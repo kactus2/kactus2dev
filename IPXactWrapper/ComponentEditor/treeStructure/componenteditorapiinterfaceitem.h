@@ -10,7 +10,6 @@
 
 #include "componenteditoritem.h"
 #include <models/ApiInterface.h>
-#include <IPXactWrapper/ComponentEditor/software/apiInterface/ApiInterfaceEditor.h>
 
 /*! \brief The item for single API-interface in component editor's navigation tree.
  *
@@ -68,12 +67,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 private:
 	
 	//! \brief No copying
@@ -84,9 +77,6 @@ private:
 
 	//! \brief Pointer to the interface being edited.
 	QSharedPointer<ApiInterface> apiIf_;
-
-	//! \brief The editor to edit the api interface.
-	ApiInterfaceEditor editor_;
 };
 
 #endif // COMPONENTEDITORAPIINTERFACEITEM_H

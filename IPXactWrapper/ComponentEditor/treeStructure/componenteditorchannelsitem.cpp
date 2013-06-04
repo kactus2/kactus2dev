@@ -6,21 +6,15 @@
  */
 
 #include "componenteditorchannelsitem.h"
+#include <IPXactWrapper/ComponentEditor/channels/channelseditor.h>
 
 ComponentEditorChannelsItem::ComponentEditorChannelsItem(ComponentEditorTreeModel* model,
 														 LibraryInterface* libHandler,
 														 QSharedPointer<Component> component,
 														 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-channels_(component->getChannels()),
-editor_(component, libHandler) {
-
-	editor_.hide();
-
-	connect(&editor_, SIGNAL(contentChanged()), 
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
+channels_(component->getChannels()) {
+	
 }
 
 ComponentEditorChannelsItem::~ComponentEditorChannelsItem() {
@@ -31,11 +25,15 @@ QString ComponentEditorChannelsItem::text() const {
 }
 
 ItemEditor* ComponentEditorChannelsItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorChannelsItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new ChannelsEditor(component_, libHandler_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()), 
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 QString ComponentEditorChannelsItem::getTooltip() const {

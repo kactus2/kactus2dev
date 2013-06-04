@@ -11,6 +11,7 @@
 
 #include "ComponentEditorSystemViewsItem.h"
 #include "ComponentEditorSystemViewItem.h"
+#include <IPXactWrapper/ComponentEditor/software/systemView/SystemViewsEditor.h>
 
 ComponentEditorSystemViewsItem::ComponentEditorSystemViewsItem(
 	ComponentEditorTreeModel* model, 
@@ -18,8 +19,7 @@ ComponentEditorSystemViewsItem::ComponentEditorSystemViewsItem(
 	QSharedPointer<Component> component,
 	ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-systemViews_(component->getSystemViews()),
-editor_(component, libHandler) {
+systemViews_(component->getSystemViews()) {
 
 	foreach (QSharedPointer<SystemView> systemView, systemViews_) {
 
@@ -27,17 +27,6 @@ editor_(component, libHandler) {
 			new ComponentEditorSystemViewItem(systemView, model, libHandler, component, this)); 
 		childItems_.append(systemViewItem);
 	}
-
-	editor_.hide();
-
-	connect(&editor_, SIGNAL(contentChanged()), 
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childAdded(int)),
-		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childRemoved(int)),
-		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorSystemViewsItem::~ComponentEditorSystemViewsItem() {
@@ -52,15 +41,24 @@ QString ComponentEditorSystemViewsItem::text() const {
 }
 
 ItemEditor* ComponentEditorSystemViewsItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorSystemViewsItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new SystemViewsEditor(component_, libHandler_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()), 
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childAdded(int)),
+			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childRemoved(int)),
+			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 void ComponentEditorSystemViewsItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorSystemViewItem> systemViewItem(
-		new ComponentEditorSystemViewItem(systemViews_.at(index), model_, libHandler_, component_, this)); 
+		new ComponentEditorSystemViewItem(systemViews_.at(index), model_, libHandler_, component_, this));
+	systemViewItem->setLocked(locked_);
 	childItems_.insert(index, systemViewItem);
 }

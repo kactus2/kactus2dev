@@ -7,14 +7,14 @@
 
 #include "componenteditorviewsitem.h"
 #include "componenteditorviewitem.h"
+#include <IPXactWrapper/ComponentEditor/views/viewseditor.h>
 
 ComponentEditorViewsItem::ComponentEditorViewsItem(ComponentEditorTreeModel* model,
 												   LibraryInterface* libHandler,
 												   QSharedPointer<Component> component,
 												   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-views_(component->getViews()),
-editor_(component, libHandler) {
+views_(component->getViews()) {
 
 	setObjectName(tr("ComponentEditorViewsItem"));
 
@@ -24,17 +24,6 @@ editor_(component, libHandler) {
 			view, model, libHandler, component, this));
 		childItems_.append(viewItem);
 	}
-
-	editor_.hide();
-
-	connect(&editor_, SIGNAL(contentChanged()), 
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childAdded(int)),
-		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childRemoved(int)),
-		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorViewsItem::~ComponentEditorViewsItem() {
@@ -45,11 +34,19 @@ QString ComponentEditorViewsItem::text() const {
 }
 
 ItemEditor* ComponentEditorViewsItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorViewsItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new ViewsEditor(component_, libHandler_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()), 
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childAdded(int)),
+			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childRemoved(int)),
+			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 QString ComponentEditorViewsItem::getTooltip() const {
@@ -58,6 +55,7 @@ QString ComponentEditorViewsItem::getTooltip() const {
 
 void ComponentEditorViewsItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorViewItem> viewItem(
-		new ComponentEditorViewItem(views_.at(index), model_, libHandler_, component_, this));	
+		new ComponentEditorViewItem(views_.at(index), model_, libHandler_, component_, this));
+	viewItem->setLocked(locked_);
 	childItems_.insert(index, viewItem);
 }

@@ -73,12 +73,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 	/*! \brief Add a new child to the item.
 	 * 
 	 * \param index The index to add the child into.
@@ -131,9 +125,6 @@ private:
 
 	//! \brief Contains the address blocks that are children of this tree item.
 	QList<QSharedPointer<MemoryMapItem> >& items_;
-
-	//! \brief The editor used to edit the address space.
-	AddressSpaceEditor editor_;
 
 	//! \brief Pointer to the graph item of the local memory map.
 	LocalMemoryMapGraphItem* graphItem_;

@@ -6,21 +6,15 @@
  */
 
 #include "componenteditorcpusitem.h"
+#include <IPXactWrapper/ComponentEditor/cpus/cpuseditor.h>
 
 ComponentEditorCpusItem::ComponentEditorCpusItem(ComponentEditorTreeModel* model, 
 												 LibraryInterface* libHandler,
 												 QSharedPointer<Component> component,
 												 ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
-cpus_(component->getCpus()),
-editor_(component, libHandler) {
-
-	editor_.hide();
-
-	connect(&editor_, SIGNAL(contentChanged()), 
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
+cpus_(component->getCpus()) {
+	
 }
 
 ComponentEditorCpusItem::~ComponentEditorCpusItem() {
@@ -31,11 +25,15 @@ QString ComponentEditorCpusItem::text() const {
 }
 
 ItemEditor* ComponentEditorCpusItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorCpusItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new CpusEditor(component_, libHandler_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()), 
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 QString ComponentEditorCpusItem::getTooltip() const {

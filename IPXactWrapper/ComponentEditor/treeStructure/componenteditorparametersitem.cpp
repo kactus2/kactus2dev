@@ -6,19 +6,15 @@
  */
 
 #include "componenteditorparametersitem.h"
+#include <IPXactWrapper/ComponentEditor/parameters/parameterseditor.h>
 
 ComponentEditorParametersItem::ComponentEditorParametersItem(ComponentEditorTreeModel* model,
 															 LibraryInterface* libHandler,
 															 QSharedPointer<Component> component,
 															 ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
-parameters_(component->getParameters()),
-editor_(component, libHandler) {
-	editor_.hide();
-	connect(&editor_, SIGNAL(contentChanged()),
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
+parameters_(component->getParameters()) {
+
 }
 
 ComponentEditorParametersItem::~ComponentEditorParametersItem() {
@@ -38,11 +34,15 @@ bool ComponentEditorParametersItem::isValid() const {
 }
 
 ItemEditor* ComponentEditorParametersItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorParametersItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new ParametersEditor(component_, libHandler_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()),
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 QString ComponentEditorParametersItem::getTooltip() const {

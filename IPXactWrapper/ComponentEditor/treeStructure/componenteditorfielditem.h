@@ -77,12 +77,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 	/*! \brief Get pointer to the visualizer of this item.
 	 * 
 	 * 
@@ -133,9 +127,6 @@ private:
 
 	//! \brief Pointer to the field being edited.
 	QSharedPointer<Field> field_;
-
-	//! \brief Pointer to the editor to edit the field
-	FieldEditor* editor_;
 
 	//! \brief Pointer to the visualizer of memory maps.
 	MemoryMapsVisualizer* visualizer_;

@@ -7,6 +7,8 @@
 
 #include "componenteditorfilesetsitem.h"
 #include "componenteditorfilesetitem.h"
+#include <IPXactWrapper/ComponentEditor/fileSet/filesetseditor.h>
+#include <models/file.h>
 
 ComponentEditorFileSetsItem::ComponentEditorFileSetsItem( ComponentEditorTreeModel* model,
 														 LibraryInterface* libHandler,
@@ -15,26 +17,13 @@ ComponentEditorFileSetsItem::ComponentEditorFileSetsItem( ComponentEditorTreeMod
 														 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 fileSets_(component->getFileSets()),
-editor_(component, libHandler, pluginMgr) {
+pluginMgr_(pluginMgr) {
 
 	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
 		QSharedPointer<ComponentEditorFileSetItem> fileSetItem(
 			new ComponentEditorFileSetItem(fileSet, model, libHandler, component, this));
 		childItems_.append(fileSetItem);
 	}
-
-    connect(&editor_, SIGNAL(fileAdded(File*)),
-            this, SLOT(onFileAdded(File*)), Qt::UniqueConnection);
-    connect(&editor_, SIGNAL(filesUpdated()),
-            this, SLOT(updateFileItems()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(contentChanged()), 
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childAdded(int)),
-		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childRemoved(int)),
-		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorFileSetsItem::~ComponentEditorFileSetsItem() {
@@ -45,11 +34,23 @@ QString ComponentEditorFileSetsItem::text() const {
 }
 
 ItemEditor* ComponentEditorFileSetsItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorFileSetsItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new FileSetsEditor(component_, libHandler_, pluginMgr_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(fileAdded(File*)),
+			this, SLOT(onFileAdded(File*)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(filesUpdated()),
+			this, SLOT(updateFileItems()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(contentChanged()), 
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childAdded(int)),
+			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childRemoved(int)),
+			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 QString ComponentEditorFileSetsItem::getTooltip() const {
@@ -59,7 +60,7 @@ QString ComponentEditorFileSetsItem::getTooltip() const {
 void ComponentEditorFileSetsItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorFileSetItem> fileSetItem(
 		new ComponentEditorFileSetItem(fileSets_.at(index), model_, libHandler_, component_, this));
-	
+	fileSetItem->setLocked(locked_);
 	childItems_.insert(index, fileSetItem);
 }
 

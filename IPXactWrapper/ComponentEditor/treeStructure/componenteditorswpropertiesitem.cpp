@@ -6,6 +6,7 @@
  */
 
 #include "componenteditorswpropertiesitem.h"
+#include <IPXactWrapper/ComponentEditor/software/SWPropertiesEditor.h>
 
 ComponentEditorSWPropertiesItem::ComponentEditorSWPropertiesItem(
 	ComponentEditorTreeModel* model,
@@ -13,13 +14,8 @@ ComponentEditorSWPropertiesItem::ComponentEditorSWPropertiesItem(
 	QSharedPointer<Component> component,
 	ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-swProperties_(component->getSWProperties()),
-editor_(component, libHandler) {
+swProperties_(component->getSWProperties()) {
 
-	connect(&editor_, SIGNAL(contentChanged()),
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorSWPropertiesItem::~ComponentEditorSWPropertiesItem() {
@@ -43,9 +39,13 @@ bool ComponentEditorSWPropertiesItem::isValid() const {
 }
 
 ItemEditor* ComponentEditorSWPropertiesItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorSWPropertiesItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new SWPropertiesEditor(component_, libHandler_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()),
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }

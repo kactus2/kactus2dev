@@ -9,7 +9,6 @@
 #define COMPONENTEDITORSWVIEWSITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXactWrapper/ComponentEditor/software/swView/swviewseditor.h>
 
 /*! \brief The Software Views-item in the component editor's navigation tree.
  *
@@ -53,12 +52,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 	/*! \brief Add a new child to the item.
 	 * 
 	 * \param index The index to add the child into.
@@ -75,9 +68,6 @@ private:
 
 	//! \brief Contains the software views being edited.
 	QList<QSharedPointer<SWView> >& swViews_;
-
-	//! \brief The editor to add/remove/edit the software views.
-	SWViewsEditor editor_;
 };
 
 #endif // COMPONENTEDITORSWVIEWSITEM_H

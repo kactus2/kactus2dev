@@ -22,6 +22,7 @@ class LibraryInterface;
 class ItemEditor;
 class ComponentEditorTreeModel;
 class ItemVisualizer;
+class ItemEditor;
 
 /*! \brief ComponentEditorItem is one item in the navigation tree in component editor.
  *
@@ -161,12 +162,6 @@ public:
 	 * \return Pointer to the editor to use for this item.
 	*/
 	virtual ItemEditor* editor() = 0;
-
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const = 0;
 
 	/*! \brief Get pointer to the visualizer of this item.
 	 * 
@@ -310,6 +305,12 @@ protected:
 
 	//! \brief Contains the children of this item.
 	QList<QSharedPointer<ComponentEditorItem> > childItems_;
+
+	//! \brief The editor for the component editor item.
+	ItemEditor* editor_;
+
+	//! \brief Defines the lock-status for editors.
+	bool locked_;
 
 protected slots:
 

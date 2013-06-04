@@ -24,14 +24,11 @@ ComponentEditorItem(model, libHandler, component, parent),
 addrSpace_(addrSpace),
 localMemMap_(addrSpace->getLocalMemoryMap()),
 items_(addrSpace->getLocalMemoryMap()->getItems()),
-editor_(component, libHandler, addrSpace),
 graphItem_(NULL),
 localMemMapVisualizer_(new MemoryMapsVisualizer(component)),
 addrSpaceVisualizer_(new AddressSpaceVisualizer(addrSpace, component)) {
 
 	setObjectName(tr("ComponentEditorAddrSpaceItem"));
-
-	editor_.hide();
 
 	graphItem_ = new LocalMemoryMapGraphItem(addrSpace_, localMemMap_);
 	localMemMapVisualizer_->addMemoryMapItem(graphItem_);
@@ -49,15 +46,6 @@ addrSpaceVisualizer_(new AddressSpaceVisualizer(addrSpace, component)) {
 			childItems_.append(addrBlockItem);
 		}
 	}
-
-	connect(&editor_, SIGNAL(contentChanged()),
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childAdded(int)),
-		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childRemoved(int)),
-		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorAddrSpaceItem::~ComponentEditorAddrSpaceItem() {
@@ -80,11 +68,19 @@ bool ComponentEditorAddrSpaceItem::isValid() const {
 }
 
 ItemEditor* ComponentEditorAddrSpaceItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorAddrSpaceItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new AddressSpaceEditor(component_, libHandler_, addrSpace_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()),
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childAdded(int)),
+			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childRemoved(int)),
+			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 QFont ComponentEditorAddrSpaceItem::getFont() const {
@@ -102,6 +98,7 @@ void ComponentEditorAddrSpaceItem::createChild( int index ) {
 	if (addrBlock) {
 		QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
 			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, this));
+		addrBlockItem->setLocked(locked_);
 
 		if (localMemMapVisualizer_) {
 			addrBlockItem->setVisualizer(localMemMapVisualizer_);

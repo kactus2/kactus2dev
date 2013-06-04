@@ -25,7 +25,6 @@ ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem(QSharedPointer<Addres
 ComponentEditorItem(model, libHandler, component, parent),
 addrBlock_(addrBlock),
 regItems_(addrBlock->getRegisterData()),
-editor_(new AddressBlockEditor(addrBlock, component, libHandler)),
 visualizer_(NULL),
 graphItem_(NULL) {
 
@@ -42,25 +41,10 @@ graphItem_(NULL) {
 		}
 	}
 
-	editor_->hide();
-
-	connect(editor_, SIGNAL(contentChanged()), 
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(editor_, SIGNAL(childAdded(int)),
-		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-	connect(editor_, SIGNAL(childRemoved(int)),
-		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-	connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
-
 	Q_ASSERT(addrBlock_);
 }
 
 ComponentEditorAddrBlockItem::~ComponentEditorAddrBlockItem() {
-	if (editor_) {
-		delete editor_;
-		editor_ = NULL;
-	}
 }
 
 QString ComponentEditorAddrBlockItem::getTooltip() const {
@@ -76,10 +60,18 @@ bool ComponentEditorAddrBlockItem::isValid() const {
 }
 
 ItemEditor* ComponentEditorAddrBlockItem::editor() {
-	return editor_;
-}
-
-const ItemEditor* ComponentEditorAddrBlockItem::editor() const {
+	if (!editor_) {
+		editor_ = new AddressBlockEditor(addrBlock_, component_, libHandler_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()), 
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childAdded(int)),
+			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childRemoved(int)),
+			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
 	return editor_;
 }
 
@@ -93,6 +85,7 @@ void ComponentEditorAddrBlockItem::createChild( int index ) {
 	if (reg) {
 		QSharedPointer<ComponentEditorRegisterItem> regItem(
 			new ComponentEditorRegisterItem(reg, model_, libHandler_, component_, this));
+		regItem->setLocked(locked_);
 		
 		if (visualizer_) {
 			regItem->setVisualizer(visualizer_);

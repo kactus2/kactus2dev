@@ -13,7 +13,6 @@
 #define COMPONENTEDITORSYSTEMVIEWSITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXactWrapper/ComponentEditor/software/systemView/SystemViewsEditor.h>
 
 /*! \brief The System Views-item in the component editor's navigation tree.
  *
@@ -57,12 +56,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 	/*! \brief Add a new child to the item.
 	 * 
 	 * \param index The index to add the child into.
@@ -79,9 +72,6 @@ private:
 
 	//! \brief Contains the system views being edited.
 	QList<QSharedPointer<SystemView> >& systemViews_;
-
-	//! \brief The editor to add/remove/edit the system views.
-	SystemViewsEditor editor_;
 };
 
 #endif // COMPONENTEDITORSYSTEMVIEWSITEM_H

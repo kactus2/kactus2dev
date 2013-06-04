@@ -6,18 +6,14 @@
  */
 
 #include "componenteditorgeneralitem.h"
+#include <IPXactWrapper/ComponentEditor/general/generaleditor.h>
 
 ComponentEditorGeneralItem::ComponentEditorGeneralItem( ComponentEditorTreeModel* model,
 													   LibraryInterface* libHandler,
 													   QSharedPointer<Component> component,
 													   ComponentEditorItem* parent ):
-ComponentEditorItem(model, libHandler, component, parent),
-editor_(libHandler, component) {
-	editor_.hide();
-	connect(&editor_, SIGNAL(contentChanged()),
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
+ComponentEditorItem(model, libHandler, component, parent) {
+
 }
 
 ComponentEditorGeneralItem::~ComponentEditorGeneralItem() {
@@ -33,11 +29,15 @@ bool ComponentEditorGeneralItem::isValid() const {
 }
 
 ItemEditor* ComponentEditorGeneralItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorGeneralItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new GeneralEditor(libHandler_, component_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()),
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 QString ComponentEditorGeneralItem::getTooltip() const {

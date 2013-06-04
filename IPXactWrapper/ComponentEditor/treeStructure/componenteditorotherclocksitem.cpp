@@ -6,19 +6,15 @@
  */
 
 #include "componenteditorotherclocksitem.h"
+#include <IPXactWrapper/ComponentEditor/otherClockDrivers/otherclockdriverseditor.h>
 
 ComponentEditorOtherClocksItem::ComponentEditorOtherClocksItem(ComponentEditorTreeModel* model, 
 															   LibraryInterface* libHandler,
 															   QSharedPointer<Component> component,
 															   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-otherClocks_(component->getOtherClockDrivers()),
-editor_(component, libHandler) {
-	editor_.hide();
-	connect(&editor_, SIGNAL(contentChanged()),
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
+otherClocks_(component->getOtherClockDrivers()) {
+
 }
 
 ComponentEditorOtherClocksItem::~ComponentEditorOtherClocksItem() {
@@ -38,11 +34,15 @@ bool ComponentEditorOtherClocksItem::isValid() const {
 }
 
 ItemEditor* ComponentEditorOtherClocksItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorOtherClocksItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new OtherClockDriversEditor(component_, libHandler_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()),
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 QString ComponentEditorOtherClocksItem::getTooltip() const {

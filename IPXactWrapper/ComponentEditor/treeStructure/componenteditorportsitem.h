@@ -9,7 +9,6 @@
 #define COMPONENTEDITORPORTSITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXactWrapper/ComponentEditor/ports/portseditor.h>
 #include <models/port.h>
 
 #include <QList>
@@ -62,12 +61,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 private:
 	//! \brief No copying
 	ComponentEditorPortsItem(const ComponentEditorPortsItem& other);
@@ -77,9 +70,6 @@ private:
 
 	//! \brief Contains the ports to edit
 	QList<QSharedPointer<Port> >& ports_;
-
-	//! \brief The editor to edit the ports
-	PortsEditor editor_;
 };
 
 #endif // COMPONENTEDITORPORTSITEM_H

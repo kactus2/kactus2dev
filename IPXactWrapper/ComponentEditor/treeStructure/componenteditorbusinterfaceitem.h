@@ -10,7 +10,6 @@
 
 #include "componenteditoritem.h"
 #include <models/businterface.h>
-#include <IPXactWrapper/ComponentEditor/busInterfaces/businterfaceeditor.h>
 
 #include <QSharedPointer>
 
@@ -71,12 +70,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 	/*! \brief Tells if the item can be opened or not.
 	 * 
 	 * If the bus interface contains valid bus definition reference is can be opened.
@@ -100,8 +93,8 @@ private:
 	//! \brief Pointer to the bus interface being edited.
 	QSharedPointer<BusInterface> busif_;
 
-	//! \brief The editor to edit the bus interface.
-	BusInterfaceEditor editor_;
+	//! \brief Pointer to the parent window.
+	QWidget* parentWnd_;
 };
 
 #endif // COMPONENTEDITORBUSINTERFACEITEM_H

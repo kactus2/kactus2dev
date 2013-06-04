@@ -9,7 +9,6 @@
 #define COMPONENTEDITORCPUSITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXactWrapper/ComponentEditor/cpus/cpuseditor.h>
 
 #include <QList>
 
@@ -55,12 +54,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 	/*! \brief Check the validity of this item and sub items.
 	 *
 	 * \return bool True if item is in valid state.
@@ -76,9 +69,6 @@ private:
 
 	//! \brief The cpus being edited
 	QList<QSharedPointer<Cpu> >& cpus_;
-
-	//! \brief The editor to edit the cpus of the component.
-	CpusEditor editor_;
 };
 
 #endif // COMPONENTEDITORCPUSITEM_H

@@ -10,7 +10,6 @@
 
 #include "componenteditoritem.h"
 #include <models/ComInterface.h>
-#include <IPXactWrapper/ComponentEditor/software/comInterface/ComInterfaceEditor.h>
 
 /*! \brief The item for a single COM interface in component editor's navigation tree.
  *
@@ -68,12 +67,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 	/*! \brief Tells if the item can be opened or not.
 	 * 
 	 * If the com interface contains valid com definition reference then it can be opened.
@@ -96,9 +89,6 @@ private:
 
 	//! \brief Pointer to the com interface being edited.
 	QSharedPointer<ComInterface> interface_;
-
-	//! \brief The editor to edit the com interface.
-	ComInterfaceEditor editor_;
 };
 
 #endif // COMPONENTEDITORCOMINTERFACEITEM_H

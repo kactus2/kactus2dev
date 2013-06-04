@@ -10,7 +10,6 @@
 
 #include "componenteditoritem.h"
 
-#include <IPXactWrapper/ComponentEditor/modelParameters/modelparametereditor.h>
 #include <models/modelparameter.h>
 
 #include <QString>
@@ -65,12 +64,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 private:
 	//! \brief No copying
 	ComponentEditorModelParamsItem(const ComponentEditorModelParamsItem& other);
@@ -80,9 +73,6 @@ private:
 
 	//! \brief The map that contains the model parameters.
 	QList<QSharedPointer<ModelParameter> >& modelParams_;
-
-	//! \brief The editor to edit the model parameters of the component.
-	ModelParameterEditor editor_;
 };
 
 #endif // COMPONENTEDITORMODELPARAMSITEM_H

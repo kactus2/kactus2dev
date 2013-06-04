@@ -6,6 +6,7 @@
  */
 
 #include "componenteditorviewitem.h"
+#include <IPXactWrapper/ComponentEditor/views/vieweditor.h>
 
 #include <QFont>
 #include <QApplication>
@@ -16,19 +17,11 @@ ComponentEditorViewItem::ComponentEditorViewItem(QSharedPointer<View> view,
 												 QSharedPointer<Component> component,
 												 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-view_(view),
-editor_(component, view, libHandler) {
+view_(view) {
 	
 	Q_ASSERT(view_);
 
 	setObjectName(tr("ComponentEditorViewItem: %1").arg(view->getName()));
-	
-	editor_.hide();
-
-	connect(&editor_, SIGNAL(contentChanged()),
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorViewItem::~ComponentEditorViewItem() {
@@ -53,11 +46,15 @@ bool ComponentEditorViewItem::isValid() const {
 }
 
 ItemEditor* ComponentEditorViewItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorViewItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new ViewEditor(component_, view_, libHandler_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()),
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 QFont ComponentEditorViewItem::getFont() const {

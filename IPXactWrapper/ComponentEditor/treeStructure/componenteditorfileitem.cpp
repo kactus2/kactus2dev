@@ -7,6 +7,7 @@
 
 #include "componenteditorfileitem.h"
 
+#include <IPXactWrapper/ComponentEditor/fileSet/file/fileeditor.h>
 #include <models/component.h>
 #include <models/generaldeclarations.h>
 
@@ -22,13 +23,7 @@ ComponentEditorFileItem::ComponentEditorFileItem(QSharedPointer<File> file,
 												 QSharedPointer<Component> component,
 												 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-file_(file),
-editor_(libHandler, component, file) {
-	editor_.hide();
-	connect(&editor_, SIGNAL(contentChanged()),
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
+file_(file) {
 }
 
 ComponentEditorFileItem::~ComponentEditorFileItem() {
@@ -65,11 +60,16 @@ bool ComponentEditorFileItem::isValid() const {
 }
 
 ItemEditor* ComponentEditorFileItem::editor() {
-	return &editor_;
-}
 
-const ItemEditor* ComponentEditorFileItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new FileEditor(libHandler_, component_, file_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()),
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 QFont ComponentEditorFileItem::getFont() const {

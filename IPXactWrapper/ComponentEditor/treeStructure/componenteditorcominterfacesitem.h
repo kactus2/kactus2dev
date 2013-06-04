@@ -8,7 +8,6 @@
 #ifndef COMPONENTEDITORCOMINTERFACESITEM_H
 #define COMPONENTEDITORCOMINTERFACESITEM_H
 
-#include <IPXactWrapper/ComponentEditor/software/comInterface/cominterfaceseditor.h>
 #include "componenteditoritem.h"
 
 /*! \brief The COM interfaces-item in the component editor's navigation tree.
@@ -53,12 +52,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 	/*! \brief Add a new child to the item.
 	 * 
 	 * \param index The index to add the child into.
@@ -72,9 +65,6 @@ private:
 
 	//! \brief No assignment
 	ComponentEditorComInterfacesItem& operator=(const ComponentEditorComInterfacesItem& other);
-
-	//! \brief The editor to add/remove/edit the com interfaces of a component.
-	ComInterfacesEditor editor_;
 
 	//! \brief The interfaces being edited.
 	QList<QSharedPointer<ComInterface> >& interfaces_;

@@ -9,7 +9,6 @@
 #define COMPONENTEDITORSWPROPERTIESITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXactWrapper/ComponentEditor/software/SWPropertiesEditor.h>
 #include <models/ComProperty.h>
 
 /*! \brief The Software Properties-item in the component editor's navigation tree.
@@ -60,12 +59,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 private:
 	//! \brief No copying
 	ComponentEditorSWPropertiesItem(const ComponentEditorSWPropertiesItem& other);
@@ -75,9 +68,6 @@ private:
 
 	//! \brief Contains the properties to edit
 	QList< QSharedPointer<ComProperty> >& swProperties_;
-
-	//! \brief The editor to edit the properties
-	SWPropertiesEditor editor_;
 };
 
 #endif // COMPONENTEDITORSWPROPERTIESITEM_H

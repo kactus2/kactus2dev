@@ -7,6 +7,7 @@
 
 #include "componenteditorswviewsitem.h"
 #include "componenteditorswviewitem.h"
+#include <IPXactWrapper/ComponentEditor/software/swView/swviewseditor.h>
 
 ComponentEditorSWViewsItem::ComponentEditorSWViewsItem(
 	ComponentEditorTreeModel* model, 
@@ -14,8 +15,7 @@ ComponentEditorSWViewsItem::ComponentEditorSWViewsItem(
 	QSharedPointer<Component> component,
 	ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-swViews_(component->getSWViews()),
-editor_(component, libHandler) {
+swViews_(component->getSWViews()) {
 
 	foreach (QSharedPointer<SWView> swView, swViews_) {
 
@@ -23,17 +23,6 @@ editor_(component, libHandler) {
 			new ComponentEditorSWViewItem(swView, model, libHandler, component, this)); 
 		childItems_.append(swViewItem);
 	}
-
-	editor_.hide();
-
-	connect(&editor_, SIGNAL(contentChanged()), 
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childAdded(int)),
-		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childRemoved(int)),
-		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorSWViewsItem::~ComponentEditorSWViewsItem() {
@@ -48,15 +37,24 @@ QString ComponentEditorSWViewsItem::text() const {
 }
 
 ItemEditor* ComponentEditorSWViewsItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorSWViewsItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new SWViewsEditor(component_, libHandler_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()), 
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childAdded(int)),
+			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childRemoved(int)),
+			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 void ComponentEditorSWViewsItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorSWViewItem> swViewItem(
-		new ComponentEditorSWViewItem(swViews_.at(index), model_, libHandler_, component_, this)); 
+		new ComponentEditorSWViewItem(swViews_.at(index), model_, libHandler_, component_, this));
+	swViewItem->setLocked(locked_);
 	childItems_.insert(index, swViewItem);
 }

@@ -8,6 +8,7 @@
 #include "componenteditorfilesetitem.h"
 #include "componenteditorfileitem.h"
 #include "componenteditortreemodel.h"
+#include <IPXactWrapper/ComponentEditor/fileSet/fileseteditor.h>
 
 #include <QFont>
 #include <QApplication>
@@ -19,8 +20,7 @@ ComponentEditorFileSetItem::ComponentEditorFileSetItem(QSharedPointer<FileSet> f
 													   ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 fileSet_(fileSet),
-files_(fileSet->getFiles()),
-editor_(libHandler, component, fileSet, NULL) {
+files_(fileSet->getFiles()) {
 
 	Q_ASSERT(fileSet);
 
@@ -33,19 +33,6 @@ editor_(libHandler, component, fileSet, NULL) {
 
 		childItems_.append(fileItem);
 	}
-
-	editor_.hide();
-
-	connect(&editor_, SIGNAL(contentChanged()),
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childAdded(int)),
-		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childRemoved(int)),
-		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childMoved(int, int)),
-		this, SLOT(onMoveChild(int, int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorFileSetItem::~ComponentEditorFileSetItem() {
@@ -87,11 +74,21 @@ bool ComponentEditorFileSetItem::isValid() const {
 }
 
 ItemEditor* ComponentEditorFileSetItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorFileSetItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		 editor_ = new FileSetEditor(libHandler_, component_, fileSet_, NULL);
+		 editor_->setDisabled(locked_);
+		 connect(editor_, SIGNAL(contentChanged()),
+			 this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		 connect(editor_, SIGNAL(childAdded(int)),
+			 this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		 connect(editor_, SIGNAL(childRemoved(int)),
+			 this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+		 connect(editor_, SIGNAL(childMoved(int, int)),
+			 this, SLOT(onMoveChild(int, int)), Qt::UniqueConnection);
+		 connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			 this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 QFont ComponentEditorFileSetItem::getFont() const {
@@ -106,6 +103,7 @@ void ComponentEditorFileSetItem::createChild( int index ) {
 
 	QSharedPointer<ComponentEditorFileItem> fileItem(new ComponentEditorFileItem(
 		files_.at(index), model_, libHandler_, component_, this));
+	fileItem->setLocked(locked_);
 	childItems_.insert(index, fileItem);
 }
 
@@ -114,7 +112,11 @@ void ComponentEditorFileSetItem::createChild( int index ) {
 //-----------------------------------------------------------------------------
 void ComponentEditorFileSetItem::onFileAdded(File* file)
 {
-    editor_.onFileAdded(file);
+	if (editor_) {
+		FileSetEditor* ownEditor = qobject_cast<FileSetEditor*>(editor_);
+		Q_ASSERT(ownEditor);
+		ownEditor->onFileAdded(file);
+	}
 }
 
 //-----------------------------------------------------------------------------

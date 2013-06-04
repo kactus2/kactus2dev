@@ -6,6 +6,7 @@
  */
 
 #include "componenteditorswviewitem.h"
+#include <IPXactWrapper/ComponentEditor/software/swView/SWViewEditor.h>
 
 #include <QApplication>
 #include <QFont>
@@ -17,14 +18,9 @@ ComponentEditorSWViewItem::ComponentEditorSWViewItem(
 	QSharedPointer<Component> component,
 	ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-swView_(swView),
-editor_(component, swView, libHandler, NULL) {
+swView_(swView) {
 
 	Q_ASSERT(swView_);
-	connect(&editor_, SIGNAL(contentChanged()),
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorSWViewItem::~ComponentEditorSWViewItem() {
@@ -59,11 +55,15 @@ bool ComponentEditorSWViewItem::isValid() const {
 }
 
 ItemEditor* ComponentEditorSWViewItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorSWViewItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new SWViewEditor(component_, swView_, libHandler_, NULL);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()),
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 QFont ComponentEditorSWViewItem::getFont() const {

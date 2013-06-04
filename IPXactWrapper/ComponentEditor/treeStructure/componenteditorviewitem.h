@@ -10,7 +10,6 @@
 
 #include "componenteditoritem.h"
 #include <models/view.h>
-#include <IPXactWrapper/ComponentEditor/views/vieweditor.h>
 
 #include <QSharedPointer>
 
@@ -71,12 +70,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 	/*! \brief Tells if the item can be opened or not.
 	 * 
 	 * If the view is hierarchical and reference hasn't changed then it can be opened.
@@ -99,9 +92,6 @@ private:
 
 	//! \brief Pointer to the view being edited.
 	QSharedPointer<View> view_;
-
-	//! \brief The editor to edit the view.
-	ViewEditor editor_;
 };
 
 #endif // COMPONENTEDITORVIEWITEM_H

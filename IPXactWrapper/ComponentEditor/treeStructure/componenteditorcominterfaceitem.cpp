@@ -6,6 +6,7 @@
  */
 
 #include "componenteditorcominterfaceitem.h"
+#include <IPXactWrapper/ComponentEditor/software/comInterface/ComInterfaceEditor.h>
 
 #include <QFont>
 #include <QApplication>
@@ -16,13 +17,8 @@ ComponentEditorComInterfaceItem::ComponentEditorComInterfaceItem(QSharedPointer<
 																 QSharedPointer<Component> component,
 																 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-interface_(comInterface),
-editor_(libHandler, component, comInterface) {
-	editor_.hide();
-	connect(&editor_, SIGNAL(contentChanged()),
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
+interface_(comInterface) {
+
 }
 
 ComponentEditorComInterfaceItem::~ComponentEditorComInterfaceItem() {
@@ -49,11 +45,15 @@ bool ComponentEditorComInterfaceItem::isValid() const {
 }
 
 ItemEditor* ComponentEditorComInterfaceItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorComInterfaceItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new ComInterfaceEditor(libHandler_, component_, interface_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()),
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 QFont ComponentEditorComInterfaceItem::getFont() const {

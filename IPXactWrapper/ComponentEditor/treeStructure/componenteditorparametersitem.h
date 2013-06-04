@@ -9,7 +9,6 @@
 #define COMPONENTEDITORPARAMETERITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXactWrapper/ComponentEditor/parameters/parameterseditor.h>
 #include <models/parameter.h>
 
 /*! \brief The parameters-item in the component editor navigation tree.
@@ -60,12 +59,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 private:
 	//! \brief No copying
 	ComponentEditorParametersItem(const ComponentEditorParametersItem& other);
@@ -75,9 +68,6 @@ private:
 
 	//! \brief The list containing the parameters to edit.
 	QList<QSharedPointer<Parameter> >& parameters_;
-
-	//! \brief The editor to edit the parameters of a component
-	ParametersEditor editor_;
 };
 
 #endif // COMPONENTEDITORPARAMETERITEM_H

@@ -19,8 +19,10 @@ ComponentEditorItem::ComponentEditorItem(ComponentEditorTreeModel* model,
 QObject(parent),
 libHandler_(libHandler),
 component_(component), 
-childItems_(),
 model_(model),
+childItems_(),
+editor_(NULL),
+locked_(true),
 parent_(parent) {
 
 	connect(this, SIGNAL(contentChanged(ComponentEditorItem*)),
@@ -58,8 +60,9 @@ ComponentEditorItem::ComponentEditorItem( LibraryInterface* libHandler,
 QObject(parent),
 libHandler_(libHandler),
 component_(component),
-childItems_(),
-model_(parent), 
+model_(parent),
+childItems_(), 
+editor_(NULL),
 parent_(NULL) {
 
 	connect(this, SIGNAL(contentChanged(ComponentEditorItem*)),
@@ -68,6 +71,10 @@ parent_(NULL) {
 
 ComponentEditorItem::~ComponentEditorItem() {
 	childItems_.clear();
+	if (editor_) {
+		delete editor_;
+		editor_ = NULL;
+	}
 }
 
 int ComponentEditorItem::row() const {
@@ -156,8 +163,8 @@ void ComponentEditorItem::onEditorChanged() {
 
 void ComponentEditorItem::setLocked( bool locked ) {
 	// if this item contains an editor
-	if (editor()) {
-		editor()->setDisabled(locked);
+	if (editor_) {
+		editor_->setDisabled(locked);
 	}
 	// if this item contains a visualizer
 	if (visualizer()) {
@@ -168,11 +175,13 @@ void ComponentEditorItem::setLocked( bool locked ) {
 	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
 		childItem->setLocked(locked);
 	}
+
+	locked_ = locked;
 }
 
 void ComponentEditorItem::refreshEditor() {
-	if (editor()) {
-		editor()->refresh();
+	if (editor_) {
+		editor_->refresh();
 	}
 }
 

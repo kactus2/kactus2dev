@@ -6,6 +6,7 @@
  */
 
 #include "componenteditorapiinterfaceitem.h"
+#include <IPXactWrapper/ComponentEditor/software/apiInterface/ApiInterfaceEditor.h>
 
 #include <QApplication>
 
@@ -16,15 +17,9 @@ ComponentEditorAPIInterfaceItem::ComponentEditorAPIInterfaceItem(
 	QSharedPointer<Component> component,
 	ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-apiIf_(APIInterface),
-editor_(libHandler, component, APIInterface, NULL) {
+apiIf_(APIInterface) {
 
 	Q_ASSERT(apiIf_);
-
-	connect(&editor_, SIGNAL(contentChanged()),
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorAPIInterfaceItem::~ComponentEditorAPIInterfaceItem() {
@@ -55,11 +50,15 @@ bool ComponentEditorAPIInterfaceItem::isValid() const {
 }
 
 ItemEditor* ComponentEditorAPIInterfaceItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorAPIInterfaceItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new ApiInterfaceEditor(libHandler_, component_, apiIf_, NULL);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()),
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 QFont ComponentEditorAPIInterfaceItem::getFont() const {

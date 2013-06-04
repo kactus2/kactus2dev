@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "ComponentEditorSystemViewItem.h"
+#include <IPXactWrapper/ComponentEditor/software/systemView/SystemViewEditor.h>
 
 #include <QApplication>
 #include <QFont>
@@ -21,14 +22,9 @@ ComponentEditorSystemViewItem::ComponentEditorSystemViewItem(
 	QSharedPointer<Component> component,
 	ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-systemView_(systemView),
-editor_(component, systemView, libHandler, NULL) {
+systemView_(systemView) {
 
 	Q_ASSERT(systemView_);
-	connect(&editor_, SIGNAL(contentChanged()),
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorSystemViewItem::~ComponentEditorSystemViewItem() {
@@ -62,11 +58,15 @@ bool ComponentEditorSystemViewItem::isValid() const {
 }
 
 ItemEditor* ComponentEditorSystemViewItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorSystemViewItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new SystemViewEditor(component_, systemView_, libHandler_, NULL);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()),
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 QFont ComponentEditorSystemViewItem::getFont() const {

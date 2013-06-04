@@ -25,7 +25,6 @@ ComponentEditorMemMapItem::ComponentEditorMemMapItem(QSharedPointer<MemoryMap> m
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMap_(memoryMap),
 items_(memoryMap->getItems()),
-editor_(new MemoryMapEditor(component, libHandler, memoryMap)),
 visualizer_(NULL),
 graphItem_(NULL) {
 
@@ -43,25 +42,10 @@ graphItem_(NULL) {
 		}
 	}
 
-	editor_->hide();
-
-	connect(editor_, SIGNAL(contentChanged()), 
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(editor_, SIGNAL(childAdded(int)),
-		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-	connect(editor_, SIGNAL(childRemoved(int)),
-		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-	connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
-
 	Q_ASSERT(memoryMap_);
 }
 
 ComponentEditorMemMapItem::~ComponentEditorMemMapItem() {
-	if (editor_) {
-		delete editor_;
-		editor_ = NULL;
-	}
 }
 
 QString ComponentEditorMemMapItem::text() const {
@@ -73,10 +57,18 @@ bool ComponentEditorMemMapItem::isValid() const {
 }
 
 ItemEditor* ComponentEditorMemMapItem::editor() {
-	return editor_;
-}
-
-const ItemEditor* ComponentEditorMemMapItem::editor() const {
+	if (!editor_) {
+		editor_ = new MemoryMapEditor(component_, libHandler_, memoryMap_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()), 
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childAdded(int)),
+			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childRemoved(int)),
+			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
 	return editor_;
 }
 
@@ -96,6 +88,7 @@ void ComponentEditorMemMapItem::createChild( int index ) {
 	if (addrBlock) {
 		QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
 			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, this));
+		addrBlockItem->setLocked(locked_);
 		
 		if (visualizer_) {
 			addrBlockItem->setVisualizer(visualizer_);

@@ -6,6 +6,7 @@
  */
 
 #include "componenteditorbusinterfaceitem.h"
+#include <IPXactWrapper/ComponentEditor/busInterfaces/businterfaceeditor.h>
 
 #include <QFont>
 #include <QApplication>
@@ -18,13 +19,8 @@ ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem(QSharedPointer<
                                                                  QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
 busif_(busif),
-editor_(libHandler, component, busif, 0, parentWnd) {
-	editor_.hide();
+parentWnd_(parentWnd) {
 
-	connect(&editor_, SIGNAL(contentChanged()),
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-    connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-            this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorBusInterfaceItem::~ComponentEditorBusInterfaceItem() {
@@ -56,11 +52,15 @@ bool ComponentEditorBusInterfaceItem::isValid() const {
 }
 
 ItemEditor* ComponentEditorBusInterfaceItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorBusInterfaceItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new BusInterfaceEditor(libHandler_, component_, busif_, 0, parentWnd_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()),
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 QFont ComponentEditorBusInterfaceItem::getFont() const {

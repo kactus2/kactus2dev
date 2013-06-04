@@ -10,7 +10,6 @@
 
 #include "componenteditoritem.h"
 #include <models/ApiInterface.h>
-#include <IPXactWrapper/ComponentEditor/software/apiInterface/apiinterfaceseditor.h>
 
 #include <QList>
 
@@ -56,12 +55,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 	/*! \brief Add a new child to the item.
 	 *
 	 * \param index The index to add the child into.
@@ -78,9 +71,6 @@ private:
 
 	//! \brief Contains the api interfaces to edit.
 	QList<QSharedPointer<ApiInterface> >& apiInterfaces_;
-
-	//! \brief The editor to add/remove/edit the API interfaces.
-	ApiInterfacesEditor editor_;
 };
 
 #endif // COMPONENTEDITORAPIINTERFACESITEM_H

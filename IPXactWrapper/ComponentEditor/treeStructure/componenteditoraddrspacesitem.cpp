@@ -8,33 +8,20 @@
 #include "componenteditoraddrspacesitem.h"
 #include "componenteditoraddrspaceitem.h"
 #include <IPXactWrapper/ComponentEditor/treeStructure/componenteditortreemodel.h>
+#include <IPXactWrapper/ComponentEditor/addressSpaces/addressspaceseditor.h>
 
 ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem(ComponentEditorTreeModel* model,
 															 LibraryInterface* libHandler,
 															 QSharedPointer<Component> component,
 															 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-addrSpaces_(component->getAddressSpaces()), 
-editor_(component, libHandler) {
+addrSpaces_(component->getAddressSpaces()) {
 
 	foreach (QSharedPointer<AddressSpace> addrSpace, addrSpaces_) {
 		QSharedPointer<ComponentEditorAddrSpaceItem> addrItem(
 			new ComponentEditorAddrSpaceItem(addrSpace, model, libHandler, component, this));	
 		childItems_.append(addrItem);
-	}
-
-	editor_.hide();
-
-	connect(&editor_, SIGNAL(contentChanged()), 
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childAdded(int)),
-		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childRemoved(int)),
-		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
-	connect(&editor_, SIGNAL(selectBusInterface(const QString&)),
-		model, SLOT(onSelectBusInterface(const QString&)), Qt::UniqueConnection);
+	};
 }
 
 ComponentEditorAddrSpacesItem::~ComponentEditorAddrSpacesItem() {
@@ -45,11 +32,21 @@ QString ComponentEditorAddrSpacesItem::text() const {
 }
 
 ItemEditor* ComponentEditorAddrSpacesItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorAddrSpacesItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new AddressSpacesEditor(component_, libHandler_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()), 
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childAdded(int)),
+			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childRemoved(int)),
+			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+		connect(editor_, SIGNAL(selectBusInterface(const QString&)),
+			model_, SLOT(onSelectBusInterface(const QString&)), Qt::UniqueConnection);
+	}
+	return editor_;
 }
 
 QString ComponentEditorAddrSpacesItem::getTooltip() const {
@@ -58,6 +55,7 @@ QString ComponentEditorAddrSpacesItem::getTooltip() const {
 
 void ComponentEditorAddrSpacesItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorAddrSpaceItem> addrItem(
-		new ComponentEditorAddrSpaceItem(addrSpaces_.at(index), model_, libHandler_, component_, this));	
+		new ComponentEditorAddrSpaceItem(addrSpaces_.at(index), model_, libHandler_, component_, this));
+	addrItem->setLocked(locked_);
 	childItems_.insert(index, addrItem);
 }

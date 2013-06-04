@@ -7,13 +7,13 @@
 
 #include "componenteditorcominterfacesitem.h"
 #include "componenteditorcominterfaceitem.h"
+#include <IPXactWrapper/ComponentEditor/software/comInterface/cominterfaceseditor.h>
 
 ComponentEditorComInterfacesItem::ComponentEditorComInterfacesItem(ComponentEditorTreeModel* model, 
 																   LibraryInterface* libHandler,
 																   QSharedPointer<Component> component,
 																   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-editor_(libHandler, component),
 interfaces_(component->getComInterfaces()) {
 
 	foreach (QSharedPointer<ComInterface> iface, interfaces_) {
@@ -21,16 +21,6 @@ interfaces_(component->getComInterfaces()) {
 			iface, model, libHandler, component, this));
 		childItems_.append(interfaceItem);
 	}
-	editor_.hide();
-
-	connect(&editor_, SIGNAL(contentChanged()), 
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childAdded(int)),
-		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childRemoved(int)),
-		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorComInterfacesItem::~ComponentEditorComInterfacesItem() {
@@ -41,11 +31,19 @@ QString ComponentEditorComInterfacesItem::text() const {
 }
 
 ItemEditor* ComponentEditorComInterfacesItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorComInterfacesItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new ComInterfacesEditor(libHandler_, component_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()), 
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childAdded(int)),
+			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childRemoved(int)),
+			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 QString ComponentEditorComInterfacesItem::getTooltip() const {
@@ -55,5 +53,6 @@ QString ComponentEditorComInterfacesItem::getTooltip() const {
 void ComponentEditorComInterfacesItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorComInterfaceItem> interfaceItem(new ComponentEditorComInterfaceItem(
 		interfaces_.at(index), model_, libHandler_, component_, this));
+	interfaceItem->setLocked(locked_);
 	childItems_.insert(index, interfaceItem);
 }

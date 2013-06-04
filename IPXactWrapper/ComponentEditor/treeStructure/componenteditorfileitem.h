@@ -10,7 +10,6 @@
 
 #include "componenteditoritem.h"
 #include <models/file.h>
-#include <IPXactWrapper/ComponentEditor/fileSet/file/fileeditor.h>
 
 /*! \brief The item for a single file in component editor's navigation tree.
  *
@@ -68,12 +67,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 	/*! \brief Tells if the item can be opened or not.
 	 * 
 	 * Files can always be opened and this function returns true.
@@ -108,9 +101,6 @@ private:
 
 	//! \brief Pointer to the file being edited.
 	QSharedPointer<File> file_;
-
-	//! \brief The editor to edit the file.
-	FileEditor editor_;
 };
 
 #endif // COMPONENTEDITORFILEITEM_H

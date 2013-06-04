@@ -56,12 +56,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 	/*! \brief Add a new child to the item.
 	 * 
 	 * \param index The index to add the child into.
@@ -84,9 +78,6 @@ private:
 
 	//! \brief Contains the memory maps being edited.
 	QList<QSharedPointer<MemoryMap> >& memoryMaps_;
-
-	//! \brief The editor to manage the memory maps.
-	MemoryMapsEditor* editor_;
 
 	//! \brief The visualizer to display the memory maps
 	MemoryMapsVisualizer* visualizer_;

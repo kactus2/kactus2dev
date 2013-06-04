@@ -8,8 +8,6 @@
 #ifndef COMPONENTEDITORCHANNELSITEM_H
 #define COMPONENTEDITORCHANNELSITEM_H
 
-#include <IPXactWrapper/ComponentEditor/channels/channelseditor.h>
-
 #include "componenteditoritem.h"
 
 /*! \brief The channels-item in the component editor's navigation tree.
@@ -54,12 +52,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 	/*! \brief Check the validity of this item.
 	 *
 	 * \return bool True if item is in valid state.
@@ -75,9 +67,6 @@ private:
 
 	//! \brief The channels being edited.
 	QList<QSharedPointer<Channel> >& channels_;
-
-	//! \brief The editor to edit the channels
-	ChannelsEditor editor_;
 };
 
 #endif // COMPONENTEDITORCHANNELSITEM_H

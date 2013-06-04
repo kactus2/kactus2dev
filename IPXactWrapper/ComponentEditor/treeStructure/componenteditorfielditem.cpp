@@ -22,27 +22,15 @@ ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Register> reg,
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
 field_(field),
-editor_(new FieldEditor(field, component, libHandler)),
 visualizer_(NULL),
 graphItem_(NULL) {
 
 	Q_ASSERT(field_);
 
 	setObjectName(tr("ComponentEditorFieldItem"));
-
-	editor_->hide();
-
-	connect(editor_, SIGNAL(contentChanged()), 
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorFieldItem::~ComponentEditorFieldItem() {
-	if (editor_) {
-		delete editor_;
-		editor_ = NULL;
-	}
 }
 
 QFont ComponentEditorFieldItem::getFont() const {
@@ -62,10 +50,14 @@ bool ComponentEditorFieldItem::isValid() const {
 }
 
 ItemEditor* ComponentEditorFieldItem::editor() {
-	return editor_;
-}
-
-const ItemEditor* ComponentEditorFieldItem::editor() const {
+	if (!editor_) {
+		editor_ = new FieldEditor(field_, component_, libHandler_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()), 
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
 	return editor_;
 }
 

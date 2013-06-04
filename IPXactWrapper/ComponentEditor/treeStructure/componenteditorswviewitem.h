@@ -9,7 +9,6 @@
 #define COMPONENTEDITORSWVIEWITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXactWrapper/ComponentEditor/software/swView/SWViewEditor.h>
 #include <models/SWView.h>
 
 /*! \brief The item for a single software view in the component editor's navigation tree.
@@ -68,12 +67,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 	/*! \brief Tells if the item can be opened or not.
 	 * 
 	 * If the hasn't changed then it can be opened.
@@ -96,9 +89,6 @@ private:
 
 	//! \brief Pointer to the view being edited.
 	QSharedPointer<SWView> swView_;
-
-	//! \brief The editor to edit the software view.
-	SWViewEditor editor_;
 };
 
 #endif // COMPONENTEDITORSWVIEWITEM_H

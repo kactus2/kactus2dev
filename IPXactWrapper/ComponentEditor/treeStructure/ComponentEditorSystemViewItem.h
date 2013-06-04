@@ -13,7 +13,6 @@
 #define COMPONENTEDITORSYSTEMVIEWITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXactWrapper/ComponentEditor/software/systemView/SystemViewEditor.h>
 #include <models/SystemView.h>
 
 /*! \brief The item for a single system view in the component editor's navigation tree.
@@ -72,12 +71,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 	/*! \brief Tells if the item can be opened or not.
 	 * 
 	 * If the view hasn't changed then it can be opened.
@@ -100,9 +93,6 @@ private:
 
 	//! \brief Pointer to the view being edited.
 	QSharedPointer<SystemView> systemView_;
-
-	//! \brief The editor to edit the system view.
-	SystemViewEditor editor_;
 };
 
 #endif // COMPONENTEDITORSYSTEMVIEWITEM_H

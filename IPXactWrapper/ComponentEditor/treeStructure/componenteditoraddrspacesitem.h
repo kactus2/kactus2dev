@@ -9,7 +9,6 @@
 #define COMPONENTEDITORADDRSPACESITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXactWrapper/ComponentEditor/addressSpaces/addressspaceseditor.h>
 #include <models/addressspace.h>
 
 #include <QList>
@@ -56,12 +55,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 	/*! \brief Add a new child to the item.
 	 * 
 	 * \param index The index to add the child into.
@@ -78,9 +71,6 @@ private:
 
 	//! \brief The address spaces being edited.
 	QList<QSharedPointer<AddressSpace> >& addrSpaces_;
-
-	//! \brief The editor to edit the address spaces.
-	AddressSpacesEditor editor_;
 };
 
 #endif // COMPONENTEDITORADDRSPACESITEM_H

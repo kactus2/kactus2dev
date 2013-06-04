@@ -23,7 +23,6 @@ ComponentEditorRegisterItem::ComponentEditorRegisterItem(QSharedPointer<Register
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
 fields_(reg->getFields()),
-editor_(new RegisterEditor(reg, component, libHandler)),
 visualizer_(NULL),
 graphItem_(NULL) {
 
@@ -37,25 +36,10 @@ graphItem_(NULL) {
 		}
 	}
 
-	editor_->hide();
-
-	connect(editor_, SIGNAL(contentChanged()), 
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(editor_, SIGNAL(childAdded(int)),
-		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-	connect(editor_, SIGNAL(childRemoved(int)),
-		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-	connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
-
 	Q_ASSERT(reg_);
 }
 
 ComponentEditorRegisterItem::~ComponentEditorRegisterItem() {
-	if (editor_) {
-		delete editor_;
-		editor_ = NULL;
-	}
 }
 
 QString ComponentEditorRegisterItem::getTooltip() const {
@@ -71,10 +55,18 @@ bool ComponentEditorRegisterItem::isValid() const {
 }
 
 ItemEditor* ComponentEditorRegisterItem::editor() {
-	return editor_;
-}
-
-const ItemEditor* ComponentEditorRegisterItem::editor() const {
+	if (!editor_) {
+		editor_ = new RegisterEditor(reg_, component_, libHandler_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()), 
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childAdded(int)),
+			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childRemoved(int)),
+			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
 	return editor_;
 }
 
@@ -85,6 +77,7 @@ QFont ComponentEditorRegisterItem::getFont() const {
 void ComponentEditorRegisterItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
 		reg_, fields_.at(index), model_, libHandler_, component_, this));
+	fieldItem->setLocked(locked_);
 	
 	if (visualizer_) {
 		fieldItem->setVisualizer(visualizer_);

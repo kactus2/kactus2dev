@@ -10,7 +10,6 @@
 
 #include "componenteditoritem.h"
 #include <models/component.h>
-#include <IPXactWrapper/ComponentEditor/general/generaleditor.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -65,21 +64,12 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 private:
 	//! \brief No copying
 	ComponentEditorGeneralItem(const ComponentEditorGeneralItem& other);
 
 	//! \brief No assignment
 	ComponentEditorGeneralItem& operator=(const ComponentEditorGeneralItem& other);
-
-	//! \brief The editor for general items
-	GeneralEditor editor_;
 };
 
 #endif // COMPONENTEDITORGENERALITEM_H

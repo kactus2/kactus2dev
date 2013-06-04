@@ -7,6 +7,7 @@
 
 #include "componenteditorapiinterfacesitem.h"
 #include "componenteditorapiinterfaceitem.h"
+#include <IPXactWrapper/ComponentEditor/software/apiInterface/apiinterfaceseditor.h>
 
 ComponentEditorAPIInterfacesItem::ComponentEditorAPIInterfacesItem(
 	ComponentEditorTreeModel* model,
@@ -14,24 +15,13 @@ ComponentEditorAPIInterfacesItem::ComponentEditorAPIInterfacesItem(
 	QSharedPointer<Component> component,
 	ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-apiInterfaces_(component->getApiInterfaces()),
-editor_(component, libHandler) {
+apiInterfaces_(component->getApiInterfaces()) {
 
 	foreach (QSharedPointer<ApiInterface> apiInterface, apiInterfaces_) {
 		QSharedPointer<ComponentEditorAPIInterfaceItem> apiItem(
 			new ComponentEditorAPIInterfaceItem(apiInterface, model, libHandler, component, this));
 		childItems_.append(apiItem);
 	}
-	editor_.hide();
-
-	connect(&editor_, SIGNAL(contentChanged()), 
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childAdded(int)),
-		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childRemoved(int)),
-		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorAPIInterfacesItem::~ComponentEditorAPIInterfacesItem() {
@@ -46,11 +36,19 @@ QString ComponentEditorAPIInterfacesItem::text() const {
 }
 
 ItemEditor* ComponentEditorAPIInterfacesItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorAPIInterfacesItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new ApiInterfacesEditor(component_, libHandler_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()), 
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childAdded(int)),
+			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childRemoved(int)),
+			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 void ComponentEditorAPIInterfacesItem::createChild( int index ) {

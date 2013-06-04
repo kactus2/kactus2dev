@@ -7,6 +7,7 @@
 
 #include "componenteditorbusinterfacesitem.h"
 #include "componenteditorbusinterfaceitem.h"
+#include <IPXactWrapper/ComponentEditor/busInterfaces/businterfaceseditor.h>
 
 ComponentEditorBusInterfacesItem::ComponentEditorBusInterfacesItem(ComponentEditorTreeModel* model,
 																   LibraryInterface* libHandler,
@@ -15,7 +16,6 @@ ComponentEditorBusInterfacesItem::ComponentEditorBusInterfacesItem(ComponentEdit
                                                                    QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
 busifs_(component->getBusInterfaces()),
-editor_(libHandler, component),
 parentWnd_(parentWnd) {
 
 	foreach (QSharedPointer<BusInterface> busif, busifs_) {
@@ -24,17 +24,6 @@ parentWnd_(parentWnd) {
 
 		childItems_.append(busifItem);
 	}
-
-	editor_.hide();
-
-	connect(&editor_, SIGNAL(contentChanged()), 
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childAdded(int)),
-		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(childRemoved(int)),
-		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorBusInterfacesItem::~ComponentEditorBusInterfacesItem() {
@@ -45,11 +34,19 @@ QString ComponentEditorBusInterfacesItem::text() const {
 }
 
 ItemEditor* ComponentEditorBusInterfacesItem::editor() {
-	return &editor_;
-}
-
-const ItemEditor* ComponentEditorBusInterfacesItem::editor() const {
-	return &editor_;
+	if (!editor_) {
+		editor_ = new BusInterfacesEditor(libHandler_, component_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()), 
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childAdded(int)),
+			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childRemoved(int)),
+			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+	}
+	return editor_;
 }
 
 QString ComponentEditorBusInterfacesItem::getTooltip() const {
@@ -60,6 +57,7 @@ void ComponentEditorBusInterfacesItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
 		new ComponentEditorBusInterfaceItem(busifs_.at(index),
 		model_, libHandler_, component_, this, parentWnd_));
+	busifItem->setLocked(locked_);
 
 	childItems_.insert(index, busifItem);
 }

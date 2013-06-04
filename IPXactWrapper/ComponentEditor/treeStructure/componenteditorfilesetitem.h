@@ -9,7 +9,6 @@
 #define COMPONENTEDITORFILESETITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXactWrapper/ComponentEditor/fileSet/fileseteditor.h>
 #include <models/fileset.h>
 #include <QSharedPointer>
 
@@ -69,12 +68,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 	/*! \brief Add a new child to the item.
 	 *
 	 * \param index The index to add the child into.
@@ -110,9 +103,6 @@ private:
 
 	//! \brief Contains the files of the file set.
 	QList<QSharedPointer<File> >& files_;
-
-	//! \brief The editor to edit the file set.
-	FileSetEditor editor_;
 };
 
 #endif // COMPONENTEDITORFILESETITEM_H

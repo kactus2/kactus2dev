@@ -76,12 +76,6 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Get pointer to the editor of this item.
-	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
-	virtual const ItemEditor* editor() const;
-
 	/*! \brief Add a new child to the item.
 	 * 
 	 * \param index The index to add the child into.
@@ -139,9 +133,6 @@ private:
 
 	//! \brief Contains the registers that belong to this address block
 	QList<QSharedPointer<RegisterModel> >& regItems_;
-
-	//! \brief Pointer to the editor to edit the address block.
-	AddressBlockEditor* editor_;
 
 	//! \brief The visualizer for memory maps.
 	MemoryMapsVisualizer* visualizer_;

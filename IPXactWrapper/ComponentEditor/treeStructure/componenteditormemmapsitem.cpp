@@ -17,7 +17,6 @@ ComponentEditorMemMapsItem::ComponentEditorMemMapsItem( ComponentEditorTreeModel
 													   ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMaps_(component->getMemoryMaps()),
-editor_(new MemoryMapsEditor(component, libHandler)),
 visualizer_(new MemoryMapsVisualizer(component)) {
 
 	setObjectName(tr("ComponentEditorMemMapsItem"));
@@ -29,28 +28,11 @@ visualizer_(new MemoryMapsVisualizer(component)) {
 		childItems_.append(memoryMapItem);
 	}
 
-	editor_->hide();
-
-	connect(editor_, SIGNAL(contentChanged()), 
-		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-	connect(editor_, SIGNAL(childAdded(int)),
-		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-	connect(editor_, SIGNAL(childRemoved(int)),
-		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-	connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-		this, SIGNAL(helpUrlRequested(QString const&)));
-	connect(editor_, SIGNAL(selectBusInterface(const QString&)),
-		model, SLOT(onSelectBusInterface(const QString&)), Qt::UniqueConnection);
-
 	connect(visualizer_, SIGNAL(contentChanged()),
 		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorMemMapsItem::~ComponentEditorMemMapsItem() {
-	if (editor_) {
-		delete editor_;
-		editor_ = NULL;
-	}
 	if (visualizer_) {
 		delete visualizer_;
 		visualizer_ = NULL;
@@ -62,10 +44,20 @@ QString ComponentEditorMemMapsItem::text() const {
 }
 
 ItemEditor* ComponentEditorMemMapsItem::editor() {
-	return editor_;
-}
-
-const ItemEditor* ComponentEditorMemMapsItem::editor() const {
+	if (!editor_) {
+		editor_ = new MemoryMapsEditor(component_, libHandler_);
+		editor_->setDisabled(locked_);
+		connect(editor_, SIGNAL(contentChanged()), 
+			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childAdded(int)),
+			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childRemoved(int)),
+			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
+			this, SIGNAL(helpUrlRequested(QString const&)));
+		connect(editor_, SIGNAL(selectBusInterface(const QString&)),
+			model_, SLOT(onSelectBusInterface(const QString&)), Qt::UniqueConnection);
+	}
 	return editor_;
 }
 
@@ -75,7 +67,8 @@ QString ComponentEditorMemMapsItem::getTooltip() const {
 
 void ComponentEditorMemMapsItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(
-		new ComponentEditorMemMapItem(memoryMaps_.at(index), model_, libHandler_, component_, this));	
+		new ComponentEditorMemMapItem(memoryMaps_.at(index), model_, libHandler_, component_, this));
+	memoryMapItem->setLocked(locked_);
 	childItems_.insert(index, memoryMapItem);
 	
 	if (visualizer_) {
