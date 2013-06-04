@@ -27,28 +27,22 @@ TabDocument(parent, DOC_PROTECTION_SUPPORT),
 libHandler_(libHandler),
 busDef_(busDef),
 absDef_(absDef),
-editableBusDef_(),
-editableAbsDef_(),
 busDefGroup_(this),
 absDefGroup_(libHandler ,this) {
 
-	Q_ASSERT_X(busDef, "BusEditor constructor",
+	Q_ASSERT_X(busDef_, "BusEditor constructor",
 		"Null Bus Definition pointer given as parameter");
 
-	// make copies of the bus definition and abstraction definition
-	editableBusDef_ = QSharedPointer<BusDefinition>(new BusDefinition(*busDef.data()));
-
 	// if abstraction definition is being edited
-	if (absDef) {
-		editableAbsDef_ = QSharedPointer<AbstractionDefinition>(new AbstractionDefinition(*absDef.data()));
-		absDefGroup_.setAbsDef(editableAbsDef_);
+	if (absDef_) {
+		absDefGroup_.setAbsDef(absDef_);
 	}
 	// if abstraction definition is not being edited.
 	else {
 		absDefGroup_.setDisabled(true);
 	}
 
-	busDefGroup_.setBusDef(editableBusDef_);
+	busDefGroup_.setBusDef(busDef_);
 	busDefGroup_.setDisabled(disableBusDef);
 
 	setupLayout();
@@ -86,13 +80,13 @@ bool BusEditor::validate(QStringList& errorList)
         // save the changes from the model to the abstraction definition
         absDefGroup_.save();
 
-        valid = editableAbsDef_->isValid(errorList);
+        valid = absDef_->isValid(errorList);
     }
 
     // if bus definition is being edited
     if (busDefGroup_.isEnabled())
     {
-        valid = editableBusDef_->isValid(errorList) && valid;
+        valid = busDef_->isValid(errorList) && valid;
     }
 
     return valid;
@@ -105,14 +99,11 @@ bool BusEditor::save() {
 		// save the changes from the model to the abstraction definition
 		absDefGroup_.save();
 
-		*absDef_ = *editableAbsDef_;
 		libHandler_->writeModelToFile(absDef_);
 	}
 
 	// if bus definition is being edited
 	if (busDefGroup_.isEnabled()) {
-		// copy the settings from the temporary items to the original
-		*busDef_ = *editableBusDef_;
 
 		libHandler_->writeModelToFile(busDef_);
 	}
@@ -137,15 +128,10 @@ bool BusEditor::saveAs() {
 			return false;
 		}
 
-		// copy the settings from the temporary items to the original
-		busDef_ = QSharedPointer<BusDefinition>(new BusDefinition(*editableBusDef_.data()));
-		editableBusDef_ = QSharedPointer<BusDefinition>(new BusDefinition(*busDef_.data()));
-
 		busDefVLNV = VLNV(VLNV::BUSDEFINITION, vlnv.getVendor(), vlnv.getLibrary(),
 			vlnv.getName(), vlnv.getVersion());
 
 		busDef_->setVlnv(busDefVLNV);
-		editableBusDef_->setVlnv(busDefVLNV);
 	}
 
 	// if abstraction definition is being edited but not the bus definition
@@ -156,14 +142,10 @@ bool BusEditor::saveAs() {
 
 		absDefGroup_.save();
 
-		absDef_ = QSharedPointer<AbstractionDefinition>(new AbstractionDefinition(*editableAbsDef_.data()));
-		editableAbsDef_ = QSharedPointer<AbstractionDefinition>(new AbstractionDefinition(*absDef_.data()));
-
 		absDefVLNV = VLNV(VLNV::ABSTRACTIONDEFINITION, vlnv.getVendor(), vlnv.getLibrary(),
 			vlnv.getName(), vlnv.getVersion());
 
 		absDef_->setVlnv(absDefVLNV);
-		editableAbsDef_->setVlnv(absDefVLNV);
 
 		// write only the abs def
 		libHandler_->writeModelToFile(absDirectory, absDef_);
@@ -180,9 +162,6 @@ bool BusEditor::saveAs() {
 		absDefName = absDefName.remove(".busDef", Qt::CaseInsensitive);
 
 		absDefGroup_.save();
-
-		absDef_ = QSharedPointer<AbstractionDefinition>(new AbstractionDefinition(*editableAbsDef_.data()));
-		editableAbsDef_ = QSharedPointer<AbstractionDefinition>(new AbstractionDefinition(*absDef_.data()));
 
 		// create automatically vlnv for the abstraction definition
 		absDefVLNV = VLNV(VLNV::ABSTRACTIONDEFINITION, vlnv.getVendor(), vlnv.getLibrary(),
@@ -204,11 +183,9 @@ bool BusEditor::saveAs() {
 
 		// update the vlnvs of the abs def
 		absDef_->setVlnv(absDefVLNV);
-		editableAbsDef_->setVlnv(absDefVLNV);
 
 		// update the abs def's reference to bus def
 		absDef_->setBusType(busDefVLNV);
-		editableAbsDef_->setBusType(busDefVLNV);
 
 		// write the abs def and bus def
 		libHandler_->writeModelToFile(busDirectory, busDef_);
@@ -219,7 +196,7 @@ bool BusEditor::saveAs() {
 	}
 	
 	// if only bus def was being edited, write bus def and set the name
-    libHandler_->writeModelToFile(busDirectory, busDef_);
+	libHandler_->writeModelToFile(busDirectory, busDef_);
 	setDocumentName(busDefVLNV.getName() + " (" + busDefVLNV.getVersion() + ")");
 	return TabDocument::saveAs();
 }

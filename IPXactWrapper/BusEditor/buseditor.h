@@ -104,21 +104,6 @@ private:
 	//! \brief Pointer to the original abstraction definition to use when saving.
 	QSharedPointer<AbstractionDefinition> absDef_;
 
-	//! \brief Pointer to the bus definition being edited.
-	QSharedPointer<BusDefinition> editableBusDef_;
-
-	//! \brief Pointer to the abstraction definition being edited.
-	QSharedPointer<AbstractionDefinition> editableAbsDef_;
-
-	//! \brief Group containing the signal buttons
-	//SignalsGroup signalsGroup_;
-
-	//! \brief Group containing the rename buttons
-	//RenameGroup renameGroup_;
-
-	//! \brief Group containing the import/export buttons
-	//ImpExpGroup impExpGroup_;
-
 	//! \brief Group containing elements to edit bus definition
 	BusDefGroup busDefGroup_;
 
