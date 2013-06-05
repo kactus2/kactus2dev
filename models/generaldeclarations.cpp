@@ -1269,8 +1269,8 @@ QString General::getRelativeSavePath( const QString& from, const QString& to ) {
 	return ipXactDir.relativeFilePath(toInfo.absoluteFilePath());
 }
 
-QString General::getAbsolutePath(const QString originalPath,
-		const QString relativePath) {
+QString General::getAbsolutePath(const QString& originalPath,
+		const QString& relativePath) {
 
 	// if one of the parameters is empty
 	if (originalPath.isEmpty() || relativePath.isEmpty()) {

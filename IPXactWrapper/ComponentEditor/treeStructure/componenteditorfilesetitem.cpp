@@ -137,6 +137,7 @@ void ComponentEditorFileSetItem::updateFileItems()
     foreach (QSharedPointer<File> file, files_) {
         QSharedPointer<ComponentEditorFileItem> fileItem(new ComponentEditorFileItem(
             file, model_, libHandler_, component_, this));
+		  fileItem->setLocked(locked_);
 
         connect(fileItem.data(), SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
                 model_, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);

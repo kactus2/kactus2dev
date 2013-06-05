@@ -1272,7 +1272,7 @@ KACTUS2_API QString getRelativeSavePath(const QString& from, const QString& to);
  *
  * \return The absolute path of the target directory/file
  */
-KACTUS2_API QString getAbsolutePath(const QString originalPath, const QString relativePath);
+KACTUS2_API QString getAbsolutePath(const QString& originalPath, const QString& relativePath);
 
 }
 

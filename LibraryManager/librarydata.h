@@ -184,6 +184,24 @@ private:
 	*/
 	void parseFile(const QString& filePath);
 
+	/*! \brief Check the specified library object's validity.
+	 * 
+	 * Note:
+	 * The following members must be initialized before calling this function first time:
+	 * errors_, failedObjects_, syntaxErrors_, vlnvErrors_, fileErrors_.
+	 * If the object is faulty, the members are modified according the to error type.
+	 * 
+	 * Method: 		checkObject
+	 * Full name:	LibraryData::checkObject
+	 * Access:		private 
+	 *
+	 * \param vlnv Identifies the library object.
+	 * \param path The path to the object's IP-XACT file.
+	 *
+	 * \return True if the object was valid.
+	*/
+	bool checkObject(const VLNV& vlnv, const QString& path);
+
     //! The main window.
     QMainWindow* mainWnd_;
 

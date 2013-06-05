@@ -12,11 +12,12 @@
 #ifndef ADHOCENABLED_H
 #define ADHOCENABLED_H
 
+#include <models/component.h>
+
 #include <QString>
 #include <QSharedPointer>
 #include <QMap>
 
-class Component;
 class Port;
 class HWConnectionEndpoint;
 class GenericEditProvider;
