@@ -40,8 +40,7 @@ public:
     /*!
      *  Display window with vhdl file display and tables for ports and parameters
      *  from vhdl file.
-     * \brief closeEvent
-     * \param event
+     *
      */
 
 private slots:
@@ -116,6 +115,19 @@ private slots:
 
 private:
 
+
+    /*!
+     * Prevent copy-construction
+     */
+    VHDLtoIPXACT(const VHDLtoIPXACT&);
+
+
+    /*!
+     * Prevent assignment
+     */
+    VHDLtoIPXACT& operator=(const VHDLtoIPXACT&);
+
+
     //! State of the VHDL file (open/close)
     bool VHDLOpen;
 
@@ -139,26 +151,34 @@ private:
 
     //! UI display elements
 
-    //QWidget *centralWidget;
+    //! grid layout for all ui elements
     QGridLayout *gridLayout;
     //! shows vhdl file content
     textEdit *VHDLdisplay;
+    //! layout for tables and their labels
     QVBoxLayout *verticalLayout;
     //! shows and stores port data
     QTableWidget *tableWidgetPorts;
 
     //! shows and stores parameter data
     QTableWidget *tableWidgetModelParams;
-    //QLabel *label_4;
+
     //! show and store fileset
-    //QTableWidget *tableWidgetFileSets;
+
     QHBoxLayout *horizontalLayout;
+
+    //! open vhdl file push button
     QPushButton *pushButtonOpenFile;
+    //! spaces push buttons
     QSpacerItem *horizontalSpacer;
-    //QPushButton *pushButtonDependency;
+    //! save ip-xact file push button
     QPushButton *pushButtonSaveFile;
+    //! labels for table titles
+    //! vhdl display
     QLabel *label;
+    //! port table
     QLabel *label_2;
+    //! parameters table
     QLabel *label_3;
 
 };

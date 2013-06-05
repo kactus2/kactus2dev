@@ -85,24 +85,24 @@ VHDLtoIPXACT::VHDLtoIPXACT(QSharedPointer<Component> comp, const QString xmlFile
     //set table for ports
     tableWidgetPorts = new QTableWidget(this);
     tableWidgetPorts->setColumnCount(9);
-    QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
-    tableWidgetPorts->setHorizontalHeaderItem(0, __qtablewidgetitem);
-    QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
-    tableWidgetPorts->setHorizontalHeaderItem(1, __qtablewidgetitem1);
-    QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
-    tableWidgetPorts->setHorizontalHeaderItem(2, __qtablewidgetitem2);
-    QTableWidgetItem *__qtablewidgetitem3 = new QTableWidgetItem();
-    tableWidgetPorts->setHorizontalHeaderItem(3, __qtablewidgetitem3);
-    QTableWidgetItem *__qtablewidgetitem4 = new QTableWidgetItem();
-    tableWidgetPorts->setHorizontalHeaderItem(4, __qtablewidgetitem4);
-    QTableWidgetItem *__qtablewidgetitem5 = new QTableWidgetItem();
-    tableWidgetPorts->setHorizontalHeaderItem(5, __qtablewidgetitem5);
-    QTableWidgetItem *__qtablewidgetitem6 = new QTableWidgetItem();
-    tableWidgetPorts->setHorizontalHeaderItem(6, __qtablewidgetitem6);
-    QTableWidgetItem *__qtablewidgetitem7 = new QTableWidgetItem();
-    tableWidgetPorts->setHorizontalHeaderItem(7, __qtablewidgetitem7);
-    QTableWidgetItem *__qtablewidgetitem8 = new QTableWidgetItem();
-    tableWidgetPorts->setHorizontalHeaderItem(8, __qtablewidgetitem8);
+    QTableWidgetItem *qtablewidgetitemp = new QTableWidgetItem();
+    tableWidgetPorts->setHorizontalHeaderItem(0, qtablewidgetitemp);
+    QTableWidgetItem *qtablewidgetitemp1 = new QTableWidgetItem();
+    tableWidgetPorts->setHorizontalHeaderItem(1, qtablewidgetitemp1);
+    QTableWidgetItem *qtablewidgetitemp2 = new QTableWidgetItem();
+    tableWidgetPorts->setHorizontalHeaderItem(2, qtablewidgetitemp2);
+    QTableWidgetItem *qtablewidgetitemp3 = new QTableWidgetItem();
+    tableWidgetPorts->setHorizontalHeaderItem(3, qtablewidgetitemp3);
+    QTableWidgetItem *qtablewidgetitemp4 = new QTableWidgetItem();
+    tableWidgetPorts->setHorizontalHeaderItem(4, qtablewidgetitemp4);
+    QTableWidgetItem *qtablewidgetitemp5 = new QTableWidgetItem();
+    tableWidgetPorts->setHorizontalHeaderItem(5, qtablewidgetitemp5);
+    QTableWidgetItem *qtablewidgetitemp6 = new QTableWidgetItem();
+    tableWidgetPorts->setHorizontalHeaderItem(6, qtablewidgetitemp6);
+    QTableWidgetItem *qtablewidgetitemp7 = new QTableWidgetItem();
+    tableWidgetPorts->setHorizontalHeaderItem(7, qtablewidgetitemp7);
+    QTableWidgetItem *qtablewidgetitemp8 = new QTableWidgetItem();
+    tableWidgetPorts->setHorizontalHeaderItem(8, qtablewidgetitemp8);
     tableWidgetPorts->setRowCount(1);
     tableWidgetPorts->setItem(0,0,new QTableWidgetItem);
     tableWidgetPorts->setItem(0,1,new QTableWidgetItem);
@@ -128,22 +128,23 @@ VHDLtoIPXACT::VHDLtoIPXACT(QSharedPointer<Component> comp, const QString xmlFile
 
     label_3 = new QLabel("label_3");
     label_3->setTextInteractionFlags(Qt::NoTextInteraction);
+    label_3->setText(QApplication::translate("dataConverter", "IP-XACT Model Parameters", 0));
 
     verticalLayout->addWidget(label_3);
 
     //set param table
     tableWidgetModelParams = new QTableWidget(this);
     tableWidgetModelParams->setColumnCount(5);
-    QTableWidgetItem *__qtablewidgetitem9 = new QTableWidgetItem();
-    tableWidgetModelParams->setHorizontalHeaderItem(0, __qtablewidgetitem9);
-    QTableWidgetItem *__qtablewidgetitem10 = new QTableWidgetItem();
-    tableWidgetModelParams->setHorizontalHeaderItem(1, __qtablewidgetitem10);
-    QTableWidgetItem *__qtablewidgetitem11 = new QTableWidgetItem();
-    tableWidgetModelParams->setHorizontalHeaderItem(2, __qtablewidgetitem11);
-    QTableWidgetItem *__qtablewidgetitem12 = new QTableWidgetItem();
-    tableWidgetModelParams->setHorizontalHeaderItem(3, __qtablewidgetitem12);
-    QTableWidgetItem *__qtablewidgetitem13 = new QTableWidgetItem();
-    tableWidgetModelParams->setHorizontalHeaderItem(4, __qtablewidgetitem13);
+    QTableWidgetItem *qtablewidgetitemp9 = new QTableWidgetItem();
+    tableWidgetModelParams->setHorizontalHeaderItem(0, qtablewidgetitemp9);
+    QTableWidgetItem *qtablewidgetitemp10 = new QTableWidgetItem();
+    tableWidgetModelParams->setHorizontalHeaderItem(1, qtablewidgetitemp10);
+    QTableWidgetItem *qtablewidgetitemp11 = new QTableWidgetItem();
+    tableWidgetModelParams->setHorizontalHeaderItem(2, qtablewidgetitemp11);
+    QTableWidgetItem *qtablewidgetitemp12 = new QTableWidgetItem();
+    tableWidgetModelParams->setHorizontalHeaderItem(3, qtablewidgetitemp12);
+    QTableWidgetItem *qtablewidgetitemp13 = new QTableWidgetItem();
+    tableWidgetModelParams->setHorizontalHeaderItem(4, qtablewidgetitemp13);
     if (tableWidgetModelParams->rowCount() < 1)
         tableWidgetModelParams->setRowCount(1);
     tableWidgetModelParams->setObjectName(QStringLiteral("tableWidgetModelParams"));
@@ -236,35 +237,35 @@ VHDLtoIPXACT::VHDLtoIPXACT(QSharedPointer<Component> comp, const QString xmlFile
 
     //set colunm names for port and generic tables
     this->setWindowTitle(QApplication::translate("dataConverter", "VHDL to IP-XACT Converter", 0));
-    QTableWidgetItem *___qtablewidgetitem = tableWidgetPorts->horizontalHeaderItem(0);
-    ___qtablewidgetitem->setText(QApplication::translate("dataConverter", "Name", 0));
-    QTableWidgetItem *___qtablewidgetitem1 = tableWidgetPorts->horizontalHeaderItem(1);
-    ___qtablewidgetitem1->setText(QApplication::translate("dataConverter", "Direction", 0));
-    QTableWidgetItem *___qtablewidgetitem2 = tableWidgetPorts->horizontalHeaderItem(2);
-    ___qtablewidgetitem2->setText(QApplication::translate("dataConverter", "Width", 0));
-    QTableWidgetItem *___qtablewidgetitem3 = tableWidgetPorts->horizontalHeaderItem(3);
-    ___qtablewidgetitem3->setText(QApplication::translate("dataConverter", "Left Bound", 0));
-    QTableWidgetItem *___qtablewidgetitem4 = tableWidgetPorts->horizontalHeaderItem(4);
-    ___qtablewidgetitem4->setText(QApplication::translate("dataConverter", "Right Bound", 0));
-    QTableWidgetItem *___qtablewidgetitem5 = tableWidgetPorts->horizontalHeaderItem(5);
-    ___qtablewidgetitem5->setText(QApplication::translate("dataConverter", "Type", 0));
-    QTableWidgetItem *___qtablewidgetitem6 = tableWidgetPorts->horizontalHeaderItem(6);
-    ___qtablewidgetitem6->setText(QApplication::translate("dataConverter", "Type Definition", 0));
-    QTableWidgetItem *___qtablewidgetitem7 = tableWidgetPorts->horizontalHeaderItem(7);
-    ___qtablewidgetitem7->setText(QApplication::translate("dataConverter", "Default Value", 0));
-    QTableWidgetItem *___qtablewidgetitem8 = tableWidgetPorts->horizontalHeaderItem(8);
-    ___qtablewidgetitem8->setText(QApplication::translate("dataConverter", "Description", 0));
-    label_3->setText(QApplication::translate("dataConverter", "IP-XACT Model Parameters", 0));
-    QTableWidgetItem *___qtablewidgetitem9 = tableWidgetModelParams->horizontalHeaderItem(0);
-    ___qtablewidgetitem9->setText(QApplication::translate("dataConverter", "Name", 0));
-    QTableWidgetItem *___qtablewidgetitem10 = tableWidgetModelParams->horizontalHeaderItem(1);
-    ___qtablewidgetitem10->setText(QApplication::translate("dataConverter", "Data Type", 0));
-    QTableWidgetItem *___qtablewidgetitem11 = tableWidgetModelParams->horizontalHeaderItem(2);
-    ___qtablewidgetitem11->setText(QApplication::translate("dataConverter", "Usage Type", 0));
-    QTableWidgetItem *___qtablewidgetitem12 = tableWidgetModelParams->horizontalHeaderItem(3);
-    ___qtablewidgetitem12->setText(QApplication::translate("dataConverter", "Value", 0));
-    QTableWidgetItem *___qtablewidgetitem13 = tableWidgetModelParams->horizontalHeaderItem(4);
-    ___qtablewidgetitem13->setText(QApplication::translate("dataConverter", "Description", 0));
+    QTableWidgetItem *qtablewidgetitem = tableWidgetPorts->horizontalHeaderItem(0);
+    qtablewidgetitem->setText(QApplication::translate("dataConverter", "Name", 0));
+    QTableWidgetItem *qtablewidgetitem1 = tableWidgetPorts->horizontalHeaderItem(1);
+    qtablewidgetitem1->setText(QApplication::translate("dataConverter", "Direction", 0));
+    QTableWidgetItem *qtablewidgetitem2 = tableWidgetPorts->horizontalHeaderItem(2);
+    qtablewidgetitem2->setText(QApplication::translate("dataConverter", "Width", 0));
+    QTableWidgetItem *qtablewidgetitem3 = tableWidgetPorts->horizontalHeaderItem(3);
+    qtablewidgetitem3->setText(QApplication::translate("dataConverter", "Left Bound", 0));
+    QTableWidgetItem *qtablewidgetitem4 = tableWidgetPorts->horizontalHeaderItem(4);
+    qtablewidgetitem4->setText(QApplication::translate("dataConverter", "Right Bound", 0));
+    QTableWidgetItem *qtablewidgetitem5 = tableWidgetPorts->horizontalHeaderItem(5);
+    qtablewidgetitem5->setText(QApplication::translate("dataConverter", "Type", 0));
+    QTableWidgetItem *qtablewidgetitem6 = tableWidgetPorts->horizontalHeaderItem(6);
+    qtablewidgetitem6->setText(QApplication::translate("dataConverter", "Type Definition", 0));
+    QTableWidgetItem *qtablewidgetitem7 = tableWidgetPorts->horizontalHeaderItem(7);
+    qtablewidgetitem7->setText(QApplication::translate("dataConverter", "Default Value", 0));
+    QTableWidgetItem *qtablewidgetitem8 = tableWidgetPorts->horizontalHeaderItem(8);
+    qtablewidgetitem8->setText(QApplication::translate("dataConverter", "Description", 0));
+
+    QTableWidgetItem *qtablewidgetitem9 = tableWidgetModelParams->horizontalHeaderItem(0);
+    qtablewidgetitem9->setText(QApplication::translate("dataConverter", "Name", 0));
+    QTableWidgetItem *qtablewidgetitem10 = tableWidgetModelParams->horizontalHeaderItem(1);
+    qtablewidgetitem10->setText(QApplication::translate("dataConverter", "Data Type", 0));
+    QTableWidgetItem *qtablewidgetitem11 = tableWidgetModelParams->horizontalHeaderItem(2);
+    qtablewidgetitem11->setText(QApplication::translate("dataConverter", "Usage Type", 0));
+    QTableWidgetItem *qtablewidgetitem12 = tableWidgetModelParams->horizontalHeaderItem(3);
+    qtablewidgetitem12->setText(QApplication::translate("dataConverter", "Value", 0));
+    QTableWidgetItem *qtablewidgetitem13 = tableWidgetModelParams->horizontalHeaderItem(4);
+    qtablewidgetitem13->setText(QApplication::translate("dataConverter", "Description", 0));
 
 
     //connect signals and slots
@@ -280,16 +281,18 @@ VHDLtoIPXACT::~VHDLtoIPXACT()
 {
     VHDLdisplay->clear();
     tableWidgetPorts->clear();
-    /*
-    delete VHDdata;
+
+    delete tableWidgetPorts;
+    delete tableWidgetModelParams;
+
+    delete VHDdata; /*
     delete label_2;
     delete label;
     delete label_3;
     delete pushButtonOpenFile;
     delete pushButtonSaveFile;
     delete VHDLdisplay;
-    delete tableWidgetPorts;
-    delete tableWidgetModelParams;
+
     delete horizontalSpacer;
     delete horizontalLayout;
     delete verticalLayout;
@@ -304,19 +307,19 @@ void VHDLtoIPXACT::closeEvent(QCloseEvent* event) {
 
     if (saveState == false){
 
-    QMessageBox::StandardButton msg;
-    msg = QMessageBox::question(this, "Warning", "IP-XACT has not been saved. Close anyway?"
-                                , QMessageBox::Yes | QMessageBox::Cancel);
-    if (msg == QMessageBox::Yes) {
-        VHDLdisplay->clear();
-        //VHDLdisplay->connect(VHDLdisplay, SIGNAL(doubleClicked(int, int)), SLOT(TextEditDoubleClicked(int,int)));
-        event->accept();
-        return;
-    }
-    else if( msg == QMessageBox::Cancel ){
-        event->ignore();
-        return;
-    }
+        QMessageBox::StandardButton msg;
+        msg = QMessageBox::question(this, "Warning", "IP-XACT has not been saved. Close anyway?"
+                                    , QMessageBox::Yes | QMessageBox::Cancel);
+        if (msg == QMessageBox::Yes) {
+            VHDLdisplay->clear();
+            comp_->setModel(new Model());
+            event->accept();
+            return;
+        }
+        else if( msg == QMessageBox::Cancel ){
+            event->ignore();
+            return;
+        }
     }
 
 }
@@ -481,10 +484,10 @@ void VHDLtoIPXACT::on_pushButtonSaveFile_released()
     Model* model = new Model;
 
     //create port list
-    QList<QSharedPointer<Port> > ports;
+    QList<QSharedPointer<Port>> ports;
 
     //create modelParam list
-    QList<QSharedPointer<ModelParameter> > modelParameters;
+    QList<QSharedPointer<ModelParameter>> modelParameters;
 
     //loop ports into model
     General::Direction direction;
@@ -593,7 +596,7 @@ void VHDLtoIPXACT::on_pushButtonSaveFile_released()
     comp_->setModel( model );
 
     //set view
-    QList<QSharedPointer<View> > views;
+    QList<QSharedPointer<View>> views;
     View view;
     view.setLanguage("vhdl");
     view.setName("structural_vhdl");
@@ -651,11 +654,21 @@ void VHDLtoIPXACT::addRow()
     if (tableWidgetPorts->currentRow() < 1 )
     {
         tableWidgetPorts->insertRow(0);
+        for ( int i = 0 ; i < tableWidgetPorts->columnCount() ; ++i) {
+
+            tableWidgetPorts->setItem(0,i,new QTableWidgetItem);
+
+        }
 
     }
     else
     {
-        tableWidgetPorts->insertRow(tableWidgetPorts->currentRow());
+        tableWidgetPorts->insertRow(tableWidgetPorts->currentRow()+1);
+        for ( int i = 0 ; i < tableWidgetPorts->columnCount() ; ++i) {
+
+            tableWidgetPorts->setItem(tableWidgetPorts->currentRow()+1,i,new QTableWidgetItem);
+
+        }
 
     }
 
@@ -679,10 +692,20 @@ void VHDLtoIPXACT::addRowG()
     if (tableWidgetModelParams->currentRow() < 1 )
     {
         tableWidgetModelParams->insertRow(0);
+        for ( int i = 0 ; i < tableWidgetModelParams->columnCount() ; ++i) {
+
+            tableWidgetModelParams->setItem(0,i,new QTableWidgetItem);
+
+        }
     }
     else
     {
-        tableWidgetModelParams->insertRow(tableWidgetModelParams->currentRow());
+        tableWidgetModelParams->insertRow(tableWidgetModelParams->currentRow()+1);
+        for ( int i = 0 ; i < tableWidgetModelParams->columnCount() ; ++i) {
+
+            tableWidgetModelParams->setItem(tableWidgetModelParams->currentRow()+1,i,new QTableWidgetItem );
+
+        }
     }
 
 }
