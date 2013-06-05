@@ -13,8 +13,6 @@
 #include <QVBoxLayout>
 #include <QSizePolicy>
 
-#include <QDebug>
-
 LibraryTreeWidget::LibraryTreeWidget(VLNVDialer* dialer, 
 									 LibraryInterface* handler,
 									 LibraryTreeModel* dataModel,

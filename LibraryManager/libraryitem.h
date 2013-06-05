@@ -181,13 +181,6 @@ public:
 	*/
 	LibraryItem* findItem(const VLNV& vlnv);
 
-	/*! \brief Get the type of items that this library item represents.
-	 *
-	 *
-	 * \return QString containing the name of the type (component, busDefinition, jne)
-	*/
-	//QString getTypeStr() const;
-
 	/*! \brief Set the vlnv to match the tree structure of this item
 	 *
 	 * \param vlnv The vlnv instance to set.

@@ -65,7 +65,7 @@ void HierarchyModel::onResetModel() {
 	for (int i = 0; i < items.size(); ++i) {
 
 		// make sure the item can be parsed
-		QSharedPointer<LibraryComponent> libComp = handler_->getModel(items.at(i));
+		QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(items.at(i));
 		if (!libComp) {
 			continue;
 		}
@@ -88,8 +88,8 @@ void HierarchyModel::onResetModel() {
 
 	// create the abstraction definitions
 	for (int i = 0; i < absDefs.size(); ++i) {
-		QSharedPointer<LibraryComponent> libComp = handler_->getModel(absDefs.at(i));
-		QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
+		QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(absDefs.at(i));
+		QSharedPointer<AbstractionDefinition const> absDef = libComp.staticCast<AbstractionDefinition const>();
 
 		VLNV busDefVlnv = absDef->getBusType();
 

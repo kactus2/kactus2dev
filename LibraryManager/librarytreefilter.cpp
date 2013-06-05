@@ -97,7 +97,7 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow,
 			continue;
 		}
 
-		QSharedPointer<LibraryComponent> libComb = handler_->getModel(vlnv);
+		QSharedPointer<LibraryComponent const> libComb = handler_->getModelReadOnly(vlnv);
 
 		// check the type
 		switch (handler_->getDocumentType(vlnv)) {
@@ -130,7 +130,7 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow,
 				if (!type_.buses_) {
 					continue;
 				}
-				QSharedPointer<BusDefinition> busDef = libComb.staticCast<BusDefinition>();
+				QSharedPointer<BusDefinition const> busDef = libComb.staticCast<BusDefinition const>();
 
 				// if this was not supposed to show then check next one
 				if  (!implementation_.hw_)
@@ -163,7 +163,7 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow,
 		}
 
 		// the vlnv is for component for sure
-		QSharedPointer<Component> component = libComb.staticCast<Component>();
+		QSharedPointer<Component const> component = libComb.staticCast<Component const>();
 
 		// if component does not match the filters
 		if (!checkImplementation(component) || !checkHierarchy(component) || !checkFirmness(component)) {
@@ -233,7 +233,7 @@ void LibraryTreeFilter::onHierarchyChanged( const Utils::HierarchyOptions& optio
 	invalidateFilter();
 }
 
-bool LibraryTreeFilter::checkFirmness( QSharedPointer<Component> component ) const {
+bool LibraryTreeFilter::checkFirmness( QSharedPointer<Component const> component ) const {
 	Q_ASSERT(component);
 
 	switch (component->getComponentFirmness()) {
@@ -254,7 +254,7 @@ bool LibraryTreeFilter::checkFirmness( QSharedPointer<Component> component ) con
 	}
 }
 
-bool LibraryTreeFilter::checkImplementation( QSharedPointer<Component> component ) const {
+bool LibraryTreeFilter::checkImplementation( QSharedPointer<Component const> component ) const {
 	Q_ASSERT(component);
 
 	switch (component->getComponentImplementation()) {
@@ -278,7 +278,7 @@ bool LibraryTreeFilter::checkImplementation( QSharedPointer<Component> component
 	}
 }
 
-bool LibraryTreeFilter::checkHierarchy( QSharedPointer<Component> component ) const {
+bool LibraryTreeFilter::checkHierarchy( QSharedPointer<Component const> component ) const {
 	Q_ASSERT(component);
 
 	switch (component->getComponentHierarchy()) {

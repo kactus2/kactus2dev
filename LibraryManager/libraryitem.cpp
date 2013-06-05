@@ -302,21 +302,6 @@ LibraryItem* LibraryItem::findItem( const VLNV& vlnv ) {
 	return 0;
 }
 
-// QString LibraryItem::getTypeStr() const {
-// 
-// 	// if this is hierarchy that contains the type
-// 	if (level_ == LibraryItem::TYPE)
-// 		return name_;
-// 	
-// 	// if root is asked for the type it can't tell it
-// 	else if (level_ == LibraryItem::ROOT)
-// 		return QString();
-// 
-// 	// ask parent to tell the type
-// 	else
-// 		return parentItem_->getTypeStr();
-// }
-
 void LibraryItem::setVlnv( VLNV& vlnv ) {
 
 	switch (level_) {

@@ -461,11 +461,6 @@ void LibraryTreeView::mouseMoveEvent( QMouseEvent *event ) {
 void LibraryTreeView::setCurrentIndex( const QModelIndex& index ) {
 
 	// expand the tree to full length all the way from the root
-// 	expand(index.parent().parent().parent().parent());
-// 	expand(index.parent().parent().parent());
-// 	expand(index.parent().parent());
-// 	expand(index.parent());
-
 	QModelIndex temp = index;
 
 	// expand the whole tree up to the index

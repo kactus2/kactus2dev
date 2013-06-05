@@ -84,13 +84,13 @@ private:
 	HierarchyFilter& operator=(const HierarchyFilter& other);
 
 	//! \brief Check the firmness matching.
-	bool checkFirmness(QSharedPointer<Component> component) const;
+	bool checkFirmness(QSharedPointer<Component const> component) const;
 
 	//! \brief Check the implementation matching.
-	bool checkImplementation(QSharedPointer<Component> component) const;
+	bool checkImplementation(QSharedPointer<Component const> component) const;
 
 	//! \brief Check the hierarchy matching.
-	bool checkHierarchy(QSharedPointer<Component> component) const;
+	bool checkHierarchy(QSharedPointer<Component const> component) const;
 
 	/*! \brief Check the list of vlnvs if they match the search rules
 	 *

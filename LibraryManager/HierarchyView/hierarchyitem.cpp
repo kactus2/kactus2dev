@@ -99,9 +99,9 @@ void HierarchyItem::parseComponent( const VLNV& vlnv ) {
 	type_ = HierarchyItem::COMPONENT;
 
 	// parse the component model
-	QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
+	QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
 	Q_ASSERT(libComp);
-	component_ = libComp.staticCast<Component>();
+	component_ = libComp.staticCast<Component const>();
 	Q_ASSERT(component_);
 
 	isValid_ = component_->isValid();
@@ -142,8 +142,8 @@ void HierarchyItem::parseComponent( const VLNV& vlnv ) {
 		// if the reference was for design configuration
 		if (handler_->getDocumentType(reference) == VLNV::DESIGNCONFIGURATION) {
 
-			QSharedPointer<LibraryComponent> temp = handler_->getModel(reference);
-			QSharedPointer<DesignConfiguration> desConf = temp.dynamicCast<DesignConfiguration>();
+			QSharedPointer<LibraryComponent const> temp = handler_->getModelReadOnly(reference);
+			QSharedPointer<DesignConfiguration const> desConf = temp.dynamicCast<DesignConfiguration const>();
 			designVLNV = desConf->getDesignRef();
 			designVLNV.setType(VLNV::DESIGN);
 		}
@@ -209,8 +209,8 @@ void HierarchyItem::parseDesign( const VLNV& vlnv, KactusAttribute::Implementati
 	}
 
 	// parse the design
-	QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
-	design_ = libComp.staticCast<Design>();
+	QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
+	design_ = libComp.staticCast<Design const>();
 
 	isValid_ = design_->isValid();
 
@@ -275,8 +275,8 @@ void HierarchyItem::parseBusDefinition( const VLNV& vlnv ) {
 	type_ = HierarchyItem::BUSDEFINITION;
 
 	// parse the bus definition model
-	QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
-	busDef_ = libComp.staticCast<BusDefinition>();
+	QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
+	busDef_ = libComp.staticCast<BusDefinition const>();
 
 	isValid_ = busDef_->isValid();
 }
@@ -285,8 +285,8 @@ void HierarchyItem::parseAbsDefinition( const VLNV& vlnv ) {
 	type_ = HierarchyItem::ABSDEFINITION;
 
 	// parse the abstraction definition model
-	QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
-	absDef_ = libComp.staticCast<AbstractionDefinition>();
+	QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
+	absDef_ = libComp.staticCast<AbstractionDefinition const>();
 
 	isValid_ = absDef_->isValid();
 }
@@ -295,8 +295,8 @@ void HierarchyItem::parseComDefinition( const VLNV& vlnv ) {
     type_ = HierarchyItem::COMDEFINITION;
 
     // parse the COM definition model
-    QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
-    comDef_ = libComp.staticCast<ComDefinition>();
+    QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
+    comDef_ = libComp.staticCast<ComDefinition const>();
 
     isValid_ = comDef_->isValid();
 }
@@ -305,8 +305,8 @@ void HierarchyItem::parseApiDefinition( const VLNV& vlnv ) {
     type_ = HierarchyItem::APIDEFINITION;
 
     // parse the API definition model
-    QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
-    apiDef_ = libComp.staticCast<ApiDefinition>();
+    QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
+    apiDef_ = libComp.staticCast<ApiDefinition const>();
 
     isValid_ = apiDef_->isValid();
 }
@@ -458,7 +458,7 @@ void HierarchyItem::cleanUp() {
 	}
 }
 
-QSharedPointer<Component> HierarchyItem::component() const {
+QSharedPointer<Component const> HierarchyItem::component() const {
 	return component_;
 }
 

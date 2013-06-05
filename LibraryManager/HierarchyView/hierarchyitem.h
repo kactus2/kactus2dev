@@ -165,7 +165,7 @@ public:
 	 *
 	 * \return QSharedPointer<Component> Pointer to the component model.
 	*/
-	QSharedPointer<Component> component() const;
+	QSharedPointer<Component const> component() const;
 
 	/*! \brief Count how many instances of given vlnv is found under this item.
 	 *
@@ -391,22 +391,22 @@ private:
 	void parseDesign(const VLNV& vlnv, KactusAttribute::Implementation implementation, const QString& viewName);
 
 	//! \brief Pointer to the component that this hierarhcyItem represents.
-	QSharedPointer<Component> component_;
+	QSharedPointer<Component const> component_;
 
 	//! \brief Pointer to the bus definition that this hierarchyItem represents.
-	QSharedPointer<BusDefinition> busDef_;
+	QSharedPointer<BusDefinition const> busDef_;
 
 	//! \brief Pointer to the abstraction definition that this hierarchyItem represents.
-	QSharedPointer<AbstractionDefinition> absDef_;
+	QSharedPointer<AbstractionDefinition const> absDef_;
 
     //! \brief Pointer to the COM definition that this hierarchyItem represents.
-    QSharedPointer<ComDefinition> comDef_;
+    QSharedPointer<ComDefinition const> comDef_;
 
     //! \brief Pointer to the API definition that this hierarchyItem represents.
-    QSharedPointer<ApiDefinition> apiDef_;
+    QSharedPointer<ApiDefinition const> apiDef_;
 
 	//! \brief Pointer to the design that this hierarchyItem represents.
-	QSharedPointer<Design> design_;
+	QSharedPointer<Design const> design_;
 
 	//! \brief Pointer to the object that manages the library.
 	LibraryInterface* handler_;

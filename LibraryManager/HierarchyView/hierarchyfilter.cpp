@@ -177,7 +177,7 @@ bool HierarchyFilter::filterAcceptsRow( int source_row,
 										   }
 	}
 
-	QSharedPointer<Component> component = item->component();
+	QSharedPointer<Component const> component = item->component();
 
 	QList<VLNV> list = item->getVLNVs();
 
@@ -229,7 +229,7 @@ bool HierarchyFilter::checkVLNVs( const QList<VLNV>& list ) const {
 	return false;
 }
 
-bool HierarchyFilter::checkFirmness(QSharedPointer<Component> component) const {
+bool HierarchyFilter::checkFirmness( QSharedPointer<Component const> component ) const {
 	Q_ASSERT(component);
 
 	switch (component->getComponentFirmness()) {
@@ -250,7 +250,7 @@ bool HierarchyFilter::checkFirmness(QSharedPointer<Component> component) const {
 	}
 }
 
-bool HierarchyFilter::checkImplementation(QSharedPointer<Component> component) const {
+bool HierarchyFilter::checkImplementation( QSharedPointer<Component const> component ) const {
 	Q_ASSERT(component);
 
 	switch (component->getComponentImplementation()) {
@@ -275,7 +275,7 @@ bool HierarchyFilter::checkImplementation(QSharedPointer<Component> component) c
 	} 
 }
 
-bool HierarchyFilter::checkHierarchy(QSharedPointer<Component> component) const {
+bool HierarchyFilter::checkHierarchy( QSharedPointer<Component const> component ) const {
 	Q_ASSERT(component);
 
 	switch (component->getComponentHierarchy()) {
