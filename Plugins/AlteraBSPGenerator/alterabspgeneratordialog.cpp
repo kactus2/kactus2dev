@@ -20,14 +20,10 @@
 
 #include <QDebug>
 
-// windows runs bat script
-#ifdef Q_OS_WIN32
-const QString AlteraBSPGeneratorDialog::PROCESS_START_COMMAND = QString("\"Nios II Command Shell.bat\"");
-
-// other run the shell script
-#else
-const QString AlteraBSPGeneratorDialog::PROCESS_START_COMMAND = QString("nios2_command_shell.sh");
-#endif
+const QString AlteraBSPGeneratorDialog::VARIABLE_NAMES[AlteraBSPGeneratorDialog::VARIABLE_COUNT] = {
+	"NIOS_COMMAND_SHELL_WIN",
+	"NIOS_COMMAND_SHELL_LINUX"
+};
 
 AlteraBSPGeneratorDialog::AlteraBSPGeneratorDialog(LibraryInterface* handler, 
 	QSharedPointer<Component> component, 
@@ -207,9 +203,28 @@ void AlteraBSPGeneratorDialog::runWindowsCommands() {
 	// inform user that batch file is run
 	process_->write("echo Running the batch file to start the Nios II command shell.\n");
 
-	// TODO the path is set elsewhere
-	process_->write("\"c:\\ALTERA\\12.1\\nios2eds\\Nios II Command Shell.bat\"\n");
+	// find the saved path
+	QSettings settings;
+	QString batchPath = settings.value("K2Variables/" +
+		AlteraBSPGeneratorDialog::VARIABLE_NAMES[AlteraBSPGeneratorDialog::WIN_PATH] +
+		"/value").toString();
 
+	// run the batch file
+	QString batchCom = "\"" + batchPath + "\"\n";
+	process_->write(batchCom.toLatin1());
+
+	runCygwinCommands();
+}
+
+void AlteraBSPGeneratorDialog::runOtherCommands() {
+
+}
+
+const QList<AlteraBSPGeneratorDialog::GenerationOptions>& AlteraBSPGeneratorDialog::getCreatedDirs() const {
+	return generatedPaths_;
+}
+
+void AlteraBSPGeneratorDialog::runCygwinCommands() {
 	// convert the output dir path
 	QString outputComPath = QString("export kactus2Target=\"$(cygpath -u '%1')\"\n").arg(outPutDirLabel_->text());
 	process_->write(outputComPath.toLatin1());
@@ -245,14 +260,6 @@ void AlteraBSPGeneratorDialog::runWindowsCommands() {
 	}
 
 	process_->close();
-}
-
-void AlteraBSPGeneratorDialog::runOtherCommands() {
-
-}
-
-const QList<AlteraBSPGeneratorDialog::GenerationOptions>& AlteraBSPGeneratorDialog::getCreatedDirs() const {
-	return generatedPaths_;
 }
 
 AlteraBSPGeneratorDialog::GenerationOptions::GenerationOptions( const QString& path, const QString& view ):

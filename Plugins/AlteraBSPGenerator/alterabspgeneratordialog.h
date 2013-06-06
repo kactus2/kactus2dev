@@ -32,6 +32,16 @@ class AlteraBSPGeneratorDialog : public CommandLineGeneratorDialog {
 
 public:
 
+	//! \brief The indexes for variables
+	enum VariableIndex {
+		WIN_PATH = 0,
+		LINUX_PATH,
+		VARIABLE_COUNT
+	};
+
+	//! \brief Defines the names for the required variables.
+	static const QString VARIABLE_NAMES[VARIABLE_COUNT];
+
 	//! \brief Used to remember where and to which sw view the generator is run.
 	struct GenerationOptions {
 
@@ -105,6 +115,9 @@ private:
 
 	//! \brief Run the generator for Linux-based systems.
 	void runOtherCommands();
+
+	//! \brief Runs the cygwin-commands which are common for all systems.
+	void runCygwinCommands();
 
 	//! \brief The instance which manages the library.
 	LibraryInterface* handler_;

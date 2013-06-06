@@ -63,6 +63,7 @@
       <file>graphics/settings-code_editor.png</file>
       <file>graphics/settings-file_types.png</file>
       <file>graphics/settings-plugins.png</file>
+	  <file>graphics/settings-environment_vars.png</file>
       <file>graphics/triangle_arrow_down.png</file>
       <file>graphics/triangle_arrow_up.png</file>
       <file>graphics/protection-locked.png</file>

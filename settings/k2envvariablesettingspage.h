@@ -10,8 +10,11 @@
 
 #include <common/dialogs/propertyPageDialog/PropertyPageView.h>
 #include <common/views/EditableTableView/editabletableview.h>
+#include <PluginSystem/PluginManager.h>
 
 #include <QSettings>
+
+class K2EnvVarModel;
 
 /*! \brief Displays the Kactus2 environment variables in settings dialog.
  *
@@ -30,7 +33,7 @@ public:
 	 * \param settings The settings to store.
 	 *
 	*/
-	K2EnvVariableSettingsPage(QSettings& settings);
+	K2EnvVariableSettingsPage(QSettings& settings,  PluginManager& pluginMgr);
 	
 	//! \brief The destructor.
 	virtual ~K2EnvVariableSettingsPage();
@@ -43,6 +46,41 @@ public:
 	 *
 	*/
 	virtual void apply();
+
+    /*! \brief Checks that all variables have a defined name.
+     *
+     * Method: 		prevalidate
+     * Full name:	K2EnvVariableSettingsPage::prevalidate
+     * Access:		virtual public 
+     *
+     *
+     * \return False if at least one variable name is empty.
+    */
+    virtual bool prevalidate() const;
+
+    /*! \brief Checks that all variables have a defined name. 
+     *
+     * If at least one name is empty, an error dialog is displayed.
+     *
+     * Method: 		validate
+     * Full name:	K2EnvVariableSettingsPage::validate
+     * Access:		virtual public 
+     *
+     *
+     * \return False if at least one variable name is empty.
+    */
+    virtual bool validate();
+
+    /*! \brief Checks that all variables have a defined name.
+     *
+     * Method: 		onPageChange
+     * Full name:	K2EnvVariableSettingsPage::onPageChange
+     * Access:		virtual public 
+     *
+     *
+     * \return False if at least one variable is unnamed.
+    */
+    virtual bool onPageChange();
 
 private:
 
@@ -57,6 +95,9 @@ private:
 
 	//! \brief Displays the environment variables.
 	EditableTableView* view_;
+
+	//! \brief The model which manages the environment variables.
+	K2EnvVarModel* model_;
 };
 
 #endif // K2ENVVARIABLESETTINGSPAGE_H

@@ -16,6 +16,7 @@
 #include "NamingPolicySettingsPage.h"
 #include "PluginSettingsPage.h"
 #include "FileTypeSettingsPage.h"
+#include "k2envvariablesettingspage.h"
 
 //-----------------------------------------------------------------------------
 // Function: SettingsDialog()
@@ -41,6 +42,9 @@ SettingsDialog::SettingsDialog(PluginManager& pluginMgr, QWidget* parent)
 
     addPage(QIcon(":icons/graphics/settings-plugins.png"), tr("Plugins"),
             new PluginSettingsPage(settings_, pluginMgr));
+
+	 addPage(QIcon(":icons/graphics/settings-environment_vars.png"), tr("Environment variables"),
+		 new K2EnvVariableSettingsPage(settings_, pluginMgr));
 
     finalizePages();
     resize(sizeHint().width(), minimumHeight());

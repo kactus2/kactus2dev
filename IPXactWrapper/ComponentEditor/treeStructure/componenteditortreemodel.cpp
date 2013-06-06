@@ -149,8 +149,7 @@ QModelIndex ComponentEditorTreeModel::index(int row,
 		parentItem = rootItem_.data();
 	}
 	else {
-		parentItem = static_cast<ComponentEditorItem*>(
-			parent.internalPointer());
+		parentItem = static_cast<ComponentEditorItem*>(parent.internalPointer());
 	}
 
 	Q_ASSERT(parentItem);

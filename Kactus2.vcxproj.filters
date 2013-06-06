@@ -3730,6 +3730,12 @@
     <ClCompile Include="settings\k2envvariablesettingspage.cpp">
       <Filter>Source Files\settings</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_k2envvarmodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="settings\k2envvarmodel.cpp">
+      <Filter>Source Files\settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4941,9 +4947,6 @@
     <CustomBuild Include="IPXactWrapper\ComponentEditor\visualization\memoryvisualizationitem.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\visualization</Filter>
     </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\itemeditor.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor</Filter>
-    </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\itemvisualizer.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor</Filter>
     </CustomBuild>
@@ -5315,6 +5318,12 @@
     </CustomBuild>
     <CustomBuild Include="settings\k2envvariablesettingspage.h">
       <Filter>Header Files\settings</Filter>
+    </CustomBuild>
+    <CustomBuild Include="settings\k2envvarmodel.h">
+      <Filter>Header Files\settings</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\itemeditor.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

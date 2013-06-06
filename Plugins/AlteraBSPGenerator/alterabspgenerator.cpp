@@ -179,14 +179,14 @@ QList<IPlugin::ExternalProgramRequirements> AlteraBSPGenerator::getProgramRequir
 	QList<IPlugin::ExternalProgramRequirements> list;
 
 	IPlugin::ExternalProgramRequirements batchFile;
-	batchFile.name_ = "NIOS_COMMAND_SHELL__WIN";
+	batchFile.name_ = AlteraBSPGeneratorDialog::VARIABLE_NAMES[AlteraBSPGeneratorDialog::WIN_PATH];
 	batchFile.filters_ = tr("Batch files (*.bat)");
 	batchFile.description_ = tr("The batch file which starts the Nios II command shell for windows. "
 		"Usually named as \"Nios II Command Shell.bat\".");
 	list.append(batchFile);
 
 	IPlugin::ExternalProgramRequirements shellFile;
-	shellFile.name_ = "NIOS_COMMAND_SHELL_LINUX";
+	shellFile.name_ = AlteraBSPGeneratorDialog::VARIABLE_NAMES[AlteraBSPGeneratorDialog::LINUX_PATH];
 	shellFile.filters_ = tr("Shell scripts (*.sh)");
 	shellFile.description_ = tr("The shell script which sets the environment variables for "
 		"Nios II Command shell. Usually named as \"nios2_command_shell.sh\"");
