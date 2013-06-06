@@ -487,6 +487,7 @@ HEADERS += ./resource.h \
     ./settings/FileTypesDelegate.h \
     ./settings/filetypesview.h \
     ./settings/k2envvariablesettingspage.h \
+    ./settings/k2envvarmodel.h \
     ./settings/SettingsDialog.h \
     ./settings/NamingPolicySettingsPage.h \
     ./settings/GeneralSettingsPage.h \
@@ -1060,6 +1061,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./settings/FileTypesModel.cpp \
     ./settings/filetypesview.cpp \
     ./settings/k2envvariablesettingspage.cpp \
+    ./settings/k2envvarmodel.cpp \
     ./settings/PluginSettingsPage.cpp \
     ./settings/CodeEditorSettingsPage.cpp \
     ./settings/GeneralSettingsPage.cpp \

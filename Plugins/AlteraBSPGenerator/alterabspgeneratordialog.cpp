@@ -174,11 +174,9 @@ void AlteraBSPGeneratorDialog::onRunClicked() {
 
 	runWindowsCommands();
 
-	// other run the shell script
+	// others run the shell script
 #else
-
-	qDebug() << "Linux not supported yet";
-	return;
+	runOtherCommands();
 #endif
 
 	// add the target dir to the list to remember where the generator is run.
@@ -217,7 +215,30 @@ void AlteraBSPGeneratorDialog::runWindowsCommands() {
 }
 
 void AlteraBSPGeneratorDialog::runOtherCommands() {
+	process_->start("/bin/bash");
 
+	// if process can not be started successfully
+	if (!process_->waitForStarted()) {
+		output_->printError(tr("Process could not be started successfully."));
+		statusLabel_->setText(tr("Could not start."));
+		process_->close();
+		return;
+	}
+
+	// inform user that batch file is run
+	process_->write("echo Running the shell script to set the environment variables for Nios II tools.\n");
+
+	// find the saved path
+	QSettings settings;
+	QString batchPath = settings.value("K2Variables/" +
+		AlteraBSPGeneratorDialog::VARIABLE_NAMES[AlteraBSPGeneratorDialog::LINUX_PATH] +
+		"/value").toString();
+
+	// run the batch file
+	QString batchCom = "\"" + batchPath + "\"\n";
+	process_->write(batchCom.toLatin1());
+
+	runCygwinCommands();
 }
 
 const QList<AlteraBSPGeneratorDialog::GenerationOptions>& AlteraBSPGeneratorDialog::getCreatedDirs() const {
