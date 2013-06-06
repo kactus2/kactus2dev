@@ -100,7 +100,9 @@ visualizerSlot_(&editorVisualizerSplitter_) {
 	connect(&navigationView_, SIGNAL(activated(const QModelIndex&)),
 		this, SLOT(onItemActivated(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&navigationModel_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-		this, SLOT(onItemChanged()), Qt::UniqueConnection);
+		    this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&navigationModel_, SIGNAL(contentChanged()),
+            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&navigationModel_, SIGNAL(helpUrlRequested(QString const&)),
             this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
 	connect(&navigationModel_, SIGNAL(errorMessage(const QString&)),
@@ -444,13 +446,6 @@ bool ComponentEditor::onModelsimGenerate() {
 		}
 	}
 	return false;
-}
-
-void ComponentEditor::onItemChanged() {
-
-	// this document has now been modified
-	TabDocument::setModified(true);
-	emit contentChanged();
 }
 
 VLNV ComponentEditor::getIdentifyingVLNV() const {

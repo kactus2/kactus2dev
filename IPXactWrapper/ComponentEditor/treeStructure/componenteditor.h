@@ -118,11 +118,6 @@ private slots:
 	*/
 	void onNavigationTreeSelection(const QModelIndex& index);
 
-	/*! \brief This slot is called when one of the component editors changes state.
-	 *
-	*/
-	void onItemChanged();
-
 signals:
     /*!
      *  Opens the specific C source file of the given component.

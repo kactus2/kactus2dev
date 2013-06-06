@@ -192,6 +192,8 @@ signals:
 	//! \brief Emitted when a system design should be opened in an editor.
 	void openSystemDesign(const VLNV& componentVLNV, const QString& viewName);
 
+    void contentChanged();
+
 private slots:
 
 	/*! \brief Open bus interface editor for named bus interface.

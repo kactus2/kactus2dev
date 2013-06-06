@@ -277,6 +277,11 @@ signals:
      */
     void contentChanged();
 
+    /*!
+     *  Emitted when the dependencies have changed.
+     */
+    void dependenciesChanged();
+
 private slots:
     /*!
      *  Performs one step of the dependency analysis.

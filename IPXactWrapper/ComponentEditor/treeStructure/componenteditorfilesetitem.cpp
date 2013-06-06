@@ -112,11 +112,10 @@ void ComponentEditorFileSetItem::createChild( int index ) {
 //-----------------------------------------------------------------------------
 void ComponentEditorFileSetItem::onFileAdded(File* file)
 {
-	if (editor_) {
-		FileSetEditor* ownEditor = qobject_cast<FileSetEditor*>(editor_);
-		Q_ASSERT(ownEditor);
-		ownEditor->onFileAdded(file);
-	}
+    Q_ASSERT(files_.at(files_.size() - 1) == file);
+    createChild(files_.size() - 1);
+    //onEditorChanged();
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -144,4 +143,6 @@ void ComponentEditorFileSetItem::updateFileItems()
 
         childItems_.append(fileItem);
     }
+
+    //onEditorChanged();
 }

@@ -70,6 +70,9 @@ signals:
     //! Emitted when the files have been updated.
     void filesUpdated();
 
+    //! Emitted when the dependencies have changed.
+    void dependenciesChanged();
+
     //! Emitted when the contents have changed.
     void contentChanged();
 

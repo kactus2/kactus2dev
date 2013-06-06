@@ -69,6 +69,8 @@ signals:
     //! Emitted when the files have been updated.
     void filesUpdated();
 
+    void dependenciesChanged();
+
 private slots:
     void updateFileSetView();
 

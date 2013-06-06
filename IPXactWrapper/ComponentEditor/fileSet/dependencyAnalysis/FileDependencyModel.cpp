@@ -39,9 +39,9 @@ FileDependencyModel::FileDependencyModel(PluginManager& pluginMgr, QSharedPointe
       progressValue_(0),
       dependencies_(component->getPendingFileDependencies())
 {
-    connect(this, SIGNAL(dependencyAdded(FileDependency*)), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(this, SIGNAL(dependencyChanged(FileDependency*)), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(this, SIGNAL(dependencyRemoved(FileDependency*)), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(this, SIGNAL(dependencyAdded(FileDependency*)), this, SIGNAL(dependenciesChanged()), Qt::UniqueConnection);
+    connect(this, SIGNAL(dependencyChanged(FileDependency*)), this, SIGNAL(dependenciesChanged()), Qt::UniqueConnection);
+    connect(this, SIGNAL(dependencyRemoved(FileDependency*)), this, SIGNAL(dependenciesChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -464,6 +464,7 @@ void FileDependencyModel::endReset()
         // First item should always be valid. Otherwise the dependency should be discarded altogether.
         if (fileItem1 == 0)
         {
+            emit dependenciesChanged();
             continue;
         }
 

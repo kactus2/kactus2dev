@@ -234,6 +234,9 @@ signals:
 	//! \brief This signal is emitted when the item should be updated in view.
 	void contentChanged(ComponentEditorItem* item);
 
+    //! Emitted when the component should be marked as modified.
+    void contentChanged();
+
 	//! \brief Emitted when a error message should be shown to user.
 	void errorMessage(const QString& msg);
 

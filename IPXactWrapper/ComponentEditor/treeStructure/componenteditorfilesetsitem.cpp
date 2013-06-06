@@ -43,6 +43,8 @@ ItemEditor* ComponentEditorFileSetsItem::editor() {
 			this, SLOT(updateFileItems()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(contentChanged()), 
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(dependenciesChanged()), 
+            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childAdded(int)),
 			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childRemoved(int)),

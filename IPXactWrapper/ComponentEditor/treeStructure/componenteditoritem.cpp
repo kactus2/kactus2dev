@@ -27,6 +27,8 @@ parent_(parent) {
 
 	connect(this, SIGNAL(contentChanged(ComponentEditorItem*)),
 		model, SLOT(onContentChanged(ComponentEditorItem*)), Qt::UniqueConnection);
+    connect(this, SIGNAL(contentChanged()),
+        model, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(this, SIGNAL(createChild(ComponentEditorItem*, int)),
 		model, SLOT(addItem(ComponentEditorItem*, int)), Qt::UniqueConnection);
 	connect(this, SIGNAL(removeChild(ComponentEditorItem*, int)),

@@ -44,13 +44,13 @@ dependencies_(tr("Dependent directories"), handler, component, this) {
 
 	layout->addWidget(&files_);
 	connect(&files_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+		    this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&files_, SIGNAL(fileAdded(int)),
-		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
+		    this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(&files_, SIGNAL(fileRemoved(int)),
-		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+		    this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 	connect(&files_, SIGNAL(fileMoved(int, int)),
-		this, SIGNAL(childMoved(int, int)), Qt::UniqueConnection);
+		    this, SIGNAL(childMoved(int, int)), Qt::UniqueConnection);
 
 	layout->addWidget(&fileBuilders_);
 	connect(&fileBuilders_, SIGNAL(contentChanged()),
@@ -116,14 +116,6 @@ void FileSetEditor::onDependenciesChange() {
 void FileSetEditor::showEvent( QShowEvent* event ) {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/fileset.html");
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileSetEditor::onFileAdded()
-//-----------------------------------------------------------------------------
-void FileSetEditor::onFileAdded(File* file)
-{
-    files_.onFileAdded(file);
 }
 
 //-----------------------------------------------------------------------------
