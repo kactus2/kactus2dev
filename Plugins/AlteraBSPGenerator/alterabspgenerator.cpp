@@ -170,14 +170,13 @@ void AlteraBSPGenerator::addEntry(const QFileInfo &entry,
 	else if (entry.isDir()) {
 		fileSet->addDependency(relPath);
 	}
-	else {
-		qDebug() << "Entry: " << entry.absoluteFilePath() << " was unidentified";
-	}
 }
 
 QList<IPlugin::ExternalProgramRequirements> AlteraBSPGenerator::getProgramRequirements() {
 	QList<IPlugin::ExternalProgramRequirements> list;
 
+	// windows uses the batch file to run cygwin
+#ifdef Q_OS_WIN32
 	IPlugin::ExternalProgramRequirements batchFile;
 	batchFile.name_ = AlteraBSPGeneratorDialog::VARIABLE_NAMES[AlteraBSPGeneratorDialog::WIN_PATH];
 	batchFile.filters_ = tr("Batch files (*.bat)");
@@ -185,12 +184,15 @@ QList<IPlugin::ExternalProgramRequirements> AlteraBSPGenerator::getProgramRequir
 		"Usually named as \"Nios II Command Shell.bat\".");
 	list.append(batchFile);
 
+	// others run the shell script
+#else
 	IPlugin::ExternalProgramRequirements shellFile;
 	shellFile.name_ = AlteraBSPGeneratorDialog::VARIABLE_NAMES[AlteraBSPGeneratorDialog::LINUX_PATH];
 	shellFile.filters_ = tr("Shell scripts (*.sh)");
 	shellFile.description_ = tr("The shell script which sets the environment variables for "
 		"Nios II Command shell. Usually named as \"nios2_command_shell.sh\"");
 	list.append(shellFile);
+#endif
 
 	return list;
 }
