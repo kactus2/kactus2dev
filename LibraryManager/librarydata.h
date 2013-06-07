@@ -248,6 +248,8 @@ private:
     //! Number of file errors found during the integrity check.
     int fileErrors_;
 
+	//! \brief The total number of files all library components contain.
+	 int fileCount_;
 };
 
 #endif // LIBRARYDATA_H

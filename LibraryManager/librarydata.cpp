@@ -66,8 +66,8 @@ LibraryData::LibraryData(LibraryHandler* parent, QMainWindow* mainWnd)
       failedObjects_(0),
       syntaxErrors_(0),
       vlnvErrors_(0),
-      fileErrors_(0)
-{
+      fileErrors_(0),
+		fileCount_(0) {
 	connect(this, SIGNAL(errorMessage(const QString&)),
 		parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(this, SIGNAL(noticeMessage(const QString&)),
@@ -196,6 +196,7 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 	syntaxErrors_ = 0;
 	vlnvErrors_ = 0;
 	fileErrors_ = 0;
+	fileCount_ = 0;
 
 	emit noticeMessage(tr("------ Library Integrity Check ------"));
 
@@ -228,12 +229,13 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 		emit resetModel();
 	}
 
-	emit noticeMessage(
-		tr("========== Library integrity check complete: found %1 errors within %2 item(s) ==========").arg(
-		errors_).arg(failedObjects_));
+	emit noticeMessage(tr("========== Library integrity check complete =========="));
+	emit noticeMessage(tr("Total library object count: %1").arg(libraryItems_.size()));
+	emit noticeMessage(tr("Total file count in the library: %1").arg(fileCount_));
 
 	// if errors were found then print the summary of error types
 	if (errors_ > 0) {
+		emit noticeMessage(tr("Found %1 errors within %2 item(s):").arg(errors_).arg(failedObjects_));
 		emit noticeMessage(tr("Structural errors within item(s): %1").arg(syntaxErrors_));
 		emit noticeMessage(tr("Invalid VLNV references: %1").arg(vlnvErrors_));
 		emit noticeMessage(tr("Invalid file references: %1\n").arg(fileErrors_));
@@ -687,6 +689,10 @@ bool LibraryData::checkObject( const VLNV& vlnv, const QString& path ) {
 
 			++errors_;
 			++fileErrors_;
+		}
+		// if the file exists then increase the total file count.
+		else {
+			++fileCount_;
 		}
 	}
 
