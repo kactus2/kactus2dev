@@ -774,26 +774,6 @@ void LibraryHandler::getHierarchicalDependencyFiles( const VLNV& vlnv, QStringLi
 	foreach (VLNV dependency, dependencies) {
 		getHierarchicalDependencyFiles(dependency, list);
 	}
-
-	// if the object is not component then are no sub objects
-// 	if (getDocumentType(vlnv) != VLNV::COMPONENT) {
-// 		return;
-// 	}
-// 
-// 	QSharedPointer<Component> comp = libComponent.staticCast<Component>();
-// 	
-// 	// if the component is hierarchical then ask for vlnv dependencies
-// 	if (comp->isHierarchical()) {
-// 		QList<VLNV> dependencies;
-// 		getNeededVLNVs(vlnv, dependencies);
-// 
-// 		foreach (VLNV dependency, dependencies) {
-// 			getHierarchicalDependencyFiles(dependency, list);
-// 		}
-// 	}
-// 	if (comp->hasSWViews()) {
-// 		QList<VLNV> swDesigns;
-// 	}
 }
 
 void LibraryHandler::getDependencyFiles( const VLNV& vlnv, QStringList& list ) {

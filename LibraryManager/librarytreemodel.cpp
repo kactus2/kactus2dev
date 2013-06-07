@@ -19,8 +19,6 @@
 #include <QColor>
 #include <QIcon>
 
-#include <QDebug>
-
 LibraryTreeModel::LibraryTreeModel(LibraryInterface* handler,
 								   LibraryData* sourceModel, 
 								   QObject *parent) :
@@ -191,26 +189,24 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
 	}
 
 	else if (role == Qt::ToolTipRole) {
-		
+
 		VLNV vlnv = item->getVLNV();
 
-        // if item can identify a single library object
-		if (vlnv.isValid())
-        {
-            QString text = QString("<b>Vendor:</b> ") + vlnv.getVendor() + "<br>" +
-                           QString("<b>Library:</b> ") + vlnv.getLibrary() + "<br>" +
-                           QString("<b>Name:</b> ") + vlnv.getName() + "<br>" +
-                           QString("<b>Version:</b> ") + vlnv.getVersion() + "<br>";
+		// if item can identify a single library object
+		if (vlnv.isValid()) {
+			QString text = QString("<b>Vendor:</b> ") + vlnv.getVendor() + "<br>" +
+				QString("<b>Library:</b> ") + vlnv.getLibrary() + "<br>" +
+				QString("<b>Name:</b> ") + vlnv.getName() + "<br>" +
+				QString("<b>Version:</b> ") + vlnv.getVersion() + "<br>";
 
-            QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
+			QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
 
-            if (libComp != 0 && !libComp->getDescription().isEmpty())
-            {
-                text += QString("<br><b>Description:</b><br>") + libComp->getDescription();
-            }
+			if (libComp != 0 && !libComp->getDescription().isEmpty()) {
+				text += QString("<br><b>Description:</b><br>") + libComp->getDescription();
+			}
 
-            text += QString("<br><b>File Path:</b><br>%1").arg(dataSource_->getPath(vlnv));
-            return text;
+			text += QString("<br><b>File Path:</b><br>%1").arg(dataSource_->getPath(vlnv));
+			return text;
 		}
 
 		// if item did not represent a single vlnv item
