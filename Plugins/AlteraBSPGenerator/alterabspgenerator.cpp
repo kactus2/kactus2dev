@@ -68,6 +68,11 @@ bool AlteraBSPGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent 
 	}
 
 	QSharedPointer<const Component> comp = libComp.dynamicCast<const Component>();
+
+    if (comp == 0)
+    {
+        return false;
+    }
 	
 	switch (comp->getComponentImplementation()) {
 	
