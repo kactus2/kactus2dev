@@ -296,6 +296,12 @@ private:
     //! The ports.
     QList< QSharedPointer<Port> > ports_;
 
+    //! The interface mode.
+    General::InterfaceMode mode_;
+
+    //! The port maps.
+    QList< QSharedPointer<General::PortMap> > portMaps_;
+
     //! The port's parent.
     GraphicsColumn* parent_;
 

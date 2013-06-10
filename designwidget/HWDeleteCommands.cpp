@@ -378,6 +378,9 @@ InterfaceDeleteCommand::InterfaceDeleteCommand(BusInterfaceItem* interface,
     : QUndoCommand(parent),
       interface_(interface),
       busIf_(interface_->getBusInterface()),
+      ports_(),
+      mode_(interface_->getBusInterface()->getInterfaceMode()),
+      portMaps_(interface_->getBusInterface()->getPortMaps()),
       parent_(static_cast<GraphicsColumn*>(interface->parentItem())),
       scene_(interface->scene()),
       del_(true),
@@ -431,6 +434,8 @@ void InterfaceDeleteCommand::undo()
     // Redefine the interface.
     if (busIf_ != 0)
     {
+        busIf_->setInterfaceMode(mode_);
+        busIf_->setPortMaps(portMaps_);
         interface_->define(busIf_, removePorts_, ports_);
     }
 

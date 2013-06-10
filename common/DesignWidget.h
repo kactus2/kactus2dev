@@ -268,11 +268,11 @@ private:
     //! The name of the hierarchical view being edited.
     QString viewName_;
 
-    //! The design diagram.
-    DesignDiagram* diagram_;
-
     //! The edit provider.
     QSharedPointer<GenericEditProvider> editProvider_;
+
+    //! The design diagram.
+    DesignDiagram* diagram_;
 };
 
 //-----------------------------------------------------------------------------

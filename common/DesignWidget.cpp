@@ -54,6 +54,11 @@ DesignWidget::DesignWidget(LibraryInterface* lh, QWidget* parent)
 //-----------------------------------------------------------------------------
 DesignWidget::~DesignWidget()
 {
+    if (diagram_ != 0)
+    {
+        delete diagram_;
+        diagram_ = 0;
+    }
 }
 
 //-----------------------------------------------------------------------------

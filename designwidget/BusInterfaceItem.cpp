@@ -398,13 +398,10 @@ void BusInterfaceItem::onDisconnect(ConnectionEndpoint const*)
 
     if (editProvider.isPerformingUndoRedo())
     {
-        //portsCopied_ = editProvider.getState("portsCopied").toBool();
-        undefine(portsCopied_);
+        portsCopied_ = editProvider.getState("portsCopied").toBool();
     }
-    else
-    {
-        undefine(portsCopied_);
-    }
+    
+    undefine(portsCopied_);
 
     // Update the interface visuals.
     updateInterface();
