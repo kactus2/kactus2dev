@@ -17,6 +17,8 @@
 #include "BusInterfaceItem.h"
 
 #include <common/graphicsItems/GraphicsColumn.h>
+#include <common/DesignDiagram.h>
+#include <common/GenericEditProvider.h>
 
 #include <models/businterface.h>
 
@@ -88,29 +90,38 @@ ConnectionAddCommand::ConnectionAddCommand(QGraphicsScene* scene, HWConnection* 
                                                                    conn_(conn), mode1_(General::MASTER),
                                                                    mode2_(General::MASTER),
                                                                    portMaps_(), scene_(scene),
-                                                                   del_(false)
+                                                                   del_(false),
+                                                                   portsCopied_(false)
                                                                    
 {
+    GenericEditProvider& editProvider = static_cast<DesignDiagram*>(scene)->getEditProvider();
+    portsCopied_ = editProvider.getState("portsCopied").toBool();
+
     QSharedPointer<BusInterface> busIf1 = conn_->endpoint1()->getBusInterface();
     QSharedPointer<BusInterface> busIf2 = conn_->endpoint2()->getBusInterface();
 
-    if (busIf1 != 0 && busIf1->getBusType().isValid())
+    QSharedPointer<Component> srcComponent;
+
+    if (busIf1 != 0 && busIf1->getBusType().isValid() && !conn_->endpoint1()->isTypeLocked())
     {
         mode1_ = busIf1->getInterfaceMode();
-
-        if (conn_->endpoint1()->isHierarchical())
-        {
-            portMaps_ = busIf1->getPortMaps();
-        }
+        portMaps_ = busIf1->getPortMaps();
+        srcComponent = conn_->endpoint1()->getOwnerComponent();
     }
 
-    if (busIf2 != 0 && busIf2->getBusType().isValid())
+    if (busIf2 != 0 && busIf2->getBusType().isValid() && !conn_->endpoint2()->isTypeLocked())
     {
         mode2_ = busIf2->getInterfaceMode();
+        portMaps_ = busIf2->getPortMaps();
+        srcComponent = conn_->endpoint2()->getOwnerComponent();
+    }
 
-        if (conn_->endpoint2()->isHierarchical())
+    if (portsCopied_ && srcComponent != 0)
+    {
+        foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
         {
-            portMaps_ = busIf2->getPortMaps();
+            QSharedPointer<Port> port = srcComponent->getPort(portMap->physicalPort_);
+            QUndoCommand* childCmd = new PastePhysicalPortCommand(srcComponent, port, this);
         }
     }
 }
@@ -131,14 +142,19 @@ ConnectionAddCommand::~ConnectionAddCommand()
 //-----------------------------------------------------------------------------
 void ConnectionAddCommand::undo()
 {
+    GenericEditProvider& editProvider = static_cast<DesignDiagram*>(scene_)->getEditProvider();
+    editProvider.setState("portsCopied", portsCopied_);
+
     // Disconnect the ends.
     conn_->disconnectEnds();
     conn_->setSelected(false);
 
     // Remove the interconnection from the scene.
     scene_->removeItem(conn_);
-
     del_ = true;
+
+    // Execute child commands.
+    QUndoCommand::undo();
 }
 
 //-----------------------------------------------------------------------------
@@ -146,6 +162,12 @@ void ConnectionAddCommand::undo()
 //-----------------------------------------------------------------------------
 void ConnectionAddCommand::redo()
 {
+    GenericEditProvider& editProvider = static_cast<DesignDiagram*>(scene_)->getEditProvider();
+    editProvider.setState("portsCopied", portsCopied_);
+
+    // Execute child commands.
+    QUndoCommand::redo();
+
     // Add the back to the scene.
     if (!scene_->items().contains(conn_))
     {
@@ -158,27 +180,17 @@ void ConnectionAddCommand::redo()
         QSharedPointer<BusInterface> busIf1 = conn_->endpoint1()->getBusInterface();
         QSharedPointer<BusInterface> busIf2 = conn_->endpoint2()->getBusInterface();
 
-        if (busIf1 != 0 && busIf1->getBusType().isValid())
+        if (busIf1 != 0 && busIf1->getBusType().isValid() && !conn_->endpoint1()->isTypeLocked())
         {
             busIf1->setInterfaceMode(mode1_);
-
-            if (conn_->endpoint1()->isHierarchical())
-            {
-                busIf1->setPortMaps(portMaps_);
-            }
-
+            busIf1->setPortMaps(portMaps_);
             conn_->endpoint1()->updateInterface();
         }
 
-        if (busIf2 != 0 && busIf2->getBusType().isValid())
+        if (busIf2 != 0 && busIf2->getBusType().isValid() && !conn_->endpoint2()->isTypeLocked())
         {
             busIf2->setInterfaceMode(mode2_);
-
-            if (conn_->endpoint2()->isHierarchical())
-            {
-                busIf2->setPortMaps(portMaps_);
-            }
-
+            busIf2->setPortMaps(portMaps_);
             conn_->endpoint2()->updateInterface();
         }
     }
@@ -226,7 +238,7 @@ PortPasteCommand::PortPasteCommand(HWComponentItem* destComponent, QSharedPointe
 			}
 		}
 
-		QUndoCommand* childCmd = new PastePhysicalPortCommand(component_, physPortCopy, this);
+		QUndoCommand* childCmd = new PastePhysicalPortCommand(component_->componentModel(), physPortCopy, this);
 	}
 }
 
@@ -274,13 +286,15 @@ void PortPasteCommand::redo()
     del_ = false;
 }
 
-
-	//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Function: PastePhysicalPortCommand()
 //-----------------------------------------------------------------------------
-PastePhysicalPortCommand::PastePhysicalPortCommand(HWComponentItem* component, QSharedPointer<Port> port,
-                               QUndoCommand* parent) : QUndoCommand(parent),
-							   component_(component->componentModel()), port_(port)                                                           
+PastePhysicalPortCommand::PastePhysicalPortCommand(QSharedPointer<Component> component,
+                                                   QSharedPointer<Port> port,
+                                                   QUndoCommand* parent)
+    : QUndoCommand(parent),
+      component_(component),
+      port_(port)                                                           
 {
 }
 

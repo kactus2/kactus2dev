@@ -18,6 +18,8 @@
 #include <QList>
 #include <QSharedPointer>
 #include <QUndoCommand>
+#include <QVariant>
+#include <QMap>
 
 //-----------------------------------------------------------------------------
 //! GenericEditProvider class.
@@ -47,6 +49,16 @@ public:
      *                            inside this function.
      */
     void addCommand(QSharedPointer<QUndoCommand> command, bool autoExec = true);
+
+    /*!
+     *  Saves a state variable to be used by undo commands.
+     */
+    void setState(QString const& name, QVariant const& value);
+
+    /*!
+     *  Returns the value of the given state variable.
+     */
+    QVariant getState(QString const& name) const;
 
     /*!
      *  Clears the undo & redo stacks.
@@ -105,6 +117,9 @@ private:
 
     //! Boolean flag for redoing.
     bool redoing_;
+
+    //! The state registry.
+    QMap<QString, QVariant> states_;
 };
 
 //-----------------------------------------------------------------------------

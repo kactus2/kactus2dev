@@ -16,6 +16,8 @@
 #include "HWComponentItem.h"
 #include "BusInterfaceItem.h"
 
+#include <common/DesignDiagram.h>
+#include <common/GenericEditProvider.h>
 #include <common/graphicsItems/GraphicsColumn.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 
@@ -180,31 +182,55 @@ void ComponentDeleteCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: ConnectionDeleteCommand()
 //-----------------------------------------------------------------------------
-ConnectionDeleteCommand::ConnectionDeleteCommand(HWConnection* conn,
-                                                 QUndoCommand* parent) : QUndoCommand(parent), conn_(conn),
-                                                 mode1_(General::MASTER), mode2_(General::MASTER),
-                                                 portMaps_(), scene_(conn->scene()), del_(true)
+ConnectionDeleteCommand::ConnectionDeleteCommand(HWConnection* conn, QUndoCommand* parent)
+    : QUndoCommand(parent),
+      conn_(conn),
+      mode1_(General::MASTER),
+      mode2_(General::MASTER),
+      portMaps_(),
+      portsCopied_(false),
+      scene_(conn->scene()),
+      del_(true)
 {
     QSharedPointer<BusInterface> busIf1 = conn_->endpoint1()->getBusInterface();
     QSharedPointer<BusInterface> busIf2 = conn_->endpoint2()->getBusInterface();
 
-    if (busIf1 != 0 && busIf1->getBusType().isValid())
+    QSharedPointer<Component> srcComponent;
+
+    if (busIf1 != 0 && busIf1->getBusType().isValid() && !conn_->endpoint1()->isTypeLocked())
     {
         mode1_ = busIf1->getInterfaceMode();
+        portMaps_ = busIf1->getPortMaps();
 
-        if (conn_->endpoint1()->isHierarchical())
+        BusInterfaceItem* busIfItem = dynamic_cast<BusInterfaceItem*>(conn_->endpoint1());
+        
+        if (busIfItem != 0)
         {
-            portMaps_ = busIf1->getPortMaps();
+            portsCopied_ = busIfItem->hasPortsCopied();
+            srcComponent = conn_->endpoint1()->getOwnerComponent();
         }
     }
 
-    if (busIf2 != 0 && busIf2->getBusType().isValid())
+    if (busIf2 != 0 && busIf2->getBusType().isValid() && !conn_->endpoint2()->isTypeLocked())
     {
         mode2_ = busIf2->getInterfaceMode();
+        portMaps_ = busIf2->getPortMaps();
 
-        if (conn_->endpoint2()->isHierarchical())
+        BusInterfaceItem* busIfItem = dynamic_cast<BusInterfaceItem*>(conn_->endpoint2());
+
+        if (busIfItem != 0)
         {
-            portMaps_ = busIf2->getPortMaps();
+            portsCopied_ = busIfItem->hasPortsCopied();
+            srcComponent = conn_->endpoint2()->getOwnerComponent();
+        }
+    }
+
+    if (portsCopied_)
+    {
+        foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
+        {
+            QSharedPointer<Port> port = srcComponent->getPort(portMap->physicalPort_);
+            QUndoCommand* childCmd = new DeletePhysicalPortCommand(srcComponent, port, this);
         }
     }
 }
@@ -228,6 +254,9 @@ void ConnectionDeleteCommand::undo()
     // Execute child commands.
     QUndoCommand::undo();
 
+    GenericEditProvider& editProvider = static_cast<DesignDiagram*>(scene_)->getEditProvider();
+    editProvider.setState("portsCopied", portsCopied_);
+
     // Add the item back to the scene.
     scene_->addItem(conn_);
     
@@ -237,27 +266,17 @@ void ConnectionDeleteCommand::undo()
     QSharedPointer<BusInterface> busIf1 = conn_->endpoint1()->getBusInterface();
     QSharedPointer<BusInterface> busIf2 = conn_->endpoint2()->getBusInterface();
 
-    if (busIf1 != 0 && busIf1->getBusType().isValid())
+    if (busIf1 != 0 && busIf1->getBusType().isValid() && !conn_->endpoint1()->isTypeLocked())
     {
         busIf1->setInterfaceMode(mode1_);
-
-        if (conn_->endpoint1()->isHierarchical())
-        {
-            busIf1->setPortMaps(portMaps_);
-        }
-
+        busIf1->setPortMaps(portMaps_);
         conn_->endpoint1()->updateInterface();
     }
 
-    if (busIf2 != 0 && busIf2->getBusType().isValid())
+    if (busIf2 != 0 && busIf2->getBusType().isValid() && !conn_->endpoint2()->isTypeLocked())
     {
         busIf2->setInterfaceMode(mode2_);
-
-        if (conn_->endpoint2()->isHierarchical())
-        {
-            busIf2->setPortMaps(portMaps_);
-        }
-
+        busIf2->setPortMaps(portMaps_);
         conn_->endpoint2()->updateInterface();
     }
 
@@ -272,6 +291,9 @@ void ConnectionDeleteCommand::undo()
 //-----------------------------------------------------------------------------
 void ConnectionDeleteCommand::redo()
 {
+    GenericEditProvider& editProvider = static_cast<DesignDiagram*>(scene_)->getEditProvider();
+    editProvider.setState("portsCopied", portsCopied_);
+
     // Disconnect the ends.
     conn_->setSelected(false);
     conn_->disconnectEnds();
@@ -434,4 +456,41 @@ void InterfaceDeleteCommand::redo()
     parent_->removeItem(interface_);
     scene_->removeItem(interface_);
     del_ = true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DeletePhysicalPortCommand()
+//-----------------------------------------------------------------------------
+DeletePhysicalPortCommand::DeletePhysicalPortCommand(QSharedPointer<Component> component,
+                                                   QSharedPointer<Port> port,
+                                                   QUndoCommand* parent)
+    : QUndoCommand(parent),
+      component_(component),
+      port_(port)                                                           
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~DeletePhysicalPortCommand()
+//-----------------------------------------------------------------------------
+DeletePhysicalPortCommand::~DeletePhysicalPortCommand()
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void DeletePhysicalPortCommand::undo()
+{
+    Q_ASSERT(component_ != 0);
+    component_->addPort(port_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void DeletePhysicalPortCommand::redo()
+{
+    Q_ASSERT(component_ != 0);
+    component_->removePort(port_->getName());
 }

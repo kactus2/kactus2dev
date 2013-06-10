@@ -34,7 +34,7 @@
 //-----------------------------------------------------------------------------
 VHDLtoIPXACT::VHDLtoIPXACT(QSharedPointer<Component> comp, const QString xmlFilePath,
              QWidget *parent)
-    : QDialog(parent),
+    : QWidget(parent),
     gridLayout(),
     VHDLdisplay(),
     verticalLayout(),
@@ -633,7 +633,7 @@ void VHDLtoIPXACT::on_pushButtonSaveFile_released()
     }
     saveState = true;
 
-    accept();
+    //accept();
     return;
 }
 

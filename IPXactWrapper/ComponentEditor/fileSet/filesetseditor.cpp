@@ -14,14 +14,16 @@
 #include <QVBoxLayout>
 
 FileSetsEditor::FileSetsEditor(QSharedPointer<Component> component,
-                               LibraryInterface* libInterface, PluginManager& pluginMgr):
-ItemEditor(component, libInterface),
-splitter_(Qt::Vertical, this),
-view_(&splitter_),
-model_(component, this),
-proxy_(this),
-dependencyEditor_(component, libInterface, pluginMgr, &splitter_) {
-
+                               LibraryInterface* libInterface, PluginManager& pluginMgr)
+    : ItemEditor(component, libInterface),
+      splitter_(Qt::Vertical, this),
+      view_(&splitter_),
+      model_(component, this),
+      proxy_(this),
+      dependencyEditor_(component, QFileInfo(libInterface->getPath(*component->getVlnv())).path(),
+                        pluginMgr, &splitter_),
+      firstShow_(true)
+{
     splitter_.addWidget(&view_);
     splitter_.addWidget(&dependencyEditor_);
 
@@ -90,6 +92,12 @@ void FileSetsEditor::refresh() {
 void FileSetsEditor::showEvent( QShowEvent* event ) {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/filesets.html");
+
+    if (firstShow_)
+    {
+        dependencyEditor_.scan();
+        firstShow_ = false;
+    }
 }
 
 //-----------------------------------------------------------------------------

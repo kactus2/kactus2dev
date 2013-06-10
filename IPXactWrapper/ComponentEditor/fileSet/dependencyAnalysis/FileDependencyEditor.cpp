@@ -15,8 +15,6 @@
 #include "FileDependencyItem.h"
 #include "FileDependencyDelegate.h"
 
-#include <LibraryManager/libraryinterface.h>
-
 #include <common/widgets/ScanProgressWidget/scanprogresswidget.h>
 
 #include <models/component.h>
@@ -39,7 +37,7 @@
 // Function: FileDependencyEditor::FileDependencyEditor()
 //-----------------------------------------------------------------------------
 FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
-                                           LibraryInterface* libInterface,
+                                           QString const& basePath,
                                            PluginManager& pluginMgr, QWidget* parent)
     : QWidget(parent),
       toolbar_(this),
@@ -48,10 +46,9 @@ FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
       graphWidget_(this),
       infoWidget_(this),
       component_(component),
-      libInterface_(libInterface),
       fileTypeLookup_(),
-      model_(pluginMgr, component, QFileInfo(libInterface_->getPath(*component_->getVlnv())).path() + "/"),
-      xmlPath_(),
+      model_(pluginMgr, component, basePath + "/"),
+      basePath_(basePath),
       scanning_(false),
       timer_(0),
       progWidget_(0)
@@ -119,9 +116,6 @@ FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
     layout->addWidget(&infoWidget_);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    // Resolve plugins and save the component's xml path.
-    xmlPath_ = QFileInfo(libInterface_->getPath(*component_->getVlnv())).path();
-
     connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&model_, SIGNAL(dependenciesChanged()), this, SIGNAL(dependenciesChanged()), Qt::UniqueConnection);
     connect(&model_, SIGNAL(analysisProgressChanged(int)),
@@ -147,7 +141,7 @@ FileDependencyEditor::~FileDependencyEditor()
 void FileDependencyEditor::openSourceDialog()
 {
     // Show the source directories dialog.
-    FileDependencySourceDialog dialog(xmlPath_, component_->getSourceDirectories(), this);
+    FileDependencySourceDialog dialog(basePath_, component_->getSourceDirectories(), this);
 
     if (dialog.exec() == QDialog::Accepted)
     {
@@ -237,7 +231,7 @@ void FileDependencyEditor::scanFiles(QString const& path)
     FileDependencyItem* folderItem = model_.addFolder(path);
 
     QFileInfoList list =
-        QDir(General::getAbsolutePath(xmlPath_ + "/", path)).entryInfoList(QDir::Files | QDir::Dirs |
+        QDir(General::getAbsolutePath(basePath_ + "/", path)).entryInfoList(QDir::Files | QDir::Dirs |
                                                                            QDir::NoDotAndDotDot);
 
     foreach (QFileInfo const& info, list)
@@ -245,7 +239,7 @@ void FileDependencyEditor::scanFiles(QString const& path)
         // Check if the entry is a directory.
         if (info.isDir())
         {
-            scanFiles(General::getRelativePath(xmlPath_, info.absoluteFilePath()));
+            scanFiles(General::getRelativePath(basePath_, info.absoluteFilePath()));
         }
         // Otherwise add the file if it does not belong to ignored extensions.
         else if (!ignoreExtList_.contains(info.completeSuffix()))
@@ -255,7 +249,7 @@ void FileDependencyEditor::scanFiles(QString const& path)
             QString fileType = fileTypeLookup_.value(info.completeSuffix(), "unknown");
 
             // Check if the file is already packaged into the metadata.
-            QString relativePath = General::getRelativePath(xmlPath_, info.absoluteFilePath());
+            QString relativePath = General::getRelativePath(basePath_, info.absoluteFilePath());
 
             QList<File*> fileRefs;
             component_->getFiles(relativePath, fileRefs);
@@ -365,11 +359,11 @@ void FileDependencyEditor::scanDirectories()
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileDependencyEditor::showEvent()
+// Function: FileDependencyEditor::setCompact()
 //-----------------------------------------------------------------------------
-void FileDependencyEditor::showEvent(QShowEvent* event)
+void FileDependencyEditor::setCompact(bool compact)
 {
-    scan();
-    QWidget::showEvent(event);
+    toolbar_.setVisible(!compact);
+    infoWidget_.setVisible(!compact);
 }
 

@@ -27,7 +27,6 @@
 class Component;
 class PluginManager;
 class ISourceAnalyzerPlugin;
-class LibraryInterface;
 class FileSet;
 class File;
 class ScanProgressWidget;
@@ -44,18 +43,33 @@ public:
      *  Constructor.
      *
      *      @param [in] component     The component being edited.
-     *      @param [in] libInterface  The library interface.
+     *      @param [in] basePath      The component's base path.
      *      @param [in] pluginMgr     The plugin manager for accessing plugins.
      *      @param [in] parent        The parent widget.
      */
     FileDependencyEditor(QSharedPointer<Component> component,
-                         LibraryInterface* libInterface,
+                         QString const& basePath,
                          PluginManager& pluginMgr, QWidget* parent);
 
     /*!
      *  Destructor.
      */
     ~FileDependencyEditor();
+
+    /*!
+     *  Sets the editor in compact mode.
+     *
+     *      @param [in] compact If true, the editor is set compact with only the table-graph in view.
+     *                          If false, the full editor is shown.
+     */
+    void setCompact(bool compact);
+
+public slots:
+    /*!
+     *  Scans the source directories for new files, adds them to the component
+     *  file sets and runs the dependency analysis.
+     */
+    void scan();
 
 signals:
     //! Emitted when a file set has been added.
@@ -76,20 +90,11 @@ signals:
     //! Emitted when the contents have changed.
     void contentChanged();
 
-protected:
-    void showEvent(QShowEvent* event);
-
 private slots:
     /*!
      *  Opens up the source selection dialog.
      */
     void openSourceDialog();
-
-    /*!
-     *  Scans the source directories for new files, adds them to the component
-     *  file sets and runs the dependency analysis.
-     */
-    void scan();
 
     /*!
      *  Scans the source directories.
@@ -155,9 +160,6 @@ private:
     //! The component being edited.
     QSharedPointer<Component> component_;
 
-    //! The library interface.
-    LibraryInterface* libInterface_;
-
     //! Extension fileset lookup.
     QMap<QString, QString> fileTypeLookup_;
 
@@ -168,7 +170,7 @@ private:
     FileDependencyModel model_;
 
     //! The XML base path for the component.
-    QString xmlPath_;
+    QString basePath_;
 
     //! If true, the editor is currently scanning.
     bool scanning_;

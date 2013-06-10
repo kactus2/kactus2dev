@@ -81,6 +81,11 @@ public:
      */
 	QList<QSharedPointer<Port> > getPorts() const;
 
+    /*!
+     *  Returns true if the bus interface has been created by copying the ports.
+     */
+    bool hasPortsCopied() const;
+
     int type() const { return Type; }
 
     //-----------------------------------------------------------------------------
@@ -209,6 +214,18 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
 private:
+    /*!
+     *  Clones the port maps and required ports from the source end point.
+     *
+     *      @param [out] busIf   The destination bus interface.
+     *      @param [in]  source  The source end point.
+     */
+    bool clonePortMaps(QSharedPointer<BusInterface> busIf, ConnectionEndpoint const* source);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! The library interface.
     LibraryInterface* lh_;
 
@@ -232,6 +249,9 @@ private:
 
     //! The off-page connector.
     OffPageConnectorItem* offPageConnector_;
+
+    //! If true, the ports were copied during end point connection.
+    bool portsCopied_;
 };
 
 #endif // BUSINTERFACEITEM_H

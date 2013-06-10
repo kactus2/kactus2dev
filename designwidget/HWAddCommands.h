@@ -140,6 +140,9 @@ private:
 
     //! Boolean flag for indicating if the connection should be deleted in the destructor.
     bool del_;
+
+    //! If true, port copy operation is a part of this undo command.
+    bool portsCopied_;
 };
 
 //-----------------------------------------------------------------------------
@@ -215,7 +218,7 @@ public:
 	 *      @param [in] port       The port to paste.
      *      @param [in] parent     The parent command.
      */
-   PastePhysicalPortCommand(HWComponentItem* component, QSharedPointer<Port> port, QUndoCommand* parent = 0);
+   PastePhysicalPortCommand(QSharedPointer<Component>, QSharedPointer<Port> port, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -246,8 +249,8 @@ private:
 
     //! The port to paste.
 	QSharedPointer<Port> port_;
-
 };
+
 //-----------------------------------------------------------------------------
 
 #endif // HWADDCOMMANDS_H

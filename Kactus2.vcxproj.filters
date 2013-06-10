@@ -827,6 +827,12 @@
     <Filter Include="Source Files\vhdl2IPXact">
       <UniqueIdentifier>{fc405438-c6ba-42f8-a0a3-9119ba6d5294}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ComponentWizard">
+      <UniqueIdentifier>{be6e1e65-e2a7-44ab-8df0-5daa1ac8ab14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ComponentWizard">
+      <UniqueIdentifier>{190bc156-118d-4358-89b7-bcb53a73473e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\CSourceWriter.cpp">
@@ -3735,6 +3741,30 @@
     </ClCompile>
     <ClCompile Include="settings\k2envvarmodel.cpp">
       <Filter>Source Files\settings</Filter>
+	</ClCompile>
+    <ClCompile Include="ComponentWizard\ComponentWizard.cpp">
+      <Filter>Source Files\ComponentWizard</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentWizard\ComponentWizardIntroPage.cpp">
+      <Filter>Source Files\ComponentWizard</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentWizard\ComponentWizardConclusionPage.cpp">
+      <Filter>Source Files\ComponentWizard</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentWizard\ComponentWizardFilesPage.cpp">
+      <Filter>Source Files\ComponentWizard</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentWizard\ComponentWizardVhdlImportPage.cpp">
+      <Filter>Source Files\ComponentWizard</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySourceEditor.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_FileDependencySourceEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentWizard\ComponentWizardDependencyPage.cpp">
+      <Filter>Source Files\ComponentWizard</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5321,9 +5351,10 @@
     </CustomBuild>
     <CustomBuild Include="settings\k2envvarmodel.h">
       <Filter>Header Files\settings</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\itemeditor.h">
+    </CustomBuild>    <CustomBuild Include="IPXactWrapper\ComponentEditor\itemeditor.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor</Filter>
+    </CustomBuild>    <CustomBuild Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySourceEditor.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -5770,6 +5801,24 @@
     </ClInclude>
     <ClInclude Include="Vhdl2IPXact\vhdlanalysis.h">
       <Filter>Header Files\vhdl2IPXact</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentWizard\ComponentWizard.h">
+      <Filter>Header Files\ComponentWizard</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentWizard\ComponentWizardIntroPage.h">
+      <Filter>Header Files\ComponentWizard</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentWizard\ComponentWizardConclusionPage.h">
+      <Filter>Header Files\ComponentWizard</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentWizard\ComponentWizardFilesPage.h">
+      <Filter>Header Files\ComponentWizard</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentWizard\ComponentWizardVhdlImportPage.h">
+      <Filter>Header Files\ComponentWizard</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentWizard\ComponentWizardDependencyPage.h">
+      <Filter>Header Files\ComponentWizard</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -101,6 +101,9 @@ private:
 
     //! The file dependency editor.
     FileDependencyEditor dependencyEditor_;
+
+    //! If true, the widget has not yet been shown at all.
+    bool firstShow_;
 };
 
 #endif // FILESETSEDITOR_H

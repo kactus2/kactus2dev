@@ -1,18 +1,16 @@
 //-----------------------------------------------------------------------------
-// File: FileDependencySourceDialog.h
+// File: FileDependencySourceEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Tommi Korhonen, Joni-Matti M‰‰tt‰
-// Date: 19.01.2013
+// Author: Joni-Matti M‰‰tt‰
+// Date: 06.06.2013
 //
 // Description:
-// Dialog for choosing the file dependency source directories.
+// Editor for changing source directories.
 //-----------------------------------------------------------------------------
 
-#ifndef FILEDEPENDENCYSOURCEDIALOG_H
-#define FILEDEPENDENCYSOURCEDIALOG_H
-
-#include "FileDependencySourceEditor.h"
+#ifndef FILEDEPENDENCYSOURCEEDITOR_H
+#define FILEDEPENDENCYSOURCEEDITOR_H
 
 #include <QDialog>
 #include <QStringList>
@@ -26,9 +24,9 @@
 #include <QFileDialog>
 
 //-----------------------------------------------------------------------------
-//! Dialog for choosing the file dependency source directories.
+//! Editor for changing source directories.
 //-----------------------------------------------------------------------------
-class FileDependencySourceDialog : public QDialog
+class FileDependencySourceEditor : public QGroupBox
 {
     Q_OBJECT
 public:
@@ -40,37 +38,53 @@ public:
      *      @param [in] sourceDirs  The current list of source directories.
      *      @param [in] parent      The parent widget.
      */
-    FileDependencySourceDialog(QString const& basePath, QStringList const& sourceDirs, QWidget* parent = 0);
+    FileDependencySourceEditor(QString const& basePath, QStringList const& sourceDirs, QWidget* parent = 0);
 
     /*!
      *  Destructor.
      */
-    ~FileDependencySourceDialog();
+    ~FileDependencySourceEditor();
 
     /*!
      *  Retrieves the new list of source directories.
      *
      *      @return The list of source directories.
-     *
-     *      @remarks Valid only when the user presses OK.
      */
     QStringList getSourceDirectories() const;
 
+private slots:
+    /*!
+     *  Adds a new source to the list. The source directory is prompted with a folder selection dialog.
+     */
+    void addSource();
+
+    /*!
+     *  Removes the currently selected source from the list.
+     */
+    void removeSource();
+
 private:
     // Disable copying.
-    FileDependencySourceDialog(FileDependencySourceDialog const& rhs);
-    FileDependencySourceDialog& operator=(FileDependencySourceDialog const& rhs);
+    FileDependencySourceEditor(FileDependencySourceEditor const& rhs);
+    FileDependencySourceEditor& operator=(FileDependencySourceEditor const& rhs);
+
+    // Help functions.
+    bool checkIfSelectedDirectoryHasBeenPreviouslyAdded(QString newDirectory);
+    void removeUnnecessaryDirectories(QString newDirectory);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The main group box.
-    //QGroupBox mainGroupBox_;
-
-    FileDependencySourceEditor editor_;
+    QPushButton* buttonAdd_;
+    QPushButton* buttonRemove_;
+    QVBoxLayout* verizontalMainLayout_;
+    QHBoxLayout* horizontalGroupBoxLayout_;
+    QListView* directoryListView_;
+    QStringListModel* directoryListModel_;
+    QString basePath_;
 };
 
 //-----------------------------------------------------------------------------
 
-#endif // FILEDEPENDENCYSOURCEDIALOG_H
+#endif // FILEDEPENDENCYSOURCEEDITOR_H

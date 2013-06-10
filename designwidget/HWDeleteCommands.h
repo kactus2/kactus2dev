@@ -29,6 +29,7 @@ class BusInterfaceItem;
 class GraphicsColumn;
 class GraphicsColumnLayout;
 class ComponentItem;
+class Component;
 
 //-----------------------------------------------------------------------------
 //! ColumnDeleteCommand class.
@@ -188,6 +189,9 @@ private:
     //! The port maps for the hierarchical end point (if any).
     QList< QSharedPointer<General::PortMap> > portMaps_;
 
+    //! If true, port copy operation is a part of this undo command.
+    bool portsCopied_;
+
     //! The graphics scene.
     QGraphicsScene* scene_;
 
@@ -303,6 +307,52 @@ private:
 
     //! If true, the command also removes the ports that are part of the bus interface.
     bool removePorts_;
+};
+
+//-----------------------------------------------------------------------------
+//! DeletePhysicalPortCommand class.
+//-----------------------------------------------------------------------------
+class DeletePhysicalPortCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] component  The component from which to delete a physical port.
+	 *      @param [in] port       The port to delete.
+     *      @param [in] parent     The parent command.
+     */
+   DeletePhysicalPortCommand(QSharedPointer<Component>, QSharedPointer<Port> port, QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~DeletePhysicalPortCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+   DeletePhysicalPortCommand(DeletePhysicalPortCommand const& rhs);
+   DeletePhysicalPortCommand& operator=(DeletePhysicalPortCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The target component model.
+    QSharedPointer<Component> component_;
+
+    //! The port to delete.
+	QSharedPointer<Port> port_;
 };
 
 //-----------------------------------------------------------------------------

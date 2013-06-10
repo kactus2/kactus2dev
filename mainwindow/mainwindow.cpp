@@ -19,7 +19,8 @@
 #include "NewWorkspaceDialog.h"
 #include "DeleteWorkspaceDialog.h"
 
-#include <common/KactusAttribute.h>
+#include <ComponentWizard/ComponentWizard.h>
+
 #include <settings/SettingsDialog.h>
 #include <settings/SettingsUpdater.h>
 
@@ -47,6 +48,7 @@
 #include <common/widgets/tabWidgetEx/TabWidgetEx.h>
 #include <common/widgets/Ribbon/Ribbon.h>
 #include <common/widgets/Ribbon/RibbonGroup.h>
+#include <common/KactusAttribute.h>
 
 #include <PluginSystem/IGeneratorPlugin.h>
 
@@ -2205,9 +2207,18 @@ void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier,
 	component->setComponentImplementation(KactusAttribute::KTS_HW);
 	component->createEmptyFlatView();
 
-    // TODO: Open wizard.
-    VHDLtoIPXACT editor(component, directory, this);
-    editor.exec();
+    if (!QDir().mkpath(directory))
+    {
+        emit errorMessage("Error creating directory for the component.");
+        return;
+    }
+
+    // Open the component wizard.
+    ComponentWizard wizard(component, directory, *pluginMgr_, this);
+    wizard.exec();
+
+//     VHDLtoIPXACT editor(component, directory, this);
+//     editor.exec();
 
 	// Create the file.
 	if (!libraryHandler_->writeModelToFile(directory, component))

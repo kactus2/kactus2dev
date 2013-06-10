@@ -28,7 +28,7 @@
 //! Class to display vhdl files port and parameter analysis.
 //-----------------------------------------------------------------------------
 
-class VHDLtoIPXACT : public QDialog
+class VHDLtoIPXACT : public QWidget
 {
     Q_OBJECT
     
