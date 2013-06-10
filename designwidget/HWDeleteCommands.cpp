@@ -344,10 +344,11 @@ PortDeleteCommand::~PortDeleteCommand()
 void PortDeleteCommand::undo()
 {
     // Add the port back to the scene.
-    scene_->addItem(port_);
+    //scene_->addItem(port_);
 
     // Add the port to the parent component.
     parent_->addPort(port_);
+
     del_ = false;
 
     // Execute child commands.
