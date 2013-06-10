@@ -73,7 +73,8 @@ void ComponentEditorFileSetsItem::onFileAdded(File* file)
 {
     foreach (QSharedPointer<ComponentEditorItem> item, childItems_)
     {
-        QSharedPointer<ComponentEditorFileSetItem> fileSetItem = item.staticCast<ComponentEditorFileSetItem>();
+        QSharedPointer<ComponentEditorFileSetItem> fileSetItem = item.dynamicCast<ComponentEditorFileSetItem>();
+        Q_ASSERT(fileSetItem != 0);
 
         if (fileSetItem->getFileSet() == file->getParent())
         {
@@ -90,7 +91,8 @@ void ComponentEditorFileSetsItem::updateFileItems()
 {
     foreach (QSharedPointer<ComponentEditorItem> item, childItems_)
     {
-        QSharedPointer<ComponentEditorFileSetItem> fileSetItem = item.staticCast<ComponentEditorFileSetItem>();
+        QSharedPointer<ComponentEditorFileSetItem> fileSetItem = item.dynamicCast<ComponentEditorFileSetItem>();
+        Q_ASSERT(fileSetItem != 0);
         fileSetItem->updateFileItems();
     }
 }
