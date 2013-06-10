@@ -330,6 +330,7 @@ void BusInterfaceDialog::setupPortTable()
     proxy_ = new QSortFilterProxyModel(this);
     proxy_->setSourceModel(portsModel_);
     portsView_->setModel(proxy_);  
+    portsView_->sortByColumn(1, Qt::AscendingOrder);
 
     // Create new, horizontal, layout for radio buttons.
     delete modeGroup_->layout();
@@ -348,8 +349,6 @@ void BusInterfaceDialog::setupPortTable()
     connect(portsModel_,SIGNAL(dataChanged(const QModelIndex &,const QModelIndex &)),
         this, SLOT(onTableDataChanged()));
 
-    //btnOK_->setEnabled(false);
-
     setMinimumSize(QSize(800, 600));
     tableEnable_ = true;
 }
@@ -362,7 +361,6 @@ void BusInterfaceDialog::updatePortsView()
     if ( tableEnable_ && modes_ != 0 )
     {
         portsModel_->initialize(lh_,opposingBusPort_, draftBusPort_, getSelectedMode());
-        portsView_->sortByColumn(1, Qt::AscendingOrder);
         onTableDataChanged();
     }
 }

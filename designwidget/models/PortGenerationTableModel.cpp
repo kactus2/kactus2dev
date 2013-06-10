@@ -376,20 +376,36 @@ void PortGenerationTableModel::initialize(LibraryInterface* lh, BusPortItem cons
     QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
 
     beginResetModel();    
-    rows_.clear();
+    //rows_.clear();
 
+    bool createNew = rows_.empty();
+    QSharedPointer<PortGenerationRow> row = QSharedPointer<PortGenerationRow>();
+    int count = 0;
     // Create table rows based on ports in opposing interface. 
     foreach ( QSharedPointer<General::PortMap> portMap, busIf->getPortMaps() )
     {
         QString portName = portMap->physicalPort_;          
         QSharedPointer<Port> port = sourceBusPort->encompassingComp()->componentModel()->getPort(portName);
-        PortGenerationRow* row = new PortGenerationRow(portName, port->getDirection(),
-            port->getDescription(), port->getPortSize());
-      
+
+        if ( createNew )
+        {
+            row = QSharedPointer<PortGenerationRow>(new PortGenerationRow(portName, port->getDirection(),
+                port->getDescription(), port->getPortSize()));
+        }
+        else
+        {
+            row = rows_.at(count);
+        }
+
         General::Direction draftDir = absDef->getPortDirection(portMap->logicalPort_, selectedMode);
         row->setDraftDirection(draftDir);
         row->setDraftName(generateName(portName, port->getDirection(), draftDir));
-        rows_.append(QSharedPointer<PortGenerationRow>(row));
+        if ( createNew )
+        {
+            rows_.append(QSharedPointer<PortGenerationRow>(row));
+        }
+
+        count++;
     }
 
     endResetModel();
