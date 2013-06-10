@@ -23,13 +23,16 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentWizard::ComponentWizard()
 //-----------------------------------------------------------------------------
-ComponentWizard::ComponentWizard(QSharedPointer<Component> component, QString const& basePath,
-                                 PluginManager& pluginMgr, QWidget* parent)
-    : QWizard(parent),
-      component_(component),
-      basePath_(basePath)
+ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
+	QString const& basePath,
+	PluginManager& pluginMgr,
+	LibraryInterface* handler,
+	QWidget* parent):
+QWizard(parent),
+	component_(component),
+	basePath_(basePath)
 {
-    setWindowTitle(tr("Component Wizard"));
+	setWindowTitle(tr("Component Wizard"));
     setWizardStyle(ModernStyle);
     setOption(NoCancelButton, true);
     setOption(HaveFinishButtonOnEarlyPages, true);
@@ -38,7 +41,7 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component, QString co
     setPage(PAGE_INTRO, new ComponentWizardIntroPage(this));
     setPage(PAGE_FILES, new ComponentWizardFilesPage(this));
     setPage(PAGE_DEPENDENCY, new ComponentWizardDependencyPage(pluginMgr, this));
-    setPage(PAGE_VHDL_IMPORT, new ComponentWizardVhdlImportPage(this));
+    setPage(PAGE_VHDL_IMPORT, new ComponentWizardVhdlImportPage(component, handler, this));
     setPage(PAGE_CONCLUSION, new ComponentWizardConclusionPage(this));
 }
 

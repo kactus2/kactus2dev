@@ -13,10 +13,14 @@
 #define COMPONENTWIZARDVHDLIMPORTPAGE_H
 
 #include <Vhdl2IPXact/vhdltoipxact.h>
+#include <models/component.h>
+#include <ComponentWizard/VhdlImportEditor/vhdlimporteditor.h>
 
 #include <QWizardPage>
+#include <QSharedPointer>
 
 class ComponentWizard;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! Intro page for the component wizard.
@@ -27,9 +31,13 @@ public:
     /*!
      *  Constructor.
      *
+     *		@param [in, out] component Pointer to the component being edited.
+     *		@param [in] Pointer to the instance which manages the library.
      *      @param [in] parent The parent wizard.
      */
-    ComponentWizardVhdlImportPage(ComponentWizard* parent);
+    ComponentWizardVhdlImportPage(QSharedPointer<Component> component,
+		 LibraryInterface* handler,
+		 ComponentWizard* parent);
 
     /*!
      *  Destructor.
@@ -41,20 +49,46 @@ public:
      */
     virtual int nextId() const;
 
+	 /*! \brief Initialize the page to contain correct files to select the top-vhdl.
+	  * 
+	  * The files saved in the component's file sets are used to select the top-vhdl.
+	  * 
+	  * Method: 		initializePage
+	  * Full name:	ComponentWizardVhdlImportPage::initializePage
+	  * Access:		virtual public 
+	  *
+	  *
+	 */
+	 virtual void initializePage();
+
+	 /*! \brief Check if the settings on the page are valid and user can move to next page.
+	  *
+	  * Method: 		validatePage
+	  * Full name:	ComponentWizardVhdlImportPage::validatePage
+	  * Access:		virtual public 
+	  *
+	  *
+	  * \return True if all settings are valid, otherwise false.
+	 */
+	 virtual bool validatePage();
+
 private:
-    // Disable copying.
-    ComponentWizardVhdlImportPage(ComponentWizardVhdlImportPage const& rhs);
-    ComponentWizardVhdlImportPage& operator=(ComponentWizardVhdlImportPage const& rhs);
+	// Disable copying.
+	ComponentWizardVhdlImportPage(ComponentWizardVhdlImportPage const& rhs);
+	ComponentWizardVhdlImportPage& operator=(ComponentWizardVhdlImportPage const& rhs);
 
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------
+	// Data.
+	//-----------------------------------------------------------------------------
 
-    //! The parent wizard.
-    ComponentWizard* parent_;
+	//! The parent wizard.
+	ComponentWizard* parent_;
 
-    //! The VHDL import editor.
-    VHDLtoIPXACT editor_;
+	//! The VHDL import editor.
+	//VHDLtoIPXACT editor_;
+
+	//! \brief Editor to set the generics and ports.
+	VhdlImportEditor* editor_;
 };
 
 #endif // COMPONENTWIZARDVHDLIMPORTPAGE_H

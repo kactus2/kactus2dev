@@ -839,6 +839,12 @@
     <Filter Include="Source Files\designwidget\models">
       <UniqueIdentifier>{539af554-8275-43d5-b6f9-cb42dce01d0d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ComponentWizard\VhdlImportEditor">
+      <UniqueIdentifier>{42ebc0a2-4349-4e91-86c1-c398df9f57b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ComponentWizard\VhdlImportEditor">
+      <UniqueIdentifier>{422da0ac-c2db-421c-af28-fabb10d08b2d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\CSourceWriter.cpp">
@@ -3747,7 +3753,7 @@
     </ClCompile>
     <ClCompile Include="settings\k2envvarmodel.cpp">
       <Filter>Source Files\settings</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="ComponentWizard\ComponentWizard.cpp">
       <Filter>Source Files\ComponentWizard</Filter>
     </ClCompile>
@@ -3789,6 +3795,12 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_PortGenerationTableModel.cpp">
       <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_vhdlimporteditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentWizard\VhdlImportEditor\vhdlimporteditor.cpp">
+      <Filter>Source Files\ComponentWizard\VhdlImportEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5375,19 +5387,24 @@
     </CustomBuild>
     <CustomBuild Include="settings\k2envvarmodel.h">
       <Filter>Header Files\settings</Filter>
-    </CustomBuild>    <CustomBuild Include="IPXactWrapper\ComponentEditor\itemeditor.h">
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\itemeditor.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor</Filter>
-    </CustomBuild>    <CustomBuild Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySourceEditor.h">
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySourceEditor.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
     </CustomBuild>
     <CustomBuild Include="designwidget\views\CellEditTableView.h">
-      <Filter>Header Files\designwidget\views</Filter>
+      <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="designwidget\models\PortGenerationRow.h">
-      <Filter>Header Files\designwidget\models</Filter>
+      <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="designwidget\models\PortGenerationTableModel.h">
-      <Filter>Header Files\designwidget\models</Filter>
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ComponentWizard\VhdlImportEditor\vhdlimporteditor.h">
+      <Filter>Header Files\ComponentWizard\VhdlImportEditor</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

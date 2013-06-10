@@ -32,11 +32,13 @@ public:
 	 *
 	 * \param component Pointer to the component being edited.
 	 * \param handler Pointer to the instance that manages the library
+	 * \param showButton When set to true, the import/export buttons are displayed.
 	 * \param parent Pointer to the owner of this widget.
 	 *
 	*/
 	PortsEditor(QSharedPointer<Component> component, 
 		LibraryInterface* handler,
+		bool showButtons = true,
 		QWidget *parent = 0);
 
 	//! \brief The destructor

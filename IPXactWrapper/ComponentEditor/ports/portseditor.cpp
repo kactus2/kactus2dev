@@ -26,6 +26,7 @@
 
 PortsEditor::PortsEditor(QSharedPointer<Component> component,
 						 LibraryInterface* handler,
+						 bool showButtons,
 						 QWidget *parent):
 ItemEditor(component, handler, parent),
 importButton_(QIcon(":/icons/graphics/import.png"), tr("Import CSV-file"), this),
@@ -80,6 +81,12 @@ proxy_(this) {
 	buttonLayout->addWidget(&importButton_, 0, Qt::AlignLeft);
 	buttonLayout->addWidget(&exportButton_, 0, Qt::AlignLeft);
 	buttonLayout->addStretch();
+
+	// if buttons are not displayed
+	if (!showButtons) {
+		importButton_.hide();
+		exportButton_.hide();
+	}
 
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Ports"), this);

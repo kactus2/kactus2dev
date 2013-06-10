@@ -16,6 +16,7 @@
 
 class Component;
 class PluginManager;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! Component wizard dialog.
@@ -30,23 +31,27 @@ public:
         PAGE_DEPENDENCY,
         PAGE_VHDL_IMPORT,
         PAGE_CONCLUSION
-    };
+	 };
 
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] component  The component for which the wizard is run.
-     *      @param [in] basePath   The base path where the component XML will be located.
-     *      @param [in] pluginMgr  The plugin manager.
-     *      @param [in] parent     The parent widget.
-     */
-    ComponentWizard(QSharedPointer<Component> component, QString const& basePath,
-                    PluginManager& pluginMgr, QWidget* parent);
+	 /*!
+	 *  Constructor.
+	 *
+	 *      @param [in] component  The component for which the wizard is run.
+	 *      @param [in] basePath   The base path where the component XML will be located.
+	 *      @param [in] pluginMgr  The plugin manager.
+	 *      @param [in] handler	 Pointer to the instance which manages the library.
+	 *      @param [in] parent     The parent widget.
+	 */
+	 ComponentWizard(QSharedPointer<Component> component,
+		 QString const& basePath,
+		 PluginManager& pluginMgr,
+		 LibraryInterface* handler, 
+		 QWidget* parent);
 
-    /*!
-     *  Destructor.
-     */
-    ~ComponentWizard();
+	 /*!
+	 *  Destructor.
+	 */
+	 ~ComponentWizard();
 
     /*!
      *  Returns the component.

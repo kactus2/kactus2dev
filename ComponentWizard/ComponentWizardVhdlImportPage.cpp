@@ -16,17 +16,20 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardVhdlImportPage::ComponentWizardVhdlImportPage()
 //-----------------------------------------------------------------------------
-ComponentWizardVhdlImportPage::ComponentWizardVhdlImportPage(ComponentWizard* parent)
+ComponentWizardVhdlImportPage::ComponentWizardVhdlImportPage(QSharedPointer<Component> component, 
+	LibraryInterface* handler, 
+	ComponentWizard* parent)
     : QWizardPage(parent),
       parent_(parent),
-      editor_(parent->getComponent(), parent->getBasePath(), this)
+      //editor_(parent->getComponent(), parent->getBasePath(), this)
+		editor_(new VhdlImportEditor(parent->getBasePath(), component, handler, this))
 {
     setTitle(tr("Import VHDL"));
     setSubTitle(tr("Choose the top-level VHDL file to import ports and generics."));
     setFinalPage(true);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(&editor_);
+    layout->addWidget(editor_);
 }
 
 //-----------------------------------------------------------------------------
@@ -42,4 +45,12 @@ ComponentWizardVhdlImportPage::~ComponentWizardVhdlImportPage()
 int ComponentWizardVhdlImportPage::nextId() const
 {
     return ComponentWizard::PAGE_CONCLUSION;
+}
+
+void ComponentWizardVhdlImportPage::initializePage() {
+	editor_->initializeFileSelection();
+}
+
+bool ComponentWizardVhdlImportPage::validatePage() {
+	return editor_->checkEditorValidity();
 }
