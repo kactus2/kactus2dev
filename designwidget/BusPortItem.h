@@ -95,7 +95,20 @@ public:
      */
     virtual bool onConnect(ConnectionEndpoint const* other);
 
-    bool askCompatibleMode(QSharedPointer<BusInterface> otherBusIf, General::InterfaceMode &mode);
+    /*!
+     *  Called when a connection between this and another end point is done.
+     *
+     *      @param [in] other The other end point of the connection.
+     *      @param [out] mode The interface mode determined or selected by user.
+     *      @param [out] ports Ports generated with the connection.
+     *      @param [out] portMaps Port maps generated with the connection.
+     *
+     *      @return False if there was an error in the connection or user rejected 
+     *              the mode dialog. Otherwise true.
+     */
+    bool askCompatibleMode(ConnectionEndpoint const* other, General::InterfaceMode& mode, 
+                           QList<QSharedPointer<Port>>& ports,
+                           QList<QSharedPointer<General::PortMap>>& portMaps);
 
     /*!
      *  Called when a connection has been removed from between this and another end point.
@@ -190,6 +203,9 @@ private:
 
     //! The off-page connector.
     OffPageConnectorItem* offPageConnector_;
+
+    //! Name of the bus interface before injection from another.
+    QString oldName_;
 };
 
 #endif // BUSPORTITEM_H

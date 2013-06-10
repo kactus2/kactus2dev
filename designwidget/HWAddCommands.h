@@ -206,9 +206,9 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-//! PastePhysicalPortCommand class.
+//! AddPhysicalPortCommand class.
 //-----------------------------------------------------------------------------
-class PastePhysicalPortCommand : public QUndoCommand
+class AddPhysicalPortCommand : public QUndoCommand
 {
 public:
     /*!
@@ -218,12 +218,12 @@ public:
 	 *      @param [in] port       The port to paste.
      *      @param [in] parent     The parent command.
      */
-   PastePhysicalPortCommand(QSharedPointer<Component>, QSharedPointer<Port> port, QUndoCommand* parent = 0);
+   AddPhysicalPortCommand(QSharedPointer<Component>, QSharedPointer<Port> port, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
      */
-    ~PastePhysicalPortCommand();
+    ~AddPhysicalPortCommand();
 
     /*!
      *  Undoes the command.
@@ -237,8 +237,8 @@ public:
 
 private:
     // Disable copying.
-   PastePhysicalPortCommand(PastePhysicalPortCommand const& rhs);
-   PastePhysicalPortCommand& operator=(PastePhysicalPortCommand const& rhs);
+   AddPhysicalPortCommand(AddPhysicalPortCommand const& rhs);
+   AddPhysicalPortCommand& operator=(AddPhysicalPortCommand const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.

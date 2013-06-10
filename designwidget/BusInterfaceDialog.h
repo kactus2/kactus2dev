@@ -20,7 +20,16 @@
 #include <QRadioButton>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QLabel>
+#include <QSortFilterProxyModel>
+#include <QTableView>
 
+class BusPortItem;
+class BusInterface;
+class CellEditTableView;
+class LibraryInterface;
+class Port;
+class PortGenerationTableModel;
 //-----------------------------------------------------------------------------
 //! BusInterfaceDialog class.
 //-----------------------------------------------------------------------------
@@ -41,6 +50,7 @@ public:
      *  Destructor.
      */
     ~BusInterfaceDialog();
+    
     
     /*!
      *  Sets the interface name in the dialog.
@@ -66,21 +76,83 @@ public:
      */
     General::InterfaceMode getSelectedMode() const;
 
+ /*!
+     *  Sets the opposing and draft interface ports for the dialog.
+     *
+     *      @param [in] opposingBusPort The bus port item in opposing component.
+     *      @param [in] draftBusPort The bus port item in draft component.
+     *      @param [in] lh The library interface.
+     */
+    void setBusPorts(BusPortItem const* opposingBusPort, BusPortItem const* draftBusPort, 
+                        LibraryInterface* lh);
+
+    /*!
+     *  Creates port mapping in draft component according to generation table contents.
+     *
+     *      @return The port maps.
+    */
+    QList<QSharedPointer<General::PortMap>> getPortMaps() const;
+
+    /*!
+     *  Creates the list of ports for draft component according to 
+     *  generation table contents.
+     *
+     *      @return The ports.
+    */
+    QList<QSharedPointer<Port>> getPorts() const;
+
 public slots:
+
     //! Called when the value of the name field has been changed.
     void onNameChanged();
+
+    //! Called when a mode is selected using a radio button.
+    void onModeSelected(bool const radioButtonChecked);
+
+    //! Called when data in port generation table changes.
+    void onTableDataChanged();
+
 
 private:
     // Disable copying.
     BusInterfaceDialog(BusInterfaceDialog const& rhs);
     BusInterfaceDialog& operator=(BusInterfaceDialog const& rhs);
 
+    /*!
+     *  Sets dialog layout for interface selection.
+     *
+     */
+    void setupLayout();
+
+    /*!
+     *  Creates and configures the port generation table view and model. 
+     *  Modifies the dialog layout to show port generation table and 
+     *  horizontal mode selection.
+     *
+     */
+    void setupPortTable();
+
+    /*!
+     *  Creates and configures the port generation table view and model.
+     *
+     */
+    void setupGeneratedPortsTable();
+
+    /*!
+     * Updates port generation table.
+     *
+     */
+    void updatePortsView();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The layout for the UI widgets.
-    QGridLayout* layout_;
+    QVBoxLayout* layout_;
+
+    //! The label for name editing.
+    QLabel* nameLabel_;
 
     //! The line edit for the name.
     QLineEdit* nameEdit_;
@@ -91,8 +163,37 @@ private:
     //! The OK button.
     QPushButton* btnOK_;
 
+    //! The Cancel button.
+    QPushButton* btnCancel_;
+
     //! The mode radio buttons.
     QRadioButton* modeRadioButtons_[General::MONITOR + 1];
+
+    //! The group box for the port tables.
+    QGroupBox* tableGroup_;
+
+    bool tableEnable_;
+
+    //! Library interface.
+    LibraryInterface* lh_;
+
+    QSharedPointer<BusInterface> busIf_;
+
+    BusPortItem const* opposingBusPort_;
+
+    BusPortItem const* draftBusPort_;
+
+    //! Table model for port generation table.
+    PortGenerationTableModel* portsModel_;
+
+    //! Table view for port generation table.
+    CellEditTableView* portsView_;
+
+    //! Sorting proxy for port generation table.
+    QSortFilterProxyModel* proxy_;
+
+    //! Number of enabled modes.
+    int modes_;
 };
 
 //-----------------------------------------------------------------------------

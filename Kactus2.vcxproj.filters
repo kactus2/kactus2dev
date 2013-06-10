@@ -833,6 +833,12 @@
     <Filter Include="Source Files\ComponentWizard">
       <UniqueIdentifier>{190bc156-118d-4358-89b7-bcb53a73473e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\designwidget\views">
+      <UniqueIdentifier>{d03b1ed0-2db3-43e5-a475-d9155e109c8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\designwidget\models">
+      <UniqueIdentifier>{539af554-8275-43d5-b6f9-cb42dce01d0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\CSourceWriter.cpp">
@@ -3766,6 +3772,24 @@
     <ClCompile Include="ComponentWizard\ComponentWizardDependencyPage.cpp">
       <Filter>Source Files\ComponentWizard</Filter>
     </ClCompile>
+    <ClCompile Include="designwidget\models\PortGenerationRow.cpp">
+      <Filter>Source Files\designwidget\models</Filter>
+    </ClCompile>
+    <ClCompile Include="designwidget\models\PortGenerationTableModel.cpp">
+      <Filter>Source Files\designwidget\models</Filter>
+    </ClCompile>
+    <ClCompile Include="designwidget\views\CellEditTableView.cpp">
+      <Filter>Source Files\designwidget\views</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_CellEditTableView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortGenerationRow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortGenerationTableModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5355,6 +5379,15 @@
       <Filter>Header Files\IPXactWrapper\ComponentEditor</Filter>
     </CustomBuild>    <CustomBuild Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySourceEditor.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designwidget\views\CellEditTableView.h">
+      <Filter>Header Files\designwidget\views</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designwidget\models\PortGenerationRow.h">
+      <Filter>Header Files\designwidget\models</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designwidget\models\PortGenerationTableModel.h">
+      <Filter>Header Files\designwidget\models</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

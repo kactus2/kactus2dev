@@ -37,7 +37,7 @@ BusPortItem::BusPortItem(QSharedPointer<BusInterface> busIf, LibraryInterface* l
     : HWConnectionEndpoint(parent, !packetized),
       lh_(lh),
       oldPos_(), oldPortPositions_(),
-      offPageConnector_(0)
+      offPageConnector_(0), oldName_()
 {
     Q_ASSERT_X(busIf, "BusPortItem constructor",
         "Null BusInterface pointer given as parameter");
@@ -252,24 +252,47 @@ bool BusPortItem::onConnect(ConnectionEndpoint const* other)
     // If the port is a non-typed one, try to copy the configuration from the other end point.
     if (getConnections().empty() && !isTypeLocked() && otherBusIf != 0 && otherBusIf->getBusType().isValid())
     {
+        GenericEditProvider& editProvider = static_cast<DesignDiagram*>(scene())->getEditProvider();
+        editProvider.setState("portsCopied", false);
+
         if (!static_cast<HWDesignDiagram*>(scene())->getEditProvider().isPerformingUndoRedo() &&
             !static_cast<HWDesignDiagram*>(scene())->isLoading())
-        {
+        {                            
+            QList<QSharedPointer<Port>> newPorts;
+            QList<QSharedPointer<General::PortMap>> newPortMaps;
+
             // Set a compatible interface mode. If the other end point is a hierarchical one,
             // the same interface mode injects automatically. Otherwise the proper interface mode must
             // be determined/asked based on the other bus interface.
             General::InterfaceMode mode = otherBusIf->getInterfaceMode();
-           
+
             if (!other->isHierarchical())
             {
-                if (!askCompatibleMode(otherBusIf, mode))
+                if (!askCompatibleMode(other, mode, newPorts, newPortMaps))
                 {
                     return false;
                 }
             }
 
             busInterface_->setInterfaceMode(mode);
+
+            editProvider.setState("portsCopied", true);
+            foreach ( QSharedPointer<Port> port, newPorts )
+            {
+                encompassingComp()->componentModel()->addPort(port);
+            } 
+            busInterface_->setPortMaps(newPortMaps);
+            oldName_ = busInterface_->getName();
         }
+    
+        QString ifName = other->getBusInterface()->getName();
+        int count = 0;
+        while( getOwnerComponent()->hasInterface(ifName) )
+        {
+            count++;
+            ifName = other->getBusInterface()->getName() + "_" + QString::number(count);
+        }
+        busInterface_->setName(ifName);
 
         // Copy the bus and abstraction definitions.
         busInterface_->setBusType(otherBusIf->getBusType());
@@ -289,7 +312,9 @@ void BusPortItem::onDisconnect(ConnectionEndpoint const*)
     if (getConnections().empty() && !isTypeLocked())
     {
         busInterface_->setBusType(VLNV());
-        busInterface_->setAbstractionType(VLNV());
+        busInterface_->setAbstractionType(VLNV());      
+        busInterface_->setPortMaps(QList<QSharedPointer<General::PortMap>>());
+        busInterface_->setName(oldName_);
         updateInterface();
     }
 }
@@ -611,39 +636,47 @@ void BusPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 // Function: askCompatibleMode()
 //-----------------------------------------------------------------------------
-bool BusPortItem::askCompatibleMode(QSharedPointer<BusInterface> otherBusIf,
-                                    General::InterfaceMode& mode)
+bool BusPortItem::askCompatibleMode(ConnectionEndpoint const* other,
+                                    General::InterfaceMode& mode, QList<QSharedPointer<Port>>& ports,
+                                    QList<QSharedPointer<General::PortMap>>& portMaps)
 {
-    switch (otherBusIf->getInterfaceMode())
+    bool showDialog = false;
+    BusInterfaceDialog dialog(false, (QWidget*)scene()->parent());
+
+    switch (other->getBusInterface()->getInterfaceMode())
     {
     case General::MIRROREDMASTER:
         {
             mode = General::MASTER;
+            dialog.addMode(General::MASTER);
             break;
         }
 
     case General::MIRROREDSLAVE:
         {
             mode = General::SLAVE;
+            dialog.addMode(General::SLAVE);
             break;
         }
 
     case General::MIRROREDSYSTEM:
         {
             mode = General::SYSTEM;
+            dialog.addMode(General::SYSTEM);
             break;
         }
 
     case General::SYSTEM:
         {
             mode = General::MIRROREDSYSTEM;
+            dialog.addMode(General::MIRROREDSYSTEM);
             break;
         }
 
     case General::MASTER:
         {
             // Try to determine whether this port should be slave or mirrored-master.
-            QSharedPointer<LibraryComponent> libComp = lh_->getModel(otherBusIf->getBusType());
+            QSharedPointer<LibraryComponent> libComp = lh_->getModel(other->getBusInterface()->getBusType());
             QSharedPointer<BusDefinition> busDef = libComp.dynamicCast<BusDefinition>();
 
             if (busDef == 0)
@@ -655,25 +688,14 @@ bool BusPortItem::askCompatibleMode(QSharedPointer<BusInterface> otherBusIf,
             {
                 // This must be a mirrored-master.
                 mode = General::MIRROREDMASTER;
+                dialog.addMode(General::MIRROREDMASTER);
             }
             else
             {
                 // Ask the user for the correct type.
-                setHighlight(HIGHLIGHT_HOVER);
-
-                BusInterfaceDialog dialog(false, (QWidget*)scene()->parent());
                 dialog.addMode(General::MIRROREDMASTER);
                 dialog.addMode(General::SLAVE);
-
-                if (dialog.exec() == QDialog::Rejected)
-                {
-                    setHighlight(HIGHLIGHT_OFF);
-                    return false;
-                }
-
-                setHighlight(HIGHLIGHT_OFF);
-
-                mode = dialog.getSelectedMode();
+                showDialog = true;
             }
             break;
         }
@@ -681,7 +703,7 @@ bool BusPortItem::askCompatibleMode(QSharedPointer<BusInterface> otherBusIf,
     case General::SLAVE:
         {
             // Try to determine whether this port should be slave or mirrored-master.
-            QSharedPointer<LibraryComponent> libComp = lh_->getModel(otherBusIf->getBusType());
+            QSharedPointer<LibraryComponent> libComp = lh_->getModel(other->getBusInterface()->getBusType());
             QSharedPointer<BusDefinition> busDef = libComp.dynamicCast<BusDefinition>();
 
             if (busDef == 0)
@@ -697,22 +719,9 @@ bool BusPortItem::askCompatibleMode(QSharedPointer<BusInterface> otherBusIf,
             else
             {
                 // Ask the user for the correct type.
-                setHighlight(HIGHLIGHT_HOVER);
-
-                BusInterfaceDialog dialog(false, (QWidget*)scene()->parent());
                 dialog.addMode(General::MIRROREDSLAVE);
                 dialog.addMode(General::MASTER);
-
-                if (dialog.exec() == QDialog::Rejected)
-                {
-                    setHighlight(HIGHLIGHT_OFF);
-                    return false;
-                }
-
-                setHighlight(HIGHLIGHT_OFF);
-
-                mode = dialog.getSelectedMode();
-
+                showDialog = true;
             }
             break;
         }
@@ -720,10 +729,34 @@ bool BusPortItem::askCompatibleMode(QSharedPointer<BusInterface> otherBusIf,
     case General::MONITOR:
         {
             mode = General::MONITOR;
+            dialog.addMode(General::MONITOR);
             break;
         }
     }
 
+    BusPortItem const* otherBusPort = static_cast<BusPortItem const*>(other);
+    if (!otherBusPort->getBusInterface()->getPortMaps().empty() )
+    {
+        showDialog = true;
+        dialog.setBusPorts(otherBusPort, this, lh_);
+    }
+
+    if ( showDialog )
+    {
+        setHighlight(HIGHLIGHT_HOVER);
+        
+        if (dialog.exec() == QDialog::Rejected)
+        {
+            setHighlight(HIGHLIGHT_OFF);
+            return false;
+        }
+
+        setHighlight(HIGHLIGHT_OFF);
+
+        mode = dialog.getSelectedMode();                
+        ports = dialog.getPorts();
+        portMaps = dialog.getPortMaps();
+    }
     return true;
 }
 

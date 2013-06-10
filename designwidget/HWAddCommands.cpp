@@ -121,7 +121,7 @@ ConnectionAddCommand::ConnectionAddCommand(QGraphicsScene* scene, HWConnection* 
         foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
         {
             QSharedPointer<Port> port = srcComponent->getPort(portMap->physicalPort_);
-            QUndoCommand* childCmd = new PastePhysicalPortCommand(srcComponent, port, this);
+            QUndoCommand* childCmd = new AddPhysicalPortCommand(srcComponent, port, this);
         }
     }
 }
@@ -153,7 +153,7 @@ void ConnectionAddCommand::undo()
     scene_->removeItem(conn_);
     del_ = true;
 
-    // Execute child commands.
+   // Execute child commands.
     QUndoCommand::undo();
 }
 
@@ -238,7 +238,7 @@ PortPasteCommand::PortPasteCommand(HWComponentItem* destComponent, QSharedPointe
 			}
 		}
 
-		QUndoCommand* childCmd = new PastePhysicalPortCommand(component_->componentModel(), physPortCopy, this);
+		QUndoCommand* childCmd = new AddPhysicalPortCommand(component_->componentModel(), physPortCopy, this);
 	}
 }
 
@@ -287,9 +287,9 @@ void PortPasteCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: PastePhysicalPortCommand()
+// Function: AddPhysicalPortCommand()
 //-----------------------------------------------------------------------------
-PastePhysicalPortCommand::PastePhysicalPortCommand(QSharedPointer<Component> component,
+AddPhysicalPortCommand::AddPhysicalPortCommand(QSharedPointer<Component> component,
                                                    QSharedPointer<Port> port,
                                                    QUndoCommand* parent)
     : QUndoCommand(parent),
@@ -299,16 +299,16 @@ PastePhysicalPortCommand::PastePhysicalPortCommand(QSharedPointer<Component> com
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~PastePhysicalPortCommand()
+// Function: ~AddPhysicalPortCommand()
 //-----------------------------------------------------------------------------
-PastePhysicalPortCommand::~PastePhysicalPortCommand()
+AddPhysicalPortCommand::~AddPhysicalPortCommand()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: undo()
 //-----------------------------------------------------------------------------
-void PastePhysicalPortCommand::undo()
+void AddPhysicalPortCommand::undo()
 {
     Q_ASSERT(component_ != 0);
     component_->removePort(port_->getName());
@@ -320,7 +320,7 @@ void PastePhysicalPortCommand::undo()
 //-----------------------------------------------------------------------------
 // Function: redo()
 //-----------------------------------------------------------------------------
-void PastePhysicalPortCommand::redo()
+void AddPhysicalPortCommand::redo()
 {
 	Q_ASSERT(component_ != 0);
     component_->addPort(port_);

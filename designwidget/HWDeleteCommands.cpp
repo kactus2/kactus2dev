@@ -325,6 +325,15 @@ PortDeleteCommand::PortDeleteCommand(HWConnectionEndpoint* port, QUndoCommand* p
         QUndoCommand* cmd =
             new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
     }
+
+    foreach (QSharedPointer<General::PortMap> portMap, port_->getBusInterface()->getPortMaps() )
+    {
+        QUndoCommand* cmd =
+            new DeletePhysicalPortCommand(parent_->componentModel(),
+                                          parent_->componentModel()->getPort(portMap->physicalPort_),
+                                          this);
+    }
+
 }
 
 //-----------------------------------------------------------------------------
