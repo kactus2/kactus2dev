@@ -65,6 +65,7 @@ component_(component),
 model_(parent),
 childItems_(), 
 editor_(NULL),
+locked_(true),
 parent_(NULL) {
 
 	connect(this, SIGNAL(contentChanged(ComponentEditorItem*)),

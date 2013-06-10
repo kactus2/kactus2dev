@@ -59,6 +59,23 @@ int ComponentEditorTreeModel::rowCount( const QModelIndex& parent /*= QModelInde
 	return parentItem->rowCount();
 }
 
+bool ComponentEditorTreeModel::hasChildren( const QModelIndex& parent /*= QModelIndex()*/ ) const {
+
+	ComponentEditorItem* parentItem = 0;
+
+	// if the given item is invalid, it is interpreted as root item
+	if (!parent.isValid()) {
+		parentItem = rootItem_.data();
+	}
+	else {
+		parentItem = static_cast<ComponentEditorItem*>(
+			parent.internalPointer());
+	}
+
+	// return how many children the parent has
+	return parentItem->hasChildren();
+}
+
 int ComponentEditorTreeModel::columnCount( const QModelIndex&) const {
 	return 1;
 }
@@ -110,23 +127,6 @@ Qt::ItemFlags ComponentEditorTreeModel::flags( const QModelIndex& index ) const 
 	}
 
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-}
-
-bool ComponentEditorTreeModel::hasChildren( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-
-	ComponentEditorItem* parentItem = 0;
-
-	// if the given item is invalid, it is interpreted as root item
-	if (!parent.isValid()) {
-		parentItem = rootItem_.data();
-	}
-	else {
-		parentItem = static_cast<ComponentEditorItem*>(
-			parent.internalPointer());
-	}
-
-	// return how many children the parent has
-	return parentItem->hasChildren();
 }
 
 void ComponentEditorTreeModel::onContentChanged(ComponentEditorItem* item ) {
