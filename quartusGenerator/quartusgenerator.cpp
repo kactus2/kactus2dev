@@ -228,6 +228,12 @@ void QuartusGenerator::writeQSF(const QString& outputDir, const QString& top_ent
 				<< endl;
 		}
 
+		//if file is synopsys design constraints file (.sdc)
+		else if (fileInfo.suffix() == QString("sdc")) {
+			stream << "set_global_assignment -name SDC_FILE " << files_.at(i)
+				<< endl;
+		}	
+
 	}
 
 	// write the pin assignments
