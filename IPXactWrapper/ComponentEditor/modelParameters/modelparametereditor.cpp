@@ -84,3 +84,7 @@ void ModelParameterEditor::showEvent( QShowEvent* event ) {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/modelparams.html");
 }
+
+void ModelParameterEditor::setAllowImportExport( bool allow ) {
+	view_.setAllowImportExport(allow);
+}

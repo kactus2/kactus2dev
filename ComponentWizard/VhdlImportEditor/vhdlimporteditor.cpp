@@ -33,6 +33,10 @@ ports_(new PortsEditor(component, handler, false, this)) {
 	connect(fileSelector_, SIGNAL(fileSelected(const QString&)),
 		this, SLOT(onFileSelected(const QString&)), Qt::UniqueConnection);
 
+	// CSV import/export is disabled in the wizard
+	modelParams_->setAllowImportExport(false);
+	ports_->setAllowImportExport(false);
+
 	// The layout on the left side of the GUI displaying the file selector and
 	// VHDL source code.
 	QVBoxLayout* vhdlLayout = new QVBoxLayout();

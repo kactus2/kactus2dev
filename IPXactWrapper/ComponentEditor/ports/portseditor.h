@@ -54,6 +54,17 @@ public:
 	*/
 	virtual void refresh();
 
+	/*! \brief Enable/disable the import/export csv functionality for the view.
+	 *
+	 * Method: 		setAllowImportExport
+	 * Full name:	ModelParameterEditor::setAllowImportExport
+	 * Access:		public 
+	 *
+	 * \param allow If true then import/export is enabled.
+	 *
+	*/
+	void setAllowImportExport(bool allow);
+
 protected:
     //! Called when the editor is shown.
     virtual void showEvent(QShowEvent* event);

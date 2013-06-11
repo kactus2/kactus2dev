@@ -118,3 +118,7 @@ void PortsEditor::showEvent(QShowEvent* event)
     ItemEditor::showEvent(event);
     emit helpUrlRequested("componenteditor/ports.html");
 }
+
+void PortsEditor::setAllowImportExport( bool allow ) {
+	view_.setAllowImportExport(allow);
+}
