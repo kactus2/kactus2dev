@@ -63,14 +63,14 @@ public:
 
 	 /*! \brief Check if the settings on the page are valid and user can move to next page.
 	  *
-	  * Method: 		validatePage
-	  * Full name:	ComponentWizardVhdlImportPage::validatePage
+	  * Method: 		isComplete
+	  * Full name:	ComponentWizardVhdlImportPage::isComplete
 	  * Access:		virtual public 
 	  *
 	  *
 	  * \return True if all settings are valid, otherwise false.
 	 */
-	 virtual bool validatePage();
+	 virtual bool isComplete() const;
 
 private:
 	// Disable copying.

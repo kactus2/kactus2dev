@@ -37,6 +37,11 @@ ports_(new PortsEditor(component, handler, false, this)) {
 	modelParams_->setAllowImportExport(false);
 	ports_->setAllowImportExport(false);
 
+	connect(modelParams_, SIGNAL(contentChanged()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(ports_, SIGNAL(contentChanged()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
 	// The layout on the left side of the GUI displaying the file selector and
 	// VHDL source code.
 	QVBoxLayout* vhdlLayout = new QVBoxLayout();
@@ -61,7 +66,7 @@ void VhdlImportEditor::initializeFileSelection() {
 	fileSelector_->refresh();
 }
 
-bool VhdlImportEditor::checkEditorValidity() {
+bool VhdlImportEditor::checkEditorValidity() const {
 	// check both editors
 	if (!modelParams_->isValid()) {
 		return false;

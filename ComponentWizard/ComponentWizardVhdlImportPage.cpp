@@ -30,6 +30,9 @@ ComponentWizardVhdlImportPage::ComponentWizardVhdlImportPage(QSharedPointer<Comp
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(editor_);
+
+	 connect(editor_, SIGNAL(contentChanged()),
+		 this, SIGNAL(completeChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -51,6 +54,6 @@ void ComponentWizardVhdlImportPage::initializePage() {
 	editor_->initializeFileSelection();
 }
 
-bool ComponentWizardVhdlImportPage::validatePage() {
+bool ComponentWizardVhdlImportPage::isComplete() const {
 	return editor_->checkEditorValidity();
 }

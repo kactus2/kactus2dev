@@ -71,7 +71,12 @@ public:
 	 *
 	 * \return False if contents of either editor is not valid.
 	*/
-	bool checkEditorValidity();
+	bool checkEditorValidity() const;
+
+signals:
+
+	//! \brief Emitted when the contents of the editors change.
+	void contentChanged();
 
 private slots:
 
