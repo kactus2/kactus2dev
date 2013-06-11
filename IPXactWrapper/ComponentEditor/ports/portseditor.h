@@ -11,6 +11,7 @@
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
 #include <common/views/EditableTableView/editabletableview.h>
 #include <models/component.h>
+#include <models/port.h>
 
 #include "portsmodel.h"
 
@@ -64,6 +65,30 @@ public:
 	 *
 	*/
 	void setAllowImportExport(bool allow);
+
+public slots:
+
+	/*! \brief Add a new port to the editor.
+	 *
+	 * Method: 		addPort
+	 * Full name:	PortsEditor::addPort
+	 * Access:		public 
+	 *
+	 * \param port The port to be added.
+	 *
+	*/
+	void addPort(const Port& port);
+
+	/*! \brief Remove port from the editor.
+	 *
+	 * Method: 		removePort
+	 * Full name:	PortsEditor::removePort
+	 * Access:		public 
+	 *
+	 * \param portName The name of the port to be remove.
+	 *
+	*/
+	void removePort(const QString& portName);
 
 protected:
     //! Called when the editor is shown.

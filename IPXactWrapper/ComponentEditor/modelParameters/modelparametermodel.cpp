@@ -242,6 +242,17 @@ void ModelParameterModel::onAddItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
+void ModelParameterModel::addModelParameter( const ModelParameter& modelParam ) {
+	beginInsertRows(QModelIndex(), table_.size(), table_.size());
+
+	table_.append(QSharedPointer<ModelParameter>(new ModelParameter(modelParam)));
+
+	endInsertRows();
+
+	// tell also parent widget that contents have been changed
+	emit contentChanged();
+}
+
 bool ModelParameterModel::isValid() const {
 	
 	for (int i = 0; i < table_.size(); ++i) {
@@ -252,4 +263,25 @@ bool ModelParameterModel::isValid() const {
 		}
 	}
 	return true;
+}
+
+QModelIndex ModelParameterModel::index( const QString& modelParamName ) const {
+	// find the correct row
+	int row = -1;
+	for (int i = 0; i < table_.size(); ++i) {
+
+		// if the named model parameter is found
+		if (table_.at(i)->getName() == modelParamName) {
+			row = i;
+			break;
+		}
+	}
+
+	// if the named model parameter is not found
+	if (row < 0) {
+		return QModelIndex();
+	}
+
+	// the base class creates the index for the row
+	return QAbstractTableModel::index(row, 0, QModelIndex());
 }

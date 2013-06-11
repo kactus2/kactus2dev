@@ -122,3 +122,17 @@ void PortsEditor::showEvent(QShowEvent* event)
 void PortsEditor::setAllowImportExport( bool allow ) {
 	view_.setAllowImportExport(allow);
 }
+
+void PortsEditor::addPort( const Port& port ) {
+	model_.addPort(port);
+}
+
+void PortsEditor::removePort( const QString& portName ) {
+	// find the index for the model parameter
+	QModelIndex portIndex = model_.index(portName);
+
+	// if the model parameter was found
+	if (portIndex.isValid()) {
+		model_.onRemoveItem(portIndex);
+	}
+}

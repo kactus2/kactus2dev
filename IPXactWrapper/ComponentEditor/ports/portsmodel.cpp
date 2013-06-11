@@ -444,3 +444,35 @@ void PortsModel::onAddItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
+void PortsModel::addPort( const Port& port ) {
+	beginInsertRows(QModelIndex(), table_.size(), table_.size());
+
+	table_.append(QSharedPointer<Port>(new Port(port)));
+
+	endInsertRows();
+
+	// tell also parent widget that contents have been changed
+	emit contentChanged();
+}
+
+
+QModelIndex PortsModel::index( const QString& portName ) const {
+	// find the correct row
+	int row = -1;
+	for (int i = 0; i < table_.size(); ++i) {
+
+		// if the named model parameter is found
+		if (table_.at(i)->getName() == portName) {
+			row = i;
+			break;
+		}
+	}
+
+	// if the named model parameter is not found
+	if (row < 0) {
+		return QModelIndex();
+	}
+
+	// the base class creates the index for the row
+	return QAbstractTableModel::index(row, 0, QModelIndex());
+}

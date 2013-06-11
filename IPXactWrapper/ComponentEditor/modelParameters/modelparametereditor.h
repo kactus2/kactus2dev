@@ -12,6 +12,7 @@
 #include <models/component.h>
 #include "modelparametermodel.h"
 #include <common/views/EditableTableView/editabletableview.h>
+#include <models/modelparameter.h>
 
 #include <QString>
 #include <QMap>
@@ -62,6 +63,30 @@ public:
 	 *
 	*/
 	void setAllowImportExport(bool allow);
+
+public slots:
+
+	/*! \brief Add a new model parameter to the editor.
+	 *
+	 * Method: 		addModelParameter
+	 * Full name:	ModelParameterEditor::addModelParameter
+	 * Access:		public 
+	 *
+	 * \param modelParam The model parameter to add.
+	 *
+	*/
+	void addModelParameter(const ModelParameter& modelParam);
+
+	/*! \brief Remove model parameter from the editor.
+	 *
+	 * Method: 		removeModelParameter
+	 * Full name:	ModelParameterEditor::removeModelParameter
+	 * Access:		public 
+	 *
+	 * \param name The name identifying the model parameter to be removed.
+	 *
+	*/
+	void removeModelParameter(const QString& name);
 
 protected:
 

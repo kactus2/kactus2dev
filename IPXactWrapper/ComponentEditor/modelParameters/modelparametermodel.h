@@ -102,6 +102,18 @@ public:
 	*/
 	bool isValid() const;
 
+	/*! \brief Get the index of the identified model parameter.
+	 *
+	 * Method: 		index
+	 * Full name:	ModelParameterModel::index
+	 * Access:		virtual public 
+	 *
+	 * \param modelParamName The name of the model parameter which's index is requested.
+	 *
+	 * \return QModelIndex of the first column of the specified model parameter. Invalid if named parameter is not found.
+	*/
+	virtual QModelIndex index(const QString& modelParamName) const;
+
 public slots:
 
 	/*! \brief Remove a row from the model
@@ -128,6 +140,17 @@ public slots:
 	 *
 	*/
 	void onRemoveItem(const QModelIndex& index);
+
+	/*! \brief Add a new model parameter to the model
+	 *
+	 * Method: 		addModelParameter
+	 * Full name:	ModelParameterModel::addModelParameter
+	 * Access:		public 
+	 *
+	 * \param modelParam The model parameter to be added.
+	 *
+	*/
+	void addModelParameter(const ModelParameter& modelParam);
 
 signals:
 

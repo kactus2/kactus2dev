@@ -104,6 +104,18 @@ public:
 	*/
 	bool isValid() const;
 
+	/*! \brief Get the index of the identified port.
+	 *
+	 * Method: 		index
+	 * Full name:	PortsModel::index
+	 * Access:		virtual public 
+	 *
+	 * \param portName Identifies the port.
+	 *
+	 * \return QModelIndex of first column of the specified port. Invalid index if named port is not found. 
+	*/
+	virtual QModelIndex index(const QString& portName) const;
+
 public slots:
 
 	/*! \brief Remove a row from the model
@@ -130,6 +142,17 @@ public slots:
 	 *
 	*/
 	void onRemoveItem(const QModelIndex& index);
+
+	/*! \brief Add a new port to the model.
+	 *
+	 * Method: 		addPort
+	 * Full name:	PortsModel::addPort
+	 * Access:		public 
+	 *
+	 * \param port The port to be added to the model.
+	 *
+	*/
+	void addPort(const Port& port);
 
 signals:
 

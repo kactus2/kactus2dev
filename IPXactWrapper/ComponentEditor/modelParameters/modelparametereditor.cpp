@@ -88,3 +88,17 @@ void ModelParameterEditor::showEvent( QShowEvent* event ) {
 void ModelParameterEditor::setAllowImportExport( bool allow ) {
 	view_.setAllowImportExport(allow);
 }
+
+void ModelParameterEditor::addModelParameter( const ModelParameter& modelParam ) {
+	model_.addModelParameter(modelParam);
+}
+
+void ModelParameterEditor::removeModelParameter( const QString& name ) {
+	// find the index for the model parameter
+	QModelIndex paramIndex = model_.index(name);
+	
+	// if the model parameter was found
+	if (paramIndex.isValid()) {
+		model_.onRemoveItem(paramIndex);
+	}
+}
