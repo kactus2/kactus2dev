@@ -32,13 +32,14 @@ ComponentWizardIntroPage::ComponentWizardIntroPage(ComponentWizard* parent)
 
     QString infoText = tr("This wizard contains the following steps:");
     infoText += "<ul><li>" + tr("Add Files");
+    infoText += "<li>" + tr("Dependency Analysis & File Sets");
 
     if (parent_->getComponent()->getComponentImplementation() == KactusAttribute::KTS_HW)
     {
         infoText += "<li>" + tr("Import VHDL");
     }
 
-    infoText += "<li>" + tr("Conclusion") + "</ul>";
+    infoText += "<li>" + tr("Summary") + "</ul>";
     infoText += "<br>" + tr("The wizard can be skipped by clicking Finish.");
 
     infoLabel_.setText(infoText);

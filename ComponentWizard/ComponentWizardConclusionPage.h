@@ -12,9 +12,13 @@
 #ifndef COMPONENTWIZARDCONCLUSIONPAGE_H
 #define COMPONENTWIZARDCONCLUSIONPAGE_H
 
+#include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
+
 #include <QWizardPage>
+#include <QLabel>
 
 class ComponentWizard;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! Conclusion page for the component wizard.
@@ -25,9 +29,10 @@ public:
     /*!
      *  Constructor.
      *
+     *      @param [in] lh     The library interface.
      *      @param [in] parent The parent wizard.
      */
-    ComponentWizardConclusionPage(ComponentWizard* parent);
+    ComponentWizardConclusionPage(LibraryInterface* lh, ComponentWizard* parent);
 
     /*!
      *  Destructor.
@@ -38,6 +43,11 @@ public:
      *  Returns the ID of the next page.
      */
     virtual int nextId() const;
+
+    /*!
+     *  Initializes the page.
+     */
+    virtual void initializePage();
 
 private:
     // Disable copying.
@@ -50,6 +60,12 @@ private:
 
     //! The parent wizard.
     ComponentWizard* parent_;
+
+    //! The summary text.
+    QLabel summaryLabel_;
+
+    //! The component preview box.
+    ComponentPreviewBox previewBox_;
 };
 
 #endif // COMPONENTWIZARDCONCLUSIONPAGE_H

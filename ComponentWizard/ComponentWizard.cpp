@@ -24,13 +24,13 @@
 // Function: ComponentWizard::ComponentWizard()
 //-----------------------------------------------------------------------------
 ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
-	QString const& basePath,
-	PluginManager& pluginMgr,
-	LibraryInterface* handler,
-	QWidget* parent):
-QWizard(parent),
-	component_(component),
-	basePath_(basePath)
+	                             QString const& basePath,
+	                             PluginManager& pluginMgr,
+	                             LibraryInterface* handler,
+	                             QWidget* parent)
+    : QWizard(parent),
+	  component_(component),
+	  basePath_(basePath)
 {
 	setWindowTitle(tr("Component Wizard"));
     setWizardStyle(ModernStyle);
@@ -42,7 +42,7 @@ QWizard(parent),
     setPage(PAGE_FILES, new ComponentWizardFilesPage(this));
     setPage(PAGE_DEPENDENCY, new ComponentWizardDependencyPage(pluginMgr, this));
     setPage(PAGE_VHDL_IMPORT, new ComponentWizardVhdlImportPage(component, handler, this));
-    setPage(PAGE_CONCLUSION, new ComponentWizardConclusionPage(this));
+    setPage(PAGE_CONCLUSION, new ComponentWizardConclusionPage(handler, this));
 }
 
 //-----------------------------------------------------------------------------

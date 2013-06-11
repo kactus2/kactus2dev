@@ -158,8 +158,11 @@ void FileDependencyEditor::scan()
     if (scanning_)
     {
         model_.stopAnalysis();
+        emit scanCompleted();
         return;
     }
+
+    emit scanStarted();
 
     runAnalysisAction_->setIcon(QIcon(":/icons/graphics/control-stop.png"));
     scanning_ = true;
@@ -295,6 +298,7 @@ void FileDependencyEditor::updateProgressBar(int value)
         runAnalysisAction_->setIcon(QIcon(":/icons/graphics/control-play.png"));
         scanning_ = false;
         emit filesUpdated();
+        emit scanCompleted();
     }
 }
 
@@ -381,5 +385,13 @@ void FileDependencyEditor::refresh()
 void FileDependencyEditor::setDependenciesEditable(bool editable)
 {
     graphWidget_.getView().setDependenciesEditable(editable);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyEditor::isScanning()
+//-----------------------------------------------------------------------------
+bool FileDependencyEditor::isScanning() const
+{
+    return scanning_;
 }
 

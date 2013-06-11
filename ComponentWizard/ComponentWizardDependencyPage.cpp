@@ -35,6 +35,7 @@ ComponentWizardDependencyPage::ComponentWizardDependencyPage(PluginManager& plug
     setFinalPage(true);
 
     editor_.setCompact(true);
+    editor_.setDependenciesEditable(false);
 
     splitter_.addWidget(&view_);
     splitter_.addWidget(&editor_);
@@ -54,6 +55,11 @@ ComponentWizardDependencyPage::ComponentWizardDependencyPage(PluginManager& plug
 
     connect(&editor_, SIGNAL(fileSetAdded(FileSet*)),
             &model_, SLOT(onFileSetAdded(FileSet*)), Qt::UniqueConnection);
+
+    connect(&editor_, SIGNAL(scanStarted()),
+            this, SIGNAL(completeChanged()), Qt::UniqueConnection);
+    connect(&editor_, SIGNAL(scanCompleted()),
+            this, SIGNAL(completeChanged()), Qt::UniqueConnection);
 
     connect(&view_, SIGNAL(addItem(const QModelIndex&)),
             &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
@@ -89,10 +95,24 @@ int ComponentWizardDependencyPage::nextId() const
 //-----------------------------------------------------------------------------
 void ComponentWizardDependencyPage::initializePage()
 {
+    // Start the scan.
+    editor_.scan();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentWizardDependencyPage::cleanupPage()
+//-----------------------------------------------------------------------------
+void ComponentWizardDependencyPage::cleanupPage()
+{
     // Clear file sets.
     QList< QSharedPointer<FileSet> > fileSets;
     parent_->getComponent()->setFileSets(fileSets);
+}
 
-    // Start the scan.
-    editor_.scan();
+//-----------------------------------------------------------------------------
+// Function: ComponentWizardDependencyPage::isComplete()
+//-----------------------------------------------------------------------------
+bool ComponentWizardDependencyPage::isComplete() const
+{
+    return (!editor_.isScanning());
 }

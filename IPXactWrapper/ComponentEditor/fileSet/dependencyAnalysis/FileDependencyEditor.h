@@ -69,6 +69,11 @@ public:
      */
     void setDependenciesEditable(bool editable);
 
+    /*!
+     *  Returns true if the editor is scanning.
+     */
+    bool isScanning() const;
+
 public slots:
     /*!
      *  Refreshes the view.
@@ -99,6 +104,12 @@ signals:
 
     //! Emitted when the contents have changed.
     void contentChanged();
+
+    //! Emitted when the scan has started.
+    void scanStarted();
+
+    //! Emitted when the scan has completed.
+    void scanCompleted();
 
 private slots:
     /*!

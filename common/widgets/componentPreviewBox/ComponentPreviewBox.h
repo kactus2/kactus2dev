@@ -26,7 +26,6 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 class ComponentPreviewBox : public QGraphicsView
 {
-
 	Q_OBJECT
 
 public:
