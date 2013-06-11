@@ -72,6 +72,10 @@ public:
 	*/
 	bool checkEditorValidity();
 
+private slots:
+
+	void onFileButtonClick();
+
 private:
 	
 	//! \brief No copying
@@ -79,6 +83,12 @@ private:
 
 	//! \brief No assignment
 	VhdlImportEditor& operator=(const VhdlImportEditor& other);
+
+	//! \brief The instance which manages the library.
+	LibraryInterface* handler_;
+
+	//! \brief Path to the containing xml
+	QString basePath_;
 
 	//! \brief Displays and parses the vhdl code
 	// TODO: replace this with actual call in final.

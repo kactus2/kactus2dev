@@ -10,6 +10,8 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
+#include <QFileDialog>
+#include <QPushButton>
 #include <QDebug>
 
 VhdlImportEditor::VhdlImportEditor(const QString& basePath,
@@ -17,14 +19,24 @@ VhdlImportEditor::VhdlImportEditor(const QString& basePath,
 	LibraryInterface* handler,
 	QWidget *parent):
 QWidget(parent),
+	handler_(handler),
+	basePath_(basePath),
 	vhdlParser_(new QTextEdit(this)),
 modelParams_(new ModelParameterEditor(component, handler, this)),
 ports_(new PortsEditor(component, handler, false, this)) {
 
+	Q_ASSERT(handler_);
+	Q_ASSERT(component);
+
+	// TODO change this to combo box in final
+	QPushButton* fileButton = new QPushButton(tr("Select file"), this);
+	connect(fileButton, SIGNAL(clicked(bool)),
+		this, SLOT(onFileButtonClick()), Qt::UniqueConnection);
 
 	// The layout on the left side of the GUI displaying the file selector and
 	// VHDL source code.
 	QVBoxLayout* vhdlLayout = new QVBoxLayout();
+	vhdlLayout->addWidget(fileButton);
 	vhdlLayout->addWidget(vhdlParser_);
 
 	// The layout on the right side of the GUI displaying the editors.
@@ -54,4 +66,16 @@ bool VhdlImportEditor::checkEditorValidity() {
 		return false;
 	}
 	return true;
+}
+
+void VhdlImportEditor::onFileButtonClick() {
+
+	QString path = QFileDialog::getOpenFileName(this, tr("Select top-vhdl file"),
+		basePath_);
+	if (path.isEmpty()) {
+		return;
+	}
+
+	// TODO add function call to set the path for vhdl parser
+
 }
