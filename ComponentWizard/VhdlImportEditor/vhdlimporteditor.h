@@ -19,6 +19,7 @@
 #include <QTextEdit>
 
 class LibraryInterface;
+class FileSelector;
 
 /*! \brief Used to parse VHDL files and generating IP-XACT packages of them.
  *
@@ -74,7 +75,16 @@ public:
 
 private slots:
 
-	void onFileButtonClick();
+	/*! \brief Handler for changes in the file selector.
+	 *
+	 * Method: 		onFileSelected
+	 * Full name:	VhdlImportEditor::onFileSelected
+	 * Access:		private 
+	 *
+	 * \param filePath The relative path of the selected file.
+	 *
+	*/
+	void onFileSelected(const QString& filePath);
 
 private:
 	
@@ -84,11 +94,11 @@ private:
 	//! \brief No assignment
 	VhdlImportEditor& operator=(const VhdlImportEditor& other);
 
-	//! \brief The instance which manages the library.
-	LibraryInterface* handler_;
-
 	//! \brief Path to the containing xml
 	QString basePath_;
+
+	//! \brief Used to select the top-level vhdl file.
+	FileSelector* fileSelector_;
 
 	//! \brief Displays and parses the vhdl code
 	// TODO: replace this with actual call in final.

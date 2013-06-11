@@ -6,12 +6,12 @@
 */
 
 #include "vhdlimporteditor.h"
+#include <common/widgets/FileSelector/fileselector.h>
+#include <models/generaldeclarations.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-#include <QFileDialog>
-#include <QPushButton>
 #include <QDebug>
 
 VhdlImportEditor::VhdlImportEditor(const QString& basePath,
@@ -19,24 +19,24 @@ VhdlImportEditor::VhdlImportEditor(const QString& basePath,
 	LibraryInterface* handler,
 	QWidget *parent):
 QWidget(parent),
-	handler_(handler),
 	basePath_(basePath),
+	fileSelector_(new FileSelector(component, this)),
 	vhdlParser_(new QTextEdit(this)),
 modelParams_(new ModelParameterEditor(component, handler, this)),
 ports_(new PortsEditor(component, handler, false, this)) {
 
-	Q_ASSERT(handler_);
 	Q_ASSERT(component);
 
-	// TODO change this to combo box in final
-	QPushButton* fileButton = new QPushButton(tr("Select file"), this);
-	connect(fileButton, SIGNAL(clicked(bool)),
-		this, SLOT(onFileButtonClick()), Qt::UniqueConnection);
+	// only vhdl files are selected
+	fileSelector_->addFilter("vhd");
+	fileSelector_->addFilter("vhdl");
+	connect(fileSelector_, SIGNAL(fileSelected(const QString&)),
+		this, SLOT(onFileSelected(const QString&)), Qt::UniqueConnection);
 
 	// The layout on the left side of the GUI displaying the file selector and
 	// VHDL source code.
 	QVBoxLayout* vhdlLayout = new QVBoxLayout();
-	vhdlLayout->addWidget(fileButton);
+	vhdlLayout->addWidget(fileSelector_);
 	vhdlLayout->addWidget(vhdlParser_);
 
 	// The layout on the right side of the GUI displaying the editors.
@@ -54,7 +54,7 @@ VhdlImportEditor::~VhdlImportEditor() {
 }
 
 void VhdlImportEditor::initializeFileSelection() {
-	qDebug() << "Initializing the files";
+	fileSelector_->refresh();
 }
 
 bool VhdlImportEditor::checkEditorValidity() {
@@ -68,14 +68,18 @@ bool VhdlImportEditor::checkEditorValidity() {
 	return true;
 }
 
-void VhdlImportEditor::onFileButtonClick() {
-
-	QString path = QFileDialog::getOpenFileName(this, tr("Select top-vhdl file"),
-		basePath_);
-	if (path.isEmpty()) {
+void VhdlImportEditor::onFileSelected( const QString& filePath ) {
+	if (filePath.isEmpty()) {
 		return;
 	}
 
-	// TODO add function call to set the path for vhdl parser
+	QString absPath = General::getAbsolutePath(basePath_, filePath);
 
+	// if the absolute path can not be converted
+	if (absPath.isEmpty()) {
+		return;
+	}
+
+	// TODO change to function call for vhdl parser in final
+	qDebug() << "The absolute path: " << absPath;
 }

@@ -845,6 +845,12 @@
     <Filter Include="Source Files\ComponentWizard\VhdlImportEditor">
       <UniqueIdentifier>{422da0ac-c2db-421c-af28-fabb10d08b2d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common\widgets\FileSelector">
+      <UniqueIdentifier>{e1b5c92c-2ad8-4366-8766-0e0dd5845044}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\FileSelector">
+      <UniqueIdentifier>{4fd994f9-e99b-4608-a6c2-0fbc6df9d786}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\CSourceWriter.cpp">
@@ -3802,6 +3808,12 @@
     <ClCompile Include="ComponentWizard\VhdlImportEditor\vhdlimporteditor.cpp">
       <Filter>Source Files\ComponentWizard\VhdlImportEditor</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_fileselector.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\FileSelector\fileselector.cpp">
+      <Filter>Source Files\common\widgets\FileSelector</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5405,6 +5417,9 @@
     </CustomBuild>
     <CustomBuild Include="ComponentWizard\VhdlImportEditor\vhdlimporteditor.h">
       <Filter>Header Files\ComponentWizard\VhdlImportEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\FileSelector\fileselector.h">
+      <Filter>Header Files\common\widgets\FileSelector</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
