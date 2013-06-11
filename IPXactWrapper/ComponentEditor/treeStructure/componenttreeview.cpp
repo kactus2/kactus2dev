@@ -194,7 +194,7 @@ void ComponentTreeView::mouseDoubleClickEvent( QMouseEvent* event ) {
 	// save the position where click occurred
 	pressedPoint_ = event->pos();
 
-	ComponentEditorItem* item = static_cast<ComponentEditorItem*>(index.internalPointer());
+	//ComponentEditorItem* item = static_cast<ComponentEditorItem*>(index.internalPointer());
 	
 	onFileOpen();
 }

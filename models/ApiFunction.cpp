@@ -335,7 +335,7 @@ void ApiFunction::generateToolTipText(unsigned int paramIndex, QString& text) co
 
     text += ")<br>" + desc_;
     
-    if (paramIndex < params_.size())
+    if (paramIndex < static_cast<unsigned int>(params_.size()))
     {
         text += "<br><b>Parameter:</b> " + params_.at(paramIndex)->getDescription();
     }

@@ -568,9 +568,9 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         {
             if (cur.key()->scenePos() != cur.value())
             {
-                QUndoCommand* childCmd = new ItemMoveCommand(cur.key(), cur.value(),
-                                                             dynamic_cast<IGraphicsItemStack*>(cur.key()->parentItem()),
-                                                             cmd.data());
+                new ItemMoveCommand(cur.key(), cur.value(),
+                                    dynamic_cast<IGraphicsItemStack*>(cur.key()->parentItem()),
+                                    cmd.data());
             }
 
             ++cur;

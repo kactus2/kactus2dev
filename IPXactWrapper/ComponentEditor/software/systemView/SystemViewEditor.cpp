@@ -144,7 +144,7 @@ void SystemViewEditor::onFileSetRefChange() {
 	emit contentChanged();
 }
 
-void SystemViewEditor::onHWViewChange( const QString& viewName ) {
+void SystemViewEditor::onHWViewChange( const QString& /*viewName*/ ) {
 	view_->setHWViewRef(HWViewRefEditor_->currentText());
 	emit contentChanged();
 }

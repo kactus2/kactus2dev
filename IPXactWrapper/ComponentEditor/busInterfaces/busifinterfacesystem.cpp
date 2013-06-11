@@ -117,7 +117,7 @@ General::InterfaceMode BusIfInterfaceSystem::getInterfaceMode() const {
 	return mode_;
 }
 
-void BusIfInterfaceSystem::onGroupChange( const QString& newGroup ) {
+void BusIfInterfaceSystem::onGroupChange( const QString& /*newGroup*/ ) {
 	busif_->setSystem(group_.currentText());
 	emit contentChanged();
 }

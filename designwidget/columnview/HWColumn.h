@@ -43,7 +43,7 @@ public:
      *      @param [in] desc    The column description.
      *      @param [in] layout  The parent column layout.
      */
-    HWColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout, QGraphicsScene* scene);
+    HWColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout);
 
     /*!
      *  Destructor.

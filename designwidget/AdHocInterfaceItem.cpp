@@ -402,7 +402,7 @@ void AdHocInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         {
             if (cur.key()->scenePos() != cur.value())
             {
-                QUndoCommand* childCmd = new ItemMoveCommand(cur.key(), cur.value(), oldColumn_, cmd.data());
+                new ItemMoveCommand(cur.key(), cur.value(), oldColumn_, cmd.data());
             }
 
             ++cur;

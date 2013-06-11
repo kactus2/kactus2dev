@@ -83,7 +83,7 @@ bool ComponentEditorBusInterfaceItem::canBeOpened() const {
 	}
 }
 
-void ComponentEditorBusInterfaceItem::openItem( bool builtinEditor /*= false*/ ) {
+void ComponentEditorBusInterfaceItem::openItem( bool /*builtinEditor = false*/ ) {
 	VLNV busdefVLNV = busif_->getBusType();
 	VLNV absdefVLNV = busif_->getAbstractionType();
 	emit openBus(busdefVLNV, absdefVLNV);

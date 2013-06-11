@@ -611,8 +611,7 @@ void BusPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     {
         if (cur.key()->pos() != cur.value())
         {
-            QUndoCommand* childCmd =
-                new PortMoveCommand(static_cast<HWConnectionEndpoint*>(cur.key()), cur.value(), cmd.data());
+            new PortMoveCommand(static_cast<HWConnectionEndpoint*>(cur.key()), cur.value(), cmd.data());
         }
 
         ++cur;

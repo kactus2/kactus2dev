@@ -146,7 +146,7 @@ FileDependency* FileDependencyInfoWidget::getEditedDependency() const
 //-----------------------------------------------------------------------------
 // Function: FileDependencyInfoWidget::directionComboChanged()
 //-----------------------------------------------------------------------------
-void FileDependencyInfoWidget::directionCheckBoxChanged(int state)
+void FileDependencyInfoWidget::directionCheckBoxChanged(int /*state*/)
 {
     if (!dependency_->isLocked())
     {
@@ -170,7 +170,7 @@ void FileDependencyInfoWidget::directionCheckBoxChanged(int state)
 //-----------------------------------------------------------------------------
 // Function: FileDependencyInfoWidget::lockedCheckChanged()
 //-----------------------------------------------------------------------------
-void FileDependencyInfoWidget::lockedCheckChanged(int state)
+void FileDependencyInfoWidget::lockedCheckChanged(int /*state*/)
 {
     dependency_->setLocked(lockedCheck_.isChecked());
     lockEverything(lockedCheck_.isChecked());

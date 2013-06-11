@@ -82,7 +82,6 @@
             <file>hwdesign/*.html</file>
             <file>swsysdesign/*.html</file>
 			<file>images/*.png</file>
-			<file>images/*.jpg</file>
         </files>
     </filterSection>
 </QtHelpProject>

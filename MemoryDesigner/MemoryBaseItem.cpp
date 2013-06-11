@@ -80,7 +80,7 @@ QList<AddressSectionItem*> const& MemoryBaseItem::getSections() const
 //-----------------------------------------------------------------------------
 // Function: MemoryBaseItem::convertAddress()
 //-----------------------------------------------------------------------------
-quint64 MemoryBaseItem::convertAddress(quint64 address, MemoryBaseItem* source) const
+quint64 MemoryBaseItem::convertAddress(quint64 /*address*/, MemoryBaseItem* /*source*/) const
 {
     return 0xDEADC0DE;
 }

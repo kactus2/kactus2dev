@@ -38,9 +38,8 @@ public:
      *
      *      @param [in] name          The column description.
      *      @param [in] layout        The parent column layout.
-     *      @param [in] scene         The graphics scene.
      */
-    MemoryColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout, QGraphicsScene* scene);
+    MemoryColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout);
 
     /*!
      *  Destructor.

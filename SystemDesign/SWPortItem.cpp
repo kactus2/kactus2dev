@@ -721,7 +721,7 @@ void SWPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     {
         if (cur.key()->pos() != cur.value())
         {
-            QUndoCommand* childCmd = new SWPortMoveCommand(cur.key(), cur.value(), cmd.data());
+            new SWPortMoveCommand(cur.key(), cur.value(), cmd.data());
         }
 
         ++cur;

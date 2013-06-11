@@ -117,7 +117,7 @@ qint64 Utils::str2Int( const QString& str ) {
 	quint64 absValue = Utils::str2Uint(absValueStr);
 
 	if (negative) {
-		return -absValue;
+		return -static_cast<qint64>(absValue);
 	}
 	else {
 		return absValue;
@@ -141,7 +141,7 @@ bool Utils::isNumber( const QString& str ) {
 	if (absValueStr.startsWith("0x", Qt::CaseInsensitive)) {
 		
 		// if the hexadecimal number could be converted
-		quint64 number = absValueStr.toULongLong(&success, 16);
+		/*quint64 number = */absValueStr.toULongLong(&success, 16);
 		return success;
 	}
 
@@ -161,7 +161,7 @@ bool Utils::isNumber( const QString& str ) {
 	}
 
 	// try to convert the number 
-	quint64 number = absValueStr.toULongLong(&success);
+	/*quint64 number = */absValueStr.toULongLong(&success);
 
 	return success;
 }

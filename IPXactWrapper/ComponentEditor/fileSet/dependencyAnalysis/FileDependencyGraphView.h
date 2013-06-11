@@ -77,6 +77,13 @@ public:
     void setFilters(DependencyFilters filters);
 
     /*!
+     *  Sets the dependencies editable/read-only.
+     *
+     *      @param [in] editable If true, the dependencies are editable. If false, they are read-only.
+     */
+    void setDependenciesEditable(bool editable);
+
+    /*!
      *  Returns the currently set filters for the graph.
      */
     DependencyFilters getFilters() const;

@@ -99,7 +99,7 @@ QVariant FileDependencyModel::headerData(int section, Qt::Orientation /*orientat
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::columnCount()
 //-----------------------------------------------------------------------------
-int FileDependencyModel::columnCount(const QModelIndex & parent /*= QModelIndex() */) const
+int FileDependencyModel::columnCount(const QModelIndex& /*parent = QModelIndex()*/) const
 {
     return FILE_DEPENDENCY_COLUMN_COUNT;
 }
@@ -107,7 +107,7 @@ int FileDependencyModel::columnCount(const QModelIndex & parent /*= QModelIndex(
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::rowCount()
 //-----------------------------------------------------------------------------
-int FileDependencyModel::rowCount(const QModelIndex &parent /*= QModelIndex()*/) const
+int FileDependencyModel::rowCount(const QModelIndex& parent /*= QModelIndex()*/) const
 {
     if (parent.isValid())
     {
@@ -1142,3 +1142,11 @@ void FileDependencyModel::onExternalRelocated(FileDependencyItem* item, QString 
     emit dependenciesReset();
 }
 
+//-----------------------------------------------------------------------------
+// Function: FileDependencyModel::refresh()
+//-----------------------------------------------------------------------------
+void FileDependencyModel::refresh()
+{
+    emit dataChanged(getItemIndex(root_->getChild(0), 0),
+                     getItemIndex(root_->getChild(root_->getChildCount() - 1), FILE_DEPENDENCY_COLUMN_DEPENDENCIES));
+}

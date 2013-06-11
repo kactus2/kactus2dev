@@ -32,7 +32,7 @@ float const GraphicsConnection::MIN_START_LENGTH = 20.0f;
 // Function: GraphicsConnection()
 //-----------------------------------------------------------------------------
 GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, ConnectionEndpoint* endpoint2,
-                                       bool autoConnect, QString const& name, QString const& displayName,
+                                       bool autoConnect, QString const& name, QString const& /*displayName*/,
                                        QString const& description, DesignDiagram* parent)
     : QGraphicsPathItem(), 
       parent_(parent),
@@ -82,7 +82,7 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
 //-----------------------------------------------------------------------------
 GraphicsConnection::GraphicsConnection(QPointF const& p1, QVector2D const& dir1,
                                        QPointF const& p2, QVector2D const& dir2,
-                                       QString const& displayName,
+                                       QString const& /*displayName*/,
                                        QString const& description,
                                        DesignDiagram* parent)
     : QGraphicsPathItem(),

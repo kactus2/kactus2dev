@@ -177,7 +177,7 @@ private:
     /*!
      *  Creates a default column object.
      */
-    static GraphicsColumn* createDefaultColumn(GraphicsColumnLayout* layout, QGraphicsScene* scene);
+    static GraphicsColumn* createDefaultColumn(GraphicsColumnLayout* layout);
 
     bool findRoute(QString const& instanceName, QSharedPointer<BusInterface const> busIf,
                    MemoryItem const* memoryItem, quint64& addressOffset) const;

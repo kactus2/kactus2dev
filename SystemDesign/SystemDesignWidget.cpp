@@ -306,7 +306,6 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
         else if (selected->type() == SWPortItem::Type)
         {
             SWPortItem* port = static_cast<SWPortItem*>(selected);
-            ComponentItem* comp = port->encompassingComp();
 
             // Ports can be removed only if they are temporary.
             if (port->isTemporary())

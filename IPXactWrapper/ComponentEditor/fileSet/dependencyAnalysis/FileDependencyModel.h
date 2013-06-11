@@ -61,6 +61,11 @@ public:
     ~FileDependencyModel();
 
     /*!
+     *  Refreshes the model so that modifications from outside are made visible.
+     */
+    void refresh();
+
+    /*!
      *  Adds a new dependency to the model.
      *
      *      @param [in] dependency The file dependency to add.
@@ -335,7 +340,7 @@ private:
      *  Updates dependencies due to file relocation.
      */
     void onExternalRelocated(FileDependencyItem* item, QString const& oldPath);
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

@@ -135,7 +135,7 @@ void ApiInterfaceEditor::onAPITypeChange() {
 	emit contentChanged();
 }
 
-void ApiInterfaceEditor::onDependencyChange( int index ) {
+void ApiInterfaceEditor::onDependencyChange( int /*index*/ ) {
 	apiIf_->setDependencyDirection(static_cast<DependencyDirection>(dependencyCombo_.currentIndex()));
 	emit contentChanged();
 }

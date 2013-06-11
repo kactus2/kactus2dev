@@ -158,7 +158,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
     foreach(ColumnDesc const& desc, design->getColumns())
     {
-        SystemColumn* column = new SystemColumn(desc, layout_.data(), this);
+        SystemColumn* column = new SystemColumn(desc, layout_.data());
         layout_->addColumn(column, true);
     }
 
@@ -835,7 +835,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
                 {
                     if (cur.key()->pos() != cur.value())
                     {
-                        QUndoCommand* childCmd = new SWPortMoveCommand(cur.key(), cur.value(), cmd.data());
+                        new SWPortMoveCommand(cur.key(), cur.value(), cmd.data());
                     }
 
                     ++cur;
@@ -1447,7 +1447,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::addColumn(ColumnDesc const& desc)
 {
-    SystemColumn* column = new SystemColumn(desc, layout_.data(), this);
+    SystemColumn* column = new SystemColumn(desc, layout_.data());
 
     QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(layout_.data(), column));
     getEditProvider().addCommand(cmd);
@@ -2431,7 +2431,7 @@ void SystemDesignDiagram::toggleConnectionStyle(GraphicsConnection* conn, QUndoC
 
     if (newConn->connectEnds())
     {
-        QUndoCommand* cmd = new SWConnectionAddCommand(this, newConn, parentCmd);
+        new SWConnectionAddCommand(this, newConn, parentCmd);
     }
     else
     {

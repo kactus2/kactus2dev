@@ -367,3 +367,19 @@ void FileDependencyEditor::setCompact(bool compact)
     infoWidget_.setVisible(!compact);
 }
 
+//-----------------------------------------------------------------------------
+// Function: FileDependencyEditor::refresh()
+//-----------------------------------------------------------------------------
+void FileDependencyEditor::refresh()
+{
+    model_.refresh();
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyEditor::setDependenciesEditable()
+//-----------------------------------------------------------------------------
+void FileDependencyEditor::setDependenciesEditable(bool editable)
+{
+    graphWidget_.getView().setDependenciesEditable(editable);
+}
+

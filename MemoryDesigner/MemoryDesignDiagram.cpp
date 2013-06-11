@@ -105,7 +105,7 @@ void MemoryDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
     foreach(ColumnDesc const& desc, design->getColumns())
     {
-        GraphicsColumn* column = new MemoryColumn(desc, layout_.data(), this);
+        GraphicsColumn* column = new MemoryColumn(desc, layout_.data());
         layout_->addColumn(column, true);
     }
 
@@ -251,20 +251,7 @@ void MemoryDesignDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
 QSharedPointer<Design> MemoryDesignDiagram::createDesign(VLNV const& vlnv) const
 {
     QSharedPointer<Design> design(new Design(vlnv));
-
-//    QList<ColumnDesc> columns;
-
-    foreach (QGraphicsItem const* item, items())
-    {
-    }
-
-//     foreach (GraphicsColumn* column, layout_->getColumns())
-//     {
-//         columns.append(column->getColumnDesc());
-//     }
-// 
-//     design->setColumns(columns);   
-
+    // TODO:
     return design;
 }
 
@@ -273,7 +260,7 @@ QSharedPointer<Design> MemoryDesignDiagram::createDesign(VLNV const& vlnv) const
 //-----------------------------------------------------------------------------
 void MemoryDesignDiagram::addColumn(ColumnDesc const& desc)
 {
-    GraphicsColumn* column = new MemoryColumn(desc, layout_.data(), this);
+    GraphicsColumn* column = new MemoryColumn(desc, layout_.data());
 
     QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(layout_.data(), column));
     getEditProvider().addCommand(cmd);
@@ -432,10 +419,10 @@ void MemoryDesignDiagram::drawForeground(QPainter* painter, const QRectF& rect)
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignDiagram::createDefaultColumn()
 //-----------------------------------------------------------------------------
-GraphicsColumn* MemoryDesignDiagram::createDefaultColumn(GraphicsColumnLayout* layout, QGraphicsScene* scene)
+GraphicsColumn* MemoryDesignDiagram::createDefaultColumn(GraphicsColumnLayout* layout)
 {
     ColumnDesc desc("Required Address Spaces", COLUMN_CONTENT_COMPONENTS, 0, COLUMN_WIDTH);
-    return new MemoryColumn(desc, layout, scene);
+    return new MemoryColumn(desc, layout);
 }
 
 //-----------------------------------------------------------------------------

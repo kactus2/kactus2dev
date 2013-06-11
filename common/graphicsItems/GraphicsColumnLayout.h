@@ -28,7 +28,7 @@ class GraphicsColumnLayout : public QObject
     Q_OBJECT
 
 public:
-    typedef GraphicsColumn* (*AutoCreateColumnFunc)(GraphicsColumnLayout*, QGraphicsScene*);
+    typedef GraphicsColumn* (*AutoCreateColumnFunc)(GraphicsColumnLayout*);
 
     /*!
      *  Constructor.

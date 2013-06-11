@@ -661,14 +661,12 @@ AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand(AdHocEnabled* dataSou
 
         foreach (GraphicsConnection* conn, port->getConnections())
         {
-            QUndoCommand* cmd =
-                new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+            new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
         }
 
         foreach (GraphicsConnection* conn, port->getOffPageConnector()->getConnections())
         {
-            QUndoCommand* cmd =
-                new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+            new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
         }
     }
 }
@@ -804,18 +802,18 @@ ReplaceComponentCommand::ReplaceComponentCommand(HWComponentItem* oldComp, HWCom
         if (newEndpoint != 0)
         {
             // Create a move command to move the port to the same place where it is in the old component.
-            QUndoCommand* moveCmd = new PortMoveCommand(newEndpoint, newEndpoint->pos(), oldEndpoint->pos(), this);
+            new PortMoveCommand(newEndpoint, newEndpoint->pos(), oldEndpoint->pos(), this);
 
             // Exchange connections between the endpoints.
             foreach (GraphicsConnection* conn, oldEndpoint->getConnections())
             {
-                QUndoCommand* exchangeCmd = new ConnectionExchangeCommand(conn, oldEndpoint, newEndpoint, this);
+                new ConnectionExchangeCommand(conn, oldEndpoint, newEndpoint, this);
             }
 
             foreach (GraphicsConnection* conn, oldEndpoint->getOffPageConnector()->getConnections())
             {
-                QUndoCommand* exchangeCmd = new ConnectionExchangeCommand(conn, oldEndpoint->getOffPageConnector(),
-                                                                          newEndpoint->getOffPageConnector(), this);
+                new ConnectionExchangeCommand(conn, oldEndpoint->getOffPageConnector(),
+                                              newEndpoint->getOffPageConnector(), this);
             }
         }
     }
@@ -834,8 +832,8 @@ ReplaceComponentCommand::ReplaceComponentCommand(HWComponentItem* oldComp, HWCom
     // Create a move/add command for the new component.
     if (existing)
     {
-        QUndoCommand* moveCmd = new ItemMoveCommand(newComp_, newComp_->scenePos(), newComp_->getParentStack(),
-                                                    oldComp_->scenePos(), oldComp_->getParentStack(), this);
+        new ItemMoveCommand(newComp_, newComp_->scenePos(), newComp_->getParentStack(),
+                            oldComp_->scenePos(), oldComp_->getParentStack(), this);
     }
     else
     {

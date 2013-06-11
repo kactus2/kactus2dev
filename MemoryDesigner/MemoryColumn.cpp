@@ -24,8 +24,8 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryColumn()
 //-----------------------------------------------------------------------------
-MemoryColumn::MemoryColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout, QGraphicsScene* scene)
-    : GraphicsColumn(desc, layout, scene)
+MemoryColumn::MemoryColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout)
+    : GraphicsColumn(desc, layout)
 {
     if (desc.getContentType() == COLUMN_CONTENT_BUSES)
     {

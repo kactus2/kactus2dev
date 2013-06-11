@@ -47,7 +47,7 @@ SystemColumnDeleteCommand::SystemColumnDeleteCommand(GraphicsColumnLayout* layou
 
                 foreach (GraphicsConnection* conn, port->getConnections())
                 {
-                    QUndoCommand* cmd = new SWConnectionDeleteCommand(conn, this);
+                    new SWConnectionDeleteCommand(conn, this);
                 }
             }
         }
@@ -57,7 +57,7 @@ SystemColumnDeleteCommand::SystemColumnDeleteCommand(GraphicsColumnLayout* layou
 
             foreach (GraphicsConnection* conn, interface->getConnections())
             {
-                QUndoCommand* cmd = new SWConnectionDeleteCommand(conn, this);
+                new SWConnectionDeleteCommand(conn, this);
             }
         }
     }
@@ -216,14 +216,14 @@ void SystemComponentDeleteCommand::redo()
 
             foreach (GraphicsConnection* conn, endpoint->getConnections())
             {
-                QUndoCommand* cmd = new SWConnectionDeleteCommand(conn, this);
+                new SWConnectionDeleteCommand(conn, this);
             }
 
             if (endpoint->getOffPageConnector() != 0)
             {
                 foreach (GraphicsConnection* conn, endpoint->getOffPageConnector()->getConnections())
                 {
-                    QUndoCommand* cmd = new SWConnectionDeleteCommand(conn, this);
+                    new SWConnectionDeleteCommand(conn, this);
                 }
             }
         }
@@ -255,13 +255,12 @@ SWPortDeleteCommand::SWPortDeleteCommand(SWPortItem* port, QUndoCommand* parent)
     // Create child commands for removing connection.
     foreach (GraphicsConnection* conn, port_->getConnections())
     {
-        QUndoCommand* cmd = new SWConnectionDeleteCommand(conn, this);
+        new SWConnectionDeleteCommand(conn, this);
     }
 
     foreach (GraphicsConnection* conn, port_->getOffPageConnector()->getConnections())
     {
-        QUndoCommand* cmd =
-            new SWConnectionDeleteCommand(conn, this);
+        new SWConnectionDeleteCommand(conn, this);
     }
 }
 
@@ -322,7 +321,7 @@ SWInterfaceDeleteCommand::SWInterfaceDeleteCommand(SWInterfaceItem* interface,
     // Create child commands for removing interconnections.
     foreach (GraphicsConnection* conn, interface_->getConnections())
     {
-        QUndoCommand* cmd = new SWConnectionDeleteCommand(conn, this);
+        new SWConnectionDeleteCommand(conn, this);
     }
 }
 

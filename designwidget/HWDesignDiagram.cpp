@@ -121,7 +121,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
     {
         foreach (ColumnDesc const& desc, design->getColumns())
         {
-            HWColumn* column = new HWColumn(desc, layout_.data(), this);
+            HWColumn* column = new HWColumn(desc, layout_.data());
             layout_->addColumn(column, true);
         }
     }
@@ -1051,7 +1051,7 @@ void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 {
                     if (cur.key()->pos() != cur.value())
                     {
-                        QUndoCommand* childCmd = new PortMoveCommand(cur.key(), cur.value(), cmd.data());
+                        new PortMoveCommand(cur.key(), cur.value(), cmd.data());
                     }
 
                     ++cur;
@@ -1989,7 +1989,7 @@ void HWDesignDiagram::onPasteAction(){
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::addColumn(ColumnDesc const& desc)
 {
-    HWColumn* column = new HWColumn(desc, layout_.data(), this);
+    HWColumn* column = new HWColumn(desc, layout_.data());
 
     QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(layout_.data(), column));
     getEditProvider().addCommand(cmd);
@@ -2136,7 +2136,7 @@ void HWDesignDiagram::addInterface(GraphicsColumn* column, QPointF const& pos)
         {
             if (cur.key()->scenePos() != cur.value())
             {
-                QUndoCommand* childCmd = new ItemMoveCommand(cur.key(), cur.value(), column, cmd.data());
+                new ItemMoveCommand(cur.key(), cur.value(), column, cmd.data());
             }
 
             ++cur;
@@ -2374,7 +2374,7 @@ void HWDesignDiagram::toggleConnectionStyle(GraphicsConnection* conn, QUndoComma
 
     if (newConn->connectEnds())
     {
-        QUndoCommand* cmd = new ConnectionAddCommand(this, newConn, parentCmd);
+        new ConnectionAddCommand(this, newConn, parentCmd);
     }
     else
     {

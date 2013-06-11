@@ -64,7 +64,17 @@ public:
      */
     void setCompact(bool compact);
 
+    /*!
+     *  Sets the dependencies editable/read-only.
+     */
+    void setDependenciesEditable(bool editable);
+
 public slots:
+    /*!
+     *  Refreshes the view.
+     */
+    void refresh();
+
     /*!
      *  Scans the source directories for new files, adds them to the component
      *  file sets and runs the dependency analysis.

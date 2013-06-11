@@ -50,8 +50,7 @@ ColumnDeleteCommand::ColumnDeleteCommand(GraphicsColumnLayout* layout, GraphicsC
 
                 foreach (GraphicsConnection* conn, diagramPort->getConnections())
                 {
-                    QUndoCommand* cmd =
-                        new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+                    new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
                 }
             }
         }
@@ -151,16 +150,14 @@ void ComponentDeleteCommand::redo()
 
             foreach (GraphicsConnection* conn, endpoint->getConnections())
             {
-                QUndoCommand* cmd =
-                    new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+                new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
             }
 
             if (endpoint->getOffPageConnector() != 0)
             {
                 foreach (GraphicsConnection* conn, endpoint->getOffPageConnector()->getConnections())
                 {
-                    QUndoCommand* cmd =
-                        new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+                    new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
                 }
             }
         }
@@ -230,7 +227,7 @@ ConnectionDeleteCommand::ConnectionDeleteCommand(HWConnection* conn, QUndoComman
         foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
         {
             QSharedPointer<Port> port = srcComponent->getPort(portMap->physicalPort_);
-            QUndoCommand* childCmd = new DeletePhysicalPortCommand(srcComponent, port, this);
+            new DeletePhysicalPortCommand(srcComponent, port, this);
         }
     }
 }
@@ -316,22 +313,19 @@ PortDeleteCommand::PortDeleteCommand(HWConnectionEndpoint* port, QUndoCommand* p
     // Create child commands for removing interconnections.
     foreach (GraphicsConnection* conn, port_->getConnections())
     {
-        QUndoCommand* cmd =
-            new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+        new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
     }
 
     foreach (GraphicsConnection* conn, port_->getOffPageConnector()->getConnections())
     {
-        QUndoCommand* cmd =
-            new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+        new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
     }
 
     foreach (QSharedPointer<General::PortMap> portMap, port_->getBusInterface()->getPortMaps() )
     {
-        QUndoCommand* cmd =
-            new DeletePhysicalPortCommand(parent_->componentModel(),
-                                          parent_->componentModel()->getPort(portMap->physicalPort_),
-                                          this);
+        new DeletePhysicalPortCommand(parent_->componentModel(),
+                                      parent_->componentModel()->getPort(portMap->physicalPort_),
+                                      this);
     }
 
 }
@@ -410,14 +404,12 @@ InterfaceDeleteCommand::InterfaceDeleteCommand(BusInterfaceItem* interface,
     // Create child commands for removing interconnections.
     foreach (GraphicsConnection* conn, interface_->getConnections())
     {
-        QUndoCommand* cmd =
-            new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+        new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
     }
 
     foreach (GraphicsConnection* conn, interface_->getOffPageConnector()->getConnections())
     {
-        QUndoCommand* cmd =
-            new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+        new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
     }
 }
 

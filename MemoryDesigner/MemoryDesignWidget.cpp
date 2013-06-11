@@ -187,7 +187,7 @@ void MemoryDesignWidget::keyPressEvent(QKeyEvent* event)
             return;
         }
 
-        QGraphicsItem* selected = getDiagram()->selectedItems().first();
+        //QGraphicsItem* selected = getDiagram()->selectedItems().first();
     }
 }
 

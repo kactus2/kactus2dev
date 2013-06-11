@@ -77,7 +77,7 @@ RibbonTheme const& Ribbon::getTheme() const
 //-----------------------------------------------------------------------------
 // Function: Ribbon::paintEvent()
 //-----------------------------------------------------------------------------
-void Ribbon::paintEvent(QPaintEvent* event)
+void Ribbon::paintEvent(QPaintEvent* /*event*/)
 {
     QLinearGradient gradient(rect().topLeft(), rect().bottomLeft());
     gradient.setColorAt(0.0, theme_.gradientTop);
@@ -99,7 +99,7 @@ void Ribbon::updateSize()
 //-----------------------------------------------------------------------------
 // Function: Ribbon::resizeEvent()
 //-----------------------------------------------------------------------------
-void Ribbon::resizeEvent(QResizeEvent* e)
+void Ribbon::resizeEvent(QResizeEvent* /*event*/)
 {
     updateCollapse();
 }

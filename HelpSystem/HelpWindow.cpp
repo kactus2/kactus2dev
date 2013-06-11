@@ -78,7 +78,7 @@ HelpWindow::~HelpWindow()
 //-----------------------------------------------------------------------------
 // Function: HelpWindow::showEvent()
 //-----------------------------------------------------------------------------
-void HelpWindow::showEvent(QShowEvent* event)
+void HelpWindow::showEvent(QShowEvent* /*event*/)
 {
     browser_->onHelpRequested("index.html");
 }

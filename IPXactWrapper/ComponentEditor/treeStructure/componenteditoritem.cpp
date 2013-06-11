@@ -213,7 +213,7 @@ void ComponentEditorItem::moveChild( const int sourceIndex, int targetIndex ) {
 	childItems_.insert(targetIndex, itemToMove);
 }
 
-void ComponentEditorItem::createChild( int index ) {
+void ComponentEditorItem::createChild( int /*index*/ ) {
 	// This must be implemented in sub classes to create the correct type of child.
 }
 
@@ -233,7 +233,7 @@ bool ComponentEditorItem::canBeOpened() const {
 	return false;
 }
 
-void ComponentEditorItem::openItem(bool builtinEditor) {
+void ComponentEditorItem::openItem(bool /*builtinEditor*/) {
 
 	// Normally items can't be opened
 	return;

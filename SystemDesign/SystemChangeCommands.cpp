@@ -150,18 +150,18 @@ ReplaceSystemComponentCommand::ReplaceSystemComponentCommand(SystemComponentItem
         if (newEndpoint != 0)
         {
             // Create a move command to move the port to the same place where it is in the old component.
-            QUndoCommand* moveCmd = new SWPortMoveCommand(newEndpoint, newEndpoint->pos(), oldEndpoint->pos(), this);
+            new SWPortMoveCommand(newEndpoint, newEndpoint->pos(), oldEndpoint->pos(), this);
 
             // Exchange connections between the endpoints.
             foreach (GraphicsConnection* conn, oldEndpoint->getConnections())
             {
-                QUndoCommand* exchangeCmd = new ConnectionExchangeCommand(conn, oldEndpoint, newEndpoint, this);
+                new ConnectionExchangeCommand(conn, oldEndpoint, newEndpoint, this);
             }
 
             foreach (GraphicsConnection* conn, oldEndpoint->getOffPageConnector()->getConnections())
             {
-                QUndoCommand* exchangeCmd = new ConnectionExchangeCommand(conn, oldEndpoint->getOffPageConnector(),
-                    newEndpoint->getOffPageConnector(), this);
+                new ConnectionExchangeCommand(conn, oldEndpoint->getOffPageConnector(),
+                                              newEndpoint->getOffPageConnector(), this);
             }
         }
     }
@@ -182,9 +182,9 @@ ReplaceSystemComponentCommand::ReplaceSystemComponentCommand(SystemComponentItem
     {
         if (oldComp_->type() == newComp_->type())
         {
-            QUndoCommand* moveCmd = new ItemMoveCommand(newComp_, newComp_->scenePos(),
-                                                        newComp_->getParentStack(), oldComp_->scenePos(),
-                                                        oldComp_->getParentStack(), this);
+            new ItemMoveCommand(newComp_, newComp_->scenePos(),
+                                newComp_->getParentStack(), oldComp_->scenePos(),
+                                oldComp_->getParentStack(), this);
         }
     }
     else

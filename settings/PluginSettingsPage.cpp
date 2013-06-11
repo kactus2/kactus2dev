@@ -185,7 +185,7 @@ bool PluginSettingsPage::onPageChange()
 //-----------------------------------------------------------------------------
 // Function: PluginSettingsPage::onTreeItemChanged()
 //-----------------------------------------------------------------------------
-void PluginSettingsPage::onTreeItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* prev)
+void PluginSettingsPage::onTreeItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* /*prev*/)
 {
     int index = 0;
 

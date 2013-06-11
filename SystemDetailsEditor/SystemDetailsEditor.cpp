@@ -227,7 +227,7 @@ void SystemDetailsEditor::onHWRefChanged()
 //-----------------------------------------------------------------------------
 // Function: SystemDetailsEditor::onViewRefChanged()
 //-----------------------------------------------------------------------------
-void SystemDetailsEditor::onViewRefChanged(QString const& viewRef)
+void SystemDetailsEditor::onViewRefChanged(QString const& /*viewRef*/)
 {
     bool modified = hwRefEditor_->getVLNV() != *component_->getVlnv() ||
                     viewSelector_->currentText() != systemView_->getHWViewRef();

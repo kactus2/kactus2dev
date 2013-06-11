@@ -209,7 +209,7 @@ int GraphicsColumnLayout::autoCreateColumn()
 {
     Q_ASSERT(autoCreateColumnFunc_ != 0);
 
-    GraphicsColumn* column = autoCreateColumnFunc_(this, scene_);
+    GraphicsColumn* column = autoCreateColumnFunc_(this);
     addColumn(column, true);
 
     return columns_.size() - 1;

@@ -73,7 +73,7 @@ bool ComponentEditorComInterfaceItem::canBeOpened() const {
 	}
 }
 
-void ComponentEditorComInterfaceItem::openItem( bool builtinEditor /*= false*/ ) {
+void ComponentEditorComInterfaceItem::openItem( bool /*builtinEditor = false*/ ) {
 	VLNV comdefVLNV = interface_->getComType();
 	emit openComDefinition(comdefVLNV);
 }

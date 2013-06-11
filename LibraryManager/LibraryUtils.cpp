@@ -213,7 +213,7 @@ void parseProgrammableElementsV2(LibraryInterface* lh, VLNV designVLNV,
 // Function: addNewInstances()
 //-----------------------------------------------------------------------------
 void addNewInstancesV2(QList<ComponentInstance> const& elements,
-                       Design& sysDesign, LibraryInterface* lh,
+                       LibraryInterface* lh,
                        QList<ComponentInstance>& hwInstances,
                        QList<SWInstance>& swInstances,
                        QList<ApiDependency>& apiDependencies)
@@ -273,7 +273,7 @@ void generateSystemDesignV2(LibraryInterface* lh, VLNV const& designVLNV, Design
     QList<ComponentInstance> hwInstances;
     QList<SWInstance> swInstances;
     QList<ApiDependency> apiDependencies;
-    addNewInstancesV2(elements, sysDesign, lh, hwInstances, swInstances, apiDependencies);
+    addNewInstancesV2(elements, lh, hwInstances, swInstances, apiDependencies);
 
     sysDesign.setComponentInstances(hwInstances);
     sysDesign.setSWInstances(swInstances);

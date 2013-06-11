@@ -259,7 +259,7 @@ IGraphicsItemStack* MemoryItem::getParentStack()
 //-----------------------------------------------------------------------------
 // Function: MemoryItem::addItem()
 //-----------------------------------------------------------------------------
-void MemoryItem::addItem(QGraphicsItem* item, bool load)
+void MemoryItem::addItem(QGraphicsItem* item, bool /*load*/)
 {
     // Map the position to the column's local coordinate system
     // and constrain the item to the horizontal center of the column.

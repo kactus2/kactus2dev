@@ -121,7 +121,7 @@ ConnectionAddCommand::ConnectionAddCommand(QGraphicsScene* scene, HWConnection* 
         foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
         {
             QSharedPointer<Port> port = srcComponent->getPort(portMap->physicalPort_);
-            QUndoCommand* childCmd = new AddPhysicalPortCommand(srcComponent, port, this);
+            new AddPhysicalPortCommand(srcComponent, port, this);
         }
     }
 }
@@ -238,7 +238,7 @@ PortPasteCommand::PortPasteCommand(HWComponentItem* destComponent, QSharedPointe
 			}
 		}
 
-		QUndoCommand* childCmd = new AddPhysicalPortCommand(component_->componentModel(), physPortCopy, this);
+		new AddPhysicalPortCommand(component_->componentModel(), physPortCopy, this);
 	}
 }
 

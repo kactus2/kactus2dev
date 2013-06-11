@@ -89,7 +89,7 @@ bool ComponentEditorSystemViewItem::canBeOpened() const {
 	return originalRef == systemView_->getHierarchyRef();
 }
 
-void ComponentEditorSystemViewItem::openItem( bool builtinEditor /*= false*/ ) {
+void ComponentEditorSystemViewItem::openItem( bool /*builtinEditor = false*/ ) {
 	// if item can't be opened
 	if (!canBeOpened()) {
 		emit errorMessage(tr("The changes to component must be saved before view can be opened."));

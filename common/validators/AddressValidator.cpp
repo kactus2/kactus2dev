@@ -68,7 +68,7 @@ void AddressValidator::fixup(QString& input) const
 //-----------------------------------------------------------------------------
 // Function: AddressValidator::validate()
 //-----------------------------------------------------------------------------
-AddressValidator::State AddressValidator::validate(QString& input, int& pos) const
+AddressValidator::State AddressValidator::validate(QString& input, int& /*pos*/) const
 {
     // Check if the input is 100% valid.
     QRegExp exactRegex("0x[0-9A-Fa-f]{8}");

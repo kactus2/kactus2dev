@@ -1180,3 +1180,11 @@ void FileDependencyGraphView::resizeEvent(QResizeEvent *event)
     QTreeView::resizeEvent(event);
     onSectionResized();
 }
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyGraphView::setDependenciesEditable()
+//-----------------------------------------------------------------------------
+void FileDependencyGraphView::setDependenciesEditable(bool editable)
+{
+    setColumnHidden(FILE_DEPENDENCY_COLUMN_CREATE, !editable);
+}

@@ -32,8 +32,8 @@
 //-----------------------------------------------------------------------------
 // Function: HWColumn()
 //-----------------------------------------------------------------------------
-HWColumn::HWColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout, QGraphicsScene* scene)
-    : GraphicsColumn(desc, layout, scene),
+HWColumn::HWColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout)
+    : GraphicsColumn(desc, layout),
       conns_()
 {
 }

@@ -18,8 +18,8 @@ FileTypeEditorDelegate::~FileTypeEditorDelegate() {
 }
 
 QWidget* FileTypeEditorDelegate::createEditor( QWidget* parent, 
-											  const QStyleOptionViewItem& option,
-											  const QModelIndex& index ) const {
+											  const QStyleOptionViewItem& /*option*/,
+											  const QModelIndex& /*index*/ ) const {
 
 	FileTypeSelector* fileCombo = new FileTypeSelector(parent);
 	return fileCombo;

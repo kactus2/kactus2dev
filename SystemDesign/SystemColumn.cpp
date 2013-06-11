@@ -23,8 +23,8 @@
 //-----------------------------------------------------------------------------
 // Function: SystemColumn()
 //-----------------------------------------------------------------------------
-SystemColumn::SystemColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout, QGraphicsScene* scene)
-    : GraphicsColumn(desc, layout, scene),
+SystemColumn::SystemColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout)
+    : GraphicsColumn(desc, layout),
       conns_()
 {
 }

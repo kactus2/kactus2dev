@@ -312,7 +312,7 @@ void DesignDiagram::drawBackground(QPainter* painter, QRectF const& rect)
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::createContextMenu()
 //-----------------------------------------------------------------------------
-QMenu* DesignDiagram::createContextMenu(QPointF const& pos){
+QMenu* DesignDiagram::createContextMenu(QPointF const& /*pos*/){
 	return 0;
 }
 
@@ -349,7 +349,7 @@ void DesignDiagram::onShow()
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::setVisibilityControlState()
 //-----------------------------------------------------------------------------
-void DesignDiagram::setVisibilityControlState(QString const& name, bool state)
+void DesignDiagram::setVisibilityControlState(QString const& /*name*/, bool /*state*/)
 {
     // Empty default implementation.
 }

@@ -149,7 +149,7 @@ void AddressSectionItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 //-----------------------------------------------------------------------------
 // Function: mousePressEvent()
 //-----------------------------------------------------------------------------
-void AddressSectionItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
+void AddressSectionItem::mousePressEvent(QGraphicsSceneMouseEvent* /*event*/)
 {
     if (mouseNearResizeArea_)
     {
@@ -276,7 +276,7 @@ void AddressSectionItem::setHeight(int height)
 //-----------------------------------------------------------------------------
 // Function: AddressSectionItem::mouseDoubleClickEvent()
 //-----------------------------------------------------------------------------
-void AddressSectionItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+void AddressSectionItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* /*event*/)
 {
     // Check if the user double clicked in the address area and a new split should be performed.
 //     if (!static_cast<DesignDiagram*>(scene())->isProtected() &&
@@ -398,7 +398,7 @@ quint64 AddressSectionItem::getEndAddress() const
 //-----------------------------------------------------------------------------
 // Function: AddressSectionItem::drawStartAddressDivider()
 //-----------------------------------------------------------------------------
-void AddressSectionItem::drawStartAddressDivider(QPainter* painter, QRectF const& rect, int y, quint64 address) const
+void AddressSectionItem::drawStartAddressDivider(QPainter* painter, QRectF const& /*rect*/, int y, quint64 address) const
 {
     if (y == static_cast<int>(sceneBoundingRect().top()) || y == static_cast<int>(sceneBoundingRect().bottom()))
     {
@@ -423,7 +423,7 @@ void AddressSectionItem::drawStartAddressDivider(QPainter* painter, QRectF const
 //-----------------------------------------------------------------------------
 // Function: AddressSectionItem::drawEndAddressDivider()
 //-----------------------------------------------------------------------------
-void AddressSectionItem::drawEndAddressDivider(QPainter* painter, QRectF const& rect, int y, quint64 address) const
+void AddressSectionItem::drawEndAddressDivider(QPainter* painter, QRectF const& /*rect*/, int y, quint64 address) const
 {
     if (y == static_cast<int>(sceneBoundingRect().top()) || y == static_cast<int>(sceneBoundingRect().bottom()))
     {
