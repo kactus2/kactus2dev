@@ -41,6 +41,7 @@ model_(this) {
 	view_.setWordWrap(true);
 	view_.horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 	view_.setColumnWidth(0, 500);
+	view_.sortByColumn(1, Qt::DescendingOrder);
 
 	QHBoxLayout* buttonLayout = new QHBoxLayout();
 	buttonLayout->addWidget(&selectionBox_, 0, Qt::AlignLeft);
