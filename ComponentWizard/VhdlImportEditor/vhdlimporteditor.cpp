@@ -13,15 +13,17 @@
 #include <QVBoxLayout>
 
 #include <QDebug>
+#include <QFileDialog>
 
 VhdlImportEditor::VhdlImportEditor(const QString& basePath,
 	QSharedPointer<Component> component, 
 	LibraryInterface* handler,
 	QWidget *parent):
-QWidget(parent),
+    QWidget(parent),
+	vhdlParser_(new VhdlParser(this)),
+    //handler_(handler),
 	basePath_(basePath),
 	fileSelector_(new FileSelector(component, this)),
-	vhdlParser_(new QTextEdit(this)),
 modelParams_(new ModelParameterEditor(component, handler, this)),
 ports_(new PortsEditor(component, handler, false, this)) {
 
@@ -82,13 +84,13 @@ void VhdlImportEditor::onFileSelected( const QString& filePath ) {
 		return;
 	}
 
-	QString absPath = General::getAbsolutePath(basePath_, filePath);
+	QString absPath = General::getAbsolutePath(basePath_+"/", filePath);
 
 	// if the absolute path can not be converted
 	if (absPath.isEmpty()) {
 		return;
 	}
 
-	// TODO change to function call for vhdl parser in final
-	qDebug() << "The absolute path: " << absPath;
+	// TODO add function call to set the path for vhdl parser
+    vhdlParser_->readFile(absPath);
 }

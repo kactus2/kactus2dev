@@ -11,6 +11,7 @@
 #include <models/component.h>
 #include <IPXactWrapper/ComponentEditor/modelParameters/modelparametereditor.h>
 #include <IPXactWrapper/ComponentEditor/ports/portseditor.h>
+#include <Vhdl2IPXact/VhdlParser.h>
 
 #include <QWidget>
 #include <QSharedPointer>
@@ -107,7 +108,7 @@ private:
 
 	//! \brief Displays and parses the vhdl code
 	// TODO: replace this with actual call in final.
-	QTextEdit* vhdlParser_;
+	VhdlParser* vhdlParser_;
 
 	//! \brief Editor to set the generics.
 	ModelParameterEditor* modelParams_;
