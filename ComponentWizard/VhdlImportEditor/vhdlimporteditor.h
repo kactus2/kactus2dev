@@ -107,7 +107,6 @@ private:
 	FileSelector* fileSelector_;
 
 	//! \brief Displays and parses the vhdl code
-	// TODO: replace this with actual call in final.
 	VhdlParser* vhdlParser_;
 
 	//! \brief Editor to set the generics.

@@ -42,8 +42,8 @@ signals:
     void addPort(const Port& port);
     void removePort(const QString& portName);
 
-    void addGeneric();
-    void removeGeneric();
+    void addGeneric(const ModelParameter& modelParam);
+    void removeGeneric(const QString& modelParamName);
 
 protected:
  

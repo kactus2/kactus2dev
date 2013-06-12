@@ -21,7 +21,6 @@ VhdlImportEditor::VhdlImportEditor(const QString& basePath,
 	QWidget *parent):
     QWidget(parent),
 	vhdlParser_(new VhdlParser(this)),
-    //handler_(handler),
 	basePath_(basePath),
 	fileSelector_(new FileSelector(component, this)),
 modelParams_(new ModelParameterEditor(component, handler, this)),
@@ -41,8 +40,17 @@ ports_(new PortsEditor(component, handler, false, this)) {
 
 	connect(modelParams_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(vhdlParser_, SIGNAL(addGeneric(const ModelParameter&)),
+		modelParams_, SLOT(addModelParameter(const ModelParameter&)), Qt::UniqueConnection);
+	connect(vhdlParser_, SIGNAL(removeGeneric(const QString&)),
+		modelParams_, SLOT(removeModelParameter(const QString&)), Qt::UniqueConnection);
+
 	connect(ports_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(vhdlParser_, SIGNAL(addPort(const Port&)),
+		ports_, SLOT(addPort(const Port&)), Qt::UniqueConnection);
+	connect(vhdlParser_, SIGNAL(removePort(const QString&)),
+		ports_, SLOT(removePort(const QString&)), Qt::UniqueConnection);
 
 	// The layout on the left side of the GUI displaying the file selector and
 	// VHDL source code.
