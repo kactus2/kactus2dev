@@ -315,6 +315,19 @@ QVariant FileDependencyModel::data(const QModelIndex& index, int role /*= Qt::Di
             return QSize(16, 16);
         }
     }
+    else if (role == Qt::ForegroundRole)
+    {
+        if (item->getType() == FileDependencyItem::ITEM_TYPE_FILE &&
+            item->getParent()->getType() == FileDependencyItem::ITEM_TYPE_FOLDER)
+        {
+            QString absPath = General::getAbsolutePath(basePath_, item->getPath());
+            
+            if (!QFile(absPath).exists())
+            {
+                return QColor(Qt::red);
+            }
+        }
+    }
     else if (role == Qt::BackgroundRole)
     {
         if (item->getType() == FileDependencyItem::ITEM_TYPE_FOLDER ||
@@ -323,7 +336,17 @@ QVariant FileDependencyModel::data(const QModelIndex& index, int role /*= Qt::Di
         {
             return QColor(230, 230, 230);
         }
-        else if (index.column() == FILE_DEPENDENCY_COLUMN_CREATE)
+        else if (item->getParent()->getType() == FileDependencyItem::ITEM_TYPE_FOLDER)
+        {
+            QString absPath = General::getAbsolutePath(basePath_, item->getPath());
+            
+            if (!QFile(absPath).exists())
+            {
+                return QColor(255, 215, 215);
+            }
+        }
+        
+        if (index.column() == FILE_DEPENDENCY_COLUMN_CREATE)
         {
             return QColor(240, 240, 240);
         }
@@ -422,6 +445,7 @@ void FileDependencyModel::stopAnalysis()
     }
 
     // TODO: Reset dependencies?
+    emit dependenciesReset();
 }
 
 //-----------------------------------------------------------------------------
@@ -429,7 +453,22 @@ void FileDependencyModel::stopAnalysis()
 //-----------------------------------------------------------------------------
 FileDependencyItem* FileDependencyModel::addFolder(QString const& path)
 {
-    return root_->addFolder(0, path);
+    if (root_->getChildCount() == 0 || root_->getChild(root_->getChildCount() - 1)->getPath() < path)
+    {
+        return root_->addFolder(0, path);
+    }
+    else
+    {
+        for (int i = 0; i < root_->getChildCount(); ++i)
+        {
+            if (root_->getChild(i)->getPath() > path)
+            {
+                return root_->addFolder(0, path, FileDependencyItem::ITEM_TYPE_FOLDER, i);
+            }
+        }
+
+        return root_->addFolder(0, path);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1147,6 +1186,19 @@ void FileDependencyModel::onExternalRelocated(FileDependencyItem* item, QString 
 //-----------------------------------------------------------------------------
 void FileDependencyModel::refresh()
 {
+    for (int i = 0; i < root_->getChildCount(); ++i)
+    {
+        FileDependencyItem* folderItem = root_->getChild(i);
+
+        if (folderItem->getType() == FileDependencyItem::ITEM_TYPE_FOLDER)
+        {
+            for (int j = 0; j < folderItem->getChildCount(); ++j)
+            {
+                folderItem->getChild(j)->refreshFileRefs();
+            }
+        }
+    }
+
     emit dataChanged(getItemIndex(root_->getChild(0), 0),
                      getItemIndex(root_->getChild(root_->getChildCount() - 1), FILE_DEPENDENCY_COLUMN_DEPENDENCIES));
 }

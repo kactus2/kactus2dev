@@ -1047,9 +1047,9 @@ bool FileDependencyGraphView::filterDependency(FileDependency const* dependency)
     bool changesFilter = !(filters_ & FILTER_DIFFERENCE) ||
                          dependency->getStatus() != FileDependency::STATUS_UNCHANGED;
 
-    //bool existFilter = (filters_ & FILTER_DIFFERENCE) || dependency->getStatus() != FileDependency::STATUS_REMOVED;
+    bool existFilter = (filters_ & FILTER_DIFFERENCE) || dependency->getStatus() != FileDependency::STATUS_REMOVED;
 
-    return (typeFilter && wayFilter && extFilter && changesFilter);
+    return (typeFilter && wayFilter && extFilter && changesFilter && existFilter);
 }
 
 //-----------------------------------------------------------------------------

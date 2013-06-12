@@ -131,6 +131,11 @@ public:
     void setFileSets(QList<FileSet*> const& fileSets, bool preserveMultiple);
 
     /*!
+     *  Refreshes the file references.
+     */
+    void refreshFileRefs();
+
+    /*!
      *  Returns the child at the given index.
      *
      *      @param [in] index The index of the child to retrieve.

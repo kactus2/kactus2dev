@@ -56,6 +56,9 @@ ComponentWizardDependencyPage::ComponentWizardDependencyPage(PluginManager& plug
     connect(&editor_, SIGNAL(fileSetAdded(FileSet*)),
             &model_, SLOT(onFileSetAdded(FileSet*)), Qt::UniqueConnection);
 
+    connect(&model_, SIGNAL(contentChanged()),
+            &editor_, SLOT(refresh()), Qt::UniqueConnection);
+
     connect(&editor_, SIGNAL(scanStarted()),
             this, SIGNAL(completeChanged()), Qt::UniqueConnection);
     connect(&editor_, SIGNAL(scanCompleted()),
@@ -107,6 +110,7 @@ void ComponentWizardDependencyPage::cleanupPage()
     // Clear file sets.
     QList< QSharedPointer<FileSet> > fileSets;
     parent_->getComponent()->setFileSets(fileSets);
+    model_.refresh();
 }
 
 //-----------------------------------------------------------------------------

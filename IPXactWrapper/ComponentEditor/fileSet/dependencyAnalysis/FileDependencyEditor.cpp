@@ -350,9 +350,38 @@ void FileDependencyEditor::scanDirectories()
 {
     model_.beginReset();
 
+    // First scan the source directories.
     foreach (QString const& sourcePath, component_->getSourceDirectories())
     {
         scanFiles(sourcePath);
+    }
+
+    // Then add files that are part of the file sets but were not added in the file scan.
+    foreach (QSharedPointer<FileSet> fileSet, component_->getFileSets())
+    {
+        foreach (QSharedPointer<File> file, fileSet->getFiles())
+        {
+            // Check if the model does not contain a corresponding file item.
+            if (model_.findFileItem(file->getName()) == 0)
+            {
+                QFileInfo info(file->getName());
+                QString folderPath = info.path();
+
+                // Create a folder item for the file if not already created.
+                FileDependencyItem* folderItem = model_.findFolderItem(folderPath);
+
+                if (folderItem == 0)
+                {
+                    folderItem = model_.addFolder(folderPath);
+                }
+
+                // Create a file item.
+                QList<File*> fileRefs;
+                component_->getFiles(file->getName(), fileRefs);
+
+                folderItem->addFile(component_.data(), file->getName(), fileRefs);
+            }
+        }
     }
 
     model_.endReset();

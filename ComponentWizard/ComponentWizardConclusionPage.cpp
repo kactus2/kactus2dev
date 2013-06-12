@@ -65,7 +65,7 @@ void ComponentWizardConclusionPage::initializePage()
 
     if (parent_->getComponent()->getFileSets().isEmpty())
     {
-        summary += "<b>No file sets specified.</b>";
+        summary += "<b>No file sets specified.</b><br>";
     }
     else
     {
@@ -73,13 +73,13 @@ void ComponentWizardConclusionPage::initializePage()
 
         foreach (QSharedPointer<FileSet> fileSet, parent_->getComponent()->getFileSets())
         {
-            summary += tr("%1: %2 files").arg(fileSet->getName()).arg(fileSet->getFiles().count());
+            summary += tr("%1: %2 files<br>").arg(fileSet->getName()).arg(fileSet->getFiles().count());
         }
     }
 
     if (parent_->getComponent()->getComponentImplementation() == KactusAttribute::KTS_HW)
     {
-        summary += "<br><br>";
+        summary += "<br>";
 
         if (parent_->getComponent()->getModelParameters().isEmpty())
         {
@@ -98,7 +98,7 @@ void ComponentWizardConclusionPage::initializePage()
         }
         else
         {
-            summary += tr("<br>%1 ports imported.</b>").arg(parent_->getComponent()->getPorts().size());
+            summary += tr("<b>%1 ports imported.</b>").arg(parent_->getComponent()->getPorts().size());
         }
     }
 

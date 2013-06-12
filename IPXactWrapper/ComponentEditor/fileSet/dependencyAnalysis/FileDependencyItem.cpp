@@ -249,7 +249,23 @@ FileDependencyItem* FileDependencyItem::addFile(Component* component, QString co
                                                 QList<File*> const& fileRefs)
 {
     FileDependencyItem* item = new FileDependencyItem(this, component, path, fileRefs);
-    children_.append(item);
+    
+    if (children_.empty() || children_.back()->getPath() < path)
+    {
+        children_.append(item);
+    }
+    else
+    {
+        for (int i = 0; i < children_.size(); ++i)
+        {
+            if (children_.at(i)->getPath() > path)
+            {
+                children_.insert(i, item);
+                break;
+            }
+        }
+    }
+
     return item;
 }
 
@@ -522,4 +538,13 @@ void FileDependencyItem::setFileSets(QList<FileSet*> const& fileSets, bool prese
             getChild(i)->setFileSets(newFileSets, false);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyItem::refreshFileRefs()
+//-----------------------------------------------------------------------------
+void FileDependencyItem::refreshFileRefs()
+{
+    fileRefs_.clear();
+    component_->getFiles(path_, fileRefs_);
 }
