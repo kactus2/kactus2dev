@@ -89,7 +89,7 @@ void ModelParameterEditor::setAllowImportExport( bool allow ) {
 	view_.setAllowImportExport(allow);
 }
 
-void ModelParameterEditor::addModelParameter( const ModelParameter& modelParam ) {
+void ModelParameterEditor::addModelParameter( QSharedPointer<ModelParameter> modelParam ) {
 	model_.addModelParameter(modelParam);
 }
 

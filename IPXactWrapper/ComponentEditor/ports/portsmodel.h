@@ -152,7 +152,7 @@ public slots:
 	 * \param port The port to be added to the model.
 	 *
 	*/
-	void addPort(const Port& port);
+	void addPort(QSharedPointer<Port> port);
 
 signals:
 

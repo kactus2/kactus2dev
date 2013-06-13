@@ -75,7 +75,7 @@ public slots:
 	 * \param modelParam The model parameter to add.
 	 *
 	*/
-	void addModelParameter(const ModelParameter& modelParam);
+	void addModelParameter(QSharedPointer<ModelParameter> modelParam);
 
 	/*! \brief Remove model parameter from the editor.
 	 *

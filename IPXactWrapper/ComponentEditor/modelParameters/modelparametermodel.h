@@ -150,7 +150,7 @@ public slots:
 	 * \param modelParam The model parameter to be added.
 	 *
 	*/
-	void addModelParameter(const ModelParameter& modelParam);
+	void addModelParameter(QSharedPointer<ModelParameter> modelParam);
 
 signals:
 

@@ -77,7 +77,7 @@ public slots:
 	 * \param port The port to be added.
 	 *
 	*/
-	void addPort(const Port& port);
+	void addPort(QSharedPointer<Port> port);
 
 	/*! \brief Remove port from the editor.
 	 *

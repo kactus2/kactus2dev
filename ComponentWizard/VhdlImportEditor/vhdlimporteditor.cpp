@@ -41,15 +41,15 @@ ports_(new PortsEditor(component, handler, false, this)) {
 
 	connect(modelParams_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(vhdlParser_, SIGNAL(addGeneric(const ModelParameter&)),
-		modelParams_, SLOT(addModelParameter(const ModelParameter&)), Qt::UniqueConnection);
+	connect(vhdlParser_, SIGNAL(addGeneric(QSharedPointer<ModelParameter>)),
+		modelParams_, SLOT(addModelParameter(QSharedPointer<ModelParameter>)), Qt::UniqueConnection);
 	connect(vhdlParser_, SIGNAL(removeGeneric(const QString&)),
 		modelParams_, SLOT(removeModelParameter(const QString&)), Qt::UniqueConnection);
 
 	connect(ports_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(vhdlParser_, SIGNAL(addPort(const Port&)),
-		ports_, SLOT(addPort(const Port&)), Qt::UniqueConnection);
+	connect(vhdlParser_, SIGNAL(addPort(QSharedPointer<Port>)),
+		ports_, SLOT(addPort(QSharedPointer<Port>)), Qt::UniqueConnection);
 	connect(vhdlParser_, SIGNAL(removePort(const QString&)),
 		ports_, SLOT(removePort(const QString&)), Qt::UniqueConnection);
 

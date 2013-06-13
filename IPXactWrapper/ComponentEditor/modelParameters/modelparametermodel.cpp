@@ -242,10 +242,10 @@ void ModelParameterModel::onAddItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
-void ModelParameterModel::addModelParameter( const ModelParameter& modelParam ) {
+void ModelParameterModel::addModelParameter( QSharedPointer<ModelParameter> modelParam ) {
 	beginInsertRows(QModelIndex(), table_.size(), table_.size());
 
-	table_.append(QSharedPointer<ModelParameter>(new ModelParameter(modelParam)));
+	table_.append(modelParam);
 
 	endInsertRows();
 

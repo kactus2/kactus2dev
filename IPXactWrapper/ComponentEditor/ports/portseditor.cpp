@@ -123,7 +123,7 @@ void PortsEditor::setAllowImportExport( bool allow ) {
 	view_.setAllowImportExport(allow);
 }
 
-void PortsEditor::addPort( const Port& port ) {
+void PortsEditor::addPort( QSharedPointer<Port> port ) {
 	model_.addPort(port);
 }
 

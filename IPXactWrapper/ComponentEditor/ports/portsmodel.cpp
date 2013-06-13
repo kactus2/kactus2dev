@@ -444,10 +444,10 @@ void PortsModel::onAddItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
-void PortsModel::addPort( const Port& port ) {
+void PortsModel::addPort( QSharedPointer<Port> port ) {
 	beginInsertRows(QModelIndex(), table_.size(), table_.size());
 
-	table_.append(QSharedPointer<Port>(new Port(port)));
+	table_.append(port);
 
 	endInsertRows();
 

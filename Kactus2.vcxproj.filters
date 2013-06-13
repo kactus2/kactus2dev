@@ -851,6 +851,9 @@
     <Filter Include="Source Files\common\widgets\FileSelector">
       <UniqueIdentifier>{4fd994f9-e99b-4608-a6c2-0fbc6df9d786}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\designwidget\views">
+      <UniqueIdentifier>{398985ba-16e7-4840-af52-3cb5c4ea9307}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\CSourceWriter.cpp">
@@ -3814,6 +3817,12 @@
     <ClCompile Include="common\widgets\FileSelector\fileselector.cpp">
       <Filter>Source Files\common\widgets\FileSelector</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_VhdlParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Vhdl2IPXact\VhdlParser.cpp">
+      <Filter>Source Files\vhdl2IPXact</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5406,20 +5415,23 @@
     <CustomBuild Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySourceEditor.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
     </CustomBuild>
-    <CustomBuild Include="designwidget\views\CellEditTableView.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designwidget\models\PortGenerationRow.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designwidget\models\PortGenerationTableModel.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="ComponentWizard\VhdlImportEditor\vhdlimporteditor.h">
       <Filter>Header Files\ComponentWizard\VhdlImportEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="common\widgets\FileSelector\fileselector.h">
       <Filter>Header Files\common\widgets\FileSelector</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designwidget\models\PortGenerationTableModel.h">
+      <Filter>Header Files\designwidget</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designwidget\models\PortGenerationRow.h">
+      <Filter>Header Files\designwidget</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designwidget\views\CellEditTableView.h">
+      <Filter>Header Files\designwidget\views</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Vhdl2IPXact\VhdlParser.h">
+      <Filter>Header Files\vhdl2IPXact</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
