@@ -65,6 +65,8 @@ private:
 
    QString parseSection(QRegExp const& begin, QRegExp const& end, QString& text);
 
+QString parseSectionContent(QRegExp const& begin, QRegExp const& end, QString& text);
+
     QList<Port> ports_;
 };
 

@@ -43,6 +43,14 @@ VhdlParser::~VhdlParser()
 //-----------------------------------------------------------------------------
 bool VhdlParser::readFile(QString absolutePath)
 {
+
+    foreach ( Port port, ports_ )
+    {
+        emit removePort(port.getName());
+    }
+    ports_.clear();
+
+
     QFile vhdlFile(absolutePath);
     if ( !vhdlFile.open(QIODevice::ReadOnly) )
     {
@@ -60,6 +68,7 @@ bool VhdlParser::readFile(QString absolutePath)
     // Entity end declaration is END [ENTITY] [<name>];
     QRegExp entityEnd("\\b(END)\\s*(ENTITY)?\\s*(\\w*)\\s*[;]", Qt::CaseInsensitive);
     QString entity =  parseSection(entityBegin, entityEnd, fileString);
+
     if ( entity.size() == 0 )
     {   
         QMessageBox::information(this,"Import warning","No entity found in given file.", QMessageBox::Ok );
@@ -72,85 +81,84 @@ bool VhdlParser::readFile(QString absolutePath)
     //verticalScrollBar()->setValue(fontMetrics().height()*2);
     
     parsePorts(entity);
+
     parseGenerics(entity);
 
     return true;
 }
 
-bool VhdlParser::parsePorts(QString& entity){
-
-    QRegExp portsBegin("\\b(PORT)\\s*[(]", Qt::CaseInsensitive);
-    QRegExp portsEnd("\\b(END|BEGIN|GENERIC)\\b", Qt::CaseInsensitive);
-
-    QString ports = parseSection(portsBegin,portsEnd,entity);
-
+//-----------------------------------------------------------------------------
+// Function: parsePorts()
+//-----------------------------------------------------------------------------
+bool VhdlParser::parsePorts(QString& entity)
+{
+    QRegExp portsBegin("\\b(PORT)\\s*[(](\\s|\\n)*", Qt::CaseInsensitive);
+    QRegExp portsEnd("\\s*[)]\\s*[;](?:\\s*\\n)*(END|BEGIN|GENERIC)\\b", Qt::CaseInsensitive);
+    QString ports = parseSectionContent(portsBegin,portsEnd,entity);
     if ( ports.size() == 0 )
     {
         qDebug() << entity;
         return false;
     }
 
-    int left = ports.indexOf(portsBegin);
-    int leftBound = portsBegin.matchedLength();
-    ports = ports.mid(leftBound);
-    ports = ports.left(ports.lastIndexOf(");")).trimmed();
+    qDebug() << ports;
+    // Port declaration is <port_names> : <direction> <type> [<default>]; [<description>].
+    QRegExp portPattern("\\s*((?:\\w+\\s*[,]?\\s*)+)\\s*[:]\\s*(\\w+)\\s+(\\w+(?:[(].*[)])?)\\s*([:][=]\\s*(?:.*))?\\s*[;]?\\s*([-][-].*)?");
 
-    ports_.clear();
-    // Port declaration is <port_name> : <direction> <type> [<default>]; [<description>].
-    QRegExp portPattern("\\s*(\\w+)\\s*[:]\\s*(\\w+)\\s+(\\w+(?:[(].*[)])?)\\s*([:][=]\\s*(?:.*))?\\s*[;]?\\s*([-][-].*)?");
-
-    // Type definition is <typename>[(<bounds>)]
+    // Type definition is <typename>[(<bounds>)].
     QRegExp typePattern("(\\w+)\\s*(?:[(]\\s*(\\d+)\\s+\\w+\\s+(\\d+)[)])?\\s*");
 
-    // Default definition is := <value>
-    QRegExp defaultPattern("[:][=]\\s*[\"|']?(\\w+)[\"|']?");
+    // Default definition is := <value>.
+    QRegExp defaultPattern("[:][=]\\s*([\"'])?(\\w+)\1");
 
-    // Description definition is a comment at end of line: --<description>
+    // Description definition is a comment at end of line: --<description>.
     QRegExp commentPattern("[-][-]\\s*((?:\\w+\\s*)*)");
 
-    // End of port declaration is ; not followed by a comment on same line
-    QRegExp declarationEnd("([;](?!(\\s*[-][-]))|[;]{0}\\s*[-][-]*\\n|\\n)");
+    // End of port declaration is ; not followed by a comment on the same line.
+    // 1. Semicolon (;) not followed by a comment on the same line.
+    // 3. Line end.
+    QRegExp declarationEnd("(?:[;](?!(?:\\s*[-][-]))|\\s*\\n)"); //[;]{0}\\s*[-][-]*\\n|     \\s*\\n+\\s*|
     foreach ( QString portDeclaration, ports.split(declarationEnd,QString::SkipEmptyParts) )
     {
-    
-        //qDebug() << portDeclaration;
-        int pos = portPattern.indexIn(portDeclaration);
-        if ( pos == -1 )
+
+        qDebug() << portDeclaration;
+        int index = portDeclaration.indexOf(QRegExp("\\s*[-][-]") );
+
+        if (index == 0){
+            continue;
+        }
+
+        if ( portPattern.indexIn(portDeclaration) == -1 )
         {
             QMessageBox::information(this,"Import warning","Invalid port declaration found. Cannot import ports.",
                 QMessageBox::Ok );
             return false;
         }    
 
-        QString portName = portPattern.cap(1);        
+        QString portNames = portPattern.cap(1);
         General::Direction direction = General::str2Direction(portPattern.cap(2),General::DIRECTION_INVALID);
         QString portType = portPattern.cap(3);
-        QString typeDefinition = portPattern.cap(3);
         QString defaultValue = portPattern.cap(4);
         QString description = portPattern.cap(5);
 
-        int rightBound = 0;
-        int leftBound = 0;
-        if ( typePattern.indexIn(portType) != -1 )
-        {
-            portType = typePattern.cap(1);
-            rightBound = typePattern.cap(2).toInt();
-            leftBound = typePattern.cap(3).toInt();
-        }    
+        typePattern.indexIn(portType) ;
+        QString type = typePattern.cap(1);
+        int leftBound = typePattern.cap(2).toInt();
+        int rightBound = typePattern.cap(3).toInt();
 
-        if ( defaultPattern.indexIn(defaultValue) != -1 )
-        {
-            defaultValue = defaultPattern.cap(1);
-        }
- 
-        if ( commentPattern.indexIn(description) != -1 )
-{
+        defaultPattern.indexIn(defaultValue);
+        defaultValue = defaultPattern.cap(1);
+
+        commentPattern.indexIn(description); 
         description = commentPattern.cap(1);
-}
-  
-        //qDebug() << portName << "," << General::direction2Str(direction) << "," << portType << "," << typeDefinition << ":=" << defaultValue << "," << description;       
-        ports_.append(Port(portName,direction,leftBound,rightBound,portType,typeDefinition,defaultValue,description));
-        emit addPort(ports_.back());
+
+        //qDebug() << portName << "," << General::direction2Str(direction) << "," << portType << "," << typeDefinition << ":=" << defaultValue << "," << description; 
+        // Port names are separated by a colon (,).
+        foreach( QString name, portNames.split(QRegExp("\\s*[,]\\s*"), QString::SkipEmptyParts) )
+        {      
+            ports_.append(Port(name, direction, leftBound, rightBound, portType, type, defaultValue, description));
+            emit addPort(ports_.back());
+        } 
     }
 
     return true;
@@ -159,8 +167,8 @@ bool VhdlParser::parsePorts(QString& entity){
 bool VhdlParser::parseGenerics(QString& entity)
 {
     QRegExp genericsBegin("\\b(GENERIC)\\s*[(]", Qt::CaseInsensitive);
-    QRegExp genericsEnd("[)][;]", Qt::CaseInsensitive);
-    QString generics = parseSection(genericsBegin,genericsEnd,entity);
+    QRegExp genericsEnd("[)]\\s*[;]", Qt::CaseInsensitive);
+    QString generics = parseSectionContent(genericsBegin,genericsEnd,entity);
 
     if ( generics.size() == 0 )
     {
@@ -170,24 +178,40 @@ bool VhdlParser::parseGenerics(QString& entity)
     return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: parseSection()
+//-----------------------------------------------------------------------------
 QString VhdlParser::parseSection(QRegExp const& begin, QRegExp const& end, QString& text)
-{
-    if ( !text.contains( begin )  )
-    {
-        return QString();
-    }
-    
-    int leftBound = text.indexOf(begin);
+{   
+    int leftBound = begin.indexIn(text);
     int rightBound = end.indexIn(text,leftBound);
 
-    if ( rightBound == -1 )
+    if ( leftBound == -1 || rightBound == -1 )
     {
         return QString();
     }
 
-    rightBound +=  end.matchedLength();    
-    QString section = text.mid(leftBound,rightBound-leftBound);
-    return section;
+    rightBound += end.matchedLength();      
+    //qDebug() << text.mid(leftBound,rightBound-leftBound);;
+    return text.mid(leftBound,rightBound-leftBound);
+}
+
+//-----------------------------------------------------------------------------
+// Function: parseSectionContent()
+//-----------------------------------------------------------------------------
+QString VhdlParser::parseSectionContent(QRegExp const& begin, QRegExp const& end, QString& text)
+{   
+    int leftBound = begin.indexIn(text);
+    int rightBound = end.indexIn(text,leftBound);
+
+    if ( leftBound == -1 || rightBound == -1 )
+    {
+        return QString();
+    }
+
+    leftBound += begin.matchedLength();
+    //qDebug() << text.mid(leftBound,rightBound-leftBound);;
+    return text.mid(leftBound,rightBound-leftBound);
 }
 
 //-----------------------------------------------------------------------------

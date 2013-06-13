@@ -9,6 +9,7 @@
 #include <common/widgets/FileSelector/fileselector.h>
 #include <models/generaldeclarations.h>
 
+#include <Qapplication>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
@@ -99,6 +100,7 @@ void VhdlImportEditor::onFileSelected( const QString& filePath ) {
 		return;
 	}
 
-	// TODO add function call to set the path for vhdl parser
+    QApplication::setOverrideCursor(Qt::WaitCursor);
     vhdlParser_->readFile(absPath);
+    QApplication::restoreOverrideCursor();
 }
