@@ -22,6 +22,10 @@ pluginMgr_(pluginMgr) {
 	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
 		QSharedPointer<ComponentEditorFileSetItem> fileSetItem(
 			new ComponentEditorFileSetItem(fileSet, model, libHandler, component, this));
+
+        connect(fileSetItem.data(), SIGNAL(childRemoved(int)),
+                this, SIGNAL(refreshDependencyModel()), Qt::UniqueConnection);
+
 		childItems_.append(fileSetItem);
 	}
 }
@@ -51,6 +55,9 @@ ItemEditor* ComponentEditorFileSetsItem::editor() {
 			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
 			this, SIGNAL(helpUrlRequested(QString const&)));
+
+        connect(this, SIGNAL(refreshDependencyModel()),
+                editor_, SLOT(refreshDependencyModel()), Qt::UniqueConnection);
 	}
 	return editor_;
 }

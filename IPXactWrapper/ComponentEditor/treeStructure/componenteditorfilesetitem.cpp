@@ -87,6 +87,9 @@ ItemEditor* ComponentEditorFileSetItem::editor() {
 			 this, SLOT(onMoveChild(int, int)), Qt::UniqueConnection);
 		 connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
 			 this, SIGNAL(helpUrlRequested(QString const&)));
+
+         connect(editor_, SIGNAL(childRemoved(int)),
+             this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 	}
 	return editor_;
 }

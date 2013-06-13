@@ -109,5 +109,12 @@ void FileSetsEditor::showEvent( QShowEvent* event ) {
 void FileSetsEditor::updateFileSetView()
 {
     model_.refresh();
-    //view_.update();
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileSetsEditor::refreshDependencyModel()
+//-----------------------------------------------------------------------------
+void FileSetsEditor::refreshDependencyModel()
+{
+    dependencyEditor_.refresh();
 }

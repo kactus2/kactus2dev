@@ -65,6 +65,10 @@ public:
 	*/
 	virtual void createChild(int index);
 
+signals:
+    //! Emitted when the dependency model should be refreshed.
+    void refreshDependencyModel();
+
 private slots:
     /*!
      *  Handles the addition of a file outside the file set editor.

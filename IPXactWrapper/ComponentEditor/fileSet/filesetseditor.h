@@ -71,6 +71,12 @@ signals:
 
     void dependenciesChanged();
 
+public slots:
+    /*!
+     *  Refreshes the dependency model.
+     */
+    void refreshDependencyModel();
+
 private slots:
     void updateFileSetView();
 

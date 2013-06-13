@@ -90,6 +90,8 @@ public:
      */
     FileSet const* getFileSet() const;
 
+signals:
+    void childRemoved(int index);
 
 private:
 	//! \brief No copying
