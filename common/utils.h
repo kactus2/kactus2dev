@@ -13,6 +13,7 @@
 
 #include <common/Global.h>
 
+#include <QRegExp>
 #include <QObject>
 
 namespace Utils {
@@ -222,6 +223,12 @@ namespace Utils {
      *  Replaces a magic word in a string with the given value.
      */
     void replaceMagicWord(QString& text, QString const& magicWord, QString const& value);
+
+	 //! \brief Regular expression to validate URLs.
+	 const QRegExp URL_VALIDITY_REG_EXP = QRegExp("^(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&%\$#_]*)?$", Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
+
+	//! \brief Regular expression to check if given string is a URL.
+	 const QRegExp URL_IDENTIFY_REG_EXP = QRegExp("^(ht|f)tp(s?)\:\/\/.*", Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
 }
 
 #endif // UTILS_H

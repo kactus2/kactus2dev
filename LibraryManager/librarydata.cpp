@@ -20,6 +20,7 @@
 #include <models/generaldeclarations.h>
 #include <models/ComDefinition.h>
 #include <models/ApiDefinition.h>
+#include <common/utils.h>
 
 #include "vlnv.h"
 
@@ -30,7 +31,6 @@
 #include <QFileInfo>
 #include <QXmlSchema>
 #include <QXmlSchemaValidator>
-#include <QUrl>
 #include <QDomDocument>
 #include <QString>
 #include <QObject>
@@ -48,6 +48,7 @@
 #include <QApplication>
 #include <QCoreApplication>
 #include <QTimer>
+#include <QUrl>
 
 #include <QDebug>
 
@@ -67,7 +68,9 @@ LibraryData::LibraryData(LibraryHandler* parent, QMainWindow* mainWnd)
       syntaxErrors_(0),
       vlnvErrors_(0),
       fileErrors_(0),
-		fileCount_(0) {
+		fileCount_(0),
+		urlTester_(new QRegExpValidator(Utils::URL_IDENTIFY_REG_EXP, this)),
+		urlValidator_(new QRegExpValidator(Utils::URL_VALIDITY_REG_EXP, this)) {
 	connect(this, SIGNAL(errorMessage(const QString&)),
 		parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(this, SIGNAL(noticeMessage(const QString&)),
@@ -669,30 +672,76 @@ bool LibraryData::checkObject( const VLNV& vlnv, const QString& path ) {
 	QStringList filelist = libComp->getDependentFiles();
 	for (int j = 0; j < filelist.size(); ++j) {
 
-		// make sure that each file referenced by the model exists
-		// in the file system
-		QString filePath = General::getAbsolutePath(path, filelist.at(j));
+		// the file reference in the component
+		QString originalPath = filelist.at(j);
 
-		QFileInfo pathInfo(filePath);
+		// used by the url validators
+		int pos = 0;
 
-		// if the path did not exist
-		if (!pathInfo.exists()) {
+		// check if the path is actually a URL to (external) location
+		if (urlTester_->validate(originalPath, pos) == QValidator::Acceptable) {
 
-			// if this is the first found error
-			if (wasValid) {
-				emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
-				++failedObjects_;
-				wasValid = false;
+			// if the URL is not valid
+			if (urlValidator_->validate(originalPath, pos) != QValidator::Acceptable) {
+
+				// if this is the first found error
+				if (wasValid) {
+					emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
+					++failedObjects_;
+					wasValid = false;
+				}
+
+				emit errorMessage(tr("\tURL %1 was not valid.").arg(originalPath));
+
+				++errors_;
+				++fileErrors_;
 			}
 
-			emit errorMessage(tr("\tFile %1 was not found in the file system.").arg(filePath));
-
-			++errors_;
-			++fileErrors_;
+			// The URL was valid
+			else {
+				++fileCount_;
+			}
 		}
-		// if the file exists then increase the total file count.
+
+		// The path was not URL so it must be file reference on the disk.
 		else {
-			++fileCount_;
+
+			QString filePath;
+
+			// if the path is relative then create absolute path
+			QFileInfo originalInfo(originalPath);
+			if (originalInfo.isRelative()) {
+				filePath = General::getAbsolutePath(path, originalPath);
+			}
+			// if the reference is directly absolute
+			else {
+				filePath = originalPath;
+			}
+
+			// make sure that each file referenced by the model exists
+			// in the file system
+			QFileInfo pathInfo(filePath);
+
+			// if the path did not exist
+			if (!pathInfo.exists()) {
+
+				// if this is the first found error
+				if (wasValid) {
+					emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
+					++failedObjects_;
+					wasValid = false;
+				}
+
+				emit errorMessage(tr("\tFile %1 was not found in the file system.").arg(filePath));
+
+				++errors_;
+				++fileErrors_;
+			}
+
+			// if the file exists then increase the total file count.
+			else {
+				++fileCount_;
+			}
 		}
 	}
 

@@ -21,6 +21,7 @@
 #include <QSharedPointer>
 #include <QMainWindow>
 #include <QTimer>
+#include <QRegExpValidator>
 
 class LibraryHandler;
 
@@ -250,6 +251,12 @@ private:
 
 	//! \brief The total number of files all library components contain.
 	 int fileCount_;
+
+	//! \brief Checks if the given string is a URL (invalids are allowed) or not.
+	 QRegExpValidator* urlTester_;
+
+	//! \brief Validates the file paths to check if they are valid URLs.
+	 QRegExpValidator* urlValidator_;
 };
 
 #endif // LIBRARYDATA_H
