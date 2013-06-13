@@ -56,6 +56,7 @@ FileDependencyItem::FileDependencyItem(FileDependencyItem* parent,
 //-----------------------------------------------------------------------------
 FileDependencyItem::FileDependencyItem(FileDependencyItem* parent,
                                        Component* component, QString const& path,
+                                       QString const& fileType,
                                        QList<File*> const& fileRefs)
     : parent_(parent),
       status_(FILE_DEPENDENCY_STATUS_UNKNOWN),
@@ -63,6 +64,7 @@ FileDependencyItem::FileDependencyItem(FileDependencyItem* parent,
       component_(component),
       path_(path),
       references_(),
+      fileType_(fileType),
       fileRefs_(fileRefs),
       children_()
 {
@@ -246,9 +248,9 @@ QList<FileSet*> FileDependencyItem::getFileSets() const
 // Function: FileDependencyItem::addFile()
 //-----------------------------------------------------------------------------
 FileDependencyItem* FileDependencyItem::addFile(Component* component, QString const& path,
-                                                QList<File*> const& fileRefs)
+                                                QString const& fileType, QList<File*> const& fileRefs)
 {
-    FileDependencyItem* item = new FileDependencyItem(this, component, path, fileRefs);
+    FileDependencyItem* item = new FileDependencyItem(this, component, path, fileType, fileRefs);
     
     if (children_.empty() || children_.back()->getPath() < path)
     {
@@ -337,6 +339,11 @@ QStringList FileDependencyItem::getFileTypes() const
                 list.append(type);
             }
         }
+    }
+
+    if (list.empty() && fileType_ != "")
+    {
+        list.append(fileType_);
     }
 
     return list;
@@ -499,6 +506,12 @@ void FileDependencyItem::setFileSets(QList<FileSet*> const& fileSets, bool prese
             {
                 // Otherwise create a new file reference.
                 QSharedPointer<File> file(new File(path_, fileSet));
+
+                if (!fileType_.isEmpty())
+                {
+                    file->addFileType(fileType_);
+                }
+
                 fileSet->addFile(file);
 
                 newFileRefs.append(file.data());
@@ -513,6 +526,15 @@ void FileDependencyItem::setFileSets(QList<FileSet*> const& fileSets, bool prese
         }
 
         fileRefs_ = newFileRefs;
+
+        if (fileRefs_.empty())
+        {
+            component_->addIgnoredFile(path_);
+        }
+        else
+        {
+            component_->removeIgnoredFile(path_);
+        }
     }
     else
     {

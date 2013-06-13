@@ -207,6 +207,7 @@ bool FileDependencyModel::setData(const QModelIndex &index, const QVariant &valu
                 item->setFileSets(fileSets, multiple);
 
                 emit dataChanged(index, index);
+                emit contentChanged();
                 return true;
             }
         }
@@ -322,7 +323,7 @@ QVariant FileDependencyModel::data(const QModelIndex& index, int role /*= Qt::Di
         {
             QString absPath = General::getAbsolutePath(basePath_, item->getPath());
             
-            if (!QFile(absPath).exists())
+            if (!QFileInfo(absPath).exists())
             {
                 return QColor(Qt::red);
             }
@@ -489,8 +490,6 @@ void FileDependencyModel::beginReset()
 //-----------------------------------------------------------------------------
 void FileDependencyModel::endReset()
 {
-    endResetModel();
-
     // Add the existing dependencies to the model.
     foreach (QSharedPointer<FileDependency> dependency, component_->getFileDependencies())
     {
@@ -539,19 +538,21 @@ void FileDependencyModel::endReset()
                     index = root_->getChildCount() - 1;
                 }
 
-                beginInsertRows(getItemIndex(root_, 0), index, index);
+                //beginInsertRows(getItemIndex(root_, 0), index, index);
                 parent = root_->addFolder(component_.data(), folderName, type, index);
-                endInsertRows();
+                //endInsertRows();
             }
 
-            beginInsertRows(getItemIndex(parent, 0), parent->getChildCount(), parent->getChildCount());
-            fileItem2 = parent->addFile(component_.data(), copy->getFile2(), QList<File*>());
-            endInsertRows();
+            //beginInsertRows(getItemIndex(parent, 0), parent->getChildCount(), parent->getChildCount());
+            fileItem2 = parent->addFile(component_.data(), copy->getFile2(), "", QList<File*>());
+            //endInsertRows();
         }
 
         copy->setItemPointers(fileItem1, fileItem2);
         dependencies_.append(copy);
     }
+
+    endResetModel();
 
     emit dependenciesReset();
 }
@@ -774,10 +775,11 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
                             endInsertRows();
                         }
 
+                        file2 = "$External$/" + desc.filename;
+
                         beginInsertRows(getItemIndex(folderItem, 0),
                                         folderItem->getChildCount(), folderItem->getChildCount());
-                        fileItem2 = folderItem->addFile(component_.data(), "$External$/" + desc.filename,
-                                                        QList<File*>());
+                        fileItem2 = folderItem->addFile(component_.data(), file2, "", QList<File*>());
                         endInsertRows();
                     }
 

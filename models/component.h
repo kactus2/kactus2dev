@@ -1018,6 +1018,11 @@ public:
      */
     QStringList const& getSourceDirectories() const;
 
+    /*!
+     *  Returns the list of ignored files.
+     */
+    QStringList const& getIgnoredFiles() const;
+
 	/*! \brief Get the file dependencies of this component.
 	 *
 	 * \return QList containing pointers to the file dependencies.
@@ -1042,6 +1047,27 @@ public:
      *      @param [in] sourceDirs The source directories to set.
      */
     void setSourceDirectories(QStringList const& sourceDirs);
+
+    /*!
+     *  Sets ignored files.
+     *
+     *      @param [in] ignoredFiles The names of the ignored files.
+     */
+    void setIgnoredFiles(QStringList const& ignoredFiles);
+
+    /*!
+     *  Adds a file to the ignore list.
+     *
+     *      @param [in] filename The name of the ignored file.
+     */
+    void addIgnoredFile(QString const& filename);
+
+    /*!
+     *  Removes a file from the ignore list.
+     *
+     *      @param [in] filename The name of the ignored file.
+     */
+    void removeIgnoredFile(QString const& filename);
 
 	/*! \brief Get the specified file set if one exists
 	*
@@ -1797,7 +1823,14 @@ private:
      */
     void parseSourceDirectories(QDomNode& node);
 
-	/*! \brief Specifies all the interfaces for this component.
+    /*!
+     *  Parses ignored files from the given XML node.
+     *
+     *      @param [in] node The source XML node.
+     */
+    void parseIgnoredFiles(QDomNode& node);
+    
+    /*! \brief Specifies all the interfaces for this component.
 	 * OPTIONAL spirit:busInterfaces
 	 *
 	 */
@@ -1869,6 +1902,10 @@ private:
     //! The list of source directories.
     //! OPTIONAL kactus2:sourceDirectories
     QStringList sourceDirs_;
+
+    //! The list of ignored files.
+    //! OPTIONAL kactus2:ignoredFiles
+    QStringList ignoredFiles_;
 
 	/*! \brief Contains the cpus.
 	 * OPTIONAL spirit:cpus

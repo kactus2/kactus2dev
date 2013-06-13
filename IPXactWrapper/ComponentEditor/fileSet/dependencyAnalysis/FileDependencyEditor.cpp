@@ -257,7 +257,8 @@ void FileDependencyEditor::scanFiles(QString const& path)
             QList<File*> fileRefs;
             component_->getFiles(relativePath, fileRefs);
 
-            if (fileRefs.empty())
+            // Add the file to the component file sets if not already found and is not yet ignored.
+            if (fileRefs.empty() && !component_->getIgnoredFiles().contains(relativePath))
             {
                 QSharedPointer<FileSet> fileSet;
 
@@ -281,7 +282,7 @@ void FileDependencyEditor::scanFiles(QString const& path)
                 fileRefs.append(file.data());
             }
 
-            folderItem->addFile(component_.data(), relativePath, fileRefs);
+            folderItem->addFile(component_.data(), relativePath, fileType, fileRefs);
         }
     }
 }
@@ -379,7 +380,14 @@ void FileDependencyEditor::scanDirectories()
                 QList<File*> fileRefs;
                 component_->getFiles(file->getName(), fileRefs);
 
-                folderItem->addFile(component_.data(), file->getName(), fileRefs);
+                QString fileType = "";
+
+                if (!file->getFileTypes().empty())
+                {
+                    fileType = file->getFileTypes().first();
+                }
+
+                folderItem->addFile(component_.data(), file->getName(), fileType, fileRefs);
             }
         }
     }

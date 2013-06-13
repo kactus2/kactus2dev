@@ -62,6 +62,7 @@ fileSets_(),
 fileDependencies_(),
 pendingFileDependencies_(),
 sourceDirs_(),
+ignoredFiles_(),
 cpus_(),
 otherClockDrivers_(),
 parameters_(), 
@@ -332,6 +333,10 @@ systemViews_() {
                         {
                             parseSourceDirectories(childNode);
                         }
+                        else if (childNode.nodeName() == "kactus2:ignoredFiles")
+                        {
+                            parseIgnoredFiles(childNode);
+                        }
 					}
 				}
 			}
@@ -364,6 +369,7 @@ fileSets_(),
 fileDependencies_(),
 pendingFileDependencies_(),
 sourceDirs_(),
+ignoredFiles_(),
 cpus_(),
 otherClockDrivers_(),
 parameters_(), 
@@ -393,6 +399,7 @@ fileSets_(),
 fileDependencies_(),
 pendingFileDependencies_(),
 sourceDirs_(),
+ignoredFiles_(),
 cpus_(), 
 otherClockDrivers_(), 
 parameters_(),
@@ -420,6 +427,7 @@ fileSets_(),
 fileDependencies_(),
 pendingFileDependencies_(),
 sourceDirs_(other.sourceDirs_),
+ignoredFiles_(other.ignoredFiles_),
 cpus_(),
 otherClockDrivers_(),
 parameters_(),
@@ -687,6 +695,7 @@ Component & Component::operator=( const Component &other ) {
         }
 
         sourceDirs_ = other.sourceDirs_;
+        ignoredFiles_ = other.ignoredFiles_;
 
 		cpus_.clear();
 		foreach (QSharedPointer<Cpu> cpu, other.cpus_) {
@@ -1022,6 +1031,18 @@ void Component::write(QFile& file) {
             }
 
             writer.writeEndElement(); // kactus2:sourceDirectories
+        }
+
+        if (!ignoredFiles_.empty())
+        {
+            writer.writeStartElement("kactus2:ignoredFiles");
+
+            foreach (QString filename, ignoredFiles_)
+            {
+                writer.writeTextElement("kactus2:ignoredFile", filename);
+            }
+
+            writer.writeEndElement(); // kactus2:ignoredFiles
         }
 
 		writer.writeEndElement(); // kactus2:extensions
@@ -3679,11 +3700,27 @@ void Component::setSourceDirectories(QStringList const& sourceDirs)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Component::setIgnoredFiles()
+//-----------------------------------------------------------------------------
+void Component::setIgnoredFiles(QStringList const& ignoredFiles)
+{
+    ignoredFiles_ = ignoredFiles;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Component::getSourceDirectories()
 //-----------------------------------------------------------------------------
 QStringList const& Component::getSourceDirectories() const
 {
     return sourceDirs_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::getIgnoredFiles()
+//-----------------------------------------------------------------------------
+QStringList const& Component::getIgnoredFiles() const
+{
+    return ignoredFiles_;
 }
 
 //-----------------------------------------------------------------------------
@@ -3698,6 +3735,22 @@ void Component::parseSourceDirectories(QDomNode& node)
         if (childNode.nodeName() == "kactus2:sourceDirectory")
         {
             sourceDirs_.append(childNode.childNodes().at(0).nodeValue());
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::parseSourceDirectories()
+//-----------------------------------------------------------------------------
+void Component::parseIgnoredFiles(QDomNode& node)
+{
+    for (int i = 0; i < node.childNodes().count(); ++i)
+    {
+        QDomNode childNode = node.childNodes().at(i);
+
+        if (childNode.nodeName() == "kactus2:ignoredFile")
+        {
+            ignoredFiles_.append(childNode.childNodes().at(0).nodeValue());
         }
     }
 }
@@ -3808,4 +3861,23 @@ bool Component::isHierarchicalSW() const
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::addIgnoredFile()
+//-----------------------------------------------------------------------------
+void Component::addIgnoredFile(QString const& filename)
+{
+    if (!ignoredFiles_.contains(filename))
+    {
+        ignoredFiles_.append(filename);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::removeIgnoredFile()
+//-----------------------------------------------------------------------------
+void Component::removeIgnoredFile(QString const& filename)
+{
+    ignoredFiles_.removeAll(filename);
 }

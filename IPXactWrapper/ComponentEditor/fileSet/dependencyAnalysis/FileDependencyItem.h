@@ -70,10 +70,11 @@ public:
      *      @param [in] type       The item type.
      *      @param [in] component  The component being edited.
      *      @param [in] path       The file path.
+     *      @param [in] fileType   The file type.
      *      @param [in] fileRefs   The file references.
      */
     FileDependencyItem* addFile(Component* component, QString const& path,
-                                QList<File*> const& fileRefs);
+                                QString const& fileType, QList<File*> const& fileRefs);
 
     /*!
      *  Adds a folder item.
@@ -219,11 +220,12 @@ private:
      *
      *      @param [in] parent     The parent item.
      *      @param [in] component  The component being edited.
-     *      @param [in] path       The path of the file/folder.
+     *      @param [in] path       The path of the file.
+     *      @param [in] fileType   The file type.
      *      @param [in] fileRefs   The file references.
      */
     FileDependencyItem(FileDependencyItem* parent, Component* component, QString const& path,
-                       QList<File*> const& fileRefs);
+                       QString const& fileType, QList<File*> const& fileRefs);
 
     /*!
      *  Constructor which creates a folder item.
@@ -257,6 +259,9 @@ private:
 
     //! VLNV references.
     QList<VLNV> references_;
+
+    //! The file type.
+    QString fileType_;
 
     //! File pointers.
     QList<File*> fileRefs_;
