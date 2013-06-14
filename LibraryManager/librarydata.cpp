@@ -224,7 +224,16 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 		QMap<VLNV, QString>::iterator i = libraryItems_.begin();
 		while (i != libraryItems_.end()) {
 
-			checkObject(i.key(), i.value());
+			QSharedPointer<LibraryComponent> libComp = getModel(i.key());
+			// if the object could not be parsed
+			if (!libComp) {
+
+				// remove the pair from the map and move on
+				QMap<VLNV, QString>::iterator i = libraryItems_.find(i.key());
+				libraryItems_.erase(i);
+				continue;
+			}
+			checkObject(libComp, i.value());
 			++i;
 		}
 
@@ -542,7 +551,18 @@ void LibraryData::performIntegrityCheckStep()
 
 	if (timerStep_ < timerSteps_)
 	{
-		checkObject(iterObjects_.key(), iterObjects_.value());
+
+		QSharedPointer<LibraryComponent> libComp = getModel(iterObjects_.key());
+		// if the object could not be parsed
+		if (!libComp) {
+
+			// remove the pair from the map and move on
+			QMap<VLNV, QString>::iterator i = libraryItems_.find(iterObjects_.key());
+			libraryItems_.erase(i);
+			return;
+		}
+
+		checkObject(libComp, iterObjects_.value());
 		++iterObjects_;
 	}
 	else
@@ -578,39 +598,45 @@ void LibraryData::performIntegrityCheckStep()
 	}
 }
 
-bool LibraryData::checkObject( const VLNV& vlnv, const QString& path ) {
+bool LibraryData::checkObject( QSharedPointer<LibraryComponent> libComp, const QString& path, bool print /*= true*/ ) {
 
 	// in the start assume that document is valid and if errors are 
 	// found the set document as invalid
 	bool wasValid = true;
 
-	QSharedPointer<LibraryComponent> libComp = getModel(vlnv);
+	Q_ASSERT(libComp);
 
-	// if the object could not be parsed
-	if (!libComp) {
-
-		// remove the pair from the map and move on
-		QMap<VLNV, QString>::iterator i = libraryItems_.find(vlnv);
-		libraryItems_.erase(i);
-		return false;
-	}
+	// used to print information to user
+	VLNV vlnv(*libComp->getVlnv());
 
 	// inform the user of the object being processed
 
 	// make sure the file exists
 	QFileInfo topFile(path);
 	if (!topFile.exists()) {
+
+		// if theres no printing then there is no reason to check further errors
+		if (!print) {
+			return false;
+		}
+
 		emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
 		emit errorMessage(tr("The file %1 for the document was not found.").arg(path));
 		++errors_;
 		++failedObjects_;
+
 		wasValid = false;
 	}
 
 	// check if the component xml is valid and if not then print errors of the component
 	QStringList errorList;
-	if (!libComp->isValid(errorList))
-	{
+	if (!libComp->isValid(errorList)) {
+
+		// if theres no printing then there is no reason to check further errors
+		if (!print) {
+			return false;
+		}
+
 		if (wasValid) {
 			emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
 			++failedObjects_;
@@ -629,7 +655,12 @@ bool LibraryData::checkObject( const VLNV& vlnv, const QString& path ) {
 	for (int j = 0; j < vlnvList.size(); ++j) {
 		// if the document referenced by this model is not found
 		if (!libraryItems_.contains(vlnvList.at(j))) {
-			
+
+			// if theres no printing then there is no reason to check further errors
+			if (!print) {
+				return false;
+			}
+
 			// if this was first failed test then increase number of failed items
 			if (wasValid) {
 				emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
@@ -653,6 +684,11 @@ bool LibraryData::checkObject( const VLNV& vlnv, const QString& path ) {
 
 		// if the directory does not exist
 		if (!dirInfo.exists()) {
+
+			// if theres no printing then there is no reason to check further errors
+			if (!print) {
+				return false;
+			}
 
 			// if this is the first found error
 			if (wasValid) {
@@ -684,15 +720,20 @@ bool LibraryData::checkObject( const VLNV& vlnv, const QString& path ) {
 			// if the URL is not valid
 			if (urlValidator_->validate(originalPath, pos) != QValidator::Acceptable) {
 
+				// if theres no printing then there is no reason to check further errors
+				if (!print) {
+					return false;
+				}
+
 				// if this is the first found error
 				if (wasValid) {
+
 					emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
 					++failedObjects_;
 					wasValid = false;
 				}
 
 				emit errorMessage(tr("\tURL %1 was not valid.").arg(originalPath));
-
 				++errors_;
 				++fileErrors_;
 			}
@@ -725,6 +766,11 @@ bool LibraryData::checkObject( const VLNV& vlnv, const QString& path ) {
 			// if the path did not exist
 			if (!pathInfo.exists()) {
 
+				// if theres no printing then there is no reason to check further errors
+				if (!print) {
+					return false;
+				}
+
 				// if this is the first found error
 				if (wasValid) {
 					emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
@@ -733,7 +779,6 @@ bool LibraryData::checkObject( const VLNV& vlnv, const QString& path ) {
 				}
 
 				emit errorMessage(tr("\tFile %1 was not found in the file system.").arg(filePath));
-
 				++errors_;
 				++fileErrors_;
 			}

@@ -104,23 +104,7 @@ void HierarchyItem::parseComponent( const VLNV& vlnv ) {
 	component_ = libComp.staticCast<Component const>();
 	Q_ASSERT(component_);
 
-	isValid_ = component_->isValid();
-
-	// check all files referenced by this component
-	QStringList filelist = component_->getDependentFiles();
-	QString xmlPath = handler_->getPath(vlnv);
-	for (int j = 0; j < filelist.size(); ++j) {
-
-		// make sure that each file referenced by the model exists
-		// in the file system
-		QString path = General::getAbsolutePath(xmlPath, filelist.at(j));
-
-		// if the file did not exist
-		if (path.isEmpty()) {
-			isValid_ = false;
-			break;
-		}
-	}
+	isValid_ = handler_->isValid(vlnv);
 
 	// ask the hierarchical references from the component
 	QList<VLNV> refs = component_->getHierRefs();
@@ -212,7 +196,7 @@ void HierarchyItem::parseDesign( const VLNV& vlnv, KactusAttribute::Implementati
 	QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
 	design_ = libComp.staticCast<Design const>();
 
-	isValid_ = design_->isValid();
+	isValid_ = handler_->isValid(vlnv);
 
 	// take all components referenced by the design
 	QList<VLNV> components = design_->getComponents();
@@ -278,7 +262,7 @@ void HierarchyItem::parseBusDefinition( const VLNV& vlnv ) {
 	QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
 	busDef_ = libComp.staticCast<BusDefinition const>();
 
-	isValid_ = busDef_->isValid();
+	isValid_ = handler_->isValid(vlnv);
 }
 
 void HierarchyItem::parseAbsDefinition( const VLNV& vlnv ) {
@@ -288,7 +272,7 @@ void HierarchyItem::parseAbsDefinition( const VLNV& vlnv ) {
 	QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
 	absDef_ = libComp.staticCast<AbstractionDefinition const>();
 
-	isValid_ = absDef_->isValid();
+	isValid_ = handler_->isValid(vlnv);
 }
 
 void HierarchyItem::parseComDefinition( const VLNV& vlnv ) {
@@ -298,7 +282,7 @@ void HierarchyItem::parseComDefinition( const VLNV& vlnv ) {
     QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
     comDef_ = libComp.staticCast<ComDefinition const>();
 
-    isValid_ = comDef_->isValid();
+    isValid_ = handler_->isValid(vlnv);
 }
 
 void HierarchyItem::parseApiDefinition( const VLNV& vlnv ) {
@@ -308,7 +292,7 @@ void HierarchyItem::parseApiDefinition( const VLNV& vlnv ) {
     QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
     apiDef_ = libComp.staticCast<ApiDefinition const>();
 
-    isValid_ = apiDef_->isValid();
+    isValid_ = handler_->isValid(vlnv);
 }
 
 void HierarchyItem::createChild( const VLNV& vlnv ) {

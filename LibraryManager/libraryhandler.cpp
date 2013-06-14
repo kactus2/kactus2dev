@@ -1537,37 +1537,10 @@ bool LibraryHandler::isValid( const VLNV& vlnv ) {
 		}
 	}
 
-	// if the item contains internal errors
-	if (!libComp->isValid()) {
-		return false;
-	}
+	QString path = data_->getPath(vlnv);
+	Q_ASSERT(!path.isEmpty());
 
-	// check that all VLNVs needed by this model are found in the library
-	QList<VLNV> vlnvList = libComp->getDependentVLNVs();
-	for (int j = 0; j < vlnvList.size(); ++j) {
-		// if the document referenced by this model is not found
-		if (!data_->contains(vlnvList.at(j))) {
-			return false;
-		}
-	}
-
-	// check all files referenced by this model
-	QStringList filelist = libComp->getDependentFiles();
-	QString xmlPath = data_->getPath(vlnv);
-	for (int j = 0; j < filelist.size(); ++j) {
-
-		// make sure that each file referenced by the model exists
-		// in the file system
-		QString path = General::getAbsolutePath(xmlPath, filelist.at(j));
-
-		// if the path did not exist
-		if (path.isEmpty()) {
-			return false;
-		}
-	}
-
-	// all checks were ok
-	return true;
+	return data_->checkObject(libComp, path, false);
 }
 
 void LibraryHandler::clearDirectoryStructure( const QString& dirPath,

@@ -118,6 +118,25 @@ public:
 	*/
 	void checkLibraryIntegrity(bool showProgress = true);
 
+	/*! \brief Check the specified library object's validity.
+	 * 
+	 * Note:
+	 * The following members must be initialized before calling this function first time:
+	 * errors_, failedObjects_, syntaxErrors_, vlnvErrors_, fileErrors_.
+	 * If the object is faulty, the members are modified according the to error type.
+	 * 
+	 * Method: 		checkObject
+	 * Full name:	LibraryData::checkObject
+	 * Access:		private 
+	 *
+	 * \param libComp The object which's validity is checked.
+	 * \param path The path to the object's IP-XACT file.
+	 * \param print If true then errors are printed to user.
+	 *
+	 * \return True if the object was valid.
+	*/
+	bool checkObject(QSharedPointer<LibraryComponent> libComp, const QString& path, bool print = true);
+
 signals:
 
 	//! \brief Emit an error message to be printed to user.
@@ -184,24 +203,6 @@ private:
 	 *
 	*/
 	void parseFile(const QString& filePath);
-
-	/*! \brief Check the specified library object's validity.
-	 * 
-	 * Note:
-	 * The following members must be initialized before calling this function first time:
-	 * errors_, failedObjects_, syntaxErrors_, vlnvErrors_, fileErrors_.
-	 * If the object is faulty, the members are modified according the to error type.
-	 * 
-	 * Method: 		checkObject
-	 * Full name:	LibraryData::checkObject
-	 * Access:		private 
-	 *
-	 * \param vlnv Identifies the library object.
-	 * \param path The path to the object's IP-XACT file.
-	 *
-	 * \return True if the object was valid.
-	*/
-	bool checkObject(const VLNV& vlnv, const QString& path);
 
     //! The main window.
     QMainWindow* mainWnd_;
