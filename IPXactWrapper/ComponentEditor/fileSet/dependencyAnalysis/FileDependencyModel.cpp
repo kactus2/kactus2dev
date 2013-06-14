@@ -404,7 +404,18 @@ Qt::ItemFlags FileDependencyModel::flags(const QModelIndex& index) const
         return Qt::ItemIsSelectable;
 
     case FILE_DEPENDENCY_COLUMN_FILESETS:
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+        {
+            FileDependencyItem* item = static_cast<FileDependencyItem*>(index.internalPointer());
+
+            if (item->getType() == FileDependencyItem::ITEM_TYPE_FILE || item->getChildCount() > 0)
+            {
+                return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+            }
+            else
+            {
+                return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+            }
+        }
 
     default:
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable;

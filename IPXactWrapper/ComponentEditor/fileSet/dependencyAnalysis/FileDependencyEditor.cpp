@@ -244,8 +244,10 @@ void FileDependencyEditor::scanFiles(QString const& path)
         {
             scanFiles(General::getRelativePath(basePath_, info.absoluteFilePath()));
         }
-        // Otherwise add the file if it does not belong to ignored extensions.
-        else if (!ignoreExtList_.contains(info.completeSuffix()))
+        // Otherwise add the file if it does not belong to ignored extensions or
+        // is not an IP-XACT file.
+        else if (!ignoreExtList_.contains(info.completeSuffix()) &&
+                 !General::isFileIPXact(info.absoluteFilePath()))
         {
             // Otherwise the entry is a file.
             // Check which file type corresponds to the extension.

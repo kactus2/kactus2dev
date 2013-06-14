@@ -49,16 +49,6 @@ public:
      */
     virtual QSize sizeHint(QStyleOptionViewItem const& option, QModelIndex const& index) const;
 
-protected:
-    /*!
-     *  Handles the painting of UI elements in the file dependency model.
-     *
-     *      @param [in] painter  The painter context.
-     *      @param [in] option   The painting options.
-     *      @param [in] index    The model index of the item to paint.
-     */
-    virtual void paint(QPainter *painter, QStyleOptionViewItem const& option, QModelIndex const& index) const;
-
 private:
     // Disable copying.
     FileDependencyDelegate(FileDependencyDelegate const& rhs);

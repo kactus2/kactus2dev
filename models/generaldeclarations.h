@@ -105,6 +105,13 @@ namespace General {
 	*/
 	KACTUS2_API QStringList getFileTypes(QSettings& settings, const QFileInfo& file);
 
+    /*!
+     *  Returns true if the given file is IP-XACT.
+     *
+     *      @param [in] filename The name of the file to check.
+     */
+    bool isFileIPXact(QString const& filename);
+
 /*!
  * Provides the capability to require or forbid a port to appear in a
  * bus interface.

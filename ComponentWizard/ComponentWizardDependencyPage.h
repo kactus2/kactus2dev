@@ -53,11 +53,6 @@ public:
     virtual void initializePage();
 
     /*!
-     *  Cleans up the page.
-     */
-    virtual void cleanupPage();
-    
-    /*!
      *  Returns true if the scan has finished; otherwise false.
      */
     virtual bool isComplete() const;

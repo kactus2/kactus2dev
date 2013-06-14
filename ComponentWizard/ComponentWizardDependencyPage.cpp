@@ -98,19 +98,13 @@ int ComponentWizardDependencyPage::nextId() const
 //-----------------------------------------------------------------------------
 void ComponentWizardDependencyPage::initializePage()
 {
-    // Start the scan.
-    editor_.scan();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentWizardDependencyPage::cleanupPage()
-//-----------------------------------------------------------------------------
-void ComponentWizardDependencyPage::cleanupPage()
-{
     // Clear file sets.
     QList< QSharedPointer<FileSet> > fileSets;
     parent_->getComponent()->setFileSets(fileSets);
     model_.refresh();
+
+    // Start the scan.
+    editor_.scan();
 }
 
 //-----------------------------------------------------------------------------
