@@ -11,6 +11,8 @@
 #include "componenteditoritem.h"
 #include <models/file.h>
 
+#include <QRegExpValidator>
+
 /*! \brief The item for a single file in component editor's navigation tree.
  *
  */
@@ -101,6 +103,12 @@ private:
 
 	//! \brief Pointer to the file being edited.
 	QSharedPointer<File> file_;
+
+	//! \brief Checks if the given string is a URL (invalids are allowed) or not.
+	QRegExpValidator* urlTester_;
+
+	//! \brief Validates the file path to check if they are valid URLs.
+	QRegExpValidator* urlValidator_;
 };
 
 #endif // COMPONENTEDITORFILEITEM_H

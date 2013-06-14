@@ -10,6 +10,7 @@
 #include <IPXactWrapper/ComponentEditor/fileSet/file/fileeditor.h>
 #include <models/component.h>
 #include <models/generaldeclarations.h>
+#include <common/utils.h>
 
 #include <QFont>
 #include <QApplication>
@@ -23,7 +24,9 @@ ComponentEditorFileItem::ComponentEditorFileItem(QSharedPointer<File> file,
 												 QSharedPointer<Component> component,
 												 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-file_(file) {
+file_(file),
+urlTester_(new QRegExpValidator(Utils::URL_IDENTIFY_REG_EXP, this)),
+urlValidator_(new QRegExpValidator(Utils::URL_VALIDITY_REG_EXP, this)) {
 }
 
 ComponentEditorFileItem::~ComponentEditorFileItem() {
@@ -38,25 +41,45 @@ bool ComponentEditorFileItem::isValid() const {
 	if (!file_->isValid(true)) {
 		return false;
 	}
-	
-	// check that the file exists in the file system
-	
-	// get the path to the xml file
-	QString basePath = libHandler_->getPath(*component_->getVlnv());
-	// get the file's relative path
-	QString relPath = file_->getName();
 
-	// create the absolute file path to the file
-	QString absolutePath = General::getAbsolutePath(basePath, relPath);
+	QString filePath = file_->getName();
+	int pos = 0;
+	
+	// check if the path is actually a URL to (external) location
+	if (urlTester_->validate(filePath, pos) == QValidator::Acceptable) { 
+		pos = 0;
 
-	// if the file does not exist then this is false item
-	QFileInfo fileInfo(absolutePath);
-	if (!fileInfo.exists()) {
-		return false;
+		// if the URL is not valid
+		if (urlValidator_->validate(filePath, pos) != QValidator::Acceptable) {
+			return false;
+		}
+
+		// the URL was valid
+		return true;
 	}
 
-	// file was valid and existed
-	return true;
+	// the path was not URL so interpret is as file path
+	else {
+
+		// get the path to the xml file
+		QString basePath = libHandler_->getPath(*component_->getVlnv());
+
+		QString absPath;
+
+		// if the path is relative then create absolute path
+		QFileInfo originalInfo(filePath);
+		if (originalInfo.isRelative()) {
+			absPath = General::getAbsolutePath(basePath, filePath);
+		}
+		// if the reference is directly absolute
+		else {
+			absPath = filePath;
+		}
+
+		// check if the file exists in the file system
+		QFileInfo fileInfo(absPath);
+		return fileInfo.exists();
+	}
 }
 
 ItemEditor* ComponentEditorFileItem::editor() {

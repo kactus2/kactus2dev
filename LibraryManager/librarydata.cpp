@@ -717,6 +717,8 @@ bool LibraryData::checkObject( QSharedPointer<LibraryComponent> libComp, const Q
 		// check if the path is actually a URL to (external) location
 		if (urlTester_->validate(originalPath, pos) == QValidator::Acceptable) {
 
+			pos = 0;
+
 			// if the URL is not valid
 			if (urlValidator_->validate(originalPath, pos) != QValidator::Acceptable) {
 
