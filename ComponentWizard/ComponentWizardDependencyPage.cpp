@@ -39,6 +39,7 @@ ComponentWizardDependencyPage::ComponentWizardDependencyPage(PluginManager& plug
 
     splitter_.addWidget(&view_);
     splitter_.addWidget(&editor_);
+    splitter_.setStretchFactor(1, 1);
 
     proxy_.setSourceModel(&model_);
 
@@ -69,6 +70,10 @@ ComponentWizardDependencyPage::ComponentWizardDependencyPage(PluginManager& plug
     connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
             &model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
     //connect(&editor_, SIGNAL(fileSetsUpdated()), this, SLOT(updateFileSetView()));
+
+    QList<int> sizes;
+    sizes << 150 << 300;
+    splitter_.setSizes(sizes);
 }
 
 //-----------------------------------------------------------------------------

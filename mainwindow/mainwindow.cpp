@@ -2207,9 +2207,10 @@ void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier,
 	component->setComponentImplementation(KactusAttribute::KTS_HW);
 	component->createEmptyFlatView();
 
-    if (!QDir().mkpath(directory))
+    // Create the file.
+    if (!libraryHandler_->writeModelToFile(directory, component))
     {
-        emit errorMessage("Error creating directory for the component.");
+        emit errorMessage("Error saving file to disk.");
         return;
     }
 
@@ -2220,8 +2221,8 @@ void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier,
 //     VHDLtoIPXACT editor(component, directory, this);
 //     editor.exec();
 
-	// Create the file.
-	if (!libraryHandler_->writeModelToFile(directory, component))
+	// Save wizard changes.
+	if (!libraryHandler_->writeModelToFile(component))
     {
         emit errorMessage("Error saving file to disk.");
         return;
@@ -3886,8 +3887,19 @@ void MainWindow::createSWComponent(VLNV const& vlnv, QString const& directory)
 	// Set Kactus attributes.
 	component->setComponentImplementation(KactusAttribute::KTS_SW);
 
-	// Create the file.
+    // Create the file.
     if (!libraryHandler_->writeModelToFile(directory, component))
+    {
+        emit errorMessage("Error saving files to disk.");
+        return;
+    }
+
+    // Open up the component wizard.
+    ComponentWizard wizard(component, directory, *pluginMgr_, libraryHandler_, this);
+    wizard.exec();
+
+	// Save wizard changes.
+    if (!libraryHandler_->writeModelToFile(component))
     {
         emit errorMessage("Error saving files to disk.");
         return;
