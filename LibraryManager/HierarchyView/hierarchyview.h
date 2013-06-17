@@ -111,6 +111,9 @@ public slots:
 	//! \brief Open the xml of the selected IP-Xact element.
 	void onOpenXml();
 
+    //! Opens the folder that contains the IP-XACT object.
+    void onOpenContainingFolder();
+
     //! Called when the user chooses Show Errors from the context menu.
     void onShowErrors();
 
@@ -282,6 +285,9 @@ private:
 
     //! \brief Open the xml file to be viewed by the user.
 	QAction* openXmlAction_;
+
+    //! Action to open the containing folder.
+    QAction* openContainingFolderAction_;
 };
 
 #endif // HIERARCHYVIEW_H

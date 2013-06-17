@@ -28,31 +28,32 @@
 
 LibraryTreeView::LibraryTreeView(LibraryInterface* handler, 
 								 LibraryTreeFilter* filter, 
-								 QWidget *parent):
-QTreeView(parent), 
-handler_(handler),
-filter_(filter),
-startPos_(),
-dragIndex_(),
-openDesignAction_(NULL),
-openSWDesignAction_(NULL),
-openCompAction_(NULL),
-createNewComponentAction_(NULL),
-createNewDesignAction_(NULL),
-createNewSWDesignAction_(NULL),
-createNewSystemDesignAction_(NULL),
-deleteAction_(NULL), 
-exportAction_(NULL),  
-showErrorsAction_(NULL),
-openBusAction_(NULL),
-createBusAction_(NULL),
-addSignalsAction_(NULL),
-openComDefAction_(NULL),
-createComDefAction_(NULL),
-openApiDefAction_(NULL),
-createApiDefAction_(NULL),
-openSystemAction_(NULL),
-openXmlAction_(NULL)
+								 QWidget *parent)
+    : QTreeView(parent), 
+      handler_(handler),
+      filter_(filter),
+      startPos_(),
+      dragIndex_(),
+      openDesignAction_(NULL),
+      openSWDesignAction_(NULL),
+      openCompAction_(NULL),
+      createNewComponentAction_(NULL),
+      createNewDesignAction_(NULL),
+      createNewSWDesignAction_(NULL),
+      createNewSystemDesignAction_(NULL),
+      deleteAction_(NULL), 
+      exportAction_(NULL),  
+      showErrorsAction_(NULL),
+      openBusAction_(NULL),
+      createBusAction_(NULL),
+      addSignalsAction_(NULL),
+      openComDefAction_(NULL),
+      createComDefAction_(NULL),
+      openApiDefAction_(NULL),
+      createApiDefAction_(NULL),
+      openSystemAction_(NULL),
+      openXmlAction_(NULL),
+      openContainingFolderAction_(NULL)
 {
 
 	Q_ASSERT_X(filter, "LibraryTreeView constructor",
@@ -224,6 +225,7 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
             menu.addAction(showErrorsAction_);
         }
 
+        menu.addAction(openContainingFolderAction_);
 		menu.addAction(openXmlAction_);
 	}
 
@@ -346,6 +348,10 @@ void LibraryTreeView::setupActions() {
 	openXmlAction_ = new QAction(tr("Open XML File"), this);
 	connect(openXmlAction_, SIGNAL(triggered()),
 		this, SLOT(onOpenXml()), Qt::UniqueConnection);
+
+    openContainingFolderAction_ = new QAction(tr("Open Containing Folder"), this);
+    connect(openContainingFolderAction_, SIGNAL(triggered()),
+            this, SLOT(onOpenContainingFolder()), Qt::UniqueConnection);
 }
 
 void LibraryTreeView::onDeleteAction() {	
@@ -553,3 +559,19 @@ void LibraryTreeView::onOpenXml() {
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onOpenContainingFolder()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onOpenContainingFolder()
+{
+    QModelIndex index = filter_->mapToSource(currentIndex());
+    LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
+    VLNV vlnv = item->getVLNV();
+
+    if (vlnv.isValid()) {
+        QString path = QFileInfo(handler_->getPath(vlnv)).absolutePath();
+
+        // Open the folder in the operating system's default file browser.
+        QDesktopServices::openUrl(QUrl::fromLocalFile(path));
+    }    
+}

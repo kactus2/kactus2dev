@@ -67,7 +67,8 @@ HierarchyView::HierarchyView(QWidget *parent,
       openApiDefAction_(NULL),
       createApiDefAction_(NULL),
       openSystemAction_(NULL),
-      openXmlAction_(NULL)
+      openXmlAction_(NULL),
+      openContainingFolderAction_(NULL)
 {
     setIconSize(QSize(24, 24));
     setItemDelegate(new HierarchyItemDelegate(this));
@@ -206,6 +207,10 @@ void HierarchyView::setupActions() {
 	openXmlAction_ = new QAction(tr("Open XML File"), this);
 	connect(openXmlAction_, SIGNAL(triggered()),
 		this, SLOT(onOpenXml()), Qt::UniqueConnection);
+
+    openContainingFolderAction_ = new QAction(tr("Open Containing Folder"), this);
+    connect(openContainingFolderAction_, SIGNAL(triggered()),
+            this, SLOT(onOpenContainingFolder()), Qt::UniqueConnection);
 }
 
 void HierarchyView::onOpenComponent() {
@@ -319,6 +324,21 @@ void HierarchyView::onOpenXml() {
 	QString xmlPath = handler_->getPath(vlnv);
 	// open the file in operating system's default editor
 	QDesktopServices::openUrl(QUrl::fromLocalFile(xmlPath));
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierarchyView::onOpenContainingFolder()
+//-----------------------------------------------------------------------------
+void HierarchyView::onOpenContainingFolder()
+{
+    QModelIndex index = filter_->mapToSource(currentIndex());
+    HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
+    VLNV vlnv = item->getVLNV();
+
+    QString path = QFileInfo(handler_->getPath(vlnv)).absolutePath();
+    
+    // Open the folder in the operating system's default file browser.
+    QDesktopServices::openUrl(QUrl::fromLocalFile(path));
 }
 
 void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
@@ -457,6 +477,7 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
             menu.addAction(showErrorsAction_);
         }
 
+        menu.addAction(openContainingFolderAction_);
         menu.addAction(openXmlAction_);
 	}
 
