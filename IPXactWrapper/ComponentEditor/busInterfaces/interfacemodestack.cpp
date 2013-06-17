@@ -35,8 +35,9 @@ monitor_(busif, component, parent, handler, this) {
 	insertWidget(General::MIRROREDSLAVE, &mirroredSlave_);
 	insertWidget(General::MIRROREDSYSTEM, &mirroredSystem_);
 	insertWidget(General::MONITOR, &monitor_);
+    insertWidget(General::INTERFACE_MODE_COUNT, new QGroupBox(tr("Undefined"), this));
 
-	connect(&master_, SIGNAL(contentChanged()),
+    connect(&master_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&slave_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -111,7 +112,8 @@ void InterfaceModeStack::refresh() {
 			break;
 							   }
 		default: {
-			setCurrentIndex(General::MASTER);
+            setCurrentIndex(General::INTERFACE_MODE_COUNT);
+			//setCurrentIndex(General::MASTER);
 			master_.refresh();
 			master_.saveModeSpecific();
 				 }
