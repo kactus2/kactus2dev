@@ -18,6 +18,7 @@
 #include <LibraryManager/libraryinterface.h>
 #include <models/librarycomponent.h>
 
+#include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QLabel>
@@ -41,7 +42,7 @@ previewBox_(0) {
     Q_ASSERT(component != 0);
 
     // Create the VLNV displayer and attribute & description editors.
-    QVBoxLayout* layout = new QVBoxLayout(this);
+    QVBoxLayout* layout = new QVBoxLayout();
 	layout->setContentsMargins(0, 0, 0, 0);
 
 	const QString xmlPath = libHandler->getPath(*component->getVlnv());
@@ -58,12 +59,16 @@ previewBox_(0) {
 
     previewBox_ = new ComponentPreviewBox(libHandler);
     previewBox_->setComponent(component);
+    previewBox_->setFixedWidth(200);
 
     layout->addWidget(vlnvDisplayer_);
     layout->addWidget(attributeEditor_);
     layout->addWidget(descEditor_);
 	layout->addWidget(headerEditor_);
-    layout->addWidget(previewBox_);
+
+    QHBoxLayout* topLayout = new QHBoxLayout(this);
+    topLayout->addLayout(layout, 1);
+    topLayout->addWidget(previewBox_);
 
     // Connect the contentChanged() signals.
     connect(attributeEditor_, SIGNAL(contentChanged()),

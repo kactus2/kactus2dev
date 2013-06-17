@@ -31,7 +31,7 @@ public:
 	//! \brief The default width of the navigation tree.
     enum
     {
-        DEFAULT_WIDTH = 150
+        DEFAULT_WIDTH = 180
     };
 
     /*! \brief The constructor

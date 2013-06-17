@@ -76,6 +76,7 @@ visualizerSlot_(&editorVisualizerSplitter_) {
 	// navigation splitter contains the navigation tree and the other splitter
 	navigationSplitter_.addWidget(&navigationView_);
 	navigationSplitter_.addWidget(&editorVisualizerSplitter_);
+    navigationSplitter_.setStretchFactor(1, 1);
 
 	// set the component to be displayed in the navigation model
 	navigationModel_.setComponent(component_);
