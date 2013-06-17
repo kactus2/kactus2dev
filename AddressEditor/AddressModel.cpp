@@ -434,13 +434,17 @@ bool AddressModel::checkRangeOverlaps(int index) const
 void AddressModel::autoAssignAddresses()
 {
     beginResetModel();
-    addressEntries_[0]->setStartAddress(addressEntries_[0]->getStartAddress());
 
-    for (int i = 0; i < addressEntries_.size() - 1; ++i)
+    if (!addressEntries_.empty())
     {
-        if (!addressEntries_[i + 1]->isLocked())
+        addressEntries_[0]->setStartAddress(addressEntries_[0]->getStartAddress());
+
+        for (int i = 0; i < addressEntries_.size() - 1; ++i)
         {
-            addressEntries_[i + 1]->setStartAddress(addressEntries_[i]->getEndAddress() + 1);
+            if (!addressEntries_[i + 1]->isLocked())
+            {
+                addressEntries_[i + 1]->setStartAddress(addressEntries_[i]->getEndAddress() + 1);
+            }
         }
     }
 
