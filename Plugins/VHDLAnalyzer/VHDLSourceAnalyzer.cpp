@@ -153,14 +153,15 @@ void VHDLSourceAnalyzer::getFileDependencies(Component const* component,
                 QStringList words = line.split(QRegExp("\\s+"), QString::SkipEmptyParts);
                 // Now the component name should be the first word of the list.
                 QString componentName = words.at(0).toLower();
+
+                FileDependencyDesc dependency;
+                dependency.description = "Component instantiation.";
+                
                 if (cachedEntities_.contains(componentName))
                 {
                     // Add all existing entities to the return value list.
                     for (int j=0; j<cachedEntities_[componentName].count(); j++)
                     {
-                        FileDependencyDesc dependency;
-                        dependency.description = "Component instantiation.";
-
 	                    // create file info instance to make sure that only the directory of the
 	                    // from parameter is used
 	                    QFileInfo fromInfo(filename);
@@ -175,9 +176,14 @@ void VHDLSourceAnalyzer::getFileDependencies(Component const* component,
 
                         //dependency.filename = cachedEntities_[componentName].at(j);
                         dependency.filename = ipXactDir.relativeFilePath(cachedEntities_[componentName].at(j));
-                        dependencies.append(dependency);
                     }
                 }
+                else
+                {
+                    dependency.filename = componentName + ".vhd";
+                }
+
+                dependencies.append(dependency);
             }
         }
     }
