@@ -64,6 +64,11 @@ public:
 	*/
 	void setAllowImportExport(bool allow);
 
+signals:
+
+    //! Emitted when a the value of a model parameter is modified.
+    void parameterChanged(QString const& parameterName);
+
 public slots:
 
 	/*! \brief Add a new model parameter to the editor.
@@ -87,6 +92,13 @@ public slots:
 	 *
 	*/
 	void removeModelParameter(const QString& name);
+
+    /*!
+     *   Emits parameterChanged when detects changes in the model data.
+     *
+     *      @param [in] index The index of the changed data object.
+     */
+    void modelDataChanged(QModelIndex const& index);
 
 protected:
 

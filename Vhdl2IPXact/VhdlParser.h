@@ -48,6 +48,11 @@ public:
      */
     bool readFile(QString absolutePath);
 
+public slots:
+
+    //! Called when a model parameter is modified.
+    virtual void modelParameterChanged(QString const& parameterName);
+
 signals:
     
     //! Emitted when a port is created or selected.
@@ -94,15 +99,6 @@ private:
      *  Signals remove for all model parameters and empties lists to model parameters.
      */
     void removeGenerics();
-
-	/*!
-     *   Resolves the value of a generic.
-     *
-     *      @param [in] name The name of the generic.
-	 *
-	 *      @return The value of the generic or -1 if not found.
-     */
-    int genericValue(QString const& name);
 
 	/*!
      *  Parses, formats, checks and displays a vhdl file.
@@ -167,22 +163,33 @@ private:
      */
     void createGeneric(QString const& genericDeclaration, QTextBlock const& genericBlock);
     
+    void assignGenerics(QSharedPointer<Port> port);
+
     /*!
      *   Changes the state of text block from selected to not selected and vice versa.
      *
      *      @param [in] block The block whose state to change.
      */
     void toggleBlock(QTextBlock& block);
+    
+    /*!
+     *   Converts the value of a generic to an integer.
+     *        
+     *      @param [in] parameter The generic whose value is converted.
+     *
+	 *      @return The value as integer or -1 if value cannot be converted.
+     */
+    int genericToInt(QSharedPointer<ModelParameter> parameter);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! Maps all ports on a line to a text block.
-    QMap<QTextBlock,QList<QSharedPointer<Port>>> ports_;
+    QMap<QTextBlock,QList<QSharedPointer<Port>>> portsMap_;
 
     //! Maps all generics on a line to a text block.
-    QMap<QTextBlock,QList<QSharedPointer<ModelParameter>>> generics_;
+    QMap<QTextBlock,QList<QSharedPointer<ModelParameter>>> genericsMap_;
 
     //! Text blocks containing port declarations.
     QList<QTextBlock> portBlocks_;
@@ -191,7 +198,10 @@ private:
     QList<QTextBlock> genericBlocks_;
 
     //! Maps a generic name and its value.
-    QMap<QString,QString> genericValues_;
+    QList<QSharedPointer<ModelParameter>> generics_;
+
+    //! Maps a generic to ports using it.
+    QMap<QSharedPointer<ModelParameter>,QList<QSharedPointer<Port>>> genericUsage_;
 
     //! The syntax highlighter for display.
     VhdlEntityHighlighter* highlighter_;

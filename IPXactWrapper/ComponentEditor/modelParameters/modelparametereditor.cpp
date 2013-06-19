@@ -12,8 +12,12 @@
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <LibraryManager/libraryinterface.h>
 
+#include <QHeaderview>
 #include <QVBoxLayout>
 
+//-----------------------------------------------------------------------------
+// Function: ModelParameterEditor()
+//-----------------------------------------------------------------------------
 ModelParameterEditor::ModelParameterEditor(QSharedPointer<Component> component,
 	LibraryInterface* handler, 
 										   QWidget *parent): 
@@ -25,7 +29,7 @@ proxy_(this) {
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+		this, SLOT(modelDataChanged(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(errorMessage(const QString&)),
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(noticeMessage(const QString&)),
@@ -49,6 +53,9 @@ proxy_(this) {
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 
+    // hide vertical header i.e. row numbering.
+    view_.verticalHeader()->hide();
+
 	// set source model for proxy
 	proxy_.setSourceModel(&model_);
 	// set proxy to be the source for the view
@@ -69,30 +76,51 @@ proxy_(this) {
 	refresh();
 }
 
+//-----------------------------------------------------------------------------
+// Function: ~ModelParameterEditor()
+//-----------------------------------------------------------------------------
 ModelParameterEditor::~ModelParameterEditor() {
 }
 
+//-----------------------------------------------------------------------------
+// Function: isValid()
+//-----------------------------------------------------------------------------
 bool ModelParameterEditor::isValid() const {
 	return model_.isValid();
 }
 
+//-----------------------------------------------------------------------------
+// Function: refresh()
+//-----------------------------------------------------------------------------
 void ModelParameterEditor::refresh() {
 	view_.update();
 }
 
+//-----------------------------------------------------------------------------
+// Function: showEvent()
+//-----------------------------------------------------------------------------
 void ModelParameterEditor::showEvent( QShowEvent* event ) {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/modelparams.html");
 }
 
+//-----------------------------------------------------------------------------
+// Function: setAllowImportExport()
+//-----------------------------------------------------------------------------
 void ModelParameterEditor::setAllowImportExport( bool allow ) {
 	view_.setAllowImportExport(allow);
 }
 
+//-----------------------------------------------------------------------------
+// Function: addModelParameter()
+//-----------------------------------------------------------------------------
 void ModelParameterEditor::addModelParameter( QSharedPointer<ModelParameter> modelParam ) {
 	model_.addModelParameter(modelParam);
 }
 
+//-----------------------------------------------------------------------------
+// Function: removeModelParameter()
+//-----------------------------------------------------------------------------
 void ModelParameterEditor::removeModelParameter( const QString& name ) {
 	// find the index for the model parameter
 	QModelIndex paramIndex = model_.index(name);
@@ -101,4 +129,21 @@ void ModelParameterEditor::removeModelParameter( const QString& name ) {
 	if (paramIndex.isValid()) {
 		model_.onRemoveItem(paramIndex);
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: modelDataChanged()
+//-----------------------------------------------------------------------------
+void ModelParameterEditor::modelDataChanged(QModelIndex const& index)
+{
+    // Only changes in the default value emits parameterChanged.
+    if ( index.column() == 3 )
+    {
+        QModelIndex nameIndex = index.sibling(index.row(),0);
+        if ( nameIndex.isValid() )
+        {
+            emit parameterChanged(nameIndex.data().toString());
+        }
+    }
+    emit contentChanged();
 }

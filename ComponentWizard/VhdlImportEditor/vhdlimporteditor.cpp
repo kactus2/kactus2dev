@@ -16,6 +16,9 @@
 #include <QDebug>
 #include <QFileDialog>
 
+//-----------------------------------------------------------------------------
+// Function: VhdlImportEditor()
+//-----------------------------------------------------------------------------
 VhdlImportEditor::VhdlImportEditor(const QString& basePath,
 	QSharedPointer<Component> component, 
 	LibraryInterface* handler,
@@ -45,6 +48,8 @@ ports_(new PortsEditor(component, handler, false, this)) {
 		modelParams_, SLOT(addModelParameter(QSharedPointer<ModelParameter>)), Qt::UniqueConnection);
 	connect(vhdlParser_, SIGNAL(removeGeneric(const QString&)),
 		modelParams_, SLOT(removeModelParameter(const QString&)), Qt::UniqueConnection);
+    connect(modelParams_, SIGNAL(parameterChanged(QString const&)),
+             vhdlParser_, SLOT(modelParameterChanged(QString const&)), Qt::UniqueConnection);
 
 	connect(ports_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -70,13 +75,22 @@ ports_(new PortsEditor(component, handler, false, this)) {
 	topLayout->addLayout(editorLayout);
 }
 
+//-----------------------------------------------------------------------------
+// Function: ~VhdlImportEditor()
+//-----------------------------------------------------------------------------
 VhdlImportEditor::~VhdlImportEditor() {
 }
 
+//-----------------------------------------------------------------------------
+// Function: initializeFileSelection()
+//-----------------------------------------------------------------------------
 void VhdlImportEditor::initializeFileSelection() {
 	fileSelector_->refresh();
 }
 
+//-----------------------------------------------------------------------------
+// Function: checkEditorValidity()
+//-----------------------------------------------------------------------------
 bool VhdlImportEditor::checkEditorValidity() const {
 	// check both editors
 	if (!modelParams_->isValid()) {
@@ -88,6 +102,9 @@ bool VhdlImportEditor::checkEditorValidity() const {
 	return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: onFileSelected()
+//-----------------------------------------------------------------------------
 void VhdlImportEditor::onFileSelected( const QString& filePath ) {
 	if (filePath.isEmpty()) {
 		return;
