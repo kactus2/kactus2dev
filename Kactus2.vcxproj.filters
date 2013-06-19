@@ -3817,11 +3817,17 @@
     <ClCompile Include="common\widgets\FileSelector\fileselector.cpp">
       <Filter>Source Files\common\widgets\FileSelector</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_VhdlParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Vhdl2IPXact\VhdlParser.cpp">
       <Filter>Source Files\vhdl2IPXact</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_VhdlParser.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Vhdl2IPXact\VhdlEntityHighlighter.cpp">
+      <Filter>Source Files\vhdl2IPXact</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_VhdlEntityHighlighter.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5431,6 +5437,9 @@
       <Filter>Header Files\designwidget\views</Filter>
     </CustomBuild>
     <CustomBuild Include="Vhdl2IPXact\VhdlParser.h">
+      <Filter>Header Files\vhdl2IPXact</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Vhdl2IPXact\VhdlEntityHighlighter.h">
       <Filter>Header Files\vhdl2IPXact</Filter>
     </CustomBuild>
   </ItemGroup>
