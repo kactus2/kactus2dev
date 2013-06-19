@@ -151,7 +151,11 @@ void VhdlParser::importPorts()
                 int rightBound = genericValue(typePattern_.cap(3));
                 port->setRightBound(rightBound);          
             }
-
+            
+            if ( genericValues_.contains(port->getDefaultValue()) )
+            {
+                port->setDefaultValue(genericValues_.value(port->getDefaultValue()));
+            } 
             emit addPort(port);
         }
     }
@@ -553,7 +557,7 @@ void VhdlParser::createPort(QString const& portDeclaration, QTextBlock const& po
     QString portNames = portPattern_.cap(1);
     General::Direction direction = General::str2Direction(portPattern_.cap(2),General::DIRECTION_INVALID);
     QString portType = portPattern_.cap(3);
-    QString defaultValue = portPattern_.cap(4);
+    QString defaultValue = portPattern_.cap(4).trimmed();
     QString description = portPattern_.cap(5);
 
     typePattern_.indexIn(portType) ;

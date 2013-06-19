@@ -39,7 +39,7 @@ selectedPort_(), selectedGeneric_(), notSelected_()
     selectedPort_.setBackground(QBrush(KactusColors::SW_COMPONENT));
 
     selectedGeneric_.setForeground(QColor("black"));
-    selectedGeneric_.setBackground(QBrush(KactusColors::MISSING_COMPONENT));
+    selectedGeneric_.setBackground(QBrush(KactusColors::HW_BUS_COMPONENT));
 
     notSelected_.setForeground(QColor("black"));
     notSelected_.setBackground(QBrush(KactusColors::MISSING_COMPONENT));
@@ -70,7 +70,7 @@ void VhdlEntityHighlighter::highlightBlock(const QString &text)
         }
     case PORT_SELECTED:
         {
-            setFormat(startIndex, endIndex, insideEntity_);
+            setFormat(startIndex, endIndex, selectedPort_);
             break;
         }
     case PORT_NOT_SELECTED:
