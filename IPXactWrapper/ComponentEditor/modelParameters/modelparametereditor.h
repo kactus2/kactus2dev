@@ -69,6 +69,8 @@ signals:
     //! Emitted when a the value of a model parameter is modified.
     void parameterChanged(QString const& parameterName);
 
+    void modelParameterRemoved(QString const& name );
+
 public slots:
 
 	/*! \brief Add a new model parameter to the editor.

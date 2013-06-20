@@ -38,6 +38,8 @@ proxy_(this) {
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(modelParameterRemoved(QString const&)),
+            this, SIGNAL(modelParameterRemoved(QString const&)),Qt::UniqueConnection);
 
 	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/modelParamList.csv").arg(compPath);
@@ -52,9 +54,6 @@ proxy_(this) {
 
 	// items can not be dragged
 	view_.setItemsDraggable(false);
-
-    // hide vertical header i.e. row numbering.
-    view_.verticalHeader()->hide();
 
 	// set source model for proxy
 	proxy_.setSourceModel(&model_);
@@ -122,13 +121,7 @@ void ModelParameterEditor::addModelParameter( QSharedPointer<ModelParameter> mod
 // Function: removeModelParameter()
 //-----------------------------------------------------------------------------
 void ModelParameterEditor::removeModelParameter( const QString& name ) {
-	// find the index for the model parameter
-	QModelIndex paramIndex = model_.index(name);
-	
-	// if the model parameter was found
-	if (paramIndex.isValid()) {
-		model_.onRemoveItem(paramIndex);
-	}
+	model_.removeModelParameter(name);
 }
 
 //-----------------------------------------------------------------------------

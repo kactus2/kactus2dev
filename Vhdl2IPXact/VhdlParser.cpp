@@ -20,7 +20,6 @@
 #include <QRegExp>
 #include <QList>
 #include <QTextBlockFormat>
-#include <QDebug>
 
 #include <models/modelparameter.h>
 #include <models/port.h>
@@ -52,25 +51,25 @@ VhdlParser::VhdlParser( QWidget *parent ) : QTextEdit( parent ), portsMap_(), ge
     entityBegin_.setCaseSensitivity(Qt::CaseInsensitive);
 
     // Entity end declaration is END [ENTITY] [<name>];
-    entityEnd_.setPattern("\\b(END)\\s*(ENTITY)?\\s*(ENTITY_NAME)?\\s*[;]\\s*");
+    entityEnd_.setPattern("\\b(END)\\s*(ENTITY)?\\s*(NAME)?\\s*[;]\\s*");
     entityEnd_.setCaseSensitivity(Qt::CaseInsensitive);
 
     portsBegin_.setPattern("\\b(PORT)\\s*[(]");
     portsBegin_.setCaseSensitivity(Qt::CaseInsensitive);
 
-    portsEnd_.setPattern("\\s*[)]\\s*[;](?:\\s|\\n)*(?=(?:[-][-][^\\n]*(?:\\s|\\n)*)*(END|BEGIN|GENERIC))(?:\\s|\\n)*");
+    portsEnd_.setPattern("\\s*[)]\\s*[;]\\s*(?=(?:[-][-][^\\n]*\\s*)*(END|BEGIN|GENERIC))\\s*");
     portsEnd_.setCaseSensitivity(Qt::CaseInsensitive);
 
-    // Port declaration is <port_names> : <direction> <type> [<default>];
-    portPattern_.setPattern("\\s*((?:\\w+\\s*[,]?\\s*)+)\\s*[:]\\s*(\\w+)\\s+(\\w+\\s*(?:[(][^;)]+[)])?)\\s*(?:[:][=]\\s*([^;-]+))?\\s*($|[;](?:(?:[ \\t])*(?:[-][-]\\s*([^\\n]*)))?|(?:(?:[ \\t])*(?:[-][-]\\s*([^\\n]*)))$)");
+    // Port declaration is <port_names> : <direction> <type> [<default>]; [--description]
+    portPattern_.setPattern("\\s*((?:\\w+\\s*[,]?\\s*)+)\\s*[:]\\s*(\\w+)\\s+([^:;$]+)\\s*(?:[:][=]\\s*([^;-]+))?\\s*($|[;](?:(?:[ \\t])*(?:[-][-]\\s*([^\\n]*)))?|(?:(?:[ \\t])*(?:[-][-]\\s*([^\\n]*)))$)");
 
    // Type definition in port declaration is <typename>[(<left> downto <right>)].
-    typePattern_.setPattern("(\\w+)\\s*(?:[(]\\s*(\\w+)(?:\\s|\\n)+\\w+(?:\\s|\\n)+(\\w+)[)])?\\s*");
+    typePattern_.setPattern("(\\w+)\\s*(?:[(]\\s*(\\w+)\\s+\\w+\\s+(\\w+)[)])?\\s*");
   
     genericsBegin_.setPattern("\\b(GENERIC)\\s*[(]");
     genericsBegin_.setCaseSensitivity(Qt::CaseInsensitive);
 
-    genericsEnd_.setPattern("\\s*[)]\\s*[;](?:\\s|\\n)*(?=(?:[-][-][^\\n]*(?:\\s|\\n)*)*(END|BEGIN|PORT))(?:\\s|\\n)*");
+    genericsEnd_.setPattern("\\s*[)]\\s*[;]\\s*(?=(?:[-][-][^\\n]*\\s*)*(END|BEGIN|PORT))\\s*");
     genericsEnd_.setCaseSensitivity(Qt::CaseInsensitive);
 
     // Generic declaration is <generic_names> : <type> [<default>];     
@@ -116,7 +115,7 @@ bool VhdlParser::readFile(QString absolutePath)
 //-----------------------------------------------------------------------------
 // Function: modelParameterChanged()
 //-----------------------------------------------------------------------------
-void VhdlParser::modelParameterChanged(QString const& parameterName)
+void VhdlParser::editorChangedModelParameter(QString const& parameterName)
 {
     foreach (QSharedPointer<ModelParameter> parameter, genericUsage_.keys() )
     {
@@ -131,6 +130,46 @@ void VhdlParser::modelParameterChanged(QString const& parameterName)
 }
 
 //-----------------------------------------------------------------------------
+// Function: editorRemovedModelParameter()
+//-----------------------------------------------------------------------------
+void VhdlParser::editorRemovedModelParameter(QString const& parameterName)
+{
+    foreach ( QList<QSharedPointer<ModelParameter>> paramList, genericsMap_.values() )
+    {
+        foreach (QSharedPointer<ModelParameter> parameter, paramList )
+        {
+            if ( parameter->getName() == parameterName )
+            {
+                QTextBlock block = genericsMap_.key(paramList);
+                block.setUserState(VhdlEntityHighlighter::GENERIC_NOT_SELECTED);
+                highlighter_->rehighlight();
+                return;
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: editorRemovedPort()
+//-----------------------------------------------------------------------------
+void VhdlParser::editorRemovedPort(QString const& portName)
+{
+    foreach ( QList<QSharedPointer<Port>> paramList, portsMap_.values() )
+    {
+        foreach (QSharedPointer<Port> port, paramList )
+        {
+            if ( port->getName() == portName )
+            {
+                QTextBlock block = portsMap_.key(paramList);
+                block.setUserState(VhdlEntityHighlighter::PORT_NOT_SELECTED);
+                highlighter_->rehighlight();
+                return;
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: mouseDoubleClickEvent()
 //-----------------------------------------------------------------------------
 void VhdlParser::mouseDoubleClickEvent(QMouseEvent *e) {
@@ -138,7 +177,7 @@ void VhdlParser::mouseDoubleClickEvent(QMouseEvent *e) {
     QTextCursor cursor = cursorForPosition( e->pos() ); 
 
     toggleBlock(cursor.block());
-    highlighter_->rehighlight();
+    highlighter_->rehighlight();    
 }
 
 //-----------------------------------------------------------------------------
@@ -279,7 +318,7 @@ void VhdlParser::createDocument(QFile& vhdlFile)
     const int entityBeginIndex = entityBegin_.indexIn(fileString);  
     QString entityName = entityBegin_.cap(1);
     QString pattern = entityEnd_.pattern();
-    pattern.replace("ENTITY_NAME",entityName);
+    pattern.replace("NAME",entityName);
     entityEnd_.setPattern(pattern);
     if ( !checkEntityStructure(fileString) )
     {
@@ -630,7 +669,7 @@ void VhdlParser::createPort(QString const& portDeclaration, QTextBlock const& po
     QRegExp nameDelimiter("\\s*[,]\\s*");
     foreach( QString name, portNames.split(nameDelimiter, QString::SkipEmptyParts) )
     {   
-        QSharedPointer<Port> port(new Port(name, direction, leftBound, rightBound, portType, type, defaultValue, description));
+        QSharedPointer<Port> port(new Port(name, direction, leftBound, rightBound, type, "", defaultValue, description));
         ports.append(port);
     } 
 

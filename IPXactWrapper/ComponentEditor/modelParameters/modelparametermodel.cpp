@@ -8,11 +8,12 @@
 #include "modelparametermodel.h"
 
 #include <QColor>
+#include <QPersistentModelIndex>
 
 ModelParameterModel::ModelParameterModel(QSharedPointer<Component> component, 
 										 QObject *parent): 
 QAbstractTableModel(parent),
-table_(component->getModelParameters()) {
+table_(component->getModelParameters()), lockedIndexes_() {
 
 	Q_ASSERT(component);
 }
@@ -49,7 +50,7 @@ QVariant ModelParameterModel::data( const QModelIndex & index,
 		return QVariant();
 
 	if (role == Qt::DisplayRole) {
-		
+		        
 		switch (index.column()) {
 			case 0: 
 				return table_.at(index.row())->getName();
@@ -73,19 +74,23 @@ QVariant ModelParameterModel::data( const QModelIndex & index,
 				return QColor("LemonChiffon");
 					}
 			default: 
-				return QColor("white");
-		}
-	}
-	else if (Qt::ForegroundRole == role) {
-		if (table_.at(index.row())->isValid()) {
-			return QColor("black");
-		}
-		else {
-			return QColor("red");
-		}
-	}
+                return QColor("white");
+        }
+    }
+    else if (Qt::ForegroundRole == role) {
+        if ( lockedIndexes_.contains(index) )
+        {
+            return QColor("gray");
+        }
+        else if (table_.at(index.row())->isValid()) {
+            return QColor("black");
+        }
+        else {
+            return QColor("red");
+        }
+    }
 
-	// if unsupported role
+    // if unsupported role
 	else {
 		return QVariant();
 	}
@@ -135,7 +140,11 @@ bool ModelParameterModel::setData( const QModelIndex& index,
 		return false;
 
 	if (role == Qt::EditRole) {
-		
+
+        if ( isLocked(index) ){
+            return false;
+        }
+
 		switch (index.column()) {
 			case 0: {
 				table_[index.row()]->setName(value.toString());
@@ -172,10 +181,15 @@ bool ModelParameterModel::setData( const QModelIndex& index,
 
 Qt::ItemFlags ModelParameterModel::flags(const QModelIndex& index) const {
 
-	if (!index.isValid())
-		return Qt::NoItemFlags;
+    if (!index.isValid())
+        return Qt::NoItemFlags;
 
-	return Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled;
+    if ( isLocked(index) )
+    {
+        return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    }
+
+    return Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled;
 }
 
 void ModelParameterModel::onRemoveRow( int row ) {
@@ -184,6 +198,12 @@ void ModelParameterModel::onRemoveRow( int row ) {
 	if (row < 0 || row >= table_.size())
 		return;
 
+    QModelIndex nameIndex = QAbstractTableModel::index(row,0, QModelIndex());
+    if ( nameIndex.isValid() && lockedIndexes_.contains(nameIndex) )
+    {
+        unlockModelParameter(nameIndex.data().toString());
+    }
+ 
 	beginRemoveRows(QModelIndex(), row, row);
 
 	// remove the object from the map
@@ -203,7 +223,13 @@ void ModelParameterModel::onRemoveItem( const QModelIndex& index ) {
 	// make sure the row number if valid
 	else if (index.row() < 0 || index.row() >= table_.size()) {
 		return;
-	}
+    }
+
+    QModelIndex nameIndex = QAbstractTableModel::index(index.row(),0,QModelIndex());
+    if ( nameIndex.isValid() && isLocked(nameIndex) )
+    {
+        unlockModelParameter(nameIndex.data().toString() );
+    }
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
@@ -246,11 +272,25 @@ void ModelParameterModel::addModelParameter( QSharedPointer<ModelParameter> mode
 	beginInsertRows(QModelIndex(), table_.size(), table_.size());
 
 	table_.append(modelParam);
-
+    lockModelParameter(modelParam);
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+void ModelParameterModel::removeModelParameter( QString const& name ) {
+
+    unlockModelParameter(name);
+
+    // find the index for the model parameter
+    QModelIndex paramIndex = index(name);
+
+    // if the model parameter was found
+    if (paramIndex.isValid()) {
+        onRemoveItem(paramIndex);
+    }
+
 }
 
 bool ModelParameterModel::isValid() const {
@@ -284,4 +324,61 @@ QModelIndex ModelParameterModel::index( const QString& modelParamName ) const {
 
 	// the base class creates the index for the row
 	return QAbstractTableModel::index(row, 0, QModelIndex());
+}
+
+//-----------------------------------------------------------------------------
+// Function: lockModelParameter()
+//-----------------------------------------------------------------------------
+void ModelParameterModel::lockModelParameter(QSharedPointer<ModelParameter> modelParam)
+{
+    QModelIndex nameIndex = index(modelParam->getName());
+    QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(),1);
+    QModelIndex usageIndex = nameIndex.sibling(nameIndex.row(),2);
+    if ( nameIndex.isValid() && typeIndex.isValid() && usageIndex.isValid() )
+    {     
+        lockIndex(nameIndex);  
+        lockIndex(typeIndex);
+        lockIndex(usageIndex);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: unlockModelParameter()
+//-----------------------------------------------------------------------------
+void ModelParameterModel::unlockModelParameter(QString const& name)
+{
+    QModelIndex nameIndex = index(name);
+    QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(),1);
+    QModelIndex usageIndex = nameIndex.sibling(nameIndex.row(),2);
+    if ( nameIndex.isValid() && typeIndex.isValid() && usageIndex.isValid() )
+    {     
+        unlockIndex(nameIndex);  
+        unlockIndex(typeIndex);
+        unlockIndex(usageIndex);      
+        emit modelParameterRemoved(nameIndex.data().toString());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: lockIndex()
+//-----------------------------------------------------------------------------
+void ModelParameterModel::lockIndex(QModelIndex const& index)
+{
+    lockedIndexes_.append(QPersistentModelIndex(index));
+}
+
+//-----------------------------------------------------------------------------
+// Function: unlockIndex()
+//-----------------------------------------------------------------------------
+void ModelParameterModel::unlockIndex(QModelIndex const& index)
+{
+    lockedIndexes_.removeAll(QPersistentModelIndex(index));
+}
+
+//-----------------------------------------------------------------------------
+// Function: isLocked()
+//-----------------------------------------------------------------------------
+bool ModelParameterModel::isLocked(QModelIndex const& index) const
+{
+    return lockedIndexes_.contains(index);
 }

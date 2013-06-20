@@ -49,7 +49,9 @@ ports_(new PortsEditor(component, handler, false, this)) {
 	connect(vhdlParser_, SIGNAL(removeGeneric(const QString&)),
 		modelParams_, SLOT(removeModelParameter(const QString&)), Qt::UniqueConnection);
     connect(modelParams_, SIGNAL(parameterChanged(QString const&)),
-             vhdlParser_, SLOT(modelParameterChanged(QString const&)), Qt::UniqueConnection);
+             vhdlParser_, SLOT(editorChangedModelParameter(QString const&)), Qt::UniqueConnection);
+    connect(modelParams_, SIGNAL(modelParameterRemoved(QString const&)),
+            vhdlParser_, SLOT(editorRemovedModelParameter(QString const&)), Qt::UniqueConnection);
 
 	connect(ports_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -57,6 +59,8 @@ ports_(new PortsEditor(component, handler, false, this)) {
 		ports_, SLOT(addPort(QSharedPointer<Port>)), Qt::UniqueConnection);
 	connect(vhdlParser_, SIGNAL(removePort(const QString&)),
 		ports_, SLOT(removePort(const QString&)), Qt::UniqueConnection);
+    connect(ports_, SIGNAL(lockedPortRemoved(QString const&)),
+		vhdlParser_, SLOT(editorRemovedPort(QString const&)), Qt::UniqueConnection);
 
 	// The layout on the left side of the GUI displaying the file selector and
 	// VHDL source code.

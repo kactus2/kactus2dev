@@ -165,6 +165,8 @@ signals:
 	//! \brief Prints a notification to user.
 	void noticeMessage(const QString& msg) const;
 
+    void lockedPortRemoved(QString const& name);
+
 private:
 	
 	//! \brief No copying
@@ -178,6 +180,46 @@ private:
 
 	//! \brief Pointer to the component being edited.
 	QSharedPointer<Component> component_;
+ 
+    /*!
+     *   Locks the name, direction  and type columns of a port.
+     *
+     *      @param [in] modelParam The parameter model to lock.
+     */
+    void lockPort(QSharedPointer<Port> port);
+
+    /*!
+     *   Unlocks the name, direction and type columns of a port.
+     *
+     *      @param [in] modelParam The parameter model to lock.
+     */
+    void unlockPort(QString const& name);
+
+    /*!
+     *   Locks the given index disabling editing.
+     *
+     *      @param [in] index The index to lock.
+     */
+    void lockIndex(QModelIndex const& index);
+
+  /*!
+     *   Unlocks the given index disabling editing.
+     *
+     *      @param [in] index The index to unlock.
+     */
+    void unlockIndex(QModelIndex const& index);
+
+    /*!
+     *   Checks if given index is locked.
+     *
+     *      @param [in] index The index to check.
+	 *
+	 *      @return True if the index is locked, otherwise false.
+     */
+    bool isLocked(QModelIndex const& index) const;
+
+    //! \brief The locked indexes that cannot be edited.
+    QList<QPersistentModelIndex> lockedIndexes_;
 };
 
 #endif // PORTSMODEL_H

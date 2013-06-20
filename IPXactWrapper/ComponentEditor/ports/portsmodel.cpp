@@ -21,7 +21,7 @@ PortsModel::PortsModel(QSharedPointer<Component> component,
 					   QObject *parent ):
 QAbstractTableModel(parent),
 table_(component->getPorts()),
-component_(component) {
+component_(component), lockedIndexes_() {
 
 	Q_ASSERT(component_);
 }
@@ -95,15 +95,20 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
 					}
 		}
 	}
-	else if (Qt::ForegroundRole == role) {
-		if (table_.at(index.row())->isValid(component_->hasViews())) {
-			return QColor("black");
-		}
-		else {
-			return QColor("red");
-		}
-	}
+    else if (Qt::ForegroundRole == role) {
+        if ( isLocked(index) )
+        {
+            return QColor("gray");
+        }
+        else if (table_.at(index.row())->isValid(component_->hasViews())) {
+            return QColor("black");
+        }
+        else {
+            return QColor("red");
+        }
+    }
 	else if (Qt::BackgroundRole == role) {
+
 		switch (index.column()) {
 		case PORT_COL_NAME:
 		case PORT_COL_DIRECTION:
@@ -206,7 +211,12 @@ bool PortsModel::setData( const QModelIndex& index,
 		return false;
 
 	if (role == Qt::EditRole) {
-		
+	
+	 if ( isLocked(index) )
+    {
+        return false;
+    }
+
 		switch (index.column()) {
 			case PORT_COL_NAME: {
 				table_.at(index.row())->setName(value.toString());
@@ -353,6 +363,11 @@ Qt::ItemFlags PortsModel::flags( const QModelIndex& index ) const {
 	if (!index.isValid())
 		return Qt::NoItemFlags;
 
+    if ( isLocked(index) )
+    {
+        return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    }
+
     Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
     if (index.column() == PORT_COL_ADHOC_VISIBILITY)
@@ -385,6 +400,12 @@ void PortsModel::onRemoveRow( int row ) {
 	if (row < 0 || row >= table_.size())
 		return;
 
+    QModelIndex nameIndex = QAbstractTableModel::index(row,0,QModelIndex());
+    if ( nameIndex.isValid() && isLocked(nameIndex) )
+    {
+        unlockPort(nameIndex.data().toString() );
+    }
+
 	beginRemoveRows(QModelIndex(), row, row);
 
 	// remove the object from the map
@@ -405,6 +426,12 @@ void PortsModel::onRemoveItem( const QModelIndex& index ) {
 	else if (index.row() < 0 || index.row() >= table_.size()) {
 		return;
 	}
+
+    QModelIndex nameIndex = QAbstractTableModel::index(index.row(),0,QModelIndex());
+    if ( nameIndex.isValid() && isLocked(nameIndex) )
+    {
+        unlockPort(nameIndex.data().toString() );
+    }
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
@@ -448,6 +475,7 @@ void PortsModel::addPort( QSharedPointer<Port> port ) {
 	beginInsertRows(QModelIndex(), table_.size(), table_.size());
 
 	table_.append(port);
+    lockPort(port);
 
 	endInsertRows();
 
@@ -475,4 +503,67 @@ QModelIndex PortsModel::index( const QString& portName ) const {
 
 	// the base class creates the index for the row
 	return QAbstractTableModel::index(row, 0, QModelIndex());
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: lockPort()
+//-----------------------------------------------------------------------------
+void PortsModel::lockPort(QSharedPointer<Port> port)
+{
+    QModelIndex nameIndex = index(port->getName());
+    QModelIndex directionIndex = nameIndex.sibling(nameIndex.row(),1);
+    QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(),5);
+
+    if ( nameIndex.isValid() && typeIndex.isValid() && typeIndex.isValid() )
+    {     
+        lockIndex(nameIndex);  
+        lockIndex(directionIndex);  
+        lockIndex(typeIndex);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: unlockPort()
+//-----------------------------------------------------------------------------
+void PortsModel::unlockPort(QString const& name)
+{
+     QModelIndex nameIndex = index(name);
+    QModelIndex directionIndex = nameIndex.sibling(nameIndex.row(),1);
+    QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(),5);
+   
+    if ( nameIndex.isValid() && typeIndex.isValid() && typeIndex.isValid() )
+    {     
+        unlockIndex(nameIndex);  
+        unlockIndex(directionIndex);  
+        unlockIndex(typeIndex);
+        emit lockedPortRemoved(nameIndex.data().toString());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: lockIndex()
+//-----------------------------------------------------------------------------
+void PortsModel::lockIndex(QModelIndex const& index)
+{
+    if( !isLocked(index) )
+    {
+        lockedIndexes_.append(QPersistentModelIndex(index));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: unlockIndex()
+//-----------------------------------------------------------------------------
+void PortsModel::unlockIndex(QModelIndex const& index)
+{
+    lockedIndexes_.removeAll(QPersistentModelIndex(index));
+}
+
+//-----------------------------------------------------------------------------
+// Function: isLocked()
+//-----------------------------------------------------------------------------
+bool PortsModel::isLocked(QModelIndex const& index) const
+{
+    return lockedIndexes_.contains(QPersistentModelIndex(index));
 }

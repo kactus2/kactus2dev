@@ -66,6 +66,10 @@ public:
 	*/
 	void setAllowImportExport(bool allow);
 
+signals:
+
+    void lockedPortRemoved(QString const& name);
+
 public slots:
 
 	/*! \brief Add a new port to the editor.

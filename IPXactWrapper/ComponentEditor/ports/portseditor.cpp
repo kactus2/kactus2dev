@@ -53,12 +53,14 @@ proxy_(this) {
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(lockedPortRemoved(const QString&)),
+		this, SIGNAL(lockedPortRemoved(const QString&)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
-
+ 
 	// set view to be sortable
 	view_.setSortingEnabled(true);
 

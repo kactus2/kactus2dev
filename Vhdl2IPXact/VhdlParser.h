@@ -50,8 +50,14 @@ public:
 
 public slots:
 
-    //! Called when a model parameter is modified.
-    virtual void modelParameterChanged(QString const& parameterName);
+    //! Called when a model parameter is outside the text editor.
+    virtual void editorChangedModelParameter(QString const& parameterName);
+
+    //! Called when a model parameter is removed outside the text editor.
+    virtual void editorRemovedModelParameter(QString const& parameterName);
+
+    //! Called when a port is removed outside the text editor.
+    virtual void editorRemovedPort(QString const& parameterName);
 
 signals:
     

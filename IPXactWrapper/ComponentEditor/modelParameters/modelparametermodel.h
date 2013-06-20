@@ -152,6 +152,8 @@ public slots:
 	*/
 	void addModelParameter(QSharedPointer<ModelParameter> modelParam);
 
+    void removeModelParameter(QString const& name);
+
 signals:
 
 	//! \brief Emitted when contents of the model change
@@ -163,6 +165,9 @@ signals:
 	//! \brief Prints a notification to user.
 	void noticeMessage(const QString& msg) const;
 
+    
+    void modelParameterRemoved(QString const& name);
+
 private:
 
 	//! \brief No copying
@@ -171,9 +176,48 @@ private:
 	//! No assignment
 	ModelParameterModel& operator=(const ModelParameterModel& other);
 
+    /*!
+     *   Locks the name, type and usage columns of a parameter model.
+     *
+     *      @param [in] modelParam The parameter model to lock.
+     */
+    void lockModelParameter(QSharedPointer<ModelParameter> modelParam);
+
+ /*!
+     *   Unocks the name, type and usage columns of a parameter model.
+     *
+     *      @param [in] modelParam The parameter model to lock.
+     */
+    void unlockModelParameter(QString const& name);
+
+    /*!
+     *   Locks the given index disabling editing.
+     *
+     *      @param [in] index The index to lock.
+     */
+    void lockIndex(QModelIndex const& index);
+
+  /*!
+     *   Unlocks the given index disabling editing.
+     *
+     *      @param [in] index The index to unlock.
+     */
+    void unlockIndex(QModelIndex const& index);
+
+    /*!
+     *   Checks if given index is locked.
+     *
+     *      @param [in] index The index to check.
+	 *
+	 *      @return True if the index is locked, otherwise false.
+     */
+    bool isLocked(QModelIndex const& index) const;
+
 	//! \brief The table that is displayed to the user.
 	QList<QSharedPointer<ModelParameter> >& table_;
 
+    //! \brief The locked indexes that cannot be edited.
+    QList<QPersistentModelIndex> lockedIndexes_;
 };
 
 #endif // MODELPARAMETERMODEL_H
