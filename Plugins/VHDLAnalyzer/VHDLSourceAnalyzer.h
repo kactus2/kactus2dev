@@ -127,22 +127,68 @@ private:
 
     /*!
      *
-     * Scans all the files in the component to find VHDL entities.
+     * Scans all the files in the component to find VHDL entities and packages.
      *
      *      @param [in] component       The component from which files are scanned.
      *      @param [in] componentPath   The path of of the component in the file system.
      */
-    void scanEntities(Component const* component, QString const& componentPath);
+    void scanDefinitions(Component const* component, QString const& componentPath);
 
     /*!
-     *  Adds a new dependency to the list of dependencies.
+     *  Scans entity declarations in the given source string.
+     *
+     *      @param [in] source    The source string.
+     *      @param [in] filename  The name of the correspondent file.
+     */
+    void scanEntities(QString const& source, QString const& filename);
+
+    /*!
+     *  Scans package declarations in the given source string.
+     *
+     *      @param [in] source    The source string.
+     *      @param [in] filename  The name of the correspondent file.
+     */
+    void scanPackages(QString const& source, QString const& filename);
+
+    /*!
+     *  Scans entity references in the source string.
+     *
+     *      @param [in]  source        The source string.
+     *      @param [in]  filename      The name of the corresponding file.
+     *      @param [out] dependencies  The list of dependencies.
+     */
+    void scanEntityReferences(QString const& source, QString const& filename,
+                              QList<FileDependencyDesc>& dependencies);
+
+    /*!
+     *  Scans package references in the source string.
+     *
+     *      @param [in]  source        The source string.
+     *      @param [in]  filename      The name of the corresponding file.
+     *      @param [out] dependencies  The list of dependencies.
+     */
+    void scanPackageReferences(QString const& source, QString const& filename,
+                               QList<FileDependencyDesc>& dependencies);
+
+    /*!
+     *  Adds a new entity dependency to the list of dependencies.
      *
      *      @param [in] componentName  The name of the instantiated component.
      *      @param [in] filename       The name of the file containing the instantiation.
      *      @param [out] dependencies  The list of dependencies.
      */
-    void addDependency(QString const& componentName, QString const& filename,
-                       QList<FileDependencyDesc> &dependencies);
+    void addEntityDependency(QString const& componentName, QString const& filename,
+                             QList<FileDependencyDesc> &dependencies);
+
+    /*!
+     *  Adds a new package dependency to the list of dependencies.
+     *
+     *      @param [in] componentName  The name of the package.
+     *      @param [in] filename       The name of the file containing the dependency.
+     *      @param [out] dependencies  The list of dependencies.
+     */
+    void addPackageDependency(QString const& packageName, QString const& filename,
+                              QList<FileDependencyDesc> &dependencies);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -151,8 +197,11 @@ private:
     //! The supported file types.
     QStringList fileTypes_;
 
-    //! The container used for caching scanned entitites
+    //! The container used for caching scanned entities.
     QMap<QString, QStringList> cachedEntities_;
+
+    //! The container used for caching scanned packages.
+    QMap<QString, QStringList> cachedPackages_;
 };
 
 #endif // VHDLSOURCEANALYZER_H
