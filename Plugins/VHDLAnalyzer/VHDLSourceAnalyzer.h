@@ -134,8 +134,15 @@ private:
      */
     void scanEntities(Component const* component, QString const& componentPath);
 
+    /*!
+     *  Adds a new dependency to the list of dependencies.
+     *
+     *      @param [in] componentName  The name of the instantiated component.
+     *      @param [in] filename       The name of the file containing the instantiation.
+     *      @param [out] dependencies  The list of dependencies.
+     */
     void addDependency(QString const& componentName, QString const& filename,
-        QList<FileDependencyDesc> &dependencies);
+                       QList<FileDependencyDesc> &dependencies);
 
     //-----------------------------------------------------------------------------
     // Data.

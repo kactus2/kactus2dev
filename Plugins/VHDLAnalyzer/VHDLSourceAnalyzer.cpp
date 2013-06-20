@@ -147,7 +147,7 @@ void VHDLSourceAnalyzer::getFileDependencies(Component const* component,
             break;
         }
 
-        QRegExp archEndExp("\\bEND\\s+" + archBeginExp.cap(1) + "\\b", Qt::CaseInsensitive);
+        QRegExp archEndExp("\\bEND\\s+(ARCHITECTURE\\s+)?" + archBeginExp.cap(1) + "\\b", Qt::CaseInsensitive);
         archEnd = archEndExp.indexIn(source, archStart + archBeginExp.matchedLength());
 
         // Skip functions that are inside this architecture declaration.
@@ -157,7 +157,7 @@ void VHDLSourceAnalyzer::getFileDependencies(Component const* component,
         while (startFuncIndex != -1 && startFuncIndex < archEnd)
         {
             // Skip the whole function and look for a next one.
-            QRegExp funcEndExp("\\bEND\\s+FUNCTION\\s+" + funcStartExp.cap(1) + "\\b", Qt::CaseInsensitive);
+            QRegExp funcEndExp("\\bEND\\s+(FUNCTION\\s+)?" + funcStartExp.cap(1) + "\\b", Qt::CaseInsensitive);
             endFuncIndex = funcEndExp.indexIn(source, startFuncIndex + funcStartExp.matchedLength());
 
             if (endFuncIndex == -1)
