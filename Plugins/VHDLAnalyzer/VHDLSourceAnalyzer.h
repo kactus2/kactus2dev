@@ -107,9 +107,9 @@ public:
                                      QString const& componentPath,
                                      QString const& filename,
                                      QList<FileDependencyDesc>& dependencies);
-    
-	 //! \brief Returns the external program requirements of the plugin.
-	 virtual QList<IPlugin::ExternalProgramRequirements> getProgramRequirements();
+
+    //! \brief Returns the external program requirements of the plugin.
+	virtual QList<IPlugin::ExternalProgramRequirements> getProgramRequirements();
 
 private:
     // Disable copying.
@@ -117,8 +117,7 @@ private:
     VHDLSourceAnalyzer& operator=(VHDLSourceAnalyzer const& rhs);
 
     /*!
-     *
-     * Reads source file data from given file. Used by calulateHash and getFileDependencies.
+     *  Reads source file data from given file. Used by calulateHash and getFileDependencies.
      *
      *      @param [in] file    The file that is read.
      *
@@ -128,22 +127,15 @@ private:
 
     /*!
      *
-     * Removes comments from a string that consists of a VHDL source code
-     *
-     *      @param [inout] data    The input source code with comments.
-     *
-     *      @return The meaningful source data of the file, with comments removed.
-     */
-    QString removeComments(QString& source);
-    
-    /*!
-     *
      * Scans all the files in the component to find VHDL entities.
      *
      *      @param [in] component       The component from which files are scanned.
      *      @param [in] componentPath   The path of of the component in the file system.
      */
     void scanEntities(Component const* component, QString const& componentPath);
+
+    void addDependency(QString const& componentName, QString const& filename,
+        QList<FileDependencyDesc> &dependencies);
 
     //-----------------------------------------------------------------------------
     // Data.

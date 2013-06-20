@@ -117,75 +117,105 @@ void VHDLSourceAnalyzer::getFileDependencies(Component const* component,
                                              QString const& filename,
                                              QList<FileDependencyDesc>& dependencies)
 {
-    // Try to open the file
+    // Try to open the file.
     QFile file(filename);
+
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text) )
     {
-        // File could not be opened, end
         return;
     }
 
-    QString line;
-    // Read the data line by line
-    while (!file.atEnd())
+    // Read file contents into a buffer.
+    QString source = getSourceData(file);
+
+    // Look for architecture declarations.
+    static QRegExp archBeginExp("\\bARCHITECTURE\\s+(\\w+)\\s+OF\\s+(\\w+)\\s+IS\\b", Qt::CaseInsensitive);
+    static QRegExp beginExp("\\bBEGIN\\b", Qt::CaseInsensitive);
+    static QRegExp entityExp("\\b(\\w+)\\s+\\:\\s+(ENTITY\\s+)?(\\w+\\.)?(\\w+)\\b", Qt::CaseInsensitive);
+    static QRegExp funcStartExp("\\bFUNCTION\\s+(\\w+)\\b", Qt::CaseInsensitive);
+
+    int archStart = 0;
+    int archEnd = 0;
+    int index = 0;
+
+    while (index >= 0 && index < source.length())
     {
-        line = file.readLine();
+        archStart = archBeginExp.indexIn(source, index);
 
-        // Check if there's a component specification
-        if (line.contains("component", Qt::CaseInsensitive))
+        if (archStart == -1)
         {
-            int index = line.indexOf("component", Qt::CaseInsensitive);
-            // This is a component end, ignore
-            if (line.contains("end", Qt::CaseInsensitive) && 
-                line.indexOf("end", Qt::CaseInsensitive) < line.indexOf("component", Qt::CaseInsensitive))
-            {
-                continue;
-            }
-            // Commented, ignore
-            else if (line.contains("--") && line.indexOf("--") < line.indexOf("component", Qt::CaseInsensitive))
-            {
-                continue;
-            }
-            // Get the component name
-            else
-            {
-                line = line.right(line.length()-index-9);
-                QStringList words = line.split(QRegExp("\\s+"), QString::SkipEmptyParts);
-                // Now the component name should be the first word of the list.
-                QString componentName = words.at(0).toLower();
+            break;
+        }
 
-                FileDependencyDesc dependency;
-                dependency.description = "Component instantiation.";
-                
-                if (cachedEntities_.contains(componentName))
+        QRegExp archEndExp("\\bEND\\s+" + archBeginExp.cap(1) + "\\b", Qt::CaseInsensitive);
+        archEnd = archEndExp.indexIn(source, archStart + archBeginExp.matchedLength());
+
+        // Skip functions that are inside this architecture declaration.
+        int endFuncIndex = archStart + archBeginExp.matchedLength();
+        int startFuncIndex = funcStartExp.indexIn(source, endFuncIndex);
+
+        while (startFuncIndex != -1 && startFuncIndex < archEnd)
+        {
+            // Skip the whole function and look for a next one.
+            QRegExp funcEndExp("\\bEND\\s+FUNCTION\\s+" + funcStartExp.cap(1) + "\\b", Qt::CaseInsensitive);
+            endFuncIndex = funcEndExp.indexIn(source, startFuncIndex + funcStartExp.matchedLength());
+
+            if (endFuncIndex == -1)
+            {
+                endFuncIndex = archEnd;
+                break;
+            }
+
+            endFuncIndex += funcEndExp.matchedLength();
+            startFuncIndex = funcStartExp.indexIn(source, endFuncIndex);
+        }
+
+        // Look for the begin word. It must be before the architecture end.
+        int beginIndex = beginExp.indexIn(source, endFuncIndex);
+        
+        if (beginIndex >= 0 && (archEnd == -1 || beginIndex < archEnd))
+        {
+            // Look for component instantiations.
+            int entityIndex = beginIndex + beginExp.matchedLength();
+
+            while (archEnd == -1 || entityIndex <= archEnd)
+            {
+                entityIndex = entityExp.indexIn(source, entityIndex);
+
+                if (entityIndex == -1)
                 {
-                    // Add all existing entities to the return value list.
-                    for (int j=0; j<cachedEntities_[componentName].count(); j++)
+                    break;
+                }
+
+                entityIndex += entityExp.matchedLength();
+
+                QString tokenName = entityExp.cap(4);
+
+                if (tokenName == "process")
+                {
+                    QRegExp processEndExp("\\bEND\\s+PROCESS\\s+" + entityExp.cap(1) + "\\b", Qt::CaseInsensitive);
+                    entityIndex = processEndExp.indexIn(source, entityIndex);
+
+                    if (entityIndex == -1)
                     {
-	                    // create file info instance to make sure that only the directory of the
-	                    // from parameter is used
-	                    QFileInfo fromInfo(filename);
-                        QString fromPath = fromInfo.absolutePath();
-                        if (fromInfo.isDir())
-                        {
-                            fromPath = fromInfo.absoluteFilePath();
-                        }
-
-	                    // if the directory does not exist
-	                    QDir ipXactDir(fromPath);
-
-                        //dependency.filename = cachedEntities_[componentName].at(j);
-                        dependency.filename = ipXactDir.relativeFilePath(cachedEntities_[componentName].at(j));
+                        break;
                     }
-                }
-                else
-                {
-                    dependency.filename = componentName + ".vhd";
-                }
 
-                dependencies.append(dependency);
+                    entityIndex += processEndExp.matchedLength();
+                }
+                else if (tokenName != "if" && tokenName != "for")
+                {
+                    addDependency(tokenName, filename, dependencies);
+                }
             }
         }
+
+        if (archEnd == -1)
+        {
+            break;
+        }
+        
+        index = archEnd + archEndExp.matchedLength();
     }
 }
 
@@ -195,58 +225,10 @@ void VHDLSourceAnalyzer::getFileDependencies(Component const* component,
 QString VHDLSourceAnalyzer::getSourceData(QFile& file)
 {
     // Read the file data
-    QString fileData;
-    while (!file.atEnd())
-    {
-        QString line = file.readLine();
-        line = line.simplified();
-        if (line == "")
-        {
-            // Skip empty lines
-            continue;
-        }
-        fileData.append(line.append("\n"));
-    }
-    
-    // Remove comments from the source
-    QString finalData = removeComments(fileData);
+    QString contents = file.readAll();
+    contents.replace(QRegExp("--[^\\n]*"), "");
 
-    return finalData;
-}
-
-
-//-----------------------------------------------------------------------------
-// Function: VHDLSourceAnalyzer::removeComments()
-//-----------------------------------------------------------------------------
-QString VHDLSourceAnalyzer::removeComments(QString& source)
-{
-    QTextStream sourceStream(&source);
-    QString finalData;
-    QString line;
-    // Read the data line by line
-    while (!sourceStream.atEnd())
-    {
-        line = sourceStream.readLine();
-
-        // Find start of comment on the line
-        if (line.count("--") > 0)
-        {
-            int index = line.indexOf("--");
-            line = line.left(index).simplified();
-
-            // Only add the line if it's not empty after removing comments 
-            if (line != "")
-            {
-                finalData.append(line.append("\n"));
-            }
-        }
-        // No comment on line, just add the line
-        else
-        {
-            finalData.append(line.append("\n"));
-        }
-    }
-    return finalData;
+    return contents.simplified();
 }
 
 //-----------------------------------------------------------------------------
@@ -270,15 +252,16 @@ void VHDLSourceAnalyzer::endAnalysis(Component const* component, QString const& 
 //-----------------------------------------------------------------------------
 void VHDLSourceAnalyzer::scanEntities(Component const* component, QString const& componentPath)
 {
-    // Get all the filesets from the component.
+    // Get all the file sets from the component.
     QList< QSharedPointer<FileSet> > fileSets = component->getFileSets();
     
-    // Scan all the filesets.
-    for( int j=0; j<fileSets.size(); j++)
+    // Scan all the file sets.
+    for (int j = 0; j < fileSets.size(); ++j)
     {
         QList< QSharedPointer<File> > files = fileSets.at(j)->getFiles();
-        // Go through all the files in the fileset.
-        for (int i=0; i<files.size(); i++)
+
+        // Go through all the files in the file set.
+        for (int i = 0; i < files.size(); ++i)
         {
             // Skip the file if it's not a VHDL source file.
             if (!files.at(i)->getAllFileTypes().contains("vhdlSource"))
@@ -286,17 +269,18 @@ void VHDLSourceAnalyzer::scanEntities(Component const* component, QString const&
                 continue;
             }
 
-            // Try to open the file
-            // TODO: We need a way to open the file here...
+            // Try to open the file.
             QFile file(componentPath + files.at(i)->getName());
-            if (!file.open(QIODevice::ReadOnly | QIODevice::Text) )
+
+            if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
             {
                 // File could not be opened, skip
                 continue;
             }
 
-            QString line;
             // Read the data line by line
+            QString line;
+
             while (!file.atEnd())
             {
                 line = file.readLine();
@@ -333,4 +317,38 @@ void VHDLSourceAnalyzer::scanEntities(Component const* component, QString const&
 
 QList<IPlugin::ExternalProgramRequirements> VHDLSourceAnalyzer::getProgramRequirements() {
 	return QList<IPlugin::ExternalProgramRequirements>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLSourceAnalyzer::addDependency()
+//-----------------------------------------------------------------------------
+void VHDLSourceAnalyzer::addDependency(QString const& componentName, QString const& filename,
+                                       QList<FileDependencyDesc>& dependencies)
+{
+    FileDependencyDesc dependency;
+    dependency.description = "Component instantiation for entity" + componentName;
+
+    if (cachedEntities_.contains(componentName))
+    {
+        // Add all existing entities to the return value list.
+        for (int j = 0; j < cachedEntities_[componentName].count(); ++j)
+        {
+            dependency.filename = General::getRelativePath(filename, cachedEntities_[componentName].at(j));
+        }
+    }
+    else
+    {
+        dependency.filename = componentName + ".vhd";
+    }
+
+    // Discard if this is a duplicate.
+    for (int i = 0; i < dependencies.size(); ++i)
+    {
+        if (dependencies[i].filename == dependency.filename)
+        {
+            return;
+        }
+    }
+
+    dependencies.append(dependency);
 }
