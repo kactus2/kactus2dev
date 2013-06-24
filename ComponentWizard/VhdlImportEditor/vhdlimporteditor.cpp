@@ -13,7 +13,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-#include <QDebug>
+#include <QLabel>
 #include <QFileDialog>
 
 //-----------------------------------------------------------------------------
@@ -24,12 +24,13 @@ VhdlImportEditor::VhdlImportEditor(const QString& basePath,
 	LibraryInterface* handler,
 	QWidget *parent):
     QWidget(parent),
-	vhdlParser_(new VhdlParser(this)),
+   splitter_(Qt::Vertical, this),
+	vhdlParser_(new VhdlParser(&splitter_)),
 	basePath_(basePath),
-	fileSelector_(new FileSelector(component, this)),
-modelParams_(new ModelParameterEditor(component, handler, this)),
-ports_(new PortsEditor(component, handler, false, this)) {
-
+	fileSelector_(new FileSelector(component, &splitter_)),
+    modelParams_(new ModelParameterEditor(component, handler, &splitter_)),
+    ports_(new PortsEditor(component, handler, false, &splitter_))
+{
 	Q_ASSERT(component);
 
 	// only vhdl files are selected
@@ -46,37 +47,52 @@ ports_(new PortsEditor(component, handler, false, this)) {
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(vhdlParser_, SIGNAL(addGeneric(QSharedPointer<ModelParameter>)),
 		modelParams_, SLOT(addModelParameter(QSharedPointer<ModelParameter>)), Qt::UniqueConnection);
-	connect(vhdlParser_, SIGNAL(removeGeneric(const QString&)),
-		modelParams_, SLOT(removeModelParameter(const QString&)), Qt::UniqueConnection);
-    connect(modelParams_, SIGNAL(parameterChanged(QString const&)),
-             vhdlParser_, SLOT(editorChangedModelParameter(QString const&)), Qt::UniqueConnection);
-    connect(modelParams_, SIGNAL(modelParameterRemoved(QString const&)),
-            vhdlParser_, SLOT(editorRemovedModelParameter(QString const&)), Qt::UniqueConnection);
+	connect(vhdlParser_, SIGNAL(removeGeneric(QSharedPointer<ModelParameter>)),
+		modelParams_, SLOT(removeModelParameter(QSharedPointer<ModelParameter>)), Qt::UniqueConnection);
+    connect(modelParams_, SIGNAL(parameterChanged(QSharedPointer<ModelParameter>)),
+             vhdlParser_, SLOT(editorChangedModelParameter(QSharedPointer<ModelParameter>)), Qt::UniqueConnection);
+    connect(modelParams_, SIGNAL(modelParameterRemoved(QSharedPointer<ModelParameter>)),
+            vhdlParser_, SLOT(editorRemovedModelParameter(QSharedPointer<ModelParameter>)), Qt::UniqueConnection);
 
 	connect(ports_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(vhdlParser_, SIGNAL(addPort(QSharedPointer<Port>)),
 		ports_, SLOT(addPort(QSharedPointer<Port>)), Qt::UniqueConnection);
-	connect(vhdlParser_, SIGNAL(removePort(const QString&)),
-		ports_, SLOT(removePort(const QString&)), Qt::UniqueConnection);
-    connect(ports_, SIGNAL(lockedPortRemoved(QString const&)),
-		vhdlParser_, SLOT(editorRemovedPort(QString const&)), Qt::UniqueConnection);
+	connect(vhdlParser_, SIGNAL(removePort(QSharedPointer<Port>)),
+		ports_, SLOT(removePort(QSharedPointer<Port>)), Qt::UniqueConnection);
+    connect(ports_, SIGNAL(lockedPortRemoved(QSharedPointer<Port>)),
+		vhdlParser_, SLOT(editorRemovedPort(QSharedPointer<Port>)), Qt::UniqueConnection);
 
 	// The layout on the left side of the GUI displaying the file selector and
 	// VHDL source code.
-	QVBoxLayout* vhdlLayout = new QVBoxLayout();
-	vhdlLayout->addWidget(fileSelector_);
+    
+    QWidget* topWidget = new QWidget(this);
+    QVBoxLayout* vhdlLayout = new QVBoxLayout(topWidget);
+    QHBoxLayout* selectorLayout = new QHBoxLayout();
+
+    QLabel* vhdltopLabel = new QLabel(this);
+    vhdltopLabel->setText("Top-level VHDL file:");
+    selectorLayout->addWidget(vhdltopLabel);
+	selectorLayout->addWidget(fileSelector_,1);
+    vhdlLayout->addLayout(selectorLayout);
 	vhdlLayout->addWidget(vhdlParser_);
 
 	// The layout on the right side of the GUI displaying the editors.
-	QVBoxLayout* editorLayout = new QVBoxLayout();
-	editorLayout->addWidget(modelParams_);
-	editorLayout->addWidget(ports_);
+	//QVBoxLayout* editorLayout = new QVBoxLayout();
+	//editorLayout->addWidget(modelParams_);
+	//editorLayout->addWidget(ports_);
 
 	// The top layout which owns other layouts
-	QHBoxLayout* topLayout = new QHBoxLayout(this);
-	topLayout->addLayout(vhdlLayout);
-	topLayout->addLayout(editorLayout);
+	QVBoxLayout* topLayout = new QVBoxLayout(this);
+    
+	//topLayout->addLayout(vhdlLayout);
+    topLayout->addWidget(&splitter_);
+	//topLayout->addLayout(editorLayout);
+
+    splitter_.addWidget(topWidget);
+    splitter_.addWidget(modelParams_);
+    splitter_.addWidget(ports_);
+    splitter_.setStretchFactor(0, 1);
 }
 
 //-----------------------------------------------------------------------------

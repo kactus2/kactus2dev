@@ -51,13 +51,13 @@ public:
 public slots:
 
     //! Called when a model parameter is outside the text editor.
-    virtual void editorChangedModelParameter(QString const& parameterName);
+    virtual void editorChangedModelParameter(QSharedPointer<ModelParameter> changedParameter);
 
     //! Called when a model parameter is removed outside the text editor.
-    virtual void editorRemovedModelParameter(QString const& parameterName);
+    virtual void editorRemovedModelParameter(QSharedPointer<ModelParameter> removedParameter);
 
     //! Called when a port is removed outside the text editor.
-    virtual void editorRemovedPort(QString const& parameterName);
+    virtual void editorRemovedPort(QSharedPointer<Port> removedPort);
 
 signals:
     
@@ -65,13 +65,13 @@ signals:
     void addPort(QSharedPointer<Port> port);
 
     //! Emitted when a port is removed or deselected.
-    void removePort(const QString& portName);
+    void removePort(QSharedPointer<Port> port);
 
     //! Emitted when a generic is created or selected.
     void addGeneric(QSharedPointer<ModelParameter> modelParam);
 
     //! Emitted when a generic is removed or deselected.
-    void removeGeneric(const QString& modelParamName);
+    void removeGeneric(QSharedPointer<ModelParameter> modelParam);
 
 protected:
  
@@ -119,6 +119,11 @@ private:
 	 *      @return True if the file is valid, otherwise false.
      */
     bool checkEntityStructure(QString const& fileString);
+
+    /*!
+     *   Scrolls the texteditor to the beginning of a valid entity declaration.
+     */
+    void scrollToEntityBegin();
 
     /*!
      *   Cuts out a section of a text.

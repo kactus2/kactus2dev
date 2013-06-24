@@ -53,14 +53,14 @@ proxy_(this) {
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-    connect(&model_, SIGNAL(lockedPortRemoved(const QString&)),
-		this, SIGNAL(lockedPortRemoved(const QString&)), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(lockedPortRemoved(QSharedPointer<Port>)),
+		this, SIGNAL(lockedPortRemoved(QSharedPointer<Port>)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
- 
+  
 	// set view to be sortable
 	view_.setSortingEnabled(true);
 
@@ -129,9 +129,9 @@ void PortsEditor::addPort( QSharedPointer<Port> port ) {
 	model_.addPort(port);
 }
 
-void PortsEditor::removePort( const QString& portName ) {
+void PortsEditor::removePort( QSharedPointer<Port> port ) {
 	// find the index for the model parameter
-	QModelIndex portIndex = model_.index(portName);
+	QModelIndex portIndex = model_.index(port);
 
 	// if the model parameter was found
 	if (portIndex.isValid()) {

@@ -38,8 +38,8 @@ proxy_(this) {
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
-    connect(&model_, SIGNAL(modelParameterRemoved(QString const&)),
-            this, SIGNAL(modelParameterRemoved(QString const&)),Qt::UniqueConnection);
+    connect(&model_, SIGNAL(modelParameterRemoved(QSharedPointer<ModelParameter>)),
+            this, SIGNAL(modelParameterRemoved(QSharedPointer<ModelParameter>)),Qt::UniqueConnection);
 
 	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/modelParamList.csv").arg(compPath);
@@ -120,8 +120,8 @@ void ModelParameterEditor::addModelParameter( QSharedPointer<ModelParameter> mod
 //-----------------------------------------------------------------------------
 // Function: removeModelParameter()
 //-----------------------------------------------------------------------------
-void ModelParameterEditor::removeModelParameter( const QString& name ) {
-	model_.removeModelParameter(name);
+void ModelParameterEditor::removeModelParameter( QSharedPointer<ModelParameter> removedParameter) {
+	model_.removeModelParameter(removedParameter);
 }
 
 //-----------------------------------------------------------------------------
@@ -132,11 +132,8 @@ void ModelParameterEditor::modelDataChanged(QModelIndex const& index)
     // Only changes in the default value emits parameterChanged.
     if ( index.column() == 3 )
     {
-        QModelIndex nameIndex = index.sibling(index.row(),0);
-        if ( nameIndex.isValid() )
-        {
-            emit parameterChanged(nameIndex.data().toString());
-        }
+        QSharedPointer<ModelParameter> changedParameter = model_.getParameter(index);
+        emit parameterChanged(changedParameter);
     }
     emit contentChanged();
 }

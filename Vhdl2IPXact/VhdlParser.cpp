@@ -103,68 +103,63 @@ bool VhdlParser::readFile(QString absolutePath)
 
     removePorts();
     removeGenerics();
+    
     setText(QString());
-    createDocument(vhdlFile);    
+    createDocument(vhdlFile);   
+    scrollToEntityBegin();
+    
     importGenerics();
     importPorts();
-    
+
     return true;
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: modelParameterChanged()
 //-----------------------------------------------------------------------------
-void VhdlParser::editorChangedModelParameter(QString const& parameterName)
+void VhdlParser::editorChangedModelParameter(QSharedPointer<ModelParameter> changedParameter)
 {
-    foreach (QSharedPointer<ModelParameter> parameter, genericUsage_.keys() )
+    if ( genericUsage_.contains(changedParameter) )
     {
-        if ( parameter->getName() == parameterName )
+        foreach (QSharedPointer<Port> port, genericUsage_.value(changedParameter) )
         {
-            foreach (QSharedPointer<Port> port, genericUsage_.value(parameter) )
-            {
-                assignGenerics(port);
-            } 
-        }
-    } 
+            assignGenerics(port);
+        } 
+    }
+
 }
 
 //-----------------------------------------------------------------------------
 // Function: editorRemovedModelParameter()
 //-----------------------------------------------------------------------------
-void VhdlParser::editorRemovedModelParameter(QString const& parameterName)
+void VhdlParser::editorRemovedModelParameter(QSharedPointer<ModelParameter> removedParameter)
 {
     foreach ( QList<QSharedPointer<ModelParameter>> paramList, genericsMap_.values() )
     {
-        foreach (QSharedPointer<ModelParameter> parameter, paramList )
+        if ( paramList.contains( removedParameter ) )
         {
-            if ( parameter->getName() == parameterName )
-            {
-                QTextBlock block = genericsMap_.key(paramList);
-                block.setUserState(VhdlEntityHighlighter::GENERIC_NOT_SELECTED);
-                highlighter_->rehighlight();
-                return;
-            }
+            QTextBlock block = genericsMap_.key(paramList);
+            block.setUserState(VhdlEntityHighlighter::GENERIC_NOT_SELECTED);
+            highlighter_->rehighlight();
+            return;
         }
     }
 }
 
+
 //-----------------------------------------------------------------------------
 // Function: editorRemovedPort()
 //-----------------------------------------------------------------------------
-void VhdlParser::editorRemovedPort(QString const& portName)
+void VhdlParser::editorRemovedPort(QSharedPointer<Port> removedPort)
 {
     foreach ( QList<QSharedPointer<Port>> paramList, portsMap_.values() )
     {
-        foreach (QSharedPointer<Port> port, paramList )
+        if ( paramList.contains(removedPort) )
         {
-            if ( port->getName() == portName )
-            {
-                QTextBlock block = portsMap_.key(paramList);
-                block.setUserState(VhdlEntityHighlighter::PORT_NOT_SELECTED);
-                highlighter_->rehighlight();
-                return;
-            }
+            QTextBlock block = portsMap_.key(paramList);
+            block.setUserState(VhdlEntityHighlighter::PORT_NOT_SELECTED);
+            highlighter_->rehighlight();
+            return;
         }
     }
 }
@@ -205,7 +200,7 @@ void VhdlParser::removePorts()
     {
         foreach ( QSharedPointer<Port> port, list )
         {
-            emit removePort(port->getName());
+            emit removePort(port);
         }
     }
     portsMap_.clear();
@@ -231,12 +226,11 @@ void VhdlParser::importGenerics()
 //-----------------------------------------------------------------------------
 void VhdlParser::removeGenerics()
 {
-
     foreach ( QList<QSharedPointer<ModelParameter>> list, genericsMap_.values() )
     {
         foreach ( QSharedPointer<ModelParameter> parameter, list )
         {
-            emit removeGeneric(parameter->getName());
+            emit removeGeneric(parameter);
         }
     }
     genericsMap_.clear();
@@ -450,6 +444,21 @@ bool VhdlParser::checkEntityStructure(QString const& fileString)
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: scrollToEntityBegin()
+//-----------------------------------------------------------------------------
+void VhdlParser::scrollToEntityBegin()
+{  
+    if ( checkEntityStructure(toPlainText()) )
+    {
+        QTextCursor cursor = textCursor();
+        cursor.setPosition(entityBegin_.indexIn(toPlainText()));
+        int rowNumber = cursor.block().firstLineNumber();
+        int rowHeight = fontMetrics().height();
+        verticalScrollBar()->setSliderPosition(rowHeight*rowNumber);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -722,7 +731,7 @@ void VhdlParser::toggleBlock(QTextBlock& block)
             block.setUserState(VhdlEntityHighlighter::PORT_NOT_SELECTED );
             foreach (QSharedPointer<Port> port, portsMap_.value(block) )
             {
-                emit removePort(port->getName());
+                emit removePort(port);
             } 
         }
         else
@@ -742,7 +751,7 @@ void VhdlParser::toggleBlock(QTextBlock& block)
             block.setUserState(VhdlEntityHighlighter::GENERIC_NOT_SELECTED );
             foreach (QSharedPointer<ModelParameter> parameter, genericsMap_.value(block) )
             {
-                emit removeGeneric(parameter->getName());
+                emit removeGeneric(parameter);
             } 
         }
 

@@ -112,7 +112,9 @@ public:
 	 *
 	 * \return QModelIndex of the first column of the specified model parameter. Invalid if named parameter is not found.
 	*/
-	virtual QModelIndex index(const QString& modelParamName) const;
+	virtual QModelIndex index(QSharedPointer<ModelParameter> modelParam) const;
+
+    virtual QSharedPointer<ModelParameter> getParameter(QModelIndex const& index) const;
 
 public slots:
 
@@ -152,7 +154,7 @@ public slots:
 	*/
 	void addModelParameter(QSharedPointer<ModelParameter> modelParam);
 
-    void removeModelParameter(QString const& name);
+    void removeModelParameter(QSharedPointer<ModelParameter> removedParam);
 
 signals:
 
@@ -166,7 +168,7 @@ signals:
 	void noticeMessage(const QString& msg) const;
 
     
-    void modelParameterRemoved(QString const& name);
+    void modelParameterRemoved(QSharedPointer<ModelParameter> modelParam);
 
 private:
 
@@ -188,7 +190,7 @@ private:
      *
      *      @param [in] modelParam The parameter model to lock.
      */
-    void unlockModelParameter(QString const& name);
+    void unlockModelParameter(QSharedPointer<ModelParameter> modelParam);
 
     /*!
      *   Locks the given index disabling editing.

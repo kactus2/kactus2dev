@@ -68,7 +68,7 @@ public:
 
 signals:
 
-    void lockedPortRemoved(QString const& name);
+    void lockedPortRemoved(QSharedPointer<Port> removedPort);
 
 public slots:
 
@@ -92,7 +92,7 @@ public slots:
 	 * \param portName The name of the port to be remove.
 	 *
 	*/
-	void removePort(const QString& portName);
+	void removePort(QSharedPointer<Port> port);
 
 protected:
     //! Called when the editor is shown.

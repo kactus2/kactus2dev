@@ -18,6 +18,7 @@
 #include <QString>
 
 #include <QTextEdit>
+#include <QSplitter>
 
 class LibraryInterface;
 class FileSelector;
@@ -100,6 +101,9 @@ private:
 	//! \brief No assignment
 	VhdlImportEditor& operator=(const VhdlImportEditor& other);
 
+    //! Splitter for vhdl view and editors.
+    QSplitter splitter_;
+
 	//! \brief Path to the containing xml
 	QString basePath_;
 
@@ -114,6 +118,8 @@ private:
 
 	//! \brief Editor to set the ports.
 	PortsEditor* ports_;
+
+
 };
 
 #endif // VHDLIMPORTEDITOR_H

@@ -198,12 +198,12 @@ void ModelParameterModel::onRemoveRow( int row ) {
 	if (row < 0 || row >= table_.size())
 		return;
 
-    QModelIndex nameIndex = QAbstractTableModel::index(row,0, QModelIndex());
-    if ( nameIndex.isValid() && lockedIndexes_.contains(nameIndex) )
+    if ( isLocked( QAbstractTableModel::index(row, 0, QModelIndex())) )
     {
-        unlockModelParameter(nameIndex.data().toString());
+        unlockModelParameter(table_.at(row));
+        emit modelParameterRemoved(table_.at(row));
     }
- 
+
 	beginRemoveRows(QModelIndex(), row, row);
 
 	// remove the object from the map
@@ -225,10 +225,10 @@ void ModelParameterModel::onRemoveItem( const QModelIndex& index ) {
 		return;
     }
 
-    QModelIndex nameIndex = QAbstractTableModel::index(index.row(),0,QModelIndex());
-    if ( nameIndex.isValid() && isLocked(nameIndex) )
+    if ( isLocked(index) )
     {
-        unlockModelParameter(nameIndex.data().toString() );
+        unlockModelParameter(table_.at(index.row()));
+        emit modelParameterRemoved(table_.at(index.row()));
     }
 
 	// remove the specified item
@@ -279,15 +279,14 @@ void ModelParameterModel::addModelParameter( QSharedPointer<ModelParameter> mode
 	emit contentChanged();
 }
 
-void ModelParameterModel::removeModelParameter( QString const& name ) {
-
-    unlockModelParameter(name);
+void ModelParameterModel::removeModelParameter(QSharedPointer<ModelParameter> removedParam ) {
 
     // find the index for the model parameter
-    QModelIndex paramIndex = index(name);
+    QModelIndex paramIndex = index(removedParam);
 
     // if the model parameter was found
     if (paramIndex.isValid()) {
+        unlockModelParameter(removedParam);    
         onRemoveItem(paramIndex);
     }
 
@@ -305,19 +304,11 @@ bool ModelParameterModel::isValid() const {
 	return true;
 }
 
-QModelIndex ModelParameterModel::index( const QString& modelParamName ) const {
+QModelIndex ModelParameterModel::index( QSharedPointer<ModelParameter> modelParam ) const {
 	// find the correct row
-	int row = -1;
-	for (int i = 0; i < table_.size(); ++i) {
+	int row = table_.indexOf(modelParam);
 
-		// if the named model parameter is found
-		if (table_.at(i)->getName() == modelParamName) {
-			row = i;
-			break;
-		}
-	}
-
-	// if the named model parameter is not found
+	// if the model parameter is not found
 	if (row < 0) {
 		return QModelIndex();
 	}
@@ -326,12 +317,20 @@ QModelIndex ModelParameterModel::index( const QString& modelParamName ) const {
 	return QAbstractTableModel::index(row, 0, QModelIndex());
 }
 
+QSharedPointer<ModelParameter> ModelParameterModel::getParameter(QModelIndex const& index) const
+{
+    if ( index.isValid() )
+    {
+        return table_.at(index.row());
+    }
+}   
+
 //-----------------------------------------------------------------------------
 // Function: lockModelParameter()
 //-----------------------------------------------------------------------------
 void ModelParameterModel::lockModelParameter(QSharedPointer<ModelParameter> modelParam)
 {
-    QModelIndex nameIndex = index(modelParam->getName());
+    QModelIndex nameIndex = index(modelParam);
     QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(),1);
     QModelIndex usageIndex = nameIndex.sibling(nameIndex.row(),2);
     if ( nameIndex.isValid() && typeIndex.isValid() && usageIndex.isValid() )
@@ -345,9 +344,9 @@ void ModelParameterModel::lockModelParameter(QSharedPointer<ModelParameter> mode
 //-----------------------------------------------------------------------------
 // Function: unlockModelParameter()
 //-----------------------------------------------------------------------------
-void ModelParameterModel::unlockModelParameter(QString const& name)
+void ModelParameterModel::unlockModelParameter(QSharedPointer<ModelParameter> modelParam)
 {
-    QModelIndex nameIndex = index(name);
+    QModelIndex nameIndex = index(modelParam);
     QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(),1);
     QModelIndex usageIndex = nameIndex.sibling(nameIndex.row(),2);
     if ( nameIndex.isValid() && typeIndex.isValid() && usageIndex.isValid() )
@@ -355,7 +354,6 @@ void ModelParameterModel::unlockModelParameter(QString const& name)
         unlockIndex(nameIndex);  
         unlockIndex(typeIndex);
         unlockIndex(usageIndex);      
-        emit modelParameterRemoved(nameIndex.data().toString());
     }
 }
 

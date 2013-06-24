@@ -403,7 +403,7 @@ void PortsModel::onRemoveRow( int row ) {
     QModelIndex nameIndex = QAbstractTableModel::index(row,0,QModelIndex());
     if ( nameIndex.isValid() && isLocked(nameIndex) )
     {
-        unlockPort(nameIndex.data().toString() );
+        unlockPort(table_.at(row));
     }
 
 	beginRemoveRows(QModelIndex(), row, row);
@@ -427,10 +427,10 @@ void PortsModel::onRemoveItem( const QModelIndex& index ) {
 		return;
 	}
 
-    QModelIndex nameIndex = QAbstractTableModel::index(index.row(),0,QModelIndex());
-    if ( nameIndex.isValid() && isLocked(nameIndex) )
+    if ( isLocked(index) )
     {
-        unlockPort(nameIndex.data().toString() );
+        unlockPort(table_.at(index.row() ));
+        emit lockedPortRemoved(table_.at(index.row()));
     }
 
 	// remove the specified item
@@ -484,17 +484,9 @@ void PortsModel::addPort( QSharedPointer<Port> port ) {
 }
 
 
-QModelIndex PortsModel::index( const QString& portName ) const {
+QModelIndex PortsModel::index( QSharedPointer<Port> port ) const {
 	// find the correct row
-	int row = -1;
-	for (int i = 0; i < table_.size(); ++i) {
-
-		// if the named model parameter is found
-		if (table_.at(i)->getName() == portName) {
-			row = i;
-			break;
-		}
-	}
+	int row = table_.indexOf(port);
 
 	// if the named model parameter is not found
 	if (row < 0) {
@@ -511,7 +503,7 @@ QModelIndex PortsModel::index( const QString& portName ) const {
 //-----------------------------------------------------------------------------
 void PortsModel::lockPort(QSharedPointer<Port> port)
 {
-    QModelIndex nameIndex = index(port->getName());
+    QModelIndex nameIndex = index(port);
     QModelIndex directionIndex = nameIndex.sibling(nameIndex.row(),1);
     QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(),5);
 
@@ -526,9 +518,9 @@ void PortsModel::lockPort(QSharedPointer<Port> port)
 //-----------------------------------------------------------------------------
 // Function: unlockPort()
 //-----------------------------------------------------------------------------
-void PortsModel::unlockPort(QString const& name)
+void PortsModel::unlockPort(QSharedPointer<Port> port)
 {
-     QModelIndex nameIndex = index(name);
+     QModelIndex nameIndex = index(port);
     QModelIndex directionIndex = nameIndex.sibling(nameIndex.row(),1);
     QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(),5);
    
@@ -537,7 +529,7 @@ void PortsModel::unlockPort(QString const& name)
         unlockIndex(nameIndex);  
         unlockIndex(directionIndex);  
         unlockIndex(typeIndex);
-        emit lockedPortRemoved(nameIndex.data().toString());
+       
     }
 }
 

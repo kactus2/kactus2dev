@@ -114,7 +114,7 @@ public:
 	 *
 	 * \return QModelIndex of first column of the specified port. Invalid index if named port is not found. 
 	*/
-	virtual QModelIndex index(const QString& portName) const;
+	virtual QModelIndex index(QSharedPointer<Port> port) const;
 
 public slots:
 
@@ -165,7 +165,7 @@ signals:
 	//! \brief Prints a notification to user.
 	void noticeMessage(const QString& msg) const;
 
-    void lockedPortRemoved(QString const& name);
+    void lockedPortRemoved(QSharedPointer<Port>);
 
 private:
 	
@@ -193,7 +193,7 @@ private:
      *
      *      @param [in] modelParam The parameter model to lock.
      */
-    void unlockPort(QString const& name);
+    void unlockPort(QSharedPointer<Port> port);
 
     /*!
      *   Locks the given index disabling editing.
