@@ -256,22 +256,13 @@ private:
 	//! \brief Create new abstraction definition for bus definition.
 	QAction* addSignalsAction_;
 
-	//! \brief Create new bus
-	QAction* createBusAction_;
-
-    //! \brief Open the COM definition editor
+	//! \brief Open the COM definition editor
     QAction* openComDefAction_;
-
-    //! \brief Create new COM definition
-    QAction* createComDefAction_;
 
     //! \brief Open the API definition editor
     QAction* openApiDefAction_;
 
-    //! \brief Create new API definition
-    QAction* createApiDefAction_;
-
-	//! \brief Open an existing system for editing.
+    //! \brief Open an existing system for editing.
 	QAction* openSystemAction_;
 
 	//! \brief Open an existing software platform.

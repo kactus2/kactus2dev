@@ -65,7 +65,7 @@ okButton_(0)
     mainLayout->addStretch(1);
     setLayout(mainLayout);
 
-    setWindowTitle("New Design");
+    setWindowTitle("New HW Design");
     setFixedHeight(sizeHint().height());
     resize(400, sizeHint().height());
 

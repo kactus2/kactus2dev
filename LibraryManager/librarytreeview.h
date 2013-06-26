@@ -233,9 +233,6 @@ private:
 	//! \brief Open the component editor
 	QAction* openCompAction_;
 
-	//! \brief Create a new empty object, only copy the vlnv structure.
-	QAction* createNewComponentAction_;
-
 	//! \brief Create new design for a component
 	QAction* createNewDesignAction_;
 
@@ -257,23 +254,14 @@ private:
 	//! \brief Open a bus definition
 	QAction* openBusAction_;
 
-	//! \brief Create a bus definition
-	QAction* createBusAction_;
-
 	//! \brief Create new abstraction definition for bus definition.
 	QAction* addSignalsAction_;
 
 	//! \brief Open a COM definition
 	QAction* openComDefAction_;
 
-	//! \brief Create a COM definition
-	QAction* createComDefAction_;
-
 	//! \brief Open an API definition
 	QAction* openApiDefAction_;
-
-	//! \brief Create a API definition
-	QAction* createApiDefAction_;
 
 	//! \brief Open an existing system for editing.
 	QAction* openSystemAction_;
