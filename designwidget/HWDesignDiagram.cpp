@@ -1673,6 +1673,17 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(vlnv);
         QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
+        // Disallow instantiation of components marked as template.
+        if (comp->getComponentFirmness() == KactusAttribute::KTS_TEMPLATE)
+        {
+            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                               tr("Template component cannot be directly instantiated in a design. "
+                                  "Save the template component as a new non-template component to enable instantiation."),
+                               QMessageBox::Ok, (QWidget*)parent());
+            msgBox.exec();
+            return;
+        }
+
         // Set the instance name for the new component instance.
         QString instanceName = createInstanceName(comp);
 
