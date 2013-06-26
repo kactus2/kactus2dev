@@ -11,15 +11,13 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-FileNameEditor::FileNameEditor(QWidget *parent,
-							   LibraryInterface* handler,
-							   QSharedPointer<Component> component,
-							   QSharedPointer<File> file): 
-QGroupBox(tr("File name and path"), parent), 
-nameEdit_(this, handler, component, file),
-file_(file) {
-
-	// the layout for the name label and name line edit
+FileNameEditor::FileNameEditor(QWidget *parent, LibraryInterface* handler,
+							   QSharedPointer<Component> component, QSharedPointer<File> file)
+    : QGroupBox(tr("File name and path"), parent), 
+      nameEdit_(file->getName(), this),
+      file_(file)
+{
+    // the layout for the name label and name line edit
 	QHBoxLayout* nameLayout = new QHBoxLayout();
 
 	// create the label
@@ -35,20 +33,21 @@ file_(file) {
 
 	topLayout->addLayout(nameLayout);
 
-	nameEdit_.setProperty("mandatoryField", true);
-
 	// connect the signals informing of content changes.
 	connect(&nameEdit_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+		    this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
-FileNameEditor::~FileNameEditor() {
+FileNameEditor::~FileNameEditor()
+{
 }
 
-bool FileNameEditor::isValid() const {
-	return nameEdit_.isValid();
+bool FileNameEditor::isValid() const
+{
+    return true;
 }
 
-void FileNameEditor::refresh() {
-	nameEdit_.refresh();
+void FileNameEditor::refresh()
+{
+    nameEdit_.setText(file_->getName());
 }

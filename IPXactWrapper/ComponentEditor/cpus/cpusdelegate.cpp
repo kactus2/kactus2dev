@@ -6,7 +6,7 @@
  */
 
 #include "cpusdelegate.h"
-#include <common/widgets/listManager/listeditor.h>
+#include <common/widgets/EnumCollectionEditor/EnumCollectionEditor.h>
 #include "addressspacerefdelegate.h"
 
 #include <QLineEdit>
@@ -35,15 +35,8 @@ QWidget* CpusDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem
 			return edit;
 											   }
 		case CpusDelegate::ADDRSPACE_COLUMN: {
-			// create the editor
-			ListEditor* editor = new ListEditor(parent);
-			editor->setMinimumHeight(CpusDelegate::LIST_EDITOR_MIN_HEIGHT);
-
-			// set the editing delegate for the editor
-			AddressSpaceRefDelegate* addrSpaceDelegate = new AddressSpaceRefDelegate(parent, component_);
-			editor->setItemDelegate(addrSpaceDelegate);
-
-			return editor;
+            EnumCollectionEditor* editor = new EnumCollectionEditor(parent);
+            return editor;
 											 }
 		default: {
 			return QStyledItemDelegate::createEditor(parent, option, index);
@@ -64,10 +57,16 @@ void CpusDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) co
 			break;
 											   }
 		case CpusDelegate::ADDRSPACE_COLUMN: {
-			ListEditor* listEditor = qobject_cast<ListEditor*>(editor);
-			Q_ASSERT(listEditor);
-			QStringList addrSpaces = index.model()->data(index, CpusDelegate::USER_DISPLAY_ROLE).toStringList();
-			listEditor->setItems(addrSpaces);
+			
+            EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
+            Q_ASSERT(collectionEditor != 0);
+
+            QStringList addrSpaces = index.model()->data(index, CpusDelegate::USER_DISPLAY_ROLE).toStringList();
+
+            foreach (QString const& name, component_->getAddressSpaceNames())
+            {
+                collectionEditor->addItem(name, addrSpaces.contains(name));
+            }
 
 			break;
 											 }
@@ -91,10 +90,10 @@ void CpusDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, con
 			break;
 											   }
 		case CpusDelegate::ADDRSPACE_COLUMN: {
-			ListEditor* listEditor = qobject_cast<ListEditor*>(editor);
-			Q_ASSERT(listEditor);
+            EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
+            Q_ASSERT(collectionEditor != 0);
 
-			QStringList addrSpaces = listEditor->items();
+			QStringList addrSpaces = collectionEditor->getSelectedItems();
 			model->setData(index, addrSpaces, CpusDelegate::USER_EDIT_ROLE);
 
 			break;

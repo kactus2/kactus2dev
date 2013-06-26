@@ -6,7 +6,7 @@
  */
 
 #include "channelsdelegate.h"
-#include <common/widgets/listManager/listeditor.h>
+#include <common/widgets/EnumCollectionEditor/EnumCollectionEditor.h>
 #include "channelinterfacemanagerdelegate.h"
 
 #include <QLineEdit>
@@ -35,14 +35,7 @@ QWidget* ChannelsDelegate::createEditor( QWidget* parent, const QStyleOptionView
 			return edit;
 												   }
 		case ChannelsDelegate::INTERFACE_COLUMN: {
-			// create the editor
-			ListEditor* editor = new ListEditor(parent);
-			editor->setMinimumHeight(ChannelsDelegate::LIST_EDITOR_MIN_HEIGHT);
-
-			// set the editing delegate for the editor
-			ChannelInterfaceManagerDelegate* interfaceDelegate = new ChannelInterfaceManagerDelegate(parent, component_);
-			editor->setItemDelegate(interfaceDelegate);
-
+			EnumCollectionEditor* editor = new EnumCollectionEditor(parent);
 			return editor;
 												 }
 		default: {
@@ -55,27 +48,37 @@ void ChannelsDelegate::setEditorData( QWidget* editor, const QModelIndex& index 
 	switch (index.column()) {
 		case ChannelsDelegate::NAME_COLUMN:
 		case ChannelsDelegate::DISPLAY_NAME_COLUMN:
-		case ChannelsDelegate::DESCRIPTION_COLUMN: {
-			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-			Q_ASSERT(edit);
+		case ChannelsDelegate::DESCRIPTION_COLUMN:
+            {
+			    QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
+			    Q_ASSERT(edit);
 
-			const QString text = index.model()->data(index, Qt::DisplayRole).toString();
-			edit->setText(text);
-			break;
-												   }
-		case ChannelsDelegate::INTERFACE_COLUMN: {
-			
-			ListEditor* listEditor = qobject_cast<ListEditor*>(editor);
-			Q_ASSERT(listEditor);
-			QStringList interfaces = index.model()->data(index, ChannelsDelegate::USER_DISPLAY_ROLE).toStringList();
-			listEditor->setItems(interfaces);
+			    const QString text = index.model()->data(index, Qt::DisplayRole).toString();
+			    edit->setText(text);
+			    break;
+            }
 
-			break;
-												 }
-		default: {
-			QStyledItemDelegate::setEditorData(editor, index);
-			break;
-				 }
+		case ChannelsDelegate::INTERFACE_COLUMN:
+            {
+                EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
+                Q_ASSERT(collectionEditor != 0);
+
+                QStringList selectedInterfaces =
+                    index.model()->data(index, ChannelsDelegate::USER_DISPLAY_ROLE).toStringList();
+
+                foreach (QString const& name, component_->getBusInterfaceNames())
+                {
+                    collectionEditor->addItem(name, selectedInterfaces.contains(name));
+                }
+
+                break;
+            }
+
+		default:
+            {
+			    QStyledItemDelegate::setEditorData(editor, index);
+			    break;
+            }
 	}
 }
 
@@ -92,10 +95,10 @@ void ChannelsDelegate::setModelData( QWidget* editor, QAbstractItemModel* model,
 			break;
 												   }
 		case ChannelsDelegate::INTERFACE_COLUMN: {
-			ListEditor* listEditor = qobject_cast<ListEditor*>(editor);
-			Q_ASSERT(listEditor);
+            EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
+            Q_ASSERT(collectionEditor != 0);
 
-			QStringList interfaces = listEditor->items();
+			QStringList interfaces = collectionEditor->getSelectedItems();
 			model->setData(index, interfaces, ChannelsDelegate::USER_EDIT_ROLE);
 
 			break;

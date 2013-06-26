@@ -16,6 +16,7 @@
 #include <QString>
 #include <QFileInfo>
 #include <QSharedPointer>
+#include <QLabel>
 
 class LibraryInterface;
 
@@ -69,7 +70,8 @@ private:
 	FileNameEditor& operator=(const FileNameEditor& other);
 	
 	//! \brief The editor to edit the name of the file.
-	FileNameLineEdit nameEdit_;
+	//FileNameLineEdit nameEdit_;
+    QLabel nameEdit_;
 
 	//! \brief Pointer to the file being edited.
 	QSharedPointer<File> file_;

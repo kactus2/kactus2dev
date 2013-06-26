@@ -165,11 +165,13 @@ QString CppSourceAnalyzer::getSourceData(QFile& file)
     {
         QString line = file.readLine();
         line = line.simplified();
+
         if (line == "")
         {
             // Skip empty lines
             continue;
         }
+
         // check if the line ends in backslash (split line) 
         while (line.length() > 0 && line.at(line.length()-1) == '\\')
         {
