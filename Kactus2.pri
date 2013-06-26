@@ -8,6 +8,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./resource.h \
+    ./version.h \
     ./common/ColumnTypes.h \
     ./common/CSourceWriter.h \
     ./common/diagramgrid.h \
@@ -83,6 +84,7 @@ HEADERS += ./resource.h \
     ./common/widgets/cpuSelector/cpuselector.h \
     ./common/widgets/fileTypeSelector/filetypeselector.h \
     ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.h \
+    ./common/widgets/FileSelector/fileselector.h \
     ./common/validators/AddressValidator.h \
     ./common/validators/nameValidator/namevalidator.h \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.h \
@@ -140,6 +142,8 @@ HEADERS += ./resource.h \
     ./designwidget/HWAddCommands.h \
     ./designwidget/HWMoveCommands.h \
     ./designwidget/PortmapDialog.h \
+    ./designwidget/models/PortGenerationRow.h \
+    ./designwidget/models/PortGenerationTableModel.h \
     ./designwidget/BusInterfaceDialog.h \
     ./designwidget/SelectItemTypeDialog.h \
     ./designwidget/OffPageConnectorItem.h \
@@ -156,6 +160,7 @@ HEADERS += ./resource.h \
     ./designwidget/AdHocInterfaceItem.h \
     ./designwidget/columnview/HWColumn.h \
     ./designwidget/columnview/ColumnEditDialog.h \
+    ./designwidget/views/CellEditTableView.h \
     ./IPXactWrapper/ComponentEditor/itemvisualizer.h \
     ./IPXactWrapper/ComponentEditor/itemeditor.h \
     ./IPXactWrapper/ComponentEditor/general/generaleditor.h \
@@ -290,6 +295,7 @@ HEADERS += ./resource.h \
     ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyItem.h \
     ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyModel.h \
     ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceDialog.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/writevalueconstrainteditor.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/registertablemodel.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/registereditor.h \
@@ -578,7 +584,16 @@ HEADERS += ./resource.h \
     ./MemoryDesigner/AddressSectionItem.h \
     ./Vhdl2IPXact/vhdlanalysis.h \
     ./Vhdl2IPXact/textedit.h \
-    ./Vhdl2IPXact/vhdltoipxact.h
+    ./Vhdl2IPXact/vhdltoipxact.h \
+    ./Vhdl2IPXact/VhdlParser.h \
+    ./Vhdl2IPXact/VhdlEntityHighlighter.h \
+    ./ComponentWizard/ComponentWizard.h \
+    ./ComponentWizard/ComponentWizardConclusionPage.h \
+    ./ComponentWizard/ComponentWizardDependencyPage.h \
+    ./ComponentWizard/ComponentWizardFilesPage.h \
+    ./ComponentWizard/ComponentWizardIntroPage.h \
+    ./ComponentWizard/ComponentWizardVhdlImportPage.h \
+    ./ComponentWizard/VhdlImportEditor/vhdlimporteditor.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
     ./common/DesignWidget.cpp \
@@ -668,6 +683,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/cpuSelector/cpuselector.cpp \
     ./common/widgets/fileTypeSelector/filetypeselector.cpp \
     ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.cpp \
+    ./common/widgets/FileSelector/fileselector.cpp \
     ./common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
     ./common/graphicsItems/ConnectionEndpoint.cpp \
@@ -707,6 +723,9 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./designwidget/SelectItemTypeDialog.cpp \
     ./designwidget/columnview/ColumnEditDialog.cpp \
     ./designwidget/columnview/HWColumn.cpp \
+    ./designwidget/views/CellEditTableView.cpp \
+    ./designwidget/models/PortGenerationRow.cpp \
+    ./designwidget/models/PortGenerationTableModel.cpp \
     ./IPXactWrapper/ComponentEditor/itemeditor.cpp \
     ./IPXactWrapper/ComponentEditor/itemvisualizer.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/ApiCreateDialog.cpp \
@@ -774,6 +793,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyModel.cpp \
     ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySortFilter.cpp \
     ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceDialog.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.cpp \
     ./IPXactWrapper/ComponentEditor/general/desceditor.cpp \
     ./IPXactWrapper/ComponentEditor/general/generaleditor.cpp \
     ./IPXactWrapper/ComponentEditor/modelParameters/modelparametereditor.cpp \
@@ -1123,5 +1143,14 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./MemoryDesigner/SegmentItem.cpp \
     ./Vhdl2IPXact/textedit.cpp \
     ./Vhdl2IPXact/vhdlanalysis.cpp \
-    ./Vhdl2IPXact/vhdltoipxact.cpp
+    ./Vhdl2IPXact/VhdlParser.cpp \
+    ./Vhdl2IPXact/VhdlEntityHighlighter.cpp \
+    ./Vhdl2IPXact/vhdltoipxact.cpp \
+    ./ComponentWizard/ComponentWizard.cpp \
+    ./ComponentWizard/ComponentWizardConclusionPage.cpp \
+    ./ComponentWizard/ComponentWizardDependencyPage.cpp \
+    ./ComponentWizard/ComponentWizardFilesPage.cpp \
+    ./ComponentWizard/ComponentWizardIntroPage.cpp \
+    ./ComponentWizard/ComponentWizardVhdlImportPage.cpp \
+    ./ComponentWizard/VhdlImportEditor/vhdlimporteditor.cpp
 RESOURCES += kactus.qrc
