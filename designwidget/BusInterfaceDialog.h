@@ -91,7 +91,7 @@ public:
      *
      *      @return The port maps.
     */
-    QList<QSharedPointer<General::PortMap>> getPortMaps() const;
+    QList< QSharedPointer<General::PortMap> > getPortMaps() const;
 
     /*!
      *  Creates the list of ports for draft component according to 
@@ -99,7 +99,7 @@ public:
      *
      *      @return The ports.
     */
-    QList<QSharedPointer<Port>> getPorts() const;
+    QList< QSharedPointer<Port> > getPorts() const;
 
 public slots:
 

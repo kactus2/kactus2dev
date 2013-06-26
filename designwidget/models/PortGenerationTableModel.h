@@ -188,7 +188,7 @@ private:
     QList<int> lockedColumns_;
 
     //! \brief Table rows.
-	QList<QSharedPointer<PortGenerationRow>> rows_;
+    QList< QSharedPointer<PortGenerationRow> > rows_;
 
     //! \brief Table headers.
     QStringList headers_;

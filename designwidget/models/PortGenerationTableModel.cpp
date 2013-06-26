@@ -11,7 +11,7 @@
 
 #include "PortGenerationTableModel.h"
 
-#include <QStringlist>
+#include <QStringList>
 #include <QColor>
 
 #include <common/graphicsItems/ComponentItem.h>

@@ -23,7 +23,7 @@
 
 #include <models/modelparameter.h>
 #include <models/port.h>
-#include <vhdl2IPXact/VhdlEntityHighlighter.h>
+#include <Vhdl2IPXact/VhdlEntityHighlighter.h>
 
 //-----------------------------------------------------------------------------
 // Function: VhdlParser()
@@ -134,7 +134,7 @@ void VhdlParser::editorChangedModelParameter(QSharedPointer<ModelParameter> chan
 //-----------------------------------------------------------------------------
 void VhdlParser::editorRemovedModelParameter(QSharedPointer<ModelParameter> removedParameter)
 {
-    foreach ( QList<QSharedPointer<ModelParameter>> paramList, genericsMap_.values() )
+    foreach ( QList< QSharedPointer<ModelParameter> > paramList, genericsMap_.values() )
     {
         if ( paramList.contains( removedParameter ) )
         {
@@ -152,7 +152,7 @@ void VhdlParser::editorRemovedModelParameter(QSharedPointer<ModelParameter> remo
 //-----------------------------------------------------------------------------
 void VhdlParser::editorRemovedPort(QSharedPointer<Port> removedPort)
 {
-    foreach ( QList<QSharedPointer<Port>> paramList, portsMap_.values() )
+    foreach ( QList< QSharedPointer<Port> > paramList, portsMap_.values() )
     {
         if ( paramList.contains(removedPort) )
         {
@@ -170,8 +170,9 @@ void VhdlParser::editorRemovedPort(QSharedPointer<Port> removedPort)
 void VhdlParser::mouseDoubleClickEvent(QMouseEvent *e) {
 
     QTextCursor cursor = cursorForPosition( e->pos() ); 
+    QTextBlock block = cursor.block();
 
-    toggleBlock(cursor.block());
+    toggleBlock(block);
     highlighter_->rehighlight();    
 }
 
@@ -180,7 +181,7 @@ void VhdlParser::mouseDoubleClickEvent(QMouseEvent *e) {
 //-----------------------------------------------------------------------------
 void VhdlParser::importPorts()
 {
-    foreach ( QList<QSharedPointer<Port>> list, portsMap_.values() )
+    foreach ( QList< QSharedPointer<Port> > list, portsMap_.values() )
     {
         foreach ( QSharedPointer<Port> port, list )
         {
@@ -196,7 +197,7 @@ void VhdlParser::importPorts()
 //-----------------------------------------------------------------------------
 void VhdlParser::removePorts()
 {
-    foreach ( QList<QSharedPointer<Port>> list, portsMap_.values() )
+    foreach ( QList< QSharedPointer<Port> > list, portsMap_.values() )
     {
         foreach ( QSharedPointer<Port> port, list )
         {
@@ -212,7 +213,7 @@ void VhdlParser::removePorts()
 //-----------------------------------------------------------------------------
 void VhdlParser::importGenerics()
 {
-    foreach ( QList<QSharedPointer<ModelParameter>> list, genericsMap_.values() )
+    foreach ( QList< QSharedPointer<ModelParameter> > list, genericsMap_.values() )
     {
         foreach ( QSharedPointer<ModelParameter> parameter, list )
         {
@@ -226,7 +227,7 @@ void VhdlParser::importGenerics()
 //-----------------------------------------------------------------------------
 void VhdlParser::removeGenerics()
 {
-    foreach ( QList<QSharedPointer<ModelParameter>> list, genericsMap_.values() )
+    foreach ( QList< QSharedPointer<ModelParameter> > list, genericsMap_.values() )
     {
         foreach ( QSharedPointer<ModelParameter> parameter, list )
         {
@@ -244,7 +245,7 @@ void VhdlParser::removeGenerics()
 void VhdlParser::assignGenerics(QSharedPointer<Port> port)
 {
     QTextBlock block = QTextBlock();
-    foreach ( QList<QSharedPointer<Port>> portList, portsMap_.values() )
+    foreach ( QList< QSharedPointer<Port> > portList, portsMap_.values() )
     {
         if ( portList.contains(port) ){
             block = portsMap_.key(portList); break;
@@ -266,7 +267,7 @@ void VhdlParser::assignGenerics(QSharedPointer<Port> port)
             if ( parameter->getName() == leftBound )
             {
                 port->setLeftBound(genericToInt(parameter));
-                QList<QSharedPointer<Port>> ports = genericUsage_.value(parameter);
+                QList< QSharedPointer<Port> > ports = genericUsage_.value(parameter);
                 if ( !ports.contains(port) )
                 {
                     ports.append(port);
@@ -277,7 +278,7 @@ void VhdlParser::assignGenerics(QSharedPointer<Port> port)
             if ( parameter->getName() == rightBound )
             {
                 port->setRightBound(genericToInt(parameter));
-                QList<QSharedPointer<Port>> ports = genericUsage_.value(parameter);
+                QList< QSharedPointer<Port> > ports = genericUsage_.value(parameter);
                 if ( !ports.contains(port) )
                 {
                     ports.append(port);
@@ -288,7 +289,7 @@ void VhdlParser::assignGenerics(QSharedPointer<Port> port)
             if ( parameter->getName() == defaultValue )
             {
                 port->setDefaultValue( parameter->getValue() );
-                QList<QSharedPointer<Port>> ports = genericUsage_.value(parameter);
+                QList< QSharedPointer<Port> > ports = genericUsage_.value(parameter);
                 if ( !ports.contains(port) )
                 {
                     ports.append(port);
@@ -674,7 +675,7 @@ void VhdlParser::createPort(QString const& portDeclaration, QTextBlock const& po
     description = commentPattern_.cap(1);
 
     // Port names are separated by a colon (,).
-    QList<QSharedPointer<Port>> ports;
+    QList< QSharedPointer<Port> > ports;
     QRegExp nameDelimiter("\\s*[,]\\s*");
     foreach( QString name, portNames.split(nameDelimiter, QString::SkipEmptyParts) )
     {   
@@ -702,7 +703,7 @@ void VhdlParser::createGeneric(QString const& genericDeclaration, QTextBlock con
     description = commentPattern_.cap(1);
 
     QRegExp nameDelimiter("\\s*[,]\\s*");
-    QList<QSharedPointer<ModelParameter>> generics;
+    QList< QSharedPointer<ModelParameter> > generics;
     foreach( QString name, genericNames.split(nameDelimiter, QString::SkipEmptyParts) )
     {   
         QSharedPointer<ModelParameter> parameter(new ModelParameter());

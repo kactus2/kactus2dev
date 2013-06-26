@@ -484,10 +484,10 @@ void VHDLtoIPXACT::on_pushButtonSaveFile_released()
     Model* model = new Model;
 
     //create port list
-    QList<QSharedPointer<Port>> ports;
+    QList< QSharedPointer<Port> > ports;
 
     //create modelParam list
-    QList<QSharedPointer<ModelParameter>> modelParameters;
+    QList< QSharedPointer<ModelParameter> > modelParameters;
 
     //loop ports into model
     General::Direction direction;
@@ -596,7 +596,7 @@ void VHDLtoIPXACT::on_pushButtonSaveFile_released()
     comp_->setModel( model );
 
     //set view
-    QList<QSharedPointer<View>> views;
+    QList< QSharedPointer<View> > views;
     View view;
     view.setLanguage("vhdl");
     view.setName("structural_vhdl");

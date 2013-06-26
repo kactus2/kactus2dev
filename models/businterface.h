@@ -309,7 +309,7 @@ public:
 	 *
 	 * \param portMaps A QList holding the port maps for this interface.
 	 */
-	void setPortMaps(QList<QSharedPointer<General::PortMap> > &portMaps);
+    void setPortMaps(QList<QSharedPointer<General::PortMap> > const& portMaps);
 
 	/*! \brief Get the pointer to the master-element
 	 *

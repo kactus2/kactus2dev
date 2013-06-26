@@ -107,8 +107,8 @@ public:
      *              the mode dialog. Otherwise true.
      */
     bool askCompatibleMode(ConnectionEndpoint const* other, General::InterfaceMode& mode, 
-                           QList<QSharedPointer<Port>>& ports,
-                           QList<QSharedPointer<General::PortMap>>& portMaps);
+                           QList< QSharedPointer<Port> >& ports,
+                           QList< QSharedPointer<General::PortMap> >& portMaps);
 
     /*!
      *  Called when a connection has been removed from between this and another end point.

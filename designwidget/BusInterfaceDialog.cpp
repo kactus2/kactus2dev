@@ -175,9 +175,9 @@ void BusInterfaceDialog::setBusPorts(BusPortItem const* opposingBusPort,
 //-----------------------------------------------------------------------------
 // Function: getPortMaps()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<General::PortMap>> BusInterfaceDialog::getPortMaps() const
+QList< QSharedPointer<General::PortMap> > BusInterfaceDialog::getPortMaps() const
 {
-    QList<QSharedPointer<General::PortMap>> portMaps;
+    QList< QSharedPointer<General::PortMap> > portMaps;
    
     if ( tableEnable_ )
     {
@@ -209,9 +209,9 @@ QList<QSharedPointer<General::PortMap>> BusInterfaceDialog::getPortMaps() const
 //-----------------------------------------------------------------------------
 // Function: getPorts()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<Port>> BusInterfaceDialog::getPorts() const
+QList< QSharedPointer<Port> > BusInterfaceDialog::getPorts() const
 {
-    QList<QSharedPointer<Port>> portList;
+    QList< QSharedPointer<Port> > portList;
     if ( tableEnable_ )
     {
         for(int row = 0; row < portsModel_->rowCount(); row++)

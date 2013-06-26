@@ -12,7 +12,7 @@
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <LibraryManager/libraryinterface.h>
 
-#include <QHeaderview>
+#include <QHeaderView>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------

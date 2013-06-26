@@ -723,7 +723,7 @@ General::InterfaceMode BusInterface::getInterfaceMode() const {
 }
 
 void BusInterface::setPortMaps(
-		QList<QSharedPointer<General::PortMap> > &portMaps) {
+        QList<QSharedPointer<General::PortMap> > const& portMaps) {
 	// delete old port maps stored
 	portMaps_.clear();
 

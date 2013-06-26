@@ -197,10 +197,10 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Maps all ports on a line to a text block.
-    QMap<QTextBlock,QList<QSharedPointer<Port>>> portsMap_;
+    QMap< QTextBlock,QList< QSharedPointer<Port> > > portsMap_;
 
     //! Maps all generics on a line to a text block.
-    QMap<QTextBlock,QList<QSharedPointer<ModelParameter>>> genericsMap_;
+    QMap<QTextBlock,QList< QSharedPointer< ModelParameter> > > genericsMap_;
 
     //! Text blocks containing port declarations.
     QList<QTextBlock> portBlocks_;
@@ -209,10 +209,10 @@ private:
     QList<QTextBlock> genericBlocks_;
 
     //! Maps a generic name and its value.
-    QList<QSharedPointer<ModelParameter>> generics_;
+    QList< QSharedPointer<ModelParameter> > generics_;
 
     //! Maps a generic to ports using it.
-    QMap<QSharedPointer<ModelParameter>,QList<QSharedPointer<Port>>> genericUsage_;
+    QMap< QSharedPointer<ModelParameter>,QList< QSharedPointer<Port> > > genericUsage_;
 
     //! The syntax highlighter for display.
     VhdlEntityHighlighter* highlighter_;
