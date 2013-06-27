@@ -88,7 +88,7 @@ public:
 		 QSharedPointer<LibraryComponent> libDes = QSharedPointer<LibraryComponent>());
 
 	 //! \brief Returns the external program requirements of the plugin.
-	 virtual QList<IPlugin::ExternalProgramRequirements> getProgramRequirements();
+	 virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements();
 
 private:
     /*!

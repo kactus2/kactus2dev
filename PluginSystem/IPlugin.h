@@ -26,7 +26,7 @@ class IPlugin
 public:
 
 	//! \brief Contains options for required external program paths for plugin.
-	struct ExternalProgramRequirements {
+	struct ExternalProgramRequirement {
 		
 		//! \brief Identifies the program to run.
 		QString name_;
@@ -64,7 +64,7 @@ public:
     virtual PluginSettingsWidget* getSettingsWidget() = 0;
 
 	//! \brief Returns the external program requirements of the plugin.
-	 virtual QList<ExternalProgramRequirements> getProgramRequirements() = 0;
+	 virtual QList<ExternalProgramRequirement> getProgramRequirements() = 0;
 };
 
 Q_DECLARE_INTERFACE(IPlugin, "com.tut.Kactus2.IPlugin/1.0")

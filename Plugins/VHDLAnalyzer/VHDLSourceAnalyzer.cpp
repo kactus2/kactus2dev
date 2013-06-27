@@ -201,8 +201,8 @@ void VHDLSourceAnalyzer::scanDefinitions(Component const* component, QString con
     }
 }
 
-QList<IPlugin::ExternalProgramRequirements> VHDLSourceAnalyzer::getProgramRequirements() {
-	return QList<IPlugin::ExternalProgramRequirements>();
+QList<IPlugin::ExternalProgramRequirement> VHDLSourceAnalyzer::getProgramRequirements() {
+	return QList<IPlugin::ExternalProgramRequirement>();
 }
 
 //-----------------------------------------------------------------------------

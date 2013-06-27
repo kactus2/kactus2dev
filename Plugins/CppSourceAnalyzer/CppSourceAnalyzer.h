@@ -106,7 +106,7 @@ public:
                                      QList<FileDependencyDesc>& dependencies);
 
 	 //! \brief Returns the external program requirements of the plugin.
-	 virtual QList<IPlugin::ExternalProgramRequirements> getProgramRequirements();
+	 virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements();
 
 private:
     // Disable copying.

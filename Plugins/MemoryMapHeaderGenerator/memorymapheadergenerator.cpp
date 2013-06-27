@@ -919,8 +919,8 @@ void MemoryMapHeaderGenerator::searchInstanceFiles( QSharedPointer<const Compone
 	}
 }
 
-QList<IPlugin::ExternalProgramRequirements> MemoryMapHeaderGenerator::getProgramRequirements() {
-	return QList<IPlugin::ExternalProgramRequirements>();
+QList<IPlugin::ExternalProgramRequirement> MemoryMapHeaderGenerator::getProgramRequirements() {
+	return QList<IPlugin::ExternalProgramRequirement>();
 }
 
 

@@ -19,14 +19,14 @@ table_() {
 
 	// find the variables required by the active plugins
 	 QList<IPlugin*> plugins = pluginMgr.getActivePlugins();
-	 QList<IPlugin::ExternalProgramRequirements> pluginRequirements;
+	 QList<IPlugin::ExternalProgramRequirement> pluginRequirements;
 	 foreach (IPlugin* plugin, plugins) {
 		 pluginRequirements.append(plugin->getProgramRequirements());
 	 }
 
 	 // add the plugin variables to the list
 	 QStringList usedNames;
-	 foreach (IPlugin::ExternalProgramRequirements const& req, pluginRequirements) {
+	 foreach (IPlugin::ExternalProgramRequirement const& req, pluginRequirements) {
 
 		 // do not add variables with no name
 		 if (req.name_.isEmpty()) {

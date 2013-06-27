@@ -301,6 +301,6 @@ void CppSourceAnalyzer::endAnalysis(Component const* component, QString const& /
 {
 }
 
-QList<IPlugin::ExternalProgramRequirements> CppSourceAnalyzer::getProgramRequirements() {
-	return QList<IPlugin::ExternalProgramRequirements>();
+QList<IPlugin::ExternalProgramRequirement> CppSourceAnalyzer::getProgramRequirements() {
+	return QList<IPlugin::ExternalProgramRequirement>();
 }

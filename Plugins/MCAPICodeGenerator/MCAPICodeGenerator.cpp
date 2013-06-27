@@ -759,6 +759,6 @@ QIcon MCAPICodeGenerator::getIcon() const
     return QIcon(":icons/mcapi-generator.png");
 }
 
-QList<IPlugin::ExternalProgramRequirements> MCAPICodeGenerator::getProgramRequirements() {
-	return QList<IPlugin::ExternalProgramRequirements>();
+QList<IPlugin::ExternalProgramRequirement> MCAPICodeGenerator::getProgramRequirements() {
+	return QList<IPlugin::ExternalProgramRequirement>();
 }
