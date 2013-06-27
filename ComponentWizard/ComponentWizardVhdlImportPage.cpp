@@ -12,7 +12,7 @@
 #include "ComponentWizardVhdlImportPage.h"
 
 #include "ComponentWizard.h"
-
+#include "common/widgets/vhdlParser/VhdlParserWidget.h"
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardVhdlImportPage::ComponentWizardVhdlImportPage()
 //-----------------------------------------------------------------------------
@@ -50,10 +50,12 @@ int ComponentWizardVhdlImportPage::nextId() const
     return ComponentWizard::PAGE_CONCLUSION;
 }
 
-void ComponentWizardVhdlImportPage::initializePage() {
-	editor_->initializeFileSelection();
+void ComponentWizardVhdlImportPage::initializePage() {	
+   
+    editor_->initializeFileSelection();       
 }
 
 bool ComponentWizardVhdlImportPage::isComplete() const {
 	return editor_->checkEditorValidity();
 }
+

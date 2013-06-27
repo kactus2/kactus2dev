@@ -31,6 +31,8 @@ public:
 
      /*!
      *  Constructor.
+	 *
+     *      @param [in] parent The parent widget.
      */
     VhdlParser(QWidget* parent = 0);
 
@@ -46,7 +48,12 @@ public:
 	 *
 	 *      @return False, if file could not be read, otherwise true.
      */
-    bool readFile(QString absolutePath);
+     virtual void  parseFile(QString absolutePath);
+
+    /*!
+     *   Scrolls the texteditor to the beginning of a valid entity declaration.
+     */
+    void scrollToEntityBegin();
 
 public slots:
 
@@ -119,11 +126,6 @@ private:
 	 *      @return True if the file is valid, otherwise false.
      */
     bool checkEntityStructure(QString const& fileString);
-
-    /*!
-     *   Scrolls the texteditor to the beginning of a valid entity declaration.
-     */
-    void scrollToEntityBegin();
 
     /*!
      *   Cuts out a section of a text.

@@ -20,15 +20,17 @@
 #include <QRegExp>
 #include <QList>
 #include <QTextBlockFormat>
+#include <QApplication>
 
 #include <models/modelparameter.h>
 #include <models/port.h>
-#include <Vhdl2IPXact/VhdlEntityHighlighter.h>
+#include <common/widgets/vhdlParser/VhdlEntityHighlighter.h>
 
 //-----------------------------------------------------------------------------
 // Function: VhdlParser()
 //-----------------------------------------------------------------------------
-VhdlParser::VhdlParser( QWidget *parent ) : QTextEdit( parent ), portsMap_(), genericsMap_(), 
+VhdlParser::VhdlParser(QWidget*parent) : QTextEdit( parent ), 
+    portsMap_(), genericsMap_(), 
     generics_(), genericUsage_(), highlighter_(), portBlocks_(), genericBlocks_(), 
     entityBegin_(),  entityEnd_(), portsBegin_(), portsEnd_(), portPattern_(), typePattern_(), 
     genericsBegin_(), genericsEnd_(), genericPattern_(), commentPattern_(), defaultPattern_()
@@ -90,28 +92,44 @@ VhdlParser::~VhdlParser()
 }
 
 //-----------------------------------------------------------------------------
+// Function: scrollToEntityBegin()
+//-----------------------------------------------------------------------------
+void VhdlParser::scrollToEntityBegin()
+{  
+    if ( checkEntityStructure(toPlainText()) )
+    {
+        QTextCursor cursor = textCursor();
+        cursor.setPosition(entityBegin_.indexIn(toPlainText()));
+        int rowNumber = cursor.block().firstLineNumber();
+        int rowHeight = fontMetrics().height();
+        verticalScrollBar()->setSliderPosition(rowHeight*rowNumber);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: readFile()
 //-----------------------------------------------------------------------------
-bool VhdlParser::readFile(QString absolutePath)
+void VhdlParser::parseFile(QString absolutePath)
 {
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    
     QFile vhdlFile(absolutePath);
     if ( !vhdlFile.open(QIODevice::ReadOnly) )
     {
         QMessageBox::information(this, "Error", vhdlFile.errorString()+": "+absolutePath);
-        return false;
+        return;
     }
 
     removePorts();
     removeGenerics();
     
     setText(QString());
-    createDocument(vhdlFile);   
-    scrollToEntityBegin();
+    createDocument(vhdlFile);       
     
     importGenerics();
     importPorts();
 
-    return true;
+    QApplication::restoreOverrideCursor();
 }
 
 //-----------------------------------------------------------------------------
@@ -445,21 +463,6 @@ bool VhdlParser::checkEntityStructure(QString const& fileString)
     }
 
     return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: scrollToEntityBegin()
-//-----------------------------------------------------------------------------
-void VhdlParser::scrollToEntityBegin()
-{  
-    if ( checkEntityStructure(toPlainText()) )
-    {
-        QTextCursor cursor = textCursor();
-        cursor.setPosition(entityBegin_.indexIn(toPlainText()));
-        int rowNumber = cursor.block().firstLineNumber();
-        int rowHeight = fontMetrics().height();
-        verticalScrollBar()->setSliderPosition(rowHeight*rowNumber);
-    }
 }
 
 //-----------------------------------------------------------------------------

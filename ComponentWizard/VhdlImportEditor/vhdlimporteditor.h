@@ -11,7 +11,6 @@
 #include <models/component.h>
 #include <IPXactWrapper/ComponentEditor/modelParameters/modelparametereditor.h>
 #include <IPXactWrapper/ComponentEditor/ports/portseditor.h>
-#include <Vhdl2IPXact/VhdlParser.h>
 
 #include <QWidget>
 #include <QSharedPointer>
@@ -22,7 +21,7 @@
 
 class LibraryInterface;
 class FileSelector;
-
+class VhdlParserWidget;
 /*! \brief Used to parse VHDL files and generating IP-XACT packages of them.
  *
  */
@@ -64,6 +63,9 @@ public:
 	*/
 	void initializeFileSelection();
 
+    void setVhdlFileSelectionEnabled(bool enabled);
+
+
 	/*! \brief Check the validity of model parameter and port editors.
 	 *
 	 * Method: 		checkEditorValidity
@@ -80,18 +82,6 @@ signals:
 	//! \brief Emitted when the contents of the editors change.
 	void contentChanged();
 
-private slots:
-
-	/*! \brief Handler for changes in the file selector.
-	 *
-	 * Method: 		onFileSelected
-	 * Full name:	VhdlImportEditor::onFileSelected
-	 * Access:		private 
-	 *
-	 * \param filePath The relative path of the selected file.
-	 *
-	*/
-	void onFileSelected(const QString& filePath);
 
 private:
 	
@@ -101,24 +91,28 @@ private:
 	//! \brief No assignment
 	VhdlImportEditor& operator=(const VhdlImportEditor& other);
 
+    /*!
+     *  Creates the layout for the page.
+     */
+    void setupLayout();
+
     //! Splitter for vhdl view and editors.
     QSplitter splitter_;
 
 	//! \brief Path to the containing xml
 	QString basePath_;
 
-	//! \brief Used to select the top-level vhdl file.
-	FileSelector* fileSelector_;
+    //! \brief Top-level vhdl file absolute path.
+    QString vhdlPath_;
 
 	//! \brief Displays and parses the vhdl code
-	VhdlParser* vhdlParser_;
+	VhdlParserWidget* parserWidget_;
 
 	//! \brief Editor to set the generics.
 	ModelParameterEditor* modelParams_;
 
 	//! \brief Editor to set the ports.
 	PortsEditor* ports_;
-
 
 };
 

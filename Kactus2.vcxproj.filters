@@ -854,6 +854,18 @@
     <Filter Include="Header Files\designwidget\views">
       <UniqueIdentifier>{398985ba-16e7-4840-af52-3cb5c4ea9307}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common\widgets\vhdlParser">
+      <UniqueIdentifier>{fd78eee9-a351-4049-a37a-3620cde863de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\vhdlParser">
+      <UniqueIdentifier>{552e424b-c294-49c3-8b41-a07215491e35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\widgets\fileViewer">
+      <UniqueIdentifier>{aaa49640-80b3-474a-8b0e-d08bf87911ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\fileViewer">
+      <UniqueIdentifier>{f1482c4f-32eb-4070-abb8-4d5a2398e80e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\CSourceWriter.cpp">
@@ -3817,16 +3829,34 @@
     <ClCompile Include="common\widgets\FileSelector\fileselector.cpp">
       <Filter>Source Files\common\widgets\FileSelector</Filter>
     </ClCompile>
-    <ClCompile Include="Vhdl2IPXact\VhdlParser.cpp">
-      <Filter>Source Files\vhdl2IPXact</Filter>
+    <ClCompile Include="common\widgets\vhdlParser\VhdlEntityHighlighter.cpp">
+      <Filter>Source Files\common\widgets\vhdlParser</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\vhdlParser\VhdlParser.cpp">
+      <Filter>Source Files\common\widgets\vhdlParser</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\vhdlParser\VhdlParserWidget.cpp">
+      <Filter>Source Files\common\widgets\vhdlParser</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_VhdlEntityHighlighter.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_VhdlParser.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="Vhdl2IPXact\VhdlEntityHighlighter.cpp">
-      <Filter>Source Files\vhdl2IPXact</Filter>
+    <ClCompile Include="GeneratedFiles\moc_VhdlParserWidget.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_VhdlEntityHighlighter.cpp">
+    <ClCompile Include="ComponentWizard\ComponentWizardGeneralInfoPage.cpp">
+      <Filter>Source Files\ComponentWizard</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentWizardGeneralInfoPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\fileViewer\FileViewer.cpp">
+      <Filter>Source Files\common\widgets\fileViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_FileViewer.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5436,11 +5466,20 @@
     <CustomBuild Include="designwidget\views\CellEditTableView.h">
       <Filter>Header Files\designwidget\views</Filter>
     </CustomBuild>
-    <CustomBuild Include="Vhdl2IPXact\VhdlParser.h">
-      <Filter>Header Files\vhdl2IPXact</Filter>
+    <CustomBuild Include="common\widgets\vhdlParser\VhdlEntityHighlighter.h">
+      <Filter>Header Files\common\widgets\vhdlParser</Filter>
     </CustomBuild>
-    <CustomBuild Include="Vhdl2IPXact\VhdlEntityHighlighter.h">
-      <Filter>Header Files\vhdl2IPXact</Filter>
+    <CustomBuild Include="common\widgets\vhdlParser\VhdlParser.h">
+      <Filter>Header Files\common\widgets\vhdlParser</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\vhdlParser\VhdlParserWidget.h">
+      <Filter>Header Files\common\widgets\vhdlParser</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ComponentWizard\ComponentWizardGeneralInfoPage.h">
+      <Filter>Header Files\ComponentWizard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\fileViewer\FileViewer.h">
+      <Filter>Header Files\common\widgets\fileViewer</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

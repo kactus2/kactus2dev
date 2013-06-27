@@ -43,13 +43,20 @@ void FileSelector::refresh() {
 	foreach (QString filePath, allFiles) {
 		if (filePath.isEmpty()) {
 			continue;
-		}
+        }
 
-		// if the file suffix is found in the filters
-		QFileInfo fileInfo(filePath);
-		if (filters_.contains(fileInfo.suffix())) {
-			results.append(filePath);
-		}
+        if ( filters_.empty() )
+        {
+            results.append(filePath);
+        }
+        else
+        {
+            // if the file suffix is found in the filters
+            QFileInfo fileInfo(filePath);
+            if (filters_.contains(fileInfo.suffix())) {
+                results.append(filePath);
+            }
+        }
 	}
 	// add also an empty item
 	addItem("");

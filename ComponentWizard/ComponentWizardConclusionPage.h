@@ -16,6 +16,7 @@
 
 #include <QWizardPage>
 #include <QLabel>
+#include <QTextEdit>
 
 class ComponentWizard;
 class LibraryInterface;
@@ -27,26 +28,26 @@ class ComponentWizardConclusionPage : public QWizardPage
 {
 public:
     /*!
-     *  Constructor.
-     *
-     *      @param [in] lh     The library interface.
-     *      @param [in] parent The parent wizard.
-     */
+    *  Constructor.
+    *
+    *      @param [in] lh     The library interface.
+    *      @param [in] parent The parent wizard.
+    */
     ComponentWizardConclusionPage(LibraryInterface* lh, ComponentWizard* parent);
 
     /*!
-     *  Destructor.
-     */
+    *  Destructor.
+    */
     ~ComponentWizardConclusionPage();
 
     /*!
-     *  Returns the ID of the next page.
-     */
+    *  Returns the ID of the next page.
+    */
     virtual int nextId() const;
 
     /*!
-     *  Initializes the page.
-     */
+    *  Initializes the page.
+    */
     virtual void initializePage();
 
 private:
@@ -54,6 +55,7 @@ private:
     ComponentWizardConclusionPage(ComponentWizardConclusionPage const& rhs);
     ComponentWizardConclusionPage& operator=(ComponentWizardConclusionPage const& rhs);
 
+    void setupLayout();
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -61,8 +63,46 @@ private:
     //! The parent wizard.
     ComponentWizard* parent_;
 
-    //! The summary text.
-    QLabel summaryLabel_;
+    //! Pointer to the library manager.
+    LibraryInterface* handler_;
+
+    //! Widget for summary labels.
+    QWidget summaryWidget_;
+
+    //! Label for VLNV vendor.
+    QLabel* vendorLabel_;
+
+    //! Label for VLNV library.
+    QLabel* libraryLabel_;
+
+    //! Label for VLNV name.
+    QLabel* nameLabel_;
+
+    //! Label for VLNV version.
+    QLabel* versionLabel_;
+
+    //! Label for Kactus attribute hierarchy.
+    QLabel* hierarchyLabel_;
+
+    //! Label for Kactus attribute firmness.
+    QLabel* firmnessLabel_;
+
+    //! Label for the xml path.
+    QLabel* directoryLabel_;
+
+    //! Label for the component filesets.
+    QLabel* filesetsLabel_;
+
+    //! Label for the imported parameters.
+    QLabel* parametersLabel_;
+
+    //! Label for the imported ports.
+    QLabel* portsLabel_;
+
+    //! Label for the component description.
+    QLabel* descriptionLabel_;
+
+    //QTextEdit* descriptionViewer_;
 
     //! The component preview box.
     ComponentPreviewBox previewBox_;

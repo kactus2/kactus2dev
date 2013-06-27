@@ -88,7 +88,7 @@ ComponentWizardDependencyPage::~ComponentWizardDependencyPage()
 //-----------------------------------------------------------------------------
 int ComponentWizardDependencyPage::nextId() const
 {
-    if (parent_->getComponent()->getComponentImplementation() == KactusAttribute::KTS_HW)
+     if (parent_->getComponent()->getComponentImplementation() == KactusAttribute::KTS_HW)
     {
         return ComponentWizard::PAGE_VHDL_IMPORT;
     }

@@ -1,48 +1,53 @@
 //-----------------------------------------------------------------------------
-// File: ComponentWizardVhdlImportPage.h
+// File: ComponentWizardGeneralInfoPage.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
-// Date: 06.06.2013
+// Author: Esko Pekkarinen
+// Date: 25.06.2013
 //
 // Description:
-// VHDL import page for the component wizard.
+// General component information page for the component wizard.
 //-----------------------------------------------------------------------------
 
-#ifndef COMPONENTWIZARDVHDLIMPORTPAGE_H
-#define COMPONENTWIZARDVHDLIMPORTPAGE_H
+#ifndef COMPONENTWIZARDGENERALINFOPAGE_H
+#define COMPONENTWIZARDGENERALINFOPAGE_H
 
-#include <Vhdl2IPXact/vhdltoipxact.h>
 #include <models/component.h>
-#include <ComponentWizard/VhdlImportEditor/vhdlimporteditor.h>
 
 #include <QWizardPage>
 #include <QSharedPointer>
+#include <QLineEdit>
+#include <QTextEdit>
+#include <QPushButton>
 
 class ComponentWizard;
 class LibraryInterface;
+class VhdlParserWidget;
+class FileSelector;
+class FileViewer;
 
 //-----------------------------------------------------------------------------
 //! Intro page for the component wizard.
 //-----------------------------------------------------------------------------
-class ComponentWizardVhdlImportPage : public QWizardPage
+class ComponentWizardGeneralInfoPage : public QWizardPage
 {
+    Q_OBJECT
+
 public:
-    /*!
+ 
+   /*!
      *  Constructor.
      *
      *		@param [in, out] component Pointer to the component being edited.
-     *		@param [in] Pointer to the instance which manages the library.
      *      @param [in] parent The parent wizard.
      */
-    ComponentWizardVhdlImportPage(QSharedPointer<Component> component,
-		 LibraryInterface* handler,
+    ComponentWizardGeneralInfoPage(QSharedPointer<Component> component,
 		 ComponentWizard* parent);
 
     /*!
      *  Destructor.
      */
-    ~ComponentWizardVhdlImportPage();
+    ~ComponentWizardGeneralInfoPage();
 
     /*!
      *  Returns the ID of the next page.
@@ -54,30 +59,44 @@ public:
 	  * The files saved in the component's file sets are used to select the top-vhdl.
 	  * 
 	  * Method: 		initializePage
-	  * Full name:	ComponentWizardVhdlImportPage::initializePage
+	  * Full name:	ComponentWizardGeneralInfoPage::initializePage
 	  * Access:		virtual public 
 	  *
 	  *
 	 */
 	 virtual void initializePage();
 
-
 	 /*! \brief Check if the settings on the page are valid and user can move to next page.
 	  *
 	  * Method: 		isComplete
-	  * Full name:	ComponentWizardVhdlImportPage::isComplete
+	  * Full name:	ComponentWizardGeneralInfoPage::isComplete
 	  * Access:		virtual public 
 	  *
 	  *
 	  * \return True if all settings are valid, otherwise false.
 	 */
-	 virtual bool isComplete() const;
+     virtual bool isComplete() const;
 
+
+    /*!
+     *   Assigns the input values to the component when next is clicked.
+     */
+     virtual bool validatePage();
+
+private slots:
+    
+    //! Called when show/hide button is clicked.
+    void onShowHide();
 
 private:
 	// Disable copying.
-	ComponentWizardVhdlImportPage(ComponentWizardVhdlImportPage const& rhs);
-	ComponentWizardVhdlImportPage& operator=(ComponentWizardVhdlImportPage const& rhs);
+	ComponentWizardGeneralInfoPage(ComponentWizardGeneralInfoPage const& rhs);
+	ComponentWizardGeneralInfoPage& operator=(ComponentWizardGeneralInfoPage const& rhs);
+
+    /*!
+     *   Creates layout for the page.
+     */
+    void setupLayout();
 
 	//-----------------------------------------------------------------------------
 	// Data.
@@ -86,14 +105,21 @@ private:
 	//! The parent wizard.
 	ComponentWizard* parent_;
 
-	//! The VHDL import editor.
-	//VHDLtoIPXACT editor_;
+    //! The component created in the wizard.
+    QSharedPointer<Component> component_;
 
-    //! Splitter for the fileset table and dependency graph.
-    QSplitter splitter_;
+    //! Editor for inputting author of the component.
+    QLineEdit authorEditor_;
 
-	//! \brief Editor to set the generics and ports.
-	VhdlImportEditor* editor_;
+    //! Editor for inputting a description for the component.
+    QTextEdit descriptionEditor_;
+
+    //! Button to show/hide file viewer.
+    QPushButton* showHideButton_;
+
+    //! Viewer for browsing files in the component's fileset.
+    FileViewer* fileViewer_;
+
 };
 
-#endif // COMPONENTWIZARDVHDLIMPORTPAGE_H
+#endif // COMPONENTWIZARDGENERALINFOPAGE_H

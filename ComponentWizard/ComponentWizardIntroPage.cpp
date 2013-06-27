@@ -31,7 +31,8 @@ ComponentWizardIntroPage::ComponentWizardIntroPage(ComponentWizard* parent)
     setFinalPage(true);
 
     QString infoText = tr("This wizard contains the following steps:");
-    infoText += "<ul><li>" + tr("Add Files");
+    infoText += "<ul><li>" + tr("Component General Information");
+    infoText += "<li>" + tr("Add Files");
     infoText += "<li>" + tr("Dependency Analysis & File Sets");
 
     if (parent_->getComponent()->getComponentImplementation() == KactusAttribute::KTS_HW)
@@ -61,5 +62,5 @@ ComponentWizardIntroPage::~ComponentWizardIntroPage()
 //-----------------------------------------------------------------------------
 int ComponentWizardIntroPage::nextId() const
 {
-    return ComponentWizard::PAGE_FILES;
+    return ComponentWizard::PAGE_GENERAL;
 }

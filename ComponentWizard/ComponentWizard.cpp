@@ -17,8 +17,11 @@
 #include "ComponentWizardIntroPage.h"
 #include "ComponentWizardFilesPage.h"
 #include "ComponentWizardDependencyPage.h"
+#include "ComponentWizardGeneralInfoPage.h"
 #include "ComponentWizardVhdlImportPage.h"
 #include "ComponentWizardConclusionPage.h"
+
+#include "common/widgets/vhdlParser/VhdlParserWidget.h"
 
 //-----------------------------------------------------------------------------
 // Function: ComponentWizard::ComponentWizard()
@@ -32,15 +35,17 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
 	  component_(component),
 	  basePath_(basePath)
 {
-	setWindowTitle(tr("Component Wizard"));
+    VLNV* vlnv = component->getVlnv();
+	setWindowTitle(tr("Component Wizard for %1:%2:%3:%4").arg(vlnv->getVendor()).arg(vlnv->getLibrary()).arg(vlnv->getName()).arg(vlnv->getVersion()));
     setWizardStyle(ModernStyle);
     setOption(NoCancelButton, true);
     setOption(HaveFinishButtonOnEarlyPages, true);
-    resize(800, 600);
+    resize(800, 800);
 
     setPage(PAGE_INTRO, new ComponentWizardIntroPage(this));
+    setPage(PAGE_GENERAL, new ComponentWizardGeneralInfoPage(component, this));    
     setPage(PAGE_FILES, new ComponentWizardFilesPage(this));
-    setPage(PAGE_DEPENDENCY, new ComponentWizardDependencyPage(pluginMgr, this));
+    setPage(PAGE_DEPENDENCY, new ComponentWizardDependencyPage(pluginMgr, this));    
     setPage(PAGE_VHDL_IMPORT, new ComponentWizardVhdlImportPage(component, handler, this));
     setPage(PAGE_CONCLUSION, new ComponentWizardConclusionPage(handler, this));
 }

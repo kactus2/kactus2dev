@@ -27,6 +27,7 @@ public:
     enum Page
     {
         PAGE_INTRO = 0,
+        PAGE_GENERAL,        
         PAGE_FILES,
         PAGE_DEPENDENCY,
         PAGE_VHDL_IMPORT,
