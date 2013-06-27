@@ -85,6 +85,10 @@ HEADERS += ./resource.h \
     ./common/widgets/fileTypeSelector/filetypeselector.h \
     ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.h \
     ./common/widgets/FileSelector/fileselector.h \
+    ./common/widgets/vhdlParser/VhdlEntityHighlighter.h \
+    ./common/widgets/vhdlParser/VhdlParser.h \
+    ./common/widgets/vhdlParser/VhdlParserWidget.h \
+    ./common/widgets/fileViewer/FileViewer.h \
     ./common/validators/AddressValidator.h \
     ./common/validators/nameValidator/namevalidator.h \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.h \
@@ -585,14 +589,13 @@ HEADERS += ./resource.h \
     ./Vhdl2IPXact/vhdlanalysis.h \
     ./Vhdl2IPXact/textedit.h \
     ./Vhdl2IPXact/vhdltoipxact.h \
-    ./Vhdl2IPXact/VhdlParser.h \
-    ./Vhdl2IPXact/VhdlEntityHighlighter.h \
     ./ComponentWizard/ComponentWizard.h \
     ./ComponentWizard/ComponentWizardConclusionPage.h \
     ./ComponentWizard/ComponentWizardDependencyPage.h \
     ./ComponentWizard/ComponentWizardFilesPage.h \
     ./ComponentWizard/ComponentWizardIntroPage.h \
     ./ComponentWizard/ComponentWizardVhdlImportPage.h \
+    ./ComponentWizard/ComponentWizardGeneralInfoPage.h \
     ./ComponentWizard/VhdlImportEditor/vhdlimporteditor.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
@@ -684,6 +687,10 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/fileTypeSelector/filetypeselector.cpp \
     ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.cpp \
     ./common/widgets/FileSelector/fileselector.cpp \
+    ./common/widgets/vhdlParser/VhdlEntityHighlighter.cpp \
+    ./common/widgets/vhdlParser/VhdlParser.cpp \
+    ./common/widgets/vhdlParser/VhdlParserWidget.cpp \
+    ./common/widgets/fileViewer/FileViewer.cpp \
     ./common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
     ./common/graphicsItems/ConnectionEndpoint.cpp \
@@ -1143,13 +1150,12 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./MemoryDesigner/SegmentItem.cpp \
     ./Vhdl2IPXact/textedit.cpp \
     ./Vhdl2IPXact/vhdlanalysis.cpp \
-    ./Vhdl2IPXact/VhdlParser.cpp \
-    ./Vhdl2IPXact/VhdlEntityHighlighter.cpp \
     ./Vhdl2IPXact/vhdltoipxact.cpp \
     ./ComponentWizard/ComponentWizard.cpp \
     ./ComponentWizard/ComponentWizardConclusionPage.cpp \
     ./ComponentWizard/ComponentWizardDependencyPage.cpp \
     ./ComponentWizard/ComponentWizardFilesPage.cpp \
+    ./ComponentWizard/ComponentWizardGeneralInfoPage.cpp \
     ./ComponentWizard/ComponentWizardIntroPage.cpp \
     ./ComponentWizard/ComponentWizardVhdlImportPage.cpp \
     ./ComponentWizard/VhdlImportEditor/vhdlimporteditor.cpp
