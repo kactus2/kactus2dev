@@ -79,7 +79,7 @@ namespace General {
 	//! \brief The number of supported file type definitions
 	const unsigned int FILE_TYPE_COUNT = 33;
 
-	/*! \brief Check if the file type is one of the specified ones.
+    /*! \brief Check if the file type is one of the specified ones.
 	 *
 	 * \param fileType The file type to check.
 	 *

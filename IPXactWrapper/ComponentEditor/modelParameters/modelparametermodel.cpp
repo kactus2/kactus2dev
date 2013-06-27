@@ -320,7 +320,6 @@ QModelIndex ModelParameterModel::index( QSharedPointer<ModelParameter> modelPara
 QSharedPointer<ModelParameter> ModelParameterModel::getParameter(QModelIndex const& index) const
 {
 	Q_ASSERT(index.isValid());
-
     return table_.at(index.row());
 }   
 

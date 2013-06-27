@@ -246,3 +246,17 @@ components_(true),
 buses_(true),
 advanced_(false) {
 }
+
+//-----------------------------------------------------------------------------
+// Function: Utils::getCurrentUser()
+//-----------------------------------------------------------------------------
+KACTUS2_API QString Utils::getCurrentUser()
+{
+#pragma warning (disable: 4996)
+#ifdef Q_OS_WIN
+    return getenv("USERNAME");
+#else
+    return getenv("USER");
+#endif
+#pragma warning (default: 4996)
+}
