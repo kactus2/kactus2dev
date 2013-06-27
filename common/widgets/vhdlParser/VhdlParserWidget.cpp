@@ -11,7 +11,7 @@
 
 #include "VhdlParserWidget.h"
 
-#include <Qapplication>
+#include <QApplication>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
