@@ -29,17 +29,18 @@ ComponentWizardConclusionPage::ComponentWizardConclusionPage(LibraryInterface* l
       summaryWidget_(this),
       handler_(lh),
       previewBox_(lh),
-      vendorLabel_(new QLabel()),
-      libraryLabel_(new QLabel()),
-      nameLabel_(new QLabel()),
-      versionLabel_(new QLabel()),
-      hierarchyLabel_(new QLabel()),
-      firmnessLabel_(new QLabel()),
-      directoryLabel_(new QLabel()),
-      filesetsLabel_(new QLabel()),
-      parametersLabel_(new QLabel()),
-      portsLabel_(new QLabel()),
-      descriptionLabel_(new QLabel())
+      vendorLabel_(new QLabel(this)),
+      libraryLabel_(new QLabel(this)),
+      nameLabel_(new QLabel(this)),
+      versionLabel_(new QLabel(this)),
+      hierarchyLabel_(new QLabel(this)),
+      firmnessLabel_(new QLabel(this)),
+      directoryLabel_(new QLabel(this)),
+      authorLabel_(new QLabel(this)),
+      filesetsLabel_(new QLabel(this)),
+      parametersLabel_(new QLabel(this)),
+      portsLabel_(new QLabel(this)),
+      descriptionLabel_(new QLabel(this))
 {
     setTitle(tr("Summary"));
     setSubTitle(tr("You have successfully completed the component wizard. Verify the choices by clicking Finish."));
@@ -83,9 +84,10 @@ void ComponentWizardConclusionPage::initializePage()
     versionLabel_->setText(vlnv->getVersion());    
     hierarchyLabel_->setText(KactusAttribute::valueToString(parent_->getComponent()->getComponentHierarchy()));
     firmnessLabel_->setText(KactusAttribute::valueToString(parent_->getComponent()->getComponentFirmness()));
-
+    
 	QString xmlPath = handler_->getPath(*parent_->getComponent()->getVlnv());
     directoryLabel_->setText(xmlPath);  
+    authorLabel_->setText(parent_->getComponent()->getAuthor());
 
     if (parent_->getComponent()->getFileSets().isEmpty())
     {
@@ -139,9 +141,6 @@ void ComponentWizardConclusionPage::initializePage()
 //-----------------------------------------------------------------------------
 void ComponentWizardConclusionPage::setupLayout()
 {
-    QHBoxLayout* topLayout = new QHBoxLayout(this);
-    //topLayout->addWidget(&summaryWidget_);
-    //topLayout->addWidget(&previewBox_);
 
     QGridLayout* layout = new QGridLayout();
     int row = 0;
@@ -183,6 +182,7 @@ void ComponentWizardConclusionPage::setupLayout()
 
     QLabel* authorTitleLabel = new QLabel("<b>Author:</b>", this);
     layout->addWidget(authorTitleLabel,row,0,1,1,Qt::AlignTop);  
+    layout->addWidget(authorLabel_,row,1,1,1);
     row++;
 
     QLabel* descriptionTitleLabel = new QLabel("<b>Description:</b>", this);
@@ -211,10 +211,10 @@ void ComponentWizardConclusionPage::setupLayout()
     layout->setRowStretch(layout->rowCount(),1);
     layout->setColumnStretch(1,1);
 
-
     QVBoxLayout* previewLayout = new QVBoxLayout();
     previewLayout->addWidget(&previewBox_);
 
+    QHBoxLayout* topLayout = new QHBoxLayout(this);
     topLayout->addLayout(layout);
     topLayout->addLayout(previewLayout,1);
 }

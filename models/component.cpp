@@ -68,8 +68,9 @@ otherClockDrivers_(),
 parameters_(), 
 attributes_(),
 swViews_(),
-systemViews_() {
-
+systemViews_(),
+author_()
+{
 	LibraryComponent::vlnv_->setType(VLNV::COMPONENT);
 
 	// find the IP-Xact root element (spirit:component or spirit:design ...)
@@ -337,6 +338,10 @@ systemViews_() {
                         {
                             parseIgnoredFiles(childNode);
                         }
+                        else if (childNode.nodeName() == "kactus2:author")
+                        {
+                            author_ = childNode.childNodes().at(0).nodeValue();
+                        }
 					}
 				}
 			}
@@ -373,7 +378,8 @@ ignoredFiles_(),
 cpus_(),
 otherClockDrivers_(),
 parameters_(), 
-attributes_() {
+attributes_(),
+author_() {
 
 	LibraryComponent::vlnv_->setType(VLNV::COMPONENT);
 
@@ -403,7 +409,9 @@ ignoredFiles_(),
 cpus_(), 
 otherClockDrivers_(), 
 parameters_(),
-attributes_() {
+attributes_(),
+author_()
+{
 
 	model_ = QSharedPointer<Model>(new Model());
 }
@@ -431,7 +439,9 @@ ignoredFiles_(other.ignoredFiles_),
 cpus_(),
 otherClockDrivers_(),
 parameters_(),
-attributes_(other.attributes_) {
+attributes_(other.attributes_),
+author_(other.getAuthor()) 
+{
 
 	foreach (QSharedPointer<BusInterface> busif, other.busInterfaces_) {
 		if (busif) {
@@ -742,6 +752,8 @@ Component & Component::operator=( const Component &other ) {
         {
             systemViews_.append(QSharedPointer<SystemView>(new SystemView(*view.data())));
         }
+
+        author_ = other.getAuthor();
 	}
 	return *this;
 }
@@ -1043,6 +1055,11 @@ void Component::write(QFile& file) {
             }
 
             writer.writeEndElement(); // kactus2:ignoredFiles
+        }
+
+        if ( !author_.isEmpty() )
+        {
+            writer.writeTextElement("kactus2:author", author_);
         }
 
 		writer.writeEndElement(); // kactus2:extensions
@@ -3880,4 +3897,20 @@ void Component::addIgnoredFile(QString const& filename)
 void Component::removeIgnoredFile(QString const& filename)
 {
     ignoredFiles_.removeAll(filename);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::setAuthor()
+//-----------------------------------------------------------------------------
+void Component::setAuthor(QString const& author)
+{
+    author_ = author;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::getAuthor()
+//-----------------------------------------------------------------------------
+QString Component::getAuthor() const
+{
+    return author_;
 }

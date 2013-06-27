@@ -41,8 +41,6 @@ VhdlParserWidget::VhdlParserWidget(const QString& basePath,	QSharedPointer<Compo
 	fileSelector_->addFilter("vhdl");
 	connect(fileSelector_, SIGNAL(fileSelected(const QString&)),
 		this, SLOT(onFileSelected(const QString&)), Qt::UniqueConnection);
-    connect(fileSelector_, SIGNAL(fileSelected(const QString&)),
-		this, SIGNAL(fileSelected(const QString&)), Qt::UniqueConnection);
 
     // Model parameter signals.
 	connect(vhdlParser_, SIGNAL(addGeneric(QSharedPointer<ModelParameter>)),

@@ -18,6 +18,7 @@
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 
 #include <QSharedPointer>
+#include <QLineEdit>
 
 class Component;
 class LibraryInterface;
@@ -77,6 +78,9 @@ private slots:
 	//! \brief Handler for changes in XML header.
 	void onHeaderChange();
 
+    //! \brief Handler for changes in author field.
+    void onAuthorChange();
+
 private:
     // Disable copying.
     GeneralEditor(const GeneralEditor& other);
@@ -91,6 +95,8 @@ private:
 
     //! Kactus attribute editor.
     KactusAttributeEditor* attributeEditor_;
+
+    QLineEdit* authorEditor_;
 
     //! The description editor.
     DescEditor* descEditor_;

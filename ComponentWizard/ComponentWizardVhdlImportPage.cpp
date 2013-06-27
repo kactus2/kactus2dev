@@ -50,11 +50,17 @@ int ComponentWizardVhdlImportPage::nextId() const
     return ComponentWizard::PAGE_CONCLUSION;
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentWizardVhdlImportPage::initializePage()
+//-----------------------------------------------------------------------------
 void ComponentWizardVhdlImportPage::initializePage() {	
    
     editor_->initializeFileSelection();       
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentWizardVhdlImportPage::isComplete()
+//-----------------------------------------------------------------------------
 bool ComponentWizardVhdlImportPage::isComplete() const {
 	return editor_->checkEditorValidity();
 }

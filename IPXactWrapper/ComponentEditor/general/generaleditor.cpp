@@ -23,8 +23,7 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QStringList>
-
-#include <QDebug>
+#include <QLineEdit>
 
 //-----------------------------------------------------------------------------
 // Function: GeneralEditor()
@@ -35,6 +34,7 @@ GeneralEditor::GeneralEditor(LibraryInterface* libHandler,
 ItemEditor(component, libHandler, parent),
 vlnvDisplayer_(0),
 attributeEditor_(0),
+authorEditor_(0),
 descEditor_(NULL),
 headerEditor_(NULL),
 previewBox_(0) {
@@ -52,6 +52,11 @@ previewBox_(0) {
 
     attributeEditor_ = new KactusAttributeEditor(this);
 
+    QGroupBox* authorBox = new QGroupBox("Author",this);
+    authorEditor_ = new QLineEdit(authorBox);   
+    QVBoxLayout* authorLayout = new QVBoxLayout(authorBox);
+    authorLayout->addWidget(authorEditor_);
+
     descEditor_ = new DescEditor();
 
 	headerEditor_ = new DescEditor();
@@ -64,6 +69,7 @@ previewBox_(0) {
 
     layout->addWidget(vlnvDisplayer_);
     layout->addWidget(attributeEditor_);
+    layout->addWidget(authorBox);    
     layout->addWidget(descEditor_);
 	layout->addWidget(headerEditor_);
 
@@ -78,6 +84,8 @@ previewBox_(0) {
             this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
 	connect(headerEditor_, SIGNAL(contentChanged()),
 		this, SLOT(onHeaderChange()), Qt::UniqueConnection);
+    connect(authorEditor_, SIGNAL(editingFinished()),
+		this, SLOT(onAuthorChange()), Qt::UniqueConnection);
 
     refresh();
 }
@@ -114,6 +122,13 @@ void GeneralEditor::refresh() {
 	attributeEditor_->setImplementation(component()->getComponentImplementation());
 	connect(attributeEditor_, SIGNAL(contentChanged()),
 		this, SLOT(onAttributesChange()), Qt::UniqueConnection);
+
+	disconnect(authorEditor_, SIGNAL(editingFinished()),
+		this, SLOT(onAuthorChange()));
+    QString author = component()->getAuthor();
+	authorEditor_->setText(component()->getAuthor());
+	connect(authorEditor_, SIGNAL(editingFinished()),
+		this, SLOT(onAuthorChange()), Qt::UniqueConnection);
 
 	disconnect(descEditor_, SIGNAL(contentChanged()),
 		this, SLOT(onDescriptionChange()));
@@ -152,4 +167,10 @@ void GeneralEditor::showEvent( QShowEvent* event ) {
 void GeneralEditor::onHeaderChange() {
 	component()->setTopComments(headerEditor_->getDescription());
 	emit contentChanged();
+}
+
+void GeneralEditor::onAuthorChange()
+{
+    component()->setAuthor(authorEditor_->text());
+    emit contentChanged();
 }

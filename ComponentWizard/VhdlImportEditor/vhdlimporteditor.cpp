@@ -26,9 +26,9 @@ VhdlImportEditor::VhdlImportEditor(const QString& basePath,
 	QWidget *parent):
     QWidget(parent),
     splitter_(Qt::Vertical, this),
-	parserWidget_(new VhdlParserWidget(basePath,component, &splitter_)),
 	basePath_(basePath),
     vhdlPath_(),
+    parserWidget_(new VhdlParserWidget(basePath,component, &splitter_)),    
     modelParams_(new ModelParameterEditor(component, handler, &splitter_)),
     ports_(new PortsEditor(component, handler, false, &splitter_))
 {
@@ -37,6 +37,21 @@ VhdlImportEditor::VhdlImportEditor(const QString& basePath,
 	// CSV import/export is disabled in the wizard
 	modelParams_->setAllowImportExport(false);
 	ports_->setAllowImportExport(false);
+
+    // Make the splitter handles visible. Handle 0 is always invisible.
+    const int handles = 3;
+    for ( int i = 1; i < handles; i++)
+    {
+        QSplitterHandle* handle = splitter_.handle(i);
+        QVBoxLayout *layout = new QVBoxLayout(handle);
+        layout->setSpacing(0);
+        layout->setMargin(0);
+
+        QFrame* line = new QFrame(handle);
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+        layout->addWidget(line);
+    }
 
     // Connections between model parameter editor and vhdlParser.
 	connect(modelParams_, SIGNAL(contentChanged()),

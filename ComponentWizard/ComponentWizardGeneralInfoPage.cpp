@@ -95,9 +95,8 @@ bool ComponentWizardGeneralInfoPage::isComplete() const {
 bool ComponentWizardGeneralInfoPage::validatePage()
 {
     component_->setDescription(descriptionEditor_.toPlainText());
-    
-    //TODO: author assingment
-    
+    component_->setAuthor(authorEditor_.text());
+
     return true;
 }
 

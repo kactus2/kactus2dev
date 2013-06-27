@@ -1772,6 +1772,11 @@ public:
 	*/
 	virtual const QStringList getDependentDirs() const;
 
+
+    void setAuthor(QString const& author);
+
+    QString getAuthor() const;
+
 private:
 
     /*!
@@ -1939,6 +1944,9 @@ private:
 
     //! The list of system views.
     QList< QSharedPointer<SystemView> > systemViews_;
+
+    
+    QString author_;
 };
 
 

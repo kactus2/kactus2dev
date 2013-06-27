@@ -90,6 +90,9 @@ private:
     //! Label for the xml path.
     QLabel* directoryLabel_;
 
+    //! Label for author.
+    QLabel* authorLabel_;
+
     //! Label for the component filesets.
     QLabel* filesetsLabel_;
 
@@ -101,8 +104,6 @@ private:
 
     //! Label for the component description.
     QLabel* descriptionLabel_;
-
-    //QTextEdit* descriptionViewer_;
 
     //! The component preview box.
     ComponentPreviewBox previewBox_;
