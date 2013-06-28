@@ -648,7 +648,7 @@ void HWDesignWidget::onModelsimGenerate() {
 	QString fileName = getLibraryInterface()->getPath(*getEditedComponent()->getVlnv());
 	QFileInfo targetInfo(fileName);
 	fileName = targetInfo.absolutePath();
-	fileName += QString("/%1.%2.create_makefile").arg(
+	fileName += QString("/%1.%2.compile.do").arg(
 		getEditedComponent()->getVlnv()->getName()).arg(getOpenViewName());
 
 	// ask user to select a location to save the makefile
