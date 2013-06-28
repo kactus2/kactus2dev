@@ -29,6 +29,8 @@
 #include <models/fileset.h>
 #include <models/file.h>
 
+#include <common/utils.h>
+
 #include <designwidget/HWDesignWidget.h>
 #include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
 
@@ -1135,7 +1137,7 @@ void VhdlGenerator2::writeVhdlHeader( QTextStream& vhdlStream, const QString& fi
 	vhdlStream << "-- " << endl;
 
 	QSettings settings;
-	QString userName = settings.value("General/Username", getenv("USERNAME")).toString();
+	QString userName = settings.value("General/Username", Utils::getCurrentUser()).toString();
 	vhdlStream << "-- Created by   : " << userName << endl; 
 	vhdlStream << "-- This file was generated with Kactus2 vhdl generator" << endl;
 	VLNV* vlnv = component_->getVlnv();

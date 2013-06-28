@@ -327,6 +327,10 @@ QVariant FileDependencyModel::data(const QModelIndex& index, int role /*= Qt::Di
             {
                 return QColor(Qt::red);
             }
+            else if (item->getFileSets().empty())
+            {
+                return QColor(Qt::gray);
+            }
         }
     }
     else if (role == Qt::BackgroundRole)

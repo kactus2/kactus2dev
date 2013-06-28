@@ -164,7 +164,6 @@ MainWindow::MainWindow(QWidget *parent)
       actGenModelSim_(0),
       actGenQuartus_(0), 
       actGenDocumentation_(0),
-      actRunPluginGenerator_(0),
       diagramToolsGroup_(0), 
       actToolSelect_(0), 
       actToolConnect_(0),
@@ -525,10 +524,6 @@ void MainWindow::setupActions()
 	connect(actGenDocumentation_, SIGNAL(triggered()),
 		this, SLOT(generateDoc()), Qt::UniqueConnection);
 
-	actRunPluginGenerator_ = new QAction(QIcon(":icons/graphics/generator_plugin.png"),
-		tr("Run Generator Plugin"), this);
-	connect(actRunPluginGenerator_, SIGNAL(triggered()), this, SLOT(runGeneratorPlugin()), Qt::UniqueConnection);
-
 	// Initialize the action to add a new column.
 	actAddColumn_ = new QAction(QIcon(":/icons/graphics/diagram-add-column.png"), tr("Add Column"), this);
 	actAddColumn_->setProperty("rowSpan", 2);
@@ -791,7 +786,6 @@ void MainWindow::setupMenus()
     generationGroup_->addAction(actGenDocumentation_);
     generationGroup_->addAction(actGenModelSim_);
     generationGroup_->addAction(actGenQuartus_);
-    generationGroup_->addAction(actRunPluginGenerator_);
     generationGroup_->setVisible(false);
     generationGroup_->setEnabled(false);
 
@@ -1239,9 +1233,6 @@ void MainWindow::updateMenuStrip()
 		
 		actGenQuartus_->setEnabled(unlocked);
 		actGenQuartus_->setVisible(true);
-        
-		actRunPluginGenerator_->setEnabled(unlocked);
-		actRunPluginGenerator_->setVisible(true);
 	}
 	// if is hardware component then set only documentation, modelsim and vhdl enabled
 	else if (isHWComp) {
@@ -1256,21 +1247,12 @@ void MainWindow::updateMenuStrip()
        
 		actGenQuartus_->setDisabled(true);
 		actGenQuartus_->setVisible(false);
-
-		actRunPluginGenerator_->setEnabled(unlocked);
-		actRunPluginGenerator_->setVisible(true);
 	}
 	else {
 		actGenVHDL_->setVisible(false);
-
 		actGenDocumentation_->setVisible(false);
-		
 		actGenModelSim_->setVisible(false);
-		
 		actGenQuartus_->setVisible(false);
-		
-		actRunPluginGenerator_->setVisible(true);
-		actRunPluginGenerator_->setEnabled(unlocked);
 	}
 
 	editGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_EDIT_SUPPORT));

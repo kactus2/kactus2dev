@@ -106,6 +106,10 @@ void ComponentEditorFileSetItem::createChild( int index ) {
 
 	QSharedPointer<ComponentEditorFileItem> fileItem(new ComponentEditorFileItem(
 		files_.at(index), model_, libHandler_, component_, this));
+
+    connect(fileItem.data(), SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
+            model_, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
+
 	fileItem->setLocked(locked_);
 	childItems_.insert(index, fileItem);
 }

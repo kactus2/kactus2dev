@@ -770,9 +770,6 @@ private:
 	//! \brief Action to generate the documentation for a component.
 	QAction* actGenDocumentation_;
 
-    //! Action to run a generator plugin.
-    QAction* actRunPluginGenerator_;
-
     //! The SW Design group.
     RibbonGroup* swDesignGroup_;
 

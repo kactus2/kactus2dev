@@ -69,6 +69,10 @@ QString ComponentEditorFileSetsItem::getTooltip() const {
 void ComponentEditorFileSetsItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorFileSetItem> fileSetItem(
 		new ComponentEditorFileSetItem(fileSets_.at(index), model_, libHandler_, component_, this));
+
+    connect(fileSetItem.data(), SIGNAL(childRemoved(int)),
+            this, SIGNAL(refreshDependencyModel()), Qt::UniqueConnection);
+
 	fileSetItem->setLocked(locked_);
 	childItems_.insert(index, fileSetItem);
 }
