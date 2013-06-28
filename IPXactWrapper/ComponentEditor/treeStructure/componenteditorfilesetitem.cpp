@@ -120,8 +120,7 @@ void ComponentEditorFileSetItem::createChild( int index ) {
 void ComponentEditorFileSetItem::onFileAdded(File* file)
 {
     Q_ASSERT(files_.at(files_.size() - 1) == file);
-    createChild(files_.size() - 1);
-    //onEditorChanged();
+    onAddChild(files_.size() - 1);
     emit contentChanged();
 }
 
