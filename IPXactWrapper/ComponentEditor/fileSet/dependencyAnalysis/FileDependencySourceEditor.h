@@ -69,8 +69,16 @@ private:
     FileDependencySourceEditor& operator=(FileDependencySourceEditor const& rhs);
 
     // Help functions.
-    bool checkIfSelectedDirectoryHasBeenPreviouslyAdded(QString newDirectory);
-    void removeUnnecessaryDirectories(QString newDirectory);
+    bool checkIfSelectedDirectoryHasBeenPreviouslyAdded(QString const& newDirectory);
+    
+    void removeUnnecessaryDirectories(QString const& newDirectory);
+
+    /*!
+     *  Returns the currently selected directories in absolute paths.
+     *
+     *      @param [out] dirs The absolute paths for the directories.
+     */
+    void getAbsoluteDirectories(QStringList& dirs);
 
     //-----------------------------------------------------------------------------
     // Data.

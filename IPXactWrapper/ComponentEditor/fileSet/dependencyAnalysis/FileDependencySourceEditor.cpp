@@ -70,10 +70,12 @@ QStringList FileDependencySourceEditor::getSourceDirectories() const
 void FileDependencySourceEditor::addSource()
 {
     QString newDirectory = QFileDialog::getExistingDirectory(this, tr("Choose Source Directory"), basePath_);
+
     if (newDirectory.size() < 1)
     {
         return;
     }
+
     newDirectory = QFileInfo(newDirectory).filePath();
     newDirectory = General::getRelativePath(basePath_, newDirectory);
 
@@ -81,10 +83,12 @@ void FileDependencySourceEditor::addSource()
     {
         newDirectory = ".";
     }
+
     if (!checkIfSelectedDirectoryHasBeenPreviouslyAdded(newDirectory))
     {
         // Now removing possibly unnecessary directories
         removeUnnecessaryDirectories(newDirectory);
+
         // Adding the new directory to the list.
         QStringList newDirectories = directoryListModel_->stringList();
         newDirectories.push_back(newDirectory);
@@ -96,90 +100,49 @@ void FileDependencySourceEditor::addSource()
 //-----------------------------------------------------------------------------------------
 // Function: FileDependencySourceEditor::checkIfSelectedDirectoryHasBeenPreviouslyAdded()
 //-----------------------------------------------------------------------------------------
-bool FileDependencySourceEditor::checkIfSelectedDirectoryHasBeenPreviouslyAdded(QString newDirectory)
+bool FileDependencySourceEditor::checkIfSelectedDirectoryHasBeenPreviouslyAdded(QString const& newDirectory)
 {
     QStringList oldDirectoriesAbs;
-    for(int i = 0; i < directoryListModel_->stringList().count(); ++i)
+    getAbsoluteDirectories(oldDirectoriesAbs);
+    
+    QString newDirAbs = QFileInfo(General::getAbsolutePath(basePath_ + "/", newDirectory)).canonicalFilePath();
+
+    // Check if the selected directory is part of any existing directory.
+    for (int i = 0; i < oldDirectoriesAbs.count(); ++i)
     {
-        oldDirectoriesAbs.push_back(General::getAbsolutePath(basePath_ + "/", directoryListModel_->stringList().at(i)));
-    }
-    QString newDirAbs = General::getAbsolutePath(basePath_ + "/", newDirectory);
-    // Checking if the selected directory has been previously added.
-    for(int i = 0; i < oldDirectoriesAbs.count(); ++i)
-    {
-        int subDirectory = 0;
-        for(int j = 0; j < newDirAbs.count("/"); ++j)
+        if (newDirAbs.startsWith(oldDirectoriesAbs.at(i)))
         {
-            subDirectory = newDirAbs.indexOf("/", subDirectory+1);
-            // Checking whether old directory is a root directory.
-            QString oldDirString = oldDirectoriesAbs.at(i);
-            if (oldDirString.right(1) == "/")
-            {
-                oldDirString = oldDirString.left(oldDirString.size() -1);
-            }
-            if (newDirAbs.left(subDirectory) == oldDirString)
-            {
-                return true;
-            }
-            else if (newDirAbs == oldDirectoriesAbs.at(i))
-            {
-                return true;
-            }
+            return true;
         }
     }
+
     return false;
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileDependencySourceEditor::removeUnnecessaryDirectories()
 //-----------------------------------------------------------------------------
-void FileDependencySourceEditor::removeUnnecessaryDirectories(QString newDirectory)
+void FileDependencySourceEditor::removeUnnecessaryDirectories(QString const& newDirectory)
 {
-    // First changing everything to absolute paths.
+    // First change everything to absolute paths.
     QStringList oldDirectoriesAbs;
-    for(int i = 0; i < directoryListModel_->stringList().count(); ++i)
-    {
-        oldDirectoriesAbs.push_back(General::getAbsolutePath(basePath_ + "/", directoryListModel_->stringList().at(i)));
-    }
-    QString newDirAbs = General::getAbsolutePath(basePath_ + "/", newDirectory);
+    getAbsoluteDirectories(oldDirectoriesAbs);
+    
+    QString newDirAbs = QFileInfo(General::getAbsolutePath(basePath_ + "/", newDirectory)).canonicalFilePath();
 
     // Temporary directory list for holding necessary directories.
     QStringList tempDirectoryList;
-    bool necessaryDirectory = true;
-
-    // Checking if root directory
-    if (newDirAbs.right(2) == ":/")
-    {
-        // Removing unnecessary forward slash.
-        newDirAbs = newDirAbs.left(newDirectory.size() -1);
-    }
 
     // Checking if unnecessary directories exist in the list.
-    for(int i = 0; i < oldDirectoriesAbs.count(); ++i)
+    for (int i = 0; i < oldDirectoriesAbs.count(); ++i)
     {
-        int subDirectory = 0;
-        necessaryDirectory = true;
-        QString oldDirectory = oldDirectoriesAbs.at(i);
-        for(int j = 0; j < oldDirectoriesAbs.at(i).count("/"); ++j)
+        if (!oldDirectoriesAbs.at(i).startsWith(newDirAbs))
         {
-            subDirectory = oldDirectoriesAbs.at(i).indexOf("/", subDirectory+1);
-            // Checking to see if old directory is contained in the new directory.
-
-            if (newDirAbs == oldDirectory.left(subDirectory))
-            {
-                // Unnecessary directory found. Marking it unnecessary.
-                necessaryDirectory = false;
-                break;
-            }
-        }
-        // Checking to see if directory is needed after the new added directory
-        if (necessaryDirectory)
-        {
-            QString necessaryDir = General::getRelativePath(basePath_, oldDirectoriesAbs.at(i));
-            tempDirectoryList.push_back(necessaryDir);
+            tempDirectoryList.append(directoryListModel_->stringList().at(i));
         }
     }
-    // Updating the source directory model.
+
+    // Update the source directory model.
     directoryListModel_->setStringList(tempDirectoryList);
 }
 
@@ -193,5 +156,20 @@ void FileDependencySourceEditor::removeSource()
     if (directoryListModel_->stringList().count() < 1)
     {
         buttonRemove_->setEnabled(false);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencySourceEditor::getAbsoluteDirectories()
+//-----------------------------------------------------------------------------
+void FileDependencySourceEditor::getAbsoluteDirectories(QStringList &oldDirectoriesAbs)
+{
+    oldDirectoriesAbs.clear();
+
+    for (int i = 0; i < directoryListModel_->stringList().count(); ++i)
+    {
+        QString path = QFileInfo(General::getAbsolutePath(basePath_ + "/", directoryListModel_->stringList().at(i))).canonicalFilePath();
+
+        oldDirectoriesAbs.push_back(path);
     }
 }
