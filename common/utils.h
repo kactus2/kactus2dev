@@ -225,10 +225,10 @@ namespace Utils {
     void replaceMagicWord(QString& text, QString const& magicWord, QString const& value);
 
     //! \brief Regular expression to validate URLs.
-	const QRegExp URL_VALIDITY_REG_EXP = QRegExp("^(ht|f)tp(s?)\\:\\/\\/[0-9a-zA-Z]([-.\\w]*[0-9a-zA-Z])*(:(0-9)*)*(\\/?)([a-zA-Z0-9\\-\\.\\?\\,\\'\\/\\\\\\+&%\\$#_]*)?$", Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
+    const QRegExp URL_VALIDITY_REG_EXP = QRegExp("^([A-Za-z]{3,9}\\:\\/\\/)?[A-Za-z0-9]+([\\-\\.][A-Za-z0-9]+)*(\\/[A-Za-z0-9\\.\\-\\?\\=\\&\\%\\#\\~\\+]*)*$", Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
 
 	//! \brief Regular expression to check if given string is a URL.
-	const QRegExp URL_IDENTIFY_REG_EXP = QRegExp("^(ht|f)tp(s?)\\:\\/\\/.*", Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
+	const QRegExp URL_IDENTIFY_REG_EXP = QRegExp("^([A-Za-z]{3,9}\\:\\/\\/)?[A-Za-z0-9]+([\\-\\.][A-Za-z0-9]+)*(\\/[A-Za-z0-9\\.\\-\\?\\=\\&\\%\\#\\~\\+]*)*$", Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
 
     /*!
      *  Retrieves and returns the name of the current user.
