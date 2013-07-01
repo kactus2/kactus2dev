@@ -114,7 +114,8 @@ void EditableListView::setupActions() {
 //-----------------------------------------------------------------------------
 // Function: EditableListView::currentChanged()
 //-----------------------------------------------------------------------------
-void EditableListView::currentChanged(const QModelIndex &current, const QModelIndex&)
+void EditableListView::currentChanged(const QModelIndex &current, const QModelIndex& previous)
 {
+    QListView::currentChanged(current, previous);
     emit selectionChanged(current);
 }
