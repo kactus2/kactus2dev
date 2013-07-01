@@ -34,8 +34,8 @@ FileNameEditor::FileNameEditor(QWidget *parent, LibraryInterface* handler,
 	topLayout->addLayout(nameLayout);
 
 	// connect the signals informing of content changes.
-	connect(&nameEdit_, SIGNAL(contentChanged()),
-		    this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+// 	connect(&nameEdit_, SIGNAL(contentChanged()),
+// 		    this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 FileNameEditor::~FileNameEditor()

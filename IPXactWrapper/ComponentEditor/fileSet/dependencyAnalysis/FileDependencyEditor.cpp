@@ -158,7 +158,6 @@ void FileDependencyEditor::scan()
     if (scanning_)
     {
         model_.stopAnalysis();
-        emit scanCompleted();
         return;
     }
 
@@ -298,8 +297,8 @@ void FileDependencyEditor::updateProgressBar(int value)
 
     if (value == 0)
     {
-        runAnalysisAction_->setIcon(QIcon(":/icons/graphics/control-play.png"));
         scanning_ = false;
+        runAnalysisAction_->setIcon(QIcon(":/icons/graphics/control-play.png"));
         emit filesUpdated();
         emit scanCompleted();
     }

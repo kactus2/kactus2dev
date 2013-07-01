@@ -448,20 +448,24 @@ void FileDependencyModel::startAnalysis()
 //-----------------------------------------------------------------------------
 void FileDependencyModel::stopAnalysis()
 {
-    timer_->stop();
-    delete timer_;
-
-    // Reset the progress.
-    emit analysisProgressChanged(0);
-
-    // End analysis for each plugin.
-    foreach (ISourceAnalyzerPlugin* plugin, usedPlugins_)
+    if (timer_ != 0)
     {
-        plugin->endAnalysis(component_.data(), basePath_);
-    }
+        timer_->stop();
+        delete timer_;
+        timer_ = 0;
 
-    // TODO: Reset dependencies?
-    emit dependenciesReset();
+        // Reset the progress.
+        emit analysisProgressChanged(0);
+
+        // End analysis for each plugin.
+        foreach (ISourceAnalyzerPlugin* plugin, usedPlugins_)
+        {
+            plugin->endAnalysis(component_.data(), basePath_);
+        }
+
+        // TODO: Reset dependencies?
+        emit dependenciesReset();
+    }
 }
 
 //-----------------------------------------------------------------------------

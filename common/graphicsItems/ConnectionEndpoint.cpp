@@ -54,11 +54,11 @@ void ConnectionEndpoint::setHighlight(HighlightMode mode)
         {
             if (isInvalid())
             {
-                setPen(QPen(Qt::red, 1));
+                setPen(QPen(Qt::red, 0));
             }
             else
             {
-                setPen(QPen(Qt::black, 1));
+                setPen(QPen(Qt::black, 0));
             }
             break;
         }
@@ -178,11 +178,11 @@ void ConnectionEndpoint::updateInterface()
 {
     if (isInvalid())
     {
-        setPen(QPen(Qt::red, 1));
+        setPen(QPen(Qt::red, 0));
     }
     else
     {
-        setPen(QPen(Qt::black, 1));
+        setPen(QPen(Qt::black, 0));
     }
 }
 
