@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if [ ! -f Help/Kactus2Help.qch ]; then
+   qhelpgenerator Help/kactus2help.qhp -o Help/Kactus2Help.qch
+fi
+
+if [ ! -f Help/Kactus2Help.qhc ]; then
+   qcollectiongenerator Help/kactus2help.qhcp -o Help/Kactus2Help.qhc
+fi
+
+rm -R -f executable/Help
+mkdir executable/Help
+cp -f Help/Kactus2Help.qhc executable/Help/Kactus2Help.qhc
+cp -f Help/Kactus2Help.qch executable/Help/Kactus2Help.qch
