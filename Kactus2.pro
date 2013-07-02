@@ -24,7 +24,7 @@ UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(Kactus2.pri)
 win32:RC_FILE = Kactus2.rc
-unix:QMAKE_POST_LINK = ./PostBuild.sh
+unix:QMAKE_POST_LINK = ln -f -s Kactus2 executable/libKactus2.so
 
 target.path = /usr/bin
 INSTALLS += target
