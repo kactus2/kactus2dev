@@ -9,7 +9,7 @@ qhelpgenerator Help/kactus2help.qhp -o Help/Kactus2Help.qch
 qcollectiongenerator Help/kactus2help.qhcp -o Help/Kactus2Help.qhc
 
 #Run qmake using qtchooser.
-if which qtchooser > /dev/null; then
+if command -v qtchooser >/dev/null 2>&1; then
    echo "Qtchooser found. Running qmake through qtchooser..."
    qtchooser -run-tool=qmake -qt=qt5 Kactus2_Solution.pro
 else
