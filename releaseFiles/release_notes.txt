@@ -1,4 +1,3 @@
-
 ===============================================================================
                             RELEASE NOTES : Kactus2
            Copyright (c) 2012-2013 Tampere University of Technology
@@ -8,6 +7,51 @@
               - Bug fix or something removed
               * Changed or Information
 ===============================================================================
+
+
+05/07/2013 2.2 (Build XXXX)
+----------------------------------------------------
+
++ NEW: Component creation wizard, including a VHDL import tool.
++ NEW: Dependency analysis tool with enhanced file set editing features.
++ NEW: Generator plugins.
+	* Memory map header generator.
+	* Altera BSP generator.
++ NEW: Source analyzer plugins for dependency analysis.
+	* VHDL source analyzer.
+	* C/C++ source analyzer.
++ Added printing of library summary report to the output window after the
+  library scan.
++ Added COM interface implementation reference to be able to specify an
+  implementing driver for each COM interface in HW components.
++ Added editing features for HW view reference and file set references
+  to the system view editor in the component editor.
++ Added file set references, build commands and BSP build tools
+  to software views in the component editor.
++ Added environment variables to SW views.
+
+- Fixed performance issues with large libraries causing unnecessary slowdowns
+  in the library window and the component editor.
+- Removed the possibility to create new components/objects from scratch in the
+  library window.
+- Bus editor now shows width field as empty instead of an invalid -1 when the
+  optional width value is not specified in the abstraction definition.
+- Unnecessary errors about URL file paths are no longer shown.
+- Fixed the missing yellow color in the mandatory file type field in the file 
+  set editor.
+- Fixed the bus interface editor showing master interface settings by default
+  even though the interface mode is undefined.
+- Fixed the issue of an ad-hoc port not being hidden in a design after the
+  ad-hoc visibility has been unchecked in the component editor and saved.
+- Fixed a crash when trying to auto-assign addresses in the address editor
+  when the selected component instance has no bus interfaces that would
+  be shown in the editor.
+
+* Migrated to Qt 5.1.0 RC2.
+* Changed the naming of library context menu New items.
+* Replaced the old list editor with a better collection editor.
+* Disabled the instantiation of template components to designs.
+
 
 
 12/02/2013 2.1 (Build 194)

@@ -47,10 +47,7 @@ Antti Kamppi, Joni-Matti M‰‰tt‰, Lauri Matilainen, Timo D. H‰m‰l‰inen,
 Juho J‰rvinen
 
 
-Kactus2 uses parts of the Generic Component Framework (GCF), copyright
-VCreate Logic (P) Ltd, Bangalore, India. (GPL2)
-
-Kactus2 is linked with Qt 5.0.0, copyright Digia Plc. (LGPL)
+Kactus2 is linked with Qt 5.1.0, copyright Digia Plc. (LGPL)
 
 
 Icons used in Kactus2
