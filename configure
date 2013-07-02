@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Generate compressed help files.
+echo "Generating compressed help files..."
+qhelpgenerator Help/kactus2help.qhp -o Help/Kactus2Help.qch
+qcollectiongenerator Help/kactus2help.qhcp -o Help/Kactus2Help.qhc
+
+#Run qmake using qtchooser.
+echo "Running qmake..."
+qtchooser -run-tool=qmake -qt=qt5 Kactus2_Solution.pro
+
+echo ""
+echo "Kactus2 has now been configured. Run make to start the build."
