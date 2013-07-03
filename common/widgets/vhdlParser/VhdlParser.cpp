@@ -21,7 +21,9 @@
 #include <QList>
 #include <QTextBlockFormat>
 #include <QApplication>
+#include <QAbstractTextDocumentLayout>
 
+#include <QDebug>
 #include <models/modelparameter.h>
 #include <models/port.h>
 #include <common/widgets/vhdlParser/VhdlEntityHighlighter.h>
@@ -30,10 +32,27 @@
 // Function: VhdlParser()
 //-----------------------------------------------------------------------------
 VhdlParser::VhdlParser(QWidget*parent) : QTextEdit( parent ), 
-    portsMap_(), genericsMap_(), 
-    generics_(), genericUsage_(), highlighter_(), portBlocks_(), genericBlocks_(), 
-    entityBegin_(),  entityEnd_(), portsBegin_(), portsEnd_(), portPattern_(), typePattern_(), 
-    genericsBegin_(), genericsEnd_(), genericPattern_(), commentPattern_(), defaultPattern_()
+    portsMap_(), 
+    genericsMap_(), 
+    generics_(), 
+    genericsInPorts_(), 
+    genericsInGenerics_(), 
+    highlighter_(),
+    portBlocks_(), 
+    genericBlocks_(), 
+    entityBegin_(),  
+    entityEnd_(), 
+    portsBegin_(),
+    portsEnd_(),
+    portPattern_(),
+    typePattern_(), 
+    genericsBegin_(), 
+    genericsEnd_(), 
+    genericExp_(),
+    commentExp_(),
+    defaultPattern_(),
+    equationPattern_(),
+    newline_()
 {
     QFont font("Courier");
     font.setStyleHint(QFont::Monospace);
@@ -48,40 +67,55 @@ VhdlParser::VhdlParser(QWidget*parent) : QTextEdit( parent ),
 
     highlighter_ = new VhdlEntityHighlighter(document());
 
+    QString newline = "(\\r\\n?|\\n\\r?)";
+    QString space = "[ \\t]*";    
+    QString comment = "[-][-]"+space+"([^\\r\\n]*)";
+
     // Entity declaration is ENTITY <name> IS
-    entityBegin_.setPattern("\\b(?:ENTITY)\\s+(\\w+)\\s+(?:IS)\\s*");
+    entityBegin_.setPattern(space+"(?:ENTITY)\\s+(\\w+)\\s+(?:IS)");
     entityBegin_.setCaseSensitivity(Qt::CaseInsensitive);
 
     // Entity end declaration is END [ENTITY] [<name>];
-    entityEnd_.setPattern("\\b(END)\\s*(ENTITY)?\\s*(NAME)?\\s*[;]\\s*");
+    entityEnd_.setPattern(space+"(END)\\s*(ENTITY)?\\s*(NAME)?\\s*[;]");
     entityEnd_.setCaseSensitivity(Qt::CaseInsensitive);
 
-    portsBegin_.setPattern("\\b(PORT)\\s*[(]");
+    portsBegin_.setPattern(space+"(PORT)\\s*[(]");
     portsBegin_.setCaseSensitivity(Qt::CaseInsensitive);
 
-    portsEnd_.setPattern("\\s*[)]\\s*[;]\\s*(?=(?:[-][-][^\\n]*\\s*)*(END|BEGIN|GENERIC))\\s*");
+    portsEnd_.setPattern(space+"[)]\\s*[;](?=\\s*(?:"+comment+"*\\s*)*(END|BEGIN|GENERIC))");
     portsEnd_.setCaseSensitivity(Qt::CaseInsensitive);
 
+    QString names = "\\w+\\s*[,]?\\s*";
+    QString operations = "[+-/*/]|[/*][/*]";
+    QString bound = "(?:\\w+)(?:\\s*(?:"+operations+")\\s*(?:\\w+))*";
+    QString portTypeExp = "(?:\\w+)\\s*(?:[(]\\s*(?:"+bound+")\\s+\\w+\\s+(?:"+bound+")\\s*[)])?";
+    QString genericTypeExp = "\\w+";
+    QString defaultExp = "[:][=]\\s*((?:"+bound+")|[^\\s:;]+)";
+
     // Port declaration is <port_names> : <direction> <type> [<default>]; [--description]
-    portPattern_.setPattern("\\s*((?:\\w+\\s*[,]?\\s*)+)\\s*[:]\\s*(\\w+)\\s+([^:;$]+)\\s*(?:[:][=]\\s*([^;-]+))?\\s*($|[;](?:(?:[ \\t])*(?:[-][-]\\s*([^\\n]*)))?|(?:(?:[ \\t])*(?:[-][-]\\s*([^\\n]*)))$)");
+    portPattern_.setPattern(space+"("+names+")+\\s*[:]\\s*(\\w+)\\s+("+portTypeExp+")\\s*(?:"+defaultExp+")?(?:\\s*[;]"+space+"(?:"+comment+")?(?:"+newline+")?|"+space+"(?:"+comment+")?(?:"+newline+")?(?=(?:\\s*(?:"+comment+")*\\s*)*$))");
 
    // Type definition in port declaration is <typename>[(<left> downto <right>)].
-    typePattern_.setPattern("(\\w+)\\s*(?:[(]\\s*(\\w+)\\s+\\w+\\s+(\\w+)[)])?\\s*");
+    typePattern_.setPattern(portTypeExp.replace("(?:","("));
   
-    genericsBegin_.setPattern("\\b(GENERIC)\\s*[(]");
+    genericsBegin_.setPattern(space+"(GENERIC)\\s*[(]");
     genericsBegin_.setCaseSensitivity(Qt::CaseInsensitive);
 
-    genericsEnd_.setPattern("\\s*[)]\\s*[;]\\s*(?=(?:[-][-][^\\n]*\\s*)*(END|BEGIN|PORT))\\s*");
+    genericsEnd_.setPattern(space+"[)]\\s*[;](?=(?:\\s*("+comment+")\\s*)*(END|BEGIN|PORT))*");
     genericsEnd_.setCaseSensitivity(Qt::CaseInsensitive);
 
-    // Generic declaration is <generic_names> : <type> [<default>];     
-    genericPattern_.setPattern("\\s*((?:\\w+\\s*[,]?\\s*)+)\\s*[:]\\s*(\\w+)\\s*(?:[:][=]\\s*([^;-]+))?\\s*($|[;](?:(?:[ \\t])*(?:[-][-]\\s*([^\\n]*)))?|(?:(?:[ \\t])*(?:[-][-]\\s*([^\\n]*)))$)");
+    // Generic declaration is <generic_names> : <type> [<default>]; [--description]    
+    genericExp_.setPattern(space+"("+names+")\\s*[:]\\s*("+genericTypeExp+")\\s*(?:"+defaultExp+")?\\s*(?:[;]"+space+"(?:"+comment+")?(?:"+newline+")?|(?:"+comment+")?(?:"+newline+")?(?=(?:\\s*(?:"+comment+")*\\s*)*$))");
 
     // Description definition is a vhdl comment: --<description>.
-    commentPattern_.setPattern("\\s*[-][-]([^\\n]*)");
+    commentExp_.setPattern(space+comment+newline);
 
     // Default definition is := <value>.
-    defaultPattern_.setPattern("[:][=]\\s*(.*)\\s*");
+    defaultPattern_.setPattern(defaultExp);
+
+    equationPattern_.setPattern(bound.replace("(?:","("));
+
+    newline_.setPattern(newline);
 }
 
 //-----------------------------------------------------------------------------
@@ -96,6 +130,7 @@ VhdlParser::~VhdlParser()
 //-----------------------------------------------------------------------------
 void VhdlParser::scrollToEntityBegin()
 {  
+    setEntityEndExp(toPlainText());    
     if ( checkEntityStructure(toPlainText()) )
     {
         QTextCursor cursor = textCursor();
@@ -107,7 +142,7 @@ void VhdlParser::scrollToEntityBegin()
 }
 
 //-----------------------------------------------------------------------------
-// Function: readFile()
+// Function: parseFile()
 //-----------------------------------------------------------------------------
 void VhdlParser::parseFile(QString absolutePath)
 {
@@ -125,7 +160,8 @@ void VhdlParser::parseFile(QString absolutePath)
     
     setText(QString());
     createDocument(vhdlFile);       
-    
+    highlighter_->rehighlight();
+
     importGenerics();
     importPorts();
 
@@ -137,14 +173,24 @@ void VhdlParser::parseFile(QString absolutePath)
 //-----------------------------------------------------------------------------
 void VhdlParser::editorChangedModelParameter(QSharedPointer<ModelParameter> changedParameter)
 {
-    if ( genericUsage_.contains(changedParameter) )
+    if ( genericsInPorts_.contains(changedParameter) )
     {
-        foreach (QSharedPointer<Port> port, genericUsage_.value(changedParameter) )
+        foreach (QSharedPointer<Port> port, genericsInPorts_.value(changedParameter) )
         {
             assignGenerics(port);
         } 
     }
-
+    
+    if ( genericsInGenerics_.contains(changedParameter) )
+    {
+        foreach (QSharedPointer<ModelParameter> param, genericsInGenerics_.value(changedParameter) )
+        {
+            if ( param != changedParameter )
+            {
+                assignGenerics(param);
+            } 
+       } 
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -226,6 +272,7 @@ void VhdlParser::removePorts()
     portBlocks_.clear();
 }   
 
+         
 //-----------------------------------------------------------------------------
 // Function: importGenerics()
 //-----------------------------------------------------------------------------
@@ -235,6 +282,7 @@ void VhdlParser::importGenerics()
     {
         foreach ( QSharedPointer<ModelParameter> parameter, list )
         {
+            assignGenerics(parameter);
             emit addGeneric(parameter);
         }
     }
@@ -254,7 +302,8 @@ void VhdlParser::removeGenerics()
     }
     genericsMap_.clear();
     generics_.clear();
-    genericUsage_.clear();
+    genericsInPorts_.clear();
+    genericsInGenerics_.clear();
 }  
 
 //-----------------------------------------------------------------------------
@@ -266,7 +315,8 @@ void VhdlParser::assignGenerics(QSharedPointer<Port> port)
     foreach ( QList< QSharedPointer<Port> > portList, portsMap_.values() )
     {
         if ( portList.contains(port) ){
-            block = portsMap_.key(portList); break;
+            block = portsMap_.key(portList); 
+            break;
         }
     }
 
@@ -274,47 +324,73 @@ void VhdlParser::assignGenerics(QSharedPointer<Port> port)
     {
         portPattern_.indexIn(block.text());
         QString portType = portPattern_.cap(3);
-        typePattern_.indexIn(portType);
-        QString leftBound = typePattern_.cap(2);
-        QString rightBound = typePattern_.cap(3);
-        QString defaultValue = portPattern_.cap(4).trimmed();
+        QString defaultValue = portPattern_.cap(4).trimmed();        
 
+        typePattern_.indexIn(portType);
+        QString leftBound = typePattern_.cap(1);
+        QString bounded = typePattern_.cap(2);
+        int left = 0;
+        int right = 0;        
+        parseBounds(bounded,left,right);        
+        port->setLeftBound(left);
+        port->setRightBound(right);
+        int def = parseEquation(defaultValue);
+        if ( def != -1 )
+        {
+            port->setDefaultValue(QString::number(def));
+        }
 
         foreach ( QSharedPointer<ModelParameter> parameter, generics_ )
         {
-            if ( parameter->getName() == leftBound )
+            if ( block.text().contains(parameter->getName()) )
             {
-                port->setLeftBound(genericToInt(parameter));
-                QList< QSharedPointer<Port> > ports = genericUsage_.value(parameter);
+                QList< QSharedPointer<Port> > ports = genericsInPorts_.value(parameter);
                 if ( !ports.contains(port) )
                 {
                     ports.append(port);
-                    genericUsage_.insert(parameter,ports);
+                    genericsInPorts_.insert(parameter,ports);
                 }   
             }
+        }             
+    }
+}
 
-            if ( parameter->getName() == rightBound )
+//-----------------------------------------------------------------------------
+// Function: assignGenerics()
+//-----------------------------------------------------------------------------
+void VhdlParser::assignGenerics(QSharedPointer<ModelParameter> param)
+{
+    QTextBlock block = QTextBlock();
+    foreach ( QList< QSharedPointer<ModelParameter> > genericList, genericsMap_.values() )
+    {
+        if ( genericList.contains(param) ){
+            block = genericsMap_.key(genericList); 
+            break;
+        }
+    }
+
+    if( block.isValid() )
+    {
+        genericExp_.indexIn(block.text());
+        QString cap = genericExp_.cap(0);
+        QString defaultValue = genericExp_.cap(3);        
+        int def = parseEquation(defaultValue);
+        if ( def != -1 )
+        {
+            param->setValue(QString::number(def));
+        }
+
+        foreach ( QSharedPointer<ModelParameter> parameter, generics_ )
+        {
+            if ( block.text().contains(parameter->getName()) )
             {
-                port->setRightBound(genericToInt(parameter));
-                QList< QSharedPointer<Port> > ports = genericUsage_.value(parameter);
-                if ( !ports.contains(port) )
+                QList< QSharedPointer<ModelParameter> > generics = genericsInGenerics_.value(parameter);
+                if ( !generics.contains(param) )
                 {
-                    ports.append(port);
-                    genericUsage_.insert(parameter,ports);
-                }
+                    generics.append(param);
+                    genericsInGenerics_.insert(parameter,generics);
+                }   
             }
-
-            if ( parameter->getName() == defaultValue )
-            {
-                port->setDefaultValue( parameter->getValue() );
-                QList< QSharedPointer<Port> > ports = genericUsage_.value(parameter);
-                if ( !ports.contains(port) )
-                {
-                    ports.append(port);
-                    genericUsage_.insert(parameter,ports);
-                }
-
-            }   
         }             
     }
 }
@@ -327,18 +403,15 @@ void VhdlParser::createDocument(QFile& vhdlFile)
     QTextStream stream(&vhdlFile);
     QString fileString = stream.readAll();
     vhdlFile.close();
-
-    const int entityBeginIndex = entityBegin_.indexIn(fileString);  
-    QString entityName = entityBegin_.cap(1);
-    QString pattern = entityEnd_.pattern();
-    pattern.replace("NAME",entityName);
-    entityEnd_.setPattern(pattern);
+    
+    setEntityEndExp(fileString);
     if ( !checkEntityStructure(fileString) )
     {
         setText(fileString);
         return;
     }
 
+    const int entityBeginIndex = entityBegin_.indexIn(fileString);  
     const int entityEndIndex = entityEnd_.indexIn(fileString,entityBeginIndex);
     const int portBeginIndex =  portsBegin_.indexIn(fileString);   
     const int genericBeginIndex =  genericsBegin_.indexIn(fileString);
@@ -355,60 +428,56 @@ void VhdlParser::createDocument(QFile& vhdlFile)
     {            
         if ( entityBeginIndex == index )
         {   
-            cursor.insertBlock();
             cursor.block().setUserState(VhdlEntityHighlighter::INSIDE_ENTITY);
-            cursor.insertText(fileString.mid(index,entityBegin_.matchedLength()));
+            cursor.insertText(fileString.mid(index,entityBegin_.matchedLength()).remove(newline_));
             index += entityBegin_.matchedLength();                       
         }
 
         else if ( genericBeginIndex == index )
-        {            
-            cursor.block().setUserState(VhdlEntityHighlighter::INSIDE_ENTITY);
-            cursor.insertText(fileString.mid(index,genericsBegin_.matchedLength()));
+        {     
+            cursor.block().setUserState(VhdlEntityHighlighter::INSIDE_ENTITY);         
+            cursor.insertText(fileString.mid(index,genericsBegin_.matchedLength()).remove(newline_));
         
             parseGenerics(fileString);
 
             int endIndex = genericsEnd_.indexIn(fileString,index);
             cursor.insertBlock();
             cursor.block().setUserState(VhdlEntityHighlighter::INSIDE_ENTITY);
-            cursor.insertText(fileString.mid(endIndex,genericsEnd_.matchedLength()).remove("\n"));
-            index = endIndex+genericsEnd_.matchedLength();
+            cursor.insertText(fileString.mid(endIndex,genericsEnd_.matchedLength()).remove(newline_));
+            index = endIndex+genericsEnd_.matchedLength();           
         } 
         
         else if ( portBeginIndex == index )
         {
             cursor.block().setUserState(VhdlEntityHighlighter::INSIDE_ENTITY);
-            cursor.insertText(fileString.mid(index,portsBegin_.matchedLength()));
+            cursor.insertText(fileString.mid(index,portsBegin_.matchedLength()).remove(newline_));
             
             parsePorts(fileString);
            
             int endIndex = portsEnd_.indexIn(fileString,index);
             cursor.insertBlock();
             cursor.block().setUserState(VhdlEntityHighlighter::INSIDE_ENTITY);
-            QString portEndStr = fileString.mid(endIndex,portsEnd_.matchedLength());
-            cursor.insertText(portEndStr.remove("\n"));
+            QString portEndStr = fileString.mid(endIndex,portsEnd_.matchedLength()).remove(newline_);
+            cursor.insertText(portEndStr);
             index = endIndex+portsEnd_.matchedLength();
         }        
      
         else if ( entityEndIndex == index )
         {
-            cursor.insertBlock();
             cursor.block().setUserState(VhdlEntityHighlighter::INSIDE_ENTITY);
-            cursor.insertText(fileString.mid(index,entityEnd_.matchedLength()).remove("\n"));
+            QString entityEnd = fileString.mid(index,entityEnd_.matchedLength());
+            cursor.insertText(entityEnd);
             index += entityEnd_.matchedLength();
-            
-            cursor.insertBlock();
-            cursor.block().setUserState(VhdlEntityHighlighter::OUTSIDE_ENTITY);
         }
         else
         {
-            VhdlEntityHighlighter::BlockState prevState = static_cast<VhdlEntityHighlighter::BlockState>(cursor.block().userState());
+           
+            VhdlEntityHighlighter::BlockState prevState = VhdlEntityHighlighter::OUTSIDE_ENTITY;
             if ( entityBeginIndex < index && index < entityEndIndex )
             {
                 prevState = VhdlEntityHighlighter::INSIDE_ENTITY;
             }
-            cursor.block().setUserState(prevState); 
-
+           
             indexes.append(index);
             qSort(indexes);
 
@@ -416,18 +485,21 @@ void VhdlParser::createDocument(QFile& vhdlFile)
             {
                 int nextChange = indexes.at(indexes.indexOf(index)+1);
                 indexes.removeAll(index);
-                cursor.insertText(fileString.mid(index,nextChange - index));
-                index += nextChange - index;
 
+                int skip = nextChange - index;              
+                insertExtraText(fileString.mid(index,skip), prevState);
+                index += skip;
             }
             else 
-            {
-                cursor.insertText(fileString.mid(index,fileString.size() - index));
-                index += fileString.size() - index;                
+            {                
+                int endLenght = fileString.size() - index;
+                insertExtraText(fileString.mid(index,endLenght), VhdlEntityHighlighter::OUTSIDE_ENTITY);
+                return;
             }
         }
     }
 }
+
 
 //-----------------------------------------------------------------------------
 // Function: checkEntityStructure()
@@ -439,18 +511,19 @@ bool VhdlParser::checkEntityStructure(QString const& fileString)
         return false;
     }
 
-    int portBeginIndex =  portsBegin_.indexIn(fileString);
-    int portEndIndex = portsEnd_.indexIn(fileString, portBeginIndex);
-    int portCount = fileString.count(portsBegin_);
-    if ( portCount > 1 || portEndIndex < portBeginIndex )
+    QString entity = parseSection(entityBegin_, entityEnd_, fileString);
+    int portBeginIndex =  portsBegin_.indexIn(entity);
+    int portEndIndex = portsEnd_.indexIn(entity, portBeginIndex);
+    // int portCount = entity.count(portsBegin_);
+    if ( portEndIndex < portBeginIndex )
     {       
-        return false;
+       return false;
     }
 
-    int genericBeginIndex =  genericsBegin_.indexIn(fileString);
-    int genericEndIndex = genericsEnd_.indexIn(fileString, genericBeginIndex);
-    int genericCount = fileString.count(genericsBegin_);
-    if ( genericCount > 1 || genericEndIndex < genericBeginIndex )
+    int genericBeginIndex =  genericsBegin_.indexIn(entity);
+    int genericEndIndex = genericsEnd_.indexIn(entity, genericBeginIndex);
+    //int genericCount = entity.count(genericsBegin_);
+    if (  genericEndIndex < genericBeginIndex )
     {
         return false;
     }
@@ -463,6 +536,37 @@ bool VhdlParser::checkEntityStructure(QString const& fileString)
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: setEntityEndExp()
+//-----------------------------------------------------------------------------
+void VhdlParser::setEntityEndExp(QString const& fileString)
+{
+    entityEnd_.setPattern("\\b(END)\\s*(ENTITY)?\\s*(NAME)?\\s*[;]\\s*");
+    entityBegin_.indexIn(fileString);
+    QString entityName = entityBegin_.cap(1);
+    QString pattern = entityEnd_.pattern();
+    pattern.replace("NAME",entityName);
+    entityEnd_.setPattern(pattern);
+}
+
+//-----------------------------------------------------------------------------
+// Function: parseSectionContent()
+//-----------------------------------------------------------------------------
+QString VhdlParser::parseSection(QRegExp const& begin, QRegExp const& end, 
+    QString const& text)
+{   
+    int leftBound = begin.indexIn(text);
+    int rightBound = end.indexIn(text,leftBound);
+
+    if ( leftBound == -1 || rightBound == -1 )
+    {
+        return QString();
+    }
+
+    rightBound += end.matchedLength();
+    return text.mid(leftBound,rightBound-leftBound);
 }
 
 //-----------------------------------------------------------------------------
@@ -488,21 +592,26 @@ QString VhdlParser::parseSectionContent(QRegExp const& begin, QRegExp const& end
 //-----------------------------------------------------------------------------
 void VhdlParser::parsePorts(QString const& fileString)
 {
-    QString ports = parseSectionContent(portsBegin_,portsEnd_,fileString);
-
+    QString entity = parseSection(entityBegin_,entityEnd_, fileString);
+    QString ports = parseSectionContent(portsBegin_,portsEnd_,entity);
     QTextCursor cursor = textCursor();
+
     int index = 0;
+    if ( newline_.indexIn(ports) == 0 )
+    {
+        index = newline_.matchedLength();
+    }
     while ( index < ports.length() )
     {
         int portIndex = portPattern_.indexIn(ports,index);
-        int commentIndex = commentPattern_.indexIn(ports,index);
+        int commentIndex = commentExp_.indexIn(ports,index);
 
         if ( commentIndex == index )
         {
             cursor.insertBlock();
             cursor.block().setUserState(VhdlEntityHighlighter::INSIDE_ENTITY);
-            int commentLength = commentPattern_.matchedLength();
-            QString comment = ports.mid(commentIndex,commentLength).remove("\n");
+            int commentLength = commentExp_.matchedLength();
+            QString comment = ports.mid(commentIndex,commentLength).remove(newline_);
             cursor.insertText(comment);
            
             index = commentIndex + commentLength;
@@ -514,7 +623,7 @@ void VhdlParser::parsePorts(QString const& fileString)
             cursor.block().setUserState(VhdlEntityHighlighter::PORT_SELECTED);
 
             int length = portPattern_.matchedLength();
-            QString portDeclaration = ports.mid(portIndex,length).remove("\n");
+            QString portDeclaration = ports.mid(portIndex,length).remove(newline_);
             cursor.insertText(portDeclaration);
             index = portIndex + length;
 
@@ -546,14 +655,8 @@ void VhdlParser::parsePorts(QString const& fileString)
             {
                 skipLength = ports.length() - index;
             }
-
-            foreach ( QString invalidLine,  ports.mid(index,skipLength).split("\n",QString::SkipEmptyParts) )
-            {          
-                cursor.insertBlock();
-                cursor.block().setUserState(VhdlEntityHighlighter::INSIDE_ENTITY);  
-                cursor.insertText(invalidLine);
-            }
-
+           
+            insertExtraText(ports.mid(index,skipLength), VhdlEntityHighlighter::INSIDE_ENTITY);   
             index += skipLength;  
         } 
     }
@@ -564,22 +667,26 @@ void VhdlParser::parsePorts(QString const& fileString)
 //-----------------------------------------------------------------------------
 void VhdlParser::parseGenerics(QString const& fileString)
 {
-    QString generics = parseSectionContent(genericsBegin_,genericsEnd_,fileString);
-    //qDebug() << generics;
+    QString entity = parseSection(entityBegin_,entityEnd_, fileString);
+    QString generics = parseSectionContent(genericsBegin_,genericsEnd_,entity);
 
     QTextCursor cursor = textCursor();
     int index = 0;
+    if ( newline_.indexIn(generics) == 0 )
+    {
+        index = newline_.matchedLength();
+    }
     while ( index < generics.length() )
     {
-        int genericIndex = genericPattern_.indexIn(generics,index);
-        int commentIndex = commentPattern_.indexIn(generics,index);
+        int genericIndex = genericExp_.indexIn(generics,index);
+        int commentIndex = commentExp_.indexIn(generics,index);
 
         if ( commentIndex == index )
         {
             cursor.insertBlock();
             cursor.block().setUserState(VhdlEntityHighlighter::INSIDE_ENTITY);
-            int commentLength = commentPattern_.matchedLength();
-            QString comment = generics.mid(commentIndex,commentLength).remove("\n");
+            int commentLength = commentExp_.matchedLength();
+            QString comment = generics.mid(commentIndex,commentLength).remove(newline_);
             cursor.insertText(comment);
             index = commentIndex + commentLength;      
         }
@@ -588,8 +695,8 @@ void VhdlParser::parseGenerics(QString const& fileString)
         {
             cursor.insertBlock();
             cursor.block().setUserState(VhdlEntityHighlighter::GENERIC_SELECTED);
-            int length = genericPattern_.matchedLength();
-            QString genericDeclaration = generics.mid(genericIndex,length).remove("\n");
+            int length = genericExp_.matchedLength();
+            QString genericDeclaration = generics.mid(genericIndex,length).remove(newline_);
             cursor.insertText(genericDeclaration);
             index = genericIndex + length;             
 
@@ -623,17 +730,169 @@ void VhdlParser::parseGenerics(QString const& fileString)
             {
                 skipLength = generics.length() - index;
             }
-
-            foreach ( QString invalidLine,  generics.mid(index,skipLength).split("\n",QString::SkipEmptyParts) )
-            {          
-                cursor.insertBlock();
-                cursor.block().setUserState(VhdlEntityHighlighter::INSIDE_ENTITY);  
-                cursor.insertText(invalidLine);
-            }
-
+                        
+            insertExtraText(generics.mid(index,skipLength), VhdlEntityHighlighter::INSIDE_ENTITY);
             index += skipLength;  
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: parseBounds()
+//-----------------------------------------------------------------------------
+void VhdlParser::parseBounds(QString& rangeDeclaration, int& leftBound, int& rightBound)
+{
+    QRegExp rangeExp = QRegExp("[(]\\s*("+equationPattern_.pattern()+")\\s+\\w+\\s+("+equationPattern_.pattern()+")\\s*[)]");
+
+    if( rangeExp.indexIn(rangeDeclaration) != -1 )
+    {
+        QString left = rangeExp.cap(1);
+        QString right = rangeExp.cap(2);
+
+        leftBound = parseEquation(left);
+        rightBound = parseEquation(right);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: parseEquation()
+//-----------------------------------------------------------------------------
+int VhdlParser::parseEquation(QString& equation)
+{
+    if ( equation.isEmpty() )
+    {
+        return -1;
+    } 
+    
+    // Do not calculate hex (or other base) values.
+    if ( equation.indexOf(QRegExp("\\d+[#]\\d+[#]")) != -1 )
+    {
+        return -1;
+    }
+    
+    // Do not calculate ogic values e.g. '1' or vectors e.g. "1001".
+    if ( equation.contains(QRegExp("['\"]")) )
+    {
+        return -1;
+    }
+
+    QRegExp multiplyDivide = QRegExp("[/*/]");
+    QRegExp power = QRegExp("[/*][/*]");
+    QRegExp extraOperand = QRegExp("([+-/*/]|[/*][/*])\\s*(\\w+)");
+
+    equationPattern_.indexIn(equation);  
+    QString value = equationPattern_.cap(1);
+    QString increments = equationPattern_.cap(2);
+    QStringList listedEquation = QStringList(value);
+
+    int index = 0;
+    while ( extraOperand.indexIn(increments,index) != -1)
+    {
+        listedEquation.append(extraOperand.cap(1));
+        listedEquation.append(extraOperand.cap(2));
+        index += extraOperand.matchedLength();        
+    }
+
+    // Power precedes all other operations.
+    while ( listedEquation.indexOf(power) != -1 )
+    {
+        int operatorIndex = listedEquation.indexOf(power);
+
+        Q_ASSERT(operatorIndex != 0 && operatorIndex != listedEquation.length());
+
+        QString leftOperand = listedEquation.at(operatorIndex-1);
+        QString rightOperand = listedEquation.at(operatorIndex+1);
+
+        int left = valueForString(leftOperand);
+        int right = valueForString(rightOperand);
+
+        if ( left == -1 || right == -1 )
+        {
+            return -1;
+        }
+
+        int result = left;
+        for( int i = 0; i < right; i++)
+        {
+            result *= left;
+        }
+
+        listedEquation.replace(operatorIndex-1, QString::number(result));
+        listedEquation.removeAt(operatorIndex);
+        listedEquation.removeAt(operatorIndex);
+    }
+
+    // Multiply and divide precedes addition and substraction.
+    while ( listedEquation.indexOf(multiplyDivide) != -1 )
+    {
+        int operatorIndex = listedEquation.indexOf(multiplyDivide);
+        
+        Q_ASSERT(operatorIndex != 0 && operatorIndex != listedEquation.length());
+
+        QString operation = listedEquation.at(operatorIndex);
+        QString leftOperand = listedEquation.at(operatorIndex-1);
+        QString rightOperand = listedEquation.at(operatorIndex+1);
+
+        int left = valueForString(leftOperand);
+        int right = valueForString(rightOperand);
+        
+        if ( left == -1 || right == -1 || ( operation == "/" && right == 0 ) )
+        {
+            return -1;
+        }
+
+        int result = 0;
+
+        if ( operation == "*" )
+        {
+            result = left * right;
+        }
+        else
+        {
+            result = left / right;
+        }
+
+        listedEquation.replace(operatorIndex-1, QString::number(result));
+        listedEquation.removeAt(operatorIndex);
+        listedEquation.removeAt(operatorIndex);
+    }
+
+    while ( listedEquation.size() > 1 )
+    {
+        int left = valueForString(listedEquation.value(0));
+        int right = valueForString(listedEquation.value(2));
+
+        if ( left == -1 || right == -1 )
+        {
+            return -1;
+        }
+
+        int result = 0;
+
+        if ( listedEquation.value(1) == "+" )
+        {
+            result = left + right;
+        }
+        else if ( listedEquation.value(1) == "-" )
+        {
+            result = left - right;
+        }
+        else
+        {
+            return -1;
+        }
+
+        listedEquation.replace(0, QString::number(result));
+        listedEquation.removeAt(1);
+        listedEquation.removeAt(1);
+    }
+
+    if ( listedEquation.size() == 1 )
+    {
+        return valueForString(listedEquation.value(0));
+    }   
+
+    return -1;
 }
 
 //-----------------------------------------------------------------------------
@@ -646,36 +905,15 @@ void VhdlParser::createPort(QString const& portDeclaration, QTextBlock const& po
     General::Direction direction = General::str2Direction(portPattern_.cap(2),General::DIRECTION_INVALID);
     QString portType = portPattern_.cap(3);
     QString defaultValue = portPattern_.cap(4).trimmed();
-    QString description = portPattern_.cap(5);
+    QString description = portPattern_.cap(5).trimmed();
 
-    typePattern_.indexIn(portType) ;
-    QString type = typePattern_.cap(1);         
-    QString left = typePattern_.cap(2);
-    QString right = typePattern_.cap(3);
+    typePattern_.indexIn(portType);
+    QString type = typePattern_.cap(1); 
+    QString bounded = typePattern_.cap(2);
 
-    bool isNumber = true;
-    int leftBound = left.toInt(&isNumber);
-    if ( left.isEmpty() )
-    {
-        leftBound = 0;
-    }
-    else if ( !isNumber )
-    {
-        leftBound = -1;
-    }
-
-    int rightBound = right.toInt(&isNumber);
-    if ( right.isEmpty() )
-    {
-        rightBound = 0;
-    }
-    else if ( !isNumber )
-    {
-        rightBound = -1;
-    }  
-
-    commentPattern_.indexIn(description);
-    description = commentPattern_.cap(1);
+    int leftBound = 0;
+    int rightBound = 0;
+    parseBounds(bounded,leftBound,rightBound);
 
     // Port names are separated by a colon (,).
     QList< QSharedPointer<Port> > ports;
@@ -695,15 +933,12 @@ void VhdlParser::createPort(QString const& portDeclaration, QTextBlock const& po
 //-----------------------------------------------------------------------------
 void VhdlParser::createGeneric(QString const& genericDeclaration, QTextBlock const& genericBlock)
 {
-    genericPattern_.indexIn(genericDeclaration);
-    QString genericNames = genericPattern_.cap(1);
+    genericExp_.indexIn(genericDeclaration);
+    QString genericNames = genericExp_.cap(1);
 
-    QString type = genericPattern_.cap(2);
-    QString defaultValue = genericPattern_.cap(3);
-    QString description = genericPattern_.cap(4);
-
-    commentPattern_.indexIn(description);
-    description = commentPattern_.cap(1);
+    QString type = genericExp_.cap(2);
+    QString defaultValue = genericExp_.cap(3);
+    QString description = genericExp_.cap(4).trimmed();
 
     QRegExp nameDelimiter("\\s*[,]\\s*");
     QList< QSharedPointer<ModelParameter> > generics;
@@ -721,6 +956,33 @@ void VhdlParser::createGeneric(QString const& genericDeclaration, QTextBlock con
 
     genericBlocks_.append(genericBlock);
     genericsMap_.insert(genericBlock,generics);
+}
+
+//-----------------------------------------------------------------------------
+// Function: insertExtraText()
+//-----------------------------------------------------------------------------
+void VhdlParser::insertExtraText(QString& text, VhdlEntityHighlighter::BlockState state)
+{
+    QTextCursor cursor = textCursor();
+
+    int prevPos = cursor.position();
+    cursor.insertText(text);
+    cursor.setPosition(prevPos);
+    if ( cursor.block().userState() != VhdlEntityHighlighter::OUTSIDE_ENTITY )
+    {
+        cursor.movePosition(QTextCursor::NextBlock);
+    }
+
+    while( !cursor.atEnd() )
+    {
+        QString blocktext = cursor.block().text();
+        cursor.block().setUserState(state);
+        cursor.movePosition(QTextCursor::NextBlock);
+        cursor.movePosition(QTextCursor::EndOfBlock);
+    }
+
+    QString blocktext = cursor.block().text();
+    cursor.block().setUserState(state);
 }
 
 //-----------------------------------------------------------------------------
@@ -771,14 +1033,28 @@ void VhdlParser::toggleBlock(QTextBlock& block)
 }
 
 //-----------------------------------------------------------------------------
-// Function: genericToInt()
-//-----------------------------------------------------------------------------
-int VhdlParser::genericToInt(QSharedPointer<ModelParameter> parameter)
+// Function: valueForString()
+//----------------------------------------------------------------------------- 
+int VhdlParser::valueForString(QString& string)   
 {
     bool isNumber = true;
-    int value = parameter->getValue().toInt(&isNumber);
+    int value = string.toInt(&isNumber);
     if ( !isNumber )
     {
+        foreach ( QSharedPointer<ModelParameter> parameter, generics_ )
+        {
+            if ( parameter->getName() == string )
+            {
+                int genericValue = parameter->getValue().toInt(&isNumber);
+                if ( !isNumber )
+                {
+                    return -1;
+                }
+
+                return genericValue;
+            }
+        }
+
         return -1;
     }
 

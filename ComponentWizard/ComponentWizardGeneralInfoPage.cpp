@@ -23,7 +23,7 @@
 
 #include <common/widgets/vhdlParser/VhdlParserWidget.h>
 #include <common/widgets/fileViewer/FileViewer.h>
-
+#include <common/utils.h>
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardGeneralInfoPage::ComponentWizardGeneralInfoPage()
 //-----------------------------------------------------------------------------
@@ -46,7 +46,7 @@ ComponentWizardGeneralInfoPage::ComponentWizardGeneralInfoPage(QSharedPointer<Co
 
     // Pre-assign username to author field.
     QSettings settings;
-    authorEditor_.setText(settings.value("General/Username",getenv("USERNAME")).toString());
+    authorEditor_.setText(settings.value("General/Username",  Utils::getCurrentUser()).toString());
 
     // Hide file browsing.
 	showHideButton_->setFlat(true);

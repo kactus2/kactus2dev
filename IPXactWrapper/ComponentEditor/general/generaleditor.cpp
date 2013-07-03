@@ -84,7 +84,7 @@ previewBox_(0) {
             this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
 	connect(headerEditor_, SIGNAL(contentChanged()),
 		this, SLOT(onHeaderChange()), Qt::UniqueConnection);
-    connect(authorEditor_, SIGNAL(editingFinished()),
+    connect(authorEditor_, SIGNAL(textChanged(const QString &)),
 		this, SLOT(onAuthorChange()), Qt::UniqueConnection);
 
     refresh();
@@ -123,11 +123,11 @@ void GeneralEditor::refresh() {
 	connect(attributeEditor_, SIGNAL(contentChanged()),
 		this, SLOT(onAttributesChange()), Qt::UniqueConnection);
 
-	disconnect(authorEditor_, SIGNAL(editingFinished()),
+	disconnect(authorEditor_, SIGNAL(textChanged(const QString &)),
 		this, SLOT(onAuthorChange()));
     QString author = component()->getAuthor();
 	authorEditor_->setText(component()->getAuthor());
-	connect(authorEditor_, SIGNAL(editingFinished()),
+	connect(authorEditor_, SIGNAL(textChanged(const QString &)),
 		this, SLOT(onAuthorChange()), Qt::UniqueConnection);
 
 	disconnect(descEditor_, SIGNAL(contentChanged()),

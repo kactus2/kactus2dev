@@ -25,7 +25,6 @@ class LibraryInterface;
 class VhdlParserWidget;
 class FileSelector;
 class FileViewer;
-
 //-----------------------------------------------------------------------------
 //! Intro page for the component wizard.
 //-----------------------------------------------------------------------------
@@ -117,9 +116,8 @@ private:
     //! Button to show/hide file viewer.
     QPushButton* showHideButton_;
 
-    //! Viewer for browsing files in the component's fileset.
+    //! Widget for browsing files in fileset.
     FileViewer* fileViewer_;
-
 };
 
 #endif // COMPONENTWIZARDGENERALINFOPAGE_H

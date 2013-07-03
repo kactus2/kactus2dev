@@ -17,9 +17,10 @@
 #include <QList>
 #include <QMap>
 
+#include <common/widgets/vhdlParser/VhdlEntityHighlighter.h>
 class ModelParameter;
 class Port;
-class VhdlEntityHighlighter;
+
 
 //-----------------------------------------------------------------------------
 //! Class VhdlParser.
@@ -127,8 +128,31 @@ private:
      */
     bool checkEntityStructure(QString const& fileString);
 
+
     /*!
-     *   Cuts out a section of a text.
+     *   Sets the entity name in the ending expression.
+     *
+     *      @param [in] fileString The vhdl file as string.
+     */
+    void setEntityEndExp(QString const& fileString);
+
+    /*!
+     *   Cuts out a section of a text leaving delimiting expressions.
+     *
+     *      @param [in] begin The beginning of the cut section.
+	 *
+     *      @param [in] end The end of the cut section.
+	 *
+     *      @param [in] text The text where to cut from.
+	 *
+	 *      @return The text section inside begin and end. 
+     *              The beginning and the end are included.
+     */
+    QString parseSection(QRegExp const& begin, QRegExp const& end, 
+        QString const& text);
+
+    /*!
+     *   Cuts out a section of a text omitting delimiting expressions.
      *
      *      @param [in] begin The beginning of the cut section.
 	 *
@@ -159,6 +183,27 @@ private:
     void parseGenerics(QString const& fileString);
 
     /*!
+     *   Parses the values for vector bounds.
+     *
+     *      @param [in] rangeDeclaration The range declaration e.g "(32 downto 0)".
+     *
+     *      @param [out] leftBound The left bound of the vector.
+     *
+     *      @param [out] rightBound The right bound of the vector.
+     */
+    void parseBounds(QString& rangeDeclaration, int& leftBound, int& rightBound);
+
+    /*!
+     *  Parses the value of a simple equation. The equation may contain literals and
+     *  generics but not parathesis.
+     *
+     *      @param [in] equation The equation to solve.
+     *
+     *      @return The result of the equation.
+     */
+    int parseEquation(QString& equation);
+
+    /*!
      *   Creates a port and maps it to corresponding text block.
      *
      *      @param [in] portDeclaration The port declaration clause.
@@ -176,7 +221,29 @@ private:
      */
     void createGeneric(QString const& genericDeclaration, QTextBlock const& genericBlock);
     
+    /*!
+     *   Assigns the generic values used in port declaration for left and right bound
+     *   and default value in a port.
+	 *
+     *      @param [in] port The port to assign to.
+     */
     void assignGenerics(QSharedPointer<Port> port);
+   
+    /*!
+     *   Assigns the generic values used in parameter declaration for default value.
+	 *
+     *      @param [in] param The parameter to assign to.
+     */
+    void assignGenerics(QSharedPointer<ModelParameter> param);
+
+    /*!
+     *   Inserts a section of text into the editor's document with given state.
+	 *
+     *      @param [in] text The text to insert into document.
+	 *
+     *      @param [in] state The state set for all blocks in the inserted text.
+     */
+    void insertExtraText(QString& text, VhdlEntityHighlighter::BlockState state);
 
     /*!
      *   Changes the state of text block from selected to not selected and vice versa.
@@ -184,15 +251,16 @@ private:
      *      @param [in] block The block whose state to change.
      */
     void toggleBlock(QTextBlock& block);
-    
+
     /*!
-     *   Converts the value of a generic to an integer.
-     *        
-     *      @param [in] parameter The generic whose value is converted.
-     *
-	 *      @return The value as integer or -1 if value cannot be converted.
+     *   Converts a generic or a number to an integer.
+	 *
+     *      @param [in] value The string to convert.
+	 *
+  	 *      @return The value as integer or -1 if value cannot be converted.
      */
-    int genericToInt(QSharedPointer<ModelParameter> parameter);
+    int valueForString(QString& string);
+    
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -214,7 +282,10 @@ private:
     QList< QSharedPointer<ModelParameter> > generics_;
 
     //! Maps a generic to ports using it.
-    QMap< QSharedPointer<ModelParameter>,QList< QSharedPointer<Port> > > genericUsage_;
+    QMap< QSharedPointer<ModelParameter>,QList< QSharedPointer<Port> > > genericsInPorts_;
+
+    //! Maps a generic to another generic using it.
+    QMap< QSharedPointer<ModelParameter>,QList< QSharedPointer<ModelParameter> > > genericsInGenerics_;
 
     //! The syntax highlighter for display.
     VhdlEntityHighlighter* highlighter_;
@@ -244,13 +315,20 @@ private:
     QRegExp genericsEnd_;
 
     //! The generics section end definition in vhdl.
-    QRegExp genericPattern_;
+    QRegExp genericExp_;
 
     //! The comment definition in vhdl.
-    QRegExp commentPattern_;
+    QRegExp commentExp_;
 
     //! The default value definition in vhdl.
     QRegExp defaultPattern_;
+
+    //! Pattern for equations in default values and vector bounds.
+    QRegExp equationPattern_;
+
+    //! Pattern for newlines.
+    QRegExp newline_;
+
 };
 
 #endif // VhdlParser_H

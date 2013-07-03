@@ -78,12 +78,16 @@ QVariant ModelParameterModel::data( const QModelIndex & index,
         }
     }
     else if (Qt::ForegroundRole == role) {
-        if ( lockedIndexes_.contains(index) )
-        {
-            return QColor("gray");
-        }
-        else if (table_.at(index.row())->isValid()) {
-            return QColor("black");
+
+        if (table_.at(index.row())->isValid()) {
+            if ( lockedIndexes_.contains(index) )
+            {
+                return QColor("gray");
+            }
+            else
+            {
+                return QColor("black");
+            } 
         }
         else {
             return QColor("red");
