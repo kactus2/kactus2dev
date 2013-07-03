@@ -5,7 +5,23 @@
 <body>
     <h2>API Definition</h2>
     <p>
-        TODO:
+        API definitions are used to define API dependencies between SW components in more detail.
+        API definition wraps an SW library or other API to offer more thorough validation for or
+        both software and system designs and to provide context-sensitive content assistance in
+        the code editor. API definition consists of three types of information:
+    </p>
+	<p>
+        <b>Data types</b> define all data types the API makes available for use in the code.
+    </p>
+    <p>
+        <b>COM definition reference</b> can be used to reference a COM definition in order to
+        use its transfer types and properties in the function definitions so that the content
+        assist in the code editor can give more detailed assistance.
+    </p>
+    <p>
+        <b>Functions</b> list is filled with all functions that the API contains. For each
+        function, all its parameters are defined in detail, including any restrictions that
+        depend on the referenced COM definition.
     </p>
 </body>
 </html>

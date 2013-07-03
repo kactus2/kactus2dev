@@ -5,7 +5,16 @@
 <body>
     <h2>COM Definition</h2>
     <p>
-        TODO:
+        COM definitions are used to define more strictly the connections that relate to higher-level communication between HW/SW components in a system design.
+		COM definition consists of two types of information: <b>transfer types</b> and <b>properties</b>.
     </p>
+	<p>
+	   <b>Transfer types</b> is an enumeration of possible data types that define what kind of data can be communicated between components via connections that are based on this COM definition.
+	   The used transfer type for each COM interface in a component is selected in the component editor.
+	</p>
+	<p>
+	   <b>Properties</b> offer a way to define certain variables whose value must be set for each COM interface.
+	   Properties can be either required or optional. COM definition defines the data type and default value for each of the properties.
+	</p>
 </body>
 </html>
