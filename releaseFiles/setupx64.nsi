@@ -80,6 +80,10 @@ Section "MainSection" SEC01
   File "..\executable\upgrade.cfg"
   File /oname=DefaultSettings.ini "DefaultSettingsWin.ini"
   
+  SetOutPath "$INSTDIR\accessible"
+  SetOverwrite on
+  File "..\x64\executable\accessible\qtaccessiblewidgets.dll"
+  
   SetOutPath "$INSTDIR\platforms"
   SetOverwrite on
   File "..\x64\executable\platforms\qminimal.dll"
@@ -182,6 +186,7 @@ Section Uninstall
   Delete "$INSTDIR\sqldrivers\qsqlite.dll"
   Delete "$INSTDIR\platforms\qminimal.dll"
   Delete "$INSTDIR\platforms\qwindows.dll"
+  Delete "$INSTDIR\accessible\qtaccessiblewidgets.dll"
   Delete "$INSTDIR\DefaultSettings.ini"
   Delete "$INSTDIR\upgrade.cfg"
   Delete "$INSTDIR\readme.txt"
@@ -217,6 +222,7 @@ Section Uninstall
   RMDir "$INSTDIR\Plugins"
   RMDir "$INSTDIR\sqldrivers"
   RMDir "$INSTDIR\platforms"
+  RMDir "$INSTDIR\accessible"
   RMDir "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063"
   RMDir "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef"
   RMDir "$INSTDIR\Library\TUT\ip.swp.api"
