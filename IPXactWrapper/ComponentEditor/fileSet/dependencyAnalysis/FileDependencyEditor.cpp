@@ -16,6 +16,7 @@
 #include "FileDependencyDelegate.h"
 
 #include <common/widgets/ScanProgressWidget/scanprogresswidget.h>
+#include <common/utils.h>
 
 #include <models/component.h>
 #include <models/fileset.h>
@@ -170,7 +171,6 @@ void FileDependencyEditor::scan()
     resolveExtensionFileTypes();
 
     // Phase 1. Scan all files and folders in the source paths recursively.
-    
     progWidget_ = new ScanProgressWidget(this);
     progWidget_->setRange(0, 1);
     progWidget_->setValue(1);
@@ -183,10 +183,15 @@ void FileDependencyEditor::scan()
     progWidget_->exec();
 
     // Phase 2. Run the dependency analysis.
-    progressBar_.setMaximum(model_.getTotalStepCount());
-    model_.startAnalysis();
-
-    emit fileSetsUpdated();
+    if (isEnabled())
+    {
+        progressBar_.setMaximum(model_.getTotalStepCount());
+        model_.startAnalysis();
+    }
+    else
+    {
+        finishScan();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -297,10 +302,7 @@ void FileDependencyEditor::updateProgressBar(int value)
 
     if (value == 0)
     {
-        scanning_ = false;
-        runAnalysisAction_->setIcon(QIcon(":/icons/graphics/control-play.png"));
-        emit filesUpdated();
-        emit scanCompleted();
+        finishScan();
     }
 }
 
@@ -352,10 +354,13 @@ void FileDependencyEditor::scanDirectories()
 {
     model_.beginReset();
 
-    // First scan the source directories.
-    foreach (QString const& sourcePath, component_->getSourceDirectories())
+    if (isEnabled())
     {
-        scanFiles(sourcePath);
+        // First scan the source directories.
+        foreach (QString const& sourcePath, component_->getSourceDirectories())
+        {
+            scanFiles(sourcePath);
+        }
     }
 
     // Then add files that are part of the file sets but were not added in the file scan.
@@ -363,8 +368,9 @@ void FileDependencyEditor::scanDirectories()
     {
         foreach (QSharedPointer<File> file, fileSet->getFiles())
         {
-            // Check if the model does not contain a corresponding file item.
-            if (model_.findFileItem(file->getName()) == 0)
+            // For non-url files, check if the model does not contain a corresponding file item.
+            if (!QRegExp(Utils::URL_IDENTIFY_REG_EXP).exactMatch(file->getName()) &&
+                model_.findFileItem(file->getName()) == 0)
             {
                 QFileInfo info(file->getName());
                 QString folderPath = info.path();
@@ -431,5 +437,16 @@ void FileDependencyEditor::setDependenciesEditable(bool editable)
 bool FileDependencyEditor::isScanning() const
 {
     return scanning_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyEditor::finishScan()
+//-----------------------------------------------------------------------------
+void FileDependencyEditor::finishScan()
+{
+    scanning_ = false;
+    runAnalysisAction_->setIcon(QIcon(":/icons/graphics/control-play.png"));
+    emit filesUpdated();
+    emit scanCompleted();
 }
 

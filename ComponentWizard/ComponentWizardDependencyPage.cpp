@@ -69,7 +69,6 @@ ComponentWizardDependencyPage::ComponentWizardDependencyPage(PluginManager& plug
             &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
     connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
             &model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
-    //connect(&editor_, SIGNAL(fileSetsUpdated()), this, SLOT(updateFileSetView()));
 
     QList<int> sizes;
     sizes << 150 << 300;

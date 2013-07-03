@@ -73,7 +73,6 @@ FileSetsEditor::FileSetsEditor(QSharedPointer<Component> component,
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
-    connect(&dependencyEditor_, SIGNAL(fileSetsUpdated()), this, SLOT(updateFileSetView()));
 }
 
 FileSetsEditor::~FileSetsEditor() {
@@ -101,14 +100,6 @@ void FileSetsEditor::showEvent( QShowEvent* event ) {
         dependencyEditor_.scan();
         firstShow_ = false;
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileSetsEditor::updateFileSetView()
-//-----------------------------------------------------------------------------
-void FileSetsEditor::updateFileSetView()
-{
-    model_.refresh();
 }
 
 //-----------------------------------------------------------------------------

@@ -93,9 +93,6 @@ signals:
     //! Emitted when a file has been added.
     void fileAdded(File* file);
 
-    //! Emitted when the file sets have been updated.
-    void fileSetsUpdated();
-
     //! Emitted when the files have been updated.
     void filesUpdated();
 
@@ -161,6 +158,11 @@ private:
      *      @param [in] filter      The filter value for the button.
      */
     void addFilterButton(QIcon icon, QString iconText, FileDependencyGraphView::DependencyFilter filter);
+
+    /*!
+     *  Finishes the scan.
+     */
+    void finishScan();
     
     //-----------------------------------------------------------------------------
     // Data.

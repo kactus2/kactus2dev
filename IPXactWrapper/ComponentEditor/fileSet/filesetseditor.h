@@ -77,11 +77,7 @@ public slots:
      */
     void refreshDependencyModel();
 
-private slots:
-    void updateFileSetView();
-
 protected:
-
 	//! \brief Handler for widget's show event
 	virtual void showEvent(QShowEvent* event);
 
