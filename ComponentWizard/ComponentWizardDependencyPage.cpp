@@ -18,6 +18,8 @@
 #include <common/KactusAttribute.h>
 #include <models/component.h>
 
+#include <QLabel>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardDependencyPage::ComponentWizardDependencyPage()
 //-----------------------------------------------------------------------------
@@ -34,22 +36,40 @@ ComponentWizardDependencyPage::ComponentWizardDependencyPage(PluginManager& plug
     setSubTitle(tr("Check for missing files with dependency analysis and create file sets."));
     setFinalPage(true);
 
-    editor_.setCompact(true);
-    editor_.setDependenciesEditable(false);
-
-    splitter_.addWidget(&view_);
-    splitter_.addWidget(&editor_);
-    splitter_.setStretchFactor(1, 1);
-
+    // Set file set view and editor settings.
     proxy_.setSourceModel(&model_);
 
-    QString defPath = parent->getBasePath() + "/fileSetList.csv";
-
-    view_.setAllowImportExport(true);
-    view_.setDefaultImportExportPath(defPath);
     view_.setModel(&proxy_);
     view_.setItemDelegate(new FileSetsDelegate(this));
     view_.setItemsDraggable(false);
+    view_.setAllowImportExport(false);
+
+    editor_.setCompact(true);
+    editor_.setDependenciesEditable(false);
+
+    // Create a container widget for the file set view and its label.
+    QWidget* container = new QWidget(this);
+    
+    QVBoxLayout* containerLayout = new QVBoxLayout(container);
+    containerLayout->addWidget(new QLabel(tr("File sets:"), container));
+    containerLayout->addWidget(&view_, 1);
+    containerLayout->setContentsMargins(0, 0, 0, 0);
+
+    QWidget* container2 = new QWidget(this);
+
+    QVBoxLayout* containerLayout2 = new QVBoxLayout(container2);
+    containerLayout2->addWidget(new QLabel(tr("Dependency analysis:"), container2));
+    containerLayout2->addWidget(&editor_, 1);
+    containerLayout2->setContentsMargins(0, 0, 0, 0);
+
+    // Configure the splitter.
+    splitter_.addWidget(container);
+    splitter_.addWidget(container2);
+    splitter_.setStretchFactor(1, 1);
+
+    QList<int> sizes;
+    sizes << 150 << 300;
+    splitter_.setSizes(sizes);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(&splitter_);
@@ -69,10 +89,6 @@ ComponentWizardDependencyPage::ComponentWizardDependencyPage(PluginManager& plug
             &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
     connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
             &model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
-
-    QList<int> sizes;
-    sizes << 150 << 300;
-    splitter_.setSizes(sizes);
 }
 
 //-----------------------------------------------------------------------------

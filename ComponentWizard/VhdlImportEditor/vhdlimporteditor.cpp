@@ -113,6 +113,7 @@ void VhdlImportEditor::setupLayout()
 {
 	QVBoxLayout* topLayout = new QVBoxLayout(this);    
     topLayout->addWidget(&splitter_);
+    topLayout->setContentsMargins(0, 0, 0, 0);
 
     splitter_.addWidget(parserWidget_);
     splitter_.addWidget(modelParams_);

@@ -19,7 +19,7 @@ class SummaryLabel : public QLabel {
 public:
 
 	//! \brief The increment amount for normal font point size.
-	static const int POINTSIZE_INCREMENT = 4;
+	static const int POINTSIZE_INCREMENT = 0;
 
 	/*! \brief The constructor
 	 *

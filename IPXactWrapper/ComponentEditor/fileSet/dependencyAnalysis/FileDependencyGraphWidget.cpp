@@ -35,6 +35,7 @@ FileDependencyGraphWidget::FileDependencyGraphWidget(QWidget* parent)
     layout->setSpacing(0);
     layout->addWidget(&view_, 1);
     layout->addLayout(barLayout_);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     connect(&view_, SIGNAL(graphColumnScollMaximumChanged(int)),
             this, SLOT(onGraphColumnScrollMaximumChanged(int)), Qt::UniqueConnection);

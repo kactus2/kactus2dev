@@ -149,6 +149,7 @@ void VhdlParserWidget::editorRemovedPort(QSharedPointer<Port> port)
 void VhdlParserWidget::setupLayout()
 {
 	QVBoxLayout* topLayout = new QVBoxLayout(this);    
+    topLayout->setContentsMargins(0, 0, 0, 0);
 
     QHBoxLayout* selectorLayout = new QHBoxLayout();
     QVBoxLayout* vhdlLayout = new QVBoxLayout();

@@ -30,7 +30,7 @@ FileDependencyInfoWidget::FileDependencyInfoWidget(QWidget* parent)
     dependency_(0)
 {
     directionCheck_.setFixedWidth(150);
-    descEdit_.setMaximumHeight(100);
+    descEdit_.setMaximumHeight(80);
     
     this->setTitle(tr("Dependency Information"));
 
@@ -39,7 +39,7 @@ FileDependencyInfoWidget::FileDependencyInfoWidget(QWidget* parent)
     leftLayout->addWidget(&descEdit_, 1);
 
     QVBoxLayout* rightLayout = new QVBoxLayout();
-    rightLayout->addWidget(new QLabel(tr("Direction:"), this));
+    rightLayout->addWidget(new QLabel("", this));
     rightLayout->addWidget(&directionButton_);
     rightLayout->addWidget(&directionCheck_);
     rightLayout->addWidget(&lockedCheck_);
