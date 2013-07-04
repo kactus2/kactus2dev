@@ -25,9 +25,12 @@
 class VhdlEntityHighlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
-public:
+public:   
 
-    enum BlockState{
+    //-----------------------------------------------------------------------------
+    //! VHDL section enumeration.
+    //-----------------------------------------------------------------------------
+    enum BlockStyle{
         OUTSIDE_ENTITY = -1,
         INSIDE_ENTITY,
         PORT_SELECTED,

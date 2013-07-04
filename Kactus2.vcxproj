@@ -4198,6 +4198,7 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
     </CustomBuild>
+    <ClInclude Include="common\widgets\vhdlParser\VhdlSyntax.h" />
     <ClInclude Include="ComponentWizard\ComponentWizard.h" />
     <ClInclude Include="ComponentWizard\ComponentWizardConclusionPage.h" />
     <ClInclude Include="ComponentWizard\ComponentWizardDependencyPage.h" />

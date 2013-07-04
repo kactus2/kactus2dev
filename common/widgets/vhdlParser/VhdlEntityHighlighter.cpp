@@ -23,6 +23,7 @@
 #include <models/modelparameter.h>
 #include <models/port.h>
 #include <common/KactusColors.h>
+#include <common/widgets/vhdlParser/VhdlSyntax.h>
 
 //-----------------------------------------------------------------------------
 // Function: VhdlEntityHighlighter()
@@ -63,32 +64,40 @@ void VhdlEntityHighlighter::highlightBlock(const QString &text)
  
    switch ( currentBlockState() ){
 
-    case  INSIDE_ENTITY:
+    case  BlockStyle::INSIDE_ENTITY:
         {
             setFormat(startIndex, endIndex, insideEntity_);
             break;
         }
-    case PORT_SELECTED:
+    case  BlockStyle::PORT_SELECTED:
         {
+            startIndex = VhdlSyntax::PORT_EXP.indexIn(text);
+            endIndex = startIndex + VhdlSyntax::PORT_EXP.matchedLength();
             setFormat(startIndex, endIndex, selectedPort_);
             break;
         }
-    case PORT_NOT_SELECTED:
+    case  BlockStyle::PORT_NOT_SELECTED:
         {
+            startIndex = VhdlSyntax::PORT_EXP.indexIn(text);
+            endIndex = startIndex + VhdlSyntax::PORT_EXP.matchedLength();
             setFormat(startIndex, endIndex, notSelected_);
             break;
         }
-    case GENERIC_SELECTED:
+    case  BlockStyle::GENERIC_SELECTED:
         {
+            startIndex = VhdlSyntax::GENERIC_EXP.indexIn(text);
+            endIndex = startIndex + VhdlSyntax::GENERIC_EXP.matchedLength();
             setFormat(startIndex, endIndex, selectedGeneric_);
             break;
         }
-    case  GENERIC_NOT_SELECTED:
+    case   BlockStyle::GENERIC_NOT_SELECTED:
         {
+            startIndex = VhdlSyntax::GENERIC_EXP.indexIn(text);
+            endIndex = startIndex + VhdlSyntax::GENERIC_EXP.matchedLength();
             setFormat(startIndex, endIndex, notSelected_);
             break;
         }
-    case OUTSIDE_ENTITY :
+    case  BlockStyle::OUTSIDE_ENTITY :
     default:
         {
             setFormat(startIndex, endIndex, outsideEntity_);

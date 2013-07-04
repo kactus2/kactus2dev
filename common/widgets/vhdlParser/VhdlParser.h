@@ -18,6 +18,8 @@
 #include <QMap>
 
 #include <common/widgets/vhdlParser/VhdlEntityHighlighter.h>
+#include <common/widgets/vhdlParser/VhdlSyntax.h>
+
 class ModelParameter;
 class Port;
 
@@ -93,7 +95,7 @@ private:
 
     //! No assignment.
     VhdlParser& operator=(const VhdlParser&);  
-
+    
 	/*!
      *  Signals add for all ports.
      */
@@ -126,7 +128,7 @@ private:
 	 *
 	 *      @return True if the file is valid, otherwise false.
      */
-    bool checkEntityStructure(QString const& fileString);
+    bool checkEntityStructure(QString const& fileString) const;
 
 
     /*!
@@ -149,7 +151,7 @@ private:
      *              The beginning and the end are included.
      */
     QString parseSection(QRegExp const& begin, QRegExp const& end, 
-        QString const& text);
+        QString const& text) const;
 
     /*!
      *   Cuts out a section of a text omitting delimiting expressions.
@@ -164,7 +166,7 @@ private:
      *              The beginning and the end are omitted.
      */
     QString parseSectionContent(QRegExp const& begin, QRegExp const& end, 
-        QString const& text);
+        QString const& text) const;
 
     /*!
      *   Finds the port declarations in a vhdl file and creates ports accordingly 
@@ -191,7 +193,7 @@ private:
      *
      *      @param [out] rightBound The right bound of the vector.
      */
-    void parseBounds(QString& rangeDeclaration, int& leftBound, int& rightBound);
+    void parseBounds(QString const& rangeDeclaration, int& leftBound, int& rightBound) const;
 
     /*!
      *  Parses the value of a simple equation. The equation may contain literals and
@@ -201,7 +203,7 @@ private:
      *
      *      @return The result of the equation.
      */
-    int parseEquation(QString& equation);
+    int parseEquation(QString const& equation) const;
 
     /*!
      *   Creates a port and maps it to corresponding text block.
@@ -243,7 +245,7 @@ private:
 	 *
      *      @param [in] state The state set for all blocks in the inserted text.
      */
-    void insertExtraText(QString& text, VhdlEntityHighlighter::BlockState state);
+    void insertExtraText(QString const& text, VhdlEntityHighlighter::BlockStyle style);
 
     /*!
      *   Changes the state of text block from selected to not selected and vice versa.
@@ -259,7 +261,7 @@ private:
 	 *
   	 *      @return The value as integer or -1 if value cannot be converted.
      */
-    int valueForString(QString& string);
+    int valueForString(QString& string) const;
     
 
     //-----------------------------------------------------------------------------
@@ -303,10 +305,10 @@ private:
     QRegExp portsEnd_;
 
     //! The ports declaration definition in vhdl.
-    QRegExp portPattern_;
+    QRegExp portExp_;
 
     //! The type declaration definition in vhdl.
-    QRegExp typePattern_;
+    QRegExp typeExp_;
 
     //! The generic declaration definition in vhdl.
     QRegExp genericsBegin_;
@@ -320,11 +322,8 @@ private:
     //! The comment definition in vhdl.
     QRegExp commentExp_;
 
-    //! The default value definition in vhdl.
-    QRegExp defaultPattern_;
-
     //! Pattern for equations in default values and vector bounds.
-    QRegExp equationPattern_;
+    QRegExp equationExp_;
 
     //! Pattern for newlines.
     QRegExp newline_;

@@ -5945,6 +5945,9 @@
     <ClInclude Include="ComponentWizard\ComponentWizardDependencyPage.h">
       <Filter>Header Files\ComponentWizard</Filter>
     </ClInclude>
+    <ClInclude Include="common\widgets\vhdlParser\VhdlSyntax.h">
+      <Filter>Header Files\common\widgets\vhdlParser</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="graphics\generator_plugin_overlay.png">
