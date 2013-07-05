@@ -11,7 +11,7 @@
 
 #include "NamingPolicySettingsPage.h"
 
-#include <common/widgets/listManager/listeditor.h>
+#include <common/widgets/listManager/listmanager.h>
 #include <common/widgets/SnippetTextEdit/SnippetTextEdit.h>
 
 #include <QVBoxLayout>
@@ -31,9 +31,8 @@ NamingPolicySettingsPage::NamingPolicySettingsPage(QSettings& settings)
       curCategoryIndex_(-1),
       categoryLabel_(new QLabel(tr("Show naming policy for:"), this)),
       categoryCombo_(new QComboBox(this)),
-      valuesLabel_(new QLabel(tr("Values:"), this)),
-      valuesList_(new ListEditor(this)),
-      formatLabel_(new QLabel(tr("Format:"), this)),
+      valuesList_(new ListManager(tr("Values"), this)),
+      formatGroup_(new QGroupBox(tr("Format"), this)),
       formatEdit_(new SnippetTextEdit(this))
 {
     // Add categories.
@@ -45,14 +44,15 @@ NamingPolicySettingsPage::NamingPolicySettingsPage(QSettings& settings)
     categories_.append(PolicyCategory("Policies/SWViewNames", "SW View Names", POLICY_ENUMERATION));
     categories_.append(PolicyCategory("Policies/SysViewNames", "System View Names", POLICY_ENUMERATION));
 
+    QVBoxLayout* formatLayout = new QVBoxLayout(formatGroup_);
+    formatLayout->addWidget(formatEdit_);
+
     // Setup the layout.
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(categoryLabel_);
     layout->addWidget(categoryCombo_);
-    layout->addWidget(valuesLabel_);
     layout->addWidget(valuesList_);
-    layout->addWidget(formatLabel_);
-    layout->addWidget(formatEdit_);
+    layout->addWidget(formatGroup_);
     layout->addStretch(1);
 
     // Setup connections.
@@ -123,11 +123,10 @@ void NamingPolicySettingsPage::onCategoryChanged(int index)
     // Update the widgets based on the category type and content.
     if (categories_.at(index).type == POLICY_ENUMERATION)
     {
-        valuesList_->setItems(categories_.at(index).values);
+        valuesList_->initialize(categories_.at(index).values);
+        //valuesList_->setItems(categories_.at(index).values);
 
-        formatLabel_->setVisible(false);
-        formatEdit_->setVisible(false);
-        valuesLabel_->setVisible(true);
+        formatGroup_->setVisible(false);
         valuesList_->setVisible(true);
     }
     else
@@ -144,9 +143,7 @@ void NamingPolicySettingsPage::onCategoryChanged(int index)
             formatEdit_->setPlainText(categories_.at(index).values.first());
         }
 
-        formatLabel_->setVisible(true);
-        formatEdit_->setVisible(true);
-        valuesLabel_->setVisible(false);
+        formatGroup_->setVisible(true);
         valuesList_->setVisible(false);
     }
 

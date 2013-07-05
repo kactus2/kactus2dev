@@ -18,8 +18,9 @@
 #include <QLabel>
 #include <QSettings>
 #include <QPlainTextEdit>
+#include <QGroupBox>
 
-class ListEditor;
+class ListManager;
 class SnippetTextEdit;
 
 //-----------------------------------------------------------------------------
@@ -136,10 +137,10 @@ private:
     QLabel* valuesLabel_;
 
     //! Suggested names list edit.
-    ListEditor* valuesList_;
+    ListManager* valuesList_;
 
     //! Label for naming format edit.
-    QLabel* formatLabel_;
+    QGroupBox* formatGroup_;
 
     //! Text box for naming format.
     SnippetTextEdit* formatEdit_;
