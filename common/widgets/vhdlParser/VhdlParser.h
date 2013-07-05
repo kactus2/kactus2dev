@@ -11,7 +11,7 @@
 #ifndef VhdlParser_H
 #define VhdlParser_H
 
-#include <QTextEdit>
+#include <QPlainTextEdit>
 #include <QTextBlock>
 #include <QMouseEvent>
 #include <QList>
@@ -27,7 +27,7 @@ class Port;
 //-----------------------------------------------------------------------------
 //! Class VhdlParser.
 //-----------------------------------------------------------------------------
-class VhdlParser : public QTextEdit
+class VhdlParser : public QPlainTextEdit 
 {
     Q_OBJECT
 public:
@@ -319,14 +319,8 @@ private:
     //! The generics section end definition in vhdl.
     QRegExp genericExp_;
 
-    //! The comment definition in vhdl.
-    QRegExp commentExp_;
-
     //! Pattern for equations in default values and vector bounds.
     QRegExp equationExp_;
-
-    //! Pattern for newlines.
-    QRegExp newline_;
 
 };
 

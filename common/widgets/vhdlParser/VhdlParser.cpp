@@ -13,7 +13,7 @@
 #include <QFile>
 #include <QFont>
 #include <QTextCursor>
-#include <QTextEdit>
+#include <QPlainTextEdit>
 #include <QMessageBox>
 #include <QTextStream>
 #include <QScrollBar>
@@ -31,7 +31,7 @@
 //-----------------------------------------------------------------------------
 // Function: VhdlParser()
 //-----------------------------------------------------------------------------
-VhdlParser::VhdlParser(QWidget*parent) : QTextEdit( parent ), 
+VhdlParser::VhdlParser(QWidget*parent) : QPlainTextEdit( parent ), 
     portsMap_(), 
     genericsMap_(), 
     generics_(), 
@@ -40,18 +40,17 @@ VhdlParser::VhdlParser(QWidget*parent) : QTextEdit( parent ),
     portBlocks_(), 
     genericBlocks_(), 
     highlighter_(new VhdlEntityHighlighter(document())),
-    entityBegin_(VhdlSyntax::SPACE+VhdlSyntax::ENTITY_BEGIN_EXP.pattern(),Qt::CaseInsensitive),  
+    entityBegin_(VhdlSyntax::SPACE + VhdlSyntax::ENTITY_BEGIN_EXP.pattern(), Qt::CaseInsensitive),  
     entityEnd_("",Qt::CaseInsensitive), 
-    portsBegin_(VhdlSyntax::SPACE+VhdlSyntax::PORTS_BEGIN_EXP.pattern()+VhdlSyntax::SPACE+"("+VhdlSyntax::ENDLINE+")?",Qt::CaseInsensitive),
-    portsEnd_(VhdlSyntax::SPACE+VhdlSyntax::PORTS_END_EXP.pattern(),Qt::CaseInsensitive),
-    portExp_(VhdlSyntax::SPACE+VhdlSyntax::PORT_EXP.pattern(),Qt::CaseInsensitive),
-    typeExp_(VhdlSyntax::TYPE_EXP.pattern().replace("(?:","("),Qt::CaseInsensitive), 
-    genericsBegin_(VhdlSyntax::SPACE+VhdlSyntax::GENERICS_BEGIN_EXP.pattern(),Qt::CaseInsensitive), 
-    genericsEnd_(VhdlSyntax::SPACE+VhdlSyntax::GENERICS_END_EXP.pattern(),Qt::CaseInsensitive), 
-    genericExp_(VhdlSyntax::SPACE+VhdlSyntax::GENERIC_EXP.pattern(),Qt::CaseInsensitive),
-    commentExp_(VhdlSyntax::COMMENT_LINE_EXP),
-    equationExp_( QString(VhdlSyntax::MATH_EXP).replace("(?:","(")),
-    newline_(VhdlSyntax::ENDLINE)
+    portsBegin_(VhdlSyntax::SPACE + VhdlSyntax::PORTS_BEGIN_EXP.pattern() +
+                VhdlSyntax::SPACE + "("+VhdlSyntax::ENDLINE+")?", Qt::CaseInsensitive),
+    portsEnd_(VhdlSyntax::SPACE + VhdlSyntax::PORTS_END_EXP.pattern(), Qt::CaseInsensitive),
+    portExp_(VhdlSyntax::SPACE + VhdlSyntax::PORT_EXP.pattern(), Qt::CaseInsensitive),
+    typeExp_(VhdlSyntax::TYPE_EXP.pattern().replace("(?:","("), Qt::CaseInsensitive), 
+    genericsBegin_(VhdlSyntax::SPACE + VhdlSyntax::GENERICS_BEGIN_EXP.pattern(), Qt::CaseInsensitive), 
+    genericsEnd_(VhdlSyntax::SPACE + VhdlSyntax::GENERICS_END_EXP.pattern(), Qt::CaseInsensitive), 
+    genericExp_(VhdlSyntax::SPACE + VhdlSyntax::GENERIC_EXP.pattern(), Qt::CaseInsensitive),
+    equationExp_( QString(VhdlSyntax::MATH_EXP).replace("(?:","("))
 {
     QFont font("Courier");
     font.setStyleHint(QFont::Monospace);
@@ -82,10 +81,9 @@ void VhdlParser::scrollToEntityBegin()
     if ( checkEntityStructure(toPlainText()) )
     {
         QTextCursor cursor = textCursor();
-        cursor.setPosition(entityBegin_.indexIn(toPlainText()));
+        cursor.setPosition(VhdlSyntax::ENTITY_BEGIN_EXP.indexIn(toPlainText()));
         int rowNumber = cursor.block().firstLineNumber();
-        int rowHeight = fontMetrics().height();
-        verticalScrollBar()->setSliderPosition(rowHeight*rowNumber);
+        verticalScrollBar()->setSliderPosition(rowNumber);
     }
 }
 
@@ -106,7 +104,7 @@ void VhdlParser::parseFile(QString absolutePath)
     removePorts();
     removeGenerics();
     
-    setText(QString());
+    setPlainText("");
     createDocument(vhdlFile);       
     highlighter_->rehighlight();
 
@@ -356,7 +354,7 @@ void VhdlParser::createDocument(QFile& vhdlFile)
     setEntityEndExp(fileString);
     if ( !checkEntityStructure(fileString) )
     {
-        setText(fileString);
+        setPlainText(fileString);
         return;
     }
 
@@ -541,11 +539,11 @@ void VhdlParser::parsePorts(QString const& fileString)
     while ( index < ports.length() )
     {
         int portIndex = portExp_.indexIn(ports,index);
-        int commentIndex = commentExp_.indexIn(ports,index);
+        int commentIndex = VhdlSyntax::COMMENT_LINE_EXP.indexIn(ports,index);
 
         if ( commentIndex == index )
         { 
-            int commentLength = commentExp_.matchedLength();
+            int commentLength = VhdlSyntax::COMMENT_LINE_EXP.matchedLength();
             QString comment = ports.mid(commentIndex,commentLength);
             insertExtraText(comment,VhdlEntityHighlighter::INSIDE_ENTITY);
             index += commentLength;
@@ -556,7 +554,7 @@ void VhdlParser::parsePorts(QString const& fileString)
             cursor.block().setUserState(VhdlEntityHighlighter::PORT_SELECTED);
 
             int length = portExp_.matchedLength();
-            QString portDeclaration = ports.mid(portIndex,length).remove(newline_);
+            QString portDeclaration = ports.mid(portIndex,length).remove(VhdlSyntax::ENDLINE_EXP);
             cursor.insertText(portDeclaration);
             index = portIndex + length;
 
@@ -614,11 +612,11 @@ void VhdlParser::parseGenerics(QString const& fileString)
     while ( index < generics.length() )
     {
         int genericIndex = genericExp_.indexIn(generics,index);
-        int commentIndex = commentExp_.indexIn(generics,index);
+        int commentIndex = VhdlSyntax::COMMENT_LINE_EXP.indexIn(generics,index);
 
         if ( commentIndex == index )
         {
-            int commentLength = commentExp_.matchedLength();
+            int commentLength = VhdlSyntax::COMMENT_LINE_EXP.matchedLength();
             QString comment = generics.mid(commentIndex,commentLength);
             insertExtraText(comment,VhdlEntityHighlighter::INSIDE_ENTITY);
             index += commentLength;
@@ -629,7 +627,7 @@ void VhdlParser::parseGenerics(QString const& fileString)
             
             cursor.block().setUserState(VhdlEntityHighlighter::GENERIC_SELECTED);
             int length = genericExp_.matchedLength();
-            QString genericDeclaration = generics.mid(genericIndex,length).remove(newline_);
+            QString genericDeclaration = generics.mid(genericIndex,length).remove(VhdlSyntax::ENDLINE_EXP);
             cursor.insertText(genericDeclaration);
             index = genericIndex + length;             
 

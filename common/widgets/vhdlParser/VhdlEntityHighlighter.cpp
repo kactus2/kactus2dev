@@ -64,40 +64,40 @@ void VhdlEntityHighlighter::highlightBlock(const QString &text)
  
    switch ( currentBlockState() ){
 
-    case  BlockStyle::INSIDE_ENTITY:
+     case  INSIDE_ENTITY:
         {
             setFormat(startIndex, endIndex, insideEntity_);
             break;
         }
-    case  BlockStyle::PORT_SELECTED:
+    case  PORT_SELECTED:
         {
             startIndex = VhdlSyntax::PORT_EXP.indexIn(text);
             endIndex = startIndex + VhdlSyntax::PORT_EXP.matchedLength();
             setFormat(startIndex, endIndex, selectedPort_);
             break;
         }
-    case  BlockStyle::PORT_NOT_SELECTED:
+    case  PORT_NOT_SELECTED:
         {
             startIndex = VhdlSyntax::PORT_EXP.indexIn(text);
             endIndex = startIndex + VhdlSyntax::PORT_EXP.matchedLength();
             setFormat(startIndex, endIndex, notSelected_);
             break;
         }
-    case  BlockStyle::GENERIC_SELECTED:
+    case  GENERIC_SELECTED:
         {
             startIndex = VhdlSyntax::GENERIC_EXP.indexIn(text);
             endIndex = startIndex + VhdlSyntax::GENERIC_EXP.matchedLength();
             setFormat(startIndex, endIndex, selectedGeneric_);
             break;
         }
-    case   BlockStyle::GENERIC_NOT_SELECTED:
+    case   GENERIC_NOT_SELECTED:
         {
             startIndex = VhdlSyntax::GENERIC_EXP.indexIn(text);
             endIndex = startIndex + VhdlSyntax::GENERIC_EXP.matchedLength();
             setFormat(startIndex, endIndex, notSelected_);
             break;
         }
-    case  BlockStyle::OUTSIDE_ENTITY :
+    case  OUTSIDE_ENTITY :
     default:
         {
             setFormat(startIndex, endIndex, outsideEntity_);
