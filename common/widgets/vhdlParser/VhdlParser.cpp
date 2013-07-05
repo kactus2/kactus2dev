@@ -274,7 +274,7 @@ void VhdlParser::assignGenerics(QSharedPointer<Port> port)
         QString defaultValue = portExp_.cap(4).trimmed();        
 
         typeExp_.indexIn(portType);
-        QString leftBound = typeExp_.cap(1);
+        QString plainType = typeExp_.cap(1);
         QString bounded = typeExp_.cap(2);
         int left = 0;
         int right = 0;        
@@ -674,7 +674,7 @@ void VhdlParser::parseGenerics(QString const& fileString)
 //-----------------------------------------------------------------------------
 void VhdlParser::parseBounds(QString const& rangeDeclaration, int& leftBound, int& rightBound) const
 {
-    QRegExp rangeExp = QRegExp("[(]\\s*("+equationExp_.pattern()+")\\s+\\w+\\s+("+equationExp_.pattern()+")\\s*[)]");
+    static QRegExp rangeExp = QRegExp("[(]\\s*(" + VhdlSyntax::MATH_EXP + ")\\s+\\w+\\s+(" + VhdlSyntax::MATH_EXP + ")\\s*[)]");
 
     if( rangeExp.indexIn(rangeDeclaration) != -1 )
     {
@@ -702,7 +702,7 @@ int VhdlParser::parseEquation(QString const& equation) const
         return -1;
     }
     
-    // Do not calculate ogic values e.g. '1' or vectors e.g. "1001".
+    // Do not calculate logic values e.g. '1' or vectors e.g. "1001".
     if ( equation.contains(QRegExp("['\"]")) )
     {
         return -1;
@@ -710,7 +710,7 @@ int VhdlParser::parseEquation(QString const& equation) const
 
     static QRegExp multiplyDivide = QRegExp("[/*/]");
     static QRegExp power = QRegExp("[/*][/*]");
-    static QRegExp extraOperand = QRegExp(VhdlSyntax::OPERATIONS+"\\s*(\\w+)");
+    static QRegExp extraOperand = QRegExp("(" + VhdlSyntax::OPERATIONS + ")\\s*(\\w+)");
 
     equationExp_.indexIn(equation);  
     QString value = equationExp_.cap(1);
@@ -735,10 +735,12 @@ int VhdlParser::parseEquation(QString const& equation) const
         QString leftOperand = listedEquation.at(operatorIndex-1);
         QString rightOperand = listedEquation.at(operatorIndex+1);
 
-        int left = valueForString(leftOperand);
-        int right = valueForString(rightOperand);
+        bool leftOk = true;
+        bool rightOk = true;
+        int left = valueForString(leftOperand, leftOk);
+        int right = valueForString(rightOperand, rightOk);
 
-        if ( left == -1 || right == -1 )
+        if ( leftOk == false || rightOk == false )
         {
             return -1;
         }
@@ -764,11 +766,13 @@ int VhdlParser::parseEquation(QString const& equation) const
         QString operation = listedEquation.at(operatorIndex);
         QString leftOperand = listedEquation.at(operatorIndex-1);
         QString rightOperand = listedEquation.at(operatorIndex+1);
-
-        int left = valueForString(leftOperand);
-        int right = valueForString(rightOperand);
+       
+        bool leftOk = true;
+        bool rightOk = true;
+        int left = valueForString(leftOperand, leftOk);
+        int right = valueForString(rightOperand, rightOk);
         
-        if ( left == -1 || right == -1 || ( operation == "/" && right == 0 ) )
+        if ( leftOk == false || rightOk == false || ( operation == "/" && right == 0 ) )
         {
             return -1;
         }
@@ -791,10 +795,13 @@ int VhdlParser::parseEquation(QString const& equation) const
 
     while ( listedEquation.size() > 1 )
     {
-        int left = valueForString(listedEquation.value(0));
-        int right = valueForString(listedEquation.value(2));
+        bool leftOk = true;
+        bool rightOk = true;
+        int left = valueForString(listedEquation.value(0), leftOk);
+        int right = valueForString(listedEquation.value(2), rightOk);
 
-        if ( left == -1 || right == -1 )
+
+        if ( leftOk == false || rightOk == false )
         {
             return -1;
         }
@@ -821,7 +828,8 @@ int VhdlParser::parseEquation(QString const& equation) const
 
     if ( listedEquation.size() == 1 )
     {
-        return valueForString(listedEquation.value(0));
+        bool ok = true;
+        return valueForString(listedEquation.value(0),ok);
     }   
 
     return -1;
@@ -963,7 +971,7 @@ void VhdlParser::toggleBlock(QTextBlock& block)
 //-----------------------------------------------------------------------------
 // Function: valueForString()
 //----------------------------------------------------------------------------- 
-int VhdlParser::valueForString(QString& string) const  
+int  VhdlParser::valueForString(QString& string, bool& ok) const  
 {
     bool isNumber = true;
     int value = string.toInt(&isNumber);
@@ -976,15 +984,18 @@ int VhdlParser::valueForString(QString& string) const
                 int genericValue = parameter->getValue().toInt(&isNumber);
                 if ( !isNumber )
                 {
+                    ok = false;
                     return -1;
                 }
 
+                ok = true;
                 return genericValue;
             }
         }
-
+        ok = false;
         return -1;
     }
 
+    ok = true;
     return value;
 }
