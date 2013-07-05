@@ -46,17 +46,17 @@ void SplashScreen::drawContents(QPainter *painter)
 	int bits = 32;
 #endif
 
-	painter->drawText(300, 125, tr("Version %1.%2 %3-bit (Build %4)").arg(QString::number(VERSION_MAJOR),
-                                                                          QString::number(VERSION_MINOR),
-                                                                          QString::number(bits),
-                                                                          QString::number(VERSION_BUILDNO)));
+	painter->drawText(300, 125, tr("Version %1.%2.%3 %4-bit").arg(QString::number(VERSION_MAJOR),
+                                                                  QString::number(VERSION_MINOR),
+                                                                  QString::number(VERSION_BUILDNO),
+                                                                  QString::number(bits)));
 
     // Draw the other information.
     painter->drawText(QRectF(270, 280, 310, 150), Qt::AlignLeft,
                       QString::fromLatin1("This software is licensed under the GPL2 General Public License.\n"
                                           "See license.txt for further details.\n\n"
                                           "Contributors: Juho J‰rvinen, Antti Kamppi, Joni-Matti M‰‰tt‰,\n"
-                                          "Lauri Matilainen, Timo D. H‰m‰l‰inen\n\n"
+                                          "Esko Pekkarinen, Lauri Matilainen, Timo D. H‰m‰l‰inen\n\n"
                                           "Kactus2 Website: http://funbase.cs.tut.fi/"));
 }
 
