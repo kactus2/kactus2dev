@@ -456,7 +456,13 @@ bool PortGenerationTableModel::nameDuplicates(int const row) const
 
         foreach ( QSharedPointer<PortGenerationRow> portRow, rows_ )
         {
-            if( comparable == portRow )
+            // Check draft component for identical port names.
+            if ( draftComponent_->getPort(comparable->getDraftName()) != 0 )
+            {
+                return true;
+            }
+
+            else if( comparable == portRow )
             {
                 continue;
             }
@@ -466,11 +472,7 @@ bool PortGenerationTableModel::nameDuplicates(int const row) const
                 return true;
             }
 
-            // Check also draft component for identical port names.
-            else if ( draftComponent_->getPort(comparable->getDraftName()) != 0 )
-            {
-                return true;
-            }
+
         }
     }
 

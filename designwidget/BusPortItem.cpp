@@ -714,6 +714,7 @@ bool BusPortItem::askCompatibleMode(ConnectionEndpoint const* other,
             {
                 // This must be a mirrored-slave.
                 mode = General::MIRROREDSLAVE;
+                dialog.addMode(General::MIRROREDSLAVE);
             }
             else
             {

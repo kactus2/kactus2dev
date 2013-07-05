@@ -1989,6 +1989,10 @@ void HWDesignDiagram::onPasteAction(){
                     QSharedPointer<QUndoCommand> cmd(new PortPasteCommand(targetComp, copy.component, pos, port) );
                     cmd->redo();
                     getEditProvider().addCommand(cmd, false);
+
+                    // Update sidebar view.
+                    emit componentSelected(targetComp);
+                    emit helpUrlRequested("hwdesign/hwinstance.html");
                 }
             }	
         }
