@@ -23,12 +23,16 @@
 + Added printing of library summary report to the output window after the
   library scan.
 + Added COM interface implementation reference to be able to specify an
-  implementing driver for each COM interface in HW components.
+  implementing driver for each COM interface in the components.
 + Added editing features for HW view reference and file set references
   to the system view editor in the component editor.
-+ Added file set references, build commands and BSP build tools
-  to software views in the component editor.
-+ Added environment variables to SW views.
++ Added file set references, build commands, BSP build tools and environment
+  variables to software views in the component editor.
++ Added half-automatic port creation for draft interfaces.
++ Added copy-paste for bus interfaces in the HW design editor.
++ Added UUIDs to be used to identify component instances in the designs
+  (especially in system designs).
++ Added the ability to launch shell scripts for components.
 
 - Fixed performance issues with large libraries causing unnecessary slowdowns
   in the library window and the component editor.
@@ -47,10 +51,17 @@
   when the selected component instance has no bus interfaces that would
   be shown in the editor.
 
-* Migrated to Qt 5.1.0 RC2.
+* Migrated to Qt 5.1.0.
 * Changed the naming of library context menu New items.
 * Replaced the old list editor with a better collection editor.
 * Disabled the instantiation of template components to designs.
+* Updated context-sensitive help content.
+* Fixed the issue of the component editor tree view not being updated
+  when making changes through the actual editor pages.
+* Added more detailed information to be generated at the beginning of the
+  generated files.
+* Generated VHDL is now formatted to max 80 character lines.
+* Enhanced editing of ports in the component editor.
 
 
 
