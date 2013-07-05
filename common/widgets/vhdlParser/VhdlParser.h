@@ -263,7 +263,7 @@ private:
      *
   	 *      @return The value as integer or -1 if value cannot be converted.
      */
-    int valueForString(QString& string, bool& ok) const;
+    int valueForString(QString const& string, bool& ok) const;
     
 
     //-----------------------------------------------------------------------------

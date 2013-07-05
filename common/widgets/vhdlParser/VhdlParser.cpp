@@ -971,7 +971,7 @@ void VhdlParser::toggleBlock(QTextBlock& block)
 //-----------------------------------------------------------------------------
 // Function: valueForString()
 //----------------------------------------------------------------------------- 
-int  VhdlParser::valueForString(QString& string, bool& ok) const  
+int  VhdlParser::valueForString(QString const& string, bool& ok) const  
 {
     bool isNumber = true;
     int value = string.toInt(&isNumber);
