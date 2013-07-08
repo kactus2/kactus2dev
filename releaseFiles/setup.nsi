@@ -95,6 +95,10 @@ Section "MainSection" SEC01
   SetOutPath "$INSTDIR\Plugins"
   SetOverwrite on
   File "..\executable\Plugins\MCAPICodeGenerator.dll"
+  File "..\executable\Plugins\CppSourceAnalyzer.dll"
+  File "..\executable\Plugins\VHDLSourceAnalyzer.dll"
+  File "..\executable\Plugins\AlteraBSPGenerator.dll"
+  File "..\executable\Plugins\MemoryMapHeaderGenerator.dll"
 
   SetOutPath "$INSTDIR\Help"
   SetOverwrite on
@@ -166,6 +170,10 @@ Section Uninstall
   Delete "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063\mcapi.apiDef.1.063.xml"
   Delete "$INSTDIR\Help\Kactus2Help.qch"
   Delete "$INSTDIR\Help\Kactus2Help.qhc"
+  Delete "$INSTDIR\Plugins\MemoryMapHeaderGenerator.dll"
+  Delete "$INSTDIR\Plugins\AlteraBSPGenerator.dll"
+  Delete "$INSTDIR\Plugins\VHDLSourceAnalyzer.dll"
+  Delete "$INSTDIR\Plugins\CppSourceAnalyzer.dll"
   Delete "$INSTDIR\Plugins\MCAPICodeGenerator.dll"
   Delete "$INSTDIR\sqldrivers\qsqlite.dll"
   Delete "$INSTDIR\platforms\qminimal.dll"
