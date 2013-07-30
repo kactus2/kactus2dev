@@ -26,6 +26,15 @@ interfaces_(component->getComInterfaces()) {
 ComponentEditorComInterfacesItem::~ComponentEditorComInterfacesItem() {
 }
 
+QFont ComponentEditorComInterfacesItem::getFont() const {
+    QFont font(ComponentEditorItem::getFont());
+    if ( childItems_.isEmpty() )
+    {
+        font.setBold(false);
+    }
+    return font;
+}
+
 QString ComponentEditorComInterfacesItem::text() const {
 	return tr("COM interfaces");
 }

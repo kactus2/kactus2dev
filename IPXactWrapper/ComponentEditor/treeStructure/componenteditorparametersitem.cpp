@@ -8,6 +8,7 @@
 #include "componenteditorparametersitem.h"
 #include <IPXactWrapper/ComponentEditor/parameters/parameterseditor.h>
 
+
 ComponentEditorParametersItem::ComponentEditorParametersItem(ComponentEditorTreeModel* model,
 															 LibraryInterface* libHandler,
 															 QSharedPointer<Component> component,
@@ -18,6 +19,15 @@ parameters_(component->getParameters()) {
 }
 
 ComponentEditorParametersItem::~ComponentEditorParametersItem() {
+}
+
+QFont ComponentEditorParametersItem::getFont() const {
+    QFont font(ComponentEditorItem::getFont());
+    if ( parameters_.empty())
+    {
+        font.setBold(false);
+    }
+    return font;
 }
 
 QString ComponentEditorParametersItem::text() const {

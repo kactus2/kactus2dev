@@ -29,6 +29,15 @@ parentWnd_(parentWnd) {
 ComponentEditorBusInterfacesItem::~ComponentEditorBusInterfacesItem() {
 }
 
+QFont ComponentEditorBusInterfacesItem::getFont() const {
+    QFont font(ComponentEditorItem::getFont());
+    if ( !component_->hasInterfaces() )
+    {
+        font.setBold(false);
+    }
+    return font;
+}
+
 QString ComponentEditorBusInterfacesItem::text() const {
 	return tr("Bus interfaces");
 }

@@ -20,6 +20,16 @@ modelParams_(component->getModelParameters()) {
 ComponentEditorModelParamsItem::~ComponentEditorModelParamsItem() {
 }
 
+QFont ComponentEditorModelParamsItem::getFont() const {
+    QFont font(ComponentEditorItem::getFont());
+    font.setBold(true);
+    if ( modelParams_.empty())
+    {
+        font.setBold(false);
+    }
+    return font;
+}
+
 QString ComponentEditorModelParamsItem::text() const {
 	return tr("Model parameters");
 }

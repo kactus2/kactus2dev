@@ -40,6 +40,14 @@ public:
 	//! \brief The destructor
 	virtual ~ComponentEditorFileSetsItem();
 
+    /*! \brief Get the font to be used for text of this item.
+	*
+	* Returns a bolded font, if filesets exist, otherwise false.
+	*
+	* \return QFont instance that defines the font to be used.
+	*/
+	virtual QFont getFont() const;
+
 	/*! \brief Get the tool tip for the item.
 	 * 
 	 * \return The text for the tool tip to print to user.

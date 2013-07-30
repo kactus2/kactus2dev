@@ -8,6 +8,7 @@
 #include "componenteditorportsitem.h"
 #include <IPXactWrapper/ComponentEditor/ports/portseditor.h>
 
+
 ComponentEditorPortsItem::ComponentEditorPortsItem(ComponentEditorTreeModel* model,
 												   LibraryInterface* libHandler,
 												   QSharedPointer<Component> component,
@@ -18,6 +19,15 @@ ports_(component->getPorts()) {
 }
 
 ComponentEditorPortsItem::~ComponentEditorPortsItem() {
+}
+
+QFont ComponentEditorPortsItem::getFont() const {
+    QFont font(ComponentEditorItem::getFont());
+    if ( ports_.empty())
+    {
+        font.setBold(false);
+    }
+    return font;
 }
 
 QString ComponentEditorPortsItem::text() const {

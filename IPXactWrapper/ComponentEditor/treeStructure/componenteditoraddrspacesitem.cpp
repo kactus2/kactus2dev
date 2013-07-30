@@ -27,6 +27,15 @@ addrSpaces_(component->getAddressSpaces()) {
 ComponentEditorAddrSpacesItem::~ComponentEditorAddrSpacesItem() {
 }
 
+QFont ComponentEditorAddrSpacesItem::getFont() const {
+    QFont font(ComponentEditorItem::getFont());
+    if ( childItems_.empty())
+    {
+        font.setBold(false);
+    }
+    return font;
+}
+
 QString ComponentEditorAddrSpacesItem::text() const {
 	return tr("Address spaces");
 }

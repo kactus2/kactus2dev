@@ -39,6 +39,15 @@ ComponentEditorMemMapsItem::~ComponentEditorMemMapsItem() {
 	}
 }
 
+QFont ComponentEditorMemMapsItem::getFont() const {
+    QFont font(ComponentEditorItem::getFont());
+    if ( childItems_.empty())
+    {
+        font.setBold(false);
+    }
+    return font;
+}
+
 QString ComponentEditorMemMapsItem::text() const {
 	return tr("Memory maps");
 }

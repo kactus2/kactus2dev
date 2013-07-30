@@ -21,6 +21,15 @@ swProperties_(component->getSWProperties()) {
 ComponentEditorSWPropertiesItem::~ComponentEditorSWPropertiesItem() {
 }
 
+QFont ComponentEditorSWPropertiesItem::getFont() const {
+    QFont font(ComponentEditorItem::getFont());
+    if ( swProperties_.isEmpty() )
+    {
+        font.setBold(false);
+    }
+    return font;
+}
+
 QString ComponentEditorSWPropertiesItem::getTooltip() const {
 	return tr("Contains the software properties of the component");
 }

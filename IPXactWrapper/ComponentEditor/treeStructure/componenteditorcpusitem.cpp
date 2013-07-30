@@ -20,6 +20,15 @@ cpus_(component->getCpus()) {
 ComponentEditorCpusItem::~ComponentEditorCpusItem() {
 }
 
+QFont ComponentEditorCpusItem::getFont() const {
+    QFont font(ComponentEditorItem::getFont());
+    if ( cpus_.isEmpty() )
+    {
+        font.setBold(false);
+    }
+    return font;
+}
+
 QString ComponentEditorCpusItem::text() const {
 	return tr("Cpus");
 }

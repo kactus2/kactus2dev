@@ -28,6 +28,15 @@ swViews_(component->getSWViews()) {
 ComponentEditorSWViewsItem::~ComponentEditorSWViewsItem() {
 }
 
+QFont ComponentEditorSWViewsItem::getFont() const {
+    QFont font(ComponentEditorItem::getFont());
+    if ( childItems_.empty())
+    {
+        font.setBold(false);
+    }
+    return font;
+}
+
 QString ComponentEditorSWViewsItem::getTooltip() const {
 	return tr("Contains the software views of the component");
 }

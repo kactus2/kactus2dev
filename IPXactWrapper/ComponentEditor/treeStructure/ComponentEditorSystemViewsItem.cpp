@@ -32,6 +32,16 @@ systemViews_(component->getSystemViews()) {
 ComponentEditorSystemViewsItem::~ComponentEditorSystemViewsItem() {
 }
 
+QFont ComponentEditorSystemViewsItem::getFont() const {
+    QFont font(ComponentEditorItem::getFont());
+    font.setBold(true);
+    if ( childItems_.empty())
+    {
+        font.setBold(false);
+    }
+    return font;
+}
+
 QString ComponentEditorSystemViewsItem::getTooltip() const {
 	return tr("Contains the system views of the component");
 }

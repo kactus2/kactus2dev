@@ -20,6 +20,15 @@ otherClocks_(component->getOtherClockDrivers()) {
 ComponentEditorOtherClocksItem::~ComponentEditorOtherClocksItem() {
 }
 
+QFont ComponentEditorOtherClocksItem::getFont() const {
+    QFont font(ComponentEditorItem::getFont());
+    if ( otherClocks_.isEmpty() )
+    {
+        font.setBold(false);
+    }
+    return font;
+}
+
 QString ComponentEditorOtherClocksItem::text() const {
 	return tr("Other clock drivers");
 }

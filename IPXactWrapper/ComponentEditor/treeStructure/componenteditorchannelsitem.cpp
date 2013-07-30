@@ -20,6 +20,15 @@ channels_(component->getChannels()) {
 ComponentEditorChannelsItem::~ComponentEditorChannelsItem() {
 }
 
+QFont ComponentEditorChannelsItem::getFont() const {
+    QFont font(ComponentEditorItem::getFont());
+    if ( channels_.isEmpty() )
+    {
+        font.setBold(false);
+    }
+    return font;
+}
+
 QString ComponentEditorChannelsItem::text() const {
 	return tr("Channels");
 }

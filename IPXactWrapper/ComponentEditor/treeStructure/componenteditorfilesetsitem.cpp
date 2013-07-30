@@ -33,6 +33,15 @@ pluginMgr_(pluginMgr) {
 ComponentEditorFileSetsItem::~ComponentEditorFileSetsItem() {
 }
 
+QFont ComponentEditorFileSetsItem::getFont() const {
+    QFont font(ComponentEditorItem::getFont());
+    if ( fileSets_.empty() )
+    {
+        font.setBold(false);
+    }
+    return font;
+}
+
 QString ComponentEditorFileSetsItem::text() const { 
 	return tr("File sets");
 }

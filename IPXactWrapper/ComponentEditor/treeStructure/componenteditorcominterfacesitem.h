@@ -34,6 +34,14 @@ public:
 	//! \brief The destructor
 	virtual ~ComponentEditorComInterfacesItem();
 
+	/*! \brief Get the font to be used for text of this item.
+	*
+	* The font is bold, if COM interfaces exist, otherwise not bold.
+	*
+	* \return QFont instance that defines the font to be used.
+	*/
+	virtual QFont getFont() const;
+
 	/*! \brief Get the tool tip for the item.
 	 * 
 	 * \return The text for the tool tip to print to user.

@@ -27,6 +27,15 @@ apiInterfaces_(component->getApiInterfaces()) {
 ComponentEditorAPIInterfacesItem::~ComponentEditorAPIInterfacesItem() {
 }
 
+QFont ComponentEditorAddrSpacesItem::getFont() const {
+    QFont font(ComponentEditorItem::getFont());
+    if ( childItems_.empty())
+    {
+        font.setBold(false);
+    }
+    return font;
+}
+
 QString ComponentEditorAPIInterfacesItem::getTooltip() const {
 	return tr("Contains the API interfaces of the component");
 }
