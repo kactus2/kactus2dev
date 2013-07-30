@@ -3829,17 +3829,11 @@
     <ClCompile Include="common\widgets\FileSelector\fileselector.cpp">
       <Filter>Source Files\common\widgets\FileSelector</Filter>
     </ClCompile>
-    <ClCompile Include="common\widgets\vhdlParser\VhdlEntityHighlighter.cpp">
-      <Filter>Source Files\common\widgets\vhdlParser</Filter>
-    </ClCompile>
     <ClCompile Include="common\widgets\vhdlParser\VhdlParser.cpp">
       <Filter>Source Files\common\widgets\vhdlParser</Filter>
     </ClCompile>
     <ClCompile Include="common\widgets\vhdlParser\VhdlParserWidget.cpp">
       <Filter>Source Files\common\widgets\vhdlParser</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_VhdlEntityHighlighter.cpp">
-      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_VhdlParser.cpp">
       <Filter>Generated Files</Filter>
@@ -5465,9 +5459,6 @@
     </CustomBuild>
     <CustomBuild Include="designwidget\views\CellEditTableView.h">
       <Filter>Header Files\designwidget\views</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\widgets\vhdlParser\VhdlEntityHighlighter.h">
-      <Filter>Header Files\common\widgets\vhdlParser</Filter>
     </CustomBuild>
     <CustomBuild Include="common\widgets\vhdlParser\VhdlParser.h">
       <Filter>Header Files\common\widgets\vhdlParser</Filter>

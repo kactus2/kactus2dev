@@ -6,18 +6,17 @@
 // Date: 10.06.2013
 //
 // Description:
-// VhdlParser for Component Wizard.
+// VhdlParser reads a given vhdl file, creates ports and generics accordingly
+// and displays the file highlighting the created ports and generics. 
 //-----------------------------------------------------------------------------
 #ifndef VhdlParser_H
 #define VhdlParser_H
 
 #include <QPlainTextEdit>
-#include <QTextBlock>
 #include <QMouseEvent>
 #include <QList>
 #include <QMap>
 
-#include <common/widgets/vhdlParser/VhdlEntityHighlighter.h>
 #include <common/widgets/vhdlParser/VhdlSyntax.h>
 
 class ModelParameter;
@@ -95,7 +94,16 @@ private:
 
     //! No assignment.
     VhdlParser& operator=(const VhdlParser&);  
-    
+  
+    //! Position and enable of a port/generic in the document.
+    struct SelectionInfo
+    {
+        int beginPos;
+        int endPos;
+        bool enabled;      
+        bool operator<(const SelectionInfo& other) const{return beginPos < other.beginPos;}
+    };
+
 	/*!
      *  Signals add for all ports.
      */
@@ -172,17 +180,15 @@ private:
      *   Finds the port declarations in a vhdl file and creates ports accordingly 
      *   with createPort().
      *
-     *      @param [in] fileString The vhdl file as string.
      */
-    void parsePorts(QString const& fileString);
+    void parsePorts();
 
     /*!
      *   Finds the generic declarations in a vhdl file and creates model parameters
      *   accordingly with createGeneric().
      *
-     *      @param [in] fileString The vhdl file as string.
      */
-    void parseGenerics(QString const& fileString);
+    void parseGenerics();
 
     /*!
      *   Parses the values for vector bounds.
@@ -206,22 +212,18 @@ private:
     int parseEquation(QString const& equation) const;
 
     /*!
-     *   Creates a port and maps it to corresponding text block.
+     *   Creates a port and maps it to corresponding selection info.
      *
-     *      @param [in] portDeclaration The port declaration clause.
-	 *
-     *      @param [in] portBlock The textblock the clause resides in.
+     *      @param [in] info The selection info for the created port.
      */
-    void createPort(QString const& portDeclaration, QTextBlock const& portBlock);
+    void createPort(SelectionInfo const& info);
 
     /*!
-     *   Creates a model parameter and maps it to corresponding text block.
-     *
-     *      @param [in] genericDeclaration The generic declaration clause.
+     *   Creates a model parameter and maps it to corresponding selection info.
 	 *
-     *      @param [in] portBlock The textblock the clause resides in.
+     *      @param [in] info The selection info for the created generic.
      */
-    void createGeneric(QString const& genericDeclaration, QTextBlock const& genericBlock);
+    void createGeneric(SelectionInfo const& info);
     
     /*!
      *   Assigns the generic values used in port declaration for left and right bound
@@ -238,21 +240,13 @@ private:
      */
     void assignGenerics(QSharedPointer<ModelParameter> param);
 
-    /*!
-     *   Inserts a section of text into the editor's document with given state.
-	 *
-     *      @param [in] text The text to insert into document.
-	 *
-     *      @param [in] state The state set for all blocks in the inserted text.
-     */
-    void insertExtraText(QString const& text, VhdlEntityHighlighter::BlockStyle style);
 
     /*!
-     *   Changes the state of text block from selected to not selected and vice versa.
+     *   Changes the state of selection from selected to not selected and vice versa.
      *
-     *      @param [in] block The block whose state to change.
+     *      @param [in] info The selection whose state to change.
      */
-    void toggleBlock(QTextBlock& block);
+    void toggleSelection(SelectionInfo& info);
 
     /*!
      *   Converts a generic or a number to an integer.
@@ -265,65 +259,47 @@ private:
      */
     int valueForString(QString const& string, bool& ok) const;
     
+    void formatSection(int const pos, int const lenght, QTextCharFormat const& format);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Maps all ports on a line to a text block.
-    QMap< QTextBlock,QList< QSharedPointer<Port> > > portsMap_;
+    //! Maps ports to a declaration.
+    QMap< SelectionInfo, QList< QSharedPointer<Port> > > ports_;
 
-    //! Maps all generics on a line to a text block.
-    QMap<QTextBlock,QList< QSharedPointer< ModelParameter> > > genericsMap_;
-
-    //! Text blocks containing port declarations.
-    QList<QTextBlock> portBlocks_;
-
-    //! Text blocks containing generic declarations.
-    QList<QTextBlock> genericBlocks_;
-
-    //! Maps a generic name and its value.
-    QList< QSharedPointer<ModelParameter> > generics_;
+    //! Maps generics to a declaration.
+    QMap< SelectionInfo, QList< QSharedPointer<ModelParameter> > > generics_;
 
     //! Maps a generic to ports using it.
-    QMap< QSharedPointer<ModelParameter>,QList< QSharedPointer<Port> > > genericsInPorts_;
+    QMap< QSharedPointer<ModelParameter>, QList< QSharedPointer<Port> > > genericsInPorts_;
 
-    //! Maps a generic to another generic using it.
-    QMap< QSharedPointer<ModelParameter>,QList< QSharedPointer<ModelParameter> > > genericsInGenerics_;
-
-    //! The syntax highlighter for display.
-    VhdlEntityHighlighter* highlighter_;
-
-    //! The entity beginning definition in vhdl.
-    QRegExp entityBegin_;
+    //! Maps a generic to other generics using it.
+    QMap< QSharedPointer<ModelParameter>, QList< QSharedPointer<ModelParameter> > > genericsInGenerics_;
 
     //! The entity end definition in vhdl.
     QRegExp entityEnd_;
 
-    //! The ports section beginning definition in vhdl.
-    QRegExp portsBegin_;
-
-    //! The ports section end definition in vhdl.
-    QRegExp portsEnd_;
-
-    //! The ports declaration definition in vhdl.
-    QRegExp portExp_;
-
     //! The type declaration definition in vhdl.
     QRegExp typeExp_;
 
-    //! The generic declaration definition in vhdl.
-    QRegExp genericsBegin_;
-
-    //! The generics section beginning definition in vhdl.
-    QRegExp genericsEnd_;
-
-    //! The generics section end definition in vhdl.
-    QRegExp genericExp_;
-
     //! Pattern for equations in default values and vector bounds.
     QRegExp equationExp_;
+    
+    //! Formatting for text inside entity.
+    QTextCharFormat insideEntityFormat_;
 
+    //! Formatting for text outside entity.
+    QTextCharFormat outsideEntityFormat_;
+
+    //! Formatting for selected port.
+    QTextCharFormat selectedPortFormat_;
+
+    //! Formatting for selected generic.
+    QTextCharFormat selectedGenericFormat_;
+
+    //! Formatting for not selected port or generic.
+    QTextCharFormat notSelectedFormat_;
 };
 
 #endif // VhdlParser_H
