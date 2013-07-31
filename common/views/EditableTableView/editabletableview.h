@@ -30,6 +30,9 @@ public:
 	//! \brief The minimum height for the view.
 	static const int MINIMUM_TABLE_HEIGHT = 100;
 
+    //! Number of the column for name.
+    static const int NAME_COLUMN = 0; 
+
 	/*! \brief The constructor
 	 *
 	 * \param parent Pointer to the owner of this view.
@@ -189,6 +192,16 @@ private:
 
 	//! \brief Set up the actions for the context menu
 	void setupActions();
+
+    /*!
+    *  Generates a unique name within the table for the item.
+    *
+    *      @param [in] original     The original name of the item.
+    *      @param [in] model        The model of this view.
+    *
+    *      @return Unique name for the item.
+    */
+    QString getUniqueName(QString const& original, QAbstractTableModel* model);
 
 	//! \brief The default path to use for import/export csv
 	QString defImportExportPath_;

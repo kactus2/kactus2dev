@@ -412,6 +412,13 @@ void EditableTableView::onPasteAction() {
 
 				itemToSet = origModel->index(lastRow, columnCounter, QModelIndex());
 			}
+                        
+            // Check for name conflicts.   
+            if ( columnCounter == NAME_COLUMN && column.size() > 0 )
+            {
+                column = getUniqueName(column, origModel);
+            }
+
 			origModel->setData(itemToSet, column, Qt::EditRole);
 			++columnCounter;
 		}
@@ -593,9 +600,36 @@ void EditableTableView::setModel( QAbstractItemModel* model ) {
 		foreach (QString headerLine, headerLines) {
 			headerSize = qMax(headerSize, fMetrics.width(headerLine));
 		}
-		headerSize += 45;
+        headerSize += 45;
 
-		// set the width for the column
-		setColumnWidth(i, qMax(contentSize, headerSize));
-	}
+        // set the width for the column
+        setColumnWidth(i, qMax(contentSize, headerSize));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: getUniqueName()
+//-----------------------------------------------------------------------------
+QString EditableTableView::getUniqueName(QString const& original, QAbstractTableModel* model)
+{
+    QString name = original;    
+    int trailingNumber = 1;
+    bool match =  true;
+    while ( match )
+    {
+        match = false;
+        for(int row = 0; row < model->rowCount(); row++ )
+        {
+            QModelIndex index = model->index(row, NAME_COLUMN);
+            if ( name == model->data(index ,Qt::DisplayRole ).toString() )
+            {
+                match = true;
+                name = original + "_" + QString::number(trailingNumber);
+                trailingNumber++;
+                break;
+            }
+        }       
+    }
+    
+    return name;
 }
