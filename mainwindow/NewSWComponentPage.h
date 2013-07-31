@@ -18,6 +18,7 @@
 
 #include <QGroupBox>
 #include <QRadioButton>
+#include <QPushButton>
 
 class LibraryInterface;
 class VLNVEditor;
@@ -83,6 +84,9 @@ public slots:
      */
     void updateDirectory();
 
+    //! Called when the user clicks browse button.
+    void onBrowse();
+
 signals:
     //! Signaled when a SW component should be created.
     void createSWComponent(VLNV const& vlnv, QString const& directory);
@@ -104,6 +108,12 @@ private:
 
 	//! \brief The editor to select the directory to save to. 
 	LibraryPathSelector* directoryEdit_;
+
+    //! Pushbutton for browsing the save directory.
+    QPushButton* browseButton_;
+
+    //! Flag for indicating whether the directory has been chosen using browse.
+    bool directorySet_;
 };
 
 //-----------------------------------------------------------------------------

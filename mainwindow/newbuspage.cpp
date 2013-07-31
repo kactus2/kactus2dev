@@ -20,7 +20,10 @@ NewBusPage::NewBusPage(LibraryInterface* libHandler, QWidget *parentDlg):
 PropertyPageView(),
 libInterface_(libHandler), 
 vlnvEditor_(VLNV::BUSDEFINITION, libHandler, parentDlg, this, true),
-directoryEdit_(this) {
+directoryEdit_(this),
+browseButton_(0),
+directorySet_(false)
+{
 
 	Q_ASSERT_X(libHandler, "NewBusPage constructor",
 		"Null LibraryInterface pointer given as parameter");
@@ -45,9 +48,13 @@ directoryEdit_(this) {
 	connect(&directoryEdit_, SIGNAL(editTextChanged(QString const&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-	QHBoxLayout *pathLayout = new QHBoxLayout;
-	pathLayout->addWidget(directoryLabel);
-	pathLayout->addWidget(&directoryEdit_, 1);
+    browseButton_ = new QPushButton(tr("Browse"),this);
+    connect(browseButton_, SIGNAL(clicked()), this, SLOT(onBrowse()), Qt::UniqueConnection);
+
+    QHBoxLayout *pathLayout = new QHBoxLayout;
+    pathLayout->addWidget(directoryLabel);
+    pathLayout->addWidget(&directoryEdit_, 1);
+    pathLayout->addWidget(browseButton_);
 
 	// Setup the layout.
 	QVBoxLayout* layout = new QVBoxLayout(this);
@@ -103,6 +110,7 @@ void NewBusPage::apply() {
 
 bool NewBusPage::onPageChange() {
 	// Discard the VLNV.
+    directorySet_ = false;
 	vlnvEditor_.setVLNV(VLNV());
 	return true;
 }
@@ -112,29 +120,62 @@ bool NewBusPage::onPageChange() {
 //-----------------------------------------------------------------------------
 void NewBusPage::updateDirectory()
 {
-    QString dir = directoryEdit_.currentLocation();
-
-    VLNV vlnv = vlnvEditor_.getVLNV();
-
-    if (!vlnv.getVendor().isEmpty())
+    if ( !directorySet_ )
     {
-        dir += "/" + vlnv.getVendor();
+        QString dir = directoryEdit_.currentLocation();
 
-        if (!vlnv.getLibrary().isEmpty())
+        VLNV vlnv = vlnvEditor_.getVLNV();
+
+        if (!vlnv.getVendor().isEmpty())
         {
-            dir += "/" + vlnv.getLibrary();
+            dir += "/" + vlnv.getVendor();
 
-            if (!vlnv.getName().isEmpty())
+            if (!vlnv.getLibrary().isEmpty())
             {
-                dir += "/" + vlnv.getName();
+                dir += "/" + vlnv.getLibrary();
 
-                if (!vlnv.getVersion().isEmpty())
+                if (!vlnv.getName().isEmpty())
                 {
-                    dir += "/" + vlnv.getVersion();
+                    dir += "/" + vlnv.getName();
+
+                    if (!vlnv.getVersion().isEmpty())
+                    {
+                        dir += "/" + vlnv.getVersion();
+                    }
                 }
             }
         }
+
+        directoryEdit_.setEditText(dir);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: onBrowse()
+//-----------------------------------------------------------------------------
+void NewBusPage::onBrowse()
+{
+    QString baseDirectory = QFileInfo(directoryEdit_.currentText()).filePath();
+    if ( baseDirectory.size() < 1 )
+    {
+        baseDirectory = directoryEdit_.currentLocation();
     }
 
-    directoryEdit_.setEditText(dir);
+    QString targetDirectory = QFileDialog::getExistingDirectory(this, tr("Choose Target Directory"),
+        baseDirectory);
+
+    if (targetDirectory.size() < 1)
+    {
+        return;
+    }
+
+    targetDirectory = QFileInfo(targetDirectory).filePath();
+
+    if (targetDirectory.size() < 1)
+    {
+        targetDirectory = ".";
+    }
+
+    directoryEdit_.setCurrentText(targetDirectory);
+    directorySet_ = true;
 }

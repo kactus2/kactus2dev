@@ -14,6 +14,8 @@
 #include <LibraryManager/libraryinterface.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
+#include <QPushButton>
+
 class NewBusPage : public PropertyPageView {
 	Q_OBJECT
 
@@ -62,6 +64,9 @@ public slots:
      */
     void updateDirectory();
 
+    //! Called when the user clicks browse button.
+    void onBrowse();
+
 signals:
 
 	//! \brief Signaled when new bus should be created.
@@ -82,6 +87,12 @@ private:
 
 	//! \brief The editor to select the directory to save to. 
 	LibraryPathSelector directoryEdit_;
+
+    //! Pushbutton for browsing the save directory.
+    QPushButton* browseButton_;
+
+    //! Flag for indicating whether the directory has been chosen using browse.
+    bool directorySet_;
 };
 
 #endif // NEWBUSPAGE_H

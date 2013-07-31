@@ -17,6 +17,8 @@
 #include <common/KactusAttribute.h>
 #include <common/widgets/LibraryPathSelector/librarypathselector.h>
 
+#include <QPushButton>
+
 class LibraryInterface;
 class KactusAttributeEditor;
 
@@ -81,6 +83,9 @@ public slots:
 
     //! Called when the user changes the product hierarchy attribute.
     void onProductHierarchyChanged();
+    
+    //! Called when the user clicks browse button.
+    void onBrowse();
 
 signals:
     //! Signaled when a design should be created.
@@ -108,6 +113,12 @@ private:
 
 	//! \brief The editor to select the directory to save to. 
 	LibraryPathSelector* directoryEdit_;
+
+    //! Pushbutton for browsing the save directory.
+    QPushButton* browseButton_;
+
+    //! Flag for indicating whether the directory has been chosen using browse.
+    bool directorySet_;
 };
 
 //-----------------------------------------------------------------------------

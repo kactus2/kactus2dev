@@ -16,6 +16,8 @@
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/LibraryPathSelector/librarypathselector.h>
 
+#include <QPushButton>
+
 class LibraryInterface;
 
 //-----------------------------------------------------------------------------
@@ -76,6 +78,9 @@ public slots:
      */
     void updateDirectory();
 
+    //! Called when the user clicks browse button.
+    void onBrowse();
+
 signals:
     //! Signaled when a API definition should be created.
     void createApiDefinition(VLNV const& vlnv, QString const& directory);
@@ -97,6 +102,12 @@ private:
 
 	//! \brief The editor to select the directory to save to. 
 	LibraryPathSelector* directoryEdit_;
+
+    //! Pushbutton for browsing the save directory.
+    QPushButton* browseButton_;
+
+    //! Flag for indicating whether the directory has been chosen using browse.
+    bool directorySet_;
 };
 
 //-----------------------------------------------------------------------------

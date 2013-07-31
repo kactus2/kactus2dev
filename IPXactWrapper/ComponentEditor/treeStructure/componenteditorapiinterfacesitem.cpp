@@ -27,7 +27,7 @@ apiInterfaces_(component->getApiInterfaces()) {
 ComponentEditorAPIInterfacesItem::~ComponentEditorAPIInterfacesItem() {
 }
 
-QFont ComponentEditorAddrSpacesItem::getFont() const {
+QFont ComponentEditorAPIInterfacesItem::getFont() const {
     QFont font(ComponentEditorItem::getFont());
     if ( childItems_.empty())
     {

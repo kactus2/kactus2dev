@@ -20,6 +20,7 @@
 #include <QGroupBox>
 #include <QRadioButton>
 #include <QButtonGroup>
+#include <QPushButton>
 #include <QLabel>
 #include <QVBoxLayout>
 
@@ -98,7 +99,11 @@ signals:
                       VLNV const& sysVLNV, QString const& directory);
 
 private slots:
+    //! Called when radio button for mapping options selection is clicked.
     void actionChanged(QAbstractButton* button);
+
+    //! Called when the user clicks browse button.
+    void onBrowse();
 
 private:
     // Disable copying.
@@ -156,8 +161,14 @@ private:
 	//! \brief The editor to select the directory to save to. 
 	LibraryPathSelector* directoryEdit_;
 
+    //! Pushbutton for browsing the save directory.
+    QPushButton* browseButton_;
+
     //! The layout for UI widgets.
     QVBoxLayout* layout_;
+
+    //! Flag for indicating whether the directory has been chosen using browse.
+    bool directorySet_;
 };
 
 //-----------------------------------------------------------------------------
