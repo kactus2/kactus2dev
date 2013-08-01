@@ -63,5 +63,7 @@ ItemEditor* ComponentEditorAPIInterfacesItem::editor() {
 void ComponentEditorAPIInterfacesItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorAPIInterfaceItem> apiItem(
 		new ComponentEditorAPIInterfaceItem(apiInterfaces_.at(index), model_, libHandler_, component_, this));
+    apiItem->setLocked(locked_);
+
 	childItems_.insert(index, apiItem);
 }

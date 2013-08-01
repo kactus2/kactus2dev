@@ -11,6 +11,7 @@
 #include <LibraryManager/vlnv.h>
 
 #include <QColor>
+#include <QMimeData>
 
 ApiInterfacesModel::ApiInterfacesModel(QSharedPointer<Component> component,
 									   QObject *parent):
@@ -42,9 +43,9 @@ Qt::ItemFlags ApiInterfacesModel::flags( const QModelIndex& index ) const {
 		return Qt::NoItemFlags;
 	}
 
-	// API definition can not be edited
+	// API definition can only be dropped.
 	else if (ApiInterfacesDelegate::API_DEF_COLUMN == index.column()) {
-			return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+			return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 	}
 	return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
@@ -192,6 +193,69 @@ bool ApiInterfacesModel::isValid() const {
 
 	// all api interfaces were valid
 	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: supportedDropActions()
+//-----------------------------------------------------------------------------
+Qt::DropActions ApiInterfacesModel::supportedDropActions() const
+{
+    return Qt::CopyAction | Qt::MoveAction;
+}
+
+//-----------------------------------------------------------------------------
+// Function: mimeTypes()
+//-----------------------------------------------------------------------------
+QStringList ApiInterfacesModel::mimeTypes() const
+{
+    QStringList types(QAbstractTableModel::mimeTypes());
+    types << "application/x-qt-image";
+    return types;
+}
+
+//-----------------------------------------------------------------------------
+// Function: dropMimeData()
+//-----------------------------------------------------------------------------
+bool ApiInterfacesModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, 
+    const QModelIndex &parent)
+{
+    if ( action == Qt::IgnoreAction)
+    {
+        return true;
+    }
+
+    // Dropped data must be directly on parent.
+    if ( row != -1 || column != -1 || !parent.isValid() )
+    {
+        return false;
+    }
+
+    if ( row > rowCount() )
+    {
+        return false;
+    }
+
+    QVariant variant = data->imageData();
+
+    if ( !variant.canConvert<VLNV>())
+    {
+        return false;
+    }
+
+    VLNV vlnv = variant.value<VLNV>();
+
+    if ( parent.column() == ApiInterfacesDelegate::API_DEF_COLUMN )
+    {
+        if ( vlnv.getType() != VLNV::APIDEFINITION )
+        {
+            return false;
+        }
+
+        setData(index(parent.row(),parent.column()),vlnv.toString(":"));
+        emit contentChanged();
+    }
+
+    return true;
 }
 
 void ApiInterfacesModel::onAddItem( const QModelIndex& index ) {

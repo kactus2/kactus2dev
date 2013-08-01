@@ -36,9 +36,11 @@ model_(component, this) {
 	view_.setDefaultImportExportPath(defPath);
 	view_.setAllowImportExport(true);
 
-	// items can not be dragged
+    // items can not be dragged, but drop is enabled for vlnv columns.
 	view_.setItemsDraggable(false);
-
+    view_.viewport()->setAcceptDrops(true); 
+    view_.setDropIndicatorShown(true);   
+    view_.setDragDropMode(QAbstractItemView::DropOnly);
 	view_.setItemDelegate(new SWViewsDelegate(this));
 
 	connect(&model_, SIGNAL(contentChanged()),

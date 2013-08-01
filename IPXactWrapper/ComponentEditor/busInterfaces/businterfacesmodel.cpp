@@ -278,7 +278,7 @@ bool BusInterfacesModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
 
     if ( parent.column() == BusInterfacesDelegate::BUSDEF_COLUMN)
     {
-        if ( libHandler_->getDocumentType(vlnv) != VLNV::BUSDEFINITION )
+        if ( vlnv.getType() != VLNV::BUSDEFINITION )
         {
             return false;
         }
@@ -288,7 +288,7 @@ bool BusInterfacesModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
     }
     else if ( parent.column() == BusInterfacesDelegate::ABSDEF_COLUMN )
     {
-        if ( libHandler_->getDocumentType(vlnv) != VLNV::ABSTRACTIONDEFINITION ) {
+        if ( vlnv.getType() != VLNV::ABSTRACTIONDEFINITION ) {
             return false;
         }
 

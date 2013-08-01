@@ -13,6 +13,7 @@
 #include <models/ComDefinition.h>
 
 #include <QColor>
+#include <QMimeData>
 
 ComInterfacesModel::ComInterfacesModel(LibraryInterface* libHandler,
 									   QSharedPointer<Component> component,
@@ -47,9 +48,9 @@ Qt::ItemFlags ComInterfacesModel::flags( const QModelIndex& index ) const {
 		return Qt::NoItemFlags;
 	}
 
-	// Com definition column can not be edited.
+	// Com definition column can only be dropped..
 	if (ComInterfacesDelegate::COM_DEF_COLUMN == index.column()) {
-		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 	}
 
 	return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
@@ -219,6 +220,69 @@ bool ComInterfacesModel::isValid() const {
 		}
 	}
 	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: supportedDropActions()
+//-----------------------------------------------------------------------------
+Qt::DropActions ComInterfacesModel::supportedDropActions() const
+{
+    return Qt::CopyAction | Qt::MoveAction;
+}
+
+//-----------------------------------------------------------------------------
+// Function: mimeTypes()
+//-----------------------------------------------------------------------------
+QStringList ComInterfacesModel::mimeTypes() const
+{
+    QStringList types(QAbstractTableModel::mimeTypes());
+    types << "application/x-qt-image";
+    return types;
+}
+
+//-----------------------------------------------------------------------------
+// Function: dropMimeData()
+//-----------------------------------------------------------------------------
+bool ComInterfacesModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, 
+    const QModelIndex &parent)
+{
+    if ( action == Qt::IgnoreAction)
+    {
+        return true;
+    }
+
+    // Dropped data must be directly on parent.
+    if ( row != -1 || column != -1 || !parent.isValid() )
+    {
+        return false;
+    }
+
+    if ( row > rowCount() )
+    {
+        return false;
+    }
+
+    QVariant variant = data->imageData();
+
+    if ( !variant.canConvert<VLNV>())
+    {
+        return false;
+    }
+
+    VLNV vlnv = variant.value<VLNV>();
+
+    if ( parent.column() == ComInterfacesDelegate::COM_DEF_COLUMN)
+    {
+        if ( vlnv.getType() != VLNV::COMDEFINITION )
+        {
+            return false;
+        }
+
+        setData(index(parent.row(),parent.column()),vlnv.toString(":"));
+        emit contentChanged();
+    }
+
+    return true;
 }
 
 void ComInterfacesModel::onAddItem( const QModelIndex& index ) {

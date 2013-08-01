@@ -42,7 +42,9 @@ model_(component, this) {
 
 	// items can not be dragged
 	view_.setItemsDraggable(false);
-
+    view_.viewport()->setAcceptDrops(true); 
+    view_.setDropIndicatorShown(true);   
+    view_.setDragDropMode(QAbstractItemView::DropOnly);
 	view_.setItemDelegate(new SystemViewsDelegate(this));
 
 	connect(&model_, SIGNAL(contentChanged()),

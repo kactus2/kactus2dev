@@ -10,6 +10,7 @@
 #include <LibraryManager/vlnv.h>
 
 #include <QColor>
+#include <QMimeData>
 
 SWViewsModel::SWViewsModel(QSharedPointer<Component> component,
 						   QObject *parent):
@@ -43,9 +44,9 @@ Qt::ItemFlags SWViewsModel::flags( const QModelIndex& index ) const {
 		return Qt::NoItemFlags;
 	}
 
-	// hierarchy reference can not be edited
+	// hierarchy reference can only be dropped
 	else if (SWViewsDelegate::HIER_REF_COLUMN == index.column()) {
-			return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+			return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 	}
 	return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
@@ -187,6 +188,69 @@ bool SWViewsModel::isValid() const {
 		}
 	}
 	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: supportedDropActions()
+//-----------------------------------------------------------------------------
+Qt::DropActions SWViewsModel::supportedDropActions() const
+{
+    return Qt::CopyAction | Qt::MoveAction;
+}
+
+//-----------------------------------------------------------------------------
+// Function: mimeTypes()
+//-----------------------------------------------------------------------------
+QStringList SWViewsModel::mimeTypes() const
+{
+    QStringList types(QAbstractTableModel::mimeTypes());
+    types << "application/x-qt-image";
+    return types;
+}
+
+//-----------------------------------------------------------------------------
+// Function: dropMimeData()
+//-----------------------------------------------------------------------------
+bool SWViewsModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, 
+    const QModelIndex &parent)
+{
+    if ( action == Qt::IgnoreAction)
+    {
+        return true;
+    }
+
+    // Dropped data must be directly on parent.
+    if ( row != -1 || column != -1 || !parent.isValid() )
+    {
+        return false;
+    }
+
+    if ( row > rowCount() )
+    {
+        return false;
+    }
+
+    QVariant variant = data->imageData();
+
+    if ( !variant.canConvert<VLNV>())
+    {
+        return false;
+    }
+
+    VLNV vlnv = variant.value<VLNV>();
+
+    if ( parent.column() == SWViewsDelegate::HIER_REF_COLUMN )
+    {
+        if ( vlnv.getType() != VLNV::DESIGNCONFIGURATION )
+        {
+            return false;
+        }
+
+        setData(index(parent.row(),parent.column()),vlnv.toString(":"));
+        emit contentChanged();
+    }
+   
+    return true;
 }
 
 void SWViewsModel::onAddItem( const QModelIndex& index ) {
