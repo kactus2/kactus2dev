@@ -14,22 +14,34 @@
 #include <QMap>
 #include <QString>
 #include <QColor>
+#include <QMimeData>
+#include <QVariant>
 
+//-----------------------------------------------------------------------------
+// Function: BusInterfacesModel()
+//-----------------------------------------------------------------------------
 BusInterfacesModel::BusInterfacesModel( LibraryInterface* libHandler, 
 									   QSharedPointer<Component> component,
 									   QObject *parent ):
 QAbstractTableModel(parent),
 libHandler_(libHandler),
 component_(component),
-busifs_(component->getBusInterfaces()) {
+busifs_(component->getBusInterfaces())
+{
 
 	Q_ASSERT(libHandler_);
 	Q_ASSERT(component_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: ~BusInterfacesModel()
+//-----------------------------------------------------------------------------
 BusInterfacesModel::~BusInterfacesModel() {
 }
 
+//-----------------------------------------------------------------------------
+// Function: rowCount()
+//-----------------------------------------------------------------------------
 int BusInterfacesModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
 	if (parent.isValid()) {
 		return 0;
@@ -37,6 +49,9 @@ int BusInterfacesModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ 
 	return busifs_.size();
 }
 
+//-----------------------------------------------------------------------------
+// Function: columnCount()
+//-----------------------------------------------------------------------------
 int BusInterfacesModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
 	if (parent.isValid()) {
 		return 0;
@@ -44,6 +59,9 @@ int BusInterfacesModel::columnCount( const QModelIndex& parent /*= QModelIndex()
 	return BusInterfacesDelegate::COLUMN_COUNT;
 }
 
+//-----------------------------------------------------------------------------
+// Function: flags()
+//-----------------------------------------------------------------------------
 Qt::ItemFlags BusInterfacesModel::flags( const QModelIndex& index ) const {
 	if (!index.isValid()) {
 		return Qt::NoItemFlags;
@@ -52,11 +70,15 @@ Qt::ItemFlags BusInterfacesModel::flags( const QModelIndex& index ) const {
 	// bus def and abs def can not be edited but can have data dropped on them
 	else if (BusInterfacesDelegate::BUSDEF_COLUMN == index.column() ||
 		BusInterfacesDelegate::ABSDEF_COLUMN == index.column()) {
-			return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+			return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 	}
+
 	return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
 
+//-----------------------------------------------------------------------------
+// Function: headerData()
+//-----------------------------------------------------------------------------
 QVariant BusInterfacesModel::headerData( int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole*/ ) const {
 	if (orientation != Qt::Horizontal) {
 		return QVariant();
@@ -89,6 +111,9 @@ QVariant BusInterfacesModel::headerData( int section, Qt::Orientation orientatio
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: data()
+//-----------------------------------------------------------------------------
 QVariant BusInterfacesModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const {
 	if (!index.isValid()) {
 		return QVariant();
@@ -150,6 +175,9 @@ QVariant BusInterfacesModel::data( const QModelIndex& index, int role /*= Qt::Di
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: setData()
+//-----------------------------------------------------------------------------
 bool BusInterfacesModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/ ) {
 	if (!index.isValid()) {
 		return false;
@@ -199,6 +227,81 @@ bool BusInterfacesModel::setData( const QModelIndex& index, const QVariant& valu
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: supportedDropActions()
+//-----------------------------------------------------------------------------
+Qt::DropActions BusInterfacesModel::supportedDropActions() const
+{
+    return Qt::CopyAction | Qt::MoveAction;
+}
+
+//-----------------------------------------------------------------------------
+// Function: mimeTypes()
+//-----------------------------------------------------------------------------
+QStringList BusInterfacesModel::mimeTypes() const
+{
+    QStringList types(QAbstractTableModel::mimeTypes());
+    types << "application/x-qt-image";
+    return types;
+}
+
+//-----------------------------------------------------------------------------
+// Function: dropMimeData()
+//-----------------------------------------------------------------------------
+bool BusInterfacesModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, 
+    const QModelIndex &parent)
+{
+    if ( action == Qt::IgnoreAction)
+    {
+        return true;
+    }
+
+    // Dropped data must be directly on parent.
+    if ( row != -1 || column != -1 || !parent.isValid() )
+    {
+        return false;
+    }
+
+    if ( row > rowCount() )
+    {
+        return false;
+    }
+
+    QVariant variant = data->imageData();
+
+    if ( !variant.canConvert<VLNV>())
+    {
+        return false;
+    }
+
+    VLNV vlnv = variant.value<VLNV>();
+
+    if ( parent.column() == BusInterfacesDelegate::BUSDEF_COLUMN)
+    {
+        if ( libHandler_->getDocumentType(vlnv) != VLNV::BUSDEFINITION )
+        {
+            return false;
+        }
+
+        setData(index(parent.row(),parent.column()),vlnv.toString(":"));
+        emit contentChanged();
+    }
+    else if ( parent.column() == BusInterfacesDelegate::ABSDEF_COLUMN )
+    {
+        if ( libHandler_->getDocumentType(vlnv) != VLNV::ABSTRACTIONDEFINITION ) {
+            return false;
+        }
+
+        setData(index(parent.row(),parent.column()),vlnv.toString(":"));
+        emit contentChanged();
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: onAddItem()
+//-----------------------------------------------------------------------------
 void BusInterfacesModel::onAddItem( const QModelIndex& index ) {
 	int row = busifs_.size();
 
@@ -218,6 +321,9 @@ void BusInterfacesModel::onAddItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: onRemoveItem()
+//-----------------------------------------------------------------------------
 void BusInterfacesModel::onRemoveItem( const QModelIndex& index ) {
 	// don't remove anything if index is invalid
 	if (!index.isValid()) {
@@ -239,7 +345,6 @@ void BusInterfacesModel::onRemoveItem( const QModelIndex& index ) {
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
 }
-
 bool BusInterfacesModel::isValid() const {
 	// list of component's physical ports and their bounds is needed for
 	// bus interface to check the port maps

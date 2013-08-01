@@ -100,6 +100,34 @@ public:
 	*/
 	bool isValid() const;
 
+    /*!
+     *  Returns the supported actions of a drop.
+     *
+     *      @return The drop actions supported by the model.
+     */
+    Qt::DropActions supportedDropActions() const;
+
+    /*!
+     *  Returns a list of supported MIME data types.
+     *
+     *      @return The supported MIME types.
+     */
+    QStringList mimeTypes() const;
+
+    /*!
+     *  Handler for the dropped MIME data.
+     *
+     *      @param [in] data   The data associated to the drop.
+     *      @param [in] action The drop action.  
+     *      @param [in] row    The row beneath the drop position.
+     *      @param [in] column The column beneath the drop position.
+     *      @param [in] parent The parent index of the drop position.
+     *
+     *      @return True, if the model could handle the data, otherwise false.
+     */
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, 
+        const QModelIndex &parent);
+
 public slots:
 
 	/*! \brief Add a new item to the given index.
@@ -151,6 +179,7 @@ private:
 
 	//! \brief The bus interfaces being edited.
 	QList<QSharedPointer<BusInterface> >& busifs_;
+
 };
 
 #endif // BUSINTERFACESMODEL_H

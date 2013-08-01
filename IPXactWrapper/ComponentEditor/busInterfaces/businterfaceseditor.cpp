@@ -36,11 +36,13 @@ model_(handler, component, this) {
 	view_.setDefaultImportExportPath(defPath);
 	view_.setAllowImportExport(true);
 
-	// items can not be dragged
-	view_.setItemsDraggable(false);
-
-	view_.setItemDelegate(new BusInterfacesDelegate(this));
-
+    // items can not be dragged, but drop is enabled for vlnv columns.
+    view_.setItemsDraggable(false);
+    view_.viewport()->setAcceptDrops(true); 
+    view_.setDropIndicatorShown(true);   
+    view_.setDragDropMode(QAbstractItemView::DropOnly);
+    view_.setItemDelegate(new BusInterfacesDelegate(this));    
+    
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(busifAdded(int)),
