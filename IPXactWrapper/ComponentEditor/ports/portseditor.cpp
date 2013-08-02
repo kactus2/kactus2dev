@@ -76,6 +76,9 @@ proxy_(this) {
 	// set proxy to be the source for the view
 	view_.setModel(&proxy_);
 
+    // Set case-insensitive sorting.
+    proxy_.setSortCaseSensitivity(Qt::CaseInsensitive);
+
 	// sort the view
 	view_.sortByColumn(0, Qt::AscendingOrder);
 

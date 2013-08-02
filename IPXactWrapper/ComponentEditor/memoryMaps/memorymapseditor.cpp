@@ -33,6 +33,9 @@ model_(new MemoryMapsModel(component, this)) {
 	proxy_->setSourceModel(model_);
 	view_->setModel(proxy_);
 
+    // Set case-insensitive sorting.
+    proxy_->setSortCaseSensitivity(Qt::CaseInsensitive);
+
 	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/memMapsList.csv").arg(compPath);
 	view_->setDefaultImportExportPath(defPath);

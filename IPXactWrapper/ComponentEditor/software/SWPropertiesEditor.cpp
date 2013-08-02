@@ -33,6 +33,9 @@ model_(this)
 
     view_.setModel(&filter_);
 
+    // Set case-insensitive sorting.
+    filter_.setSortCaseSensitivity(Qt::CaseInsensitive);
+
 	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/swPropertiesListing.csv").arg(compPath);
 	view_.setDefaultImportExportPath(defPath);
