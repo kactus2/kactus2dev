@@ -16,6 +16,8 @@
 #include <QColor>
 #include <QMimeData>
 #include <QVariant>
+#include <QMessageBox>
+#include <QCoreApplication>
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfacesModel()
@@ -284,8 +286,18 @@ bool BusInterfacesModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
         }
 
         setData(index(parent.row(),parent.column()),vlnv.toString(":"));
+
+        // If only one possible absDef, set it automatically.
+        QList<VLNV> absDefVLNVs;
+        if (libHandler_->getChildren(absDefVLNVs, vlnv) == 1) 
+        {
+            setData(index(parent.row(),BusInterfacesDelegate::ABSDEF_COLUMN), absDefVLNVs.first().toString(":"));
+        }
+
         emit contentChanged();
+
     }
+
     else if ( parent.column() == BusInterfacesDelegate::ABSDEF_COLUMN )
     {
         if ( vlnv.getType() != VLNV::ABSTRACTIONDEFINITION ) {
