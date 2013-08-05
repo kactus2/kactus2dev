@@ -15127,8 +15127,11 @@ CreateHelp
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <None Include="graphics\control-180.png" />
+    <None Include="graphics\control-dual.png" />
     <None Include="graphics\control-play.png" />
     <None Include="graphics\control-stop.png" />
+    <None Include="graphics\control.png" />
     <None Include="graphics\dependency_auto.png" />
     <None Include="graphics\dependency_manual.png" />
     <None Include="graphics\dependency_oneway.png" />

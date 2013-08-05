@@ -42,6 +42,15 @@ public:
 	*/
 	virtual void refresh();
 
+	/*! \brief Get the data for the specified item for specified role.
+	 *
+	 * \param index Identifies the item that's data is wanted.
+	 * \param role Specifies what kind of data is wanted
+	 *
+	 * \return QVariant containing the data
+	*/
+	QVariant data(const QModelIndex& index, int role = Qt::DisplayRole ) const;
+
 private:
 
 	//! \brief No copying

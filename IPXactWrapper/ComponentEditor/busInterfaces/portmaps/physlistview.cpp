@@ -14,7 +14,6 @@
 
 PhysListView::PhysListView(QWidget *parent):
 PortListView(parent) {
-
 }
 
 PhysListView::~PhysListView() {

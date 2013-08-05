@@ -100,6 +100,10 @@
       <file>graphics/plugin-source_analyzer.png</file>
       <file>graphics/control-play.png</file>
       <file>graphics/control-stop.png</file>
+	  <file>graphics/control.png</file>
+	  <file>graphics/control-180.png</file>
+ 	  <file>graphics/control-dual.png</file>
+	  <file>graphics/cross.png</file>
   </qresource>
     <qresource prefix="/">        
         <file>graphics/splash.png</file>

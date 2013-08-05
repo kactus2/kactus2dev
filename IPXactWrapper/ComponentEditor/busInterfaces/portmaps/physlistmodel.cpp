@@ -11,6 +11,8 @@
 #include <models/component.h>
 #include <models/port.h>
 
+#include <QIcon>
+
 PhysListModel::PhysListModel(QSharedPointer<Component> component, 
 							 PortMapsModel* portMapsModel,
 							 QObject *parent ):
@@ -39,3 +41,26 @@ void PhysListModel::refresh() {
 	endResetModel();
 }
 
+QVariant PhysListModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole */ ) const 
+{
+    if (Qt::DecorationRole == role)
+    {
+        General::Direction direction = component_->getPortDirection(data(index).toString());
+        switch( direction )
+        {
+        case General::IN :
+            return QIcon(":icons/graphics/control-180.png");
+
+        case General::OUT :
+            return QIcon(":icons/graphics/control.png");
+
+        case General::INOUT :
+            return QIcon(":icons/graphics/control-dual.png");
+
+        default:
+            return QIcon(":icons/graphics/cross.png");
+        }
+    }
+
+    return PortListModel::data(index,role);
+}

@@ -13,6 +13,8 @@
 #include <LibraryManager/vlnv.h>
 #include <models/abstractiondefinition.h>
 
+#include <QIcon>
+
 LogicalListModel::LogicalListModel(LibraryInterface* libHandler,
 								   PortMapsModel* portMapsModel,
 								   QObject *parent ):
@@ -80,4 +82,41 @@ void LogicalListModel::setAbsType( const VLNV& vlnv, General::InterfaceMode mode
 void LogicalListModel::refresh() {
 
 	setAbsType(absTypeVLNV_, mode_);
+}
+
+QVariant LogicalListModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole */ ) const 
+{
+    if (Qt::DecorationRole == role)
+    {
+        QSharedPointer<AbstractionDefinition> absdef;
+
+        // ask library to parse the model for abstraction definition
+        if (libHandler_->contains(absTypeVLNV_) && 
+            absTypeVLNV_.getType() == VLNV::ABSTRACTIONDEFINITION) 
+        {
+            absdef = libHandler_->getModel(absTypeVLNV_).staticCast<AbstractionDefinition>();
+        }
+        else
+        {
+            return QVariant();
+        }   
+
+        General::Direction direction =absdef->getPortDirection(data(index).toString(), mode_);      
+        switch( direction )
+        {
+        case General::IN :
+            return QIcon(":icons/graphics/control-180.png");
+
+        case General::OUT :
+            return QIcon(":icons/graphics/control.png");
+
+        case General::INOUT :
+            return QIcon(":icons/graphics/control-dual.png");
+
+        default:
+            return QIcon(":icons/graphics/cross.png");
+        }
+    }
+
+    return PortListModel::data(index,role);
 }

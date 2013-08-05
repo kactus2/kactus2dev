@@ -5998,5 +5998,14 @@
     <None Include="graphics\traffic-light_yellow.png">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="graphics\control.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\control-180.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\control-dual.png">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

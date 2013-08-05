@@ -9,6 +9,8 @@
 #include "portmapsmodel.h"
 
 #include <QDebug>
+#include <QPixmap>
+#include <QIcon>
 
 PortListModel::PortListModel(PortMapsModel* portMapsModel, QObject *parent): 
 QAbstractListModel(parent), 
@@ -36,7 +38,7 @@ QVariant PortListModel::data( const QModelIndex& index, int role /*= Qt::Display
 	if (Qt::DisplayRole == role) {
 		return list_.at(index.row());
 	}
-	// if unsupported role
+    // if unsupported role
 	else
 		return QVariant();
 }
