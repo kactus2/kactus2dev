@@ -35,8 +35,8 @@ options_() {
 		this, SLOT(onTemplateChanged(int)), Qt::UniqueConnection);
 	connect(&mutableBox_, SIGNAL(stateChanged(int)),
 		this, SLOT(onBlockChanged(int)), Qt::UniqueConnection);
-	connect(&mutableBox_, SIGNAL(stateChanged(int)),
-		this, SLOT(onIntegrationChanged(int)), Qt::UniqueConnection);
+	//connect(&parameterizableBox_, SIGNAL(stateChanged(int)),
+	//	this, SLOT(onIntegrationChanged(int)), Qt::UniqueConnection);
 	connect(&fixedBox_, SIGNAL(stateChanged(int)),
 		this, SLOT(onConfigurationChanged(int)), Qt::UniqueConnection);
 }
@@ -51,6 +51,7 @@ void FirmnessGroup::onTemplateChanged( int state ) {
 
 void FirmnessGroup::onBlockChanged( int state ) {
 	options_.mutable_ = Utils::checkBoxState2Bool(state);
+	options_.parameterizable_ = Utils::checkBoxState2Bool(state);
 	emit optionsChanged(options_);
 }
 
