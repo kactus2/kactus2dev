@@ -64,7 +64,7 @@ private:
 	QCheckBox mutableBox_;
 
 	//! \brief Check box to select parameterizable in/out of search results.
-	QCheckBox parameterizableBox_;
+	//QCheckBox parameterizableBox_;
 
 	//! \brief Check box to select fixed in/out of search results.
 	QCheckBox fixedBox_;

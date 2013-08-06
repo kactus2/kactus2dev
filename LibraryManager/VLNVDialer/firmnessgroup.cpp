@@ -15,28 +15,27 @@ FirmnessGroup::FirmnessGroup(QWidget *parent):
 QGroupBox(tr("Firmness"), parent),
 templateBox_(tr("Template"), this),
 mutableBox_(tr("Mutable"), this),
-parameterizableBox_(tr("Parameterizable"), this),
+//parameterizableBox_(tr("Parameterizable"), this),
 fixedBox_(tr("Fixed"), this),
 options_() {
 
 	QGridLayout* layout = new QGridLayout(this);
 	layout->addWidget(&templateBox_, 0, 0, 1, 1);
 	layout->addWidget(&mutableBox_, 0, 1, 1, 1);
-	layout->addWidget(&parameterizableBox_, 0, 2, 1, 1);
-	layout->addWidget(&fixedBox_, 0, 3, 1, 1);
+	layout->addWidget(&fixedBox_, 0, 2, 1, 1);
 	layout->setSpacing(0);
 	layout->setContentsMargins(4, 4, 4, 4);
 
 	templateBox_.setChecked(true);
 	mutableBox_.setChecked(true);
-	parameterizableBox_.setChecked(true);
+	//parameterizableBox_.setChecked(true);
 	fixedBox_.setChecked(true);
 
 	connect(&templateBox_, SIGNAL(stateChanged(int)),
 		this, SLOT(onTemplateChanged(int)), Qt::UniqueConnection);
 	connect(&mutableBox_, SIGNAL(stateChanged(int)),
 		this, SLOT(onBlockChanged(int)), Qt::UniqueConnection);
-	connect(&parameterizableBox_, SIGNAL(stateChanged(int)),
+	connect(&mutableBox_, SIGNAL(stateChanged(int)),
 		this, SLOT(onIntegrationChanged(int)), Qt::UniqueConnection);
 	connect(&fixedBox_, SIGNAL(stateChanged(int)),
 		this, SLOT(onConfigurationChanged(int)), Qt::UniqueConnection);
