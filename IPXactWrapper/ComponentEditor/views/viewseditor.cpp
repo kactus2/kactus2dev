@@ -49,14 +49,14 @@ model_(component, this) {
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&model_, SIGNAL(contentChanged()),
-        this, SLOT(onAddItem()), Qt::UniqueConnection);
+        this, SLOT(onItemChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(viewAdded(int)),
 		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(viewRemoved(int)),
 		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
-		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+		&model_, SLOT(onItemChanged(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
@@ -69,11 +69,11 @@ bool ViewsEditor::isValid() const {
 }
 
 void ViewsEditor::refresh() {    
-    onAddItem();
+    onItemChanged();
     view_.update();
 }
 
-void ViewsEditor::onAddItem()
+void ViewsEditor::onItemChanged()
 {
     view_.sortByColumn(ViewsModel::NAME_COLUMN, Qt::AscendingOrder);
     view_.sortByColumn(ViewsModel::TYPE_COLUMN, Qt::AscendingOrder);

@@ -50,7 +50,8 @@ public:
 
 public slots:
 
-    virtual void onAddItem();
+	//! \brief Called to update the view sorting when the model changes.
+    virtual void onItemChanged();
 
 protected:
 
