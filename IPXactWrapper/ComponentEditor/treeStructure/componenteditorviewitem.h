@@ -76,6 +76,24 @@ public:
 	*/
 	virtual bool canBeOpened() const;
 
+	/*! \brief Tells if the view is hierarchical or not.
+	 * 
+	 * If the view is hierarchical, returns true, otherwise false.
+	*/
+    virtual bool isHierarchical() const;
+
+	/*! \brief Tells if the view has a decoration icon or not.
+	 * 
+	 * If the view has an icon, returns true, otherwise false.
+	*/
+    virtual bool hasIcon() const;
+
+	/*! \brief Gets the decoration icon for the view.
+	 * 
+	 * If the view is hierarchical, hierarchy icon is returned, otherwise a null icon.
+	*/
+    virtual QIcon getIcon() const;
+
 public slots:
 	
 	/*! \brief Open the view in a design editor.

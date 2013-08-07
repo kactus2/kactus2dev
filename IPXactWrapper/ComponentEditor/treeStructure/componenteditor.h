@@ -13,12 +13,14 @@
 #include "componenttreeview.h"
 #include "componenteditortreemodel.h"
 #include "componenteditorgroupslot.h"
+#include "ComponentEditorTreeSortProxyModel.h"
 
 #include <QSharedPointer>
 #include <QSplitter>
 
 class LibraryInterface;
 class PluginManager;
+
 
 /*! \brief The editor to edit/packet IP-Xact components.
  *
@@ -151,6 +153,9 @@ private:
 
 	//! \brief The tree view to navigate in the editor.
 	ComponentTreeView navigationView_;
+
+    //! \brief The proxy model for sorting the tree items.
+    ComponentEditorTreeProxyModel proxy_;
 
 	//! \brief The slot to display the editors in.
 	ComponentEditorGroupSlot editorSlot_;

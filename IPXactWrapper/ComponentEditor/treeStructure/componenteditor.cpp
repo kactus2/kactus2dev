@@ -14,6 +14,7 @@
 #include <common/dialogs/comboSelector/comboselector.h>
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
 #include <IPXactWrapper/ComponentEditor/itemvisualizer.h>
+#include <IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
 
 #include <QMessageBox>
 #include <QFileDialog>
@@ -34,6 +35,7 @@ navigationSplitter_(Qt::Horizontal, this),
 editorVisualizerSplitter_(Qt::Horizontal, &navigationSplitter_), 
 navigationModel_(libHandler, pluginMgr, this, parent),
 navigationView_(libHandler, *component->getVlnv(), &navigationSplitter_),
+proxy_(this),
 editorSlot_(&editorVisualizerSplitter_),
 visualizerSlot_(&editorVisualizerSplitter_) {
 
@@ -81,8 +83,12 @@ visualizerSlot_(&editorVisualizerSplitter_) {
 	// set the component to be displayed in the navigation model
 	navigationModel_.setComponent(component_);
 
-	// connect the view with the model
-	navigationView_.setModel(&navigationModel_);
+    // Set source model for the proxy.
+    proxy_.setSourceModel(&navigationModel_);
+
+	// connect the view with the model (proxy) and sort.
+	navigationView_.setModel(&proxy_);
+    navigationView_.sortByColumn(0, Qt::AscendingOrder);
 
 	// The navigation tree takes 1/5 of the space available and editor and 
 	// visualizer take the rest
@@ -91,8 +97,8 @@ visualizerSlot_(&editorVisualizerSplitter_) {
 	navigationSize.append(4 * ComponentTreeView::DEFAULT_WIDTH);
 	navigationSplitter_.setSizes(navigationSize);
 
-	// when starting the component editor open the general editor
-	onItemActivated(navigationModel_.index(0, 0, QModelIndex()));
+	// when starting the component editor open the general editor.
+	onItemActivated(proxy_.index(0, 0, QModelIndex()));
 
 	// navigation model may request an item to be expanded
 	connect(&navigationModel_, SIGNAL(expandItem(const QModelIndex&)),
@@ -173,8 +179,8 @@ void ComponentEditor::refresh() {
 	component_.clear();
 	component_ = comp;
 
-	// open the general editor
-	onItemActivated(navigationModel_.index(0, 0, QModelIndex()));
+	// open the general editor.
+	onItemActivated(proxy_.index(0, 0, QModelIndex()));
 
 	// the document is no longer modified
 	setModified(false);
@@ -269,7 +275,8 @@ void ComponentEditor::onNavigationTreeSelection( const QModelIndex& index ) {
 
 void ComponentEditor::onItemActivated( const QModelIndex& index ) {
 
-	ComponentEditorItem* item = static_cast<ComponentEditorItem*>(index.internalPointer());
+    // To get correct internal pointer, the index from source model must be used.
+	ComponentEditorItem* item = static_cast<ComponentEditorItem*>(proxy_.mapToSource(index).internalPointer());
 	Q_ASSERT(item);
 
 	QList<int> editorVisualizerSizes;

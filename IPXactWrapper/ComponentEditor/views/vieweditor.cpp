@@ -146,6 +146,9 @@ void ViewEditor::onStackChange( int index ) {
 		hierarchyRef_.clear();
 		generalTab_.refresh();
 		parameters_.refresh();
+
+        // Update order in tree view.
+        emit contentChanged();
 	}
 }
 

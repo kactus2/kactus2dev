@@ -48,6 +48,10 @@ public:
 	*/
 	virtual void refresh();
 
+public slots:
+
+    virtual void onAddItem();
+
 protected:
 
 	//! \brief Handler for widget's show event

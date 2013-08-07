@@ -14,9 +14,10 @@ ViewsModel::ViewsModel(QSharedPointer<Component> component,
 					   QObject *parent):
 QAbstractTableModel(parent),
 component_(component),
-views_(component->getViews()) {
+views_(component->getViews()) 
+{
+    Q_ASSERT(component);
 
-	Q_ASSERT(component);
 }
 
 ViewsModel::~ViewsModel() {
@@ -77,33 +78,40 @@ QVariant ViewsModel::headerData( int section, Qt::Orientation orientation, int r
 
 QVariant ViewsModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const {
 	if (!index.isValid()) {
-		return QVariant();
-	}
-	else if (index.row() < 0 || index.row() >= views_.size()) {
-		return QVariant();
-	}
+        return QVariant();
+    }
+    else if (index.row() < 0 || index.row() >= views_.size()) {
+        return QVariant();
+    }
 
-	if (Qt::DisplayRole == role) {
+    if (Qt::DisplayRole == role) {
 
-		switch (index.column()) {
-			case ViewsModel::NAME_COLUMN: {
-				return views_.at(index.row())->getName();
-													 }
-			case ViewsModel::TYPE_COLUMN: {
-				if (views_.at(index.row())->isHierarchical()) {
-					return tr("hierarchical");
-				}
-				else {
-					return tr("non-hierarchical");
-				}
-														  }
-			case ViewsModel::DESCRIPTION_COLUMN: {
-				return views_.at(index.row())->getDescription();
-													  }
-			default: {
-				return QVariant();
-					 }
-		}
+        switch (index.column()) {
+        case ViewsModel::NAME_COLUMN: {
+            if (!views_.at(index.row())->getName().isEmpty())
+            {
+                return views_.at(index.row())->getName();
+            }
+            else
+            {
+                return "unnamed";
+            }
+                                      }
+        case ViewsModel::TYPE_COLUMN: {
+            if (views_.at(index.row())->isHierarchical()) {
+                return tr("hierarchical");
+            }
+            else {
+                return tr("non-hierarchical");
+            }
+                                      }
+        case ViewsModel::DESCRIPTION_COLUMN: {
+            return views_.at(index.row())->getDescription();
+                                             }
+        default: {
+            return QVariant();
+                 }
+        }
 	}
 	else if (Qt::ForegroundRole == role) {
 

@@ -3853,6 +3853,12 @@
     <ClCompile Include="GeneratedFiles\moc_FileViewer.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentEditorTreeSortProxyModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\treeStructure\ComponentEditorTreeSortProxyModel.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5471,6 +5477,9 @@
     </CustomBuild>
     <CustomBuild Include="common\widgets\fileViewer\FileViewer.h">
       <Filter>Header Files\common\widgets\fileViewer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\treeStructure\ComponentEditorTreeSortProxyModel.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\treeStructure</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

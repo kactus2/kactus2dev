@@ -11,6 +11,9 @@
 #include <QFont>
 #include <QApplication>
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorViewItem()
+//-----------------------------------------------------------------------------
 ComponentEditorViewItem::ComponentEditorViewItem(QSharedPointer<View> view,
 												 ComponentEditorTreeModel* model,
 												 LibraryInterface* libHandler,
@@ -24,13 +27,22 @@ view_(view) {
 	setObjectName(tr("ComponentEditorViewItem: %1").arg(view->getName()));
 }
 
+//-----------------------------------------------------------------------------
+// Function: ~ComponentEditorViewItem()
+//-----------------------------------------------------------------------------
 ComponentEditorViewItem::~ComponentEditorViewItem() {
 }
 
+//-----------------------------------------------------------------------------
+// Function: text()
+//-----------------------------------------------------------------------------
 QString ComponentEditorViewItem::text() const {
 	return view_->getName();
 }
 
+//-----------------------------------------------------------------------------
+// Function: isValid()
+//-----------------------------------------------------------------------------
 bool ComponentEditorViewItem::isValid() const {
 	// check that view is valid
 	if (!view_->isValid(component_->getFileSetNames())) {
@@ -45,6 +57,9 @@ bool ComponentEditorViewItem::isValid() const {
 	return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: editor()
+//-----------------------------------------------------------------------------
 ItemEditor* ComponentEditorViewItem::editor() {
 	if (!editor_) {
 		editor_ = new ViewEditor(component_, view_, libHandler_);
@@ -57,14 +72,23 @@ ItemEditor* ComponentEditorViewItem::editor() {
 	return editor_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: getFont()
+//-----------------------------------------------------------------------------
 QFont ComponentEditorViewItem::getFont() const {
 	return QApplication::font();
 }
 
+//-----------------------------------------------------------------------------
+// Function: getTooltip()
+//-----------------------------------------------------------------------------
 QString ComponentEditorViewItem::getTooltip() const {
 	return tr("Specifies a representation level of the component");
 }
 
+//-----------------------------------------------------------------------------
+// Function: canBeOpened()
+//-----------------------------------------------------------------------------
 bool ComponentEditorViewItem::canBeOpened() const {
 	// if view is not hierarchical then it can't be opened
 	if (!view_->isHierarchical()) {
@@ -84,6 +108,9 @@ bool ComponentEditorViewItem::canBeOpened() const {
 	return originalRef == view_->getHierarchyRef();
 }
 
+//-----------------------------------------------------------------------------
+// Function: openItem()
+//-----------------------------------------------------------------------------
 void ComponentEditorViewItem::openItem( bool ) {
 	// if item can't be opened
 	if (!canBeOpened()) {
@@ -92,4 +119,37 @@ void ComponentEditorViewItem::openItem( bool ) {
 	QString viewName = view_->getName();
 	VLNV compVLNV = *component_->getVlnv();
 	emit openDesign(compVLNV, viewName);
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: isHierarchical()
+//-----------------------------------------------------------------------------
+bool ComponentEditorViewItem::isHierarchical() const
+{
+    return view_->isHierarchical();       
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: hasIcon()
+//-----------------------------------------------------------------------------
+bool ComponentEditorViewItem::hasIcon() const
+{
+    return view_->isHierarchical();       
+}
+
+//-----------------------------------------------------------------------------
+// Function: getIcon()
+//-----------------------------------------------------------------------------
+QIcon ComponentEditorViewItem::getIcon() const
+{
+    if ( view_->isHierarchical() )
+    {
+        return QIcon(":/icons/graphics/hierarchy.png");
+    }
+    else
+    {
+        return QIcon();
+    }
 }

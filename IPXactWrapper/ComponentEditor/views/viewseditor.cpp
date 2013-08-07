@@ -28,9 +28,13 @@ model_(component, this) {
 	layout->addWidget(&view_);
 	layout->setContentsMargins(0, 0, 0, 0);
 
-	proxy_.setSourceModel(&model_);
+	proxy_.setSourceModel(&model_);	
+    proxy_.setDynamicSortFilter(false);
 
-	view_.setModel(&proxy_);
+	view_.setModel(&proxy_);    
+    view_.sortByColumn(ViewsModel::NAME_COLUMN, Qt::AscendingOrder);
+    view_.sortByColumn(ViewsModel::TYPE_COLUMN, Qt::AscendingOrder);
+    //view_.sortByColumn(ViewsModel::TYPE_COLUMN, Qt::AscendingOrder);
 
 	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/viewListing.csv").arg(compPath);
@@ -44,6 +48,8 @@ model_(component, this) {
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(contentChanged()),
+        this, SLOT(onAddItem()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(viewAdded(int)),
 		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(viewRemoved(int)),
@@ -62,8 +68,16 @@ bool ViewsEditor::isValid() const {
 	return model_.isValid();
 }
 
-void ViewsEditor::refresh() {
-	view_.update();
+void ViewsEditor::refresh() {    
+    onAddItem();
+    view_.update();
+}
+
+void ViewsEditor::onAddItem()
+{
+    view_.sortByColumn(ViewsModel::NAME_COLUMN, Qt::AscendingOrder);
+    view_.sortByColumn(ViewsModel::TYPE_COLUMN, Qt::AscendingOrder);
+    view_.update();
 }
 
 void ViewsEditor::showEvent( QShowEvent* event ) {

@@ -11,6 +11,7 @@
 #include <IPXactWrapper/ComponentEditor/itemvisualizer.h>
 
 #include <QApplication>
+#include <QIcon>
 
 ComponentEditorItem::ComponentEditorItem(ComponentEditorTreeModel* model,
 										 LibraryInterface* libHandler,
@@ -257,6 +258,18 @@ void ComponentEditorItem::updateGraphics() {
 
 void ComponentEditorItem::removeGraphicsItem() {
 	return;
+}
+
+bool ComponentEditorItem::hasIcon() const
+{
+    // Normally items have no icon.
+    return false;
+}
+
+QIcon ComponentEditorItem::getIcon() const
+{
+    // Normally items have no default icon.
+    return QIcon();
 }
 
 void ComponentEditorItem::onSelectRequest() {

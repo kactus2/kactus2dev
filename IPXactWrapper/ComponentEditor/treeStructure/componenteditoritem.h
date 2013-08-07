@@ -215,6 +215,18 @@ public:
 	*/
 	virtual void removeGraphicsItem();
 
+	/*! \brief Tells if the item has a decoration icon or not.
+	 * 
+	 * If the item has an icon, returns true, otherwise false (default).
+	*/
+    virtual bool hasIcon() const;
+
+	/*! \brief Gets the decoration icon for the item.
+	 * 
+	 * By default returns a null icon.
+	*/
+    virtual QIcon getIcon() const;
+
 public slots:
 
 	/*! \brief Open the item in an editor.

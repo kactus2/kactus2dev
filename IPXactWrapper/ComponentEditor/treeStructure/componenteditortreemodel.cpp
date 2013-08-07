@@ -8,6 +8,7 @@
 #include "componenteditortreemodel.h"
 
 #include <QColor>
+#include <QIcon>
 
 #include <QDebug>
 
@@ -115,6 +116,10 @@ QVariant ComponentEditorTreeModel::data( const QModelIndex& index,
 	else if (role == Qt::ToolTipRole) {
 		return item->getTooltip();
 	}
+    else if( role == Qt::DecorationRole && item->hasIcon() )
+    {
+        return item->getIcon();
+    }
 	// not supported role
 	else {
 		return QVariant();

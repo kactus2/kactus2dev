@@ -8,6 +8,7 @@
 #include "componenteditoritem.h"
 #include <LibraryManager/libraryinterface.h>
 #include <models/generaldeclarations.h>
+#include "IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h"
 
 #include <QEvent>
 #include <QCursor>
@@ -164,7 +165,10 @@ void ComponentTreeView::contextMenuEvent( QContextMenuEvent* event ) {
 	// save the position where click occurred
 	pressedPoint_ = event->pos();
 
-	ComponentEditorItem* item = static_cast<ComponentEditorItem*>(index.internalPointer());
+    // To get correct internal pointer, the index from source model must be used. Proxy performs the mapping.
+    ComponentEditorTreeProxyModel* proxy = dynamic_cast<ComponentEditorTreeProxyModel*>(model());
+    Q_ASSERT(proxy != 0);
+	ComponentEditorItem* item = static_cast<ComponentEditorItem*>(proxy->mapToSource(index).internalPointer());
 	
 	// if item can be opened then show the context menu
 	if (item->canBeOpened()) {
@@ -205,8 +209,11 @@ void ComponentTreeView::onFileOpen() {
 	
 	QModelIndex index = indexAt(pressedPoint_);
 	
-	ComponentEditorItem* item = static_cast<ComponentEditorItem*>(index.internalPointer());
-
+    // To get correct internal pointer, the index from source model must be used. Proxy performs the mapping.
+    ComponentEditorTreeProxyModel* proxy = dynamic_cast<ComponentEditorTreeProxyModel*>(model());
+    Q_ASSERT(proxy != 0);
+	ComponentEditorItem* item = static_cast<ComponentEditorItem*>(proxy->mapToSource(index).internalPointer());
+    
 	item->openItem(true);
 }
 
@@ -215,7 +222,10 @@ void ComponentTreeView::onFileOpenDefault() {
 
     QModelIndex index = indexAt(pressedPoint_);
 
-    ComponentEditorItem* item = static_cast<ComponentEditorItem*>(index.internalPointer());
+    // To get correct internal pointer, the index from source model must be used. Proxy performs the mapping.
+    ComponentEditorTreeProxyModel* proxy = dynamic_cast<ComponentEditorTreeProxyModel*>(model());
+    Q_ASSERT(proxy != 0);
+    ComponentEditorItem* item = static_cast<ComponentEditorItem*>(proxy->mapToSource(index).internalPointer());
     Q_ASSERT(item->canBeOpened());
 
     item->openItem(false);
