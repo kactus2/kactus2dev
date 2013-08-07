@@ -275,9 +275,19 @@ void ComponentEditor::onNavigationTreeSelection( const QModelIndex& index ) {
 
 void ComponentEditor::onItemActivated( const QModelIndex& index ) {
 
-    // To get correct internal pointer, the index from source model must be used.
-	ComponentEditorItem* item = static_cast<ComponentEditorItem*>(proxy_.mapToSource(index).internalPointer());
-	Q_ASSERT(item);
+    // If tree proxy model index is used, the item must be retrieved from the source model.
+    const ComponentEditorTreeProxyModel* indexModel = dynamic_cast<const ComponentEditorTreeProxyModel*>(index.model());
+    ComponentEditorItem* item = 0;
+    if ( indexModel == 0 )
+    {
+        item = static_cast<ComponentEditorItem*>(index.internalPointer());
+    }
+    else
+    {
+        item = static_cast<ComponentEditorItem*>(proxy_.mapToSource(index).internalPointer());
+    }
+
+    Q_ASSERT(item);
 
 	QList<int> editorVisualizerSizes;
 
