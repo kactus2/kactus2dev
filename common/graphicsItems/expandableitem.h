@@ -71,6 +71,9 @@ protected:
 	*/
 	virtual void setExpansionBrush(const QBrush& brush);
 
+
+    virtual void setExpansionPen( const QPen& pen);
+
 	/*! \brief Hide/show the rectangle that contains the expand/collapse icon.
 	 *
 	 * \param visible If true then the rectangle is shown.

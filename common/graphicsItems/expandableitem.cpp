@@ -78,6 +78,11 @@ void ExpandableItem::setExpansionBrush( const QBrush& brush ) {
 	expansionRect_->setBrush(brush);
 }
 
+void ExpandableItem::setExpansionPen( const QPen& pen)
+{
+    expansionRect_->setPen(pen);
+}
+
 void ExpandableItem::setExpansionRectVisible( bool visible ) {
 	expansionRect_->setVisible(visible);
 }

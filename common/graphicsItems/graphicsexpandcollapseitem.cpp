@@ -14,10 +14,10 @@ GraphicsExpandCollapseItem::GraphicsExpandCollapseItem( QGraphicsItem* parent /*
 QGraphicsPixmapItem(parent),
 expanded_(false) {
 
-	QPixmap pic(":/icons/graphics/expand.png");
-	QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, 
-		GraphicsExpandCollapseItem::SIDE, Qt::KeepAspectRatio);
-	setPixmap(scaledPic);
+	QPixmap pic(":/icons/graphics/triangle_arrow_down.png");
+	//QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, 
+	//	GraphicsExpandCollapseItem::SIDE, Qt::KeepAspectRatio);
+	setPixmap(pic);
 
 	setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
 }
@@ -27,10 +27,10 @@ GraphicsExpandCollapseItem::~GraphicsExpandCollapseItem() {
 
 void GraphicsExpandCollapseItem::expand() {
 	expanded_ = true;
-	QPixmap pic(":/icons/graphics/collapse");
-	QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, 
-		GraphicsExpandCollapseItem::SIDE, Qt::KeepAspectRatio);
-	setPixmap(scaledPic);
+	QPixmap pic(":/icons/graphics/triangle_arrow_up.png");
+	//QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, 
+	//	GraphicsExpandCollapseItem::SIDE, Qt::KeepAspectRatio);
+	setPixmap(pic);
 }
 
 bool GraphicsExpandCollapseItem::isExpanded() const {
@@ -39,10 +39,10 @@ bool GraphicsExpandCollapseItem::isExpanded() const {
 
 void GraphicsExpandCollapseItem::collapse() {
 	expanded_ = false;
-	QPixmap pic(":/icons/graphics/expand.png");
-	QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, 
-		GraphicsExpandCollapseItem::SIDE, Qt::KeepAspectRatio);
-	setPixmap(scaledPic);
+	QPixmap pic(":/icons/graphics/triangle_arrow_down.png");
+	//QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, 
+	//	GraphicsExpandCollapseItem::SIDE, Qt::KeepAspectRatio);
+	setPixmap(pic);
 }
 
 bool GraphicsExpandCollapseItem::isCollapsed() const {
