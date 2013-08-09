@@ -30,9 +30,15 @@ AddressBlockGraphItem::~AddressBlockGraphItem() {
 }
 
 void AddressBlockGraphItem::refresh() {
-	setName(addrBlock_->getName());
-	setLeftTopCorner(Utils::str2Uint(addrBlock_->getBaseAddress()));
-	setLeftBottomCorner(addrBlock_->getLastAddress());
+    setName(addrBlock_->getName());
+    setLeftTopCorner(Utils::str2Uint(addrBlock_->getBaseAddress()));
+    if (Utils::str2Uint(addrBlock_->getBaseAddress()) != addrBlock_->getLastAddress())
+    {
+        setLeftBottomCorner(addrBlock_->getLastAddress());
+    }else
+    {
+        setLeftBottomCorner("");
+    }
 
 	// set the positions for the children
 	MemoryVisualizationItem::reorganizeChildren();

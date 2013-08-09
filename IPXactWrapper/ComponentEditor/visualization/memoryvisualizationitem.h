@@ -36,6 +36,9 @@ public:
 	//! \brief The destructor
 	virtual ~MemoryVisualizationItem();
 
+	//! \brief Set the item brush and store it as original.
+    void setBrush(const QBrush& brush);
+
 	//! \brief Refresh the item and sub-items.
 	virtual void refresh() = 0;
 
@@ -89,6 +92,12 @@ public:
 	 * \return The rectangle that bounds the item and possible sub items.
 	*/
 	virtual QRectF boundingRect() const;
+
+    //! \brief Set the item into conflicted (overlapping memory) state.
+    virtual void setConflicted();
+
+    //! \brief Remove the item from conflicted state.
+    virtual void setNotConflicted();
 
 signals:
 
@@ -155,6 +164,7 @@ private:
 	//! \brief No assignment
 	MemoryVisualizationItem& operator=(const MemoryVisualizationItem& other);
 
+    QBrush originalBrush_;
 };
 
 #endif // MEMORYVISUALIZATIONITEM_H

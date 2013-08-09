@@ -64,7 +64,14 @@ void RegisterGraphItem::refresh() {
 
 
 	quint64 endAddress = base + offset + addrUnits -1;
-	setLeftBottomCorner(endAddress);
+    if (endAddress != startAddress)
+    {
+        setLeftBottomCorner(endAddress);
+    }
+    else
+    {
+        setLeftBottomCorner("");
+    }
 
 	// set the positions for the children
 	reorganizeChildren();

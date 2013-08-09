@@ -16,9 +16,8 @@ MemoryGapItem::MemoryGapItem(QGraphicsItem* parent):
 MemoryVisualizationItem(parent),
 start_(0),
 end_(0) {
-	QBrush brush(KactusColors::DRAFT_COMPONENT);
-	setBrush(brush);
-	ExpandableItem::setExpansionBrush(brush);
+	setBrush(QBrush(QColor(Qt::white)));
+	ExpandableItem::setExpansionBrush(QBrush(QColor(Qt::white)));
 	setName("...");
 	setLeftTopCorner("0x0");
 	setShowExpandableItem(false);
