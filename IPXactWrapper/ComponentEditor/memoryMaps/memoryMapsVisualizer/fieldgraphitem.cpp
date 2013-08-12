@@ -26,6 +26,8 @@ field_(field) {
 
 	setShowExpandableItem(false);
 	setExpansionRectVisible(false);
+    setOverlappingTop(field->getMSB());
+    setOverlappingBottom(field->getBitOffset());
 }
 
 FieldGraphItem::~FieldGraphItem() {	
@@ -37,7 +39,7 @@ void FieldGraphItem::refresh() {
 	// the name depends on the size of the rectangle (if too small then name is chopped)
 	setName(field_->getName());
 	setLeftTopCorner(QString::number(field_->getMSB()));
-	setRightTopCorner(QString::number(field_->getBitOffset()));
+	VisualizerItem::setRightTopCorner(QString::number(field_->getBitOffset()));
 	ExpandableItem::reorganizeChildren();
 
 	MemoryVisualizationItem* parentGraphItem = static_cast<MemoryVisualizationItem*>(parentItem());
@@ -67,3 +69,15 @@ qreal FieldGraphItem::itemTotalWidth() const {
 	return rect().width();
 }
 
+void FieldGraphItem::setOverlappingTop(quint64 const& address)
+{
+    firstFreeAddress_ = address;
+    setLeftTopCorner(QString::number(firstFreeAddress_));
+
+}
+
+void FieldGraphItem::setOverlappingBottom(quint64 const& address)
+{
+    lastFreeAddress_ = address;
+    setRightTopCorner(QString::number(lastFreeAddress_));
+}

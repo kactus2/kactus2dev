@@ -24,6 +24,9 @@ addrBlock_(addrBlock) {
 	QBrush brush(KactusColors::ADDR_BLOCK_COLOR);
 	setBrush(brush);
 	ExpandableItem::setExpansionBrush(brush);
+
+    setOverlappingTop(addrBlock_->getBaseAddress().toLongLong());
+    setOverlappingBottom(addrBlock_->getLastAddress());
 }
 
 AddressBlockGraphItem::~AddressBlockGraphItem() {
@@ -31,14 +34,8 @@ AddressBlockGraphItem::~AddressBlockGraphItem() {
 
 void AddressBlockGraphItem::refresh() {
     setName(addrBlock_->getName());
-    setLeftTopCorner(Utils::str2Uint(addrBlock_->getBaseAddress()));
-    if (Utils::str2Uint(addrBlock_->getBaseAddress()) != addrBlock_->getLastAddress())
-    {
-        setLeftBottomCorner(addrBlock_->getLastAddress());
-    }else
-    {
-        setLeftBottomCorner("");
-    }
+    setOverlappingTop(addrBlock_->getBaseAddress().toLongLong());
+    setOverlappingBottom(addrBlock_->getLastAddress());
 
 	// set the positions for the children
 	MemoryVisualizationItem::reorganizeChildren();

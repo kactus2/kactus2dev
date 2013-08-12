@@ -12,6 +12,7 @@
 #include "addressblockgraphitem.h"
 #include <IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.h>
 #include <IPXactWrapper/ComponentEditor/visualization/fieldgapitem.h>
+#include <IPXactWrapper/ComponentEditor/visualization/ConflictedMemoryGapItem.h>
 
 #include <common/graphicsItems/visualizeritem.h>
 #include <common/KactusColors.h>
@@ -28,6 +29,9 @@ register_(reg) {
 	QBrush brush(KactusColors::REGISTER_COLOR);
 	setBrush(brush);
 	ExpandableItem::setExpansionBrush(brush);
+
+    setOverlappingTop(reg->getMSB());
+    setOverlappingBottom(reg->getOffset());
 }
 
 RegisterGraphItem::~RegisterGraphItem() {
@@ -62,17 +66,11 @@ void RegisterGraphItem::refresh() {
 		addrUnits++;
 	}
 
-
 	quint64 endAddress = base + offset + addrUnits -1;
-    if (endAddress != startAddress)
-    {
-        setLeftBottomCorner(endAddress);
-    }
-    else
-    {
-        setLeftBottomCorner("");
-    }
-
+    
+    setOverlappingTop(base);
+    setOverlappingBottom(endAddress);
+    
 	// set the positions for the children
 	reorganizeChildren();
 
@@ -125,18 +123,22 @@ void RegisterGraphItem::reorganizeChildren() {
 	// the offset where the previous block starts
 	quint64 previousBlockStart = register_->getMSB();
 
+    FieldGapItem* prevConflict = 0;
+
 	qreal xCoordinate = rect().left();
 	MemoryVisualizationItem* previous = NULL;
 	for (QMap<quint64, MemoryVisualizationItem*>::iterator i = --childItems_.end();
 		i != --childItems_.begin(); --i) { 
 
 		Q_ASSERT(i.value());
+        i.value()->setNotConflicted();
 
 		// pointer to the possible gap to add between two fields
 		FieldGapItem* gap = 0;
 
 		// if there is a gap between the last block and this block
-		if (previousBlockStart > i.value()->getLastAddress() + 1) {
+		if (previousBlockStart > i.value()->getLastAddress() + 1 ||
+            previous == 0 && previousBlockStart == i.value()->getLastAddress() + 1) {
 
 			// create the gap i.value()
 			gap = new FieldGapItem(this);
@@ -164,6 +166,71 @@ void RegisterGraphItem::reorganizeChildren() {
 
 			gaps.append(gap);
 		}
+
+        // if the block and the next block are overlapping.
+        else if (previous && i.value()->getLastAddress() >= previousBlockStart )
+        {
+
+            // This and previous block overlap completely.
+            if (i.value()->getOffset() == previous->getOffset() &&
+                i.value()->getLastAddress() == previous->getLastAddress())
+            {
+                previous->setConflicted();
+                i.value()->setConflicted();
+            }
+            // This block is completely inside the previous block.
+            else if (i.value()->getOffset() >= previous->getOffset() &&
+                i.value()->getLastAddress() <= previous->getLastAddress() )
+            {
+                i.value()->setConflicted();
+                previous->setConflicted();
+            }
+
+            // The previous block is completely inside this block.
+            else if (previous->getOffset() >= i.value()->getOffset() &&
+                previous->getLastAddress() <= i.value()->getLastAddress())
+            {
+                i.value()->setConflicted();
+                previous->setConflicted();
+            }          
+
+            // Partial overlapping.
+            else
+            {                
+                gap = new FieldGapItem("conflicted", this);                
+                gap->setConflicted();
+                gap->setStartAddress(previous->getOffset(),true);
+                gap->setEndAddress(i.value()->getLastAddress(),true);     
+
+                // set the conflicted gap to the end of the last item.
+                gap->setPos(xCoordinate, rect().bottom());
+
+                // update the y-coordinate to avoid setting a block under the gap.
+			    xCoordinate += gap->rect().width();
+
+                gap->setVisible(isExpanded());
+
+                gaps.append(gap);
+
+                
+                // Update display of the last address on this block.
+                i.value()->setOverlappingTop(previousBlockStart - 1);
+
+                // If previous block is completely overlapped by the preceding block and this block.
+                if (prevConflict && prevConflict->getOffset() + 1 >= i.value()->getLastAddress())
+                {
+                    previous->setCompleteOverlap();
+                }
+                // Update display of last address on the previous block.
+                else
+                {
+                    previous->setOverlappingBottom(i.value()->getLastAddress() + 1);
+                }
+
+
+                prevConflict = gap;
+            }
+        }
 
 		if (previous) {
 			QRectF previousRect;

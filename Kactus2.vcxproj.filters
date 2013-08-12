@@ -3859,12 +3859,6 @@
     <ClCompile Include="IPXactWrapper\ComponentEditor\treeStructure\ComponentEditorTreeSortProxyModel.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\treeStructure</Filter>
     </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\visualization\ConflictedMemoryGapItem.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ConflictedMemoryGapItem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5486,9 +5480,6 @@
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\treeStructure\ComponentEditorTreeSortProxyModel.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\treeStructure</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\visualization\ConflictedMemoryGapItem.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

@@ -21,14 +21,15 @@ end_(0) {
 	setName("...");
 	setLeftTopCorner("0x0");
 	setShowExpandableItem(false);
+
 }
 
 MemoryGapItem::~MemoryGapItem() {
 }
 
 void MemoryGapItem::refresh() {
-	setLeftTopCorner(start_);
-	setLeftBottomCorner(end_);
+	//setLeftTopCorner(start_);
+	//setLeftBottomCorner(end_);
 
 	ExpandableItem::reorganizeChildren();
 }
@@ -56,6 +57,7 @@ void MemoryGapItem::setStartAddress( quint64 address, bool contains /*= true*/ )
 	else {
 		start_ = ++address;
 	}
+    setOverlappingTop(start_);
 	refresh();
 }
 
@@ -66,6 +68,7 @@ void MemoryGapItem::setEndAddress( quint64 address, bool contains /*= true*/ ) {
 	else {
 		end_ = --address;
 	}
+    setOverlappingBottom(end_);
 	refresh();
 }
 

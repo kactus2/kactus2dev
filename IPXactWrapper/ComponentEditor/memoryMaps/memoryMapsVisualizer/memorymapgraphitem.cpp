@@ -35,15 +35,10 @@ MemoryMapGraphItem::~MemoryMapGraphItem() {
 void MemoryMapGraphItem::refresh() {
 	
 	setName(memoryMap_->getName());
-	setLeftTopCorner(memoryMap_->getFirstAddress());
-    if(memoryMap_->getFirstAddress() != memoryMap_->getLastAddress())
-    {
-        setLeftBottomCorner(memoryMap_->getLastAddress());
-    }
-    else
-    {
-        setLeftBottomCorner("");
-    }
+	//setLeftTopCorner(memoryMap_->getFirstAddress());
+    //setLeftBottomCorner(memoryMap_->getLastAddress());
+    setOverlappingTop(memoryMap_->getFirstAddress());
+    setOverlappingBottom(memoryMap_->getLastAddress());
 
 	// set the positions for the children
 	MemoryVisualizationItem::reorganizeChildren();

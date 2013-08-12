@@ -17,7 +17,9 @@
 
 MemoryVisualizationItem::MemoryVisualizationItem( QGraphicsItem* parent /*= 0*/ ):
 ExpandableItem(parent),
-    originalBrush_(QBrush())
+    originalBrush_(QBrush()),
+firstFreeAddress_(-1),
+lastFreeAddress_(-1)
 {
     QPen pen(Qt::gray);
     setPen(pen);
@@ -129,14 +131,14 @@ void MemoryVisualizationItem::reorganizeChildren() {
             // Partial overlapping.
             else
             {                
-                gap = new ConflictedMemoryGapItem(this);
+                gap = new MemoryGapItem(this);
+                gap->setConflicted();
+                gap->setName("conflicted");
                 gap->setStartAddress(item->getOffset(),true);
-                gap->setEndAddress(previousBlockEnd,true);     
-                if (item->getOffset() == previousBlockEnd)
-                {                           
-                    gap->setLeftBottomCorner("");
-                }
-
+                gap->setOverlappingTop(item->getOffset());
+                gap->setEndAddress(previousBlockEnd,true);                     
+                gap->setOverlappingBottom(previousBlockEnd);
+                                
                 // set the conflicted gap to the end of the last item.
                 gap->setPos(MemoryVisualizationItem::CHILD_INDENTATION, yCoordinate);
 
@@ -149,28 +151,17 @@ void MemoryVisualizationItem::reorganizeChildren() {
                 gaps.append(gap);
 
                 // Update display of the first address on this block.
-                item->setLeftTopCorner(previousBlockEnd + 1);
-                if ( item->getLastAddress() == previousBlockEnd + 1)
-                {
-                    item->setLeftBottomCorner("");
-                }
+                item->setOverlappingTop(previousBlockEnd + 1);
 
                 // If previous block is completely overlapped by the preceding block and this block.
                 if (prevConflict && prevConflict->getLastAddress() + 1 >= item->getOffset())
                 {
-                    previous->setConflicted();
-                    previous->setLeftTopCorner("");
-                    previous->setLeftBottomCorner("");
+                    previous->setCompleteOverlap();
                 }
-                // Update display of last address on the previous block.
-                else if (previous->getOffset() == item->getOffset() - 1 ||
-                            prevConflict && prevConflict->getLastAddress() + 1 == item->getOffset() -1)
-                {
-                    previous->setLeftBottomCorner("");
-                }   
+                // Update display of last address on the previous block.                
                 else
                 {
-                    previous->setLeftBottomCorner(item->getOffset() - 1);
+                    previous->setOverlappingBottom(item->getOffset() - 1);
                 }
 
                 prevConflict = gap;
@@ -308,6 +299,35 @@ QRectF MemoryVisualizationItem::boundingRect() const {
     return bounds;
 }
 
+void MemoryVisualizationItem::setOverlappingTop(quint64 const& address)
+{
+    firstFreeAddress_ = address;
+    setLeftTopCorner(firstFreeAddress_);
+
+    if (firstFreeAddress_ == lastFreeAddress_){        
+        setLeftBottomCorner("");
+    }
+}
+
+void MemoryVisualizationItem::setOverlappingBottom(quint64 const& address)
+{
+    lastFreeAddress_ = address;
+    setLeftBottomCorner(lastFreeAddress_);
+
+    if (firstFreeAddress_ == lastFreeAddress_)
+    {
+        setLeftBottomCorner("");
+    }
+}
+
+void MemoryVisualizationItem::setCompleteOverlap()
+{
+    setConflicted();
+    setLeftTopCorner("");
+    setLeftBottomCorner("");
+    VisualizerItem::setRightTopCorner("");
+}
+
 void MemoryVisualizationItem::setLeftTopCorner( const QString& text ) {
     QString str(text);
 
@@ -384,14 +404,14 @@ void MemoryVisualizationItem::setLeftBottomCorner( quint64 address ) {
 
 void MemoryVisualizationItem::setConflicted()
 {
-    setName(getName() + " (conflicted)");
+    //setName(getName() + " (conflicted)");
     QAbstractGraphicsShapeItem::setBrush(KactusColors::MISSING_COMPONENT);
     setExpansionBrush(KactusColors::MISSING_COMPONENT);
 }
 
 void MemoryVisualizationItem::setNotConflicted()
 {
-    setName(getName().remove(" (conflicted)"));
+    //setName(getName().remove(" (conflicted)"));
     QAbstractGraphicsShapeItem::setBrush(originalBrush_);
     setExpansionBrush(originalBrush_);
 }

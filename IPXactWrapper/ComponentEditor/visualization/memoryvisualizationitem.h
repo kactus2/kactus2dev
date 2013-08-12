@@ -93,6 +93,23 @@ public:
 	*/
 	virtual QRectF boundingRect() const;
 
+	/*! \brief Sets the first non-overlapping address to display.
+	 *
+	 * \param The first address to set.
+	*/
+    virtual void setOverlappingTop(quint64 const& address);
+
+
+	/*! \brief Sets the last non-overlapping address to display.
+	 *
+	 * \param The last address to set.
+	*/
+    virtual void setOverlappingBottom(quint64 const& address);
+
+	/*! \brief Sets the item to be completely overlapped by adjacent items.
+	*/
+    virtual void setCompleteOverlap();
+
     //! \brief Set the item into conflicted (overlapping memory) state.
     virtual void setConflicted();
 
@@ -153,8 +170,17 @@ protected:
 	*/
 	virtual void setLeftBottomCorner(quint64 address);
 
+
 	//! \brief Contains the child memory items. The offset of the child is the key.
 	QMultiMap<quint64, MemoryVisualizationItem*> childItems_;
+
+protected:
+    
+    //! \brief The first non-overlapping address.
+    quint64 firstFreeAddress_;
+
+    //! \brief The last non-overlapping address.
+    quint64 lastFreeAddress_;
 
 private:
 	
@@ -164,6 +190,7 @@ private:
 	//! \brief No assignment
 	MemoryVisualizationItem& operator=(const MemoryVisualizationItem& other);
 
+	//! \brief Original coloring for the item.
     QBrush originalBrush_;
 };
 
