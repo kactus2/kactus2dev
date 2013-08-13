@@ -23,7 +23,7 @@ public:
 
 	//! \brief The length of one side of the rectangle.
 	enum Bounds {
-		SIDE = 10
+		SIDE = 16
 	};
 
 	enum { Type = GFX_TYPE_EXPAND_COLLAPSE_ITEM};

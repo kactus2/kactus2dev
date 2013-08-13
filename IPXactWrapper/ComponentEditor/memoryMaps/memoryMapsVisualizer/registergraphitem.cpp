@@ -12,7 +12,6 @@
 #include "addressblockgraphitem.h"
 #include <IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.h>
 #include <IPXactWrapper/ComponentEditor/visualization/fieldgapitem.h>
-#include <IPXactWrapper/ComponentEditor/visualization/ConflictedMemoryGapItem.h>
 
 #include <common/graphicsItems/visualizeritem.h>
 #include <common/KactusColors.h>

@@ -7,7 +7,7 @@
 
 #include "memoryvisualizationitem.h"
 #include "memorygapitem.h"
-#include "ConflictedMemoryGapItem.h"
+
 #include <common/KactusColors.h>
 
 #include <QRectF>

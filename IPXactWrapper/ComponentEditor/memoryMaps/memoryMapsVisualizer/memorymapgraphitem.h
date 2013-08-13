@@ -76,6 +76,7 @@ public:
 	*/
 	virtual void setWidth(qreal width);
 
+
 protected:
 
 	//! \brief Pointer to the memory map that is shown

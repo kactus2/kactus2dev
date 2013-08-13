@@ -26,6 +26,7 @@ rightBottomText_(this) {
 	QFont font = nameLabel_.font();
 	//font.setWeight(QFont::Bold);
 	font.setPointSize(VisualizerItem::FONT_NAMESIZE);
+
 	nameLabel_.setFont(font);
 	nameLabel_.setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
 	nameLabel_.setTextInteractionFlags(Qt::NoTextInteraction);
@@ -93,26 +94,26 @@ void VisualizerItem::setName( const QString& name ) {
 void VisualizerItem::setLeftTopCorner( const QString& text ) {
 	leftTopText_.setText(text);
 	// set the left corner text position
-	leftTopText_.setPos(2, 0);
+	leftTopText_.setPos(VisualizerItem::CORNER_INDENTATION, VisualizerItem::CORNER_INDENTATION);
 }
 
 void VisualizerItem::setLeftBottomCorner( const QString& text ) {
 	leftBottomText_.setText(text);
 	// set the left bottom text position
-	leftBottomText_.setPos(2, rect().bottomLeft().y() - VisualizerItem::FONT_CORNERSIZE - 4);
+	leftBottomText_.setPos(VisualizerItem::CORNER_INDENTATION, rect().bottomLeft().y() - VisualizerItem::FONT_CORNERSIZE - 2*VisualizerItem::CORNER_INDENTATION);
 }
 
 void VisualizerItem::setRightTopCorner( const QString& text ) {
 	rightTopText_.setText(text);
 	// set the right corner text position
-	rightTopText_.setPos(rect().topRight().x() - rightTopText_.boundingRect().width(), 0);
+	rightTopText_.setPos(rect().topRight().x() - rightTopText_.boundingRect().width() -VisualizerItem::CORNER_INDENTATION, VisualizerItem::CORNER_INDENTATION);
 }
 
 void VisualizerItem::setRightBottomCorner( const QString& text ) {
 	rightBottomText_.setText(text);
 	// set the right bottom text position
-	rightBottomText_.setPos(rect().topRight().x() - rightBottomText_.boundingRect().width(),
-		rect().bottomRight().y() - VisualizerItem::FONT_CORNERSIZE - 4);
+	rightBottomText_.setPos(rect().topRight().x() - rightBottomText_.boundingRect().width() - VisualizerItem::CORNER_INDENTATION,
+		rect().bottomRight().y() - VisualizerItem::FONT_CORNERSIZE - 2*VisualizerItem::CORNER_INDENTATION);
 }
 
 QRectF VisualizerItem::minimumRect() const {
@@ -138,11 +139,11 @@ void VisualizerItem::reorganizeChildren() {
 				 }
 	}
 
-	leftTopText_.setPos(2, 0);
-	leftBottomText_.setPos(2, rect().bottomLeft().y() - VisualizerItem::FONT_CORNERSIZE - 4);
-	rightTopText_.setPos(rect().topRight().x() - rightTopText_.boundingRect().width(), 0);
-	rightBottomText_.setPos(rect().topRight().x() - rightBottomText_.boundingRect().width(),
-		rect().bottomRight().y() - VisualizerItem::FONT_CORNERSIZE - 4);
+	leftTopText_.setPos(VisualizerItem::CORNER_INDENTATION, VisualizerItem::CORNER_INDENTATION);
+	leftBottomText_.setPos(VisualizerItem::CORNER_INDENTATION, rect().bottomLeft().y() - VisualizerItem::FONT_CORNERSIZE - 2*VisualizerItem::CORNER_INDENTATION);
+	rightTopText_.setPos(rect().topRight().x() - rightTopText_.boundingRect().width()-VisualizerItem::CORNER_INDENTATION, VisualizerItem::CORNER_INDENTATION);
+	rightBottomText_.setPos(rect().topRight().x() - rightBottomText_.boundingRect().width()-VisualizerItem::CORNER_INDENTATION,
+		rect().bottomRight().y() - VisualizerItem::FONT_CORNERSIZE - 2*VisualizerItem::CORNER_INDENTATION);
 }
 
 QRectF VisualizerItem::itemTotalRect() const {

@@ -63,13 +63,11 @@ void ExpandableItem::reorganizeChildren() {
 	QRectF totalRect = itemTotalRect();
 
 	// the rectangle is on the left side of the parent and children
-	expansionRect_->setRect(-VisualizerItem::ITEM_HEIGHT, 0, VisualizerItem::ITEM_HEIGHT, totalRect.height());
+	expansionRect_->setRect(-GraphicsExpandCollapseItem::SIDE, 0, 
+        GraphicsExpandCollapseItem::SIDE, totalRect.height());
 
-	qreal rectWidth = VisualizerItem::ITEM_HEIGHT / 2;
-	qreal expColWidth = expandCollapseItem_->boundingRect().width() / 2;
-
-	// Set the position for the hide/show button
-	expandCollapseItem_->setPos(-(rectWidth + expColWidth), rectWidth - expColWidth);
+    // Set the position for the expand/collapse item with the icon.
+    expandCollapseItem_->setPos(-GraphicsExpandCollapseItem::SIDE, GraphicsExpandCollapseItem::SIDE/2);
 
 	VisualizerItem::reorganizeChildren();
 }

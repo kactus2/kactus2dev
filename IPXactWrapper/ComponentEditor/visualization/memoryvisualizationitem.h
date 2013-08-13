@@ -9,6 +9,7 @@
 #define MEMORYVISUALIZATIONITEM_H
 
 #include <common/graphicsItems/expandableitem.h>
+#include <common/graphicsItems/graphicsexpandcollapseitem.h>
 
 #include <QMultiMap>
 #include <QGraphicsSceneMouseEvent>
@@ -23,7 +24,7 @@ public:
 
 	//! \brief The indentation of each child under its parent.
 	enum Indentation {
-		CHILD_INDENTATION = VisualizerItem::ITEM_HEIGHT
+		CHILD_INDENTATION = GraphicsExpandCollapseItem::SIDE
 	};
 
 	/*! \brief The constructor.
