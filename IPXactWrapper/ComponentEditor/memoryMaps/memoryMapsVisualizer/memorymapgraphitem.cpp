@@ -65,6 +65,10 @@ quint64 MemoryMapGraphItem::getLastAddress() const {
 }
 
 qreal MemoryMapGraphItem::itemTotalWidth() const {
+
+    return VisualizerItem::MAX_WIDTH;
+
+    /*
 	qreal width = VisualizerItem::MAX_WIDTH;
 
 	// if there are children
@@ -77,10 +81,13 @@ qreal MemoryMapGraphItem::itemTotalWidth() const {
 			width = qMax(width, childItem->itemTotalWidth());
 		}
 	}
-	return width;
+	return width;*/
 }
 
 void MemoryMapGraphItem::setWidth( qreal width ) {
-	setRect(0, 0, width + 2* VisualizerItem::ITEM_HEIGHT, VisualizerItem::ITEM_HEIGHT);
-	ExpandableItem::reorganizeChildren();
+    setRect(0, 0, width, VisualizerItem::ITEM_HEIGHT);
+
+    childWidth_ = width - MemoryVisualizationItem::CHILD_INDENTATION;
+
+    MemoryVisualizationItem::reorganizeChildren();
 }

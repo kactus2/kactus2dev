@@ -21,11 +21,13 @@ end_(0) {
 	setName("...");
 	setLeftTopCorner("0x0");
 	setShowExpandableItem(false);
-
+    setToolTip("This memory block is unassigned.");
 }
 
 MemoryGapItem::~MemoryGapItem() {
 }
+
+
 
 void MemoryGapItem::refresh() {
 	//setLeftTopCorner(start_);
@@ -77,6 +79,10 @@ quint64 MemoryGapItem::getLastAddress() const {
 }
 
 void MemoryGapItem::setWidth( qreal width ) {
+
+    MemoryVisualizationItem::setWidth(width);
+    return;
+/*
 	QGraphicsItem* parentGraph = parentItem();
 
 	MemoryMapGraphItem* parentMap = dynamic_cast<MemoryMapGraphItem*>(parentGraph);
@@ -90,4 +96,5 @@ void MemoryGapItem::setWidth( qreal width ) {
 
 	// update the text fields
 	VisualizerItem::reorganizeChildren();
+*/
 }

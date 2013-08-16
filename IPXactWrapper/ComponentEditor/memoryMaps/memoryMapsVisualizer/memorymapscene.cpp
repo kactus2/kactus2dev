@@ -41,7 +41,7 @@ void MemoryMapScene::removeMemGraphItem( MemoryMapGraphItem* memGraphItem ) {
 void MemoryMapScene::rePosition() {
 	qreal yCoordinate = 0;
 	MemoryMapGraphItem* previous = 0;
-	foreach (MemoryMapGraphItem* memMap, memGraphItems_) {
+	foreach (MemoryMapGraphItem* memMap, memGraphItems_) {        
 
 		// if there is a previous then add the new after it
 		if (previous) {
@@ -53,6 +53,7 @@ void MemoryMapScene::rePosition() {
 		}
 
 		memMap->setPos(0, yCoordinate);
+        memMap->setWidth(400);
 		previous = memMap;
 	}
 

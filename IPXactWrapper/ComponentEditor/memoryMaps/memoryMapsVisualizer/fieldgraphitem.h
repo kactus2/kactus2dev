@@ -60,11 +60,7 @@ public:
 	*/
 	virtual unsigned int getAddressUnitSize() const;
 
-	/*! \brief Get the width of the item.
-	 *
-	 * \return The width of the field item
-	*/
-	virtual qreal itemTotalWidth() const;
+
 
 	/*! \brief Sets the first non-overlapping address to display.
 	 *
@@ -79,6 +75,8 @@ public:
 	*/
     virtual void setOverlappingBottom(quint64 const& address);
 
+    virtual  void setCompleteOverlap();
+
 private:
 
 	//! \brief No copying
@@ -86,7 +84,7 @@ private:
 
 	//! \brief No assignment
 	FieldGraphItem& operator=(const FieldGraphItem& other);
-
+   
 	//! \brief Pointer to the field being visualized.
 	QSharedPointer<Field> field_;
 };

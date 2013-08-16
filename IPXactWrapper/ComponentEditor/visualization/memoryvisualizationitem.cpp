@@ -19,7 +19,8 @@ MemoryVisualizationItem::MemoryVisualizationItem( QGraphicsItem* parent /*= 0*/ 
 ExpandableItem(parent),
     originalBrush_(QBrush()),
 firstFreeAddress_(-1),
-lastFreeAddress_(-1)
+lastFreeAddress_(-1),
+childWidth_(VisualizerItem::MAX_WIDTH/2)
 {
     QPen pen(Qt::gray);
     setPen(pen);
@@ -36,8 +37,9 @@ void MemoryVisualizationItem::setBrush(const QBrush& brush)
 }
 
 void MemoryVisualizationItem::reorganizeChildren() {
+
     // first find out the width for all items
-    qreal width = itemTotalWidth();
+    //qreal width = itemTotalWidth();
 
     // update the offsets of the child items so they are displayed in correct order
     updateChildMap();
@@ -64,7 +66,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
     foreach (MemoryVisualizationItem* item, childItems_) {
 
         Q_ASSERT(item);
-        item->setWidth(width);
+        item->setWidth(childWidth_);
         item->setNotConflicted();
 
         // pointer to the possible gap item
@@ -75,7 +77,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
 
             // create the gap item
             gap = new MemoryGapItem(this);
-
+            
             // if the gap is not at the start 
             if (previous) {
                 // set the first address of the gap
@@ -96,7 +98,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
             yCoordinate += VisualizerItem::ITEM_HEIGHT;
 
             gap->setVisible(isExpanded());
-            gap->setWidth(width);
+            gap->setWidth(childWidth_);
 
             gaps.append(gap);
         }
@@ -146,7 +148,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
                 yCoordinate += VisualizerItem::ITEM_HEIGHT;
 
                 gap->setVisible(isExpanded());
-                gap->setWidth(width);
+                gap->setWidth(childWidth_);
 
                 gaps.append(gap);
 
@@ -197,8 +199,8 @@ void MemoryVisualizationItem::reorganizeChildren() {
 
         // update the last address of the block        
         if(item->getLastAddress() >= previousBlockEnd){
-        previousBlockEnd = item->getLastAddress();
-}
+            previousBlockEnd = item->getLastAddress();
+        }
         item->setPos(MemoryVisualizationItem::CHILD_INDENTATION, yCoordinate);
         previous = item;
     }
@@ -221,7 +223,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
         gap->setPos(MemoryVisualizationItem::CHILD_INDENTATION, yCoordinate);
 
         gap->setVisible(isExpanded());
-        gap->setWidth(width);
+        gap->setWidth(childWidth_);
 
         gaps.append(gap);
     }
@@ -232,7 +234,8 @@ void MemoryVisualizationItem::reorganizeChildren() {
     }
 
     // update the width of this item to match the width of all
-    setWidth(width);
+    //setWidth(width);
+    ExpandableItem::reorganizeChildren();
 }
 
 void MemoryVisualizationItem::addChild( MemoryVisualizationItem* childItem ) {
@@ -276,7 +279,7 @@ void MemoryVisualizationItem::updateChildMap() {
         if(newMap.count(offset) != 1)
         {
             QList<MemoryVisualizationItem*> childs = newMap.values(offset);
-            qSort(childs);
+            qSort(childs.begin(), childs.end(), offsetLessThan );
             newMap.remove(offset);
             foreach(MemoryVisualizationItem* child, childs)
             {
@@ -289,9 +292,17 @@ void MemoryVisualizationItem::updateChildMap() {
     childItems_ = newMap;
 }
 
+bool MemoryVisualizationItem::offsetLessThan(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2)
+{
+    return s1->getLastAddress() > s2->getLastAddress();
+}
+
 void MemoryVisualizationItem::setWidth( qreal width ) {
     setRect(0, 0, width, VisualizerItem::ITEM_HEIGHT);
-    ExpandableItem::reorganizeChildren();
+
+    childWidth_ = width - MemoryVisualizationItem::CHILD_INDENTATION;
+
+    reorganizeChildren();
 }
 
 QRectF MemoryVisualizationItem::boundingRect() const {
@@ -320,13 +331,26 @@ void MemoryVisualizationItem::setOverlappingBottom(quint64 const& address)
     }
 }
 
+quint64 MemoryVisualizationItem::getOverlappingTop()
+{
+    return firstFreeAddress_;
+}
+
 void MemoryVisualizationItem::setCompleteOverlap()
 {
+    firstFreeAddress_ = -1;
+    lastFreeAddress_ = -1;
     setConflicted();
     setLeftTopCorner("");
     setLeftBottomCorner("");
     VisualizerItem::setRightTopCorner("");
 }
+
+quint64 MemoryVisualizationItem::getOverlappingBottom()
+{
+    return lastFreeAddress_;
+}
+
 
 void MemoryVisualizationItem::setLeftTopCorner( const QString& text ) {
     QString str(text);
@@ -420,4 +444,23 @@ void MemoryVisualizationItem::mousePressEvent( QGraphicsSceneMouseEvent* event )
     // perform the base class functionality and inform that this item should be selected
     QGraphicsItem::mousePressEvent(event);
     emit selectEditor();
+}
+
+
+qreal MemoryVisualizationItem::getChildWidth() const
+{
+    return childWidth_;
+}
+
+qreal MemoryVisualizationItem::itemTotalWidth() const {
+    
+    if (parentItem() != 0)
+    {
+        MemoryVisualizationItem* parentVisualizationItem = dynamic_cast<MemoryVisualizationItem*>(parentItem());
+        Q_ASSERT(parentVisualizationItem);
+
+        return parentVisualizationItem->getChildWidth();
+    }
+
+    return VisualizerItem::itemTotalWidth();
 }

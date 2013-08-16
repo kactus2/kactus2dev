@@ -28,6 +28,7 @@ public:
 	//! \brief The destructor
 	virtual ~MemoryGapItem();
 
+
 	//! \brief Refresh the gap item.
 	virtual void refresh();
 
@@ -95,6 +96,7 @@ private:
 
 	//! \brief No assignment
 	MemoryGapItem& operator=(const MemoryGapItem& other);
+   
 };
 
 #endif // MEMORYGAPITEM_H

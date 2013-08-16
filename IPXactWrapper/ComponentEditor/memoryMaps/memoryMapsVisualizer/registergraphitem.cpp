@@ -67,7 +67,7 @@ void RegisterGraphItem::refresh() {
 
 	quint64 endAddress = base + offset + addrUnits -1;
     
-    setOverlappingTop(base);
+    setOverlappingTop(startAddress);
     setOverlappingBottom(endAddress);
     
 	// set the positions for the children
@@ -99,19 +99,24 @@ int RegisterGraphItem::getBitWidth() const {
 	return register_->getWidth();
 }
 
+void RegisterGraphItem::removeChild( MemoryVisualizationItem* childItem ) {
+    quint64 offset = childItem->getLastAddress();
+
+    Q_ASSERT(childItems_.contains(offset));
+    int removeCount = childItems_.remove(offset, childItem);
+    Q_ASSERT(removeCount == 1);
+}
+
 void RegisterGraphItem::reorganizeChildren() {
 
 	// remove the gaps and update offsets of fields
 	updateChildMap();
 
-	// first find out the width for all items
-	qreal width = itemTotalWidth();
-
 	// if there are no children then this can not be expanded or collapsed
 	if (childItems_.isEmpty()) {
 		ExpandableItem::setShowExpandableItem(false);
 	}
-	// if there are children then display the expand/collapse i.value()
+	// if there are children then display the expand/collapse item
 	else {
 		ExpandableItem::setShowExpandableItem(true);
 	}
@@ -120,149 +125,174 @@ void RegisterGraphItem::reorganizeChildren() {
 	QList<FieldGapItem*> gaps;
 
 	// the offset where the previous block starts
-	quint64 previousBlockStart = register_->getMSB();
+	quint64 OffsetMin = register_->getMSB();
 
     FieldGapItem* prevConflict = 0;
 
 	qreal xCoordinate = rect().left();
 	MemoryVisualizationItem* previous = NULL;
+    MemoryVisualizationItem* topItem = NULL;   
+    
 	for (QMap<quint64, MemoryVisualizationItem*>::iterator i = --childItems_.end();
 		i != --childItems_.begin(); --i) { 
 
-		Q_ASSERT(i.value());
-        i.value()->setNotConflicted();
+        MemoryVisualizationItem* item = i.value();
+		Q_ASSERT(item);
 
 		// pointer to the possible gap to add between two fields
 		FieldGapItem* gap = 0;
 
-		// if there is a gap between the last block and this block
-		if (previousBlockStart > i.value()->getLastAddress() + 1 ||
-            previous == 0 && previousBlockStart == i.value()->getLastAddress() + 1) {
+		// if there is a gap between the last field and this field
+		if (OffsetMin > item->getLastAddress() + 1 ||
+             previous == 0 && OffsetMin == item->getLastAddress() + 1) {
 
-			// create the gap i.value()
+			// create the gap item
 			gap = new FieldGapItem(this);
 
-			// set the first address of the gap
-			gap->setStartAddress(i.value()->getLastAddress(), false);
+            // set the first address of the gap
+            gap->setStartAddress(item->getLastAddress(), false);
 
-			// if the gap is not at the start 
-			if (previous) {
-				// set the last address for the gap
-				gap->setEndAddress(previousBlockStart, false);
-			}
-			else {
-				// the gap starts from the end of the parent
-				gap->setEndAddress(previousBlockStart, true);
-			}			
+            // if the gap is not at the start 
+            if (previous && previous->getOffset() <= register_->getMSB()) {
+                // set the last address for the gap
+                gap->setEndAddress(OffsetMin, false);
+            }
+            else {
+                // the gap starts from the end of the parent
+                gap->setEndAddress(OffsetMin, true);
+            }			
 
-			// set the gap to the end of the last i.value()
-			gap->setPos(xCoordinate, rect().bottom());
+            // set the gap to the end of the last item
+            gap->setPos(xCoordinate, rect().bottom());
+            gap->setWidth(getChildWidth(gap));
+            gap->setVisible(isExpanded());
 
-			// update the x-coordinate to avoid setting a block under the gap
-			xCoordinate += gap->rect().width();
+            gaps.append(gap);
 
-			gap->setVisible(isExpanded());
+            // update the x-coordinate to avoid setting a field under the gap
+            xCoordinate += gap->rect().width();
+        }
 
-			gaps.append(gap);
-		}
-
-        // if the block and the next block are overlapping.
-        else if (previous && i.value()->getLastAddress() >= previousBlockStart )
+        // If field overlaps with others.
+        if (topItem && item->getLastAddress() >= topItem->getOffset() )
         {
+            item->setConflicted();
+            previous->setConflicted();
 
-            // This and previous block overlap completely.
-            if (i.value()->getOffset() == previous->getOffset() &&
-                i.value()->getLastAddress() == previous->getLastAddress())
+            // Field is completely inside other fields.
+            if (item->getOffset() >= topItem->getOffset())
             {
-                previous->setConflicted();
-                i.value()->setConflicted();
+                item->setCompleteOverlap();
+
+                // Field is completely overlapping with previous.
+                if (item->getOffset() >= previous->getOffset() &&
+                    item->getLastAddress() <= previous->getLastAddress() )
+                {
+                    previous->setConflicted();
+                    if (previous->getOverlappingBottom() != -1)
+                    {
+                        topItem = previous;                    
+                    }
+                }                
             }
-            // This block is completely inside the previous block.
-            else if (i.value()->getOffset() >= previous->getOffset() &&
-                i.value()->getLastAddress() <= previous->getLastAddress() )
-            {
-                i.value()->setConflicted();
-                previous->setConflicted();
-            }
 
-            // The previous block is completely inside this block.
-            else if (previous->getOffset() >= i.value()->getOffset() &&
-                previous->getLastAddress() <= i.value()->getLastAddress())
-            {
-                i.value()->setConflicted();
-                previous->setConflicted();
-            }          
-
-            // Partial overlapping.
+            // Field partially overlaps with previous.
             else
-            {                
+            {
+                item->setOverlappingTop(topItem->getOffset() - 1);
+                item->setWidth(getChildWidth(item));
+
+                quint64 conflictEnd = item->getLastAddress();
+                MemoryVisualizationItem* previousTopItem = topItem;
+
+                // Previous is completely overlapped by this field and another field.
+                if (prevConflict && prevConflict->getOffset() - 1 <= item->getLastAddress())
+                {
+                    if (previousTopItem != previous)
+                    {
+                        previous->setPos(xCoordinate - getChildWidth(previousTopItem), rect().bottom());
+                    }
+
+                    previousTopItem->setCompleteOverlap();                   
+                    conflictEnd = prevConflict->getOffset() - 1;
+                    topItem = item;
+                }
+                // Previous is completely under this field. 
+                else if (item->getLastAddress() == previousTopItem->getLastAddress())
+                {                    
+                    if (previousTopItem != previous)
+                    {
+                        previous->setPos(xCoordinate - getChildWidth(previousTopItem), rect().bottom());
+                    }
+
+                    previousTopItem->setCompleteOverlap(); 
+                    topItem = item;
+                }
+
+                // Previous is partially under this field. 
+                else 
+                {                 
+                    xCoordinate -= getChildWidth(previousTopItem);
+                    previousTopItem->setOverlappingBottom(item->getLastAddress() + 1); 
+                    previousTopItem->setWidth(getChildWidth(previousTopItem));                                                          
+                    xCoordinate += getChildWidth(previousTopItem);                                
+
+                    if (previous != previousTopItem)
+                    {
+                        previous->setPos(xCoordinate, rect().bottom());
+                    }
+
+                    topItem = item;
+                }
+
                 gap = new FieldGapItem("conflicted", this);                
                 gap->setConflicted();
-                gap->setStartAddress(previous->getOffset(),true);
-                gap->setEndAddress(i.value()->getLastAddress(),true);     
-
-                // set the conflicted gap to the end of the last item.
-                gap->setPos(xCoordinate, rect().bottom());
-
-                // update the y-coordinate to avoid setting a block under the gap.
-			    xCoordinate += gap->rect().width();
-
+                gap->setStartAddress(previousTopItem->getOffset(),true);
+                gap->setEndAddress(conflictEnd,true); 
                 gap->setVisible(isExpanded());
-
+                gap->setWidth(getChildWidth(gap));
                 gaps.append(gap);
-
-                
-                // Update display of the last address on this block.
-                i.value()->setOverlappingTop(previousBlockStart - 1);
-
-                // If previous block is completely overlapped by the preceding block and this block.
-                if (prevConflict && prevConflict->getOffset() + 1 >= i.value()->getLastAddress())
-                {
-                    previous->setCompleteOverlap();
-                }
-                // Update display of last address on the previous block.
-                else
-                {
-                    previous->setOverlappingBottom(i.value()->getLastAddress() + 1);
-                }
-
 
                 prevConflict = gap;
             }
         }
+        else
+        {
+            topItem = item;
+        }
 
-		if (previous) {
-			QRectF previousRect;
+        if (previous) {
+            QRectF previousRect;
 
-			// if there was a gap
-			if (gap) {
+            // if there was a gap
+            if (gap) {
 
-				// find the position where previous block ended
-				previousRect = mapRectFromItem(previous, previous->itemTotalRect());
+                // find the position where previous field ended
+                previousRect = mapRectFromItem(previous, previous->itemTotalRect());
 
-				// set the gap to be under the previous block
-				gap->setPos(previousRect.right(), rect().bottom());
+                // set the gap to be under the previous field
+                gap->setPos(previousRect.right(), rect().bottom());
 
-				// update the previous rect to the end of the gap
-				previousRect = mapRectFromItem(gap, gap->itemTotalRect());	
-			}
-			// if there was no gap then use the previous defined block
-			else {
-				// set the next i.value() to start after the previous
-				previousRect = mapRectFromItem(previous, previous->itemTotalRect());
-			}
+                // update the previous rect to the end of the gap
+                previousRect = mapRectFromItem(gap, gap->itemTotalRect());	
+            }
+            // if there was no gap then use the previous defined field
+            else {
+                // set the next item to start after the previous
+                previousRect = mapRectFromItem(previous, previous->itemTotalRect());
+            }
 
-			xCoordinate = previousRect.right();
-		}
+            xCoordinate = previousRect.right();
+        }
 
-		// update the last address of the block
-		previousBlockStart = i.value()->getOffset();
-		i.value()->setPos(xCoordinate, rect().bottom());
-		previous = i.value();
+		// update the last address of the field
+		OffsetMin = qMin(item->getOffset(),OffsetMin);
+		item->setPos(xCoordinate, rect().bottom());
+		previous = item;
 	}
 
 	// if the LSB bit(s) does not belong to any field
-	if (previous && previous->getOffset() > 0) {
+	if (previous && OffsetMin > 0) {//previous->getOffset() > 0) {
 		// create the gap 
 		FieldGapItem* gap = new FieldGapItem(this);
 
@@ -270,14 +300,17 @@ void RegisterGraphItem::reorganizeChildren() {
 		gap->setStartAddress(0, true);
 
 		// the gap ends to the start of the defined field
-		gap->setEndAddress(previous->getOffset(), false);
+        gap->setEndAddress(topItem->getOffset(), false);
 
-		// increase the x-coordinate to avoid setting the next field on top of the gap
-		xCoordinate += previous->rect().width();
+        // increase the x-coordinate to avoid setting the next field on top of the gap
+        if (topItem == previous)
+        {
+            xCoordinate += topItem->rect().width();
+        }
 
 		// gap is positioned after the last field
 		gap->setPos(xCoordinate, rect().bottom());
-
+        gap->setWidth(getChildWidth(gap));
 		gap->setVisible(isExpanded());
 
 		gaps.append(gap);
@@ -288,11 +321,56 @@ void RegisterGraphItem::reorganizeChildren() {
 		childItems_.insert(gap->getOffset(), gap);
 	}
 
-	// update the width of this i.value() to match the width of all
-	setRect(0, 0, width, VisualizerItem::ITEM_HEIGHT);
-
 	// reorganize the text blocks of this register
 	ExpandableItem::reorganizeChildren();
+}
+
+void RegisterGraphItem::updateChildMap() {
+    QMap<quint64, MemoryVisualizationItem*> newMap;
+
+    // go through all children and ask their offsets
+    foreach (MemoryVisualizationItem* item, childItems_) {
+
+        // if the item is a gap then it is not added
+        MemoryGapItem* gap = dynamic_cast<MemoryGapItem*>(item);
+        if (gap) {
+            gap->setParent(NULL);
+            delete gap;
+            gap = NULL;
+            continue;
+        }
+
+        // update the offset for the item
+        item->setNotConflicted();
+        item->setOverlappingTop(item->getLastAddress());
+        item->setOverlappingBottom(item->getOffset());
+        item->setWidth(getChildWidth(item));
+        quint64 offset = item->getLastAddress();
+        newMap.insertMulti(offset, item);
+    }
+
+    // Sort childs with same offset for stable order.
+    foreach(quint64 offset, newMap.uniqueKeys())
+    {
+        if(newMap.count(offset) != 1)
+        {
+            QList<MemoryVisualizationItem*> childs = newMap.values(offset);
+            qSort(childs.begin(), childs.end(), offsetLessThan );
+            newMap.remove(offset);
+            foreach(MemoryVisualizationItem* child, childs)
+            {
+                newMap.insertMulti(offset,child);
+            }
+        }
+    }
+
+    // update the original map
+    childItems_ = newMap;
+}
+
+bool RegisterGraphItem::offsetLessThan(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2)
+{
+    return s1->getOffset() > s2->getOffset();
 }
 
 unsigned int RegisterGraphItem::getAddressUnitSize() const {
@@ -330,21 +408,34 @@ quint64 RegisterGraphItem::getLastAddress() const {
 	return offset + size - 1;
 }
 
-qreal RegisterGraphItem::itemTotalWidth() const {
-	
-	// combine the width of the child items
-	qreal width = 0;
-	foreach (MemoryVisualizationItem* child, childItems_) {
-		if (child->isVisible()) {
-			width += child->itemTotalWidth();
-		}
-	}
+void RegisterGraphItem::setWidth(qreal width)
+{
+    setRect(0, 0, width, VisualizerItem::ITEM_HEIGHT);
 
-	// if there were no children then return the default width
-	if (width < VisualizerItem::MAX_WIDTH) {
-		return VisualizerItem::MAX_WIDTH;
-	}
-	
-	// return the combined width of the children
-	return width;
+    childWidth_ = width;
+
+    reorganizeChildren();
 }
+
+ qreal RegisterGraphItem::getChildWidth(MemoryVisualizationItem* child) const
+{
+    Q_ASSERT(child);
+    unsigned int highBit = qMax(child->getOverlappingBottom(), child->getOverlappingTop());
+
+    if (highBit > register_->getMSB())
+    {
+        child->setConflicted();
+        highBit = register_->getMSB();
+    }
+
+    unsigned int lowBit = qMin(child->getOverlappingBottom(), child->getOverlappingTop());
+
+    if (lowBit > register_->getMSB())
+    {
+        return 0;
+    }
+
+    quint64 bits =  qMin(highBit - lowBit + 1,register_->getSize());    
+    qreal bitWidth = childWidth_/register_->getSize();
+    return bitWidth * bits;
+ }

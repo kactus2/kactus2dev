@@ -65,7 +65,9 @@ quint64 AddressBlockGraphItem::getLastAddress() const {
 }
 
 qreal AddressBlockGraphItem::itemTotalWidth() const {
-	qreal width = VisualizerItem::MAX_WIDTH;
+
+    return MemoryVisualizationItem::itemTotalWidth();
+/*	qreal width = VisualizerItem::MAX_WIDTH;
 
 	// if there are children
 	QList<QGraphicsItem*> children = childItems();
@@ -77,10 +79,11 @@ qreal AddressBlockGraphItem::itemTotalWidth() const {
 			width = qMax(width, childItem->itemTotalWidth());
 		}
 	}
-	return width;
+	return width;*/
 }
 
 void AddressBlockGraphItem::setWidth( qreal width ) {
-	setRect(0, 0, width + VisualizerItem::ITEM_HEIGHT, VisualizerItem::ITEM_HEIGHT);
-	ExpandableItem::reorganizeChildren();
+	//setRect(0, 0, width + VisualizerItem::ITEM_HEIGHT, VisualizerItem::ITEM_HEIGHT);
+	//ExpandableItem::reorganizeChildren();
+    MemoryVisualizationItem::setWidth(width);
 }

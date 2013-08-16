@@ -13,7 +13,8 @@
 ExpandableItem::ExpandableItem( QGraphicsItem* parent /*= 0*/):
 VisualizerItem(parent),
 expandCollapseItem_(new GraphicsExpandCollapseItem(this)),
-expansionRect_(new QGraphicsRectItem(this)) {
+expansionRect_(new QGraphicsRectItem(this))
+ {
 
 	connect(expandCollapseItem_, SIGNAL(stateChanged(bool)),
 		this, SLOT(onExpandStateChange(bool)), Qt::UniqueConnection);
@@ -58,7 +59,7 @@ bool ExpandableItem::isExpanded() const {
 }
 
 void ExpandableItem::reorganizeChildren() {
-
+    
 	// the rectangle that contains this item and children
 	QRectF totalRect = itemTotalRect();
 
@@ -67,7 +68,8 @@ void ExpandableItem::reorganizeChildren() {
         GraphicsExpandCollapseItem::SIDE, totalRect.height());
 
     // Set the position for the expand/collapse item with the icon.
-    expandCollapseItem_->setPos(-GraphicsExpandCollapseItem::SIDE, GraphicsExpandCollapseItem::SIDE/2);
+    expandCollapseItem_->setPos(-GraphicsExpandCollapseItem::SIDE, 
+        GraphicsExpandCollapseItem::SIDE / 2 + VisualizerItem::CORNER_INDENTATION);
 
 	VisualizerItem::reorganizeChildren();
 }

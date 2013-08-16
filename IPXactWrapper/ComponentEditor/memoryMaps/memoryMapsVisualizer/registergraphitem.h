@@ -36,6 +36,8 @@ public:
 	//! \brief Refresh the item and sub-items.
 	virtual void refresh();
 
+ virtual void removeChild( MemoryVisualizationItem* childItem );
+
 	/*! \brief Get the offset of the item. 
 	 *
 	 * \return int The offset of the item from the parent item's base address.
@@ -60,14 +62,9 @@ public:
 	*/
 	virtual unsigned int getAddressUnitSize() const;
 
-	/*! \brief Get the width of the item.
-	 *
-	 * This width is affected by the item's children so if children grow this 
-	 * width grows accordingly.
-	 *
-	 * \return The width of the item and it's sub-items.
-	*/
-	virtual qreal itemTotalWidth() const;
+    virtual qreal getChildWidth(MemoryVisualizationItem* child) const;
+
+    virtual void setWidth(qreal width);
 
 protected:
 
@@ -77,6 +74,11 @@ protected:
 	*/
 	virtual void reorganizeChildren();
 
+    void updateChildMap();
+
+    static bool offsetLessThan(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2);
+
+
 private:
 	
 	//! \brief No copying
@@ -84,8 +86,8 @@ private:
 
 	//! \brief No assignment
 	RegisterGraphItem& operator=(const RegisterGraphItem& other);
-
-	//! \brief Pointer to the register being visualized.
+   
+    //! \brief Pointer to the register being visualized.
 	QSharedPointer<Register> register_;
 };
 

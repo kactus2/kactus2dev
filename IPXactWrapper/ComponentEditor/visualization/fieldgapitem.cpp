@@ -40,7 +40,6 @@ void FieldGapItem::refresh() {
 
 	QString endStr = QString::number(end_);
 	setLeftTopCorner(endStr);
-
 	VisualizerItem::reorganizeChildren();
 }
 

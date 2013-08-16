@@ -42,6 +42,10 @@ void FieldGraphItem::refresh() {
 	VisualizerItem::setRightTopCorner(QString::number(field_->getBitOffset()));
 	ExpandableItem::reorganizeChildren();
 
+    setOverlappingTop(field_->getMSB());
+    setOverlappingBottom(field_->getBitOffset());
+    setToolTip(getName() + "[" + QString::number(field_->getMSB()) + ".." + QString::number(field_->getBitOffset()) + "]");
+
 	MemoryVisualizationItem* parentGraphItem = static_cast<MemoryVisualizationItem*>(parentItem());
 	Q_ASSERT(parentGraphItem);
 	parentGraphItem->refresh();
@@ -65,9 +69,7 @@ quint64 FieldGraphItem::getLastAddress() const {
 	return field_->getMSB();
 }
 
-qreal FieldGraphItem::itemTotalWidth() const {
-	return rect().width();
-}
+
 
 void FieldGraphItem::setOverlappingTop(quint64 const& address)
 {
@@ -80,4 +82,11 @@ void FieldGraphItem::setOverlappingBottom(quint64 const& address)
 {
     lastFreeAddress_ = address;
     setRightTopCorner(QString::number(lastFreeAddress_));
+}
+
+void FieldGraphItem::setCompleteOverlap()
+{
+    MemoryVisualizationItem::setCompleteOverlap();
+    setWidth(0);
+    ExpandableItem::reorganizeChildren();
 }

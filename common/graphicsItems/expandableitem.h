@@ -94,6 +94,7 @@ private:
 
 	//! \brief Pointer to the rect item which displays which children belong to parent.
 	QGraphicsRectItem* expansionRect_;
+
 };
 
 #endif // EXPANDABLEITEM_H

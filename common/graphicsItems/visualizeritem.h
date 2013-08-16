@@ -90,6 +90,7 @@ public:
 	 *
 	*/
 	virtual void setNamePosition(const NamePosition namePos);
+    
 
 protected:
 

@@ -48,7 +48,10 @@ VisualizerItem::~VisualizerItem() {
 }
 
 void VisualizerItem::setName( const QString& name ) {
-	// used to calculate the needed size of the text
+	
+    setToolTip(name);
+
+    // used to calculate the needed size of the text
 	QFontMetrics fontMetrics(nameLabel_.font());
 
 	// The maximum width for the text

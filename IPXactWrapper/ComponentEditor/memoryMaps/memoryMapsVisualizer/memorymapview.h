@@ -28,6 +28,10 @@ public:
 	//! \brief The destructor
 	virtual ~MemoryMapView();
 
+protected:
+
+    virtual void resizeEvent(QResizeEvent* event);
+
 private:
 	
 	//! \brief No copying
