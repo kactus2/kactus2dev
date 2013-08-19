@@ -194,96 +194,72 @@ QString CppSourceAnalyzer::getSourceData(QFile& file)
 //-----------------------------------------------------------------------------
 QString CppSourceAnalyzer::removeComments(QString& source)
 {
-    QTextStream sourceStream(&source);
-    QString finalData;
-    QString line;
-    // Read the data line by line
-    while (!sourceStream.atEnd())
+    QString finalData = source;
+
+    QRegExp tokenExp("(/\\*|//|\")");
+    QRegExp stringEndExp("(\\\\\"|\"|\n)");
+    
+    int index = finalData.indexOf(tokenExp);
+
+    while (index >= 0)
     {
-        line = sourceStream.readLine();
-        bool checkForComments = true;
-        while (checkForComments)
+        if (tokenExp.cap(1) == "//")
         {
-            bool singleLineFound = line.count("//");
-            bool multiLineFound = line.count("/*");
-            // No (more) comments on the line
-            if (!singleLineFound && !multiLineFound)
+            // Single-line comment. Strip to the end of the line.
+            int endIndex = finalData.indexOf('\n', index + tokenExp.matchedLength());
+
+            if (endIndex == -1)
             {
-                finalData.append(line.append("\n"));
-                checkForComments = false;
+                endIndex = finalData.length();
             }
-            // Normal comment before multiline
-            else if ((singleLineFound && !multiLineFound) ||  
-                     (singleLineFound && line.indexOf("//") < line.indexOf("*/")))
+
+            finalData.remove(index, endIndex - index);
+            index = index + 1;
+        }
+        else if (tokenExp.cap(1) == "/*")
+        {
+            // Multi-line string begins. Strip to the end marker.
+            int endIndex = finalData.indexOf("*/", index + tokenExp.matchedLength());
+
+            if (endIndex == -1)
             {
-                int index = line.indexOf("//");
-                // Entire line is comment, so just remove (skip) it
-                if (index == 0)
-                {
-                    checkForComments = false;
-                }
-                // Comment marker not inside a string, remove end of line
-                else if (line.left(index).count("\"") % 2 == 0)
-                {
-                    line = line.left(index);
-                    finalData.append(line.append("\n"));
-                    checkForComments = false;
-                }
-                // Comment marker inside string
-                // Append line up to end of string and keep looking for comments
-                else
-                {
-                    finalData.append(line.left(index+2));
-                    line = line.right(line.length()-index-2);
-                    finalData.append(line.left(line.indexOf("\"")+1));
-                    line = line.right(line.length()-line.indexOf("\"")-1);
-                    checkForComments = true;
-                }
-            }
-            // Multi line comment found before single line
-            else if (multiLineFound)
-            {
-                int index = line.indexOf("/*");
-                // Comment marker inside string
-                // Append line up to end of string and keep looking for comments
-                if (line.left(index).count("\"") % 2 != 0)
-                {
-                    finalData.append(line.left(index+2));
-                    line = line.right(line.length()-index-2);
-                    finalData.append(line.left(line.indexOf("\"")+1));
-                    line = line.right(line.length()-line.indexOf("\"")-1);
-                    checkForComments = true;
-                }
-                // Not inside a string, look for comment end marker
-                else
-                {
-                    // Append everything before the comment started
-                    finalData.append(line.left(index));
-                    line = line.right(line.length()-index-2);
-                    bool commentEndFound = false;
-                    while (!commentEndFound)
-                    {
-                        // End found, remove everything before it
-                        if (line.count("*/") > 0)
-                        {
-                            line = line.right(line.length()-line.indexOf("*/")-2);
-                            commentEndFound = true;
-                        }
-                        // End not found, check the next line
-                        else
-                        {
-                            line.append(sourceStream.readLine());
-                        }
-                    }
-                    checkForComments = true;
-                }
+                endIndex = finalData.length();
             }
             else
             {
-                checkForComments = false;
+                endIndex += 2;
             }
+            
+            finalData.remove(index, endIndex - index);
+            index = index + 1;
         }
+        else if (tokenExp.cap(1) == "\"")
+        {
+            // String begins. Just skip the string to its end.
+            int endIndex = finalData.indexOf(stringEndExp, index + 1);
+
+            while (endIndex >= 0 && stringEndExp.cap(1) != "\n")
+            {
+                if (stringEndExp.cap(1) == "\"")
+                {
+                    ++endIndex;
+                    break;
+                }
+
+                endIndex = finalData.indexOf(stringEndExp, endIndex + stringEndExp.matchedLength());
+            }
+
+            if (endIndex == -1)
+            {
+                endIndex = finalData.length();
+            }
+
+            index = endIndex;
+        }
+
+        index = finalData.indexOf(tokenExp, index);
     }
+
     return finalData;
 }
 
