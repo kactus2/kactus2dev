@@ -1227,7 +1227,10 @@ void HWDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         }
     }
 
-    QGraphicsScene::mouseMoveEvent(mouseEvent);
+    if (selectedItems().count() == 1)
+    {
+        QGraphicsScene::mouseMoveEvent(mouseEvent);
+    }
 }
 
 void HWDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -2047,8 +2050,8 @@ void HWDesignDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
 void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
 {
     // Activate the correct views when something has been selected.
-    if (newSelection)
-    { 
+    if (newSelection != 0)
+    {
         // Check if the selected item was a component.
         if (newSelection->type() == HWComponentItem::Type)
         {
