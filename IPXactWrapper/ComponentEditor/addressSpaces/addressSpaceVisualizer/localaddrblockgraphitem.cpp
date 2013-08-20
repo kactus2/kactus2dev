@@ -21,7 +21,7 @@ addrBlock_(block) {
 
 	QBrush brush(KactusColors::ADDR_BLOCK_COLOR);
 	setBrush(brush);
-	setNamePosition(VisualizerItem::NAME_INDENTED);
+	setNamePosition(VisualizerItem::NAME_LEFT_ALIGN, VisualizerItem::NAME_MIDDLE);
 }
 
 LocalAddrBlockGraphItem::~LocalAddrBlockGraphItem() {

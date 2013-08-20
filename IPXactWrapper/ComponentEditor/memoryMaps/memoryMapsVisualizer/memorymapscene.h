@@ -25,6 +25,9 @@ class MemoryMapScene : public QGraphicsScene {
 
 public:
 
+    //! \brief Scrolling sensitivity. Bigger value results in smaller steps.
+    static const int WHEEL_SENSITIVITY = 6;
+
 	/*! \brief The constructor
 	 *
 	 * \param parent Pointer to the owner of the graphics scene.
@@ -54,10 +57,22 @@ public:
 	*/
 	void rePosition();
 
+	/*! \brief Set the scene width.
+	 *
+     * \param width Width to set.
+     *
+	 */
+    void setWidth(int width);
+
 signals:
 
 	//! \brief This signal is emitted when the contents of the scene changes.
 	void contentChanged();
+
+protected:
+    
+    //! \brief Resizes memory map when user turns the mouse wheel.
+    void wheelEvent(QGraphicsSceneWheelEvent * wheelEvent);
 
 private:
 	
@@ -72,6 +87,9 @@ private:
 
 	//! \brief Contains the graph items for memory maps.
 	QList<MemoryMapGraphItem*> memGraphItems_;
+
+    //! \brief Width of top (memory map) items.
+    int width_;
 };
 
 #endif // MEMORYMAPSCENE_H

@@ -67,7 +67,7 @@ quint64 AddressBlockGraphItem::getLastAddress() const {
 qreal AddressBlockGraphItem::itemTotalWidth() const {
 
     return MemoryVisualizationItem::itemTotalWidth();
-/*	qreal width = VisualizerItem::MAX_WIDTH;
+/*	qreal width = VisualizerItem::DEFAULT_WIDTH;
 
 	// if there are children
 	QList<QGraphicsItem*> children = childItems();

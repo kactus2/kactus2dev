@@ -15177,6 +15177,7 @@ CreateHelp
     <None Include="graphics\traffic-light_green.png" />
     <None Include="graphics\traffic-light_red.png" />
     <None Include="graphics\traffic-light_yellow.png" />
+    <None Include="graphics\triangle_arrow_right.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

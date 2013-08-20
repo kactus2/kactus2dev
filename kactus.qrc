@@ -66,6 +66,7 @@
 	  <file>graphics/settings-environment_vars.png</file>
       <file>graphics/triangle_arrow_down.png</file>
       <file>graphics/triangle_arrow_up.png</file>
+	  <file>graphics/triangle_arrow_right.png</file>
       <file>graphics/protection-locked.png</file>
       <file>graphics/protection-unlocked.png</file>
       <file>graphics/edit-undo.png</file>

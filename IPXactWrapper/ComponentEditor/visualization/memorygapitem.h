@@ -28,7 +28,6 @@ public:
 	//! \brief The destructor
 	virtual ~MemoryGapItem();
 
-
 	//! \brief Refresh the gap item.
 	virtual void refresh();
 
@@ -73,13 +72,6 @@ public:
 	 *
 	*/
 	void setEndAddress(quint64 address, bool contains = true);
-
-	/*! \brief Set the width for the item.
-	 *
-	 * \param width The new width of the item.
-	 *
-	*/
-	virtual void setWidth(qreal width);
 
 protected:
 

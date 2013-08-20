@@ -35,8 +35,6 @@ MemoryMapGraphItem::~MemoryMapGraphItem() {
 void MemoryMapGraphItem::refresh() {
 	
 	setName(memoryMap_->getName());
-	//setLeftTopCorner(memoryMap_->getFirstAddress());
-    //setLeftBottomCorner(memoryMap_->getLastAddress());
     setOverlappingTop(memoryMap_->getFirstAddress());
     setOverlappingBottom(memoryMap_->getLastAddress());
 
@@ -66,10 +64,10 @@ quint64 MemoryMapGraphItem::getLastAddress() const {
 
 qreal MemoryMapGraphItem::itemTotalWidth() const {
 
-    return VisualizerItem::MAX_WIDTH;
+    return VisualizerItem::DEFAULT_WIDTH;
 
     /*
-	qreal width = VisualizerItem::MAX_WIDTH;
+	qreal width = VisualizerItem::DEFAULT_WIDTH;
 
 	// if there are children
 	QList<QGraphicsItem*> children = childItems();

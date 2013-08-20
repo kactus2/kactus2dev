@@ -6016,5 +6016,8 @@
     <None Include="graphics\control-dual.png">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="graphics\triangle_arrow_right.png">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -37,10 +37,8 @@ public:
 	//! \brief The destructor
 	virtual ~MemoryVisualizationItem();
 
-	//! \brief Set the item brush and store it as original.
+	//! \brief Set the item brush and store it as default brush.
     void setBrush(const QBrush& brush);
-
-
 
 	//! \brief Refresh the item and sub-items.
 	virtual void refresh() = 0;
@@ -90,6 +88,14 @@ public:
 	*/
 	virtual void setWidth(qreal width);
 
+	/*! \brief Get the width of the item.
+	 *
+	 * The width is dependent on the parents width.
+	 *
+	 * \return The width of the item and it's sub-items.
+	*/
+    qreal itemTotalWidth() const;
+
 	/*! \brief The bounding rect of the item.
 	 *
 	 * \return The rectangle that bounds the item and possible sub items.
@@ -102,18 +108,25 @@ public:
 	*/
     virtual void setOverlappingTop(quint64 const& address);
 
+	/*! \brief Get the first non-overlapping address of the item.
+	 *
+	 * \return The first non-overlapping address or -1 if completely overlapped.
+	 */
     virtual quint64 getOverlappingTop();
 
 	/*! \brief Sets the last non-overlapping address to display.
 	 *
 	 * \param The last address to set.
-	*/
+	 */
     virtual void setOverlappingBottom(quint64 const& address);
 
+    /*! \brief Get the last non-overlapping address of the item.
+     *
+     * \return The last non-overlapping address or -1 if completely overlapped.
+     */
     virtual quint64 getOverlappingBottom();
 
-	/*! \brief Sets the item to be completely overlapped by adjacent items.
-	*/
+	// \brief Sets the item to be completely overlapped by adjacent items.
     virtual void setCompleteOverlap();
 
     //! \brief Set the item into conflicted (overlapping memory) state.
@@ -122,11 +135,8 @@ public:
     //! \brief Remove the item from conflicted state.
     virtual void setNotConflicted();
 
-
+    // \brief Get the width of child items.
     qreal getChildWidth() const;
-
-    qreal itemTotalWidth() const;
-
 
 signals:
 
@@ -149,8 +159,6 @@ protected:
 
 	//! \brief Update the offsets of the child items in the map.
 	void updateChildMap();
-
- static bool offsetLessThan(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2);
 
 	/*! \brief Set text to the top left corner.
 	 *
@@ -184,8 +192,6 @@ protected:
 	*/
 	virtual void setLeftBottomCorner(quint64 address);
 
-
-
 	//! \brief Contains the child memory items. The offset of the child is the key.
 	QMultiMap<quint64, MemoryVisualizationItem*> childItems_;
 
@@ -208,8 +214,11 @@ private:
 	//! \brief No assignment
 	MemoryVisualizationItem& operator=(const MemoryVisualizationItem& other);
    
-	//! \brief Original coloring for the item.
-    QBrush originalBrush_;
+    //! \brief comparison function for two equal offsets.
+    static bool offsetLessThan(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2);
+
+	//! \brief Default coloring for the item.
+    QBrush defaultBrush_;
 };
 
 #endif // MEMORYVISUALIZATIONITEM_H

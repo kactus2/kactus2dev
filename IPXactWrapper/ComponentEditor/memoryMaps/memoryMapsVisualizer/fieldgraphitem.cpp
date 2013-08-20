@@ -22,7 +22,7 @@ field_(field) {
 	ExpandableItem::setExpansionBrush(brush);
 
 	// fields show name in the middle
-	setNamePosition(VisualizerItem::NAME_CENTERED);
+	setNamePosition(VisualizerItem::NAME_CENTERED, VisualizerItem::NAME_BOTTOM);
 
 	setShowExpandableItem(false);
 	setExpansionRectVisible(false);

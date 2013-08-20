@@ -50,6 +50,24 @@ public:
 	*/
 	virtual qreal itemTotalWidth() const;
 
+    /*! \brief Set lowest bit for the gap.
+	 *
+	 * \param address The lowest bit that limits the gap.
+	 * \param contains If true then the address is contained in the gap, 
+	 * otherwise the gap starts from next address.
+	 *
+	*/
+	void setStartAddress(quint64 address, bool contains = true);
+
+	/*! \brief Set highest bit for the gap.
+	 *
+	 * \param address The highest bit that limits the gap end.
+	 * \param contains If true then the address is contained in the gap,
+	 * otherwise the gap ends before the specified address.
+	 *
+	*/
+	void setEndAddress(quint64 address, bool contains = true);
+
 	/*! \brief Sets the first non-overlapping address to display.
 	 *
 	 * \param The first address to set.

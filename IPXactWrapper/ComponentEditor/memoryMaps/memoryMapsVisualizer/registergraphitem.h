@@ -36,7 +36,8 @@ public:
 	//! \brief Refresh the item and sub-items.
 	virtual void refresh();
 
- virtual void removeChild( MemoryVisualizationItem* childItem );
+	//! \brief Remove the item.
+    virtual void removeChild(MemoryVisualizationItem* childItem );
 
 	/*! \brief Get the offset of the item. 
 	 *
@@ -70,14 +71,12 @@ protected:
 
 	/*! \brief Set new positions for child field items.
 	 * 
-	 * The child items are organized in the order of their offset.
+	 * The child items are organized in the order of their last address (MSB).
 	*/
 	virtual void reorganizeChildren();
 
+    //! \brief Update the child items in the map. Field items are organized according to last address.
     void updateChildMap();
-
-    static bool offsetLessThan(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2);
-
 
 private:
 	
@@ -86,9 +85,20 @@ private:
 
 	//! \brief No assignment
 	RegisterGraphItem& operator=(const RegisterGraphItem& other);
+
+    /* \brief Sorting function for fields with same last address.
+     *
+     * \param s1 The left field in comparison s1 < s2.
+     *
+     * \param s2 The right field in comparison s1 < s2.
+     *
+     * \return True, if s1 precedes s2, otherwise false.
+     */
+    static bool addressLessThan(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2);
    
     //! \brief Pointer to the register being visualized.
 	QSharedPointer<Register> register_;
+
 };
 
 #endif // REGISTERGRAPHITEM_H

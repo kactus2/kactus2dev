@@ -21,7 +21,7 @@ addrPosition_(addrPos) {
 
 	QBrush brush(KactusColors::DRAFT_COMPONENT);
 	setBrush(brush);
-	setNamePosition(VisualizerItem::NAME_CENTERED);
+	setNamePosition(VisualizerItem::NAME_CENTERED, VisualizerItem::NAME_MIDDLE);
 	setName("...");
 }
 

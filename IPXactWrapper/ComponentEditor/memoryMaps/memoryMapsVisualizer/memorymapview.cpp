@@ -12,23 +12,34 @@
 #include <QRect>
 #include <QResizeEvent>
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapView()
+//-----------------------------------------------------------------------------
 MemoryMapView::MemoryMapView(QWidget *parent):
-QGraphicsView(parent) {
+QGraphicsView(parent)
+{
+    //setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 }
 
+//-----------------------------------------------------------------------------
+// Function: ~MemoryMapView()
+//-----------------------------------------------------------------------------
 MemoryMapView::~MemoryMapView() {
 }
 
+
+//-----------------------------------------------------------------------------
+// Function: resizeEvent()
+//-----------------------------------------------------------------------------
 void MemoryMapView::resizeEvent(QResizeEvent *event)
 {
     QGraphicsView::resizeEvent(event);
-    //QRect rect(-VisualizerItem::ITEM_HEIGHT,0,event->size().width(),event->size().height());
-    //scene()->update();
-    //MemoryMapScene* memoryscene = dynamic_cast<MemoryMapScene*>(scene());
-    //Q_ASSERT(memoryscene);
-    //memoryscene->setViewWidth(event->size().width());
-    //scene()->setSceneRect(rect);
-    //scene()->update(rect);
-    //fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
-    //memoryscene->rePosition();
+   
+    if (event->size().width() != event->oldSize().width())
+    {
+        MemoryMapScene* memoryscene = dynamic_cast<MemoryMapScene*>(scene());
+        Q_ASSERT(memoryscene);
+        memoryscene->setWidth(event->size().width());
+        event->accept();
+    }
 }

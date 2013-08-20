@@ -30,6 +30,7 @@ public:
 
 protected:
 
+    //! \brief Event handler for resizing.
     virtual void resizeEvent(QResizeEvent* event);
 
 private:

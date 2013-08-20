@@ -109,7 +109,7 @@ void RegisterGraphItem::removeChild( MemoryVisualizationItem* childItem ) {
 
 void RegisterGraphItem::reorganizeChildren() {
 
-	// remove the gaps and update offsets of fields
+	// remove the gaps and update msbs of fields
 	updateChildMap();
 
 	// if there are no children then this can not be expanded or collapsed
@@ -127,9 +127,13 @@ void RegisterGraphItem::reorganizeChildren() {
 	// the offset where the previous block starts
 	quint64 OffsetMin = register_->getMSB();
 
+    // previous conflicting area.
     FieldGapItem* prevConflict = 0;
 
+    // x-coordinate for childs.        
 	qreal xCoordinate = rect().left();
+
+    // the previous and top-most child items.
 	MemoryVisualizationItem* previous = NULL;
     MemoryVisualizationItem* topItem = NULL;   
     
@@ -184,19 +188,18 @@ void RegisterGraphItem::reorganizeChildren() {
             {
                 item->setCompleteOverlap();
 
-                // Field is completely overlapping with previous.
+                // Field is completely overlapping with previous and previous does not overlap with
+                // completely with any other field.
                 if (item->getOffset() >= previous->getOffset() &&
-                    item->getLastAddress() <= previous->getLastAddress() )
+                    item->getLastAddress() <= previous->getLastAddress() &&
+                    previous->getOverlappingBottom() != -1)
                 {
-                    previous->setConflicted();
-                    if (previous->getOverlappingBottom() != -1)
-                    {
-                        topItem = previous;                    
-                    }
-                }                
-            }
+                    topItem = previous;                    
+                }
+            }                
 
-            // Field partially overlaps with previous.
+
+            // Field partially overlaps with previous top-most item.
             else
             {
                 item->setOverlappingTop(topItem->getOffset() - 1);
@@ -205,11 +208,13 @@ void RegisterGraphItem::reorganizeChildren() {
                 quint64 conflictEnd = item->getLastAddress();
                 MemoryVisualizationItem* previousTopItem = topItem;
 
-                // Previous is completely overlapped by this field and another field.
+                // Previous top-most item is completely overlapped by this field and another field.
                 if (prevConflict && prevConflict->getOffset() - 1 <= item->getLastAddress())
                 {
+                    
                     if (previousTopItem != previous)
                     {
+                        // Update the coordinates of previous to align conflicting area correctly.     
                         previous->setPos(xCoordinate - getChildWidth(previousTopItem), rect().bottom());
                     }
 
@@ -217,11 +222,12 @@ void RegisterGraphItem::reorganizeChildren() {
                     conflictEnd = prevConflict->getOffset() - 1;
                     topItem = item;
                 }
-                // Previous is completely under this field. 
+                // Previous top-most item is completely under this field. 
                 else if (item->getLastAddress() == previousTopItem->getLastAddress())
-                {                    
+                {                                   
                     if (previousTopItem != previous)
                     {
+                        // Update the coordinates of previous to align conflicting area correctly.     
                         previous->setPos(xCoordinate - getChildWidth(previousTopItem), rect().bottom());
                     }
 
@@ -229,7 +235,7 @@ void RegisterGraphItem::reorganizeChildren() {
                     topItem = item;
                 }
 
-                // Previous is partially under this field. 
+                // Previous top-most item is partially under this field. 
                 else 
                 {                 
                     xCoordinate -= getChildWidth(previousTopItem);
@@ -239,6 +245,7 @@ void RegisterGraphItem::reorganizeChildren() {
 
                     if (previous != previousTopItem)
                     {
+                        // Update the coordinates of previous to align conflicting area correctly.   
                         previous->setPos(xCoordinate, rect().bottom());
                     }
 
@@ -292,7 +299,7 @@ void RegisterGraphItem::reorganizeChildren() {
 	}
 
 	// if the LSB bit(s) does not belong to any field
-	if (previous && OffsetMin > 0) {//previous->getOffset() > 0) {
+	if (previous && OffsetMin > 0) {
 		// create the gap 
 		FieldGapItem* gap = new FieldGapItem(this);
 
@@ -339,27 +346,34 @@ void RegisterGraphItem::updateChildMap() {
             gap = NULL;
             continue;
         }
-
-        // update the offset for the item
-        item->setNotConflicted();
+ 
+        // update the status and msbs for the item
+        if (item->getLastAddress() > register_->getMSB() )
+        {
+            item->setConflicted();
+        }
+        else
+        {
+            item->setNotConflicted();
+        }
         item->setOverlappingTop(item->getLastAddress());
         item->setOverlappingBottom(item->getOffset());
         item->setWidth(getChildWidth(item));
-        quint64 offset = item->getLastAddress();
-        newMap.insertMulti(offset, item);
+        quint64 msb = item->getLastAddress();
+        newMap.insertMulti(msb, item);
     }
 
-    // Sort childs with same offset for stable order.
-    foreach(quint64 offset, newMap.uniqueKeys())
+    // Sort childs with same last bit for stable order.
+    foreach(quint64 msb, newMap.uniqueKeys())
     {
-        if(newMap.count(offset) != 1)
+        if(newMap.count(msb) != 1)
         {
-            QList<MemoryVisualizationItem*> childs = newMap.values(offset);
-            qSort(childs.begin(), childs.end(), offsetLessThan );
-            newMap.remove(offset);
+            QList<MemoryVisualizationItem*> childs = newMap.values(msb);
+            qSort(childs.begin(), childs.end(), addressLessThan );
+            newMap.remove(msb);
             foreach(MemoryVisualizationItem* child, childs)
             {
-                newMap.insertMulti(offset,child);
+                newMap.insertMulti(msb,child);
             }
         }
     }
@@ -368,12 +382,10 @@ void RegisterGraphItem::updateChildMap() {
     childItems_ = newMap;
 }
 
-bool RegisterGraphItem::offsetLessThan(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2)
-{
-    return s1->getOffset() > s2->getOffset();
-}
 
-unsigned int RegisterGraphItem::getAddressUnitSize() const {
+
+unsigned int RegisterGraphItem::getAddressUnitSize() const 
+{
 	AddressBlockGraphItem* addrBlock = static_cast<AddressBlockGraphItem*>(parentItem());
 	Q_ASSERT(addrBlock);
 	return addrBlock->getAddressUnitSize();
@@ -420,15 +432,19 @@ void RegisterGraphItem::setWidth(qreal width)
  qreal RegisterGraphItem::getChildWidth(MemoryVisualizationItem* child) const
 {
     Q_ASSERT(child);
-    unsigned int highBit = qMax(child->getOverlappingBottom(), child->getOverlappingTop());
+    if ( child->getOverlappingBottom() == -1 || child->getOverlappingTop() == -1)
+    {
+        return 0;
+    }
+
+    unsigned int highBit = child->getOverlappingTop();
 
     if (highBit > register_->getMSB())
-    {
-        child->setConflicted();
+    {       
         highBit = register_->getMSB();
     }
 
-    unsigned int lowBit = qMin(child->getOverlappingBottom(), child->getOverlappingTop());
+    unsigned int lowBit = child->getOverlappingBottom();
 
     if (lowBit > register_->getMSB())
     {
@@ -439,3 +455,10 @@ void RegisterGraphItem::setWidth(qreal width)
     qreal bitWidth = childWidth_/register_->getSize();
     return bitWidth * bits;
  }
+
+bool RegisterGraphItem::addressLessThan(const MemoryVisualizationItem* s1, 
+    const MemoryVisualizationItem* s2)
+{
+    // Field with higher offset (lsb) precedes lower offset.
+    return s1->getOffset() > s2->getOffset();
+}

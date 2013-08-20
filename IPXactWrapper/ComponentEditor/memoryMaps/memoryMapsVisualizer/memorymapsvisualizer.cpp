@@ -47,7 +47,7 @@ void MemoryMapsVisualizer::removeMemoryMapItem( MemoryMapGraphItem* memMapItem )
 }
 
 QSize MemoryMapsVisualizer::minimumSizeHint() const {
-	return QSize(VisualizerItem::MAX_WIDTH + 80, VisualizerItem::ITEM_HEIGHT * 2);
+	return QSize(VisualizerItem::DEFAULT_WIDTH + 80, VisualizerItem::ITEM_HEIGHT * 2);
 }
 
 QSize MemoryMapsVisualizer::sizeHint() const {

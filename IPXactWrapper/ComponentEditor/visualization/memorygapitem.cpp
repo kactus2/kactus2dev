@@ -28,10 +28,9 @@ MemoryGapItem::~MemoryGapItem() {
 }
 
 
-
 void MemoryGapItem::refresh() {
-	//setLeftTopCorner(start_);
-	//setLeftBottomCorner(end_);
+	setLeftTopCorner(start_);
+	setLeftBottomCorner(end_);
 
 	ExpandableItem::reorganizeChildren();
 }
@@ -76,25 +75,4 @@ void MemoryGapItem::setEndAddress( quint64 address, bool contains /*= true*/ ) {
 
 quint64 MemoryGapItem::getLastAddress() const {
 	return end_;
-}
-
-void MemoryGapItem::setWidth( qreal width ) {
-
-    MemoryVisualizationItem::setWidth(width);
-    return;
-/*
-	QGraphicsItem* parentGraph = parentItem();
-
-	MemoryMapGraphItem* parentMap = dynamic_cast<MemoryMapGraphItem*>(parentGraph);
-	// gaps within memory maps must be wider because they are indented
-	if (parentMap) {
-		setRect(0, 0, width + VisualizerItem::ITEM_HEIGHT, VisualizerItem::ITEM_HEIGHT);
-	}
-	else {
-		setRect(0, 0, width, VisualizerItem::ITEM_HEIGHT);
-	}
-
-	// update the text fields
-	VisualizerItem::reorganizeChildren();
-*/
 }

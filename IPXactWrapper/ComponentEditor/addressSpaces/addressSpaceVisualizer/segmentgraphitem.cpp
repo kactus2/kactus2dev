@@ -21,7 +21,7 @@ segment_(segment) {
 
 	QBrush brush(KactusColors::ADDRESS_SEGMENT);
 	setBrush(brush);
-	setNamePosition(VisualizerItem::NAME_CENTERED);
+	setNamePosition(VisualizerItem::NAME_CENTERED, VisualizerItem::NAME_MIDDLE);
 }
 
 SegmentGraphItem::~SegmentGraphItem() {

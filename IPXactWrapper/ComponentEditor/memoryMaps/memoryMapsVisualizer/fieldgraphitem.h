@@ -61,7 +61,6 @@ public:
 	virtual unsigned int getAddressUnitSize() const;
 
 
-
 	/*! \brief Sets the first non-overlapping address to display.
 	 *
 	 * \param The first address to set.
@@ -69,12 +68,13 @@ public:
     virtual void setOverlappingTop(quint64 const& address);
 
 
-	/*! \brief Sets the last non-overlapping address to display.
-	 *
-	 * \param The last address to set.
-	*/
+    /*! \brief Sets the last non-overlapping address to display.
+    *
+    * \param The last address to set.
+    */
     virtual void setOverlappingBottom(quint64 const& address);
 
+    // \brief Sets the item to be completely overlapped by adjacent items.
     virtual  void setCompleteOverlap();
 
 private:

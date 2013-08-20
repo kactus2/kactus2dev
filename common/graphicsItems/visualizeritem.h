@@ -22,17 +22,26 @@ class VisualizerItem : public QObject, public QGraphicsRectItem {
 
 public:
 
-	enum NamePosition {
-		NAME_INDENTED = 0,		//! The name label is indented.
-		NAME_CENTERED			//! The name is centered in the middle of item.
-	};
+    enum NameHorizontalAlign
+    {
+        NAME_LEFT_ALIGN = 0, //! Name is aligned to left.
+        NAME_CENTERED,       //! Name is aligned to center.
+        NAME_RIGHT_ALIGN     //! Name is aligned to right.
+    };
+
+    enum NameVerticalAlign
+    {
+        NAME_TOP = 0,       //! Name is aligned to the top of the item.
+        NAME_MIDDLE,      //! Name is aligned to the center of the item.
+        NAME_BOTTOM         //! Name is aligned to the bottom of the item.
+    };
 
 	//! \brief The minimum and maximum bounds for visualizer items.
 	enum Bounds {
 		ITEM_HEIGHT = 36,		//! The height of a single item
 		MIN_WIDTH = 90,			//! The minimum width of an item
-		MAX_WIDTH = 200,		//! The maximum width of a single item
-		NAME_INDENTATION = 100, //! How much space the name leaves for left corners
+		DEFAULT_WIDTH = 200,		//! The default width of a single item
+		NAME_INDENTATION = 20, //! How much space the name leaves for left corners
         CORNER_INDENTATION = 4
 	};
 
@@ -62,8 +71,8 @@ public:
 	*/
 	virtual QRectF itemTotalRect() const;
 
-	/*! \brief Get the displayed name of the object.
-	 *
+	/*! \brief Get the displayed name of the object. 
+     *
 	 * \return QString containing the name
 	*/
 	virtual QString getName() const;
@@ -77,8 +86,7 @@ public:
 
 	/*! \brief Get the width of the item.
 	 *
-	 * This width is affected by the item's children so if children grow this 
-	 * width grows accordingly.
+	 * The width is dependent on the parents width.
 	 *
 	 * \return The width of the item and it's sub-items.
 	*/
@@ -89,7 +97,8 @@ public:
 	 * \param namePos The position to be used.
 	 *
 	*/
-	virtual void setNamePosition(const NamePosition namePos);
+	virtual void VisualizerItem::setNamePosition( const NameHorizontalAlign hPos, 
+        const NameVerticalAlign vPos );
     
 
 protected:
@@ -129,6 +138,21 @@ protected:
 	*/
 	virtual void setRightBottomCorner(const QString& text);
 
+	//! \brief Set the position for text in the top left corner.
+    virtual void setLeftTopPosition();
+
+    //! \brief Set the position for text in the bottom left corner.
+    virtual void setLeftBottomPosition();
+
+    //! \brief Set the position for text in the top right corner.
+    virtual void setRightTopPosition();
+
+    //! \brief Set the position for text in the bottom right corner.
+    virtual void setRightBottomPosition();
+
+    //! \brief Set the position for name text.
+    virtual void setNameLabelPosition();
+
 	/*! \brief Get the minimum rectangle of the item.
 	 *
 	 * \return QRectF that limits the minimum size needed by this item.
@@ -149,8 +173,24 @@ private:
 	//! \brief No assignment
 	VisualizerItem& operator=(const VisualizerItem& other);
 
+    //! \brief Resizes text boxes according to ohters.
+    void resizeLabels();
+    
+    /*! \brief If text is longer than maxChars, cuts the lenght to maxChars is and appends "...".
+     *
+	 * \param text The text to clip.
+     * \param maxChars Maximum number of characters to show.
+     *
+	 * \return The string with maximum lenght of maxChars.
+	*/
+    QString clipText(QString const& text, int maxChars) const;
+
+    //! \brief The name of the item.
+    QString name_;
+
 	//! \brief Defines where the name label is positioned.
-	NamePosition namePos_;
+	NameHorizontalAlign nameHorizontalPos_;
+    NameVerticalAlign nameVerticalPos_;
 
 	//! \brief The label to display the name of the memory map.
 	QGraphicsTextItem nameLabel_;

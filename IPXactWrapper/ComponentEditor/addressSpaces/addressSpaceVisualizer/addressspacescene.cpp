@@ -96,7 +96,7 @@ void AddressSpaceScene::rePosition() {
 
 			// update the positions
 			seg->setPos(0, yCoord);
-			block->setPos(VisualizerItem::MAX_WIDTH, yCoord);
+			block->setPos(VisualizerItem::DEFAULT_WIDTH, yCoord);
 
 			// check if the items are different sizes
 			
@@ -153,7 +153,7 @@ void AddressSpaceScene::rePosition() {
 		// if the segment starts before the block
 		else if (seg->getOffset() < block->getOffset()) {
 
-			block->setPos(VisualizerItem::MAX_WIDTH, blockCoord);
+			block->setPos(VisualizerItem::DEFAULT_WIDTH, blockCoord);
 
 			// if block reaches further than segment
 			if (seg->getLastAddress() < block->getLastAddress()) {
