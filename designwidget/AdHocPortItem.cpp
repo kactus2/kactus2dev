@@ -354,7 +354,9 @@ bool AdHocPortItem::isDirectionFixed() const
 void AdHocPortItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     // Discard mouse move if the diagram is protected.
-    if (static_cast<HWDesignDiagram*>(scene())->isProtected())
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+
+    if (diagram != 0 && diagram->isProtected())
     {
         return;
     }
@@ -401,6 +403,21 @@ void AdHocPortItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void AdHocPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     HWConnectionEndpoint::mouseReleaseEvent(event);
+
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+
+    if (diagram == 0)
+    {
+        // Update the default position in case the graphics are located in other scene than the designer.
+        port_->setDefaultPos(pos());
+
+        if (oldPos_ != pos())
+        {
+            emit moved(this);
+        }
+
+        return;
+    }
 
     QSharedPointer<QUndoCommand> cmd;
 

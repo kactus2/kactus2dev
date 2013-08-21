@@ -128,6 +128,13 @@ public:
     void setDependencyDirection(DependencyDirection dir);
 
     /*!
+     *  Sets the default position in the parent component's graphical representation.
+     *
+     *      @param [in] pos The position to set.
+     */
+    void setDefaultPos(QPointF const& pos);
+
+    /*!
      *  Returns the name of the API interface.
      */
     QString const& getName() const;
@@ -152,13 +159,18 @@ public:
      */
     DependencyDirection getDependencyDirection() const;
 
-	/*! \brief Get the name group of the api interface.
+    /*!
+     *  Returns the default position in the parent component's graphical representation.
+     */
+    QPointF const& getDefaultPos() const;
+
+	/*! \brief Get the name group of the API interface.
 	 *
 	 * \return Reference to the name group.
 	*/
 	General::NameGroup& getNameGroup();
 
-	/*! \brief Get the name group of the api interface.
+	/*! \brief Get the name group of the API interface.
 	 *
 	 * \return Reference to the name group.
 	*/
@@ -181,7 +193,10 @@ private:
     VLNV apiType_;
 
     //! Dependency direction.
-    DependencyDirection dependencyDir_;    
+    DependencyDirection dependencyDir_;
+
+    //! The default position in the parent component's graphical representation (optional).
+    QPointF defaultPos_;
 };
 
 //-----------------------------------------------------------------------------

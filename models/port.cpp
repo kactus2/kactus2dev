@@ -8,6 +8,7 @@
 #include "parameter.h"
 #include "transactional.h"
 #include "wire.h"
+#include "XmlUtils.h"
 
 #include <QDomNode>
 #include <QString>
@@ -28,7 +29,8 @@ transactional_(),
 portAccessHandle_(), 
 portAccessType_(),
 remoteEndpointName_(),
-adHocVisible_(false) {
+adHocVisible_(false),
+defaultPos_() {
 
 	for (int i = 0; i < portNode.childNodes().count(); ++i) {
 		QDomNode tempNode = portNode.childNodes().at(i);
@@ -72,6 +74,12 @@ adHocVisible_(false) {
                 {
                     adHocVisible_ = true;
                 }
+                else if (tempNode.childNodes().at(j).nodeName() == "kactus2:position")
+                {
+                    QDomNode posNode = tempNode.childNodes().at(j);
+                    defaultPos_.setX(posNode.attributes().namedItem("x").nodeValue().toInt());
+                    defaultPos_.setY(posNode.attributes().namedItem("y").nodeValue().toInt());
+                }
             }
         }
 	}
@@ -98,7 +106,8 @@ transactional_(other.transactional_),
 portAccessHandle_(other.portAccessHandle_),
 portAccessType_(other.portAccessType_),
 remoteEndpointName_(other.remoteEndpointName_),
-adHocVisible_(other.adHocVisible_)
+adHocVisible_(other.adHocVisible_),
+defaultPos_(other.defaultPos_)
 {	
 	nameGroup_.name_ = name;
 
@@ -118,7 +127,8 @@ transactional_(),
 portAccessHandle_(other.portAccessHandle_),
 portAccessType_(other.portAccessType_),
 remoteEndpointName_(other.remoteEndpointName_),
-adHocVisible_(other.adHocVisible_)
+adHocVisible_(other.adHocVisible_),
+defaultPos_(other.defaultPos_)
 {
 	
 	if (other.wire_) {
@@ -142,6 +152,7 @@ Port & Port::operator=( const Port &other ) {
 		portAccessType_ = other.portAccessType_;
         remoteEndpointName_ = other.remoteEndpointName_;
         adHocVisible_ = other.adHocVisible_;
+        defaultPos_ = other.defaultPos_;
 
 		if (other.wire_) {
 			wire_ = QSharedPointer<Wire>(
@@ -171,8 +182,9 @@ transactional_(),
 portAccessHandle_(),
 portAccessType_(),
 remoteEndpointName_(),
-adHocVisible_(false) {
-
+adHocVisible_(false),
+defaultPos_()
+{
 	wire_ = QSharedPointer<Wire>(new Wire());
 }
 
@@ -191,8 +203,9 @@ wire_(),
 transactional_(),
 portAccessHandle_(),
 portAccessType_(),
-adHocVisible_(false) {
-
+adHocVisible_(false),
+defaultPos_()
+{
 	nameGroup_.name_ = name;
 
 	wire_ = QSharedPointer<Wire>(new Wire(direction, leftBound, 
@@ -296,6 +309,11 @@ void Port::write(QXmlStreamWriter& writer, const QStringList& viewNames)
     if (adHocVisible_)
     {
         writer.writeEmptyElement("kactus2:adHocVisible");
+    }
+
+    if (!defaultPos_.isNull())
+    {
+        XmlUtils::writePosition(writer, defaultPos_);
     }
 
     writer.writeEndElement(); // spirit:vendorExtensions
@@ -686,4 +704,20 @@ void Port::setAdHocVisible(bool visible)
 bool Port::isAdHocVisible() const
 {
     return adHocVisible_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Port::setDefaultPos()
+//-----------------------------------------------------------------------------
+void Port::setDefaultPos(QPointF const& pos)
+{
+    defaultPos_ = pos;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Port::getDefaultPos()
+//-----------------------------------------------------------------------------
+QPointF const& Port::getDefaultPos() const
+{
+    return defaultPos_;
 }

@@ -13,6 +13,7 @@
 #include "ApiInterface.h"
 
 #include "generaldeclarations.h"
+#include "XmlUtils.h"
 
 //-----------------------------------------------------------------------------
 // Function: str2DependencyDirection()
@@ -52,26 +53,33 @@ QString dependencyDirection2Str(DependencyDirection dir)
 //-----------------------------------------------------------------------------
 // Function: ApiInterface::ApiInterface()
 //-----------------------------------------------------------------------------
-ApiInterface::ApiInterface():
-nameGroup_(),
-apiType_(),
-dependencyDir_(DEPENDENCY_PROVIDER) {
-}
-
-//-----------------------------------------------------------------------------
-// Function: ApiInterface::ApiInterface()
-//-----------------------------------------------------------------------------
-ApiInterface::ApiInterface(ApiInterface const& rhs) : nameGroup_(rhs.nameGroup_),
-                                                      apiType_(rhs.apiType_),
-                                                      dependencyDir_(rhs.dependencyDir_)
+ApiInterface::ApiInterface()
+    : nameGroup_(),
+      apiType_(),
+      dependencyDir_(DEPENDENCY_PROVIDER),
+      defaultPos_()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: ApiInterface::ApiInterface()
 //-----------------------------------------------------------------------------
-ApiInterface::ApiInterface(QDomNode& node) : nameGroup_(node), apiType_(),
-                                             dependencyDir_(DEPENDENCY_PROVIDER)
+ApiInterface::ApiInterface(ApiInterface const& rhs)
+    : nameGroup_(rhs.nameGroup_),
+      apiType_(rhs.apiType_),
+      dependencyDir_(rhs.dependencyDir_),
+      defaultPos_(rhs.defaultPos_)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiInterface::ApiInterface()
+//-----------------------------------------------------------------------------
+ApiInterface::ApiInterface(QDomNode& node)
+    : nameGroup_(node),
+      apiType_(),
+      dependencyDir_(DEPENDENCY_PROVIDER),
+      defaultPos_()
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
@@ -89,6 +97,11 @@ ApiInterface::ApiInterface(QDomNode& node) : nameGroup_(node), apiType_(),
         else if (childNode.nodeName() == "kactus2:dependencyDirection")
         {
             dependencyDir_ = str2DependencyDirection(childNode.childNodes().at(0).nodeValue(), DEPENDENCY_PROVIDER);
+        }
+        else if (childNode.nodeName() == "kactus2:position")
+        {
+            defaultPos_.setX(childNode.attributes().namedItem("x").nodeValue().toInt());
+            defaultPos_.setY(childNode.attributes().namedItem("y").nodeValue().toInt());
         }
     }
 }
@@ -116,6 +129,11 @@ void ApiInterface::write(QXmlStreamWriter& writer) const
     General::writeVLNVAttributes(writer, &apiType_);
 
     writer.writeTextElement("kactus2:dependencyDirection", dependencyDirection2Str(dependencyDir_));
+
+    if (!defaultPos_.isNull())
+    {
+        XmlUtils::writePosition(writer, defaultPos_);
+    }
 
     writer.writeEndElement(); // kactus2:apiInterface
 }
@@ -254,4 +272,20 @@ General::NameGroup& ApiInterface::getNameGroup() {
 
 const General::NameGroup& ApiInterface::getNameGroup() const {
 	return nameGroup_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiInterface::setDefaultPos()
+//-----------------------------------------------------------------------------
+void ApiInterface::setDefaultPos(QPointF const& pos)
+{
+    defaultPos_ = pos;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiInterface::getDefaultPos()
+//-----------------------------------------------------------------------------
+QPointF const& ApiInterface::getDefaultPos() const
+{
+    return defaultPos_;
 }

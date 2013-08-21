@@ -417,6 +417,18 @@ public:
     void setAdHocVisible(bool visible);
 
     /*!
+     *  Sets the default position in the parent component's graphical representation.
+     *
+     *      @param [in] pos The position to set.
+     */
+    void setDefaultPos(QPointF const& pos);
+
+    /*!
+     *  Returns the default position in the parent component's graphical representation.
+     */
+    QPointF const& getDefaultPos() const;
+
+    /*!
      *  Returns the remote endpoint name (used only for endpoints).
      */
     QString const& getRemoteEndpointName() const;
@@ -464,6 +476,9 @@ private:
 
     //! If true, the port is visible for ad-hoc connections.
     bool adHocVisible_;
+
+    //! The default position of the port in ad-hoc mode.
+    QPointF defaultPos_;
 };
 
 #endif /* PORT_H_ */

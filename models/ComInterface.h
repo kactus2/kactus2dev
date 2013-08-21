@@ -119,6 +119,13 @@ public:
     void setPropertyValues(QMap<QString, QString> const& values);
 
     /*!
+     *  Sets the default position in the parent component's graphical representation.
+     *
+     *      @param [in] pos The position to set.
+     */
+    void setDefaultPos(QPointF const& pos);
+
+    /*!
      *  Returns the name of the COM interface.
      */
     QString const& getName() const;
@@ -154,6 +161,11 @@ public:
     QMap<QString, QString> const& getPropertyValues() const;
 
     /*!
+     *  Returns the default position in the parent component's graphical representation.
+     */
+    QPointF const& getDefaultPos() const;
+
+    /*!
      *  Assignment operator.
      */
     ComInterface& operator=(ComInterface const& rhs);
@@ -172,24 +184,15 @@ public:
 
 	/*! \brief Get reference to the COM interface implementation driver.
 	 *
-	 * Method: 		getComImplementation
-	 * Full name:	ComInterface::getComImplementation
-	 * Access:		public 
-	 *
-	 *
-	 * \return VLNV identifying the implementation driver.
-	*/
+     * \return VLNV identifying the implementation driver.
+	 */
 	const VLNV& getComImplementation() const;
 
 	/*! \brief Set the COM interface implementation driver.
-	 *
-	 * Method: 		setComImplementation
-	 * Full name:	ComInterface::setComImplementation
-	 * Access:		public 
-	 *
+     *
 	 * \param implementationVLNV Reference to the driver which implements the COM interface.
 	 *
-	*/
+	 */
 	void setComImplementation(const VLNV& implementationVLNV);
 
 private:
@@ -221,6 +224,9 @@ private:
 
 	//! \brief Reference to the implementation driver.
 	 VLNV comImplementation_;
+
+     //! The default position in the parent component's graphical representation (optional).
+     QPointF defaultPos_;
 };
 
 //-----------------------------------------------------------------------------

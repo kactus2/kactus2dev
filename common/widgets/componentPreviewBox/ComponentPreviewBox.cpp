@@ -80,8 +80,8 @@ ComponentPreviewBox::ComponentPreviewBox(LibraryInterface* lh) : lh_(lh), compon
 
 	setMinimumHeight(MIN_BOX_HEIGHT);
 
-    // Disable interactivity.
-    //setInteractive(false);
+    // Disable interactivity by default.
+    setInteractive(false);
 }
 
 //-----------------------------------------------------------------------------

@@ -594,8 +594,6 @@ void BusPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     HWConnectionEndpoint::mouseReleaseEvent(event);
 
-    QSharedPointer<QUndoCommand> cmd;
-
     DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
 
     if (diagram == 0)
@@ -610,6 +608,8 @@ void BusPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
         return;
     }
+
+    QSharedPointer<QUndoCommand> cmd;
 
     // Check if the port position was really changed.
     if (oldPos_ != pos())

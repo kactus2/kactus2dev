@@ -661,7 +661,9 @@ bool SWPortItem::isDirectionFixed() const
 void SWPortItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     // Discard mouse move if the diagram is protected.
-    if (static_cast<DesignDiagram*>(scene())->isProtected())
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+
+    if (diagram != 0 && diagram->isProtected())
     {
         return;
     }
@@ -701,6 +703,28 @@ void SWPortItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void SWPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     SWConnectionEndpoint::mouseReleaseEvent(event);
+
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+
+    if (diagram == 0)
+    {
+        // Update the default position in case the graphics are located in other scene than the designer.
+        if (comInterface_ != 0)
+        {
+            comInterface_->setDefaultPos(pos());
+        }
+        else if (apiInterface_ != 0)
+        {
+            apiInterface_->setDefaultPos(pos());
+        }
+
+        if (oldPos_ != pos())
+        {
+            emit moved(this);
+        }
+
+        return;
+    }
 
     QSharedPointer<QUndoCommand> cmd;
 

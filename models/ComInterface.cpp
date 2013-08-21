@@ -12,6 +12,8 @@
 
 #include "ComInterface.h"
 
+#include "XmlUtils.h"
+
 //-----------------------------------------------------------------------------
 // Function: ComInterface::ComInterface()
 //-----------------------------------------------------------------------------
@@ -21,7 +23,8 @@ ComInterface::ComInterface()
       transferType_(), 
       dir_(General::INOUT),
       propertyValues_(),
-		comImplementation_()
+      comImplementation_(),
+      defaultPos_()
 {
 }
 
@@ -34,7 +37,8 @@ ComInterface::ComInterface(ComInterface const& rhs)
       transferType_(rhs.transferType_),
       dir_(rhs.dir_),
       propertyValues_(rhs.propertyValues_),
-		comImplementation_(rhs.comImplementation_)
+      comImplementation_(rhs.comImplementation_),
+      defaultPos_(rhs.defaultPos_)
 {
 }
 
@@ -47,7 +51,8 @@ ComInterface::ComInterface(QDomNode& node)
       transferType_(), 
       dir_(General::INOUT),
       propertyValues_(),
-		comImplementation_()
+      comImplementation_(),
+      defaultPos_()
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
@@ -74,9 +79,15 @@ ComInterface::ComInterface(QDomNode& node)
         {
             parsePropertyValues(childNode);
         }
-		  else if (childNode.nodeName() == "kactus2:comImplementationRef") {
-			  comImplementation_ = General::createVLNV(childNode, VLNV::COMPONENT);
-		  }
+        else if (childNode.nodeName() == "kactus2:comImplementationRef")
+        {
+            comImplementation_ = General::createVLNV(childNode, VLNV::COMPONENT);
+        }
+        else if (childNode.nodeName() == "kactus2:position")
+        {
+            defaultPos_.setX(childNode.attributes().namedItem("x").nodeValue().toInt());
+            defaultPos_.setY(childNode.attributes().namedItem("y").nodeValue().toInt());
+        }
     }
 }
 
@@ -123,8 +134,13 @@ void ComInterface::write(QXmlStreamWriter& writer) const
 
     writer.writeEndElement(); // kactus2:propertyValues
 
-	 writer.writeEmptyElement("kactus2:comImplementationRef");
-	 General::writeVLNVAttributes(writer, &comImplementation_);
+	writer.writeEmptyElement("kactus2:comImplementationRef");
+    General::writeVLNVAttributes(writer, &comImplementation_);
+
+    if (!defaultPos_.isNull())
+    {
+        XmlUtils::writePosition(writer, defaultPos_);
+    }
 
     writer.writeEndElement(); // kactus2:comInterface
 }
@@ -368,4 +384,20 @@ const VLNV& ComInterface::getComImplementation() const {
 
 void ComInterface::setComImplementation( const VLNV& implementationVLNV ) {
 	comImplementation_ = implementationVLNV;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComInterface::setDefaultPos()
+//-----------------------------------------------------------------------------
+void ComInterface::setDefaultPos(QPointF const& pos)
+{
+    defaultPos_ = pos;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComInterface::getDefaultPos()
+//-----------------------------------------------------------------------------
+QPointF const& ComInterface::getDefaultPos() const
+{
+    return defaultPos_;
 }

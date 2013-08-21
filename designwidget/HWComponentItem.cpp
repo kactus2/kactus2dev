@@ -112,19 +112,28 @@ HWComponentItem::HWComponentItem(LibraryInterface* lh_,
 
         AdHocPortItem* port = new AdHocPortItem(adhocPort.data(), getLibraryInterface(), this);
 
-        if (right)
+        // Check if the default position has been specified.
+        if (!adhocPort->getDefaultPos().isNull())
         {
-            port->setPos(QPointF(rect().width(), rightY) + rect().topLeft());
-            rightY += portSpacing;
+            port->setPos(adhocPort->getDefaultPos());
+            onAddPort(port, port->pos().x() >= 0);
         }
         else
         {
-            port->setPos(QPointF(0, leftY) + rect().topLeft());
-            leftY += portSpacing;
-        }
+            if (right)
+            {
+                port->setPos(QPointF(rect().width(), rightY) + rect().topLeft());
+                rightY += portSpacing;
+            }
+            else
+            {
+                port->setPos(QPointF(0, leftY) + rect().topLeft());
+                leftY += portSpacing;
+            }
 
-        onAddPort(port, right);
-        right = !right;
+            onAddPort(port, right);
+            right = !right;
+        }
     }
 
     updateSize();
@@ -252,6 +261,13 @@ void HWComponentItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 void HWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+
+    if (diagram == 0)
+    {
+        return;
+    }
+
     ComponentItem::mouseReleaseEvent(event);
     setZValue(0.0);
 
@@ -306,6 +322,13 @@ void HWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 void HWComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+
+    if (diagram == 0)
+    {
+        return;
+    }
+
     ComponentItem::mousePressEvent(event);
     setZValue(1001.0);
 

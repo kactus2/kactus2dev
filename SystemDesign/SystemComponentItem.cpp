@@ -50,27 +50,36 @@ SystemComponentItem::SystemComponentItem(QRectF const& size,
     {
         SWPortItem* port = new SWPortItem(apiIf, this);
 
-        if (right)
+        // Check if the default position has been specified.
+        if (!apiIf->getDefaultPos().isNull())
         {
-            port->setPos(QPointF(rect().width(), rightY) + rect().topLeft());
-            rightY += portSpacing;
+            port->setPos(apiIf->getDefaultPos());
+            onAddPort(port, (port->pos().x() >= 0) ? PORT_RIGHT : PORT_LEFT);
         }
         else
         {
-            port->setPos(QPointF(0, leftY) + rect().topLeft());
-            leftY += portSpacing;
-        }
+            if (right)
+            {
+                port->setPos(QPointF(rect().width(), rightY) + rect().topLeft());
+                rightY += portSpacing;
+            }
+            else
+            {
+                port->setPos(QPointF(0, leftY) + rect().topLeft());
+                leftY += portSpacing;
+            }
 
-        if (right)
-        {
-            onAddPort(port, PORT_RIGHT);
-        }
-        else
-        {
-            onAddPort(port, PORT_LEFT);
-        }
+            if (right)
+            {
+                onAddPort(port, PORT_RIGHT);
+            }
+            else
+            {
+                onAddPort(port, PORT_LEFT);
+            }
 
-        right = !right;
+            right = !right;
+        }
     }
 
     // Create graphics items for COM interfaces.
@@ -78,27 +87,36 @@ SystemComponentItem::SystemComponentItem(QRectF const& size,
     {
         SWPortItem* port = new SWPortItem(comIf, this);
 
-        if (right)
+        // Check if the default position has been specified.
+        if (!comIf->getDefaultPos().isNull())
         {
-            port->setPos(QPointF(rect().width(), rightY) + rect().topLeft());
-            rightY += portSpacing;
+            port->setPos(comIf->getDefaultPos());
+            onAddPort(port, (port->pos().x() >= 0) ? PORT_RIGHT : PORT_LEFT);
         }
         else
         {
-            port->setPos(QPointF(0, leftY) + rect().topLeft());
-            leftY += portSpacing;
-        }
+            if (right)
+            {
+                port->setPos(QPointF(rect().width(), rightY) + rect().topLeft());
+                rightY += portSpacing;
+            }
+            else
+            {
+                port->setPos(QPointF(0, leftY) + rect().topLeft());
+                leftY += portSpacing;
+            }
 
-        if (right)
-        {
-            onAddPort(port, PORT_RIGHT);
-        }
-        else
-        {
-            onAddPort(port, PORT_LEFT);
-        }
+            if (right)
+            {
+                onAddPort(port, PORT_RIGHT);
+            }
+            else
+            {
+                onAddPort(port, PORT_LEFT);
+            }
 
-        right = !right;
+            right = !right;
+        }
     }
 }
 

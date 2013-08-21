@@ -76,6 +76,13 @@ SWComponentItem::~SWComponentItem()
 //-----------------------------------------------------------------------------
 void SWComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+
+    if (diagram == 0)
+    {
+        return;
+    }
+
     setZValue(1001.0);
     ComponentItem::mousePressEvent(event);
 
@@ -108,8 +115,10 @@ void SWComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 void SWComponentItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
-    // Discard mouse move if the diagram is protected.
-    if (static_cast<SystemDesignDiagram*>(scene())->isProtected())
+    // Discard movement if the diagram is protected.
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+
+    if (diagram == 0 || diagram->isProtected())
     {
         return;
     }
@@ -156,6 +165,13 @@ void SWComponentItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 void SWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+
+    if (diagram == 0)
+    {
+        return;
+    }
+
     ComponentItem::mouseReleaseEvent(event);
     setZValue(0.0);
 

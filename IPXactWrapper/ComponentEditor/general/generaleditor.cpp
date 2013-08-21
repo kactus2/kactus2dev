@@ -63,6 +63,7 @@ previewBox_(0) {
 	headerEditor_->setTitle(tr("XML header"));
 
     previewBox_ = new ComponentPreviewBox(libHandler);
+    previewBox_->setInteractive(true);
     previewBox_->setComponent(component);
     previewBox_->setFixedWidth(220);
     previewBox_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
