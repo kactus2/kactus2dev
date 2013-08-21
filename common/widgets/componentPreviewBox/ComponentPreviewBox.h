@@ -70,6 +70,10 @@ public slots:
 	 */
 	void setComponent(const VLNV& vlnv);
 
+signals:
+    //! Emitted when the terminal arrangement has changed.
+    void endpointsRearranged();
+
 private:
     // Disable copying.
     ComponentPreviewBox(ComponentPreviewBox const& rhs);

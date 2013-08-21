@@ -488,6 +488,18 @@ public:
      */
     int getMCAPIPortID() const;
 
+    /*!
+     *  Sets the default position in the parent component's graphical representation.
+     *
+     *      @param [in] pos The position to set.
+     */
+    void setDefaultPos(QPointF const& pos);
+
+    /*!
+     *  Returns the default position in the parent component's graphical representation.
+     */
+    QPointF const& getDefaultPos() const;
+
 	/*! \brief Get the struct that contains name, display name and description.
 	 *
 	 * \return Reference to the struct.
@@ -610,6 +622,9 @@ private:
 	 * A pointer to the mirroredSlave instance.
 	 */
 	QSharedPointer<MirroredSlaveInterface> mirroredSlave_;
+
+    //! The default position in the parent component's graphical representation (optional).
+    QPointF defaultPos_;
 };
 
 #endif /* BUSINTERFACE_H_ */

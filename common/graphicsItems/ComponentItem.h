@@ -153,18 +153,21 @@ public:
      */
     virtual bool isConnectionUpdateDisabled() const = 0;
 
-	 /*! \brief Get the uuid of the instance.
-	  *
-	  * Method: 		getUuid
-	  * Full name:	ComponentItem::getUuid
-	  * Access:		public 
-	  *
-	  *
-	  * \return QString containing uuid.
+	/*! \brief Get the uuid of the instance.
+	 *
+	 * Method: 		getUuid
+	 * Full name:	ComponentItem::getUuid
+	 * Access:		public 
+	 *
+	 *
+	 * \return QString containing uuid.
 	 */
-	 QString getUuid() const;
+	QString getUuid() const;
 
 signals:
+    //! Emitted when an endpoint has been moved.
+    void endpointMoved(ConnectionEndpoint* endpoint);
+
     //! Sends an error message to the user.
     void errorMessage(const QString& errorMessage) const;
 

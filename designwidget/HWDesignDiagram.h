@@ -55,14 +55,29 @@ public:
         IO_COLUMN_WIDTH = 119
     };
 		
-	// Data required for copy-paste actions.
-	struct CopyData
+    //-----------------------------------------------------------------------------
+    //! Clipboard copy data for a single bus port.
+    //-----------------------------------------------------------------------------
+	struct BusPortCopyData
 	{
 		QSharedPointer<Component> component;
 		QSharedPointer<BusInterface> busInterface;
-		CopyData() : component(0), busInterface(0) {}
-		CopyData(QSharedPointer<Component> comp,QSharedPointer<BusInterface> busIf) : 
-		component(comp), busInterface(busIf) {}
+
+		/*!
+         *  Default constructor.
+         */
+        BusPortCopyData() : component(0), busInterface(0)
+        {
+        }
+
+        /*!
+         *  Constructor.
+         */
+		BusPortCopyData(QSharedPointer<Component> comp,QSharedPointer<BusInterface> busIf)
+            : component(comp),
+              busInterface(busIf)
+        {
+        }
 	};
 
     //-----------------------------------------------------------------------------
@@ -110,19 +125,62 @@ public:
     };
 
     //-----------------------------------------------------------------------------
+    //! Clipboard copy data for a single bus interface.
+    //-----------------------------------------------------------------------------
+	struct BusInterfaceCopyData
+	{
+		QSharedPointer<Component> component;
+		QSharedPointer<BusInterface> busInterface;
+
+		/*!
+         *  Default constructor.
+         */
+        BusInterfaceCopyData() : component(0), busInterface(0)
+        {
+        }
+
+        /*!
+         *  Constructor.
+         */
+		BusInterfaceCopyData(QSharedPointer<Component> comp,QSharedPointer<BusInterface> busIf)
+            : component(comp),
+              busInterface(busIf)
+        {
+        }
+	};
+
+    //-----------------------------------------------------------------------------
+    //! Clipboard copy data for a collection of copied bus interfaces.
+    //-----------------------------------------------------------------------------
+    struct BusInterfaceCollectionCopyData
+    {
+        QList<BusInterfaceCopyData> interfaces;
+
+        /*!
+         *  Constructor.
+         */
+        BusInterfaceCollectionCopyData()
+            : interfaces()
+        {
+        }
+    };
+
+    //-----------------------------------------------------------------------------
     //! Clipboard copy data for a single column.
     //-----------------------------------------------------------------------------
     struct ColumnCopyData
     {
-        ColumnDesc desc;                        //!< Column description.
-        ComponentCollectionCopyData components; //!< Components.
+        ColumnDesc desc;                            //!< Column description.
+        ComponentCollectionCopyData components;     //!< Components.
+        //BusInterfaceCollectionCopyData interfaces;  //!< Bus interfaces.
 
         /*!
          *  Constructor.
          */
         ColumnCopyData()
             : desc(),
-              components()
+              components()/*,
+              interfaces()*/
         {
         }
     };

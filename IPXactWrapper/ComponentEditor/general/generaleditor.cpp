@@ -78,6 +78,7 @@ previewBox_(0) {
     topLayout->addWidget(previewBox_);
 
     // Connect the contentChanged() signals.
+    connect(previewBox_, SIGNAL(endpointsRearranged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(attributeEditor_, SIGNAL(contentChanged()),
             this, SLOT(onAttributesChange()), Qt::UniqueConnection);
     connect(descEditor_, SIGNAL(contentChanged()),
@@ -162,6 +163,8 @@ void GeneralEditor::onDescriptionChange() {
 void GeneralEditor::showEvent( QShowEvent* event ) {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/general.html");
+
+    previewBox_->updatePreview();
 }
 
 void GeneralEditor::onHeaderChange() {

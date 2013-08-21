@@ -81,7 +81,7 @@ ComponentPreviewBox::ComponentPreviewBox(LibraryInterface* lh) : lh_(lh), compon
 	setMinimumHeight(MIN_BOX_HEIGHT);
 
     // Disable interactivity.
-    setInteractive(false);
+    //setInteractive(false);
 }
 
 //-----------------------------------------------------------------------------
@@ -104,7 +104,7 @@ void ComponentPreviewBox::updatePreview()
 
     if (component_ != 0)
     {
-        QGraphicsItem* item = 0;
+        ComponentItem* item = 0;
 
         switch (component_->getComponentImplementation())
         {
@@ -123,6 +123,7 @@ void ComponentPreviewBox::updatePreview()
         
         if (item != 0)
         {
+            connect(item, SIGNAL(endpointMoved(ConnectionEndpoint*)), this, SIGNAL(endpointsRearranged()));
             scene_->addItem(item);
         }
     }

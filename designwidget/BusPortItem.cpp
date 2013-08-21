@@ -494,7 +494,9 @@ bool BusPortItem::isDirectionFixed() const
 void BusPortItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     // Discard mouse move if the diagram is protected.
-    if (static_cast<HWDesignDiagram*>(scene())->isProtected())
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+
+    if (diagram != 0 && diagram->isProtected())
     {
         return;
     }
@@ -593,6 +595,21 @@ void BusPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     HWConnectionEndpoint::mouseReleaseEvent(event);
 
     QSharedPointer<QUndoCommand> cmd;
+
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+
+    if (diagram == 0)
+    {
+        // Update the default position in case the graphics are located in other scene than the designer.
+        busInterface_->setDefaultPos(pos());
+
+        if (oldPos_ != pos())
+        {
+            emit moved(this);
+        }
+
+        return;
+    }
 
     // Check if the port position was really changed.
     if (oldPos_ != pos())

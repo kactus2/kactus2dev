@@ -66,7 +66,7 @@
 #include <QDebug>
 #include "columnview/ColumnEditDialog.h"
 
-Q_DECLARE_METATYPE(HWDesignDiagram::CopyData)
+Q_DECLARE_METATYPE(HWDesignDiagram::BusPortCopyData)
 Q_DECLARE_METATYPE(HWDesignDiagram::ComponentCollectionCopyData)
 Q_DECLARE_METATYPE(HWDesignDiagram::ColumnCollectionCopyData)
 
@@ -1915,7 +1915,7 @@ QMenu* HWDesignDiagram::createContextMenu(QPointF const& pos)
 
                 if (items.count() == 1 &&
                     !(qgraphicsitem_cast<HWComponentItem *>(item)->componentModel()->getVlnv()->isValid()) &&
-                    mimedata != 0 && mimedata->hasImage() && mimedata->imageData().canConvert<CopyData>())
+                    mimedata != 0 && mimedata->hasImage() && mimedata->imageData().canConvert<BusPortCopyData>())
                 {
                     pasteAction_.setEnabled(true);
                 }
@@ -1963,7 +1963,7 @@ void HWDesignDiagram::onCopyAction(){
         if (type == BusPortItem::Type)
         {
             BusPortItem* port = qgraphicsitem_cast<BusPortItem*>(items[0]);
-            CopyData copy(port->getOwnerComponent(),port->getBusInterface());
+            BusPortCopyData copy(port->getOwnerComponent(),port->getBusInterface());
             QMimeData* mimeData = new QMimeData();
             mimeData->setImageData(QVariant::fromValue(copy));
             QApplication::clipboard()->setMimeData(mimeData);
@@ -2021,9 +2021,9 @@ void HWDesignDiagram::onPasteAction(){
 
                 QMimeData const* mimedata = QApplication::clipboard()->mimeData();
 
-                if ( mimedata->hasImage() && mimedata->imageData().canConvert<CopyData>())
+                if ( mimedata->hasImage() && mimedata->imageData().canConvert<BusPortCopyData>())
                 {				
-                    CopyData copy = mimedata->imageData().value<CopyData>();
+                    BusPortCopyData copy = mimedata->imageData().value<BusPortCopyData>();
 
                     // Bus interface must have a unique name within the component.
                     QString uniqueBusName = copy.busInterface->getName();	

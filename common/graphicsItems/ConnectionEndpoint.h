@@ -324,6 +324,9 @@ signals:
     //! \brief Emitted when the endpoint is destroyed.
     void destroyed(ConnectionEndpoint* endpoint);
 
+    //! Emitted when the end point has been moved.
+    void moved(ConnectionEndpoint* endpoint);
+
 protected:
     /*!
      *  Begins updating connection names.

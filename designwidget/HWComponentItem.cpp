@@ -78,16 +78,28 @@ HWComponentItem::HWComponentItem(LibraryInterface* lh_,
     {
         BusPortItem *port = new BusPortItem(busif, getLibraryInterface(), true, this);
 
-        if (right) {
-            port->setPos(QPointF(rect().width(), rightY) + rect().topLeft());
-            rightY += portSpacing;
-        } else {
-            port->setPos(QPointF(0, leftY) + rect().topLeft());
-            leftY += portSpacing;
+        // Check if the default position has been specified.
+        if (!busif->getDefaultPos().isNull())
+        {
+            port->setPos(busif->getDefaultPos());
+            onAddPort(port, port->pos().x() >= 0);
         }
+        else
+        {
+            if (right)
+            {
+                port->setPos(QPointF(rect().width(), rightY) + rect().topLeft());
+                rightY += portSpacing;
+            }
+            else
+            {
+                port->setPos(QPointF(0, leftY) + rect().topLeft());
+                leftY += portSpacing;
+            }
 
-        onAddPort(port, right);
-        right = !right;
+            onAddPort(port, right);
+            right = !right;
+        }
     }
 
     // Parse port ad-hoc visibilities.
@@ -191,7 +203,9 @@ BusPortItem const* HWComponentItem::getBusPort(const QString &name) const
 void HWComponentItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     // Discard movement if the diagram is protected.
-    if (static_cast<DesignDiagram*>(scene())->isProtected())
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+
+    if (diagram == 0 || diagram->isProtected())
     {
         return;
     }
@@ -323,6 +337,8 @@ void HWComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 void HWComponentItem::onAddPort(HWConnectionEndpoint* port, bool right)
 {
+    connect(port, SIGNAL(moved(ConnectionEndpoint*)), this, SIGNAL(endpointMoved(ConnectionEndpoint*)));
+
     if (right)
     {
         rightPorts_.append(port);
@@ -494,6 +510,8 @@ void HWComponentItem::updateComponent()
 //-----------------------------------------------------------------------------
 void HWComponentItem::removePort(HWConnectionEndpoint* port)
 {
+    disconnect(port, SIGNAL(moved(ConnectionEndpoint*)), this, SIGNAL(endpointMoved(ConnectionEndpoint*)));
+
     leftPorts_.removeAll(port);
     rightPorts_.removeAll(port);
     updateSize();

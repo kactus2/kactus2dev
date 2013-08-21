@@ -6,10 +6,12 @@
 
 #include "businterface.h"
 #include "generaldeclarations.h"
-#include <LibraryManager/vlnv.h>
+#include "XmlUtils.h"
 #include "masterinterface.h"
 #include "slaveinterface.h"
 #include "mirroredslaveinterface.h"
+
+#include <LibraryManager/vlnv.h>
 
 #include <QString>
 #include <QList>
@@ -236,6 +238,28 @@ monitor_() {
 				parameters_.append(QSharedPointer<Parameter>(temp));
 			}
 		}
+        else if (children.at(i).nodeName() == "spirit:vendorExtensions")
+        {
+            for (int j = 0; j < children.at(i).childNodes().count(); ++j)
+            {
+                QDomNode extensionNode = children.at(i).childNodes().at(j);
+
+                // Search for kactus2 extensions.
+                if (extensionNode.nodeName() == "kactus2:extensions")
+                {
+                    for (int k = 0; k < extensionNode.childNodes().count(); ++k)
+                    {
+                        QDomNode childNode = extensionNode.childNodes().at(k);
+
+                        if (childNode.nodeName() == "kactus2:position")
+                        {
+                            defaultPos_.setX(childNode.attributes().namedItem("x").nodeValue().toInt());
+                            defaultPos_.setY(childNode.attributes().namedItem("y").nodeValue().toInt());
+                        }
+                    }
+                }
+            }
+        }
 	}
 
 	// if mandatory elements are missing
@@ -262,7 +286,9 @@ BusInterface::BusInterface(): nameGroup_(),
 		endianness_(General::LITTLE),
         parameters_(), master_(QSharedPointer<MasterInterface>(new MasterInterface)),
         slave_(), system_(),
-        monitor_() {
+        monitor_(),
+        defaultPos_()
+{
 }
 
 BusInterface::BusInterface( const BusInterface &other ):
@@ -282,8 +308,9 @@ master_(),
 slave_(),
 system_(other.system_),
 monitor_(),
-mirroredSlave_() {
-
+mirroredSlave_(),
+defaultPos_(other.defaultPos_)
+{
 	foreach (QSharedPointer<General::PortMap> portMap, other.portMaps_) {
 		if (portMap) {
 			QSharedPointer<General::PortMap> copy = QSharedPointer<General::PortMap>(
@@ -321,9 +348,10 @@ mirroredSlave_() {
 	}
 }
 
-BusInterface & BusInterface::operator=( const BusInterface &other ) {
-	if (this != &other) {
-	
+BusInterface & BusInterface::operator=( const BusInterface &other )
+{
+	if (this != &other)
+    {	
 		nameGroup_ = other.nameGroup_;
 		attributes_ = other.attributes_;
 		busType_ = other.busType_;
@@ -335,6 +363,7 @@ BusInterface & BusInterface::operator=( const BusInterface &other ) {
 		bitSteeringAttributes_ = other.bitSteeringAttributes_;
 		endianness_ = other.endianness_;
 		system_ = other.system_;
+        defaultPos_ = other.defaultPos_;
 
 		portMaps_.clear();
 		foreach (QSharedPointer<General::PortMap> portMap, other.portMaps_) {
@@ -547,6 +576,17 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 		}
 		writer.writeEndElement(); // spirit:parameters
 	}
+
+    if (!defaultPos_.isNull())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        writer.writeStartElement("kactus2:extensions");
+
+        XmlUtils::writePosition(writer, defaultPos_);
+
+        writer.writeEndElement(); // kactus2:extensions
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:busInterface
 }
@@ -1167,4 +1207,20 @@ QString BusInterface::getAddressSpaceRef() const {
 	else {
 		return QString();
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterface::setDefaultPos()
+//-----------------------------------------------------------------------------
+void BusInterface::setDefaultPos(QPointF const& pos)
+{
+    defaultPos_ = pos;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterface::getDefaultPos()
+//-----------------------------------------------------------------------------
+QPointF const& BusInterface::getDefaultPos() const
+{
+    return defaultPos_;
 }
