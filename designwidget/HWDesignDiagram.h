@@ -64,8 +64,86 @@ public:
 		CopyData(QSharedPointer<Component> comp,QSharedPointer<BusInterface> busIf) : 
 		component(comp), busInterface(busIf) {}
 	};
+
+    //-----------------------------------------------------------------------------
+    //! Clipboard copy data for a single component instance.
+    //-----------------------------------------------------------------------------
+    struct ComponentInstanceCopyData
+    {
+        QSharedPointer<Component> component;            //!< The referenced component.
+        QString instanceName;                           //!< The instance name.
+        QString displayName;                            //!< The display name.
+        QString description;                            //!< The description of the instance.
+        QPointF pos;                                    //!< Original position of the instance.
+        QMap<QString, QString> configurableElements;    //!< Configurable element values.
+        QMap<QString, QPointF> busInterfacePositions;   //!< Bus interface positions.
+        QMap<QString, QPointF> adHocPortPositions;      //!< Ad-hoc port positions.
+        QMap<QString, bool> adHocVisibilities;          //!< Ad-hoc visibilities.
+
+        ComponentInstanceCopyData()
+            : component(),
+              instanceName(),
+              displayName(),
+              description(),
+              configurableElements(),
+              busInterfacePositions(),
+              adHocPortPositions(),
+              adHocVisibilities()
+        {
+        }
+    };
+
+    //-----------------------------------------------------------------------------
+    //! Clipboard copy data for a collection of copied component instances.
+    //-----------------------------------------------------------------------------
+    struct ComponentCollectionCopyData
+    {
+        QList<ComponentInstanceCopyData> instances;
+
+        /*!
+         *  Constructor.
+         */
+        ComponentCollectionCopyData()
+            : instances()
+        {
+        }
+    };
+
+    //-----------------------------------------------------------------------------
+    //! Clipboard copy data for a single column.
+    //-----------------------------------------------------------------------------
+    struct ColumnCopyData
+    {
+        ColumnDesc desc;                        //!< Column description.
+        ComponentCollectionCopyData components; //!< Components.
+
+        /*!
+         *  Constructor.
+         */
+        ColumnCopyData()
+            : desc(),
+              components()
+        {
+        }
+    };
+
+    //-----------------------------------------------------------------------------
+    //! Clipboard copy data for a collection of columns.
+    //-----------------------------------------------------------------------------
+    struct ColumnCollectionCopyData
+    {
+        QList<ColumnCopyData> columns;
+
+        /*!
+         *  Constructor.
+         */
+        ColumnCollectionCopyData()
+            : columns()
+        {
+        }
+    };
     
-/*!
+    /*!
      *  Constructor.
      */
     HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, HWDesignWidget *parent = 0);
@@ -181,10 +259,30 @@ public slots:
      */
 	virtual void onCopyAction();
 
-	/*!
+    /*!
      *  Called when paste is selected from the context menu.
      */
 	virtual void onPasteAction();
+
+    /*!
+     *  Copies component instances in a format which can be saved to clipboard.
+     *
+     *      @param [in]  items       The component instance items to copy.
+     *      @param [out] collection  The resulted collection of component instance copy data.
+     */
+    void copyInstances(QList<QGraphicsItem*> const& items, ComponentCollectionCopyData &collection);
+
+    /*!
+     *  Pastes component instances from a copy data collection.
+     *
+     *      @param [in] collection     The collection of component instance copy data.
+     *      @param [in] column         The column where to place the instances.
+     *      @param [in] cmd            The parent undo command for the paste undo commands.
+     *      @param [in] userCursorPos  If true, the instances are placed close to the cursor position.
+     *                                 Otherwise the original positions are used.
+     */
+    void pasteInstances(ComponentCollectionCopyData const& collection,
+                        GraphicsColumn* column, QUndoCommand* cmd, bool useCursorPos);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
@@ -280,6 +378,13 @@ private:
      *  Initializes the context menu actions.
      */
 	void setupActions();
+
+    /*!
+     *  Returns the type of the given items if they all are of the same type.
+     *
+     *      @return The common type, or -1 if the items are of different type.
+     */
+    int getCommonItemType(QList<QGraphicsItem*> const& items) const;
 
     //-----------------------------------------------------------------------------
     // Data.

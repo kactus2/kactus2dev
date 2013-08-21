@@ -49,7 +49,7 @@ public:
                   QString const& instanceName = QString("instance"),
                   QString const& displayName = QString(),
                   QString const& description = QString(),
-						QString const& uuid = QString(),
+                  QString const& uuid = QString(),
                   QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>(),
                   QGraphicsItem *parent = 0);
 

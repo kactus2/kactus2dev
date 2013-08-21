@@ -33,7 +33,7 @@ ComponentItem::ComponentItem(QRectF const& size,
                              QString const& instanceName,
                              QString const& displayName,
                              QString const& description,
-									  QString const& uuid,
+                             QString const& uuid,
                              QMap<QString, QString> const& configurableElementValues,
                              QGraphicsItem *parent)
     : QGraphicsRectItem(parent),
@@ -44,7 +44,7 @@ ComponentItem::ComponentItem(QRectF const& size,
       displayName_(displayName),
       description_(description),
       configurableValues_(configurableElementValues),
-		uuid_(uuid)
+      uuid_(uuid)
 {
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemIsSelectable);

@@ -69,12 +69,22 @@ public:
     /*! \brief Get the BusPortItem that corresponds to the given bus interface name
      *
      */
-    BusPortItem *getBusPort(const QString &name);
+    BusPortItem* getBusPort(const QString &name);
+
+    /*! \brief Get the BusPortItem that corresponds to the given bus interface name
+     *
+     */
+    BusPortItem const* getBusPort(const QString &name) const;
 
     /*
      *  Returns the ad-hoc port with the given name, or null if not found.
      */
     AdHocPortItem* getAdHocPort(QString const& portName);
+
+    /*
+     *  Returns the ad-hoc port with the given name, or null if not found.
+     */
+    AdHocPortItem const* getAdHocPort(QString const& portName) const;
 
     int type() const { return Type; }
 
@@ -127,6 +137,31 @@ public:
      *  Returns the ad-hoc port with the given name or null if not found.
      */
     virtual HWConnectionEndpoint* getDiagramAdHocPort(QString const& portName);
+
+    /*!
+     *  Sets the bus interface positions.
+     *
+     *      @param [in] positions      The positions to set.
+     *      @param [in] createMissing  If true, the missing bus interfaces are created.
+     */
+    void setBusInterfacePositions(QMap<QString, QPointF> const& positions, bool createMissing = false);
+
+    /*!
+     *  Sets the ad-hoc port positions.
+     *
+     *      @param [in] positions      The positions to set.
+     */
+    void setAdHocPortPositions(QMap<QString, QPointF> const& positions);
+
+    /*!
+     *  Returns the bus interface positions.
+     */
+    QMap<QString, QPointF> getBusInterfacePositions() const;
+
+    /*!
+     *  Returns the ad-hoc port positions.
+     */
+    QMap<QString, QPointF> getAdHocPortPositions() const;
 
 signals:
     //! Emitted when the ad-hoc visibilities have been changed.

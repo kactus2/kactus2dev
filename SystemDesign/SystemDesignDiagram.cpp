@@ -510,7 +510,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
                 // Create the SW component item.
                 SWComponentItem* item = new SWComponentItem(getLibraryInterface(), comp,
                                                             instanceName, QString(), QString(),
-																				QUuid::createUuid().toString(),
+                                                            QUuid::createUuid().toString(),
                                                             QMap<QString, QString>());
                 
                 item->setPos(stack->mapStackFromScene(snapPointToGrid(event->scenePos())));
@@ -564,7 +564,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             // Create the SW component item.
             SWComponentItem* newCompItem = new SWComponentItem(getLibraryInterface(), comp,
                                                                instanceName, QString(), QString(),
-																					QUuid::createUuid().toString(),
+                                                               QUuid::createUuid().toString(),
                                                                QMap<QString, QString>());
 
             // Perform the replacement.
@@ -1146,7 +1146,11 @@ void SystemDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         }
     }
 
-    QGraphicsScene::mouseMoveEvent(event);
+    // Allow moving items only when a single item is selected.
+    if (selectedItems().count() == 1)
+    {
+        QGraphicsScene::mouseMoveEvent(event);
+    }
 }
 
 //-----------------------------------------------------------------------------
