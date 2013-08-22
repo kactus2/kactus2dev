@@ -53,6 +53,50 @@ public:
         IO_COLUMN_WIDTH = 119
     };
 
+
+    //-----------------------------------------------------------------------------
+    //! Clipboard copy data for a single API/COM port.
+    //-----------------------------------------------------------------------------
+	struct PortCopyData
+	{
+        QString name;                              //!< The name of the interface.
+        // Only one of these is valid at one time.
+		QSharedPointer<ApiInterface> apiInterface; //!< API interface.
+		QSharedPointer<ComInterface> comInterface; //!< COM interface.
+
+		/*!
+         *  Default constructor.
+         */
+        PortCopyData() : apiInterface(), comInterface()
+        {
+        }
+
+        /*!
+         *  Constructor.
+         */
+		PortCopyData(QSharedPointer<ApiInterface> apiInterface, QSharedPointer<ComInterface> comInterface)
+            : apiInterface(apiInterface),
+              comInterface(comInterface)
+        {
+        }
+	};
+
+    //-----------------------------------------------------------------------------
+    //! Clipboard copy data for a collection of API/COM ports.
+    //-----------------------------------------------------------------------------
+    struct PortCollectionCopyData
+    {
+        QList<PortCopyData> ports;
+
+        /*!
+         *  Constructor.
+         */
+        PortCollectionCopyData()
+            : ports()
+        {
+        }
+    };
+
     //-----------------------------------------------------------------------------
     //! Clipboard copy data for a single component instance.
     //-----------------------------------------------------------------------------

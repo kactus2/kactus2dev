@@ -1988,7 +1988,6 @@ void HWDesignDiagram::onCopyAction(){
 
                 collection.columns.append(ColumnCopyData());
                 ColumnCopyData& columnData = collection.columns.back();
-
                 columnData.desc = column->getColumnDesc();
 
                 copyInstances(column->getItems(), columnData.components);
@@ -2049,9 +2048,8 @@ void HWDesignDiagram::onPasteAction(){
                         port->setTypeLocked(true);
                     }
 
-                    QSharedPointer<QUndoCommand> cmd(new PortPasteCommand(targetComp, copy.component, pos, port) );
-                    cmd->redo();
-                    getEditProvider().addCommand(cmd, false);
+                    QSharedPointer<QUndoCommand> cmd(new PortPasteCommand(targetComp, copy.component, pos, port));
+                    getEditProvider().addCommand(cmd);
 
                     // Update sidebar view.
                     emit componentSelected(targetComp);

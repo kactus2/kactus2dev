@@ -128,11 +128,24 @@ void SystemItemAddCommand::redo()
 // Function: SWPortAddCommand()
 //-----------------------------------------------------------------------------
 SWPortAddCommand::SWPortAddCommand(SystemComponentItem* component, QPointF const& pos,
-                                           QUndoCommand* parent)
+                                   QUndoCommand* parent)
     : QUndoCommand(parent),
       component_(component),
       pos_(pos),
       port_(0),
+      scene_(component->scene()),
+      del_(false)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWPortAddCommand()
+//-----------------------------------------------------------------------------
+SWPortAddCommand::SWPortAddCommand(SystemComponentItem* component, SWPortItem* port, QUndoCommand* parent)
+    : QUndoCommand(parent),
+      component_(component),
+      pos_(),
+      port_(port),
       scene_(component->scene()),
       del_(false)
 {

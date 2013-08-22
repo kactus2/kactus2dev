@@ -151,6 +151,15 @@ public:
     SWPortAddCommand(SystemComponentItem* component, QPointF const& pos, QUndoCommand* parent = 0);
 
     /*!
+     *  Constructor.
+     *
+     *      @param [in] component  The component to which to add a port.
+     *      @param [in] port       The port to add.
+     *      @param [in] parent     The parent command.
+     */
+    SWPortAddCommand(SystemComponentItem* component, SWPortItem* port, QUndoCommand* parent = 0);
+
+    /*!
      *  Destructor.
      */
     ~SWPortAddCommand();

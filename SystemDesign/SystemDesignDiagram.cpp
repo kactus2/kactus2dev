@@ -66,6 +66,7 @@
 
 #include <QUuid>
 
+Q_DECLARE_METATYPE(SystemDesignDiagram::PortCollectionCopyData)
 Q_DECLARE_METATYPE(SystemDesignDiagram::ComponentCollectionCopyData)
 Q_DECLARE_METATYPE(SystemDesignDiagram::ColumnCollectionCopyData)
 
@@ -2876,7 +2877,30 @@ void SystemDesignDiagram::onCopyAction()
 
         if (type == SWPortItem::Type)
         {
-            // TODO: API and COM interface copy.
+            PortCollectionCopyData collection;
+
+            foreach (QGraphicsItem* item, items)
+            {
+                SWPortItem* port = static_cast<SWPortItem*>(item);
+
+                collection.ports.append(PortCopyData());
+                PortCopyData& portData = collection.ports.back();
+                portData.name = port->name();
+
+                if (port->getApiInterface() != 0)
+                {
+                    portData.apiInterface = QSharedPointer<ApiInterface>(new ApiInterface(*port->getApiInterface()));
+                }
+
+                if (port->getComInterface() != 0)
+                {
+                    portData.comInterface = QSharedPointer<ComInterface>(new ComInterface(*port->getComInterface()));
+                }
+            }
+
+            QMimeData* mimeData = new QMimeData();
+            mimeData->setImageData(QVariant::fromValue(collection));
+            QApplication::clipboard()->setMimeData(mimeData);
         }
         else if (type == SWComponentItem::Type)
         {
@@ -2922,7 +2946,67 @@ void SystemDesignDiagram::onPasteAction()
 
         if (type == SWComponentItem::Type)
         {
-            // TODO: Paste API/COM interfaces.
+            SWComponentItem* targetComp = static_cast<SWComponentItem*>(items[0]);
+
+            // Paste only to draft components.
+            if (!targetComp->componentModel()->getVlnv()->isValid())
+            {
+                QMimeData const* mimedata = QApplication::clipboard()->mimeData();
+
+                if (mimedata->hasImage() && mimedata->imageData().canConvert<PortCollectionCopyData>())
+                {				
+                    PortCollectionCopyData collection = mimedata->imageData().value<PortCollectionCopyData>();
+                    QSharedPointer<QUndoCommand> parentCmd(new QUndoCommand());
+
+                    foreach (PortCopyData const& portData, collection.ports)
+                    {
+                        // Interface must have a unique name within the component.
+                        QString uniqueName = portData.name;	
+
+                        unsigned int count =  0;	
+
+                        while(targetComp->getSWPort(uniqueName, SWConnectionEndpoint::ENDPOINT_TYPE_COM) != 0 ||
+                              targetComp->getSWPort(uniqueName, SWConnectionEndpoint::ENDPOINT_TYPE_API) != 0 )
+                        {
+                            ++count;
+                            uniqueName = portData.name + "_" + QString::number(count);			
+                        }
+
+                        SWPortItem* port = 0;
+
+                        if (portData.apiInterface != 0)
+                        {
+                            // Create a copy of the API interface.
+                            QSharedPointer<ApiInterface> apiIf(new ApiInterface(*portData.apiInterface));
+                            apiIf->setName(uniqueName);
+
+                            port = new SWPortItem(apiIf, targetComp);
+                        }
+                        else if (portData.comInterface != 0)
+                        {
+                            QSharedPointer<ComInterface> comIf(new ComInterface(*portData.comInterface));
+                            comIf->setName(uniqueName);
+
+                            port = new SWPortItem(comIf, targetComp);
+                        }
+                        else
+                        {
+                            port = new SWPortItem(uniqueName, targetComp);
+                        }
+
+                        QPointF pos = snapPointToGrid(targetComp->mapFromScene(parent()->mapFromGlobal(QCursor::pos())));
+                        port->setPos(pos);
+
+                        new SWPortAddCommand(targetComp, port, parentCmd.data());
+                    }
+
+                    getEditProvider().addCommand(parentCmd);
+
+                    // Update sidebar view.
+                    emit componentSelected(targetComp);
+                    emit helpUrlRequested("swsysdesign/swinstance.html");
+                }
+            }
         }
         else
         {
@@ -3037,13 +3121,31 @@ QMenu* SystemDesignDiagram::createContextMenu(QPointF const& pos)
 
             if (type == SWPortItem::Type)
             {
-                // TODO: Paste support for API/COM interfaces.
+                // Allow copying API/COM ports (single or multiple).
+                menu = new QMenu(parent());	
+                menu->addAction(&copyAction_);
             }
             else if (type == SWComponentItem::Type)
             {
                 // Allow copying components (single or multiple).
                 menu = new QMenu(parent());	
                 menu->addAction(&copyAction_);
+
+                // Enable paste action, if a draft component (no valid vlnv) and the clipboard
+                // contains API/COM bus interfaces.
+                menu->addAction(&pasteAction_);
+
+                QMimeData const* mimedata = QApplication::clipboard()->mimeData();
+
+                if (!(static_cast<SWComponentItem *>(item)->componentModel()->getVlnv()->isValid()) &&
+                    mimedata != 0 && mimedata->hasImage() && mimedata->imageData().canConvert<PortCollectionCopyData>())
+                {
+                    pasteAction_.setEnabled(true);
+                }
+                else
+                {
+                    pasteAction_.setEnabled(false);
+                }
             }
             else if (type == SystemColumn::Type)
             {
