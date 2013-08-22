@@ -152,6 +152,10 @@ bool SegmentsModel::setData( const QModelIndex& index,
 				break;
 					}
 			case 2: {
+                if (value.toInt() < 1)
+                {
+                    return false;
+                }
 				segments_.at(index.row())->setRange(value.toString());
 				emit segmentChanged(segments_.at(index.row()));
 				break;

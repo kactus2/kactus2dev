@@ -20,7 +20,7 @@ addrBlock_(block) {
 	Q_ASSERT(addrBlock_);
 
 	QBrush brush(KactusColors::ADDR_BLOCK_COLOR);
-	setBrush(brush);
+	setDefaultBrush(brush);
 	setNamePosition(VisualizerItem::NAME_LEFT_ALIGN, VisualizerItem::NAME_MIDDLE);
 }
 
@@ -29,8 +29,12 @@ LocalAddrBlockGraphItem::~LocalAddrBlockGraphItem() {
 
 void LocalAddrBlockGraphItem::refresh() {
 	setName(addrBlock_->getName());
-	setLeftTopCorner(Utils::str2Uint(addrBlock_->getBaseAddress()));
-	setLeftBottomCorner(addrBlock_->getLastAddress());
+    
+    quint64 offset = Utils::str2Uint(addrBlock_->getBaseAddress());
+    quint64 lastAddr = addrBlock_->getLastAddress();
+    setOverlappingTop(offset);    
+    setOverlappingBottom(lastAddr);
+	
 	VisualizerItem::reorganizeChildren();
 }
 

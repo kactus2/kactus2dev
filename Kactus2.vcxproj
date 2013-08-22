@@ -480,6 +480,7 @@ CreateHelp
     <ClCompile Include="GeneratedFiles\moc_AddressEditor.cpp" />
     <ClCompile Include="GeneratedFiles\moc_AddressModel.cpp" />
     <ClCompile Include="GeneratedFiles\moc_AddressSectionItem.cpp" />
+    <ClCompile Include="GeneratedFiles\moc_AddressSpaceConflictedItem.cpp" />
     <ClCompile Include="GeneratedFiles\moc_addressspaceeditor.cpp" />
     <ClCompile Include="GeneratedFiles\moc_addressspacegapitem.cpp" />
     <ClCompile Include="GeneratedFiles\moc_addressspacegeneraleditor.cpp" />
@@ -900,6 +901,7 @@ CreateHelp
     <ClCompile Include="GeneratedFiles\moc_vlnvdisplayer.cpp" />
     <ClCompile Include="GeneratedFiles\moc_vlnveditor.cpp" />
     <ClCompile Include="GeneratedFiles\moc_writevalueconstrainteditor.cpp" />
+    <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\AddressSpaceConflictedItem.cpp" />
     <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\addressspacegapitem.cpp" />
     <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\addressspacescene.cpp" />
     <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\addressspacevisualizationitem.cpp" />
@@ -5061,6 +5063,32 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Template|x64'">Moc%27ing PortGenerationTableModel.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\AddressSpaceConflictedItem.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing AddressSpaceConflictedItem.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing AddressSpaceConflictedItem.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing AddressSpaceConflictedItem.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\addressSpaces\localMemoryMap" "-I.\common\graphicsItems" "-I.\IPXactWrapper\ComponentEditor\visualization" "-I.\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer" "-I.\IPXactWrapper\ComponentEditor\memoryMaps" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing AddressSpaceConflictedItem.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">Moc%27ing AddressSpaceConflictedItem.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|x64'">Moc%27ing AddressSpaceConflictedItem.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
     </CustomBuild>

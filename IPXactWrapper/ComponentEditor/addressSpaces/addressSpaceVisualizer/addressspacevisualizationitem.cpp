@@ -7,13 +7,18 @@
 
 #include "addressspacevisualizationitem.h"
 
+#include "common/kactuscolors.h"
+
 #include <QRectF>
+#include <QBrush>
 
 AddressSpaceVisualizationItem::AddressSpaceVisualizationItem(QSharedPointer<AddressSpace> addrSpace,
 															 QGraphicsItem* parent /*= 0*/):
 VisualizerItem(parent),
-addrSpace_(addrSpace) {
-
+addrSpace_(addrSpace),
+defaultBrush_(QBrush()),
+overlapped_(false)
+{
 	Q_ASSERT(addrSpace_);
 }
 
@@ -46,6 +51,18 @@ void AddressSpaceVisualizationItem::setLeftBottomCorner( quint64 address ) {
 void AddressSpaceVisualizationItem::setRightBottomCorner( quint64 address ) {
 	QString padded = addr2Str(address);
 	VisualizerItem::setRightBottomCorner(padded);
+}
+
+
+void AddressSpaceVisualizationItem::setDefaultBrush(QBrush brush)
+{
+    defaultBrush_ = brush;
+    setBrush(brush);
+}
+
+QBrush AddressSpaceVisualizationItem::defaultBrush()
+{
+    return defaultBrush_;
 }
 
 QString AddressSpaceVisualizationItem::addr2Str( quint64 address ) {
@@ -82,4 +99,77 @@ void AddressSpaceVisualizationItem::setHeight( qreal height ) {
 	qreal width = rect().width();
 	setRect(0, 0, width, height);
 	VisualizerItem::reorganizeChildren();
+}
+
+void AddressSpaceVisualizationItem::setOverlappingTop(quint64 const& address)
+{
+    firstFreeAddress_ = address;
+    setLeftTopCorner(firstFreeAddress_);
+
+    if (firstFreeAddress_ == lastFreeAddress_){        
+        VisualizerItem::setLeftBottomCorner("");
+    }
+}
+
+quint64 AddressSpaceVisualizationItem::getOverlappingTop()
+{
+    return firstFreeAddress_;
+}
+
+void AddressSpaceVisualizationItem::setOverlappingBottom(quint64 const& address)
+{
+    lastFreeAddress_ = address;
+    setLeftBottomCorner(lastFreeAddress_);
+
+    if (firstFreeAddress_ == lastFreeAddress_)
+    {
+        VisualizerItem::setLeftBottomCorner("");
+    }
+}
+
+quint64 AddressSpaceVisualizationItem::getOverlappingBottom()
+{
+    return lastFreeAddress_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: setCompleteOverlap()
+//-----------------------------------------------------------------------------
+void AddressSpaceVisualizationItem::setCompleteOverlap()
+{
+    overlapped_ = true;
+    hide();
+}
+
+//-----------------------------------------------------------------------------
+// Function: isCompletelyOverlapped()
+//-----------------------------------------------------------------------------
+bool AddressSpaceVisualizationItem::isCompletelyOverlapped() const
+{
+    return overlapped_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: setConflicted()
+//-----------------------------------------------------------------------------
+void AddressSpaceVisualizationItem::setConflicted(bool conflicted)
+{
+    conflicted_ = conflicted;
+
+    if (conflicted)
+    {
+        setBrush(KactusColors::MISSING_COMPONENT);
+    }
+    else
+    {
+        setBrush(defaultBrush());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: isConflicted()
+//-----------------------------------------------------------------------------
+bool AddressSpaceVisualizationItem::isConflicted() const
+{
+    return conflicted_;
 }

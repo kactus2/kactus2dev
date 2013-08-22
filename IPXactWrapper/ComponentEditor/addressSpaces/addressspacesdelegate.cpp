@@ -42,7 +42,7 @@ QWidget* AddressSpacesDelegate::createEditor( QWidget* parent, const QStyleOptio
 							   }
 		case WIDTH_COLUMN: {
 			QSpinBox* spinBox = new QSpinBox(parent);
-			spinBox->setRange(0, 4096);
+			spinBox->setRange(1, 4096);
 			connect(spinBox, SIGNAL(editingFinished()),
 				this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
 			return spinBox;

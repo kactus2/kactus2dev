@@ -29,8 +29,8 @@ MemoryGapItem::~MemoryGapItem() {
 
 
 void MemoryGapItem::refresh() {
-	setLeftTopCorner(start_);
-	setLeftBottomCorner(end_);
+	//setLeftTopCorner(start_);
+	//setLeftBottomCorner(end_);
 
 	ExpandableItem::reorganizeChildren();
 }

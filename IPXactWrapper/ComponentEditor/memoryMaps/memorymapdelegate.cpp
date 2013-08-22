@@ -28,18 +28,19 @@ QWidget* MemoryMapDelegate::createEditor( QWidget* parent, const QStyleOptionVie
 											  }
 		case MemoryMapDelegate::NAME_COLUMN: 
 		case MemoryMapDelegate::BASE_COLUMN:
-		case MemoryMapDelegate::RANGE_COLUMN:
+		
 		case MemoryMapDelegate::DESCRIPTION_COLUMN: {
 			QLineEdit* edit = new QLineEdit(parent);
 			connect(edit, SIGNAL(editingFinished()),
 				this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
 			return edit;
 													}
+        case MemoryMapDelegate::RANGE_COLUMN:
 		case MemoryMapDelegate::WIDTH_COLUMN: {
 			QSpinBox* spinBox = new QSpinBox(parent);
 			connect(spinBox, SIGNAL(editingFinished()),
 				this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-			spinBox->setRange(0, 4096);
+			spinBox->setRange(1, 4096);
 			return spinBox;
 											  }
 		case MemoryMapDelegate::ACCESS_COLUMN: {
@@ -68,8 +69,7 @@ void MemoryMapDelegate::setEditorData( QWidget* editor, const QModelIndex& index
 			break;
 											  }
 		case MemoryMapDelegate::NAME_COLUMN: 
-		case MemoryMapDelegate::BASE_COLUMN:
-		case MemoryMapDelegate::RANGE_COLUMN:
+		case MemoryMapDelegate::BASE_COLUMN:	
 		case MemoryMapDelegate::DESCRIPTION_COLUMN: {
 			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
 			Q_ASSERT(edit);
@@ -78,6 +78,7 @@ void MemoryMapDelegate::setEditorData( QWidget* editor, const QModelIndex& index
 			edit->setText(text);
 			break;
 													}
+	    case MemoryMapDelegate::RANGE_COLUMN:
 		case MemoryMapDelegate::WIDTH_COLUMN: {
 			QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
 			Q_ASSERT(spinBox);
@@ -121,8 +122,7 @@ void MemoryMapDelegate::setModelData( QWidget* editor, QAbstractItemModel* model
 			break;
 											  }
 		case MemoryMapDelegate::NAME_COLUMN: 
-		case MemoryMapDelegate::BASE_COLUMN:
-		case MemoryMapDelegate::RANGE_COLUMN:
+		case MemoryMapDelegate::BASE_COLUMN:		
 		case MemoryMapDelegate::DESCRIPTION_COLUMN: {
 			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
 			Q_ASSERT(edit);
@@ -131,6 +131,7 @@ void MemoryMapDelegate::setModelData( QWidget* editor, QAbstractItemModel* model
 			model->setData(index, text, Qt::EditRole);
 			break;
 													}
+        case MemoryMapDelegate::RANGE_COLUMN:
 		case MemoryMapDelegate::WIDTH_COLUMN: {
 			QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
 			Q_ASSERT(spinBox);

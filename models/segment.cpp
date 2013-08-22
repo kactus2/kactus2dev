@@ -200,6 +200,13 @@ quint64 Segment::getLastAddress() const {
 		return 0;
 	}
 
-	// if they are defined then return actual last address
-	return lastAddr - 1;
+    // if they are defined then return actual last address
+    if (range != 0)
+    {
+        return lastAddr - 1;
+    }
+    else
+    {
+        return lastAddr;
+    }
 }

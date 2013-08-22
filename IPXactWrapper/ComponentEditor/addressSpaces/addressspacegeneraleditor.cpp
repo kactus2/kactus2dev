@@ -22,7 +22,7 @@ range_(this) {
 	Q_ASSERT(addrSpace_);
 
 	addrUnit_.setRange(1, 4096);
-	width_.setRange(0, 4096);
+	width_.setRange(1, 4096);
 	range_.setPlaceholderText(tr("Range of address space i.e 4G"));
 
 	// set the back ground colors for mandatory fields

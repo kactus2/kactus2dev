@@ -84,7 +84,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
         MemoryGapItem* gap = 0;
 
         // if there is a gap between the last block and this block
-        if (item->getOffset() > previousBlockEnd + 1) {
+        if (item->getOffset() > previousBlockEnd + 1 || (previous == NULL && item->getOffset() == previousBlockEnd + 1) ) {
 
             // create the gap item
             gap = new MemoryGapItem(this);

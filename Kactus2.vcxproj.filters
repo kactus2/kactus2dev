@@ -3859,6 +3859,12 @@
     <ClCompile Include="IPXactWrapper\ComponentEditor\treeStructure\ComponentEditorTreeSortProxyModel.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\treeStructure</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AddressSpaceConflictedItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\AddressSpaceConflictedItem.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5480,6 +5486,9 @@
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\treeStructure\ComponentEditorTreeSortProxyModel.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\treeStructure</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\AddressSpaceConflictedItem.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\addressSpaces\AddressSpaceVisualizer</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

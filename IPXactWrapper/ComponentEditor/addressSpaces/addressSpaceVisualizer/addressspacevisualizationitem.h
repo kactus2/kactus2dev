@@ -12,6 +12,7 @@
 #include <models/addressspace.h>
 
 #include <QSharedPointer>
+#include <QBrush>
 
 /*! \brief The base class to visualize objects in address space editor.
  *
@@ -74,6 +75,38 @@ public:
 	*/
 	virtual void setHeight(qreal height);
 
+	/*! \brief Sets the first non-overlapping address to display.
+	 *
+	 * \param The first address to set.
+	*/
+    virtual void setOverlappingTop(quint64 const& address);
+
+	/*! \brief Get the first non-overlapping address of the item.
+	 *
+	 * \return The first non-overlapping address or -1 if completely overlapped.
+	 */
+    virtual quint64 getOverlappingTop();
+
+	/*! \brief Sets the last non-overlapping address to display.
+	 *
+	 * \param The last address to set.
+	 */
+    virtual void setOverlappingBottom(quint64 const& address);
+
+    /*! \brief Get the last non-overlapping address of the item.
+     *
+     * \return The last non-overlapping address or -1 if completely overlapped.
+     */
+    virtual quint64 getOverlappingBottom();
+
+    virtual void setCompleteOverlap();
+    
+    virtual bool isCompletelyOverlapped() const;
+
+    virtual void setConflicted(bool conflicted);
+
+    virtual bool isConflicted() const;
+
 protected:
 
 	/*! \brief Set the address to be shown on the top left corner.
@@ -103,6 +136,16 @@ protected:
 	 *
 	*/
 	virtual void setRightBottomCorner(quint64 address);
+    
+    virtual void setDefaultBrush(QBrush brush);
+
+    virtual QBrush defaultBrush();
+
+    //! \brief The first non-overlapping address.
+    quint64 firstFreeAddress_;
+
+    //! \brief The last non-overlapping address.
+    quint64 lastFreeAddress_;
 
 private:
 	
@@ -122,6 +165,13 @@ private:
 
 	//! \brief Pointer to the address space being edited.
 	QSharedPointer<AddressSpace> addrSpace_;
+
+    QBrush defaultBrush_;  
+
+    bool conflicted_;
+
+    bool overlapped_;
+
 };
 
 #endif // ADDRESSSPACEVISUALIZATIONITEM_H

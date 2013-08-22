@@ -17,28 +17,47 @@ AddressSpaceGapItem::AddressSpaceGapItem(QSharedPointer<AddressSpace> addrSpace,
 AddressSpaceVisualizationItem(addrSpace, parent),
 start_(0),
 end_(0),
-addrPosition_(addrPos) {
-
-	QBrush brush(KactusColors::DRAFT_COMPONENT);
-	setBrush(brush);
+addrPosition_(addrPos) 
+{
+	setDefaultBrush(QBrush(Qt::white));
 	setNamePosition(VisualizerItem::NAME_CENTERED, VisualizerItem::NAME_MIDDLE);
 	setName("...");
+    setToolTip("This memory block is unassigned.");
 }
 
 AddressSpaceGapItem::~AddressSpaceGapItem() {
 }
 
 void AddressSpaceGapItem::refresh() {
-	
-	if (addrPosition_ == AddressSpaceGapItem::ALIGN_LEFT) {
-		setLeftTopCorner(start_);
-		setLeftBottomCorner(end_);
-	}
-	else {
-		setRightTopCorner(start_);
-		setRightBottomCorner(end_);
-	}
-	VisualizerItem::reorganizeChildren();
+
+    if (addrPosition_ == AddressSpaceGapItem::ALIGN_LEFT) {
+        setLeftTopCorner(start_);
+        if (end_ != start_)
+        {
+            setLeftBottomCorner(end_);
+        }
+        else
+        {
+            VisualizerItem::setLeftBottomCorner("");
+        }
+    }
+
+    else {
+        setRightTopCorner(start_);
+        if (end_ != start_)
+        {
+            setRightBottomCorner(end_);
+        }
+        else
+        {
+            VisualizerItem::setRightBottomCorner("");
+        }
+    }
+
+    setOverlappingTop(start_);
+    setOverlappingBottom(end_);
+
+    VisualizerItem::reorganizeChildren();
 }
 
 quint64 AddressSpaceGapItem::getOffset() const {
@@ -72,4 +91,62 @@ void AddressSpaceGapItem::setEndAddress( quint64 address, bool contains /*= true
 void AddressSpaceGapItem::setAddressAlign(AddressSpaceGapItem::AddressPosition pos ) {
 	addrPosition_ = pos;
 	refresh();
+}
+
+void AddressSpaceGapItem::setOverlappingTop(quint64 const& address)
+{
+    firstFreeAddress_ = address;
+
+    if (addrPosition_ == AddressSpaceGapItem::ALIGN_LEFT)
+    {
+        setLeftTopCorner(firstFreeAddress_);
+
+        if (firstFreeAddress_ == lastFreeAddress_){        
+            VisualizerItem::setLeftBottomCorner("");
+        }
+        else
+        {
+            setLeftBottomCorner(lastFreeAddress_);
+        }
+    }
+
+    else //if (addrPosition == AddressSpaceGapItem::ALIGN_RIGHT)
+    {
+        setRightTopCorner(firstFreeAddress_);
+
+        if (firstFreeAddress_ == lastFreeAddress_){        
+            VisualizerItem::setRightBottomCorner("");
+        }
+        else
+        {
+            setRightBottomCorner(lastFreeAddress_);
+        }
+    }
+}
+
+void AddressSpaceGapItem::setOverlappingBottom(quint64 const& address)
+{
+    lastFreeAddress_ = address;
+
+    if (addrPosition_ == AddressSpaceGapItem::ALIGN_LEFT)
+    {
+        if (firstFreeAddress_ == lastFreeAddress_){        
+            VisualizerItem::setLeftBottomCorner("");
+        }
+        else
+        {
+            setLeftBottomCorner(lastFreeAddress_);
+        }
+    }
+
+    else //if (addrPosition == AddressSpaceGapItem::ALIGN_RIGHT)
+    {  
+        if (firstFreeAddress_ == lastFreeAddress_){        
+            VisualizerItem::setRightBottomCorner("");
+        }
+        else
+        {
+            setRightBottomCorner(lastFreeAddress_);
+        }
+    }
 }
