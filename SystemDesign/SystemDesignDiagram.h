@@ -53,6 +53,86 @@ public:
         IO_COLUMN_WIDTH = 119
     };
 
+    //-----------------------------------------------------------------------------
+    //! Clipboard copy data for a single component instance.
+    //-----------------------------------------------------------------------------
+    struct ComponentInstanceCopyData
+    {
+        QSharedPointer<Component> component;            //!< The referenced component.
+        QString instanceName;                           //!< The instance name.
+        QString displayName;                            //!< The display name.
+        QString description;                            //!< The description of the instance.
+        QPointF pos;                                    //!< Original position of the instance.
+        QMap<QString, QString> propertyValues;          //!< Property values.
+        QString fileSetRef;                             //!< File set reference.
+        QMap<QString, QPointF> apiInterfacePositions;   //!< API interface positions.
+        QMap<QString, QPointF> comInterfacePositions;   //!< COM interface positions.
+
+        ComponentInstanceCopyData()
+            : component(),
+              instanceName(),
+              displayName(),
+              description(),
+              propertyValues(),
+              fileSetRef(),
+              apiInterfacePositions(),
+              comInterfacePositions()
+        {
+        }
+    };
+
+    //-----------------------------------------------------------------------------
+    //! Clipboard copy data for a collection of copied component instances.
+    //-----------------------------------------------------------------------------
+    struct ComponentCollectionCopyData
+    {
+        QList<ComponentInstanceCopyData> instances;
+
+        /*!
+         *  Constructor.
+         */
+        ComponentCollectionCopyData()
+            : instances()
+        {
+        }
+    };
+
+    //-----------------------------------------------------------------------------
+    //! Clipboard copy data for a single column.
+    //-----------------------------------------------------------------------------
+    struct ColumnCopyData
+    {
+        ColumnDesc desc;                            //!< Column description.
+        ComponentCollectionCopyData components;     //!< Components.
+        // TODO: API/COM interfaces.
+
+        /*!
+         *  Constructor.
+         */
+        ColumnCopyData()
+            : desc(),
+              components()/*,
+              interfaces()*/
+        {
+        }
+    };
+
+    //-----------------------------------------------------------------------------
+    //! Clipboard copy data for a collection of columns.
+    //-----------------------------------------------------------------------------
+    struct ColumnCollectionCopyData
+    {
+        QList<ColumnCopyData> columns;
+
+        /*!
+         *  Constructor.
+         */
+        ColumnCollectionCopyData()
+            : columns()
+        {
+        }
+    };
+
     /*!
      *  Constructor.
      *
@@ -124,6 +204,16 @@ public slots:
      */
     void onSelectionChanged();
 
+    /*!
+     *  Called when copy is selected from the context menu.
+     */
+	void onCopyAction();
+
+    /*!
+     *  Called when paste is selected from the context menu.
+     */
+	void onPasteAction();
+
 protected:
     //! Called when the user presses a mouse button.
     void mousePressEvent(QGraphicsSceneMouseEvent* event);
@@ -154,6 +244,15 @@ protected:
 
     //! Called when a key has been released.
     void keyReleaseEvent(QKeyEvent *event);
+
+    /*!
+     *  Creates the context menu for function contextMenuEvent().
+     *
+     *      @param [in] pos Mouse position when the menu is requested.
+	 *
+	 *      @return The menu with allowed actions or 0 if no menu is allowed or nothing to show.
+     */
+	virtual QMenu* createContextMenu(QPointF const& pos);
 
 private:
     // Disable copying.
@@ -268,17 +367,34 @@ private:
     void importDesign(QSharedPointer<Design> design, IGraphicsItemStack* stack, QPointF const& guidePos);
 
     /*!
-     *  Recalls port positions for an SW instance.
-     *
-     *      @param [in] instance The instance metadata.
-     *      @param [in] item     The corresponding graphics item in the diagram.
-     */
-    void recallPortPositions(SWInstance const &instance, SWComponentItem* item);
-
-    /*!
      *  Updates the drop action for a drag-dropped object.
      */
     void updateDropAction(QGraphicsSceneDragDropEvent* event);
+    
+    /*!
+     *  Copies SW component instances in a format which can be saved to clipboard.
+     *
+     *      @param [in]  items       The component instance items to copy.
+     *      @param [out] collection  The resulted collection of component instance copy data.
+     */
+    void copySWInstances(QList<QGraphicsItem*> const& items, ComponentCollectionCopyData &collection);
+
+    /*!
+     *  Pastes component instances from a copy data collection.
+     *
+     *      @param [in] collection     The collection of component instance copy data.
+     *      @param [in] column         The item stack where to place the instances.
+     *      @param [in] cmd            The parent undo command for the paste undo commands.
+     *      @param [in] userCursorPos  If true, the instances are placed close to the cursor position.
+     *                                 Otherwise the original positions are used.
+     */
+    void pasteSWInstances(ComponentCollectionCopyData const& collection,
+                          IGraphicsItemStack* stack, QUndoCommand* cmd, bool useCursorPos);
+
+    /*!
+     *  Initializes the context menu actions.
+     */
+	void setupActions();
 
     //-----------------------------------------------------------------------------
     //! Drag type enumeration.
@@ -331,6 +447,15 @@ private:
 
     //! The old item selection.
     QGraphicsItem* oldSelection_;
+
+    //! Context menu copy action.
+    QAction copyAction_;
+
+    //! Context menu paste action.
+    QAction pasteAction_;
+
+    //! If true, context menu is enabled.
+    bool showContextMenu_;
 };
 
 //-----------------------------------------------------------------------------

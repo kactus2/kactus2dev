@@ -419,3 +419,26 @@ QSharedPointer<Design> DesignDiagram::createDesign( VLNV const& vlnv ) const {
 	design->setTopComments(XMLComments_);
 	return design;
 }
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::getCommonType()
+//-----------------------------------------------------------------------------
+int DesignDiagram::getCommonItemType(QList<QGraphicsItem*> const& items)
+{
+    if (items.empty())
+    {
+        return -1;
+    }
+
+    int type = items[0]->type();
+
+    for (int i = 1; i < items.size(); ++i)
+    {
+        if (type != items[i]->type())
+        {
+            return -1;
+        }
+    }
+
+    return type;
+}

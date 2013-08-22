@@ -171,6 +171,32 @@ public:
      */
     virtual HWMappingItem const* getLinkedHW() const = 0;
 
+    /*!
+     *  Sets the API interface positions.
+     *
+     *      @param [in] positions      The positions to set.
+     *      @param [in] createMissing  If true, the missing bus interfaces are created.
+     */
+    void setApiInterfacePositions(QMap<QString, QPointF> const& positions, bool createMissing = false);
+
+    /*!
+     *  Sets the COM interface positions.
+     *
+     *      @param [in] positions      The positions to set.
+     *      @param [in] createMissing  If true, the missing bus interfaces are created.
+     */
+    void setComInterfacePositions(QMap<QString, QPointF> const& positions, bool createMissing = false);
+
+    /*!
+     *  Returns the API interface positions.
+     */
+    QMap<QString, QPointF> getApiInterfacePositions() const;
+
+    /*!
+     *  Returns the COM interface positions.
+     */
+    QMap<QString, QPointF> getComInterfacePositions() const;
+
 signals:
     //! Occurs when the property values have been changed.
     void propertyValuesChanged(QMap<QString, QString> const& propertyValues);

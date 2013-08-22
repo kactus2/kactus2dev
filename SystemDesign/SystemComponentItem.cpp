@@ -474,3 +474,95 @@ QVariant SystemComponentItem::itemChange(GraphicsItemChange change, const QVaria
 
     return ComponentItem::itemChange(change, value);
 }
+
+//-----------------------------------------------------------------------------
+// Function: SystemComponentItem::setApiInterfacePositions()
+//-----------------------------------------------------------------------------
+void SystemComponentItem::setApiInterfacePositions(QMap<QString, QPointF> const& positions, bool createMissing /*= false*/)
+{
+    QMapIterator<QString, QPointF> itrPortPos(positions);
+
+    while (itrPortPos.hasNext())
+    {
+        itrPortPos.next();
+        SWPortItem* port = getSWPort(itrPortPos.key(), SWConnectionEndpoint::ENDPOINT_TYPE_API);
+
+        // If the port was not found, create it.
+        if (port == 0)
+        {
+            if (!createMissing || componentModel()->getVlnv()->isValid())
+            {
+                continue;
+            }
+
+            port = new SWPortItem(itrPortPos.key(), this);
+            addPort(port);
+        }
+
+        port->setPos(itrPortPos.value());
+        onMovePort(port);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemComponentItem::setComInterfacePositions()
+//-----------------------------------------------------------------------------
+void SystemComponentItem::setComInterfacePositions(QMap<QString, QPointF> const& positions, bool createMissing /*= false*/)
+{
+    QMapIterator<QString, QPointF> itrPortPos(positions);
+
+    while (itrPortPos.hasNext())
+    {
+        itrPortPos.next();
+        SWPortItem* port = getSWPort(itrPortPos.key(), SWConnectionEndpoint::ENDPOINT_TYPE_COM);
+
+        // If the port was not found, create it.
+        if (port == 0)
+        {
+            if (!createMissing || componentModel()->getVlnv()->isValid())
+            {
+                continue;
+            }
+
+            port = new SWPortItem(itrPortPos.key(), this);
+            addPort(port);
+        }
+
+        port->setPos(itrPortPos.value());
+        onMovePort(port);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemComponentItem::getApiInterfacePositions()
+//-----------------------------------------------------------------------------
+QMap<QString, QPointF> SystemComponentItem::getApiInterfacePositions() const
+{
+    QMap<QString, QPointF> positions;
+    QListIterator< QSharedPointer<ApiInterface> > itrApiIf(componentModel()->getApiInterfaces());
+
+    while (itrApiIf.hasNext())
+    {
+        QSharedPointer<ApiInterface> apiIf = itrApiIf.next();
+        positions[apiIf->getName()] = getSWPort(apiIf->getName(), SWConnectionEndpoint::ENDPOINT_TYPE_API)->pos();
+    }
+
+    return positions;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemComponentItem::getComInterfacePositions()
+//-----------------------------------------------------------------------------
+QMap<QString, QPointF> SystemComponentItem::getComInterfacePositions() const
+{
+    QMap<QString, QPointF> positions;
+    QListIterator< QSharedPointer<ComInterface> > itrComIf(componentModel()->getComInterfaces());
+
+    while (itrComIf.hasNext())
+    {
+        QSharedPointer<ComInterface> comIf = itrComIf.next();
+        positions[comIf->getName()] = getSWPort(comIf->getName(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos();
+    }
+
+    return positions;
+}

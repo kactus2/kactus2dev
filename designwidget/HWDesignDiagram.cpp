@@ -823,7 +823,6 @@ void HWDesignDiagram::selectionToFront()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-
     showContextMenu_ = (getMode() == MODE_SELECT && mouseEvent->button() == Qt::RightButton);
 
     // if other than left button was pressed return the mode back to select
@@ -1996,7 +1995,6 @@ void HWDesignDiagram::onCopyAction(){
             QMimeData* mimeData = new QMimeData();
             mimeData->setImageData(QVariant::fromValue(collection));
             QApplication::clipboard()->setMimeData(mimeData);
-
         }
     }
 }
@@ -2079,8 +2077,8 @@ void HWDesignDiagram::onPasteAction(){
                         getEditProvider().addCommand(cmd);
                     }
                 }
-                else if (mimeData->imageData().canConvert<ColumnCollectionCopyData>() && items.empty() ||
-                         type == HWColumn::Type)
+                else if (mimeData->imageData().canConvert<ColumnCollectionCopyData>() &&
+                        (items.empty() || type == HWColumn::Type))
                 {
                     ColumnCollectionCopyData collection = mimeData->imageData().value<ColumnCollectionCopyData>();
                     QSharedPointer<QUndoCommand> parentCmd(new QUndoCommand());
@@ -2709,29 +2707,6 @@ void HWDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::getCommonType()
-//-----------------------------------------------------------------------------
-int HWDesignDiagram::getCommonItemType(QList<QGraphicsItem*> const& items) const
-{
-    if (items.empty())
-    {
-        return -1;
-    }
-
-    int type = items[0]->type();
-
-    for (int i = 1; i < items.size(); ++i)
-    {
-        if (type != items[i]->type())
-        {
-            return -1;
-        }
-    }
-
-    return type;
-}
-
-//-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::copyInstances()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::copyInstances(QList<QGraphicsItem*> const& items, ComponentCollectionCopyData &collection)
@@ -2746,16 +2721,7 @@ void HWDesignDiagram::copyInstances(QList<QGraphicsItem*> const& items, Componen
             collection.instances.append(ComponentInstanceCopyData());
             ComponentInstanceCopyData& instance = collection.instances.back();
 
-            // Take a copy of the component model in case of a draft.
-            if (comp->componentModel()->getVlnv()->isValid())
-            {
-                instance.component = comp->componentModel();
-            }
-            else
-            {
-                instance.component = QSharedPointer<Component>(new Component(*comp->componentModel()));
-            }
-
+            instance.component = comp->componentModel();
             instance.instanceName = comp->name();
             instance.displayName = comp->displayName();
             instance.description = comp->description();
@@ -2779,14 +2745,22 @@ void HWDesignDiagram::pasteInstances(ComponentCollectionCopyData const& collecti
         // Create unique name for the component instance.
         QString instanceName = createInstanceName(instance.instanceName);
 
+        // Take a copy of the component in case of a draft.
+        QSharedPointer<Component> component = instance.component;
+
+        if (!component->getVlnv()->isValid())
+        {
+            component = QSharedPointer<Component>(new Component(*instance.component));
+        }
+
         HWComponentItem* comp = new HWComponentItem(getLibraryInterface(),
-            instance.component,
-            instanceName,
-            instance.displayName,
-            instance.description,
-            QString(),
-            instance.configurableElements,
-            instance.adHocVisibilities);
+                                                    component,
+                                                    instanceName,
+                                                    instance.displayName,
+                                                    instance.description,
+                                                    QString(),
+                                                    instance.configurableElements,
+                                                    instance.adHocVisibilities);
 
         if (useCursorPos)
         {

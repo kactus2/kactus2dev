@@ -329,6 +329,13 @@ protected:
      */
 	virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent* event);
 
+    /*!
+     *  Returns the type of the given items if they all are of the same type.
+     *
+     *      @return The common type, or -1 if the items are of different type.
+     */
+    static int getCommonItemType(QList<QGraphicsItem*> const& items);
+
 private:
     // Disable copying.
     DesignDiagram(DesignDiagram const& rhs);

@@ -32,6 +32,7 @@
 #include <QFileDialog>
 #include <QCoreApplication>
 #include <QApplication>
+#include <QClipboard>
 
 #include <SystemDetailsEditor/SwitchHWDialog.h>
 
@@ -65,6 +66,9 @@
 
 #include <QUuid>
 
+Q_DECLARE_METATYPE(SystemDesignDiagram::ComponentCollectionCopyData)
+Q_DECLARE_METATYPE(SystemDesignDiagram::ColumnCollectionCopyData)
+
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram()
 //-----------------------------------------------------------------------------
@@ -83,8 +87,13 @@ SystemDesignDiagram::SystemDesignDiagram(bool onlySW, LibraryInterface* lh, Main
       offPageMode_(false),
       replaceMode_(false),
       sourceComp_(0),
-      oldSelection_(0)
+      oldSelection_(0),
+      copyAction_(tr("Copy"), this),
+      pasteAction_(tr("Paste"), this),
+      showContextMenu_(true)
 {
+    setupActions();
+
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
     connect(&editProvider, SIGNAL(modified()), this, SIGNAL(contentChanged()));
 }
@@ -183,8 +192,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
         HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance.getInstanceName(),
                                                 instance.getDisplayName(), instance.getDescription(),
-																instance.getUuid(),
-                                                instance.getConfigurableElementValues());
+												instance.getUuid(), instance.getConfigurableElementValues());
         item->setImported(instance.isImported());
         item->setImportRef(instance.getImportRef());
         item->setPropertyValues(instance.getPropertyValues());
@@ -298,7 +306,8 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         item->setPos(instance.getPosition());
         item->setPropertyValues(instance.getPropertyValues());
         item->setFileSetRef(instance.getFileSetRef());
-        recallPortPositions(instance, item);
+        item->setApiInterfacePositions(instance.getApiInterfacePositions(), true);
+        item->setComInterfacePositions(instance.getComInterfacePositions(), true);
 
         if (instance.getMapping().isEmpty())
         {
@@ -710,6 +719,8 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
+    showContextMenu_ = (getMode() == MODE_SELECT && event->button() == Qt::RightButton);
+
     // If other than left button was pressed return back to select mode.
     if (event->button() != Qt::LeftButton)
     {
@@ -2486,13 +2497,12 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
         item->setPos(stack->mapStackFromScene(guidePos));
         item->setPropertyValues(instance.getPropertyValues());
         item->setFileSetRef(instance.getFileSetRef());
+        item->setApiInterfacePositions(instance.getApiInterfacePositions(), true);
+        item->setComInterfacePositions(instance.getComInterfacePositions(), true);
 
         connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
-
-        recallPortPositions(instance, item);
-
-
+        
         // Add the instance to the specified stack.
         stack->addItem(item);
         addInstanceName(instance.getInstanceName());
@@ -2637,63 +2647,6 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
 }
 
 //-----------------------------------------------------------------------------
-// Function: SystemDesignDiagram::recallPortPositions()
-//-----------------------------------------------------------------------------
-void SystemDesignDiagram::recallPortPositions(SWInstance const &instance, SWComponentItem* item)
-{
-    // Setup custom port positions.
-    {
-        QMapIterator<QString, QPointF> itrPortPos(instance.getApiInterfacePositions());
-
-        while (itrPortPos.hasNext())
-        {
-            itrPortPos.next();
-            SWPortItem* port = item->getSWPort(itrPortPos.key(), SWConnectionEndpoint::ENDPOINT_TYPE_API);
-
-            // If the port was not found, create it.
-            if (port == 0)
-            {
-                if (instance.getComponentRef().isValid())
-                {
-                    continue;
-                }
-
-                port = new SWPortItem(itrPortPos.key(), item);
-                item->addPort(port);
-            }
-
-            port->setPos(itrPortPos.value());
-            item->onMovePort(port);
-        }
-    }
-
-    {
-        QMapIterator<QString, QPointF> itrPortPos(instance.getComInterfacePositions());
-
-        while (itrPortPos.hasNext())
-        {
-            itrPortPos.next();
-            SWPortItem* port = item->getSWPort(itrPortPos.key(), SWConnectionEndpoint::ENDPOINT_TYPE_COM);
-
-            // If the port was not found, create it.
-            if (port == 0)
-            {
-                if (instance.getComponentRef().isValid())
-                {
-                    continue;
-                }
-
-                port = new SWPortItem(itrPortPos.key(), item);
-                item->addPort(port);
-            }
-
-            port->setPos(itrPortPos.value());
-            item->onMovePort(port);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::updateDropAction()
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
@@ -2810,4 +2763,341 @@ void SystemDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
     {
         event->setDropAction(Qt::IgnoreAction);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::copySWInstances()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::copySWInstances(QList<QGraphicsItem*> const& items,
+                                          ComponentCollectionCopyData &collection)
+{
+    // Create instance copies.
+    foreach (QGraphicsItem* item, items)
+    {
+        if (item->type() == SWComponentItem::Type)
+        {
+            SWComponentItem* comp = static_cast<SWComponentItem*>(item);
+
+            collection.instances.append(ComponentInstanceCopyData());
+            ComponentInstanceCopyData& instance = collection.instances.back();
+
+            // Take a copy of the component model so that we are not influenced by any changes to the
+            // original model.
+            instance.component = QSharedPointer<Component>(new Component(*comp->componentModel()));
+
+            instance.instanceName = comp->name();
+            instance.displayName = comp->displayName();
+            instance.description = comp->description();
+            instance.pos = comp->pos();
+            instance.propertyValues = comp->getPropertyValues();
+            instance.fileSetRef = comp->getFileSetRef();
+            instance.apiInterfacePositions = comp->getApiInterfacePositions();
+            instance.comInterfacePositions = comp->getComInterfacePositions();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::pasteSWInstances()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::pasteSWInstances(ComponentCollectionCopyData const& collection, IGraphicsItemStack* stack,
+                                           QUndoCommand* cmd, bool useCursorPos)
+{
+    foreach (ComponentInstanceCopyData const& instance, collection.instances)
+    {
+        // Create unique name for the component instance.
+        QString instanceName = createInstanceName(instance.instanceName);
+
+        // Take a copy of the component in case of a draft.
+        QSharedPointer<Component> component = instance.component;
+
+        if (!component->getVlnv()->isValid())
+        {
+            component = QSharedPointer<Component>(new Component(*instance.component));
+        }
+
+        SWComponentItem* comp = new SWComponentItem(getLibraryInterface(),
+                                                    component,
+                                                    instanceName,
+                                                    instance.displayName,
+                                                    instance.description);
+
+        if (useCursorPos)
+        {
+            comp->setPos(parent()->mapFromGlobal(QCursor::pos()));
+        }
+        else
+        {
+            comp->setPos(instance.pos);
+        }
+
+        comp->setApiInterfacePositions(instance.apiInterfacePositions, false);
+        comp->setComInterfacePositions(instance.comInterfacePositions, false);
+
+        IGraphicsItemStack* targetStack = stack;
+
+        // Check if the stack does not accept the given component.
+        if (!stack->isItemAllowed(comp))
+        {
+            targetStack = 0;
+
+            // Find the first column that accepts the component.
+            foreach (GraphicsColumn* otherColumn, layout_->getColumns())
+            {
+                if (otherColumn->isItemAllowed(comp))
+                {
+                    targetStack = otherColumn;
+                    break;
+                }
+            }
+        }
+
+        if (targetStack != 0)
+        {
+            SystemItemAddCommand* childCmd = new SystemItemAddCommand(stack, comp, cmd);
+
+            connect(childCmd, SIGNAL(componentInstantiated(ComponentItem*)),
+                this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+            connect(childCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::onCopyAction()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::onCopyAction()
+{
+    if (!isProtected())
+    {
+        QList<QGraphicsItem*> items = selectedItems();
+        int type = getCommonItemType(items);
+
+        if (type == SWPortItem::Type)
+        {
+            // TODO: API and COM interface copy.
+        }
+        else if (type == SWComponentItem::Type)
+        {
+            ComponentCollectionCopyData collection;
+            copySWInstances(items, collection);
+
+            QMimeData* mimeData = new QMimeData();
+            mimeData->setImageData(QVariant::fromValue(collection));
+            QApplication::clipboard()->setMimeData(mimeData);
+        }
+        else if (type == SystemColumn::Type)
+        {
+            ColumnCollectionCopyData collection;
+
+            foreach (QGraphicsItem* item, items)
+            {
+                SystemColumn* column = static_cast<SystemColumn*>(item);
+
+                collection.columns.append(ColumnCopyData());
+                ColumnCopyData& columnData = collection.columns.back();
+
+                columnData.desc = column->getColumnDesc();
+
+                copySWInstances(column->getItems(), columnData.components);
+            }
+
+            QMimeData* mimeData = new QMimeData();
+            mimeData->setImageData(QVariant::fromValue(collection));
+            QApplication::clipboard()->setMimeData(mimeData);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::onPasteAction()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::onPasteAction()
+{
+    if (!isProtected())
+    {
+        QList<QGraphicsItem*> items = selectedItems();
+        int type = getCommonItemType(items);
+
+        if (type == SWComponentItem::Type)
+        {
+            // TODO: Paste API/COM interfaces.
+        }
+        else
+        {
+            // Check the mime data.
+            QMimeData const* mimeData = QApplication::clipboard()->mimeData();
+
+            if (mimeData->hasImage())
+            {
+                // Allow pasting components to either empty design space (column) or to parent HW.
+                if (mimeData->imageData().canConvert<ComponentCollectionCopyData>() &&
+                    (items.empty() || type == HWMappingItem::Type))
+                {
+                    IGraphicsItemStack* stack = 0;
+
+                    if (type == HWMappingItem::Type)
+                    {
+                        stack = dynamic_cast<IGraphicsItemStack*>(items[0]);
+                    }
+                    else
+                    {
+                        stack = layout_->findColumnAt(parent()->mapFromGlobal(QCursor::pos()));
+                    }
+
+                    if (stack != 0)
+                    {
+                        ComponentCollectionCopyData collection = mimeData->imageData().value<ComponentCollectionCopyData>();
+
+                        QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+                        pasteSWInstances(collection, stack, cmd.data(), true);
+                        getEditProvider().addCommand(cmd);
+                    }
+                }
+                else if (mimeData->imageData().canConvert<ColumnCollectionCopyData>() &&
+                         (items.empty() || type == SystemColumn::Type))
+                {
+                    ColumnCollectionCopyData collection = mimeData->imageData().value<ColumnCollectionCopyData>();
+                    QSharedPointer<QUndoCommand> parentCmd(new QUndoCommand());
+
+                    foreach (ColumnCopyData const& columnData, collection.columns)
+                    {
+                        SystemColumn* column = new SystemColumn(columnData.desc, layout_.data());
+
+                        new GraphicsColumnAddCommand(layout_.data(), column, parentCmd.data());
+                        pasteSWInstances(columnData.components, column, parentCmd.data(), false);
+                    }
+
+                    getEditProvider().addCommand(parentCmd);
+                }
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::createContextMenu()
+//-----------------------------------------------------------------------------
+QMenu* SystemDesignDiagram::createContextMenu(QPointF const& pos)
+{
+    QMenu* menu = 0;
+
+    if (!isProtected() && getMode() == MODE_SELECT && showContextMenu_)
+    {
+        QGraphicsItem* item = itemAt(pos,QTransform());
+
+        // Deselect the currently selected items if the user clicked above nothing.
+        if (item == 0)
+        {
+            clearSelection();
+        }
+        // Or select new item if the clicked item does not belong into the current selection.
+        else
+        {
+            // This fixes the problem when the user click above a text label or a pixmap but
+            // actually wants to select the parent item (such as the actual component, not its label).
+            if (item->parentItem() != 0 &&
+                (item->type() == QGraphicsTextItem::Type || item->type() == QGraphicsPixmapItem::Type))
+            {
+                item = item->parentItem();
+            }
+
+            if (!selectedItems().contains(item))
+            {
+                clearSelection();
+                item->setSelected(true);
+            }
+        }
+
+        QList<QGraphicsItem*> items = selectedItems();
+
+        if (items.empty())
+        {
+            menu = new QMenu(parent());
+            menu->addAction(&pasteAction_);
+
+            // If the selection is empty, check if the clipboard contains components or a column.
+            QMimeData const* mimeData = QApplication::clipboard()->mimeData();
+
+            if (mimeData != 0 && mimeData->hasImage() &&
+                (mimeData->imageData().canConvert<ComponentCollectionCopyData>() ||
+                mimeData->imageData().canConvert<ColumnCollectionCopyData>()))
+            {
+                pasteAction_.setEnabled(true);
+            }
+            else
+            {
+                pasteAction_.setEnabled(false);
+            }
+        }
+        else
+        {
+            int type = getCommonItemType(items);
+
+            if (type == SWPortItem::Type)
+            {
+                // TODO: Paste support for API/COM interfaces.
+            }
+            else if (type == SWComponentItem::Type)
+            {
+                // Allow copying components (single or multiple).
+                menu = new QMenu(parent());	
+                menu->addAction(&copyAction_);
+            }
+            else if (type == SystemColumn::Type)
+            {
+                // Allow copying columns (single or multiple).
+                menu = new QMenu(parent());	
+                menu->addAction(&copyAction_);
+
+                // Allow pasting if the clipboard contains column data.
+                menu->addAction(&pasteAction_);
+
+                QMimeData const* mimedata = QApplication::clipboard()->mimeData();
+
+                if (mimedata != 0 && mimedata->hasImage() && mimedata->imageData().canConvert<ColumnCollectionCopyData>())
+                {
+                    pasteAction_.setEnabled(true);
+                }
+                else
+                {
+                    pasteAction_.setEnabled(false);
+                }
+            }
+            else if (type == HWMappingItem::Type)
+            {
+                menu = new QMenu(parent());
+                menu->addAction(&pasteAction_);
+
+                QMimeData const* mimeData = QApplication::clipboard()->mimeData();
+
+                if (mimeData != 0 && mimeData->hasImage() &&
+                    mimeData->imageData().canConvert<ComponentCollectionCopyData>())
+                {
+                    pasteAction_.setEnabled(true);
+                }
+                else
+                {
+                    pasteAction_.setEnabled(false);
+                }
+            }
+        }
+    }
+
+    return menu;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemWDesignDiagram::setupActions()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::setupActions()
+{
+    parent()->addAction(&copyAction_);
+    copyAction_.setShortcut(QKeySequence::Copy);
+    connect(&copyAction_, SIGNAL(triggered()),this, SLOT(onCopyAction()), Qt::UniqueConnection);
+
+    parent()->addAction(&pasteAction_);
+    pasteAction_.setShortcut(QKeySequence::Paste);
+    connect(&pasteAction_, SIGNAL(triggered()),this, SLOT(onPasteAction()), Qt::UniqueConnection);	
 }
