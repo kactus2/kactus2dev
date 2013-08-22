@@ -1962,7 +1962,9 @@ void HWDesignDiagram::onCopyAction(){
         if (type == BusPortItem::Type)
         {
             BusPortItem* port = qgraphicsitem_cast<BusPortItem*>(items[0]);
-            BusPortCopyData copy(port->getOwnerComponent(),port->getBusInterface());
+            BusPortCopyData copy(port->getOwnerComponent(),
+                                 QSharedPointer<BusInterface>(new BusInterface(*port->getBusInterface())));
+
             QMimeData* mimeData = new QMimeData();
             mimeData->setImageData(QVariant::fromValue(copy));
             QApplication::clipboard()->setMimeData(mimeData);
