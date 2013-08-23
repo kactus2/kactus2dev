@@ -63,6 +63,7 @@ public:
         // Only one of these is valid at one time.
 		QSharedPointer<ApiInterface> apiInterface; //!< API interface.
 		QSharedPointer<ComInterface> comInterface; //!< COM interface.
+        QPointF pos;                               //!< The original position.
 
 		/*!
          *  Default constructor.
@@ -148,7 +149,7 @@ public:
     {
         ColumnDesc desc;                            //!< Column description.
         ComponentCollectionCopyData components;     //!< Components.
-        // TODO: API/COM interfaces.
+        PortCollectionCopyData interfaces;          //!< COM/API interfaces.
 
         /*!
          *  Constructor.
@@ -424,6 +425,14 @@ private:
     void copySWInstances(QList<QGraphicsItem*> const& items, ComponentCollectionCopyData &collection);
 
     /*!
+     *  Copies interfaces in a format which can be saved to clipboard.
+     *
+     *      @param [in]  items       The interface items to copy.
+     *      @param [out] collection  The resulted collection of interface copy data.
+     */
+    void copyInterfaces(QList<QGraphicsItem*> const& items, PortCollectionCopyData& collection);
+
+    /*!
      *  Pastes component instances from a copy data collection.
      *
      *      @param [in] collection     The collection of component instance copy data.
@@ -434,6 +443,27 @@ private:
      */
     void pasteSWInstances(ComponentCollectionCopyData const& collection,
                           IGraphicsItemStack* stack, QUndoCommand* cmd, bool useCursorPos);
+
+    /*!
+     *  Pastes interfaces from a copy data collection.
+     *
+     *      @param [in] collection  The collection of interface copy data.
+     *      @param [in] targetComp  The target component. If null, the interfaces are pasted to the top level component.
+     *      @param [in] cmd         The parent undo command for the paste undo commands.
+     */
+    void pasteInterfaces(PortCollectionCopyData const& collection, SWComponentItem* targetComp, QUndoCommand* cmd);
+
+    /*!
+     *  Pastes interfaces from a copy data collection to a top-level item stack.
+     *
+     *      @param [in] collection     The collection of interface copy data.
+     *      @param [in] stack          The target item tack.
+     *      @param [in] cmd            The parent undo command for the paste undo commands.
+     *      @param [in] userCursorPos  If true, the interfaces are placed close to the cursor position.
+     *                                 Otherwise the original positions are used.
+     */
+    void pasteInterfaces(PortCollectionCopyData const& collection, IGraphicsItemStack* stack, QUndoCommand* cmd,
+                         bool useCursorPos);
 
     /*!
      *  Initializes the context menu actions.
