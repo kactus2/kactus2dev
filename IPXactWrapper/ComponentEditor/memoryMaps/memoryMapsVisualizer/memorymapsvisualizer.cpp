@@ -39,7 +39,7 @@ MemoryMapsVisualizer::~MemoryMapsVisualizer() {
 void MemoryMapsVisualizer::addMemoryMapItem( MemoryMapGraphItem* memMapItem ) {
 	scene_->addMemGraphItem(memMapItem);
 	QPointF position = memMapItem->pos();
-	view_->centerOn(position.x() - VisualizerItem::ITEM_HEIGHT, position.y());
+	view_->centerOn(position.x() - VisualizerItem::DEFAULT_HEIGHT, position.y());
 }
 
 void MemoryMapsVisualizer::removeMemoryMapItem( MemoryMapGraphItem* memMapItem ) {
@@ -47,7 +47,7 @@ void MemoryMapsVisualizer::removeMemoryMapItem( MemoryMapGraphItem* memMapItem )
 }
 
 QSize MemoryMapsVisualizer::minimumSizeHint() const {
-	return QSize(VisualizerItem::DEFAULT_WIDTH + 80, VisualizerItem::ITEM_HEIGHT * 2);
+	return QSize(VisualizerItem::DEFAULT_WIDTH + 80, VisualizerItem::DEFAULT_HEIGHT * 2);
 }
 
 QSize MemoryMapsVisualizer::sizeHint() const {

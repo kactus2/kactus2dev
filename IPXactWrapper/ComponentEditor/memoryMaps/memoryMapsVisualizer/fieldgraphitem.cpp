@@ -18,8 +18,7 @@ MemoryVisualizationItem(parent),
 field_(field) {
 	Q_ASSERT(field_);
 	QBrush brush(KactusColors::FIELD_COLOR);
-	setBrush(brush);
-	ExpandableItem::setExpansionBrush(brush);
+	setDefaultBrush(brush);
 
 	// fields show name in the middle
 	setNamePosition(VisualizerItem::NAME_CENTERED, VisualizerItem::NAME_BOTTOM);
@@ -34,7 +33,7 @@ FieldGraphItem::~FieldGraphItem() {
 }
 
 void FieldGraphItem::refresh() {
-	setRect(0, 0, VisualizerItem::MIN_WIDTH, VisualizerItem::ITEM_HEIGHT);
+	setRect(0, 0, VisualizerItem::MIN_WIDTH, VisualizerItem::DEFAULT_HEIGHT);
 
 	// the name depends on the size of the rectangle (if too small then name is chopped)
 	setName(field_->getName());
@@ -44,7 +43,8 @@ void FieldGraphItem::refresh() {
 
     setOverlappingTop(field_->getMSB());
     setOverlappingBottom(field_->getBitOffset());
-    setToolTip(getName() + "[" + QString::number(field_->getMSB()) + ".." + QString::number(field_->getBitOffset()) + "]");
+    setToolTip("<b>" + getName() + "</b> [" + QString::number(field_->getMSB()) + ".." + 
+        QString::number(field_->getBitOffset()) + "]");
 
 	MemoryVisualizationItem* parentGraphItem = static_cast<MemoryVisualizationItem*>(parentItem());
 	Q_ASSERT(parentGraphItem);

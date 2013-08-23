@@ -20,9 +20,9 @@
 //-----------------------------------------------------------------------------
 MemoryVisualizationItem::MemoryVisualizationItem( QGraphicsItem* parent /*= 0*/ ):
 ExpandableItem(parent),
-    defaultBrush_(QBrush()),
 firstFreeAddress_(-1),
 lastFreeAddress_(-1),
+overlapped_(false),
 childWidth_(VisualizerItem::DEFAULT_WIDTH/2)
 {
     QPen pen(Qt::gray);
@@ -108,7 +108,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
             gap->setPos(MemoryVisualizationItem::CHILD_INDENTATION, yCoordinate);
 
             // update the y-coordinate to avoid setting a block under the gap
-            yCoordinate += VisualizerItem::ITEM_HEIGHT;
+            yCoordinate += VisualizerItem::DEFAULT_HEIGHT;
 
             gap->setVisible(isExpanded());
             
@@ -124,23 +124,23 @@ void MemoryVisualizationItem::reorganizeChildren() {
             if (item->getOffset() == previous->getOffset() &&
                 item->getLastAddress() == previous->getLastAddress())
             {
-                previous->setConflicted();
-                item->setConflicted();
+                previous->setConflicted(true);
+                item->setConflicted(true);
             }
             // This block is completely inside the previous block.
             else if (item->getOffset() >= previous->getOffset() &&
                 item->getLastAddress() <= previous->getLastAddress() )
             {
-                item->setConflicted();
-                previous->setConflicted();
+                item->setConflicted(true);
+                previous->setConflicted(true);
             }
 
             // The previous block is completely inside this block.
             else if (previous->getOffset() >= item->getOffset() &&
                 previous->getLastAddress() <= item->getLastAddress())
             {
-                item->setConflicted();
-                previous->setConflicted();
+                item->setConflicted(true);
+                previous->setConflicted(true);
             }          
 
             // Partial overlapping.
@@ -148,7 +148,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
             {                
                 gap = new MemoryGapItem(this);
                 gap->setWidth(childWidth_);
-                gap->setConflicted();
+                gap->setConflicted(true);
                 gap->setName("conflicted");
                 gap->setStartAddress(item->getOffset(),true);
                 gap->setOverlappingTop(item->getOffset());
@@ -159,7 +159,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
                 gap->setPos(MemoryVisualizationItem::CHILD_INDENTATION, yCoordinate);
 
                 // update the y-coordinate to avoid setting a block under the gap.
-                yCoordinate += VisualizerItem::ITEM_HEIGHT;
+                yCoordinate += VisualizerItem::DEFAULT_HEIGHT;
 
                 gap->setVisible(isExpanded());
 
@@ -296,11 +296,11 @@ void MemoryVisualizationItem::updateChildMap() {
         // update the offset for the item
         if (item->getLastAddress() > getLastAddress())
         {
-            item->setConflicted();
+            item->setConflicted(true);
         }
         else
         {
-            item->setNotConflicted();
+            item->setConflicted(false);
         }
         quint64 offset = item->getOffset();
         newMap.insertMulti(offset, item);
@@ -330,7 +330,7 @@ void MemoryVisualizationItem::updateChildMap() {
 // Function: setWidth()
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::setWidth( qreal width ) {
-    setRect(0, 0, width, VisualizerItem::ITEM_HEIGHT);
+    setRect(0, 0, width, VisualizerItem::DEFAULT_HEIGHT);
 
     childWidth_ = width - MemoryVisualizationItem::CHILD_INDENTATION;
 
@@ -409,12 +409,19 @@ quint64 MemoryVisualizationItem::getOverlappingBottom()
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::setCompleteOverlap()
 {
-    firstFreeAddress_ = -1;
-    lastFreeAddress_ = -1;
-    setConflicted();
+    overlapped_ = true;
+    setConflicted(true);
     setLeftTopCorner("");
     setLeftBottomCorner("");
     VisualizerItem::setRightTopCorner("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: isCompletelyOverlapped()
+//-----------------------------------------------------------------------------
+bool MemoryVisualizationItem::isCompletelyOverlapped() const
+{
+    return overlapped_;
 }
 
 //-----------------------------------------------------------------------------
@@ -504,23 +511,21 @@ void MemoryVisualizationItem::setLeftBottomCorner( quint64 address ) {
 }
 
 //-----------------------------------------------------------------------------
-// Function: setConflicted()
+// Function: setConflicted(true)
 //-----------------------------------------------------------------------------
-void MemoryVisualizationItem::setConflicted()
+void MemoryVisualizationItem::setConflicted(bool conflicted)
 {
-    //setName(getName() + " (conflicted)");
-    QAbstractGraphicsShapeItem::setBrush(KactusColors::MISSING_COMPONENT);
-    setExpansionBrush(KactusColors::MISSING_COMPONENT);
-}
-
-//-----------------------------------------------------------------------------
-// Function: setNotConflicted()
-//-----------------------------------------------------------------------------
-void MemoryVisualizationItem::setNotConflicted()
-{
-    //setName(getName().remove(" (conflicted)"));
-    QAbstractGraphicsShapeItem::setBrush(defaultBrush_);
-    setExpansionBrush(defaultBrush_);
+    if (conflicted)
+    {
+        QAbstractGraphicsShapeItem::setBrush(KactusColors::MISSING_COMPONENT);
+        setExpansionBrush(KactusColors::MISSING_COMPONENT);
+    }
+    else
+    {
+        QAbstractGraphicsShapeItem::setBrush(defaultBrush());
+        setExpansionBrush(defaultBrush());  
+        overlapped_ = false;
+    }
 }
 
 //-----------------------------------------------------------------------------

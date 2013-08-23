@@ -11,6 +11,7 @@
 #include <common/utils.h>
 #include "addressblockgraphitem.h"
 #include <IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.h>
+#include <IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.h>
 #include <IPXactWrapper/ComponentEditor/visualization/fieldgapitem.h>
 
 #include <common/graphicsItems/visualizeritem.h>
@@ -26,8 +27,7 @@ register_(reg) {
 
 	Q_ASSERT(register_);
 	QBrush brush(KactusColors::REGISTER_COLOR);
-	setBrush(brush);
-	ExpandableItem::setExpansionBrush(brush);
+	setDefaultBrush(brush);
 
     setOverlappingTop(reg->getMSB());
     setOverlappingBottom(reg->getOffset());
@@ -70,6 +70,11 @@ void RegisterGraphItem::refresh() {
     setOverlappingTop(startAddress);
     setOverlappingBottom(endAddress);
     
+    // Set tooltip to show addresses in hexadecimals.
+    setToolTip("<b>Name: </b>" + register_->getName() + "<br>" +
+        "<b>First address: </b>" + AddressSpaceVisualizationItem::addr2Str(getOffset(),getBitWidth()) + "<br>" +
+        "<b>Last address: </b>" + AddressSpaceVisualizationItem::addr2Str(getLastAddress(),getBitWidth()));
+
 	// set the positions for the children
 	reorganizeChildren();
 
@@ -180,8 +185,8 @@ void RegisterGraphItem::reorganizeChildren() {
         // If field overlaps with others.
         if (topItem && item->getLastAddress() >= topItem->getOffset() )
         {
-            item->setConflicted();
-            previous->setConflicted();
+            item->setConflicted(true);
+            previous->setConflicted(true);
 
             // Field is completely inside other fields.
             if (item->getOffset() >= topItem->getOffset())
@@ -253,7 +258,7 @@ void RegisterGraphItem::reorganizeChildren() {
                 }
 
                 gap = new FieldGapItem("conflicted", this);                
-                gap->setConflicted();
+                gap->setConflicted(true);
                 gap->setStartAddress(previousTopItem->getOffset(),true);
                 gap->setEndAddress(conflictEnd,true); 
                 gap->setVisible(isExpanded());
@@ -350,11 +355,11 @@ void RegisterGraphItem::updateChildMap() {
         // update the status and msbs for the item
         if (item->getLastAddress() > register_->getMSB() )
         {
-            item->setConflicted();
+            item->setConflicted(true);
         }
         else
         {
-            item->setNotConflicted();
+            item->setConflicted(false);
         }
         item->setOverlappingTop(item->getLastAddress());
         item->setOverlappingBottom(item->getOffset());
@@ -422,7 +427,7 @@ quint64 RegisterGraphItem::getLastAddress() const {
 
 void RegisterGraphItem::setWidth(qreal width)
 {
-    setRect(0, 0, width, VisualizerItem::ITEM_HEIGHT);
+    setRect(0, 0, width, VisualizerItem::DEFAULT_HEIGHT);
 
     childWidth_ = width;
 

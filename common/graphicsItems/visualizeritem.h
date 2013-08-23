@@ -8,6 +8,7 @@
 #ifndef VISUALIZERITEM_H
 #define VISUALIZERITEM_H
 
+#include <QBrush>
 #include <QGraphicsRectItem>
 #include <QGraphicsTextItem>
 #include <QGraphicsSimpleTextItem>
@@ -32,16 +33,16 @@ public:
     enum NameVerticalAlign
     {
         NAME_TOP = 0,       //! Name is aligned to the top of the item.
-        NAME_MIDDLE,      //! Name is aligned to the center of the item.
+        NAME_MIDDLE,        //! Name is aligned to the center of the item.
         NAME_BOTTOM         //! Name is aligned to the bottom of the item.
     };
 
 	//! \brief The minimum and maximum bounds for visualizer items.
 	enum Bounds {
-		ITEM_HEIGHT = 36,		//! The height of a single item
+		DEFAULT_HEIGHT = 40,    //! The height of a single item
 		MIN_WIDTH = 90,			//! The minimum width of an item
-		DEFAULT_WIDTH = 200,		//! The default width of a single item
-		NAME_INDENTATION = 20, //! How much space the name leaves for left corners
+		DEFAULT_WIDTH = 200,	//! The default width of a single item
+		NAME_INDENTATION = 20,  //! How much space the name leaves for left corners
         CORNER_INDENTATION = 4
 	};
 
@@ -164,6 +165,23 @@ protected:
 	 * The base class implementation only updates the position of the name and corner texts.
 	*/
 	virtual void reorganizeChildren();
+
+    /*!
+     *  Sets the default coloring brush for the item.
+     *
+     *      @param [in] brush   The brush to set.
+     */
+    virtual void setDefaultBrush(QBrush brush);
+
+    /*!
+     *  Gets the default coloring brush for the item.
+     *
+     *      @return [in] brush   The default brush.
+     */
+    virtual QBrush defaultBrush();
+
+	//! Default brush for item coloring.
+    QBrush defaultBrush_;  
 
 private:
 	

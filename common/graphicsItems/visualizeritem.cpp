@@ -26,7 +26,7 @@ leftBottomText_(this),
 rightTopText_(this),
 rightBottomText_(this) {
 
-	setRect(0, 0, VisualizerItem::DEFAULT_WIDTH, VisualizerItem::ITEM_HEIGHT);
+	setRect(0, 0, VisualizerItem::DEFAULT_WIDTH, VisualizerItem::DEFAULT_HEIGHT);
 
 	QFont font = nameLabel_.font();
 	//font.setWeight(QFont::Bold);
@@ -116,7 +116,7 @@ void VisualizerItem::setLeftTopPosition()
 void VisualizerItem::setLeftBottomPosition()
 {
     leftBottomText_.setPos(VisualizerItem::CORNER_INDENTATION, 
-        rect().bottomLeft().y() - VisualizerItem::FONT_CORNERSIZE - 2 * VisualizerItem::CORNER_INDENTATION);
+        rect().bottomLeft().y() - leftBottomText_.boundingRect().height() - VisualizerItem::CORNER_INDENTATION);
 }
 
 //-----------------------------------------------------------------------------
@@ -134,7 +134,7 @@ void VisualizerItem::setRightTopPosition()
 void VisualizerItem::setRightBottomPosition()
 {
     rightBottomText_.setPos(rect().topRight().x() - rightBottomText_.boundingRect().width() - VisualizerItem::CORNER_INDENTATION,
-		rect().bottomRight().y() - VisualizerItem::FONT_CORNERSIZE - 2 * VisualizerItem::CORNER_INDENTATION);
+		rect().bottomRight().y() - rightBottomText_.boundingRect().height() - VisualizerItem::CORNER_INDENTATION);
 }
 
 //-----------------------------------------------------------------------------
@@ -190,7 +190,7 @@ void VisualizerItem::setNameLabelPosition()
 //-----------------------------------------------------------------------------
 QRectF VisualizerItem::minimumRect() const {
 	return QRectF(0, 0, VisualizerItem::DEFAULT_WIDTH, 
-		VisualizerItem::ITEM_HEIGHT);
+		VisualizerItem::DEFAULT_HEIGHT);
 }
 
 //-----------------------------------------------------------------------------
@@ -207,6 +207,23 @@ void VisualizerItem::reorganizeChildren() {
 
     nameLabel_.setPlainText(name_);
     resizeLabels();
+}
+
+//-----------------------------------------------------------------------------
+// Function: setDefaultBrush()
+//-----------------------------------------------------------------------------
+void VisualizerItem::setDefaultBrush(QBrush brush)
+{
+    defaultBrush_ = brush;
+    setBrush(brush);
+}
+
+//-----------------------------------------------------------------------------
+// Function: defaultBrush()
+//-----------------------------------------------------------------------------
+QBrush VisualizerItem::defaultBrush()
+{
+    return defaultBrush_;
 }
 
 //-----------------------------------------------------------------------------
@@ -240,7 +257,7 @@ qreal VisualizerItem::itemTotalWidth() const {
 // Function: setWidth()
 //-----------------------------------------------------------------------------
 void VisualizerItem::setWidth( qreal width ) {
-	setRect(0, 0, width, VisualizerItem::ITEM_HEIGHT);
+	setRect(0, 0, width, VisualizerItem::DEFAULT_HEIGHT);
 	VisualizerItem::reorganizeChildren();
 }
 

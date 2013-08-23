@@ -35,6 +35,10 @@ void SegmentGraphItem::refresh() {
     setOverlappingTop(offset);
     setOverlappingBottom(lastAddr);
 
+    setToolTip("<b>Name: </b>" + segment_->getName() + "<br>" +
+        "<b>Offset: </b>" + addr2Str(getOffset(), getBitWidth()) + "<br>" +
+        "<b>Last address: </b>" + addr2Str(getLastAddress(), getBitWidth()));
+
     VisualizerItem::reorganizeChildren();
 }
 

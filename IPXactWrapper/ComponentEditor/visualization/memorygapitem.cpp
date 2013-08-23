@@ -12,6 +12,9 @@
 #include <QColor>
 #include <QBrush>
 
+//-----------------------------------------------------------------------------
+// Function: MemoryGapItem()
+//-----------------------------------------------------------------------------
 MemoryGapItem::MemoryGapItem(QGraphicsItem* parent):
 MemoryVisualizationItem(parent),
 start_(0),
@@ -24,33 +27,48 @@ end_(0) {
     setToolTip("This memory block is unassigned.");
 }
 
+//-----------------------------------------------------------------------------
+// Function: ~MemoryGapItem()
+//-----------------------------------------------------------------------------
 MemoryGapItem::~MemoryGapItem() {
 }
 
-
-void MemoryGapItem::refresh() {
-	//setLeftTopCorner(start_);
-	//setLeftBottomCorner(end_);
-
+//-----------------------------------------------------------------------------
+// Function: refresh()
+//-----------------------------------------------------------------------------
+void MemoryGapItem::refresh() 
+{
 	ExpandableItem::reorganizeChildren();
 }
 
+//-----------------------------------------------------------------------------
+// Function: getOffset()
+//-----------------------------------------------------------------------------
 quint64 MemoryGapItem::getOffset() const {
 	return start_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: getBitWidth()
+//-----------------------------------------------------------------------------
 int MemoryGapItem::getBitWidth() const {
 	MemoryVisualizationItem* memItem = static_cast<MemoryVisualizationItem*>(parentItem());
 	Q_ASSERT(memItem);
 	return memItem->getBitWidth();
 }
 
+//-----------------------------------------------------------------------------
+// Function: getAddressUnitSize()
+//-----------------------------------------------------------------------------
 unsigned int MemoryGapItem::getAddressUnitSize() const {
 	MemoryVisualizationItem* memItem = static_cast<MemoryVisualizationItem*>(parentItem());
 	Q_ASSERT(memItem);
 	return memItem->getAddressUnitSize();
 }
 
+//-----------------------------------------------------------------------------
+// Function: setStartAddress()
+//-----------------------------------------------------------------------------
 void MemoryGapItem::setStartAddress( quint64 address, bool contains /*= true*/ ) {
 	if (contains) {
 		start_ = address;
@@ -62,6 +80,9 @@ void MemoryGapItem::setStartAddress( quint64 address, bool contains /*= true*/ )
 	refresh();
 }
 
+//-----------------------------------------------------------------------------
+// Function: setEndAddress()
+//-----------------------------------------------------------------------------
 void MemoryGapItem::setEndAddress( quint64 address, bool contains /*= true*/ ) {
 	if (contains) {
 		end_ = address;
@@ -73,6 +94,9 @@ void MemoryGapItem::setEndAddress( quint64 address, bool contains /*= true*/ ) {
 	refresh();
 }
 
+//-----------------------------------------------------------------------------
+// Function: getLastAddress()
+//-----------------------------------------------------------------------------
 quint64 MemoryGapItem::getLastAddress() const {
 	return end_;
 }

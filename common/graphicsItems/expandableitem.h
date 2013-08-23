@@ -71,6 +71,13 @@ protected:
 	*/
 	virtual void setExpansionBrush(const QBrush& brush);
 
+    /*!
+     *  Sets the default coloring brush for the item.
+     *
+     *      @param [in] brush   The brush to set.
+     */
+    virtual void setDefaultBrush(QBrush brush);
+
 
     virtual void setExpansionPen( const QPen& pen);
 

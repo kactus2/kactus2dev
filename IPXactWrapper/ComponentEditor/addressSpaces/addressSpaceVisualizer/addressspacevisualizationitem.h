@@ -22,6 +22,13 @@ class AddressSpaceVisualizationItem : public VisualizerItem {
 
 public:
 
+    //! \brief The minimum and maximum bounds for address space items.
+	enum Bounds {
+        PEN_WIDTH = 2,
+        MIN_HEIGHT = VisualizerItem::DEFAULT_HEIGHT/2 + PEN_WIDTH, //! Height for items with one address.
+        SEGMENT_HEIGHT = 2*MIN_HEIGHT + PEN_WIDTH                  //! Height for items with address range.
+	};
+
 	/*! \brief The constructor
 	 *
 	 * \param addrSpace Pointer to the address space being visualized.
@@ -99,13 +106,37 @@ public:
      */
     virtual quint64 getOverlappingBottom();
 
+    //! Tells the item that its memory block is shadowed by other memory blocks.
     virtual void setCompleteOverlap();
     
+    /*! Tells if the item is completely overlapped by other items.
+     *
+     *      @return True, if the item's memory is completely under other memory blocks, otherwise false.
+     */
     virtual bool isCompletelyOverlapped() const;
 
+    /*!
+     *  Sets the item to conflicted (overlaps with other memory blocks) or not-conflicted state.
+     *
+     *      @param [in] conflicted   Conflicted state to set.
+     */
     virtual void setConflicted(bool conflicted);
 
+    /*!
+     *  Sets the item to conflicted or not-conflicted state.
+     *
+     *      @return True, if item is conflicted, otherwise false.
+     */
     virtual bool isConflicted() const;
+
+	/*! \brief Convert the address to string presented in hexadecimal form.
+	 *
+	 * \param address  The address to be converted.
+	 * \param bitWidth The bit width of the item.
+	 *
+	 * \return QString containing the address in hexadecimal form.
+	*/
+    static QString addr2Str(quint64 const address, int const bitWidth);
 
 protected:
 
@@ -136,10 +167,6 @@ protected:
 	 *
 	*/
 	virtual void setRightBottomCorner(quint64 address);
-    
-    virtual void setDefaultBrush(QBrush brush);
-
-    virtual QBrush defaultBrush();
 
     //! \brief The first non-overlapping address.
     quint64 firstFreeAddress_;
@@ -155,23 +182,14 @@ private:
 	//! \brief No assignment
 	AddressSpaceVisualizationItem& operator=(const AddressSpaceVisualizationItem& other);
 
-	/*! \brief Convert the address to string presented in hexadecimal form.
-	 *
-	 * \param address The address to be converted.
-	 *
-	 * \return QString containing the address in hexadecimal form.
-	*/
-	QString addr2Str(quint64 address);
-
-	//! \brief Pointer to the address space being edited.
+	//! Pointer to the address space being edited.
 	QSharedPointer<AddressSpace> addrSpace_;
 
-    QBrush defaultBrush_;  
-
+	//! Conflicted state. Item is conflicted if it overlaps with other items.
     bool conflicted_;
 
+    //! Tells if the item is completely overlapped by other items.
     bool overlapped_;
-
 };
 
 #endif // ADDRESSSPACEVISUALIZATIONITEM_H

@@ -10,6 +10,7 @@
 #include <models/register.h>
 #include <common/utils.h>
 #include <IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.h>
+#include <IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.h>
 #include <common/KactusColors.h>
 
 #include <QBrush>
@@ -22,8 +23,7 @@ addrBlock_(addrBlock) {
 
 	Q_ASSERT(addrBlock_);
 	QBrush brush(KactusColors::ADDR_BLOCK_COLOR);
-	setBrush(brush);
-	ExpandableItem::setExpansionBrush(brush);
+	setDefaultBrush(brush);
 
     setOverlappingTop(addrBlock_->getBaseAddress().toLongLong());
     setOverlappingBottom(addrBlock_->getLastAddress());
@@ -36,6 +36,11 @@ void AddressBlockGraphItem::refresh() {
     setName(addrBlock_->getName());
     setOverlappingTop(addrBlock_->getBaseAddress().toLongLong());
     setOverlappingBottom(addrBlock_->getLastAddress());
+
+    // Set tooltip to show addresses in hexadecimals.
+    setToolTip("<b>Name: </b>" + addrBlock_->getName() + "<br>" +
+        "<b>Offset: </b>" + AddressSpaceVisualizationItem::addr2Str(getOffset(), getBitWidth()) + "<br>" +
+        "<b>Last address: </b>" + AddressSpaceVisualizationItem::addr2Str(addrBlock_->getLastAddress(), getBitWidth()));
 
 	// set the positions for the children
 	MemoryVisualizationItem::reorganizeChildren();
@@ -83,7 +88,7 @@ qreal AddressBlockGraphItem::itemTotalWidth() const {
 }
 
 void AddressBlockGraphItem::setWidth( qreal width ) {
-	//setRect(0, 0, width + VisualizerItem::ITEM_HEIGHT, VisualizerItem::ITEM_HEIGHT);
+	//setRect(0, 0, width + VisualizerItem::DEFAULT_HEIGHT, VisualizerItem::DEFAULT_HEIGHT);
 	//ExpandableItem::reorganizeChildren();
     MemoryVisualizationItem::setWidth(width);
 }

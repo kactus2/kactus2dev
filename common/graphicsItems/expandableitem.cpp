@@ -74,6 +74,15 @@ void ExpandableItem::reorganizeChildren() {
 	VisualizerItem::reorganizeChildren();
 }
 
+//-----------------------------------------------------------------------------
+// Function: setDefaultBrush()
+//-----------------------------------------------------------------------------
+void ExpandableItem::setDefaultBrush(QBrush brush)
+{
+    VisualizerItem::setDefaultBrush(brush);
+    setExpansionBrush(brush);
+}
+
 void ExpandableItem::setExpansionBrush( const QBrush& brush ) {
 	expansionRect_->setBrush(brush);
 }

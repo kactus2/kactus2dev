@@ -122,7 +122,7 @@ void AddressSpaceScene::rePosition()
         }
         // if address block is overlapped by others, it need not be positioned.
         if (block->isCompletelyOverlapped())
-        {
+        {          
             ++blockIterator;
             continue;
         }
@@ -139,7 +139,7 @@ void AddressSpaceScene::rePosition()
 				prevSeg->setBottomCoordinate(yCoord);
 			}
 			if (prevBlock) {
-				prevBlock->setBottomCoordinate(yCoord); //!
+				prevBlock->setBottomCoordinate(yCoord);
 			}
 
 			// update the positions
@@ -149,14 +149,31 @@ void AddressSpaceScene::rePosition()
 			// check if the items are different sizes
 			
 			// if block reaches further than segment
-			if (seg->getOverlappingBottom() < block->getOverlappingBottom()) {
+            if (seg->getOverlappingBottom() < block->getOverlappingBottom()) {
+                qreal segHeight = AddressSpaceVisualizationItem::SEGMENT_HEIGHT;      
+                // Segment displaying one address should be smaller.  
+                if (seg->getOverlappingTop() == seg->getOverlappingBottom())
+                {
+                    segHeight = AddressSpaceVisualizationItem::MIN_HEIGHT;
+                }
+                seg->setHeight(segHeight);
+                segCoord += segHeight;
 
-				seg->setHeight(VisualizerItem::ITEM_HEIGHT);
-				block->setHeight(VisualizerItem::ITEM_HEIGHT * 1.5);
+                // Find the bottom of the address block.
+				blockCoord = segCoord;
+                // If the next block begins at the ending address of the segment,
+                // they should align.
+                if (block->getOverlappingBottom() == seg->getOverlappingBottom() + 1)
+                {
+                    blockCoord += AddressSpaceVisualizationItem::MIN_HEIGHT +  AddressSpaceVisualizationItem::PEN_WIDTH;
+                }
+                // Otherwise the segment should stretch further down.
+                else
+                {
+                    blockCoord += AddressSpaceVisualizationItem::SEGMENT_HEIGHT +  AddressSpaceVisualizationItem::PEN_WIDTH;
+                }                
 
-				// update the y-coordinates for next items
-				segCoord += VisualizerItem::ITEM_HEIGHT;
-				blockCoord += VisualizerItem::ITEM_HEIGHT * 1.5;
+				block->setBottomCoordinate(blockCoord);
 				
 				// the segment has been processed but block is needed on next loop iteration
 				prevSeg = seg;
@@ -165,14 +182,30 @@ void AddressSpaceScene::rePosition()
 			}
 
 			// if segment reaches further than block
-			else if (seg->getOverlappingBottom() > block->getOverlappingBottom()) {
+			else if (seg->getOverlappingBottom() > block->getOverlappingBottom()) {                
+                qreal blockHeight = AddressSpaceVisualizationItem::SEGMENT_HEIGHT;
+                // Block displaying one address should be smaller.  
+                if (block->getOverlappingTop() == block->getOverlappingBottom())
+                {
+                    blockHeight = AddressSpaceVisualizationItem::MIN_HEIGHT;
+                }
+                block->setHeight(blockHeight);
+                blockCoord += blockHeight;
 
-				seg->setHeight(VisualizerItem::ITEM_HEIGHT * 1.5);
-				block->setHeight(VisualizerItem::ITEM_HEIGHT);
+				segCoord = blockCoord;
+                // If the next block begins at the ending address of the segment,
+                // they should align.
+                if (seg->getOverlappingBottom() == block->getOverlappingBottom() + 1)
+                {
+                    segCoord += AddressSpaceVisualizationItem::MIN_HEIGHT +  AddressSpaceVisualizationItem::PEN_WIDTH;
+                }
+                // Otherwise the segment should stretch further down.
+                else
+                {
+                    segCoord += AddressSpaceVisualizationItem::SEGMENT_HEIGHT +  AddressSpaceVisualizationItem::PEN_WIDTH;
+                }                
 
-				// update the y-coordinates for next items
-				segCoord += VisualizerItem::ITEM_HEIGHT * 1.5;
-				blockCoord += VisualizerItem::ITEM_HEIGHT;
+				seg->setBottomCoordinate(segCoord);	
 				
 				// the block has been processed but segment is needed on next loop iteration
 				prevBlock = block;
@@ -181,13 +214,18 @@ void AddressSpaceScene::rePosition()
 			}
 			// if blocks are of same size
 			else {
-
-				seg->setHeight(VisualizerItem::ITEM_HEIGHT);
-				block->setHeight(VisualizerItem::ITEM_HEIGHT);
+                qreal height = AddressSpaceVisualizationItem::SEGMENT_HEIGHT;
+                 // Block and segment displaying one address should be smaller. 
+                if (seg->getOverlappingTop() == seg->getOverlappingBottom())
+                {
+                    height = AddressSpaceVisualizationItem::MIN_HEIGHT;
+                }
+				seg->setHeight(height);
+				block->setHeight(height);
 
 				// update the y-coordinates for next items
-				segCoord += VisualizerItem::ITEM_HEIGHT;
-				blockCoord += VisualizerItem::ITEM_HEIGHT;
+				segCoord += height;
+				blockCoord += height;
 				 
 				// both blocks are processed and next loop iteration starts on new items
 				prevSeg = seg;
@@ -205,9 +243,21 @@ void AddressSpaceScene::rePosition()
 
 			// if block reaches further than segment
 			if (seg->getOverlappingBottom() < block->getOverlappingBottom()) {
-
-				block->setHeight(VisualizerItem::ITEM_HEIGHT);
-				blockCoord += VisualizerItem::ITEM_HEIGHT;
+                
+                // Find the bottom of the segment.
+                blockCoord = seg->mapToScene(seg->rect().bottomRight()).y();
+                // If the next segment begins at the ending address of the block,
+                // they should align.
+                if (block->getOverlappingBottom() == seg->getOverlappingBottom() + 1)
+                {
+                    blockCoord += AddressSpaceVisualizationItem::MIN_HEIGHT +  AddressSpaceVisualizationItem::PEN_WIDTH;
+                }
+                // Otherwise the block should stretch further down.
+                else
+                {
+                    blockCoord += AddressSpaceVisualizationItem::SEGMENT_HEIGHT +  AddressSpaceVisualizationItem::PEN_WIDTH;
+                }
+                block->setBottomCoordinate(blockCoord);
 
 				// the segment has been processed but block is needed on next loop iteration
 				prevSeg = seg;
@@ -217,12 +267,28 @@ void AddressSpaceScene::rePosition()
 
 			// if segment reaches further than block
 			else if (seg->getOverlappingBottom() > block->getOverlappingBottom()) {
+                qreal blockHeight = AddressSpaceVisualizationItem::SEGMENT_HEIGHT;
+                if (block->getOverlappingTop() == block->getOverlappingBottom())
+                {
+                    blockHeight = AddressSpaceVisualizationItem::MIN_HEIGHT;
+                }
+				block->setHeight(blockHeight);
+				blockCoord += blockHeight;
 
-				block->setHeight(VisualizerItem::ITEM_HEIGHT);
-				blockCoord += VisualizerItem::ITEM_HEIGHT;
+				// Find the bottom of the address block.
+				segCoord = blockCoord;
+                // If the next block begins at the ending address of the segment,
+                // they should align.
+                if (seg->getOverlappingBottom() == block->getOverlappingBottom() + 1)
+                {
+                    segCoord += AddressSpaceVisualizationItem::MIN_HEIGHT +  AddressSpaceVisualizationItem::PEN_WIDTH;
+                }
+                // Otherwise the segment should stretch further down.
+                else
+                {
+                    segCoord += AddressSpaceVisualizationItem::SEGMENT_HEIGHT +  AddressSpaceVisualizationItem::PEN_WIDTH;
+                }                
 
-				// segment reaches past the block
-				segCoord = block->mapToScene(block->rect().bottomRight()).y() + (VisualizerItem::ITEM_HEIGHT / 2);
 				seg->setBottomCoordinate(segCoord);
 
 				// the block has been processed but segment is needed on next loop iteration
@@ -232,9 +298,15 @@ void AddressSpaceScene::rePosition()
 			}
 			// if blocks have the same ending address
 			else {
-
-				blockCoord += VisualizerItem::ITEM_HEIGHT;
-
+                // Block displaying one address should be smaller. 
+                if ( block->getOverlappingTop() != block->getOverlappingBottom())
+                {
+                    blockCoord += AddressSpaceVisualizationItem::SEGMENT_HEIGHT;
+                }
+                else
+                {
+                    blockCoord += AddressSpaceVisualizationItem::MIN_HEIGHT;
+                }
 				// the common ending coordinate
 				qreal yCoord = qMax(segCoord, blockCoord);
 
@@ -260,25 +332,52 @@ void AddressSpaceScene::rePosition()
  
  			// if block reaches further than segment
 			if (seg->getOverlappingBottom() < block->getOverlappingBottom()) {
+                qreal segHeight = AddressSpaceVisualizationItem::SEGMENT_HEIGHT;
+                // Segment displaying one address should be smaller.
+                if (seg->getOverlappingTop() == seg->getOverlappingBottom())
+                {
+                    segHeight = AddressSpaceVisualizationItem::MIN_HEIGHT;
+                }
+				seg->setHeight(segHeight);
+				segCoord += segHeight;
 
-				seg->setHeight(VisualizerItem::ITEM_HEIGHT);
-				segCoord += VisualizerItem::ITEM_HEIGHT;
+				// Find the bottom of the segment.
+                blockCoord = seg->mapToScene(seg->rect().bottomRight()).y();
+                // If the next segment begins at the ending address of the address block,
+                // they should align.
+                if (block->getOverlappingBottom() == seg->getOverlappingBottom() + 1)
+                {
+                    blockCoord += AddressSpaceVisualizationItem::MIN_HEIGHT +  AddressSpaceVisualizationItem::PEN_WIDTH;
+                }
+                // Otherwise the block should stretch further down.
+                else
+                {
+                    blockCoord += AddressSpaceVisualizationItem::SEGMENT_HEIGHT +  AddressSpaceVisualizationItem::PEN_WIDTH;
+                }                
 
-				// block reaches past the segment
-				blockCoord = seg->mapToScene(seg->rect().bottomRight()).y() + (VisualizerItem::ITEM_HEIGHT / 2);
-				block->setBottomCoordinate(blockCoord);
-
-				// the segment has been processed but block is needed on next loop iteration
-				prevSeg = seg;
+                block->setBottomCoordinate(blockCoord);
+                // the segment has been processed but block is needed on next loop iteration
+                prevSeg = seg;
 				++segIterator;
 				continue;
 			}
 
 			// if segment reaches further than block
 			else if (seg->getOverlappingBottom() > block->getOverlappingBottom()) {
-
-				seg->setHeight(VisualizerItem::ITEM_HEIGHT);
-				segCoord += VisualizerItem::ITEM_HEIGHT;
+                // Find the bottom of the block.
+                segCoord = block->mapToScene(block->rect().bottomRight()).y();
+                // If the next address block begins at the ending address of the segment,
+                // they should align.
+                if (seg->getOverlappingBottom() == block->getOverlappingBottom() + 1)
+                {
+                    segCoord += AddressSpaceVisualizationItem::MIN_HEIGHT +  AddressSpaceVisualizationItem::PEN_WIDTH;
+                }
+                // Otherwise the segment should stretch further down.
+                else
+                {
+                    segCoord += AddressSpaceVisualizationItem::SEGMENT_HEIGHT +  AddressSpaceVisualizationItem::PEN_WIDTH;
+                }
+                seg->setBottomCoordinate(segCoord);
 
 				// the block has been processed but segment is needed on next loop iteration
 				prevBlock = block;
@@ -286,10 +385,16 @@ void AddressSpaceScene::rePosition()
 				continue;
 			}
 			// if blocks have the same ending address
-			else {
-
-				segCoord += VisualizerItem::ITEM_HEIGHT;
-
+            else {
+                 // Block and segment displaying one address should be smaller.
+                if (seg->getOverlappingTop() != seg->getOverlappingBottom())
+                {
+                    segCoord += AddressSpaceVisualizationItem::SEGMENT_HEIGHT;
+                }
+                else
+                {
+                    segCoord += AddressSpaceVisualizationItem::MIN_HEIGHT;
+                }
 				// the common ending coordinate
 				qreal yCoord = qMax(segCoord, blockCoord);
 
@@ -429,18 +534,18 @@ void AddressSpaceScene::rePositionExceeding(qreal const yStart)
     qreal yCoordinate = yStart + MARGIN;
     foreach(AddressSpaceVisualizationItem* seg, exceedingSegments_)
     {
-        seg->setHeight(VisualizerItem::ITEM_HEIGHT);
+        seg->setHeight(AddressSpaceVisualizationItem::SEGMENT_HEIGHT);
         seg->setPos(0, yCoordinate);
-        yCoordinate += VisualizerItem::ITEM_HEIGHT;
+        yCoordinate += AddressSpaceVisualizationItem::SEGMENT_HEIGHT;
     }
 
     // Add address blocks outside address space to the end.
     yCoordinate = yStart + MARGIN;
     foreach(AddressSpaceVisualizationItem* block, exceedingAddrBlocks_)
     {
-        block->setHeight(VisualizerItem::ITEM_HEIGHT);
+        block->setHeight(AddressSpaceVisualizationItem::SEGMENT_HEIGHT);
         block->setPos(VisualizerItem::DEFAULT_WIDTH, yCoordinate);
-        yCoordinate += VisualizerItem::ITEM_HEIGHT;
+        yCoordinate += AddressSpaceVisualizationItem::SEGMENT_HEIGHT;
     }
 }
 
@@ -463,7 +568,7 @@ void AddressSpaceScene::resolveConflicts(AddressSpaceVisualizationItem* currentI
 
         // item is completely inside other items.
         if (currentItem->getLastAddress() <= topItem->getLastAddress())
-        {
+        {            
             currentItem->setCompleteOverlap();
         }
 
@@ -482,7 +587,7 @@ void AddressSpaceScene::resolveConflicts(AddressSpaceVisualizationItem* currentI
             // Previous top-most item is completely under this item. 
             else if (currentItem->getOffset() == topItem->getOffset())
             {                                   
-                topItem->setCompleteOverlap();                     
+                topItem->setCompleteOverlap();                  
             }
 
             // Previous top-most item is partially under this item. 

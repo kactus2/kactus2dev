@@ -36,6 +36,9 @@ public:
 	//! The destructor.
 	virtual ~AddressSpaceConflictedItem();
 
+	//! Refresh the item.
+    virtual void refresh();
+
 private:
 	
 	//! No copying

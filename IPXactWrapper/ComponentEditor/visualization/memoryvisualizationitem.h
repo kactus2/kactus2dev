@@ -126,14 +126,17 @@ public:
      */
     virtual quint64 getOverlappingBottom();
 
-	// \brief Sets the item to be completely overlapped by adjacent items.
+	//! \brief Sets the item to be completely overlapped by adjacent items.
     virtual void setCompleteOverlap();
 
-    //! \brief Set the item into conflicted (overlapping memory) state.
-    virtual void setConflicted();
+    /*! Tells if the item is completely overlapped by other items.
+     *
+     *      @return True, if the item's memory is completely under other memory blocks, otherwise false.
+     */
+    virtual bool isCompletelyOverlapped() const;
 
-    //! \brief Remove the item from conflicted state.
-    virtual void setNotConflicted();
+    //! \brief Set the item into conflicted (overlapping memory) state.
+    virtual void setConflicted(bool conflicted);
 
     // \brief Get the width of child items.
     qreal getChildWidth() const;
@@ -217,8 +220,11 @@ private:
     //! \brief comparison function for two equal offsets.
     static bool offsetLessThan(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2);
 
-	//! \brief Default coloring for the item.
-    QBrush defaultBrush_;
+	//! Conflicted state. Item is conflicted if it overlaps with other items.
+    bool conflicted_;
+
+    //! Tells if the item is completely overlapped by other items.
+    bool overlapped_;
 };
 
 #endif // MEMORYVISUALIZATIONITEM_H

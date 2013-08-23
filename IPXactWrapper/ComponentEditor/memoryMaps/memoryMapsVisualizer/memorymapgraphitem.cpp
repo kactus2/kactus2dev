@@ -11,6 +11,7 @@
 #include <models/memorymapitem.h>
 #include <models/addressblock.h>
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.h>
+#include <IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.h>
 #include <common/KactusColors.h>
 
 #include <QBrush>
@@ -25,8 +26,7 @@ memoryMap_(memoryMap) {
 
 	Q_ASSERT(memoryMap_);
 	QBrush brush(KactusColors::MEM_MAP_COLOR);
-	setBrush(brush);
-	ExpandableItem::setExpansionBrush(brush);
+	setDefaultBrush(brush);
 }
 
 MemoryMapGraphItem::~MemoryMapGraphItem() {
@@ -37,6 +37,11 @@ void MemoryMapGraphItem::refresh() {
 	setName(memoryMap_->getName());
     setOverlappingTop(memoryMap_->getFirstAddress());
     setOverlappingBottom(memoryMap_->getLastAddress());
+
+    // Set tooltip to show addresses in hexadecimals.
+    setToolTip("<b>Name: </b>" + memoryMap_->getName() + "<br>" +
+        "<b>First address: </b>" + AddressSpaceVisualizationItem::addr2Str(getOffset(),getBitWidth()) + "<br>" +
+        "<b>Last address: </b>" + AddressSpaceVisualizationItem::addr2Str(memoryMap_->getLastAddress(), getBitWidth()));
 
 	// set the positions for the children
 	MemoryVisualizationItem::reorganizeChildren();
@@ -83,7 +88,7 @@ qreal MemoryMapGraphItem::itemTotalWidth() const {
 }
 
 void MemoryMapGraphItem::setWidth( qreal width ) {
-    setRect(0, 0, width, VisualizerItem::ITEM_HEIGHT);
+    setRect(0, 0, width, VisualizerItem::DEFAULT_HEIGHT);
 
     childWidth_ = width - MemoryVisualizationItem::CHILD_INDENTATION;
 

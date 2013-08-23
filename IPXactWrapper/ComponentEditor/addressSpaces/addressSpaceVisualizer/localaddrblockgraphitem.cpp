@@ -35,6 +35,11 @@ void LocalAddrBlockGraphItem::refresh() {
     setOverlappingTop(offset);    
     setOverlappingBottom(lastAddr);
 	
+    // Set tooltip to show addresses in hexadecimals.
+    setToolTip("<b>Name: </b>" + addrBlock_->getName() + "<br>" +
+        "<b>Base address: </b>" + addr2Str(getOffset(), getBitWidth()) + "<br>" +
+        "<b>Last address: </b>" + addr2Str(addrBlock_->getLastAddress(), getBitWidth()));
+
 	VisualizerItem::reorganizeChildren();
 }
 
