@@ -33,6 +33,9 @@ protected:
     //! \brief Event handler for resizing.
     virtual void resizeEvent(QResizeEvent* event);
 
+    //! \brief Handler for mouse press events.
+    void mousePressEvent(QMouseEvent* mouseEvent);
+
 private:
 	
 	//! \brief No copying

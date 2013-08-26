@@ -146,7 +146,7 @@ void VisualizerItem::setNameLabelPosition()
     int xCoordinate = 0;
     switch (nameHorizontalPos_) {
     case VisualizerItem::NAME_RIGHT_ALIGN: {
-        xCoordinate = rightTopText_.x() - nameLabel_.boundingRect().width() - VisualizerItem::NAME_INDENTATION;
+        xCoordinate = rightTopText_.x() - nameLabel_.boundingRect().width() - VisualizerItem::NAME_INDENTATION; //!!!!!!!!!
         break;
                                      }
 
@@ -157,7 +157,7 @@ void VisualizerItem::setNameLabelPosition()
 
     case VisualizerItem::NAME_LEFT_ALIGN:
     default: {
-        xCoordinate = leftTopText_.boundingRect().right() +  VisualizerItem::NAME_INDENTATION;
+        xCoordinate = leftTopText_.x() + leftTopText_.boundingRect().width() +  VisualizerItem::NAME_INDENTATION;
         break;
              }
     }
@@ -284,61 +284,116 @@ void VisualizerItem::setNamePosition( const NameHorizontalAlign hPos,
 void VisualizerItem::resizeLabels()
 {
     qreal leftTextStart = leftTopText_.x();
-    qreal leftTextEnd = qMax(leftTopText_.boundingRect().right(),leftBottomText_.boundingRect().right());
-    qreal rightTextStart = qMin(rightTopText_.x(),  rightBottomText_.x());
+    qreal leftTextEnd = qMax(leftTopText_.x() + leftTopText_.boundingRect().width(),
+        leftBottomText_.x() + leftBottomText_.boundingRect().width());
+    qreal rightTextStart = qMin(rightTopText_.x(),rightTopText_.x());
+    qreal rightTextEnd = qMax(rightTopText_.x() + rightTopText_.boundingRect().width(),
+        rightBottomText_.x() + rightBottomText_.boundingRect().width());
+    const unsigned int margin = VisualizerItem::CORNER_INDENTATION;
 
-    // Left text does not fit at all.
-    if (leftTextStart > rightTextStart)
-    {
-        leftTopText_.setText("");
-        leftBottomText_.setText("");
-    }
-
-    // Left text would overlap the right text.
-    else if (leftTextEnd > rightTextStart)
-    {
-        // calculate how many characters can be fitted to the available space
-        const unsigned int margin = 2 * VisualizerItem::NAME_INDENTATION;
-        int maxTextSize = rightTextStart - leftTextStart - margin; 
-        QFontMetrics fontMetrics(leftTopText_.font());                 
-        int charCount = (maxTextSize / fontMetrics.width("x")) + 1;
-
-        leftTopText_.setText(clipText(leftTopText_.text(), charCount));
-        leftBottomText_.setText(clipText(leftBottomText_.text(), charCount));       
-    }    
-
-    // Right text is placed on left text or .
-    if (rightTextStart < leftTextStart || leftTextEnd > rightTextStart)
-    {
-        rightTopText_.setText("");
-        rightBottomText_.setText("");
-    }
+    bool hasLeftText = !leftTopText_.text().size() == 0 || !leftBottomText_.text().size() == 0;
+    bool hasRightText = !rightTopText_.text().size() == 0 || !rightBottomText_.text().size() == 0;
     
+    // Set size for right text(s).
+    if (hasRightText)
+    {
+        qreal leftBound = rect().width() * 0.3;
+        // If there is a left text, right text may take half of the available size.
+        if (hasLeftText)
+        {
+            leftBound = rect().center().x() + margin/2;
+        }
+        if (rightTextStart < leftBound)
+        {
+            rightTextStart = leftBound;
+            int maxTextSize = rightTextEnd - rightTextStart; 
+            QFontMetrics fontMetrics(rightTopText_.font());                 
+            int charCount = (maxTextSize / fontMetrics.width("x"));
 
-    leftTextEnd = qMax(leftTopText_.boundingRect().right(),leftBottomText_.boundingRect().right());
-    rightTextStart = qMin(rightTopText_.x(),  rightBottomText_.x());
-
-    // calculate how many characters can be fitted to the available space
-    int maxTextSize = 0;                
-    if (nameVerticalPos_ == VisualizerItem::NAME_BOTTOM)
-    {        
-        const unsigned int margin = VisualizerItem::NAME_INDENTATION;
-        maxTextSize = rect().right() - rect().left() - margin;
+            rightTopText_.setText(clipText(rightTopText_.text(), charCount));
+            rightBottomText_.setText(clipText(rightBottomText_.text(), charCount));
+            // Reposition right texts.
+            setRightTopPosition();
+            setRightBottomPosition();
+        }
     }
-    else
-    {   
-        const unsigned int margin = 2 * VisualizerItem::NAME_INDENTATION;     
-        maxTextSize = rightTextStart - leftTextEnd - margin;
-    }   
+
+    // Set size for left text(s).
+    if (hasLeftText)
+    {
+        qreal rightBound = rect().width() * 0.7;
+        // If there is right text, left text may take up to the beginning of right text.
+        if (hasRightText)
+        {
+            rightBound = rightTextStart - margin/2;
+        }
+
+        if (leftTextEnd > rightBound)
+        {
+            leftTextEnd = rightBound;
+            int maxTextSize = leftTextEnd - leftTextStart; 
+            QFontMetrics fontMetrics(leftTopText_.font());                 
+            int charCount = (maxTextSize / fontMetrics.width("x"));
+
+            leftTopText_.setText(clipText(leftTopText_.text(), charCount));
+            leftBottomText_.setText(clipText(leftBottomText_.text(), charCount));
+        }
+    }
+
+    // Set size for name label.
+    int maxTextSize = 0;
+    qreal nameTop = nameLabel_.y();
+    qreal nameBottom = nameTop + nameLabel_.boundingRect().height();
+    if (nameHorizontalPos_ == VisualizerItem::NAME_CENTERED)
+    {
+        // If name label is below top labels.
+        if(nameTop > (leftTopText_.y() + leftTopText_.boundingRect().height() - margin))
+        {
+            if (leftBottomText_.text().size() == 0 && rightBottomText_.text().size() == 0)
+            {
+                maxTextSize = rect().width() - 2* VisualizerItem::CORNER_INDENTATION;
+            }
+            else
+            {
+                maxTextSize = rightBottomText_.x() - (leftBottomText_.x() + leftBottomText_.boundingRect().width()) - 2*margin;
+            }
+        }
+        // If name label is above bottom labels.
+        else if(nameBottom < leftBottomText_.y())
+        {
+            if (leftTopText_.text().size() == 0 && rightTopText_.text().size() == 0)
+            {
+                maxTextSize = rect().width() - 2* VisualizerItem::CORNER_INDENTATION;
+            }
+            else
+            {
+                maxTextSize = rightTopText_.x() - (leftTopText_.x() + leftTopText_.boundingRect().width()) - 2*margin;
+            }
+        }
+        // Name label is between top and bottom labels.
+        else
+        {
+            maxTextSize = rightTextStart - leftTextEnd - 2*margin;
+        }
+
+    }
+
+    else if (nameHorizontalPos_ == VisualizerItem::NAME_RIGHT_ALIGN)
+    {
+        maxTextSize = rightTextStart - VisualizerItem::NAME_INDENTATION - (leftTextEnd + margin) - 2*margin;
+    }
+
+    else //if (nameHorizontalPos_ == VisualizerItem::NAME_LEFT_ALIGN)
+    {
+        maxTextSize = rightTextStart - margin - (leftTextEnd + VisualizerItem::NAME_INDENTATION) - 2*margin;
+    }
 
     QFontMetrics fontMetrics(nameLabel_.font());
-    int charCount = (maxTextSize / fontMetrics.width("x")) + 1;
+    int charCount = (maxTextSize / fontMetrics.width("x"));
 
-    if (charCount < name_.size())
-    {
-        nameLabel_.setPlainText(clipText(name_,charCount));        
-    }
-   
+    nameLabel_.setPlainText(clipText(name_, charCount));        
+    
+    // Reposition name label.
     setNameLabelPosition();
 }
 
@@ -356,7 +411,7 @@ QString VisualizerItem::clipText(QString const& text, int maxChars) const
     else if (text.size() > maxChars) {    
  
         QString chopped(text);
-        chopped.resize(maxChars - 2);
+        chopped.resize(maxChars - 3);
 
         // add "..." to the end to indicate the text has been partly hidden.
         chopped.append("...");
