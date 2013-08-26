@@ -5,8 +5,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Kactus2", "Kactus2.vcxproj"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MCAPICodeGenerator", "Plugins\MCAPICodeGenerator\MCAPICodeGenerator.vcxproj", "{AA63BE2D-A701-4C68-9760-C71655FFE66D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3AA1F9C5-ECA4-4763-83D2-D1AE4D05FF9D}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppSourceAnalyzer", "Plugins\CppSourceAnalyzer\CppSourceAnalyzer.vcxproj", "{D47FBAF4-1642-4F73-837C-F289DCB9E8FE}"
 	ProjectSection(ProjectDependencies) = postProject
 		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6} = {09486B51-70A7-3073-B15B-6D4BAF3EC8C6}
@@ -113,9 +111,9 @@ Global
 		{AA63BE2D-A701-4C68-9760-C71655FFE66D} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		Qt5Version = 5.1.0
-		BuildVersion_UpdateFileVersion = True
-		BuildVersion_UpdateAssemblyVersion = True
 		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
+		BuildVersion_UpdateAssemblyVersion = True
+		BuildVersion_UpdateFileVersion = True
+		Qt5Version = 5.1.0
 	EndGlobalSection
 EndGlobal

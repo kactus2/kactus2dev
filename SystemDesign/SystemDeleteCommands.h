@@ -27,6 +27,8 @@ class IGraphicsItemStack;
 class SWPortItem;
 class SWInterfaceItem;
 class SystemComponentItem;
+class ApiInterface;
+class ComInterface;
 
 //-----------------------------------------------------------------------------
 //! SystemColumnDeleteCommand class.
@@ -276,6 +278,12 @@ private:
 
     //! The interface item.
     SWInterfaceItem* interface_;
+
+    //! The API interface (if API).
+    QSharedPointer<ApiInterface> apiInterface_;
+
+    //! The COM interface (if COM).
+    QSharedPointer<ComInterface> comInterface_;
 
     //! The parent stack.
     IGraphicsItemStack* parent_;

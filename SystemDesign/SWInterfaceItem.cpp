@@ -828,3 +828,45 @@ ConnectionEndpoint* SWInterfaceItem::getOffPageConnector()
 {
     return offPageConnector_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: SWInterfaceItem::define()
+//-----------------------------------------------------------------------------
+void SWInterfaceItem::define(QSharedPointer<ApiInterface> apiIf)
+{
+    apiInterface_ = apiIf;
+    getOwnerComponent()->addApiInterface(apiInterface_);
+
+    setType(ENDPOINT_TYPE_API);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInterfaceItem::define()
+//-----------------------------------------------------------------------------
+void SWInterfaceItem::define(QSharedPointer<ComInterface> comIf)
+{
+    comInterface_ = comIf;
+    getOwnerComponent()->addComInterface(comInterface_);
+
+    setType(ENDPOINT_TYPE_COM);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInterfaceItem::undefine()
+//-----------------------------------------------------------------------------
+void SWInterfaceItem::undefine()
+{
+    if (apiInterface_ != 0)
+    {
+        getOwnerComponent()->removeApiInterface(apiInterface_.data());
+        apiInterface_.clear();
+    }
+
+    if (comInterface_ != 0)
+    {
+        getOwnerComponent()->removeComInterface(comInterface_.data());
+        comInterface_.clear();
+    }
+
+    setType(ENDPOINT_TYPE_UNDEFINED);
+}

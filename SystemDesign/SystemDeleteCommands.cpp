@@ -314,6 +314,8 @@ SWInterfaceDeleteCommand::SWInterfaceDeleteCommand(SWInterfaceItem* interface,
                                                    QUndoCommand* parent)
     : QUndoCommand(parent),
       interface_(interface),
+      apiInterface_(interface->getApiInterface()),
+      comInterface_(interface->getComInterface()),
       parent_(dynamic_cast<IGraphicsItemStack*>(interface->parentItem())),
       scene_(interface->scene()),
       del_(true)
@@ -345,6 +347,16 @@ void SWInterfaceDeleteCommand::undo()
     parent_->addItem(interface_);
     del_ = false;
 
+    // Define the interface.
+    if (apiInterface_ != 0)
+    {
+        interface_->define(apiInterface_);
+    }
+    else if (comInterface_ != 0)
+    {
+        interface_->define(comInterface_);
+    }
+
     // Execute child commands.
     QUndoCommand::undo();
 }
@@ -356,6 +368,12 @@ void SWInterfaceDeleteCommand::redo()
 {
     // Execute child commands.
     QUndoCommand::redo();
+
+    // Undefine the interface.
+    if (apiInterface_ != 0 || comInterface_ != 0)
+    {
+        interface_->undefine();
+    }
 
     // Remove the interface from the scene.
     parent_->removeItem(interface_);

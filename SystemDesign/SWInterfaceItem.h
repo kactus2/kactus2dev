@@ -67,6 +67,23 @@ public:
     virtual void onEndConnect();
 
     /*!
+     *  Defines the interface as an API interface.
+     *
+     *      @param [in] apiIf The API interface to set.
+     */
+    void define(QSharedPointer<ApiInterface> apiIf);
+
+    /*!
+     *  Defines the interface as a COM interface.
+     */
+    void define(QSharedPointer<ComInterface> comIf);
+
+    /*!
+     *  Undefines the interface.
+     */
+    void undefine();
+
+    /*!
      *  Sets the COM/API type. The type of the VLNV determines the type of the endpoint.
      *
      *      @param [in] type The VLNV of the COM/API definition.

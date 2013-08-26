@@ -25,6 +25,9 @@ class ComponentItem;
 class IGraphicsItemStack;
 class SystemComponentItem;
 class SWPortItem;
+class SWInterfaceItem;
+class ApiInterface;
+class ComInterface;
 
 //-----------------------------------------------------------------------------
 //! SWConnectionAddCommand class.
@@ -196,6 +199,61 @@ private:
     QGraphicsScene* scene_;
 
     //! Boolean flag for indicating if the port should be deleted in the destructor.
+    bool del_;
+};
+
+//-----------------------------------------------------------------------------
+//! SWInterfacePasteCommand class.
+//-----------------------------------------------------------------------------
+class SWInterfacePasteCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] stack   The graphics item stack to which to paste the item.
+     *      @param [in] item    The SW interface item to paste.
+     *      @param [in] parent  The parent command.
+     */
+    SWInterfacePasteCommand(IGraphicsItemStack* stack, SWInterfaceItem* item, QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~SWInterfacePasteCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    SWInterfacePasteCommand(SWInterfacePasteCommand const& rhs);
+    SWInterfacePasteCommand& operator=(SWInterfacePasteCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The SW interface item.
+    SWInterfaceItem* interface_;
+
+    //! The API interface (if API).
+    QSharedPointer<ApiInterface> apiInterface_;
+
+    //! The COM interface (if COM).
+    QSharedPointer<ComInterface> comInterface_;
+
+    //! The item's parent component stack.
+    IGraphicsItemStack* stack_;
+
+    //! Boolean flag for indicating if the component should be deleted in the destructor.
     bool del_;
 };
 

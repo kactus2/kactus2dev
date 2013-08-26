@@ -13,6 +13,7 @@
 
 #include "SystemColumn.h"
 #include "SystemComponentItem.h"
+#include "SWInterfaceItem.h"
 
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsConnection.h>
@@ -198,4 +199,67 @@ void SWPortAddCommand::redo()
     // Child commands need not be executed because the other ports change their position
     // in a deterministic way.
     //QUndoCommand::redo();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInterfacePasteCommand()
+//-----------------------------------------------------------------------------
+SWInterfacePasteCommand::SWInterfacePasteCommand(IGraphicsItemStack* stack, SWInterfaceItem* item,
+                                                 QUndoCommand* parent)
+    : QUndoCommand(parent),
+      interface_(item),
+      apiInterface_(item->getApiInterface()),
+      comInterface_(item->getComInterface()),
+      stack_(stack),
+      del_(false)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~SWInterfacePasteCommand()
+//-----------------------------------------------------------------------------
+SWInterfacePasteCommand::~SWInterfacePasteCommand()
+{
+    if (del_)
+    {
+        delete interface_;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void SWInterfacePasteCommand::undo()
+{
+    // Undefine the interface.
+    if (apiInterface_ != 0 || comInterface_ != 0)
+    {
+        interface_->undefine();
+    }
+
+    // Remove the item from the column and the scene.
+    stack_->removeItem(interface_);
+    interface_->scene()->removeItem(interface_);
+    del_ = true;
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void SWInterfacePasteCommand::redo()
+{
+    // Add the item to the column.
+    stack_->addItem(interface_);
+    del_ = false;
+
+    // Define the interface.
+    if (apiInterface_ != 0)
+    {
+        interface_->define(apiInterface_);
+    }
+    else if (comInterface_ != 0)
+    {
+        interface_->define(comInterface_);
+    }
 }

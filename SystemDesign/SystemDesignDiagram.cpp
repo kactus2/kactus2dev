@@ -3304,6 +3304,6 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
             interface->setPos(portData.pos);
         }
 
-        new SystemItemAddCommand(stack, interface, cmd);
+        new SWInterfacePasteCommand(stack, interface, cmd);
     }
 }
