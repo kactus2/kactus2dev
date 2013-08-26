@@ -177,5 +177,46 @@ private:
 };
 
 //-----------------------------------------------------------------------------
+//! ConnectionToggleOffPageCommand class.
+//-----------------------------------------------------------------------------
+class ConnectionToggleOffPageCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] conn    The interconnection to delete.
+     */
+    ConnectionToggleOffPageCommand(GraphicsConnection* conn, QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~ConnectionToggleOffPageCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    ConnectionToggleOffPageCommand(ConnectionToggleOffPageCommand const& rhs);
+    ConnectionToggleOffPageCommand& operator=(ConnectionToggleOffPageCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The interconnection.
+    GraphicsConnection* conn_;
+};
+
+//-----------------------------------------------------------------------------
 
 #endif // CONNECTIONUNDOCOMMANDS_H

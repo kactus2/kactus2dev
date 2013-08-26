@@ -13,6 +13,8 @@
 
 #include "GraphicsConnection.h"
 
+#include <QGraphicsScene>
+
 //-----------------------------------------------------------------------------
 // Function: ConnectionMoveCommand()
 //-----------------------------------------------------------------------------
@@ -140,3 +142,44 @@ void ConnectionExchangeCommand::redo()
         conn_->setEndpoint2(newEndpoint_);
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionDeleteCommand()
+//-----------------------------------------------------------------------------
+ConnectionToggleOffPageCommand::ConnectionToggleOffPageCommand(GraphicsConnection* conn, QUndoCommand* parent)
+    : QUndoCommand(parent),
+    conn_(conn)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~ConnectionToggleOffPageCommand()
+//-----------------------------------------------------------------------------
+ConnectionToggleOffPageCommand::~ConnectionToggleOffPageCommand()
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void ConnectionToggleOffPageCommand::undo()
+{
+    QUndoCommand::undo();
+
+    conn_->scene()->clearSelection();
+    conn_->toggleOffPage();
+    conn_->setSelected(true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void ConnectionToggleOffPageCommand::redo()
+{
+    conn_->scene()->clearSelection();
+    conn_->toggleOffPage();
+    conn_->setSelected(true);
+
+    QUndoCommand::redo();
+}
+

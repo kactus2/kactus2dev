@@ -22,6 +22,7 @@
 #include <common/graphicsItems/GraphicsColumnUndoCommands.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
+#include <common/graphicsItems/ConnectionUndoCommands.h>
 
 #include <common/DiagramUtil.h>
 #include <common/diagramgrid.h>
@@ -2461,40 +2462,8 @@ void HWDesignDiagram::toggleConnectionStyle(GraphicsConnection* conn, QUndoComma
     Q_ASSERT(parentCmd != 0);
     emit clearItemSelection();
 
-    // Determine the new end points for the connection.
-    ConnectionEndpoint* endpoint1 = conn->endpoint1();
-    ConnectionEndpoint* endpoint2 = conn->endpoint2();
-
-    if (endpoint1->type() == OffPageConnectorItem::Type)
-    {
-        endpoint1 = static_cast<ConnectionEndpoint*>(endpoint1->parentItem());
-        endpoint2 = static_cast<ConnectionEndpoint*>(endpoint2->parentItem());
-    }
-    else
-    {
-        endpoint1 = endpoint1->getOffPageConnector();
-        endpoint2 = endpoint2->getOffPageConnector();
-    }
-
-    HWConnection* newConn = new HWConnection(endpoint1, endpoint2, false,
-                                             conn->name(), QString(), conn->description(), this);
-
-    // Recreate the connection by first deleting the old and then creating a new one.
-    QUndoCommand* cmd = new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), parentCmd);
-    cmd->redo();
-    
-    addItem(newConn);
-    connect(newConn, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
-
-    if (newConn->connectEnds())
-    {
-        new ConnectionAddCommand(this, newConn, parentCmd);
-    }
-    else
-    {
-        delete newConn;
-        newConn = 0;
-    }
+    conn->toggleOffPage();
+    new ConnectionToggleOffPageCommand(conn, parentCmd);
 }
 
 //-----------------------------------------------------------------------------

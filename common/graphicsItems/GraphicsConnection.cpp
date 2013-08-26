@@ -13,6 +13,7 @@
 
 #include "ComponentItem.h"
 #include "ConnectionUndoCommands.h"
+#include <designwidget/OffPageConnectorItem.h>
 
 #include <common/GenericEditProvider.h>
 #include <common/DesignDiagram.h>
@@ -165,6 +166,8 @@ bool GraphicsConnection::connectEnds()
 
     simplifyPath();
     setRoute(pathPoints_);
+
+    updatePosition();
     name_ = createDefaultName();
     return true;
 }
@@ -920,9 +923,13 @@ void GraphicsConnection::setRoutingMode(RoutingMode style)
     if (routingMode_ != style)
     {
         routingMode_ = style;
+        
+        if (style == ROUTING_MODE_NORMAL)
+        {
+            setVisible(true);
+        }
 
         setDefaultColor();
-        updatePosition();
     }
 }
 
@@ -1273,4 +1280,38 @@ bool GraphicsConnection::isInvalid() const
 bool GraphicsConnection::hasDefaultName() const
 {
     return (createDefaultName() == name_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::toggleOffPage()
+//-----------------------------------------------------------------------------
+void GraphicsConnection::toggleOffPage()
+{
+    // Determine the new end points for the connection.
+    ConnectionEndpoint* endpoint1 = endpoint1_;
+    ConnectionEndpoint* endpoint2 = endpoint2_;
+    
+    if (endpoint1->type() == OffPageConnectorItem::Type)
+    {
+        endpoint1 = static_cast<ConnectionEndpoint*>(endpoint1->parentItem());
+        endpoint2 = static_cast<ConnectionEndpoint*>(endpoint2->parentItem());
+    }
+    else
+    {
+        endpoint1 = endpoint1->getOffPageConnector();
+        endpoint2 = endpoint2->getOffPageConnector();
+    }
+
+    // Disconnect old endpoints.
+    endpoint1_->removeConnection(this);
+    endpoint2_->removeConnection(this);
+
+    // Connect new endpoints.
+    endpoint1_ = endpoint1;
+    endpoint2_ = endpoint2;
+
+    endpoint1_->addConnection(this);
+    endpoint2_->addConnection(this);
+
+    updatePosition();
 }

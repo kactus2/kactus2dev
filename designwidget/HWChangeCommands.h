@@ -36,6 +36,7 @@ class ActiveViewModel;
 class AdHocPortItem;
 class AdHocEnabled;
 class ConnectionEndpoint;
+class GraphicsConnection;
 
 //-----------------------------------------------------------------------------
 //! ComponentChangeNameCommand class.

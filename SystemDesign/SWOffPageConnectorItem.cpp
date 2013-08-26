@@ -221,6 +221,7 @@ void SWOffPageConnectorItem::addConnection(GraphicsConnection* connection)
 void SWOffPageConnectorItem::removeConnection(GraphicsConnection* connection)
 {
     SWConnectionEndpoint::removeConnection(connection);
+    connection->setRoutingMode(GraphicsConnection::ROUTING_MODE_NORMAL);
 
     if (getConnections().size() == 0)
     {

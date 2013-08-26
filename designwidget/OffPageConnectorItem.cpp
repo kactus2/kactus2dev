@@ -276,6 +276,7 @@ void OffPageConnectorItem::addConnection(GraphicsConnection* connection)
 void OffPageConnectorItem::removeConnection(GraphicsConnection* connection)
 {
     HWConnectionEndpoint::removeConnection(connection);
+    connection->setRoutingMode(GraphicsConnection::ROUTING_MODE_NORMAL);
 
     if (getConnections().size() == 0)
     {

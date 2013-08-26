@@ -110,6 +110,11 @@ public:
     void disconnectEnds();
 
     /*!
+     *  Toggles the connection between normal and off-page.
+     */
+    void toggleOffPage();
+
+    /*!
      *  Sets the routing of the connection.
      *
      *      @param [in] path The route to set.
