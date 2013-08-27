@@ -16,6 +16,7 @@
 #include <LibraryManager/libraryinterface.h>
 
 #include <common/widgets/LineEditEx/LineEditEx.h>
+#include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 
 #include <QMessageBox>
 #include <QCoreApplication>
@@ -44,8 +45,7 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
       copyDescLabel_(new QLabel(tr("Creates an identical copy of the system design with a new VLNV "
                                    "and adds a new system view to the HW component."), this)),
       vlnvEdit_(new VLNVEditor(VLNV::DESIGN, lh, this, this)),
-      directoryLabel_(new QLabel(tr("Directory:"), this)),
-      directoryEdit_(new LibraryPathSelector(this)),
+      directoryEditor_(new LibrarySelectorWidget(this)),
       buttonBox_(new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this)),
       layout_(new QVBoxLayout(this))
 {
@@ -81,8 +81,8 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
     vlnvEdit_->addNameExtension(".sysdesign");
     vlnvEdit_->addNameExtension(".sysdesigncfg");
 
-    directoryLabel_->setVisible(false);
-    directoryEdit_->setVisible(false);
+    directoryEditor_->layout()->setContentsMargins(0,11,0,11);
+    directoryEditor_->setVisible(false);
 
     actionGroup_->addButton(moveRadioButton_);
     actionGroup_->addButton(copyRadioButton_);
@@ -94,10 +94,6 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
     groupLayout->addWidget(copyRadioButton_);
     groupLayout->addWidget(copyDescLabel_);
 
-    QHBoxLayout* dirLayout = new QHBoxLayout();
-    dirLayout->addWidget(directoryLabel_);
-    dirLayout->addWidget(directoryEdit_, 1);
-
     layout_->addWidget(infoLabel_);
     layout_->addSpacing(12);
     layout_->addWidget(hwViewRefLabel_);
@@ -106,7 +102,7 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
     layout_->addWidget(viewNameEdit_);
     layout_->addWidget(actionGroupBox_);
     layout_->addWidget(vlnvEdit_);
-    layout_->addLayout(dirLayout);
+    layout_->addWidget(directoryEditor_);
     layout_->addStretch(1);
     layout_->addWidget(buttonBox_);
 
@@ -192,8 +188,7 @@ void SwitchHWDialog::accept()
 void SwitchHWDialog::actionChanged(QAbstractButton* button)
 {
     vlnvEdit_->setVisible(button == copyRadioButton_);
-    directoryLabel_->setVisible(button == copyRadioButton_);
-    directoryEdit_->setVisible(button == copyRadioButton_);
+    directoryEditor_->setVisible(button == copyRadioButton_);
     layout_->activate();
     setFixedHeight(sizeHint().height());
 
@@ -237,7 +232,7 @@ bool SwitchHWDialog::isCopyActionSelected() const
 //-----------------------------------------------------------------------------
 QString SwitchHWDialog::getPath() const
 {
-    return directoryEdit_->currentText();
+    return directoryEditor_->getPath();
 }
 
 //-----------------------------------------------------------------------------
@@ -245,31 +240,31 @@ QString SwitchHWDialog::getPath() const
 //-----------------------------------------------------------------------------
 void SwitchHWDialog::updateDirectory()
 {
-    QString dir = directoryEdit_->currentLocation();
+    QString vlnvDir;
 
     VLNV vlnv = vlnvEdit_->getVLNV();
 
     if (!vlnv.getVendor().isEmpty())
     {
-        dir += "/" + vlnv.getVendor();
+        vlnvDir += "/" + vlnv.getVendor();
 
         if (!vlnv.getLibrary().isEmpty())
         {
-            dir += "/" + vlnv.getLibrary();
+            vlnvDir += "/" + vlnv.getLibrary();
 
             if (!vlnv.getName().isEmpty())
             {
-                dir += "/" + vlnv.getName();
+                vlnvDir += "/" + vlnv.getName();
 
                 if (!vlnv.getVersion().isEmpty())
                 {
-                    dir += "/" + vlnv.getVersion();
+                    vlnvDir += "/" + vlnv.getVersion();
                 }
             }
         }
     }
 
-    directoryEdit_->setEditText(dir);
+    directoryEditor_->updatePath(vlnvDir);
 }
 
 //-----------------------------------------------------------------------------
@@ -281,7 +276,7 @@ void SwitchHWDialog::validate()
     btnOK->setEnabled(!viewNameEdit_->text().isEmpty() && viewNameEdit_->isInputValid() &&
                       (moveRadioButton_->isChecked() || vlnvEdit_->isValid()) &&
                       (!hwViewRefCombo_->isEnabled() || hwViewRefCombo_->count() > 0) &&
-                      !directoryEdit_->currentText().isEmpty());
+                      !directoryEditor_->isValid());
 }
 
 //-----------------------------------------------------------------------------

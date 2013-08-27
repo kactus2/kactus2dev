@@ -11,7 +11,7 @@
 
 #include <common/KactusAttribute.h>
 #include <LibraryManager/vlnv.h>
-#include <common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h>
+#include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 
 class LibraryInterface;
 class VLNVEditor;
@@ -113,7 +113,7 @@ private:
     VLNVEditor* vlnvEditor_;
 
 	//! \brief The editor to select the directory to save to. 
-	LibraryPathSelector* directoryEdit_;
+	LibrarySelectorWidget* directoryEditor_;
 
     //! OK button.
     QPushButton* okButton_;

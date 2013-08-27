@@ -14,7 +14,6 @@
 
 #include "NewPage.h"
 #include <common/widgets/vlnvEditor/vlnveditor.h>
-#include <common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h>
 
 #include <QPushButton>
 

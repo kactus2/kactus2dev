@@ -28,8 +28,7 @@ ExportSWDialog::ExportSWDialog(LibraryInterface* lh, QWidget* parent)
       lh_(lh),
       infoLabel_(new QLabel(tr("Exporting SW requires a new system component to be created."), this)),
       vlnvEdit_(new VLNVEditor(VLNV::COMPONENT, lh, this, this)),
-      directoryLabel_(new QLabel(tr("Directory:"), this)),
-      directoryEdit_(new LibraryPathSelector(this)),
+      directoryEditor_(new LibrarySelectorWidget(this)),
       buttonBox_(new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this)),
       layout_(new QVBoxLayout(this))
 {
@@ -43,12 +42,13 @@ ExportSWDialog::ExportSWDialog(LibraryInterface* lh, QWidget* parent)
     QGroupBox* separator = new QGroupBox(this);
     separator->setFlat(true);
 
+    directoryEditor_->layout()->setContentsMargins(0,11,0,11);
+
     // Create layouts.
     layout_->addWidget(infoLabel_);
     layout_->addSpacing(12);
     layout_->addWidget(vlnvEdit_);
-    layout_->addWidget(directoryLabel_);
-    layout_->addWidget(directoryEdit_);
+    layout_->addWidget(directoryEditor_);
     layout_->addWidget(separator);
     layout_->addWidget(buttonBox_);
 
@@ -128,7 +128,7 @@ VLNV ExportSWDialog::getVLNV() const
 //-----------------------------------------------------------------------------
 QString ExportSWDialog::getPath() const
 {
-    return directoryEdit_->currentText();
+    return directoryEditor_->getPath();
 }
 
 //-----------------------------------------------------------------------------
@@ -136,31 +136,31 @@ QString ExportSWDialog::getPath() const
 //-----------------------------------------------------------------------------
 void ExportSWDialog::updateDirectory()
 {
-    QString dir = directoryEdit_->currentLocation();
+    QString vlnvDir;
 
     VLNV vlnv = vlnvEdit_->getVLNV();
 
     if (!vlnv.getVendor().isEmpty())
     {
-        dir += "/" + vlnv.getVendor();
+        vlnvDir += "/" + vlnv.getVendor();
 
         if (!vlnv.getLibrary().isEmpty())
         {
-            dir += "/" + vlnv.getLibrary();
+            vlnvDir += "/" + vlnv.getLibrary();
 
             if (!vlnv.getName().isEmpty())
             {
-                dir += "/" + vlnv.getName();
+                vlnvDir += "/" + vlnv.getName();
 
                 if (!vlnv.getVersion().isEmpty())
                 {
-                    dir += "/" + vlnv.getVersion();
+                    vlnvDir += "/" + vlnv.getVersion();
                 }
             }
         }
     }
 
-    directoryEdit_->setEditText(dir);
+    directoryEditor_->updatePath(vlnvDir);
 }
 
 //-----------------------------------------------------------------------------
@@ -169,5 +169,5 @@ void ExportSWDialog::updateDirectory()
 void ExportSWDialog::validate()
 {
     QAbstractButton* btnOK = buttonBox_->button(QDialogButtonBox::Ok);
-    btnOK->setEnabled(vlnvEdit_->isValid() && !directoryEdit_->currentText().isEmpty());
+    btnOK->setEnabled(vlnvEdit_->isValid() && directoryEditor_->isValid());
 }

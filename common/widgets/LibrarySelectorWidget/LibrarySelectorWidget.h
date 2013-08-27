@@ -19,9 +19,10 @@
 class LibraryInterface;
 class LibraryPathSelector;
 class Component;
-/*! \brief Used to parse VHDL files and generating IP-XACT packages of them.
- *
- */
+
+//-----------------------------------------------------------------------------
+//! Widget is used to select a valid path within a library for a component.
+//-----------------------------------------------------------------------------
 class LibrarySelectorWidget : public QWidget {
 	Q_OBJECT
 
@@ -37,19 +38,32 @@ public:
 	//! \brief The destructor.
 	~LibrarySelectorWidget();
 
-    QString getDirectory() const;
+    /*!
+     *  Get the edited path.
+     *      
+     *      @return Path in the edit field.
+     */
+    QString getPath() const;
 
+    /*!
+     *  Updates active libraries in combobox and enables path to be constructed using vlnv.
+     */
     void reset();
 
+    /*!
+     *  Checks if the path is valid.
+     *      
+     *      @return True, if the path is in an active library, otherwise false.
+     */
     bool isValid() const;
 
 public slots:
 
-    
-    void onBrowse();
+    //! Called when browse button is clicked.
+    virtual void onBrowse();
 
-
-    void updateDirectory(QString const& path);
+    //! Called when vlnv is used to set the path. Path is appended to the active library path.
+    virtual void updatePath(QString const& path);
 
 private:
 	
@@ -59,16 +73,16 @@ private:
 	//! \brief No assignment
 	LibrarySelectorWidget& operator=(const LibrarySelectorWidget& other);
 
-    /*!
-     *  Creates the layout for the widget.
-     */
+    //! Creates the layout for the widget.
     void setupLayout();
 
 	//! \brief Used to select the library path.
 	LibraryPathSelector* librarySelector_;
 
+    //! The browse button.
     QPushButton* browseButton_;
 
+    //! Flag for indicating if the path set using browse or if vlnv should be used to set the path.
     bool directorySet_;
 
 };

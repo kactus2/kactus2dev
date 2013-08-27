@@ -43,7 +43,7 @@ LibrarySelectorWidget::LibrarySelectorWidget(QWidget* parent):
 LibrarySelectorWidget::~LibrarySelectorWidget() {
 }
 
-QString LibrarySelectorWidget::getDirectory() const
+QString LibrarySelectorWidget::getPath() const
 {
     return librarySelector_->currentText();
 }
@@ -124,7 +124,7 @@ void LibrarySelectorWidget::onBrowse()
 //-----------------------------------------------------------------------------
 // Function: updateDirectory()
 //-----------------------------------------------------------------------------
-void LibrarySelectorWidget::updateDirectory(QString const& path)
+void LibrarySelectorWidget::updatePath(QString const& path)
 {
     if ( !directorySet_ )
     {
@@ -146,5 +146,4 @@ void LibrarySelectorWidget::setupLayout()
     widgetLayout->addWidget(directoryLabel);
     widgetLayout->addWidget(librarySelector_, 1);
     widgetLayout->addWidget(browseButton_);
-
 }

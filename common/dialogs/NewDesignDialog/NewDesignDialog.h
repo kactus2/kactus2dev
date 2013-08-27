@@ -21,7 +21,7 @@
 #include <QDialog>
 #include <QPushButton>
 
-class LibraryPathSelector;
+class LibrarySelectorWidget;
 class LibraryInterface;
 class VLNVEditor;
 class Component;
@@ -125,7 +125,7 @@ private:
     VLNVEditor* vlnvEditor_;
 
 	//! \brief The editor to select the directory to save to. 
-	LibraryPathSelector* directoryEdit_;
+	LibrarySelectorWidget* directoryEditor_;
 
     //! OK button.
     QPushButton* okButton_;

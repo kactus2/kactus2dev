@@ -25,7 +25,7 @@ QDialog(parent),
 lh_(libInterface),
 attributeEditor_(0), 
 vlnvEditor_(0),
-directoryEdit_(0), 
+directoryEditor_(0), 
 okButton_(0)
 {
     attributeEditor_ = new KactusAttributeEditor(this);
@@ -36,10 +36,9 @@ okButton_(0)
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(onContentChanged()));
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(updateDirectory()));
 
-    QLabel *directoryLabel = new QLabel(tr("Directory:"));
-    
-	directoryEdit_ = new LibraryPathSelector(this);
-	connect(directoryEdit_, SIGNAL(editTextChanged(QString const&)), this, SLOT(onContentChanged()));
+    directoryEditor_ = new LibrarySelectorWidget(this);
+    directoryEditor_->layout()->setContentsMargins(0,0,0,0);
+	connect(directoryEditor_, SIGNAL(contentChanged()), this, SLOT(onContentChanged()));
 
     QGroupBox* separator = new QGroupBox(this);
     separator->setFlat(true);
@@ -58,8 +57,7 @@ okButton_(0)
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(attributeEditor_);
     mainLayout->addWidget(vlnvEditor_);
-    mainLayout->addWidget(directoryLabel);
-    mainLayout->addWidget(directoryEdit_);
+    mainLayout->addWidget(directoryEditor_);
     mainLayout->addWidget(separator);
     mainLayout->addWidget(buttonBox);
     mainLayout->addStretch(1);
@@ -81,7 +79,7 @@ VLNV NewObjectDialog::getVLNV()
 
 QString NewObjectDialog::getPath()
 {
-    return directoryEdit_->currentText();
+    return directoryEditor_->getPath();
 }
 
 //-----------------------------------------------------------------------------
@@ -90,7 +88,7 @@ QString NewObjectDialog::getPath()
 void NewObjectDialog::onContentChanged()
 {
     // Enable/disable the ok button if the contents are valid/invalid.
-    okButton_->setEnabled(!directoryEdit_->currentText().isEmpty() && vlnvEditor_->isValid());
+    okButton_->setEnabled(directoryEditor_->isValid() && vlnvEditor_->isValid());
 }
 
 //-----------------------------------------------------------------------------
@@ -201,31 +199,31 @@ bool NewObjectDialog::saveAsDialog(QWidget* parent, LibraryInterface* lh,
 //-----------------------------------------------------------------------------
 void NewObjectDialog::updateDirectory()
 {
-    QString dir = directoryEdit_->currentLocation();
+    QString vlnvDir;
 
     VLNV vlnv = vlnvEditor_->getVLNV();
 
     if (!vlnv.getVendor().isEmpty())
     {
-        dir += "/" + vlnv.getVendor();
+        vlnvDir += "/" + vlnv.getVendor();
 
         if (!vlnv.getLibrary().isEmpty())
         {
-            dir += "/" + vlnv.getLibrary();
+            vlnvDir += "/" + vlnv.getLibrary();
 
             if (!vlnv.getName().isEmpty())
             {
-                dir += "/" + vlnv.getName();
+                vlnvDir += "/" + vlnv.getName();
 
                 if (!vlnv.getVersion().isEmpty())
                 {
-                    dir += "/" + vlnv.getVersion();
+                    vlnvDir += "/" + vlnv.getVersion();
                 }
             }
         }
     }
 
-    directoryEdit_->setEditText(dir);
+    directoryEditor_->updatePath(vlnvDir);
 }
 
 //-----------------------------------------------------------------------------

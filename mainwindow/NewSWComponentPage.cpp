@@ -70,5 +70,5 @@ bool NewSWComponentPage::validate()
 //-----------------------------------------------------------------------------
 void NewSWComponentPage::apply()
 {
-    emit createSWComponent(vlnvEditor_->getVLNV(), librarySelector_->getDirectory());
+    emit createSWComponent(vlnvEditor_->getVLNV(), librarySelector_->getPath());
 }

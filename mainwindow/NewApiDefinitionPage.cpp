@@ -69,5 +69,5 @@ bool NewApiDefinitionPage::validate()
 //-----------------------------------------------------------------------------
 void NewApiDefinitionPage::apply()
 {
-    emit createApiDefinition(vlnvEditor_->getVLNV(), librarySelector_->getDirectory());
+    emit createApiDefinition(vlnvEditor_->getVLNV(), librarySelector_->getPath());
 }

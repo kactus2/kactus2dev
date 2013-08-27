@@ -23,7 +23,7 @@
 
 #include <models/component.h>
 
-#include <common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h>
+#include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 #include <common/widgets/LineEditEx/LineEditEx.h>
 #include <LibraryManager/libraryinterface.h>
 
@@ -41,7 +41,7 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
       viewNameMatcher_(),
       viewNameEdit_(new LineEditEx(this)),
       vlnvEditor_(new VLNVEditor(VLNV::DESIGN, libInterface, this, this, true)),
-      directoryEdit_(new LibraryPathSelector(this)), 
+      directoryEditor_(new LibrarySelectorWidget(this)), 
       okButton_(new QPushButton(tr("&OK"))),
       designExt_(),
       designConfExt_()
@@ -94,9 +94,9 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
 
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(onContentChanged()));
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(updateDirectory()));
-
-    QLabel* directoryLabel = new QLabel(tr("Directory:"), this);
-	connect(directoryEdit_, SIGNAL(editTextChanged(QString const&)), this, SLOT(onContentChanged()));
+        
+    directoryEditor_->layout()->setContentsMargins(0,11,0,11);
+	connect(directoryEditor_, SIGNAL(contentChanged()), this, SLOT(onContentChanged()));
 
     okButton_->setEnabled(false);
     connect(okButton_, SIGNAL(released()), this, SLOT(accept()));
@@ -112,8 +112,7 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
     mainLayout->addWidget(viewNameLabel_);
     mainLayout->addWidget(viewNameEdit_);
     mainLayout->addWidget(vlnvEditor_);
-    mainLayout->addWidget(directoryLabel);
-    mainLayout->addWidget(directoryEdit_);
+    mainLayout->addWidget(directoryEditor_);
     mainLayout->addWidget(buttonBox);
     mainLayout->addStretch(1);
     setLayout(mainLayout);
@@ -167,7 +166,7 @@ VLNV NewDesignDialog::getDesignConfVLNV() const
 //-----------------------------------------------------------------------------
 QString NewDesignDialog::getPath() const
 {
-    return directoryEdit_->currentText();
+    return directoryEditor_->getPath();
 }
 
 //-----------------------------------------------------------------------------
@@ -177,7 +176,7 @@ void NewDesignDialog::onContentChanged()
 {
     // Enable/disable the ok button if the contents are valid/invalid.
     okButton_->setEnabled(!viewNameEdit_->text().isEmpty() && viewNameEdit_->isInputValid() &&
-                          !directoryEdit_->currentText().isEmpty() && vlnvEditor_->isValid());
+                          directoryEditor_->isValid() && vlnvEditor_->isValid());
 }
 
 //-----------------------------------------------------------------------------
@@ -219,31 +218,31 @@ void NewDesignDialog::setVLNV( const VLNV& vlnv ) {
 //-----------------------------------------------------------------------------
 void NewDesignDialog::updateDirectory()
 {
-    QString dir = directoryEdit_->currentLocation();
+    QString vlnvDir;
 
     VLNV vlnv = vlnvEditor_->getVLNV();
 
     if (!vlnv.getVendor().isEmpty())
     {
-        dir += "/" + vlnv.getVendor();
+        vlnvDir += "/" + vlnv.getVendor();
 
         if (!vlnv.getLibrary().isEmpty())
         {
-            dir += "/" + vlnv.getLibrary();
+            vlnvDir += "/" + vlnv.getLibrary();
 
             if (!vlnv.getName().isEmpty())
             {
-                dir += "/" + vlnv.getName();
+                vlnvDir += "/" + vlnv.getName();
 
                 if (!vlnv.getVersion().isEmpty())
                 {
-                    dir += "/" + vlnv.getVersion();
+                    vlnvDir += "/" + vlnv.getVersion();
                 }
             }
         }
     }
 
-    directoryEdit_->setEditText(dir);
+    directoryEditor_->updatePath(vlnvDir);
 }
 
 //-----------------------------------------------------------------------------

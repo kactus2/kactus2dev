@@ -109,7 +109,7 @@ void NewDesignPage::apply()
 {
     emit createDesign(attributeEditor_->getProductHierarchy(),
                       attributeEditor_->getFirmness(),
-                      vlnvEditor_->getVLNV(), librarySelector_->getDirectory());
+                      vlnvEditor_->getVLNV(), librarySelector_->getPath());
 }
 
 //-----------------------------------------------------------------------------

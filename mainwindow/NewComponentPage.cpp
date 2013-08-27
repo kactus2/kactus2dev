@@ -83,7 +83,7 @@ void NewComponentPage::apply()
 {
     emit createComponent(attributeEditor_->getProductHierarchy(),
                          attributeEditor_->getFirmness(),
-                         vlnvEditor_->getVLNV(), librarySelector_->getDirectory());
+                         vlnvEditor_->getVLNV(), librarySelector_->getPath());
 }
 
 //-----------------------------------------------------------------------------

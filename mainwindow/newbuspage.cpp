@@ -74,5 +74,5 @@ bool NewBusPage::validate() {
 // Function: apply()
 //-----------------------------------------------------------------------------
 void NewBusPage::apply() {
-	 emit createBus(vlnvEditor_->getVLNV(), librarySelector_->getDirectory());
+	 emit createBus(vlnvEditor_->getVLNV(), librarySelector_->getPath());
 }

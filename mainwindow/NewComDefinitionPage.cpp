@@ -71,5 +71,5 @@ bool NewComDefinitionPage::validate()
 //-----------------------------------------------------------------------------
 void NewComDefinitionPage::apply()
 {
-    emit createComDefinition(vlnvEditor_->getVLNV(), librarySelector_->getDirectory());
+    emit createComDefinition(vlnvEditor_->getVLNV(), librarySelector_->getPath());
 }

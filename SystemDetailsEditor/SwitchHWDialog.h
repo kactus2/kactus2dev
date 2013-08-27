@@ -13,9 +13,9 @@
 #define SWITCHHWDIALOG_H
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
-#include <common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h>
 #include <common/widgets/assistedLineEdit/BasicLineContentMatcher.h>
 
+#include <QComboBox>
 #include <QPushButton>
 #include <QLineEdit>
 #include <QRadioButton>
@@ -27,7 +27,7 @@
 
 class Component;
 class LineEditEx;
-
+class LibrarySelectorWidget;
 //-----------------------------------------------------------------------------
 // Dialog for configuring settings how to switch HW for a system design.
 //-----------------------------------------------------------------------------
@@ -166,11 +166,8 @@ private:
     //! VLNV editor for design/designcfg VLNV (shown in case of copy action).
     VLNVEditor* vlnvEdit_;
 
-    //! Label for the directory selector.
-    QLabel* directoryLabel_;
-
-    //! The editor to select the directory to save to. 
-    LibraryPathSelector* directoryEdit_;
+	//! \brief The editor to select the directory to save to. 
+    LibrarySelectorWidget* directoryEditor_;
 
     //! Button box for OK and Cancel buttons.
     QDialogButtonBox* buttonBox_;

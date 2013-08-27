@@ -13,7 +13,7 @@
 #define EXPORTSWDIALOG_H
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
-#include <common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h>
+#include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 
 #include <QPushButton>
 #include <QLineEdit>
@@ -95,11 +95,8 @@ private:
     //! VLNV editor for system component VLNV.
     VLNVEditor* vlnvEdit_;
 
-    //! Label for the directory selector.
-    QLabel* directoryLabel_;
-
     //! The editor to select the directory to save to. 
-    LibraryPathSelector* directoryEdit_;
+    LibrarySelectorWidget* directoryEditor_;
 
     //! Button box for OK and Cancel buttons.
     QDialogButtonBox* buttonBox_;

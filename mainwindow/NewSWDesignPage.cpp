@@ -82,6 +82,6 @@ bool NewSWDesignPage::validate()
 //-----------------------------------------------------------------------------
 void NewSWDesignPage::apply()
 {
-    emit createSWDesign(vlnvEditor_->getVLNV(), librarySelector_->getDirectory());
+    emit createSWDesign(vlnvEditor_->getVLNV(), librarySelector_->getPath());
 }
 

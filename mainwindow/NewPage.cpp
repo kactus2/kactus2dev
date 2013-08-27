@@ -128,7 +128,7 @@ void NewPage::updateDirectory()
         }
     }
 
-    librarySelector_->updateDirectory(vlnvDir);
+    librarySelector_->updatePath(vlnvDir);
 }
 
 //-----------------------------------------------------------------------------

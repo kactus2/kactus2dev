@@ -209,11 +209,11 @@ void NewSystemPage::apply()
         QVariant data = compTreeWidget_->currentItem()->data(0, Qt::UserRole);
 
         emit createSystem(data.value<VLNV>(), viewComboBox_->currentText(),
-            vlnvEditor_->getVLNV(), librarySelector_->getDirectory());
+            vlnvEditor_->getVLNV(), librarySelector_->getPath());
     }
     else
     {
-        emit createSystem(VLNV(), "", vlnvEditor_->getVLNV(),librarySelector_->getDirectory());
+        emit createSystem(VLNV(), "", vlnvEditor_->getVLNV(),librarySelector_->getPath());
     }
 }
 
