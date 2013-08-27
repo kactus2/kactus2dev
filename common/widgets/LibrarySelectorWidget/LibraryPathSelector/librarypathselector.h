@@ -8,7 +8,7 @@
 #ifndef LIBRARYPATHSELECTOR_H
 #define LIBRARYPATHSELECTOR_H
 
-#include <common/widgets/LibraryPathEditor/librarypatheditor.h>
+#include <common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.h>
 #include <common/validators/LibraryPathValidator/librarypathvalidator.h>
 
 #include <QComboBox>
@@ -33,11 +33,21 @@ public:
 	//! \brief The destructor
 	virtual ~LibraryPathSelector();
 
+    bool isValid();
+
 	/*! \brief Get the currently selected base location.
 	 *
 	 * \return QString containing the selected library location.
 	*/
 	QString currentLocation() const;
+
+    void refresh();
+
+    QStringList getLibraryLocations();
+
+    bool hasIndexFor(QString const& path);
+
+    bool setIndexFor(QString const& path);
 
 private slots:
 

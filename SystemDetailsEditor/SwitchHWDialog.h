@@ -13,7 +13,7 @@
 #define SWITCHHWDIALOG_H
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
-#include <common/widgets/LibraryPathSelector/librarypathselector.h>
+#include <common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h>
 #include <common/widgets/assistedLineEdit/BasicLineContentMatcher.h>
 
 #include <QPushButton>

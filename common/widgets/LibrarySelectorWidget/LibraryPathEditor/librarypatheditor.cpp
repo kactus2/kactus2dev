@@ -7,19 +7,31 @@
 
 #include "librarypatheditor.h"
 
+//-----------------------------------------------------------------------------
+// Function: LibraryPathEditor()
+//-----------------------------------------------------------------------------
 LibraryPathEditor::LibraryPathEditor(QWidget *parent):
 QLineEdit(parent),
 unmodifiablePath_() {
 
 }
 
+//-----------------------------------------------------------------------------
+// Function: ~LibraryPathEditor()
+//-----------------------------------------------------------------------------
 LibraryPathEditor::~LibraryPathEditor() {
 }
 
+//-----------------------------------------------------------------------------
+// Function: setUnmodifiablePath()
+//-----------------------------------------------------------------------------
 void LibraryPathEditor::setUnmodifiablePath( const QString& path ) {
 	unmodifiablePath_ = path;
 }
 
+//-----------------------------------------------------------------------------
+// Function: keyPressEvent()
+//-----------------------------------------------------------------------------
 void LibraryPathEditor::keyPressEvent( QKeyEvent* event ) {
 
 	// if user clicks delete or back space

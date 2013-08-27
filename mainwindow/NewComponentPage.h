@@ -12,9 +12,9 @@
 #ifndef NEWCOMPONENTPAGE_H
 #define NEWCOMPONENTPAGE_H
 
-#include <common/dialogs/propertyPageDialog/PropertyPageView.h>
+#include <mainwindow/NewPage.h>
 #include <common/KactusAttribute.h>
-#include <common/widgets/LibraryPathSelector/librarypathselector.h>
+
 
 #include <QPushButton>
 
@@ -26,7 +26,7 @@ class VLNV;
 //-----------------------------------------------------------------------------
 //! NewComponentPage class.
 //-----------------------------------------------------------------------------
-class NewComponentPage : public PropertyPageView
+class NewComponentPage : public NewPage
 {
     Q_OBJECT
 
@@ -43,16 +43,6 @@ public:
      *  Destructor.
      */
     ~NewComponentPage();
-
-    /*!
-     *  Pre-validates the contents of the page. This is used for enabling/disabling the OK button.
-     *
-     *      @return True, if the contents are valid and OK button should be enabled.
-     *              False, if the contents are invalid and OK button should be disabled.
-     *
-     *      @remarks Must not show any message boxes.
-     */
-    bool prevalidate() const;
 
     /*!
      *  Validates the contents of the page thoroughly.
@@ -77,16 +67,9 @@ public:
 
 public slots:
 
-    /*!
-     *  Updates the directory based on the VLNV.
-     */
-    void updateDirectory();
 
     //! Called when the user changes the product hierarchy attribute.
     void onProductHierarchyChanged();
-
-    //! Called when the user clicks browse button.
-    void onBrowse();
 
 signals:
     //! Signaled when a component should be created.
@@ -103,23 +86,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The library interface.
-    LibraryInterface* libInterface_;
-
     //! Attribute editor.
     KactusAttributeEditor* attributeEditor_;
-
-    //! VLNV editor.
-    VLNVEditor* vlnvEditor_;
-
-	//! \brief The editor to select the directory to save to. 
-	LibraryPathSelector* directoryEdit_;
-
-    //! Pushbutton for browsing the save directory.
-    QPushButton* browseButton_;
-	
-	//! 
-	bool directorySet_;
 };
 
 //-----------------------------------------------------------------------------

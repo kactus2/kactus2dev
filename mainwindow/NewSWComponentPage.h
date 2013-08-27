@@ -12,9 +12,8 @@
 #ifndef NEWSWCOMPONENTPAGE_H
 #define NEWSWCOMPONENTPAGE_H
 
-#include <common/dialogs/propertyPageDialog/PropertyPageView.h>
+#include <mainwindow/NewPage.h>
 #include <common/KactusAttribute.h>
-#include <common/widgets/LibraryPathSelector/librarypathselector.h>
 
 #include <QGroupBox>
 #include <QRadioButton>
@@ -28,7 +27,7 @@ class VLNV;
 //-----------------------------------------------------------------------------
 //! NewSWComponentPage class.
 //-----------------------------------------------------------------------------
-class NewSWComponentPage : public PropertyPageView
+class NewSWComponentPage : public NewPage
 {
     Q_OBJECT
 
@@ -47,16 +46,6 @@ public:
     ~NewSWComponentPage();
 
     /*!
-     *  Pre-validates the contents of the page. This is used for enabling/disabling the OK button.
-     *
-     *      @return True, if the contents are valid and OK button should be enabled.
-     *              False, if the contents are invalid and OK button should be disabled.
-     *
-     *      @remarks Must not show any message boxes.
-     */
-    bool prevalidate() const;
-
-    /*!
      *  Validates the contents of the page thoroughly.
      *
      *      @return True, if the contents are valid. False, if they are invalid.
@@ -70,22 +59,6 @@ public:
      */
     void apply();
 
-    /*!
-     *  Called when the page is to be changed and this page would be hidden.
-     *
-     *      @return False, if the page change should be rejected. Otherwise true.
-     */
-    bool onPageChange();
-
-public slots:
-
-    /*!
-     *  Updates the directory based on the VLNV.
-     */
-    void updateDirectory();
-
-    //! Called when the user clicks browse button.
-    void onBrowse();
 
 signals:
     //! Signaled when a SW component should be created.
@@ -95,25 +68,6 @@ private:
     // Disable copying.
     NewSWComponentPage(NewSWComponentPage const& rhs);
     NewSWComponentPage& operator=(NewSWComponentPage const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The library interface.
-    LibraryInterface* libInterface_;
-
-    //! VLNV editor.
-    VLNVEditor* vlnvEditor_;
-
-	//! \brief The editor to select the directory to save to. 
-	LibraryPathSelector* directoryEdit_;
-
-    //! Pushbutton for browsing the save directory.
-    QPushButton* browseButton_;
-
-    //! Flag for indicating whether the directory has been chosen using browse.
-    bool directorySet_;
 };
 
 //-----------------------------------------------------------------------------

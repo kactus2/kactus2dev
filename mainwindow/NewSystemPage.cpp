@@ -17,6 +17,7 @@
 #include <models/component.h>
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
+#include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 
 #include <QLabel>
 #include <QHBoxLayout>
@@ -32,8 +33,7 @@
 // Function: NewSystemPage()
 //-----------------------------------------------------------------------------
 NewSystemPage::NewSystemPage(LibraryInterface* libInterface, QWidget* parentDlg)
-: PropertyPageView(),
-libInterface_(libInterface),
+: NewPage(libInterface, VLNV::COMPONENT, tr("New System"), tr("Creates SW architecture that can be mapped to HW"), parentDlg),
 actionGroupBox_(new QGroupBox(tr("Mapping Options"), this)),
 actionGroup_(new QButtonGroup(this)),
 emptyRadioButton_(new QRadioButton(tr("Leave initially unmapped"), this)),
@@ -42,14 +42,10 @@ mapRadioButton_(new QRadioButton(tr("Map to specific HW now"), this)),
 mapDescLabel_(new QLabel(tr("Creates a SW architecture and maps it to selected top-level HW. A system view will "
               "be created for the HW component to reference the new system design."), this)),
               treeLabel_(new QLabel(tr("Select top-level HW component:"), this)),
-              compTreeWidget_(new QTreeWidget(this)),
-              vlnvEditor_(new VLNVEditor(VLNV::COMPONENT, libInterface, parentDlg, this, true)),
-              directoryEdit_(new LibraryPathSelector(this)),
+              compTreeWidget_(new QTreeWidget(this)),             
               viewLabel_(new QLabel(tr("Select view of top-level HW component:"), this)),
               viewComboBox_(new QComboBox(this)),
-              layout_(new QVBoxLayout(this)),
-              browseButton_(0),
-              directorySet_(false)
+              layout_(0)
 {
     emptyDescLabel_->setStyleSheet("QLabel { padding-left: 19px; }");
     emptyDescLabel_->setWordWrap(true);
@@ -62,16 +58,6 @@ mapDescLabel_(new QLabel(tr("Creates a SW architecture and maps it to selected t
     emptyRadioButton_->setStyleSheet("QRadioButton::indicator { width: 15px; height: 15px; }");
     mapRadioButton_->setFont(font);
     mapRadioButton_->setStyleSheet("QRadioButton::indicator { width: 15px; height: 15px; }");
-
-    // Create the title and description labels labels.
-    QLabel* titleLabel = new QLabel(tr("New System"), this);
-
-    font = titleLabel->font();
-    font.setPointSize(12);
-    font.setBold(true);
-    titleLabel->setFont(font);
-
-    QLabel* descLabel = new QLabel(tr("Creates SW architecture that can be mapped to HW"), this);
 
     actionGroup_->addButton(emptyRadioButton_);
     actionGroup_->addButton(mapRadioButton_);
@@ -113,21 +99,6 @@ mapDescLabel_(new QLabel(tr("Creates a SW architecture and maps it to selected t
     vlnvEditor_->addNameExtension(".sysdesigncfg");
     //vlnvEditor_->setTitle(tr("VLNV of the new system design"));
 
-    connect(vlnvEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
-    connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(updateDirectory()));
-
-    // Create the directory line edit and label.
-    QLabel *directoryLabel = new QLabel(tr("Directory:"), this);
-    connect(directoryEdit_, SIGNAL(editTextChanged(QString const&)), this, SIGNAL(contentChanged()));
-
-    browseButton_ = new QPushButton(tr("Browse"),this);
-    connect(browseButton_, SIGNAL(clicked()), this, SLOT(onBrowse()), Qt::UniqueConnection);
-
-    QHBoxLayout *pathLayout = new QHBoxLayout;
-    pathLayout->addWidget(directoryLabel);
-    pathLayout->addWidget(directoryEdit_, 1);
-    pathLayout->addWidget(browseButton_);
-
     QVBoxLayout* groupLayout = new QVBoxLayout(actionGroupBox_);
     groupLayout->addWidget(emptyRadioButton_);
     groupLayout->addWidget(emptyDescLabel_);
@@ -135,18 +106,13 @@ mapDescLabel_(new QLabel(tr("Creates a SW architecture and maps it to selected t
     groupLayout->addWidget(mapDescLabel_);
 
     // Setup the layout.
-    layout_->addWidget(titleLabel);
-    layout_->addWidget(descLabel);
-    layout_->addSpacing(12);
-    layout_->addWidget(actionGroupBox_);
-    layout_->addWidget(treeLabel_);
-    layout_->addWidget(compTreeWidget_, 1);
-    layout_->addWidget(viewLabel_);
-    layout_->addWidget(viewComboBox_);
-    layout_->addWidget(vlnvEditor_);
-    layout_->addSpacing(12);
-    layout_->addLayout(pathLayout);
-    //layout_->addStretch(1);
+    layout_ = dynamic_cast<QVBoxLayout*>(layout());
+    Q_ASSERT(layout_);
+    layout_->insertWidget(3, actionGroupBox_);
+    layout_->insertWidget(4, treeLabel_);
+    layout_->insertWidget(5, compTreeWidget_, 1);
+    layout_->insertWidget(6, viewLabel_);
+    layout_->insertWidget(7, viewComboBox_);
 
     connect(actionGroup_, SIGNAL(buttonClicked(QAbstractButton*)),
         this, SLOT(actionChanged(QAbstractButton*)), Qt::UniqueConnection);
@@ -178,11 +144,11 @@ bool NewSystemPage::prevalidate() const
         QVariant data = compTreeWidget_->currentItem()->data(0, Qt::UserRole);
 
         return (!data.isNull() && data.value<VLNV>().isValid() &&
-            vlnvEditor_->isValid() && !directoryEdit_->currentText().isEmpty());
+            NewPage::prevalidate());
     }
     else
     {
-        return (vlnvEditor_->isValid() && !directoryEdit_->currentText().isEmpty());
+        return NewPage::prevalidate();
     }
 }
 
@@ -243,11 +209,11 @@ void NewSystemPage::apply()
         QVariant data = compTreeWidget_->currentItem()->data(0, Qt::UserRole);
 
         emit createSystem(data.value<VLNV>(), viewComboBox_->currentText(),
-            vlnvEditor_->getVLNV(), directoryEdit_->currentText());
+            vlnvEditor_->getVLNV(), librarySelector_->getDirectory());
     }
     else
     {
-        emit createSystem(VLNV(), "", vlnvEditor_->getVLNV(), directoryEdit_->currentText());
+        emit createSystem(VLNV(), "", vlnvEditor_->getVLNV(),librarySelector_->getDirectory());
     }
 }
 
@@ -257,11 +223,9 @@ void NewSystemPage::apply()
 bool NewSystemPage::onPageChange()
 {
     // Discard the VLNV and collapse the tree widget.
-    vlnvEditor_->setVLNV(VLNV());
     compTreeWidget_->collapseAll();
     compTreeWidget_->setCurrentItem(0);
-    directorySet_ = false;
-    return true;
+    return NewPage::onPageChange();
 }
 
 //-----------------------------------------------------------------------------
@@ -357,41 +321,6 @@ void NewSystemPage::addChildItems(LibraryItem const* libItem, QTreeWidgetItem* t
 }
 
 //-----------------------------------------------------------------------------
-// Function: updateDirectory()
-//-----------------------------------------------------------------------------
-void NewSystemPage::updateDirectory()
-{
-    if ( !directorySet_ )
-    {
-        QString dir = directoryEdit_->currentLocation();
-
-        VLNV vlnv = vlnvEditor_->getVLNV();
-
-        if (!vlnv.getVendor().isEmpty())
-        {
-            dir += "/" + vlnv.getVendor();
-
-            if (!vlnv.getLibrary().isEmpty())
-            {
-                dir += "/" + vlnv.getLibrary();
-
-                if (!vlnv.getName().isEmpty())
-                {
-                    dir += "/" + vlnv.getName();
-
-                    if (!vlnv.getVersion().isEmpty())
-                    {
-                        dir += "/" + vlnv.getVersion();
-                    }
-                }
-            }
-        }
-
-        directoryEdit_->setEditText(dir);
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: NewSystemPage::actionChanged()
 //-----------------------------------------------------------------------------
 void NewSystemPage::actionChanged(QAbstractButton* button)
@@ -411,34 +340,4 @@ void NewSystemPage::actionChanged(QAbstractButton* button)
 
     //     layout_->activate();
     emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: onBrowse()
-//-----------------------------------------------------------------------------
-void NewSystemPage::onBrowse()
-{
-    QString baseDirectory = QFileInfo(directoryEdit_->currentText()).filePath();
-    if ( baseDirectory.size() < 1 )
-    {
-        baseDirectory = directoryEdit_->currentLocation();
-    }
-
-    QString targetDirectory = QFileDialog::getExistingDirectory(this, tr("Choose Target Directory"),
-        baseDirectory);
-
-    if (targetDirectory.size() < 1)
-    {
-        return;
-    }
-
-    targetDirectory = QFileInfo(targetDirectory).filePath();
-
-    if (targetDirectory.size() < 1)
-    {
-        targetDirectory = ".";
-    }
-
-    directoryEdit_->setCurrentText(targetDirectory);
-    directorySet_ = true;
 }

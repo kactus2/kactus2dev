@@ -23,7 +23,7 @@
 
 #include <models/component.h>
 
-#include <common/widgets/LibraryPathSelector/librarypathselector.h>
+#include <common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h>
 #include <common/widgets/LineEditEx/LineEditEx.h>
 #include <LibraryManager/libraryinterface.h>
 

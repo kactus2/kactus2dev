@@ -13,7 +13,7 @@
 #define EXPORTSWDIALOG_H
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
-#include <common/widgets/LibraryPathSelector/librarypathselector.h>
+#include <common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h>
 
 #include <QPushButton>
 #include <QLineEdit>

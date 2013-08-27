@@ -11,7 +11,7 @@
 
 #include <common/KactusAttribute.h>
 #include <LibraryManager/vlnv.h>
-#include <common/widgets/LibraryPathSelector/librarypathselector.h>
+#include <common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h>
 
 class LibraryInterface;
 class VLNVEditor;

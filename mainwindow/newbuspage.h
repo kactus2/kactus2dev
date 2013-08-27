@@ -8,15 +8,15 @@
 #ifndef NEWBUSPAGE_H
 #define NEWBUSPAGE_H
 
-#include <common/dialogs/propertyPageDialog/PropertyPageView.h>
-#include <common/widgets/LibraryPathSelector/librarypathselector.h>
+#include "NewPage.h"
 
 #include <LibraryManager/libraryinterface.h>
-#include <common/widgets/vlnvEditor/vlnveditor.h>
+
 
 #include <QPushButton>
 
-class NewBusPage : public PropertyPageView {
+class NewBusPage : public NewPage 
+{
 	Q_OBJECT
 
 public:
@@ -26,16 +26,7 @@ public:
 	//! \brief The destructor
 	virtual ~NewBusPage();
 
-	/*!
-     *  Pre-validates the contents of the page. This is used for enabling/disabling the OK button.
-     *
-     *      @return True, if the contents are valid and OK button should be enabled.
-     *              False, if the contents are invalid and OK button should be disabled.
-     *
-     *      @remarks Must not show any message boxes.
-     */
-    virtual bool prevalidate() const;
-
+	
     /*!
      *  Validates the contents of the page thoroughly.
      *
@@ -50,22 +41,6 @@ public:
      */
     virtual void apply();
 
-    /*!
-     *  Called when the page is to be changed and this page would be hidden.
-     *
-     *      @return False, if the page change should be rejected. Otherwise true.
-     */
-    virtual bool onPageChange();
-
-public slots:
-
-    /*!
-     *  Updates the directory based on the VLNV.
-     */
-    void updateDirectory();
-
-    //! Called when the user clicks browse button.
-    void onBrowse();
 
 signals:
 
@@ -77,22 +52,8 @@ private:
 	NewBusPage(const NewBusPage& other);
 
 	//! \brief No assignment
-	NewBusPage& operator=(const NewBusPage& other);	
+	NewBusPage& operator=(const NewBusPage& other);	    
 
-	//! The library interface.
-	LibraryInterface* libInterface_;
-
-	//! VLNV editor.
-	VLNVEditor vlnvEditor_;
-
-	//! \brief The editor to select the directory to save to. 
-	LibraryPathSelector directoryEdit_;
-
-    //! Pushbutton for browsing the save directory.
-    QPushButton* browseButton_;
-
-    //! Flag for indicating whether the directory has been chosen using browse.
-    bool directorySet_;
 };
 
 #endif // NEWBUSPAGE_H

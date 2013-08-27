@@ -7,6 +7,9 @@
 
 #include "newbuspage.h"
 
+#include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
+#include <common/widgets/vlnvEditor/vlnveditor.h>
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDir>
@@ -16,68 +19,31 @@
 #include <QMessageBox>
 #include <QCoreApplication>
 
+//-----------------------------------------------------------------------------
+// Function: NewBusPage()
+//-----------------------------------------------------------------------------
 NewBusPage::NewBusPage(LibraryInterface* libHandler, QWidget *parentDlg):
-PropertyPageView(),
-libInterface_(libHandler), 
-vlnvEditor_(VLNV::BUSDEFINITION, libHandler, parentDlg, this, true),
-directoryEdit_(this),
-browseButton_(0),
-directorySet_(false)
+NewPage(libHandler, VLNV::BUSDEFINITION, tr("New Bus"), tr("Creates a new bus"), parentDlg)
 {
 
 	Q_ASSERT_X(libHandler, "NewBusPage constructor",
-		"Null LibraryInterface pointer given as parameter");
-
-	connect(&vlnvEditor_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(updateDirectory()));
-
-	// Create the title and description labels labels.
-	QLabel* titleLabel = new QLabel(tr("New Bus"), this);
-
-	QFont font = titleLabel->font();
-	font.setPointSize(12);
-	font.setBold(true);
-	titleLabel->setFont(font);
-
-	QLabel* descLabel = new QLabel(tr("Creates a new bus"), this);
-
-	// Create the directory line edit and label.
-	QLabel *directoryLabel = new QLabel(tr("Directory:"), this);
-
-	connect(&directoryEdit_, SIGNAL(editTextChanged(QString const&)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-
-    browseButton_ = new QPushButton(tr("Browse"),this);
-    connect(browseButton_, SIGNAL(clicked()), this, SLOT(onBrowse()), Qt::UniqueConnection);
-
-    QHBoxLayout *pathLayout = new QHBoxLayout;
-    pathLayout->addWidget(directoryLabel);
-    pathLayout->addWidget(&directoryEdit_, 1);
-    pathLayout->addWidget(browseButton_);
-
-	// Setup the layout.
-	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(titleLabel);
-	layout->addWidget(descLabel);
-	layout->addSpacing(12);
-	layout->addWidget(&vlnvEditor_);
-	layout->addSpacing(12);
-	layout->addLayout(pathLayout);
-	layout->addStretch(1);
+		"Null LibraryInterface pointer given as parameter");	
 }
 
+//-----------------------------------------------------------------------------
+// Function: ~NewBusPage()
+//-----------------------------------------------------------------------------
 NewBusPage::~NewBusPage() {
 }
 
-bool NewBusPage::prevalidate() const {
-	return (vlnvEditor_.isValid() && !directoryEdit_.currentText().isEmpty());
-}
 
+//-----------------------------------------------------------------------------
+// Function: validate()
+//-----------------------------------------------------------------------------
 bool NewBusPage::validate() {
 	Q_ASSERT(prevalidate());
 
-    VLNV vlnv = vlnvEditor_.getVLNV();
+    VLNV vlnv = vlnvEditor_->getVLNV();
 
     /*VLNV absVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
                  vlnv.getName().remove(".busDef", Qt::CaseInsensitive) + ".absDef", vlnv.getVersion());*/
@@ -104,78 +70,9 @@ bool NewBusPage::validate() {
 	return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: apply()
+//-----------------------------------------------------------------------------
 void NewBusPage::apply() {
-	 emit createBus(vlnvEditor_.getVLNV(), directoryEdit_.currentText());
-}
-
-bool NewBusPage::onPageChange() {
-	// Discard the VLNV.
-    directorySet_ = false;
-	vlnvEditor_.setVLNV(VLNV());
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: updateDirectory()
-//-----------------------------------------------------------------------------
-void NewBusPage::updateDirectory()
-{
-    if ( !directorySet_ )
-    {
-        QString dir = directoryEdit_.currentLocation();
-
-        VLNV vlnv = vlnvEditor_.getVLNV();
-
-        if (!vlnv.getVendor().isEmpty())
-        {
-            dir += "/" + vlnv.getVendor();
-
-            if (!vlnv.getLibrary().isEmpty())
-            {
-                dir += "/" + vlnv.getLibrary();
-
-                if (!vlnv.getName().isEmpty())
-                {
-                    dir += "/" + vlnv.getName();
-
-                    if (!vlnv.getVersion().isEmpty())
-                    {
-                        dir += "/" + vlnv.getVersion();
-                    }
-                }
-            }
-        }
-
-        directoryEdit_.setEditText(dir);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: onBrowse()
-//-----------------------------------------------------------------------------
-void NewBusPage::onBrowse()
-{
-    QString baseDirectory = QFileInfo(directoryEdit_.currentText()).filePath();
-    if ( baseDirectory.size() < 1 )
-    {
-        baseDirectory = directoryEdit_.currentLocation();
-    }
-
-    QString targetDirectory = QFileDialog::getExistingDirectory(this, tr("Choose Target Directory"),
-        baseDirectory);
-
-    if (targetDirectory.size() < 1)
-    {
-        return;
-    }
-
-    targetDirectory = QFileInfo(targetDirectory).filePath();
-
-    if (targetDirectory.size() < 1)
-    {
-        targetDirectory = ".";
-    }
-
-    directoryEdit_.setCurrentText(targetDirectory);
-    directorySet_ = true;
+	 emit createBus(vlnvEditor_->getVLNV(), librarySelector_->getDirectory());
 }

@@ -12,8 +12,7 @@
 #ifndef NEWSYSTEMPAGE_H
 #define NEWSYSTEMPAGE_H
 
-#include <common/dialogs/propertyPageDialog/PropertyPageView.h>
-#include <common/widgets/LibraryPathSelector/librarypathselector.h>
+#include <mainwindow/NewPage.h>
 
 #include <QTreeWidget>
 #include <QComboBox>
@@ -32,7 +31,7 @@ class VLNV;
 //-----------------------------------------------------------------------------
 //! NewSystemPage class.
 //-----------------------------------------------------------------------------
-class NewSystemPage : public PropertyPageView
+class NewSystemPage : public NewPage
 {
     Q_OBJECT
 
@@ -84,11 +83,6 @@ public:
 public slots:
 
     /*!
-     *  Updates the directory based on the VLNV.
-     */
-    void updateDirectory();
-
-    /*!
      *  Called when the item in the tree widget has changed.
      */
     void onTreeItemChanged(QTreeWidgetItem* cur, QTreeWidgetItem*);
@@ -101,9 +95,6 @@ signals:
 private slots:
     //! Called when radio button for mapping options selection is clicked.
     void actionChanged(QAbstractButton* button);
-
-    //! Called when the user clicks browse button.
-    void onBrowse();
 
 private:
     // Disable copying.
@@ -121,9 +112,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The library interface.
-    LibraryInterface* libInterface_;
 
     //! Group box for radio buttons.
     QGroupBox* actionGroupBox_;
@@ -155,20 +143,9 @@ private:
     //! View selection combo box.
     QComboBox* viewComboBox_;
 
-    //! VLNV editor.
-    VLNVEditor* vlnvEditor_;
-
-	//! \brief The editor to select the directory to save to. 
-	LibraryPathSelector* directoryEdit_;
-
-    //! Pushbutton for browsing the save directory.
-    QPushButton* browseButton_;
-
     //! The layout for UI widgets.
     QVBoxLayout* layout_;
 
-    //! Flag for indicating whether the directory has been chosen using browse.
-    bool directorySet_;
 };
 
 //-----------------------------------------------------------------------------

@@ -110,12 +110,6 @@
     <Filter Include="Source Files\common\widgets\booleanComboBox">
       <UniqueIdentifier>{996434f3-7697-4fb2-9356-3df1f317ec3b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\widgets\LibraryPathSelector">
-      <UniqueIdentifier>{7a26ce2c-5f00-4280-8cd3-d85eb3768d1d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\widgets\LibraryPathEditor">
-      <UniqueIdentifier>{f6c762d1-f5d0-45dc-af47-6c6e95ae42c5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\widgets\ScanProgressWidget">
       <UniqueIdentifier>{e3ef319b-6662-4df0-a9d8-691d3d45b236}</UniqueIdentifier>
     </Filter>
@@ -416,12 +410,6 @@
     </Filter>
     <Filter Include="Header Files\common\widgets\dirLineEdit">
       <UniqueIdentifier>{cf147f6a-cb8b-4b72-88da-9df71d960032}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\widgets\LibraryPathSelector">
-      <UniqueIdentifier>{fe661274-ed8d-468f-a1ad-3834f52ccb6c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\widgets\LibraryPathEditor">
-      <UniqueIdentifier>{80b21f11-faa3-43e2-9790-7cdb70b46c2e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\ScanProgressWidget">
       <UniqueIdentifier>{2dce8bcc-4b84-4cbc-a486-4180e81a598a}</UniqueIdentifier>
@@ -866,6 +854,27 @@
     <Filter Include="Source Files\common\widgets\ComboBoxEx\colorBox">
       <UniqueIdentifier>{9b05bee6-46c8-4ad5-9f89-361f31037f76}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\mainwindow\NewPages">
+      <UniqueIdentifier>{c5f861cd-161d-40dd-85cf-5c9af8ab6f37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\LibrarySelectorWidget">
+      <UniqueIdentifier>{3669727f-e908-4e09-adb1-aea2788442e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\LibrarySelectorWidget\LibraryPathEditor">
+      <UniqueIdentifier>{f6c762d1-f5d0-45dc-af47-6c6e95ae42c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\LibrarySelectorWidget\LibraryPathSelector">
+      <UniqueIdentifier>{7a26ce2c-5f00-4280-8cd3-d85eb3768d1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\widgets\LibrarySelectorWidget">
+      <UniqueIdentifier>{35329cc7-3c1f-4065-a502-3f9c53f2455d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\widgets\LibrarySelectorWidget\LibraryPathEditor">
+      <UniqueIdentifier>{80b21f11-faa3-43e2-9790-7cdb70b46c2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\widgets\LibrarySelectorWidget\LibraryPathSelector">
+      <UniqueIdentifier>{fe661274-ed8d-468f-a1ad-3834f52ccb6c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\CSourceWriter.cpp">
@@ -1029,12 +1038,6 @@
     </ClCompile>
     <ClCompile Include="common\widgets\booleanComboBox\booleancombobox.cpp">
       <Filter>Source Files\common\widgets\booleanComboBox</Filter>
-    </ClCompile>
-    <ClCompile Include="common\widgets\LibraryPathSelector\librarypathselector.cpp">
-      <Filter>Source Files\common\widgets\LibraryPathSelector</Filter>
-    </ClCompile>
-    <ClCompile Include="common\widgets\LibraryPathEditor\librarypatheditor.cpp">
-      <Filter>Source Files\common\widgets\LibraryPathEditor</Filter>
     </ClCompile>
     <ClCompile Include="common\widgets\ScanProgressWidget\scanprogresswidget.cpp">
       <Filter>Source Files\common\widgets\ScanProgressWidget</Filter>
@@ -2767,12 +2770,6 @@
     <ClCompile Include="GeneratedFiles\moc_librarypathvalidator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_librarypathselector.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_librarypatheditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_libraryitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -3865,6 +3862,30 @@
     <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\AddressSpaceConflictedItem.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer</Filter>
     </ClCompile>
+    <ClCompile Include="mainwindow\NewPage.cpp">
+      <Filter>Source Files\mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_NewPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\LibrarySelectorWidget\LibrarySelectorWidget.cpp">
+      <Filter>Source Files\common\widgets\LibrarySelectorWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_LibrarySelectorWidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_librarypatheditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_librarypathselector.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\LibrarySelectorWidget\LibraryPathSelector\librarypathselector.cpp">
+      <Filter>Source Files\common\widgets\LibrarySelectorWidget\LibraryPathSelector</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\LibrarySelectorWidget\LibraryPathEditor\librarypatheditor.cpp">
+      <Filter>Source Files\common\widgets\LibrarySelectorWidget\LibraryPathEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4343,12 +4364,6 @@
     </CustomBuild>
     <CustomBuild Include="common\widgets\kactusAttributeEditor\KactusAttributeEditor.h">
       <Filter>Header Files\common\widgets\kactusAttributeEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\widgets\LibraryPathEditor\librarypatheditor.h">
-      <Filter>Header Files\common\widgets\LibraryPathEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\widgets\LibraryPathSelector\librarypathselector.h">
-      <Filter>Header Files\common\widgets\LibraryPathSelector</Filter>
     </CustomBuild>
     <CustomBuild Include="common\widgets\LineEditEx\LineEditEx.h">
       <Filter>Header Files\common\widgets\LineEditEx</Filter>
@@ -5489,6 +5504,18 @@
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\AddressSpaceConflictedItem.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\addressSpaces\AddressSpaceVisualizer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\NewPage.h">
+      <Filter>Header Files\mainwindow</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\LibrarySelectorWidget\LibrarySelectorWidget.h">
+      <Filter>Header Files\common\widgets\LibrarySelectorWidget</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\LibrarySelectorWidget\LibraryPathEditor\librarypatheditor.h">
+      <Filter>Header Files\common\widgets\LibrarySelectorWidget\LibraryPathEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\LibrarySelectorWidget\LibraryPathSelector\librarypathselector.h">
+      <Filter>Header Files\common\widgets\LibrarySelectorWidget\LibraryPathSelector</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

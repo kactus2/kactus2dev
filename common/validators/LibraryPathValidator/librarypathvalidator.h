@@ -28,6 +28,15 @@ public:
 	//! \brief The destructor
 	virtual ~LibraryPathValidator();
 
+	/*! \brief Validates a given input.
+	 *
+	 * \param input Input to validate.
+	 * \param pos   Length set to input, if input is not matched.
+	 *
+     * \return Acceptable, if input is valid, otherwise Invalid. Intermediate is never returned.
+	*/
+    virtual QValidator::State validate(QString& input, int& pos) const;
+
 public slots:
 
 	void setUnmodifiablePath(const QString& path);
