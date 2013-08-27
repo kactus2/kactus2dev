@@ -95,8 +95,8 @@ itemsToAdd_() {
 	connect(hierarchyWidget_, SIGNAL(componentSelected(const VLNV&)),
 		this, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
 
+    addTab(treeWidget_, tr("VLNV Tree"));
 	addTab(hierarchyWidget_, tr("Hierarchy"));
-	addTab(treeWidget_, tr("VLNV Tree"));
 }
 
 LibraryHandler::~LibraryHandler() {
