@@ -19,7 +19,6 @@
 #include <common/graphicsItems/GraphicsColumn.h>
 #include <common/DesignDiagram.h>
 #include <common/GenericEditProvider.h>
-
 #include <models/businterface.h>
 
 //-----------------------------------------------------------------------------
@@ -284,6 +283,89 @@ void PortPasteCommand::redo()
 	port_->updateInterface();
   
     del_ = false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfacePasteCommand()
+//-----------------------------------------------------------------------------
+BusInterfacePasteCommand::BusInterfacePasteCommand(QSharedPointer<Component> srcComponent, 
+    QSharedPointer<Component> destComponent,
+    QSharedPointer<BusInterfaceItem> interfaceItem,    
+    GraphicsColumn* column, QUndoCommand* parent) 
+    :   QUndoCommand(parent), srcComponent_(srcComponent), destComponent_(destComponent),
+        busInterface_(interfaceItem->getBusInterface()), 
+        interfaceItem_(interfaceItem), column_(column)
+{
+    // Create child commands for adding physical ports to target component. 
+    // Physical ports must have a unique name within the component.
+    foreach (QString const& portName, interfaceItem->getBusInterface()->getPhysicalPortNames())
+    {	
+        QString uniquePortName = portName;
+        unsigned int count = 0;
+        while (destComponent->getPort(uniquePortName) != 0 )
+        {
+            count++;
+            uniquePortName = portName + "_" + QString::number(count);
+        }
+
+        // Create copies of the physical ports in the source component and rename them.
+        QSharedPointer<Port> physPortCopy = QSharedPointer<Port>(new Port(*srcComponent->getPort(portName)));
+        physPortCopy->setName(uniquePortName);	
+
+        // If port name changed, it is also changed in bus interface.
+        if( uniquePortName != portName )
+        {
+            foreach (QSharedPointer<General::PortMap> portMap, interfaceItem->getBusInterface()->getPortMaps())
+            {
+                if( portMap->physicalPort_ == portName )
+                {
+                    portMap->physicalPort_ = uniquePortName;
+                }
+            }
+        }
+
+        new AddPhysicalPortCommand(destComponent_, physPortCopy, this);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~PortPasteCommand()
+//-----------------------------------------------------------------------------
+BusInterfacePasteCommand::~BusInterfacePasteCommand()
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void BusInterfacePasteCommand::undo()
+{
+    // Execute child commands.
+    QUndoCommand::undo();
+
+    Q_ASSERT(!interfaceItem_.isNull());
+
+    // Remove the port from the component and from the scene
+    destComponent_->removeBusInterface(busInterface_.data());
+    column_->removeItem(interfaceItem_.data());
+    interfaceItem_->scene()->removeItem(interfaceItem_.data());       
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void BusInterfacePasteCommand::redo()
+{
+    // Execute child commands.
+    QUndoCommand::redo();    
+
+    Q_ASSERT(!interfaceItem_.isNull());
+
+    // Copy a port to the component.
+    destComponent_->addBusInterface(busInterface_);
+    column_->addItem(interfaceItem_.data());
+    interfaceItem_->updateInterface();
+
 }
 
 //-----------------------------------------------------------------------------

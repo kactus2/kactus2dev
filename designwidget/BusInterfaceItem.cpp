@@ -716,7 +716,7 @@ void BusInterfaceItem::undefine(bool removePorts)
 
     busInterface_->setPortMaps(QList< QSharedPointer<General::PortMap> >());
     busInterface_->setInterfaceMode(General::INTERFACE_MODE_COUNT);
-    busInterface_->setName("");
+    //busInterface_->setName("");
     
     // Remove the bus interface from the top-level component and destroy it.
     component_->removeBusInterface(busInterface_->getName());

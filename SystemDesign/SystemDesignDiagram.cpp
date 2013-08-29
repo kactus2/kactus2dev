@@ -2932,7 +2932,7 @@ void SystemDesignDiagram::onPasteAction()
                     // Find a valid column for the interfaces.
                     IGraphicsItemStack* stack = layout_->findColumnAt(parent()->mapFromGlobal(QCursor::pos()));
 
-                    if (stack->getContentType() != COLUMN_CONTENT_IO)
+                    if (stack && stack->getContentType() != COLUMN_CONTENT_IO)
                     {
                         foreach (GraphicsColumn* col, layout_->getColumns())
                         {

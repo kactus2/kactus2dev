@@ -24,6 +24,7 @@ class HWConnection;
 class BusPortItem;
 class HWComponentItem;
 class BusInterfaceItem;
+class BusInterface;
 class GraphicsColumn;
 class GraphicsColumnLayout;
 class ComponentItem;
@@ -203,6 +204,70 @@ private:
 
 	//! Boolean flag for indicating if the port should be deleted in the destructor.
     bool del_;
+};
+
+//-----------------------------------------------------------------------------
+//! BusInterfacePasteCommand class.
+//-----------------------------------------------------------------------------
+class BusInterfacePasteCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+	 *      Creates the child commands for adding physical ports to the component model. 
+	 *
+     *      @param [in] destComponent  The component to which to copy an interface.
+     *      @param [in] srcComponent   The component from which the interface is copied.
+	 *      @param [in] interface      The interface item to paste.
+     *      @param [in] parent         The parent command.
+     */
+    BusInterfacePasteCommand(QSharedPointer<Component> srcComponent, 
+        QSharedPointer<Component> destComponent,
+        QSharedPointer<BusInterfaceItem> interface,
+        GraphicsColumn* column, QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~BusInterfacePasteCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    BusInterfacePasteCommand(BusInterfacePasteCommand const& rhs);
+    BusInterfacePasteCommand& operator=(BusInterfacePasteCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The component to copy from.
+    QSharedPointer<Component> srcComponent_;
+
+    //! The component to copy to.
+    QSharedPointer<Component> destComponent_;
+
+    //! The bus interface to copy.
+    QSharedPointer<BusInterface> busInterface_;
+
+    //! The interface position.
+    QPointF pos_;
+
+    //! The interface item.
+    QSharedPointer<BusInterfaceItem> interfaceItem_;
+
+    //! The target column.
+    GraphicsColumn* column_;
 };
 
 //-----------------------------------------------------------------------------

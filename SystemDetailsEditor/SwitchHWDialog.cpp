@@ -276,7 +276,7 @@ void SwitchHWDialog::validate()
     btnOK->setEnabled(!viewNameEdit_->text().isEmpty() && viewNameEdit_->isInputValid() &&
                       (moveRadioButton_->isChecked() || vlnvEdit_->isValid()) &&
                       (!hwViewRefCombo_->isEnabled() || hwViewRefCombo_->count() > 0) &&
-                      !directoryEditor_->isValid());
+                      directoryEditor_->isValid());
 }
 
 //-----------------------------------------------------------------------------
