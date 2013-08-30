@@ -15,7 +15,7 @@
 #include <QColor>
 
 #include <common/graphicsItems/ComponentItem.h>
-#include <designwidget/BusPortItem.h>
+#include <common/graphicsItems/ConnectionEndpoint.h>
 #include <designwidget/HWComponentItem.h>
 #include <designwidget/models/PortGenerationRow.h>
 #include <models/component.h>
@@ -364,14 +364,14 @@ bool PortGenerationTableModel::isValid() const
 //-----------------------------------------------------------------------------
 // Function: initialize()
 //-----------------------------------------------------------------------------
-void PortGenerationTableModel::initialize(LibraryInterface* lh, BusPortItem const* sourceBusPort,
-    BusPortItem const* draftBusPort, General::InterfaceMode selectedMode)
+void PortGenerationTableModel::initialize(LibraryInterface* lh, ConnectionEndpoint const* sourceBusInterface,
+    ConnectionEndpoint const* draftBusPort, General::InterfaceMode selectedMode)
 {
     // Store pointer to draft component.
     draftComponent_ = draftBusPort->encompassingComp()->componentModel();
 
     // Get the abstract definition of the bus interface.
-    QSharedPointer<BusInterface> busIf = sourceBusPort->getBusInterface();
+    QSharedPointer<BusInterface> busIf = sourceBusInterface->getBusInterface();
     QSharedPointer<LibraryComponent> libComp = lh->getModel(busIf->getAbstractionType());
     QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
 
@@ -385,9 +385,14 @@ void PortGenerationTableModel::initialize(LibraryInterface* lh, BusPortItem cons
     foreach ( QSharedPointer<General::PortMap> portMap, busIf->getPortMaps() )
     {
         QString portName = portMap->physicalPort_;          
-        QSharedPointer<Port> port = sourceBusPort->encompassingComp()->componentModel()->getPort(portName);
+        QSharedPointer<Port> port = sourceBusInterface->getOwnerComponent()->getPort(portName);
 
-        if ( createNew )
+        if (!port)
+        {
+            continue;
+        }
+
+        if (createNew)
         {
             row = QSharedPointer<PortGenerationRow>(new PortGenerationRow(portName, port->getDirection(),
                 port->getDescription(), port->getPortSize()));

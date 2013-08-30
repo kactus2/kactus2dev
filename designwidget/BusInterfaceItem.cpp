@@ -234,9 +234,9 @@ void BusInterfaceItem::updateInterface()
                 << QPointF(squareSize/2, squareSize / 2)
                 << QPointF(0, squareSize);
             break;
-        }
-
+        }    
     case General::INOUT:
+    default:
         {
             /*  /\
              *  ||

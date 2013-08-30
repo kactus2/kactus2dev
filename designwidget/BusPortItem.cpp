@@ -202,6 +202,7 @@ void BusPortItem::updateInterface()
         }
 
     case General::INOUT:
+    default:
         {
             /*  /\
             *  ||
@@ -266,13 +267,12 @@ bool BusPortItem::onConnect(ConnectionEndpoint const* other)
             // be determined/asked based on the other bus interface.
             General::InterfaceMode mode = otherBusIf->getInterfaceMode();
 
-            if (!other->isHierarchical())
-            {
+
                 if (!askCompatibleMode(other, mode, newPorts, newPortMaps))
                 {
                     return false;
                 }
-            }
+
 
             busInterface_->setInterfaceMode(mode);
 
@@ -659,6 +659,13 @@ bool BusPortItem::askCompatibleMode(ConnectionEndpoint const* other,
     bool showDialog = false;
     BusInterfaceDialog dialog(false, (QWidget*)scene()->parent());
 
+    if (other->isHierarchical())
+{
+    mode = other->getBusInterface()->getInterfaceMode();
+    dialog.addMode(other->getBusInterface()->getInterfaceMode());    
+}
+else
+{
     switch (other->getBusInterface()->getInterfaceMode())
     {
     case General::MIRROREDMASTER:
@@ -750,12 +757,12 @@ bool BusPortItem::askCompatibleMode(ConnectionEndpoint const* other,
             break;
         }
     }
-
-    BusPortItem const* otherBusPort = static_cast<BusPortItem const*>(other);
-    if (!otherBusPort->getBusInterface()->getPortMaps().empty() )
+}
+    //BusPortItem const* otherBusPort = static_cast<BusPortItem const*>(other);
+    if (!other->getBusInterface()->getPortMaps().empty() )
     {
         showDialog = true;
-        dialog.setBusPorts(otherBusPort, this, lh_);
+        dialog.setBusInterfaces(other, this, lh_);
     }
 
     if ( showDialog )

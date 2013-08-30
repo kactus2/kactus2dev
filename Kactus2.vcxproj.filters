@@ -875,6 +875,9 @@
     <Filter Include="Header Files\common\widgets\LibrarySelectorWidget\LibraryPathSelector">
       <UniqueIdentifier>{fe661274-ed8d-468f-a1ad-3834f52ccb6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\designwidget\models">
+      <UniqueIdentifier>{dbe17298-1f77-43bc-a8f9-6c50a9450c51}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\CSourceWriter.cpp">
@@ -5478,12 +5481,6 @@
     <CustomBuild Include="common\widgets\FileSelector\fileselector.h">
       <Filter>Header Files\common\widgets\FileSelector</Filter>
     </CustomBuild>
-    <CustomBuild Include="designwidget\models\PortGenerationTableModel.h">
-      <Filter>Header Files\designwidget</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designwidget\models\PortGenerationRow.h">
-      <Filter>Header Files\designwidget</Filter>
-    </CustomBuild>
     <CustomBuild Include="designwidget\views\CellEditTableView.h">
       <Filter>Header Files\designwidget\views</Filter>
     </CustomBuild>
@@ -5516,6 +5513,12 @@
     </CustomBuild>
     <CustomBuild Include="common\widgets\LibrarySelectorWidget\LibraryPathSelector\librarypathselector.h">
       <Filter>Header Files\common\widgets\LibrarySelectorWidget\LibraryPathSelector</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designwidget\models\PortGenerationTableModel.h">
+      <Filter>Header Files\designwidget\models</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designwidget\models\PortGenerationRow.h">
+      <Filter>Header Files\designwidget\models</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

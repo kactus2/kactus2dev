@@ -18,11 +18,10 @@
 #include "models/generaldeclarations.h"
 
 class BusInterface;
-class BusPortItem;
 class Component;
 class LibraryInterface;
 class PortGenerationRow;
-
+class ConnectionEndpoint;
 //-----------------------------------------------------------------------------
 //! PortGenerationTableModel class.
 //-----------------------------------------------------------------------------
@@ -130,13 +129,14 @@ public:
 
 	/*! \brief Creates the initial content according to specified interfaces.
      *
-     * @param [in] lh The library interface.
-     * @param [in] sourceComponent Opposing bus interface item.
-     * @param [in] draftComponent Bus interface item in draft component.
-     * @param [in] selectedMode Bus interface mode for draft component.
+     * @param [in] lh                   The library interface.
+     * @param [in] sourceComponent      Opposing bus interface item.
+     * @param [in] draftComponent       Bus interface item in draft component.
+     * @param [in] selectedMode         Bus interface mode for draft component.
 	*/
-    void initialize(LibraryInterface* lh, BusPortItem const* sourceComponent, BusPortItem const* draftComponent,
-General::InterfaceMode selectedMode);
+    void initialize(LibraryInterface* lh, ConnectionEndpoint const* sourceComponent, 
+        ConnectionEndpoint const* draftComponent,
+        General::InterfaceMode selectedMode);
 
 	//! \brief Locks a column.
 	void lockColumn(int const column);
@@ -167,10 +167,10 @@ private:
 
     /*! \brief Generates a unique name for a port.
 	 *
-     * @param [in] name The port name in the opposite interface.
-     * @param [in] opposingDirection The port direction  in the opposite interface.
-     * @param [in] draftDirection The port direction in the draft interface.
-     * @param [in] delimiter Delimiter for in/out/inout in port name.
+     * @param [in] name                 The port name in the opposite interface.
+     * @param [in] opposingDirection    The port direction  in the opposite interface.
+     * @param [in] draftDirection       The port direction in the draft interface.
+     * @param [in] delimiter            Delimiter for in/out/inout in port name.
 
 	 * @return Unique name for a port in the draft component.
 	*/

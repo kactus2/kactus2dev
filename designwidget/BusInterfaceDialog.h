@@ -24,12 +24,13 @@
 #include <QSortFilterProxyModel>
 #include <QTableView>
 
-class BusPortItem;
+class ConnectionEndpoint;
 class BusInterface;
 class CellEditTableView;
 class LibraryInterface;
 class Port;
 class PortGenerationTableModel;
+
 //-----------------------------------------------------------------------------
 //! BusInterfaceDialog class.
 //-----------------------------------------------------------------------------
@@ -79,11 +80,11 @@ public:
  /*!
      *  Sets the opposing and draft interface ports for the dialog.
      *
-     *      @param [in] opposingBusPort The bus port item in opposing component.
-     *      @param [in] draftBusPort The bus port item in draft component.
-     *      @param [in] lh The library interface.
+     *      @param [in] opposingBusItem     The bus interface item in opposing end.
+     *      @param [in] draftBusItem        The bus interface item in the draft component.
+     *      @param [in] lh                  The library interface.
      */
-    void setBusPorts(BusPortItem const* opposingBusPort, BusPortItem const* draftBusPort, 
+    void setBusInterfaces(ConnectionEndpoint const* opposingBusItem, ConnectionEndpoint const* draftBusItem, 
                         LibraryInterface* lh);
 
     /*!
@@ -172,16 +173,20 @@ private:
     //! The group box for the port tables.
     QGroupBox* tableGroup_;
 
+    //! Flag for showing or hiding port table.
     bool tableEnable_;
 
     //! Library interface.
     LibraryInterface* lh_;
 
+    //! The bus interface the dialog is referring to.
     QSharedPointer<BusInterface> busIf_;
 
-    BusPortItem const* opposingBusPort_;
+    //! The opposing end of the connection.
+    ConnectionEndpoint const* opposingEnd_;
 
-    BusPortItem const* draftBusPort_;
+    //! The draft end of the connection.
+    ConnectionEndpoint const* draftEnd_;
 
     //! Table model for port generation table.
     PortGenerationTableModel* portsModel_;

@@ -120,7 +120,11 @@ ConnectionAddCommand::ConnectionAddCommand(QGraphicsScene* scene, HWConnection* 
         foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
         {
             QSharedPointer<Port> port = srcComponent->getPort(portMap->physicalPort_);
-            new AddPhysicalPortCommand(srcComponent, port, this);
+            // Check that port exists.
+            if (!port.isNull())            
+            {
+                new AddPhysicalPortCommand(srcComponent, port, this);
+            }
         }
     }
 }
@@ -392,7 +396,7 @@ AddPhysicalPortCommand::~AddPhysicalPortCommand()
 //-----------------------------------------------------------------------------
 void AddPhysicalPortCommand::undo()
 {
-    Q_ASSERT(component_ != 0);
+    Q_ASSERT(component_ != 0 && port_ != 0);
     component_->removePort(port_->getName());
 	
     // Execute child commands.
@@ -404,7 +408,7 @@ void AddPhysicalPortCommand::undo()
 //-----------------------------------------------------------------------------
 void AddPhysicalPortCommand::redo()
 {
-	Q_ASSERT(component_ != 0);
+	Q_ASSERT(component_ != 0 && port_ != 0);
     component_->addPort(port_);
 
 	// Execute child commands.

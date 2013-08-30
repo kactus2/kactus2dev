@@ -23,7 +23,7 @@
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 #include <models/port.h>
 #include <models/businterface.h>
-#include <designwidget/BusPortItem.h>
+#include <common/graphicsItems/ConnectionEndpoint.h>
 #include <designwidget/views/CellEditTableView.h>
 #include <designwidget/models/PortGenerationTableModel.h>
 #include <LibraryManager/libraryinterface.h>
@@ -132,12 +132,12 @@ General::InterfaceMode BusInterfaceDialog::getSelectedMode() const
 //-----------------------------------------------------------------------------
 // Function: setBusPorts()
 //-----------------------------------------------------------------------------
-void BusInterfaceDialog::setBusPorts(BusPortItem const* opposingBusPort, 
-    BusPortItem const* draftBusPort, LibraryInterface* lh)
+void BusInterfaceDialog::setBusInterfaces(ConnectionEndpoint const* opposingBusPort, 
+    ConnectionEndpoint const* draftBusPort, LibraryInterface* lh)
 {
     lh_ = lh;
-    opposingBusPort_ = opposingBusPort;
-    draftBusPort_ = draftBusPort;
+    opposingEnd_ = opposingBusPort;
+    draftEnd_ = draftBusPort;
 
     if ( !tableEnable_ )
     {
@@ -165,7 +165,18 @@ void BusInterfaceDialog::setBusPorts(BusPortItem const* opposingBusPort,
         }
     }
 
-    QString sourceHeader = "Name in " + opposingBusPort->encompassingComp()->name();
+    ComponentItem* sourceComponent = opposingBusPort->encompassingComp();    
+    QString sourceName;   
+    if (sourceComponent)
+    {
+        sourceName = sourceComponent->name();
+    }
+    else
+    {
+        sourceName = "Top-level";
+    }
+
+    QString sourceHeader = "Name in " + sourceName;
     portsModel_->setHeaderData(PortGenerationTableModel::SRC_NAME, Qt::Horizontal, sourceHeader);
     
     QString draftHeader = "Name in " + draftBusPort->encompassingComp()->name();
@@ -181,7 +192,7 @@ QList< QSharedPointer<General::PortMap> > BusInterfaceDialog::getPortMaps() cons
    
     if ( tableEnable_ )
     {
-        foreach ( QSharedPointer<General::PortMap> portMap, opposingBusPort_->getBusInterface()->getPortMaps() )
+        foreach ( QSharedPointer<General::PortMap> portMap, opposingEnd_->getBusInterface()->getPortMaps() )
         {
             int row = 0;
             QModelIndex index;
@@ -220,7 +231,7 @@ QList< QSharedPointer<Port> > BusInterfaceDialog::getPorts() const
             QString name = portsModel_->data(index,Qt::DisplayRole).toString();
             index = portsModel_->index(row,PortGenerationTableModel::DRAFT_NAME);
             QString generatedName = portsModel_->data(index,Qt::DisplayRole).toString();
-            QSharedPointer<Port> port = opposingBusPort_->encompassingComp()->componentModel()->getPort(name);
+            QSharedPointer<Port> port = opposingEnd_->getOwnerComponent()->getPort(name);
             QSharedPointer<Port> draftPort(new Port(generatedName,*port));
             index = portsModel_->index(row,PortGenerationTableModel::DRAFT_DIRECTION);
             QString draftDir = portsModel_->data(index,Qt::DisplayRole).toString();
@@ -360,7 +371,7 @@ void BusInterfaceDialog::updatePortsView()
 {
     if ( tableEnable_ && modes_ != 0 )
     {
-        portsModel_->initialize(lh_,opposingBusPort_, draftBusPort_, getSelectedMode());
+        portsModel_->initialize(lh_,opposingEnd_, draftEnd_, getSelectedMode());
         onTableDataChanged();
     }
 }
