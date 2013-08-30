@@ -2079,7 +2079,7 @@ void HWDesignDiagram::onPasteAction(){
 
                         QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
                         pasteInstances(collection, column, cmd.data(), true);
-                        getEditProvider().addCommand(cmd, false);
+                        getEditProvider().addCommand(cmd);
                     }
                 }
                 // Paste columns.
