@@ -91,6 +91,7 @@ HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& edit
       cornerStitchStruct_(),
       copyAction_(tr("Copy"), this),
       pasteAction_(tr("Paste"), this),
+      addAction_(tr("Add to Library"), this),
       showContextMenu_(true)
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
@@ -1903,24 +1904,34 @@ QMenu* HWDesignDiagram::createContextMenu(QPointF const& pos)
             {
                 // Allow copying interfaces (single or multiple).
                 menu = new QMenu(parent());	
-                menu->addAction(&copyAction_);
-
-                copyAction_.setEnabled(true);
+                menu->addAction(&copyAction_); 
+                //copyAction_.setEnabled(true);
             }
             else if (type == HWComponentItem::Type)
             {
+                
                 // Allow copying components (single or multiple).
-                menu = new QMenu(parent());	
-                menu->addAction(&copyAction_);
-
-                // Enable paste action, if a draft component (no valid vlnv) and data on the clipboard is valid.
+                menu = new QMenu(parent());	                               
+                menu->addAction(&copyAction_);                                              
                 menu->addAction(&pasteAction_);
 
-                QMimeData const* mimedata = QApplication::clipboard()->mimeData();
+                bool draft = !qgraphicsitem_cast<HWComponentItem *>(item)->componentModel()->getVlnv()->isValid();           
+                if (draft)
+                {
+                    menu->addAction(&addAction_);
+                    if (selectedItems().size() == 1)
+                    {
+                        addAction_.setEnabled(true);
+                    }
+                    else
+                    {
+                        addAction_.setEnabled(false);
+                    }
+                }
 
-                if (items.count() == 1 &&
-                    !(qgraphicsitem_cast<HWComponentItem *>(item)->componentModel()->getVlnv()->isValid()) &&
-                    mimedata != 0 && mimedata->hasImage() && 
+                // Enable paste action, if a draft component and bus ports on the clipboard.
+                QMimeData const* mimedata = QApplication::clipboard()->mimeData();
+                if (items.count() == 1 && draft && mimedata != 0 && mimedata->hasImage() && 
                     mimedata->imageData().canConvert<BusPortCollectionCopyData>())
                 {
                     pasteAction_.setEnabled(true);
@@ -2109,6 +2120,60 @@ void HWDesignDiagram::onPasteAction(){
                         emit clearItemSelection();       
                     }
                 }
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: onAddAction()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::onAddAction()
+{
+    if (selectedItems().size() == 1)
+    {
+        QGraphicsItem *item = selectedItems().first();
+        if (item != 0 && item->type() == HWComponentItem::Type)
+        {
+            item->setSelected(true);
+            HWComponentItem *comp = qgraphicsitem_cast<HWComponentItem *>(item);
+
+            NewObjectDialog dialog(getLibraryInterface(), VLNV::COMPONENT, true, (QWidget*)parent());
+            dialog.setVLNV(*comp->componentModel()->getVlnv());
+            dialog.setWindowTitle(tr("Add Component to Library"));
+
+            if (dialog.exec() == QDialog::Rejected)
+            {
+                return;
+            }
+
+            VLNV vlnv = dialog.getVLNV();
+            comp->componentModel()->setVlnv(vlnv);
+            comp->componentModel()->setComponentHierarchy(dialog.getProductHierarchy());
+            comp->componentModel()->setComponentFirmness(dialog.getFirmness());
+            comp->componentModel()->createEmptyFlatView();
+
+            // Write the model to file.
+            getLibraryInterface()->writeModelToFile(dialog.getPath(), comp->componentModel());
+
+            // Create an undo command.
+            QSharedPointer<QUndoCommand> cmd(new ComponentPacketizeCommand(comp, vlnv));
+            getEditProvider().addCommand(cmd);
+
+            // Ask the user if he wants to complete the component.
+            QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
+                "Do you want to continue packaging the component completely?",
+                QMessageBox::NoButton, (QWidget*)parent());
+            msgBox.setInformativeText("Pressing Continue opens up the component editor.");
+            QPushButton* btnContinue = msgBox.addButton(tr("Continue"), QMessageBox::ActionRole);
+            msgBox.addButton(tr("Skip"), QMessageBox::RejectRole);
+
+            msgBox.exec();
+
+            if (msgBox.clickedButton() == btnContinue)
+            {
+                // Open up the component editor.
+                emit openComponent(*comp->componentModel()->getVlnv());
             }
         }
     }
@@ -2618,6 +2683,9 @@ void HWDesignDiagram::setupActions()
     parent()->addAction(&pasteAction_);
     pasteAction_.setShortcut(QKeySequence::Paste);
     connect(&pasteAction_, SIGNAL(triggered()),this, SLOT(onPasteAction()), Qt::UniqueConnection);	
+
+    parent()->addAction(&addAction_);
+    connect(&addAction_, SIGNAL(triggered()), this, SLOT(onAddAction()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

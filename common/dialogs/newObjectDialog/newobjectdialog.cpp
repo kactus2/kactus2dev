@@ -19,6 +19,9 @@
 
 #include "newobjectdialog.h"
 
+//-----------------------------------------------------------------------------
+// Function: NewObjectDialog()
+//-----------------------------------------------------------------------------
 NewObjectDialog::NewObjectDialog(LibraryInterface* libInterface, VLNV::IPXactType type,
                                  bool showAttributes, QWidget *parent):
 QDialog(parent), 
@@ -72,11 +75,17 @@ okButton_(0)
     onProductHierarchyChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: getVLNV()
+//-----------------------------------------------------------------------------
 VLNV NewObjectDialog::getVLNV()
 {
     return vlnvEditor_->getVLNV();
 }
 
+//-----------------------------------------------------------------------------
+// Function: getPath()
+//-----------------------------------------------------------------------------
 QString NewObjectDialog::getPath()
 {
     return directoryEditor_->getPath();
@@ -141,7 +150,7 @@ KactusAttribute::Firmness NewObjectDialog::getFirmness() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: showDialog()
+// Function: saveAsDialog()
 //-----------------------------------------------------------------------------
 bool NewObjectDialog::saveAsDialog(QWidget* parent, LibraryInterface* lh, VLNV const& oldVLNV,
                                    KactusAttribute::ProductHierarchy& prodHier,
@@ -170,7 +179,7 @@ bool NewObjectDialog::saveAsDialog(QWidget* parent, LibraryInterface* lh, VLNV c
 }
 
 //-----------------------------------------------------------------------------
-// Function: showDialog()
+// Function: saveAsDialog()
 //-----------------------------------------------------------------------------
 bool NewObjectDialog::saveAsDialog(QWidget* parent, LibraryInterface* lh,
                                    VLNV const& oldVLNV, VLNV& vlnv, QString& directory,

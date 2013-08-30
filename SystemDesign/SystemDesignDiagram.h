@@ -259,6 +259,12 @@ public slots:
      */
 	void onPasteAction();
 
+
+    /*!
+     *  Called when add to library is selected from the context menu.
+     */
+	virtual void onAddAction();
+
 protected:
     //! Called when the user presses a mouse button.
     void mousePressEvent(QGraphicsSceneMouseEvent* event);
@@ -527,6 +533,9 @@ private:
 
     //! Context menu paste action.
     QAction pasteAction_;
+
+    //! Context menu action for adding a draft component to library.
+    QAction addAction_;
 
     //! If true, context menu is enabled.
     bool showContextMenu_;
