@@ -67,7 +67,7 @@ BusInterfaceDialog::BusInterfaceDialog(bool enableNameEdit,
       }
 
     // Create the radio button group.
-    modeGroup_ = new QGroupBox(tr("Interface Mode"), this);
+    modeGroup_ = new QGroupBox(tr("Select Interface Mode"), this);
     for (unsigned int i = 0; i < General::MONITOR + 1; ++i)
     {
         modeRadioButtons_[i] = new QRadioButton(MODE_NAMES[i], modeGroup_);
@@ -88,7 +88,8 @@ BusInterfaceDialog::BusInterfaceDialog(bool enableNameEdit,
         btnOK_->setEnabled(!nameEdit_->text().isEmpty());
     }
 
-    tableGroup_ = new QGroupBox(tr("Port Generation"), this);
+    tableGroup_ = new QGroupBox(tr("Define Port Names and Descriptions for Bus Interface in Draft Component"), 
+                                    this);
 
     setupLayout();
 }
@@ -371,7 +372,7 @@ void BusInterfaceDialog::updatePortsView()
 {
     if ( tableEnable_ && modes_ != 0 )
     {
-        portsModel_->initialize(lh_,opposingEnd_, draftEnd_, getSelectedMode());
+        portsModel_->initialize(lh_,opposingEnd_, draftEnd_, getSelectedMode());        
         onTableDataChanged();
     }
 }
