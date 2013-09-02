@@ -343,12 +343,22 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
         else if (selected->type() == BusInterfaceItem::Type)
         {
             BusInterfaceItem* diagIf = static_cast<BusInterfaceItem*>(selected);
+            bool removePorts = false;
 
-            // Ask the user if he/she wants to delete the ports too.
-            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                               tr("Do you want to delete also the ports that are part of the interface?"),
-                               QMessageBox::Yes | QMessageBox::No, this);
-            bool removePorts = (msgBox.exec() == QMessageBox::Yes);
+            // Ask the user if he/she wants to delete the ports, if any exist.
+            if (!diagIf->getPorts().isEmpty())
+            {
+                QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                    tr("Do you want to delete also the ports that are part of the interface?"),
+                    QMessageBox::Yes | QMessageBox::No, this);
+                QStringList ports("Interface ports:");
+                foreach(QSharedPointer<Port> port, diagIf->getPorts())
+                {
+                    ports.append("* " + port->getName());
+                }
+                msgBox.setDetailedText(ports.join("\n"));
+                removePorts = (msgBox.exec() == QMessageBox::Yes);
+            }
 
             getDiagram()->clearSelection();
             emit clearItemSelection();

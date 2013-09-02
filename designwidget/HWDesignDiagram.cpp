@@ -1344,43 +1344,7 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
 //             }
             
             // Request the user to set the vlnv.
-            NewObjectDialog dialog(getLibraryInterface(), VLNV::COMPONENT, true, (QWidget*)parent());
-            dialog.setVLNV(*comp->componentModel()->getVlnv());
-            dialog.setWindowTitle(tr("Add Component to Library"));
-
-            if (dialog.exec() == QDialog::Rejected)
-            {
-                return;
-            }
-
-            VLNV vlnv = dialog.getVLNV();
-            comp->componentModel()->setVlnv(vlnv);
-            comp->componentModel()->setComponentHierarchy(dialog.getProductHierarchy());
-            comp->componentModel()->setComponentFirmness(dialog.getFirmness());
-            comp->componentModel()->createEmptyFlatView();
-
-            // Write the model to file.
-            getLibraryInterface()->writeModelToFile(dialog.getPath(), comp->componentModel());
-
-            // Create an undo command.
-            QSharedPointer<QUndoCommand> cmd(new ComponentPacketizeCommand(comp, vlnv));
-            getEditProvider().addCommand(cmd);
-
-            // Ask the user if he wants to complete the component.
-            QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
-                               "Do you want to continue packaging the component completely?",
-                               QMessageBox::NoButton, (QWidget*)parent());
-            msgBox.setInformativeText("Pressing Continue opens up the component editor.");
-            QPushButton* btnContinue = msgBox.addButton(tr("Continue"), QMessageBox::ActionRole);
-            msgBox.addButton(tr("Skip"), QMessageBox::RejectRole);
-
-            msgBox.exec();
-
-            if (msgBox.clickedButton() == btnContinue)
-            {
-                // Open up the component editor.
-				emit openComponent(*comp->componentModel()->getVlnv());
-            }
+           onAddAction();
         }
     }
     else if (item->type() == HWColumn::Type)
@@ -2137,6 +2101,9 @@ void HWDesignDiagram::onAddAction()
         {
             item->setSelected(true);
             HWComponentItem *comp = qgraphicsitem_cast<HWComponentItem *>(item);
+
+            // Set the instance name as default name suggestion.
+            comp->componentModel()->getVlnv()->setName(comp->name());
 
             NewObjectDialog dialog(getLibraryInterface(), VLNV::COMPONENT, true, (QWidget*)parent());
             dialog.setVLNV(*comp->componentModel()->getVlnv());
