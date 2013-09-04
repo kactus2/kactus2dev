@@ -57,6 +57,8 @@ ItemEditor* ComponentEditorBusInterfaceItem::editor() {
 		editor_->setDisabled(locked_);
 		connect(editor_, SIGNAL(contentChanged()),
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(errorMessage(const QString&)), 
+            this, SIGNAL(errorMessage(const QString&)),Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
 			this, SIGNAL(helpUrlRequested(QString const&)));
 	}

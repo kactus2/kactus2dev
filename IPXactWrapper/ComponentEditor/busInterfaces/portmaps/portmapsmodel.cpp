@@ -462,7 +462,7 @@ bool PortMapsModel::canCreateMap( const QString& physicalPort, const QString& lo
 		General::Direction physDirection = component_->getPortDirection(physicalPort);
 
 		// if directions don't match
-		if (logicalDirection != physDirection) {
+		if (logicalDirection != physDirection && physDirection != General::INOUT) {
 			emit errorMessage(tr("Directions between logical port \"%1\" and"
 				" physical port \"%2\" didn't match.").arg(logicalPort).arg(physicalPort));
 			return false;
