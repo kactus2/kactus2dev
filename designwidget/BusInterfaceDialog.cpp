@@ -88,7 +88,7 @@ BusInterfaceDialog::BusInterfaceDialog(bool enableNameEdit,
         btnOK_->setEnabled(!nameEdit_->text().isEmpty());
     }
 
-    tableGroup_ = new QGroupBox(tr("Define Port Names and Descriptions for Bus Interface in Draft Component"), 
+    tableGroup_ = new QGroupBox(tr("Define Port Names and Descriptions in Draft Component"), 
                                     this);
 
     setupLayout();

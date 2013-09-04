@@ -360,12 +360,11 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
                 removePorts = (msgBox.exec() == QMessageBox::Yes);
             }
 
-            getDiagram()->clearSelection();
-            emit clearItemSelection();
-
             // Delete the interface.
-            QSharedPointer<QUndoCommand> cmd(new InterfaceDeleteCommand(diagIf, removePorts));
+            QSharedPointer<InterfaceDeleteCommand> cmd(new InterfaceDeleteCommand(diagIf, removePorts));
+            connect(cmd.data(), SIGNAL(interfaceDeleted()), this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);            
             getGenericEditProvider()->addCommand(cmd);
+            getDiagram()->clearSelection();
         }
         else if (selected->type() == BusPortItem::Type)
         {

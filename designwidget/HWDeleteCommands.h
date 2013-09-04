@@ -252,8 +252,9 @@ private:
 //-----------------------------------------------------------------------------
 //! InterfaceDeleteCommand class.
 //-----------------------------------------------------------------------------
-class InterfaceDeleteCommand : public QUndoCommand
+class InterfaceDeleteCommand : public QObject, public QUndoCommand
 {
+    Q_OBJECT
 public:
     /*!
      *  Constructor.
@@ -278,8 +279,13 @@ public:
      */
     virtual void redo();
 
+signals:
+
+    //! Emitted when the interface is deleted.
+    void interfaceDeleted();
+
 private:
-    // Disable copying.
+    //! Disable copying.
     InterfaceDeleteCommand(InterfaceDeleteCommand const& rhs);
     InterfaceDeleteCommand& operator=(InterfaceDeleteCommand const& rhs);
 

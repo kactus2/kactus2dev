@@ -11,6 +11,7 @@
 
 #include "HWDeleteCommands.h"
 
+#include "HWChangeCommands.h"
 #include "HWConnection.h"
 #include "BusPortItem.h"
 #include "HWComponentItem.h"
@@ -392,12 +393,20 @@ InterfaceDeleteCommand::InterfaceDeleteCommand(BusInterfaceItem* interface,
 {
     if (removePorts_)
     {
-        // Create copies of the related ports.
+        // Create copies of the related ports and remove commands for them.
         QList<QSharedPointer<Port> > ports = interface_->getPorts();
-
         foreach (QSharedPointer<Port> port, ports)
         {
             ports_.append(QSharedPointer<Port>(new Port(*port.data())));
+            DeletePhysicalPortCommand* delCmd = new DeletePhysicalPortCommand(interface_->getOwnerComponent(), port, this);
+
+            // If the port is visible as ad-hoc in the current design, it must be hidden.
+            DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(interface->scene());
+            Q_ASSERT(diagram);
+            if (diagram->getDiagramAdHocPort(port->getName()) != 0)
+            {                               
+                new AdHocVisibilityChangeCommand(diagram, port->getName(), false, delCmd);
+            }
         }
     }
 
@@ -438,7 +447,7 @@ void InterfaceDeleteCommand::undo()
     {
         busIf_->setInterfaceMode(mode_);
         busIf_->setPortMaps(portMaps_);
-        interface_->define(busIf_, removePorts_, ports_);
+        interface_->define(busIf_, false, ports_);
     }
 
     // Execute child commands.
@@ -462,6 +471,7 @@ void InterfaceDeleteCommand::redo()
     // Remove the interface from the scene.
     parent_->removeItem(interface_);
     scene_->removeItem(interface_);
+    emit interfaceDeleted();
     del_ = true;
 }
 
@@ -489,8 +499,10 @@ DeletePhysicalPortCommand::~DeletePhysicalPortCommand()
 //-----------------------------------------------------------------------------
 void DeletePhysicalPortCommand::undo()
 {
-    Q_ASSERT(component_ != 0);
+    Q_ASSERT(component_ != 0 && !port_.isNull());
     component_->addPort(port_);
+
+    QUndoCommand::undo();
 }
 
 //-----------------------------------------------------------------------------
@@ -498,6 +510,8 @@ void DeletePhysicalPortCommand::undo()
 //-----------------------------------------------------------------------------
 void DeletePhysicalPortCommand::redo()
 {
-    Q_ASSERT(component_ != 0);
+    QUndoCommand::redo();
+
+    Q_ASSERT(component_ != 0 && !port_.isNull());
     component_->removePort(port_->getName());
 }
