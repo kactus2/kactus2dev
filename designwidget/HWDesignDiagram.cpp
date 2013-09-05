@@ -2369,6 +2369,8 @@ void HWDesignDiagram::createConnection(QGraphicsSceneMouseEvent * mouseEvent)
 
         if (tempConnection_->connectEnds())
         {
+            tempConnection_->fixOverlap();
+
             QSharedPointer<QUndoCommand> cmd(new ConnectionAddCommand(this, tempConnection_));
             getEditProvider().addCommand(cmd, false);
 

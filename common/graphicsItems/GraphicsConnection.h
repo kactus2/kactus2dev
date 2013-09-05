@@ -132,6 +132,11 @@ public:
     virtual void updatePosition();
 
     /*!
+     *  Applies clearance algorithm to prevent connections from intersecting.
+     */
+    void fixOverlap();
+
+    /*!
      *  Updates the name of the connection according to the default formatting.
      */
     QString createDefaultName() const;
@@ -294,6 +299,124 @@ private:
      *      @param [in] pt      The intersection point where to draw the gap.
      */
     void drawLineGap(QPainter* painter, QLineF const& line, QPointF const& pt);
+
+    //-----------------------------------------------------------------------------
+    //! Segment bound structure.
+    //-----------------------------------------------------------------------------
+    struct SegmentBound
+    {
+        qreal minX;
+        qreal minY;
+        qreal maxX;
+        qreal maxY;
+
+        /*!
+         *  Constructor.
+         */
+        SegmentBound(QPointF const& p1, QPointF const& p2)
+            : minX(qMin(p1.x(), p2.x())),
+              minY(qMin(p1.y(), p2.y())),
+              maxX(qMax(p1.x(), p2.x())),
+              maxY(qMax(p1.y(), p2.y()))
+        {
+        }
+    };
+
+    /*!
+     *  Creates segment bounds from the existing connections.
+     *
+     *      @param [out] verBounds    The list of vertical segment bounds.
+     *      @param [out] horizontalBounds  The list of horizontal bounds.
+     */
+    void createSegmentBounds(QList<SegmentBound>& verBounds, QList<SegmentBound>& horizontalBounds);
+
+    /*!
+     *  Retrieves the minimum and maximum X coordinates for the horizontal segment identified by index i.
+     *
+     *      @param [in]  i      The segment index.
+     *      @param [out] minY   The minimum X coordinate.
+     *      @param [out] maxY   The maximum X coordinate.
+     */
+    void getSegmentLimitsX(int i, qreal& minX, qreal& maxX);
+
+    /*!
+     *  Retrieves the minimum and maximum Y coordinates for the vertical segment identified by index i.
+     *
+     *      @param [in]  i      The segment index.
+     *      @param [out] minY   The minimum Y coordinate.
+     *      @param [out] maxY   The maximum Y coordinate.
+     */
+    void getSegmentLimitsY(int i, qreal& minY, qreal& maxY);
+
+    /*!
+     *  Searches for a vertical segment overlap.
+     *
+     *      @param [in] verBounds  The collection of vertical segment bounds to test against.
+     *      @param [in] bounds     The vertical segment being tested for overlap.
+     *
+     *      @return The index of the first found overlapping bound in the collection, or -1 if not found.
+     */
+    int findVerticalSegmentOverlap(QList<SegmentBound> const& verBounds, SegmentBound const& bounds);
+    
+    /*!
+     *  Fixes vertical segment overlap issues for the vertical segment identified by index i.
+     *
+     *      @param [in] verBounds  The collection of vertical segment bounds to test against.
+     *      @param [in] i          The index of the segment to fix.
+     *
+     *      @return True if modifications were made; false if nothing was changed.
+     */
+    bool fixVerticalSegmentClearance(QList<SegmentBound> const& verBounds, int i);
+
+    /*!
+     *  Searches for a horizontal segment overlap.
+     *
+     *      @param [in] horBounds  The collection of horizontal segment bounds to test against.
+     *      @param [in] bounds     The horizontal segment being tested for overlap.
+     *
+     *      @return The index of the first found overlapping bound in the collection, or -1 if not found.
+     */
+    int findHorizontalSegmentOverlap(QList<SegmentBound> const& horBounds, SegmentBound const& bounds);
+    
+    /*!
+     *  Fixes horizontal segment overlap issues for the horizontal segment identified by index i.
+     *
+     *      @param [in] horBounds  The collection of horizontal segment bounds to test against.
+     *      @param [in] i          The index of the segment to fix.
+     *
+     *      @return True if modifications were made; false if nothing was changed.
+     */
+    bool fixHorizontalSegmentClearance(QList<SegmentBound> const& horBounds, int i);
+
+    /*!
+     *  Tests for horizontal overlap between two segment bounds.
+     *
+     *      @param [in] bound1 The first segment bound.
+     *      @param [in] bound2 The second segment bound.
+     *
+     *      @return True if the bounds overlap by X coordinate.
+     */
+    static bool testSegmentOverlapX(SegmentBound const& bound1, SegmentBound const& bound2);
+
+    /*!
+     *  Tests for vertical overlap between two segment bounds.
+     *
+     *      @param [in] bound1 The first segment bound.
+     *      @param [in] bound2 The second segment bound.
+     *
+     *      @return True if the bounds overlap by Y coordinate.
+     */
+    static bool testSegmentOverlapY(SegmentBound const& bound1, SegmentBound const& bound2);
+
+    /*!
+     *  Sort operator for sorting segment bounds by X coordinate.
+     */
+    static bool sortBoundsByX(SegmentBound const& lhs, SegmentBound const& rhs);
+
+    /*!
+     *  Sort operator for sorting segment bounds by Y coordinate.
+     */
+    static bool sortBoundsByY(SegmentBound const& lhs, SegmentBound const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.

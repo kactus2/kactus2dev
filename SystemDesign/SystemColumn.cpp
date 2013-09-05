@@ -24,8 +24,7 @@
 // Function: SystemColumn()
 //-----------------------------------------------------------------------------
 SystemColumn::SystemColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout)
-    : GraphicsColumn(desc, layout),
-      conns_()
+    : GraphicsColumn(desc, layout)
 {
 }
 
@@ -64,43 +63,14 @@ bool SystemColumn::isItemAllowed(QGraphicsItem* item, unsigned int allowedItems)
 //-----------------------------------------------------------------------------
 void SystemColumn::prepareColumnMove()
 {
-    // Begin position update for the connections.
-    foreach (QGraphicsItem* item, getItems())
+    // Begin the position update for all connections.
+    foreach (QGraphicsItem *item, scene()->items())
     {
-        foreach (QGraphicsItem* childItem, item->childItems())
+        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
+
+        if (conn != 0)
         {
-            if (childItem->type() == SWComponentItem::Type)
-            {
-                foreach (QGraphicsItem* childItem2, childItem->childItems())
-                {
-                    if (childItem2->type() == SWPortItem::Type)
-                    {
-                        SWConnectionEndpoint* endpoint = static_cast<SWConnectionEndpoint*>(childItem2);
-
-                        foreach (GraphicsConnection* conn, endpoint->getConnections())
-                        {
-                            if (!conns_.contains(conn))
-                            {
-                                conn->beginUpdatePosition();
-                                conns_.insert(conn);
-                            }
-                        }
-                    }
-                }
-            }
-            else if (dynamic_cast<SWConnectionEndpoint*>(childItem))
-            {
-                SWConnectionEndpoint* endpoint = static_cast<SWConnectionEndpoint*>(childItem);
-
-                foreach (GraphicsConnection* conn, endpoint->getConnections())
-                {
-                    if (!conns_.contains(conn))
-                    {
-                        conn->beginUpdatePosition();
-                        conns_.insert(conn);
-                    }
-                }
-            }
+            conn->beginUpdatePosition();
         }
     }
 }
@@ -112,13 +82,16 @@ QSharedPointer<QUndoCommand> SystemColumn::createMoveUndoCommand()
 {
     QSharedPointer<QUndoCommand> cmd = GraphicsColumn::createMoveUndoCommand();
 
-    // End position update for the connections.
-    foreach (GraphicsConnection* conn, conns_)
+    // End the position update for all connections.
+    foreach (QGraphicsItem *item, scene()->items())
     {
-        conn->endUpdatePosition(cmd.data());
-    }
+        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
 
-    conns_.clear();
+        if (conn != 0)
+        {
+            conn->endUpdatePosition(cmd.data());
+        }
+    }
 
     return cmd;
 }

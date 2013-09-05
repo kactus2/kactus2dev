@@ -288,20 +288,12 @@ void HWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
             cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
         }
 
-        // End the position update for the interconnections.
-        foreach (QGraphicsItem *item, childItems())
+        // End the position update for all connections.
+        foreach (QGraphicsItem *item, scene()->items())
         {
-            if (item->type() != BusPortItem::Type)
-                continue;
+            GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
 
-            BusPortItem *diagramPort = qgraphicsitem_cast<BusPortItem *>(item);
-
-            foreach (GraphicsConnection* conn, diagramPort->getConnections())
-            {
-                conn->endUpdatePosition(cmd.data());
-            }
-
-            foreach (GraphicsConnection* conn, diagramPort->getOffPageConnector()->getConnections())
+            if (conn != 0)
             {
                 conn->endUpdatePosition(cmd.data());
             }
@@ -335,20 +327,12 @@ void HWComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     oldPos_ = scenePos();
     oldColumn_ = dynamic_cast<HWColumn*>(parentItem());
 
-    // Begin the position update for the interconnections.
-    foreach (QGraphicsItem *item, childItems())
+    // Begin the position update for all connections.
+    foreach (QGraphicsItem *item, scene()->items())
     {
-        if (item->type() != BusPortItem::Type)
-            continue;
+        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
 
-        BusPortItem *diagramPort = qgraphicsitem_cast<BusPortItem *>(item);
-
-        foreach (GraphicsConnection *conn, diagramPort->getConnections())
-        {
-            conn->beginUpdatePosition();
-        }
-
-        foreach (GraphicsConnection *conn, diagramPort->getOffPageConnector()->getConnections())
+        if (conn != 0)
         {
             conn->beginUpdatePosition();
         }

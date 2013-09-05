@@ -90,22 +90,14 @@ void SWComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     oldStack_ = dynamic_cast<IGraphicsItemStack*>(parentItem());
     oldStackPos_ = parentItem()->scenePos();
 
-    // Begin the position update for the connections.
-    foreach (QGraphicsItem* item, childItems())
+    // Begin the position update for all connections.
+    foreach (QGraphicsItem *item, scene()->items())
     {
-        if (item->type() == SWPortItem::Type)
+        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
+
+        if (conn != 0)
         {
-            SWPortItem* port = qgraphicsitem_cast<SWPortItem*>(item);
-
-            foreach (GraphicsConnection* conn, port->getConnections())
-            {
-                conn->beginUpdatePosition();
-            }
-
-            foreach (GraphicsConnection* conn, port->getOffPageConnector()->getConnections())
-            {
-                conn->beginUpdatePosition();
-            }
+            conn->beginUpdatePosition();
         }
     }
 }
@@ -192,22 +184,14 @@ void SWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
             cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
         }
 
-        // End the position update for the connections and clear the list.
-        foreach (QGraphicsItem* item, childItems())
+        // End the position update for all connections.
+        foreach (QGraphicsItem *item, scene()->items())
         {
-            if (item->type() == SWPortItem::Type)
+            GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
+
+            if (conn != 0)
             {
-                SWPortItem* port = qgraphicsitem_cast<SWPortItem*>(item);
-
-                foreach (GraphicsConnection* conn, port->getConnections())
-                {
-                    conn->endUpdatePosition(cmd.data());
-                }
-
-                foreach (GraphicsConnection* conn, port->getOffPageConnector()->getConnections())
-                {
-                    conn->endUpdatePosition(cmd.data());
-                }
+                conn->endUpdatePosition(cmd.data());
             }
         }
         

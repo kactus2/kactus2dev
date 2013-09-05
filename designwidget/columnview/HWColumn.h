@@ -77,20 +77,6 @@ private:
     // Disable copying.
     HWColumn(HWColumn const& rhs);
     HWColumn& operator=(HWColumn const& rhs);
-
-    /*!
-     *  Begins the position updates for the connections that start from the given end point.
-     *
-     *      @param [in] endpoint The end point.
-     */
-    void beginUpdateConnPositions(HWConnectionEndpoint* endpoint);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The connections that need to be also stored for undo.
-    QSet<GraphicsConnection*> conns_;
 };
 
 //-----------------------------------------------------------------------------

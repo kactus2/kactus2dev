@@ -273,16 +273,23 @@ void GraphicsConnection::updatePosition()
 {
     if (routingMode_ == ROUTING_MODE_NORMAL)
     {
+//         if (!oldRoute_.empty())
+//         {
+//             pathPoints_ = oldRoute_;
+//         }
+
         QVector2D delta1 = QVector2D(endpoint1_->scenePos()) - QVector2D(pathPoints_.first());
         QVector2D delta2 = QVector2D(endpoint2_->scenePos()) - QVector2D(pathPoints_.last());
         QVector2D const& dir1 = endpoint1_->getDirection();
         QVector2D const& dir2 = endpoint2_->getDirection();
 
-        // Recreate the route from scratch if there are not enough points in the path or
-        // the route is too complicated when the position and direction of the endpoints is considered.
+        // Recreate the route from scratch if there are not enough points in the path,
+        // the route is too complicated when the position and direction of the endpoints is considered
+        // or the delta is away from the end points.
         if (pathPoints_.size() < 2 ||
             (pathPoints_.size() > 4 && qFuzzyCompare(QVector2D::dotProduct(dir1, dir2), -1.0f) &&
-            QVector2D::dotProduct(dir1, QVector2D(endpoint2_->scenePos() - endpoint1_->scenePos())) > 0.0))
+            QVector2D::dotProduct(dir1, QVector2D(endpoint2_->scenePos() - endpoint1_->scenePos())) > 0.0) ||
+            delta1.x() * dir1.x() < 0.0f || delta2.x() * dir2.x() < 0.0f)
         {
             createRoute(endpoint1_, endpoint2_);
             return;
@@ -585,6 +592,7 @@ void GraphicsConnection::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     else if (selectionType_ == SEGMENT)
     {
         simplifyPath();
+        fixOverlap();
         setRoute(pathPoints_);
     }
 
@@ -681,8 +689,7 @@ void GraphicsConnection::createRoute(ConnectionEndpoint* endpoint1, ConnectionEn
 //-----------------------------------------------------------------------------
 // Function: createRoute()
 //-----------------------------------------------------------------------------
-void GraphicsConnection::createRoute(QPointF p1, QPointF p2,
-                               QVector2D const& dir1, QVector2D const& dir2)
+void GraphicsConnection::createRoute(QPointF p1, QPointF p2, QVector2D const& dir1, QVector2D const& dir2)
 {
     pathPoints_.clear();
 
@@ -905,9 +912,13 @@ void GraphicsConnection::beginUpdatePosition()
 //-----------------------------------------------------------------------------
 QUndoCommand* GraphicsConnection::endUpdatePosition(QUndoCommand* parent)
 {
+    simplifyPath();
+    fixOverlap();
+
     if (route() != oldRoute_)
     {
         return new ConnectionMoveCommand(this, oldRoute_, parent);
+        oldRoute_.clear();
     }
     else
     {
@@ -1314,4 +1325,530 @@ void GraphicsConnection::toggleOffPage()
     endpoint2_->addConnection(this);
 
     updatePosition();
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::applyClearance()
+//-----------------------------------------------------------------------------
+void GraphicsConnection::fixOverlap()
+{
+    // Overlap fix is possible only for normally routed connections.
+    if (routingMode_ != ROUTING_MODE_NORMAL)
+    {
+        return;
+    }
+
+    // Build segment bounding lists based on the other existing connections.
+    QList<SegmentBound> horizontalBounds;
+    QList<SegmentBound> verticalBounds;
+    createSegmentBounds(verticalBounds, horizontalBounds);
+    
+    // Iteratively move segments until the solution does not change.
+    bool solutionChanged = true;
+
+    do
+    {
+        solutionChanged = false;
+
+        for (int i = 1; i < pathPoints_.size() - 2; ++i)
+        {
+            // Check if the segment is vertical.
+            if (qFuzzyCompare(pathPoints_[i].x(), pathPoints_[i + 1].x()))
+            {
+                if (fixVerticalSegmentClearance(verticalBounds, i))
+                {
+                    solutionChanged = true;
+                }
+            }
+            // Otherwise check if the segment is horizontal.
+            else if (qFuzzyCompare(pathPoints_[i].y(), pathPoints_[i + 1].y()))
+            {
+                if (fixHorizontalSegmentClearance(horizontalBounds, i))
+                {
+                    solutionChanged = true;
+                }
+            }
+        }
+
+    } while (solutionChanged);
+
+    // Update the visual route.
+    QListIterator<QPointF> i(pathPoints_);
+
+    QPainterPath path(i.next());
+
+    while (i.hasNext()) {
+        path.lineTo(i.next());
+    }
+
+    QPainterPathStroker stroker;
+    setPath(stroker.createStroke(path));
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::sortBoundsByX()
+//-----------------------------------------------------------------------------
+bool GraphicsConnection::sortBoundsByX(SegmentBound const& lhs, SegmentBound const& rhs)
+{
+    return (lhs.minX < rhs.minX || (lhs.minX == rhs.minX && lhs.minY < rhs.minY));
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::sortBoundsByY()
+//-----------------------------------------------------------------------------
+bool GraphicsConnection::sortBoundsByY(SegmentBound const& lhs, SegmentBound const& rhs)
+{
+    return (lhs.minY < rhs.minY || (lhs.minY == rhs.minY && lhs.minX < rhs.minX));
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::createSegmentBounds()
+//-----------------------------------------------------------------------------
+void GraphicsConnection::createSegmentBounds(QList<SegmentBound>& verticalBounds,
+                                             QList<SegmentBound>& horizontalBounds)
+{
+    foreach (QGraphicsItem* item, scene()->items())
+    {
+        GraphicsConnection const* conn = dynamic_cast<GraphicsConnection const*>(item);
+
+        if (conn != 0 && conn != this)
+        {
+            for (int i = 0; i < conn->route().size() - 1; ++i)
+            {
+                if (qFuzzyCompare(conn->route().at(i).x(), conn->route().at(i + 1).x()))
+                {
+                    verticalBounds.append(SegmentBound(conn->route().at(i), conn->route().at(i + 1)));
+                }
+                else
+                {
+                    horizontalBounds.append(SegmentBound(conn->route().at(i), conn->route().at(i + 1)));
+                }
+            }
+        }
+    }
+
+    // Add start and end segments of this connection also to the list of horizontal bounds.
+    if (pathPoints_.size() >= 2)
+    {
+        horizontalBounds.append(SegmentBound(pathPoints_[0], pathPoints_[1]));
+        horizontalBounds.append(SegmentBound(pathPoints_[pathPoints_.size() - 2], pathPoints_[pathPoints_.size() - 1]));
+    }
+
+    qSort(horizontalBounds.begin(), horizontalBounds.end(), sortBoundsByY);
+    qSort(verticalBounds.begin(), verticalBounds.end(), sortBoundsByX);
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::getSegmentLimitsX()
+//-----------------------------------------------------------------------------
+void GraphicsConnection::getSegmentLimitsX(int i, qreal& minX, qreal& maxX)
+{
+    // Prevent connections going out of the left edge.
+    minX = 10.0;
+    maxX = FLT_MAX;
+
+    // Clamp the min and max.
+    qreal prev = pathPoints_[i - 1].x();
+    qreal cur = pathPoints_[i].x();
+    qreal next = pathPoints_[i + 2].x();
+
+    if (cur > next)
+    {
+        minX = qMax(minX, next + MIN_START_LENGTH);
+    }
+    else
+    {
+        maxX = qMin(maxX, next - MIN_START_LENGTH);
+    }
+
+    if (cur > prev)
+    {
+        minX = qMax(minX, MIN_START_LENGTH + prev);
+    }
+    else
+    {
+        maxX = qMin(maxX, prev - MIN_START_LENGTH);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::getSegmentLimitsY()
+//-----------------------------------------------------------------------------
+void GraphicsConnection::getSegmentLimitsY(int i, qreal& minY, qreal& maxY)
+{
+    // Use simple distance based min and max.
+    minY = qMax(30.0, pathPoints_[i].y() - 500.0);
+    maxY = pathPoints_[i].y() + 500.0;
+
+    // Prevent connections going out of the top edge.
+//     minY = 30.0;
+//     maxY = FLT_MAX;
+// 
+//     // Clamp the min and max.
+//     qreal prev = pathPoints_[i - 1].y();
+//     qreal cur = pathPoints_[i].y();
+//     qreal next = pathPoints_[i + 2].y();
+// 
+//     if (cur > next)
+//     {
+//         minY = qMax(minY, next + MIN_START_LENGTH);
+//     }
+//     else
+//     {
+//         maxY = qMin(maxY, next - MIN_START_LENGTH);
+//     }
+// 
+//     if (cur > prev)
+//     {
+//         minY = qMax(minY, MIN_START_LENGTH + prev);
+//     }
+//     else
+//     {
+//         maxY = qMin(maxY, prev - MIN_START_LENGTH);
+//     }
+}
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::findVerticalSegmentOverlap()
+//-----------------------------------------------------------------------------
+int GraphicsConnection::findVerticalSegmentOverlap(QList<SegmentBound> const& verBounds, SegmentBound const& bounds)
+{
+    int violationIndex = -1;
+
+    // Use binary search to speed up the search through the bounds collection.
+    int left = 0;
+    int right = verBounds.size() - 1;
+    int mid = 0;
+
+    while (left <= right)
+    {
+        mid = (right + left) / 2;
+
+        if (verBounds.at(mid).minX < bounds.minX)
+        {
+            left = mid + 1;
+        }
+        else if (verBounds.at(mid).maxX > bounds.minX)
+        {
+            right = mid - 1;
+        }
+        else
+        {
+            // Check all bounds that have the same X.
+            for (int j = mid; j < verBounds.size(); ++j)
+            {
+                if (!qFuzzyCompare(verBounds.at(j).minX, bounds.minX))
+                {
+                    break;
+                }
+
+                // Check for an overlap.
+                if (testSegmentOverlapY(verBounds.at(j), bounds))
+                {
+                    return j;
+                }
+            }
+
+            if (violationIndex == -1)
+            {
+                for (int j = mid; j >= 0; --j)
+                {
+                    if (!qFuzzyCompare(verBounds.at(j).minX, bounds.minX))
+                    {
+                        break;
+                    }
+
+                    // Check for an overlap.
+                    if (testSegmentOverlapY(verBounds.at(j), bounds))
+                    {
+                        return j;
+                    }
+                }
+            }
+
+            break;
+        }
+    }
+
+    return -1;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::findHorizontalSegmentOverlap()
+//-----------------------------------------------------------------------------
+int GraphicsConnection::findHorizontalSegmentOverlap(QList<SegmentBound> const& horBounds, SegmentBound const& bounds)
+{
+    int violationIndex = -1;
+
+    // Use binary search to speed up the search through the bounds collection.
+    int left = 0;
+    int right = horBounds.size() - 1;
+    int mid = 0;
+
+    while (left <= right)
+    {
+        mid = (right + left) / 2;
+
+        if (horBounds.at(mid).minY < bounds.minY)
+        {
+            left = mid + 1;
+        }
+        else if (horBounds.at(mid).maxY > bounds.minY)
+        {
+            right = mid - 1;
+        }
+        else
+        {
+            // Check all bounds that have the same Y.
+            for (int j = mid; j < horBounds.size(); ++j)
+            {
+                if (!qFuzzyCompare(horBounds.at(j).minY, bounds.minY))
+                {
+                    break;
+                }
+
+                // Check for an overlap.
+                if (testSegmentOverlapX(horBounds.at(j), bounds))
+                {
+                    return j;
+                }
+            }
+
+            if (violationIndex == -1)
+            {
+                for (int j = mid; j >= 0; --j)
+                {
+                    if (!qFuzzyCompare(horBounds.at(j).minY, bounds.minY))
+                    {
+                        break;
+                    }
+
+                    // Check for an overlap.
+                    if (testSegmentOverlapX(horBounds.at(j), bounds))
+                    {
+                        return j;
+                    }
+                }
+            }
+
+            break;
+        }
+    }
+
+    return -1;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::fixVerticalSegmentClearance()
+//-----------------------------------------------------------------------------
+bool GraphicsConnection::fixVerticalSegmentClearance(QList<SegmentBound> const& verticalBounds, int i)
+{
+    // Create segment bounds for the inspected segment.
+    SegmentBound bounds(pathPoints_[i], pathPoints_[i + 1]);
+
+    // Check if the segment does not violate the clearance rule.
+    int violationIndex = findVerticalSegmentOverlap(verticalBounds, bounds);
+    
+    if (violationIndex == -1)
+    {
+        return false;
+    }
+    
+    // Retrieve segment limits.
+    qreal minX = 0.0;
+    qreal maxX = 0.0;
+    getSegmentLimitsX(i, minX, maxX);
+
+    qreal newX = bounds.minX;
+
+    // Search the first non-overlapping coordinate on the right.
+    qreal rightX = bounds.minX + GridSize;
+    int rightIndex = violationIndex;
+
+    while (rightX <= maxX)
+    {
+        bool empty = true;
+
+        // Go through the vertical bounds up to rightX.
+        while (rightIndex < verticalBounds.size() && verticalBounds.at(rightIndex).minX <= rightX)
+        {
+            // Check if the bound overlaps.
+            if (qFuzzyCompare(verticalBounds.at(rightIndex).minX, rightX) &&
+                testSegmentOverlapY(verticalBounds.at(rightIndex), bounds))
+            {
+                empty = false;
+                break;
+            }
+
+            ++rightIndex;
+        }
+
+        if (empty)
+        {
+            newX = rightX;
+            break;
+        }
+
+        rightX += GridSize;
+    }
+
+    // Search the first non-overlapping coordinate on the left.
+    qreal leftX = bounds.minX - GridSize;
+    int leftIndex = violationIndex;
+
+    while (leftX >= minX)
+    {
+        bool empty = true;
+
+        // Go through the vertical bounds down to leftX.
+        while (leftIndex >= 0 && verticalBounds.at(leftIndex).minX >= leftX)
+        {
+            // Check if the bound overlaps.
+            if (qFuzzyCompare(verticalBounds.at(leftIndex).minX, leftX) &&
+                testSegmentOverlapY(verticalBounds.at(leftIndex), bounds))
+            {
+                empty = false;
+                break;
+            }
+
+            --leftIndex;
+        }
+
+        if (empty)
+        {
+            if (newX == bounds.minX || qAbs(leftX - bounds.minX) < qAbs(newX - bounds.minX))
+            {
+                newX = leftX;
+            }
+
+            break;
+        }
+
+        leftX -= GridSize;
+    }
+
+    // Check if we cannot change the bounds at all.
+    if (qFuzzyCompare(newX, bounds.minX))
+    {
+        return false;
+    }
+
+    pathPoints_[i].setX(newX);
+    pathPoints_[i + 1].setX(newX);
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::fixHorizontalSegmentClearance()
+//-----------------------------------------------------------------------------
+bool GraphicsConnection::fixHorizontalSegmentClearance(QList<SegmentBound> const& horBounds, int i)
+{
+    // Create segment bounds for the inspected segment.
+    SegmentBound bounds(pathPoints_[i], pathPoints_[i + 1]);
+
+    // Check if the segment does not violate the clearance rule.
+    int violationIndex = findHorizontalSegmentOverlap(horBounds, bounds);
+
+    if (violationIndex == -1)
+    {
+        return false;
+    }
+
+    // Retrieve segment limits.
+    qreal minY = 0.0;
+    qreal maxY = 0.0;
+    getSegmentLimitsY(i, minY, maxY);
+
+    qreal newY = bounds.minY;
+
+    // Search the first non-overlapping coordinate below.
+    qreal belowY = bounds.minY + GridSize;
+    int belowIndex = violationIndex;
+
+    while (belowY <= maxY)
+    {
+        bool empty = true;
+
+        // Go through the horizontal bounds up to belowX.
+        while (belowIndex < horBounds.size() && horBounds.at(belowIndex).minY <= belowY)
+        {
+            // Check if the bound overlaps.
+            if (qFuzzyCompare(horBounds.at(belowIndex).minY, belowY) &&
+                testSegmentOverlapX(horBounds.at(belowIndex), bounds))
+            {
+                empty = false;
+                break;
+            }
+
+            ++belowIndex;
+        }
+
+        if (empty)
+        {
+            newY = belowY;
+            break;
+        }
+
+        belowY += GridSize;
+    }
+
+    // Search the first non-overlapping coordinate above.
+    qreal aboveY = bounds.minY - GridSize;
+    int aboveIndex = violationIndex;
+
+    while (aboveY >= minY)
+    {
+        bool empty = true;
+
+        // Go through the horizontal bounds down to aboveY.
+        while (aboveIndex >= 0 && horBounds.at(aboveIndex).minY >= aboveY)
+        {
+            // Check if the bound overlaps.
+            if (qFuzzyCompare(horBounds.at(aboveIndex).minY, aboveY) &&
+                testSegmentOverlapX(horBounds.at(aboveIndex), bounds))
+            {
+                empty = false;
+                break;
+            }
+
+            --aboveIndex;
+        }
+
+        if (empty)
+        {
+            if (newY == bounds.minY || qAbs(aboveY - bounds.minY) < qAbs(newY - bounds.minY))
+            {
+                newY = aboveY;
+            }
+
+            break;
+        }
+
+        aboveY -= GridSize;
+    }
+
+    // Check if we cannot change the bounds at all.
+    if (qFuzzyCompare(newY, bounds.minY))
+    {
+        return false;
+    }
+
+    pathPoints_[i].setY(newY);
+    pathPoints_[i + 1].setY(newY);
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::testSegmentOverlapX()
+//-----------------------------------------------------------------------------
+bool GraphicsConnection::testSegmentOverlapX(SegmentBound const& bound1, SegmentBound const& bound2)
+{
+    return !(bound1.maxX < bound2.minX || bound1.minX > bound2.maxX);
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::testSegmentOverlapY()
+//-----------------------------------------------------------------------------
+bool GraphicsConnection::testSegmentOverlapY(SegmentBound const& bound1, SegmentBound const& bound2)
+{
+    return !(bound1.maxY < bound2.minY || bound1.minY > bound2.maxY);
 }

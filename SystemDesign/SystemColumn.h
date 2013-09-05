@@ -72,13 +72,6 @@ private:
     // Disable copying.
     SystemColumn(SystemColumn const& rhs);
     SystemColumn& operator=(SystemColumn const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The connections that need to be also stored for undo.
-    QSet<GraphicsConnection*> conns_;
 };
 
 //-----------------------------------------------------------------------------

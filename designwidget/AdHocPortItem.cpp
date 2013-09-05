@@ -390,10 +390,15 @@ void AdHocPortItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
         }
     }
 
-    // Begin the position update for the connections.
-    foreach (GraphicsConnection* conn, getConnections())
+    // Begin the position update for all connections.
+    foreach (QGraphicsItem *item, scene()->items())
     {
-        conn->beginUpdatePosition();
+        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
+
+        if (conn != 0)
+        {
+            conn->beginUpdatePosition();
+        }
     }
 }
 
@@ -446,10 +451,15 @@ void AdHocPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
     oldPortPositions_.clear();
     
-    // End the position update of the connections.
-    foreach (GraphicsConnection* conn, getConnections())
+    // End the position update for all connections.
+    foreach (QGraphicsItem *item, scene()->items())
     {
-        conn->endUpdatePosition(cmd.data());
+        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
+
+        if (conn != 0)
+        {
+            conn->endUpdatePosition(cmd.data());
+        }
     }
 
     // Add the undo command to the edit stack only if it has changes.

@@ -33,8 +33,7 @@
 // Function: HWColumn()
 //-----------------------------------------------------------------------------
 HWColumn::HWColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout)
-    : GraphicsColumn(desc, layout),
-      conns_()
+    : GraphicsColumn(desc, layout)
 {
 }
 
@@ -85,24 +84,14 @@ bool HWColumn::isItemAllowed(QGraphicsItem* item, unsigned int allowedItems) con
 //-----------------------------------------------------------------------------
 void HWColumn::prepareColumnMove()
 {
-    // Begin position update for the interconnections.
-    foreach (QGraphicsItem* item, getItems())
+    // Begin position update for all connections.
+    foreach (QGraphicsItem *item, scene()->items())
     {
-        if (item->type() == HWComponentItem::Type)
-        {
-            HWComponentItem* comp = static_cast<HWComponentItem*>(item);
+        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
 
-            foreach (QGraphicsItem* childItem, comp->childItems())
-            {
-                if (childItem->type() == BusPortItem::Type)
-                {
-                    beginUpdateConnPositions(static_cast<HWConnectionEndpoint*>(childItem));
-                }
-            }
-        }
-        else if (item->type() == BusInterfaceItem::Type)
+        if (conn != 0)
         {
-            beginUpdateConnPositions(static_cast<HWConnectionEndpoint*>(item));
+            conn->beginUpdatePosition();
         }
     }
 }
@@ -114,28 +103,16 @@ QSharedPointer<QUndoCommand> HWColumn::createMoveUndoCommand()
 {
     QSharedPointer<QUndoCommand> cmd = GraphicsColumn::createMoveUndoCommand();
 
-    // End position update for the interconnections.
-    foreach (GraphicsConnection* conn, conns_)
+    // End the position update for all connections.
+    foreach (QGraphicsItem *item, scene()->items())
     {
-        conn->endUpdatePosition(cmd.data());
-    }
+        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
 
-    conns_.clear();
-
-    return cmd;
-}
-
-//-----------------------------------------------------------------------------
-// Function: beginUpdateConnPositions()
-//-----------------------------------------------------------------------------
-void HWColumn::beginUpdateConnPositions(HWConnectionEndpoint* endpoint)
-{
-    foreach (GraphicsConnection* conn, endpoint->getConnections())
-    {
-        if (!conns_.contains(conn))
+        if (conn != 0)
         {
-            conn->beginUpdatePosition();
-            conns_.insert(conn);
+            conn->endUpdatePosition(cmd.data());
         }
     }
+
+    return cmd;
 }
