@@ -38,21 +38,25 @@ SplashScreen::~SplashScreen()
 void SplashScreen::drawContents(QPainter *painter)
 {
     // Draw the version text.
-	painter->setPen(QPen(Qt::white, 1));
+    painter->setPen(QPen(Qt::white, 1));
 
 #if defined (_WIN64) || (__LP64__) || (_LP64)
-	int bits = 64;
+    int bits = 64;
 #else
-	int bits = 32;
+    int bits = 32;
 #endif
 
-	painter->drawText(300, 125, tr("Version %1.%2.%3 %4-bit").arg(QString::number(VERSION_MAJOR),
+    painter->drawText(300, 125, tr("Version %1.%2.%3 %4-bit").arg(QString::number(VERSION_MAJOR),
                                                                   QString::number(VERSION_MINOR),
                                                                   QString::number(VERSION_BUILDNO),
                                                                   QString::number(bits)));
 
     // Draw the other information.
-    painter->drawText(QRectF(270, 280, 310, 150), Qt::AlignLeft,
+    QFont font = painter->font();
+    font.setPixelSize(11);
+    painter->setFont(font);
+ 
+    painter->drawText(QRectF(270, 280, 320, 150), Qt::AlignLeft,
                       QString::fromLatin1("This software is licensed under the GPL2 General Public License.\n"
                                           "See license.txt for further details.\n\n"
                                           "Contributors: Juho J‰rvinen, Antti Kamppi, Joni-Matti M‰‰tt‰,\n"
