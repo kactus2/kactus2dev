@@ -21,6 +21,7 @@
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
+#include <QPointF>
 
 //-----------------------------------------------------------------------------
 //! Dependency direction enumeration.

@@ -19,7 +19,8 @@
 #include <QSharedPointer>
 #include <QMap>
 #include <QXmlStreamWriter>
-#include <QStringList>  
+#include <QStringList>
+#include <QPointF>
 
 class MasterInterface;
 class SlaveInterface;

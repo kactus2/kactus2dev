@@ -9,7 +9,7 @@
 #define ADDRESSSPACESCENE_H
 
 #include <models/addressspace.h>
-#include "AddressSpaceGapItem.h"
+#include "addressspacegapitem.h"
 
 #include <QGraphicsScene>
 #include <QSharedPointer>

@@ -1445,7 +1445,7 @@ void GraphicsConnection::getSegmentLimitsX(int i, qreal& minX, qreal& maxX)
 {
     // Prevent connections going out of the left edge.
     minX = 10.0;
-    maxX = FLT_MAX;
+    maxX = 100000.0f;
 
     // Clamp the min and max.
     qreal prev = pathPoints_[i - 1].x();

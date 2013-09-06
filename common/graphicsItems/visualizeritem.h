@@ -98,8 +98,7 @@ public:
 	 * \param namePos The position to be used.
 	 *
 	*/
-	virtual void VisualizerItem::setNamePosition( const NameHorizontalAlign hPos, 
-        const NameVerticalAlign vPos );
+	virtual void setNamePosition(const NameHorizontalAlign hPos, const NameVerticalAlign vPos);
     
 
 protected:

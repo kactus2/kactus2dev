@@ -7,7 +7,7 @@
 
 #include "addressspacevisualizationitem.h"
 
-#include "common/kactuscolors.h"
+#include "common/KactusColors.h"
 
 #include <QRectF>
 #include <QBrush>

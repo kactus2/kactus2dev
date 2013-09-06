@@ -17,6 +17,7 @@
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
 #include <QStringList>
+#include <QPointF>
 
 class Wire;
 class Transactional;

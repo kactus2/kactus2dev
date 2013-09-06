@@ -21,6 +21,7 @@
 #include <QDomNode>
 #include <QXmlStreamWriter>
 #include <QMap>
+#include <QPointF>
 
 //-----------------------------------------------------------------------------
 //! COM interface class for defining properties of a specific COM interface
