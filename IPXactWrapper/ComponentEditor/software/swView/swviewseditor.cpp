@@ -18,7 +18,7 @@ SWViewsEditor::SWViewsEditor(QSharedPointer<Component> component,
 ItemEditor(component, handler, parent),
 view_(this),
 proxy_(this),
-model_(component, this) {
+model_(handler, component, this) {
 
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Software views"), this);

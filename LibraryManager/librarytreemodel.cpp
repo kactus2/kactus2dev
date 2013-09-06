@@ -266,9 +266,19 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
 
 			// if item is for a design
 			else if (vlnv.getType() == VLNV::DESIGN) {
-				return QIcon(":/icons/graphics/hw-design.png");
-			}
 
+                // Determine the design type.
+                QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
+                QSharedPointer<Design> design = libComp.staticCast<Design>();
+                if (design && design->getDesignImplementation() == KactusAttribute::KTS_SW)
+                {
+                    return QIcon(":/icons/graphics/sw-design24x24.png");
+                }
+                else
+                {               
+                    return QIcon(":/icons/graphics/hw-design.png");
+                }
+            }
 			// if item is for a design configuration
 			else if (vlnv.getType() == VLNV::DESIGNCONFIGURATION) {
 				return QIcon(":/icons/graphics/configuration.png");

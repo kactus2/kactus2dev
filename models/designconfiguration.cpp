@@ -10,6 +10,7 @@
 #include <LibraryManager/vlnv.h>
 #include "designconfabstractor.h"
 #include "generatorchain.h"
+#include <common/KactusAttribute.h>
 
 #include <QList>
 #include <QDomNode>
@@ -24,24 +25,25 @@
 // struct constructor
 DesignConfiguration::InterconnectionConf::InterconnectionConf(
     QDomNode& interconnectionNode): interconnectionRef_(QString()),
-				    abstractors_() {
+    abstractors_()
+{
 
     // go through all child items
     for (int i = 0; i < interconnectionNode.childNodes().count(); ++i) {
-	QDomNode tempNode = interconnectionNode.childNodes().at(i);
+        QDomNode tempNode = interconnectionNode.childNodes().at(i);
 
-	if (tempNode.nodeName() == QString("spirit:interconnectionRef")) {
-	    interconnectionRef_ = tempNode.childNodes().at(0).nodeValue();
-	}
+        if (tempNode.nodeName() == QString("spirit:interconnectionRef")) {
+            interconnectionRef_ = tempNode.childNodes().at(0).nodeValue();
+        }
 
-	else if (tempNode.nodeName() == QString("spirit:abstractors")) {
-	    // go through each abstractor element
-	    for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-		QDomNode abstractorNode = tempNode.childNodes().at(j);
-		abstractors_.append(QSharedPointer<DesignConfAbstractor>(
-					new DesignConfAbstractor(abstractorNode)));
-	    }
-	}
+        else if (tempNode.nodeName() == QString("spirit:abstractors")) {
+            // go through each abstractor element
+            for (int j = 0; j < tempNode.childNodes().count(); ++j) {
+                QDomNode abstractorNode = tempNode.childNodes().at(j);
+                abstractors_.append(QSharedPointer<DesignConfAbstractor>(
+                    new DesignConfAbstractor(abstractorNode)));
+            }
+        }       
     }
     return;
 }
@@ -255,6 +257,10 @@ attributes_() {
 			QString("spirit:description")) {
 				description_ = tempNode.childNodes().at(0).nodeValue();
 		}
+        else if (tempNode.nodeName() == "spirit:vendorExtensions")
+        {
+            parseVendorExtensions(tempNode);
+        }
 	}
 
 	// if mandatory elemets are missing
@@ -442,6 +448,17 @@ void DesignConfiguration::write(QFile& file) {
 
 			writer.writeEndElement(); // spirit:viewConfiguration
 		}
+    }
+
+    // if contains kactus2 attributes
+    if (!kactus2Attributes_.isEmpty()) {
+        writer.writeStartElement("spirit:vendorExtensions");
+        writer.writeStartElement("kactus2:extensions");
+
+        writeKactus2Attributes(writer);
+
+        writer.writeEndElement(); // kactus2:extensions
+        writer.writeEndElement(); // spirit:vendorExtensions
     }
 
     writer.writeEndElement(); // spirit:designConfiguration
@@ -665,7 +682,49 @@ bool DesignConfiguration::hasActiveView( const QString& instanceName ) const {
 	return false;
 }
 
+void DesignConfiguration::setDesignConfigImplementation(KactusAttribute::Implementation implementation)
+{
+    kactus2Attributes_.insert("kts_implementation", KactusAttribute::valueToString(implementation));
+}
+
+KactusAttribute::Implementation DesignConfiguration::getDesignConfigImplementation() const
+{
+    KactusAttribute::Implementation implementation = KactusAttribute::KTS_HW;
+
+    if (!kactus2Attributes_.contains(QString("kts_implementation")))
+        return implementation;
+    else
+        KactusAttribute::stringToValue(kactus2Attributes_.value(QString("kts_implementation")),
+        implementation);
+    return implementation;
+}
+
 void DesignConfiguration::setVlnv( const VLNV& vlnv ) {
 	LibraryComponent::setVlnv(vlnv);
 	LibraryComponent::vlnv_->setType(VLNV::DESIGNCONFIGURATION);
+}
+
+//-----------------------------------------------------------------------------
+// Function: parseVendorExtensions()
+//-----------------------------------------------------------------------------
+void DesignConfiguration::parseVendorExtensions(QDomNode &node)
+{
+    QDomNodeList childNodes = node.childNodes();
+
+    for (int i = 0; i < childNodes.size(); i++)
+    {
+        QDomNode vendorExtNode = childNodes.at(i);
+
+        if (vendorExtNode.nodeName() == "kactus2:extensions")
+        {
+            for (int j = 0; j < vendorExtNode.childNodes().size(); j++)
+            {
+                QDomNode ktsExtensionNode = vendorExtNode.childNodes().at(j);
+                if (ktsExtensionNode.nodeName() == "kactus2:kts_attributes")
+                {
+                    parseKactus2Attributes(ktsExtensionNode);
+                }
+            }
+        }
+    }
 }

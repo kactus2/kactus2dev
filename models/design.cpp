@@ -5,6 +5,7 @@
 #include "XmlUtils.h"
 
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
+#include <common/KactusAttribute.h>
 #include <LibraryManager/vlnv.h>
 #include "generaldeclarations.h"
 
@@ -260,16 +261,16 @@ void Design::write(QFile& file)
 			writer.writeAttribute("spirit:busRef",
 				hier.interface_.busRef);
 
-			// Write custom data to vendor extensions.
-			writer.writeStartElement("spirit:vendorExtensions");
+            // Write custom data to vendor extensions.
+            writer.writeStartElement("spirit:vendorExtensions");
 
-			XmlUtils::writePosition(writer, hier.position);
-			XmlUtils::writeDirection(writer, hier.direction);
+            XmlUtils::writePosition(writer, hier.position);
+            XmlUtils::writeDirection(writer, hier.direction);
 
-			if (!hier.route.empty())
-			{
-				writer.writeStartElement("kactus2:route");
-                
+            if (!hier.route.empty())
+            {
+                writer.writeStartElement("kactus2:route");
+
                 if (hier.offPage)
                 {
                     writer.writeAttribute("kactus2:offPage", "true");
@@ -347,7 +348,13 @@ void Design::write(QFile& file)
 		writer.writeEndElement();
 	}
 
-	writer.writeStartElement("spirit:vendorExtensions");
+	writer.writeStartElement("spirit:vendorExtensions");    
+    writer.writeStartElement("kactus2:extensions");  
+
+  // if contains kactus2 attributes
+    if (!kactus2Attributes_.isEmpty()) {           
+        writeKactus2Attributes(writer);
+    }
 
     // Write SW instances if any.
     if (!swInstances_.empty())
@@ -479,6 +486,8 @@ void Design::write(QFile& file)
     }
 
     writer.writeEndElement(); // kactus2:routes
+
+    writer.writeEndElement(); // kactus2:extensions
 
     // Write the top-level component's port ad-hoc visibilities.
     XmlUtils::writeAdHocVisibilities(writer, portAdHocVisibilities_, adHocPortPositions_);
@@ -883,6 +892,17 @@ const QList<VLNV> Design::getDependentVLNVs() const {
 void Design::parseVendorExtensions(QDomNode &node)
 {
 	QDomNodeList childNodes = node.childNodes();
+    
+    // Compatibility note: 
+    // Search for kactus:extensions. If not found, parse vendor extensions for kactus specific extensions.
+    for (int i = 0; i < childNodes.size(); i++)
+    {
+        if (childNodes.at(i).nodeName() == "kactus2:extensions")
+        {
+            childNodes = childNodes.at(i).childNodes();
+            break;
+        }
+    }
 
 	for (int i = 0; i < childNodes.size(); i++)
 	{
@@ -1038,7 +1058,11 @@ void Design::parseVendorExtensions(QDomNode &node)
                 }
             }
         }
-	}
+        else if (childNode.nodeName() == "kactus2:kts_attributes")
+        {
+            parseKactus2Attributes(childNode);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1280,6 +1304,21 @@ QString Design::getConfElementValue( const QString& instanceName, const QString&
 
 	// specified instance was not found
 	return QString();
+}
+	
+void Design::setDesignImplementation(KactusAttribute::Implementation implementation){
+	kactus2Attributes_.insert("kts_implementation", KactusAttribute::valueToString(implementation));
+}
+
+KactusAttribute::Implementation Design::getDesignImplementation() const {
+    KactusAttribute::Implementation implementation = KactusAttribute::KTS_HW;
+
+    if (!kactus2Attributes_.contains(QString("kts_implementation")))
+        return implementation;
+    else
+        KactusAttribute::stringToValue(kactus2Attributes_.value(QString("kts_implementation")),
+        implementation);
+    return implementation;
 }
 
 QString Design::getHWInstanceDescription( const QString& instanceName ) const {

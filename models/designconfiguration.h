@@ -11,6 +11,7 @@
 #include "designconfabstractor.h"
 
 #include <common/Global.h>
+#include <common/KactusAttribute.h>
 
 #include <QSharedPointer>
 #include <QList>
@@ -336,7 +337,28 @@ public:
 	*/
 	bool hasActiveView(const QString& instanceName) const;
 
+    /*! \brief Set the implementation type of the design configuration.
+     *
+     * \param implementation The implementation type.
+     *
+     */
+	void setDesignConfigImplementation(KactusAttribute::Implementation implementation);
+
+    /*! \brief Set the implementation type of the design configuration.
+     *
+     * \param implementation The implementation type.
+     *
+     */
+	KactusAttribute::Implementation getDesignConfigImplementation() const;
+
 private:
+
+    /*!
+     *  Parses the vendor extensions of the design from a QDomNode.
+     *
+     *      @param [in] node The QDomNode from where to parse the information.
+     */
+    void parseVendorExtensions(QDomNode& node);
 
     /*! \brief MANDATORY spirit:designRef
      * Specifies the design for this design configuration

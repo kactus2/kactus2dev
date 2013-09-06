@@ -2242,8 +2242,11 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier,
 
 	// Create the design and design configuration.
 	QSharedPointer<Design> design(new Design(designVLNV));
+    design->setDesignImplementation(KactusAttribute::KTS_HW);
+
 	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
 	designConf->setDesignRef(designVLNV);
+    designConf->setDesignConfigImplementation(KactusAttribute::KTS_HW);
 
 	// Create the files.
 	libraryHandler_->beginSave();
@@ -2342,8 +2345,10 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     // Create the design and design configuration objects.
     QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV()));
     designConf->setDesignRef(dialog.getDesignVLNV());
+    designConf->setDesignConfigImplementation(KactusAttribute::KTS_HW);
 
     QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV()));
+    newDesign->setDesignImplementation(KactusAttribute::KTS_HW);
     QList<ColumnDesc> columns;
 
     columns.append(ColumnDesc("IO", COLUMN_CONTENT_IO, 0, HWDesignDiagram::IO_COLUMN_WIDTH));
@@ -2410,8 +2415,10 @@ void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
 
     // Create the design and design configuration.
     QSharedPointer<Design> design(new Design(designVLNV));
+    design->setDesignImplementation(KactusAttribute::KTS_SW);
     QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
     designConf->setDesignRef(designVLNV);
+    designConf->setDesignConfigImplementation(KactusAttribute::KTS_SW);
 
     QList<ColumnDesc> columns;
 
@@ -2508,8 +2515,10 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     // Create the design and design configuration objects.
     QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV()));
     designConf->setDesignRef(dialog.getDesignVLNV());
+    designConf->setDesignConfigImplementation(KactusAttribute::KTS_SW);
 
     QSharedPointer<Design> newDesign(new Design(dialog.getDesignVLNV()));
+    newDesign->setDesignImplementation(KactusAttribute::KTS_SW);
     QList<ColumnDesc> columns;
 
     if (component->getComponentImplementation() == KactusAttribute::KTS_SW)
@@ -2638,6 +2647,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
 
 	// Flat-out the hierarchy to form the system design.
 	QSharedPointer<Design> sysDesign(new Design(designVLNV));
+    sysDesign->setDesignImplementation(KactusAttribute::KTS_SYS);
 
     QList<ColumnDesc> columns;
     columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH));
@@ -2649,6 +2659,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
 	// Create the design configuration.
 	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
 	designConf->setDesignRef(designVLNV);
+    designConf->setDesignConfigImplementation(KactusAttribute::KTS_SYS);
 
 	// Create the files.
     bool success = true;
@@ -2746,8 +2757,10 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     // Create the design and design configuration objects to the same folder as the component.
     QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV()));
     designConf->setDesignRef(dialog.getDesignVLNV());
+    designConf->setDesignConfigImplementation(KactusAttribute::KTS_SYS);
 
     QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV()));
+    newDesign->setDesignImplementation(KactusAttribute::KTS_SYS);
 
     QList<ColumnDesc> columns;
     columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH));

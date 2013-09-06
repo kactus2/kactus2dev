@@ -44,6 +44,8 @@ bspEditor_(NULL) {
 	}
 
 	hierRefEditor_ = new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, parentW, this);
+    hierRefEditor_->addContentType(VLNV::DESIGN);
+    hierRefEditor_->setImplementationFilter(true, KactusAttribute::KTS_SW);
 	hierRefEditor_->setTitle(tr("Hierarchy reference"));
 	hierRefEditor_->setMandatory(false);
 

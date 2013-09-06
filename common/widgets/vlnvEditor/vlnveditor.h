@@ -16,6 +16,7 @@
 #include "VLNVContentMatcher.h"
 
 #include <LibraryManager/vlnv.h>
+#include <common/KactusAttribute.h>
 
 #include <QGroupBox>
 #include <QLineEdit>
@@ -263,6 +264,10 @@ private:
 
 	//! \brief Pointer to the instance that manages the library
 	LibraryInterface* handler_;
+
+    //! Implementation filter data.
+    bool implementationFilterEnabled_;
+    KactusAttribute::Implementation implementationFilter_;
 };
 
 //-----------------------------------------------------------------------------

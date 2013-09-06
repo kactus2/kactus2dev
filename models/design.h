@@ -14,6 +14,7 @@
 
 #include <common/ColumnTypes.h>
 #include <common/Global.h>
+#include <common/KactusAttribute.h>
 
 #include <QSharedPointer>
 #include <QList>
@@ -819,6 +820,20 @@ public:
 	 * \return QString containing the set configurable element value, empty string if value is not set.
 	*/
 	QString getConfElementValue(const QString& instanceName, const QString& confElementName) const;
+
+    /*! \brief Set the implementation type of the design.
+     *
+     * \param implementation The implementation type.
+     *
+     */
+	void setDesignImplementation(KactusAttribute::Implementation implementation);
+
+    /*! \brief Set the implementation type of the design.
+     *
+     * \param implementation The implementation type.
+     *
+     */
+	KactusAttribute::Implementation getDesignImplementation() const;
 
 private:
 

@@ -8,16 +8,21 @@
 #include "swviewsmodel.h"
 #include "swviewsdelegate.h"
 #include <LibraryManager/vlnv.h>
+#include <LibraryManager/libraryinterface.h>
+#include <models/designconfiguration.h>
 
 #include <QColor>
 #include <QMimeData>
 
-SWViewsModel::SWViewsModel(QSharedPointer<Component> component,
+SWViewsModel::SWViewsModel(LibraryInterface* libHandler,
+                           QSharedPointer<Component> component,
 						   QObject *parent):
 QAbstractTableModel(parent),
 views_(component->getSWViews()),
+libHandler_(libHandler),
 component_(component) {
 
+    Q_ASSERT(libHandler_);
 	Q_ASSERT(component_);
 }
 
@@ -241,13 +246,30 @@ bool SWViewsModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
 
     if ( parent.column() == SWViewsDelegate::HIER_REF_COLUMN )
     {
-        if ( vlnv.getType() != VLNV::DESIGNCONFIGURATION )
+        if (vlnv.getType() == VLNV::DESIGN )
         {
-            return false;
-        }
+            // Determine the component type which must be SW.
+            QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(vlnv);
+            QSharedPointer<Design const> design = libComp.staticCast<Design>();
 
-        setData(index(parent.row(),parent.column()),vlnv.toString(":"));
-        emit contentChanged();
+            if (design && design->getDesignImplementation() == KactusAttribute::KTS_SW)
+            {
+                setData(index(parent.row(),parent.column()),vlnv.toString(":"));
+                emit contentChanged();
+            }
+        }
+        else if (vlnv.getType() == VLNV::DESIGNCONFIGURATION)
+        {
+            // Determine the component type which must be SW.
+            QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(vlnv);
+            QSharedPointer<DesignConfiguration const> designConf = libComp.staticCast<DesignConfiguration>();
+
+            if (designConf && designConf->getDesignConfigImplementation() == KactusAttribute::KTS_SW)
+            {
+                setData(index(parent.row(),parent.column()),vlnv.toString(":"));
+                emit contentChanged();
+            }
+        }       
     }
    
     return true;

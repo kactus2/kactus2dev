@@ -14,6 +14,8 @@
 #include <QSortFilterProxyModel>
 #include <QAbstractTableModel>
 
+class LibraryInterface;
+
 /*! \brief The model to manage the software views for a table view.
  *
  */
@@ -28,7 +30,7 @@ public:
 	 * \param parent Pointer to the owner of the model
 	 *
 	*/
-	SWViewsModel(QSharedPointer<Component> component,
+	SWViewsModel(LibraryInterface* libHandler, QSharedPointer<Component> component,
 		QObject *parent);
 	
 	//! \brief The destructor
@@ -168,6 +170,9 @@ private:
 
 	//! \brief Contains the software views to edit.
 	QList<QSharedPointer<SWView> >& views_;
+
+    //! \brief Pointer to the library interface.
+    LibraryInterface* libHandler_;
 
 	//! \brief Pointer to the component being edited.
 	QSharedPointer<Component> component_;

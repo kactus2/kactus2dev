@@ -13,6 +13,7 @@
 
 #include <common/widgets/assistedLineEdit/AssistedLineEdit.h>
 #include <common/validators/nameValidator/namevalidator.h>
+#include <common/KactusAttribute.h>
 #include <LibraryManager/libraryinterface.h>
 #include <LibraryManager/libraryitem.h>
 #include <LibraryManager/libraryhandler.h>
@@ -20,6 +21,7 @@
 #include <models/librarycomponent.h>
 #include <models/abstractiondefinition.h>
 #include <models/busdefinition.h>
+#include <models/designconfiguration.h>
 
 #include <QGridLayout>
 #include <QVBoxLayout>
@@ -51,7 +53,9 @@ VLNVEditor::VLNVEditor(VLNV::IPXactType type,
       nameMatcher_(libHandler),
       versionEdit_(0),
       versionMatcher_(libHandler),
-      handler_(libHandler)
+      handler_(libHandler),
+      implementationFilterEnabled_(false),
+      implementationFilter_(KactusAttribute::KTS_HW)
 {
     Q_ASSERT(libHandler != 0);
     Q_ASSERT(type_ != VLNV::INVALID);
@@ -317,11 +321,36 @@ void VLNVEditor::dropEvent( QDropEvent* event ) {
 	}
 
 	VLNV vlnv = data.value<VLNV>();
+
+    // If filtering is enabled and a design/design configuration is dropped, check the implementation.
+    VLNV::IPXactType type = handler_->getDocumentType(vlnv);
+    if (implementationFilterEnabled_)
+    {
+        if (type == VLNV::DESIGN)
+        {
+            if (handler_->getDesign(vlnv)->getDesignImplementation() != implementationFilter_)
+            {
+                return;
+            }
+
+        }
+        else if (type == VLNV::DESIGNCONFIGURATION)
+        {
+            QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
+            QSharedPointer<DesignConfiguration> designConf = libComp.staticCast<DesignConfiguration>();
+            KactusAttribute::Implementation imp = designConf->getDesignConfigImplementation();
+            if (designConf->getDesignConfigImplementation() != implementationFilter_)
+            {
+                return;
+            }
+        }    
+    }
+
 	setVLNV(vlnv);
 	event->acceptProposedAction();
 
 	// for abs def and bus def there is additional option to set the paired vlnv editor
-	switch (handler_->getDocumentType(vlnv)) 
+	switch (type) 
 	{
 	case VLNV::BUSDEFINITION: {
 		
@@ -403,6 +432,8 @@ void VLNVEditor::setImplementationFilter(bool on, KactusAttribute::Implementatio
 {
     dataTree_.setImplementationFilter(on, implementation);
     dirty_ = true;
+    implementationFilterEnabled_ = on;
+    implementationFilter_ = implementation;
 }
 
 //-----------------------------------------------------------------------------
