@@ -11,6 +11,7 @@
 #include <LibraryManager/VLNVDialer/vlnvdialer.h>
 #include <models/librarycomponent.h>
 #include <models/busdefinition.h>
+#include <models/designconfiguration.h>
 
 #include <QRegExp>
 
@@ -149,6 +150,16 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow,
 
                 return true;
                                       }
+
+            case VLNV::DESIGN:
+                {
+                    QSharedPointer<Design> design = handler_->getDesign(vlnv);
+                    if (type_.components_ && implementation_.sw_ && 
+                        design->getDesignImplementation() == KactusAttribute::KTS_SW)
+                    {
+                        return true;
+                    }
+                }
 			// if type is one of the advanced
 			default:
 

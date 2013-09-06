@@ -338,7 +338,6 @@ void VLNVEditor::dropEvent( QDropEvent* event ) {
         {
             QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
             QSharedPointer<DesignConfiguration> designConf = libComp.staticCast<DesignConfiguration>();
-            KactusAttribute::Implementation imp = designConf->getDesignConfigImplementation();
             if (designConf->getDesignConfigImplementation() != implementationFilter_)
             {
                 return;

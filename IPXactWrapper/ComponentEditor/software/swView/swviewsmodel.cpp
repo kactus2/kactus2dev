@@ -250,7 +250,7 @@ bool SWViewsModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
         {
             // Determine the component type which must be SW.
             QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(vlnv);
-            QSharedPointer<Design const> design = libComp.staticCast<Design>();
+            QSharedPointer<Design const> design = libComp.staticCast<Design const>();
 
             if (design && design->getDesignImplementation() == KactusAttribute::KTS_SW)
             {
@@ -262,7 +262,7 @@ bool SWViewsModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
         {
             // Determine the component type which must be SW.
             QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(vlnv);
-            QSharedPointer<DesignConfiguration const> designConf = libComp.staticCast<DesignConfiguration>();
+            QSharedPointer<DesignConfiguration const> designConf = libComp.staticCast<DesignConfiguration const>();
 
             if (designConf && designConf->getDesignConfigImplementation() == KactusAttribute::KTS_SW)
             {
