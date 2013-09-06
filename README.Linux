@@ -1,4 +1,18 @@
-Steps to build and install Kactus2 on Linux:
+In order to build Kactus2, Qt5 must be installed on your system.
+There are two ways to achieve this:
+
+A) Installing Qt5 packages through the package manager
+
+The following packages are needed:
+qt5-default
+libqt5xmlpatterns5-dev
+libqt5sql5-sqlite
+qttools5-private-dev
+qttools5-dev-tools
+
+B) Manually downloading and installing from http://qt-project.org/downloads
+
+After successful installation of Qt5, Kactus2 is built and installed with the following steps:
 
 ./configure
 make
@@ -8,7 +22,7 @@ To run Kactus2:
 
 /usr/bin/Kactus2
 
-success reports
+Success reports
 ---------------
 
 Tested on Debian GNU/Linux 6.0.6/Gnome 2.30.2/Qt 5.0.0 on 1st Feb 2013 by

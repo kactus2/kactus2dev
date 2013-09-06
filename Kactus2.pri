@@ -55,8 +55,6 @@ HEADERS += ./resource.h \
     ./common/widgets/kactusAttributeEditor/KactusAttributeEditor.h \
     ./common/widgets/componentPreviewBox/ComponentPreviewBox.h \
     ./common/widgets/dirLineEdit/dirlineedit.h \
-    ./common/widgets/LibraryPathSelector/librarypathselector.h \
-    ./common/widgets/LibraryPathEditor/librarypatheditor.h \
     ./common/widgets/ScanProgressWidget/scanprogresswidget.h \
     ./common/widgets/ParameterEditor/parametereditor.h \
     ./common/widgets/ParameterGroupBox/parametergroupbox.h \
@@ -85,10 +83,13 @@ HEADERS += ./resource.h \
     ./common/widgets/fileTypeSelector/filetypeselector.h \
     ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.h \
     ./common/widgets/FileSelector/fileselector.h \
-    ./common/widgets/vhdlParser/VhdlEntityHighlighter.h \
+    ./common/widgets/vhdlParser/VhdlSyntax.h \
     ./common/widgets/vhdlParser/VhdlParser.h \
     ./common/widgets/vhdlParser/VhdlParserWidget.h \
     ./common/widgets/fileViewer/FileViewer.h \
+    ./common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h \
+    ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.h \
+    ./common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h \
     ./common/validators/AddressValidator.h \
     ./common/validators/nameValidator/namevalidator.h \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.h \
@@ -146,8 +147,6 @@ HEADERS += ./resource.h \
     ./designwidget/HWAddCommands.h \
     ./designwidget/HWMoveCommands.h \
     ./designwidget/PortmapDialog.h \
-    ./designwidget/models/PortGenerationRow.h \
-    ./designwidget/models/PortGenerationTableModel.h \
     ./designwidget/BusInterfaceDialog.h \
     ./designwidget/SelectItemTypeDialog.h \
     ./designwidget/OffPageConnectorItem.h \
@@ -165,6 +164,8 @@ HEADERS += ./resource.h \
     ./designwidget/columnview/HWColumn.h \
     ./designwidget/columnview/ColumnEditDialog.h \
     ./designwidget/views/CellEditTableView.h \
+    ./designwidget/models/PortGenerationRow.h \
+    ./designwidget/models/PortGenerationTableModel.h \
     ./IPXactWrapper/ComponentEditor/itemvisualizer.h \
     ./IPXactWrapper/ComponentEditor/itemeditor.h \
     ./IPXactWrapper/ComponentEditor/general/generaleditor.h \
@@ -247,6 +248,7 @@ HEADERS += ./resource.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceeditor.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapgraphitem.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapeditor.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/AddressSpaceConflictedItem.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/segmentgraphitem.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/localaddrblockgraphitem.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.h \
@@ -325,6 +327,7 @@ HEADERS += ./resource.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenttreeview.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorviewsitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorviewitem.h \
@@ -461,6 +464,7 @@ HEADERS += ./resource.h \
     ./models/XmlUtils.h \
     ./mainwindow/SplashScreen.h \
     ./mainwindow/NewWorkspaceDialog.h \
+    ./mainwindow/NewPage.h \
     ./mainwindow/DeleteWorkspaceDialog.h \
     ./mainwindow/NewSystemPage.h \
     ./mainwindow/NewSWDesignPage.h \
@@ -651,14 +655,11 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/vlnvEditor/VLNVContentMatcher.cpp \
     ./common/widgets/vlnvEditor/VLNVDataTree.cpp \
     ./common/widgets/vlnvEditor/vlnveditor.cpp \
-    ./common/widgets/colorBox/ColorBox.cpp \
     ./common/widgets/kactusAttributeEditor/KactusAttributeEditor.cpp \
     ./common/widgets/componentPreviewBox/ComponentPreviewBox.cpp \
     ./common/widgets/tabDocument/TabDocument.cpp \
     ./common/widgets/dirLineEdit/dirlineedit.cpp \
     ./common/widgets/booleanComboBox/booleancombobox.cpp \
-    ./common/widgets/LibraryPathSelector/librarypathselector.cpp \
-    ./common/widgets/LibraryPathEditor/librarypatheditor.cpp \
     ./common/widgets/ScanProgressWidget/scanprogresswidget.cpp \
     ./common/widgets/ParameterEditor/parametereditor.cpp \
     ./common/widgets/ParameterGroupBox/parametergroupbox.cpp \
@@ -672,6 +673,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/interfaceSelector/interfaceselector.cpp \
     ./common/widgets/LineEditEx/LineEditEx.cpp \
     ./common/widgets/ComboBoxEx/ComboBoxEx.cpp \
+    ./common/widgets/colorBox/ColorBox.cpp \
     ./common/widgets/SnippetTextEdit/SnippetHighlighter.cpp \
     ./common/widgets/SnippetTextEdit/SnippetTextEdit.cpp \
     ./common/widgets/usageComboBox/usagecombobox.cpp \
@@ -687,10 +689,12 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/fileTypeSelector/filetypeselector.cpp \
     ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.cpp \
     ./common/widgets/FileSelector/fileselector.cpp \
-    ./common/widgets/vhdlParser/VhdlEntityHighlighter.cpp \
     ./common/widgets/vhdlParser/VhdlParser.cpp \
     ./common/widgets/vhdlParser/VhdlParserWidget.cpp \
     ./common/widgets/fileViewer/FileViewer.cpp \
+    ./common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.cpp \
+    ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.cpp \
+    ./common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.cpp \
     ./common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
     ./common/graphicsItems/ConnectionEndpoint.cpp \
@@ -858,6 +862,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapeditor.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapgraphitem.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/AddressSpaceConflictedItem.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacegapitem.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacescene.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.cpp \
@@ -893,6 +898,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapview.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.cpp \
+    ./IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditor.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoraddrblockitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoraddrspaceitem.cpp \
@@ -983,6 +989,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./mainwindow/NewComDefinitionPage.cpp \
     ./mainwindow/NewComponentPage.cpp \
     ./mainwindow/NewDesignPage.cpp \
+    ./mainwindow/NewPage.cpp \
     ./mainwindow/NewSWComponentPage.cpp \
     ./mainwindow/NewSWDesignPage.cpp \
     ./mainwindow/NewSystemPage.cpp \
