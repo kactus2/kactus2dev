@@ -48,11 +48,16 @@ QWidget* BusPortsDelegate::createEditor( QWidget* parent,
 				}
 		// width
 		case 2: {
-			QSpinBox* box = new QSpinBox(parent);
-			box->setRange(1, 99999);
-			connect(box, SIGNAL(editingFinished()),
-				this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-			return box;
+            QLineEdit* line = new QLineEdit(parent);
+
+            // the validator for editor input
+            QRegExpValidator* validator = new QRegExpValidator(QRegExp("[0-9]{0,5}"), line);
+
+            line->setValidator(validator);
+
+            connect(line, SIGNAL(editingFinished()),
+                this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+            return line;
 				}
 		// default value
 		case 3: {
@@ -132,6 +137,7 @@ void BusPortsDelegate::setEditorData( QWidget* editor,
 	switch (index.column()) {
 		// name and comment or default value
 		case 0:
+        case 2:
 		case 8:
 		case 3: {
 			QLineEdit* line = qobject_cast<QLineEdit*>(editor);
@@ -158,16 +164,6 @@ void BusPortsDelegate::setEditorData( QWidget* editor,
 			box->setCurrentIndex(index);
 			break;
 				}
-		// width
-		case 2: {
-			QSpinBox* box = qobject_cast<QSpinBox*>(editor);
-			Q_ASSERT_X(box, "BusPortsDelegate::setEditorData",
-				"Type conversion failed for width spin box");
-
-			int width = index.model()->data(index, Qt::DisplayRole).toInt();
-			box->setValue(width);
-			break;
-				}
 		default: {
 			QStyledItemDelegate::setEditorData(editor, index);
 			break;
@@ -180,8 +176,9 @@ void BusPortsDelegate::setModelData( QWidget* editor,
 									const QModelIndex& index ) const {
 
 	switch (index.column()) {
-		// name and comment or default value
+		// name, width and comment or default value
 		case 0:
+        case 2:
 		case 8: 
 		case 3: {
 			QLineEdit* line = qobject_cast<QLineEdit*>(editor);
@@ -206,16 +203,6 @@ void BusPortsDelegate::setModelData( QWidget* editor,
 			model->setData(index, text, Qt::EditRole);
 			break;
 				}
-		// width
-		case 2: {
-			QSpinBox* box = qobject_cast<QSpinBox*>(editor);
-			Q_ASSERT_X(box, "BusPortsDelegate::setModelData",
-				"Type conversion failed for spin box");
-
-			int value = box->value();
-			model->setData(index, value, Qt::EditRole);
-			break;
-				}
 		default: {
 			QStyledItemDelegate::setModelData(editor, model, index);
 			break;
@@ -227,18 +214,11 @@ void BusPortsDelegate::commitAndCloseEditor() {
 	// try to get pointer to editor in both cases
 	QComboBox* combo = qobject_cast<QComboBox*>(sender());
 	QLineEdit* lineEdit = qobject_cast<QLineEdit*>(sender());
-	QSpinBox* spinBox = qobject_cast<QSpinBox*>(sender());
 
 	// if the editor was combo box
 	if (combo) {
 		emit commitData(combo);
 		emit closeEditor(combo);
-	}
-
-	// if the editor was spinBox
-	else if (spinBox) {
-		emit commitData(spinBox);
-		emit closeEditor(spinBox);
 	}
 
 	// if editor was line edit

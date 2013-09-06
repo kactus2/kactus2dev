@@ -1006,7 +1006,7 @@ void BusPortsModel::importCSV( const QString& path ) {
 BusPortsModel::Port::Port():
 name_(),
 qualifier_(BusPortsModel::QUALIFIER_ANY),
-width_(1),
+width_(0),
 defaultValue_(),
 mode_(BusPortsModel::MODE_ANY),
 direction_(BusPortsModel::DIRECTION_INOUT),
@@ -1018,7 +1018,7 @@ comment_() {
 BusPortsModel::Port::Port( const QString& name ):
 name_(name),
 qualifier_(BusPortsModel::QUALIFIER_ANY),
-width_(1),
+width_(0),
 defaultValue_(),
 mode_(BusPortsModel::MODE_ANY),
 direction_(BusPortsModel::DIRECTION_INOUT),

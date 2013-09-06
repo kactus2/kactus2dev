@@ -378,11 +378,17 @@ void PortMapsModel::createMap( const QString& physicalPort, const QString& logic
 	if (absDef_) {
 		int size = absDef_->getPortSize(logicalPort, interfaceMode_);
 
-		// if size was specified
+        // If size is not specified in logical, use physical port size.
+        if (size < 0 && component_->hasPort(physicalPort))
+        {
+            size = component_->getPortWidth(physicalPort);
+        }
+
+		// if size was specified.
 		if (size >= 0) {
 			portMap->logicalVector_->setLeft(size - 1);
 			portMap->logicalVector_->setRight(0);
-		}
+        }
 	}
 	// if the port is found on the component
 	if (component_->hasPort(physicalPort)) {
