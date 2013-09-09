@@ -1,5 +1,5 @@
 In order to build 64-bit version of Kactus2, 64-bit compiled version of Qt libraries
-is needed. 64-bit precompiled binaries are not available for VS2010 in Qt size.
+is needed. 64-bit precompiled binaries are not available for VS2010 at Qt site (http://qt-project.org/downloads).
 This file explains the procedure of building 64-bit Qt with VS2010.
 
 -------------
