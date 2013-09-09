@@ -1,0 +1,54 @@
+In order to build 64-bit version of Kactus2, 64-bit compiled version of Qt libraries
+is needed. 64-bit precompiled binaries are not available for VS2010 in Qt size.
+This file explains the procedure of building 64-bit Qt with VS2010.
+
+-------------
+Prerequisites
+-------------
+
+In order to build 64-bit version of Qt 5.x, install the prerequisites in the following order:
+
+* Visual Studio 2010 SP1
+
+* Windows SDK 7.1
+
+* Visual C++ 2010 SP1 Compiler Update for Windows SDK 7.1
+  http://www.microsoft.com/en-us/download/details.aspx?id=4422
+
+* DirectX SDK (June 2010)
+
+* Strawberry Perl (zip version)
+
+* Python 2.7.3
+
+* ICU libraries Win64
+  http://site.icu-project.org/download/50#TOC-ICU4C-Download
+
+After installation, add the following folders to PATH:
+PERL_LOCATION\bin
+PERL_LOCATION\site\bin
+ICU_LOCATION\bin64
+PYTHON_LOCATION
+PYTHON_LOCATION\DLLs
+
+-----------
+Compilation
+-----------
+
+1. Download (http://qt-project.org/downloads) and unpack the source version of Qt.
+
+2. Copy qt_configure_vs2010.bat to the root folder of the unpacked source.
+
+3. Start up Visual Studio 2010 x64 Win64 Command Prompt:
+   Start > Programs > Microsoft Visual Studio 2010 > Visual Studio Tools
+         > Visual Studio 2010 x64 Win64 Command Prompt (2010)
+
+4. Go to the source root folder.
+
+5. Run the following commands:
+     qt64_configure_vs2010
+     nmake
+
+
+In case of problems, please refer to:
+http://www.holoborodko.com/pavel/2011/02/01/how-to-compile-qt-4-7-with-visual-studio-2010/
