@@ -8,7 +8,6 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./resource.h \
-    ./version.h \
     ./common/ColumnTypes.h \
     ./common/CSourceWriter.h \
     ./common/diagramgrid.h \
@@ -141,8 +140,6 @@ HEADERS += ./resource.h \
     ./common/dialogs/fileSaveDialog/filesavedialogview.h \
     ./common/dialogs/commandLineGeneratorDialog/commandlinegeneratordialog.h \
     ./common/dialogs/commandLineGeneratorDialog/commandlineconsole.h \
-    ./common/cornerStitch/CornerStitchStructure.h \
-    ./common/cornerStitch/StitchTile.h \
     ./designwidget/AdHocEnabled.h \
     ./designwidget/HWAddCommands.h \
     ./designwidget/HWMoveCommands.h \
@@ -713,7 +710,6 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/views/EditableTableView/editabletableview.cpp \
     ./common/views/EditableListView/editablelistview.cpp \
     ./common/models/ParameterModel/parametersmodel.cpp \
-    ./common/cornerStitch/CornerStitchStructure.cpp \
     ./designwidget/AdHocEnabled.cpp \
     ./designwidget/AdHocInterfaceItem.cpp \
     ./designwidget/AdHocPortItem.cpp \
