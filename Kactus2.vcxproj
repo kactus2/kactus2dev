@@ -435,7 +435,6 @@ CreateHelp
     <ClCompile Include="common\views\EditableTableView\editabletableview.cpp" />
     <ClCompile Include="common\views\EditableListView\editablelistview.cpp" />
     <ClCompile Include="common\models\ParameterModel\parametersmodel.cpp" />
-    <ClCompile Include="common\cornerStitch\CornerStitchStructure.cpp" />
     <ClCompile Include="ComponentWizard\ComponentWizard.cpp" />
     <ClCompile Include="ComponentWizard\ComponentWizardConclusionPage.cpp" />
     <ClCompile Include="ComponentWizard\ComponentWizardDependencyPage.cpp" />
@@ -3774,8 +3773,6 @@ CreateHelp
   <ItemGroup>
     <ClInclude Include="AddressEditor\AddressEntry.h" />
     <ClInclude Include="common\ColumnTypes.h" />
-    <ClInclude Include="common\cornerStitch\CornerStitchStructure.h" />
-    <ClInclude Include="common\cornerStitch\StitchTile.h" />
     <ClInclude Include="common\CSourceWriter.h" />
     <ClInclude Include="common\diagramgrid.h" />
     <ClInclude Include="common\DiagramUtil.h" />

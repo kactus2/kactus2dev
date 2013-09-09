@@ -12,8 +12,6 @@
 #include <models/businterface.h>
 #include <models/ColumnDesc.h>
 
-#include <common/cornerStitch/CornerStitchStructure.h>
-
 #include <QMap>
 #include <QVector>
 #include <QSharedPointer>
@@ -509,9 +507,6 @@ private:
 
     //! The old item selection.
     QGraphicsItem* oldSelection_;
-
-    //! The corner-stitching structure.
-    CornerStitchStructure cornerStitchStruct_;
 
     //! Context menu copy action.
     QAction copyAction_;

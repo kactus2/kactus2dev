@@ -88,7 +88,6 @@ HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& edit
       oldSelection_(0),
       replaceMode_(false),
       sourceComp_(0),
-      cornerStitchStruct_(),
       copyAction_(tr("Copy"), this),
       pasteAction_(tr("Paste"), this),
       addAction_(tr("Add to Library"), this),
@@ -193,8 +192,6 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         }
 
 		onComponentInstanceAdded(item);
-        //StitchTile* tile = cornerStitchStruct_.addSolidTile(item->sceneBoundingRect().toRect());
-        //cornerStitchStruct_.removeTile(tile);
     }
 
     /* interconnections */

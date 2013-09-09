@@ -197,9 +197,6 @@
     <Filter Include="Source Files\common\models\ParametersModel">
       <UniqueIdentifier>{16e2d204-d232-4602-9716-2ec950a66f7a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\cornerStitch">
-      <UniqueIdentifier>{900f2d81-3aaf-4011-b5b6-219606735596}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\designwidget">
       <UniqueIdentifier>{0e1c82e6-9b0e-4d87-85ff-d2579c05eb88}</UniqueIdentifier>
     </Filter>
@@ -548,9 +545,6 @@
     </Filter>
     <Filter Include="Header Files\common\dialogs\TableViewDialog">
       <UniqueIdentifier>{8b3322f9-844b-47af-ad0d-4f0ac50556ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\cornerStitch">
-      <UniqueIdentifier>{810a4798-e014-44e6-a3ca-1482eed70c6c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\designwidget">
       <UniqueIdentifier>{1dc51274-ec2a-4d89-94a8-d460bf5c74ab}</UniqueIdentifier>
@@ -1155,9 +1149,6 @@
     </ClCompile>
     <ClCompile Include="common\models\ParameterModel\parametersmodel.cpp">
       <Filter>Source Files\common\models\ParametersModel</Filter>
-    </ClCompile>
-    <ClCompile Include="common\cornerStitch\CornerStitchStructure.cpp">
-      <Filter>Source Files\common\cornerStitch</Filter>
     </ClCompile>
     <ClCompile Include="designwidget\AdHocEnabled.cpp">
       <Filter>Source Files\designwidget</Filter>
@@ -5524,12 +5515,6 @@
   <ItemGroup>
     <ClInclude Include="AddressEditor\AddressEntry.h">
       <Filter>Header Files\AddressEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="common\cornerStitch\CornerStitchStructure.h">
-      <Filter>Header Files\common\cornerStitch</Filter>
-    </ClInclude>
-    <ClInclude Include="common\cornerStitch\StitchTile.h">
-      <Filter>Header Files\common\cornerStitch</Filter>
     </ClInclude>
     <ClInclude Include="common\dialogs\attributeDialog\attributedialog.h">
       <Filter>Header Files\common\dialogs\attributeDialog</Filter>
