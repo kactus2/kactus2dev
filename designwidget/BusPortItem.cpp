@@ -251,53 +251,57 @@ bool BusPortItem::onConnect(ConnectionEndpoint const* other)
     QSharedPointer<BusInterface> otherBusIf = other->getBusInterface();
 
     // If the port is a non-typed one, try to copy the configuration from the other end point.
-    if (getConnections().empty() && !isTypeLocked() && otherBusIf != 0 && otherBusIf->getBusType().isValid())
+    if (getConnections().empty() && !isTypeLocked())
     {
-        GenericEditProvider& editProvider = static_cast<DesignDiagram*>(scene())->getEditProvider();
-        editProvider.setState("portsCopied", false);
+        oldName_ = busInterface_->getName();
 
-        if (!static_cast<HWDesignDiagram*>(scene())->getEditProvider().isPerformingUndoRedo() &&
-            !static_cast<HWDesignDiagram*>(scene())->isLoading())
-        {                            
-            QList< QSharedPointer<Port> > newPorts;
-            QList< QSharedPointer<General::PortMap> > newPortMaps;
+        if (otherBusIf != 0 && otherBusIf->getBusType().isValid())
+        {
+            GenericEditProvider& editProvider = static_cast<DesignDiagram*>(scene())->getEditProvider();
+            editProvider.setState("portsCopied", false);
 
-            // Set a compatible interface mode. If the other end point is a hierarchical one,
-            // the same interface mode injects automatically. Otherwise the proper interface mode must
-            // be determined/asked based on the other bus interface.
-            General::InterfaceMode mode = otherBusIf->getInterfaceMode();
+            if (!static_cast<HWDesignDiagram*>(scene())->getEditProvider().isPerformingUndoRedo() &&
+                !static_cast<HWDesignDiagram*>(scene())->isLoading())
+            {                            
+                QList< QSharedPointer<Port> > newPorts;
+                QList< QSharedPointer<General::PortMap> > newPortMaps;
 
+                // Set a compatible interface mode. If the other end point is a hierarchical one,
+                // the same interface mode injects automatically. Otherwise the proper interface mode must
+                // be determined/asked based on the other bus interface.
+                General::InterfaceMode mode = otherBusIf->getInterfaceMode();
 
                 if (!askCompatibleMode(other, mode, newPorts, newPortMaps))
                 {
                     return false;
                 }
 
+                busInterface_->setInterfaceMode(mode);
 
-            busInterface_->setInterfaceMode(mode);
+                editProvider.setState("portsCopied", true);
 
-            editProvider.setState("portsCopied", true);
-            foreach ( QSharedPointer<Port> port, newPorts )
-            {
-                encompassingComp()->componentModel()->addPort(port);
-            } 
-            busInterface_->setPortMaps(newPortMaps);
-            oldName_ = busInterface_->getName();
-        }
+                foreach ( QSharedPointer<Port> port, newPorts)
+                {
+                    encompassingComp()->componentModel()->addPort(port);
+                } 
+
+                busInterface_->setPortMaps(newPortMaps);
+            }
     
-        QString ifName = other->getBusInterface()->getName();
-        int count = 0;
-        while( getOwnerComponent()->hasInterface(ifName) )
-        {
-            count++;
-            ifName = other->getBusInterface()->getName() + "_" + QString::number(count);
-        }
-        busInterface_->setName(ifName);
+            QString ifName = other->getBusInterface()->getName();
+            int count = 0;
+            while( getOwnerComponent()->hasInterface(ifName) )
+            {
+                count++;
+                ifName = other->getBusInterface()->getName() + "_" + QString::number(count);
+            }
+            busInterface_->setName(ifName);
 
-        // Copy the bus and abstraction definitions.
-        busInterface_->setBusType(otherBusIf->getBusType());
-        busInterface_->setAbstractionType(otherBusIf->getAbstractionType());
-        updateInterface();
+            // Copy the bus and abstraction definitions.
+            busInterface_->setBusType(otherBusIf->getBusType());
+            busInterface_->setAbstractionType(otherBusIf->getAbstractionType());
+            updateInterface();
+        }
     }
 
     return true;
