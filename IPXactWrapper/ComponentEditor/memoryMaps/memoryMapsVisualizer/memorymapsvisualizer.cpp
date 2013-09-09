@@ -39,11 +39,13 @@ MemoryMapsVisualizer::~MemoryMapsVisualizer() {
 void MemoryMapsVisualizer::addMemoryMapItem( MemoryMapGraphItem* memMapItem ) {
 	scene_->addMemGraphItem(memMapItem);
 	QPointF position = memMapItem->pos();
-	view_->centerOn(position.x() - VisualizerItem::DEFAULT_HEIGHT, position.y());
+	view_->centerOn(position.x() - MemoryVisualizationItem::CHILD_INDENTATION, position.y());
+    scene_->setSceneRect(scene_->itemsBoundingRect());
 }
 
 void MemoryMapsVisualizer::removeMemoryMapItem( MemoryMapGraphItem* memMapItem ) {
 	scene_->removeMemGraphItem(memMapItem);
+    scene_->setSceneRect(scene_->itemsBoundingRect());
 }
 
 QSize MemoryMapsVisualizer::minimumSizeHint() const {

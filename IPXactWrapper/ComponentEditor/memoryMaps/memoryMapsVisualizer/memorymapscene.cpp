@@ -40,6 +40,7 @@ void MemoryMapScene::addMemGraphItem( MemoryMapGraphItem* memGraphItem ) {
 	memGraphItems_.append(memGraphItem);
 	connect(memGraphItem, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    rePosition();
 }
 
 //-----------------------------------------------------------------------------
@@ -98,6 +99,6 @@ void MemoryMapScene::setWidth(int width)
 void MemoryMapScene::wheelEvent(QGraphicsSceneWheelEvent * wheelEvent)
 {   
     int width = sceneRect().width() + wheelEvent->delta() / WHEEL_SENSITIVITY;
-    setWidth(width);
+    setWidth(width);    
     wheelEvent->accept();
 }
