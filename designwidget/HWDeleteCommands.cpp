@@ -195,6 +195,8 @@ ConnectionDeleteCommand::ConnectionDeleteCommand(HWConnection* conn, QUndoComman
 
     QSharedPointer<Component> srcComponent;
 
+    bool lastConnection = false;
+
     if (busIf1 != 0 && busIf1->getBusType().isValid() && !conn_->endpoint1()->isTypeLocked())
     {
         mode1_ = busIf1->getInterfaceMode();
@@ -205,6 +207,7 @@ ConnectionDeleteCommand::ConnectionDeleteCommand(HWConnection* conn, QUndoComman
         if (busIfItem != 0)
         {
             portsCopied_ = busIfItem->hasPortsCopied();
+            lastConnection = busIfItem->getConnections().size() == 1;
             srcComponent = conn_->endpoint1()->getOwnerComponent();
         }
     }
@@ -219,16 +222,25 @@ ConnectionDeleteCommand::ConnectionDeleteCommand(HWConnection* conn, QUndoComman
         if (busIfItem != 0)
         {
             portsCopied_ = busIfItem->hasPortsCopied();
+            lastConnection = busIfItem->getConnections().size() == 1;
             srcComponent = conn_->endpoint2()->getOwnerComponent();
         }
     }
 
-    if (portsCopied_)
+    if (portsCopied_ && lastConnection)
     {
         foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
         {
             QSharedPointer<Port> port = srcComponent->getPort(portMap->physicalPort_);
-            new DeletePhysicalPortCommand(srcComponent, port, this);
+            DeletePhysicalPortCommand* delCmd = new DeletePhysicalPortCommand(srcComponent, port, this);
+
+            // If the port is visible as ad-hoc in the current design, it must be hidden.
+            DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene_);
+            Q_ASSERT(diagram);
+            if (diagram->getDiagramAdHocPort(port->getName()) != 0)
+            {                               
+                new AdHocVisibilityChangeCommand(diagram, port->getName(), false, delCmd);
+            }        
         }
     }
 }
