@@ -57,7 +57,7 @@ public:
     //-----------------------------------------------------------------------------
     //! Clipboard copy data for a single bus interface instance.
     //-----------------------------------------------------------------------------
-    struct BusInstanceCopyData
+    struct BusInterfaceCopyData
     {
         QSharedPointer<Component> srcComponent;         //!< The origin component.
         QSharedPointer<BusInterface> busInterface;      //!< The bus interface.
@@ -69,7 +69,7 @@ public:
         /*!
         *  Constructor.
         */
-        BusInstanceCopyData()
+        BusInterfaceCopyData()
             : srcComponent(),
             busInterface(),
             mode(),
@@ -84,7 +84,7 @@ public:
     //-----------------------------------------------------------------------------
     struct BusPortCollectionCopyData
     {
-        QList<BusInstanceCopyData> instances;
+        QList<BusInterfaceCopyData> instances;
 
         /*!
         *  Constructor.
@@ -100,7 +100,7 @@ public:
     //-----------------------------------------------------------------------------
     struct BusInterfaceCollectionCopyData
     {
-        QList<BusInstanceCopyData> instances;
+        QList<BusInterfaceCopyData> instances;
 
         /*!
         *  Constructor.
@@ -416,8 +416,7 @@ private:
      *      @param [in]  items       The bus port instance items to copy.
      *      @param [out] collection  The resulted collection of bus port instance copy data.
      */
-    void copyInstances(QList<QGraphicsItem*> const& items, 
-        BusPortCollectionCopyData &collection);
+    void copyInterfaces(QList<QGraphicsItem*> const& items, BusPortCollectionCopyData &collection);
 
     /*!
      *  Copies component instances in a format which can be saved to clipboard.
@@ -425,8 +424,7 @@ private:
      *      @param [in]  items       The top-level bus interface instance items to copy.
      *      @param [out] collection  The resulted collection of bus interface instance copy data.
      */
-    void copyInstances(QList<QGraphicsItem*> const& items, 
-        BusInterfaceCollectionCopyData &collection);
+    void copyInterfaces(QList<QGraphicsItem*> const& items, BusInterfaceCollectionCopyData &collection);
 
     /*!
      *  Copies component instances in a format which can be saved to clipboard.
@@ -443,8 +441,8 @@ private:
      *      @param [in] component      The component where to place the ports.
      *      @param [in] cmd            The parent undo command for the paste undo commands.
      */
-   void pasteInstances(BusPortCollectionCopyData const& collection,
-        HWComponentItem* component, QUndoCommand* cmd);
+   void pasteInterfaces(BusPortCollectionCopyData const& collection,
+                        HWComponentItem* component, QUndoCommand* cmd);
 
    /*!
      *  Pastes top-level bus interface instances from a copy data collection.
@@ -455,8 +453,8 @@ private:
      *      @param [in] userCursorPos  If true, the instances are placed close to the cursor position.
      *                                 Otherwise the original positions are used.
      */
-    void pasteInstances(BusInterfaceCollectionCopyData const& collection,
-       GraphicsColumn* column, QUndoCommand* cmd, bool useCursorPos);
+    void pasteInterfaces(BusInterfaceCollectionCopyData const& collection,
+                         GraphicsColumn* column, QUndoCommand* cmd, bool useCursorPos);
 
     /*!
      *  Pastes component instances from a copy data collection.

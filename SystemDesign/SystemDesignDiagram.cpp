@@ -34,6 +34,7 @@
 #include <QApplication>
 #include <QClipboard>
 
+#include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <SystemDetailsEditor/SwitchHWDialog.h>
 
 #include <LibraryManager/libraryinterface.h>
@@ -813,7 +814,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
         {
             item = itemList.front();
 
-            if (item->type() == QGraphicsTextItem::Type)
+            while (item->parentItem() != 0 && dynamic_cast<SystemComponentItem*>(item) == 0)
             {
                 item = item->parentItem();
             }
@@ -906,32 +907,32 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
                     newItem->setPos(snapPointToGrid(event->scenePos()));
 
                     // Save the positions of the other diagram interfaces.
-//                     QMap<DiagramInterface*, QPointF> oldPositions;
-// 
-//                     foreach (QGraphicsItem* item, stack->childItems())
-//                     {
-//                         if (item->type() == DiagramInterface::Type)
-//                         {
-//                             DiagramInterface* interface = static_cast<DiagramInterface*>(item);
-//                             oldPositions.insert(interface, interface->scenePos());
-//                         }
-//                     }
+                    QMap<SWInterfaceItem*, QPointF> oldPositions;
+
+                    foreach (QGraphicsItem* item, dynamic_cast<SystemColumn*>(stack)->childItems())
+                    {
+                        if (item->type() == SWInterfaceItem::Type)
+                        {
+                            SWInterfaceItem* interface = static_cast<SWInterfaceItem*>(item);
+                            oldPositions.insert(interface, interface->scenePos());
+                        }
+                    }
 
                     QSharedPointer<QUndoCommand> cmd(new SystemItemAddCommand(stack, newItem));
                     cmd->redo();
 
                     // Determine if the other interfaces changed their position and create undo commands for them.
-//                     QMap<DiagramInterface*, QPointF>::iterator cur = oldPositions.begin();
-// 
-//                     while (cur != oldPositions.end())
-//                     {
-//                         if (cur.key()->scenePos() != cur.value())
-//                         {
-//                             QUndoCommand* childCmd = new ItemMoveCommand(cur.key(), cur.value(), cmd.data());
-//                         }
-// 
-//                         ++cur;
-//                     }
+                    QMap<SWInterfaceItem*, QPointF>::iterator cur = oldPositions.begin();
+
+                    while (cur != oldPositions.end())
+                    {
+                        if (cur.key()->scenePos() != cur.value())
+                        {
+                            new ItemMoveCommand(cur.key(), cur.value(), stack, cmd.data());
+                        }
+
+                        ++cur;
+                    }
 
                     getEditProvider().addCommand(cmd, false);
                 }
@@ -1792,6 +1793,8 @@ void SystemDesignDiagram::createConnection(QGraphicsSceneMouseEvent* event)
         // Make the temporary connection a permanent one by connecting the ends.
         if (tempConnection_->connectEnds())
         {
+            tempConnection_->fixOverlap();
+
             QSharedPointer<QUndoCommand> cmd(new SWConnectionAddCommand(this, tempConnection_));
             getEditProvider().addCommand(cmd, false);
 

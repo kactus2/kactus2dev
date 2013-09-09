@@ -108,6 +108,9 @@ void SystemItemAddCommand::undo()
     {
         emit componentInstanceRemoved(static_cast<ComponentItem*>(item_));
     }
+
+    // Execute child commands.
+    QUndoCommand::undo();
 }
 
 //-----------------------------------------------------------------------------
@@ -123,6 +126,10 @@ void SystemItemAddCommand::redo()
     {
         emit componentInstantiated(static_cast<ComponentItem*>(item_));
     }
+
+    // Child commands need not be executed because the other items change their position
+    // in a deterministic way.
+    //QUndoCommand::redo();
 }
 
 //-----------------------------------------------------------------------------

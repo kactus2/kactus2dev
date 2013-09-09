@@ -1942,7 +1942,7 @@ void HWDesignDiagram::onCopyAction(){
         if (type == BusPortItem::Type)
         {
             BusPortCollectionCopyData collection;
-            copyInstances(items, collection);
+            copyInterfaces(items, collection);
 
             QMimeData* mimeData = new QMimeData();
             mimeData->setImageData(QVariant::fromValue(collection));
@@ -1951,7 +1951,7 @@ void HWDesignDiagram::onCopyAction(){
         else if (type == BusInterfaceItem::Type)
         {
             BusInterfaceCollectionCopyData collection;
-            copyInstances(items, collection);
+            copyInterfaces(items, collection);
 
             QMimeData* mimeData = new QMimeData();
             mimeData->setImageData(QVariant::fromValue(collection));
@@ -1979,7 +1979,7 @@ void HWDesignDiagram::onCopyAction(){
                 columnData.desc = column->getColumnDesc();
 
                 copyInstances(column->getItems(), columnData.components);
-                copyInstances(column->getItems(), columnData.interfaces);
+                copyInterfaces(column->getItems(), columnData.interfaces);
             }
 
             QMimeData* mimeData = new QMimeData();
@@ -2013,7 +2013,7 @@ void HWDesignDiagram::onPasteAction(){
                     BusPortCollectionCopyData collection = mimedata->imageData().value<BusPortCollectionCopyData>();
 
                     QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
-                    pasteInstances(collection, targetComp, cmd.data());
+                    pasteInterfaces(collection, targetComp, cmd.data());
                     getEditProvider().addCommand(cmd, false);
 
                     // Update sidebar view.
@@ -2056,7 +2056,7 @@ void HWDesignDiagram::onPasteAction(){
                         
                         new GraphicsColumnAddCommand(layout_.data(), column, parentCmd.data());
                         pasteInstances(columnData.components, column, parentCmd.data(), false);
-                        pasteInstances(columnData.interfaces, column, parentCmd.data(), false);
+                        pasteInterfaces(columnData.interfaces, column, parentCmd.data(), false);
                     }
 
                     getEditProvider().addCommand(parentCmd);
@@ -2075,7 +2075,7 @@ void HWDesignDiagram::onPasteAction(){
                         BusInterfaceCollectionCopyData collection = mimeData->imageData().value<BusInterfaceCollectionCopyData>();
                                       
                         QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
-                        pasteInstances(collection, column, cmd.data(), true);
+                        pasteInterfaces(collection, column, cmd.data(), true);
                         getEditProvider().addCommand(cmd, false); 
                         // Update sidebar view .
                         emit clearItemSelection();       
@@ -2727,7 +2727,7 @@ void HWDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::copyInstances()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::copyInstances(QList<QGraphicsItem*> const& items, BusPortCollectionCopyData &collection)
+void HWDesignDiagram::copyInterfaces(QList<QGraphicsItem*> const& items, BusPortCollectionCopyData &collection)
 {
     // Create instance copies.
     foreach (QGraphicsItem* item, items)
@@ -2736,8 +2736,8 @@ void HWDesignDiagram::copyInstances(QList<QGraphicsItem*> const& items, BusPortC
         {
             BusPortItem* busPort = static_cast<BusPortItem*>(item);
 
-            collection.instances.append(BusInstanceCopyData());
-            BusInstanceCopyData& instance = collection.instances.back();
+            collection.instances.append(BusInterfaceCopyData());
+            BusInterfaceCopyData& instance = collection.instances.back();
 
             instance.srcComponent = busPort->getOwnerComponent();
             instance.busInterface = busPort->getBusInterface();
@@ -2745,7 +2745,6 @@ void HWDesignDiagram::copyInstances(QList<QGraphicsItem*> const& items, BusPortC
             instance.pos = busPort->pos();
             instance.instanceName = busPort->name();
             instance.description = busPort->description();
-
         }
     }
 }
@@ -2753,8 +2752,7 @@ void HWDesignDiagram::copyInstances(QList<QGraphicsItem*> const& items, BusPortC
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::copyInstances()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::copyInstances(QList<QGraphicsItem*> const& items, 
-    BusInterfaceCollectionCopyData &collection)
+void HWDesignDiagram::copyInterfaces(QList<QGraphicsItem*> const& items, BusInterfaceCollectionCopyData &collection)
 {
     // Create instance copies.
     foreach (QGraphicsItem* item, items)
@@ -2763,8 +2761,8 @@ void HWDesignDiagram::copyInstances(QList<QGraphicsItem*> const& items,
         {
             BusInterfaceItem* busPort = static_cast<BusInterfaceItem*>(item);
 
-            collection.instances.append(BusInstanceCopyData());
-            BusInstanceCopyData& instance = collection.instances.back();
+            collection.instances.append(BusInterfaceCopyData());
+            BusInterfaceCopyData& instance = collection.instances.back();
 
             instance.srcComponent = busPort->getOwnerComponent();
             instance.busInterface = busPort->getBusInterface();
@@ -2805,12 +2803,12 @@ void HWDesignDiagram::copyInstances(QList<QGraphicsItem*> const& items, Componen
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::pasteInstances()
+// Function: HWDesignDiagram::pasteInterfaces()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::pasteInstances(BusPortCollectionCopyData const& collection,
-                                     HWComponentItem* component, QUndoCommand* cmd)
+void HWDesignDiagram::pasteInterfaces(BusPortCollectionCopyData const& collection,
+                                      HWComponentItem* component, QUndoCommand* cmd)
 {
-    foreach(BusInstanceCopyData const& instance, collection.instances)
+    foreach(BusInterfaceCopyData const& instance, collection.instances)
     {        
         // Bus interface must have a unique name within the component.
         QString uniqueBusName = instance.busInterface->getName();        	
@@ -2856,12 +2854,12 @@ void HWDesignDiagram::pasteInstances(BusPortCollectionCopyData const& collection
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::pasteInstances()
+// Function: HWDesignDiagram::pasteInterfaces()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::pasteInstances(BusInterfaceCollectionCopyData const& collection,
-                                     GraphicsColumn* column, QUndoCommand* cmd, bool useCursorPos)
+void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& collection,
+                                      GraphicsColumn* column, QUndoCommand* cmd, bool useCursorPos)
 {
-    foreach(BusInstanceCopyData const& instance, collection.instances)
+    foreach(BusInterfaceCopyData const& instance, collection.instances)
     {
         // Bus interface must have a unique name within the component.
         QString uniqueBusName = instance.busInterface->getName();	
