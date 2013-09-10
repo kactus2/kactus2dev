@@ -29,7 +29,6 @@ namespace KactusAttribute
         {
             "Mutable",
             "Template",
-            "Parameterizable",
             "Fixed"
         };
 

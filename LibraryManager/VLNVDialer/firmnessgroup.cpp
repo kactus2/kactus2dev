@@ -15,7 +15,6 @@ FirmnessGroup::FirmnessGroup(QWidget *parent):
 QGroupBox(tr("Firmness"), parent),
 templateBox_(tr("Template"), this),
 mutableBox_(tr("Mutable"), this),
-//parameterizableBox_(tr("Parameterizable"), this),
 fixedBox_(tr("Fixed"), this),
 options_() {
 
@@ -28,15 +27,12 @@ options_() {
 
 	templateBox_.setChecked(true);
 	mutableBox_.setChecked(true);
-	//parameterizableBox_.setChecked(true);
 	fixedBox_.setChecked(true);
 
 	connect(&templateBox_, SIGNAL(stateChanged(int)),
 		this, SLOT(onTemplateChanged(int)), Qt::UniqueConnection);
 	connect(&mutableBox_, SIGNAL(stateChanged(int)),
 		this, SLOT(onBlockChanged(int)), Qt::UniqueConnection);
-	//connect(&parameterizableBox_, SIGNAL(stateChanged(int)),
-	//	this, SLOT(onIntegrationChanged(int)), Qt::UniqueConnection);
 	connect(&fixedBox_, SIGNAL(stateChanged(int)),
 		this, SLOT(onConfigurationChanged(int)), Qt::UniqueConnection);
 }
@@ -51,12 +47,6 @@ void FirmnessGroup::onTemplateChanged( int state ) {
 
 void FirmnessGroup::onBlockChanged( int state ) {
 	options_.mutable_ = Utils::checkBoxState2Bool(state);
-	options_.parameterizable_ = Utils::checkBoxState2Bool(state);
-	emit optionsChanged(options_);
-}
-
-void FirmnessGroup::onIntegrationChanged( int state ) {
-	options_.parameterizable_ = Utils::checkBoxState2Bool(state);
 	emit optionsChanged(options_);
 }
 

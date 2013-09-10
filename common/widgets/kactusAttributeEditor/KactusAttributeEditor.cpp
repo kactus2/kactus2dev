@@ -11,6 +11,8 @@
 
 #include "KactusAttributeEditor.h"
 
+#include <common/KactusAttribute.h>
+
 #include <QGridLayout>
 #include <QString>
 
@@ -29,7 +31,7 @@ KactusAttributeEditor::KactusAttributeEditor(QWidget* parent) : QGroupBox(tr("Ka
     prodHierCombo_ = new QComboBox(this);
     //prodHierCombo_->setVisible(false);
     
-    for (unsigned int i = 0; i < PROD_HIER_COUNT; ++i)
+    for (unsigned int i = 0; i < KactusAttribute::KTS_PRODHIER_COUNT; ++i)
     {
         KactusAttribute::ProductHierarchy val = static_cast<KactusAttribute::ProductHierarchy>(i);
         prodHierCombo_->addItem(KactusAttribute::valueToString(val));
@@ -39,7 +41,7 @@ KactusAttributeEditor::KactusAttributeEditor(QWidget* parent) : QGroupBox(tr("Ka
     firmnessLabel_ = new QLabel(tr("Firmness:"), this);
     firmnessCombo_ = new QComboBox(this);
 
-    for (unsigned int i = 0; i < FIRMNESS_COUNT; ++i)
+    for (unsigned int i = 0; i < KactusAttribute::KTS_REUSE_LEVEL_COUNT; ++i)
     {
         KactusAttribute::Firmness val = static_cast<KactusAttribute::Firmness>(i);
         firmnessCombo_->addItem(KactusAttribute::valueToString(val));

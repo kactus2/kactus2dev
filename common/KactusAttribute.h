@@ -60,7 +60,6 @@ namespace KactusAttribute
     {
         KTS_MUTABLE=0,
         KTS_TEMPLATE,
-        KTS_PARAMETERIZABLE,
         KTS_FIXED,
         KTS_REUSE_LEVEL_COUNT
     };

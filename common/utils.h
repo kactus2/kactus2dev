@@ -99,9 +99,6 @@ namespace Utils {
 		//! \brief If true then mutables should be included in search.
 		bool mutable_;
 
-		//! \brief If true then parameterizables should be included in search.
-		bool parameterizable_;
-
 		//! \brief If true then fixeds should be included in search.
 		bool fixed_;
 

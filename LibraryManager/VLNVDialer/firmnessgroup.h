@@ -44,9 +44,6 @@ private slots:
 	//! \brief Handler for block check box state changes.
 	void onBlockChanged(int state);
 
-	//! \brief Handler for integration check box state changes.
-	void onIntegrationChanged(int state);
-
 	//! \brief Handler for configuration check box state changes.
 	void onConfigurationChanged(int state);
 
@@ -62,9 +59,6 @@ private:
 
 	//! \brief Check box to select mutable in/out of search results.
 	QCheckBox mutableBox_;
-
-	//! \brief Check box to select parameterizable in/out of search results.
-	//QCheckBox parameterizableBox_;
 
 	//! \brief Check box to select fixed in/out of search results.
 	QCheckBox fixedBox_;

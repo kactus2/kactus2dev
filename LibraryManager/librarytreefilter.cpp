@@ -254,9 +254,6 @@ bool LibraryTreeFilter::checkFirmness( QSharedPointer<Component const> component
 		case KactusAttribute::KTS_MUTABLE: 
 			return firmness_.mutable_;
 
-		case KactusAttribute::KTS_PARAMETERIZABLE: 
-			return firmness_.parameterizable_;
-
 		case KactusAttribute::KTS_FIXED: 
 			return firmness_.fixed_;
 
