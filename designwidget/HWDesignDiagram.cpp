@@ -1835,118 +1835,15 @@ QMenu* HWDesignDiagram::createContextMenu(QPointF const& pos)
             }
         }
 
-        QList<QGraphicsItem*> items = selectedItems();
+        prepareContextMenuActions();
 
-        if (items.empty())
-        {
-            menu = new QMenu(parent());
-            menu->addAction(&pasteAction_);
-
-            // If the selection is empty, check if the clipboard contains components or a column.
-            QMimeData const* mimeData = QApplication::clipboard()->mimeData();
-
-            GraphicsColumn* column = layout_->findColumnAt(parent()->mapFromGlobal(QCursor::pos()));
-
-            if (mimeData != 0 && mimeData->hasImage() &&                
-                (mimeData->imageData().canConvert<ColumnCollectionCopyData>() || 
-                (column != 0 && mimeData->imageData().canConvert<ComponentCollectionCopyData>()) ||
-                (column != 0 && mimeData->imageData().canConvert<BusInterfaceCollectionCopyData>())))
-            {
-                pasteAction_.setEnabled(true);
-            }
-            else
-            {
-                pasteAction_.setEnabled(false);
-            }
-        }
-        else
-        {
-            int type = getCommonItemType(items);
-
-            if (type == BusPortItem::Type || type == BusInterfaceItem::Type)
-            {
-                // Allow copying interfaces (single or multiple).
-                menu = new QMenu(parent());	
-                menu->addAction(&copyAction_); 
-                //copyAction_.setEnabled(true);
-            }
-            else if (type == HWComponentItem::Type)
-            {
-                
-                // Allow copying components (single or multiple).
-                menu = new QMenu(parent());	                               
-                menu->addAction(&copyAction_);                                              
-                menu->addAction(&pasteAction_);
-                menu->addSeparator();
-                
-                HWComponentItem* compItem = qgraphicsitem_cast<HWComponentItem *>(item);
-                bool draft = !compItem->componentModel()->getVlnv()->isValid();           
-                if (draft)
-                {
-                    menu->addAction(&addAction_);
-                    if (selectedItems().size() == 1)
-                    {
-                        addAction_.setEnabled(true);
-                    }
-                    else
-                    {
-                        addAction_.setEnabled(false);
-                    }
-                }
-                else
-                {
-                    menu->addAction(&openComponentAction_);
-                    if (compItem->componentModel()->isHierarchical())
-                    {
-                        menu->addAction(&openDesignAction_);
-                    }
-
-                    if (selectedItems().size() == 1)
-                    {
-                        openComponentAction_.setEnabled(true);
-                        openDesignAction_.setEnabled(true);
-                    }
-                    else
-                    {
-                        openComponentAction_.setEnabled(false);
-                        openDesignAction_.setEnabled(false);
-                    }
-                }
-
-                // Enable paste action, if a draft component and bus ports on the clipboard.
-                QMimeData const* mimedata = QApplication::clipboard()->mimeData();
-                if (items.count() == 1 && draft && mimedata != 0 && mimedata->hasImage() && 
-                    mimedata->imageData().canConvert<BusPortCollectionCopyData>())
-                {
-                    pasteAction_.setEnabled(true);
-                }
-                else
-                {
-                    pasteAction_.setEnabled(false);
-                }
-            }
-            else if (type == HWColumn::Type)
-            {
-                // Allow copying columns (single or multiple).
-                menu = new QMenu(parent());	
-                menu->addAction(&copyAction_);
-
-                // Allow pasting if the clipboard contains column data.
-                menu->addAction(&pasteAction_);
-
-                QMimeData const* mimedata = QApplication::clipboard()->mimeData();
-
-                if (mimedata != 0 && mimedata->hasImage() && 
-                    mimedata->imageData().canConvert<ColumnCollectionCopyData>())
-                {
-                    pasteAction_.setEnabled(true);
-                }
-                else
-                {
-                    pasteAction_.setEnabled(false);
-                }
-            }
-        }
+        menu = new QMenu(parent());
+        menu->addAction(&addAction_);
+        menu->addAction(&openComponentAction_);
+        menu->addAction(&openDesignAction_);
+        menu->addSeparator();
+        menu->addAction(&copyAction_);
+        menu->addAction(&pasteAction_);
     }
 
     return menu;
@@ -2055,7 +1952,7 @@ void HWDesignDiagram::onPasteAction(){
                 // Paste components.
                 if (mimeData->imageData().canConvert<ComponentCollectionCopyData>() && items.empty())
                 {
-                    GraphicsColumn* column = layout_->findColumnAt(parent()->mapFromGlobal(QCursor::pos()));
+                    GraphicsColumn* column = layout_->findColumnAt(parent()->mapFromGlobal(contextPos_));
 
                     if (column != 0)
                     {
@@ -2092,7 +1989,7 @@ void HWDesignDiagram::onPasteAction(){
                 else if (mimeData->imageData().canConvert<BusInterfaceCollectionCopyData>() &&
                          items.empty()) 
                 {
-                    GraphicsColumn* column = layout_->findColumnAt(parent()->mapFromGlobal(QCursor::pos()));
+                    GraphicsColumn* column = layout_->findColumnAt(parent()->mapFromGlobal(contextPos_));
                                        
                     if (column != 0 )
                     {
@@ -2897,15 +2794,16 @@ void HWDesignDiagram::pasteInterfaces(BusPortCollectionCopyData const& collectio
         copyBusIf->setInterfaceMode(instance.mode);
         copyBusIf->setDefaultPos(instance.busInterface->getDefaultPos());
 
-        // Create a busPort with the copied bus interface.
+        // Create a bus port with the copied bus interface.
         BusPortItem* port = new BusPortItem(copyBusIf, getLibraryInterface(), false, component);        			
-        port->setPos(instance.pos);
+        port->setPos(snapPointToGrid(component->mapFromScene(parent()->mapFromGlobal(contextPos_))));
         
         // Lock the interface type for non-draft interfaces.
-        if ( copyBusIf->getInterfaceMode() != General::INTERFACE_MODE_COUNT )
+        if (copyBusIf->getInterfaceMode() != General::INTERFACE_MODE_COUNT)
         {
             port->setTypeLocked(true);
         }
+
         QMap<QString, QPointF> oldLocations = component->getBusInterfacePositions();
 
         PortPasteCommand* pasteCmd = new PortPasteCommand(component, instance.srcComponent, instance.pos, port, cmd);
@@ -2983,7 +2881,7 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
 
             if (useCursorPos)
             {
-                port->setPos(parent()->mapFromGlobal(QCursor::pos()));
+                port->setPos(parent()->mapFromGlobal(contextPos_));
             }
             else
             {
@@ -3054,7 +2952,7 @@ void HWDesignDiagram::pasteInstances(ComponentCollectionCopyData const& collecti
 
         if (useCursorPos)
         {
-            comp->setPos(parent()->mapFromGlobal(QCursor::pos()));
+            comp->setPos(parent()->mapFromGlobal(contextPos_));
         }
         else
         {
@@ -3094,5 +2992,96 @@ void HWDesignDiagram::pasteInstances(ComponentCollectionCopyData const& collecti
             childCmd->redo();
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::prepareContextMenuActions()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::prepareContextMenuActions()
+{
+    contextPos_ = QCursor::pos();
+
+    QList<QGraphicsItem*> items = selectedItems();
+
+    if (items.empty())
+    {
+        addAction_.setEnabled(false);
+        openComponentAction_.setEnabled(false);
+        openDesignAction_.setEnabled(false);
+        copyAction_.setEnabled(false);
+
+        // If the selection is empty, check if the clipboard contains components or a column.
+        QMimeData const* mimeData = QApplication::clipboard()->mimeData();
+
+        GraphicsColumn* column = layout_->findColumnAt(parent()->mapFromGlobal(contextPos_));
+
+        pasteAction_.setEnabled(mimeData != 0 && mimeData->hasImage() &&                
+                                (mimeData->imageData().canConvert<ColumnCollectionCopyData>() || 
+                                (column != 0 && mimeData->imageData().canConvert<ComponentCollectionCopyData>()) ||
+                                (column != 0 && mimeData->imageData().canConvert<BusInterfaceCollectionCopyData>())));
+    }
+    else
+    {
+        int type = getCommonItemType(items);
+
+        // Allow copying interfaces (single or multiple).
+        if (type == BusPortItem::Type || type == BusInterfaceItem::Type)
+        {
+            addAction_.setEnabled(false);
+            openComponentAction_.setEnabled(false);
+            openDesignAction_.setEnabled(false);
+            copyAction_.setEnabled(true);
+            pasteAction_.setEnabled(false);
+        }
+        else if (type == HWComponentItem::Type)
+        {
+            HWComponentItem* compItem = qgraphicsitem_cast<HWComponentItem *>(items.back());
+            bool draft = !compItem->componentModel()->getVlnv()->isValid();
+
+            addAction_.setEnabled(draft && items.count() == 1);
+            openComponentAction_.setEnabled(!draft && items.count() == 1);
+            openDesignAction_.setEnabled(!draft && compItem->componentModel()->isHierarchical() &&
+                                         items.count() == 1);
+
+            // Allow copying components (single or multiple).
+            copyAction_.setEnabled(true);
+
+            // Enable paste action, if a draft component and bus ports on the clipboard.
+            QMimeData const* mimedata = QApplication::clipboard()->mimeData();
+            pasteAction_.setEnabled(items.count() == 1 && draft && mimedata != 0 && mimedata->hasImage() && 
+                                    mimedata->imageData().canConvert<BusPortCollectionCopyData>());
+        }
+        else if (type == HWColumn::Type)
+        {
+            addAction_.setEnabled(false);
+            openComponentAction_.setEnabled(false);
+            openDesignAction_.setEnabled(false);
+        
+            // Allow copying columns (single or multiple).
+            copyAction_.setEnabled(true);
+
+            // Allow pasting if the clipboard contains column data.
+            QMimeData const* mimedata = QApplication::clipboard()->mimeData();
+            pasteAction_.setEnabled(mimedata != 0 && mimedata->hasImage() && 
+                                    mimedata->imageData().canConvert<ColumnCollectionCopyData>());
+        }
+        else
+        {
+            addAction_.setEnabled(false);
+            openComponentAction_.setEnabled(false);
+            openDesignAction_.setEnabled(false);
+            copyAction_.setEnabled(false);
+            pasteAction_.setEnabled(false);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::keyPressEvent()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::keyPressEvent(QKeyEvent *event)
+{
+    prepareContextMenuActions();
+    DesignDiagram::keyPressEvent(event);
 }
 

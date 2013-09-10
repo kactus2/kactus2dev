@@ -319,8 +319,6 @@ protected:
      */
 	virtual QMenu* createContextMenu(QPointF const& pos);
 
-    void prepareContextMenuActions();
-
 private:
     // Disable copying.
     SystemDesignDiagram(SystemDesignDiagram const& rhs);
@@ -491,6 +489,11 @@ private:
      *  Initializes the context menu actions.
      */
 	void setupActions();
+
+    /*!
+     *  Enables/disable context menu actions based on the current selection.
+     */
+    void prepareContextMenuActions();
 
     //-----------------------------------------------------------------------------
     //! Drag type enumeration.

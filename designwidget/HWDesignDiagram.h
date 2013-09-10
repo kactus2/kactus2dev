@@ -341,6 +341,10 @@ protected:
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void wheelEvent(QGraphicsSceneWheelEvent *event);
 
+    //! Called when a key has been pressed.
+    void keyPressEvent(QKeyEvent *event);
+
+    //! Called when a key has been release.
     void keyReleaseEvent(QKeyEvent *event);
 
     void dropEvent(QGraphicsSceneDragDropEvent *event);
@@ -480,6 +484,11 @@ private:
     void pasteInstances(ComponentCollectionCopyData const& collection,
                         GraphicsColumn* column, QUndoCommand* cmd, bool useCursorPos);
 
+    /*!
+     *  Enables/disable context menu actions based on the current selection.
+     */
+    void prepareContextMenuActions();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -535,6 +544,10 @@ private:
 
 	//! If true, context menu is enabled.
 	bool showContextMenu_;
+
+    //! Context opening mouse cursor position.
+    QPoint contextPos_;
+
 };
 
 #endif // HWDESIGNDIAGRAM_H
