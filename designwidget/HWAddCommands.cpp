@@ -261,9 +261,6 @@ PortPasteCommand::~PortPasteCommand()
 //-----------------------------------------------------------------------------
 void PortPasteCommand::undo()
 {
-    // Execute child commands.
-    QUndoCommand::undo();
-
     Q_ASSERT(port_ != 0);
 
     // Remove the port from the component and from the scene
@@ -271,6 +268,9 @@ void PortPasteCommand::undo()
     scene_->removeItem(port_);
 
     del_ = true;
+
+    // Execute child commands.
+    QUndoCommand::undo();
 }
 
 //-----------------------------------------------------------------------------

@@ -249,6 +249,8 @@ void SWInterfacePasteCommand::undo()
     interface_->scene()->removeItem(interface_);
     del_ = true;
 
+    // Execute child commands.
+    QUndoCommand::undo();
 }
 
 //-----------------------------------------------------------------------------
@@ -256,6 +258,9 @@ void SWInterfacePasteCommand::undo()
 //-----------------------------------------------------------------------------
 void SWInterfacePasteCommand::redo()
 {
+    // Execute child commands.
+    QUndoCommand::redo();
+
     // Add the item to the column.
     stack_->addItem(interface_);
     del_ = false;

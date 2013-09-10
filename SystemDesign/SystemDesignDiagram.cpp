@@ -906,7 +906,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
                     SWInterfaceItem* newItem = new SWInterfaceItem(getEditedComponent(), "", 0);
                     newItem->setPos(snapPointToGrid(event->scenePos()));
 
-                    // Save the positions of the other diagram interfaces.
+                    // Save the positions of the other interfaces.
                     QMap<SWInterfaceItem*, QPointF> oldPositions;
 
                     foreach (QGraphicsItem* item, dynamic_cast<SystemColumn*>(stack)->childItems())
@@ -2915,7 +2915,7 @@ void SystemDesignDiagram::onPasteAction()
 
                     QSharedPointer<QUndoCommand> parentCmd(new QUndoCommand());
                     pasteInterfaces(collection, targetComp, parentCmd.data());
-                    getEditProvider().addCommand(parentCmd);
+                    getEditProvider().addCommand(parentCmd, false);
 
                     // Update sidebar view.
                     emit componentSelected(targetComp);
@@ -2954,7 +2954,7 @@ void SystemDesignDiagram::onPasteAction()
 
                         QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
                         pasteInterfaces(collection, stack, cmd.data(), true);
-                        getEditProvider().addCommand(cmd);
+                        getEditProvider().addCommand(cmd, false);
                     }
                 }
                 // Allow pasting components to either empty design space (column) or to parent HW.
@@ -3265,7 +3265,7 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
         unsigned int count = 0;
 
         while(targetComp->getSWPort(uniqueName, SWConnectionEndpoint::ENDPOINT_TYPE_COM) != 0 ||
-            targetComp->getSWPort(uniqueName, SWConnectionEndpoint::ENDPOINT_TYPE_API) != 0 )
+              targetComp->getSWPort(uniqueName, SWConnectionEndpoint::ENDPOINT_TYPE_API) != 0 )
         {
             ++count;
             uniqueName = portData.name + "_" + QString::number(count);			
@@ -3296,7 +3296,34 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
         QPointF pos = snapPointToGrid(targetComp->mapFromScene(parent()->mapFromGlobal(QCursor::pos())));
         port->setPos(pos);
 
-        new SWPortAddCommand(targetComp, port, cmd);
+        // Save the positions of the other interfaces.
+        QMap<SWPortItem*, QPointF> oldPositions;
+
+        foreach (QGraphicsItem* item, targetComp->childItems())
+        {
+            if (item->type() == SWPortItem::Type)
+            {
+                SWPortItem* port = static_cast<SWPortItem*>(item);
+                oldPositions.insert(port, port->pos());
+            }
+        }
+
+        // Run the actual command for pasting the interface.
+        QUndoCommand* pasteCmd = new SWPortAddCommand(targetComp, port, cmd);
+        pasteCmd->redo();
+
+        // Determine if the other interfaces changed their position and create undo commands for them.
+        QMap<SWPortItem*, QPointF>::iterator cur = oldPositions.begin();
+
+        while (cur != oldPositions.end())
+        {
+            if (cur.key()->pos() != cur.value())
+            {
+                new SWPortMoveCommand(cur.key(), cur.value(), pasteCmd);
+            }
+
+            ++cur;
+        }
     }
 }
 
@@ -3309,7 +3336,7 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
     foreach (PortCopyData const& portData, collection.ports)
     {
         // Interface must have a unique name within the component.
-        QString uniqueName = portData.name;	
+        QString uniqueName = portData.name;
 
         unsigned int count = 0;
 
@@ -3351,6 +3378,32 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
             interface->setPos(portData.pos);
         }
 
-        new SWInterfacePasteCommand(stack, interface, cmd);
+        // Save the positions of the other interfaces.
+        QMap<SWInterfaceItem*, QPointF> oldPositions;
+
+        foreach (QGraphicsItem* item, dynamic_cast<SystemColumn*>(stack)->childItems())
+        {
+            if (item->type() == SWInterfaceItem::Type)
+            {
+                SWInterfaceItem* interface = static_cast<SWInterfaceItem*>(item);
+                oldPositions.insert(interface, interface->scenePos());
+            }
+        }
+
+        QUndoCommand* pasteCmd = new SWInterfacePasteCommand(stack, interface, cmd);
+        pasteCmd->redo();
+
+        // Determine if the other interfaces changed their position and create undo commands for them.
+        QMap<SWInterfaceItem*, QPointF>::iterator cur = oldPositions.begin();
+
+        while (cur != oldPositions.end())
+        {
+            if (cur.key()->scenePos() != cur.value())
+            {
+                new ItemMoveCommand(cur.key(), cur.value(), stack, pasteCmd);
+            }
+
+            ++cur;
+        }
     }
 }
