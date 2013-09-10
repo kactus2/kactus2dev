@@ -48,4 +48,5 @@ void LibraryPathEditor::keyPressEvent( QKeyEvent* event ) {
 
 	// normally use the base class implementation
 	QLineEdit::keyPressEvent(event);
+    emit contentChanged();
 }

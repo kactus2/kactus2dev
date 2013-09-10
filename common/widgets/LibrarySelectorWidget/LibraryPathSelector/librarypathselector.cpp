@@ -39,6 +39,7 @@ pathEditor_(NULL) {
 	pathEditor_ = new LibraryPathEditor(this);
 	setLineEdit(pathEditor_);
 	pathEditor_->setUnmodifiablePath(defaultPath);
+    connect(pathEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
 	setValidator(validator_);
 	validator_->setUnmodifiablePath(defaultPath);

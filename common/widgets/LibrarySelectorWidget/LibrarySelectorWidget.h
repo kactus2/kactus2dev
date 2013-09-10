@@ -57,6 +57,11 @@ public:
      */
     bool isValid() const;
 
+signals:
+
+    //! \brief Emitted when the library path changes.
+    void contentChanged();
+
 public slots:
 
     //! Called when browse button is clicked.

@@ -37,6 +37,11 @@ public:
 	*/
 	void setUnmodifiablePath(const QString& path);
 
+signals:
+
+    //! \brief Emitted when the text in editor changes.
+    void contentChanged();
+
 protected:
 
 	/*! \brief Handler for key press events.
