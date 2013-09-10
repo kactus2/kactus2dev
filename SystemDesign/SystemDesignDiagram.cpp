@@ -490,6 +490,16 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
     // Check if the dragged item was a valid one.
     if (dragType_ == DRAG_TYPE_SW)
     {
+        // Disallow self-instantiation.
+        if (droppedVLNV == *getEditedComponent()->getVlnv())
+        {
+            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                tr("Component cannot be instantiated to its own design."),
+                QMessageBox::Ok, (QWidget*)parent());
+            msgBox.exec();
+            return;
+        }
+
         // Retrieve the component model.
         QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(droppedVLNV);
         QSharedPointer<Component> comp = libComp.staticCast<Component>();
