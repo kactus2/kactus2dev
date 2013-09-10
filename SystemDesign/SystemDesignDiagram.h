@@ -265,6 +265,17 @@ public slots:
      */
 	virtual void onAddAction();
 
+    /*!
+     *  Called when open component is selected from the context menu.
+     */
+	virtual void onOpenComponentAction();
+
+
+    /*!
+     *  Called when open SW design is selected from the context menu.
+     */
+	virtual void onOpenDesignAction();
+
 protected:
     //! Called when the user presses a mouse button.
     void mousePressEvent(QGraphicsSceneMouseEvent* event);
@@ -541,6 +552,12 @@ private:
 
     //! Context menu action for adding a draft component to library.
     QAction addAction_;
+
+    //! Context menu action for opening a SW component.
+    QAction openComponentAction_;
+
+    //! Context menu action for opening a SW component design.
+    QAction openDesignAction_;
 
     //! If true, context menu is enabled.
     bool showContextMenu_;

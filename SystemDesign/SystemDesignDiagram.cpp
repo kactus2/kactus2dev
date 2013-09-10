@@ -94,6 +94,8 @@ SystemDesignDiagram::SystemDesignDiagram(bool onlySW, LibraryInterface* lh, Main
       copyAction_(tr("Copy"), this),
       pasteAction_(tr("Paste"), this),
       addAction_(tr("Add to Library"), this),
+      openComponentAction_(tr("Open Component"), this),
+      openDesignAction_(tr("Open SW Design"), this),
       showContextMenu_(true)
 {
     setupActions();
@@ -3061,6 +3063,57 @@ void SystemDesignDiagram::onAddAction()
 }
 
 //-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::onOpenComponentAction()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::onOpenComponentAction()
+{
+    if (selectedItems().size() == 1)
+    {
+        SystemComponentItem* component = dynamic_cast<SystemComponentItem*>(selectedItems().first());
+        if (component)
+        {
+            emit openComponent(*component->componentModel()->getVlnv());
+        }            
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::onOpenDesignAction()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::onOpenDesignAction()
+{
+    if (selectedItems().size() == 1)
+    {
+        SystemComponentItem* component = dynamic_cast<SystemComponentItem*>(selectedItems().first());
+        if (component)
+        {
+            if (getLibraryInterface()->contains(*component->componentModel()->getVlnv()))
+            {
+                QString viewName;
+                QStringList hierViews = component->componentModel()->getSWViewNames();
+
+                // if configuration is used and it contains an active view for the instance
+                if (getDesignConfiguration() && getDesignConfiguration()->hasActiveView(component->name())) {
+                    viewName = getDesignConfiguration()->getActiveView(component->name());
+
+                    QSharedPointer<SWView> view = component->componentModel()->findSWView(viewName);
+                    // if view was found
+                    if (view)
+                    {
+                        emit openSWDesign(*component->componentModel()->getVlnv(), viewName);
+                    }
+                }
+                // Open the first design if there is one or multiple hierarchical view.
+                else if (hierViews.size() != 0)
+                {
+                    emit openSWDesign(*component->componentModel()->getVlnv(), hierViews.first());
+                }
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::createContextMenu()
 //-----------------------------------------------------------------------------
 QMenu* SystemDesignDiagram::createContextMenu(QPointF const& pos)
@@ -3098,6 +3151,8 @@ QMenu* SystemDesignDiagram::createContextMenu(QPointF const& pos)
 
         menu = new QMenu(parent());
         menu->addAction(&addAction_);
+        menu->addAction(&openComponentAction_);
+        menu->addAction(&openDesignAction_);
         menu->addSeparator();
         menu->addAction(&copyAction_);
         menu->addAction(&pasteAction_);
@@ -3121,6 +3176,12 @@ void SystemDesignDiagram::setupActions()
 
     parent()->addAction(&addAction_);
     connect(&addAction_, SIGNAL(triggered()), this, SLOT(onAddAction()), Qt::UniqueConnection);
+
+    parent()->addAction(&openComponentAction_);
+    connect(&openComponentAction_, SIGNAL(triggered()), this, SLOT(onOpenComponentAction()), Qt::UniqueConnection);
+
+    parent()->addAction(&openDesignAction_);
+    connect(&openDesignAction_, SIGNAL(triggered()), this, SLOT(onOpenDesignAction()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -3330,6 +3391,8 @@ void SystemDesignDiagram::prepareContextMenuActions()
     {
         addAction_.setEnabled(false);
         copyAction_.setEnabled(false);
+        openComponentAction_.setEnabled(false);
+        openDesignAction_.setEnabled(false);
 
         // If the selection is empty, check if the clipboard contains components or a column.
         QMimeData const* mimeData = QApplication::clipboard()->mimeData();
@@ -3356,11 +3419,27 @@ void SystemDesignDiagram::prepareContextMenuActions()
             copyAction_.setEnabled(true);
 
             addAction_.setEnabled(false);
+            openComponentAction_.setEnabled(false);
+            openDesignAction_.setEnabled(false);
             pasteAction_.setEnabled(false);
         }
         else if (type == SWComponentItem::Type)
         {
             addAction_.setEnabled(false);
+            openComponentAction_.setEnabled(true);
+
+            // Allow SW design opening, if component has at least one hierarchical view.
+            SWComponentItem* swItem = qgraphicsitem_cast<SWComponentItem *>(items.back());
+            Q_ASSERT(swItem);
+            QStringList hierViews = swItem->componentModel()->getSWViewNames();          
+            if (hierViews.size() != 0)
+            {
+                openDesignAction_.setEnabled(true);
+            }
+            else
+            {
+                openDesignAction_.setEnabled(false);
+            }
 
             // Allow copying components (single or multiple).
             copyAction_.setEnabled(true);
@@ -3378,6 +3457,8 @@ void SystemDesignDiagram::prepareContextMenuActions()
         else if (type == SystemColumn::Type)
         {
             addAction_.setEnabled(false);
+            openComponentAction_.setEnabled(false);
+            openDesignAction_.setEnabled(false);
             copyAction_.setEnabled(true);
 
             QMimeData const* mimedata = QApplication::clipboard()->mimeData();
@@ -3387,6 +3468,8 @@ void SystemDesignDiagram::prepareContextMenuActions()
         else if (type == HWMappingItem::Type)
         {
             addAction_.setEnabled(false);
+            openComponentAction_.setEnabled(true);
+            openDesignAction_.setEnabled(false);
             copyAction_.setEnabled(false);            
             
             QMimeData const* mimeData = QApplication::clipboard()->mimeData();
@@ -3396,6 +3479,8 @@ void SystemDesignDiagram::prepareContextMenuActions()
         else
         {
             addAction_.setEnabled(false);
+            openComponentAction_.setEnabled(false);
+            openDesignAction_.setEnabled(false);
             copyAction_.setEnabled(false);
             pasteAction_.setEnabled(false);
         }
