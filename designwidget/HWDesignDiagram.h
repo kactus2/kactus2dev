@@ -545,9 +545,8 @@ private:
 	//! If true, context menu is enabled.
 	bool showContextMenu_;
 
-    //! Context opening mouse cursor position.
+    //! Cursor position where the user right-presses to open the context menu.
     QPoint contextPos_;
-
 };
 
 #endif // HWDESIGNDIAGRAM_H

@@ -2810,7 +2810,7 @@ void SystemDesignDiagram::pasteSWInstances(ComponentCollectionCopyData const& co
 
         if (useCursorPos)
         {
-            comp->setPos(parent()->mapFromGlobal(QCursor::pos()));
+            comp->setPos(parent()->mapFromGlobal(contextPos_));
         }
         else
         {
@@ -2946,7 +2946,7 @@ void SystemDesignDiagram::onPasteAction()
                 if (mimeData->imageData().canConvert<PortCollectionCopyData>() && items.empty())
                 {
                     // Find a valid column for the interfaces.
-                    IGraphicsItemStack* stack = layout_->findColumnAt(parent()->mapFromGlobal(QCursor::pos()));
+                    IGraphicsItemStack* stack = layout_->findColumnAt(parent()->mapFromGlobal(contextPos_));
 
                     if (stack && stack->getContentType() != COLUMN_CONTENT_IO)
                     {
@@ -2981,7 +2981,7 @@ void SystemDesignDiagram::onPasteAction()
                     }
                     else
                     {
-                        stack = layout_->findColumnAt(parent()->mapFromGlobal(QCursor::pos()));
+                        stack = layout_->findColumnAt(parent()->mapFromGlobal(contextPos_));
                     }
 
                     if (stack != 0)
@@ -3265,7 +3265,7 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
             port = new SWPortItem(uniqueName, targetComp);
         }
 
-        QPointF pos = snapPointToGrid(targetComp->mapFromScene(parent()->mapFromGlobal(QCursor::pos())));
+        QPointF pos = snapPointToGrid(targetComp->mapFromScene(parent()->mapFromGlobal(contextPos_)));
         port->setPos(pos);
 
         // Save the positions of the other interfaces.
@@ -3353,7 +3353,7 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
 
         if (useCursorPos)
         {
-            interface->setPos(parent()->mapFromGlobal(QCursor::pos()));
+            interface->setPos(parent()->mapFromGlobal(contextPos_));
         }
         else
         {
@@ -3395,6 +3395,7 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::prepareContextMenuActions()
 {
+    contextPos_ = QCursor::pos();
     QList<QGraphicsItem*> items = selectedItems();
 
     if (items.empty())

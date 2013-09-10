@@ -564,6 +564,9 @@ private:
 
     //! If true, context menu is enabled.
     bool showContextMenu_;
+
+    //! Cursor position where the user right-presses to open the context menu.
+    QPoint contextPos_;
 };
 
 //-----------------------------------------------------------------------------
