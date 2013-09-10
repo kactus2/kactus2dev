@@ -3335,13 +3335,23 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
 {
     foreach (PortCopyData const& portData, collection.ports)
     {
+        QList<QString> existingNames;
+
+        foreach (QGraphicsItem* item, items())
+        {
+            if (item->type() == SWInterfaceItem::Type)
+            {
+                SWInterfaceItem* interface = static_cast<SWInterfaceItem*>(item);
+                existingNames.append(interface->name());
+            }
+        }
+        
         // Interface must have a unique name within the component.
         QString uniqueName = portData.name;
 
         unsigned int count = 0;
 
-        while (getEditedComponent()->getComInterfaceNames().contains(uniqueName) ||
-               getEditedComponent()->getApiInterfaceNames().contains(uniqueName))
+        while (existingNames.contains(uniqueName))
         {
             ++count;
             uniqueName = portData.name + "_" + QString::number(count);

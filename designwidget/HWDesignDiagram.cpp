@@ -2861,10 +2861,22 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
 {
     foreach(BusInterfaceCopyData const& instance, collection.instances)
     {
+        QList<QString> existingNames;
+
+        foreach (QGraphicsItem* item, items())
+        {
+            if (item->type() == BusInterfaceItem::Type)
+            {
+                BusInterfaceItem* interface = static_cast<BusInterfaceItem*>(item);
+                existingNames.append(interface->name());
+            }
+        }
+
         // Bus interface must have a unique name within the component.
-        QString uniqueBusName = instance.busInterface->getName();	
-        unsigned int count =  0;	
-        while( getEditedComponent()->getBusInterface( uniqueBusName ) != 0 )
+        QString uniqueBusName = instance.busInterface->getName();
+        unsigned int count =  0;
+
+        while (existingNames.contains(uniqueBusName))
         {
             count++;
             uniqueBusName = instance.busInterface->getName() + "_" + QString::number(count);			
