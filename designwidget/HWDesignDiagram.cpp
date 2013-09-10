@@ -90,7 +90,9 @@ HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& edit
       sourceComp_(0),
       copyAction_(tr("Copy"), this),
       pasteAction_(tr("Paste"), this),
-      addAction_(tr("Add to Library"), this),
+      addAction_(tr("Add to Library"), this),     
+      openComponentAction_(tr("Open Component"), this),
+      openDesignAction_(tr("Open HW Design"), this),
       showContextMenu_(true)
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
@@ -1875,8 +1877,10 @@ QMenu* HWDesignDiagram::createContextMenu(QPointF const& pos)
                 menu = new QMenu(parent());	                               
                 menu->addAction(&copyAction_);                                              
                 menu->addAction(&pasteAction_);
-
-                bool draft = !qgraphicsitem_cast<HWComponentItem *>(item)->componentModel()->getVlnv()->isValid();           
+                menu->addSeparator();
+                
+                HWComponentItem* compItem = qgraphicsitem_cast<HWComponentItem *>(item);
+                bool draft = !compItem->componentModel()->getVlnv()->isValid();           
                 if (draft)
                 {
                     menu->addAction(&addAction_);
@@ -1887,6 +1891,25 @@ QMenu* HWDesignDiagram::createContextMenu(QPointF const& pos)
                     else
                     {
                         addAction_.setEnabled(false);
+                    }
+                }
+                else
+                {
+                    menu->addAction(&openComponentAction_);
+                    if (compItem->componentModel()->isHierarchical())
+                    {
+                        menu->addAction(&openDesignAction_);
+                    }
+
+                    if (selectedItems().size() == 1)
+                    {
+                        openComponentAction_.setEnabled(true);
+                        openDesignAction_.setEnabled(true);
+                    }
+                    else
+                    {
+                        openComponentAction_.setEnabled(false);
+                        openDesignAction_.setEnabled(false);
                     }
                 }
 
@@ -2138,6 +2161,47 @@ void HWDesignDiagram::onAddAction()
             {
                 // Open up the component editor.
                 emit openComponent(*comp->componentModel()->getVlnv());
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::onOpenComponentAction()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::onOpenComponentAction()
+{
+    if (selectedItems().size() == 1)
+    {
+        HWComponentItem* component = qgraphicsitem_cast<HWComponentItem *>(selectedItems().first());
+        if (component)
+        {
+            emit openComponent(*component->componentModel()->getVlnv());
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::onOpenDesignAction()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::onOpenDesignAction()
+{
+    if (selectedItems().size() == 1)
+    {
+        HWComponentItem* component = qgraphicsitem_cast<HWComponentItem *>(selectedItems().first());
+        if (component)
+        {
+            // if configuration is used and it contains an active view for the instance
+            if (getDesignConfiguration() && getDesignConfiguration()->hasActiveView(component->name())) 
+            {
+                QString viewName = getDesignConfiguration()->getActiveView(component->name());
+
+                View* view = component->componentModel()->findView(viewName);
+
+                // if view was found and it is hierarchical
+                if (view && view->isHierarchical()) {
+                    emit openDesign(*component->componentModel()->getVlnv(), viewName);
+                }
             }
         }
     }
@@ -2652,6 +2716,12 @@ void HWDesignDiagram::setupActions()
 
     parent()->addAction(&addAction_);
     connect(&addAction_, SIGNAL(triggered()), this, SLOT(onAddAction()), Qt::UniqueConnection);
+
+    parent()->addAction(&openComponentAction_);
+    connect(&openComponentAction_, SIGNAL(triggered()), this, SLOT(onOpenComponentAction()), Qt::UniqueConnection);
+
+    parent()->addAction(&openDesignAction_);
+    connect(&openDesignAction_, SIGNAL(triggered()), this, SLOT(onOpenDesignAction()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -3022,3 +3092,4 @@ void HWDesignDiagram::pasteInstances(ComponentCollectionCopyData const& collecti
         }
     }
 }
+
