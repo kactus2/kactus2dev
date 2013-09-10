@@ -293,6 +293,9 @@ protected:
     //! Called when an object is dropped to the diagram.
     void dropEvent(QGraphicsSceneDragDropEvent *event);
 
+    //! Called when a key has been pressed.
+    void keyPressEvent(QKeyEvent *event);
+
     //! Called when a key has been released.
     void keyReleaseEvent(QKeyEvent *event);
 
@@ -304,6 +307,8 @@ protected:
 	 *      @return The menu with allowed actions or 0 if no menu is allowed or nothing to show.
      */
 	virtual QMenu* createContextMenu(QPointF const& pos);
+
+    void prepareContextMenuActions();
 
 private:
     // Disable copying.

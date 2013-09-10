@@ -3094,112 +3094,13 @@ QMenu* SystemDesignDiagram::createContextMenu(QPointF const& pos)
             }
         }
 
-        QList<QGraphicsItem*> items = selectedItems();
+        prepareContextMenuActions();
 
-        if (items.empty())
-        {
-            menu = new QMenu(parent());
-            menu->addAction(&pasteAction_);
-
-            // If the selection is empty, check if the clipboard contains components or a column.
-            QMimeData const* mimeData = QApplication::clipboard()->mimeData();
-
-            if (mimeData != 0 && mimeData->hasImage() &&
-                (mimeData->imageData().canConvert<ComponentCollectionCopyData>() ||
-                 mimeData->imageData().canConvert<ColumnCollectionCopyData>() ||
-                 mimeData->imageData().canConvert<PortCollectionCopyData>()))
-            {
-                pasteAction_.setEnabled(true);
-            }
-            else
-            {
-                pasteAction_.setEnabled(false);
-            }
-        }
-        else
-        {
-            int type = getCommonItemType(items);
-
-            if (type == SWPortItem::Type || type == SWInterfaceItem::Type)
-            {
-                // Allow copying API/COM ports (single or multiple).
-                menu = new QMenu(parent());	
-                menu->addAction(&copyAction_);
-            }
-            else if (type == SWComponentItem::Type)
-            {
-                // Allow copying components (single or multiple).
-                menu = new QMenu(parent());	
-                menu->addAction(&copyAction_);
-
-                // Enable paste action, if a draft component (no valid vlnv) and the clipboard
-                // contains API/COM bus interfaces.
-                menu->addAction(&pasteAction_);
-               
-                bool draft = !qgraphicsitem_cast<SWComponentItem *>(item)->componentModel()->getVlnv()->isValid();           
-                if (draft)
-                {
-                    menu->addAction(&addAction_);
-                    if (selectedItems().size() == 1)
-                    {
-                        addAction_.setEnabled(true);
-                    }
-                    else
-                    {
-                        addAction_.setEnabled(false);
-                    }
-                }
-
-                QMimeData const* mimedata = QApplication::clipboard()->mimeData();
-
-                if (draft && mimedata != 0 && mimedata->hasImage() && 
-                    mimedata->imageData().canConvert<PortCollectionCopyData>())
-                {
-                    pasteAction_.setEnabled(true);
-                }
-                else
-                {
-                    pasteAction_.setEnabled(false);
-                }
-            }
-            else if (type == SystemColumn::Type)
-            {
-                // Allow copying columns (single or multiple).
-                menu = new QMenu(parent());	
-                menu->addAction(&copyAction_);
-
-                // Allow pasting if the clipboard contains column data.
-                menu->addAction(&pasteAction_);
-
-                QMimeData const* mimedata = QApplication::clipboard()->mimeData();
-
-                if (mimedata != 0 && mimedata->hasImage() && mimedata->imageData().canConvert<ColumnCollectionCopyData>())
-                {
-                    pasteAction_.setEnabled(true);
-                }
-                else
-                {
-                    pasteAction_.setEnabled(false);
-                }
-            }
-            else if (type == HWMappingItem::Type)
-            {
-                menu = new QMenu(parent());
-                menu->addAction(&pasteAction_);
-
-                QMimeData const* mimeData = QApplication::clipboard()->mimeData();
-
-                if (mimeData != 0 && mimeData->hasImage() &&
-                    mimeData->imageData().canConvert<ComponentCollectionCopyData>())
-                {
-                    pasteAction_.setEnabled(true);
-                }
-                else
-                {
-                    pasteAction_.setEnabled(false);
-                }
-            }
-        }
+        menu = new QMenu(parent());
+        menu->addAction(&addAction_);
+        menu->addSeparator();
+        menu->addAction(&copyAction_);
+        menu->addAction(&pasteAction_);
     }
 
     return menu;
@@ -3416,4 +3317,96 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
             ++cur;
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::prepareContextMenuActions()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::prepareContextMenuActions()
+{
+    QList<QGraphicsItem*> items = selectedItems();
+
+    if (items.empty())
+    {
+        addAction_.setEnabled(false);
+        copyAction_.setEnabled(false);
+
+        // If the selection is empty, check if the clipboard contains components or a column.
+        QMimeData const* mimeData = QApplication::clipboard()->mimeData();
+
+        if (mimeData != 0 && mimeData->hasImage() &&
+            (mimeData->imageData().canConvert<ComponentCollectionCopyData>() ||
+            mimeData->imageData().canConvert<ColumnCollectionCopyData>() ||
+            mimeData->imageData().canConvert<PortCollectionCopyData>()))
+        {
+            pasteAction_.setEnabled(true);
+        }
+        else
+        {
+            pasteAction_.setEnabled(false);
+        }
+    }
+    else
+    {
+        int type = getCommonItemType(items);
+
+        if (type == SWPortItem::Type || type == SWInterfaceItem::Type)
+        {
+            // Allow copying API/COM ports (single or multiple).
+            copyAction_.setEnabled(true);
+
+            addAction_.setEnabled(false);
+            pasteAction_.setEnabled(false);
+        }
+        else if (type == SWComponentItem::Type)
+        {
+            addAction_.setEnabled(false);
+
+            // Allow copying components (single or multiple).
+            copyAction_.setEnabled(true);
+            
+            // Enable paste action, if a draft component (no valid vlnv) and the clipboard
+            // contains API/COM bus interfaces.
+            bool draft = !qgraphicsitem_cast<SWComponentItem *>(items.back())->componentModel()->getVlnv()->isValid();
+            addAction_.setEnabled(draft && selectedItems().size() == 1);
+            
+            QMimeData const* mimedata = QApplication::clipboard()->mimeData();
+
+            pasteAction_.setEnabled(draft && mimedata != 0 && mimedata->hasImage() && 
+                                    mimedata->imageData().canConvert<PortCollectionCopyData>());
+        }
+        else if (type == SystemColumn::Type)
+        {
+            addAction_.setEnabled(false);
+            copyAction_.setEnabled(true);
+
+            QMimeData const* mimedata = QApplication::clipboard()->mimeData();
+            pasteAction_.setEnabled(mimedata != 0 && mimedata->hasImage() &&
+                                    mimedata->imageData().canConvert<ColumnCollectionCopyData>());
+        }
+        else if (type == HWMappingItem::Type)
+        {
+            addAction_.setEnabled(false);
+            copyAction_.setEnabled(false);            
+            
+            QMimeData const* mimeData = QApplication::clipboard()->mimeData();
+            pasteAction_.setEnabled(mimeData != 0 && mimeData->hasImage() &&
+                                    mimeData->imageData().canConvert<ComponentCollectionCopyData>());
+        }
+        else
+        {
+            addAction_.setEnabled(false);
+            copyAction_.setEnabled(false);
+            pasteAction_.setEnabled(false);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::keyPressEvent()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::keyPressEvent(QKeyEvent *event)
+{
+    prepareContextMenuActions();
+    DesignDiagram::keyPressEvent(event);
 }

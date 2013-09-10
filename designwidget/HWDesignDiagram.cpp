@@ -2063,7 +2063,7 @@ void HWDesignDiagram::onPasteAction(){
 
                         QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
                         pasteInstances(collection, column, cmd.data(), true);
-                        getEditProvider().addCommand(cmd);
+                        getEditProvider().addCommand(cmd, false);
                     }
                 }
                 // Paste columns.
@@ -2077,15 +2077,16 @@ void HWDesignDiagram::onPasteAction(){
                     {
                         HWColumn* column = new HWColumn(columnData.desc, layout_.data());
                         
-                        new GraphicsColumnAddCommand(layout_.data(), column, parentCmd.data());
+                        QUndoCommand* columnCmd = new GraphicsColumnAddCommand(layout_.data(), column, parentCmd.data());
+                        columnCmd->redo();
+
                         pasteInstances(columnData.components, column, parentCmd.data(), false);
                         pasteInterfaces(columnData.interfaces, column, parentCmd.data(), false);
                     }
 
-                    getEditProvider().addCommand(parentCmd);
+                    getEditProvider().addCommand(parentCmd, false);
                     // Update sidebar view.
-                    emit clearItemSelection();
-            
+                    emit clearItemSelection();            
                 }
                 // Paste top-level interfaces.
                 else if (mimeData->imageData().canConvert<BusInterfaceCollectionCopyData>() &&
@@ -3089,6 +3090,8 @@ void HWDesignDiagram::pasteInstances(ComponentCollectionCopyData const& collecti
                 this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
             connect(childCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
                 this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+            childCmd->redo();
         }
     }
 }
