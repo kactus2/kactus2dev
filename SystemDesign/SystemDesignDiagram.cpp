@@ -2840,7 +2840,7 @@ void SystemDesignDiagram::pasteSWInstances(ComponentCollectionCopyData const& co
 
         if (targetStack != 0)
         {
-            SystemItemAddCommand* childCmd = new SystemItemAddCommand(stack, comp, cmd);
+            SystemItemAddCommand* childCmd = new SystemItemAddCommand(targetStack, comp, cmd);
 
             connect(childCmd, SIGNAL(componentInstantiated(ComponentItem*)),
                 this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
