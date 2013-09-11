@@ -650,11 +650,12 @@ void BusInterfaceItem::setTypes(VLNV const& busType, VLNV const& absType, Genera
         busInterface_->setInterfaceMode(General::INTERFACE_MODE_COUNT);
     }
 
+    busInterface_->setBusType(busType);
+    busInterface_->setAbstractionType(absType);
+    busInterface_->setInterfaceMode(mode);
+
     if (busType.isValid())
     {
-        busInterface_->setBusType(busType);
-        busInterface_->setAbstractionType(absType);
-        busInterface_->setInterfaceMode(mode);
         setTypeLocked(true);
 
         // Update the interface visuals.
@@ -682,6 +683,8 @@ void BusInterfaceItem::setTypes(VLNV const& busType, VLNV const& absType, Genera
         // Update the interface visuals.
         updateInterface();
     }
+
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -726,6 +729,8 @@ void BusInterfaceItem::undefine(bool removePorts)
 
     busInterface_->setPortMaps(QList< QSharedPointer<General::PortMap> >());
     busInterface_->setInterfaceMode(General::INTERFACE_MODE_COUNT);
+    busInterface_->setAbstractionType(VLNV());
+    busInterface_->setBusType(VLNV());
     //busInterface_->setName("");
     
     // Remove the bus interface from the top-level component and destroy it.

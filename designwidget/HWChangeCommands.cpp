@@ -541,13 +541,12 @@ EndPointTypesCommand::~EndPointTypesCommand()
 //-----------------------------------------------------------------------------
 void EndPointTypesCommand::undo()
 {
-    endpoint_->setTypes(oldBusType_, oldAbsType_, oldMode_);
-
     if (endpoint_->getBusInterface() != 0 && oldName_ != newName_)
     {
         endpoint_->getBusInterface()->setName(oldName_);
     }
 
+    endpoint_->setTypes(oldBusType_, oldAbsType_, oldMode_);
     endpoint_->updateInterface();
 }
 
@@ -556,13 +555,12 @@ void EndPointTypesCommand::undo()
 //-----------------------------------------------------------------------------
 void EndPointTypesCommand::redo()
 {
-    endpoint_->setTypes(newBusType_, newAbsType_, newMode_);
-
     if (oldName_ != newName_)
     {
         endpoint_->getBusInterface()->setName(newName_);
     }
 
+    endpoint_->setTypes(newBusType_, newAbsType_, newMode_);
     endpoint_->updateInterface();
 
     // Set interface modes for the other end points.

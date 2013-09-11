@@ -1715,7 +1715,7 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 			Q_ASSERT(vlnv.getType() == VLNV::BUSDEFINITION);
 
             bool editName = highlightedEndPoint_->type() == BusInterfaceItem::Type &&
-                            highlightedEndPoint_->getBusInterface() == 0 &&
+                            !highlightedEndPoint_->getBusInterface()->getBusType().isValid() &&
                             highlightedEndPoint_->getConnections().empty();
 
             // Ask the user for the interface mode.
