@@ -113,6 +113,10 @@ void HWConnection::updatePosition()
 void HWConnection::updateWidthLabel()
 {
     //simplifyPath();
+    if (route().size() < 2)
+    {
+        return;
+    }
 
     int totalWidth = 0;
     QList<QPointF> const& pathPoints = route();
