@@ -1267,9 +1267,8 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
 
     // This fixes the problem when the user click above a text label or a pixmap but
     // actually wants to select the parent item (such as the actual component, not its label).
-    if (item->parentItem() != 0 && item->type() != HWComponentItem::Type &&
-        item->type() != BusPortItem::Type && item->type() != BusInterfaceItem::Type &&
-        item->type() != HWColumn::Type)
+    while (item->parentItem() != 0 &&
+        (item->type() == QGraphicsTextItem::Type || item->type() == QGraphicsPixmapItem::Type))
     {
         item = item->parentItem();
     }
@@ -1821,9 +1820,8 @@ QMenu* HWDesignDiagram::createContextMenu(QPointF const& pos)
         {
             // This fixes the problem when the user click above a text label or a pixmap but
             // actually wants to select the parent item (such as the actual component, not its label).
-            if (item->parentItem() != 0 && item->type() != HWComponentItem::Type &&
-                item->type() != BusPortItem::Type && item->type() != BusInterfaceItem::Type &&
-                item->type() != HWColumn::Type)
+            while (item->parentItem() != 0 &&
+                (item->type() == QGraphicsTextItem::Type || item->type() == QGraphicsPixmapItem::Type))
             {
                 item = item->parentItem();
             }
