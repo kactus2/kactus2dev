@@ -80,7 +80,7 @@ proxy_(this) {
     proxy_.setSortCaseSensitivity(Qt::CaseInsensitive);
 
 	// sort the view
-	view_.sortByColumn(0, Qt::AscendingOrder);
+	// view_.sortByColumn(0, Qt::AscendingOrder);
 
 	QHBoxLayout* buttonLayout = new QHBoxLayout();
 	buttonLayout->addWidget(&importButton_, 0, Qt::AlignLeft);
