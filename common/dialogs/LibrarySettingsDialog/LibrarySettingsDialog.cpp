@@ -274,8 +274,13 @@ void LibrarySettingsDialog::onItemClicked( QTableWidgetItem* item ) {
 					temp->setCheckState(Qt::Unchecked);
 				}
 			}
-		}
-	}
+        }
+        // Do not allow unchecking
+        else
+        {
+            item->setCheckState(Qt::Checked);
+        }           
+    }
 
 	// if the item is the check box to select the active libraries
 	else if (item->column() == LibrarySettingsDelegate::ACTIVE_COL) {
