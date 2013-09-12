@@ -821,7 +821,7 @@ int VhdlParser::parseEquation(QString const& equation) const
 void VhdlParser::createPort(SelectionInfo const& info)
 {
     QString portNames = VhdlSyntax::PORT_EXP.cap(1);
-    General::Direction direction = General::str2Direction(VhdlSyntax::PORT_EXP.cap(2),General::DIRECTION_INVALID);
+	General::Direction direction = General::str2Direction(VhdlSyntax::PORT_EXP.cap(2).toLower(),General::DIRECTION_INVALID);
     QString portType = VhdlSyntax::PORT_EXP.cap(3);
     QString defaultValue = VhdlSyntax::PORT_EXP.cap(4).trimmed();
     QString description = VhdlSyntax::PORT_EXP.cap(5).trimmed();
