@@ -299,6 +299,10 @@ private:
     //! The bus interface.
     QSharedPointer<BusInterface> busIf_;
 
+    //! Bus and abs types.
+    VLNV busType_;
+    VLNV absType_;
+
     //! The ports.
     QList< QSharedPointer<Port> > ports_;
 

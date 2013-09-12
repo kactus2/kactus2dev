@@ -317,144 +317,201 @@ bool HWDesignWidget::saveAs() {
 void HWDesignWidget::keyPressEvent(QKeyEvent *event)
 {
     // Handle delete events if the document is not protected.
-    if (!isProtected() && event->key() == Qt::Key_Delete) {
-        if (getDiagram()->selectedItems().empty()) {
+    if (!isProtected() && event->key() == Qt::Key_Delete)
+    {
+        if (getDiagram()->selectedItems().empty())
+        {
             return;
         }
-        QGraphicsItem *selected = getDiagram()->selectedItems().first();
 
-        if (selected->type() == HWComponentItem::Type)
+        QList<QGraphicsItem*> selectedItems = getDiagram()->selectedItems();
+        int type = getDiagram()->getCommonItemType(selectedItems);
+
+        if (type == HWComponentItem::Type)
         {
-			HWComponentItem* component = static_cast<HWComponentItem*>(selected);
-			getDiagram()->removeInstanceName(component->name());
             getDiagram()->clearSelection();
-            
-            QSharedPointer<ComponentDeleteCommand> cmd(new ComponentDeleteCommand(component));
 
-			connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-				this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-			connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-				this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
 
-            getGenericEditProvider()->addCommand(cmd);
-
-            emit clearItemSelection();
-        }
-        else if (selected->type() == BusInterfaceItem::Type)
-        {
-            BusInterfaceItem* diagIf = static_cast<BusInterfaceItem*>(selected);
-            bool removePorts = false;
-
-            // Ask the user if he/she wants to delete the ports, if any exist.
-            if (!diagIf->getPorts().isEmpty())
+            foreach (QGraphicsItem* selected, selectedItems)
             {
-                QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                    tr("Do you want to delete also the ports that are part of the interface?"),
-                    QMessageBox::Yes | QMessageBox::No, this);
-                QStringList ports("Interface ports:");
+			    HWComponentItem* component = static_cast<HWComponentItem*>(selected);
+			    getDiagram()->removeInstanceName(component->name());
+                getDiagram()->clearSelection();
+            
+                ComponentDeleteCommand* childCmd = new ComponentDeleteCommand(component, cmd.data());
+
+			    connect(childCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
+				    this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+			    connect(childCmd, SIGNAL(componentInstantiated(ComponentItem*)),
+				    this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+
+                childCmd->redo();
+            }
+
+            getGenericEditProvider()->addCommand(cmd, false);
+        }
+        else if (type == BusInterfaceItem::Type)
+        {
+            // Enumerate all ports that are part of the selected bus interfaces.
+            QList< QSharedPointer<Port> > ports;
+
+            foreach (QGraphicsItem* selected, selectedItems)
+            {
+                BusInterfaceItem* diagIf = static_cast<BusInterfaceItem*>(selected);
+
                 foreach(QSharedPointer<Port> port, diagIf->getPorts())
                 {
-                    ports.append("* " + port->getName());
+                    if (!ports.contains(port))
+                    {
+                        ports.append(port);
+                    }
                 }
-                msgBox.setDetailedText(ports.join("\n"));
+            }
+
+            // Ask confirmation for port deletion from the user if there were ports in
+            // any of the bus interfaces.
+            bool removePorts = false;
+
+            if (!ports.isEmpty())
+            {
+                QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                                   tr("Do you want to delete also the ports that are part of the interfaces?"),
+                                   QMessageBox::Yes | QMessageBox::No, this);
+
+                QStringList textList("Interface ports:");
+
+                foreach(QSharedPointer<Port> port, ports)
+                {
+                    textList.append("* " + port->getName());
+                }
+
+                msgBox.setDetailedText(textList.join("\n"));
                 removePorts = (msgBox.exec() == QMessageBox::Yes);
             }
 
-            // Delete the interface.
-            QSharedPointer<InterfaceDeleteCommand> cmd(new InterfaceDeleteCommand(diagIf, removePorts));
-            connect(cmd.data(), SIGNAL(interfaceDeleted()), this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);            
-            getGenericEditProvider()->addCommand(cmd);
+            // Delete the interfaces.
             getDiagram()->clearSelection();
+            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+
+            foreach (QGraphicsItem* selected, selectedItems)
+            {
+                BusInterfaceItem* diagIf = static_cast<BusInterfaceItem*>(selected);
+
+                InterfaceDeleteCommand* childCmd = new InterfaceDeleteCommand(diagIf, removePorts, cmd.data());
+                connect(childCmd, SIGNAL(interfaceDeleted()), this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);            
+
+                childCmd->redo();
+            }
+
+            getGenericEditProvider()->addCommand(cmd, false);
         }
-        else if (selected->type() == BusPortItem::Type)
+        else if (type == BusPortItem::Type)
         {
-            BusPortItem* port = static_cast<BusPortItem*>(selected);
+            getDiagram()->clearSelection();
+            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+
+            foreach (QGraphicsItem* selected, selectedItems)
+            {
+                BusPortItem* port = static_cast<BusPortItem*>(selected);
             
-            // Ports can be removed only if they are temporary.
-            if (port->isTemporary())
-            {
-                // Delete the port.
-                QSharedPointer<QUndoCommand> cmd(new PortDeleteCommand(port));
-                getGenericEditProvider()->addCommand(cmd);
-
-                // Clear the item selection.
-                emit clearItemSelection();
+                // Ports can be removed only if they are temporary.
+                if (port->isTemporary())
+                {
+                    // Delete the port.
+                    QUndoCommand* childCmd = new PortDeleteCommand(port, cmd.data());
+                    childCmd->redo();
+                }
             }
+
+            getGenericEditProvider()->addCommand(cmd, false);
         }
-        else if (selected->type() == HWConnection::Type)
+        else if (type == HWConnection::Type)
         {
-            emit clearItemSelection();
+            getDiagram()->clearSelection();
+            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
 
-            // Delete the interconnection.
-            HWConnection* conn = static_cast<HWConnection*>(selected);
-            HWConnectionEndpoint* endpoint1 = static_cast<HWConnectionEndpoint*>(conn->endpoint1());
-            HWConnectionEndpoint* endpoint2 = static_cast<HWConnectionEndpoint*>(conn->endpoint2());
-
-            QSharedPointer<QUndoCommand> cmd(new ConnectionDeleteCommand(conn));
-            getGenericEditProvider()->addCommand(cmd);
-
-            // If the bus ports are invalid, delete them too.
-            if (endpoint1->isInvalid())
+            foreach (QGraphicsItem* selected, selectedItems)
             {
-                QUndoCommand* childCmd = 0;
+                // Delete the interconnection.
+                HWConnection* conn = static_cast<HWConnection*>(selected);
+                HWConnectionEndpoint* endpoint1 = static_cast<HWConnectionEndpoint*>(conn->endpoint1());
+                HWConnectionEndpoint* endpoint2 = static_cast<HWConnectionEndpoint*>(conn->endpoint2());
 
-                if (endpoint1->type() == BusPortItem::Type)
+                QUndoCommand* childCmd = new ConnectionDeleteCommand(conn, cmd.data());
+                childCmd->redo();
+
+                // If the bus ports are invalid, delete them too.
+                if (endpoint1->isInvalid())
                 {
-                    childCmd = new PortDeleteCommand(endpoint1, cmd.data());
-                }
-                else
-                {
-                    childCmd = new InterfaceDeleteCommand(static_cast<BusInterfaceItem*>(endpoint1), false, cmd.data());
+                    QUndoCommand* childCmd = 0;
+
+                    if (endpoint1->type() == BusPortItem::Type)
+                    {
+                        childCmd = new PortDeleteCommand(endpoint1, cmd.data());
+                    }
+                    else
+                    {
+                        childCmd = new InterfaceDeleteCommand(static_cast<BusInterfaceItem*>(endpoint1), false, cmd.data());
+                    }
+
+                    childCmd->redo();
                 }
 
+                if (endpoint2->isInvalid())
+                {
+                    QUndoCommand* childCmd = 0;
+
+                    if (endpoint2->type() == BusPortItem::Type)
+                    {
+                        childCmd = new PortDeleteCommand(endpoint2, cmd.data());
+                    }
+                    else
+                    {
+                        childCmd = new InterfaceDeleteCommand(static_cast<BusInterfaceItem*>(endpoint2), false, cmd.data());
+                    }
+
+                    childCmd->redo();
+                }
+            }
+
+            getGenericEditProvider()->addCommand(cmd, false);
+        }
+        else if (type == HWColumn::Type)
+        {
+            // Ask a confirmation if the user really wants to delete the entire column if it is not empty.
+            foreach (QGraphicsItem* selected, selectedItems)
+            {
+                HWColumn* column = static_cast<HWColumn*>(selected);
+
+                if (!column->isEmpty())
+                {
+                    QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                                       tr("The columns are not empty. Do you want to "
+                                          "delete the columns and all of their contents?"),
+                                       QMessageBox::Yes | QMessageBox::No, this);
+
+                    if (msgBox.exec() == QMessageBox::No)
+                    {
+                        return;
+                    }
+
+                    break;
+                }
+            }
+
+            // Delete the columns.
+            getDiagram()->clearSelection();
+            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+
+            foreach (QGraphicsItem* selected, selectedItems)
+            {
+                HWColumn* column = static_cast<HWColumn*>(selected);
+                QUndoCommand* childCmd = new ColumnDeleteCommand(getDiagram()->getColumnLayout(), column, cmd.data());
                 childCmd->redo();
             }
 
-            if (endpoint2->isInvalid())
-            {
-                QUndoCommand* childCmd = 0;
-
-                if (endpoint2->type() == BusPortItem::Type)
-                {
-                    childCmd = new PortDeleteCommand(endpoint2, cmd.data());
-                }
-                else
-                {
-                    childCmd = new InterfaceDeleteCommand(static_cast<BusInterfaceItem*>(endpoint2), false, cmd.data());
-                }
-
-                childCmd->redo();
-            }
-        }
-        else if (selected->type() == HWColumn::Type)
-        {
-            // Ask a confirmation if the user really wants to delete the entire column
-            // if it is not empty.
-            HWColumn* column = static_cast<HWColumn*>(selected);
-
-            bool del = true;
-
-            if (!column->isEmpty())
-            {
-                QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                                   tr("The column is not empty. Do you want to "
-                                   "delete the column and all of its contents?"),
-                                   QMessageBox::Yes | QMessageBox::No, this);
-
-                if (msgBox.exec() == QMessageBox::No)
-                {
-                    del = false;
-                }
-            }
-
-            if (!del)
-            {
-                return;
-            }
-
-            // Delete the column if requested.
-            QSharedPointer<QUndoCommand> cmd(new ColumnDeleteCommand(getDiagram()->getColumnLayout(), column));
-            getGenericEditProvider()->addCommand(cmd);
+            getGenericEditProvider()->addCommand(cmd, false);
         }
     }
     else

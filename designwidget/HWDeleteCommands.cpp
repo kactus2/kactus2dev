@@ -34,6 +34,8 @@ ColumnDeleteCommand::ColumnDeleteCommand(GraphicsColumnLayout* layout, GraphicsC
                                                                  layout_(layout), column_(column), del_(true)
 {
     // Create child commands for removing interconnections.
+    QList<GraphicsConnection*> connections;
+
     foreach (QGraphicsItem* item, column->childItems())
     {
         if (item->type() == HWComponentItem::Type)
@@ -42,16 +44,57 @@ ColumnDeleteCommand::ColumnDeleteCommand(GraphicsColumnLayout* layout, GraphicsC
 
             foreach (QGraphicsItem* childItem, comp->childItems())
             {
-                if (childItem->type() != BusPortItem::Type)
+                HWConnectionEndpoint* endpoint = dynamic_cast<HWConnectionEndpoint*>(childItem);
+
+                if (endpoint == 0)
                 {
                     continue;
                 }
 
-                BusPortItem *diagramPort = qgraphicsitem_cast<BusPortItem *>(childItem);
+                foreach (GraphicsConnection* conn, endpoint->getConnections())
+                {
+                    if (!connections.contains(conn))
+                    {
+                        new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+                        connections.append(conn);
+                    }
+                }
 
-                foreach (GraphicsConnection* conn, diagramPort->getConnections())
+                if (endpoint->getOffPageConnector() != 0)
+                {
+                    foreach (GraphicsConnection* conn, endpoint->getOffPageConnector()->getConnections())
+                    {
+                        if (!connections.contains(conn))
+                        {
+                            new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+                            connections.append(conn);
+                        }
+                    }
+                }
+            }
+        }
+        else if (item->type() == BusInterfaceItem::Type)
+        {
+            HWConnectionEndpoint* endpoint = static_cast<HWConnectionEndpoint*>(item);
+
+            foreach (GraphicsConnection* conn, endpoint->getConnections())
+            {
+                if (!connections.contains(conn))
                 {
                     new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+                    connections.append(conn);
+                }
+            }
+
+            if (endpoint->getOffPageConnector() != 0)
+            {
+                foreach (GraphicsConnection* conn, endpoint->getOffPageConnector()->getConnections())
+                {
+                    if (!connections.contains(conn))
+                    {
+                        new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+                        connections.append(conn);
+                    }
                 }
             }
         }
@@ -98,11 +141,13 @@ void ColumnDeleteCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: ComponentDeleteCommand()
 //-----------------------------------------------------------------------------
-ComponentDeleteCommand::ComponentDeleteCommand(HWComponentItem* component, QUndoCommand* parent) :
-    QUndoCommand(parent), component_(component), parent_(static_cast<GraphicsColumn*>(component->parentItem())),
-    scene_(component->scene()),
-    del_(true),
-    firstRun_(true)
+ComponentDeleteCommand::ComponentDeleteCommand(HWComponentItem* component, QUndoCommand* parent)
+    : QUndoCommand(parent),
+      component_(component),
+      parent_(static_cast<GraphicsColumn*>(component->parentItem())),
+      scene_(component->scene()),
+      del_(true),
+      firstRun_(true)
 {
 }
 
@@ -140,6 +185,8 @@ void ComponentDeleteCommand::redo()
     if (firstRun_)
     {
         // Create child commands for removing interconnections.
+        QList<GraphicsConnection*> connections;
+
         foreach (QGraphicsItem *item, component_->childItems())
         {
             HWConnectionEndpoint* endpoint = dynamic_cast<HWConnectionEndpoint*>(item);
@@ -151,14 +198,22 @@ void ComponentDeleteCommand::redo()
 
             foreach (GraphicsConnection* conn, endpoint->getConnections())
             {
-                new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+                if (!connections.contains(conn))
+                {
+                    new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+                    connections.append(conn);
+                }
             }
 
             if (endpoint->getOffPageConnector() != 0)
             {
                 foreach (GraphicsConnection* conn, endpoint->getOffPageConnector()->getConnections())
                 {
-                    new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+                    if (!connections.contains(conn))
+                    {
+                        new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+                        connections.append(conn);
+                    }
                 }
             }
         }
@@ -396,6 +451,8 @@ InterfaceDeleteCommand::InterfaceDeleteCommand(BusInterfaceItem* interface,
       interface_(interface),
       busIf_(interface_->getBusInterface()),
       ports_(),
+      busType_(interface_->getBusInterface()->getBusType()),
+      absType_(interface_->getBusInterface()->getAbstractionType()),
       mode_(interface_->getBusInterface()->getInterfaceMode()),
       portMaps_(interface_->getBusInterface()->getPortMaps()),
       parent_(static_cast<GraphicsColumn*>(interface->parentItem())),
@@ -459,11 +516,16 @@ void InterfaceDeleteCommand::undo()
     {
         busIf_->setInterfaceMode(mode_);
         busIf_->setPortMaps(portMaps_);
+        busIf_->setBusType(busType_);
+        busIf_->setAbstractionType(absType_);
+
         interface_->define(busIf_, false, ports_);
     }
 
     // Execute child commands.
     QUndoCommand::undo();
+
+    interface_->updateInterface();
 }
 
 //-----------------------------------------------------------------------------
