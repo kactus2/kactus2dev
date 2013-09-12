@@ -692,8 +692,8 @@ void MainWindow::setupActions()
 	showSystemDetailsAction_->setChecked(true);
 	connect(showSystemDetailsAction_, SIGNAL(toggled(bool)),
 		this, SLOT(onSystemDetailsAction(bool)), Qt::UniqueConnection);
-	connect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showSystemDetailsAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+	connect(systemDetailsDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		    showSystemDetailsAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
 	// Action to show/hide the connection editor.
 	showConnectionAction_ = new QAction(tr("Connection Editor"), this);

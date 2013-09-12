@@ -85,7 +85,7 @@ HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& edit
       dragCompType_(CIT_NONE),
       dragBus_(false),
       offPageMode_(false),
-      oldSelection_(0),
+      oldSelectedItems_(),
       replaceMode_(false),
       sourceComp_(0),
       copyAction_(tr("Copy"), this),
@@ -2401,6 +2401,27 @@ void HWDesignDiagram::endConnect()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::onSelectionChanged()
 {
+    // Disallow selecting elements of different type.
+    if (selectedItems().size() > 1)
+    {
+        // Check if all selected items have the same type.
+        int type = getCommonItemType(selectedItems());
+
+        if (type == -1)
+        {
+            // If not, deselect those that are in the new selection but no in the old one.
+            for (int i = 0; i < selectedItems().size(); ++i)
+            {
+                QGraphicsItem* item = selectedItems()[i];
+
+                if (!oldSelectedItems_.contains(item))
+                {
+                    item->setSelected(false);
+                }
+            }
+        }
+    }
+
     selectionToFront();
 
     // Retrieve the new selection.
@@ -2413,11 +2434,13 @@ void HWDesignDiagram::onSelectionChanged()
 
     // If the old selection was an off-page connector, hide its connections.
     // Also hide the previously selected connection if it was an off-page connection.
-    if (oldSelection_ != 0)
+    for (int i = 0; i < oldSelectedItems_.size(); ++i)
     {
-        if (oldSelection_->type() == OffPageConnectorItem::Type)
+        QGraphicsItem* oldSelection = oldSelectedItems_[i];
+
+        if (oldSelection->type() == OffPageConnectorItem::Type)
         {
-            OffPageConnectorItem* connector = static_cast<OffPageConnectorItem*>(oldSelection_);
+            OffPageConnectorItem* connector = static_cast<OffPageConnectorItem*>(oldSelection);
 
             foreach (GraphicsConnection* conn, connector->getConnections())
             {
@@ -2427,19 +2450,19 @@ void HWDesignDiagram::onSelectionChanged()
                 }
             }
         }
-        else if (oldSelection_->type() == HWConnection::Type && oldSelection_ != newSelection)
+        else if (oldSelection->type() == HWConnection::Type && !selectedItems().contains(oldSelection))
         {
-            HWConnection* conn = static_cast<HWConnection*>(oldSelection_);
+            HWConnection* conn = static_cast<HWConnection*>(oldSelection);
 
             if (conn->endpoint1() != 0)
             {
                 if (conn->endpoint1()->type() == OffPageConnectorItem::Type)
                 {
-                    oldSelection_->setVisible(false);
+                    oldSelection->setVisible(false);
                 }
                 else
                 {
-                    oldSelection_->setZValue(-1000);
+                    oldSelection->setZValue(-1000);
                 }
             }
         }
@@ -2459,7 +2482,7 @@ void HWDesignDiagram::onSelectionChanged()
     onSelected(newSelection);
 
     // Save the current selection as the old selection.
-    oldSelection_ = newSelection;
+    oldSelectedItems_ = selectedItems();
 }
 
 //-----------------------------------------------------------------------------
