@@ -40,9 +40,11 @@ void MemoryMapGraphItem::refresh() {
 
     // Set tooltip to show addresses in hexadecimals.
     setToolTip("<b>Name: </b>" + memoryMap_->getName() + "<br>" +
+        "<b>AUB: </b>" + QString::number(memoryMap_->getAddressUnitBits()) + "<br>" +
         "<b>First address: </b>" + AddressSpaceVisualizationItem::addr2Str(getOffset(),getBitWidth()) + "<br>" +
-        "<b>Last address: </b>" + AddressSpaceVisualizationItem::addr2Str(memoryMap_->getLastAddress(), getBitWidth()));
-
+        "<b>Last address: </b>" + AddressSpaceVisualizationItem::addr2Str(memoryMap_->getLastAddress(), 
+        getBitWidth()));
+  
 	// set the positions for the children
 	MemoryVisualizationItem::reorganizeChildren();
 

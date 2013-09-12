@@ -37,7 +37,8 @@ void SegmentGraphItem::refresh() {
 
     setToolTip("<b>Name: </b>" + segment_->getName() + "<br>" +
         "<b>Offset: </b>" + addr2Str(getOffset(), getBitWidth()) + "<br>" +
-        "<b>Last address: </b>" + addr2Str(getLastAddress(), getBitWidth()));
+        "<b>Last address: </b>" + addr2Str(getLastAddress(), getBitWidth())  + "<br>" +
+        "<b>Size [AUB]: </b>" + segment_->getRange());
 
     VisualizerItem::reorganizeChildren();
 }

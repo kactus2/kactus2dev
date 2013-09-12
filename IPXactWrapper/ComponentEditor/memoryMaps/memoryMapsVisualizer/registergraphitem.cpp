@@ -72,8 +72,10 @@ void RegisterGraphItem::refresh() {
     
     // Set tooltip to show addresses in hexadecimals.
     setToolTip("<b>Name: </b>" + register_->getName() + "<br>" +
-        "<b>First address: </b>" + AddressSpaceVisualizationItem::addr2Str(getOffset(),getBitWidth()) + "<br>" +
-        "<b>Last address: </b>" + AddressSpaceVisualizationItem::addr2Str(getLastAddress(),getBitWidth()));
+        "<b>First address: </b>" + AddressSpaceVisualizationItem::addr2Str(getOffset(), getBitWidth()) + "<br>" +
+        "<b>Last address: </b>" + AddressSpaceVisualizationItem::addr2Str(getLastAddress(), getBitWidth()) + 
+        "<br>" +
+        "<b>Size [bits]: </b>" + QString::number(register_->getSize()));
 
 	// set the positions for the children
 	reorganizeChildren();

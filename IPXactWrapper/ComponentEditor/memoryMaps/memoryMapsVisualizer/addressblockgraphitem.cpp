@@ -40,7 +40,9 @@ void AddressBlockGraphItem::refresh() {
     // Set tooltip to show addresses in hexadecimals.
     setToolTip("<b>Name: </b>" + addrBlock_->getName() + "<br>" +
         "<b>Offset: </b>" + AddressSpaceVisualizationItem::addr2Str(getOffset(), getBitWidth()) + "<br>" +
-        "<b>Last address: </b>" + AddressSpaceVisualizationItem::addr2Str(addrBlock_->getLastAddress(), getBitWidth()));
+        "<b>Last address: </b>" + AddressSpaceVisualizationItem::addr2Str(addrBlock_->getLastAddress(), 
+        getBitWidth()) + "<br>" +
+        "<b>Size [AUB]: </b>" + addrBlock_->getRange());
 
 	// set the positions for the children
 	MemoryVisualizationItem::reorganizeChildren();
