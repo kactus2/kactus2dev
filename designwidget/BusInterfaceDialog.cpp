@@ -228,15 +228,21 @@ QList< QSharedPointer<Port> > BusInterfaceDialog::getPorts() const
     {
         for(int row = 0; row < portsModel_->rowCount(); row++)
         {
-            QModelIndex index = portsModel_->index(row,PortGenerationTableModel::SRC_NAME);
-            QString name = portsModel_->data(index,Qt::DisplayRole).toString();
-            index = portsModel_->index(row,PortGenerationTableModel::DRAFT_NAME);
-            QString generatedName = portsModel_->data(index,Qt::DisplayRole).toString();
+            QModelIndex index = portsModel_->index(row, PortGenerationTableModel::SRC_NAME);
+            QString name = portsModel_->data(index, Qt::DisplayRole).toString();
+            index = portsModel_->index(row, PortGenerationTableModel::DRAFT_NAME);
+            QString generatedName = portsModel_->data(index, Qt::DisplayRole).toString();
             QSharedPointer<Port> port = opposingEnd_->getOwnerComponent()->getPort(name);
-            QSharedPointer<Port> draftPort(new Port(generatedName,*port));
-            index = portsModel_->index(row,PortGenerationTableModel::DRAFT_DIRECTION);
-            QString draftDir = portsModel_->data(index,Qt::DisplayRole).toString();
-            draftPort->setDirection(General::str2Direction(draftDir,General::DIRECTION_INVALID));
+            QSharedPointer<Port> draftPort(new Port(generatedName, port.data()));
+            index = portsModel_->index(row, PortGenerationTableModel::DRAFT_DIRECTION);
+            QString draftDir = portsModel_->data(index, Qt::DisplayRole).toString();
+            draftPort->setDirection(General::str2Direction(draftDir, General::DIRECTION_INVALID));
+
+            if (draftPort->getDirection() == General::OUT)
+            {
+                draftPort->setDefaultValue("");
+            }
+
             portList.append(draftPort);
         }
     }
