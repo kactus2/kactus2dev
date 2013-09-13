@@ -59,6 +59,8 @@ localMemMap_(addrSpace->getLocalMemoryMap(), component, handler, this) {
 	layout->addWidget(&localMemMap_);
 	connect(&localMemMap_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&localMemMap_, SIGNAL(errorMessage(const QString&)),
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&localMemMap_, SIGNAL(itemAdded(int)),
 		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(&localMemMap_, SIGNAL(itemRemoved(int)),

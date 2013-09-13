@@ -7,12 +7,13 @@
 
 #include "localmemorymapgraphitem.h"
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.h>
+#include <IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.h>
 
 LocalMemoryMapGraphItem::LocalMemoryMapGraphItem(QSharedPointer<AddressSpace> addrSpace, 
 												 QSharedPointer<MemoryMap> localMemoryMap,
 												 QGraphicsItem* parent /*= 0*/ ):
 MemoryMapGraphItem(localMemoryMap, parent),
-addrSpace_(addrSpace) {
+addrSpace_(addrSpace) {   
 }
 
 LocalMemoryMapGraphItem::~LocalMemoryMapGraphItem() {
@@ -23,9 +24,22 @@ unsigned int LocalMemoryMapGraphItem::getAddressUnitSize() const {
 }
 
 void LocalMemoryMapGraphItem::refresh() {
-	setName(tr("Local memory map"));
-	setLeftTopCorner(memoryMap_->getFirstAddress());
-	setLeftBottomCorner(memoryMap_->getLastAddress());
+
+    QString name = memoryMap_->getName();
+    if (name.isEmpty())
+    {
+        name = "Local memory map";
+    }
+
+    setName(name);
+    setLeftTopCorner(memoryMap_->getFirstAddress());
+    setLeftBottomCorner(memoryMap_->getLastAddress());
+
+    setToolTip("<b>Name: </b>" + memoryMap_->getName() + "<br>" +
+        "<b>AUB: </b>" + QString::number(getAddressUnitSize()) + "<br>" +
+        "<b>First address: </b>" + AddressSpaceVisualizationItem::addr2Str(getOffset(), getBitWidth()) + "<br>" +
+        "<b>Last address: </b>" + AddressSpaceVisualizationItem::addr2Str(memoryMap_->getLastAddress(), 
+        getBitWidth()));
 
 	// set the positions for the children
 	MemoryVisualizationItem::reorganizeChildren();

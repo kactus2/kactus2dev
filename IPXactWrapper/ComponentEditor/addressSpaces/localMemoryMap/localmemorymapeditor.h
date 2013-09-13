@@ -14,6 +14,7 @@
 #include <QGroupBox>
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
+#include <QCheckBox>
 
 class NameGroupEditor;
 class EditableTableView;
@@ -65,6 +66,14 @@ signals:
 	//! \brief Emitted when a memory map item is removed from the given index.
 	void itemRemoved(int index);
 
+    //! \brief Prints an error message to the user.
+    void errorMessage(const QString& msg) const;
+
+public slots:
+
+    
+    void onEnableChanged();
+
 private:
 	
 	//! \brief No copying
@@ -72,6 +81,8 @@ private:
 
 	//! \brief No assignment
 	LocalMemoryMapEditor& operator=(const LocalMemoryMapEditor& other);
+
+    QCheckBox* enableMemMapBox_;
 
 	//! \brief Pointer to the local memory map being edited.
 	QSharedPointer<MemoryMap> localMemoryMap_;

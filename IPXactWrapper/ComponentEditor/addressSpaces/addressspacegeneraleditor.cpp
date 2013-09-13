@@ -64,18 +64,20 @@ bool AddressSpaceGeneralEditor::isValid() const {
 
 void AddressSpaceGeneralEditor::refresh() {
 	addrUnit_.setValue(addrSpace_->getAddressUnitBits());
+    addrSpace_->getLocalMemoryMap()->setAddressUnitBits(addrSpace_->getAddressUnitBits());
 	width_.setValue(addrSpace_->getWidth());
 	range_.setText(addrSpace_->getRange());
 }
 
 void AddressSpaceGeneralEditor::onAddrUnitChanged( int newValue ) {
 	addrSpace_->setAddressUnitBits(newValue);
+    addrSpace_->getLocalMemoryMap()->setAddressUnitBits(newValue);
 	emit addressableUnitsChanged(newValue);
 	emit contentChanged();
 }
 
 void AddressSpaceGeneralEditor::onWidthChanged( int newWidth ) {
-	addrSpace_->setWidth(newWidth);
+	addrSpace_->setWidth(newWidth);    
 	emit widthChanged(newWidth);
 	emit contentChanged();
 }

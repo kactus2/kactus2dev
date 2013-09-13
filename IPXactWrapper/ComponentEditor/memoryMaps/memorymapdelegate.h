@@ -20,8 +20,8 @@ public:
 
 	//! \brief Contains the columns for the table.
 	enum Column {
-		USAGE_COLUMN = 0,
-		NAME_COLUMN,
+        NAME_COLUMN = 0,		
+        USAGE_COLUMN,	
 		BASE_COLUMN,
 		RANGE_COLUMN,
 		WIDTH_COLUMN,

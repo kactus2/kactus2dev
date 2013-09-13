@@ -77,6 +77,8 @@ ItemEditor* ComponentEditorAddrSpaceItem::editor() {
 			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childRemoved(int)),
 			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(errorMessage(QString const&)),
+            this, SIGNAL(errorMessage(QString const&)));
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
 			this, SIGNAL(helpUrlRequested(QString const&)));
 	}

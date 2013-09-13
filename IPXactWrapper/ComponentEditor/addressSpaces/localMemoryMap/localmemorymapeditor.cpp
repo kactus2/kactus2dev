@@ -16,12 +16,16 @@
 
 #include <QVBoxLayout>
 
+//-----------------------------------------------------------------------------
+// Function: LocalMemoryMapEditor::LocalMemoryMapEditor()
+//-----------------------------------------------------------------------------
 LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
 	QSharedPointer<Component> component,
 	LibraryInterface* handler,
-										   QWidget *parent):
+    QWidget *parent):
 QGroupBox(tr("Local memory map"), parent),
 localMemoryMap_(memoryMap),
+enableMemMapBox_(new QCheckBox("Use local memory map", this)),
 nameEditor_(new NameGroupEditor(memoryMap->getNameGroup(), this)),
 view_(new EditableTableView(this)),
 proxy_(new MemoryMapProxy(this)),
@@ -66,15 +70,25 @@ handler_(handler) {
 	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
 		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
+    connect(enableMemMapBox_, SIGNAL(stateChanged(int)), 
+        this, SLOT(onEnableChanged()), Qt::UniqueConnection);
+
 	QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(enableMemMapBox_);
 	layout->addWidget(nameEditor_);
 	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
 	layout->addWidget(view_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: LocalMemoryMapEditor::~LocalMemoryMapEditor()
+//-----------------------------------------------------------------------------
 LocalMemoryMapEditor::~LocalMemoryMapEditor() {
 }
 
+//-----------------------------------------------------------------------------
+// Function: LocalMemoryMapEditor::isValid()
+//-----------------------------------------------------------------------------
 bool LocalMemoryMapEditor::isValid() const {
 	if (!nameEditor_->isValid()) {
 		return false;
@@ -85,7 +99,36 @@ bool LocalMemoryMapEditor::isValid() const {
 	return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: LocalMemoryMapEditor::refresh()
+//-----------------------------------------------------------------------------
 void LocalMemoryMapEditor::refresh() {
 	nameEditor_->refresh();
 	view_->update();
+    
+    onEnableChanged();
 }
+
+//-----------------------------------------------------------------------------
+// Function: LocalMemoryMapEditor::onEnableChanged()
+//-----------------------------------------------------------------------------
+void LocalMemoryMapEditor::onEnableChanged()
+{
+    if (enableMemMapBox_->checkState() == Qt::Unchecked && !localMemoryMap_->isEmpty())
+    {
+        enableMemMapBox_->setCheckState(Qt::Checked);
+        emit errorMessage("Local memory map must be used since one or more address blocks are defined.");        
+    }
+
+    if (enableMemMapBox_->checkState() == Qt::Checked)
+    {
+        nameEditor_->setEnabled(true);
+        view_->setEnabled(true);
+    }
+    else
+    {
+        nameEditor_->setEnabled(false);
+        view_->setEnabled(false);
+    }
+}
+
