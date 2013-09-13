@@ -109,6 +109,7 @@ SystemDesignDiagram::SystemDesignDiagram(bool onlySW, LibraryInterface* lh, Main
 //-----------------------------------------------------------------------------
 SystemDesignDiagram::~SystemDesignDiagram()
 {
+    clearSelection();
     destroyConnections();
 }
 
@@ -117,6 +118,7 @@ SystemDesignDiagram::~SystemDesignDiagram()
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::clearScene()
 {
+    clearSelection();
     destroyConnections();
     layout_.clear();
     DesignDiagram::clearScene();

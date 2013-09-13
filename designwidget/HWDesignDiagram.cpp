@@ -105,6 +105,7 @@ HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& edit
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::clearScene()
 {
+    clearSelection();
     destroyConnections();
     layout_.clear();
     DesignDiagram::clearScene();
@@ -568,6 +569,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 //-----------------------------------------------------------------------------
 HWDesignDiagram::~HWDesignDiagram()
 {
+    clearSelection();
     destroyConnections();
 }
 

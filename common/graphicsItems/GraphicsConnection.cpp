@@ -1086,79 +1086,79 @@ void GraphicsConnection::drawOverlapGraphics(QPainter* painter)
                 }
             }
         }
-//         else if (dynamic_cast<ComponentItem*>(item) != 0)
-//         {
-//             ComponentItem* comp = static_cast<ComponentItem*>(item);
-// 
-//             // Create the line objects for each edge of the diagram component rectangle.
-//             QLineF leftEdge(comp->rect().topLeft() + comp->scenePos(),
-//                 comp->rect().bottomLeft() + comp->scenePos());
-// 
-//             QLineF rightEdge(comp->rect().topRight() + comp->scenePos(),
-//                 comp->rect().bottomRight() + comp->scenePos());
-// 
-//             QLineF topEdge(comp->rect().topLeft() + comp->scenePos(),
-//                 comp->rect().topRight() + comp->scenePos());
-// 
-//             QLineF bottomEdge(comp->rect().bottomLeft() + comp->scenePos(),
-//                 comp->rect().bottomRight() + comp->scenePos());
-// 
-//             for (int i = 0; i < route1.size() - 1; ++i)
-//             {
-//                 QLineF line1(route1[i], route1[i + 1]);
-// 
-//                 // Check for intersections with the component rectangle's edges.
-//                 QPointF pt, pt2;
-//                 QLineF::IntersectType type1 = line1.intersect(leftEdge, &pt);
-//                 QLineF::IntersectType type2 = line1.intersect(rightEdge, &pt2);
-// 
-//                 painter->setPen(QPen(QColor(160, 160, 160), pen().width() + 1));
-// 
-//                 // Left intersection.
-//                 // TODO: Requires checking whether the segment is first or last and the endpoint is inside the component.
-// //                 if (type1 == QLineF::BoundedIntersection)
-// //                 {
-// //                     drawLineGap(painter, line1, pt);
-// //                 }
-// // 
-// //                 // Right intersection.
-// //                 if (type2 == QLineF::BoundedIntersection)
-// //                 {
-// //                     drawLineGap(painter, line1, pt2);
-// //                 }
-// 
-//                 // Fill in the whole line segment under the component if the segment goes across the component
-//                 // horizontally.
-//                 if (type1 == QLineF::BoundedIntersection && type2 == QLineF::BoundedIntersection)
-//                 {
-//                     drawLineGap(painter, line1, pt);
-//                     drawLineGap(painter, line1, pt2);
-//                     painter->drawLine(pt, pt2);
-//                 }
-// 
-//                 type1 = line1.intersect(topEdge, &pt);
-//                 type2 = line1.intersect(bottomEdge, &pt2);
-// 
-//                 // Top intersection.
+        else if (dynamic_cast<ComponentItem*>(item) != 0)
+        {
+            ComponentItem* comp = static_cast<ComponentItem*>(item);
+
+            // Create the line objects for each edge of the diagram component rectangle.
+            QLineF leftEdge(comp->rect().topLeft() + comp->scenePos(),
+                comp->rect().bottomLeft() + comp->scenePos());
+
+            QLineF rightEdge(comp->rect().topRight() + comp->scenePos(),
+                comp->rect().bottomRight() + comp->scenePos());
+
+            QLineF topEdge(comp->rect().topLeft() + comp->scenePos(),
+                comp->rect().topRight() + comp->scenePos());
+
+            QLineF bottomEdge(comp->rect().bottomLeft() + comp->scenePos(),
+                comp->rect().bottomRight() + comp->scenePos());
+
+            for (int i = 0; i < route1.size() - 1; ++i)
+            {
+                QLineF line1(route1[i], route1[i + 1]);
+
+                // Check for intersections with the component rectangle's edges.
+                QPointF pt, pt2;
+                QLineF::IntersectType type1 = line1.intersect(leftEdge, &pt);
+                QLineF::IntersectType type2 = line1.intersect(rightEdge, &pt2);
+
+                painter->setPen(QPen(QColor(160, 160, 160), pen().width() + 1));
+
+                // Left intersection.
+                // TODO: Requires checking whether the segment is first or last and the endpoint is inside the component.
 //                 if (type1 == QLineF::BoundedIntersection)
 //                 {
 //                     drawLineGap(painter, line1, pt);
 //                 }
 // 
-//                 // Bottom intersection.
+//                 // Right intersection.
 //                 if (type2 == QLineF::BoundedIntersection)
 //                 {
 //                     drawLineGap(painter, line1, pt2);
 //                 }
-// 
-//                 // Fill in the whole line segment under the component if the segment goes across the component
-//                 // vertically.
-//                 if (type1 == QLineF::BoundedIntersection && type2 == QLineF::BoundedIntersection)
-//                 {
-//                     painter->drawLine(pt, pt2);
-//                 }
-//             }
-//         }
+
+                // Fill in the whole line segment under the component if the segment goes across the component
+                // horizontally.
+                if (type1 == QLineF::BoundedIntersection && type2 == QLineF::BoundedIntersection)
+                {
+                    drawLineGap(painter, line1, pt);
+                    drawLineGap(painter, line1, pt2);
+                    painter->drawLine(pt, pt2);
+                }
+
+                type1 = line1.intersect(topEdge, &pt);
+                type2 = line1.intersect(bottomEdge, &pt2);
+
+                // Top intersection.
+                if (type1 == QLineF::BoundedIntersection)
+                {
+                    drawLineGap(painter, line1, pt);
+                }
+
+                // Bottom intersection.
+                if (type2 == QLineF::BoundedIntersection)
+                {
+                    drawLineGap(painter, line1, pt2);
+                }
+
+                // Fill in the whole line segment under the component if the segment goes across the component
+                // vertically.
+                if (type1 == QLineF::BoundedIntersection && type2 == QLineF::BoundedIntersection)
+                {
+                    painter->drawLine(pt, pt2);
+                }
+            }
+        }
     }
 }
 
