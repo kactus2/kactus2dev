@@ -233,7 +233,7 @@ QList< QSharedPointer<Port> > BusInterfaceDialog::getPorts() const
             index = portsModel_->index(row, PortGenerationTableModel::DRAFT_NAME);
             QString generatedName = portsModel_->data(index, Qt::DisplayRole).toString();
             QSharedPointer<Port> port = opposingEnd_->getOwnerComponent()->getPort(name);
-            QSharedPointer<Port> draftPort(new Port(generatedName, port.data()));
+            QSharedPointer<Port> draftPort(new Port(generatedName, *port));
             index = portsModel_->index(row, PortGenerationTableModel::DRAFT_DIRECTION);
             QString draftDir = portsModel_->data(index, Qt::DisplayRole).toString();
             draftPort->setDirection(General::str2Direction(draftDir, General::DIRECTION_INVALID));
