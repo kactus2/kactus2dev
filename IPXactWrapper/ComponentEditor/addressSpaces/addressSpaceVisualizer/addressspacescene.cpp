@@ -449,6 +449,10 @@ void AddressSpaceScene::updateMaps(QMultiMap<quint64, AddressSpaceVisualizationI
         // update the offset for other than gap items
         quint64 offset = item->getOffset();
         newMap.insert(offset, item);
+        if (item->getLastAddress() > addrSpace_->getLastAddress())
+        {
+            item->setConflicted(true);
+        }
         item->refresh();           
     }
 
@@ -497,7 +501,9 @@ void AddressSpaceScene::updateMaps(QMultiMap<quint64, AddressSpaceVisualizationI
 	}
 
 	// add a gap to the end of the address space if last item < addr space size.
-	if (addrSpace_->getLastAddress() > lastAddress) {
+	if (addrSpace_->getLastAddress() > lastAddress || 
+        (newMap.empty() && newMap == segmentItems_ && !addrBlockItems_.empty() )) 
+        {
 		// create the gap item.
 		AddressSpaceGapItem* gap = new AddressSpaceGapItem(addrSpace_, align);
 		addItem(gap);
