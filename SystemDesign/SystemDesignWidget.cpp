@@ -235,142 +235,168 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
             return;
         }
 
-        QGraphicsItem* selected = getDiagram()->selectedItems().first();
+        QList<QGraphicsItem*> selectedItems = getDiagram()->selectedItems();
+        int type = getDiagram()->getCommonItemType(selectedItems);
 
-        if (selected->type() == SystemColumn::Type)
+        if (type == SystemColumn::Type)
         {
             // Ask a confirmation if the user really wants to delete the entire column if it is not empty.
-            SystemColumn* column = static_cast<SystemColumn*>(selected);
-
-            bool del = true;
-
-            if (!column->isEmpty())
+            foreach (QGraphicsItem* selected, selectedItems)
             {
-                // Column cannot be deleted if it contains HW mapping items.
-                foreach (QGraphicsItem* childItem, column->getItems())
+                SystemColumn* column = static_cast<SystemColumn*>(selected);
+
+                if (!column->isEmpty())
                 {
-                    if (childItem->type() == HWMappingItem::Type)
+                    // Column cannot be deleted if it contains HW mapping items.
+                    foreach (QGraphicsItem* childItem, column->getItems())
                     {
-                        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                                           tr("The column cannot be removed because it contains underlying HW. "
-                                              "Move underlying HW components to another column before deletion."),
-                                           QMessageBox::Ok, this);
-                        msgBox.exec();
+                        if (childItem->type() == HWMappingItem::Type)
+                        {
+                            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                                               tr("The columns cannot be removed because they contain underlying HW. "
+                                                  "Move underlying HW components to another column before deletion."),
+                                               QMessageBox::Ok, this);
+                            msgBox.exec();
+                            return;
+                        }
+                    }
+
+                    QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                                       tr("The columns are not empty. Do you want to "
+                                          "delete the columns and all of their contents?"),
+                                       QMessageBox::Yes | QMessageBox::No, this);
+
+                    if (msgBox.exec() == QMessageBox::No)
+                    {
                         return;
                     }
-                }
 
-                QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                                   tr("The column is not empty. Do you want to "
-                                      "delete the column and all of its contents?"),
-                                   QMessageBox::Yes | QMessageBox::No, this);
-
-                if (msgBox.exec() == QMessageBox::No)
-                {
-                    del = false;
+                    break;
                 }
             }
 
-            // Delete the column if requested.
-            if (!del)
-            {
-                return;
-            }
-
-            QSharedPointer<QUndoCommand> cmd(new SystemColumnDeleteCommand(getDiagram()->getColumnLayout(),
-                                                                           column));
-            getGenericEditProvider()->addCommand(cmd);
-            emit clearItemSelection();
-        }
-        else if (selected->type() == SWComponentItem::Type)
-        {
-            SWComponentItem* component = static_cast<SWComponentItem*>(selected);
-
-            // Only non-imported SW component instances can be deleted.
-            if (!component->isImported())
-            {
-                getDiagram()->removeInstanceName(component->name());
-                getDiagram()->clearSelection();
-
-                QSharedPointer<SystemComponentDeleteCommand> cmd(new SystemComponentDeleteCommand(component));
-
-                connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-                        this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-                connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-                        this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-
-                getGenericEditProvider()->addCommand(cmd);
-                emit clearItemSelection();
-            }
-        }
-        else if (selected->type() == SWPortItem::Type)
-        {
-            SWPortItem* port = static_cast<SWPortItem*>(selected);
-
-            // Ports can be removed only if they are temporary.
-            if (port->isTemporary())
-            {
-                // Delete the port.
-                QSharedPointer<QUndoCommand> cmd(new SWPortDeleteCommand(port));
-                getGenericEditProvider()->addCommand(cmd);
-
-                // Clear the item selection.
-                emit clearItemSelection();
-            }
-        }
-        else if (selected->type() == SWInterfaceItem::Type)
-        {
-            SWInterfaceItem* interface = static_cast<SWInterfaceItem*>(selected);
+            // Delete the columns.
             getDiagram()->clearSelection();
-            emit clearItemSelection();
+            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
 
-            QSharedPointer<QUndoCommand> cmd(new SWInterfaceDeleteCommand(interface));
-            getGenericEditProvider()->addCommand(cmd);
+            foreach (QGraphicsItem* selected, selectedItems)
+            {
+                SystemColumn* column = static_cast<SystemColumn*>(selected);
+                QUndoCommand* childCmd = new SystemColumnDeleteCommand(getDiagram()->getColumnLayout(), column, cmd.data());
+                childCmd->redo();
+            }
+
+            getGenericEditProvider()->addCommand(cmd, false);
         }
-        else if (selected->type() == GraphicsConnection::Type)
+        else if (type == SWComponentItem::Type)
         {
-            emit clearItemSelection();
+            getDiagram()->clearSelection();
+            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
 
-            // Delete the connection.
-            GraphicsConnection* conn = static_cast<GraphicsConnection*>(selected);
-            SWConnectionEndpoint* endpoint1 = static_cast<SWConnectionEndpoint*>(conn->endpoint1());
-            SWConnectionEndpoint* endpoint2 = static_cast<SWConnectionEndpoint*>(conn->endpoint2());
-
-            QSharedPointer<QUndoCommand> cmd(new SWConnectionDeleteCommand(conn));
-            getGenericEditProvider()->addCommand(cmd);
-
-            // If the bus ports are invalid, delete them too.
-            if (endpoint1->isInvalid())
+            foreach (QGraphicsItem* selected, selectedItems)
             {
-                QUndoCommand* childCmd = 0;
+                SWComponentItem* component = static_cast<SWComponentItem*>(selected);
 
-                if (endpoint1->type() == SWPortItem::Type)
+                // Only non-imported SW component instances can be deleted.
+                if (!component->isImported())
                 {
-                    childCmd = new SWPortDeleteCommand(static_cast<SWPortItem*>(endpoint1), cmd.data());
-                }
-                else
-                {
-                    childCmd = new SWInterfaceDeleteCommand(static_cast<SWInterfaceItem*>(endpoint1), cmd.data());
-                }
+                    SystemComponentDeleteCommand* childCmd = new SystemComponentDeleteCommand(component, cmd.data());
 
+                    connect(childCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+                    connect(childCmd, SIGNAL(componentInstantiated(ComponentItem*)),
+                            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+
+                    childCmd->redo();
+                }
+            }
+
+            getGenericEditProvider()->addCommand(cmd, false);
+        }
+        else if (type == SWPortItem::Type)
+        {
+            getDiagram()->clearSelection();
+            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+
+            foreach (QGraphicsItem* selected, selectedItems)
+            {
+                SWPortItem* port = static_cast<SWPortItem*>(selected);
+
+                // Ports can be removed only if they are temporary.
+                if (port->isTemporary())
+                {
+                    // Delete the port.
+                    QUndoCommand* childCmd = new SWPortDeleteCommand(port, cmd.data());
+                    childCmd->redo();
+                }
+            }
+
+            getGenericEditProvider()->addCommand(cmd, false);
+        }
+        else if (type == SWInterfaceItem::Type)
+        {
+            getDiagram()->clearSelection();
+            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+
+            foreach (QGraphicsItem* selected, selectedItems)
+            {
+                SWInterfaceItem* interface = static_cast<SWInterfaceItem*>(selected);
+
+                QUndoCommand* childCmd = new SWInterfaceDeleteCommand(interface, cmd.data());
                 childCmd->redo();
             }
 
-            if (endpoint2->isInvalid())
+            getGenericEditProvider()->addCommand(cmd, false);
+        }
+        else if (type == GraphicsConnection::Type)
+        {
+            getDiagram()->clearSelection();
+            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+
+            foreach (QGraphicsItem* selected, selectedItems)
             {
-                QUndoCommand* childCmd = 0;
+                // Delete the connection.
+                GraphicsConnection* conn = static_cast<GraphicsConnection*>(selected);
+                SWConnectionEndpoint* endpoint1 = static_cast<SWConnectionEndpoint*>(conn->endpoint1());
+                SWConnectionEndpoint* endpoint2 = static_cast<SWConnectionEndpoint*>(conn->endpoint2());
 
-                if (endpoint2->type() == SWPortItem::Type)
+                QUndoCommand* childCmd = new SWConnectionDeleteCommand(conn, cmd.data());
+                
+                // If the bus ports are invalid, delete them too.
+                if (endpoint1->isInvalid())
                 {
-                    childCmd = new SWPortDeleteCommand(static_cast<SWPortItem*>(endpoint2), cmd.data());
-                }
-                else
-                {
-                    childCmd = new SWInterfaceDeleteCommand(static_cast<SWInterfaceItem*>(endpoint2), cmd.data());
+                    QUndoCommand* childCmd = 0;
+
+                    if (endpoint1->type() == SWPortItem::Type)
+                    {
+                        childCmd = new SWPortDeleteCommand(static_cast<SWPortItem*>(endpoint1), cmd.data());
+                    }
+                    else
+                    {
+                        childCmd = new SWInterfaceDeleteCommand(static_cast<SWInterfaceItem*>(endpoint1), cmd.data());
+                    }
+
+                    childCmd->redo();
                 }
 
-                childCmd->redo();
+                if (endpoint2->isInvalid())
+                {
+                    QUndoCommand* childCmd = 0;
+
+                    if (endpoint2->type() == SWPortItem::Type)
+                    {
+                        childCmd = new SWPortDeleteCommand(static_cast<SWPortItem*>(endpoint2), cmd.data());
+                    }
+                    else
+                    {
+                        childCmd = new SWInterfaceDeleteCommand(static_cast<SWInterfaceItem*>(endpoint2), cmd.data());
+                    }
+
+                    childCmd->redo();
+                }
             }
+
+            getGenericEditProvider()->addCommand(cmd, false);
         }
     }
 }

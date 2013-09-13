@@ -544,8 +544,8 @@ private:
     //! The component that is used to replace another component in replace mode.
     SystemComponentItem* sourceComp_;
 
-    //! The old item selection.
-    QGraphicsItem* oldSelection_;
+    //! Old selected items.
+    QList<QGraphicsItem*> oldSelectedItems_;
 
     //! Context menu copy action.
     QAction copyAction_;

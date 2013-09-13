@@ -30,6 +30,8 @@ SystemColumnDeleteCommand::SystemColumnDeleteCommand(GraphicsColumnLayout* layou
                                                                              column_(column), del_(true)
 {
     // Create child commands for removing connections.
+    QList<GraphicsConnection*> connections;
+
     foreach (QGraphicsItem* item, column->childItems())
     {
         if (item->type() == SWComponentItem::Type)
@@ -47,7 +49,23 @@ SystemColumnDeleteCommand::SystemColumnDeleteCommand(GraphicsColumnLayout* layou
 
                 foreach (GraphicsConnection* conn, port->getConnections())
                 {
-                    new SWConnectionDeleteCommand(conn, this);
+                    if (!connections.contains(conn))
+                    {
+                        new SWConnectionDeleteCommand(conn, this);
+                        connections.append(conn);
+                    }
+                }
+
+                if (port->getOffPageConnector() != 0)
+                {
+                    foreach (GraphicsConnection* conn, port->getOffPageConnector()->getConnections())
+                    {
+                        if (!connections.contains(conn))
+                        {
+                            new SWConnectionDeleteCommand(conn, this);
+                            connections.append(conn);
+                        }
+                    }
                 }
             }
         }
@@ -57,7 +75,23 @@ SystemColumnDeleteCommand::SystemColumnDeleteCommand(GraphicsColumnLayout* layou
 
             foreach (GraphicsConnection* conn, interface->getConnections())
             {
-                new SWConnectionDeleteCommand(conn, this);
+                if (!connections.contains(conn))
+                {
+                    new SWConnectionDeleteCommand(conn, this);
+                    connections.append(conn);
+                }
+            }
+
+            if (interface->getOffPageConnector() != 0)
+            {
+                foreach (GraphicsConnection* conn, interface->getOffPageConnector()->getConnections())
+                {
+                    if (!connections.contains(conn))
+                    {
+                        new SWConnectionDeleteCommand(conn, this);
+                        connections.append(conn);
+                    }
+                }
             }
         }
     }
@@ -205,6 +239,8 @@ void SystemComponentDeleteCommand::redo()
     if (firstRun_)
     {
         // Create child commands for removing connections.
+        QList<GraphicsConnection*> connections;
+
         foreach (QGraphicsItem* childItem, item_->childItems())
         {
             if (childItem->type() != SWPortItem::Type)
@@ -216,14 +252,22 @@ void SystemComponentDeleteCommand::redo()
 
             foreach (GraphicsConnection* conn, endpoint->getConnections())
             {
-                new SWConnectionDeleteCommand(conn, this);
+                if (!connections.contains(conn))
+                {
+                    new SWConnectionDeleteCommand(conn, this);
+                    connections.append(conn);
+                }
             }
 
             if (endpoint->getOffPageConnector() != 0)
             {
                 foreach (GraphicsConnection* conn, endpoint->getOffPageConnector()->getConnections())
                 {
-                    new SWConnectionDeleteCommand(conn, this);
+                    if (!connections.contains(conn))
+                    {
+                        new SWConnectionDeleteCommand(conn, this);
+                        connections.append(conn);
+                    }
                 }
             }
         }

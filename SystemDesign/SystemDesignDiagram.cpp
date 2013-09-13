@@ -90,7 +90,7 @@ SystemDesignDiagram::SystemDesignDiagram(bool onlySW, LibraryInterface* lh, Main
       offPageMode_(false),
       replaceMode_(false),
       sourceComp_(0),
-      oldSelection_(0),
+      oldSelectedItems_(),
       copyAction_(tr("Copy"), this),
       pasteAction_(tr("Paste"), this),
       addAction_(tr("Add to Library"), this),
@@ -2272,6 +2272,27 @@ void SystemDesignDiagram::updateHierComponent()
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::onSelectionChanged()
 {
+    // Disallow selecting elements of different type.
+    if (selectedItems().size() > 1)
+    {
+        // Check if all selected items have the same type.
+        int type = getCommonItemType(selectedItems());
+
+        if (type == -1)
+        {
+            // If not, deselect those that are in the new selection but no in the old one.
+            for (int i = 0; i < selectedItems().size(); ++i)
+            {
+                QGraphicsItem* item = selectedItems()[i];
+
+                if (!oldSelectedItems_.contains(item))
+                {
+                    item->setSelected(false);
+                }
+            }
+        }
+    }
+
     // Retrieve the new selection.
     QGraphicsItem* newSelection = 0;
 
@@ -2282,11 +2303,13 @@ void SystemDesignDiagram::onSelectionChanged()
 
     // If the old selection was an off-page connector, hide its connections.
     // Also hide the previously selected connection if it was an off-page connection.
-    if (oldSelection_ != 0)
+    for (int i = 0; i < oldSelectedItems_.size(); ++i)
     {
-        if (oldSelection_->type() == SWOffPageConnectorItem::Type)
+        QGraphicsItem* oldSelection = oldSelectedItems_[i];
+
+        if (oldSelection->type() == SWOffPageConnectorItem::Type)
         {
-            SWOffPageConnectorItem* connector = static_cast<SWOffPageConnectorItem*>(oldSelection_);
+            SWOffPageConnectorItem* connector = static_cast<SWOffPageConnectorItem*>(oldSelection);
 
             foreach (GraphicsConnection* conn, connector->getConnections())
             {
@@ -2296,19 +2319,19 @@ void SystemDesignDiagram::onSelectionChanged()
                 }
             }
         }
-        else if (oldSelection_->type() == GraphicsConnection::Type && oldSelection_ != newSelection)
+        else if (oldSelection->type() == GraphicsConnection::Type && !selectedItems().contains(oldSelection))
         {
-            GraphicsConnection* conn = static_cast<GraphicsConnection*>(oldSelection_);
+            GraphicsConnection* conn = static_cast<GraphicsConnection*>(oldSelection);
 
             if (conn->endpoint1() != 0)
             {
                 if (conn->endpoint1()->type() == SWOffPageConnectorItem::Type)
                 {
-                    oldSelection_->setVisible(false);
+                    oldSelection->setVisible(false);
                 }
                 else
                 {
-                    oldSelection_->setZValue(-1000);
+                    oldSelection->setZValue(-1000);
                 }
             }
         }
@@ -2328,7 +2351,7 @@ void SystemDesignDiagram::onSelectionChanged()
     onSelected(newSelection);
 
     // Save the current selection as the old selection.
-    oldSelection_ = newSelection;
+    oldSelectedItems_ = selectedItems();
 }
 
 //-----------------------------------------------------------------------------
