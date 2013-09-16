@@ -1890,6 +1890,8 @@ void HWDesignDiagram::onCopyAction(){
         }
         else if (type == HWColumn::Type)
         {
+            qSort(items.begin(), items.end(), &sortByX);
+
             ColumnCollectionCopyData collection;
             
             foreach (QGraphicsItem* item, items)

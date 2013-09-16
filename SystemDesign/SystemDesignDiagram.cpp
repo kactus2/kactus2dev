@@ -91,6 +91,7 @@ SystemDesignDiagram::SystemDesignDiagram(bool onlySW, LibraryInterface* lh, Main
       replaceMode_(false),
       sourceComp_(0),
       oldSelectedItems_(),
+      selectAllAction_(tr("Select All"), this),
       copyAction_(tr("Copy"), this),
       pasteAction_(tr("Paste"), this),
       addAction_(tr("Add to Library"), this),
@@ -2905,6 +2906,8 @@ void SystemDesignDiagram::onCopyAction()
         }
         else if (type == SystemColumn::Type)
         {
+            qSort(items.begin(), items.end(), &sortByX);
+
             ColumnCollectionCopyData collection;
 
             foreach (QGraphicsItem* item, items)
@@ -3185,6 +3188,8 @@ QMenu* SystemDesignDiagram::createContextMenu(QPointF const& pos)
         prepareContextMenuActions();
 
         menu = new QMenu(parent());
+        menu->addAction(&selectAllAction_);
+        menu->addSeparator();
         menu->addAction(&addAction_);
         menu->addAction(&openComponentAction_);
         menu->addAction(&openDesignAction_);
@@ -3201,6 +3206,10 @@ QMenu* SystemDesignDiagram::createContextMenu(QPointF const& pos)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::setupActions()
 {
+    parent()->addAction(&selectAllAction_);
+    selectAllAction_.setShortcut(QKeySequence::SelectAll);
+    connect(&selectAllAction_, SIGNAL(triggered()),this, SLOT(selectAll()), Qt::UniqueConnection);
+
     parent()->addAction(&copyAction_);
     copyAction_.setShortcut(QKeySequence::Copy);
     connect(&copyAction_, SIGNAL(triggered()),this, SLOT(onCopyAction()), Qt::UniqueConnection);
@@ -3530,4 +3539,17 @@ void SystemDesignDiagram::keyPressEvent(QKeyEvent *event)
 {
     prepareContextMenuActions();
     DesignDiagram::keyPressEvent(event);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::selectAll()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::selectAll()
+{
+    clearSelection();
+
+    foreach (GraphicsColumn* column, layout_->getColumns())
+    {
+        column->setSelected(true);
+    }
 }

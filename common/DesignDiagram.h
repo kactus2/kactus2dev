@@ -226,6 +226,11 @@ public:
      */
     static int getCommonItemType(QList<QGraphicsItem*> const& items);
 
+    /*!
+     *  Sorts graphics items by X coordinate.
+     */
+    static bool sortByX(QGraphicsItem* lhs, QGraphicsItem* rhs);
+
 public slots:
     //! Called when the diagram is shown.
     void onShow();

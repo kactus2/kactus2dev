@@ -28,6 +28,7 @@
 #include <QWidget>
 #include <QPainter>
 #include <QMenu>
+#include <QGraphicsItem>
 
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::DesignDiagram()
@@ -441,4 +442,12 @@ int DesignDiagram::getCommonItemType(QList<QGraphicsItem*> const& items)
     }
 
     return type;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::sortByX()
+//-----------------------------------------------------------------------------
+bool DesignDiagram::sortByX(QGraphicsItem* lhs, QGraphicsItem* rhs)
+{
+    return lhs->x() < rhs->x();
 }

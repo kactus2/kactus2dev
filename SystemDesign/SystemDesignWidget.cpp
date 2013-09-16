@@ -361,6 +361,7 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 SWConnectionEndpoint* endpoint2 = static_cast<SWConnectionEndpoint*>(conn->endpoint2());
 
                 QUndoCommand* childCmd = new SWConnectionDeleteCommand(conn, cmd.data());
+                childCmd->redo();
                 
                 // If the bus ports are invalid, delete them too.
                 if (endpoint1->isInvalid())

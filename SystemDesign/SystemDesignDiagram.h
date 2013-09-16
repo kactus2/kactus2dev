@@ -238,6 +238,11 @@ public:
     void onVerticalScroll(qreal y);
 
 public slots:
+    /*!
+     *  Selects all (columns) in the design.
+     */
+    void selectAll();
+
     //! Called when a component instance is added to the diagram.
     virtual void onComponentInstanceAdded(ComponentItem* item);
 
@@ -546,6 +551,9 @@ private:
 
     //! Old selected items.
     QList<QGraphicsItem*> oldSelectedItems_;
+
+    //! Context menu select all action.
+    QAction selectAllAction_;
 
     //! Context menu copy action.
     QAction copyAction_;
