@@ -117,7 +117,7 @@ void LocalMemoryMapEditor::onEnableChanged()
     if (enableMemMapBox_->checkState() == Qt::Unchecked && !localMemoryMap_->isEmpty())
     {
         enableMemMapBox_->setCheckState(Qt::Checked);
-        emit errorMessage("Local memory map must be used since one or more address blocks are defined.");        
+        emit errorMessage("Cannot unselect local memory map since all fields are not empty.");        
     }
 
     if (enableMemMapBox_->checkState() == Qt::Checked)
