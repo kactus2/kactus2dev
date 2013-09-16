@@ -65,6 +65,7 @@ public:
         QString instanceName;                           //!< The bus instance name.
         QString description;                            //!< The description of the instance.
         QPointF pos;                                    //!< Original position of the instance.
+        bool topLevelIf;                                //!< Top-level or bus port interface.
 
         /*!
         *  Constructor.
@@ -74,23 +75,8 @@ public:
             busInterface(),
             mode(),
             instanceName(),
-            description()
-        {
-        }
-    };
-
-    //-----------------------------------------------------------------------------
-    //! Clipboard copy data for a collection of copied bus port instances.
-    //-----------------------------------------------------------------------------
-    struct BusPortCollectionCopyData
-    {
-        QList<BusInterfaceCopyData> instances;
-
-        /*!
-        *  Constructor.
-        */
-        BusPortCollectionCopyData()
-            : instances()
+            description(),
+            topLevelIf()
         {
         }
     };
@@ -434,14 +420,6 @@ private:
     /*!
      *  Copies component instances in a format which can be saved to clipboard.
      *
-     *      @param [in]  items       The bus port instance items to copy.
-     *      @param [out] collection  The resulted collection of bus port instance copy data.
-     */
-    void copyInterfaces(QList<QGraphicsItem*> const& items, BusPortCollectionCopyData &collection);
-
-    /*!
-     *  Copies component instances in a format which can be saved to clipboard.
-     *
      *      @param [in]  items       The top-level bus interface instance items to copy.
      *      @param [out] collection  The resulted collection of bus interface instance copy data.
      */
@@ -462,7 +440,7 @@ private:
      *      @param [in] component      The component where to place the ports.
      *      @param [in] cmd            The parent undo command for the paste undo commands.
      */
-   void pasteInterfaces(BusPortCollectionCopyData const& collection,
+   void pasteInterfaces(BusInterfaceCollectionCopyData const& collection,
                         HWComponentItem* component, QUndoCommand* cmd);
 
    /*!

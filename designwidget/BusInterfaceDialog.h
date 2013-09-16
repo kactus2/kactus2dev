@@ -24,6 +24,7 @@
 #include <QSortFilterProxyModel>
 #include <QTableView>
 
+class Component;
 class ConnectionEndpoint;
 class BusInterface;
 class CellEditTableView;
@@ -78,21 +79,24 @@ public:
     General::InterfaceMode getSelectedMode() const;
 
  /*!
-     *  Sets the opposing and draft interface ports for the dialog.
+     *  Sets the components and interface for copying for the dialog.
      *
-     *      @param [in] opposingBusItem     The bus interface item in opposing end.
-     *      @param [in] draftBusItem        The bus interface item in the draft component.
-     *      @param [in] lh                  The library interface.
+     *      @param [in] srcComponent        The component to copy from.
+     *      @param [in] busInterface        The bus interface to copy.
+     *      @param [in] targetComponent     The component to copy to.
+     *      @param [in] handler             The library interface.
      */
-    void setBusInterfaces(ConnectionEndpoint const* opposingBusItem, ConnectionEndpoint const* draftBusItem, 
-                        LibraryInterface* lh);
+    void setBusInterfaces(QSharedPointer<Component> srcComponent, 
+                          QSharedPointer<BusInterface> busInterface, 
+                          QSharedPointer<Component> targetComponent,
+                          LibraryInterface* handler);
 
     /*!
      *  Creates port mapping in draft component according to generation table contents.
      *
      *      @return The port maps.
     */
-    QList< QSharedPointer<General::PortMap> > getPortMaps() const;
+    QList< QSharedPointer<General::PortMap> > getPortMaps();
 
     /*!
      *  Creates the list of ports for draft component according to 
@@ -100,7 +104,7 @@ public:
      *
      *      @return The ports.
     */
-    QList< QSharedPointer<Port> > getPorts() const;
+    QList< QSharedPointer<Port> > getPorts();
 
 public slots:
 
@@ -178,6 +182,18 @@ private:
 
     //! Library interface.
     LibraryInterface* lh_;
+
+    //! The component from which the bus interface is copied.
+    QSharedPointer<Component> sourceComp_;
+
+    //! The component to which the bus interface is copied.
+    QSharedPointer<Component> destComp_;
+
+    //! List of generated ports.
+    QList< QSharedPointer<Port> > ports_;
+
+    //! List of generated port maps.
+    QList< QSharedPointer<General::PortMap> > portMaps_;
 
     //! The bus interface the dialog is referring to.
     QSharedPointer<BusInterface> busIf_;

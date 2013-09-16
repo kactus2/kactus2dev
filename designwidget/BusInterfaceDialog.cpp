@@ -44,17 +44,22 @@ namespace
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceDialog()
+// Function: BusInterfaceDialog::BusInterfaceDialog()
 //-----------------------------------------------------------------------------
 BusInterfaceDialog::BusInterfaceDialog(bool enableNameEdit,
-                                       QWidget* parent) : 
-                                                          QDialog(parent), layout_(0),
-                                                          nameLabel_(0),nameEdit_(0),
-                                                          modeGroup_(0), btnOK_(0),
-                                                          btnCancel_(0), tableGroup_(0), 
-                                                          tableEnable_(false),portsView_(0),
-                                                          portsModel_(0),
-                                                          proxy_(0), modes_(0)
+                                       QWidget* parent) 
+    : QDialog(parent), layout_(0),
+    nameLabel_(0),nameEdit_(0),
+    modeGroup_(0), btnOK_(0),
+    btnCancel_(0), tableGroup_(0), 
+    tableEnable_(false), portsView_(0),
+    portsModel_(0),
+    proxy_(0), modes_(0),
+    sourceComp_(),
+    destComp_(),
+    busIf_(),
+    ports_(),
+    portMaps_()
 {
     setWindowTitle(tr("Define Bus Interface"));
 
@@ -88,21 +93,21 @@ BusInterfaceDialog::BusInterfaceDialog(bool enableNameEdit,
         btnOK_->setEnabled(!nameEdit_->text().isEmpty());
     }
 
-    tableGroup_ = new QGroupBox(tr("Define Port Names and Descriptions in Draft Component"), 
+    tableGroup_ = new QGroupBox(tr("Define Port Names and Descriptions in Target Component"), 
                                     this);
 
     setupLayout();
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~BusInterfaceDialog()
+// Function: BusInterfaceDialog::~BusInterfaceDialog()
 //-----------------------------------------------------------------------------
 BusInterfaceDialog::~BusInterfaceDialog()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: addMode()
+// Function: BusInterfaceDialog::addMode()
 //-----------------------------------------------------------------------------
 void BusInterfaceDialog::addMode(General::InterfaceMode mode)
 {
@@ -113,7 +118,7 @@ void BusInterfaceDialog::addMode(General::InterfaceMode mode)
 }
 
 //-----------------------------------------------------------------------------
-// Function: getSelectedMode()
+// Function: BusInterfaceDialog::getSelectedMode()
 //-----------------------------------------------------------------------------
 General::InterfaceMode BusInterfaceDialog::getSelectedMode() const
 {
@@ -131,14 +136,17 @@ General::InterfaceMode BusInterfaceDialog::getSelectedMode() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: setBusPorts()
+// Function: BusInterfaceDialog::setBusInterfaces()
 //-----------------------------------------------------------------------------
-void BusInterfaceDialog::setBusInterfaces(ConnectionEndpoint const* opposingBusPort, 
-    ConnectionEndpoint const* draftBusPort, LibraryInterface* lh)
+void BusInterfaceDialog::setBusInterfaces(QSharedPointer<Component> srcComponent, 
+    QSharedPointer<BusInterface> busInterface, 
+    QSharedPointer<Component> targetComponent, 
+    LibraryInterface* handler)
 {
-    lh_ = lh;
-    opposingEnd_ = opposingBusPort;
-    draftEnd_ = draftBusPort;
+    sourceComp_ = srcComponent;
+    destComp_ = targetComponent;
+    busIf_ = busInterface;
+    lh_ = handler;
 
     if ( !tableEnable_ )
     {
@@ -165,35 +173,35 @@ void BusInterfaceDialog::setBusInterfaces(ConnectionEndpoint const* opposingBusP
             portsView_->setEnabled(false);
         }
     }
-
-    ComponentItem* sourceComponent = opposingBusPort->encompassingComp();    
-    QString sourceName;   
-    if (sourceComponent)
+   
+    QString sourceName = srcComponent->getVlnv()->getName();
+    if (sourceName.isEmpty())
     {
-        sourceName = sourceComponent->name();
+        sourceName = "Draft Component";
     }
-    else
+    QString destName = targetComponent->getVlnv()->getName();
+    if (destName.isEmpty())
     {
-        sourceName = "Top-level";
+        destName = "Draft Component";
     }
 
     QString sourceHeader = "Name in " + sourceName;
     portsModel_->setHeaderData(PortGenerationTableModel::SRC_NAME, Qt::Horizontal, sourceHeader);
-    
-    QString draftHeader = "Name in " + draftBusPort->encompassingComp()->name();
-    portsModel_->setHeaderData(PortGenerationTableModel::DRAFT_NAME, Qt::Horizontal, draftHeader);
+
+    QString draftHeader = "Name in " + destName;
+    portsModel_->setHeaderData(PortGenerationTableModel::TARGET_NAME, Qt::Horizontal, draftHeader);
 }
 
+
 //-----------------------------------------------------------------------------
-// Function: getPortMaps()
+// Function: BusInterfaceDialog::getPortMaps()
 //-----------------------------------------------------------------------------
-QList< QSharedPointer<General::PortMap> > BusInterfaceDialog::getPortMaps() const
-{
-    QList< QSharedPointer<General::PortMap> > portMaps;
-   
-    if ( tableEnable_ )
+QList< QSharedPointer<General::PortMap> > BusInterfaceDialog::getPortMaps() 
+{   
+    // Create port maps
+    if ( tableEnable_ && portMaps_.empty())
     {
-        foreach ( QSharedPointer<General::PortMap> portMap, opposingEnd_->getBusInterface()->getPortMaps() )
+        foreach ( QSharedPointer<General::PortMap> portMap, busIf_->getPortMaps() )
         {
             int row = 0;
             QModelIndex index;
@@ -206,35 +214,35 @@ QList< QSharedPointer<General::PortMap> > BusInterfaceDialog::getPortMaps() cons
                     break;
                 }
             }
-            index = portsModel_->index(row,PortGenerationTableModel::DRAFT_NAME);
+            index = portsModel_->index(row,PortGenerationTableModel::TARGET_NAME);
             QString physDraft = portsModel_->data(index,Qt::DisplayRole).toString();
 
             QSharedPointer<General::PortMap> generated(new General::PortMap(*portMap));
             generated->physicalPort_ = physDraft;
-            portMaps.append(generated);
+            portMaps_.append(generated);
         }
     }
 
-    return portMaps;
+    return portMaps_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: getPorts()
+// Function: BusInterfaceDialog::getPorts()
 //-----------------------------------------------------------------------------
-QList< QSharedPointer<Port> > BusInterfaceDialog::getPorts() const
+QList< QSharedPointer<Port> > BusInterfaceDialog::getPorts() 
 {
-    QList< QSharedPointer<Port> > portList;
-    if ( tableEnable_ )
+    // Create ports
+    if ( tableEnable_ && ports_.empty())
     {
         for(int row = 0; row < portsModel_->rowCount(); row++)
         {
             QModelIndex index = portsModel_->index(row, PortGenerationTableModel::SRC_NAME);
             QString name = portsModel_->data(index, Qt::DisplayRole).toString();
-            index = portsModel_->index(row, PortGenerationTableModel::DRAFT_NAME);
+            index = portsModel_->index(row, PortGenerationTableModel::TARGET_NAME);
             QString generatedName = portsModel_->data(index, Qt::DisplayRole).toString();
-            QSharedPointer<Port> port = opposingEnd_->getOwnerComponent()->getPort(name);
+            QSharedPointer<Port> port = sourceComp_->getPort(name);
             QSharedPointer<Port> draftPort(new Port(generatedName, *port));
-            index = portsModel_->index(row, PortGenerationTableModel::DRAFT_DIRECTION);
+            index = portsModel_->index(row, PortGenerationTableModel::TARGET_DIRECTION);
             QString draftDir = portsModel_->data(index, Qt::DisplayRole).toString();
             draftPort->setDirection(General::str2Direction(draftDir, General::DIRECTION_INVALID));
 
@@ -243,15 +251,15 @@ QList< QSharedPointer<Port> > BusInterfaceDialog::getPorts() const
                 draftPort->setDefaultValue("");
             }
 
-            portList.append(draftPort);
+            ports_.append(draftPort);
         }
     }
 
-    return portList;
+    return ports_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: setName()
+// Function: BusInterfaceDialog::setName()
 //-----------------------------------------------------------------------------
 void BusInterfaceDialog::setName(QString const& name)
 {
@@ -260,7 +268,7 @@ void BusInterfaceDialog::setName(QString const& name)
 }
 
 //-----------------------------------------------------------------------------
-// Function: getName()
+// Function: BusInterfaceDialog::getName()
 //-----------------------------------------------------------------------------
 QString BusInterfaceDialog::getName() const
 {
@@ -269,7 +277,7 @@ QString BusInterfaceDialog::getName() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: onNameChanged()
+// Function: BusInterfaceDialog::onNameChanged()
 //-----------------------------------------------------------------------------
 void BusInterfaceDialog::onNameChanged()
 {
@@ -277,7 +285,7 @@ void BusInterfaceDialog::onNameChanged()
 }
 
 //-----------------------------------------------------------------------------
-// Function: onTableDataChanged()
+// Function: BusInterfaceDialog::onTableDataChanged()
 //-----------------------------------------------------------------------------
 void BusInterfaceDialog::onTableDataChanged()
 {
@@ -285,7 +293,7 @@ void BusInterfaceDialog::onTableDataChanged()
 }
 
 //-----------------------------------------------------------------------------
-// Function: onModeSelected()
+// Function: BusInterfaceDialog::onModeSelected()
 //-----------------------------------------------------------------------------
 void BusInterfaceDialog::onModeSelected(bool const radioButtonChecked)
 {
@@ -298,7 +306,7 @@ void BusInterfaceDialog::onModeSelected(bool const radioButtonChecked)
 }
 
 //-----------------------------------------------------------------------------
-// Function: setupLayout()
+// Function: BusInterfaceDialog::setupLayout()
 //-----------------------------------------------------------------------------
 void BusInterfaceDialog::setupLayout()
 {
@@ -334,13 +342,12 @@ void BusInterfaceDialog::setupLayout()
 }
 
 //-----------------------------------------------------------------------------
-// Function: setupPortTable()
+// Function: BusInterfaceDialog::setupPortTable()
 //-----------------------------------------------------------------------------
 void BusInterfaceDialog::setupPortTable()
 {
     portsView_ = new CellEditTableView(this);
     portsView_->setSortingEnabled(true);
-    //portsView_->setEnabled(false);
     portsView_->setItemDelegate(new LineEditDelegate(this));
 
     portsModel_ = new PortGenerationTableModel(this);   
@@ -372,13 +379,13 @@ void BusInterfaceDialog::setupPortTable()
 }
 
 //-----------------------------------------------------------------------------
-// Function: updatePortsView()
+// Function: BusInterfaceDialog::updatePortsView()
 //-----------------------------------------------------------------------------
 void BusInterfaceDialog::updatePortsView()
 {
     if ( tableEnable_ && modes_ != 0 )
     {
-        portsModel_->initialize(lh_,opposingEnd_, draftEnd_, getSelectedMode());        
+        portsModel_->initialize(sourceComp_, busIf_, destComp_, lh_, getSelectedMode());        
         onTableDataChanged();
     }
 }

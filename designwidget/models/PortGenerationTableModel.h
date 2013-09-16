@@ -38,9 +38,9 @@ public:
         SRC_DIRECTION,
         SRC_NAME,
         SIZE,
-        DRAFT_NAME,
-        DRAFT_DIRECTION,
-        DRAFT_DESCRIPTION
+        TARGET_NAME,
+        TARGET_DIRECTION,
+        TARGET_DESCRIPTION        
     };
 
     //! \brief The constructor.
@@ -128,15 +128,15 @@ public:
 	bool isValid() const;
 
 	/*! \brief Creates the initial content according to specified interfaces.
-     *
+     *     
+     * @param [in] srcComponent         The component to copy from.
+     * @param [in] busIf                Bus interface to copy.
+     * @param [in] targetComponent      The component to copy to.
      * @param [in] lh                   The library interface.
-     * @param [in] sourceComponent      Opposing bus interface item.
-     * @param [in] draftComponent       Bus interface item in draft component.
-     * @param [in] selectedMode         Bus interface mode for draft component.
+     * @param [in] selectedMode         Bus interface mode for target component.
 	*/
-    void initialize(LibraryInterface* lh, ConnectionEndpoint const* sourceComponent, 
-        ConnectionEndpoint const* draftComponent,
-        General::InterfaceMode selectedMode);
+    void initialize(QSharedPointer<Component> srcComponent, QSharedPointer<BusInterface> busIf, 
+        QSharedPointer<Component> targetComponent, LibraryInterface* lh, General::InterfaceMode selectedMode);
 
 	//! \brief Locks a column.
 	void lockColumn(int const column);

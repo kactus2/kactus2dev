@@ -122,11 +122,11 @@ QVariant PortGenerationTableModel::data(const QModelIndex& index,
             {
                 return row->getSize();
             }
-        case DRAFT_NAME :
+        case TARGET_NAME :
             {
                 return row->getDraftName();
             }
-        case DRAFT_DIRECTION :
+        case TARGET_DIRECTION :
             {
                 General::Direction dir = row->getDraftDirection();
                 if ( dir == General::DIRECTION_INVALID )
@@ -135,7 +135,7 @@ QVariant PortGenerationTableModel::data(const QModelIndex& index,
                 }
                 return General::direction2Str(dir);
             }
-        case DRAFT_DESCRIPTION : 
+        case TARGET_DESCRIPTION : 
             {
                 return row->getDraftDescription();
             }
@@ -149,11 +149,11 @@ QVariant PortGenerationTableModel::data(const QModelIndex& index,
     else if ( role == Qt::ForegroundRole )
     {
         
-        if ( index.column() == DRAFT_NAME && nameDuplicates(index.row()) )
+        if ( index.column() == TARGET_NAME && nameDuplicates(index.row()) )
         {
             return QColor("red");
         } 
-        else if ( index.column() == DRAFT_DIRECTION && 
+        else if ( index.column() == TARGET_DIRECTION && 
             rows_.at(index.row())->getDraftDirection() == General::DIRECTION_INVALID )
         {
             return QColor("red");
@@ -168,7 +168,7 @@ QVariant PortGenerationTableModel::data(const QModelIndex& index,
 
     else if ( role == Qt::BackgroundRole )
     {
-        if ( index.column() == DRAFT_NAME )
+        if ( index.column() == TARGET_NAME )
         {
             return QColor("LemonChiffon");
         }
@@ -179,7 +179,7 @@ QVariant PortGenerationTableModel::data(const QModelIndex& index,
     else if (role == Qt::TextAlignmentRole)
     {
         if ( index.column() == SRC_DIRECTION || index.column() == SIZE || 
-            index.column() == DRAFT_DIRECTION )
+            index.column() == TARGET_DIRECTION )
         {
             return Qt::AlignCenter;
         }
@@ -199,14 +199,14 @@ QVariant PortGenerationTableModel::data(const QModelIndex& index,
 
     else if ( role == Qt::ToolTipRole )
     {
-        if ( index.column() == DRAFT_NAME )
+        if ( index.column() == TARGET_NAME )
         {
             if ( nameDuplicates(index.row()) )
             {
                 return QString(tr("Name %1 already in use.").arg(data(index).toString()));
             } 
         }
-        else if ( index.column() == DRAFT_DIRECTION )
+        else if ( index.column() == TARGET_DIRECTION )
         {
             if ( rows_.at(index.row())->getDraftDirection() == General::DIRECTION_INVALID )
             {
@@ -274,19 +274,19 @@ bool PortGenerationTableModel::setData(const QModelIndex& index, const QVariant&
         switch (index.column()) 
         {
 
-        case DRAFT_NAME :
+        case TARGET_NAME :
             {
                 row->setDraftName(value.toString());
                 emit dataChanged(index,index);
                 return true;
             }
-        case DRAFT_DIRECTION :
+        case TARGET_DIRECTION :
             {
                 row->setDraftDirection(General::str2Direction(value.toString(),General::DIRECTION_INVALID));
                 emit dataChanged(index,index);
                 return true;
             }
-        case DRAFT_DESCRIPTION : 
+        case TARGET_DESCRIPTION : 
             {
                 row->setDraftDescription(value.toString());
                 emit dataChanged(index,index);
@@ -364,14 +364,16 @@ bool PortGenerationTableModel::isValid() const
 //-----------------------------------------------------------------------------
 // Function: initialize()
 //-----------------------------------------------------------------------------
-void PortGenerationTableModel::initialize(LibraryInterface* lh, ConnectionEndpoint const* sourceBusInterface,
-    ConnectionEndpoint const* draftBusPort, General::InterfaceMode selectedMode)
+void PortGenerationTableModel::initialize(QSharedPointer<Component> srcComponent, 
+    QSharedPointer<BusInterface> busIf, 
+    QSharedPointer<Component> targetComponent, 
+    LibraryInterface* lh, 
+    General::InterfaceMode selectedMode)
 {
     // Store pointer to draft component.
-    draftComponent_ = draftBusPort->encompassingComp()->componentModel();
+    draftComponent_ = targetComponent;
 
     // Get the abstract definition of the bus interface.
-    QSharedPointer<BusInterface> busIf = sourceBusInterface->getBusInterface();
     QSharedPointer<LibraryComponent> libComp = lh->getModel(busIf->getAbstractionType());
     QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
 
@@ -381,11 +383,12 @@ void PortGenerationTableModel::initialize(LibraryInterface* lh, ConnectionEndpoi
     bool createNew = rows_.empty();
     QSharedPointer<PortGenerationRow> row = QSharedPointer<PortGenerationRow>();
     int count = 0;
+
     // Create table rows based on ports in opposing interface. 
     foreach ( QSharedPointer<General::PortMap> portMap, busIf->getPortMaps() )
     {
         QString portName = portMap->physicalPort_;          
-        QSharedPointer<Port> port = sourceBusInterface->getOwnerComponent()->getPort(portName);
+        QSharedPointer<Port> port = srcComponent->getPort(portName);
 
         if (!port)
         {
@@ -419,8 +422,7 @@ void PortGenerationTableModel::initialize(LibraryInterface* lh, ConnectionEndpoi
     lockColumn(SRC_DIRECTION);
     lockColumn(SRC_NAME);
     lockColumn(SIZE);
-    lockColumn(DRAFT_DIRECTION);
-
+    lockColumn(TARGET_DIRECTION);
 }
 
 //-----------------------------------------------------------------------------

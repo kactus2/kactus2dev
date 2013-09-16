@@ -337,6 +337,27 @@ BusInterfacePasteCommand::BusInterfacePasteCommand(QSharedPointer<Component> src
 }
 
 //-----------------------------------------------------------------------------
+// Function: BusInterfacePasteCommand::BusInterfacePasteCommand()
+//-----------------------------------------------------------------------------
+BusInterfacePasteCommand::BusInterfacePasteCommand(QSharedPointer<Component> srcComponent, 
+    QSharedPointer<Component> destComponent, 
+    BusInterfaceItem* interfaceItem, 
+    GraphicsColumn* column, 
+    QList<QSharedPointer<Port> > ports, 
+    QUndoCommand* parent /*= 0*/) 
+    : QUndoCommand(parent), srcComponent_(srcComponent), destComponent_(destComponent),
+    busInterface_(interfaceItem->getBusInterface()), 
+    interfaceItem_(interfaceItem), column_(column)
+{
+    // Create child commands for adding pre-defined ports.
+    foreach( QSharedPointer<Port> port, ports)
+    {
+        new AddPhysicalPortCommand(destComponent_, port, this);
+    }
+}
+
+
+//-----------------------------------------------------------------------------
 // Function: ~PortPasteCommand()
 //-----------------------------------------------------------------------------
 BusInterfacePasteCommand::~BusInterfacePasteCommand()

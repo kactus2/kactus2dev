@@ -68,7 +68,6 @@
 #include "columnview/ColumnEditDialog.h"
 
 
-Q_DECLARE_METATYPE(HWDesignDiagram::BusPortCollectionCopyData)
 Q_DECLARE_METATYPE(HWDesignDiagram::BusInterfaceCollectionCopyData)
 Q_DECLARE_METATYPE(HWDesignDiagram::ComponentCollectionCopyData)
 Q_DECLARE_METATYPE(HWDesignDiagram::ColumnCollectionCopyData)
@@ -1862,7 +1861,7 @@ void HWDesignDiagram::onCopyAction(){
         QList<QGraphicsItem*> items = selectedItems();
         int type = getCommonItemType(items);
 
-        if (type == BusPortItem::Type)
+        /*if (type == BusPortItem::Type)
         {
             BusPortCollectionCopyData collection;
             copyInterfaces(items, collection);
@@ -1871,7 +1870,7 @@ void HWDesignDiagram::onCopyAction(){
             mimeData->setImageData(QVariant::fromValue(collection));
             QApplication::clipboard()->setMimeData(mimeData);
         }
-        else if (type == BusInterfaceItem::Type)
+        else*/ if (type == BusInterfaceItem::Type || type == BusPortItem::Type)
         {
             BusInterfaceCollectionCopyData collection;
             copyInterfaces(items, collection);
@@ -1931,9 +1930,9 @@ void HWDesignDiagram::onPasteAction(){
             {
                 QMimeData const* mimedata = QApplication::clipboard()->mimeData();
                 
-                if ( mimedata->hasImage() && mimedata->imageData().canConvert<BusPortCollectionCopyData>())
+                if ( mimedata->hasImage() && mimedata->imageData().canConvert<BusInterfaceCollectionCopyData>())
                 {				
-                    BusPortCollectionCopyData collection = mimedata->imageData().value<BusPortCollectionCopyData>();
+                    BusInterfaceCollectionCopyData collection = mimedata->imageData().value<BusInterfaceCollectionCopyData>();
 
                     QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
                     pasteInterfaces(collection, targetComp, cmd.data());
@@ -2004,7 +2003,7 @@ void HWDesignDiagram::onPasteAction(){
                         // Update sidebar view .
                         emit clearItemSelection();       
                     }
-                }
+                }                
             }
         }
     }
@@ -2725,37 +2724,12 @@ void HWDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::copyInstances()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::copyInterfaces(QList<QGraphicsItem*> const& items, BusPortCollectionCopyData &collection)
-{
-    // Create instance copies.
-    foreach (QGraphicsItem* item, items)
-    {
-        if (item->type() == BusPortItem::Type)
-        {
-            BusPortItem* busPort = static_cast<BusPortItem*>(item);
-
-            collection.instances.append(BusInterfaceCopyData());
-            BusInterfaceCopyData& instance = collection.instances.back();
-
-            instance.srcComponent = busPort->getOwnerComponent();
-            instance.busInterface = busPort->getBusInterface();
-            instance.mode = busPort->getBusInterface()->getInterfaceMode();
-            instance.pos = busPort->pos();
-            instance.instanceName = busPort->name();
-            instance.description = busPort->description();
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::copyInstances()
-//-----------------------------------------------------------------------------
 void HWDesignDiagram::copyInterfaces(QList<QGraphicsItem*> const& items, BusInterfaceCollectionCopyData &collection)
 {
     // Create instance copies.
     foreach (QGraphicsItem* item, items)
     {
-        if (item->type() == BusInterfaceItem::Type)
+        if (item->type() == BusInterfaceItem::Type || item->type() == BusPortItem::Type)
         {
             BusInterfaceItem* busPort = static_cast<BusInterfaceItem*>(item);
 
@@ -2764,10 +2738,11 @@ void HWDesignDiagram::copyInterfaces(QList<QGraphicsItem*> const& items, BusInte
 
             instance.srcComponent = busPort->getOwnerComponent();
             instance.busInterface = busPort->getBusInterface();
-            //instance.mode = busPort->getBusInterface()->getInterfaceMode();
+            instance.mode = busPort->getBusInterface()->getInterfaceMode();
             instance.instanceName = busPort->name();
             instance.description = busPort->description();
             instance.pos = busPort->pos();
+            instance.topLevelIf = item->type() == BusInterfaceItem::Type;
         }
     }
 }
@@ -2803,7 +2778,7 @@ void HWDesignDiagram::copyInstances(QList<QGraphicsItem*> const& items, Componen
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::pasteInterfaces()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::pasteInterfaces(BusPortCollectionCopyData const& collection,
+void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& collection,
                                       HWComponentItem* component, QUndoCommand* cmd)
 {
     foreach(BusInterfaceCopyData const& instance, collection.instances)
@@ -2918,8 +2893,28 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
                 port->setPos(instance.pos);
             }
 
-            BusInterfacePasteCommand* pasteCmd = new BusInterfacePasteCommand(instance.srcComponent, 
-                getEditedComponent(), port, ioColumn, cmd); 
+            // If interface is copied from an component instance to top-level, ask user for the port names in 
+            // top-level.
+            BusInterfacePasteCommand* pasteCmd = 0;            
+            if (!instance.topLevelIf && instance.busInterface->getInterfaceMode() != General::INTERFACE_MODE_COUNT)
+            {
+                BusInterfaceDialog dialog(false, parent());
+                dialog.addMode(instance.busInterface->getInterfaceMode());
+                dialog.setBusInterfaces(instance.srcComponent, instance.busInterface, getEditedComponent(), 
+                    getLibraryInterface());
+                if (dialog.exec() == QDialog::Rejected)
+                {                   
+                    return;
+                }
+                copyBusIf->setPortMaps(dialog.getPortMaps());
+                pasteCmd = new BusInterfacePasteCommand(instance.srcComponent, 
+                    getEditedComponent(), port, ioColumn, dialog.getPorts(), cmd);
+            }
+            else
+            {
+                pasteCmd = new BusInterfacePasteCommand(instance.srcComponent, 
+                    getEditedComponent(), port, ioColumn, cmd); 
+            }
 
             connect(port, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
@@ -3047,7 +3042,7 @@ void HWDesignDiagram::prepareContextMenuActions()
 
         pasteAction_.setEnabled(mimeData != 0 && mimeData->hasImage() &&                
                                 (mimeData->imageData().canConvert<ColumnCollectionCopyData>() || 
-                                (column != 0 && mimeData->imageData().canConvert<ComponentCollectionCopyData>()) ||
+                                (column != 0 && mimeData->imageData().canConvert<ComponentCollectionCopyData>()) ||                                    
                                 (column != 0 && mimeData->imageData().canConvert<BusInterfaceCollectionCopyData>())));
     }
     else
@@ -3079,7 +3074,7 @@ void HWDesignDiagram::prepareContextMenuActions()
             // Enable paste action, if a draft component and bus ports on the clipboard.
             QMimeData const* mimedata = QApplication::clipboard()->mimeData();
             pasteAction_.setEnabled(items.count() == 1 && draft && mimedata != 0 && mimedata->hasImage() && 
-                                    mimedata->imageData().canConvert<BusPortCollectionCopyData>());
+                                    mimedata->imageData().canConvert<BusInterfaceCollectionCopyData>());
         }
         else if (type == HWColumn::Type)
         {

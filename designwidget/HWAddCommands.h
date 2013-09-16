@@ -220,12 +220,31 @@ public:
      *      @param [in] destComponent  The component to which to copy an interface.
      *      @param [in] srcComponent   The component from which the interface is copied.
 	 *      @param [in] interface      The interface item to paste.
+	 *      @param [in] column         The target column.
      *      @param [in] parent         The parent command.
      */
     BusInterfacePasteCommand(QSharedPointer<Component> srcComponent, 
         QSharedPointer<Component> destComponent,
-        BusInterfaceItem* interface,
+        BusInterfaceItem* interfaceItem,
         GraphicsColumn* column, QUndoCommand* parent = 0);
+
+    /*!
+     *  Constructor.
+     *
+	 *      Creates the child commands for adding pre-defined physical ports to the component model. 
+	 *
+     *      @param [in] destComponent  The component to which to copy an interface.
+     *      @param [in] srcComponent   The component from which the interface is copied.
+	 *      @param [in] interface      The interface item to paste.
+	 *      @param [in] column         The target column.
+	 *      @param [in] ports          The ports for the interface.
+     *      @param [in] parent         The parent command.
+     */
+    BusInterfacePasteCommand(QSharedPointer<Component> srcComponent, 
+        QSharedPointer<Component> destComponent,
+        BusInterfaceItem* interfaceItem,
+        GraphicsColumn* column, QList<QSharedPointer<Port> > ports,
+        QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.

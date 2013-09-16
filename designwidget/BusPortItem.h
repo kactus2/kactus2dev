@@ -96,7 +96,7 @@ public:
     virtual bool onConnect(ConnectionEndpoint const* other);
 
     /*!
-     *  Called when a connection between this and another end point is done.
+     *  Finds the mode for the interface and generated ports (if any).
      *
      *      @param [in] other The other end point of the connection.
      *      @param [out] mode The interface mode determined or selected by user.
@@ -106,7 +106,7 @@ public:
      *      @return False if there was an error in the connection or user rejected 
      *              the mode dialog. Otherwise true.
      */
-    bool askCompatibleMode(ConnectionEndpoint const* other, General::InterfaceMode& mode, 
+    bool getModeAndPorts(ConnectionEndpoint const* other, General::InterfaceMode& mode, 
                            QList< QSharedPointer<Port> >& ports,
                            QList< QSharedPointer<General::PortMap> >& portMaps);
 
@@ -191,6 +191,16 @@ protected:
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:
+    
+    /*!
+     *  Finds the possible opposing modes for a bus interface.
+     *
+     *      @param [in] busIf   The interface for which the opposing mode is searched.
+     *    
+     *      @return The possible opposing modes.
+     */
+    QList<General::InterfaceMode> getOpposingModes(QSharedPointer<BusInterface> busIf);
+
     QGraphicsTextItem *nameLabel_;
     QSharedPointer<BusInterface> busInterface_;
     LibraryInterface* lh_;
