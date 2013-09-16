@@ -1999,7 +1999,10 @@ void HWDesignDiagram::onPasteAction(){
                                       
                         QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
                         pasteInterfaces(collection, column, cmd.data(), true);
-                        getEditProvider().addCommand(cmd, false); 
+                        if (cmd->childCount() > 0)
+                        {
+                            getEditProvider().addCommand(cmd, false); 
+                        }
                         // Update sidebar view .
                         emit clearItemSelection();       
                     }
@@ -2880,18 +2883,7 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
             copyBusIf->setName(uniqueBusName);
             copyBusIf->setDescription(instance.description);
 
-            // Create a busPort with the copied bus interface.
-            BusInterfaceItem* port(new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), 
-                                                        copyBusIf, ioColumn));			
-
-            if (useCursorPos)
-            {
-                port->setPos(parent()->mapFromGlobal(contextPos_));
-            }
-            else
-            {
-                port->setPos(instance.pos);
-            }
+            BusInterfaceItem* port = 0;
 
             // If interface is copied from an component instance to top-level, ask user for the port names in 
             // top-level.
@@ -2904,16 +2896,31 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
                     getLibraryInterface());
                 if (dialog.exec() == QDialog::Rejected)
                 {                   
-                    return;
+                    continue;
                 }
                 copyBusIf->setPortMaps(dialog.getPortMaps());
+                // Create a busPort with the copied bus interface.
+                port = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), 
+                    copyBusIf, ioColumn);
                 pasteCmd = new BusInterfacePasteCommand(instance.srcComponent, 
                     getEditedComponent(), port, ioColumn, dialog.getPorts(), cmd);
             }
             else
             {
+                // Create a busPort with the copied bus interface.
+                port = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), 
+                    copyBusIf, ioColumn);
                 pasteCmd = new BusInterfacePasteCommand(instance.srcComponent, 
                     getEditedComponent(), port, ioColumn, cmd); 
+            }
+
+            if (useCursorPos)
+            {
+                port->setPos(parent()->mapFromGlobal(contextPos_));
+            }
+            else
+            {
+                port->setPos(instance.pos);
             }
 
             connect(port, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
