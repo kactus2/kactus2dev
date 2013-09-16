@@ -224,28 +224,31 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
 				QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
 				QSharedPointer<Component const> component = libComp.staticCast<Component const>();
 
-				switch (component->getComponentImplementation()) {
-				case KactusAttribute::KTS_SYS: {
-					return QIcon(":/icons/graphics/system-component.png");
-											   }
-				case KactusAttribute::KTS_SW: {
-                    if (component->hasSWViews())
-                    {
-					    return QIcon(":/icons/graphics/hier-sw-component.png");
+                if (component != 0)
+                {
+                    switch (component->getComponentImplementation()) {
+                    case KactusAttribute::KTS_SYS: {
+                        return QIcon(":/icons/graphics/system-component.png");
+                                                   }
+                    case KactusAttribute::KTS_SW: {
+                        if (component->hasSWViews())
+                        {
+                            return QIcon(":/icons/graphics/hier-sw-component.png");
+                        }
+                        else
+                        {
+                            return QIcon(":/icons/graphics/sw-component24x24.png");
+                        }
+                                                  }
+                    default: {
+                        if (component->isHierarchical()) {
+                            return QIcon(":/icons/graphics/hier-hw-component.png");
+                        }
+                        else
+                            return QIcon(":/icons/graphics/hw-component.png");
+                             }
                     }
-                    else
-                    {
-                        return QIcon(":/icons/graphics/sw-component24x24.png");
-                    }
-											  }
-				default: {
-					if (component->isHierarchical()) {
-						return QIcon(":/icons/graphics/hier-hw-component.png");
-					}
-					else
-						return QIcon(":/icons/graphics/hw-component.png");
-						 }
-				}
+                }
 			}
 
 			// if item is for a bus
