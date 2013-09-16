@@ -293,12 +293,16 @@ void PortPasteCommand::redo()
 // Function: BusInterfacePasteCommand()
 //-----------------------------------------------------------------------------
 BusInterfacePasteCommand::BusInterfacePasteCommand(QSharedPointer<Component> srcComponent, 
-    QSharedPointer<Component> destComponent,
-    QSharedPointer<BusInterfaceItem> interfaceItem,    
-    GraphicsColumn* column, QUndoCommand* parent) 
-    :   QUndoCommand(parent), srcComponent_(srcComponent), destComponent_(destComponent),
-        busInterface_(interfaceItem->getBusInterface()), 
-        interfaceItem_(interfaceItem), column_(column)
+                                                   QSharedPointer<Component> destComponent,
+                                                   BusInterfaceItem* interfaceItem,    
+                                                   GraphicsColumn* column, QUndoCommand* parent) 
+    : QUndoCommand(parent),
+      srcComponent_(srcComponent),
+      destComponent_(destComponent),
+      busInterface_(interfaceItem->getBusInterface()), 
+      interfaceItem_(interfaceItem),
+      column_(column),
+      del_(false)
 {
     // Create child commands for adding physical ports to target component. 
     // Physical ports must have a unique name within the component.
@@ -337,6 +341,10 @@ BusInterfacePasteCommand::BusInterfacePasteCommand(QSharedPointer<Component> src
 //-----------------------------------------------------------------------------
 BusInterfacePasteCommand::~BusInterfacePasteCommand()
 {
+    if (del_)
+    {
+        delete interfaceItem_;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -347,12 +355,13 @@ void BusInterfacePasteCommand::undo()
     // Execute child commands.
     QUndoCommand::undo();
 
-    Q_ASSERT(!interfaceItem_.isNull());
+    Q_ASSERT(interfaceItem_ != 0);
 
     // Remove the port from the component and from the scene
     destComponent_->removeBusInterface(busInterface_.data());
-    column_->removeItem(interfaceItem_.data());
-    interfaceItem_->scene()->removeItem(interfaceItem_.data());       
+    column_->removeItem(interfaceItem_);
+    interfaceItem_->scene()->removeItem(interfaceItem_);       
+    del_ = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -363,21 +372,22 @@ void BusInterfacePasteCommand::redo()
     // Execute child commands.
     QUndoCommand::redo();    
 
-    Q_ASSERT(!interfaceItem_.isNull());
+    Q_ASSERT(interfaceItem_ != 0);
 
     // Copy a port to the component.
     destComponent_->addBusInterface(busInterface_);
-    column_->addItem(interfaceItem_.data());
-    interfaceItem_->updateInterface();
+    column_->addItem(interfaceItem_);
+    del_ = false;
 
+    interfaceItem_->updateInterface();
 }
 
 //-----------------------------------------------------------------------------
 // Function: AddPhysicalPortCommand()
 //-----------------------------------------------------------------------------
 AddPhysicalPortCommand::AddPhysicalPortCommand(QSharedPointer<Component> component,
-                                                   QSharedPointer<Port> port,
-                                                   QUndoCommand* parent)
+                                               QSharedPointer<Port> port,
+                                               QUndoCommand* parent)
     : QUndoCommand(parent),
       component_(component),
       port_(port)                                                           

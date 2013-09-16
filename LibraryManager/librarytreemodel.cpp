@@ -249,6 +249,8 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
                              }
                     }
                 }
+
+                return QIcon(":/icons/graphics/hw-component.png");
 			}
 
 			// if item is for a bus

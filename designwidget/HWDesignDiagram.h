@@ -288,8 +288,13 @@ public:
     virtual HWConnectionEndpoint* getDiagramAdHocPort(QString const& portName);
 
 public slots:
-    /*! \brief Bring the selected item to front
-     *
+    /*!
+     *  Selects all (columns) in the design.
+     */
+    void selectAll();
+
+    /*!
+     *  Brings the selected item to front.
      */
     void selectionToFront();
 
@@ -526,6 +531,9 @@ private:
 
     //! Old selected items.
     QList<QGraphicsItem*> oldSelectedItems_;
+
+    //! Context menu select all action.
+    QAction selectAllAction_;
 
     //! Context menu copy action.
     QAction copyAction_;

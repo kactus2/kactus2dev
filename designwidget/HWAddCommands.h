@@ -224,7 +224,7 @@ public:
      */
     BusInterfacePasteCommand(QSharedPointer<Component> srcComponent, 
         QSharedPointer<Component> destComponent,
-        QSharedPointer<BusInterfaceItem> interface,
+        BusInterfaceItem* interface,
         GraphicsColumn* column, QUndoCommand* parent = 0);
 
     /*!
@@ -264,10 +264,13 @@ private:
     QPointF pos_;
 
     //! The interface item.
-    QSharedPointer<BusInterfaceItem> interfaceItem_;
+    BusInterfaceItem* interfaceItem_;
 
     //! The target column.
     GraphicsColumn* column_;
+
+    //! If true, the bus interface item is deleted in the destructor.
+    bool del_;
 };
 
 //-----------------------------------------------------------------------------

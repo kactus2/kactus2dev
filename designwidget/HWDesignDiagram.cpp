@@ -88,9 +88,10 @@ HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& edit
       oldSelectedItems_(),
       replaceMode_(false),
       sourceComp_(0),
+      selectAllAction_(tr("Select All"), this),
       copyAction_(tr("Copy"), this),
       pasteAction_(tr("Paste"), this),
-      addAction_(tr("Add to Library"), this),     
+      addAction_(tr("Add to Library"), this),
       openComponentAction_(tr("Open Component"), this),
       openDesignAction_(tr("Open HW Design"), this),
       showContextMenu_(true)
@@ -1838,6 +1839,8 @@ QMenu* HWDesignDiagram::createContextMenu(QPointF const& pos)
         prepareContextMenuActions();
 
         menu = new QMenu(parent());
+        menu->addAction(&selectAllAction_);
+        menu->addSeparator();
         menu->addAction(&addAction_);
         menu->addAction(&openComponentAction_);
         menu->addAction(&openDesignAction_);
@@ -2627,6 +2630,10 @@ BusPortItem* HWDesignDiagram::createMissingPort(QString const& portName, HWCompo
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::setupActions()
 {
+    parent()->addAction(&selectAllAction_);
+    selectAllAction_.setShortcut(QKeySequence::SelectAll);
+    connect(&selectAllAction_, SIGNAL(triggered()),this, SLOT(selectAll()), Qt::UniqueConnection);
+
     parent()->addAction(&copyAction_);
     copyAction_.setShortcut(QKeySequence::Copy);
     connect(&copyAction_, SIGNAL(triggered()),this, SLOT(onCopyAction()), Qt::UniqueConnection);
@@ -2899,8 +2906,8 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
             copyBusIf->setDescription(instance.description);
 
             // Create a busPort with the copied bus interface.
-            QSharedPointer<BusInterfaceItem> port(new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), 
-                copyBusIf, ioColumn));			
+            BusInterfaceItem* port(new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), 
+                                                        copyBusIf, ioColumn));			
 
             if (useCursorPos)
             {
@@ -2914,7 +2921,7 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
             BusInterfacePasteCommand* pasteCmd = new BusInterfacePasteCommand(instance.srcComponent, 
                 getEditedComponent(), port, ioColumn, cmd); 
 
-            connect(port.data(), SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
+            connect(port, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
             // Store the positions of other interfaces.
             QMap<BusInterfaceItem*, QPointF> oldPositions;
@@ -3106,5 +3113,18 @@ void HWDesignDiagram::keyPressEvent(QKeyEvent *event)
 {
     prepareContextMenuActions();
     DesignDiagram::keyPressEvent(event);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::selectAll()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::selectAll()
+{
+    clearSelection();
+
+    foreach (GraphicsColumn* column, layout_->getColumns())
+    {
+        column->setSelected(true);
+    }
 }
 
