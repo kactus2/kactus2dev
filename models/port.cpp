@@ -228,7 +228,10 @@ portType_(General::WIRE),
 wire_(),
 transactional_(),
 portAccessHandle_(),
-portAccessType_() {
+portAccessType_(),
+adHocVisible_(false),
+defaultPos_()
+{
 
 	nameGroup_.name_ = name;
 	nameGroup_.description_ = description;
