@@ -52,6 +52,8 @@ model_(new AddressBlockModel(addressBlock, this)) {
 
 	connect(model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(model_, SIGNAL(errorMessage(const QString&)),
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(itemAdded(int)),
 		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(itemRemoved(int)),

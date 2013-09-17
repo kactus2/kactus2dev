@@ -327,7 +327,14 @@ bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value
 	}
 }
 
-bool AddressBlockModel::isValid() const {
+bool AddressBlockModel::isValid() const { 
+    // Usage must be register or unspecified, if address block has children (registers).
+    if (!items_.empty() && 
+        (addressBlock_->getUsage() == General::MEMORY || addressBlock_->getUsage() == General::RESERVED))
+    {
+        return false;
+    }
+
 	foreach (QSharedPointer<RegisterModel> regModel, items_) {
 		if (!regModel->isValid()) {
 			return false;
@@ -337,6 +344,13 @@ bool AddressBlockModel::isValid() const {
 }
 
 void AddressBlockModel::onAddItem( const QModelIndex& index ) {
+    // Usage must be register or unspecified, if trying to add children (registers).
+    if (addressBlock_->getUsage() == General::MEMORY || addressBlock_->getUsage() == General::RESERVED)
+    {
+        emit errorMessage("Registers can only be added to address blocks with usage register.");
+        return;
+    }
+
 	int row = items_.size();
 
 	// if the index is valid then add the item to the correct position

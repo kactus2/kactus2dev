@@ -215,6 +215,14 @@ bool AddressBlock::isValid( QStringList& errorList,
 		valid = false;
 	}
 
+    if (!registerData_.empty() &&
+        (memoryBlockData_.getUsage() == General::RESERVED || memoryBlockData_.getUsage() == General::MEMORY))
+    {
+        errorList.append(QObject::tr("%1 with usage %2 must not contain registers").arg(
+            thisIdentifier).arg(General::usage2Str(memoryBlockData_.getUsage())));
+        valid = false;
+    }
+
 	foreach (QSharedPointer<RegisterModel> regModel, registerData_) {
 		if (!regModel->isValid(errorList, thisIdentifier)) {
 			valid = false;
@@ -245,6 +253,12 @@ bool AddressBlock::isValid() const {
 	if (!memoryBlockData_.isValid()) {
 		return false;
 	}
+
+    if (!registerData_.empty() &&
+        (memoryBlockData_.getUsage() == General::RESERVED || memoryBlockData_.getUsage() == General::MEMORY))
+    {
+        return false;
+    }
 
 	foreach (QSharedPointer<RegisterModel> regModel, registerData_) {
 		if (!regModel->isValid()) {

@@ -116,6 +116,9 @@ signals:
 	//! \brief Emitted when the contents of the model change.
 	void contentChanged();
 
+    //! \brief Prints an error message to the user.
+    void errorMessage(const QString& msg) const;
+
 	//! \brief Emitted when a new register item is added to the given index.
 	void itemAdded(int index);
 

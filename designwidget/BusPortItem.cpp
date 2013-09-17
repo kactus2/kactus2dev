@@ -691,15 +691,17 @@ bool BusPortItem::getModeAndPorts(ConnectionEndpoint const* other,
     }
 
     // If there are ports to copy from the other interface, ask for their names and interface mode.
-    if (!other->getBusInterface()->getPortMaps().empty())
+    if (!other->getBusInterface()->getPortMaps().empty() || modes.size() > 1)
     {
         BusInterfaceDialog dialog(false, (QWidget*)scene()->parent());
         foreach (General::InterfaceMode ifMode, modes)
         {
             dialog.addMode(ifMode);
+        }        
+        if (!other->getBusInterface()->getPortMaps().empty())
+        {
+            dialog.setBusInterfaces(other->getOwnerComponent(), other->getBusInterface(), getOwnerComponent(), lh_);
         }
-        dialog.setBusInterfaces(other->getOwnerComponent(), other->getBusInterface(), getOwnerComponent(), lh_);
-
         setHighlight(HIGHLIGHT_HOVER);
 
         if (dialog.exec() == QDialog::Rejected)
