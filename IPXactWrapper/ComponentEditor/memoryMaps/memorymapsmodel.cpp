@@ -98,7 +98,7 @@ QVariant MemoryMapsModel::data( const QModelIndex& index, int role /*= Qt::Displ
 					memMaps_.at(index.row())->getName());
 				
 				// if no interface refers to the memory map
-				if (interfaceNames.isEmpty()) {
+				if (interfaceNames.isEmpty() || memMaps_.at(index.row())->getName().isEmpty()) {
 					return tr("No binding");
 				}
 				// if there are then show them separated by space
