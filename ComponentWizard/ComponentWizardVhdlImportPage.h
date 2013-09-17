@@ -12,7 +12,6 @@
 #ifndef COMPONENTWIZARDVHDLIMPORTPAGE_H
 #define COMPONENTWIZARDVHDLIMPORTPAGE_H
 
-#include <Vhdl2IPXact/vhdltoipxact.h>
 #include <models/component.h>
 #include <ComponentWizard/VhdlImportEditor/vhdlimporteditor.h>
 
@@ -31,9 +30,9 @@ public:
     /*!
      *  Constructor.
      *
-     *		@param [in, out] component Pointer to the component being edited.
-     *		@param [in] Pointer to the instance which manages the library.
-     *      @param [in] parent The parent wizard.
+     *		@param [in, out] component  Pointer to the component being edited.
+     *		@param [in]      handler    Pointer to the instance which manages the library.
+     *      @param [in]      parent     The parent wizard.
      */
     ComponentWizardVhdlImportPage(QSharedPointer<Component> component,
 		 LibraryInterface* handler,

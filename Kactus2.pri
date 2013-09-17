@@ -587,9 +587,6 @@ HEADERS += ./resource.h \
     ./MemoryDesigner/AddressSubsection.h \
     ./MemoryDesigner/AddressSpaceItem.h \
     ./MemoryDesigner/AddressSectionItem.h \
-    ./Vhdl2IPXact/vhdlanalysis.h \
-    ./Vhdl2IPXact/textedit.h \
-    ./Vhdl2IPXact/vhdltoipxact.h \
     ./ComponentWizard/ComponentWizard.h \
     ./ComponentWizard/ComponentWizardConclusionPage.h \
     ./ComponentWizard/ComponentWizardDependencyPage.h \
@@ -1151,9 +1148,6 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./MemoryDesigner/MemoryDesignWidget.cpp \
     ./MemoryDesigner/MemoryItem.cpp \
     ./MemoryDesigner/SegmentItem.cpp \
-    ./Vhdl2IPXact/textedit.cpp \
-    ./Vhdl2IPXact/vhdlanalysis.cpp \
-    ./Vhdl2IPXact/vhdltoipxact.cpp \
     ./ComponentWizard/ComponentWizard.cpp \
     ./ComponentWizard/ComponentWizardConclusionPage.cpp \
     ./ComponentWizard/ComponentWizardDependencyPage.cpp \

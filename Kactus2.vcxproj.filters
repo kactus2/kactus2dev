@@ -800,12 +800,6 @@
     <Filter Include="Source Files\common\dialogs\commandLineGeneratorDialog">
       <UniqueIdentifier>{ca94da07-4954-4c3b-b08c-f5474019e1b2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\vhdl2IPXact">
-      <UniqueIdentifier>{4eadc0fe-56a2-4568-a2e5-ea11cf84f7f9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\vhdl2IPXact">
-      <UniqueIdentifier>{fc405438-c6ba-42f8-a0a3-9119ba6d5294}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\ComponentWizard">
       <UniqueIdentifier>{be6e1e65-e2a7-44ab-8df0-5daa1ac8ab14}</UniqueIdentifier>
     </Filter>
@@ -3739,21 +3733,6 @@
     <ClCompile Include="common\widgets\listManager\dirlistmanagermodel.cpp">
       <Filter>Source Files\common\widgets\listManager</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_textedit.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vhdltoipxact.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Vhdl2IPXact\textedit.cpp">
-      <Filter>Source Files\vhdl2IPXact</Filter>
-    </ClCompile>
-    <ClCompile Include="Vhdl2IPXact\vhdlanalysis.cpp">
-      <Filter>Source Files\vhdl2IPXact</Filter>
-    </ClCompile>
-    <ClCompile Include="Vhdl2IPXact\vhdltoipxact.cpp">
-      <Filter>Source Files\vhdl2IPXact</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_k2envvariablesettingspage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -5448,12 +5427,6 @@
     <CustomBuild Include="common\widgets\listManager\dirlistmanagermodel.h">
       <Filter>Header Files\common\widgets\listManager</Filter>
     </CustomBuild>
-    <CustomBuild Include="Vhdl2IPXact\textedit.h">
-      <Filter>Header Files\vhdl2IPXact</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Vhdl2IPXact\vhdltoipxact.h">
-      <Filter>Header Files\vhdl2IPXact</Filter>
-    </CustomBuild>
     <CustomBuild Include="settings\k2envvariablesettingspage.h">
       <Filter>Header Files\settings</Filter>
     </CustomBuild>
@@ -5947,9 +5920,6 @@
     </ClInclude>
     <ClInclude Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.h">
       <Filter>Header Files\common\widgets\EnumCollectionEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="Vhdl2IPXact\vhdlanalysis.h">
-      <Filter>Header Files\vhdl2IPXact</Filter>
     </ClInclude>
     <ClInclude Include="ComponentWizard\ComponentWizard.h">
       <Filter>Header Files\ComponentWizard</Filter>
