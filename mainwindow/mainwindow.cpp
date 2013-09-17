@@ -94,8 +94,6 @@
 #include <ConnectionEditor/connectioneditor.h>
 #include <AdHocEditor/AdHocEditor.h>
 
-#include <Vhdl2IPXact/vhdltoipxact.h>
-
 #include <QCoreApplication>
 #include <QApplication>
 #include <QSettings>
