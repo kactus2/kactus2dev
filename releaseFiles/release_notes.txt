@@ -8,18 +8,62 @@
               * Changed or Information
 ===============================================================================
 
+20/09/2013 2.3.0
+----------------------------------------------------
 
-05/07/2013 2.2 (Build XXXX)
++ Added copy-paste to all designs allowing copying of component instances,
+  interfaces and whole columns excluding connections.
++ Added multi-selection capability for copy-paste and deletion to all designs.
++ Added VLNV drag & drop support to summary tables in the component editor.
++ Added the possibility to rearrange the default positions of component's
+  interfaces in the general page of the component editor.
++ Added a tooltip to show memory map size in AUB for each address block and
+  segment in the memory map and address space editors.
++ Added a check box to enable/disable local memory map.
++ Added Browse button to New dialog pages in order to have more convenient
+  directory selection if the automatically suggested location does not 
+  suffice.
++ Added 'Select All' to the right-click context menu in design editors.
+
+- Fixed a bug causing the port maps dialog to open when using the off-page
+  connection tool.
+- Fixed API/COM interface deletion to also delete the underlying interface
+  metadata from the SW component.
+- Fixed an issue of ad-hoc ports not disappearing when a bus interface
+  containing the corresponding ports is deleted.
+- Removed the 'Parameterizable' firmness attribute option.
+
+* Migrated to Qt 5.1.1.
+* Improved routing of connections in all designs with automatic overlap
+  avoidance.
+* Improved memory map visualization with the following changes:
+    - Memory block widths are now scaled acccording to the window size.
+    - Changes to colors, fonts and alignment to improve readability.
+    - Visualization of overlapping addresses and violations.
+* Improved address spaces visualization.
+* SW designs are now shown in the library and they can be mapped to
+  the CPU's SW view by dragging from the library.
+* Bus interface port maps editor now shows also the port directions.
+* Component editor now highlights the used sections in the tree view.
+* Name conflicts are now checked in all tables in the component editor.
+  This concerns also copy-paste to the tables.
+* Changed the sorting in port and generic editors to case-insensitive.
+* Renamed 'Add Signals to Bus' to 'New Abstraction Definition' to prevent
+  confusion with the Add signals option in the bus editor.
+
+
+
+05/07/2013 2.2.0
 ----------------------------------------------------
 
 + NEW: Component creation wizard, including a VHDL import tool.
 + NEW: Dependency analysis tool with enhanced file set editing features.
 + NEW: Generator plugins.
-	* Memory map header generator.
-	* Altera BSP generator.
+    * Memory map header generator.
+    * Altera BSP generator.
 + NEW: Source analyzer plugins for dependency analysis.
-	* VHDL source analyzer.
-	* C/C++ source analyzer.
+    * VHDL source analyzer.
+    * C/C++ source analyzer.
 + Added printing of library summary report to the output window after the
   library scan.
 + Added COM interface implementation reference to be able to specify an
