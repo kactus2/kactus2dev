@@ -311,7 +311,7 @@ QString MemoryMap::getLastAddressStr() const {
 	quint64 lastAddress = range + lastBaseAddress - 1;
 
 	// if base and range were undefined then there is no last address
-	if (lastAddress < 0) {
+	if (range == 0 && lastBaseAddress == 0) {
 		return QString();
 	}
 
