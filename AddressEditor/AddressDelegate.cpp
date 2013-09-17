@@ -160,7 +160,7 @@ bool AddressDelegate::editorEvent(QEvent* event, QAbstractItemModel* model,
         return false;
     }
 
-    bool newState;
+    bool newState = value.toBool();
 
     // Handle the mouse button events.
     if (event->type() == QEvent::MouseButtonPress)

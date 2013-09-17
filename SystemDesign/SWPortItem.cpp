@@ -46,11 +46,12 @@
 SWPortItem::SWPortItem(QString const& name, QGraphicsItem *parent)
     : SWConnectionEndpoint(parent, true),
       nameLabel_(name, this),
-      apiInterface_(),
       comInterface_(),
+      apiInterface_(),
       oldPos_(),
       oldPortPositions_(),
       stubLine_(0, 0, 0, -GridSize, this),
+      stubLineDefaultPen_(),
       offPageConnector_(0)
 {
     setType(ENDPOINT_TYPE_UNDEFINED);
@@ -64,11 +65,12 @@ SWPortItem::SWPortItem(QString const& name, QGraphicsItem *parent)
 SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent)
     : SWConnectionEndpoint(parent, false),
       nameLabel_(this),
-      apiInterface_(apiIf),
       comInterface_(),
+      apiInterface_(apiIf),
       oldPos_(),
       oldPortPositions_(),
       stubLine_(0, 0, 0, -GridSize, this),
+      stubLineDefaultPen_(),
       offPageConnector_(0)
 {
     Q_ASSERT(apiIf != 0);
@@ -83,11 +85,12 @@ SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent
 SWPortItem::SWPortItem(QSharedPointer<ComInterface> comIf, QGraphicsItem *parent)
     : SWConnectionEndpoint(parent, false),
       nameLabel_(this),
-      apiInterface_(),
       comInterface_(comIf),
+      apiInterface_(),
       oldPos_(),
       oldPortPositions_(),
       stubLine_(0, 0, 0, -GridSize, this),
+      stubLineDefaultPen_(),
       offPageConnector_(0)
 {
     Q_ASSERT(comIf != 0);
@@ -247,6 +250,7 @@ void SWPortItem::updateInterface()
             }
 
         case General::INOUT:
+        default:
             {
                 /*  /\
                  *  ||
@@ -365,6 +369,12 @@ bool SWPortItem::onConnect(ConnectionEndpoint const* other)
                 case General::INOUT:
                     {
                         comInterface_->setDirection(General::INOUT);
+                        break;
+                    }
+
+                default:
+                    {
+                        Q_ASSERT(false);
                         break;
                     }
                 }
@@ -580,18 +590,8 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
 
             qreal nameWidth = nameLabel_.boundingRect().width();
             qreal nameHeight = nameLabel_.boundingRect().height();
-            QPointF newPos = pos();
 
-            QRectF parentRect = static_cast<SystemComponentItem*>(parentItem())->rect();
-
-            // Check if the port is directed to the bottom.
-            /*if (pos().y() - parentRect.bottom() >= -35.0 && qAbs(pos().x()) < 50.0)
-            {
-                setDirection(QVector2D(0.0f, 1.0f));
-                nameLabel_.setPos(nameWidth / 2, GridSize * 3);
-            }
-            // Check if the port is directed to the left.
-            else*/ if (pos().x() < 0)
+            if (pos().x() < 0)
             {
                 setDirection(QVector2D(-1.0f, 0.0f));
                 nameLabel_.setPos(nameHeight/2, GridSize);

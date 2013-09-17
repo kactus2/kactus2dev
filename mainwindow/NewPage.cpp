@@ -32,13 +32,13 @@
 // Function: NewPage()
 //-----------------------------------------------------------------------------
 NewPage::NewPage(LibraryInterface* libInterface, VLNV::IPXactType vlnvType, 
-    QString title, QString description, QWidget* parentDlg):
-PropertyPageView(),
-libInterface_(libInterface),
-titleLabel_(new QLabel(title,this)),
-descLabel_(new QLabel(description,this)),
-vlnvEditor_(new VLNVEditor(vlnvType, libInterface, parentDlg, this, true)), 
-librarySelector_(new LibrarySelectorWidget(this))
+    QString title, QString description, QWidget* parentDlg)
+    : PropertyPageView(),
+      libInterface_(libInterface),
+      vlnvEditor_(new VLNVEditor(vlnvType, libInterface, parentDlg, this, true)),
+      librarySelector_(new LibrarySelectorWidget(this)),
+      titleLabel_(new QLabel(title,this)),
+      descLabel_(new QLabel(description,this))
 {   
     QFont font = titleLabel_->font();
     font.setPointSize(12);

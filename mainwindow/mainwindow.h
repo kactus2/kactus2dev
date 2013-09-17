@@ -755,7 +755,7 @@ private:
     //! The generation group.
     RibbonGroup* generationGroup_;
 
-    // Action group for plugin generators.
+    //! Action group for plugin generators.
     QActionGroup* pluginActionGroup_;
 
     //! Action to generate VHDL from a design.
@@ -770,11 +770,9 @@ private:
 	//! \brief Action to generate the documentation for a component.
 	QAction* actGenDocumentation_;
 
-    //! The SW Design group.
-    RibbonGroup* swDesignGroup_;
-
     //! The Diagram Tools group.
     RibbonGroup* diagramToolsGroup_;
+
     //! Action to add a new column to the current diagram.
     QAction* actAddColumn_;
 

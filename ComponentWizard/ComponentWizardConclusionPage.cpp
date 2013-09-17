@@ -26,9 +26,8 @@
 ComponentWizardConclusionPage::ComponentWizardConclusionPage(LibraryInterface* lh, ComponentWizard* parent)
     : QWizardPage(parent),
       parent_(parent),
-      summaryWidget_(this),
       handler_(lh),
-      previewBox_(lh),
+      summaryWidget_(this),
       vendorLabel_(new QLabel(this)),
       libraryLabel_(new QLabel(this)),
       nameLabel_(new QLabel(this)),
@@ -40,7 +39,8 @@ ComponentWizardConclusionPage::ComponentWizardConclusionPage(LibraryInterface* l
       filesetsLabel_(new QLabel(this)),
       parametersLabel_(new QLabel(this)),
       portsLabel_(new QLabel(this)),
-      descriptionLabel_(new QLabel(this))
+      descriptionLabel_(new QLabel(this)),
+      previewBox_(lh)
 {
     setTitle(tr("Summary"));
     setSubTitle(tr("You have successfully completed the component wizard. Verify the choices by clicking Finish."));

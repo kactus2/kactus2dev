@@ -30,9 +30,9 @@ ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent)
       component_(0),
       vlnvDisplayer_(new VLNVDisplayer(this)),
       nameGroup_(new NameGroupBox(this, tr("Instance name"))),
+      configurableElements_(new ConfigurableElementEditor(this)),
       swGroup_(new QGroupBox(tr("SW"), this)),
       fileSetRefCombo_(new QComboBox(this)),
-      configurableElements_(new ConfigurableElementEditor(this)),
       propertyValueEditor_(new PropertyValueEditor(this)),
       editProvider_(0)
 {

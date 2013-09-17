@@ -40,7 +40,7 @@ void VStaticLayout<T>::updateItemMove(QList<T*>& items, T* item, qreal minY)
     items.removeAt(items.indexOf(item));
 
     int index = 0;
-    qreal y = minY;
+    //qreal y = minY;
 
     // Phase 1. Skip over the items that are fully above the moved item.
     for (index = 0; index < items.size(); ++index)
@@ -53,7 +53,7 @@ void VStaticLayout<T>::updateItemMove(QList<T*>& items, T* item, qreal minY)
             break;
         }
 
-        y = curItemRect.bottom() + spacing_;
+        //y = curItemRect.bottom() + spacing_;
     }
 
     // Phase 3. Put the moved item to its correct place.

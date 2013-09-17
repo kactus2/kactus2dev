@@ -52,8 +52,8 @@ SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
     : SWConnectionEndpoint(parent, false, QVector2D(-1.0f, 0.0f)),
       nameLabel_(name, this),
       component_(component),
-      apiInterface_(),
       comInterface_(),
+      apiInterface_(),
       oldPos_(),
       oldStack_(0),
       oldInterfacePositions_(),
@@ -72,9 +72,10 @@ SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
     : SWConnectionEndpoint(parent, false, QVector2D(-1.0f, 0.0f)),
       nameLabel_(this),
       component_(component),
-      apiInterface_(apiIf),
       comInterface_(),
+      apiInterface_(apiIf),
       oldPos_(),
+      oldStack_(0),
       oldInterfacePositions_(),
       offPageConnector_(0)
 {
@@ -92,9 +93,10 @@ SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
     : SWConnectionEndpoint(parent, false, QVector2D(-1.0f, 0.0f)),
       nameLabel_(this),
       component_(component),
-      apiInterface_(),
       comInterface_(comIf),
+      apiInterface_(),
       oldPos_(),
+      oldStack_(0),
       oldInterfacePositions_(),
       offPageConnector_(0)
 {
@@ -237,6 +239,7 @@ void SWInterfaceItem::updateInterface()
             }
 
         case General::INOUT:
+        default:
             {
                 /*  /\
                  *  ||

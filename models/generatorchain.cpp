@@ -282,7 +282,7 @@ bool GeneratorChain::isValid( QStringList& errorList ) const {
 	}
 
 	// TODO add the validation here when the generators are supported
-	return false;
+    return valid;
 }
 
 bool GeneratorChain::isValid() const {

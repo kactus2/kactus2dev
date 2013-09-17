@@ -108,20 +108,32 @@ WriteValueConstraint::Type WriteValueConstraint::getType() const {
 void WriteValueConstraint::setType(WriteValueConstraint::Type type ) {
 	type_ = type;
 
-	switch (type_) {
-		case WriteValueConstraint::WRITE_AS_READ: {
+    switch (type_)
+    {
+    case WriteValueConstraint::WRITE_AS_READ:
+        {
 			writeAsRead_ = true;
 			break;
-												  }
-		case WriteValueConstraint::USE_ENUM: {
+        }
+
+    case WriteValueConstraint::USE_ENUM:
+        {
 			useEnumValues_ = true;
 			break;
-											 }
-		case WriteValueConstraint::MIN_MAX: {
+        }
+
+    case WriteValueConstraint::MIN_MAX:
+        {
 			min_ = 0;
 			max_ = 0;
 			break;
-											}
+        }
+
+    default:
+        {
+            Q_ASSERT(false);
+            break;
+        }
 	}
 }
 

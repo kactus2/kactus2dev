@@ -18,12 +18,13 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem()
 //-----------------------------------------------------------------------------
-MemoryVisualizationItem::MemoryVisualizationItem( QGraphicsItem* parent /*= 0*/ ):
-ExpandableItem(parent),
-firstFreeAddress_(-1),
-lastFreeAddress_(-1),
-overlapped_(false),
-childWidth_(VisualizerItem::DEFAULT_WIDTH/2)
+MemoryVisualizationItem::MemoryVisualizationItem( QGraphicsItem* parent /*= 0*/ )
+    : ExpandableItem(parent),
+      firstFreeAddress_(-1),
+      lastFreeAddress_(-1),
+      childWidth_(VisualizerItem::DEFAULT_WIDTH/2),
+      conflicted_(false),
+      overlapped_(false)
 {
     QPen pen(Qt::gray);
     setPen(pen);
@@ -271,8 +272,7 @@ void MemoryVisualizationItem::removeChild( MemoryVisualizationItem* childItem ) 
     quint64 offset = childItem->getOffset();
 
     Q_ASSERT(childItems_.contains(offset));
-    int removeCount = childItems_.remove(offset, childItem);
-    Q_ASSERT(removeCount == 1);
+    childItems_.remove(offset, childItem);
 }
 
 //-----------------------------------------------------------------------------

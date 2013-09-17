@@ -447,66 +447,88 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 	General::writeVLNVAttributes(writer, &abstractionType_);
 
 	// write the interface mode
-	switch (interfaceMode_) {
-	case General::MASTER: {
-		if (master_) {
-			writer.writeStartElement("spirit:master");
-			master_->write(writer);
-			writer.writeEndElement(); // spirit:master
-		}
-		break;
-	}
-	case General::SLAVE: {
-		if (slave_) {
-			slave_->write(writer);
-		}
-		break;
-	}
-	case General::SYSTEM: {
-		if (!system_.isEmpty()) {
-			writer.writeStartElement("spirit:system");
-			writer.writeTextElement("spirit:group", system_);
-			writer.writeEndElement(); // spirit:system
-		}
-		break;
-	}
-	case General::MIRROREDMASTER: {
-		if (master_) {
-			writer.writeStartElement("spirit:mirroredMaster");
-			master_->write(writer);
-			writer.writeEndElement(); // spirit:mirroredMaster
-		}
-		break;
-	}
-	case General::MIRROREDSLAVE: {
-		if (mirroredSlave_) {
-			mirroredSlave_->write(writer);
-		}
-		break;
-	}
-	case General::MIRROREDSYSTEM: {
-		if (!system_.isEmpty()) {
-			writer.writeStartElement("spirit:mirroredSystem");
-			writer.writeTextElement("spirit:group", system_);
-			writer.writeEndElement(); // spirit:system
-		}
-		break;
-	}
-	case General::MONITOR: {
-		if (monitor_) {
-			writer.writeStartElement("spirit:monitor");
+    switch (interfaceMode_)
+    {
+    case General::MASTER:
+        {
+            if (master_) {
+                writer.writeStartElement("spirit:master");
+                master_->write(writer);
+                writer.writeEndElement(); // spirit:master
+            }
+            break;
+        }
 
-			writer.writeAttribute("spirit:interfaceMode",
-						          General::interfaceMode2Str(monitor_->interfaceMode_));
+    case General::SLAVE:
+        {
+            if (slave_)
+            {
+                slave_->write(writer);
+            }
+            break;
+        }
 
-			// if mandatory group is defined
-			if (!monitor_->group_.isEmpty()) {
-				writer.writeTextElement("spirit:group", monitor_->group_);
-			}
-			writer.writeEndElement(); // spirit:monitor
-		}
-		break;
-	}
+    case General::SYSTEM:
+        {
+            if (!system_.isEmpty())
+            {
+                writer.writeStartElement("spirit:system");
+                writer.writeTextElement("spirit:group", system_);
+                writer.writeEndElement(); // spirit:system
+            }
+            break;
+        }
+
+    case General::MIRROREDMASTER:
+        {
+            if (master_)
+            {
+                writer.writeStartElement("spirit:mirroredMaster");
+                master_->write(writer);
+                writer.writeEndElement(); // spirit:mirroredMaster
+            }
+            break;
+        }
+
+    case General::MIRROREDSLAVE:
+        {
+            if (mirroredSlave_)
+            {
+                mirroredSlave_->write(writer);
+            }
+            break;
+        }
+
+    case General::MIRROREDSYSTEM:
+        {
+            if (!system_.isEmpty())
+            {
+                writer.writeStartElement("spirit:mirroredSystem");
+                writer.writeTextElement("spirit:group", system_);
+                writer.writeEndElement(); // spirit:system
+            }
+            break;
+        }
+
+    case General::MONITOR:
+        {
+            if (monitor_) {
+                writer.writeStartElement("spirit:monitor");
+
+                writer.writeAttribute("spirit:interfaceMode",
+                                      General::interfaceMode2Str(monitor_->interfaceMode_));
+
+                // if mandatory group is defined
+                if (!monitor_->group_.isEmpty()) {
+                    writer.writeTextElement("spirit:group", monitor_->group_);
+                }
+                writer.writeEndElement(); // spirit:monitor
+            }
+            break;
+        }
+
+    default:
+        break;
 	}
 
 	writer.writeTextElement("spirit:connectionRequired",

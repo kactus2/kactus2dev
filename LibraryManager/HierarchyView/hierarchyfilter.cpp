@@ -175,6 +175,9 @@ bool HierarchyFilter::filterAcceptsRow( int source_row,
             if (!implementation_.hw_)
                 return false;
 										   }
+
+        default:
+            break;
 	}
 
 	QSharedPointer<Component const> component = item->component();

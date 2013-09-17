@@ -83,8 +83,8 @@ PluginSettingsWidget* MCAPICodeGenerator::getSettingsWidget()
 // Function: MCAPICodeGenerator::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
 bool MCAPICodeGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent const> libComp,
-	QSharedPointer<LibraryComponent const> libDesConf /*= QSharedPointer<LibraryComponent const>()*/,
-	QSharedPointer<LibraryComponent const> libDes /*= QSharedPointer<LibraryComponent const>()*/ ) const {
+    QSharedPointer<LibraryComponent const> libDesConf,
+    QSharedPointer<LibraryComponent const> /*libDes*/ ) const {
 
 	// MCAPI code generator is only run for SW component editor
 	if (libDesConf) {
@@ -100,13 +100,9 @@ bool MCAPICodeGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent 
 //-----------------------------------------------------------------------------
 void MCAPICodeGenerator::runGenerator( IPluginUtility* utility, 
 	QSharedPointer<LibraryComponent> libComp,
-	QSharedPointer<LibraryComponent> libDesConf /*= QSharedPointer<LibraryComponent const>()*/, 
-	QSharedPointer<LibraryComponent> libDes /*= QSharedPointer<LibraryComponent>()*/ ) {
-
-	// MCAPI code generator is only run for SW component editor
-	Q_ASSERT(!libDesConf);
-	Q_ASSERT(!libDes);
-
+    QSharedPointer<LibraryComponent> /*libDesConf*/,
+    QSharedPointer<LibraryComponent> /*libDes*/)
+{
     utility_ = utility;
 
     QString dir = QFileInfo(utility->getLibraryInterface()->getPath(*libComp->getVlnv())).absolutePath();
@@ -429,7 +425,7 @@ void MCAPICodeGenerator::generateSource(QString const& filename, QSharedPointer<
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGenerator::generateMainTemplate()
 //-----------------------------------------------------------------------------
-void MCAPICodeGenerator::generateMainTemplate(QString const& filename, QSharedPointer<Component> component)
+void MCAPICodeGenerator::generateMainTemplate(QString const& filename, QSharedPointer<Component> /*component*/)
 {
     CSourceWriter writer(filename, createIndentString());
 

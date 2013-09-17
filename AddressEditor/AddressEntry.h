@@ -119,6 +119,8 @@ private:
 
     //! The edit provider.
     GenericEditProvider& editProvider_;
+
+    //! Addressable unit bits.
     unsigned int aub_;
 };
 

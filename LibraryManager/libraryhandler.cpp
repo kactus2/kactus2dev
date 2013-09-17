@@ -1062,6 +1062,9 @@ void LibraryHandler::onCreateNewItem( const VLNV& vlnv ) {
                 newDesignDialog.setWindowTitle(tr("New API Definition"));
                 break;
             }
+
+    default:
+        break;
 	}
 
 	newDesignDialog.exec();

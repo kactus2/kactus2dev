@@ -104,8 +104,6 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 	// create a menu to show contextMenu actions
 	QMenu menu(this);
 
-	bool hierarchical = false;
-
 	// if item can be identified as single item
 	if (vlnv.isValid()) {
 
@@ -147,7 +145,6 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 
 					if (!component->getHierViews().isEmpty()) {
 						menu.addAction(openDesignAction_);
-						hierarchical = true;
 					}
 
                     if (component->hasSWViews())

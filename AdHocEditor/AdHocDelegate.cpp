@@ -144,7 +144,7 @@ bool AdHocDelegate::editorEvent(QEvent* event, QAbstractItemModel* model,
         return false;
     }
 
-    Qt::CheckState newState;
+    Qt::CheckState newState = static_cast<Qt::CheckState>(value.toInt());
 
     // Handle the mouse button events.
     if (event->type() == QEvent::MouseButtonPress)

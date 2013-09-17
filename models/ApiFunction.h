@@ -157,7 +157,7 @@ public:
      *      @param [in]  paramIndex  The index of the parameter to highlight.
      *      @param [out] text        The tool tip text.
      */
-    void generateToolTipText(unsigned int paramIndex, QString& text) const;
+    void generateToolTipText(int paramIndex, QString& text) const;
 
     /*!
      *  Assignment operator.

@@ -32,8 +32,8 @@ AddressEntry::AddressEntry(ComponentItem* component, BusPortItem* port)
       connectedPort_(0),
       range_(0),
       baseEndAddress_(0),
-      aub_(0),
-      editProvider_(static_cast<DesignDiagram*>(component->scene())->getEditProvider())
+      editProvider_(static_cast<DesignDiagram*>(component->scene())->getEditProvider()),
+      aub_(0)
 {
     if (port_->isConnected())
     {

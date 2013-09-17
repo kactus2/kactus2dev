@@ -155,6 +155,13 @@ void ConfigurationEditor::onAdd() {
             SystemView* view = component_->createSystemView();
             view->setName(viewName);
             view->setHierarchyRef(configVLNV);
+            break;
+        }
+
+    default:
+        {
+            Q_ASSERT(false);
+            break;
         }
     }
 
@@ -219,6 +226,12 @@ void ConfigurationEditor::onRemove() {
             configVLNV = component_->findSystemView(viewToRemove)->getHierarchyRef();
             break;
         }
+
+    default:
+        {
+            Q_ASSERT(false);
+            break;
+        }
     }
 
 	VLNV designVLNV;
@@ -256,6 +269,12 @@ void ConfigurationEditor::onRemove() {
         {
             component_->removeSystemView(viewToRemove);
             hierRefs = component_->getHierSystemRefs();
+            break;
+        }
+
+    default:
+        {
+            Q_ASSERT(false);
             break;
         }
     }
@@ -337,6 +356,12 @@ void ConfigurationEditor::setConfiguration( DesignWidget* designWidget, bool loc
             hierViewNames = component_->getSystemViewNames();
 			break;
 								   }
+
+    default:
+        {
+            Q_ASSERT(false);
+            break;
+        }
     }
 
 	// the vlnv of the design used
@@ -349,20 +374,26 @@ void ConfigurationEditor::setConfiguration( DesignWidget* designWidget, bool loc
 		// the vlnv that the component references
 		VLNV ref;
 		switch (designWidget->getImplementation()) {
-			case KactusAttribute::KTS_HW: {
+        case KactusAttribute::KTS_HW: {
 				ref = component_->getHierRef(viewName);
 				break;
 								  }
 
-			case KactusAttribute::KTS_SW: {
+        case KactusAttribute::KTS_SW: {
 				ref = component_->getHierSWRef(viewName);
 				break;
 								  }
 
-			case KactusAttribute::KTS_SYS: {
+        case KactusAttribute::KTS_SYS: {
 				ref = component_->getHierSystemRef(viewName);
 				break;
 								   }
+
+        default:
+            {
+                Q_ASSERT(false);
+                break;
+            }
 		}
 
 		// the VLNV for the design used by the view

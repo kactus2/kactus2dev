@@ -110,8 +110,7 @@ void RegisterGraphItem::removeChild( MemoryVisualizationItem* childItem ) {
     quint64 offset = childItem->getLastAddress();
 
     Q_ASSERT(childItems_.contains(offset));
-    int removeCount = childItems_.remove(offset, childItem);
-    Q_ASSERT(removeCount == 1);
+    childItems_.remove(offset, childItem);
 }
 
 void RegisterGraphItem::reorganizeChildren() {

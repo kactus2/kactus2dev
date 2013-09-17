@@ -87,7 +87,12 @@ CSourceWidget::CSourceWidget(QString const& sourceFile,
     QFile file(sourceFile);
 
     bool success = file.open(QIODevice::ReadOnly | QIODevice::Text);
-    Q_ASSERT(success);
+
+    if (!success)
+    {
+        // TODO: Error checking.
+        return;
+    }
 
     QTextStream stream(&file);
     textEdit_->setPlainText(stream.readAll());

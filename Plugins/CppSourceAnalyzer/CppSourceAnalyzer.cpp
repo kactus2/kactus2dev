@@ -273,7 +273,7 @@ void CppSourceAnalyzer::beginAnalysis(Component const* /*component*/, QString co
 //-----------------------------------------------------------------------------
 // Function: CppSourceAnalyzer::endAnalysis()
 //-----------------------------------------------------------------------------
-void CppSourceAnalyzer::endAnalysis(Component const* component, QString const& /*componentPath*/)
+void CppSourceAnalyzer::endAnalysis(Component const* /*component*/, QString const& /*componentPath*/)
 {
 }
 

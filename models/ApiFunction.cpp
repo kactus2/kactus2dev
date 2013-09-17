@@ -304,7 +304,7 @@ int ApiFunction::getParamCount() const
 //-----------------------------------------------------------------------------
 // Function: ApiFunction::generateToolTipText()
 //-----------------------------------------------------------------------------
-void ApiFunction::generateToolTipText(unsigned int paramIndex, QString& text) const
+void ApiFunction::generateToolTipText(int paramIndex, QString& text) const
 {
     text.clear();
 
@@ -335,7 +335,7 @@ void ApiFunction::generateToolTipText(unsigned int paramIndex, QString& text) co
 
     text += ")<br>" + desc_;
     
-    if (paramIndex < static_cast<unsigned int>(params_.size()))
+    if (paramIndex < params_.size())
     {
         text += "<br><b>Parameter:</b> " + params_.at(paramIndex)->getDescription();
     }

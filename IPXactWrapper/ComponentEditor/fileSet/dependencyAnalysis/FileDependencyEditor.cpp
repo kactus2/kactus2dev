@@ -47,10 +47,12 @@ FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
       infoWidget_(this),
       component_(component),
       fileTypeLookup_(),
+      ignoreExtList_(),
       model_(pluginMgr, component, basePath + "/"),
       basePath_(basePath),
       scanning_(false),
       filterActions_(this),
+      runAnalysisAction_(0),
       timer_(0),
       progWidget_(0)
 {

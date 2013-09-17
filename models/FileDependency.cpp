@@ -17,7 +17,8 @@
 // Function: FileDependency::FileDependency()
 //-----------------------------------------------------------------------------
 FileDependency::FileDependency()
-    : file1_(),
+    : QObject(),
+      file1_(),
       file2_(),
       desc_(),
       locked_(false),
@@ -33,7 +34,8 @@ FileDependency::FileDependency()
 // Function: FileDependency::FileDependency()
 //-----------------------------------------------------------------------------
 FileDependency::FileDependency(FileDependency const& rhs)
-    : file1_(rhs.file1_),
+    : QObject(),
+      file1_(rhs.file1_),
       file2_(rhs.file2_),
       desc_(rhs.desc_),
       locked_(rhs.locked_),
@@ -49,7 +51,8 @@ FileDependency::FileDependency(FileDependency const& rhs)
 // Function: FileDependency::FileDependency()
 //-----------------------------------------------------------------------------
 FileDependency::FileDependency(QDomNode& node)
-    : file1_(),
+    : QObject(),
+      file1_(),
       file2_(),
       desc_(),
       locked_(false),

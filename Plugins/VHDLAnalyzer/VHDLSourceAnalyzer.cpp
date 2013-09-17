@@ -112,8 +112,8 @@ QString VHDLSourceAnalyzer::calculateHash(QString const& filename)
 //-----------------------------------------------------------------------------
 // Function: VHDLSourceAnalyzer::getFileDependencies()
 //-----------------------------------------------------------------------------
-void VHDLSourceAnalyzer::getFileDependencies(Component const* component,
-                                             QString const& componentPath,
+void VHDLSourceAnalyzer::getFileDependencies(Component const* /*component*/,
+                                             QString const& /*componentPath*/,
                                              QString const& filename,
                                              QList<FileDependencyDesc>& dependencies)
 {
@@ -156,7 +156,7 @@ void VHDLSourceAnalyzer::beginAnalysis(Component const* component, QString const
 //-----------------------------------------------------------------------------
 // Function: VHDLSourceAnalyzer::endAnalysis()
 //-----------------------------------------------------------------------------
-void VHDLSourceAnalyzer::endAnalysis(Component const* component, QString const& componentPath)
+void VHDLSourceAnalyzer::endAnalysis(Component const* /*component*/, QString const& /*componentPath*/)
 {
     cachedEntities_.clear();
 }

@@ -83,10 +83,10 @@ QIcon MemoryMapHeaderGenerator::getIcon() const
     return QIcon(":icons/headerGenerator24.png");
 }
 
-bool MemoryMapHeaderGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent const> libComp,
-	QSharedPointer<LibraryComponent const> libDesConf /*= QSharedPointer<LibraryComponent const>()*/,
-	QSharedPointer<LibraryComponent const> libDes /*= QSharedPointer<LibraryComponent const>()*/ ) const {
-	
+bool MemoryMapHeaderGenerator::checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp,
+                                                     QSharedPointer<LibraryComponent const> libDesConf,
+                                                     QSharedPointer<LibraryComponent const> /*libDes*/) const
+{
 	// make sure the object is a component
 	QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
 	if (!comp) {

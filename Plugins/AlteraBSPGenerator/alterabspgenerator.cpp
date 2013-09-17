@@ -90,17 +90,15 @@ bool AlteraBSPGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent 
 	return comp->hasSWViews();
 }
 
-void AlteraBSPGenerator::runGenerator( IPluginUtility* utility,
+void AlteraBSPGenerator::runGenerator(IPluginUtility* utility,
 	QSharedPointer<LibraryComponent> libComp,
-	QSharedPointer<LibraryComponent> libDesConf /*= QSharedPointer<LibraryComponent>()*/,
-	QSharedPointer<LibraryComponent> libDes /*= QSharedPointer<LibraryComponent>()*/ ) {
+    QSharedPointer<LibraryComponent> /*libDesConf*/,
+    QSharedPointer<LibraryComponent> /*libDes*/) {
 
 	utility_ = utility;
 	Q_ASSERT(utility_);
 
 	Q_ASSERT(libComp);
-	Q_ASSERT(!libDesConf);
-	Q_ASSERT(!libDes);
 
 	QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
 	Q_ASSERT(comp);
