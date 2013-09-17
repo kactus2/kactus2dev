@@ -256,7 +256,7 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 
 void LibraryData::parseLibrary( bool showProgress /*= true*/ ) {
 	
-	Q_ASSERT(_CrtCheckMemory());
+    //Q_ASSERT(_CrtCheckMemory());
 
 	// clear the previous items in the library
 	libraryItems_.clear();

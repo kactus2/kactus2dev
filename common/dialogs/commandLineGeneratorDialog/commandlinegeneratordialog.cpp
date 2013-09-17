@@ -19,9 +19,9 @@ buttonLayout_(NULL),
 statusLayout_(NULL),
 statusLabel_(NULL),
 runButton_(NULL),
-cancelButton_(NULL),
-okButton_(NULL) {
-
+okButton_(NULL),
+cancelButton_(NULL)
+{
 	QLabel* statusName = new QLabel(tr("Status: "), this);
 	statusLabel_ = new QLabel(tr("Waiting"), this);
 	statusLayout_ = new QHBoxLayout();
@@ -51,11 +51,12 @@ okButton_(NULL) {
 		this, SLOT(reject()), Qt::UniqueConnection);
 }
 
-CommandLineGeneratorDialog::~CommandLineGeneratorDialog() {
+CommandLineGeneratorDialog::~CommandLineGeneratorDialog()
+{
 }
 
-void CommandLineGeneratorDialog::connectProcessToOutput() {
-
+void CommandLineGeneratorDialog::connectProcessToOutput()
+{
 	// the process is set up in sub-class but it has to be done before calling this function.
 	Q_ASSERT(process_);
 
@@ -69,21 +70,25 @@ void CommandLineGeneratorDialog::connectProcessToOutput() {
 		this, SLOT(onProcessFinished(int, QProcess::ExitStatus)), Qt::UniqueConnection);
 }
 
-void CommandLineGeneratorDialog::onStandardOutputRead() {
+void CommandLineGeneratorDialog::onStandardOutputRead()
+{
 	QString output(process_->readAllStandardOutput());
 	output_->printStandard(output);
 }
 
-void CommandLineGeneratorDialog::onStandardErrorRead() {
+void CommandLineGeneratorDialog::onStandardErrorRead()
+{
 	QString output(process_->readAllStandardError());
 	output_->printError(output);
 }
 
-void CommandLineGeneratorDialog::onProcessStarted() {
+void CommandLineGeneratorDialog::onProcessStarted()
+{
 	statusLabel_->setText(tr("Running..."));
 }
 
-void CommandLineGeneratorDialog::onProcessFinished( int exitCode, QProcess::ExitStatus exitStatus ) {
+void CommandLineGeneratorDialog::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
+{
 	QString text;
 
 	switch (exitStatus) {

@@ -201,9 +201,13 @@ private:
     //! Container for the filter button actions.
     QActionGroup filterActions_;
 
+    //! Action to start the analysis.
     QAction* runAnalysisAction_;
 
+    //! Timer for file scanning.
     QTimer* timer_;
+
+    //! Progress widget for file scanning.
     ScanProgressWidget* progWidget_;
 };
 

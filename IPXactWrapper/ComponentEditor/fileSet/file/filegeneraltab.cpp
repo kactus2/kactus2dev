@@ -17,7 +17,7 @@ FileGeneralTab::FileGeneralTab(LibraryInterface* handler,
 							   QWidget *parent ):
 QWidget(parent), 
 file_(file),
-nameEditor_(this, handler, component, file),
+nameEditor_(this, file),
 generalEditor_(this, file),
 fileTypeEditor_(this, file),
 buildCommand_(this, handler, component, file) {

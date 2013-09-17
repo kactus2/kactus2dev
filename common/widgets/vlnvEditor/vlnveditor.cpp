@@ -382,6 +382,9 @@ void VLNVEditor::dropEvent( QDropEvent* event ) {
 		emit setBusDef(busDefVLNV);
 		break;
 									  }
+
+    default:
+        break;
 	
 	}
 

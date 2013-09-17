@@ -25,19 +25,20 @@
 #include <QSize>
 #include <QHeaderView>
 
-EditableTableView::EditableTableView(QWidget *parent):
-QTableView(parent),
-defImportExportPath_(),
-addAction_(tr("Add row"), this),
-removeAction_(tr("Remove row"), this),
-copyAction_(tr("Copy"), this),
-pasteAction_(tr("Paste"), this),
-clearAction_(tr("Clear"), this),
-importAction_(tr("Import csv-file"), this),
-exportAction_(tr("Export csv-file"), this),
-itemsDraggable_(true),
-impExportable_(false) {
-
+EditableTableView::EditableTableView(QWidget *parent)
+    : QTableView(parent),
+      pressedPoint_(),
+      addAction_(tr("Add row"), this),
+      removeAction_(tr("Remove row"), this),
+      copyAction_(tr("Copy"), this),
+      pasteAction_(tr("Paste"), this),
+      clearAction_(tr("Clear"), this),
+      importAction_(tr("Import csv-file"), this),
+      exportAction_(tr("Export csv-file"), this),
+      impExportable_(false),
+      defImportExportPath_(),
+      itemsDraggable_(true)
+{
 	// cells are resized to match contents 
 	horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 

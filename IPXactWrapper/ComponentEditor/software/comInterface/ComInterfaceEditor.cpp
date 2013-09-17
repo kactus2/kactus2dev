@@ -134,8 +134,8 @@ ComInterfaceEditor::~ComInterfaceEditor() {
 bool ComInterfaceEditor::isValid() const
 {
     return (nameEditor_.isValid() &&
-            (comType_->isEmpty() || (comType_->isValid() && libInterface_->contains(comType_->getVLNV())) &&
-				comImplementation_->isEmpty() || comImplementation_->isValid()));
+            (comType_->isEmpty() || (comType_->isValid() && libInterface_->contains(comType_->getVLNV()))) &&
+             (comImplementation_->isEmpty() || comImplementation_->isValid()));
 }
 
 //-----------------------------------------------------------------------------

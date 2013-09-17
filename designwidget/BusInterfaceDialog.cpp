@@ -48,18 +48,27 @@ namespace
 //-----------------------------------------------------------------------------
 BusInterfaceDialog::BusInterfaceDialog(bool enableNameEdit,
                                        QWidget* parent) 
-    : QDialog(parent), layout_(0),
-    nameLabel_(0),nameEdit_(0),
-    modeGroup_(0), btnOK_(0),
-    btnCancel_(0), tableGroup_(0), 
-    tableEnable_(false), portsView_(0),
-    portsModel_(0),
-    proxy_(0), modes_(0),
-    sourceComp_(),
-    destComp_(),
-    busIf_(),
-    ports_(),
-    portMaps_()
+    : QDialog(parent),
+      layout_(0),
+      nameLabel_(0),
+      nameEdit_(0),
+      modeGroup_(0),
+      btnOK_(0),
+      btnCancel_(0),
+      tableGroup_(0),
+      tableEnable_(false),
+      lh_(0),
+      sourceComp_(),
+      destComp_(),
+      ports_(),
+      portMaps_(),
+      busIf_(),
+      opposingEnd_(0),
+      draftEnd_(0),
+      portsModel_(0),
+      portsView_(0),
+      proxy_(0),
+      modes_(0)
 {
     setWindowTitle(tr("Define Bus Interface"));
 

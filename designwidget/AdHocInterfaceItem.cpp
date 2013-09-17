@@ -95,6 +95,7 @@ AdHocInterfaceItem::AdHocInterfaceItem(QSharedPointer<Component> component,
         }
 
     case General::INOUT:
+    default:
         {
             shape << QPointF(-halfSquareSize, halfSquareSize)
                   << QPointF(-halfSquareSize, -halfSquareSize)

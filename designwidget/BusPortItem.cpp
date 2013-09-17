@@ -138,6 +138,9 @@ void BusPortItem::updateInterface()
         case General::MONITOR:
             setBrush(QBrush(QColor(0xfd,0xfd,0xfd)));
             break;
+        default:
+            setBrush(QBrush(Qt::red));
+            break;
         }
     }
 
@@ -444,8 +447,6 @@ QVariant BusPortItem::itemChange(GraphicsItemChange change,
 
             qreal nameWidth = nameLabel_->boundingRect().width();
             qreal nameHeight = nameLabel_->boundingRect().height();
-
-            QRectF parentRect = qgraphicsitem_cast<HWComponentItem *>(parentItem())->rect();
 
             // Check if the port is directed to the left.
             if (pos().x() < 0)
@@ -856,6 +857,9 @@ QList<General::InterfaceMode> BusPortItem::getOpposingModes(QSharedPointer<BusIn
             modes.append(General::MONITOR);    
             break;
         }
+
+    default:
+        break;
     }
 
     return modes;

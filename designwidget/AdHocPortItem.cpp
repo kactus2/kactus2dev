@@ -86,6 +86,7 @@ AdHocPortItem::AdHocPortItem(Port* port, LibraryInterface* lh,
         }
 
     case General::INOUT:
+    default:
         {
             shape << QPointF(-halfSquareSize, halfSquareSize)
                   << QPointF(-halfSquareSize, -halfSquareSize)
@@ -239,8 +240,8 @@ bool AdHocPortItem::isConnectionValid(ConnectionEndpoint const* other) const
     {
         return (port_->getDirection() == General::INOUT ||
                 other->getPort()->getDirection() == General::INOUT ||
-                port_->getDirection() == General::IN && other->getPort()->getDirection() == General::OUT ||
-                port_->getDirection() == General::OUT && other->getPort()->getDirection() == General::IN);
+                (port_->getDirection() == General::IN && other->getPort()->getDirection() == General::OUT) ||
+                (port_->getDirection() == General::OUT && other->getPort()->getDirection() == General::IN));
     }
 }
 
@@ -301,8 +302,6 @@ QVariant AdHocPortItem::itemChange(GraphicsItemChange change,
 
             qreal nameWidth = nameLabel_->boundingRect().width();
             qreal nameHeight = nameLabel_->boundingRect().height();
-
-            QRectF parentRect = qgraphicsitem_cast<HWComponentItem*>(parentItem())->rect();
 
             // Check if the port is directed to the left.
             if (pos().x() < 0)

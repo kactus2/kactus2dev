@@ -34,8 +34,8 @@ DesignWidget::DesignWidget(LibraryInterface* lh, QWidget* parent)
       view_(0),
       editedComponent_(),
       viewName_(),
-      diagram_(0),
-      editProvider_()
+      editProvider_(),
+      diagram_(0)
 {
     editProvider_ = QSharedPointer<GenericEditProvider>(new GenericEditProvider(EDIT_HISTORY_SIZE));
 

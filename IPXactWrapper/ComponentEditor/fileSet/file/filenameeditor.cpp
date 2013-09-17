@@ -11,8 +11,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-FileNameEditor::FileNameEditor(QWidget *parent, LibraryInterface* handler,
-							   QSharedPointer<Component> component, QSharedPointer<File> file)
+FileNameEditor::FileNameEditor(QWidget *parent, QSharedPointer<File> file)
     : QGroupBox(tr("File name and path"), parent), 
       nameEdit_(file->getName(), this),
       file_(file)

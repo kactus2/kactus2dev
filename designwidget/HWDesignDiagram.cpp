@@ -80,20 +80,23 @@ HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& edit
       parent_(parent),
       tempConnection_(0),
       tempConnEndPoint_(0), 
+      tempPotentialEndingEndPoints_(),
       highlightedEndPoint_(0),
+      layout_(),
       dragCompType_(CIT_NONE),
       dragBus_(false),
       offPageMode_(false),
-      oldSelectedItems_(),
       replaceMode_(false),
       sourceComp_(0),
+      oldSelectedItems_(),
       selectAllAction_(tr("Select All"), this),
       copyAction_(tr("Copy"), this),
       pasteAction_(tr("Paste"), this),
       addAction_(tr("Add to Library"), this),
       openComponentAction_(tr("Open Component"), this),
       openDesignAction_(tr("Open HW Design"), this),
-      showContextMenu_(true)
+      showContextMenu_(true),
+      contextPos_()
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
     connect(&editProvider, SIGNAL(modified()), this, SIGNAL(contentChanged()));

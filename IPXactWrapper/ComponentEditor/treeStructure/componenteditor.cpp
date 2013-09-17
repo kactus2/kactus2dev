@@ -228,7 +228,7 @@ bool ComponentEditor::saveAs() {
     {
         if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, *component_->getVlnv(), vlnv, directory))
         {
-                return false;
+            return false;
         }
     }
 
@@ -266,6 +266,8 @@ bool ComponentEditor::saveAs() {
 
     clearRelatedVLNVs();
     addRelatedVLNV(compVLNV);
+
+    return true;
 }
 
 void ComponentEditor::onNavigationTreeSelection( const QModelIndex& index ) {

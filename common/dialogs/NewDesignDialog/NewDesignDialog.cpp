@@ -80,6 +80,12 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
             designConfExt_ = ".sysdesigncfg";
             break;
         }
+
+    default:
+        {
+            Q_ASSERT(false);
+            break;
+        }
     }
 
     viewNameEdit_->setMessageIcon(QPixmap(":/icons/graphics/exclamation.png"));

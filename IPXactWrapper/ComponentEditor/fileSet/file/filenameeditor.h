@@ -33,15 +33,11 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param parent Pointer to the owner of this widget
-	 * \param handler Pointer to the instance that manages the library.
-	 * \param component Pointer to the component being edited.
-	 * \param file Pointer to the file being edited.
+     * \param file Pointer to the file being edited.
 	 *
 	*/
 	FileNameEditor(QWidget *parent,
-		LibraryInterface* handler,
-		QSharedPointer<Component> component,
-		QSharedPointer<File> file);
+        QSharedPointer<File> file);
 
 	//! \brief The destructor
 	virtual ~FileNameEditor();

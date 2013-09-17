@@ -251,11 +251,11 @@ advanced_(false) {
 //-----------------------------------------------------------------------------
 KACTUS2_API QString Utils::getCurrentUser()
 {
-#pragma warning (disable: 4996)
 #ifdef Q_OS_WIN
+#pragma warning (disable: 4996)
     return getenv("USERNAME");
+#pragma warning (default: 4996)
 #else
     return getenv("USER");
 #endif
-#pragma warning (default: 4996)
 }

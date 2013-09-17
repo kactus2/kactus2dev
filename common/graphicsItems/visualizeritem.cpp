@@ -15,17 +15,17 @@
 //-----------------------------------------------------------------------------
 // Function: VisualizerItem()
 //-----------------------------------------------------------------------------
-VisualizerItem::VisualizerItem( QGraphicsItem* parent /*= 0*/ ):
-QGraphicsRectItem(parent),
-nameHorizontalPos_(VisualizerItem::NAME_LEFT_ALIGN),
-nameVerticalPos_(VisualizerItem::NAME_MIDDLE),
-name_(),
-nameLabel_(this),
-leftTopText_(this),
-leftBottomText_(this),
-rightTopText_(this),
-rightBottomText_(this) {
-
+VisualizerItem::VisualizerItem( QGraphicsItem* parent /*= 0*/ )
+    : QGraphicsRectItem(parent),
+      name_(),
+      nameHorizontalPos_(VisualizerItem::NAME_LEFT_ALIGN),
+      nameVerticalPos_(VisualizerItem::NAME_MIDDLE),
+      nameLabel_(this),
+      leftTopText_(this),
+      leftBottomText_(this),
+      rightTopText_(this),
+      rightBottomText_(this)
+{
 	setRect(0, 0, VisualizerItem::DEFAULT_WIDTH, VisualizerItem::DEFAULT_HEIGHT);
 
 	QFont font = nameLabel_.font();

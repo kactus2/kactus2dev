@@ -376,12 +376,9 @@ bool GraphicsColumn::isEmpty() const
 //-----------------------------------------------------------------------------
 QVariant GraphicsColumn::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-    switch (change)
+    if (change == ItemPositionChange)
     {
-    case ItemPositionChange:
-        {
-            return QPointF(value.toPointF().x(), 0.0);
-        }
+        return QPointF(value.toPointF().x(), 0.0);
     }
 
     return QGraphicsRectItem::itemChange(change, value);

@@ -77,7 +77,7 @@ QWidget* PortsDelegate::createEditor( QWidget* parent,
         {
             QComboBox* combo = new QComboBox(parent);
 
-            for (int i = 0; i < VhdlGeneral::VHDL_TYPE_COUNT; ++i) {
+            for (unsigned int i = 0; i < VhdlGeneral::VHDL_TYPE_COUNT; ++i) {
                 combo->addItem(VhdlGeneral::VHDL_TYPES[i]);
             }
             combo->setEditable(true);
@@ -92,7 +92,7 @@ QWidget* PortsDelegate::createEditor( QWidget* parent,
         {
             QComboBox* combo = new QComboBox(parent);
 
-            for (int i = 0;i < VhdlGeneral::VHDL_TYPEDEF_COUNT; ++i) {
+            for (unsigned int i = 0;i < VhdlGeneral::VHDL_TYPEDEF_COUNT; ++i) {
                 combo->addItem(VhdlGeneral::VHDL_TYPE_DEFINITIONS[i]);
             }
             combo->setEditable(true);

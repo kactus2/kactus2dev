@@ -19,9 +19,14 @@
 // Function: PortGenerationRow()
 //-----------------------------------------------------------------------------
 PortGenerationRow::PortGenerationRow(QString name, General::Direction direction,
-    QString description, int size) : sourceName_(name), sourceDirection_(direction),
-    sourceDescription_(description), size_(size), draftName_(), 
-    draftDirection_(General::DIRECTION_INVALID), draftDescription_()
+                                     QString description, int size)
+    : sourceName_(name),
+      sourceDirection_(direction),
+      sourceDescription_(description),
+      size_(size),
+      draftName_(),
+      draftDirection_(General::DIRECTION_INVALID),
+      draftDescription_()
 {
 }
 

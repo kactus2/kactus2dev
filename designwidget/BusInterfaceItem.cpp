@@ -68,9 +68,6 @@ BusInterfaceItem::BusInterfaceItem(LibraryInterface* lh, QSharedPointer<Componen
     busInterface_ = busIf;
     int squareSize = GridSize;
 
-    // The shape is of form:
-    // /\
-    // ||
     QPolygonF shape;
     shape << QPointF(-squareSize/2, squareSize / 2)
           << QPointF(-squareSize/2, -squareSize)

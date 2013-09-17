@@ -130,6 +130,9 @@ bool RibbonGroup::event(QEvent* e)
             parent_->updateCollapse();
             break;
         }
+
+    default:
+        break;
     }
 
     return QWidget::event(e);

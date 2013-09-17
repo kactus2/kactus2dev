@@ -126,6 +126,9 @@ void OffPageConnectorItem::updateInterface()
         case General::MONITOR:
             setBrush(QBrush(QColor(0xfd,0xfd,0xfd)));
             break;
+        default:
+            setBrush(QBrush(Qt::red));
+            break;
         }
     }
 }

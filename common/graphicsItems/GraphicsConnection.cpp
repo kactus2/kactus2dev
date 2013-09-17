@@ -875,25 +875,22 @@ void GraphicsConnection::disconnectEnds()
 //-----------------------------------------------------------------------------
 QVariant GraphicsConnection::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-    switch (change)
+    if (change == ItemSelectedHasChanged)
     {
-    case ItemSelectedHasChanged:
+        bool selected = value.toBool();
+        setDefaultColor();
+
+        if (endpoint1_ != 0)
         {
-            bool selected = value.toBool();
-            setDefaultColor();
-
-            if (endpoint1_ != 0)
-            {
-                endpoint1_->setSelectionHighlight(selected);
-            }
-
-            if (endpoint2_ != 0)
-            {
-                endpoint2_->setSelectionHighlight(selected);
-            }
-
-            return value;
+            endpoint1_->setSelectionHighlight(selected);
         }
+
+        if (endpoint2_ != 0)
+        {
+            endpoint2_->setSelectionHighlight(selected);
+        }
+
+        return value;
     }
 
     return QGraphicsPathItem::itemChange(change, value);

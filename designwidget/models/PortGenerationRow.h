@@ -121,17 +121,14 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    
-    bool create_;
-
-    //! Port description in opposing interface.
-    QString sourceDescription_;    
+    //! Port name in opposing interface.
+    QString sourceName_;
 
     //! Port direction in opposing interface.
     General::Direction sourceDirection_;
 
-    //! Port name in opposing interface.
-    QString sourceName_;      
+    //! Port description in opposing interface.
+    QString sourceDescription_;
 
     //! Port size in both interfaces.
     int size_;

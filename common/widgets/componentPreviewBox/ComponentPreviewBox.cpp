@@ -119,6 +119,9 @@ void ComponentPreviewBox::updatePreview()
                 item = new SWComponentItem(lh_, component_, component_->getVlnv()->getName());
                 break;
             }
+
+        default:
+            break;
         }
         
         if (item != 0)

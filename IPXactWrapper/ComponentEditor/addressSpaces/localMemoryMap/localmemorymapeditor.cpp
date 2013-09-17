@@ -20,19 +20,19 @@
 // Function: LocalMemoryMapEditor::LocalMemoryMapEditor()
 //-----------------------------------------------------------------------------
 LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
-	QSharedPointer<Component> component,
-	LibraryInterface* handler,
-    QWidget *parent):
-QGroupBox(tr("Local memory map"), parent),
-localMemoryMap_(memoryMap),
-enableMemMapBox_(new QCheckBox("Use local memory map", this)),
-nameEditor_(new NameGroupEditor(memoryMap->getNameGroup(), this)),
-view_(new EditableTableView(this)),
-proxy_(new MemoryMapProxy(this)),
-model_(new MemoryMapModel(memoryMap, this)),
-component_(component),
-handler_(handler) {
-
+                                           QSharedPointer<Component> component,
+                                           LibraryInterface* handler,
+                                           QWidget *parent)
+    : QGroupBox(tr("Local memory map"), parent),
+      enableMemMapBox_(new QCheckBox("Use local memory map", this)),
+      localMemoryMap_(memoryMap),
+      nameEditor_(new NameGroupEditor(memoryMap->getNameGroup(), this)),
+      view_(new EditableTableView(this)),
+      proxy_(new MemoryMapProxy(this)),
+      model_(new MemoryMapModel(memoryMap, this)),
+      component_(component),
+      handler_(handler)
+{
 	proxy_->setSourceModel(model_);
 	view_->setModel(proxy_);
 

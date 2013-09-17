@@ -155,7 +155,7 @@ void RegisterGraphItem::reorganizeChildren() {
 
 		// if there is a gap between the last field and this field
 		if (OffsetMin > item->getLastAddress() + 1 ||
-             previous == 0 && OffsetMin == item->getLastAddress() + 1) {
+            (previous == 0 && OffsetMin == item->getLastAddress() + 1)) {
 
 			// create the gap item
 			gap = new FieldGapItem(this);

@@ -29,10 +29,11 @@ VhdlParserWidget::VhdlParserWidget(const QString& basePath,	QSharedPointer<Compo
     QWidget* parent):
     QWidget(parent),
     basePath_(basePath),
-	vhdlParser_(new VhdlParser(this)),
 	fileSelector_(new FileSelector(component, this)),
+    vhdlPath_(),
     editButton_(tr("Open editor"),this),
-    refreshButton_(QIcon(":/icons/graphics/refresh.png"),"",this)
+    refreshButton_(QIcon(":/icons/graphics/refresh.png"),"",this),
+    vhdlParser_(new VhdlParser(this))
 {
 	Q_ASSERT(component);
 

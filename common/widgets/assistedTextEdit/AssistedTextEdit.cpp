@@ -26,10 +26,10 @@
 AssistedTextEdit::AssistedTextEdit(QSharedPointer<ITextContentMatcher> contentMatcher,
                                    QWidget* parentWnd, QWidget* parent)
     : QPlainTextEdit(parent),
+      matcher_(contentMatcher),
       contentAssist_(0),
       indentStyle_(INDENT_STYLE_TAB),
-      indentWidth_(DEFAULT_INDENT_WIDTH),
-      matcher_(contentMatcher)
+      indentWidth_(DEFAULT_INDENT_WIDTH)
 {
     //setFont(QFont("Courier", 10));
     setLineWrapMode(NoWrap);

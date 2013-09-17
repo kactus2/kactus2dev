@@ -42,7 +42,6 @@ FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
                                            PluginManager& pluginMgr, QWidget* parent)
     : QWidget(parent),
       toolbar_(this),
-      filterActions_(this),
       progressBar_(this),
       graphWidget_(this),
       infoWidget_(this),
@@ -51,6 +50,7 @@ FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
       model_(pluginMgr, component, basePath + "/"),
       basePath_(basePath),
       scanning_(false),
+      filterActions_(this),
       timer_(0),
       progWidget_(0)
 {
