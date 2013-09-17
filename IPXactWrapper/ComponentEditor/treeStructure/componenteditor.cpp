@@ -102,7 +102,7 @@ visualizerSlot_(&editorVisualizerSplitter_) {
 
 	// navigation model may request an item to be expanded
 	connect(&navigationModel_, SIGNAL(expandItem(const QModelIndex&)),
-		&navigationView_, SLOT(expand(const QModelIndex&)), Qt::UniqueConnection);
+		this, SLOT(onExpand(const QModelIndex&)), Qt::UniqueConnection);
 
 	connect(&navigationView_, SIGNAL(activated(const QModelIndex&)),
 		this, SLOT(onItemActivated(const QModelIndex&)), Qt::UniqueConnection);
@@ -273,6 +273,20 @@ bool ComponentEditor::saveAs() {
 void ComponentEditor::onNavigationTreeSelection( const QModelIndex& index ) {
 	navigationView_.setCurrentIndex(index);
 	onItemActivated(index);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::onExpand()
+//-----------------------------------------------------------------------------
+void ComponentEditor::onExpand(const QModelIndex& index)
+{    
+    // Expand parents until root is hit.            
+    QModelIndex parentIndex = index;
+    while(parentIndex.isValid())
+    {
+        navigationView_.expand(proxy_.mapFromSource(parentIndex));
+        parentIndex = parentIndex.parent();
+    }    
 }
 
 void ComponentEditor::onItemActivated( const QModelIndex& index ) {
@@ -471,3 +485,4 @@ bool ComponentEditor::onModelsimGenerate() {
 VLNV ComponentEditor::getIdentifyingVLNV() const {
 	return getDocumentVLNV();
 }
+

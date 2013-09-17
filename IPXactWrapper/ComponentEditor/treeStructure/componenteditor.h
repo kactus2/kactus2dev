@@ -120,6 +120,15 @@ private slots:
 	*/
 	void onNavigationTreeSelection(const QModelIndex& index);
 
+	/*! \brief This slot is called when navigation tree sends an expandItem signal.
+	 * 
+	 * This function tells navigation view to expand the index in the tree.
+	 * 
+	 * \param index Model index that identifies the item to expand.
+	 *
+	*/
+    void onExpand(const QModelIndex& index);
+
 signals:
     /*!
      *  Opens the specific C source file of the given component.
