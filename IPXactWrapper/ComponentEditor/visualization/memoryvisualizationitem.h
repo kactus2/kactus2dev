@@ -110,7 +110,7 @@ public:
 
 	/*! \brief Get the first non-overlapping address of the item.
 	 *
-	 * \return The first non-overlapping address or -1 if completely overlapped.
+	 * \return The first non-overlapping address.
 	 */
     virtual quint64 getOverlappingTop();
 
@@ -122,7 +122,7 @@ public:
 
     /*! \brief Get the last non-overlapping address of the item.
      *
-     * \return The last non-overlapping address or -1 if completely overlapped.
+     * \return The last non-overlapping address.
      */
     virtual quint64 getOverlappingBottom();
 

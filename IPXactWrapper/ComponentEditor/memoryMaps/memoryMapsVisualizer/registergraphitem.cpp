@@ -199,7 +199,7 @@ void RegisterGraphItem::reorganizeChildren() {
                 // completely with any other field.
                 if (item->getOffset() >= previous->getOffset() &&
                     item->getLastAddress() <= previous->getLastAddress() &&
-                    previous->getOverlappingBottom() != -1)
+                    !previous->isCompletelyOverlapped())
                 {
                     topItem = previous;                    
                 }
@@ -439,7 +439,7 @@ void RegisterGraphItem::setWidth(qreal width)
  qreal RegisterGraphItem::getChildWidth(MemoryVisualizationItem* child) const
 {
     Q_ASSERT(child);
-    if ( child->getOverlappingBottom() == -1 || child->getOverlappingTop() == -1)
+    if ( child->isCompletelyOverlapped())
     {
         return 0;
     }
