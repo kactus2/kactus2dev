@@ -1866,16 +1866,7 @@ void HWDesignDiagram::onCopyAction()
         QList<QGraphicsItem*> items = selectedItems();
         int type = getCommonItemType(items);
 
-        /*if (type == BusPortItem::Type)
-        {
-            BusPortCollectionCopyData collection;
-            copyInterfaces(items, collection);
-
-            QMimeData* mimeData = new QMimeData();
-            mimeData->setImageData(QVariant::fromValue(collection));
-            QApplication::clipboard()->setMimeData(mimeData);
-        }
-        else*/ if (type == BusInterfaceItem::Type || type == BusPortItem::Type)
+        if (type == BusInterfaceItem::Type || type == BusPortItem::Type)
         {
             BusInterfaceCollectionCopyData collection;
             copyInterfaces(items, collection);

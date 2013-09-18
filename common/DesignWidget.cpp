@@ -54,6 +54,8 @@ DesignWidget::DesignWidget(LibraryInterface* lh, QWidget* parent)
 //-----------------------------------------------------------------------------
 DesignWidget::~DesignWidget()
 {
+    view_->verticalScrollBar()->disconnect(this);
+
     if (diagram_ != 0)
     {
         delete diagram_;
