@@ -25,6 +25,7 @@
   suffice.
 + Added 'Select All' to the right-click context menu in design editors.
 
+- Fixed numerous bugs, both critical and non-critical ones.
 - Fixed a bug causing the port maps dialog to open when using the off-page
   connection tool.
 - Fixed API/COM interface deletion to also delete the underlying interface
@@ -50,6 +51,9 @@
 * Changed the sorting in port and generic editors to case-insensitive.
 * Renamed 'Add Signals to Bus' to 'New Abstraction Definition' to prevent
   confusion with the Add signals option in the bus editor.
+* Changed the order of HW views in the component editor to list hierarchical
+  views before non-hierarchical ones. Hierarchical views now also show an
+  icon.
 
 
 
