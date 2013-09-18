@@ -1102,6 +1102,8 @@ void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+    contextPos_ = QCursor::pos();
+
     // Check if the connect mode is active.
     if (getMode() == MODE_CONNECT || getMode() == MODE_TOGGLE_OFFPAGE)
     {
@@ -1857,8 +1859,8 @@ QMenu* HWDesignDiagram::createContextMenu(QPointF const& pos)
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::onCopyAction()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::onCopyAction(){
-
+void HWDesignDiagram::onCopyAction()
+{
     if (!isProtected())
     {
         QList<QGraphicsItem*> items = selectedItems();
@@ -1914,6 +1916,8 @@ void HWDesignDiagram::onCopyAction(){
             QApplication::clipboard()->setMimeData(mimeData);
         }
     }
+
+    prepareContextMenuActions();
 }
 
 //-----------------------------------------------------------------------------
@@ -2493,6 +2497,7 @@ void HWDesignDiagram::onSelectionChanged()
 
     // Save the current selection as the old selection.
     oldSelectedItems_ = selectedItems();
+    prepareContextMenuActions();
 }
 
 //-----------------------------------------------------------------------------
@@ -3036,8 +3041,6 @@ void HWDesignDiagram::pasteInstances(ComponentCollectionCopyData const& collecti
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::prepareContextMenuActions()
 {
-    contextPos_ = QCursor::pos();
-
     QList<QGraphicsItem*> items = selectedItems();
 
     if (items.empty())
@@ -3111,15 +3114,6 @@ void HWDesignDiagram::prepareContextMenuActions()
             pasteAction_.setEnabled(false);
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::keyPressEvent()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::keyPressEvent(QKeyEvent *event)
-{
-    prepareContextMenuActions();
-    DesignDiagram::keyPressEvent(event);
 }
 
 //-----------------------------------------------------------------------------

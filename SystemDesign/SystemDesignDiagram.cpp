@@ -1096,6 +1096,8 @@ void SystemDesignDiagram::onSelected(QGraphicsItem* newSelection)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
+    contextPos_ = QCursor::pos();
+
     // Check if the connect mode is active.
     if (getMode() == MODE_CONNECT || getMode() == MODE_TOGGLE_OFFPAGE)
     {
@@ -2353,6 +2355,7 @@ void SystemDesignDiagram::onSelectionChanged()
 
     // Save the current selection as the old selection.
     oldSelectedItems_ = selectedItems();
+    prepareContextMenuActions();
 }
 
 //-----------------------------------------------------------------------------
@@ -2928,6 +2931,8 @@ void SystemDesignDiagram::onCopyAction()
             QApplication::clipboard()->setMimeData(mimeData);
         }
     }
+
+    prepareContextMenuActions();
 }
 
 //-----------------------------------------------------------------------------
@@ -3429,7 +3434,6 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::prepareContextMenuActions()
 {
-    contextPos_ = QCursor::pos();
     QList<QGraphicsItem*> items = selectedItems();
 
     if (items.empty())
@@ -3470,13 +3474,11 @@ void SystemDesignDiagram::prepareContextMenuActions()
         }
         else if (type == SWComponentItem::Type)
         {
-            addAction_.setEnabled(false);
-            openComponentAction_.setEnabled(true);
-
             // Allow SW design opening, if component has at least one hierarchical view.
             SWComponentItem* swItem = qgraphicsitem_cast<SWComponentItem *>(items.back());
             Q_ASSERT(swItem);
             QStringList hierViews = swItem->componentModel()->getSWViewNames();          
+
             if (hierViews.size() != 0)
             {
                 openDesignAction_.setEnabled(true);
@@ -3493,6 +3495,7 @@ void SystemDesignDiagram::prepareContextMenuActions()
             // contains API/COM bus interfaces.
             bool draft = !qgraphicsitem_cast<SWComponentItem *>(items.back())->componentModel()->getVlnv()->isValid();
             addAction_.setEnabled(draft && selectedItems().size() == 1);
+            openComponentAction_.setEnabled(!draft && items.count() == 1);
             
             QMimeData const* mimedata = QApplication::clipboard()->mimeData();
 
@@ -3530,15 +3533,6 @@ void SystemDesignDiagram::prepareContextMenuActions()
             pasteAction_.setEnabled(false);
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: SystemDesignDiagram::keyPressEvent()
-//-----------------------------------------------------------------------------
-void SystemDesignDiagram::keyPressEvent(QKeyEvent *event)
-{
-    prepareContextMenuActions();
-    DesignDiagram::keyPressEvent(event);
 }
 
 //-----------------------------------------------------------------------------

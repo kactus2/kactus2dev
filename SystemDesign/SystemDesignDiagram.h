@@ -309,9 +309,6 @@ protected:
     //! Called when an object is dropped to the diagram.
     void dropEvent(QGraphicsSceneDragDropEvent *event);
 
-    //! Called when a key has been pressed.
-    void keyPressEvent(QKeyEvent *event);
-
     //! Called when a key has been released.
     void keyReleaseEvent(QKeyEvent *event);
 

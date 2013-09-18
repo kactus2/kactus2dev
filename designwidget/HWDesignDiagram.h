@@ -332,9 +332,6 @@ protected:
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void wheelEvent(QGraphicsSceneWheelEvent *event);
 
-    //! Called when a key has been pressed.
-    void keyPressEvent(QKeyEvent *event);
-
     //! Called when a key has been release.
     void keyReleaseEvent(QKeyEvent *event);
 
