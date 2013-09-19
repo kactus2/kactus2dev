@@ -47,6 +47,7 @@ NewWorkspaceDialog::NewWorkspaceDialog(QWidget* parent) : QDialog(parent), nameE
 
     setWindowTitle(tr("New Workspace"));
     setFixedSize(sizeHint());
+    onContentChanged();
 }
 
 //-----------------------------------------------------------------------------
