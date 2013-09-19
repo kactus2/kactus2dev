@@ -24,6 +24,7 @@
   directory selection if the automatically suggested location does not 
   suffice.
 + Added 'Select All' to the right-click context menu in design editors.
++ Added library filter selections to be saved as a part of the workspace.
 
 - Fixed numerous bugs, both critical and non-critical ones.
 - Fixed a bug causing the port maps dialog to open when using the off-page
