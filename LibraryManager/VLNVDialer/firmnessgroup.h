@@ -31,6 +31,20 @@ public:
 	//! \brief The destructor
 	virtual ~FirmnessGroup();
 
+    /*!
+     *  Sets new firmness options.
+     *
+     *      @param [in] options   The options to set.
+     */
+    void setFirmness(Utils::FirmnessOptions options);
+
+    /*!
+     *  Gets the selected firmness options.
+     *
+     *      @return Selected firmness options.
+     */
+    Utils::FirmnessOptions getFirmness() const;
+
 signals:
 
 	//! \brief Emitted when one of the check boxes changes state.
@@ -53,7 +67,7 @@ private:
 
 	//! \brief No assignment
 	FirmnessGroup& operator=(const FirmnessGroup& other);
-	
+
 	//! \brief Check box to select templates in/out of search results.
 	QCheckBox templateBox_;
 

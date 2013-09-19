@@ -1,7 +1,7 @@
 /* 
  *  	Created on: 11.7.2011
  *      Author: Antti Kamppi
- * 		filename: firmnessgroup.h
+ * 		filename: implementationgroup.h
  *		Project: Kactus 2
  */
 
@@ -13,7 +13,7 @@
 #include <QGroupBox>
 #include <QCheckBox>
 
-/*! \brief Contains check boxes to set the firmness options for VLNVDialer.
+/*! \brief Contains check boxes to set the implementation options for VLNVDialer.
  *
  */
 class ImplementationGroup : public QGroupBox {
@@ -31,9 +31,23 @@ public:
 	//! \brief The destructor
 	virtual ~ImplementationGroup();
 
+    /*!
+     *  Sets new implementation options.
+     *
+     *      @param [in] options   The options to set.
+     */
+    void setImplementation(Utils::ImplementationOptions options);
+
+    /*!
+     *  Gets the selected implementation options.
+     *
+     *      @return Selected implementation options.
+     */
+    Utils::ImplementationOptions getImplementation() const;
+
 signals:
 
-	//! \brief Emitted when firmness options changes state.
+	//! \brief Emitted when implementation options changes state.
 	void optionsChanged(const Utils::ImplementationOptions& options);
 
 private slots:

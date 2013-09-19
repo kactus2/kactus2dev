@@ -11,6 +11,9 @@
 
 #include <QGridLayout>
 
+//-----------------------------------------------------------------------------
+// Function: HierarchyGroup::HierarchyGroup()
+//-----------------------------------------------------------------------------
 HierarchyGroup::HierarchyGroup(QWidget *parent):
 QGroupBox(tr("Product Hierarchy"), parent),
 globalBox_(tr("Global"), this),
@@ -52,34 +55,83 @@ options_() {
 		this, SLOT(onIpChange(int)), Qt::UniqueConnection);
 }
 
+//-----------------------------------------------------------------------------
+// Function: HierarchyGroup::~HierarchyGroup()
+//-----------------------------------------------------------------------------
 HierarchyGroup::~HierarchyGroup() {
 }
 
+//-----------------------------------------------------------------------------
+// Function: HierarchyGroup::setHierarchy()
+//-----------------------------------------------------------------------------
+void HierarchyGroup::setHierarchy(Utils::HierarchyOptions options)
+{
+    globalBox_.setChecked(options.global_);
+    productBox_.setChecked(options.product_);
+    boardBox_.setChecked(options.board_);    
+    chipBox_.setChecked(options.chip_);
+    socBox_.setChecked(options.soc_);
+    ipBox_.setChecked(options.ip_);   
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierarchyGroup::getHierarchy()
+//-----------------------------------------------------------------------------
+Utils::HierarchyOptions HierarchyGroup::getHierarchy() const
+{
+    Utils::HierarchyOptions options;
+    options.global_ = globalBox_.isChecked();
+    options.product_ = productBox_.isChecked();
+    options.board_ = boardBox_.isChecked();
+    options.chip_ = chipBox_.isChecked();
+    options.soc_ = socBox_.isChecked();
+    options.ip_ = ipBox_.isChecked();
+    return options;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierarchyGroup::onGlobalChange()
+//-----------------------------------------------------------------------------
 void HierarchyGroup::onGlobalChange( int state ) {
 	options_.global_ = Utils::checkBoxState2Bool(state);
 	emit optionsChanged(options_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: HierarchyGroup::onProductChange()
+//-----------------------------------------------------------------------------
 void HierarchyGroup::onProductChange( int state ) {
 	options_.product_ = Utils::checkBoxState2Bool(state);
 	emit optionsChanged(options_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: HierarchyGroup::onBoardChange()
+//-----------------------------------------------------------------------------
 void HierarchyGroup::onBoardChange( int state ) {
 	options_.board_ = Utils::checkBoxState2Bool(state);
 	emit optionsChanged(options_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: HierarchyGroup::onChipChange()
+//-----------------------------------------------------------------------------
 void HierarchyGroup::onChipChange( int state ) {
 	options_.chip_ = Utils::checkBoxState2Bool(state);
 	emit optionsChanged(options_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: HierarchyGroup::onSocChange()
+//-----------------------------------------------------------------------------
 void HierarchyGroup::onSocChange( int state ) {
 	options_.soc_ = Utils::checkBoxState2Bool(state);
 	emit optionsChanged(options_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: HierarchyGroup::onIpChange()
+//-----------------------------------------------------------------------------
 void HierarchyGroup::onIpChange( int state ) {
 	options_.ip_ = Utils::checkBoxState2Bool(state);
 	emit optionsChanged(options_);

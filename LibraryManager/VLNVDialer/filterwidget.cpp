@@ -37,3 +37,28 @@ hierarchy_(this) {
 
 FilterWidget::~FilterWidget() {
 }
+
+//-----------------------------------------------------------------------------
+// Function: FilterWidget::setFilters()
+//-----------------------------------------------------------------------------
+void FilterWidget::setFilters(FilterOptions options)
+{
+    type_.setTypes(options.type);  
+    implementation_.setImplementation(options.implementation);  
+    hierarchy_.setHierarchy(options.hierarchy);  
+    firmness_.setFirmness(options.firmness);    
+}
+
+//-----------------------------------------------------------------------------
+// Function: FilterWidget::getFilters()
+//-----------------------------------------------------------------------------
+FilterWidget::FilterOptions FilterWidget::getFilters() const
+{
+    FilterOptions options;
+    options.type = type_.getTypes();
+    options.implementation = implementation_.getImplementation();
+    options.hierarchy = hierarchy_.getHierarchy();
+    options.firmness = firmness_.getFirmness();
+    return options;
+}
+

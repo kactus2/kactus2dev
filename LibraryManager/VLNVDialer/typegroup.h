@@ -31,6 +31,20 @@ public:
 	//! \brief The destructor
 	virtual ~TypeGroup();
 
+    /*!
+     *  Sets new type options.
+     *
+     *      @param [in] options   The options to set.
+     */
+    void setTypes(Utils::TypeOptions options);
+
+    /*!
+     *  Gets the selected type options.
+     *
+     *      @return Selected type options.
+     */
+    Utils::TypeOptions getTypes() const;
+
 signals:
 
 	//! \brief Emitted when type settings change

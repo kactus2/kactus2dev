@@ -44,6 +44,10 @@ public:
 	*/
 	void setRootItem(const LibraryItem* rootItem);
 
+    void setFilters(FilterWidget::FilterOptions options);
+
+    FilterWidget::FilterOptions getFilters() const;
+
 signals:
 
 	//! \brief Emitted when the text in vendor combobox is changed.

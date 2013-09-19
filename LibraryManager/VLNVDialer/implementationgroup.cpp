@@ -9,6 +9,9 @@
 
 #include <QGridLayout>
 
+//-----------------------------------------------------------------------------
+// Function: ImplementationGroup::ImplementationGroup()
+//-----------------------------------------------------------------------------
 ImplementationGroup::ImplementationGroup(QWidget *parent): 
 QGroupBox(tr("Implementation"), parent),
 hwBox_(tr("HW"), this),
@@ -35,20 +38,56 @@ options_() {
 		this, SLOT(onSystemChanged(int)), Qt::UniqueConnection);
 }
 
+//-----------------------------------------------------------------------------
+// Function: ImplementationGroup::~ImplementationGroup()
+//-----------------------------------------------------------------------------
 ImplementationGroup::~ImplementationGroup() {
 }
 
+//-----------------------------------------------------------------------------
+// Function: ImplementationGroup::setImplementation()
+//-----------------------------------------------------------------------------
+void ImplementationGroup::setImplementation(Utils::ImplementationOptions options)
+{
+    hwBox_.setChecked(options.hw_);
+    swBox_.setChecked(options.sw_);
+    systemBox_.setChecked(options.system_);    
+}
+
+//-----------------------------------------------------------------------------
+// Function: ImplementationGroup::getImplementation()
+//-----------------------------------------------------------------------------
+Utils::ImplementationOptions ImplementationGroup::getImplementation() const
+{
+    Utils::ImplementationOptions options;
+    options.hw_ = hwBox_.isChecked();
+    options.sw_ = swBox_.isChecked();
+    options.system_ = systemBox_.isChecked();
+    return options;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ImplementationGroup::onHWChanged()
+//-----------------------------------------------------------------------------
 void ImplementationGroup::onHWChanged( int state ) {
 	options_.hw_ = Utils::checkBoxState2Bool(state);
 	emit optionsChanged(options_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: ImplementationGroup::onSWChanged()
+//-----------------------------------------------------------------------------
 void ImplementationGroup::onSWChanged( int state ) {
 	options_.sw_ = Utils::checkBoxState2Bool(state);
 	emit optionsChanged(options_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: ImplementationGroup::onSystemChanged()
+//-----------------------------------------------------------------------------
 void ImplementationGroup::onSystemChanged( int state ) {
 	options_.system_ = Utils::checkBoxState2Bool(state);
 	emit optionsChanged(options_);
 }
+
+

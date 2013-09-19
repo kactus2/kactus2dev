@@ -31,6 +31,20 @@ public:
 	//! \brief The destructor
 	virtual ~HierarchyGroup();
 
+    /*!
+     *  Sets new hierarchy options.
+     *
+     *      @param [in] options   The options to set.
+     */
+    void setHierarchy(Utils::HierarchyOptions options);
+
+    /*!
+     *  Gets the selected hierarchy options.
+     *
+     *      @return Selected hierarchy options.
+     */
+    Utils::HierarchyOptions getHierarchy() const;
+
 signals:
 
 	//! \brief Emitted when hierarchy options change.

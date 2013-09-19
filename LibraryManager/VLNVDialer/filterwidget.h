@@ -25,6 +25,27 @@ class FilterWidget : public QWidget {
 
 public:
 
+    struct FilterOptions
+    {
+	    //! \brief Contains Type settings.
+        Utils::TypeOptions type;
+
+	    //! \brief Contains Implementation settings.
+        Utils::ImplementationOptions implementation;
+
+	    //! \brief Contains Hierarchy settings.
+        Utils::HierarchyOptions hierarchy;
+
+	    //! \brief Contains Firmness settings.
+        Utils::FirmnessOptions firmness;
+
+		/*! \brief The default constructor
+		 *
+		 * Constructs struct with all options set to true.
+		*/
+        FilterOptions() : type(), implementation(), hierarchy(), firmness() {};
+    };
+
 	/*! \brief The constructor
 	 *
 	 * \param parent Pointer to the owner of this widget.
@@ -34,6 +55,10 @@ public:
 	
 	//! \brief The destructor
 	virtual ~FilterWidget();
+
+    void setFilters(FilterOptions options);
+
+    FilterOptions getFilters() const;
 
 signals:
 

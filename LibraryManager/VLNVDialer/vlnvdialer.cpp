@@ -62,6 +62,22 @@ VLNVDialer::~VLNVDialer() {
 	settings.setValue("FilterWidget/Hidden", hidden_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: VLNVDialer::setFilters()
+//-----------------------------------------------------------------------------
+void VLNVDialer::setFilters(FilterWidget::FilterOptions options)
+{
+    filters_.setFilters(options);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VLNVDialer::getFilters()
+//-----------------------------------------------------------------------------
+FilterWidget::FilterOptions VLNVDialer::getFilters() const
+{
+    return filters_.getFilters();
+}
+
 void VLNVDialer::onHideShowClick() {
 	// if filters were hidden
 	if (hidden_) {
@@ -85,3 +101,4 @@ void VLNVDialer::setRootItem(const LibraryItem* rootItem ) {
 void VLNVDialer::refreshLibrary() {
 	dialer_.refreshVendors();
 }
+
