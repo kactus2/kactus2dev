@@ -25,7 +25,7 @@ SetCompressor bzip2
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
 ; License page
-!insertmacro MUI_PAGE_LICENSE "license.txt"
+!insertmacro MUI_PAGE_LICENSE "gpl2.txt"
 ; Multiuser page
 !insertmacro MULTIUSER_PAGE_INSTALLMODE
 ; Directory page
@@ -74,7 +74,7 @@ Section "MainSection" SEC01
   File "..\x64\executable\icuuc50.dll"
   File "..\x64\executable\D3DCompiler_43.dll"
   File "..\x64\executable\Kactus2.exe"
-  File "license.txt"
+  File "gpl2.txt"
   File "release_notes.txt"
   File "readme.txt"
   File "..\executable\upgrade.cfg"
@@ -121,7 +121,7 @@ Section "MainSection" SEC01
   SetOutPath "$INSTDIR"
   CreateDirectory "$SMPROGRAMS\Kactus2"
   CreateShortCut "$SMPROGRAMS\Kactus2\Kactus2.lnk" "$INSTDIR\Kactus2.exe"
-  CreateShortCut "$SMPROGRAMS\Kactus2\License.lnk" "$INSTDIR\license.txt"
+  CreateShortCut "$SMPROGRAMS\Kactus2\License.lnk" "$INSTDIR\gpl2.txt"
   CreateShortCut "$SMPROGRAMS\Kactus2\Release Notes.lnk" "$INSTDIR\release_notes.txt"
   CreateShortCut "$SMPROGRAMS\Kactus2\Readme.lnk" "$INSTDIR\readme.txt"
   CreateShortCut "$DESKTOP\Kactus2.lnk" "$INSTDIR\Kactus2.exe"
@@ -191,7 +191,7 @@ Section Uninstall
   Delete "$INSTDIR\upgrade.cfg"
   Delete "$INSTDIR\readme.txt"
   Delete "$INSTDIR\release_notes.txt"
-  Delete "$INSTDIR\license.txt"
+  Delete "$INSTDIR\gpl2.txt"
   Delete "$INSTDIR\Kactus2.exe"
   Delete "$INSTDIR\D3DCompiler_43.dll"
   Delete "$INSTDIR\icuuc50.dll"

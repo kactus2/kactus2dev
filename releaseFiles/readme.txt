@@ -49,6 +49,14 @@ Juho Järvinen, Esko Pekkarinen
 
 Kactus2 is linked with Qt 5.1.1, copyright Digia Plc. (LGPL)
 
+Licencing
+----------------------------------------------------
+
+This software is licensed under the GPL2 General Public License.
+
+Kactus2 is also available for dual licensing. Please contact kactus2@cs.tut.fi
+to purchase a commercial license.
+
 
 Icons used in Kactus2
 ----------------------------------------------------

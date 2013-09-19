@@ -56,9 +56,10 @@ void SplashScreen::drawContents(QPainter *painter)
     font.setPixelSize(11);
     painter->setFont(font);
  
-    painter->drawText(QRectF(270, 280, 320, 150), Qt::AlignLeft,
-                      QString::fromLatin1("This software is licensed under the GPL2 General Public License.\n"
-                                          "See license.txt for further details.\n\n"
+    painter->drawText(QRectF(270, 270, 320, 160), Qt::AlignLeft,
+                      QString::fromLatin1("This software is licensed under the GPL2 General Public License.\n\n"
+                                          "Kactus2 is also available for dual licensing. Please contact\n"
+                                          "kactus2@cs.tut.fi to purchase a commercial license.\n\n"
                                           "Contributors: Juho J‰rvinen, Antti Kamppi, Joni-Matti M‰‰tt‰,\n"
                                           "Esko Pekkarinen, Lauri Matilainen, Timo D. H‰m‰l‰inen\n\n"
                                           "Kactus2 Website: http://funbase.cs.tut.fi/"));
