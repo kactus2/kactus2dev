@@ -1414,7 +1414,10 @@ void GraphicsConnection::createSegmentBounds(QList<SegmentBound>& verticalBounds
     {
         GraphicsConnection const* conn = dynamic_cast<GraphicsConnection const*>(item);
 
-        if (conn != 0 && conn != this)
+        // If the connections share an endpoint, discard it from the segment bounds.
+        if (conn != 0 && conn != this &&
+            endpoint1() != conn->endpoint1() && endpoint2() != conn->endpoint2() &&
+            endpoint1() != conn->endpoint2() && endpoint2() != conn->endpoint1())
         {
             for (int i = 0; i < conn->route().size() - 1; ++i)
             {
