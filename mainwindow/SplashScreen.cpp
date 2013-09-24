@@ -14,6 +14,7 @@
 #include <version.h>
 #include <QPainter>
 #include <QLabel>
+#include <QBitmap>
 
 #include <QDebug>
 
@@ -38,7 +39,7 @@ SplashScreen::~SplashScreen()
 void SplashScreen::drawContents(QPainter *painter)
 {
     // Draw the version text.
-    painter->setPen(QPen(Qt::white, 1));
+    painter->setPen(QPen(Qt::black, 1));
 
 #if defined (_WIN64) || (__LP64__) || (_LP64)
     int bits = 64;
@@ -46,23 +47,30 @@ void SplashScreen::drawContents(QPainter *painter)
     int bits = 32;
 #endif
 
-    painter->drawText(300, 125, tr("Version %1.%2.%3 %4-bit").arg(QString::number(VERSION_MAJOR),
+
+    QFont font = painter->font();
+    font.setPixelSize(14);
+    font.setBold(true);
+    painter->setFont(font);
+
+    painter->drawText(240, 240, tr("Version %1.%2.%3 %4-bit").arg(QString::number(VERSION_MAJOR),
                                                                   QString::number(VERSION_MINOR),
                                                                   QString::number(VERSION_BUILDNO),
                                                                   QString::number(bits)));
-
     // Draw the other information.
-    QFont font = painter->font();
-    font.setPixelSize(11);
-    painter->setFont(font);
+    font.setPixelSize(12);
+    font.setBold(false);
+    painter->setFont(font);    
  
-    painter->drawText(QRectF(270, 270, 320, 160), Qt::AlignLeft,
-                      QString::fromLatin1("Copyright (c) 2012-2013 Tampere University of Technology\n\n"
-                                          "This software is licensed under the GPL2 General Public License.\n"
-                                          "Kactus2 is also available for dual licensing.\n\n"
-                                          "Contributors: Juho J‰rvinen, Antti Kamppi, Joni-Matti M‰‰tt‰,\n"
-                                          "Esko Pekkarinen, Lauri Matilainen, Timo D. H‰m‰l‰inen\n\n"
-                                          "Kactus2 Website: http://funbase.cs.tut.fi/"));
+    painter->drawText(QRectF(5, 240, 590, 160), Qt::AlignCenter,
+        QString::fromLatin1("Copyright 2010-2013 Tampere University of Technology,\n" 
+                            "Korkeakoulunkatu 10, FI-33720 Tampere, Finland\n"
+                            "http://funbase.cs.tut.fi\n"
+                            "kactus2@cs.tut.fi\n" 
+                            "Kactus2 is available for dual licensing.\n"
+                            "This software is licensed under the General Public License Version 2.\n"
+                            "Contributors: Antti Kamppi, Esko Pekkarinen, Joni-Matti M‰‰tt‰,\n"
+                            "Juho J‰rvinen, Lauri Matilainen, Timo D. H‰m‰l‰inen"));
 }
 
 void SplashScreen::mousePressEvent( QMouseEvent* event ) {
