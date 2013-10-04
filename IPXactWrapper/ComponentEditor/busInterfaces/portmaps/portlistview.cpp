@@ -17,7 +17,9 @@
 
 PortListView::PortListView(QWidget *parent): 
 QListView(parent),
-startPos_() {
+startPos_(),
+removeConnected_(true) 
+{
 
 	// the view accepts drops from drag & drop actions
 	setAcceptDrops(true);
@@ -37,6 +39,14 @@ startPos_() {
 }
 
 PortListView::~PortListView() {
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortListView::removeOnConnect()
+//-----------------------------------------------------------------------------
+void PortListView::removeOnConnect(bool remove)
+{
+    removeConnected_ = remove;
 }
 
 void PortListView::dragEnterEvent( QDragEnterEvent* event ) {
@@ -104,7 +114,7 @@ void PortListView::performDrag() {
 
 	QDrag* drag = new QDrag(this);
 	drag->setMimeData(mimeData);
-	if (drag->exec(Qt::MoveAction) == Qt::MoveAction) {
+	if (drag->exec(Qt::MoveAction) == Qt::MoveAction && removeConnected_) {
 		
 		// inform the model that the dragged items could be removed
 		emit removeItems(indexes);

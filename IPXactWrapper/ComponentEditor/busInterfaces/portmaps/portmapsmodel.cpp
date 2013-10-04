@@ -405,6 +405,19 @@ void PortMapsModel::createMap( const QString& physicalPort, const QString& logic
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: PortMapsModel::createMap()
+//-----------------------------------------------------------------------------
+void PortMapsModel::createMap(QSharedPointer<General::PortMap> portMap)
+{
+
+    beginInsertRows(QModelIndex(), portMaps_.size(), portMaps_.size());
+    portMaps_.append(portMap);
+    endInsertRows();
+    emit contentChanged();
+}
+
+
 QStringList PortMapsModel::logicalPorts() const {
 
 	QStringList list;
@@ -470,7 +483,7 @@ bool PortMapsModel::canCreateMap( const QString& physicalPort, const QString& lo
 		// if directions don't match
 		if (logicalDirection != physDirection && physDirection != General::INOUT) {
 			emit errorMessage(tr("Directions between logical port \"%1\" and"
-				" physical port \"%2\" didn't match.").arg(logicalPort).arg(physicalPort));
+				" physical port \"%2\" did not match.").arg(logicalPort).arg(physicalPort));
 			return false;
 		}
 		else

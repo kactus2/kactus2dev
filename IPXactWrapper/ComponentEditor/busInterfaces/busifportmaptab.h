@@ -8,6 +8,7 @@
 #ifndef BUSIFPORTMAPTAB_H
 #define BUSIFPORTMAPTAB_H
 
+
 #include "portmaps/physlistview.h"
 #include "portmaps/logicallistview.h"
 #include "portmaps/physlistmodel.h"
@@ -17,7 +18,15 @@
 #include <models/businterface.h>
 #include <models/generaldeclarations.h>
 #include <models/component.h>
+#include <IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PinMappingModel.h>
+#include <IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h>
+#include <IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PinMappingView.h>
 
+#include <common/views/EditableTableView/editabletableview.h>
+
+#include <QCheckBox>
+#include <QComboBox>
+#include <QLabel>
 #include <QWidget>
 #include <QPushButton>
 #include <QTableView>
@@ -29,6 +38,8 @@
 class LibraryInterface;
 class PortMap;
 class PortMapsPhysModel;
+class EditableTableView;
+class PinMappingModel;
 
 /*! \brief Editor to set the port maps of a bus interface.
  *
@@ -76,7 +87,7 @@ public:
 	 *
 	 * \return void
 	*/
-	void setAbsType(const VLNV& vlnv, General::InterfaceMode mode);
+	virtual void setAbsType(const VLNV& vlnv, General::InterfaceMode mode);
 
 public slots:
 
@@ -113,6 +124,9 @@ private slots:
 	//! \brief The handler for connect button clicks
 	void onConnect();
 
+    //! \brief The handler for connect bits button clicks.
+    void onBitConnect();
+
 	//! \brief Handler for when user changes the connection mode.
 	void onConnectionModeChange();
 
@@ -124,6 +138,25 @@ private slots:
 	*/
 	void onMakeConnections(const QStringList& physicals, const QStringList& logicals);
 
+    /*!
+     *  The handler for change in logical port selection.
+     *
+     *      @param [in] index   The index of the selected logical port.     
+     */
+    void onLogicalChanged(const QModelIndex& index);
+
+    /*!
+     *  The handler for changes in physical port name filter.
+     *
+     */
+    void onNameFilterChanged();
+
+    /*!
+     *  The handler for changing bit field mapping visibility.
+     *
+     */
+    void toggleMappingVisibility();
+
 private:
 	
 	//! \brief No copying
@@ -134,7 +167,7 @@ private:
 
 	//! \brief Set up the layout of the GUI items
 	void setupLayout();
-
+   
 	//! \brief Specifies the connection mode
 	ConnectionMode mode_;
 
@@ -162,13 +195,28 @@ private:
 	//! \brief The view to display the logical ports
 	LogicalListView logicalView_;
 
-	//! \brief The model to present the logical ports
+	//! \brief The model to present the logical ports.
 	LogicalListModel logicalModel_;
 
-	//! \brief The view to display the physical ports
+    //! \brief The label for bit-level mapping.
+    QLabel mappingLabel_;
+
+    //! \brief The bit-level mapping view.
+    PinMappingView mappingView_;
+
+    //! \brief The sorting proxy for bit-level mapping.
+    QSortFilterProxyModel mappingProxy_;
+
+    //! \brief The model to present bit-level mapping.
+    PinMappingModel mappingModel_;
+
+	//! \brief The view to display the physical ports.
 	PhysListView physicalView_;
 
-	//! \brief The model to present the physical ports
+    //! \brief The filter proxy for the physical ports.
+    PortListSortProxyModel physProxy_;
+
+	//! \brief The model to present the physical ports.
 	PhysListModel physModel_; 
 
 	//! \brief The button to clean the lists of physical and logical ports.
@@ -182,6 +230,20 @@ private:
 
 	//! \brief The button to select the one to many connection mode.
 	QPushButton one2ManyButton_;
+
+    //! \brief The button to show/hide bit-level mapping.
+    QPushButton showHideMappingButton_;
+
+    //! \brief Editor for filtering of physical ports by name.
+    QLineEdit* nameFilterEditor_;
+
+    //! \brief Editor for filtering of physical ports by direction.
+    QComboBox* directionFilterEditor_;
+
+    QCheckBox hideConnectedBox_;
+
+    //! \brief Boolean for show/hide status of the bit-level mapping.
+    bool showBitMapping_;
 };
 
 #endif // BUSIFPORTMAPTAB_H

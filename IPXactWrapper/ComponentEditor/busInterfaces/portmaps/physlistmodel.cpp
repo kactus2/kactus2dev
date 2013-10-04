@@ -16,8 +16,8 @@
 PhysListModel::PhysListModel(QSharedPointer<Component> component, 
 							 PortMapsModel* portMapsModel,
 							 QObject *parent ):
-PortListModel(portMapsModel, parent), component_(component) {
-
+PortListModel(portMapsModel, parent), component_(component)
+{
 	refresh();
 }
 
@@ -30,13 +30,15 @@ void PhysListModel::refresh() {
 
 	list_.clear();
 
-	QStringList portNames = component_->getPortNames();
-	foreach (QString portName, portNames) {
+    QStringList portNames = component_->getPortNames();
+    foreach (QString portName, portNames) {
 
-		// if the port is not yet in the list
-		if (!PortListModel::list_.contains(portName))
-			PortListModel::list_.append(portName);
-	}
+        // if the port is not yet in the list
+        if (!PortListModel::list_.contains(portName))
+        {
+            PortListModel::list_.append(portName);
+        }
+    }
 
 	endResetModel();
 }

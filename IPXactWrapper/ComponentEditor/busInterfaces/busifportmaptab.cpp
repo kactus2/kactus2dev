@@ -7,17 +7,26 @@
 
 #include "busifportmaptab.h"
 
-#include <models/component.h>
 #include <models/abstractiondefinition.h>
+#include <models/component.h>
+#include <models/port.h>
 #include <LibraryManager/vlnv.h>
 #include <LibraryManager/libraryinterface.h>
-#include <models/port.h>
+#include <IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h>
 
+#include <QCheckBox>
+#include <QComboBox>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QIcon>
 #include <QLabel>
+#include <QLineEdit>
+#include <QGroupBox>
+#include <QFormLayout>
 
+//-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::BusIfPortmapTab()
+//-----------------------------------------------------------------------------
 BusIfPortmapTab::BusIfPortmapTab( LibraryInterface* libHandler,
 								 QSharedPointer<Component> component,
 								 BusInterface* busif, 
@@ -33,12 +42,23 @@ model_(busif, component, libHandler, this),
 view_(&mapProxy_, this),
 logicalView_(this),
 logicalModel_(libHandler, &model_, this),
+mappingLabel_(tr("Bit-field mapping"),this),
+mappingView_(this),
+mappingProxy_(this),
+mappingModel_(busif, component, libHandler, this),
 physicalView_(this),
+physProxy_(component, this),
 physModel_(component, &model_, this),
 cleanButton_(QIcon(":/icons/graphics/cleanup.png"), tr("Clean up"), this),
 connectButton_(QIcon(":/icons/graphics/connect.png"), tr("Connect"), this),
 one2OneButton_(tr("1 to 1"), this),
-one2ManyButton_(tr("1 to many"), this) {
+one2ManyButton_(tr("1 to many"), this),
+hideConnectedBox_(tr("Hide connected ports"), this),
+showHideMappingButton_(tr("Show bit-field mapping"),this),
+nameFilterEditor_(new QLineEdit(this)),
+directionFilterEditor_(new QComboBox(this)),
+showBitMapping_(false)
+{
 
 	// mode buttons are checkable and mutually exclusive
 	one2OneButton_.setCheckable(true);
@@ -47,16 +67,40 @@ one2ManyButton_(tr("1 to many"), this) {
 	one2ManyButton_.setCheckable(true);
 	one2ManyButton_.setAutoExclusive(true);
 
+    directionFilterEditor_->setEditable(false);
+    directionFilterEditor_->addItem("any");
+    directionFilterEditor_->addItem("in");
+    directionFilterEditor_->addItem("inout");
+    directionFilterEditor_->addItem("out");
+
 	mapProxy_.setSourceModel(&model_);
 	view_.setModel(&mapProxy_);
 
+    //mappingView_.setItemsDraggable(false);
+    mappingView_.setDragDropMode(QAbstractItemView::DropOnly);
+
+    //mappingView_.verticalHeader()->show();
+    mappingView_.setAcceptDrops(true); 
+    mappingProxy_.setSourceModel(&mappingModel_);   
+    mappingView_.setModel(&mappingProxy_);
+    mappingLabel_.hide();
+    mappingView_.hide();
+
+    // set view to be sortable
+    mappingProxy_.setSortCaseSensitivity(Qt::CaseInsensitive);
+    mappingView_.setSortingEnabled(true);
+    mappingView_.sortByColumn(PinMappingModel::INDEX, Qt::AscendingOrder);
+
+    hideConnectedBox_.setCheckState(Qt::Checked);
+
 	// set the sources for views
 	logicalView_.setModel(&logicalModel_);
-	physicalView_.setModel(&physModel_);
+    physProxy_.setSourceModel(&physModel_);
+	physicalView_.setModel(&physProxy_);
 
 	// remove the ports from the port lists that are already mapped
 	logicalModel_.removePorts(model_.logicalPorts());
-	physModel_.removePorts(model_.physicalPorts());
+
 
 	setupLayout();
 
@@ -73,6 +117,8 @@ one2ManyButton_(tr("1 to many"), this) {
 		&logicalModel_, SLOT(addPort(const QString&)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(physicalRemoved(const QString&)),
 		&physModel_, SLOT(addPort(const QString&)), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(physicalRemoved(const QString&)),
+        &physProxy_, SLOT(onConnectionsChanged()), Qt::UniqueConnection);
 
 	// connect the signals from view to model that manipulate the items
 	connect(&view_, SIGNAL(removeItems(const QModelIndex&)),
@@ -89,6 +135,8 @@ one2ManyButton_(tr("1 to many"), this) {
 
 	connect(&logicalView_, SIGNAL(moveItems(const QStringList&, const QModelIndex&)),
 		&logicalModel_, SLOT(onMoveItems(const QStringList&, const QModelIndex&)), Qt::UniqueConnection);
+    connect(&logicalView_, SIGNAL(clicked(const QModelIndex&)),
+        this, SLOT(onLogicalChanged(const QModelIndex&)), Qt::UniqueConnection);
 
 	connect(&physicalView_, SIGNAL(removeItem(const QModelIndex&)),
 		&physModel_, SLOT(removeItem(const QModelIndex&)), Qt::UniqueConnection);
@@ -108,25 +156,50 @@ one2ManyButton_(tr("1 to many"), this) {
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&physModel_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(nameFilterEditor_, SIGNAL(textChanged(const QString&)), 
+        this, SLOT(onNameFilterChanged()), Qt::UniqueConnection);
+    connect(directionFilterEditor_, SIGNAL(currentTextChanged(QString const&)), 
+        &physProxy_, SLOT(setFilterDirection(QString const&)), Qt::UniqueConnection);
+    connect(&hideConnectedBox_, SIGNAL(toggled(bool)), 
+        &physicalView_, SLOT(removeOnConnect(bool)), Qt::UniqueConnection);
+    connect(&hideConnectedBox_, SIGNAL(toggled(bool)), 
+        &physProxy_, SLOT(setFilterHideConnected(bool)), Qt::UniqueConnection);
+
+    connect(&mappingModel_, SIGNAL(errorMessage(const QString&)),
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 
 	connect(&cleanButton_, SIGNAL(clicked(bool)),
 		this, SLOT(onRefresh()), Qt::UniqueConnection);
 	connect(&connectButton_, SIGNAL(clicked(bool)),
 		this, SLOT(onConnect()), Qt::UniqueConnection);
+    connect(&connectButton_, SIGNAL(clicked(bool)),
+        &physProxy_, SLOT(onConnectionsChanged()), Qt::UniqueConnection);  
 
 	connect(&one2OneButton_, SIGNAL(clicked(bool)),
 		this, SLOT(onConnectionModeChange()), Qt::UniqueConnection);
 	connect(&one2ManyButton_, SIGNAL(clicked(bool)),
 		this, SLOT(onConnectionModeChange()), Qt::UniqueConnection);
+
+    connect(&showHideMappingButton_, SIGNAL(clicked(bool)),
+        this, SLOT(toggleMappingVisibility()), Qt::UniqueConnection);
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::~BusIfPortmapTab()
+//-----------------------------------------------------------------------------
 BusIfPortmapTab::~BusIfPortmapTab() {
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::isValid()
+//-----------------------------------------------------------------------------
 bool BusIfPortmapTab::isValid() const {
 	return model_.isValid();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::refresh()
+//-----------------------------------------------------------------------------
 void BusIfPortmapTab::refresh() {
 	view_.update();
 
@@ -134,6 +207,9 @@ void BusIfPortmapTab::refresh() {
 	onRefresh();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::setupLayout()
+//-----------------------------------------------------------------------------
 void BusIfPortmapTab::setupLayout() {
 
 	QVBoxLayout* logicalLayout = new QVBoxLayout();
@@ -143,20 +219,34 @@ void BusIfPortmapTab::setupLayout() {
 
 	QVBoxLayout* physicalLayout = new QVBoxLayout();
 	QLabel* physLabel = new QLabel(tr("Physical ports"), this);
-	physicalLayout->addWidget(physLabel);
+    QGroupBox* filterGroup = new QGroupBox("Filters for Physical ports", this);
+	QFormLayout* filterLayout = new QFormLayout(filterGroup);
+    filterLayout->addRow("Name", nameFilterEditor_);
+    filterLayout->addRow("Direction", directionFilterEditor_);
+    filterLayout->addWidget(&hideConnectedBox_);    
+
+	physicalLayout->addWidget(physLabel);    
 	physicalLayout->addWidget(&physicalView_);
+    
 
 	QHBoxLayout* buttonLayout = new QHBoxLayout();
 	buttonLayout->addWidget(&one2OneButton_, 0, Qt::AlignLeft);
 	buttonLayout->addWidget(&one2ManyButton_, 0, Qt::AlignLeft);
 	buttonLayout->addWidget(&cleanButton_, 0, Qt::AlignLeft);
 	buttonLayout->addWidget(&connectButton_, 0 , Qt::AlignLeft);
+    buttonLayout->addWidget(&showHideMappingButton_, 0 , Qt::AlignLeft);
 	buttonLayout->addStretch();
+
+    QVBoxLayout* mappingLayout = new QVBoxLayout();
+    mappingLayout->addWidget(&mappingLabel_);    
+    mappingLayout->addWidget(&mappingView_);
 
 	QHBoxLayout* portNameLayout = new QHBoxLayout();
 	portNameLayout->addLayout(logicalLayout);
+    portNameLayout->addLayout(mappingLayout);
 	portNameLayout->addLayout(physicalLayout);
-	portNameLayout->addStretch();
+    portNameLayout->addWidget(filterGroup);
+	//portNameLayout->addStretch();
 	
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
 	topLayout->addLayout(buttonLayout);
@@ -164,28 +254,96 @@ void BusIfPortmapTab::setupLayout() {
 	topLayout->addWidget(&view_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::setMappingVisibility()
+//-----------------------------------------------------------------------------
+void BusIfPortmapTab::toggleMappingVisibility()
+{
+    showBitMapping_ = !showBitMapping_;
+    mappingLabel_.setVisible(showBitMapping_);
+    mappingView_.setVisible(showBitMapping_);
+
+    if (showBitMapping_)
+    {
+        showHideMappingButton_.setText("Hide bit-field mapping");
+    }
+    else
+    {
+        showHideMappingButton_.setText("Show bit-field mapping");
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::onRemove()
+//-----------------------------------------------------------------------------
 void BusIfPortmapTab::onRemove() {
 	
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::onRefresh()
+//-----------------------------------------------------------------------------
 void BusIfPortmapTab::onRefresh() {
 	logicalModel_.refresh();
 	physModel_.refresh();
 
 	// remove the ports from the port lists that are already mapped
 	logicalModel_.removePorts(model_.logicalPorts());
-	physModel_.removePorts(model_.physicalPorts());
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::onConnect()
+//-----------------------------------------------------------------------------
 void BusIfPortmapTab::onConnect() {
 
-	// get lists of the selected ports
-	QStringList logicals = logicalView_.getSelectedPorts(false);
-	QStringList physicals = physicalView_.getSelectedPorts(false);
+    if (!showBitMapping_)
+    {
+        // get lists of the selected ports
+        QStringList logicals = logicalView_.getSelectedPorts(false);
+        QStringList physicals = physicalView_.getSelectedPorts(false);
 
-	onMakeConnections(physicals, logicals);
+        onMakeConnections(physicals, logicals);
+    }
+    else
+    {
+        onBitConnect();
+    }
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::onBitConnect()
+//-----------------------------------------------------------------------------
+void BusIfPortmapTab::onBitConnect()
+{
+
+    if (logicalView_.getSelectedPorts(false).size() != 1)
+    {
+        emit errorMessage("No logical port selected for mapping.");
+        return;
+    }
+
+    QList<QSharedPointer<General::PortMap> > portMaps = mappingModel_.getPortMaps();
+
+    if (portMaps.empty())
+    {        
+        emit errorMessage("No physical ports mapped to " + logicalView_.getSelectedPorts(false).last());
+        return; 
+   }
+
+    foreach (QSharedPointer<General::PortMap> map, portMaps)
+    {        
+        model_.createMap(map);
+        logicalModel_.removePort(map->logicalPort_);
+    }    
+
+    physProxy_.onConnectionsChanged();
+    QString empty = "";
+    mappingModel_.setLogicalSignal(empty);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::keyPressEvent()
+//-----------------------------------------------------------------------------
 void BusIfPortmapTab::keyPressEvent( QKeyEvent* event ) {
 
 	// if enter / return was pressed
@@ -196,6 +354,9 @@ void BusIfPortmapTab::keyPressEvent( QKeyEvent* event ) {
 	QWidget::keyPressEvent(event);
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::onConnectionModeChange()
+//-----------------------------------------------------------------------------
 void BusIfPortmapTab::onConnectionModeChange() {
 	
 	// if one to one button was pressed
@@ -209,7 +370,14 @@ void BusIfPortmapTab::onConnectionModeChange() {
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::setAbsType()
+//-----------------------------------------------------------------------------
 void BusIfPortmapTab::setAbsType( const VLNV& vlnv, General::InterfaceMode mode ) {
+
+    // inform the model of bit-level mapping that it should refresh itself
+    mappingModel_.setAbsType(vlnv, mode);
+
 	// inform the model of logical signals that it should refresh itself
 	logicalModel_.setAbsType(vlnv, mode);
 
@@ -220,8 +388,17 @@ void BusIfPortmapTab::setAbsType( const VLNV& vlnv, General::InterfaceMode mode 
 	onRefresh();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::onMakeConnections()
+//-----------------------------------------------------------------------------
 void BusIfPortmapTab::onMakeConnections( const QStringList& physicals, 
-										const QStringList& logicals ) {
+										const QStringList& logicals ) 
+{
+
+    if (showBitMapping_)
+    {
+        return;
+    }
 
 	if (physicals.isEmpty() || logicals.isEmpty())
 		return;
@@ -237,7 +414,10 @@ void BusIfPortmapTab::onMakeConnections( const QStringList& physicals,
 			// if connection can be made between ports
 			if (model_.canCreateMap(physicals.at(i), logicals.at(i))) {
 				model_.createMap(physicals.at(i), logicals.at(i));
+                if (hideConnectedBox_.checkState() == Qt::Checked)
+{
 				physModel_.removePort(physicals.at(i));
+}
 				logicalModel_.removePort(logicals.at(i));
 			}
 		}
@@ -262,10 +442,33 @@ void BusIfPortmapTab::onMakeConnections( const QStringList& physicals,
 				}
 			}
 
-			if (connected)
+			if (connected && hideConnectedBox_.checkState() == Qt::Checked)
 				physModel_.removePort(physical);
 		}
 	}
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: PinMapTab::onLogicalChanged()
+//-----------------------------------------------------------------------------
+void BusIfPortmapTab::onLogicalChanged(const QModelIndex& index)
+{
+    QString logicalName = logicalModel_.data(index).toString();
+
+    if (!logicalName.isEmpty())
+    {
+        mappingModel_.setLogicalSignal(logicalName);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::onNameFilterChanged()
+//-----------------------------------------------------------------------------
+void BusIfPortmapTab::onNameFilterChanged()
+{
+    QRegExp filterExp(nameFilterEditor_->text(), Qt::CaseInsensitive);
+    physProxy_.setFilterRegExp(filterExp);
 }
 
 //-----------------------------------------------------------------------------
@@ -275,3 +478,4 @@ void BusIfPortmapTab::showEvent(QShowEvent* event) {
     QWidget::showEvent(event);
     emit helpUrlRequested("componenteditor/portmaps.html");
 }
+

@@ -149,6 +149,13 @@ public slots:
 	*/
 	void createMap(const QString& physicalPort, const QString& logicalPort);
 
+	/*! \brief Create a port map for given ports
+	 *
+	 * \param portMap Port map to add to model.
+	 *
+	*/
+	void createMap(QSharedPointer<General::PortMap> portMap);
+
 	/*! \brief Restore the selected port back to port list.
 	 *
 	 * \param index Model index that identifies the selected port.
