@@ -13,7 +13,7 @@
 #include <QSharedPointer>
 
 class Component;
-class PortMapsModel;
+class PortMapsTreeModel;
 
 /*! \brief Model to display the physical ports of a component.
  *
@@ -31,7 +31,7 @@ public:
 	 *
 	*/
 	PhysListModel(QSharedPointer<Component> component, 
-		PortMapsModel* portMapsModel,
+		PortMapsTreeModel* portMapsModel,
 		QObject *parent);
 	
 	//! \brief The destructor

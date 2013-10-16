@@ -6,7 +6,7 @@
  */
 
 #include "logicallistmodel.h"
-#include "portmapsmodel.h"
+#include "PortMapsTreeModel.h"
 
 #include <LibraryManager/libraryinterface.h>
 #include <models/librarycomponent.h>
@@ -16,7 +16,7 @@
 #include <QIcon>
 
 LogicalListModel::LogicalListModel(LibraryInterface* libHandler,
-								   PortMapsModel* portMapsModel,
+								   PortMapsTreeModel* portMapsModel,
 								   QObject *parent ):
 PortListModel(portMapsModel, parent), 
 libHandler_(libHandler),

@@ -19,14 +19,14 @@
 #include <common/graphicsItems/ConnectionEndpoint.h>
 #include <designwidget/HWComponentItem.h>
 #include <designwidget/models/PortGenerationRow.h>
-#include <models/component.h>
-#include "models/port.h"
-#include <models/businterface.h>
 #include <models/abstractiondefinition.h>
+#include <models/businterface.h>
+#include <models/component.h>
+#include <models/generaldeclarations.h>
+#include "models/port.h"
 #include <models/portabstraction.h>
 
 #include <LibraryManager/libraryinterface.h>
-#include "models/generaldeclarations.h"
 #include "LibraryManager/vlnv.h"
 #include <IPXactWrapper/ComponentEditor/busInterfaces/portmaps/BitSelectionDialog.h>
 
@@ -35,21 +35,22 @@ namespace
     QString const HEADER_NAMES[] =
     {
         "Logical\nIndex",
-        "Bit field(s)"
+        "Bit Field(s)"
     }; 
+
+    QString const EDIT_ROW_NAME = "Drop port to add rows.";
 }
 
-Q_DECLARE_METATYPE(PinMappingModel::PinMapDropData)
+Q_DECLARE_METATYPE(General::PortBounds)
 
-//-----------------------------------------------------------------------------
-// Function: PinMappingModel()
-//-----------------------------------------------------------------------------
-PinMappingModel::PinMappingModel(BusInterface* busif,
+    //-----------------------------------------------------------------------------
+    // Function: PinMappingModel()
+    //-----------------------------------------------------------------------------
+    PinMappingModel::PinMappingModel(BusInterface* busif,
     QSharedPointer<Component> component,
     LibraryInterface* libHandler, 
     QObject* parent)
     : QAbstractTableModel(parent), 
-    parentWidget_(dynamic_cast<QWidget*>(parent)),
     busif_(busif),
     mode_(General::INTERFACE_MODE_COUNT),
     logicalPort_(),
@@ -57,9 +58,8 @@ PinMappingModel::PinMappingModel(BusInterface* busif,
     component_(component),
     handler_(libHandler),    
     rows_(),
-    canChange_(false)
+    canEdit_(false)
 {
-    Q_ASSERT(parentWidget_);
     Q_ASSERT(busif);
     Q_ASSERT(component);
     Q_ASSERT(libHandler);
@@ -106,7 +106,7 @@ QVariant PinMappingModel::data(const QModelIndex& index,
     {
         return QVariant();
     }
-    
+
     if ( !rows_.contains(index.row()) || index.column() >= COLUMN_COUNT )
     {
         return QVariant();
@@ -114,7 +114,7 @@ QVariant PinMappingModel::data(const QModelIndex& index,
 
     if ( role == Qt::DisplayRole ) 
     {                  
-             
+
         switch (index.column()) {
         case INDEX :
             {
@@ -128,19 +128,24 @@ QVariant PinMappingModel::data(const QModelIndex& index,
                 }
                 else
                 {
+
                     QStringList ports;
-                    foreach (PinMappingModel::PinConnection row, rows_.value(index.row()))
+                    foreach (General::PortBounds row, rows_.value(index.row()))
                     {
-                        if (component_->getPortWidth(row.physicalName) > 1)
+                        int left = component_->getPortLeftBound(row.portName_);
+                        int right = component_->getPortRightBound(row.portName_);
+                        int portSize = abs(left - right) + 1;
+                        
+                        if (portSize > 1)
                         {
-                            ports.append(row.physicalName + "(" + QString::number(row.physicalIndex) + ")");
+                            ports.append(row.portName_ + "(" + QString::number(row.left_) + ")");
                         }
                         else
                         {
-                            ports.append(row.physicalName);
+                            ports.append(row.portName_);
                         }                        
                     }
-                return ports.join(", ");
+                    return ports.join(", ");
                 }
             }
         default :
@@ -152,7 +157,8 @@ QVariant PinMappingModel::data(const QModelIndex& index,
 
     else if ( role == Qt::ForegroundRole )
     {      
-        if ((index.column() == INDEX && !canChange_) ||
+        if ((index.column() == INDEX && !canEdit_) ||
+            (canEdit_ && index.row()  == rows_.size() - 1) ||          
             (index.column() == PIN && rows_.value(index.row()).isEmpty()))
         {
             return QColor("gray");
@@ -167,7 +173,7 @@ QVariant PinMappingModel::data(const QModelIndex& index,
 
     else if (role == Qt::TextAlignmentRole)
     {
-            return (Qt::AlignLeft + Qt::AlignVCenter);     
+        return (Qt::AlignLeft + Qt::AlignVCenter);     
     }
 
     else if ( role == Qt::EditRole )
@@ -182,7 +188,7 @@ QVariant PinMappingModel::data(const QModelIndex& index,
     {
         // TODO
     }
-      
+
     return QVariant();
 }
 
@@ -236,18 +242,21 @@ bool PinMappingModel::setData(const QModelIndex& index, const QVariant& value,
 
         case PIN :
             {
-                if(value.canConvert<PinMapDropData>())
+                if(value.canConvert<General::PortBounds>())
                 {
-                    PinMapDropData data = value.value<PinMapDropData>();
+                    General::PortBounds data = value.value<General::PortBounds>();
                     int targetRow = index.row();
-                    for (int i = data.right; i <= data.left; i++)
+                    int lowerBound = qMin(data.left_, data.right_);
+                    int higherBound = qMax(data.left_, data.right_);
+
+                    for (int i = lowerBound; i <= higherBound; i++)
                     {
                         if (targetRow > rows_.size())
                         {
                             break;
                         }
 
-                        PinConnection conn(i, data.physName);
+                        General::PortBounds conn(data.portName_, i, i);
                         if (!hasDuplicates(conn, targetRow))
                         {
                             rows_[targetRow].append(conn);
@@ -265,7 +274,7 @@ bool PinMappingModel::setData(const QModelIndex& index, const QVariant& value,
                 }
 
                 return false;
-                  
+
             }        
         default :
             {
@@ -343,7 +352,7 @@ Qt::DropActions PinMappingModel::supportedDropActions() const
 //-----------------------------------------------------------------------------
 QStringList PinMappingModel::mimeTypes() const
 {
-   QStringList types = QAbstractTableModel::mimeTypes();
+    QStringList types = QAbstractTableModel::mimeTypes();
     types << "text/plain";
     return types;
 }
@@ -372,11 +381,16 @@ bool PinMappingModel::dropMimeData(const QMimeData *data,
         if (portNames.isEmpty() || !checkDirectionForPorts(portNames))
         {
             return false;
-        }
-       
+        }       
         QList<QVariant> dropData;
 
-        int targetRow = parent.row();        
+        int targetRow = parent.row(); 
+
+        if (canEdit_)
+        {
+            removeEditRow();
+        }
+
         foreach (QString portName, portNames)
         {
             if (!component_->hasPort(portName))
@@ -384,34 +398,42 @@ bool PinMappingModel::dropMimeData(const QMimeData *data,
                 continue;
             }
 
-            if (targetRow >= rowCount())
+            if (targetRow >= rowCount() && !canEdit_)
             {
                 break;
             }
 
-            int portSize = component_->getPortWidth(portName);
-            int left = portSize - 1;
-            int right = 0;
+            int left = component_->getPort(portName)->getLeftBound();
+            int right = component_->getPort(portName)->getRightBound();
+            int portSize = abs(left - right) + 1;
             int rowsLeft = rowCount() - targetRow;
 
-        if (portSize > rowsLeft)
-        {
-            BitSelectionDialog* dialog = new BitSelectionDialog(portSize, rowsLeft, parentWidget_ );
-            if (dialog->exec() != QDialog::Accepted)
+            if (portSize > rowsLeft)
             {
-                return false;
-            }
-            left = dialog->getLeft();
-            right = dialog->getRight();
+                if (canEdit_)
+                {
+                    addRows(portSize - rowsLeft);
+                } 
+                else
+                {
+                    BitSelectionDialog dialog(portSize, rowsLeft);
+                    if (dialog.exec() != QDialog::Accepted)
+                    {
+                        return false;
+                    }
+                    left = dialog.getLeft();
+                    right = dialog.getRight();
+                }            
+            } 
+            General::PortBounds portData(portName, left, right);
+
+            setData(index(targetRow, PIN), QVariant::fromValue(portData));
+            targetRow += abs(left - right) + 1;
         }
 
-        PinMappingModel::PinMapDropData pinData;        
-        pinData.physName = portName;
-        pinData.left = left;
-        pinData.right = right;
-
-        setData(index(targetRow, PIN), QVariant::fromValue(pinData));
-        targetRow += left - right + 1;
+        if (canEdit_)
+        {
+            addEditRow();
         }
 
         return true;
@@ -469,13 +491,25 @@ void PinMappingModel::setLogicalSignal(QString& logicalName)
         int logicalPortSize = absDef_->getPortSize(logicalName, mode_);
 
         // Indexes can be added/removed, if absDef does not define size.
-        canChange_ = (logicalPortSize == -1);
+        canEdit_ = (logicalPortSize == -1);
+
+        // If logical width is not defined in the abs def, find the highest bound in port maps for width.
+        if (logicalPortSize == -1)
+        {
+            foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
+            {   
+                if (portMap->logicalPort_ == logicalName)
+                {
+                    int higherBound = qMax(portMap->logicalVector_->getLeft(), portMap->logicalVector_->getRight());
+                    logicalPortSize = qMax(logicalPortSize, higherBound);
+                }
+            }
+            logicalPortSize++;
+        }
 
         for (int index = 0; index < logicalPortSize; index++)
         {
-
-            QList<PinMappingModel::PinConnection> pins;
-
+            QList<General::PortBounds> pins;
             // Search for previous mappings.
             foreach(QSharedPointer<General::PortMap> portMap, portMaps_)
             {
@@ -483,13 +517,19 @@ void PinMappingModel::setLogicalSignal(QString& logicalName)
                 {
                     int logLeft = portMap->logicalVector_->getLeft();
                     int logRight = portMap->logicalVector_->getRight();
-                    if ((logLeft >= index && index >= logRight) || (logLeft <= index && index <= logRight))
+                    int logLower = qMin(logLeft, logRight);
+                    int logHigher = qMax(logLeft, logRight);
+                    if (logLower <= index && index <= logHigher)
                     {
-                        PinConnection toAdd(0, portMap->physicalPort_);                    
-                        //toAdd.physicalName = portMap->physicalPort_;
-                        if (component_->getPortWidth(portMap->physicalPort_) > 1)
+                        int physLeft = component_->getPortLeftBound(portMap->physicalPort_);               
+                        int physRight = component_->getPortRightBound(portMap->physicalPort_);
+                        int physLower = qMin(physLeft, physRight);
+                        General::PortBounds toAdd(portMap->physicalPort_);     
+                        if (abs(physLeft - physRight) + 1 > 1)
                         {
-                            toAdd.physicalIndex = index - (logRight - portMap->physicalVector_->getRight());
+                            int physIndex = index - (logLower - physLower);
+                            toAdd.left_ = physIndex;
+                            toAdd.right_ = physIndex;
                         }                    
                         pins.append(toAdd);
                     }
@@ -497,10 +537,23 @@ void PinMappingModel::setLogicalSignal(QString& logicalName)
             }
             rows_.insert(index, pins);
         }
+
+        if (canEdit_)
+        {
+            addEditRow();
+        }
     }
     endResetModel();
 
-    emit canModify(canChange_);
+    emit canModify(canEdit_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PinMappingModel::getLogicalSignal()
+//-----------------------------------------------------------------------------
+QString PinMappingModel::getLogicalSignal() const
+{
+    return logicalPort_;
 }
 
 //-----------------------------------------------------------------------------
@@ -509,57 +562,85 @@ void PinMappingModel::setLogicalSignal(QString& logicalName)
 QList< QSharedPointer<General::PortMap> > PinMappingModel::getPortMaps() const
 {                    
     QList<QSharedPointer<General::PortMap> > mappings;
-    
-    for (int logIndex = 0; logIndex < rows_.size(); logIndex++)
+
+    // Omit editing row, if exists.
+    int endIndex = rows_.size();
+    if (canEdit_)
     {
-        foreach(PinConnection pin, rows_[logIndex])
+        endIndex--;
+    }
+
+    for (int logIndex = 0; logIndex < endIndex; logIndex++)
+    {
+        foreach(General::PortBounds pin, rows_[logIndex])
         {           
             // Check if physical port is already mapped.
             bool alreadyMapped = false;            
             foreach (QSharedPointer<General::PortMap> portMap, mappings)
             {
-                if (portMap->physicalPort_ == pin.physicalName &&
-                    portMap->logicalVector_->getRight() <= logIndex &&
-                    logIndex <= portMap->logicalVector_->getLeft() &&
-                    portMap->physicalVector_->getRight() <= pin.physicalIndex &&
-                    pin.physicalIndex <= portMap->physicalVector_->getLeft() )
+                int logLowerBound = qMin(portMap->logicalVector_->getLeft(),portMap->logicalVector_->getRight());
+                int logHigherBound = qMax(portMap->logicalVector_->getLeft(),portMap->logicalVector_->getRight());
+                int phyLowerBound = qMin(portMap->physicalVector_->getLeft(),portMap->physicalVector_->getRight());
+                int phyHigherBound = qMax(portMap->physicalVector_->getLeft(),portMap->physicalVector_->getRight());
+
+                if (portMap->physicalPort_ == pin.portName_ &&
+                    logLowerBound <= logIndex && logIndex <= logHigherBound &&
+                    phyLowerBound <= pin.left_ && pin.left_ <= phyHigherBound )
                 {
                     alreadyMapped = true;
                     break;
                 }
             }
-            
+
             if (!alreadyMapped) 
             {               
                 // Create a new port map.      
                 int logLeft = logIndex;
                 int logRight = logIndex;
-                int physLeft = pin.physicalIndex;
-                int physRight = pin.physicalIndex;
-    
-                // Check how many contiguous bits are connected.
-                bool stretch = true;
-                for (int index = logIndex + 1; index < rows_.size() && stretch; index++)
+                int physLeft = pin.left_;
+                int physRight = pin.left_;
+
+                bool ascending = true;
+                if (component_->getPortLeftBound(pin.portName_) < component_->getPortRightBound(pin.portName_))
                 {
-                    stretch = false;
-                    foreach (PinConnection conn, rows_[index])
-                    {
-                        if (conn.physicalName == pin.physicalName &&
-                            conn.physicalIndex == physLeft + 1)
-                        {
-                            physLeft++;
-                            logLeft++;
-                            stretch = true;
-                            break;
-                        }
-                    }
+                    ascending = false;
                 }
-                      
+
+                // Check how many contiguous bits are connected  in ascending order.
+                if (logIndex != rows_.size() - 1)
+                {                    
+                    bool stretch = true;
+                    for (int index = logIndex + 1; index < rows_.size() && stretch; index++)
+                    {
+                        stretch = false;
+                        foreach (General::PortBounds conn, rows_[index])
+                        {
+                            if (conn == pin )
+                            { 
+                                if (ascending && conn.left_ == physLeft + 1)                                
+                                {
+                                    physLeft++;
+                                    logLeft++;
+                                    stretch = true;
+                                    break;
+                                }
+                                else if (!ascending && conn.left_ == physRight + 1)
+                                {
+                                    physRight++;
+                                    logRight++;
+                                    stretch = true;
+                                    break;
+                                }
+                            }
+                        }                   
+                    } 
+                }               
+
                 QSharedPointer<General::PortMap> map(new General::PortMap());
                 map->logicalPort_ = logicalPort_;
                 map->logicalVector_->setLeft(logLeft);
                 map->logicalVector_->setRight(logRight);
-                map->physicalPort_ = pin.physicalName;
+                map->physicalPort_ = pin.portName_;
                 map->physicalVector_->setLeft(physLeft);
                 map->physicalVector_->setRight(physRight);
                 mappings.append(map);     
@@ -571,15 +652,73 @@ QList< QSharedPointer<General::PortMap> > PinMappingModel::getPortMaps() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: PinMappingModel::addRows()
+//-----------------------------------------------------------------------------
+void PinMappingModel::addRows(int count)
+{
+    int lastRow = rows_.size() + count - 1;
+
+    beginInsertRows(QModelIndex(), rows_.size(), lastRow);
+    for (int row = rows_.size(); row <= lastRow; row++)
+    {
+        rows_.insert(rows_.size(), QList<General::PortBounds>());
+    }
+    endInsertRows();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PinMappingModel::removeRows()
+//-----------------------------------------------------------------------------
+void PinMappingModel::removeRows(int count)
+{
+    int lastRemovedRow = rows_.size() - count;
+
+    beginRemoveRows(QModelIndex(), lastRemovedRow, rows_.size() - 1);
+    for (int row = rows_.size() - 1; row >= lastRemovedRow; row--)
+    {
+        rows_.remove(rows_.size() - 1);
+    }
+    endRemoveRows();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PinMappingModel::addEditRow()
+//-----------------------------------------------------------------------------
+void PinMappingModel::addEditRow()
+{
+    if (canEdit_){
+        QList<General::PortBounds> pins;
+        General::PortBounds toAdd(EDIT_ROW_NAME);              
+        pins.append(toAdd);
+        addRows(1);
+        rows_[rows_.size() - 1].append(pins);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PinMappingModel::removeEditRow()
+//-----------------------------------------------------------------------------
+void PinMappingModel::removeEditRow()
+{
+    if (canEdit_)
+    {
+        const QList<General::PortBounds> lastConnection = rows_.value(rows_.size() - 1);
+        if (lastConnection.size() != 0 && 
+            lastConnection.first().portName_ == EDIT_ROW_NAME)
+        {
+            removeRows(1);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: PinMappingModel::hasDuplicates()
 //-----------------------------------------------------------------------------
-bool PinMappingModel::hasDuplicates(PinConnection connection, int row) const
+bool PinMappingModel::hasDuplicates(General::PortBounds connection, int row) const
 {
-
-    // Check that no duplicates are added.
-    foreach (PinConnection pins, rows_.value(row))
+    foreach (General::PortBounds pins, rows_.value(row))
     {
-        if ( pins.physicalIndex == connection.physicalIndex && pins.physicalName == connection.physicalName)
+        if ( pins.left_ == connection.left_ && pins == connection)
         {
             return true;
         }

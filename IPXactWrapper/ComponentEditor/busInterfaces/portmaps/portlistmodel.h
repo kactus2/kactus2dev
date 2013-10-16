@@ -11,7 +11,7 @@
 #include <QAbstractListModel>
 #include <QStringList>
 
-class PortMapsModel;
+class PortMapsTreeModel;
 
 /*! \brief The base class for logical list model and physical list model.
  *
@@ -27,7 +27,7 @@ public:
 	 * \param parent Pointer to the owner of this model
 	 *
 	*/
-	PortListModel(PortMapsModel* portMapsModel, QObject *parent);
+	PortListModel(PortMapsTreeModel* portMapsModel, QObject *parent);
 	
 	//! \brief The destructor
 	virtual ~PortListModel();
@@ -102,7 +102,7 @@ protected:
 	QStringList list_;
 
 	//! \brief Pointer to the port maps model to ask if connection is possible.
-	PortMapsModel* portMapsModel_;
+	PortMapsTreeModel* portMapsModel_;
 
 private:
 

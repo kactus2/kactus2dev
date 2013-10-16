@@ -40,15 +40,6 @@ public:
         COLUMN_COUNT
     };
 
-    //! Data structure for internal handling of drag-dropped data.
-    struct PinMapDropData
-    {
-        QString physName;
-        //TODO: ascending/descending order.
-        int left;
-        int right;
-    };
-
     //! The constructor.
     PinMappingModel(BusInterface* busif,
         QSharedPointer<Component> component,
@@ -64,7 +55,7 @@ public:
 	 * because this is not hierarchical model.
 	 *
 	 * @return Number of rows currently in the model.
-	*/
+	 */
 	virtual int rowCount(const QModelIndex& parent = QModelIndex() ) const;
 
 	/*! Get the number of columns in the model
@@ -73,7 +64,7 @@ public:
 	 * because this is not hierarchical model.
 	 *
 	 * \return Number of columns currently in the model.
-	*/
+	 */
 	virtual int columnCount(const QModelIndex& parent = QModelIndex() ) const;
 
 	/*! Get the data for the specified item for specified role.
@@ -82,7 +73,7 @@ public:
 	 * @param [in] role Specifies what kind of data is wanted.
 	 *
 	 * @return QVariant containing the data.
-	*/
+	 */
 	virtual QVariant data(const QModelIndex& index, 
 		int role = Qt::DisplayRole ) const;
 
@@ -93,7 +84,7 @@ public:
 	 * @param [in] role Specified the type of data that is wanted.
 	 *
 	 * @return QVariant containing the data to be displayed.
-	*/
+	 */
 	virtual QVariant headerData(int section, Qt::Orientation orientation, 
 		int role = Qt::DisplayRole ) const;
 
@@ -105,7 +96,7 @@ public:
 	 * is supported.
 	 *
 	 * @return True if data was successfully set in non-locked column.
-	*/
+	 */
 	virtual bool setData(const QModelIndex& index, const QVariant& value, 
 		int role = Qt::EditRole );
 
@@ -118,7 +109,7 @@ public:
 	 * is supported.
 	 *
 	 * @return True if the header was successfully set.
-	*/
+	 */
     bool setHeaderData( int section, Qt::Orientation orientation, 
         const QVariant & value, int role = Qt::EditRole );
 
@@ -127,7 +118,7 @@ public:
 	 * @param [in] index Specifies the item that's flags are wanted.
 	 *
 	 * @return Qt::ItemFlags that define how object can be handled.
-	*/
+	 */
 	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
 
 	/*! Check if the model is in valid state or not.
@@ -150,6 +141,14 @@ public:
      * @param [in] logicalName      The component to copy to.
      */
     void setLogicalSignal(QString& logicalName);
+
+    /*!
+     *  Gets the name of the logical signal being mapped.
+     *
+     *
+     *      @return Name of the logical signal.
+     */
+    QString getLogicalSignal() const;
 
     /*!
      *  Generates the port maps according to the visible mapping.
@@ -209,21 +208,37 @@ public slots:
 
 private:
 
-    //! Internal data structure for one connected physical port bit.
-    struct PinConnection
-    {
-        int physicalIndex;
-        QString physicalName;
-
-        PinConnection() : physicalIndex(0), physicalName() {};
-        PinConnection(int index, QString name) : physicalIndex(index), physicalName(name) {};
-    };
-
     //! No copying.
 	PinMappingModel(const PinMappingModel& other);
 
 	//! No assignment.
 	PinMappingModel& operator=(const PinMappingModel& other);
+
+
+
+    /*!
+     *  Adds empty rows to the end of the model.
+     *
+     *      @param [in] count   Number of rows to add.
+     */
+    void addRows(int count);
+
+    /*!
+     *  Removes rows from the end of the model.
+     *
+     *      @param [in] count   Number of rows to remove.
+     */
+    void removeRows(int count);
+
+    /*!
+     *  Adds an edit row to the end of the model. Dropping port on the edit row adds more rows.
+     */
+    void addEditRow();
+
+    /*!
+     *  Removes the edit row from the end of the model, if edit row exists.
+     */
+    void removeEditRow();
 
     /*!
      *  Checks if the physical port connection is already made with the logical port.
@@ -233,7 +248,7 @@ private:
      *
      *      @return True, if connection already exists, otherwise false.
      */
-    bool hasDuplicates(PinConnection connection, int row) const;
+    bool hasDuplicates(General::PortBounds connection, int row) const;
 
     /*!
      *  Checks if the physical ports have a compatible direction with the logical port.
@@ -248,11 +263,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Pointer to the parent widget.
-    QWidget* parentWidget_;
-
     //! Table rows that correspond to the bit indexes in the logical signal.
-    QMap< unsigned int, QList<PinConnection> > rows_;
+    QMap< unsigned int, QList<General::PortBounds> > rows_;
 
     //! Pointer to the bus interface being edited.
     BusInterface* busif_;
@@ -275,8 +287,8 @@ private:
     //! Pointer to the abstraction definition that is used.
     QSharedPointer<AbstractionDefinition> absDef_;
 
-    //! Boolean for adding and removing indexes.
-    bool canChange_;    
+    //! Boolean for adding and removing rows.
+    bool canEdit_;    
 
 };
 

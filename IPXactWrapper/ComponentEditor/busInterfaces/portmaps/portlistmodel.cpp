@@ -6,13 +6,13 @@
  */
 
 #include "portlistmodel.h"
-#include "portmapsmodel.h"
+#include "PortMapsTreeModel.h"
 
 #include <QDebug>
 #include <QPixmap>
 #include <QIcon>
 
-PortListModel::PortListModel(PortMapsModel* portMapsModel, QObject *parent): 
+PortListModel::PortListModel(PortMapsTreeModel* portMapsModel, QObject *parent): 
 QAbstractListModel(parent), 
 list_(),
 portMapsModel_(portMapsModel) {

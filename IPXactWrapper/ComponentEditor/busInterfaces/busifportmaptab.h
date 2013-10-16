@@ -12,9 +12,9 @@
 #include "portmaps/physlistview.h"
 #include "portmaps/logicallistview.h"
 #include "portmaps/physlistmodel.h"
-#include "portmaps/portmapsmodel.h"
+#include "portmaps/PortMapsTreeModel.h"
 #include "portmaps/logicallistmodel.h"
-#include "portmaps/portmapsview.h"
+#include "portmaps/PortMapsTreeView.h"
 #include <models/businterface.h>
 #include <models/generaldeclarations.h>
 #include <models/component.h>
@@ -184,13 +184,13 @@ private:
 	LibraryInterface* libHandler_;
 
 	//! \brief The proxy filter that does sorting for port maps.
-	QSortFilterProxyModel mapProxy_;
+	//QSortFilterProxyModel mapProxy_;
 
 	//! \brief The model to manage the port maps.
-	PortMapsModel model_;
+	PortMapsTreeModel model_;
 
 	//! \brief The view to display the port maps.
-	PortMapsView view_;
+	PortMapsTreeView view_;
 
 	//! \brief The view to display the logical ports
 	LogicalListView logicalView_;

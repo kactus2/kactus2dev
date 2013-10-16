@@ -41,14 +41,6 @@ removeConnected_(true)
 PortListView::~PortListView() {
 }
 
-//-----------------------------------------------------------------------------
-// Function: PortListView::removeOnConnect()
-//-----------------------------------------------------------------------------
-void PortListView::removeOnConnect(bool remove)
-{
-    removeConnected_ = remove;
-}
-
 void PortListView::dragEnterEvent( QDragEnterEvent* event ) {
 
 	// make sure the source is port list view or port maps view and
@@ -114,7 +106,7 @@ void PortListView::performDrag() {
 
 	QDrag* drag = new QDrag(this);
 	drag->setMimeData(mimeData);
-	if (drag->exec(Qt::MoveAction) == Qt::MoveAction && removeConnected_) {
+	if (drag->exec(Qt::MoveAction) == Qt::MoveAction) {
 		
 		// inform the model that the dragged items could be removed
 		emit removeItems(indexes);

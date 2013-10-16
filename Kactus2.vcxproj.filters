@@ -3883,6 +3883,36 @@
     <ClCompile Include="GeneratedFiles\moc_PinMappingModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortMapsTreeItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortMapsTreeModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PortMapsTreeItem.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PortMapsTreeModel.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortMapsTreeView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PortMapsTreeView.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortMapsBitMapItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortMapsLogicalItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PortMapsBitMapItem.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PortMapsLogicalItem.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5518,6 +5548,21 @@
       <Filter>Header Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PinMappingModel.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PortMapsTreeItem.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PortMapsTreeModel.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PortMapsTreeView.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PortMapsBitMapItem.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PortMapsLogicalItem.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
     </CustomBuild>
   </ItemGroup>

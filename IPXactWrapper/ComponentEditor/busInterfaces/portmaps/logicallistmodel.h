@@ -14,7 +14,7 @@
 #include <LibraryManager/vlnv.h>
 
 class LibraryInterface;
-class PortMapsModel;
+class PortMapsTreeModel;
 
 /*! \brief Model to display the Logical ports of an abstraction definition.
  *
@@ -32,7 +32,7 @@ public:
 	 *
 	*/
 	LogicalListModel(LibraryInterface* libHandler,
-		PortMapsModel* portMapsModel,
+		PortMapsTreeModel* portMapsModel,
 		QObject *parent);
 	
 	//! \brief The destructor

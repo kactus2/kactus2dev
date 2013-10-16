@@ -64,10 +64,6 @@ signals:
 	//! \brief Emitted when one or more ports are dropped on the widget and mode is one to one
 	//void portsDropped(const QStringList& ports, const QModelIndexList& indexes);
 
-public slots:
-
-    virtual void removeOnConnect(bool remove);    
-
 protected:
 
 	/*! \brief Handler for drag enter events

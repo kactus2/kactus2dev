@@ -293,7 +293,7 @@ bool General::PortMap::isValid( const QList<General::PortBounds>& physicalPorts 
 				foundPhysPort = true;
 
 				// calculate the size of the actual physical port.
-				int actualPortSize = port.left_ - port.right_ + 1;
+				int actualPortSize = abs(port.left_ - port.right_) + 1;
 
 				// if the actual port size is smaller than the referenced vector in 
 				// the port map

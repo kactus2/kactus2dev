@@ -6,7 +6,7 @@
  */
 
 #include "physlistmodel.h"
-#include "portmapsmodel.h"
+#include "PortMapsTreeModel.h"
 
 #include <models/component.h>
 #include <models/port.h>
@@ -14,7 +14,7 @@
 #include <QIcon>
 
 PhysListModel::PhysListModel(QSharedPointer<Component> component, 
-							 PortMapsModel* portMapsModel,
+							 PortMapsTreeModel* portMapsModel,
 							 QObject *parent ):
 PortListModel(portMapsModel, parent), component_(component)
 {
