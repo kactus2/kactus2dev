@@ -81,45 +81,51 @@ void PortMapsLogicalItem::refresh()
     {
         if (portMap->logicalPort_ == getName())
         {
-
+            // Get the port bounds.
             int lowerPhysical = portMap->physicalVector_->getRight();
             int higherPhysical = portMap->physicalVector_->getLeft();
-
             int lowerLogical = portMap->logicalVector_->getRight();            
             int higherLogical = portMap->logicalVector_->getLeft();
 
-            // If right bound > left bound, reverse left and right for logical port.
             if (lowerPhysical > portMap->physicalVector_->getLeft())
             {
+                // Reverse left and right.
                 lowerPhysical = portMap->physicalVector_->getLeft();
                 higherPhysical = portMap->physicalVector_->getRight();
-
                 lowerLogical = portMap->logicalVector_->getLeft();
                 higherLogical = portMap->logicalVector_->getRight();
+                // The first mapping defines the logical bounds.
                 if (beginMapping_)
                 {
-                    left_ =  portMap->logicalVector_->getLeft();                    
+                    left_ =  portMap->logicalVector_->getLeft();
+                    right_ = portMap->logicalVector_->getRight();                    
                 }
-                else
+                // Other mappings may stretch the bounds.
+                else if (left_ <= right_)
                 {
-                    left_ = qMin(left_, portMap->logicalVector_->getLeft());
-                }
-                right_ = qMax(right_, portMap->logicalVector_->getRight());
+                    left_ = qMin(left_, lowerPhysical);
+                    right_ = qMax(right_, higherPhysical);                    
+                }                
             }
             else
-            {
-                left_ = qMax(left_, portMap->logicalVector_->getLeft());
+            {                
+                // The first mapping defines the logical bounds.
                 if (beginMapping_)
                 {
+                    left_ = portMap->logicalVector_->getLeft();
                     right_ = portMap->logicalVector_->getRight();
                 }
-                else
+                // Other mappings may stretch the bounds.
+                else if (left_ >= right_)
                 {
-                    right_ = qMin(right_, portMap->logicalVector_->getRight());
+                    left_ = qMax(left_, higherPhysical);
+                    right_ = qMin(right_, lowerPhysical);
                 }
             }
 
             beginMapping_ = false;
+
+            // Update mappings to children.
             int physicalIndex = lowerPhysical;
             for (int logicalIndex = lowerLogical; logicalIndex <= higherLogical; logicalIndex++, physicalIndex++)
             {
@@ -162,23 +168,7 @@ QVariant PortMapsLogicalItem::data(int section) const
         case PortMapsTreeModel::COLUMN_WIDTH_PHYSICAL :
             {
                 return QString::number(getConnectionCount());
-            }
-       /* case PortMapsTreeModel::COLUMN_LEFT_LOGICAL:
-            {
-                return QString::number(left_);
-            }
-        case PortMapsTreeModel::COLUMN_RIGHT_LOGICAL:
-            {
-                return QString::number(right_);
-            }
-        case PortMapsTreeModel::COLUMN_LEFT_PHYSICAL:
-            {
-                return QString::number(getWidth());
-            }
-        case PortMapsTreeModel::COLUMN_RIGHT_PHYSICAL:
-            {
-                return QString::number(getWidth());
-            }*/
+            }       
         }
     }
     return QVariant();
