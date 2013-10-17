@@ -82,11 +82,6 @@ protected:
      */
     virtual void rowsInserted(QModelIndex const& parent, int start, int end);
 
-    /*!
-     *  Handles auto-collapse when model is reset.
-     */
-    virtual void reset();
-
 
     /*!
      *  Draws a row and a separator line under it.

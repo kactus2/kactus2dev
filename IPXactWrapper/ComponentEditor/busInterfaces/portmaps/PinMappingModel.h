@@ -134,14 +134,6 @@ public:
 	*/
 	void setAbsType(const VLNV& vlnv, General::InterfaceMode mode);
 
-	/*! .
-     *     
-     * @param [in] absDefVlnv         The component to copy from.
-     * @param [in] mode                Bus interface to copy.
-     * @param [in] logicalName      The component to copy to.
-     */
-    void setLogicalSignal(QString& logicalName);
-
     /*!
      *  Gets the name of the logical signal being mapped.
      *
@@ -206,6 +198,12 @@ signals:
 
 public slots:
 
+	/*! Sets the logical signal for mapping.
+     *     
+     * @param [in] logicalName      The name of the logical signal to set.
+     */
+    void onSetLogicalSignal(QString const& logicalName);
+
 private:
 
     //! No copying.
@@ -213,8 +211,6 @@ private:
 
 	//! No assignment.
 	PinMappingModel& operator=(const PinMappingModel& other);
-
-
 
     /*!
      *  Adds empty rows to the end of the model.

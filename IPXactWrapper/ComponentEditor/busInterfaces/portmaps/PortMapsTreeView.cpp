@@ -107,15 +107,6 @@ void PortMapsTreeView::rowsInserted(QModelIndex const& parent, int start, int en
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortMapsTreeView::reset()
-//-----------------------------------------------------------------------------
-void PortMapsTreeView::reset()
-{
-    QTreeView::reset();
-    collapseAll();
-}
-
-//-----------------------------------------------------------------------------
 // Function: PortMapsTreeView::onRemove()
 //-----------------------------------------------------------------------------
 void PortMapsTreeView::onRemoveItem()

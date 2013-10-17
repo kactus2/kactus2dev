@@ -244,6 +244,9 @@ signals:
     //! When port map is removed informs name of the logical port.
     void logicalRemoved(const QString& logicalName) const;
 
+    //! When port map is restored informs name of the logical port.
+    void logicalRestored(const QString& logicalName) const;
+
     //! When port map is removed informs name of the physical port.
     void physicalRemoved(const QString& physicalName) const;
    

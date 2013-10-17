@@ -111,6 +111,8 @@ showBitMapping_(false)
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(logicalRemoved(const QString&)),
 		&logicalModel_, SLOT(addPort(const QString&)), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(logicalRestored(const QString&)),
+        &logicalModel_, SLOT(addPort(const QString&)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(physicalRemoved(const QString&)),
 		&physModel_, SLOT(addPort(const QString&)), Qt::UniqueConnection);
     connect(&model_, SIGNAL(contentChanged()),
@@ -153,7 +155,10 @@ showBitMapping_(false)
         &physProxy_, SLOT(setFilterHideConnected(bool)), Qt::UniqueConnection);
 
     connect(&mappingModel_, SIGNAL(errorMessage(const QString&)),
-        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);    
+
+    connect(&model_, SIGNAL(logicalRestored(const QString&)), 
+        &mappingModel_, SLOT(onSetLogicalSignal(const QString&)), Qt::UniqueConnection);
 
 	connect(&cleanButton_, SIGNAL(clicked(bool)),
 		this, SLOT(onRefresh()), Qt::UniqueConnection);
@@ -291,7 +296,7 @@ void BusIfPortmapTab::onConnect() {
 
         onMakeConnections(physicals, logicals);
         QString empty = "";
-        mappingModel_.setLogicalSignal(empty);
+        mappingModel_.onSetLogicalSignal(empty);
     }
     else
     {
@@ -339,7 +344,7 @@ void BusIfPortmapTab::onBitConnect()
     }    
   
     QString empty = "";
-    mappingModel_.setLogicalSignal(empty);
+    mappingModel_.onSetLogicalSignal(empty);
 }
 
 //-----------------------------------------------------------------------------
@@ -452,7 +457,7 @@ void BusIfPortmapTab::onLogicalChanged(const QModelIndex& index)
 
     if (!logicalName.isEmpty())
     {
-        mappingModel_.setLogicalSignal(logicalName);
+        mappingModel_.onSetLogicalSignal(logicalName);
     }
 }
 

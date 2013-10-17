@@ -155,7 +155,7 @@ QModelIndex PortMapsTreeModel::index(int row, int column, const QModelIndex &par
 //-----------------------------------------------------------------------------
 QModelIndex PortMapsTreeModel::parent(QModelIndex const& child) const
 {
-    if (!child.isValid())
+    if (!child.isValid() || child.column() > 0)
     {
         return QModelIndex();
     }
@@ -183,7 +183,17 @@ QModelIndex PortMapsTreeModel::parent(QModelIndex const& child) const
 //-----------------------------------------------------------------------------
 bool PortMapsTreeModel::setData(const QModelIndex &index, const QVariant &value, int role /* = Qt::EditRole */)
 {
+    if (!index.isValid())
+    {
         return false;
+    }
+
+    if (role != Qt::EditRole)
+    {
+        return false;
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -335,19 +345,21 @@ void PortMapsTreeModel::beginReset()
 
     delete root_;
     root_ = new PortMapsTreeItem();
-    foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
-    {
-        createMap(portMap);
-    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeModel::endReset()
 //-----------------------------------------------------------------------------
 void PortMapsTreeModel::endReset()
-{
-   
+{   
+    // Add existing mappings.
+    foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
+    {
+        createMap(portMap);
+    }
+
     endResetModel();
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -431,14 +443,14 @@ void PortMapsTreeModel::createMap(QSharedPointer<General::PortMap> portMap)
 
     if (!logicalItem)
     {
-        beginInsertRows(QModelIndex(), 0, 0);
+        beginInsertRows(QModelIndex(), root_->getChildCount(), root_->getChildCount() + 1);
         logicalItem = new PortMapsLogicalItem(root_, portMap->logicalPort_, component_, busif_, absDef_, 
             interfaceMode_);
         root_->addChild(logicalItem);
         endInsertRows();
     }
 
-    beginInsertRows(getItemIndex(logicalItem, 0), 0, logicalItem->getChildCount() - 1);
+    beginInsertRows(getItemIndex(logicalItem, 0), 0, logicalItem->getWidth());
     logicalItem->refresh();
     endInsertRows();
 
@@ -484,9 +496,20 @@ void PortMapsTreeModel::setAbsType(const VLNV& vlnv, General::InterfaceMode mode
     // make sure the model is for abstraction definition
     if (handler_->getDocumentType(vlnv) == VLNV::ABSTRACTIONDEFINITION)
     {
-        absDef_ = libComb.staticCast<AbstractionDefinition>();
-        beginReset();
-        endReset();
+        absDef_ = libComb.staticCast<AbstractionDefinition>();     
+    }
+
+    // Add existing mappings.
+    if (root_->getChildCount() == 0)
+    {
+        foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
+        {
+            createMap(portMap);
+        }
+    }
+    else
+    {
+        refresh();
     }
 }
 
@@ -549,8 +572,8 @@ QModelIndex PortMapsTreeModel::getItemIndex(PortMapsTreeItem* item, int column) 
 //-----------------------------------------------------------------------------
 bool PortMapsTreeModel::isValid() const
 {
-//TODO
-return true;
+    //TODO
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -585,7 +608,6 @@ bool PortMapsTreeModel::canCreateMap( const QString& physicalPort, const QString
     }
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeModel::restoreItem()
 //-----------------------------------------------------------------------------
@@ -604,10 +626,9 @@ void PortMapsTreeModel::restoreItem(QModelIndex const& index)
 
     PortMapsTreeItem* item = root_->getChild(index.row());
     QString logicalName = item->getName();
-    
-    emit logicalRemoved(logicalName);
+        
+    emit logicalRestored(logicalName);
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeModel::removeItem()

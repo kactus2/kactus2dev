@@ -70,13 +70,6 @@ public:
      */
     void clearMappings();
 
-private:
-    // Disable copying.
-    PortMapsLogicalItem(PortMapsLogicalItem const& rhs);
-    PortMapsLogicalItem& operator=(PortMapsLogicalItem const& rhs);
-    
-    QString getPhysPorts() const;
-
     /*!
      *  Gets the width of the logical signal.
      *
@@ -84,6 +77,19 @@ private:
      *      @return width of the logical signal.
      */
     int getWidth() const;
+
+private:
+    // Disable copying.
+    PortMapsLogicalItem(PortMapsLogicalItem const& rhs);
+    PortMapsLogicalItem& operator=(PortMapsLogicalItem const& rhs);
+    
+    /*!
+     *  Gets a string of the connected ports and their bits.
+     *     
+     *      @return Names and bits of connected physical ports.
+     */
+    QString getPhysPorts() const;
+
 
     /*!
      *  Gets the width of the logical signal.
@@ -94,28 +100,36 @@ private:
     int getConnectionCount() const;
 
 
+    /*!
+     *  Updates the port width to given value by adding/removing children.
+     *
+     *      @param [in] width   The new width.
+     */
     void updateWidthTo(int width);    
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------  
 
+    //! Pointer to the logical port bus interface.
+    BusInterface* busif_;
 
-BusInterface* busif_;
-
-    //! \brief Pointer to the abstraction definition that is used.
+    //! Pointer to the abstraction definition that is used.
     QSharedPointer<AbstractionDefinition> absDef_;
 
-    //! \brief Specifies the interface mode of this bus interface
+    //! Specifies the interface mode of this bus interface
     General::InterfaceMode interfaceMode_;
 
     //! The port maps of the logical port item.
 	QList<QSharedPointer<General::PortMap> >& portMaps_;
 
+    //! The left bound of the logical port.
     int right_;
 
+    //! The right bound of the logical port.
     int left_;
     
+    //! Flag for indicating beginning of mapping when bounds are not yet set.
     bool beginMapping_;
     
 };

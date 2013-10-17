@@ -36,7 +36,6 @@ PortMapsLogicalItem::PortMapsLogicalItem(PortMapsTreeItem* parent,
     left_(),
     beginMapping_(true)
 {
-    refresh();
 }
 
 //-----------------------------------------------------------------------------

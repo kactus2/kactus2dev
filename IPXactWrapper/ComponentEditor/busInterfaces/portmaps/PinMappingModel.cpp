@@ -478,9 +478,9 @@ void PinMappingModel::setAbsType(const VLNV& absDefVlnv, General::InterfaceMode 
 
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingModel::setLogicalSignal()
+// Function: PinMappingModel::onSetLogicalSignal()
 //-----------------------------------------------------------------------------
-void PinMappingModel::setLogicalSignal(QString& logicalName)
+void PinMappingModel::onSetLogicalSignal(QString const& logicalName)
 {
     logicalPort_ = logicalName;
     // Reset the table.
