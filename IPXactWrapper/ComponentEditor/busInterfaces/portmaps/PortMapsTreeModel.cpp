@@ -359,7 +359,6 @@ void PortMapsTreeModel::endReset()
     }
 
     endResetModel();
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -426,7 +425,9 @@ void PortMapsTreeModel::createMap(const QString& physicalPort, const QString& lo
         portMap->logicalVector_->setLeft(0);
         portMap->logicalVector_->setRight(physSize - 1);  
     }          
-    createMap(portMap);    
+
+    createMap(portMap);
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -437,6 +438,7 @@ void PortMapsTreeModel::createMap(QSharedPointer<General::PortMap> portMap)
     if (!portMaps_.contains(portMap))
     {
         portMaps_.append(portMap);
+        emit contentChanged();
     }
     
     PortMapsLogicalItem* logicalItem = dynamic_cast<PortMapsLogicalItem*>(findItem(portMap->logicalPort_));
@@ -452,9 +454,7 @@ void PortMapsTreeModel::createMap(QSharedPointer<General::PortMap> portMap)
 
     beginInsertRows(getItemIndex(logicalItem, 0), 0, logicalItem->getWidth());
     logicalItem->refresh();
-    endInsertRows();
-
-    emit contentChanged();
+    endInsertRows();    
 }
 
 

@@ -112,7 +112,7 @@ showBitMapping_(false)
 	connect(&model_, SIGNAL(logicalRemoved(const QString&)),
 		&logicalModel_, SLOT(addPort(const QString&)), Qt::UniqueConnection);
     connect(&model_, SIGNAL(logicalRemoved(const QString&)),
-        &mappingModel_, SLOT(onLogicalRemoved(const QString&)), Qt::UniqueConnection);
+        &mappingModel_, SLOT(onRemoveMapping(const QString&)), Qt::UniqueConnection);
     connect(&model_, SIGNAL(logicalRestored(const QString&)),
         &logicalModel_, SLOT(addPort(const QString&)), Qt::UniqueConnection);
     connect(&model_, SIGNAL(logicalRestored(const QString&)),

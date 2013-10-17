@@ -532,10 +532,22 @@ void PinMappingModel::onSetLogicalSignal(QString const& logicalName)
 //-----------------------------------------------------------------------------
 void PinMappingModel::onRemoveMapping(QString const& logicalName)
 {
+    bool setPrevious = logicalPort_ == logicalName;
+    if (setPrevious)
+    {
+        onSetLogicalSignal("");
+    }
+
     if (mappings_.contains(logicalName))
     {
         mappings_.remove(logicalName);
     }
+
+    if (setPrevious)
+    {
+        onSetLogicalSignal(logicalName);
+    }
+
 }
 
 //-----------------------------------------------------------------------------
