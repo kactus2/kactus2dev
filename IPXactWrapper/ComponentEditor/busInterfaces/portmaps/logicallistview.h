@@ -22,6 +22,10 @@ public:
 	//! \brief The destructor
 	virtual ~LogicalListView();
 
+public slots:
+
+    void onPortRestored(QString const& portName);
+
 protected:
 
 	/*! \brief Handler for drop events on drag & drop.

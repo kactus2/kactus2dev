@@ -74,3 +74,29 @@ void LogicalListView::dropEvent( QDropEvent* event ) {
 	// accept the drop
 	event->accept();
 }
+
+//-----------------------------------------------------------------------------
+// Function: LogicalListView::onPortRestored()
+//-----------------------------------------------------------------------------
+void LogicalListView::onPortRestored(QString const& portName)
+{    
+    QModelIndex index = QModelIndex();
+    bool found = false;
+    for (int row = 0; row < model()->rowCount(); row++)
+    {
+        index = model()->index(row, 0);
+
+        if (index.isValid() && model()->data(index).toString() == portName)
+        {
+            found = true;
+            break;            
+        }
+    }
+
+    if (found)
+    {
+        clearSelection();
+        selectionModel()->select(index, QItemSelectionModel::Select);
+    }
+}
+

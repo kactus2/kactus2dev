@@ -204,6 +204,8 @@ public slots:
      */
     void onSetLogicalSignal(QString const& logicalName);
 
+    void onRemoveMapping(QString const& logicalName);
+
 private:
 
     //! No copying.
@@ -260,7 +262,9 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Table rows that correspond to the bit indexes in the logical signal.
-    QMap< unsigned int, QList<General::PortBounds> > rows_;
+    QList< QList<General::PortBounds> > rows_;
+
+    QMap< QString, QList< QList<General::PortBounds> > > mappings_;
 
     //! Pointer to the bus interface being edited.
     BusInterface* busif_;

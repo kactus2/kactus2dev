@@ -103,7 +103,15 @@ void PortMapsTreeView::keyPressEvent(QKeyEvent* event)
 void PortMapsTreeView::rowsInserted(QModelIndex const& parent, int start, int end)
 {
     QTreeView::rowsInserted(parent, start, end);
-    setExpanded(parent, false);
+
+    if (parent.isValid())
+    {
+        setExpanded(parent, isExpanded(parent));
+    } 
+    else
+    {
+        setExpanded(parent, false);
+    }
 }
 
 //-----------------------------------------------------------------------------
