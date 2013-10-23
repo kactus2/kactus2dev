@@ -1813,7 +1813,7 @@ QMenu* HWDesignDiagram::createContextMenu(QPointF const& pos)
 {
     QMenu* menu = 0;
 
-    if (!isProtected() && getMode() == MODE_SELECT && showContextMenu_)
+    if (getMode() == MODE_SELECT && showContextMenu_)
     {
         QGraphicsItem* item = itemAt(pos,QTransform());
 
@@ -3034,13 +3034,15 @@ void HWDesignDiagram::prepareContextMenuActions()
 {
     QList<QGraphicsItem*> items = selectedItems();
 
+    // Disable all actions as default.
+    addAction_.setEnabled(false);
+    openComponentAction_.setEnabled(false);
+    openDesignAction_.setEnabled(false);
+    copyAction_.setEnabled(false);
+    pasteAction_.setEnabled(false);
+
     if (items.empty())
     {
-        addAction_.setEnabled(false);
-        openComponentAction_.setEnabled(false);
-        openDesignAction_.setEnabled(false);
-        copyAction_.setEnabled(false);
-
         // If the selection is empty, check if the clipboard contains components or a column.
         QMimeData const* mimeData = QApplication::clipboard()->mimeData();
 
@@ -3052,58 +3054,44 @@ void HWDesignDiagram::prepareContextMenuActions()
                                 (column != 0 && mimeData->imageData().canConvert<BusInterfaceCollectionCopyData>())));
     }
     else
-    {
+    {        
         int type = getCommonItemType(items);
 
         // Allow copying interfaces (single or multiple).
         if (type == BusPortItem::Type || type == BusInterfaceItem::Type)
         {
-            addAction_.setEnabled(false);
-            openComponentAction_.setEnabled(false);
-            openDesignAction_.setEnabled(false);
-            copyAction_.setEnabled(true);
-            pasteAction_.setEnabled(false);
+            copyAction_.setEnabled(!isProtected());
         }
         else if (type == HWComponentItem::Type)
         {
             HWComponentItem* compItem = qgraphicsitem_cast<HWComponentItem *>(items.back());
             bool draft = !compItem->componentModel()->getVlnv()->isValid();
 
-            addAction_.setEnabled(draft && items.count() == 1);
+            addAction_.setEnabled(!isProtected() && draft && items.count() == 1);
             openComponentAction_.setEnabled(!draft && items.count() == 1);
             openDesignAction_.setEnabled(!draft && compItem->componentModel()->isHierarchical() &&
                                          items.count() == 1);
 
             // Allow copying components (single or multiple).
-            copyAction_.setEnabled(true);
+            copyAction_.setEnabled(!isProtected());
 
             // Enable paste action, if a draft component and bus ports on the clipboard.
             QMimeData const* mimedata = QApplication::clipboard()->mimeData();
-            pasteAction_.setEnabled(items.count() == 1 && draft && mimedata != 0 && mimedata->hasImage() && 
+            pasteAction_.setEnabled(!isProtected() && items.count() == 1 && draft && mimedata != 0 && 
+                                    mimedata->hasImage() && 
                                     mimedata->imageData().canConvert<BusInterfaceCollectionCopyData>());
         }
         else if (type == HWColumn::Type)
         {
-            addAction_.setEnabled(false);
-            openComponentAction_.setEnabled(false);
-            openDesignAction_.setEnabled(false);
-        
             // Allow copying columns (single or multiple).
-            copyAction_.setEnabled(true);
+            copyAction_.setEnabled(!isProtected());
 
             // Allow pasting if the clipboard contains column data.
             QMimeData const* mimedata = QApplication::clipboard()->mimeData();
-            pasteAction_.setEnabled(mimedata != 0 && mimedata->hasImage() && 
+            pasteAction_.setEnabled(!isProtected() && mimedata != 0 && mimedata->hasImage() && 
                                     mimedata->imageData().canConvert<ColumnCollectionCopyData>());
         }
-        else
-        {
-            addAction_.setEnabled(false);
-            openComponentAction_.setEnabled(false);
-            openDesignAction_.setEnabled(false);
-            copyAction_.setEnabled(false);
-            pasteAction_.setEnabled(false);
-        }
+
     }
 }
 

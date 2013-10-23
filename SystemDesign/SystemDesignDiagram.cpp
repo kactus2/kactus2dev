@@ -3163,7 +3163,7 @@ QMenu* SystemDesignDiagram::createContextMenu(QPointF const& pos)
 {
     QMenu* menu = 0;
 
-    if (!isProtected() && getMode() == MODE_SELECT && showContextMenu_)
+    if (getMode() == MODE_SELECT && showContextMenu_)
     {
         QGraphicsItem* item = itemAt(pos,QTransform());
 
@@ -3436,17 +3436,19 @@ void SystemDesignDiagram::prepareContextMenuActions()
 {
     QList<QGraphicsItem*> items = selectedItems();
 
+    // Disable all actions as default.
+    addAction_.setEnabled(false);
+    openComponentAction_.setEnabled(false);
+    openDesignAction_.setEnabled(false);
+    copyAction_.setEnabled(false);
+    pasteAction_.setEnabled(false);
+
     if (items.empty())
     {
-        addAction_.setEnabled(false);
-        copyAction_.setEnabled(false);
-        openComponentAction_.setEnabled(false);
-        openDesignAction_.setEnabled(false);
-
         // If the selection is empty, check if the clipboard contains components or a column.
         QMimeData const* mimeData = QApplication::clipboard()->mimeData();
 
-        if (mimeData != 0 && mimeData->hasImage() &&
+        if (!isProtected() && mimeData != 0 && mimeData->hasImage() &&
             (mimeData->imageData().canConvert<ComponentCollectionCopyData>() ||
             mimeData->imageData().canConvert<ColumnCollectionCopyData>() ||
             mimeData->imageData().canConvert<PortCollectionCopyData>()))
@@ -3465,12 +3467,7 @@ void SystemDesignDiagram::prepareContextMenuActions()
         if (type == SWPortItem::Type || type == SWInterfaceItem::Type)
         {
             // Allow copying API/COM ports (single or multiple).
-            copyAction_.setEnabled(true);
-
-            addAction_.setEnabled(false);
-            openComponentAction_.setEnabled(false);
-            openDesignAction_.setEnabled(false);
-            pasteAction_.setEnabled(false);
+            copyAction_.setEnabled(!isProtected());
         }
         else if (type == SWComponentItem::Type)
         {
@@ -3479,59 +3476,38 @@ void SystemDesignDiagram::prepareContextMenuActions()
             Q_ASSERT(swItem);
             QStringList hierViews = swItem->componentModel()->getSWViewNames();          
 
-            if (hierViews.size() != 0)
-            {
-                openDesignAction_.setEnabled(true);
-            }
-            else
-            {
-                openDesignAction_.setEnabled(false);
-            }
+             openDesignAction_.setEnabled(hierViews.size() != 0);
 
             // Allow copying components (single or multiple).
-            copyAction_.setEnabled(true);
+            copyAction_.setEnabled(!isProtected());
             
             // Enable paste action, if a draft component (no valid vlnv) and the clipboard
             // contains API/COM bus interfaces.
             bool draft = !qgraphicsitem_cast<SWComponentItem *>(items.back())->componentModel()->getVlnv()->isValid();
-            addAction_.setEnabled(draft && selectedItems().size() == 1);
+            addAction_.setEnabled(!isProtected() && draft && selectedItems().size() == 1);
             openComponentAction_.setEnabled(!draft && items.count() == 1);
             
             QMimeData const* mimedata = QApplication::clipboard()->mimeData();
 
-            pasteAction_.setEnabled(draft && mimedata != 0 && mimedata->hasImage() && 
+            pasteAction_.setEnabled(!isProtected() && draft && mimedata != 0 && mimedata->hasImage() && 
                                     mimedata->imageData().canConvert<PortCollectionCopyData>());
         }
         else if (type == SystemColumn::Type)
         {
-            addAction_.setEnabled(false);
-            openComponentAction_.setEnabled(false);
-            openDesignAction_.setEnabled(false);
-            copyAction_.setEnabled(true);
+            copyAction_.setEnabled(!isProtected());
 
             QMimeData const* mimedata = QApplication::clipboard()->mimeData();
-            pasteAction_.setEnabled(mimedata != 0 && mimedata->hasImage() &&
+            pasteAction_.setEnabled(!isProtected() && mimedata != 0 && mimedata->hasImage() &&
                                     mimedata->imageData().canConvert<ColumnCollectionCopyData>());
         }
         else if (type == HWMappingItem::Type)
         {
-            addAction_.setEnabled(false);
-            openComponentAction_.setEnabled(true);
-            openDesignAction_.setEnabled(false);
-            copyAction_.setEnabled(false);            
+            openComponentAction_.setEnabled(true);       
             
             QMimeData const* mimeData = QApplication::clipboard()->mimeData();
-            pasteAction_.setEnabled(mimeData != 0 && mimeData->hasImage() &&
+            pasteAction_.setEnabled(!isProtected() && mimeData != 0 && mimeData->hasImage() &&
                                     mimeData->imageData().canConvert<ComponentCollectionCopyData>());
-        }
-        else
-        {
-            addAction_.setEnabled(false);
-            openComponentAction_.setEnabled(false);
-            openDesignAction_.setEnabled(false);
-            copyAction_.setEnabled(false);
-            pasteAction_.setEnabled(false);
-        }
+        }        
     }
 }
 
