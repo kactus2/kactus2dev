@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 5.4.2011
- *      Author: Antti Kamppi
- * 		filename: busifportmaptab.h
- */
+//-----------------------------------------------------------------------------
+// File: busifportmaptab.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 5.4.2011
+//
+// Description:
+// Tab for editing and viewing component port maps.
+//-----------------------------------------------------------------------------
 
 #ifndef BUSIFPORTMAPTAB_H
 #define BUSIFPORTMAPTAB_H
@@ -22,8 +26,6 @@
 #include <IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h>
 #include <IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PinMappingView.h>
 
-#include <common/views/EditableTableView/editabletableview.h>
-
 #include <QCheckBox>
 #include <QComboBox>
 #include <QLabel>
@@ -37,11 +39,9 @@
 
 class LibraryInterface;
 class PortMap;
-class PortMapsPhysModel;
-class EditableTableView;
-class PinMappingModel;
 
-/*! \brief Editor to set the port maps of a bus interface.
+
+/*! Editor to set the port maps of a bus interface.
  *
  */
 class BusIfPortmapTab : public QWidget {
@@ -49,17 +49,17 @@ class BusIfPortmapTab : public QWidget {
 
 public:
 
-	//! \brief Connection mode specifies how multiple selections are handled
+	//! Connection mode specifies how multiple selections are handled
 	enum ConnectionMode {
 		ONE2ONE = 0, 
 		ONE2MANY};
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param libHandler Pointer to the instance that manages the library.
-	 * \param component Pointer to the component being edited.
-	 * \param busif Pointer to the bus interface being edited.
-	 * \param parent Pointer to the owner of the editor.
+	 * @param libHandler Pointer to the instance that manages the library.
+	 * @param component Pointer to the component being edited.
+	 * @param busif Pointer to the bus interface being edited.
+	 * @param parent Pointer to the owner of the editor.
 	 *
 	*/
 	BusIfPortmapTab(LibraryInterface* libHandler,
@@ -67,50 +67,50 @@ public:
 		BusInterface* busif,
 		QWidget* parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~BusIfPortmapTab();
 
-	/*! \brief Check for the validity of the edited item.
+	/*! Check for the validity of the edited item.
 	*
-	* \return True if item is valid.
+	* @return True if item is valid.
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Restore the changes made in the editor back to ones in the model.
+	/*! Restore the changes made in the editor back to ones in the model.
 	*
 	*/
 	virtual void refresh();
 
-	/*! \brief Set the abstraction type that defines the logical signals to use.
+	/*! Set the abstraction type that defines the logical signals to use.
 	 *
-	 * \param vlnv
+	 * @param vlnv
 	 *
-	 * \return void
+	 * @return void
 	*/
 	virtual void setAbsType(const VLNV& vlnv, General::InterfaceMode mode);
 
 public slots:
 
-	//! \brief Handler for remove button clicks.
+	//! Handler for remove button clicks.
 	void onRemove();
 	
 protected:
 
-	//! \brief Handler for key press events.
+	//! Handler for key press events.
 	virtual void keyPressEvent(QKeyEvent* event);
 
-	//! \brief Handler for widget's show event
+	//! Handler for widget's show event
     virtual void showEvent(QShowEvent* event);
 
 signals:
 
-	//! \brief Emitted when contents of the model change
+	//! Emitted when contents of the model change
 	void contentChanged();
 
-	//! \brief Prints an error message to the user.
+	//! Prints an error message to the user.
 	void errorMessage(const QString& msg) const;
 
-	//! \brief Prints a notification to user.
+	//! Prints a notification to user.
 	void noticeMessage(const QString& msg) const;
 
     //! Emitted when a help page should be changed in the context help window.
@@ -118,22 +118,26 @@ signals:
 
 private slots:
 
-	//! \brief The handler for refresh button clicks
+	//! The handler for refresh button clicks
 	void onRefresh();
 
-	//! \brief The handler for connect button clicks
+	//! The handler for connect button clicks
 	void onConnect();
 
-    //! \brief The handler for connect bits button clicks.
+    //! The handler for connect bits button clicks.
     void onBitConnect();
 
-	//! \brief Handler for when user changes the connection mode.
-	void onConnectionModeChange();
+    //! The handler for connecting port to first unmapped logical bits.
+    void onMapPortToLastBit();
 
-	/*! \brief Make connections between physical signals and logical signals.
+    // One to one and one to many removed as obsolete.
+	//! Handler for when user changes the connection mode.    
+	//void onConnectionModeChange();
+
+	/*! Make connections between physical signals and logical signals.
 	 *
-	 * \param physicals List of physical signal names.
-	 * \param logicals List of logical signal names.
+	 * @param physicals List of physical signal names.
+	 * @param logicals List of logical signal names.
 	 *
 	*/
 	void onMakeConnections(const QStringList& physicals, const QStringList& logicals);
@@ -145,11 +149,6 @@ private slots:
      */
     void onLogicalChanged(const QModelIndex& index);
 
-    /*!
-     *  The handler for changes in physical port name filter.
-     *
-     */
-    void onNameFilterChanged();
 
     /*!
      *  The handler for changing bit field mapping visibility.
@@ -159,90 +158,96 @@ private slots:
 
 private:
 	
-	//! \brief No copying
+	//! No copying
 	BusIfPortmapTab(const BusIfPortmapTab& other);
 
 	//! No assignment
 	BusIfPortmapTab& operator=(const BusIfPortmapTab& other);
 
-	//! \brief Set up the layout of the GUI items
+	//! Set up the layout of the GUI items
 	void setupLayout();
    
-	//! \brief Specifies the connection mode
+	//! Specifies the connection mode
 	ConnectionMode mode_;
 
-	//! \brief Pointer to the currently selected port map.
+	//! Pointer to the currently selected port map.
 	QSharedPointer<General::PortMap> portMap_;
 
-	//! \brief Pointer to the bus interface being edited.
+	//! Pointer to the bus interface being edited.
 	BusInterface* busif_;
 
-	//! \brief Pointer to the component being edited.
+	//! Pointer to the component being edited.
 	QSharedPointer<Component> component_;
 
-	//! \brief Pointer to the instance that manages the library.
+	//! Pointer to the instance that manages the library.
 	LibraryInterface* libHandler_;
 
-	//! \brief The proxy filter that does sorting for port maps.
+	//! The proxy filter that does sorting for port maps.
 	//QSortFilterProxyModel mapProxy_;
 
-	//! \brief The model to manage the port maps.
+	//! The model to manage the port maps.
 	PortMapsTreeModel model_;
 
-	//! \brief The view to display the port maps.
+	//! The view to display the port maps.
 	PortMapsTreeView view_;
 
-	//! \brief The view to display the logical ports
+	//! The view to display the logical ports
 	LogicalListView logicalView_;
 
-	//! \brief The model to present the logical ports.
+	//! The model to present the logical ports.
 	LogicalListModel logicalModel_;
 
-    //! \brief The label for bit-level mapping.
+    //! The label for bit-level mapping.
     QLabel mappingLabel_;
 
-    //! \brief The bit-level mapping view.
+    //! The bit-level mapping view.
     PinMappingView mappingView_;
 
-    //! \brief The sorting proxy for bit-level mapping.
+    //! The sorting proxy for bit-level mapping.
     QSortFilterProxyModel mappingProxy_;
 
-    //! \brief The model to present bit-level mapping.
+    //! The model to present bit-level mapping.
     PinMappingModel mappingModel_;
 
-	//! \brief The view to display the physical ports.
+	//! The view to display the physical ports.
 	PhysListView physicalView_;
 
-    //! \brief The filter proxy for the physical ports.
+    //! The filter proxy for the physical ports.
     PortListSortProxyModel physProxy_;
 
-	//! \brief The model to present the physical ports.
+	//! The model to present the physical ports.
 	PhysListModel physModel_; 
 
-	//! \brief The button to clean the lists of physical and logical ports.
+	//! The button to clean the lists of physical and logical ports.
 	QPushButton cleanButton_;
 
-	//! \brief The button to connect the selected logical and physical ports.
+	//! The button to connect the selected logical and physical ports.
 	QPushButton connectButton_;
 
-	//! \brief The button to select the one to one connection mode.
-	QPushButton one2OneButton_;
+	//! The button to select the one to one connection mode.
+    // One to one and one to many removed as obsolete.
+	//QPushButton one2OneButton_;
 
-	//! \brief The button to select the one to many connection mode.
-	QPushButton one2ManyButton_;
+	//! The button to select the one to many connection mode.
+    // One to one and one to many removed as obsolete.
+	//QPushButton one2ManyButton_;
 
-    //! \brief The button to show/hide bit-level mapping.
+    //! The button to show/hide bit-level mapping.
     QPushButton showHideMappingButton_;
 
-    //! \brief Editor for filtering of physical ports by name.
+    //! Editor for filtering of physical ports by name.
     QLineEdit* nameFilterEditor_;
 
-    //! \brief Editor for filtering of physical ports by direction.
-    QComboBox* directionFilterEditor_;
+    //! Button for filtering ports by direction in.
+    QPushButton inButton_;
 
+    //! Button for filtering ports by direction out.
+    QPushButton outButton_;
+
+    //! Checkbox for showing/hiding connected physical ports.
     QCheckBox hideConnectedBox_;
 
-    //! \brief Boolean for show/hide status of the bit-level mapping.
+    //! Boolean for show/hide status of the bit-level mapping.
     bool showBitMapping_;
 };
 

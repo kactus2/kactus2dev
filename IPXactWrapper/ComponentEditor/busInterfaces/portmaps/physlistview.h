@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 7.7.2011
- *      Author: Antti Kamppi
- * 		filename: physlistview.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: physlistview.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 7.7.2011
+//
+// Description:
+// List view for physical ports.
+//-----------------------------------------------------------------------------
 
 #ifndef PHYSLISTVIEW_H
 #define PHYSLISTVIEW_H
@@ -12,30 +16,41 @@
 
 #include <QDropEvent>
 
+
 class PhysListView : public PortListView {
 	Q_OBJECT
 
 public:
 
+    // The constructor.
 	PhysListView(QWidget *parent);
 
-	//! \brief The destructor
+	// The destructor.
 	virtual ~PhysListView();
+
+public slots:
+
+    /*!
+     *  Handles changes in the name filter by selecting the best matching port from the list.
+     *
+     *      @param [in] portName   Name given in filter.
+     */
+    virtual void onFilterNameChanged(QString const& portName);
 
 protected:
 
-	/*! \brief Handler for drop events on drag & drop.
+	/* Handler for drop events on drag & drop.
 	 *
-	 * \param event Pointer to the event object.
+	 *      @param event Pointer to the event object.
 	 *
 	*/
 	virtual void dropEvent(QDropEvent* event);
 	
 private:
-	//! \brief No copying
+	// No copying
 	PhysListView(const PhysListView& other);
 
-	//! \brief No assignment
+	// No assignment
 	PhysListView& operator=(const PhysListView& other);
 };
 

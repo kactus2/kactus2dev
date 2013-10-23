@@ -13,13 +13,17 @@
 #include <QDrag>
 
 LogicalListView::LogicalListView(QWidget *parent):
-PortListView(parent) {
+PortListView(parent),
+selectedIndex_(QModelIndex()) 
+{
 }
 
-LogicalListView::~LogicalListView() {
+LogicalListView::~LogicalListView() 
+{
 }
 
-void LogicalListView::dropEvent( QDropEvent* event ) {
+void LogicalListView::dropEvent( QDropEvent* event )
+{
 	// make sure the source is not this view
 	PortListView* source = qobject_cast<PortListView*>(event->source());
 	PortMapsView* mapSource = qobject_cast<PortMapsView*>(event->source());
@@ -97,6 +101,48 @@ void LogicalListView::onPortRestored(QString const& portName)
     {
         clearSelection();
         selectionModel()->select(index, QItemSelectionModel::Select);
+        selectedIndex_ = index;
+        emit clicked(index);
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: LogicalListView::onPortRemoved()
+//-----------------------------------------------------------------------------
+void LogicalListView::onPortRemoved()
+{
+    QModelIndex nextIndex = model()->index(selectedIndex_.row(), selectedIndex_.column());
+    if (!nextIndex.isValid())
+    {
+        nextIndex = model()->index(selectedIndex_.row() - 1, selectedIndex_.column());              
+    }
+
+    clearSelection();
+
+    if (nextIndex.isValid())
+    {    
+        selectionModel()->select(nextIndex, QItemSelectionModel::Select);
+        selectedIndex_ = nextIndex;
+    } 
+    else
+    {
+        selectedIndex_ = QModelIndex();      
+    }
+    
+    emit clicked(selectedIndex_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: LogicalListView::mousePressEvent()
+//-----------------------------------------------------------------------------
+void LogicalListView::mousePressEvent(QMouseEvent* event)
+{
+    QListView::mousePressEvent(event);
+    
+    if (selectedIndexes().size() > 0)
+    {
+        selectedIndex_ = selectedIndexes().last();
+    }       
+}
+
 

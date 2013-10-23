@@ -264,7 +264,7 @@ bool PinMappingModel::setData(const QModelIndex& index, const QVariant& value,
                         }
                         targetRow++;
                     }
-                    emit dataChanged(index,index);
+                    emit dataChanged(index,createIndex(targetRow,PIN));                    
                     return true;
                 }
                 // Clear cell.
@@ -441,6 +441,30 @@ bool PinMappingModel::dropMimeData(const QMimeData *data,
         return true;
     }
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PinMappingModel::mapLast()
+//-----------------------------------------------------------------------------
+void PinMappingModel::mapToEnd(QStringList portNames)
+{
+    int endIndex = rows_.size();
+    if (canEdit_)
+    {
+        endIndex--;
+    }
+
+    // Find the first unmapped index and insert ports.
+    for (int logIndex = 0; logIndex < endIndex; logIndex++)
+    {
+        if (rows_[logIndex].size() == 0)
+        {
+            QMimeData mimeData;
+            mimeData.setText(portNames.join(';'));
+            dropMimeData(&mimeData, Qt::CopyAction, -1, -1, createIndex(logIndex, 0));
+            return;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

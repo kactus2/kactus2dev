@@ -17,30 +17,49 @@ class LogicalListView : public PortListView {
 
 public:
 
+    //! The constructor.
 	LogicalListView(QWidget *parent);
 
-	//! \brief The destructor
-	virtual ~LogicalListView();
+	//! The destructor.
+	virtual ~LogicalListView();    
 
 public slots:
 
+    /*!
+     *  Called when a port is restored from the port maps.
+     *
+     *      @param [in] portName   The name of the restored port.
+     */
     void onPortRestored(QString const& portName);
+
+    /*!
+     *  Called when a port is removed from the port map.
+     *
+     */
+    void onPortRemoved();
 
 protected:
 
-	/*! \brief Handler for drop events on drag & drop.
+	/*! Handler for drop events on drag & drop.
 	 *
 	 * \param event Pointer to the event object.
 	 *
 	*/
 	virtual void dropEvent(QDropEvent* event);
 
+
+    virtual void mousePressEvent(QMouseEvent* event);
+
+
 private:
-	//! \brief No copying
+	//! No copying
 	LogicalListView(const LogicalListView& other);
 
-	//! \brief No assignment
+	//! No assignment
 	LogicalListView& operator=(const LogicalListView& other);
+
+    //! The last index selected.
+    QModelIndex selectedIndex_;
 };
 
 #endif // LOGICALLISTVIEW_H

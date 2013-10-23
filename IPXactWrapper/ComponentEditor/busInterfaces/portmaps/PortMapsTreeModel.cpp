@@ -678,11 +678,35 @@ void PortMapsTreeModel::removeMapping(QModelIndex const& index)
 
     PortMapsTreeItem* item = root_->getChild(index.row());
     QString logicalName = item->getName();
+    QStringList physPorts;
     foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
     {
         if (portMap->logicalPort_ == logicalName)
         {
+            if (!physPorts.contains(portMap->physicalPort_))
+            {
+                physPorts.append(portMap->physicalPort_);
+            }
             portMaps_.removeAll(portMap);
+        }
+    }    
+
+    // Search for disconnected physical ports.    
+    foreach (QString physicalName, physPorts)
+    {
+        bool connected = false;
+        foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
+        {
+            if (portMap->physicalPort_ == physicalName)
+            {
+                connected = true;
+                break;
+            }
+        }
+
+        if (!connected)
+        {
+            emit physicalRemoved(physicalName);
         }
     }
 

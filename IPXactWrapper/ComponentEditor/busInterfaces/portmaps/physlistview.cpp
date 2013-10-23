@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 7.7.2011
- *      Author: Antti Kamppi
- * 		filename: physlistview.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: physlistview.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 7.7.2011
+//
+// Description:
+// List view for physical ports.
+//-----------------------------------------------------------------------------
 
 #include "physlistview.h"
 
@@ -12,14 +16,64 @@
 #include <QMimeData>
 #include <QDrag>
 
+//-----------------------------------------------------------------------------
+// Function: physlistview::PhysListView()
+//-----------------------------------------------------------------------------
 PhysListView::PhysListView(QWidget *parent):
-PortListView(parent) {
+PortListView(parent)
+{
 }
 
-PhysListView::~PhysListView() {
+//-----------------------------------------------------------------------------
+// Function: physlistview::~PhysListView()
+//-----------------------------------------------------------------------------
+PhysListView::~PhysListView()
+{
 }
 
-void PhysListView::dropEvent( QDropEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: PhysListView::onFilterNameChanged()
+//-----------------------------------------------------------------------------
+void PhysListView::onFilterNameChanged(QString const& portName)
+{    
+    QModelIndex matchingIndex = model()->index(0, 0);
+    
+    if (!matchingIndex.isValid())
+    {
+        return;
+    }
+
+    int match =  QString::compare(model()->data(matchingIndex).toString(), portName, Qt::CaseInsensitive);
+
+    // Search for better matching port names.
+    for (int row = 1; row < model()->rowCount(); row++)
+    {
+        QModelIndex index = model()->index(row, 0);
+        if (index.isValid())
+        {
+            int diff = QString::compare(model()->data(index).toString(), portName, Qt::CaseInsensitive);
+            if (match > diff)
+            {
+                matchingIndex = index;
+                match = diff;
+            }
+        }
+    }
+
+    clearSelection();
+
+    // Select the best matching port.
+    if (matchingIndex.isValid())
+    {        
+        selectionModel()->select(matchingIndex, QItemSelectionModel::Select);        
+    }    
+}
+
+//-----------------------------------------------------------------------------
+// Function: physlistview::dropEvent()
+//-----------------------------------------------------------------------------
+void PhysListView::dropEvent( QDropEvent* event ) 
+{
 	// make sure the source is not this view
 	PortListView* source = qobject_cast<PortListView*>(event->source());
 	PortMapsView* mapSource = qobject_cast<PortMapsView*>(event->source());

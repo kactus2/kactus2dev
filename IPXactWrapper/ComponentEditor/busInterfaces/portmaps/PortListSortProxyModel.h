@@ -56,15 +56,6 @@ public:
 	 */
     DirectionFilter filterDirection() const;
 
-
-
-	 /*!
-	 *  Sets direction for filtering.
-	 *
-	 *      @param [in] direction  The accepted direction.
-	 */
-    void setFilterDirection(DirectionFilter direction);
-
     /*!
 	 *  Gets the filter for hiding connected ports.
 	 *
@@ -74,25 +65,56 @@ public:
 
 
 public slots:
-
-	 /*!
-	 *  Sets direction for filtering.
-	 *
-	 *      @param [in] direction  The accepted direction.
-	 */
-    void setFilterDirection(QString const& direction);
 	 
+
+    /*!
+     *  Sets the filter for port name(s).
+     *
+     *      @param [in] portName   The allowed port name.
+     *
+     *      @return 
+     */
+    virtual void setFilterPortName(QString const& portName);
+
+    /*!
+     *  Sets the filter for in-direction.
+     *
+     *      @param [in] enabled   If true, filter using in-direction.
+     */
+    virtual void setFilterInDirection(bool enabled);
+
+    /*!
+     *  Sets the filter for out-direction.
+     *
+     *      @param [in] enabled   If true, filter using out-direction.
+     */
+    virtual void setFilterOutDirection(bool enabled);
+
     /*!
 	 *  Sets to show or hide already connected ports.
 	 *
 	 *      @param [in] hide  True, if ports are hidden, otherwise false.
 	 */
-    void setFilterHideConnected(bool hide = true);
+    virtual void setFilterHideConnected(bool hide = true);
 
     /*!
-	 *  Called when port mappings have changed.
+	 *  Called when port mappings have been reset.
 	 */    
-    virtual void onConnectionsChanged();
+    virtual void onConnectionsReset();
+
+    /*!
+     *  Called to update filtering when a port has been connected in a port map.
+     *
+     *      @param [in] portName   The name of the connected port.
+     */
+    virtual void onPortConnected(QString const& portName);
+
+    /*!
+     *  Called to update filtering when a port has been disconnected from all port maps.
+     *
+     *      @param [in] portName   The name of the disconnected port.
+     */
+    virtual void onPortDisconnected(QString const& portName);
 
 protected:
 

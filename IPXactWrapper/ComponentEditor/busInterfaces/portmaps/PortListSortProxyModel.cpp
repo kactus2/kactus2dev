@@ -28,7 +28,7 @@ filterDirection_(ANY),
 hideConnected_(true),
 connectedPorts_()
 {
-    onConnectionsChanged();
+    onConnectionsReset();
 }
 
 //-----------------------------------------------------------------------------
@@ -47,11 +47,99 @@ PortListSortProxyModel::DirectionFilter PortListSortProxyModel::filterDirection(
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortListSortProxyModel::setFilterDirection()
+// Function: PortListSortProxyModel::setFilterPortName()
 //-----------------------------------------------------------------------------
-void PortListSortProxyModel::setFilterDirection(DirectionFilter direction)
+void PortListSortProxyModel::setFilterPortName(QString const& portName)
 {
-    filterDirection_ = direction;
+    setFilterRegExp(QRegExp(portName, Qt::CaseInsensitive));
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortListSortProxyModel::setFilterInDirection()
+//-----------------------------------------------------------------------------
+void PortListSortProxyModel::setFilterInDirection(bool enabled)
+{
+    switch(filterDirection_)
+    {
+    case IN:
+        {
+            if (!enabled)
+            {
+                filterDirection_ = ANY;
+            }
+            break;
+        }
+    case OUT:
+        {
+            if (enabled)
+            {
+                filterDirection_ = INOUT;
+            }
+            break;
+        }
+
+    case INOUT:
+        {
+            if (!enabled)
+            {
+                filterDirection_ = OUT;
+            }
+            break;
+        }
+
+    case ANY:
+    default:
+        {
+            if (enabled)
+            {
+                filterDirection_ = IN;
+            }
+        }
+    }
+    invalidateFilter();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortListSortProxyModel::setFilterOutDirection()
+//-----------------------------------------------------------------------------
+void PortListSortProxyModel::setFilterOutDirection(bool enabled)
+{
+    switch(filterDirection_)
+    {
+    case IN:
+        {
+            if (enabled)
+            {
+                filterDirection_ = INOUT;
+            }
+            break;
+        }
+    case OUT:
+        {
+            if (!enabled)
+            {
+                filterDirection_ = ANY;
+            }
+            break;
+        }
+
+    case INOUT:
+        {
+            if (!enabled)
+            {
+                filterDirection_ = IN;
+            }
+        }
+
+    case ANY:
+    default:
+        {
+            if (enabled)
+            {
+                filterDirection_ = OUT;
+            }
+        }
+    }
     invalidateFilter();
 }
 
@@ -73,32 +161,9 @@ void PortListSortProxyModel::setFilterHideConnected(bool hide /*= true*/)
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortListSortProxyModel::setFilterDirection()
-//-----------------------------------------------------------------------------
-void PortListSortProxyModel::setFilterDirection(QString const& direction)
-{
-    if (QString::compare(direction, "any", Qt::CaseInsensitive) == 0)
-    {
-        setFilterDirection(ANY);
-    }
-    else if (QString::compare(direction, "in", Qt::CaseInsensitive) == 0)
-    {
-        setFilterDirection(IN);
-    }
-    else if (QString::compare(direction, "inout", Qt::CaseInsensitive) == 0)
-    {
-        setFilterDirection(INOUT);
-    }
-    else if (QString::compare(direction, "out", Qt::CaseInsensitive) == 0)
-    {
-        setFilterDirection(OUT);
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: PortListSortProxyModel::onConnectionsChanged()
 //-----------------------------------------------------------------------------
-void PortListSortProxyModel::onConnectionsChanged()
+void PortListSortProxyModel::onConnectionsReset()
 {
     connectedPorts_.clear();
     foreach (QSharedPointer<BusInterface> busIf, component_->getBusInterfaces())
@@ -136,4 +201,28 @@ bool PortListSortProxyModel::filterAcceptsRow(int source_row, const QModelIndex&
 
     // Check filter for port name.
     return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortListSortProxyModel::onPortConnected()
+//-----------------------------------------------------------------------------
+void PortListSortProxyModel::onPortConnected(QString const& portName)
+{
+    if (!connectedPorts_.contains(portName))
+    {
+        connectedPorts_.append(portName);
+        invalidateFilter();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortListSortProxyModel::onPortDisconnected()
+//-----------------------------------------------------------------------------
+void PortListSortProxyModel::onPortDisconnected(QString const& portName)
+{
+    if (connectedPorts_.contains(portName))
+    {
+        connectedPorts_.removeAll(portName);
+        invalidateFilter();
+    }
 }

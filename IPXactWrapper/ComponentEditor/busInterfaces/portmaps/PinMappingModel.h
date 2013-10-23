@@ -177,6 +177,13 @@ public:
     virtual bool dropMimeData(const QMimeData *data,
         Qt::DropAction action, int row, int column, const QModelIndex &parent);
 
+    /*!
+     *  Maps the given ports to first unmapped index(es).
+     *
+     *      @param [in] portNames   The names of the ports to map.
+     */
+    virtual void mapToEnd(QStringList portNames);
+
 signals:
 
     /*!
