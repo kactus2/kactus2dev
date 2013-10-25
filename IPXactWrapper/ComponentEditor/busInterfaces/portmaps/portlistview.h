@@ -94,19 +94,19 @@ protected:
 	*/
 	virtual void mousePressEvent(QMouseEvent* event);
 
-private:
+    //! \brief Initiates a drag operation from this view.
+    virtual void performDrag();
 
-	//! \brief Initiates a drag operation from this view.
-	virtual void performDrag();
+    //! The position where mouse press happened to initiate a drag event.
+    QPoint startPos_;
+
+private:
 
 	//! \brief No copying
 	PortListView(const PortListView& other);
 
 	//! No assignment
 	PortListView& operator=(const PortListView& other);
-
-	//! The position where mouse press happened to initiate a drag event.
-	QPoint startPos_;
 
 	//! Boolean for removing a port from the list on connection.
     bool removeConnected_;

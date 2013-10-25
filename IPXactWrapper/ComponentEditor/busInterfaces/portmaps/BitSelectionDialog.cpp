@@ -12,39 +12,52 @@
 
 #include <QWidget>
 #include <QDialogButtonBox>
+#include <QGridLayout>
 #include <QLabel>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-
+#include <QGroupBox>
 
 //-----------------------------------------------------------------------------
 // Function: BitSelectionDialog::BitSelectionDialog()
 //-----------------------------------------------------------------------------
-BitSelectionDialog::BitSelectionDialog(int portSize, int portMaxSize, QWidget *parent)
+BitSelectionDialog::BitSelectionDialog(QString logicalPort, int logicalBeginIndex, QString physicalPort, 
+    int portSize, int portMaxSize, QWidget *parent)
     : QDialog(parent),
-    leftBox_(new QSpinBox(this)),
-    rightBox_(new QSpinBox(this)),
+    logicalNameLabel_(new QLabel(logicalPort, this)),
+    physicalNameLabel_(new QLabel(physicalPort, this)),
+    higherLogicalBox_(new QSpinBox(this)),
+    lowerLogicalBox_(new QSpinBox(this)),
+    higherPhysicalBox_(new QSpinBox(this)),
+    lowerPhysicalBox_(new QSpinBox(this)),
     buttonBox_(new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this)),
-    portSize_(portSize),
-    maxSize_(portMaxSize)
+    physPortSize_(portSize),
+    maxPhysPortSize_(portMaxSize)
 {
     setupLayout();
 
-    leftBox_->setRange(0, portSize - 1);
-    leftBox_->setValue(portMaxSize-1);
-    rightBox_->setRange(0, portSize - 1);
-    rightBox_->setValue(0);
+    // Set initial values for physical bits and set ranges.
+    higherPhysicalBox_->setRange(0, portSize - 1);
+    higherPhysicalBox_->setValue(portMaxSize - 1);
+    lowerPhysicalBox_->setRange(0, portSize - 1);
+    lowerPhysicalBox_->setValue(0);
+
+    // Set initial values for logical bits and disable editing.
+    higherLogicalBox_->setValue(logicalBeginIndex + portMaxSize - 1);
+    higherLogicalBox_->setEnabled(false);
+    lowerLogicalBox_->setValue(logicalBeginIndex);
+    lowerLogicalBox_->setEnabled(false);
 
     connect(buttonBox_->button(QDialogButtonBox::Ok), SIGNAL(clicked()), 
         this, SLOT(accept()), Qt::UniqueConnection);
     connect(buttonBox_->button(QDialogButtonBox::Cancel), SIGNAL(clicked()), 
         this, SLOT(reject()), Qt::UniqueConnection);
-    connect(leftBox_, SIGNAL(valueChanged(int)),
-        this, SLOT(onLeftChanged()), Qt::UniqueConnection);
-    connect(rightBox_, SIGNAL(valueChanged(int)),
-        this, SLOT(onRightChanged()), Qt::UniqueConnection);
+    connect(higherPhysicalBox_, SIGNAL(valueChanged(int)),
+        this, SLOT(onHigherBoundChanged()), Qt::UniqueConnection);
+    connect(lowerPhysicalBox_, SIGNAL(valueChanged(int)),
+        this, SLOT(onLowerBoundChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -57,57 +70,43 @@ BitSelectionDialog::~BitSelectionDialog()
 //-----------------------------------------------------------------------------
 // Function: BitSelectionDialog::getLeft()
 //-----------------------------------------------------------------------------
-int BitSelectionDialog::getLeft() const
+int BitSelectionDialog::getHigherBound() const
 {
-    return leftBox_->value();
+    return higherPhysicalBox_->value();
 }
 
 //-----------------------------------------------------------------------------
 // Function: BitSelectionDialog::getRight()
 //-----------------------------------------------------------------------------
-int BitSelectionDialog::getRight() const
+int BitSelectionDialog::getLowerBound() const
 {
-    return rightBox_->value();
+    return lowerPhysicalBox_->value();
 }
 
 //-----------------------------------------------------------------------------
 // Function: BitSelectionDialog::onLeftChanged()
 //-----------------------------------------------------------------------------
-void BitSelectionDialog::onLeftChanged()
+void BitSelectionDialog::onHigherBoundChanged()
 {
-    if (rightBox_->value() > leftBox_->value())
+    if (lowerPhysicalBox_->value() > higherPhysicalBox_->value())
     {
-        rightBox_->setValue(leftBox_->value());
+        lowerPhysicalBox_->setValue(higherPhysicalBox_->value());
     }
 
-    if (leftBox_->value() - rightBox_->value() + 1 > maxSize_)
-    {
-        buttonBox_->button(QDialogButtonBox::Ok)->setEnabled(false);
-    }
-    else
-    {
-        buttonBox_->button(QDialogButtonBox::Ok)->setEnabled(true);
-    }
+    updateLogicalBits();
 }
 
 //-----------------------------------------------------------------------------
 // Function: BitSelectionDialog::onRightChanged()
 //-----------------------------------------------------------------------------
-void BitSelectionDialog::onRightChanged()
+void BitSelectionDialog::onLowerBoundChanged()
 {
-    if (rightBox_->value() > leftBox_->value())
+    if (lowerPhysicalBox_->value() > higherPhysicalBox_->value())
     {
-        leftBox_->setValue(rightBox_->value());
+        higherPhysicalBox_->setValue(lowerPhysicalBox_->value());
     }
 
-    if (leftBox_->value() - rightBox_->value() + 1 > maxSize_)
-    {
-        buttonBox_->button(QDialogButtonBox::Ok)->setEnabled(false);
-    }
-    else
-    {
-        buttonBox_->button(QDialogButtonBox::Ok)->setEnabled(true);
-    }
+    updateLogicalBits();
 }
 
 //-----------------------------------------------------------------------------
@@ -115,27 +114,58 @@ void BitSelectionDialog::onRightChanged()
 //-----------------------------------------------------------------------------
 void BitSelectionDialog::setupLayout()
 {
+    const int SPINBOX_MIN_WIDTH = 45;
+    higherLogicalBox_->setMinimumWidth(SPINBOX_MIN_WIDTH);
+    lowerLogicalBox_->setMinimumWidth(SPINBOX_MIN_WIDTH);
+    higherPhysicalBox_->setMinimumWidth(SPINBOX_MIN_WIDTH);
+    lowerPhysicalBox_->setMinimumWidth(SPINBOX_MIN_WIDTH);
+
     QVBoxLayout* topLayout = new QVBoxLayout(this);
-
-    QString labelText = "Physical port has size of " + QString::number(portSize_) + " bits, but only " + 
-        QString::number(maxSize_) + " bit(s) can be connected to logical signal.\n" +
-        "Select which physical bit(s) to connect:";
-    QLabel* descLabel = new QLabel(labelText, this);
-    descLabel->setWordWrap(true);
-    topLayout->addWidget(descLabel);
-
-    QHBoxLayout* indexLayout = new QHBoxLayout();
-    QLabel* downLabel = new QLabel(tr("downto"), this);
-    indexLayout->addWidget(leftBox_, 0 ,Qt::AlignLeft);
-    indexLayout->addWidget(downLabel, 0 ,Qt::AlignLeft);
-    indexLayout->addWidget(rightBox_, 0 ,Qt::AlignLeft);
-    indexLayout->addStretch();
-    topLayout->addLayout(indexLayout);
     
+    QGroupBox* group = new QGroupBox(tr("Select bit(s) to connect"), this);
+
+    QGridLayout* selectionLayout = new QGridLayout(group);
+    selectionLayout->addWidget(logicalNameLabel_, 0, 1, 1, 1);
+    selectionLayout->addWidget(physicalNameLabel_, 0, 2, 1, 1);
+
+    selectionLayout->addWidget(new QLabel(tr("Left (higher) bound")), 1, 0, 1, 1);    
+    selectionLayout->addWidget(higherLogicalBox_, 1, 1, 1, 1);
+    QHBoxLayout* higherPhysicalLayout = new QHBoxLayout();
+    higherPhysicalLayout->addWidget(higherPhysicalBox_);
+    higherPhysicalLayout->addStretch();
+    selectionLayout->addLayout(higherPhysicalLayout, 1, 2, 1, 1);
+
+    selectionLayout->addWidget(new QLabel(tr("Right (lower) bound")), 2, 0, 1, 1, Qt::AlignTop | Qt::AlignLeft);    
+    selectionLayout->addWidget(lowerLogicalBox_, 2, 1, 1, 1);
+    QHBoxLayout* lowerPhysicalLayout = new QHBoxLayout();
+    lowerPhysicalLayout->addWidget(lowerPhysicalBox_, 0, Qt::AlignTop | Qt::AlignLeft);
+    lowerPhysicalLayout->addStretch();
+    selectionLayout->addLayout(lowerPhysicalLayout, 2, 2, 1, 1, Qt::AlignTop | Qt::AlignLeft);
+
+    //selectionLayout->setColumnStretch(3, 1);
+    //selectionLayout->setRowStretch(2, 1);
+    
+    topLayout->addWidget(group);
     topLayout->addWidget(buttonBox_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: BitSelectionDialog::updateLogicalBits()
+//-----------------------------------------------------------------------------
+void BitSelectionDialog::updateLogicalBits()
+{
+    int physSize = higherPhysicalBox_->value() - lowerPhysicalBox_->value() + 1;
+    int lowerLogical = lowerLogicalBox_->value();
 
-
-
+    if (physSize > maxPhysPortSize_)
+    {
+        buttonBox_->button(QDialogButtonBox::Ok)->setEnabled(false);
+        higherLogicalBox_->setValue(lowerLogical + maxPhysPortSize_ - 1);       
+    }
+    else
+    {
+        buttonBox_->button(QDialogButtonBox::Ok)->setEnabled(true);
+        higherLogicalBox_->setValue(lowerLogical + physSize - 1);
+    }
+}
 

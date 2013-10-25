@@ -192,10 +192,10 @@ signals:
     void contentChanged();
 
     /*!
-     *  Emitted when modify-option changes.
+     *  Emitted when new logical port has been set.
      *
      */
-    void canModify(const bool);    
+    void logicalPortSet(QString const&);    
 
     /*!
      *  Emitted when an error message must be shown to user.
@@ -211,6 +211,11 @@ public slots:
      */
     void onSetLogicalSignal(QString const& logicalName);
 
+    /*!
+     *  Removes all port maps of a logical port.
+     *
+     *      @param [in] logicalName   The port whose mappings to remove.
+     */
     void onRemoveMapping(QString const& logicalName);
 
 private:

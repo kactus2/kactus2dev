@@ -47,7 +47,7 @@ view_(this),
 logicalView_(this),
 logicalModel_(libHandler, &model_, this),
 mappingLabel_(tr("Bit-field mapping"),this),
-mappingView_(this),
+mappingView_(component, this),
 mappingProxy_(this),
 mappingModel_(busif, component, libHandler, this),
 physicalView_(this),
@@ -143,8 +143,6 @@ showBitMapping_(false)
         this, SLOT(onLogicalChanged(const QModelIndex&)), Qt::UniqueConnection);
 
     // Connect signals from physical view.
-	connect(&physicalView_, SIGNAL(removeItem(const QModelIndex&)),
-		&physProxy_, SLOT(onConnectionsChanged()), Qt::UniqueConnection);
 	connect(&physicalView_, SIGNAL(makeConnection(const QStringList&, const QStringList&)),
 		this, SLOT(onMakeConnections(const QStringList&, const QStringList&)), Qt::UniqueConnection);
 	connect(&physicalView_, SIGNAL(moveItems(const QStringList&, const QModelIndex&)),
@@ -175,6 +173,8 @@ showBitMapping_(false)
     // Connect signals from bit-field mapping model.
     connect(&mappingModel_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);    
+    connect(&mappingModel_, SIGNAL(logicalPortSet(const QString&)),
+        &mappingView_, SLOT(onLogicalPortChanged(const QString&)), Qt::UniqueConnection);    
 
     // Connect signals from toolbar buttons.
 	connect(&cleanButton_, SIGNAL(clicked(bool)),

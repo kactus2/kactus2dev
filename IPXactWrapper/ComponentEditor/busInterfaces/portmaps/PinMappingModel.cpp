@@ -252,7 +252,7 @@ bool PinMappingModel::setData(const QModelIndex& index, const QVariant& value,
 
                     for (int i = lowerBound; i <= higherBound; i++)
                     {
-                        if (targetRow > rows_.size())
+                        if (targetRow >= rows_.size())
                         {
                             break;
                         }
@@ -264,7 +264,7 @@ bool PinMappingModel::setData(const QModelIndex& index, const QVariant& value,
                         }
                         targetRow++;
                     }
-                    emit dataChanged(index,createIndex(targetRow,PIN));                    
+                    emit dataChanged(index, createIndex(targetRow,PIN));                    
                     return true;
                 }
                 // Clear cell.
@@ -418,13 +418,13 @@ bool PinMappingModel::dropMimeData(const QMimeData *data,
                 } 
                 else
                 {
-                    BitSelectionDialog dialog(portSize, rowsLeft);
+                    BitSelectionDialog dialog(logicalPort_, targetRow, portName, portSize, rowsLeft);
                     if (dialog.exec() != QDialog::Accepted)
                     {
                         return false;
                     }
-                    left = dialog.getLeft();
-                    right = dialog.getRight();
+                    left = dialog.getHigherBound();
+                    right = dialog.getLowerBound();
                 }            
             } 
             General::PortBounds portData(portName, left, right);
@@ -548,7 +548,7 @@ void PinMappingModel::onSetLogicalSignal(QString const& logicalName)
     }
     endResetModel();
 
-    emit canModify(canEdit_);
+    emit logicalPortSet(logicalPort_);
 }
 
 //-----------------------------------------------------------------------------

@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include <QDialog>
+#include <QLabel>
 #include <QSpinBox>
 #include <QDialogButtonBox>
 
@@ -24,35 +25,50 @@ class BitSelectionDialog : public QDialog
 	Q_OBJECT
 
 public:
+
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] parent   The parent object.
+	 *      @param [in] logicalPort         Logical port name.
+	 *      @param [in] logicalBeginIndex   First logical bit to map.
+	 *      @param [in] physicalPort        Physical port name.
+	 *      @param [in] portSize            Physical port actual size.
+	 *      @param [in] maxBitsToMap        Maximum number of bits that can be mapped to logical.
+	 *      @param [in] parent              The parent widget.
 	 */
-	BitSelectionDialog(int portSize, int portMaxSize, QWidget *parent = 0);
+	BitSelectionDialog(QString logicalPort, int logicalBeginIndex, QString physicalPort, 
+        int portSize, int maxBitsToMap, QWidget *parent = 0);
 
 	/*!
 	 *  The destructor.
 	*/
 	~BitSelectionDialog();
 
-    int getLeft() const;
+    /*!
+     *  Gets the selected higher bound.
+     *
+     *      @return The higher bound.
+     */
+    int getHigherBound() const;
 
-    int getRight() const;
-
-protected:
+    /*!
+     *  Gets the selected lower bound.
+     *
+     *      @return The lower bound.
+     */
+    int getLowerBound() const;
 	
 private slots:
 
     /*!
      *  Called when the user changes left index.
      */
-    virtual void onLeftChanged();
+    virtual void onHigherBoundChanged();
 
     /*!
      *  Called when the user changes right index.
      */
-    virtual void onRightChanged();
+    virtual void onLowerBoundChanged();
 
 private:
 	// Disable copying.
@@ -64,19 +80,39 @@ private:
 	// Setup initial dialog layout.
     void setupLayout();
 
+    void updateLogicalBits();
+
 	//-----------------------------------------------------------------------------
 	// Data.
 	//-----------------------------------------------------------------------------
 
-    QSpinBox* leftBox_;
+    //! Label for logical name.
+    QLabel* logicalNameLabel_;
 
-    QSpinBox* rightBox_;
+    //! Label for physical name.
+    QLabel* physicalNameLabel_;
 
+    //! Editor for displaying higher logical bound.
+    QSpinBox* higherLogicalBox_;
+
+    //! Editor for displaying lower logical bound.
+    QSpinBox* lowerLogicalBox_;
+
+    //! Editor for higher physical bound.
+    QSpinBox* higherPhysicalBox_;
+
+    //! Editor for lower physical bound.
+    QSpinBox* lowerPhysicalBox_;
+
+    //! Dialog buttons.
     QDialogButtonBox* buttonBox_;
 
-    int portSize_;
+    //! Size of the physical port.
+    int physPortSize_;
 
-    int maxSize_;
+    //! Maximum size of the physical port.
+    int maxPhysPortSize_;
+
 };
 #endif // BITSELECTIONDIALOG_H
 

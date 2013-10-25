@@ -12,6 +12,8 @@
 #ifndef PINMAPPINGVIEW_H
 #define PINMAPPINGVIEW_H
 
+#include <models/component.h>
+
 #include <QDropEvent>
 #include <QTableView>
 #include <QMouseEvent>
@@ -33,17 +35,16 @@ public:
 	//! The minimum height for the view.
 	static const int MINIMUM_TABLE_HEIGHT = 100;
 
-
 	/*! The constructor
 	 *
-	 *  @param parent Pointer to the owner of this view.
+     *  @param [in] component   The component whose ports are edited.
+	 *  @param [in] parent      Pointer to the owner of this view.
 	 *
 	 */
-	PinMappingView(QWidget *parent);
+	PinMappingView(QSharedPointer<Component> component, QWidget *parent);
 	
 	//! The destructor
 	virtual ~PinMappingView();
-
 
     /*!
      *  Sets the source/proxy model for the view.
@@ -53,8 +54,16 @@ public:
      */
 	virtual void setModel(QAbstractItemModel* model);
 
-protected:
+public slots:
 
+    /*!
+     *  Called when the selected logical port changes.
+     *
+     *      @param [in] portName   Name of the new selected logical port.
+     */
+    virtual void onLogicalPortChanged(QString const& portName);
+
+protected:
 
 	//! Handler for key press events
 	virtual void keyPressEvent(QKeyEvent* event);
@@ -75,17 +84,24 @@ protected:
      */
     virtual void dragEnterEvent(QDragEnterEvent *event);
 
+    /*!
+     *  Handler for drop event. Either opens a menu on right-button drag or drops the 
+     *  data to the model on left-button drag.
+     *
+     *      @param [in] event   The drop event.
+     */
+    virtual void dropEvent(QDropEvent *event);
+
 	//! The point where mouse was clicked
 	QPoint pressedPoint_;
 
-	//! Action to clear selected cells
-	QAction clearAction_;
-
 protected slots:
-
 
 	//! Handler for cell clear action.
 	virtual void onClearAction(); 
+
+    //! Handler for select bits action.
+    virtual void onSelectBitsAction();
 
 private:
 
@@ -98,6 +114,22 @@ private:
 	//! Set up the actions for the context menu.
 	void setupActions();
 
+    //! The component being edited.
+    QSharedPointer<Component> component_;
+
+    //! The point where drag-drop ended.
+    QPoint dropPoint_;
+
+    //! The data drag-dropped onto the view.
+    QMimeData const* droppedData_;
+
+    //! Action to clear selected cells.
+    QAction clearAction_;
+
+    //! Action to select bits to connect.
+    QAction selectBitsAction_;
+
+    QString logicalPort_;
 };
 
 #endif // PINMAPPINGVIEW_H

@@ -14,6 +14,7 @@
 #include "PortMapsTreeItem.h"
 #include "PortMapsLogicalItem.h"
 #include "PortMapsBitMapItem.h"
+#include "BitSelectionDialog.h"
 
 #include <models/abstractiondefinition.h>
 #include <models/businterface.h>
@@ -25,7 +26,7 @@
 #include <QFont>
 #include <QIcon>
 #include <QSize>
-#include "BitSelectionDialog.h"
+
 
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeModel::PortMapsTreeModel()
@@ -400,11 +401,11 @@ void PortMapsTreeModel::createMap(const QString& physicalPort, const QString& lo
 
     if (physSize > logicalSize)
     {
-        BitSelectionDialog dialog(physSize, logicalSize);            
+        BitSelectionDialog dialog(logicalPort, 0, physicalPort, physSize, logicalSize);            
         if (dialog.exec() == QDialog::Accepted)
         {
-            physLeft = dialog.getLeft();
-            physRight = dialog.getRight();
+            physLeft = dialog.getHigherBound();
+            physRight = dialog.getLowerBound();
             physSize = abs(physLeft - physRight) + 1;
         }
         else

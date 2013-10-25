@@ -13,6 +13,7 @@
 
 #include "portmapsview.h"
 
+#include <QApplication>
 #include <QMimeData>
 #include <QDrag>
 
@@ -127,4 +128,31 @@ void PhysListView::dropEvent( QDropEvent* event )
 
 	// accept the drop
 	event->accept();
+}
+
+//-----------------------------------------------------------------------------
+// Function: physlistview::mouseMoveEvent()
+//-----------------------------------------------------------------------------
+void PhysListView::mouseMoveEvent( QMouseEvent* event ) {
+
+    // if either mouse button is pressed
+    if (event->buttons() == Qt::LeftButton || event->buttons() == Qt::RightButton) {
+
+        // calculate how much mouse was moved
+        int distance = (event->pos() - startPos_).manhattanLength();
+
+        // if the move distance is enough to start the drag
+        if (distance >= QApplication::startDragDistance())
+            performDrag();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: physlistview::mousePressEvent()
+//-----------------------------------------------------------------------------
+void PhysListView::mousePressEvent( QMouseEvent* event ) {
+
+    if (event->button() == Qt::LeftButton || event->buttons() == Qt::RightButton)
+        startPos_ = event->pos();
+    QListView::mousePressEvent(event);
 }

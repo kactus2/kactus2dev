@@ -45,13 +45,29 @@ protected:
 	 *
 	*/
 	virtual void dropEvent(QDropEvent* event);
+
+    /*! Handler for mouse move events.
+	 *
+	 * @param [in] event Pointer to the event object.
+	 *
+	*/
+
+    void mouseMoveEvent( QMouseEvent* event );
 	
+    /*! Handler for mouse press events.
+	 *
+	 * @param [in] event Pointer to the event object.
+	 *
+	*/
+    void mousePressEvent( QMouseEvent* event );
+
 private:
 	// No copying
 	PhysListView(const PhysListView& other);
 
 	// No assignment
 	PhysListView& operator=(const PhysListView& other);
+
 };
 
 #endif // PHYSLISTVIEW_H

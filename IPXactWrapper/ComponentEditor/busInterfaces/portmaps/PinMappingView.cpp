@@ -11,8 +11,11 @@
 
 #include "PinMappingView.h"
 
+#include "PinMappingModel.h"
 #include "physlistview.h"
 #include <LibraryManager/vlnv.h>
+#include <models/generaldeclarations.h>
+#include <IPXactWrapper/ComponentEditor/busInterfaces/portmaps/BitSelectionDialog.h>
 
 #include <QHeaderView>
 #include <QMenu>
@@ -31,14 +34,23 @@
 #include <QSize>
 #include <QHeaderView>
 
+Q_DECLARE_METATYPE(General::PortBounds)
+
 //-----------------------------------------------------------------------------
 // Function: PinMappingView::PinMappingView()
 //-----------------------------------------------------------------------------
-PinMappingView::PinMappingView(QWidget *parent)
-    : QTableView(parent),
+PinMappingView::PinMappingView(QSharedPointer<Component> component, QWidget *parent)
+    : component_(component),
+      QTableView(parent),
       pressedPoint_(),
-      clearAction_(tr("Clear"), this)
+      dropPoint_(),
+      droppedData_(0),
+      clearAction_(tr("Clear"), this),
+      selectBitsAction_(tr("Select bits to map"), this),
+    logicalPort_()
 {
+    Q_ASSERT(component_);
+    
 	// cells are resized to match contents 
 	horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 
@@ -137,10 +149,9 @@ void PinMappingView::dragEnterEvent(QDragEnterEvent *event)
     PhysListView* physView = dynamic_cast<PhysListView*>(event->source());
     if (physView != 0)
     {
-       event->accept();
+        event->accept();
     }
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: PinMappingView::setupActions()
@@ -153,6 +164,10 @@ void PinMappingView::setupActions() {
 		this, SLOT(onClearAction()), Qt::UniqueConnection);
 	clearAction_.setShortcut(QKeySequence::Delete);
 
+    selectBitsAction_.setToolTip(tr("Select physical bits to map"));
+    selectBitsAction_.setStatusTip(tr("Select physical bits to map"));
+    connect(&selectBitsAction_, SIGNAL(triggered()),
+        this, SLOT(onSelectBitsAction()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -169,6 +184,39 @@ void PinMappingView::onClearAction() {
 }
 
 
+//-----------------------------------------------------------------------------
+// Function: PinMappingView::onSelectBitsAction()
+//-----------------------------------------------------------------------------
+void PinMappingView::onSelectBitsAction()
+{
+    if (droppedData_ != 0 && droppedData_->hasText())
+    {
+        QModelIndex bitIndex = model()->index(indexAt(dropPoint_).row(), PinMappingModel::INDEX);
+        int targetBit = model()->data(bitIndex).toInt();
+
+        foreach (QString portName, droppedData_->text().split(';', QString::SkipEmptyParts))
+        {
+            if (component_->hasPort(portName))
+            {
+                int physLeft = component_->getPortLeftBound(portName);
+                int physRight = component_->getPortRightBound(portName);
+                int physSize = abs(physLeft - physRight) + 1;
+                int logicalBitsLeft = model()->rowCount() - targetBit;
+                BitSelectionDialog dialog(logicalPort_, targetBit, portName, physSize, logicalBitsLeft, this);
+                if (dialog.exec() == QDialog::Accepted)
+                {
+                    physLeft = dialog.getHigherBound();
+                    physRight = dialog.getLowerBound();
+                    physSize = abs(physLeft - physRight) + 1;
+
+                    General::PortBounds bound(portName, physLeft, physRight);
+                    model()->setData(model()->index(targetBit, PinMappingModel::PIN), QVariant::fromValue(bound));
+                    targetBit += physSize;
+                }
+            }
+        }    
+    }
+}
 
 //-----------------------------------------------------------------------------
 // Function: PinMappingView::setModel()
@@ -202,6 +250,43 @@ void PinMappingView::setModel( QAbstractItemModel* model ) {
 
         // set the width for the column
         setColumnWidth(i, qMax(contentSize, headerSize));
+    }
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: PinMappingView::onLogicalPortChanged()
+//-----------------------------------------------------------------------------
+void PinMappingView::onLogicalPortChanged(QString const& portName)
+{
+    logicalPort_ = portName;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PinMappingView::dropEvent()
+//-----------------------------------------------------------------------------
+void PinMappingView::dropEvent(QDropEvent *event)
+{
+    // If drag-drop with right mouse button, open menu.
+    if (event->mouseButtons() == Qt::RightButton)
+    {
+        dropPoint_ = event->pos();
+        QModelIndex index = indexAt(dropPoint_);
+        QMenu menu(this);
+
+        if (index.isValid()) {
+            menu.addAction(&selectBitsAction_);		
+        }	
+        if (event->mimeData()->hasText())
+        {
+            droppedData_ = event->mimeData(); 
+            menu.exec(mapToGlobal(event->pos() + QPoint(0, horizontalHeader()->height())));
+        }
+        event->accept();
+    }
+    else
+    {
+        QTableView::dropEvent(event);
     }
 }
 
