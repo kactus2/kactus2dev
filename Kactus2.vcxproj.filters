@@ -3865,22 +3865,10 @@
     <ClCompile Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PortListSortProxyModel.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PinMappingView.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_PinMappingView.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\BitSelectionDialog.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_BitSelectionDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PinMappingModel.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_PinMappingModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_PortMapsTreeItem.cpp">
@@ -3911,6 +3899,18 @@
       <Filter>Source Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PortMapsLogicalItem.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\BitMappingModel.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BitMappingModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BitMappingView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\BitMappingView.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5541,13 +5541,7 @@
     <CustomBuild Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PortListSortProxyModel.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
     </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PinMappingView.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
-    </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\BitSelectionDialog.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PinMappingModel.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PortMapsTreeItem.h">
@@ -5563,6 +5557,12 @@
       <Filter>Header Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\PortMapsLogicalItem.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\BitMappingModel.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\busInterfaces\portmaps\BitMappingView.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps</Filter>
     </CustomBuild>
   </ItemGroup>

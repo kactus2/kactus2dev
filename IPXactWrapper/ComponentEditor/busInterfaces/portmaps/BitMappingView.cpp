@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: PinMappingView.cpp
+// File: BitMappingView.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
@@ -9,9 +9,9 @@
 // View for bit-field mapping.
 //-----------------------------------------------------------------------------
 
-#include "PinMappingView.h"
+#include "BitMappingView.h"
 
-#include "PinMappingModel.h"
+#include "BitMappingModel.h"
 #include "physlistview.h"
 #include <LibraryManager/vlnv.h>
 #include <models/generaldeclarations.h>
@@ -37,9 +37,9 @@
 Q_DECLARE_METATYPE(General::PortBounds)
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingView::PinMappingView()
+// Function: BitMappingView::BitMappingView()
 //-----------------------------------------------------------------------------
-PinMappingView::PinMappingView(QSharedPointer<Component> component, QWidget *parent)
+BitMappingView::BitMappingView(QSharedPointer<Component> component, QWidget *parent)
     : component_(component),
       QTableView(parent),
       pressedPoint_(),
@@ -78,15 +78,15 @@ PinMappingView::PinMappingView(QSharedPointer<Component> component, QWidget *par
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingView::~PinMappingView()
+// Function: BitMappingView::~BitMappingView()
 //-----------------------------------------------------------------------------
-PinMappingView::~PinMappingView() {
+BitMappingView::~BitMappingView() {
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingView::keyPressEvent()
+// Function: BitMappingView::keyPressEvent()
 //-----------------------------------------------------------------------------
-void PinMappingView::keyPressEvent( QKeyEvent* event ) {
+void BitMappingView::keyPressEvent( QKeyEvent* event ) {
 
 	// call the base class implementation
 	QTableView::keyPressEvent(event);
@@ -97,9 +97,9 @@ void PinMappingView::keyPressEvent( QKeyEvent* event ) {
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingView::mousePressEvent()
+// Function: BitMappingView::mousePressEvent()
 //-----------------------------------------------------------------------------
-void PinMappingView::mousePressEvent( QMouseEvent* event ) {
+void BitMappingView::mousePressEvent( QMouseEvent* event ) {
 	pressedPoint_ = event->pos();
 
 	// if user clicked area that has no item
@@ -112,17 +112,17 @@ void PinMappingView::mousePressEvent( QMouseEvent* event ) {
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingView::mouseReleaseEvent()
+// Function: BitMappingView::mouseReleaseEvent()
 //-----------------------------------------------------------------------------
-void PinMappingView::mouseReleaseEvent( QMouseEvent* event ) {
+void BitMappingView::mouseReleaseEvent( QMouseEvent* event ) {
 	setCursor(QCursor(Qt::ArrowCursor));
 	QTableView::mouseReleaseEvent(event);
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingView::contextMenuEvent()
+// Function: BitMappingView::contextMenuEvent()
 //-----------------------------------------------------------------------------
-void PinMappingView::contextMenuEvent( QContextMenuEvent* event ) {
+void BitMappingView::contextMenuEvent( QContextMenuEvent* event ) {
 	pressedPoint_ = event->pos();
 
 	QModelIndex index = indexAt(pressedPoint_);
@@ -141,9 +141,9 @@ void PinMappingView::contextMenuEvent( QContextMenuEvent* event ) {
 
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingView::dragEnterEvent()
+// Function: BitMappingView::dragEnterEvent()
 //-----------------------------------------------------------------------------
-void PinMappingView::dragEnterEvent(QDragEnterEvent *event)
+void BitMappingView::dragEnterEvent(QDragEnterEvent *event)
 {
     // Accept drops only from physical port list.
     PhysListView* physView = dynamic_cast<PhysListView*>(event->source());
@@ -154,9 +154,9 @@ void PinMappingView::dragEnterEvent(QDragEnterEvent *event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingView::setupActions()
+// Function: BitMappingView::setupActions()
 //-----------------------------------------------------------------------------
-void PinMappingView::setupActions() {
+void BitMappingView::setupActions() {
 
 	clearAction_.setToolTip(tr("Clear the contents of a cell"));
 	clearAction_.setStatusTip(tr("Clear the contents of a cell"));
@@ -171,9 +171,9 @@ void PinMappingView::setupActions() {
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingView::onClearAction()
+// Function: BitMappingView::onClearAction()
 //-----------------------------------------------------------------------------
-void PinMappingView::onClearAction() {
+void BitMappingView::onClearAction() {
 	
 	QModelIndexList indexes = selectedIndexes();
 
@@ -185,13 +185,13 @@ void PinMappingView::onClearAction() {
 
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingView::onSelectBitsAction()
+// Function: BitMappingView::onSelectBitsAction()
 //-----------------------------------------------------------------------------
-void PinMappingView::onSelectBitsAction()
+void BitMappingView::onSelectBitsAction()
 {
     if (droppedData_ != 0 && droppedData_->hasText())
     {
-        QModelIndex bitIndex = model()->index(indexAt(dropPoint_).row(), PinMappingModel::INDEX);
+        QModelIndex bitIndex = model()->index(indexAt(dropPoint_).row(), BitMappingModel::INDEX);
         int targetBit = model()->data(bitIndex).toInt();
 
         foreach (QString portName, droppedData_->text().split(';', QString::SkipEmptyParts))
@@ -210,7 +210,7 @@ void PinMappingView::onSelectBitsAction()
                     physSize = abs(physLeft - physRight) + 1;
 
                     General::PortBounds bound(portName, physLeft, physRight);
-                    model()->setData(model()->index(targetBit, PinMappingModel::PIN), QVariant::fromValue(bound));
+                    model()->setData(model()->index(targetBit, BitMappingModel::BIT), QVariant::fromValue(bound));
                     targetBit += physSize;
                 }
             }
@@ -219,9 +219,9 @@ void PinMappingView::onSelectBitsAction()
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingView::setModel()
+// Function: BitMappingView::setModel()
 //-----------------------------------------------------------------------------
-void PinMappingView::setModel( QAbstractItemModel* model ) {
+void BitMappingView::setModel( QAbstractItemModel* model ) {
 	
 	// the base class implementation does most of the work
 	QTableView::setModel(model);
@@ -255,17 +255,17 @@ void PinMappingView::setModel( QAbstractItemModel* model ) {
 
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingView::onLogicalPortChanged()
+// Function: BitMappingView::onLogicalPortChanged()
 //-----------------------------------------------------------------------------
-void PinMappingView::onLogicalPortChanged(QString const& portName)
+void BitMappingView::onLogicalPortChanged(QString const& portName)
 {
     logicalPort_ = portName;
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingView::dropEvent()
+// Function: BitMappingView::dropEvent()
 //-----------------------------------------------------------------------------
-void PinMappingView::dropEvent(QDropEvent *event)
+void BitMappingView::dropEvent(QDropEvent *event)
 {
     // If drag-drop with right mouse button, open menu.
     if (event->mouseButtons() == Qt::RightButton)

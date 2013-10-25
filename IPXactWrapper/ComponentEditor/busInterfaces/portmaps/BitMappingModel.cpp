@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: PinMappingModel.cpp
+// File: BitMappingModel.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
@@ -9,7 +9,7 @@
 // Table model for bit field mapping.
 //-----------------------------------------------------------------------------
 
-#include "PinMappingModel.h"
+#include "BitMappingModel.h"
 
 #include <QStringList>
 #include <QColor>
@@ -44,9 +44,9 @@ namespace
 Q_DECLARE_METATYPE(General::PortBounds)
 
     //-----------------------------------------------------------------------------
-    // Function: PinMappingModel()
+    // Function: BitMappingModel()
     //-----------------------------------------------------------------------------
-    PinMappingModel::PinMappingModel(BusInterface* busif,
+    BitMappingModel::BitMappingModel(BusInterface* busif,
     QSharedPointer<Component> component,
     LibraryInterface* libHandler, 
     QObject* parent)
@@ -67,16 +67,16 @@ Q_DECLARE_METATYPE(General::PortBounds)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~PinMappingModel()
+// Function: ~BitMappingModel()
 //-----------------------------------------------------------------------------
-PinMappingModel::~PinMappingModel()
+BitMappingModel::~BitMappingModel()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: rowCount()
 //-----------------------------------------------------------------------------
-int PinMappingModel::rowCount(const QModelIndex& parent /*= QModelIndex()*/ ) const
+int BitMappingModel::rowCount(const QModelIndex& parent /*= QModelIndex()*/ ) const
 {
     if (parent.isValid()) {
         return 0;
@@ -88,7 +88,7 @@ int PinMappingModel::rowCount(const QModelIndex& parent /*= QModelIndex()*/ ) co
 //-----------------------------------------------------------------------------
 // Function: columnCount()
 //-----------------------------------------------------------------------------
-int PinMappingModel::columnCount(const QModelIndex& parent /*= QModelIndex()*/ ) const
+int BitMappingModel::columnCount(const QModelIndex& parent /*= QModelIndex()*/ ) const
 {
     if (parent.isValid()) {
         return 0;
@@ -100,7 +100,7 @@ int PinMappingModel::columnCount(const QModelIndex& parent /*= QModelIndex()*/ )
 //-----------------------------------------------------------------------------
 // Function: data()
 //-----------------------------------------------------------------------------
-QVariant PinMappingModel::data(const QModelIndex& index, 
+QVariant BitMappingModel::data(const QModelIndex& index, 
     int role /*= Qt::DisplayRole*/ ) const
 {
     if ( !index.isValid() )
@@ -121,7 +121,7 @@ QVariant PinMappingModel::data(const QModelIndex& index,
             {
                 return index.row();
             }
-        case PIN : 
+        case BIT : 
             {                
                 if (rows_.at(index.row()).isEmpty())
                 {
@@ -160,7 +160,7 @@ QVariant PinMappingModel::data(const QModelIndex& index,
     {      
         if ((index.column() == INDEX && !canEdit_) ||
             (canEdit_ && index.row()  == rows_.size() - 1) ||          
-            (index.column() == PIN && rows_.at(index.row()).isEmpty()))
+            (index.column() == BIT && rows_.at(index.row()).isEmpty()))
         {
             return QColor("gray");
         }  
@@ -179,7 +179,7 @@ QVariant PinMappingModel::data(const QModelIndex& index,
 
     else if ( role == Qt::EditRole )
     {
-        if (index.column() == PIN)
+        if (index.column() == BIT)
         {
             return data(index, Qt::DisplayRole);
         }
@@ -196,7 +196,7 @@ QVariant PinMappingModel::data(const QModelIndex& index,
 //-----------------------------------------------------------------------------
 // Function: headerData()
 //-----------------------------------------------------------------------------
-QVariant PinMappingModel::headerData(int section, Qt::Orientation orientation, 
+QVariant BitMappingModel::headerData(int section, Qt::Orientation orientation, 
     int role /*= Qt::DisplayRole*/ ) const
 {
     if ( orientation != Qt::Horizontal )
@@ -219,7 +219,7 @@ QVariant PinMappingModel::headerData(int section, Qt::Orientation orientation,
 //-----------------------------------------------------------------------------
 // Function: setData()
 //-----------------------------------------------------------------------------
-bool PinMappingModel::setData(const QModelIndex& index, const QVariant& value, 
+bool BitMappingModel::setData(const QModelIndex& index, const QVariant& value, 
     int role /*Qt::EditRole*/ )
 {
     if (!index.isValid())
@@ -231,7 +231,7 @@ bool PinMappingModel::setData(const QModelIndex& index, const QVariant& value,
         return false;
     }
 
-    else if ( index.column() != PIN )
+    else if ( index.column() != BIT )
     {
         return false;
     }
@@ -241,7 +241,7 @@ bool PinMappingModel::setData(const QModelIndex& index, const QVariant& value,
         switch (index.column()) 
         {
 
-        case PIN :
+        case BIT :
             {                
                 if(value.canConvert<General::PortBounds>())
                 {
@@ -264,7 +264,7 @@ bool PinMappingModel::setData(const QModelIndex& index, const QVariant& value,
                         }
                         targetRow++;
                     }
-                    emit dataChanged(index, createIndex(targetRow,PIN));                    
+                    emit dataChanged(index, createIndex(targetRow,BIT));                    
                     return true;
                 }
                 // Clear cell.
@@ -290,7 +290,7 @@ bool PinMappingModel::setData(const QModelIndex& index, const QVariant& value,
 //-----------------------------------------------------------------------------
 // Function: setHeaderData()
 //-----------------------------------------------------------------------------
-bool PinMappingModel::setHeaderData( int section, Qt::Orientation orientation, 
+bool BitMappingModel::setHeaderData( int section, Qt::Orientation orientation, 
     const QVariant & value, int role /*= Qt::EditRole*/ )
 {
     if( orientation != Qt::Horizontal )
@@ -316,14 +316,14 @@ bool PinMappingModel::setHeaderData( int section, Qt::Orientation orientation,
 //-----------------------------------------------------------------------------
 // Function: flags()
 //-----------------------------------------------------------------------------
-Qt::ItemFlags PinMappingModel::flags(const QModelIndex& index) const
+Qt::ItemFlags BitMappingModel::flags(const QModelIndex& index) const
 {
     if ( !index.isValid() )
     {
         return Qt::NoItemFlags;
     }
 
-    if (index.column() == PIN)
+    if (index.column() == BIT)
     {
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
     }
@@ -334,25 +334,25 @@ Qt::ItemFlags PinMappingModel::flags(const QModelIndex& index) const
 //-----------------------------------------------------------------------------
 // Function: isValid()
 //-----------------------------------------------------------------------------
-bool PinMappingModel::isValid() const
+bool BitMappingModel::isValid() const
 {
     return true;
 }
 
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingModel::supportedDropActions()
+// Function: BitMappingModel::supportedDropActions()
 //-----------------------------------------------------------------------------
-Qt::DropActions PinMappingModel::supportedDropActions() const
+Qt::DropActions BitMappingModel::supportedDropActions() const
 {
     return Qt::CopyAction | Qt::MoveAction;
 }
 
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingModel::mimeTypes()
+// Function: BitMappingModel::mimeTypes()
 //-----------------------------------------------------------------------------
-QStringList PinMappingModel::mimeTypes() const
+QStringList BitMappingModel::mimeTypes() const
 {
     QStringList types = QAbstractTableModel::mimeTypes();
     types << "text/plain";
@@ -360,9 +360,9 @@ QStringList PinMappingModel::mimeTypes() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingModel::dropMimeData()
+// Function: BitMappingModel::dropMimeData()
 //-----------------------------------------------------------------------------
-bool PinMappingModel::dropMimeData(const QMimeData *data, 
+bool BitMappingModel::dropMimeData(const QMimeData *data, 
     Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
     if ( action == Qt::IgnoreAction)
@@ -429,7 +429,7 @@ bool PinMappingModel::dropMimeData(const QMimeData *data,
             } 
             General::PortBounds portData(portName, left, right);
 
-            setData(index(targetRow, PIN), QVariant::fromValue(portData));
+            setData(index(targetRow, BIT), QVariant::fromValue(portData));
             targetRow += abs(left - right) + 1;
         }
 
@@ -444,9 +444,9 @@ bool PinMappingModel::dropMimeData(const QMimeData *data,
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingModel::mapLast()
+// Function: BitMappingModel::mapLast()
 //-----------------------------------------------------------------------------
-void PinMappingModel::mapToEnd(QStringList portNames)
+void BitMappingModel::mapToEnd(QStringList portNames)
 {
     int endIndex = rows_.size();
     if (canEdit_)
@@ -468,9 +468,9 @@ void PinMappingModel::mapToEnd(QStringList portNames)
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingModel::onSetLogicalSignal()
+// Function: BitMappingModel::onSetLogicalSignal()
 //-----------------------------------------------------------------------------
-void PinMappingModel::onSetLogicalSignal(QString const& logicalName)
+void BitMappingModel::onSetLogicalSignal(QString const& logicalName)
 {
     if (!logicalPort_.isEmpty())
     {
@@ -552,9 +552,9 @@ void PinMappingModel::onSetLogicalSignal(QString const& logicalName)
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingModel::onRemoveMapping()
+// Function: BitMappingModel::onRemoveMapping()
 //-----------------------------------------------------------------------------
-void PinMappingModel::onRemoveMapping(QString const& logicalName)
+void BitMappingModel::onRemoveMapping(QString const& logicalName)
 {
     bool setPrevious = logicalPort_ == logicalName;
     if (setPrevious)
@@ -575,9 +575,9 @@ void PinMappingModel::onRemoveMapping(QString const& logicalName)
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingModel::setAbsType()
+// Function: BitMappingModel::setAbsType()
 //-----------------------------------------------------------------------------
-void PinMappingModel::setAbsType(const VLNV& absDefVlnv, General::InterfaceMode mode)
+void BitMappingModel::setAbsType(const VLNV& absDefVlnv, General::InterfaceMode mode)
 {
     if (!absDefVlnv.isValid())
     {
@@ -610,17 +610,17 @@ void PinMappingModel::setAbsType(const VLNV& absDefVlnv, General::InterfaceMode 
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingModel::getLogicalSignal()
+// Function: BitMappingModel::getLogicalSignal()
 //-----------------------------------------------------------------------------
-QString PinMappingModel::getLogicalSignal() const
+QString BitMappingModel::getLogicalSignal() const
 {
     return logicalPort_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingModel::getPortMaps()
+// Function: BitMappingModel::getPortMaps()
 //-----------------------------------------------------------------------------
-QList< QSharedPointer<General::PortMap> > PinMappingModel::getPortMaps() const
+QList< QSharedPointer<General::PortMap> > BitMappingModel::getPortMaps() const
 {                    
     QList<QSharedPointer<General::PortMap> > mappings;
 
@@ -713,9 +713,9 @@ QList< QSharedPointer<General::PortMap> > PinMappingModel::getPortMaps() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingModel::addRows()
+// Function: BitMappingModel::addRows()
 //-----------------------------------------------------------------------------
-void PinMappingModel::addRows(int count)
+void BitMappingModel::addRows(int count)
 {
     int lastRow = rows_.size() + count - 1;
 
@@ -728,9 +728,9 @@ void PinMappingModel::addRows(int count)
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingModel::removeRows()
+// Function: BitMappingModel::removeRows()
 //-----------------------------------------------------------------------------
-void PinMappingModel::removeRows(int count)
+void BitMappingModel::removeRows(int count)
 {
     int lastRemovedRow = rows_.size() - count;
 
@@ -743,9 +743,9 @@ void PinMappingModel::removeRows(int count)
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingModel::addEditRow()
+// Function: BitMappingModel::addEditRow()
 //-----------------------------------------------------------------------------
-void PinMappingModel::addEditRow()
+void BitMappingModel::addEditRow()
 {
     if (canEdit_){
         QList<General::PortBounds> pins;
@@ -757,9 +757,9 @@ void PinMappingModel::addEditRow()
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingModel::removeEditRow()
+// Function: BitMappingModel::removeEditRow()
 //-----------------------------------------------------------------------------
-void PinMappingModel::removeEditRow()
+void BitMappingModel::removeEditRow()
 {
     if (canEdit_)
     {
@@ -773,9 +773,9 @@ void PinMappingModel::removeEditRow()
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingModel::hasDuplicates()
+// Function: BitMappingModel::hasDuplicates()
 //-----------------------------------------------------------------------------
-bool PinMappingModel::hasDuplicates(General::PortBounds connection, int row) const
+bool BitMappingModel::hasDuplicates(General::PortBounds connection, int row) const
 {
     foreach (General::PortBounds pins, rows_.value(row))
     {
@@ -791,9 +791,9 @@ bool PinMappingModel::hasDuplicates(General::PortBounds connection, int row) con
 
 
 //-----------------------------------------------------------------------------
-// Function: PinMappingModel::checkDirectionForPorts()
+// Function: BitMappingModel::checkDirectionForPorts()
 //-----------------------------------------------------------------------------
-bool PinMappingModel::checkDirectionForPorts(QStringList const& ports)
+bool BitMappingModel::checkDirectionForPorts(QStringList const& ports)
 {
     QStringList incompatiblePorts;
     foreach (QString portName, ports)

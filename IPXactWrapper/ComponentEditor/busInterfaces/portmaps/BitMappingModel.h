@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: PinMappingModel.h
+// File: BitMappingModel.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
@@ -9,8 +9,8 @@
 // Table model for bit field mapping.
 //-----------------------------------------------------------------------------
 
-#ifndef PINMAPPINGMODEL_H
-#define PINMAPPINGMODEL_H
+#ifndef BITMAPPINGMODEL_H
+#define BITMAPPINGMODEL_H
 
 #include <QList>
 #include <QAbstractTableModel>
@@ -24,9 +24,9 @@ class Component;
 class LibraryInterface;
 
 //-----------------------------------------------------------------------------
-//! PinMappingModel class.
+//! BitMappingModel class.
 //-----------------------------------------------------------------------------
-class PinMappingModel : public QAbstractTableModel
+class BitMappingModel : public QAbstractTableModel
 {
     Q_OBJECT
 
@@ -36,18 +36,18 @@ public:
     enum Columns
     {        
         INDEX,
-        PIN,
+        BIT,
         COLUMN_COUNT
     };
 
     //! The constructor.
-    PinMappingModel(BusInterface* busif,
+    BitMappingModel(BusInterface* busif,
         QSharedPointer<Component> component,
         LibraryInterface* libHandler, 
         QObject* parent = 0);
 
     //! The destructor.
-    virtual ~PinMappingModel();
+    virtual ~BitMappingModel();
 	
 	/*! Get the number of rows in the model.
 	 *
@@ -221,10 +221,10 @@ public slots:
 private:
 
     //! No copying.
-	PinMappingModel(const PinMappingModel& other);
+	BitMappingModel(const BitMappingModel& other);
 
 	//! No assignment.
-	PinMappingModel& operator=(const PinMappingModel& other);
+	BitMappingModel& operator=(const BitMappingModel& other);
 
     /*!
      *  Adds empty rows to the end of the model.
@@ -304,4 +304,4 @@ private:
 
 };
 
-#endif // PINMAPPINGMODEL_H
+#endif // BITMAPPINGMODEL_H

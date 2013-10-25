@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: PinMappingView.h
+// File: BitMappingView.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
@@ -9,8 +9,8 @@
 // View for bit-field mapping.
 //-----------------------------------------------------------------------------
 
-#ifndef PINMAPPINGVIEW_H
-#define PINMAPPINGVIEW_H
+#ifndef BITMAPPINGVIEW_H
+#define BITMAPPINGVIEW_H
 
 #include <models/component.h>
 
@@ -25,9 +25,9 @@
 
 
 //-----------------------------------------------------------------------------
-// class PinMappingView.
+// class BitMappingView.
 //-----------------------------------------------------------------------------
-class PinMappingView : public QTableView {
+class BitMappingView : public QTableView {
 	Q_OBJECT
 
 public:
@@ -41,10 +41,10 @@ public:
 	 *  @param [in] parent      Pointer to the owner of this view.
 	 *
 	 */
-	PinMappingView(QSharedPointer<Component> component, QWidget *parent);
+	BitMappingView(QSharedPointer<Component> component, QWidget *parent);
 	
 	//! The destructor
-	virtual ~PinMappingView();
+	virtual ~BitMappingView();
 
     /*!
      *  Sets the source/proxy model for the view.
@@ -106,10 +106,10 @@ protected slots:
 private:
 
 	//! No copying
-	PinMappingView(const PinMappingView& other);
+	BitMappingView(const BitMappingView& other);
 
 	//! No assignment
-	PinMappingView& operator=(const PinMappingView& other);
+	BitMappingView& operator=(const BitMappingView& other);
 
 	//! Set up the actions for the context menu.
 	void setupActions();
@@ -132,4 +132,4 @@ private:
     QString logicalPort_;
 };
 
-#endif // PINMAPPINGVIEW_H
+#endif // BITMAPPINGVIEW_H

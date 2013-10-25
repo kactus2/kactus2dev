@@ -22,9 +22,9 @@
 #include <models/businterface.h>
 #include <models/generaldeclarations.h>
 #include <models/component.h>
-#include <IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PinMappingModel.h>
+#include <IPXactWrapper/ComponentEditor/busInterfaces/portmaps/BitMappingModel.h>
 #include <IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h>
-#include <IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PinMappingView.h>
+#include <IPXactWrapper/ComponentEditor/busInterfaces/portmaps/BitMappingView.h>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -201,13 +201,13 @@ private:
     QLabel mappingLabel_;
 
     //! The bit-level mapping view.
-    PinMappingView mappingView_;
+    BitMappingView mappingView_;
 
     //! The sorting proxy for bit-level mapping.
     QSortFilterProxyModel mappingProxy_;
 
     //! The model to present bit-level mapping.
-    PinMappingModel mappingModel_;
+    BitMappingModel mappingModel_;
 
 	//! The view to display the physical ports.
 	PhysListView physicalView_;

@@ -87,7 +87,7 @@ showBitMapping_(false)
     // Set view to be sortable.
     mappingProxy_.setSortCaseSensitivity(Qt::CaseInsensitive);
     mappingView_.setSortingEnabled(true);
-    mappingView_.sortByColumn(PinMappingModel::INDEX, Qt::AscendingOrder);
+    mappingView_.sortByColumn(BitMappingModel::INDEX, Qt::AscendingOrder);
 
     hideConnectedBox_.setCheckState(Qt::Checked);
 
