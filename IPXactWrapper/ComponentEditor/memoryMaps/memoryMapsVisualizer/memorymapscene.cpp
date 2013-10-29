@@ -57,6 +57,7 @@ void MemoryMapScene::removeMemGraphItem( MemoryMapGraphItem* memGraphItem ) {
 //-----------------------------------------------------------------------------
 void MemoryMapScene::rePosition() {
 	qreal yCoordinate = 0;
+    qreal yMax = 0;
 	MemoryMapGraphItem* previous = 0;
 	foreach (MemoryMapGraphItem* memMap, memGraphItems_) {        
 
@@ -71,10 +72,14 @@ void MemoryMapScene::rePosition() {
 
 		memMap->setPos(0, yCoordinate);
         memMap->setWidth(width_);
+        yMax = qMax(yMax, memMap->itemTotalRect().bottom());
 		previous = memMap;
 	}
 
-	// tell view to draw the items
+	// Update scene rect height.   
+    QRectF rect = sceneRect();
+    rect.setBottom(yMax);
+    setSceneRect(rect);
 	invalidate();
 }
 
@@ -85,11 +90,13 @@ void MemoryMapScene::setWidth(int width)
 {
     if (width > VisualizerItem::DEFAULT_WIDTH)
     {
-        width_ = width - MemoryVisualizationItem::CHILD_INDENTATION;
+        width_ = width - MemoryVisualizationItem::CHILD_INDENTATION;        
+        rePosition();        
+
+        // Update scene rect width.
         QRectF rect = sceneRect();
         rect.setWidth(width);
-        setSceneRect(rect);
-        rePosition();
+        setSceneRect(rect);        
     }
 }
 
