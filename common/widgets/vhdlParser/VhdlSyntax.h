@@ -22,7 +22,7 @@ namespace VhdlSyntax {
     const QString ENDLINE = "(\\r\\n?|\\n\\r?)";
 
     //! VHDL comment.
-    const QString COMMENT = "[-][-]" + SPACE + "([^\\r\\n]*)";
+    const QString COMMENT = "[-][-]" + SPACE + "([^\\r\\n]*)(?=" +ENDLINE + ")";
    
     //! VHDL port and generic names are separated using a colon (,).
     const QString NAMES = "\\w+(?:\\s*[,]?\\s*\\w+)*";
@@ -33,15 +33,22 @@ namespace VhdlSyntax {
     //! Supported mathematical operations in math expressions.
     const QString OPERATIONS = "[+-/*/]|[/*][/*]";
 
+    //! Supported std_logic values.
+    const QString STD_ULOGIC = "['][U|X|0|1|Z|W|L|H|-][']";
+
+    //! Others is used to initialize a group of bits in std_logic_vector.
+    const QString OTHERS_EXP = "[(]\\s*others\\s*=>\\s*" + STD_ULOGIC + "\\s*[)]";
+
     //! Mathematical expressions e.g. x or x + y.
     const QString MATH_EXP = "(?:\\w+)(?:\\s*(?:" + OPERATIONS + ")\\s*(?:\\w+))*";
-    
+        
     //! VHDL port type definition is <typename>[(<left> downto <right>)].
     const QString PORT_TYPE = "(?:\\w+)(?:\\s*[(]\\s*(?:" + MATH_EXP +
                               ")\\s+\\w+\\s+(?:" + MATH_EXP + ")\\s*[)])?";
 
-    //! VHDL default value definition.
-    const QString DEFAULT = "[:][=]\\s*((?:" + MATH_EXP + ")|[^\\s:;]+)";
+    //! VHDL default value definition is mathematical expression, vector assignment with others, logical value
+    // or other string value.
+    const QString DEFAULT = "[:][=]\\s*((?:" + MATH_EXP + ")|" + OTHERS_EXP + "|[^\\s:;]+)";
 
     //! VHDL pragmas begin like comments with -- followed by a reserved word.
     const QString PRAGMA = "[-][-]" + SPACE + "(?:PRAGMA|SYNTHESIS|SYNOPSYS)[^\\r\\n]*";
@@ -63,7 +70,7 @@ namespace VhdlSyntax {
 
     //! Ports are declared inside entity by PORT ( <port_declarations> );
     const QRegExp PORTS_BEGIN_EXP = QRegExp("(PORT)\\s*[(]", Qt::CaseInsensitive);
-    const QRegExp PORTS_END_EXP = QRegExp("[)]\\s*[;](?=\\s*(?:" + COMMENT + "*\\s*)*(END|BEGIN|GENERIC))", 
+    const QRegExp PORTS_END_EXP = QRegExp("[)]\\s*[;](?=\\s*(?:" + COMMENT + "\\s*)*(END|BEGIN|GENERIC))", 
                                             Qt::CaseInsensitive);
 
     /*! Port declaration is <port_names> : <direction> <type> [<default>] [pragma] ; [description]    
