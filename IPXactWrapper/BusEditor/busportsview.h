@@ -7,6 +7,8 @@
 #ifndef BUSPORTSVIEW_H
 #define BUSPORTSVIEW_H
 
+#include <common/views/EditableTableView/editabletableview.h>
+
 #include <QTableView>
 #include <QKeyEvent>
 #include <QContextMenuEvent>
@@ -16,7 +18,7 @@
 /*! \brief The view that displays the contents of the BusPortsModel
  *
  */
-class BusPortsView : public QTableView {
+class BusPortsView : public EditableTableView {
 	Q_OBJECT
 
 public:
@@ -39,27 +41,18 @@ public:
 
 signals:
 
-	//! \brief The given items should be removed from the model
-    void removeItems(const QModelIndexList& indexes);
-
-	//! \brief The given items should be copied in the model
-    void copyItems(const QModelIndexList& indexes);
+	//! \brief 
+    void addSignalOptions();
 
 protected:
 
 	//! \brief Handler for key press events
-	virtual void keyPressEvent(QKeyEvent* event);
+	//virtual void keyPressEvent(QKeyEvent* event);
 
 	//! \brief Handler for context menu events
 	virtual void contextMenuEvent(QContextMenuEvent* e);
 
-private slots:
-
-	//! \brief Handler for remove action triggers
-	void onRemove();
-
-	//! \brief Handler for copy action triggers
-	void onCopy();
+    QAction addOptionsAction_;
 
 private:
 	//! \brief No copying
@@ -72,10 +65,10 @@ private:
 	void setupActions();
 
 	//! \brief Action to remove all selected indexes.
-	QAction removeAction_;
+	//QAction removeAction_;
 
 	//! \brief Action to copy all selected indexes.
-	QAction copyAction_;
+	//QAction copyAction_;
 };
 
 #endif // BUSPORTSVIEW_H

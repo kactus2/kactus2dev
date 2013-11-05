@@ -6,22 +6,24 @@
 
 #include "busportsview.h"
 
-#include "busportsdelegate.h"
+
 
 #include <QHeaderView>
 #include <QMenu>
 
 BusPortsView::BusPortsView(QWidget *parent):
-QTableView(parent),
-removeAction_(tr("Remove"), this),
-copyAction_(tr("Copy"), this) {
+EditableTableView(parent),
+addOptionsAction_(tr("Add signal options"), this)
+//removeAction_(tr("Remove"), this),
+//copyAction_(tr("Copy"), this) 
+{
 
-	horizontalHeader()->setStretchLastSection(true);
+	/*horizontalHeader()->setStretchLastSection(true);
 	horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 	horizontalHeader()->setMinimumSectionSize(70);
+*/
 
-	setItemDelegate(new BusPortsDelegate(this));
-
+/*
 	setSelectionMode(QAbstractItemView::ExtendedSelection);
 	setSelectionBehavior(QAbstractItemView::SelectRows);
 
@@ -30,13 +32,17 @@ copyAction_(tr("Copy"), this) {
 	setWordWrap(true);
 	
 	setSortingEnabled(false);
-
+*/
 	setupActions();
 }
 
 BusPortsView::~BusPortsView() {
 }
 
+QModelIndexList BusPortsView::selected() const {
+    return selectedIndexes();
+}
+/*
 void BusPortsView::keyPressEvent( QKeyEvent* event ) {
 	// if delete was pressed
 	if (event->key() == Qt::Key_Delete) {
@@ -46,39 +52,41 @@ void BusPortsView::keyPressEvent( QKeyEvent* event ) {
 	// call the default implementation
 	QTableView::keyPressEvent(event);
 }
+*/
+void BusPortsView::contextMenuEvent( QContextMenuEvent* event ) {
+    pressedPoint_ = event->pos();
 
-void BusPortsView::contextMenuEvent( QContextMenuEvent* e ) {
-	QMenu contextMenu(this);
-	contextMenu.addAction(&copyAction_);
-	contextMenu.addAction(&removeAction_);
+    QModelIndex index = indexAt(pressedPoint_);
 
-	QModelIndexList indexes = selectedIndexes();
+    QMenu menu(this);
+    if (index.isValid()) {
+        menu.addAction(&addOptionsAction_);
+        menu.addSeparator();
+    }
+    menu.addAction(&addAction_);
+    
+    // if at least one valid item is selected
+    if (index.isValid()) {        
+        menu.addAction(&removeAction_);
+        menu.addAction(&clearAction_);
+        menu.addAction(&copyAction_);    
+    }
+    menu.addAction(&pasteAction_);
 
-	// if no indexes are selected
-	if (indexes.isEmpty())
-		return;
+    if (impExportable_) {
+        menu.addSeparator();
+        menu.addAction(&importAction_);
+        menu.addAction(&exportAction_);
+    }
 
-	contextMenu.exec(e->globalPos());
-	e->accept();
+    menu.exec(event->globalPos());
+
+    event->accept();
 }
 
 void BusPortsView::setupActions() {
 
-	connect(&removeAction_, SIGNAL(triggered()),
-		this, SLOT(onRemove()), Qt::UniqueConnection);
-
-	connect(&copyAction_, SIGNAL(triggered()),
-		this, SLOT(onCopy()), Qt::UniqueConnection);
-}
-
-void BusPortsView::onRemove() {
-	emit removeItems(selectedIndexes());
-}
-
-void BusPortsView::onCopy() {
-	emit copyItems(selectedIndexes());
-}
-
-QModelIndexList BusPortsView::selected() const {
-	return selectedIndexes();
+    connect(&addOptionsAction_, SIGNAL(triggered()), this, 
+        SIGNAL(addSignalOptions()), Qt::UniqueConnection);
+    
 }

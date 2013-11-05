@@ -300,6 +300,8 @@ public slots:
 	*/
 	void removeIndexes(const QModelIndexList& indexes);
 
+void onRemoveItem(QModelIndex const& index);
+
 	/*! \brief Copy the items with given indexes in the model.
 	 *
 	 * \param indexes List of QModelIndexes that identify items to copy.

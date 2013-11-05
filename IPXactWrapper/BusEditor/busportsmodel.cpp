@@ -89,39 +89,49 @@ QVariant BusPortsModel::data( const QModelIndex& index,
 		}
 	}
 	else if (role == Qt::BackgroundRole) {
-		int topIndex = index.row();
+        if (index.column() == 0) {
+            return QColor("LemonChiffon");
+        }
 
-		// find the index that is the first index for this port
-		while (topIndex > 0 && topIndex < table_.size()) {
+        int topIndex = index.row();
 
-			// if the next port is different port
-			if (table_.at(topIndex - 1).name_ != table_.at(index.row()).name_)
-				break;
-			
-			// if the next port is the same port
-			else
-				--topIndex;
-		}
+        // find the index that is the first index for this port
+        while (topIndex > 0 && topIndex < table_.size()) {
 
-		// the first item has white back ground
-		if (topIndex == 0)
-			return QColor("white");
+            // if the next port is different port
+            if (table_.at(topIndex - 1).name_ != table_.at(index.row()).name_)
+                break;
 
-		// index for the previous port
-		QModelIndex previous = QAbstractTableModel::index(--topIndex, 0, QModelIndex());
+            // if the next port is the same port
+            else
+                --topIndex;
+        }
 
-		// color of the previous port
-		QColor previousColor = data(previous, Qt::BackgroundRole).value<QColor>();
+        // the first item has white back ground
+        if (topIndex == 0)
+            return QColor("white");
 
-		// return a color that is different from previous port
-		if (previousColor == QColor("white"))
-			return QColor("lightgrey");
-		else
-			return QColor("white");
-	}
+        // index for the previous port
+        QModelIndex previous = QAbstractTableModel::index(--topIndex, 1, QModelIndex());
 
-	else
-		return QVariant();
+        // color of the previous port
+        QColor previousColor = data(previous, Qt::BackgroundRole).value<QColor>();
+
+        // return a color that is different from previous port
+        if (previousColor == QColor("white"))
+        {
+            return QColor("lightgrey");
+        }
+        else
+        {
+            return QColor("white");
+        }
+    }
+
+    else
+    {
+        return QVariant();
+    }
 }
 
 QVariant BusPortsModel::headerData( int section,
@@ -843,6 +853,26 @@ void BusPortsModel::removeIndexes(const QModelIndexList& indexes ) {
 	endResetModel();
 
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::onRemoveItem()
+//-----------------------------------------------------------------------------
+void BusPortsModel::onRemoveItem(QModelIndex const& index)
+{
+    if (index.row() >= 0 && index.row() <= table_.size()) {
+        // find the port for the index
+        BusPortsModel::Port port = table_.at(index.row());
+
+        if (table_.contains(port)) {
+            beginRemoveRows(QModelIndex(), index.row(), index.row());
+                int index = table_.indexOf(port);
+            table_.removeAt(index);
+            endRemoveRows();
+
+            emit contentChanged();        
+        }       
+    }
 }
 
 void BusPortsModel::copyIndexes( const QModelIndexList& indexes ) {

@@ -8,6 +8,8 @@
 #include "absdefgroup.h"
 #include <LibraryManager/libraryinterface.h>
 
+#include "busportsdelegate.h"
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFileDialog>
@@ -18,25 +20,17 @@
 
 AbsDefGroup::AbsDefGroup(LibraryInterface* handler, QWidget *parent): 
 QGroupBox(tr("Signals (Abstraction Definition)"), parent),
-newSignalButton_(tr("Add new signal"), this),
-newSignalOptionsButton_(tr("Add new signal options"), this),
-importButton_(tr("Import csv"), this),
-exportButton_(tr("Export csv"), this),
 portView_(this),
 portModel_(this),
 handler_(handler),
 absDef_() {
 
 	portView_.setModel(&portModel_);
+	portView_.setItemDelegate(new BusPortsDelegate(this));
+    portView_.setAllowImportExport(true);
 
-	connect(&newSignalButton_, SIGNAL(clicked(bool)),
-		&portModel_, SLOT(addSignal()), Qt::UniqueConnection);
-	connect(&newSignalOptionsButton_, SIGNAL(clicked(bool)),
+	connect(&portView_, SIGNAL(addSignalOptions()),
 		this, SLOT(onAddSignalOptions()), Qt::UniqueConnection);
-	connect(&importButton_, SIGNAL(clicked(bool)),
-		this, SLOT(onImport()), Qt::UniqueConnection);
-	connect(&exportButton_, SIGNAL(clicked(bool)),
-		this, SLOT(onExport()), Qt::UniqueConnection);
 	
 	connect(&portModel_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -47,10 +41,15 @@ absDef_() {
 	connect(&portModel_, SIGNAL(errorMessage(const QString&)),
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 
-	connect(&portView_, SIGNAL(removeItems(const QModelIndexList&)),
+    connect(&portView_, SIGNAL(addItem(const QModelIndex&)),
+        &portModel_, SLOT(addSignal()), Qt::UniqueConnection);
+    connect(&portView_, SIGNAL(removeItem(const QModelIndex&)),
+        &portModel_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+
+	/*connect(&portView_, SIGNAL(removeItems(const QModelIndexList&)),
 		&portModel_, SLOT(removeIndexes(const QModelIndexList&)), Qt::UniqueConnection);
 	connect(&portView_, SIGNAL(copyItems(const QModelIndexList&)),
-		&portModel_, SLOT(copyIndexes(const QModelIndexList&)), Qt::UniqueConnection);		
+		&portModel_, SLOT(copyIndexes(const QModelIndexList&)), Qt::UniqueConnection);		*/
 
 	setupLayout();
 }
@@ -119,16 +118,8 @@ void AbsDefGroup::save() {
 }
 
 void AbsDefGroup::setupLayout() {
-	QHBoxLayout* buttonLayout = new QHBoxLayout();
-	buttonLayout->addStretch();
-	buttonLayout->addWidget(&newSignalButton_);
-	buttonLayout->addWidget(&newSignalOptionsButton_);
-	buttonLayout->addWidget(&importButton_);
-	buttonLayout->addWidget(&exportButton_);
-	buttonLayout->addStretch();
 
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
-	topLayout->addLayout(buttonLayout);
 	topLayout->addWidget(&portView_, 1);
 }
 

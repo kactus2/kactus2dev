@@ -89,18 +89,6 @@ private:
 
 	void setupLayout();
 
-	//! \brief Button to add new signals
-	QPushButton newSignalButton_;
-
-	//! \brief Button to add new signal with options
-	QPushButton newSignalOptionsButton_;
-
-	//! \brief Button to import a csv-file
-	QPushButton importButton_;
-
-	//! \brief Button to export a csv-file
-	QPushButton exportButton_;
-
 	//! \brief The table view to display the logical signals
 	BusPortsView portView_;
 
