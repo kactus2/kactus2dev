@@ -136,7 +136,18 @@ void BusPortsDelegate::setEditorData( QWidget* editor,
 
 	switch (index.column()) {
 		// name and comment or default value
-		case 0:
+		case 0: {
+            QLineEdit* line = qobject_cast<QLineEdit*>(editor);
+            Q_ASSERT_X(line, "BusPortsDelegate::setEditorData",
+                "Type conversion failed for QLineEdit");
+
+            QString text = index.model()->data(index, Qt::DisplayRole).toString();
+            if (QString::compare(text, "unnamed") != 0)
+            {
+                line->setText(text);
+            }            
+            break;
+            }
         case 2:
 		case 8:
 		case 3: {

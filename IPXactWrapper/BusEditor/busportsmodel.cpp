@@ -50,8 +50,15 @@ QVariant BusPortsModel::data( const QModelIndex& index,
 	if (role == Qt::DisplayRole) {
 
 		switch (index.column()) {
-		case 0: {
-			return table_.at(index.row()).name_;
+        case 0: {
+            if (table_.at(index.row()).name_.isEmpty())
+            {
+                return "unnamed";
+            }
+            else
+            {
+                return table_.at(index.row()).name_;
+            }
 				}
 		case 1: {
 			return portQualifier2Str(table_.at(index.row()).qualifier_);
@@ -127,11 +134,15 @@ QVariant BusPortsModel::data( const QModelIndex& index,
             return QColor("white");
         }
     }
-
-    else
+    else if (role == Qt::ForegroundRole)
     {
-        return QVariant();
+        if (table_.at(index.row()).name_.isEmpty())
+        {
+            return QColor("red");
+        }
     }
+
+    return QVariant();
 }
 
 QVariant BusPortsModel::headerData( int section,
