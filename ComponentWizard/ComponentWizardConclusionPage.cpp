@@ -82,9 +82,12 @@ void ComponentWizardConclusionPage::initializePage()
     libraryLabel_->setText(vlnv->getLibrary());
     nameLabel_->setText(vlnv->getName());
     versionLabel_->setText(vlnv->getVersion());    
-    hierarchyLabel_->setText(KactusAttribute::valueToString(parent_->getComponent()->getComponentHierarchy()));
-    firmnessLabel_->setText(KactusAttribute::valueToString(parent_->getComponent()->getComponentFirmness()));
-    
+    if (parent_->getComponent()->getComponentImplementation() == KactusAttribute::KTS_HW)
+    {
+        hierarchyLabel_->setText(KactusAttribute::valueToString(parent_->getComponent()->getComponentHierarchy()));
+        firmnessLabel_->setText(KactusAttribute::valueToString(parent_->getComponent()->getComponentFirmness()));
+    }
+
 	QString xmlPath = handler_->getPath(*parent_->getComponent()->getVlnv());
     directoryLabel_->setText(xmlPath);  
     authorLabel_->setText(parent_->getComponent()->getAuthor());
@@ -165,15 +168,18 @@ void ComponentWizardConclusionPage::setupLayout()
     layout->addWidget(versionLabel_,row,1,1,1);
     row++;
 
-    QLabel* hierarchyTitleLabel = new QLabel("<b>Product Hierarchy:</b>", this);
-    layout->addWidget(hierarchyTitleLabel,row,0,1,1,Qt::AlignTop);    
-    layout->addWidget(hierarchyLabel_,row,1,1,1);
-    row++;
+    if (parent_->getComponent()->getComponentImplementation() == KactusAttribute::KTS_HW)
+    {
+        QLabel* hierarchyTitleLabel = new QLabel("<b>Product Hierarchy:</b>", this);
+        layout->addWidget(hierarchyTitleLabel,row,0,1,1,Qt::AlignTop);    
+        layout->addWidget(hierarchyLabel_,row,1,1,1);
+        row++;
 
-    QLabel* firmnessTitleLabel = new QLabel("<b>Firmness:</b>", this);
-    layout->addWidget(firmnessTitleLabel,row,0,1,1,Qt::AlignTop);    
-    layout->addWidget(firmnessLabel_,row,1,1,1);
-    row++;
+        QLabel* firmnessTitleLabel = new QLabel("<b>Firmness:</b>", this);
+        layout->addWidget(firmnessTitleLabel,row,0,1,1,Qt::AlignTop);    
+        layout->addWidget(firmnessLabel_,row,1,1,1);
+        row++;
+    }
 
     QLabel* directoryTitleLabel = new QLabel("<b>Directory:</b>", this);
     layout->addWidget(directoryTitleLabel,row,0,1,1,Qt::AlignTop);    
