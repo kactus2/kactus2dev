@@ -485,7 +485,7 @@ int Port::getRightBound() const {
 }
 
 int Port::getPortSize() const {
-	return (getLeftBound() - getRightBound() +1);
+	return abs(getLeftBound() - getRightBound()) +1;
 }
 
 QString Port::getDefaultValue() const {
