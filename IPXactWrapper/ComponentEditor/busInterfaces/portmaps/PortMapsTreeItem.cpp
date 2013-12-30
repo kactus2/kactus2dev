@@ -70,6 +70,39 @@ QVariant PortMapsTreeItem::data(int section) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortMapsTreeItem::isValid()
+//-----------------------------------------------------------------------------
+bool PortMapsTreeItem::isValid() const
+{    
+    // Item is valid, if all childs are valid.
+    for(int i = 0; i < getChildCount(); i++)
+    {
+        if (!getChild(i)->isValid())
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapsTreeItem::isValid()
+//-----------------------------------------------------------------------------
+bool PortMapsTreeItem::isValid(QStringList& errorList) const
+{
+    bool valid = true;
+    // Item is valid, if all childs are valid.
+    for(int i = 0; i < getChildCount(); i++)
+    {
+        if (!getChild(i)->isValid(errorList))
+        {
+            valid = false;
+        }
+    }
+    return valid;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortMapsTreeItem::getChild()
 //-----------------------------------------------------------------------------
 PortMapsTreeItem* PortMapsTreeItem::getChild(int index)
@@ -106,7 +139,7 @@ int PortMapsTreeItem::getChildCount() const
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeItem::getParent()
 //-----------------------------------------------------------------------------
-PortMapsTreeItem* PortMapsTreeItem::getParent()
+PortMapsTreeItem* PortMapsTreeItem::getParent() const
 {
     return parent_;
 }

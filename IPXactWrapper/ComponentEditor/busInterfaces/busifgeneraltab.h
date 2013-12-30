@@ -55,6 +55,15 @@ public:
 	*/
 	virtual bool isValid() const;
 
+    /*!
+     * Check for the validity of the edited item.
+     *
+     * \param errorList The list to add possible error messages to.
+     *
+     * \return True if item is valid
+     */
+    virtual bool isValid(QStringList& errorList) const; 
+
 	/*! \brief Restore the changes made in the editor back to ones in the model.
 	*
 	*/
@@ -71,6 +80,12 @@ public:
 	 * \return VLNV that is set for the current abstraction type.
 	*/
 	VLNV getAbsType() const;
+
+	/*! \brief Set the abstraction type mandatory or not.
+	 *
+	 * \param isMandatory Whether abstraction type is mandatory or not.
+	*/
+    void setAbsTypeMandatory(bool isMandatory);
 
 signals:
 

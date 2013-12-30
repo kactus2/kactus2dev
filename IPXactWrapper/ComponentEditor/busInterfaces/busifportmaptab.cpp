@@ -37,7 +37,7 @@ BusIfPortmapTab::BusIfPortmapTab( LibraryInterface* libHandler,
 								 BusInterface* busif, 
 								 QWidget* parent ):
 QWidget(parent), 
-mode_(BusIfPortmapTab::ONE2ONE),
+mode_(BusIfPortmapTab::ONE2MANY),
 portMap_(),
 busif_(busif),
 component_(component), 
@@ -55,6 +55,7 @@ physProxy_(component, this),
 physModel_(component, &model_, this),
 cleanButton_(QIcon(":/icons/graphics/cleanup.png"), tr("Clean up"), this),
 connectButton_(QIcon(":/icons/graphics/connect.png"), tr("Connect"), this),
+showAllButton_(tr("Show all ports"), this),
 // One to one and one to many removed as obsolete.
 /*one2OneButton_(tr("1 to 1"), this),
 one2ManyButton_(tr("1 to many"), this),*/
@@ -100,6 +101,8 @@ showBitMapping_(false)
 	logicalModel_.removePorts(model_.logicalPorts());
 
 	setupLayout();
+
+    showAllButton_.setVisible(false);
 
     inButton_.setToolTip(tr("Filter ports by direction in"));
     outButton_.setToolTip(tr("Filter ports by direction out"));
@@ -185,6 +188,8 @@ showBitMapping_(false)
         this, SLOT(toggleMappingVisibility()), Qt::UniqueConnection);
     connect(&hideConnectedBox_, SIGNAL(toggled(bool)), 
         &physProxy_, SLOT(setFilterHideConnected(bool)), Qt::UniqueConnection);
+    connect(&showAllButton_, SIGNAL(clicked(bool)), 
+        this, SLOT(onShowAll()), Qt::UniqueConnection);
 
     // One to one and one to many removed as obsolete.
 	/*connect(&one2OneButton_, SIGNAL(clicked(bool)),
@@ -207,10 +212,20 @@ bool BusIfPortmapTab::isValid() const {
 }
 
 //-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::isValid()
+//-----------------------------------------------------------------------------
+bool BusIfPortmapTab::isValid(QStringList& errorList) const
+{
+	return model_.isValid(errorList);
+}
+
+//-----------------------------------------------------------------------------
 // Function: BusIfPortmapTab::refresh()
 //-----------------------------------------------------------------------------
 void BusIfPortmapTab::refresh() {
 	view_.update();
+
+    model_.reset();    
 
 	// the lists are refreshed
 	onRefresh();
@@ -263,6 +278,7 @@ void BusIfPortmapTab::setupLayout() {
 	buttonLayout->addWidget(&cleanButton_, 0, Qt::AlignLeft);
 	buttonLayout->addWidget(&connectButton_, 0 , Qt::AlignLeft);
     buttonLayout->addWidget(&showHideMappingButton_, 0 , Qt::AlignLeft);
+    buttonLayout->addWidget(&showAllButton_, 0 , Qt::AlignLeft);
     buttonLayout->addWidget(&hideConnectedBox_, 0 , Qt::AlignLeft);
 	buttonLayout->addStretch();
 
@@ -454,6 +470,16 @@ void BusIfPortmapTab::setAbsType( const VLNV& vlnv, General::InterfaceMode mode 
 }
 
 //-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::setPhysicalPorts()
+//-----------------------------------------------------------------------------
+void BusIfPortmapTab::setPhysicalPorts(QStringList const& ports)
+{
+    physProxy_.setFilterPorts(ports);
+    showAllButton_.setVisible(!ports.isEmpty());
+    onRefresh();
+}
+
+//-----------------------------------------------------------------------------
 // Function: BusIfPortmapTab::onMakeConnections()
 //-----------------------------------------------------------------------------
 void BusIfPortmapTab::onMakeConnections( const QStringList& physicals, 
@@ -471,7 +497,7 @@ void BusIfPortmapTab::onMakeConnections( const QStringList& physicals,
     // One to one and one to many removed as obsolete.
 	//if (mode_ == BusIfPortmapTab::ONE2ONE) {
 
-    for (int i = 0; i < physicals.size() && i < logicals.size(); ++i) {
+    /*for (int i = 0; i < physicals.size() && i < logicals.size(); ++i) {
 
         // do not connect empty port names
         if (physicals.at(i).isEmpty() || logicals.at(i).isEmpty())
@@ -485,9 +511,9 @@ void BusIfPortmapTab::onMakeConnections( const QStringList& physicals,
             physProxy_.onPortConnected(physicals.at(i));
         }
     }
-	/*}
+	}
 	// if mode is one to many
-	else {
+	else {*/
 
 		foreach (QString physical, physicals) {
 			if (physical.isEmpty())
@@ -503,10 +529,11 @@ void BusIfPortmapTab::onMakeConnections( const QStringList& physicals,
 					model_.createMap(physical, logical);
 
 					logicalModel_.removePort(logical);
+                    physProxy_.onPortConnected(physical);
 				}
 			}
 		}
-	}*/
+	//}
 }
 
 
@@ -521,10 +548,19 @@ void BusIfPortmapTab::onLogicalChanged(const QModelIndex& index)
 }
 
 //-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::onShowAll()
+//-----------------------------------------------------------------------------
+void BusIfPortmapTab::onShowAll()
+{    
+    // Clear physical port filter.
+    physProxy_.setFilterPorts(QStringList());
+    showAllButton_.setVisible(false);
+}
+
+//-----------------------------------------------------------------------------
 // Function: BusIfPortmapTab::focusInEvent()
 //-----------------------------------------------------------------------------
 void BusIfPortmapTab::showEvent(QShowEvent* event) {
     QWidget::showEvent(event);
     emit helpUrlRequested("componenteditor/portmaps.html");
 }
-

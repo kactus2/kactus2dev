@@ -64,7 +64,7 @@ bool BusInterfacesEditor::isValid() const {
 }
 
 void BusInterfacesEditor::refresh() {
-	view_.update();
+	view_.setModel(&model_);
 }
 
 void BusInterfacesEditor::showEvent( QShowEvent* event ) {

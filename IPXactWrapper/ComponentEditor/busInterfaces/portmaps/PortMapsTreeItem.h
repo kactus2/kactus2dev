@@ -77,6 +77,23 @@ public:
     virtual QVariant data(int section) const;
 
     /*!
+     *  Checks the validity of the item. Default implementation checks all child items.
+     *
+     *      @return True, if all childs are valid, otherwise false.
+     */
+    virtual bool isValid() const;
+
+    /*!
+     *  Checks the validity of the item. Default implementation checks all child items.
+     *
+     *      @param [inout] errorList   The list to add the possible error messages to.
+     *
+     *      @return True, if all childs are valid, otherwise false.
+     */
+    virtual bool isValid(QStringList& errorList) const;
+
+
+    /*!
      *  Inserts an item.
      *
      *      @param [in] item The item to insert.
@@ -112,7 +129,7 @@ public:
     /*!
      *  Returns the parent item.
      */
-    PortMapsTreeItem* getParent();
+    PortMapsTreeItem* getParent() const;
 
     /*!
      *  Returns the index of this item.

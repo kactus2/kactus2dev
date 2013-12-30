@@ -41,12 +41,32 @@ bool ComponentEditorBusInterfaceItem::isValid() const {
 		return false;
 	}
 
-	// if there is an abstraction definition then check that it is found
-	else if (busif_->getAbstractionType().isValid()) {
-		if (!libHandler_->contains(busif_->getAbstractionType())) {
-			return false;
-		}
-	}
+    // if there is an abstraction definition then check that it is found
+    else if (busif_->getAbstractionType().isValid()) {
+        if (!libHandler_->contains(busif_->getAbstractionType())) {
+            return false;
+        }
+
+        QSharedPointer<LibraryComponent> libComp = libHandler_->getModel(busif_->getAbstractionType());
+        QSharedPointer<AbstractionDefinition> absDef = libComp.dynamicCast<AbstractionDefinition>();
+
+        if (absDef)
+        {
+            // If the port directions in port map do not match.
+            foreach (QSharedPointer<General::PortMap> portMap, busif_->getPortMaps())
+            {
+                General::Direction logDir = absDef->getPortDirection(portMap->logicalPort_, busif_->getInterfaceMode());
+
+                General::Direction physDir =  component_->getPortDirection(portMap->physicalPort_);
+                if (logDir != General::INOUT &&
+                    physDir != General::INOUT &&
+                    physDir != logDir) 
+                {
+                    return false;
+                }        
+            }
+        }
+    }
 
 	return true;
 }

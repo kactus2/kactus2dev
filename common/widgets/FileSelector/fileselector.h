@@ -17,7 +17,7 @@
 /*! \brief Used to select one file from the component's file sets.
  *
  */
-class FileSelector : public QComboBox {
+class KACTUS2_API FileSelector : public QComboBox {
 	Q_OBJECT
 
 public:

@@ -40,6 +40,10 @@ absDef_() {
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 	connect(&portModel_, SIGNAL(errorMessage(const QString&)),
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+    connect(&portModel_, SIGNAL(portRenamed(const QString&, const QString&)), 
+        this, SIGNAL(portRenamed(const QString&, const QString&)), Qt::UniqueConnection);
+    connect(&portModel_, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), 
+        this, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), Qt::UniqueConnection);
 
     connect(&portView_, SIGNAL(addItem(const QModelIndex&)),
         &portModel_, SLOT(addSignal()), Qt::UniqueConnection);

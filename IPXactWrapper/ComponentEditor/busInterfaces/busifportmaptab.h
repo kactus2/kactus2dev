@@ -76,6 +76,14 @@ public:
 	*/
 	virtual bool isValid() const;
 
+	/*! Check for the validity of the edited item.
+	*
+    *      @param [inout] errorList   The list to add the possible error messages to.
+    *
+	*      @return True if item is valid.
+	*/
+	virtual bool isValid(QStringList& errorList) const;
+
 	/*! Restore the changes made in the editor back to ones in the model.
 	*
 	*/
@@ -88,6 +96,13 @@ public:
 	 * @return void
 	*/
 	virtual void setAbsType(const VLNV& vlnv, General::InterfaceMode mode);
+
+    /*!
+     *  Sets a subset of component ports to be visible in the physical port list.
+     *
+     *      @param [in] ports   List of port names to show.
+     */
+    virtual void setPhysicalPorts(QStringList const& ports);
 
 public slots:
 
@@ -156,6 +171,9 @@ private slots:
      */
     void toggleMappingVisibility();
 
+    //! Handler for show all button clicks.
+    void onShowAll();
+
 private:
 	
 	//! No copying
@@ -223,6 +241,9 @@ private:
 
 	//! The button to connect the selected logical and physical ports.
 	QPushButton connectButton_;
+
+    //! The button to clear port filter.
+    QPushButton showAllButton_;
 
 	//! The button to select the one to one connection mode.
     // One to one and one to many removed as obsolete.

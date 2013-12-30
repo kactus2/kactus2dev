@@ -67,15 +67,11 @@ public:
      */
     void refresh();
 
-    /*!
-     *  Begins reset.
-     */
-    void beginReset();
 
     /*!
-     *  Ends reset.
+     *  Resets the model and restores the port maps from the component.
      */
-    void endReset();    
+    void reset();
 
    	/*! Create a port map for given ports
 	 *
@@ -178,10 +174,18 @@ public:
     /*!
      *  Evaluates the validness of the model.
      *
-     *
      *      @return True, if everything is valid, otherwise false.
      */
     bool isValid() const;
+
+    /*!
+     *  Evaluates the validness of the model.
+     *
+     *      @param [inout] errorList The list to add the possible error messages to.
+     *
+     *      @return True, if everything is valid, otherwise false.
+     */
+    bool isValid(QStringList& errorList) const;
 
 	/*! Get list of logical ports in this model.
 	 *

@@ -59,6 +59,14 @@ bool ParameterGroupBox::isValid() const {
 	return model_.isValid();
 }
 
+//-----------------------------------------------------------------------------
+// Function: ParameterGroupBox::isValid()
+//-----------------------------------------------------------------------------
+bool ParameterGroupBox::isValid(QStringList& errorList, const QString& parentIdentifier) const
+{
+    return model_.isValid(errorList, parentIdentifier);
+}
+
 void ParameterGroupBox::refresh() {
 	view_.update();
 }

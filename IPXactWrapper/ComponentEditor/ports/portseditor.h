@@ -14,6 +14,7 @@
 #include <models/port.h>
 
 #include "portsmodel.h"
+#include "PortsView.h"
 
 #include <QPushButton>
 #include <QSortFilterProxyModel>
@@ -68,7 +69,15 @@ public:
 
 signals:
 
+    /*!
+     *  Emitted when a locked port is removed from the model.
+     */
     void lockedPortRemoved(QSharedPointer<Port> removedPort);
+
+    /*!
+     *  Emitted when a new interface should be added to the component editor tree view.
+     */
+    void createInterface();
 
 public slots:
 
@@ -98,6 +107,22 @@ protected:
     //! Called when the editor is shown.
     virtual void showEvent(QShowEvent* event);
 
+private slots:
+
+    /*!
+     *  Handler for new interface creation for new bus definition.
+     *
+     *      @param [in] selectedPorts   Ports to be mapped in the interface.
+     */
+    virtual void onCreateNewInteface(QStringList const& selectedPorts);
+
+    /*!
+     *  Handler for new interface creation for existing bus definition.
+     *
+     *      @param [in] selectedPorts   Ports to be mapped in the interface.
+     */
+    virtual void onCreateInterface(QStringList const& selectedPorts);
+
 private:
 
 	//! \brief No copying
@@ -113,13 +138,15 @@ private:
 	QPushButton exportButton_;
 
 	//! \brief The view that displays the parameters.
-	EditableTableView view_;
+	PortsView view_;
 
 	//! \brief The model that holds the data to be displayed to the user
 	PortsModel model_;
 
 	//! \brief Pointer to the proxy that is used to sort the view
 	QSortFilterProxyModel proxy_;
+
+    QSharedPointer<Component> component_; 
 
 	//! \brief Pointer to the instance that manages the library.
 	LibraryInterface* handler_;

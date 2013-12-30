@@ -18,6 +18,9 @@
 #include <QCoreApplication>
 #include <QFile>
 
+//-----------------------------------------------------------------------------
+// Function: BusEditor::BusEditor()
+//-----------------------------------------------------------------------------
 BusEditor::BusEditor( QWidget *parent, 
 					 LibraryInterface* libHandler,
 					 QSharedPointer<BusDefinition> busDef, 
@@ -30,8 +33,8 @@ absDef_(absDef),
 busDefGroup_(this),
 absDefGroup_(libHandler ,this) {
 
-	Q_ASSERT_X(busDef_, "BusEditor constructor",
-		"Null Bus Definition pointer given as parameter");
+	//Q_ASSERT_X(busDef_, "BusEditor constructor",
+	//	"Null Bus Definition pointer given as parameter");
 
 	// if abstraction definition is being edited
 	if (absDef_) {
@@ -42,8 +45,12 @@ absDefGroup_(libHandler ,this) {
 		absDefGroup_.setDisabled(true);
 	}
 
-	busDefGroup_.setBusDef(busDef_);
-	busDefGroup_.setDisabled(disableBusDef);
+    if (busDef_)
+    {
+        busDefGroup_.setBusDef(busDef_);
+    } 
+    	
+	busDefGroup_.setDisabled(!busDef_ || disableBusDef);
 
 	setupLayout();
 
@@ -55,15 +62,30 @@ absDefGroup_(libHandler ,this) {
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&absDefGroup_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+    connect(&absDefGroup_, SIGNAL(portRenamed(const QString&, const QString&)), 
+        this, SIGNAL(portRenamed(const QString&, const QString&)), Qt::UniqueConnection);
+    connect(&absDefGroup_, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), 
+        this, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), Qt::UniqueConnection);
 
-    VLNV const* vlnv = busDef_->getVlnv();
-    setDocumentName(vlnv->getName() + " (" + vlnv->getVersion() + ")");
     setDocumentType(tr("Bus"));
 
-    // Open in unlocked mode by default only if the version is draft.
-    setProtection(vlnv->getVersion() != "draft");
+    if (busDef_)
+    {
+        VLNV const* vlnv = busDef_->getVlnv();
+        setDocumentName(vlnv->getName() + " (" + vlnv->getVersion() + ")");
+
+        // Open in unlocked mode by default only if the version is draft.
+        setProtection(vlnv->getVersion() != "draft");
+    }
+    else
+    {
+        setProtection(true);
+    }    
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusEditor::~BusEditor()
+//-----------------------------------------------------------------------------
 BusEditor::~BusEditor() {
 }
 
@@ -92,6 +114,9 @@ bool BusEditor::validate(QStringList& errorList)
     return valid;
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusEditor::save()
+//-----------------------------------------------------------------------------
 bool BusEditor::save() {
 
 	// if abstraction definition is being edited
@@ -111,6 +136,9 @@ bool BusEditor::save() {
 	return TabDocument::save();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusEditor::saveAs()
+//-----------------------------------------------------------------------------
 bool BusEditor::saveAs() {
 
     // Ask the user for a new VLNV along with the directory.
@@ -201,6 +229,9 @@ bool BusEditor::saveAs() {
 	return TabDocument::saveAs();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusEditor::setupLayout()
+//-----------------------------------------------------------------------------
 void BusEditor::setupLayout() {
 
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
@@ -208,6 +239,9 @@ void BusEditor::setupLayout() {
 	topLayout->addWidget(&absDefGroup_, 1);
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusEditor::getDocumentVLNV()
+//-----------------------------------------------------------------------------
 VLNV BusEditor::getDocumentVLNV() const {
 
 	// if abstraction definition is being edited then use it as the identifier.
@@ -216,8 +250,13 @@ VLNV BusEditor::getDocumentVLNV() const {
 	}
 
 	// if only bus definition is being edited then use it as identifier.
-	else {
-		return *busDef_->getVlnv();
+	else if (busDef_)
+	{
+	    return *busDef_->getVlnv();	
+    }
+    else
+	{
+	    return VLNV();
 	}
 }
 
@@ -239,6 +278,41 @@ void BusEditor::showEvent(QShowEvent* event)
     emit helpUrlRequested("definitions/busdefinition.html");
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusEditor::getIdentifyingVLNV()
+//-----------------------------------------------------------------------------
 VLNV BusEditor::getIdentifyingVLNV() const {
 	return getDocumentVLNV();
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusEditor::setBusDef()
+//-----------------------------------------------------------------------------
+void BusEditor::setBusDef(QSharedPointer<BusDefinition> busDef)
+{
+    Q_ASSERT_X(busDef, "BusEditor setBusDef",
+        "Null Bus Definition pointer given as parameter");
+
+    busDef_ = busDef;
+
+    busDefGroup_.setBusDef(busDef_);
+    busDefGroup_.setDisabled(false);
+
+    VLNV const* vlnv = busDef_->getVlnv();
+    setDocumentName(vlnv->getName() + " (" + vlnv->getVersion() + ")");
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusEditor::setAbsDef()
+//-----------------------------------------------------------------------------
+void BusEditor::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
+{
+    absDef_ = absDef;
+    // if abstraction definition is being edited
+    if (absDef_) 
+    {
+        absDefGroup_.setAbsDef(absDef_);
+    }
+     
+    absDefGroup_.setDisabled(!absDef_);    
 }

@@ -48,6 +48,14 @@ public:
 	*/
 	PortMode str2PortMode(const QString& str) const;
 
+	/*! \brief Convert a PortMode to interface mode
+	 *
+	 * \param mode The PortMode to convert.
+	 *
+	 * \return The mode that matches the PortMode.
+	*/
+    General::InterfaceMode portMode2Mode(const PortMode mode) const;
+
 	//! \brief Enum PortDirection is used to select the direction of a port.
 	enum PortDirection {
 		DIRECTION_IN = 0,
@@ -333,6 +341,12 @@ signals:
 
 	//! \brief Sends notification to be printed to user.
 	void noticeMessage(const QString& msg);
+
+    //! \brief Inform that a port abstraction has been renamed.
+    void portRenamed(const QString& oldName, const QString& newName);
+
+    //! \brief Inform that a port abstraction has been removed.
+    void portRemoved(const QString& portName, const General::InterfaceMode mode);
 
 private:
 	//! \brief No copying

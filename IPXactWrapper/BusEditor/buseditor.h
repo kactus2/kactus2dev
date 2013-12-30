@@ -65,6 +65,19 @@ public:
 	*/
 	virtual VLNV getDocumentVLNV() const;
 
+    /*! \brief Sets the edited bus definition.
+     * 
+     * \param busDef   The bus definition to set. Must not be NULL.
+     */
+    virtual void setBusDef(QSharedPointer<BusDefinition> busDef);
+
+    /*!
+     *  Sets the edited abstraction definition.
+     *
+     *  \param absDef   The absraction definition to set.
+     */
+    virtual void setAbsDef(QSharedPointer<AbstractionDefinition> absDef);
+
 public slots:
     /*!
      *  Validates the document against the IP-XACT standard.
@@ -80,6 +93,14 @@ public slots:
 
 	//! \brief Saves the document as new object and resets modifies state
 	virtual bool saveAs();
+
+signals:
+
+    //! \brief Inform that a port abstraction has been renamed.
+    void portRenamed(const QString& oldName, const QString& newName);
+
+    //! \brief Inform that a port abstraction has been removed.
+    void portRemoved(const QString& portName, const General::InterfaceMode mode);
 
 protected:
     //! Called when the editor is shown.

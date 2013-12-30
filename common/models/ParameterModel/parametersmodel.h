@@ -102,6 +102,16 @@ public:
 	*/
 	bool isValid() const;
 
+    /*!
+     *  \brief Check if the model is in valid state or not.
+     *
+     *      \param [inout] errorList           The list to add the possible error messages to.
+     *      \param [in]    parentIdentifier    String from parent to help to identify the location of the error.
+     *
+     *      \return True if all items in model are valid.
+     */
+    bool isValid(QStringList& errorList, const QString& parentIdentifier) const;
+
 public slots:
 
 	/*! \brief A new item should be added to given index.

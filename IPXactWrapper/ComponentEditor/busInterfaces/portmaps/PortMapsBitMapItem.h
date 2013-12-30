@@ -37,8 +37,8 @@ public:
     /*!
      *  Constructor for a physical port item.
      */
-    PortMapsBitMapItem(PortMapsTreeItem* parent, QSharedPointer<Component> component,
-        QString const& physicalName = QString());
+    PortMapsBitMapItem(PortMapsTreeItem* parent, QSharedPointer<Component> component, 
+        BusInterface* busIf, QString const& physicalName = QString());
 
     /*!
      *  Destructor.
@@ -59,6 +59,22 @@ public:
      *      @return The data in section.
      */
     virtual QVariant data(int section) const;
+
+    /*!
+     *  Checks the validity of the item.
+     *
+     *      @return True, if item is valid, otherwise false.
+     */
+    virtual bool isValid() const;
+
+    /*!
+     *  Checks the validity of the item. 
+     *
+     *      @param [inout] errorList   The list to add the possible error messages to.
+     *
+     *      @return True, if the item is valid, otherwise false.
+     */
+    virtual bool isValid(QStringList& errorList) const;
 
     /*!
      *  Inserts an item.
@@ -123,6 +139,9 @@ private:
         bool operator==(const BitMapping& other){return physIndex == other.physIndex && 
             QString::compare(physName,other.physName) == 0;};
     };
+
+    //! Pointer to the bus interface of the port map.
+    BusInterface* busIf_;
 
     //! The bit mappings of the logical port bit.
     QList<BitMapping> mappings_;

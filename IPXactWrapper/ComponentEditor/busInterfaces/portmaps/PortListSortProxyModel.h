@@ -63,18 +63,28 @@ public:
 	 */
     bool filterHideConnected() const;
 
+    /*!
+     *  Gets the filter for allowed port names.
+     *
+     *      @return The allowed port names.
+     */
+    QStringList filterPortNames() const;
 
 public slots:
 	 
-
     /*!
      *  Sets the filter for port name(s).
      *
      *      @param [in] portName   The allowed port name.
-     *
-     *      @return 
      */
     virtual void setFilterPortName(QString const& portName);
+
+    /*!
+     *  Sets the filter for port names.
+     *
+     *      @param [in] ports   Allowed port names.
+     */
+    virtual void setFilterPorts( QStringList const& ports );
 
     /*!
      *  Sets the filter for in-direction.
@@ -134,7 +144,7 @@ private:
 
     //! No assignment
     PortListSortProxyModel& operator=(const PortListSortProxyModel& other);  
-
+    
     //! The owner component of the ports.
     QSharedPointer<Component> component_;
 
@@ -146,6 +156,9 @@ private:
 
     //! Already connected ports.
     QStringList connectedPorts_;
+
+    //! Filter for allowed port names. If set to empty, all ports are allowed by the filter.
+    QStringList filterPorts_;
 };
 
 #endif // PORTLISTSORTPROXYMODEL_H

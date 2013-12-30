@@ -232,6 +232,25 @@ BusPortsModel::PortMode BusPortsModel::str2PortMode( const QString& str ) const 
 		return BusPortsModel::MODE_ANY;
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::portMode2Mode()
+//-----------------------------------------------------------------------------
+General::InterfaceMode BusPortsModel::portMode2Mode(const PortMode mode) const
+{
+    switch (mode)
+    {
+    case BusPortsModel::MODE_MASTER:
+        return General::MASTER;
+    case BusPortsModel::MODE_SLAVE:
+        return General::SLAVE;
+    case BusPortsModel::MODE_SYSTEM:
+        return General::SYSTEM;
+    case BusPortsModel::MODE_ANY:
+    default:
+        return General::INTERFACE_MODE_COUNT;
+    }
+}
+
 QString BusPortsModel::portDirection2Str( PortDirection direction ) const {
 
 	switch (direction) {
@@ -470,6 +489,7 @@ void BusPortsModel::savePort(QSharedPointer<PortAbstraction> portAbs, int i) {
 void BusPortsModel::readPorts() {
 
 	beginResetModel();
+    table_.clear();
 	for (int i = 0; i < ports_->size(); ++i) {
 		QSharedPointer<PortAbstraction> portAbs = ports_->at(i);
 		if (!portAbs)
@@ -576,7 +596,12 @@ void BusPortsModel::readPort( QSharedPointer<PortAbstraction> portAbs,
 	}
 
 	port.comment_ = portAbs->getDescription();
-	table_.append(port);
+
+    // Check for no duplicates.
+    if (!table_.contains(port))
+    {
+        table_.append(port);
+    }	
 }
 
 void BusPortsModel::addSignal() {
@@ -739,6 +764,8 @@ void BusPortsModel::renamePort( const QString oldPort, const QString newPort ) {
 		}
 	}
 
+    emit portRenamed(oldPort, newPort);
+
 	// sort the model to keep it ordered
 	beginResetModel();
 	qSort(table_);
@@ -858,6 +885,7 @@ void BusPortsModel::removeIndexes(const QModelIndexList& indexes ) {
 		if (table_.contains(port)) {
 			int index = table_.indexOf(port);
 			table_.removeAt(index);
+            emit portRemoved(port.name_, portMode2Mode(port.mode_));
 		}
 	}
 
@@ -876,12 +904,15 @@ void BusPortsModel::onRemoveItem(QModelIndex const& index)
         BusPortsModel::Port port = table_.at(index.row());
 
         if (table_.contains(port)) {
+            QString portName = port.name_;
+            BusPortsModel::PortMode portMode = port.mode_;
             beginRemoveRows(QModelIndex(), index.row(), index.row());
                 int index = table_.indexOf(port);
             table_.removeAt(index);
             endRemoveRows();
 
             emit contentChanged();        
+            emit portRemoved(portName, portMode2Mode(portMode));
         }       
     }
 }

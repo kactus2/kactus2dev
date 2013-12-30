@@ -44,6 +44,15 @@ public:
 	*/
 	virtual bool isValid() const;
 
+	/*! \brief Check for the validity of the edited parameters.
+	*
+	* \param errorList          The list to add the possible error messages to.
+	* \param parentIdentifier   String from parent to help to identify the location of the error.
+	*
+	* \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(QStringList& errorList, const QString& parentIdentifier) const;
+
 	/*! \brief Restore the changes made in the editor back to ones in parameter models.
 	*
 	*/

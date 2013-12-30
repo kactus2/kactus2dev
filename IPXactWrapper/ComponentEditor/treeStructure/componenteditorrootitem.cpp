@@ -24,6 +24,7 @@
 #include "componenteditorapiinterfacesitem.h"
 #include "componenteditorswpropertiesitem.h"
 #include "ComponentEditorSystemViewsItem.h"
+#include "componenteditortreemodel.h"
 
 ComponentEditorRootItem::ComponentEditorRootItem(LibraryInterface* libHandler,
                                                  PluginManager& pluginMgr,
@@ -74,6 +75,8 @@ ComponentEditorItem(libHandler, component, parent) {
 	{
 		childItems_.append(QSharedPointer<ComponentEditorPortsItem>(
 			new ComponentEditorPortsItem(parent, libHandler, component, this)));
+            connect(childItems_.back().data(), SIGNAL(createInterface()), 
+                    this, SLOT(addInterface()), Qt::UniqueConnection);
 
 		childItems_.append(QSharedPointer<ComponentEditorBusInterfacesItem>(
 			new ComponentEditorBusInterfacesItem(parent, libHandler, component, this, parentWnd)));
@@ -141,3 +144,22 @@ QSharedPointer<ComponentEditorItem> ComponentEditorRootItem::getBusInterfaceItem
 	// if there was no item for bus interfaces summary
 	return QSharedPointer<ComponentEditorItem>();
 }
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorRootItem::addInterface()
+//-----------------------------------------------------------------------------
+void ComponentEditorRootItem::addInterface()
+{
+    foreach (const QSharedPointer<ComponentEditorItem> item, childItems_) {
+        const QSharedPointer<ComponentEditorBusInterfacesItem> busIfsItem =
+            item.dynamicCast<ComponentEditorBusInterfacesItem>();
+
+        // if the child was for bus interfaces summary item.
+        if (busIfsItem) {            
+            model_->addItem(busIfsItem.data(), busIfsItem->children().count());
+            busIfsItem->refreshEditor();
+            return;
+        }
+    }
+}
+

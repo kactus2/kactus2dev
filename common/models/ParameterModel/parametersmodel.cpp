@@ -177,6 +177,23 @@ bool ParametersModel::isValid() const {
 	return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: ParametersModel::isValid()
+//-----------------------------------------------------------------------------
+bool ParametersModel::isValid(QStringList& errorList, const QString& parentIdentifier) const
+{
+    bool valid = true;
+    // check all parameters.
+    foreach (QSharedPointer<Parameter> parameter, parameters_) {
+
+        // if one parameter is invalid, model is invalid.
+        if (!parameter->isValid(errorList, parentIdentifier))
+            valid = false;
+    }
+
+    return valid;
+}
+
 void ParametersModel::onRemoveItem( const QModelIndex& index ) {
 	// don't remove anything if index is invalid
  	if (!index.isValid()) {

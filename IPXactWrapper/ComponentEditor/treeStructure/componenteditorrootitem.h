@@ -82,12 +82,17 @@ public:
 	*/
 	QSharedPointer<ComponentEditorItem> getBusInterfaceItem(const QString& interfaceName) const;
 
+private slots:
+
+virtual void addInterface();
+
 private:
 	//! \brief No copying
 	ComponentEditorRootItem(const ComponentEditorRootItem& other);
 
 	//! \brief No assignment
 	ComponentEditorRootItem& operator=(const ComponentEditorRootItem& other);
+    
 };
 
 #endif // COMPONENTEDITORROOTITEM_H

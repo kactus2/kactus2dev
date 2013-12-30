@@ -69,6 +69,12 @@ signals:
 	//! \brief Emitted when a notification should be printed to user.
 	void noticeMessage(const QString& message);
 
+    //! \brief Inform that a port abstraction has been renamed.
+    void portRenamed(const QString& oldName, const QString& newName);
+
+    //! \brief Inform that a port abstraction has been removed.
+    void portRemoved(const QString& portName, const General::InterfaceMode mode);
+
 private slots:
 
 	//! \brief Handler for the import button clicks.

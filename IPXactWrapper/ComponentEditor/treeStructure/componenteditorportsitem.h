@@ -69,6 +69,11 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
+signals:
+
+    //! Emitted when a new interface should be created in the component editor tree.
+    void createInterface();
+
 private:
 	//! \brief No copying
 	ComponentEditorPortsItem(const ComponentEditorPortsItem& other);

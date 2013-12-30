@@ -26,7 +26,8 @@ QSortFilterProxyModel(parent),
 component_(component),
 filterDirection_(ANY),
 hideConnected_(true),
-connectedPorts_()
+connectedPorts_(),
+filterPorts_()
 {
     onConnectionsReset();
 }
@@ -52,6 +53,15 @@ PortListSortProxyModel::DirectionFilter PortListSortProxyModel::filterDirection(
 void PortListSortProxyModel::setFilterPortName(QString const& portName)
 {
     setFilterRegExp(QRegExp(portName, Qt::CaseInsensitive));
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortListSortProxyModel::setFilterPorts()
+//-----------------------------------------------------------------------------
+void PortListSortProxyModel::setFilterPorts(QStringList const& ports)
+{
+    filterPorts_ = ports;
+    invalidateFilter();
 }
 
 //-----------------------------------------------------------------------------
@@ -152,6 +162,14 @@ bool PortListSortProxyModel::filterHideConnected() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortListSortProxyModel::filterPortNames()
+//-----------------------------------------------------------------------------
+QStringList PortListSortProxyModel::filterPortNames() const
+{
+    return filterPorts_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortListSortProxyModel::setFilterHideConnected()
 //-----------------------------------------------------------------------------
 void PortListSortProxyModel::setFilterHideConnected(bool hide /*= true*/)
@@ -199,6 +217,12 @@ bool PortListSortProxyModel::filterAcceptsRow(int source_row, const QModelIndex&
         return false;
     }
 
+    // Check filter for allowed port names.
+    if (!filterPorts_.isEmpty() && !filterPorts_.contains(portName))
+    {
+        return false;
+    }
+
     // Check filter for port name.
     return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
 }
@@ -226,3 +250,5 @@ void PortListSortProxyModel::onPortDisconnected(QString const& portName)
         invalidateFilter();
     }
 }
+
+

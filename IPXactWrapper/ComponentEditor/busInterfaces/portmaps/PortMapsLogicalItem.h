@@ -41,8 +41,7 @@ public:
         QString const& logicalName,
         QSharedPointer<Component> component,
         BusInterface* busif,
-        QSharedPointer<AbstractionDefinition> absDef,
-        General::InterfaceMode interfaceMode
+        QSharedPointer<AbstractionDefinition> absDef
     );
 
     /*!
@@ -66,6 +65,22 @@ public:
     virtual QVariant data(int section) const;
 
     /*!
+     *  Checks the validity of the item.
+     *
+     *      @return True, if item is valid, otherwise false.
+     */
+    virtual bool isValid() const;
+
+    /*!
+     *  Checks the validity of the item.
+     *
+     *      @param [inout] errorList   The list to add the possible error messages to.
+     *
+     *      @return True, if item is valid, otherwise false.
+     */
+    virtual bool isValid(QStringList& errorList) const;
+
+    /*!
      *  Clears the mappings for all children.
      */
     void clearMappings();
@@ -77,6 +92,13 @@ public:
      *      @return width of the logical signal.
      */
     int getWidth() const;
+
+    /*!
+     *  Gets the direction of the logical signal.
+     *
+     *      @return The logical direction.
+     */
+    General::Direction getDirection() const;
 
 private:
     // Disable copying.
@@ -112,13 +134,10 @@ private:
     //-----------------------------------------------------------------------------  
 
     //! Pointer to the logical port bus interface.
-    BusInterface* busif_;
+    BusInterface* busIf_;
 
     //! Pointer to the abstraction definition that is used.
     QSharedPointer<AbstractionDefinition> absDef_;
-
-    //! Specifies the interface mode of this bus interface
-    General::InterfaceMode interfaceMode_;
 
     //! The port maps of the logical port item.
 	QList<QSharedPointer<General::PortMap> >& portMaps_;
