@@ -17,6 +17,7 @@
 
 #include <models/generaldeclarations.h>
 
+#include <QApplication>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QGroupBox>
@@ -27,10 +28,15 @@
 PluginSettingsPage::PluginSettingsPage(QSettings& settings, PluginManager& pluginMgr)
     : settings_(settings),
     pluginMgr_(pluginMgr),
+    pluginDirSelector_(QApplication::applicationDirPath(), 
+        settings.value("Platform/PluginsPath", QStringList()).toStringList(), this),
     pluginsTree_(this),
-    settingsStack_(this)
+    settingsStack_(this),    
+    directoriesChanged_(false)
 {
     // Initialize the widgets and create the layout.
+    pluginDirSelector_.setTitle(tr("Plugins directories"));
+
     pluginsTree_.setHeaderHidden(true);
     pluginsTree_.setColumnCount(1);
     pluginsTree_.setSelectionBehavior(QAbstractItemView::SelectItems);
@@ -42,65 +48,15 @@ PluginSettingsPage::PluginSettingsPage(QSettings& settings, PluginManager& plugi
     settingsLayout->addWidget(&settingsStack_);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(&pluginDirSelector_);
     layout->addWidget(new QLabel(tr("Available plugins:"), this));
     layout->addWidget(&pluginsTree_);
     layout->addWidget(settingsGroup, 1);
 
-    // Create the category items.
-    QTreeWidgetItem* generatorsItem = createCategoryItem(tr("Generators"),
-        QIcon(":icons/graphics/plugin-generator.png"));
-    QTreeWidgetItem* analyzersItem = createCategoryItem(tr("Source Analyzers"),
-        QIcon(":icons/graphics/plugin-source_analyzer.png"));
+    refreshPluginsTree();
 
-
-    settingsStack_.addWidget(new PluginSettingsWidget());
-
-    // Enumerate all plugins and add them to the correct root.
-    settings.beginGroup("PluginSettings");
-
-    foreach (IPlugin* plugin, pluginMgr_.getAllPlugins())
-    {
-        settings.beginGroup(General::removeWhiteSpace(plugin->getName()));
-
-        // Create the tree item.
-        QTreeWidgetItem* pluginItem = new QTreeWidgetItem();
-        pluginItem->setText(0, plugin->getName() + " (" + plugin->getVersion() + ")");
-        pluginItem->setToolTip(0, plugin->getDescription());
-
-        if (settings.value("Active", true).toBool())
-        {
-            pluginItem->setCheckState(0, Qt::Checked);
-        }
-        else
-        {
-            pluginItem->setCheckState(0, Qt::Unchecked);
-        }
-
-        pluginItem->setData(0, Qt::UserRole, qVariantFromValue(static_cast<void*>(plugin)));
-
-        if (dynamic_cast<IGeneratorPlugin*>(plugin) != 0)
-        {
-            pluginItem->setIcon(0, dynamic_cast<IGeneratorPlugin*>(plugin)->getIcon());
-            generatorsItem->addChild(pluginItem);
-        }
-        else if (dynamic_cast<ISourceAnalyzerPlugin*>(plugin) != 0)
-        {
-            analyzersItem->addChild(pluginItem);
-        }
-
-        // Retrieve the settings widget and load the current settings.
-        PluginSettingsWidget* settingsWidget = plugin->getSettingsWidget();
-        settingsWidget->loadSettings(settings_);
-
-        settingsStack_.addWidget(settingsWidget);
-        pluginItem->setData(0, Qt::UserRole + 1, settingsStack_.count() - 1);
-
-        settings.endGroup();
-    }
-
-    settings.endGroup();
-
-    pluginsTree_.expandAll();
+    connect(&pluginDirSelector_, SIGNAL(contentChanged()),
+        this, SLOT(onDirectoriesChanged()), Qt::UniqueConnection);    
 
     connect(&pluginsTree_, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
         this, SLOT(onTreeItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
@@ -137,6 +93,13 @@ bool PluginSettingsPage::validate()
 //-----------------------------------------------------------------------------
 void PluginSettingsPage::apply()
 {
+    if (directoriesChanged_)
+    {
+        // Save the new plugins directories and update plugin manager.
+        settings_.setValue("Platform/PluginsPath", pluginDirSelector_.getDirectories());
+        pluginMgr_.setPluginPaths(pluginDirSelector_.getDirectories());
+    }
+
     settings_.beginGroup("PluginSettings");
 
     // Save settings and active state for each individual plugin.
@@ -214,4 +177,85 @@ QTreeWidgetItem* PluginSettingsPage::createCategoryItem(QString const& text, QIc
 
     pluginsTree_.addTopLevelItem(item);
     return item;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PluginSettingsPage::onDirectoriesChanged()
+//-----------------------------------------------------------------------------
+void PluginSettingsPage::onDirectoriesChanged()
+{
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
+    directoriesChanged_ = true;
+    refreshPluginsTree();
+
+    QApplication::restoreOverrideCursor();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PluginSettingsPage::refreshPluginsTree()
+//-----------------------------------------------------------------------------
+void PluginSettingsPage::refreshPluginsTree()
+{
+    pluginsTree_.clear();
+    while (settingsStack_.count() > 0)
+    {
+        settingsStack_.removeWidget(settingsStack_.widget(0));
+    }
+
+    // Create the category items.
+    QTreeWidgetItem* generatorsItem = createCategoryItem(tr("Generators"),
+        QIcon(":icons/graphics/plugin-generator.png"));
+    QTreeWidgetItem* analyzersItem = createCategoryItem(tr("Source Analyzers"),
+        QIcon(":icons/graphics/plugin-source_analyzer.png"));
+
+    settingsStack_.addWidget(new PluginSettingsWidget());
+
+    // Enumerate all plugins and add them to the correct root.
+    PluginManager pluginManager(pluginDirSelector_.getDirectories());
+    settings_.beginGroup("PluginSettings");
+
+    foreach (IPlugin* plugin, pluginManager.getAllPlugins())
+    {
+        settings_.beginGroup(General::removeWhiteSpace(plugin->getName()));
+
+        // Create the tree item.
+        QTreeWidgetItem* pluginItem = new QTreeWidgetItem();
+        pluginItem->setText(0, plugin->getName() + " (" + plugin->getVersion() + ")");
+        pluginItem->setToolTip(0, plugin->getDescription());
+
+        if (settings_.value("Active", true).toBool())
+        {
+            pluginItem->setCheckState(0, Qt::Checked);
+        }
+        else
+        {
+            pluginItem->setCheckState(0, Qt::Unchecked);
+        }
+
+        pluginItem->setData(0, Qt::UserRole, qVariantFromValue(static_cast<void*>(plugin)));
+
+        if (dynamic_cast<IGeneratorPlugin*>(plugin) != 0)
+        {
+            pluginItem->setIcon(0, dynamic_cast<IGeneratorPlugin*>(plugin)->getIcon());
+            generatorsItem->addChild(pluginItem);
+        }
+        else if (dynamic_cast<ISourceAnalyzerPlugin*>(plugin) != 0)
+        {
+            analyzersItem->addChild(pluginItem);
+        }
+
+        // Retrieve the settings widget and load the current settings.
+        PluginSettingsWidget* settingsWidget = plugin->getSettingsWidget();
+        settingsWidget->loadSettings(settings_);
+
+        settingsStack_.addWidget(settingsWidget);
+        pluginItem->setData(0, Qt::UserRole + 1, settingsStack_.count() - 1);
+
+        settings_.endGroup();
+    }
+
+    settings_.endGroup();
+
+    pluginsTree_.expandAll();
 }

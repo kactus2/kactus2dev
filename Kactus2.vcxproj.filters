@@ -878,6 +878,12 @@
     <Filter Include="Header Files\common\dialogs\NewBusDialog">
       <UniqueIdentifier>{afbcd084-85b3-425a-ae67-9016aae1e368}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common\widgets\DirectoryListSelector">
+      <UniqueIdentifier>{f99fc9aa-a4b0-444d-a7e0-56017f38b79f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\DirectoryListSelector">
+      <UniqueIdentifier>{d67f21c2-7206-4fe7-999d-98b1a6c4dc6f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\CSourceWriter.cpp">
@@ -3964,6 +3970,12 @@
     <ClCompile Include="common\dialogs\NewBusDialog\NewBusDialog.cpp">
       <Filter>Source Files\common\dialogs\NewBusDialog</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DirectoryListSelector.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\DirectoryListSelector\DirectoryListSelector.cpp">
+      <Filter>Source Files\common\widgets\DirectoryListSelector</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5630,6 +5642,9 @@
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\BusInterfaceWizard\BusInterfaceWizardBusDefinitionPage.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\BusInterfaceWizard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\DirectoryListSelector\DirectoryListSelector.h">
+      <Filter>Header Files\common\widgets\DirectoryListSelector</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

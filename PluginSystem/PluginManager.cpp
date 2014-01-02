@@ -15,25 +15,15 @@
 
 #include <models/generaldeclarations.h>
 
+#include <QApplication>
 #include <QDir>
 
 //-----------------------------------------------------------------------------
 // Function: PluginManager::PluginManager()
 //-----------------------------------------------------------------------------
-PluginManager::PluginManager(QString const& pluginPath)
+PluginManager::PluginManager(QStringList const& pluginPaths)
 {
-    QDir dir(pluginPath);
-
-    foreach (QString const& filename, dir.entryList(QDir::Files))
-    {
-        QPluginLoader loader(dir.absoluteFilePath(filename));
-        IPlugin* plugin = qobject_cast<IPlugin*>(loader.instance());
-
-        if (plugin != 0)
-        {
-            plugins_.append(plugin);
-        }
-    }
+    setPluginPaths(pluginPath);
 }
 
 //-----------------------------------------------------------------------------
@@ -68,4 +58,33 @@ QList<IPlugin*> PluginManager::getActivePlugins() const
     }
 
     return activePlugins;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PluginManager::setPluginPaths()
+//-----------------------------------------------------------------------------
+void PluginManager::setPluginPaths(QStringList const& pluginPaths)
+{
+    plugins_.clear();
+
+    foreach(QString dirName, pluginPaths)
+    {
+        if (QFileInfo(dirName).isRelative())
+        {
+            dirName = QApplication::applicationDirPath() + "/" + dirName;
+        }        
+
+        QDir dir(dirName);
+
+        foreach (QString const& filename, dir.entryList(QDir::Files))
+        {
+            QPluginLoader loader(dir.absoluteFilePath(filename));
+            IPlugin* plugin = qobject_cast<IPlugin*>(loader.instance());
+
+            if (plugin != 0)
+            {
+                plugins_.append(plugin);
+            }
+        }
+    }
 }

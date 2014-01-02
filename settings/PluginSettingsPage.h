@@ -13,13 +13,13 @@
 #define PLUGINSETTINGSPAGE_H
 
 #include <common/dialogs/propertyPageDialog/PropertyPageView.h>
+#include <common/widgets/DirectoryListSelector/DirectoryListSelector.h>
 #include <PluginSystem/PluginManager.h>
 
 #include <QTreeWidget>
 #include <QPlainTextEdit>
 #include <QSettings>
 #include <QStackedWidget>
-
 //-----------------------------------------------------------------------------
 //! PluginSettingsPage class.
 //-----------------------------------------------------------------------------
@@ -68,9 +68,20 @@ private slots:
      */
     void onTreeItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* prev);
 
+    /*!
+     *  Updates the plugins tree when plugins directories have changed.
+     */
+    void onDirectoriesChanged();
+
 private:
     // Disable copying.
     PluginSettingsPage(PluginSettingsPage const& rhs);
+
+    /*!
+     *  Updates the plugins tree.
+     */
+    void refreshPluginsTree();
+
     PluginSettingsPage& operator=(PluginSettingsPage const& rhs);
 
     /*!
@@ -91,11 +102,17 @@ private:
     //! The plugin manager.
     PluginManager& pluginMgr_;
 
+    //! The plugins directories editor.
+    DirectoryListSelector pluginDirSelector_;
+
     //! The plugins tree widget.
     QTreeWidget pluginsTree_;
 
     //! The settings stack.
     QStackedWidget settingsStack_;
+
+    //! Flag for indicating changes in plugin directories.    
+    bool directoriesChanged_;
 };
 
 //-----------------------------------------------------------------------------
