@@ -48,7 +48,7 @@ public:
     QList<IPlugin*> const& getAllPlugins() const;
 
     /*!
-     *  Loads the plugins from given pahts.
+     *  Loads the plugins from given paths.
      *
      *      @param [in] pluginPaths   The paths containing the plugins.
      */

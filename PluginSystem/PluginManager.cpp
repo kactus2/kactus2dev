@@ -23,7 +23,7 @@
 //-----------------------------------------------------------------------------
 PluginManager::PluginManager(QStringList const& pluginPaths)
 {
-    setPluginPaths(pluginPath);
+    setPluginPaths(pluginPaths);
 }
 
 //-----------------------------------------------------------------------------
