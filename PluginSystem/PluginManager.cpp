@@ -83,7 +83,21 @@ void PluginManager::setPluginPaths(QStringList const& pluginPaths)
 
             if (plugin != 0)
             {
-                plugins_.append(plugin);
+                // Check for duplicate plugins.
+                bool uniquePlugin = true;
+                foreach(IPlugin* knownPlugin, plugins_)
+                {
+                    if (QString::compare(knownPlugin->getName(), plugin->getName()) == 0 && 
+                        QString::compare(knownPlugin->getVersion(), plugin->getVersion()) == 0)
+                    {
+                        uniquePlugin = false;
+                        break;
+                    }
+                }
+                if (uniquePlugin)
+                {
+                    plugins_.append(plugin);
+                }
             }
         }
     }
