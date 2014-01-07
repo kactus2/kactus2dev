@@ -999,6 +999,11 @@ void MainWindow::setupMessageConsole() {
 		console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
 	connect(this, SIGNAL(noticeMessage(const QString&)),
 		console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
+    // Force console visible on new messages.
+    connect(this, SIGNAL(errorMessage(const QString&)),
+        consoleDock_, SLOT(show()), Qt::UniqueConnection);
+    connect(this, SIGNAL(noticeMessage(const QString&)),
+        consoleDock_, SLOT(show()), Qt::UniqueConnection);
 }
 
 
