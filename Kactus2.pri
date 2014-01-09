@@ -89,6 +89,7 @@ HEADERS += ./resource.h \
     ./common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h \
+    ./common/widgets/DirectoryListSelector/DirectoryListSelector.h \
     ./common/validators/AddressValidator.h \
     ./common/validators/nameValidator/namevalidator.h \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.h \
@@ -140,6 +141,7 @@ HEADERS += ./resource.h \
     ./common/dialogs/fileSaveDialog/filesavedialogview.h \
     ./common/dialogs/commandLineGeneratorDialog/commandlinegeneratordialog.h \
     ./common/dialogs/commandLineGeneratorDialog/commandlineconsole.h \
+    ./common/dialogs/NewBusDialog/NewBusDialog.h \
     ./designwidget/AdHocEnabled.h \
     ./designwidget/HWAddCommands.h \
     ./designwidget/HWMoveCommands.h \
@@ -170,6 +172,7 @@ HEADERS += ./resource.h \
     ./IPXactWrapper/ComponentEditor/modelParameters/usagedelegate.h \
     ./IPXactWrapper/ComponentEditor/modelParameters/modelparametermodel.h \
     ./IPXactWrapper/ComponentEditor/modelParameters/modelparametereditor.h \
+    ./IPXactWrapper/ComponentEditor/ports/PortsView.h \
     ./IPXactWrapper/ComponentEditor/ports/portsmodel.h \
     ./IPXactWrapper/ComponentEditor/ports/portseditor.h \
     ./IPXactWrapper/ComponentEditor/ports/portsdelegate.h \
@@ -199,6 +202,15 @@ HEADERS += ./resource.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/bridgeseditor.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/bridgesdelegate.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/ApiCreateDialog.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/BitMappingView.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/BitSelectionDialog.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/BitMappingModel.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PortMapsTreeItem.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PortMapsTreeModel.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PortMapsTreeView.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PortMapsBitMapItem.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PortMapsLogicalItem.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portmapsview.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portmapsmodel.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.h \
@@ -364,6 +376,12 @@ HEADERS += ./resource.h \
     ./IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.h \
     ./IPXactWrapper/ComponentEditor/visualization/memorygapitem.h \
     ./IPXactWrapper/ComponentEditor/visualization/fieldgapitem.h \
+    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizard.h \
+    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardGeneralOptionsPage.h \
+    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardBusDefinitionPage.h \
+    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardConclusionPage.h \
+    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardIntroPage.h \
+    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardPortMapPage.h \
     ./IPXactWrapper/BusEditor/signalsgroup.h \
     ./IPXactWrapper/BusEditor/renamegroup.h \
     ./IPXactWrapper/BusEditor/impexpgroup.h \
@@ -473,6 +491,16 @@ HEADERS += ./resource.h \
     ./mainwindow/NewApiDefinitionPage.h \
     ./mainwindow/mainwindow.h \
     ./modelsimGenerator/modelsimgenerator.h \
+    ./MemoryDesigner/AddressBlockItem.h \
+    ./MemoryDesigner/SegmentItem.h \
+    ./MemoryDesigner/MemoryBaseItem.h \
+    ./MemoryDesigner/MemoryItem.h \
+    ./MemoryDesigner/MemoryDesignWidget.h \
+    ./MemoryDesigner/MemoryDesignDiagram.h \
+    ./MemoryDesigner/MemoryColumn.h \
+    ./MemoryDesigner/AddressSubsection.h \
+    ./MemoryDesigner/AddressSpaceItem.h \
+    ./MemoryDesigner/AddressSectionItem.h \
     ./quartusGenerator/quartusgenerator.h \
     ./vhdlGenerator/vhdlconnectionendpoint.h \
     ./vhdlGenerator/vhdlgeneral.h \
@@ -577,16 +605,6 @@ HEADERS += ./resource.h \
     ./AddressEditor/AddressEditor.h \
     ./AddressEditor/AddressTableView.h \
     ./AddressEditor/AddressModel.h \
-    ./MemoryDesigner/AddressBlockItem.h \
-    ./MemoryDesigner/SegmentItem.h \
-    ./MemoryDesigner/MemoryBaseItem.h \
-    ./MemoryDesigner/MemoryItem.h \
-    ./MemoryDesigner/MemoryDesignWidget.h \
-    ./MemoryDesigner/MemoryDesignDiagram.h \
-    ./MemoryDesigner/MemoryColumn.h \
-    ./MemoryDesigner/AddressSubsection.h \
-    ./MemoryDesigner/AddressSpaceItem.h \
-    ./MemoryDesigner/AddressSectionItem.h \
     ./ComponentWizard/ComponentWizard.h \
     ./ComponentWizard/ComponentWizardConclusionPage.h \
     ./ComponentWizard/ComponentWizardDependencyPage.h \
@@ -623,6 +641,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/dialogs/fileSaveDialog/filesavedialogview.cpp \
     ./common/dialogs/commandLineGeneratorDialog/commandlineconsole.cpp \
     ./common/dialogs/commandLineGeneratorDialog/commandlinegeneratordialog.cpp \
+    ./common/dialogs/NewBusDialog/NewBusDialog.cpp \
     ./common/validators/AddressValidator.cpp \
     ./common/validators/nameValidator/namevalidator.cpp \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.cpp \
@@ -689,6 +708,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.cpp \
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.cpp \
     ./common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.cpp \
+    ./common/widgets/DirectoryListSelector/DirectoryListSelector.cpp \
     ./common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
     ./common/graphicsItems/ConnectionEndpoint.cpp \
@@ -750,6 +770,15 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/businterfaceseditor.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/businterfacesmodel.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/interfacemodestack.cpp \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/BitSelectionDialog.cpp \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/BitMappingModel.cpp \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/BitMappingView.cpp \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.cpp \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PortMapsBitMapItem.cpp \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PortMapsLogicalItem.cpp \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PortMapsTreeItem.cpp \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PortMapsTreeModel.cpp \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PortMapsTreeView.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/logicallistmodel.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/logicallistview.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/physlistmodel.cpp \
@@ -810,6 +839,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/ports/portsdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/ports/portseditor.cpp \
     ./IPXactWrapper/ComponentEditor/ports/portsmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/ports/PortsView.cpp \
     ./IPXactWrapper/ComponentEditor/views/envidentifiereditor.cpp \
     ./IPXactWrapper/ComponentEditor/views/envidentifiersdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/views/envidentifiersmodel.cpp \
@@ -931,6 +961,12 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/visualization/fieldgapitem.cpp \
     ./IPXactWrapper/ComponentEditor/visualization/memorygapitem.cpp \
     ./IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.cpp \
+    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizard.cpp \
+    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardBusDefinitionPage.cpp \
+    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardConclusionPage.cpp \
+    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardIntroPage.cpp \
+    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardPortMapPage.cpp \
+    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardGeneralOptionsPage.cpp \
     ./IPXactWrapper/BusEditor/absdefgroup.cpp \
     ./IPXactWrapper/BusEditor/busdefgroup.cpp \
     ./IPXactWrapper/BusEditor/buseditor.cpp \
