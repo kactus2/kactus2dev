@@ -17,7 +17,7 @@
 #include <LibraryManager/vlnv.h>
 #include <LibraryManager/libraryinterface.h>
 #include <IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h>
-#include <IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PortMapsDelegate.h>
+#include <IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.h>
 
 #include <QCheckBox>
 #include <QComboBox>
