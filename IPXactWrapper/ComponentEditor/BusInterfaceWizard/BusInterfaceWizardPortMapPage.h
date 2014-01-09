@@ -63,6 +63,7 @@ public:
 
 private slots:
     
+    //! Handler for error messages.
     virtual void showErrorMessage(const QString& msg);
 
 private:

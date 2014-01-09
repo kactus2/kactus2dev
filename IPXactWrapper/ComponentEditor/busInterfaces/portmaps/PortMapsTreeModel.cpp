@@ -290,9 +290,12 @@ QVariant PortMapsTreeModel::data(const QModelIndex& index, int role /*= Qt::Disp
     {
         // Show all connected bits in tooltip.
         if (index.column() == COLUMN_PHYSICAL && item->getType() == PortMapsTreeItem::ITEM_BIT_MAP && 
-            !dynamic_cast<PortMapsBitMapItem*>(item)->isConnected())
+            dynamic_cast<PortMapsBitMapItem*>(item)->isConnected())
         {
-            return item->data(COLUMN_PHYSICAL);
+            QString portNames = "<p>";
+            portNames.append(item->data(COLUMN_PHYSICAL).toString());
+            portNames.append("</p>");           
+            return portNames;
         }
     }
 

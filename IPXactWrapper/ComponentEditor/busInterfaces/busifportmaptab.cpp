@@ -55,7 +55,7 @@ physProxy_(component, this),
 physModel_(component, &model_, this),
 cleanButton_(QIcon(":/icons/graphics/cleanup.png"), tr("Clean up"), this),
 connectButton_(QIcon(":/icons/graphics/connect.png"), tr("Connect"), this),
-showAllButton_(tr("Show all ports"), this),
+showAllButton_(tr("Show all ports in component"), this),
 // One to one and one to many removed as obsolete.
 /*one2OneButton_(tr("1 to 1"), this),
 one2ManyButton_(tr("1 to many"), this),*/
@@ -64,8 +64,7 @@ showHideMappingButton_(tr("Show bit-field mapping"),this),
 inButton_(QIcon(":/icons/graphics/control-180.png"), "", this),
 outButton_(QIcon(":/icons/graphics/control.png"), "", this),
 nameFilterEditor_(new QLineEdit(this)),
-//directionFilterEditor_(new QComboBox(this)),
-showBitMapping_(false)
+portSet_()
 {
     // One to one and one to many removed as obsolete.
 	// mode buttons are checkable and mutually exclusive
@@ -102,6 +101,7 @@ showBitMapping_(false)
 
 	setupLayout();
 
+    // By default, show all button is not visible, but setting physical ports sets visible.
     showAllButton_.setVisible(false);
 
     inButton_.setToolTip(tr("Filter ports by direction in"));
@@ -304,18 +304,9 @@ void BusIfPortmapTab::setupLayout() {
 //-----------------------------------------------------------------------------
 void BusIfPortmapTab::toggleMappingVisibility()
 {
-    showBitMapping_ = !showBitMapping_;
+    bool showBitMapping_ = showHideMappingButton_.checkState() == Qt::Checked;
     mappingLabel_.setVisible(showBitMapping_);
     mappingView_.setVisible(showBitMapping_);
-
-    if (showBitMapping_)
-    {
-        showHideMappingButton_.setText("Hide bit-field mapping");
-    }
-    else
-    {
-        showHideMappingButton_.setText("Show bit-field mapping");
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -342,7 +333,7 @@ void BusIfPortmapTab::onRefresh() {
 //-----------------------------------------------------------------------------
 void BusIfPortmapTab::onConnect() {
 
-    if (!showBitMapping_)
+    if (showHideMappingButton_.checkState() == Qt::Unchecked)
     {
         // get lists of the selected ports
         QStringList logicals = logicalView_.getSelectedPorts(false);
@@ -397,11 +388,11 @@ void BusIfPortmapTab::onBitConnect()
 
 
 //-----------------------------------------------------------------------------
-// Function: BusIfPortmapTab::onMapPort()
+// Function: BusIfPortmapTab::onMapPortToLastBit()
 //-----------------------------------------------------------------------------
 void BusIfPortmapTab::onMapPortToLastBit()
 {
-    if (showBitMapping_)
+    if (showHideMappingButton_.checkState() == Qt::Checked)
     {
         QStringList ports = physicalView_.getSelectedPorts(false);
         if (ports.size() > 0)
@@ -474,8 +465,17 @@ void BusIfPortmapTab::setAbsType( const VLNV& vlnv, General::InterfaceMode mode 
 //-----------------------------------------------------------------------------
 void BusIfPortmapTab::setPhysicalPorts(QStringList const& ports)
 {
+	portSet_ = ports;
     physProxy_.setFilterPorts(ports);
-    showAllButton_.setVisible(!ports.isEmpty());
+    showAllButton_.setVisible(true);
+	if(ports.isEmpty())
+	{
+		showAllButton_.setCheckState(Qt::Checked);
+	}
+	else
+	{
+		showAllButton_.setCheckState(Qt::Unchecked);
+	}
     onRefresh();
 }
 
@@ -486,7 +486,7 @@ void BusIfPortmapTab::onMakeConnections( const QStringList& physicals,
 										const QStringList& logicals ) 
 {
     // If bit mapping is visible, do not allow connection.
-    if (showBitMapping_)
+    if (showHideMappingButton_.checkState() == Qt::Checked)
     {
         return;
     }
@@ -552,9 +552,20 @@ void BusIfPortmapTab::onLogicalChanged(const QModelIndex& index)
 //-----------------------------------------------------------------------------
 void BusIfPortmapTab::onShowAll()
 {    
-    // Clear physical port filter.
-    physProxy_.setFilterPorts(QStringList());
-    showAllButton_.setVisible(false);
+    if (portSet_.isEmpty())
+    {
+        showAllButton_.setCheckState(Qt::Checked);
+    }
+
+	if(showAllButton_.checkState() == Qt::Checked)
+	{
+	    // Clear physical port filter.
+		physProxy_.setFilterPorts(QStringList());
+	}
+	else
+	{
+		physProxy_.setFilterPorts(portSet_);
+	}
 }
 
 //-----------------------------------------------------------------------------

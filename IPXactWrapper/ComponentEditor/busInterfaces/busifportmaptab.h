@@ -243,7 +243,7 @@ private:
 	QPushButton connectButton_;
 
     //! The button to clear port filter.
-    QPushButton showAllButton_;
+    QCheckBox showAllButton_;
 
 	//! The button to select the one to one connection mode.
     // One to one and one to many removed as obsolete.
@@ -254,7 +254,7 @@ private:
 	//QPushButton one2ManyButton_;
 
     //! The button to show/hide bit-level mapping.
-    QPushButton showHideMappingButton_;
+    QCheckBox showHideMappingButton_;
 
     //! Editor for filtering of physical ports by name.
     QLineEdit* nameFilterEditor_;
@@ -268,8 +268,8 @@ private:
     //! Checkbox for showing/hiding connected physical ports.
     QCheckBox hideConnectedBox_;
 
-    //! Boolean for show/hide status of the bit-level mapping.
-    bool showBitMapping_;
+    //! List of selected ports for physical port filter.
+    QStringList portSet_;
 };
 
 #endif // BUSIFPORTMAPTAB_H
