@@ -57,6 +57,21 @@ public:
 	//! \brief Returns the description of the plugin.
     virtual QString const& getDescription() const;
 
+    /*!
+     *  Returns the vendor of the plugin.
+     */
+    virtual QString const& getVendor() const;
+
+    /*!
+     *  Returns the licence of the plugin.
+     */
+    virtual QString const& getLicence() const;
+
+    /*!
+     *  Returns the holder of the licence of the plugin.
+     */
+    virtual QString const& getLicenceHolder() const;
+
 	//! \brief Returns the icon for the generator.
     /*!
      *  Returns the settings widget.

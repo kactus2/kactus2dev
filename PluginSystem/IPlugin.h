@@ -59,6 +59,21 @@ public:
     virtual QString const& getDescription() const = 0;
 
     /*!
+     *  Returns the vendor of the plugin.
+     */
+    virtual QString const& getVendor() const = 0;
+
+    /*!
+     *  Returns the licence of the plugin.
+     */
+    virtual QString const& getLicence() const = 0;
+
+    /*!
+     *  Returns the licence holder of the plugin.
+     */
+    virtual QString const& getLicenceHolder() const = 0;
+
+    /*!
      *  Returns the settings widget.
      */
     virtual PluginSettingsWidget* getSettingsWidget() = 0;

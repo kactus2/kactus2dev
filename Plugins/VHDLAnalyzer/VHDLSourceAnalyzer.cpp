@@ -61,6 +61,30 @@ QString const& VHDLSourceAnalyzer::getVersion() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: VHDLSourceAnalyzer::getVendor()
+//-----------------------------------------------------------------------------
+QString const& VHDLSourceAnalyzer::getVendor() const {
+    static QString vendor(tr("TUT"));
+    return vendor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLSourceAnalyzer::getLicence()
+//-----------------------------------------------------------------------------
+QString const& VHDLSourceAnalyzer::getLicence() const {
+    static QString licence(tr("GPL2"));
+    return licence;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLSourceAnalyzer::getLicenceHolder()
+//-----------------------------------------------------------------------------
+QString const& VHDLSourceAnalyzer::getLicenceHolder() const {
+    static QString holder(tr("Public"));
+    return holder;
+}
+
+//-----------------------------------------------------------------------------
 // Function: VHDLSourceAnalyzer::getDescription()
 //-----------------------------------------------------------------------------
 QString const& VHDLSourceAnalyzer::getDescription() const

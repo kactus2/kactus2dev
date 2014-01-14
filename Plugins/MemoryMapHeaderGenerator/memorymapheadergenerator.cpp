@@ -67,6 +67,30 @@ QString const& MemoryMapHeaderGenerator::getDescription() const {
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::getVendor()
+//-----------------------------------------------------------------------------
+QString const& MemoryMapHeaderGenerator::getVendor() const {
+    static QString vendor(tr("TUT"));
+    return vendor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::getLicence()
+//-----------------------------------------------------------------------------
+QString const& MemoryMapHeaderGenerator::getLicence() const {
+    static QString licence(tr("GPL2"));
+    return licence;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::getLicenceHolder()
+//-----------------------------------------------------------------------------
+QString const& MemoryMapHeaderGenerator::getLicenceHolder() const {
+    static QString holder(tr("Public"));
+    return holder;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryMapHeaderGenerator::getSettingsWidget()
 //-----------------------------------------------------------------------------
 PluginSettingsWidget* MemoryMapHeaderGenerator::getSettingsWidget()

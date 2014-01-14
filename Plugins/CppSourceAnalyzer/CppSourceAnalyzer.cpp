@@ -66,6 +66,30 @@ QString const& CppSourceAnalyzer::getDescription() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: CppSourceAnalyzer::getVendor()
+//-----------------------------------------------------------------------------
+QString const& CppSourceAnalyzer::getVendor() const {
+    static QString vendor(tr("TUT"));
+    return vendor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: CppSourceAnalyzer::getLicence()
+//-----------------------------------------------------------------------------
+QString const& CppSourceAnalyzer::getLicence() const {
+    static QString licence(tr("GPL2"));
+    return licence;
+}
+
+//-----------------------------------------------------------------------------
+// Function: CppSourceAnalyzer::getLicenceHolder()
+//-----------------------------------------------------------------------------
+QString const& CppSourceAnalyzer::getLicenceHolder() const {
+    static QString holder(tr("Public"));
+    return holder;
+}
+
+//-----------------------------------------------------------------------------
 // Function: CppSourceAnalyzer::getSettingsWidget()
 //-----------------------------------------------------------------------------
 PluginSettingsWidget* CppSourceAnalyzer::getSettingsWidget()

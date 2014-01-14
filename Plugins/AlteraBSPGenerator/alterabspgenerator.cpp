@@ -37,8 +37,23 @@ QString const& AlteraBSPGenerator::getVersion() const {
 }
 
 QString const& AlteraBSPGenerator::getDescription() const {
-	static QString description(tr("Generates board support package for CPU component."));
-	return description;
+    static QString description(tr("Generates board support package for CPU component."));
+    return description;
+}
+
+QString const& AlteraBSPGenerator::getVendor() const {
+    static QString vendor(tr("TUT"));
+    return vendor;
+}
+
+QString const& AlteraBSPGenerator::getLicence() const {
+    static QString licence(tr("GPL2"));
+    return licence;
+}
+
+QString const& AlteraBSPGenerator::getLicenceHolder() const {
+    static QString holder(tr("Public"));
+    return holder;
 }
 
 //-----------------------------------------------------------------------------

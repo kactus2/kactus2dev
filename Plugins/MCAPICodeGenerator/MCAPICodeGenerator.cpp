@@ -72,6 +72,30 @@ QString const& MCAPICodeGenerator::getDescription() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MCAPICodeGenerator::getVendor()
+//-----------------------------------------------------------------------------
+QString const& MCAPICodeGenerator::getVendor() const {
+    static QString vendor(tr("TUT"));
+    return vendor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MCAPICodeGenerator::getLicence()
+//-----------------------------------------------------------------------------
+QString const& MCAPICodeGenerator::getLicence() const {
+    static QString licence(tr("GPL2"));
+    return licence;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MCAPICodeGenerator::getLicenceHolder()
+//-----------------------------------------------------------------------------
+QString const& MCAPICodeGenerator::getLicenceHolder() const {
+    static QString holder(tr("Public"));
+    return holder;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MCAPICodeGenerator::getSettingsWidget()
 //-----------------------------------------------------------------------------
 PluginSettingsWidget* MCAPICodeGenerator::getSettingsWidget()
