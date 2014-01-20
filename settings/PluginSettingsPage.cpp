@@ -23,7 +23,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QGroupBox>
-#include "PluginSystem/newPluginsDialog.h"
+#include "PluginSystem/NewPluginsDialog.h"
 
 namespace
 {   
