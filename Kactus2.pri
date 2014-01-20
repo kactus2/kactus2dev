@@ -591,8 +591,10 @@ HEADERS += ./resource.h \
     ./PluginSystem/IPlugin.h \
     ./PluginSystem/IPluginUtility.h \
     ./PluginSystem/ISourceAnalyzerPlugin.h \
+    ./PluginSystem/PluginInfoWidget.h \
     ./PluginSystem/PluginManager.h \
     ./PluginSystem/PluginSettingsWidget.h \
+    ./PluginSystem/NewPluginsDialog.h \
     ./PluginSystem/PluginListDialog.h \
     ./SystemDetailsEditor/SystemDetailsEditor.h \
     ./SystemDetailsEditor/SwitchHWDialog.h \
@@ -1161,6 +1163,8 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./SystemDesign/SystemDesignDiagram.cpp \
     ./SystemDesign/SystemDesignWidget.cpp \
     ./SystemDesign/SystemMoveCommands.cpp \
+    ./PluginSystem/NewPluginsDialog.cpp \
+    ./PluginSystem/PluginInfoWidget.cpp \
     ./PluginSystem/PluginListDialog.cpp \
     ./PluginSystem/PluginManager.cpp \
     ./SystemDetailsEditor/ExportSWDialog.cpp \
