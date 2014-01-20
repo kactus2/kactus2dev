@@ -69,7 +69,12 @@
                 <section title="HW Design" ref="hwdesign/hwdesign.html">
                     <section title="HW Component Instance" ref="hwdesign/hwinstance.html" />
                 </section>
-			</section>
+				<section title="SW Design" ref="swsysdesign/swdesign.html">
+                    <section title="SW Component Instance" ref="swsysdesign/swinstance.html" />
+                </section>
+				<!--section title="System Design" ref="swsysdesign/systemdesign.html"/-->				
+				<section title="Keyboard and Mouse Shortcuts" ref="shortcuts.html"/>
+			</section>			
         </toc>
         <keywords>
             <keyword name="HW Design" id="Kactus2::hwdesign" ref="hwdesign/hwdesign.html" />
