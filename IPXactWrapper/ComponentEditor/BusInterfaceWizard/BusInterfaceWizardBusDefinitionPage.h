@@ -107,6 +107,8 @@ private:
      */
     void createLogicalPorts(QSharedPointer<AbstractionDefinition> absDef);
 
+    QSharedPointer<PortAbstraction> createAbsPort(QString portName, General::Direction portDirection, int portWidth );
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
