@@ -24,9 +24,9 @@
 #include <QFileDialog>
 
 //-----------------------------------------------------------------------------
-//! Editor for selecting directories.
+//! Editor for selecting multiple directories.
 //-----------------------------------------------------------------------------
-class DirectoryListSelector : public QGroupBox
+class DirectoryListSelector : public QWidget
 {
     Q_OBJECT
 public:
@@ -45,6 +45,27 @@ public:
      *  Destructor.
      */
     ~DirectoryListSelector();
+
+    /*!
+     *  Sets a directory non-removable.
+     *
+     *      @param [in] directory   The directory to set.
+     */
+    void setPersistentDirectory(QString const& directory);
+
+    /*!
+     *  Sets a directory removable.
+     *
+     *      @param [in] directory   The directory to set.
+     */
+    void removePersistentDirectory(QString const& directory);
+
+    /*!
+     *  Gets the list of non-removable directories.
+     *     
+     *      @return List of non-removable directories.
+     */
+    QStringList getPersistentDirectories() const;
 
     /*!
      *  Retrieves the list of directories.
@@ -73,6 +94,12 @@ private slots:
      */
     void removeDirectory();
 
+    
+    /*!
+     *  Handler for directory selection changes.
+     */
+    void onSelectionChanged();
+
 private:
     // Disable copying.
     DirectoryListSelector(DirectoryListSelector const& rhs);
@@ -99,6 +126,9 @@ private:
 
     //! The base path for directories.
     QString basePath_;
+
+    //! List of persistent, non-removable directories.
+    QStringList persistentDirectories_;
 };
 
 //-----------------------------------------------------------------------------

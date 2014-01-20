@@ -235,7 +235,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Load plugins.
     QSettings settings;
-    QStringList pluginsPath = settings.value("Platform/PluginsPath", QStringList()).toStringList();
+    QStringList pluginsPath = settings.value("Platform/PluginsPath", QStringList("Plugins")).toStringList();
  
     pluginMgr_ = QSharedPointer<PluginManager>(new PluginManager(pluginsPath));
 

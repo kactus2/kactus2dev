@@ -13,32 +13,30 @@
 
 #include <models/generaldeclarations.h>
 
+#include <QModelIndex>
+
 //-----------------------------------------------------------------------------
 // Function: DirectoryListSelector::DirectoryListSelector()
 //-----------------------------------------------------------------------------
 DirectoryListSelector::DirectoryListSelector(QString const& basePath,
                                              QStringList const& initialDirs,                                             
                                              QWidget* parent)
-    : QGroupBox(tr("Directories"), parent),
+    : QWidget(parent),
     buttonAdd_(new QPushButton(QIcon(":/icons/graphics/add.png"), QString(), this)),
     buttonRemove_(new QPushButton(QIcon(":/icons/graphics/remove.png"), QString(), this)),
     directoryListModel_(new QStringListModel(initialDirs)),
     directoryListView_(new QListView(this)),
-    basePath_(QFileInfo(basePath).canonicalFilePath())
+    basePath_(QFileInfo(basePath).canonicalFilePath()),
+    persistentDirectories_()
 {
     directoryListView_->setModel(directoryListModel_);
    
-    if (initialDirs.count() > 0)
-    {
-        buttonRemove_->setEnabled(true);
-    }
-    else
-    {
-        buttonRemove_->setEnabled(false);
-    }
+    buttonRemove_->setEnabled(false); 
 
     connect(buttonAdd_, SIGNAL(clicked()), this, SLOT(addDirectory()));
     connect(buttonRemove_, SIGNAL(clicked()), this, SLOT(removeDirectory()));
+    connect(directoryListView_, SIGNAL(clicked(const QModelIndex&)),
+        this, SLOT(onSelectionChanged()), Qt::UniqueConnection);
 
     setupLayout();
 }
@@ -48,6 +46,33 @@ DirectoryListSelector::DirectoryListSelector(QString const& basePath,
 //-----------------------------------------------------------------------------
 DirectoryListSelector::~DirectoryListSelector()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: DirectoryListSelector::addPersistentDirectory()
+//-----------------------------------------------------------------------------
+void DirectoryListSelector::setPersistentDirectory(QString const& directory)
+{
+    if (!persistentDirectories_.contains(directory))
+    {
+        persistentDirectories_.append(directory);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DirectoryListSelector::removePersistentDirectory()
+//-----------------------------------------------------------------------------
+void DirectoryListSelector::removePersistentDirectory(QString const& directory)
+{
+    persistentDirectories_.removeAll(directory);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DirectoryListSelector::getPersistentDirectories()
+//-----------------------------------------------------------------------------
+QStringList DirectoryListSelector::getPersistentDirectories() const
+{
+    return persistentDirectories_;
 }
 
 //-----------------------------------------------------------------------------
@@ -64,24 +89,23 @@ QStringList DirectoryListSelector::getDirectories() const
 void DirectoryListSelector::addDirectory()
 {
     QString newDirectory = QFileDialog::getExistingDirectory(this, tr("Choose Directory"), basePath_);
-
     if (newDirectory.size() < 1)
     {
         return;
     }
 
     newDirectory = QFileInfo(newDirectory).filePath();    
-    QString absDirPath = newDirectory;
+    QString newAbsPath = newDirectory;
 
     // Use relative path for subdirectories of base path.
+    // If relative path could not be resolved, use absolute path instead.
     if (!basePath_.isEmpty() && newDirectory.startsWith(basePath_))
     {
         newDirectory = General::getRelativePath(basePath_, newDirectory);
-    }
-
+    }    
     if (newDirectory.size() < 1)
     {
-        newDirectory = ".";
+        newDirectory = newAbsPath;
     }
 
     // Check that new directory does not overlap with existing.
@@ -90,11 +114,10 @@ void DirectoryListSelector::addDirectory()
     {
         if (QFileInfo(directory).isRelative())
         {
-            directory = QFileInfo(directory).absolutePath() + "/" + directory;
-            directory = QFileInfo(directory).canonicalFilePath();
+            directory = QFileInfo(basePath_ + "/" + directory).canonicalFilePath();
         }
 
-        if (QString::compare(directory, absDirPath) == 0)
+        if (QString::compare(directory, newAbsPath) == 0)
         {
             return;
         }
@@ -103,7 +126,6 @@ void DirectoryListSelector::addDirectory()
     // Add the new directory to the list.
     directories.push_back(newDirectory);
     directoryListModel_->setStringList(directories);
-    buttonRemove_->setEnabled(true);
     emit contentChanged();    
 }
 
@@ -111,15 +133,34 @@ void DirectoryListSelector::addDirectory()
 // Function: DirectoryListSelector::removeDirectory()
 //-----------------------------------------------------------------------------
 void DirectoryListSelector::removeDirectory()
-{
-    directoryListModel_->removeRow(directoryListView_->selectionModel()->currentIndex().row());
-
-    if (directoryListModel_->stringList().count() < 1)
-    {
-        buttonRemove_->setEnabled(false);
-    }
+{    
+    QModelIndex index = directoryListView_->selectionModel()->currentIndex();
     
+    if (!index.isValid())
+    {
+        return;
+    }
+
+    // Do not allow persistent directories to be removed.
+    if (persistentDirectories_.contains(index.data().toString()))
+    {
+        return;
+    }
+
+    directoryListModel_->removeRow(index.row());
+
+    onSelectionChanged();    
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DirectoryListSelector::onSelectionChanged()
+//-----------------------------------------------------------------------------
+void DirectoryListSelector::onSelectionChanged()
+{    
+    QModelIndex index = directoryListView_->selectionModel()->currentIndex();
+    buttonRemove_->setEnabled(index.isValid() && 
+        !persistentDirectories_.contains(directoryListModel_->data(index, Qt::DisplayRole).toString()));
 }
 
 //-----------------------------------------------------------------------------
@@ -132,6 +173,6 @@ void DirectoryListSelector::setupLayout()
     addRemoveButtonBox->addButton(buttonRemove_, QDialogButtonBox::ActionRole);
 
     QHBoxLayout* topLayout = new QHBoxLayout(this);
-    topLayout->addWidget(directoryListView_);
+    topLayout->addWidget(directoryListView_, 1);
     topLayout->addWidget(addRemoveButtonBox);
 }

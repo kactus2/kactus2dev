@@ -107,6 +107,16 @@ private:
      */
     void createLogicalPorts(QSharedPointer<AbstractionDefinition> absDef);
 
+
+    /*!
+     *  Creates a port abstraction.
+     *
+     *      @param [in] portName        Name of the port.
+     *      @param [in] portDirection   Direction of the port.
+     *      @param [in] portWidth       Width of the port.
+     *
+     *      @return The created port.
+     */
     QSharedPointer<PortAbstraction> createAbsPort(QString portName, General::Direction portDirection, int portWidth );
 
     //-----------------------------------------------------------------------------
@@ -131,9 +141,10 @@ private:
     //! The source for logical signal names.
     SignalNaming portNamesType_;
 
-    // Mapping for logic signal generation. Physical port names as keys and generated abstract signals as values.
+    //! Mapping for logic signal generation. Physical port names as keys and generated abstract signals as values.
     QMap<QString, QString > portMappings_;
 
+    //! Flag for indicating changes on the page. 
     bool hasChanged_;
 };
 

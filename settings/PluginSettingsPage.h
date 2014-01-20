@@ -74,13 +74,22 @@ private slots:
     void onDirectoriesChanged();
 
 private:
-    // Disable copying.
+    //! Disable copying.
     PluginSettingsPage(PluginSettingsPage const& rhs);
+
+    //! Sets the page layout.
+    void setupLayout();
 
     /*!
      *  Updates the plugins tree.
      */
-    void refreshPluginsTree();
+    void refreshPluginsTree(bool displayChanges = false);
+    
+    /*!
+     *  Resets the general information and settings stacks for plugins.
+     *
+     */
+    void resetStacks();
 
     PluginSettingsPage& operator=(PluginSettingsPage const& rhs);
 
@@ -92,6 +101,15 @@ private:
      */
     QTreeWidgetItem* createCategoryItem(QString const& text, QIcon const& icon);
 
+    /*!
+     *  Creates a new plugin item to the tree.
+     *
+     *      @param [in] plugin   Target plugin for the item.
+     *
+     *      @return The created tree item.
+     */
+    QTreeWidgetItem* createPluginItem(IPlugin* plugin);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -102,6 +120,9 @@ private:
     //! The plugin manager.
     PluginManager& pluginMgr_;
 
+    //! The local manager.
+    PluginManager localManager_;
+
     //! The plugins directories editor.
     DirectoryListSelector pluginDirSelector_;
 
@@ -110,6 +131,9 @@ private:
 
     //! The settings stack.
     QStackedWidget settingsStack_;
+
+    //! The plugin info stack.
+    QStackedWidget infoStack_;
 
     //! Flag for indicating changes in plugin directories.    
     bool directoriesChanged_;

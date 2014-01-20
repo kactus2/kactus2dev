@@ -3976,6 +3976,15 @@
     <ClCompile Include="common\widgets\DirectoryListSelector\DirectoryListSelector.cpp">
       <Filter>Source Files\common\widgets\DirectoryListSelector</Filter>
     </ClCompile>
+    <ClCompile Include="PluginSystem\PluginInfoWidget.cpp">
+      <Filter>Source Files\PluginSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="PluginSystem\NewPluginsDialog.cpp">
+      <Filter>Source Files\PluginSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_NewPluginsDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5646,6 +5655,9 @@
     <CustomBuild Include="common\widgets\DirectoryListSelector\DirectoryListSelector.h">
       <Filter>Header Files\common\widgets\DirectoryListSelector</Filter>
     </CustomBuild>
+    <CustomBuild Include="PluginSystem\NewPluginsDialog.h">
+      <Filter>Header Files\PluginSystem</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddressEditor\AddressEntry.h">
@@ -6112,6 +6124,9 @@
     </ClInclude>
     <ClInclude Include="common\dialogs\NewBusDialog\NewBusDialog.h">
       <Filter>Header Files\common\dialogs\NewBusDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="PluginSystem\PluginInfoWidget.h">
+      <Filter>Header Files\PluginSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
