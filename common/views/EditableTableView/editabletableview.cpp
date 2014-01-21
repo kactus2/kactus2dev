@@ -135,6 +135,10 @@ void EditableTableView::keyPressEvent( QKeyEvent* event ) {
 	if (event->matches(QKeySequence::InsertLineSeparator)) {
 		onAddAction();
 	}
+    if (event->matches(QKeySequence::Cut))
+    {
+        onRemoveAction();
+    }
 }
 
 void EditableTableView::mouseDoubleClickEvent( QMouseEvent* event ) {
@@ -280,6 +284,7 @@ void EditableTableView::setupActions() {
 	removeAction_.setStatusTip(tr("Remove a row from the table"));
 	connect(&removeAction_, SIGNAL(triggered()),
 		this, SLOT(onRemoveAction()), Qt::UniqueConnection);
+    removeAction_.setShortcut(Qt::SHIFT + Qt::Key_Delete);
 
 	copyAction_.setToolTip(tr("Copy a row from the table"));
 	copyAction_.setStatusTip(tr("Copy a row from the table"));
