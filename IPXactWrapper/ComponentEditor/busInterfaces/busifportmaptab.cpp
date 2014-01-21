@@ -352,7 +352,7 @@ void BusIfPortmapTab::onConnect() {
 void BusIfPortmapTab::onBitConnect()
 {
 
-    if (mappingModel_.getLogicalSignal().isEmpty())
+    if (mappingModel_.getLogicalSignal().isEmpty() || logicalView_.getSelectedPorts(false).isEmpty())
     {
         emit errorMessage("No logical port selected for mapping.");
         return;

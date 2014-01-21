@@ -6,7 +6,7 @@
 // Date: 25.11.2013
 //
 // Description:
-// <Short description of the class/file contents>
+// Wizard for generating bus interface from a set of ports.
 //-----------------------------------------------------------------------------
 
 #include "BusInterfaceWizard.h"
@@ -37,8 +37,9 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     setWindowTitle(tr("Bus Interface Wizard"));
     setWizardStyle(ModernStyle);
     setOption(NoCancelButton, true);
+    setOption(NoDefaultButton, true);
     setOption(HaveFinishButtonOnEarlyPages, false);
-    resize(900, 1000);
+    resize(800, 800);
 
     setPage(PAGE_INTRO, new BusInterfaceWizardIntroPage(this));
     setPage(PAGE_VLNVSELECTION, new BusInterfaceWizardGeneralOptionsPage(component,  busIf, handler, this));
@@ -86,11 +87,9 @@ void BusInterfaceWizard::setCreatedAbsDef(VLNV& createdVLNV, bool useDescription
     createdVLVN_ = createdVLNV;
     if (useDescription)
     {
-        BusInterfaceWizardBusEditorPage* busPage = dynamic_cast<BusInterfaceWizardBusEditorPage*>(page(PAGE_BUSDEFINITION));
+        BusInterfaceWizardBusEditorPage* busPage = 
+            dynamic_cast<BusInterfaceWizardBusEditorPage*>(page(PAGE_BUSDEFINITION));
         Q_ASSERT(busPage);
         busPage->setSignalNaming(BusInterfaceWizardBusEditorPage::DESCRIPTION);
     }
 }
-
-
-

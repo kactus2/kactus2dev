@@ -6,7 +6,7 @@
 // Date: 25.11.2013
 //
 // Description:
-// <Short description of the class/file contents>
+// Wizard for generating bus interface from a set of ports.
 //-----------------------------------------------------------------------------
 
 #ifndef BUSINTERFACEWIZARD_H
