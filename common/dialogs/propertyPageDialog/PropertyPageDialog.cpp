@@ -221,12 +221,10 @@ void PropertyPageDialog::finalizePages()
     // Update the width of the list.
     if (viewMode_ == VIEW_ICONS)
     {
-        QFontMetrics metrics(contentsList_->font());
-        int textHeight = metrics.height();
-
+        optimalWidth += 50;
         for (int i = 0; i < contentsList_->count(); ++i)
         {
-            contentsList_->item(i)->setSizeHint(QSize(optimalWidth, contentsList_->sizeHintForRow(i) + textHeight));
+            contentsList_->item(i)->setSizeHint(QSize(optimalWidth, contentsList_->sizeHintForRow(i)));
         }
 
         contentsList_->setFixedWidth(optimalWidth * iconColumnCount_);
