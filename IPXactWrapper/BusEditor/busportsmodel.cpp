@@ -12,8 +12,26 @@
 #include <QTextStream>
 #include <QStringList>
 
-#include <QDebug>
+namespace
+{
+    //! Enumeration for table columns.
+    enum Columns
+    {
+        NAME_COLUMN = 0,
+        QUALIFIER_COLUMN,
+        WIDTH_COLUMN,
+        DEFAULT_COLUMN,
+        MODE_COLUMN,
+        DIRECTION_COLUMN,
+        PRESENCE_COLUMN,
+        DRIVER_COLUMN,
+        COMMENT_COLUMN
+    };
+}
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::BusPortsModel()
+//-----------------------------------------------------------------------------
 BusPortsModel::BusPortsModel(QObject *parent): 
 QAbstractTableModel(parent),
 absDef_(),
@@ -22,9 +40,15 @@ table_() {
 
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::~BusPortsModel()
+//-----------------------------------------------------------------------------
 BusPortsModel::~BusPortsModel() {
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::rowCount()
+//-----------------------------------------------------------------------------
 int BusPortsModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
 
 	if (parent.isValid())
@@ -32,6 +56,9 @@ int BusPortsModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) con
 	return table_.size();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::columnCount()
+//-----------------------------------------------------------------------------
 int BusPortsModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
 
 	if (parent.isValid())
@@ -39,6 +66,9 @@ int BusPortsModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) 
 	return 9;
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::data()
+//-----------------------------------------------------------------------------
 QVariant BusPortsModel::data( const QModelIndex& index, 
 							 int role /*= Qt::DisplayRole*/ ) const {
 
@@ -50,7 +80,7 @@ QVariant BusPortsModel::data( const QModelIndex& index,
 	if (role == Qt::DisplayRole) {
 
 		switch (index.column()) {
-        case 0: {
+        case NAME_COLUMN: {
             if (table_.at(index.row()).name_.isEmpty())
             {
                 return "unnamed";
@@ -60,10 +90,10 @@ QVariant BusPortsModel::data( const QModelIndex& index,
                 return table_.at(index.row()).name_;
             }
 				}
-		case 1: {
+		case QUALIFIER_COLUMN: {
 			return portQualifier2Str(table_.at(index.row()).qualifier_);
 				}
-		case 2: {
+		case WIDTH_COLUMN: {
 			int width = table_.at(index.row()).width_;
 			
 			// if width is unspecified
@@ -72,22 +102,22 @@ QVariant BusPortsModel::data( const QModelIndex& index,
 			}
 			return width;
 				}
-		case 3: {
+		case DEFAULT_COLUMN: {
 			return table_.at(index.row()).defaultValue_;
 				}
-		case 4: {
+		case MODE_COLUMN: {
 			return portMode2Str(table_.at(index.row()).mode_);
 				}
-		case 5: {
+		case DIRECTION_COLUMN: {
 			return portDirection2Str(table_.at(index.row()).direction_);
 				}
-		case 6: {
+		case PRESENCE_COLUMN: {
 			return General::presence2Str(table_.at(index.row()).presence_);
 				}
-		case 7: {
+		case DRIVER_COLUMN: {
 			return portDriver2Str(table_.at(index.row()).driver_);
 				}
-		case 8: {
+		case COMMENT_COLUMN: {
 			return table_.at(index.row()).comment_;
 				}
 		default: {
@@ -145,6 +175,9 @@ QVariant BusPortsModel::data( const QModelIndex& index,
     return QVariant();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::headerData()
+//-----------------------------------------------------------------------------
 QVariant BusPortsModel::headerData( int section,
 								   Qt::Orientation orientation,
 								   int role /*= Qt::DisplayRole*/ ) const {
@@ -158,31 +191,31 @@ QVariant BusPortsModel::headerData( int section,
 	   if (orientation == Qt::Horizontal) {
 
 		   switch (section) {
-		   case 0: {
+		   case NAME_COLUMN: {
 			   return tr("Name");
 				   }
-		   case 1: {
+		   case QUALIFIER_COLUMN: {
 			   return tr("Qualifier");
 				   }
-		   case 2: {
+		   case WIDTH_COLUMN: {
 			   return tr("Width");
 				   }
-		   case 3: {
+		   case DEFAULT_COLUMN: {
 			   return tr("Default");
 				   }
-		   case 4: {
+		   case MODE_COLUMN: {
 			   return tr("Mode");
 				   }
-		   case 5: {
+		   case DIRECTION_COLUMN: {
 			   return tr("Direction");
 				   }
-		   case 6: {
+		   case PRESENCE_COLUMN: {
 			   return tr("Presence");
 				   }
-		   case 7: {
+		   case DRIVER_COLUMN: {
 			   return tr("Driver");
 				   }
-		   case 8: {
+		   case COMMENT_COLUMN: {
 			   return tr("Comment");
 				   }
 		   default: {
@@ -205,6 +238,9 @@ QVariant BusPortsModel::headerData( int section,
 	   return QVariant();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::portMode2Str()
+//-----------------------------------------------------------------------------
 QString BusPortsModel::portMode2Str( PortMode mode ) const {
 	switch (mode) {
 		case BusPortsModel::MODE_MASTER: 
@@ -220,6 +256,9 @@ QString BusPortsModel::portMode2Str( PortMode mode ) const {
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::str2PortMode()
+//-----------------------------------------------------------------------------
 BusPortsModel::PortMode BusPortsModel::str2PortMode( const QString& str ) const {
 
 	if (str == QString("master"))
@@ -251,6 +290,9 @@ General::InterfaceMode BusPortsModel::portMode2Mode(const PortMode mode) const
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::portDirection2Str()
+//-----------------------------------------------------------------------------
 QString BusPortsModel::portDirection2Str( PortDirection direction ) const {
 
 	switch (direction) {
@@ -265,6 +307,9 @@ QString BusPortsModel::portDirection2Str( PortDirection direction ) const {
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::str2PortDirection()
+//-----------------------------------------------------------------------------
 BusPortsModel::PortDirection BusPortsModel::str2PortDirection( const QString& str ) const {
 
 	if (str == QString("in"))
@@ -275,6 +320,9 @@ BusPortsModel::PortDirection BusPortsModel::str2PortDirection( const QString& st
 		return BusPortsModel::DIRECTION_INOUT;
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::portDriver2Str()
+//-----------------------------------------------------------------------------
 QString BusPortsModel::portDriver2Str( PortDriver driver ) const {
 
 	switch (driver) {
@@ -291,6 +339,9 @@ QString BusPortsModel::portDriver2Str( PortDriver driver ) const {
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::str2PortDriver()
+//-----------------------------------------------------------------------------
 BusPortsModel::PortDriver BusPortsModel::str2PortDriver( const QString& str ) const {
 
 	if (str == QString("any"))
@@ -303,6 +354,9 @@ BusPortsModel::PortDriver BusPortsModel::str2PortDriver( const QString& str ) co
 		return BusPortsModel::DRIVER_NONE;
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::portQualifier2Str()
+//-----------------------------------------------------------------------------
 QString BusPortsModel::portQualifier2Str( PortQualifier qualifier ) const {
 
 	switch ( qualifier) {
@@ -321,6 +375,9 @@ QString BusPortsModel::portQualifier2Str( PortQualifier qualifier ) const {
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::str2PortQualifier()
+//-----------------------------------------------------------------------------
 BusPortsModel::PortQualifier BusPortsModel::str2PortQualifier( const QString& str ) const {
 
 	if (str == QString("address"))
@@ -335,6 +392,9 @@ BusPortsModel::PortQualifier BusPortsModel::str2PortQualifier( const QString& st
 		return BusPortsModel::QUALIFIER_ANY;
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::save()
+//-----------------------------------------------------------------------------
 void BusPortsModel::save() {
 
 	// remove previous ports
@@ -421,6 +481,9 @@ void BusPortsModel::save() {
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::savePort()
+//-----------------------------------------------------------------------------
 void BusPortsModel::savePort(QSharedPointer<PortAbstraction> portAbs, int i) {
 	// set the width of the port for the specified element
 	switch (table_.at(i).mode_) {
@@ -486,6 +549,9 @@ void BusPortsModel::savePort(QSharedPointer<PortAbstraction> portAbs, int i) {
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::readPorts()
+//-----------------------------------------------------------------------------
 void BusPortsModel::readPorts() {
 
 	beginResetModel();
@@ -517,6 +583,9 @@ void BusPortsModel::readPorts() {
 	endResetModel();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::readPort()
+//-----------------------------------------------------------------------------
 void BusPortsModel::readPort( QSharedPointer<PortAbstraction> portAbs, 
 							 WireAbstraction::WirePort* modeSpesific,
 							 BusPortsModel::PortMode mode) {
@@ -604,6 +673,9 @@ void BusPortsModel::readPort( QSharedPointer<PortAbstraction> portAbs,
     }	
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::addSignal()
+//-----------------------------------------------------------------------------
 void BusPortsModel::addSignal() {
 
 	BusPortsModel::Port port;
@@ -615,6 +687,9 @@ void BusPortsModel::addSignal() {
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::addSignalOptions()
+//-----------------------------------------------------------------------------
 void BusPortsModel::addSignalOptions(const QModelIndexList& indexes ) {
 	QList<BusPortsModel::Port> ports;
 
@@ -666,6 +741,9 @@ void BusPortsModel::addSignalOptions(const QModelIndexList& indexes ) {
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::setData()
+//-----------------------------------------------------------------------------
 bool BusPortsModel::setData(const QModelIndex& index, 
 							const QVariant& value, 
 							int role /*= Qt::EditRole*/) {
@@ -678,7 +756,7 @@ bool BusPortsModel::setData(const QModelIndex& index,
 	if (role == Qt::EditRole) {
 
 		switch (index.column()) {
-			case 0: {
+			case NAME_COLUMN: {
 				
 				// make sure there is not already port with same name and mode
 				BusPortsModel::Port temp = table_.at(index.row());
@@ -697,39 +775,38 @@ bool BusPortsModel::setData(const QModelIndex& index,
 				renamePort(table_.at(index.row()).name_, value.toString());
 				return true;
 					}
-			case 1: {
+			case QUALIFIER_COLUMN: {
 				setQualifier(table_.at(index.row()).name_, value.toString());
 				return true;
 					}
-			case 2: {
-				table_[index.row()].width_ = value.toInt();
-				emit dataChanged(index, index);
+			case WIDTH_COLUMN: {
+                setWidth(table_.at(index.row()).name_, value.toInt());				
 				return true;
 					}
-			case 3: {
+			case DEFAULT_COLUMN: {
 				setDefaultValue(table_.at(index.row()).name_, value.toString());
 				return true;
 					}
-			case 4: {
+			case MODE_COLUMN: {
 				table_[index.row()].mode_ = str2PortMode(value.toString());
 				emit dataChanged(index, index);
 				return true;
 					}
-			case 5: {
+			case DIRECTION_COLUMN: {
 				table_[index.row()].direction_ = str2PortDirection(value.toString());
 				emit dataChanged(index, index);
 				return true;
 					}
-			case 6: {
+			case PRESENCE_COLUMN: {
 				table_[index.row()].presence_ = General::str2Presence(value.toString(), General::REQUIRED);
 				emit dataChanged(index, index);
 				return true;
 					}
-			case 7: {
+			case DRIVER_COLUMN: {
 				setDriver(table_.at(index.row()).name_, value.toString());
 				return true;
 					}
-			case 8: {
+			case COMMENT_COLUMN: {
 				setComment(table_.at(index.row()).name_, value.toString());
 				return true;
 					}
@@ -745,6 +822,9 @@ bool BusPortsModel::setData(const QModelIndex& index,
 		return false;
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::flags()
+//-----------------------------------------------------------------------------
 Qt::ItemFlags BusPortsModel::flags(const QModelIndex& index) const {
 
 	if (!index.isValid())
@@ -752,6 +832,9 @@ Qt::ItemFlags BusPortsModel::flags(const QModelIndex& index) const {
 	return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::renamePort()
+//-----------------------------------------------------------------------------
 void BusPortsModel::renamePort( const QString oldPort, const QString newPort ) {
 
 	// change all ports with given name
@@ -759,7 +842,7 @@ void BusPortsModel::renamePort( const QString oldPort, const QString newPort ) {
 
 		if (table_.at(i).name_ == oldPort) {
 			table_[i].name_ = newPort;
-			QModelIndex ind = index(i, 0, QModelIndex());
+			QModelIndex ind = index(i, NAME_COLUMN, QModelIndex());
 			emit dataChanged(ind, ind);
 		}
 	}
@@ -772,6 +855,9 @@ void BusPortsModel::renamePort( const QString oldPort, const QString newPort ) {
 	endResetModel();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::setQualifier()
+//-----------------------------------------------------------------------------
 void BusPortsModel::setQualifier( const QString& portName, const QString& qualifier ) {
 
 	// change all qualifiers that have the given port name
@@ -779,12 +865,15 @@ void BusPortsModel::setQualifier( const QString& portName, const QString& qualif
 
 		if (table_.at(i).name_ == portName) {
 			table_[i].qualifier_ = str2PortQualifier(qualifier);
-			QModelIndex ind = index(i, 1, QModelIndex());
+			QModelIndex ind = index(i, QUALIFIER_COLUMN, QModelIndex());
 			emit dataChanged(ind, ind);
 		}
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::setDefaultValue()
+//-----------------------------------------------------------------------------
 void BusPortsModel::setDefaultValue( const QString& portName, const QString& defaultValue ) {
 
 	// change all default values for given ports
@@ -792,17 +881,20 @@ void BusPortsModel::setDefaultValue( const QString& portName, const QString& def
 
 		if (table_.at(i).name_ == portName) {
 			table_[i].defaultValue_ = defaultValue;
-			QModelIndex ind = index(i, 3, QModelIndex());
+			QModelIndex ind = index(i, DEFAULT_COLUMN, QModelIndex());
 			emit dataChanged(ind, ind);
 
 			// default value and driver are mutually exclusive
 			table_[i].driver_ = BusPortsModel::DRIVER_NONE;
-			QModelIndex ind2 = index(i, 7, QModelIndex());
+			QModelIndex ind2 = index(i, DRIVER_COLUMN, QModelIndex());
 			emit dataChanged(ind2, ind2);
 		}
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::setDriver()
+//-----------------------------------------------------------------------------
 void BusPortsModel::setDriver(const QString& portName, const QString& driverValue) {
 
 	// change all drivers for given ports
@@ -810,17 +902,20 @@ void BusPortsModel::setDriver(const QString& portName, const QString& driverValu
 
 		if (table_.at(i).name_ == portName) {
 			table_[i].driver_ = str2PortDriver(driverValue);
-			QModelIndex ind = index(i, 7, QModelIndex());
+			QModelIndex ind = index(i, DRIVER_COLUMN, QModelIndex());
 			emit dataChanged(ind, ind);
 
 			// default value and driver are mutually exclusive
 			table_[i].defaultValue_ = QString();
-			QModelIndex ind2 = index(i, 3, QModelIndex());
+			QModelIndex ind2 = index(i, DEFAULT_COLUMN, QModelIndex());
 			emit dataChanged(ind2, ind2);
 		}
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::setComment()
+//-----------------------------------------------------------------------------
 void BusPortsModel::setComment(const QString& portName, const QString& comment) {
 
 	// change comments for the given ports
@@ -828,12 +923,31 @@ void BusPortsModel::setComment(const QString& portName, const QString& comment) 
 
 		if (table_.at(i).name_ == portName) {
 			table_[i].comment_ = comment;
-			QModelIndex ind = index(i, 8, QModelIndex());
+			QModelIndex ind = index(i, COMMENT_COLUMN, QModelIndex());
 			emit dataChanged(ind, ind);
 		}
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::setWidth()
+//-----------------------------------------------------------------------------
+void BusPortsModel::setWidth(const QString& portName, const int width)
+{
+    // change width for the given ports.
+    for (int i = 0; i < table_.size(); ++i) {
+
+        if (table_.at(i).name_ == portName) {
+            table_[i].width_ = width;
+            QModelIndex ind = index(i, WIDTH_COLUMN, QModelIndex());
+            emit dataChanged(ind, ind);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::setAbsDef()
+//-----------------------------------------------------------------------------
 void BusPortsModel::setAbsDef( QSharedPointer<AbstractionDefinition> absDef ) {
 
 	Q_ASSERT_X(absDef, "BusPortsModel constructor",
@@ -846,6 +960,9 @@ void BusPortsModel::setAbsDef( QSharedPointer<AbstractionDefinition> absDef ) {
 	readPorts();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::portDirection2Direction()
+//-----------------------------------------------------------------------------
 General::Direction BusPortsModel::portDirection2Direction( PortDirection direction ) const {
 	switch (direction) {
 		case BusPortsModel::DIRECTION_IN: {
@@ -861,6 +978,9 @@ General::Direction BusPortsModel::portDirection2Direction( PortDirection directi
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::removeIndexes()
+//-----------------------------------------------------------------------------
 void BusPortsModel::removeIndexes(const QModelIndexList& indexes ) {
 
 	QList<BusPortsModel::Port> ports;
@@ -917,6 +1037,9 @@ void BusPortsModel::onRemoveItem(QModelIndex const& index)
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::copyIndexes()
+//-----------------------------------------------------------------------------
 void BusPortsModel::copyIndexes( const QModelIndexList& indexes ) {
 	QList<BusPortsModel::Port> ports;
 
@@ -954,6 +1077,9 @@ void BusPortsModel::copyIndexes( const QModelIndexList& indexes ) {
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::exportCSV()
+//-----------------------------------------------------------------------------
 void BusPortsModel::exportCSV( const QString& path ) {
 
 	if (path.isEmpty())
@@ -989,6 +1115,9 @@ void BusPortsModel::exportCSV( const QString& path ) {
 	file.close();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::importCSV()
+//-----------------------------------------------------------------------------
 void BusPortsModel::importCSV( const QString& path ) {
 
 	if (path.isEmpty())
@@ -1075,6 +1204,9 @@ void BusPortsModel::importCSV( const QString& path ) {
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::Port::Port()
+//-----------------------------------------------------------------------------
 BusPortsModel::Port::Port():
 name_(),
 qualifier_(BusPortsModel::QUALIFIER_ANY),
@@ -1087,6 +1219,9 @@ driver_(BusPortsModel::DRIVER_NONE),
 comment_() {
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::Port::Port()
+//-----------------------------------------------------------------------------
 BusPortsModel::Port::Port( const QString& name ):
 name_(name),
 qualifier_(BusPortsModel::QUALIFIER_ANY),
@@ -1099,6 +1234,9 @@ driver_(BusPortsModel::DRIVER_NONE),
 comment_() {
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::Port::Port()
+//-----------------------------------------------------------------------------
 BusPortsModel::Port::Port( const Port& other ):
 name_(other.name_),
 qualifier_(other.qualifier_),
@@ -1111,6 +1249,9 @@ driver_(other.driver_),
 comment_(other.comment_) {
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::Port::operator=()
+//-----------------------------------------------------------------------------
 BusPortsModel::Port& BusPortsModel::Port::operator=( const Port& other ) {
 	if (this != &other) {
 
@@ -1127,6 +1268,9 @@ BusPortsModel::Port& BusPortsModel::Port::operator=( const Port& other ) {
 	return *this;
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::Port::operator==()
+//-----------------------------------------------------------------------------
 bool BusPortsModel::Port::operator==( const Port& other ) const {
 	
 	// if names don't match
@@ -1146,6 +1290,9 @@ bool BusPortsModel::Port::operator==( const Port& other ) const {
 		return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::Port::operator!=()
+//-----------------------------------------------------------------------------
 bool BusPortsModel::Port::operator!=( const Port& other ) const {
 
 	// if names don't match
@@ -1165,6 +1312,9 @@ bool BusPortsModel::Port::operator!=( const Port& other ) const {
 		return false;
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::Port::operator<()
+//-----------------------------------------------------------------------------
 bool BusPortsModel::Port::operator<( const Port& other ) const {
 
 	// if names match then order by mode

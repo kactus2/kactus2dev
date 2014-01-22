@@ -409,6 +409,14 @@ private:
 	*/
 	void setComment(const QString& portName, const QString& comment);
 
+	/*! \brief Set the width(s) for port(s) with given name.
+	 *
+	 * \param portName Identifies the port that's width is to be set.
+	 * \param width The width to set for the port(s)
+	 *
+	*/
+    void setWidth(const QString& portName, const int width );
+
 	/*! \brief Save the port from table to a port abstraction.
 	 *
 	 * \param portAbs Pointer to the port abstraction to save the port to.
@@ -416,6 +424,10 @@ private:
 	 *
 	*/
 	void savePort(QSharedPointer<PortAbstraction> portAbs, int i);
+    
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! \brief Pointer to the abstraction definition being edited.
 	QSharedPointer<AbstractionDefinition> absDef_;
