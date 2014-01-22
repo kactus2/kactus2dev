@@ -397,7 +397,7 @@ General::Direction convert2Mirrored(const General::Direction originalDirection);
  * \param defaultValue The value that will be returned if no match is found
  * \return General::Direction that matches the str or default value.
  */
-General::Direction str2Direction(QString str, General::Direction defaultValue);
+KACTUS2_API General::Direction str2Direction(QString str, General::Direction defaultValue);
 
 /*! \brief Convert the Direction value to QString.
  *
@@ -405,7 +405,7 @@ General::Direction str2Direction(QString str, General::Direction defaultValue);
  *
  * \return QString that matches the enum value.
  */
-QString direction2Str(const General::Direction direction);
+KACTUS2_API QString direction2Str(const General::Direction direction);
 
 /*! \brief Equals to spirit:usage element within spirit:memoryBlockData
  *
