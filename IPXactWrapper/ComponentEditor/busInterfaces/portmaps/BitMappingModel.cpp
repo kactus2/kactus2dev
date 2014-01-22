@@ -449,15 +449,11 @@ bool BitMappingModel::dropMimeData(const QMimeData *data,
 void BitMappingModel::mapToEnd(QStringList portNames)
 {
     int endIndex = rows_.size();
-    if (canEdit_)
-    {
-        endIndex--;
-    }
 
     // Find the first unmapped index and insert ports.
     for (int logIndex = 0; logIndex < endIndex; logIndex++)
     {
-        if (rows_[logIndex].size() == 0)
+        if (rows_[logIndex].size() == 0 || (canEdit_ && logIndex == endIndex - 1))
         {
             QMimeData mimeData;
             mimeData.setText(portNames.join(';'));
