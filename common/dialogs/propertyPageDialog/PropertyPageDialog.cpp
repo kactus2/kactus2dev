@@ -216,15 +216,20 @@ void PropertyPageDialog::onContentChanged()
 void PropertyPageDialog::finalizePages()
 {
     // Determine the best width for the list items.
-    int optimalWidth = contentsList_->sizeHintForColumn(0);
+    int optimalWidth = contentsList_->sizeHintForColumn(0);    
 
     // Update the width of the list.
     if (viewMode_ == VIEW_ICONS)
     {
         optimalWidth += 50;
+
+        QFontMetrics metrics(contentsList_->font());
+        int textHeight = metrics.height();
+        int optimalHeight = contentsList_->iconSize().height() + textHeight + 4;
+                
         for (int i = 0; i < contentsList_->count(); ++i)
         {
-            contentsList_->item(i)->setSizeHint(QSize(optimalWidth, contentsList_->sizeHintForRow(i)));
+            contentsList_->item(i)->setSizeHint(QSize(optimalWidth, optimalHeight));
         }
 
         contentsList_->setFixedWidth(optimalWidth * iconColumnCount_);
