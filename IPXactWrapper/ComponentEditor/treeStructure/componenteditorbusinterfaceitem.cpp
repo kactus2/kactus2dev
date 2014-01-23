@@ -82,6 +82,7 @@ ItemEditor* ComponentEditorBusInterfaceItem::editor() {
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
 			this, SIGNAL(helpUrlRequested(QString const&)));
 	}
+    setHighlight(false);
 	return editor_;
 }
 

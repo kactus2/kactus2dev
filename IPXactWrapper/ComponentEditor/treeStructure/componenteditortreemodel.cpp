@@ -7,6 +7,8 @@
 
 #include "componenteditortreemodel.h"
 
+#include <common/KactusColors.h>
+
 #include <QColor>
 #include <QIcon>
 
@@ -107,11 +109,19 @@ QVariant ComponentEditorTreeModel::data( const QModelIndex& index,
 		return item->getFont();
 	}
 	else if (role == Qt::ForegroundRole) {
-
-		if (item->isValid())
-			return QColor("black");
-		else
-			return QColor("red");
+        
+        if (!item->isValid())
+        {
+            return QColor("red");
+        }         
+        else if (item->highlight())
+        {
+            return QColor("blue");
+        }  
+        else
+        {
+            return QColor("black");
+        }
 	}
 	else if (role == Qt::ToolTipRole) {
 		return item->getTooltip();

@@ -157,6 +157,10 @@ public:
 	*/
 	virtual bool isValid() const;
 
+    virtual void setHighlight(bool highlight);
+
+    virtual bool highlight() const;
+
 	/*! \brief Get pointer to the editor of this item.
 	 *
 	 * \return Pointer to the editor to use for this item.
@@ -326,6 +330,9 @@ protected:
 
 	//! \brief Defines the lock-status for editors.
 	bool locked_;
+
+    //! \brief Flag for indicating highlight of the item.
+    bool highlight_;
 
 protected slots:
 

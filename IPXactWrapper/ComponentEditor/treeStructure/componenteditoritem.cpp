@@ -24,6 +24,7 @@ model_(model),
 childItems_(),
 editor_(NULL),
 locked_(true),
+highlight_(false),
 parent_(parent) {
 
 	connect(this, SIGNAL(contentChanged(ComponentEditorItem*)),
@@ -67,6 +68,7 @@ model_(parent),
 childItems_(), 
 editor_(NULL),
 locked_(true),
+highlight_(false),
 parent_(NULL) {
 
 	connect(this, SIGNAL(contentChanged(ComponentEditorItem*)),
@@ -136,6 +138,22 @@ bool ComponentEditorItem::isValid() const {
 
 	// all children were valid
 	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorItem::setHighlight()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::setHighlight(bool highlight)
+{
+    highlight_ = highlight;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorItem::isModified()
+//-----------------------------------------------------------------------------
+bool ComponentEditorItem::highlight() const
+{
+    return highlight_;
 }
 
 ItemVisualizer* ComponentEditorItem::visualizer() {
@@ -272,6 +290,6 @@ QIcon ComponentEditorItem::getIcon() const
     return QIcon();
 }
 
-void ComponentEditorItem::onSelectRequest() {
+void ComponentEditorItem::onSelectRequest() {    
 	emit selectItem(this);
 }

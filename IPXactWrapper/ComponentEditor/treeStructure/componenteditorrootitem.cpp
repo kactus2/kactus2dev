@@ -156,8 +156,10 @@ void ComponentEditorRootItem::addInterface()
 
         // if the child was for bus interfaces summary item.
         if (busIfsItem) {            
-            model_->addItem(busIfsItem.data(), busIfsItem->children().count());
+            int childIndex = busIfsItem->children().count();
+            model_->addItem(busIfsItem.data(), childIndex);
             busIfsItem->refreshEditor();
+            busIfsItem->child(childIndex)->setHighlight(true);
             return;
         }
     }
