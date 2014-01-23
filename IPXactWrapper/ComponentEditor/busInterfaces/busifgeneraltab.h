@@ -87,6 +87,14 @@ public:
 	*/
     void setAbsTypeMandatory(bool isMandatory);
 
+
+    /*!
+     *  Locks/unlocks the VLNV selection for bus definition and abstraction definition.
+     *
+     *      @param [in] locked   The lock to set.
+     */
+    void setBusTypesLock( bool locked );
+
 signals:
 
 	//! \brief Emitted when contents of the model change
@@ -146,7 +154,11 @@ private:
 
 	//! No assignment
 	BusIfGeneralTab& operator=(const BusIfGeneralTab& other);
-	
+
+    //-----------------------------------------------------------------------------
+    //! Data.
+    //-----------------------------------------------------------------------------
+
 	//! \brief Pointer to the bus interface being edited.
 	QSharedPointer<BusInterface> busif_;
 

@@ -23,16 +23,14 @@
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizard::BusInterfaceWizard()
 //-----------------------------------------------------------------------------
-BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf,
-    LibraryInterface* handler,    
-    QWidget* parent)
-    : QWizard(parent),
-    component_(component),
-    busIf_(busIf),
-    handler_(handler),
-    ports_(),
-    createdVLVN_(),
-    namesFromDescription_(false)
+BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component,  
+    QSharedPointer<BusInterface> busIf,
+    LibraryInterface* handler, 
+    QStringList portNames,         
+    QWidget* parent, 
+    VLNV& absDefVLNV, 
+    bool descriptionAsLogicalName)
+    : QWizard(parent)
 {
     setWindowTitle(tr("Bus Interface Wizard"));
     setWizardStyle(ModernStyle);
@@ -41,11 +39,19 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     setOption(HaveFinishButtonOnEarlyPages, false);
     resize(800, 800);
 
+    BusInterfaceWizardBusEditorPage::SignalNamingPolicy namingPolicy = BusInterfaceWizardBusEditorPage::NAME;
+    if (descriptionAsLogicalName)
+    {
+        namingPolicy = BusInterfaceWizardBusEditorPage::DESCRIPTION;
+    }
+
     setPage(PAGE_INTRO, new BusInterfaceWizardIntroPage(this));
-    setPage(PAGE_VLNVSELECTION, new BusInterfaceWizardGeneralOptionsPage(component,  busIf, handler, this));
-    setPage(PAGE_BUSDEFINITION, new BusInterfaceWizardBusEditorPage(component_, busIf, handler, this));
-    setPage(PAGE_PORTMAP, new BusInterfaceWizardPortMapPage(component, busIf, handler, this));
-    setPage(PAGE_SUMMARY, new BusInterfaceWizardConclusionPage(busIf, this));
+    setPage(PAGE_GENERALOPTIONS, new BusInterfaceWizardGeneralOptionsPage(component, busIf, handler, 
+        !absDefVLNV.isValid(), this));
+    setPage(PAGE_BUSDEFINITION, new BusInterfaceWizardBusEditorPage(component, busIf, handler, portNames, 
+        this, absDefVLNV, namingPolicy));
+    setPage(PAGE_PORTMAPS, new BusInterfaceWizardPortMapPage(component, busIf, handler, portNames, this));
+    setPage(PAGE_SUMMARY, new BusInterfaceWizardConclusionPage(busIf, portNames, this));
 }
 
 //-----------------------------------------------------------------------------
@@ -53,43 +59,4 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
 //-----------------------------------------------------------------------------
 BusInterfaceWizard::~BusInterfaceWizard()
 {
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceWizard::getPorts()
-//-----------------------------------------------------------------------------
-QStringList BusInterfaceWizard::getPorts() const
-{
-    return ports_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceWizard::setPorts()
-//-----------------------------------------------------------------------------
-void BusInterfaceWizard::setPorts(QStringList const& ports)
-{
-    ports_ = ports;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceWizard::getCreatedAbsDef()
-//-----------------------------------------------------------------------------
-VLNV BusInterfaceWizard::getCreatedAbsDef()
-{
-    return createdVLVN_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceWizard::setCreatedAbsDef()
-//-----------------------------------------------------------------------------
-void BusInterfaceWizard::setCreatedAbsDef(VLNV& createdVLNV, bool useDescription)
-{
-    createdVLVN_ = createdVLNV;
-    if (useDescription)
-    {
-        BusInterfaceWizardBusEditorPage* busPage = 
-            dynamic_cast<BusInterfaceWizardBusEditorPage*>(page(PAGE_BUSDEFINITION));
-        Q_ASSERT(busPage);
-        busPage->setSignalNaming(BusInterfaceWizardBusEditorPage::DESCRIPTION);
-    }
 }

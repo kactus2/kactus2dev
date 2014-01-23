@@ -236,6 +236,15 @@ void BusIfGeneralTab::onBusTypeChanged() {
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfGeneralTab::setBusTypesLocked()
+//-----------------------------------------------------------------------------
+void BusIfGeneralTab::setBusTypesLock(bool locked)
+{
+    busType_.setEnabled(!locked);
+    absType_.setEnabled(!locked);
+}
+
 void BusIfGeneralTab::onAbsTypeChanged() {
 	busif_->setAbstractionType(absType_.getVLNV());
 	emit contentChanged();

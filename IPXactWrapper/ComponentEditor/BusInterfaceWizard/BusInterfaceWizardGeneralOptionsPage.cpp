@@ -25,9 +25,9 @@
 BusInterfaceWizardGeneralOptionsPage::BusInterfaceWizardGeneralOptionsPage(QSharedPointer<Component> component,
     QSharedPointer<BusInterface> busIf,
     LibraryInterface* lh, 
+    bool absDefEditable,
     BusInterfaceWizard* parent)
     : QWizardPage(parent),
-    parent_(parent),
     component_(component),
     busIf_(busIf),
     handler_(lh),
@@ -39,6 +39,7 @@ BusInterfaceWizardGeneralOptionsPage::BusInterfaceWizardGeneralOptionsPage(QShar
     setFinalPage(false);
 
     generalTab_->setAbsTypeMandatory(true);
+    generalTab_->setBusTypesLock(!absDefEditable);
 
     setupLayout();
 }

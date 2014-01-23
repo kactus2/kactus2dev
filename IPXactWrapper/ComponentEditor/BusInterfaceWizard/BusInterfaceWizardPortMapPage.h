@@ -33,13 +33,14 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component   The component whose bus interface is being edited.
-     *      @param [in] busIf       The bus interface being edited.
-     *      @param [in] lh          The component library handler.
-     *      @param [in] parent      The parent wizard.
+     *      @param [in] component       The component whose bus interface is being edited.
+     *      @param [in] busIf           The bus interface being edited.
+     *      @param [in] lh              The component library handler.
+     *      @param [in] physicalPorts   The physical ports selected for mapping.
+     *      @param [in] parent          The parent wizard.
      */
     BusInterfaceWizardPortMapPage(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf, 
-        LibraryInterface* lh, BusInterfaceWizard* parent);
+        LibraryInterface* lh, QStringList physicalPorts, BusInterfaceWizard* parent);
 
     /*!
     *  Destructor.
@@ -79,9 +80,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-    
-    //! The parent wizard.
-    BusInterfaceWizard* parent_;
 
     //! The library interface.
     LibraryInterface* handler_;

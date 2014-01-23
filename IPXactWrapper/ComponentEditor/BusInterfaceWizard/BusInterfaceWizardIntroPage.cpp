@@ -40,7 +40,7 @@ BusInterfaceWizardIntroPage::~BusInterfaceWizardIntroPage()
 //-----------------------------------------------------------------------------
 int BusInterfaceWizardIntroPage::nextId() const
 {
-    return BusInterfaceWizard::PAGE_VLNVSELECTION;
+    return BusInterfaceWizard::PAGE_GENERALOPTIONS;
 }
 
 //-----------------------------------------------------------------------------

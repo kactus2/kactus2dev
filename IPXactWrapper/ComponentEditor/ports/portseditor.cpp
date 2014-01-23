@@ -230,9 +230,8 @@ void PortsEditor::onCreateNewInteface(QStringList const& selectedPorts)
     busIf->setBusType(busVLNV);
 
     // Open the bus interface wizard.
-    BusInterfaceWizard wizard(component_, busIf, handler_, this);
-    wizard.setCreatedAbsDef(absVLNV, dialog.getSignalSelection() == NewBusDialog::USE_DESCRIPTION);    
-    wizard.setPorts(selectedPorts);
+    BusInterfaceWizard wizard(component_, busIf, handler_, selectedPorts, this, absVLNV, 
+        dialog.getSignalSelection() == NewBusDialog::USE_DESCRIPTION);
     component_->addBusInterface(busIf);   
 
     if (wizard.exec() == QWizard::Accepted)
@@ -254,8 +253,7 @@ void PortsEditor::onCreateInterface(QStringList const& selectedPorts)
     QSharedPointer<BusInterface> busIf(new BusInterface());
     
     // Open the bus interface wizard.
-    BusInterfaceWizard wizard(component_, busIf, handler_, this);    
-    wizard.setPorts(selectedPorts);
+    BusInterfaceWizard wizard(component_, busIf, handler_, selectedPorts, this);
     component_->addBusInterface(busIf);   
 
     if (wizard.exec() == QWizard::Accepted)

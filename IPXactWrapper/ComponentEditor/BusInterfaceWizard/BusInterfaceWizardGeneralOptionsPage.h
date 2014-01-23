@@ -38,7 +38,7 @@ public:
      *      @param [in] parent      The parent wizard.
      */
     BusInterfaceWizardGeneralOptionsPage(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf, 
-        LibraryInterface* lh, BusInterfaceWizard* parent);
+        LibraryInterface* lh, bool absDefEditable, BusInterfaceWizard* parent);
 
     /*!
     *  Destructor.
@@ -82,9 +82,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The parent wizard.
-    BusInterfaceWizard* parent_;
 
     //! Flag for indicating, if a new bus is created.
     bool newBus_;

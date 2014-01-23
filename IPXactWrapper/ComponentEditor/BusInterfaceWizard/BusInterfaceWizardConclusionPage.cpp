@@ -23,10 +23,11 @@
 // Function: BusInterfaceWizardConclusionPage::BusInterfaceWizardConclusionPage()
 //-----------------------------------------------------------------------------
 BusInterfaceWizardConclusionPage::BusInterfaceWizardConclusionPage(QSharedPointer<BusInterface> busIf,
+    QStringList portNames, 
     BusInterfaceWizard *parent)
     : QWizardPage(parent),
-    parent_(parent),
     busIf_(busIf),
+    ports_(portNames),
     nameLabel_(this),
     modeLabel_(this),
     busDefLabel_(this),
@@ -70,7 +71,7 @@ void BusInterfaceWizardConclusionPage::initializePage()
     // Search through all ports to see which ones are mapped in port maps.
     QStringList mappedPorts;
 
-    foreach(QString portName, parent_->getPorts())
+    foreach(QString portName, ports_)
     {
         foreach(QSharedPointer<General::PortMap> portMap, busIf_->getPortMaps())
         {
@@ -81,7 +82,7 @@ void BusInterfaceWizardConclusionPage::initializePage()
             }
         }
     }
-    portMapLabel_.setText(QString::number(mappedPorts.size()) + "/" + QString::number(parent_->getPorts().size()));
+    portMapLabel_.setText(QString::number(mappedPorts.size()) + "/" + QString::number(ports_.size()));
 }
 
 //-----------------------------------------------------------------------------

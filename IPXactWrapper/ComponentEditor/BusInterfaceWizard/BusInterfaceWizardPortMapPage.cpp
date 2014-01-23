@@ -25,18 +25,20 @@
 // Function: BusInterfaceWizardPortMapPage::BusInterfaceWizardPortMapPage()
 //-----------------------------------------------------------------------------
 BusInterfaceWizardPortMapPage::BusInterfaceWizardPortMapPage(QSharedPointer<Component> component, 
-    QSharedPointer<BusInterface> busIf, LibraryInterface* lh, BusInterfaceWizard* parent)
-    : QWizardPage(parent),
-      parent_(parent),
+    QSharedPointer<BusInterface> busIf, LibraryInterface* lh, 
+    QStringList physicalPorts,
+    BusInterfaceWizard* parent)
+    : QWizardPage(parent),      
     component_(component),
     busIf_(busIf),
-      handler_(lh),
+    handler_(lh),
     portMapTab_(lh, component, busIf.data(), this)
 {
     setTitle(tr("Port Maps"));
     setSubTitle(tr("Create port maps for interface %1.").arg(busIf->getName()));
     setFinalPage(false);
     
+    portMapTab_.setPhysicalPorts(physicalPorts);
     connect(&portMapTab_, SIGNAL(errorMessage(const QString&)),
         this, SLOT(showErrorMessage(const QString&)), Qt::UniqueConnection);
 
@@ -65,8 +67,7 @@ void BusInterfaceWizardPortMapPage::initializePage()
 {
     portMapTab_.setAbsType(busIf_->getAbstractionType(), busIf_->getInterfaceMode());
     
-    portMapTab_.refresh();
-    portMapTab_.setPhysicalPorts(parent_->getPorts());
+    portMapTab_.refresh();    
 }
 
 //-----------------------------------------------------------------------------

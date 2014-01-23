@@ -32,11 +32,14 @@ public:
      *  <Description>.
      *
      *      @param [in] busIf   The bus interface being edited.
+     *      @param [in] ports   The ports selected to the wizard.
      *      @param [in] parent  The parent wizard.
      *
      *      @return 
      */
-    BusInterfaceWizardConclusionPage(QSharedPointer<BusInterface> busIf, BusInterfaceWizard* parent);
+    BusInterfaceWizardConclusionPage(QSharedPointer<BusInterface> busIf, 
+        QStringList ports,
+        BusInterfaceWizard* parent);
 
     /*!
      *  The destructor.
@@ -68,11 +71,11 @@ private:
     //! Data.
     //-----------------------------------------------------------------------------
 
-    //! The parent wizard.
-    BusInterfaceWizard* parent_;
-
     //! The bus interface being edited.
     QSharedPointer<BusInterface> busIf_;
+
+    //! The ports selected to the wizard.
+    QStringList ports_;
 
     //! Label for bus interface name.
     QLabel nameLabel_;

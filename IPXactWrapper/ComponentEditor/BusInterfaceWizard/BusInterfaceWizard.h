@@ -28,63 +28,45 @@ class LibraryInterface;
 class BusInterfaceWizard : public QWizard
 {
 public:
-    enum Page
+    
+    //! Enumeration for the wizard pages.
+    enum Pages
     {
         PAGE_INTRO = 0,
-        PAGE_VLNVSELECTION,
+        PAGE_GENERALOPTIONS,
         PAGE_BUSDEFINITION,
-        PAGE_PORTMAP,
+        PAGE_PORTMAPS,
         PAGE_SUMMARY
-	 };
+	 };    
 
-    
-
-	 /*!
-	 *  Constructor.
-	 *
-	 *      @param [in] component  The component for which the wizard is run.
-	 *      @param [in] handler	   Pointer to the instance which manages the library.
-	 *      @param [in] parent     The parent widget.
-	 */
+    /*!
+     *  The constructor.
+     *
+     *      @param [in] component                   The component for which the wizard is run.
+     *      @param [in] busIf                       The bus interface for which the wizard is run.
+     *      @param [in] handler                     Pointer to the instance which manages the library.
+     *      @param [in] portNames                   Names of the physical ports used to generate the interface.
+     *      @param [in] parent                      The parent widget.
+     *      @param [in] absDefVLNV                  VLNV of the fixed abstraction definition of the bus interface.
+     *                                              If invalid, VLNV can be chosen freely on general page.
+     *      @param [in] descriptionAsLogicalName    Logical signal naming selection.
+     */
     BusInterfaceWizard(QSharedPointer<Component> component,  
         QSharedPointer<BusInterface> busIf,
-        LibraryInterface* handler, 
-        QWidget* parent);
+        LibraryInterface* handler, QStringList portNames,         
+        QWidget* parent = 0, 
+        VLNV& absDefVLNV = VLNV(), 
+        bool descriptionAsLogicalName = false);
 
 	 /*!
 	 *  Destructor.
 	 */
 	 ~BusInterfaceWizard();
 
-    QStringList getPorts() const;
-
-    void setPorts(QStringList const& ports);
-
-    VLNV getCreatedAbsDef();
-
-    void setCreatedAbsDef(VLNV& createdVLNV, bool useDescription);
-
-
 private:
     // Disable copying.
     BusInterfaceWizard(BusInterfaceWizard const& rhs);
     BusInterfaceWizard& operator=(BusInterfaceWizard const& rhs);
-    
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    QStringList ports_;
-
-    VLNV createdVLVN_;
-
-    QSharedPointer<Component> component_;
-
-    QSharedPointer<BusInterface> busIf_;
-
-    LibraryInterface* handler_;
-
-    bool namesFromDescription_;
 };
 
 #endif // BUSINTERFACEWIZARD_H
