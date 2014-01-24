@@ -282,7 +282,7 @@ void BusInterfaceWizardBusEditorPage::createPortMaps()
                     // Use bit index in description to map to logical signal, if logical signals
                     // are generated from the physical ports and index is found in description.
                     QRegExp indexExp("\\[(\\d+)\\]");                    
-                    if ( mappingMode_ == GENERATE_ALL && portNamesPolicy_ == DESCRIPTION && 
+                    if ( (mappingMode_ == GENERATE_SINGLE || portNamesPolicy_ == DESCRIPTION) && 
                         physPort->getDescription().contains(indexExp))
                     {
                         lowerLogical = indexExp.cap(1).toInt();
