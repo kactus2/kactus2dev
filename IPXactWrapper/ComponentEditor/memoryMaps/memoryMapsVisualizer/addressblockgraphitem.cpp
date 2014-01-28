@@ -34,7 +34,7 @@ AddressBlockGraphItem::~AddressBlockGraphItem() {
 
 void AddressBlockGraphItem::refresh() {
     setName(addrBlock_->getName());
-    setOverlappingTop(addrBlock_->getBaseAddress().toLongLong());
+    setOverlappingTop(Utils::str2Uint(addrBlock_->getBaseAddress()));
     setOverlappingBottom(addrBlock_->getLastAddress());
 
     // Set tooltip to show addresses in hexadecimals.
