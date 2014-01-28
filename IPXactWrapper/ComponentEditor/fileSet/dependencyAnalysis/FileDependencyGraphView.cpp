@@ -45,7 +45,6 @@ FileDependencyGraphView::FileDependencyGraphView(QWidget* parent)
 {
     setUniformRowHeights(true);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    //setItemDelegate(new FileDependencyDelegate(this));
     setMouseTracking(true);
 
     connect(header(), SIGNAL(sectionResized(int, int, int)),
@@ -265,9 +264,7 @@ void FileDependencyGraphView::mousePressEvent(QMouseEvent* event)
     {
         if (manualDependencyStartItem_)
         {
-            manualDependencyStartItem_ = 0;
-            manualDependencyEndItem_ = 0;
-            drawingDependency_ = false;
+            endDependencyDraw();
             viewport()->repaint();
         }
     }
@@ -284,21 +281,16 @@ void FileDependencyGraphView::mousePressEvent(QMouseEvent* event)
 
             if (dependency != selectedDependency_)
             {
-                FileDependency* oldDependency = selectedDependency_;
-                selectedDependency_ = dependency;
-
-                repaintDependency(oldDependency);
-                repaintDependency(selectedDependency_);                
-
-                emit selectionChanged(selectedDependency_);
+                changeDependencySelection(dependency);
             }
-            
+
             // Handle context menu opening.
             if (event->button() == Qt::RightButton && selectedDependency_ != 0)
             {
                 createContextMenu(event->globalPos());
-            }
+            }      
         }
+
     }
     // Check if click is on the path.
     else if (column == FILE_DEPENDENCY_COLUMN_PATH)
@@ -312,30 +304,11 @@ void FileDependencyGraphView::mousePressEvent(QMouseEvent* event)
             {
                 FileDependencyItem* item = 0;
                 item = static_cast<FileDependencyItem*>(startPoint.internalPointer());
-                
+
                 if (item && item->getType() == FileDependencyItem::ITEM_TYPE_FILE && item->isExternal())
                 {
-                    contextMenuItem_ = item;
-
-                    QMenu contextMenu;
-                    QAction* addedAction;
-
-                    if (item->getParent()->getType() == FileDependencyItem::ITEM_TYPE_UNKNOWN_LOCATION)
-                    {
-                        addedAction = contextMenu.addAction("Define Location...");
-                        connect(addedAction, SIGNAL(triggered()), this, SLOT(onAddLocation()));
-                    }
-                    else
-                    {
-                        addedAction = contextMenu.addAction("Change Location...");
-                        connect(addedAction, SIGNAL(triggered()), this, SLOT(onAddLocation()));
-
-                        addedAction = contextMenu.addAction("Reset");
-                        connect(addedAction, SIGNAL(triggered()), this, SLOT(onLocationReset()));
-                    }
-                    
-                    // Open the context menu.
-                    contextMenu.exec(event->globalPos());
+                    createContextMenuForExternalItem(event->globalPos(), 
+                        item->getParent()->getType() != FileDependencyItem::ITEM_TYPE_UNKNOWN_LOCATION);
                 }
             }
         }
@@ -355,18 +328,15 @@ void FileDependencyGraphView::mousePressEvent(QMouseEvent* event)
                 // Remove possible selection
                 if (selectedDependency_)
                 {
-                    FileDependency* oldDependency = selectedDependency_;
-                    selectedDependency_ = 0;
-                    emit selectionChanged(selectedDependency_);
-                    repaintDependency(oldDependency);
+                    clearDependencySelection();
                 }
-                
+
                 QModelIndex startPoint = sortFilter_->mapToSource(indexAt(event->pos()));
-                
+
                 if (startPoint.isValid())
                 {
                     manualDependencyStartItem_ = static_cast<FileDependencyItem*>(startPoint.internalPointer());
-                    
+
                     if (manualDependencyStartItem_->getType() != FileDependencyItem::ITEM_TYPE_FILE)
                     {
                         manualDependencyStartItem_ = 0;
@@ -381,8 +351,7 @@ void FileDependencyGraphView::mousePressEvent(QMouseEvent* event)
                     }
                     else
                     {
-                        manualDependencyEndItem_ = manualDependencyStartItem_;
-                        drawingDependency_ = true;
+                        startDependencyDraw();
                         emit warningMessage("");
                     }
                 }
@@ -390,54 +359,39 @@ void FileDependencyGraphView::mousePressEvent(QMouseEvent* event)
             // Ending manual dependency creation.
             else
             {
-				if (manualDependencyEndItem_->getParent()->getType() == FileDependencyItem::ITEM_TYPE_EXTERNAL_LOCATION ||
+                if (manualDependencyEndItem_->getParent()->getType() == FileDependencyItem::ITEM_TYPE_EXTERNAL_LOCATION ||
                     manualDependencyEndItem_->getParent()->getType() == FileDependencyItem::ITEM_TYPE_UNKNOWN_LOCATION)
                 {
                     // Print information about creating manual dependencies to external files.
                     emit warningMessage(tr("Cannot create manual dependency to external or unknown file location."));
                 }
                 else if (manualDependencyEndItem_ && manualDependencyStartItem_ &&
-						 manualDependencyEndItem_->getType() == FileDependencyItem::ITEM_TYPE_FILE)
+                    manualDependencyEndItem_->getType() == FileDependencyItem::ITEM_TYPE_FILE)
                 {
                     // Check if the dependency in the correct direction is not found.
                     FileDependency* found = model_->findDependency(manualDependencyStartItem_->getPath(),
-                                                                   manualDependencyEndItem_->getPath());
+                        manualDependencyEndItem_->getPath());
 
                     if (found == 0)
                     {
                         // Check for a reversed dependency and whether the new dependency cannot
                         // be combined with it.
                         FileDependency* revFound = model_->findDependency(manualDependencyEndItem_->getPath(),
-                                                                          manualDependencyStartItem_->getPath());
+                            manualDependencyStartItem_->getPath());
 
                         if (revFound == 0 || !revFound->isManual())
                         {
-                            FileDependency* createdDependency = new FileDependency();
-                            createdDependency->setFile1(manualDependencyStartItem_->getPath());
-                            createdDependency->setFile2(manualDependencyEndItem_->getPath());
-                            createdDependency->setManual(true);
-                            createdDependency->setStatus(FileDependency::STATUS_ADDED);
-
+                            FileDependency* createdDependency = createDependency();                           
                             model_->addDependency(QSharedPointer<FileDependency>(createdDependency));
 
                             // Selecting created manual dependency.
-                            FileDependency* oldDependency = selectedDependency_;
-                            selectedDependency_ = createdDependency;
-                            emit selectionChanged(selectedDependency_);
-                            repaintDependency(oldDependency);
-                            repaintDependency(selectedDependency_);
-
+                            changeDependencySelection(createdDependency);
                             emit warningMessage("");
                         }
                         else
                         {
                             revFound->setBidirectional(true);
-
-                            selectedDependency_ = revFound;
-                            emit selectionChanged(selectedDependency_);
-
-                            repaintDependency(revFound);
-
+                            changeDependencySelection(revFound);
                             emit warningMessage(tr("An existing manual dependency was changed to bidirectional."));
                         }
                     }
@@ -450,16 +404,13 @@ void FileDependencyGraphView::mousePressEvent(QMouseEvent* event)
                     // If shift-key is hold down not ending manual creation yet.
                     if (multiManualCreation_)
                     {
-                        manualDependencyEndItem_ = manualDependencyStartItem_;
+                        startDependencyDraw();
                     }
                     // Else ending manual dependency creation.
                     else
                     {
-                        manualDependencyStartItem_ = 0;
-                        manualDependencyEndItem_ = 0;
-                        drawingDependency_ = false;
+                        endDependencyDraw();
                     }
-
                     viewport()->repaint();
                 }
             }
@@ -1170,6 +1121,90 @@ void FileDependencyGraphView::createContextMenu(const QPoint& position)
     
     // Open the context menu.
     contextMenu.exec(position);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyGraphView::createContextMenu()
+//-----------------------------------------------------------------------------
+void FileDependencyGraphView::createContextMenuForExternalItem(QPoint const& position, bool inKnownLocation)
+{
+    QMenu contextMenu;
+    QAction* addedAction;
+
+    if (!inKnownLocation)
+    {
+        addedAction = contextMenu.addAction("Define Location...");
+        connect(addedAction, SIGNAL(triggered()), this, SLOT(onAddLocation()));
+    }
+    else
+    {
+        addedAction = contextMenu.addAction("Change Location...");
+        connect(addedAction, SIGNAL(triggered()), this, SLOT(onAddLocation()));
+
+        addedAction = contextMenu.addAction("Reset");
+        connect(addedAction, SIGNAL(triggered()), this, SLOT(onLocationReset()));
+    }
+
+    // Open the context menu.
+    contextMenu.exec(position);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyGraphView::changeDependencySelection()
+//-----------------------------------------------------------------------------
+void FileDependencyGraphView::changeDependencySelection(FileDependency* newSelection)
+{
+    FileDependency* oldDependency = selectedDependency_;
+    selectedDependency_ = newSelection;
+
+    repaintDependency(oldDependency);
+    repaintDependency(selectedDependency_);                
+
+    emit selectionChanged(selectedDependency_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyGraphView::clearDependencySelection()
+//-----------------------------------------------------------------------------
+void FileDependencyGraphView::clearDependencySelection()
+{
+    FileDependency* oldDependency = selectedDependency_;
+    selectedDependency_ = 0;
+
+    repaintDependency(oldDependency);            
+    emit selectionChanged(selectedDependency_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyGraphView::startDependencyDraw()
+//-----------------------------------------------------------------------------
+void FileDependencyGraphView::startDependencyDraw()
+{
+    manualDependencyEndItem_ = manualDependencyStartItem_;
+    drawingDependency_ = true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyGraphView::endDependencyDraw()
+//-----------------------------------------------------------------------------
+void FileDependencyGraphView::endDependencyDraw()
+{
+    manualDependencyStartItem_ = 0;
+    manualDependencyEndItem_ = 0;
+    drawingDependency_ = false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyGraphView::createDependency()
+//-----------------------------------------------------------------------------
+FileDependency* FileDependencyGraphView::createDependency()
+{
+    FileDependency* createdDependency = new FileDependency();
+    createdDependency->setFile1(manualDependencyStartItem_->getPath());
+    createdDependency->setFile2(manualDependencyEndItem_->getPath());
+    createdDependency->setManual(true);
+    createdDependency->setStatus(FileDependency::STATUS_ADDED);
+    return createdDependency;
 }
 
 //-----------------------------------------------------------------------------

@@ -14,9 +14,10 @@
 
 #include <QTreeView>
 
+#include "FileDependencyItem.h"
+
 class FileDependency;
 class FileDependencyModel;
-class FileDependencyItem;
 class FileDependencySortFilter;
 
 //-----------------------------------------------------------------------------
@@ -349,7 +350,45 @@ private:
      *      @param [in] position    The global position for the context menu.
      */
     void createContextMenu(const QPoint& position);
-    
+
+
+    /*!
+     *  Creates a context menu for an external file.
+     *
+     *      @param [in] position            The global position for the context menu.
+     *      @param [in] inKnownLocation     If true, the external file location is known.
+     */
+    void createContextMenuForExternalItem(QPoint const& position, bool inKnownLocation);
+
+    /*!
+     *  Changes the selected dependency and repaints the previous and current selection.
+     *
+     *      @param [in] newSelection   The dependency to select.
+     */
+    void changeDependencySelection(FileDependency* newSelection);
+
+    /*!
+     *  Clears the selected dependency and repaints the previous selection.
+     */
+    void clearDependencySelection();
+
+    /*!
+     *  Sets the dependency start item and starts the dependency draw.
+     */
+    void startDependencyDraw();    
+
+    /*!
+     *  Ends the dependency draw and clears the start and end item.
+     */
+    void endDependencyDraw();
+
+    /*!
+     *  Creates a new dependency using the start and end item.
+     *
+     *      @return The created dependency.
+     */
+    FileDependency* createDependency();
+
     enum
     {
         DOT_RADIUS = 2,       //!< The radius of the "from" dot for the arrows.
