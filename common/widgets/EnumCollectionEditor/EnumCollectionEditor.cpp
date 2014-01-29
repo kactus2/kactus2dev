@@ -65,3 +65,34 @@ QStringList EnumCollectionEditor::getSelectedItems() const
 
     return selectedItems;
 }
+
+//-----------------------------------------------------------------------------
+// Function: EnumCollectionEditor::moveEvent()
+//-----------------------------------------------------------------------------
+void EnumCollectionEditor::moveEvent(QMoveEvent* event)
+{
+    // Set position.
+    rePosition();
+
+    QFrame::moveEvent(event);
+}
+
+//-----------------------------------------------------------------------------
+// Function: EnumCollectionEditor::rePosition()
+//-----------------------------------------------------------------------------
+void EnumCollectionEditor::rePosition()
+{
+    int availableHeight = parentWidget()->height() - parentWidget()->contentsMargins().bottom() 
+        - parentWidget()->contentsMargins().top();
+
+    int yLeftBottom = pos().y() + height();
+    if (yLeftBottom > availableHeight)
+    {
+        int yChange = yLeftBottom - parentWidget()->height() + parentWidget()->contentsMargins().bottom();
+        int yCoordinate = pos().y() - yChange;
+        if (yCoordinate >= 0)
+        {
+            move(pos().x(), yCoordinate);
+        }
+    }
+}

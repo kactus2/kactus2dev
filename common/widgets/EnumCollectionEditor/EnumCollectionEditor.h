@@ -48,6 +48,20 @@ public:
      */
     QStringList getSelectedItems() const;
 
+protected:
+
+    /*!
+     *  Handler for move events.
+     *
+     *      @param [in] event   The triggering move event.
+     */
+    virtual void moveEvent(QMoveEvent* event);
+
+    /*!
+     *  Repositions the editor higher, if it would otherwise exceed the bottom of parent widget.
+     */
+    virtual void rePosition();
+
 private:
     // Disable copying.
     EnumCollectionEditor(EnumCollectionEditor const& rhs);
