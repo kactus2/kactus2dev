@@ -21,6 +21,7 @@
 //-----------------------------------------------------------------------------
 class EnumCollectionEditor : public QFrame
 {
+    Q_OBJECT
 public:
     /*!
      *  Constructor.
