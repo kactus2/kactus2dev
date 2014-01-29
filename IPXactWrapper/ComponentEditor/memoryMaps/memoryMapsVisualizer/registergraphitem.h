@@ -33,8 +33,11 @@ public:
 	//! \brief The destructor
 	virtual ~RegisterGraphItem();
 
-	//! \brief Refresh the item and sub-items.
-	virtual void refresh();
+	//! \brief Refresh the item, refresh and re-layout the sub-items and refresh parent item.
+    virtual void refresh();
+
+    //! \brief Refresh the item and re-layout the sub-items.
+	virtual void refreshItem();
 
 	//! \brief Remove the item.
     virtual void removeChild(MemoryVisualizationItem* childItem );

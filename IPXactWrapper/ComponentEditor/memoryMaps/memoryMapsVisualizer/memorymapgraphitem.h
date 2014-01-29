@@ -33,7 +33,7 @@ public:
 	//! \brief The destructor
 	virtual ~MemoryMapGraphItem();
 
-	//! \brief Refresh the item and sub-items.
+    //! \brief Refresh the item and re-layout the sub-items.
 	virtual void refresh();
 
 	/*! \brief Get the offset of the item. 

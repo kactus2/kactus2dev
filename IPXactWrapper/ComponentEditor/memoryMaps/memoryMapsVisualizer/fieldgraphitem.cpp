@@ -12,6 +12,9 @@
 #include <QBrush>
 #include <QColor>
 
+//-----------------------------------------------------------------------------
+// Function: FieldGraphItem::FieldGraphItem()
+//-----------------------------------------------------------------------------
 FieldGraphItem::FieldGraphItem( QSharedPointer<Field> field,
 							   QGraphicsItem* parent):
 MemoryVisualizationItem(parent),
@@ -29,9 +32,15 @@ field_(field) {
     setOverlappingBottom(field->getBitOffset());
 }
 
+//-----------------------------------------------------------------------------
+// Function: FieldGraphItem::~FieldGraphItem()
+//-----------------------------------------------------------------------------
 FieldGraphItem::~FieldGraphItem() {	
 }
 
+//-----------------------------------------------------------------------------
+// Function: FieldGraphItem::refresh()
+//-----------------------------------------------------------------------------
 void FieldGraphItem::refresh() {
 	setRect(0, 0, VisualizerItem::MIN_WIDTH, VisualizerItem::DEFAULT_HEIGHT);
 
@@ -51,26 +60,39 @@ void FieldGraphItem::refresh() {
 	parentGraphItem->refresh();
 }
 
+//-----------------------------------------------------------------------------
+// Function: FieldGraphItem::getOffset()
+//-----------------------------------------------------------------------------
 quint64 FieldGraphItem::getOffset() const {
 	return field_->getBitOffset();
 }
 
+//-----------------------------------------------------------------------------
+// Function: FieldGraphItem::getBitWidth()
+//-----------------------------------------------------------------------------
 int FieldGraphItem::getBitWidth() const {
 	return field_->getBitWidth();
 }
 
+//-----------------------------------------------------------------------------
+// Function: FieldGraphItem::getAddressUnitSize()
+//-----------------------------------------------------------------------------
 unsigned int FieldGraphItem::getAddressUnitSize() const {
 	RegisterGraphItem* regItem = static_cast<RegisterGraphItem*>(parentItem());
 	Q_ASSERT(regItem);
 	return regItem->getAddressUnitSize();
 }
 
+//-----------------------------------------------------------------------------
+// Function: FieldGraphItem::getLastAddress()
+//-----------------------------------------------------------------------------
 quint64 FieldGraphItem::getLastAddress() const {
 	return field_->getMSB();
 }
 
-
-
+//-----------------------------------------------------------------------------
+// Function: FieldGraphItem::setOverlappingTop()
+//-----------------------------------------------------------------------------
 void FieldGraphItem::setOverlappingTop(quint64 const& address)
 {
     firstFreeAddress_ = address;
@@ -78,12 +100,18 @@ void FieldGraphItem::setOverlappingTop(quint64 const& address)
 
 }
 
+//-----------------------------------------------------------------------------
+// Function: FieldGraphItem::setOverlappingBottom()
+//-----------------------------------------------------------------------------
 void FieldGraphItem::setOverlappingBottom(quint64 const& address)
 {
     lastFreeAddress_ = address;
     setRightTopCorner(QString::number(lastFreeAddress_));
 }
 
+//-----------------------------------------------------------------------------
+// Function: FieldGraphItem::setCompleteOverlap()
+//-----------------------------------------------------------------------------
 void FieldGraphItem::setCompleteOverlap()
 {
     MemoryVisualizationItem::setCompleteOverlap();

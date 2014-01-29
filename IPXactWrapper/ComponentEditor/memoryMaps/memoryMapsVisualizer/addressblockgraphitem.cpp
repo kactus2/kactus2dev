@@ -16,6 +16,9 @@
 #include <QBrush>
 #include <QColor>
 
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphItem::AddressBlockGraphItem()
+//-----------------------------------------------------------------------------
 AddressBlockGraphItem::AddressBlockGraphItem( QSharedPointer<AddressBlock> addrBlock, 
 											 QGraphicsItem *parent ):
 MemoryVisualizationItem(parent),
@@ -29,9 +32,15 @@ addrBlock_(addrBlock) {
     setOverlappingBottom(addrBlock_->getLastAddress());
 }
 
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphItem::~AddressBlockGraphItem()
+//-----------------------------------------------------------------------------
 AddressBlockGraphItem::~AddressBlockGraphItem() {
 }
 
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphItem::refresh()
+//-----------------------------------------------------------------------------
 void AddressBlockGraphItem::refresh() {
     setName(addrBlock_->getName());
     setOverlappingTop(Utils::str2Uint(addrBlock_->getBaseAddress()));
@@ -44,7 +53,15 @@ void AddressBlockGraphItem::refresh() {
         getBitWidth()) + "<br>" +
         "<b>Size [AUB]: </b>" + addrBlock_->getRange());
 
-	// set the positions for the children
+    // set the positions for the children.
+    foreach (MemoryVisualizationItem* child, childItems_)
+    {
+        RegisterGraphItem* childRegister = qobject_cast<RegisterGraphItem*>(child);
+        if (childRegister)
+        {
+            childRegister->refreshItem();
+        }        
+    }
 	MemoryVisualizationItem::reorganizeChildren();
 
 	MemoryVisualizationItem* parentGraphItem = static_cast<MemoryVisualizationItem*>(parentItem());
@@ -52,21 +69,34 @@ void AddressBlockGraphItem::refresh() {
 	parentGraphItem->refresh();
 }
 
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphItem::getOffset()
+//-----------------------------------------------------------------------------
 quint64 AddressBlockGraphItem::getOffset() const {
 	QString offset = addrBlock_->getBaseAddress();
 	return Utils::str2Uint(offset);
 }
 
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphItem::getBitWidth()
+//-----------------------------------------------------------------------------
 int AddressBlockGraphItem::getBitWidth() const {
 	return addrBlock_->getWidth();
 }
 
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphItem::getAddressUnitSize()
+//-----------------------------------------------------------------------------
 unsigned int AddressBlockGraphItem::getAddressUnitSize() const {
 	MemoryVisualizationItem* memMap = static_cast<MemoryVisualizationItem*>(parentItem());
 	Q_ASSERT(memMap);
 	return memMap->getAddressUnitSize();
 }
 
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphItem::getLastAddress()
+//-----------------------------------------------------------------------------
 quint64 AddressBlockGraphItem::getLastAddress() const {
 	return addrBlock_->getLastAddress();
 }

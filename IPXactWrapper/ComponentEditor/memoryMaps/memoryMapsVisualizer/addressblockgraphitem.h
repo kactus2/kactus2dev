@@ -34,7 +34,7 @@ public:
 	//! \brief The destructor
 	virtual ~AddressBlockGraphItem();
 
-	//! \brief Refresh the item and sub-items.
+    //! \brief Refresh the item, re-layout the sub-items and refresh parent item.
 	virtual void refresh();
 
 	/*! \brief Get the offset of the item. 

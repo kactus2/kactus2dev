@@ -33,7 +33,7 @@ public:
 	//! \brief The destructor
 	virtual ~FieldGraphItem();
 
-	//! \brief Refresh the item and sub-items.
+    //! \brief Refresh the item and the parent item.
 	virtual void refresh();
 
 	/*! \brief Get the offset of the item. 

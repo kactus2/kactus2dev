@@ -20,6 +20,9 @@
 #include <QBrush>
 #include <QColor>
 
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::RegisterGraphItem()
+//-----------------------------------------------------------------------------
 RegisterGraphItem::RegisterGraphItem(QSharedPointer<Register> reg,
 									 QGraphicsItem* parent):
 MemoryVisualizationItem(parent),
@@ -33,43 +36,62 @@ register_(reg) {
     setOverlappingBottom(reg->getOffset());
 }
 
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::~RegisterGraphItem()
+//-----------------------------------------------------------------------------
 RegisterGraphItem::~RegisterGraphItem() {
 }
 
-void RegisterGraphItem::refresh() {
-	setName(register_->getName());
-	
-	// get the base of the parent address block
-	quint64 base = 0;
-	MemoryVisualizationItem* addrBlock = dynamic_cast<MemoryVisualizationItem*>(parentItem());
-	if (addrBlock) {
-		base = addrBlock->getOffset();
-	}
+//-----------------------------------------------------------------------------
+// Function: registergraphitem::refresh()
+//-----------------------------------------------------------------------------
+void RegisterGraphItem::refresh() 
+{
+    refreshItem();
 
-	// get the offset of the register
-	quint64 offset = Utils::str2Uint(register_->getAddressOffset());
-	// calculate the start address of the register
-	quint64 startAddress = base + offset;
-	// show the start address of the register
-	setLeftTopCorner(startAddress);
+	MemoryVisualizationItem* parentGraphItem = static_cast<MemoryVisualizationItem*>(parentItem());
+	Q_ASSERT(parentGraphItem);
+	parentGraphItem->refresh();
+}
 
-	// show the end address of the register
-	unsigned int addrUnit = getAddressUnitSize();
-	// prevent division by zero
-	if (addrUnit == 0) {
-		addrUnit = 1;
-	}	
-	unsigned int addrUnits = register_->getSize() / addrUnit;
-	// Round upwards. Needed for unorthodox regsize, e.g. 30b/8=3 becomes 4 (Bytes)
-	if (addrUnits * addrUnit < register_->getSize()) {
-		addrUnits++;
-	}
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::refreshItemOnly()
+//-----------------------------------------------------------------------------
+void RegisterGraphItem::refreshItem()
+{
+    setName(register_->getName());
 
-	quint64 endAddress = base + offset + addrUnits -1;
-    
+    // get the base of the parent address block
+    quint64 base = 0;
+    MemoryVisualizationItem* addrBlock = dynamic_cast<MemoryVisualizationItem*>(parentItem());
+    if (addrBlock) {
+        base = addrBlock->getOffset();
+    }
+
+    // get the offset of the register
+    quint64 offset = Utils::str2Uint(register_->getAddressOffset());
+    // calculate the start address of the register
+    quint64 startAddress = base + offset;
+    // show the start address of the register
+    setLeftTopCorner(startAddress);
+
+    // show the end address of the register
+    unsigned int addrUnit = getAddressUnitSize();
+    // prevent division by zero
+    if (addrUnit == 0) {
+        addrUnit = 1;
+    }	
+    unsigned int addrUnits = register_->getSize() / addrUnit;
+    // Round upwards. Needed for unorthodox regsize, e.g. 30b/8=3 becomes 4 (Bytes)
+    if (addrUnits * addrUnit < register_->getSize()) {
+        addrUnits++;
+    }
+
+    quint64 endAddress = base + offset + addrUnits -1;
+
     setOverlappingTop(startAddress);
     setOverlappingBottom(endAddress);
-    
+
     // Set tooltip to show addresses in hexadecimals.
     setToolTip("<b>Name: </b>" + register_->getName() + "<br>" +
         "<b>First address: </b>" + AddressSpaceVisualizationItem::addr2Str(getOffset(), getBitWidth()) + "<br>" +
@@ -77,14 +99,13 @@ void RegisterGraphItem::refresh() {
         "<br>" +
         "<b>Size [bits]: </b>" + QString::number(register_->getSize()));
 
-	// set the positions for the children
-	reorganizeChildren();
-
-	MemoryVisualizationItem* parentGraphItem = static_cast<MemoryVisualizationItem*>(parentItem());
-	Q_ASSERT(parentGraphItem);
-	parentGraphItem->refresh();
+    // set the positions for the children
+    reorganizeChildren();
 }
 
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::getOffset()
+//-----------------------------------------------------------------------------
 quint64 RegisterGraphItem::getOffset() const {
 	Q_ASSERT(register_);
 	
@@ -101,11 +122,17 @@ quint64 RegisterGraphItem::getOffset() const {
 	return blockOffset + regOffset;
 }
 
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::getBitWidth()
+//-----------------------------------------------------------------------------
 int RegisterGraphItem::getBitWidth() const {
 	Q_ASSERT(register_);
 	return register_->getWidth();
 }
 
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::removeChild()
+//-----------------------------------------------------------------------------
 void RegisterGraphItem::removeChild( MemoryVisualizationItem* childItem ) {
     quint64 offset = childItem->getLastAddress();
 
@@ -113,6 +140,9 @@ void RegisterGraphItem::removeChild( MemoryVisualizationItem* childItem ) {
     childItems_.remove(offset, childItem);
 }
 
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::reorganizeChildren()
+//-----------------------------------------------------------------------------
 void RegisterGraphItem::reorganizeChildren() {
 
 	// remove the gaps and update msbs of fields
@@ -338,6 +368,9 @@ void RegisterGraphItem::reorganizeChildren() {
 	ExpandableItem::reorganizeChildren();
 }
 
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::updateChildMap()
+//-----------------------------------------------------------------------------
 void RegisterGraphItem::updateChildMap() {
     QMap<quint64, MemoryVisualizationItem*> newMap;
 
@@ -388,8 +421,9 @@ void RegisterGraphItem::updateChildMap() {
     childItems_ = newMap;
 }
 
-
-
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::getAddressUnitSize()
+//-----------------------------------------------------------------------------
 unsigned int RegisterGraphItem::getAddressUnitSize() const 
 {
 	AddressBlockGraphItem* addrBlock = static_cast<AddressBlockGraphItem*>(parentItem());
@@ -397,6 +431,9 @@ unsigned int RegisterGraphItem::getAddressUnitSize() const
 	return addrBlock->getAddressUnitSize();
 }
 
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::getLastAddress()
+//-----------------------------------------------------------------------------
 quint64 RegisterGraphItem::getLastAddress() const {
 	AddressBlockGraphItem* addrBlock = static_cast<AddressBlockGraphItem*>(parentItem());
 	Q_ASSERT(addrBlock);
@@ -426,6 +463,9 @@ quint64 RegisterGraphItem::getLastAddress() const {
 	return offset + size - 1;
 }
 
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::setWidth()
+//-----------------------------------------------------------------------------
 void RegisterGraphItem::setWidth(qreal width)
 {
     setRect(0, 0, width, VisualizerItem::DEFAULT_HEIGHT);
@@ -435,6 +475,9 @@ void RegisterGraphItem::setWidth(qreal width)
     reorganizeChildren();
 }
 
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::getChildWidth()
+//-----------------------------------------------------------------------------
  qreal RegisterGraphItem::getChildWidth(MemoryVisualizationItem* child) const
 {
     Q_ASSERT(child);
@@ -462,6 +505,9 @@ void RegisterGraphItem::setWidth(qreal width)
     return bitWidth * bits;
  }
 
+ //-----------------------------------------------------------------------------
+ // Function: RegisterGraphItem::addressLessThan()
+ //-----------------------------------------------------------------------------
 bool RegisterGraphItem::addressLessThan(const MemoryVisualizationItem* s1, 
     const MemoryVisualizationItem* s2)
 {

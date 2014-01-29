@@ -19,20 +19,31 @@
 
 #include <QDebug>
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphItem::MemoryMapGraphItem()
+//-----------------------------------------------------------------------------
 MemoryMapGraphItem::MemoryMapGraphItem(QSharedPointer<MemoryMap> memoryMap,
 									   QGraphicsItem* parent):
 MemoryVisualizationItem(parent),
-memoryMap_(memoryMap) {
-
+memoryMap_(memoryMap) 
+{
 	Q_ASSERT(memoryMap_);
 	QBrush brush(KactusColors::MEM_MAP_COLOR);
 	setDefaultBrush(brush);
 }
 
-MemoryMapGraphItem::~MemoryMapGraphItem() {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphItem::~MemoryMapGraphItem()
+//-----------------------------------------------------------------------------
+MemoryMapGraphItem::~MemoryMapGraphItem() 
+{
 }
 
-void MemoryMapGraphItem::refresh() {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphItem::refresh()
+//-----------------------------------------------------------------------------
+void MemoryMapGraphItem::refresh() 
+{
 	
 	setName(memoryMap_->getName());
     setOverlappingTop(memoryMap_->getFirstAddress());
@@ -53,42 +64,49 @@ void MemoryMapGraphItem::refresh() {
 	memScene->rePosition();
 }
 
-quint64 MemoryMapGraphItem::getOffset() const {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphItem::getOffset()
+//-----------------------------------------------------------------------------
+quint64 MemoryMapGraphItem::getOffset() const 
+{
 	return memoryMap_->getFirstAddress();
 }
 
-int MemoryMapGraphItem::getBitWidth() const {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphItem::getBitWidth()
+//-----------------------------------------------------------------------------
+int MemoryMapGraphItem::getBitWidth() const 
+{
 	return memoryMap_->getMaxWidth();
 }
 
-unsigned int MemoryMapGraphItem::getAddressUnitSize() const {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphItem::getAddressUnitSize()
+//-----------------------------------------------------------------------------
+unsigned int MemoryMapGraphItem::getAddressUnitSize() const 
+{
 	return memoryMap_->getAddressUnitBits();
 }
 
-quint64 MemoryMapGraphItem::getLastAddress() const {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphItem::getLastAddress()
+//-----------------------------------------------------------------------------
+quint64 MemoryMapGraphItem::getLastAddress() const 
+{
 	return memoryMap_->getLastAddress();
 }
 
-qreal MemoryMapGraphItem::itemTotalWidth() const {
-
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphItem::itemTotalWidth()
+//-----------------------------------------------------------------------------
+qreal MemoryMapGraphItem::itemTotalWidth() const 
+{
     return VisualizerItem::DEFAULT_WIDTH;
-
-    /*
-	qreal width = VisualizerItem::DEFAULT_WIDTH;
-
-	// if there are children
-	QList<QGraphicsItem*> children = childItems();
-	foreach (QGraphicsItem* child, children) {
-
-		// The larger width
-		VisualizerItem* childItem = dynamic_cast<VisualizerItem*>(child);
-		if (childItem) {
-			width = qMax(width, childItem->itemTotalWidth());
-		}
-	}
-	return width;*/
 }
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphItem::setWidth()
+//-----------------------------------------------------------------------------
 void MemoryMapGraphItem::setWidth( qreal width ) {
     setRect(0, 0, width, VisualizerItem::DEFAULT_HEIGHT);
 
