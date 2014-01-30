@@ -3985,6 +3985,9 @@
     <ClCompile Include="GeneratedFiles\moc_NewPluginsDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_EnumCollectionEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5658,6 +5661,9 @@
     <CustomBuild Include="PluginSystem\NewPluginsDialog.h">
       <Filter>Header Files\PluginSystem</Filter>
     </CustomBuild>
+    <CustomBuild Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.h">
+      <Filter>Header Files\common\widgets\EnumCollectionEditor</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddressEditor\AddressEntry.h">
@@ -6091,9 +6097,6 @@
     </ClInclude>
     <ClInclude Include="models\FileDependency.h">
       <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.h">
-      <Filter>Header Files\common\widgets\EnumCollectionEditor</Filter>
     </ClInclude>
     <ClInclude Include="ComponentWizard\ComponentWizard.h">
       <Filter>Header Files\ComponentWizard</Filter>
