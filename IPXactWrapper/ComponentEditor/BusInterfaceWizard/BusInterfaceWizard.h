@@ -55,7 +55,7 @@ public:
         QSharedPointer<BusInterface> busIf,
         LibraryInterface* handler, QStringList portNames,         
         QWidget* parent = 0, 
-        VLNV& absDefVLNV = VLNV(), 
+        VLNV absDefVLNV = VLNV(), 
         bool descriptionAsLogicalName = false);
 
 	 /*!

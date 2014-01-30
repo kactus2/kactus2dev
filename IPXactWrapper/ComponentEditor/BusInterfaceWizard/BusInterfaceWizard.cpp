@@ -28,7 +28,7 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component,
     LibraryInterface* handler, 
     QStringList portNames,         
     QWidget* parent, 
-    VLNV& absDefVLNV, 
+    VLNV absDefVLNV, 
     bool descriptionAsLogicalName)
     : QWizard(parent)
 {
