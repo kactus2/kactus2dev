@@ -8,6 +8,24 @@
               * Changed or Information
 ===============================================================================
 
+30/1/2014 2.4.0
+----------------------------------------------------
+
++ Improved Editor for port maps.
+    - Improved visualization of port maps.
+    - Added bit-by-bit port map creation.
++ Added Bus interface generation wizard.
+    - New Bus and Abstraction definition generation based on ports in a 
+      component.
+    - Bus interface and port map generation to component using the
+	  generatarted or existing Bus and Abstraction definitions.
++ Added help page for keyboard and mouse shortcuts.
+
+- Fixed numerous non-critical bugs and usability issues.
+
+* Migrated to Qt 5.2.0.
+* Separated plugin system from Kactus2 core.
+
 20/09/2013 2.3.0
 ----------------------------------------------------
 

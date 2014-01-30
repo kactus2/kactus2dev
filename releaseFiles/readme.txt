@@ -47,7 +47,7 @@ Antti Kamppi, Joni-Matti M‰‰tt‰, Lauri Matilainen, Timo D. H‰m‰l‰inen,
 Juho J‰rvinen, Esko Pekkarinen
 
 
-Kactus2 is linked with Qt 5.1.1, copyright Digia Plc. (LGPL)
+Kactus2 is linked with Qt 5.2.0, copyright Digia Plc. (LGPL)
 
 Licencing
 ----------------------------------------------------
