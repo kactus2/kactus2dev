@@ -39,6 +39,7 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
 	setWindowTitle(tr("Component Wizard for %1:%2:%3:%4").arg(vlnv->getVendor()).arg(vlnv->getLibrary()).arg(vlnv->getName()).arg(vlnv->getVersion()));
     setWizardStyle(ModernStyle);
     setOption(NoCancelButton, true);
+    setOption(NoDefaultButton, true);
     setOption(HaveFinishButtonOnEarlyPages, true);
     resize(800, 800);
 
