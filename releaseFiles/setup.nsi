@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Kactus2"
-!define PRODUCT_VERSION "2.3"
+!define PRODUCT_VERSION "2.4"
 !define PRODUCT_PUBLISHER "TUT"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Kactus2.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -99,6 +99,8 @@ Section "MainSection" SEC01
   File "..\executable\Plugins\VHDLSourceAnalyzer.dll"
   File "..\executable\Plugins\AlteraBSPGenerator.dll"
   File "..\executable\Plugins\MemoryMapHeaderGenerator.dll"
+  File "..\executable\Plugins\PadsPartGenerator.dll"
+  File "..\executable\Plugins\QuartusPinImportPlugin.dll"
 
   SetOutPath "$INSTDIR\Help"
   SetOverwrite on
@@ -170,6 +172,8 @@ Section Uninstall
   Delete "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063\mcapi.apiDef.1.063.xml"
   Delete "$INSTDIR\Help\Kactus2Help.qch"
   Delete "$INSTDIR\Help\Kactus2Help.qhc"
+  Delete "$INSTDIR\Plugins\QuartusPinImportPlugin.dll"
+  Delete "$INSTDIR\Plugins\PadsPartGenerator.dll"
   Delete "$INSTDIR\Plugins\MemoryMapHeaderGenerator.dll"
   Delete "$INSTDIR\Plugins\AlteraBSPGenerator.dll"
   Delete "$INSTDIR\Plugins\VHDLSourceAnalyzer.dll"

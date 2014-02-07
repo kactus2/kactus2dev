@@ -27,6 +27,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AlteraBSPGenerator", "Plugi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{90EC3FAA-DA36-47D5-97B5-9D463272C406}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PadsPartGenerator", "Plugins\PadsPartGenerator\PadsPartGenerator.vcxproj", "{A84E0600-2A1B-4593-9D89-25098A0150AA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuartusPinImportPlugin", "Plugins\QuartusPinImportPlugin\QuartusPinImportPlugin.vcxproj", "{C0DBF909-F12F-473F-8AC3-2248ABA68B92}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -99,6 +103,28 @@ Global
 		{16C73FC5-A179-4B2C-983C-59B9D1431703}.Template|Win32.ActiveCfg = Release|x64
 		{16C73FC5-A179-4B2C-983C-59B9D1431703}.Template|x64.ActiveCfg = Release|x64
 		{16C73FC5-A179-4B2C-983C-59B9D1431703}.Template|x64.Build.0 = Release|x64
+		{A84E0600-2A1B-4593-9D89-25098A0150AA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A84E0600-2A1B-4593-9D89-25098A0150AA}.Debug|Win32.Build.0 = Debug|Win32
+		{A84E0600-2A1B-4593-9D89-25098A0150AA}.Debug|x64.ActiveCfg = Debug|x64
+		{A84E0600-2A1B-4593-9D89-25098A0150AA}.Debug|x64.Build.0 = Debug|x64
+		{A84E0600-2A1B-4593-9D89-25098A0150AA}.Release|Win32.ActiveCfg = Release|Win32
+		{A84E0600-2A1B-4593-9D89-25098A0150AA}.Release|Win32.Build.0 = Release|Win32
+		{A84E0600-2A1B-4593-9D89-25098A0150AA}.Release|x64.ActiveCfg = Release|x64
+		{A84E0600-2A1B-4593-9D89-25098A0150AA}.Release|x64.Build.0 = Release|x64
+		{A84E0600-2A1B-4593-9D89-25098A0150AA}.Template|Win32.ActiveCfg = Release|x64
+		{A84E0600-2A1B-4593-9D89-25098A0150AA}.Template|x64.ActiveCfg = Release|x64
+		{A84E0600-2A1B-4593-9D89-25098A0150AA}.Template|x64.Build.0 = Release|x64
+		{C0DBF909-F12F-473F-8AC3-2248ABA68B92}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C0DBF909-F12F-473F-8AC3-2248ABA68B92}.Debug|Win32.Build.0 = Debug|Win32
+		{C0DBF909-F12F-473F-8AC3-2248ABA68B92}.Debug|x64.ActiveCfg = Debug|x64
+		{C0DBF909-F12F-473F-8AC3-2248ABA68B92}.Debug|x64.Build.0 = Debug|x64
+		{C0DBF909-F12F-473F-8AC3-2248ABA68B92}.Release|Win32.ActiveCfg = Release|Win32
+		{C0DBF909-F12F-473F-8AC3-2248ABA68B92}.Release|Win32.Build.0 = Release|Win32
+		{C0DBF909-F12F-473F-8AC3-2248ABA68B92}.Release|x64.ActiveCfg = Release|x64
+		{C0DBF909-F12F-473F-8AC3-2248ABA68B92}.Release|x64.Build.0 = Release|x64
+		{C0DBF909-F12F-473F-8AC3-2248ABA68B92}.Template|Win32.ActiveCfg = Release|x64
+		{C0DBF909-F12F-473F-8AC3-2248ABA68B92}.Template|x64.ActiveCfg = Release|x64
+		{C0DBF909-F12F-473F-8AC3-2248ABA68B92}.Template|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,11 +135,13 @@ Global
 		{C846486D-4A9D-4212-89A8-D25BEFED7FC5} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
 		{16C73FC5-A179-4B2C-983C-59B9D1431703} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
 		{AA63BE2D-A701-4C68-9760-C71655FFE66D} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
+		{A84E0600-2A1B-4593-9D89-25098A0150AA} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
+		{C0DBF909-F12F-473F-8AC3-2248ABA68B92} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		Qt5Version = 5.2.0
-		BuildVersion_UpdateFileVersion = True
-		BuildVersion_UpdateAssemblyVersion = True
 		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
+		BuildVersion_UpdateAssemblyVersion = True
+		BuildVersion_UpdateFileVersion = True
+		Qt5Version = 5.2.0
 	EndGlobalSection
 EndGlobal

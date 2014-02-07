@@ -100,6 +100,8 @@ Section "MainSection" SEC01
   File "..\x64\executable\Plugins\VHDLSourceAnalyzer.dll"
   File "..\x64\executable\Plugins\AlteraBSPGenerator.dll"
   File "..\x64\executable\Plugins\MemoryMapHeaderGenerator.dll"
+  File "..\x64\executable\Plugins\PadsPartGenerator.dll"
+  File "..\x64\executable\Plugins\QuartusPinImportPlugin.dll"
 
   SetOutPath "$INSTDIR\Help"
   SetOverwrite on
@@ -178,6 +180,8 @@ Section Uninstall
   Delete "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063\mcapi.apiDef.1.063.xml"
   Delete "$INSTDIR\Help\Kactus2Help.qch"
   Delete "$INSTDIR\Help\Kactus2Help.qhc"
+  Delete "$INSTDIR\Plugins\QuartusPinImportPlugin.dll"
+  Delete "$INSTDIR\Plugins\PadsPartGenerator.dll"
   Delete "$INSTDIR\Plugins\MemoryMapHeaderGenerator.dll"
   Delete "$INSTDIR\Plugins\AlteraBSPGenerator.dll"
   Delete "$INSTDIR\Plugins\VHDLSourceAnalyzer.dll"
