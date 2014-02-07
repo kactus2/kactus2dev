@@ -5,20 +5,20 @@
 TEMPLATE = lib
 TARGET = PadsPartGenerator
 DESTDIR = ../../executable/Plugins
-QT += core widgets gui
-CONFIG += plugin debug
-DEFINES += WIN64 QT_DLL QT_WIDGETS_LIB
+QT += core xml xmlpatterns widgets gui printsupport
+CONFIG += release
+DEFINES += WIN64 QT_DLL QT_PRINTSUPPORT_LIB QT_WIDGETS_LIB QT_XML_LIB
 INCLUDEPATH += ./GeneratedFiles \
     . \
-    ./GeneratedFiles/Debug
+    ./GeneratedFiles/Release \
+    $(QTDIR)/../qtxmlpatterns/include/QtXmlPatterns \
+    $(QTDIR)/../qtxmlpatterns/include \
+    ./../..
 LIBS += -L"./../../executable" \
     -lKactus2
 DEPENDPATH += .
-MOC_DIR += ./GeneratedFiles/debug
-OBJECTS_DIR += debug
+MOC_DIR += ./GeneratedFiles/release
+OBJECTS_DIR += release
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(PadsPartGenerator.pri)
-
-target.path = /usr/share/kactus2/plugins
-INSTALLS += target
