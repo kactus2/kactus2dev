@@ -98,8 +98,8 @@ private:
         unsigned int removedPorts;  //<! Number of removed ports in component.
 
         // The constructor.
-        PortImportStatistics() : inPorts(0), outPorts(0), otherPorts(0),
-         powerPorts(0), gndPorts(0), portCount(0), modifiedPorts(0), newPorts(0), removedPorts(0) {}
+        PortImportStatistics() : inPorts(0), outPorts(0), powerPorts(0), gndPorts(0), otherPorts(0), 
+            portCount(0), modifiedPorts(0), newPorts(0), removedPorts(0) {}
     };
 
     /*!

@@ -603,7 +603,6 @@ void PadsPartGeneratorDialog::insertGate(QString const& name, int decals, int pi
     insertLine(gateLine.join(PadsAsciiSyntax::SEPARATOR), cursor, PadsAsciiSyntax::PART_GATE_EXP);    
 
     // Add gate name declaration on 2nd line.
-    int row = cursor.block().firstLineNumber();
     gates_.insert(cursor.blockNumber(), name);    
     insertLine(nameEditor_->text().toUpper() + "_" + name.toUpper(), cursor, PadsAsciiSyntax::PART_GATE_NAME_EXP);        
 }
@@ -652,7 +651,7 @@ void PadsPartGeneratorDialog::insertPins(QSharedPointer<BusInterface> busInterfa
 //-----------------------------------------------------------------------------
 // Function: PadsPartGeneratorDialog::insertLine()
 //-----------------------------------------------------------------------------
-void PadsPartGeneratorDialog::insertLine(QString line, QTextCursor& cursor, 
+void PadsPartGeneratorDialog::insertLine(QString const& line, QTextCursor cursor, 
     QRegExp const validatingExp /*= QRegExp() */)
 {    
     if (validatingExp.pattern().isEmpty() || validatingExp.exactMatch(line))

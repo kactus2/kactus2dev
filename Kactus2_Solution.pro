@@ -13,7 +13,9 @@ SUBDIRS += Kactus2.pro \
 	Plugins/CppSourceAnalyzer/CppSourceAnalyzer.pro \
 	Plugins/VHDLAnalyzer/VHDLSourceAnalyzer.pro \
 	Plugins/MemoryMapHeaderGenerator/MemoryMapHeaderGenerator.pro \
-	Plugins/AlteraBSPGenerator/AlteraBSPGenerator.pro
+	Plugins/AlteraBSPGenerator/AlteraBSPGenerator.pro \
+	Plugins/QuartusPinImportPlugin/QuartusPinImportPlugin.pro \
+	Plugins/PadsPartGenerator/PadsPartGenerator.pro 
 
 unix:upgrade.path = /usr/share/kactus2
 unix:upgrade.files = ./releaseFiles/upgrade.cfg

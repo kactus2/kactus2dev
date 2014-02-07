@@ -6,13 +6,14 @@ TEMPLATE = lib
 TARGET = QuartusPinImportPlugin
 DESTDIR = ../../executable/Plugins
 QT += core xml widgets gui printsupport
-CONFIG += release
-DEFINES += WIN64 QT_DLL QUARTUSPINIMPORTPLUGIN_LIB QT_WIDGETS_LIB QT_PRINTSUPPORT_LIB QT_XML_LIB
+CONFIG += plugin release
+DEFINES += QT_DLL QUARTUSPINIMPORTPLUGIN_LIB QT_WIDGETS_LIB QT_PRINTSUPPORT_LIB QT_XML_LIB
 INCLUDEPATH += ./GeneratedFiles \
     . \
-    ./GeneratedFiles/Release \
+    ./GeneratedFiles/$(Configuration) \
     $(QTDIR)/../qtxmlpatterns/include/QtXmlPatterns \
     $(QTDIR)/../qtxmlpatterns/include \
+    $(QTDIR)/../qttools/include \
     ./../..
 LIBS += -L"./../../executable" \
     -lKactus2
@@ -22,3 +23,7 @@ OBJECTS_DIR += release
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(QuartusPinImportPlugin.pri)
+
+target.path = /usr/share/kactus2/plugins
+INSTALLS += target
+PadsPartGeneratorPadsPartGenerator

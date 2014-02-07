@@ -12,7 +12,7 @@
 #ifndef QUARTUSPINIMPORTPLUGIN_H
 #define QUARTUSPINIMPORTPLUGIN_H
 
-#include "quartuspinimportplugin_global.h"
+#include "QuartusPinImportPlugin_global.h"
 
 #include <PluginSystem/IPlugin.h>
 #include <PluginSystem/IGeneratorPlugin.h>
