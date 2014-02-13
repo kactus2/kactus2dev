@@ -62,6 +62,16 @@ public:
 	*/
 	virtual void refresh();
 
+signals:
+
+    /*! \brief Emitted when the order of the bus interfaces have changed.
+     *
+     *      @param [in] source   The original row number of the moved bus interface.
+     *      @param [in] target   The new row number of the moved bus interface.
+     *
+     */
+    void childMoved(int source, int target);
+
 protected:
 
 	//! \brief Handler for widget's show event

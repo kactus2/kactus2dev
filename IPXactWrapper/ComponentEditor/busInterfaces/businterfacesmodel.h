@@ -144,6 +144,14 @@ public slots:
 	*/
 	virtual void onRemoveItem(const QModelIndex& index);
 
+	/*! \brief Move item from the original position to new position.
+	 *
+	 * \param originalPos The index identifying the item to move.
+	 * \param newPos      The index identifying the position of the item after the move.
+     *
+	*/
+    virtual void onMoveItem( const QModelIndex& originalPos, const QModelIndex& newPos );
+
 signals:
 
 	//! \brief Emitted when the contents of the model change.
@@ -163,6 +171,14 @@ signals:
 	*/
 	void busifRemoved(int index);
 
+    /*! \brief Emitted when a bus interface is moved from one position to another.
+     *
+     * \param source The row number of the bus interface before the move.
+     * \param target The row number of the bus interface after the move.
+     *
+     */
+    void busIfMoved(int source, int target);
+
 private:
 
 	//! \brief No copying
@@ -170,7 +186,7 @@ private:
 
 	//! \brief No assignment
 	BusInterfacesModel& operator=(const BusInterfacesModel& other);
-
+   
 	//! \brief The instance that manages the library.
 	LibraryInterface* libHandler_;
 

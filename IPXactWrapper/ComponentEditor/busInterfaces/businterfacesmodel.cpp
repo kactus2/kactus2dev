@@ -357,6 +357,52 @@ void BusInterfacesModel::onRemoveItem( const QModelIndex& index ) {
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
 }
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfacesModel::onMoveItem()
+//-----------------------------------------------------------------------------
+void BusInterfacesModel::onMoveItem( const QModelIndex& originalPos, const QModelIndex& newPos ) {
+
+    // if there was no item in the starting point
+    if (!originalPos.isValid()) {
+        return;
+    }
+    // if the indexes are the same
+    else if (originalPos == newPos) {
+        return;
+    }
+    else if (originalPos.row() < 0 || originalPos.row() >= busifs_.size()) {
+        return;
+    }
+
+    int source = originalPos.row();
+    int target = 0;
+
+    // if the new position is invalid index then put the item last in the table
+    if (!newPos.isValid() || newPos.row() < 0 || newPos.row() >= busifs_.size()) {
+
+        beginResetModel();
+        QSharedPointer<BusInterface> busIf = busifs_.takeAt(originalPos.row());
+        busifs_.append(busIf);
+        target = busifs_.size() - 1;
+        endResetModel();
+    }
+    // if both indexes were valid
+    else {
+        beginResetModel();
+        busifs_.swap(originalPos.row(), newPos.row());
+        target = newPos.row();
+        endResetModel();
+    }
+
+    emit busIfMoved(source, target);
+
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function:  BusInterfacesModel::isValid()
+//-----------------------------------------------------------------------------
 bool BusInterfacesModel::isValid() const {
 	// list of component's physical ports and their bounds is needed for
 	// bus interface to check the port maps

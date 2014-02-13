@@ -12,6 +12,9 @@
 
 #include <QVBoxLayout>
 
+//-----------------------------------------------------------------------------
+// Function: BusInterfacesEditor::BusInterfacesEditor()
+//-----------------------------------------------------------------------------
 BusInterfacesEditor::BusInterfacesEditor(LibraryInterface* handler,
 										 QSharedPointer<Component> component, 
 										 QWidget* parent /*= 0*/ ):
@@ -36,8 +39,8 @@ model_(handler, component, this) {
 	view_.setDefaultImportExportPath(defPath);
 	view_.setAllowImportExport(true);
 
-    // items can not be dragged, but drop is enabled for vlnv columns.
-    view_.setItemsDraggable(false);
+    // Items can be dragged to change postitions. Drop is enabled for vlnv columns.
+    view_.setItemsDraggable(true);
     view_.viewport()->setAcceptDrops(true); 
     view_.setDropIndicatorShown(true);   
     view_.setDragDropMode(QAbstractItemView::DropOnly);
@@ -49,24 +52,40 @@ model_(handler, component, this) {
 		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(busifRemoved(int)),
 		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(busIfMoved(int, int)),
+        this, SIGNAL(childMoved(int, int)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(moveItem(const QModelIndex&, const QModelIndex&)),
+        &model_, SLOT(onMoveItem(const QModelIndex&, const QModelIndex&)), Qt::UniqueConnection);
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusInterfacesEditor::~BusInterfacesEditor()
+//-----------------------------------------------------------------------------
 BusInterfacesEditor::~BusInterfacesEditor() {
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusInterfacesEditor::isValid()
+//-----------------------------------------------------------------------------
 bool BusInterfacesEditor::isValid() const {
 	return model_.isValid();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusInterfacesEditor::refresh()
+//-----------------------------------------------------------------------------
 void BusInterfacesEditor::refresh() {
 	view_.setModel(&model_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusInterfacesEditor::showEvent()
+//-----------------------------------------------------------------------------
 void BusInterfacesEditor::showEvent( QShowEvent* event ) {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/businterfaces.html");
