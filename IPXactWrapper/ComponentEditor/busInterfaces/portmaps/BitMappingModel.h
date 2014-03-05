@@ -269,6 +269,55 @@ private:
      */
     bool checkDirectionForPorts(QStringList const& ports);
 
+    /*!
+     *  Adds a given bit mapping to a logical row.
+     *
+     *      @param [in] mapping     The mapping to add.
+     *      @param [in] row         The logical row to add to.
+     *
+     *      @return The last mapped row.
+     */
+    int addMapping( General::PortBounds mapping, int row );
+
+    /*!
+     *  Creates the initial table for selected logical signal based on existing port maps.               
+     */
+    void createInitialMappings();
+
+    /*!
+     *  Saves the current mapping in the table.     
+     */
+    void saveCurrentMappings();
+
+    /*!
+     *  Restores a previously saved mapping for selected logical signal.
+     */
+    void restoreMappings();
+
+    /*!
+     *  Checks if a given physical port is already mapped to a logical index in the given set of port maps.
+     *
+     *      @param [in] mappings        The set of port maps to compare.
+     *      @param [in] pin             The physical mapping to find.
+     *      @param [in] logicalIndex    The logical index to check.
+     *
+     *      @return True, if a mapping exists, otherwise false.
+     */
+    bool isMapped( QList<QSharedPointer<General::PortMap> > mappings, General::PortBounds const& pin, 
+        int logicalIndex) const;
+
+
+    /*!
+     *  Creates a port map expanding the maximum amount of contiguous physical and logical bits.
+     *
+     *      @param [in] pin                 The physical mapping to create the map for.
+     *      @param [in] firstLogicalIndex   The first logical index to map.
+     *
+     *      @return The created port map.
+     */
+    QSharedPointer<General::PortMap> createPortMapForPin( General::PortBounds const& pin, 
+        int firstLogicalIndex ) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

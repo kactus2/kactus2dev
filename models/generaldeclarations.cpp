@@ -5,7 +5,7 @@
  */
 
 #include "generaldeclarations.h"
-
+#include "port.h"
 
 #include <QDomNode>
 #include <QString>
@@ -310,6 +310,69 @@ bool General::PortMap::isValid( const QList<General::PortBounds>& physicalPorts 
 		}
 	}
 	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: General::PortMap::getPhysicalRange()
+//-----------------------------------------------------------------------------
+General::PortBounds General::PortMap::getPhysicalRange(QSharedPointer<Port> referencedPhysicalPort) const
+{
+    General::PortBounds physicalBounds(physicalPort_);
+    // IP-XACT Mapping rule B.1.8.b) If vector subelement exists, the range shall be according 
+    // to its left and right. If no vector subelement is present, the range is according to the
+    // referenced wire model port.
+    if (!physicalVector_.isNull())
+    {
+        physicalBounds.left_ = physicalVector_->getLeft();
+        physicalBounds.right_ = physicalVector_->getRight();        
+    }
+    else if(!referencedPhysicalPort.isNull() &&
+            referencedPhysicalPort->getPortType() == General::WIRE)
+    {
+        physicalBounds.left_ = referencedPhysicalPort->getLeftBound();
+        physicalBounds.right_ = referencedPhysicalPort->getRightBound();
+    }
+    else
+    {
+        Q_ASSERT_X(false, "Resolving port map boundaries", "No vector element or wire port defined");        
+    }
+
+    return physicalBounds;
+}
+
+//-----------------------------------------------------------------------------
+// Function: General::PortMap::getLogicalRange()
+//-----------------------------------------------------------------------------
+General::PortBounds General::PortMap::getLogicalRange(QSharedPointer<Port> referencedPhysicalPort) const
+{
+    General::PortBounds logicalBounds(logicalPort_);
+    // IP-XACT Mapping rule B.1.8.c) If vector subelement exists, the range shall be according 
+    // to its left and right. If no vector subelement is present, the range shall be taken as
+    // [abs(physical.left – physical.right): 0].
+    if (!logicalVector_.isNull())
+    {
+        logicalBounds.left_ = logicalVector_->getLeft();
+        logicalBounds.right_ = logicalVector_->getRight();        
+    }
+    else
+    {
+        // Set logical boundaries based physical mapping.
+        General::PortBounds physicalBounds = getPhysicalRange(referencedPhysicalPort);    
+
+        // Select higher boundary according to physical mapping.           
+        if (physicalBounds.left_ >= physicalBounds.right_)
+        {
+            logicalBounds.left_ = abs(physicalBounds.left_ - physicalBounds.right_);
+            logicalBounds.right_ = 0;
+        }
+        else
+        {
+            logicalBounds.right_ = abs(physicalBounds.left_ - physicalBounds.right_);
+            logicalBounds.left_ = 0;
+        }
+    }
+
+    return logicalBounds;
 }
 
 General::PortBounds::PortBounds():

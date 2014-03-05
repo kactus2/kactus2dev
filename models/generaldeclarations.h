@@ -24,6 +24,8 @@
 #include <QStringList>
 #include <QFileInfo>
 
+class Port;
+
 /*!
  * The VLNV tags that name the elements containing information
  */
@@ -877,6 +879,26 @@ struct PortMap {
 	 * \return bool True if the state is valid and writing is possible.
 	*/
 	bool isValid(const QList<General::PortBounds>& physicalPorts) const;
+
+    /*!
+     *  Gets the physical range in the port map.
+     *
+     *      @param [in] referencedPhysicalPort   The physical port referenced in the port map 
+     *                                           in the component containing the port map.
+     *
+     *      @return The physical range in the port map.
+     */
+    General::PortBounds getPhysicalRange(QSharedPointer<Port> referencedPhysicalPort) const;
+
+    /*!
+     *  Gets the logical range in the port map.
+     *
+     *      @param [in] referencedPhysicalPort   The physical port referenced in the port map 
+     *                                           in the component containing the port map.
+     *
+     *      @return The logical range in the port map.
+     */
+    General::PortBounds getLogicalRange(QSharedPointer<Port> referencedPhysicalPort) const;
 };
 
 /*! \brief Convert the physical port into string.

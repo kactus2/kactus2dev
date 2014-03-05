@@ -156,7 +156,7 @@ QModelIndex PortMapsTreeModel::index(int row, int column, const QModelIndex &par
 //-----------------------------------------------------------------------------
 QModelIndex PortMapsTreeModel::parent(QModelIndex const& child) const
 {
-    if (!child.isValid() || child.column() > 0)
+    if (!child.isValid() || child.column() > COLUMN_COUNT)
     {
         return QModelIndex();
     }
