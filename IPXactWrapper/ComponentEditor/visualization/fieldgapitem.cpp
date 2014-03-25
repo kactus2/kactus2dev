@@ -52,6 +52,7 @@ void FieldGapItem::refresh() {
 
 	QString endStr = QString::number(end_);
 	setLeftTopCorner(endStr);
+    setToolTip("<b>" + getName() + "</b> [" + endStr + ".." + startStr + "]");
 	VisualizerItem::reorganizeChildren();
 }
 

@@ -21,10 +21,10 @@ start_(0),
 end_(0) {
 	setBrush(QBrush(QColor(Qt::white)));
 	ExpandableItem::setExpansionBrush(QBrush(QColor(Qt::white)));
-	setName("...");
+	setName("Reserved");
 	setLeftTopCorner("0x0");
 	setShowExpandableItem(false);
-    setToolTip("This memory block is unassigned.");
+    setToolTip("This memory block is reserved for future use.");
 }
 
 //-----------------------------------------------------------------------------

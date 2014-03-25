@@ -56,8 +56,26 @@ void MemoryMapGraphItem::refresh()
         "<b>Last address: </b>" + AddressSpaceVisualizationItem::addr2Str(memoryMap_->getLastAddress(), 
         getBitWidth()));
   
+    // set the positions for the children.
+    if (isExpanded())
+    {
+        foreach (MemoryVisualizationItem* child, childItems_)
+        {
+            AddressBlockGraphItem* childRegister = qobject_cast<AddressBlockGraphItem*>(child);
+            if (childRegister)
+            {
+                childRegister->refreshItem();
+            }        
+        }
+        MemoryVisualizationItem::reorganizeChildren();
+    }
+    else
+    {
+        ExpandableItem::reorganizeChildren();
+    }
+
 	// set the positions for the children
-	MemoryVisualizationItem::reorganizeChildren();
+	//MemoryVisualizationItem::reorganizeChildren();
 
 	MemoryMapScene* memScene = static_cast<MemoryMapScene*>(scene());
 	Q_ASSERT(memScene);
@@ -108,9 +126,11 @@ qreal MemoryMapGraphItem::itemTotalWidth() const
 // Function: MemoryMapGraphItem::setWidth()
 //-----------------------------------------------------------------------------
 void MemoryMapGraphItem::setWidth( qreal width ) {
-    setRect(0, 0, width, VisualizerItem::DEFAULT_HEIGHT);
+    if (childWidth_ != width - MemoryVisualizationItem::CHILD_INDENTATION)
+    {
+        VisualizerItem::setWidth(width);
+        childWidth_ = width - MemoryVisualizationItem::CHILD_INDENTATION;
 
-    childWidth_ = width - MemoryVisualizationItem::CHILD_INDENTATION;
-
-    MemoryVisualizationItem::reorganizeChildren();
+        reorganizeChildren();
+    }
 }

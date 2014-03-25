@@ -84,6 +84,14 @@ unsigned int FieldGraphItem::getAddressUnitSize() const {
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldGraphItem::setWidth()
+//-----------------------------------------------------------------------------
+void FieldGraphItem::setWidth(qreal width)
+{
+    VisualizerItem::setWidth(width);
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldGraphItem::getLastAddress()
 //-----------------------------------------------------------------------------
 quint64 FieldGraphItem::getLastAddress() const {

@@ -20,7 +20,6 @@ expanded_(false) {
 	setPixmap(scaledPic);
 
 	setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
-    expand();
 }
 
 GraphicsExpandCollapseItem::~GraphicsExpandCollapseItem() {

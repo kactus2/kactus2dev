@@ -59,7 +59,13 @@ public:
 	 * \return The size of least addressable unit.
 	*/
 	virtual unsigned int getAddressUnitSize() const;
-
+ 
+	/*! \brief Set the width for the item.
+	 *
+	 * \param width The new width of the item.
+	 *
+	*/
+    void setWidth(qreal width);
 
 	/*! \brief Sets the first non-overlapping address to display.
 	 *
@@ -85,6 +91,7 @@ private:
 	//! \brief No assignment
 	FieldGraphItem& operator=(const FieldGraphItem& other);
    
+
 	//! \brief Pointer to the field being visualized.
 	QSharedPointer<Field> field_;
 };

@@ -22,7 +22,7 @@ MemoryVisualizationItem::MemoryVisualizationItem( QGraphicsItem* parent /*= 0*/ 
     : ExpandableItem(parent),
       firstFreeAddress_(-1),
       lastFreeAddress_(-1),
-      childWidth_(VisualizerItem::DEFAULT_WIDTH/2),
+      childWidth_(VisualizerItem::DEFAULT_WIDTH),
       conflicted_(false),
       overlapped_(false)
 {
@@ -65,7 +65,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
     else {
         ExpandableItem::setShowExpandableItem(true);
     }
-
+    
     // save the new gap child items to be added to map
     QList<MemoryGapItem*> gaps;
     // the offset where the last block ended
@@ -330,11 +330,19 @@ void MemoryVisualizationItem::updateChildMap() {
 // Function: setWidth()
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::setWidth( qreal width ) {
-    setRect(0, 0, width, VisualizerItem::DEFAULT_HEIGHT);
+    //setRect(0, 0, width, VisualizerItem::DEFAULT_HEIGHT);
 
-    childWidth_ = width - MemoryVisualizationItem::CHILD_INDENTATION;
+    if (childWidth_ != width - MemoryVisualizationItem::CHILD_INDENTATION)
+    {
+        VisualizerItem::setWidth(width);
 
-    reorganizeChildren();
+        childWidth_ = width - MemoryVisualizationItem::CHILD_INDENTATION;
+
+        foreach(MemoryVisualizationItem* child, childItems_)
+        {
+            child->setWidth(childWidth_);
+        }        
+    }
 }
 
 //-----------------------------------------------------------------------------

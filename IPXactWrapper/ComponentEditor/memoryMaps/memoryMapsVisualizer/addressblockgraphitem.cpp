@@ -42,6 +42,28 @@ AddressBlockGraphItem::~AddressBlockGraphItem() {
 // Function: AddressBlockGraphItem::refresh()
 //-----------------------------------------------------------------------------
 void AddressBlockGraphItem::refresh() {
+    
+    updateDisplay();
+
+	MemoryVisualizationItem* parentGraphItem = static_cast<MemoryVisualizationItem*>(parentItem());
+	Q_ASSERT(parentGraphItem);
+	parentGraphItem->refresh();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphItem::refreshItem()
+//-----------------------------------------------------------------------------
+void AddressBlockGraphItem::refreshItem()
+{
+    updateDisplay();
+    reorganizeChildren();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphItem::updateDisplay()
+//-----------------------------------------------------------------------------
+void AddressBlockGraphItem::updateDisplay()
+{
     setName(addrBlock_->getName());
     setOverlappingTop(Utils::str2Uint(addrBlock_->getBaseAddress()));
     setOverlappingBottom(addrBlock_->getLastAddress());
@@ -52,23 +74,7 @@ void AddressBlockGraphItem::refresh() {
         "<b>Last address: </b>" + AddressSpaceVisualizationItem::addr2Str(addrBlock_->getLastAddress(), 
         getBitWidth()) + "<br>" +
         "<b>Size [AUB]: </b>" + addrBlock_->getRange());
-
-    // set the positions for the children.
-    foreach (MemoryVisualizationItem* child, childItems_)
-    {
-        RegisterGraphItem* childRegister = qobject_cast<RegisterGraphItem*>(child);
-        if (childRegister)
-        {
-            childRegister->refreshItem();
-        }        
-    }
-	MemoryVisualizationItem::reorganizeChildren();
-
-	MemoryVisualizationItem* parentGraphItem = static_cast<MemoryVisualizationItem*>(parentItem());
-	Q_ASSERT(parentGraphItem);
-	parentGraphItem->refresh();
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: AddressBlockGraphItem::getOffset()

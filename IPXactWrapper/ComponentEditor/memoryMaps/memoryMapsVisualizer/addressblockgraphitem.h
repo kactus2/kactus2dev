@@ -37,6 +37,12 @@ public:
     //! \brief Refresh the item, re-layout the sub-items and refresh parent item.
 	virtual void refresh();
 
+    //! \brief Refresh the item and re-layout the sub-items.
+    virtual void refreshItem();
+
+    //! \brief Updates the labels and tooltip for the item.
+    void updateDisplay();
+
 	/*! \brief Get the offset of the item. 
 	 *
 	 * \return int The offset of the item from the parent item's base address.

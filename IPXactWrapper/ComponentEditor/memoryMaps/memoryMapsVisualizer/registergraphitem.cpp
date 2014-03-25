@@ -59,6 +59,15 @@ void RegisterGraphItem::refresh()
 //-----------------------------------------------------------------------------
 void RegisterGraphItem::refreshItem()
 {
+    updateDisplay();
+    reorganizeChildren();
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::updateDisplay()
+//-----------------------------------------------------------------------------
+void RegisterGraphItem::updateDisplay()
+{
     setName(register_->getName());
 
     // get the base of the parent address block
@@ -98,9 +107,6 @@ void RegisterGraphItem::refreshItem()
         "<b>Last address: </b>" + AddressSpaceVisualizationItem::addr2Str(getLastAddress(), getBitWidth()) + 
         "<br>" +
         "<b>Size [bits]: </b>" + QString::number(register_->getSize()));
-
-    // set the positions for the children
-    reorganizeChildren();
 }
 
 //-----------------------------------------------------------------------------
@@ -187,7 +193,7 @@ void RegisterGraphItem::reorganizeChildren() {
             (previous == 0 && OffsetMin == item->getLastAddress() + 1)) {
 
 			// create the gap item
-			gap = new FieldGapItem(this);
+			gap = new FieldGapItem(tr("Reserved"), this);
 
             // set the first address of the gap
             gap->setStartAddress(item->getLastAddress(), false);
@@ -337,7 +343,7 @@ void RegisterGraphItem::reorganizeChildren() {
 	// if the LSB bit(s) does not belong to any field
 	if (previous && OffsetMin > 0) {
 		// create the gap 
-		FieldGapItem* gap = new FieldGapItem(this);
+		FieldGapItem* gap = new FieldGapItem(tr("Reserved"), this);
 
 		// the gap starts from the start of the register
 		gap->setStartAddress(0, true);
@@ -468,11 +474,12 @@ quint64 RegisterGraphItem::getLastAddress() const {
 //-----------------------------------------------------------------------------
 void RegisterGraphItem::setWidth(qreal width)
 {
-    setRect(0, 0, width, VisualizerItem::DEFAULT_HEIGHT);
-
-    childWidth_ = width;
-
-    reorganizeChildren();
+    if ( childWidth_ != width)
+    {
+         childWidth_ = width;
+        VisualizerItem::setWidth(width);
+        reorganizeChildren();
+    }
 }
 
 //-----------------------------------------------------------------------------
