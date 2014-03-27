@@ -23,7 +23,7 @@ RegisterModel(registerNode), alternateGroups_(), alternateRegisterDef_() {
 		if (tempNode.nodeName() == QString("spirit:alternateGroups")) {
 
 			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-				QString groupName = tempNode.childNodes().at(0).nodeValue();
+				QString groupName = tempNode.childNodes().at(j).nodeValue();
 				alternateGroups_.append(General::removeWhiteSpace(groupName));
 			}
 		}

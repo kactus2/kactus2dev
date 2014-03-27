@@ -55,7 +55,7 @@ qualifier_(), onMaster_(), onSlave_() {
 				new General::Qualifier(tempNode));
 		}
 
-		else if (tempNode.nodeName() == QString("spirit:onSlave")) {
+		else if (tempNode.nodeName() == QString("spirit:onMaster")) {
 			onMaster_ = QSharedPointer<TransactionalPort>(
 				new TransactionalPort(tempNode));
 		}
