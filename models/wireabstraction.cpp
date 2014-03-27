@@ -237,10 +237,11 @@ void WireAbstraction::write(QXmlStreamWriter& writer) {
 	}
 	// if default value was not defined then use requiresDriver
 	else {
-		writer.writeEmptyElement("spirit:requiresDriver");
+		writer.writeStartElement("spirit:requiresDriver");
 		writer.writeAttribute("spirit:driverType",
 				General::driverType2Str(driverType_));
 		writer.writeCharacters(General::bool2Str(requiresDriver_));
+        writer.writeEndElement(); // spirit:requiresDriver
 	}
 
 	writer.writeEndElement(); // spirit:wire

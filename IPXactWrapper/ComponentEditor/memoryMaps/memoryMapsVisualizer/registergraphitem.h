@@ -39,6 +39,9 @@ public:
     //! \brief Refresh the item and re-layout the sub-items.
 	virtual void refreshItem();
 
+    //! \brief Updates the labels and tooltip for the item.
+    void updateDisplay();
+
 	//! \brief Remove the item.
     virtual void removeChild(MemoryVisualizationItem* childItem );
 
