@@ -329,9 +329,6 @@
     <Filter Include="Source Files\SystemDetailsEditor">
       <UniqueIdentifier>{a69cd6a6-201a-41fa-97db-d7e74fc20e27}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\HelpSystem">
-      <UniqueIdentifier>{59279986-79fb-4355-9e6f-673e09806d31}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\AddressEditor">
       <UniqueIdentifier>{7d233129-b394-406f-a685-e12be4d6bb83}</UniqueIdentifier>
     </Filter>
@@ -666,9 +663,6 @@
     <Filter Include="Header Files\SystemDetailsEditor">
       <UniqueIdentifier>{bd961281-bac8-4b4e-9228-9b9ae077a8d0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\HelpSystem">
-      <UniqueIdentifier>{8b73cc82-7417-45d5-bf0f-a4bf81811ba5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\AddressEditor">
       <UniqueIdentifier>{ee35da27-a35a-40db-bba2-f097f5b28492}</UniqueIdentifier>
     </Filter>
@@ -895,6 +889,18 @@
     </Filter>
     <Filter Include="Header Files\wizards\ComponentWizard\VhdlImportEditor">
       <UniqueIdentifier>{42ebc0a2-4349-4e91-86c1-c398df9f57b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Help">
+      <UniqueIdentifier>{49a211ee-ccfc-4853-a9a6-099a139b1dab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Help\HelpSystem">
+      <UniqueIdentifier>{8b73cc82-7417-45d5-bf0f-a4bf81811ba5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Help">
+      <UniqueIdentifier>{2103255c-ef97-4919-a66a-5cc5f99f57e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Help\HelpSystem">
+      <UniqueIdentifier>{59279986-79fb-4355-9e6f-673e09806d31}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -2245,15 +2251,6 @@
     <ClCompile Include="SystemDetailsEditor\SystemDetailsEditor.cpp">
       <Filter>Source Files\SystemDetailsEditor</Filter>
     </ClCompile>
-    <ClCompile Include="HelpSystem\ContextHelpBrowser.cpp">
-      <Filter>Source Files\HelpSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="HelpSystem\HelpSearchWidget.cpp">
-      <Filter>Source Files\HelpSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="HelpSystem\HelpWindow.cpp">
-      <Filter>Source Files\HelpSystem</Filter>
-    </ClCompile>
     <ClCompile Include="MemoryDesigner\AddressBlockItem.cpp">
       <Filter>Source Files\MemoryDesigner</Filter>
     </ClCompile>
@@ -2812,9 +2809,6 @@
     <ClCompile Include="GeneratedFiles\moc_hierarchyfilter.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_HelpSearchWidget.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_groupmanagerdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -3014,9 +3008,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_cpusdelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ContextHelpBrowser.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ConnectionEndpoint.cpp">
@@ -3997,6 +3988,21 @@
     <ClCompile Include="wizards\ComponentWizard\ComponentWizardVhdlImportPage.cpp">
       <Filter>Source Files\wizards\ComponentWizard</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ContextHelpBrowser.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_HelpSearchWidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Help\HelpSystem\ContextHelpBrowser.cpp">
+      <Filter>Source Files\Help\HelpSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Help\HelpSystem\HelpSearchWidget.cpp">
+      <Filter>Source Files\Help\HelpSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Help\HelpSystem\HelpWindow.cpp">
+      <Filter>Source Files\Help\HelpSystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4637,12 +4643,6 @@
     </CustomBuild>
     <CustomBuild Include="designwidget\SelectItemTypeDialog.h">
       <Filter>Header Files\designwidget</Filter>
-    </CustomBuild>
-    <CustomBuild Include="HelpSystem\ContextHelpBrowser.h">
-      <Filter>Header Files\HelpSystem</Filter>
-    </CustomBuild>
-    <CustomBuild Include="HelpSystem\HelpSearchWidget.h">
-      <Filter>Header Files\HelpSystem</Filter>
     </CustomBuild>
     <CustomBuild Include="InterfaceEditor\interfaceeditor.h">
       <Filter>Header Files\InterfaceEditor</Filter>
@@ -5673,6 +5673,12 @@
     <CustomBuild Include="wizards\ComponentWizard\VhdlImportEditor\vhdlimporteditor.h">
       <Filter>Header Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
     </CustomBuild>
+    <CustomBuild Include="Help\HelpSystem\ContextHelpBrowser.h">
+      <Filter>Header Files\Help\HelpSystem</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Help\HelpSystem\HelpSearchWidget.h">
+      <Filter>Header Files\Help\HelpSystem</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddressEditor\AddressEntry.h">
@@ -5800,9 +5806,6 @@
     </ClInclude>
     <ClInclude Include="designwidget\PortmapDialog.h">
       <Filter>Header Files\designwidget</Filter>
-    </ClInclude>
-    <ClInclude Include="HelpSystem\HelpWindow.h">
-      <Filter>Header Files\HelpSystem</Filter>
     </ClInclude>
     <ClInclude Include="LibraryManager\ipxactitem.h">
       <Filter>Header Files\LibraryManager</Filter>
@@ -6139,6 +6142,9 @@
     </ClInclude>
     <ClInclude Include="wizards\ComponentWizard\ComponentWizardVhdlImportPage.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
+    </ClInclude>
+    <ClInclude Include="Help\HelpSystem\HelpWindow.h">
+      <Filter>Header Files\Help\HelpSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

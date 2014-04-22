@@ -585,9 +585,8 @@ HEADERS += ./resource.h \
     ./SystemDetailsEditor/SystemDetailsEditor.h \
     ./SystemDetailsEditor/SwitchHWDialog.h \
     ./SystemDetailsEditor/ExportSWDialog.h \
-    ./HelpSystem/HelpWindow.h \
-    ./HelpSystem/HelpSearchWidget.h \
-    ./HelpSystem/ContextHelpBrowser.h \
+    ./Help/HelpSystem/HelpSearchWidget.h \
+    ./Help/HelpSystem/HelpWindow.h \
     ./AddressEditor/AddressEntry.h \
     ./AddressEditor/AddressDelegate.h \
     ./AddressEditor/AddressEditor.h \
@@ -612,6 +611,7 @@ HEADERS += ./resource.h \
     ./generators/vhdlGenerator/vhdlsignal.h \
     ./wizards/ComponentWizard/ComponentWizardConclusionPage.h \
     ./generators/DocumentGenerator/documentgenerator.h \
+    ./Help/HelpSystem/ContextHelpBrowser.h \
     ./generators/modelsimGenerator/modelsimgenerator.h \
     ./generators/quartusGenerator/quartusgenerator.h \
     ./wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.h
@@ -1159,9 +1159,9 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./SystemDetailsEditor/ExportSWDialog.cpp \
     ./SystemDetailsEditor/SwitchHWDialog.cpp \
     ./SystemDetailsEditor/SystemDetailsEditor.cpp \
-    ./HelpSystem/ContextHelpBrowser.cpp \
-    ./HelpSystem/HelpSearchWidget.cpp \
-    ./HelpSystem/HelpWindow.cpp \
+    ./Help/HelpSystem/HelpWindow.cpp \
+    ./Help/HelpSystem/ContextHelpBrowser.cpp \
+    ./Help/HelpSystem/HelpSearchWidget.cpp \
     ./AddressEditor/AddressDelegate.cpp \
     ./AddressEditor/AddressEditor.cpp \
     ./AddressEditor/AddressEntry.cpp \

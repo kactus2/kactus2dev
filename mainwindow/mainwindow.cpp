@@ -32,8 +32,8 @@
 
 #include <generators/DocumentGenerator/documentgenerator.h>
 
-#include <HelpSystem/ContextHelpBrowser.h>
-#include <HelpSystem/HelpWindow.h>
+#include <Help/HelpSystem/ContextHelpBrowser.h>
+#include <Help/HelpSystem/HelpWindow.h>
 
 #include <LibraryManager/libraryhandler.h>
 #include <LibraryManager/vlnv.h>
