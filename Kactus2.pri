@@ -593,14 +593,12 @@ HEADERS += ./resource.h \
     ./AddressEditor/AddressEditor.h \
     ./AddressEditor/AddressTableView.h \
     ./AddressEditor/AddressModel.h \
-    ./ComponentWizard/ComponentWizard.h \
-    ./ComponentWizard/ComponentWizardConclusionPage.h \
-    ./ComponentWizard/ComponentWizardDependencyPage.h \
-    ./ComponentWizard/ComponentWizardFilesPage.h \
-    ./ComponentWizard/ComponentWizardIntroPage.h \
-    ./ComponentWizard/ComponentWizardVhdlImportPage.h \
-    ./ComponentWizard/ComponentWizardGeneralInfoPage.h \
-    ./ComponentWizard/VhdlImportEditor/vhdlimporteditor.h \
+    ./wizards/ComponentWizard/ComponentWizardVhdlImportPage.h \
+    ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.h \
+    ./wizards/ComponentWizard/ComponentWizardFilesPage.h \
+    ./wizards/ComponentWizard/ComponentWizard.h \
+    ./wizards/ComponentWizard/ComponentWizardIntroPage.h \
+    ./wizards/ComponentWizard/ComponentWizardDependencyPage.h \
     ./generators/vhdlGenerator/vhdlcomponentdeclaration.h \
     ./generators/vhdlGenerator/vhdlcomponentinstance.h \
     ./generators/vhdlGenerator/vhdlconnectionendpoint.h \
@@ -612,9 +610,11 @@ HEADERS += ./resource.h \
     ./generators/vhdlGenerator/vhdlportmap.h \
     ./generators/vhdlGenerator/vhdlportsorter.h \
     ./generators/vhdlGenerator/vhdlsignal.h \
+    ./wizards/ComponentWizard/ComponentWizardConclusionPage.h \
     ./generators/DocumentGenerator/documentgenerator.h \
     ./generators/modelsimGenerator/modelsimgenerator.h \
-    ./generators/quartusGenerator/quartusgenerator.h
+    ./generators/quartusGenerator/quartusgenerator.h \
+    ./wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
     ./common/DesignWidget.cpp \
@@ -1177,14 +1177,14 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./MemoryDesigner/MemoryDesignWidget.cpp \
     ./MemoryDesigner/MemoryItem.cpp \
     ./MemoryDesigner/SegmentItem.cpp \
-    ./ComponentWizard/ComponentWizard.cpp \
-    ./ComponentWizard/ComponentWizardConclusionPage.cpp \
-    ./ComponentWizard/ComponentWizardDependencyPage.cpp \
-    ./ComponentWizard/ComponentWizardFilesPage.cpp \
-    ./ComponentWizard/ComponentWizardGeneralInfoPage.cpp \
-    ./ComponentWizard/ComponentWizardIntroPage.cpp \
-    ./ComponentWizard/ComponentWizardVhdlImportPage.cpp \
-    ./ComponentWizard/VhdlImportEditor/vhdlimporteditor.cpp \
+    ./wizards/ComponentWizard/ComponentWizardVhdlImportPage.cpp \
+    ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.cpp \
+    ./wizards/ComponentWizard/ComponentWizardFilesPage.cpp \
+    ./wizards/ComponentWizard/ComponentWizardDependencyPage.cpp \
+    ./wizards/ComponentWizard/ComponentWizardConclusionPage.cpp \
+    ./wizards/ComponentWizard/ComponentWizard.cpp \
+    ./wizards/ComponentWizard/ComponentWizardIntroPage.cpp \
+    ./wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.cpp \
     ./generators/vhdlGenerator/vhdlcomponentdeclaration.cpp \
     ./generators/vhdlGenerator/vhdlcomponentinstance.cpp \
     ./generators/vhdlGenerator/vhdlconnectionendpoint.cpp \

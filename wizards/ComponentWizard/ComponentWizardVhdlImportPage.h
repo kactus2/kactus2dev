@@ -13,7 +13,7 @@
 #define COMPONENTWIZARDVHDLIMPORTPAGE_H
 
 #include <models/component.h>
-#include <ComponentWizard/VhdlImportEditor/vhdlimporteditor.h>
+#include <wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.h>
 
 #include <QWizardPage>
 #include <QSharedPointer>

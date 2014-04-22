@@ -19,7 +19,7 @@
 #include "NewWorkspaceDialog.h"
 #include "DeleteWorkspaceDialog.h"
 
-#include <ComponentWizard/ComponentWizard.h>
+#include <wizards/ComponentWizard/ComponentWizard.h>
 
 #include <settings/SettingsDialog.h>
 #include <settings/SettingsUpdater.h>
