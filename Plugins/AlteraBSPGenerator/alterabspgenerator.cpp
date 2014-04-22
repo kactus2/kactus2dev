@@ -7,7 +7,7 @@
 
 #include "alterabspgenerator.h"
 #include <LibraryManager/libraryinterface.h>
-#include <PluginSystem/IPluginUtility.h>
+#include <Plugins/PluginSystem/IPluginUtility.h>
 #include <models/component.h>
 #include <common/KactusAttribute.h>
 #include "alterabspgeneratordialog.h"

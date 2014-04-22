@@ -14,7 +14,7 @@
 
 #include <common/dialogs/propertyPageDialog/PropertyPageView.h>
 #include <common/widgets/DirectoryListSelector/DirectoryListSelector.h>
-#include <PluginSystem/PluginManager.h>
+#include <Plugins/PluginSystem/PluginManager.h>
 
 #include <QTreeWidget>
 #include <QPlainTextEdit>

@@ -13,7 +13,7 @@
 #define SETTINGSDIALOG_H
 
 #include <common/dialogs/propertyPageDialog/PropertyPageDialog.h>
-#include <PluginSystem/PluginManager.h>
+#include <Plugins/PluginSystem/PluginManager.h>
 
 #include <QSettings>
 

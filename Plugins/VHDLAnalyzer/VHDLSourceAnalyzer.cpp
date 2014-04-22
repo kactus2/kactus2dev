@@ -24,7 +24,7 @@
 #include <QFileInfo>
 #include <QDir>
 
-#include <PluginSystem/IPluginUtility.h>
+#include <Plugins/PluginSystem/IPluginUtility.h>
 
 //-----------------------------------------------------------------------------
 // Function: VHDLSourceAnalyzer::VHDLSourceAnalyzer()

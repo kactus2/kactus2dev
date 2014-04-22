@@ -10,8 +10,8 @@
 
 #include "NewSWComponentPage.h"
 
-#include <PluginSystem/PluginManager.h>
-#include <PluginSystem/IPluginUtility.h>
+#include <Plugins/PluginSystem/PluginManager.h>
+#include <Plugins/PluginSystem/IPluginUtility.h>
 
 #include <common/DrawMode.h>
 #include <common/KactusAttribute.h>

@@ -10,7 +10,7 @@
 
 #include <common/dialogs/propertyPageDialog/PropertyPageView.h>
 #include <common/views/EditableTableView/editabletableview.h>
-#include <PluginSystem/PluginManager.h>
+#include <Plugins/PluginSystem/PluginManager.h>
 
 #include <QSettings>
 

@@ -573,15 +573,13 @@ HEADERS += ./resource.h \
     ./LibraryManager/HierarchyView/hierarchymodel.h \
     ./LibraryManager/HierarchyView/hierarchyitem.h \
     ./LibraryManager/HierarchyView/hierarchyfilter.h \
-    ./PluginSystem/IGeneratorPlugin.h \
-    ./PluginSystem/IPlugin.h \
-    ./PluginSystem/IPluginUtility.h \
-    ./PluginSystem/ISourceAnalyzerPlugin.h \
-    ./PluginSystem/PluginInfoWidget.h \
-    ./PluginSystem/PluginManager.h \
-    ./PluginSystem/PluginSettingsWidget.h \
-    ./PluginSystem/NewPluginsDialog.h \
-    ./PluginSystem/PluginListDialog.h \
+    ./Plugins/PluginSystem/PluginSettingsWidget.h \
+    ./Plugins/PluginSystem/PluginListDialog.h \
+    ./Plugins/PluginSystem/PluginInfoWidget.h \
+    ./Plugins/PluginSystem/ISourceAnalyzerPlugin.h \
+    ./Plugins/PluginSystem/IGeneratorPlugin.h \
+    ./Plugins/PluginSystem/PluginManager.h \
+    ./Plugins/PluginSystem/IPluginUtility.h \
     ./SystemDetailsEditor/SystemDetailsEditor.h \
     ./SystemDetailsEditor/SwitchHWDialog.h \
     ./SystemDetailsEditor/ExportSWDialog.h \
@@ -613,6 +611,8 @@ HEADERS += ./resource.h \
     ./generators/DocumentGenerator/documentgenerator.h \
     ./Help/HelpSystem/ContextHelpBrowser.h \
     ./generators/modelsimGenerator/modelsimgenerator.h \
+    ./Plugins/PluginSystem/NewPluginsDialog.h \
+    ./Plugins/PluginSystem/IPlugin.h \
     ./generators/quartusGenerator/quartusgenerator.h \
     ./wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.h
 SOURCES += ./common/CSourceWriter.cpp \
@@ -1152,10 +1152,10 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./SystemDesign/SystemDesignDiagram.cpp \
     ./SystemDesign/SystemDesignWidget.cpp \
     ./SystemDesign/SystemMoveCommands.cpp \
-    ./PluginSystem/NewPluginsDialog.cpp \
-    ./PluginSystem/PluginInfoWidget.cpp \
-    ./PluginSystem/PluginListDialog.cpp \
-    ./PluginSystem/PluginManager.cpp \
+    ./Plugins/PluginSystem/PluginManager.cpp \
+    ./Plugins/PluginSystem/PluginInfoWidget.cpp \
+    ./Plugins/PluginSystem/NewPluginsDialog.cpp \
+    ./Plugins/PluginSystem/PluginListDialog.cpp \
     ./SystemDetailsEditor/ExportSWDialog.cpp \
     ./SystemDetailsEditor/SwitchHWDialog.cpp \
     ./SystemDetailsEditor/SystemDetailsEditor.cpp \

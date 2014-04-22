@@ -20,9 +20,9 @@
 #include <models/fileset.h>
 #include <models/file.h>
 #include <models/generaldeclarations.h>
-#include <PluginSystem/IPlugin.h>
-#include <PluginSystem/IPluginUtility.h>
-#include <PluginSystem/PluginSettingsWidget.h>
+#include <Plugins/PluginSystem/IPlugin.h>
+#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <Plugins/PluginSystem/PluginSettingsWidget.h>
 
 #include <QDate>
 #include <QDialog>

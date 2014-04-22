@@ -22,8 +22,8 @@
 #include <models/fileset.h>
 #include <models/file.h>
 
-#include <PluginSystem/PluginManager.h>
-#include <PluginSystem/ISourceAnalyzerPlugin.h>
+#include <Plugins/PluginSystem/PluginManager.h>
+#include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
 
 #include <QVBoxLayout>
 #include <QIcon>

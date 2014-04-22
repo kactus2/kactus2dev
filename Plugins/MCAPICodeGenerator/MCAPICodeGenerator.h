@@ -12,7 +12,7 @@
 #ifndef MCAPICODEGENERATOR_H
 #define MCAPICODEGENERATOR_H
 
-#include <PluginSystem/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/IGeneratorPlugin.h>
 
 #include <QObject>
 

@@ -17,8 +17,8 @@
 #include <models/component.h>
 #include <models/FileDependency.h>
 
-#include <PluginSystem/PluginManager.h>
-#include <PluginSystem/ISourceAnalyzerPlugin.h>
+#include <Plugins/PluginSystem/PluginManager.h>
+#include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
 
 #include <QIcon>
 #include <QDir>

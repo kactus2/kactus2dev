@@ -8,7 +8,7 @@
 #ifndef K2ENVVARMODEL_H
 #define K2ENVVARMODEL_H
 
-#include <PluginSystem/PluginManager.h>
+#include <Plugins/PluginSystem/PluginManager.h>
 
 #include <QAbstractTableModel>
 #include <QSettings>

@@ -12,7 +12,7 @@
 #ifndef MCAPISETTINGSWIDGET_H
 #define MCAPISETTINGSWIDGET_H
 
-#include <PluginSystem/PluginSettingsWidget.h>
+#include <Plugins/PluginSystem/PluginSettingsWidget.h>
 
 #include <QLineEdit>
 

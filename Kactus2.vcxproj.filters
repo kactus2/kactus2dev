@@ -323,9 +323,6 @@
     <Filter Include="Source Files\SystemDesign">
       <UniqueIdentifier>{659499c4-96b7-4f6a-bb28-ac04d831e8bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\PluginSystem">
-      <UniqueIdentifier>{20e3b635-b2b3-4dbc-a204-fc6773166d05}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\SystemDetailsEditor">
       <UniqueIdentifier>{a69cd6a6-201a-41fa-97db-d7e74fc20e27}</UniqueIdentifier>
     </Filter>
@@ -657,9 +654,6 @@
     <Filter Include="Header Files\LibraryManager\HierarchyView">
       <UniqueIdentifier>{319e069c-6161-49af-a60b-01ec3d1131a2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\PluginSystem">
-      <UniqueIdentifier>{c981759c-6aff-442a-a7a4-88d85d58a770}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\SystemDetailsEditor">
       <UniqueIdentifier>{bd961281-bac8-4b4e-9228-9b9ae077a8d0}</UniqueIdentifier>
     </Filter>
@@ -901,6 +895,18 @@
     </Filter>
     <Filter Include="Source Files\Help\HelpSystem">
       <UniqueIdentifier>{59279986-79fb-4355-9e6f-673e09806d31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Plugins">
+      <UniqueIdentifier>{8d955ae9-b301-48c4-ae1e-9bb92a65f3d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Plugins\PluginSystem">
+      <UniqueIdentifier>{c981759c-6aff-442a-a7a4-88d85d58a770}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Plugins">
+      <UniqueIdentifier>{85e8249e-7bf8-4c41-b66f-1a5255b75589}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Plugins\PluginSystem">
+      <UniqueIdentifier>{20e3b635-b2b3-4dbc-a204-fc6773166d05}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -2236,12 +2242,6 @@
     <ClCompile Include="SystemDesign\SystemMoveCommands.cpp">
       <Filter>Source Files\SystemDesign</Filter>
     </ClCompile>
-    <ClCompile Include="PluginSystem\PluginListDialog.cpp">
-      <Filter>Source Files\PluginSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="PluginSystem\PluginManager.cpp">
-      <Filter>Source Files\PluginSystem</Filter>
-    </ClCompile>
     <ClCompile Include="SystemDetailsEditor\ExportSWDialog.cpp">
       <Filter>Source Files\SystemDetailsEditor</Filter>
     </ClCompile>
@@ -2510,9 +2510,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_portlistmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_PluginListDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_physlistview.cpp">
@@ -3877,15 +3874,6 @@
     <ClCompile Include="common\widgets\DirectoryListSelector\DirectoryListSelector.cpp">
       <Filter>Source Files\common\widgets\DirectoryListSelector</Filter>
     </ClCompile>
-    <ClCompile Include="PluginSystem\PluginInfoWidget.cpp">
-      <Filter>Source Files\PluginSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="PluginSystem\NewPluginsDialog.cpp">
-      <Filter>Source Files\PluginSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_NewPluginsDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="generators\vhdlGenerator\vhdlcomponentdeclaration.cpp">
       <Filter>Source Files\generators\vhdlGenerator</Filter>
     </ClCompile>
@@ -4002,6 +3990,24 @@
     </ClCompile>
     <ClCompile Include="Help\HelpSystem\HelpWindow.cpp">
       <Filter>Source Files\Help\HelpSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_NewPluginsDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PluginListDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\PluginSystem\NewPluginsDialog.cpp">
+      <Filter>Source Files\Plugins\PluginSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\PluginSystem\PluginInfoWidget.cpp">
+      <Filter>Source Files\Plugins\PluginSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\PluginSystem\PluginListDialog.cpp">
+      <Filter>Source Files\Plugins\PluginSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\PluginSystem\PluginManager.cpp">
+      <Filter>Source Files\Plugins\PluginSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5325,9 +5331,6 @@
     <CustomBuild Include="MemoryDesigner\MemoryItem.h">
       <Filter>Header Files\MemoryDesigner</Filter>
     </CustomBuild>
-    <CustomBuild Include="PluginSystem\PluginListDialog.h">
-      <Filter>Header Files\PluginSystem</Filter>
-    </CustomBuild>
     <CustomBuild Include="PropertyWidget\messageconsole.h">
       <Filter>Header Files\PropertyWidget</Filter>
     </CustomBuild>
@@ -5631,9 +5634,6 @@
     <CustomBuild Include="common\widgets\DirectoryListSelector\DirectoryListSelector.h">
       <Filter>Header Files\common\widgets\DirectoryListSelector</Filter>
     </CustomBuild>
-    <CustomBuild Include="PluginSystem\NewPluginsDialog.h">
-      <Filter>Header Files\PluginSystem</Filter>
-    </CustomBuild>
     <CustomBuild Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.h">
       <Filter>Header Files\common\widgets\EnumCollectionEditor</Filter>
     </CustomBuild>
@@ -5678,6 +5678,12 @@
     </CustomBuild>
     <CustomBuild Include="Help\HelpSystem\HelpSearchWidget.h">
       <Filter>Header Files\Help\HelpSystem</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Plugins\PluginSystem\NewPluginsDialog.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Plugins\PluginSystem\PluginListDialog.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -6050,15 +6056,6 @@
     <ClInclude Include="models\XmlUtils.h">
       <Filter>Header Files\models</Filter>
     </ClInclude>
-    <ClInclude Include="PluginSystem\IGeneratorPlugin.h">
-      <Filter>Header Files\PluginSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="PluginSystem\IPluginUtility.h">
-      <Filter>Header Files\PluginSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="PluginSystem\PluginManager.h">
-      <Filter>Header Files\PluginSystem</Filter>
-    </ClInclude>
     <ClInclude Include="settings\SettingsUpdater.h">
       <Filter>Header Files\settings</Filter>
     </ClInclude>
@@ -6076,15 +6073,6 @@
     </ClInclude>
     <ClInclude Include="common\widgets\Ribbon\Ribbon.h">
       <Filter>Header Files\common\widgets\Ribbon</Filter>
-    </ClInclude>
-    <ClInclude Include="PluginSystem\IPlugin.h">
-      <Filter>Header Files\PluginSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="PluginSystem\PluginSettingsWidget.h">
-      <Filter>Header Files\PluginSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="PluginSystem\ISourceAnalyzerPlugin.h">
-      <Filter>Header Files\PluginSystem</Filter>
     </ClInclude>
     <ClInclude Include="models\swbuildcommand.h">
       <Filter>Header Files\models</Filter>
@@ -6109,9 +6097,6 @@
     </ClInclude>
     <ClInclude Include="common\dialogs\NewBusDialog\NewBusDialog.h">
       <Filter>Header Files\common\dialogs\NewBusDialog</Filter>
-    </ClInclude>
-    <ClInclude Include="PluginSystem\PluginInfoWidget.h">
-      <Filter>Header Files\PluginSystem</Filter>
     </ClInclude>
     <ClInclude Include="generators\vhdlGenerator\vhdlconnectionendpoint.h">
       <Filter>Header Files\generators\vhdlGenerator</Filter>
@@ -6145,6 +6130,27 @@
     </ClInclude>
     <ClInclude Include="Help\HelpSystem\HelpWindow.h">
       <Filter>Header Files\Help\HelpSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\IGeneratorPlugin.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\IPlugin.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\IPluginUtility.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\ISourceAnalyzerPlugin.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\PluginInfoWidget.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\PluginManager.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\PluginSettingsWidget.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

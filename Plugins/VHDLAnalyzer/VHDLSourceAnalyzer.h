@@ -12,8 +12,8 @@
 #ifndef VHDLSOURCEANALYZER_H
 #define VHDLSOURCEANALYZER_H
 
-#include <PluginSystem/IPlugin.h>
-#include <PluginSystem/ISourceAnalyzerPlugin.h>
+#include <Plugins/PluginSystem/IPlugin.h>
+#include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
 #include <QFileInfo>
 
 #include <QObject>

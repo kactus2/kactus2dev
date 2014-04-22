@@ -21,7 +21,7 @@
 
 #include <LibraryManager/libraryinterface.h>
 
-#include <PluginSystem/IPluginUtility.h>
+#include <Plugins/PluginSystem/IPluginUtility.h>
 
 #include <QApplication>
 #include <QFile>

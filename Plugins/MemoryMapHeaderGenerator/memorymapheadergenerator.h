@@ -11,7 +11,7 @@
 
 #include "memorymapheadergenerator_global.h"
 
-#include <PluginSystem/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/IGeneratorPlugin.h>
 #include <models/component.h>
 #include <models/librarycomponent.h>
 #include <models/design.h>

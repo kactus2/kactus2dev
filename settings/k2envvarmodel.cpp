@@ -6,7 +6,7 @@
 */
 
 #include "k2envvarmodel.h"
-#include <PluginSystem/IPlugin.h>
+#include <Plugins/PluginSystem/IPlugin.h>
 
 #include <QColor>
 #include <QStringList>

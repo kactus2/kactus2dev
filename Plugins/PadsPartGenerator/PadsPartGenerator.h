@@ -13,8 +13,8 @@
 #define PADSPARTGENERATOR_H
 
 #include "PadsPartGeneratorDialog.h"
-#include <PluginSystem/IGeneratorPlugin.h>
-#include <PluginSystem/IPlugin.h>
+#include <Plugins/PluginSystem/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/IPlugin.h>
 
 #include <QtPlugin>
 #include <QObject>

@@ -11,11 +11,11 @@
 
 #include "PluginSettingsPage.h"
 
-#include <PluginSystem/IPlugin.h>
-#include <PluginSystem/IGeneratorPlugin.h>
-#include <PluginSystem/ISourceAnalyzerPlugin.h>
-#include <PluginSystem/PluginListDialog.h>
-#include <PluginSystem/PluginInfoWidget.h>
+#include <Plugins/PluginSystem/IPlugin.h>
+#include <Plugins/PluginSystem/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
+#include <Plugins/PluginSystem/PluginListDialog.h>
+#include <Plugins/PluginSystem/PluginInfoWidget.h>
 
 #include <models/generaldeclarations.h>
 
@@ -23,7 +23,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QGroupBox>
-#include "PluginSystem/NewPluginsDialog.h"
+#include <Plugins/PluginSystem/NewPluginsDialog.h>
 
 namespace
 {   

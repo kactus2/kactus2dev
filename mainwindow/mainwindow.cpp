@@ -50,7 +50,7 @@
 #include <common/widgets/Ribbon/RibbonGroup.h>
 #include <common/KactusAttribute.h>
 
-#include <PluginSystem/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/IGeneratorPlugin.h>
 
 #include <models/view.h>
 #include <models/component.h>
@@ -68,7 +68,7 @@
 #include <models/SystemView.h>
 #include <models/SWInstance.h>
 
-#include <PluginSystem/PluginListDialog.h>
+#include <Plugins/PluginSystem/PluginListDialog.h>
 
 #include <MemoryDesigner/MemoryDesignWidget.h>
 
