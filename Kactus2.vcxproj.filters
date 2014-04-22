@@ -296,17 +296,8 @@
     <Filter Include="Source Files\models">
       <UniqueIdentifier>{501317d1-cd55-43bf-bf3b-334b179b362d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\modelsimGenerator">
-      <UniqueIdentifier>{4697ea43-7841-4607-b56a-5d057f770e05}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\PropertyWidget">
       <UniqueIdentifier>{d0c9547c-34a4-4a9f-9160-deefc67f0b9a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\quartusGenerator">
-      <UniqueIdentifier>{4ab964a4-d2c1-45c6-be87-82877944ff93}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\vhdlGenerator">
-      <UniqueIdentifier>{187fe712-6c9b-4325-8995-7537c2f75a08}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\MCAPI">
       <UniqueIdentifier>{b3a65de6-002a-4ddf-a213-84e64c40de2e}</UniqueIdentifier>
@@ -319,9 +310,6 @@
     </Filter>
     <Filter Include="Source Files\ConfigurationEditor">
       <UniqueIdentifier>{8a260cf7-b0b9-48bc-b067-1e9e89bd1676}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\DocumentGenerator">
-      <UniqueIdentifier>{69521121-c455-4608-9dc4-da1c622addad}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\InterfaceEditor">
       <UniqueIdentifier>{89e742d4-39f9-4e45-b4b0-e33929df86d4}</UniqueIdentifier>
@@ -636,15 +624,6 @@
     <Filter Include="Header Files\mainwindow">
       <UniqueIdentifier>{4de4886d-eb93-4769-b4b0-303692e58ea9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\modelsimGenerator">
-      <UniqueIdentifier>{40496d77-2846-4a5a-a656-02401bc3b522}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\quartusGenerator">
-      <UniqueIdentifier>{9fa58811-55e5-451f-aa5a-9513f855e5d1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\vhdlGenerator">
-      <UniqueIdentifier>{ce33f57a-2b91-406b-be72-c7e55a95fed3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\PropertyWidget">
       <UniqueIdentifier>{69d6b3ac-9838-45fb-9bf5-130aae3d6f7d}</UniqueIdentifier>
     </Filter>
@@ -659,9 +638,6 @@
     </Filter>
     <Filter Include="Header Files\ConfigurationEditor">
       <UniqueIdentifier>{823d3f6d-9d7f-42c9-af49-306f99cb53ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\DocumentGenerator">
-      <UniqueIdentifier>{9e423b88-6032-4541-9a86-aa8855635370}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\InterfaceEditor">
       <UniqueIdentifier>{013ca66b-3bc2-42d1-81d1-087b28766716}</UniqueIdentifier>
@@ -863,9 +839,6 @@
     <Filter Include="Header Files\designwidget\models">
       <UniqueIdentifier>{dbe17298-1f77-43bc-a8f9-6c50a9450c51}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\modelsimGenerator\MemoryDesigner">
-      <UniqueIdentifier>{e4d45644-a380-4514-a439-916e44bbecd3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\BusInterfaceWizard">
       <UniqueIdentifier>{043b6ec6-2d86-48dc-a6f2-dac4de1c28c0}</UniqueIdentifier>
     </Filter>
@@ -883,6 +856,39 @@
     </Filter>
     <Filter Include="Source Files\common\widgets\DirectoryListSelector">
       <UniqueIdentifier>{d67f21c2-7206-4fe7-999d-98b1a6c4dc6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\generators">
+      <UniqueIdentifier>{92fda97e-e51f-4e8f-94dc-dd7b59575d10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\generators\vhdlGenerator">
+      <UniqueIdentifier>{32daecaf-f441-49a3-8f81-2e3dc32e2acb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\generators">
+      <UniqueIdentifier>{9e2200b5-c8b4-434a-9926-39ab71cf426e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\generators\vhdlGenerator">
+      <UniqueIdentifier>{43031955-41a7-4ad1-af45-1be42a4286fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\generators\DocumentGenerator">
+      <UniqueIdentifier>{9e423b88-6032-4541-9a86-aa8855635370}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\generators\DocumentGenerator">
+      <UniqueIdentifier>{69521121-c455-4608-9dc4-da1c622addad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\generators\modelsimGenerator">
+      <UniqueIdentifier>{4697ea43-7841-4607-b56a-5d057f770e05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\generators\modelsimGenerator">
+      <UniqueIdentifier>{40496d77-2846-4a5a-a656-02401bc3b522}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MemoryDesigner">
+      <UniqueIdentifier>{e4d45644-a380-4514-a439-916e44bbecd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\generators\quartusGenerator">
+      <UniqueIdentifier>{4ab964a4-d2c1-45c6-be87-82877944ff93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\generators\quartusGenerator">
+      <UniqueIdentifier>{9fa58811-55e5-451f-aa5a-9513f855e5d1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -2101,47 +2107,8 @@
     <ClCompile Include="models\XmlUtils.cpp">
       <Filter>Source Files\models</Filter>
     </ClCompile>
-    <ClCompile Include="modelsimGenerator\modelsimgenerator.cpp">
-      <Filter>Source Files\modelsimGenerator</Filter>
-    </ClCompile>
     <ClCompile Include="PropertyWidget\messageconsole.cpp">
       <Filter>Source Files\PropertyWidget</Filter>
-    </ClCompile>
-    <ClCompile Include="quartusGenerator\quartusgenerator.cpp">
-      <Filter>Source Files\quartusGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="vhdlGenerator\vhdlcomponentdeclaration.cpp">
-      <Filter>Source Files\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="vhdlGenerator\vhdlcomponentinstance.cpp">
-      <Filter>Source Files\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="vhdlGenerator\vhdlconnectionendpoint.cpp">
-      <Filter>Source Files\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="vhdlGenerator\vhdlgeneral.cpp">
-      <Filter>Source Files\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="vhdlGenerator\vhdlgenerator2.cpp">
-      <Filter>Source Files\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="vhdlGenerator\vhdlgeneric.cpp">
-      <Filter>Source Files\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="vhdlGenerator\vhdlobject.cpp">
-      <Filter>Source Files\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="vhdlGenerator\vhdlport.cpp">
-      <Filter>Source Files\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="vhdlGenerator\vhdlportmap.cpp">
-      <Filter>Source Files\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="vhdlGenerator\vhdlportsorter.cpp">
-      <Filter>Source Files\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="vhdlGenerator\vhdlsignal.cpp">
-      <Filter>Source Files\vhdlGenerator</Filter>
     </ClCompile>
     <ClCompile Include="MCAPI\CSourceContentMatcher.cpp">
       <Filter>Source Files\MCAPI</Filter>
@@ -2193,9 +2160,6 @@
     </ClCompile>
     <ClCompile Include="ConfigurationEditor\configurationeditor.cpp">
       <Filter>Source Files\ConfigurationEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="DocumentGenerator\documentgenerator.cpp">
-      <Filter>Source Files\DocumentGenerator</Filter>
     </ClCompile>
     <ClCompile Include="InterfaceEditor\interfaceeditor.cpp">
       <Filter>Source Files\InterfaceEditor</Filter>
@@ -2377,28 +2341,7 @@
     <ClCompile Include="GeneratedFiles\moc_vieweditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vhdlsignal.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vhdlport.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vhdlobject.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_vhdlnamevalidator.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vhdlgeneric.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vhdlgenerator2.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vhdlcomponentinstance.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vhdlcomponentdeclaration.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_vectoreditor.cpp">
@@ -2527,9 +2470,6 @@
     <ClCompile Include="GeneratedFiles\moc_readactioncombobox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_quartusgenerator.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_PropertyValueModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2654,9 +2594,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_modwritecombobox.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_modelsimgenerator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_modelparametermodel.cpp">
@@ -3026,9 +2963,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_editablelistview.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_documentgenerator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_dirlistmanager.cpp">
@@ -3985,6 +3919,78 @@
     <ClCompile Include="GeneratedFiles\moc_NewPluginsDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="generators\vhdlGenerator\vhdlcomponentdeclaration.cpp">
+      <Filter>Source Files\generators\vhdlGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="generators\vhdlGenerator\vhdlcomponentinstance.cpp">
+      <Filter>Source Files\generators\vhdlGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="generators\vhdlGenerator\vhdlconnectionendpoint.cpp">
+      <Filter>Source Files\generators\vhdlGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="generators\vhdlGenerator\vhdlgeneral.cpp">
+      <Filter>Source Files\generators\vhdlGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="generators\vhdlGenerator\vhdlgenerator2.cpp">
+      <Filter>Source Files\generators\vhdlGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="generators\vhdlGenerator\vhdlgeneric.cpp">
+      <Filter>Source Files\generators\vhdlGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="generators\vhdlGenerator\vhdlobject.cpp">
+      <Filter>Source Files\generators\vhdlGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="generators\vhdlGenerator\vhdlport.cpp">
+      <Filter>Source Files\generators\vhdlGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="generators\vhdlGenerator\vhdlportmap.cpp">
+      <Filter>Source Files\generators\vhdlGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="generators\vhdlGenerator\vhdlportsorter.cpp">
+      <Filter>Source Files\generators\vhdlGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="generators\vhdlGenerator\vhdlsignal.cpp">
+      <Filter>Source Files\generators\vhdlGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_vhdlcomponentinstance.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_vhdlgenerator2.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_vhdlcomponentdeclaration.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_vhdlgeneric.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_vhdlobject.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_vhdlport.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_vhdlsignal.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_documentgenerator.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="generators\DocumentGenerator\documentgenerator.cpp">
+      <Filter>Source Files\generators\DocumentGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="generators\modelsimGenerator\modelsimgenerator.cpp">
+      <Filter>Source Files\generators\modelsimGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_modelsimgenerator.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="generators\quartusGenerator\quartusgenerator.cpp">
+      <Filter>Source Files\generators\quartusGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_quartusgenerator.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4625,9 +4631,6 @@
     </CustomBuild>
     <CustomBuild Include="designwidget\SelectItemTypeDialog.h">
       <Filter>Header Files\designwidget</Filter>
-    </CustomBuild>
-    <CustomBuild Include="DocumentGenerator\documentgenerator.h">
-      <Filter>Header Files\DocumentGenerator</Filter>
     </CustomBuild>
     <CustomBuild Include="HelpSystem\ContextHelpBrowser.h">
       <Filter>Header Files\HelpSystem</Filter>
@@ -5296,37 +5299,31 @@
       <Filter>Header Files\MCAPI</Filter>
     </CustomBuild>
     <CustomBuild Include="MemoryDesigner\AddressSectionItem.h">
-      <Filter>Header Files\modelsimGenerator\MemoryDesigner</Filter>
+      <Filter>Header Files\MemoryDesigner</Filter>
     </CustomBuild>
     <CustomBuild Include="MemoryDesigner\AddressSpaceItem.h">
-      <Filter>Header Files\modelsimGenerator\MemoryDesigner</Filter>
+      <Filter>Header Files\MemoryDesigner</Filter>
     </CustomBuild>
     <CustomBuild Include="MemoryDesigner\AddressSubsection.h">
-      <Filter>Header Files\modelsimGenerator\MemoryDesigner</Filter>
+      <Filter>Header Files\MemoryDesigner</Filter>
     </CustomBuild>
     <CustomBuild Include="MemoryDesigner\MemoryColumn.h">
-      <Filter>Header Files\modelsimGenerator\MemoryDesigner</Filter>
+      <Filter>Header Files\MemoryDesigner</Filter>
     </CustomBuild>
     <CustomBuild Include="MemoryDesigner\MemoryDesignDiagram.h">
-      <Filter>Header Files\modelsimGenerator\MemoryDesigner</Filter>
+      <Filter>Header Files\MemoryDesigner</Filter>
     </CustomBuild>
     <CustomBuild Include="MemoryDesigner\MemoryDesignWidget.h">
-      <Filter>Header Files\modelsimGenerator\MemoryDesigner</Filter>
+      <Filter>Header Files\MemoryDesigner</Filter>
     </CustomBuild>
     <CustomBuild Include="MemoryDesigner\MemoryItem.h">
-      <Filter>Header Files\modelsimGenerator\MemoryDesigner</Filter>
-    </CustomBuild>
-    <CustomBuild Include="modelsimGenerator\modelsimgenerator.h">
-      <Filter>Header Files\modelsimGenerator</Filter>
+      <Filter>Header Files\MemoryDesigner</Filter>
     </CustomBuild>
     <CustomBuild Include="PluginSystem\PluginListDialog.h">
       <Filter>Header Files\PluginSystem</Filter>
     </CustomBuild>
     <CustomBuild Include="PropertyWidget\messageconsole.h">
       <Filter>Header Files\PropertyWidget</Filter>
-    </CustomBuild>
-    <CustomBuild Include="quartusGenerator\quartusgenerator.h">
-      <Filter>Header Files\quartusGenerator</Filter>
     </CustomBuild>
     <CustomBuild Include="settings\CodeEditorSettingsPage.h">
       <Filter>Header Files\settings</Filter>
@@ -5385,29 +5382,8 @@
     <CustomBuild Include="SystemDetailsEditor\SystemDetailsEditor.h">
       <Filter>Header Files\SystemDetailsEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="vhdlGenerator\vhdlcomponentdeclaration.h">
-      <Filter>Header Files\vhdlGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="vhdlGenerator\vhdlcomponentinstance.h">
-      <Filter>Header Files\vhdlGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="vhdlGenerator\vhdlgenerator2.h">
-      <Filter>Header Files\vhdlGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="vhdlGenerator\vhdlgeneric.h">
-      <Filter>Header Files\vhdlGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="vhdlGenerator\vhdlobject.h">
-      <Filter>Header Files\vhdlGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="vhdlGenerator\vhdlport.h">
-      <Filter>Header Files\vhdlGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="vhdlGenerator\vhdlsignal.h">
-      <Filter>Header Files\vhdlGenerator</Filter>
-    </CustomBuild>
     <CustomBuild Include="MemoryDesigner\MemoryBaseItem.h">
-      <Filter>Header Files\modelsimGenerator\MemoryDesigner</Filter>
+      <Filter>Header Files\MemoryDesigner</Filter>
     </CustomBuild>
     <CustomBuild Include="designwidget\BusInterfaceDialog.h">
       <Filter>Header Files\designwidget</Filter>
@@ -5661,6 +5637,36 @@
     <CustomBuild Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.h">
       <Filter>Header Files\common\widgets\EnumCollectionEditor</Filter>
     </CustomBuild>
+    <CustomBuild Include="generators\vhdlGenerator\vhdlcomponentinstance.h">
+      <Filter>Header Files\generators\vhdlGenerator</Filter>
+    </CustomBuild>
+    <CustomBuild Include="generators\vhdlGenerator\vhdlgenerator2.h">
+      <Filter>Header Files\generators\vhdlGenerator</Filter>
+    </CustomBuild>
+    <CustomBuild Include="generators\vhdlGenerator\vhdlcomponentdeclaration.h">
+      <Filter>Header Files\generators\vhdlGenerator</Filter>
+    </CustomBuild>
+    <CustomBuild Include="generators\vhdlGenerator\vhdlgeneric.h">
+      <Filter>Header Files\generators\vhdlGenerator</Filter>
+    </CustomBuild>
+    <CustomBuild Include="generators\vhdlGenerator\vhdlobject.h">
+      <Filter>Header Files\generators\vhdlGenerator</Filter>
+    </CustomBuild>
+    <CustomBuild Include="generators\vhdlGenerator\vhdlport.h">
+      <Filter>Header Files\generators\vhdlGenerator</Filter>
+    </CustomBuild>
+    <CustomBuild Include="generators\vhdlGenerator\vhdlsignal.h">
+      <Filter>Header Files\generators\vhdlGenerator</Filter>
+    </CustomBuild>
+    <CustomBuild Include="generators\DocumentGenerator\documentgenerator.h">
+      <Filter>Header Files\generators\DocumentGenerator</Filter>
+    </CustomBuild>
+    <CustomBuild Include="generators\modelsimGenerator\modelsimgenerator.h">
+      <Filter>Header Files\generators\modelsimGenerator</Filter>
+    </CustomBuild>
+    <CustomBuild Include="generators\quartusGenerator\quartusgenerator.h">
+      <Filter>Header Files\generators\quartusGenerator</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddressEditor\AddressEntry.h">
@@ -5811,7 +5817,7 @@
       <Filter>Header Files\MCAPI</Filter>
     </ClInclude>
     <ClInclude Include="MemoryDesigner\SegmentItem.h">
-      <Filter>Header Files\modelsimGenerator\MemoryDesigner</Filter>
+      <Filter>Header Files\MemoryDesigner</Filter>
     </ClInclude>
     <ClInclude Include="models\abstractiondefinition.h">
       <Filter>Header Files\models</Filter>
@@ -6053,20 +6059,8 @@
     <ClInclude Include="SystemDesign\SystemMoveCommands.h">
       <Filter>Header Files\SystemDesign</Filter>
     </ClInclude>
-    <ClInclude Include="vhdlGenerator\vhdlconnectionendpoint.h">
-      <Filter>Header Files\vhdlGenerator</Filter>
-    </ClInclude>
-    <ClInclude Include="vhdlGenerator\vhdlgeneral.h">
-      <Filter>Header Files\vhdlGenerator</Filter>
-    </ClInclude>
-    <ClInclude Include="vhdlGenerator\vhdlportmap.h">
-      <Filter>Header Files\vhdlGenerator</Filter>
-    </ClInclude>
-    <ClInclude Include="vhdlGenerator\vhdlportsorter.h">
-      <Filter>Header Files\vhdlGenerator</Filter>
-    </ClInclude>
     <ClInclude Include="MemoryDesigner\AddressBlockItem.h">
-      <Filter>Header Files\modelsimGenerator\MemoryDesigner</Filter>
+      <Filter>Header Files\MemoryDesigner</Filter>
     </ClInclude>
     <ClInclude Include="mainwindow\SplashScreen.h">
       <Filter>Header Files\mainwindow</Filter>
@@ -6127,6 +6121,18 @@
     </ClInclude>
     <ClInclude Include="PluginSystem\PluginInfoWidget.h">
       <Filter>Header Files\PluginSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="generators\vhdlGenerator\vhdlconnectionendpoint.h">
+      <Filter>Header Files\generators\vhdlGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="generators\vhdlGenerator\vhdlgeneral.h">
+      <Filter>Header Files\generators\vhdlGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="generators\vhdlGenerator\vhdlportmap.h">
+      <Filter>Header Files\generators\vhdlGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="generators\vhdlGenerator\vhdlportsorter.h">
+      <Filter>Header Files\generators\vhdlGenerator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -30,9 +30,9 @@
 #include <models/view.h>
 #include <models/generaldeclarations.h>
 
-#include <vhdlGenerator/vhdlgenerator2.h>
-#include <quartusGenerator/quartusgenerator.h>
-#include <modelsimGenerator/modelsimgenerator.h>
+#include <generators/vhdlGenerator/vhdlgenerator2.h>
+#include <generators/quartusGenerator/quartusgenerator.h>
+#include <generators/modelsimGenerator/modelsimgenerator.h>
 
 #include <QMessageBox>
 #include <QFileDialog>

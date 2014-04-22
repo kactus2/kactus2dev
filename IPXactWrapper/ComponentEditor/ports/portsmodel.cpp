@@ -10,7 +10,7 @@
 #include "portsdelegate.h"
 #include <models/generaldeclarations.h>
 
-#include <vhdlGenerator/vhdlgeneral.h>
+#include <generators/vhdlGenerator/vhdlgeneral.h>
 
 #include <QTextStream>
 #include <QString>

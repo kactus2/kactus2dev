@@ -7,7 +7,7 @@
 
 #include "portsdelegate.h"
 
-#include <vhdlGenerator/vhdlgeneral.h>
+#include <generators/vhdlGenerator/vhdlgeneral.h>
 
 #include <QComboBox>
 #include <QLineEdit>

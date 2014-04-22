@@ -30,7 +30,7 @@
 #include <MCAPI/CSourceWidget.h>
 #include <MCAPI/CSourceContentMatcher.h>
 
-#include <DocumentGenerator/documentgenerator.h>
+#include <generators/DocumentGenerator/documentgenerator.h>
 
 #include <HelpSystem/ContextHelpBrowser.h>
 #include <HelpSystem/HelpWindow.h>

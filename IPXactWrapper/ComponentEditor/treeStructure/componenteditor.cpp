@@ -9,8 +9,8 @@
 
 #include "componenteditoritem.h"
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
-#include <vhdlGenerator/vhdlgenerator2.h>
-#include <modelsimGenerator/modelsimgenerator.h>
+#include <generators/vhdlGenerator/vhdlgenerator2.h>
+#include <generators/modelsimGenerator/modelsimgenerator.h>
 #include <common/dialogs/comboSelector/comboselector.h>
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
 #include <IPXactWrapper/ComponentEditor/itemvisualizer.h>

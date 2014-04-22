@@ -490,7 +490,6 @@ HEADERS += ./resource.h \
     ./mainwindow/newbuspage.h \
     ./mainwindow/NewApiDefinitionPage.h \
     ./mainwindow/mainwindow.h \
-    ./modelsimGenerator/modelsimgenerator.h \
     ./MemoryDesigner/AddressBlockItem.h \
     ./MemoryDesigner/SegmentItem.h \
     ./MemoryDesigner/MemoryBaseItem.h \
@@ -501,18 +500,6 @@ HEADERS += ./resource.h \
     ./MemoryDesigner/AddressSubsection.h \
     ./MemoryDesigner/AddressSpaceItem.h \
     ./MemoryDesigner/AddressSectionItem.h \
-    ./quartusGenerator/quartusgenerator.h \
-    ./vhdlGenerator/vhdlconnectionendpoint.h \
-    ./vhdlGenerator/vhdlgeneral.h \
-    ./vhdlGenerator/vhdlportmap.h \
-    ./vhdlGenerator/vhdlportsorter.h \
-    ./vhdlGenerator/vhdlsignal.h \
-    ./vhdlGenerator/vhdlport.h \
-    ./vhdlGenerator/vhdlobject.h \
-    ./vhdlGenerator/vhdlgeneric.h \
-    ./vhdlGenerator/vhdlgenerator2.h \
-    ./vhdlGenerator/vhdlcomponentinstance.h \
-    ./vhdlGenerator/vhdlcomponentdeclaration.h \
     ./PropertyWidget/messageconsole.h \
     ./MCAPI/CSourceContentMatcher.h \
     ./MCAPI/MCAPIDesignerTypes.h \
@@ -539,7 +526,6 @@ HEADERS += ./resource.h \
     ./ConfigurationEditor/activeviewmodel.h \
     ./ConfigurationEditor/activevieweditor.h \
     ./ConfigurationEditor/activeviewdelegate.h \
-    ./DocumentGenerator/documentgenerator.h \
     ./InterfaceEditor/interfaceeditor.h \
     ./ConnectionEditor/connectioneditor.h \
     ./ConnectionEditor/AdHocBoundsModel.h \
@@ -614,7 +600,21 @@ HEADERS += ./resource.h \
     ./ComponentWizard/ComponentWizardIntroPage.h \
     ./ComponentWizard/ComponentWizardVhdlImportPage.h \
     ./ComponentWizard/ComponentWizardGeneralInfoPage.h \
-    ./ComponentWizard/VhdlImportEditor/vhdlimporteditor.h
+    ./ComponentWizard/VhdlImportEditor/vhdlimporteditor.h \
+    ./generators/vhdlGenerator/vhdlcomponentdeclaration.h \
+    ./generators/vhdlGenerator/vhdlcomponentinstance.h \
+    ./generators/vhdlGenerator/vhdlconnectionendpoint.h \
+    ./generators/vhdlGenerator/vhdlgeneral.h \
+    ./generators/vhdlGenerator/vhdlgenerator2.h \
+    ./generators/vhdlGenerator/vhdlgeneric.h \
+    ./generators/vhdlGenerator/vhdlobject.h \
+    ./generators/vhdlGenerator/vhdlport.h \
+    ./generators/vhdlGenerator/vhdlportmap.h \
+    ./generators/vhdlGenerator/vhdlportsorter.h \
+    ./generators/vhdlGenerator/vhdlsignal.h \
+    ./generators/DocumentGenerator/documentgenerator.h \
+    ./generators/modelsimGenerator/modelsimgenerator.h \
+    ./generators/quartusGenerator/quartusgenerator.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
     ./common/DesignWidget.cpp \
@@ -1103,20 +1103,9 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./models/wireabstraction.cpp \
     ./models/writevalueconstraint.cpp \
     ./models/XmlUtils.cpp \
-    ./modelsimGenerator/modelsimgenerator.cpp \
+    ./generators/modelsimGenerator/modelsimgenerator.cpp \
     ./PropertyWidget/messageconsole.cpp \
-    ./quartusGenerator/quartusgenerator.cpp \
-    ./vhdlGenerator/vhdlcomponentdeclaration.cpp \
-    ./vhdlGenerator/vhdlcomponentinstance.cpp \
-    ./vhdlGenerator/vhdlconnectionendpoint.cpp \
-    ./vhdlGenerator/vhdlgeneral.cpp \
-    ./vhdlGenerator/vhdlgenerator2.cpp \
-    ./vhdlGenerator/vhdlgeneric.cpp \
-    ./vhdlGenerator/vhdlobject.cpp \
-    ./vhdlGenerator/vhdlport.cpp \
-    ./vhdlGenerator/vhdlportmap.cpp \
-    ./vhdlGenerator/vhdlportsorter.cpp \
-    ./vhdlGenerator/vhdlsignal.cpp \
+    ./generators/quartusGenerator/quartusgenerator.cpp \
     ./MCAPI/CSourceContentMatcher.cpp \
     ./MCAPI/CSourceHighlighter.cpp \
     ./MCAPI/CSourceTextEdit.cpp \
@@ -1141,7 +1130,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./ConfigurationEditor/activevieweditor.cpp \
     ./ConfigurationEditor/activeviewmodel.cpp \
     ./ConfigurationEditor/configurationeditor.cpp \
-    ./DocumentGenerator/documentgenerator.cpp \
+    ./generators/DocumentGenerator/documentgenerator.cpp \
     ./InterfaceEditor/interfaceeditor.cpp \
     ./ConnectionEditor/AdHocBoundsDelegate.cpp \
     ./ConnectionEditor/AdHocBoundsModel.cpp \
@@ -1195,5 +1184,16 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./ComponentWizard/ComponentWizardGeneralInfoPage.cpp \
     ./ComponentWizard/ComponentWizardIntroPage.cpp \
     ./ComponentWizard/ComponentWizardVhdlImportPage.cpp \
-    ./ComponentWizard/VhdlImportEditor/vhdlimporteditor.cpp
+    ./ComponentWizard/VhdlImportEditor/vhdlimporteditor.cpp \
+    ./generators/vhdlGenerator/vhdlcomponentdeclaration.cpp \
+    ./generators/vhdlGenerator/vhdlcomponentinstance.cpp \
+    ./generators/vhdlGenerator/vhdlconnectionendpoint.cpp \
+    ./generators/vhdlGenerator/vhdlgeneral.cpp \
+    ./generators/vhdlGenerator/vhdlgenerator2.cpp \
+    ./generators/vhdlGenerator/vhdlgeneric.cpp \
+    ./generators/vhdlGenerator/vhdlobject.cpp \
+    ./generators/vhdlGenerator/vhdlport.cpp \
+    ./generators/vhdlGenerator/vhdlportmap.cpp \
+    ./generators/vhdlGenerator/vhdlportsorter.cpp \
+    ./generators/vhdlGenerator/vhdlsignal.cpp
 RESOURCES += kactus.qrc
