@@ -19,7 +19,7 @@
 #include <QCryptographicHash>
 #include <QTextStream>
 
-#include <PluginSystem/IPluginUtility.h>
+#include <Plugins/PluginSystem/IPluginUtility.h>
 
 //-----------------------------------------------------------------------------
 // Function: CppSourceAnalyzer::CppSourceAnalyzer()

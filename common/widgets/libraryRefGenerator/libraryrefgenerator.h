@@ -7,7 +7,7 @@
 #ifndef LIBRARYREFGENERATOR_H_
 #define LIBRARYREFGENERATOR_H_
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <QGroupBox>
 #include <QLineEdit>

@@ -11,7 +11,7 @@
 
 #include "ApiCreateDialog.h"
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <QVBoxLayout>
 #include <QLabel>

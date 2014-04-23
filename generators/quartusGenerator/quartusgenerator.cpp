@@ -6,8 +6,8 @@
 
 #include "quartusgenerator.h"
 
-#include <LibraryManager/vlnv.h>
-#include <LibraryManager/libraryhandler.h>
+#include <library/LibraryManager/vlnv.h>
+#include <library/LibraryManager/libraryhandler.h>
 
 #include <models/component.h>
 #include <models/design.h>

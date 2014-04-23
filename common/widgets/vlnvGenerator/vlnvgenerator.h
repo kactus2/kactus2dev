@@ -7,7 +7,7 @@
 #ifndef VLNVGENERATOR_H_
 #define VLNVGENERATOR_H_
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <QGroupBox>
 #include <QLineEdit>
