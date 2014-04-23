@@ -84,7 +84,7 @@
 #include <editors/BusEditor/buseditor.h>
 #include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
 
-#include <PropertyWidget/messageconsole.h>
+#include <mainwindow/MessageConsole/messageconsole.h>
 
 #include <designEditors/common/ComponentInstanceEditor/componentinstanceeditor.h>
 #include <designEditors/HWDesign/AddressEditor/AddressEditor.h>

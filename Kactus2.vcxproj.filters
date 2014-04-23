@@ -278,9 +278,6 @@
     <Filter Include="Source Files\models">
       <UniqueIdentifier>{501317d1-cd55-43bf-bf3b-334b179b362d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\PropertyWidget">
-      <UniqueIdentifier>{d0c9547c-34a4-4a9f-9160-deefc67f0b9a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\MCAPI">
       <UniqueIdentifier>{b3a65de6-002a-4ddf-a213-84e64c40de2e}</UniqueIdentifier>
     </Filter>
@@ -563,9 +560,6 @@
     </Filter>
     <Filter Include="Header Files\mainwindow">
       <UniqueIdentifier>{4de4886d-eb93-4769-b4b0-303692e58ea9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\PropertyWidget">
-      <UniqueIdentifier>{69d6b3ac-9838-45fb-9bf5-130aae3d6f7d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\MCAPI">
       <UniqueIdentifier>{0d6b0b85-6278-4e56-919e-ea7d6f9c1d58}</UniqueIdentifier>
@@ -931,6 +925,12 @@
     </Filter>
     <Filter Include="Header Files\designEditors\HWDesign\AdHocEditor">
       <UniqueIdentifier>{892a9b94-615c-4e95-9c4c-e30a7c23f3bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\mainwindow\MessageConsole">
+      <UniqueIdentifier>{d0c9547c-34a4-4a9f-9160-deefc67f0b9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\mainwindow\MessageConsole">
+      <UniqueIdentifier>{69d6b3ac-9838-45fb-9bf5-130aae3d6f7d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1987,9 +1987,6 @@
     <ClCompile Include="models\XmlUtils.cpp">
       <Filter>Source Files\models</Filter>
     </ClCompile>
-    <ClCompile Include="PropertyWidget\messageconsole.cpp">
-      <Filter>Source Files\PropertyWidget</Filter>
-    </ClCompile>
     <ClCompile Include="MCAPI\CSourceContentMatcher.cpp">
       <Filter>Source Files\MCAPI</Filter>
     </ClCompile>
@@ -2261,9 +2258,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_modelparametereditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_messageconsole.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_memoryvisualizationitem.cpp">
@@ -4033,6 +4027,12 @@
     <ClCompile Include="GeneratedFiles\moc_AdHocModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="mainwindow\MessageConsole\messageconsole.cpp">
+      <Filter>Source Files\mainwindow\MessageConsole</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_messageconsole.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5139,9 +5139,6 @@
     <CustomBuild Include="MCAPI\CSourceWidget.h">
       <Filter>Header Files\MCAPI</Filter>
     </CustomBuild>
-    <CustomBuild Include="PropertyWidget\messageconsole.h">
-      <Filter>Header Files\PropertyWidget</Filter>
-    </CustomBuild>
     <CustomBuild Include="settings\CodeEditorSettingsPage.h">
       <Filter>Header Files\settings</Filter>
     </CustomBuild>
@@ -5708,6 +5705,9 @@
     </CustomBuild>
     <CustomBuild Include="designEditors\HWDesign\AdHocEditor\AdHocModel.h">
       <Filter>Header Files\designEditors\HWDesign\AdHocEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\MessageConsole\messageconsole.h">
+      <Filter>Header Files\mainwindow\MessageConsole</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

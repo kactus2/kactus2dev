@@ -7,17 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./designEditors/HWDesign/AdHocEnabled.h \
-    ./designEditors/HWDesign/AdHocInterfaceItem.h \
-    ./designEditors/HWDesign/BusPortItem.h \
-    ./designEditors/HWDesign/HWAddCommands.h \
-    ./designEditors/HWDesign/AdHocPortItem.h \
-    ./designEditors/HWDesign/BusInterfaceDialog.h \
-    ./designEditors/HWDesign/BusInterfaceItem.h \
-    ./designEditors/HWDesign/HWChangeCommands.h \
-    ./designEditors/HWDesign/HWComponentItem.h \
-    ./designEditors/HWDesign/HWConnection.h \
-    ./resource.h \
+HEADERS += ./resource.h \
     ./common/ColumnTypes.h \
     ./common/CSourceWriter.h \
     ./common/diagramgrid.h \
@@ -152,12 +142,6 @@ HEADERS += ./designEditors/HWDesign/AdHocEnabled.h \
     ./common/dialogs/commandLineGeneratorDialog/commandlinegeneratordialog.h \
     ./common/dialogs/commandLineGeneratorDialog/commandlineconsole.h \
     ./common/dialogs/NewBusDialog/NewBusDialog.h \
-    ./designEditors/HWDesign/SelectItemTypeDialog.h \
-    ./designEditors/HWDesign/models/PortGenerationRow.h \
-    ./designEditors/HWDesign/models/PortGenerationTableModel.h \
-    ./designEditors/HWDesign/columnview/ColumnEditDialog.h \
-    ./designEditors/HWDesign/columnview/HWColumn.h \
-    ./designEditors/HWDesign/OffPageConnectorItem.h \
     ./IPXactWrapper/ComponentEditor/itemvisualizer.h \
     ./IPXactWrapper/ComponentEditor/itemeditor.h \
     ./IPXactWrapper/ComponentEditor/general/generaleditor.h \
@@ -468,7 +452,6 @@ HEADERS += ./designEditors/HWDesign/AdHocEnabled.h \
     ./mainwindow/newbuspage.h \
     ./mainwindow/NewApiDefinitionPage.h \
     ./mainwindow/mainwindow.h \
-    ./PropertyWidget/messageconsole.h \
     ./MCAPI/CSourceContentMatcher.h \
     ./MCAPI/MCAPIDesignerTypes.h \
     ./MCAPI/CSourceWidget.h \
@@ -486,34 +469,6 @@ HEADERS += ./designEditors/HWDesign/AdHocEnabled.h \
     ./settings/NamingPolicySettingsPage.h \
     ./settings/GeneralSettingsPage.h \
     ./settings/CodeEditorSettingsPage.h \
-    ./designEditors/SystemDesign/SystemMoveCommands.h \
-    ./designEditors/SystemDesign/SWComponentItem.h \
-    ./designEditors/SystemDesign/SWConnectionEndpoint.h \
-    ./designEditors/SystemDesign/SWInterfaceItem.h \
-    ./designEditors/SystemDesign/SWOffPageConnectorItem.h \
-    ./designEditors/SystemDesign/SWPortItem.h \
-    ./designEditors/SystemDesign/SystemAddCommands.h \
-    ./designEditors/SystemDesign/SystemChangeCommands.h \
-    ./designEditors/SystemDesign/SystemColumn.h \
-    ./designEditors/SystemDesign/SystemComponentItem.h \
-    ./designEditors/SystemDesign/SystemDeleteCommands.h \
-    ./designEditors/SystemDesign/SystemDesignDiagram.h \
-    ./designEditors/SystemDesign/SystemDesignWidget.h \
-    ./designEditors/HWDesign/AddressEditor/AddressEditor.h \
-    ./designEditors/HWDesign/AddressEditor/AddressEntry.h \
-    ./kactusGenerators/vhdlGenerator/vhdlobject.h \
-    ./kactusGenerators/vhdlGenerator/vhdlcomponentdeclaration.h \
-    ./kactusGenerators/vhdlGenerator/vhdlgeneral.h \
-    ./kactusGenerators/vhdlGenerator/vhdlportsorter.h \
-    ./designEditors/MemoryDesigner/AddressBlockItem.h \
-    ./designEditors/MemoryDesigner/MemoryBaseItem.h \
-    ./designEditors/MemoryDesigner/MemoryItem.h \
-    ./designEditors/MemoryDesigner/MemoryDesignWidget.h \
-    ./designEditors/MemoryDesigner/MemoryDesignDiagram.h \
-    ./designEditors/MemoryDesigner/MemoryColumn.h \
-    ./designEditors/MemoryDesigner/AddressSubsection.h \
-    ./designEditors/MemoryDesigner/AddressSpaceItem.h \
-    ./designEditors/MemoryDesigner/AddressSectionItem.h \
     ./wizards/ComponentWizard/ComponentWizard.h \
     ./wizards/ComponentWizard/ComponentWizardConclusionPage.h \
     ./wizards/ComponentWizard/ComponentWizardDependencyPage.h \
@@ -566,55 +521,100 @@ HEADERS += ./designEditors/HWDesign/AdHocEnabled.h \
     ./library/LibraryManager/HierarchyView/hierarchymodel.h \
     ./library/LibraryManager/HierarchyView/hierarchywidget.h \
     ./library/LibraryManager/HierarchyView/hierarchyview.h \
+    ./editors/BusEditor/absdefgroup.h \
+    ./editors/BusEditor/busdefgroup.h \
+    ./editors/BusEditor/buseditor.h \
+    ./editors/BusEditor/busportsdelegate.h \
+    ./editors/BusEditor/busportsmodel.h \
+    ./editors/BusEditor/busportsview.h \
+    ./editors/BusEditor/impexpgroup.h \
+    ./editors/BusEditor/renamegroup.h \
     ./editors/BusEditor/signalsgroup.h \
-    ./designEditors/common/ConfigurationEditor/configurationeditor.h \
-    ./designEditors/common/ConfigurationEditor/activevieweditor.h \
-    ./designEditors/common/ConfigurationEditor/activeviewdelegate.h \
-    ./designEditors/HWDesign/AddressEditor/AddressTableView.h \
-    ./designEditors/HWDesign/AddressEditor/AddressModel.h \
+    ./designEditors/SystemDesign/HWMappingItem.h \
+    ./designEditors/SystemDesign/SystemMoveCommands.h \
+    ./designEditors/SystemDesign/SWComponentItem.h \
+    ./designEditors/SystemDesign/SWConnectionEndpoint.h \
+    ./designEditors/SystemDesign/SWInterfaceItem.h \
+    ./designEditors/SystemDesign/SWOffPageConnectorItem.h \
+    ./designEditors/SystemDesign/SWPortItem.h \
+    ./designEditors/SystemDesign/SystemAddCommands.h \
+    ./designEditors/SystemDesign/SystemChangeCommands.h \
+    ./designEditors/SystemDesign/SystemColumn.h \
+    ./designEditors/SystemDesign/SystemComponentItem.h \
+    ./designEditors/SystemDesign/SystemDeleteCommands.h \
+    ./designEditors/SystemDesign/SystemDesignDiagram.h \
+    ./designEditors/SystemDesign/SystemDesignWidget.h \
+    ./designEditors/SystemDesign/SystemDetailsEditor/ExportSWDialog.h \
+    ./designEditors/SystemDesign/SystemDetailsEditor/SwitchHWDialog.h \
+    ./designEditors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.h \
+    ./designEditors/MemoryDesigner/AddressBlockItem.h \
+    ./designEditors/MemoryDesigner/SegmentItem.h \
+    ./designEditors/MemoryDesigner/AddressSectionItem.h \
+    ./designEditors/MemoryDesigner/AddressSpaceItem.h \
+    ./designEditors/MemoryDesigner/AddressSubsection.h \
+    ./designEditors/MemoryDesigner/MemoryBaseItem.h \
+    ./designEditors/MemoryDesigner/MemoryColumn.h \
+    ./designEditors/MemoryDesigner/MemoryDesignDiagram.h \
+    ./designEditors/MemoryDesigner/MemoryDesignWidget.h \
+    ./designEditors/MemoryDesigner/MemoryItem.h \
+    ./designEditors/HWDesign/AdHocEnabled.h \
+    ./designEditors/HWDesign/HWAddCommands.h \
+    ./designEditors/HWDesign/HWMoveCommands.h \
+    ./designEditors/HWDesign/PortmapDialog.h \
+    ./designEditors/HWDesign/AdHocInterfaceItem.h \
+    ./designEditors/HWDesign/AdHocPortItem.h \
+    ./designEditors/HWDesign/BusInterfaceDialog.h \
+    ./designEditors/HWDesign/BusInterfaceItem.h \
+    ./designEditors/HWDesign/BusPortItem.h \
+    ./designEditors/HWDesign/HWChangeCommands.h \
+    ./designEditors/HWDesign/HWComponentItem.h \
+    ./designEditors/HWDesign/HWConnection.h \
+    ./designEditors/HWDesign/HWConnectionEndpoint.h \
+    ./designEditors/HWDesign/HWDeleteCommands.h \
+    ./designEditors/HWDesign/HWDesignDiagram.h \
+    ./designEditors/HWDesign/HWDesignWidget.h \
+    ./designEditors/HWDesign/OffPageConnectorItem.h \
+    ./designEditors/HWDesign/SelectItemTypeDialog.h \
+    ./designEditors/HWDesign/columnview/ColumnEditDialog.h \
+    ./designEditors/HWDesign/columnview/HWColumn.h \
+    ./designEditors/HWDesign/models/PortGenerationRow.h \
+    ./designEditors/HWDesign/models/PortGenerationTableModel.h \
+    ./designEditors/HWDesign/views/CellEditTableView.h \
+    ./designEditors/HWDesign/AddressEditor/AddressEntry.h \
     ./designEditors/HWDesign/AddressEditor/AddressDelegate.h \
-    ./designEditors/common/ConnectionEditor/connectioneditor.h \
-    ./designEditors/common/ConnectionEditor/AdHocBoundsDelegate.h \
-    ./designEditors/HWDesign/AdHocEditor/AdHocModel.h \
+    ./designEditors/HWDesign/AddressEditor/AddressEditor.h \
+    ./designEditors/HWDesign/AddressEditor/AddressModel.h \
+    ./designEditors/HWDesign/AddressEditor/AddressTableView.h \
     ./designEditors/HWDesign/AdHocEditor/AdHocDelegate.h \
     ./designEditors/HWDesign/AdHocEditor/AdHocEditor.h \
-    ./editors/BusEditor/impexpgroup.h \
-    ./editors/BusEditor/busportsview.h \
-    ./editors/BusEditor/busportsmodel.h \
-    ./editors/BusEditor/busportsdelegate.h \
-    ./editors/BusEditor/buseditor.h \
-    ./designEditors/HWDesign/HWConnectionEndpoint.h \
-    ./designEditors/HWDesign/HWDesignDiagram.h \
-    ./designEditors/common/ComponentInstanceEditor/configurableelementeditor.h \
-    ./designEditors/common/ComponentInstanceEditor/componentinstancemodel.h \
+    ./designEditors/HWDesign/AdHocEditor/AdHocModel.h \
     ./designEditors/common/ComponentInstanceEditor/componentinstanceeditor.h \
+    ./designEditors/common/ComponentInstanceEditor/componentinstancemodel.h \
     ./designEditors/common/ComponentInstanceEditor/configurableelementdelegate.h \
-    ./designEditors/common/ConfigurationEditor/activeviewmodel.h \
+    ./designEditors/common/ComponentInstanceEditor/configurableelementeditor.h \
+    ./designEditors/common/ConnectionEditor/AdHocBoundsDelegate.h \
     ./designEditors/common/ConnectionEditor/AdHocBoundsModel.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./designEditors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.h \
-    ./designEditors/HWDesign/HWMoveCommands.h \
-    ./designEditors/HWDesign/views/CellEditTableView.h \
-    ./editors/BusEditor/busdefgroup.h \
+    ./designEditors/common/ConnectionEditor/connectioneditor.h \
     ./designEditors/common/InterfaceEditor/interfaceeditor.h \
-    ./designEditors/MemoryDesigner/SegmentItem.h \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./designEditors/HWDesign/PortmapDialog.h \
-    ./designEditors/HWDesign/HWDesignWidget.h \
-    ./designEditors/HWDesign/HWDeleteCommands.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/BusEditor/absdefgroup.h \
-    ./editors/BusEditor/renamegroup.h \
-    ./designEditors/SystemDesign/SystemDetailsEditor/ExportSWDialog.h \
-    ./designEditors/SystemDesign/HWMappingItem.h \
-    ./designEditors/SystemDesign/SystemDetailsEditor/SwitchHWDialog.h \
-    ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/vhdlGenerator/vhdlport.h \
-    ./kactusGenerators/vhdlGenerator/vhdlgeneric.h \
-    ./kactusGenerators/vhdlGenerator/vhdlgenerator2.h \
+    ./designEditors/common/ConfigurationEditor/activeviewdelegate.h \
+    ./designEditors/common/ConfigurationEditor/activevieweditor.h \
+    ./designEditors/common/ConfigurationEditor/activeviewmodel.h \
+    ./designEditors/common/ConfigurationEditor/configurationeditor.h \
     ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.h \
+    ./kactusGenerators/vhdlGenerator/vhdlgeneral.h \
+    ./kactusGenerators/vhdlGenerator/vhdlportmap.h \
+    ./kactusGenerators/vhdlGenerator/vhdlportsorter.h \
+    ./kactusGenerators/vhdlGenerator/vhdlcomponentdeclaration.h \
     ./kactusGenerators/vhdlGenerator/vhdlcomponentinstance.h \
-    ./kactusGenerators/vhdlGenerator/vhdlportmap.h
+    ./kactusGenerators/vhdlGenerator/vhdlgenerator2.h \
+    ./kactusGenerators/vhdlGenerator/vhdlgeneric.h \
+    ./kactusGenerators/vhdlGenerator/vhdlobject.h \
+    ./kactusGenerators/vhdlGenerator/vhdlport.h \
+    ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
+    ./mainwindow/MessageConsole/messageconsole.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
     ./common/DesignWidget.cpp \
@@ -940,15 +940,6 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/visualization/fieldgapitem.cpp \
     ./IPXactWrapper/ComponentEditor/visualization/memorygapitem.cpp \
     ./IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.cpp \
-    ./editors/BusEditor/signalsgroup.cpp \
-    ./editors/BusEditor/impexpgroup.cpp \
-    ./editors/BusEditor/busportsview.cpp \
-    ./editors/BusEditor/busportsmodel.cpp \
-    ./editors/BusEditor/busportsdelegate.cpp \
-    ./editors/BusEditor/buseditor.cpp \
-    ./editors/BusEditor/busdefgroup.cpp \
-    ./editors/BusEditor/absdefgroup.cpp \
-    ./editors/BusEditor/renamegroup.cpp \
     ./IPXactWrapper/ComDefinitionEditor/ComDefinitionEditor.cpp \
     ./IPXactWrapper/ComDefinitionEditor/ComPropertyDelegate.cpp \
     ./IPXactWrapper/ComDefinitionEditor/ComPropertyEditor.cpp \
@@ -1049,7 +1040,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./models/wireabstraction.cpp \
     ./models/writevalueconstraint.cpp \
     ./models/XmlUtils.cpp \
-    ./PropertyWidget/messageconsole.cpp \
+    ./mainwindow/MessageConsole/messageconsole.cpp \
     ./MCAPI/CSourceContentMatcher.cpp \
     ./MCAPI/CSourceHighlighter.cpp \
     ./MCAPI/CSourceTextEdit.cpp \
@@ -1066,66 +1057,6 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./settings/NamingPolicySettingsPage.cpp \
     ./settings/SettingsDialog.cpp \
     ./settings/SettingsUpdater.cpp \
-    ./designEditors/common/ComponentInstanceEditor/configurableelementeditor.cpp \
-    ./designEditors/common/ComponentInstanceEditor/componentinstancemodel.cpp \
-    ./designEditors/common/ComponentInstanceEditor/componentinstanceeditor.cpp \
-    ./designEditors/common/ComponentInstanceEditor/configurableelementdelegate.cpp \
-    ./designEditors/common/ConfigurationEditor/configurationeditor.cpp \
-    ./designEditors/common/ConfigurationEditor/activevieweditor.cpp \
-    ./designEditors/common/ConfigurationEditor/activeviewdelegate.cpp \
-    ./designEditors/common/ConfigurationEditor/activeviewmodel.cpp \
-    ./designEditors/common/InterfaceEditor/interfaceeditor.cpp \
-    ./designEditors/common/ConnectionEditor/connectioneditor.cpp \
-    ./designEditors/common/ConnectionEditor/AdHocBoundsDelegate.cpp \
-    ./designEditors/common/ConnectionEditor/AdHocBoundsModel.cpp \
-    ./designEditors/HWDesign/AdHocEditor/AdHocModel.cpp \
-    ./designEditors/HWDesign/AdHocEditor/AdHocDelegate.cpp \
-    ./designEditors/HWDesign/AdHocEditor/AdHocEditor.cpp \
-    ./designEditors/SystemDesign/SystemMoveCommands.cpp \
-    ./designEditors/SystemDesign/SystemDeleteCommands.cpp \
-    ./designEditors/SystemDesign/SystemComponentItem.cpp \
-    ./designEditors/SystemDesign/SystemColumn.cpp \
-    ./designEditors/SystemDesign/SystemChangeCommands.cpp \
-    ./designEditors/SystemDesign/SystemAddCommands.cpp \
-    ./designEditors/SystemDesign/SWPortItem.cpp \
-    ./designEditors/SystemDesign/SWOffPageConnectorItem.cpp \
-    ./designEditors/SystemDesign/SWInterfaceItem.cpp \
-    ./designEditors/SystemDesign/SWConnectionEndpoint.cpp \
-    ./designEditors/SystemDesign/SWComponentItem.cpp \
-    ./designEditors/SystemDesign/HWMappingItem.cpp \
-    ./designEditors/SystemDesign/SystemDesignWidget.cpp \
-    ./designEditors/SystemDesign/SystemDesignDiagram.cpp \
-    ./designEditors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.cpp \
-    ./designEditors/SystemDesign/SystemDetailsEditor/ExportSWDialog.cpp \
-    ./designEditors/SystemDesign/SystemDetailsEditor/SwitchHWDialog.cpp \
-    ./designEditors/HWDesign/AddressEditor/AddressTableView.cpp \
-    ./designEditors/HWDesign/AddressEditor/AddressEntry.cpp \
-    ./designEditors/HWDesign/AddressEditor/AddressEditor.cpp \
-    ./designEditors/HWDesign/AddressEditor/AddressDelegate.cpp \
-    ./designEditors/HWDesign/AddressEditor/AddressModel.cpp \
-    ./designEditors/MemoryDesigner/MemoryItem.cpp \
-    ./designEditors/MemoryDesigner/AddressSectionItem.cpp \
-    ./designEditors/MemoryDesigner/AddressSpaceItem.cpp \
-    ./designEditors/MemoryDesigner/AddressSubsection.cpp \
-    ./designEditors/MemoryDesigner/MemoryBaseItem.cpp \
-    ./designEditors/MemoryDesigner/MemoryColumn.cpp \
-    ./designEditors/MemoryDesigner/MemoryDesignDiagram.cpp \
-    ./designEditors/MemoryDesigner/MemoryDesignWidget.cpp \
-    ./designEditors/MemoryDesigner/SegmentItem.cpp \
-    ./designEditors/MemoryDesigner/AddressBlockItem.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlportmap.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlport.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlobject.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlgeneric.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlgenerator2.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlgeneral.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlcomponentinstance.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlcomponentdeclaration.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./wizards/ComponentWizard/ComponentWizard.cpp \
     ./wizards/ComponentWizard/ComponentWizardConclusionPage.cpp \
     ./wizards/ComponentWizard/ComponentWizardDependencyPage.cpp \
@@ -1172,28 +1103,97 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./library/LibraryManager/HierarchyView/hierarchymodel.cpp \
     ./library/LibraryManager/HierarchyView/hierarchyview.cpp \
     ./library/LibraryManager/HierarchyView/hierarchywidget.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./designEditors/HWDesign/OffPageConnectorItem.cpp \
-    ./designEditors/HWDesign/HWMoveCommands.cpp \
-    ./designEditors/HWDesign/HWDesignWidget.cpp \
-    ./designEditors/HWDesign/HWDesignDiagram.cpp \
-    ./designEditors/HWDesign/HWDeleteCommands.cpp \
-    ./designEditors/HWDesign/HWConnectionEndPoint.cpp \
-    ./designEditors/HWDesign/HWConnection.cpp \
-    ./designEditors/HWDesign/HWComponentItem.cpp \
-    ./designEditors/HWDesign/HWChangeCommands.cpp \
-    ./designEditors/HWDesign/HWAddCommands.cpp \
-    ./designEditors/HWDesign/BusPortItem.cpp \
-    ./designEditors/HWDesign/BusInterfaceItem.cpp \
-    ./designEditors/HWDesign/BusInterfaceDialog.cpp \
-    ./designEditors/HWDesign/AdHocPortItem.cpp \
-    ./designEditors/HWDesign/AdHocInterfaceItem.cpp \
+    ./editors/BusEditor/absdefgroup.cpp \
+    ./editors/BusEditor/busdefgroup.cpp \
+    ./editors/BusEditor/buseditor.cpp \
+    ./editors/BusEditor/busportsdelegate.cpp \
+    ./editors/BusEditor/busportsmodel.cpp \
+    ./editors/BusEditor/busportsview.cpp \
+    ./editors/BusEditor/impexpgroup.cpp \
+    ./editors/BusEditor/renamegroup.cpp \
+    ./editors/BusEditor/signalsgroup.cpp \
     ./designEditors/HWDesign/AdHocEnabled.cpp \
-    ./designEditors/HWDesign/columnview/HWColumn.cpp \
+    ./designEditors/HWDesign/AdHocInterfaceItem.cpp \
+    ./designEditors/HWDesign/AdHocPortItem.cpp \
+    ./designEditors/HWDesign/BusInterfaceDialog.cpp \
+    ./designEditors/HWDesign/BusInterfaceItem.cpp \
+    ./designEditors/HWDesign/BusPortItem.cpp \
+    ./designEditors/HWDesign/HWAddCommands.cpp \
+    ./designEditors/HWDesign/HWChangeCommands.cpp \
+    ./designEditors/HWDesign/HWComponentItem.cpp \
+    ./designEditors/HWDesign/HWConnection.cpp \
+    ./designEditors/HWDesign/HWConnectionEndPoint.cpp \
+    ./designEditors/HWDesign/HWDeleteCommands.cpp \
+    ./designEditors/HWDesign/HWDesignDiagram.cpp \
+    ./designEditors/HWDesign/HWDesignWidget.cpp \
+    ./designEditors/HWDesign/HWMoveCommands.cpp \
+    ./designEditors/HWDesign/OffPageConnectorItem.cpp \
     ./designEditors/HWDesign/PortmapDialog.cpp \
-    ./designEditors/HWDesign/views/CellEditTableView.cpp \
+    ./designEditors/HWDesign/SelectItemTypeDialog.cpp \
+    ./designEditors/HWDesign/columnview/ColumnEditDialog.cpp \
+    ./designEditors/HWDesign/columnview/HWColumn.cpp \
     ./designEditors/HWDesign/models/PortGenerationRow.cpp \
     ./designEditors/HWDesign/models/PortGenerationTableModel.cpp \
-    ./designEditors/HWDesign/columnview/ColumnEditDialog.cpp \
-    ./designEditors/HWDesign/SelectItemTypeDialog.cpp
+    ./designEditors/HWDesign/views/CellEditTableView.cpp \
+    ./designEditors/HWDesign/AddressEditor/AddressDelegate.cpp \
+    ./designEditors/HWDesign/AddressEditor/AddressEditor.cpp \
+    ./designEditors/HWDesign/AddressEditor/AddressEntry.cpp \
+    ./designEditors/HWDesign/AddressEditor/AddressModel.cpp \
+    ./designEditors/HWDesign/AddressEditor/AddressTableView.cpp \
+    ./designEditors/HWDesign/AdHocEditor/AdHocDelegate.cpp \
+    ./designEditors/HWDesign/AdHocEditor/AdHocEditor.cpp \
+    ./designEditors/HWDesign/AdHocEditor/AdHocModel.cpp \
+    ./designEditors/MemoryDesigner/AddressBlockItem.cpp \
+    ./designEditors/MemoryDesigner/AddressSectionItem.cpp \
+    ./designEditors/MemoryDesigner/AddressSpaceItem.cpp \
+    ./designEditors/MemoryDesigner/AddressSubsection.cpp \
+    ./designEditors/MemoryDesigner/MemoryBaseItem.cpp \
+    ./designEditors/MemoryDesigner/MemoryColumn.cpp \
+    ./designEditors/MemoryDesigner/MemoryDesignDiagram.cpp \
+    ./designEditors/MemoryDesigner/MemoryDesignWidget.cpp \
+    ./designEditors/MemoryDesigner/MemoryItem.cpp \
+    ./designEditors/MemoryDesigner/SegmentItem.cpp \
+    ./designEditors/SystemDesign/HWMappingItem.cpp \
+    ./designEditors/SystemDesign/SWComponentItem.cpp \
+    ./designEditors/SystemDesign/SWConnectionEndpoint.cpp \
+    ./designEditors/SystemDesign/SWInterfaceItem.cpp \
+    ./designEditors/SystemDesign/SWOffPageConnectorItem.cpp \
+    ./designEditors/SystemDesign/SWPortItem.cpp \
+    ./designEditors/SystemDesign/SystemAddCommands.cpp \
+    ./designEditors/SystemDesign/SystemChangeCommands.cpp \
+    ./designEditors/SystemDesign/SystemColumn.cpp \
+    ./designEditors/SystemDesign/SystemComponentItem.cpp \
+    ./designEditors/SystemDesign/SystemDeleteCommands.cpp \
+    ./designEditors/SystemDesign/SystemDesignDiagram.cpp \
+    ./designEditors/SystemDesign/SystemDesignWidget.cpp \
+    ./designEditors/SystemDesign/SystemMoveCommands.cpp \
+    ./designEditors/SystemDesign/SystemDetailsEditor/ExportSWDialog.cpp \
+    ./designEditors/SystemDesign/SystemDetailsEditor/SwitchHWDialog.cpp \
+    ./designEditors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.cpp \
+    ./designEditors/common/ComponentInstanceEditor/componentinstanceeditor.cpp \
+    ./designEditors/common/ComponentInstanceEditor/componentinstancemodel.cpp \
+    ./designEditors/common/ComponentInstanceEditor/configurableelementdelegate.cpp \
+    ./designEditors/common/ComponentInstanceEditor/configurableelementeditor.cpp \
+    ./designEditors/common/ConnectionEditor/AdHocBoundsDelegate.cpp \
+    ./designEditors/common/ConnectionEditor/AdHocBoundsModel.cpp \
+    ./designEditors/common/ConnectionEditor/connectioneditor.cpp \
+    ./designEditors/common/InterfaceEditor/interfaceeditor.cpp \
+    ./designEditors/common/ConfigurationEditor/activeviewdelegate.cpp \
+    ./designEditors/common/ConfigurationEditor/activevieweditor.cpp \
+    ./designEditors/common/ConfigurationEditor/activeviewmodel.cpp \
+    ./designEditors/common/ConfigurationEditor/configurationeditor.cpp \
+    ./kactusGenerators/vhdlGenerator/vhdlcomponentdeclaration.cpp \
+    ./kactusGenerators/vhdlGenerator/vhdlcomponentinstance.cpp \
+    ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.cpp \
+    ./kactusGenerators/vhdlGenerator/vhdlgeneral.cpp \
+    ./kactusGenerators/vhdlGenerator/vhdlgenerator2.cpp \
+    ./kactusGenerators/vhdlGenerator/vhdlgeneric.cpp \
+    ./kactusGenerators/vhdlGenerator/vhdlobject.cpp \
+    ./kactusGenerators/vhdlGenerator/vhdlport.cpp \
+    ./kactusGenerators/vhdlGenerator/vhdlportmap.cpp \
+    ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
+    ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
 RESOURCES += kactus.qrc
