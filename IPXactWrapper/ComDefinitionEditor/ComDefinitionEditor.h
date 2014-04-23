@@ -19,7 +19,7 @@
 #include <common/widgets/listManager/listmanager.h>
 #include <models/ComDefinition.h>
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <QSharedPointer>
 #include <QPushButton>

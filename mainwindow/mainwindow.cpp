@@ -35,9 +35,9 @@
 #include <Help/HelpSystem/ContextHelpBrowser.h>
 #include <Help/HelpSystem/HelpWindow.h>
 
-#include <LibraryManager/libraryhandler.h>
-#include <LibraryManager/vlnv.h>
-#include <LibraryManager/LibraryUtils.h>
+#include <library/LibraryManager/libraryhandler.h>
+#include <library/LibraryManager/vlnv.h>
+#include <library/LibraryManager/LibraryUtils.h>
 
 #include <common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h>
 #include <common/dialogs/NewDesignDialog/NewDesignDialog.h>

@@ -8,7 +8,7 @@
 #include "portmapsmodel.h"
 
 #include <models/generaldeclarations.h>
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <QtGlobal>
 #include <QStringList>

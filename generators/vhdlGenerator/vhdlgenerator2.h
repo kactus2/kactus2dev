@@ -12,7 +12,7 @@
 #include <models/design.h>
 #include <models/designconfiguration.h>
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include "vhdlgeneric.h"
 #include "vhdlport.h"

@@ -37,7 +37,7 @@
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <SystemDetailsEditor/SwitchHWDialog.h>
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <designwidget/columnview/ColumnEditDialog.h>
 #include <designwidget/HWChangeCommands.h>

@@ -11,7 +11,7 @@
 
 #include "SystemViewsModel.h"
 #include "SystemViewsDelegate.h"
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <QColor>
 #include <QMimeData>

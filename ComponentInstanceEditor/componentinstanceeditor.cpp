@@ -15,7 +15,7 @@
 #include <models/component.h>
 #include <models/designconfiguration.h>
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 #include <designwidget/HWDesignDiagram.h>
 #include <designwidget/HWDesignWidget.h>
 #include <designwidget/HWChangeCommands.h>

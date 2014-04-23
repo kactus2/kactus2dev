@@ -7,7 +7,7 @@
 #ifndef BUSINTERFACE_H_
 #define BUSINTERFACE_H_
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 #include "generaldeclarations.h"
 #include "parameter.h"
 

@@ -15,7 +15,7 @@
 #include "IGraphicsItemStack.h"
 #include "GraphicsConnection.h"
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <common/DesignDiagram.h>
 

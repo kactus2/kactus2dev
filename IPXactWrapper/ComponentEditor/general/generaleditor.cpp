@@ -15,8 +15,8 @@
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 
 #include <models/component.h>
-#include <LibraryManager/libraryinterface.h>
 #include <models/librarycomponent.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>

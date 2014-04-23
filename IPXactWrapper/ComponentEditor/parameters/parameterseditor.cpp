@@ -9,7 +9,7 @@
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <models/component.h>
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 

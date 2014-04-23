@@ -8,8 +8,8 @@
 #include "busifinterfacemonitor.h"
 #include <models/generaldeclarations.h>
 #include "busifgeneraltab.h"
-#include <LibraryManager/libraryinterface.h>
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/vlnv.h>
 #include <models/busdefinition.h>
 
 #include <QGridLayout>

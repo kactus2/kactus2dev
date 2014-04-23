@@ -8,7 +8,7 @@
 #include "hierarchyfilter.h"
 
 #include <common/KactusAttribute.h>
-#include <LibraryManager/VLNVDialer/vlnvdialer.h>
+#include <library/LibraryManager/VLNVDialer/vlnvdialer.h>
 #include "hierarchyitem.h"
 
 #include <QRegExp>

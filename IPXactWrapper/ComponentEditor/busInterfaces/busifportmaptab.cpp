@@ -14,8 +14,8 @@
 #include <models/abstractiondefinition.h>
 #include <models/component.h>
 #include <models/port.h>
-#include <LibraryManager/vlnv.h>
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/vlnv.h>
+#include <library/LibraryManager/libraryinterface.h>
 #include <IPXactWrapper/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h>
 #include <IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.h>
 

@@ -7,7 +7,7 @@
 
 #include "filesmodel.h"
 #include <models/generaldeclarations.h>
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <QStringList>
 #include <QColor>

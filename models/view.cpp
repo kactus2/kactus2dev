@@ -4,7 +4,7 @@
  */
 
 #include "view.h"
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 #include "parameter.h"
 #include "generaldeclarations.h"
 

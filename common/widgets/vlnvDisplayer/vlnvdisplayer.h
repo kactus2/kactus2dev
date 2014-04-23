@@ -8,7 +8,7 @@
 #ifndef VLNVDISPLAYER_H
 #define VLNVDISPLAYER_H
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <QGroupBox>
 #include <QLabel>

@@ -10,7 +10,7 @@
 #include "memorymapsmodel.h"
 #include "memorymapsdelegate.h"
 #include <common/widgets/summaryLabel/summarylabel.h>
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 

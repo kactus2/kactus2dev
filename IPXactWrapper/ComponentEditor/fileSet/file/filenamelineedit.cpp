@@ -6,7 +6,7 @@
  */
 
 #include "filenamelineedit.h"
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 #include <models/generaldeclarations.h>
 
 #include <QFileDialog>

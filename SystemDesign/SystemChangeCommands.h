@@ -12,7 +12,7 @@
 #ifndef SYSTEMCHANGECOMMANDS_H
 #define SYSTEMCHANGECOMMANDS_H
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <QMap>
 #include <QUndoCommand>

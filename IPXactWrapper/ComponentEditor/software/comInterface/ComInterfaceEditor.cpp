@@ -11,7 +11,7 @@
 
 #include "ComInterfaceEditor.h"
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 #include <models/ComInterface.h>
 #include <models/ComDefinition.h>
 #include <mainwindow/mainwindow.h>

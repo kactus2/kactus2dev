@@ -12,7 +12,7 @@
 #ifndef SWVIEW_H
 #define SWVIEW_H
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <models/generaldeclarations.h>
 #include <models/filebuilder.h>

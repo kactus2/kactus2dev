@@ -11,7 +11,7 @@
 
 #include "NewDesignPage.h"
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>

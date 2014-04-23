@@ -25,8 +25,8 @@
 
 #include <designwidget/columnview/ColumnEditDialog.h>
 
-#include <LibraryManager/libraryinterface.h>
-#include <LibraryManager/LibraryUtils.h>
+#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/LibraryUtils.h>
 
 #include <models/component.h>
 #include <models/design.h>

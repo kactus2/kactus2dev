@@ -13,7 +13,7 @@
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <IPXactWrapper/ComDefinitionEditor/ComPropertyDelegate.h>
 #include <models/ComProperty.h>
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 

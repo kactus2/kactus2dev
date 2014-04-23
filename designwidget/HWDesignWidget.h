@@ -5,7 +5,7 @@
 #ifndef HWDESIGNWIDGET_H
 #define HWDESIGNWIDGET_H
 
-#include "../LibraryManager/vlnv.h"
+#include <library/LibraryManager/vlnv.h>
 
 #include "HWDesignDiagram.h"
 

@@ -19,8 +19,8 @@
 #include <models/abstractiondefinition.h>
 #include <models/businterface.h>
 #include <models/component.h>
-#include <LibraryManager/libraryinterface.h>
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <QColor>
 #include <QFont>

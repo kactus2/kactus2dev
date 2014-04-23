@@ -13,7 +13,7 @@
 #ifndef APIINTERFACE_H
 #define APIINTERFACE_H
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 #include "generaldeclarations.h"
 
 #include <common/Global.h>

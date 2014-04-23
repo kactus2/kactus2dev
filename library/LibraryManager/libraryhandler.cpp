@@ -177,6 +177,9 @@ void LibraryHandler::syncronizeModels() {
     connect(hierarchyModel_.data(), SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
         this, SIGNAL(openMemoryDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 
+    connect(hierarchyModel_.data(), SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
+        this, SLOT(onOpenMemoryDesign(const VLNV&)), Qt::UniqueConnection);
+
     connect(hierarchyModel_.data(), SIGNAL(openSWDesign(const VLNV&, const QString&)),
         this, SIGNAL(openSWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
     connect(hierarchyModel_.data(), SIGNAL(openSystemDesign(const VLNV&, const QString&)),

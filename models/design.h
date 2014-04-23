@@ -10,7 +10,7 @@
 #include "ComponentInstance.h"
 
 #include "librarycomponent.h"
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <common/ColumnTypes.h>
 #include <common/Global.h>

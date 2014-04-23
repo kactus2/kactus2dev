@@ -7,7 +7,7 @@
 
 #include "dialerwidget.h"
 
-#include <LibraryManager/libraryitem.h>
+#include <library/LibraryManager/libraryitem.h>
 
 #include <QGridLayout>
 #include <QLabel>

@@ -11,7 +11,7 @@
 #include "portlistmodel.h"
 
 #include <models/generaldeclarations.h>
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 class LibraryInterface;
 class PortMapsTreeModel;

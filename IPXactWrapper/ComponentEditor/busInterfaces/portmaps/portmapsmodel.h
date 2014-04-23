@@ -14,7 +14,7 @@
 #include <models/businterface.h>
 #include <common/utils.h>
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <QAbstractTableModel>
 #include <QList>

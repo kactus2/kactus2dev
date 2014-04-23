@@ -6,7 +6,7 @@
 
 #include "componenttreeview.h"
 #include "componenteditoritem.h"
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 #include <models/generaldeclarations.h>
 #include "IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h"
 

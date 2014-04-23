@@ -24,7 +24,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <designwidget/columnview/ColumnEditDialog.h>
 

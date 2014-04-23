@@ -7,7 +7,7 @@
 
 #include "fileseditor.h"
 #include "filesdelegate.h"
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 #include <QIcon>

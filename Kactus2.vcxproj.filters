@@ -281,15 +281,6 @@
     <Filter Include="Source Files\IPXactWrapper\ApiDefinitionEditor">
       <UniqueIdentifier>{116be889-2be7-4118-b11d-c894fe24fb4a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\LibraryManager">
-      <UniqueIdentifier>{a88e6ec8-5fc6-4797-98b5-b41fc8527e5f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\LibraryManager\VLNVDialer">
-      <UniqueIdentifier>{00c586dc-9ec3-4fbf-9dbb-6f5a9d0081a5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\LibraryManager\HierarchyView">
-      <UniqueIdentifier>{439d93d5-3416-4399-b7a3-6affbcf54ca7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\mainwindow">
       <UniqueIdentifier>{5632e02c-bce4-40b7-b3e1-fa2400380d5e}</UniqueIdentifier>
     </Filter>
@@ -645,15 +636,6 @@
     <Filter Include="Header Files\SystemDesign">
       <UniqueIdentifier>{0297a084-f080-4064-b0d4-a92dd52cacbc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\LibraryManager">
-      <UniqueIdentifier>{ad660dd6-a105-46d3-93df-3ca66c6cca75}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\LibraryManager\VLNVDialer">
-      <UniqueIdentifier>{b48093a5-1b49-4ce5-a1d9-dd6e57eb7356}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\LibraryManager\HierarchyView">
-      <UniqueIdentifier>{319e069c-6161-49af-a60b-01ec3d1131a2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\SystemDetailsEditor">
       <UniqueIdentifier>{bd961281-bac8-4b4e-9228-9b9ae077a8d0}</UniqueIdentifier>
     </Filter>
@@ -907,6 +889,30 @@
     </Filter>
     <Filter Include="Source Files\Plugins\PluginSystem">
       <UniqueIdentifier>{20e3b635-b2b3-4dbc-a204-fc6773166d05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\library">
+      <UniqueIdentifier>{700d0d99-bb8f-470d-a447-fb12cee9e11e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\library\LibraryManager">
+      <UniqueIdentifier>{a88e6ec8-5fc6-4797-98b5-b41fc8527e5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\library\LibraryManager\VLNVDialer">
+      <UniqueIdentifier>{00c586dc-9ec3-4fbf-9dbb-6f5a9d0081a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\library\LibraryManager\HierarchyView">
+      <UniqueIdentifier>{439d93d5-3416-4399-b7a3-6affbcf54ca7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\library">
+      <UniqueIdentifier>{94c09cd0-96f3-499b-8b78-8c00ee7f60c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\library\LibraryManager">
+      <UniqueIdentifier>{ad660dd6-a105-46d3-93df-3ca66c6cca75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\library\LibraryManager\VLNVDialer">
+      <UniqueIdentifier>{b48093a5-1b49-4ce5-a1d9-dd6e57eb7356}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\library\LibraryManager\HierarchyView">
+      <UniqueIdentifier>{319e069c-6161-49af-a60b-01ec3d1131a2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1789,81 +1795,6 @@
     <ClCompile Include="IPXactWrapper\ApiDefinitionEditor\ApiFunctionParameterModel.cpp">
       <Filter>Source Files\IPXactWrapper\ApiDefinitionEditor</Filter>
     </ClCompile>
-    <ClCompile Include="LibraryManager\ipxactitem.cpp">
-      <Filter>Source Files\LibraryManager</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\ipxactmodel.cpp">
-      <Filter>Source Files\LibraryManager</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\ipxactwidget.cpp">
-      <Filter>Source Files\LibraryManager</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\librarydata.cpp">
-      <Filter>Source Files\LibraryManager</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\LibraryErrorModel.cpp">
-      <Filter>Source Files\LibraryManager</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\libraryhandler.cpp">
-      <Filter>Source Files\LibraryManager</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\libraryitem.cpp">
-      <Filter>Source Files\LibraryManager</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\librarytreefilter.cpp">
-      <Filter>Source Files\LibraryManager</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\librarytreemodel.cpp">
-      <Filter>Source Files\LibraryManager</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\librarytreeview.cpp">
-      <Filter>Source Files\LibraryManager</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\librarytreewidget.cpp">
-      <Filter>Source Files\LibraryManager</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\LibraryUtils.cpp">
-      <Filter>Source Files\LibraryManager</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\vlnv.cpp">
-      <Filter>Source Files\LibraryManager</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\VLNVDialer\dialerwidget.cpp">
-      <Filter>Source Files\LibraryManager\VLNVDialer</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\VLNVDialer\filterwidget.cpp">
-      <Filter>Source Files\LibraryManager\VLNVDialer</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\VLNVDialer\firmnessgroup.cpp">
-      <Filter>Source Files\LibraryManager\VLNVDialer</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\VLNVDialer\hierarchygroup.cpp">
-      <Filter>Source Files\LibraryManager\VLNVDialer</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\VLNVDialer\implementationgroup.cpp">
-      <Filter>Source Files\LibraryManager\VLNVDialer</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\VLNVDialer\typegroup.cpp">
-      <Filter>Source Files\LibraryManager\VLNVDialer</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\VLNVDialer\vlnvdialer.cpp">
-      <Filter>Source Files\LibraryManager\VLNVDialer</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\HierarchyView\hierarchyfilter.cpp">
-      <Filter>Source Files\LibraryManager\HierarchyView</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\HierarchyView\hierarchyitem.cpp">
-      <Filter>Source Files\LibraryManager\HierarchyView</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\HierarchyView\hierarchymodel.cpp">
-      <Filter>Source Files\LibraryManager\HierarchyView</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\HierarchyView\hierarchyview.cpp">
-      <Filter>Source Files\LibraryManager\HierarchyView</Filter>
-    </ClCompile>
-    <ClCompile Include="LibraryManager\HierarchyView\hierarchywidget.cpp">
-      <Filter>Source Files\LibraryManager\HierarchyView</Filter>
-    </ClCompile>
     <ClCompile Include="mainwindow\DeleteWorkspaceDialog.cpp">
       <Filter>Source Files\mainwindow</Filter>
     </ClCompile>
@@ -2329,9 +2260,6 @@
     <ClCompile Include="GeneratedFiles\moc_vlnvdisplayer.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vlnvdialer.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_visualizeritem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2354,9 +2282,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_usagecombobox.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_typegroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ToolTipHintWidget.cpp">
@@ -2695,34 +2620,10 @@
     <ClCompile Include="GeneratedFiles\moc_lineeditdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_librarytreewidget.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_librarytreeview.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_librarytreemodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_librarytreefilter.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_LibrarySettingsDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_librarypathvalidator.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_libraryitem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_libraryhandler.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_LibraryErrorModel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_librarydata.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_KactusAttributeEditor.cpp">
@@ -2732,12 +2633,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_itemeditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ipxactwidget.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ipxactmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_interfaceselector.cpp">
@@ -2750,9 +2645,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_interfaceeditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_implementationgroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_impexpgroup.cpp">
@@ -2785,25 +2677,7 @@
     <ClCompile Include="GeneratedFiles\moc_HWChangeCommands.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_hierarchywidget.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_hierarchyview.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_hierarchyrefwidget.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_hierarchymodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_hierarchyitem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_hierarchygroup.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_hierarchyfilter.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_groupmanagerdelegate.cpp">
@@ -2840,12 +2714,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_flatviewgeneraltab.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_firmnessgroup.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_filterwidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_filetypeeditordelegate.cpp">
@@ -2966,9 +2834,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_dirlineedit.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_dialerwidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_DesignWidget.cpp">
@@ -4008,6 +3873,147 @@
     </ClCompile>
     <ClCompile Include="Plugins\PluginSystem\PluginManager.cpp">
       <Filter>Source Files\Plugins\PluginSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\HierarchyView\hierarchyfilter.cpp">
+      <Filter>Source Files\library\LibraryManager\HierarchyView</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\HierarchyView\hierarchyitem.cpp">
+      <Filter>Source Files\library\LibraryManager\HierarchyView</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\HierarchyView\hierarchymodel.cpp">
+      <Filter>Source Files\library\LibraryManager\HierarchyView</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\HierarchyView\hierarchywidget.cpp">
+      <Filter>Source Files\library\LibraryManager\HierarchyView</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\HierarchyView\hierarchyview.cpp">
+      <Filter>Source Files\library\LibraryManager\HierarchyView</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\VLNVDialer\dialerwidget.cpp">
+      <Filter>Source Files\library\LibraryManager\VLNVDialer</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\VLNVDialer\filterwidget.cpp">
+      <Filter>Source Files\library\LibraryManager\VLNVDialer</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\VLNVDialer\firmnessgroup.cpp">
+      <Filter>Source Files\library\LibraryManager\VLNVDialer</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\VLNVDialer\hierarchygroup.cpp">
+      <Filter>Source Files\library\LibraryManager\VLNVDialer</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\VLNVDialer\implementationgroup.cpp">
+      <Filter>Source Files\library\LibraryManager\VLNVDialer</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\VLNVDialer\typegroup.cpp">
+      <Filter>Source Files\library\LibraryManager\VLNVDialer</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\VLNVDialer\vlnvdialer.cpp">
+      <Filter>Source Files\library\LibraryManager\VLNVDialer</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\ipxactitem.cpp">
+      <Filter>Source Files\library\LibraryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\ipxactmodel.cpp">
+      <Filter>Source Files\library\LibraryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\ipxactwidget.cpp">
+      <Filter>Source Files\library\LibraryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\librarydata.cpp">
+      <Filter>Source Files\library\LibraryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\LibraryErrorModel.cpp">
+      <Filter>Source Files\library\LibraryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\libraryhandler.cpp">
+      <Filter>Source Files\library\LibraryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\libraryitem.cpp">
+      <Filter>Source Files\library\LibraryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\librarytreefilter.cpp">
+      <Filter>Source Files\library\LibraryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\librarytreemodel.cpp">
+      <Filter>Source Files\library\LibraryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\librarytreewidget.cpp">
+      <Filter>Source Files\library\LibraryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\librarytreeview.cpp">
+      <Filter>Source Files\library\LibraryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\LibraryUtils.cpp">
+      <Filter>Source Files\library\LibraryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryManager\vlnv.cpp">
+      <Filter>Source Files\library\LibraryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ipxactmodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ipxactwidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_librarydata.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_LibraryErrorModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_libraryhandler.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_libraryitem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_librarytreefilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_librarytreemodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_librarytreewidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_librarytreeview.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_hierarchyfilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_hierarchyitem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_hierarchymodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_hierarchywidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_hierarchyview.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_dialerwidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_filterwidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_firmnessgroup.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_hierarchygroup.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_implementationgroup.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_typegroup.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_vlnvdialer.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5208,72 +5214,6 @@
     <CustomBuild Include="IPXactWrapper\ComponentEditor\itemvisualizer.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="LibraryManager\HierarchyView\hierarchyfilter.h">
-      <Filter>Header Files\LibraryManager\HierarchyView</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\HierarchyView\hierarchyitem.h">
-      <Filter>Header Files\LibraryManager\HierarchyView</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\HierarchyView\hierarchymodel.h">
-      <Filter>Header Files\LibraryManager\HierarchyView</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\HierarchyView\hierarchywidget.h">
-      <Filter>Header Files\LibraryManager\HierarchyView</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\HierarchyView\hierarchyview.h">
-      <Filter>Header Files\LibraryManager\HierarchyView</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\VLNVDialer\dialerwidget.h">
-      <Filter>Header Files\LibraryManager\VLNVDialer</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\VLNVDialer\filterwidget.h">
-      <Filter>Header Files\LibraryManager\VLNVDialer</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\VLNVDialer\firmnessgroup.h">
-      <Filter>Header Files\LibraryManager\VLNVDialer</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\VLNVDialer\hierarchygroup.h">
-      <Filter>Header Files\LibraryManager\VLNVDialer</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\VLNVDialer\implementationgroup.h">
-      <Filter>Header Files\LibraryManager\VLNVDialer</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\VLNVDialer\typegroup.h">
-      <Filter>Header Files\LibraryManager\VLNVDialer</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\VLNVDialer\vlnvdialer.h">
-      <Filter>Header Files\LibraryManager\VLNVDialer</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\ipxactmodel.h">
-      <Filter>Header Files\LibraryManager</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\ipxactwidget.h">
-      <Filter>Header Files\LibraryManager</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\librarydata.h">
-      <Filter>Header Files\LibraryManager</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\LibraryErrorModel.h">
-      <Filter>Header Files\LibraryManager</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\libraryhandler.h">
-      <Filter>Header Files\LibraryManager</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\libraryitem.h">
-      <Filter>Header Files\LibraryManager</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\librarytreefilter.h">
-      <Filter>Header Files\LibraryManager</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\librarytreemodel.h">
-      <Filter>Header Files\LibraryManager</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\librarytreewidget.h">
-      <Filter>Header Files\LibraryManager</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LibraryManager\librarytreeview.h">
-      <Filter>Header Files\LibraryManager</Filter>
-    </CustomBuild>
     <CustomBuild Include="mainwindow\mainwindow.h">
       <Filter>Header Files\mainwindow</Filter>
     </CustomBuild>
@@ -5685,6 +5625,72 @@
     <CustomBuild Include="Plugins\PluginSystem\PluginListDialog.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
     </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\ipxactmodel.h">
+      <Filter>Header Files\library\LibraryManager</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\ipxactwidget.h">
+      <Filter>Header Files\library\LibraryManager</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\librarydata.h">
+      <Filter>Header Files\library\LibraryManager</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\LibraryErrorModel.h">
+      <Filter>Header Files\library\LibraryManager</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\libraryhandler.h">
+      <Filter>Header Files\library\LibraryManager</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\libraryitem.h">
+      <Filter>Header Files\library\LibraryManager</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\librarytreefilter.h">
+      <Filter>Header Files\library\LibraryManager</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\librarytreemodel.h">
+      <Filter>Header Files\library\LibraryManager</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\librarytreewidget.h">
+      <Filter>Header Files\library\LibraryManager</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\librarytreeview.h">
+      <Filter>Header Files\library\LibraryManager</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\HierarchyView\hierarchyfilter.h">
+      <Filter>Header Files\library\LibraryManager\HierarchyView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\HierarchyView\hierarchyitem.h">
+      <Filter>Header Files\library\LibraryManager\HierarchyView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\HierarchyView\hierarchymodel.h">
+      <Filter>Header Files\library\LibraryManager\HierarchyView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\HierarchyView\hierarchywidget.h">
+      <Filter>Header Files\library\LibraryManager\HierarchyView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\HierarchyView\hierarchyview.h">
+      <Filter>Header Files\library\LibraryManager\HierarchyView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\VLNVDialer\dialerwidget.h">
+      <Filter>Header Files\library\LibraryManager\VLNVDialer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\VLNVDialer\filterwidget.h">
+      <Filter>Header Files\library\LibraryManager\VLNVDialer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\VLNVDialer\firmnessgroup.h">
+      <Filter>Header Files\library\LibraryManager\VLNVDialer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\VLNVDialer\hierarchygroup.h">
+      <Filter>Header Files\library\LibraryManager\VLNVDialer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\VLNVDialer\implementationgroup.h">
+      <Filter>Header Files\library\LibraryManager\VLNVDialer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\VLNVDialer\typegroup.h">
+      <Filter>Header Files\library\LibraryManager\VLNVDialer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\VLNVDialer\vlnvdialer.h">
+      <Filter>Header Files\library\LibraryManager\VLNVDialer</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddressEditor\AddressEntry.h">
@@ -5812,18 +5818,6 @@
     </ClInclude>
     <ClInclude Include="designwidget\PortmapDialog.h">
       <Filter>Header Files\designwidget</Filter>
-    </ClInclude>
-    <ClInclude Include="LibraryManager\ipxactitem.h">
-      <Filter>Header Files\LibraryManager</Filter>
-    </ClInclude>
-    <ClInclude Include="LibraryManager\libraryinterface.h">
-      <Filter>Header Files\LibraryManager</Filter>
-    </ClInclude>
-    <ClInclude Include="LibraryManager\LibraryUtils.h">
-      <Filter>Header Files\LibraryManager</Filter>
-    </ClInclude>
-    <ClInclude Include="LibraryManager\vlnv.h">
-      <Filter>Header Files\LibraryManager</Filter>
     </ClInclude>
     <ClInclude Include="MCAPI\CSourceContentMatcher.h">
       <Filter>Header Files\MCAPI</Filter>
@@ -6151,6 +6145,18 @@
     </ClInclude>
     <ClInclude Include="Plugins\PluginSystem\PluginSettingsWidget.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="library\LibraryManager\ipxactitem.h">
+      <Filter>Header Files\library\LibraryManager</Filter>
+    </ClInclude>
+    <ClInclude Include="library\LibraryManager\libraryinterface.h">
+      <Filter>Header Files\library\LibraryManager</Filter>
+    </ClInclude>
+    <ClInclude Include="library\LibraryManager\LibraryUtils.h">
+      <Filter>Header Files\library\LibraryManager</Filter>
+    </ClInclude>
+    <ClInclude Include="library\LibraryManager\vlnv.h">
+      <Filter>Header Files\library\LibraryManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

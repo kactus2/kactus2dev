@@ -12,7 +12,7 @@
 #ifndef SYSTEMVIEW_H
 #define SYSTEMVIEW_H
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <models/generaldeclarations.h>
 

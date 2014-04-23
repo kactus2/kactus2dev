@@ -12,7 +12,7 @@
 #ifndef TABDOCUMENT_H
 #define TABDOCUMENT_H
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <common/DrawMode.h>
 #include <common/IEditProvider.h>

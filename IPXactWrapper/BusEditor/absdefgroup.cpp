@@ -6,7 +6,7 @@
  */
 
 #include "absdefgroup.h"
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include "busportsdelegate.h"
 

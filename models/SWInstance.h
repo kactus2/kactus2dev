@@ -12,7 +12,7 @@
 #ifndef SWINSTANCE_H
 #define SWINSTANCE_H
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <common/Global.h>
 

@@ -26,8 +26,8 @@
 #include "models/port.h"
 #include <models/portabstraction.h>
 
-#include <LibraryManager/libraryinterface.h>
-#include "LibraryManager/vlnv.h"
+#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/vlnv.h>
 #include <IPXactWrapper/ComponentEditor/busInterfaces/portmaps/BitSelectionDialog.h>
 
 namespace

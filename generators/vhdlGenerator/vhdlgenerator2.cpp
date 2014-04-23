@@ -18,7 +18,7 @@
 
 #include "vhdlgeneral.h"
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <models/view.h>
 #include <models/librarycomponent.h>

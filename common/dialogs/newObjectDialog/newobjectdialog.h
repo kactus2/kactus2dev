@@ -10,7 +10,7 @@
 #include <QPushButton>
 
 #include <common/KactusAttribute.h>
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 #include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 
 class LibraryInterface;

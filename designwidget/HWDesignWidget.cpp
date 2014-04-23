@@ -16,8 +16,8 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/GenericEditProvider.h>
 
-#include "LibraryManager/vlnv.h"
-#include "LibraryManager/libraryinterface.h"
+#include <library/LibraryManager/vlnv.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include "columnview/ColumnEditDialog.h"
 #include "columnview/HWColumn.h"

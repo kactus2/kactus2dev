@@ -6,7 +6,7 @@
 
 #include "abstractiondefinition.h"
 #include "portabstraction.h"
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 #include "librarycomponent.h"
 
 

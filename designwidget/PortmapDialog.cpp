@@ -12,7 +12,7 @@
 #include "PortmapDialog.h"
 
 #include <IPXactWrapper/ComponentEditor/busInterfaces/busifportmaptab.h>
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 #include <models/businterface.h>
 
 #include <QHBoxLayout>

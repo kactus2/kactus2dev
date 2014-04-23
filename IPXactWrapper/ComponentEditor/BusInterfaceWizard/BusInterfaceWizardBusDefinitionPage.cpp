@@ -19,8 +19,8 @@
 #include <IPXactWrapper/BusEditor/absdefgroup.h>
 #include <IPXactWrapper/BusEditor/busdefgroup.h>
 #include <IPXactWrapper/ComponentEditor/ports/portsdelegate.h>
-#include <LibraryManager/libraryinterface.h>
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <QVBoxLayout>
 #include <QLabel>

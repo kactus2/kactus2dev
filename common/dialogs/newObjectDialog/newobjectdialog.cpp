@@ -15,7 +15,7 @@
 
 #include <common/widgets/kactusAttributeEditor/KactusAttributeEditor.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include "newobjectdialog.h"
 

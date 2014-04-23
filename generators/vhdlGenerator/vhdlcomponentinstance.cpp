@@ -16,7 +16,7 @@
 #include <models/abstractiondefinition.h>
 #include <models/businterface.h>
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <QSharedPointer>
 #include <QMultiMap>

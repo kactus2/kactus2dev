@@ -7,9 +7,9 @@
 
 #include "hierarchymodel.h"
 
-#include <LibraryManager/libraryinterface.h>
-#include <LibraryManager/libraryhandler.h>
-#include <LibraryManager/librarydata.h>
+#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryhandler.h>
+#include <library/LibraryManager/librarydata.h>
 #include <models/component.h>
 #include <models/librarycomponent.h>
 #include <models/designconfiguration.h>

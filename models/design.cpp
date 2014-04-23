@@ -6,7 +6,7 @@
 
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
 #include <common/KactusAttribute.h>
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 #include "generaldeclarations.h"
 
 #include <QDomNamedNodeMap>

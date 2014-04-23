@@ -7,7 +7,7 @@
 #ifndef DESIGNCONFABSTRACTOR_H_
 #define DESIGNCONFABSTRACTOR_H_
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <common/Global.h>
 

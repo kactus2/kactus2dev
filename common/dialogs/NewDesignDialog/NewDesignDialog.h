@@ -12,7 +12,7 @@
 #ifndef NEWDESIGNDIALOG_H
 #define NEWDESIGNDIALOG_H
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/assistedLineEdit/BasicLineContentMatcher.h>

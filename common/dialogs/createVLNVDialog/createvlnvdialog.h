@@ -7,7 +7,7 @@
 #ifndef CREATEVLNVDIALOG_H_
 #define CREATEVLNVDIALOG_H_
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <QDialog>
 #include <QWidget>

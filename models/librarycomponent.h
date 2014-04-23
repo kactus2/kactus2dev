@@ -7,7 +7,7 @@
 #ifndef LIBRARYCOMPONENT_H_
 #define LIBRARYCOMPONENT_H_
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 #include "generaldeclarations.h"
 
 #include <common/Global.h>

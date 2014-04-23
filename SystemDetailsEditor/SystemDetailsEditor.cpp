@@ -24,7 +24,7 @@
 #include <models/design.h>
 #include <models/SWInstance.h>
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>

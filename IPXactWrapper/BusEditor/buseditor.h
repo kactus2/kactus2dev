@@ -12,7 +12,7 @@
 #include <models/abstractiondefinition.h>
 #include <models/busdefinition.h>
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include "busdefgroup.h"
 #include "absdefgroup.h"

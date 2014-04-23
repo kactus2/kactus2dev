@@ -32,7 +32,7 @@
 
 #include "columnview/HWColumn.h"
 
-#include <LibraryManager/libraryhandler.h>
+#include <library/LibraryManager/libraryhandler.h>
 
 #include <AdHocEditor/AdHocEditor.h>
 

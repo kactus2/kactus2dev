@@ -10,7 +10,7 @@
 #include "hierarchyfilter.h"
 #include "hierarchyitem.h"
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 #include <models/component.h>
 #include <models/busdefinition.h>
 

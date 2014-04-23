@@ -14,9 +14,9 @@
 #include <common/widgets/assistedLineEdit/AssistedLineEdit.h>
 #include <common/validators/nameValidator/namevalidator.h>
 #include <common/KactusAttribute.h>
-#include <LibraryManager/libraryinterface.h>
-#include <LibraryManager/libraryitem.h>
-#include <LibraryManager/libraryhandler.h>
+#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryitem.h>
+#include <library/LibraryManager/libraryhandler.h>
 
 #include <models/librarycomponent.h>
 #include <models/abstractiondefinition.h>

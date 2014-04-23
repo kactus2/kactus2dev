@@ -14,8 +14,8 @@
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 
-#include <LibraryManager/vlnv.h>
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/vlnv.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 #include <QFont>

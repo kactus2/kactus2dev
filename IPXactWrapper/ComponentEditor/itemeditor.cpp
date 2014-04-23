@@ -7,7 +7,7 @@
 
 #include "itemeditor.h"
 #include <models/component.h>
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 ItemEditor::ItemEditor( QSharedPointer<Component> component,
 	LibraryInterface* handler,

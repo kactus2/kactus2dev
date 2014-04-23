@@ -7,7 +7,7 @@
 #ifndef VIEW_H_
 #define VIEW_H_
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <models/generaldeclarations.h>
 #include <models/filebuilder.h>

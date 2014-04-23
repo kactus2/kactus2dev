@@ -16,8 +16,8 @@
 #include <models/component.h>
 #include <models/model.h>
 
-#include <LibraryManager/vlnv.h>
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/vlnv.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: getDesign()

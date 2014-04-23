@@ -20,7 +20,7 @@
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <models/ApiDefinition.h>
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <QSharedPointer>
 #include <QPushButton>

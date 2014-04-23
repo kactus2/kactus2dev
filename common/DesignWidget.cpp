@@ -20,7 +20,7 @@
 #include <common/GenericEditProvider.h>
 #include <common/DesignDiagram.h>
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <models/component.h>
 

@@ -7,7 +7,7 @@
 #include "librarycomponent.h"
 #include "designconfiguration.h"
 #include "generaldeclarations.h"
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 #include "designconfabstractor.h"
 #include "generatorchain.h"
 #include <common/KactusAttribute.h>

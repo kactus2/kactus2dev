@@ -8,7 +8,7 @@
 #ifndef COMPONENTEDITORITEM_H
 #define COMPONENTEDITORITEM_H
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 #include <models/component.h>
 
 #include <QObject>

@@ -547,32 +547,15 @@ HEADERS += ./resource.h \
     ./SystemDesign/SWInterfaceItem.h \
     ./SystemDesign/SWConnectionEndpoint.h \
     ./SystemDesign/SWComponentItem.h \
-    ./LibraryManager/ipxactitem.h \
-    ./LibraryManager/libraryinterface.h \
-    ./LibraryManager/LibraryUtils.h \
-    ./LibraryManager/vlnv.h \
-    ./LibraryManager/librarytreeview.h \
-    ./LibraryManager/librarytreewidget.h \
-    ./LibraryManager/librarytreemodel.h \
-    ./LibraryManager/librarytreefilter.h \
-    ./LibraryManager/libraryitem.h \
-    ./LibraryManager/libraryhandler.h \
-    ./LibraryManager/LibraryErrorModel.h \
-    ./LibraryManager/librarydata.h \
-    ./LibraryManager/ipxactwidget.h \
-    ./LibraryManager/ipxactmodel.h \
-    ./LibraryManager/VLNVDialer/vlnvdialer.h \
-    ./LibraryManager/VLNVDialer/typegroup.h \
-    ./LibraryManager/VLNVDialer/implementationgroup.h \
-    ./LibraryManager/VLNVDialer/hierarchygroup.h \
-    ./LibraryManager/VLNVDialer/firmnessgroup.h \
-    ./LibraryManager/VLNVDialer/filterwidget.h \
-    ./LibraryManager/VLNVDialer/dialerwidget.h \
-    ./LibraryManager/HierarchyView/hierarchyview.h \
-    ./LibraryManager/HierarchyView/hierarchywidget.h \
-    ./LibraryManager/HierarchyView/hierarchymodel.h \
-    ./LibraryManager/HierarchyView/hierarchyitem.h \
-    ./LibraryManager/HierarchyView/hierarchyfilter.h \
+    ./library/LibraryManager/LibraryUtils.h \
+    ./library/LibraryManager/libraryinterface.h \
+    ./library/LibraryManager/ipxactitem.h \
+    ./library/LibraryManager/HierarchyView/hierarchyfilter.h \
+    ./library/LibraryManager/HierarchyView/hierarchyitem.h \
+    ./library/LibraryManager/HierarchyView/hierarchymodel.h \
+    ./library/LibraryManager/HierarchyView/hierarchywidget.h \
+    ./library/LibraryManager/HierarchyView/hierarchyview.h \
+    ./library/LibraryManager/VLNVDialer/dialerwidget.h \
     ./Plugins/PluginSystem/PluginSettingsWidget.h \
     ./Plugins/PluginSystem/PluginListDialog.h \
     ./Plugins/PluginSystem/PluginInfoWidget.h \
@@ -608,13 +591,30 @@ HEADERS += ./resource.h \
     ./generators/vhdlGenerator/vhdlportsorter.h \
     ./generators/vhdlGenerator/vhdlsignal.h \
     ./wizards/ComponentWizard/ComponentWizardConclusionPage.h \
+    ./library/LibraryManager/VLNVDialer/filterwidget.h \
     ./generators/DocumentGenerator/documentgenerator.h \
     ./Help/HelpSystem/ContextHelpBrowser.h \
+    ./library/LibraryManager/VLNVDialer/vlnvdialer.h \
+    ./library/LibraryManager/VLNVDialer/implementationgroup.h \
+    ./library/LibraryManager/VLNVDialer/hierarchygroup.h \
+    ./library/LibraryManager/VLNVDialer/firmnessgroup.h \
+    ./library/LibraryManager/VLNVDialer/typegroup.h \
+    ./library/LibraryManager/librarytreeview.h \
+    ./library/LibraryManager/librarytreewidget.h \
+    ./library/LibraryManager/librarytreemodel.h \
+    ./library/LibraryManager/librarytreefilter.h \
+    ./library/LibraryManager/libraryitem.h \
+    ./library/LibraryManager/libraryhandler.h \
+    ./library/LibraryManager/LibraryErrorModel.h \
+    ./library/LibraryManager/librarydata.h \
+    ./library/LibraryManager/ipxactwidget.h \
+    ./library/LibraryManager/ipxactmodel.h \
     ./generators/modelsimGenerator/modelsimgenerator.h \
     ./Plugins/PluginSystem/NewPluginsDialog.h \
     ./Plugins/PluginSystem/IPlugin.h \
     ./generators/quartusGenerator/quartusgenerator.h \
-    ./wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.h
+    ./wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.h \
+    ./library/LibraryManager/vlnv.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
     ./common/DesignWidget.cpp \
@@ -987,31 +987,31 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionModel.cpp \
     ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionParameterDelegate.cpp \
     ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionParameterModel.cpp \
-    ./LibraryManager/ipxactitem.cpp \
-    ./LibraryManager/ipxactmodel.cpp \
-    ./LibraryManager/ipxactwidget.cpp \
-    ./LibraryManager/librarydata.cpp \
-    ./LibraryManager/LibraryErrorModel.cpp \
-    ./LibraryManager/libraryhandler.cpp \
-    ./LibraryManager/libraryitem.cpp \
-    ./LibraryManager/librarytreefilter.cpp \
-    ./LibraryManager/librarytreemodel.cpp \
-    ./LibraryManager/librarytreeview.cpp \
-    ./LibraryManager/librarytreewidget.cpp \
-    ./LibraryManager/LibraryUtils.cpp \
-    ./LibraryManager/vlnv.cpp \
-    ./LibraryManager/VLNVDialer/dialerwidget.cpp \
-    ./LibraryManager/VLNVDialer/filterwidget.cpp \
-    ./LibraryManager/VLNVDialer/firmnessgroup.cpp \
-    ./LibraryManager/VLNVDialer/hierarchygroup.cpp \
-    ./LibraryManager/VLNVDialer/implementationgroup.cpp \
-    ./LibraryManager/VLNVDialer/typegroup.cpp \
-    ./LibraryManager/VLNVDialer/vlnvdialer.cpp \
-    ./LibraryManager/HierarchyView/hierarchyfilter.cpp \
-    ./LibraryManager/HierarchyView/hierarchyitem.cpp \
-    ./LibraryManager/HierarchyView/hierarchymodel.cpp \
-    ./LibraryManager/HierarchyView/hierarchyview.cpp \
-    ./LibraryManager/HierarchyView/hierarchywidget.cpp \
+    ./library/LibraryManager/LibraryErrorModel.cpp \
+    ./library/LibraryManager/librarydata.cpp \
+    ./library/LibraryManager/ipxactwidget.cpp \
+    ./library/LibraryManager/ipxactmodel.cpp \
+    ./library/LibraryManager/ipxactitem.cpp \
+    ./library/LibraryManager/VLNVDialer/vlnvdialer.cpp \
+    ./library/LibraryManager/VLNVDialer/typegroup.cpp \
+    ./library/LibraryManager/VLNVDialer/implementationgroup.cpp \
+    ./library/LibraryManager/VLNVDialer/hierarchygroup.cpp \
+    ./library/LibraryManager/VLNVDialer/firmnessgroup.cpp \
+    ./library/LibraryManager/VLNVDialer/filterwidget.cpp \
+    ./library/LibraryManager/VLNVDialer/dialerwidget.cpp \
+    ./library/LibraryManager/libraryhandler.cpp \
+    ./library/LibraryManager/vlnv.cpp \
+    ./library/LibraryManager/librarytreeview.cpp \
+    ./library/LibraryManager/librarytreewidget.cpp \
+    ./library/LibraryManager/librarytreemodel.cpp \
+    ./library/LibraryManager/librarytreefilter.cpp \
+    ./library/LibraryManager/libraryitem.cpp \
+    ./library/LibraryManager/LibraryUtils.cpp \
+    ./library/LibraryManager/HierarchyView/hierarchyview.cpp \
+    ./library/LibraryManager/HierarchyView/hierarchymodel.cpp \
+    ./library/LibraryManager/HierarchyView/hierarchyitem.cpp \
+    ./library/LibraryManager/HierarchyView/hierarchyfilter.cpp \
+    ./library/LibraryManager/HierarchyView/hierarchywidget.cpp \
     ./mainwindow/DeleteWorkspaceDialog.cpp \
     ./mainwindow/main.cpp \
     ./mainwindow/mainwindow.cpp \

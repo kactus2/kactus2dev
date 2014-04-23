@@ -15,7 +15,7 @@
 #include "CSourceContentMatcher.h"
 #include "CSourceHighlighter.h"
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <models/component.h>
 #include <models/ApiDefinition.h>

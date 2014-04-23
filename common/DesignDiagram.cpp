@@ -20,7 +20,7 @@
 
 #include <AdHocEditor/AdHocEditor.h>
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <models/designconfiguration.h>
 #include <models/component.h>

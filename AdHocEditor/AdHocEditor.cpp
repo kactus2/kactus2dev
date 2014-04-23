@@ -16,7 +16,7 @@
 #include <designwidget/HWComponentItem.h>
 #include <models/component.h>
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <designwidget/HWDesignDiagram.h>
 #include <designwidget/HWComponentItem.h>

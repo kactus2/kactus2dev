@@ -8,7 +8,7 @@
 #include "apiinterfaceseditor.h"
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include "apiinterfacesdelegate.h"
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 ApiInterfacesEditor::ApiInterfacesEditor(QSharedPointer<Component> component, 
 	LibraryInterface* handler, 

@@ -15,7 +15,7 @@
 #include "VLNVDataTree.h"
 #include "VLNVContentMatcher.h"
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 #include <common/KactusAttribute.h>
 
 #include <QGroupBox>

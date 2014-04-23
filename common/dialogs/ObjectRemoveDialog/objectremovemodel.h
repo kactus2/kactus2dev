@@ -8,7 +8,7 @@
 #ifndef OBJECTREMOVEMODEL_H
 #define OBJECTREMOVEMODEL_H
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <QAbstractTableModel>
 #include <QString>

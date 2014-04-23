@@ -14,7 +14,7 @@
 #include <models/generaldeclarations.h>
 #include <models/component.h>
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <QObject>
 #include <QString>

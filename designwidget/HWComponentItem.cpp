@@ -12,7 +12,7 @@
 
 #include "columnview/HWColumn.h"
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>

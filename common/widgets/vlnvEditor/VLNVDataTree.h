@@ -13,7 +13,7 @@
 #define VLNVDATATREE_H
 
 #include <common/KactusAttribute.h>
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <QString>
 #include <QSharedPointer>

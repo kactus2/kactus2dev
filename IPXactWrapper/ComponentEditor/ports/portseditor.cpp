@@ -10,8 +10,8 @@
 #include "portsdelegate.h"
 #include <common/dialogs/NewBusDialog/NewBusDialog.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
-#include <LibraryManager/libraryinterface.h>
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/vlnv.h>
 #include <models/component.h>
 
 #include <models/businterface.h>

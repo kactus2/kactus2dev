@@ -17,7 +17,7 @@
 #include "MemoryColumn.h"
 #include "MemoryDesignDiagram.h"
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <common/utils.h>
 #include <common/DesignDiagram.h>

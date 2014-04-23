@@ -26,7 +26,7 @@
 #include <common/graphicsItems/ConnectionEndpoint.h>
 #include <designwidget/views/CellEditTableView.h>
 #include <designwidget/models/PortGenerationTableModel.h>
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 namespace
 {

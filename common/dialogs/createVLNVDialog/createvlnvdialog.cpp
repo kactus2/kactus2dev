@@ -5,7 +5,7 @@
  */
 
 #include "createvlnvdialog.h"
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <QDialog>
 #include <QWidget>

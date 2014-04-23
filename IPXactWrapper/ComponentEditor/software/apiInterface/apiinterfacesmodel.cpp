@@ -8,7 +8,7 @@
 #include "apiinterfacesmodel.h"
 #include "apiinterfacesdelegate.h"
 #include <models/ApiInterface.h>
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <QColor>
 #include <QMimeData>

@@ -16,8 +16,8 @@
 #include <common/DrawMode.h>
 #include <common/KactusAttribute.h>
 #include <models/component.h>
-#include <LibraryManager/vlnv.h>
-#include <LibraryManager/VLNVDialer/vlnvdialer.h>
+#include <library/LibraryManager/vlnv.h>
+#include <library/LibraryManager/VLNVDialer/vlnvdialer.h>
 
 #include <QMainWindow>
 #include <QActionGroup>

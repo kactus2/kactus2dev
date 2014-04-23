@@ -12,7 +12,7 @@
 #ifndef COMPONENTINSTANCE_H
 #define COMPONENTINSTANCE_H
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <common/Global.h>
 

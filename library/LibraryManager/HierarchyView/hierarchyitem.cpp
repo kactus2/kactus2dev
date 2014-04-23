@@ -7,8 +7,8 @@
 
 #include "hierarchyitem.h"
 
-#include <LibraryManager/vlnv.h>
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/vlnv.h>
+#include <library/LibraryManager/libraryinterface.h>
 #include <models/librarycomponent.h>
 #include <models/designconfiguration.h>
 

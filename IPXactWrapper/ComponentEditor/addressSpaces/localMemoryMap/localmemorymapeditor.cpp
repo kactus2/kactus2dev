@@ -12,7 +12,7 @@
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memorymapdelegate.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memorymapproxy.h>
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 

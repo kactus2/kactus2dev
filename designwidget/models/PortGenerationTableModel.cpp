@@ -24,7 +24,7 @@
 #include <models/abstractiondefinition.h>
 #include <models/portabstraction.h>
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 namespace
 {

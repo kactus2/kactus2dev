@@ -14,7 +14,7 @@
 
 #include <common/dialogs/propertyPageDialog/PropertyPageView.h>
 #include <common/KactusAttribute.h>
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <QLabel>
 #include <QPushButton>

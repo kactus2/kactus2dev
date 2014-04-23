@@ -9,7 +9,7 @@
 
 #include <common/Global.h>
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 #include "parameter.h"
 #include "vector.h"
 #include <common/Global.h>

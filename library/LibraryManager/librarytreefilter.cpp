@@ -8,7 +8,7 @@
 #include "libraryitem.h"
 
 #include "libraryinterface.h"
-#include <LibraryManager/VLNVDialer/vlnvdialer.h>
+#include <library/LibraryManager/VLNVDialer/vlnvdialer.h>
 #include <models/librarycomponent.h>
 #include <models/busdefinition.h>
 #include <models/designconfiguration.h>

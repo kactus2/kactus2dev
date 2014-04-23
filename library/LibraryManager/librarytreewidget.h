@@ -10,7 +10,7 @@
 #include "librarytreeview.h"
 #include "librarytreefilter.h"
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <QWidget>
 

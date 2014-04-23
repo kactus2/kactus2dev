@@ -8,8 +8,8 @@
 #ifndef DOCUMENTGENERATOR_H
 #define DOCUMENTGENERATOR_H
 
-#include <LibraryManager/libraryinterface.h>
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <models/component.h>
 #include <models/view.h>

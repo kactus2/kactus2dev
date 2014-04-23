@@ -11,7 +11,7 @@
 #include "enumeratedvaluemodel.h"
 #include "enumeratedvaluedelegate.h"
 #include "writevalueconstrainteditor.h"
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 FieldEditor::FieldEditor(QSharedPointer<Field> field, 
 						 QSharedPointer<Component> component, 
