@@ -27,7 +27,7 @@
 #include <common/KactusAttribute.h>
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 
-#include <designwidget/HWDesignWidget.h>
+#include <editors/HWDesign/HWDesignWidget.h>
 
 #include <QFileDialog>
 #include <QString>

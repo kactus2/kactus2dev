@@ -9,7 +9,7 @@
 
 #include "activeviewdelegate.h"
 
-#include <designwidget/HWDesignWidget.h>
+#include <editors/HWDesign/HWDesignWidget.h>
 
 #include <models/designconfiguration.h>
 

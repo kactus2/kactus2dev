@@ -17,7 +17,7 @@
 #include "SystemMoveCommands.h"
 #include "SWOffPageConnectorItem.h"
 
-#include <designwidget/HWMoveCommands.h>
+#include <editors/HWDesign/HWMoveCommands.h>
 
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>

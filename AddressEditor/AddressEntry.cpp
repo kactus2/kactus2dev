@@ -16,8 +16,8 @@
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 
-#include <designwidget/BusPortItem.h>
-#include <designwidget/HWChangeCommands.h>
+#include <editors/HWDesign/BusPortItem.h>
+#include <editors/HWDesign/HWChangeCommands.h>
 
 #include <models/businterface.h>
 #include <models/slaveinterface.h>

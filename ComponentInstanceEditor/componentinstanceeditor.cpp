@@ -7,18 +7,18 @@
 
 #include "componentinstanceeditor.h"
 
-#include <SystemDesign/SystemChangeCommands.h>
-#include <designwidget/HWComponentItem.h>
-#include <SystemDesign/SystemComponentItem.h>
-#include <SystemDesign/SWComponentItem.h>
+#include <editors/SystemDesign/SystemChangeCommands.h>
+#include <editors/HWDesign/HWComponentItem.h>
+#include <editors/SystemDesign/SystemComponentItem.h>
+#include <editors/SystemDesign/SWComponentItem.h>
 
 #include <models/component.h>
 #include <models/designconfiguration.h>
 
 #include <library/LibraryManager/vlnv.h>
-#include <designwidget/HWDesignDiagram.h>
-#include <designwidget/HWDesignWidget.h>
-#include <designwidget/HWChangeCommands.h>
+#include <editors/HWDesign/HWDesignDiagram.h>
+#include <editors/HWDesign/HWDesignWidget.h>
+#include <editors/HWDesign/HWChangeCommands.h>
 
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
 

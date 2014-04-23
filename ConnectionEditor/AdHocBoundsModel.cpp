@@ -13,10 +13,10 @@
 
 #include "AdHocBoundsDelegate.h"
 
-#include <designwidget/HWConnection.h>
-#include <designwidget/HWConnectionEndpoint.h>
-#include <designwidget/HWDesignDiagram.h>
-#include <designwidget/HWChangeCommands.h>
+#include <editors/HWDesign/HWConnection.h>
+#include <editors/HWDesign/HWConnectionEndpoint.h>
+#include <editors/HWDesign/HWDesignDiagram.h>
+#include <editors/HWDesign/HWChangeCommands.h>
 
 #include <common/GenericEditProvider.h>
 

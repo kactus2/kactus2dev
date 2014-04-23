@@ -24,8 +24,8 @@
 #include <settings/SettingsDialog.h>
 #include <settings/SettingsUpdater.h>
 
-#include <SystemDesign/SystemDesignWidget.h>
-#include <SystemDesign/SystemDesignDiagram.h>
+#include <editors/SystemDesign/SystemDesignWidget.h>
+#include <editors/SystemDesign/SystemDesignDiagram.h>
 
 #include <MCAPI/CSourceWidget.h>
 #include <MCAPI/CSourceContentMatcher.h>
@@ -70,13 +70,13 @@
 
 #include <Plugins/PluginSystem/PluginListDialog.h>
 
-#include <MemoryDesigner/MemoryDesignWidget.h>
+#include <editors/MemoryDesigner/MemoryDesignWidget.h>
 
-#include <designwidget/HWDesignWidget.h>
-#include <designwidget/HWDesignDiagram.h>
-#include <designwidget/HWComponentItem.h>
-#include <designwidget/BusPortItem.h>
-#include <designwidget/BusInterfaceItem.h>
+#include <editors/HWDesign/HWDesignWidget.h>
+#include <editors/HWDesign/HWDesignDiagram.h>
+#include <editors/HWDesign/HWComponentItem.h>
+#include <editors/HWDesign/BusPortItem.h>
+#include <editors/HWDesign/BusInterfaceItem.h>
 
 #include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
 #include <IPXactWrapper/ComDefinitionEditor/ComDefinitionEditor.h>

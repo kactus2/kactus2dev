@@ -13,7 +13,7 @@
 
 #include "ComponentItem.h"
 #include "ConnectionUndoCommands.h"
-#include <designwidget/OffPageConnectorItem.h>
+#include <editors/HWDesign/OffPageConnectorItem.h>
 
 #include <common/GenericEditProvider.h>
 #include <common/DesignDiagram.h>

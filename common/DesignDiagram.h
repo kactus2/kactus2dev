@@ -18,7 +18,7 @@
 #include <QMenu>
 #include <QGraphicsSceneContextMenuEvent>
 
-#include <designwidget/AdHocEnabled.h>
+#include <editors/HWDesign/AdHocEnabled.h>
 
 #include <models/designconfiguration.h>
 #include <models/ColumnDesc.h>

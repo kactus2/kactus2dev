@@ -26,7 +26,7 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <designwidget/columnview/ColumnEditDialog.h>
+#include <editors/HWDesign/columnview/ColumnEditDialog.h>
 
 #include <common/diagramgrid.h>
 #include <common/DiagramUtil.h>

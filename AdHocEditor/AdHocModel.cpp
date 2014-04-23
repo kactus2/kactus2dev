@@ -16,10 +16,10 @@
 #include <models/port.h>
 #include <models/component.h>
 
-#include <designwidget/HWComponentItem.h>
-#include <designwidget/HWDesignDiagram.h>
-#include <designwidget/HWChangeCommands.h>
-#include <designwidget/AdHocEnabled.h>
+#include <editors/HWDesign/HWComponentItem.h>
+#include <editors/HWDesign/HWDesignDiagram.h>
+#include <editors/HWDesign/HWChangeCommands.h>
+#include <editors/HWDesign/AdHocEnabled.h>
 
 #include <common/GenericEditProvider.h>
 

@@ -16,8 +16,8 @@
 
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/ConnectionEndpoint.h>
-#include <designwidget/HWComponentItem.h>
-#include <designwidget/models/PortGenerationRow.h>
+#include <editors/HWDesign/HWComponentItem.h>
+#include <editors/HWDesign/models/PortGenerationRow.h>
 #include <models/component.h>
 #include "models/port.h"
 #include <models/businterface.h>

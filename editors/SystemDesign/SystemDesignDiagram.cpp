@@ -39,8 +39,8 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <designwidget/columnview/ColumnEditDialog.h>
-#include <designwidget/HWChangeCommands.h>
+#include <editors/HWDesign/columnview/ColumnEditDialog.h>
+#include <editors/HWDesign/HWChangeCommands.h>
 
 #include <common/diagramgrid.h>
 #include <common/DiagramUtil.h>

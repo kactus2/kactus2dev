@@ -24,8 +24,8 @@
 #include <models/port.h>
 #include <models/businterface.h>
 #include <common/graphicsItems/ConnectionEndpoint.h>
-#include <designwidget/views/CellEditTableView.h>
-#include <designwidget/models/PortGenerationTableModel.h>
+#include <editors/HWDesign/views/CellEditTableView.h>
+#include <editors/HWDesign/models/PortGenerationTableModel.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 namespace

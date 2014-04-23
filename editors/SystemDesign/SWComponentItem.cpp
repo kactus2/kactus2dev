@@ -16,7 +16,7 @@
 #include "SystemMoveCommands.h"
 #include "SystemDesignDiagram.h"
 
-#include <designwidget/HWMoveCommands.h>
+#include <editors/HWDesign/HWMoveCommands.h>
 
 #include <models/component.h>
 #include <models/model.h>

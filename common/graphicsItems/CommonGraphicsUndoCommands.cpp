@@ -13,7 +13,7 @@
 
 #include "IGraphicsItemStack.h"
 
-#include <designwidget/HWComponentItem.h>
+#include <editors/HWDesign/HWComponentItem.h>
 
 //-----------------------------------------------------------------------------
 // Function: ItemAddCommand()

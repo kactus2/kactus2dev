@@ -13,15 +13,15 @@
 
 #include "AdHocDelegate.h"
 
-#include <designwidget/HWComponentItem.h>
+#include <editors/HWDesign/HWComponentItem.h>
 #include <models/component.h>
 
 #include <library/LibraryManager/vlnv.h>
 
-#include <designwidget/HWDesignDiagram.h>
-#include <designwidget/HWComponentItem.h>
+#include <editors/HWDesign/HWDesignDiagram.h>
+#include <editors/HWDesign/HWComponentItem.h>
 
-#include <designwidget/HWChangeCommands.h>
+#include <editors/HWDesign/HWChangeCommands.h>
 
 #include <QVBoxLayout>
 #include <QDockWidget>

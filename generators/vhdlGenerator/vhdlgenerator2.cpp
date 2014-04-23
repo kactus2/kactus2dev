@@ -31,7 +31,7 @@
 
 #include <common/utils.h>
 
-#include <designwidget/HWDesignWidget.h>
+#include <editors/HWDesign/HWDesignWidget.h>
 #include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
 
 #include <QFile>
