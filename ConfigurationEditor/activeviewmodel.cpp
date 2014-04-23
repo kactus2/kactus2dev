@@ -7,11 +7,11 @@
 
 #include "activeviewmodel.h"
 
-#include <editors/HWDesign/HWComponentItem.h>
-#include <editors/SystemDesign/HWMappingItem.h>
-#include <editors/SystemDesign/SWComponentItem.h>
-#include <editors/HWDesign/HWDesignWidget.h>
-#include <editors/HWDesign/HWChangeCommands.h>
+#include <designEditors/HWDesign/HWComponentItem.h>
+#include <designEditors/SystemDesign/HWMappingItem.h>
+#include <designEditors/SystemDesign/SWComponentItem.h>
+#include <designEditors/HWDesign/HWDesignWidget.h>
+#include <designEditors/HWDesign/HWChangeCommands.h>
 
 #include <models/component.h>
 

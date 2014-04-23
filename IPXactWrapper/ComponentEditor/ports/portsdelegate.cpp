@@ -7,7 +7,7 @@
 
 #include "portsdelegate.h"
 
-#include <generators/vhdlGenerator/vhdlgeneral.h>
+#include <kactusGenerators/vhdlGenerator/vhdlgeneral.h>
 
 #include <QComboBox>
 #include <QLineEdit>

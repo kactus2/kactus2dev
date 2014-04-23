@@ -9,11 +9,11 @@
 
 #include "AdHocBoundsDelegate.h"
 
-#include <editors/HWDesign/HWConnection.h>
-#include <editors/HWDesign/HWConnectionEndpoint.h>
-#include <editors/HWDesign/HWDesignDiagram.h>
-#include <editors/HWDesign/HWChangeCommands.h>
-#include <editors/HWDesign/HWComponentItem.h>
+#include <designEditors/HWDesign/HWConnection.h>
+#include <designEditors/HWDesign/HWConnectionEndpoint.h>
+#include <designEditors/HWDesign/HWDesignDiagram.h>
+#include <designEditors/HWDesign/HWChangeCommands.h>
+#include <designEditors/HWDesign/HWComponentItem.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/vlnv.h>

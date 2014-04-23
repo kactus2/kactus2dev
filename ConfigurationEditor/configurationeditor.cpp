@@ -7,7 +7,7 @@
 
 #include "configurationeditor.h"
 
-#include <editors/HWDesign/HWDesignWidget.h>
+#include <designEditors/HWDesign/HWDesignWidget.h>
 
 #include <common/dialogs/createConfigurationDialog/createconfigurationdialog.h>
 

@@ -11,9 +11,9 @@
 
 #include "ComponentPreviewBox.h"
 
-#include <editors/SystemDesign/SWComponentItem.h>
+#include <designEditors/SystemDesign/SWComponentItem.h>
 
-#include <editors/HWDesign/HWComponentItem.h>
+#include <designEditors/HWDesign/HWComponentItem.h>
 #include <models/component.h>
 #include <models/librarycomponent.h>
 #include <common/diagramgrid.h>

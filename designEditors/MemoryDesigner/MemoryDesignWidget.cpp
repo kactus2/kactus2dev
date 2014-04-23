@@ -15,7 +15,7 @@
 
 #include <common/GenericEditProvider.h>
 
-#include <editors/HWDesign/columnview/ColumnEditDialog.h>
+#include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/LibraryUtils.h>

@@ -23,7 +23,7 @@
 #include <common/GenericEditProvider.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
-#include <editors/HWDesign/columnview/ColumnEditDialog.h>
+#include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/LibraryUtils.h>

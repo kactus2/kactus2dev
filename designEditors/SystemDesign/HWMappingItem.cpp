@@ -17,7 +17,7 @@
 #include "SWComponentItem.h"
 #include "SWPortItem.h"
 
-#include <editors/HWDesign/HWMoveCommands.h>
+#include <designEditors/HWDesign/HWMoveCommands.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 

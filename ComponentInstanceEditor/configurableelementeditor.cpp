@@ -9,7 +9,7 @@
 
 #include "configurableelementdelegate.h"
 #include <models/component.h>
-#include <editors/HWDesign/HWComponentItem.h>
+#include <designEditors/HWDesign/HWComponentItem.h>
 
 #include <QIcon>
 #include <QHBoxLayout>

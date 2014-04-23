@@ -17,12 +17,12 @@
 
 #include <common/GenericEditProvider.h>
 
-#include <editors/HWDesign/HWConnectionEndpoint.h>
-#include <editors/HWDesign/BusPortItem.h>
-#include <editors/HWDesign/BusInterfaceItem.h>
-#include <editors/HWDesign/HWChangeCommands.h>
-#include <editors/HWDesign/HWDesignDiagram.h>
-#include <editors/HWDesign/HWComponentItem.h>
+#include <designEditors/HWDesign/HWConnectionEndpoint.h>
+#include <designEditors/HWDesign/BusPortItem.h>
+#include <designEditors/HWDesign/BusInterfaceItem.h>
+#include <designEditors/HWDesign/HWChangeCommands.h>
+#include <designEditors/HWDesign/HWDesignDiagram.h>
+#include <designEditors/HWDesign/HWComponentItem.h>
 
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
 

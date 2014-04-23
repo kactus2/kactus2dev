@@ -10,7 +10,7 @@
 
 #include <models/designconfiguration.h>
 
-#include <editors/HWDesign/HWComponentItem.h>
+#include <designEditors/HWDesign/HWComponentItem.h>
 
 #include <common/GenericEditProvider.h>
 

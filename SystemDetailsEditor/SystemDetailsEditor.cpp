@@ -14,7 +14,7 @@
 #include "SwitchHWDialog.h"
 #include "ExportSWDialog.h"
 
-#include <editors/SystemDesign/SystemDesignWidget.h>
+#include <designEditors/SystemDesign/SystemDesignWidget.h>
 
 #include <common/DesignDiagram.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>

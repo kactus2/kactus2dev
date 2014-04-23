@@ -24,13 +24,13 @@
 #include <settings/SettingsDialog.h>
 #include <settings/SettingsUpdater.h>
 
-#include <editors/SystemDesign/SystemDesignWidget.h>
-#include <editors/SystemDesign/SystemDesignDiagram.h>
+#include <designEditors/SystemDesign/SystemDesignWidget.h>
+#include <designEditors/SystemDesign/SystemDesignDiagram.h>
 
 #include <MCAPI/CSourceWidget.h>
 #include <MCAPI/CSourceContentMatcher.h>
 
-#include <generators/DocumentGenerator/documentgenerator.h>
+#include <kactusGenerators/DocumentGenerator/documentgenerator.h>
 
 #include <Help/HelpSystem/ContextHelpBrowser.h>
 #include <Help/HelpSystem/HelpWindow.h>
@@ -70,13 +70,13 @@
 
 #include <Plugins/PluginSystem/PluginListDialog.h>
 
-#include <editors/MemoryDesigner/MemoryDesignWidget.h>
+#include <designEditors/MemoryDesigner/MemoryDesignWidget.h>
 
-#include <editors/HWDesign/HWDesignWidget.h>
-#include <editors/HWDesign/HWDesignDiagram.h>
-#include <editors/HWDesign/HWComponentItem.h>
-#include <editors/HWDesign/BusPortItem.h>
-#include <editors/HWDesign/BusInterfaceItem.h>
+#include <designEditors/HWDesign/HWDesignWidget.h>
+#include <designEditors/HWDesign/HWDesignDiagram.h>
+#include <designEditors/HWDesign/HWComponentItem.h>
+#include <designEditors/HWDesign/BusPortItem.h>
+#include <designEditors/HWDesign/BusInterfaceItem.h>
 
 #include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
 #include <IPXactWrapper/ComDefinitionEditor/ComDefinitionEditor.h>
