@@ -18,7 +18,7 @@
 #include <common/GenericEditProvider.h>
 #include <common/graphicsItems/ComponentItem.h>
 
-#include <AdHocEditor/AdHocEditor.h>
+#include <designEditors/HWDesign/AdHocEditor/AdHocEditor.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 

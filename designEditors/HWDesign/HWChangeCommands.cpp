@@ -24,7 +24,7 @@
 #include <common/graphicsItems/ConnectionUndoCommands.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 
-#include <ConfigurationEditor/activeviewmodel.h>
+#include <designEditors/common/ConfigurationEditor/activeviewmodel.h>
 
 #include "HWConnection.h"
 #include "BusPortItem.h"

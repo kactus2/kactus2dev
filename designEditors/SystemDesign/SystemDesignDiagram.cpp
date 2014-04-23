@@ -35,7 +35,7 @@
 #include <QClipboard>
 
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
-#include <SystemDetailsEditor/SwitchHWDialog.h>
+#include <designEditors/SystemDesign/SystemDetailsEditor/SwitchHWDialog.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 

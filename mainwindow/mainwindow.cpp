@@ -86,13 +86,13 @@
 
 #include <PropertyWidget/messageconsole.h>
 
-#include <ComponentInstanceEditor/componentinstanceeditor.h>
-#include <AddressEditor/AddressEditor.h>
-#include <ConfigurationEditor/configurationeditor.h>
-#include <SystemDetailsEditor/SystemDetailsEditor.h>
-#include <InterfaceEditor/interfaceeditor.h>
-#include <ConnectionEditor/connectioneditor.h>
-#include <AdHocEditor/AdHocEditor.h>
+#include <designEditors/common/ComponentInstanceEditor/componentinstanceeditor.h>
+#include <designEditors/HWDesign/AddressEditor/AddressEditor.h>
+#include <designEditors/common/ConfigurationEditor/configurationeditor.h>
+#include <designEditors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.h>
+#include <designEditors/common/InterfaceEditor/interfaceeditor.h>
+#include <designEditors/common/ConnectionEditor/connectioneditor.h>
+#include <designEditors/HWDesign/AdHocEditor/AdHocEditor.h>
 
 #include <QCoreApplication>
 #include <QApplication>

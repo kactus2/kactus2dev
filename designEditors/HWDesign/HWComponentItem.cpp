@@ -19,7 +19,7 @@
 #include <common/KactusColors.h>
 #include <common/layouts/VCollisionLayout.h>
 
-#include <AdHocEditor/AdHocEditor.h>
+#include <designEditors/HWDesign/AdHocEditor/AdHocEditor.h>
 
 #include <models/component.h>
 #include <models/businterface.h>

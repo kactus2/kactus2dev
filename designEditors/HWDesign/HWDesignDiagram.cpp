@@ -34,8 +34,6 @@
 
 #include <library/LibraryManager/libraryhandler.h>
 
-#include <AdHocEditor/AdHocEditor.h>
-
 #include <models/component.h>
 #include <models/abstractiondefinition.h>
 #include <models/businterface.h>

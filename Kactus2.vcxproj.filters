@@ -287,27 +287,6 @@
     <Filter Include="Source Files\settings">
       <UniqueIdentifier>{78fb2d79-16b8-4d2b-9ee0-4ac09b03b0f5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\ComponentInstanceEditor">
-      <UniqueIdentifier>{0cc5a03a-e5f0-4d7b-bcfd-0c4418e1e410}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\ConfigurationEditor">
-      <UniqueIdentifier>{8a260cf7-b0b9-48bc-b067-1e9e89bd1676}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\InterfaceEditor">
-      <UniqueIdentifier>{89e742d4-39f9-4e45-b4b0-e33929df86d4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\ConnectionEditor">
-      <UniqueIdentifier>{fa21c43e-3610-4d7d-8120-e2431a363368}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\AdHocEditor">
-      <UniqueIdentifier>{f1e5422a-1fae-4477-baf6-fced4fe21f6a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\SystemDetailsEditor">
-      <UniqueIdentifier>{a69cd6a6-201a-41fa-97db-d7e74fc20e27}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\AddressEditor">
-      <UniqueIdentifier>{7d233129-b394-406f-a685-e12be4d6bb83}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
@@ -593,27 +572,6 @@
     </Filter>
     <Filter Include="Header Files\settings">
       <UniqueIdentifier>{4fc7a21e-ab99-4732-b9b6-6f34021bdfb5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\ComponentInstanceEditor">
-      <UniqueIdentifier>{a472d7d3-267c-4e47-9267-707e6a7610b1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\ConfigurationEditor">
-      <UniqueIdentifier>{823d3f6d-9d7f-42c9-af49-306f99cb53ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\InterfaceEditor">
-      <UniqueIdentifier>{013ca66b-3bc2-42d1-81d1-087b28766716}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\ConnectionEditor">
-      <UniqueIdentifier>{33ee3f06-a4fc-41d8-be4f-37a04efea7a2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\AdHocEditor">
-      <UniqueIdentifier>{892a9b94-615c-4e95-9c4c-e30a7c23f3bd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\SystemDetailsEditor">
-      <UniqueIdentifier>{bd961281-bac8-4b4e-9228-9b9ae077a8d0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\AddressEditor">
-      <UniqueIdentifier>{ee35da27-a35a-40db-bba2-f097f5b28492}</UniqueIdentifier>
     </Filter>
     <Filter Include="Generated Files">
       <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
@@ -925,6 +883,54 @@
     </Filter>
     <Filter Include="Header Files\kactusGenerators\quartusGenerator">
       <UniqueIdentifier>{9fa58811-55e5-451f-aa5a-9513f855e5d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\designEditors\common">
+      <UniqueIdentifier>{4dbcb3e0-06d1-48aa-9b91-0766a72b6575}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\designEditors\common\ComponentInstanceEditor">
+      <UniqueIdentifier>{a472d7d3-267c-4e47-9267-707e6a7610b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\designEditors\common">
+      <UniqueIdentifier>{0757d58a-ae12-467c-a9c1-1e335671f518}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\designEditors\common\ComponentInstanceEditor">
+      <UniqueIdentifier>{0cc5a03a-e5f0-4d7b-bcfd-0c4418e1e410}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\designEditors\common\ConnectionEditor">
+      <UniqueIdentifier>{fa21c43e-3610-4d7d-8120-e2431a363368}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\designEditors\common\ConnectionEditor">
+      <UniqueIdentifier>{33ee3f06-a4fc-41d8-be4f-37a04efea7a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\designEditors\common\InterfaceEditor">
+      <UniqueIdentifier>{89e742d4-39f9-4e45-b4b0-e33929df86d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\designEditors\common\InterfaceEditor">
+      <UniqueIdentifier>{013ca66b-3bc2-42d1-81d1-087b28766716}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\designEditors\common\ConfigurationEditor">
+      <UniqueIdentifier>{8a260cf7-b0b9-48bc-b067-1e9e89bd1676}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\designEditors\common\ConfigurationEditor">
+      <UniqueIdentifier>{823d3f6d-9d7f-42c9-af49-306f99cb53ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\designEditors\SystemDesign\SystemDetailsEditor">
+      <UniqueIdentifier>{a69cd6a6-201a-41fa-97db-d7e74fc20e27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\designEditors\SystemDesign\SystemDetailsEditor">
+      <UniqueIdentifier>{bd961281-bac8-4b4e-9228-9b9ae077a8d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\designEditors\HWDesign\AddressEditor">
+      <UniqueIdentifier>{ee35da27-a35a-40db-bba2-f097f5b28492}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\designEditors\HWDesign\AddressEditor">
+      <UniqueIdentifier>{7d233129-b394-406f-a685-e12be4d6bb83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\designEditors\HWDesign\AdHocEditor">
+      <UniqueIdentifier>{f1e5422a-1fae-4477-baf6-fced4fe21f6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\designEditors\HWDesign\AdHocEditor">
+      <UniqueIdentifier>{892a9b94-615c-4e95-9c4c-e30a7c23f3bd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -2011,60 +2017,6 @@
     <ClCompile Include="settings\SettingsUpdater.cpp">
       <Filter>Source Files\settings</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentInstanceEditor\componentinstanceeditor.cpp">
-      <Filter>Source Files\ComponentInstanceEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="ComponentInstanceEditor\componentinstancemodel.cpp">
-      <Filter>Source Files\ComponentInstanceEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="ComponentInstanceEditor\configurableelementdelegate.cpp">
-      <Filter>Source Files\ComponentInstanceEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="ComponentInstanceEditor\configurableelementeditor.cpp">
-      <Filter>Source Files\ComponentInstanceEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="ConfigurationEditor\activeviewdelegate.cpp">
-      <Filter>Source Files\ConfigurationEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="ConfigurationEditor\activevieweditor.cpp">
-      <Filter>Source Files\ConfigurationEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="ConfigurationEditor\activeviewmodel.cpp">
-      <Filter>Source Files\ConfigurationEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="ConfigurationEditor\configurationeditor.cpp">
-      <Filter>Source Files\ConfigurationEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="InterfaceEditor\interfaceeditor.cpp">
-      <Filter>Source Files\InterfaceEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="ConnectionEditor\AdHocBoundsDelegate.cpp">
-      <Filter>Source Files\ConnectionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="ConnectionEditor\AdHocBoundsModel.cpp">
-      <Filter>Source Files\ConnectionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="ConnectionEditor\connectioneditor.cpp">
-      <Filter>Source Files\ConnectionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="AdHocEditor\AdHocDelegate.cpp">
-      <Filter>Source Files\AdHocEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="AdHocEditor\AdHocEditor.cpp">
-      <Filter>Source Files\AdHocEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="AdHocEditor\AdHocModel.cpp">
-      <Filter>Source Files\AdHocEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="SystemDetailsEditor\ExportSWDialog.cpp">
-      <Filter>Source Files\SystemDetailsEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="SystemDetailsEditor\SwitchHWDialog.cpp">
-      <Filter>Source Files\SystemDetailsEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="SystemDetailsEditor\SystemDetailsEditor.cpp">
-      <Filter>Source Files\SystemDetailsEditor</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\qrc_kactus.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2085,21 +2037,6 @@
     </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\addressspacegapitem.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer</Filter>
-    </ClCompile>
-    <ClCompile Include="AddressEditor\AddressDelegate.cpp">
-      <Filter>Source Files\AddressEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="AddressEditor\AddressEditor.cpp">
-      <Filter>Source Files\AddressEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="AddressEditor\AddressEntry.cpp">
-      <Filter>Source Files\AddressEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="AddressEditor\AddressModel.cpp">
-      <Filter>Source Files\AddressEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="AddressEditor\AddressTableView.cpp">
-      <Filter>Source Files\AddressEditor</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ApiDefinitionEditor.cpp">
       <Filter>Generated Files</Filter>
@@ -2152,13 +2089,7 @@
     <ClCompile Include="GeneratedFiles\moc_TabDocument.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_SystemDetailsEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SWPropertiesEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_SwitchHWDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_summarylabel.cpp">
@@ -2434,9 +2365,6 @@
     <ClCompile Include="GeneratedFiles\moc_interfacemodeselector.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_interfaceeditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_IEditProvider.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2566,9 +2494,6 @@
     <ClCompile Include="GeneratedFiles\moc_fieldeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ExportSWDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_expandableitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2638,18 +2563,6 @@
     <ClCompile Include="GeneratedFiles\moc_ConnectionEndpoint.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_connectioneditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_configurationeditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_configurableelementeditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_configurableelementdelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ComPropertyModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2666,12 +2579,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ComponentItem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_componentinstancemodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_componentinstanceeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_componenteditorviewsitem.cpp">
@@ -2893,24 +2800,6 @@
     <ClCompile Include="GeneratedFiles\moc_ApiCreateDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AdHocModel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AdHocEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AdHocDelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AdHocBoundsModel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AdHocBoundsDelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AddressTableView.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_addressspacevisualizer.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2944,15 +2833,6 @@
     <ClCompile Include="GeneratedFiles\moc_addressspaceeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AddressModel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AddressEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AddressDelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_addressblockproxy.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2966,15 +2846,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_addressblockdelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_activeviewmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_activevieweditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_activeviewdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_accesscombobox.cpp">
@@ -4027,6 +3898,141 @@
     <ClCompile Include="GeneratedFiles\moc_documentgenerator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_componentinstanceeditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_componentinstancemodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_configurableelementdelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_configurableelementeditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\ComponentInstanceEditor\componentinstanceeditor.cpp">
+      <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\ComponentInstanceEditor\componentinstancemodel.cpp">
+      <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\ComponentInstanceEditor\configurableelementdelegate.cpp">
+      <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\ComponentInstanceEditor\configurableelementeditor.cpp">
+      <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\ConnectionEditor\AdHocBoundsDelegate.cpp">
+      <Filter>Source Files\designEditors\common\ConnectionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\ConnectionEditor\AdHocBoundsModel.cpp">
+      <Filter>Source Files\designEditors\common\ConnectionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\ConnectionEditor\connectioneditor.cpp">
+      <Filter>Source Files\designEditors\common\ConnectionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocBoundsDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocBoundsModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_connectioneditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\InterfaceEditor\interfaceeditor.cpp">
+      <Filter>Source Files\designEditors\common\InterfaceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_interfaceeditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\ConfigurationEditor\activeviewdelegate.cpp">
+      <Filter>Source Files\designEditors\common\ConfigurationEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\ConfigurationEditor\activevieweditor.cpp">
+      <Filter>Source Files\designEditors\common\ConfigurationEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\ConfigurationEditor\activeviewmodel.cpp">
+      <Filter>Source Files\designEditors\common\ConfigurationEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\ConfigurationEditor\configurationeditor.cpp">
+      <Filter>Source Files\designEditors\common\ConfigurationEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_activeviewdelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_activevieweditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_activeviewmodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_configurationeditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\SystemDetailsEditor\ExportSWDialog.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\SystemDetailsEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\SystemDetailsEditor\SwitchHWDialog.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\SystemDetailsEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\SystemDesign\SystemDetailsEditor\SystemDetailsEditor.cpp">
+      <Filter>Source Files\designEditors\SystemDesign\SystemDetailsEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ExportSWDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SwitchHWDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SystemDetailsEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AddressDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AddressEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AddressModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AddressTableView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\AddressEditor\AddressDelegate.cpp">
+      <Filter>Source Files\designEditors\HWDesign\AddressEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\AddressEditor\AddressEditor.cpp">
+      <Filter>Source Files\designEditors\HWDesign\AddressEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\AddressEditor\AddressEntry.cpp">
+      <Filter>Source Files\designEditors\HWDesign\AddressEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\AddressEditor\AddressModel.cpp">
+      <Filter>Source Files\designEditors\HWDesign\AddressEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\AddressEditor\AddressTableView.cpp">
+      <Filter>Source Files\designEditors\HWDesign\AddressEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\AdHocEditor\AdHocDelegate.cpp">
+      <Filter>Source Files\designEditors\HWDesign\AdHocEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\AdHocEditor\AdHocEditor.cpp">
+      <Filter>Source Files\designEditors\HWDesign\AdHocEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\AdHocEditor\AdHocModel.cpp">
+      <Filter>Source Files\designEditors\HWDesign\AdHocEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4347,27 +4353,6 @@
     <CustomBuild Include="appicon.ico" />
     <CustomBuild Include="Kactus2.pri" />
     <CustomBuild Include="Kactus2.pro" />
-    <CustomBuild Include="AddressEditor\AddressDelegate.h">
-      <Filter>Header Files\AddressEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="AddressEditor\AddressEditor.h">
-      <Filter>Header Files\AddressEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="AddressEditor\AddressModel.h">
-      <Filter>Header Files\AddressEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="AddressEditor\AddressTableView.h">
-      <Filter>Header Files\AddressEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="AdHocEditor\AdHocDelegate.h">
-      <Filter>Header Files\AdHocEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="AdHocEditor\AdHocEditor.h">
-      <Filter>Header Files\AdHocEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="AdHocEditor\AdHocModel.h">
-      <Filter>Header Files\AdHocEditor</Filter>
-    </CustomBuild>
     <CustomBuild Include="common\delegates\ComboDelegate\combodelegate.h">
       <Filter>Header Files\common\delegates\ComboDelegate</Filter>
     </CustomBuild>
@@ -4589,42 +4574,6 @@
     </CustomBuild>
     <CustomBuild Include="common\IEditProvider.h">
       <Filter>Header Files\common</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ComponentInstanceEditor\componentinstanceeditor.h">
-      <Filter>Header Files\ComponentInstanceEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ComponentInstanceEditor\componentinstancemodel.h">
-      <Filter>Header Files\ComponentInstanceEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ComponentInstanceEditor\configurableelementdelegate.h">
-      <Filter>Header Files\ComponentInstanceEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ComponentInstanceEditor\configurableelementeditor.h">
-      <Filter>Header Files\ComponentInstanceEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ConfigurationEditor\activeviewdelegate.h">
-      <Filter>Header Files\ConfigurationEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ConfigurationEditor\activevieweditor.h">
-      <Filter>Header Files\ConfigurationEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ConfigurationEditor\activeviewmodel.h">
-      <Filter>Header Files\ConfigurationEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ConfigurationEditor\configurationeditor.h">
-      <Filter>Header Files\ConfigurationEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ConnectionEditor\AdHocBoundsDelegate.h">
-      <Filter>Header Files\ConnectionEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ConnectionEditor\AdHocBoundsModel.h">
-      <Filter>Header Files\ConnectionEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ConnectionEditor\connectioneditor.h">
-      <Filter>Header Files\ConnectionEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="InterfaceEditor\interfaceeditor.h">
-      <Filter>Header Files\InterfaceEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ApiDefinitionEditor\ApiFunctionEditor.h">
       <Filter>Header Files\IPXactWrapper\ApiDefinitionEditor</Filter>
@@ -5205,15 +5154,6 @@
     <CustomBuild Include="settings\SettingsDialog.h">
       <Filter>Header Files\settings</Filter>
     </CustomBuild>
-    <CustomBuild Include="SystemDetailsEditor\ExportSWDialog.h">
-      <Filter>Header Files\SystemDetailsEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="SystemDetailsEditor\SwitchHWDialog.h">
-      <Filter>Header Files\SystemDetailsEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="SystemDetailsEditor\SystemDetailsEditor.h">
-      <Filter>Header Files\SystemDetailsEditor</Filter>
-    </CustomBuild>
     <CustomBuild Include="mainwindow\DeleteWorkspaceDialog.h">
       <Filter>Header Files\mainwindow</Filter>
     </CustomBuild>
@@ -5703,11 +5643,74 @@
     <CustomBuild Include="kactusGenerators\DocumentGenerator\documentgenerator.h">
       <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
     </CustomBuild>
+    <CustomBuild Include="designEditors\common\ComponentInstanceEditor\componentinstanceeditor.h">
+      <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ComponentInstanceEditor\componentinstancemodel.h">
+      <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ComponentInstanceEditor\configurableelementdelegate.h">
+      <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ComponentInstanceEditor\configurableelementeditor.h">
+      <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ConnectionEditor\AdHocBoundsDelegate.h">
+      <Filter>Header Files\designEditors\common\ConnectionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ConnectionEditor\AdHocBoundsModel.h">
+      <Filter>Header Files\designEditors\common\ConnectionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ConnectionEditor\connectioneditor.h">
+      <Filter>Header Files\designEditors\common\ConnectionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\InterfaceEditor\interfaceeditor.h">
+      <Filter>Header Files\designEditors\common\InterfaceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ConfigurationEditor\activeviewdelegate.h">
+      <Filter>Header Files\designEditors\common\ConfigurationEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ConfigurationEditor\activevieweditor.h">
+      <Filter>Header Files\designEditors\common\ConfigurationEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ConfigurationEditor\activeviewmodel.h">
+      <Filter>Header Files\designEditors\common\ConfigurationEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ConfigurationEditor\configurationeditor.h">
+      <Filter>Header Files\designEditors\common\ConfigurationEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\SystemDesign\SystemDetailsEditor\ExportSWDialog.h">
+      <Filter>Header Files\designEditors\SystemDesign\SystemDetailsEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\SystemDesign\SystemDetailsEditor\SwitchHWDialog.h">
+      <Filter>Header Files\designEditors\SystemDesign\SystemDetailsEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\SystemDesign\SystemDetailsEditor\SystemDetailsEditor.h">
+      <Filter>Header Files\designEditors\SystemDesign\SystemDetailsEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\AddressEditor\AddressDelegate.h">
+      <Filter>Header Files\designEditors\HWDesign\AddressEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\AddressEditor\AddressEditor.h">
+      <Filter>Header Files\designEditors\HWDesign\AddressEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\AddressEditor\AddressModel.h">
+      <Filter>Header Files\designEditors\HWDesign\AddressEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\AddressEditor\AddressTableView.h">
+      <Filter>Header Files\designEditors\HWDesign\AddressEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\AdHocEditor\AdHocDelegate.h">
+      <Filter>Header Files\designEditors\HWDesign\AdHocEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\AdHocEditor\AdHocEditor.h">
+      <Filter>Header Files\designEditors\HWDesign\AdHocEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\AdHocEditor\AdHocModel.h">
+      <Filter>Header Files\designEditors\HWDesign\AdHocEditor</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AddressEditor\AddressEntry.h">
-      <Filter>Header Files\AddressEditor</Filter>
-    </ClInclude>
     <ClInclude Include="common\dialogs\attributeDialog\attributedialog.h">
       <Filter>Header Files\common\dialogs\attributeDialog</Filter>
     </ClInclude>
@@ -6169,6 +6172,9 @@
     </ClInclude>
     <ClInclude Include="kactusGenerators\vhdlGenerator\vhdlportsorter.h">
       <Filter>Header Files\kactusGenerators\vhdlGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\AddressEditor\AddressEntry.h">
+      <Filter>Header Files\designEditors\HWDesign\AddressEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
