@@ -17,8 +17,8 @@
 #include <models/fileset.h>
 #include <models/component.h>
 #include <library/LibraryManager/libraryinterface.h>
-#include <IPXactWrapper/BusEditor/absdefgroup.h>
-#include <IPXactWrapper/BusEditor/busdefgroup.h>
+#include <editors/BusEditor/absdefgroup.h>
+#include <editors/BusEditor/busdefgroup.h>
 
 #include <QVBoxLayout>
 #include <QGroupBox>

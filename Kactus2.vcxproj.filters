@@ -266,9 +266,6 @@
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\visualization">
       <UniqueIdentifier>{8548c639-7a0c-4828-894c-1badeb9906d2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\IPXactWrapper\BusEditor">
-      <UniqueIdentifier>{259357d4-028a-437b-b212-8514a8af1434}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComDefinitionEditor">
       <UniqueIdentifier>{3edee860-beea-4eda-b7b5-7a916e6da570}</UniqueIdentifier>
     </Filter>
@@ -575,9 +572,6 @@
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\visualization">
       <UniqueIdentifier>{ec63cac5-5b23-443d-a5d7-0dbb4cb79c21}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\IPXactWrapper\BusEditor">
-      <UniqueIdentifier>{cde09ff6-5bc5-4b7e-9974-552b151c81b8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComDefinitionEditor">
       <UniqueIdentifier>{5a68258a-9267-4385-83ab-253c65f1d395}</UniqueIdentifier>
@@ -919,6 +913,12 @@
     </Filter>
     <Filter Include="Header Files\editors\MemoryDesigner">
       <UniqueIdentifier>{e4d45644-a380-4514-a439-916e44bbecd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\BusEditor">
+      <UniqueIdentifier>{259357d4-028a-437b-b212-8514a8af1434}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\BusEditor">
+      <UniqueIdentifier>{cde09ff6-5bc5-4b7e-9974-552b151c81b8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1687,33 +1687,6 @@
     <ClCompile Include="IPXactWrapper\ComponentEditor\visualization\memoryvisualizationitem.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\visualization</Filter>
     </ClCompile>
-    <ClCompile Include="IPXactWrapper\BusEditor\absdefgroup.cpp">
-      <Filter>Source Files\IPXactWrapper\BusEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\BusEditor\busdefgroup.cpp">
-      <Filter>Source Files\IPXactWrapper\BusEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\BusEditor\buseditor.cpp">
-      <Filter>Source Files\IPXactWrapper\BusEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\BusEditor\busportsdelegate.cpp">
-      <Filter>Source Files\IPXactWrapper\BusEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\BusEditor\busportsmodel.cpp">
-      <Filter>Source Files\IPXactWrapper\BusEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\BusEditor\busportsview.cpp">
-      <Filter>Source Files\IPXactWrapper\BusEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\BusEditor\impexpgroup.cpp">
-      <Filter>Source Files\IPXactWrapper\BusEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\BusEditor\renamegroup.cpp">
-      <Filter>Source Files\IPXactWrapper\BusEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\BusEditor\signalsgroup.cpp">
-      <Filter>Source Files\IPXactWrapper\BusEditor</Filter>
-    </ClCompile>
     <ClCompile Include="IPXactWrapper\ComDefinitionEditor\ComDefinitionEditor.cpp">
       <Filter>Source Files\IPXactWrapper\ComDefinitionEditor</Filter>
     </ClCompile>
@@ -2188,9 +2161,6 @@
     <ClCompile Include="GeneratedFiles\moc_SnippetTextEdit.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_signalsgroup.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SettingsDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2210,9 +2180,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_scanprogresswidget.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_renamegroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_renamedialog.cpp">
@@ -2462,9 +2429,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_interfaceeditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_impexpgroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_IEditProvider.cpp">
@@ -2845,15 +2809,6 @@
     <ClCompile Include="GeneratedFiles\moc_channelinterfacemanagerdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busportsview.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busportsmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busportsdelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_businterfacesmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2891,12 +2846,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_busifgeneraldetails.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_buseditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busdefgroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_bridgesmodel.cpp">
@@ -3023,9 +2972,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_accesscombobox.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_absdefgroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_librarysettingsdelegate.cpp">
@@ -4021,6 +3967,60 @@
     <ClCompile Include="GeneratedFiles\moc_MemoryItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\BusEditor\absdefgroup.cpp">
+      <Filter>Source Files\editors\BusEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusEditor\busdefgroup.cpp">
+      <Filter>Source Files\editors\BusEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusEditor\buseditor.cpp">
+      <Filter>Source Files\editors\BusEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusEditor\busportsdelegate.cpp">
+      <Filter>Source Files\editors\BusEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusEditor\busportsmodel.cpp">
+      <Filter>Source Files\editors\BusEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusEditor\busportsview.cpp">
+      <Filter>Source Files\editors\BusEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusEditor\impexpgroup.cpp">
+      <Filter>Source Files\editors\BusEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusEditor\renamegroup.cpp">
+      <Filter>Source Files\editors\BusEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusEditor\signalsgroup.cpp">
+      <Filter>Source Files\editors\BusEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_absdefgroup.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_busdefgroup.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_buseditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_busportsdelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_busportsmodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_busportsview.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_impexpgroup.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_renamegroup.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_signalsgroup.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4631,33 +4631,6 @@
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ApiDefinitionEditor\ApiFunctionParameterModel.h">
       <Filter>Header Files\IPXactWrapper\ApiDefinitionEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\BusEditor\absdefgroup.h">
-      <Filter>Header Files\IPXactWrapper\BusEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\BusEditor\busdefgroup.h">
-      <Filter>Header Files\IPXactWrapper\BusEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\BusEditor\buseditor.h">
-      <Filter>Header Files\IPXactWrapper\BusEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\BusEditor\busportsdelegate.h">
-      <Filter>Header Files\IPXactWrapper\BusEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\BusEditor\busportsmodel.h">
-      <Filter>Header Files\IPXactWrapper\BusEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\BusEditor\busportsview.h">
-      <Filter>Header Files\IPXactWrapper\BusEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\BusEditor\impexpgroup.h">
-      <Filter>Header Files\IPXactWrapper\BusEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\BusEditor\renamegroup.h">
-      <Filter>Header Files\IPXactWrapper\BusEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\BusEditor\signalsgroup.h">
-      <Filter>Header Files\IPXactWrapper\BusEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComDefinitionEditor\ComDefinitionEditor.h">
       <Filter>Header Files\IPXactWrapper\ComDefinitionEditor</Filter>
@@ -5696,6 +5669,33 @@
     </CustomBuild>
     <CustomBuild Include="editors\MemoryDesigner\MemoryItem.h">
       <Filter>Header Files\editors\MemoryDesigner</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusEditor\absdefgroup.h">
+      <Filter>Header Files\editors\BusEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusEditor\busdefgroup.h">
+      <Filter>Header Files\editors\BusEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusEditor\buseditor.h">
+      <Filter>Header Files\editors\BusEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusEditor\busportsdelegate.h">
+      <Filter>Header Files\editors\BusEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusEditor\busportsmodel.h">
+      <Filter>Header Files\editors\BusEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusEditor\busportsview.h">
+      <Filter>Header Files\editors\BusEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusEditor\impexpgroup.h">
+      <Filter>Header Files\editors\BusEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusEditor\renamegroup.h">
+      <Filter>Header Files\editors\BusEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusEditor\signalsgroup.h">
+      <Filter>Header Files\editors\BusEditor</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

@@ -81,7 +81,7 @@
 #include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
 #include <IPXactWrapper/ComDefinitionEditor/ComDefinitionEditor.h>
 #include <IPXactWrapper/ApiDefinitionEditor/ApiDefinitionEditor.h>
-#include <IPXactWrapper/BusEditor/buseditor.h>
+#include <editors/BusEditor/buseditor.h>
 #include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
 
 #include <PropertyWidget/messageconsole.h>

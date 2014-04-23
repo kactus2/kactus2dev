@@ -17,7 +17,7 @@
 #include <QMap>
 #include <QPushButton>
 
-#include <IPXactWrapper/BusEditor/buseditor.h>
+#include <editors/BusEditor/buseditor.h>
 #include <models/businterface.h>
 
 class BusInterfaceWizard;
