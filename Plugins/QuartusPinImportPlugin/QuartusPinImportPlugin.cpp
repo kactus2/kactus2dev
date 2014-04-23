@@ -19,7 +19,7 @@
 #include <models/component.h>
 #include <models/generaldeclarations.h>
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <Plugins/PluginSystem/IPluginUtility.h>
 

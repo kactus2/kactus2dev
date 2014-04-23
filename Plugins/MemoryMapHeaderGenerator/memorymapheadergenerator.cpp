@@ -6,7 +6,7 @@
 */
 
 #include "memorymapheadergenerator.h"
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 #include <common/dialogs/fileSaveDialog/filesavedialog.h>
 #include "localheadersavemodel.h"

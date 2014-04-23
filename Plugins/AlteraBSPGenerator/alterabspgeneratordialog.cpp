@@ -6,7 +6,7 @@
 */
 
 #include "alterabspgeneratordialog.h"
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 #include <models/bspbuildcommand.h>
 #include <models/generaldeclarations.h>
 #include <models/component.h>

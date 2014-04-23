@@ -8,7 +8,7 @@
 #ifndef SYSTEMHEADERSAVEMODEL_H
 #define SYSTEMHEADERSAVEMODEL_H
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 #include <models/component.h>
 
 #include <QAbstractTableModel>

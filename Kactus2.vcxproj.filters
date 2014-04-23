@@ -797,12 +797,6 @@
     <Filter Include="Header Files\designwidget\models">
       <UniqueIdentifier>{dbe17298-1f77-43bc-a8f9-6c50a9450c51}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\IPXactWrapper\ComponentEditor\BusInterfaceWizard">
-      <UniqueIdentifier>{043b6ec6-2d86-48dc-a6f2-dac4de1c28c0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\IPXactWrapper\ComponentEditor\BusInterfaceWizard">
-      <UniqueIdentifier>{ad4d9bad-60d2-4149-a58c-991a136ac275}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\dialogs\NewBusDialog">
       <UniqueIdentifier>{c24945c3-2148-4814-9d5b-16b984c5d5a5}</UniqueIdentifier>
     </Filter>
@@ -913,6 +907,12 @@
     </Filter>
     <Filter Include="Header Files\library\LibraryManager\HierarchyView">
       <UniqueIdentifier>{319e069c-6161-49af-a60b-01ec3d1131a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\wizards\BusInterfaceWizard">
+      <UniqueIdentifier>{043b6ec6-2d86-48dc-a6f2-dac4de1c28c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\wizards\BusInterfaceWizard">
+      <UniqueIdentifier>{ad4d9bad-60d2-4149-a58c-991a136ac275}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -3700,36 +3700,6 @@
     <ClCompile Include="IPXactWrapper\ComponentEditor\ports\PortsView.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\ports</Filter>
     </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\BusInterfaceWizard\BusInterfaceWizard.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\BusInterfaceWizard</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\BusInterfaceWizard\BusInterfaceWizardBusDefinitionPage.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\BusInterfaceWizard</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\BusInterfaceWizard\BusInterfaceWizardConclusionPage.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\BusInterfaceWizard</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\BusInterfaceWizard\BusInterfaceWizardIntroPage.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\BusInterfaceWizard</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\BusInterfaceWizard\BusInterfaceWizardPortMapPage.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\BusInterfaceWizard</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\BusInterfaceWizard\BusInterfaceWizardGeneralOptionsPage.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\BusInterfaceWizard</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizardConclusionPage.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizardIntroPage.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizardPortMapPage.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizardBusDefinitionPage.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="common\dialogs\NewBusDialog\NewBusDialog.cpp">
       <Filter>Source Files\common\dialogs\NewBusDialog</Filter>
     </ClCompile>
@@ -4013,6 +3983,36 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_vlnvdialer.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\BusInterfaceWizard\BusInterfaceWizard.cpp">
+      <Filter>Source Files\wizards\BusInterfaceWizard</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\BusInterfaceWizard\BusInterfaceWizardBusDefinitionPage.cpp">
+      <Filter>Source Files\wizards\BusInterfaceWizard</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\BusInterfaceWizard\BusInterfaceWizardConclusionPage.cpp">
+      <Filter>Source Files\wizards\BusInterfaceWizard</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\BusInterfaceWizard\BusInterfaceWizardGeneralOptionsPage.cpp">
+      <Filter>Source Files\wizards\BusInterfaceWizard</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\BusInterfaceWizard\BusInterfaceWizardIntroPage.cpp">
+      <Filter>Source Files\wizards\BusInterfaceWizard</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\BusInterfaceWizard\BusInterfaceWizardPortMapPage.cpp">
+      <Filter>Source Files\wizards\BusInterfaceWizard</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizardBusDefinitionPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizardConclusionPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizardIntroPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizardPortMapPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5559,18 +5559,6 @@
     <CustomBuild Include="IPXactWrapper\ComponentEditor\ports\PortsView.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\ports</Filter>
     </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\BusInterfaceWizard\BusInterfaceWizardConclusionPage.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\BusInterfaceWizard</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\BusInterfaceWizard\BusInterfaceWizardIntroPage.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\BusInterfaceWizard</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\BusInterfaceWizard\BusInterfaceWizardPortMapPage.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\BusInterfaceWizard</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\BusInterfaceWizard\BusInterfaceWizardBusDefinitionPage.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\BusInterfaceWizard</Filter>
-    </CustomBuild>
     <CustomBuild Include="common\widgets\DirectoryListSelector\DirectoryListSelector.h">
       <Filter>Header Files\common\widgets\DirectoryListSelector</Filter>
     </CustomBuild>
@@ -5690,6 +5678,18 @@
     </CustomBuild>
     <CustomBuild Include="library\LibraryManager\VLNVDialer\vlnvdialer.h">
       <Filter>Header Files\library\LibraryManager\VLNVDialer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizardBusDefinitionPage.h">
+      <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizardConclusionPage.h">
+      <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizardIntroPage.h">
+      <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizardPortMapPage.h">
+      <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -6083,12 +6083,6 @@
     <ClInclude Include="common\widgets\vhdlParser\VhdlSyntax.h">
       <Filter>Header Files\common\widgets\vhdlParser</Filter>
     </ClInclude>
-    <ClInclude Include="IPXactWrapper\ComponentEditor\BusInterfaceWizard\BusInterfaceWizard.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\BusInterfaceWizard</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXactWrapper\ComponentEditor\BusInterfaceWizard\BusInterfaceWizardGeneralOptionsPage.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\BusInterfaceWizard</Filter>
-    </ClInclude>
     <ClInclude Include="common\dialogs\NewBusDialog\NewBusDialog.h">
       <Filter>Header Files\common\dialogs\NewBusDialog</Filter>
     </ClInclude>
@@ -6157,6 +6151,12 @@
     </ClInclude>
     <ClInclude Include="library\LibraryManager\vlnv.h">
       <Filter>Header Files\library\LibraryManager</Filter>
+    </ClInclude>
+    <ClInclude Include="wizards\BusInterfaceWizard\BusInterfaceWizard.h">
+      <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
+    </ClInclude>
+    <ClInclude Include="wizards\BusInterfaceWizard\BusInterfaceWizardGeneralOptionsPage.h">
+      <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

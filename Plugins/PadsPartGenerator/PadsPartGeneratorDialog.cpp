@@ -13,8 +13,8 @@
 #include "PadsPartGenerator.h"
 #include "PadsAsciiSyntax.h"
 
-#include <LibraryManager/vlnv.h>
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/vlnv.h>
+#include <library/LibraryManager/libraryinterface.h>
 #include <models/abstractiondefinition.h>
 #include <models/businterface.h>
 #include <models/generaldeclarations.h>

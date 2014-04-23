@@ -7,7 +7,7 @@
 
 #include "globalheadersavemodel.h"
 
-#include <LibraryManager/libraryinterface.h>
+#include <library/LibraryManager/libraryinterface.h>
 #include <models/ComponentInstance.h>
 
 #include <QDir>

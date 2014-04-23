@@ -15,7 +15,7 @@
 #include <models/component.h>
 
 #include <models/businterface.h>
-#include <IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizard.h>
+#include <wizards/BusInterfaceWizard/BusInterfaceWizard.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>

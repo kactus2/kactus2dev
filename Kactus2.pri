@@ -376,12 +376,9 @@ HEADERS += ./resource.h \
     ./IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.h \
     ./IPXactWrapper/ComponentEditor/visualization/memorygapitem.h \
     ./IPXactWrapper/ComponentEditor/visualization/fieldgapitem.h \
-    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizard.h \
-    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardGeneralOptionsPage.h \
-    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardBusDefinitionPage.h \
-    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardConclusionPage.h \
-    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardIntroPage.h \
-    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardPortMapPage.h \
+    ./wizards/BusInterfaceWizard/BusInterfaceWizardIntroPage.h \
+    ./wizards/BusInterfaceWizard/BusInterfaceWizardBusDefinitionPage.h \
+    ./wizards/BusInterfaceWizard/BusInterfaceWizardPortMapPage.h \
     ./IPXactWrapper/BusEditor/signalsgroup.h \
     ./IPXactWrapper/BusEditor/renamegroup.h \
     ./IPXactWrapper/BusEditor/impexpgroup.h \
@@ -490,16 +487,6 @@ HEADERS += ./resource.h \
     ./mainwindow/newbuspage.h \
     ./mainwindow/NewApiDefinitionPage.h \
     ./mainwindow/mainwindow.h \
-    ./MemoryDesigner/AddressBlockItem.h \
-    ./MemoryDesigner/SegmentItem.h \
-    ./MemoryDesigner/MemoryBaseItem.h \
-    ./MemoryDesigner/MemoryItem.h \
-    ./MemoryDesigner/MemoryDesignWidget.h \
-    ./MemoryDesigner/MemoryDesignDiagram.h \
-    ./MemoryDesigner/MemoryColumn.h \
-    ./MemoryDesigner/AddressSubsection.h \
-    ./MemoryDesigner/AddressSpaceItem.h \
-    ./MemoryDesigner/AddressSectionItem.h \
     ./PropertyWidget/messageconsole.h \
     ./MCAPI/CSourceContentMatcher.h \
     ./MCAPI/MCAPIDesignerTypes.h \
@@ -547,74 +534,87 @@ HEADERS += ./resource.h \
     ./SystemDesign/SWInterfaceItem.h \
     ./SystemDesign/SWConnectionEndpoint.h \
     ./SystemDesign/SWComponentItem.h \
-    ./library/LibraryManager/LibraryUtils.h \
-    ./library/LibraryManager/libraryinterface.h \
-    ./library/LibraryManager/ipxactitem.h \
-    ./library/LibraryManager/HierarchyView/hierarchyfilter.h \
-    ./library/LibraryManager/HierarchyView/hierarchyitem.h \
-    ./library/LibraryManager/HierarchyView/hierarchymodel.h \
-    ./library/LibraryManager/HierarchyView/hierarchywidget.h \
-    ./library/LibraryManager/HierarchyView/hierarchyview.h \
-    ./library/LibraryManager/VLNVDialer/dialerwidget.h \
-    ./Plugins/PluginSystem/PluginSettingsWidget.h \
-    ./Plugins/PluginSystem/PluginListDialog.h \
-    ./Plugins/PluginSystem/PluginInfoWidget.h \
-    ./Plugins/PluginSystem/ISourceAnalyzerPlugin.h \
-    ./Plugins/PluginSystem/IGeneratorPlugin.h \
-    ./Plugins/PluginSystem/PluginManager.h \
-    ./Plugins/PluginSystem/IPluginUtility.h \
     ./SystemDetailsEditor/SystemDetailsEditor.h \
     ./SystemDetailsEditor/SwitchHWDialog.h \
     ./SystemDetailsEditor/ExportSWDialog.h \
-    ./Help/HelpSystem/HelpSearchWidget.h \
-    ./Help/HelpSystem/HelpWindow.h \
     ./AddressEditor/AddressEntry.h \
     ./AddressEditor/AddressDelegate.h \
     ./AddressEditor/AddressEditor.h \
     ./AddressEditor/AddressTableView.h \
     ./AddressEditor/AddressModel.h \
-    ./wizards/ComponentWizard/ComponentWizardVhdlImportPage.h \
-    ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.h \
-    ./wizards/ComponentWizard/ComponentWizardFilesPage.h \
-    ./wizards/ComponentWizard/ComponentWizard.h \
-    ./wizards/ComponentWizard/ComponentWizardIntroPage.h \
-    ./wizards/ComponentWizard/ComponentWizardDependencyPage.h \
-    ./generators/vhdlGenerator/vhdlcomponentdeclaration.h \
-    ./generators/vhdlGenerator/vhdlcomponentinstance.h \
     ./generators/vhdlGenerator/vhdlconnectionendpoint.h \
     ./generators/vhdlGenerator/vhdlgeneral.h \
+    ./generators/vhdlGenerator/vhdlportmap.h \
+    ./generators/vhdlGenerator/vhdlportsorter.h \
+    ./generators/vhdlGenerator/vhdlcomponentdeclaration.h \
+    ./generators/vhdlGenerator/vhdlcomponentinstance.h \
     ./generators/vhdlGenerator/vhdlgenerator2.h \
     ./generators/vhdlGenerator/vhdlgeneric.h \
     ./generators/vhdlGenerator/vhdlobject.h \
     ./generators/vhdlGenerator/vhdlport.h \
-    ./generators/vhdlGenerator/vhdlportmap.h \
-    ./generators/vhdlGenerator/vhdlportsorter.h \
     ./generators/vhdlGenerator/vhdlsignal.h \
-    ./wizards/ComponentWizard/ComponentWizardConclusionPage.h \
-    ./library/LibraryManager/VLNVDialer/filterwidget.h \
     ./generators/DocumentGenerator/documentgenerator.h \
-    ./Help/HelpSystem/ContextHelpBrowser.h \
-    ./library/LibraryManager/VLNVDialer/vlnvdialer.h \
-    ./library/LibraryManager/VLNVDialer/implementationgroup.h \
-    ./library/LibraryManager/VLNVDialer/hierarchygroup.h \
-    ./library/LibraryManager/VLNVDialer/firmnessgroup.h \
-    ./library/LibraryManager/VLNVDialer/typegroup.h \
-    ./library/LibraryManager/librarytreeview.h \
-    ./library/LibraryManager/librarytreewidget.h \
-    ./library/LibraryManager/librarytreemodel.h \
-    ./library/LibraryManager/librarytreefilter.h \
-    ./library/LibraryManager/libraryitem.h \
-    ./library/LibraryManager/libraryhandler.h \
-    ./library/LibraryManager/LibraryErrorModel.h \
-    ./library/LibraryManager/librarydata.h \
-    ./library/LibraryManager/ipxactwidget.h \
-    ./library/LibraryManager/ipxactmodel.h \
     ./generators/modelsimGenerator/modelsimgenerator.h \
-    ./Plugins/PluginSystem/NewPluginsDialog.h \
-    ./Plugins/PluginSystem/IPlugin.h \
     ./generators/quartusGenerator/quartusgenerator.h \
+    ./MemoryDesigner/AddressBlockItem.h \
+    ./MemoryDesigner/SegmentItem.h \
+    ./MemoryDesigner/MemoryBaseItem.h \
+    ./MemoryDesigner/MemoryItem.h \
+    ./MemoryDesigner/MemoryDesignWidget.h \
+    ./MemoryDesigner/MemoryDesignDiagram.h \
+    ./MemoryDesigner/MemoryColumn.h \
+    ./MemoryDesigner/AddressSubsection.h \
+    ./MemoryDesigner/AddressSpaceItem.h \
+    ./MemoryDesigner/AddressSectionItem.h \
+    ./wizards/ComponentWizard/ComponentWizard.h \
+    ./wizards/ComponentWizard/ComponentWizardConclusionPage.h \
+    ./wizards/ComponentWizard/ComponentWizardDependencyPage.h \
+    ./wizards/ComponentWizard/ComponentWizardFilesPage.h \
+    ./wizards/ComponentWizard/ComponentWizardIntroPage.h \
+    ./wizards/ComponentWizard/ComponentWizardVhdlImportPage.h \
+    ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.h \
     ./wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.h \
-    ./library/LibraryManager/vlnv.h
+    ./Help/HelpSystem/HelpWindow.h \
+    ./Help/HelpSystem/ContextHelpBrowser.h \
+    ./Help/HelpSystem/HelpSearchWidget.h \
+    ./Plugins/PluginSystem/IGeneratorPlugin.h \
+    ./Plugins/PluginSystem/IPlugin.h \
+    ./Plugins/PluginSystem/IPluginUtility.h \
+    ./Plugins/PluginSystem/ISourceAnalyzerPlugin.h \
+    ./Plugins/PluginSystem/PluginInfoWidget.h \
+    ./Plugins/PluginSystem/PluginManager.h \
+    ./Plugins/PluginSystem/PluginSettingsWidget.h \
+    ./Plugins/PluginSystem/NewPluginsDialog.h \
+    ./Plugins/PluginSystem/PluginListDialog.h \
+    ./library/LibraryManager/ipxactitem.h \
+    ./library/LibraryManager/libraryinterface.h \
+    ./library/LibraryManager/LibraryUtils.h \
+    ./library/LibraryManager/vlnv.h \
+    ./library/LibraryManager/ipxactmodel.h \
+    ./library/LibraryManager/ipxactwidget.h \
+    ./library/LibraryManager/librarydata.h \
+    ./library/LibraryManager/LibraryErrorModel.h \
+    ./library/LibraryManager/libraryhandler.h \
+    ./library/LibraryManager/libraryitem.h \
+    ./library/LibraryManager/librarytreefilter.h \
+    ./library/LibraryManager/librarytreemodel.h \
+    ./library/LibraryManager/librarytreewidget.h \
+    ./library/LibraryManager/librarytreeview.h \
+    ./library/LibraryManager/VLNVDialer/dialerwidget.h \
+    ./library/LibraryManager/VLNVDialer/filterwidget.h \
+    ./library/LibraryManager/VLNVDialer/firmnessgroup.h \
+    ./library/LibraryManager/VLNVDialer/hierarchygroup.h \
+    ./library/LibraryManager/VLNVDialer/implementationgroup.h \
+    ./library/LibraryManager/VLNVDialer/typegroup.h \
+    ./library/LibraryManager/VLNVDialer/vlnvdialer.h \
+    ./library/LibraryManager/HierarchyView/hierarchyfilter.h \
+    ./library/LibraryManager/HierarchyView/hierarchyitem.h \
+    ./library/LibraryManager/HierarchyView/hierarchymodel.h \
+    ./library/LibraryManager/HierarchyView/hierarchywidget.h \
+    ./library/LibraryManager/HierarchyView/hierarchyview.h \
+    ./wizards/BusInterfaceWizard/BusInterfaceWizardGeneralOptionsPage.h \
+    ./wizards/BusInterfaceWizard/BusInterfaceWizardConclusionPage.h \
+    ./wizards/BusInterfaceWizard/BusInterfaceWizard.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
     ./common/DesignWidget.cpp \
@@ -963,12 +963,12 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/visualization/fieldgapitem.cpp \
     ./IPXactWrapper/ComponentEditor/visualization/memorygapitem.cpp \
     ./IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.cpp \
-    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizard.cpp \
-    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardBusDefinitionPage.cpp \
-    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardConclusionPage.cpp \
-    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardIntroPage.cpp \
-    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardPortMapPage.cpp \
-    ./IPXactWrapper/ComponentEditor/BusInterfaceWizard/BusInterfaceWizardGeneralOptionsPage.cpp \
+    ./wizards/BusInterfaceWizard/BusInterfaceWizardPortMapPage.cpp \
+    ./wizards/BusInterfaceWizard/BusInterfaceWizardGeneralOptionsPage.cpp \
+    ./wizards/BusInterfaceWizard/BusInterfaceWizardConclusionPage.cpp \
+    ./wizards/BusInterfaceWizard/BusInterfaceWizard.cpp \
+    ./wizards/BusInterfaceWizard/BusInterfaceWizardIntroPage.cpp \
+    ./wizards/BusInterfaceWizard/BusInterfaceWizardBusDefinitionPage.cpp \
     ./IPXactWrapper/BusEditor/absdefgroup.cpp \
     ./IPXactWrapper/BusEditor/busdefgroup.cpp \
     ./IPXactWrapper/BusEditor/buseditor.cpp \
@@ -987,31 +987,6 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionModel.cpp \
     ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionParameterDelegate.cpp \
     ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionParameterModel.cpp \
-    ./library/LibraryManager/LibraryErrorModel.cpp \
-    ./library/LibraryManager/librarydata.cpp \
-    ./library/LibraryManager/ipxactwidget.cpp \
-    ./library/LibraryManager/ipxactmodel.cpp \
-    ./library/LibraryManager/ipxactitem.cpp \
-    ./library/LibraryManager/VLNVDialer/vlnvdialer.cpp \
-    ./library/LibraryManager/VLNVDialer/typegroup.cpp \
-    ./library/LibraryManager/VLNVDialer/implementationgroup.cpp \
-    ./library/LibraryManager/VLNVDialer/hierarchygroup.cpp \
-    ./library/LibraryManager/VLNVDialer/firmnessgroup.cpp \
-    ./library/LibraryManager/VLNVDialer/filterwidget.cpp \
-    ./library/LibraryManager/VLNVDialer/dialerwidget.cpp \
-    ./library/LibraryManager/libraryhandler.cpp \
-    ./library/LibraryManager/vlnv.cpp \
-    ./library/LibraryManager/librarytreeview.cpp \
-    ./library/LibraryManager/librarytreewidget.cpp \
-    ./library/LibraryManager/librarytreemodel.cpp \
-    ./library/LibraryManager/librarytreefilter.cpp \
-    ./library/LibraryManager/libraryitem.cpp \
-    ./library/LibraryManager/LibraryUtils.cpp \
-    ./library/LibraryManager/HierarchyView/hierarchyview.cpp \
-    ./library/LibraryManager/HierarchyView/hierarchymodel.cpp \
-    ./library/LibraryManager/HierarchyView/hierarchyitem.cpp \
-    ./library/LibraryManager/HierarchyView/hierarchyfilter.cpp \
-    ./library/LibraryManager/HierarchyView/hierarchywidget.cpp \
     ./mainwindow/DeleteWorkspaceDialog.cpp \
     ./mainwindow/main.cpp \
     ./mainwindow/mainwindow.cpp \
@@ -1103,9 +1078,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./models/wireabstraction.cpp \
     ./models/writevalueconstraint.cpp \
     ./models/XmlUtils.cpp \
-    ./generators/modelsimGenerator/modelsimgenerator.cpp \
     ./PropertyWidget/messageconsole.cpp \
-    ./generators/quartusGenerator/quartusgenerator.cpp \
     ./MCAPI/CSourceContentMatcher.cpp \
     ./MCAPI/CSourceHighlighter.cpp \
     ./MCAPI/CSourceTextEdit.cpp \
@@ -1130,7 +1103,6 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./ConfigurationEditor/activevieweditor.cpp \
     ./ConfigurationEditor/activeviewmodel.cpp \
     ./ConfigurationEditor/configurationeditor.cpp \
-    ./generators/DocumentGenerator/documentgenerator.cpp \
     ./InterfaceEditor/interfaceeditor.cpp \
     ./ConnectionEditor/AdHocBoundsDelegate.cpp \
     ./ConnectionEditor/AdHocBoundsModel.cpp \
@@ -1152,16 +1124,9 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./SystemDesign/SystemDesignDiagram.cpp \
     ./SystemDesign/SystemDesignWidget.cpp \
     ./SystemDesign/SystemMoveCommands.cpp \
-    ./Plugins/PluginSystem/PluginManager.cpp \
-    ./Plugins/PluginSystem/PluginInfoWidget.cpp \
-    ./Plugins/PluginSystem/NewPluginsDialog.cpp \
-    ./Plugins/PluginSystem/PluginListDialog.cpp \
     ./SystemDetailsEditor/ExportSWDialog.cpp \
     ./SystemDetailsEditor/SwitchHWDialog.cpp \
     ./SystemDetailsEditor/SystemDetailsEditor.cpp \
-    ./Help/HelpSystem/HelpWindow.cpp \
-    ./Help/HelpSystem/ContextHelpBrowser.cpp \
-    ./Help/HelpSystem/HelpSearchWidget.cpp \
     ./AddressEditor/AddressDelegate.cpp \
     ./AddressEditor/AddressEditor.cpp \
     ./AddressEditor/AddressEntry.cpp \
@@ -1177,14 +1142,6 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./MemoryDesigner/MemoryDesignWidget.cpp \
     ./MemoryDesigner/MemoryItem.cpp \
     ./MemoryDesigner/SegmentItem.cpp \
-    ./wizards/ComponentWizard/ComponentWizardVhdlImportPage.cpp \
-    ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.cpp \
-    ./wizards/ComponentWizard/ComponentWizardFilesPage.cpp \
-    ./wizards/ComponentWizard/ComponentWizardDependencyPage.cpp \
-    ./wizards/ComponentWizard/ComponentWizardConclusionPage.cpp \
-    ./wizards/ComponentWizard/ComponentWizard.cpp \
-    ./wizards/ComponentWizard/ComponentWizardIntroPage.cpp \
-    ./wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.cpp \
     ./generators/vhdlGenerator/vhdlcomponentdeclaration.cpp \
     ./generators/vhdlGenerator/vhdlcomponentinstance.cpp \
     ./generators/vhdlGenerator/vhdlconnectionendpoint.cpp \
@@ -1195,5 +1152,48 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./generators/vhdlGenerator/vhdlport.cpp \
     ./generators/vhdlGenerator/vhdlportmap.cpp \
     ./generators/vhdlGenerator/vhdlportsorter.cpp \
-    ./generators/vhdlGenerator/vhdlsignal.cpp
+    ./generators/vhdlGenerator/vhdlsignal.cpp \
+    ./generators/DocumentGenerator/documentgenerator.cpp \
+    ./generators/modelsimGenerator/modelsimgenerator.cpp \
+    ./generators/quartusGenerator/quartusgenerator.cpp \
+    ./wizards/ComponentWizard/ComponentWizard.cpp \
+    ./wizards/ComponentWizard/ComponentWizardConclusionPage.cpp \
+    ./wizards/ComponentWizard/ComponentWizardDependencyPage.cpp \
+    ./wizards/ComponentWizard/ComponentWizardFilesPage.cpp \
+    ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.cpp \
+    ./wizards/ComponentWizard/ComponentWizardIntroPage.cpp \
+    ./wizards/ComponentWizard/ComponentWizardVhdlImportPage.cpp \
+    ./wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.cpp \
+    ./Help/HelpSystem/ContextHelpBrowser.cpp \
+    ./Help/HelpSystem/HelpSearchWidget.cpp \
+    ./Help/HelpSystem/HelpWindow.cpp \
+    ./Plugins/PluginSystem/NewPluginsDialog.cpp \
+    ./Plugins/PluginSystem/PluginInfoWidget.cpp \
+    ./Plugins/PluginSystem/PluginListDialog.cpp \
+    ./Plugins/PluginSystem/PluginManager.cpp \
+    ./library/LibraryManager/ipxactitem.cpp \
+    ./library/LibraryManager/ipxactmodel.cpp \
+    ./library/LibraryManager/ipxactwidget.cpp \
+    ./library/LibraryManager/librarydata.cpp \
+    ./library/LibraryManager/LibraryErrorModel.cpp \
+    ./library/LibraryManager/libraryhandler.cpp \
+    ./library/LibraryManager/libraryitem.cpp \
+    ./library/LibraryManager/librarytreefilter.cpp \
+    ./library/LibraryManager/librarytreemodel.cpp \
+    ./library/LibraryManager/librarytreeview.cpp \
+    ./library/LibraryManager/librarytreewidget.cpp \
+    ./library/LibraryManager/LibraryUtils.cpp \
+    ./library/LibraryManager/vlnv.cpp \
+    ./library/LibraryManager/VLNVDialer/dialerwidget.cpp \
+    ./library/LibraryManager/VLNVDialer/filterwidget.cpp \
+    ./library/LibraryManager/VLNVDialer/firmnessgroup.cpp \
+    ./library/LibraryManager/VLNVDialer/hierarchygroup.cpp \
+    ./library/LibraryManager/VLNVDialer/implementationgroup.cpp \
+    ./library/LibraryManager/VLNVDialer/typegroup.cpp \
+    ./library/LibraryManager/VLNVDialer/vlnvdialer.cpp \
+    ./library/LibraryManager/HierarchyView/hierarchyfilter.cpp \
+    ./library/LibraryManager/HierarchyView/hierarchyitem.cpp \
+    ./library/LibraryManager/HierarchyView/hierarchymodel.cpp \
+    ./library/LibraryManager/HierarchyView/hierarchyview.cpp \
+    ./library/LibraryManager/HierarchyView/hierarchywidget.cpp
 RESOURCES += kactus.qrc

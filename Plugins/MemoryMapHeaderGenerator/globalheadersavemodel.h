@@ -8,7 +8,7 @@
 #ifndef GLOBALHEADERSAVEMODEL_H
 #define GLOBALHEADERSAVEMODEL_H
 
-#include <LibraryManager/vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 #include <models/component.h>
 #include <models/design.h>
 
