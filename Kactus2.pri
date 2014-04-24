@@ -351,15 +351,6 @@ HEADERS += ./resource.h \
     ./IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.h \
     ./IPXactWrapper/ComponentEditor/visualization/memorygapitem.h \
     ./IPXactWrapper/ComponentEditor/visualization/fieldgapitem.h \
-    ./IPXactWrapper/ComDefinitionEditor/ComPropertyModel.h \
-    ./IPXactWrapper/ComDefinitionEditor/ComPropertyEditor.h \
-    ./IPXactWrapper/ComDefinitionEditor/ComPropertyDelegate.h \
-    ./IPXactWrapper/ComDefinitionEditor/ComDefinitionEditor.h \
-    ./IPXactWrapper/ApiDefinitionEditor/ApiDefinitionEditor.h \
-    ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionParameterModel.h \
-    ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionParameterDelegate.h \
-    ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionModel.h \
-    ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionEditor.h \
     ./models/bspbuildcommand.h \
     ./models/FileDependency.h \
     ./models/swbuildcommand.h \
@@ -603,6 +594,15 @@ HEADERS += ./resource.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
+    ./editors/ApiDefinitionEditor/ApiFunctionParameterModel.h \
+    ./editors/ApiDefinitionEditor/ApiFunctionModel.h \
+    ./editors/ApiDefinitionEditor/ApiFunctionEditor.h \
+    ./editors/ApiDefinitionEditor/ApiDefinitionEditor.h \
+    ./editors/ApiDefinitionEditor/ApiFunctionParameterDelegate.h \
+    ./editors/ComDefinitionEditor/ComPropertyModel.h \
+    ./editors/ComDefinitionEditor/ComPropertyDelegate.h \
+    ./editors/ComDefinitionEditor/ComDefinitionEditor.h \
+    ./editors/ComDefinitionEditor/ComPropertyEditor.h \
     ./mainwindow/MessageConsole/messageconsole.h \
     ./mainwindow/NewPages/NewSystemPage.h \
     ./mainwindow/NewPages/NewSWComponentPage.h \
@@ -938,15 +938,15 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/visualization/fieldgapitem.cpp \
     ./IPXactWrapper/ComponentEditor/visualization/memorygapitem.cpp \
     ./IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.cpp \
-    ./IPXactWrapper/ComDefinitionEditor/ComDefinitionEditor.cpp \
-    ./IPXactWrapper/ComDefinitionEditor/ComPropertyDelegate.cpp \
-    ./IPXactWrapper/ComDefinitionEditor/ComPropertyEditor.cpp \
-    ./IPXactWrapper/ComDefinitionEditor/ComPropertyModel.cpp \
-    ./IPXactWrapper/ApiDefinitionEditor/ApiDefinitionEditor.cpp \
-    ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionEditor.cpp \
-    ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionModel.cpp \
-    ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionParameterDelegate.cpp \
-    ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionParameterModel.cpp \
+    ./editors/ComDefinitionEditor/ComPropertyModel.cpp \
+    ./editors/ComDefinitionEditor/ComPropertyDelegate.cpp \
+    ./editors/ComDefinitionEditor/ComDefinitionEditor.cpp \
+    ./editors/ComDefinitionEditor/ComPropertyEditor.cpp \
+    ./editors/ApiDefinitionEditor/ApiFunctionParameterModel.cpp \
+    ./editors/ApiDefinitionEditor/ApiFunctionModel.cpp \
+    ./editors/ApiDefinitionEditor/ApiFunctionEditor.cpp \
+    ./editors/ApiDefinitionEditor/ApiDefinitionEditor.cpp \
+    ./editors/ApiDefinitionEditor/ApiFunctionParameterDelegate.cpp \
     ./mainwindow/DeleteWorkspaceDialog.cpp \
     ./mainwindow/main.cpp \
     ./mainwindow/mainwindow.cpp \

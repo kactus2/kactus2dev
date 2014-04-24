@@ -12,7 +12,7 @@
 #ifndef SWPROPERTIESEDITOR_H
 #define SWPROPERTIESEDITOR_H
 
-#include <IPXactWrapper/ComDefinitionEditor/ComPropertyModel.h>
+#include <editors/ComDefinitionEditor/ComPropertyModel.h>
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
 #include <common/views/EditableTableView/editabletableview.h>
 

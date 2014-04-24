@@ -54,14 +54,14 @@
 #include <designEditors/SystemDesign/SystemDesignWidget.h>
 #include <designEditors/SystemDesign/SystemDesignDiagram.h>
 
+#include <editors/ApiDefinitionEditor/ApiDefinitionEditor.h>
 #include <editors/BusEditor/buseditor.h>
+#include <editors/ComDefinitionEditor/ComDefinitionEditor.h>
 
 #include <Help/HelpSystem/ContextHelpBrowser.h>
 #include <Help/HelpSystem/HelpWindow.h>
 
 #include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
-#include <IPXactWrapper/ComDefinitionEditor/ComDefinitionEditor.h>
-#include <IPXactWrapper/ApiDefinitionEditor/ApiDefinitionEditor.h>
 #include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
 
 #include <kactusGenerators/DocumentGenerator/documentgenerator.h>

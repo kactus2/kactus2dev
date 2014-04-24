@@ -263,12 +263,6 @@
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\visualization">
       <UniqueIdentifier>{8548c639-7a0c-4828-894c-1badeb9906d2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\IPXactWrapper\ComDefinitionEditor">
-      <UniqueIdentifier>{3edee860-beea-4eda-b7b5-7a916e6da570}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\IPXactWrapper\ApiDefinitionEditor">
-      <UniqueIdentifier>{116be889-2be7-4118-b11d-c894fe24fb4a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\mainwindow">
       <UniqueIdentifier>{5632e02c-bce4-40b7-b3e1-fa2400380d5e}</UniqueIdentifier>
     </Filter>
@@ -542,12 +536,6 @@
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\visualization">
       <UniqueIdentifier>{ec63cac5-5b23-443d-a5d7-0dbb4cb79c21}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\IPXactWrapper\ComDefinitionEditor">
-      <UniqueIdentifier>{5a68258a-9267-4385-83ab-253c65f1d395}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\IPXactWrapper\ApiDefinitionEditor">
-      <UniqueIdentifier>{ea420432-6c58-4982-a06f-60ed86e52e1a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\models">
       <UniqueIdentifier>{97f0af62-ebfe-4e04-9832-8ad6e4f6c6da}</UniqueIdentifier>
@@ -934,6 +922,18 @@
     </Filter>
     <Filter Include="Header Files\mainwindow\EditorArea">
       <UniqueIdentifier>{0f00dbb7-92d4-4cce-82eb-de06e0386c30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ApiDefinitionEditor">
+      <UniqueIdentifier>{ea420432-6c58-4982-a06f-60ed86e52e1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ApiDefinitionEditor">
+      <UniqueIdentifier>{116be889-2be7-4118-b11d-c894fe24fb4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComDefinitionEditor">
+      <UniqueIdentifier>{3edee860-beea-4eda-b7b5-7a916e6da570}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComDefinitionEditor">
+      <UniqueIdentifier>{5a68258a-9267-4385-83ab-253c65f1d395}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1699,33 +1699,6 @@
     <ClCompile Include="IPXactWrapper\ComponentEditor\visualization\memoryvisualizationitem.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\visualization</Filter>
     </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComDefinitionEditor\ComDefinitionEditor.cpp">
-      <Filter>Source Files\IPXactWrapper\ComDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComDefinitionEditor\ComPropertyDelegate.cpp">
-      <Filter>Source Files\IPXactWrapper\ComDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComDefinitionEditor\ComPropertyEditor.cpp">
-      <Filter>Source Files\IPXactWrapper\ComDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComDefinitionEditor\ComPropertyModel.cpp">
-      <Filter>Source Files\IPXactWrapper\ComDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ApiDefinitionEditor\ApiDefinitionEditor.cpp">
-      <Filter>Source Files\IPXactWrapper\ApiDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ApiDefinitionEditor\ApiFunctionEditor.cpp">
-      <Filter>Source Files\IPXactWrapper\ApiDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ApiDefinitionEditor\ApiFunctionModel.cpp">
-      <Filter>Source Files\IPXactWrapper\ApiDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ApiDefinitionEditor\ApiFunctionParameterDelegate.cpp">
-      <Filter>Source Files\IPXactWrapper\ApiDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ApiDefinitionEditor\ApiFunctionParameterModel.cpp">
-      <Filter>Source Files\IPXactWrapper\ApiDefinitionEditor</Filter>
-    </ClCompile>
     <ClCompile Include="mainwindow\DeleteWorkspaceDialog.cpp">
       <Filter>Source Files\mainwindow</Filter>
     </ClCompile>
@@ -2010,9 +1983,6 @@
     </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\addressspacegapitem.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ApiDefinitionEditor.cpp">
-      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_writevalueconstrainteditor.cpp">
       <Filter>Generated Files</Filter>
@@ -2506,15 +2476,6 @@
     <ClCompile Include="GeneratedFiles\moc_ConnectionEndpoint.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ComPropertyModel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ComPropertyEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ComPropertyDelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_componenttreeview.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2632,9 +2593,6 @@
     <ClCompile Include="GeneratedFiles\moc_CommonGraphicsUndoCommands.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ComDefinitionEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_comboselector.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2726,18 +2684,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_AssistedLineEdit.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ApiFunctionParameterModel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ApiFunctionParameterDelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ApiFunctionModel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ApiFunctionEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ApiCreateDialog.cpp">
@@ -4036,6 +3982,60 @@
     <ClCompile Include="GeneratedFiles\moc_EditorArea.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ApiDefinitionEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ApiFunctionEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ApiFunctionModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ApiFunctionParameterDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ApiFunctionParameterModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ApiDefinitionEditor\ApiDefinitionEditor.cpp">
+      <Filter>Source Files\editors\ApiDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ApiDefinitionEditor\ApiFunctionEditor.cpp">
+      <Filter>Source Files\editors\ApiDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ApiDefinitionEditor\ApiFunctionModel.cpp">
+      <Filter>Source Files\editors\ApiDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ApiDefinitionEditor\ApiFunctionParameterDelegate.cpp">
+      <Filter>Source Files\editors\ApiDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ApiDefinitionEditor\ApiFunctionParameterModel.cpp">
+      <Filter>Source Files\editors\ApiDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComDefinitionEditor\ComDefinitionEditor.cpp">
+      <Filter>Source Files\editors\ComDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComDefinitionEditor\ComPropertyDelegate.cpp">
+      <Filter>Source Files\editors\ComDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComDefinitionEditor\ComPropertyEditor.cpp">
+      <Filter>Source Files\editors\ComDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComDefinitionEditor\ComPropertyModel.cpp">
+      <Filter>Source Files\editors\ComDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComDefinitionEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComPropertyDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComPropertyEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComPropertyModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4575,30 +4575,6 @@
     <CustomBuild Include="common\IEditProvider.h">
       <Filter>Header Files\common</Filter>
     </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ApiDefinitionEditor\ApiFunctionEditor.h">
-      <Filter>Header Files\IPXactWrapper\ApiDefinitionEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ApiDefinitionEditor\ApiFunctionModel.h">
-      <Filter>Header Files\IPXactWrapper\ApiDefinitionEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ApiDefinitionEditor\ApiFunctionParameterDelegate.h">
-      <Filter>Header Files\IPXactWrapper\ApiDefinitionEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ApiDefinitionEditor\ApiFunctionParameterModel.h">
-      <Filter>Header Files\IPXactWrapper\ApiDefinitionEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComDefinitionEditor\ComDefinitionEditor.h">
-      <Filter>Header Files\IPXactWrapper\ComDefinitionEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComDefinitionEditor\ComPropertyDelegate.h">
-      <Filter>Header Files\IPXactWrapper\ComDefinitionEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComDefinitionEditor\ComPropertyEditor.h">
-      <Filter>Header Files\IPXactWrapper\ComDefinitionEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComDefinitionEditor\ComPropertyModel.h">
-      <Filter>Header Files\IPXactWrapper\ComDefinitionEditor</Filter>
-    </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\addressspacegapitem.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\addressSpaces\AddressSpaceVisualizer</Filter>
     </CustomBuild>
@@ -5132,9 +5108,6 @@
     </CustomBuild>
     <CustomBuild Include="mainwindow\NewWorkspaceDialog.h">
       <Filter>Header Files\mainwindow</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ApiDefinitionEditor\ApiDefinitionEditor.h">
-      <Filter>Header Files\IPXactWrapper\ApiDefinitionEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="common\dialogs\LibrarySettingsDialog\librarysettingsdelegate.h">
       <Filter>Header Files\common\dialogs\LibrarySettingsDialog</Filter>
@@ -5711,6 +5684,33 @@
     </CustomBuild>
     <CustomBuild Include="mainwindow\EditorArea\EditorArea.h">
       <Filter>Header Files\mainwindow\EditorArea</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ApiDefinitionEditor\ApiDefinitionEditor.h">
+      <Filter>Header Files\editors\ApiDefinitionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ApiDefinitionEditor\ApiFunctionEditor.h">
+      <Filter>Header Files\editors\ApiDefinitionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ApiDefinitionEditor\ApiFunctionModel.h">
+      <Filter>Header Files\editors\ApiDefinitionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ApiDefinitionEditor\ApiFunctionParameterDelegate.h">
+      <Filter>Header Files\editors\ApiDefinitionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ApiDefinitionEditor\ApiFunctionParameterModel.h">
+      <Filter>Header Files\editors\ApiDefinitionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComDefinitionEditor\ComDefinitionEditor.h">
+      <Filter>Header Files\editors\ComDefinitionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComDefinitionEditor\ComPropertyDelegate.h">
+      <Filter>Header Files\editors\ComDefinitionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComDefinitionEditor\ComPropertyEditor.h">
+      <Filter>Header Files\editors\ComDefinitionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComDefinitionEditor\ComPropertyModel.h">
+      <Filter>Header Files\editors\ComDefinitionEditor</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

@@ -11,7 +11,7 @@
 
 #include "SWPropertiesEditor.h"
 #include <common/widgets/summaryLabel/summarylabel.h>
-#include <IPXactWrapper/ComDefinitionEditor/ComPropertyDelegate.h>
+#include <editors/ComDefinitionEditor/ComPropertyDelegate.h>
 #include <models/ComProperty.h>
 #include <library/LibraryManager/libraryinterface.h>
 
