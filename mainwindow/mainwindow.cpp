@@ -61,8 +61,8 @@
 #include <Help/HelpSystem/ContextHelpBrowser.h>
 #include <Help/HelpSystem/HelpWindow.h>
 
-#include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
-#include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
+#include <editors/ComponentEditor/treeStructure/componenteditor.h>
+#include <editors/ComponentEditor/treeStructure/componenteditor.h>
 
 #include <kactusGenerators/DocumentGenerator/documentgenerator.h>
 

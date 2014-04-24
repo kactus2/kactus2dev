@@ -14,8 +14,8 @@
 
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include <IPXactWrapper/ComponentEditor/fileSet/filesetsmodel.h>
-#include <IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyEditor.h>
+#include <editors/ComponentEditor/fileSet/filesetsmodel.h>
+#include <editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyEditor.h>
 
 #include <QWizardPage>
 #include <QSortFilterProxyModel>

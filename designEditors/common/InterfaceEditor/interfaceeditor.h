@@ -10,7 +10,7 @@
 
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 
-#include <IPXactWrapper/ComponentEditor/software/PropertyValueEditor.h>
+#include <editors/ComponentEditor/software/PropertyValueEditor.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 

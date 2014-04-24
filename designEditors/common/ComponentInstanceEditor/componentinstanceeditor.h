@@ -8,7 +8,7 @@
 #ifndef COMPONENTINSTANCEEDITOR_H
 #define COMPONENTINSTANCEEDITOR_H
 
-#include <IPXactWrapper/ComponentEditor/software/PropertyValueEditor.h>
+#include <editors/ComponentEditor/software/PropertyValueEditor.h>
 
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/nameGroupBox/namegroupbox.h>

@@ -13,7 +13,7 @@
 
 #include "ComponentWizard.h"
 
-#include <IPXactWrapper/ComponentEditor/fileSet/filesetsdelegate.h>
+#include <editors/ComponentEditor/fileSet/filesetsdelegate.h>
 
 #include <common/KactusAttribute.h>
 #include <models/component.h>

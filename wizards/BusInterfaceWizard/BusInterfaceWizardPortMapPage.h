@@ -12,7 +12,7 @@
 #ifndef BUSINTERFACEWIZARDPORTMAPPAGE_H
 #define BUSINTERFACEWIZARDPORTMAPPAGE_H
 
-#include <IPXactWrapper/ComponentEditor/busInterfaces/busifportmaptab.h>
+#include <editors/ComponentEditor/busInterfaces/busifportmaptab.h>
 
 #include <QWizardPage>
 #include <QLabel>

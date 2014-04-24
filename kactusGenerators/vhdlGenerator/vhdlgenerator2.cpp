@@ -32,7 +32,7 @@
 #include <common/utils.h>
 
 #include <designEditors/HWDesign/HWDesignWidget.h>
-#include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
+#include <editors/ComponentEditor/treeStructure/componenteditor.h>
 
 #include <QFile>
 #include <QFileInfo>

@@ -9,8 +9,8 @@
 #define VHDLIMPORTEDITOR_H
 
 #include <models/component.h>
-#include <IPXactWrapper/ComponentEditor/modelParameters/modelparametereditor.h>
-#include <IPXactWrapper/ComponentEditor/ports/portseditor.h>
+#include <editors/ComponentEditor/modelParameters/modelparametereditor.h>
+#include <editors/ComponentEditor/ports/portseditor.h>
 
 #include <QWidget>
 #include <QSharedPointer>

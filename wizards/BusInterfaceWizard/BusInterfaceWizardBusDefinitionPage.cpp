@@ -18,7 +18,7 @@
 #include <models/busdefinition.h>
 #include <editors/BusEditor/absdefgroup.h>
 #include <editors/BusEditor/busdefgroup.h>
-#include <IPXactWrapper/ComponentEditor/ports/portsdelegate.h>
+#include <editors/ComponentEditor/ports/portsdelegate.h>
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/vlnv.h>
 

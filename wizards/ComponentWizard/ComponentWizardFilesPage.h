@@ -12,7 +12,7 @@
 #ifndef COMPONENTWIZARDFILESPAGE_H
 #define COMPONENTWIZARDFILESPAGE_H
 
-#include <IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.h>
+#include <editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.h>
 
 #include <QWizardPage>
 
