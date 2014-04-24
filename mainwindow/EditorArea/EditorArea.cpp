@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: TabWidgetEx.cpp
+// File: EditorArea.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,28 +9,28 @@
 // Extended tab widget which supports shortcuts.
 //-----------------------------------------------------------------------------
 
-#include "TabWidgetEx.h"
+#include "EditorArea.h"
 
 #include <QKeyEvent>
 
 //-----------------------------------------------------------------------------
 // Function: TabWidgetEx::TabWidgetEx()
 //-----------------------------------------------------------------------------
-TabWidgetEx::TabWidgetEx(QWidget* parent /*= 0*/) : QTabWidget(parent)
+EditorArea::EditorArea(QWidget* parent /*= 0*/) : QTabWidget(parent)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: TabWidgetEx::~TabWidgetEx()
 //-----------------------------------------------------------------------------
-TabWidgetEx::~TabWidgetEx()
+EditorArea::~EditorArea()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: TabWidgetEx::eventFilter()
 //-----------------------------------------------------------------------------
-bool TabWidgetEx::event(QEvent* event)
+bool EditorArea::event(QEvent* event)
 {
     if (event->type() == QEvent::KeyPress)
     {

@@ -12,7 +12,7 @@
 #ifndef NEWSWDESIGNPAGE_H
 #define NEWSWDESIGNPAGE_H
 
-#include <mainwindow/NewPage.h>
+#include "NewPage.h"
 
 //-----------------------------------------------------------------------------
 //! NewSWDesignPage class.

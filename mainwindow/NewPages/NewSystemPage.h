@@ -12,7 +12,7 @@
 #ifndef NEWSYSTEMPAGE_H
 #define NEWSYSTEMPAGE_H
 
-#include <mainwindow/NewPage.h>
+#include "NewPage.h"
 
 #include <QTreeWidget>
 #include <QComboBox>

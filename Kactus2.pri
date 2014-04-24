@@ -58,7 +58,6 @@ HEADERS += ./resource.h \
     ./common/widgets/ParameterEditor/parametereditor.h \
     ./common/widgets/ParameterGroupBox/parametergroupbox.h \
     ./common/widgets/NumberLineEdit/numberlineedit.h \
-    ./common/widgets/tabWidgetEx/TabWidgetEx.h \
     ./common/widgets/nameGroupEditor/namegroupeditor.h \
     ./common/widgets/summaryLabel/summarylabel.h \
     ./common/widgets/interfaceModeSelector/interfacemodeselector.h \
@@ -74,8 +73,7 @@ HEADERS += ./resource.h \
     ./common/widgets/modWriteComboBox/modwritecombobox.h \
     ./common/widgets/readActionComboBox/readactioncombobox.h \
     ./common/widgets/testConstraintComboBox/testconstraintcombobox.h \
-    ./common/widgets/Ribbon/Ribbon.h \
-    ./common/widgets/Ribbon/RibbonGroup.h \
+    ./mainwindow/Ribbon/RibbonGroup.h \
     ./common/widgets/parameterComboBox/parametercombobox.h \
     ./common/widgets/viewSelector/viewselector.h \
     ./common/widgets/cpuSelector/cpuselector.h \
@@ -441,16 +439,7 @@ HEADERS += ./resource.h \
     ./models/XmlUtils.h \
     ./mainwindow/SplashScreen.h \
     ./mainwindow/NewWorkspaceDialog.h \
-    ./mainwindow/NewPage.h \
     ./mainwindow/DeleteWorkspaceDialog.h \
-    ./mainwindow/NewSystemPage.h \
-    ./mainwindow/NewSWDesignPage.h \
-    ./mainwindow/NewSWComponentPage.h \
-    ./mainwindow/NewDesignPage.h \
-    ./mainwindow/NewComponentPage.h \
-    ./mainwindow/NewComDefinitionPage.h \
-    ./mainwindow/newbuspage.h \
-    ./mainwindow/NewApiDefinitionPage.h \
     ./mainwindow/mainwindow.h \
     ./MCAPI/CSourceContentMatcher.h \
     ./MCAPI/MCAPIDesignerTypes.h \
@@ -614,7 +603,18 @@ HEADERS += ./resource.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./mainwindow/MessageConsole/messageconsole.h
+    ./mainwindow/MessageConsole/messageconsole.h \
+    ./mainwindow/NewPages/NewSystemPage.h \
+    ./mainwindow/NewPages/NewSWComponentPage.h \
+    ./mainwindow/NewPages/NewPage.h \
+    ./mainwindow/NewPages/NewDesignPage.h \
+    ./mainwindow/NewPages/NewComponentPage.h \
+    ./mainwindow/NewPages/NewComDefinitionPage.h \
+    ./mainwindow/NewPages/newbuspage.h \
+    ./mainwindow/NewPages/NewApiDefinitionPage.h \
+    ./mainwindow/NewPages/NewSWDesignPage.h \
+    ./mainwindow/Ribbon/Ribbon.h \
+    ./mainwindow/EditorArea/EditorArea.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
     ./common/DesignWidget.cpp \
@@ -679,7 +679,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/ParameterEditor/parametereditor.cpp \
     ./common/widgets/ParameterGroupBox/parametergroupbox.cpp \
     ./common/widgets/NumberLineEdit/numberlineedit.cpp \
-    ./common/widgets/tabWidgetEx/TabWidgetEx.cpp \
+    ./mainwindow/EditorArea/EditorArea.cpp \
     ./common/widgets/nameGroupEditor/namegroupeditor.cpp \
     ./common/widgets/summaryLabel/summarylabel.cpp \
     ./common/widgets/interfaceModeSelector/interfacemodeselector.cpp \
@@ -696,8 +696,6 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/modWriteComboBox/modwritecombobox.cpp \
     ./common/widgets/readActionComboBox/readactioncombobox.cpp \
     ./common/widgets/testConstraintComboBox/testconstraintcombobox.cpp \
-    ./common/widgets/Ribbon/Ribbon.cpp \
-    ./common/widgets/Ribbon/RibbonGroup.cpp \
     ./common/widgets/parameterComboBox/parametercombobox.cpp \
     ./common/widgets/viewSelector/viewselector.cpp \
     ./common/widgets/cpuSelector/cpuselector.cpp \
@@ -952,15 +950,15 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./mainwindow/DeleteWorkspaceDialog.cpp \
     ./mainwindow/main.cpp \
     ./mainwindow/mainwindow.cpp \
-    ./mainwindow/NewApiDefinitionPage.cpp \
-    ./mainwindow/newbuspage.cpp \
-    ./mainwindow/NewComDefinitionPage.cpp \
-    ./mainwindow/NewComponentPage.cpp \
-    ./mainwindow/NewDesignPage.cpp \
-    ./mainwindow/NewPage.cpp \
-    ./mainwindow/NewSWComponentPage.cpp \
-    ./mainwindow/NewSWDesignPage.cpp \
-    ./mainwindow/NewSystemPage.cpp \
+    ./mainwindow/NewPages/NewSystemPage.cpp \
+    ./mainwindow/NewPages/NewSWComponentPage.cpp \
+    ./mainwindow/NewPages/NewPage.cpp \
+    ./mainwindow/NewPages/NewDesignPage.cpp \
+    ./mainwindow/NewPages/NewComponentPage.cpp \
+    ./mainwindow/NewPages/NewComDefinitionPage.cpp \
+    ./mainwindow/NewPages/newbuspage.cpp \
+    ./mainwindow/NewPages/NewApiDefinitionPage.cpp \
+    ./mainwindow/NewPages/NewSWDesignPage.cpp \
     ./mainwindow/NewWorkspaceDialog.cpp \
     ./mainwindow/SplashScreen.cpp \
     ./models/abstractiondefinition.cpp \
@@ -1195,5 +1193,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
+    ./mainwindow/Ribbon/Ribbon.cpp \
+    ./mainwindow/Ribbon/RibbonGroup.cpp
 RESOURCES += kactus.qrc

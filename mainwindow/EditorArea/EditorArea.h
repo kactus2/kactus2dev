@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: TabWidgetEx.h
+// File: EditorArea.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -17,7 +17,7 @@
 //-----------------------------------------------------------------------------
 //! Extended tab widget which supports shortcuts.
 //-----------------------------------------------------------------------------
-class TabWidgetEx : public QTabWidget
+class EditorArea : public QTabWidget
 {
     Q_OBJECT
 
@@ -27,12 +27,12 @@ public:
      *
      *      @param [in] parent The parent widget. Can be null.
      */
-    TabWidgetEx(QWidget* parent = 0);
+    EditorArea(QWidget* parent = 0);
 
     /*!
      *  Destructor.
      */
-    ~TabWidgetEx();
+    ~EditorArea();
 
     /*!
      *  Filters and handles keyboard shortcut events.

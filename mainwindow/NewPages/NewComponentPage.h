@@ -1,26 +1,32 @@
 //-----------------------------------------------------------------------------
-// File: NewDesignPage.h
+// File: NewComponentPage.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
 // Date: 9.6.2011
 //
 // Description:
-// New design property page.
+// New component property page.
 //-----------------------------------------------------------------------------
 
-#ifndef NEWDESIGNPAGE_H
-#define NEWDESIGNPAGE_H
+#ifndef NEWCOMPONENTPAGE_H
+#define NEWCOMPONENTPAGE_H
 
-#include <mainwindow/NewPage.h>
+#include "NewPage.h"
 #include <common/KactusAttribute.h>
 
+
+#include <QPushButton>
+
+class LibraryInterface;
+class VLNVEditor;
 class KactusAttributeEditor;
+class VLNV;
 
 //-----------------------------------------------------------------------------
-//! NewDesignPage class.
+//! NewComponentPage class.
 //-----------------------------------------------------------------------------
-class NewDesignPage : public NewPage
+class NewComponentPage : public NewPage
 {
     Q_OBJECT
 
@@ -31,13 +37,12 @@ public:
      *      @param [in] libInterface The library interface.
      *      @param [in] parentDlg    The parent dialog.
      */
-    NewDesignPage(LibraryInterface* libInterface, QWidget* parentDlg);
+    NewComponentPage(LibraryInterface* libInterface, QWidget* parentDlg);
 
     /*!
      *  Destructor.
      */
-    ~NewDesignPage();
-
+    ~NewComponentPage();
 
     /*!
      *  Validates the contents of the page thoroughly.
@@ -62,21 +67,21 @@ public:
 
 public slots:
 
+
     //! Called when the user changes the product hierarchy attribute.
     void onProductHierarchyChanged();
-    
 
 signals:
-    //! Signaled when a design should be created.
-    void createDesign(KactusAttribute::ProductHierarchy prodHier,
-                      KactusAttribute::Firmness firmness,
-                      VLNV const& vlnv, QString const& directory);
+    //! Signaled when a component should be created.
+    void createComponent(KactusAttribute::ProductHierarchy prodHier,
+                         KactusAttribute::Firmness firmness,
+                         VLNV const& vlnv, QString const& directory);
 
 private:
     // Disable copying.
-    NewDesignPage(NewDesignPage const& rhs);
-    NewDesignPage& operator=(NewDesignPage const& rhs);
-  
+    NewComponentPage(NewComponentPage const& rhs);
+    NewComponentPage& operator=(NewComponentPage const& rhs);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -87,4 +92,4 @@ private:
 
 //-----------------------------------------------------------------------------
 
-#endif // NEWDESIGNPAGE_H
+#endif // NEWCOMPONENTPAGE_H

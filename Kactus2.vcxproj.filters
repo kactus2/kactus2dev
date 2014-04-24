@@ -122,9 +122,6 @@
     <Filter Include="Source Files\common\widgets\NumberLineEdit">
       <UniqueIdentifier>{bb16b652-d511-4c19-94c5-981e698eb1f6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\widgets\tabWidgetEx">
-      <UniqueIdentifier>{60fa3cda-fb8b-47e0-84f6-ef1fe195f570}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\widgets\nameGroupEditor">
       <UniqueIdentifier>{7bd57c00-0edd-431f-b688-641e72257559}</UniqueIdentifier>
     </Filter>
@@ -353,9 +350,6 @@
     </Filter>
     <Filter Include="Header Files\common\widgets\NumberLineEdit">
       <UniqueIdentifier>{621089b8-04fc-4b7d-af35-856e86545aa6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\widgets\tabWidgetEx">
-      <UniqueIdentifier>{efe930ab-aec0-43c0-8a98-a950aa0bc25d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\nameGroupEditor">
       <UniqueIdentifier>{dd95d98f-650f-4006-948c-7b6c4ea8ec8f}</UniqueIdentifier>
@@ -589,12 +583,6 @@
     </Filter>
     <Filter Include="Header Files\common\dialogs\createConfigurationDialog">
       <UniqueIdentifier>{4595fd3d-b102-46cb-8a5a-006537a68009}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\widgets\Ribbon">
-      <UniqueIdentifier>{d61b0b2c-d3ec-48ac-b73d-57d270d93c69}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\widgets\Ribbon">
-      <UniqueIdentifier>{15fb5228-af85-4a5d-8347-5e28159e9f32}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\dialogs\fileSaveDialog">
       <UniqueIdentifier>{b3ba712a-1a25-4333-9ac4-ce20fea34d57}</UniqueIdentifier>
@@ -932,6 +920,21 @@
     <Filter Include="Header Files\mainwindow\MessageConsole">
       <UniqueIdentifier>{69d6b3ac-9838-45fb-9bf5-130aae3d6f7d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\mainwindow\Ribbon">
+      <UniqueIdentifier>{1e809727-d38c-4093-b47d-bffaf465f21c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\mainwindow\Ribbon">
+      <UniqueIdentifier>{e45d8aa5-fb2d-46f1-8109-f0af75e113c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\mainwindow\NewPages">
+      <UniqueIdentifier>{ff1f42da-f845-43f9-b706-9e6abf435097}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\mainwindow\EditorArea">
+      <UniqueIdentifier>{c85ccfe2-9101-46f3-a314-d9fabf41a4d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\mainwindow\EditorArea">
+      <UniqueIdentifier>{0f00dbb7-92d4-4cce-82eb-de06e0386c30}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\CSourceWriter.cpp">
@@ -1107,9 +1110,6 @@
     </ClCompile>
     <ClCompile Include="common\widgets\NumberLineEdit\numberlineedit.cpp">
       <Filter>Source Files\common\widgets\NumberLineEdit</Filter>
-    </ClCompile>
-    <ClCompile Include="common\widgets\tabWidgetEx\TabWidgetEx.cpp">
-      <Filter>Source Files\common\widgets\tabWidgetEx</Filter>
     </ClCompile>
     <ClCompile Include="common\widgets\nameGroupEditor\namegroupeditor.cpp">
       <Filter>Source Files\common\widgets\nameGroupEditor</Filter>
@@ -1735,30 +1735,6 @@
     <ClCompile Include="mainwindow\mainwindow.cpp">
       <Filter>Source Files\mainwindow</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\NewApiDefinitionPage.cpp">
-      <Filter>Source Files\mainwindow</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\newbuspage.cpp">
-      <Filter>Source Files\mainwindow</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\NewComDefinitionPage.cpp">
-      <Filter>Source Files\mainwindow</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\NewComponentPage.cpp">
-      <Filter>Source Files\mainwindow</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\NewDesignPage.cpp">
-      <Filter>Source Files\mainwindow</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\NewSWComponentPage.cpp">
-      <Filter>Source Files\mainwindow</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\NewSWDesignPage.cpp">
-      <Filter>Source Files\mainwindow</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\NewSystemPage.cpp">
-      <Filter>Source Files\mainwindow</Filter>
-    </ClCompile>
     <ClCompile Include="mainwindow\NewWorkspaceDialog.cpp">
       <Filter>Source Files\mainwindow</Filter>
     </ClCompile>
@@ -2080,9 +2056,6 @@
     <ClCompile Include="GeneratedFiles\moc_targetnameedit.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_TabWidgetEx.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_TabDocument.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2209,34 +2182,10 @@
     <ClCompile Include="GeneratedFiles\moc_NewWorkspaceDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_NewSystemPage.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_NewSWDesignPage.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_NewSWComponentPage.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_newobjectdialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_NewDesignPage.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_NewDesignDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_NewComponentPage.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_NewComDefinitionPage.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_newbuspage.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_NewApiDefinitionPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_NamingPolicySettingsPage.cpp">
@@ -2851,15 +2800,6 @@
     <ClCompile Include="common\dialogs\LibrarySettingsDialog\librarysettingsdelegate.cpp">
       <Filter>Source Files\common\dialogs\LibrarySettingsDialog</Filter>
     </ClCompile>
-    <ClCompile Include="common\widgets\Ribbon\Ribbon.cpp">
-      <Filter>Source Files\common\widgets\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="common\widgets\Ribbon\RibbonGroup.cpp">
-      <Filter>Source Files\common\widgets\Ribbon</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_RibbonGroup.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_filesavedialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -3180,12 +3120,6 @@
     </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\AddressSpaceConflictedItem.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\NewPage.cpp">
-      <Filter>Source Files\mainwindow</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_NewPage.cpp">
-      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="common\widgets\LibrarySelectorWidget\LibrarySelectorWidget.cpp">
       <Filter>Source Files\common\widgets\LibrarySelectorWidget</Filter>
@@ -4033,6 +3967,75 @@
     <ClCompile Include="GeneratedFiles\moc_messageconsole.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_RibbonGroup.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\Ribbon\Ribbon.cpp">
+      <Filter>Source Files\mainwindow\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\Ribbon\RibbonGroup.cpp">
+      <Filter>Source Files\mainwindow\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\NewPages\NewApiDefinitionPage.cpp">
+      <Filter>Source Files\mainwindow\NewPages</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\NewPages\newbuspage.cpp">
+      <Filter>Source Files\mainwindow\NewPages</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\NewPages\NewComDefinitionPage.cpp">
+      <Filter>Source Files\mainwindow\NewPages</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\NewPages\NewComponentPage.cpp">
+      <Filter>Source Files\mainwindow\NewPages</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\NewPages\NewDesignPage.cpp">
+      <Filter>Source Files\mainwindow\NewPages</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\NewPages\NewPage.cpp">
+      <Filter>Source Files\mainwindow\NewPages</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\NewPages\NewSWComponentPage.cpp">
+      <Filter>Source Files\mainwindow\NewPages</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\NewPages\NewSWDesignPage.cpp">
+      <Filter>Source Files\mainwindow\NewPages</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\NewPages\NewSystemPage.cpp">
+      <Filter>Source Files\mainwindow\NewPages</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_NewApiDefinitionPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_newbuspage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_NewComDefinitionPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_NewComponentPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_NewDesignPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_NewPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_NewSWComponentPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_NewSWDesignPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_NewSystemPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\EditorArea\EditorArea.cpp">
+      <Filter>Source Files\mainwindow\EditorArea</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_EditorArea.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4544,9 +4547,6 @@
     </CustomBuild>
     <CustomBuild Include="common\widgets\tabDocument\TabDocument.h">
       <Filter>Header Files\common\widgets\tabDocument</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\widgets\tabWidgetEx\TabWidgetEx.h">
-      <Filter>Header Files\common\widgets\tabWidgetEx</Filter>
     </CustomBuild>
     <CustomBuild Include="common\widgets\testConstraintComboBox\testconstraintcombobox.h">
       <Filter>Header Files\common\widgets\testConstraintComboBox</Filter>
@@ -5106,30 +5106,6 @@
     <CustomBuild Include="mainwindow\mainwindow.h">
       <Filter>Header Files\mainwindow</Filter>
     </CustomBuild>
-    <CustomBuild Include="mainwindow\NewApiDefinitionPage.h">
-      <Filter>Header Files\mainwindow</Filter>
-    </CustomBuild>
-    <CustomBuild Include="mainwindow\newbuspage.h">
-      <Filter>Header Files\mainwindow</Filter>
-    </CustomBuild>
-    <CustomBuild Include="mainwindow\NewComDefinitionPage.h">
-      <Filter>Header Files\mainwindow</Filter>
-    </CustomBuild>
-    <CustomBuild Include="mainwindow\NewComponentPage.h">
-      <Filter>Header Files\mainwindow</Filter>
-    </CustomBuild>
-    <CustomBuild Include="mainwindow\NewDesignPage.h">
-      <Filter>Header Files\mainwindow</Filter>
-    </CustomBuild>
-    <CustomBuild Include="mainwindow\NewSWComponentPage.h">
-      <Filter>Header Files\mainwindow</Filter>
-    </CustomBuild>
-    <CustomBuild Include="mainwindow\NewSWDesignPage.h">
-      <Filter>Header Files\mainwindow</Filter>
-    </CustomBuild>
-    <CustomBuild Include="mainwindow\NewSystemPage.h">
-      <Filter>Header Files\mainwindow</Filter>
-    </CustomBuild>
     <CustomBuild Include="MCAPI\CSourceHighlighter.h">
       <Filter>Header Files\MCAPI</Filter>
     </CustomBuild>
@@ -5162,9 +5138,6 @@
     </CustomBuild>
     <CustomBuild Include="common\dialogs\LibrarySettingsDialog\librarysettingsdelegate.h">
       <Filter>Header Files\common\dialogs\LibrarySettingsDialog</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\widgets\Ribbon\RibbonGroup.h">
-      <Filter>Header Files\common\widgets\Ribbon</Filter>
     </CustomBuild>
     <CustomBuild Include="common\dialogs\fileSaveDialog\filesavedialog.h">
       <Filter>Header Files\common\dialogs\fileSaveDialog</Filter>
@@ -5321,9 +5294,6 @@
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\AddressSpaceConflictedItem.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\addressSpaces\AddressSpaceVisualizer</Filter>
-    </CustomBuild>
-    <CustomBuild Include="mainwindow\NewPage.h">
-      <Filter>Header Files\mainwindow</Filter>
     </CustomBuild>
     <CustomBuild Include="common\widgets\LibrarySelectorWidget\LibrarySelectorWidget.h">
       <Filter>Header Files\common\widgets\LibrarySelectorWidget</Filter>
@@ -5709,6 +5679,39 @@
     <CustomBuild Include="mainwindow\MessageConsole\messageconsole.h">
       <Filter>Header Files\mainwindow\MessageConsole</Filter>
     </CustomBuild>
+    <CustomBuild Include="mainwindow\Ribbon\RibbonGroup.h">
+      <Filter>Header Files\mainwindow\Ribbon</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\NewPages\NewApiDefinitionPage.h">
+      <Filter>Header Files\mainwindow\NewPages</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\NewPages\newbuspage.h">
+      <Filter>Header Files\mainwindow\NewPages</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\NewPages\NewComDefinitionPage.h">
+      <Filter>Header Files\mainwindow\NewPages</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\NewPages\NewComponentPage.h">
+      <Filter>Header Files\mainwindow\NewPages</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\NewPages\NewDesignPage.h">
+      <Filter>Header Files\mainwindow\NewPages</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\NewPages\NewPage.h">
+      <Filter>Header Files\mainwindow\NewPages</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\NewPages\NewSWComponentPage.h">
+      <Filter>Header Files\mainwindow\NewPages</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\NewPages\NewSWDesignPage.h">
+      <Filter>Header Files\mainwindow\NewPages</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\NewPages\NewSystemPage.h">
+      <Filter>Header Files\mainwindow\NewPages</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\EditorArea\EditorArea.h">
+      <Filter>Header Files\mainwindow\EditorArea</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\attributeDialog\attributedialog.h">
@@ -6056,9 +6059,6 @@
     <ClInclude Include="mainwindow\SplashScreen.h">
       <Filter>Header Files\mainwindow</Filter>
     </ClInclude>
-    <ClInclude Include="common\widgets\Ribbon\Ribbon.h">
-      <Filter>Header Files\common\widgets\Ribbon</Filter>
-    </ClInclude>
     <ClInclude Include="models\swbuildcommand.h">
       <Filter>Header Files\models</Filter>
     </ClInclude>
@@ -6175,6 +6175,9 @@
     </ClInclude>
     <ClInclude Include="designEditors\HWDesign\AddressEditor\AddressEntry.h">
       <Filter>Header Files\designEditors\HWDesign\AddressEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\Ribbon\Ribbon.h">
+      <Filter>Header Files\mainwindow\Ribbon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

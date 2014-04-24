@@ -1,14 +1,16 @@
-/* 
- *
- *  Created on: 24.2.2011
- * 		filename: mainwindow.h
- */
-
+//-----------------------------------------------------------------------------
+// File: mainwindow.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Joni-Matti M‰‰tt‰
+// Date: 24.2.2011
+//
+// Description:
+// The main window of Kactus2.
+//-----------------------------------------------------------------------------
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
-#include "NewSWComponentPage.h"
 
 #include <Plugins/PluginSystem/PluginManager.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
@@ -42,7 +44,7 @@ class InterfaceEditor;
 class ConnectionEditor;
 class AdHocEditor;
 class HWConnection;
-class TabWidgetEx;
+class EditorArea;
 class TabDocument;
 class ConnectionEndpoint;
 class GraphicsConnection;
@@ -653,7 +655,7 @@ private:
 	QDockWidget* libraryDock_;
     
 	//! \brief Contains the designWidgets as each in it's own tab
-	TabWidgetEx* designTabs_;
+	EditorArea* designTabs_;
 
 	//! \brief The widget to set the display rules for library items in library handler.
 	VLNVDialer* dialer_;

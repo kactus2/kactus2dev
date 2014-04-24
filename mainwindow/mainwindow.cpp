@@ -1,56 +1,77 @@
-/* 
- *
- *  Created on: 24.2.2011
- * 		filename: mainwindow.cpp
- */
+//-----------------------------------------------------------------------------
+// File: mainwindow.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Joni-Matti M‰‰tt‰
+// Date: 24.2.2011
+//
+// Description:
+// The main window of Kactus2.
+//-----------------------------------------------------------------------------
 
 #include "mainwindow.h"
 
 #include "SplashScreen.h"
 
-#include "NewComponentPage.h"
-#include "NewDesignPage.h"
-#include "NewSWDesignPage.h"
-#include "NewSystemPage.h"
-#include "NewComDefinitionPage.h"
-#include "NewApiDefinitionPage.h"
-#include "newbuspage.h"
-
 #include "NewWorkspaceDialog.h"
 #include "DeleteWorkspaceDialog.h"
 
-#include <wizards/ComponentWizard/ComponentWizard.h>
+#include <mainwindow/Ribbon/Ribbon.h>
+#include <mainwindow/Ribbon/RibbonGroup.h>
+#include <mainwindow/MessageConsole/messageconsole.h>
+#include <mainwindow/NewPages/NewComponentPage.h>
+#include <mainwindow/NewPages/NewDesignPage.h>
+#include <mainwindow/NewPages/NewSWComponentPage.h>
+#include <mainwindow/NewPages/NewSWDesignPage.h>
+#include <mainwindow/NewPages/NewSystemPage.h>
+#include <mainwindow/NewPages/NewComDefinitionPage.h>
+#include <mainwindow/NewPages/NewApiDefinitionPage.h>
+#include <mainwindow/NewPages/newbuspage.h>
+#include <mainwindow/EditorArea/EditorArea.h>
 
-#include <settings/SettingsDialog.h>
-#include <settings/SettingsUpdater.h>
-
-#include <designEditors/SystemDesign/SystemDesignWidget.h>
-#include <designEditors/SystemDesign/SystemDesignDiagram.h>
-
-#include <MCAPI/CSourceWidget.h>
-#include <MCAPI/CSourceContentMatcher.h>
-
-#include <kactusGenerators/DocumentGenerator/documentgenerator.h>
-
-#include <Help/HelpSystem/ContextHelpBrowser.h>
-#include <Help/HelpSystem/HelpWindow.h>
-
-#include <library/LibraryManager/libraryhandler.h>
-#include <library/LibraryManager/vlnv.h>
-#include <library/LibraryManager/LibraryUtils.h>
-
+#include <common/KactusAttribute.h>
 #include <common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h>
 #include <common/dialogs/NewDesignDialog/NewDesignDialog.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/listSelectDialog/ListSelectDialog.h>
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 #include <common/dialogs/propertyPageDialog/PropertyPageDialog.h>
-#include <common/widgets/tabWidgetEx/TabWidgetEx.h>
-#include <common/widgets/Ribbon/Ribbon.h>
-#include <common/widgets/Ribbon/RibbonGroup.h>
-#include <common/KactusAttribute.h>
 
-#include <Plugins/PluginSystem/IGeneratorPlugin.h>
+#include <designEditors/MemoryDesigner/MemoryDesignWidget.h>
+
+#include <designEditors/common/ComponentInstanceEditor/componentinstanceeditor.h>
+#include <designEditors/common/ConfigurationEditor/configurationeditor.h>
+#include <designEditors/common/InterfaceEditor/interfaceeditor.h>
+#include <designEditors/common/ConnectionEditor/connectioneditor.h>
+#include <designEditors/HWDesign/HWDesignWidget.h>
+#include <designEditors/HWDesign/HWDesignDiagram.h>
+#include <designEditors/HWDesign/HWComponentItem.h>
+#include <designEditors/HWDesign/BusPortItem.h>
+#include <designEditors/HWDesign/BusInterfaceItem.h>
+#include <designEditors/HWDesign/AddressEditor/AddressEditor.h>
+#include <designEditors/HWDesign/AdHocEditor/AdHocEditor.h>
+#include <designEditors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.h>
+#include <designEditors/SystemDesign/SystemDesignWidget.h>
+#include <designEditors/SystemDesign/SystemDesignDiagram.h>
+
+#include <editors/BusEditor/buseditor.h>
+
+#include <Help/HelpSystem/ContextHelpBrowser.h>
+#include <Help/HelpSystem/HelpWindow.h>
+
+#include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
+#include <IPXactWrapper/ComDefinitionEditor/ComDefinitionEditor.h>
+#include <IPXactWrapper/ApiDefinitionEditor/ApiDefinitionEditor.h>
+#include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
+
+#include <kactusGenerators/DocumentGenerator/documentgenerator.h>
+
+#include <library/LibraryManager/libraryhandler.h>
+#include <library/LibraryManager/vlnv.h>
+#include <library/LibraryManager/LibraryUtils.h>
+
+#include <MCAPI/CSourceWidget.h>
+#include <MCAPI/CSourceContentMatcher.h>
 
 #include <models/view.h>
 #include <models/component.h>
@@ -68,31 +89,13 @@
 #include <models/SystemView.h>
 #include <models/SWInstance.h>
 
+#include <Plugins/PluginSystem/IGeneratorPlugin.h>
 #include <Plugins/PluginSystem/PluginListDialog.h>
 
-#include <designEditors/MemoryDesigner/MemoryDesignWidget.h>
+#include <settings/SettingsDialog.h>
+#include <settings/SettingsUpdater.h>
 
-#include <designEditors/HWDesign/HWDesignWidget.h>
-#include <designEditors/HWDesign/HWDesignDiagram.h>
-#include <designEditors/HWDesign/HWComponentItem.h>
-#include <designEditors/HWDesign/BusPortItem.h>
-#include <designEditors/HWDesign/BusInterfaceItem.h>
-
-#include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
-#include <IPXactWrapper/ComDefinitionEditor/ComDefinitionEditor.h>
-#include <IPXactWrapper/ApiDefinitionEditor/ApiDefinitionEditor.h>
-#include <editors/BusEditor/buseditor.h>
-#include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
-
-#include <mainwindow/MessageConsole/messageconsole.h>
-
-#include <designEditors/common/ComponentInstanceEditor/componentinstanceeditor.h>
-#include <designEditors/HWDesign/AddressEditor/AddressEditor.h>
-#include <designEditors/common/ConfigurationEditor/configurationeditor.h>
-#include <designEditors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.h>
-#include <designEditors/common/InterfaceEditor/interfaceeditor.h>
-#include <designEditors/common/ConnectionEditor/connectioneditor.h>
-#include <designEditors/HWDesign/AdHocEditor/AdHocEditor.h>
+#include <wizards/ComponentWizard/ComponentWizard.h>
 
 #include <QCoreApplication>
 #include <QApplication>
@@ -888,7 +891,7 @@ void MainWindow::setupMenus()
 
 void MainWindow::setupDrawBoard() {
 
-	designTabs_ = new TabWidgetEx();
+	designTabs_ = new EditorArea();
 	designTabs_->setMovable(true);
 	designTabs_->setTabsClosable(true);
 	setCentralWidget(designTabs_);

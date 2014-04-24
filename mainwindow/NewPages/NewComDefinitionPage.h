@@ -1,33 +1,28 @@
 //-----------------------------------------------------------------------------
-// File: NewSWComponentPage.h
+// File: NewComDefinitionPage.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
-// Date: 24.8.2011
+// Date: 17.4.2012
 //
 // Description:
-// New SW component page.
+// New COM definition page.
 //-----------------------------------------------------------------------------
 
-#ifndef NEWSWCOMPONENTPAGE_H
-#define NEWSWCOMPONENTPAGE_H
+#ifndef NEWCOMDEFINITIONPAGE_H
+#define NEWCOMDEFINITIONPAGE_H
 
-#include <mainwindow/NewPage.h>
-#include <common/KactusAttribute.h>
+#include "NewPage.h"
+#include <common/dialogs/propertyPageDialog/PropertyPageView.h>
+#include <common/widgets/vlnvEditor/vlnveditor.h>
 
-#include <QGroupBox>
-#include <QRadioButton>
 #include <QPushButton>
 
 class LibraryInterface;
-class VLNVEditor;
-class KactusAttributeEditor;
-class VLNV;
-
 //-----------------------------------------------------------------------------
-//! NewSWComponentPage class.
+//! NewComDefinitionPage class.
 //-----------------------------------------------------------------------------
-class NewSWComponentPage : public NewPage
+class NewComDefinitionPage : public NewPage
 {
     Q_OBJECT
 
@@ -38,12 +33,12 @@ public:
      *      @param [in] libInterface The library interface.
      *      @param [in] parentDlg    The parent dialog.
      */
-    NewSWComponentPage(LibraryInterface* libInterface, QWidget* parentDlg);
+    NewComDefinitionPage(LibraryInterface* libInterface, QWidget* parentDlg);
 
     /*!
      *  Destructor.
      */
-    ~NewSWComponentPage();
+    ~NewComDefinitionPage();
 
     /*!
      *  Validates the contents of the page thoroughly.
@@ -59,17 +54,17 @@ public:
      */
     void apply();
 
-
 signals:
-    //! Signaled when a SW component should be created.
-    void createSWComponent(VLNV const& vlnv, QString const& directory);
+    //! Signaled when a COM definition should be created.
+    void createComDefinition(VLNV const& vlnv, QString const& directory);
 
 private:
     // Disable copying.
-    NewSWComponentPage(NewSWComponentPage const& rhs);
-    NewSWComponentPage& operator=(NewSWComponentPage const& rhs);
+    NewComDefinitionPage(NewComDefinitionPage const& rhs);
+    NewComDefinitionPage& operator=(NewComDefinitionPage const& rhs);
+    
 };
 
 //-----------------------------------------------------------------------------
 
-#endif // NEWSWCOMPONENTPAGE_H
+#endif // NEWCOMDEFINITIONPAGE_H
