@@ -8,8 +8,8 @@
 #ifndef VIEWSMODEL_H
 #define VIEWSMODEL_H
 
-#include <models/view.h>
-#include <models/component.h>
+#include <IPXACTmodels/view.h>
+#include <IPXACTmodels/component.h>
 
 #include <QAbstractTableModel>
 #include <QList>

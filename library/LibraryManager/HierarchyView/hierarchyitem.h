@@ -8,12 +8,12 @@
 #ifndef HIERARCHYITEM_H
 #define HIERARCHYITEM_H
 
-#include <models/component.h>
-#include <models/busdefinition.h>
-#include <models/abstractiondefinition.h>
-#include <models/ApiDefinition.h>
-#include <models/ComDefinition.h>
-#include <models/design.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/ApiDefinition.h>
+#include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/design.h>
 
 #include <common/KactusAttribute.h>
 

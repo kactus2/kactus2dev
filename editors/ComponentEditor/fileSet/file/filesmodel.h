@@ -8,9 +8,9 @@
 #ifndef FILESMODEL_H
 #define FILESMODEL_H
 
-#include <models/file.h>
-#include <models/fileset.h>
-#include <models/component.h>
+#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/fileset.h>
+#include <IPXACTmodels/component.h>
 
 #include <QAbstractTableModel>
 #include <QList>

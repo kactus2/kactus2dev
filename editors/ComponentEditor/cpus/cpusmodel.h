@@ -8,8 +8,8 @@
 #ifndef CPUSMODEL_H
 #define CPUSMODEL_H
 
-#include <models/component.h>
-#include <models/cpu.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/cpu.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>

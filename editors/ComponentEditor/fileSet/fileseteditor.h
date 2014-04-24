@@ -11,7 +11,7 @@
 #include "../itemeditor.h"
 #include "groupmanager.h"
 #include "file/fileseditor.h"
-#include <models/fileset.h>
+#include <IPXACTmodels/fileset.h>
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/listManager/dirlistmanager.h>
 #include <editors/ComponentEditor/fileBuilders/filebuilderseditor.h>

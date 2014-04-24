@@ -8,8 +8,8 @@
 #ifndef SEGMENTSMODEL_H
 #define SEGMENTSMODEL_H
 
-#include <models/addressspace.h>
-#include <models/segment.h>
+#include <IPXACTmodels/addressspace.h>
+#include <IPXACTmodels/segment.h>
 
 #include <QAbstractTableModel>
 #include <QList>

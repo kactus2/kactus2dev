@@ -9,8 +9,8 @@
 
 #include <common/widgets/tabDocument/TabDocument.h>
 
-#include <models/abstractiondefinition.h>
-#include <models/busdefinition.h>
+#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/busdefinition.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 

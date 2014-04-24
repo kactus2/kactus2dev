@@ -11,8 +11,8 @@
 
 #include "AddressBlockItem.h"
 
-#include <models/component.h>
-#include <models/addressspace.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/addressspace.h>
 
 //-----------------------------------------------------------------------------
 // Function: AddressBlockItem::AddressBlockItem()

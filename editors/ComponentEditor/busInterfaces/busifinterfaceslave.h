@@ -9,9 +9,9 @@
 #define BUSIFINTERFACESLAVE_H
 
 #include "busifinterfacemodeeditor.h"
-#include <models/businterface.h>
-#include <models/component.h>
-#include <models/slaveinterface.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/slaveinterface.h>
 #include <common/widgets/memoryMapSelector/memorymapselector.h>
 #include "bridgeseditor.h"
 

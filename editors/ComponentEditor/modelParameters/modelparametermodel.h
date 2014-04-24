@@ -8,8 +8,8 @@
 #ifndef MODELPARAMETERMODEL_H
 #define MODELPARAMETERMODEL_H
 
-#include <models/modelparameter.h>
-#include <models/component.h>
+#include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/component.h>
 
 #include <QAbstractTableModel>
 #include <QMap>

@@ -22,9 +22,9 @@
 #include <common/graphicsItems/GraphicsColumn.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 
-#include <models/component.h>
-#include <models/businterface.h>
-#include <models/port.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/port.h>
 
 //-----------------------------------------------------------------------------
 // Function: ColumnDeleteCommand()

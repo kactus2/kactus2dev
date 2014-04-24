@@ -12,7 +12,7 @@
 #include "SWPropertiesEditor.h"
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <editors/ComDefinitionEditor/ComPropertyDelegate.h>
-#include <models/ComProperty.h>
+#include <IPXACTmodels/ComProperty.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>

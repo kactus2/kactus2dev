@@ -18,10 +18,10 @@
 #include <common/layouts/HCollisionLayout.h>
 #include <common/layouts/VCollisionLayout.h>
 
-#include <models/component.h>
-#include <models/ComInterface.h>
-#include <models/ApiInterface.h>
-#include <models/ComProperty.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/ComInterface.h>
+#include <IPXACTmodels/ApiInterface.h>
+#include <IPXACTmodels/ComProperty.h>
 
 //-----------------------------------------------------------------------------
 // Function: SystemComponentItem()

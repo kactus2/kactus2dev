@@ -9,8 +9,8 @@
 #include "AdHocEnabled.h"
 
 #include <common/DesignDiagram.h>
-#include <models/businterface.h>
-#include <models/ColumnDesc.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/ColumnDesc.h>
 
 #include <QMap>
 #include <QVector>

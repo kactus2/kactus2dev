@@ -7,7 +7,7 @@
 #ifndef CPU_H_
 #define CPU_H_
 
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <common/Global.h>
 

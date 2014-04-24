@@ -14,7 +14,7 @@
 
 #include <common/widgets/FileSelector/fileselector.h>
 #include <library/LibraryManager/libraryinterface.h>
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QTime>
 #include <QDate>

@@ -7,10 +7,10 @@
 
 #include "busifinterfacemaster.h"
 
-#include <models/businterface.h>
-#include <models/component.h>
-#include <models/generaldeclarations.h>
-#include <models/masterinterface.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/masterinterface.h>
 
 #include <QLabel>
 #include <QGridLayout>

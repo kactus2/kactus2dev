@@ -9,9 +9,9 @@
 
 #include "vhdlgenerator2.h"
 #include "vhdlgeneral.h"
-#include <models/modelparameter.h>
-#include <models/port.h>
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 VhdlComponentDeclaration::VhdlComponentDeclaration( QSharedPointer<Component> component,
 												   VhdlGenerator2* parent ):

@@ -10,9 +10,9 @@
 //-----------------------------------------------------------------------------
 
 #include "VHDLSourceAnalyzer.h"
-#include <models/fileset.h>
-#include <models/file.h>
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/fileset.h>
+#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QtPlugin>
 #include <QMessageBox>

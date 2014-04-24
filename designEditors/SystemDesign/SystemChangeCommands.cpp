@@ -22,7 +22,7 @@
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 //-----------------------------------------------------------------------------
 // Function: TypeDefinitionChangeCommand()

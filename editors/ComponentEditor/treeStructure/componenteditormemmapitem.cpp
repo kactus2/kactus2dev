@@ -9,8 +9,8 @@
 #include <editors/ComponentEditor/memoryMaps/memorymapeditor.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include "componenteditoraddrblockitem.h"
-#include <models/memorymapitem.h>
-#include <models/addressblock.h>
+#include <IPXACTmodels/memorymapitem.h>
+#include <IPXACTmodels/addressblock.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
 
 #include <QFont>

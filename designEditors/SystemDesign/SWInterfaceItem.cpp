@@ -26,12 +26,12 @@
 #include <common/diagramgrid.h>
 #include <common/DesignDiagram.h>
 
-#include <models/ApiInterface.h>
-#include <models/ComInterface.h>
-#include <models/component.h>
-#include <models/ApiDefinition.h>
-#include <models/ApiFunction.h>
-#include <models/ComDefinition.h>
+#include <IPXACTmodels/ApiInterface.h>
+#include <IPXACTmodels/ComInterface.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/ApiDefinition.h>
+#include <IPXACTmodels/ApiFunction.h>
+#include <IPXACTmodels/ComDefinition.h>
 
 #include <QBrush>
 #include <QPen>

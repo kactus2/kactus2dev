@@ -12,7 +12,7 @@
 #ifndef HWADDCOMMANDS_H
 #define HWADDCOMMANDS_H
 
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QUndoCommand>
 #include <QGraphicsItem>

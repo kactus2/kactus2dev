@@ -7,10 +7,10 @@
 
 #include "cominterfacesmodel.h"
 #include "cominterfacesdelegate.h"
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/vlnv.h>
-#include <models/ComDefinition.h>
+#include <IPXACTmodels/ComDefinition.h>
 
 #include <QColor>
 #include <QMimeData>

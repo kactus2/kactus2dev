@@ -8,8 +8,8 @@
 #ifndef SWBUILDCOMMANDEDITOR_H
 #define SWBUILDCOMMANDEDITOR_H
 
-#include <models/component.h>
-#include <models/swbuildcommand.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/swbuildcommand.h>
 
 #include <QSharedPointer>
 #include <QGroupBox>

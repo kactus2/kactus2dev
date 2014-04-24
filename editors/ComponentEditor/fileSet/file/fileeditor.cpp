@@ -7,8 +7,8 @@
 
 #include "fileeditor.h"
 
-#include <models/component.h>
-#include <models/file.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/file.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>

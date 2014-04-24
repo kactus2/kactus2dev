@@ -14,8 +14,8 @@
 #include <designEditors/SystemDesign/SWComponentItem.h>
 
 #include <designEditors/HWDesign/HWComponentItem.h>
-#include <models/component.h>
-#include <models/librarycomponent.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/librarycomponent.h>
 #include <common/diagramgrid.h>
 #include <library/LibraryManager/libraryinterface.h>
 

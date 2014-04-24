@@ -12,7 +12,7 @@
 #ifndef HWDELETECOMMANDS_H
 #define HWDELETECOMMANDS_H
 
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QUndoCommand>
 #include <QGraphicsItem>

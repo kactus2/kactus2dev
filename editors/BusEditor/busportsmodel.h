@@ -7,10 +7,10 @@
 #ifndef BUSPORTSMODEL_H
 #define BUSPORTSMODEL_H
 
-#include <models/abstractiondefinition.h>
-#include <models/generaldeclarations.h>
-#include <models/portabstraction.h>
-#include <models/wireabstraction.h>
+#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/portabstraction.h>
+#include <IPXACTmodels/wireabstraction.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>

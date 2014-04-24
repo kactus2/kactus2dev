@@ -12,8 +12,8 @@
 #ifndef HWCONNECTIONENDPOINT_H
 #define HWCONNECTIONENDPOINT_H
 
-#include <models/generaldeclarations.h>
-#include <models/component.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/component.h>
 
 #include <common/graphicsItems/ConnectionEndpoint.h>
 

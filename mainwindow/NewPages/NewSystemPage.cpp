@@ -14,7 +14,7 @@
 #include <library/LibraryManager/libraryitem.h>
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>

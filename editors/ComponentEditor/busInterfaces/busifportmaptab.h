@@ -19,9 +19,9 @@
 #include "portmaps/PortMapsTreeModel.h"
 #include "portmaps/logicallistmodel.h"
 #include "portmaps/PortMapsTreeView.h"
-#include <models/businterface.h>
-#include <models/generaldeclarations.h>
-#include <models/component.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/component.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/BitMappingModel.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/BitMappingView.h>

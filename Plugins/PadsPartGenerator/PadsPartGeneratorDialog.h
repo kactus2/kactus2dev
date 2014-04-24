@@ -12,7 +12,7 @@
 #ifndef PADSPARTGENERATORDIALOG_H
 #define PADSPARTGENERATORDIALOG_H
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QComboBox>
 #include <QDialog>

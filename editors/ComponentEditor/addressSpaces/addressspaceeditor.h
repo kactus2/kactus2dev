@@ -12,8 +12,8 @@
 #include "segmenteditor.h"
 #include "localMemoryMap/localmemorymapeditor.h"
 
-#include <models/component.h>
-#include <models/addressspace.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/addressspace.h>
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>

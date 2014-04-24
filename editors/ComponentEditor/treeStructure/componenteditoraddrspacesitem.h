@@ -9,7 +9,7 @@
 #define COMPONENTEDITORADDRSPACESITEM_H
 
 #include "componenteditoritem.h"
-#include <models/addressspace.h>
+#include <IPXACTmodels/addressspace.h>
 
 #include <QList>
 

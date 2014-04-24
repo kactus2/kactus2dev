@@ -15,7 +15,7 @@
 #include "FileDependencyItem.h"
 #include "FileDependencySortFilter.h"
 
-#include <models/FileDependency.h>
+#include <IPXACTmodels/FileDependency.h>
 
 #include <QHeaderView>
 #include <QPainter>

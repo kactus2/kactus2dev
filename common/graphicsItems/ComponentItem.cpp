@@ -19,7 +19,7 @@
 
 #include <common/DesignDiagram.h>
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QFont>
 #include <QTextDocument>

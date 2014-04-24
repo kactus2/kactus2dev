@@ -7,13 +7,13 @@
 
 #include "interfaceeditor.h"
 
-#include <models/businterface.h>
-#include <models/generaldeclarations.h>
-#include <models/abstractiondefinition.h>
-#include <models/ApiInterface.h>
-#include <models/ComInterface.h>
-#include <models/ComDefinition.h>
-#include <models/ComProperty.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/ApiInterface.h>
+#include <IPXACTmodels/ComInterface.h>
+#include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/ComProperty.h>
 
 #include <common/GenericEditProvider.h>
 

@@ -8,7 +8,7 @@
 #include "configurableelementeditor.h"
 
 #include "configurableelementdelegate.h"
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 #include <designEditors/HWDesign/HWComponentItem.h>
 
 #include <QIcon>

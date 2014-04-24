@@ -8,8 +8,8 @@
 #ifndef ENUMERATEDVALUEMODEL_H
 #define ENUMERATEDVALUEMODEL_H
 
-#include <models/field.h>
-#include <models/enumeratedvalue.h>
+#include <IPXACTmodels/field.h>
+#include <IPXACTmodels/enumeratedvalue.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>

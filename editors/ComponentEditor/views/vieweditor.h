@@ -16,7 +16,7 @@
 #include "flatviewgeneraltab.h"
 #include <editors/ComponentEditor/fileBuilders/filebuilderseditor.h>
 #include "hierarchyrefwidget.h"
-#include <models/view.h>
+#include <IPXACTmodels/view.h>
 
 #include <QComboBox>
 #include <QStackedWidget>

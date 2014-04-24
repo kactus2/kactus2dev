@@ -8,8 +8,8 @@
 #ifndef MEMORYMAPSMODEL_H
 #define MEMORYMAPSMODEL_H
 
-#include <models/component.h>
-#include <models/memorymap.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/memorymap.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>

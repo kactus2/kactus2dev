@@ -18,7 +18,7 @@
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 //-----------------------------------------------------------------------------
 // Function: SystemColumn()

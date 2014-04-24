@@ -8,7 +8,7 @@
 #ifndef MODWRITECOMBOBOX_H
 #define MODWRITECOMBOBOX_H
 
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QComboBox>
 

@@ -17,10 +17,10 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <models/component.h>
-#include <models/ApiDefinition.h>
-#include <models/ApiInterface.h>
-#include <models/ComDefinition.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/ApiDefinition.h>
+#include <IPXACTmodels/ApiInterface.h>
+#include <IPXACTmodels/ComDefinition.h>
 
 #include <common/TextEditProvider.h>
 

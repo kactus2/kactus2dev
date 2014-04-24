@@ -14,7 +14,7 @@
 #include "ComponentWizard.h"
 
 #include <common/KactusAttribute.h>
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardFilesPage::ComponentWizardFilesPage()

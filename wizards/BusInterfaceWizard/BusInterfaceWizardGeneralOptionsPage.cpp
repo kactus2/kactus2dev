@@ -12,7 +12,7 @@
 #include "BusInterfaceWizardGeneralOptionsPage.h"
 #include "BusInterfaceWizard.h"
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>

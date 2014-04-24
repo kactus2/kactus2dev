@@ -7,9 +7,9 @@
 
 #include "otherclockdriversmodel.h"
 
-#include <models/component.h>
-#include <models/generaldeclarations.h>
-#include <models/otherclockdriver.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/otherclockdriver.h>
 
 #include <QColor>
 

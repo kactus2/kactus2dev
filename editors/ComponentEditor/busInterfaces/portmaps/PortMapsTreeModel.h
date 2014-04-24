@@ -17,7 +17,7 @@
 #include <QMap>
 #include <QSharedPointer>
 
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 class AbstractionDefinition;
 class BusInterface;

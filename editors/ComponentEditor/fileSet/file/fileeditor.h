@@ -11,8 +11,8 @@
 #include "../../itemeditor.h"
 #include "filegeneraltab.h"
 #include "fileextratab.h"
-#include <models/component.h>
-#include <models/file.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/file.h>
 
 #include <QWidget>
 #include <QFileInfo>

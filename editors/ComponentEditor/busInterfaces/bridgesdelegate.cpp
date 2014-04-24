@@ -7,7 +7,7 @@
 
 #include "bridgesdelegate.h"
 #include <common/widgets/interfaceSelector/interfaceselector.h>
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QApplication>
 #include <QMouseEvent>

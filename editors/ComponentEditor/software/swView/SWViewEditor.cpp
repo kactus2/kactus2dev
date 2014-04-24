@@ -15,7 +15,7 @@
 #include "bspbuildeditor.h"
 #include <common/KactusAttribute.h>
 
-#include <models/SWView.h>
+#include <IPXACTmodels/SWView.h>
 #include <QApplication>
 
 //-----------------------------------------------------------------------------

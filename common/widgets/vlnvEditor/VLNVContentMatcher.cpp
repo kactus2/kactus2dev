@@ -15,7 +15,7 @@
 #include <common/widgets/assistedLineEdit/LineContentAssistWidget.h>
 #include <common/widgets/vlnvEditor/VLNVDataTree.h>
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 

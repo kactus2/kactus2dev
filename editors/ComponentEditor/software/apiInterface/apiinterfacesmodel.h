@@ -8,7 +8,7 @@
 #ifndef APIINTERFACESMODEL_H
 #define APIINTERFACESMODEL_H
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>

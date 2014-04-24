@@ -16,7 +16,7 @@
 #include <common/graphicsItems/GraphicsItemTypes.h>
 #include <common/graphicsItems/GraphicsColumn.h>
 
-#include <models/ColumnDesc.h>
+#include <IPXACTmodels/ColumnDesc.h>
 
 #include <QGraphicsRectItem>
 #include <QSet>

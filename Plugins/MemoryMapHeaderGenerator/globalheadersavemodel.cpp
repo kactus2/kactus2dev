@@ -8,7 +8,7 @@
 #include "globalheadersavemodel.h"
 
 #include <library/LibraryManager/libraryinterface.h>
-#include <models/ComponentInstance.h>
+#include <IPXACTmodels/ComponentInstance.h>
 
 #include <QDir>
 #include <QStringList>

@@ -9,14 +9,14 @@
 #include <library/LibraryManager/vlnv.h>
 #include <library/LibraryManager/libraryhandler.h>
 
-#include <models/component.h>
-#include <models/design.h>
-#include <models/designconfiguration.h>
-#include <models/librarycomponent.h>
-#include <models/generaldeclarations.h>
-#include <models/file.h>
-#include <models/fileset.h>
-#include <models/view.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/fileset.h>
+#include <IPXACTmodels/view.h>
 
 #include <common/dialogs/comboSelector/comboselector.h>
 

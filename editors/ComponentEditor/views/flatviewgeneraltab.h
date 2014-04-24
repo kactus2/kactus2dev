@@ -9,7 +9,7 @@
 #define FLATVIEWGENERALTAB_H
 
 #include "filesetrefeditor.h"
-#include <models/view.h>
+#include <IPXACTmodels/view.h>
 
 #include <QWidget>
 #include <QLineEdit>

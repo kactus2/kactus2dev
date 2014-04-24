@@ -22,9 +22,9 @@
 #include <common/CSourceWriter.h>
 #include <MCAPI/CSourceTextEdit.h>
 
-#include <models/component.h>
-#include <models/ComInterface.h>
-#include <models/fileset.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/ComInterface.h>
+#include <IPXACTmodels/fileset.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 

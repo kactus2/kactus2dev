@@ -8,7 +8,7 @@
 #ifndef CONFIGURABLEELEMENTDELEGATE_H
 #define CONFIGURABLEELEMENTDELEGATE_H
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QStyledItemDelegate>
 #include <QSharedPointer>

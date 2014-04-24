@@ -7,7 +7,7 @@
 
 #include "addressblockgraphitem.h"
 #include "registergraphitem.h"
-#include <models/register.h>
+#include <IPXACTmodels/register.h>
 #include <common/utils.h>
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 #include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.h>

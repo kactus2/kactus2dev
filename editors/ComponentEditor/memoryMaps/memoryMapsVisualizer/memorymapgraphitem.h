@@ -9,7 +9,7 @@
 #define MEMORYMAPGRAPHITEM_H
 
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
-#include <models/memorymap.h>
+#include <IPXACTmodels/memorymap.h>
 
 #include <QSharedPointer>
 #include <QGraphicsItem>

@@ -8,9 +8,9 @@
 #ifndef SEGMENTEDITOR_H
 #define SEGMENTEDITOR_H
 
-#include <models/addressspace.h>
-#include <models/segment.h>
-#include <models/component.h>
+#include <IPXACTmodels/addressspace.h>
+#include <IPXACTmodels/segment.h>
+#include <IPXACTmodels/component.h>
 #include <common/views/EditableTableView/editabletableview.h>
 #include "segmentsmodel.h"
 #include "segmentproxy.h"

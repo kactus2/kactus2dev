@@ -20,8 +20,8 @@
 
 #include <designEditors/HWDesign/AdHocEnabled.h>
 
-#include <models/designconfiguration.h>
-#include <models/ColumnDesc.h>
+#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/ColumnDesc.h>
 
 #include <common/DrawMode.h>
 

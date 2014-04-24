@@ -11,10 +11,10 @@
 
 #include "LibraryUtils.h"
 
-#include <models/design.h>
-#include <models/designconfiguration.h>
-#include <models/component.h>
-#include <models/model.h>
+#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/model.h>
 
 #include <library/LibraryManager/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>

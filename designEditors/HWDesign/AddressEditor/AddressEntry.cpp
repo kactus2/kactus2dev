@@ -19,9 +19,9 @@
 #include <designEditors/HWDesign/BusPortItem.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
 
-#include <models/businterface.h>
-#include <models/slaveinterface.h>
-#include <models/memorymap.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/slaveinterface.h>
+#include <IPXACTmodels/memorymap.h>
 
 //-----------------------------------------------------------------------------
 // Function: AddressEntry::AddressEntry()

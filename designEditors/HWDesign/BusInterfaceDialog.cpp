@@ -21,8 +21,8 @@
 #include <common/DesignDiagram.h>
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
-#include <models/port.h>
-#include <models/businterface.h>
+#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/businterface.h>
 #include <common/graphicsItems/ConnectionEndpoint.h>
 #include <designEditors/HWDesign/views/CellEditTableView.h>
 #include <designEditors/HWDesign/models/PortGenerationTableModel.h>

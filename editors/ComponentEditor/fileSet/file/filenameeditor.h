@@ -9,7 +9,7 @@
 #define FILENAMEEDITOR_H
 
 #include "filenamelineedit.h"
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QGroupBox>
 #include <QMap>

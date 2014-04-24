@@ -37,17 +37,17 @@
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumn.h>
 
-#include <models/component.h>
-#include <models/designconfiguration.h>
-#include <models/design.h>
-#include <models/model.h>
-#include <models/memorymap.h>
-#include <models/addressspace.h>
-#include <models/businterface.h>
-#include <models/masterinterface.h>
-#include <models/slaveinterface.h>
-#include <models/channel.h>
-#include <models/mirroredslaveinterface.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/model.h>
+#include <IPXACTmodels/memorymap.h>
+#include <IPXACTmodels/addressspace.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/masterinterface.h>
+#include <IPXACTmodels/slaveinterface.h>
+#include <IPXACTmodels/channel.h>
+#include <IPXACTmodels/mirroredslaveinterface.h>
 
 #include <mainwindow/mainwindow.h>
 

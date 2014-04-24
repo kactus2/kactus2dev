@@ -9,7 +9,7 @@
 #include "swviewsdelegate.h"
 #include <library/LibraryManager/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>
-#include <models/designconfiguration.h>
+#include <IPXACTmodels/designconfiguration.h>
 
 #include <QColor>
 #include <QMimeData>

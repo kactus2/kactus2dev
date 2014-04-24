@@ -7,7 +7,7 @@
 #include "componenttreeview.h"
 #include "componenteditoritem.h"
 #include <library/LibraryManager/libraryinterface.h>
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
 
 #include <QEvent>

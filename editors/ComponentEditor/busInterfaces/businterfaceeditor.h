@@ -9,8 +9,8 @@
 #define BUSINTERFACEEDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
-#include <models/businterface.h>
-#include <models/component.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/component.h>
 #include "busifgeneraltab.h"
 #include "busifportmaptab.h"
 

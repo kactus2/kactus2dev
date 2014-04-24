@@ -22,13 +22,13 @@
 #include "columnview/ColumnEditDialog.h"
 #include "columnview/HWColumn.h"
 
-#include <models/librarycomponent.h>
-#include <models/component.h>
-#include <models/design.h>
-#include <models/designconfiguration.h>
-#include <models/model.h>
-#include <models/view.h>
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/model.h>
+#include <IPXACTmodels/view.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <kactusGenerators/vhdlGenerator/vhdlgenerator2.h>
 #include <kactusGenerators/quartusGenerator/quartusgenerator.h>

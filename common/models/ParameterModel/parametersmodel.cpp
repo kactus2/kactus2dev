@@ -7,7 +7,7 @@
 
 #include "parametersmodel.h"
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QColor>
 

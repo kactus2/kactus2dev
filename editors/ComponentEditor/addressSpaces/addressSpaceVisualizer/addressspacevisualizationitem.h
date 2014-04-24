@@ -9,7 +9,7 @@
 #define ADDRESSSPACEVISUALIZATIONITEM_H
 
 #include <common/graphicsItems/visualizeritem.h>
-#include <models/addressspace.h>
+#include <IPXACTmodels/addressspace.h>
 
 #include <QSharedPointer>
 #include <QBrush>

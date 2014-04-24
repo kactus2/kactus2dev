@@ -8,7 +8,7 @@
 #ifndef NAMEGROUPEDITOR_H
 #define NAMEGROUPEDITOR_H
 
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QGroupBox>
 #include <QLineEdit>

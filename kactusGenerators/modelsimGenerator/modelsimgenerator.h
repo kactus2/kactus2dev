@@ -7,7 +7,7 @@
 #ifndef MODELSIMGENERATOR_H_
 #define MODELSIMGENERATOR_H_
 
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QWidget>
 #include <QObject>

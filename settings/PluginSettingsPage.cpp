@@ -17,7 +17,7 @@
 #include <Plugins/PluginSystem/PluginListDialog.h>
 #include <Plugins/PluginSystem/PluginInfoWidget.h>
 
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QApplication>
 #include <QVBoxLayout>

@@ -20,13 +20,13 @@
 #include <common/dialogs/TableViewDialog/TableViewDialog.h>
 
 // the model files
-#include <models/busdefinition.h>
-#include <models/component.h>
-#include <models/generatorchain.h>
-#include <models/abstractiondefinition.h>
-#include <models/designconfiguration.h>
-#include <models/librarycomponent.h>
-#include <models/design.h>
+#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/generatorchain.h>
+#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/design.h>
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 

@@ -17,7 +17,7 @@
 #include <QPushButton>
 #include <QPlainTextEdit>
 
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 class Component;
 class FileSelector;

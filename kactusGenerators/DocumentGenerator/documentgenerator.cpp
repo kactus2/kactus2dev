@@ -7,21 +7,21 @@
 
 #include "documentgenerator.h"
 
-#include <models/designconfiguration.h>
-#include <models/design.h>
-#include <models/librarycomponent.h>
-#include <models/generaldeclarations.h>
-#include <models/parameter.h>
-#include <models/modelparameter.h>
-#include <models/port.h>
-#include <models/businterface.h>
-#include <models/fileset.h>
-#include <models/filebuilder.h>
-#include <models/file.h>
-#include <models/buildcommand.h>
-#include <models/view.h>
-#include <models/design.h>
-#include <models/designconfiguration.h>
+#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/fileset.h>
+#include <IPXACTmodels/filebuilder.h>
+#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/buildcommand.h>
+#include <IPXACTmodels/view.h>
+#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/designconfiguration.h>
 
 #include <common/utils.h>
 #include <common/KactusAttribute.h>

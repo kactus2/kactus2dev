@@ -13,7 +13,7 @@
 
 #include <editors/ComponentEditor/busInterfaces/busifportmaptab.h>
 #include <library/LibraryManager/libraryinterface.h>
-#include <models/businterface.h>
+#include <IPXACTmodels/businterface.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>

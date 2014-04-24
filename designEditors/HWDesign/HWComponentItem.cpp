@@ -21,11 +21,11 @@
 
 #include <designEditors/HWDesign/AdHocEditor/AdHocEditor.h>
 
-#include <models/component.h>
-#include <models/businterface.h>
-#include <models/model.h>
-#include <models/modelparameter.h>
-#include <models/view.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/model.h>
+#include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/view.h>
 
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 

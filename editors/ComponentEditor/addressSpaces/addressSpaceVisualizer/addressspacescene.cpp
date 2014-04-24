@@ -11,9 +11,9 @@
 #include "addressspacegapitem.h"
 #include "localaddrblockgraphitem.h"
 #include "AddressSpaceConflictedItem.h"
-#include <models/memorymap.h>
-#include <models/memorymapitem.h>
-#include <models/addressblock.h>
+#include <IPXACTmodels/memorymap.h>
+#include <IPXACTmodels/memorymapitem.h>
+#include <IPXACTmodels/addressblock.h>
 #include <common/graphicsItems/visualizeritem.h>
 
 //-----------------------------------------------------------------------------

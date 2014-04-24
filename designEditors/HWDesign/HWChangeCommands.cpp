@@ -15,8 +15,8 @@
 #include "HWMoveCommands.h"
 #include "HWAddCommands.h"
 
-#include <models/component.h>
-#include <models/ComInterface.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/ComInterface.h>
 
 #include <common/DesignDiagram.h>
 #include <common/DesignWidget.h>
@@ -34,7 +34,7 @@
 #include "BusInterfaceItem.h"
 #include "columnview/HWColumn.h"
 
-#include <models/businterface.h>
+#include <IPXACTmodels/businterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentChangeNameCommand()

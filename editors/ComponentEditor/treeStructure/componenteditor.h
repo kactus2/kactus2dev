@@ -9,7 +9,7 @@
 #define COMPONENTEDITOR_H
 
 #include <common/widgets/tabDocument/TabDocument.h>
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 #include "componenttreeview.h"
 #include "componenteditortreemodel.h"
 #include "componenteditorgroupslot.h"

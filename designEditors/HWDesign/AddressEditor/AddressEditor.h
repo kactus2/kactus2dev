@@ -14,7 +14,7 @@
 
 #include "AddressModel.h"
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QWidget>
 #include <QPushButton>

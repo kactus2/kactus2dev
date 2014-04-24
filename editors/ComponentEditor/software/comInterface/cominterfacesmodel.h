@@ -8,8 +8,8 @@
 #ifndef COMINTERFACESMODEL_H
 #define COMINTERFACESMODEL_H
 
-#include <models/component.h>
-#include <models/ComInterface.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/ComInterface.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>

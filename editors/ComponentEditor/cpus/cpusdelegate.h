@@ -8,7 +8,7 @@
 #ifndef CPUSDELEGATE_H
 #define CPUSDELEGATE_H
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QStyledItemDelegate>
 #include <QSharedPointer>

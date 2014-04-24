@@ -9,7 +9,7 @@
 #define REGISTEREDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
-#include <models/register.h>
+#include <IPXACTmodels/register.h>
 
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>

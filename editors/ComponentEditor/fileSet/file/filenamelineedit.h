@@ -8,8 +8,8 @@
 #ifndef FILENAMELINEEDIT_H
 #define FILENAMELINEEDIT_H
 
-#include <models/component.h>
-#include <models/file.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/file.h>
 
 #include <QLineEdit>
 #include <QFileInfo>

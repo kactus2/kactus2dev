@@ -14,7 +14,7 @@
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QWidget>
 #include <QPushButton>

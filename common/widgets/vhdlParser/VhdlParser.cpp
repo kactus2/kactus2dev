@@ -24,8 +24,8 @@
 #include <QApplication>
 #include <QAbstractTextDocumentLayout>
 
-#include <models/modelparameter.h>
-#include <models/port.h>
+#include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/port.h>
 #include <common/widgets/vhdlParser/VhdlSyntax.h>
 #include <common/KactusColors.h>
 

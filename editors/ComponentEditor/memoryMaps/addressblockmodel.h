@@ -8,8 +8,8 @@
 #ifndef ADDRESSBLOCKMODEL_H
 #define ADDRESSBLOCKMODEL_H
 
-#include <models/addressblock.h>
-#include <models/registermodel.h>
+#include <IPXACTmodels/addressblock.h>
+#include <IPXACTmodels/registermodel.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>

@@ -8,8 +8,8 @@
 #ifndef REGISTERTABLEMODEL_H
 #define REGISTERTABLEMODEL_H
 
-#include <models/register.h>
-#include <models/field.h>
+#include <IPXACTmodels/register.h>
+#include <IPXACTmodels/field.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>

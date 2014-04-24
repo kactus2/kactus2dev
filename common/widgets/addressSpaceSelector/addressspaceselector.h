@@ -8,7 +8,7 @@
 #ifndef ADDRESSSPACESELECTOR_H
 #define ADDRESSSPACESELECTOR_H
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QComboBox>
 #include <QSharedPointer>

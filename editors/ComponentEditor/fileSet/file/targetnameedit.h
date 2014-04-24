@@ -8,7 +8,7 @@
 #ifndef TARGETNAMEEDIT_H
 #define TARGETNAMEEDIT_H
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QLineEdit>
 #include <QFileInfo>

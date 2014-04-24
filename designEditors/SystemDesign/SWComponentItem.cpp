@@ -18,8 +18,8 @@
 
 #include <designEditors/HWDesign/HWMoveCommands.h>
 
-#include <models/component.h>
-#include <models/model.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/model.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 

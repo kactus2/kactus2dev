@@ -12,10 +12,10 @@
 #include "memorymapheadergenerator_global.h"
 
 #include <Plugins/PluginSystem/IGeneratorPlugin.h>
-#include <models/component.h>
-#include <models/librarycomponent.h>
-#include <models/design.h>
-#include <models/designconfiguration.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/designconfiguration.h>
 #include "globalheadersavemodel.h"
 #include "systemheadersavemodel.h"
 

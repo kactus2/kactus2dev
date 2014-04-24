@@ -8,7 +8,7 @@
 #ifndef FILEDEFINEMODEL_H
 #define FILEDEFINEMODEL_H
 
-#include <models/file.h>
+#include <IPXACTmodels/file.h>
 
 #include <QAbstractTableModel>
 #include <QString>

@@ -9,8 +9,8 @@
 #define COMPONENTEDITORFIELDITEM_H
 
 #include "componenteditoritem.h"
-#include <models/field.h>
-#include <models/register.h>
+#include <IPXACTmodels/field.h>
+#include <IPXACTmodels/register.h>
 
 #include <QFont>
 #include <QSharedPointer>

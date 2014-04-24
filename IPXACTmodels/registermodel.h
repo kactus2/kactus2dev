@@ -8,7 +8,7 @@
 #define REGISTERMODEL_H_
 
 #include <common/Global.h>
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QList>
 #include <QDomNode>

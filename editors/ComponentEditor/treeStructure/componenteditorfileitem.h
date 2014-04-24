@@ -9,7 +9,7 @@
 #define COMPONENTEDITORFILEITEM_H
 
 #include "componenteditoritem.h"
-#include <models/file.h>
+#include <IPXACTmodels/file.h>
 
 #include <QRegExpValidator>
 

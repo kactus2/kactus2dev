@@ -25,9 +25,9 @@
 #include <common/GenericEditProvider.h>
 #include <common/layouts/VStackedLayout.h>
 
-#include <models/component.h>
-#include <models/addressspace.h>
-#include <models/segment.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/addressspace.h>
+#include <IPXACTmodels/segment.h>
 
 #include <QFont>
 #include <QTextDocument>

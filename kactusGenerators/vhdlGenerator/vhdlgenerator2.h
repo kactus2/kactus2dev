@@ -8,9 +8,9 @@
 #ifndef VHDLGENERATOR2_H
 #define VHDLGENERATOR2_H
 
-#include <models/component.h>
-#include <models/design.h>
-#include <models/designconfiguration.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/designconfiguration.h>
 
 #include <library/LibraryManager/vlnv.h>
 

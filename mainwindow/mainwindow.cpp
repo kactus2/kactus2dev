@@ -73,21 +73,21 @@
 #include <MCAPI/CSourceWidget.h>
 #include <MCAPI/CSourceContentMatcher.h>
 
-#include <models/view.h>
-#include <models/component.h>
-#include <models/model.h>
-#include <models/design.h>
-#include <models/designconfiguration.h>
-#include <models/abstractiondefinition.h>
-#include <models/busdefinition.h>
-#include <models/fileset.h>
-#include <models/file.h>
-#include <models/ComDefinition.h>
-#include <models/ApiDefinition.h>
-#include <models/ApiInterface.h>
-#include <models/SWView.h>
-#include <models/SystemView.h>
-#include <models/SWInstance.h>
+#include <IPXACTmodels/view.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/model.h>
+#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/fileset.h>
+#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/ApiDefinition.h>
+#include <IPXACTmodels/ApiInterface.h>
+#include <IPXACTmodels/SWView.h>
+#include <IPXACTmodels/SystemView.h>
+#include <IPXACTmodels/SWInstance.h>
 
 #include <Plugins/PluginSystem/IGeneratorPlugin.h>
 #include <Plugins/PluginSystem/PluginListDialog.h>

@@ -13,7 +13,7 @@
 
 #include "ComPropertyDelegate.h"
 
-#include <models/ComProperty.h>
+#include <IPXACTmodels/ComProperty.h>
 
 #include <QColor>
 #include <QRegExp>

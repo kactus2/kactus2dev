@@ -18,9 +18,9 @@
 #include <common/widgets/ScanProgressWidget/scanprogresswidget.h>
 #include <common/utils.h>
 
-#include <models/component.h>
-#include <models/fileset.h>
-#include <models/file.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/fileset.h>
+#include <IPXACTmodels/file.h>
 
 #include <Plugins/PluginSystem/PluginManager.h>
 #include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>

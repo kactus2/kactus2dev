@@ -6,11 +6,11 @@
  */
 
 #include "busifinterfacemonitor.h"
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 #include "busifgeneraltab.h"
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/vlnv.h>
-#include <models/busdefinition.h>
+#include <IPXACTmodels/busdefinition.h>
 
 #include <QGridLayout>
 #include <QLabel>

@@ -9,7 +9,7 @@
 #define FILETYPEEDITOR_H
 
 #include <common/widgets/listManager/listmanager.h>
-#include <models/file.h>
+#include <IPXACTmodels/file.h>
 
 #include <QSharedPointer>
 

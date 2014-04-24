@@ -12,9 +12,9 @@
 #ifndef HWCHANGECOMMANDS_H
 #define HWCHANGECOMMANDS_H
 
-#include <models/ColumnDesc.h>
-#include <models/generaldeclarations.h>
-#include <models/ApiInterface.h>
+#include <IPXACTmodels/ColumnDesc.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/ApiInterface.h>
 
 #include <common/ColumnTypes.h>
 

@@ -8,7 +8,7 @@
 #ifndef ACCESSCOMBOBOX_H
 #define ACCESSCOMBOBOX_H
 
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QComboBox>
 

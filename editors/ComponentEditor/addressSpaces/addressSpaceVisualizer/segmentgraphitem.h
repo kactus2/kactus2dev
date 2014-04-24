@@ -9,7 +9,7 @@
 #define SEGMENTGRAPHITEM_H
 
 #include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.h>
-#include <models/segment.h>
+#include <IPXACTmodels/segment.h>
 
 #include <QSharedPointer>
 

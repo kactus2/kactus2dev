@@ -8,8 +8,8 @@
 #include "componenteditorfileitem.h"
 
 #include <editors/ComponentEditor/fileSet/file/fileeditor.h>
-#include <models/component.h>
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/generaldeclarations.h>
 #include <common/utils.h>
 
 #include <QFont>

@@ -8,7 +8,7 @@
 #ifndef OTHERCLOCKDRIVERSMODEL_H
 #define OTHERCLOCKDRIVERSMODEL_H
 
-#include <models/otherclockdriver.h>
+#include <IPXACTmodels/otherclockdriver.h>
 
 #include <QAbstractTableModel>
 

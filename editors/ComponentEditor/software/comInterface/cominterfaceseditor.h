@@ -9,7 +9,7 @@
 #define COMINTERFACESEDITOR_H
 
 #include <common/views/EditableTableView/editabletableview.h>
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 #include <editors/ComponentEditor/itemeditor.h>
 #include "cominterfacesmodel.h"
 

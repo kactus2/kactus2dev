@@ -20,8 +20,8 @@
 #include <QWizardPage>
 
 #include <common/widgets/FileSelector/fileselector.h>
-#include <models/generaldeclarations.h>
-#include <models/component.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/component.h>
 //-----------------------------------------------------------------------------
 // Function: VhdlParserWidget()
 //-----------------------------------------------------------------------------

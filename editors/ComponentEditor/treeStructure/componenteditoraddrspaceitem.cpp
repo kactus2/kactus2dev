@@ -6,7 +6,7 @@
  */
 
 #include "componenteditoraddrspaceitem.h"
-#include <models/addressblock.h>
+#include <IPXACTmodels/addressblock.h>
 #include "componenteditoraddrblockitem.h"
 #include <editors/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapgraphitem.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>

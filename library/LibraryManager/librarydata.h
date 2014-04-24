@@ -8,7 +8,7 @@
 #define LIBRARYDATA_H
 
 #include "vlnv.h"
-#include <models/librarycomponent.h>
+#include <IPXACTmodels/librarycomponent.h>
 #include <common/widgets/ScanProgressWidget/scanprogresswidget.h>
 
 #include <QObject>

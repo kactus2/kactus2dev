@@ -16,8 +16,8 @@
 #include <QAbstractTableModel>
 #include <QMimeData>
 
-#include "models/generaldeclarations.h"
-#include "models/abstractiondefinition.h"
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/abstractiondefinition.h>
 
 class BusInterface;
 class Component;

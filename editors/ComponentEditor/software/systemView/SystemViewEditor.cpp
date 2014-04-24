@@ -11,7 +11,7 @@
 
 #include "SystemViewEditor.h"
 #include <mainwindow/mainwindow.h>
-#include <models/SystemView.h>
+#include <IPXACTmodels/SystemView.h>
 
 #include <common/widgets/viewSelector/viewselector.h>
 

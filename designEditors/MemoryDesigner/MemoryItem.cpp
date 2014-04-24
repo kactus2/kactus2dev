@@ -24,9 +24,9 @@
 #include <common/KactusColors.h>
 #include <common/layouts/VStackedLayout.h>
 
-#include <models/component.h>
-#include <models/memorymap.h>
-#include <models/addressblock.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/memorymap.h>
+#include <IPXACTmodels/addressblock.h>
 
 #include <QFont>
 #include <QTextDocument>

@@ -6,7 +6,7 @@
  */
 
 #include "filesmodel.h"
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QStringList>

@@ -8,7 +8,7 @@
 #ifndef WRITEVALUECONSTRAINTEDITOR_H
 #define WRITEVALUECONSTRAINTEDITOR_H
 
-#include <models/writevalueconstraint.h>
+#include <IPXACTmodels/writevalueconstraint.h>
 
 #include <QGroupBox>
 #include <QSharedPointer>

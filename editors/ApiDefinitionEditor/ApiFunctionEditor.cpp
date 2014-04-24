@@ -13,9 +13,9 @@
 
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 
-#include <models/ApiFunction.h>
-#include <models/ApiDefinition.h>
-#include <models/ComDefinition.h>
+#include <IPXACTmodels/ApiFunction.h>
+#include <IPXACTmodels/ApiDefinition.h>
+#include <IPXACTmodels/ComDefinition.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>

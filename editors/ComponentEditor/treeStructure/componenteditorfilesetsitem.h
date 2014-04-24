@@ -9,7 +9,7 @@
 #define COMPONENTEDITORFILESETSITEM_H
 
 #include "componenteditoritem.h"
-#include <models/fileset.h>
+#include <IPXACTmodels/fileset.h>
 
 #include <QSharedPointer>
 

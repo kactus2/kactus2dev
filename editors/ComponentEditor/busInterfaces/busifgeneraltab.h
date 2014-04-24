@@ -13,8 +13,8 @@
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 #include <common/widgets/interfaceModeSelector/interfacemodeselector.h>
 #include "busifgeneraldetails.h"
-#include <models/component.h>
-#include <models/businterface.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/businterface.h>
 #include "interfacemodestack.h"
 
 #include <QWidget>

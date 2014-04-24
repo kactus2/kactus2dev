@@ -9,8 +9,8 @@
 #define CONFIGURATIONEDITOR_H
 
 #include "activevieweditor.h"
-#include <models/component.h>
-#include <models/designconfiguration.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/designconfiguration.h>
 
 #include <QWidget>
 #include <QPushButton>

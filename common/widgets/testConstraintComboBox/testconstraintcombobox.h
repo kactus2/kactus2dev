@@ -8,7 +8,7 @@
 #ifndef TESTCONSTRAINTCOMBOBOX_H
 #define TESTCONSTRAINTCOMBOBOX_H
 
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QComboBox>
 

@@ -9,7 +9,7 @@
 #define LOCALADDRBLOCKGRAPHITEM_H
 
 #include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.h>
-#include <models/addressblock.h>
+#include <IPXACTmodels/addressblock.h>
 
 #include <QSharedPointer>
 

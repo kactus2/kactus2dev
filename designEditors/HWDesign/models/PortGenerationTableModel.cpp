@@ -18,11 +18,11 @@
 #include <common/graphicsItems/ConnectionEndpoint.h>
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/HWDesign/models/PortGenerationRow.h>
-#include <models/component.h>
-#include "models/port.h"
-#include <models/businterface.h>
-#include <models/abstractiondefinition.h>
-#include <models/portabstraction.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/portabstraction.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 

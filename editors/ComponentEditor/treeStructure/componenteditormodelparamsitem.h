@@ -10,7 +10,7 @@
 
 #include "componenteditoritem.h"
 
-#include <models/modelparameter.h>
+#include <IPXACTmodels/modelparameter.h>
 
 #include <QString>
 #include <QList>

@@ -22,9 +22,9 @@
 
 #include "columnview/HWColumn.h"
 
-#include <models/businterface.h>
-#include <models/component.h>
-#include <models/port.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/port.h>
 
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>

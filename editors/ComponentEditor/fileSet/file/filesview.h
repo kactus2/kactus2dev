@@ -9,7 +9,7 @@
 #define FILESVIEW_H
 
 #include <common/views/EditableTableView/editabletableview.h>
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QMouseEvent>
 #include <QSharedPointer>

@@ -8,7 +8,7 @@
 #include "addressblockdelegate.h"
 #include <common/widgets/booleanComboBox/booleancombobox.h>
 #include <common/widgets/accessComboBox/accesscombobox.h>
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QLineEdit>
 #include <QSpinBox>

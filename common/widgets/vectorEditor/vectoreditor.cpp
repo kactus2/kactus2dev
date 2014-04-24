@@ -7,7 +7,7 @@
 
 #include "vectoreditor.h"
 
-#include <models/vector.h>
+#include <IPXACTmodels/vector.h>
 
 #include <QLabel>
 #include <QVBoxLayout>

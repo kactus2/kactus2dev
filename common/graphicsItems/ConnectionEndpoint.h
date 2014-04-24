@@ -12,8 +12,8 @@
 #ifndef CONNECTIONENDPOINT_H
 #define CONNECTIONENDPOINT_H
 
-#include <models/generaldeclarations.h>
-#include <models/component.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/component.h>
 
 #include <QList>
 #include <QPointF>

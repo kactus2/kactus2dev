@@ -11,7 +11,7 @@
 
 #include "PropertyValueModel.h"
 
-#include <models/ComProperty.h>
+#include <IPXACTmodels/ComProperty.h>
 
 #include <QRegExp>
 #include <QFont>

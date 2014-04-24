@@ -8,9 +8,9 @@
 #ifndef BUSIFINTERFACEMODEEDITOR_H
 #define BUSIFINTERFACEMODEEDITOR_H
 
-#include <models/generaldeclarations.h>
-#include <models/businterface.h>
-#include <models/component.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/component.h>
 
 #include <QGroupBox>
 #include <QSharedPointer>

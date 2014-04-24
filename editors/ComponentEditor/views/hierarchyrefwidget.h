@@ -9,7 +9,7 @@
 #define HIERARCHYREFWIDGET_H
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
-#include <models/view.h>
+#include <IPXACTmodels/view.h>
 
 #include <QWidget>
 #include <QSharedPointer>

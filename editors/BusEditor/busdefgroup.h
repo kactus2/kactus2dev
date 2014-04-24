@@ -7,7 +7,7 @@
 #ifndef BUSDEFGROUP_H
 #define BUSDEFGROUP_H
 
-#include <models/busdefinition.h>
+#include <IPXACTmodels/busdefinition.h>
 
 #include <QGroupBox>
 #include <QCheckBox>

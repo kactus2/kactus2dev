@@ -10,8 +10,8 @@
 
 #include "vlnv.h"
 
-#include <models/librarycomponent.h>
-#include <models/design.h>
+#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/design.h>
 
 #include <QObject>
 #include <QSharedPointer>

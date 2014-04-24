@@ -27,7 +27,7 @@
 #include <common/DesignDiagram.h>
 #include <common/diagramgrid.h>
 #include <common/DiagramUtil.h>
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 //-----------------------------------------------------------------------------
 // Function: HWColumn()

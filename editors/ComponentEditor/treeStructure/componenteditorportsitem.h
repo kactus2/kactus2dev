@@ -9,7 +9,7 @@
 #define COMPONENTEDITORPORTSITEM_H
 
 #include "componenteditoritem.h"
-#include <models/port.h>
+#include <IPXACTmodels/port.h>
 
 #include <QList>
 

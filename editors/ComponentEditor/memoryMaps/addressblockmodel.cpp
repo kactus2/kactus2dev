@@ -7,8 +7,8 @@
 
 #include "addressblockmodel.h"
 #include "addressblockdelegate.h"
-#include <models/register.h>
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/register.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QColor>
 

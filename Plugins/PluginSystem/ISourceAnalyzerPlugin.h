@@ -15,7 +15,7 @@
 #include "IPlugin.h"
 #include "IPluginUtility.h"
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QString>
 #include <QStringList>

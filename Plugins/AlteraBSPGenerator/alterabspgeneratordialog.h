@@ -11,9 +11,9 @@
 #include <common/Global.h>
 
 #include <common/dialogs/commandLineGeneratorDialog/commandlinegeneratordialog.h>
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 #include <common/widgets/viewSelector/viewselector.h>
-#include <models/SWView.h>
+#include <IPXACTmodels/SWView.h>
 
 #include <QSharedPointer>
 #include <QDialog>

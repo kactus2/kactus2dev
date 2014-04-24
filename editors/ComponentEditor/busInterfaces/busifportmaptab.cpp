@@ -11,9 +11,9 @@
 
 #include "busifportmaptab.h"
 
-#include <models/abstractiondefinition.h>
-#include <models/component.h>
-#include <models/port.h>
+#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/port.h>
 #include <library/LibraryManager/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h>

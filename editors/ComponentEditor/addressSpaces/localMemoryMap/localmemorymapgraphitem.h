@@ -9,7 +9,7 @@
 #define LOCALMEMORYMAPGRAPHITEM_H
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
-#include <models/addressspace.h>
+#include <IPXACTmodels/addressspace.h>
 
 /*! \brief The graph item that visualizes a local memory map within address space.
  *

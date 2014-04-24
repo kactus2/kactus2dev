@@ -8,7 +8,7 @@
 #ifndef PARAMETERGROUPBOX_H
 #define PARAMETERGROUPBOX_H
 
-#include <models/parameter.h>
+#include <IPXACTmodels/parameter.h>
 
 #include <common/models/ParameterModel/parametersmodel.h>
 #include <common/views/EditableTableView/editabletableview.h>

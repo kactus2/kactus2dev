@@ -7,8 +7,8 @@
 
 #include "portmapsdelegate.h"
 
-#include <models/component.h>
-#include <models/port.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/port.h>
 
 #include <QLineEdit>
 #include <QRegExpValidator>

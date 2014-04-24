@@ -8,7 +8,7 @@
 #ifndef BUSIFGENERALDETAILS_H
 #define BUSIFGENERALDETAILS_H
 
-#include <models/businterface.h>
+#include <IPXACTmodels/businterface.h>
 
 #include <QGroupBox>
 #include <QCheckBox>

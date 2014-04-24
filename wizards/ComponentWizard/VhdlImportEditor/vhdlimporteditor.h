@@ -8,7 +8,7 @@
 #ifndef VHDLIMPORTEDITOR_H
 #define VHDLIMPORTEDITOR_H
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 #include <editors/ComponentEditor/modelParameters/modelparametereditor.h>
 #include <editors/ComponentEditor/ports/portseditor.h>
 

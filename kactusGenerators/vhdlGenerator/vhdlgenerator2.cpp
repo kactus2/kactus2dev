@@ -20,14 +20,14 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <models/view.h>
-#include <models/librarycomponent.h>
-#include <models/modelparameter.h>
-#include <models/port.h>
-#include <models/businterface.h>
-#include <models/generaldeclarations.h>
-#include <models/fileset.h>
-#include <models/file.h>
+#include <IPXACTmodels/view.h>
+#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/fileset.h>
+#include <IPXACTmodels/file.h>
 
 #include <common/utils.h>
 

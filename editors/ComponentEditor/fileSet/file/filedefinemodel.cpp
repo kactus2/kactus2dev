@@ -7,7 +7,7 @@
 
 #include "filedefinemodel.h"
 
-#include <models/file.h>
+#include <IPXACTmodels/file.h>
 
 FileDefineModel::FileDefineModel(QObject *parent, 
 								 QSharedPointer<File> file): 

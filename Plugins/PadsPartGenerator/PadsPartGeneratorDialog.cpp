@@ -15,11 +15,11 @@
 
 #include <library/LibraryManager/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>
-#include <models/abstractiondefinition.h>
-#include <models/businterface.h>
-#include <models/generaldeclarations.h>
-#include <models/file.h>
-#include <models/fileset.h>
+#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/fileset.h>
 
 #include <QApplication>
 #include <QTextCharFormat>

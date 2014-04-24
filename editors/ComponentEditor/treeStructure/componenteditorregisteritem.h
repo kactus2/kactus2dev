@@ -9,9 +9,9 @@
 #define COMPONENTEDITORREGISTERITEM_H
 
 #include "componenteditoritem.h"
-#include <models/component.h>
-#include <models/register.h>
-#include <models/field.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/register.h>
+#include <IPXACTmodels/field.h>
 
 #include <QSharedPointer>
 #include <QList>

@@ -9,13 +9,13 @@
 #include "HWDesignDiagram.h"
 #include "HWDesignWidget.h"
 
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>
 #include <common/DiagramUtil.h>
 
-#include <models/businterface.h>
+#include <IPXACTmodels/businterface.h>
 
 #include <cmath>
 

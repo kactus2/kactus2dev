@@ -12,7 +12,7 @@
 #ifndef COMPONENTWIZARDGENERALINFOPAGE_H
 #define COMPONENTWIZARDGENERALINFOPAGE_H
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QWizardPage>
 #include <QSharedPointer>

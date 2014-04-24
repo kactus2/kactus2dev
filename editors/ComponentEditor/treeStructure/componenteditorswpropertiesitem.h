@@ -9,7 +9,7 @@
 #define COMPONENTEDITORSWPROPERTIESITEM_H
 
 #include "componenteditoritem.h"
-#include <models/ComProperty.h>
+#include <IPXACTmodels/ComProperty.h>
 
 /*! \brief The Software Properties-item in the component editor's navigation tree.
  *

@@ -15,7 +15,7 @@
 #include <QList>
 #include <QAbstractTableModel>
 
-#include "models/generaldeclarations.h"
+#include <IPXACTmodels/generaldeclarations.h>
 
 class BusInterface;
 class Component;

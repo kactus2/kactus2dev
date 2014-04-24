@@ -7,7 +7,7 @@
 
 #include "configurableelementdelegate.h"
 
-#include <models/modelparameter.h>
+#include <IPXACTmodels/modelparameter.h>
 
 #include <QLineEdit>
 #include <QComboBox>

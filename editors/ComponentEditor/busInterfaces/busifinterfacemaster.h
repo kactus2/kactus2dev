@@ -10,9 +10,9 @@
 
 #include "busifinterfacemodeeditor.h"
 #include <common/widgets/addressSpaceSelector/addressspaceselector.h>
-#include <models/generaldeclarations.h>
-#include <models/component.h>
-#include <models/businterface.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/businterface.h>
 
 #include <QString>
 #include <QSharedPointer>

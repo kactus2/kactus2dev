@@ -8,8 +8,8 @@
 #ifndef CHANNELSMODEL_H
 #define CHANNELSMODEL_H
 
-#include <models/component.h>
-#include <models/channel.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/channel.h>
 
 #include <QAbstractTableModel>
 #include <QList>

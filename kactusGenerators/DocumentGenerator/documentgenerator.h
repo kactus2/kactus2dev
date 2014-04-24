@@ -11,8 +11,8 @@
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/vlnv.h>
 
-#include <models/component.h>
-#include <models/view.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/view.h>
 
 #include <QObject>
 #include <QTextStream>

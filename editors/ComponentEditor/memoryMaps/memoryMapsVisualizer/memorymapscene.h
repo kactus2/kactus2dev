@@ -8,7 +8,7 @@
 #ifndef MEMORYMAPSCENE_H
 #define MEMORYMAPSCENE_H
 
-#include <models/memorymap.h>
+#include <IPXACTmodels/memorymap.h>
 
 #include <QGraphicsScene>
 #include <QList>

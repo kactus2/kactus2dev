@@ -13,12 +13,12 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <models/component.h>
-#include <models/designconfiguration.h>
-#include <models/design.h>
-#include <models/view.h>
-#include <models/SWView.h>
-#include <models/SystemView.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/view.h>
+#include <IPXACTmodels/SWView.h>
+#include <IPXACTmodels/SystemView.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>

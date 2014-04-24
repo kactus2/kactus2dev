@@ -10,7 +10,7 @@
 
 #include <common/utils.h>
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>

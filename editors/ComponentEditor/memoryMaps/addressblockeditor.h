@@ -9,8 +9,8 @@
 #define ADDRESSBLOCKEDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
-#include <models/addressblock.h>
-#include <models/component.h>
+#include <IPXACTmodels/addressblock.h>
+#include <IPXACTmodels/component.h>
 
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>

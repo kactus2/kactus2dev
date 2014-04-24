@@ -13,9 +13,9 @@
 #include "busifinterfacemslave.h"
 #include "busifinterfaceslave.h"
 #include "busifinterfacesystem.h"
-#include <models/component.h>
-#include <models/businterface.h>
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QStackedWidget>
 #include <QSharedPointer>

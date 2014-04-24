@@ -9,8 +9,8 @@
 #define COMPONENTEDITORADDRBLOCKITEM_H
 
 #include <editors/ComponentEditor/treeStructure/componenteditoritem.h>
-#include <models/addressblock.h>
-#include <models/registermodel.h>
+#include <IPXACTmodels/addressblock.h>
+#include <IPXACTmodels/registermodel.h>
 
 #include <QFont>
 #include <QSharedPointer>

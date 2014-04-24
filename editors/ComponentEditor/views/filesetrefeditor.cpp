@@ -10,7 +10,7 @@
 #include "filesetrefeditordelegate.h"
 #include "filesetrefmodel.h"
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QHBoxLayout>
 #include <QLayout>

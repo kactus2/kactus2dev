@@ -8,7 +8,7 @@
 #ifndef MEMORYMAPSELECTOR_H
 #define MEMORYMAPSELECTOR_H
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QComboBox>
 #include <QSharedPointer>

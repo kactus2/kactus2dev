@@ -11,8 +11,8 @@
 
 #include "CSourceHighlighter.h"
 
-#include <models/ApiDefinition.h>
-#include <models/ApiFunction.h>
+#include <IPXACTmodels/ApiDefinition.h>
+#include <IPXACTmodels/ApiFunction.h>
 
 //-----------------------------------------------------------------------------
 // Static member initializations.

@@ -17,7 +17,7 @@
 
 #include <common/DrawMode.h>
 #include <common/KactusAttribute.h>
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 #include <library/LibraryManager/vlnv.h>
 #include <library/LibraryManager/VLNVDialer/vlnvdialer.h>
 

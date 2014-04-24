@@ -8,7 +8,7 @@
 #ifndef ITEMVISUALIZER_H
 #define ITEMVISUALIZER_H
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QWidget>
 #include <QSharedPointer>

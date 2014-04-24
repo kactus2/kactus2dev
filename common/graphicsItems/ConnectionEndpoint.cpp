@@ -13,9 +13,9 @@
 
 #include "GraphicsConnection.h"
 
-#include <models/businterface.h>
-#include <models/ApiInterface.h>
-#include <models/ComInterface.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/ApiInterface.h>
+#include <IPXACTmodels/ComInterface.h>
 
 #include <common/KactusColors.h>
 

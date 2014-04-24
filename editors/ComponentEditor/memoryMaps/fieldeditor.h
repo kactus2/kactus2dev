@@ -9,8 +9,8 @@
 #define FIELDEDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
-#include <models/field.h>
-#include <models/component.h>
+#include <IPXACTmodels/field.h>
+#include <IPXACTmodels/component.h>
 
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>

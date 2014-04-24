@@ -7,9 +7,9 @@
 
 #include "alterabspgeneratordialog.h"
 #include <library/LibraryManager/libraryinterface.h>
-#include <models/bspbuildcommand.h>
-#include <models/generaldeclarations.h>
-#include <models/component.h>
+#include <IPXACTmodels/bspbuildcommand.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/component.h>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>

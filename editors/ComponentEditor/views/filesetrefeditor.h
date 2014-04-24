@@ -9,7 +9,7 @@
 #define FILESETREFEDITOR_H
 
 #include <common/widgets/listManager/listmanager.h>
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QSharedPointer>
 

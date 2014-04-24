@@ -11,8 +11,8 @@
 #include "alterabspgenerator_global.h"
 
 #include <Plugins/PluginSystem/IGeneratorPlugin.h>
-#include <models/librarycomponent.h>
-#include <models/fileset.h>
+#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/fileset.h>
 
 #include <QObject>
 #include <QSharedPointer>

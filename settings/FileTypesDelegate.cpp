@@ -13,7 +13,7 @@
 
 #include "FileTypesModel.h"
 
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QComboBox>
 #include <QLineEdit>

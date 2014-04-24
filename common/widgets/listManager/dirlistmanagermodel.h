@@ -9,7 +9,7 @@
 #define DIRLISTMANAGERMODEL_H
 
 #include <common/widgets/listManager/listmanagermodel.h>
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QSharedPointer>
 

@@ -8,7 +8,7 @@
 #include "componenteditoraddrblockitem.h"
 #include <editors/ComponentEditor/memoryMaps/addressblockeditor.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
-#include <models/register.h>
+#include <IPXACTmodels/register.h>
 #include "componenteditorregisteritem.h"
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h>
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>

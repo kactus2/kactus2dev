@@ -8,7 +8,7 @@
 #include "portsmodel.h"
 
 #include "portsdelegate.h"
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <kactusGenerators/vhdlGenerator/vhdlgeneral.h>
 

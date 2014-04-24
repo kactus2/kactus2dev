@@ -8,8 +8,8 @@
 #ifndef PORTSMODEL_H
 #define PORTSMODEL_H
 
-#include <models/port.h>
-#include <models/component.h>
+#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/component.h>
 
 #include <QAbstractTableModel>
 #include <QMap>

@@ -12,7 +12,7 @@
 #ifndef SYSTEMADDCOMMANDS_H
 #define SYSTEMADDCOMMANDS_H
 
-#include <models/ColumnDesc.h>
+#include <IPXACTmodels/ColumnDesc.h>
 
 #include <QUndoCommand>
 #include <QGraphicsItem>

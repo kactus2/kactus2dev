@@ -8,8 +8,8 @@
 #ifndef SWBUILDCOMMANDMODEL_H
 #define SWBUILDCOMMANDMODEL_H
 
-#include <models/component.h>
-#include <models/swbuildcommand.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/swbuildcommand.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>

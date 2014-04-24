@@ -9,7 +9,7 @@
 #define REGISTERGRAPHITEM_H
 
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
-#include <models/register.h>
+#include <IPXACTmodels/register.h>
 
 #include <QSharedPointer>
 

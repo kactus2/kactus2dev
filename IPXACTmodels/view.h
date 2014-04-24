@@ -9,8 +9,8 @@
 
 #include <library/LibraryManager/vlnv.h>
 
-#include <models/generaldeclarations.h>
-#include <models/filebuilder.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/filebuilder.h>
 
 #include <common/Global.h>
 

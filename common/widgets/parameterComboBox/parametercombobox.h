@@ -8,7 +8,7 @@
 #ifndef PARAMETERCOMBOBOX_H
 #define PARAMETERCOMBOBOX_H
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QComboBox>
 #include <QSharedPointer>

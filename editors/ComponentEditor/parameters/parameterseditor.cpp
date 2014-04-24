@@ -8,7 +8,7 @@
 #include "parameterseditor.h"
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>

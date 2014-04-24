@@ -14,11 +14,11 @@
 
 #include <library/LibraryManager/vlnv.h>
 
-#include <models/generaldeclarations.h>
-#include <models/filebuilder.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/filebuilder.h>
 #include <common/Global.h>
-#include <models/swbuildcommand.h>
-#include <models/bspbuildcommand.h>
+#include <IPXACTmodels/swbuildcommand.h>
+#include <IPXACTmodels/bspbuildcommand.h>
 
 #include <QString>
 #include <QDomNode>

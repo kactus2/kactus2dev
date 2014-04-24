@@ -10,9 +10,9 @@
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/libraryhandler.h>
 #include <library/LibraryManager/librarydata.h>
-#include <models/component.h>
-#include <models/librarycomponent.h>
-#include <models/designconfiguration.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/designconfiguration.h>
 #include <common/KactusAttribute.h>
 
 #include <QColor>

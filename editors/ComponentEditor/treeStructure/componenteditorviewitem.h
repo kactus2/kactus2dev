@@ -9,7 +9,7 @@
 #define COMPONENTEDITORVIEWITEM_H
 
 #include "componenteditoritem.h"
-#include <models/view.h>
+#include <IPXACTmodels/view.h>
 
 #include <QSharedPointer>
 

@@ -21,7 +21,7 @@
 #include <QMessageBox>
 #include <QCoreApplication>
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 #include <common/widgets/LineEditEx/LineEditEx.h>

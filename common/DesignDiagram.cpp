@@ -22,8 +22,8 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <models/designconfiguration.h>
-#include <models/component.h>
+#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/component.h>
 
 #include <QWidget>
 #include <QPainter>

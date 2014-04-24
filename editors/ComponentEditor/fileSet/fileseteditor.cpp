@@ -7,7 +7,7 @@
 
 #include "fileseteditor.h"
 #include <library/LibraryManager/libraryinterface.h>
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QStringList>
 #include <QVBoxLayout>

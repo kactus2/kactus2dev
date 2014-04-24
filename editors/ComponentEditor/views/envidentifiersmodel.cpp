@@ -7,7 +7,7 @@
 
 #include "envidentifiersmodel.h"
 
-#include <models/view.h>
+#include <IPXACTmodels/view.h>
 
 EnvIdentifiersModel::EnvIdentifiersModel(QSharedPointer<View> view, 
 										 QObject *parent ):

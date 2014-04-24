@@ -9,9 +9,9 @@
 
 #include "libraryinterface.h"
 #include <library/LibraryManager/VLNVDialer/vlnvdialer.h>
-#include <models/librarycomponent.h>
-#include <models/busdefinition.h>
-#include <models/designconfiguration.h>
+#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/designconfiguration.h>
 
 #include <QRegExp>
 

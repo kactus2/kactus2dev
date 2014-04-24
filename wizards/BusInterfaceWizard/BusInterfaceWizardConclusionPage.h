@@ -14,7 +14,7 @@
 
 #include "BusInterfaceWizard.h"
 
-#include <models/businterface.h>
+#include <IPXACTmodels/businterface.h>
 
 #include <QLabel>
 #include <QWizardPage>

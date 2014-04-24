@@ -14,8 +14,8 @@
 #include "FileDependencyModel.h"
 #include "FileDependencyItem.h"
 
-#include <models/component.h>
-#include <models/fileset.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/fileset.h>
 
 #include <common/widgets/EnumCollectionEditor/EnumCollectionEditor.h>
 

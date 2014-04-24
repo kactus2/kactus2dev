@@ -9,8 +9,8 @@
 
 #include <library/LibraryManager/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>
-#include <models/librarycomponent.h>
-#include <models/designconfiguration.h>
+#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/designconfiguration.h>
 
 #include <QDebug>
 

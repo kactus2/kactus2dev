@@ -13,7 +13,7 @@
 #define COMPONENTEDITORSYSTEMVIEWITEM_H
 
 #include "componenteditoritem.h"
-#include <models/SystemView.h>
+#include <IPXACTmodels/SystemView.h>
 
 /*! \brief The item for a single system view in the component editor's navigation tree.
  *

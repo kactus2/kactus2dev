@@ -8,7 +8,7 @@
 #ifndef ITEMEDITOR_H
 #define ITEMEDITOR_H
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QWidget>
 #include <QPushButton>

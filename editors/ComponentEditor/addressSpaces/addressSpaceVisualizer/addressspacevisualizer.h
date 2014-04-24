@@ -9,8 +9,8 @@
 #define ADDRESSSPACEVISUALIZER_H
 
 #include <editors/ComponentEditor/itemvisualizer.h>
-#include <models/component.h>
-#include <models/addressspace.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/addressspace.h>
 #include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacescene.h>
 
 #include <QSharedPointer>

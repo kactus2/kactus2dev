@@ -17,7 +17,7 @@
 #include <common/widgets/tabDocument/TabDocument.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/listManager/listmanager.h>
-#include <models/ComDefinition.h>
+#include <IPXACTmodels/ComDefinition.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 

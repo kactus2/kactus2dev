@@ -10,7 +10,7 @@
 
 #include <common/delegates/ComboDelegate/combodelegate.h>
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QSharedPointer>
 

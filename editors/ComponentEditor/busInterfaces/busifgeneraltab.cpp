@@ -7,7 +7,7 @@
 
 #include "busifgeneraltab.h"
 
-#include <models/businterface.h>
+#include <IPXACTmodels/businterface.h>
 #include <library/LibraryManager/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>
 

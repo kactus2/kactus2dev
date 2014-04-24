@@ -13,8 +13,8 @@
 
 #include <common/widgets/listManager/dirlistmanager.h>
 #include <common/widgets/listManager/listmanager.h>
-#include <models/component.h>
-#include <models/file.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/file.h>
 
 #include <QWidget>
 #include <QSharedPointer>

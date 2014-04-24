@@ -8,8 +8,8 @@
 #ifndef LOCALMEMORYMAPEDITOR_H
 #define LOCALMEMORYMAPEDITOR_H
 
-#include <models/memorymap.h>
-#include <models/component.h>
+#include <IPXACTmodels/memorymap.h>
+#include <IPXACTmodels/component.h>
 
 #include <QGroupBox>
 #include <QSortFilterProxyModel>

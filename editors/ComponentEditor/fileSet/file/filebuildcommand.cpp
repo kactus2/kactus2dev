@@ -7,8 +7,8 @@
 
 #include "filebuildcommand.h"
 
-#include <models/file.h>
-#include <models/buildcommand.h>
+#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/buildcommand.h>
 
 #include <QGroupBox>
 #include <QLabel>

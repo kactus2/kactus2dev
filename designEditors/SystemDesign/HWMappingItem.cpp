@@ -26,7 +26,7 @@
 #include <common/GenericEditProvider.h>
 #include <common/layouts/VStackedLayout.h>
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QBrush>
 #include <QUndoCommand>

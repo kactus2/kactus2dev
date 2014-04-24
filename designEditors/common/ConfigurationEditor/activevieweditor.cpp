@@ -11,7 +11,7 @@
 
 #include <designEditors/HWDesign/HWDesignWidget.h>
 
-#include <models/designconfiguration.h>
+#include <IPXACTmodels/designconfiguration.h>
 
 #include <QVBoxLayout>
 #include <QSharedPointer>

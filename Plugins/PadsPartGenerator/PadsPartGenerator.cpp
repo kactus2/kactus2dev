@@ -16,10 +16,10 @@
 
 #include <common/KactusAttribute.h>
 #include <library/LibraryManager/libraryinterface.h>
-#include <models/component.h>
-#include <models/fileset.h>
-#include <models/file.h>
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/fileset.h>
+#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/generaldeclarations.h>
 #include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 #include <Plugins/PluginSystem/PluginSettingsWidget.h>

@@ -9,7 +9,7 @@
 #define CHANNELSEDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 #include <common/views/EditableTableView/editabletableview.h>
 #include "channelsmodel.h"
 

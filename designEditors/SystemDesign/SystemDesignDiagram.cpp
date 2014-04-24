@@ -51,18 +51,18 @@
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/ConnectionUndoCommands.h>
 
-#include <models/SWInstance.h>
-#include <models/component.h>
-#include <models/designconfiguration.h>
-#include <models/design.h>
-#include <models/model.h>
-#include <models/SWView.h>
-#include <models/businterface.h>
-#include <models/fileset.h>
-#include <models/file.h>
-#include <models/ApiInterface.h>
-#include <models/ComInterface.h>
-#include <models/SystemView.h>
+#include <IPXACTmodels/SWInstance.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/model.h>
+#include <IPXACTmodels/SWView.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/fileset.h>
+#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/ApiInterface.h>
+#include <IPXACTmodels/ComInterface.h>
+#include <IPXACTmodels/SystemView.h>
 
 #include <mainwindow/mainwindow.h>
 

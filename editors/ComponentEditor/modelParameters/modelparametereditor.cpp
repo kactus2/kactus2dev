@@ -8,7 +8,7 @@
 #include "modelparametereditor.h"
 
 #include "usagedelegate.h"
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <library/LibraryManager/libraryinterface.h>
 

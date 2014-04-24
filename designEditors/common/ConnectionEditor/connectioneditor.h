@@ -12,8 +12,8 @@
 
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 
-#include <models/generaldeclarations.h>
-#include <models/component.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/component.h>
 
 #include <QWidget>
 #include <QLineEdit>

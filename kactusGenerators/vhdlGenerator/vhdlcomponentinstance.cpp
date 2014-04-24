@@ -10,11 +10,11 @@
 #include "vhdlgenerator2.h"
 #include "vhdlcomponentdeclaration.h"
 #include "vhdlgeneral.h"
-#include <models/component.h>
-#include <models/view.h>
-#include <models/librarycomponent.h>
-#include <models/abstractiondefinition.h>
-#include <models/businterface.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/view.h>
+#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/businterface.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 

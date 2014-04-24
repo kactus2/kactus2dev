@@ -9,7 +9,7 @@
 #define ADDRESSBLOCKGRAPHITEM_H
 
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
-#include <models/addressblock.h>
+#include <IPXACTmodels/addressblock.h>
 
 #include <QGraphicsItem>
 #include <QSharedPointer>

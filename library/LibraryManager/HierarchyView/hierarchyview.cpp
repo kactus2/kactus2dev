@@ -11,8 +11,8 @@
 #include "hierarchyitem.h"
 
 #include <library/LibraryManager/libraryinterface.h>
-#include <models/component.h>
-#include <models/busdefinition.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/busdefinition.h>
 
 #include <QMenu>
 #include <QApplication>

@@ -9,10 +9,10 @@
 #define MODELPARAMETEREDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 #include "modelparametermodel.h"
 #include <common/views/EditableTableView/editabletableview.h>
-#include <models/modelparameter.h>
+#include <IPXACTmodels/modelparameter.h>
 
 #include <QString>
 #include <QMap>

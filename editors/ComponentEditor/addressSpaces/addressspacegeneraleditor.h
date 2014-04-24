@@ -8,7 +8,7 @@
 #ifndef ADDRESSSPACEGENERALEDITOR_H
 #define ADDRESSSPACEGENERALEDITOR_H
 
-#include <models/addressspace.h>
+#include <IPXACTmodels/addressspace.h>
 #include <common/widgets/NumberLineEdit/numberlineedit.h>
 
 #include <QSpinBox>

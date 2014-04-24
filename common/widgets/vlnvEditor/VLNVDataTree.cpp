@@ -14,7 +14,7 @@
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/libraryitem.h>
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 //-----------------------------------------------------------------------------
 // Function: VLNVDataNode()

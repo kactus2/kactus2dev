@@ -12,7 +12,7 @@
 #ifndef COMPONENTWIZARDVHDLIMPORTPAGE_H
 #define COMPONENTWIZARDVHDLIMPORTPAGE_H
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 #include <wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.h>
 
 #include <QWizardPage>

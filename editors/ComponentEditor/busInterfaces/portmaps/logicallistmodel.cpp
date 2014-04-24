@@ -10,8 +10,8 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/vlnv.h>
-#include <models/librarycomponent.h>
-#include <models/abstractiondefinition.h>
+#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/abstractiondefinition.h>
 
 #include <QIcon>
 

@@ -10,16 +10,16 @@
 #include "ipxactmodel.h"
 #include "librarytreemodel.h"
 
-#include <models/librarycomponent.h>
-#include <models/abstractiondefinition.h>
-#include <models/busdefinition.h>
-#include <models/component.h>
-#include <models/design.h>
-#include <models/designconfiguration.h>
-#include <models/generatorchain.h>
-#include <models/generaldeclarations.h>
-#include <models/ComDefinition.h>
-#include <models/ApiDefinition.h>
+#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/generatorchain.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/ApiDefinition.h>
 #include <common/utils.h>
 
 #include "vlnv.h"

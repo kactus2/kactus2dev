@@ -9,7 +9,7 @@
 #define COMPONENTEDITORTREEMODEL_H
 
 #include "componenteditorrootitem.h"
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QAbstractItemModel>
 #include <QWidget>

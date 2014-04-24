@@ -8,7 +8,7 @@
 #ifndef CPUSELECTOR_H
 #define CPUSELECTOR_H
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QComboBox>
 #include <QSharedPointer>

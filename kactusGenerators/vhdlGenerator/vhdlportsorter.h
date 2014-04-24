@@ -8,7 +8,7 @@
 #ifndef VHDLPORTSORTER_H
 #define VHDLPORTSORTER_H
 
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QString>
 

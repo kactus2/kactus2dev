@@ -12,7 +12,7 @@
 #ifndef ADHOCENABLED_H
 #define ADHOCENABLED_H
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QString>
 #include <QSharedPointer>

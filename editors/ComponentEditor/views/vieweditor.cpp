@@ -7,11 +7,11 @@
 
 #include "vieweditor.h"
 
-#include <models/component.h>
-#include <models/view.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/view.h>
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/vlnv.h>
-#include <models/filebuilder.h>
+#include <IPXACTmodels/filebuilder.h>
 
 #include <QVBoxLayout>
 #include <QFormLayout>

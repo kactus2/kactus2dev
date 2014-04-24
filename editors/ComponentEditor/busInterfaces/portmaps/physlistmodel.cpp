@@ -8,8 +8,8 @@
 #include "physlistmodel.h"
 #include "PortMapsTreeModel.h"
 
-#include <models/component.h>
-#include <models/port.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/port.h>
 
 #include <QIcon>
 

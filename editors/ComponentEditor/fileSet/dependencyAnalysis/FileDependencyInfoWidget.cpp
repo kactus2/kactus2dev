@@ -11,7 +11,7 @@
 
 #include "FileDependencyInfoWidget.h"
 
-#include <models/FileDependency.h>
+#include <IPXACTmodels/FileDependency.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>

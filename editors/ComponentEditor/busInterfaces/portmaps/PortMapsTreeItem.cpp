@@ -12,9 +12,9 @@
 #include "PortMapsTreeItem.h"
 
 
-#include <models/abstractiondefinition.h>
-#include <models/businterface.h>
-#include <models/component.h>
+#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/component.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeItem::PortMapsTreeItem()

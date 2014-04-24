@@ -9,7 +9,7 @@
 #define COMPONENTEDITORBUSINTERFACEITEM_H
 
 #include "componenteditoritem.h"
-#include <models/businterface.h>
+#include <IPXACTmodels/businterface.h>
 
 #include <QSharedPointer>
 

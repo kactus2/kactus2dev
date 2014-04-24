@@ -11,7 +11,7 @@
 
 #include <QObject>
 
-#include "models/generaldeclarations.h"
+#include <IPXACTmodels/generaldeclarations.h>
 
 //-----------------------------------------------------------------------------
 //! PortGenerationRow class.

@@ -9,8 +9,8 @@
 #include "libraryitem.h"
 #include "libraryinterface.h"
 
-#include <models/librarycomponent.h>
-#include <models/component.h>
+#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/component.h>
 
 #include <common/KactusAttribute.h>
 

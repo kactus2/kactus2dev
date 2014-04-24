@@ -14,9 +14,9 @@
 
 #include <QWizard>
 
-#include <models/abstractiondefinition.h>
-#include <models/busdefinition.h>
-#include <models/businterface.h>
+#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/businterface.h>
 
 class Component;
 class PluginManager;

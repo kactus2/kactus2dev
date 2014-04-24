@@ -18,7 +18,7 @@
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/listManager/listmanager.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
-#include <models/ApiDefinition.h>
+#include <IPXACTmodels/ApiDefinition.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 

@@ -8,8 +8,8 @@
 #ifndef INTERFACEMODESELECTOR_H
 #define INTERFACEMODESELECTOR_H
 
-#include <models/businterface.h>
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QComboBox>
 #include <QSharedPointer>

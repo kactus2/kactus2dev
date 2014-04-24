@@ -9,7 +9,7 @@
 #define COMPONENTEDITORROOTITEM_H
 
 #include "componenteditoritem.h"
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QSharedPointer>
 #include <QString>

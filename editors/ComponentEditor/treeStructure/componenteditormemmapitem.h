@@ -9,7 +9,7 @@
 #define COMPONENTEDITORMEMMAPITEM_H
 
 #include "componenteditoritem.h"
-#include <models/memorymap.h>
+#include <IPXACTmodels/memorymap.h>
 
 #include <QSharedPointer>
 #include <QList>

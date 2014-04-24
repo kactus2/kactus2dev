@@ -8,7 +8,7 @@
 #ifndef VIEWSELECTOR_H
 #define VIEWSELECTOR_H
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 #include <common/Global.h>
 
 #include <QComboBox>

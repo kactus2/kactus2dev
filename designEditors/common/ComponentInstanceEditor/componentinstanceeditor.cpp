@@ -12,8 +12,8 @@
 #include <designEditors/SystemDesign/SystemComponentItem.h>
 #include <designEditors/SystemDesign/SWComponentItem.h>
 
-#include <models/component.h>
-#include <models/designconfiguration.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/designconfiguration.h>
 
 #include <library/LibraryManager/vlnv.h>
 #include <designEditors/HWDesign/HWDesignDiagram.h>

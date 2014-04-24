@@ -6,7 +6,7 @@
  */
 
 #include "itemeditor.h"
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 ItemEditor::ItemEditor( QSharedPointer<Component> component,

@@ -8,7 +8,7 @@
 #ifndef FILESELECTOR_H
 #define FILESELECTOR_H
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QComboBox>
 #include <QSharedPointer>

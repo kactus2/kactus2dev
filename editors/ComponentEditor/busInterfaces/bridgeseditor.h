@@ -9,9 +9,9 @@
 #define BRIDGESEDITOR_H
 
 #include <common/views/EditableTableView/editabletableview.h>
-#include <models/slaveinterface.h>
+#include <IPXACTmodels/slaveinterface.h>
 #include "bridgesmodel.h"
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QGroupBox>
 #include <QSortFilterProxyModel>

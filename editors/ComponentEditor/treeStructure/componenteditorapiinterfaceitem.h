@@ -9,7 +9,7 @@
 #define COMPONENTEDITORAPIINTERFACEITEM_H
 
 #include "componenteditoritem.h"
-#include <models/ApiInterface.h>
+#include <IPXACTmodels/ApiInterface.h>
 
 /*! \brief The item for single API-interface in component editor's navigation tree.
  *

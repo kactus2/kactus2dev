@@ -9,7 +9,7 @@
 #define FIELDGRAPHITEM_H
 
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
-#include <models/field.h>
+#include <IPXACTmodels/field.h>
 
 #include <QSharedPointer>
 

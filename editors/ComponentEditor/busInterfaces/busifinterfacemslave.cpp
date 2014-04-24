@@ -7,7 +7,7 @@
 
 #include "busifinterfacemslave.h"
 
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 #include <common/widgets/parameterComboBox/parametercombobox.h>
 
 #include <QLabel>

@@ -18,10 +18,10 @@
 #include <library/LibraryManager/libraryitem.h>
 #include <library/LibraryManager/libraryhandler.h>
 
-#include <models/librarycomponent.h>
-#include <models/abstractiondefinition.h>
-#include <models/busdefinition.h>
-#include <models/designconfiguration.h>
+#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/designconfiguration.h>
 
 #include <QGridLayout>
 #include <QVBoxLayout>

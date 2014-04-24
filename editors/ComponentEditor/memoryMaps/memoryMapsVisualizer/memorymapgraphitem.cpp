@@ -8,8 +8,8 @@
 #include "memorymapgraphitem.h"
 #include "addressblockgraphitem.h"
 
-#include <models/memorymapitem.h>
-#include <models/addressblock.h>
+#include <IPXACTmodels/memorymapitem.h>
+#include <IPXACTmodels/addressblock.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.h>
 #include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.h>
 #include <common/KactusColors.h>

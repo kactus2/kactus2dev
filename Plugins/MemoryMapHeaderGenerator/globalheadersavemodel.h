@@ -9,8 +9,8 @@
 #define GLOBALHEADERSAVEMODEL_H
 
 #include <library/LibraryManager/vlnv.h>
-#include <models/component.h>
-#include <models/design.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/design.h>
 
 #include <QAbstractTableModel>
 #include <QString>

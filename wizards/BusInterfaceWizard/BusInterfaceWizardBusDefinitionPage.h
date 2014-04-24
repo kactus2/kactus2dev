@@ -18,7 +18,7 @@
 #include <QPushButton>
 
 #include <editors/BusEditor/buseditor.h>
-#include <models/businterface.h>
+#include <IPXACTmodels/businterface.h>
 
 class BusInterfaceWizard;
 class LibraryInterface;

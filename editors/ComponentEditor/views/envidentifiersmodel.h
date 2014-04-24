@@ -8,7 +8,7 @@
 #ifndef ENVIDENTIFIERSMODEL_H
 #define ENVIDENTIFIERSMODEL_H
 
-#include <models/view.h>
+#include <IPXACTmodels/view.h>
 
 #include <QAbstractTableModel>
 #include <QStringList>

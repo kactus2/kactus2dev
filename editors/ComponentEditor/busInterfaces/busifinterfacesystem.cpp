@@ -10,9 +10,9 @@
 #include "busifgeneraltab.h"
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/vlnv.h>
-#include <models/busdefinition.h>
-#include <models/librarycomponent.h>
-#include <models/businterface.h>
+#include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/businterface.h>
 
 #include <QFormLayout>
 #include <QStringList>

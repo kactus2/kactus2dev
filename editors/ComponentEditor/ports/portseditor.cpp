@@ -12,9 +12,9 @@
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/vlnv.h>
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
-#include <models/businterface.h>
+#include <IPXACTmodels/businterface.h>
 #include <wizards/BusInterfaceWizard/BusInterfaceWizard.h>
 
 #include <QHBoxLayout>

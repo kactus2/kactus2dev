@@ -17,7 +17,7 @@
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <editors/BusEditor/buseditor.h>
-#include <models/businterface.h>
+#include <IPXACTmodels/businterface.h>
 
 class LibraryInterface;
 

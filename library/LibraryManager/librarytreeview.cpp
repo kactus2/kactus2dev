@@ -9,9 +9,9 @@
 #include "libraryinterface.h"
 #include "vlnv.h"
 
-#include <models/librarycomponent.h>
-#include <models/component.h>
-#include <models/busdefinition.h>
+#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/busdefinition.h>
 
 #include <common/KactusAttribute.h>
 

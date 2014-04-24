@@ -34,20 +34,20 @@
 
 #include <library/LibraryManager/libraryhandler.h>
 
-#include <models/component.h>
-#include <models/abstractiondefinition.h>
-#include <models/businterface.h>
-#include <models/portabstraction.h>
-#include <models/generaldeclarations.h>
-#include <models/model.h>
-#include <models/modelparameter.h>
-#include <models/channel.h>
-#include <models/designconfiguration.h>
-#include <models/busdefinition.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/portabstraction.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/model.h>
+#include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/channel.h>
+#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/busdefinition.h>
 
-#include <models/design.h>
-#include <models/port.h>
-#include <models/view.h>
+#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/view.h>
 
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>

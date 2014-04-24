@@ -9,7 +9,7 @@
 #define DIRLISTMANAGER_H
 
 #include "listmanager.h"
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QString>
 #include <QFileInfo>

@@ -7,7 +7,7 @@
 
 #include "registergraphitem.h"
 #include "fieldgraphitem.h"
-#include <models/field.h>
+#include <IPXACTmodels/field.h>
 #include <common/utils.h>
 #include "addressblockgraphitem.h"
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>

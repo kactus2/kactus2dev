@@ -14,7 +14,7 @@
 #include "AdHocDelegate.h"
 
 #include <designEditors/HWDesign/HWComponentItem.h>
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <library/LibraryManager/vlnv.h>
 

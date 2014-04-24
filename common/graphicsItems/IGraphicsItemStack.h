@@ -12,7 +12,7 @@
 #ifndef IGRAPHICSITEMSTACK_H
 #define IGRAPHICSITEMSTACK_H
 
-#include <models/ColumnDesc.h>
+#include <IPXACTmodels/ColumnDesc.h>
 
 #include <QPointF>
 #include <QGraphicsItem>

@@ -8,7 +8,7 @@
 #ifndef ADDRESSSPACESCENE_H
 #define ADDRESSSPACESCENE_H
 
-#include <models/addressspace.h>
+#include <IPXACTmodels/addressspace.h>
 #include "addressspacegapitem.h"
 
 #include <QGraphicsScene>

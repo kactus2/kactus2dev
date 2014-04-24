@@ -8,7 +8,7 @@
 #ifndef READACTIONCOMBOBOX_H
 #define READACTIONCOMBOBOX_H
 
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QComboBox>
 

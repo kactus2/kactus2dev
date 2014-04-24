@@ -13,7 +13,7 @@
 
 #include <QString>
 
-#include "models/generaldeclarations.h"
+#include <IPXACTmodels/generaldeclarations.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortGenerationRow()

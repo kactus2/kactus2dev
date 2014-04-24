@@ -11,9 +11,9 @@
 
 #include "FileDependencyItem.h"
 
-#include <models/component.h>
-#include <models/file.h>
-#include <models/fileset.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/fileset.h>
 
 #include <QFileInfo>
 

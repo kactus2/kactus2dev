@@ -9,9 +9,9 @@
 #define BUSIFINTERFACEMONITOR_H
 
 #include "busifinterfacemodeeditor.h"
-#include <models/businterface.h>
-#include <models/component.h>
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/generaldeclarations.h>
 #include <common/widgets/interfaceModeSelector/interfacemodeselector.h>
 
 #include <QSharedPointer>

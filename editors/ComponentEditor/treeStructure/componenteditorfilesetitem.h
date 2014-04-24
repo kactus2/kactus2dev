@@ -9,7 +9,7 @@
 #define COMPONENTEDITORFILESETITEM_H
 
 #include "componenteditoritem.h"
-#include <models/fileset.h>
+#include <IPXACTmodels/fileset.h>
 #include <QSharedPointer>
 
 /*! \brief The item for a single file set in the component editor's navigation tree.

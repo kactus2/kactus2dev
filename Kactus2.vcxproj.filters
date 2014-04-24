@@ -197,9 +197,6 @@
     <Filter Include="Source Files\mainwindow">
       <UniqueIdentifier>{5632e02c-bce4-40b7-b3e1-fa2400380d5e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\models">
-      <UniqueIdentifier>{501317d1-cd55-43bf-bf3b-334b179b362d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\MCAPI">
       <UniqueIdentifier>{b3a65de6-002a-4ddf-a213-84e64c40de2e}</UniqueIdentifier>
     </Filter>
@@ -398,12 +395,6 @@
     </Filter>
     <Filter Include="Header Files\common\dialogs\TableViewDialog">
       <UniqueIdentifier>{8b3322f9-844b-47af-ad0d-4f0ac50556ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\IPXactWrapper">
-      <UniqueIdentifier>{b3188af1-9669-4205-8d4f-9f93630175f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\models">
-      <UniqueIdentifier>{97f0af62-ebfe-4e04-9832-8ad6e4f6c6da}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\mainwindow">
       <UniqueIdentifier>{4de4886d-eb93-4769-b4b0-303692e58ea9}</UniqueIdentifier>
@@ -932,6 +923,12 @@
     <Filter Include="Source Files\editors\ComponentEditor\visualization">
       <UniqueIdentifier>{8548c639-7a0c-4828-894c-1badeb9906d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\IPXACTmodels">
+      <UniqueIdentifier>{5699db78-6b6a-4065-bf5d-4a38d6d6980d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\IPXACTmodels">
+      <UniqueIdentifier>{8816236b-c7b5-414c-bc68-c09bf8e216bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\CSourceWriter.cpp">
@@ -1221,228 +1218,6 @@
     </ClCompile>
     <ClCompile Include="mainwindow\SplashScreen.cpp">
       <Filter>Source Files\mainwindow</Filter>
-    </ClCompile>
-    <ClCompile Include="models\abstractiondefinition.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\addressblock.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\addressspace.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\alternateregister.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\ApiDefinition.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\ApiDependency.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\ApiFunction.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\ApiFunctionParameter.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\ApiInterface.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\bank.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\buildcommand.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\buildmodel.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\busdefinition.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\businterface.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\channel.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\choice.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\ColumnDesc.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\ComConnection.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\ComDefinition.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\ComInterface.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\component.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\componentgenerator.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\ComponentInstance.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\ComProperty.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\cpu.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\design.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\designconfabstractor.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\designconfiguration.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\enumeratedvalue.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\field.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\file.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\filebuilder.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\fileset.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\function.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\generaldeclarations.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\generator.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\generatorchain.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\generatorchainselector.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\HierApiDependency.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\HierComConnection.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\librarycomponent.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\masterinterface.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\memoryblockdata.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\memorymap.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\memorymapitem.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\mirroredslaveinterface.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\model.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\modelparameter.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\otherclockdriver.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\parameter.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\port.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\portabstraction.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\register.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\registerdefinition.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\registerfile.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\registermodel.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\remapport.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\remapstate.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\reset.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\segment.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\servicetypedef.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\slaveinterface.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\subspacemap.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\SWInstance.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\SWView.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\SystemView.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\transactional.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\transactionalabstraction.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\vector.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\view.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\wire.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\wireabstraction.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\writevalueconstraint.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\XmlUtils.cpp">
-      <Filter>Source Files\models</Filter>
     </ClCompile>
     <ClCompile Include="MCAPI\CSourceContentMatcher.cpp">
       <Filter>Source Files\MCAPI</Filter>
@@ -1771,12 +1546,6 @@
     <ClCompile Include="common\widgets\parameterComboBox\parametercombobox.cpp">
       <Filter>Source Files\common\widgets\parameterComboBox</Filter>
     </ClCompile>
-    <ClCompile Include="models\swbuildcommand.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
-    <ClCompile Include="models\bspbuildcommand.cpp">
-      <Filter>Source Files\models</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_viewselector.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -1800,9 +1569,6 @@
     </ClCompile>
     <ClCompile Include="settings\filetypesview.cpp">
       <Filter>Source Files\settings</Filter>
-    </ClCompile>
-    <ClCompile Include="models\FileDependency.cpp">
-      <Filter>Source Files\models</Filter>
     </ClCompile>
     <ClCompile Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.cpp">
       <Filter>Source Files\common\widgets\EnumCollectionEditor</Filter>
@@ -4033,6 +3799,237 @@
     <ClCompile Include="GeneratedFiles\moc_itemvisualizer.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="IPXACTmodels\abstractiondefinition.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\addressblock.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\addressspace.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\alternateregister.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\ApiDefinition.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\ApiDependency.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\ApiFunction.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\ApiFunctionParameter.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\ApiInterface.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\bank.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\bspbuildcommand.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\buildcommand.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\buildmodel.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\busdefinition.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\businterface.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\channel.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\choice.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\ColumnDesc.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\ComConnection.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\ComDefinition.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\ComInterface.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\component.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\componentgenerator.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\ComponentInstance.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\ComProperty.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\cpu.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\design.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\designconfabstractor.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\designconfiguration.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\enumeratedvalue.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\field.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\file.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\filebuilder.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\FileDependency.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\fileset.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\function.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\generaldeclarations.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\generator.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\generatorchain.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\generatorchainselector.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\HierApiDependency.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\HierComConnection.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\librarycomponent.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\masterinterface.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\memoryblockdata.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\memorymap.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\memorymapitem.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\mirroredslaveinterface.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\model.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\modelparameter.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\otherclockdriver.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\parameter.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\port.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\portabstraction.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\register.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\registerdefinition.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\registerfile.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\registermodel.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\remapport.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\remapstate.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\reset.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\segment.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\servicetypedef.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\slaveinterface.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\subspacemap.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\swbuildcommand.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\SWInstance.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\SWView.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\SystemView.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\transactional.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\transactionalabstraction.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\vector.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\view.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\wire.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\wireabstraction.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\writevalueconstraint.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\XmlUtils.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5828,242 +5825,11 @@
     <ClInclude Include="MCAPI\MCAPIDesignerTypes.h">
       <Filter>Header Files\MCAPI</Filter>
     </ClInclude>
-    <ClInclude Include="models\abstractiondefinition.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\addressblock.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\addressspace.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\alternateregister.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ApiDefinition.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ApiDependency.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ApiFunction.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ApiFunctionParameter.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ApiInterface.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\bank.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\buildcommand.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\buildmodel.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\busdefinition.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\businterface.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\channel.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\choice.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ColumnDesc.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ComConnection.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ComDefinition.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ComInterface.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\component.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\componentgenerator.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ComponentInstance.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ComProperty.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\cpu.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\design.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\designconfabstractor.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\designconfiguration.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\enumeratedvalue.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\field.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\file.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\filebuilder.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\fileset.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\function.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\generaldeclarations.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\generator.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\generatorchain.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\generatorchainselector.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\HierApiDependency.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\HierComConnection.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\librarycomponent.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\masterinterface.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\memoryblockdata.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\memorymap.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\memorymapitem.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\mirroredslaveinterface.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\model.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\modelparameter.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\otherclockdriver.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\parameter.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\port.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\portabstraction.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\register.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\registerdefinition.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\registerfile.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\registermodel.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\remapport.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\remapstate.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\reset.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\segment.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\servicetypedef.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\slaveinterface.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\subspacemap.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\SWInstance.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\SWView.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\SystemView.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\transactional.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\transactionalabstraction.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\vector.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\view.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\wire.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\wireabstraction.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\writevalueconstraint.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\XmlUtils.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
     <ClInclude Include="settings\SettingsUpdater.h">
       <Filter>Header Files\settings</Filter>
     </ClInclude>
     <ClInclude Include="mainwindow\SplashScreen.h">
       <Filter>Header Files\mainwindow</Filter>
-    </ClInclude>
-    <ClInclude Include="models\swbuildcommand.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\bspbuildcommand.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\FileDependency.h">
-      <Filter>Header Files\models</Filter>
     </ClInclude>
     <ClInclude Include="common\widgets\vhdlParser\VhdlSyntax.h">
       <Filter>Header Files\common\widgets\vhdlParser</Filter>
@@ -6175,6 +5941,237 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySortFilter.h">
       <Filter>Header Files\editors\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\abstractiondefinition.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\addressblock.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\addressspace.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\alternateregister.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\ApiDefinition.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\ApiDependency.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\ApiFunction.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\ApiFunctionParameter.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\ApiInterface.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\bank.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\bspbuildcommand.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\buildcommand.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\buildmodel.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\busdefinition.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\businterface.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\channel.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\choice.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\ColumnDesc.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\ComConnection.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\ComDefinition.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\ComInterface.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\component.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\componentgenerator.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\ComponentInstance.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\ComProperty.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\cpu.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\design.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\designconfabstractor.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\designconfiguration.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\enumeratedvalue.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\field.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\file.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\filebuilder.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\FileDependency.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\fileset.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\function.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\generaldeclarations.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\generator.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\generatorchain.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\generatorchainselector.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\HierApiDependency.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\HierComConnection.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\librarycomponent.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\masterinterface.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\memoryblockdata.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\memorymap.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\memorymapitem.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\mirroredslaveinterface.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\model.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\modelparameter.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\otherclockdriver.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\parameter.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\port.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\portabstraction.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\register.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\registerdefinition.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\registerfile.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\registermodel.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\remapport.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\remapstate.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\reset.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\segment.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\servicetypedef.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\slaveinterface.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\subspacemap.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\swbuildcommand.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\SWInstance.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\SWView.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\SystemView.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\transactional.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\transactionalabstraction.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\vector.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\view.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\wire.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\wireabstraction.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\writevalueconstraint.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\XmlUtils.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

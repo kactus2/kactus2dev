@@ -12,7 +12,7 @@
 #ifndef BITMAPPINGVIEW_H
 #define BITMAPPINGVIEW_H
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QDropEvent>
 #include <QTableView>

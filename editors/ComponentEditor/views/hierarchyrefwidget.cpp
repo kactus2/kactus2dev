@@ -7,8 +7,8 @@
 
 #include "hierarchyrefwidget.h"
 
-#include <models/view.h>
-#include <models/component.h>
+#include <IPXACTmodels/view.h>
+#include <IPXACTmodels/component.h>
 #include <mainwindow/mainwindow.h>
 
 #include <QVBoxLayout>

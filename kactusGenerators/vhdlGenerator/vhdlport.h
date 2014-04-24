@@ -8,7 +8,7 @@
 #ifndef VHDLPORT_H
 #define VHDLPORT_H
 
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include "vhdlobject.h"
 #include "vhdlportsorter.h"

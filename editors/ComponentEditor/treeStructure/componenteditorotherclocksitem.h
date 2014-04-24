@@ -9,7 +9,7 @@
 #define COMPONENTEDITOROTHERCLOCKSITEM_H
 
 #include "componenteditoritem.h"
-#include <models/otherclockdriver.h>
+#include <IPXACTmodels/otherclockdriver.h>
 
 /*! \brief The Other clock drivers-item in the component editor's navigation tree.
  *

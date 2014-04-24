@@ -8,8 +8,8 @@
 #ifndef VHDLCOMPONENTDECLARATION_H
 #define VHDLCOMPONENTDECLARATION_H
 
-#include <models/component.h>
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include "vhdlgeneric.h"
 #include "vhdlport.h"

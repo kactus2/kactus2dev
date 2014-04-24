@@ -7,7 +7,7 @@
 #ifndef PORTABSTRACTION_H_
 #define PORTABSTRACTION_H_
 
-#include <models/wireabstraction.h>
+#include <IPXACTmodels/wireabstraction.h>
 
 #include <common/Global.h>
 

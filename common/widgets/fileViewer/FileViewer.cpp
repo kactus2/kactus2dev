@@ -20,7 +20,7 @@
 #include <QTextStream>
 
 #include <common/widgets/FileSelector/fileselector.h>
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 //-----------------------------------------------------------------------------
 // Function: FileViewer()

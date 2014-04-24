@@ -8,8 +8,8 @@
 #ifndef SWVIEWSMODEL_H
 #define SWVIEWSMODEL_H
 
-#include <models/SWView.h>
-#include <models/component.h>
+#include <IPXACTmodels/SWView.h>
+#include <IPXACTmodels/component.h>
 
 #include <QSortFilterProxyModel>
 #include <QAbstractTableModel>

@@ -8,7 +8,7 @@
 #define LIBRARYTREEFILTER_H
 
 #include <common/utils.h>
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <common/KactusAttribute.h>
 

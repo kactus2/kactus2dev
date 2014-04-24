@@ -13,7 +13,7 @@
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
-#include <models/ComProperty.h>
+#include <IPXACTmodels/ComProperty.h>
 
 #include <QVBoxLayout>
 #include <QGridLayout>

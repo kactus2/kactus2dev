@@ -11,7 +11,7 @@
 
 #include "PropertyValueDelegate.h"
 
-#include <models/ComProperty.h>
+#include <IPXACTmodels/ComProperty.h>
 
 #include <QComboBox>
 #include <QLineEdit>

@@ -11,7 +11,7 @@
 #include "envidentifiersmodel.h"
 
 #include <common/views/EditableTableView/editabletableview.h>
-#include <models/view.h>
+#include <IPXACTmodels/view.h>
 
 #include <QGroupBox>
 #include <QString>

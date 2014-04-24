@@ -9,8 +9,8 @@
 #define COMPONENTEDITORADDRSPACEITEM_H
 
 #include "componenteditoritem.h"
-#include <models/addressspace.h>
-#include <models/memorymap.h>
+#include <IPXACTmodels/addressspace.h>
+#include <IPXACTmodels/memorymap.h>
 #include <editors/ComponentEditor/addressSpaces/addressspaceeditor.h>
 #include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.h>
 

@@ -12,8 +12,8 @@
 #define PortsView_H
 
 #include <common/views/EditableTableView/editabletableview.h>
-#include <models/port.h>
-#include <models/component.h>
+#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/component.h>
 
 #include <QAction>
 

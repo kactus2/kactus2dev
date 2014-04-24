@@ -7,8 +7,8 @@
 
 #include "businterfaceeditor.h"
 
-#include <models/component.h>
-#include <models/businterface.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/businterface.h>
 
 #include <QHBoxLayout>
 

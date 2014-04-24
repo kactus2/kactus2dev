@@ -8,7 +8,7 @@
 #ifndef FILEBUILDERSMODEL_H
 #define FILEBUILDERSMODEL_H
 
-#include <models/filebuilder.h>
+#include <IPXACTmodels/filebuilder.h>
 
 #include <QAbstractTableModel>
 #include <QList>

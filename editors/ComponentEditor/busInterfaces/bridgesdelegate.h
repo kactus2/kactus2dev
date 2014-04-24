@@ -8,7 +8,7 @@
 #ifndef BRIDGESDELEGATE_H
 #define BRIDGESDELEGATE_H
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QStyledItemDelegate>
 #include <QSharedPointer>

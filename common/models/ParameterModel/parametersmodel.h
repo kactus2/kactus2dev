@@ -8,7 +8,7 @@
 #ifndef PARAMETERSMODEL_H
 #define PARAMETERSMODEL_H
 
-#include <models/parameter.h>
+#include <IPXACTmodels/parameter.h>
 
 #include <QAbstractTableModel>
 

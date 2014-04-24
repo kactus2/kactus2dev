@@ -11,7 +11,7 @@
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/assistedLineEdit/BasicLineContentMatcher.h>
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QDialog>
 #include <QPushButton>

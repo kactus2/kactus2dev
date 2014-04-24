@@ -10,7 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "FileDependencySourceDialog.h"
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 //-----------------------------------------------------------------------------
 // Function: FileDependencySourceDialog::FileDependencySourceDialog()

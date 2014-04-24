@@ -6,7 +6,7 @@
 */
 
 #include "swbuildcommand.h"
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QObject>
 

@@ -8,7 +8,7 @@
 #ifndef FILEGENERALEDITOR_H
 #define FILEGENERALEDITOR_H
 
-#include <models/file.h>
+#include <IPXACTmodels/file.h>
 
 #include <QGroupBox>
 #include <QLineEdit>

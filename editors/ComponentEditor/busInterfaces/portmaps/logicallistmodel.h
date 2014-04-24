@@ -10,7 +10,7 @@
 
 #include "portlistmodel.h"
 
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 #include <library/LibraryManager/vlnv.h>
 
 class LibraryInterface;

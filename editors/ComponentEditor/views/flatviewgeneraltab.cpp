@@ -7,7 +7,7 @@
 
 #include "flatviewgeneraltab.h"
 
-#include <models/view.h>
+#include <IPXACTmodels/view.h>
 
 #include <QLabel>
 #include <QVBoxLayout>

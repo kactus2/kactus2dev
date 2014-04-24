@@ -11,9 +11,9 @@
 
 #include "PortListSortProxyModel.h"
 
-#include <models/businterface.h>
-#include <models/component.h>
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QModelIndex>
 

@@ -12,8 +12,8 @@
 #include "ComInterfaceEditor.h"
 
 #include <library/LibraryManager/libraryinterface.h>
-#include <models/ComInterface.h>
-#include <models/ComDefinition.h>
+#include <IPXACTmodels/ComInterface.h>
+#include <IPXACTmodels/ComDefinition.h>
 #include <mainwindow/mainwindow.h>
 
 #include <QScrollArea>

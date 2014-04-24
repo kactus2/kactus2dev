@@ -19,7 +19,7 @@
 #include <common/diagramgrid.h>
 #include <common/DesignDiagram.h>
 
-#include <models/addressblock.h>
+#include <IPXACTmodels/addressblock.h>
 
 #include <QFont>
 #include <QPainter>

@@ -15,9 +15,9 @@
 #include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>
 
-#include <models/businterface.h>
-#include <models/component.h>
-#include <models/busdefinition.h>
+#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/busdefinition.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 

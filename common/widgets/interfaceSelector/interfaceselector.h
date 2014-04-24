@@ -8,8 +8,8 @@
 #ifndef INTERFACESELECTOR_H
 #define INTERFACESELECTOR_H
 
-#include <models/generaldeclarations.h>
-#include <models/component.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/component.h>
 
 #include <QComboBox>
 #include <QSharedPointer>

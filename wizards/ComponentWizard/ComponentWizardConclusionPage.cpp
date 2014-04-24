@@ -13,8 +13,8 @@
 
 #include "ComponentWizard.h"
 
-#include <models/fileset.h>
-#include <models/component.h>
+#include <IPXACTmodels/fileset.h>
+#include <IPXACTmodels/component.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QHBoxLayout>

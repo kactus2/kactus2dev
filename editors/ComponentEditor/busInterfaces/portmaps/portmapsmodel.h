@@ -8,10 +8,10 @@
 #ifndef PORTMAPSMODEL_H
 #define PORTMAPSMODEL_H
 
-#include <models/generaldeclarations.h>
-#include <models/component.h>
-#include <models/abstractiondefinition.h>
-#include <models/businterface.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/businterface.h>
 #include <common/utils.h>
 
 #include <library/LibraryManager/libraryinterface.h>

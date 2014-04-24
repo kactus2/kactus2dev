@@ -14,8 +14,8 @@
 #include <common/widgets/kactusAttributeEditor/KactusAttributeEditor.h>
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 
-#include <models/component.h>
-#include <models/librarycomponent.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/librarycomponent.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QHBoxLayout>

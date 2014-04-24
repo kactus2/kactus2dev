@@ -9,8 +9,8 @@
 #define MEMORYMAPSVISUALIZER_H
 
 #include <editors/ComponentEditor/itemvisualizer.h>
-#include <models/memorymap.h>
-#include <models/component.h>
+#include <IPXACTmodels/memorymap.h>
+#include <IPXACTmodels/component.h>
 
 #include <QWidget>
 #include <QList>

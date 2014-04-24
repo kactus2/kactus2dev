@@ -8,8 +8,8 @@
 #ifndef BSPBUILDEDITOR_H
 #define BSPBUILDEDITOR_H
 
-#include <models/bspbuildcommand.h>
-#include <models/component.h>
+#include <IPXACTmodels/bspbuildcommand.h>
+#include <IPXACTmodels/component.h>
 
 #include <QGroupBox>
 #include <QSharedPointer>

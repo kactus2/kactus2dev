@@ -12,7 +12,7 @@
 #ifndef GRAPHICSCOLUMNUNDOCOMMANDS_H
 #define GRAPHICSCOLUMNUNDOCOMMANDS_H
 
-#include <models/ColumnDesc.h>
+#include <IPXACTmodels/ColumnDesc.h>
 
 #include <QUndoCommand>
 #include <QPointF>

@@ -10,9 +10,9 @@
 
 #include "filesmodel.h"
 #include "filesview.h"
-#include <models/fileset.h>
-#include <models/file.h>
-#include <models/component.h>
+#include <IPXACTmodels/fileset.h>
+#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/component.h>
 
 #include <QGroupBox>
 #include <QSharedPointer>

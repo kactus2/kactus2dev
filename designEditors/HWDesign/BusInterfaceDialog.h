@@ -12,7 +12,7 @@
 #ifndef SELECTINTERFACEMODEDIALOG_H
 #define SELECTINTERFACEMODEDIALOG_H
 
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QDialog>
 #include <QGridLayout>

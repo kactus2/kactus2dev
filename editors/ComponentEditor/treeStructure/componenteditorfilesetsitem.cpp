@@ -8,7 +8,7 @@
 #include "componenteditorfilesetsitem.h"
 #include "componenteditorfilesetitem.h"
 #include <editors/ComponentEditor/fileSet/filesetseditor.h>
-#include <models/file.h>
+#include <IPXACTmodels/file.h>
 
 ComponentEditorFileSetsItem::ComponentEditorFileSetsItem( ComponentEditorTreeModel* model,
 														 LibraryInterface* libHandler,

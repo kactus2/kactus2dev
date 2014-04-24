@@ -9,7 +9,7 @@
 #define MEMORYMAPEDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
-#include <models/memorymap.h>
+#include <IPXACTmodels/memorymap.h>
 
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>

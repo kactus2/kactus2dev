@@ -17,8 +17,8 @@
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
-#include <models/ComInterface.h>
-#include <models/component.h>
+#include <IPXACTmodels/ComInterface.h>
+#include <IPXACTmodels/component.h>
 
 #include <QComboBox>
 #include <QGroupBox>

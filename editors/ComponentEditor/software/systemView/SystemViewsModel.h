@@ -12,8 +12,8 @@
 #ifndef SYSTEMVIEWSMODEL_H
 #define SYSTEMVIEWSMODEL_H
 
-#include <models/SystemView.h>
-#include <models/component.h>
+#include <IPXACTmodels/SystemView.h>
+#include <IPXACTmodels/component.h>
 
 #include <QSortFilterProxyModel>
 #include <QAbstractTableModel>

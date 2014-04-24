@@ -10,7 +10,7 @@
 
 #include <editors/ComponentEditor/itemeditor.h>
 #include <common/views/EditableTableView/editabletableview.h>
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 #include "otherclockdriversmodel.h"
 
 #include <QSortFilterProxyModel>

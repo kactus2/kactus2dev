@@ -11,9 +11,9 @@
 #include "targetnameedit.h"
 
 #include <common/widgets/attributeBox/attributebox.h>
-#include <models/buildcommand.h>
-#include <models/file.h>
-#include <models/component.h>
+#include <IPXACTmodels/buildcommand.h>
+#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/component.h>
 
 #include <QWidget>
 #include <QLineEdit>

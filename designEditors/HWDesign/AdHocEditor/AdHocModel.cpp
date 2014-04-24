@@ -13,8 +13,8 @@
 
 #include "AdHocDelegate.h"
 
-#include <models/port.h>
-#include <models/component.h>
+#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/component.h>
 
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/HWDesign/HWDesignDiagram.h>

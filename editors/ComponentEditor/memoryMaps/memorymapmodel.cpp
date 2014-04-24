@@ -7,8 +7,8 @@
 
 #include "memorymapmodel.h"
 #include "memorymapdelegate.h"
-#include <models/addressblock.h>
-#include <models/generaldeclarations.h>
+#include <IPXACTmodels/addressblock.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QDebug>
 

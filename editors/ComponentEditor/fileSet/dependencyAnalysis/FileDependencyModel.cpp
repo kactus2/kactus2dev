@@ -13,9 +13,9 @@
 
 #include "FileDependencyItem.h"
 
-#include <models/fileset.h>
-#include <models/component.h>
-#include <models/FileDependency.h>
+#include <IPXACTmodels/fileset.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/FileDependency.h>
 
 #include <Plugins/PluginSystem/PluginManager.h>
 #include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>

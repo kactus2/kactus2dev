@@ -11,7 +11,7 @@
 #include <common/views/EditableTableView/editabletableview.h>
 #include <editors/ComponentEditor/itemeditor.h>
 #include "businterfacesmodel.h"
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>

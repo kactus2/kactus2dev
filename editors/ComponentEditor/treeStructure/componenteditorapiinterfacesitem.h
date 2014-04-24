@@ -9,7 +9,7 @@
 #define COMPONENTEDITORAPIINTERFACESITEM_H
 
 #include "componenteditoritem.h"
-#include <models/ApiInterface.h>
+#include <IPXACTmodels/ApiInterface.h>
 
 #include <QList>
 

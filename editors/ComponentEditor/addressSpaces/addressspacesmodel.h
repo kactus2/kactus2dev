@@ -8,8 +8,8 @@
 #ifndef ADDRESSSPACESMODEL_H
 #define ADDRESSSPACESMODEL_H
 
-#include <models/addressspace.h>
-#include <models/component.h>
+#include <IPXACTmodels/addressspace.h>
+#include <IPXACTmodels/component.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>

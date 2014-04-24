@@ -11,7 +11,7 @@
 
 #include "SwitchHWDialog.h"
 
-#include <models/component.h>
+#include <IPXACTmodels/component.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 

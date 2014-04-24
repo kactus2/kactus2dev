@@ -7,8 +7,8 @@
 
 #include "busifgeneraldetails.h"
 
-#include <models/generaldeclarations.h>
-#include <models/businterface.h>
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/businterface.h>
 
 #include <QFormLayout>
 #include <QVBoxLayout>

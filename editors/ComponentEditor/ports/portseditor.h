@@ -10,8 +10,8 @@
 
 #include <editors/ComponentEditor/itemeditor.h>
 #include <common/views/EditableTableView/editabletableview.h>
-#include <models/component.h>
-#include <models/port.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/port.h>
 
 #include "portsmodel.h"
 #include "PortsView.h"

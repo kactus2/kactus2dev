@@ -19,7 +19,7 @@
 #include <common/graphicsItems/GraphicsColumn.h>
 #include <common/DesignDiagram.h>
 #include <common/GenericEditProvider.h>
-#include <models/businterface.h>
+#include <IPXACTmodels/businterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortAddCommand()

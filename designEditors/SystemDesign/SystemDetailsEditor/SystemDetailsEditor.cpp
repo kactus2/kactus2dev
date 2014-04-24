@@ -19,10 +19,10 @@
 #include <common/DesignDiagram.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
-#include <models/SystemView.h>
-#include <models/designconfiguration.h>
-#include <models/design.h>
-#include <models/SWInstance.h>
+#include <IPXACTmodels/SystemView.h>
+#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/SWInstance.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 

@@ -9,8 +9,8 @@
 
 #include "vhdlgeneral.h"
 
-#include <models/vector.h>
-#include <models/port.h>
+#include <IPXACTmodels/vector.h>
+#include <IPXACTmodels/port.h>
 
 VhdlPort::VhdlPort( VhdlGenerator2* parent, Port* port ):
 VhdlObject(parent, port->getName(), 

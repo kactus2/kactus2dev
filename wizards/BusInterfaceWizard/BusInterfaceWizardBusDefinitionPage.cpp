@@ -13,9 +13,9 @@
 
 #include "BusInterfaceWizard.h"
 
-#include <models/component.h>
-#include <models/abstractiondefinition.h>
-#include <models/busdefinition.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/busdefinition.h>
 #include <editors/BusEditor/absdefgroup.h>
 #include <editors/BusEditor/busdefgroup.h>
 #include <editors/ComponentEditor/ports/portsdelegate.h>
