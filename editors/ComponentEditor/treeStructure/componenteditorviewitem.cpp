@@ -146,7 +146,7 @@ QIcon ComponentEditorViewItem::getIcon() const
 {
     if ( view_->isHierarchical() )
     {
-        return QIcon(":/icons/graphics/hierarchy.png");
+        return QIcon(":/icons/common/graphics/hierarchy.png");
     }
     else
     {

@@ -51,16 +51,16 @@ QVariant PhysListModel::data( const QModelIndex& index, int role /*= Qt::Display
         switch( direction )
         {
         case General::IN :
-            return QIcon(":icons/graphics/control-180.png");
+            return QIcon(":icons/common/graphics/control-180.png");
 
         case General::OUT :
-            return QIcon(":icons/graphics/control.png");
+            return QIcon(":icons/common/graphics/control.png");
 
         case General::INOUT :
-            return QIcon(":icons/graphics/control-dual.png");
+            return QIcon(":icons/common/graphics/control-dual.png");
 
         default:
-            return QIcon(":icons/graphics/cross.png");
+            return QIcon(":icons/common/graphics/cross.png");
         }
     }
 

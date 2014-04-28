@@ -35,7 +35,7 @@ ComponentWizardGeneralInfoPage::ComponentWizardGeneralInfoPage(QSharedPointer<Co
       component_(component),
       authorEditor_(this),
       descriptionEditor_(this),
-      showHideButton_(new QPushButton(QIcon(":/icons/graphics/triangle_arrow_down.png"),"",this)),
+      showHideButton_(new QPushButton(QIcon(":/icons/common/graphics/triangle_arrow_down.png"),"",this)),
       fileViewer_(new FileViewer(component, parent->getBasePath(), this))
 {
     setTitle(tr("General information"));
@@ -108,12 +108,12 @@ void ComponentWizardGeneralInfoPage::onShowHide()
     if ( fileViewer_->isVisible() )
     {
         fileViewer_->setVisible(false);
-        showHideButton_->setIcon(QIcon(":/icons/graphics/triangle_arrow_down.png"));
+        showHideButton_->setIcon(QIcon(":/icons/common/graphics/triangle_arrow_down.png"));
     }
     else
     {
         fileViewer_->setVisible(true);
-        showHideButton_->setIcon(QIcon(":/icons/graphics/triangle_arrow_up.png"));
+        showHideButton_->setIcon(QIcon(":/icons/common/graphics/triangle_arrow_up.png"));
     }
 }
 

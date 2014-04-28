@@ -53,16 +53,16 @@ mappingModel_(busif, component, libHandler, this),
 physicalView_(this),
 physProxy_(component, this),
 physModel_(component, &model_, this),
-cleanButton_(QIcon(":/icons/graphics/cleanup.png"), tr("Clean up"), this),
-connectButton_(QIcon(":/icons/graphics/connect.png"), tr("Connect"), this),
+cleanButton_(QIcon(":/icons/common/graphics/cleanup.png"), tr("Clean up"), this),
+connectButton_(QIcon(":/icons/common/graphics/connect.png"), tr("Connect"), this),
 showAllButton_(tr("Show all ports in component"), this),
 // One to one and one to many removed as obsolete.
 /*one2OneButton_(tr("1 to 1"), this),
 one2ManyButton_(tr("1 to many"), this),*/
 hideConnectedBox_(tr("Hide connected ports"), this),
 showHideMappingButton_(tr("Show bit-field mapping"),this),
-inButton_(QIcon(":/icons/graphics/control-180.png"), "", this),
-outButton_(QIcon(":/icons/graphics/control.png"), "", this),
+inButton_(QIcon(":/icons/common/graphics/control-180.png"), "", this),
+outButton_(QIcon(":/icons/common/graphics/control.png"), "", this),
 nameFilterEditor_(new QLineEdit(this)),
 portSet_()
 {

@@ -84,7 +84,7 @@ void NewPluginsDialog::addPlugin(IPlugin* plugin)
     }
     else // if(dynamic_cast<ISourceAnalyzerPlugin*>(plugin) != 0)
     {
-        item->setIcon(QIcon(":icons/graphics/plugin-source_analyzer.png"));
+        item->setIcon(QIcon(":icons/common/graphics/plugin-source_analyzer.png"));
     }
     
     pluginsList_.addItem(item);    

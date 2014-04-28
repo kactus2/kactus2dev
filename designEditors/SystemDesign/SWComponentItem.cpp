@@ -236,7 +236,7 @@ void SWComponentItem::updateComponent()
     {
         if (hierIcon_ == 0)
         {
-            hierIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/hierarchy.png"), this);
+            hierIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/hierarchy.png"), this);
             hierIcon_->setToolTip(tr("Hierarchical"));
             hierIcon_->setPos(58, 6);
         }
@@ -252,7 +252,7 @@ void SWComponentItem::updateComponent()
     {
         if (importedIcon_ == 0)
         {
-            hierIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/imported.png"), this);
+            hierIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/imported.png"), this);
             hierIcon_->setToolTip(tr("Auto-synced"));
             hierIcon_->setPos(-75, 6);
         }

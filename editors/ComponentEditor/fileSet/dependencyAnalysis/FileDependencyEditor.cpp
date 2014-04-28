@@ -84,31 +84,31 @@ FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
     toolbar_.setStyleSheet(QString("QToolBar { border: none; }"));
 
     // Create the filter buttons in the toolbar. The button actions are also added to the separate actiongroup
-    addFilterButton(QIcon(":/icons/graphics/traffic-light_green.png"), "Show Unchanged Files",
+    addFilterButton(QIcon(":/icons/common/graphics/traffic-light_green.png"), "Show Unchanged Files",
                     FileDependencyGraphView::FILTER_GREEN);
-    addFilterButton(QIcon(":/icons/graphics/traffic-light_yellow.png"), "Show Changed Files (Only Contents Changed)",
+    addFilterButton(QIcon(":/icons/common/graphics/traffic-light_yellow.png"), "Show Changed Files (Only Contents Changed)",
                     FileDependencyGraphView::FILTER_YELLOW);
-    addFilterButton(QIcon(":/icons/graphics/traffic-light_red.png"), "Show Changed Files (Dependencies Changed)",
+    addFilterButton(QIcon(":/icons/common/graphics/traffic-light_red.png"), "Show Changed Files (Dependencies Changed)",
                     FileDependencyGraphView::FILTER_RED);
-    addFilterButton(QIcon(":/icons/graphics/dependency_twoway.png"), "Show Bidirectional Dependencies",
+    addFilterButton(QIcon(":/icons/common/graphics/dependency_twoway.png"), "Show Bidirectional Dependencies",
                     FileDependencyGraphView::FILTER_TWO_WAY);
-    addFilterButton(QIcon(":/icons/graphics/dependency_oneway.png"), "Show Unidirectional Dependencies",
+    addFilterButton(QIcon(":/icons/common/graphics/dependency_oneway.png"), "Show Unidirectional Dependencies",
                     FileDependencyGraphView::FILTER_ONE_WAY);
-    addFilterButton(QIcon(":/icons/graphics/dependency_manual.png"), "Show Manual Dependencies",
+    addFilterButton(QIcon(":/icons/common/graphics/dependency_manual.png"), "Show Manual Dependencies",
                     FileDependencyGraphView::FILTER_MANUAL);
-    addFilterButton(QIcon(":/icons/graphics/dependency_auto.png"), "Show Analyzed Dependencies",
+    addFilterButton(QIcon(":/icons/common/graphics/dependency_auto.png"), "Show Analyzed Dependencies",
                     FileDependencyGraphView::FILTER_AUTOMATIC);
-    addFilterButton(QIcon(":/icons/graphics/external.png"), "Show External",
+    addFilterButton(QIcon(":/icons/common/graphics/external.png"), "Show External",
                     FileDependencyGraphView::FILTER_EXTERNAL);
-    addFilterButton(QIcon(":/icons/graphics/diff.png"), "Show Differences",
+    addFilterButton(QIcon(":/icons/common/graphics/diff.png"), "Show Differences",
                     FileDependencyGraphView::FILTER_DIFFERENCE);
     connect(&filterActions_, SIGNAL(triggered(QAction*)), this, SLOT(filterToggle(QAction*)));
 
 
     toolbar_.addSeparator();
-    toolbar_.addAction(QIcon(":/icons/graphics/import_folders.png"), "Import Source Directories",
+    toolbar_.addAction(QIcon(":/icons/common/graphics/import_folders.png"), "Import Source Directories",
                        this, SLOT(openSourceDialog()));
-    runAnalysisAction_ = toolbar_.addAction(QIcon(":/icons/graphics/control-play.png"), "Rescan",
+    runAnalysisAction_ = toolbar_.addAction(QIcon(":/icons/common/graphics/control-play.png"), "Rescan",
                                             this, SLOT(scan()));
 
     // Create the layout.
@@ -166,7 +166,7 @@ void FileDependencyEditor::scan()
 
     emit scanStarted();
 
-    runAnalysisAction_->setIcon(QIcon(":/icons/graphics/control-stop.png"));
+    runAnalysisAction_->setIcon(QIcon(":/icons/common/graphics/control-stop.png"));
     scanning_ = true;
 
     // Preparations. Resolve file types for each extension.
@@ -447,7 +447,7 @@ bool FileDependencyEditor::isScanning() const
 void FileDependencyEditor::finishScan()
 {
     scanning_ = false;
-    runAnalysisAction_->setIcon(QIcon(":/icons/graphics/control-play.png"));
+    runAnalysisAction_->setIcon(QIcon(":/icons/common/graphics/control-play.png"));
     emit filesUpdated();
     emit scanCompleted();
 }

@@ -188,11 +188,11 @@ QVariant AddressModel::data(QModelIndex const& index, int role /*= Qt::DisplayRo
 
             if (entry->isLocked())
             {
-                return QIcon(":icons/graphics/lock-on.png");
+                return QIcon(":icons/common/graphics/lock-on.png");
             }
             else
             {
-                return QIcon(":icons/graphics/lock-off.png");
+                return QIcon(":icons/common/graphics/lock-off.png");
             }
         }
     }

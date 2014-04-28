@@ -28,22 +28,22 @@ SettingsDialog::SettingsDialog(PluginManager& pluginMgr, QWidget* parent)
     //setFixedSize(600, 440);
     setWindowTitle(tr("Settings"));
 
-    addPage(QIcon(":icons/graphics/settings-general.png"), tr("General"),
+    addPage(QIcon(":icons/common/graphics/settings-general.png"), tr("General"),
             new GeneralSettingsPage(settings_));
 
-    addPage(QIcon(":icons/graphics/naming-policy.png"), tr("Naming Policies"),
+    addPage(QIcon(":icons/common/graphics/naming-policy.png"), tr("Naming Policies"),
         new NamingPolicySettingsPage(settings_));
 
-	addPage(QIcon(":icons/graphics/settings-code_editor.png"), tr("Code Editor"),
+	addPage(QIcon(":icons/common/graphics/settings-code_editor.png"), tr("Code Editor"),
             new CodeEditorSettingsPage(settings_));
 
-    addPage(QIcon(":icons/graphics/settings-file_types.png"), tr("File Types"),
+    addPage(QIcon(":icons/common/graphics/settings-file_types.png"), tr("File Types"),
             new FileTypeSettingsPage(settings_));
 
-    addPage(QIcon(":icons/graphics/settings-plugins.png"), tr("Plugins"),
+    addPage(QIcon(":icons/common/graphics/settings-plugins.png"), tr("Plugins"),
             new PluginSettingsPage(settings_, pluginMgr));
 
-	 addPage(QIcon(":icons/graphics/settings-environment_vars.png"), tr("Environment variables"),
+	 addPage(QIcon(":icons/common/graphics/settings-environment_vars.png"), tr("Environment variables"),
 		 new K2EnvVariableSettingsPage(settings_, pluginMgr));
 
     finalizePages();

@@ -501,7 +501,7 @@ void HWComponentItem::updateComponent()
     {
         if (hierIcon_ == 0)
         {
-            hierIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/hierarchy.png"), this);
+            hierIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/hierarchy.png"), this);
             hierIcon_->setToolTip(tr("Hierarchical"));
             hierIcon_->setPos(58, 6);
         }

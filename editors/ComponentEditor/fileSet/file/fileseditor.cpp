@@ -26,7 +26,7 @@ fileSet_(fileSet),
 files_(fileSet->getFiles()),
 view_(handler, component, this),
 model_(handler, component, fileSet, this),
-addFilesButton_(QIcon(":/icons/graphics/add.png"), tr("Add Files"), this) {
+addFilesButton_(QIcon(":/icons/common/graphics/add.png"), tr("Add Files"), this) {
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);

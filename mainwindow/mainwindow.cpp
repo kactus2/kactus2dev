@@ -217,7 +217,7 @@ MainWindow::MainWindow(QWidget *parent)
     SettingsUpdater::runUpgrade(this);
 
 	setWindowTitle(QCoreApplication::applicationName());
-	setWindowIcon(QIcon(":icons/graphics/appicon.png"));
+	setWindowIcon(QIcon(":icons/common/graphics/appicon.png"));
 
 	// By default, the window is 1024x768 and set to maximized state.
 	resize(1024, 768);
@@ -495,117 +495,117 @@ void MainWindow::saveWorkspace(QString const& workspaceName)
 void MainWindow::setupActions() 
 {
 	// the action to create a new hierarchical component
-	actNew_ = new QAction(QIcon(":/icons/graphics/file-new.png"), tr("New"), this);
+	actNew_ = new QAction(QIcon(":/icons/common/graphics/file-new.png"), tr("New"), this);
 	actNew_->setShortcut(QKeySequence::New);
 	actNew_->setProperty("rowSpan", 2);
 	actNew_->setProperty("colSpan", 2);
 	connect(actNew_, SIGNAL(triggered()), this, SLOT(createNew()));
 
-	actSave_ = new QAction(QIcon(":/icons/graphics/file-save.png"), tr("Save"), this);
+	actSave_ = new QAction(QIcon(":/icons/common/graphics/file-save.png"), tr("Save"), this);
 	actSave_->setShortcut(QKeySequence::Save);
 	actSave_->setProperty("rowSpan", 2);
 	actSave_->setProperty("colSpan", 2);
 	actSave_->setEnabled(false);
 	connect(actSave_, SIGNAL(triggered()), this, SLOT(saveCurrent()));
 
-	actSaveAs_ = new QAction(QIcon(":/icons/graphics/file-save.png"), tr("Save As"), this);
+	actSaveAs_ = new QAction(QIcon(":/icons/common/graphics/file-save.png"), tr("Save As"), this);
 	actSaveAs_->setShortcut(QKeySequence::SaveAs);
 	actSaveAs_->setProperty("rowSpan", 2);
 	actSaveAs_->setProperty("colSpan", 2);
 	actSaveAs_->setEnabled(false);
 	connect(actSaveAs_, SIGNAL(triggered()), this, SLOT(saveCurrentAs()));
 
-	actSaveAll_ = new QAction(QIcon(":/icons/graphics/file-save_all.png"), tr("Save All"), this);
+	actSaveAll_ = new QAction(QIcon(":/icons/common/graphics/file-save_all.png"), tr("Save All"), this);
 	actSaveAll_->setShortcut(QKeySequence("Ctrl+Shift+S"));
 	actSaveAll_->setProperty("rowSpan", 2);
 	actSaveAll_->setProperty("colSpan", 2);
 	connect(actSaveAll_, SIGNAL(triggered()), this, SLOT(saveAll()));
 
-	actPrint_ = new QAction(QIcon(":/icons/graphics/file-print.png"), tr("Print"), this);
+	actPrint_ = new QAction(QIcon(":/icons/common/graphics/file-print.png"), tr("Print"), this);
 	actPrint_->setShortcut(QKeySequence::Print);
 	actPrint_->setProperty("rowSpan", 2);
 	actPrint_->setProperty("colSpan", 2);
 	actPrint_->setEnabled(false);
 	connect(actPrint_, SIGNAL(triggered()), this, SLOT(printCurrent()));
 
-	actUndo_ = new QAction(QIcon(":/icons/graphics/edit-undo.png"), tr("Undo"), this);
+	actUndo_ = new QAction(QIcon(":/icons/common/graphics/edit-undo.png"), tr("Undo"), this);
 	actUndo_->setShortcut(QKeySequence::Undo);
 	actUndo_->setProperty("rowSpan", 2);
 	actUndo_->setProperty("colSpan", 2);
 	connect(actUndo_, SIGNAL(triggered()), this, SLOT(undo()));
 
-	actRedo_ = new QAction(QIcon(":/icons/graphics/edit-redo.png"), tr("Redo"), this);
+	actRedo_ = new QAction(QIcon(":/icons/common/graphics/edit-redo.png"), tr("Redo"), this);
 	actRedo_->setShortcut(QKeySequence::Redo);
 	actRedo_->setProperty("rowSpan", 2);
 	actRedo_->setProperty("colSpan", 2);
 	connect(actRedo_, SIGNAL(triggered()), this, SLOT(redo()));
 
-	actLibraryLocations_ = new QAction(QIcon(":/icons/graphics/library-config.png"),
+	actLibraryLocations_ = new QAction(QIcon(":/icons/common/graphics/library-config.png"),
 		tr("Configure Library"), this);
 	connect(actLibraryLocations_, SIGNAL(triggered()),
 		this, SLOT(setLibraryLocations()), Qt::UniqueConnection);
 
 	// the action to search for IP-Xact documents in file system
-	actLibrarySearch_ = new QAction(QIcon(":/icons/graphics/library-refresh.png"),
+	actLibrarySearch_ = new QAction(QIcon(":/icons/common/graphics/library-refresh.png"),
 		tr("Refresh Library"), this);
 	connect(actLibrarySearch_, SIGNAL(triggered()),
 		this, SLOT(onLibrarySearch()), Qt::UniqueConnection);
 
 	// Check the library integrity
-	actCheckIntegrity_ = new QAction(QIcon(":/icons/graphics/checkIntegrity.png"),
+	actCheckIntegrity_ = new QAction(QIcon(":/icons/common/graphics/checkIntegrity.png"),
 		tr("Check Integrity"), this);
 	connect(actCheckIntegrity_, SIGNAL(triggered()),
 		libraryHandler_, SLOT(onCheckLibraryIntegrity()), Qt::UniqueConnection);
 
 	// Initialize the action to generate VHDL.
-	actGenVHDL_ = new QAction(QIcon(":/icons/graphics/vhdl_gen.png"),
+	actGenVHDL_ = new QAction(QIcon(":/icons/common/graphics/vhdl_gen.png"),
 		tr("Generate Top-VHDL"), this);
 	connect(actGenVHDL_, SIGNAL(triggered()), 
 		this, SLOT(generateVHDL()), Qt::UniqueConnection);
 
 	// Initialize the action to generate a ModelSim makefile.
-	actGenModelSim_ = new QAction(QIcon(":/icons/graphics/modelsim_generator.png"),
+	actGenModelSim_ = new QAction(QIcon(":/icons/common/graphics/modelsim_generator.png"),
 		tr("Generate ModelSim Makefile"), this);
 	connect(actGenModelSim_, SIGNAL(triggered()), 
 		this, SLOT(generateModelSim()), Qt::UniqueConnection);
 
 	// Initialize the action to generate a Quartus project.
-	actGenQuartus_ = new QAction(QIcon(":/icons/graphics/quartus_generator.png"),
+	actGenQuartus_ = new QAction(QIcon(":/icons/common/graphics/quartus_generator.png"),
 		tr("Generate Quartus Project"), this);
 	connect(actGenQuartus_, SIGNAL(triggered()), 
 		this, SLOT(generateQuartus()), Qt::UniqueConnection);
 
 	// initialize the action to generate documentation for the component/design
-	actGenDocumentation_ = new QAction(QIcon(":icons/graphics/documentation.png"),
+	actGenDocumentation_ = new QAction(QIcon(":icons/common/graphics/documentation.png"),
 		tr("Generate Documentation"), this);
 	connect(actGenDocumentation_, SIGNAL(triggered()),
 		this, SLOT(generateDoc()), Qt::UniqueConnection);
 
 	// Initialize the action to add a new column.
-	actAddColumn_ = new QAction(QIcon(":/icons/graphics/diagram-add-column.png"), tr("Add Column"), this);
+	actAddColumn_ = new QAction(QIcon(":/icons/common/graphics/diagram-add-column.png"), tr("Add Column"), this);
 	actAddColumn_->setProperty("rowSpan", 2);
 	actAddColumn_->setProperty("colSpan", 2);
 	connect(actAddColumn_, SIGNAL(triggered()), 
 		this, SLOT(addColumn()), Qt::UniqueConnection);
 
 	// Initialize the action to set draw mode to selection mode.
-	actToolSelect_ = new QAction(QIcon(":/icons/graphics/tool-select.png"), tr("Select Tool"), this);
+	actToolSelect_ = new QAction(QIcon(":/icons/common/graphics/tool-select.png"), tr("Select Tool"), this);
 	actToolSelect_->setCheckable(true);
 	actToolSelect_->setChecked(true);
 
 	// Initialize the action to set draw mode to connection mode.
-	actToolConnect_ = new QAction(QIcon(":/icons/graphics/tool-interconnection.png"),
+	actToolConnect_ = new QAction(QIcon(":/icons/common/graphics/tool-interconnection.png"),
 		tr("Interconnection Tool"), this);
 	actToolConnect_->setCheckable(true);
 
 	// Initialize the action to set draw mode to interface mode.
-	actToolInterface_ = new QAction(QIcon(":/icons/graphics/tool-interface.png"), tr("Interface Tool"), this);
+	actToolInterface_ = new QAction(QIcon(":/icons/common/graphics/tool-interface.png"), tr("Interface Tool"), this);
 	actToolInterface_->setCheckable(true);
 
-	actToolDraft_ = new QAction(QIcon(":/icons/graphics/tool-drafting.png"), tr("Drafting Tool"), this);
+	actToolDraft_ = new QAction(QIcon(":/icons/common/graphics/tool-drafting.png"), tr("Drafting Tool"), this);
 	actToolDraft_->setCheckable(true);
 
-	actToolToggleOffPage_ = new QAction(QIcon(":/icons/graphics/tool-toggle_offpage.png"),
+	actToolToggleOffPage_ = new QAction(QIcon(":/icons/common/graphics/tool-toggle_offpage.png"),
 		tr("Toggle Off-Page Tool"), this);
 	actToolToggleOffPage_->setCheckable(true);
 
@@ -619,51 +619,51 @@ void MainWindow::setupActions()
 	connect(modeActionGroup_, SIGNAL(triggered(QAction *)), this, SLOT(drawModeChange(QAction *)));
 
 	// Initialize the action to zoom in.
-	actZoomIn_ = new QAction(QIcon(":/icons/graphics/view-zoom_in.png"), tr("Zoom In"), this);
+	actZoomIn_ = new QAction(QIcon(":/icons/common/graphics/view-zoom_in.png"), tr("Zoom In"), this);
 	actZoomIn_->setEnabled(false);
 	connect(actZoomIn_, SIGNAL(triggered()), 
 		this, SLOT(zoomIn()));
 
 	// Initialize the action to zoom out.
-	actZoomOut_ = new QAction(QIcon(":/icons/graphics/view-zoom_out.png"), tr("Zoom Out"), this);
+	actZoomOut_ = new QAction(QIcon(":/icons/common/graphics/view-zoom_out.png"), tr("Zoom Out"), this);
 	actZoomOut_->setEnabled(false);
 	connect(actZoomOut_, SIGNAL(triggered()), this, SLOT(zoomOut()));
 
 	// Initialize the action to reset the zoom to original 1:1 ratio.
-	actZoomOriginal_ = new QAction(QIcon(":/icons/graphics/view-zoom_original.png"),
+	actZoomOriginal_ = new QAction(QIcon(":/icons/common/graphics/view-zoom_original.png"),
 		tr("Original 1:1 Zoom"), this);
 	actZoomOriginal_->setEnabled(false);
 	connect(actZoomOriginal_, SIGNAL(triggered()), this, SLOT(zoomOriginal()));
 
 	// Initialize the action to fit the document into the view.
-	actFitInView_ = new QAction(QIcon(":/icons/graphics/view-fit_best.png"),
+	actFitInView_ = new QAction(QIcon(":/icons/common/graphics/view-fit_best.png"),
 		tr("Fit Document to View"), this);
 	actFitInView_->setEnabled(false);
 	connect(actFitInView_, SIGNAL(triggered()), this, SLOT(fitInView()));
 
 	// the action for user to select the visible docks
-	actVisibleDocks_ = new QAction(QIcon(":icons/graphics/dockSelect.png"),
+	actVisibleDocks_ = new QAction(QIcon(":icons/common/graphics/dockSelect.png"),
 		tr("Visible Windows"), this);
 	connect(actVisibleDocks_, SIGNAL(triggered()), this, SLOT(selectVisibleDocks()), Qt::UniqueConnection);
 
 	// Initialize the action to manage visibility control.
-	actVisibilityControl_ = new QAction(QIcon(":icons/graphics/visibility.png"), tr("Visibility Control"), this);
+	actVisibilityControl_ = new QAction(QIcon(":icons/common/graphics/visibility.png"), tr("Visibility Control"), this);
 	actVisibilityControl_->setEnabled(false);
 	connect(actVisibilityControl_, SIGNAL(triggered()),
 		this, SLOT(openVisibilityControlMenu()), Qt::UniqueConnection);
 
 	// Initialize the action to manage workspaces.
-	actWorkspaces_ = new QAction(QIcon(":icons/graphics/workspace.png"),
+	actWorkspaces_ = new QAction(QIcon(":icons/common/graphics/workspace.png"),
 		tr("Workspaces"), this);
 	connect(actWorkspaces_, SIGNAL(triggered()), this, SLOT(openWorkspaceMenu()), Qt::UniqueConnection);
 
-	actRefresh_ = new QAction(QIcon(":/icons/graphics/refresh.png"), tr("Refresh"), this);
+	actRefresh_ = new QAction(QIcon(":/icons/common/graphics/refresh.png"), tr("Refresh"), this);
 	actRefresh_->setProperty("rowSpan", 2);
 	actRefresh_->setProperty("colSpan", 2);
 	actRefresh_->setShortcut(QKeySequence("F5"));
 	connect(actRefresh_, SIGNAL(triggered(bool)), this, SLOT(refresh()));
 
-	actProtect_ = new QAction(QIcon(":/icons/graphics/protection-unlocked.png"), tr("Unlocked"), this);
+	actProtect_ = new QAction(QIcon(":/icons/common/graphics/protection-unlocked.png"), tr("Unlocked"), this);
 	actProtect_->setProperty("rowSpan", 2);
 	actProtect_->setProperty("colSpan", 2);
 	actProtect_->setCheckable(true);
@@ -672,25 +672,25 @@ void MainWindow::setupActions()
 	connect(actProtect_, SIGNAL(triggered(bool)), this, SLOT(changeProtection(bool)));
 
 	// Initialize the action to open Kactus2 settings.
-	actSettings_ = new QAction(QIcon(":/icons/graphics/system-settings.png"), tr("Settings"), this);
+	actSettings_ = new QAction(QIcon(":/icons/common/graphics/system-settings.png"), tr("Settings"), this);
 	actSettings_->setProperty("rowSpan", 2);
 	actSettings_->setProperty("colSpan", 2);
 	connect(actSettings_, SIGNAL(triggered()), this, SLOT(openSettings()));
 
 	// Initialize the action to open the about box.
-	actAbout_= new QAction(QIcon(":/icons/graphics/system-about.png"), tr("About"), this);
+	actAbout_= new QAction(QIcon(":/icons/common/graphics/system-about.png"), tr("About"), this);
 	actAbout_->setProperty("rowSpan", 2);
 	actAbout_->setProperty("colSpan", 2);
 	connect(actAbout_, SIGNAL(triggered()), this, SLOT(showAbout()), Qt::UniqueConnection);
 
 	// Initialize the action to open the help window.
-	actHelp_= new QAction(QIcon(":/icons/graphics/system-help.png"), tr("Help"), this);
+	actHelp_= new QAction(QIcon(":/icons/common/graphics/system-help.png"), tr("Help"), this);
 	actHelp_->setProperty("rowSpan", 2);
 	actHelp_->setProperty("colSpan", 2);
 	connect(actHelp_, SIGNAL(triggered()), this, SLOT(showHelp()), Qt::UniqueConnection);
 
 	// Initialize the action to exit the program.
-	actExit_ = new QAction(QIcon(":/icons/graphics/system-exit.png"), tr("Exit"), this);
+	actExit_ = new QAction(QIcon(":/icons/common/graphics/system-exit.png"), tr("Exit"), this);
 	actExit_->setProperty("rowSpan", 2);
 	actExit_->setProperty("colSpan", 2);
 	connect(actExit_, SIGNAL(triggered()), this, SLOT(close()), Qt::UniqueConnection);
@@ -2186,7 +2186,7 @@ void MainWindow::createNew()
 		this, SLOT(createComponent(KactusAttribute::ProductHierarchy,
 		KactusAttribute::Firmness,
 		VLNV const&, QString const&)));
-	dialog.addPage(QIcon(":icons/graphics/hw-component.png"), tr("HW Component"), compPage);
+	dialog.addPage(QIcon(":icons/common/graphics/hw-component.png"), tr("HW Component"), compPage);
 
 	NewDesignPage* designPage = new NewDesignPage(libraryHandler_, &dialog);
 	connect(designPage, SIGNAL(createDesign(KactusAttribute::ProductHierarchy,
@@ -2195,37 +2195,37 @@ void MainWindow::createNew()
 		this, SLOT(createDesign(KactusAttribute::ProductHierarchy,
 		KactusAttribute::Firmness,
 		VLNV const&, QString const&)));
-	dialog.addPage(QIcon(":icons/graphics/hw-design.png"), tr("HW Design"), designPage);
+	dialog.addPage(QIcon(":icons/common/graphics/hw-design.png"), tr("HW Design"), designPage);
 
 	NewSWComponentPage* swCompPage = new NewSWComponentPage(libraryHandler_, &dialog);
 	connect(swCompPage, SIGNAL(createSWComponent(VLNV const&, QString const&)),
 		this, SLOT(createSWComponent(VLNV const&, QString const&)));
-	dialog.addPage(QIcon(":icons/graphics/sw-component48x48.png"), tr("SW Component"), swCompPage);
+	dialog.addPage(QIcon(":icons/common/graphics/sw-component48x48.png"), tr("SW Component"), swCompPage);
 
 	NewSWDesignPage* swDesignPage = new NewSWDesignPage(libraryHandler_, &dialog);
 	connect(swDesignPage, SIGNAL(createSWDesign(VLNV const&, QString const&)),
 		    this, SLOT(createSWDesign(VLNV const&, QString const&)), Qt::UniqueConnection);
-	dialog.addPage(QIcon(":icons/graphics/sw-design48x48.png"), tr("SW Design"), swDesignPage);
+	dialog.addPage(QIcon(":icons/common/graphics/sw-design48x48.png"), tr("SW Design"), swDesignPage);
 
 	NewSystemPage* sysPage = new NewSystemPage(libraryHandler_, &dialog);
 	connect(sysPage, SIGNAL(createSystem(VLNV const&, QString const&, VLNV const&, QString const&)),
 		this, SLOT(createSystem(VLNV const&, QString const&, VLNV const&, QString const&)));
-	dialog.addPage(QIcon(":icons/graphics/system-component.png"), tr("System"), sysPage);
+	dialog.addPage(QIcon(":icons/common/graphics/system-component.png"), tr("System"), sysPage);
 
 	NewBusPage* busPage = new NewBusPage(libraryHandler_, &dialog);
 	connect(busPage, SIGNAL(createBus(VLNV const&, QString const&)),
 		this, SLOT(createBus(VLNV const&, QString const&)), Qt::UniqueConnection);
-	dialog.addPage(QIcon(":icons/graphics/new-bus.png"), tr("Bus"), busPage);
+	dialog.addPage(QIcon(":icons/common/graphics/new-bus.png"), tr("Bus"), busPage);
 
     NewComDefinitionPage* comDefPage = new NewComDefinitionPage(libraryHandler_, &dialog);
     connect(comDefPage, SIGNAL(createComDefinition(VLNV const&, QString const&)),
             this, SLOT(createComDefinition(VLNV const&, QString const&)), Qt::UniqueConnection);
-    dialog.addPage(QIcon(":icons/graphics/new-com_definition.png"), tr("COM Definition"), comDefPage);
+    dialog.addPage(QIcon(":icons/common/graphics/new-com_definition.png"), tr("COM Definition"), comDefPage);
 
     NewApiDefinitionPage* apiDefPage = new NewApiDefinitionPage(libraryHandler_, &dialog);
     connect(apiDefPage, SIGNAL(createApiDefinition(VLNV const&, QString const&)),
         this, SLOT(createApiDefinition(VLNV const&, QString const&)), Qt::UniqueConnection);
-    dialog.addPage(QIcon(":icons/graphics/new-api_definition.png"), tr("API Definition"), apiDefPage);
+    dialog.addPage(QIcon(":icons/common/graphics/new-api_definition.png"), tr("API Definition"), apiDefPage);
 
     dialog.finalizePages();
 
@@ -3894,12 +3894,12 @@ void MainWindow::onProtectionChanged(bool locked)
 {
 	if (locked)
 	{
-		actProtect_->setIcon(QIcon(":icons/graphics/protection-locked.png"));
+		actProtect_->setIcon(QIcon(":icons/common/graphics/protection-locked.png"));
 		actProtect_->setText(tr("Locked"));
 	}
 	else
 	{
-		actProtect_->setIcon(QIcon(":icons/graphics/protection-unlocked.png"));
+		actProtect_->setIcon(QIcon(":icons/common/graphics/protection-unlocked.png"));
 		actProtect_->setText(tr("Unlocked"));
 	}
 }
@@ -4673,7 +4673,7 @@ void MainWindow::createGeneratorPluginActions()
 
             QPainter painter(&icon);
             painter.drawPixmap(0, 0, pluginBaseIcon.pixmap(24, 24));
-            painter.drawPixmap(14, 14, QPixmap(":icons/graphics/generator_plugin_overlay.png"));
+            painter.drawPixmap(14, 14, QPixmap(":icons/common/graphics/generator_plugin_overlay.png"));
 
             QAction* action = new QAction(icon, genPlugin->getName(), this);
             action->setData(qVariantFromValue((void*)genPlugin));

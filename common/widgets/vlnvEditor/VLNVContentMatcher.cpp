@@ -105,7 +105,7 @@ bool VLNVContentMatcher::enumerateMatches(QString const& text, LineContentAssist
 //                             {
 //                             case KactusAttribute::KTS_SYS:
 //                                 {
-//                                     item->setIcon(QIcon(":/icons/graphics/system-component.png"));
+//                                     item->setIcon(QIcon(":/icons/common/graphics/system-component.png"));
 //                                     break;
 //                                 }
 // 
@@ -113,11 +113,11 @@ bool VLNVContentMatcher::enumerateMatches(QString const& text, LineContentAssist
 //                                 {
 //                                     if (component->hasSWViews())
 //                                     {
-//                                         item->setIcon(QIcon(":/icons/graphics/hier-sw-component.png"));
+//                                         item->setIcon(QIcon(":/icons/common/graphics/hier-sw-component.png"));
 //                                     }
 //                                     else
 //                                     {
-//                                         item->setIcon(QIcon(":/icons/graphics/sw-component.png"));
+//                                         item->setIcon(QIcon(":/icons/common/graphics/sw-component.png"));
 //                                     }
 //                                     break;
 //                                 }
@@ -126,11 +126,11 @@ bool VLNVContentMatcher::enumerateMatches(QString const& text, LineContentAssist
 //                                 {
 //                                     if (component->isHierarchical())
 //                                     {
-//                                         item->setIcon(QIcon(":/icons/graphics/hier-hw-component.png"));
+//                                         item->setIcon(QIcon(":/icons/common/graphics/hier-hw-component.png"));
 //                                     }
 //                                     else
 //                                     {
-//                                         item->setIcon(QIcon(":/icons/graphics/hw-component.png"));
+//                                         item->setIcon(QIcon(":/icons/common/graphics/hw-component.png"));
 //                                     }
 // 
 //                                     break;

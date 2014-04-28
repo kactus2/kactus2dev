@@ -77,8 +77,8 @@ LibrarySettingsDialog::LibrarySettingsDialog(QSettings& settings, QWidget* paren
 	connect(libLocationsTable_, SIGNAL(currentItemChanged(QTableWidgetItem*, QTableWidgetItem*)),
 		this, SLOT(onSelectLocation(QTableWidgetItem*, QTableWidgetItem*)), Qt::UniqueConnection);
 
-    addLocationButton_ = new QPushButton(QIcon(":/icons/graphics/add.png"), QString(), this);
-    removeLocationButton_ = new QPushButton(QIcon(":/icons/graphics/remove.png"), QString(), this);
+    addLocationButton_ = new QPushButton(QIcon(":/icons/common/graphics/add.png"), QString(), this);
+    removeLocationButton_ = new QPushButton(QIcon(":/icons/common/graphics/remove.png"), QString(), this);
     removeLocationButton_->setEnabled(false);
 
     QDialogButtonBox* listButtonBox = new QDialogButtonBox(Qt::Vertical);

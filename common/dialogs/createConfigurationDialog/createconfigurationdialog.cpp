@@ -45,7 +45,7 @@ CreateConfigurationDialog::CreateConfigurationDialog(LibraryInterface* handler,
 	Q_ASSERT(component);
 	Q_ASSERT(handler);
 
-	configNameEdit_->setMessageIcon(QPixmap(":/icons/graphics/exclamation.png"));
+	configNameEdit_->setMessageIcon(QPixmap(":/icons/common/graphics/exclamation.png"));
     configNameEdit_->setContentMatcher(&configNameMatcher_);
 
     QSettings settings;

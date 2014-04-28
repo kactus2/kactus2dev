@@ -15,7 +15,7 @@ VLNVDialer::VLNVDialer(QWidget *parent):
 QWidget(parent),
 filters_(this),
 dialer_(this),
-hideButton_(QIcon(":/icons/graphics/triangle_arrow_up.png"), QString(), this),
+hideButton_(QIcon(":/icons/common/graphics/triangle_arrow_up.png"), QString(), this),
 hidden_(false) {
 
 	// set visual options for the hide/show button
@@ -82,12 +82,12 @@ void VLNVDialer::onHideShowClick() {
 	// if filters were hidden
 	if (hidden_) {
 		filters_.show();
-		hideButton_.setIcon(QIcon(":/icons/graphics/triangle_arrow_up.png"));
+		hideButton_.setIcon(QIcon(":/icons/common/graphics/triangle_arrow_up.png"));
 	}
 	// if filters were visible
 	else {
 		filters_.hide();
-		hideButton_.setIcon(QIcon(":/icons/graphics/triangle_arrow_down.png"));
+		hideButton_.setIcon(QIcon(":/icons/common/graphics/triangle_arrow_down.png"));
 	}
 
 	// change the hidden value

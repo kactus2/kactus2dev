@@ -242,9 +242,9 @@ void PluginSettingsPage::refreshPluginsTree(bool displayChanges)
 
     // Create the category items.
     QTreeWidgetItem* generatorsItem = createCategoryItem(tr("Generators"),
-        QIcon(":icons/graphics/plugin-generator.png"));
+        QIcon(":icons/common/graphics/plugin-generator.png"));
     QTreeWidgetItem* analyzersItem = createCategoryItem(tr("Source Analyzers"),
-        QIcon(":icons/graphics/plugin-source_analyzer.png"));
+        QIcon(":icons/common/graphics/plugin-source_analyzer.png"));
 
     // Enumerate all plugins and add them to the correct root.
     localManager_.setPluginPaths(pluginDirSelector_.getDirectories());

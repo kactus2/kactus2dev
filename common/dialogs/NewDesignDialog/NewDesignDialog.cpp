@@ -88,7 +88,7 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
         }
     }
 
-    viewNameEdit_->setMessageIcon(QPixmap(":/icons/graphics/exclamation.png"));
+    viewNameEdit_->setMessageIcon(QPixmap(":/icons/common/graphics/exclamation.png"));
     viewNameEdit_->setContentMatcher(&viewNameMatcher_);
 
     connect(viewNameEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(updateVlnvName()));

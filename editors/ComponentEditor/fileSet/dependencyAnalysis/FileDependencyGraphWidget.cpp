@@ -92,7 +92,7 @@ void FileDependencyGraphWidget::showWarningMessage(QString const& message)
 // 
 //     if (message != "")
 //     {
-//         prefix += "<img src=\":/icons/graphics/exclamation.png\">";
+//         prefix += "<img src=\":/icons/common/graphics/exclamation.png\">";
 //     }
     
     infoLabel_.setText("<font color=\"red\">" + message + "</font>");

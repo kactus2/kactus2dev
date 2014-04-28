@@ -408,9 +408,6 @@
       <Extensions>qrc;*</Extensions>
       <ParseFiles>false</ParseFiles>
     </Filter>
-    <Filter Include="Resource Files\Originals">
-      <UniqueIdentifier>{e6a1978a-5bfb-46f9-979f-0632c1bea41f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Form Files">
       <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
       <Extensions>ui</Extensions>
@@ -4053,287 +4050,8 @@
     <CustomBuild Include="version.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="graphics\abs-def.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\add.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\appicon.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\bus-def.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\checkIntegrity.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\cleanup.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\collapse.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\configuration.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\connect.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\diagram-add-column.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\dockSelect.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\documentation.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\edit-redo.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\edit-undo.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\exclamation.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\expand.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\export.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\file-new.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\file-print.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\file-save.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\file-save_all.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\generator.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\generator_plugin.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\help.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\hier-hw-component.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\hier-sw-component.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\hierarchy.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\hw-component.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\hw-design.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\import.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\imported.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="kactus.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\library-config.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\library-refresh.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\lock-off.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\lock-on.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\mcapi-endpoint.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\mcapi-endpoint_handle.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\mcapi-func.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\mcapi-node.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\mcapi-port.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\mcapi-type.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\modelsim_generator.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\naming-policy.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\new-api_definition.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\new-bus.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\new-com_definition.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\protection-locked.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\protection-unlocked.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\quartus_generator.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\refresh.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\remove.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\search.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\settings-code_editor.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\settings-general.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\settings-library.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\splash.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\sw-component24x24.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\sw-component48x48.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\sw-design-add_node.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\sw-design24x24.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\sw-design48x48.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\system-about.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\system-component.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\system-design.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\system-exit.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\system-help.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\system-settings.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\tool-drafting.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\tool-interconnection.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\tool-interface.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\tool-select.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\tool-toggle_offpage.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\triangle_arrow_down.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\triangle_arrow_up.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\vhdl_gen.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\view-fit_best.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\view-zoom_in.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\view-zoom_original.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\view-zoom_out.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\visibility.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\workspace.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\Originals\AbsDef.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\Originals\Appicon.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\Originals\Design.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\Originals\Expand.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\Originals\Hierarchical.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\Originals\NewBus.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\Originals\NewBusIcon.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\Originals\NewBusIcon2.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\Originals\SplashScreen.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\Originals\SWComponent.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\Originals\SWDesign.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </CustomBuild>
-    <CustomBuild Include="graphics\Originals\System.psd">
-      <Filter>Resource Files\Originals</Filter>
     </CustomBuild>
     <CustomBuild Include="Help\kactus2help.qhcp">
       <Filter>Help Files</Filter>
@@ -6166,83 +5884,336 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="graphics\generator_plugin_overlay.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\settings-plugins.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\settings-file_types.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\plugin-generator.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\plugin-source_analyzer.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\control-play.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\control-stop.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\dependency_auto.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\dependency_manual.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\dependency_oneway.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\dependency_twoway.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\diff.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\external.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\import_folders.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\refresh_16x16.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\traffic-light_gray.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\traffic-light_green.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\traffic-light_red.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\traffic-light_yellow.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\control.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\control-180.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\control-dual.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\triangle_arrow_right.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\Kactus2_splash_screen.png">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="executable\Kactus2_d.exe">
       <Filter>Header Files\common</Filter>
     </None>
     <None Include="designEditors\common\DiagramUtil.inl">
       <Filter>Source Files\designEditors\common</Filter>
     </None>
+    <None Include="common\graphics\abs-def.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\add.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\appicon.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\bus-def.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\checkIntegrity.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\cleanup.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\collapse.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\configuration.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\connect.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\control.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\control-180.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\control-dual.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\control-play.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\control-stop.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\cross.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\dependency_auto.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\dependency_manual.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\dependency_oneway.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\dependency_twoway.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\diagram-add-column.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\diff.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\dockSelect.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\documentation.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\edit-redo.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\edit-undo.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\exclamation.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\expand.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\export.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\external.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\file-new.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\file-print.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\file-save.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\file-save_all.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\generation_memHeader.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\generator.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\generator_plugin.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\generator_plugin_overlay.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\help.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\hierarchy.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\hier-hw-component.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\hier-sw-component.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\hw-component.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\hw-design.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\import.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\import_folders.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\imported.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\library-config.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\library-refresh.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\lock-off.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\lock-on.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\mcapi-endpoint.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\mcapi-endpoint_handle.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\mcapi-func.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\mcapi-node.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\mcapi-port.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\mcapi-type.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\modelsim_generator.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\naming-policy.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\new-api_definition.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\new-bus.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\new-com_definition.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\plugin-generator.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\plugin-source_analyzer.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\protection-locked.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\protection-unlocked.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\quartus_generator.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\refresh.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\refresh_16x16.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\remove.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\search.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\settings-code_editor.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\settings-environment_vars.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\settings-file_types.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\settings-general.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\settings-library.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\settings-plugins.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\source_listing_generator.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\splash.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\sw-component24x24.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\sw-component48x48.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\sw-design24x24.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\sw-design48x48.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\sw-design-add_node.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\system-about.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\system-component.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\system-design.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\system-exit.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\system-help.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\system-settings.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\tool-drafting.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\tool-interconnection.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\tool-interface.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\tool-select.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\tool-toggle_offpage.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\traffic-light_gray.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\traffic-light_green.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\traffic-light_red.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\traffic-light_yellow.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\triangle_arrow_down.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\triangle_arrow_right.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\triangle_arrow_up.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\vhdl_gen.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\view-fit_best.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\view-zoom_in.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\view-zoom_original.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\view-zoom_out.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\visibility.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="common\graphics\workspace.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon1.ico" />
   </ItemGroup>
 </Project>

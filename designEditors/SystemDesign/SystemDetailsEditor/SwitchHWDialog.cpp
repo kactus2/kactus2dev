@@ -57,7 +57,7 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
     hwViewRefCombo_->setEnabled(false);
 
     viewNameEdit_->setDisallowedInputs(component->getSystemViewNames());
-    viewNameEdit_->setMessageIcon(QPixmap(":/icons/graphics/exclamation.png"));
+    viewNameEdit_->setMessageIcon(QPixmap(":/icons/common/graphics/exclamation.png"));
     viewNameEdit_->setMessageTemplate("System view name '%1' is already in use!");
     viewNameEdit_->setContentMatcher(&viewNameMatcher_);
     viewNameEdit_->setText(viewName);

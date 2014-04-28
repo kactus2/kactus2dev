@@ -14,7 +14,7 @@ GraphicsExpandCollapseItem::GraphicsExpandCollapseItem( QGraphicsItem* parent /*
 QGraphicsPixmapItem(parent),
 expanded_(false) {
 
-	QPixmap pic(":/icons/graphics/triangle_arrow_right.png");
+	QPixmap pic(":/icons/common/graphics/triangle_arrow_right.png");
 	QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, 
 		GraphicsExpandCollapseItem::SIDE, Qt::KeepAspectRatio);
 	setPixmap(scaledPic);
@@ -27,7 +27,7 @@ GraphicsExpandCollapseItem::~GraphicsExpandCollapseItem() {
 
 void GraphicsExpandCollapseItem::expand() {
 	expanded_ = true;
-	QPixmap pic(":/icons/graphics/triangle_arrow_down.png");
+	QPixmap pic(":/icons/common/graphics/triangle_arrow_down.png");
 	QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, 
 		GraphicsExpandCollapseItem::SIDE, Qt::KeepAspectRatio);
 	setPixmap(scaledPic);
@@ -39,7 +39,7 @@ bool GraphicsExpandCollapseItem::isExpanded() const {
 
 void GraphicsExpandCollapseItem::collapse() {
 	expanded_ = false;
-	QPixmap pic(":/icons/graphics/triangle_arrow_right.png");
+	QPixmap pic(":/icons/common/graphics/triangle_arrow_right.png");
 	QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, 
 		GraphicsExpandCollapseItem::SIDE, Qt::KeepAspectRatio);
 	setPixmap(scaledPic);

@@ -23,8 +23,8 @@ FileDependencySourceEditor::FileDependencySourceEditor(QString const& basePath,
 {
     basePath_ = basePath;
 
-    buttonAdd_ = new QPushButton(QIcon(":/icons/graphics/add.png"), QString(), this);
-    buttonRemove_ = new QPushButton(QIcon(":/icons/graphics/remove.png"), QString(), this);
+    buttonAdd_ = new QPushButton(QIcon(":/icons/common/graphics/add.png"), QString(), this);
+    buttonRemove_ = new QPushButton(QIcon(":/icons/common/graphics/remove.png"), QString(), this);
     buttonRemove_->setEnabled(false);
 
     directoryListView_ = new QListView(this);

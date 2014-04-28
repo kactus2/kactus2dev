@@ -289,22 +289,22 @@ QVariant FileDependencyModel::data(const QModelIndex& index, int role /*= Qt::Di
             {
             case FILE_DEPENDENCY_STATUS_UNKNOWN:
                 {
-                    return QIcon(":icons/graphics/traffic-light_gray.png");
+                    return QIcon(":icons/common/graphics/traffic-light_gray.png");
                 }
 
             case FILE_DEPENDENCY_STATUS_OK:
                 {
-                    return QIcon(":icons/graphics/traffic-light_green.png");
+                    return QIcon(":icons/common/graphics/traffic-light_green.png");
                 }
 
             case FILE_DEPENDENCY_STATUS_CHANGED:
                 {
-                    return QIcon(":icons/graphics/traffic-light_yellow.png");
+                    return QIcon(":icons/common/graphics/traffic-light_yellow.png");
                 }
 
             case FILE_DEPENDENCY_STATUS_CHANGED2:
                 {
-                    return QIcon(":icons/graphics/traffic-light_red.png");
+                    return QIcon(":icons/common/graphics/traffic-light_red.png");
                 }
             }
         }

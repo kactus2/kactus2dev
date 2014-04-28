@@ -34,12 +34,12 @@ CSourceContentMatcher::CSourceContentMatcher()
       curAssist_(0),
       tooltipText_()
 {
-    icons_[MCAPI_CONTENT_FUNC] = QIcon(":icons/graphics/mcapi-func.png");
-    icons_[MCAPI_CONTENT_TYPENAME] = QIcon(":icons/graphics/mcapi-type.png");
-    icons_[MCAPI_CONTENT_NODE_ID] = QIcon(":icons/graphics/mcapi-node.png");
-    icons_[MCAPI_CONTENT_PORT_ID] = QIcon(":icons/graphics/mcapi-port.png");
-    icons_[MCAPI_CONTENT_ENDPOINT] = QIcon(":icons/graphics/mcapi-endpoint.png");
-    icons_[MCAPI_CONTENT_ENDPOINT_HANDLE] = QIcon(":icons/graphics/mcapi-endpoint_handle.png");
+    icons_[MCAPI_CONTENT_FUNC] = QIcon(":icons/common/graphics/mcapi-func.png");
+    icons_[MCAPI_CONTENT_TYPENAME] = QIcon(":icons/common/graphics/mcapi-type.png");
+    icons_[MCAPI_CONTENT_NODE_ID] = QIcon(":icons/common/graphics/mcapi-node.png");
+    icons_[MCAPI_CONTENT_PORT_ID] = QIcon(":icons/common/graphics/mcapi-port.png");
+    icons_[MCAPI_CONTENT_ENDPOINT] = QIcon(":icons/common/graphics/mcapi-endpoint.png");
+    icons_[MCAPI_CONTENT_ENDPOINT_HANDLE] = QIcon(":icons/common/graphics/mcapi-endpoint_handle.png");
 }
 
 //-----------------------------------------------------------------------------

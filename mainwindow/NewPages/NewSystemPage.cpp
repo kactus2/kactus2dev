@@ -314,7 +314,7 @@ void NewSystemPage::addChildItems(LibraryItem const* libItem, QTreeWidgetItem* t
 
             // Add the VLNV to the item's data.
             item->setData(0, Qt::UserRole, QVariant::fromValue((vlnv)));
-            item->setIcon(0, QIcon(":icons/graphics/hier-hw-component.png"));
+            item->setIcon(0, QIcon(":icons/common/graphics/hier-hw-component.png"));
             treeItem->addChild(item);
         }
     }

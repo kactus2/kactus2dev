@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 // Function: SplashScreen()
 //-----------------------------------------------------------------------------
-SplashScreen::SplashScreen(QWidget* parent) : QSplashScreen(parent, QPixmap(":/graphics/splash.png"))
+SplashScreen::SplashScreen(QWidget* parent) : QSplashScreen(parent, QPixmap(":/common/graphics/splash.png"))
 {
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
 }
