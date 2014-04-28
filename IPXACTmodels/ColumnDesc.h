@@ -13,7 +13,7 @@
 #define COLUMNDESC_H
 
 #include <common/Global.h>
-#include <common/ColumnTypes.h>
+#include <designEditors/common/ColumnTypes.h>
 
 #include <QString>
 #include <QDomNode>

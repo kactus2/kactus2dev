@@ -23,7 +23,7 @@
 #include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/ColumnDesc.h>
 
-#include <common/DrawMode.h>
+#include <designEditors/common/DrawMode.h>
 
 class MainWindow;
 class LibraryInterface;

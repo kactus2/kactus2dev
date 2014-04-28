@@ -12,7 +12,7 @@
 #include "librarycomponent.h"
 #include <library/LibraryManager/vlnv.h>
 
-#include <common/ColumnTypes.h>
+#include <designEditors/common/ColumnTypes.h>
 #include <common/Global.h>
 #include <common/KactusAttribute.h>
 

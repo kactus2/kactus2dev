@@ -15,7 +15,7 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <common/GenericEditProvider.h>
-#include <common/diagramgrid.h>
+#include <designEditors/common/diagramgrid.h>
 #include <common/KactusColors.h>
 #include <common/layouts/VCollisionLayout.h>
 

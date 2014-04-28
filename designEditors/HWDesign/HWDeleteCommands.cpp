@@ -17,7 +17,7 @@
 #include "HWComponentItem.h"
 #include "BusInterfaceItem.h"
 
-#include <common/DesignDiagram.h>
+#include <designEditors/common/DesignDiagram.h>
 #include <common/GenericEditProvider.h>
 #include <common/graphicsItems/GraphicsColumn.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>

@@ -23,8 +23,8 @@
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/GenericEditProvider.h>
-#include <common/diagramgrid.h>
-#include <common/DesignDiagram.h>
+#include <designEditors/common/diagramgrid.h>
+#include <designEditors/common/DesignDiagram.h>
 
 #include <IPXACTmodels/ApiInterface.h>
 #include <IPXACTmodels/ComInterface.h>

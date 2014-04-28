@@ -12,7 +12,7 @@
 
 #include "HWDeleteCommands.h"
 
-#include <common/DiagramUtil.h>
+#include <designEditors/common/DiagramUtil.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/GenericEditProvider.h>
 

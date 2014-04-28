@@ -18,7 +18,7 @@
 #include <QApplication>
 
 #include <common/GenericEditProvider.h>
-#include <common/DesignDiagram.h>
+#include <designEditors/common/DesignDiagram.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 

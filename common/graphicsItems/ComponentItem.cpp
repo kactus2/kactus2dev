@@ -17,7 +17,7 @@
 
 #include <library/LibraryManager/vlnv.h>
 
-#include <common/DesignDiagram.h>
+#include <designEditors/common/DesignDiagram.h>
 
 #include <IPXACTmodels/component.h>
 

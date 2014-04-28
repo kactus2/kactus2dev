@@ -16,7 +16,7 @@
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/librarycomponent.h>
-#include <common/diagramgrid.h>
+#include <designEditors/common/diagramgrid.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QPainter>

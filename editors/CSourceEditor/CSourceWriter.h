@@ -64,7 +64,7 @@ public:
     /*!
      *  Writes an empty line to the source file.
      */
-    void writeLine();
+    void writeEmptyLine();
 
     /*!
      *  Writes a #include to the source file.

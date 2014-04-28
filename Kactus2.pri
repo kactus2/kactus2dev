@@ -7,23 +7,22 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./editors/ComponentEditor/itemvisualizer.h \
+HEADERS += ./designEditors/common/DrawMode.h \
+    ./editors/ComponentEditor/itemvisualizer.h \
     ./resource.h \
-    ./common/ColumnTypes.h \
-    ./common/CSourceWriter.h \
-    ./common/diagramgrid.h \
-    ./common/DiagramUtil.h \
-    ./common/DrawMode.h \
+    ./designEditors/common/DiagramUtil.h \
+    ./editors/CSourceEditor/CSourceWriter.h \
+    ./designEditors/common/DesignDiagram.h \
+    ./designEditors/common/ColumnTypes.h \
     ./common/Global.h \
-    ./common/IDFactory.h \
     ./common/KactusAttribute.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
     ./common/IEditProvider.h \
     ./common/GenericEditProvider.h \
-    ./common/DesignWidget.h \
-    ./common/DesignDiagram.h \
+    ./designEditors/common/DesignWidget.h \
+    ./designEditors/common/diagramgrid.h \
     ./common/widgets/attributeBox/attributemodel.h \
     ./common/widgets/attributeBox/attributebox.h \
     ./common/widgets/libraryRefGenerator/libraryrefgenerator.h \
@@ -265,11 +264,10 @@ HEADERS += ./editors/ComponentEditor/itemvisualizer.h \
     ./mainwindow/NewWorkspaceDialog.h \
     ./mainwindow/DeleteWorkspaceDialog.h \
     ./mainwindow/mainwindow.h \
-    ./MCAPI/CSourceContentMatcher.h \
-    ./MCAPI/MCAPIDesignerTypes.h \
-    ./MCAPI/CSourceWidget.h \
-    ./MCAPI/CSourceTextEdit.h \
-    ./MCAPI/CSourceHighlighter.h \
+    ./editors/CSourceEditor/MCAPIDesignerTypes.h \
+    ./editors/CSourceEditor/CSourceHighlighter.h \
+    ./editors/CSourceEditor/CSourceTextEdit.h \
+    ./editors/CSourceEditor/CSourceWidget.h \
     ./settings/SettingsUpdater.h \
     ./settings/PluginSettingsPage.h \
     ./settings/FileTypeSettingsPage.h \
@@ -500,6 +498,7 @@ HEADERS += ./editors/ComponentEditor/itemvisualizer.h \
     ./editors/ComDefinitionEditor/ComDefinitionEditor.h \
     ./editors/ComDefinitionEditor/ComPropertyEditor.h \
     ./editors/ComponentEditor/cpus/cpusdelegate.h \
+    ./editors/CSourceEditor/CSourceContentMatcher.h \
     ./editors/ComponentEditor/memoryMaps/registerdelegate.h \
     ./editors/ComponentEditor/views/filesetrefeditordelegate.h \
     ./editors/ComponentEditor/views/envidentifiersmodel.h \
@@ -615,11 +614,8 @@ HEADERS += ./editors/ComponentEditor/itemvisualizer.h \
     ./editors/ComponentEditor/memoryMaps/fieldeditor.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapview.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h
-SOURCES += ./common/CSourceWriter.cpp \
-    ./common/DesignDiagram.cpp \
-    ./common/DesignWidget.cpp \
+SOURCES += ./designEditors/common/DesignDiagram.cpp \
     ./common/GenericEditProvider.cpp \
-    ./common/IDFactory.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -775,6 +771,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorapiinterfaceitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditoraddrspacesitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditoraddrspaceitem.cpp \
+    ./designEditors/common/DesignWidget.cpp \
     ./editors/ComponentEditor/visualization/fieldgapitem.cpp \
     ./editors/ComponentEditor/visualization/memoryvisualizationitem.cpp \
     ./editors/ComponentEditor/visualization/memorygapitem.cpp \
@@ -923,10 +920,10 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXACTmodels/addressblock.cpp \
     ./IPXACTmodels/abstractiondefinition.cpp \
     ./mainwindow/MessageConsole/messageconsole.cpp \
-    ./MCAPI/CSourceContentMatcher.cpp \
-    ./MCAPI/CSourceHighlighter.cpp \
-    ./MCAPI/CSourceTextEdit.cpp \
-    ./MCAPI/CSourceWidget.cpp \
+    ./editors/CSourceEditor/CSourceWidget.cpp \
+    ./editors/CSourceEditor/CSourceHighlighter.cpp \
+    ./editors/CSourceEditor/CSourceContentMatcher.cpp \
+    ./editors/CSourceEditor/CSourceTextEdit.cpp \
     ./settings/FileTypesDelegate.cpp \
     ./settings/FileTypeSettingsPage.cpp \
     ./settings/FileTypesModel.cpp \
@@ -1078,6 +1075,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
+    ./editors/CSourceEditor/CSourceWriter.cpp \
     ./editors/ComponentEditor/addressSpaces/addressspacegeneraleditor.cpp \
     ./editors/ComponentEditor/channels/channelsdelegate.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/BitMappingView.cpp \

@@ -16,8 +16,8 @@
 #include "MemoryDesignDiagram.h"
 
 #include <common/utils.h>
-#include <common/diagramgrid.h>
-#include <common/DesignDiagram.h>
+#include <designEditors/common/diagramgrid.h>
+#include <designEditors/common/DesignDiagram.h>
 
 #include <IPXACTmodels/addressblock.h>
 

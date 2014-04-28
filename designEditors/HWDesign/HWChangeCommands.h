@@ -16,7 +16,7 @@
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/ApiInterface.h>
 
-#include <common/ColumnTypes.h>
+#include <designEditors/common/ColumnTypes.h>
 
 #include <QUndoCommand>
 #include <QGraphicsItem>

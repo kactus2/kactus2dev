@@ -18,8 +18,8 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/ComInterface.h>
 
-#include <common/DesignDiagram.h>
-#include <common/DesignWidget.h>
+#include <designEditors/common/DesignDiagram.h>
+#include <designEditors/common/DesignWidget.h>
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/ConnectionUndoCommands.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>

@@ -12,7 +12,7 @@
 #ifndef HWCOLUMN_H
 #define HWCOLUMN_H
 
-#include <common/ColumnTypes.h>
+#include <designEditors/common/ColumnTypes.h>
 #include <common/graphicsItems/GraphicsItemTypes.h>
 #include <common/graphicsItems/GraphicsColumn.h>
 

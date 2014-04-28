@@ -8,7 +8,7 @@
 
 #include "AdHocEnabled.h"
 
-#include <common/DesignDiagram.h>
+#include <designEditors/common/DesignDiagram.h>
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/ColumnDesc.h>
 

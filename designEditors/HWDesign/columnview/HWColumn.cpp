@@ -24,9 +24,9 @@
 #include <common/layouts/VStackedLayout.h>
 #include <common/layouts/VCollisionLayout.h>
 
-#include <common/DesignDiagram.h>
-#include <common/diagramgrid.h>
-#include <common/DiagramUtil.h>
+#include <designEditors/common/DesignDiagram.h>
+#include <designEditors/common/diagramgrid.h>
+#include <designEditors/common/DiagramUtil.h>
 #include <IPXACTmodels/component.h>
 
 //-----------------------------------------------------------------------------

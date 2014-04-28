@@ -7,7 +7,7 @@
 
 #include "componentinstancemodel.h"
 
-#include <common/DesignDiagram.h>
+#include <designEditors/common/DesignDiagram.h>
 
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>

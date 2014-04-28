@@ -30,7 +30,7 @@
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/GenericEditProvider.h>
-#include <common/diagramgrid.h>
+#include <designEditors/common/diagramgrid.h>
 
 #include <QBrush>
 #include <QPen>

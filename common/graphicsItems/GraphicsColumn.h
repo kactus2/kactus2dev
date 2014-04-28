@@ -16,7 +16,7 @@
 #include "IGraphicsItemStack.h"
 #include "../layouts/IVGraphicsLayout.h"
 
-#include <common/ColumnTypes.h>
+#include <designEditors/common/ColumnTypes.h>
 
 #include <QGraphicsRectItem>
 #include <QSet>

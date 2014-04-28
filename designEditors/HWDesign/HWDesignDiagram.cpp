@@ -24,8 +24,8 @@
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/graphicsItems/ConnectionUndoCommands.h>
 
-#include <common/DiagramUtil.h>
-#include <common/diagramgrid.h>
+#include <designEditors/common/DiagramUtil.h>
+#include <designEditors/common/diagramgrid.h>
 #include <common/dialogs/comboSelector/comboselector.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/GenericEditProvider.h>

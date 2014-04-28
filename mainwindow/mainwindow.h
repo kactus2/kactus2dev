@@ -15,7 +15,7 @@
 #include <Plugins/PluginSystem/PluginManager.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 
-#include <common/DrawMode.h>
+#include <designEditors/common/DrawMode.h>
 #include <common/KactusAttribute.h>
 #include <IPXACTmodels/component.h>
 #include <library/LibraryManager/vlnv.h>

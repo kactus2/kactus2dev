@@ -20,7 +20,7 @@
 #include <library/LibraryManager/vlnv.h>
 
 #include <common/utils.h>
-#include <common/DesignDiagram.h>
+#include <designEditors/common/DesignDiagram.h>
 #include <common/KactusColors.h>
 #include <common/GenericEditProvider.h>
 #include <common/layouts/VStackedLayout.h>

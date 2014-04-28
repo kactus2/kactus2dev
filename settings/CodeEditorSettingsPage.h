@@ -25,7 +25,7 @@
 #include <QFrame>
 #include <QCheckBox>
 
-#include "../MCAPI/CSourceHighlighter.h"
+#include <editors/CSourceEditor/CSourceHighlighter.h>
 
 //-----------------------------------------------------------------------------
 //! CodeEditorSettingsPage class.

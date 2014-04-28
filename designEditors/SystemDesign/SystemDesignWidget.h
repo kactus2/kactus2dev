@@ -12,7 +12,7 @@
 #ifndef SYSTEMDESIGNWIDGET_H
 #define SYSTEMDESIGNWIDGET_H
 
-#include <common/DesignWidget.h>
+#include <designEditors/common/DesignWidget.h>
 
 class SystemDesignDiagram;
 class MainWindow;

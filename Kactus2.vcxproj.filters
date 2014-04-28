@@ -197,9 +197,6 @@
     <Filter Include="Source Files\mainwindow">
       <UniqueIdentifier>{5632e02c-bce4-40b7-b3e1-fa2400380d5e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\MCAPI">
-      <UniqueIdentifier>{b3a65de6-002a-4ddf-a213-84e64c40de2e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\settings">
       <UniqueIdentifier>{78fb2d79-16b8-4d2b-9ee0-4ac09b03b0f5}</UniqueIdentifier>
     </Filter>
@@ -398,9 +395,6 @@
     </Filter>
     <Filter Include="Header Files\mainwindow">
       <UniqueIdentifier>{4de4886d-eb93-4769-b4b0-303692e58ea9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\MCAPI">
-      <UniqueIdentifier>{0d6b0b85-6278-4e56-919e-ea7d6f9c1d58}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\settings">
       <UniqueIdentifier>{4fc7a21e-ab99-4732-b9b6-6f34021bdfb5}</UniqueIdentifier>
@@ -929,21 +923,15 @@
     <Filter Include="Header Files\IPXACTmodels">
       <UniqueIdentifier>{8816236b-c7b5-414c-bc68-c09bf8e216bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\editors\CSourceEditor">
+      <UniqueIdentifier>{0d6b0b85-6278-4e56-919e-ea7d6f9c1d58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\CSourceEditor">
+      <UniqueIdentifier>{b3a65de6-002a-4ddf-a213-84e64c40de2e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="common\CSourceWriter.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="common\DesignDiagram.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="common\DesignWidget.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="common\GenericEditProvider.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="common\IDFactory.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
     <ClCompile Include="common\KactusAttribute.cpp">
@@ -1219,18 +1207,6 @@
     <ClCompile Include="mainwindow\SplashScreen.cpp">
       <Filter>Source Files\mainwindow</Filter>
     </ClCompile>
-    <ClCompile Include="MCAPI\CSourceContentMatcher.cpp">
-      <Filter>Source Files\MCAPI</Filter>
-    </ClCompile>
-    <ClCompile Include="MCAPI\CSourceHighlighter.cpp">
-      <Filter>Source Files\MCAPI</Filter>
-    </ClCompile>
-    <ClCompile Include="MCAPI\CSourceTextEdit.cpp">
-      <Filter>Source Files\MCAPI</Filter>
-    </ClCompile>
-    <ClCompile Include="MCAPI\CSourceWidget.cpp">
-      <Filter>Source Files\MCAPI</Filter>
-    </ClCompile>
     <ClCompile Include="settings\CodeEditorSettingsPage.cpp">
       <Filter>Source Files\settings</Filter>
     </ClCompile>
@@ -1426,22 +1402,7 @@
     <ClCompile Include="GeneratedFiles\moc_dirlineedit.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_DesignWidget.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_DesignDiagram.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_DeleteWorkspaceDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_CSourceWidget.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_CSourceTextEdit.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_CSourceHighlighter.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_createvlnvdialog.cpp">
@@ -4030,14 +3991,47 @@
     <ClCompile Include="IPXACTmodels\XmlUtils.cpp">
       <Filter>Source Files\IPXACTmodels</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignDiagram.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignWidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\DesignDiagram.cpp">
+      <Filter>Source Files\designEditors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\DesignWidget.cpp">
+      <Filter>Source Files\designEditors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_CSourceHighlighter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_CSourceTextEdit.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_CSourceWidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\CSourceEditor\CSourceContentMatcher.cpp">
+      <Filter>Source Files\editors\CSourceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\CSourceEditor\CSourceHighlighter.cpp">
+      <Filter>Source Files\editors\CSourceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\CSourceEditor\CSourceTextEdit.cpp">
+      <Filter>Source Files\editors\CSourceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\CSourceEditor\CSourceWidget.cpp">
+      <Filter>Source Files\editors\CSourceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\CSourceEditor\CSourceWriter.cpp">
+      <Filter>Source Files\editors\CSourceEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="common\DiagramUtil.inl">
-      <Filter>Source Files\common</Filter>
-    </CustomBuild>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
       <Filter>Source Files\common\layouts</Filter>
     </CustomBuild>
@@ -4557,12 +4551,6 @@
     <CustomBuild Include="common\widgets\vlnvEditor\vlnveditor.h">
       <Filter>Header Files\common\widgets\vlnvEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="common\DesignDiagram.h">
-      <Filter>Header Files\common</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\DesignWidget.h">
-      <Filter>Header Files\common</Filter>
-    </CustomBuild>
     <CustomBuild Include="common\GenericEditProvider.h">
       <Filter>Header Files\common</Filter>
     </CustomBuild>
@@ -4571,15 +4559,6 @@
     </CustomBuild>
     <CustomBuild Include="mainwindow\mainwindow.h">
       <Filter>Header Files\mainwindow</Filter>
-    </CustomBuild>
-    <CustomBuild Include="MCAPI\CSourceHighlighter.h">
-      <Filter>Header Files\MCAPI</Filter>
-    </CustomBuild>
-    <CustomBuild Include="MCAPI\CSourceTextEdit.h">
-      <Filter>Header Files\MCAPI</Filter>
-    </CustomBuild>
-    <CustomBuild Include="MCAPI\CSourceWidget.h">
-      <Filter>Header Files\MCAPI</Filter>
     </CustomBuild>
     <CustomBuild Include="settings\CodeEditorSettingsPage.h">
       <Filter>Header Files\settings</Filter>
@@ -5706,6 +5685,21 @@
     <CustomBuild Include="editors\ComponentEditor\itemvisualizer.h">
       <Filter>Header Files\editors\ComponentEditor</Filter>
     </CustomBuild>
+    <CustomBuild Include="designEditors\common\DesignDiagram.h">
+      <Filter>Header Files\designEditors\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\DesignWidget.h">
+      <Filter>Header Files\designEditors\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\CSourceEditor\CSourceHighlighter.h">
+      <Filter>Header Files\editors\CSourceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\CSourceEditor\CSourceTextEdit.h">
+      <Filter>Header Files\editors\CSourceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\CSourceEditor\CSourceWidget.h">
+      <Filter>Header Files\editors\CSourceEditor</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\attributeDialog\attributedialog.h">
@@ -5786,25 +5780,7 @@
     <ClInclude Include="common\widgets\vlnvGenerator\vlnvgenerator.h">
       <Filter>Header Files\common\widgets\vlnvGenerator</Filter>
     </ClInclude>
-    <ClInclude Include="common\ColumnTypes.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\CSourceWriter.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\diagramgrid.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\DiagramUtil.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\DrawMode.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="common\Global.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\IDFactory.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="common\KactusAttribute.h">
@@ -5818,12 +5794,6 @@
     </ClInclude>
     <ClInclude Include="common\utils.h">
       <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="MCAPI\CSourceContentMatcher.h">
-      <Filter>Header Files\MCAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="MCAPI\MCAPIDesignerTypes.h">
-      <Filter>Header Files\MCAPI</Filter>
     </ClInclude>
     <ClInclude Include="settings\SettingsUpdater.h">
       <Filter>Header Files\settings</Filter>
@@ -6173,6 +6143,27 @@
     <ClInclude Include="IPXACTmodels\XmlUtils.h">
       <Filter>Header Files\IPXACTmodels</Filter>
     </ClInclude>
+    <ClInclude Include="designEditors\common\ColumnTypes.h">
+      <Filter>Header Files\designEditors\common</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\common\diagramgrid.h">
+      <Filter>Header Files\designEditors\common</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\common\DiagramUtil.h">
+      <Filter>Header Files\designEditors\common</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\common\DrawMode.h">
+      <Filter>Header Files\designEditors\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\CSourceEditor\CSourceContentMatcher.h">
+      <Filter>Header Files\editors\CSourceEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\CSourceEditor\MCAPIDesignerTypes.h">
+      <Filter>Header Files\editors\CSourceEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\CSourceEditor\CSourceWriter.h">
+      <Filter>Header Files\editors\CSourceEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="graphics\generator_plugin_overlay.png">
@@ -6249,6 +6240,9 @@
     </None>
     <None Include="executable\Kactus2_d.exe">
       <Filter>Header Files\common</Filter>
+    </None>
+    <None Include="designEditors\common\DiagramUtil.inl">
+      <Filter>Source Files\designEditors\common</Filter>
     </None>
   </ItemGroup>
 </Project>

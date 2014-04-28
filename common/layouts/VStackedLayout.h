@@ -14,7 +14,7 @@
 
 #include "IVGraphicsLayout.h"
 
-#include <common/DiagramUtil.h>
+#include <designEditors/common/DiagramUtil.h>
 
 //-----------------------------------------------------------------------------
 //! Vertical stacked layout.

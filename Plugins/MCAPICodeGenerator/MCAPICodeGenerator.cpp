@@ -19,8 +19,8 @@
 #include <QSettings>
 #include <QCoreApplication>
 
-#include <common/CSourceWriter.h>
-#include <MCAPI/CSourceTextEdit.h>
+#include <editors/CSourceEditor/CSourceWriter.h>
+#include <editors/CSourceEditor/CSourceTextEdit.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/ComInterface.h>
@@ -228,17 +228,17 @@ void MCAPICodeGenerator::generateHeader(QString const& filename, QSharedPointer<
 
     // Write the Kactus 2 generated code.
     writer.writeLine("// DO NOT MODIFY THIS FILE. ALL CHANGES WILL BE OVERWRITTEN BY KACTUS2.");
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     writer.writeLine("#ifndef KTSMCAPICODE_H");
     writer.writeLine("#define KTSMCAPICODE_H");
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     writer.writeInclude("mcapi.h");
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     writer.writeHeaderComment("Node data.");
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     // Write local endpoint variables.
     writer.writeLine("// Local endpoints.");
@@ -278,7 +278,7 @@ void MCAPICodeGenerator::generateHeader(QString const& filename, QSharedPointer<
             }
         }
 
-        writer.writeLine();
+        writer.writeEmptyLine();
     }
 
     // Write remote endpoint variables.
@@ -296,15 +296,15 @@ void MCAPICodeGenerator::generateHeader(QString const& filename, QSharedPointer<
         writer.writeLine("extern mcapi_endpoint_t " + remoteEndpointName + ";");
     }
 
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     // Write the other variables.
     writer.writeLine("// Other variables.");
     writer.writeLine("extern mcapi_status_t status;");
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     writer.writeHeaderComment("Functions.");
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     // Write the initialization function prototype.
     writer.writeLine("/*");
@@ -313,7 +313,7 @@ void MCAPICodeGenerator::generateHeader(QString const& filename, QSharedPointer<
     writer.writeLine(" *        @return 0 if successful. -1 in case of an error.");
     writer.writeLine(" */");
     writer.writeLine("int initializeMCAPI();");
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     writer.writeLine("/*");
     writer.writeLine(" *  Creates and opens all connections.");
@@ -321,7 +321,7 @@ void MCAPICodeGenerator::generateHeader(QString const& filename, QSharedPointer<
     writer.writeLine(" *        @return 0 if successful. -1 in case of an error.");
     writer.writeLine(" */");
     writer.writeLine("int createConnections();");
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     writer.writeLine("/*");
     writer.writeLine(" *  Closes all connections.");
@@ -329,10 +329,10 @@ void MCAPICodeGenerator::generateHeader(QString const& filename, QSharedPointer<
     writer.writeLine(" *        @return 0 if successful. -1 in case of an error.");
     writer.writeLine(" */");
     writer.writeLine("int closeConnections();");
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     writer.writeLine("#endif // KTSMCAPICODE_H");
-    writer.writeLine();
+    writer.writeEmptyLine();
 }
 
 //-----------------------------------------------------------------------------
@@ -349,12 +349,12 @@ void MCAPICodeGenerator::generateSource(QString const& filename, QSharedPointer<
 
     // Write the Kactus 2 generated code.
     writer.writeLine("// DO NOT MODIFY THIS FILE. ALL CHANGES WILL BE OVERWRITTEN BY KACTUS2.");
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     writer.writeInclude("ktsmcapicode.h", true);
-    writer.writeLine();
+    writer.writeEmptyLine();
     writer.writeHeaderComment("Constants.");
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     // Write local port IDs.
     writer.writeLine("// Local port IDs.");
@@ -371,10 +371,10 @@ void MCAPICodeGenerator::generateSource(QString const& filename, QSharedPointer<
                          comIf->getPropertyValues().value("port_id") + ";");
     }
 
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     writer.writeHeaderComment("Global variables.");
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     // Write local endpoint variables.
     writer.writeLine("// Local endpoints.");
@@ -414,7 +414,7 @@ void MCAPICodeGenerator::generateSource(QString const& filename, QSharedPointer<
             }
         }
 
-        writer.writeLine();
+        writer.writeEmptyLine();
     }
 
     // Write remote endpoint variables.
@@ -432,18 +432,18 @@ void MCAPICodeGenerator::generateSource(QString const& filename, QSharedPointer<
         writer.writeLine("mcapi_endpoint_t " + remoteEndpointName + ";");
     }
 
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     // Write the other variables.
     writer.writeLine("// Other variables.");
     writer.writeLine("mcapi_status_t status;");
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     generateInitializeMCAPIFunc(writer, component);
     generateCreateConnectionsFunc(writer, component);
     generateCloseConnectionsFunc(writer, component);
 
-    writer.writeLine();
+    writer.writeEmptyLine();
 }
 
 //-----------------------------------------------------------------------------
@@ -461,11 +461,11 @@ void MCAPICodeGenerator::generateMainTemplate(QString const& filename, QSharedPo
     // Write includes.
     writer.writeInclude("stdlib.h");
     writer.writeInclude("stdio.h");
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     writer.writeLine("// This header includes the Kactus2 generated MCAPI code.");
     writer.writeInclude("ktsmcapicode.h");
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     writer.writeLine("int main(int argc, char* argv[])");
     writer.beginBlock();
@@ -476,24 +476,24 @@ void MCAPICodeGenerator::generateMainTemplate(QString const& filename, QSharedPo
     writer.writeLine("// TODO: Write error handling code.");
     writer.writeLine("return EXIT_FAILURE;");
     writer.endBlock();
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     writer.writeLine("if (createConnections() != 0)");
     writer.beginBlock();
     writer.writeLine("// TODO: Write error handling code.");
     writer.writeLine("return EXIT_FAILURE;");
     writer.endBlock();
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     writer.writeLine("// TODO: Write your application code here.");
-    writer.writeLine();
+    writer.writeEmptyLine();
     writer.writeLine("// Close connections and finalize MCAPI before exiting.");
     writer.writeLine("if (closeConnections() != 0)");
     writer.beginBlock();
     writer.writeLine("// TODO: Write error handling code.");
     writer.writeLine("return EXIT_FAILURE;");
     writer.endBlock();
-    writer.writeLine();
+    writer.writeEmptyLine();
     writer.writeLine("mcapi_finalize(&status);");
     writer.writeLine("return EXIT_SUCCESS;");
 
@@ -538,7 +538,7 @@ void MCAPICodeGenerator::generateCreateConnectionsFunc(CSourceWriter& writer, QS
     writer.beginBlock();
     writer.writeLine("mcapi_request_t request;");
     writer.writeLine("size_t size = 0;");
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
@@ -555,14 +555,14 @@ void MCAPICodeGenerator::generateCreateConnectionsFunc(CSourceWriter& writer, QS
                 // Sender is responsible of calling the connect function.
                 writer.writeLine("mcapi_connect_pktchan_i(" + comIf->getName() + ", " +
                                  comIf->getPropertyValues().value("remote_endpoint_name") + ", &request, &status);");
-                writer.writeLine();
+                writer.writeEmptyLine();
 
                 writeStatusCheck(writer);
                 writeWaitCall(writer, "request", "size");
 
                 writer.writeLine("mcapi_open_pktchan_send_i(&" + comIf->getPropertyValues().value("handle_name") +
                                  ", " + comIf->getName() + ", &request, &status);");
-                writer.writeLine();
+                writer.writeEmptyLine();
 
                 writeStatusCheck(writer);
                 writeWaitCall(writer, "request", "size");
@@ -571,7 +571,7 @@ void MCAPICodeGenerator::generateCreateConnectionsFunc(CSourceWriter& writer, QS
             {
                 writer.writeLine("mcapi_open_pktchan_recv_i(&" + comIf->getPropertyValues().value("handle_name") +
                                  ", " + comIf->getName() + ", &request, &status);");
-                writer.writeLine();
+                writer.writeEmptyLine();
 
                 writeStatusCheck(writer);
                 writeWaitCall(writer, "request", "size");
@@ -584,14 +584,14 @@ void MCAPICodeGenerator::generateCreateConnectionsFunc(CSourceWriter& writer, QS
                 // Sender is responsible of calling the connect function.
                 writer.writeLine("mcapi_connect_sclchan_i(" + comIf->getName() + ", " +
                     comIf->getPropertyValues().value("remote_endpoint_name") + ", &request, &status);");
-                writer.writeLine();
+                writer.writeEmptyLine();
 
                 writeStatusCheck(writer);
                 writeWaitCall(writer, "request", "size");
 
                 writer.writeLine("mcapi_open_sclchan_send_i(&" + comIf->getPropertyValues().value("handle_name") +
                                  ", " + comIf->getName() + ", &request, &status);");
-                writer.writeLine();
+                writer.writeEmptyLine();
 
                 writeStatusCheck(writer);
                 writeWaitCall(writer, "request", "size");
@@ -600,7 +600,7 @@ void MCAPICodeGenerator::generateCreateConnectionsFunc(CSourceWriter& writer, QS
             {
                 writer.writeLine("mcapi_open_sclchan_recv_i(&" + comIf->getPropertyValues().value("handle_name") +
                                  ", " + comIf->getName() + ", &request, &status);");
-                writer.writeLine();
+                writer.writeEmptyLine();
 
                 writeStatusCheck(writer);
                 writeWaitCall(writer, "request", "size");
@@ -610,7 +610,7 @@ void MCAPICodeGenerator::generateCreateConnectionsFunc(CSourceWriter& writer, QS
 
     writer.writeLine("return 0;");
     writer.endBlock();
-    writer.writeLine();
+    writer.writeEmptyLine();
 }
 
 //-----------------------------------------------------------------------------
@@ -625,7 +625,7 @@ void MCAPICodeGenerator::generateCloseConnectionsFunc(CSourceWriter& writer, QSh
     writer.beginBlock();
     writer.writeLine("mcapi_request_t request;");
     writer.writeLine("size_t size = 0;");
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
@@ -641,13 +641,13 @@ void MCAPICodeGenerator::generateCloseConnectionsFunc(CSourceWriter& writer, QSh
             {
                 writer.writeLine("mcapi_pktchan_send_close_i(" + comIf->getPropertyValues().value("handle_name") +
                                  ", &request, &status);");
-                writer.writeLine();
+                writer.writeEmptyLine();
             }
             else
             {
                 writer.writeLine("mcapi_pktchan_recv_close_i(" + comIf->getPropertyValues().value("handle_name") +
                     ", &request, &status);");
-                writer.writeLine();
+                writer.writeEmptyLine();
             }
         }
         else if (comIf->getTransferType() == "scalar")
@@ -656,20 +656,20 @@ void MCAPICodeGenerator::generateCloseConnectionsFunc(CSourceWriter& writer, QSh
             {
                 writer.writeLine("mcapi_sclchan_send_close_i(" + comIf->getPropertyValues().value("handle_name") +
                                  ", &request, &status);");
-                writer.writeLine();
+                writer.writeEmptyLine();
             }
             else
             {
                 writer.writeLine("mcapi_sclchan_recv_close_i(" + comIf->getPropertyValues().value("handle_name") +
                                  ", &request, &status);");
-                writer.writeLine();
+                writer.writeEmptyLine();
             }
         }
     }
 
     writer.writeLine("return 0;");
     writer.endBlock();
-    writer.writeLine();
+    writer.writeEmptyLine();
 }
 
 //-----------------------------------------------------------------------------
@@ -683,16 +683,16 @@ void MCAPICodeGenerator::generateInitializeMCAPIFunc(CSourceWriter& writer, QSha
 
     writer.beginBlock();
     writer.writeLine("mcapi_version_t version;");
-    writer.writeLine();
+    writer.writeEmptyLine();
     writer.writeLine("// Initialize MCAPI implementation.");
     writer.writeLine("mcapi_initialize(LOCAL_NODE_ID, &version, &status);");
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     writer.writeLine("if (status != MCAPI_SUCCESS)");
     writer.beginBlock();
     writer.writeLine("return -1;");
     writer.endBlock();
-    writer.writeLine();
+    writer.writeEmptyLine();
 
     // Write function calls to create local endpoints.
     writer.writeLine("// Create local endpoints.");
@@ -707,13 +707,13 @@ void MCAPICodeGenerator::generateInitializeMCAPIFunc(CSourceWriter& writer, QSha
 
         writer.writeLine(comIf->getName() + " = mcapi_create_endpoint(" +
                          comIf->getName().toUpper() + "_PORT, &status);");
-        writer.writeLine();
+        writer.writeEmptyLine();
 
         writer.writeLine("if (status != MCAPI_SUCCESS)");
         writer.beginBlock();
         writer.writeLine("return -1;");
         writer.endBlock();
-        writer.writeLine();
+        writer.writeEmptyLine();
     }
 
     // Write function calls to retrieve remote endpoints.
@@ -732,18 +732,18 @@ void MCAPICodeGenerator::generateInitializeMCAPIFunc(CSourceWriter& writer, QSha
                          comIf->getPropertyValues().value("remote_endpoint_name").toUpper() + "_NODE" +
                          ", " +
                          comIf->getPropertyValues().value("remote_endpoint_name").toUpper() + "_PORT, &status);");
-        writer.writeLine();
+        writer.writeEmptyLine();
 
         writer.writeLine("if (status != MCAPI_SUCCESS)");
         writer.beginBlock();
         writer.writeLine("return -1;");
         writer.endBlock();
-        writer.writeLine();
+        writer.writeEmptyLine();
     }
 
     writer.writeLine("return 0;");
     writer.endBlock();
-    writer.writeLine();
+    writer.writeEmptyLine();
 }
 
 //-----------------------------------------------------------------------------
@@ -756,7 +756,7 @@ void MCAPICodeGenerator::writeWaitCall(CSourceWriter& writer, QString const& req
     writer.beginBlock();
     writer.writeLine("return -1;");
     writer.endBlock();
-    writer.writeLine();
+    writer.writeEmptyLine();
 }
 
 //-----------------------------------------------------------------------------
@@ -768,7 +768,7 @@ void MCAPICodeGenerator::writeStatusCheck(CSourceWriter &writer)
     writer.beginBlock();
     writer.writeLine("return -1;");
     writer.endBlock();
-    writer.writeLine();
+    writer.writeEmptyLine();
 }
 
 //-----------------------------------------------------------------------------

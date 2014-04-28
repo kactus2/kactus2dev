@@ -12,8 +12,8 @@
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <common/GenericEditProvider.h>
-#include <common/diagramgrid.h>
-#include <common/DiagramUtil.h>
+#include <designEditors/common/diagramgrid.h>
+#include <designEditors/common/DiagramUtil.h>
 
 #include <IPXACTmodels/businterface.h>
 

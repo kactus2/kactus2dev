@@ -15,7 +15,7 @@
 #include <QGraphicsRectItem>
 #include <QSharedPointer>
 
-#include "common/diagramgrid.h"
+#include <designEditors/common/diagramgrid.h>
 
 class Component;
 class ConnectionEndpoint;

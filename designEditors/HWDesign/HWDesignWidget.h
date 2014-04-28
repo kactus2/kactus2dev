@@ -9,7 +9,7 @@
 
 #include "HWDesignDiagram.h"
 
-#include <common/DesignWidget.h>
+#include <designEditors/common/DesignWidget.h>
 #include <common/GenericEditProvider.h>
 
 #include <QMainWindow>

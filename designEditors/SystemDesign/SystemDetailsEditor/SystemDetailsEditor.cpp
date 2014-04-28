@@ -16,7 +16,7 @@
 
 #include <designEditors/SystemDesign/SystemDesignWidget.h>
 
-#include <common/DesignDiagram.h>
+#include <designEditors/common/DesignDiagram.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
 #include <IPXACTmodels/SystemView.h>

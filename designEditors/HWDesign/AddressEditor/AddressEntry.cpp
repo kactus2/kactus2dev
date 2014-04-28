@@ -11,7 +11,7 @@
 
 #include "AddressEntry.h"
 
-#include <common/DesignDiagram.h>
+#include <designEditors/common/DesignDiagram.h>
 #include <common/GenericEditProvider.h>
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsConnection.h>

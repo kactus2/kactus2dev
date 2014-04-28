@@ -19,8 +19,8 @@
 
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/GenericEditProvider.h>
-#include <common/diagramgrid.h>
-#include <common/DesignDiagram.h>
+#include <designEditors/common/diagramgrid.h>
+#include <designEditors/common/DesignDiagram.h>
 #include <common/KactusColors.h>
 
 #include <IPXACTmodels/ApiInterface.h>

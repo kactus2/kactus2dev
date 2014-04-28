@@ -14,7 +14,7 @@
 
 #include "MemoryBaseItem.h"
 
-#include <common/diagramgrid.h>
+#include <designEditors/common/diagramgrid.h>
 #include <common/graphicsItems/GraphicsItemTypes.h>
 #include <common/graphicsItems/IGraphicsItemStack.h>
 #include <common/layouts/IVGraphicsLayout.h>

@@ -13,7 +13,7 @@
 
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsConnection.h>
-#include <common/diagramgrid.h>
+#include <designEditors/common/diagramgrid.h>
 
 #include <IPXACTmodels/businterface.h>
 

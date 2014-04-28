@@ -16,8 +16,8 @@
 #include <designEditors/HWDesign/OffPageConnectorItem.h>
 
 #include <common/GenericEditProvider.h>
-#include <common/DesignDiagram.h>
-#include <common/DiagramUtil.h>
+#include <designEditors/common/DesignDiagram.h>
+#include <designEditors/common/DiagramUtil.h>
 #include <common/KactusColors.h>
 
 #include <QPen>

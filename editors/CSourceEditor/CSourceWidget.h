@@ -20,7 +20,6 @@
 #include <QList>
 
 class CSourceTextEdit;
-class CSourceContentMatcher;
 class TextEditProvider;
 class Component;
 class LibraryInterface;

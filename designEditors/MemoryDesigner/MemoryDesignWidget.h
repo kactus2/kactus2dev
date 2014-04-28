@@ -12,7 +12,7 @@
 #ifndef MEMORYDESIGNWIDGET_H
 #define MEMORYDESIGNWIDGET_H
 
-#include <common/DesignWidget.h>
+#include <designEditors/common/DesignWidget.h>
 
 class MemoryDesignDiagram;
 class MainWindow;

@@ -19,7 +19,7 @@
 #include <QGridLayout>
 #include <QGroupBox>
 
-#include <common/ColumnTypes.h>
+#include <designEditors/common/ColumnTypes.h>
 
 //-----------------------------------------------------------------------------
 //! SelectItemTypeDialog class.

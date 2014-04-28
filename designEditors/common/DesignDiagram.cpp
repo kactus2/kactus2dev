@@ -14,7 +14,7 @@
 #include "DesignWidget.h"
 
 #include <common/utils.h>
-#include <common/diagramgrid.h>
+#include <designEditors/common/diagramgrid.h>
 #include <common/GenericEditProvider.h>
 #include <common/graphicsItems/ComponentItem.h>
 

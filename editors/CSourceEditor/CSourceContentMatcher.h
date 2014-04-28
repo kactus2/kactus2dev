@@ -18,7 +18,7 @@
 #include <QSharedPointer>
 
 #include "MCAPIDesignerTypes.h"
-#include "common/widgets/assistedTextEdit/ITextContentMatcher.h"
+#include <common/widgets/assistedTextEdit/ITextContentMatcher.h>
 #include <IPXACTmodels/component.h>
 
 class ApiDefinition;

@@ -70,8 +70,8 @@
 #include <library/LibraryManager/vlnv.h>
 #include <library/LibraryManager/LibraryUtils.h>
 
-#include <MCAPI/CSourceWidget.h>
-#include <MCAPI/CSourceContentMatcher.h>
+#include <editors/CSourceEditor/CSourceWidget.h>
+#include <editors/CSourceEditor/CSourceContentMatcher.h>
 
 #include <IPXACTmodels/view.h>
 #include <IPXACTmodels/component.h>

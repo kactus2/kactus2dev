@@ -15,9 +15,8 @@
 #include "SWConnectionEndpoint.h"
 
 #include <common/graphicsItems/GraphicsColumnLayout.h>
-#include <common/IDFactory.h>
 #include <common/KactusAttribute.h>
-#include <common/DesignDiagram.h>
+#include <designEditors/common/DesignDiagram.h>
 
 #include <QVector>
 

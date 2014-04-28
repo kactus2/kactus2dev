@@ -28,8 +28,8 @@
 
 #include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
 
-#include <common/diagramgrid.h>
-#include <common/DiagramUtil.h>
+#include <designEditors/common/diagramgrid.h>
+#include <designEditors/common/DiagramUtil.h>
 #include <common/GenericEditProvider.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/graphicsItems/ComponentItem.h>

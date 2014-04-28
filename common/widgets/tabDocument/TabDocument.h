@@ -14,7 +14,7 @@
 
 #include <library/LibraryManager/vlnv.h>
 
-#include <common/DrawMode.h>
+#include <designEditors/common/DrawMode.h>
 #include <common/IEditProvider.h>
 
 #include <QWidget>

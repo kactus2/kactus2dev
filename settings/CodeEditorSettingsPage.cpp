@@ -11,7 +11,7 @@
 
 #include "CodeEditorSettingsPage.h"
 
-#include <MCAPI/CSourceWidget.h>
+#include <editors/CSourceEditor/CSourceWidget.h>
 #include <common/widgets/assistedTextEdit/AssistedTextEdit.h>
 
 #include <QHBoxLayout>

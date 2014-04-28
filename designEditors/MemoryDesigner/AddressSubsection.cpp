@@ -14,8 +14,8 @@
 #include "AddressSectionItem.h"
 
 #include <common/utils.h>
-#include <common/DesignDiagram.h>
-#include <common/DesignWidget.h>
+#include <designEditors/common/DesignDiagram.h>
+#include <designEditors/common/DesignWidget.h>
 #include <common/graphicsItems/GraphicsLineEdit.h>
 #include <common/validators/AddressValidator.h>
 
