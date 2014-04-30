@@ -10,10 +10,10 @@
 
 #include <common/widgets/tabDocument/TabDocument.h>
 #include <IPXACTmodels/component.h>
-#include "componenttreeview.h"
-#include "componenteditortreemodel.h"
-#include "componenteditorgroupslot.h"
-#include "ComponentEditorTreeSortProxyModel.h"
+#include <editors/ComponentEditor/treeStructure/componenttreeview.h>
+#include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorgroupslot.h>
+#include <editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
 
 #include <QSharedPointer>
 #include <QSplitter>

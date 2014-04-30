@@ -61,8 +61,7 @@
 #include <Help/HelpSystem/ContextHelpBrowser.h>
 #include <Help/HelpSystem/HelpWindow.h>
 
-#include <editors/ComponentEditor/treeStructure/componenteditor.h>
-#include <editors/ComponentEditor/treeStructure/componenteditor.h>
+#include <editors/ComponentEditor/componenteditor.h>
 
 #include <kactusGenerators/DocumentGenerator/documentgenerator.h>
 
@@ -4710,6 +4709,7 @@ void MainWindow::updateGeneratorPluginActions()
     // Recreate the plugin actions.
     createGeneratorPluginActions();
 }
+
 MainWindow::WindowVisibility::WindowVisibility():
 showOutput_(true),
 showContextHelp_(true),

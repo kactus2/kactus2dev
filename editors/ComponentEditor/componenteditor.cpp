@@ -7,7 +7,7 @@
 
 #include "componenteditor.h"
 
-#include "componenteditoritem.h"
+#include <editors/ComponentEditor/treeStructure/componenteditoritem.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <kactusGenerators/vhdlGenerator/vhdlgenerator2.h>
 #include <kactusGenerators/modelsimGenerator/modelsimgenerator.h>

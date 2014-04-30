@@ -2998,9 +2998,6 @@
     <ClCompile Include="GeneratedFiles\moc_componenttreeview.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_componenteditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_componenteditoraddrblockitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -3628,9 +3625,6 @@
     <ClCompile Include="editors\ComponentEditor\treeStructure\componenttreeview.cpp">
       <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\treeStructure\componenteditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\treeStructure\componenteditoraddrblockitem.cpp">
       <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
     </ClCompile>
@@ -4023,6 +4017,12 @@
     </ClCompile>
     <ClCompile Include="editors\CSourceEditor\CSourceWriter.cpp">
       <Filter>Source Files\editors\CSourceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\componenteditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_componenteditor.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5277,9 +5277,6 @@
     <CustomBuild Include="editors\ComponentEditor\treeStructure\componenttreeview.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\treeStructure\componenteditor.h">
-      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\treeStructure\componenteditoraddrblockitem.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
     </CustomBuild>
@@ -5417,6 +5414,9 @@
     </CustomBuild>
     <CustomBuild Include="editors\CSourceEditor\CSourceWidget.h">
       <Filter>Header Files\editors\CSourceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\componenteditor.h">
+      <Filter>Header Files\editors\ComponentEditor</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
