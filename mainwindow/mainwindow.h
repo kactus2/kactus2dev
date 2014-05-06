@@ -659,11 +659,6 @@ private:
 	bool isDocumentOpen(VLNV const& vlnv) const;
 
     /*!
-     *  Sets the enabled default windows visible and hides the others.
-     */
-    void setDefaultWindows();
-
-    /*!
      *  Sets the visibility for a given window type if it is supported in the current document.
      *
      *      @param [in] windowType   The window type whose visibility to set.
@@ -679,32 +674,42 @@ private:
      */
     void setWindowVisibility(TabDocument::SupportedWindows windowType, bool show);
 
-    /*!
-     *  Sets the visibility for a given window type if it is supported in the current document or no
-     *  no document is open.
-     *
-     *      @param [in] windowType   The window type whose visibility to set.
-     *      @param [in] show         Should the window be visible.
-     */
-    void setWindowVisibilityForDefaultOrSupportedWindow(TabDocument::SupportedWindows type, bool show);
-
-	/*! \brief Update the windows menu to contain the supported windows.
-	 *
-	 * \param supportedWindows Bit field that specifies which windows should be displayed.
-	 *
+	/*!
+	 *  Update the windows menu to contain the supported windows and visibility of the windows.
 	*/
-    void updateWindows(  unsigned int supportedWindows );
+    void updateWindows();
 
     /*!
      *  Sets the visibility for the windows visibility control and its associated window.
      *
-     *      @param [in] supportedWindows   The supported windows in the current document.
      *      @param [in] windowType         The type of the window to set.
-     *      @param [in] action             The action controlling the visibility.
      *      @param [in] dock               The window whose visibility to update.
      */
-    void updateWindowControlVisibility(unsigned int supportedWindows, TabDocument::SupportedWindows windowType, 
-        QAction* action, QDockWidget* dock);
+    void updateWindowAndControlVisibility(TabDocument::SupportedWindows windowType, QDockWidget* dock);
+
+    /*!
+     *  Checks if a given window type is supported in current document or by default.
+     *
+     *      @param [in] windowType   The window type to check.
+     *
+     *      @return True, if the type is supported, otherwise false.
+     */
+    bool isSupportedWindowType(TabDocument::SupportedWindows windowType);
+
+    /*!
+     *  Returns the supported windows of the current document. If no document is open, default windows are
+     *  returned.
+     *     
+     *      @return The currently supported window types.
+     */
+    unsigned int currentlySupportedWindows();
+
+    /*!
+     *  Returns the default windows which are visible even if no document is open.
+     *
+     *      @return The default windows.
+     */
+    unsigned int defaultWindows();
 
     /*!
      *  Connects all the visibility controls for windows.     
@@ -905,42 +910,6 @@ private:
 
     QActionGroup* modeActionGroup_;
 
-	//! \brief Action to show/hide the output window.
-	QAction* showOutputAction_;
-
-    //! Action to show/hide context help.
-    QAction* showContextHelpAction_;
-
-	//! \brief Action to show/hide the preview box.
-	QAction* showPreviewAction_;
-
-	//! \brief Action to show/hide the library window.
-	QAction* showLibraryAction_;
-
-	//! \brief Action to show/hide the configuration window.
-	QAction* showConfigurationAction_;
-
-    //! Action to show/hide the system details window.
-    QAction* showSystemDetailsAction_;
-
-	//! \brief Action to show/hide the connection editor.
-	QAction* showConnectionAction_;
-
-	//! \brief Action to show/hide the interface editor.
-	QAction* showInterfaceAction_;
-
-	//! \brief Action to show/hide the instance editor.
-	QAction* showInstanceAction_;
-
-    //! Action to show/hide the ad-hoc visibility editor.
-    QAction* showAdHocAction_;
-
-    //! Action to show/hide the address editor.
-    QAction* showAddressAction_;
-
-    //! Action to show/hide the chat box.
-    QAction* showChatboxAction_;
-
 	//! \brief The menu containing the actions to select which windows to display.
 	QMenu windowsMenu_;
 
@@ -959,7 +928,9 @@ private:
     //! The help window.
     HelpWindow* helpWnd_;
 
-	//! \brief Contains the visibility options for the windows.
+	/* Contains the visibility for the windows. Used to maintain the visibility information when windows are 
+     * hidden by change of the active document.
+     */
 	QMap<TabDocument::SupportedWindows, bool> visibilities_;
 };
 
