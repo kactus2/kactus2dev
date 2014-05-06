@@ -16,6 +16,7 @@
 #include <Plugins/PluginSystem/IPluginUtility.h>
 
 #include <designEditors/common/DrawMode.h>
+#include <common/widgets/tabDocument/TabDocument.h>
 #include <common/KactusAttribute.h>
 #include <IPXACTmodels/component.h>
 #include <library/LibraryManager/vlnv.h>
@@ -45,7 +46,6 @@ class ConnectionEditor;
 class AdHocEditor;
 class HWConnection;
 class EditorArea;
-class TabDocument;
 class ConnectionEndpoint;
 class GraphicsConnection;
 class ContextHelpBrowser;
@@ -443,6 +443,7 @@ protected:
 	//! \brief Called when user i.e maximizes the main window after it has been minimized.
 	virtual void showEvent(QShowEvent* event);
 
+
 private slots:
 	//! \brief Handler for design widget's clearItemSelection signal.
 	void onClearItemSelection();
@@ -458,6 +459,21 @@ private slots:
 
     //! Opens the workspace management menu.
     void openWorkspaceMenu();
+
+    /*!
+     *  Handles the situation when a workspace has been changed.
+     */
+    void onWorkspaceChanged(QAction* action);
+
+    /*!
+     *  Creates a new workspace, requesting a name for the workspace from the user using a dialog.
+     */
+    void onNewWorkspace();
+
+    /*!
+     *  Deletes a workspace, asking the user which workspace to delete using a dialog.
+     */
+    void onDeleteWorkspace();
 
 	//! \brief Handler for output action's trigger.
 	void onOutputAction(bool show);
@@ -492,26 +508,13 @@ private slots:
     //! \brief Handler for address action's trigger.
     void onAddressAction(bool show);
 
-
-    /*!
-     *  Handles the situation when a workspace has been changed.
-     */
-    void onWorkspaceChanged(QAction* action);
+    //! \brief Handler for chatbox action's trigger.
+    void onChatboxAction( bool show );
 
     /*!
      *  Handles the toggling of visibility controls.
      */
     void onVisibilityControlToggled(QAction*);
-
-    /*!
-     *  Creates a new workspace, requesting a name for the workspace from the user using a dialog.
-     */
-    void onNewWorkspace();
-
-    /*!
-     *  Deletes a workspace, asking the user which workspace to delete using a dialog.
-     */
-    void onDeleteWorkspace();
 
     //! Called when a document has been saved.
     void onDocumentSaved(TabDocument* doc);
@@ -522,7 +525,9 @@ private slots:
 private:
 	// Disable copying.
 	MainWindow(MainWindow const& rhs);
-	MainWindow& operator=(MainWindow const& rhs);
+
+
+    MainWindow& operator=(MainWindow const& rhs);
 
     /*!
      *  Registers a tab document (connects common signals etc.).
@@ -544,12 +549,12 @@ private:
 	 */
 	void restoreSettings();
 
-    void updateWorkspaceMenu();
-
 	/*! 
      *  Save the program's settings.
 	 */
 	void saveSettings();
+
+    void updateWorkspaceMenu();
 
     /*!
      *  Restores the settings for the given workspace.
@@ -605,6 +610,11 @@ private:
      */
     void setupContextHelp();
 
+    /*!
+     *  Sets up the chatbox system.
+     */
+    void setupChatBox();
+
 	//! Sets up the component instance editor.
 	void setupInstanceEditor();
 
@@ -647,6 +657,64 @@ private:
 	 * \return True if the document was already open in some tab.
 	*/
 	bool isDocumentOpen(VLNV const& vlnv) const;
+
+    /*!
+     *  Sets the enabled default windows visible and hides the others.
+     */
+    void setDefaultWindows();
+
+    /*!
+     *  Sets the visibility for a given window type if it is supported in the current document.
+     *
+     *      @param [in] windowType   The window type whose visibility to set.
+     *      @param [in] show         Should the window be visible.
+     */
+    void setWindowVisibilityForSupportedWindow(TabDocument::SupportedWindows type, bool show);
+
+    /*!
+     *  Sets the window visibility for a given window type.
+     *
+     *      @param [in] windowType   The window type whose visibility to set.
+     *      @param [in] show         Should the window be visible.
+     */
+    void setWindowVisibility(TabDocument::SupportedWindows windowType, bool show);
+
+    /*!
+     *  Sets the visibility for a given window type if it is supported in the current document or no
+     *  no document is open.
+     *
+     *      @param [in] windowType   The window type whose visibility to set.
+     *      @param [in] show         Should the window be visible.
+     */
+    void setWindowVisibilityForDefaultOrSupportedWindow(TabDocument::SupportedWindows type, bool show);
+
+	/*! \brief Update the windows menu to contain the supported windows.
+	 *
+	 * \param supportedWindows Bit field that specifies which windows should be displayed.
+	 *
+	*/
+    void updateWindows(  unsigned int supportedWindows );
+
+    /*!
+     *  Sets the visibility for the windows visibility control and its associated window.
+     *
+     *      @param [in] supportedWindows   The supported windows in the current document.
+     *      @param [in] windowType         The type of the window to set.
+     *      @param [in] action             The action controlling the visibility.
+     *      @param [in] dock               The window whose visibility to update.
+     */
+    void updateWindowControlVisibility(unsigned int supportedWindows, TabDocument::SupportedWindows windowType, 
+        QAction* action, QDockWidget* dock);
+
+    /*!
+     *  Connects all the visibility controls for windows.     
+     */
+    void connectVisibilityControls();
+
+    /*!
+     *  Disconnects all the visibility controls for windows.     
+     */
+    void disconnectVisibilityControls();
 
 	//! \brief The instance that manages the IP-Xact library
     LibraryHandler *libraryHandler_;
@@ -715,6 +783,8 @@ private:
 
 	//! \brief The dock widget that contains the connection editor.
 	QDockWidget* connectionDock_;
+
+    QDockWidget* chatboxDock_;
 
 	/*******************************************************************/
 	// the actions in the menus
@@ -868,6 +938,9 @@ private:
     //! Action to show/hide the address editor.
     QAction* showAddressAction_;
 
+    //! Action to show/hide the chat box.
+    QAction* showChatboxAction_;
+
 	//! \brief The menu containing the actions to select which windows to display.
 	QMenu windowsMenu_;
 
@@ -886,60 +959,8 @@ private:
     //! The help window.
     HelpWindow* helpWnd_;
 
-	/*! \brief Update the windows menu to contain the supported windows.
-	 *
-	 * \param supportedWindows Bit field that specifies which windows should be displayed.
-	 *
-	*/
-	void updateWindows(unsigned int supportedWindows);
-
-    //-----------------------------------------------------------------------------
-    //! Structure which contains the show/hidden status for the windows.
-    //-----------------------------------------------------------------------------
-	struct WindowVisibility
-    {
-		//! \brief Show the output window
-		bool showOutput_;
-
-        //! If true, the context help is shown.
-        bool showContextHelp_;
-
-		//! \brief Show the preview window
-		bool showPreview_;
-
-		//! \brief Show the library window
-		bool showLibrary_;
-
-		//! \brief Show the configuration window
-		bool showConfiguration_;
-
-        //! If true, the system details window is visible.
-        bool showSystemDetails_;
-
-		//! \brief Show the connection editor
-		bool showConnection_;
-
-		//! \brief Show the interface editor
-		bool showInterface_;
-
-		//! \brief Show the instance editor
-		bool showInstance_;
-
-        //! If true, the ad-hoc visibility editor is shown.
-        bool showAdHocVisibility;
-
-        //! If true, the address editor is shown.
-        bool showAddress;
-
-		/*! \brief The default constructor.
-		 *
-		 * Constructs all settings as true.
-		*/
-		WindowVisibility();
-	};
-
 	//! \brief Contains the visibility options for the windows.
-	WindowVisibility visibilities_;
+	QMap<TabDocument::SupportedWindows, bool> visibilities_;
 };
 
 #endif // MAINWINDOW_H

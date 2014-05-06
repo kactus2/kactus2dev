@@ -110,6 +110,7 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QTextStream>
+#include <QTextEdit>
 #include <QUrl>
 #include <QDesktopServices>
 #include <QCursor>
@@ -147,6 +148,7 @@ MainWindow::MainWindow(QWidget *parent)
       interfaceDock_(0),
       connectionEditor_(0),
       connectionDock_(0),
+      chatboxDock_(0),
       ribbon_(0),
       actNew_(0),
       actSave_(0),
@@ -196,6 +198,7 @@ MainWindow::MainWindow(QWidget *parent)
       showInstanceAction_(0),
       showAdHocAction_(0),
       showAddressAction_(0),
+      showChatboxAction_(0),
       windowsMenu_(this),
       visibilityMenu_(this),
       workspaceMenu_(this),
@@ -225,6 +228,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Setup windows.
     setupMessageConsole();
     setupContextHelp();
+    setupChatBox();
 	setupDrawBoard();
     setupLibraryDock();
     setupInstanceEditor();
@@ -248,8 +252,7 @@ MainWindow::MainWindow(QWidget *parent)
 	restoreSettings();
 
 	// don't display empty editors
-	updateWindows(TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW | 
-		          TabDocument::PREVIEWWINDOW | TabDocument::CONTEXT_HELP_WINDOW);
+    setDefaultWindows();
 
 	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
@@ -312,6 +315,49 @@ void MainWindow::saveSettings()
 }
 
 //-----------------------------------------------------------------------------
+// Function: updateWorkspaceMenu()
+//-----------------------------------------------------------------------------
+void MainWindow::updateWorkspaceMenu()
+{
+    // Create the workspace menu based on the settings.
+    workspaceMenu_.clear();
+
+    QSettings settings;
+    settings.beginGroup("Workspaces");
+
+    QStringList workspaceIDs = settings.childGroups();
+    QActionGroup* workspaceGroup = new QActionGroup(this);
+    workspaceGroup->setExclusive(true);
+
+    foreach (QString const& workspaceID, workspaceIDs)
+    {
+        QString workspaceName = workspaceID;
+
+        QAction* action = new QAction(workspaceName, this);
+        action->setCheckable(true);
+        action->setChecked(curWorkspaceName_ == workspaceName);
+
+        workspaceGroup->addAction(action);
+        workspaceMenu_.addAction(action);
+    }
+
+    settings.endGroup();
+
+    connect(workspaceGroup, SIGNAL(triggered(QAction *)), this, SLOT(onWorkspaceChanged(QAction *)));
+
+    // Add actions for creating and deleting new workspaces.
+    QAction* addAction = new QAction(tr("New Workspace..."), this);
+    connect(addAction, SIGNAL(triggered()), this, SLOT(onNewWorkspace()), Qt::UniqueConnection);
+
+    QAction* deleteAction = new QAction(tr("Delete Workspace..."), this);
+    connect(deleteAction, SIGNAL(triggered()), this, SLOT(onDeleteWorkspace()), Qt::UniqueConnection);
+
+    workspaceMenu_.addSeparator();
+    workspaceMenu_.addAction(addAction);
+    workspaceMenu_.addAction(deleteAction);
+}
+
+//-----------------------------------------------------------------------------
 // Function: loadWorkspace()
 //-----------------------------------------------------------------------------
 void MainWindow::loadWorkspace(QString const& workspaceName)
@@ -346,53 +392,56 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
     }
 
     const bool configurationVisible = settings.value("ConfigurationVisibility", true).toBool();
-    visibilities_.showConfiguration_ = configurationVisible;
+    visibilities_.insert(TabDocument::CONFIGURATIONWINDOW, configurationVisible);
     showConfigurationAction_->setChecked(configurationVisible);
 
     const bool systemDetailsVisible = settings.value("SystemDetailsVisibility", true).toBool();
-    visibilities_.showSystemDetails_ = systemDetailsVisible;
+    visibilities_.insert(TabDocument::SYSTEM_DETAILS_WINDOW, systemDetailsVisible);
     showSystemDetailsAction_->setChecked(systemDetailsVisible);
 
     const bool connectionVisible = settings.value("ConnectionVisibility", true).toBool();
-    visibilities_.showConnection_ = connectionVisible;
+    visibilities_.insert(TabDocument::CONNECTIONWINDOW, connectionVisible);    
     showConnectionAction_->setChecked(connectionVisible);
 
     const bool instanceVisible = settings.value("InstanceVisibility", true).toBool();
-    visibilities_.showInstance_ = instanceVisible;
+    visibilities_.insert(TabDocument::INSTANCEWINDOW, instanceVisible); 
     showInstanceAction_->setChecked(instanceVisible);
 
     const bool adHocVisible = settings.value("AdHocVisibility", true).toBool();
-    visibilities_.showAdHocVisibility = adHocVisible;
+    visibilities_.insert(TabDocument::ADHOC_WINDOW, adHocVisible);
     showAdHocAction_->setChecked(adHocVisible);
 
     const bool addressVisible = settings.value("AddressVisibility", false).toBool();
-    visibilities_.showAddress = addressVisible;
+    visibilities_.insert(TabDocument::ADDRESS_WINDOW, addressVisible);
     showAddressAction_->setChecked(addressVisible);
 
     const bool interfaceVisible = settings.value("InterfaceVisibility", true).toBool();
-    visibilities_.showInterface_ = interfaceVisible;
+    visibilities_.insert(TabDocument::INTERFACEWINDOW, interfaceVisible);
     showInterfaceAction_->setChecked(interfaceVisible);
 
     const bool libraryVisible = settings.value("LibraryVisibility", true).toBool();
-    visibilities_.showLibrary_ = libraryVisible;
+    visibilities_.insert(TabDocument::LIBRARYWINDOW, libraryVisible);
     showLibraryAction_->setChecked(libraryVisible);
 
     const bool outputVisible = settings.value("OutputVisibility", true).toBool();
-    visibilities_.showOutput_ = outputVisible;
+    visibilities_.insert(TabDocument::OUTPUTWINDOW, outputVisible);
     showOutputAction_->setChecked(outputVisible);
 
     const bool contextHelpVisible = settings.value("ContextHelpVisibility", false).toBool();
-    visibilities_.showContextHelp_ = contextHelpVisible;
+    visibilities_.insert(TabDocument::CONTEXT_HELP_WINDOW, contextHelpVisible);
     showContextHelpAction_->setChecked(contextHelpVisible);
 
     const bool previewVisible = settings.value("PreviewVisibility", true).toBool();
-    visibilities_.showPreview_ = previewVisible;
+    visibilities_.insert(TabDocument::PREVIEWWINDOW, previewVisible);
     showPreviewAction_->setChecked(previewVisible);
+
+    const bool chatboxVisible = settings.value("ChatboxVisibility", true).toBool();
+    visibilities_.insert(TabDocument::CHATBOX_WINDOW, chatboxVisible);
+    showChatboxAction_->setChecked(chatboxVisible);
 
     if (designTabs_->count() == 0)
     {
-        updateWindows(TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW | 
-                      TabDocument::PREVIEWWINDOW | TabDocument::CONTEXT_HELP_WINDOW);
+        setDefaultWindows();
     }
     else
     {
@@ -449,17 +498,18 @@ void MainWindow::saveWorkspace(QString const& workspaceName)
     settings.setValue("WindowState", saveState());
     settings.setValue("Geometry", saveGeometry());
     settings.setValue("WindowPosition", pos());
-    settings.setValue("ConfigurationVisibility", visibilities_.showConfiguration_);
-    settings.setValue("SystemDetailsVisibility", visibilities_.showSystemDetails_);
-    settings.setValue("ConnectionVisibility", visibilities_.showConnection_);
-    settings.setValue("InstanceVisibility", visibilities_.showInstance_);
-    settings.setValue("AdHocVisibility", visibilities_.showAdHocVisibility);
-    settings.setValue("AddressVisibility", visibilities_.showAddress);
-    settings.setValue("InterfaceVisibility", visibilities_.showInterface_);
-    settings.setValue("LibraryVisibility", visibilities_.showLibrary_);
-    settings.setValue("OutputVisibility", visibilities_.showOutput_);
-    settings.setValue("ContextHelpVisibility", visibilities_.showContextHelp_);
-    settings.setValue("PreviewVisibility", visibilities_.showPreview_);    
+    settings.setValue("ConfigurationVisibility", visibilities_.value(TabDocument::CONFIGURATIONWINDOW));
+    settings.setValue("SystemDetailsVisibility", visibilities_.value(TabDocument::SYSTEM_DETAILS_WINDOW));
+    settings.setValue("ConnectionVisibility", visibilities_.value(TabDocument::CONNECTIONWINDOW));
+    settings.setValue("InstanceVisibility", visibilities_.value(TabDocument::INSTANCEWINDOW));
+    settings.setValue("AdHocVisibility", visibilities_.value(TabDocument::ADHOC_WINDOW));
+    settings.setValue("AddressVisibility", visibilities_.value(TabDocument::ADDRESS_WINDOW));
+    settings.setValue("InterfaceVisibility", visibilities_.value(TabDocument::INTERFACEWINDOW));
+    settings.setValue("LibraryVisibility", visibilities_.value(TabDocument::LIBRARYWINDOW));
+    settings.setValue("OutputVisibility", visibilities_.value(TabDocument::OUTPUTWINDOW));
+    settings.setValue("ContextHelpVisibility", visibilities_.value(TabDocument::CONTEXT_HELP_WINDOW));
+    settings.setValue("PreviewVisibility", visibilities_.value(TabDocument::PREVIEWWINDOW));
+    settings.setValue("ChatboxVisibility", visibilities_.value(TabDocument::CHATBOX_WINDOW));
 
     // Save filters.
     settings.beginGroup("LibraryFilters");
@@ -699,101 +749,52 @@ void MainWindow::setupActions()
 	// Action to show/hide the output window.
 	showOutputAction_ = new QAction(tr("Output Window"), this);
 	showOutputAction_->setCheckable(true);
-	showOutputAction_->setChecked(true);
-	connect(showOutputAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onOutputAction(bool)), Qt::UniqueConnection);
-	connect(consoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showOutputAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
 	// Action to show/hide the context help window.
 	showContextHelpAction_ = new QAction(tr("Context Help"), this);
 	showContextHelpAction_->setCheckable(true);
-	showContextHelpAction_->setChecked(true);
-	connect(showContextHelpAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onContextHelpAction(bool)), Qt::UniqueConnection);
-	connect(contextHelpDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showContextHelpAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
 	// Action to show/hide the preview box.
 	showPreviewAction_ = new QAction(tr("Preview Box"), this);
 	showPreviewAction_->setCheckable(true);
-	showPreviewAction_->setChecked(true);
-	connect(showPreviewAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onPreviewAction(bool)), Qt::UniqueConnection);
-	connect(previewDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showPreviewAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
 	// Action to show/hide the library window.
 	showLibraryAction_ = new QAction(tr("Library Window"), this);
 	showLibraryAction_->setCheckable(true);
-	showLibraryAction_->setChecked(true);
-	connect(showLibraryAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onLibraryAction(bool)), Qt::UniqueConnection);
-	connect(libraryDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showLibraryAction_, SLOT(setChecked(bool)), Qt::UniqueConnection); 		
-
 
 	// Action to show/hide the configuration window.
 	showConfigurationAction_ = new QAction(tr("Configuration Window"), this);
 	showConfigurationAction_->setCheckable(true);
-	showConfigurationAction_->setChecked(true);
-	connect(showConfigurationAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onConfigurationAction(bool)), Qt::UniqueConnection);
-	connect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showConfigurationAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
 	// Action to show/hide the system details window.
 	showSystemDetailsAction_ = new QAction(tr("HW Mapping Details Window"), this);
 	showSystemDetailsAction_->setCheckable(true);
-	showSystemDetailsAction_->setChecked(true);
-	connect(showSystemDetailsAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onSystemDetailsAction(bool)), Qt::UniqueConnection);
-	connect(systemDetailsDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		    showSystemDetailsAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
 	// Action to show/hide the connection editor.
 	showConnectionAction_ = new QAction(tr("Connection Editor"), this);
 	showConnectionAction_->setCheckable(true);
-	showConnectionAction_->setChecked(true);
-	connect(showConnectionAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onConnectionAction(bool)), Qt::UniqueConnection);
-	connect(connectionDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showConnectionAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
 	// Action to show/hide the interface editor.
 	showInterfaceAction_ = new QAction(tr("Interface Editor"), this);
 	showInterfaceAction_->setCheckable(true);
-	showInterfaceAction_->setChecked(true);
-	connect(showInterfaceAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onInterfaceAction(bool)), Qt::UniqueConnection);
-	connect(interfaceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showInterfaceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
 	// Action to show/hide the instance editor.
 	showInstanceAction_ = new QAction(tr("Instance Editor"), this);
 	showInstanceAction_->setCheckable(true);
-	showInstanceAction_->setChecked(true);
-	connect(showInstanceAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onInstanceAction(bool)), Qt::UniqueConnection);
-	connect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showInstanceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
 	// Action to show/hide the ad-hoc visibility editor.
 	showAdHocAction_ = new QAction(tr("Ad-hoc Visibility Editor"), this);
 	showAdHocAction_->setCheckable(true);
-	showAdHocAction_->setChecked(true);
-	connect(showAdHocAction_, SIGNAL(toggled(bool)), this, SLOT(onAdHocAction(bool)), Qt::UniqueConnection);
-	connect(adHocDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showAdHocAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
 	// Action to show/hide the address editor.
 	showAddressAction_ = new QAction(tr("Address Editor"), this);
 	showAddressAction_->setCheckable(true);
-	showAddressAction_->setChecked(true);
-	connect(showAddressAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onAddressAction(bool)), Qt::UniqueConnection);
-	connect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showAddressAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+    // Action to show/hide the chat box.
+    showChatboxAction_ = new QAction(tr("Notes"), this);
+    showChatboxAction_->setCheckable(true);
+
+    connectVisibilityControls();
 
 	setupMenus();
 }
@@ -882,10 +883,18 @@ void MainWindow::setupMenus()
     sysGroup->setAutoCollapse(false);
 
 	// the menu to display the dock widgets
-	windowsMenu_.addAction(showOutputAction_);
-    windowsMenu_.addAction(showPreviewAction_);
-	windowsMenu_.addAction(showLibraryAction_);
+    windowsMenu_.addAction(showAddressAction_);	
+    windowsMenu_.addAction(showAdHocAction_);	    
+    windowsMenu_.addAction(showConfigurationAction_);
+    windowsMenu_.addAction(showConnectionAction_);
     windowsMenu_.addAction(showContextHelpAction_);
+    windowsMenu_.addAction(showLibraryAction_);       
+    windowsMenu_.addAction(showSystemDetailsAction_);
+    windowsMenu_.addAction(showInterfaceAction_);
+    windowsMenu_.addAction(showInstanceAction_);
+    windowsMenu_.addAction(showChatboxAction_); 
+    windowsMenu_.addAction(showOutputAction_);
+    windowsMenu_.addAction(showPreviewAction_);
 }
 
 void MainWindow::setupDrawBoard() {
@@ -986,8 +995,11 @@ void MainWindow::setupLibraryDock() {
 		const VLNV&, const QString&)), Qt::UniqueConnection);
 }
 
-void MainWindow::setupMessageConsole() {
-
+//-----------------------------------------------------------------------------
+// Function: mainwindow::setupMessageConsole()
+//-----------------------------------------------------------------------------
+void MainWindow::setupMessageConsole() 
+{
 	consoleDock_ = new QDockWidget(tr("Output"), this);
 	consoleDock_->setObjectName(tr("Output"));
 	consoleDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
@@ -1007,7 +1019,6 @@ void MainWindow::setupMessageConsole() {
     connect(this, SIGNAL(noticeMessage(const QString&)),
         consoleDock_, SLOT(show()), Qt::UniqueConnection);
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: MainWindow::setupContextHelp()
@@ -1047,6 +1058,24 @@ void MainWindow::setupContextHelp()
     contextHelpBrowser_->onHelpRequested("index.html");
 }
 
+//-----------------------------------------------------------------------------
+// Function: MainWindow::setupChatBox()
+//-----------------------------------------------------------------------------
+void MainWindow::setupChatBox()
+{
+    chatboxDock_ = new QDockWidget(tr("Notes"), this);
+    chatboxDock_->setObjectName(tr("Notes"));
+    chatboxDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
+    chatboxDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
+
+    QTextEdit* chatBox = new QTextEdit(chatboxDock_);
+    chatboxDock_->setWidget(chatBox);
+    addDockWidget(Qt::BottomDockWidgetArea, chatboxDock_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::setupConfigurationEditor()
+//-----------------------------------------------------------------------------
 void MainWindow::setupConfigurationEditor() {
 
 	configurationDock_ = new QDockWidget(tr("Design Configuration Details"), this);
@@ -1080,6 +1109,9 @@ void MainWindow::setupSystemDetailsEditor()
             this, SLOT(onDesignChanged()), Qt::UniqueConnection);
 }
 
+//-----------------------------------------------------------------------------
+// Function: mainwindow::setupInstanceEditor()
+//-----------------------------------------------------------------------------
 void MainWindow::setupInstanceEditor()
 {
 	instanceDock_ = new QDockWidget(tr("Component Instance Details"), this);
@@ -1095,6 +1127,9 @@ void MainWindow::setupInstanceEditor()
 		this, SLOT(onDesignChanged()), Qt::UniqueConnection);
 }
 
+//-----------------------------------------------------------------------------
+// Function: mainwindow::setupAdHocVisibilityEditor()
+//-----------------------------------------------------------------------------
 void MainWindow::setupAdHocVisibilityEditor()
 {
     adHocDock_ = new QDockWidget(tr("Ad-hoc Visibility"), this);
@@ -1107,6 +1142,9 @@ void MainWindow::setupAdHocVisibilityEditor()
     addDockWidget(Qt::RightDockWidgetArea, adHocDock_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: mainwindow::setupAddressEditor()
+//-----------------------------------------------------------------------------
 void MainWindow::setupAddressEditor()
 {
     addressDock_ = new QDockWidget(tr("Address Editor"), this);
@@ -1121,6 +1159,9 @@ void MainWindow::setupAddressEditor()
     connect(addressEditor_, SIGNAL(contentChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
 }
 
+//-----------------------------------------------------------------------------
+// Function: mainwindow::setupInterfaceEditor()
+//-----------------------------------------------------------------------------
 void MainWindow::setupInterfaceEditor()
 {
 	interfaceDock_ = new QDockWidget(tr("Interface Editor"), this);
@@ -1133,6 +1174,9 @@ void MainWindow::setupInterfaceEditor()
 	addDockWidget(Qt::RightDockWidgetArea, interfaceDock_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: mainwindow::setupConnectionEditor()
+//-----------------------------------------------------------------------------
 void MainWindow::setupConnectionEditor()
 {
 	connectionDock_ = new QDockWidget(tr("Connection Editor"), this);
@@ -1145,6 +1189,9 @@ void MainWindow::setupConnectionEditor()
 	addDockWidget(Qt::RightDockWidgetArea, connectionDock_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: mainwindow::onDesignChanged()
+//-----------------------------------------------------------------------------
 void MainWindow::onDesignChanged() {
 
 	// find the currently open editor
@@ -1162,6 +1209,9 @@ void MainWindow::onDesignChanged() {
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: mainwindow::onClearItemSelection()
+//-----------------------------------------------------------------------------
 void MainWindow::onClearItemSelection()
 {
     HWDesignWidget* designWidget = dynamic_cast<HWDesignWidget*>(designTabs_->currentWidget());
@@ -1181,6 +1231,9 @@ void MainWindow::onClearItemSelection()
 	connectionEditor_->clear();
 }
 
+//-----------------------------------------------------------------------------
+// Function: mainwindow::onComponentSelected()
+//-----------------------------------------------------------------------------
 void MainWindow::onComponentSelected( ComponentItem* component ) {
 	Q_ASSERT(component);
 
@@ -1211,6 +1264,9 @@ void MainWindow::onComponentSelected( ComponentItem* component ) {
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: mainwindow::onInterfaceSelected()
+//-----------------------------------------------------------------------------
 void MainWindow::onInterfaceSelected( ConnectionEndpoint* interface ) {
 	Q_ASSERT(interface);
 
@@ -1242,6 +1298,9 @@ void MainWindow::onInterfaceSelected( ConnectionEndpoint* interface ) {
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: onConnectionSelected()
+//-----------------------------------------------------------------------------
 void MainWindow::onConnectionSelected( GraphicsConnection* connection ) {
 	Q_ASSERT(connection);
     adHocEditor_->clear();
@@ -2001,9 +2060,7 @@ void MainWindow::onTabCloseRequested( int index )
 
 	// if there are no more tabs in the tab widget
 	if (designTabs_->count() == 0) {
-		// don't display empty editors
-		updateWindows(TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW | 
-			          TabDocument::PREVIEWWINDOW | TabDocument::CONTEXT_HELP_WINDOW);
+        setDefaultWindows();
 	}
 }
 
@@ -2067,43 +2124,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
 {
 	// disconnect the signals that would otherwise change the window states to be saved
 
-	// Action to show/hide the output window.
-	disconnect(showOutputAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onOutputAction(bool)));
-
-    // Action to show/hide the context help window.
-    disconnect(showContextHelpAction_, SIGNAL(toggled(bool)),
-               this, SLOT(onContextHelpAction(bool)));
-
-	// Action to show/hide the preview box.
-	disconnect(showPreviewAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onPreviewAction(bool)));
-
-	// Action to show/hide the library window.
-	disconnect(showLibraryAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onLibraryAction(bool)));
-
-	// Action to show/hide the configuration window.
-	disconnect(showConfigurationAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onConfigurationAction(bool)));
-
-	// Action to show/hide the connection editor.
-	disconnect(showConnectionAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onConnectionAction(bool)));
-
-	// Action to show/hide the interface editor.
-	disconnect(showInterfaceAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onInterfaceAction(bool)));
-
-	// Action to show/hide the instance editor.
-	disconnect(showInstanceAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onInstanceAction(bool)));
-
-    // Disconnect the action to show/hide the ad-hoc visibility editor.
-    disconnect(showAdHocAction_, SIGNAL(toggled(bool)), this, SLOT(onAdHocAction(bool)));
-
-    // Action to show/hide the instance editor.
-    disconnect(showAddressAction_, SIGNAL(toggled(bool)), this, SLOT(onAddressAction(bool)));
+	disconnectVisibilityControls();
 
 	// Go through all tab documents and ask the user what to do if they are not saved.
 	while (designTabs_->count() > 0)
@@ -3616,6 +3637,234 @@ bool MainWindow::isDocumentOpen(VLNV const& vlnv) const
     return false;
 }
 
+//-----------------------------------------------------------------------------
+// Function: MainWindow::setDefaultWindows()
+//-----------------------------------------------------------------------------
+void MainWindow::setDefaultWindows()
+{
+    updateWindows(TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW | 
+        TabDocument::PREVIEWWINDOW | TabDocument::CONTEXT_HELP_WINDOW);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::setWindowVisibilityForSupportedWindow()
+//-----------------------------------------------------------------------------
+void MainWindow::setWindowVisibilityForSupportedWindow(TabDocument::SupportedWindows type, bool show)
+{
+    // if the instance window is supported in the current window
+    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+
+    if (doc && doc->getSupportedWindows() & type) {
+        setWindowVisibility(type, show);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::setWindowVisibility()
+//-----------------------------------------------------------------------------
+void MainWindow::setWindowVisibility(TabDocument::SupportedWindows windowType, bool show)
+{
+    visibilities_.insert(windowType, show);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::setWindowVisibilityForClosedOrSupportedWindow()
+//-----------------------------------------------------------------------------
+void MainWindow::setWindowVisibilityForDefaultOrSupportedWindow(TabDocument::SupportedWindows type, bool show)
+{
+    // if the library window is supported in the current window
+    // or if there is no window open
+    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+    if (!doc || (doc && doc->getSupportedWindows() & type)) {
+        setWindowVisibility(type, show);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::updateWindows()
+//-----------------------------------------------------------------------------
+void MainWindow::updateWindows( unsigned int supportedWindows ) 
+{
+    updateWindowControlVisibility(supportedWindows, TabDocument::LIBRARYWINDOW, showLibraryAction_, libraryDock_);
+    updateWindowControlVisibility(supportedWindows, TabDocument::OUTPUTWINDOW, showOutputAction_, consoleDock_);
+    updateWindowControlVisibility(supportedWindows, TabDocument::CONTEXT_HELP_WINDOW, showContextHelpAction_, contextHelpDock_);
+    updateWindowControlVisibility(supportedWindows, TabDocument::PREVIEWWINDOW, showPreviewAction_, previewDock_);
+    updateWindowControlVisibility(supportedWindows, TabDocument::CONFIGURATIONWINDOW, showConfigurationAction_, configurationDock_);
+    updateWindowControlVisibility(supportedWindows, TabDocument::SYSTEM_DETAILS_WINDOW, showSystemDetailsAction_, systemDetailsDock_);
+    updateWindowControlVisibility(supportedWindows, TabDocument::CONNECTIONWINDOW, showConnectionAction_, connectionDock_);
+    updateWindowControlVisibility(supportedWindows, TabDocument::INTERFACEWINDOW, showInterfaceAction_, interfaceDock_);
+    updateWindowControlVisibility(supportedWindows, TabDocument::INSTANCEWINDOW, showInstanceAction_, instanceDock_);
+    updateWindowControlVisibility(supportedWindows, TabDocument::ADHOC_WINDOW, showAdHocAction_, adHocDock_);
+    updateWindowControlVisibility(supportedWindows, TabDocument::ADDRESS_WINDOW, showAddressAction_, addressDock_);   
+    updateWindowControlVisibility(supportedWindows, TabDocument::CHATBOX_WINDOW, showChatboxAction_, chatboxDock_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::updateWindowControlVisibility()
+//-----------------------------------------------------------------------------
+void MainWindow::updateWindowControlVisibility(unsigned int supportedWindows, 
+    TabDocument::SupportedWindows windowType, QAction* action, QDockWidget* dock)
+{
+    if (supportedWindows & windowType) {
+        action->setVisible(true);
+        dock->setVisible(visibilities_.value(windowType));
+    }
+    else {
+        action->setVisible(false);
+        dock->hide();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::connectVisibilityControls()
+//-----------------------------------------------------------------------------
+void MainWindow::connectVisibilityControls()
+{
+    // Action to show/hide the output window.
+    connect(showOutputAction_, SIGNAL(toggled(bool)),
+        this, SLOT(onOutputAction(bool)), Qt::UniqueConnection);
+    connect(consoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        showOutputAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+    // Action to show/hide the context help window.
+    connect(showContextHelpAction_, SIGNAL(toggled(bool)),
+        this, SLOT(onContextHelpAction(bool)), Qt::UniqueConnection);
+    connect(contextHelpDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        showContextHelpAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+    // Action to show/hide the preview box.
+    connect(showPreviewAction_, SIGNAL(toggled(bool)),
+        this, SLOT(onPreviewAction(bool)), Qt::UniqueConnection);
+    connect(previewDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        showPreviewAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+    // Action to show/hide the library window.
+    connect(showLibraryAction_, SIGNAL(toggled(bool)),
+        this, SLOT(onLibraryAction(bool)), Qt::UniqueConnection);
+    connect(libraryDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        showLibraryAction_, SLOT(setChecked(bool)), Qt::UniqueConnection); 		
+
+    // Action to show/hide the configuration window.
+    connect(showConfigurationAction_, SIGNAL(toggled(bool)),
+        this, SLOT(onConfigurationAction(bool)), Qt::UniqueConnection);
+    connect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        showConfigurationAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+    // Action to show/hide the system detail window.
+    connect(showSystemDetailsAction_, SIGNAL(toggled(bool)),
+        this, SLOT(onSystemDetailsAction(bool)), Qt::UniqueConnection);
+    connect(systemDetailsDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        showSystemDetailsAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+    // Action to show/hide the connection editor.
+    connect(showConnectionAction_, SIGNAL(toggled(bool)),
+        this, SLOT(onConnectionAction(bool)), Qt::UniqueConnection);
+    connect(connectionDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        showConnectionAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+    // Action to show/hide the interface editor.
+    connect(showInterfaceAction_, SIGNAL(toggled(bool)),
+        this, SLOT(onInterfaceAction(bool)), Qt::UniqueConnection);
+    connect(interfaceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        showInterfaceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+    // Action to show/hide the instance editor.
+    connect(showInstanceAction_, SIGNAL(toggled(bool)),
+        this, SLOT(onInstanceAction(bool)), Qt::UniqueConnection);
+    connect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        showInstanceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+    // Action to show/hide the ad-hoc visibility editor.
+    connect(showAdHocAction_, SIGNAL(toggled(bool)), this, SLOT(onAdHocAction(bool)), Qt::UniqueConnection);
+    connect(adHocDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        showAdHocAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+    // Action to show/hide the address editor.
+    connect(showAddressAction_, SIGNAL(toggled(bool)), this, SLOT(onAddressAction(bool)), Qt::UniqueConnection);
+    connect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        showAddressAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+    // Action to show/hide the chatbox.
+    connect(showChatboxAction_, SIGNAL(toggled(bool)), this, SLOT(onChatboxAction(bool)), Qt::UniqueConnection);
+    connect(chatboxDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        showChatboxAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::disconnectVisibilityControls()
+//-----------------------------------------------------------------------------
+void MainWindow::disconnectVisibilityControls()
+{
+    // Action to show/hide the output window.
+    disconnect(showOutputAction_, SIGNAL(toggled(bool)), 
+        this, SLOT(onOutputAction(bool)));
+    disconnect(consoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        showOutputAction_, SLOT(setChecked(bool)));
+
+    // Action to show/hide the context help window.
+    disconnect(showContextHelpAction_, SIGNAL(toggled(bool)),
+        this, SLOT(onContextHelpAction(bool)));
+    disconnect(contextHelpDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        showContextHelpAction_, SLOT(setChecked(bool)));
+
+    // Action to show/hide the preview box.
+    disconnect(showPreviewAction_, SIGNAL(toggled(bool)),
+        this, SLOT(onPreviewAction(bool)));
+    disconnect(previewDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        showPreviewAction_, SLOT(setChecked(bool)));
+
+    // Action to show/hide the library window.
+    disconnect(showLibraryAction_, SIGNAL(toggled(bool)),
+        this, SLOT(onLibraryAction(bool)));
+    disconnect(libraryDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        showLibraryAction_, SLOT(setChecked(bool))); 		
+
+    // Action to show/hide the configuration window.
+    disconnect(showConfigurationAction_, SIGNAL(toggled(bool)),
+        this, SLOT(onConfigurationAction(bool)));
+    disconnect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        showConfigurationAction_, SLOT(setChecked(bool)));
+
+    // Action to show/hide the system details window.
+    disconnect(showSystemDetailsAction_, SIGNAL(toggled(bool)), 
+        this, SLOT(onSystemDetailsAction(bool)));
+    disconnect(systemDetailsDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
+        showSystemDetailsAction_, SLOT(setChecked(bool)));
+
+    // Action to show/hide the connection editor.
+    disconnect(showConnectionAction_, SIGNAL(toggled(bool)), 
+        this, SLOT(onConnectionAction(bool)));
+    disconnect(connectionDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
+        showConnectionAction_, SLOT(setChecked(bool)));
+
+    // Action to show/hide the interface editor.
+    disconnect(showInterfaceAction_, SIGNAL(toggled(bool)), this, SLOT(onInterfaceAction(bool)));
+    disconnect(interfaceDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
+        showInterfaceAction_, SLOT(setChecked(bool)));
+
+    // Action to show/hide the instance editor.
+    disconnect(showInstanceAction_, SIGNAL(toggled(bool)), 
+        this, SLOT(onInstanceAction(bool)));
+    disconnect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
+        showInstanceAction_, SLOT(setChecked(bool)));
+
+    // Action to show/hide the instance editor.
+    disconnect(showAdHocAction_, SIGNAL(toggled(bool)),
+        this, SLOT(onAdHocAction(bool)));
+    disconnect(adHocDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
+        showAdHocAction_, SLOT(setChecked(bool)));
+
+    // Action to show/hide the address editor.
+    disconnect(showAddressAction_, SIGNAL(toggled(bool)), 
+        this, SLOT(onAddressAction(bool)));
+    disconnect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
+        showAddressAction_, SLOT(setChecked(bool)));
+
+    disconnect(showChatboxAction_, SIGNAL(toggled(bool)), 
+        this, SLOT(onChatboxAction(bool)));
+    disconnect(chatboxDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
+        showChatboxAction_, SLOT(setChecked(bool)));
+}
 
 //-----------------------------------------------------------------------------
 // Function: openCSource()
@@ -3990,362 +4239,15 @@ void MainWindow::selectVisibleDocks() {
 	windowsMenu_.exec(QCursor::pos());
 }
 
-void MainWindow::onOutputAction( bool show ) {
-	consoleDock_->setVisible(show);
-
-	// if the output window is supported in the current window
-	// or if there is no window open
-	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-	if (!doc || (doc && doc->getSupportedWindows() & TabDocument::OUTPUTWINDOW)) {
-		visibilities_.showOutput_ = show;
-	}
-}
-
-void MainWindow::onContextHelpAction( bool show )
+void MainWindow::hideEvent( QHideEvent* event ) 
 {
-    contextHelpDock_->setVisible(show);
-    visibilities_.showContextHelp_ = show;
-}
-
-void MainWindow::onPreviewAction( bool show ) {
-	previewDock_->setVisible(show);
-
-	// if the preview window is supported in the current window
-	// or if there is no window open
-	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-	if (!doc || (doc && doc->getSupportedWindows() & TabDocument::PREVIEWWINDOW)) {
-		visibilities_.showPreview_ = show;
-	}
-}
-
-void MainWindow::onLibraryAction( bool show ) {
-	libraryDock_->setVisible(show);
-
-	// if the library window is supported in the current window
-	// or if there is no window open
-	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-	if (!doc || (doc && doc->getSupportedWindows() & TabDocument::LIBRARYWINDOW)) {
-		visibilities_.showLibrary_ = show;
-	}
-}
-
-void MainWindow::onConfigurationAction( bool show ) {
-	configurationDock_->setVisible(show);
-
-	// if the configuration window is supported in the current window
-	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-	if (doc && doc->getSupportedWindows() & TabDocument::CONFIGURATIONWINDOW) {
-		visibilities_.showConfiguration_ = show;
-	}
-}
-
-void MainWindow::onSystemDetailsAction( bool show )
-{
-    systemDetailsDock_->setVisible(show);
-
-    // if the configuration window is supported in the current window
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-
-    if (doc && doc->getSupportedWindows() & TabDocument::SYSTEM_DETAILS_WINDOW)
-    {
-        visibilities_.showSystemDetails_ = show;
-    }
-}
-
-void MainWindow::onConnectionAction( bool show ) {
-	connectionDock_->setVisible(show);
-
-	// if the connection window is supported in the current window
-	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-
-	if (doc && doc->getSupportedWindows() & TabDocument::CONNECTIONWINDOW) {
-		visibilities_.showConnection_ = show;
-	}
-}
-
-void MainWindow::onInterfaceAction( bool show ) {
-	interfaceDock_->setVisible(show);
-
-	// if the interface window is supported in the current window
-	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-
-	if (doc && doc->getSupportedWindows() & TabDocument::INTERFACEWINDOW) {
-		visibilities_.showInterface_ = show;
-	}
-}
-
-void MainWindow::onAdHocAction( bool show ) {
-    adHocDock_->setVisible(show);
-
-    // if the instance window is supported in the current window
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-
-    if (doc && doc->getSupportedWindows() & TabDocument::ADHOC_WINDOW) {
-        visibilities_.showAdHocVisibility = show;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainWindow::onAddressAction()
-//-----------------------------------------------------------------------------
-void MainWindow::onAddressAction(bool show)
-{
-    addressDock_->setVisible(show);
-
-    // if the instance window is supported in the current window
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-
-    if (doc && doc->getSupportedWindows() & TabDocument::ADDRESS_WINDOW) {
-        visibilities_.showAddress = show;
-    }
-}
-
-
-void MainWindow::onInstanceAction( bool show ) {
-	instanceDock_->setVisible(show);
-
-	// if the instance window is supported in the current window
-	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-
-	if (doc && doc->getSupportedWindows() & TabDocument::INSTANCEWINDOW) {
-		visibilities_.showInstance_ = show;
-	}
-}
-
-void MainWindow::updateWindows( unsigned int supportedWindows ) {
-
-	if (supportedWindows & TabDocument::LIBRARYWINDOW) {
-		windowsMenu_.addAction(showLibraryAction_);
-		libraryDock_->setVisible(visibilities_.showLibrary_);
-	}
-	else {
-		windowsMenu_.removeAction(showLibraryAction_);
-		libraryDock_->hide();
-	}
-
-	if (supportedWindows & TabDocument::OUTPUTWINDOW) {
-		windowsMenu_.addAction(showOutputAction_);
-		consoleDock_->setVisible(visibilities_.showOutput_);
-	}
-	else {
-		windowsMenu_.removeAction(showOutputAction_);
-		consoleDock_->hide();
-	}
-
-    if (supportedWindows & TabDocument::CONTEXT_HELP_WINDOW) {
-        windowsMenu_.addAction(showContextHelpAction_);
-        contextHelpDock_->setVisible(visibilities_.showContextHelp_);
-    }
-    else {
-        windowsMenu_.removeAction(showContextHelpAction_);
-        contextHelpDock_->hide();
-    }
-
-	if (supportedWindows & TabDocument::PREVIEWWINDOW) {
-		windowsMenu_.addAction(showPreviewAction_);
-		previewDock_->setVisible(visibilities_.showPreview_);
-	}
-	else {
-		windowsMenu_.removeAction(showPreviewAction_);
-		previewDock_->hide();
-	}
-
-	if (supportedWindows & TabDocument::CONFIGURATIONWINDOW) {
-		windowsMenu_.addAction(showConfigurationAction_);
-		configurationDock_->setVisible(visibilities_.showConfiguration_);
-	}
-	else {
-		windowsMenu_.removeAction(showConfigurationAction_);
-		configurationDock_->hide();
-	}
-
-    if (supportedWindows & TabDocument::SYSTEM_DETAILS_WINDOW) {
-        windowsMenu_.addAction(showSystemDetailsAction_);
-        systemDetailsDock_->setVisible(visibilities_.showSystemDetails_);
-    }
-    else {
-        windowsMenu_.removeAction(showSystemDetailsAction_);
-        systemDetailsDock_->hide();
-    }
-
-	if (supportedWindows & TabDocument::CONNECTIONWINDOW) {
-		windowsMenu_.addAction(showConnectionAction_);
-		connectionDock_->setVisible(visibilities_.showConnection_);
-	}
-	else {
-		windowsMenu_.removeAction(showConnectionAction_);
-		connectionDock_->hide();
-	}
-
-	if (supportedWindows & TabDocument::INTERFACEWINDOW) {
-		windowsMenu_.addAction(showInterfaceAction_);
-		interfaceDock_->setVisible(visibilities_.showInterface_);
-	}
-	else {
-		windowsMenu_.removeAction(showInterfaceAction_);
-		interfaceDock_->hide();
-	}
-
-	if (supportedWindows & TabDocument::INSTANCEWINDOW) {
-		windowsMenu_.addAction(showInstanceAction_);
-		instanceDock_->setVisible(visibilities_.showInstance_);
-	}
-	else {
-		windowsMenu_.removeAction(showInstanceAction_);
-		instanceDock_->hide();
-	}
-
-    if (supportedWindows & TabDocument::ADHOC_WINDOW) {
-        windowsMenu_.addAction(showAdHocAction_);
-        adHocDock_->setVisible(visibilities_.showAdHocVisibility);
-    }
-    else {
-        windowsMenu_.removeAction(showAdHocAction_);
-        adHocDock_->hide();
-    }
-
-    if (supportedWindows & TabDocument::ADDRESS_WINDOW) {
-        windowsMenu_.addAction(showAddressAction_);
-        addressDock_->setVisible(visibilities_.showAddress);
-    }
-    else {
-        windowsMenu_.removeAction(showAddressAction_);
-        addressDock_->hide();
-    }
-}
-
-void MainWindow::hideEvent( QHideEvent* event ) {
-	// Action to show/hide the output window.
-	disconnect(showOutputAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onOutputAction(bool)));
-	disconnect(consoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showOutputAction_, SLOT(setChecked(bool)));
-
-    // Action to show/hide the context help window.
-    disconnect(showContextHelpAction_, SIGNAL(toggled(bool)),
-               this, SLOT(onContextHelpAction(bool)));
-    disconnect(contextHelpDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-               showContextHelpAction_, SLOT(setChecked(bool)));
-
-	// Action to show/hide the preview box.
-	disconnect(showPreviewAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onPreviewAction(bool)));
-	disconnect(previewDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showPreviewAction_, SLOT(setChecked(bool)));
-
-	// Action to show/hide the library window.
-	disconnect(showLibraryAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onLibraryAction(bool)));
-	disconnect(libraryDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showLibraryAction_, SLOT(setChecked(bool))); 		
-
-	// Action to show/hide the configuration window.
-	disconnect(showConfigurationAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onConfigurationAction(bool)));
-	disconnect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showConfigurationAction_, SLOT(setChecked(bool)));
-
-    // Action to show/hide the system details window.
-    disconnect(showSystemDetailsAction_, SIGNAL(toggled(bool)),
-        this, SLOT(onSystemDetailsAction(bool)));
-    disconnect(systemDetailsDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-               showSystemDetailsAction_, SLOT(setChecked(bool)));
-
-	// Action to show/hide the connection editor.
-	disconnect(showConnectionAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onConnectionAction(bool)));
-	disconnect(connectionDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showConnectionAction_, SLOT(setChecked(bool)));
-
-	// Action to show/hide the interface editor.
-	disconnect(showInterfaceAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onInterfaceAction(bool)));
-	disconnect(interfaceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showInterfaceAction_, SLOT(setChecked(bool)));
-
-	// Action to show/hide the instance editor.
-	disconnect(showInstanceAction_, SIGNAL(toggled(bool)),
-		       this, SLOT(onInstanceAction(bool)));
-	disconnect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		       showInstanceAction_, SLOT(setChecked(bool)));
-
-    // Action to show/hide the instance editor.
-    disconnect(showAdHocAction_, SIGNAL(toggled(bool)), this, SLOT(onAdHocAction(bool)));
-    disconnect(adHocDock_->toggleViewAction(), SIGNAL(toggled(bool)), showAdHocAction_, SLOT(setChecked(bool)));
-
-    // Action to show/hide the address editor.
-    disconnect(showAddressAction_, SIGNAL(toggled(bool)), this, SLOT(onAddressAction(bool)));
-    disconnect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)), showAddressAction_, SLOT(setChecked(bool)));
-
+    disconnectVisibilityControls();
 	QMainWindow::hideEvent(event);
 }
 
-void MainWindow::showEvent( QShowEvent* event ) {
-
-	// Action to show/hide the output window.
-	connect(showOutputAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onOutputAction(bool)), Qt::UniqueConnection);
-	connect(consoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showOutputAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-
-    // Action to show/hide the context help window.
-    connect(showContextHelpAction_, SIGNAL(toggled(bool)),
-        this, SLOT(onContextHelpAction(bool)), Qt::UniqueConnection);
-    connect(contextHelpDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-            showContextHelpAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-
-	// Action to show/hide the preview box.
-	connect(showPreviewAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onPreviewAction(bool)), Qt::UniqueConnection);
-	connect(previewDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showPreviewAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-
-	// Action to show/hide the library window.
-	connect(showLibraryAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onLibraryAction(bool)), Qt::UniqueConnection);
-	connect(libraryDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showLibraryAction_, SLOT(setChecked(bool)), Qt::UniqueConnection); 		
-
-	// Action to show/hide the configuration window.
-	connect(showConfigurationAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onConfigurationAction(bool)), Qt::UniqueConnection);
-	connect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showConfigurationAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-
-    // Action to show/hide the system detail window.
-    connect(showSystemDetailsAction_, SIGNAL(toggled(bool)),
-        this, SLOT(onSystemDetailsAction(bool)), Qt::UniqueConnection);
-    connect(systemDetailsDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-            showSystemDetailsAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-
-	// Action to show/hide the connection editor.
-	connect(showConnectionAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onConnectionAction(bool)), Qt::UniqueConnection);
-	connect(connectionDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showConnectionAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-
-	// Action to show/hide the interface editor.
-	connect(showInterfaceAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onInterfaceAction(bool)), Qt::UniqueConnection);
-	connect(interfaceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showInterfaceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-
-	// Action to show/hide the instance editor.
-	connect(showInstanceAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onInstanceAction(bool)), Qt::UniqueConnection);
-	connect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showInstanceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-
-    // Action to show/hide the ad-hoc visibility editor.
-    connect(showAdHocAction_, SIGNAL(toggled(bool)), this, SLOT(onAdHocAction(bool)), Qt::UniqueConnection);
-    connect(adHocDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-            showAdHocAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-
-    // Action to show/hide the address editor.
-    connect(showAddressAction_, SIGNAL(toggled(bool)), this, SLOT(onAddressAction(bool)), Qt::UniqueConnection);
-    connect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-            showAddressAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-
+void MainWindow::showEvent( QShowEvent* event ) 
+{
+    connectVisibilityControls();
 	QMainWindow::showEvent(event);
 }
 
@@ -4358,7 +4260,7 @@ void MainWindow::openWorkspaceMenu()
 }
 
 //-----------------------------------------------------------------------------
-// Function: onWorkspaceChanged()
+// Function: MainWindow::onWorkspaceChanged()
 //-----------------------------------------------------------------------------
 void MainWindow::onWorkspaceChanged(QAction* action)
 {
@@ -4419,47 +4321,71 @@ void MainWindow::onDeleteWorkspace()
     }
 }
 
-//-----------------------------------------------------------------------------
-// Function: updateWorkspaceMenu()
-//-----------------------------------------------------------------------------
-void MainWindow::updateWorkspaceMenu()
+void MainWindow::onOutputAction( bool show ) {
+    consoleDock_->setVisible(show);
+    setWindowVisibilityForDefaultOrSupportedWindow(TabDocument::OUTPUTWINDOW, show);
+}
+
+void MainWindow::onContextHelpAction( bool show )
 {
-    // Create the workspace menu based on the settings.
-    workspaceMenu_.clear();
+    contextHelpDock_->setVisible(show);
+    setWindowVisibilityForDefaultOrSupportedWindow(TabDocument::CONTEXT_HELP_WINDOW, show);
+}
 
-    QSettings settings;
-    settings.beginGroup("Workspaces");
+void MainWindow::onPreviewAction( bool show ) {
+    previewDock_->setVisible(show);
+    setWindowVisibilityForDefaultOrSupportedWindow(TabDocument::PREVIEWWINDOW, show);
+}
 
-    QStringList workspaceIDs = settings.childGroups();
-    QActionGroup* workspaceGroup = new QActionGroup(this);
-    workspaceGroup->setExclusive(true);
+void MainWindow::onLibraryAction( bool show ) {
+    libraryDock_->setVisible(show);
+    setWindowVisibilityForDefaultOrSupportedWindow(TabDocument::LIBRARYWINDOW, show);
+}
 
-    foreach (QString const& workspaceID, workspaceIDs)
-    {
-        QString workspaceName = workspaceID;
+void MainWindow::onConfigurationAction( bool show ) {
+    configurationDock_->setVisible(show);
+    setWindowVisibilityForSupportedWindow(TabDocument::CONFIGURATIONWINDOW, show);
+}
 
-        QAction* action = new QAction(workspaceName, this);
-        action->setCheckable(true);
-        action->setChecked(curWorkspaceName_ == workspaceName);
+void MainWindow::onSystemDetailsAction( bool show )
+{
+    systemDetailsDock_->setVisible(show);
+    setWindowVisibilityForSupportedWindow(TabDocument::SYSTEM_DETAILS_WINDOW, show);
+}
 
-        workspaceGroup->addAction(action);
-        workspaceMenu_.addAction(action);
-    }
+void MainWindow::onConnectionAction( bool show ) {
+    connectionDock_->setVisible(show);
+    setWindowVisibilityForSupportedWindow(TabDocument::CONNECTIONWINDOW, show);
+}
 
-    settings.endGroup();
+void MainWindow::onInterfaceAction( bool show ) {
+    interfaceDock_->setVisible(show);
+    setWindowVisibilityForSupportedWindow(TabDocument::INTERFACEWINDOW, show);
+}
 
-    connect(workspaceGroup, SIGNAL(triggered(QAction *)), this, SLOT(onWorkspaceChanged(QAction *)));
+void MainWindow::onAdHocAction( bool show ) {
+    adHocDock_->setVisible(show);
+    setWindowVisibilityForSupportedWindow(TabDocument::ADHOC_WINDOW, show);
+}
 
-    // Add actions for creating and deleting new workspaces.
-    QAction* addAction = new QAction(tr("New Workspace..."), this);
-    connect(addAction, SIGNAL(triggered()), this, SLOT(onNewWorkspace()), Qt::UniqueConnection);
+//-----------------------------------------------------------------------------
+// Function: MainWindow::onAddressAction()
+//-----------------------------------------------------------------------------
+void MainWindow::onAddressAction(bool show)
+{
+    addressDock_->setVisible(show);
+    setWindowVisibilityForSupportedWindow(TabDocument::ADDRESS_WINDOW, show);
+}
 
-    QAction* deleteAction = new QAction(tr("Delete Workspace..."), this);
-    connect(deleteAction, SIGNAL(triggered()), this, SLOT(onDeleteWorkspace()), Qt::UniqueConnection);
+void MainWindow::onInstanceAction( bool show ) {
+    instanceDock_->setVisible(show);
+    setWindowVisibilityForSupportedWindow(TabDocument::INSTANCEWINDOW, show);
+}
 
-    workspaceMenu_.addSeparator();
-    workspaceMenu_.addAction(addAction);
-    workspaceMenu_.addAction(deleteAction);
+void MainWindow::onChatboxAction(bool show)
+{
+    chatboxDock_->setVisible(show);
+    setWindowVisibilityForSupportedWindow(TabDocument::CHATBOX_WINDOW, show);
 }
 
 //-----------------------------------------------------------------------------
@@ -4708,18 +4634,4 @@ void MainWindow::updateGeneratorPluginActions()
     
     // Recreate the plugin actions.
     createGeneratorPluginActions();
-}
-
-MainWindow::WindowVisibility::WindowVisibility():
-showOutput_(true),
-showContextHelp_(true),
-showPreview_(true),
-showLibrary_(true),
-showConfiguration_(true),
-showConnection_(true),
-showInterface_(true),
-showInstance_(true),
-showAdHocVisibility(true),
-showAddress(false)
-{
 }

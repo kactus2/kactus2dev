@@ -56,6 +56,7 @@ public:
         SYSTEM_DETAILS_WINDOW   = 0x100,
         CONTEXT_HELP_WINDOW     = 0x200,
         ADDRESS_WINDOW          = 0x400,
+        CHATBOX_WINDOW          = 0x800,
 	};
 
     /*!

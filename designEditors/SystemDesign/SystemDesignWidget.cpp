@@ -49,7 +49,7 @@ SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, MainWi
     : DesignWidget(lh, parent),
       onlySW_(onlySW)
 {
-    supportedWindows_ |= INSTANCEWINDOW | INTERFACEWINDOW | CONNECTIONWINDOW | CONFIGURATIONWINDOW;
+    supportedWindows_ |= INSTANCEWINDOW | INTERFACEWINDOW | CONNECTIONWINDOW | CONFIGURATIONWINDOW | CHATBOX_WINDOW;
 
     if (!onlySW_)
     {
