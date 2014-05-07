@@ -46,7 +46,7 @@ visualizerSlot_(&editorVisualizerSplitter_) {
 	editorSlot_.setObjectName(tr("EditorSlot"));
 	visualizerSlot_.setObjectName(tr("VisualizerSlot"));
 
-    supportedWindows_ |= CHATBOX_WINDOW;
+    supportedWindows_ |= NOTES_WINDOW;
 
 	Q_ASSERT(component_);
 	Q_ASSERT(libHandler_);

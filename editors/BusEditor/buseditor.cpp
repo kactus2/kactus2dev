@@ -33,8 +33,7 @@ absDef_(absDef),
 busDefGroup_(this),
 absDefGroup_(libHandler ,this) {
 
-	//Q_ASSERT_X(busDef_, "BusEditor constructor",
-	//	"Null Bus Definition pointer given as parameter");
+    supportedWindows_ |= TabDocument::NOTES_WINDOW;
 
 	// if abstraction definition is being edited
 	if (absDef_) {

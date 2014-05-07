@@ -57,20 +57,19 @@
 #include <editors/ApiDefinitionEditor/ApiDefinitionEditor.h>
 #include <editors/BusEditor/buseditor.h>
 #include <editors/ComDefinitionEditor/ComDefinitionEditor.h>
+#include <editors/ComponentEditor/componenteditor.h>
+#include <editors/CSourceEditor/CSourceWidget.h>
+#include <editors/CSourceEditor/CSourceContentMatcher.h>
+#include <editors/NotesEditor/NotesEditor.h>
 
 #include <Help/HelpSystem/ContextHelpBrowser.h>
 #include <Help/HelpSystem/HelpWindow.h>
-
-#include <editors/ComponentEditor/componenteditor.h>
 
 #include <kactusGenerators/DocumentGenerator/documentgenerator.h>
 
 #include <library/LibraryManager/libraryhandler.h>
 #include <library/LibraryManager/vlnv.h>
 #include <library/LibraryManager/LibraryUtils.h>
-
-#include <editors/CSourceEditor/CSourceWidget.h>
-#include <editors/CSourceEditor/CSourceContentMatcher.h>
 
 #include <IPXACTmodels/view.h>
 #include <IPXACTmodels/component.h>
@@ -110,7 +109,6 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QTextStream>
-#include <QTextEdit>
 #include <QUrl>
 #include <QDesktopServices>
 #include <QCursor>
@@ -148,7 +146,8 @@ MainWindow::MainWindow(QWidget *parent)
       interfaceDock_(0),
       connectionEditor_(0),
       connectionDock_(0),
-      chatboxDock_(0),
+      notesDock_(0),
+      notesEditor_(0),
       ribbon_(0),
       actNew_(0),
       actSave_(0),
@@ -216,7 +215,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Setup windows.
     setupMessageConsole();
     setupContextHelp();
-    setupChatBox();
+    setupNotesEditor();
 	setupDrawBoard();
     setupLibraryDock();
     setupInstanceEditor();
@@ -423,9 +422,9 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
     visibilities_.insert(TabDocument::PREVIEWWINDOW, previewVisible);
     previewDock_->toggleViewAction()->setChecked(previewVisible);
 
-    const bool chatboxVisible = settings.value("ChatboxVisibility", true).toBool();
-    visibilities_.insert(TabDocument::CHATBOX_WINDOW, chatboxVisible);
-    chatboxDock_->toggleViewAction()->setChecked(chatboxVisible);
+    const bool notesVisible = settings.value("NotesVisibility", true).toBool();
+    visibilities_.insert(TabDocument::NOTES_WINDOW, notesVisible);
+    notesDock_->toggleViewAction()->setChecked(notesVisible);
 
     updateWindows();
     
@@ -490,7 +489,7 @@ void MainWindow::saveWorkspace(QString const& workspaceName)
     settings.setValue("OutputVisibility", visibilities_.value(TabDocument::OUTPUTWINDOW));
     settings.setValue("ContextHelpVisibility", visibilities_.value(TabDocument::CONTEXT_HELP_WINDOW));
     settings.setValue("PreviewVisibility", visibilities_.value(TabDocument::PREVIEWWINDOW));
-    settings.setValue("ChatboxVisibility", visibilities_.value(TabDocument::CHATBOX_WINDOW));
+    settings.setValue("NotesVisibility", visibilities_.value(TabDocument::NOTES_WINDOW));
 
     // Save filters.
     settings.beginGroup("LibraryFilters");
@@ -823,7 +822,7 @@ void MainWindow::setupMenus()
     windowsMenu_.addAction(systemDetailsDock_->toggleViewAction());
     windowsMenu_.addAction(interfaceDock_->toggleViewAction());
     windowsMenu_.addAction(instanceDock_->toggleViewAction());
-    windowsMenu_.addAction(chatboxDock_->toggleViewAction()); 
+    windowsMenu_.addAction(notesDock_->toggleViewAction()); 
     windowsMenu_.addAction(consoleDock_->toggleViewAction());
     windowsMenu_.addAction(previewDock_->toggleViewAction());
 }
@@ -990,18 +989,21 @@ void MainWindow::setupContextHelp()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainWindow::setupChatBox()
+// Function: MainWindow::setupNotesEditor()
 //-----------------------------------------------------------------------------
-void MainWindow::setupChatBox()
+void MainWindow::setupNotesEditor()
 {
-    chatboxDock_ = new QDockWidget(tr("Notes"), this);
-    chatboxDock_->setObjectName(tr("Notes"));
-    chatboxDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
-    chatboxDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    notesDock_ = new QDockWidget(tr("Notes"), this);
+    notesDock_->setObjectName(tr("Notes"));
+    notesDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
+    notesDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-    QTextEdit* chatBox = new QTextEdit(chatboxDock_);
-    chatboxDock_->setWidget(chatBox);
-    addDockWidget(Qt::BottomDockWidgetArea, chatboxDock_);
+    notesEditor_ = new NotesStack(notesDock_);
+    notesDock_->setWidget(notesEditor_);
+    addDockWidget(Qt::BottomDockWidgetArea, notesDock_);
+
+    connect(this, SIGNAL(helpUrlRequested(QString const&)),
+        notesEditor_, SLOT(onContextChanged(QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -2005,6 +2007,8 @@ void MainWindow::onTabChanged(int index)
 	// update the menu 
 	if (doc) {
 		updateWindows();
+        VLNV vlnv = doc->getIdentifyingVLNV();
+        notesEditor_->onVLNVChanged(vlnv, libraryHandler_->getPath(vlnv));
 	}
 
 	// if the new tab is designWidget
@@ -3590,7 +3594,7 @@ void MainWindow::updateWindows()
     updateWindowAndControlVisibility(TabDocument::INSTANCEWINDOW, instanceDock_);
     updateWindowAndControlVisibility(TabDocument::ADHOC_WINDOW, adHocDock_);
     updateWindowAndControlVisibility(TabDocument::ADDRESS_WINDOW, addressDock_);   
-    updateWindowAndControlVisibility(TabDocument::CHATBOX_WINDOW, chatboxDock_);
+    updateWindowAndControlVisibility(TabDocument::NOTES_WINDOW, notesDock_);
 }
 
 //-----------------------------------------------------------------------------
@@ -3692,9 +3696,9 @@ void MainWindow::connectVisibilityControls()
     connect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
         this, SLOT(onAddressAction(bool)), Qt::UniqueConnection);
 
-    // Action to show/hide the chatbox.
-    connect(chatboxDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
-        this, SLOT(onChatboxAction(bool)), Qt::UniqueConnection);
+    // Action to show/hide the notes.
+    connect(notesDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
+        this, SLOT(onNotesEditorAction(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -3726,7 +3730,7 @@ void MainWindow::disconnectVisibilityControls()
 
     disconnect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onAddressAction(bool)));
    
-    disconnect(chatboxDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onChatboxAction(bool)));
+    disconnect(notesDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onNotesEditorAction(bool)));
 }
 
 //-----------------------------------------------------------------------------
@@ -4265,11 +4269,11 @@ void MainWindow::onInstanceAction( bool show ) {
 }
 
 //-----------------------------------------------------------------------------
-// Function: mainwindow::onChatboxAction()
+// Function: mainwindow::onNotesEditorAction()
 //-----------------------------------------------------------------------------
-void MainWindow::onChatboxAction(bool show)
+void MainWindow::onNotesEditorAction(bool show)
 {
-    setWindowVisibilityForSupportedWindow(TabDocument::CHATBOX_WINDOW, show);
+    setWindowVisibilityForSupportedWindow(TabDocument::NOTES_WINDOW, show);
 }
 
 //-----------------------------------------------------------------------------
@@ -4409,6 +4413,7 @@ void MainWindow::registerDocument(TabDocument* doc, bool forceUnlocked)
 
     connect(doc, SIGNAL(helpUrlRequested(QString const&)),
             this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
+
 
     if (doc->getEditProvider() != 0)
     {
