@@ -38,6 +38,8 @@ public:
 	*/
 	~NotesEditor();
 
+    void setPreviewHTML(QString const& html);
+
 private:
 	// Disable copying.
 	NotesEditor(NotesEditor const& rhs);

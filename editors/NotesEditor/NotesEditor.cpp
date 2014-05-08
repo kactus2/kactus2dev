@@ -38,6 +38,14 @@ NotesEditor::~NotesEditor()
 }
 
 //-----------------------------------------------------------------------------
+// Function: NotesEditor::setPreviewHTML()
+//-----------------------------------------------------------------------------
+void NotesEditor::setPreviewHTML(QString const& html)
+{
+    preview_.setHtml(html);
+}
+
+//-----------------------------------------------------------------------------
 // Function: NotesEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void NotesEditor::setupLayout()

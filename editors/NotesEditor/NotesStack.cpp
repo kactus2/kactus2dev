@@ -23,11 +23,9 @@
 NotesStack::NotesStack(QWidget *parent)
     : QStackedWidget(parent),
     context_(),
-    path_(),
     vlnv_(),
-    editors_(),
-    editorsForVlnv_(),
-    vlnvPaths_()
+    vlnvPaths_(),
+    vlnvEditors_()
 {
     
 }
@@ -40,6 +38,7 @@ NotesStack::~NotesStack()
 
 }
 
+
 //-----------------------------------------------------------------------------
 // Function: NotesStack::onVLNVChanged()
 //-----------------------------------------------------------------------------
@@ -48,7 +47,7 @@ void NotesStack::onVLNVChanged(VLNV const& vlnv, QString const& path)
     vlnv_ = vlnv;
     saveVLNVpath(vlnv, path);
 
-    changeActiveEditor();
+    changeActiveEditor(); 
 }
 
 //-----------------------------------------------------------------------------
@@ -56,12 +55,20 @@ void NotesStack::onVLNVChanged(VLNV const& vlnv, QString const& path)
 //-----------------------------------------------------------------------------
 void NotesStack::onContextChanged(QString const& context)
 {
-    context_ = context;
+    context_ = formatContext(context);
 
     if (vlnv_.isValid())
     {
         changeActiveEditor();
     }    
+}
+
+//-----------------------------------------------------------------------------
+// Function: NotesStack::onVLNVClosed()
+//-----------------------------------------------------------------------------
+void NotesStack::onVLNVClosed(VLNV const& vlnv)
+{
+    closeEditorsForVLNV(vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -96,8 +103,6 @@ QString NotesStack::formatPathForVlnv(QString const& vlnvPath, VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void NotesStack::changeActiveEditor()
 {
-    adjustPath();
-
     if (noOpenEditor())
     {
         createEditor();
@@ -107,19 +112,11 @@ void NotesStack::changeActiveEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: NotesStack::adjustPath()
-//-----------------------------------------------------------------------------
-void NotesStack::adjustPath()
-{
-    path_ = vlnvPaths_.value(vlnv_) + "/" + context_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: NotesStack::noOpenEditor()
 //-----------------------------------------------------------------------------
 bool NotesStack::noOpenEditor()
 {
-    return !editors_.contains(path_);
+    return !vlnvEditors_.value(vlnv_).contains(context_);
 }
 
 //-----------------------------------------------------------------------------
@@ -127,11 +124,10 @@ bool NotesStack::noOpenEditor()
 //-----------------------------------------------------------------------------
 void NotesStack::createEditor()
 {
-    NotesEditor* page = new NotesEditor(this);
+    NotesEditor* page = new NotesEditor(this);    
     int index = addWidget(page);
 
-    Q_ASSERT(!editors_.contains(path_));
-    editors_.append(path_);  
+    Q_ASSERT(!vlnvEditors_.value(vlnv_).contains(context_));
     
     addEditorForVlnv(index);
 }
@@ -141,12 +137,17 @@ void NotesStack::createEditor()
 //-----------------------------------------------------------------------------
 void NotesStack::addEditorForVlnv(int stackIndex)
 {
-    if (!editorsForVlnv_.contains(vlnv_))
+
+    if (!vlnvEditors_.contains(vlnv_))
     {
-        editorsForVlnv_.insert(vlnv_, QList<int>());
+        vlnvEditors_.insert(vlnv_, QMap<QString, QWidget*>());
     }
 
-    editorsForVlnv_[vlnv_].append(stackIndex);
+    if (!vlnvEditors_[vlnv_].contains(context_))
+    {
+        vlnvEditors_[vlnv_].insert(context_, widget(stackIndex));
+    }
+
 }
 
 //-----------------------------------------------------------------------------
@@ -154,5 +155,34 @@ void NotesStack::addEditorForVlnv(int stackIndex)
 //-----------------------------------------------------------------------------
 void NotesStack::showEditor()
 {
-    setCurrentIndex(editors_.indexOf(path_));
+    setCurrentWidget(vlnvEditors_.value(vlnv_).value(context_));
+}
+
+//-----------------------------------------------------------------------------
+// Function: NotesStack::closeEditorsForVLNV()
+//-----------------------------------------------------------------------------
+void NotesStack::closeEditorsForVLNV(VLNV const& vlnv)
+{
+    foreach(QWidget* vlnvEditor, vlnvEditors_.value(vlnv).values())
+    {
+        removeWidget(vlnvEditor);
+        delete vlnvEditor;
+    }
+
+    vlnvEditors_.remove(vlnv);
+
+    vlnvPaths_.remove(vlnv);
+}
+
+//-----------------------------------------------------------------------------
+// Function: NotesStack::formatContext()
+//-----------------------------------------------------------------------------
+QString NotesStack::formatContext(QString const& context)
+{
+    QString formatted = context;
+    QRegExp path = QRegExp("(\\w*/)*");
+
+    formatted.remove(path);
+    
+    return formatted;
 }

@@ -422,9 +422,9 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
     visibilities_.insert(TabDocument::PREVIEWWINDOW, previewVisible);
     previewDock_->toggleViewAction()->setChecked(previewVisible);
 
-    const bool notesVisible = settings.value("NotesVisibility", true).toBool();
+    /*const bool notesVisible = settings.value("NotesVisibility", true).toBool();
     visibilities_.insert(TabDocument::NOTES_WINDOW, notesVisible);
-    notesDock_->toggleViewAction()->setChecked(notesVisible);
+    notesDock_->toggleViewAction()->setChecked(notesVisible);*/
 
     updateWindows();
     
@@ -814,17 +814,18 @@ void MainWindow::setupMenus()
 
 	// the menu to display the dock widgets
     windowsMenu_.addAction(addressDock_->toggleViewAction());	
-    windowsMenu_.addAction(adHocDock_->toggleViewAction());	    
-    windowsMenu_.addAction(configurationDock_->toggleViewAction());
+    windowsMenu_.addAction(adHocDock_->toggleViewAction());	        
     windowsMenu_.addAction(connectionDock_->toggleViewAction());
-    windowsMenu_.addAction(contextHelpDock_->toggleViewAction());
-    windowsMenu_.addAction(libraryDock_->toggleViewAction());       
-    windowsMenu_.addAction(systemDetailsDock_->toggleViewAction());
-    windowsMenu_.addAction(interfaceDock_->toggleViewAction());
+    windowsMenu_.addAction(contextHelpDock_->toggleViewAction());    
     windowsMenu_.addAction(instanceDock_->toggleViewAction());
-    windowsMenu_.addAction(notesDock_->toggleViewAction()); 
-    windowsMenu_.addAction(consoleDock_->toggleViewAction());
     windowsMenu_.addAction(previewDock_->toggleViewAction());
+    windowsMenu_.addAction(configurationDock_->toggleViewAction());
+    windowsMenu_.addAction(systemDetailsDock_->toggleViewAction());
+    windowsMenu_.addAction(libraryDock_->toggleViewAction());       
+    windowsMenu_.addAction(interfaceDock_->toggleViewAction());
+    //windowsMenu_.addAction(notesDock_->toggleViewAction()); 
+    windowsMenu_.addAction(consoleDock_->toggleViewAction());
+    
 }
 
 void MainWindow::setupDrawBoard() {
@@ -993,7 +994,7 @@ void MainWindow::setupContextHelp()
 //-----------------------------------------------------------------------------
 void MainWindow::setupNotesEditor()
 {
-    notesDock_ = new QDockWidget(tr("Notes"), this);
+    /*notesDock_ = new QDockWidget(tr("Notes"), this);
     notesDock_->setObjectName(tr("Notes"));
     notesDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
     notesDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
@@ -1003,7 +1004,7 @@ void MainWindow::setupNotesEditor()
     addDockWidget(Qt::BottomDockWidgetArea, notesDock_);
 
     connect(this, SIGNAL(helpUrlRequested(QString const&)),
-        notesEditor_, SLOT(onContextChanged(QString const&)), Qt::UniqueConnection);
+        notesEditor_, SLOT(onContextChanged(QString const&)), Qt::UniqueConnection);*/
 }
 
 //-----------------------------------------------------------------------------
@@ -1985,6 +1986,9 @@ void MainWindow::onTabCloseRequested( int index )
 		}
 	}
 
+    /*VLNV vlnv = doc->getIdentifyingVLNV();
+    notesEditor_->onVLNVClosed(vlnv);*/
+
 	// remove the widget from the tabs
 	designTabs_->removeTab(index);
 
@@ -2007,8 +2011,8 @@ void MainWindow::onTabChanged(int index)
 	// update the menu 
 	if (doc) {
 		updateWindows();
-        VLNV vlnv = doc->getIdentifyingVLNV();
-        notesEditor_->onVLNVChanged(vlnv, libraryHandler_->getPath(vlnv));
+        /*VLNV vlnv = doc->getIdentifyingVLNV();
+        notesEditor_->onVLNVChanged(vlnv, libraryHandler_->getPath(vlnv));*/
 	}
 
 	// if the new tab is designWidget
@@ -3594,7 +3598,7 @@ void MainWindow::updateWindows()
     updateWindowAndControlVisibility(TabDocument::INSTANCEWINDOW, instanceDock_);
     updateWindowAndControlVisibility(TabDocument::ADHOC_WINDOW, adHocDock_);
     updateWindowAndControlVisibility(TabDocument::ADDRESS_WINDOW, addressDock_);   
-    updateWindowAndControlVisibility(TabDocument::NOTES_WINDOW, notesDock_);
+    //updateWindowAndControlVisibility(TabDocument::NOTES_WINDOW, notesDock_);
 }
 
 //-----------------------------------------------------------------------------
@@ -3697,8 +3701,8 @@ void MainWindow::connectVisibilityControls()
         this, SLOT(onAddressAction(bool)), Qt::UniqueConnection);
 
     // Action to show/hide the notes.
-    connect(notesDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
-        this, SLOT(onNotesEditorAction(bool)), Qt::UniqueConnection);
+    /*connect(notesDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
+        this, SLOT(onNotesEditorAction(bool)), Qt::UniqueConnection);*/
 }
 
 //-----------------------------------------------------------------------------
@@ -3730,7 +3734,7 @@ void MainWindow::disconnectVisibilityControls()
 
     disconnect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onAddressAction(bool)));
    
-    disconnect(notesDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onNotesEditorAction(bool)));
+    //disconnect(notesDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onNotesEditorAction(bool)));
 }
 
 //-----------------------------------------------------------------------------

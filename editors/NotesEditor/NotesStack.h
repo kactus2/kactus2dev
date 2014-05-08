@@ -40,11 +40,15 @@ public:
 
 public slots:
 
+
+
     //! Called when the active VLNV is changed.
     void onVLNVChanged(VLNV const& vlnv, QString const& path);
 
     //! Called when the active context is changed.
     void onContextChanged(QString const& context);
+
+    void onVLNVClosed(VLNV const& vlnv);
 
 private:
 	// Disable copying.
@@ -77,11 +81,6 @@ private:
     void changeActiveEditor();
 
     /*!
-     *  Changes the currently active path according to the path of current VLNV and context.
-     */
-    void adjustPath();
-
-    /*!
      *  Checks if the currently active VLNV and context has not an editor in the stack.
      *
      *      @return True, if no editor is in the stack, otherwise false.
@@ -103,6 +102,8 @@ private:
      */
     void showEditor();
 
+    void closeEditorsForVLNV(VLNV const& vlnv);
+    QString formatContext(QString const& context);
     //-----------------------------------------------------------------------------
 	// Data.
 	//-----------------------------------------------------------------------------
@@ -110,19 +111,14 @@ private:
     //! The current context.
     QString context_;
 
-    //! The current active path.
-    QString path_;
-
     //! The current active VLNV.
     VLNV vlnv_;
 
-    //! The paths of the editors.
-    QList<QString> editors_;
-
-    //! The indexes of the editors for VLNVs.
-    QMap<VLNV, QList<int> > editorsForVlnv_;
-
     //! The paths for VLNVs.
     QMap<VLNV, QString> vlnvPaths_;
+
+    //! Mapping of VLNV, context and editor.
+    QMap<VLNV, QMap<QString, QWidget*> > vlnvEditors_;
+
 };
 #endif // NotesStack_H
