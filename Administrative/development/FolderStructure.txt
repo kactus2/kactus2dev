@@ -1,0 +1,27 @@
+This document describes the high level directory organization of Kactus2.
+
+The root directory (trunk) is organized as follows:
+Administrative			Documentation, guidelines for development and release files.
+common					Files meant for application-wide use.
+debug*					Generated files for 32-bit debug build.
+designEditors			Editors for designs e.g. HW design.
+editors					Editors for manipulating e.g. Component Editor.
+executable				Binaries and libraries for 32-bit build.
+GeneratedFiles*			Generated files for Qt MOC objects.
+Help					Help system and help pages.
+ipch*					Visual Studio generated iPCH headers.
+IPXACTmodels			Implementation of IP-XACT components.
+kactusGenerators		Kactus2 specific generators.
+library					Component library.
+mainwindow				The application main window.
+Plugins					Plugin system and Kactus2 default plugins.
+release*				Generated files for 32-bit release build.
+settings				Application-wide settings.
+wizards					Assistant wizards e.g. for component creation.
+x64*					Generated files for 64-bit build.
+
+Folders marked with an asterisk (*) are used mostly for build and can be deleted by user
+if not needed.
+
+The directories may contain subdirectories named common for sharing files within the directory. 
+For example designEditors/common contains editors used by HW, SW and System design.
