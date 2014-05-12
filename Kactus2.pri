@@ -615,7 +615,9 @@ HEADERS += ./resource.h \
     ./IPXACTmodels/writevalueconstraint.h \
     ./IPXACTmodels/XmlUtils.h \
     ./editors/NotesEditor/NotesEditor.h \
-    ./editors/NotesEditor/NotesStack.h
+    ./editors/NotesEditor/NotesStack.h \
+    ./IPXACTmodels/VendorExtension.h \
+    ./IPXACTmodels/GenericVendorExtension.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
@@ -1197,5 +1199,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXACTmodels/writevalueconstraint.cpp \
     ./IPXACTmodels/XmlUtils.cpp \
     ./editors/NotesEditor/NotesEditor.cpp \
-    ./editors/NotesEditor/NotesStack.cpp
+    ./editors/NotesEditor/NotesStack.cpp \
+    ./IPXACTmodels/GenericVendorExtension.cpp
 RESOURCES += kactus.qrc

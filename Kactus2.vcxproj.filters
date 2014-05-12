@@ -4042,6 +4042,9 @@
     <ClCompile Include="GeneratedFiles\moc_NotesStack.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="IPXACTmodels\GenericVendorExtension.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5441,6 +5444,12 @@
     </CustomBuild>
     <CustomBuild Include="editors\NotesEditor\NotesStack.h">
       <Filter>Header Files\editors\NotesEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXACTmodels\VendorExtension.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXACTmodels\GenericVendorExtension.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
