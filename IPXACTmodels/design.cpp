@@ -492,6 +492,8 @@ void Design::write(QFile& file)
     // Write the top-level component's port ad-hoc visibilities.
     XmlUtils::writeAdHocVisibilities(writer, portAdHocVisibilities_, adHocPortPositions_);
 
+    writeVendorExtensions(writer);
+
 	writer.writeEndElement(); // kactus2:vendorExtensions
 
 	writer.writeEndElement();

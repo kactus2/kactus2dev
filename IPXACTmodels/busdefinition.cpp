@@ -213,8 +213,17 @@ void BusDefinition::write(QFile& file) {
 		writeKactus2Attributes(writer);
 
 		writer.writeEndElement(); // kactus2:extensions
-		writer.writeEndElement(); // spirit:vendorExtensions
-	}
+
+        writeVendorExtensions(writer);
+
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
+    else if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        writeVendorExtensions(writer);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:busDefinition
 	writer.writeEndDocument();

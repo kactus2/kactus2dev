@@ -258,7 +258,12 @@ void GeneratorChain::write(QFile& file) {
 		writer.writeTextElement("spirit:description", description_);
 	}
 
-	// own code here
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        writeVendorExtensions(writer);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:generatorChain
 	writer.writeEndDocument();

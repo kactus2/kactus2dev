@@ -42,6 +42,7 @@
 #include <QFileInfo>
 
 #include <QDebug>
+#include "GenericVendorExtension.h"
 
 //-----------------------------------------------------------------------------
 // Function: Component::Component()
@@ -379,7 +380,8 @@ cpus_(),
 otherClockDrivers_(),
 parameters_(), 
 attributes_(),
-author_() {
+author_()
+{
 
 	LibraryComponent::vlnv_->setType(VLNV::COMPONENT);
 
@@ -440,7 +442,7 @@ cpus_(),
 otherClockDrivers_(),
 parameters_(),
 attributes_(other.attributes_),
-author_(other.getAuthor()) 
+author_(other.author_)
 {
 
 	foreach (QSharedPointer<BusInterface> busif, other.busInterfaces_) {
@@ -754,6 +756,8 @@ Component & Component::operator=( const Component &other ) {
         }
 
         author_ = other.getAuthor();
+
+        vendorExtensions_ = other.vendorExtensions_;
 	}
 	return *this;
 }
@@ -1064,8 +1068,17 @@ void Component::write(QFile& file) {
         }
 
 		writer.writeEndElement(); // kactus2:extensions
+
+        writeVendorExtensions(writer);
+
 		writer.writeEndElement(); // spirit:vendorExtensions
 	}
+    else if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        writeVendorExtensions(writer);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:component
 	writer.writeEndDocument();

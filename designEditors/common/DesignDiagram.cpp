@@ -46,7 +46,8 @@ DesignDiagram::DesignDiagram(LibraryInterface* lh, MainWindow* mainWnd,
       instanceNames_(),
       loading_(false),
       locked_(false),
-	  XMLComments_()
+	  XMLComments_(),
+    vendorExtensions_()
 {
     setSceneRect(0, 0, 100000, 100000);
 
@@ -79,6 +80,8 @@ bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointe
 {
 	// save the XML header from the design
 	XMLComments_ = design->getTopComments();
+
+    vendorExtensions_ = design->getVendorExtensions();
 
     // Clear the edit provider.
     editProvider_.clear();
@@ -418,6 +421,7 @@ DesignWidget* DesignDiagram::getParent()
 QSharedPointer<Design> DesignDiagram::createDesign( VLNV const& vlnv ) const {
 	QSharedPointer<Design> design(new Design(vlnv));
 	design->setTopComments(XMLComments_);
+    design->setVendorExtensions(vendorExtensions_);
 	return design;
 }
 

@@ -78,12 +78,6 @@ attributes_() {
 			}
 		}
 	}
-
-	// if mandatory fields is missing
-// 	if (!busType_.isValid()) {
-// 		throw Parse_error(QObject::tr("Mandatory element spirit:busType "
-// 				"missing in spirit:abstractionDefinition"));
-// 	}
 }
 
 AbstractionDefinition::AbstractionDefinition( const AbstractionDefinition& other ):
@@ -91,10 +85,10 @@ LibraryComponent(other),
 busType_(other.busType_), 
 ports_(),
 extends_(other.extends_),
-attributes_(other.attributes_) {
-
-	foreach (QSharedPointer<PortAbstraction> portAbs, other.ports_) {
-		
+attributes_(other.attributes_) 
+{
+	foreach (QSharedPointer<PortAbstraction> portAbs, other.ports_) 
+    {	
 		if (portAbs) {
 			QSharedPointer<PortAbstraction> copy = QSharedPointer<PortAbstraction>(
 				new PortAbstraction(*portAbs.data()));
@@ -186,6 +180,13 @@ void AbstractionDefinition::write(QFile& file) {
 
 		writer.writeEndElement(); // spirit:ports
 	}
+
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        writeVendorExtensions(writer);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:abstractionDefinition
 	writer.writeEndDocument();

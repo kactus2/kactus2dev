@@ -20,6 +20,8 @@
 #include <QXmlStreamWriter>
 #include <QFile>
 
+class VendorExtension;
+
 /*! \brief LibraryComponent is a base class for the 7 IP-Xact document types
  *
  * This class is meant to be subclassed to create classes that represent models
@@ -224,6 +226,20 @@ public:
 	*/
 	virtual void setTopComments(const QStringList& comments);
 
+    /*!
+     *  Sets the vendor extensions in the library component.
+     *
+     *      @param [in] vendorExtensions   The vendor extensions to set.
+     */
+    void setVendorExtensions(QList<QSharedPointer<VendorExtension> > vendorExtensions);
+
+    /*!
+     *  Gets the vendor extensions.
+     *     
+     *      @return The vendor extensions of the library component.
+     */
+    QList<QSharedPointer<VendorExtension> > getVendorExtensions() const;
+
 protected:
 
 	/*! \brief Write the kactus2 attributes using the writer.
@@ -247,6 +263,14 @@ protected:
 	*/
 	void setXMLNameSpaceAttributes(QMap<QString, QString>& attributes);
 
+
+    /*!
+     *  Writes the component vendor extensions to XML.
+     *
+     *      @param [in] writer   The XML writer used in writing.     
+     */
+    void writeVendorExtensions(QXmlStreamWriter& writer) const;
+
 	/*!
 	 * spirit:versionedIdentifier
 	 * MANDATORY
@@ -264,6 +288,9 @@ protected:
 
 	//! \brief Contains the comment lines from the beginning of the document.
 	QStringList topComments_;
+
+    //! Component vendor extensions.
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 #endif /* LIBRARYCOMPONENT_H_ */

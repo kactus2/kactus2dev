@@ -5,10 +5,12 @@
  */
 
 #include "librarycomponent.h"
-#include <library/LibraryManager/vlnv.h>
-#include <common/KactusAttribute.h>
 
 #include "generaldeclarations.h"
+#include "GenericVendorExtension.h"
+
+#include <library/LibraryManager/vlnv.h>
+#include <common/KactusAttribute.h>
 
 #include <QString>
 #include <QDomDocument>
@@ -26,14 +28,13 @@
 #include <QFile>
 #include <QXmlStreamWriter>
 
-#include <QDebug>
-
 LibraryComponent::LibraryComponent(QDomDocument &doc):
 vlnv_(), 
 description_(),
 kactus2Attributes_(),
-topComments_() {
-
+topComments_(),
+vendorExtensions_()
+{
 	// get the VLNV
 	vlnv_ = QSharedPointer<VLNV>(new VLNV(findVLNV(doc)));
 
@@ -54,6 +55,19 @@ topComments_() {
 				QString("spirit:description")) {
 			description_ = children.at(i).childNodes().item(0).nodeValue();
 		}
+        else if (children.at(i).nodeName() == QString("spirit:vendorExtensions"))
+        {
+            int vendorExtensionCount = children.at(i).childNodes().count();
+            for(int j = 0; j < vendorExtensionCount; j++)
+            {
+                QDomNode extensionNode = children.at(i).childNodes().at(j);
+                if (!extensionNode.nodeName().contains("kactus2:"))
+                {
+                    QSharedPointer<GenericVendorExtension> extension(new GenericVendorExtension(extensionNode));
+                    vendorExtensions_.append(extension);
+                }                
+            }
+        }
 	}
 	return;
 }
@@ -62,8 +76,9 @@ topComments_() {
 LibraryComponent::LibraryComponent():
 vlnv_(), 
 description_(),
-kactus2Attributes_() {
-
+kactus2Attributes_(),
+vendorExtensions_()
+{
 	vlnv_ = QSharedPointer<VLNV>(new VLNV());
 }
 
@@ -71,7 +86,9 @@ LibraryComponent::LibraryComponent(const VLNV &vlnv):
 vlnv_(), 
 description_(),
 kactus2Attributes_(),
-topComments_() {
+topComments_(),
+vendorExtensions_()
+{
     vlnv_ = QSharedPointer<VLNV>(new VLNV(vlnv));
 }
 
@@ -79,8 +96,9 @@ LibraryComponent::LibraryComponent( const LibraryComponent &other ):
 vlnv_(),
 description_(other.description_),
 kactus2Attributes_(other.kactus2Attributes_),
-topComments_(other.topComments_) {
-
+topComments_(other.topComments_),
+vendorExtensions_(other.vendorExtensions_)
+{
 	if (other.vlnv_) {
 		vlnv_ = QSharedPointer<VLNV>(new VLNV(*other.vlnv_));
 	}
@@ -102,6 +120,8 @@ LibraryComponent & LibraryComponent::operator=( const LibraryComponent &other ) 
 		kactus2Attributes_ = other.kactus2Attributes_;
 
 		topComments_ = other.topComments_;
+
+        vendorExtensions_ = other.vendorExtensions_;
 	}
 	return *this;
 }
@@ -177,12 +197,6 @@ void LibraryComponent::setDescription(const QString & description) {
 
 void LibraryComponent::write(QXmlStreamWriter& writer) {
 	writer.writeStartDocument();
-
-	// write the comment to top of the xml-file
-	//writer.writeComment(QObject::tr(" Created by Kactus2 - Open source IP-Xact toolset "));
-	//writer.writeComment(QObject::tr(" http://sourceforge.net/projects/kactus2/ "));
-	//writer.writeComment(QObject::tr(" Date: %1 ").arg(QDate::currentDate().toString(QString("dd.MM.yyyy"))));
-	//writer.writeComment(QObject::tr(" Time: %1 ").arg(QTime::currentTime().toString(QString("hh:mm:ss"))));
 
 	// write the top comments for the XML file
 	foreach (QString comment, topComments_) {
@@ -270,9 +284,36 @@ void LibraryComponent::setXMLNameSpaceAttributes( QMap<QString, QString>& attrib
 	attributes.insert("xmlns:kactus2", "http://funbase.cs.tut.fi/");
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryComponent::writeVendorExtensions()
+//-----------------------------------------------------------------------------
+void LibraryComponent::writeVendorExtensions(QXmlStreamWriter& writer) const
+{
+    foreach(QSharedPointer<VendorExtension> extension, vendorExtensions_)
+    {
+        extension->write(writer);
+    }
+}
+
 void LibraryComponent::setTopComments( const QString& comment ) {
 	QStringList comments = comment.split("\n");
 	topComments_ = comments;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryComponent::setVendorExtensions()
+//-----------------------------------------------------------------------------
+void LibraryComponent::setVendorExtensions(QList<QSharedPointer<VendorExtension> > vendorExtensions)
+{
+    vendorExtensions_ = vendorExtensions;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryComponent::getVendorExtensions()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<VendorExtension> > LibraryComponent::getVendorExtensions() const
+{
+    return vendorExtensions_;
 }
 
 void LibraryComponent::setTopComments( const QStringList& comments ) {

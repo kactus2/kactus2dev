@@ -1945,7 +1945,7 @@ private:
     //! The list of system views.
     QList< QSharedPointer<SystemView> > systemViews_;
 
-    
+    //! The author of the component.
     QString author_;
 };
 

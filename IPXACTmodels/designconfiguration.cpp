@@ -263,11 +263,6 @@ attributes_() {
         }
 	}
 
-	// if mandatory elemets are missing
-// 	if (!designRef_.isValid()) {
-// 		throw Parse_error(QObject::tr("Mandatory element spirit:designRef missing "
-// 			"in spirit:designConfiguration"));
-// 	}
 	return;
 }
 
@@ -458,6 +453,15 @@ void DesignConfiguration::write(QFile& file) {
         writeKactus2Attributes(writer);
 
         writer.writeEndElement(); // kactus2:extensions
+
+        writeVendorExtensions(writer);
+
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
+    else if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        writeVendorExtensions(writer);
         writer.writeEndElement(); // spirit:vendorExtensions
     }
 

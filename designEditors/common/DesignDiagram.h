@@ -389,6 +389,8 @@ private:
 
 	//! \brief Contains the XML header comments of the design.
 	QStringList XMLComments_;
+
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 //-----------------------------------------------------------------------------
