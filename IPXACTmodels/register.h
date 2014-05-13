@@ -22,6 +22,7 @@
 
 class AlternateRegister;
 class RegisterDefinition;
+class VendorExtension;
 
 /*! \brief Equals the spirit:register element in IP-Xact specification.
  *
@@ -282,6 +283,12 @@ private:
 	 * MANDATORY spirit:registerDefinitionGroup
 	 */
 	RegisterDefinition registerDefinition_;
+
+    /*!
+	 * OPTIONAL (spirit: vendorExtensions)
+	 * Register vendor extensions.
+	 */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 #endif /* REGISTER_H_ */

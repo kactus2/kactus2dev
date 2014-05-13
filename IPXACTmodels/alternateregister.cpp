@@ -13,9 +13,12 @@
 #include <QString>
 #include <QList>
 #include <QSharedPointer>
+#include "XmlUtils.h"
 
 AlternateRegister::AlternateRegister(QDomNode& registerNode):
-RegisterModel(registerNode), alternateGroups_(), alternateRegisterDef_() {
+RegisterModel(registerNode), alternateGroups_(), alternateRegisterDef_(),
+vendorExtensions_()
+{
 
 	for (int i = 0; i < registerNode.childNodes().count(); ++i) {
 		QDomNode tempNode = registerNode.childNodes().at(i);
@@ -27,23 +30,28 @@ RegisterModel(registerNode), alternateGroups_(), alternateRegisterDef_() {
 				alternateGroups_.append(General::removeWhiteSpace(groupName));
 			}
 		}
+        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
+        {
+            int extensionCount = tempNode.childNodes().count();
+            for (int j = 0; j < extensionCount; ++j) {
+                QDomNode extensionNode = tempNode.childNodes().at(j);
+                QSharedPointer<VendorExtension> extension = 
+                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
+                vendorExtensions_.append(extension);
+            }
+        }
 	}
 	alternateRegisterDef_ = QSharedPointer<RegisterDefinition>(
 			new RegisterDefinition(registerNode));
 
-	// at least one alternate group must be found
-// 	if (alternateGroups_.size() == 0) {
-// 		throw Parse_error(QObject::tr("Atleast one alternateGroup must be "
-// 				"found in spirit:alternateRegister"));
-// 	}
-	return;
 }
 
 AlternateRegister::AlternateRegister( const AlternateRegister& other ):
 RegisterModel(other),
 alternateGroups_(other.alternateGroups_),
-alternateRegisterDef_() {
-
+alternateRegisterDef_(),
+vendorExtensions_(other.vendorExtensions_)
+{
 	if (other.alternateRegisterDef_) {
 		alternateRegisterDef_ = QSharedPointer<RegisterDefinition>(
 			new RegisterDefinition(*other.alternateRegisterDef_.data()));
@@ -55,6 +63,7 @@ AlternateRegister& AlternateRegister::operator=( const AlternateRegister& other 
 		RegisterModel::operator=(other);
 
 		alternateGroups_ = other.alternateGroups_;
+        vendorExtensions_ = other.vendorExtensions_;
 
 		if (other.alternateRegisterDef_) {
 			alternateRegisterDef_ = QSharedPointer<RegisterDefinition>(
@@ -97,6 +106,13 @@ void AlternateRegister::write(QXmlStreamWriter& writer) {
 	if (alternateRegisterDef_) {
 		alternateRegisterDef_->write(writer);
 	}
+
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:alternateRegister
 }

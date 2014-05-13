@@ -18,6 +18,7 @@
 #include <QSharedPointer>
 
 class RegisterDefinition;
+class VendorExtension;
 
 /*! \brief Equals the spirit:alternateRegister element in IP-Xact specification.
  *
@@ -119,6 +120,13 @@ private:
 
 	//! \brief A pointer to RegisterDefinition class.
 	QSharedPointer<RegisterDefinition> alternateRegisterDef_;
+
+    /*!
+	 * OPTIONAL (spirit: vendorExtensions)
+	 * Alternate register vendor extensions.
+	 */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
+
 };
 
 #endif /* ALTERNATEREGISTER_H_ */

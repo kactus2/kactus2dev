@@ -19,6 +19,8 @@
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
 
+class VendorExtension;
+
 /*! \brief Equals the spirit:bank element in IP-Xact specification
  *
  * Bank represents a collection of address blocks, banks or subspace maps.
@@ -170,6 +172,11 @@ private:
 	 */
 	QSharedPointer<MemoryBlockData> memoryBlockData_;
 
+    /*!
+	 * OPTIONAL (spirit: vendorExtensions)
+	 * Bank vendor extensions.
+	 */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 #endif /* BANK_H_ */

@@ -20,12 +20,15 @@
 #include <QObject>
 #include <QXmlStreamWriter>
 #include <QDomNamedNodeMap>
+#include "XmlUtils.h"
 
 MemoryMap::MemoryMap(QDomNode &memoryMapNode): 
 nameGroup_(memoryMapNode),
 id_(), 
 items_(),
-addressUnitBits_(0) {
+addressUnitBits_(0),
+vendorExtensions_()
+{
 	for (int i = 0; i < memoryMapNode.childNodes().count(); ++i) {
 
 		QDomNamedNodeMap attributeMap = memoryMapNode.attributes();
@@ -39,39 +42,41 @@ addressUnitBits_(0) {
 			addressUnitBits_ = tempNode.childNodes().at(0).nodeValue().toInt();
 		}
 
-		// get SubSpaceMap
-// 		else if (tempNode.nodeName() == QString("spirit:subspaceMap")) {
-// 			SubspaceMap *temp = new SubspaceMap(tempNode);
-// 			items_.append(QSharedPointer<SubspaceMap>(temp));
-// 		}
-
-		// get Bank
-// 		else if (tempNode.nodeName() == QString("spirit:bank")) {
-// 			Bank *temp = new Bank(tempNode);
-// 			items_.append(QSharedPointer<Bank>(temp));
-// 		}
-
 		// get addressBlock
 		else if (tempNode.nodeName() == QString("spirit:addressBlock")) {
 			AddressBlock *temp = new AddressBlock(tempNode);
 			items_.append(QSharedPointer<AddressBlock>(temp));
 		}
+
+        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
+        {
+            int extensionCount = tempNode.childNodes().count();
+            for (int j = 0; j < extensionCount; ++j) {
+                QDomNode extensionNode = tempNode.childNodes().at(j);
+                QSharedPointer<VendorExtension> extension = 
+                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
+                vendorExtensions_.append(extension);
+            }
+        }
 	}
-	return;
 }
 
 MemoryMap::MemoryMap():
 nameGroup_(),
 id_(), 
 items_(),
-addressUnitBits_(0) {
+addressUnitBits_(0),
+vendorExtensions_()
+{
 }
 
 MemoryMap::MemoryMap( const MemoryMap &other ):
 nameGroup_(other.nameGroup_),
 id_(other.id_),
 items_(),
-addressUnitBits_(other.addressUnitBits_) {
+addressUnitBits_(other.addressUnitBits_),
+vendorExtensions_(other.vendorExtensions_)
+{
 
 	foreach (QSharedPointer<MemoryMapItem> item, other.items_) {
 		if (item) {
@@ -81,12 +86,14 @@ addressUnitBits_(other.addressUnitBits_) {
 	}
 }
 
-MemoryMap & MemoryMap::operator=( const MemoryMap &other ) {
+MemoryMap & MemoryMap::operator=( const MemoryMap &other ) 
+{
 	if (this != &other) {
 		nameGroup_ = other.nameGroup_;
 		id_ = other.id_;
 		addressUnitBits_ = other.addressUnitBits_;
-		
+		vendorExtensions_ = other.vendorExtensions_;
+
 		items_.clear();
 		foreach (QSharedPointer<MemoryMapItem> item, other.items_) {
 			if (item) {
@@ -131,6 +138,12 @@ void MemoryMap::write(QXmlStreamWriter& writer) {
 				QString::number(addressUnitBits_));
 	}
 
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 }
 
 bool MemoryMap::isValid( QStringList& errorList, 

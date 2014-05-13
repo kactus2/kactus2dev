@@ -19,6 +19,7 @@
 #include <QXmlStreamWriter>
 
 class parameter;
+class VendorExtension;
 
 /*! \brief Equals the spirit:subspaceMap element in IP-Xact specification
  *
@@ -109,6 +110,12 @@ private:
 	 * Contains the parameters for the SubspaceMap instance.
 	 */
 	QList<QSharedPointer<Parameter> > parameters_;
+
+    /*!
+	 * OPTIONAL (spirit: vendorExtensions)
+	 * SubspaceMap vendor extensions.
+	 */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 
 };
 

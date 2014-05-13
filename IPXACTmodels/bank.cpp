@@ -18,11 +18,14 @@
 #include <QObject>
 #include <QXmlStreamWriter>
 #include <QSharedPointer>
+#include "XmlUtils.h"
 
 Bank::Bank(QDomNode &memoryMapNode): 
 MemoryMapItem(memoryMapNode),
 items_(),
-memoryBlockData_(0) {
+memoryBlockData_(0),
+vendorExtensions_()
+{
 
 	// the temporary variables to store the parsed values for memoryBlockData_
 	General::Usage usage = General::USAGE_COUNT;
@@ -81,6 +84,17 @@ memoryBlockData_(0) {
 				tempParameters.append(QSharedPointer<Parameter>(temp));
 			}
 		}
+
+        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
+        {
+            int extensionCount = tempNode.childNodes().count();
+            for (int j = 0; j < extensionCount; ++j) {
+                QDomNode extensionNode = tempNode.childNodes().at(j);
+                QSharedPointer<VendorExtension> extension = 
+                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
+                vendorExtensions_.append(extension);
+            }
+        }
 	}
 
 	// parsing information is over so save the values to memoryBlockData
@@ -92,7 +106,9 @@ memoryBlockData_(0) {
 Bank::Bank( const Bank &other ):
 MemoryMapItem(other),
 items_(),
-memoryBlockData_() {
+memoryBlockData_(),
+vendorExtensions_(other.vendorExtensions_)
+{
 
 	foreach (QSharedPointer<MemoryMapItem> memItem, other.items_) {
 		if (memItem) {
@@ -128,6 +144,7 @@ memoryBlockData_() {
 Bank & Bank::operator=( const Bank &other ) {
 	if (this != &other) {
 		MemoryMapItem::operator=(other);
+        vendorExtensions_ = other.vendorExtensions_;
 
 		items_.clear();
 		foreach (QSharedPointer<MemoryMapItem> memItem, other.items_) {
@@ -189,6 +206,13 @@ void Bank::write(QXmlStreamWriter& writer) {
 	if (memoryBlockData_) {
 		memoryBlockData_->write(writer);
 	}
+
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:bank
 }

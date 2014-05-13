@@ -14,10 +14,13 @@
 #include <QDomNode>
 #include <QObject>
 #include <QXmlStreamWriter>
+#include "XmlUtils.h"
 
 // The constructor
 SubspaceMap::SubspaceMap(QDomNode &memoryMapNode): MemoryMapItem(memoryMapNode),
-parameters_() {
+parameters_(),
+vendorExtensions_()
+{
 	for (int i = 0; i < memoryMapNode.childNodes().count(); ++i) {
 		if (memoryMapNode.childNodes().at(i).nodeName() ==
 				QString("spirit:parameters")) {
@@ -33,18 +36,25 @@ parameters_() {
 				parameters_.append(QSharedPointer<Parameter>(temp));
 			}
 		}
-	}
 
-	// if mandatory elements are missing
-// 	if (!MemoryMapItem::attributes_.contains(QString("spirit:masterRef"))) {
-// 		throw Parse_error(QObject::tr("Mandatory attribute spirit:masterRef"
-// 				" missing in spirit:subspaceMap"));
-// 	}
+        else if (memoryMapNode.nodeName() == QString("spirit:vendorExtensions")) 
+        {
+            int extensionCount = memoryMapNode.childNodes().count();
+            for (int j = 0; j < extensionCount; ++j) {
+                QDomNode extensionNode = memoryMapNode.childNodes().at(j);
+                QSharedPointer<VendorExtension> extension = 
+                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
+                vendorExtensions_.append(extension);
+            }
+        }
+	}
 }
 
 SubspaceMap::SubspaceMap( const SubspaceMap &other ):
 MemoryMapItem(other),
-parameters_() {
+parameters_(),
+vendorExtensions_(other.vendorExtensions_)
+{
 
 	foreach (QSharedPointer<Parameter> param, other.parameters_) {
 		if (param) {
@@ -58,6 +68,7 @@ parameters_() {
 SubspaceMap & SubspaceMap::operator=( const SubspaceMap &other ) {
 	if (this != &other) {
 		MemoryMapItem::operator=(other);
+        vendorExtensions_ = other.vendorExtensions_;
 
 		parameters_.clear();
 		foreach (QSharedPointer<Parameter> param, other.parameters_) {
@@ -95,6 +106,13 @@ void SubspaceMap::write(QXmlStreamWriter& writer) {
 
 		writer.writeEndElement(); // spirit:parameters
 	}
+
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:subspaceMap
 }

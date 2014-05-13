@@ -19,6 +19,7 @@
 #include <QSharedPointer>
 #include <QObject>
 #include <QXmlStreamWriter>
+#include "XmlUtils.h"
 
 AddressBlock::AddressBlock(QDomNode &memoryMapNode):
 MemoryMapItem(memoryMapNode),
@@ -27,7 +28,9 @@ rangeAttributes_(),
 width_(-1),
 widthAttributes_(),
 memoryBlockData_(),
-registerData_() {
+registerData_(),
+vendorExtensions_()
+{
 
 	for (int i = 0; i < memoryMapNode.childNodes().count(); ++i) {
 
@@ -85,10 +88,17 @@ registerData_() {
 			registerData_.append(QSharedPointer<Register>(
 					new Register(tempNode)));
 		}
-// 		else if (tempNode.nodeName() == QString("spirit:registerFile")) {
-// 			registerData_.append(QSharedPointer<RegisterFile>(
-// 					new RegisterFile(tempNode)));
-// 		}
+
+        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
+        {
+            int extensionCount = tempNode.childNodes().count();
+            for (int j = 0; j < extensionCount; ++j) {
+                QDomNode extensionNode = tempNode.childNodes().at(j);
+                QSharedPointer<VendorExtension> extension = 
+                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
+                vendorExtensions_.append(extension);
+            }
+        }
 	}
 }
 
@@ -99,7 +109,9 @@ rangeAttributes_(),
 width_(-1),
 widthAttributes_(),
 memoryBlockData_(),
-registerData_() {
+registerData_(),
+vendorExtensions_()
+{
 
 }
 
@@ -110,7 +122,9 @@ rangeAttributes_(other.rangeAttributes_),
 width_(other.width_),
 widthAttributes_(other.widthAttributes_),
 memoryBlockData_(other.memoryBlockData_),
-registerData_() {
+registerData_(),
+vendorExtensions_(other.vendorExtensions_)
+{
 
 	foreach (QSharedPointer<RegisterModel> regModel, other.registerData_) {
 		if (regModel) {
@@ -128,6 +142,7 @@ AddressBlock & AddressBlock::operator=( const AddressBlock &other ) {
 		width_ = other.width_;
 		widthAttributes_ = other.widthAttributes_;
 		memoryBlockData_ = other.memoryBlockData_;
+        vendorExtensions_ = other.vendorExtensions_;
 
 		registerData_.clear();
 		foreach (QSharedPointer<RegisterModel> regModel, other.registerData_) {
@@ -178,6 +193,13 @@ void AddressBlock::write(QXmlStreamWriter& writer) {
 	for (int i = 0; i < registerData_.size(); ++i) {
 		registerData_.at(i)->write(writer);
 	}
+
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:addressBlock
 }

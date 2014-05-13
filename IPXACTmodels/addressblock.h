@@ -23,6 +23,7 @@
 
 class RegisterModel;
 class MemoryBlockData;
+class VendorExtension;
 
 /*! \brief Equals to spirit:addressBlock element in IP-Xact specification.
  *
@@ -315,6 +316,13 @@ private:
 	 * fields.
 	 */
 	QList<QSharedPointer<RegisterModel> > registerData_;
+
+    /*!
+	 * OPTIONAL (spirit: vendorExtensions)
+	 * Address block vendor extensions.
+	 */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
+
 };
 
 #endif /* ADDRESSBLOCK_H_ */

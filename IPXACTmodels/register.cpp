@@ -15,13 +15,16 @@
 #include <QString>
 #include <QList>
 #include <QSharedPointer>
+#include "XmlUtils.h"
 
 Register::Register(QDomNode& registerNode):
 RegisterModel(registerNode),
 dim_(-1),
 addressOffset_(),
 alternateRegisters_(), 
-registerDefinition_(registerNode) {
+registerDefinition_(registerNode),
+vendorExtensions_()
+{
 
 	for (int i = 0; i < registerNode.childNodes().count(); ++i) {
 		QDomNode tempNode = registerNode.childNodes().at(i);
@@ -43,6 +46,16 @@ registerDefinition_(registerNode) {
 						new AlternateRegister(alternateRegNode)));
 			}
 		}
+        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
+        {
+            int extensionCount = tempNode.childNodes().count();
+            for (int j = 0; j < extensionCount; ++j) {
+                QDomNode extensionNode = tempNode.childNodes().at(j);
+                QSharedPointer<VendorExtension> extension = 
+                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
+                vendorExtensions_.append(extension);
+            }
+        }
 	}
 }
 
@@ -51,7 +64,9 @@ RegisterModel(),
 dim_(-1),
 addressOffset_("0x0"),
 alternateRegisters_(), 
-registerDefinition_() {
+registerDefinition_(),
+vendorExtensions_()
+{
 }
 
 
@@ -60,7 +75,9 @@ RegisterModel(),
 dim_(-1),
 addressOffset_(),
 alternateRegisters_(), 
-registerDefinition_() {
+registerDefinition_(),
+vendorExtensions_()
+{
 	registerDefinition_.setVolatile(volatileValue);
 	registerDefinition_.setAccess(access);
 }
@@ -70,7 +87,9 @@ RegisterModel(other),
 dim_(other.dim_),
 addressOffset_(other.addressOffset_),
 alternateRegisters_(),
-registerDefinition_(other.registerDefinition_) {
+registerDefinition_(other.registerDefinition_),
+vendorExtensions_(other.vendorExtensions_)
+{
 
 	foreach (QSharedPointer<AlternateRegister> altReg, other.alternateRegisters_) {
 		if (altReg) {
@@ -88,6 +107,7 @@ Register& Register::operator=( const Register& other ) {
 		dim_ = other.dim_;
 		addressOffset_ = other.addressOffset_;
 		registerDefinition_ = other.registerDefinition_;
+        vendorExtensions_ = other.vendorExtensions_;
 
 		alternateRegisters_.clear();
 		foreach (QSharedPointer<AlternateRegister> altReg, other.alternateRegisters_) {
@@ -137,6 +157,14 @@ void Register::write(QXmlStreamWriter& writer) {
 
 		writer.writeEndElement(); // spirit:alternateRegisters
 	}
+
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
+
 	writer.writeEndElement(); // spirit:register
 }
 

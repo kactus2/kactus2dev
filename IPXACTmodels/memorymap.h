@@ -18,6 +18,8 @@
 #include <QXmlStreamWriter>
 #include <QTextStream>
 
+class VendorExtension;
+
 /*! \brief Equals to the spirit:memoryMap element in IP-Xact specification
  *
  * MemoryMap contains an unbounded list of memoryMap elements
@@ -278,6 +280,12 @@ private:
 	 * map.
 	 */
 	unsigned int addressUnitBits_;
+
+    /*!
+	 * OPTIONAL (spirit: vendorExtensions)
+	 * Memory map vendor extensions.
+	 */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 
 };
 
