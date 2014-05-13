@@ -14,10 +14,13 @@
 #include <QXmlStreamWriter>
 #include <QMap>
 #include <QSharedPointer>
+#include "XmlUtils.h"
 
 RegisterFile::RegisterFile(QDomNode& registerNode): RegisterModel(registerNode),
 dim_(-1), addressOffset_(), typeIdentifier_(), range_(0), rangeAttributes_(),
-registerData_() {
+registerData_(),
+vendorExtensions_()
+{
 
 	for (int i = 0; i < registerNode.childNodes().count(); ++i) {
 		QDomNode tempNode = registerNode.childNodes().at(i);
@@ -49,6 +52,16 @@ registerData_() {
 			registerData_.insert(reg->getName(),
 				QSharedPointer<RegisterFile>(reg));
 		}
+        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
+        {
+            int extensionCount = tempNode.childNodes().count();
+            for (int j = 0; j < extensionCount; ++j) {
+                QDomNode extensionNode = tempNode.childNodes().at(j);
+                QSharedPointer<VendorExtension> extension = 
+                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
+                vendorExtensions_.append(extension);
+            }
+        }
 	}
 	return;
 }
@@ -60,7 +73,9 @@ addressOffset_(other.addressOffset_),
 typeIdentifier_(other.typeIdentifier_),
 range_(other.range_),
 rangeAttributes_(other.rangeAttributes_),
-registerData_() {
+registerData_(),
+vendorExtensions_(other.vendorExtensions_)
+ {
 
 	for (QMap<QString, QSharedPointer<RegisterModel> >::const_iterator i = 
              other.registerData_.begin();
@@ -96,6 +111,7 @@ RegisterFile& RegisterFile::operator=( const RegisterFile& other ) {
 		typeIdentifier_ = other.typeIdentifier_;
 		range_ = other.range_;
 		rangeAttributes_ = other.rangeAttributes_;
+        vendorExtensions_ = other.vendorExtensions_;
 
 		registerData_.clear();
 		for (QMap<QString, QSharedPointer<RegisterModel> >::const_iterator i = 
@@ -161,6 +177,13 @@ void RegisterFile::write(QXmlStreamWriter& writer) {
 			registerData_.begin(); i != registerData_.end(); ++i) {
 		i.value()->write(writer);
 	}
+
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:registerFile
 }

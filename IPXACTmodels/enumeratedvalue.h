@@ -14,6 +14,8 @@
 #include <QString>
 #include <QXmlStreamWriter>
 
+class VendorExtension;
+
 /*! \brief Equals the spirit:enumeratedValue element in IP-Xact specification.
  *
  * Describes a name and value pair for the given field.
@@ -173,6 +175,12 @@ private:
      * MANDATORY spirit:value
      */
     QString value_;
+
+    /*!
+	 * OPTIONAL (spirit: vendorExtensions)
+	 * Enumerated value vendor extensions.
+	 */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 #endif /* ENUMERATEDVALUE_H_ */

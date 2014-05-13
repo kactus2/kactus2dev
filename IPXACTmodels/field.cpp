@@ -18,6 +18,7 @@
 #include <QDomNamedNodeMap>
 
 #include <QDebug>
+#include "XmlUtils.h"
 
 Field::Field(QDomNode& fieldNode): 
 id_(), 
@@ -34,7 +35,9 @@ modifiedWrite_(General::MODIFIED_WRITE_COUNT),
 readAction_(General::READ_ACTION_COUNT),
 testable_(true),
 testConstraint_(General::TEST_UNCONSTRAINED),
-writeConstraint_() {
+writeConstraint_(),
+vendorExtensions_()
+{
 
 	// parse the spirit:id attribute
 	QDomNamedNodeMap attributeMap = fieldNode.attributes();
@@ -98,6 +101,16 @@ writeConstraint_() {
 			QString constraint = testAttributes.namedItem("spirit:testConstraint").nodeValue();
 			testConstraint_ = General::str2TestConstraint(constraint);
 		}
+        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
+        {
+            int extensionCount = tempNode.childNodes().count();
+            for (int j = 0; j < extensionCount; ++j) {
+                QDomNode extensionNode = tempNode.childNodes().at(j);
+                QSharedPointer<VendorExtension> extension = 
+                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
+                vendorExtensions_.append(extension);
+            }
+        }
 	}
 }
 
@@ -116,7 +129,9 @@ modifiedWrite_(General::MODIFIED_WRITE_COUNT),
 readAction_(General::READ_ACTION_COUNT),
 testable_(true),
 testConstraint_(General::TEST_UNCONSTRAINED),
-writeConstraint_() {
+writeConstraint_(),
+vendorExtensions_()
+{
 
 }
 
@@ -135,7 +150,9 @@ modifiedWrite_(General::MODIFIED_WRITE_COUNT),
 readAction_(General::READ_ACTION_COUNT),
 testable_(true),
 testConstraint_(General::TEST_UNCONSTRAINED),
-writeConstraint_() {
+writeConstraint_(),
+vendorExtensions_()
+{
 
 }
 
@@ -154,7 +171,9 @@ modifiedWrite_(other.modifiedWrite_),
 readAction_(other.readAction_),
 testable_(other.testable_),
 testConstraint_(other.testConstraint_),
-writeConstraint_() {
+writeConstraint_(),
+vendorExtensions_(other.vendorExtensions_)
+{
 
 	foreach (QSharedPointer<EnumeratedValue> enumValue, other.enumeratedValues_) {
 		if (enumValue) {
@@ -192,6 +211,7 @@ Field& Field::operator=( const Field& other ) {
 		readAction_ = other.readAction_;
 		testable_ = other.testable_;
 		testConstraint_ = other.testConstraint_;
+        vendorExtensions_ = other.vendorExtensions_;
 
 		enumeratedValues_.clear();
 		foreach (QSharedPointer<EnumeratedValue> enumValue, other.enumeratedValues_) {
@@ -309,6 +329,13 @@ void Field::write(QXmlStreamWriter& writer) {
 
 		writer.writeEndElement(); // spirit:parameters
 	}
+
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:field
 }

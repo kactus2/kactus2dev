@@ -20,6 +20,7 @@
 
 class Parameter;
 class EnumeratedValue;
+class VendorExtension;
 
 /*! \brief Equals the spirit:field element in IP-Xact specification.
  *
@@ -374,6 +375,12 @@ private:
 
 	//! \brief Pointer to the write value constraint for the field.
 	QSharedPointer<WriteValueConstraint> writeConstraint_;
+
+    /*!
+	 * OPTIONAL (spirit: vendorExtensions)
+	 * Field vendor extensions.
+	 */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 #endif /* FIELD_H_ */

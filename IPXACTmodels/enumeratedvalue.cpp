@@ -12,11 +12,14 @@
 #include <QXmlStreamWriter>
 #include <QDomNamedNodeMap>
 #include <QObject>
+#include "XmlUtils.h"
 
 EnumeratedValue::EnumeratedValue(QDomNode& enumerationNode):
 usage_(EnumeratedValue::READWRITE), 
 nameGroup_(enumerationNode),
-value_() {
+value_(),
+vendorExtensions_()
+{
 
 	// parse the spirit:usage attribute
 	QDomNamedNodeMap attributeMap = enumerationNode.attributes();
@@ -29,19 +32,33 @@ value_() {
 		if (tempNode.nodeName() == QString("spirit:value")) {
 			value_ = tempNode.childNodes().at(0).nodeValue();
 		}
+        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
+        {
+            int extensionCount = tempNode.childNodes().count();
+            for (int j = 0; j < extensionCount; ++j) {
+                QDomNode extensionNode = tempNode.childNodes().at(j);
+                QSharedPointer<VendorExtension> extension = 
+                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
+                vendorExtensions_.append(extension);
+            }
+        }
 	}
 }
 
 EnumeratedValue::EnumeratedValue():
 usage_(EnumeratedValue::READWRITE), 
 nameGroup_(),
-value_() {
+value_(),
+vendorExtensions_()
+{
 }
 
 EnumeratedValue::EnumeratedValue( const EnumeratedValue& other ):
 usage_(other.usage_),
 nameGroup_(other.nameGroup_),
-value_(other.value_) {
+value_(other.value_),
+vendorExtensions_(other.vendorExtensions_)
+{
 }
 
 EnumeratedValue& EnumeratedValue::operator=( const EnumeratedValue& other ) {
@@ -49,6 +66,7 @@ EnumeratedValue& EnumeratedValue::operator=( const EnumeratedValue& other ) {
 		usage_ = other.usage_;
 		nameGroup_ = other.nameGroup_;
 		value_ = other.value_;
+        vendorExtensions_ = other.vendorExtensions_;
 	}
 	return *this;
 }
@@ -76,6 +94,13 @@ void EnumeratedValue::write(QXmlStreamWriter& writer) {
 	}
 
 	writer.writeTextElement("spirit:value", value_);
+
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:enumeratedValue
 }

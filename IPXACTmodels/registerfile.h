@@ -17,6 +17,8 @@
 #include <QMap>
 #include <QSharedPointer>
 
+class VendorExtension;
+
 /*! \brief Equals the spirit:registerFile element in IP-Xact specification.
  *
  * This class is inherited from RegisterModel base class.
@@ -185,6 +187,12 @@ private:
 	 * OPTIONAL spirit:registerData
 	 */
 	QMap<QString, QSharedPointer<RegisterModel> > registerData_;
+
+    /*!
+	 * OPTIONAL (spirit: vendorExtensions)
+	 * RegisterFile vendor extensions.
+	 */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 #endif /* REGISTERFILE_H_ */
