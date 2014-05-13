@@ -9,12 +9,17 @@
 
 #include <common/utils.h>
 
+#include "XmlUtils.h"
+#include "VendorExtension.h"
+
 Segment::Segment( QDomNode &segmentNode ):
 nameGroup_(segmentNode),
 addressOffset_(),
 offsetAttributes_(),
 range_(),
-rangeAttributes_() {
+rangeAttributes_(),
+vendorExtensions_()
+{
 
 	for (int i = 0; i < segmentNode.childNodes().count(); ++i) {
 		QDomNode tempNode = segmentNode.childNodes().at(i);
@@ -30,6 +35,16 @@ rangeAttributes_() {
 
 			General::parseAttributes(tempNode, rangeAttributes_);
 		}
+        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
+        {
+            int extensionCount = tempNode.childNodes().count();
+            for (int j = 0; j < extensionCount; ++j) {
+                QDomNode extensionNode = tempNode.childNodes().at(j);
+                QSharedPointer<VendorExtension> extension = 
+                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
+                vendorExtensions_.append(extension);
+            }
+        }
 	}
 }
 
@@ -38,7 +53,9 @@ nameGroup_(),
 addressOffset_(),
 offsetAttributes_(),
 range_(),
-rangeAttributes_() {
+rangeAttributes_(),
+vendorExtensions_()
+{
 
 }
 
@@ -47,7 +64,9 @@ nameGroup_(other.nameGroup_),
 addressOffset_(other.addressOffset_),
 offsetAttributes_(other.offsetAttributes_),
 range_(other.range_),
-rangeAttributes_(other.rangeAttributes_) {
+rangeAttributes_(other.rangeAttributes_),
+vendorExtensions_(other.vendorExtensions_)
+{
 }
 
 Segment::~Segment() {
@@ -61,6 +80,7 @@ Segment& Segment::operator=( const Segment& other ) {
 		offsetAttributes_ = other.offsetAttributes_;
 		range_ = other.range_;
 		rangeAttributes_ = other.rangeAttributes_;
+        vendorExtensions_ = other.vendorExtensions_;
 	}
 	return *this;
 }
@@ -98,6 +118,13 @@ void Segment::write( QXmlStreamWriter& writer ) {
 
 		writer.writeEndElement(); // spirit:range
 	}
+
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:segment
 }

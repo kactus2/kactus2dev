@@ -7,10 +7,13 @@
 #include "addressspace.h"
 #include "memorymap.h"
 #include "parameter.h"
+#include "XmlUtils.h"
+#include "VendorExtension.h"
 #include <common/utils.h>
 
 #include <QDomNode>
 #include <QDomNamedNodeMap>
+#include <QSharedPointer>
 #include <QString>
 #include <QObject>
 #include <QList>
@@ -28,7 +31,9 @@ widthAttributes_(),
 segments_(),
 addressUnitBits_(DEFAULT_ADDRESS_UNIT_BITS), 
 localMemoryMap_(0),
-parameters_() {
+parameters_(),
+vendorExtensions_()
+{
 	for (int i = 0; i < addrSpaceNode.childNodes().count(); ++i) {
 		QDomNode tempNode = addrSpaceNode.childNodes().at(i);
 
@@ -73,8 +78,17 @@ parameters_() {
 						new Parameter(parameterNode)));
 			}
 		}
-	}
-	return;
+        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
+        {
+            int extensionCount = tempNode.childNodes().count();
+            for (int j = 0; j < extensionCount; ++j) {
+                QDomNode extensionNode = tempNode.childNodes().at(j);
+                QSharedPointer<VendorExtension> extension = 
+                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
+                vendorExtensions_.append(extension);
+            }
+        }
+	}	
 }
 
 AddressSpace::AddressSpace( const AddressSpace &other ):
@@ -86,8 +100,9 @@ widthAttributes_(other.widthAttributes_),
 segments_(),
 addressUnitBits_(other.addressUnitBits_),
 localMemoryMap_(),
-parameters_() {
-
+parameters_(),
+vendorExtensions_(other.vendorExtensions_)
+ {
 	if (other.localMemoryMap_) {
 		localMemoryMap_ = QSharedPointer<MemoryMap>(
 			new MemoryMap(*other.localMemoryMap_.data()));
@@ -121,7 +136,9 @@ widthAttributes_(),
 segments_(),
 addressUnitBits_(DEFAULT_ADDRESS_UNIT_BITS), 
 localMemoryMap_(0),
-parameters_() {
+parameters_(),
+vendorExtensions_()
+{
 }
 
 AddressSpace & AddressSpace::operator=( const AddressSpace &other ) {
@@ -132,6 +149,7 @@ AddressSpace & AddressSpace::operator=( const AddressSpace &other ) {
 		width_ = other.width_;
 		widthAttributes_ = other.widthAttributes_;
 		addressUnitBits_ = other.addressUnitBits_;
+        vendorExtensions_ = other.vendorExtensions_;
 
 		if (other.localMemoryMap_) {
 			localMemoryMap_ = QSharedPointer<MemoryMap>(
@@ -229,6 +247,13 @@ void AddressSpace::write(QXmlStreamWriter& writer) {
 
 		writer.writeEndElement(); // spirit:parameters
 	}
+
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:addressSpace
 }

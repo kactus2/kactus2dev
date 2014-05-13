@@ -27,6 +27,7 @@
 #include <QTime>
 #include <QFile>
 #include <QXmlStreamWriter>
+#include "XmlUtils.h"
 
 LibraryComponent::LibraryComponent(QDomDocument &doc):
 vlnv_(), 
@@ -63,7 +64,8 @@ vendorExtensions_()
                 QDomNode extensionNode = children.at(i).childNodes().at(j);
                 if (!extensionNode.nodeName().contains("kactus2:"))
                 {
-                    QSharedPointer<GenericVendorExtension> extension(new GenericVendorExtension(extensionNode));
+                    QSharedPointer<VendorExtension> extension = 
+                        XmlUtils::createVendorExtensionFromNode(extensionNode);
                     vendorExtensions_.append(extension);
                 }                
             }
@@ -289,10 +291,7 @@ void LibraryComponent::setXMLNameSpaceAttributes( QMap<QString, QString>& attrib
 //-----------------------------------------------------------------------------
 void LibraryComponent::writeVendorExtensions(QXmlStreamWriter& writer) const
 {
-    foreach(QSharedPointer<VendorExtension> extension, vendorExtensions_)
-    {
-        extension->write(writer);
-    }
+    XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
 }
 
 void LibraryComponent::setTopComments( const QString& comment ) {

@@ -21,6 +21,7 @@
 #include <QXmlStreamWriter>
 
 class parameter;
+class VendorExtension;
 
 /*! \brief Equals the spirit:addressSpace element in the IP-Xact specification
  *
@@ -307,6 +308,12 @@ private:
 	//! \brief Contains the parameters for the addressSpace
 	//! OPTIONAL spirit:parameters
 	QList<QSharedPointer<Parameter> > parameters_;
+
+    /*!
+	 * OPTIONAL (spirit: vendorExtensions)
+	 * Address space vendor extensions.
+	 */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 #endif /* ADDRESSSPACE_H_ */

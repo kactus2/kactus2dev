@@ -263,7 +263,6 @@ protected:
 	*/
 	void setXMLNameSpaceAttributes(QMap<QString, QString>& attributes);
 
-
     /*!
      *  Writes the component vendor extensions to XML.
      *

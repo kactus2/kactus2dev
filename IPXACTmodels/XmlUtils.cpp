@@ -10,6 +10,10 @@
 //-----------------------------------------------------------------------------
 
 #include "XmlUtils.h"
+#include "VendorExtension.h"
+#include "GenericVendorExtension.h"
+
+#include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
 
@@ -141,6 +145,26 @@ namespace XmlUtils
             }
 
             writer.writeEndElement();
+        }
+    }
+
+    //-----------------------------------------------------------------------------
+    // Function: createVendorExtensionFromNode()
+    //-----------------------------------------------------------------------------
+    QSharedPointer<VendorExtension> createVendorExtensionFromNode(QDomNode const& node)
+    {
+        return QSharedPointer<VendorExtension>(new GenericVendorExtension(node));
+    }
+
+    //-----------------------------------------------------------------------------
+    // Function: writeVendorExtensions()
+    //-----------------------------------------------------------------------------
+    void writeVendorExtensions(QXmlStreamWriter& writer, 
+        QList<QSharedPointer<VendorExtension> > const& vendorExtensions)
+    {
+        foreach(QSharedPointer<VendorExtension> extension, vendorExtensions)
+        {
+            extension->write(writer);
         }
     }
 }

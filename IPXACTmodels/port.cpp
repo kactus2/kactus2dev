@@ -18,8 +18,6 @@
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
 
-#include <QDebug>
-
 // the constructor
 Port::Port(QDomNode &portNode): 
 nameGroup_(portNode), 
@@ -30,7 +28,9 @@ portAccessHandle_(),
 portAccessType_(),
 remoteEndpointName_(),
 adHocVisible_(false),
-defaultPos_() {
+defaultPos_(),
+vendorExtensions_()
+{
 
 	for (int i = 0; i < portNode.childNodes().count(); ++i) {
 		QDomNode tempNode = portNode.childNodes().at(i);
@@ -80,20 +80,15 @@ defaultPos_() {
                     defaultPos_.setX(posNode.attributes().namedItem("x").nodeValue().toInt());
                     defaultPos_.setY(posNode.attributes().namedItem("y").nodeValue().toInt());
                 }
+                else
+                {                    
+                    QSharedPointer<VendorExtension> extension = 
+                        XmlUtils::createVendorExtensionFromNode(tempNode.childNodes().at(j)); 
+                    vendorExtensions_.append(extension);
+                }
             }
         }
-	}
-
-// 	if (nameGroup_.name_.isNull()) {
-// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
-// 				"spirit:port"));
-// 	}
-// 
-// 	if (!transactional_ && !wire_) {
-// 		throw Parse_error(QObject::tr("No wire or transactional elements "
-// 				"found in spirit:port"));
-// 	}
-	return;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -107,7 +102,8 @@ portAccessHandle_(other.portAccessHandle_),
 portAccessType_(other.portAccessType_),
 remoteEndpointName_(other.remoteEndpointName_),
 adHocVisible_(other.adHocVisible_),
-defaultPos_(other.defaultPos_)
+defaultPos_(other.defaultPos_),
+vendorExtensions_()
 {	
 	nameGroup_.name_ = name;
 
@@ -128,7 +124,8 @@ portAccessHandle_(other.portAccessHandle_),
 portAccessType_(other.portAccessType_),
 remoteEndpointName_(other.remoteEndpointName_),
 adHocVisible_(other.adHocVisible_),
-defaultPos_(other.defaultPos_)
+defaultPos_(other.defaultPos_),
+vendorExtensions_(other.vendorExtensions_)
 {
 	
 	if (other.wire_) {
@@ -153,6 +150,7 @@ Port & Port::operator=( const Port &other ) {
         remoteEndpointName_ = other.remoteEndpointName_;
         adHocVisible_ = other.adHocVisible_;
         defaultPos_ = other.defaultPos_;
+        vendorExtensions_ = other.vendorExtensions_;
 
 		if (other.wire_) {
 			wire_ = QSharedPointer<Wire>(
@@ -183,7 +181,8 @@ portAccessHandle_(),
 portAccessType_(),
 remoteEndpointName_(),
 adHocVisible_(false),
-defaultPos_()
+defaultPos_(),
+vendorExtensions_()
 {
 	wire_ = QSharedPointer<Wire>(new Wire());
 }
@@ -204,7 +203,8 @@ transactional_(),
 portAccessHandle_(),
 portAccessType_(),
 adHocVisible_(false),
-defaultPos_()
+defaultPos_(),
+vendorExtensions_()
 {
 	nameGroup_.name_ = name;
 
@@ -230,7 +230,8 @@ transactional_(),
 portAccessHandle_(),
 portAccessType_(),
 adHocVisible_(false),
-defaultPos_()
+defaultPos_(),
+vendorExtensions_()
 {
 
 	nameGroup_.name_ = name;
@@ -318,6 +319,8 @@ void Port::write(QXmlStreamWriter& writer, const QStringList& viewNames)
     {
         XmlUtils::writePosition(writer, defaultPos_);
     }
+
+    XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
 
     writer.writeEndElement(); // spirit:vendorExtensions
 

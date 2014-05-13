@@ -9,8 +9,8 @@
 // Common utilities for writing/parsing IP-XACT documents.
 //-----------------------------------------------------------------------------
 
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef XMLUTILS_H
+#define XMLUTILS_H
 
 #include <QXmlStreamWriter>
 #include <QDomNode>
@@ -18,6 +18,9 @@
 #include <QMap>
 #include <QPointF>
 #include <QVector2D>
+#include <QSharedPointer>
+
+class VendorExtension;
 
 //-----------------------------------------------------------------------------
 
@@ -83,8 +86,26 @@ namespace XmlUtils
      */
     void writePositionsMap(QXmlStreamWriter& writer, QMap<QString, QPointF> const& positions,
                            QString const& identifier, QString const& refIdentifier);
+
+    /*!
+     *  Creates a vendor extension from an XML node.
+     *
+     *      @param [in] node   The node to create from.
+     *
+     *      @return The created vendor extension.
+     */
+    QSharedPointer<VendorExtension> createVendorExtensionFromNode(QDomNode const& node);
+
+    /*!
+     *  Writes the vendor extensions to an XML using the given XML writer.
+     *
+     *      @param [in] writer              The writer to use.
+     *      @param [in] vendorExtensions    The vendor extensions to write.
+     */
+    void writeVendorExtensions(QXmlStreamWriter& writer, 
+                               QList<QSharedPointer<VendorExtension> > const& vendorExtensions);
 }
 
 //-----------------------------------------------------------------------------
 
-#endif // UTILS_H
+#endif // XMLUTILS_H

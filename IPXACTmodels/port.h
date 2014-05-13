@@ -21,6 +21,7 @@
 
 class Wire;
 class Transactional;
+class VendorExtension;
 
 /*! \brief Equals the spirit:port element in IP-Xact specification
  *
@@ -480,6 +481,12 @@ private:
 
     //! The default position of the port in ad-hoc mode.
     QPointF defaultPos_;
+
+	/*!
+	 * OPTIONAL (spirit: vendorExtensions)
+	 * Port vendor extensions.
+	 */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 #endif /* PORT_H_ */

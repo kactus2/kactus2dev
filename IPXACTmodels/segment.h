@@ -18,6 +18,8 @@
 #include <QString>
 #include <QMap>
 
+class VendorExtension;
+
 /*! \brief Segment describes the location and size of an area in containing address space.
  *
  */
@@ -174,6 +176,12 @@ private:
 
 	//! \brief The attributes for the range
 	QMap<QString, QString> rangeAttributes_;
+
+    /*!
+	 * OPTIONAL (spirit: vendorExtensions)
+	 * Segment vendor extensions.
+	 */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 #endif /* SEGMENT_H_ */
