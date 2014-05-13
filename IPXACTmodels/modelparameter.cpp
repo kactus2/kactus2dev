@@ -13,12 +13,15 @@
 #include <QObject>
 #include <QDomNamedNodeMap>
 #include <QXmlStreamWriter>
+#include "XmlUtils.h"
 
 ModelParameter::ModelParameter(QDomNode &modelParameterNode): 
 nameGroup_(modelParameterNode),
 value_(QString()), 
 attributes_(),
-valueAttributes_() {
+valueAttributes_(),
+vendorExtensions_()
+{
 
 	// get the modelParameter attributes
 	General::parseAttributes(modelParameterNode, attributes_);
@@ -32,15 +35,26 @@ valueAttributes_() {
 			// get the value attributes that define the value
 			General::parseAttributes(tempNode, valueAttributes_);
 		}
+        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
+        {
+            int extensionCount = tempNode.childNodes().count();
+            for (int j = 0; j < extensionCount; ++j) {
+                QDomNode extensionNode = tempNode.childNodes().at(j);
+                QSharedPointer<VendorExtension> extension = 
+                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
+                vendorExtensions_.append(extension);
+            }
+        }
 	}
-	return;
 }
 
 ModelParameter::ModelParameter():
 nameGroup_(),
 value_(),
 attributes_(),
-valueAttributes_() {
+valueAttributes_(),
+vendorExtensions_()
+{
 }
 
 // the copy constructor
@@ -48,7 +62,9 @@ ModelParameter::ModelParameter(const ModelParameter &other ):
 nameGroup_(other.nameGroup_), 
 value_(other.value_), 
 attributes_(other.attributes_),
-valueAttributes_(other.valueAttributes_) {
+valueAttributes_(other.valueAttributes_),
+vendorExtensions_(other.vendorExtensions_)
+{
 }
 
 ModelParameter & ModelParameter::operator=( const ModelParameter &other ) {
@@ -57,6 +73,7 @@ ModelParameter & ModelParameter::operator=( const ModelParameter &other ) {
 		value_ = other.value_;
 		attributes_ = other.attributes_;
 		valueAttributes_ = other.valueAttributes_;
+        vendorExtensions_ = other.vendorExtensions_;
 	}
 	return *this;
 }
@@ -90,6 +107,13 @@ void ModelParameter::write(QXmlStreamWriter& writer) {
     // write the value of the element and close the tag
     writer.writeCharacters(value_);
     writer.writeEndElement(); // spirit:value
+
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:modelParameter
 }

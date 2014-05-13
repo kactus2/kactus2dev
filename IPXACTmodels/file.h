@@ -23,6 +23,7 @@
 #include <QSettings>
 
 class FileSet;
+class VendorExtension;
 
 /*! \brief Equals the spirit:file element in IP-Xact specification.
  *
@@ -40,6 +41,12 @@ public:
 
 		//! \brief The value of the define parameter.
 		QString value_;
+
+        /*!
+         * OPTIONAL spirit: vendorExtensions
+         * Define vendor extensions.
+         */
+        QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 
 		/*! \brief The constructor
 		 *
@@ -653,6 +660,12 @@ private:
 
 	//! \brief Pointer to the FileSet that contains this file.
 	FileSet* parent_;
+
+    /*!
+	 * OPTIONAL spirit: vendorExtensions
+	 * File vendor extensions.
+	 */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 #endif /* FILE_H_ */

@@ -24,6 +24,7 @@
 class Function;
 class FileBuilder;
 class File;
+class VendorExtension;
 
 /*! \brief Equals the spirit:fileSet element in IP-Xact specification.
  *
@@ -503,6 +504,12 @@ private:
 
 	//! \brief ID used to identify the file set on generators.
 	QString fileSetId_;
+
+    /*!
+	 * OPTIONAL spirit: vendorExtensions
+	 * Fileset vendor extensions.
+	 */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 #endif /* FILESET_H_ */

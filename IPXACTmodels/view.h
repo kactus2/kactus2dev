@@ -23,6 +23,7 @@
 
 class VLNV;
 class Parameter;
+class VendorExtension;
 
 /*! \brief Equals the spirit:view element in IP-Xact specification
  *
@@ -375,6 +376,12 @@ private:
 	 * OPTIONAL kactus2:topLevelViewRef
 	 */
 	QString topLevelViewRef_;
+
+    /*!
+	 * OPTIONAL spirit: vendorExtensions
+	 * View vendor extensions.
+	 */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 

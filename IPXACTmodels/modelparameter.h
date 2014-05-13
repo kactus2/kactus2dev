@@ -17,6 +17,8 @@
 #include <QXmlStreamWriter>
 #include <QStringList>
 
+class VendorExtension;
+
 /*! \brief Equals the spirit:modelParameter element in IP-Xact specification.
  *
  * ModelParameter desribes the properties for a single parameter that is
@@ -212,6 +214,12 @@ private:
 	 * Contains the attributes for the value element
 	 */
 	QMap<QString, QString> valueAttributes_;
+
+    /*!
+	 * OPTIONAL spirit: vendorExtensions
+	 * Model Parameter vendor extensions.
+	 */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 

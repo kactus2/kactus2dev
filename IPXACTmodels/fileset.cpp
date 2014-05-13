@@ -17,6 +17,7 @@
 #include <QObject>
 #include <QXmlStreamWriter>
 #include <QFileInfo>
+#include "XmlUtils.h"
 
 FileSet::FileSet(QDomNode & fileSetNode):
 nameGroup_(fileSetNode),
@@ -25,7 +26,9 @@ files_(),
 defaultFileBuilders_(),
 dependencies_(),
 functions_(),
-fileSetId_() {
+fileSetId_(),
+vendorExtensions_()
+{
 
 	for (int i = 0; i < fileSetNode.childNodes().count(); ++i) {
 		QDomNode tempNode = fileSetNode.childNodes().at(i);
@@ -60,7 +63,13 @@ fileSetId_() {
 
 				if (extensionNode.nodeName() == QString("kactus2:fileSetId")) {
 					fileSetId_ = extensionNode.childNodes().at(0).nodeValue();
-				}
+                }
+                else
+                {
+                    QSharedPointer<VendorExtension> extension = 
+                        XmlUtils::createVendorExtensionFromNode(extensionNode); 
+                    vendorExtensions_.append(extension);
+                }
 			}
 		}
 	}
@@ -72,7 +81,9 @@ nameGroup_(),
 	files_(), defaultFileBuilders_(),
 	dependencies_(), 
 	functions_(),
-fileSetId_() {
+    fileSetId_(),
+    vendorExtensions_()
+{
 
 	if (!group.isEmpty()) {
 		groups_.append(group);
@@ -88,7 +99,9 @@ nameGroup_(),
 	defaultFileBuilders_(), 
 	dependencies_(), 
 	functions_(),
-fileSetId_() {
+    fileSetId_(),
+    vendorExtensions_()
+ {
 }
 
 FileSet::FileSet( const FileSet &other ):
@@ -98,7 +111,9 @@ files_(),
 defaultFileBuilders_(),
 dependencies_(other.dependencies_),
 functions_(),
-fileSetId_(other.fileSetId_) {
+fileSetId_(other.fileSetId_),
+vendorExtensions_(other.vendorExtensions_)
+{
 
 	foreach (QSharedPointer<File> file, other.files_) {
 		if (file) {
@@ -131,6 +146,7 @@ FileSet & FileSet::operator=( const FileSet &other ) {
 		groups_ = other.groups_;
 		dependencies_ = other.dependencies_;
 		fileSetId_ = other.fileSetId_;
+        vendorExtensions_ = other.vendorExtensions_;
 
 		files_.clear();
 		foreach (QSharedPointer<File> file, other.files_) {
@@ -211,8 +227,15 @@ void FileSet::write(QXmlStreamWriter& writer) {
 	if (!fileSetId_.isEmpty()) {
 		writer.writeStartElement("spirit:vendorExtensions");
 		writer.writeTextElement("kactus2:fileSetId", fileSetId_);
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
 		writer.writeEndElement(); // spirit:vendorExtensions
 	}
+    else if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:fileSet
 }

@@ -13,6 +13,7 @@
 #include <QString>
 #include <QDomNamedNodeMap>
 #include <QXmlStreamWriter>
+#include "XmlUtils.h"
 
 View::View(QDomNode &viewNode): 
 nameGroup_(viewNode),
@@ -25,8 +26,9 @@ constraintSetRefs_(),
 parameters_(),
 hierarchyRef_(), 
 defaultFileBuilders_(),
-topLevelViewRef_() {
-
+topLevelViewRef_(),
+vendorExtensions_()
+{
 	for (int i = 0; i < viewNode.childNodes().count(); ++i) {
 		QDomNode tempNode = viewNode.childNodes().at(i);
 
@@ -92,14 +94,23 @@ topLevelViewRef_() {
 				QSharedPointer<FileBuilder>(new FileBuilder(tempNode)));
 		}
 
-		else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) {
-			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-				QDomNode extNode = tempNode.childNodes().at(j);
-				if (extNode.nodeName() == QString("kactus2:topLevelViewRef"))
-					topLevelViewRef_ = extNode.childNodes().at(0).nodeValue();
-			}
-		}
-	}
+        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
+        {
+            for (int j = 0; j < tempNode.childNodes().count(); ++j) 
+            {
+                QDomNode extNode = tempNode.childNodes().at(j);
+                if (extNode.nodeName() == QString("kactus2:topLevelViewRef"))
+                {
+                    topLevelViewRef_ = extNode.childNodes().at(0).nodeValue();
+                }
+                else
+                {
+                    QSharedPointer<VendorExtension> extension = XmlUtils::createVendorExtensionFromNode(extNode); 
+                    vendorExtensions_.append(extension);
+                }
+            }
+        }
+    }
 }
 
 View::View(const QString name): 
@@ -113,7 +124,9 @@ constraintSetRefs_(),
 parameters_(),
 hierarchyRef_(), 
 defaultFileBuilders_(),
-topLevelViewRef_() {
+topLevelViewRef_(),
+vendorExtensions_()
+{
 }
 
 View::View(): 
@@ -127,7 +140,9 @@ constraintSetRefs_(),
 parameters_(), 
 hierarchyRef_(), 
 defaultFileBuilders_(),
-topLevelViewRef_() {
+topLevelViewRef_(),
+vendorExtensions_()
+{
 }
 
 View::View( const View &other ):
@@ -141,8 +156,9 @@ constraintSetRefs_(other.constraintSetRefs_),
 parameters_(),
 hierarchyRef_(other.hierarchyRef_),
 defaultFileBuilders_(),
-topLevelViewRef_(other.topLevelViewRef_) {
-
+topLevelViewRef_(other.topLevelViewRef_),
+vendorExtensions_(other.vendorExtensions_)
+{
 	foreach (QSharedPointer<Parameter> param, other.parameters_) {
 		if (param) {
 			QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(
@@ -171,6 +187,7 @@ View & View::operator=( const View &other ) {
 		constraintSetRefs_ = other.constraintSetRefs_;
 		hierarchyRef_ = other.hierarchyRef_;
 		topLevelViewRef_ = other.topLevelViewRef_;
+        vendorExtensions_ = other.vendorExtensions_;
 
 		parameters_.clear();
 		foreach (QSharedPointer<Parameter> param, other.parameters_) {
@@ -275,8 +292,15 @@ void View::write(QXmlStreamWriter& writer) {
 		writer.writeStartElement("spirit:vendorExtensions");
 		writer.writeTextElement("kactus2:topLevelViewRef",
 			topLevelViewRef_);
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
 		writer.writeEndElement(); // spirit:vendorExtensions
 	}
+    else if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:view
 }

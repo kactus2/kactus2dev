@@ -19,35 +19,49 @@
 #include <QObject>
 #include <QXmlStreamWriter>
 #include <QFileInfo>
+#include "XmlUtils.h"
 
 File::Define::Define( const QString name, const QString value ):
-nameGroup_(name), value_(value) {
+nameGroup_(name), value_(value), vendorExtensions_() {
 }
 
 File::Define::Define( QDomNode& defineNode ):
-nameGroup_(defineNode), value_() {
+nameGroup_(defineNode), value_(), vendorExtensions_() {
 
 	for (int i = 0; i < defineNode.childNodes().count(); ++i) {
 		QDomNode tempNode = defineNode.childNodes().at(i);
 
 		if (tempNode.nodeName() == QString("spirit:value")) {
 			value_ = tempNode.childNodes().at(0).nodeValue();
-		}
+        }
+        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
+        {
+            int extensionCount = tempNode.childNodes().count();
+            for (int j = 0; j < extensionCount; ++j) {
+                QDomNode extensionNode = tempNode.childNodes().at(j);
+                QSharedPointer<VendorExtension> extension = 
+                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
+                vendorExtensions_.append(extension);
+            }
+        }
 	}
 }
 
-File::Define::Define(): nameGroup_(), value_() {
+File::Define::Define(): nameGroup_(), value_(), vendorExtensions_() {
 }
 
 File::Define::Define( const Define& other ):
 nameGroup_(other.nameGroup_),
-value_(other.value_) {
+value_(other.value_),
+vendorExtensions_(other.vendorExtensions_)
+{
 }
 
 File::Define& File::Define::operator=( const Define& other ) {
 	if (this != &other) {
 		nameGroup_ = other.nameGroup_;
 		value_ = other.value_;
+        vendorExtensions_ = other.vendorExtensions_;
 	}
 	return *this;
 }
@@ -96,8 +110,9 @@ description_(),
 buildcommand_(),
 defines_(), 
 pendingHash_(),
-parent_(parent) {
-
+parent_(parent),
+vendorExtensions_()
+{
 	// get the attributes for the file element
 	QDomNamedNodeMap attributeMap = fileNode.attributes();
 	for (int j = 0; j < attributeMap.size(); ++j) {
@@ -204,10 +219,15 @@ parent_(parent) {
                         }
                     }
                 }
+                else 
+                {
+                    QSharedPointer<VendorExtension> extension = 
+                        XmlUtils::createVendorExtensionFromNode(extensionNode); 
+                    vendorExtensions_.append(extension);
+                }
             }
         }
 	}
-	return;
 }
 
 File::File(const QString filePath, FileSet* parent): 
@@ -227,7 +247,9 @@ imageTypes_(),
 description_(),
 buildcommand_(), 
 defines_(), 
-parent_(parent)  {
+parent_(parent),
+vendorExtensions_()
+{
 
 }
 
@@ -250,7 +272,9 @@ buildcommand_(),
 defines_(), 
 lastHash_(),
 pendingHash_(),
-parent_(parent)  {
+parent_(parent),
+vendorExtensions_()
+{
 }
 
 File::File( const File &other, FileSet* parent ):
@@ -272,7 +296,9 @@ buildcommand_(),
 defines_(other.defines_),
 lastHash_(other.lastHash_),
 pendingHash_(),
-parent_(parent) {
+parent_(parent),
+vendorExtensions_(other.vendorExtensions_)
+{
 
 	if (other.buildcommand_) {
 		buildcommand_ = QSharedPointer<BuildCommand>(
@@ -301,6 +327,7 @@ File & File::operator=( const File &other) {
         lastHash_ = other.lastHash_;
         pendingHash_ = QString();
 		parent_ = other.parent_;
+        vendorExtensions_ = other.vendorExtensions_;
 
 		if (other.buildcommand_) {
 			buildcommand_ = QSharedPointer<BuildCommand>(
@@ -402,6 +429,13 @@ void File::write(QXmlStreamWriter& writer) {
 		writer.writeTextElement("spirit:description", i->nameGroup_.description_);
 		writer.writeTextElement("spirit:value", i->value_);
 
+        if (!i->vendorExtensions_.isEmpty())
+        {
+            writer.writeStartElement("spirit:vendorExtensions");
+            XmlUtils::writeVendorExtensions(writer, i->vendorExtensions_);
+            writer.writeEndElement(); // spirit:vendorExtensions
+        }
+
 		writer.writeEndElement(); // spirit:define
 	}
 
@@ -423,9 +457,19 @@ void File::write(QXmlStreamWriter& writer) {
     if (!lastHash_.isEmpty())
     {
         writer.writeStartElement("spirit:vendorExtensions");
+
         writer.writeStartElement("kactus2:extensions");
         writer.writeTextElement("kactus2:hash", lastHash_);
         writer.writeEndElement(); // kactus2:extensions
+
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
+    else if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
         writer.writeEndElement(); // spirit:vendorExtensions
     }
 
