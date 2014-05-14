@@ -268,6 +268,12 @@ public:
          */
         bool offPage;
 
+        /*!
+	     * OPTIONAL (spirit: vendorExtensions)
+	     * HierConnection vendor extensions.
+	     */
+        QList<QSharedPointer<VendorExtension> > vendorExtensions_;
+
 		/*! \brief The constructor
 		*
 		* \param hierConnectionNode A reference to a QDomNode where

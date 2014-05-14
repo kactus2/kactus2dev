@@ -18,6 +18,7 @@ class AdHocPortItem;
 class HWConnectionEndpoint;
 class HWColumn;
 class LibraryInterface;
+class VendorExtension;
 
 /*! \brief HWComponentItem represents graphically an IP-XACT component instance
  *
@@ -154,6 +155,13 @@ public:
     void setAdHocPortPositions(QMap<QString, QPointF> const& positions);
 
     /*!
+     *  Sets the vendor extensions for the instance.
+     *
+     *      @param [in] vendorExtensions   The vendor extensions to set.
+     */
+    void setVendorExtensions(QList<QSharedPointer<VendorExtension> > const& vendorExtensions);
+
+    /*!
      *  Returns the bus interface positions.
      */
     QMap<QString, QPointF> getBusInterfacePositions() const;
@@ -162,6 +170,13 @@ public:
      *  Returns the ad-hoc port positions.
      */
     QMap<QString, QPointF> getAdHocPortPositions() const;
+
+    /*!
+     *  Returns the instance vendor extensions.
+     *
+     *      @return The vendor extensions.
+     */
+    QList<QSharedPointer<VendorExtension> > getVendorExtensions() const;
 
 signals:
     //! Emitted when the ad-hoc visibilities have been changed.
@@ -201,7 +216,7 @@ private:
      *  Updates the size of the component based on the port positions.
      */
     void updateSize();
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -225,6 +240,9 @@ private:
     QList<HWConnectionEndpoint*> rightPorts_;
     bool connUpdateDisabled_;
     QPointF oldPos_;
+
+    //! Component instance vendor extensions.
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 #endif // HWCOMPONENTITEM_H

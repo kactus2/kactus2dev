@@ -22,6 +22,8 @@
 #include <QDomNode>
 #include <QXmlStreamWriter>
 
+class VendorExtension;
+
 //-----------------------------------------------------------------------------
 //! IP-XACT component instance class.
 //-----------------------------------------------------------------------------
@@ -283,6 +285,20 @@ public:
 	 */
 	 QString getUuid() const;
 
+     /*!
+      *  Sets the vendor extensions of the component instance.
+      *
+      *      @param [in] vendorExtensions   The vendor extensions to set.
+      */
+     void setVendorExtensions(QList<QSharedPointer<VendorExtension> > const& vendorExtensions);
+
+    /*!
+     *  Returns the vendor extensions of the component instance.
+     *
+     *      @return The vendor extensions.
+     */
+    QList<QSharedPointer<VendorExtension> > getVendorExtensions() const;
+
 private:
     /*!
     *  Parses the property values from the given XML node.
@@ -344,6 +360,12 @@ private:
 
 	//! \brief The unique id used to identify the instance.
 	 QString uuid_;
+
+    /*!
+     * OPTIONAL spirit: vendorExtensions
+     * Component instance vendor extensions.
+     */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 //-----------------------------------------------------------------------------

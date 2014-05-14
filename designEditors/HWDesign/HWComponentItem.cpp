@@ -58,7 +58,8 @@ HWComponentItem::HWComponentItem(LibraryInterface* lh_,
       portLayout_(new VCollisionLayout<HWConnectionEndpoint>(SPACING)),
       leftPorts_(),
       rightPorts_(),
-      connUpdateDisabled_(false)
+      connUpdateDisabled_(false),
+      vendorExtensions_()
 {
     setFlag(ItemIsMovable);
     setAdHocData(component, portAdHocVisibilities);
@@ -734,6 +735,14 @@ void HWComponentItem::setAdHocPortPositions(QMap<QString, QPointF> const& positi
 }
 
 //-----------------------------------------------------------------------------
+// Function: HWComponentItem::setVendorExtensions()
+//-----------------------------------------------------------------------------
+void HWComponentItem::setVendorExtensions(QList<QSharedPointer<VendorExtension> > const& vendorExtensions)
+{
+    vendorExtensions_ = vendorExtensions;
+}
+
+//-----------------------------------------------------------------------------
 // Function: HWComponentItem::getBusInterfacePositions()
 //-----------------------------------------------------------------------------
 QMap<QString, QPointF> HWComponentItem::getBusInterfacePositions() const
@@ -769,4 +778,12 @@ QMap<QString, QPointF> HWComponentItem::getAdHocPortPositions() const
     }
 
     return positions;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::getVendorExtensions()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<VendorExtension> > HWComponentItem::getVendorExtensions() const
+{
+    return vendorExtensions_;
 }

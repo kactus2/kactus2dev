@@ -288,6 +288,8 @@ void Design::write(QFile& file)
 				writer.writeEndElement();
 			}
 
+            XmlUtils::writeVendorExtensions(writer, hier.vendorExtensions_);
+
 			writer.writeEndElement();
 
 			writer.writeEndElement();
@@ -1533,7 +1535,8 @@ bool Design::Interconnection::isValid( const QStringList& instanceNames ) const 
 }
 
 Design::HierConnection::HierConnection(QDomNode &hierConnectionNode)
-    : interfaceRef(), interface_(QString(""), QString("")), position(), route(), offPage(false)
+    : interfaceRef(), interface_(QString(""), QString("")), position(), route(), offPage(false),
+      vendorExtensions_()
 {
     QDomNamedNodeMap attributes = hierConnectionNode.attributes();
 
@@ -1580,6 +1583,12 @@ Design::HierConnection::HierConnection(QDomNode &hierConnectionNode)
                         }
                     }
                 }
+                else
+                {
+                    QSharedPointer<VendorExtension> extension = 
+                        XmlUtils::createVendorExtensionFromNode(childNode); 
+                    vendorExtensions_.append(extension);
+                }
             }
         }
     }
@@ -1592,7 +1601,7 @@ Design::HierConnection::HierConnection(QString interfaceRef_,
                                        QList<QPointF> const& route,
                                        bool offPage)
     : interfaceRef(interfaceRef_), interface_(interface_),
-      position(position), direction(direction), route(route), offPage(offPage)
+      position(position), direction(direction), route(route), offPage(offPage), vendorExtensions_()
 {
 }
 
@@ -1602,7 +1611,9 @@ interface_(other.interface_),
 position(other.position),
 direction(other.direction),
 route(other.route),
-offPage(other.offPage) {
+offPage(other.offPage),
+vendorExtensions_(other.vendorExtensions_)
+{
 }
 
 Design::HierConnection& Design::HierConnection::operator=( const HierConnection& other ) {
@@ -1613,6 +1624,7 @@ Design::HierConnection& Design::HierConnection::operator=( const HierConnection&
 		direction = other.direction;
 		route = other.route;
         offPage = other.offPage;
+        vendorExtensions_ = other.vendorExtensions_;
 	}
 	return *this;
 }

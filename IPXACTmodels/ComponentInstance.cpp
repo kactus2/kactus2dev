@@ -24,7 +24,7 @@
 ComponentInstance::ComponentInstance(QString instanceName, QString displayName,
                                      QString description, VLNV const& componentRef,
                                      QPointF const& position,
-												 const QString& uuid)
+									 const QString& uuid)
     : instanceName_(instanceName),
       displayName_(displayName),
       desc_(description),
@@ -39,7 +39,8 @@ ComponentInstance::ComponentInstance(QString instanceName, QString displayName,
       comInterfacePositions_(),
       portAdHocVisibilities_(),
       swPropertyValues_(),
-		uuid_(uuid)
+	  uuid_(uuid),
+      vendorExtensions_()
 {
 	if (uuid_.isEmpty()) {
 		uuid_ = QUuid::createUuid().toString();
@@ -64,7 +65,8 @@ ComponentInstance::ComponentInstance(ComponentInstance const& other)
       comInterfacePositions_(other.comInterfacePositions_),
       portAdHocVisibilities_(other.portAdHocVisibilities_),
       swPropertyValues_(other.swPropertyValues_),
-		uuid_(other.uuid_)
+	  uuid_(other.uuid_),
+      vendorExtensions_(other.vendorExtensions_)
 {
 	// make sure instances always have uuid
 	if (uuid_.isEmpty()) {
@@ -90,7 +92,8 @@ ComponentInstance::ComponentInstance(QDomNode& node)
       comInterfacePositions_(),
       portAdHocVisibilities_(),
       swPropertyValues_(),
-		uuid_()
+	  uuid_(),
+      vendorExtensions_()
 {
     QDomNodeList nodes = node.childNodes();
 
@@ -166,9 +169,14 @@ ComponentInstance::ComponentInstance(QDomNode& node)
                 {
                     parsePropertyValues(childNode);
                 }
-					 else if (childNode.nodeName() == "kactus2:uuid") {
-						 uuid_ = childNode.childNodes().at(0).nodeValue();
-					 }
+				else if (childNode.nodeName() == "kactus2:uuid") {
+					uuid_ = childNode.childNodes().at(0).nodeValue();
+				}
+                else
+                {
+                    QSharedPointer<VendorExtension> extension = XmlUtils::createVendorExtensionFromNode(childNode); 
+                    vendorExtensions_.append(extension);
+                }
             }
         }
     }
@@ -246,6 +254,8 @@ void ComponentInstance::write(QXmlStreamWriter& writer) const
 
 	 // write the id value
 	 writer.writeTextElement("kactus2:uuid", uuid_);
+
+    XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
 
     writer.writeEndElement(); // spirit:vendorExtensions
     writer.writeEndElement(); // spirit:componentInstance
@@ -625,3 +635,21 @@ QString ComponentInstance::getConfElementValue( const QString& confElementName )
 QString ComponentInstance::getUuid() const {
 	return uuid_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstance::setVendorExtensions()
+//-----------------------------------------------------------------------------
+void ComponentInstance::setVendorExtensions(QList<QSharedPointer<VendorExtension> > const& vendorExtensions)
+{
+    vendorExtensions_ = vendorExtensions;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstance::getVendorExtensions()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<VendorExtension> > ComponentInstance::getVendorExtensions() const
+{
+    return vendorExtensions_;
+}
+
+

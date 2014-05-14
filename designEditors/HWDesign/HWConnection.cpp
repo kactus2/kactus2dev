@@ -30,7 +30,7 @@ HWConnection::HWConnection(ConnectionEndpoint* endpoint1,
                                                QString const& description,
                                                DesignDiagram* parent)
     : GraphicsConnection(endpoint1, endpoint2, autoConnect, name, displayName, description, parent), 
-      widthLabel_(0)
+      widthLabel_(0), vendorExtensions_()
 {
     if (autoConnect)
     {
@@ -47,7 +47,7 @@ HWConnection::HWConnection(QPointF const& p1, QVector2D const& dir1,
 											   QString const& description,
 											   DesignDiagram* parent)
     : GraphicsConnection(p1, dir1, p2, dir2, displayName, description, parent),
-      widthLabel_(0)
+      widthLabel_(0), vendorExtensions_()
 {
 }
 
@@ -310,6 +310,22 @@ int HWConnection::calculateBusWidth() const
 bool HWConnection::isBus() const
 {
     return endpoint1()->isBus();
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWConnection::setVendorExtensions()
+//-----------------------------------------------------------------------------
+void HWConnection::setVendorExtensions(QList<QSharedPointer<VendorExtension> > const& vendorExtensions)
+{
+    vendorExtensions_ = vendorExtensions;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWConnection::getVendorExtensions()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<VendorExtension> > HWConnection::getVendorExtensions() const
+{
+    return vendorExtensions_;
 }
 
 //-----------------------------------------------------------------------------

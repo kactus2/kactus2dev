@@ -108,6 +108,24 @@ public:
 
     int type() const { return Type; }
 
+    /*!
+     *  Sets the vendor extensions for the connection.
+     *
+     *      @param [in] vendorExtensions   The vendor extensions to set.
+     *
+     *      @remark     Should be used only for hierConnections.
+     */
+    void setVendorExtensions(QList<QSharedPointer<VendorExtension> > const& vendorExtensions);
+
+    /*!
+     *  Returns the vendor extensions of the connection.
+     *
+     *      @return     The vendor extensions of the connection.
+     *
+     *      @remark     Should be used only for hierConnections.
+     */
+    QList<QSharedPointer<VendorExtension> > getVendorExtensions() const;
+
 private:
 
     //-----------------------------------------------------------------------------
@@ -147,6 +165,11 @@ private:
 
     //! The ad-hoc port bounds.
     AdHocPortBound portBounds_[2];
+
+    /*!
+     * HierConnection vendor extensions.
+     */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 #endif // HWCONNECTION_H

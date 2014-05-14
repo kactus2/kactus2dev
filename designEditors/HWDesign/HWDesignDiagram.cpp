@@ -172,6 +172,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
         item->setBusInterfacePositions(instance.getBusInterfacePositions(), true);
         item->setAdHocPortPositions(instance.getAdHocPortPositions());
+        item->setVendorExtensions(instance.getVendorExtensions());
 
         // Check if the position is not found.
         if (instance.getPosition().isNull())
@@ -360,6 +361,8 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         {
             diagConn->setVisible(false);
         }
+
+        diagConn->setVendorExtensions(hierConn.vendorExtensions_);
 
         connect(diagConn, SIGNAL(errorMessage(QString const&)), this,
             SIGNAL(errorMessage(QString const&)));
@@ -626,6 +629,7 @@ QSharedPointer<Design> HWDesignDiagram::createDesign(const VLNV &vlnv) const
 			// save the configurable element values to the design
 			instance.setConfigurableElementValues(comp->getConfigurableElements());
             instance.setPortAdHocVisibilities(comp->getPortAdHocVisibilities());
+            instance.setVendorExtensions(comp->getVendorExtensions());
 
             // Save the port positions.
             QListIterator<QSharedPointer<BusInterface> >
@@ -685,13 +689,14 @@ QSharedPointer<Design> HWDesignDiagram::createDesign(const VLNV &vlnv) const
 
                     if (hierPort->getBusInterface() != 0)
                     {
-                        hierConnections.append(
-					        Design::HierConnection(hierPort->name(),
-                                                   Design::Interface(compPort->encompassingComp()->name(),
-					                                                 compPort->name()),
-                                                   hierPort->scenePos(), hierPort->getDirection(),
-                                                   conn->route(),
-                                                   conn->endpoint1()->type() == OffPageConnectorItem::Type));
+                       Design::HierConnection hierConnection = Design::HierConnection(hierPort->name(),
+                            Design::Interface(compPort->encompassingComp()->name(),
+                            compPort->name()),
+                            hierPort->scenePos(), hierPort->getDirection(),
+                            conn->route(),
+                            conn->endpoint1()->type() == OffPageConnectorItem::Type);
+                        hierConnection.vendorExtensions_ = conn->getVendorExtensions();
+                        hierConnections.append(hierConnection);
                     }
 			    }
             }
