@@ -15,12 +15,13 @@
 #include <QSharedPointer>
 #include <QObject>
 #include <QXmlStreamWriter>
+#include "XmlUtils.h"
 
 // the constructor
 Generator::Generator(QDomNode &generatorNode): hidden_(false),
 name_(), displayName_(), description_(),
-phase_(-1), parameters_(), apiType_(Generator::NONE), generatorExe_() {
-
+phase_(-1), parameters_(), apiType_(Generator::NONE), generatorExe_(), vendorExtensions_()
+{
 	// get attributes for the componentGenerator
 	QDomNamedNodeMap attributeMap = generatorNode.attributes();
 	QString hidden = attributeMap.namedItem(QString("spirit:hidden")).
@@ -69,20 +70,17 @@ phase_(-1), parameters_(), apiType_(Generator::NONE), generatorExe_() {
 		else if (tempNode.nodeName() == QString("spirit:description")) {
 			description_ = tempNode.childNodes().at(0).nodeValue();
 		}
+        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
+        {
+            int extensionCount = tempNode.childNodes().count();
+            for (int j = 0; j < extensionCount; ++j) {
+                QDomNode extensionNode = tempNode.childNodes().at(j);
+                QSharedPointer<VendorExtension> extension = 
+                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
+                vendorExtensions_.append(extension);
+            }
+        }
 	}
-
-	// if mandatory fields are missing
-
-// 	if (name_.isNull() ) {
-// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
-// 				" generator"));
-// 	}
-// 
-// 	if (generatorExe_.isNull()) {
-// 		throw Parse_error(QObject::tr("Mandatory element spirit:generatorExe "
-// 				"missing in generator"));
-// 	}
-	return;
 }
 
 Generator::Generator( const Generator &other ):
@@ -93,8 +91,9 @@ description_(other.description_),
 phase_(other.phase_),
 parameters_(),
 apiType_(other.apiType_),
-generatorExe_(other.generatorExe_) {
-
+generatorExe_(other.generatorExe_),
+vendorExtensions_(other.vendorExtensions_)
+{
 	foreach (QSharedPointer<Parameter> param, other.parameters_) {
 		if (param) {
 			QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(
@@ -113,6 +112,7 @@ Generator & Generator::operator=( const Generator &other ) {
 		phase_ = other.phase_;
 		apiType_ = other.apiType_;
 		generatorExe_ = other.generatorExe_;
+        vendorExtensions_ = other.vendorExtensions_;
 
 		parameters_.clear();
 		foreach (QSharedPointer<Parameter> param, other.parameters_) {
@@ -174,6 +174,13 @@ void Generator::write(QXmlStreamWriter& writer) {
 	}
 
 	writer.writeTextElement("spirit:generatorExe", generatorExe_);
+
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:generator
 }

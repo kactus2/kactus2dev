@@ -16,6 +16,7 @@
 #include <QXmlStreamWriter>
 
 class Parameter;
+class VendorExtension;
 
 /*! \brief Equals the spirit:generator element in IP-Xact specification.
  *
@@ -218,6 +219,12 @@ protected:
 	 * Contains the path to the generator executable.
 	 */
 	QString generatorExe_;
+
+    /*!
+     * OPTIONAL spirit: vendorExtensions
+     * Generator vendor extensions.
+     */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 #endif /* GENERATOR_H_ */
