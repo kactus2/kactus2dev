@@ -18,6 +18,7 @@
 #include <QXmlStreamWriter>
 
 class Parameter;
+class VendorExtension;
 
 /*! \brief Equals the spirit:cpu element in IP-Xact specification
  *
@@ -170,6 +171,12 @@ private:
 	 * OPTIONAL spirit:parameters
 	 */
 	QList<QSharedPointer<Parameter> > parameters_;
+
+    /*!
+     * OPTIONAL spirit: vendorExtensions
+     * Cpu vendor extensions.
+     */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 
 };
 

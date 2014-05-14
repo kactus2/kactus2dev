@@ -17,10 +17,11 @@
 #include <QDomNamedNodeMap>
 #include <QObject>
 #include <QXmlStreamWriter>
+#include "XmlUtils.h"
 
 // the struct constructor
 Function::Argument::Argument(QDomNode &argNode): name_(QString()),
-value_(QString()), dataType_(QString()) {
+value_(QString()), dataType_(QString()), vendorExtensions_() {
 
 	// get the spirit:dataType attribute
 	QDomNamedNodeMap attributeMap = argNode.attributes();
@@ -36,14 +37,18 @@ value_(QString()), dataType_(QString()) {
 		else if (tempNode.nodeName() == QString("spirit:value")) {
 			value_ = tempNode.childNodes().at(0).nodeValue();
 		}
-	}
 
-	// if mandatory fields are missing
-// 	if (name_.isNull() || value_.isNull() || dataType_.isNull() ) {
-// 		throw Parse_error(QObject::tr("Mandatory element missing in "
-// 				"spirit:argument"));
-// 	}
-	return;
+        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
+        {
+            int extensionCount = tempNode.childNodes().count();
+            for (int j = 0; j < extensionCount; ++j) {
+                QDomNode extensionNode = tempNode.childNodes().at(j);
+                QSharedPointer<VendorExtension> extension = 
+                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
+                vendorExtensions_.append(extension);
+            }
+        }
+    }
 }
 
 bool Function::Argument::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
@@ -103,18 +108,6 @@ Function::SourceFile::SourceFile(QDomNode &sourceFileNode): sourceName_(),
 			userFileType_ = tempNode.childNodes().at(0).nodeValue();
 		}
 	}
-
-	// if mandatory fields are missing
-// 	if (sourceName_.isEmpty() ||
-// 			(fileType_.isEmpty() && userFileType_.isEmpty()) ) {
-// 		throw Parse_error(QObject::tr("Mandatory element missing in spirit:"
-// 				"sourceFile"));
-// 	}
-// 	else if (!fileType_.isEmpty() && !userFileType_.isEmpty()) {
-// 		throw Parse_error(QObject::tr("Both spirit:fileType and spirit:"
-// 				"userFileType elements can not be defined in spirit:sourceFile"));
-// 	}
-	return;
 }
 
 Function::SourceFile::SourceFile(): 
@@ -197,13 +190,6 @@ arguments_(), disabled_(false), disabledAttributes_(), sourceFiles_() {
 					tempNode)));
 		}
 	}
-
-	// if mandatory fields are missing
-// 	if (fileRef_.isNull()) {
-// 		throw Parse_error(QObject::tr("Mandatory element spirit:fileRef "
-// 				"missing in spirit:function"));
-// 	}
-	return;
 }
 
 Function::Function( const Function &other ):
@@ -290,6 +276,13 @@ void Function::write(QXmlStreamWriter& writer) {
 
 		writer.writeTextElement("spirit:name", arguments_.at(i)->name_);
 		writer.writeTextElement("spirit:value", arguments_.at(i)->value_);
+
+        if (!arguments_.at(i)->vendorExtensions_.isEmpty())
+        {
+            writer.writeStartElement("spirit:vendorExtensions");
+            XmlUtils::writeVendorExtensions(writer, arguments_.at(i)->vendorExtensions_);
+            writer.writeEndElement(); // spirit:vendorExtensions
+        }
 
 		writer.writeEndElement(); // spirit:argument
 	}

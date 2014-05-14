@@ -15,6 +15,7 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
+#include "XmlUtils.h"
 
 
 //-----------------------------------------------------------------------------
@@ -23,13 +24,17 @@
 Cpu::Cpu():
 nameGroup_(),
 addressSpaceRefs_(),
-parameters_() {
+parameters_(),
+vendorExtensions_()
+{
 }
 
 Cpu::Cpu(QDomNode &cpuNode): 
 nameGroup_(cpuNode), 
 addressSpaceRefs_(),
-parameters_() {
+parameters_(),
+vendorExtensions_()
+ {
 
 	for (int i = 0; i < cpuNode.childNodes().count(); ++i) {
 		QDomNode tempNode = cpuNode.childNodes().at(i);
@@ -63,14 +68,25 @@ parameters_() {
 				}
 			}
 		}
+        else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
+        {
+            int extensionCount = tempNode.childNodes().count();
+            for (int j = 0; j < extensionCount; ++j) {
+                QDomNode extensionNode = tempNode.childNodes().at(j);
+                QSharedPointer<VendorExtension> extension = 
+                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
+                vendorExtensions_.append(extension);
+            }
+        }
 	}
 }
 
 Cpu::Cpu( const Cpu &other ):
 nameGroup_(other.nameGroup_),
 addressSpaceRefs_(other.addressSpaceRefs_),
-parameters_() {
-
+parameters_(),
+vendorExtensions_(other.vendorExtensions_)
+{
 	foreach (QSharedPointer<Parameter> param, other.parameters_) {
 		if (param) {
 			QSharedPointer<Parameter> copy(new Parameter(*param.data()));
@@ -83,6 +99,7 @@ Cpu & Cpu::operator=( const Cpu &other ) {
 	if (this != &other) {
 		nameGroup_ = other.nameGroup_;
 		addressSpaceRefs_ = other.addressSpaceRefs_;
+        vendorExtensions_ = other.vendorExtensions_;
 
 		parameters_.clear();
 		foreach (QSharedPointer<Parameter> param, other.parameters_) {
@@ -131,6 +148,13 @@ void Cpu::write(QXmlStreamWriter& writer) {
 		}
 		writer.writeEndElement(); // spirit:parameters
 	}
+
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:cpu
 	return;

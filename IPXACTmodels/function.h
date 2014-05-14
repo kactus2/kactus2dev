@@ -19,6 +19,8 @@
 #include <QXmlStreamWriter>
 #include <QStringList>
 
+class VendorExtension;
+
 /*! \brief Equals the spirit:function element in IP-Xact specification
  *
  * Specifies information about a software function.
@@ -47,6 +49,12 @@ public:
 		 * MANDATORY attribute spirit:dataType
 		 */
 		QString dataType_;
+
+        /*!
+         * OPTIONAL spirit: vendorExtensions
+         * Argument vendor extensions.
+         */
+        QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 
 		/*! \brief The constructor
 		 *
