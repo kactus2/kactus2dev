@@ -18,10 +18,10 @@ SUBDIRS += Kactus2.pro \
 	Plugins/PadsPartGenerator/PadsPartGenerator.pro 
 
 unix:upgrade.path = /usr/share/kactus2
-unix:upgrade.files = ./releaseFiles/upgrade.cfg
+unix:upgrade.files = ./Administrative/releaseFiles/upgrade.cfg
 
 unix:doc.path = /usr/share/kactus2/doc
-unix:doc.files = ./releaseFiles/*.txt
+unix:doc.files = ./Administrative/releaseFiles/*.txt
 
 unix:help.path = /usr/share/kactus2/help
 unix:help.files = ./Help/Kactus2Help.qch ./Help/Kactus2Help.qhc
@@ -29,17 +29,17 @@ unix:help.files = ./Help/Kactus2Help.qch ./Help/Kactus2Help.qhc
 unix:config.path = /etc/xdg/TUT
 
 UNAME = $$system(uname -m)
-equals(UNAME, x86_64): unix:config.extra = cp ./releaseFiles/DefaultSettingsLinux.ini /etc/xdg/TUT/Kactus2.ini; (test -d /usr/lib64 && ln -f -s /usr/bin/Kactus2 /usr/lib64/libKactus2.so) || (test -d /lib/x86_64-linux-gnu && ln -f -s /usr/bin/Kactus2 /lib/x86_64-linux-gnu/libKactus2.so)
-!equals(UNAME, x86_64): unix:config.extra = cp ./releaseFiles/DefaultSettingsLinux.ini /etc/xdg/TUT/Kactus2.ini; ln -f -s /usr/bin/Kactus2 /usr/lib/libKactus2.so
+equals(UNAME, x86_64): unix:config.extra = cp ./Administrative/releaseFiles/DefaultSettingsLinux.ini /etc/xdg/TUT/Kactus2.ini; (test -d /usr/lib64 && ln -f -s /usr/bin/Kactus2 /usr/lib64/libKactus2.so) || (test -d /lib/x86_64-linux-gnu && ln -f -s /usr/bin/Kactus2 /lib/x86_64-linux-gnu/libKactus2.so)
+!equals(UNAME, x86_64): unix:config.extra = cp ./Administrative/releaseFiles/DefaultSettingsLinux.ini /etc/xdg/TUT/Kactus2.ini; ln -f -s /usr/bin/Kactus2 /usr/lib/libKactus2.so
 
 unix:library.path = /usr/share/kactus2/library
-unix:library.files = ./releaseFiles/Library/*
+unix:library.files = ./Administrative/releaseFiles/Library/*
 
 unix:icons.path = /usr/share/pixmaps
-unix:icons.files = ./releaseFiles/kactus2.xpm ./releaseFiles/kactus2.png
+unix:icons.files = ./Administrative/releaseFiles/kactus2.xpm ./Administrative/releaseFiles/kactus2.png
 
 unix:desktop.path = /usr/share/applications
-unix:desktop.files = ./releaseFiles/kactus2.desktop
+unix:desktop.files = ./Administrative/releaseFiles/kactus2.desktop
 
 INSTALLS += help doc upgrade config library icons desktop
 

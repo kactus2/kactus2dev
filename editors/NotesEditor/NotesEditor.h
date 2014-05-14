@@ -12,7 +12,7 @@
 #ifndef NOTESEDITOR_H
 #define NOTESEDITOR_H
 
-#include <library\LibraryManager\vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <QSplitter>
 #include <QTextEdit>

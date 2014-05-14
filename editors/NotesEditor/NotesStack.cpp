@@ -12,7 +12,7 @@
 #include "NotesStack.h"
 #include "NotesEditor.h"
 
-#include <library\LibraryManager\vlnv.h>
+#include <library/LibraryManager/vlnv.h>
 
 #include <QRegExp>
 #include <QVBoxLayout>
