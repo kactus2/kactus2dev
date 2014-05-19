@@ -26,7 +26,6 @@ wire_(),
 transactional_(),
 portAccessHandle_(), 
 portAccessType_(),
-remoteEndpointName_(),
 adHocVisible_(false),
 defaultPos_(),
 vendorExtensions_()
@@ -64,29 +63,7 @@ vendorExtensions_()
 		}
         else if (tempNode.nodeName() == QString("spirit:vendorExtensions"))
         {
-            for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-
-                if (tempNode.childNodes().at(j).nodeName() == QString("kactus2:remoteEndpointName"))
-                {
-                    remoteEndpointName_ = tempNode.childNodes().at(j).firstChild().nodeValue();
-                }
-                else if (tempNode.childNodes().at(j).nodeName() == QString("kactus2:adHocVisible"))
-                {
-                    adHocVisible_ = true;
-                }
-                else if (tempNode.childNodes().at(j).nodeName() == "kactus2:position")
-                {
-                    QDomNode posNode = tempNode.childNodes().at(j);
-                    defaultPos_.setX(posNode.attributes().namedItem("x").nodeValue().toInt());
-                    defaultPos_.setY(posNode.attributes().namedItem("y").nodeValue().toInt());
-                }
-                else
-                {                    
-                    QSharedPointer<VendorExtension> extension = 
-                        XmlUtils::createVendorExtensionFromNode(tempNode.childNodes().at(j)); 
-                    vendorExtensions_.append(extension);
-                }
-            }
+            parseVendorExtensions(tempNode);
         }
     }
 }
@@ -100,7 +77,6 @@ wire_(),
 transactional_(other.transactional_),
 portAccessHandle_(other.portAccessHandle_),
 portAccessType_(other.portAccessType_),
-remoteEndpointName_(other.remoteEndpointName_),
 adHocVisible_(other.adHocVisible_),
 defaultPos_(other.defaultPos_),
 vendorExtensions_()
@@ -122,7 +98,6 @@ wire_(),
 transactional_(),
 portAccessHandle_(other.portAccessHandle_),
 portAccessType_(other.portAccessType_),
-remoteEndpointName_(other.remoteEndpointName_),
 adHocVisible_(other.adHocVisible_),
 defaultPos_(other.defaultPos_),
 vendorExtensions_(other.vendorExtensions_)
@@ -147,7 +122,6 @@ Port & Port::operator=( const Port &other ) {
 		portType_ = other.portType_;
 		portAccessHandle_ = other.portAccessHandle_;
 		portAccessType_ = other.portAccessType_;
-        remoteEndpointName_ = other.remoteEndpointName_;
         adHocVisible_ = other.adHocVisible_;
         defaultPos_ = other.defaultPos_;
         vendorExtensions_ = other.vendorExtensions_;
@@ -159,12 +133,14 @@ Port & Port::operator=( const Port &other ) {
 		else
 			wire_ = QSharedPointer<Wire>();
 
-		if (other.transactional_) {
-			transactional_ = QSharedPointer<Transactional>(
-				new Transactional(*other.transactional_.data()));
+		if (other.transactional_) 
+        {
+			transactional_ = QSharedPointer<Transactional>(new Transactional(*other.transactional_.data()));
 		}
 		else
+        {
 			transactional_ = QSharedPointer<Transactional>();
+        }
 	}
 	return *this;
 }
@@ -179,7 +155,6 @@ wire_(),
 transactional_(),
 portAccessHandle_(),
 portAccessType_(),
-remoteEndpointName_(),
 adHocVisible_(false),
 defaultPos_(),
 vendorExtensions_()
@@ -303,12 +278,6 @@ void Port::write(QXmlStreamWriter& writer, const QStringList& viewNames)
 	}
 
     writer.writeStartElement("spirit:vendorExtensions");
-
-    // Write remote endpoint name if specified.
-    if (!remoteEndpointName_.isEmpty())
-    {
-        writer.writeTextElement("kactus2:remoteEndpointName", remoteEndpointName_);
-    }
 
     if (adHocVisible_)
     {
@@ -681,22 +650,6 @@ void Port::useDefaultVhdlTypes() {
 }
 
 //-----------------------------------------------------------------------------
-// Function: setRemoteEndpointName()
-//-----------------------------------------------------------------------------
-void Port::setRemoteEndpointName(QString const& remoteName)
-{
-    remoteEndpointName_ = remoteName;
-}
-
-//-----------------------------------------------------------------------------
-// Function: getRemoteEndpointName()
-//-----------------------------------------------------------------------------
-QString const& Port::getRemoteEndpointName() const
-{
-    return remoteEndpointName_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: Port::setAdHocVisible()
 //-----------------------------------------------------------------------------
 void Port::setAdHocVisible(bool visible)
@@ -727,3 +680,31 @@ QPointF const& Port::getDefaultPos() const
 {
     return defaultPos_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: Port::parseVendorExtensions()
+//-----------------------------------------------------------------------------
+void Port::parseVendorExtensions(QDomNode const& extensionsNode)
+{
+    for (int i = 0; i < extensionsNode.childNodes().count(); ++i) 
+    {        
+        QDomNode extensionNode = extensionsNode.childNodes().at(i);
+
+        if (extensionNode.nodeName() == QString("kactus2:adHocVisible"))
+        {
+            adHocVisible_ = true;
+        }
+        else if (extensionNode.nodeName() == "kactus2:position")
+        {
+            QDomNode posNode = extensionNode;
+            defaultPos_.setX(posNode.attributes().namedItem("x").nodeValue().toInt());
+            defaultPos_.setY(posNode.attributes().namedItem("y").nodeValue().toInt());
+        }
+        else
+        {                    
+            QSharedPointer<VendorExtension> extension = XmlUtils::createVendorExtensionFromNode(extensionNode); 
+            vendorExtensions_.append(extension);
+        }
+    }
+}
+

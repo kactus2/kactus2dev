@@ -258,10 +258,6 @@ void LibraryComponent::parseKactus2Attributes( QDomNode& attributeNode ) {
 	for (int i = 0; i < attributeNode.childNodes().count(); ++i) {
 		QDomNode tempNode = attributeNode.childNodes().at(i);
 
-		// temporary variables to store the attribute name and value
-		QString attName;
-		QString attValue;
-
 		if (tempNode.nodeName() == "kactus2:kts_productHier") {
 			kactus2Attributes_.insert("kts_productHier", tempNode.childNodes().at(0).nodeValue());
 		}

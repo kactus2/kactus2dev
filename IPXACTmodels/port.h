@@ -97,7 +97,7 @@ public:
 	 *
 	 * Constructs an empty wire port which is in invalid state.
 	*/
-	Port();
+	Port();   
 
 	//! \brief Assignment operator
 	Port &operator=(const Port &other);
@@ -405,13 +405,6 @@ public:
 	void setTypeDefinition(const QString& typeName, const QString& typeDefinition);
 
     /*!
-     *  Sets the remote endpoint name (used only for endpoints).
-     *
-     *      @param [in] remoteName The name of the remote endpoint.
-     */
-    void setRemoteEndpointName(QString const& remoteName);
-
-    /*!
      *  Sets default the ad-hoc visibility of the port.
      *
      *      @param [in] visible If true, the port is set visible for ad-hoc connections.
@@ -431,16 +424,13 @@ public:
     QPointF const& getDefaultPos() const;
 
     /*!
-     *  Returns the remote endpoint name (used only for endpoints).
-     */
-    QString const& getRemoteEndpointName() const;
-
-    /*!
      *  Returns true if the ad-hoc visibility is turned on.
      */
     bool isAdHocVisible() const;
 
 private:
+
+    void parseVendorExtensions(QDomNode const& extensionsNode);
 
 	//! \brief Contains the name, display name and description for the port.
 	General::NameGroup nameGroup_;
@@ -472,9 +462,6 @@ private:
 	 * Indicates to a netlister how to access the port.
 	 */
 	QString portAccessType_;
-
-    //! The remote endpoint name.
-    QString remoteEndpointName_;
 
     //! If true, the port is visible for ad-hoc connections.
     bool adHocVisible_;
