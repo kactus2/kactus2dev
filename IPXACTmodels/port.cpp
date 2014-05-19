@@ -17,6 +17,8 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
+#include "Kactus2Placeholder.h"
+#include "GenericVendorExtension.h"
 
 // the constructor
 Port::Port(QDomNode &portNode): 
@@ -26,38 +28,36 @@ wire_(),
 transactional_(),
 portAccessHandle_(), 
 portAccessType_(),
-adHocVisible_(false),
+adHocVisible_(),
 defaultPos_(),
 vendorExtensions_()
 {
-
 	for (int i = 0; i < portNode.childNodes().count(); ++i) {
 		QDomNode tempNode = portNode.childNodes().at(i);
 
-		if (tempNode.nodeName() == QString("spirit:wire")) {
-                        portType_ = General::WIRE;
+		if (tempNode.nodeName() == QString("spirit:wire")) 
+        {
+            portType_ = General::WIRE;
 			wire_ = QSharedPointer<Wire>(new Wire(tempNode));
 		}
-		else if (tempNode.nodeName() == QString("spirit:transactional")) {
-                        portType_ = General::TRANSACTIONAL;
-			transactional_ = QSharedPointer<Transactional>(
-					new Transactional(tempNode));
+		else if (tempNode.nodeName() == QString("spirit:transactional")) 
+        {
+            portType_ = General::TRANSACTIONAL;
+			transactional_ = QSharedPointer<Transactional>(new Transactional(tempNode));
 		}
 
 		// get the portAccessHandle and portAccessType elements
-		else if (tempNode.nodeName() == QString("spirit:access")) {
-			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-
-				if (tempNode.childNodes().at(j).nodeName() ==
-						QString("spirit:portAccessHandle")) {
-					portAccessHandle_ = tempNode.childNodes().at(j).childNodes().
-							at(0).nodeValue();
+		else if (tempNode.nodeName() == QString("spirit:access")) 
+        {
+			for (int j = 0; j < tempNode.childNodes().count(); ++j) 
+            {
+                QDomNode accessNode = tempNode.childNodes().at(j);
+				if (accessNode.nodeName() == QString("spirit:portAccessHandle")) {
+					portAccessHandle_ = accessNode.childNodes().at(0).nodeValue();
 				}
 
-				else if (tempNode.childNodes().at(j).nodeName() ==
-						QString("spirit:portAccessType")) {
-					portAccessType_ = tempNode.childNodes().at(j).childNodes().
-							at(0).nodeValue();
+				else if (accessNode.nodeName() == QString("spirit:portAccessType")) {
+					portAccessType_ = accessNode.childNodes().at(0).nodeValue();
 				}
 			}
 		}
@@ -77,7 +77,7 @@ wire_(),
 transactional_(other.transactional_),
 portAccessHandle_(other.portAccessHandle_),
 portAccessType_(other.portAccessType_),
-adHocVisible_(other.adHocVisible_),
+adHocVisible_(),
 defaultPos_(other.defaultPos_),
 vendorExtensions_()
 {	
@@ -86,6 +86,8 @@ vendorExtensions_()
     if (other.wire_ != 0) {
         wire_ = QSharedPointer<Wire>(new Wire(*other.wire_));
     }
+
+    copyVendorExtensions(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -98,19 +100,19 @@ wire_(),
 transactional_(),
 portAccessHandle_(other.portAccessHandle_),
 portAccessType_(other.portAccessType_),
-adHocVisible_(other.adHocVisible_),
+adHocVisible_(),
 defaultPos_(other.defaultPos_),
-vendorExtensions_(other.vendorExtensions_)
+vendorExtensions_()
 {
-	
 	if (other.wire_) {
 		wire_ = QSharedPointer<Wire>(new Wire(*other.wire_));
 	}
 
 	if (other.transactional_) {
-		transactional_ = QSharedPointer<Transactional>(
-			new Transactional(*other.transactional_.data()));
+		transactional_ = QSharedPointer<Transactional>(new Transactional(*other.transactional_.data()));
 	}
+
+    copyVendorExtensions(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -122,13 +124,10 @@ Port & Port::operator=( const Port &other ) {
 		portType_ = other.portType_;
 		portAccessHandle_ = other.portAccessHandle_;
 		portAccessType_ = other.portAccessType_;
-        adHocVisible_ = other.adHocVisible_;
         defaultPos_ = other.defaultPos_;
-        vendorExtensions_ = other.vendorExtensions_;
 
 		if (other.wire_) {
-			wire_ = QSharedPointer<Wire>(
-				new Wire(*other.wire_.data()));
+			wire_ = QSharedPointer<Wire>(new Wire(*other.wire_.data()));
 		}
 		else
 			wire_ = QSharedPointer<Wire>();
@@ -141,6 +140,8 @@ Port & Port::operator=( const Port &other ) {
         {
 			transactional_ = QSharedPointer<Transactional>();
         }
+
+        copyVendorExtensions(other);
 	}
 	return *this;
 }
@@ -155,7 +156,7 @@ wire_(),
 transactional_(),
 portAccessHandle_(),
 portAccessType_(),
-adHocVisible_(false),
+adHocVisible_(),
 defaultPos_(),
 vendorExtensions_()
 {
@@ -177,14 +178,13 @@ wire_(),
 transactional_(),
 portAccessHandle_(),
 portAccessType_(),
-adHocVisible_(false),
+adHocVisible_(),
 defaultPos_(),
 vendorExtensions_()
 {
 	nameGroup_.name_ = name;
 
-	wire_ = QSharedPointer<Wire>(new Wire(direction, leftBound, 
-		rightBound, defaultValue, allLogicalDirections));
+	wire_ = QSharedPointer<Wire>(new Wire(direction, leftBound, rightBound, defaultValue, allLogicalDirections));
 }
 
 //-----------------------------------------------------------------------------
@@ -204,7 +204,7 @@ wire_(),
 transactional_(),
 portAccessHandle_(),
 portAccessType_(),
-adHocVisible_(false),
+adHocVisible_(),
 defaultPos_(),
 vendorExtensions_()
 {
@@ -212,8 +212,7 @@ vendorExtensions_()
 	nameGroup_.name_ = name;
 	nameGroup_.description_ = description;
 
-	wire_ = QSharedPointer<Wire>(new Wire(direction, leftBound, rightBound, defaultValue,
-		false));
+	wire_ = QSharedPointer<Wire>(new Wire(direction, leftBound, rightBound, defaultValue, false));
 	wire_->setTypeName(typeName);
 	wire_->setTypeDefinition(typeName, typeDefinition);
 }
@@ -221,7 +220,9 @@ vendorExtensions_()
 //-----------------------------------------------------------------------------
 // Function: ~Port()
 //-----------------------------------------------------------------------------
-Port::~Port() {
+Port::~Port() 
+{
+
 }
 
 //-----------------------------------------------------------------------------
@@ -270,19 +271,13 @@ void Port::write(QXmlStreamWriter& writer, const QStringList& viewNames)
 		}
 
 		if (!portAccessHandle_.isEmpty()) {
-			writer.writeTextElement("spirit:portAccessHandle",
-					portAccessHandle_);
+			writer.writeTextElement("spirit:portAccessHandle", portAccessHandle_);
 		}
 
 		writer.writeEndElement(); // spirit:access
 	}
 
     writer.writeStartElement("spirit:vendorExtensions");
-
-    if (adHocVisible_)
-    {
-        writer.writeEmptyElement("kactus2:adHocVisible");
-    }
 
     if (!defaultPos_.isNull())
     {
@@ -348,19 +343,19 @@ bool Port::isValid( bool hasViews,
 	return valid;
 }
 
-void Port::setTransactional(Transactional *transactional) {
-	// delete the old transactional if one exists
+void Port::setTransactional(Transactional *transactional) {	
+	// delete the old wire if one exists
 	if (wire_) {
 		wire_.clear();
 	}
 
-	// delete the old wire if one exists
+    // delete the old transactional if one exists
 	if (transactional_) {
 		transactional_.clear();
 	}
-	// change the port type
-        portType_ = General::TRANSACTIONAL;
 
+	// change the port type
+    portType_ = General::TRANSACTIONAL;
 	transactional_ = QSharedPointer<Transactional>(transactional);
 }
 
@@ -400,19 +395,19 @@ Wire *Port::getWire() const {
 	return wire_.data();
 }
 
-void Port::setWire(Wire *wire) {
-	// delete the old transactional if one exists
+void Port::setWire(Wire *wire) {	
+	// delete the old wire if one exists
 	if (wire_) {
 		wire_.clear();
 	}
 
-	// delete the old wire if one exists
+    // delete the old transactional if one exists
 	if (transactional_) {
 		transactional_.clear();
 	}
-	// change the port type
-        portType_ = General::WIRE;
 
+	// change the port type
+    portType_ = General::WIRE;
 	wire_ = QSharedPointer<Wire>(wire);
 }
 
@@ -502,10 +497,12 @@ void Port::setDirection( General::Direction direction ) {
 
 	// if wire has been specified
 	if (wire_)
+    {
 		wire_->setDirection(direction);
-
+    }
 	// if neither is specified then create a new wire element
-	else {
+	else 
+    {
 		wire_ = QSharedPointer<Wire>(new Wire());
 		portType_ = General::WIRE;
 		wire_->setDirection(direction);
@@ -545,12 +542,15 @@ void Port::setPortSize( int size ) {
 void Port::setAllLogicalDirectionsAllowed( bool allowed ) {
 
 	if (wire_)
+    {
 		wire_->setAllLogicalDirectionsAllowed(allowed);
-
+    }
 	else if (transactional_)
+    {
 		transactional_->setAllLogicalInitiativesAllowed(allowed);
-
-	else {
+    }
+	else 
+    {
 		wire_ = QSharedPointer<Wire>(new Wire());
 		wire_->setAllLogicalDirectionsAllowed(allowed);
 		portType_ = General::WIRE;
@@ -558,10 +558,12 @@ void Port::setAllLogicalDirectionsAllowed( bool allowed ) {
 }
 
 QString Port::getTypeName( const QString& viewName /*= QString("")*/ ) const {
-	if (wire_) {
+	if (wire_) 
+    {
 		return wire_->getTypeName(viewName);
 	}
-	else {
+	else 
+    {
 		return QString("");
 	}
 }
@@ -626,7 +628,8 @@ bool Port::hasTypeDefinitions() const {
 
 void Port::useDefaultVhdlTypes() {
 	// if theres no wire definition
-	if (!wire_) {
+	if (!wire_) 
+    {
 		wire_ = QSharedPointer<Wire>(new Wire());
 		portType_ = General::WIRE;
 	}
@@ -654,7 +657,14 @@ void Port::useDefaultVhdlTypes() {
 //-----------------------------------------------------------------------------
 void Port::setAdHocVisible(bool visible)
 {
-    adHocVisible_ = visible;
+    if (visible)
+    {
+        createAdHocVisibleExtension();
+    }
+    else
+    {
+        removeAdHocVisibleExtension();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -662,7 +672,7 @@ void Port::setAdHocVisible(bool visible)
 //-----------------------------------------------------------------------------
 bool Port::isAdHocVisible() const
 {
-    return adHocVisible_;
+    return !adHocVisible_.isNull();
 }
 
 //-----------------------------------------------------------------------------
@@ -692,13 +702,12 @@ void Port::parseVendorExtensions(QDomNode const& extensionsNode)
 
         if (extensionNode.nodeName() == QString("kactus2:adHocVisible"))
         {
-            adHocVisible_ = true;
+           createAdHocVisibleExtension();
         }
         else if (extensionNode.nodeName() == "kactus2:position")
         {
-            QDomNode posNode = extensionNode;
-            defaultPos_.setX(posNode.attributes().namedItem("x").nodeValue().toInt());
-            defaultPos_.setY(posNode.attributes().namedItem("y").nodeValue().toInt());
+            defaultPos_.setX(extensionNode.attributes().namedItem("x").nodeValue().toInt());
+            defaultPos_.setY(extensionNode.attributes().namedItem("y").nodeValue().toInt());
         }
         else
         {                    
@@ -708,3 +717,45 @@ void Port::parseVendorExtensions(QDomNode const& extensionsNode)
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: Port::copyVendorExtensions()
+//-----------------------------------------------------------------------------
+void Port::copyVendorExtensions(Port const& other)
+{
+    foreach (QSharedPointer<VendorExtension> extension, other.vendorExtensions_) 
+    {
+        GenericVendorExtension* genericExtension = dynamic_cast<GenericVendorExtension*>(extension.data());
+        Kactus2Placeholder* visibilityExtension = dynamic_cast<Kactus2Placeholder*>(extension.data());
+
+        if (genericExtension)
+        {
+            QSharedPointer<VendorExtension> copy(new GenericVendorExtension(*genericExtension));
+            vendorExtensions_.append(copy);
+        }
+        else if (visibilityExtension)
+        {
+            createAdHocVisibleExtension();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Port::createAdHocVisibleExtensions()
+//-----------------------------------------------------------------------------
+void Port::createAdHocVisibleExtension()
+{
+    if (adHocVisible_.isNull())
+    {
+        adHocVisible_ = QSharedPointer<Kactus2Placeholder>(new Kactus2Placeholder("kactus2:adHocVisible"));
+        vendorExtensions_.append(adHocVisible_);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Port::removeAdHocVisibleExtension()
+//-----------------------------------------------------------------------------
+void Port::removeAdHocVisibleExtension()
+{
+    vendorExtensions_.removeAll(adHocVisible_);
+    adHocVisible_.clear();
+}

@@ -32,6 +32,9 @@ public:
 	 */
 	GenericVendorExtension(QDomNode const& extensionNode);
 
+    //! Copy constructor.
+    GenericVendorExtension(GenericVendorExtension const& other);
+
 	/*!
 	 *  The destructor.
 	*/
@@ -46,9 +49,6 @@ public:
 
 private:
     
-    //! Disable copying.
-    GenericVendorExtension(GenericVendorExtension const& rhs);
-
     //! Disable assign.
     GenericVendorExtension& operator=(GenericVendorExtension const& rhs);
 

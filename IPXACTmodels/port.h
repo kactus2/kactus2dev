@@ -430,7 +430,25 @@ public:
 
 private:
 
+    /*!
+     *  Parses the vendor extensions from a DOM node.
+     *
+     *      @param [in] extensionsNode   The DOM node containing all vendor extensions.
+     */
     void parseVendorExtensions(QDomNode const& extensionsNode);
+
+    /*!
+     *  Copies vendor extensions from another port.
+     *
+     *      @param [in] other   The port to copy extensions from.
+     */
+    void copyVendorExtensions(Port const& other);
+
+    //! Creates the ad hoc visibility vendor extension.
+    void createAdHocVisibleExtension();
+
+    //! Removes the ad hoc visibility vendor extension.
+    void removeAdHocVisibleExtension();
 
 	//! \brief Contains the name, display name and description for the port.
 	General::NameGroup nameGroup_;
@@ -463,8 +481,7 @@ private:
 	 */
 	QString portAccessType_;
 
-    //! If true, the port is visible for ad-hoc connections.
-    bool adHocVisible_;
+    QSharedPointer<VendorExtension> adHocVisible_;
 
     //! The default position of the port in ad-hoc mode.
     QPointF defaultPos_;
