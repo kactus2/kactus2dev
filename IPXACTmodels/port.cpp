@@ -19,6 +19,7 @@
 #include <QXmlStreamWriter>
 #include "Kactus2Placeholder.h"
 #include "GenericVendorExtension.h"
+#include "Kactus2Position.h"
 
 // the constructor
 Port::Port(QDomNode &portNode): 
@@ -78,7 +79,7 @@ transactional_(other.transactional_),
 portAccessHandle_(other.portAccessHandle_),
 portAccessType_(other.portAccessType_),
 adHocVisible_(),
-defaultPos_(other.defaultPos_),
+defaultPos_(),
 vendorExtensions_()
 {	
 	nameGroup_.name_ = name;
@@ -101,7 +102,7 @@ transactional_(),
 portAccessHandle_(other.portAccessHandle_),
 portAccessType_(other.portAccessType_),
 adHocVisible_(),
-defaultPos_(other.defaultPos_),
+defaultPos_(),
 vendorExtensions_()
 {
 	if (other.wire_) {
@@ -124,7 +125,6 @@ Port & Port::operator=( const Port &other ) {
 		portType_ = other.portType_;
 		portAccessHandle_ = other.portAccessHandle_;
 		portAccessType_ = other.portAccessType_;
-        defaultPos_ = other.defaultPos_;
 
 		if (other.wire_) {
 			wire_ = QSharedPointer<Wire>(new Wire(*other.wire_.data()));
@@ -278,14 +278,7 @@ void Port::write(QXmlStreamWriter& writer, const QStringList& viewNames)
 	}
 
     writer.writeStartElement("spirit:vendorExtensions");
-
-    if (!defaultPos_.isNull())
-    {
-        XmlUtils::writePosition(writer, defaultPos_);
-    }
-
     XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
-
     writer.writeEndElement(); // spirit:vendorExtensions
 
 	writer.writeEndElement(); // spirit:port
@@ -680,15 +673,23 @@ bool Port::isAdHocVisible() const
 //-----------------------------------------------------------------------------
 void Port::setDefaultPos(QPointF const& pos)
 {
-    defaultPos_ = pos;
+    createPositionExtension(pos);
+    defaultPos_->setPosition(pos);
 }
 
 //-----------------------------------------------------------------------------
 // Function: Port::getDefaultPos()
 //-----------------------------------------------------------------------------
-QPointF const& Port::getDefaultPos() const
+QPointF Port::getDefaultPos() const
 {
-    return defaultPos_;
+    if (defaultPos_.isNull())
+    {
+        return QPointF();
+    }
+    else
+    {
+        return defaultPos_->position();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -696,7 +697,8 @@ QPointF const& Port::getDefaultPos() const
 //-----------------------------------------------------------------------------
 void Port::parseVendorExtensions(QDomNode const& extensionsNode)
 {
-    for (int i = 0; i < extensionsNode.childNodes().count(); ++i) 
+    int extensionCount = extensionsNode.childNodes().count();
+    for (int i = 0; i < extensionCount; ++i) 
     {        
         QDomNode extensionNode = extensionsNode.childNodes().at(i);
 
@@ -706,8 +708,7 @@ void Port::parseVendorExtensions(QDomNode const& extensionsNode)
         }
         else if (extensionNode.nodeName() == "kactus2:position")
         {
-            defaultPos_.setX(extensionNode.attributes().namedItem("x").nodeValue().toInt());
-            defaultPos_.setY(extensionNode.attributes().namedItem("y").nodeValue().toInt());
+            createPositionExtensionFromDom(extensionNode);
         }
         else
         {                    
@@ -726,6 +727,7 @@ void Port::copyVendorExtensions(Port const& other)
     {
         GenericVendorExtension* genericExtension = dynamic_cast<GenericVendorExtension*>(extension.data());
         Kactus2Placeholder* visibilityExtension = dynamic_cast<Kactus2Placeholder*>(extension.data());
+        Kactus2Position* positionExtension = dynamic_cast<Kactus2Position*>(extension.data());
 
         if (genericExtension)
         {
@@ -735,6 +737,10 @@ void Port::copyVendorExtensions(Port const& other)
         else if (visibilityExtension)
         {
             createAdHocVisibleExtension();
+        }
+        else if (positionExtension)
+        {
+            createPositionExtension(positionExtension->position());
         }
     }
 }
@@ -758,4 +764,28 @@ void Port::removeAdHocVisibleExtension()
 {
     vendorExtensions_.removeAll(adHocVisible_);
     adHocVisible_.clear();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Port::createPositionExtension()
+//-----------------------------------------------------------------------------
+void Port::createPositionExtensionFromDom(QDomNode const& extensionNode)
+{
+    int x = extensionNode.attributes().namedItem("x").nodeValue().toInt();
+    int y = extensionNode.attributes().namedItem("y").nodeValue().toInt();
+    QPointF position(x, y);
+
+    createPositionExtension(position);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Port::createPositionExtension()
+//-----------------------------------------------------------------------------
+void Port::createPositionExtension(QPointF const& position)
+{
+    if (defaultPos_.isNull())
+    {
+        defaultPos_ = QSharedPointer<Kactus2Position>(new Kactus2Position(position));
+        vendorExtensions_.append(defaultPos_);
+    }
 }

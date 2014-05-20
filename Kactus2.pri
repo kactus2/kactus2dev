@@ -447,6 +447,8 @@ HEADERS += ./resource.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
     ./editors/CSourceEditor/CSourceTextEdit.h \
     ./editors/CSourceEditor/CSourceWidget.h \
+    ./editors/NotesEditor/NotesEditor.h \
+    ./editors/NotesEditor/NotesStack.h \
     ./designEditors/SystemDesign/HWMappingItem.h \
     ./designEditors/SystemDesign/SystemMoveCommands.h \
     ./designEditors/SystemDesign/SWComponentItem.h \
@@ -614,10 +616,10 @@ HEADERS += ./resource.h \
     ./IPXACTmodels/wireabstraction.h \
     ./IPXACTmodels/writevalueconstraint.h \
     ./IPXACTmodels/XmlUtils.h \
-    ./editors/NotesEditor/NotesEditor.h \
-    ./editors/NotesEditor/NotesStack.h \
+    ./IPXACTmodels/GenericVendorExtension.h \
     ./IPXACTmodels/VendorExtension.h \
-    ./IPXACTmodels/GenericVendorExtension.h
+    ./IPXACTmodels/Kactus2Placeholder.h \
+    ./IPXACTmodels/Kactus2Position.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
@@ -1035,6 +1037,8 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/CSourceEditor/CSourceTextEdit.cpp \
     ./editors/CSourceEditor/CSourceWidget.cpp \
     ./editors/CSourceEditor/CSourceWriter.cpp \
+    ./editors/NotesEditor/NotesEditor.cpp \
+    ./editors/NotesEditor/NotesStack.cpp \
     ./designEditors/HWDesign/AdHocEnabled.cpp \
     ./designEditors/HWDesign/AdHocInterfaceItem.cpp \
     ./designEditors/HWDesign/AdHocPortItem.cpp \
@@ -1161,6 +1165,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXACTmodels/generator.cpp \
     ./IPXACTmodels/generatorchain.cpp \
     ./IPXACTmodels/generatorchainselector.cpp \
+    ./IPXACTmodels/GenericVendorExtension.cpp \
     ./IPXACTmodels/HierApiDependency.cpp \
     ./IPXACTmodels/HierComConnection.cpp \
     ./IPXACTmodels/librarycomponent.cpp \
@@ -1198,7 +1203,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXACTmodels/wireabstraction.cpp \
     ./IPXACTmodels/writevalueconstraint.cpp \
     ./IPXACTmodels/XmlUtils.cpp \
-    ./editors/NotesEditor/NotesEditor.cpp \
-    ./editors/NotesEditor/NotesStack.cpp \
-    ./IPXACTmodels/GenericVendorExtension.cpp
+    ./IPXACTmodels/Kactus2Placeholder.cpp \
+    ./IPXACTmodels/Kactus2Position.cpp
 RESOURCES += kactus.qrc

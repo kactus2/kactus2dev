@@ -22,6 +22,8 @@
 class Wire;
 class Transactional;
 class VendorExtension;
+class Kactus2Placeholder;
+class Kactus2Position;
 
 /*! \brief Equals the spirit:port element in IP-Xact specification
  *
@@ -421,7 +423,7 @@ public:
     /*!
      *  Returns the default position in the parent component's graphical representation.
      */
-    QPointF const& getDefaultPos() const;
+    QPointF getDefaultPos() const;
 
     /*!
      *  Returns true if the ad-hoc visibility is turned on.
@@ -436,6 +438,10 @@ private:
      *      @param [in] extensionsNode   The DOM node containing all vendor extensions.
      */
     void parseVendorExtensions(QDomNode const& extensionsNode);
+
+    void createPositionExtensionFromDom(QDomNode const& extensionNode);
+
+    void createPositionExtension(QPointF const& position);
 
     /*!
      *  Copies vendor extensions from another port.
@@ -481,10 +487,9 @@ private:
 	 */
 	QString portAccessType_;
 
-    QSharedPointer<VendorExtension> adHocVisible_;
+    QSharedPointer<Kactus2Placeholder> adHocVisible_;
 
-    //! The default position of the port in ad-hoc mode.
-    QPointF defaultPos_;
+    QSharedPointer<Kactus2Position> defaultPos_;
 
 	/*!
 	 * OPTIONAL (spirit: vendorExtensions)

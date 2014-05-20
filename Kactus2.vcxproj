@@ -1233,6 +1233,7 @@ CreateHelp
     <ClCompile Include="IPXACTmodels\HierApiDependency.cpp" />
     <ClCompile Include="IPXACTmodels\HierComConnection.cpp" />
     <ClCompile Include="IPXACTmodels\Kactus2Placeholder.cpp" />
+    <ClCompile Include="IPXACTmodels\Kactus2Position.cpp" />
     <ClCompile Include="IPXACTmodels\librarycomponent.cpp" />
     <ClCompile Include="IPXACTmodels\masterinterface.cpp" />
     <ClCompile Include="IPXACTmodels\memoryblockdata.cpp" />
@@ -9776,6 +9777,7 @@ CreateHelp
     <ClInclude Include="IPXACTmodels\HierApiDependency.h" />
     <ClInclude Include="IPXACTmodels\HierComConnection.h" />
     <ClInclude Include="IPXACTmodels\Kactus2Placeholder.h" />
+    <ClInclude Include="IPXACTmodels\Kactus2Position.h" />
     <ClInclude Include="IPXACTmodels\librarycomponent.h" />
     <ClInclude Include="IPXACTmodels\masterinterface.h" />
     <ClInclude Include="IPXACTmodels\memoryblockdata.h" />
