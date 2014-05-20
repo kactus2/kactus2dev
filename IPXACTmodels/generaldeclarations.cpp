@@ -1533,3 +1533,20 @@ General::NameGroup& General::NameGroup::operator=( const NameGroup& other ) {
 	return *this;
 }
 
+//-----------------------------------------------------------------------------
+// Function: General::NameGroup::write()
+//-----------------------------------------------------------------------------
+void General::NameGroup::write(QXmlStreamWriter& writer) const
+{
+    writer.writeTextElement("spirit:name", name_);
+
+    if (!displayName_.isEmpty()) {
+        writer.writeTextElement("spirit:displayName", displayName_);
+    }
+
+    if (!description_.isEmpty()) {
+        writer.writeTextElement("spirit:description", description_);
+    }
+}
+
+

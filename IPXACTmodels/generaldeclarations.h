@@ -1025,6 +1025,13 @@ struct NameGroup {
 	 * \return Reference to this NameGroup.
 	*/
 	NameGroup& operator=(const NameGroup& other);
+
+    /*!
+     *  Writes the NameGroup to XML.
+     *
+     *      @param [in] writer   The writer used for writing the XML.
+     */
+    void write(QXmlStreamWriter& writer) const;
 };
 
 /*! \brief Convert a boolean value into QString
