@@ -6,7 +6,7 @@
 // Date: 19.5.2014
 //
 // Description:
-// Kactus2 vendor extension for single values.
+// Kactus2 vendor extension for position.
 //-----------------------------------------------------------------------------
 
 #include "Kactus2Position.h"
@@ -53,5 +53,3 @@ void Kactus2Position::setPosition(QPointF const& pos)
 {
     position_ = pos;
 }
-
-

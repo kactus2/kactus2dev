@@ -6,7 +6,7 @@
 // Date: 19.5.2014
 //
 // Description:
-// Kactus2 vendor extension for single values.
+// Kactus2 vendor extension for position.
 //-----------------------------------------------------------------------------
 
 #ifndef KACTUS2POSITION_H
@@ -23,7 +23,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] name   The name of the placeholder.
+	 *      @param [in] position   The initial position of represented by the extension.
 	 */
     Kactus2Position(QPointF position);
 
@@ -42,16 +42,14 @@ public:
     /*!
      *  Gets the position.
      *
-     *      @return 
+     *      @return The position represented by the extension.
      */
     QPointF position() const;
 
     /*!
-     *  <Description>.
+     *  Sets the position.
      *
-     *      @param [in] pos   <Argument description>.
-     *
-     *      @return 
+     *      @param [in] pos   The position to set.
      */
     void setPosition(QPointF const& pos);
 
@@ -66,7 +64,7 @@ private:
 	// Data.
 	//-----------------------------------------------------------------------------
 
-    //! Name of the placeholder extension.
+    //! The position of represented by the extension.
     QPointF position_;
 
 };
