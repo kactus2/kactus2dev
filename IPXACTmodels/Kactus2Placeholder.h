@@ -33,14 +33,25 @@ public:
     virtual ~Kactus2Placeholder();
 
     /*!
+     *  Clones the vendor extension.
+     *
+     *      @return The clone copy of the vendor extension.
+     */
+    virtual Kactus2Placeholder* clone() const;
+
+    /*!
+     *  Returns a type identifier for the vendor extension.
+     *
+     *      @return A type identifier of the vendor extension.
+     */
+    virtual QString type() const;
+
+    /*!
      *  Writes the vendor extension to XML.
      *
      *      @param [in] writer   The writer used for writing the XML.
      */
     virtual void write(QXmlStreamWriter& writer) const;
-
-protected:
-	
 
 private:
 	// Disable copying.

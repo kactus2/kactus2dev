@@ -619,7 +619,8 @@ HEADERS += ./resource.h \
     ./IPXACTmodels/GenericVendorExtension.h \
     ./IPXACTmodels/VendorExtension.h \
     ./IPXACTmodels/Kactus2Placeholder.h \
-    ./IPXACTmodels/Kactus2Position.h
+    ./IPXACTmodels/Kactus2Position.h \
+    ./IPXACTmodels/Kactus2Extension.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
@@ -1204,5 +1205,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXACTmodels/writevalueconstraint.cpp \
     ./IPXACTmodels/XmlUtils.cpp \
     ./IPXACTmodels/Kactus2Placeholder.cpp \
-    ./IPXACTmodels/Kactus2Position.cpp
+    ./IPXACTmodels/Kactus2Position.cpp \
+    ./IPXACTmodels/Kactus2Extension.cpp
 RESOURCES += kactus.qrc

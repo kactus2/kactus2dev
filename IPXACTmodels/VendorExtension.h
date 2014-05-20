@@ -28,6 +28,20 @@ public:
     virtual ~VendorExtension() {}
 
     /*!
+     *  Clones the vendor extension.
+     *
+     *      @return The clone copy of the vendor extension.
+     */
+    virtual VendorExtension* clone() const = 0;
+
+    /*!
+     *  Returns a type identifier for the vendor extension.
+     *
+     *      @return A type identifier of the vendor extension.
+     */
+    virtual QString type() const = 0;
+
+    /*!
      *  Writes the vendor extension to XML.
      *
      *      @param [in] writer   The writer used for writing the XML.

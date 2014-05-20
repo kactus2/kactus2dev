@@ -32,13 +32,24 @@ public:
 	 */
 	GenericVendorExtension(QDomNode const& extensionNode);
 
-    //! Copy constructor.
-    GenericVendorExtension(GenericVendorExtension const& other);
+    /*!
+     *  Clones the vendor extension.
+     *
+     *      @return The clone copy of the vendor extension.
+     */
+    virtual GenericVendorExtension* clone() const;
 
 	/*!
 	 *  The destructor.
 	*/
 	virtual ~GenericVendorExtension();
+
+    /*!
+     *  Returns a type identifier for the vendor extension.
+     *
+     *      @return A type identifier of the vendor extension.
+     */
+    virtual QString type() const;
 
     /*!
      *  Writes the vendor extension to XML.
@@ -48,7 +59,9 @@ public:
     virtual void write(QXmlStreamWriter& writer) const;
 
 private:
-    
+	// Disable copying.
+    GenericVendorExtension(GenericVendorExtension const& other);
+
     //! Disable assign.
     GenericVendorExtension& operator=(GenericVendorExtension const& rhs);
 

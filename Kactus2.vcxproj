@@ -1232,6 +1232,7 @@ CreateHelp
     <ClCompile Include="IPXACTmodels\GenericVendorExtension.cpp" />
     <ClCompile Include="IPXACTmodels\HierApiDependency.cpp" />
     <ClCompile Include="IPXACTmodels\HierComConnection.cpp" />
+    <ClCompile Include="IPXACTmodels\Kactus2Extension.cpp" />
     <ClCompile Include="IPXACTmodels\Kactus2Placeholder.cpp" />
     <ClCompile Include="IPXACTmodels\Kactus2Position.cpp" />
     <ClCompile Include="IPXACTmodels\librarycomponent.cpp" />
@@ -9776,6 +9777,7 @@ CreateHelp
     </CustomBuild>
     <ClInclude Include="IPXACTmodels\HierApiDependency.h" />
     <ClInclude Include="IPXACTmodels\HierComConnection.h" />
+    <ClInclude Include="IPXACTmodels\Kactus2Extension.h" />
     <ClInclude Include="IPXACTmodels\Kactus2Placeholder.h" />
     <ClInclude Include="IPXACTmodels\Kactus2Position.h" />
     <ClInclude Include="IPXACTmodels\librarycomponent.h" />
@@ -13733,6 +13735,7 @@ CreateHelp
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
     <None Include="common\graphics\abs-def.png" />
     <None Include="common\graphics\add.png" />
     <None Include="common\graphics\appicon.png" />

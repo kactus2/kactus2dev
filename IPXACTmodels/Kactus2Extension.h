@@ -1,43 +1,43 @@
 //-----------------------------------------------------------------------------
-// File: Kactus2Position.h
+// File: Kactus2Extension.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
-// Date: 19.5.2014
+// Date: 20.5.2014
 //
 // Description:
-// Kactus2 vendor extension for position.
+// Kactus2 vendor extension for name-value pairs.
 //-----------------------------------------------------------------------------
 
-#ifndef KACTUS2POSITION_H
-#define KACTUS2POSITION_H
+#ifndef KACTUS2EXTENSION_H
+#define KACTUS2EXTENSION_H
 
 #include "VendorExtension.h"
 
 //-----------------------------------------------------------------------------
-// class Kactus2Position.
+// class Kactus2Extension.
 //-----------------------------------------------------------------------------
-class Kactus2Position : public VendorExtension
+class Kactus2Extension : public VendorExtension
 {
 public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] position   The initial position of represented by the extension.
+	 *      @param [in] parent   The parent object.
 	 */
-    Kactus2Position(QPointF position);
+    Kactus2Extension(QString name, QString value);
 
 	/*!
 	 *  The destructor.
 	*/
-    virtual ~Kactus2Position();
+	virtual ~Kactus2Extension();
 
     /*!
      *  Clones the vendor extension.
      *
      *      @return The clone copy of the vendor extension.
      */
-    virtual Kactus2Position* clone() const;
+    virtual Kactus2Extension* clone() const;
 
     /*!
      *  Returns a type identifier for the vendor extension.
@@ -54,32 +54,34 @@ public:
     virtual void write(QXmlStreamWriter& writer) const;
 
     /*!
-     *  Gets the position.
+     *  Gets the value of the vendor extension.
      *
-     *      @return The position represented by the extension.
+     *      @return The stored value.
      */
-    QPointF position() const;
+    QString value() const;
 
     /*!
-     *  Sets the position.
+     *  Sets the value of the vendor extension.
      *
-     *      @param [in] pos   The position to set.
+     *      @param [in] newValue   The value to set.
      */
-    void setPosition(QPointF const& pos);
+    void setValue(QString const& newValue);
 
 private:
-	// Disable copying.
-	Kactus2Position(Kactus2Position const& rhs);
+    //! Disable copying.
+    Kactus2Extension(Kactus2Extension const& other);
 
 	// Disable assignment.
-	Kactus2Position& operator=(Kactus2Position const& rhs);
-    
+	Kactus2Extension& operator=(Kactus2Extension const& rhs);
+
 	//-----------------------------------------------------------------------------
 	// Data.
 	//-----------------------------------------------------------------------------
 
-    //! The position of represented by the extension.
-    QPointF position_;
+    //! The name identifier of the vendor extension.
+    QString name_;
 
+    //! The value of the vendor extension.
+    QString value_;
 };
-#endif // KACTUS2POSITION_H
+#endif // KACTUS2EXTENSION_H

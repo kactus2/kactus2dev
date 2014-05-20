@@ -4051,6 +4051,9 @@
     <ClCompile Include="IPXACTmodels\Kactus2Position.cpp">
       <Filter>Source Files\IPXACTmodels</Filter>
     </ClCompile>
+    <ClCompile Include="IPXACTmodels\Kactus2Extension.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5927,6 +5930,9 @@
     <ClInclude Include="IPXACTmodels\Kactus2Position.h">
       <Filter>Header Files\IPXACTmodels</Filter>
     </ClInclude>
+    <ClInclude Include="IPXACTmodels\Kactus2Extension.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="executable\Kactus2_d.exe">
@@ -6261,5 +6267,6 @@
     </None>
     <None Include="icon1.ico" />
     <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
   </ItemGroup>
 </Project>

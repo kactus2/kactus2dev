@@ -439,8 +439,18 @@ private:
      */
     void parseVendorExtensions(QDomNode const& extensionsNode);
 
+    /*!
+     *  Creates a vendor extension for port default position from a DOM node.
+     *
+     *      @param [in] extensionNode   The DOM node to create from.
+     */
     void createPositionExtensionFromDom(QDomNode const& extensionNode);
 
+    /*!
+     *  Creates a vendor extension for port default position.
+     *
+     *      @param [in] position   The initial position to set.
+     */
     void createPositionExtension(QPointF const& position);
 
     /*!

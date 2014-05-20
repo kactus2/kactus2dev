@@ -18,7 +18,11 @@
 #include <QXmlStreamWriter>
 #include <QFileInfo>
 #include "XmlUtils.h"
+#include "Kactus2Extension.h"
 
+//-----------------------------------------------------------------------------
+// Function: FileSet::FileSet()
+//-----------------------------------------------------------------------------
 FileSet::FileSet(QDomNode & fileSetNode):
 nameGroup_(fileSetNode),
 	groups_(),
@@ -29,7 +33,6 @@ functions_(),
 fileSetId_(),
 vendorExtensions_()
 {
-
 	for (int i = 0; i < fileSetNode.childNodes().count(); ++i) {
 		QDomNode tempNode = fileSetNode.childNodes().at(i);
 
@@ -43,10 +46,8 @@ vendorExtensions_()
 			files_.append(QSharedPointer<File>(new File(tempNode, this)));
 		}
 
-		else if (tempNode.nodeName() == QString(
-				"spirit:defaultFileBuilder")) {
-			defaultFileBuilders_.append(
-					QSharedPointer<FileBuilder>(new FileBuilder(tempNode)));
+		else if (tempNode.nodeName() == QString("spirit:defaultFileBuilder")) {
+			defaultFileBuilders_.append(QSharedPointer<FileBuilder>(new FileBuilder(tempNode)));
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:dependency") ) {
@@ -54,27 +55,17 @@ vendorExtensions_()
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:function")) {
-			functions_.append(
-					QSharedPointer<Function>(new Function(tempNode)));
+			functions_.append(QSharedPointer<Function>(new Function(tempNode)));
 		}
 		else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) {
-			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-				QDomNode extensionNode = tempNode.childNodes().at(j);
-
-				if (extensionNode.nodeName() == QString("kactus2:fileSetId")) {
-					fileSetId_ = extensionNode.childNodes().at(0).nodeValue();
-                }
-                else
-                {
-                    QSharedPointer<VendorExtension> extension = 
-                        XmlUtils::createVendorExtensionFromNode(extensionNode); 
-                    vendorExtensions_.append(extension);
-                }
-			}
+            parseVendorExtensions(tempNode);
 		}
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: FileSet::FileSet()
+//-----------------------------------------------------------------------------
 FileSet::FileSet(const QString& name, const QString& group):
 nameGroup_(),
 	groups_(),
@@ -84,7 +75,6 @@ nameGroup_(),
     fileSetId_(),
     vendorExtensions_()
 {
-
 	if (!group.isEmpty()) {
 		groups_.append(group);
 	}
@@ -92,6 +82,9 @@ nameGroup_(),
 	nameGroup_.name_ = name;
 }
 
+//-----------------------------------------------------------------------------
+// Function: FileSet::FileSet()
+//-----------------------------------------------------------------------------
 FileSet::FileSet():
 nameGroup_(), 
 	groups_(), 
@@ -101,9 +94,13 @@ nameGroup_(),
 	functions_(),
     fileSetId_(),
     vendorExtensions_()
- {
+{
+
 }
 
+//-----------------------------------------------------------------------------
+// Function: FileSet::FileSet()
+//-----------------------------------------------------------------------------
 FileSet::FileSet( const FileSet &other ):
 nameGroup_(other.nameGroup_),
 groups_(other.groups_),
@@ -111,33 +108,31 @@ files_(),
 defaultFileBuilders_(),
 dependencies_(other.dependencies_),
 functions_(),
-fileSetId_(other.fileSetId_),
-vendorExtensions_(other.vendorExtensions_)
+fileSetId_(),
+vendorExtensions_()
 {
-
 	foreach (QSharedPointer<File> file, other.files_) {
 		if (file) {
-			QSharedPointer<File> copy = QSharedPointer<File>(
-				new File(*file.data(), this));
+			QSharedPointer<File> copy = QSharedPointer<File>(new File(*file.data(), this));
 			files_.append(copy);
 		}
 	}
 
 	foreach (QSharedPointer<FileBuilder> fileBuilder, other.defaultFileBuilders_) {
 		if (fileBuilder) {
-			QSharedPointer<FileBuilder> copy = QSharedPointer<FileBuilder>(
-				new FileBuilder(*fileBuilder.data()));
+			QSharedPointer<FileBuilder> copy = QSharedPointer<FileBuilder>(new FileBuilder(*fileBuilder.data()));
 			defaultFileBuilders_.append(copy);
 		}
 	}
 
 	foreach (QSharedPointer<Function> func, other.functions_) {
 		if (func) {
-			QSharedPointer<Function> copy = QSharedPointer<Function>(
-				new Function(*func.data()));
+			QSharedPointer<Function> copy = QSharedPointer<Function>(new Function(*func.data()));
 			functions_.append(copy);
 		}
 	}
+
+    copyVendorExtensions(other);
 }
 
 FileSet & FileSet::operator=( const FileSet &other ) {
@@ -145,14 +140,11 @@ FileSet & FileSet::operator=( const FileSet &other ) {
 		nameGroup_ = other.nameGroup_;
 		groups_ = other.groups_;
 		dependencies_ = other.dependencies_;
-		fileSetId_ = other.fileSetId_;
-        vendorExtensions_ = other.vendorExtensions_;
 
 		files_.clear();
 		foreach (QSharedPointer<File> file, other.files_) {
 			if (file) {
-				QSharedPointer<File> copy = QSharedPointer<File>(
-					new File(*file.data(), this));
+				QSharedPointer<File> copy = QSharedPointer<File>(new File(*file.data(), this));
 				files_.append(copy);
 			}
 		}
@@ -169,34 +161,28 @@ FileSet & FileSet::operator=( const FileSet &other ) {
 		functions_.clear();
 		foreach (QSharedPointer<Function> func, other.functions_) {
 			if (func) {
-				QSharedPointer<Function> copy = QSharedPointer<Function>(
-					new Function(*func.data()));
+				QSharedPointer<Function> copy = QSharedPointer<Function>(new Function(*func.data()));
 				functions_.append(copy);
 			}
 		}
+
+        copyVendorExtensions(other);
 	}
 	return *this;
 }
 
-FileSet::~FileSet() {
+FileSet::~FileSet() 
+{
 	files_.clear();
 	defaultFileBuilders_.clear();
 	functions_.clear();
 }
 
-void FileSet::write(QXmlStreamWriter& writer) {
-
+void FileSet::write(QXmlStreamWriter& writer)
+{
 	writer.writeStartElement("spirit:fileSet");
 
-	writer.writeTextElement("spirit:name", nameGroup_.name_);
-
-	if (!nameGroup_.displayName_.isEmpty()) {
-		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
-	}
-
-	if (!nameGroup_.description_.isEmpty()) {
-		writer.writeTextElement("spirit:description", nameGroup_.description_);
-	}
+    nameGroup_.write(writer);
 
 	// if optional groups are defined
 	for (int i = 0; i < groups_.size(); ++i) {
@@ -223,25 +209,14 @@ void FileSet::write(QXmlStreamWriter& writer) {
 		functions_.at(i)->write(writer);
 	}
 
-	// if file set id has been set
-	if (!fileSetId_.isEmpty()) {
-		writer.writeStartElement("spirit:vendorExtensions");
-		writer.writeTextElement("kactus2:fileSetId", fileSetId_);
-        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
-		writer.writeEndElement(); // spirit:vendorExtensions
-	}
-    else if (!vendorExtensions_.isEmpty())
-    {
-        writer.writeStartElement("spirit:vendorExtensions");
-        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
-        writer.writeEndElement(); // spirit:vendorExtensions
-    }
+    writer.writeStartElement("spirit:vendorExtensions");
+    XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+    writer.writeEndElement(); // spirit:vendorExtensions   
 
 	writer.writeEndElement(); // spirit:fileSet
 }
 
-bool FileSet::isValid( QStringList& errorList, 
-					  const QString& parentIdentifier, 
+bool FileSet::isValid( QStringList& errorList, const QString& parentIdentifier, 
 					  bool checkChildren /*= true*/ ) const {
 	bool valid = true;
 	const QString thisIdentifier = QObject::tr("file set %1").arg(nameGroup_.name_);
@@ -761,12 +736,26 @@ const General::NameGroup& FileSet::getNameGroup() const {
 	return nameGroup_;
 }
 
-QString FileSet::getFileSetId() const {
-	return fileSetId_;
+QString FileSet::getFileSetId() const 
+{
+    if (fileSetId_.isNull())
+    {
+        return QString();
+    }
+    else
+    {
+	    return fileSetId_->value();
+    }
 }
 
-void FileSet::setFileSetId( const QString& id ) {
-	fileSetId_ = id;
+void FileSet::setFileSetId( const QString& id ) 
+{
+    if (fileSetId_.isNull())
+    {
+        createFileSetIdExtension(id);
+    }
+
+	fileSetId_->setValue(id);
 }
 
 QStringList FileSet::findFilesByFileType( const QString& fileType ) const {
@@ -790,4 +779,54 @@ void FileSet::setDependencies(const QStringList &dependencies) {
 
 void FileSet::addDependency( const QString& path ) {
 	dependencies_.append(path);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileSet::parseVendorExtensions()
+//-----------------------------------------------------------------------------
+void FileSet::parseVendorExtensions(QDomNode const& extensionsNode)
+{
+    for (int j = 0; j < extensionsNode.childNodes().count(); ++j) {
+        QDomNode extensionNode = extensionsNode.childNodes().at(j);
+
+        if (extensionNode.nodeName() == QString("kactus2:fileSetId")) {
+            createFileSetIdExtension(extensionNode.childNodes().at(0).nodeValue());
+        }
+        else
+        {
+            QSharedPointer<VendorExtension> extension = XmlUtils::createVendorExtensionFromNode(extensionNode); 
+            vendorExtensions_.append(extension);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileSet::createFileSetIdExtension()
+//-----------------------------------------------------------------------------
+void FileSet::createFileSetIdExtension(const QString& id)
+{
+    if (fileSetId_.isNull())
+    {
+        fileSetId_ = QSharedPointer<Kactus2Extension>(new Kactus2Extension("kactus2:fileSetId", id));
+        vendorExtensions_.append(fileSetId_);    
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileSet::copyVendorExtensions()
+//-----------------------------------------------------------------------------
+void FileSet::copyVendorExtensions(const FileSet & other)
+{
+    foreach(QSharedPointer<VendorExtension> extension, other.vendorExtensions_)
+    {
+        if (extension->type() == "kactus2:fileSetId")
+        {
+            fileSetId_ = QSharedPointer<Kactus2Extension>(other.fileSetId_->clone());
+            vendorExtensions_.append(fileSetId_);
+        }
+        else
+        {
+            vendorExtensions_.append(QSharedPointer<VendorExtension>(extension->clone()));
+        }
+    }
 }

@@ -1,71 +1,71 @@
 //-----------------------------------------------------------------------------
-// File: Kactus2Position.cpp
+// File: Kactus2Extension.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
-// Date: 19.5.2014
+// Date: 20.5.2014
 //
 // Description:
-// Kactus2 vendor extension for position.
+// Kactus2 vendor extension for name-value pairs.
 //-----------------------------------------------------------------------------
 
-#include "Kactus2Position.h"
+#include "Kactus2Extension.h"
 
 //-----------------------------------------------------------------------------
-// Function: Kactus2Position::Kactus2Position()
+// Function: Kactus2Extension::Kactus2Extension()
 //-----------------------------------------------------------------------------
-Kactus2Position::Kactus2Position(QPointF position):
-    position_(position)
+Kactus2Extension::Kactus2Extension(QString name, QString value):
+    name_(name),
+    value_(value)
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: Kactus2Position::~Kactus2Position()
+// Function: Kactus2Extension::~Kactus2Extension()
 //-----------------------------------------------------------------------------
-Kactus2Position::~Kactus2Position()
+Kactus2Extension::~Kactus2Extension()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: Kactus2Position::clone()
+// Function: Kactus2Extension::clone()
 //-----------------------------------------------------------------------------
-Kactus2Position* Kactus2Position::clone() const
+Kactus2Extension* Kactus2Extension::clone() const
 {
-    return new Kactus2Position(position_);
+    return new Kactus2Extension(name_, value_);
 }
 
 //-----------------------------------------------------------------------------
-// Function: Kactus2Position::type()
+// Function: Kactus2Extension::type()
 //-----------------------------------------------------------------------------
-QString Kactus2Position::type() const
+QString Kactus2Extension::type() const
 {
-    return "kactus2:position";
+    return name_;
 }
 
 //-----------------------------------------------------------------------------
 // Function: Kactus2Extension::write()
 //-----------------------------------------------------------------------------
-void Kactus2Position::write(QXmlStreamWriter& writer) const
+void Kactus2Extension::write(QXmlStreamWriter& writer) const
 {
-    writer.writeEmptyElement("kactus2:position");
-    writer.writeAttribute("x", QString::number(int(position_.x())));
-    writer.writeAttribute("y", QString::number(int(position_.y())));
+    writer.writeTextElement(name_, value_);
 }
 
 //-----------------------------------------------------------------------------
-// Function: Kactus2Position::position()
+// Function: Kactus2Extension::value()
 //-----------------------------------------------------------------------------
-QPointF Kactus2Position::position() const
+QString Kactus2Extension::value() const
 {
-    return position_;
+    return value_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: Kactus2Position::setPosition()
+// Function: Kactus2Extension::setValue()
 //-----------------------------------------------------------------------------
-void Kactus2Position::setPosition(QPointF const& pos)
+void Kactus2Extension::setValue(QString const& newValue)
 {
-    position_ = pos;
+    value_ = newValue;
 }
+

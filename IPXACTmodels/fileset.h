@@ -25,6 +25,7 @@ class Function;
 class FileBuilder;
 class File;
 class VendorExtension;
+class Kactus2Extension;
 
 /*! \brief Equals the spirit:fileSet element in IP-Xact specification.
  *
@@ -463,6 +464,27 @@ public:
 
 private:
 
+    /*!
+     *  Parses the vendor extensions from a DOM node.
+     *
+     *      @param [in] extensionsNode   The DOM node containing all vendor extensions.
+     */
+    void parseVendorExtensions(QDomNode const& extensionsNode);
+
+    /*!
+     *  Creates a vendor extension for FileSet id.
+     *
+     *      @param [in] id   The initial id to set.
+     */
+    void createFileSetIdExtension(QString const& id);
+
+    /*!
+     *  Copies vendor extensions from another file set.
+     *
+     *      @param [in] other   The file set to copy extensions from.
+     */
+    void copyVendorExtensions(const FileSet & other);
+
 	/*! \brief Contains the name and description information for file set.
 	 * 
 	 * MANDATORY spirit:name
@@ -503,7 +525,7 @@ private:
 	QList<QSharedPointer<Function> > functions_;
 
 	//! \brief ID used to identify the file set on generators.
-	QString fileSetId_;
+	 QSharedPointer<Kactus2Extension> fileSetId_;
 
     /*!
 	 * OPTIONAL spirit: vendorExtensions

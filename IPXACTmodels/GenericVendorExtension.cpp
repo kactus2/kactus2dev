@@ -17,19 +17,18 @@
 //-----------------------------------------------------------------------------
 // Function: GenericVendorExtension::GenericVendorExtension()
 //-----------------------------------------------------------------------------
-GenericVendorExtension::GenericVendorExtension(QDomNode const& extensionNode):
+GenericVendorExtension::GenericVendorExtension(QDomNode const& extensionNode) :
     vendorExtension_(extensionNode)
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: GenericVendorExtension::GenericVendorExtension()
+// Function: GenericVendorExtension::clone()
 //-----------------------------------------------------------------------------
-GenericVendorExtension::GenericVendorExtension(GenericVendorExtension const& other):
-    vendorExtension_(other.vendorExtension_)
+GenericVendorExtension* GenericVendorExtension::clone() const
 {
-
+    return new GenericVendorExtension(vendorExtension_);
 }
 
 //-----------------------------------------------------------------------------
@@ -38,6 +37,14 @@ GenericVendorExtension::GenericVendorExtension(GenericVendorExtension const& oth
 GenericVendorExtension::~GenericVendorExtension()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::type()
+//-----------------------------------------------------------------------------
+QString GenericVendorExtension::type() const
+{
+    return "any";
 }
 
 //-----------------------------------------------------------------------------

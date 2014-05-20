@@ -29,6 +29,22 @@ Kactus2Placeholder::~Kactus2Placeholder()
 }
 
 //-----------------------------------------------------------------------------
+// Function: Kactus2Placeholder::clone()
+//-----------------------------------------------------------------------------
+Kactus2Placeholder* Kactus2Placeholder::clone() const
+{
+    return new Kactus2Placeholder(name_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Kactus2Placeholder::type()
+//-----------------------------------------------------------------------------
+QString Kactus2Placeholder::type() const
+{
+    return name_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Kactus2Extension::write()
 //-----------------------------------------------------------------------------
 void Kactus2Placeholder::write(QXmlStreamWriter& writer) const

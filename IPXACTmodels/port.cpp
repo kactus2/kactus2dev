@@ -232,15 +232,7 @@ void Port::write(QXmlStreamWriter& writer, const QStringList& viewNames)
 {
 	writer.writeStartElement("spirit:port");
 
-	writer.writeTextElement("spirit:name", nameGroup_.name_);
-
-	if (!nameGroup_.displayName_.isEmpty()) {
-		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
-	}
-
-	if (!nameGroup_.description_.isEmpty()) {
-		writer.writeTextElement("spirit:description", nameGroup_.description_);
-	}
+    nameGroup_.write(writer);
 
 	// write the port type element (spirit:wire or spirit:transactional)
 	switch (portType_) {
@@ -724,23 +716,19 @@ void Port::parseVendorExtensions(QDomNode const& extensionsNode)
 void Port::copyVendorExtensions(Port const& other)
 {
     foreach (QSharedPointer<VendorExtension> extension, other.vendorExtensions_) 
-    {
-        GenericVendorExtension* genericExtension = dynamic_cast<GenericVendorExtension*>(extension.data());
-        Kactus2Placeholder* visibilityExtension = dynamic_cast<Kactus2Placeholder*>(extension.data());
-        Kactus2Position* positionExtension = dynamic_cast<Kactus2Position*>(extension.data());
-
-        if (genericExtension)
-        {
-            QSharedPointer<VendorExtension> copy(new GenericVendorExtension(*genericExtension));
-            vendorExtensions_.append(copy);
-        }
-        else if (visibilityExtension)
+    {        
+        if (extension->type() == "kactus2:adHocVisible")
         {
             createAdHocVisibleExtension();
         }
-        else if (positionExtension)
+        else if (extension->type() == "kactus2:position")
         {
-            createPositionExtension(positionExtension->position());
+            defaultPos_ = QSharedPointer<Kactus2Position>(other.defaultPos_->clone());
+            vendorExtensions_.append(defaultPos_);
+        }
+        else
+        {
+            vendorExtensions_.append(QSharedPointer<VendorExtension>(extension->clone()));
         }
     }
 }
