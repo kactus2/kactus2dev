@@ -14,6 +14,7 @@
 #include <QDomNamedNodeMap>
 #include <QXmlStreamWriter>
 #include "XmlUtils.h"
+#include "Kactus2Extension.h"
 
 View::View(QDomNode &viewNode): 
 nameGroup_(viewNode),
@@ -96,19 +97,7 @@ vendorExtensions_()
 
         else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
         {
-            for (int j = 0; j < tempNode.childNodes().count(); ++j) 
-            {
-                QDomNode extNode = tempNode.childNodes().at(j);
-                if (extNode.nodeName() == QString("kactus2:topLevelViewRef"))
-                {
-                    topLevelViewRef_ = extNode.childNodes().at(0).nodeValue();
-                }
-                else
-                {
-                    QSharedPointer<VendorExtension> extension = XmlUtils::createVendorExtensionFromNode(extNode); 
-                    vendorExtensions_.append(extension);
-                }
-            }
+            parseVendorExtensions(tempNode);
         }
     }
 }
@@ -156,8 +145,8 @@ constraintSetRefs_(other.constraintSetRefs_),
 parameters_(),
 hierarchyRef_(other.hierarchyRef_),
 defaultFileBuilders_(),
-topLevelViewRef_(other.topLevelViewRef_),
-vendorExtensions_(other.vendorExtensions_)
+topLevelViewRef_(),
+vendorExtensions_()
 {
 	foreach (QSharedPointer<Parameter> param, other.parameters_) {
 		if (param) {
@@ -174,6 +163,8 @@ vendorExtensions_(other.vendorExtensions_)
 			defaultFileBuilders_.append(copy);
 		}
 	}
+
+    copyVendorExtensions(other);
 }
 
 View & View::operator=( const View &other ) {
@@ -186,8 +177,6 @@ View & View::operator=( const View &other ) {
 		fileSetRefs_ = other.fileSetRefs_;
 		constraintSetRefs_ = other.constraintSetRefs_;
 		hierarchyRef_ = other.hierarchyRef_;
-		topLevelViewRef_ = other.topLevelViewRef_;
-        vendorExtensions_ = other.vendorExtensions_;
 
 		parameters_.clear();
 		foreach (QSharedPointer<Parameter> param, other.parameters_) {
@@ -206,6 +195,8 @@ View & View::operator=( const View &other ) {
 				defaultFileBuilders_.append(copy);
 			}
 		}
+
+        copyVendorExtensions(other);
 	}
 	return *this;
 }
@@ -217,15 +208,7 @@ View::~View() {
 void View::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:view");
 
-    writer.writeTextElement("spirit:name", nameGroup_.name_);
-	
-	// if display name is defined
-	if (!nameGroup_.displayName_.isEmpty())
-		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
-
-	// if description is defined
-	if (!nameGroup_.description_.isEmpty())
-		writer.writeTextElement("spirit:description", nameGroup_.description_);
+    nameGroup_.write(writer);
 
 	// write all spirit:envIdentifier elements
 	for (int i = 0; i < envIdentifiers_.size(); ++i) {
@@ -287,20 +270,9 @@ void View::write(QXmlStreamWriter& writer) {
 		writer.writeEndElement(); // spirit:parameters
 	}
 
-	// if a vendor extension is defined
-	if (!topLevelViewRef_.isEmpty()) {
-		writer.writeStartElement("spirit:vendorExtensions");
-		writer.writeTextElement("kactus2:topLevelViewRef",
-			topLevelViewRef_);
-        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
-		writer.writeEndElement(); // spirit:vendorExtensions
-	}
-    else if (!vendorExtensions_.isEmpty())
-    {
-        writer.writeStartElement("spirit:vendorExtensions");
-        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
-        writer.writeEndElement(); // spirit:vendorExtensions
-    }
+    writer.writeStartElement("spirit:vendorExtensions");
+    XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+    writer.writeEndElement(); // spirit:vendorExtensions
 
 	writer.writeEndElement(); // spirit:view
 }
@@ -313,8 +285,7 @@ bool View::isValid( const QStringList& fileSetNames,
 	const QString thisIdentifier(QObject::tr("view %1").arg(nameGroup_.name_));
 
 	if (nameGroup_.name_.isEmpty()) {
-		errorList.append(QObject::tr("No name specified for view within %1").arg(
-			parentIdentifier));
+		errorList.append(QObject::tr("No name specified for view within %1").arg(parentIdentifier));
 		valid = false;
 	}
 
@@ -393,11 +364,10 @@ void View::setFileSetRefs(const QList<QString> &fileSetRefs) {
 	fileSetRefs_ = fileSetRefs;
 
 	hierarchyRef_.clear();
-	topLevelViewRef_.clear();
+    removeTopLevelViewRefExtension();
 }
 
 QString View::getLanguage() const {
-	//Q_ASSERT(!hierarchyRef_.isValid());
 	return language_;
 }
 
@@ -417,18 +387,17 @@ void View::setParameters(const QList<QSharedPointer<Parameter> > &parameters) {
 	parameters_ = parameters;
 
 	hierarchyRef_.clear();
-	topLevelViewRef_.clear();
+    removeTopLevelViewRefExtension();
 }
 
 void View::setLanguage(const QString &language) {
 	language_ = language;
 
 	hierarchyRef_.clear();
-	topLevelViewRef_.clear();
+    removeTopLevelViewRefExtension();
 }
 
 QString View::getModelName() const {
-	//Q_ASSERT(!hierarchyRef_.isValid());
 	return modelName_;
 }
 
@@ -436,11 +405,10 @@ void View::setLanguageStrict(bool languageStrict) {
 	languageStrict_ = languageStrict;
 	
 	hierarchyRef_.clear();
-	topLevelViewRef_.clear();
+    removeTopLevelViewRefExtension();
 }
 
 QStringList View::getFileSetRefs() const {
-	//Q_ASSERT(!hierarchyRef_.isValid());
 	return fileSetRefs_;
 }
 
@@ -492,7 +460,7 @@ void View::setModelName(const QString &modelName) {
 	modelName_ = modelName;
 
 	hierarchyRef_.clear();
-	topLevelViewRef_.clear();
+    removeTopLevelViewRefExtension();
 }
 
 void View::addEnvIdentifier(const QString envIdentifier) {
@@ -512,7 +480,7 @@ void View::addFileSetRef(const QString fileSetRef) {
 	fileSetRefs_.append(fileSetRef);
 
 	hierarchyRef_.clear();
-	topLevelViewRef_.clear();
+    removeTopLevelViewRefExtension();
 }
 
 QString View::getDisplayName() const {
@@ -550,15 +518,26 @@ void View::setDefaultFileBuilders( QList<QSharedPointer<FileBuilder> >& defaultF
 	defaultFileBuilders_ = defaultFileBuilders;
 
 	hierarchyRef_.clear();
-	topLevelViewRef_.clear();
+    removeTopLevelViewRefExtension();
 }
 
 QString View::getTopLevelView() const {
-	return topLevelViewRef_;
+    if (topLevelViewRef_.isNull())
+    {
+        return QString();
+    }
+    else
+    {
+	    return topLevelViewRef_->value();
+    }
 }
 
 void View::setTopLevelView( const QString& viewName ) {
-	topLevelViewRef_ = viewName;
+    if (topLevelViewRef_.isNull())
+    {
+        createTopLevelViewRefExtension(viewName);
+    }
+	topLevelViewRef_->setValue(viewName);
 
 	// if view is hierarchical then it can't have these elements.
 	language_.clear();
@@ -579,5 +558,65 @@ const General::NameGroup& View::getNameGroup() const {
 
 void View::clearHierarchy() {
 	hierarchyRef_.clear();
-	topLevelViewRef_.clear();
+    removeTopLevelViewRefExtension();
+}
+
+//-----------------------------------------------------------------------------
+// Function: View::parseVendorExtensions()
+//-----------------------------------------------------------------------------
+void View::parseVendorExtensions(QDomNode const& extensionsNode)
+{
+    for (int i = 0; i < extensionsNode.childNodes().count(); ++i) 
+    {
+        QDomNode extensionNode = extensionsNode.childNodes().at(i);
+        if (extensionNode.nodeName() == QString("kactus2:topLevelViewRef"))
+        {
+            createTopLevelViewRefExtension(extensionNode.childNodes().at(0).nodeValue());
+        }
+        else
+        {
+            QSharedPointer<VendorExtension> extension = XmlUtils::createVendorExtensionFromNode(extensionNode); 
+            vendorExtensions_.append(extension);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: View::createTopLevelViewRefExtension()
+//-----------------------------------------------------------------------------
+void View::createTopLevelViewRefExtension(QString topLevelViewRef)
+{
+    if (topLevelViewRef_.isNull())
+    {
+        topLevelViewRef_ = QSharedPointer<Kactus2Extension>(new Kactus2Extension("kactus2:topLevelViewRef", topLevelViewRef));
+        vendorExtensions_.append(topLevelViewRef_);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: View::removeTopLevelViewExtension()
+//-----------------------------------------------------------------------------
+void View::removeTopLevelViewRefExtension()
+{
+    vendorExtensions_.removeAll(topLevelViewRef_);
+    topLevelViewRef_.clear();
+}
+
+//-----------------------------------------------------------------------------
+// Function: View::copyVendorExtensions()
+//-----------------------------------------------------------------------------
+void View::copyVendorExtensions(View const& other)
+{
+    foreach(QSharedPointer<VendorExtension> extension, other.vendorExtensions_)
+    {
+        if (extension->type() == "kactus2:topLevelViewRef")
+        {
+            topLevelViewRef_ = QSharedPointer<Kactus2Extension>(other.topLevelViewRef_->clone());
+            vendorExtensions_.append(topLevelViewRef_);
+        }
+        else
+        {
+            vendorExtensions_.append(QSharedPointer<VendorExtension>(extension->clone()));
+        }
+    }
 }

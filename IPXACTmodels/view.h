@@ -24,6 +24,7 @@
 class VLNV;
 class Parameter;
 class VendorExtension;
+class Kactus2Extension;
 
 /*! \brief Equals the spirit:view element in IP-Xact specification
  *
@@ -117,7 +118,7 @@ public:
 	 */
 	QStringList getFileSetRefs() const;
 
-	/*! \brief Get pointer to the hierarchical desing for this view
+	/*! \brief Get pointer to the hierarchical design for this view
 	 *
 	 * \return A pointer to the vlnv of a hierarchical design if the view is
 	 * used to reference a hierachical design. If not a null pointer is
@@ -313,6 +314,30 @@ public:
 
 private:
 
+    /*!
+     *  Parses the vendor extensions from a DOM node.
+     *
+     *      @param [in] extensionsNode   The DOM node containing all vendor extensions.
+     */
+    void parseVendorExtensions(QDomNode const& extensionsNode);
+
+    /*!
+     *  Creates a vendor extension for top level view reference vendor extension.
+     *
+     *      @param [in] topLevelViewRef   The initial reference to set.
+     */
+    void createTopLevelViewRefExtension(QString topLevelViewRef);
+
+    //! Removes the top level view reference vendor extension.
+    void removeTopLevelViewRefExtension();
+
+    /*!
+     *  Copies vendor extensions from another view.
+     *
+     *      @param [in] other   The view to copy extensions from.
+     */
+    void copyVendorExtensions(const View & other);
+
 	//! \brief Contains the name, display name and description of view.
 	General::NameGroup nameGroup_;
 
@@ -375,7 +400,7 @@ private:
 	/*! \brief References another view that contains files for the top-level implementation
 	 * OPTIONAL kactus2:topLevelViewRef
 	 */
-	QString topLevelViewRef_;
+	QSharedPointer<Kactus2Extension> topLevelViewRef_;
 
     /*!
 	 * OPTIONAL spirit: vendorExtensions

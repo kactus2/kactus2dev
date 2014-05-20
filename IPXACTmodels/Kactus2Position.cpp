@@ -49,7 +49,7 @@ QString Kactus2Position::type() const
 //-----------------------------------------------------------------------------
 void Kactus2Position::write(QXmlStreamWriter& writer) const
 {
-    writer.writeEmptyElement("kactus2:position");
+    writer.writeEmptyElement(type());
     writer.writeAttribute("x", QString::number(int(position_.x())));
     writer.writeAttribute("y", QString::number(int(position_.y())));
 }
