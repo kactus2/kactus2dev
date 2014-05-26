@@ -9,6 +9,9 @@
 #include "filebuilder.h"
 #include "function.h"
 #include "generaldeclarations.h"
+#include "XmlUtils.h"
+
+#include <IPXACTmodels/kactusExtensions/Kactus2Extension.h>
 
 #include <QString>
 #include <QList>
@@ -17,8 +20,6 @@
 #include <QObject>
 #include <QXmlStreamWriter>
 #include <QFileInfo>
-#include "XmlUtils.h"
-#include "Kactus2Extension.h"
 
 //-----------------------------------------------------------------------------
 // Function: FileSet::FileSet()

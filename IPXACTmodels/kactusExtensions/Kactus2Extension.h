@@ -12,7 +12,7 @@
 #ifndef KACTUS2EXTENSION_H
 #define KACTUS2EXTENSION_H
 
-#include "VendorExtension.h"
+#include <IPXACTmodels/VendorExtension.h>
 
 //-----------------------------------------------------------------------------
 // class Kactus2Extension.

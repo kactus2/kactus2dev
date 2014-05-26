@@ -1,43 +1,52 @@
 //-----------------------------------------------------------------------------
-// File: Kactus2Placeholder.h
+// File: Kactus2Position.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
 // Date: 19.5.2014
 //
 // Description:
-// Kactus2 vendor extension for single values.
+// Kactus2 vendor extension for position.
 //-----------------------------------------------------------------------------
 
-#ifndef KACTUS2PLACEHOLDER_H
-#define KACTUS2PLACEHOLDER_H
+#ifndef KACTUS2POSITION_H
+#define KACTUS2POSITION_H
 
-#include "VendorExtension.h"
+#include <IPXACTmodels/VendorExtension.h>
+
+#include <QDomNode>
 
 //-----------------------------------------------------------------------------
-// class Kactus2Placeholder.
+// class Kactus2Position.
 //-----------------------------------------------------------------------------
-class Kactus2Placeholder : public VendorExtension
+class Kactus2Position : public VendorExtension
 {
 public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] name   The name of the placeholder.
+	 *      @param [in] position   The initial position of represented by the extension.
 	 */
-    Kactus2Placeholder(QString name);
+    Kactus2Position(QPointF position);
+
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] node A DomNode where the initial position is parsed from.
+     */
+    Kactus2Position(QDomNode const& node);
 
 	/*!
 	 *  The destructor.
 	*/
-    virtual ~Kactus2Placeholder();
+    virtual ~Kactus2Position();
 
     /*!
      *  Clones the vendor extension.
      *
      *      @return The clone copy of the vendor extension.
      */
-    virtual Kactus2Placeholder* clone() const;
+    virtual Kactus2Position* clone() const;
 
     /*!
      *  Returns a type identifier for the vendor extension.
@@ -53,19 +62,33 @@ public:
      */
     virtual void write(QXmlStreamWriter& writer) const;
 
+    /*!
+     *  Gets the position.
+     *
+     *      @return The position represented by the extension.
+     */
+    QPointF position() const;
+
+    /*!
+     *  Sets the position.
+     *
+     *      @param [in] pos   The position to set.
+     */
+    void setPosition(QPointF const& pos);
+
 private:
 	// Disable copying.
-	Kactus2Placeholder(Kactus2Placeholder const& rhs);
+	Kactus2Position(Kactus2Position const& rhs);
 
 	// Disable assignment.
-	Kactus2Placeholder& operator=(Kactus2Placeholder const& rhs);
-
+	Kactus2Position& operator=(Kactus2Position const& rhs);
+    
 	//-----------------------------------------------------------------------------
 	// Data.
 	//-----------------------------------------------------------------------------
 
-    //! Name of the placeholder extension.
-    QString name_;
+    //! The position of represented by the extension.
+    QPointF position_;
 
 };
-#endif // KACTUS2PLACEHOLDER_H
+#endif // KACTUS2POSITION_H

@@ -14,7 +14,7 @@
 #include <QDomNamedNodeMap>
 #include <QXmlStreamWriter>
 #include "XmlUtils.h"
-#include "Kactus2Extension.h"
+#include <IPXACTmodels/kactusExtensions/Kactus2Extension.h>
 
 View::View(QDomNode &viewNode): 
 nameGroup_(viewNode),

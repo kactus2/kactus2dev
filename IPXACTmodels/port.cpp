@@ -17,9 +17,9 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
-#include "Kactus2Placeholder.h"
+#include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 #include "GenericVendorExtension.h"
-#include "Kactus2Position.h"
+#include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 
 // the constructor
 Port::Port(QDomNode &portNode): 
@@ -700,7 +700,8 @@ void Port::parseVendorExtensions(QDomNode const& extensionsNode)
         }
         else if (extensionNode.nodeName() == "kactus2:position")
         {
-            createPositionExtensionFromDom(extensionNode);
+            defaultPos_ = QSharedPointer<Kactus2Position>(new Kactus2Position(extensionNode));
+            vendorExtensions_.append(defaultPos_);
         }
         else
         {                    
@@ -752,18 +753,6 @@ void Port::removeAdHocVisibleExtension()
 {
     vendorExtensions_.removeAll(adHocVisible_);
     adHocVisible_.clear();
-}
-
-//-----------------------------------------------------------------------------
-// Function: Port::createPositionExtension()
-//-----------------------------------------------------------------------------
-void Port::createPositionExtensionFromDom(QDomNode const& extensionNode)
-{
-    int x = extensionNode.attributes().namedItem("x").nodeValue().toInt();
-    int y = extensionNode.attributes().namedItem("y").nodeValue().toInt();
-    QPointF position(x, y);
-
-    createPositionExtension(position);
 }
 
 //-----------------------------------------------------------------------------

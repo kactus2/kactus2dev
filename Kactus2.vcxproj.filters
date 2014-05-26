@@ -932,6 +932,12 @@
     <Filter Include="Header Files\editors\NotesEditor">
       <UniqueIdentifier>{817d192c-ff75-4c77-b9cc-aa9f6c3025c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\IPXACTmodels\kactusExtensions">
+      <UniqueIdentifier>{a262b241-ffd8-4a05-8038-b920bb36c334}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\IPXACTmodels\kactusExtensions">
+      <UniqueIdentifier>{a4b97ef0-265f-4fe5-805f-7482e8921ea0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4045,14 +4051,14 @@
     <ClCompile Include="IPXACTmodels\GenericVendorExtension.cpp">
       <Filter>Source Files\IPXACTmodels</Filter>
     </ClCompile>
-    <ClCompile Include="IPXACTmodels\Kactus2Placeholder.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
+    <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Extension.cpp">
+      <Filter>Source Files\IPXACTmodels\kactusExtensions</Filter>
     </ClCompile>
-    <ClCompile Include="IPXACTmodels\Kactus2Position.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
+    <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Placeholder.cpp">
+      <Filter>Source Files\IPXACTmodels\kactusExtensions</Filter>
     </ClCompile>
-    <ClCompile Include="IPXACTmodels\Kactus2Extension.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
+    <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Position.cpp">
+      <Filter>Source Files\IPXACTmodels\kactusExtensions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5924,14 +5930,14 @@
     <ClInclude Include="editors\CSourceEditor\CSourceWriter.h">
       <Filter>Header Files\editors\CSourceEditor</Filter>
     </ClInclude>
-    <ClInclude Include="IPXACTmodels\Kactus2Placeholder.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
+    <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Extension.h">
+      <Filter>Header Files\IPXACTmodels\kactusExtensions</Filter>
     </ClInclude>
-    <ClInclude Include="IPXACTmodels\Kactus2Position.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
+    <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Placeholder.h">
+      <Filter>Header Files\IPXACTmodels\kactusExtensions</Filter>
     </ClInclude>
-    <ClInclude Include="IPXACTmodels\Kactus2Extension.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
+    <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Position.h">
+      <Filter>Header Files\IPXACTmodels\kactusExtensions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
