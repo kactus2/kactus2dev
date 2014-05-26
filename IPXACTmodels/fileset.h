@@ -25,7 +25,7 @@ class Function;
 class FileBuilder;
 class File;
 class VendorExtension;
-class Kactus2Extension;
+class Kactus2Value;
 
 /*! \brief Equals the spirit:fileSet element in IP-Xact specification.
  *
@@ -525,7 +525,7 @@ private:
 	QList<QSharedPointer<Function> > functions_;
 
 	//! \brief ID used to identify the file set on generators.
-	 QSharedPointer<Kactus2Extension> fileSetId_;
+	 QSharedPointer<Kactus2Value> fileSetId_;
 
     /*!
 	 * OPTIONAL spirit: vendorExtensions

@@ -20,68 +20,29 @@
 class Kactus2Extension : public VendorExtension
 {
 public:
-	/*!
-	 *  The constructor.
-	 *
-	 *      @param [in] parent   The parent object.
-	 */
-    Kactus2Extension(QString name, QString value);
-
-	/*!
-	 *  The destructor.
-	*/
-	virtual ~Kactus2Extension();
+	    //! The destructor.
+    virtual ~Kactus2Extension() {}
 
     /*!
      *  Clones the vendor extension.
      *
      *      @return The clone copy of the vendor extension.
      */
-    virtual Kactus2Extension* clone() const;
+    virtual VendorExtension* clone() const = 0;
 
     /*!
      *  Returns a type identifier for the vendor extension.
      *
      *      @return A type identifier of the vendor extension.
      */
-    virtual QString type() const;
+    virtual QString type() const = 0;
 
     /*!
      *  Writes the vendor extension to XML.
      *
      *      @param [in] writer   The writer used for writing the XML.
      */
-    virtual void write(QXmlStreamWriter& writer) const;
+    virtual void write(QXmlStreamWriter& writer) const = 0;
 
-    /*!
-     *  Gets the value of the vendor extension.
-     *
-     *      @return The stored value.
-     */
-    QString value() const;
-
-    /*!
-     *  Sets the value of the vendor extension.
-     *
-     *      @param [in] newValue   The value to set.
-     */
-    void setValue(QString const& newValue);
-
-private:
-    //! Disable copying.
-    Kactus2Extension(Kactus2Extension const& other);
-
-	// Disable assignment.
-	Kactus2Extension& operator=(Kactus2Extension const& rhs);
-
-	//-----------------------------------------------------------------------------
-	// Data.
-	//-----------------------------------------------------------------------------
-
-    //! The name identifier of the vendor extension.
-    QString name_;
-
-    //! The value of the vendor extension.
-    QString value_;
 };
 #endif // KACTUS2EXTENSION_H

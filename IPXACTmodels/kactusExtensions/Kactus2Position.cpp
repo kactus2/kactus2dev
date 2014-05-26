@@ -22,19 +22,6 @@ Kactus2Position::Kactus2Position(QPointF position):
 }
 
 //-----------------------------------------------------------------------------
-// Function: Kactus2Position::Kactus2Position()
-//-----------------------------------------------------------------------------
-Kactus2Position::Kactus2Position(QDomNode const& node) :
-position_()
-{
-    int x = node.attributes().namedItem("x").nodeValue().toInt();
-    int y = node.attributes().namedItem("y").nodeValue().toInt();
-
-    position_.setX(x);
-    position_.setY(y);
-}
-
-//-----------------------------------------------------------------------------
 // Function: Kactus2Position::~Kactus2Position()
 //-----------------------------------------------------------------------------
 Kactus2Position::~Kactus2Position()

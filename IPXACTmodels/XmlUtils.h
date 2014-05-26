@@ -47,6 +47,8 @@ namespace XmlUtils
     void parseAdHocVisibilities(QDomNode& node, QMap<QString, bool>& portAdHocVisibilities,
                                 QMap<QString, QPointF>& adHocPortPositions);
 
+    QPointF parsePoint(QDomNode const& node);
+
     /*!
      *  Writes a kactus2:position to the XML stream.
      *
@@ -104,6 +106,7 @@ namespace XmlUtils
      */
     void writeVendorExtensions(QXmlStreamWriter& writer, 
                                QList<QSharedPointer<VendorExtension> > const& vendorExtensions);
+    
 }
 
 //-----------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: Kactus2Extension.cpp
+// File: Kactus2Value.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
@@ -9,12 +9,12 @@
 // Kactus2 vendor extension for name-value pairs.
 //-----------------------------------------------------------------------------
 
-#include "Kactus2Extension.h"
+#include "Kactus2Value.h"
 
 //-----------------------------------------------------------------------------
-// Function: Kactus2Extension::Kactus2Extension()
+// Function: Kactus2Value::Kactus2Value()
 //-----------------------------------------------------------------------------
-Kactus2Extension::Kactus2Extension(QString name, QString value):
+Kactus2Value::Kactus2Value(QString name, QString value):
     name_(name),
     value_(value)
 {
@@ -22,50 +22,49 @@ Kactus2Extension::Kactus2Extension(QString name, QString value):
 }
 
 //-----------------------------------------------------------------------------
-// Function: Kactus2Extension::~Kactus2Extension()
+// Function: Kactus2Value::~Kactus2Value()
 //-----------------------------------------------------------------------------
-Kactus2Extension::~Kactus2Extension()
+Kactus2Value::~Kactus2Value()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: Kactus2Extension::clone()
+// Function: Kactus2Value::clone()
 //-----------------------------------------------------------------------------
-Kactus2Extension* Kactus2Extension::clone() const
+Kactus2Value* Kactus2Value::clone() const
 {
-    return new Kactus2Extension(name_, value_);
+    return new Kactus2Value(name_, value_);
 }
 
 //-----------------------------------------------------------------------------
-// Function: Kactus2Extension::type()
+// Function: Kactus2Value::type()
 //-----------------------------------------------------------------------------
-QString Kactus2Extension::type() const
+QString Kactus2Value::type() const
 {
     return name_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: Kactus2Extension::write()
+// Function: Kactus2Value::write()
 //-----------------------------------------------------------------------------
-void Kactus2Extension::write(QXmlStreamWriter& writer) const
-{
+void Kactus2Value::write(QXmlStreamWriter& writer) const
+{    
     writer.writeTextElement(name_, value_);
 }
 
 //-----------------------------------------------------------------------------
-// Function: Kactus2Extension::value()
+// Function: Kactus2Value::value()
 //-----------------------------------------------------------------------------
-QString Kactus2Extension::value() const
+QString Kactus2Value::value() const
 {
     return value_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: Kactus2Extension::setValue()
+// Function: Kactus2Value::setValue()
 //-----------------------------------------------------------------------------
-void Kactus2Extension::setValue(QString const& newValue)
+void Kactus2Value::setValue(QString const& newValue)
 {
     value_ = newValue;
 }
-

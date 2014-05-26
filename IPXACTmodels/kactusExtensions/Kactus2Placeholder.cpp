@@ -15,10 +15,22 @@
 // Function: Kactus2Flag::Kactus2Flag()
 //-----------------------------------------------------------------------------
 Kactus2Placeholder::Kactus2Placeholder(QString name):
-    name_(name)
+    name_(name),
+    attributes_()
 {
 
 }
+
+//-----------------------------------------------------------------------------
+// Function: Kactus2Placeholder::Kactus2Placeholder()
+//-----------------------------------------------------------------------------
+Kactus2Placeholder::Kactus2Placeholder(Kactus2Placeholder const& other):
+    name_(other.name_),
+    attributes_(other.attributes_)
+{
+
+}
+
 
 //-----------------------------------------------------------------------------
 // Function: Kactus2Flag::~Kactus2Flag()
@@ -33,7 +45,9 @@ Kactus2Placeholder::~Kactus2Placeholder()
 //-----------------------------------------------------------------------------
 Kactus2Placeholder* Kactus2Placeholder::clone() const
 {
-    return new Kactus2Placeholder(name_);
+    Kactus2Placeholder* cloned = new Kactus2Placeholder(name_);
+    cloned->attributes_ = attributes_;
+    return cloned;
 }
 
 //-----------------------------------------------------------------------------
@@ -45,9 +59,31 @@ QString Kactus2Placeholder::type() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: Kactus2Extension::write()
+// Function: Kactus2Placeholder::write()
 //-----------------------------------------------------------------------------
 void Kactus2Placeholder::write(QXmlStreamWriter& writer) const
 {
     writer.writeEmptyElement(name_);
+
+    for (QMapIterator<QString, QString> attributeIterator(attributes_); attributeIterator.hasNext(); 
+        attributeIterator.next())
+    {
+        writer.writeAttribute(attributeIterator.key(), attributeIterator.value());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Kactus2Placeholder::setAttribute()
+//-----------------------------------------------------------------------------
+void Kactus2Placeholder::setAttribute(QString const& attributeName, QString const& attributeValue)
+{
+    attributes_.insert(attributeName, attributeValue);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Kactus2Placeholder::getAttributeValue()
+//-----------------------------------------------------------------------------
+QString Kactus2Placeholder::getAttributeValue(QString const& attributeName)
+{
+    return attributes_.value(attributeName);    
 }

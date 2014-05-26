@@ -11,7 +11,7 @@
 #include "generaldeclarations.h"
 #include "XmlUtils.h"
 
-#include <IPXACTmodels/kactusExtensions/Kactus2Extension.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
 #include <QString>
 #include <QList>
@@ -808,7 +808,7 @@ void FileSet::createFileSetIdExtension(const QString& id)
 {
     if (fileSetId_.isNull())
     {
-        fileSetId_ = QSharedPointer<Kactus2Extension>(new Kactus2Extension("kactus2:fileSetId", id));
+        fileSetId_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:fileSetId", id));
         vendorExtensions_.append(fileSetId_);    
     }
 }
@@ -822,7 +822,7 @@ void FileSet::copyVendorExtensions(const FileSet & other)
     {
         if (extension->type() == "kactus2:fileSetId")
         {
-            fileSetId_ = QSharedPointer<Kactus2Extension>(other.fileSetId_->clone());
+            fileSetId_ = QSharedPointer<Kactus2Value>(other.fileSetId_->clone());
             vendorExtensions_.append(fileSetId_);
         }
         else

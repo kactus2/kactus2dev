@@ -39,8 +39,7 @@ namespace XmlUtils
                     childNode.childNodes().at(0).nodeName() == "kactus2:position")
                 {
                     QDomNode posNode = childNode.childNodes().at(0);
-                    pos.setX(posNode.attributes().namedItem("x").nodeValue().toInt());
-                    pos.setY(posNode.attributes().namedItem("y").nodeValue().toInt());
+                    pos = parsePoint(posNode);
                 }
 
                 positions[name] = pos;
@@ -49,7 +48,7 @@ namespace XmlUtils
     }
 
     //-----------------------------------------------------------------------------
-    // Function: Design::ComponentInstance::parseAdHocVisibilities()
+    // Function: parseAdHocVisibilities()
     //-----------------------------------------------------------------------------
     void parseAdHocVisibilities(QDomNode& node, QMap<QString, bool>& portAdHocVisibilities,
                                 QMap<QString, QPointF>& adHocPortPositions)
@@ -63,13 +62,21 @@ namespace XmlUtils
                 QString name = childNode.attributes().namedItem("portName").nodeValue();
                 portAdHocVisibilities[name] = true;
 
-                QPointF pos;
-                pos.setX(childNode.attributes().namedItem("x").nodeValue().toInt());
-                pos.setY(childNode.attributes().namedItem("y").nodeValue().toInt());
-
+                QPointF pos = parsePoint(childNode);
                 adHocPortPositions[name] = pos;
             }
         }
+    }
+
+    //-----------------------------------------------------------------------------
+    // Function: parsePosition()
+    //-----------------------------------------------------------------------------
+    QPointF parsePoint(QDomNode const& node)
+    {
+        int x = node.attributes().namedItem("x").nodeValue().toInt();
+        int y = node.attributes().namedItem("y").nodeValue().toInt();
+
+        return QPointF(x, y);
     }
 
     //-----------------------------------------------------------------------------

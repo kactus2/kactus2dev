@@ -14,7 +14,7 @@
 #include <QDomNamedNodeMap>
 #include <QXmlStreamWriter>
 #include "XmlUtils.h"
-#include <IPXACTmodels/kactusExtensions/Kactus2Extension.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
 View::View(QDomNode &viewNode): 
 nameGroup_(viewNode),
@@ -588,7 +588,7 @@ void View::createTopLevelViewRefExtension(QString topLevelViewRef)
 {
     if (topLevelViewRef_.isNull())
     {
-        topLevelViewRef_ = QSharedPointer<Kactus2Extension>(new Kactus2Extension("kactus2:topLevelViewRef", topLevelViewRef));
+        topLevelViewRef_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:topLevelViewRef", topLevelViewRef));
         vendorExtensions_.append(topLevelViewRef_);
     }
 }
@@ -611,7 +611,7 @@ void View::copyVendorExtensions(View const& other)
     {
         if (extension->type() == "kactus2:topLevelViewRef")
         {
-            topLevelViewRef_ = QSharedPointer<Kactus2Extension>(other.topLevelViewRef_->clone());
+            topLevelViewRef_ = QSharedPointer<Kactus2Value>(other.topLevelViewRef_->clone());
             vendorExtensions_.append(topLevelViewRef_);
         }
         else

@@ -440,25 +440,14 @@ private:
     void parseVendorExtensions(QDomNode const& extensionsNode);
 
     /*!
-     *  Creates a vendor extension for port default position.
-     *
-     *      @param [in] position   The initial position to set.
-     */
-    void createPositionExtension(QPointF const& position);
-
-    /*!
      *  Copies vendor extensions from another port.
      *
      *      @param [in] other   The port to copy extensions from.
      */
     void copyVendorExtensions(Port const& other);
 
-    //! Creates the ad hoc visibility vendor extension.
     void createAdHocVisibleExtension();
-
-    //! Removes the ad hoc visibility vendor extension.
-    void removeAdHocVisibleExtension();
-
+    void createPositionExtension();
 	//! \brief Contains the name, display name and description for the port.
 	General::NameGroup nameGroup_;
 

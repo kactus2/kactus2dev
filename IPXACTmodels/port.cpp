@@ -33,6 +33,9 @@ adHocVisible_(),
 defaultPos_(),
 vendorExtensions_()
 {
+    createAdHocVisibleExtension();
+    createPositionExtension();
+
 	for (int i = 0; i < portNode.childNodes().count(); ++i) {
 		QDomNode tempNode = portNode.childNodes().at(i);
 
@@ -88,6 +91,8 @@ vendorExtensions_()
         wire_ = QSharedPointer<Wire>(new Wire(*other.wire_));
     }
 
+    createAdHocVisibleExtension();
+    createPositionExtension();
     copyVendorExtensions(other);
 }
 
@@ -113,6 +118,8 @@ vendorExtensions_()
 		transactional_ = QSharedPointer<Transactional>(new Transactional(*other.transactional_.data()));
 	}
 
+    createAdHocVisibleExtension();
+    createPositionExtension();
     copyVendorExtensions(other);
 }
 
@@ -141,6 +148,8 @@ Port & Port::operator=( const Port &other ) {
 			transactional_ = QSharedPointer<Transactional>();
         }
 
+        createAdHocVisibleExtension();
+        createPositionExtension();
         copyVendorExtensions(other);
 	}
 	return *this;
@@ -161,6 +170,9 @@ defaultPos_(),
 vendorExtensions_()
 {
 	wire_ = QSharedPointer<Wire>(new Wire());
+
+    createAdHocVisibleExtension();
+    createPositionExtension();
 }
 
 //-----------------------------------------------------------------------------
@@ -185,6 +197,9 @@ vendorExtensions_()
 	nameGroup_.name_ = name;
 
 	wire_ = QSharedPointer<Wire>(new Wire(direction, leftBound, rightBound, defaultValue, allLogicalDirections));
+    
+    createAdHocVisibleExtension();
+    createPositionExtension();
 }
 
 //-----------------------------------------------------------------------------
@@ -215,6 +230,9 @@ vendorExtensions_()
 	wire_ = QSharedPointer<Wire>(new Wire(direction, leftBound, rightBound, defaultValue, false));
 	wire_->setTypeName(typeName);
 	wire_->setTypeDefinition(typeName, typeDefinition);
+
+    createAdHocVisibleExtension();
+    createPositionExtension();
 }
 
 //-----------------------------------------------------------------------------
@@ -644,11 +662,14 @@ void Port::setAdHocVisible(bool visible)
 {
     if (visible)
     {
-        createAdHocVisibleExtension();
+        if (!vendorExtensions_.contains(adHocVisible_))
+        {
+            vendorExtensions_.append(adHocVisible_);
+        }
     }
     else
     {
-        removeAdHocVisibleExtension();
+        vendorExtensions_.removeAll(adHocVisible_);
     }
 }
 
@@ -657,7 +678,7 @@ void Port::setAdHocVisible(bool visible)
 //-----------------------------------------------------------------------------
 bool Port::isAdHocVisible() const
 {
-    return !adHocVisible_.isNull();
+    return vendorExtensions_.contains(adHocVisible_);
 }
 
 //-----------------------------------------------------------------------------
@@ -665,8 +686,12 @@ bool Port::isAdHocVisible() const
 //-----------------------------------------------------------------------------
 void Port::setDefaultPos(QPointF const& pos)
 {
-    createPositionExtension(pos);
     defaultPos_->setPosition(pos);
+    
+    if (!vendorExtensions_.contains(defaultPos_))
+    {
+        vendorExtensions_.append(defaultPos_);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -674,34 +699,27 @@ void Port::setDefaultPos(QPointF const& pos)
 //-----------------------------------------------------------------------------
 QPointF Port::getDefaultPos() const
 {
-    if (defaultPos_.isNull())
-    {
-        return QPointF();
-    }
-    else
-    {
-        return defaultPos_->position();
-    }
+    return defaultPos_->position();
 }
 
 //-----------------------------------------------------------------------------
 // Function: Port::parseVendorExtensions()
 //-----------------------------------------------------------------------------
 void Port::parseVendorExtensions(QDomNode const& extensionsNode)
-{
+{    
     int extensionCount = extensionsNode.childNodes().count();
     for (int i = 0; i < extensionCount; ++i) 
     {        
         QDomNode extensionNode = extensionsNode.childNodes().at(i);
 
         if (extensionNode.nodeName() == QString("kactus2:adHocVisible"))
-        {
-           createAdHocVisibleExtension();
+        {          
+            setAdHocVisible(true);
         }
         else if (extensionNode.nodeName() == "kactus2:position")
-        {
-            defaultPos_ = QSharedPointer<Kactus2Position>(new Kactus2Position(extensionNode));
-            vendorExtensions_.append(defaultPos_);
+        {            
+            QPointF position = XmlUtils::parsePoint(extensionNode);
+            setDefaultPos(position);
         }
         else
         {                    
@@ -720,12 +738,11 @@ void Port::copyVendorExtensions(Port const& other)
     {        
         if (extension->type() == "kactus2:adHocVisible")
         {
-            createAdHocVisibleExtension();
+            setAdHocVisible(true);
         }
         else if (extension->type() == "kactus2:position")
         {
-            defaultPos_ = QSharedPointer<Kactus2Position>(other.defaultPos_->clone());
-            vendorExtensions_.append(defaultPos_);
+            setDefaultPos(other.defaultPos_->position());           
         }
         else
         {
@@ -735,34 +752,19 @@ void Port::copyVendorExtensions(Port const& other)
 }
 
 //-----------------------------------------------------------------------------
-// Function: Port::createAdHocVisibleExtensions()
+// Function: Port::createAdHocVisibleExtension()
 //-----------------------------------------------------------------------------
 void Port::createAdHocVisibleExtension()
 {
-    if (adHocVisible_.isNull())
-    {
-        adHocVisible_ = QSharedPointer<Kactus2Placeholder>(new Kactus2Placeholder("kactus2:adHocVisible"));
-        vendorExtensions_.append(adHocVisible_);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Port::removeAdHocVisibleExtension()
-//-----------------------------------------------------------------------------
-void Port::removeAdHocVisibleExtension()
-{
-    vendorExtensions_.removeAll(adHocVisible_);
-    adHocVisible_.clear();
+    adHocVisible_ = QSharedPointer<Kactus2Placeholder>(new Kactus2Placeholder("kactus2:adHocVisible"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: Port::createPositionExtension()
 //-----------------------------------------------------------------------------
-void Port::createPositionExtension(QPointF const& position)
+void Port::createPositionExtension()
 {
-    if (defaultPos_.isNull())
-    {
-        defaultPos_ = QSharedPointer<Kactus2Position>(new Kactus2Position(position));
-        vendorExtensions_.append(defaultPos_);
-    }
+    defaultPos_ = QSharedPointer<Kactus2Position>(new Kactus2Position(QPointF()));
 }
+
+
