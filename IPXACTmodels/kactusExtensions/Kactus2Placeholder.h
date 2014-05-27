@@ -12,14 +12,14 @@
 #ifndef KACTUS2PLACEHOLDER_H
 #define KACTUS2PLACEHOLDER_H
 
-#include <IPXACTmodels/kactusExtensions/Kactus2Extension.h>
+#include <IPXACTmodels/VendorExtension.h>
 
 #include <QMap>
 
 //-----------------------------------------------------------------------------
 // class Kactus2Placeholder.
 //-----------------------------------------------------------------------------
-class Kactus2Placeholder : public Kactus2Extension
+class Kactus2Placeholder : public VendorExtension
 {
 public:
 	/*!

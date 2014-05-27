@@ -618,9 +618,10 @@ HEADERS += ./resource.h \
     ./IPXACTmodels/XmlUtils.h \
     ./IPXACTmodels/GenericVendorExtension.h \
     ./IPXACTmodels/VendorExtension.h \
-    ./IPXACTmodels/kactusExtensions/Kactus2Extension.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
-    ./IPXACTmodels/kactusExtensions/Kactus2Position.h
+    ./IPXACTmodels/kactusExtensions/Kactus2Position.h \
+    ./IPXACTmodels/kactusExtensions/Kactus2Value.h \
+    ./IPXACTmodels/kactusExtensions/Kactus2PortPositions.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
@@ -1204,7 +1205,8 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXACTmodels/wireabstraction.cpp \
     ./IPXACTmodels/writevalueconstraint.cpp \
     ./IPXACTmodels/XmlUtils.cpp \
-    ./IPXACTmodels/kactusExtensions/Kactus2Extension.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
-    ./IPXACTmodels/kactusExtensions/Kactus2Position.cpp
+    ./IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
+    ./IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
+    ./IPXACTmodels/kactusExtensions/Kactus2PortPositions.cpp
 RESOURCES += kactus.qrc

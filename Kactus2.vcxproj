@@ -1232,9 +1232,10 @@ CreateHelp
     <ClCompile Include="IPXACTmodels\GenericVendorExtension.cpp" />
     <ClCompile Include="IPXACTmodels\HierApiDependency.cpp" />
     <ClCompile Include="IPXACTmodels\HierComConnection.cpp" />
-    <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Extension.cpp" />
     <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Placeholder.cpp" />
+    <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2PortPositions.cpp" />
     <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Position.cpp" />
+    <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Value.cpp" />
     <ClCompile Include="IPXACTmodels\librarycomponent.cpp" />
     <ClCompile Include="IPXACTmodels\masterinterface.cpp" />
     <ClCompile Include="IPXACTmodels\memoryblockdata.cpp" />
@@ -9777,9 +9778,10 @@ CreateHelp
     </CustomBuild>
     <ClInclude Include="IPXACTmodels\HierApiDependency.h" />
     <ClInclude Include="IPXACTmodels\HierComConnection.h" />
-    <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Extension.h" />
     <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Placeholder.h" />
+    <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2PortPositions.h" />
     <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Position.h" />
+    <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Value.h" />
     <ClInclude Include="IPXACTmodels\librarycomponent.h" />
     <ClInclude Include="IPXACTmodels\masterinterface.h" />
     <ClInclude Include="IPXACTmodels\memoryblockdata.h" />

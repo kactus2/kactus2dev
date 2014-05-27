@@ -17,12 +17,16 @@
 #include <common/Global.h>
 
 #include <QString>
+#include <QSharedPointer>
 #include <QPointF>
 #include <QMap>
 #include <QDomNode>
 #include <QXmlStreamWriter>
 
 class VendorExtension;
+class Kactus2Position;
+class Kactus2Value;
+class Kactus2Placeholder;
 
 //-----------------------------------------------------------------------------
 //! IP-XACT component instance class.
@@ -48,6 +52,11 @@ public:
      *      @param [in] node A reference to a QDomNode where the information should be parsed from.
      */
     ComponentInstance(QDomNode& node);
+
+    /*!
+     *  Assignment operator.
+     */
+    ComponentInstance& operator=(ComponentInstance const& other);
 
     /*!
      *  Writes the contents to an XML stream.
@@ -227,7 +236,7 @@ public:
     /*!
      *  Returns the global position of the instance in the design.
      */
-    QPointF const& getPosition() const;
+     QPointF getPosition() const;
 
     /*!
      *  Returns true if the instance is an imported one.
@@ -237,7 +246,7 @@ public:
     /*!
      *  Returns the name of the import source instance.
      */
-    QString const& getImportRef() const;
+    QString getImportRef() const;
 
     /*!
      *  Returns the property values.
@@ -268,11 +277,6 @@ public:
      *  Returns the port ad-hoc visibilities.
      */
     QMap<QString, bool> const& getPortAdHocVisibilities() const;
-
-    /*!
-     *  Assignment operator.
-     */
-    ComponentInstance& operator=(ComponentInstance const& other);
 
 	 /*! \brief Get the Uuid of the instance.
 	  *
@@ -305,6 +309,37 @@ private:
     */
     void parsePropertyValues(QDomNode& node);
 
+    /*!
+     *  Parses the vendor extensions from a DOM node.
+     *
+     *      @param [in] extensionsNode   The DOM node containing all vendor extensions.
+     */
+    void parseVendorExtensions(QDomNode const& extensionsNode);
+
+    /*!
+     *  Copies vendor extensions from a list of vendor extension.
+     *
+     *      @param [in] extensions   The list to copy extensions from.          
+     */
+    void copyVendorExtensions(QList<QSharedPointer<VendorExtension> > const& extensions);
+
+    /*!
+     *  Creates a vendor extension for import.
+     */
+    void createImportVendorExtension();
+
+    /*!
+     *  Creates a vendor extension for default position.
+     *
+     *      @param [in] position   The initial default position.          
+     */
+    void createPositionVendorExtension(QPointF const& position);
+
+    /*!
+     *  Creates a vendor extension for UUID.
+     */
+    void createUuidVendorExtension();
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -332,13 +367,10 @@ private:
     QMap<QString, QString> configurableElementValues_;
 
     //! The global position of the instance in the design (kactus2:position).
-    QPointF pos_;
+    QSharedPointer<Kactus2Position> pos_;
 
     //! If true, the instance is an imported one (kactus2:imported).
-    bool imported_;
-
-    //! The name of the import source instance (kactus2:importRef).
-    QString importRef_;
+    QSharedPointer<Kactus2Placeholder> imported_;
 
     //! Port positions for the component instance's bus interface (kactus2:portPositions).
     QMap<QString, QPointF> portPositions_;
@@ -359,7 +391,7 @@ private:
     QMap<QString, QString> swPropertyValues_;
 
 	//! \brief The unique id used to identify the instance.
-	 QString uuid_;
+	QSharedPointer<Kactus2Value> uuid_;
 
     /*!
      * OPTIONAL spirit: vendorExtensions

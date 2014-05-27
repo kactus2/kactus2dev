@@ -4051,13 +4051,16 @@
     <ClCompile Include="IPXACTmodels\GenericVendorExtension.cpp">
       <Filter>Source Files\IPXACTmodels</Filter>
     </ClCompile>
-    <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Extension.cpp">
-      <Filter>Source Files\IPXACTmodels\kactusExtensions</Filter>
-    </ClCompile>
     <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Placeholder.cpp">
       <Filter>Source Files\IPXACTmodels\kactusExtensions</Filter>
     </ClCompile>
     <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Position.cpp">
+      <Filter>Source Files\IPXACTmodels\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Value.cpp">
+      <Filter>Source Files\IPXACTmodels\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2PortPositions.cpp">
       <Filter>Source Files\IPXACTmodels\kactusExtensions</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5930,13 +5933,16 @@
     <ClInclude Include="editors\CSourceEditor\CSourceWriter.h">
       <Filter>Header Files\editors\CSourceEditor</Filter>
     </ClInclude>
-    <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Extension.h">
-      <Filter>Header Files\IPXACTmodels\kactusExtensions</Filter>
-    </ClInclude>
     <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Placeholder.h">
       <Filter>Header Files\IPXACTmodels\kactusExtensions</Filter>
     </ClInclude>
     <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Position.h">
+      <Filter>Header Files\IPXACTmodels\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Value.h">
+      <Filter>Header Files\IPXACTmodels\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2PortPositions.h">
       <Filter>Header Files\IPXACTmodels\kactusExtensions</Filter>
     </ClInclude>
   </ItemGroup>

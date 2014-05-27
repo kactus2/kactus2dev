@@ -12,14 +12,14 @@
 #ifndef KACTUS2POSITION_H
 #define KACTUS2POSITION_H
 
-#include <IPXACTmodels/kactusExtensions/Kactus2Extension.h>
+#include <IPXACTmodels/VendorExtension.h>
 
 #include <QDomNode>
 
 //-----------------------------------------------------------------------------
 // class Kactus2Position.
 //-----------------------------------------------------------------------------
-class Kactus2Position : public Kactus2Extension
+class Kactus2Position : public VendorExtension
 {
 public:
 	/*!
