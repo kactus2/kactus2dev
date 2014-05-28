@@ -793,7 +793,7 @@ unsigned int HWDesignWidget::getSupportedDrawModes() const
 {
     if (!isProtected())
     {
-        return (MODE_SELECT | MODE_CONNECT | MODE_INTERFACE | MODE_DRAFT | MODE_TOGGLE_OFFPAGE);
+        return (MODE_SELECT | MODE_CONNECT | MODE_INTERFACE | MODE_DRAFT | MODE_TOGGLE_OFFPAGE | MODE_LABEL);
     }
     else
     {

@@ -22,7 +22,8 @@ enum DrawMode
     MODE_CONNECT        = 0x02,
     MODE_INTERFACE      = 0x04,
     MODE_DRAFT          = 0x08,
-    MODE_TOGGLE_OFFPAGE = 0x10
+    MODE_TOGGLE_OFFPAGE = 0x10,
+    MODE_LABEL          = 0x20
 };
 
 //-----------------------------------------------------------------------------

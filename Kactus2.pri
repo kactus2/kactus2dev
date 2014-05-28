@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./resource.h \
+HEADERS += ./designEditors/common/DesignLabel.h \
+    ./resource.h \
     ./common/Global.h \
     ./common/KactusAttribute.h \
     ./common/KactusColors.h \
@@ -1208,5 +1209,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
+    ./designEditors/common/DesignLabel.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2PortPositions.cpp
 RESOURCES += kactus.qrc

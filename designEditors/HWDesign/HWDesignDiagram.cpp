@@ -813,11 +813,6 @@ void HWDesignDiagram::updateHierComponent()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::selectionToFront()
 {
-    /*if (oldSelection_ != 0 && oldSelection_->type() == HWConnection::Type)
-    {
-        oldSelection_->setZValue(-900);
-    }*/
-
     if (selectedItems().isEmpty())
         return;
 
@@ -1098,6 +1093,14 @@ void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             QGraphicsScene::mousePressEvent(mouseEvent);
         }
     }
+    else if(getMode() == MODE_LABEL)
+    {
+        if (!isProtected())
+        {
+            createLabel(mouseEvent->scenePos());
+  
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1333,24 +1336,7 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
 			}
         }
         else if (!isProtected())
-        {
-            // Otherwise this is an unpackaged component. Check if the bus interfaces are valid.
-//             foreach (QSharedPointer<BusInterface> busIf, comp->componentModel()->getBusInterfaces())
-//             {
-//                 if (!busIf->getBusType().isValid())
-//                 {
-//                     QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-//                                        tr("Component '%1' cannot be packetized because all bus interfaces "
-//                                           "have not been defined.").arg(comp->name()),
-//                                        QMessageBox::Ok, (QWidget*)parent());
-//                     msgBox.setInformativeText(tr("Define first the buses by dragging from the library "
-//                                                  "or double clicking the bus interface."));
-//                     
-//                     msgBox.exec();
-//                     return;
-//                 }
-//             }
-            
+        {           
             // Request the user to set the vlnv.
            onAddAction();
         }
@@ -1658,20 +1644,6 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             // Replace the underlying component with the new one.
             HWComponentItem* oldCompItem = static_cast<HWComponentItem*>(getTopmostComponent(event->scenePos()));
             Q_ASSERT(oldCompItem != 0);
-
-            // TODO: Determine connectivity issues and ask confirmation from the user.
-//             QStringList detailList;
-// 
-//             foreach (ConnectionEndpoint* endpoint, oldCompItem->getEndpoints())
-//             {
-//                 if (endpoint->isConnected())
-//                 {
-//                     // Check if the endpoint is not found in the new component.
-//                     if (endpoint->getType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS)
-//                     {
-//                     }
-//                 }
-//             }
 
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                                tr("Component instance '%1' is about to be replaced "

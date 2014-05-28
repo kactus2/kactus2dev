@@ -4063,6 +4063,12 @@
     <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2PortPositions.cpp">
       <Filter>Source Files\IPXACTmodels\kactusExtensions</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignLabel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\DesignLabel.cpp">
+      <Filter>Source Files\designEditors\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5468,6 +5474,9 @@
     </CustomBuild>
     <CustomBuild Include="IPXACTmodels\GenericVendorExtension.h">
       <Filter>Header Files\IPXACTmodels</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\DesignLabel.h">
+      <Filter>Header Files\designEditors\common</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

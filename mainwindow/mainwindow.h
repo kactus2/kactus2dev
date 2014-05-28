@@ -863,10 +863,15 @@ private:
 
     //! Action to add interfaces in a diagram.
     QAction* actToolInterface_;
+
+    //! Action to drafting.
     QAction* actToolDraft_;
 
     //! Action to toggle off-page connection in a diagram.
     QAction* actToolToggleOffPage_;
+
+    //! Action to create labels.
+    QAction* actToolLabel_;
 
     //! Action to zoom in.
     QAction* actZoomIn_;
@@ -934,6 +939,7 @@ private:
      * hidden by change of the active document.
      */
 	QMap<TabDocument::SupportedWindows, bool> visibilities_;
+
 };
 
 #endif // MAINWINDOW_H

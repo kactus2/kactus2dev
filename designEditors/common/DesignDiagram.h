@@ -318,6 +318,13 @@ protected:
      */
      virtual void drawBackground(QPainter* painter, QRectF const& rect);
 
+    /*!
+     *  Adds a new label to the design.
+     *
+     *      @param [in] position   The initial position of the label.
+     */
+    virtual void createLabel(QPointF const& position);
+
      /*!
      *  Called when an item has been selected in the diagram.
      *

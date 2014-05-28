@@ -29,6 +29,7 @@
 #include <QPainter>
 #include <QMenu>
 #include <QGraphicsItem>
+#include "DesignLabel.h"
 
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::DesignDiagram()
@@ -301,7 +302,6 @@ QString DesignDiagram::createInstanceName(QString const& baseName)
 void DesignDiagram::drawBackground(QPainter* painter, QRectF const& rect)
 {
     painter->setWorldMatrixEnabled(true);
-    //painter->setBrush(Qt::lightGray);
     painter->setPen(QPen(Qt::black, 0));
 
     qreal left = int(rect.left()) - (int(rect.left()) % GridSize );
@@ -311,6 +311,22 @@ void DesignDiagram::drawBackground(QPainter* painter, QRectF const& rect)
         for (qreal y = top; y < rect.bottom(); y += GridSize )
             painter->drawPoint(x, y);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::createTextLabel()
+//-----------------------------------------------------------------------------
+void DesignDiagram::createLabel(QPointF const& position)
+{
+    DesignLabel* label = new DesignLabel();    
+    addItem(label);
+    label->setPos(snapPointToGrid(position));
+
+    clearSelection();
+    label->setSelected(true);    
+    onSelected(label);
+
+    label->setFocus();
 }
 
 //-----------------------------------------------------------------------------
@@ -328,8 +344,8 @@ void DesignDiagram::contextMenuEvent(QGraphicsSceneContextMenuEvent* event){
 	QMenu* menu = createContextMenu(event->scenePos());
 	if ( menu != 0 )
 	{
-	menu->exec(event->screenPos());
-	delete menu;
+	    menu->exec(event->screenPos());
+	    delete menu;
 	}
 	event->accept();
 }
