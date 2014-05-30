@@ -622,7 +622,9 @@ HEADERS += ./designEditors/common/DesignLabel.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Position.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Value.h \
-    ./IPXACTmodels/kactusExtensions/Kactus2PortPositions.h
+    ./IPXACTmodels/kactusExtensions/Kactus2PortPositions.h \
+    ./common/graphicsItems/commands/FloatingItemAddCommand.h \
+    ./common/graphicsItems/commands/FloatingItemMoveCommand.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
@@ -1210,5 +1212,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
     ./designEditors/common/DesignLabel.cpp \
-    ./IPXACTmodels/kactusExtensions/Kactus2PortPositions.cpp
+    ./IPXACTmodels/kactusExtensions/Kactus2PortPositions.cpp \
+    ./common/graphicsItems/commands/FloatingItemAddCommand.cpp \
+    ./common/graphicsItems/commands/FloatingItemMoveCommand.cpp
 RESOURCES += kactus.qrc

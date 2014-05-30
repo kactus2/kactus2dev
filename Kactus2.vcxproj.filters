@@ -938,6 +938,12 @@
     <Filter Include="Header Files\IPXACTmodels\kactusExtensions">
       <UniqueIdentifier>{a4b97ef0-265f-4fe5-805f-7482e8921ea0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\common\graphicsItems\commands">
+      <UniqueIdentifier>{c5738b20-7a21-4c08-8d4b-8632994c162b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\graphicsItems\commands">
+      <UniqueIdentifier>{414bd4f5-aed9-47d9-950c-ee6a828cc02b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4069,6 +4075,15 @@
     <ClCompile Include="designEditors\common\DesignLabel.cpp">
       <Filter>Source Files\designEditors\common</Filter>
     </ClCompile>
+    <ClCompile Include="common\graphicsItems\commands\FloatingItemAddCommand.cpp">
+      <Filter>Source Files\common\graphicsItems\commands</Filter>
+    </ClCompile>
+    <ClCompile Include="common\graphicsItems\commands\FloatingItemMoveCommand.cpp">
+      <Filter>Source Files\common\graphicsItems\commands</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_FloatingItemAddCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5478,6 +5493,9 @@
     <CustomBuild Include="designEditors\common\DesignLabel.h">
       <Filter>Header Files\designEditors\common</Filter>
     </CustomBuild>
+    <CustomBuild Include="common\graphicsItems\commands\FloatingItemAddCommand.h">
+      <Filter>Header Files\common\graphicsItems\commands</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\attributeDialog\attributedialog.h">
@@ -5953,6 +5971,9 @@
     </ClInclude>
     <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2PortPositions.h">
       <Filter>Header Files\IPXACTmodels\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="common\graphicsItems\commands\FloatingItemMoveCommand.h">
+      <Filter>Header Files\common\graphicsItems\commands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

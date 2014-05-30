@@ -25,11 +25,15 @@
 #include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/component.h>
 
+#include <common/graphicsItems/commands/FloatingItemAddCommand.h>
+
 #include <QWidget>
 #include <QPainter>
 #include <QMenu>
 #include <QGraphicsItem>
 #include "DesignLabel.h"
+
+
 
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::DesignDiagram()
@@ -319,13 +323,14 @@ void DesignDiagram::drawBackground(QPainter* painter, QRectF const& rect)
 void DesignDiagram::createLabel(QPointF const& position)
 {
     DesignLabel* label = new DesignLabel();    
-    addItem(label);
-    label->setPos(snapPointToGrid(position));
+    
+    QSharedPointer<FloatingItemAddCommand> cmd(new FloatingItemAddCommand(this, label, position));
+    getEditProvider().addCommand(cmd, false);
+    cmd->redo();
 
     clearSelection();
     label->setSelected(true);    
     onSelected(label);
-
     label->setFocus();
 }
 

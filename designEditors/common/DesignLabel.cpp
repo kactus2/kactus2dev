@@ -17,18 +17,24 @@
 #include <QMargins>
 
 #include "diagramgrid.h"
+#include "DesignDiagram.h"
+#include <common/graphicsItems/commands/FloatingItemMoveCommand.h>
+#include <common/GenericEditProvider.h>
 
 //-----------------------------------------------------------------------------
 // Function: DesignLabel::DesignLabel()
 //-----------------------------------------------------------------------------
 DesignLabel::DesignLabel(QGraphicsItem* parent):
-QGraphicsTextItem(parent)
+QGraphicsTextItem(parent),
+oldPos_()
 { 
     setFlag(ItemIsMovable);
     setFlag(ItemIsSelectable);
     setFlag(ItemIsFocusable);
     setTextInteractionFlags(Qt::TextEditable);
-    setTextWidth(GridSize * 8 * 2);
+
+    setTextWidth(GridSize * 8 * 2);    
+
     setOpacity(1.0);
 }
 
@@ -37,6 +43,7 @@ QGraphicsTextItem(parent)
 //-----------------------------------------------------------------------------
 DesignLabel::~DesignLabel()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -57,3 +64,33 @@ void DesignLabel::paint(QPainter* painter, const QStyleOptionGraphicsItem * opti
     painter->restore();
 }
 
+//-----------------------------------------------------------------------------
+// Function: DesignLabel::mousePressEvent()
+//-----------------------------------------------------------------------------
+void DesignLabel::mousePressEvent(QGraphicsSceneMouseEvent * event)
+{
+    oldPos_ = scenePos();
+
+    QGraphicsTextItem::mousePressEvent(event);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignLabel::mouseReleaseEvent()
+//-----------------------------------------------------------------------------
+void DesignLabel::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
+{
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+
+    if (diagram == 0)
+    {
+        return;
+    }
+
+    QGraphicsTextItem::mouseReleaseEvent(event);
+
+    if (pos() != oldPos_)
+    {
+        QSharedPointer<FloatingItemMoveCommand> moveCommand(new FloatingItemMoveCommand(this, oldPos_));
+        diagram->getEditProvider().addCommand(moveCommand, false);
+    }
+}

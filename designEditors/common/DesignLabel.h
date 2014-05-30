@@ -9,6 +9,9 @@
 // <Short description of the class/file contents>
 //-----------------------------------------------------------------------------
 
+#ifndef DESIGNLABEL_H
+#define DESIGNLABEL_H
+
 #include <QGraphicsTextItem>
 
 //-----------------------------------------------------------------------------
@@ -25,10 +28,10 @@ public:
      *
      *      @param [in] parent   The parent item.
      */
-    DesignLabel(QGraphicsItem* parent = 0);
+    explicit DesignLabel(QGraphicsItem* parent = 0);
 
     //! The destructor.
-    virtual ~DesignLabel(void);
+    virtual ~DesignLabel();
 
     /*!
      *  Draws the label.
@@ -37,7 +40,21 @@ public:
      *      @param [in] option      The style options for drawing.
      *      @param [in] widget      The widget being painted on.
      */
-    virtual void paint(QPainter* painter, const QStyleOptionGraphicsItem * option, QWidget * widget );
+    virtual void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget );
+
+protected:
+
+    //! Handler for mouse press events.
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
+
+    //! Handler for mouse release event.
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
+
+private:
+
+    //! Position of the label before move.
+    QPointF oldPos_;
 
 };
 
+#endif // HWDESIGNLABEL_H

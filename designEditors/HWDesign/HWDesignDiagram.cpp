@@ -26,6 +26,7 @@
 
 #include <designEditors/common/DiagramUtil.h>
 #include <designEditors/common/diagramgrid.h>
+#include <designEditors/common/DesignLabel.h>
 #include <common/dialogs/comboSelector/comboselector.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/GenericEditProvider.h>
@@ -64,6 +65,8 @@
 
 #include <QDebug>
 #include "columnview/ColumnEditDialog.h"
+
+#include "../common/LabelUndoCommands.h"
 
 
 Q_DECLARE_METATYPE(HWDesignDiagram::BusInterfaceCollectionCopyData)
@@ -1098,7 +1101,6 @@ void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         if (!isProtected())
         {
             createLabel(mouseEvent->scenePos());
-  
         }
     }
 }
