@@ -242,6 +242,8 @@ protected:
 
     virtual bool setDesign(QSharedPointer<Component> component, const QString& viewName);
 
+    void removeSelectedLabels();
+
 private:
     // Disable copying.
     DesignWidget(DesignWidget const& rhs);

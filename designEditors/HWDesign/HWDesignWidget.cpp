@@ -13,6 +13,8 @@
 #include "HWDeleteCommands.h"
 
 #include <designEditors/common/DiagramUtil.h>
+#include <designEditors/common/StickyNote/StickyNote.h>
+
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/GenericEditProvider.h>
 
@@ -54,8 +56,6 @@
 #include <QPrintDialog>
 
 #include <QDebug>
-#include "../common/DesignLabel.h"
-#include <common/graphicsItems/commands/FloatingItemRemoveCommand.h>
 
 HWDesignWidget::HWDesignWidget(LibraryInterface *lh, QWidget* parent)
     : DesignWidget(lh, parent)
@@ -517,16 +517,7 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
         }
         else if (type == StickyNote::Type)
         {
-            getDiagram()->clearSelection();
-            QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
-
-            foreach (QGraphicsItem* selected, selectedItems)
-            {
-                QUndoCommand* deleteCommand = new FloatingItemRemoveCommand(selected, getDiagram(), parentCommand.data());
-                deleteCommand->redo();
-            }
-
-            getGenericEditProvider()->addCommand(parentCommand);
+            removeSelectedLabels();
         }
     }
     else

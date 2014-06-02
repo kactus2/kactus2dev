@@ -24,6 +24,7 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
 #include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
+#include <designEditors/common/StickyNote/StickyNote.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/LibraryUtils.h>
@@ -41,6 +42,7 @@
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QCoreApplication>
+
 
 //-----------------------------------------------------------------------------
 // Function: SystemDesignWidget()
@@ -209,7 +211,7 @@ unsigned int SystemDesignWidget::getSupportedDrawModes() const
 {
     if (getView()->isInteractive())
     {
-        return (MODE_SELECT | MODE_CONNECT | MODE_DRAFT | MODE_TOGGLE_OFFPAGE);
+        return (MODE_SELECT | MODE_CONNECT | MODE_DRAFT | MODE_TOGGLE_OFFPAGE | MODE_LABEL);
     }
     else
     {
@@ -398,6 +400,10 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
             }
 
             getGenericEditProvider()->addCommand(cmd);
+        }
+        else if (type == StickyNote::Type)
+        {
+            removeSelectedLabels();
         }
     }
 }

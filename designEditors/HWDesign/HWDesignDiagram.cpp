@@ -26,7 +26,8 @@
 
 #include <designEditors/common/DiagramUtil.h>
 #include <designEditors/common/diagramgrid.h>
-#include <designEditors/common/DesignLabel.h>
+#include <designEditors/common/StickyNote/StickyNote.h>
+
 #include <common/dialogs/comboSelector/comboselector.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/GenericEditProvider.h>

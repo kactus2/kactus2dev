@@ -16,6 +16,7 @@
 #include <common/GenericEditProvider.h>
 
 #include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
+#include <designEditors/common/StickyNote/StickyNote.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/LibraryUtils.h>
@@ -31,6 +32,7 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <QFileInfo>
+
 
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignWidget()
@@ -161,7 +163,7 @@ unsigned int MemoryDesignWidget::getSupportedDrawModes() const
 {
     if (getView()->isInteractive())
     {
-        return (MODE_SELECT | MODE_DRAFT);
+        return (MODE_SELECT | MODE_DRAFT | MODE_LABEL);
     }
     else
     {
@@ -182,9 +184,18 @@ void MemoryDesignWidget::keyPressEvent(QKeyEvent* event)
 
     if (event->key() == Qt::Key_Delete)
     {
-        if (getDiagram()->selectedItems().empty())
+        QList<QGraphicsItem*> selectedItems = getDiagram()->selectedItems();
+
+        if (selectedItems.empty())
         {
             return;
+        }
+
+        int type = getDiagram()->getCommonItemType(selectedItems);
+
+        if (type == StickyNote::Type)
+        {
+            removeSelectedLabels();
         }
 
         //QGraphicsItem* selected = getDiagram()->selectedItems().first();

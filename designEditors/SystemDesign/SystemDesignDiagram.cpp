@@ -1016,6 +1016,13 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
             QGraphicsScene::mousePressEvent(event);
         }
     }
+    else if(getMode() == MODE_LABEL)
+    {
+        if (!isProtected())
+        {
+            createLabel(event->scenePos());
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

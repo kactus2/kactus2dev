@@ -16,9 +16,14 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QApplication>
+#include <QGraphicsItem>
 
 #include <common/GenericEditProvider.h>
+
+#include <common/graphicsItems/commands/FloatingItemRemoveCommand.h>
+
 #include <designEditors/common/DesignDiagram.h>
+#include <designEditors/common/StickyNote/StickyNote.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -262,6 +267,29 @@ bool DesignWidget::setDesign(QSharedPointer<Component> component, const QString&
     editedComponent_ = component;
     viewName_ = viewName;
     return true;
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: DesignWidget::removeLabel()
+//-----------------------------------------------------------------------------
+void DesignWidget::removeSelectedLabels()
+{
+    QList<QGraphicsItem*> selectedItems = getDiagram()->selectedItems();
+
+    getDiagram()->clearSelection();
+
+    QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        if (selected->type() == StickyNote::Type)
+        {
+            QUndoCommand* deleteCommand = new FloatingItemRemoveCommand(selected, getDiagram(), parentCommand.data());
+            deleteCommand->redo();
+        }
+    }
+
+    getGenericEditProvider()->addCommand(parentCommand);
 }
 
 //-----------------------------------------------------------------------------

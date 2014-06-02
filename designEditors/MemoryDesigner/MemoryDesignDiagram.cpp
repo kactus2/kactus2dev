@@ -167,6 +167,13 @@ void MemoryDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
         // Handle the mouse press.
         QGraphicsScene::mousePressEvent(event);
     }
+    else if(getMode() == MODE_LABEL)
+    {
+        if (!isProtected())
+        {
+            createLabel(event->scenePos());
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
