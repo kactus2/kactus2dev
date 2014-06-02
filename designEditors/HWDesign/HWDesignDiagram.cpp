@@ -2587,6 +2587,10 @@ void HWDesignDiagram::setVisibilityControlState(QString const& name, bool state)
             }
         }
     }
+    else
+    {
+        DesignDiagram::setVisibilityControlState(name, state);
+    }
 }
 
 //-----------------------------------------------------------------------------

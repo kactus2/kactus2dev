@@ -640,7 +640,7 @@ void MainWindow::setupActions()
 	actToolToggleOffPage_->setCheckable(true);
 
     actToolLabel_ = new QAction(QIcon(":/icons/common/graphics/sticky-note.png"),
-        tr("Label Tool"), this);
+        tr("Sticky Note Tool"), this);
     actToolLabel_->setCheckable(true);
 
 	modeActionGroup_ = new QActionGroup(this);

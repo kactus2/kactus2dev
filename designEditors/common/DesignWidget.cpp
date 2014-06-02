@@ -52,6 +52,8 @@ DesignWidget::DesignWidget(LibraryInterface* lh, QWidget* parent)
 
     view_->verticalScrollBar()->setTracking(true);
     connect(view_->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(onVerticalScroll(int)));
+
+	addVisibilityControl(tr("Sticky Notes"), true);
 }
 
 //-----------------------------------------------------------------------------

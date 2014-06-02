@@ -374,9 +374,18 @@ void DesignDiagram::onShow()
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::setVisibilityControlState()
 //-----------------------------------------------------------------------------
-void DesignDiagram::setVisibilityControlState(QString const& /*name*/, bool /*state*/)
+void DesignDiagram::setVisibilityControlState(QString const& name, bool state)
 {
-    // Empty default implementation.
+    if (name == tr("Sticky Notes"))
+    { 
+        foreach (QGraphicsItem* item, items())
+        {       
+            if (item->type() == StickyNote::Type)
+            {
+                item->setVisible(state);
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
