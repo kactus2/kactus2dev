@@ -325,7 +325,7 @@ void DesignDiagram::createLabel(QPointF const& position)
     DesignLabel* label = new DesignLabel();    
     
     QSharedPointer<FloatingItemAddCommand> cmd(new FloatingItemAddCommand(this, label, position));
-    getEditProvider().addCommand(cmd, false);
+    getEditProvider().addCommand(cmd);
     cmd->redo();
 
     clearSelection();

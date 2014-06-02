@@ -198,6 +198,8 @@ bool AdHocModel::setData(const QModelIndex& index, const QVariant& value, int ro
                                                                           table_.at(index.row())->getName(),
                                                                           value == Qt::Checked));
         dataSource_->getEditProvider().addCommand(cmd);
+        cmd->redo();
+
         emit dataChanged(index, index);
         return true;
     }

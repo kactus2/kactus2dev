@@ -216,6 +216,7 @@ void ComponentInstanceEditor::onNameChanged( const QString& newName ) {
 		       nameGroup_, SLOT(setName(const QString&)));
 
 	editProvider_->addCommand(cmd);
+    cmd->redo();
 
 	connect(component_, SIGNAL(nameChanged(const QString&, const QString&)),
 		    nameGroup_, SLOT(setName(const QString&)), Qt::UniqueConnection);
@@ -229,6 +230,7 @@ void ComponentInstanceEditor::onDisplayNameChanged( const QString& newDisplayNam
 		       nameGroup_, SLOT(setDisplayName(const QString&)));
 
 	editProvider_->addCommand(cmd);
+    cmd->redo();
 
 	connect(component_, SIGNAL(displayNameChanged(const QString&)),
 		    nameGroup_, SLOT(setDisplayName(const QString&)), Qt::UniqueConnection);
@@ -241,6 +243,7 @@ void ComponentInstanceEditor::onDescriptionChanged( const QString& newDescriptio
 	disconnect(component_, SIGNAL(descriptionChanged(const QString&)),
 		nameGroup_, SLOT(setDescription(const QString&)));
 	editProvider_->addCommand(cmd);
+    cmd->redo();
 	connect(component_, SIGNAL(descriptionChanged(const QString&)),
 		nameGroup_, SLOT(setDescription(const QString&)), Qt::UniqueConnection);
 }
@@ -253,6 +256,7 @@ void ComponentInstanceEditor::onPropertyValuesChanged()
     SystemComponentItem* swComp = static_cast<SystemComponentItem*>(component_);
     QSharedPointer<PropertyValuesChangeCommand> cmd(new PropertyValuesChangeCommand(swComp, propertyValueEditor_->getData()));
     editProvider_->addCommand(cmd);
+    cmd->redo();
 
     connect(component_, SIGNAL(propertyValuesChanged(QMap<QString, QString> const&)),
             propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)), Qt::UniqueConnection);
@@ -269,6 +273,7 @@ void ComponentInstanceEditor::onFileSetRefChanged(QString const& fileSetRef)
     SWComponentItem* swComp = static_cast<SWComponentItem*>(component_);
     QSharedPointer<FileSetRefChangeCommand> cmd(new FileSetRefChangeCommand(swComp, fileSetRef));
     editProvider_->addCommand(cmd);
+    cmd->redo();
 
     connect(component_, SIGNAL(fileSetRefChanged(QString const&)),
             this, SLOT(updateFileSetRef(QString const&)), Qt::UniqueConnection);

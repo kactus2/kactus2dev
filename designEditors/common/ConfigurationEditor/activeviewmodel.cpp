@@ -181,7 +181,7 @@ bool ActiveViewModel::setData(const QModelIndex& index, const QVariant& value,
 				QSharedPointer<ComponentActiveViewChangeCommand> command = QSharedPointer<ComponentActiveViewChangeCommand>(
 					new ComponentActiveViewChangeCommand(
 					table_[index.row()].instanceName_, table_[index.row()].viewName_, value.toString(), this));
-				editProvider_->addCommand(command, false);
+				editProvider_->addCommand(command);
 
 				// make the change
 				table_[index.row()].viewName_ = value.toString();

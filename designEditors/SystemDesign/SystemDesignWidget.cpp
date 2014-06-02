@@ -286,7 +286,7 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 childCmd->redo();
             }
 
-            getGenericEditProvider()->addCommand(cmd, false);
+            getGenericEditProvider()->addCommand(cmd);
         }
         else if (type == SWComponentItem::Type)
         {
@@ -311,7 +311,7 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 }
             }
 
-            getGenericEditProvider()->addCommand(cmd, false);
+            getGenericEditProvider()->addCommand(cmd);
         }
         else if (type == SWPortItem::Type)
         {
@@ -331,7 +331,7 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 }
             }
 
-            getGenericEditProvider()->addCommand(cmd, false);
+            getGenericEditProvider()->addCommand(cmd);
         }
         else if (type == SWInterfaceItem::Type)
         {
@@ -346,7 +346,7 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 childCmd->redo();
             }
 
-            getGenericEditProvider()->addCommand(cmd, false);
+            getGenericEditProvider()->addCommand(cmd);
         }
         else if (type == GraphicsConnection::Type)
         {
@@ -397,7 +397,7 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 }
             }
 
-            getGenericEditProvider()->addCommand(cmd, false);
+            getGenericEditProvider()->addCommand(cmd);
         }
     }
 }

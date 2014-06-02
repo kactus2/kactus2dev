@@ -264,6 +264,7 @@ void MemoryDesignDiagram::addColumn(ColumnDesc const& desc)
 
     QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(layout_.data(), column));
     getEditProvider().addCommand(cmd);
+    cmd->redo();
 }
 
 //-----------------------------------------------------------------------------

@@ -240,6 +240,7 @@ bool AdHocBoundsModel::setData(const QModelIndex& index, const QVariant& value, 
                                                                               connection_->getAdHocLeftBound(index.row()),
                                                                               value.toInt()));
                 editProvider.addCommand(cmd);
+                cmd->redo();
                 return true;
             }
 
@@ -249,6 +250,7 @@ bool AdHocBoundsModel::setData(const QModelIndex& index, const QVariant& value, 
                                                                               connection_->getAdHocRightBound(index.row()),
                                                                               value.toInt()));
                 editProvider.addCommand(cmd);
+                cmd->redo();
                 return true;
             }
 

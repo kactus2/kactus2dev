@@ -349,7 +349,7 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
                 childCmd->redo();
             }
 
-            getGenericEditProvider()->addCommand(cmd, false);
+            getGenericEditProvider()->addCommand(cmd);
         }
         else if (type == BusInterfaceItem::Type)
         {
@@ -404,7 +404,7 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
                 childCmd->redo();
             }
 
-            getGenericEditProvider()->addCommand(cmd, false);
+            getGenericEditProvider()->addCommand(cmd);
         }
         else if (type == BusPortItem::Type)
         {
@@ -424,7 +424,7 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
                 }
             }
 
-            getGenericEditProvider()->addCommand(cmd, false);
+            getGenericEditProvider()->addCommand(cmd);
         }
         else if (type == HWConnection::Type)
         {
@@ -475,7 +475,7 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
                 }
             }
 
-            getGenericEditProvider()->addCommand(cmd, false);
+            getGenericEditProvider()->addCommand(cmd);
         }
         else if (type == HWColumn::Type)
         {
@@ -511,7 +511,7 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
                 childCmd->redo();
             }
 
-            getGenericEditProvider()->addCommand(cmd, false);
+            getGenericEditProvider()->addCommand(cmd);
         }
     }
     else

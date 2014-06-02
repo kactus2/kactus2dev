@@ -601,7 +601,7 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         if (cmd->childCount() > 0 || oldPos_ != scenePos())
         {
 
-            static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
+            static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd);
         }
 
         oldStack_ = 0;

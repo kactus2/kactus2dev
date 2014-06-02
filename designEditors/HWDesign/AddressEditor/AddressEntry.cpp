@@ -77,6 +77,7 @@ void AddressEntry::setStartAddress(unsigned int startAddress)
 
     QSharedPointer<QUndoCommand> cmd(new ComponentConfElementChangeCommand(component_, elements));
     editProvider_.addCommand(cmd);
+    cmd->redo();
 }
 
 //-----------------------------------------------------------------------------
@@ -97,6 +98,7 @@ void AddressEntry::setLocked(bool locked)
 
     QSharedPointer<QUndoCommand> cmd(new ComponentConfElementChangeCommand(component_, elements));
     editProvider_.addCommand(cmd);
+    cmd->redo();
 }
 
 //-----------------------------------------------------------------------------

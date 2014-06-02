@@ -91,6 +91,6 @@ void DesignLabel::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
     if (pos() != oldPos_)
     {
         QSharedPointer<FloatingItemMoveCommand> moveCommand(new FloatingItemMoveCommand(this, oldPos_));
-        diagram->getEditProvider().addCommand(moveCommand, false);
+        diagram->getEditProvider().addCommand(moveCommand);
     }
 }

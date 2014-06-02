@@ -772,7 +772,7 @@ void SWPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     // Add the undo command to the edit stack only if it has changes.
     if (cmd->childCount() > 0 || oldPos_ != pos())
     {
-        static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
+        static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd);
     }
 }
 

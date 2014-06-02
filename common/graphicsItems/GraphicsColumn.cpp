@@ -189,7 +189,7 @@ void GraphicsColumn::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         if (desc_.getWidth() != oldWidth_)
         {
             QSharedPointer<QUndoCommand> cmd(new GraphicsColumnResizeCommand(this, oldWidth_));
-            static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
+            static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd);
         }
     }
     else
@@ -205,7 +205,7 @@ void GraphicsColumn::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         // Add the undo command to the edit provider only if there were any actual changes.
         if (cmd->childCount() > 0 || pos() != oldPos_)
         {
-            static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
+            static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd);
         }
     }
 }

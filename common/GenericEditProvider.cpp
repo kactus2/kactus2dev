@@ -33,7 +33,7 @@ GenericEditProvider::~GenericEditProvider()
 //-----------------------------------------------------------------------------
 // Function: addAction()
 //-----------------------------------------------------------------------------
-void GenericEditProvider::addCommand(QSharedPointer<QUndoCommand> command, bool autoExec)
+void GenericEditProvider::addCommand(QSharedPointer<QUndoCommand> command)
 {
     Q_ASSERT(undoStack_.size() <= historySize_);
 
@@ -44,12 +44,6 @@ void GenericEditProvider::addCommand(QSharedPointer<QUndoCommand> command, bool 
 
         // Add the action to the undo stack.
         undoStack_.append(command);
-
-        // Execute the command if requested.
-        if (autoExec)
-        {
-            command->redo();
-        }
 
         // Check if the undo stack is too large and in that chase, remove the oldest undo command.
         if (undoStack_.size() > historySize_)

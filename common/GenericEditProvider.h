@@ -45,10 +45,8 @@ public:
      *  Stores a new command to the edit stack.
      *
      *      @param [in] command   The command to add.
-     *      @param [in] autoExec  If true, the command's redo() is automatically executed
-     *                            inside this function.
      */
-    void addCommand(QSharedPointer<QUndoCommand> command, bool autoExec = true);
+    void addCommand(QSharedPointer<QUndoCommand> command);
 
     /*!
      *  Saves a state variable to be used by undo commands.

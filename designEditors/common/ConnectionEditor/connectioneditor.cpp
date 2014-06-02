@@ -317,6 +317,7 @@ void ConnectionEditor::onNameChanged( const QString& name ) {
 	QSharedPointer<QUndoCommand> cmd(new ConnectionChangeCommand(
 		connection_, name, descriptionEdit_.toPlainText()));
 	static_cast<DesignDiagram*>(connection_->scene())->getEditProvider().addCommand(cmd);
+    cmd->redo();
 
 	connect(connection_, SIGNAL(contentChanged()), 
 		this, SLOT(refresh()), Qt::UniqueConnection);
@@ -332,6 +333,7 @@ void ConnectionEditor::onDescriptionChanged() {
 	QSharedPointer<QUndoCommand> cmd(new ConnectionChangeCommand(
 		connection_, nameEdit_.text(), descriptionEdit_.toPlainText()));
 	static_cast<DesignDiagram*>(connection_->scene())->getEditProvider().addCommand(cmd);
+    cmd->redo();
 
 	connect(connection_, SIGNAL(contentChanged()), 
 		this, SLOT(refresh()), Qt::UniqueConnection);

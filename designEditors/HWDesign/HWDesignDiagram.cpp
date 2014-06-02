@@ -993,6 +993,7 @@ void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 						this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
                     getEditProvider().addCommand(cmd);
+                    cmd->redo();
                 }
             }
         }
@@ -1034,7 +1035,7 @@ void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 }
 
                 // Add the command to the edit stack.
-                getEditProvider().addCommand(cmd, false);
+                getEditProvider().addCommand(cmd);
             }
         }
     }
@@ -1072,7 +1073,7 @@ void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
         if (cmd->childCount() > 0)
         {
-            getEditProvider().addCommand(cmd, false);
+            getEditProvider().addCommand(cmd);
         }
     }
     else if (getMode() == MODE_SELECT)
@@ -1258,6 +1259,7 @@ void HWDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
             this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
         getEditProvider().addCommand(cmd);
+        cmd->redo();
     }
 
 	// process the normal mouse release event
@@ -1371,6 +1373,7 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
 
                 QSharedPointer<QUndoCommand> cmd(new GraphicsColumnChangeCommand(column, desc));
                 getEditProvider().addCommand(cmd);
+                cmd->redo();
             }
         }
     }
@@ -1480,7 +1483,7 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
 
             QSharedPointer<QUndoCommand> cmd(new EndPointTypesCommand(endpoint, oldBusType,
                                                                       oldAbsType, oldMode, oldName));
-            getEditProvider().addCommand(cmd, false);
+            getEditProvider().addCommand(cmd);
 
             emit interfaceSelected(endpoint);
             emit openBus(busVLNV, absVLNV, true);
@@ -1639,6 +1642,7 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 				    this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
                 getEditProvider().addCommand(cmd);
+                cmd->redo();
             }
         }
         else if (event->dropAction() == Qt::MoveAction)
@@ -1668,6 +1672,7 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
                 this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
             getEditProvider().addCommand(cmd);
+            cmd->redo();
         }
     }
     else if (dragBus_)
@@ -1746,7 +1751,7 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             QSharedPointer<QUndoCommand> cmd(new EndPointTypesCommand(highlightedEndPoint_,
                                                                       oldBusType, oldAbsType,
                                                                       oldMode, oldName));
-            getEditProvider().addCommand(cmd, false);
+            getEditProvider().addCommand(cmd);
 
             highlightedEndPoint_ = 0;
         }
@@ -1913,7 +1918,7 @@ void HWDesignDiagram::onPasteAction(){
 
                     QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
                     pasteInterfaces(collection, targetComp, cmd.data());
-                    getEditProvider().addCommand(cmd, false);
+                    getEditProvider().addCommand(cmd);
 
                     // Update sidebar view.
                     emit componentSelected(targetComp);
@@ -1939,7 +1944,7 @@ void HWDesignDiagram::onPasteAction(){
 
                         QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
                         pasteInstances(collection, column, cmd.data(), true);
-                        getEditProvider().addCommand(cmd, false);
+                        getEditProvider().addCommand(cmd);
                     }
                 }
                 // Paste columns.
@@ -1960,7 +1965,7 @@ void HWDesignDiagram::onPasteAction(){
                         pasteInterfaces(columnData.interfaces, column, parentCmd.data(), false);
                     }
 
-                    getEditProvider().addCommand(parentCmd, false);
+                    getEditProvider().addCommand(parentCmd);
                     // Update sidebar view.
                     emit clearItemSelection();            
                 }
@@ -1978,7 +1983,7 @@ void HWDesignDiagram::onPasteAction(){
                         pasteInterfaces(collection, column, cmd.data(), true);
                         if (cmd->childCount() > 0)
                         {
-                            getEditProvider().addCommand(cmd, false); 
+                            getEditProvider().addCommand(cmd); 
                         }
                         // Update sidebar view .
                         emit clearItemSelection();       
@@ -2026,6 +2031,7 @@ void HWDesignDiagram::onAddAction()
             // Create an undo command.
             QSharedPointer<QUndoCommand> cmd(new ComponentPacketizeCommand(comp, vlnv));
             getEditProvider().addCommand(cmd);
+            cmd->redo();
 
             // Ask the user if he wants to complete the component.
             QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
@@ -2096,6 +2102,7 @@ void HWDesignDiagram::addColumn(ColumnDesc const& desc)
 
     QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(layout_.data(), column));
     getEditProvider().addCommand(cmd);
+    cmd->redo();
 }
 
 //-----------------------------------------------------------------------------
@@ -2105,6 +2112,7 @@ void HWDesignDiagram::removeColumn(GraphicsColumn* column)
 {
     QSharedPointer<QUndoCommand> cmd(new ColumnDeleteCommand(layout_.data(), column));
     getEditProvider().addCommand(cmd);
+    cmd->redo();
 }
 
 //-----------------------------------------------------------------------------
@@ -2246,7 +2254,7 @@ void HWDesignDiagram::addInterface(GraphicsColumn* column, QPointF const& pos)
         }
     }
 	
-    getEditProvider().addCommand(cmd, false);
+    getEditProvider().addCommand(cmd);
 }
 
 HWDesignWidget* HWDesignDiagram::parent() const {
@@ -2313,7 +2321,7 @@ void HWDesignDiagram::createConnection(QGraphicsSceneMouseEvent * mouseEvent)
             tempConnection_->fixOverlap();
 
             QSharedPointer<QUndoCommand> cmd(new ConnectionAddCommand(this, tempConnection_));
-            getEditProvider().addCommand(cmd, false);
+            getEditProvider().addCommand(cmd);
 
             tempConnection_ = 0;
 

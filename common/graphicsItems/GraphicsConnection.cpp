@@ -600,6 +600,7 @@ void GraphicsConnection::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     {
         QSharedPointer<QUndoCommand> cmd(new ConnectionMoveCommand(this, oldRoute_));
         parent_->getEditProvider().addCommand(cmd);
+        cmd->redo();
     }
 
     QGraphicsPathItem::mouseReleaseEvent(mouseEvent);

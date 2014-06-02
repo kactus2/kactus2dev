@@ -173,6 +173,8 @@ void ComponentInstanceModel::save() {
 	disconnect(component_, SIGNAL(confElementsChanged(const QMap<QString, QString>&)),
 		this, SLOT(changeElements(const QMap<QString, QString>&)));
 	editProvider_->addCommand(cmd);
+    cmd->redo();
+
 	connect(component_, SIGNAL(confElementsChanged(const QMap<QString, QString>&)),
 		this, SLOT(changeElements(const QMap<QString, QString>&)), Qt::UniqueConnection);
 

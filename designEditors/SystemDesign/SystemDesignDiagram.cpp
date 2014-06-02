@@ -553,6 +553,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
                     this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
                 getEditProvider().addCommand(cmd);
+                cmd->redo();
             }
         }
         else if (event->dropAction() == Qt::MoveAction)
@@ -606,6 +607,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
                 this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
             getEditProvider().addCommand(cmd);
+            cmd->redo();
         }
     }
     else if (dragType_ == DRAG_TYPE_HW)
@@ -715,7 +717,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 
             // Create an undo command.
             QSharedPointer<QUndoCommand> cmd(new TypeDefinitionChangeCommand(highlightedEndpoint_, oldType));
-            getEditProvider().addCommand(cmd, false);
+            getEditProvider().addCommand(cmd);
 
             highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_OFF);
             highlightedEndpoint_ = 0;
@@ -872,7 +874,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
                 }
 
                 // Add the command to the edit stack.
-                getEditProvider().addCommand(cmd, false);
+                getEditProvider().addCommand(cmd);
             }
         }
         else if (item == 0 || item->type() == HWMappingItem::Type)
@@ -915,6 +917,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
                         this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
                     getEditProvider().addCommand(cmd);
+                    cmd->redo();
                 }
                 else if (stack->getContentType() == COLUMN_CONTENT_IO)
                 {
@@ -949,7 +952,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
                         ++cur;
                     }
 
-                    getEditProvider().addCommand(cmd, false);
+                    getEditProvider().addCommand(cmd);
                 }
             }
         }
@@ -988,7 +991,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
         if (cmd->childCount() > 0)
         {
-            getEditProvider().addCommand(cmd, false);
+            getEditProvider().addCommand(cmd);
         }
     }
     else if (getMode() == MODE_SELECT)
@@ -1224,6 +1227,7 @@ void SystemDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
             this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
         getEditProvider().addCommand(cmd);
+        cmd->redo();
     }
 
     // Process the normal mouse release event.
@@ -1487,6 +1491,7 @@ void SystemDesignDiagram::addColumn(ColumnDesc const& desc)
 
     QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(layout_.data(), column));
     getEditProvider().addCommand(cmd);
+    cmd->redo();
 }
 
 //-----------------------------------------------------------------------------
@@ -1596,6 +1601,7 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
             // Create an undo command.
             QSharedPointer<ComponentPacketizeCommand> cmd(new ComponentPacketizeCommand(comp, vlnv));
             getEditProvider().addCommand(cmd);
+            cmd->redo();
 
             // Ask the user if he wants to complete the component.
             QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
@@ -1653,6 +1659,7 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 
                 QSharedPointer<QUndoCommand> cmd(new GraphicsColumnChangeCommand(column, desc));
                 getEditProvider().addCommand(cmd);
+                cmd->redo();
             }
         }
     }
@@ -1813,7 +1820,7 @@ void SystemDesignDiagram::createConnection(QGraphicsSceneMouseEvent* event)
             tempConnection_->fixOverlap();
 
             QSharedPointer<QUndoCommand> cmd(new SWConnectionAddCommand(this, tempConnection_));
-            getEditProvider().addCommand(cmd, false);
+            getEditProvider().addCommand(cmd);
 
             tempConnection_ = 0;
             
@@ -2960,7 +2967,7 @@ void SystemDesignDiagram::onPasteAction()
 
                     QSharedPointer<QUndoCommand> parentCmd(new QUndoCommand());
                     pasteInterfaces(collection, targetComp, parentCmd.data());
-                    getEditProvider().addCommand(parentCmd, false);
+                    getEditProvider().addCommand(parentCmd);
 
                     // Update sidebar view.
                     emit componentSelected(targetComp);
@@ -2999,7 +3006,7 @@ void SystemDesignDiagram::onPasteAction()
 
                         QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
                         pasteInterfaces(collection, stack, cmd.data(), true);
-                        getEditProvider().addCommand(cmd, false);
+                        getEditProvider().addCommand(cmd);
                     }
                 }
                 // Allow pasting components to either empty design space (column) or to parent HW.
@@ -3024,6 +3031,7 @@ void SystemDesignDiagram::onPasteAction()
                         QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
                         pasteSWInstances(collection, stack, cmd.data(), true);
                         getEditProvider().addCommand(cmd);
+                        cmd->redo();
                     }
                 }
                 else if (mimeData->imageData().canConvert<ColumnCollectionCopyData>() &&
@@ -3042,6 +3050,7 @@ void SystemDesignDiagram::onPasteAction()
                     }
 
                     getEditProvider().addCommand(parentCmd);
+                    parentCmd->redo();
                 }
             }
         }
@@ -3085,6 +3094,7 @@ void SystemDesignDiagram::onAddAction()
             // Create an undo command.
             QSharedPointer<ComponentPacketizeCommand> cmd(new ComponentPacketizeCommand(comp, vlnv));
             getEditProvider().addCommand(cmd);
+            cmd->redo();
 
             // Ask the user if he wants to complete the component.
             QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
