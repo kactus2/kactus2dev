@@ -26,13 +26,12 @@
 #include <IPXACTmodels/component.h>
 
 #include <common/graphicsItems/commands/FloatingItemAddCommand.h>
+#include <designEditors/common/StickyNote/StickyNote.h>
 
 #include <QWidget>
 #include <QPainter>
 #include <QMenu>
 #include <QGraphicsItem>
-#include "DesignLabel.h"
-
 
 
 //-----------------------------------------------------------------------------
@@ -322,7 +321,7 @@ void DesignDiagram::drawBackground(QPainter* painter, QRectF const& rect)
 //-----------------------------------------------------------------------------
 void DesignDiagram::createLabel(QPointF const& position)
 {
-    DesignLabel* label = new DesignLabel();    
+    StickyNote* label = new StickyNote();    
     
     QSharedPointer<FloatingItemAddCommand> cmd(new FloatingItemAddCommand(this, label, position));
     getEditProvider().addCommand(cmd);
@@ -331,7 +330,8 @@ void DesignDiagram::createLabel(QPointF const& position)
     clearSelection();
     label->setSelected(true);    
     onSelected(label);
-    label->setFocus();
+    
+    label->beginEditing();
 }
 
 //-----------------------------------------------------------------------------

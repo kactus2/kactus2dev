@@ -54,6 +54,8 @@
 #include <QPrintDialog>
 
 #include <QDebug>
+#include "../common/DesignLabel.h"
+#include <common/graphicsItems/commands/FloatingItemRemoveCommand.h>
 
 HWDesignWidget::HWDesignWidget(LibraryInterface *lh, QWidget* parent)
     : DesignWidget(lh, parent)
@@ -512,6 +514,19 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
             }
 
             getGenericEditProvider()->addCommand(cmd);
+        }
+        else if (type == StickyNote::Type)
+        {
+            getDiagram()->clearSelection();
+            QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
+
+            foreach (QGraphicsItem* selected, selectedItems)
+            {
+                QUndoCommand* deleteCommand = new FloatingItemRemoveCommand(selected, getDiagram(), parentCommand.data());
+                deleteCommand->redo();
+            }
+
+            getGenericEditProvider()->addCommand(parentCommand);
         }
     }
     else
