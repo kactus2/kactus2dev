@@ -25,6 +25,7 @@
 #include <IPXACTmodels/VendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
 //-----------------------------------------------------------------------------
 // Function: StickyNote::StickyNote()
@@ -34,6 +35,7 @@ StickyNote::StickyNote(QSharedPointer<Kactus2Group> extension, QGraphicsItem* pa
     oldPos_(),
     extension_(extension),
     position_(),
+    content_(),
     textArea_(0)
 {
     setItemOptions();
@@ -134,7 +136,7 @@ QSharedPointer<VendorExtension> StickyNote::getVendorExtension() const
 //-----------------------------------------------------------------------------
 void StickyNote::onTextEdited()
 {
-
+    content_->setValue(textArea_->toPlainText());
 }
 
 //-----------------------------------------------------------------------------
@@ -185,7 +187,7 @@ void StickyNote::createWritableArea()
 void StickyNote::initializeExtensions()
 {
     initializePosition();
-
+    initializeContent();
 }
 
 //-----------------------------------------------------------------------------
@@ -204,4 +206,22 @@ void StickyNote::initializePosition()
     }
 
     setPos(position_->position());
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::initializeContent()
+//-----------------------------------------------------------------------------
+void StickyNote::initializeContent()
+{
+    if (extension_->getByType("kactus2:content").isEmpty())
+    {
+        content_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:content", ""));
+        extension_->addToGroup(content_);
+    }
+    else
+    {
+        content_ = extension_->getByType("kactus2:content").first().dynamicCast<Kactus2Value>();
+    }
+
+    textArea_->setPlainText(content_->value());
 }

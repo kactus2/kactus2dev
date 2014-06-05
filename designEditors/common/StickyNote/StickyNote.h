@@ -18,9 +18,10 @@
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
-#include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
-
+class VendorExtension;
 class Kactus2Group;
+class Kactus2Position;
+class Kactus2Value;
 class ColorFillTextItem;
 
 //-----------------------------------------------------------------------------
@@ -111,6 +112,7 @@ private:
 
     //! Initialized the vendor extension for tracking the note position.
     void initializePosition();
+    void initializeContent();
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -124,6 +126,8 @@ private:
 
     //! The vendor extension containing the position of the note.
     QSharedPointer<Kactus2Position> position_;
+
+    QSharedPointer<Kactus2Value> content_;
 
     //! Editor item for the notes.
     ColorFillTextItem* textArea_;

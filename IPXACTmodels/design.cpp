@@ -14,6 +14,7 @@
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
 #include <QDebug>
 
@@ -1052,6 +1053,12 @@ void Design::parseStickyNote(QDomNode& noteNode)
             QPointF position = XmlUtils::parsePoint(childNode);
             QSharedPointer<Kactus2Position> notePosition(new Kactus2Position(position));
             noteExtension->addToGroup(notePosition);
+        }
+        else if (childNode.nodeName() == "kactus2:content")
+        {
+            QString content = childNode.childNodes().at(0).nodeValue();
+            QSharedPointer<Kactus2Value> noteContent(new Kactus2Value("kactus2:content", content));
+            noteExtension->addToGroup(noteContent);
         }
     }
 
