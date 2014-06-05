@@ -1201,6 +1201,7 @@ CreateHelp
     <ClCompile Include="IPXACTmodels\abstractiondefinition.cpp" />
     <ClCompile Include="IPXACTmodels\addressblock.cpp" />
     <ClCompile Include="IPXACTmodels\addressspace.cpp" />
+    <ClCompile Include="IPXACTmodels\AdHocConnection.cpp" />
     <ClCompile Include="IPXACTmodels\alternateregister.cpp" />
     <ClCompile Include="IPXACTmodels\ApiDefinition.cpp" />
     <ClCompile Include="IPXACTmodels\ApiDependency.cpp" />
@@ -1257,6 +1258,7 @@ CreateHelp
     <ClCompile Include="IPXACTmodels\parameter.cpp" />
     <ClCompile Include="IPXACTmodels\port.cpp" />
     <ClCompile Include="IPXACTmodels\portabstraction.cpp" />
+    <ClCompile Include="IPXACTmodels\PortRef.cpp" />
     <ClCompile Include="IPXACTmodels\register.cpp" />
     <ClCompile Include="IPXACTmodels\registerdefinition.cpp" />
     <ClCompile Include="IPXACTmodels\registerfile.cpp" />
@@ -9809,6 +9811,50 @@ CreateHelp
     <ClInclude Include="IPXACTmodels\abstractiondefinition.h" />
     <ClInclude Include="IPXACTmodels\addressblock.h" />
     <ClInclude Include="IPXACTmodels\addressspace.h" />
+    <CustomBuild Include="IPXACTmodels\AdHocConnection.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+      </Command>
+    </CustomBuild>
     <ClInclude Include="IPXACTmodels\alternateregister.h" />
     <ClInclude Include="IPXACTmodels\ApiDefinition.h" />
     <ClInclude Include="IPXACTmodels\ApiDependency.h" />
@@ -9908,6 +9954,7 @@ CreateHelp
     <ClInclude Include="IPXACTmodels\parameter.h" />
     <ClInclude Include="IPXACTmodels\port.h" />
     <ClInclude Include="IPXACTmodels\portabstraction.h" />
+    <ClInclude Include="IPXACTmodels\PortRef.h" />
     <ClInclude Include="IPXACTmodels\register.h" />
     <ClInclude Include="IPXACTmodels\registerdefinition.h" />
     <ClInclude Include="IPXACTmodels\registerfile.h" />

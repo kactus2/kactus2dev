@@ -1,3 +1,14 @@
+//-----------------------------------------------------------------------------
+// File: design.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: 
+// Date: 
+//
+// Description:
+// Describes the spirit:design element in an IP-XACT document
+//-----------------------------------------------------------------------------
+
 #ifndef DESIGN_H
 #define DESIGN_H
 
@@ -8,6 +19,7 @@
 #include "HierComConnection.h"
 #include "ColumnDesc.h"
 #include "ComponentInstance.h"
+#include "AdHocConnection.h"
 
 #include "librarycomponent.h"
 #include <library/LibraryManager/vlnv.h>
@@ -318,210 +330,6 @@ public:
 		/*! \brief Check if the hierarchical connection is in a valid state.
 		* 
 		* \param instanceNames List of component instance names contained in the design.
-		* 
-		* \return bool True if the state is valid and writing is possible.
-		*/
-		bool isValid(const QStringList& instanceNames) const;
-
-        /*!
-         *  Writes the element to XML.
-         *
-         *      @param [in] writer   The used XML writer.
-         */
-        void write(QXmlStreamWriter& writer);
-    };
-
-	/*! \brief Describes a port reference in an ad-hoc connection
-	*
-	* PortRef a reference to a internal or external port. Internal
-	* port (spirit:internalPortReference) is a port on a component
-	* contained within the design and has a non-null
-	* componentRef. External port (spirit:externalPortReference) is a
-	* port on the component containing this design and has a null
-	* componentRef.
-	*/
-	struct PortRef {
-
-		/*! \brief MANDATORY spirit:portRef
-		*
-		* Name of the port referenced.
-		*/
-		QString portRef;
-
-		/*! \brief MANDATORY spirit:componentRef
-		* 
-		* A reference to the instanceName of a component instance in
-		* this design if this is a reference to an internal
-		* port. Otherwise this field is set to a null string.
-		*/
-		QString componentRef;
-
-		/*! \brief OPTIONAL spirit:left
-		*
-		* Left index of a vector
-		*/
-		int left;
-
-		/*! \brief OPTIONAL spirit:right
-		*
-		* Right index of a vector
-		*/
-		int right;
-
-		/*! \brief The constructor
-		*
-		* \param portReferenceNode A reference to a QDomNode where
-		* the information should be parsed from.
-		*/
-		PortRef(QDomNode &portReferenceNode);
-
-		/*! \brief Convenience constructor for initializing fields
-		*/
-		PortRef(QString portRef,
-			QString componentRef = QString(),
-			int left = -1,
-			int right = -1);
-
-		//! \brief Copy constructor
-		PortRef(const PortRef& other);
-
-		//! \brief Assignment operator
-		PortRef& operator=(const PortRef& other);
-
-		/*! \brief Check if the port ref is in a valid state.
-		* 
-		* \param externalRef Must be true for external refs so component reference 
-		* is not checked.
-		* \param instanceNames List containing the component instance names from
-		* the containing design.
-		* \param errorList The list to add the possible error messages to.
-		* \param parentIdentifier String from parent to help to identify the location of the error.
-		*
-		* \return bool True if the state is valid and writing is possible.
-		*/
-		bool isValid(bool externalRef,
-			const QStringList& instanceNames,
-			QStringList& errorList, 
-			const QString& parentIdentifier) const;
-
-		/*! \brief Check if the port ref is in a valid state.
-		* 
-		* \param externalRef Must be true for external refs so component reference 
-		* is not checked.
-		* \param instanceNames List containing the component instance names from
-		* the containing design.
-		* 
-		* \return bool True if the state is valid and writing is possible.
-		*/
-		bool isValid(bool externalRef,
-			const QStringList& instanceNames) const;
-	};
-
-	/*! \brief Describes the spirit:adHocConnection element in an
-	* IP-XACT document
-	*
-	* Specifies a connection that is made on a port-by-port basis and
-	* not done through the higher-level bus interface. These
-	* connections are between component instance ports or between
-	* component instance ports and ports of the encompassing
-	* component (in the case of a hierarchical component).
-	*/
-	struct AdHocConnection {
-
-		/*! \brief MANDATORY spirit:name
-		*
-		* Unique name of the ad-hoc connection
-		*/
-		QString name;
-
-		/*! \brief OPTIONAL spirit:displayName
-		*
-		* Allows a short descriptive text to be associated with the
-		* ad-hoc connection
-		*/
-		QString displayName;
-
-		/*! \brief OPTIONAL spirit:description
-		*
-		* Allows a textual description of the ad-hoc connection.
-		*/
-		QString description;
-
-		/*! \brief OPTIONAL spirit:tiedValue
-		*
-		* The logic value of this ad-hoc connection
-		*/
-		QString tiedValue;
-
-		/*! \brief MANDATORY spirit:internalPortReference
-		*
-		* List of PortRefs. Each references the port of a component
-		* instance.
-		*/
-		QList<PortRef> internalPortReferences;
-
-		/*! \brief OPTIONAL spirit:externalPortReference
-		*
-		* List of PortRefs. Each References a port of the
-		* encompassing component where this design is referred (for
-		* hierarchical ad-hoc connections).
-		*/
-		QList<PortRef> externalPortReferences;
-
-        /*! \brief VENDOREXT kactus2:route
-         *
-         *  The diagram route for the interconnection.
-         */
-        QList<QPointF> route;
-
-        /*! \brief VENDOREXT kactus2:offPage
-         *
-         *  If true, the route is treated as an off-page connection.
-         */
-        bool offPage;
-
-		/*! \brief The constructor
-		*
-		* \param adHocConnectionNode a reference to a QDomNode where
-		* the information should be parsed from.
-		*/
-		AdHocConnection(QDomNode &adHocConnectionNode);
-
-		/*! \brief Convenience constructor for initializing fields
-		*/
-		AdHocConnection(
-			QString name,
-			QString displayName = QString(),
-			QString description = QString(),
-			QString tiedValue = QString(),
-			QList<PortRef> internalPortReferences = QList<PortRef>(),
-			QList<PortRef> externalPortReferences = QList<PortRef>(),
-            QList<QPointF> const& route = QList<QPointF>(),
-            bool offPage = false);
-
-		//! \brief Copy constructor
-		AdHocConnection(const AdHocConnection& other);
-
-		//! \brief Assignment operator
-		AdHocConnection& operator=(const AdHocConnection& other);
-
-		/*! \brief Check if the ad hoc connection is in a valid state.
-		* 
-		* \param instanceNames List containing the component instance names from
-		* the containing design.
-		* \param errorList The list to add the possible error messages to.
-		* \param parentIdentifier String from parent to help to identify the location of the error.
-		*
-		* \return bool True if the state is valid and writing is possible.
-		*/
-		bool isValid(const QStringList& instanceNames,
-			QStringList& errorList, 
-			const QString& parentIdentifier) const;
-
-		/*! \brief Check if the ad hoc connection is in a valid state.
-		* 
-		* \param instanceNames List containing the component instance names from
-		* the containing design.
 		* 
 		* \return bool True if the state is valid and writing is possible.
 		*/

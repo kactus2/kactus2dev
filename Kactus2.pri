@@ -618,6 +618,7 @@ HEADERS += ./resource.h \
     ./IPXACTmodels/XmlUtils.h \
     ./IPXACTmodels/GenericVendorExtension.h \
     ./IPXACTmodels/VendorExtension.h \
+    ./IPXACTmodels/AdHocConnection.h \
     ./designEditors/common/StickyNote/StickyNote.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Position.h \
@@ -626,7 +627,8 @@ HEADERS += ./resource.h \
     ./designEditors/common/StickyNote/StickyNoteRemoveCommand.h \
     ./designEditors/common/StickyNote/ColorFillTextItem.h \
     ./designEditors/common/StickyNote/StickyNoteMoveCommand.h \
-    ./designEditors/common/StickyNote/StickyNoteAddCommand.h
+    ./designEditors/common/StickyNote/StickyNoteAddCommand.h \
+    ./IPXACTmodels/PortRef.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
@@ -1218,5 +1220,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/common/StickyNote/StickyNoteAddCommand.cpp \
     ./designEditors/common/StickyNote/ColorFillTextItem.cpp \
     ./designEditors/common/StickyNote/StickyNoteRemoveCommand.cpp \
-    ./designEditors/common/StickyNote/StickyNote.cpp
+    ./designEditors/common/StickyNote/StickyNote.cpp \
+    ./IPXACTmodels/AdHocConnection.cpp \
+    ./IPXACTmodels/PortRef.cpp
 RESOURCES += kactus.qrc

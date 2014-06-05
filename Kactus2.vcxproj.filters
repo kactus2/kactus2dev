@@ -4096,6 +4096,12 @@
     <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Group.cpp">
       <Filter>Source Files\IPXACTmodels\kactusExtensions</Filter>
     </ClCompile>
+    <ClCompile Include="IPXACTmodels\AdHocConnection.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\PortRef.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5514,6 +5520,9 @@
     <CustomBuild Include="designEditors\common\StickyNote\StickyNoteAddCommand.h">
       <Filter>Header Files\designEditors\common\StickyNote</Filter>
     </CustomBuild>
+    <CustomBuild Include="IPXACTmodels\AdHocConnection.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\attributeDialog\attributedialog.h">
@@ -5992,6 +6001,9 @@
     </ClInclude>
     <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Group.h">
       <Filter>Header Files\IPXACTmodels\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\PortRef.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

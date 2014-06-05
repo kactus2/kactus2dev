@@ -534,7 +534,7 @@ void DesignDiagram::loadStickyNotes()
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignDiagram::setProtectionForLabels()
+// Function: DesignDiagram::setProtectionForStickyNotes()
 //-----------------------------------------------------------------------------
 void DesignDiagram::setProtectionForStickyNotes()
 {

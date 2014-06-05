@@ -28,6 +28,7 @@
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/file.h>
+#include <IPXACTmodels/PortRef.h>
 
 #include <common/utils.h>
 
@@ -840,47 +841,47 @@ void VhdlGenerator2::connectEndPoint( const VhdlConnectionEndPoint& endpoint,
 
 void VhdlGenerator2::parseAdHocConnections() {
 	// all adHoc connections are processed
-	QList<Design::AdHocConnection> adHocs = design_->getAdHocConnections();
-	foreach (Design::AdHocConnection adHoc, adHocs) {
+	QList<AdHocConnection> adHocs = design_->getAdHocConnections();
+	foreach (AdHocConnection adHoc, adHocs) {
 
 		// the data structure to store the ports to connect
 		QList<VhdlGenerator2::PortConnection> ports;
 
-		foreach (Design::PortRef portRef, adHoc.internalPortReferences) {
+		foreach (PortRef portRef, adHoc.internalPortReferences()) {
 
 			// if the instance is not found
-			if (!instances_.contains(portRef.componentRef)) {
+			if (!instances_.contains(portRef.getComponentRef())) {
 				emit errorMessage(tr("Instance %1 was not found in design.").arg(
-					portRef.componentRef));
+					portRef.getComponentRef()));
 				continue;
 			}
 			QSharedPointer<VhdlComponentInstance> instance =
-				instances_.value(portRef.componentRef);
+				instances_.value(portRef.getComponentRef());
 			Q_ASSERT(instance);
 
 			// if the specified port is not found
-			if (!instance->hasPort(portRef.portRef)) {
+			if (!instance->hasPort(portRef.getPortRef())) {
 				emit errorMessage(tr("Port %1 was not found in instance %2 of"
-					" type %3").arg(portRef.portRef).arg(
-					portRef.componentRef).arg(
+					" type %3").arg(portRef.getPortRef()).arg(
+					portRef.getComponentRef()).arg(
 					instance->vlnv().toString()));
 				continue;
 			}
 
-			int left = portRef.left;
+			int left = portRef.getLeft();
 			// if left bound is not defined then use the port physical bound
 			if (left < 0) {
-				left = instance->getPortPhysLeftBound(portRef.portRef);
+				left = instance->getPortPhysLeftBound(portRef.getPortRef());
 			}
 
-			int right = portRef.right;
+			int right = portRef.getRight();
 			// if right bound is not defined then use the port physical bound
 			if (right < 0) {
-				right = instance->getPortPhysRightBound(portRef.portRef);
+				right = instance->getPortPhysRightBound(portRef.getPortRef());
 			}
 
 			// create the port specification
-			VhdlGenerator2::PortConnection port(instance, portRef.portRef,
+			VhdlGenerator2::PortConnection port(instance, portRef.getPortRef(),
 				left, right);
 
 			// add port to the list
@@ -888,45 +889,45 @@ void VhdlGenerator2::parseAdHocConnections() {
 		}
 
 		// if the connection contains at least one port of the top component
-		if (!adHoc.externalPortReferences.isEmpty()) {
+		if (!adHoc.externalPortReferences().isEmpty()) {
 
 			// connect each external port to instance port
-			foreach (Design::PortRef portRef, adHoc.externalPortReferences) {
+			foreach (PortRef portRef, adHoc.externalPortReferences()) {
 
 				// check that the port is found 
-				VhdlPortSorter sorter(component_->getInterfaceNameForPort(portRef.portRef),
-					portRef.portRef, 
-					component_->getPortDirection(portRef.portRef));
+				VhdlPortSorter sorter(component_->getInterfaceNameForPort(portRef.getPortRef()),
+					portRef.getPortRef(), 
+					component_->getPortDirection(portRef.getPortRef()));
 				if (!topPorts_.contains(sorter)) {
 					emit errorMessage(tr("The port %1 is not found in top component %2").arg(
-						portRef.portRef).arg(component_->getVlnv()->toString()));
+						portRef.getPortRef()).arg(component_->getVlnv()->toString()));
 					continue;
 				}
 
 				QSharedPointer<VhdlPort> port = topPorts_.value(sorter);
 				Q_ASSERT(port);
 
-				int left = portRef.left;
+				int left = portRef.getLeft();
 				// if left bound is not defined then use the port physical bound
 				if (left < 0) {
 					left = port->left();
 				}
 
-				int right = portRef.right;
+				int right = portRef.getRight();
 				// if right bound is not defined then use the port physical bound
 				if (right < 0) {
 					right = port->right();
 				}
 
 				// connect each instance port to the top port
-				connectHierPort(portRef.portRef, left, right, ports);
+				connectHierPort(portRef.getPortRef(), left, right, ports);
 			}
 		}
 		// otherwise the connection is just between the ports of the instances
 		else {
 
 			// connect the ports 
-			connectPorts(adHoc.name, adHoc.description, ports);
+			connectPorts(adHoc.name(), adHoc.description(), ports);
 		}
 	}
 }

@@ -1,7 +1,17 @@
-// TODO: check datatypes
+//-----------------------------------------------------------------------------
+// File: design.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: 
+// Date: 
+//
+// Description:
+// Describes the spirit:design element in an IP-XACT document
+//-----------------------------------------------------------------------------
 
 #include "design.h"
 
+#include "AdHocConnection.h"
 #include "XmlUtils.h"
 
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
@@ -16,7 +26,6 @@
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
-#include <QDebug>
 
 //-----------------------------------------------------------------------------
 // Function: Design::Design()
@@ -365,12 +374,12 @@ void Design::write(QFile& file)
 
     foreach (AdHocConnection const& conn, adHocConnections_)
     {
-        if (!conn.route.empty())
+        if (!conn.getRoute().empty())
         {
             writer.writeStartElement("kactus2:route");
-            writer.writeAttribute("kactus2:connRef", conn.name);
+            writer.writeAttribute("kactus2:connRef", conn.name());
 
-            if (conn.offPage)
+            if (conn.isOffPage())
             {
                 writer.writeAttribute("kactus2:offPage", "true");
             }
@@ -379,7 +388,7 @@ void Design::write(QFile& file)
                 writer.writeAttribute("kactus2:offPage", "false");
             }
 
-            foreach (QPointF const& point, conn.route)
+            foreach (QPointF const& point, conn.getRoute())
             {
                 XmlUtils::writePosition(writer, point);
             }
@@ -550,14 +559,14 @@ bool Design::isValid( QStringList& errorList ) const {
 	}
 
 	QStringList adHocNames;
-	foreach (Design::AdHocConnection adHoc, adHocConnections_) {
-		if (adHocNames.contains(adHoc.name)) {
+	foreach (AdHocConnection adHoc, adHocConnections_) {
+		if (adHocNames.contains(adHoc.name())) {
 			errorList.append(QObject::tr("Design contains several ad hoc connections"
-				" with name %1").arg(adHoc.name));
+				" with name %1").arg(adHoc.name()));
 			valid = false;
 		}
 		else {
-			adHocNames.append(adHoc.name);
+			adHocNames.append(adHoc.name());
 		}
 
 		if (!adHoc.isValid(instanceNames, errorList, thisIdentifier)) {
@@ -635,12 +644,12 @@ bool Design::isValid() const {
 	}
 
 	QStringList adHocNames;
-	foreach (Design::AdHocConnection adHoc, adHocConnections_) {
-		if (adHocNames.contains(adHoc.name)) {
+	foreach (AdHocConnection adHoc, adHocConnections_) {
+		if (adHocNames.contains(adHoc.name())) {
 			return false;
 		}
 		else {
-			adHocNames.append(adHoc.name);
+			adHocNames.append(adHoc.name());
 		}
 
 		if (!adHoc.isValid(instanceNames)) {
@@ -731,7 +740,7 @@ const QList<Design::HierConnection> &Design::getHierarchicalConnections()
 	return hierConnections_;
 }
 
-const QList<Design::AdHocConnection> &Design::getAdHocConnections()
+const QList<AdHocConnection> &Design::getAdHocConnections()
 {
 	return adHocConnections_;
 }
@@ -751,7 +760,7 @@ void Design::setHierarchicalConnections(QList<Design::HierConnection> const& hie
 	hierConnections_ = hierConnections;
 }
 
-void Design::setAdHocConnections(QList<Design::AdHocConnection> const& adHocConnections)
+void Design::setAdHocConnections(QList<AdHocConnection> const& adHocConnections)
 {
 	adHocConnections_ = adHocConnections;
 }
@@ -905,11 +914,10 @@ void Design::parseRoute(QDomNode& routeNode)
     for (int i = 0; i < routeNode.childNodes().size(); ++i)
     {
         QDomNode posNode = routeNode.childNodes().at(i);
-        QPointF pos = XmlUtils::parsePoint(posNode);
 
         if (posNode.nodeName() == "kactus2:position")
         {
-            route.append(pos);
+            route.append(XmlUtils::parsePoint(posNode));
         }
     }
 
@@ -928,10 +936,10 @@ void Design::parseRoute(QDomNode& routeNode)
 
     for (int i = 0; i < adHocConnections_.size() && !found; ++i)
     {
-        if (adHocConnections_[i].name == name)
+        if (adHocConnections_[i].name() == name)
         {
-            adHocConnections_[i].route = route;
-            adHocConnections_[i].offPage = offPageValue == "true";
+            adHocConnections_[i].setRoute(route);
+            adHocConnections_[i].setOffPage(offPageValue == "true");
         }
     }
 }
@@ -962,9 +970,9 @@ void Design::parseAdHocVisibilities(QDomNode& visibilitiesNode)
 //-----------------------------------------------------------------------------
 void Design::parseSWInstances(QDomNode& swInstancesNode)
 {
-    for (int j = 0; j < swInstancesNode.childNodes().count(); ++j)
+    for (int i = 0; i < swInstancesNode.childNodes().count(); ++i)
     {
-        QDomNode swNode = swInstancesNode.childNodes().at(j);
+        QDomNode swNode = swInstancesNode.childNodes().at(i);
 
         if (swNode.nodeName() == "kactus2:swInstance")
         {
@@ -978,9 +986,9 @@ void Design::parseSWInstances(QDomNode& swInstancesNode)
 //-----------------------------------------------------------------------------
 void Design::parseApiDependencies(QDomNode& dependenciesNode)
 {
-    for (int j = 0; j < dependenciesNode.childNodes().count(); ++j)
+    for (int i = 0; i < dependenciesNode.childNodes().count(); ++i)
     {
-        QDomNode apiNode = dependenciesNode.childNodes().at(j);
+        QDomNode apiNode = dependenciesNode.childNodes().at(i);
 
         if (apiNode.nodeName() == "kactus2:apiDependency")
         {
@@ -994,9 +1002,9 @@ void Design::parseApiDependencies(QDomNode& dependenciesNode)
 //-----------------------------------------------------------------------------
 void Design::parseHierApiDependencies(QDomNode& hierDependenciesNode)
 {
-    for (int j = 0; j < hierDependenciesNode.childNodes().count(); ++j)
+    for (int i = 0; i < hierDependenciesNode.childNodes().count(); ++i)
     {
-        QDomNode apiNode = hierDependenciesNode.childNodes().at(j);
+        QDomNode apiNode = hierDependenciesNode.childNodes().at(i);
 
         if (apiNode.nodeName() == "kactus2:hierApiDependency")
         {
@@ -1010,9 +1018,9 @@ void Design::parseHierApiDependencies(QDomNode& hierDependenciesNode)
 //-----------------------------------------------------------------------------
 void Design::parseComConnections(QDomNode& comConnectionsNode)
 {
-    for (int j = 0; j < comConnectionsNode.childNodes().count(); ++j)
+    for (int i = 0; i < comConnectionsNode.childNodes().count(); ++i)
     {
-        QDomNode comNode = comConnectionsNode.childNodes().at(j);
+        QDomNode comNode = comConnectionsNode.childNodes().at(i);
 
         if (comNode.nodeName() == "kactus2:comConnection")
         {
@@ -1026,9 +1034,9 @@ void Design::parseComConnections(QDomNode& comConnectionsNode)
 //-----------------------------------------------------------------------------
 void Design::parseHierComConnections(QDomNode& hierComConnectionsNode)
 {
-    for (int j = 0; j < hierComConnectionsNode.childNodes().count(); ++j)
+    for (int i = 0; i < hierComConnectionsNode.childNodes().count(); ++i)
     {
-        QDomNode comNode = hierComConnectionsNode.childNodes().at(j);
+        QDomNode comNode = hierComConnectionsNode.childNodes().at(i);
 
         if (comNode.nodeName() == "kactus2:hierComConnection")
         {
@@ -1044,9 +1052,9 @@ void Design::parseStickyNote(QDomNode& noteNode)
 {
     QSharedPointer<Kactus2Group> noteExtension(new Kactus2Group("kactus2:note"));
 
-    for (int j = 0; j < noteNode.childNodes().count(); ++j)
+    for (int i = 0; i < noteNode.childNodes().count(); ++i)
     {
-        QDomNode childNode = noteNode.childNodes().at(j);
+        QDomNode childNode = noteNode.childNodes().at(i);
 
         if (childNode.nodeName() == "kactus2:position")
         {
@@ -1724,292 +1732,3 @@ void Design::HierConnection::write(QXmlStreamWriter& writer)
 
     writer.writeEndElement();
 }
-
-Design::PortRef::PortRef(QDomNode &portReferenceNode)
-    : portRef(), componentRef(), left(-1), right(-1)
-{
-    QDomNamedNodeMap attributes = portReferenceNode.attributes();
-
-    portRef = attributes.namedItem("spirit:portRef").nodeValue();
-
-    if (portReferenceNode.nodeName() == "spirit:internalPortReference")
-    {
-	    componentRef = attributes.namedItem("spirit:componentRef").nodeValue();
-    }
-
-    if (attributes.contains("spirit:left"))
-    {
-	    left = attributes.namedItem("spirit:left").nodeValue().toInt();
-    }
-
-    if (attributes.contains("spirit:right"))
-    {
-	    right = attributes.namedItem("spirit:right").nodeValue().toInt();
-    }
-}
-
-Design::PortRef::PortRef(QString portRef,
-			 QString componentRef,
-			 int left,
-			 int right): 
-portRef(portRef),
-componentRef(componentRef),
-left(left),
-right(right)
-{
-    
-}
-
-Design::PortRef::PortRef( const PortRef& other ):
-portRef(other.portRef),
-componentRef(other.componentRef),
-left(other.left),
-right(other.right) {
-}
-
-Design::PortRef& Design::PortRef::operator=( const PortRef& other ) {
-	if (this != &other) {
-		portRef	= other.portRef;
-		componentRef = other.componentRef;
-		left = other.left;
-		right = other.right;
-	}
-	return *this;
-}
-
-bool Design::PortRef::isValid( bool externalRef,
-							  const QStringList& instanceNames, 
-							  QStringList& errorList, 
-							  const QString& parentIdentifier ) const {
-	bool valid = true;
-
-	// if this is internal reference then the component ref must exist
-	if (!externalRef) {
-		if (componentRef.isEmpty()) {
-			errorList.append(QObject::tr("No component reference set for internal"
-				" port reference within %1").arg(parentIdentifier));
-			valid = false;
-		}
-		else if (!instanceNames.contains(componentRef)) {
-			errorList.append(QObject::tr("The internal port reference in %1 "
-				"contained a component reference to instance %2 that does not exist").arg(
-				parentIdentifier).arg(componentRef));
-			valid = false;
-		}
-
-		if (portRef.isEmpty()) {
-			errorList.append(QObject::tr("No port reference set for internal port"
-				" reference within %1").arg(parentIdentifier));
-			valid = false;
-		}
-	}
-	else {
-		if (portRef.isEmpty()) {
-			errorList.append(QObject::tr("No port reference set for external port"
-				" reference within %1").arg(parentIdentifier));
-			valid = false;
-		}
-	}
-
-	return valid;
-}
-
-bool Design::PortRef::isValid( bool externalRef, const QStringList& instanceNames ) const {
-	// if this is internal reference then the component ref must exist
-	if (!externalRef) {
-		if (componentRef.isEmpty()) {
-			return false;
-		}
-		else if (!instanceNames.contains(componentRef)) {
-			return false;
-		}
-
-		if (portRef.isEmpty()) {
-			return false;
-		}
-	}
-	else {
-		if (portRef.isEmpty()) {
-			return false;
-		}
-	}
-	return true;
-}
-
-Design::AdHocConnection::AdHocConnection(QDomNode &adHocConnectionNode)
-    : name(), displayName(), description(), tiedValue(),
-      internalPortReferences(), externalPortReferences(),
-      route(), offPage(false)
-{
-    for (int i = 0; i < adHocConnectionNode.childNodes().size(); i++) {
-	QDomNode node = adHocConnectionNode.childNodes().at(i);
-
-	if (node.nodeName() == "spirit:name") {
-	    name = node.firstChild().nodeValue();
-	} else if (node.nodeName() == "spirit:displayName") {
-	    displayName = node.firstChild().nodeValue();
-	} else if (node.nodeName() == "spirit:description") {
-	    description = node.firstChild().nodeValue();
-	} else if (node.nodeName() == "spirit:internalPortReference") {
-	    internalPortReferences.append(PortRef(node));
-	} else if (node.nodeName() == "spirit:externalPortReference") {
-	    externalPortReferences.append(PortRef(node));
-	}
-    }
-
-    QDomNamedNodeMap attributes = adHocConnectionNode.attributes();
-
-    if (attributes.contains("spirit:tiedValue")) {
-    	tiedValue = attributes.namedItem("spirit:tiedValue").nodeValue();
-    }
-}
-
-Design::AdHocConnection::AdHocConnection(QString name,
-					 QString displayName,
-					 QString description,
-					 QString tiedValue,
-					 QList<PortRef> internalPortReferences,
-					 QList<PortRef> externalPortReferences,
-                     QList<QPointF> const& route, bool offPage):
-name(name), 
-displayName(displayName), 
-description(description),
-tiedValue(tiedValue), 
-internalPortReferences(internalPortReferences),
-externalPortReferences(externalPortReferences),
-route(route), offPage(offPage)
-{
-}
-
-Design::AdHocConnection::AdHocConnection( const AdHocConnection& other ):
-name(other.name),
-displayName(other.displayName),
-description(other.description),
-tiedValue(other.tiedValue),
-internalPortReferences(other.internalPortReferences),
-externalPortReferences(other.externalPortReferences),
-route(other.route), offPage(other.offPage) {
-}
-
-Design::AdHocConnection& Design::AdHocConnection::operator=( const AdHocConnection& other ) {
-	if (this != &other) {
-		name = other.name;
-		displayName = other.displayName;
-		description = other.description;
-		tiedValue = other.tiedValue;
-		internalPortReferences = other.internalPortReferences;
-		externalPortReferences = other.externalPortReferences;
-        route = other.route;
-        offPage = other.offPage;
-	}
-	return *this;
-}
-
-bool Design::AdHocConnection::isValid( const QStringList& instanceNames, 
-									  QStringList& errorList, 
-									  const QString& parentIdentifier ) const {
-	bool valid = true;
-	const QString thisIdentifier(QObject::tr("ad hoc connection %1").arg(name));
-
-	if (name.isEmpty()) {
-		errorList.append(QObject::tr("No name specified for ad hoc connection"
-			" within %1").arg(parentIdentifier));
-		valid = false;
-	}
-
-	if (internalPortReferences.isEmpty()) {
-		errorList.append(QObject::tr("At least one internal port reference must be"
-			" listed in %1 within %2").arg(thisIdentifier).arg(parentIdentifier));
-		valid = false;
-	}
-	else {
-		foreach (PortRef portRef, internalPortReferences) {
-			if (!portRef.isValid(false, instanceNames, errorList, thisIdentifier)) {
-				valid = false;
-			}
-		}
-	}
-
-	foreach (PortRef portRef, externalPortReferences) {
-		if (!portRef.isValid(true, instanceNames, errorList, thisIdentifier)) {
-			valid = false;
-		}
-	}
-
-	return valid;
-}
-
-bool Design::AdHocConnection::isValid( const QStringList& instanceNames ) const {
-	if (name.isEmpty()) {
-		return false;
-	}
-
-	if (internalPortReferences.isEmpty()) {
-		return false;
-	}
-	else {
-		foreach (PortRef portRef, internalPortReferences) {
-			if (!portRef.isValid(false, instanceNames)) {
-				return false;
-			}
-		}
-	}
-
-	foreach (PortRef portRef, externalPortReferences) {
-		if (!portRef.isValid(true, instanceNames)) {
-			return false;
-		}
-	}
-
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Design::AdHocConnection::write()
-//-----------------------------------------------------------------------------
-void Design::AdHocConnection::write(QXmlStreamWriter& writer)
-{
-    writer.writeStartElement("spirit:adHocConnection");
-
-    writer.writeTextElement("spirit:name", name);
-    writer.writeTextElement("spirit:displayName", displayName);
-    writer.writeTextElement("spirit:description", description);
-
-    foreach (PortRef portRef, internalPortReferences)
-    {
-        writer.writeEmptyElement("spirit:internalPortReference");
-
-        writer.writeAttribute("spirit:componentRef", portRef.componentRef);
-        writer.writeAttribute("spirit:portRef", portRef.portRef);
-
-        if (portRef.left >= 0)
-        {
-            writer.writeAttribute("spirit:left", QString::number(portRef.left));
-        }
-
-        if (portRef.right >= 0)
-        {
-            writer.writeAttribute("spirit:right", QString::number(portRef.right));
-        }
-    }
-
-    foreach (PortRef portRef, externalPortReferences)
-    {
-        writer.writeEmptyElement("spirit:externalPortReference");
-
-        writer.writeAttribute("spirit:portRef", portRef.portRef);
-
-        if (portRef.left >= 0)
-        {
-            writer.writeAttribute("spirit:left", QString::number(portRef.left));
-        }
-
-        if (portRef.right >= 0)
-        {
-            writer.writeAttribute("spirit:right", QString::number(portRef.right));
-        }
-    }
-
-    writer.writeEndElement();
-}
-
