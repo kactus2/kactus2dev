@@ -62,6 +62,22 @@ void StickyNote::mousePressEvent(QGraphicsSceneMouseEvent* event)
 }
 
 //-----------------------------------------------------------------------------
+// Function: StickyNote::mouseMoveEvent()
+//-----------------------------------------------------------------------------
+void StickyNote::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
+{
+    // Discard movement if the diagram is protected.
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+
+    if (diagram == 0 || diagram->isProtected())
+    {
+        return;
+    } 
+
+    QGraphicsItemGroup::mouseMoveEvent(event);
+}
+
+//-----------------------------------------------------------------------------
 // Function: DesignLabel::mouseReleaseEvent()
 //-----------------------------------------------------------------------------
 void StickyNote::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
