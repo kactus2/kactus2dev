@@ -369,6 +369,9 @@ private:
     //! Creates sticky notes from vendor extensions.
     void loadStickyNotes();
 
+    //! Enables/disables the sticky notes according to design protection state.
+    void setProtectionForStickyNotes();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

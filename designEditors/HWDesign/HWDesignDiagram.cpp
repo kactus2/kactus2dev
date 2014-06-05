@@ -67,9 +67,6 @@
 #include <QDebug>
 #include "columnview/ColumnEditDialog.h"
 
-#include "../common/LabelUndoCommands.h"
-
-
 Q_DECLARE_METATYPE(HWDesignDiagram::BusInterfaceCollectionCopyData)
 Q_DECLARE_METATYPE(HWDesignDiagram::ComponentCollectionCopyData)
 Q_DECLARE_METATYPE(HWDesignDiagram::ColumnCollectionCopyData)

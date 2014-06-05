@@ -180,6 +180,8 @@ void DesignDiagram::setProtection(bool locked)
     locked_ = locked;
     clearSelection();
     emit clearItemSelection();
+
+    setProtectionForStickyNotes();
 }
 
 //-----------------------------------------------------------------------------
@@ -527,6 +529,20 @@ void DesignDiagram::loadStickyNotes()
 
             QSharedPointer<StickyNoteAddCommand> cmd(new StickyNoteAddCommand(note, this, note->pos()));
             cmd->redo();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::setProtectionForLabels()
+//-----------------------------------------------------------------------------
+void DesignDiagram::setProtectionForStickyNotes()
+{
+    foreach(QGraphicsItem* item, items())
+    {
+        if (item->type() == StickyNote::Type)
+        {
+            item->setEnabled(!locked_);
         }
     }
 }

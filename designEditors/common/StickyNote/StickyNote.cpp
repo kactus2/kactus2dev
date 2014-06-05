@@ -66,22 +66,6 @@ void StickyNote::mousePressEvent(QGraphicsSceneMouseEvent* event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: StickyNote::mouseMoveEvent()
-//-----------------------------------------------------------------------------
-void StickyNote::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
-{
-    // Discard movement if the diagram is protected.
-    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
-
-    if (diagram == 0 || diagram->isProtected())
-    {
-        return;
-    } 
-
-    QGraphicsItemGroup::mouseMoveEvent(event);
-}
-
-//-----------------------------------------------------------------------------
 // Function: DesignLabel::mouseReleaseEvent()
 //-----------------------------------------------------------------------------
 void StickyNote::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
@@ -195,14 +179,16 @@ void StickyNote::initializeExtensions()
 //-----------------------------------------------------------------------------
 void StickyNote::initializePosition()
 {
-    if (extension_->getByType("kactus2:position").isEmpty())
+    QList<QSharedPointer<VendorExtension> > positionExtensions = extension_->getByType("kactus2:position");
+
+    if (positionExtensions.isEmpty())
     {
         position_ = QSharedPointer<Kactus2Position>(new Kactus2Position(QPointF()));
         extension_->addToGroup(position_);
     }
     else
     {
-        position_ = extension_->getByType("kactus2:position").first().dynamicCast<Kactus2Position>();
+        position_ = positionExtensions.first().dynamicCast<Kactus2Position>();
     }
 
     setPos(position_->position());
@@ -213,14 +199,16 @@ void StickyNote::initializePosition()
 //-----------------------------------------------------------------------------
 void StickyNote::initializeContent()
 {
-    if (extension_->getByType("kactus2:content").isEmpty())
+    QList<QSharedPointer<VendorExtension> > contentExtensions = extension_->getByType("kactus2:content");
+
+    if (contentExtensions.isEmpty())
     {
         content_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:content", ""));
         extension_->addToGroup(content_);
     }
     else
     {
-        content_ = extension_->getByType("kactus2:content").first().dynamicCast<Kactus2Value>();
+        content_ = contentExtensions.first().dynamicCast<Kactus2Value>();
     }
 
     textArea_->setPlainText(content_->value());

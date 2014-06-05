@@ -79,9 +79,6 @@ protected:
     //! Handler for mouse press events.
     virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
 
-    //! Handler for mouse move events.
-    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
-
     //! Handler for mouse release event.
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
