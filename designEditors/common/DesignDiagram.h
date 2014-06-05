@@ -244,6 +244,12 @@ public slots:
     //! Called when a component instance is remove from the diagram.
     virtual void onComponentInstanceRemoved(ComponentItem* item);
 
+    //! Called when a vendor extension is added to the design.
+    virtual void onVendorExtensionAdded(QSharedPointer<VendorExtension> extension);
+
+    //! Called when a vendor extension is removed from the design.
+    virtual void onVendorExtensionRemoved(QSharedPointer<VendorExtension> extension);
+
 signals:
     //! Emitted when component with given vlnv should be opened in editor.
     void openComponent(const VLNV& vlnv);
@@ -359,7 +365,10 @@ private:
      *      @param [in] design The design to open.
      */
     virtual void loadDesign(QSharedPointer<Design> design) = 0;
-    
+
+    //! Creates sticky notes from vendor extensions.
+    void loadStickyNotes();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

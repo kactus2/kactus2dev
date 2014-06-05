@@ -220,7 +220,14 @@ public:
 		* \return bool True if the state is valid and writing is possible.
 		*/
 		bool isValid(const QStringList& instanceNames) const;
-	};
+    
+        /*!
+         *  Writes the element to XML.
+         *
+         *      @param [in] writer   The used XML writer.
+         */
+        void write(QXmlStreamWriter& writer);
+    };
 
 	/*! \brief Describes the spirit:hierConnection element in an
 	* IP-XACT document
@@ -315,7 +322,14 @@ public:
 		* \return bool True if the state is valid and writing is possible.
 		*/
 		bool isValid(const QStringList& instanceNames) const;
-	};
+
+        /*!
+         *  Writes the element to XML.
+         *
+         *      @param [in] writer   The used XML writer.
+         */
+        void write(QXmlStreamWriter& writer);
+    };
 
 	/*! \brief Describes a port reference in an ad-hoc connection
 	*
@@ -512,7 +526,14 @@ public:
 		* \return bool True if the state is valid and writing is possible.
 		*/
 		bool isValid(const QStringList& instanceNames) const;
-	};
+
+        /*!
+         *  Writes the element to XML.
+         *
+         *      @param [in] writer   The used XML writer.
+         */
+        void write(QXmlStreamWriter& writer);
+    };
 
 	/*! \brief The constructor
 	*
@@ -849,6 +870,72 @@ private:
      *      @param [in] node The QDomNode from where to parse the information.
      */
     void parseVendorExtensions(QDomNode& node);
+
+    /*!
+     *  Parses the column layout from kactus2:columnLayout.
+     *
+     *      @param [in] layoutNode   The DOM node containing the layout.
+     */
+    void parseColumnLayout(QDomNode& layoutNode);
+
+    /*!
+     *  Parses the routes from kactus2:routes.
+     *
+     *      @param [in] routesNode   The DOM node containing the routes.
+     */
+    void parseRoutes(QDomNode& routesNode);
+
+    /*!
+     *  Parses a route from kactus2:route.
+     *
+     *      @param [in] routeNode   The DOM node containing the route.
+     */
+    void parseRoute(QDomNode& routeNode);
+
+    /*!
+     *  Parses the ad-hoc port visibilities from kactus2:adHocVisibilities.
+     *
+     *      @param [in] visibilitiesNode   The DOM node containing the visibilities.
+     */
+    void parseAdHocVisibilities(QDomNode& visibilitiesNode);
+
+    /*!
+     *  Parses the SW instances from kactus2:swInstances.
+     *
+     *      @param [in] swInstancesNode   The DOM node containing the SW instances.
+     */
+    void parseSWInstances(QDomNode& swInstancesNode);
+
+    /*!
+     *  Parses the API dependencies from kactus2:apiDependencies.
+     *
+     *      @param [in] dependenciesNode   The DOM node containing the API dependencies.
+     */
+    void parseApiDependencies(QDomNode& dependenciesNode);
+
+    /*!
+     *  Parses the hierarchical API dependencies from kactus2:hierApiDependencies.
+     *
+     *      @param [in] hierDependenciesNode   The DOM node containing the hierarchical API dependencies.
+     */
+    void parseHierApiDependencies(QDomNode& hierDependenciesNode);
+
+    /*!
+     *  Parses the COM connections from kactus2:comConnections.
+     *
+     *      @param [in] comConnectionsNode   The DOM node containing the hierarchical COM connections.
+     */
+    void parseComConnections(QDomNode& comConnectionsNode);
+
+    /*!
+     *  Parses the hierarchical COM connections from kactus2:hierComConnections.
+     *
+     *      @param [in] hierComConnectionsNode   The DOM node containing the 
+     *                                           hierarchical hierarchical COM connections.
+     */
+    void parseHierComConnections(QDomNode& hierComConnectionsNode);
+
+    void parseStickyNote(QDomNode node);
 
     QList<ColumnDesc> columns_;
 

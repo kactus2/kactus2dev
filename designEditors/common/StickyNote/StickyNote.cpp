@@ -11,52 +11,36 @@
 
 #include "StickyNote.h"
 
+#include "ColorFillTextItem.h"
+#include "StickyNoteMoveCommand.h"
+
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
-#include <common/KactusColors.h>
-#include <QMargins>
+#include <QSharedPointer>
 
-#include <designEditors/common/diagramgrid.h>
-#include <designEditors/common/DesignDiagram.h>
-
-#include <common/graphicsItems/commands/FloatingItemMoveCommand.h>
 #include <common/GenericEditProvider.h>
 
-#include "ColorFillTextItem.h"
+#include <designEditors/common/DesignDiagram.h>
+
+#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 
 //-----------------------------------------------------------------------------
-// Function: DesignLabel::DesignLabel()
+// Function: StickyNote::StickyNote()
 //-----------------------------------------------------------------------------
-StickyNote::StickyNote(QGraphicsItem* parent):
-QGraphicsItemGroup(parent),
-oldPos_(),
-textArea_(0)
-{ 
-    setFlag(ItemIsMovable);
-    setFlag(ItemIsSelectable);
-    setFlag(ItemIsFocusable);
+StickyNote::StickyNote(QSharedPointer<VendorExtension> extension, QGraphicsItem* parent):
+    QGraphicsItemGroup(parent),
+    oldPos_(),
+    position_(extension.dynamicCast<Kactus2Position>()),
+    textArea_(0)
+{
+    setItemOptions();
+    createGluedEdge();
+    createWritableArea();
 
-    setHandlesChildEvents(false);
+    connect(textArea_, SIGNAL(contentChanged()), this, SLOT(onTextEdited()), Qt::UniqueConnection);
 
-    QColor topColor = QColor("lemonChiffon").darker(103);
-
-    const int TOP_OFFSET = 15;
-    const int DEFAULT_WIDTH = GridSize * 8 * 2;
-
-    QGraphicsRectItem* glueTop = new QGraphicsRectItem(0, 0 , DEFAULT_WIDTH, TOP_OFFSET);
-    QPen outlinePen;
-    outlinePen.setStyle(Qt::NoPen);
-    glueTop->setPen(outlinePen);
-    glueTop->setBrush(QBrush(topColor));
-
-    addToGroup(glueTop);
-
-    textArea_ = new ColorFillTextItem();
-    textArea_->setFill(QColor("lemonChiffon"));
-    textArea_->setTextWidth(DEFAULT_WIDTH);
-    textArea_->setPos(0, TOP_OFFSET);
-  
-    addToGroup(textArea_);
+    setPos(position_->position());
 }
 
 //-----------------------------------------------------------------------------
@@ -68,13 +52,13 @@ StickyNote::~StickyNote()
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignLabel::mousePressEvent()
+// Function: StickyNote::mousePressEvent()
 //-----------------------------------------------------------------------------
-void StickyNote::mousePressEvent(QGraphicsSceneMouseEvent * event)
+void StickyNote::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
-    oldPos_ = scenePos();
+    oldPos_ = pos();
 
-    QGraphicsItem::mousePressEvent(event);
+    QGraphicsItemGroup::mousePressEvent(event);
 }
 
 //-----------------------------------------------------------------------------
@@ -89,11 +73,11 @@ void StickyNote::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
         return;
     }
 
-    QGraphicsItem::mouseReleaseEvent(event);
+    QGraphicsItemGroup::mouseReleaseEvent(event);
 
     if (pos() != oldPos_)
     {
-        QSharedPointer<FloatingItemMoveCommand> moveCommand(new FloatingItemMoveCommand(this, oldPos_));
+        QSharedPointer<StickyNoteMoveCommand> moveCommand(new StickyNoteMoveCommand(this, oldPos_));
         diagram->getEditProvider().addCommand(moveCommand);
     }
 }
@@ -104,4 +88,75 @@ void StickyNote::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 void StickyNote::beginEditing()
 {
     textArea_->setFocus();
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::itemChange()
+//-----------------------------------------------------------------------------
+QVariant StickyNote::itemChange(GraphicsItemChange change, const QVariant& value)
+{
+    if (change == ItemPositionChange)
+    {
+        position_->setPosition(value.toPointF());
+    }
+
+    return QGraphicsItemGroup::itemChange(change, value);
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::getVendorExtension()
+//-----------------------------------------------------------------------------
+QSharedPointer<VendorExtension> StickyNote::getVendorExtension() const
+{
+    return position_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::onTextEdited()
+//-----------------------------------------------------------------------------
+void StickyNote::onTextEdited()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::setItemOptions()
+//-----------------------------------------------------------------------------
+void StickyNote::setItemOptions()
+{
+    setFlag(ItemIsMovable);
+    setFlag(ItemIsSelectable);
+    setFlag(ItemIsFocusable);
+    setFlag(ItemSendsGeometryChanges);
+
+    setHandlesChildEvents(false);
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::createGluedEdge()
+//-----------------------------------------------------------------------------
+void StickyNote::createGluedEdge()
+{
+    QColor topColor = QColor("lemonChiffon").darker(103);
+
+    QGraphicsRectItem* glueEdge = new QGraphicsRectItem(0, 0 , DEFAULT_WIDTH, TOP_OFFSET);
+    QPen outlinePen;
+    outlinePen.setStyle(Qt::NoPen);
+    glueEdge->setPen(outlinePen);
+    glueEdge->setBrush(QBrush(topColor));
+
+    addToGroup(glueEdge);
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::createWritableArea()
+//-----------------------------------------------------------------------------
+void StickyNote::createWritableArea()
+{
+    textArea_ = new ColorFillTextItem();
+    textArea_->setFill(QColor("lemonChiffon"));
+    textArea_->setTextWidth(DEFAULT_WIDTH);
+    textArea_->setPos(0, TOP_OFFSET);
+
+    addToGroup(textArea_);
 }

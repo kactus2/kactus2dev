@@ -45,6 +45,11 @@ public:
     //! Draws the item.
     virtual void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget );
 
+signals:
+
+    //! Emitted when the text changes.
+    void contentChanged();
+
 private:
 
     //! Disable copying.

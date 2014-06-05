@@ -14,24 +14,25 @@
 #include "DesignWidget.h"
 
 #include <common/utils.h>
-#include <designEditors/common/diagramgrid.h>
 #include <common/GenericEditProvider.h>
 #include <common/graphicsItems/ComponentItem.h>
 
+#include <designEditors/common/diagramgrid.h>
 #include <designEditors/HWDesign/AdHocEditor/AdHocEditor.h>
+#include <designEditors/common/StickyNote/StickyNote.h>
+#include <designEditors/common/StickyNote/StickyNoteAddCommand.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/component.h>
-
-#include <common/graphicsItems/commands/FloatingItemAddCommand.h>
-#include <designEditors/common/StickyNote/StickyNote.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 
 #include <QWidget>
 #include <QPainter>
 #include <QMenu>
 #include <QGraphicsItem>
+
 
 
 //-----------------------------------------------------------------------------
@@ -107,6 +108,7 @@ bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointe
 
     loading_ = true;
     loadDesign(design);
+    loadStickyNotes();
     loading_ = false;
 
     return true;
@@ -257,6 +259,25 @@ void DesignDiagram::onComponentInstanceRemoved(ComponentItem* item)
 }
 
 //-----------------------------------------------------------------------------
+// Function: DesignDiagram::onVendorExtensionAdded()
+//-----------------------------------------------------------------------------
+void DesignDiagram::onVendorExtensionAdded(QSharedPointer<VendorExtension> extension)
+{
+    if (!vendorExtensions_.contains(extension))
+    {
+        vendorExtensions_.append(extension);
+    }    
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::onVendorExtensionRemoved()
+//-----------------------------------------------------------------------------
+void DesignDiagram::onVendorExtensionRemoved(QSharedPointer<VendorExtension> extension)
+{
+    vendorExtensions_.removeAll(extension);
+}
+
+//-----------------------------------------------------------------------------
 // Function: DesignDiagram::createInstanceName()
 //-----------------------------------------------------------------------------
 QString DesignDiagram::createInstanceName(QSharedPointer<Component> component)
@@ -317,21 +338,30 @@ void DesignDiagram::drawBackground(QPainter* painter, QRectF const& rect)
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignDiagram::createTextLabel()
+// Function: DesignDiagram::createLabel()
 //-----------------------------------------------------------------------------
 void DesignDiagram::createLabel(QPointF const& position)
 {
-    StickyNote* label = new StickyNote();    
+    QSharedPointer<Kactus2Position> noteExtension(new Kactus2Position(position));
+    StickyNote* note = new StickyNote(noteExtension);    
     
-    QSharedPointer<FloatingItemAddCommand> cmd(new FloatingItemAddCommand(this, label, position));
+    QSharedPointer<StickyNoteAddCommand> cmd(new StickyNoteAddCommand(note, this, position));
+
+    connect(cmd.data(), SIGNAL(addVendorExtension(QSharedPointer<VendorExtension>)),
+        this, SLOT(onVendorExtensionAdded(QSharedPointer<VendorExtension>)), Qt::UniqueConnection);
+
+    connect(cmd.data(), SIGNAL(removeVendorExtension(QSharedPointer<VendorExtension>)),
+        this, SLOT(onVendorExtensionRemoved(QSharedPointer<VendorExtension>)), Qt::UniqueConnection);
+
     getEditProvider().addCommand(cmd);
     cmd->redo();
 
     clearSelection();
-    label->setSelected(true);    
-    onSelected(label);
-    
-    label->beginEditing();
+    emit clearItemSelection();
+
+    note->setSelected(true);    
+    onSelected(note);
+    note->beginEditing();
 }
 
 //-----------------------------------------------------------------------------
@@ -485,3 +515,21 @@ bool DesignDiagram::sortByX(QGraphicsItem* lhs, QGraphicsItem* rhs)
 {
     return lhs->x() < rhs->x();
 }
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::loadStickyNotes()
+//-----------------------------------------------------------------------------
+void DesignDiagram::loadStickyNotes()
+{
+    foreach(QSharedPointer<VendorExtension> extension, vendorExtensions_)
+    {
+        if (extension->type() == "kactus2:position")
+        {
+            StickyNote* note = new StickyNote(extension);
+
+            QSharedPointer<StickyNoteAddCommand> cmd(new StickyNoteAddCommand(note, this, note->pos()));
+            cmd->redo();
+        }        
+    }
+}
+

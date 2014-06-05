@@ -1,16 +1,16 @@
 //-----------------------------------------------------------------------------
-// File: FloatingItemAddCommand.h
+// File: StickyNoteMoveCommand.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
 // Date: 30.05.2014
 //
 // Description:
-// Add command for floating items.
+// Move command for floating items.
 //-----------------------------------------------------------------------------
 
-#ifndef FLOATINGITEMADDCOMMAND_H
-#define FLOATINGITEMADDCOMMAND_H
+#ifndef STICKYNOTEMOVECOMMAND_H
+#define STICKYNOTEMOVECOMMAND_H
 
 #include <QUndoCommand>
 #include <QGraphicsItem>
@@ -19,26 +19,24 @@
 #include <QPointF>
 
 //-----------------------------------------------------------------------------
-//! FloatingItemAddCommand class.
+//! StickyNoteMoveCommand class.
 //-----------------------------------------------------------------------------
-class FloatingItemAddCommand : public QObject, public QUndoCommand
+class StickyNoteMoveCommand : public QUndoCommand
 {
-	Q_OBJECT
-
 public:
     /*!
      *  Constructor.
      *
-     *      @param [in] scene   The scene to which to add the item.
-     *      @param [in] item    The item to add.
-     *      @param [in] parent  The parent command.
+     *      @param [in] item      The item to move.
+     *      @param [in] oldPos    The item's old position.
+     *      @param [in] parent    The parent command.
      */
-    FloatingItemAddCommand(QGraphicsScene* scene, QGraphicsItem* item, QPointF position, QUndoCommand* parent = 0);
+    StickyNoteMoveCommand(QGraphicsItem* item, QPointF const& oldPos,  QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
      */
-    ~FloatingItemAddCommand();
+    ~StickyNoteMoveCommand();
 
     /*!
      *  Undoes the command.
@@ -52,8 +50,8 @@ public:
 
 private:
     // Disable copying.
-    FloatingItemAddCommand(FloatingItemAddCommand const& rhs);
-    FloatingItemAddCommand& operator=(FloatingItemAddCommand const& rhs);
+    StickyNoteMoveCommand(StickyNoteMoveCommand const& rhs);
+    StickyNoteMoveCommand& operator=(StickyNoteMoveCommand const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -62,15 +60,13 @@ private:
     //! The graphics item.
     QGraphicsItem* item_;
 
-    //! The item's parent column.
-    QGraphicsScene* scene_;
+    //! The old position of the item.
+    QPointF oldPos_;
 
-    //! The item's initial position.
-    QPointF position_;
-
-    //! Boolean flag for indicating if the component should be deleted in the destructor.
-    bool del_;
+    //! The new position of the item.
+    QPointF newPos_;
 
 };
+//-----------------------------------------------------------------------------
 
-#endif //FLOATINGITEMADDCOMMAND_H
+#endif // STICKYNOTEMOVECOMMAND_H

@@ -1,41 +1,51 @@
 //-----------------------------------------------------------------------------
-// File: FloatingItemMoveCommand.cpp
+// File: FloatingItemAddCommand.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
 // Date: 30.05.2014
 //
 // Description:
-// Move command for floating items.
+// Add command for sticky note items.
 //-----------------------------------------------------------------------------
 
-#include "FloatingItemMoveCommand.h"
+#include "StickyNoteAddCommand.h"
+
+#include "StickyNote.h"
+
+#include <IPXACTmodels/VendorExtension.h>
 
 //-----------------------------------------------------------------------------
-// Function: FloatingItemMoveCommand()
+// Function: StickyNoteAddCommand()
 //-----------------------------------------------------------------------------
-FloatingItemMoveCommand::FloatingItemMoveCommand(QGraphicsItem* item, QPointF const& oldPos, QUndoCommand* parent)
-    : QUndoCommand(parent),
-    item_(item),
-    oldPos_(oldPos),
-    newPos_(item->scenePos())
+StickyNoteAddCommand::StickyNoteAddCommand(StickyNote* note, QGraphicsScene* scene, QPointF position,
+    QUndoCommand* parent) : QUndoCommand(parent), note_(note),
+    scene_(scene), position_(position), del_(false)
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~FloatingItemMoveCommand()
+// Function: ~StickyNoteAddCommand()
 //-----------------------------------------------------------------------------
-FloatingItemMoveCommand::~FloatingItemMoveCommand()
+StickyNoteAddCommand::~StickyNoteAddCommand()
 {
+    if (del_)
+    {
+        delete note_;
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: undo()
 //-----------------------------------------------------------------------------
-void FloatingItemMoveCommand::undo()
+void StickyNoteAddCommand::undo()
 {
-    item_->setPos(oldPos_);
+    // Remove the item from the stack and the scene.
+    scene_->removeItem(note_);
+    del_ = true;
+
+    emit removeVendorExtension(note_->getVendorExtension());
 
     // Execute child commands.
     QUndoCommand::undo();
@@ -44,10 +54,15 @@ void FloatingItemMoveCommand::undo()
 //-----------------------------------------------------------------------------
 // Function: redo()
 //-----------------------------------------------------------------------------
-void FloatingItemMoveCommand::redo()
+void StickyNoteAddCommand::redo()
 {
-    item_->setPos(newPos_);
+    // Add the item to the stack.
+    scene_->addItem(note_);
+    note_->setPos(position_);    
 
-    // Execute child commands.
+    del_ = false;
+
+    emit addVendorExtension(note_->getVendorExtension());
+
     QUndoCommand::redo();
 }

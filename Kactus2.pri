@@ -622,11 +622,10 @@ HEADERS += ./resource.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Position.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Value.h \
-    ./IPXACTmodels/kactusExtensions/Kactus2PortPositions.h \
+    ./designEditors/common/StickyNote/StickyNoteRemoveCommand.h \
     ./designEditors/common/StickyNote/ColorFillTextItem.h \
-    ./common/graphicsItems/commands/FloatingItemAddCommand.h \
-    ./common/graphicsItems/commands/FloatingItemMoveCommand.h \
-    ./common/graphicsItems/commands/FloatingItemRemoveCommand.h
+    ./designEditors/common/StickyNote/StickyNoteMoveCommand.h \
+    ./designEditors/common/StickyNote/StickyNoteAddCommand.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
@@ -1213,10 +1212,9 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
-    ./IPXACTmodels/kactusExtensions/Kactus2PortPositions.cpp \
-    ./common/graphicsItems/commands/FloatingItemAddCommand.cpp \
-    ./common/graphicsItems/commands/FloatingItemMoveCommand.cpp \
+    ./designEditors/common/StickyNote/StickyNoteMoveCommand.cpp \
+    ./designEditors/common/StickyNote/StickyNoteAddCommand.cpp \
     ./designEditors/common/StickyNote/ColorFillTextItem.cpp \
-    ./common/graphicsItems/commands/FloatingItemRemoveCommand.cpp \
+    ./designEditors/common/StickyNote/StickyNoteRemoveCommand.cpp \
     ./designEditors/common/StickyNote/StickyNote.cpp
 RESOURCES += kactus.qrc

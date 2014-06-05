@@ -9,14 +9,19 @@
 // Remove command for floating items.
 //-----------------------------------------------------------------------------
 
-#include "FloatingItemRemoveCommand.h"
+#include "StickyNoteRemoveCommand.h"
+
+#include <IPXACTmodels/VendorExtension.h>
+#include <designEditors/common/DesignDiagram.h>
 
 //-----------------------------------------------------------------------------
 // Function: FloatingItemRemoveCommand()
 //-----------------------------------------------------------------------------
-FloatingItemRemoveCommand::FloatingItemRemoveCommand(QGraphicsItem* item, QGraphicsScene* scene, 
-    QUndoCommand* parent) : QUndoCommand(parent), item_(item),
-    scene_(scene), del_(true)
+StickyNoteRemoveCommand::StickyNoteRemoveCommand(StickyNote* noteItem, DesignDiagram* diagram, 
+    QUndoCommand* parent) : 
+    QUndoCommand(parent), note_(noteItem),
+    diagram_(diagram), 
+    del_(true)
 {
 
 }
@@ -24,21 +29,22 @@ FloatingItemRemoveCommand::FloatingItemRemoveCommand(QGraphicsItem* item, QGraph
 //-----------------------------------------------------------------------------
 // Function: ~FloatingItemRemoveCommand()
 //-----------------------------------------------------------------------------
-FloatingItemRemoveCommand::~FloatingItemRemoveCommand()
+StickyNoteRemoveCommand::~StickyNoteRemoveCommand()
 {
     if (del_)
     {
-        delete item_;
+        delete note_;
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: undo()
 //-----------------------------------------------------------------------------
-void FloatingItemRemoveCommand::undo()
+void StickyNoteRemoveCommand::undo()
 {
-    scene_->addItem(item_);
-    del_ = false;
+    diagram_->addItem(note_);
+
+    emit addVendorExtension(note_->getVendorExtension());
 
     // Execute child commands.
     QUndoCommand::undo();
@@ -47,10 +53,12 @@ void FloatingItemRemoveCommand::undo()
 //-----------------------------------------------------------------------------
 // Function: redo()
 //-----------------------------------------------------------------------------
-void FloatingItemRemoveCommand::redo()
+void StickyNoteRemoveCommand::redo()
 {
-    scene_->removeItem(item_);
+    diagram_->removeItem(note_);
     del_ = true;
+
+    emit removeVendorExtension(note_->getVendorExtension());
 
     QUndoCommand::redo();
 }

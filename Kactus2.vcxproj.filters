@@ -938,12 +938,6 @@
     <Filter Include="Header Files\IPXACTmodels\kactusExtensions">
       <UniqueIdentifier>{a4b97ef0-265f-4fe5-805f-7482e8921ea0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\graphicsItems\commands">
-      <UniqueIdentifier>{c5738b20-7a21-4c08-8d4b-8632994c162b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\graphicsItems\commands">
-      <UniqueIdentifier>{414bd4f5-aed9-47d9-950c-ee6a828cc02b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\designEditors\common\StickyNote">
       <UniqueIdentifier>{b64dd13f-cfeb-43a3-91b9-83197b195916}</UniqueIdentifier>
     </Filter>
@@ -4072,24 +4066,6 @@
     <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Value.cpp">
       <Filter>Source Files\IPXACTmodels\kactusExtensions</Filter>
     </ClCompile>
-    <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2PortPositions.cpp">
-      <Filter>Source Files\IPXACTmodels\kactusExtensions</Filter>
-    </ClCompile>
-    <ClCompile Include="common\graphicsItems\commands\FloatingItemAddCommand.cpp">
-      <Filter>Source Files\common\graphicsItems\commands</Filter>
-    </ClCompile>
-    <ClCompile Include="common\graphicsItems\commands\FloatingItemMoveCommand.cpp">
-      <Filter>Source Files\common\graphicsItems\commands</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_FloatingItemAddCommand.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_FloatingItemRemoveCommand.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="common\graphicsItems\commands\FloatingItemRemoveCommand.cpp">
-      <Filter>Source Files\common\graphicsItems\commands</Filter>
-    </ClCompile>
     <ClCompile Include="designEditors\common\StickyNote\StickyNote.cpp">
       <Filter>Source Files\designEditors\common\StickyNote</Filter>
     </ClCompile>
@@ -4101,6 +4077,21 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ColorFillTextItem.cpp">
       <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\StickyNote\StickyNoteRemoveCommand.cpp">
+      <Filter>Source Files\designEditors\common\StickyNote</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_StickyNoteRemoveCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_StickyNoteAddCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\StickyNote\StickyNoteAddCommand.cpp">
+      <Filter>Source Files\designEditors\common\StickyNote</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\StickyNote\StickyNoteMoveCommand.cpp">
+      <Filter>Source Files\designEditors\common\StickyNote</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5508,16 +5499,16 @@
     <CustomBuild Include="IPXACTmodels\GenericVendorExtension.h">
       <Filter>Header Files\IPXACTmodels</Filter>
     </CustomBuild>
-    <CustomBuild Include="common\graphicsItems\commands\FloatingItemAddCommand.h">
-      <Filter>Header Files\common\graphicsItems\commands</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\graphicsItems\commands\FloatingItemRemoveCommand.h">
-      <Filter>Header Files\common\graphicsItems\commands</Filter>
-    </CustomBuild>
     <CustomBuild Include="designEditors\common\StickyNote\StickyNote.h">
       <Filter>Header Files\designEditors\common\StickyNote</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\common\StickyNote\ColorFillTextItem.h">
+      <Filter>Header Files\designEditors\common\StickyNote</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\StickyNote\StickyNoteRemoveCommand.h">
+      <Filter>Header Files\designEditors\common\StickyNote</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\StickyNote\StickyNoteAddCommand.h">
       <Filter>Header Files\designEditors\common\StickyNote</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -5993,11 +5984,8 @@
     <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Value.h">
       <Filter>Header Files\IPXACTmodels\kactusExtensions</Filter>
     </ClInclude>
-    <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2PortPositions.h">
-      <Filter>Header Files\IPXACTmodels\kactusExtensions</Filter>
-    </ClInclude>
-    <ClInclude Include="common\graphicsItems\commands\FloatingItemMoveCommand.h">
-      <Filter>Header Files\common\graphicsItems\commands</Filter>
+    <ClInclude Include="designEditors\common\StickyNote\StickyNoteMoveCommand.h">
+      <Filter>Header Files\designEditors\common\StickyNote</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

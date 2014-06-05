@@ -1,44 +1,41 @@
 //-----------------------------------------------------------------------------
-// File: FloatingItemAddCommand.cpp
+// File: StickyNoteMoveCommand.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
 // Date: 30.05.2014
 //
 // Description:
-// Add command for floating items.
+// Move command for floating items.
 //-----------------------------------------------------------------------------
 
-#include "FloatingItemAddCommand.h"
+#include "StickyNoteMoveCommand.h"
 
 //-----------------------------------------------------------------------------
-// Function: FloatingItemAddCommand()
+// Function: StickyNoteMoveCommand()
 //-----------------------------------------------------------------------------
-FloatingItemAddCommand::FloatingItemAddCommand(QGraphicsScene* scene, QGraphicsItem* item, QPointF position,
-    QUndoCommand* parent) : QUndoCommand(parent), item_(item),
-    scene_(scene), position_(position), del_(false)
+StickyNoteMoveCommand::StickyNoteMoveCommand(QGraphicsItem* item, QPointF const& oldPos, QUndoCommand* parent)
+    : QUndoCommand(parent),
+    item_(item),
+    oldPos_(oldPos),
+    newPos_(item->scenePos())
 {
+
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~FloatingItemAddCommand()
+// Function: ~StickyNoteMoveCommand()
 //-----------------------------------------------------------------------------
-FloatingItemAddCommand::~FloatingItemAddCommand()
+StickyNoteMoveCommand::~StickyNoteMoveCommand()
 {
-    if (del_)
-    {
-        delete item_;
-    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: undo()
 //-----------------------------------------------------------------------------
-void FloatingItemAddCommand::undo()
+void StickyNoteMoveCommand::undo()
 {
-    // Remove the item from the stack and the scene.
-    scene_->removeItem(item_);
-    del_ = true;
+    item_->setPos(oldPos_);
 
     // Execute child commands.
     QUndoCommand::undo();
@@ -47,13 +44,10 @@ void FloatingItemAddCommand::undo()
 //-----------------------------------------------------------------------------
 // Function: redo()
 //-----------------------------------------------------------------------------
-void FloatingItemAddCommand::redo()
+void StickyNoteMoveCommand::redo()
 {
-    // Add the item to the stack.
-    scene_->addItem(item_);
-    item_->setPos(position_);
+    item_->setPos(newPos_);
 
-    del_ = false;
-
+    // Execute child commands.
     QUndoCommand::redo();
 }

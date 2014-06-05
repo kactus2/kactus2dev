@@ -20,10 +20,9 @@
 
 #include <common/GenericEditProvider.h>
 
-#include <common/graphicsItems/commands/FloatingItemRemoveCommand.h>
-
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
+#include <designEditors/common/StickyNote/StickyNoteRemoveCommand.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -271,9 +270,8 @@ bool DesignWidget::setDesign(QSharedPointer<Component> component, const QString&
     return true;
 }
 
-
 //-----------------------------------------------------------------------------
-// Function: DesignWidget::removeLabel()
+// Function: DesignWidget::removeSelectedLabels()
 //-----------------------------------------------------------------------------
 void DesignWidget::removeSelectedLabels()
 {
@@ -281,17 +279,28 @@ void DesignWidget::removeSelectedLabels()
 
     getDiagram()->clearSelection();
 
-    QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
-    foreach (QGraphicsItem* selected, selectedItems)
-    {
-        if (selected->type() == StickyNote::Type)
+    if (!selectedItems.isEmpty())
+    {  
+        QSharedPointer<QUndoCommand> parentDelete(new QUndoCommand());
+        foreach (QGraphicsItem* selected, selectedItems)
         {
-            QUndoCommand* deleteCommand = new FloatingItemRemoveCommand(selected, getDiagram(), parentCommand.data());
-            deleteCommand->redo();
-        }
-    }
+            if (selected->type() == StickyNote::Type)
+            {
+                StickyNote* note = dynamic_cast<StickyNote*>(selected);
+                StickyNoteRemoveCommand* cmd = new StickyNoteRemoveCommand(note, diagram_, parentDelete.data());
 
-    getGenericEditProvider()->addCommand(parentCommand);
+                connect(cmd, SIGNAL(addVendorExtension(QSharedPointer<VendorExtension>)),
+                    diagram_, SLOT(onVendorExtensionAdded(QSharedPointer<VendorExtension>)), Qt::UniqueConnection);
+
+                connect(cmd, SIGNAL(removeVendorExtension(QSharedPointer<VendorExtension>)),
+                    diagram_, SLOT(onVendorExtensionRemoved(QSharedPointer<VendorExtension>)), Qt::UniqueConnection);
+
+                cmd->redo();
+            }
+        }
+
+        getGenericEditProvider()->addCommand(parentDelete);
+    }
 }
 
 //-----------------------------------------------------------------------------

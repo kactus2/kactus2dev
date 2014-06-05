@@ -1,27 +1,33 @@
 //-----------------------------------------------------------------------------
-// File: FloatingItemRemoveCommand.h
+// File: StickyNoteRemoveCommand.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
 // Date: 30.05.2014
 //
 // Description:
-// Remove command for floating items.
+// Remove command for sticky note items.
 //-----------------------------------------------------------------------------
 
-#ifndef FLOATINGITEMREMOVECOMMAND_H
-#define FLOATINGITEMREMOVECOMMAND_H
+#ifndef STICKYNOTEREMOVECOMMAND_H
+#define STICKYNOTEREMOVECOMMAND_H
+
+#include "StickyNote.h"
+
+#include <IPXACTmodels/VendorExtension.h>
 
 #include <QUndoCommand>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QObject>
-#include <QPointF>
+#include <QSharedPointer>
+
+class DesignDiagram;
 
 //-----------------------------------------------------------------------------
 //! FloatingItemRemoveCommand class.
 //-----------------------------------------------------------------------------
-class FloatingItemRemoveCommand : public QObject, public QUndoCommand
+class StickyNoteRemoveCommand : public QObject, public QUndoCommand
 {
 	Q_OBJECT
 
@@ -29,16 +35,15 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] item    The item to remove.
-     *      @param [in] scene   The scene from which to remove the item.
-     *      @param [in] parent  The parent command.
+     *      @param [in] item        The item to remove.
+     *      @param [in] parent      The parent command.
      */
-    FloatingItemRemoveCommand(QGraphicsItem* item, QGraphicsScene* scene, QUndoCommand* parent = 0);
+    StickyNoteRemoveCommand(StickyNote* noteItem, DesignDiagram* diagram, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
      */
-    ~FloatingItemRemoveCommand();
+    ~StickyNoteRemoveCommand();
 
     /*!
      *  Undoes the command.
@@ -50,25 +55,31 @@ public:
      */
     virtual void redo();
 
+signals:
+
+    void addVendorExtension(QSharedPointer<VendorExtension>);
+
+    void removeVendorExtension(QSharedPointer<VendorExtension>);
+
 private:
     // Disable copying.
-    FloatingItemRemoveCommand(FloatingItemRemoveCommand const& rhs);
-    FloatingItemRemoveCommand& operator=(FloatingItemRemoveCommand const& rhs);
+    StickyNoteRemoveCommand(StickyNoteRemoveCommand const& rhs);
+    StickyNoteRemoveCommand& operator=(StickyNoteRemoveCommand const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The graphics item.
-    QGraphicsItem* item_;
+    StickyNote* note_;
 
     //! The item's parent scene.
-    QGraphicsScene* scene_;
+    QGraphicsScene* diagram_;
 
-    //! Boolean flag for indicating if the component should be deleted in the destructor.
+    //! Boolean flag for indicating if the items should be deleted in the destructor.
     bool del_;
 
 };
 
 //-----------------------------------------------------------------------------
-#endif // FLOATINGITEMREMOVECOMMAND_H
+#endif // STICKYNOTEREMOVECOMMAND_H

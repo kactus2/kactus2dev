@@ -12,6 +12,8 @@
 #include <QDomNamedNodeMap>
 #include <QXmlStreamWriter>
 
+#include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
+
 #include <QDebug>
 
 //-----------------------------------------------------------------------------
@@ -220,28 +222,7 @@ void Design::write(QFile& file)
 		writer.writeStartElement("spirit:interconnections");
 
 		foreach (Interconnection inter, interconnections_) {
-			writer.writeStartElement("spirit:interconnection");
-
-			writer.writeTextElement("spirit:name",
-				inter.name);
-			writer.writeTextElement("spirit:displayName",
-				inter.displayName);
-			writer.writeTextElement("spirit:description",
-				inter.description);
-
-			writer.writeEmptyElement("spirit:activeInterface");
-			writer.writeAttribute("spirit:componentRef",
-				inter.interface1.componentRef);
-			writer.writeAttribute("spirit:busRef",
-				inter.interface1.busRef);
-
-			writer.writeEmptyElement("spirit:activeInterface");
-			writer.writeAttribute("spirit:componentRef",
-				inter.interface2.componentRef);
-			writer.writeAttribute("spirit:busRef",
-				inter.interface2.busRef);
-
-			writer.writeEndElement();
+            inter.write(writer);
 		}
 
 		writer.writeEndElement();
@@ -251,48 +232,7 @@ void Design::write(QFile& file)
 		writer.writeStartElement("spirit:hierConnections");
 
 		foreach (HierConnection hier, hierConnections_) {
-			writer.writeStartElement("spirit:hierConnection");
-			writer.writeAttribute("spirit:interfaceRef",
-				hier.interfaceRef);
-
-			writer.writeEmptyElement("spirit:interface");
-			writer.writeAttribute("spirit:componentRef",
-				hier.interface_.componentRef);
-			writer.writeAttribute("spirit:busRef",
-				hier.interface_.busRef);
-
-            // Write custom data to vendor extensions.
-            writer.writeStartElement("spirit:vendorExtensions");
-
-            XmlUtils::writePosition(writer, hier.position);
-            XmlUtils::writeDirection(writer, hier.direction);
-
-            if (!hier.route.empty())
-            {
-                writer.writeStartElement("kactus2:route");
-
-                if (hier.offPage)
-                {
-                    writer.writeAttribute("kactus2:offPage", "true");
-                }
-                else
-                {
-                    writer.writeAttribute("kactus2:offPage", "false");
-                }
-
-				foreach (QPointF const& point, hier.route)
-				{
-					XmlUtils::writePosition(writer, point);
-				}
-
-				writer.writeEndElement();
-			}
-
-            XmlUtils::writeVendorExtensions(writer, hier.vendorExtensions_);
-
-			writer.writeEndElement();
-
-			writer.writeEndElement();
+			hier.write(writer);
 		}
 
 		writer.writeEndElement();
@@ -303,48 +243,7 @@ void Design::write(QFile& file)
 
 		foreach (AdHocConnection adhoc, adHocConnections_)
         {
-			writer.writeStartElement("spirit:adHocConnection");
-
-			writer.writeTextElement("spirit:name", adhoc.name);
-			writer.writeTextElement("spirit:displayName", adhoc.displayName);
-			writer.writeTextElement("spirit:description", adhoc.description);
-
-			foreach (PortRef portRef, adhoc.internalPortReferences)
-            {
-				writer.writeEmptyElement("spirit:internalPortReference");
-
-				writer.writeAttribute("spirit:componentRef", portRef.componentRef);
-				writer.writeAttribute("spirit:portRef", portRef.portRef);
-
-                if (portRef.left >= 0)
-                {
-                    writer.writeAttribute("spirit:left", QString::number(portRef.left));
-                }
-
-                if (portRef.right >= 0)
-                {
-                    writer.writeAttribute("spirit:right", QString::number(portRef.right));
-                }
-			}
-
-			foreach (PortRef portRef, adhoc.externalPortReferences)
-            {
-				writer.writeEmptyElement("spirit:externalPortReference");
-
-				writer.writeAttribute("spirit:portRef", portRef.portRef);
-
-                if (portRef.left >= 0)
-                {
-                    writer.writeAttribute("spirit:left", QString::number(portRef.left));
-                }
-
-                if (portRef.right >= 0)
-                {
-                    writer.writeAttribute("spirit:right", QString::number(portRef.right));
-                }
-			}
-
-			writer.writeEndElement();
+            adhoc.write(writer);
 		}
 
 		writer.writeEndElement();
@@ -896,177 +795,254 @@ const QList<VLNV> Design::getDependentVLNVs() const {
 void Design::parseVendorExtensions(QDomNode &node)
 {
 	QDomNodeList childNodes = node.childNodes();
-    
-    // Compatibility note: 
-    // Search for kactus:extensions. If not found, parse vendor extensions for kactus specific extensions.
+
     for (int i = 0; i < childNodes.size(); i++)
     {
-        if (childNodes.at(i).nodeName() == "kactus2:extensions")
-        {
-            childNodes = childNodes.at(i).childNodes();
-            break;
+        QDomNode childNode = childNodes.at(i);
+
+        // Compatibility note: 
+        // Kactus extensions are found under kactus:extensions or spirit:vendorExtensions.
+        if (childNode.nodeName() == "kactus2:extensions")
+        {            
+            parseVendorExtensions(childNode);
         }
-    }
-
-	for (int i = 0; i < childNodes.size(); i++)
-	{
-		QDomNode childNode = childNodes.at(i);
-
-		// If the column layout was found, read the column descriptions.
-		if (childNode.nodeName() == "kactus2:columnLayout")
-		{
-			QDomNodeList columnNodes = childNode.childNodes();
-
-			for (int i = 0; i < columnNodes.size(); ++i)
-			{
-				if (columnNodes.at(i).nodeName() == "kactus2:column")
-				{
-					columns_.append(ColumnDesc(columnNodes.at(i)));
-				}
-			}
-		}
-		// Otherwise read the interconnection routes if they were found.
-		else if (childNode.nodeName() == "kactus2:routes")
-		{
-			QDomNodeList connNodes = childNode.childNodes();
-
-			for (int i = 0; i < connNodes.size(); ++i)
-			{
-				QDomNode connNode = connNodes.at(i);
-
-				if (connNode.nodeName() == "kactus2:route")
-				{
-					QString name = connNode.attributes().namedItem("kactus2:connRef").nodeValue();
-                    QString offPageValue = connNode.attributes().namedItem("kactus2:offPage").nodeValue();
-					QList<QPointF> route;
-
-					// Parse the route.
-					for (int i = 0; i < connNode.childNodes().size(); ++i)
-					{
-						QDomNode posNode = connNode.childNodes().at(i);
-						QPointF pos;
-
-						if (posNode.nodeName() == "kactus2:position")
-						{
-							pos.setX(posNode.attributes().namedItem("x").nodeValue().toInt());
-							pos.setY(posNode.attributes().namedItem("y").nodeValue().toInt());
-							route.append(pos);
-						}
-					}
-
-					// Apply the route to the correct interconnection or ad-hoc connection.
-                    bool found = false;
-
-					for (int i = 0; i < interconnections_.size(); ++i)
-					{
-						if (interconnections_[i].name == name)
-						{
-							interconnections_[i].route = route;
-                            interconnections_[i].offPage = offPageValue == "true";
-                            found = true;
-							break;
-						}
-					}
-
-                    if (!found)
-                    {
-                        for (int i = 0; i < adHocConnections_.size(); ++i)
-                        {
-                            if (adHocConnections_[i].name == name)
-                            {
-                                adHocConnections_[i].route = route;
-                                adHocConnections_[i].offPage = offPageValue == "true";
-                                break;
-                            }
-                        }
-                    }
-				}
-			}
-		}
+        // If the column layout was found, read the column descriptions.
+        else if (childNode.nodeName() == "kactus2:columnLayout")
+        {
+            parseColumnLayout(childNode);
+        }
+        // Otherwise read the interconnection routes if they were found.
+        else if (childNode.nodeName() == "kactus2:routes")
+        {
+            parseRoutes(childNode);
+        }
         else if (childNode.nodeName() == "kactus2:adHocVisibilities")
         {
-            for (int i = 0; i < childNode.childNodes().size(); ++i)
-            {
-                QDomNode adHocNode = childNode.childNodes().at(i);
-
-                if (adHocNode.nodeName() == "kactus2:adHocVisible")
-                {
-                    QString name = adHocNode.attributes().namedItem("portName").nodeValue();
-                    portAdHocVisibilities_[name] = true;
-
-                    QPointF pos;
-                    pos.setX(adHocNode.attributes().namedItem("x").nodeValue().toInt());
-                    pos.setY(adHocNode.attributes().namedItem("y").nodeValue().toInt());
-
-                    adHocPortPositions_[name] = pos;
-                }
-            }
+            parseAdHocVisibilities(childNode);
         }
         else if (childNode.nodeName() == "kactus2:swInstances")
         {
-            for (int j = 0; j < childNode.childNodes().count(); ++j)
-            {
-                QDomNode swNode = childNode.childNodes().at(j);
-
-                if (swNode.nodeName() == "kactus2:swInstance")
-                {
-                    swInstances_.append(SWInstance(swNode));
-                }
-            }
+            parseSWInstances(childNode);
         }
         else if (childNode.nodeName() == "kactus2:apiDependencies")
         {
-            for (int j = 0; j < childNode.childNodes().count(); ++j)
-            {
-                QDomNode apiNode = childNode.childNodes().at(j);
-
-                if (apiNode.nodeName() == "kactus2:apiDependency")
-                {
-                    apiDependencies_.append(ApiDependency(apiNode));
-                }
-            }
+            parseApiDependencies(childNode);
         }
         else if (childNode.nodeName() == "kactus2:hierApiDependencies")
         {
-            for (int j = 0; j < childNode.childNodes().count(); ++j)
-            {
-                QDomNode apiNode = childNode.childNodes().at(j);
-
-                if (apiNode.nodeName() == "kactus2:hierApiDependency")
-                {
-                    hierApiDependencies_.append(HierApiDependency(apiNode));
-                }
-            }
+            parseHierApiDependencies(childNode);
         }
         else if (childNode.nodeName() == "kactus2:comConnections")
         {
-            for (int j = 0; j < childNode.childNodes().count(); ++j)
-            {
-                QDomNode comNode = childNode.childNodes().at(j);
-
-                if (comNode.nodeName() == "kactus2:comConnection")
-                {
-                    comConnections_.append(ComConnection(comNode));
-                }
-            }
+            parseComConnections(childNode);
         }
         else if (childNode.nodeName() == "kactus2:hierComConnections")
         {
-            for (int j = 0; j < childNode.childNodes().count(); ++j)
-            {
-                QDomNode comNode = childNode.childNodes().at(j);
-
-                if (comNode.nodeName() == "kactus2:hierComConnection")
-                {
-                    hierComConnections_.append(HierComConnection(comNode));
-                }
-            }
+            parseHierComConnections(childNode);
         }
         else if (childNode.nodeName() == "kactus2:kts_attributes")
         {
             parseKactus2Attributes(childNode);
         }
+        else if (childNode.nodeName() == "kactus2:position")
+        {
+            parseStickyNote(childNode);
+        }
+        else
+        {
+            QSharedPointer<VendorExtension> extension = XmlUtils::createVendorExtensionFromNode(childNode);
+            vendorExtensions_.append(extension);
+        }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::parseColumnLayout()
+//-----------------------------------------------------------------------------
+void Design::parseColumnLayout(QDomNode& layoutNode)
+{
+    QDomNodeList columnNodes = layoutNode.childNodes();
+
+    for (int i = 0; i < columnNodes.size(); ++i)
+    {
+        if (columnNodes.at(i).nodeName() == "kactus2:column")
+        {
+            columns_.append(ColumnDesc(columnNodes.at(i)));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::parseRoutes()
+//-----------------------------------------------------------------------------
+void Design::parseRoutes(QDomNode& routesNode)
+{
+    QDomNodeList connNodes = routesNode.childNodes();
+
+    for (int i = 0; i < connNodes.size(); ++i)
+    {
+        QDomNode connNode = connNodes.at(i);
+
+        if (connNode.nodeName() == "kactus2:route")
+        {
+            parseRoute(connNode);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::parseRoute()
+//-----------------------------------------------------------------------------
+void Design::parseRoute(QDomNode& routeNode)
+{
+    QString name = routeNode.attributes().namedItem("kactus2:connRef").nodeValue();
+    QString offPageValue = routeNode.attributes().namedItem("kactus2:offPage").nodeValue();
+    QList<QPointF> route;
+
+    // Parse the route.
+    for (int i = 0; i < routeNode.childNodes().size(); ++i)
+    {
+        QDomNode posNode = routeNode.childNodes().at(i);
+        QPointF pos = XmlUtils::parsePoint(posNode);
+
+        if (posNode.nodeName() == "kactus2:position")
+        {
+            route.append(pos);
+        }
+    }
+
+    // Apply the route to the correct interconnection or ad-hoc connection.
+    bool found = false;
+
+    for (int i = 0; i < interconnections_.size() && !found; ++i)
+    {
+        if (interconnections_[i].name == name)
+        {
+            interconnections_[i].route = route;
+            interconnections_[i].offPage = offPageValue == "true";
+            found = true;
+        }
+    }
+
+    for (int i = 0; i < adHocConnections_.size() && !found; ++i)
+    {
+        if (adHocConnections_[i].name == name)
+        {
+            adHocConnections_[i].route = route;
+            adHocConnections_[i].offPage = offPageValue == "true";
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::parseAdHocVisibilities()
+//-----------------------------------------------------------------------------
+void Design::parseAdHocVisibilities(QDomNode& visibilitiesNode)
+{
+    for (int i = 0; i < visibilitiesNode.childNodes().size(); ++i)
+    {
+        QDomNode adHocNode = visibilitiesNode.childNodes().at(i);
+
+        if (adHocNode.nodeName() == "kactus2:adHocVisible")
+        {
+            QString name = adHocNode.attributes().namedItem("portName").nodeValue();
+            portAdHocVisibilities_[name] = true;
+
+            QPointF pos = XmlUtils::parsePoint(adHocNode);
+
+            adHocPortPositions_[name] = pos;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::parseSWInstances()
+//-----------------------------------------------------------------------------
+void Design::parseSWInstances(QDomNode& swInstancesNode)
+{
+    for (int j = 0; j < swInstancesNode.childNodes().count(); ++j)
+    {
+        QDomNode swNode = swInstancesNode.childNodes().at(j);
+
+        if (swNode.nodeName() == "kactus2:swInstance")
+        {
+            swInstances_.append(SWInstance(swNode));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::parseApiDependencies()
+//-----------------------------------------------------------------------------
+void Design::parseApiDependencies(QDomNode& dependenciesNode)
+{
+    for (int j = 0; j < dependenciesNode.childNodes().count(); ++j)
+    {
+        QDomNode apiNode = dependenciesNode.childNodes().at(j);
+
+        if (apiNode.nodeName() == "kactus2:apiDependency")
+        {
+            apiDependencies_.append(ApiDependency(apiNode));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::parseHierApiDependencies()
+//-----------------------------------------------------------------------------
+void Design::parseHierApiDependencies(QDomNode& hierDependenciesNode)
+{
+    for (int j = 0; j < hierDependenciesNode.childNodes().count(); ++j)
+    {
+        QDomNode apiNode = hierDependenciesNode.childNodes().at(j);
+
+        if (apiNode.nodeName() == "kactus2:hierApiDependency")
+        {
+            hierApiDependencies_.append(HierApiDependency(apiNode));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::parseComConnections()
+//-----------------------------------------------------------------------------
+void Design::parseComConnections(QDomNode& comConnectionsNode)
+{
+    for (int j = 0; j < comConnectionsNode.childNodes().count(); ++j)
+    {
+        QDomNode comNode = comConnectionsNode.childNodes().at(j);
+
+        if (comNode.nodeName() == "kactus2:comConnection")
+        {
+            comConnections_.append(ComConnection(comNode));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::parseHierComConnections()
+//-----------------------------------------------------------------------------
+void Design::parseHierComConnections(QDomNode& hierComConnectionsNode)
+{
+    for (int j = 0; j < hierComConnectionsNode.childNodes().count(); ++j)
+    {
+        QDomNode comNode = hierComConnectionsNode.childNodes().at(j);
+
+        if (comNode.nodeName() == "kactus2:hierComConnection")
+        {
+            hierComConnections_.append(HierComConnection(comNode));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::parseStickyNote()
+//-----------------------------------------------------------------------------
+void Design::parseStickyNote(QDomNode node)
+{
+    QPointF position = XmlUtils::parsePoint(node);
+    QSharedPointer<Kactus2Position> noteExtension(new Kactus2Position(position));
+    vendorExtensions_.append(noteExtension);
 }
 
 //-----------------------------------------------------------------------------
@@ -1534,6 +1510,28 @@ bool Design::Interconnection::isValid( const QStringList& instanceNames ) const 
 	return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: Design::Interconnection::write()
+//-----------------------------------------------------------------------------
+void Design::Interconnection::write(QXmlStreamWriter& writer)
+{
+    writer.writeStartElement("spirit:interconnection");
+
+    writer.writeTextElement("spirit:name", name);
+    writer.writeTextElement("spirit:displayName", displayName);
+    writer.writeTextElement("spirit:description", description);
+
+    writer.writeEmptyElement("spirit:activeInterface");
+    writer.writeAttribute("spirit:componentRef", interface1.componentRef);
+    writer.writeAttribute("spirit:busRef", interface1.busRef);
+
+    writer.writeEmptyElement("spirit:activeInterface");
+    writer.writeAttribute("spirit:componentRef", interface2.componentRef);
+    writer.writeAttribute("spirit:busRef", interface2.busRef);
+
+    writer.writeEndElement();
+}
+
 Design::HierConnection::HierConnection(QDomNode &hierConnectionNode)
     : interfaceRef(), interface_(QString(""), QString("")), position(), route(), offPage(false),
       vendorExtensions_()
@@ -1658,6 +1656,53 @@ bool Design::HierConnection::isValid( const QStringList& instanceNames ) const {
 	}
 
 	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::HierConnection::write()
+//-----------------------------------------------------------------------------
+void Design::HierConnection::write(QXmlStreamWriter& writer)
+{
+    writer.writeStartElement("spirit:hierConnection");
+
+    writer.writeAttribute("spirit:interfaceRef", interfaceRef);
+
+    writer.writeEmptyElement("spirit:interface");
+    writer.writeAttribute("spirit:componentRef", interface_.componentRef);
+    writer.writeAttribute("spirit:busRef", interface_.busRef);
+
+    // Write custom data to vendor extensions.
+    writer.writeStartElement("spirit:vendorExtensions");
+
+    XmlUtils::writePosition(writer, position);
+    XmlUtils::writeDirection(writer, direction);
+
+    if (!route.empty())
+    {
+        writer.writeStartElement("kactus2:route");
+
+        if (offPage)
+        {
+            writer.writeAttribute("kactus2:offPage", "true");
+        }
+        else
+        {
+            writer.writeAttribute("kactus2:offPage", "false");
+        }
+
+        foreach (QPointF const& point, route)
+        {
+            XmlUtils::writePosition(writer, point);
+        }
+
+        writer.writeEndElement();
+    }
+
+    XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+
+    writer.writeEndElement(); // spirit:vendorExtensions.
+
+    writer.writeEndElement();
 }
 
 Design::PortRef::PortRef(QDomNode &portReferenceNode)
@@ -1898,3 +1943,53 @@ bool Design::AdHocConnection::isValid( const QStringList& instanceNames ) const 
 
 	return true;
 }
+
+//-----------------------------------------------------------------------------
+// Function: Design::AdHocConnection::write()
+//-----------------------------------------------------------------------------
+void Design::AdHocConnection::write(QXmlStreamWriter& writer)
+{
+    writer.writeStartElement("spirit:adHocConnection");
+
+    writer.writeTextElement("spirit:name", name);
+    writer.writeTextElement("spirit:displayName", displayName);
+    writer.writeTextElement("spirit:description", description);
+
+    foreach (PortRef portRef, internalPortReferences)
+    {
+        writer.writeEmptyElement("spirit:internalPortReference");
+
+        writer.writeAttribute("spirit:componentRef", portRef.componentRef);
+        writer.writeAttribute("spirit:portRef", portRef.portRef);
+
+        if (portRef.left >= 0)
+        {
+            writer.writeAttribute("spirit:left", QString::number(portRef.left));
+        }
+
+        if (portRef.right >= 0)
+        {
+            writer.writeAttribute("spirit:right", QString::number(portRef.right));
+        }
+    }
+
+    foreach (PortRef portRef, externalPortReferences)
+    {
+        writer.writeEmptyElement("spirit:externalPortReference");
+
+        writer.writeAttribute("spirit:portRef", portRef.portRef);
+
+        if (portRef.left >= 0)
+        {
+            writer.writeAttribute("spirit:left", QString::number(portRef.left));
+        }
+
+        if (portRef.right >= 0)
+        {
+            writer.writeAttribute("spirit:right", QString::number(portRef.right));
+        }
+    }
+
+    writer.writeEndElement();
+}
+

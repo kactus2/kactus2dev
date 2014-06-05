@@ -13,13 +13,9 @@
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
-#include <common/KactusColors.h>
-#include <QMargins>
 
-#include "../diagramgrid.h"
-#include "../DesignDiagram.h"
-#include <common/graphicsItems/commands/FloatingItemMoveCommand.h>
-#include <common/GenericEditProvider.h>
+#include <QObject>
+#include <QTextDocument>
 
 //-----------------------------------------------------------------------------
 // Function: ColorFillTextItem::ColorFillTextItem()
@@ -30,6 +26,8 @@ fillColor_()
 { 
     setFlag(ItemIsFocusable);
     setTextInteractionFlags(Qt::TextEditable);
+
+    connect(document(), SIGNAL(contentsChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
