@@ -23,24 +23,26 @@
 #include <designEditors/common/DesignDiagram.h>
 
 #include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 
 //-----------------------------------------------------------------------------
 // Function: StickyNote::StickyNote()
 //-----------------------------------------------------------------------------
-StickyNote::StickyNote(QSharedPointer<VendorExtension> extension, QGraphicsItem* parent):
+StickyNote::StickyNote(QSharedPointer<Kactus2Group> extension, QGraphicsItem* parent):
     QGraphicsItemGroup(parent),
     oldPos_(),
-    position_(extension.dynamicCast<Kactus2Position>()),
+    extension_(extension),
+    position_(),
     textArea_(0)
 {
     setItemOptions();
     createGluedEdge();
     createWritableArea();
 
-    connect(textArea_, SIGNAL(contentChanged()), this, SLOT(onTextEdited()), Qt::UniqueConnection);
+    initializeExtensions();
 
-    setPos(position_->position());
+    connect(textArea_, SIGNAL(contentChanged()), this, SLOT(onTextEdited()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -124,7 +126,7 @@ QVariant StickyNote::itemChange(GraphicsItemChange change, const QVariant& value
 //-----------------------------------------------------------------------------
 QSharedPointer<VendorExtension> StickyNote::getVendorExtension() const
 {
-    return position_;
+    return extension_;
 }
 
 //-----------------------------------------------------------------------------
@@ -175,4 +177,31 @@ void StickyNote::createWritableArea()
     textArea_->setPos(0, TOP_OFFSET);
 
     addToGroup(textArea_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::initializeExtensions()
+//-----------------------------------------------------------------------------
+void StickyNote::initializeExtensions()
+{
+    initializePosition();
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::initializePosition()
+//-----------------------------------------------------------------------------
+void StickyNote::initializePosition()
+{
+    if (extension_->getByType("kactus2:position").isEmpty())
+    {
+        position_ = QSharedPointer<Kactus2Position>(new Kactus2Position(QPointF()));
+        extension_->addToGroup(position_);
+    }
+    else
+    {
+        position_ = extension_->getByType("kactus2:position").first().dynamicCast<Kactus2Position>();
+    }
+
+    setPos(position_->position());
 }

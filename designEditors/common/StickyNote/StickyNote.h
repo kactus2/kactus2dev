@@ -20,6 +20,7 @@
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 
+class Kactus2Group;
 class ColorFillTextItem;
 
 //-----------------------------------------------------------------------------
@@ -42,7 +43,7 @@ public:
      *      @param [in] extension   The vendor extension representing the note.
      *      @param [in] parent      The parent item.
      */
-    explicit StickyNote(QSharedPointer<VendorExtension> extension, QGraphicsItem* parent = 0);
+    explicit StickyNote(QSharedPointer<Kactus2Group> extension, QGraphicsItem* parent = 0);
 
     //! The destructor.
     virtual ~StickyNote();
@@ -52,8 +53,21 @@ public:
      */
     void beginEditing();
 
+    /*!
+     *  Handler for item state changes.
+     *
+     *      @param [in] change      The parameter of the item changing.
+     *      @param [in] value       The new value of the parameter.
+     *
+     *      @return The set new value.
+     */
     virtual QVariant itemChange(GraphicsItemChange change, const QVariant& value);
 
+    /*!
+     *  Gets the vendor extension visualized by the note.
+     *
+     *      @return The vendor extension visualized by the note.
+     */
     QSharedPointer<VendorExtension> getVendorExtension() const;
 
     //! The item type identifier.
@@ -80,19 +94,35 @@ private:
     //! Disable copying.
     StickyNote(StickyNote const& rhs);
 
-    void setItemOptions();
-
-    void createWritableArea();
-
-    void createGluedEdge();
-
-
     //! Disable assignment.
     StickyNote& operator=(StickyNote const& rhs);
+
+     //!Initializes the item flags.     
+    void setItemOptions();
+
+    //! Creates the glued edge at the top of the note.
+    void createGluedEdge();
+
+    //! Creates the writing area of the note.
+    void createWritableArea();
+
+    //! Initializes the vendor extensions for the note.
+    void initializeExtensions();
+
+    //! Initialized the vendor extension for tracking the note position.
+    void initializePosition();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! The position of the item before move.
     QPointF oldPos_;
 
+    //! The vendor extension represented by the note.
+    QSharedPointer<Kactus2Group> extension_;
+
+    //! The vendor extension containing the position of the note.
     QSharedPointer<Kactus2Position> position_;
 
     //! Editor item for the notes.

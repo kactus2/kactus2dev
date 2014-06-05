@@ -622,6 +622,7 @@ HEADERS += ./resource.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Position.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Value.h \
+    ./IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ./designEditors/common/StickyNote/StickyNoteRemoveCommand.h \
     ./designEditors/common/StickyNote/ColorFillTextItem.h \
     ./designEditors/common/StickyNote/StickyNoteMoveCommand.h \
@@ -1212,6 +1213,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
+    ./IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ./designEditors/common/StickyNote/StickyNoteMoveCommand.cpp \
     ./designEditors/common/StickyNote/StickyNoteAddCommand.cpp \
     ./designEditors/common/StickyNote/ColorFillTextItem.cpp \

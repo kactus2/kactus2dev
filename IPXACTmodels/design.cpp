@@ -12,6 +12,7 @@
 #include <QDomNamedNodeMap>
 #include <QXmlStreamWriter>
 
+#include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 
 #include <QDebug>
@@ -844,7 +845,7 @@ void Design::parseVendorExtensions(QDomNode &node)
         {
             parseKactus2Attributes(childNode);
         }
-        else if (childNode.nodeName() == "kactus2:position")
+        else if (childNode.nodeName() == "kactus2:note")
         {
             parseStickyNote(childNode);
         }
@@ -1038,10 +1039,22 @@ void Design::parseHierComConnections(QDomNode& hierComConnectionsNode)
 //-----------------------------------------------------------------------------
 // Function: Design::parseStickyNote()
 //-----------------------------------------------------------------------------
-void Design::parseStickyNote(QDomNode node)
+void Design::parseStickyNote(QDomNode& noteNode)
 {
-    QPointF position = XmlUtils::parsePoint(node);
-    QSharedPointer<Kactus2Position> noteExtension(new Kactus2Position(position));
+    QSharedPointer<Kactus2Group> noteExtension(new Kactus2Group("kactus2:note"));
+
+    for (int j = 0; j < noteNode.childNodes().count(); ++j)
+    {
+        QDomNode childNode = noteNode.childNodes().at(j);
+
+        if (childNode.nodeName() == "kactus2:position")
+        {
+            QPointF position = XmlUtils::parsePoint(childNode);
+            QSharedPointer<Kactus2Position> notePosition(new Kactus2Position(position));
+            noteExtension->addToGroup(notePosition);
+        }
+    }
+
     vendorExtensions_.append(noteExtension);
 }
 

@@ -26,14 +26,12 @@
 
 #include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 
 #include <QWidget>
 #include <QPainter>
 #include <QMenu>
 #include <QGraphicsItem>
-
-
 
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::DesignDiagram()
@@ -342,8 +340,8 @@ void DesignDiagram::drawBackground(QPainter* painter, QRectF const& rect)
 //-----------------------------------------------------------------------------
 void DesignDiagram::createLabel(QPointF const& position)
 {
-    QSharedPointer<Kactus2Position> noteExtension(new Kactus2Position(position));
-    StickyNote* note = new StickyNote(noteExtension);    
+    QSharedPointer<Kactus2Group> noteExtension(new Kactus2Group("kactus2:note"));
+    StickyNote* note = new StickyNote(noteExtension);
     
     QSharedPointer<StickyNoteAddCommand> cmd(new StickyNoteAddCommand(note, this, position));
 
@@ -523,13 +521,12 @@ void DesignDiagram::loadStickyNotes()
 {
     foreach(QSharedPointer<VendorExtension> extension, vendorExtensions_)
     {
-        if (extension->type() == "kactus2:position")
+        if (extension->type() == "kactus2:note")
         {
-            StickyNote* note = new StickyNote(extension);
+            StickyNote* note = new StickyNote(extension.dynamicCast<Kactus2Group>());
 
             QSharedPointer<StickyNoteAddCommand> cmd(new StickyNoteAddCommand(note, this, note->pos()));
             cmd->redo();
-        }        
+        }
     }
 }
-

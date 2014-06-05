@@ -4093,6 +4093,9 @@
     <ClCompile Include="designEditors\common\StickyNote\StickyNoteMoveCommand.cpp">
       <Filter>Source Files\designEditors\common\StickyNote</Filter>
     </ClCompile>
+    <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Group.cpp">
+      <Filter>Source Files\IPXACTmodels\kactusExtensions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5986,6 +5989,9 @@
     </ClInclude>
     <ClInclude Include="designEditors\common\StickyNote\StickyNoteMoveCommand.h">
       <Filter>Header Files\designEditors\common\StickyNote</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Group.h">
+      <Filter>Header Files\IPXACTmodels\kactusExtensions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

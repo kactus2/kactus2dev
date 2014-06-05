@@ -1,25 +1,25 @@
 //-----------------------------------------------------------------------------
-// File: Kactus2Placeholder.h
+// File: Kactus2Group.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
-// Date: 19.5.2014
+// Date: 05.06.2014
 //
 // Description:
-// Kactus2 vendor extension for single values.
+// Kactus2 vendor extension for a group of extensions.
 //-----------------------------------------------------------------------------
 
-#ifndef KACTUS2PLACEHOLDER_H
-#define KACTUS2PLACEHOLDER_H
+#ifndef KACTUS2GROUP_H
+#define KACTUS2GROUP_H
 
 #include <IPXACTmodels/VendorExtension.h>
 
 #include <QMap>
 
 //-----------------------------------------------------------------------------
-// class Kactus2Placeholder.
+// class Kactus2Group.
 //-----------------------------------------------------------------------------
-class Kactus2Placeholder : public VendorExtension
+class Kactus2Group : public VendorExtension
 {
 public:
 	/*!
@@ -27,22 +27,22 @@ public:
 	 *
 	 *      @param [in] name   The name of the placeholder.
 	 */
-    Kactus2Placeholder(QString name);
+    Kactus2Group(QString name);
 
     //! Copy constructor.
-    Kactus2Placeholder(Kactus2Placeholder const& other);
+    Kactus2Group(Kactus2Group const& other);
 
 	/*!
 	 *  The destructor.
 	*/
-    virtual ~Kactus2Placeholder();
+    virtual ~Kactus2Group();
 
     /*!
      *  Clones the vendor extension.
      *
      *      @return The clone copy of the vendor extension.
      */
-    virtual Kactus2Placeholder* clone() const;
+    virtual Kactus2Group* clone() const;
 
     /*!
      *  Returns a type identifier for the vendor extension.
@@ -59,35 +59,34 @@ public:
     virtual void write(QXmlStreamWriter& writer) const;
 
     /*!
-     *  Sets a value of an attribute. If the attribute does not exist, it is created.
+     *  Adds a vendor extension to the group.
      *
-     *      @param [in] attributeName   The name of the attribute.
-     *      @param [in] attributeValue  The value to set.
+     *      @param [in] extension   The extension to add.
      */
-    void setAttribute(QString const& attributeName, QString const& attributeValue);
+    void addToGroup(QSharedPointer<VendorExtension> extension);
 
     /*!
-     *  Gets the value of a given attribute.
+     *  Gets all the extensions with the given type.
      *
-     *      @param [in] attributeName   The name of the attribute whose value to get.
+     *      @param [in] type   The type to search for.
      *
-     *      @return The value of the attribute or empty string if the given attribute is not found.
+     *      @return The vendor extensions with the given type.
      */
-    QString getAttributeValue(QString const& attributeName);
+    QList<QSharedPointer<VendorExtension> > getByType(QString const& type) const;
 
 private:
 	//! Disable assignment.
-	Kactus2Placeholder& operator=(Kactus2Placeholder const& rhs);
+	Kactus2Group& operator=(Kactus2Group const& rhs);
 
-	//-----------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------
 	// Data.
 	//-----------------------------------------------------------------------------
 
-    //! Name of the placeholder extension.
+    //! Name of the group.
     QString name_;
 
-    //! The attributes of the extension.
-    QMap<QString, QString> attributes_;
+    //! The extensions composing the group.
+    QList<QSharedPointer<VendorExtension> > groupExtensions_;
 
 };
-#endif // KACTUS2PLACEHOLDER_H
+#endif // KACTUS2GROUP_H

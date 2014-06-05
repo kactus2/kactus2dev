@@ -935,7 +935,16 @@ private:
      */
     void parseHierComConnections(QDomNode& hierComConnectionsNode);
 
-    void parseStickyNote(QDomNode node);
+    /*!
+     *  Parses the sticky note from kactus2:note.
+     *
+     *      @param [in] noteNode   The DOM node containing the sticky note.
+     */
+    void parseStickyNote(QDomNode& noteNode);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     QList<ColumnDesc> columns_;
 
