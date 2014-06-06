@@ -19,22 +19,20 @@
 #include "HWChangeCommands.h"
 #include "BusInterfaceDialog.h"
 
-
+#include "columnview/HWColumn.h"
+#include "columnview/ColumnEditDialog.h"
 
 #include <common/graphicsItems/GraphicsColumnUndoCommands.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/graphicsItems/ConnectionUndoCommands.h>
-
-#include <designEditors/common/DiagramUtil.h>
-#include <designEditors/common/diagramgrid.h>
-#include <designEditors/common/StickyNote/StickyNote.h>
-
 #include <common/dialogs/comboSelector/comboselector.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/GenericEditProvider.h>
 
-#include "columnview/HWColumn.h"
+#include <designEditors/common/DiagramUtil.h>
+#include <designEditors/common/diagramgrid.h>
+#include <designEditors/common/StickyNote/StickyNote.h>
 
 #include <library/LibraryManager/libraryhandler.h>
 
@@ -49,12 +47,15 @@
 #include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/busdefinition.h>
 #include <IPXACTmodels/PortRef.h>
-
+#include <IPXACTmodels/Interconnection.h>
+#include <IPXACTmodels/Interface.h>
+#include <IPXACTmodels/HierConnection.h>
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/view.h>
 
 #include <QPainter>
+#include <QPair>
 #include <QGraphicsSceneMouseEvent>
 #include <QUuid>
 #include <QMimeData>
@@ -66,9 +67,6 @@
 #include <QApplication>
 #include <QMenu>
 #include <QClipboard>
-
-#include <QDebug>
-#include "columnview/ColumnEditDialog.h"
 
 Q_DECLARE_METATYPE(HWDesignDiagram::BusInterfaceCollectionCopyData)
 Q_DECLARE_METATYPE(HWDesignDiagram::ComponentCollectionCopyData)
@@ -204,49 +202,51 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
     }
 
     /* interconnections */
-    foreach(Design::Interconnection interconnection, design->getInterconnections())
+    foreach(Interconnection interconnection, design->getInterconnections())
     {
+        QPair<Interface, Interface> connInterfaces = interconnection.getInterfaces();
+
 		// find the first referenced component
-        HWComponentItem *comp1 = getComponent(interconnection.interface1.componentRef);
+        HWComponentItem *comp1 = getComponent(connInterfaces.first.getComponentRef());
 
 		if (!comp1) {
 			emit errorMessage(tr("Component %1 was not found in the design").arg(
-			interconnection.interface1.componentRef));
+			connInterfaces.first.getComponentRef()));
 			continue;
 		}
 		
 		// find the second referenced component
-        HWComponentItem *comp2 = getComponent(interconnection.interface2.componentRef);
+        HWComponentItem *comp2 = getComponent(connInterfaces.second.getComponentRef());
 
 		if (!comp2) {
 			emit errorMessage(tr("Component %1 was not found in the design").arg(
-			interconnection.interface2.componentRef));
+			connInterfaces.second.getComponentRef()));
 			continue;
 		}
 
 		// find the port of the first referenced component
-        ConnectionEndpoint* port1 = comp1->getBusPort(interconnection.interface1.busRef);
+        ConnectionEndpoint* port1 = comp1->getBusPort(connInterfaces.first.getBusRef());
 
 		if (!port1)
         {
 			emit errorMessage(tr("Port %1 was not found in the component %2").arg(
-			interconnection.interface1.busRef).arg(interconnection.interface1.componentRef));
+			connInterfaces.first.getBusRef()).arg(connInterfaces.first.getComponentRef()));
 
-			port1 = createMissingPort(interconnection.interface1.busRef, comp1, design);
+			port1 = createMissingPort(connInterfaces.first.getBusRef(), comp1, design);
 		}
 		
 		// find the port of the second referenced component
-        ConnectionEndpoint* port2 = comp2->getBusPort(interconnection.interface2.busRef);
+        ConnectionEndpoint* port2 = comp2->getBusPort(connInterfaces.second.getBusRef());
 
 		if (!port2)
         {
 			emit errorMessage(tr("Port %1 was not found in the component %2").arg(
-			interconnection.interface2.busRef).arg(interconnection.interface2.componentRef));
+			connInterfaces.second.getBusRef()).arg(connInterfaces.second.getComponentRef()));
 			
-            port2 = createMissingPort(interconnection.interface2.busRef, comp2, design);
+            port2 = createMissingPort(connInterfaces.second.getBusRef(), comp2, design);
 		}
 
-        if (interconnection.offPage)
+        if (interconnection.isOffPage())
         {
             port1 = port1->getOffPageConnector();
             port2 = port2->getOffPageConnector();
@@ -257,12 +257,12 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 		if (comp1 && comp2 && port1 && port2)
         {
 			HWConnection *diagramInterconnection =
-				new HWConnection(port1, port2, true, QString(), interconnection.displayName,
-                                           interconnection.description, this);
-            diagramInterconnection->setRoute(interconnection.route);
-			diagramInterconnection->setName(interconnection.name);
+				new HWConnection(port1, port2, true, QString(), interconnection.displayName(),
+                                           interconnection.description(), this);
+            diagramInterconnection->setRoute(interconnection.getRoute());
+			diagramInterconnection->setName(interconnection.name());
 
-            if (interconnection.offPage)
+            if (interconnection.isOffPage())
             {
                 diagramInterconnection->setVisible(false);
             }
@@ -277,23 +277,23 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
 	// Create hierarchical connections.
     QList<QString> connectedHier;
-    QList<Design::HierConnection> hierConnections = design->getHierarchicalConnections();
+    QList<HierConnection> hierConnections = design->getHierarchicalConnections();
 
     for (int i = 0; i < hierConnections.size(); ++i)
     {
-        Design::HierConnection hierConn = hierConnections.at(i);
+        HierConnection hierConn = hierConnections.at(i);
 
-		QSharedPointer<BusInterface> busIf = getEditedComponent()->getBusInterface(hierConn.interfaceRef);
+		QSharedPointer<BusInterface> busIf = getEditedComponent()->getBusInterface(hierConn.getInterfaceRef());
         ConnectionEndpoint* diagIf = 0;
 
 		// if the bus interface was not found
 		if (busIf == 0)
         {
-			emit errorMessage(tr("Bus interface %1 was not found in the top-component").arg(hierConn.interfaceRef));
+			emit errorMessage(tr("Bus interface %1 was not found in the top-component").arg(hierConn.getInterfaceRef()));
 
             // Create a dummy interface which is marked as invalid.
             busIf = QSharedPointer<BusInterface>(new BusInterface());
-            busIf->setName(hierConn.interfaceRef);
+            busIf->setName(hierConn.getInterfaceRef());
 
             diagIf = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), busIf, 0);
             diagIf->setTemporary(true);
@@ -316,12 +316,12 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         Q_ASSERT(diagIf != 0);
 
 		// Check if the position is found.
-        if (!hierConn.position.isNull())
+        if (!hierConn.getPosition().isNull())
         {
-            diagIf->setPos(hierConn.position);
-            diagIf->setDirection(hierConn.direction);
+            diagIf->setPos(hierConn.getPosition());
+            diagIf->setDirection(hierConn.getDirection());
 
-            GraphicsColumn* column = layout_->findColumnAt(hierConn.position);
+            GraphicsColumn* column = layout_->findColumnAt(hierConn.getPosition());
             
             if (column != 0)
             {
@@ -334,24 +334,24 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         }
 
 		// find the component where the hierarchical connection is connected to
-        HWComponentItem *comp = getComponent(hierConn.interface_.componentRef);
+        HWComponentItem *comp = getComponent(hierConn.getInterface().getComponentRef());
 		if (!comp) {
 			emit errorMessage(tr("Component %1 was not found in the top-design").arg(
-				hierConn.interface_.componentRef));
+				hierConn.getInterface().getComponentRef()));
 			continue;
 		}
 
 		// find the port of the component
-        ConnectionEndpoint* compPort = comp->getBusPort(hierConn.interface_.busRef);
+        ConnectionEndpoint* compPort = comp->getBusPort(hierConn.getInterface().getBusRef());
 		if (!compPort)
         {
 			emit errorMessage(tr("Port %1 was not found in the component %2").arg(
-				hierConn.interface_.busRef).arg(hierConn.interface_.componentRef));
+				hierConn.getInterface().getBusRef()).arg(hierConn.getInterface().getComponentRef()));
 
-            compPort = createMissingPort(hierConn.interface_.busRef, comp, design);
+            compPort = createMissingPort(hierConn.getInterface().getBusRef(), comp, design);
 		}        
 
-        if (hierConn.offPage)
+        if (hierConn.isOffPage())
         {
             compPort = compPort->getOffPageConnector();
             diagIf = diagIf->getOffPageConnector();
@@ -359,18 +359,18 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
         HWConnection* diagConn = new HWConnection(compPort, diagIf, true, QString(),
             QString(), QString(), this);
-        diagConn->setRoute(hierConn.route);
+        diagConn->setRoute(hierConn.getRoute());
 
-        if (hierConn.offPage)
+        if (hierConn.isOffPage())
         {
             diagConn->setVisible(false);
         }
 
-        diagConn->setVendorExtensions(hierConn.vendorExtensions_);
+        diagConn->setVendorExtensions(hierConn.getVendorExtensions());
 
         connect(diagConn, SIGNAL(errorMessage(QString const&)), this,
             SIGNAL(errorMessage(QString const&)));
-        connectedHier.append(hierConn.interfaceRef);
+        connectedHier.append(hierConn.getInterfaceRef());
 
         addItem(diagConn);
         diagConn->updatePosition();
@@ -612,8 +612,8 @@ QSharedPointer<Design> HWDesignDiagram::createDesign(const VLNV &vlnv) const
 	QSharedPointer<Design> design = DesignDiagram::createDesign(vlnv);
 
 	QList<ComponentInstance> instances;
-	QList<Design::Interconnection> interconnections;
-	QList<Design::HierConnection> hierConnections;
+	QList<Interconnection> interconnections;
+	QList<HierConnection> hierConnections;
     QList<AdHocConnection> adHocConnections;
     QList<ColumnDesc> columns;
 
@@ -668,11 +668,11 @@ QSharedPointer<Design> HWDesignDiagram::createDesign(const VLNV &vlnv) const
             {
 			    if (conn->endpoint1()->encompassingComp() && conn->endpoint2()->encompassingComp())
                 {
-				    Design::Interface iface1(conn->endpoint1()->encompassingComp()->name(),
+				    Interface iface1(conn->endpoint1()->encompassingComp()->name(),
 					    conn->endpoint1()->name());
-				    Design::Interface iface2(conn->endpoint2()->encompassingComp()->name(),
+				    Interface iface2(conn->endpoint2()->encompassingComp()->name(),
 					    conn->endpoint2()->name());
-				    interconnections.append(Design::Interconnection(conn->name(), iface1, iface2,
+				    interconnections.append(Interconnection(conn->name(), iface1, iface2,
                                                                     conn->route(),
                                                                     conn->endpoint1()->type() == OffPageConnectorItem::Type,
                                                                     QString(),
@@ -693,13 +693,13 @@ QSharedPointer<Design> HWDesignDiagram::createDesign(const VLNV &vlnv) const
 
                     if (hierPort->getBusInterface() != 0)
                     {
-                       Design::HierConnection hierConnection = Design::HierConnection(hierPort->name(),
-                            Design::Interface(compPort->encompassingComp()->name(),
+                       HierConnection hierConnection = HierConnection(hierPort->name(),
+                            Interface(compPort->encompassingComp()->name(),
                             compPort->name()),
                             hierPort->scenePos(), hierPort->getDirection(),
                             conn->route(),
                             conn->endpoint1()->type() == OffPageConnectorItem::Type);
-                        hierConnection.vendorExtensions_ = conn->getVendorExtensions();
+                        hierConnection.setVendorExtensions(conn->getVendorExtensions());
                         hierConnections.append(hierConnection);
                     }
 			    }

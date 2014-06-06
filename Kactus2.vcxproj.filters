@@ -4102,6 +4102,15 @@
     <ClCompile Include="IPXACTmodels\PortRef.cpp">
       <Filter>Source Files\IPXACTmodels</Filter>
     </ClCompile>
+    <ClCompile Include="IPXACTmodels\Interconnection.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\Interface.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXACTmodels\HierConnection.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6003,6 +6012,15 @@
       <Filter>Header Files\IPXACTmodels\kactusExtensions</Filter>
     </ClInclude>
     <ClInclude Include="IPXACTmodels\PortRef.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\Interconnection.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\Interface.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\HierConnection.h">
       <Filter>Header Files\IPXACTmodels</Filter>
     </ClInclude>
   </ItemGroup>

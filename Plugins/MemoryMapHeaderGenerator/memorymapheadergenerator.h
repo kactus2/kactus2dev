@@ -11,13 +11,16 @@
 
 #include "memorymapheadergenerator_global.h"
 
+#include "globalheadersavemodel.h"
+#include "systemheadersavemodel.h"
+
 #include <Plugins/PluginSystem/IGeneratorPlugin.h>
+
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/designconfiguration.h>
-#include "globalheadersavemodel.h"
-#include "systemheadersavemodel.h"
+#include <IPXACTmodels/Interface.h>
 
 #include <QObject>
 #include <QSharedPointer>
@@ -200,9 +203,7 @@ private:
 	 * \param interface Identifies the current interface to parse.
 	 *
 	*/
-	void parseInterface(qint64 offset,
-		QTextStream& stream,
-		const Design::Interface& interface);
+	void parseInterface(qint64 offset, QTextStream& stream, const Interface& interface);
 
 	/*! \brief Search the CPU instances and their containing components to find the generated global headers.
 	 *
@@ -223,7 +224,7 @@ private:
 	QSharedPointer<Design> design_;
 
 	//! \brief The list where all operated interfaces are added to when generating global headers.
-	QList<Design::Interface> operatedInterfaces_;
+	QList<Interface> operatedInterfaces_;
 
 	//! \brief Contains the settings for the system header generation.
 	QList<SystemHeaderSaveModel::SysHeaderOptions> sysGenSettings_;

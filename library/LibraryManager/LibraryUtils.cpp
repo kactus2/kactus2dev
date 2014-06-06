@@ -70,14 +70,14 @@ bool getDesign(LibraryInterface* lh, VLNV& designVLNV,
 //-----------------------------------------------------------------------------
 // Function: getConnectionIndex()
 //-----------------------------------------------------------------------------
-int getConnectionIndex(QList<Design::Interconnection> const& connections, QString const& name)
+int getConnectionIndex(QList<Interconnection> const& connections, QString const& name)
 {
     int index = -1;
 
     // Search for a match in the list.
     for (int i = 0; i < connections.size(); ++i)
     {
-        if (connections[i].name == name)
+        if (connections[i].name() == name)
         {
             index = i;
             break;

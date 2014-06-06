@@ -26,16 +26,16 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
-
-#include <designEditors/common/diagramgrid.h>
-#include <designEditors/common/DiagramUtil.h>
 #include <common/GenericEditProvider.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsColumnUndoCommands.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumn.h>
+
+#include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
+#include <designEditors/common/diagramgrid.h>
+#include <designEditors/common/DiagramUtil.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/designconfiguration.h>
@@ -48,6 +48,8 @@
 #include <IPXACTmodels/slaveinterface.h>
 #include <IPXACTmodels/channel.h>
 #include <IPXACTmodels/mirroredslaveinterface.h>
+#include <IPXACTmodels/Interconnection.h>
+#include <IPXACTmodels/Interface.h>
 
 #include <mainwindow/mainwindow.h>
 
@@ -568,30 +570,33 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
                                     MemoryItem const* memoryItem, quint64& addressOffset) const
 {
     // Check all connections that start from the bus interface.
-    foreach (Design::Interconnection const& conn, design_->getInterconnections())
+    foreach (Interconnection const& conn, design_->getInterconnections())
     {
-        Design::Interface const* interface = 0;
+        Interface const* interface = 0;
 
-        if (conn.interface1.componentRef == instanceName && conn.interface1.busRef == busIf->getName())
+        QPair<Interface, Interface> interfaces = conn.getInterfaces();
+        if (interfaces.first.references(instanceName, busIf->getName()) )
         {
-            interface = &conn.interface2;
+            interface = &interfaces.second;
         }
 
-        if (conn.interface2.componentRef == instanceName && conn.interface2.busRef == busIf->getName())
+        if (interfaces.second.references(instanceName, busIf->getName()))
         {
-            interface = &conn.interface1;
+            interface = &interfaces.first;
         }
 
         // Check if we found a matching connection.
         if (interface != 0)
         {
             // Retrieve the component referenced by the connection.
-            QSharedPointer<Component const> component = getComponentByInstanceName(interface->componentRef);
-
+            QString connectionComponentInstance = interface->getComponentRef();
+            QSharedPointer<Component const> component = getComponentByInstanceName(connectionComponentInstance);
+            
             if (component != 0)
             {
                 // Retrieve the correct bus interface.
-                QSharedPointer<BusInterface const> otherBusIf = component->getBusInterface(interface->busRef);
+                QString connectionInterface = interface->getBusRef();
+                QSharedPointer<BusInterface const> otherBusIf = component->getBusInterface(connectionInterface);
 
                 if (otherBusIf != 0)
                 {
@@ -601,7 +606,7 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
                         // If the other bus interface is slave, we either have a connection to the correct
                         // component or then this was a wrong route.
                         if (otherBusIf->getInterfaceMode() == General::SLAVE &&
-                            interface->componentRef == memoryItem->getInstanceName())
+                            connectionComponentInstance == memoryItem->getInstanceName())
                         {
                             addressOffset = Utils::str2Uint(busIf->getMaster()->getBaseAddress());
                             return true;
@@ -612,11 +617,11 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
                             foreach (QSharedPointer<Channel> channel, component->getChannels())
                             {
                                 // Check if the channel contains the bus interface in question.
-                                if (channel->getInterfaces().contains(interface->busRef))
+                                if (channel->getInterfaces().contains(connectionInterface))
                                 {
                                     foreach (QString const& chIfName, channel->getInterfaces())
                                     {
-                                        if (chIfName != interface->busRef)
+                                        if (chIfName != connectionInterface)
                                         {
                                             // Retrieve the bus interface.
                                             QSharedPointer<BusInterface const> nextBusIf = component->getBusInterface(chIfName);
@@ -625,7 +630,7 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
                                             {
                                                 quint64 addressOffsetTemp = 0;
 
-                                                if (findRoute(interface->componentRef, nextBusIf, memoryItem,
+                                                if (findRoute(connectionComponentInstance, nextBusIf, memoryItem,
                                                               addressOffsetTemp))
                                                 {
                                                     addressOffset = addressOffsetTemp + Utils::str2Uint(busIf->getMaster()->getBaseAddress());
@@ -645,7 +650,7 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
                              otherBusIf->getInterfaceMode() == General::SLAVE)
                     {
                         // Check if we ended up in the correct component.
-                        if (interface->componentRef == memoryItem->getInstanceName())
+                        if (connectionComponentInstance == memoryItem->getInstanceName())
                         {
                             addressOffset = Utils::str2Uint(busIf->getMirroredSlave()->getRemapAddress());
                             return true;
@@ -660,7 +665,7 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
                             {
                                 quint64 addressOffsetTemp = 0;
 
-                                if (findRoute(interface->componentRef, nextBusIf, memoryItem,
+                                if (findRoute(connectionComponentInstance, nextBusIf, memoryItem,
                                     addressOffsetTemp))
                                 {
                                     addressOffset = addressOffsetTemp + Utils::str2Uint(busIf->getMaster()->getBaseAddress());

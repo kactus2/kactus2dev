@@ -6,10 +6,22 @@
 */
 
 #include "memorymapheadergenerator.h"
-#include <library/LibraryManager/libraryinterface.h>
-#include <Plugins/PluginSystem/IPluginUtility.h>
-#include <common/dialogs/fileSaveDialog/filesavedialog.h>
+
 #include "localheadersavemodel.h"
+#include "localheadersavedelegate.h"
+#include "systemheadersavemodel.h"
+
+#include <Plugins/PluginSystem/IPluginUtility.h>
+
+#include <library/LibraryManager/libraryinterface.h>
+
+#include <common/dialogs/fileSaveDialog/filesavedialog.h>
+#include <common/KactusAttribute.h>
+#include <common/utils.h>
+
+#include <IPXACTmodels/SWView.h>
+#include <IPXACTmodels/SystemView.h>
+#include <IPXACTmodels/ComponentInstance.h>
 #include <IPXACTmodels/memorymap.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/fileset.h>
@@ -19,13 +31,7 @@
 #include <IPXACTmodels/masterinterface.h>
 #include <IPXACTmodels/mirroredslaveinterface.h>
 #include <IPXACTmodels/slaveinterface.h>
-#include <common/KactusAttribute.h>
-#include <common/utils.h>
-#include "localheadersavedelegate.h"
-#include <IPXACTmodels/SWView.h>
-#include <IPXACTmodels/SystemView.h>
-#include <IPXACTmodels/ComponentInstance.h>
-#include "systemheadersavemodel.h"
+#include <IPXACTmodels/Interface.h>
 
 #include <QtPlugin>
 #include <QFileInfo>
@@ -431,7 +437,7 @@ void MemoryMapHeaderGenerator::generateGlobalHeaders( QSharedPointer<Component> 
 		stream << "#define " << headerGuard << endl << endl;
 
 		// add the starting point to the list of operated interfaces
-		Design::Interface cpuMasterInterface(headerOpt->instance_, headerOpt->interface_);
+		Interface cpuMasterInterface(headerOpt->instance_, headerOpt->interface_);
 		operatedInterfaces_.append(cpuMasterInterface);
 
 		// start the address parsing from the cpu's interface
@@ -464,29 +470,27 @@ void MemoryMapHeaderGenerator::generateGlobalHeaders( QSharedPointer<Component> 
 	operatedInterfaces_.clear();
 }
 
-void MemoryMapHeaderGenerator::parseInterface( qint64 offset,
-	QTextStream& stream,
-	const Design::Interface& interface ) {
-
+void MemoryMapHeaderGenerator::parseInterface( qint64 offset, QTextStream& stream, const Interface& interface )
+{
 	Q_ASSERT(design_);
-	Q_ASSERT(design_->containsHWInstance(interface.componentRef));
+	Q_ASSERT(design_->containsHWInstance(interface.getComponentRef()));
 
 	// parse the component containing the interface
-	VLNV compVLNV = design_->getHWComponentVLNV(interface.componentRef);
+	VLNV compVLNV = design_->getHWComponentVLNV(interface.getComponentRef());
 	QSharedPointer<const LibraryComponent> libComp = utility_->getLibraryInterface()->getModelReadOnly(compVLNV);
 	QSharedPointer<const Component> comp = libComp.dynamicCast<const Component>();
 	Q_ASSERT(comp);
 
-	switch (comp->getInterfaceMode(interface.busRef)) {
+	switch (comp->getInterfaceMode(interface.getBusRef())) {
 	case General::MASTER: {
 		// update the offset
-		offset += Utils::str2Int(comp->getBusInterface(interface.busRef)->getMaster()->getBaseAddress());
+		offset += Utils::str2Int(comp->getBusInterface(interface.getBusRef())->getMaster()->getBaseAddress());
 
 		// ask the design for interfaces that are connected to this interface
-		QList<Design::Interface> connected = design_->getConnectedInterfaces(interface);
+		QList<Interface> connected = design_->getConnectedInterfaces(interface);
 		
 		// all connected interfaces are processed
-		foreach (Design::Interface targetInterface, connected) {
+		foreach (Interface targetInterface, connected) {
 
 			// if the connected interface has already been processed before
 			if (operatedInterfaces_.contains(targetInterface)) {
@@ -503,7 +507,7 @@ void MemoryMapHeaderGenerator::parseInterface( qint64 offset,
 	case General::SLAVE: {
 
 		// the slave contains the slave-specific data
-		QSharedPointer<SlaveInterface> slave = comp->getBusInterface(interface.busRef)->getSlave();
+		QSharedPointer<SlaveInterface> slave = comp->getBusInterface(interface.getBusRef())->getSlave();
 		Q_ASSERT(slave);
 
 		QSharedPointer<MemoryMap> memMap = comp->getMemoryMap(slave->getMemoryMapRef());
@@ -512,12 +516,12 @@ void MemoryMapHeaderGenerator::parseInterface( qint64 offset,
 		if (memMap && memMap->containsSubItems()) {
 			// write the identifier comment for the instance
 			stream << "/*" << endl;
-			stream << " * Instance: " << interface.componentRef << " Interface: " << interface.busRef << endl;
+			stream << " * Instance: " << interface.getComponentRef() << " Interface: " << interface.getBusRef() << endl;
 			stream << " * Instance base address: 0x" << QString::number(offset, 16) << endl;
 			stream << " * Source component: " << comp->getVlnv()->toString() << endl;
 
 			// if there is a description for the component instance
-			QString instanceDesc = design_->getHWInstanceDescription(interface.componentRef);
+			QString instanceDesc = design_->getHWInstanceDescription(interface.getComponentRef());
 			if (!instanceDesc.isEmpty()) {
 				stream << " * Description:" << endl;
 				stream << " * " << instanceDesc << endl;
@@ -526,15 +530,15 @@ void MemoryMapHeaderGenerator::parseInterface( qint64 offset,
 			stream << " * The defines for the memory map \"" << memMap->getName() << "\":" << endl;
 			stream << "*/" << endl << endl;
 
-			memMap->writeMemoryAddresses(stream, offset, interface.componentRef);
+			memMap->writeMemoryAddresses(stream, offset, interface.getComponentRef());
 
 			// if the registers within the instance are unique then do not concatenate with address block name
 			QStringList regNames;
 			if (memMap->uniqueRegisterNames(regNames)) {
-				memMap->writeRegisters(stream, offset, false, interface.componentRef);
+				memMap->writeRegisters(stream, offset, false, interface.getComponentRef());
 			}
 			else {
-				memMap->writeRegisters(stream, offset, true, interface.componentRef);
+				memMap->writeRegisters(stream, offset, true, interface.getComponentRef());
 			}
 		}
 
@@ -551,7 +555,7 @@ void MemoryMapHeaderGenerator::parseInterface( qint64 offset,
 				}
 
 				// the interface for the connected master-bus interface
-				Design::Interface masterIF(interface.componentRef, masterRef);
+				Interface masterIF(interface.getComponentRef(), masterRef);
 
 				// if the connected interface has already been processed before
 				if (operatedInterfaces_.contains(masterIF)) {
@@ -569,7 +573,7 @@ void MemoryMapHeaderGenerator::parseInterface( qint64 offset,
 								}
 	case General::MIRROREDSLAVE: {
 		// increase the offset by the remap address of the mirrored slave interface
-		QString remapStr = comp->getBusInterface(interface.busRef)->getMirroredSlave()->getRemapAddress();
+		QString remapStr = comp->getBusInterface(interface.getBusRef())->getMirroredSlave()->getRemapAddress();
 
 		// if the remap address is directly a number
 		if (Utils::isNumber(remapStr)) {
@@ -579,10 +583,10 @@ void MemoryMapHeaderGenerator::parseInterface( qint64 offset,
 		else {
 
 			// if the configurable element value is specified
-			if (design_->hasConfElementValue(interface.componentRef, remapStr)) {
+			if (design_->hasConfElementValue(interface.getComponentRef(), remapStr)) {
 
 				// increase the offset by the value set in the configurable elements
-				QString confValue = design_->getConfElementValue(interface.componentRef, remapStr);
+				QString confValue = design_->getConfElementValue(interface.getComponentRef(), remapStr);
 				offset += Utils::str2Int(confValue);
 			}
 			// if the value is not set then use the default value from the component
@@ -595,10 +599,10 @@ void MemoryMapHeaderGenerator::parseInterface( qint64 offset,
 		}
 
 		// ask the design for interfaces that are connected to this interface
-		QList<Design::Interface> connected = design_->getConnectedInterfaces(interface);
+		QList<Interface> connected = design_->getConnectedInterfaces(interface);
 
 		// all connected interfaces are processed
-		foreach (Design::Interface targetInterface, connected) {
+		foreach (Interface targetInterface, connected) {
 
 			// if the connected interface has already been processed before
 			if (operatedInterfaces_.contains(targetInterface)) {
@@ -616,11 +620,11 @@ void MemoryMapHeaderGenerator::parseInterface( qint64 offset,
 	case General::MIRROREDMASTER: {
 		// mirrored master interfaces are connected via channels
 		// find the interfaces connected to the specified mirrored master interface
-		QList<QSharedPointer<const BusInterface> > connectedInterfaces = comp->getChannelConnectedInterfaces(interface.busRef);
+		QList<QSharedPointer<const BusInterface> > connectedInterfaces = comp->getChannelConnectedInterfaces(interface.getBusRef());
 
 		// all interfaces that are connected via channel are processed
 		foreach (QSharedPointer<const BusInterface> busif, connectedInterfaces) {
-			Design::Interface connectedInterface(interface.componentRef, busif->getName());
+			Interface connectedInterface(interface.getComponentRef(), busif->getName());
 
 			// if the interface connected via channel has already been processed before
 			if (operatedInterfaces_.contains(connectedInterface)) {

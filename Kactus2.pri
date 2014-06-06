@@ -525,6 +525,11 @@ HEADERS += ./resource.h \
     ./designEditors/common/ConfigurationEditor/activevieweditor.h \
     ./designEditors/common/ConfigurationEditor/activeviewmodel.h \
     ./designEditors/common/ConfigurationEditor/configurationeditor.h \
+    ./designEditors/common/StickyNote/StickyNoteMoveCommand.h \
+    ./designEditors/common/StickyNote/StickyNote.h \
+    ./designEditors/common/StickyNote/ColorFillTextItem.h \
+    ./designEditors/common/StickyNote/StickyNoteRemoveCommand.h \
+    ./designEditors/common/StickyNote/StickyNoteAddCommand.h \
     ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.h \
     ./kactusGenerators/vhdlGenerator/vhdlgeneral.h \
     ./kactusGenerators/vhdlGenerator/vhdlportmap.h \
@@ -593,6 +598,7 @@ HEADERS += ./resource.h \
     ./IPXACTmodels/parameter.h \
     ./IPXACTmodels/port.h \
     ./IPXACTmodels/portabstraction.h \
+    ./IPXACTmodels/PortRef.h \
     ./IPXACTmodels/register.h \
     ./IPXACTmodels/registerdefinition.h \
     ./IPXACTmodels/registerfile.h \
@@ -616,19 +622,16 @@ HEADERS += ./resource.h \
     ./IPXACTmodels/wireabstraction.h \
     ./IPXACTmodels/writevalueconstraint.h \
     ./IPXACTmodels/XmlUtils.h \
+    ./IPXACTmodels/AdHocConnection.h \
     ./IPXACTmodels/GenericVendorExtension.h \
     ./IPXACTmodels/VendorExtension.h \
-    ./IPXACTmodels/AdHocConnection.h \
-    ./designEditors/common/StickyNote/StickyNote.h \
+    ./IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Position.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Value.h \
-    ./IPXACTmodels/kactusExtensions/Kactus2Group.h \
-    ./designEditors/common/StickyNote/StickyNoteRemoveCommand.h \
-    ./designEditors/common/StickyNote/ColorFillTextItem.h \
-    ./designEditors/common/StickyNote/StickyNoteMoveCommand.h \
-    ./designEditors/common/StickyNote/StickyNoteAddCommand.h \
-    ./IPXACTmodels/PortRef.h
+    ./IPXACTmodels/Interconnection.h \
+    ./IPXACTmodels/Interface.h \
+    ./IPXACTmodels/HierConnection.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
@@ -1120,6 +1123,11 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/common/ConfigurationEditor/activevieweditor.cpp \
     ./designEditors/common/ConfigurationEditor/activeviewmodel.cpp \
     ./designEditors/common/ConfigurationEditor/configurationeditor.cpp \
+    ./designEditors/common/StickyNote/ColorFillTextItem.cpp \
+    ./designEditors/common/StickyNote/StickyNote.cpp \
+    ./designEditors/common/StickyNote/StickyNoteAddCommand.cpp \
+    ./designEditors/common/StickyNote/StickyNoteMoveCommand.cpp \
+    ./designEditors/common/StickyNote/StickyNoteRemoveCommand.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlcomponentdeclaration.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlcomponentinstance.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.cpp \
@@ -1137,6 +1145,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXACTmodels/abstractiondefinition.cpp \
     ./IPXACTmodels/addressblock.cpp \
     ./IPXACTmodels/addressspace.cpp \
+    ./IPXACTmodels/AdHocConnection.cpp \
     ./IPXACTmodels/alternateregister.cpp \
     ./IPXACTmodels/ApiDefinition.cpp \
     ./IPXACTmodels/ApiDependency.cpp \
@@ -1189,6 +1198,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXACTmodels/parameter.cpp \
     ./IPXACTmodels/port.cpp \
     ./IPXACTmodels/portabstraction.cpp \
+    ./IPXACTmodels/PortRef.cpp \
     ./IPXACTmodels/register.cpp \
     ./IPXACTmodels/registerdefinition.cpp \
     ./IPXACTmodels/registerfile.cpp \
@@ -1212,15 +1222,11 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXACTmodels/wireabstraction.cpp \
     ./IPXACTmodels/writevalueconstraint.cpp \
     ./IPXACTmodels/XmlUtils.cpp \
+    ./IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
-    ./IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
-    ./designEditors/common/StickyNote/StickyNoteMoveCommand.cpp \
-    ./designEditors/common/StickyNote/StickyNoteAddCommand.cpp \
-    ./designEditors/common/StickyNote/ColorFillTextItem.cpp \
-    ./designEditors/common/StickyNote/StickyNoteRemoveCommand.cpp \
-    ./designEditors/common/StickyNote/StickyNote.cpp \
-    ./IPXACTmodels/AdHocConnection.cpp \
-    ./IPXACTmodels/PortRef.cpp
+    ./IPXACTmodels/Interconnection.cpp \
+    ./IPXACTmodels/Interface.cpp \
+    ./IPXACTmodels/HierConnection.cpp
 RESOURCES += kactus.qrc

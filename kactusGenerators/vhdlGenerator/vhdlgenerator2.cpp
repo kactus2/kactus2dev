@@ -29,6 +29,8 @@
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/file.h>
 #include <IPXACTmodels/PortRef.h>
+#include <IPXACTmodels/Interconnection.h>
+#include <IPXACTmodels/HierConnection.h>
 
 #include <common/utils.h>
 
@@ -576,11 +578,10 @@ void VhdlGenerator2::parseInstances() {
 void VhdlGenerator2::parseInterconnections() {
 	Q_ASSERT(design_);
 
-	QList<Design::Interconnection> interconnections =
-		design_->getInterconnections();
+	QList<Interconnection> interconnections = design_->getInterconnections();
 
 	QStringList connectionNames;
-	foreach (Design::Interconnection interconnection, interconnections) {
+	foreach (Interconnection interconnection, interconnections) {
 
 		bool invalidInterconnection = false;
 		QSharedPointer<VhdlComponentInstance> instance1;
@@ -589,50 +590,52 @@ void VhdlGenerator2::parseInterconnections() {
 		QSharedPointer<BusInterface> interface2;
 		
 		// if there are several interconnections with same name
-		if (connectionNames.contains(interconnection.name)) {
+		if (connectionNames.contains(interconnection.name())) {
 			emit errorMessage(tr("Design %1 contained more than one interconnection"
 				" named %2").arg(
 				component_->getVlnv()->toString()).arg(
-				interconnection.name));
+				interconnection.name()));
 		}
 		else {
-			connectionNames.append(interconnection.name);
+			connectionNames.append(interconnection.name());
 		}
 
+        QPair<Interface, Interface> interfaces = interconnection.getInterfaces();
+
 		// if the instance reference is incorrect
-		if (!instances_.contains(interconnection.interface1.componentRef)) {
+		if (!instances_.contains(interfaces.first.getComponentRef())) {
 			invalidInterconnection = true;
 			emit errorMessage(tr("Instance %1 was not found in component %2.").arg(
-				interconnection.interface1.componentRef).arg(
+				interfaces.first.getComponentRef()).arg(
 				component_->getVlnv()->toString()));
 		}
 		else { 
-			instance1 = instances_.value(interconnection.interface1.componentRef);
-			interface1 = instance1->interface(interconnection.interface1.busRef);
+			instance1 = instances_.value(interfaces.first.getComponentRef());
+			interface1 = instance1->interface(interfaces.first.getBusRef());
 		}
 		// if the interface is not found
 		if (!interface1) {
 			emit errorMessage(tr("Bus interface %1 was not found in component %2.").arg(
-				interconnection.interface1.busRef).arg(
+				interfaces.first.getBusRef()).arg(
 				instance1->vlnv().toString()));
 			invalidInterconnection = true;
 		}
 
 		// if the instance reference is incorrect
-		if (!instances_.contains(interconnection.interface2.componentRef)) {
+		if (!instances_.contains(interfaces.second.getComponentRef())) {
 			invalidInterconnection = true;
 			emit errorMessage(tr("Instance %1 was not found in component %2.").arg(
-				interconnection.interface2.componentRef).arg(
+				interfaces.second.getComponentRef()).arg(
 				component_->getVlnv()->toString()));
 		}
 		else {
-			instance2 = instances_.value(interconnection.interface2.componentRef);
-			interface2 = instance2->interface(interconnection.interface2.busRef);
+			instance2 = instances_.value(interfaces.second.getComponentRef());
+			interface2 = instance2->interface(interfaces.second.getBusRef());
 		}
 		// if the interface is not found
 		if (!interface2) {
 			emit errorMessage(tr("Bus interface %1 was not found in component %2.").arg(
-				interconnection.interface2.busRef).arg(
+				interfaces.second.getBusRef()).arg(
 				instance2->vlnv().toString()));
 			invalidInterconnection = true;
 		}
@@ -642,7 +645,7 @@ void VhdlGenerator2::parseInterconnections() {
 			continue;
 		}
 		else {
-			connectInterfaces(interconnection.name, interconnection.description,
+			connectInterfaces(interconnection.name(), interconnection.description(),
 				instance1, interface1, instance2, interface2);
 		}
 	}
@@ -976,39 +979,39 @@ void VhdlGenerator2::connectHierPort( const QString& topPort,
 
 void VhdlGenerator2::parseHierConnections() {
 	// search all hierConnections within design
-	QList<Design::HierConnection> hierConnections =
+	QList<HierConnection> hierConnections =
 		design_->getHierarchicalConnections();
 
-	foreach (Design::HierConnection hierConnection, hierConnections) {
+	foreach (HierConnection hierConnection, hierConnections) {
 	
 		// find the top-level bus interface
 		QSharedPointer<BusInterface> topInterface =
-			component_->getBusInterface(hierConnection.interfaceRef);
+			component_->getBusInterface(hierConnection.getInterfaceRef());
 
 		// if the top level interface couldn't be found
 		if (!topInterface) {
 			emit errorMessage(tr("Interface %1 was not found in top component %2.").arg(
-				hierConnection.interfaceRef).arg(
+				hierConnection.getInterfaceRef()).arg(
 				component_->getVlnv()->toString()));
 			continue;
 		}
 
 		// find the component instance for this hierConnection
-		QSharedPointer<VhdlComponentInstance> instance = instances_.value(hierConnection.interface_.componentRef);
+		QSharedPointer<VhdlComponentInstance> instance = instances_.value(hierConnection.getInterface().getComponentRef());
 
 		// if the component instance couldn't be found
 		if (!instance) {
 			emit errorMessage(tr("Instance %1 was not found in design.").arg(
-				hierConnection.interface_.componentRef));
+				hierConnection.getInterface().getComponentRef()));
 			continue;
 		}
 
 		// find the bus interface
-		QSharedPointer<BusInterface> instanceInterface = instance->interface(hierConnection.interface_.busRef);
+		QSharedPointer<BusInterface> instanceInterface = instance->interface(hierConnection.getInterface().getBusRef());
 		// if bus interface couldn't be found
 		if (!instanceInterface) {
 			emit errorMessage(tr("Interface %1 was not found in instance %2 of type %3").arg(
-				hierConnection.interface_.busRef).arg(
+				hierConnection.getInterface().getBusRef()).arg(
 				instance->name()).arg(
 				instance->typeName()));
 			continue;
