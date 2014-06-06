@@ -266,6 +266,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
             {
                 diagramInterconnection->setVisible(false);
             }
+            diagramInterconnection->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
 
             connect(diagramInterconnection, SIGNAL(errorMessage(QString const&)), this,
                     SIGNAL(errorMessage(QString const&)));
@@ -357,8 +358,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
             diagIf = diagIf->getOffPageConnector();
         }
 
-        HWConnection* diagConn = new HWConnection(compPort, diagIf, true, QString(),
-            QString(), QString(), this);
+        HWConnection* diagConn = new HWConnection(compPort, diagIf, true, QString(), QString(), QString(), this);
         diagConn->setRoute(hierConn.getRoute());
 
         if (hierConn.isOffPage())
@@ -367,6 +367,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         }
 
         diagConn->setVendorExtensions(hierConn.getVendorExtensions());
+        diagConn->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
 
         connect(diagConn, SIGNAL(errorMessage(QString const&)), this,
             SIGNAL(errorMessage(QString const&)));
@@ -489,6 +490,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 {
                     conn->setVisible(false);
                 }
+                conn->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
 
                 connect(conn, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
@@ -557,6 +559,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 {
                     conn->setVisible(false);
                 }
+                conn->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
 
                 connect(conn, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
                 addItem(conn);
@@ -901,6 +904,7 @@ void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             {
                 tempConnection_->setLineWidth(1);
             }
+            tempConnection_->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
 
             addItem(tempConnection_);
 
@@ -1145,9 +1149,9 @@ void HWDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
             if (highlightedEndPoint_ != 0)
             {
-                 newTempConnection_ = new HWConnection(tempConnEndPoint_,
+                newTempConnection_ = new HWConnection(tempConnEndPoint_,
                                                                  highlightedEndPoint_, false,
-                                                                 QString(), QString(), QString(), this);
+                                                                 QString(), QString(), QString(), this);                
             }
             else
             {
@@ -1160,6 +1164,7 @@ void HWDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
             {
                 newTempConnection_->setLineWidth(1);
             }
+            newTempConnection_->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
 
             removeItem(tempConnection_);
             delete tempConnection_;
@@ -2314,6 +2319,7 @@ void HWDesignDiagram::createConnection(QGraphicsSceneMouseEvent * mouseEvent)
 
             tempConnection_ = new HWConnection(tempConnEndPoint_, endpoint, false,
                                                          QString(), QString(), QString(), this);
+            tempConnection_->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
             addItem(tempConnection_);
         }
 

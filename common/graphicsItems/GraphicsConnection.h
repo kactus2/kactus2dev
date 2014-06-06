@@ -202,11 +202,6 @@ public:
     ConnectionEndpoint* endpoint2() const;
 
     /*!
-     *  Returns the parent diagram.
-     */
-    DesignDiagram* getDiagram();
-
-    /*!
      *  Returns the type of the connection.
      */
     ConnectionEndpoint::EndpointType getConnectionType() const;
@@ -268,6 +263,11 @@ private:
      *  Creates an optimal route from point p1 to point p2, considering the given start and exit directions.
      */
     void createRoute(QPointF p1, QPointF p2, QVector2D const& dir1, QVector2D const& dir2);
+
+    /*!
+     *  Paints the current path of the connection.     
+     */
+    void paintConnectionPath();
 
     /*!
      *  Creates an optimal route between the given endpoints.
@@ -417,6 +417,17 @@ private:
      *  Sort operator for sorting segment bounds by Y coordinate.
      */
     static bool sortBoundsByY(SegmentBound const& lhs, SegmentBound const& rhs);
+   
+
+    /*!
+     *  Updates the endpoint direction to given direction.
+     *
+     *      @param [in] endpoint   The endpoint to update.
+     *      @param [in] dir        The direction to change to.
+     *
+     *      @return 
+     */
+    void updateEndpointDirection(ConnectionEndpoint* endpoint, QVector2D dir);
 
     //-----------------------------------------------------------------------------
     // Data.

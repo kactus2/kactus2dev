@@ -150,11 +150,37 @@ private:
     void updateWidthLabel();
 
     /*!
+     *  Finds the position for bus width label.
+     *     
+     *      @return The optimal position of the bus width label.
+     */
+    QPointF findWidthLabelPosition() const;
+
+    /*!
+     *  Finds the position for bus width label above the longest horizontal segment.
+     *     
+     *      @return The optimal position of the bus width label.
+     */
+    QPointF findWidthLabelVertically() const;
+
+    /*!
+     *  Finds the position for bus width label next to the longest vertical segment.
+     *     
+     *      @return The optimal position of the bus width label.
+     */
+    QPointF findWidthLabelHorizontally() const;
+
+    /*!
      *  Calculates the total bus width.
      *
      *      @return The bus width.
      */
     int calculateBusWidth() const;
+
+    /*!
+     *  Sets th default font for the bus width label.
+     */
+    void setWidthLabelDefaultFont();
 
     //-----------------------------------------------------------------------------
     // Data.

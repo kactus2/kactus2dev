@@ -9,13 +9,12 @@
 #include "HWDesignDiagram.h"
 #include "HWDesignWidget.h"
 
-#include <IPXACTmodels/generaldeclarations.h>
-
 #include <common/GenericEditProvider.h>
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DiagramUtil.h>
 
 #include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include <cmath>
 
@@ -30,8 +29,10 @@ HWConnection::HWConnection(ConnectionEndpoint* endpoint1,
                                                QString const& description,
                                                DesignDiagram* parent)
     : GraphicsConnection(endpoint1, endpoint2, autoConnect, name, displayName, description, parent), 
-      widthLabel_(0), vendorExtensions_()
+      widthLabel_(new QGraphicsTextItem(this)), vendorExtensions_()
 {
+    setWidthLabelDefaultFont();
+
     if (autoConnect)
     {
         updateWidthLabel();
@@ -47,8 +48,9 @@ HWConnection::HWConnection(QPointF const& p1, QVector2D const& dir1,
 											   QString const& description,
 											   DesignDiagram* parent)
     : GraphicsConnection(p1, dir1, p2, dir2, displayName, description, parent),
-      widthLabel_(0), vendorExtensions_()
+      widthLabel_(new QGraphicsTextItem(this)), vendorExtensions_()
 {
+    setWidthLabelDefaultFont();
 }
 
 //-----------------------------------------------------------------------------
@@ -95,12 +97,18 @@ bool HWConnection::connectEnds()
     return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: HWConnection::setRoute()
+//-----------------------------------------------------------------------------
 void HWConnection::setRoute(QList<QPointF> path)
 {
     GraphicsConnection::setRoute(path);
     updateWidthLabel();
 }
 
+//-----------------------------------------------------------------------------
+// Function: HWConnection::updatePosition()
+//-----------------------------------------------------------------------------
 void HWConnection::updatePosition()
 {
     GraphicsConnection::updatePosition();
@@ -108,21 +116,19 @@ void HWConnection::updatePosition()
 }
 
 //-----------------------------------------------------------------------------
-// Function: updateWidthLabel()
+// Function: HWConnection::updateWidthLabel()
 //-----------------------------------------------------------------------------
 void HWConnection::updateWidthLabel()
 {
-    //simplifyPath();
     if (route().size() < 2)
     {
         return;
     }
 
     int totalWidth = 0;
-    QList<QPointF> const& pathPoints = route();
 
     // for bus connections, the bus width must be calculated from the port maps.
-    if (endpoint1()->isBus())
+    if (isBus())
     {
         totalWidth = calculateBusWidth();
     }
@@ -132,112 +138,9 @@ void HWConnection::updateWidthLabel()
         totalWidth = 1;
     }
 
-    if (widthLabel_ == 0)
-    {
-        widthLabel_ = new QGraphicsTextItem(QString::number(totalWidth), this);
+    widthLabel_->setPlainText(QString::number(totalWidth));
 
-        QFont font = widthLabel_->font();
-        font.setPointSize(8);
-        font.setBold(true);
-        widthLabel_->setFont(font);
-
-        HWDesignWidget* designWidget = static_cast<HWDesignWidget*>(getDiagram()->parent());
-        widthLabel_->setVisible(designWidget->getVisibilityControls().value("Bus Widths"));
-    }
-    else
-    {
-        widthLabel_->setPlainText(QString::number(totalWidth));
-    }
-
-    QPointF textPos = boundingRect().center();
-
-    if (getRoutingMode() == ROUTING_MODE_OFFPAGE)
-    {
-        textPos.setX(textPos.x() - widthLabel_->boundingRect().width() * 0.5);
-        textPos.setY(textPos.y() - 2 * GridSize);
-    }
-    else
-    {
-        // If the end points are move apart in horizontal direction, place the text above
-        // the longest horizontal segment.
-        if (qAbs(endpoint1()->scenePos().x() - endpoint2()->scenePos().x()) >=
-            qAbs(endpoint1()->scenePos().y() - endpoint2()->scenePos().y()))
-        {
-            // Determine the longest horizontal segment.
-            int longestIndex = 0;
-            qreal longestLength = 0.0;
-
-            for (int i = 0; i < route().size() - 1; ++i)
-            {
-                QPointF const& pt1 = pathPoints[i];
-                QPointF const& pt2 = pathPoints[i + 1];
-                qreal length = QVector2D(pt2 - pt1).length();
-
-                if (qFuzzyCompare(pt1.y(), pt2.y()) && length > longestLength)
-                {
-                    longestLength = length;
-                    longestIndex = i;
-                }
-            }
-
-            QPointF const& pt1 = pathPoints[longestIndex];
-            QPointF const& pt2 = pathPoints[longestIndex + 1];
-
-            textPos.setX((pt1.x() + pt2.x()) * 0.5 - widthLabel_->boundingRect().width() * 0.5);
-            textPos.setY(pt1.y() - 2 * GridSize);
-        }
-        // Otherwise place the text beside the longest vertical segment.
-        else
-        {
-            // Determine the longest vertical segment.
-            int longestIndex = 0;
-            qreal longestLength = 0.0;
-
-            for (int i = 0; i < pathPoints.size() - 1; ++i)
-            {
-                QPointF const& pt1 = pathPoints[i];
-                QPointF const& pt2 = pathPoints[i + 1];
-                qreal length = QVector2D(pt2 - pt1).length();
-
-                if (qFuzzyCompare(pt1.x(), pt2.x()) && length > longestLength)
-                {
-                    longestLength = length;
-                    longestIndex = i;
-                }
-            }
-
-            Q_ASSERT(longestIndex > 0 && longestIndex + 2 < pathPoints.size());
-            QPointF const& pt1 = pathPoints[longestIndex];
-            QPointF const& pt2 = pathPoints[longestIndex + 1];
-
-            // Place the text on the right side if the connection is fully on the left.
-            if (pathPoints[longestIndex - 1].x() < pt1.x() && pathPoints[longestIndex + 2].x() < pt1.x())
-            {
-                textPos.setX(pt1.x() + GridSize);
-            }
-            // Place the text on the left side if the connection is fully on the right.
-            else if (pathPoints[longestIndex - 1].x() > pt1.x() && pathPoints[longestIndex + 2].x() > pt1.x())
-            {
-                textPos.setX(pt1.x() - widthLabel_->boundingRect().width());
-            }
-            else
-            {
-                // Otherwise we have to determine on which side there is more space.
-                if (QVector2D(pathPoints[longestIndex - 1] - pt1).lengthSquared() <
-                    QVector2D(pathPoints[longestIndex + 2] - pt2).lengthSquared())
-                {
-                    textPos.setX(pt1.x() + GridSize);
-                }
-                else
-                {
-                    textPos.setX(pt1.x() - widthLabel_->boundingRect().width());
-                }
-            }
-
-            textPos.setY((pt1.y() + pt2.y()) * 0.5 - widthLabel_->boundingRect().height() * 0.5);
-        }
-    }
-
+    QPointF textPos = findWidthLabelPosition();
     widthLabel_->setPos(textPos);
 }
 
@@ -277,27 +180,17 @@ int HWConnection::calculateBusWidth() const
         QSharedPointer<Port> port1 = endpoint1()->getOwnerComponent()->getPort(portMap1->physicalPort_);
         QSharedPointer<Port> port2 = endpoint2()->getOwnerComponent()->getPort(portMap2->physicalPort_);
 
-        if (!port1)
+        if (!port1 || !port2)
         {
-//             emit errorMessage(tr("Port '%1' not found in the component '%1'.").arg(portMap1->physicalPort_,
-//                 endpoint1()->getOwnerComponent()->getVlnv()->getName()));
             continue;
         }
         
-        if (!port2)
-        {
-//             emit errorMessage(tr("Port '%1' not found in the component '%1'.").arg(portMap2->physicalPort_,
-//                 endpoint2()->getOwnerComponent()->getVlnv()->getName()));
-            continue;
-        }
-
         // Calculate the intersection of the port bounds and add it to the total width.
         General::PortAlignment align =
             General::calculatePortAlignment(portMap1.data(), port1->getLeftBound(), port1->getRightBound(),
             portMap2.data(), port2->getLeftBound(), port2->getRightBound());
 
-        int width = qMin(align.port1Left_, align.port2Left_) -
-                    qMax(align.port1Right_, align.port2Right_) + 1;
+        int width = qMin(align.port1Left_, align.port2Left_) - qMax(align.port1Right_, align.port2Right_) + 1;
         totalWidth += width;
     }
 
@@ -360,4 +253,134 @@ void HWConnection::setAdHocRightBound(int endpointIndex, int rightBound)
 {
     portBounds_[endpointIndex].right_ = rightBound;
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWConnection::findWidthLabelPosition()
+//-----------------------------------------------------------------------------
+QPointF HWConnection::findWidthLabelPosition() const
+{
+    QPointF textPos = boundingRect().center();
+    if (getRoutingMode() == ROUTING_MODE_OFFPAGE)
+    {
+        textPos.setX(textPos.x() - widthLabel_->boundingRect().width() * 0.5);
+        textPos.setY(textPos.y() - 2 * GridSize);
+    }
+    else
+    {
+        // If the end points are more apart in horizontal direction, place the text above
+        // the longest horizontal segment.
+        if (qAbs(endpoint1()->scenePos().x() - endpoint2()->scenePos().x()) >=
+            qAbs(endpoint1()->scenePos().y() - endpoint2()->scenePos().y()))
+        {
+            textPos = findWidthLabelHorizontally();
+        }
+        // Otherwise place the text beside the longest vertical segment.
+        else
+        {
+            textPos = findWidthLabelVertically();
+        }
+    }
+    return textPos;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWConnection::findWidthLabelHorizontally()
+//-----------------------------------------------------------------------------
+QPointF HWConnection::findWidthLabelHorizontally() const
+{
+    QPointF position;
+    QList<QPointF> const& pathPoints = route();
+
+    // Determine the longest horizontal segment.
+    int longestIndex = 0;
+    qreal longestLength = 0.0;
+
+    for (int i = 0; i < route().size() - 1; ++i)
+    {
+        QPointF const& pt1 = pathPoints[i];
+        QPointF const& pt2 = pathPoints[i + 1];
+        qreal length = QVector2D(pt2 - pt1).length();
+
+        if (qFuzzyCompare(pt1.y(), pt2.y()) && length > longestLength)
+        {
+            longestLength = length;
+            longestIndex = i;
+        }
+    }
+
+    QPointF const& pt1 = pathPoints[longestIndex];
+    QPointF const& pt2 = pathPoints[longestIndex + 1];
+
+    position.setX((pt1.x() + pt2.x()) * 0.5 - widthLabel_->boundingRect().width() * 0.5);
+    position.setY(pt1.y() - 2 * GridSize);
+    return position;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWConnection::findWidthLabelVertically()
+//-----------------------------------------------------------------------------
+QPointF HWConnection::findWidthLabelVertically() const
+{
+    QPointF position;
+    QList<QPointF> const& pathPoints = route();
+
+    // Determine the longest vertical segment.
+    int longestIndex = 0;
+    qreal longestLength = 0.0;
+
+    for (int i = 0; i < pathPoints.size() - 1; ++i)
+    {
+        QPointF const& pt1 = pathPoints[i];
+        QPointF const& pt2 = pathPoints[i + 1];
+        qreal length = QVector2D(pt2 - pt1).length();
+
+        if (qFuzzyCompare(pt1.x(), pt2.x()) && length > longestLength)
+        {
+            longestLength = length;
+            longestIndex = i;
+        }
+    }
+
+    Q_ASSERT(longestIndex > 0 && longestIndex + 2 < pathPoints.size());
+    QPointF const& pt1 = pathPoints[longestIndex];
+    QPointF const& pt2 = pathPoints[longestIndex + 1];
+
+    // Place the text on the right side if the connection is fully on the left.
+    if (pathPoints[longestIndex - 1].x() < pt1.x() && pathPoints[longestIndex + 2].x() < pt1.x())
+    {
+        position.setX(pt1.x() + GridSize);
+    }
+    // Place the text on the left side if the connection is fully on the right.
+    else if (pathPoints[longestIndex - 1].x() > pt1.x() && pathPoints[longestIndex + 2].x() > pt1.x())
+    {
+        position.setX(pt1.x() - widthLabel_->boundingRect().width());
+    }
+    else
+    {
+        // Otherwise we have to determine on which side there is more space.
+        if (QVector2D(pathPoints[longestIndex - 1] - pt1).lengthSquared() <
+            QVector2D(pathPoints[longestIndex + 2] - pt2).lengthSquared())
+        {
+            position.setX(pt1.x() + GridSize);
+        }
+        else
+        {
+            position.setX(pt1.x() - widthLabel_->boundingRect().width());
+        }
+    }
+
+    position.setY((pt1.y() + pt2.y()) * 0.5 - widthLabel_->boundingRect().height() * 0.5);
+    return position;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWConnection::setWidthLabelFont()
+//-----------------------------------------------------------------------------
+void HWConnection::setWidthLabelDefaultFont()
+{
+    QFont font = widthLabel_->font();
+    font.setPointSize(8);
+    font.setBold(true);
+    widthLabel_->setFont(font);
 }

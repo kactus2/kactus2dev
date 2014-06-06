@@ -13,12 +13,13 @@
 
 #include "ComponentItem.h"
 #include "ConnectionUndoCommands.h"
-#include <designEditors/HWDesign/OffPageConnectorItem.h>
 
 #include <common/GenericEditProvider.h>
+#include <common/KactusColors.h>
+
+#include <designEditors/HWDesign/OffPageConnectorItem.h>
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/DiagramUtil.h>
-#include <common/KactusColors.h>
 
 #include <QPen>
 #include <QStyleOptionGraphicsItem>
@@ -180,40 +181,15 @@ void GraphicsConnection::setRoute(QList<QPointF> path)
     if (path.size() < 2)
         return;
 
-    if (endpoint1_)
-    {
-        QVector2D dir = QVector2D(path[1] - path[0]).normalized();
+    QVector2D dir1 = QVector2D(path[1] - path[0]).normalized();
+    updateEndpointDirection(endpoint1_, dir1);
 
-        // Switch the direction of the end point if it is not correct.
-        if (!endpoint1_->isDirectionFixed() && QVector2D::dotProduct(dir, endpoint1_->getDirection()) < 0)
-        {
-            endpoint1_->setDirection(dir);
-        }
-    }
-
-    if (endpoint2_)
-    {
-        QVector2D dir = QVector2D(path[path.size() - 2] - path[path.size() - 1]).normalized();
-
-        // Switch the direction of the end point if it is not correct.
-        if (!endpoint2_->isDirectionFixed() && QVector2D::dotProduct(dir, endpoint2_->getDirection()) < 0)
-        {
-            endpoint2_->setDirection(dir);
-        }
-    }
-
-    QListIterator<QPointF> i(path);
-
-    QPainterPath painterPath(i.next());
-
-    while (i.hasNext()) {
-        painterPath.lineTo(i.next());
-    }
-
-    QPainterPathStroker stroker;
-    setPath(stroker.createStroke(painterPath));
+    QVector2D dir2 = QVector2D(path[path.size() - 2] - path[path.size() - 1]).normalized();
+    updateEndpointDirection(endpoint2_, dir2);
 
     pathPoints_ = path;
+
+    paintConnectionPath();
 }
 
 //-----------------------------------------------------------------------------
@@ -273,11 +249,6 @@ void GraphicsConnection::updatePosition()
 {
     if (routingMode_ == ROUTING_MODE_NORMAL)
     {
-//         if (!oldRoute_.empty())
-//         {
-//             pathPoints_ = oldRoute_;
-//         }
-
         QVector2D delta1 = QVector2D(endpoint1_->scenePos()) - QVector2D(pathPoints_.first());
         QVector2D delta2 = QVector2D(endpoint2_->scenePos()) - QVector2D(pathPoints_.last());
         QVector2D const& dir1 = endpoint1_->getDirection();
@@ -439,10 +410,9 @@ void GraphicsConnection::simplifyPath()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-    QPointF pos = snapPointToGrid(mouseEvent->pos());
-
-    oldRoute_ = route();
-
+    beginUpdatePosition();
+    
+    QPointF pos = snapPointToGrid(mouseEvent->pos());    
     if (pathPoints_.first() == pos)
     {
         selectionType_ = END;
@@ -805,6 +775,14 @@ void GraphicsConnection::createRoute(QPointF p1, QPointF p2, QVector2D const& di
 
     simplifyPath();
 
+    paintConnectionPath();
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::paintConnectionPath()
+//-----------------------------------------------------------------------------
+void GraphicsConnection::paintConnectionPath()
+{
     QListIterator<QPointF> i(pathPoints_);
 
     QPainterPath path(i.next());
@@ -890,8 +868,6 @@ QVariant GraphicsConnection::itemChange(GraphicsItemChange change, const QVarian
         {
             endpoint2_->setSelectionHighlight(selected);
         }
-
-        return value;
     }
 
     return QGraphicsPathItem::itemChange(change, value);
@@ -1191,14 +1167,6 @@ ConnectionEndpoint::EndpointType GraphicsConnection::getConnectionType() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: GraphicsConnection::getDiagram()
-//-----------------------------------------------------------------------------
-DesignDiagram* GraphicsConnection::getDiagram()
-{
-    return parent_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: GraphicsConnection::getRoutingMode()
 //-----------------------------------------------------------------------------
 GraphicsConnection::RoutingMode GraphicsConnection::getRoutingMode() const
@@ -1350,7 +1318,7 @@ void GraphicsConnection::fixOverlap()
     // Iteratively move segments until the solution does not change.
     bool solutionChanged = true;
 
-    do
+    while (solutionChanged)
     {
         solutionChanged = false;
 
@@ -1374,19 +1342,10 @@ void GraphicsConnection::fixOverlap()
             }
         }
 
-    } while (solutionChanged);
-
-    // Update the visual route.
-    QListIterator<QPointF> i(pathPoints_);
-
-    QPainterPath path(i.next());
-
-    while (i.hasNext()) {
-        path.lineTo(i.next());
     }
 
-    QPainterPathStroker stroker;
-    setPath(stroker.createStroke(path));
+    // Update the visual route.
+    paintConnectionPath();
 }
 
 //-----------------------------------------------------------------------------
@@ -1486,34 +1445,8 @@ void GraphicsConnection::getSegmentLimitsY(int i, qreal& minY, qreal& maxY)
     // Use simple distance based min and max.
     minY = qMax(30.0, pathPoints_[i].y() - 500.0);
     maxY = pathPoints_[i].y() + 500.0;
-
-    // Prevent connections going out of the top edge.
-//     minY = 30.0;
-//     maxY = FLT_MAX;
-// 
-//     // Clamp the min and max.
-//     qreal prev = pathPoints_[i - 1].y();
-//     qreal cur = pathPoints_[i].y();
-//     qreal next = pathPoints_[i + 2].y();
-// 
-//     if (cur > next)
-//     {
-//         minY = qMax(minY, next + MIN_START_LENGTH);
-//     }
-//     else
-//     {
-//         maxY = qMin(maxY, next - MIN_START_LENGTH);
-//     }
-// 
-//     if (cur > prev)
-//     {
-//         minY = qMax(minY, MIN_START_LENGTH + prev);
-//     }
-//     else
-//     {
-//         maxY = qMin(maxY, prev - MIN_START_LENGTH);
-//     }
 }
+
 //-----------------------------------------------------------------------------
 // Function: GraphicsConnection::findVerticalSegmentOverlap()
 //-----------------------------------------------------------------------------
@@ -1858,4 +1791,19 @@ bool GraphicsConnection::testSegmentOverlapX(SegmentBound const& bound1, Segment
 bool GraphicsConnection::testSegmentOverlapY(SegmentBound const& bound1, SegmentBound const& bound2)
 {
     return !(bound1.maxY < bound2.minY || bound1.minY > bound2.maxY);
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::updateEndpointDirection()
+//-----------------------------------------------------------------------------
+void GraphicsConnection::updateEndpointDirection(ConnectionEndpoint* endpoint, QVector2D dir)
+{
+    if (endpoint)
+    {
+        // Switch the direction of the end point if it is not correct.
+        if (!endpoint->isDirectionFixed() && QVector2D::dotProduct(dir, endpoint->getDirection()) < 0)
+        {
+            endpoint->setDirection(dir);
+        }
+    }
 }
