@@ -1940,6 +1940,13 @@ void MainWindow::onDrawModeChanged(DrawMode mode)
             doc->setCursor(Qt::CrossCursor);
         }
     }	
+
+    actToolSelect_->setChecked(mode == MODE_SELECT);
+    actToolConnect_->setChecked(mode == MODE_CONNECT);
+    actToolInterface_->setChecked(mode == MODE_INTERFACE);
+    actToolDraft_->setChecked(mode == MODE_DRAFT);
+    actToolToggleOffPage_->setChecked(mode == MODE_TOGGLE_OFFPAGE);
+    actToolLabel_->setChecked(mode == MODE_LABEL);
 }
 
 void MainWindow::onTabCloseRequested( int index )
