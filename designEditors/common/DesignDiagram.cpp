@@ -16,6 +16,7 @@
 #include <common/utils.h>
 #include <common/GenericEditProvider.h>
 #include <common/graphicsItems/ComponentItem.h>
+#include <common/graphicsItems/GraphicsColumnLayout.h>
 
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/HWDesign/AdHocEditor/AdHocEditor.h>
@@ -399,6 +400,19 @@ void DesignDiagram::onShow()
     }
 
     onSelected(newSelection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::selectAll()
+//-----------------------------------------------------------------------------
+void DesignDiagram::selectAll()
+{
+    clearSelection();
+
+    foreach (GraphicsColumn* column, getColumnLayout()->getColumns())
+    {
+        column->setSelected(true);
+    }
 }
 
 //-----------------------------------------------------------------------------

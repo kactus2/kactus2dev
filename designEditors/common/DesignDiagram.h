@@ -235,6 +235,11 @@ public slots:
     //! Called when the diagram is shown.
     void onShow();
 
+    /*!
+     *  Selects all (columns) in the design.
+     */
+    void selectAll();
+
     //! Called when the view has been scrolled vertically.
     virtual void onVerticalScroll(qreal y) = 0;
 

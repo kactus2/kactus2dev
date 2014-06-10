@@ -274,10 +274,6 @@ public:
     virtual HWConnectionEndpoint* getDiagramAdHocPort(QString const& portName);
 
 public slots:
-    /*!
-     *  Selects all (columns) in the design.
-     */
-    void selectAll();
 
     /*!
      *  Brings the selected item to front.
@@ -393,7 +389,9 @@ private:
      *      @param [in] cursorPosition      The position to connect.
      *      @param [in] setOffPageMode      If true, offpage mode is set for the new connection.
      */
-    void connectAt(QPointF const& cursorPosition, bool setOffPageMode);
+    void connectAt(QPointF const& cursorPosition);
+
+    void setConnectionStaringPoint(QPointF const& cursorPosition);
 
     /*!
      *  Checks if a connection is being drawn.

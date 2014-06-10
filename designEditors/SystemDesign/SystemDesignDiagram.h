@@ -237,10 +237,6 @@ public:
     void onVerticalScroll(qreal y);
 
 public slots:
-    /*!
-     *  Selects all (columns) in the design.
-     */
-    void selectAll();
 
     //! Called when a component instance is added to the diagram.
     virtual void onComponentInstanceAdded(ComponentItem* item);

@@ -847,7 +847,12 @@ void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
     if (getMode() == MODE_CONNECT)
     {
-        connectAt(mouseEvent->scenePos(), mouseEvent->modifiers() & Qt::ShiftModifier);
+        if (!creatingConnection())
+        {
+            offPageMode_ = mouseEvent->modifiers() & Qt::ShiftModifier;
+        }
+               
+        connectAt(mouseEvent->scenePos());
     }
     else if (getMode() == MODE_INTERFACE)
     {
@@ -1881,7 +1886,7 @@ void HWDesignDiagram::keyReleaseEvent(QKeyEvent *event)
 void HWDesignDiagram::endConnect()
 {
     // Destroy the connection that was being drawn.
-    if (tempConnection_) {
+    if (creatingConnection()) {
         removeCurrentConnection();
     }
 
@@ -1889,6 +1894,7 @@ void HWDesignDiagram::endConnect()
     clearHighlightedEndpoint();
     clearPotentialEndpoints();
 
+    tempConnEndPoint_ = 0;
     offPageMode_ = false;
 }
 
@@ -1964,8 +1970,6 @@ GraphicsColumnLayout* HWDesignDiagram::getColumnLayout()
     return layout_.data();
 }
 
-
-
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::parent()
 //-----------------------------------------------------------------------------
@@ -1977,50 +1981,30 @@ HWDesignWidget* HWDesignDiagram::parent() const
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::connectAt()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::connectAt(QPointF const& cursorPosition, bool setOffPageMode)
+void HWDesignDiagram::connectAt(QPointF const& cursorPosition)
 {
-    // Check if we need to change the temporary connection into a persistent one.
+    // no items are selected if the mode is connect
+    clearSelection();
+
     if (creatingConnection())
     {
         endConnectionTo(cursorPosition);
-    }
-    // Otherwise choose a new start end point if in normal connection mode.
-    else if (!offPageMode_)
-    {
-        offPageMode_ = setOffPageMode;
 
-        // no items are selected if the mode is connect
-        clearSelection();
-
-        // Try to snap to a connection end point.
-        ConnectionEndpoint* endpoint = DiagramUtil::snapToItem<ConnectionEndpoint>(cursorPosition, this, GridSize);
-
-        if (endpoint == 0 || !endpoint->isVisible())
-        {
-            return;
-        }
-
-        if (offPageMode_)
-        {
-            clearHighlightedEndpoint();
-
-            if (endpoint->type() != OffPageConnectorItem::Type)
-            {
-                endpoint = endpoint->getOffPageConnector();
-                endpoint->show();
-            }
-        }
-
-        tempConnEndPoint_ = endpoint;
-
-        if (offPageMode_)
+        // In off page mode immediately continue with a new connection.
+        if (offPageMode_ && tempConnEndPoint_ != 0)
         {
             beginCreateConnection(cursorPosition);
         }
     }
+    // Otherwise choose a new start end point.
     else
     {
-        beginCreateConnection(cursorPosition);
+        setConnectionStaringPoint(cursorPosition);
+
+        if (tempConnEndPoint_ != 0)
+        {
+            beginCreateConnection(cursorPosition);
+        }
     }
 }
 
@@ -2079,20 +2063,21 @@ void HWDesignDiagram::endConnectionTo(QPointF const& point)
             getEditProvider().addCommand(cmd);
 
             tempConnection_ = 0;
-
-            if (!offPageMode_)
-            {
-                tempConnEndPoint_ = 0;
-            }
         }
         else
         {
             removeCurrentConnection();
             tempConnEndPoint_ = 0;
         }
+
+        if (!offPageMode_)
+        {
+            tempConnEndPoint_ = 0;
+        }
+
     }
     // Delete the temporary connection.
-    else if (tempConnection_)
+    else
     {
         removeItem(tempConnection_);
         removeCurrentConnection();
@@ -3202,14 +3187,35 @@ void HWDesignDiagram::prepareContextMenuActions()
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::selectAll()
+// Function: HWDesignDiagram::getConnectionStaringPoint()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::selectAll()
+void HWDesignDiagram::setConnectionStaringPoint(QPointF const& cursorPosition)
 {
-    clearSelection();
-
-    foreach (GraphicsColumn* column, layout_->getColumns())
+    // No need to change the starting point in off page mode.
+    if (offPageMode_ && tempConnEndPoint_ != 0)
     {
-        column->setSelected(true);
+        return;
     }
+
+    // Try to snap to a connection end point.
+    ConnectionEndpoint* endpoint = DiagramUtil::snapToItem<ConnectionEndpoint>(cursorPosition, this, GridSize);
+
+    if (endpoint == 0 || !endpoint->isVisible())
+    {
+        tempConnEndPoint_ = 0;
+        return;
+    }
+
+    if (offPageMode_)
+    {
+        clearHighlightedEndpoint();
+
+        if (endpoint->type() != OffPageConnectorItem::Type)
+        {
+            endpoint = endpoint->getOffPageConnector();
+            endpoint->show();
+        }
+    }
+
+    tempConnEndPoint_ = endpoint;
 }

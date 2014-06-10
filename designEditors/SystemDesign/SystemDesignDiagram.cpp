@@ -3527,16 +3527,3 @@ void SystemDesignDiagram::prepareContextMenuActions()
         }        
     }
 }
-
-//-----------------------------------------------------------------------------
-// Function: SystemDesignDiagram::selectAll()
-//-----------------------------------------------------------------------------
-void SystemDesignDiagram::selectAll()
-{
-    clearSelection();
-
-    foreach (GraphicsColumn* column, layout_->getColumns())
-    {
-        column->setSelected(true);
-    }
-}
