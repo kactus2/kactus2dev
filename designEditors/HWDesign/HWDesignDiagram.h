@@ -325,15 +325,19 @@ public slots:
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
-    void endConnect();
-
     void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
+
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
+
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent);
+
     void wheelEvent(QGraphicsSceneWheelEvent *event);
 
     //! Called when a key has been release.
     void keyReleaseEvent(QKeyEvent *event);
+
+    //! Ends the drawing of current connection.
+    void endConnect();
 
     void dropEvent(QGraphicsSceneDragDropEvent *event);
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
@@ -342,8 +346,6 @@ protected:
     void updateDropAction(QGraphicsSceneDragDropEvent* event);
 
     void dragLeaveEvent(QGraphicsSceneDragDropEvent * event);
-
-    void disableHighlight();
 
 	/*!
      *  Creates the context menu for function contextMenuEvent().
@@ -367,15 +369,6 @@ private:
     virtual void onSelected(QGraphicsItem* newSelection);
 
     /*!
-     *  Adds a new interface to the given diagram column.
-     *
-     *      @param [in] column The column where to add the interface.
-     *      @param [in] pos    The interface position.
-     */
-
-    void addInterface(GraphicsColumn* column, QPointF const& pos);
-
-    /*!
      *  Toggles the connection style of the given connection between normal and off-page style.
      *
      *      @param [in] conn      The connection.
@@ -394,11 +387,161 @@ private:
     void destroyConnections();
 
     /*!
-     *  Creates the currently drawn connection.
+     *  Handler for connection tool clicks. Creates a connection to the given position by either 
+     *  beginning a new connection or ending currently drawn connection to it.     
      *
-     *      @param [in] event The ending mouse press event.
+     *      @param [in] cursorPosition      The position to connect.
+     *      @param [in] setOffPageMode      If true, offpage mode is set for the new connection.
      */
-    void createConnection(QGraphicsSceneMouseEvent* event);
+    void connectAt(QPointF const& cursorPosition, bool setOffPageMode);
+
+    /*!
+     *  Checks if a connection is being drawn.
+     *     
+     *      @return True, if a connection is being drawn, otherwise false.
+     */
+    bool creatingConnection();
+
+    /*!
+     *  Creates the currently drawn connection by ending it to the given point.
+     *
+     *      @param [in] event The ending point.
+     */
+    void endConnectionTo(QPointF const& point);
+
+    //! Removes highlight from possible endpoints for current connection.
+    void clearPotentialEndpoints();
+
+    /*!
+     *  Checks if an endpoint can be used as the ending point for current connection.
+     *
+     *      @param [in] endpoint   The endpoint to check.
+     *
+     *      @return True, if endpoint can be connected to the current connection, otherwise false.
+     */
+    bool isPossibleEndpointForCurrentConnection(ConnectionEndpoint* endpoint);
+
+    //! Deletes the currently drawn connection.
+    void removeCurrentConnection();
+    
+   /*!
+    *  Begins drawing a connection from the given point.
+    *
+    *      @param [in] startingPoint   The point to start the connection from.    
+    */
+    void beginCreateConnection(QPointF const& startingPoint);
+
+    //! Highlights all endpoints that can be connected to the current connection.     
+    void highlightConnectableEndpoints();
+
+    /*!
+     *  Handler for interface tool clicks.
+     *
+     *      @param [in] position   The interface position.
+     */
+    void addInterfaceAt(QPointF const& position);
+
+    /*!
+     *  Adds a new interface to the given diagram column.
+     *
+     *      @param [in] column The column where to add the interface.
+     *      @param [in] pos    The interface position.
+     */
+
+    void addInterface(GraphicsColumn* column, QPointF const& pos);
+
+    /*!
+     *  Handler for draft tool clicks. Creates a draft component instance or a draft interface according to the
+     *  clicked position.
+     *
+     *      @param [in] clickedPosition   The position to create the draft item to.     
+     */
+    void draftAt(QPointF const& clickedPosition);
+
+    /*!
+     *  Finds the item types for the given column. If the types are ambiguous, asks the user for types.
+     *
+     *      @param [in] column   The column to find the types for.
+     *
+     *      @return The column types.
+     */
+    unsigned int findColumnItemType(GraphicsColumn* column) const;
+
+    /*!
+     *  Adds a draft component instance to the design.
+     *
+     *      @param [in] column      The column to add the instance to.
+     *      @param [in] position    The initial position to add the instance at.     
+     */
+    void addDraftInstance(GraphicsColumn* column, QPointF const& position);
+
+    /*!
+     *  Adds a draft interface in a draft component instance.
+     *
+     *      @param [in] targetComponent     The component item to add the interface to.
+     *      @param [in] position            The initial position of the interface.     
+     */
+    void addDraftInterface(HWComponentItem* targetComponent, QPointF const& position);
+
+    /*!
+     *  Handler for offpage tool clicks. Toggles the connection offpage mode for clicked interface or connection.
+     *
+     *      @param [in] position   The point to toggle at.     
+     */
+    void toggleOffPageAt(QPointF const& position);
+
+    /*!
+     *  Begins replacing another component with a component at the given position.
+     *
+     *      @param [in] position   The position to start replacing from.     
+     */
+    void beginComponentReplace(QPointF const& position);
+
+    /*!
+     *  Updates the cursor according to design content at the given position while replacing.
+     *
+     *      @param [in] cursorPosition   The cursor position.
+     */
+    void updateComponentReplaceCursor(QPointF const& cursorPosition);
+
+    /*!
+     *  Ends the component replace at the given position. If another component is in the given position,
+     *  it is replaced with the component being dragged.
+     *
+     *      @param [in] position   The point to end the replacing.
+     */
+    void endComponentReplace(QPointF const& position);
+
+    /*!
+     *  Updates the highlights and drawing of current connection.
+     *
+     *      @param [in] cursorPosition   The position of the cursor.     
+     */
+    void updateConnectionDisplay(QPointF const& cursorPosition);
+
+    /*!
+     *  Updates the highlighting of endpoint near the cursor for current connection.
+     *
+     *      @param [in] cursorPosition   The position of the cursor.
+     */
+    void updateConnectionHighlight(QPointF const& cursorPosition);
+
+    /*!
+     *  Updates the drawing of current connection.
+     *
+     *      @param [in] cursorPosition   The position of the cursor. Connection ends to it.
+     */
+    void updateCurrentConnection(QPointF const& cursorPosition);
+
+    /*!
+     *  Updates highlighting of possible endpoints for a new connection.
+     *
+     *      @param [in] cursorPosition   The position of the cursor. Connection begins from it.
+     */
+    void updateHighlightForNewConnection(QPointF const& cursorPosition);
+
+    //! Clears the highlighting of the currently highlighted endpoint.
+     void clearHighlightedEndpoint();
 
     /*!
      *  Creates a missing port to the given component item.

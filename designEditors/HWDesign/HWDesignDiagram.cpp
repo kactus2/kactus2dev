@@ -264,7 +264,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
             if (interconnection.isOffPage())
             {
-                diagramInterconnection->setVisible(false);
+                diagramInterconnection->hide();
             }
             diagramInterconnection->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
 
@@ -363,7 +363,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
         if (hierConn.isOffPage())
         {
-            diagConn->setVisible(false);
+            diagConn->hide();
         }
 
         diagConn->setVendorExtensions(hierConn.getVendorExtensions());
@@ -488,7 +488,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
                 if (adHocConn.isOffPage())
                 {
-                    conn->setVisible(false);
+                    conn->hide();
                 }
                 conn->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
 
@@ -557,7 +557,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
                 if (adHocConn.isOffPage())
                 {
-                    conn->setVisible(false);
+                    conn->hide();
                 }
                 conn->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
 
@@ -847,254 +847,26 @@ void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
     if (getMode() == MODE_CONNECT)
     {
-        bool creating = tempConnection_ != 0;
-
-        // Check if we need to change the temporary connection into a persistent one.
-        if (creating)
-        {
-            createConnection(mouseEvent);
-        }
-        // Otherwise choose a new start end point if in normal connection mode.
-        else if (!offPageMode_)
-        {
-            offPageMode_ = (mouseEvent->modifiers() & Qt::ShiftModifier);
-
-            // no items are selected if the mode is connect
-            clearSelection();
-
-            // Try to snap to a connection end point.
-            ConnectionEndpoint* endpoint =
-                DiagramUtil::snapToItem<ConnectionEndpoint>(mouseEvent->scenePos(), this, GridSize);
-
-            if (endpoint == 0 || !endpoint->isVisible())
-            {
-                return;
-            }
-
-            if (offPageMode_)
-            {
-                if (highlightedEndPoint_ != 0)
-                {
-                    highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
-                    highlightedEndPoint_ = 0;
-                }
-
-                if (endpoint->type() != OffPageConnectorItem::Type)
-                {
-                    endpoint = endpoint->getOffPageConnector();
-                    endpoint->setVisible(true);
-                }
-            }
-
-            tempConnEndPoint_ = endpoint;
-        }
-
-        // Start drawing a new connection if in off page mode or we were not creating anything yet.
-        if (offPageMode_ || !creating)
-        {
-            Q_ASSERT(tempConnEndPoint_ != 0);
-
-            // Create the connection.
-            tempConnection_ = new HWConnection(tempConnEndPoint_->scenePos(),
-                tempConnEndPoint_->getDirection(),
-                mouseEvent->scenePos(),
-                QVector2D(0.0f, 0.0f), QString(), QString(), this);
-
-            if (tempConnEndPoint_->isAdHoc())
-            {
-                tempConnection_->setLineWidth(1);
-            }
-            tempConnection_->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
-
-            addItem(tempConnection_);
-
-            // Determine all potential end points to which the starting end point could be connected
-            // and highlight them.
-            foreach(QGraphicsItem* item, items())
-            {
-                ConnectionEndpoint* endpoint = dynamic_cast<ConnectionEndpoint*>(item);
-
-                if (endpoint != 0 && endpoint->isVisible() && endpoint != tempConnEndPoint_ &&
-                    endpoint->getOffPageConnector() != tempConnEndPoint_ &&
-                    endpoint->canConnect(tempConnEndPoint_) && tempConnEndPoint_->canConnect(endpoint))
-                {
-                    tempPotentialEndingEndPoints_.append(endpoint);
-                    endpoint->setHighlight(ConnectionEndpoint::HIGHLIGHT_ALLOWED);
-                }
-            }
-        }
+        connectAt(mouseEvent->scenePos(), mouseEvent->modifiers() & Qt::ShiftModifier);
     }
     else if (getMode() == MODE_INTERFACE)
     {
-        // Find the column under the cursor.
-        GraphicsColumn* column = layout_->findColumnAt(mouseEvent->scenePos());
-
-        // Add a new diagram interface to the column it it is allowed.
-        if (column != 0 && column->getColumnDesc().getAllowedItems() & CIT_INTERFACE)
-        {
-            addInterface(column, mouseEvent->scenePos());
-        }
+        addInterfaceAt(mouseEvent->scenePos());
     }
     else if (getMode() == MODE_DRAFT)
     {
-        // Find the bottom-most item under the cursor.
-        QGraphicsItem* item = 0;
-        QList<QGraphicsItem*> itemList = items(mouseEvent->scenePos());
-        
-        if (!itemList.empty())
-        {
-            item = itemList.back();
-        }
-
-        // If there was no item, then a new component/channel/bridge/interface should be added
-        // to the column under cursor.
-        if (item == 0)
-        {
-            GraphicsColumn* column = layout_->findColumnAt(mouseEvent->scenePos());
-            
-            if (column != 0)
-            {
-                // Check what kind of item should be created.
-                unsigned int itemType = column->getColumnDesc().getAllowedItems();
-                
-                // Check if the item type is ambiguous (interface vs. the rest of the types).
-                if (itemType != CIT_INTERFACE && itemType & CIT_INTERFACE)
-                {
-                    // Open a dialog to determine which type of item to create.
-                    SelectItemTypeDialog dialog((QWidget*)parent(), column->getColumnDesc().getAllowedItems());
-
-                    if (dialog.exec() != QDialog::Accepted)
-                    {
-                        return;
-                    }
-
-                    itemType = dialog.getSelectedItemType();
-                }
-
-                // Create the item based on the selected/determined type.
-                if (itemType == CIT_INTERFACE)
-                {
-                    addInterface(column, mouseEvent->scenePos());
-                }
-                else
-                {
-                    // Determine an unused name for the component instance.
-                    QString name = createInstanceName("instance");
-
-                    // Create a component model without a valid vlnv.
-                    QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
-                    comp->setVlnv(VLNV());
-                    comp->setComponentImplementation(getEditedComponent()->getComponentImplementation());
-
-                    // Create the corresponding diagram component.
-                    HWComponentItem* diagComp = new HWComponentItem(getLibraryInterface(), comp, name);
-                    diagComp->setPos(snapPointToGrid(mouseEvent->scenePos()));
-
-                    QSharedPointer<ItemAddCommand> cmd(new ItemAddCommand(column, diagComp));
-
-					connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-						this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-					connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-						this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-
-                    getEditProvider().addCommand(cmd);
-                    cmd->redo();
-                }
-            }
-        }
-        // Otherwise check if the item is an unpackaged component in which case
-        // we can add a new port (bus interface) to it.
-        else if (item->type() == HWComponentItem::Type)
-        {
-            HWComponentItem* comp = static_cast<HWComponentItem*>(item);
-
-            // The component is unpackaged if it has an invalid vlnv.
-            if (!comp->componentModel()->getVlnv()->isValid())
-            {
-                QMap<BusPortItem*, QPointF> oldPositions;
-
-                // Save old port positions.
-                foreach (QGraphicsItem* item, comp->childItems())
-                {
-                    if (item->type() == BusPortItem::Type)
-                    {
-                        BusPortItem* port = static_cast<BusPortItem*>(item);
-                        oldPositions.insert(port, port->pos());
-                    }
-                }
-
-                QSharedPointer<QUndoCommand> cmd(new PortAddCommand(comp, snapPointToGrid(mouseEvent->scenePos())));
-                cmd->redo();
-                
-                // Create child undo commands for the changed ports.
-                QMap<BusPortItem*, QPointF>::iterator cur = oldPositions.begin();
-
-                while (cur != oldPositions.end())
-                {
-                    if (cur.key()->pos() != cur.value())
-                    {
-                        new PortMoveCommand(cur.key(), cur.value(), cmd.data());
-                    }
-
-                    ++cur;
-                }
-
-                // Add the command to the edit stack.
-                getEditProvider().addCommand(cmd);
-            }
-        }
+        draftAt(mouseEvent->scenePos());
     }
     else if (getMode() == MODE_TOGGLE_OFFPAGE)
     {
-        // Try to snap to a connection end point.
-        ConnectionEndpoint* endpoint =
-            DiagramUtil::snapToItem<ConnectionEndpoint>(mouseEvent->scenePos(), this, GridSize);
-
-        QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
-
-        if (endpoint != 0 && endpoint->isVisible())
-        {
-            if (endpoint->getConnections().size() > 0)
-            {
-                hideOffPageConnections();
-
-                QList<GraphicsConnection*> connections = endpoint->getConnections();
-
-                foreach (GraphicsConnection* conn, connections)
-                {
-                    toggleConnectionStyle(conn, cmd.data());
-                }
-            }
-        }
-        else
-        {
-            QGraphicsItem* item = itemAt(mouseEvent->scenePos(), QTransform());
-
-            if (item != 0 && item->type() == HWConnection::Type)
-            {
-                toggleConnectionStyle(static_cast<HWConnection*>(item), cmd.data());
-            }
-        }
-
-        if (cmd->childCount() > 0)
-        {
-            getEditProvider().addCommand(cmd);
-        }
+        toggleOffPageAt(mouseEvent->scenePos());
     }
     else if (getMode() == MODE_SELECT)
     {
         // Check if the user pressed Alt over a component => replace component mode.
         if (!isProtected() && mouseEvent->modifiers() & Qt::AltModifier)
         {
-            HWComponentItem* sourceComp =
-                static_cast<HWComponentItem*>(getTopmostComponent(mouseEvent->scenePos()));
-            
-            if (sourceComp != 0)
-            {
-                sourceComp_ = sourceComp;
-                QApplication::setOverrideCursor(Qt::ForbiddenCursor);
-                replaceMode_ = true;
-            }
+            beginComponentReplace(mouseEvent->scenePos());
         }
         else
         {
@@ -1114,109 +886,20 @@ void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 //-----------------------------------------------------------------------------
 // Function: mouseMoveEvent()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void HWDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent)
 {
     contextPos_ = QCursor::pos();
 
     // Check if the connect mode is active.
     if (getMode() == MODE_CONNECT || getMode() == MODE_TOGGLE_OFFPAGE)
     {
-        // Find out if there is an end point currently under the cursor.
-        HWConnectionEndpoint* endpoint =
-            DiagramUtil::snapToItem<HWConnectionEndpoint>(mouseEvent->scenePos(), this, GridSize);
-
-        if (tempConnection_)
-        {
-            // Check if there was an valid endpoint close enough.
-            if (endpoint != 0 && tempPotentialEndingEndPoints_.contains(endpoint))
-            {
-                // Highlight the end point.
-                disableHighlight();                
-                highlightedEndPoint_ = endpoint;
-                highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
-
-            }
-            // Disable the highlight if there was no end point close enough.
-            else
-            {
-                disableHighlight();
-            }
-
-            // Update the connection.
-            Q_ASSERT(tempConnection_->route().size() != 0);
-
-            HWConnection* newTempConnection_ = 0;
-
-            if (highlightedEndPoint_ != 0)
-            {
-                newTempConnection_ = new HWConnection(tempConnEndPoint_,
-                                                                 highlightedEndPoint_, false,
-                                                                 QString(), QString(), QString(), this);                
-            }
-            else
-            {
-                newTempConnection_ = new HWConnection(tempConnEndPoint_->scenePos(),
-                    tempConnEndPoint_->getDirection(), snapPointToGrid(mouseEvent->scenePos()),
-                    QVector2D(0.0f, 0.0f), QString(), QString(), this);
-            }
-
-            if (tempConnEndPoint_->isAdHoc())
-            {
-                newTempConnection_->setLineWidth(1);
-            }
-            newTempConnection_->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
-
-            removeItem(tempConnection_);
-            delete tempConnection_;
-
-            addItem(newTempConnection_);
-			tempConnection_ = newTempConnection_;
-			return;
-        }
-        else
-        {
-            if (highlightedEndPoint_ != 0)
-            {
-                highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
-                highlightedEndPoint_ = 0;
-            }
-
-            if (endpoint != 0 && endpoint->isVisible())
-            {
-                highlightedEndPoint_ = endpoint;
-                highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
-
-                if (highlightedEndPoint_->type() == OffPageConnectorItem::Type)
-                {
-                    hideOffPageConnections();
-
-                    foreach (GraphicsConnection* conn, highlightedEndPoint_->getConnections())
-                    {
-                        conn->setVisible(true);
-                    }
-                }
-            }
-        }
+        updateConnectionDisplay(mouseEvent->scenePos());
+        return;
     }
 
     if (replaceMode_)
     {
-        HWComponentItem* destComp = 0;
-        QList<QGraphicsItem*> itemList = items(mouseEvent->scenePos());
-
-        if (!itemList.empty())
-        {
-            destComp = dynamic_cast<HWComponentItem*>(itemList.back());
-        }
-
-        if (destComp != 0 && destComp != sourceComp_)
-        {
-            QApplication::changeOverrideCursor(Qt::ClosedHandCursor);
-        }
-        else
-        {
-            QApplication::changeOverrideCursor(Qt::ForbiddenCursor);
-        }
+        updateComponentReplaceCursor(mouseEvent->scenePos());
     }
 
     // Allow moving items only when a single item is selected.
@@ -1231,45 +914,11 @@ void HWDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     // Check if we're replacing a component.
     if (replaceMode_)
     {
-        replaceMode_ = false;
-        QApplication::restoreOverrideCursor();
-
-        HWComponentItem* destComp = 0;
-        QList<QGraphicsItem*> itemList = items(mouseEvent->scenePos());
-
-        if (!itemList.empty())
-        {
-            destComp = dynamic_cast<HWComponentItem*>(itemList.back());
-        }
-
-        if (destComp == 0 || destComp == sourceComp_)
-        {
-            return;
-        }
-
-        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                           tr("Component instance '%1' is about to be switched in place "
-                           "with '%2'. Continue and replace?").arg(destComp->name(), sourceComp_->name()),
-                           QMessageBox::Yes | QMessageBox::No, (QWidget*)parent());
-
-        if (msgBox.exec() == QMessageBox::No)
-        {
-            return;
-        }
-
-        // Perform the replacement.
-        QSharedPointer<ReplaceComponentCommand> cmd(new ReplaceComponentCommand(destComp, sourceComp_, true, true));
-        connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-        connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-
-        getEditProvider().addCommand(cmd);
-        cmd->redo();
+        endComponentReplace(mouseEvent->scenePos());        
     }
-
-	// process the normal mouse release event
-    QGraphicsScene::mouseReleaseEvent(mouseEvent);
+    
+    // process the normal mouse release event
+	QGraphicsScene::mouseReleaseEvent(mouseEvent);
 }
 
 void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -1392,7 +1041,7 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
             (endpoint->getBusInterface() == 0 || !endpoint->getBusInterface()->getBusType().isValid()))
         {
             // Request the user to set the vlnv.
-            NewObjectDialog dialog(getLibraryInterface(), VLNV::BUSDEFINITION, true, (QWidget*)parent());
+            NewObjectDialog dialog(getLibraryInterface(), VLNV::BUSDEFINITION, true, parent());
             dialog.setWindowTitle(tr("Create New Bus"));
 
             if (dialog.exec() == QDialog::Rejected)
@@ -1447,7 +1096,7 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
             bool editName = endpoint->type() == BusInterfaceItem::Type &&
                             endpoint->getConnections().empty();
 
-            BusInterfaceDialog modeDialog(editName, (QWidget*)parent());
+            BusInterfaceDialog modeDialog(editName, parent());
             modeDialog.addMode(General::MIRROREDMASTER);
             modeDialog.addMode(General::SLAVE);
             modeDialog.addMode(General::MIRROREDSLAVE);
@@ -1577,11 +1226,7 @@ void HWDesignDiagram::dragLeaveEvent(QGraphicsSceneDragDropEvent*)
     dragCompType_ = CIT_NONE;
     dragBus_ = false;
     
-    if (highlightedEndPoint_ != 0)
-    {
-        highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
-        highlightedEndPoint_ = 0;
-    }
+    clearHighlightedEndpoint();
 }
 
 //-----------------------------------------------------------------------------
@@ -1605,8 +1250,7 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         if (vlnv == *getEditedComponent()->getVlnv())
         {
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                tr("Component cannot be instantiated to its own design."),
-                QMessageBox::Ok, (QWidget*)parent());
+                tr("Component cannot be instantiated to its own design."), QMessageBox::Ok, parent());
             msgBox.exec();
             return;
         }
@@ -1662,23 +1306,22 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
                                   "with an instance of %2. Continue and replace?").arg(oldCompItem->name(), vlnv.toString()),
                                QMessageBox::Yes | QMessageBox::No, (QWidget*)parent());
             
-            if (msgBox.exec() == QMessageBox::No)
+            if (msgBox.exec() == QMessageBox::Yes)
             {
-                return;
+                // Create the component item.
+                HWComponentItem *newCompItem = new HWComponentItem(getLibraryInterface(), comp, instanceName);
+
+                // Perform the replacement.
+                QSharedPointer<ReplaceComponentCommand> cmd(new ReplaceComponentCommand(oldCompItem, newCompItem, 
+                    false, false));
+                connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                    this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+                connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                    this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+                getEditProvider().addCommand(cmd);
+                cmd->redo();
             }
-
-            // Create the component item.
-            HWComponentItem *newCompItem = new HWComponentItem(getLibraryInterface(), comp, instanceName);
-
-            // Perform the replacement.
-            QSharedPointer<ReplaceComponentCommand> cmd(new ReplaceComponentCommand(oldCompItem, newCompItem, false, false));
-            connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-                this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-            connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-                this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-
-            getEditProvider().addCommand(cmd);
-            cmd->redo();
         }
     }
     else if (dragBus_)
@@ -1774,24 +1417,93 @@ void HWDesignDiagram::onVerticalScroll(qreal y)
 }
 
 //-----------------------------------------------------------------------------
-// Function: disableHighlight()
+// Function: onSelectionChanged()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::disableHighlight()
+void HWDesignDiagram::onSelectionChanged()
 {
-    if (highlightedEndPoint_ != 0)
+    // Disallow selecting elements of different type.
+    if (selectedItems().size() > 1)
     {
-        if (tempConnEndPoint_ != 0 && highlightedEndPoint_ != tempConnEndPoint_ &&
-            tempPotentialEndingEndPoints_.contains(highlightedEndPoint_))
-        {
-            highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_ALLOWED);
-        }
-        else
-        {
-            highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
-        }
+        // Check if all selected items have the same type.
+        int type = getCommonItemType(selectedItems());
 
-        highlightedEndPoint_ = 0;
+        if (type == -1)
+        {
+            // If not, deselect those that are in the new selection but no in the old one.
+            for (int i = 0; i < selectedItems().size(); ++i)
+            {
+                QGraphicsItem* item = selectedItems()[i];
+
+                if (!oldSelectedItems_.contains(item))
+                {
+                    item->setSelected(false);
+                }
+            }
+        }
     }
+
+    selectionToFront();
+
+    // Retrieve the new selection.
+    QGraphicsItem* newSelection = 0;
+
+    if (!selectedItems().isEmpty())
+    {
+        newSelection = selectedItems().front();
+    }
+
+    // If the old selection was an off-page connector, hide its connections.
+    // Also hide the previously selected connection if it was an off-page connection.
+    for (int i = 0; i < oldSelectedItems_.size(); ++i)
+    {
+        QGraphicsItem* oldSelection = oldSelectedItems_[i];
+
+        if (oldSelection->type() == OffPageConnectorItem::Type)
+        {
+            OffPageConnectorItem* connector = static_cast<OffPageConnectorItem*>(oldSelection);
+
+            foreach (GraphicsConnection* conn, connector->getConnections())
+            {
+                if (conn != newSelection)
+                {
+                    conn->hide();
+                }
+            }
+        }
+        else if (oldSelection->type() == HWConnection::Type && !selectedItems().contains(oldSelection))
+        {
+            HWConnection* conn = static_cast<HWConnection*>(oldSelection);
+
+            if (conn->endpoint1() != 0)
+            {
+                if (conn->endpoint1()->type() == OffPageConnectorItem::Type)
+                {
+                    oldSelection->hide();
+                }
+                else
+                {
+                    oldSelection->setZValue(-1000);
+                }
+            }
+        }
+    }
+
+    // If the new selection is an off-page connector, show its connections.
+    if (newSelection != 0 && newSelection->type() == OffPageConnectorItem::Type)
+    {
+        OffPageConnectorItem* connector = static_cast<OffPageConnectorItem*>(newSelection);
+
+        foreach (GraphicsConnection* conn, connector->getConnections())
+        {
+            conn->show();
+        }
+    }
+
+    onSelected(newSelection);
+
+    // Save the current selection as the old selection.
+    oldSelectedItems_ = selectedItems();
+    prepareContextMenuActions();
 }
 
 //-----------------------------------------------------------------------------
@@ -2144,6 +1856,43 @@ void HWDesignDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
 }
 
 //-----------------------------------------------------------------------------
+// Function: keyReleaseEvent()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::keyReleaseEvent(QKeyEvent *event)
+{
+    // Check if the user ended the off-page connection mode.
+    if ((event->key() == Qt::Key_Shift) && offPageMode_)
+    {
+        if (tempConnEndPoint_ != 0)
+        {
+            if (tempConnEndPoint_->getConnections().size() == 0)
+            {
+                tempConnEndPoint_->hide();
+            }
+        }
+
+        endConnect();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: endConnect()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::endConnect()
+{
+    // Destroy the connection that was being drawn.
+    if (tempConnection_) {
+        removeCurrentConnection();
+    }
+
+    // Disable highlights from all end points.
+    clearHighlightedEndpoint();
+    clearPotentialEndpoints();
+
+    offPageMode_ = false;
+}
+
+//-----------------------------------------------------------------------------
 // Function: onSelected()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
@@ -2215,12 +1964,234 @@ GraphicsColumnLayout* HWDesignDiagram::getColumnLayout()
     return layout_.data();
 }
 
+
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::parent()
+//-----------------------------------------------------------------------------
+HWDesignWidget* HWDesignDiagram::parent() const
+{
+	return parent_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::connectAt()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::connectAt(QPointF const& cursorPosition, bool setOffPageMode)
+{
+    // Check if we need to change the temporary connection into a persistent one.
+    if (creatingConnection())
+    {
+        endConnectionTo(cursorPosition);
+    }
+    // Otherwise choose a new start end point if in normal connection mode.
+    else if (!offPageMode_)
+    {
+        offPageMode_ = setOffPageMode;
+
+        // no items are selected if the mode is connect
+        clearSelection();
+
+        // Try to snap to a connection end point.
+        ConnectionEndpoint* endpoint = DiagramUtil::snapToItem<ConnectionEndpoint>(cursorPosition, this, GridSize);
+
+        if (endpoint == 0 || !endpoint->isVisible())
+        {
+            return;
+        }
+
+        if (offPageMode_)
+        {
+            clearHighlightedEndpoint();
+
+            if (endpoint->type() != OffPageConnectorItem::Type)
+            {
+                endpoint = endpoint->getOffPageConnector();
+                endpoint->show();
+            }
+        }
+
+        tempConnEndPoint_ = endpoint;
+
+        if (offPageMode_)
+        {
+            beginCreateConnection(cursorPosition);
+        }
+    }
+    else
+    {
+        beginCreateConnection(cursorPosition);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::creatingConnection()
+//-----------------------------------------------------------------------------
+bool HWDesignDiagram::creatingConnection()
+{
+    return tempConnection_ != 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: endConnectionTo()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::endConnectionTo(QPointF const& point)
+{
+    // Disable highlights from all potential end points.
+    clearPotentialEndpoints();
+
+    ConnectionEndpoint* endpoint = DiagramUtil::snapToItem<ConnectionEndpoint>(point, this, GridSize);
+
+    // Check if there is an end point close enough to the cursor and the
+    // end points can be connected together.
+    if (isPossibleEndpointForCurrentConnection(endpoint))
+    {
+        // Check if the connection should be converted to an off-page connection.
+        bool firstOffPage = tempConnEndPoint_->type() == OffPageConnectorItem::Type;
+        bool secondOffPage = endpoint->type() == OffPageConnectorItem::Type;
+
+        if (offPageMode_ ||
+            ((firstOffPage || secondOffPage) && tempConnEndPoint_->type() != endpoint->type()))
+        {
+            if (!firstOffPage)
+            {
+                tempConnEndPoint_ = tempConnEndPoint_->getOffPageConnector();
+            }
+
+            if (!secondOffPage)
+            {
+                endpoint = endpoint->getOffPageConnector();
+            }
+
+            removeCurrentConnection();
+
+            tempConnection_ = new HWConnection(tempConnEndPoint_, endpoint, false,
+                QString(), QString(), QString(), this);
+            tempConnection_->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
+            addItem(tempConnection_);
+        }
+
+        if (tempConnection_->connectEnds())
+        {
+            tempConnection_->fixOverlap();
+
+            QSharedPointer<QUndoCommand> cmd(new ConnectionAddCommand(this, tempConnection_));
+            getEditProvider().addCommand(cmd);
+
+            tempConnection_ = 0;
+
+            if (!offPageMode_)
+            {
+                tempConnEndPoint_ = 0;
+            }
+        }
+        else
+        {
+            removeCurrentConnection();
+            tempConnEndPoint_ = 0;
+        }
+    }
+    // Delete the temporary connection.
+    else if (tempConnection_)
+    {
+        removeItem(tempConnection_);
+        removeCurrentConnection();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::clearPotentialEndpoints()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::clearPotentialEndpoints()
+{
+    foreach (ConnectionEndpoint* endpoint, tempPotentialEndingEndPoints_)
+    {
+        endpoint->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
+    }
+    tempPotentialEndingEndPoints_.clear();
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::canConnectEndpoints()
+//-----------------------------------------------------------------------------
+bool HWDesignDiagram::isPossibleEndpointForCurrentConnection(ConnectionEndpoint* endpoint)
+{
+    return endpoint != 0 && endpoint->isVisible() && endpoint != tempConnEndPoint_ &&
+        endpoint->getOffPageConnector() != tempConnEndPoint_ &&
+        endpoint->canConnect(tempConnEndPoint_) && tempConnEndPoint_->canConnect(endpoint);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::clearCurrentConnection()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::removeCurrentConnection()
+{
+    delete tempConnection_;
+    tempConnection_ = 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::beginCreateConnection()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::beginCreateConnection(QPointF const& startingPoint)
+{
+    Q_ASSERT(tempConnEndPoint_ != 0);
+
+    // Create the connection.
+    tempConnection_ = new HWConnection(tempConnEndPoint_->scenePos(),
+        tempConnEndPoint_->getDirection(), startingPoint, QVector2D(0.0f, 0.0f), QString(), QString(), this);
+
+    if (tempConnEndPoint_->isAdHoc())
+    {
+        tempConnection_->setLineWidth(1);
+    }
+    tempConnection_->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
+
+    addItem(tempConnection_);
+
+    // Determine all potential end points to which the starting end point could be connected
+    // and highlight them.
+    highlightConnectableEndpoints();
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::highlightConnectableEndpoints()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::highlightConnectableEndpoints()
+{
+    foreach(QGraphicsItem* item, items())
+    {
+        ConnectionEndpoint* endpoint = dynamic_cast<ConnectionEndpoint*>(item);
+
+        if (isPossibleEndpointForCurrentConnection(endpoint))
+        {
+            endpoint->setHighlight(ConnectionEndpoint::HIGHLIGHT_ALLOWED);
+            tempPotentialEndingEndPoints_.append(endpoint);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::addInterfaceAt()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::addInterfaceAt(QPointF const& position)
+{
+    // Find the column under the cursor.
+    GraphicsColumn* column = layout_->findColumnAt(position);
+
+    // Add a new diagram interface to the column it it is allowed.
+    if (column != 0 && column->getColumnDesc().getAllowedItems() & CIT_INTERFACE)
+    {
+        addInterface(column, position);
+    }
+}
+
 //-----------------------------------------------------------------------------
 // Function: addInterface()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::addInterface(GraphicsColumn* column, QPointF const& pos)
 {
-	QSharedPointer<BusInterface> busif(new BusInterface());
+    QSharedPointer<BusInterface> busif(new BusInterface());
     BusInterfaceItem *newItem = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), busif, 0);
     newItem->setPos(snapPointToGrid(pos));
 
@@ -2247,240 +2218,391 @@ void HWDesignDiagram::addInterface(GraphicsColumn* column, QPointF const& pos)
     // Determine if the other interfaces changed their position and create undo commands for them.
     if (column->getContentType() == COLUMN_CONTENT_IO)
     {
-        QMap<BusInterfaceItem*, QPointF>::iterator cur = oldPositions.begin();
-
-        while (cur != oldPositions.end())
+        for (QMap<BusInterfaceItem*, QPointF>::iterator cur = oldPositions.begin(); cur != oldPositions.end(); 
+            cur++)
         {
             if (cur.key()->scenePos() != cur.value())
             {
                 new ItemMoveCommand(cur.key(), cur.value(), column, cmd.data());
             }
-
-            ++cur;
         }
     }
-	
+
     getEditProvider().addCommand(cmd);
 }
 
-HWDesignWidget* HWDesignDiagram::parent() const {
-	return parent_;
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::draftAt()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::draftAt(QPointF const& clickedPosition)
+{
+    // Find the bottom-most item under the cursor.
+    QGraphicsItem* clickedItem = 0;
+    QList<QGraphicsItem*> itemList = items(clickedPosition);
+
+    if (!itemList.empty())
+    {
+        clickedItem = itemList.back();
+    }
+
+    // If there was no item, then a new component/channel/bridge/interface should be added
+    // to the column under cursor.
+    if (clickedItem == 0)
+    {
+        GraphicsColumn* column = layout_->findColumnAt(clickedPosition);
+
+        if (column != 0)
+        {
+            // Check what kind of item should be created.
+            unsigned int itemType = findColumnItemType(column);
+
+            // Create the item based on the selected/determined type.
+            if (itemType == CIT_INTERFACE)
+            {
+                addInterface(column, clickedPosition);
+            }
+            else if (itemType != CIT_NONE)
+            {
+                addDraftInstance(column, clickedPosition);
+            }
+        }
+    }
+    // Otherwise check if the item is an unpackaged component in which case
+    // we can add a new port (bus interface) to it.
+    else if (clickedItem->type() == HWComponentItem::Type)
+    {
+        HWComponentItem* component = static_cast<HWComponentItem*>(clickedItem);
+        addDraftInterface(component, clickedPosition);
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: createConnection()
+// Function: HWDesignDiagram::findItemTypeForColumn()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::createConnection(QGraphicsSceneMouseEvent * mouseEvent)
+unsigned int HWDesignDiagram::findColumnItemType(GraphicsColumn* column) const
 {
-    // Disable highlights from all potential end points.
-    for (int i = 0 ; i < tempPotentialEndingEndPoints_.size(); ++i)
+    unsigned int itemType = column->getColumnDesc().getAllowedItems();
+
+    // Check if the item type is ambiguous (interface vs. the rest of the types).
+    if (itemType != CIT_INTERFACE && itemType & CIT_INTERFACE)
     {
-        tempPotentialEndingEndPoints_.at(i)->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
-    }
-    tempPotentialEndingEndPoints_.clear();
+        // Open a dialog to determine which type of item to create.
+        SelectItemTypeDialog dialog((QWidget*)parent(), column->getColumnDesc().getAllowedItems());
 
-    ConnectionEndpoint* endpoint =
-        DiagramUtil::snapToItem<ConnectionEndpoint>(mouseEvent->scenePos(), this, GridSize);
-
-    // Check if there is no end point close enough to the cursor or the
-    // end points cannot be connected together.
-    if (endpoint == 0 || endpoint == tempConnEndPoint_ || !endpoint->isVisible() ||
-        !endpoint->canConnect(tempConnEndPoint_) ||
-        !tempConnEndPoint_->canConnect(endpoint))
-    {
-        // Delete the temporary connection.
-        if (tempConnection_)
+        if (dialog.exec() == QDialog::Accepted)
         {
-            removeItem(tempConnection_);
-            delete tempConnection_;
-            tempConnection_ = 0;
-        }
-    }
-    else 
-    {
-        // Check if the connection should be converted to an off-page connection.
-        bool firstOffPage = tempConnEndPoint_->type() == OffPageConnectorItem::Type;
-        bool secondOffPage = endpoint->type() == OffPageConnectorItem::Type;
-
-        if (offPageMode_ ||
-            ((firstOffPage || secondOffPage) && tempConnEndPoint_->type() != endpoint->type()))
-        {
-            delete tempConnection_;
-
-            if (!firstOffPage)
-            {
-                tempConnEndPoint_ = tempConnEndPoint_->getOffPageConnector();
-            }
-
-            if (!secondOffPage)
-            {
-                endpoint = endpoint->getOffPageConnector();
-            }
-
-            tempConnection_ = new HWConnection(tempConnEndPoint_, endpoint, false,
-                                                         QString(), QString(), QString(), this);
-            tempConnection_->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
-            addItem(tempConnection_);
-        }
-
-        if (tempConnection_->connectEnds())
-        {
-            tempConnection_->fixOverlap();
-
-            QSharedPointer<QUndoCommand> cmd(new ConnectionAddCommand(this, tempConnection_));
-            getEditProvider().addCommand(cmd);
-
-            tempConnection_ = 0;
-
-            if (!offPageMode_)
-            {
-                tempConnEndPoint_ = 0;
-            }
+            itemType = dialog.getSelectedItemType();
         }
         else
         {
-            delete tempConnection_;
-            tempConnection_ = 0;
-            tempConnEndPoint_ = 0;
+            itemType = CIT_NONE;
         }
     }
+
+    return itemType;
 }
 
 //-----------------------------------------------------------------------------
-// Function: keyReleaseEvent()
+// Function: HWDesignDiagram::createDraftInnstance()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::keyReleaseEvent(QKeyEvent *event)
+void HWDesignDiagram::addDraftInstance(GraphicsColumn* column, QPointF const& position)
 {
-    // Check if the user ended the off-page connection mode.
-    if ((event->key() == Qt::Key_Shift) && offPageMode_)
+    // Determine an unused name for the component instance.
+    QString name = createInstanceName("instance");
+
+    // Create a component model without a valid vlnv.
+    QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
+    comp->setVlnv(VLNV());
+    comp->setComponentImplementation(getEditedComponent()->getComponentImplementation());
+
+    // Create the corresponding diagram component.
+    HWComponentItem* diagComp = new HWComponentItem(getLibraryInterface(), comp, name);
+    diagComp->setPos(snapPointToGrid(position));
+
+    QSharedPointer<ItemAddCommand> cmd(new ItemAddCommand(column, diagComp));
+
+    connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+        this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+    connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+        this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+    getEditProvider().addCommand(cmd);
+    cmd->redo();
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::addDraftInterface()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::addDraftInterface(HWComponentItem* targetComponent, QPointF const& position)
+{
+    // The component is unpackaged if it has an invalid vlnv.
+    if (!targetComponent->componentModel()->getVlnv()->isValid())
     {
-        if (tempConnEndPoint_ != 0)
+        QMap<BusPortItem*, QPointF> oldPositions;
+
+        // Save old port positions.
+        foreach (QGraphicsItem* item, targetComponent->childItems())
         {
-            if (tempConnEndPoint_->getConnections().size() == 0)
+            if (item->type() == BusPortItem::Type)
             {
-                tempConnEndPoint_->setVisible(false);
+                BusPortItem* port = static_cast<BusPortItem*>(item);
+                oldPositions.insert(port, port->pos());
             }
         }
-       
-        endConnect();
+
+        QSharedPointer<QUndoCommand> cmd(new PortAddCommand(targetComponent, snapPointToGrid(position)));
+        cmd->redo();
+
+        // Create child undo commands for the ports with changed position.
+        for (QMap<BusPortItem*, QPointF>::iterator current = oldPositions.begin(); 
+            current != oldPositions.end(); current++)
+        {
+            if (current.key()->pos() != current.value())
+            {
+                new PortMoveCommand(current.key(), current.value(), cmd.data());
+            }
+        }
+
+        // Add the command to the edit stack.
+        getEditProvider().addCommand(cmd);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: endConnect()
+// Function: HWDesignDiagram::toggleOffPageAt()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::endConnect()
+void HWDesignDiagram::toggleOffPageAt(QPointF const& position)
 {
-    // Destroy the connection that was being drawn.
-    if (tempConnection_) {
-        delete tempConnection_;
-        tempConnection_ = 0;
+    // Try to snap to a connection end point.
+    ConnectionEndpoint* endpoint = DiagramUtil::snapToItem<ConnectionEndpoint>(position, this, GridSize);
+
+    QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+
+    if (endpoint != 0 && endpoint->isVisible())
+    {
+        QList<GraphicsConnection*> connections = endpoint->getConnections();
+        if (connections.size() > 0)
+        {
+            hideOffPageConnections();
+
+            foreach (GraphicsConnection* conn, connections)
+            {
+                toggleConnectionStyle(conn, cmd.data());
+            }
+        }
+    }
+    else
+    {
+        QGraphicsItem* item = itemAt(position, QTransform());
+
+        if (item != 0 && item->type() == HWConnection::Type)
+        {
+            toggleConnectionStyle(static_cast<HWConnection*>(item), cmd.data());
+        }
     }
 
-    // Disable highlights from all end points.
+    if (cmd->childCount() > 0)
+    {
+        getEditProvider().addCommand(cmd);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::beginComponenReplace()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::beginComponentReplace(QPointF const& position)
+{
+    HWComponentItem* sourceComp =  static_cast<HWComponentItem*>(getTopmostComponent(position));
+
+    if (sourceComp != 0)
+    {
+        sourceComp_ = sourceComp;
+        QApplication::setOverrideCursor(Qt::ForbiddenCursor);
+        replaceMode_ = true;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::updaceComponenReplaceCursor()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::updateComponentReplaceCursor(QPointF const& cursorPosition)
+{
+    HWComponentItem* destComp = 0;
+    QList<QGraphicsItem*> itemList = items(cursorPosition);
+
+    if (!itemList.empty())
+    {
+        destComp = dynamic_cast<HWComponentItem*>(itemList.back());
+    }
+
+    if (destComp != 0 && destComp != sourceComp_)
+    {
+        QApplication::changeOverrideCursor(Qt::ClosedHandCursor);
+    }
+    else
+    {
+        QApplication::changeOverrideCursor(Qt::ForbiddenCursor);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::endComponentReplace()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::endComponentReplace(QPointF const& position)
+{
+    replaceMode_ = false;
+    QApplication::restoreOverrideCursor();
+
+    HWComponentItem* destComp = 0;
+    QList<QGraphicsItem*> itemList = items(position);
+
+    if (!itemList.empty())
+    {
+        destComp = dynamic_cast<HWComponentItem*>(itemList.back());
+    }
+
+    if (destComp == 0 || destComp == sourceComp_)
+    {
+        return;
+    }
+
+    QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+        tr("Component instance '%1' is about to be switched in place "
+        "with '%2'. Continue and replace?").arg(destComp->name(), sourceComp_->name()),
+        QMessageBox::Yes | QMessageBox::No, (QWidget*)parent());
+
+    if (msgBox.exec() == QMessageBox::Yes)
+    {
+        // Perform the replacement.
+        QSharedPointer<ReplaceComponentCommand> cmd(new ReplaceComponentCommand(destComp, sourceComp_, true, true));
+        connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+        connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+        getEditProvider().addCommand(cmd);
+        cmd->redo();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::updateConnectionDisplay()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::updateConnectionDisplay(QPointF const& cursorPosition)
+{
+    if (creatingConnection())
+    {
+        updateConnectionHighlight(cursorPosition);
+        updateCurrentConnection(cursorPosition);
+    }
+    else
+    {
+        updateHighlightForNewConnection(cursorPosition);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::updateConnectionHighlight()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::updateConnectionHighlight(QPointF const& cursorPosition)
+{
+    // Find out if there is an end point currently under the cursor.
+    HWConnectionEndpoint* endpoint = DiagramUtil::snapToItem<HWConnectionEndpoint>(cursorPosition, this, GridSize);
+
+    if (highlightedEndPoint_ != 0)
+    {
+        if (tempConnEndPoint_ != 0 && highlightedEndPoint_ != tempConnEndPoint_ &&
+            tempPotentialEndingEndPoints_.contains(highlightedEndPoint_))
+        {
+            highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_ALLOWED);
+        }
+        else
+        {
+            highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
+        }
+
+        highlightedEndPoint_ = 0;
+    }
+
+    // Check if there was an valid endpoint close enough.
+    if (endpoint != 0 && tempPotentialEndingEndPoints_.contains(endpoint))
+    {
+        // Highlight the end point.          
+        highlightedEndPoint_ = endpoint;
+        highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::updateCurrentConnection()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::updateCurrentConnection(QPointF const& cursorPosition)
+{
+    Q_ASSERT(tempConnection_->route().size() != 0);
+
+    HWConnection* newTempConnection_ = 0;
+
+    if (highlightedEndPoint_ != 0)
+    {
+        newTempConnection_ = new HWConnection(tempConnEndPoint_, highlightedEndPoint_, false,
+            QString(), QString(), QString(), this);                
+    }
+    else
+    {
+        newTempConnection_ = new HWConnection(tempConnEndPoint_->scenePos(),
+            tempConnEndPoint_->getDirection(), snapPointToGrid(cursorPosition),
+            QVector2D(0.0f, 0.0f), QString(), QString(), this);
+    }
+
+    if (tempConnEndPoint_->isAdHoc())
+    {
+        newTempConnection_->setLineWidth(1);
+    }
+    newTempConnection_->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
+
+    removeItem(tempConnection_);
+    removeCurrentConnection();
+
+    addItem(newTempConnection_);
+    tempConnection_ = newTempConnection_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::updateHighlightForNewConnection()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::updateHighlightForNewConnection(QPointF const& cursorPosition)
+{
+    clearHighlightedEndpoint();
+
+    // Find out if there is an end point currently under the cursor.
+    HWConnectionEndpoint* endpoint = DiagramUtil::snapToItem<HWConnectionEndpoint>(cursorPosition, this, GridSize);
+    if (endpoint != 0 && endpoint->isVisible())
+    {
+        highlightedEndPoint_ = endpoint;
+        highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
+
+        if (highlightedEndPoint_->type() == OffPageConnectorItem::Type)
+        {
+            hideOffPageConnections();
+
+            foreach (GraphicsConnection* conn, highlightedEndPoint_->getConnections())
+            {
+                conn->show();
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::clearHighlightedEndpoint()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::clearHighlightedEndpoint()
+{
     if (highlightedEndPoint_ != 0)
     {
         highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
         highlightedEndPoint_ = 0;
     }
-
-    for (int i = 0 ; i < tempPotentialEndingEndPoints_.size(); ++i)
-    {
-        tempPotentialEndingEndPoints_.at(i)->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
-    }
-    tempPotentialEndingEndPoints_.clear();
-
-    offPageMode_ = false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: onSelectionChanged()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::onSelectionChanged()
-{
-    // Disallow selecting elements of different type.
-    if (selectedItems().size() > 1)
-    {
-        // Check if all selected items have the same type.
-        int type = getCommonItemType(selectedItems());
-
-        if (type == -1)
-        {
-            // If not, deselect those that are in the new selection but no in the old one.
-            for (int i = 0; i < selectedItems().size(); ++i)
-            {
-                QGraphicsItem* item = selectedItems()[i];
-
-                if (!oldSelectedItems_.contains(item))
-                {
-                    item->setSelected(false);
-                }
-            }
-        }
-    }
-
-    selectionToFront();
-
-    // Retrieve the new selection.
-    QGraphicsItem* newSelection = 0;
-
-    if (!selectedItems().isEmpty())
-    {
-        newSelection = selectedItems().front();
-    }
-
-    // If the old selection was an off-page connector, hide its connections.
-    // Also hide the previously selected connection if it was an off-page connection.
-    for (int i = 0; i < oldSelectedItems_.size(); ++i)
-    {
-        QGraphicsItem* oldSelection = oldSelectedItems_[i];
-
-        if (oldSelection->type() == OffPageConnectorItem::Type)
-        {
-            OffPageConnectorItem* connector = static_cast<OffPageConnectorItem*>(oldSelection);
-
-            foreach (GraphicsConnection* conn, connector->getConnections())
-            {
-                if (conn != newSelection)
-                {
-                    conn->setVisible(false);
-                }
-            }
-        }
-        else if (oldSelection->type() == HWConnection::Type && !selectedItems().contains(oldSelection))
-        {
-            HWConnection* conn = static_cast<HWConnection*>(oldSelection);
-
-            if (conn->endpoint1() != 0)
-            {
-                if (conn->endpoint1()->type() == OffPageConnectorItem::Type)
-                {
-                    oldSelection->setVisible(false);
-                }
-                else
-                {
-                    oldSelection->setZValue(-1000);
-                }
-            }
-        }
-    }
-
-    // If the new selection is an off-page connector, show its connections.
-    if (newSelection != 0 && newSelection->type() == OffPageConnectorItem::Type)
-    {
-        OffPageConnectorItem* connector = static_cast<OffPageConnectorItem*>(newSelection);
-
-        foreach (GraphicsConnection* conn, connector->getConnections())
-        {
-            conn->setVisible(true);
-        }
-    }
-
-    onSelected(newSelection);
-
-    // Save the current selection as the old selection.
-    oldSelectedItems_ = selectedItems();
-    prepareContextMenuActions();
 }
 
 //-----------------------------------------------------------------------------
@@ -2506,7 +2628,7 @@ void HWDesignDiagram::hideOffPageConnections()
 
         if (conn != 0 && conn->endpoint1()->type() == OffPageConnectorItem::Type)
         {
-            conn->setVisible(false);
+            conn->hide();
         }
     }
 }
@@ -2516,20 +2638,14 @@ void HWDesignDiagram::hideOffPageConnections()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::destroyConnections()
 {
-    QList<QGraphicsItem*> conns;
-
-    foreach (QGraphicsItem* item, items()) {
-
-        // if the item is an interconnection
-        if (item->type() == HWConnection::Type) {
-            conns.append(item);
-        }
-    }
-
-    foreach (QGraphicsItem* item, conns)
+    foreach (QGraphicsItem* item, items()) 
     {
-        removeItem(item);
-        delete item;
+        // if the item is an interconnection
+        if (item->type() == HWConnection::Type) 
+        {
+            removeItem(item);
+            delete item;
+        }
     }
 }
 
@@ -2593,10 +2709,8 @@ void HWDesignDiagram::setVisibilityControlState(QString const& name, bool state)
             }
         }
     }
-    else
-    {
-        DesignDiagram::setVisibilityControlState(name, state);
-    }
+   
+    DesignDiagram::setVisibilityControlState(name, state);
 }
 
 //-----------------------------------------------------------------------------
@@ -2689,11 +2803,7 @@ void HWDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
         HWConnectionEndpoint* endpoint =
             DiagramUtil::snapToItem<HWConnectionEndpoint>(event->scenePos(), this, GridSize);
 
-        if (highlightedEndPoint_ != 0)
-        {
-            highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
-        }
-
+        clearHighlightedEndpoint();
         highlightedEndPoint_ = endpoint;
 
         // Allow the drop event if the end point is undefined or there are no connections
@@ -3103,4 +3213,3 @@ void HWDesignDiagram::selectAll()
         column->setSelected(true);
     }
 }
-
