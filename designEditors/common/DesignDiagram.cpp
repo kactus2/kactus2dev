@@ -51,7 +51,10 @@ DesignDiagram::DesignDiagram(LibraryInterface* lh, MainWindow* mainWnd,
       loading_(false),
       locked_(false),
 	  XMLComments_(),
-    vendorExtensions_()
+    vendorExtensions_(),
+    associationMode_(false),
+    associationStartItem_(0),
+    associationLine_(0)
 {
     setSceneRect(0, 0, 100000, 100000);
 
@@ -279,6 +282,18 @@ void DesignDiagram::onVendorExtensionRemoved(QSharedPointer<VendorExtension> ext
 }
 
 //-----------------------------------------------------------------------------
+// Function: DesignDiagram::onBeginAssociation()
+//-----------------------------------------------------------------------------
+void DesignDiagram::onBeginAssociation(Associable* startingPoint)
+{
+    associationMode_ = true;
+    associationStartItem_ = startingPoint;
+    QPointF start = startingPoint->connectionPoint();
+    associationLine_ = new QGraphicsLineItem(QLineF(start, start));
+    addItem(associationLine_);
+}
+
+//-----------------------------------------------------------------------------
 // Function: DesignDiagram::createInstanceName()
 //-----------------------------------------------------------------------------
 QString DesignDiagram::createInstanceName(QSharedPointer<Component> component)
@@ -341,7 +356,7 @@ void DesignDiagram::drawBackground(QPainter* painter, QRectF const& rect)
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::createLabel()
 //-----------------------------------------------------------------------------
-void DesignDiagram::createLabel(QPointF const& position)
+void DesignDiagram::createNote(QPointF const& position)
 {
     QSharedPointer<Kactus2Group> noteExtension(new Kactus2Group("kactus2:note"));
     StickyNote* note = new StickyNote(noteExtension);
@@ -354,14 +369,17 @@ void DesignDiagram::createLabel(QPointF const& position)
     connect(cmd.data(), SIGNAL(removeVendorExtension(QSharedPointer<VendorExtension>)),
         this, SLOT(onVendorExtensionRemoved(QSharedPointer<VendorExtension>)), Qt::UniqueConnection);
 
+    connect(note, SIGNAL(beginAssociation(Associable*)), 
+        this, SLOT(onBeginAssociation(Associable*)), Qt::UniqueConnection);
+
     getEditProvider().addCommand(cmd);
     cmd->redo();
 
     clearSelection();
     emit clearItemSelection();
-
     note->setSelected(true);    
     onSelected(note);
+
     note->beginEditing();
 }
 
@@ -541,6 +559,9 @@ void DesignDiagram::loadStickyNotes()
         {
             StickyNote* note = new StickyNote(extension.dynamicCast<Kactus2Group>());
 
+            connect(note, SIGNAL(beginAssociation(Associable*)), 
+                this, SLOT(onBeginAssociation(Associable*)), Qt::UniqueConnection);
+
             QSharedPointer<StickyNoteAddCommand> cmd(new StickyNoteAddCommand(note, this, note->pos()));
             cmd->redo();
         }
@@ -560,3 +581,45 @@ void DesignDiagram::setProtectionForStickyNotes()
         }
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::updateAssociationLine()
+//-----------------------------------------------------------------------------
+void DesignDiagram::updateAssociation(QPointF const& cursorPosition)
+{
+    QLineF line = associationLine_->line();
+    line.setP2(cursorPosition);
+    associationLine_->setLine(line);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::endAssociation()
+//-----------------------------------------------------------------------------
+void DesignDiagram::endAssociation(QPointF const& endpoint)
+{
+    removeItem(associationLine_);
+    delete associationLine_;
+    associationLine_ = 0;
+    associationMode_ = false;
+
+    createAssociation(associationStartItem_, endpoint);
+
+    associationStartItem_ = 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::inAssociationMode()
+//-----------------------------------------------------------------------------
+bool DesignDiagram::inAssociationMode()
+{
+    return associationMode_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::associationEnds()
+//-----------------------------------------------------------------------------
+bool DesignDiagram::associationEnds()
+{
+    return inAssociationMode() && associationLine_->line().p1() != associationLine_->line().p2();
+}
+

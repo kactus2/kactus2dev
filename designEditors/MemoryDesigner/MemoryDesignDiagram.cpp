@@ -36,6 +36,7 @@
 #include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DiagramUtil.h>
+#include <designEditors/common/StickyNote/StickyNote.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/designconfiguration.h>
@@ -173,7 +174,7 @@ void MemoryDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
     {
         if (!isProtected())
         {
-            createLabel(event->scenePos());
+            createNote(event->scenePos());
         }
     }
 }
@@ -701,3 +702,13 @@ QSharedPointer<Component const> MemoryDesignDiagram::getComponentByInstanceName(
 
     return QSharedPointer<Component const>();
 }
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDiagram::createAssociation()
+//-----------------------------------------------------------------------------
+void MemoryDesignDiagram::createAssociation(Associable* startNote, QPointF const& endpoint)
+{
+    // TODO: Add association to compatible items.
+    return;
+}
+

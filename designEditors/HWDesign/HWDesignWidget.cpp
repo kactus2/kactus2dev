@@ -12,6 +12,7 @@
 
 #include "HWDeleteCommands.h"
 
+#include <designEditors/common/Association.h>
 #include <designEditors/common/DiagramUtil.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
 
@@ -55,8 +56,9 @@
 #include <QPainter>
 #include <QPrintDialog>
 
-#include <QDebug>
-
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::HWDesignWidget()
+//-----------------------------------------------------------------------------
 HWDesignWidget::HWDesignWidget(LibraryInterface *lh, QWidget* parent)
     : DesignWidget(lh, parent)
 {
@@ -71,10 +73,16 @@ HWDesignWidget::HWDesignWidget(LibraryInterface *lh, QWidget* parent)
 	addVisibilityControl("Bus Widths", false);
 }
 
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::~HWDesignWidget()
+//-----------------------------------------------------------------------------
 HWDesignWidget::~HWDesignWidget()
 {
 }
 
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::setDesign()
+//-----------------------------------------------------------------------------
 bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 {	
 	disconnect(getDiagram(), SIGNAL(contentChanged()),
@@ -517,8 +525,12 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
         }
         else if (type == StickyNote::Type)
         {
-            removeSelectedLabels();
+            removeSelectedNotes();
         }
+        else if (type == Association::Type)
+        {
+            removeSelectedAssociations();
+        }        
     }
     else
     {

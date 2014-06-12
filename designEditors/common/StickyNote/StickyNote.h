@@ -17,6 +17,7 @@
 #include <designEditors/common/diagramgrid.h>
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
+#include <designEditors/common/Associable.h>
 
 class VendorExtension;
 class Kactus2Group;
@@ -27,13 +28,12 @@ class ColorFillTextItem;
 //-----------------------------------------------------------------------------
 //! DesignLabel class.
 //-----------------------------------------------------------------------------
-class StickyNote : public QObject, public QGraphicsItemGroup 
+class StickyNote : public QObject, public QGraphicsItemGroup, public Associable
 {
     Q_OBJECT
 public:
 
-    static const int TOP_OFFSET = 15;
-
+    static const int TOP_OFFSET = 20;
     static const int DEFAULT_WIDTH = GridSize * 8 * 2;
 
     enum { Type = GFX_TYPE_DIAGRAM_STICKY_NOTE };
@@ -44,7 +44,7 @@ public:
      *      @param [in] extension   The vendor extension representing the note.
      *      @param [in] parent      The parent item.
      */
-    explicit StickyNote(QSharedPointer<Kactus2Group> extension, QGraphicsItem* parent = 0);
+    StickyNote(QSharedPointer<Kactus2Group> extension, QGraphicsItem* parent = 0);
 
     //! The destructor.
     virtual ~StickyNote();
@@ -74,6 +74,17 @@ public:
     //! The item type identifier.
     virtual int type() const { return Type; }
 
+    /*!
+     *  Defines the connection point for associations in scene coordinates.
+     *
+     *      @return The connection point of the item.
+     */
+    virtual QPointF connectionPoint() const;
+
+signals:
+   
+    void beginAssociation(Associable* originator);
+
 protected:
 
     //! Handler for mouse press events.
@@ -81,6 +92,14 @@ protected:
 
     //! Handler for mouse release event.
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
+
+    
+    /*!
+     *  Checks if the item's position has changed as a result of a mouse drag.
+     *
+     *      @return True, if the position has changed, otherwise false.
+     */
+    bool positionChanged();
 
 private slots:
 
@@ -104,12 +123,23 @@ private:
     //! Creates the writing area of the note.
     void createWritableArea();
 
+    void createAssociationButton();
+
     //! Initializes the vendor extensions for the note.
     void initializeExtensions();
 
     //! Initialized the vendor extension for tracking the note position.
     void initializePosition();
     void initializeContent();
+
+    /*!
+     *  Checks if clicking a given position hits the association button.
+     *
+     *      @param [in] clickPosition   The position of the click.
+     *
+     *      @return True, if the click hits the association button, otherwise false.
+     */
+    bool hitsAssociationButton(QPointF const& clickPosition) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -122,12 +152,14 @@ private:
     QSharedPointer<Kactus2Group> extension_;
 
     //! The vendor extension containing the position of the note.
-    QSharedPointer<Kactus2Position> position_;
+    QSharedPointer<Kactus2Position> positionExtension_;
 
-    QSharedPointer<Kactus2Value> content_;
+    QSharedPointer<Kactus2Value> contentExtension_;
 
     //! Editor item for the notes.
     ColorFillTextItem* textArea_;
+
+    QGraphicsPixmapItem* associationButton_;
 };
 
 #endif // STICKYNOTE_H

@@ -30,6 +30,7 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/GenericEditProvider.h>
 
+#include <designEditors/common/Association.h>
 #include <designEditors/common/DiagramUtil.h>
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
@@ -883,7 +884,7 @@ void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     {
         if (!isProtected())
         {
-            createLabel(mouseEvent->scenePos());
+            createNote(mouseEvent->scenePos());
         }
     }
 }
@@ -907,6 +908,12 @@ void HWDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent)
         updateComponentReplaceCursor(mouseEvent->scenePos());
     }
 
+    if (inAssociationMode())
+    {
+        updateAssociation(mouseEvent->scenePos());
+        return;
+    }
+
     // Allow moving items only when a single item is selected.
     if (selectedItems().count() == 1)
     {
@@ -922,6 +929,12 @@ void HWDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         endComponentReplace(mouseEvent->scenePos());        
     }
     
+    if (associationEnds())
+    {
+        endAssociation(mouseEvent->scenePos());
+        return;
+    }
+
     // process the normal mouse release event
 	QGraphicsScene::mouseReleaseEvent(mouseEvent);
 }
@@ -2140,6 +2153,40 @@ void HWDesignDiagram::beginCreateConnection(QPointF const& startingPoint)
 }
 
 //-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::getConnectionStaringPoint()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::setConnectionStaringPoint(QPointF const& cursorPosition)
+{
+    // No need to change the starting point in off page mode.
+    if (offPageMode_ && tempConnEndPoint_ != 0)
+    {
+        return;
+    }
+
+    // Try to snap to a connection end point.
+    ConnectionEndpoint* endpoint = DiagramUtil::snapToItem<ConnectionEndpoint>(cursorPosition, this, GridSize);
+
+    if (endpoint == 0 || !endpoint->isVisible())
+    {
+        tempConnEndPoint_ = 0;
+        return;
+    }
+
+    if (offPageMode_)
+    {
+        clearHighlightedEndpoint();
+
+        if (endpoint->type() != OffPageConnectorItem::Type)
+        {
+            endpoint = endpoint->getOffPageConnector();
+            endpoint->show();
+        }
+    }
+
+    tempConnEndPoint_ = endpoint;
+}
+
+//-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::highlightConnectableEndpoints()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::highlightConnectableEndpoints()
@@ -3187,35 +3234,20 @@ void HWDesignDiagram::prepareContextMenuActions()
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::getConnectionStaringPoint()
+// Function: HWDesignDiagram::createAssociation()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::setConnectionStaringPoint(QPointF const& cursorPosition)
+void HWDesignDiagram::createAssociation(Associable* startItem, QPointF const& endpoint)
 {
-    // No need to change the starting point in off page mode.
-    if (offPageMode_ && tempConnEndPoint_ != 0)
+    QGraphicsItem* endItem = itemAt(endpoint, QTransform());
+    HWComponentItem* hwComp = qgraphicsitem_cast<HWComponentItem*>(endItem);
+
+    if (startItem && hwComp)
     {
-        return;
+        Association* connection = new Association(startItem, hwComp);
+        startItem->addAssociation(connection);
+        hwComp->addAssociation(connection);
+        connection->update();
+
+        addItem(connection);
     }
-
-    // Try to snap to a connection end point.
-    ConnectionEndpoint* endpoint = DiagramUtil::snapToItem<ConnectionEndpoint>(cursorPosition, this, GridSize);
-
-    if (endpoint == 0 || !endpoint->isVisible())
-    {
-        tempConnEndPoint_ = 0;
-        return;
-    }
-
-    if (offPageMode_)
-    {
-        clearHighlightedEndpoint();
-
-        if (endpoint->type() != OffPageConnectorItem::Type)
-        {
-            endpoint = endpoint->getOffPageConnector();
-            endpoint->show();
-        }
-    }
-
-    tempConnEndPoint_ = endpoint;
 }

@@ -425,6 +425,8 @@ CreateHelp
     <ClCompile Include="common\views\EditableTableView\editabletableview.cpp" />
     <ClCompile Include="common\views\EditableListView\editablelistview.cpp" />
     <ClCompile Include="common\models\ParameterModel\parametersmodel.cpp" />
+    <ClCompile Include="designEditors\common\Associable.cpp" />
+    <ClCompile Include="designEditors\common\Association.cpp" />
     <ClCompile Include="designEditors\common\ComponentInstanceEditor\componentinstanceeditor.cpp" />
     <ClCompile Include="designEditors\common\ComponentInstanceEditor\componentinstancemodel.cpp" />
     <ClCompile Include="designEditors\common\ComponentInstanceEditor\configurableelementdelegate.cpp" />
@@ -2330,6 +2332,8 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
     </CustomBuild>
+    <ClInclude Include="designEditors\common\Associable.h" />
+    <ClInclude Include="designEditors\common\Association.h" />
     <ClInclude Include="designEditors\common\ColumnTypes.h" />
     <CustomBuild Include="designEditors\common\DesignDiagram.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -13905,6 +13909,12 @@ CreateHelp
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
     <None Include="ClassDiagram2.cd" />
+    <None Include="ClassDiagram3.cd" />
+    <None Include="ClassDiagram4.cd" />
+    <None Include="ClassDiagram5.cd" />
+    <None Include="ClassDiagram6.cd" />
+    <None Include="ClassDiagram7.cd" />
+    <None Include="ClassDiagram8.cd" />
     <None Include="common\graphics\abs-def.png" />
     <None Include="common\graphics\add.png" />
     <None Include="common\graphics\appicon.png" />

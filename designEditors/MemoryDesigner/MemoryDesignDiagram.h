@@ -28,6 +28,7 @@ class MemoryDesignWidget;
 class AddressSpaceItem;
 class MemoryItem;
 class BusInterface;
+class Associable;
 
 //-----------------------------------------------------------------------------
 //! MemoryDesignDiagram class.
@@ -182,6 +183,8 @@ private:
                    MemoryItem const* memoryItem, quint64& addressOffset) const;
 
     QSharedPointer<Component const> getComponentByInstanceName(QString const& componentRef) const;
+
+    virtual void createAssociation(Associable* startNote, QPointF const& endpoint);
 
     //-----------------------------------------------------------------------------
     // Data.

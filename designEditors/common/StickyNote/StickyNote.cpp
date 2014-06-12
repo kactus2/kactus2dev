@@ -14,33 +14,41 @@
 #include "ColorFillTextItem.h"
 #include "StickyNoteMoveCommand.h"
 
-#include <QPainter>
-#include <QStyleOptionGraphicsItem>
-#include <QSharedPointer>
-
 #include <common/GenericEditProvider.h>
 
 #include <designEditors/common/DesignDiagram.h>
+#include <designEditors/common/diagramgrid.h>
 
 #include <IPXACTmodels/VendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
+#include <QGraphicsPixmapItem>
+#include <QObject>
+#include <QPainter>
+#include <QPixmap>
+#include <QPolygonF>
+#include <QStyleOptionGraphicsItem>
+#include <QSharedPointer>
+
 //-----------------------------------------------------------------------------
 // Function: StickyNote::StickyNote()
 //-----------------------------------------------------------------------------
 StickyNote::StickyNote(QSharedPointer<Kactus2Group> extension, QGraphicsItem* parent):
     QGraphicsItemGroup(parent),
+    Associable(),
     oldPos_(),
     extension_(extension),
-    position_(),
-    content_(),
-    textArea_(0)
+    positionExtension_(),
+    contentExtension_(),
+    textArea_(0),
+    associationButton_(0)
 {
     setItemOptions();
     createGluedEdge();
     createWritableArea();
+    createAssociationButton();
 
     initializeExtensions();
 
@@ -61,7 +69,6 @@ StickyNote::~StickyNote()
 void StickyNote::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
     oldPos_ = pos();
-
     QGraphicsItemGroup::mousePressEvent(event);
 }
 
@@ -79,11 +86,23 @@ void StickyNote::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 
     QGraphicsItemGroup::mouseReleaseEvent(event);
 
-    if (pos() != oldPos_)
+    if (positionChanged())
     {
         QSharedPointer<StickyNoteMoveCommand> moveCommand(new StickyNoteMoveCommand(this, oldPos_));
         diagram->getEditProvider().addCommand(moveCommand);
     }
+    else if (hitsAssociationButton(event->pos()))
+    {
+        emit beginAssociation(this);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::positionChanged()
+//-----------------------------------------------------------------------------
+bool StickyNote::positionChanged()
+{
+    return pos() != oldPos_;
 }
 
 //-----------------------------------------------------------------------------
@@ -101,7 +120,12 @@ QVariant StickyNote::itemChange(GraphicsItemChange change, const QVariant& value
 {
     if (change == ItemPositionChange)
     {
-        position_->setPosition(value.toPointF());
+        // Assert that the new position does not overlap the column headers.
+        QPointF newPosition = snapPointToGrid(value.toPointF());
+        newPosition.setY(qMax(newPosition.y(), 31.0));
+
+        positionExtension_->setPosition(newPosition);
+        return newPosition;
     }
 
     return QGraphicsItemGroup::itemChange(change, value);
@@ -116,11 +140,19 @@ QSharedPointer<VendorExtension> StickyNote::getVendorExtension() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: StickyNote::connectionPoint()
+//-----------------------------------------------------------------------------
+QPointF StickyNote::connectionPoint() const
+{
+    return mapToScene(boundingRect().center());
+}
+
+//-----------------------------------------------------------------------------
 // Function: StickyNote::onTextEdited()
 //-----------------------------------------------------------------------------
 void StickyNote::onTextEdited()
 {
-    content_->setValue(textArea_->toPlainText());
+    contentExtension_->setValue(textArea_->toPlainText());
 }
 
 //-----------------------------------------------------------------------------
@@ -143,11 +175,10 @@ void StickyNote::createGluedEdge()
 {
     QColor topColor = QColor("lemonChiffon").darker(103);
 
-    QGraphicsRectItem* glueEdge = new QGraphicsRectItem(0, 0 , DEFAULT_WIDTH, TOP_OFFSET);
-    QPen outlinePen;
-    outlinePen.setStyle(Qt::NoPen);
+    QGraphicsRectItem* glueEdge = new QGraphicsRectItem(0, 0, DEFAULT_WIDTH, TOP_OFFSET);
+    QPen outlinePen(Qt::black, 0, Qt::NoPen);    
     glueEdge->setPen(outlinePen);
-    glueEdge->setBrush(QBrush(topColor));
+    glueEdge->setBrush(topColor);
 
     addToGroup(glueEdge);
 }
@@ -163,6 +194,18 @@ void StickyNote::createWritableArea()
     textArea_->setPos(0, TOP_OFFSET);
 
     addToGroup(textArea_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::createAssociationButton()
+//-----------------------------------------------------------------------------
+void StickyNote::createAssociationButton()
+{
+    QPixmap pixmap(":/icons/common/graphics/pin--plus.png");
+    associationButton_ = new QGraphicsPixmapItem(pixmap, this);
+    associationButton_->setToolTip(QObject::tr("Click to add a new association to a component."));
+    associationButton_->setPos(DEFAULT_WIDTH - associationButton_->boundingRect().width(), 0);
+    associationButton_->setZValue(1.0);
 }
 
 //-----------------------------------------------------------------------------
@@ -183,15 +226,15 @@ void StickyNote::initializePosition()
 
     if (positionExtensions.isEmpty())
     {
-        position_ = QSharedPointer<Kactus2Position>(new Kactus2Position(QPointF()));
-        extension_->addToGroup(position_);
+        positionExtension_ = QSharedPointer<Kactus2Position>(new Kactus2Position(QPointF()));
+        extension_->addToGroup(positionExtension_);
     }
     else
     {
-        position_ = positionExtensions.first().dynamicCast<Kactus2Position>();
+        positionExtension_ = positionExtensions.first().dynamicCast<Kactus2Position>();
     }
 
-    setPos(position_->position());
+    setPos(positionExtension_->position());
 }
 
 //-----------------------------------------------------------------------------
@@ -203,13 +246,22 @@ void StickyNote::initializeContent()
 
     if (contentExtensions.isEmpty())
     {
-        content_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:content", ""));
-        extension_->addToGroup(content_);
+        contentExtension_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:content", ""));
+        extension_->addToGroup(contentExtension_);
     }
     else
     {
-        content_ = contentExtensions.first().dynamicCast<Kactus2Value>();
+        contentExtension_ = contentExtensions.first().dynamicCast<Kactus2Value>();
     }
 
-    textArea_->setPlainText(content_->value());
+    textArea_->setPlainText(contentExtension_->value());
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::clickedAssociationButton()
+//-----------------------------------------------------------------------------
+bool StickyNote::hitsAssociationButton(QPointF const& clickPosition) const
+{
+    QPolygonF buttonArea = mapFromItem(associationButton_, associationButton_->boundingRect());
+    return buttonArea.containsPoint(clickPosition, Qt::OddEvenFill);
 }

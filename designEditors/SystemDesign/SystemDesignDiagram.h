@@ -492,6 +492,8 @@ private:
      */
     void prepareContextMenuActions();
 
+    virtual void createAssociation(Associable* startItem, QPointF const& endpoint);
+
     //-----------------------------------------------------------------------------
     //! Drag type enumeration.
     //-----------------------------------------------------------------------------

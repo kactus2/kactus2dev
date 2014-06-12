@@ -319,14 +319,19 @@ public slots:
 
 
 protected:
+    //! Handler for mouse click events.
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
+    //! Handler for mouse move events.
     void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
+    //! Handler for mouse release events.
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
+    //! Handler for mouse double click events.
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
+    //! Handler for mouse wheel events.
     void wheelEvent(QGraphicsSceneWheelEvent *event);
 
     //! Called when a key has been release.
@@ -391,6 +396,12 @@ private:
      */
     void connectAt(QPointF const& cursorPosition);
 
+    /*!
+     *  Sets the starting end point for a new connection. If offpage mode is on, the previous starting point
+     *  is used, otherwise the starting point is selected based on the clicked cursor position.
+     *
+     *      @param [in] cursorPosition   The cursor position.     
+     */
     void setConnectionStaringPoint(QPointF const& cursorPosition);
 
     /*!
@@ -609,6 +620,8 @@ private:
      *  Enables/disable context menu actions based on the current selection.
      */
     void prepareContextMenuActions();
+
+     virtual void createAssociation(Associable* startItem, QPointF const& endpoint);
 
     //-----------------------------------------------------------------------------
     // Data.

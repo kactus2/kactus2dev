@@ -16,6 +16,7 @@
 #include <common/GenericEditProvider.h>
 
 #include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
+#include <designEditors/common/Association.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
 
 #include <library/LibraryManager/libraryinterface.h>
@@ -32,7 +33,6 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <QFileInfo>
-
 
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignWidget()
@@ -195,9 +195,12 @@ void MemoryDesignWidget::keyPressEvent(QKeyEvent* event)
 
         if (type == StickyNote::Type)
         {
-            removeSelectedLabels();
+            removeSelectedNotes();
         }
-
+        else if (type == Association::Type)
+        {
+            removeSelectedAssociations();
+        }   
         //QGraphicsItem* selected = getDiagram()->selectedItems().first();
     }
 }

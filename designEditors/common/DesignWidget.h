@@ -242,7 +242,11 @@ protected:
 
     virtual bool setDesign(QSharedPointer<Component> component, const QString& viewName);
 
-    void removeSelectedLabels();
+    //! Removes all selected sticky notes.
+    void removeSelectedNotes();
+
+    //! Removes all selected associations.
+    void removeSelectedAssociations();
 
 private:
     // Disable copying.

@@ -12,10 +12,11 @@
 #ifndef COMPONENTITEM_H
 #define COMPONENTITEM_H
 
+#include <designEditors/common/diagramgrid.h>
+#include <designEditors/common/Associable.h>
+
 #include <QGraphicsRectItem>
 #include <QSharedPointer>
-
-#include <designEditors/common/diagramgrid.h>
 
 class Component;
 class ConnectionEndpoint;
@@ -25,7 +26,7 @@ class IGraphicsItemStack;
 //-----------------------------------------------------------------------------
 //! ComponentItem class.
 //-----------------------------------------------------------------------------
-class ComponentItem : public QObject, public QGraphicsRectItem
+class ComponentItem : public QObject, public QGraphicsRectItem, public Associable
 {
     Q_OBJECT 
 
@@ -163,6 +164,13 @@ public:
 	 * \return QString containing uuid.
 	 */
 	QString getUuid() const;
+
+    /*!
+     *  Defines the connection point for associations in scene coordinates.
+     *
+     *      @return The connection point of the item.
+     */
+    virtual QPointF connectionPoint() const;
 
 signals:
     //! Emitted when an endpoint has been moved.

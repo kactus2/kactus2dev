@@ -24,6 +24,7 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
 #include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
+#include <designEditors/common/Association.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
 
 #include <library/LibraryManager/libraryinterface.h>
@@ -403,8 +404,12 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
         }
         else if (type == StickyNote::Type)
         {
-            removeSelectedLabels();
+            removeSelectedNotes();
         }
+        else if (type == Association::Type)
+        {
+            removeSelectedAssociations();
+        }   
     }
 }
 

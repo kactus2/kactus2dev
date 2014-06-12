@@ -36,7 +36,7 @@ class ComponentItem;
 class Design;
 class VLNV;
 class DesignWidget;
-
+class Associable;
 //-----------------------------------------------------------------------------
 //! Base class for all design diagrams.
 //-----------------------------------------------------------------------------
@@ -255,6 +255,8 @@ public slots:
     //! Called when a vendor extension is removed from the design.
     virtual void onVendorExtensionRemoved(QSharedPointer<VendorExtension> extension);
 
+    void onBeginAssociation(Associable* startingPoint);
+
 signals:
     //! Emitted when component with given vlnv should be opened in editor.
     void openComponent(const VLNV& vlnv);
@@ -334,7 +336,7 @@ protected:
      *
      *      @param [in] position   The initial position of the label.
      */
-    virtual void createLabel(QPointF const& position);
+    virtual void createNote(QPointF const& position);
 
      /*!
      *  Called when an item has been selected in the diagram.
@@ -358,6 +360,17 @@ protected:
      *      @param [in] event The triggering event.
      */
 	virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent* event);
+
+
+    void updateAssociation(QPointF const& cursorPosition);
+
+    void endAssociation(QPointF const& endpoint);
+
+    virtual void createAssociation(Associable* startNote, QPointF const& endpoint) = 0;
+
+    bool inAssociationMode();
+
+    bool associationEnds();
 
 private:
     // Disable copying.
@@ -415,6 +428,12 @@ private:
 	QStringList XMLComments_;
 
     QList<QSharedPointer<VendorExtension> > vendorExtensions_;
+    
+    bool associationMode_;
+
+    Associable* associationStartItem_;
+
+    QGraphicsLineItem* associationLine_;
 };
 
 //-----------------------------------------------------------------------------

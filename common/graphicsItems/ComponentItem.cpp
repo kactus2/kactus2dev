@@ -317,3 +317,11 @@ IGraphicsItemStack* ComponentItem::getParentStack()
 QString ComponentItem::getUuid() const {
 	return uuid_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: ComponentItem::connectionPoint()
+//-----------------------------------------------------------------------------
+QPointF ComponentItem::connectionPoint() const
+{
+    return mapToScene(rect().center());
+}

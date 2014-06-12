@@ -42,8 +42,11 @@
 #include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
 
+#include <designEditors/common/Association.h>
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DiagramUtil.h>
+#include <designEditors/common/StickyNote/StickyNote.h>
+
 #include <common/GenericEditProvider.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/graphicsItems/ComponentItem.h>
@@ -1020,7 +1023,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
     {
         if (!isProtected())
         {
-            createLabel(event->scenePos());
+            createNote(event->scenePos());
         }
     }
 }
@@ -1188,6 +1191,12 @@ void SystemDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         }
     }
 
+    if (inAssociationMode())
+    {
+        updateAssociation(event->scenePos());
+        return;
+    }
+
     // Allow moving items only when a single item is selected.
     if (selectedItems().count() == 1)
     {
@@ -1235,6 +1244,12 @@ void SystemDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
         getEditProvider().addCommand(cmd);
         cmd->redo();
+    }
+
+    if (associationEnds())
+    {
+        endAssociation(event->scenePos());
+        return;
     }
 
     // Process the normal mouse release event.
@@ -3525,5 +3540,29 @@ void SystemDesignDiagram::prepareContextMenuActions()
             pasteAction_.setEnabled(!isProtected() && mimeData != 0 && mimeData->hasImage() &&
                                     mimeData->imageData().canConvert<ComponentCollectionCopyData>());
         }        
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::createAssociation()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::createAssociation(Associable* startItem, QPointF const& endpoint)
+{
+    QGraphicsItem* endItem = itemAt(endpoint, QTransform());
+    ComponentItem* comp = qgraphicsitem_cast<SWComponentItem*>(endItem);
+
+    if (!comp)
+    {
+        comp = qgraphicsitem_cast<HWMappingItem*>(endItem);
+    }
+
+    if (startItem && comp)
+    {
+        Association* connection = new Association(startItem, comp);
+        startItem->addAssociation(connection);
+        comp->addAssociation(connection);
+        connection->update();
+
+        addItem(connection);
     }
 }

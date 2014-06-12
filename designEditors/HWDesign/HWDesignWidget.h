@@ -118,8 +118,8 @@ private:
 	 * configuration to.
 	 *
 	*/
-	void createDesignForComponent(QSharedPointer<Component> component,
-		const QString& dirPath);
+	void createDesignForComponent(QSharedPointer<Component> component, const QString& dirPath);
+
 };
 
 #endif // HWDESIGNWIDGET_H

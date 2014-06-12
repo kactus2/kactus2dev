@@ -4111,6 +4111,12 @@
     <ClCompile Include="IPXACTmodels\HierConnection.cpp">
       <Filter>Source Files\IPXACTmodels</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\common\Associable.cpp">
+      <Filter>Source Files\designEditors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\Association.cpp">
+      <Filter>Source Files\designEditors\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6023,6 +6029,12 @@
     <ClInclude Include="IPXACTmodels\HierConnection.h">
       <Filter>Header Files\IPXACTmodels</Filter>
     </ClInclude>
+    <ClInclude Include="designEditors\common\Associable.h">
+      <Filter>Header Files\designEditors\common</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\common\Association.h">
+      <Filter>Header Files\designEditors\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="executable\Kactus2_d.exe">
@@ -6358,5 +6370,11 @@
     <None Include="icon1.ico" />
     <None Include="ClassDiagram1.cd" />
     <None Include="ClassDiagram2.cd" />
+    <None Include="ClassDiagram3.cd" />
+    <None Include="ClassDiagram4.cd" />
+    <None Include="ClassDiagram5.cd" />
+    <None Include="ClassDiagram6.cd" />
+    <None Include="ClassDiagram7.cd" />
+    <None Include="ClassDiagram8.cd" />
   </ItemGroup>
 </Project>

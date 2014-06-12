@@ -11,12 +11,7 @@
 
 #include "DesignWidget.h"
 
-#include <QScrollBar>
-#include <QVBoxLayout>
-#include <QPrinter>
-#include <QPrintDialog>
-#include <QApplication>
-#include <QGraphicsItem>
+#include "Association.h"
 
 #include <common/GenericEditProvider.h>
 
@@ -27,6 +22,13 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/component.h>
+
+#include <QScrollBar>
+#include <QVBoxLayout>
+#include <QPrinter>
+#include <QPrintDialog>
+#include <QApplication>
+#include <QGraphicsItem>
 
 //-----------------------------------------------------------------------------
 // Function: DesignWidget::DesignWidget()
@@ -271,36 +273,54 @@ bool DesignWidget::setDesign(QSharedPointer<Component> component, const QString&
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignWidget::removeSelectedLabels()
+// Function: DesignWidget::removeSelectedNotes()
 //-----------------------------------------------------------------------------
-void DesignWidget::removeSelectedLabels()
+void DesignWidget::removeSelectedNotes()
 {
     QList<QGraphicsItem*> selectedItems = getDiagram()->selectedItems();
-
     getDiagram()->clearSelection();
 
-    if (!selectedItems.isEmpty())
-    {  
-        QSharedPointer<QUndoCommand> parentDelete(new QUndoCommand());
-        foreach (QGraphicsItem* selected, selectedItems)
-        {
-            if (selected->type() == StickyNote::Type)
-            {
-                StickyNote* note = dynamic_cast<StickyNote*>(selected);
-                StickyNoteRemoveCommand* cmd = new StickyNoteRemoveCommand(note, diagram_, parentDelete.data());
+    QSharedPointer<QUndoCommand> parentDelete(new QUndoCommand());
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+            StickyNote* note = qgraphicsitem_cast<StickyNote*>(selected);
+            StickyNoteRemoveCommand* cmd = new StickyNoteRemoveCommand(note, diagram_, parentDelete.data());
 
-                connect(cmd, SIGNAL(addVendorExtension(QSharedPointer<VendorExtension>)),
-                    diagram_, SLOT(onVendorExtensionAdded(QSharedPointer<VendorExtension>)), Qt::UniqueConnection);
+            connect(cmd, SIGNAL(addVendorExtension(QSharedPointer<VendorExtension>)),
+                diagram_, SLOT(onVendorExtensionAdded(QSharedPointer<VendorExtension>)), Qt::UniqueConnection);
 
-                connect(cmd, SIGNAL(removeVendorExtension(QSharedPointer<VendorExtension>)),
-                    diagram_, SLOT(onVendorExtensionRemoved(QSharedPointer<VendorExtension>)), Qt::UniqueConnection);
+            connect(cmd, SIGNAL(removeVendorExtension(QSharedPointer<VendorExtension>)),
+                diagram_, SLOT(onVendorExtensionRemoved(QSharedPointer<VendorExtension>)), Qt::UniqueConnection);
 
-                cmd->redo();
-            }
-        }
-
-        getGenericEditProvider()->addCommand(parentDelete);
+            cmd->redo();
     }
+
+    getGenericEditProvider()->addCommand(parentDelete);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignWidget::removeSelectedAssociations()
+//-----------------------------------------------------------------------------
+void DesignWidget::removeSelectedAssociations()
+{
+    QList<QGraphicsItem*> selectedItems = getDiagram()->selectedItems();
+    getDiagram()->clearSelection();
+
+    QSharedPointer<QUndoCommand> parentDelete(new QUndoCommand());
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        if (selected->type() == Association::Type)
+        {
+            Association* association = qgraphicsitem_cast<Association*>(selected);
+            association->disconnect();
+
+            getDiagram()->removeItem(association);
+            delete association;
+        }
+    }
+
+    getGenericEditProvider()->addCommand(parentDelete);
+
 }
 
 //-----------------------------------------------------------------------------

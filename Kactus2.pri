@@ -586,6 +586,9 @@ HEADERS += ./resource.h \
     ./IPXACTmodels/generatorchainselector.h \
     ./IPXACTmodels/HierApiDependency.h \
     ./IPXACTmodels/HierComConnection.h \
+    ./IPXACTmodels/HierConnection.h \
+    ./IPXACTmodels/Interconnection.h \
+    ./IPXACTmodels/Interface.h \
     ./IPXACTmodels/librarycomponent.h \
     ./IPXACTmodels/masterinterface.h \
     ./IPXACTmodels/memoryblockdata.h \
@@ -629,9 +632,8 @@ HEADERS += ./resource.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Position.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Value.h \
-    ./IPXACTmodels/Interconnection.h \
-    ./IPXACTmodels/Interface.h \
-    ./IPXACTmodels/HierConnection.h
+    ./designEditors/common/Associable.h \
+    ./designEditors/common/Association.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
@@ -1186,6 +1188,9 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXACTmodels/GenericVendorExtension.cpp \
     ./IPXACTmodels/HierApiDependency.cpp \
     ./IPXACTmodels/HierComConnection.cpp \
+    ./IPXACTmodels/HierConnection.cpp \
+    ./IPXACTmodels/Interconnection.cpp \
+    ./IPXACTmodels/Interface.cpp \
     ./IPXACTmodels/librarycomponent.cpp \
     ./IPXACTmodels/masterinterface.cpp \
     ./IPXACTmodels/memoryblockdata.cpp \
@@ -1226,7 +1231,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
-    ./IPXACTmodels/Interconnection.cpp \
-    ./IPXACTmodels/Interface.cpp \
-    ./IPXACTmodels/HierConnection.cpp
+    ./designEditors/common/Associable.cpp \
+    ./designEditors/common/Association.cpp
 RESOURCES += kactus.qrc
