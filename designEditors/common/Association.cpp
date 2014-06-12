@@ -38,7 +38,7 @@ Association::~Association()
 //-----------------------------------------------------------------------------
 // Function: Association::paint()
 //-----------------------------------------------------------------------------
-void Association::paint(QPainter* painter, QStyleOptionGraphicsItem const* option, QWidget* widget)
+void Association::paint(QPainter* painter, QStyleOptionGraphicsItem const*, QWidget*)
 {
     if (isSelected()) 
     {
@@ -49,7 +49,8 @@ void Association::paint(QPainter* painter, QStyleOptionGraphicsItem const* optio
         painter->setPen(pen());
     }
 
-    QLineF centerLine(startItem_->connectionPoint(), endItem_->connectionPoint());
+    QPointF startPoint = startItem_->connectionPoint();
+    QLineF centerLine(startPoint, endItem_->connectionPoint(startPoint));
     setLine(centerLine);
 
     painter->drawLine(centerLine);

@@ -1535,13 +1535,8 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
         return;
     }
 
-    // This fixes the problem when the user click above a text label or a pixmap but
-    // actually wants to select the parent item (such as the actual component, not its label).
-    while (item->parentItem() != 0 &&
-           (item->type() == QGraphicsTextItem::Type || item->type() == QGraphicsPixmapItem::Type))
-    {
-        item = item->parentItem();
-    }
+        item = getBaseItemOf(item);
+    
 
     if (dynamic_cast<SystemComponentItem*>(item) != 0)
     {
@@ -3207,13 +3202,8 @@ QMenu* SystemDesignDiagram::createContextMenu(QPointF const& pos)
         // Or select new item if the clicked item does not belong into the current selection.
         else
         {
-            // This fixes the problem when the user click above a text label or a pixmap but
-            // actually wants to select the parent item (such as the actual component, not its label).
-            if (item->parentItem() != 0 &&
-                (item->type() == QGraphicsTextItem::Type || item->type() == QGraphicsPixmapItem::Type))
-            {
-                item = item->parentItem();
-            }
+
+            item = getBaseItemOf(item);            
 
             if (!selectedItems().contains(item))
             {
@@ -3540,29 +3530,5 @@ void SystemDesignDiagram::prepareContextMenuActions()
             pasteAction_.setEnabled(!isProtected() && mimeData != 0 && mimeData->hasImage() &&
                                     mimeData->imageData().canConvert<ComponentCollectionCopyData>());
         }        
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: SystemDesignDiagram::createAssociation()
-//-----------------------------------------------------------------------------
-void SystemDesignDiagram::createAssociation(Associable* startItem, QPointF const& endpoint)
-{
-    QGraphicsItem* endItem = itemAt(endpoint, QTransform());
-    ComponentItem* comp = qgraphicsitem_cast<SWComponentItem*>(endItem);
-
-    if (!comp)
-    {
-        comp = qgraphicsitem_cast<HWMappingItem*>(endItem);
-    }
-
-    if (startItem && comp)
-    {
-        Association* connection = new Association(startItem, comp);
-        startItem->addAssociation(connection);
-        comp->addAssociation(connection);
-        connection->update();
-
-        addItem(connection);
     }
 }

@@ -12,6 +12,8 @@
 #ifndef GRAPHICSCONNECTION_H
 #define GRAPHICSCONNECTION_H
 
+#include <designEditors/common/Associable.h>
+
 #include <common/graphicsItems/ConnectionEndpoint.h>
 
 #include <QGraphicsPathItem>
@@ -23,7 +25,7 @@ class DesignDiagram;
 //-----------------------------------------------------------------------------
 //! Base class for graphical connections.
 //-----------------------------------------------------------------------------
-class GraphicsConnection : public QObject, public QGraphicsPathItem
+class GraphicsConnection : public QObject, public QGraphicsPathItem, public Associable
 {
     Q_OBJECT
 
@@ -220,6 +222,16 @@ public:
      *  Returns true if the connection uses the default name.
      */
     bool hasDefaultName() const;
+
+    /*!
+     *  Defines the connection point for associations in scene coordinates.
+     *     
+     *      @param [in] otherEnd   The position of the other end connection point.
+     *
+     *      @return The connection point of the item.
+     */
+    virtual QPointF connectionPoint(QPointF const& otherEnd) const;
+
 
 signals:
     //! Signals that the connection has changed.
@@ -428,6 +440,17 @@ private:
      *      @return 
      */
     void updateEndpointDirection(ConnectionEndpoint* endpoint, QVector2D dir);
+
+
+    /*!
+     *  Finds the point closest to the given point from a set of points.
+     *
+     *      @param [in] sourcePoints    The points to search through.
+     *      @param [in] destination     The point get closest to.
+     *
+     *      @return The point closest to destination.
+     */
+    QPointF findClosestPoint(QList<QPointF> const& sourcePoints, QPointF const& destination) const;
 
     //-----------------------------------------------------------------------------
     // Data.

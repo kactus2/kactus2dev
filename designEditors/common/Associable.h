@@ -45,10 +45,12 @@ public:
 
     /*!
      *  Defines the connection point for associations in scene coordinates.
+     *     
+     *      @param [in] otherEnd   The position of the other end connection point.
      *
      *      @return The connection point of the item.
      */
-    virtual QPointF connectionPoint() const = 0;
+    virtual QPointF connectionPoint(QPointF const& otherEnd = QPointF()) const = 0;
 
 private:
 

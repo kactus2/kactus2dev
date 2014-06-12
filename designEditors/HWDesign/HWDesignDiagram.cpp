@@ -30,7 +30,6 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/GenericEditProvider.h>
 
-#include <designEditors/common/Association.h>
 #include <designEditors/common/DiagramUtil.h>
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
@@ -955,13 +954,7 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
         return;
     }
 
-    // This fixes the problem when the user click above a text label or a pixmap but
-    // actually wants to select the parent item (such as the actual component, not its label).
-    while (item->parentItem() != 0 &&
-        (item->type() == QGraphicsTextItem::Type || item->type() == QGraphicsPixmapItem::Type))
-    {
-        item = item->parentItem();
-    }
+    item = getBaseItemOf(item);
 
     if (item->type() == HWComponentItem::Type)
     {
@@ -1543,13 +1536,7 @@ QMenu* HWDesignDiagram::createContextMenu(QPointF const& pos)
         // Or select new item if the clicked item does not belong into the current selection.
         else
         {
-            // This fixes the problem when the user click above a text label or a pixmap but
-            // actually wants to select the parent item (such as the actual component, not its label).
-            while (item->parentItem() != 0 &&
-                (item->type() == QGraphicsTextItem::Type || item->type() == QGraphicsPixmapItem::Type))
-            {
-                item = item->parentItem();
-            }
+            item = getBaseItemOf(item);
 
             if (!selectedItems().contains(item))
             {
@@ -3230,24 +3217,5 @@ void HWDesignDiagram::prepareContextMenuActions()
                                     mimedata->imageData().canConvert<ColumnCollectionCopyData>());
         }
 
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::createAssociation()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::createAssociation(Associable* startItem, QPointF const& endpoint)
-{
-    QGraphicsItem* endItem = itemAt(endpoint, QTransform());
-    HWComponentItem* hwComp = qgraphicsitem_cast<HWComponentItem*>(endItem);
-
-    if (startItem && hwComp)
-    {
-        Association* connection = new Association(startItem, hwComp);
-        startItem->addAssociation(connection);
-        hwComp->addAssociation(connection);
-        connection->update();
-
-        addItem(connection);
     }
 }

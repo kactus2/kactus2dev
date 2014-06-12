@@ -1088,19 +1088,6 @@ void GraphicsConnection::drawOverlapGraphics(QPainter* painter)
 
                 painter->setPen(QPen(QColor(160, 160, 160), pen().width() + 1));
 
-                // Left intersection.
-                // TODO: Requires checking whether the segment is first or last and the endpoint is inside the component.
-//                 if (type1 == QLineF::BoundedIntersection)
-//                 {
-//                     drawLineGap(painter, line1, pt);
-//                 }
-// 
-//                 // Right intersection.
-//                 if (type2 == QLineF::BoundedIntersection)
-//                 {
-//                     drawLineGap(painter, line1, pt2);
-//                 }
-
                 // Fill in the whole line segment under the component if the segment goes across the component
                 // horizontally.
                 if (type1 == QLineF::BoundedIntersection && type2 == QLineF::BoundedIntersection)
@@ -1806,4 +1793,53 @@ void GraphicsConnection::updateEndpointDirection(ConnectionEndpoint* endpoint, Q
             endpoint->setDirection(dir);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::connectionPoint()
+//-----------------------------------------------------------------------------
+QPointF GraphicsConnection::connectionPoint(QPointF const& otherEnd) const
+{
+    QList<QPointF> connectionPoints;
+    
+    if (otherEnd.isNull() || getRoutingMode() == ROUTING_MODE_OFFPAGE)
+    {        
+        connectionPoints.append(pathPoints_.first());
+        connectionPoints.append(pathPoints_.last());           
+    }
+    else
+    {
+        int segmentCount = pathPoints_.size() - 1;
+        for(int i = 0; i < segmentCount; i++)
+        {
+            QPointF segmentStart = pathPoints_.at(i);
+            QPointF segmentEnd = pathPoints_.at(i + 1);     
+            QPointF segmentCenter = segmentStart + (segmentEnd - segmentStart)/2;
+
+            connectionPoints.append(segmentCenter);
+        }
+    }
+
+    return findClosestPoint(connectionPoints, otherEnd);
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::findClosestPoint()
+//-----------------------------------------------------------------------------
+QPointF GraphicsConnection::findClosestPoint(QList<QPointF> const& sourcePoints, QPointF const& destination) const
+{
+    QPointF closest = sourcePoints.first();
+    qreal shortestDistance = QLineF(closest, destination).length();
+
+    foreach(QPointF candidate, sourcePoints)
+    {
+        qreal distance = QLineF(candidate, destination).length();
+        if (distance < shortestDistance)
+        {
+            shortestDistance = distance;
+            closest = candidate;
+        }
+    }
+
+    return closest;
 }

@@ -18,10 +18,11 @@
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 
+#include <designEditors/common/Association.h>
 #include <designEditors/common/diagramgrid.h>
-#include <designEditors/HWDesign/AdHocEditor/AdHocEditor.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
 #include <designEditors/common/StickyNote/StickyNoteAddCommand.h>
+#include <designEditors/HWDesign/AdHocEditor/AdHocEditor.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -602,7 +603,18 @@ void DesignDiagram::endAssociation(QPointF const& endpoint)
     associationLine_ = 0;
     associationMode_ = false;
 
-    createAssociation(associationStartItem_, endpoint);
+    QGraphicsItem* endItem = getBaseItemOf(itemAt(endpoint, QTransform()));
+    Associable* associationEndItem = dynamic_cast<Associable*>(endItem);
+
+    if (associationStartItem_ && associationEndItem && associationStartItem_ != associationEndItem)
+    {
+        Association* connection = new Association(associationStartItem_, associationEndItem);
+        associationStartItem_->addAssociation(connection);
+        associationEndItem->addAssociation(connection);
+        connection->update();
+
+        addItem(connection);
+    }
 
     associationStartItem_ = 0;
 }
@@ -622,4 +634,21 @@ bool DesignDiagram::associationEnds()
 {
     return inAssociationMode() && associationLine_->line().p1() != associationLine_->line().p2();
 }
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::getBaseItemOf()
+//-----------------------------------------------------------------------------
+QGraphicsItem* DesignDiagram::getBaseItemOf(QGraphicsItem* item) const
+{
+    QGraphicsItem* baseItem = item;
+
+    while (baseItem != 0 && baseItem->parentItem() != 0 &&
+        (baseItem->type() == QGraphicsTextItem::Type || baseItem->type() == QGraphicsPixmapItem::Type))
+    {
+        baseItem = baseItem->parentItem();
+    }	
+
+    return baseItem;
+}
+
 

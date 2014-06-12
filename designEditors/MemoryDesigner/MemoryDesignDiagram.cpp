@@ -702,13 +702,3 @@ QSharedPointer<Component const> MemoryDesignDiagram::getComponentByInstanceName(
 
     return QSharedPointer<Component const>();
 }
-
-//-----------------------------------------------------------------------------
-// Function: MemoryDesignDiagram::createAssociation()
-//-----------------------------------------------------------------------------
-void MemoryDesignDiagram::createAssociation(Associable* startNote, QPointF const& endpoint)
-{
-    // TODO: Add association to compatible items.
-    return;
-}
-

@@ -184,8 +184,6 @@ private:
 
     QSharedPointer<Component const> getComponentByInstanceName(QString const& componentRef) const;
 
-    virtual void createAssociation(Associable* startNote, QPointF const& endpoint);
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

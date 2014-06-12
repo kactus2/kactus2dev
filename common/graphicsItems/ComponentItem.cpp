@@ -321,7 +321,8 @@ QString ComponentItem::getUuid() const {
 //-----------------------------------------------------------------------------
 // Function: ComponentItem::connectionPoint()
 //-----------------------------------------------------------------------------
-QPointF ComponentItem::connectionPoint() const
+QPointF ComponentItem::connectionPoint(QPointF const&) const
 {
     return mapToScene(rect().center());
 }
+

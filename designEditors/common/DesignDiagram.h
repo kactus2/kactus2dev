@@ -366,11 +366,21 @@ protected:
 
     void endAssociation(QPointF const& endpoint);
 
-    virtual void createAssociation(Associable* startNote, QPointF const& endpoint) = 0;
-
     bool inAssociationMode();
 
     bool associationEnds();
+
+    /*!
+     *  Finds the underlying item of a given item ignoring text labels and pixmap items. 
+     *
+     *  This fixes the problem when the user click above a text label or a pixmap but
+     *  actually wants to select the parent item (such as the actual component, not its label).
+     *
+     *      @param [in] item   The item whose base item to find.
+     *
+     *      @return The bottom-most item.
+     */
+    QGraphicsItem* getBaseItemOf(QGraphicsItem* item) const;
 
 private:
     // Disable copying.

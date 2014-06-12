@@ -140,9 +140,9 @@ QSharedPointer<VendorExtension> StickyNote::getVendorExtension() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: StickyNote::connectionPoint()
+// Function: ComponentItem::connectionPoint()
 //-----------------------------------------------------------------------------
-QPointF StickyNote::connectionPoint() const
+QPointF StickyNote::connectionPoint(QPointF const&) const
 {
     return mapToScene(boundingRect().center());
 }
