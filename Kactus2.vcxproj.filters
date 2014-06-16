@@ -944,6 +944,12 @@
     <Filter Include="Header Files\designEditors\common\StickyNote">
       <UniqueIdentifier>{60d827e2-a8c9-4f5c-9682-43ccef1c86e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\designEditors\common\Association">
+      <UniqueIdentifier>{a75be2b9-d62b-4a55-b8ca-523999320b70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\designEditors\common\Association">
+      <UniqueIdentifier>{639b5694-b994-4740-a403-6ec20fab5862}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4117,6 +4123,15 @@
     <ClCompile Include="designEditors\common\Association.cpp">
       <Filter>Source Files\designEditors\common</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\common\Association\AssociationRemoveCommand.cpp">
+      <Filter>Source Files\designEditors\common\Association</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\Association\AssociationAddCommand.cpp">
+      <Filter>Source Files\designEditors\common\Association</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\Association\AssociationChangeEndpointCommand.cpp">
+      <Filter>Source Files\designEditors\common\Association</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5537,6 +5552,15 @@
     </CustomBuild>
     <CustomBuild Include="IPXACTmodels\AdHocConnection.h">
       <Filter>Header Files\IPXACTmodels</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\Association\AssociationRemoveCommand.h">
+      <Filter>Header Files\designEditors\common\Association</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\Association\AssociationAddCommand.h">
+      <Filter>Header Files\designEditors\common\Association</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\Association\AssociationChangeEndpointCommand.h">
+      <Filter>Header Files\designEditors\common\Association</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

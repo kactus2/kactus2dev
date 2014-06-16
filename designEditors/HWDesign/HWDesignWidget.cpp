@@ -15,6 +15,7 @@
 #include <designEditors/common/Association.h>
 #include <designEditors/common/DiagramUtil.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
+#include <designEditors/common/Association/AssociationRemoveCommand.h>
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/GenericEditProvider.h>
@@ -55,6 +56,7 @@
 #include <QPrinter>
 #include <QPainter>
 #include <QPrintDialog>
+
 
 //-----------------------------------------------------------------------------
 // Function: HWDesignWidget::HWDesignWidget()
@@ -357,6 +359,12 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
 				    this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
 
                 childCmd->redo();
+
+                foreach(Association* association, component->getAssociations())
+                {
+                    QUndoCommand* associationRemoveCmd = new AssociationRemoveCommand(association, getDiagram(), childCmd);
+                    associationRemoveCmd->redo();
+                }
             }
 
             getGenericEditProvider()->addCommand(cmd);

@@ -17,10 +17,13 @@
 #include "HWComponentItem.h"
 #include "BusInterfaceItem.h"
 
-#include <designEditors/common/DesignDiagram.h>
 #include <common/GenericEditProvider.h>
 #include <common/graphicsItems/GraphicsColumn.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
+
+#include <designEditors/common/Association.h>
+#include <designEditors/common/DesignDiagram.h>
+#include <designEditors/common/Association/AssociationRemoveCommand.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/businterface.h>
@@ -297,6 +300,11 @@ ConnectionDeleteCommand::ConnectionDeleteCommand(HWConnection* conn, QUndoComman
                 new AdHocVisibilityChangeCommand(diagram, port->getName(), false, delCmd);
             }        
         }
+    }
+
+    foreach(Association* association, conn->getAssociations())
+    {
+        new AssociationRemoveCommand(association, scene_, this);
     }
 }
 

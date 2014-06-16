@@ -26,7 +26,10 @@ Associable::Associable():
 //-----------------------------------------------------------------------------
 Associable::~Associable()
 {
-
+    /*foreach(Association* association, associations_)
+    {
+        association->disconnect();
+    }*/
 }
 
 //-----------------------------------------------------------------------------
@@ -38,6 +41,14 @@ void Associable::addAssociation(Association* association)
     {
         associations_.append(association);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Associable::getAssociations()
+//-----------------------------------------------------------------------------
+QList<Association*> Associable::getAssociations() const
+{
+    return associations_;
 }
 
 //-----------------------------------------------------------------------------

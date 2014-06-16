@@ -12,14 +12,17 @@
 #include "Association.h"
 
 #include <QPen>
+#include "IPXACTmodels\kactusExtensions\Kactus2Position.h"
 
 //-----------------------------------------------------------------------------
 // Function: QGraphicsLineItem::Association()
 //-----------------------------------------------------------------------------
-Association::Association(Associable* startItem, Associable* endItem, QGraphicsItem* parent):
+Association::Association(Associable* startItem, Associable* endItem, 
+    QSharedPointer<Kactus2Position> endpointExtension, QGraphicsItem* parent):
     QGraphicsLineItem(parent),
     startItem_(startItem),
-    endItem_(endItem)
+    endItem_(endItem),
+    endpointPosition_(endpointExtension)
 {        
     setFlag(ItemIsSelectable);
     setPen(QPen(Qt::black, 1, Qt::DashLine));
@@ -52,8 +55,18 @@ void Association::paint(QPainter* painter, QStyleOptionGraphicsItem const*, QWid
     QPointF startPoint = startItem_->connectionPoint();
     QLineF centerLine(startPoint, endItem_->connectionPoint(startPoint));
     setLine(centerLine);
+    endpointPosition_->setPosition(centerLine.p2());
 
     painter->drawLine(centerLine);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Association::connect()
+//-----------------------------------------------------------------------------
+void Association::connect()
+{
+    startItem_->addAssociation(this);
+    endItem_->addAssociation(this);
 }
 
 //-----------------------------------------------------------------------------
@@ -63,4 +76,24 @@ void Association::disconnect()
 {
     startItem_->removeAssociation(this);
     endItem_->removeAssociation(this);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Association::setEndItem()
+//-----------------------------------------------------------------------------
+void Association::setEndItem(Associable* endItem)
+{
+    endItem_->removeAssociation(this);
+
+    endItem_ = endItem;
+
+    endItem_->addAssociation(this);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Association::getEndpointExtension()
+//-----------------------------------------------------------------------------
+QSharedPointer<Kactus2Position> Association::getEndpointExtension() const
+{
+    return endpointPosition_;
 }

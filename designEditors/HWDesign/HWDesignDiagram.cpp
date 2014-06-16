@@ -883,7 +883,7 @@ void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     {
         if (!isProtected())
         {
-            createNote(mouseEvent->scenePos());
+            createNoteAt(mouseEvent->scenePos());
         }
     }
 }

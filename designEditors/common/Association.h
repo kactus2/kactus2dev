@@ -20,10 +20,12 @@
 
 #include <QGraphicsItem>
 #include <QRectF>
+#include <QSharedPointer>
 #include <QPainter>
-#include "qstyleoption.h"
-#include "qwidget.h"
+#include <QStyleOption>
+#include <QWidget>
 
+class Kactus2Position;
 //-----------------------------------------------------------------------------
 // class Association.
 //-----------------------------------------------------------------------------
@@ -40,7 +42,8 @@ public:
 	 *      @param [in] endItem     The item at the end of the association.
 	 *      @param [in] parent      The parent item.
 	 */
-	Association(Associable* startItem, Associable* endItem, QGraphicsItem* parent = 0);
+	Association(Associable* startItem, Associable* endItem, QSharedPointer<Kactus2Position> endpointExtension, 
+        QGraphicsItem* parent = 0);
 
 	/*!
 	 *  The destructor.
@@ -59,8 +62,25 @@ public:
     //! Identifies the type of the item.
     virtual int type() const { return Type; }
 
+    //! Connects the association to both ends.  
+    void connect();
+
     //! Disconnects the association from both ends.     
     void disconnect();
+
+    /*!
+     *  Changes the item at the end of the association.
+     *
+     *      @param [in] endItem   The item to set as the new end item.
+     */
+    void setEndItem(Associable* endItem);
+
+    /*!
+     *  Gets the vendor extension representing the endpoint position.
+     *
+     *      @return The endpoint vendor extension.
+     */
+    QSharedPointer<Kactus2Position> getEndpointExtension() const;
 
 private:
 	// Disable copying.
@@ -68,7 +88,7 @@ private:
 
 	// Disable assignment.
 	Association& operator=(Association const& rhs);
-    
+
 	//-----------------------------------------------------------------------------
 	// Data.
 	//-----------------------------------------------------------------------------
@@ -78,6 +98,9 @@ private:
 
     //! The item at the ending point of the association.
     Associable* endItem_;
+    
+    //! Vendor extension for tracking the endpoint position.
+    QSharedPointer<Kactus2Position> endpointPosition_;
 };
 #endif // ASSOCIATION_H
 

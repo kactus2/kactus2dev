@@ -1023,7 +1023,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
     {
         if (!isProtected())
         {
-            createNote(event->scenePos());
+            createNoteAt(event->scenePos());
         }
     }
 }

@@ -34,14 +34,21 @@ public:
      *
      *      @param [in] association   The association to add.     
      */
-    void addAssociation(Association* association);
+    virtual void addAssociation(Association* association);
    
     /*!
      *  Removes an association from the item.
      *
      *      @param [in] association   The association to remove.     
      */
-    void removeAssociation(Association* association);
+    virtual void removeAssociation(Association* association);
+
+    /*!
+     *  Gets the item associations.
+     *
+     *      @return The associations of the item.
+     */
+    QList<Association*> getAssociations() const;
 
     /*!
      *  Defines the connection point for associations in scene coordinates.

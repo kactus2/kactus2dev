@@ -15,11 +15,14 @@
 #include "HWMoveCommands.h"
 #include "HWAddCommands.h"
 
+#include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/ComInterface.h>
 
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/DesignWidget.h>
+#include <designEditors/common/Association/AssociationChangeEndpointCommand.h>
+
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/ConnectionUndoCommands.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
@@ -33,8 +36,6 @@
 #include "HWComponentItem.h"
 #include "BusInterfaceItem.h"
 #include "columnview/HWColumn.h"
-
-#include <IPXACTmodels/businterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentChangeNameCommand()
@@ -825,6 +826,11 @@ ReplaceComponentCommand::ReplaceComponentCommand(HWComponentItem* oldComp, HWCom
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
         connect(deleteCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
             this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+        foreach(Association* association, oldComp_->getAssociations())
+        {
+            new AssociationChangeEndpointCommand(association, oldComp_, newComp_, this);
+        }
     }
 
     // Create a move/add command for the new component.

@@ -23,17 +23,21 @@
 #include <designEditors/common/StickyNote/StickyNote.h>
 #include <designEditors/common/StickyNote/StickyNoteAddCommand.h>
 #include <designEditors/HWDesign/AdHocEditor/AdHocEditor.h>
+#include <designEditors/common/Association/AssociationAddCommand.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 
 #include <QWidget>
 #include <QPainter>
 #include <QMenu>
 #include <QGraphicsItem>
+#include <QSharedPointer>
+
 
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::DesignDiagram()
@@ -53,8 +57,7 @@ DesignDiagram::DesignDiagram(LibraryInterface* lh, MainWindow* mainWnd,
       locked_(false),
 	  XMLComments_(),
     vendorExtensions_(),
-    associationMode_(false),
-    associationStartItem_(0),
+    interactionMode_(NORMAL),
     associationLine_(0)
 {
     setSceneRect(0, 0, 100000, 100000);
@@ -287,8 +290,8 @@ void DesignDiagram::onVendorExtensionRemoved(QSharedPointer<VendorExtension> ext
 //-----------------------------------------------------------------------------
 void DesignDiagram::onBeginAssociation(Associable* startingPoint)
 {
-    associationMode_ = true;
-    associationStartItem_ = startingPoint;
+    setInteractionMode(ASSOCIATION);
+
     QPointF start = startingPoint->connectionPoint();
     associationLine_ = new QGraphicsLineItem(QLineF(start, start));
     addItem(associationLine_);
@@ -355,33 +358,73 @@ void DesignDiagram::drawBackground(QPainter* painter, QRectF const& rect)
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignDiagram::createLabel()
+// Function: DesignDiagram::getTopmostComponent()
 //-----------------------------------------------------------------------------
-void DesignDiagram::createNote(QPointF const& position)
+ComponentItem* DesignDiagram::getTopmostComponent(QPointF const& pos)
+{
+    QList<QGraphicsItem*> itemList = items(pos);
+
+    foreach (QGraphicsItem* item, itemList)
+    {
+        ComponentItem* compItem = dynamic_cast<ComponentItem*>(item);
+
+        if (compItem != 0)
+        {
+            return compItem;
+        }
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::getBaseItemOf()
+//-----------------------------------------------------------------------------
+QGraphicsItem* DesignDiagram::getBaseItemOf(QGraphicsItem* item) const
+{
+    QGraphicsItem* baseItem = item;
+
+    while (baseItem != 0 && baseItem->parentItem() != 0 &&
+        (baseItem->type() == QGraphicsTextItem::Type || baseItem->type() == QGraphicsPixmapItem::Type))
+    {
+        baseItem = baseItem->parentItem();
+    }	
+
+    return baseItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::createNote()
+//-----------------------------------------------------------------------------
+void DesignDiagram::createNoteAt(QPointF const& position)
 {
     QSharedPointer<Kactus2Group> noteExtension(new Kactus2Group("kactus2:note"));
+    StickyNote* note = createNote(noteExtension);
+    note->setPos(position);
+
+    QSharedPointer<StickyNoteAddCommand> cmd = createNoteAddCommand(note);
+    cmd->redo(); 
+    getEditProvider().addCommand(cmd);
+
+    clearSelection();
+    emit clearItemSelection();
+    note->setSelected(true);
+    onSelected(note);
+
+    note->beginEditing();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::createNote()
+//-----------------------------------------------------------------------------
+StickyNote* DesignDiagram::createNote(QSharedPointer<Kactus2Group> noteExtension)
+{
     StickyNote* note = new StickyNote(noteExtension);
-    
-    QSharedPointer<StickyNoteAddCommand> cmd(new StickyNoteAddCommand(note, this, position));
-
-    connect(cmd.data(), SIGNAL(addVendorExtension(QSharedPointer<VendorExtension>)),
-        this, SLOT(onVendorExtensionAdded(QSharedPointer<VendorExtension>)), Qt::UniqueConnection);
-
-    connect(cmd.data(), SIGNAL(removeVendorExtension(QSharedPointer<VendorExtension>)),
-        this, SLOT(onVendorExtensionRemoved(QSharedPointer<VendorExtension>)), Qt::UniqueConnection);
 
     connect(note, SIGNAL(beginAssociation(Associable*)), 
         this, SLOT(onBeginAssociation(Associable*)), Qt::UniqueConnection);
 
-    getEditProvider().addCommand(cmd);
-    cmd->redo();
-
-    clearSelection();
-    emit clearItemSelection();
-    note->setSelected(true);    
-    onSelected(note);
-
-    note->beginEditing();
+    return note;
 }
 
 //-----------------------------------------------------------------------------
@@ -443,10 +486,10 @@ void DesignDiagram::setVisibilityControlState(QString const& name, bool state)
     { 
         foreach (QGraphicsItem* item, items())
         {       
-            if (item->type() == StickyNote::Type)
+            if (item->type() == StickyNote::Type || item->type() == Association::Type)
             {
                 item->setVisible(state);
-            }
+            }            
         }
     }
 }
@@ -478,26 +521,6 @@ QList<ComponentItem*> DesignDiagram::getInstances() const
 bool DesignDiagram::isLoading() const
 {
     return loading_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: SystemDesignDiagram::getTopmostComponent()
-//-----------------------------------------------------------------------------
-ComponentItem* DesignDiagram::getTopmostComponent(QPointF const& pos)
-{
-    QList<QGraphicsItem*> itemList = items(pos);
-
-    foreach (QGraphicsItem* item, itemList)
-    {
-        ComponentItem* compItem = dynamic_cast<ComponentItem*>(item);
-
-        if (compItem != 0)
-        {
-            return compItem;
-        }
-    }
-
-    return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -558,14 +581,34 @@ void DesignDiagram::loadStickyNotes()
     {
         if (extension->type() == "kactus2:note")
         {
-            StickyNote* note = new StickyNote(extension.dynamicCast<Kactus2Group>());
+            QSharedPointer<Kactus2Group> noteExtension = extension.dynamicCast<Kactus2Group>();
+            StickyNote* note = createNote(noteExtension);
 
-            connect(note, SIGNAL(beginAssociation(Associable*)), 
-                this, SLOT(onBeginAssociation(Associable*)), Qt::UniqueConnection);
-
-            QSharedPointer<StickyNoteAddCommand> cmd(new StickyNoteAddCommand(note, this, note->pos()));
+            QSharedPointer<StickyNoteAddCommand> cmd = createNoteAddCommand(note);
             cmd->redo();
+            
+            QList<QSharedPointer<VendorExtension> > associations = noteExtension->getByType("kactus2:associations");
+            if (!associations.empty())
+            {
+                loadNoteAssociations(note, associations.first());
+            }            
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::loadNoteAssociations()
+//-----------------------------------------------------------------------------
+void DesignDiagram::loadNoteAssociations(StickyNote* note, QSharedPointer<VendorExtension> associationsExtension)
+{
+    QSharedPointer<Kactus2Group> associationGroup = associationsExtension.dynamicCast<Kactus2Group>();
+
+    foreach(QSharedPointer<VendorExtension> endpoint, associationGroup->getByType("kactus2:position"))
+    {
+        QSharedPointer<Kactus2Position> endpointExtension = endpoint.dynamicCast<Kactus2Position>();
+
+        QSharedPointer<QUndoCommand> addCommand = createAssociationAddCommand(note, endpointExtension);
+        addCommand->redo();
     }
 }
 
@@ -598,25 +641,50 @@ void DesignDiagram::updateAssociation(QPointF const& cursorPosition)
 //-----------------------------------------------------------------------------
 void DesignDiagram::endAssociation(QPointF const& endpoint)
 {
+    QPointF startingPoint = associationLine_->line().p1();
+
     removeItem(associationLine_);
     delete associationLine_;
     associationLine_ = 0;
-    associationMode_ = false;
 
-    QGraphicsItem* endItem = getBaseItemOf(itemAt(endpoint, QTransform()));
-    Associable* associationEndItem = dynamic_cast<Associable*>(endItem);
+    QGraphicsItem* item = getBaseItemOf(itemAt(startingPoint, QTransform()));
+    Associable* startItem = dynamic_cast<Associable*>(item);
 
-    if (associationStartItem_ && associationEndItem && associationStartItem_ != associationEndItem)
+    QSharedPointer<Kactus2Position> endPositionExtension(new Kactus2Position(endpoint));
+
+    QSharedPointer<QUndoCommand> addCommand = createAssociationAddCommand(startItem, endPositionExtension);
+    addCommand->redo();
+    getEditProvider().addCommand(addCommand);
+
+    setInteractionMode(NORMAL);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::createAssociation()
+//-----------------------------------------------------------------------------
+QSharedPointer<QUndoCommand> DesignDiagram::createAssociationAddCommand(Associable* startItem, 
+    QSharedPointer<Kactus2Position> endPointExtension)
+{
+    QGraphicsItem* item = getBaseItemOf(itemAt(endPointExtension->position(), QTransform()));
+    Associable* endItem = dynamic_cast<Associable*>(item);
+
+    QSharedPointer<QUndoCommand> addCommand(new QUndoCommand());
+
+    if (canAssociateItems(startItem, endItem))
     {
-        Association* connection = new Association(associationStartItem_, associationEndItem);
-        associationStartItem_->addAssociation(connection);
-        associationEndItem->addAssociation(connection);
-        connection->update();
-
-        addItem(connection);
+        Association* association = new Association(startItem, endItem, endPointExtension);
+        addCommand = QSharedPointer<AssociationAddCommand>(new AssociationAddCommand(association, this));       
     }
 
-    associationStartItem_ = 0;
+    return addCommand;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::canAssociateItems()
+//-----------------------------------------------------------------------------
+bool DesignDiagram::canAssociateItems(Associable* startItem, Associable* endItem)
+{
+    return startItem && endItem && startItem != endItem;
 }
 
 //-----------------------------------------------------------------------------
@@ -624,7 +692,7 @@ void DesignDiagram::endAssociation(QPointF const& endpoint)
 //-----------------------------------------------------------------------------
 bool DesignDiagram::inAssociationMode()
 {
-    return associationMode_;
+    return interactionMode_ == ASSOCIATION;
 }
 
 //-----------------------------------------------------------------------------
@@ -636,19 +704,25 @@ bool DesignDiagram::associationEnds()
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignDiagram::getBaseItemOf()
+// Function: DesignDiagram::setInteractionMode()
 //-----------------------------------------------------------------------------
-QGraphicsItem* DesignDiagram::getBaseItemOf(QGraphicsItem* item) const
+void DesignDiagram::setInteractionMode(interactionMode mode)
 {
-    QGraphicsItem* baseItem = item;
-
-    while (baseItem != 0 && baseItem->parentItem() != 0 &&
-        (baseItem->type() == QGraphicsTextItem::Type || baseItem->type() == QGraphicsPixmapItem::Type))
-    {
-        baseItem = baseItem->parentItem();
-    }	
-
-    return baseItem;
+    interactionMode_ = mode;
 }
 
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::createNoteAddCommand()
+//-----------------------------------------------------------------------------
+QSharedPointer<StickyNoteAddCommand> DesignDiagram::createNoteAddCommand(StickyNote* note)
+{
+    QSharedPointer<StickyNoteAddCommand> cmd(new StickyNoteAddCommand(note, this, note->pos()));
 
+    connect(cmd.data(), SIGNAL(addVendorExtension(QSharedPointer<VendorExtension>)),
+        this, SLOT(onVendorExtensionAdded(QSharedPointer<VendorExtension>)), Qt::UniqueConnection);
+
+    connect(cmd.data(), SIGNAL(removeVendorExtension(QSharedPointer<VendorExtension>)),
+        this, SLOT(onVendorExtensionRemoved(QSharedPointer<VendorExtension>)), Qt::UniqueConnection);
+
+    return cmd;
+}

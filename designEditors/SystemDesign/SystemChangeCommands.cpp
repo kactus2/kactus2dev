@@ -22,6 +22,8 @@
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 
+#include <designEditors/common/Association/AssociationChangeEndpointCommand.h>
+
 #include <IPXACTmodels/component.h>
 
 //-----------------------------------------------------------------------------
@@ -175,6 +177,11 @@ ReplaceSystemComponentCommand::ReplaceSystemComponentCommand(SystemComponentItem
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
         connect(deleteCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
             this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+        foreach(Association* association, oldComp_->getAssociations())
+        {
+            new AssociationChangeEndpointCommand(association, oldComp_, newComp_, this);
+        }
     }
 
     // Create a move/add command for the new component.

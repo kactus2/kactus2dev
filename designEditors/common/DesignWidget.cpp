@@ -18,6 +18,7 @@
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
 #include <designEditors/common/StickyNote/StickyNoteRemoveCommand.h>
+#include <designEditors/common/Association/AssociationRemoveCommand.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -29,6 +30,7 @@
 #include <QPrintDialog>
 #include <QApplication>
 #include <QGraphicsItem>
+
 
 //-----------------------------------------------------------------------------
 // Function: DesignWidget::DesignWidget()
@@ -280,22 +282,23 @@ void DesignWidget::removeSelectedNotes()
     QList<QGraphicsItem*> selectedItems = getDiagram()->selectedItems();
     getDiagram()->clearSelection();
 
-    QSharedPointer<QUndoCommand> parentDelete(new QUndoCommand());
+    QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
     foreach (QGraphicsItem* selected, selectedItems)
     {
-            StickyNote* note = qgraphicsitem_cast<StickyNote*>(selected);
-            StickyNoteRemoveCommand* cmd = new StickyNoteRemoveCommand(note, diagram_, parentDelete.data());
+        StickyNote* note = qgraphicsitem_cast<StickyNote*>(selected);
+        StickyNoteRemoveCommand* noteRemoveCommand = new StickyNoteRemoveCommand(note, getDiagram(), 
+            parentCommand.data());
 
-            connect(cmd, SIGNAL(addVendorExtension(QSharedPointer<VendorExtension>)),
-                diagram_, SLOT(onVendorExtensionAdded(QSharedPointer<VendorExtension>)), Qt::UniqueConnection);
+        connect(noteRemoveCommand, SIGNAL(addVendorExtension(QSharedPointer<VendorExtension>)),
+            diagram_, SLOT(onVendorExtensionAdded(QSharedPointer<VendorExtension>)), Qt::UniqueConnection);
 
-            connect(cmd, SIGNAL(removeVendorExtension(QSharedPointer<VendorExtension>)),
-                diagram_, SLOT(onVendorExtensionRemoved(QSharedPointer<VendorExtension>)), Qt::UniqueConnection);
+        connect(noteRemoveCommand, SIGNAL(removeVendorExtension(QSharedPointer<VendorExtension>)),
+            diagram_, SLOT(onVendorExtensionRemoved(QSharedPointer<VendorExtension>)), Qt::UniqueConnection);
 
-            cmd->redo();
+        noteRemoveCommand->redo();
     }
 
-    getGenericEditProvider()->addCommand(parentDelete);
+    getGenericEditProvider()->addCommand(parentCommand);
 }
 
 //-----------------------------------------------------------------------------
@@ -306,21 +309,16 @@ void DesignWidget::removeSelectedAssociations()
     QList<QGraphicsItem*> selectedItems = getDiagram()->selectedItems();
     getDiagram()->clearSelection();
 
-    QSharedPointer<QUndoCommand> parentDelete(new QUndoCommand());
+    QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
     foreach (QGraphicsItem* selected, selectedItems)
     {
-        if (selected->type() == Association::Type)
-        {
-            Association* association = qgraphicsitem_cast<Association*>(selected);
-            association->disconnect();
-
-            getDiagram()->removeItem(association);
-            delete association;
-        }
+        Association* association = qgraphicsitem_cast<Association*>(selected);
+        QUndoCommand* associationRemoveCmd = new AssociationRemoveCommand(association, getDiagram(), 
+            parentCommand.data()); 
+        associationRemoveCmd->redo();
     }
 
-    getGenericEditProvider()->addCommand(parentDelete);
-
+    getGenericEditProvider()->addCommand(parentCommand);
 }
 
 //-----------------------------------------------------------------------------

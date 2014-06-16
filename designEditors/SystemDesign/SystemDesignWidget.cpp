@@ -26,6 +26,7 @@
 #include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
 #include <designEditors/common/Association.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
+#include <designEditors/common/Association/AssociationRemoveCommand.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/LibraryUtils.h>
@@ -43,7 +44,6 @@
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QCoreApplication>
-
 
 //-----------------------------------------------------------------------------
 // Function: SystemDesignWidget()
@@ -311,6 +311,12 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
 
                     childCmd->redo();
+
+                    foreach(Association* association, component->getAssociations())
+                    {
+                        QUndoCommand* associationRemoveCmd = new AssociationRemoveCommand(association, getDiagram(), childCmd);
+                        associationRemoveCmd->redo();
+                    }
                 }
             }
 

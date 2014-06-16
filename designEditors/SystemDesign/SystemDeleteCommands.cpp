@@ -21,6 +21,10 @@
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 
+
+#include <designEditors/common/Association.h>
+#include <designEditors/common/Association/AssociationRemoveCommand.h>
+
 //-----------------------------------------------------------------------------
 // Function: SystemColumnDeleteCommand()
 //-----------------------------------------------------------------------------
@@ -143,6 +147,10 @@ SWConnectionDeleteCommand::SWConnectionDeleteCommand(GraphicsConnection* conn, Q
       scene_(conn->scene()),
       del_(true)
 {
+    foreach(Association* association, conn->getAssociations())
+    {
+        new AssociationRemoveCommand(association, scene_, this);
+    }
 }
 
 //-----------------------------------------------------------------------------

@@ -66,6 +66,13 @@ public:
     void addToGroup(QSharedPointer<VendorExtension> extension);
 
     /*!
+     *  Removes a vendor extension from the group.
+     *
+     *      @param [in] extension   The extension to remove.     
+     */
+    void removeFromGroup(QSharedPointer<VendorExtension> extension);
+
+    /*!
      *  Gets all the extensions with the given type.
      *
      *      @param [in] type   The type to search for.

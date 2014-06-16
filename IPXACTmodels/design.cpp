@@ -1071,6 +1071,22 @@ void Design::parseStickyNote(QDomNode& noteNode)
             QSharedPointer<Kactus2Value> noteContent(new Kactus2Value("kactus2:content", content));
             noteExtension->addToGroup(noteContent);
         }
+        else if (childNode.nodeName() == "kactus2:associations")
+        {            
+            QSharedPointer<Kactus2Group> associations(new Kactus2Group("kactus2:associations"));
+            int associationCount = childNode.childNodes().count();
+            for(int j = 0; j < associationCount; j++)
+            {
+                QDomNode assocationNode = childNode.childNodes().at(j);
+
+                QPointF position = XmlUtils::parsePoint(assocationNode);
+                QSharedPointer<Kactus2Position> associationEnd(new Kactus2Position(position));
+
+                associations->addToGroup(associationEnd);
+            }
+
+            noteExtension->addToGroup(associations);
+        }
     }
 
     vendorExtensions_.append(noteExtension);

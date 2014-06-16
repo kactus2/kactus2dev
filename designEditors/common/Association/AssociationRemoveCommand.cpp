@@ -3,53 +3,50 @@
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
-// Date: 30.05.2014
+// Date: 16.06.2014
 //
 // Description:
-// Remove command for floating items.
+// Remove command for association items.
 //-----------------------------------------------------------------------------
 
-#include "StickyNoteRemoveCommand.h"
+#include "AssociationRemoveCommand.h"
 
-#include <IPXACTmodels/VendorExtension.h>
-#include <designEditors/common/DesignDiagram.h>
-#include <designEditors/common/Association/AssociationRemoveCommand.h>
+#include <designEditors/common/Association.h>
+
+#include <QGraphicsScene>
 
 //-----------------------------------------------------------------------------
-// Function: FloatingItemRemoveCommand()
+// Function: AssociationRemoveCommand()
 //-----------------------------------------------------------------------------
-StickyNoteRemoveCommand::StickyNoteRemoveCommand(StickyNote* noteItem, DesignDiagram* diagram, 
+AssociationRemoveCommand::AssociationRemoveCommand(Association* association, QGraphicsScene* diagram, 
     QUndoCommand* parent) : 
-    QUndoCommand(parent), note_(noteItem),
-    diagram_(diagram), 
+    QUndoCommand(parent), association_(association),
+    scene_(diagram), 
     del_(true)
 {
-    foreach(Association* association, noteItem->getAssociations())
-    {
-        new AssociationRemoveCommand(association, diagram, this);
-    }
+
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~FloatingItemRemoveCommand()
+// Function: ~AssociationRemoveCommand()
 //-----------------------------------------------------------------------------
-StickyNoteRemoveCommand::~StickyNoteRemoveCommand()
+AssociationRemoveCommand::~AssociationRemoveCommand()
 {
     if (del_)
     {
-        delete note_;
+        delete association_;
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: undo()
 //-----------------------------------------------------------------------------
-void StickyNoteRemoveCommand::undo()
+void AssociationRemoveCommand::undo()
 {
-    diagram_->addItem(note_);
+    scene_->addItem(association_);
     del_ = false;
 
-    emit addVendorExtension(note_->getVendorExtension());
+    association_->connect();
 
     // Execute child commands.
     QUndoCommand::undo();
@@ -58,12 +55,12 @@ void StickyNoteRemoveCommand::undo()
 //-----------------------------------------------------------------------------
 // Function: redo()
 //-----------------------------------------------------------------------------
-void StickyNoteRemoveCommand::redo()
+void AssociationRemoveCommand::redo()
 {
-    diagram_->removeItem(note_);
+    scene_->removeItem(association_);
     del_ = true;
 
-    emit removeVendorExtension(note_->getVendorExtension());
+    association_->disconnect();
 
     QUndoCommand::redo();
 }

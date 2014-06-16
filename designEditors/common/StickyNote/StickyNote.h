@@ -75,6 +75,20 @@ public:
     virtual int type() const { return Type; }
 
     /*!
+     *  Adds a new association to the item.
+     *
+     *      @param [in] association   The association to add.     
+     */
+    virtual void addAssociation(Association* association);
+
+    /*!
+     *  Removes an association from the item.
+     *
+     *      @param [in] association   The association to remove.     
+     */
+    virtual void removeAssociation(Association* association);
+
+    /*!
      *  Defines the connection point for associations in scene coordinates.
      *     
      *      @param [in] otherEnd   The position of the other end connection point.
@@ -85,6 +99,7 @@ public:
 
 signals:
    
+    //! Emitted when a new association should be created for the item.
     void beginAssociation(Associable* originator);
 
 protected:
@@ -94,7 +109,6 @@ protected:
 
     //! Handler for mouse release event.
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
-
     
     /*!
      *  Checks if the item's position has changed as a result of a mouse drag.
@@ -130,9 +144,14 @@ private:
     //! Initializes the vendor extensions for the note.
     void initializeExtensions();
 
-    //! Initialized the vendor extension for tracking the note position.
+    //! Initializes the vendor extension for tracking the note position.
     void initializePosition();
+
+    //! Initializes the vendor extension for tracking the note text.
     void initializeContent();
+
+    //! Initializes the vendor extension for tracking the note associations.
+    void initializeAssociations();
 
     /*!
      *  Checks if clicking a given position hits the association button.
@@ -156,11 +175,16 @@ private:
     //! The vendor extension containing the position of the note.
     QSharedPointer<Kactus2Position> positionExtension_;
 
+    //! The vendor extension containing the text of the note.
     QSharedPointer<Kactus2Value> contentExtension_;
+
+    //! The vendor extension containing the text of the note.
+    QSharedPointer<Kactus2Group> associationExtensions_;
 
     //! Editor item for the notes.
     ColorFillTextItem* textArea_;
 
+    //! Item acting as a button for creating new associations.
     QGraphicsPixmapItem* associationButton_;
 };
 

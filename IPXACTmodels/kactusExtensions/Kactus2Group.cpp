@@ -97,6 +97,14 @@ void Kactus2Group::addToGroup(QSharedPointer<VendorExtension> extension)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Kactus2Group::removeFromGroup()
+//-----------------------------------------------------------------------------
+void Kactus2Group::removeFromGroup(QSharedPointer<VendorExtension> extension)
+{
+    groupExtensions_.removeOne(extension);
+}
+
+//-----------------------------------------------------------------------------
 // Function: Kactus2Group::getExtensionForType()
 //-----------------------------------------------------------------------------
 QList<QSharedPointer<VendorExtension> > Kactus2Group::getByType(QString const& type) const

@@ -1,55 +1,47 @@
 //-----------------------------------------------------------------------------
-// File: FloatingItemRemoveCommand.h
+// File: AssociationChangeEndpointCommand.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
-// Date: 30.05.2014
+// Date: 16.06.2014
 //
 // Description:
-// Remove command for floating items.
+// Command for changing the ending item of an association item.
 //-----------------------------------------------------------------------------
 
-#include "StickyNoteRemoveCommand.h"
+#include "AssociationChangeEndpointCommand.h"
 
-#include <IPXACTmodels/VendorExtension.h>
+#include <designEditors/common/Associable.h>
+#include <designEditors/common/Association.h>
 #include <designEditors/common/DesignDiagram.h>
-#include <designEditors/common/Association/AssociationRemoveCommand.h>
 
 //-----------------------------------------------------------------------------
-// Function: FloatingItemRemoveCommand()
+// Function: AssociationChangeEndpointCommand()
 //-----------------------------------------------------------------------------
-StickyNoteRemoveCommand::StickyNoteRemoveCommand(StickyNote* noteItem, DesignDiagram* diagram, 
-    QUndoCommand* parent) : 
-    QUndoCommand(parent), note_(noteItem),
-    diagram_(diagram), 
-    del_(true)
+AssociationChangeEndpointCommand::AssociationChangeEndpointCommand(Association* association, Associable* oldEndpoint, 
+    Associable* newEndpoint, QUndoCommand* parent) : 
+    QUndoCommand(parent), 
+    association_(association),
+    oldEndpoint_(oldEndpoint),
+    newEndpoint_(newEndpoint)
 {
-    foreach(Association* association, noteItem->getAssociations())
-    {
-        new AssociationRemoveCommand(association, diagram, this);
-    }
+
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~FloatingItemRemoveCommand()
+// Function: ~AssociationChangeEndpointCommand()
 //-----------------------------------------------------------------------------
-StickyNoteRemoveCommand::~StickyNoteRemoveCommand()
+AssociationChangeEndpointCommand::~AssociationChangeEndpointCommand()
 {
-    if (del_)
-    {
-        delete note_;
-    }
+
 }
 
 //-----------------------------------------------------------------------------
 // Function: undo()
 //-----------------------------------------------------------------------------
-void StickyNoteRemoveCommand::undo()
+void AssociationChangeEndpointCommand::undo()
 {
-    diagram_->addItem(note_);
-    del_ = false;
-
-    emit addVendorExtension(note_->getVendorExtension());
+    association_->setEndItem(oldEndpoint_);
 
     // Execute child commands.
     QUndoCommand::undo();
@@ -58,12 +50,10 @@ void StickyNoteRemoveCommand::undo()
 //-----------------------------------------------------------------------------
 // Function: redo()
 //-----------------------------------------------------------------------------
-void StickyNoteRemoveCommand::redo()
+void AssociationChangeEndpointCommand::redo()
 {
-    diagram_->removeItem(note_);
-    del_ = true;
+    association_->setEndItem(newEndpoint_);
 
-    emit removeVendorExtension(note_->getVendorExtension());
-
+    // Execute child commands.
     QUndoCommand::redo();
 }

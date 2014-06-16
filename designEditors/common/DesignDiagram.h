@@ -12,18 +12,19 @@
 #ifndef DESIGNDIAGRAM_H
 #define DESIGNDIAGRAM_H
 
-#include <QGraphicsScene>
-#include <QStringList>
-#include <QAction>
-#include <QMenu>
-#include <QGraphicsSceneContextMenuEvent>
-
 #include <designEditors/HWDesign/AdHocEnabled.h>
+#include <designEditors/common/DrawMode.h>
 
 #include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/ColumnDesc.h>
 
-#include <designEditors/common/DrawMode.h>
+#include <QAction>
+#include <QGraphicsScene>
+#include <QGraphicsSceneContextMenuEvent>
+#include <QMenu>
+#include <QSharedPointer>
+#include <QStringList>
+#include <QUndoCommand>
 
 class MainWindow;
 class LibraryInterface;
@@ -37,6 +38,9 @@ class Design;
 class VLNV;
 class DesignWidget;
 class Associable;
+class StickyNote;
+class Kactus2Group;
+class StickyNoteAddCommand;
 //-----------------------------------------------------------------------------
 //! Base class for all design diagrams.
 //-----------------------------------------------------------------------------
@@ -159,15 +163,6 @@ public:
      *  Returns the diagram column layout.
      */
     virtual GraphicsColumnLayout* getColumnLayout() = 0;
-
-    /*!
-     *  Picks the top-most component at the given position.
-     *
-     *      @param [in] pos The picking positions.
-     *
-     *      @return The top-most component at the given positions, or 0 if there is no component.
-     */
-    ComponentItem* getTopmostComponent(QPointF const& pos);
 
     /*!
      *  Returns the current draw mode.
@@ -332,11 +327,32 @@ protected:
      virtual void drawBackground(QPainter* painter, QRectF const& rect);
 
     /*!
-     *  Adds a new label to the design.
+     *  Picks the top-most component at the given position.
      *
-     *      @param [in] position   The initial position of the label.
+     *      @param [in] pos The picking positions.
+     *
+     *      @return The top-most component at the given positions, or 0 if there is no component.
      */
-    virtual void createNote(QPointF const& position);
+    ComponentItem* getTopmostComponent(QPointF const& pos);
+
+    /*!
+     *  Finds the underlying item of a given item ignoring text labels and pixmap items. 
+     *
+     *  This fixes the problem when the user click above a text label or a pixmap but
+     *  actually wants to select the parent item (such as the actual component, not its label).
+     *
+     *      @param [in] item   The item whose base item to find.
+     *
+     *      @return The bottom-most item.
+     */
+    QGraphicsItem* getBaseItemOf(QGraphicsItem* item) const;
+
+    /*!
+     *  Adds a new note to the design.
+     *
+     *      @param [in] position   The initial position of the note.
+     */
+    virtual void createNoteAt(QPointF const& position);
 
      /*!
      *  Called when an item has been selected in the diagram.
@@ -366,21 +382,13 @@ protected:
 
     void endAssociation(QPointF const& endpoint);
 
+    bool canAssociateItems(Associable* startItem, Associable* endItem);
+
+    QSharedPointer<QUndoCommand> createAssociationAddCommand(Associable* startItem, QSharedPointer<Kactus2Position> endPointExtension);
+
     bool inAssociationMode();
 
     bool associationEnds();
-
-    /*!
-     *  Finds the underlying item of a given item ignoring text labels and pixmap items. 
-     *
-     *  This fixes the problem when the user click above a text label or a pixmap but
-     *  actually wants to select the parent item (such as the actual component, not its label).
-     *
-     *      @param [in] item   The item whose base item to find.
-     *
-     *      @return The bottom-most item.
-     */
-    QGraphicsItem* getBaseItemOf(QGraphicsItem* item) const;
 
 private:
     // Disable copying.
@@ -397,8 +405,22 @@ private:
     //! Creates sticky notes from vendor extensions.
     void loadStickyNotes();
 
+    StickyNote* createNote(QSharedPointer<Kactus2Group> noteExtension);
+
+    QSharedPointer<StickyNoteAddCommand> createNoteAddCommand(StickyNote* note);
+
+    void loadNoteAssociations(StickyNote* note, QSharedPointer<VendorExtension> associationsExtension);
+
     //! Enables/disables the sticky notes according to design protection state.
     void setProtectionForStickyNotes();
+
+
+    enum interactionMode{
+        NORMAL = 0,
+        ASSOCIATION
+    };
+
+    void setInteractionMode(interactionMode mode);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -439,9 +461,7 @@ private:
 
     QList<QSharedPointer<VendorExtension> > vendorExtensions_;
     
-    bool associationMode_;
-
-    Associable* associationStartItem_;
+    interactionMode interactionMode_;
 
     QGraphicsLineItem* associationLine_;
 };

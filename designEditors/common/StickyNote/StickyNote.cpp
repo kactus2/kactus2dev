@@ -18,6 +18,7 @@
 
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/diagramgrid.h>
+#include <designEditors/common/Association.h>
 
 #include <IPXACTmodels/VendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
@@ -42,6 +43,7 @@ StickyNote::StickyNote(QSharedPointer<Kactus2Group> extension, QGraphicsItem* pa
     extension_(extension),
     positionExtension_(),
     contentExtension_(),
+    associationExtensions_(),
     textArea_(0),
     associationButton_(0)
 {
@@ -140,6 +142,24 @@ QSharedPointer<VendorExtension> StickyNote::getVendorExtension() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: StickyNote::addAssociation()
+//-----------------------------------------------------------------------------
+void StickyNote::addAssociation(Association* association)
+{
+    Associable::addAssociation(association);
+    associationExtensions_->addToGroup(association->getEndpointExtension());
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::removeAssociation()
+//-----------------------------------------------------------------------------
+void StickyNote::removeAssociation(Association* association)
+{
+    Associable::removeAssociation(association);
+    associationExtensions_->removeFromGroup(association->getEndpointExtension());
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentItem::connectionPoint()
 //-----------------------------------------------------------------------------
 QPointF StickyNote::connectionPoint(QPointF const&) const
@@ -215,6 +235,7 @@ void StickyNote::initializeExtensions()
 {
     initializePosition();
     initializeContent();
+    initializeAssociations();
 }
 
 //-----------------------------------------------------------------------------
@@ -255,6 +276,24 @@ void StickyNote::initializeContent()
     }
 
     textArea_->setPlainText(contentExtension_->value());
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::initializeAssociations()
+//-----------------------------------------------------------------------------
+void StickyNote::initializeAssociations()
+{
+    QList<QSharedPointer<VendorExtension> > existingExtensions = extension_->getByType("kactus2:associations");
+
+    if (existingExtensions.isEmpty())
+    {
+        associationExtensions_ = QSharedPointer<Kactus2Group>(new Kactus2Group("kactus2:associations"));
+        extension_->addToGroup(associationExtensions_);
+    }
+    else
+    {
+        associationExtensions_ = existingExtensions.first().dynamicCast<Kactus2Group>();
+    }
 }
 
 //-----------------------------------------------------------------------------
