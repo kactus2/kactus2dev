@@ -641,7 +641,7 @@ void DesignDiagram::setProtectionForStickyNotes()
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::updateAssociationLine()
 //-----------------------------------------------------------------------------
-void DesignDiagram::updateAssociation(QPointF const& cursorPosition)
+void DesignDiagram::updateAssociationLineDraw(QPointF const& cursorPosition)
 {
     QLineF line = associationLine_->line();
     line.setP2(cursorPosition);
@@ -708,7 +708,7 @@ bool DesignDiagram::inAssociationMode() const
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::associationEnds()
 //-----------------------------------------------------------------------------
-bool DesignDiagram::associationEnds() const
+bool DesignDiagram::canEndAssociation() const
 {
     return inAssociationMode() && associationLine_->line().p1() != associationLine_->line().p2();
 }
