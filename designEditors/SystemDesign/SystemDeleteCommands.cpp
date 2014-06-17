@@ -22,7 +22,7 @@
 #include <common/graphicsItems/GraphicsConnection.h>
 
 
-#include <designEditors/common/Association.h>
+#include <designEditors/common/Association/Association.h>
 #include <designEditors/common/Association/AssociationRemoveCommand.h>
 
 //-----------------------------------------------------------------------------
@@ -71,6 +71,10 @@ SystemColumnDeleteCommand::SystemColumnDeleteCommand(GraphicsColumnLayout* layou
                         }
                     }
                 }
+            }
+            foreach(Association* association, compItem->getAssociations())
+            {
+                new AssociationRemoveCommand(association, association->scene(), this);
             }
         }
         else if (item->type() == SWInterfaceItem::Type)

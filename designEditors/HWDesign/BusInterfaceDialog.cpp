@@ -18,7 +18,6 @@
 #include <QHeaderView>
 #include <QTableView>
 
-#include <designEditors/common/DesignDiagram.h>
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 #include <IPXACTmodels/port.h>

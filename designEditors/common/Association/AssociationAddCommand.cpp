@@ -13,7 +13,7 @@
 
 
 #include <designEditors/common/DesignDiagram.h>
-#include <designEditors/common/Association.h>
+#include <designEditors/common/Association/Association.h>
 
 //-----------------------------------------------------------------------------
 // Function: AssociationAddCommand()

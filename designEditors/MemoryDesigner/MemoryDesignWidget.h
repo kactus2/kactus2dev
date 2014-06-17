@@ -15,7 +15,6 @@
 #include <designEditors/common/DesignWidget.h>
 
 class MemoryDesignDiagram;
-class MainWindow;
 
 //-----------------------------------------------------------------------------
 //! MemoryDesignWidget class.
@@ -28,7 +27,7 @@ public:
     /*!
      *  Constructor.
      */
-    MemoryDesignWidget(LibraryInterface* lh, MainWindow* mainWnd, QWidget* parent = 0);
+    MemoryDesignWidget(LibraryInterface* lh, QWidget* parent = 0);
 
     /*!
      *  Destructor.

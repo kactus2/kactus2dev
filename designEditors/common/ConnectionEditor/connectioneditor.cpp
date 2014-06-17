@@ -9,9 +9,9 @@
 
 #include "AdHocBoundsDelegate.h"
 
+#include <designEditors/common/DesignDiagram.h>
 #include <designEditors/HWDesign/HWConnection.h>
 #include <designEditors/HWDesign/HWConnectionEndpoint.h>
-#include <designEditors/HWDesign/HWDesignDiagram.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
 #include <designEditors/HWDesign/HWComponentItem.h>
 

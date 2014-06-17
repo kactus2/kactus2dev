@@ -17,7 +17,7 @@
 #include <designEditors/common/diagramgrid.h>
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
-#include <designEditors/common/Associable.h>
+#include <designEditors/common/Association/Associable.h>
 
 class VendorExtension;
 class Kactus2Group;

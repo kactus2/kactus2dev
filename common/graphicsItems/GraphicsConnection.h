@@ -12,7 +12,7 @@
 #ifndef GRAPHICSCONNECTION_H
 #define GRAPHICSCONNECTION_H
 
-#include <designEditors/common/Associable.h>
+#include <designEditors/common/Association/Associable.h>
 
 #include <common/graphicsItems/ConnectionEndpoint.h>
 
@@ -231,7 +231,6 @@ public:
      *      @return The connection point of the item.
      */
     virtual QPointF connectionPoint(QPointF const& otherEnd) const;
-
 
 signals:
     //! Signals that the connection has changed.

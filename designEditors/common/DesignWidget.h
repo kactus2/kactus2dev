@@ -16,6 +16,7 @@
 #include <common/KactusAttribute.h>
 
 #include <QGraphicsView>
+#include <QWheelEvent>
 
 class LibraryInterface;
 class IEditProvider;
@@ -120,16 +121,6 @@ public:
     void setEditedComponent(QSharedPointer<Component> component);
 
     /*!
-     *  Returns the graphics view.
-     */
-    QGraphicsView* getView();
-
-    /*!
-     *  Returns the graphics view.
-     */
-    QGraphicsView const* getView() const;
-
-    /*!
      *  Returns the VLNV of the currently open system.
      */
     VLNV const* getOpenDocument() const;
@@ -171,17 +162,19 @@ public:
     /*!
      *  Returns the design diagram.
      */
-    DesignDiagram* getDiagram();
-
-    /*!
-     *  Returns the design diagram.
-     */
-    DesignDiagram const* getDiagram() const;
+    DesignDiagram* getDiagram() const;
 
     /*!
      *  Returns the implementation attribute.
      */
     virtual KactusAttribute::Implementation getImplementation() const = 0;
+
+    /*!
+     *  Centers the current view to a point.
+     *
+     *      @param [in] centerPoint   The point to center to.
+     */
+    void centerViewTo(QPointF const& centerPoint);
 
 public slots:
     /*! 

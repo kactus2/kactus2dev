@@ -44,13 +44,6 @@ class VhdlGenerator2 : public QObject {
 
 public:
 
-	/*! \brief The constructor
-	 *
-	 * \param handler Pointer to the instance that manages the library.
-	 * \param parent Pointer to the owner of this generator.
-	 *
-	*/
-	VhdlGenerator2(LibraryInterface* handler, HWDesignWidget* parent);
 
 	/*! \brief The constructor
 	 *
@@ -58,7 +51,7 @@ public:
 	 * \param parent Pointer to the owner of this generator.
 	 *
 	*/
-	VhdlGenerator2(LibraryInterface* handler, ComponentEditor* parent);
+	VhdlGenerator2(LibraryInterface* handler, QObject* parent);
 	
 	//! \brief The destructor
 	virtual ~VhdlGenerator2();

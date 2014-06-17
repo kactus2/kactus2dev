@@ -11,8 +11,9 @@
 
 #include "Association.h"
 
+#include <IPXACTmodels\kactusExtensions\Kactus2Position.h>
+
 #include <QPen>
-#include "IPXACTmodels\kactusExtensions\Kactus2Position.h"
 
 //-----------------------------------------------------------------------------
 // Function: QGraphicsLineItem::Association()
@@ -28,6 +29,8 @@ Association::Association(Associable* startItem, Associable* endItem,
     setPen(QPen(Qt::black, 1, Qt::DashLine));
 
     setZValue(-1.0);
+
+    updateLine();
 }
 
 //-----------------------------------------------------------------------------
@@ -52,12 +55,8 @@ void Association::paint(QPainter* painter, QStyleOptionGraphicsItem const*, QWid
         painter->setPen(pen());
     }
 
-    QPointF startPoint = startItem_->connectionPoint();
-    QLineF centerLine(startPoint, endItem_->connectionPoint(startPoint));
-    setLine(centerLine);
-    endpointPosition_->setPosition(centerLine.p2());
-
-    painter->drawLine(centerLine);
+    updateLine();
+    painter->drawLine(line());
 }
 
 //-----------------------------------------------------------------------------
@@ -96,4 +95,19 @@ void Association::setEndItem(Associable* endItem)
 QSharedPointer<Kactus2Position> Association::getEndpointExtension() const
 {
     return endpointPosition_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Association::updateLine()
+//-----------------------------------------------------------------------------
+void Association::updateLine()
+{
+    QPointF startPoint = startItem_->connectionPoint();
+    QPointF endPoint = endItem_->connectionPoint(startPoint);
+    QLineF centerLine(startPoint, endPoint);
+       
+    prepareGeometryChange();
+    setLine(centerLine);    
+
+    endpointPosition_->setPosition(endPoint);
 }

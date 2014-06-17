@@ -15,7 +15,6 @@
 #include <designEditors/common/DesignWidget.h>
 
 class SystemDesignDiagram;
-class MainWindow;
 
 //-----------------------------------------------------------------------------
 //! SystemDesignWidget class.
@@ -28,7 +27,7 @@ public:
     /*!
      *  Constructor.
      */
-    SystemDesignWidget(bool onlySW, LibraryInterface* lh, MainWindow* mainWnd, QWidget* parent = 0);
+    SystemDesignWidget(bool onlySW, LibraryInterface* lh, QWidget* parent = 0);
 
     /*!
      *  Destructor.

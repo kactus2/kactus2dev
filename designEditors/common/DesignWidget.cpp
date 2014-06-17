@@ -11,13 +11,12 @@
 
 #include "DesignWidget.h"
 
-#include "Association.h"
-
 #include <common/GenericEditProvider.h>
 
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
 #include <designEditors/common/StickyNote/StickyNoteRemoveCommand.h>
+#include <designEditors/common/Association/Association.h>
 #include <designEditors/common/Association/AssociationRemoveCommand.h>
 
 #include <library/LibraryManager/libraryinterface.h>
@@ -39,15 +38,13 @@ DesignWidget::DesignWidget(LibraryInterface* lh, QWidget* parent)
     : TabDocument(parent, DOC_ZOOM_SUPPORT | DOC_DRAW_MODE_SUPPORT | DOC_PRINT_SUPPORT |
                           DOC_PROTECTION_SUPPORT | DOC_EDIT_SUPPORT | DOC_VISIBILITY_CONTROL_SUPPORT, 30, 300),
       lh_(lh),
-      view_(0),
+      view_(new QGraphicsView(this)),
       editedComponent_(),
       viewName_(),
-      editProvider_(),
+      editProvider_(new GenericEditProvider(EDIT_HISTORY_SIZE)),
       diagram_(0)
 {
-    editProvider_ = QSharedPointer<GenericEditProvider>(new GenericEditProvider(EDIT_HISTORY_SIZE));
 
-    view_ = new QGraphicsView(this);
     view_->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
@@ -66,11 +63,65 @@ DesignWidget::~DesignWidget()
 {
     view_->verticalScrollBar()->disconnect(this);
 
-    if (diagram_ != 0)
-    {
-        delete diagram_;
-        diagram_ = 0;
+    delete diagram_;
+    diagram_ = 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignWidget::getIdentifyingVLNV()
+//-----------------------------------------------------------------------------
+VLNV DesignWidget::getIdentifyingVLNV() const 
+{
+    const QSharedPointer<DesignConfiguration> designConf = diagram_->getDesignConfiguration();
+
+    if (designConf) {
+        return designConf->getDesignRef();
     }
+    else {
+        return editedComponent_->getHierRef(viewName_);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignWidget::setDiagram()
+//-----------------------------------------------------------------------------
+void DesignWidget::setDiagram(DesignDiagram* diagram)
+{
+    diagram_ = diagram;
+
+    connect(diagram_, SIGNAL(openComponent(const VLNV&)),
+        this, SIGNAL(openComponent(const VLNV&)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(openDesign(const VLNV&, const QString&)),
+        this, SIGNAL(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(openSWDesign(const VLNV&, QString const&)),
+        this, SIGNAL(openSWDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(openBus(VLNV const&, VLNV const&, bool)),
+        this, SIGNAL(openBus(VLNV const&, VLNV const&, bool)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(openCSource(ComponentItem*)),
+        this, SIGNAL(openCSource(ComponentItem*)), Qt::UniqueConnection);
+
+    connect(diagram_, SIGNAL(componentSelected(ComponentItem*)),
+        this, SIGNAL(componentSelected(ComponentItem*)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(interfaceSelected(ConnectionEndpoint*)),
+        this, SIGNAL(interfaceSelected(ConnectionEndpoint*)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(connectionSelected(GraphicsConnection*)),
+        this, SIGNAL(connectionSelected(GraphicsConnection*)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(clearItemSelection()),
+        this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(componentInstantiated(ComponentItem*)),
+        this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)),
+        this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+    connect(diagram_, SIGNAL(errorMessage(const QString&)),
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(noticeMessage(const QString&)),
+        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(helpUrlRequested(QString const&)),
+        this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
+
+    view_->setScene(diagram_);
+    centerViewTo(QPointF(0, 0));
 }
 
 //-----------------------------------------------------------------------------
@@ -101,7 +152,7 @@ void DesignWidget::fitInView()
     int scaleLevel = int(qMin(scaleX, scaleY) * 10) * 10;
     setZoomLevel(scaleLevel);
 
-    view_->centerOn(itemRect.center());
+    centerViewTo(itemRect.center());
 }
 
 //-----------------------------------------------------------------------------
@@ -120,22 +171,6 @@ void DesignWidget::setProtection(bool locked)
     TabDocument::setProtection(locked);
     diagram_->setProtection(locked);
     diagram_->setMode(MODE_SELECT);
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignWidget::getView()
-//-----------------------------------------------------------------------------
-QGraphicsView* DesignWidget::getView()
-{
-    return view_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignWidget::getView()
-//-----------------------------------------------------------------------------
-QGraphicsView const* DesignWidget::getView() const
-{
-    return view_;
 }
 
 //-----------------------------------------------------------------------------
@@ -324,59 +359,17 @@ void DesignWidget::removeSelectedAssociations()
 //-----------------------------------------------------------------------------
 // Function: DesignWidget::getDiagram()
 //-----------------------------------------------------------------------------
-DesignDiagram* DesignWidget::getDiagram()
+DesignDiagram* DesignWidget::getDiagram() const
 {
     return diagram_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignWidget::getDiagram()
+// Function: DesignWidget::centerViewTo()
 //-----------------------------------------------------------------------------
-DesignDiagram const* DesignWidget::getDiagram() const
+void DesignWidget::centerViewTo(QPointF const& centerPoint)
 {
-    return diagram_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignWidget::setDiagram()
-//-----------------------------------------------------------------------------
-void DesignWidget::setDiagram(DesignDiagram* diagram)
-{
-    diagram_ = diagram;
-
-    connect(diagram_, SIGNAL(openComponent(const VLNV&)),
-            this, SIGNAL(openComponent(const VLNV&)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(openDesign(const VLNV&, const QString&)),
-            this, SIGNAL(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(openSWDesign(const VLNV&, QString const&)),
-            this, SIGNAL(openSWDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(openBus(VLNV const&, VLNV const&, bool)),
-            this, SIGNAL(openBus(VLNV const&, VLNV const&, bool)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(openCSource(ComponentItem*)),
-            this, SIGNAL(openCSource(ComponentItem*)), Qt::UniqueConnection);
-
-    connect(diagram_, SIGNAL(componentSelected(ComponentItem*)),
-            this, SIGNAL(componentSelected(ComponentItem*)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(interfaceSelected(ConnectionEndpoint*)),
-            this, SIGNAL(interfaceSelected(ConnectionEndpoint*)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(connectionSelected(GraphicsConnection*)),
-            this, SIGNAL(connectionSelected(GraphicsConnection*)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(clearItemSelection()),
-            this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(componentInstantiated(ComponentItem*)),
-            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)),
-            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-
-    connect(diagram_, SIGNAL(errorMessage(const QString&)),
-        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(noticeMessage(const QString&)),
-        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(helpUrlRequested(QString const&)),
-            this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
-
-    view_->setScene(diagram_);
-    view_->centerOn(0, 0);
+    view_->centerOn(centerPoint);
 }
 
 //-----------------------------------------------------------------------------
@@ -478,15 +471,4 @@ void DesignWidget::showEvent(QShowEvent* event)
 void DesignWidget::setEditedComponent(QSharedPointer<Component> component)
 {
     editedComponent_ = component;
-}
-
-VLNV DesignWidget::getIdentifyingVLNV() const {
-	 const QSharedPointer<DesignConfiguration> designConf = diagram_->getDesignConfiguration();
-	
-	if (designConf) {
-		return designConf->getDesignRef();
-	}
-	else {
-		return editedComponent_->getHierRef(viewName_);
-	}
 }

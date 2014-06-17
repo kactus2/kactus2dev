@@ -34,7 +34,6 @@
 
 #include <common/utils.h>
 
-#include <designEditors/HWDesign/HWDesignWidget.h>
 #include <editors/ComponentEditor/componenteditor.h>
 
 #include <QFile>
@@ -48,33 +47,8 @@ static const QString BLACK_BOX_DECL_END = "-- ##KACTUS2_BLACK_BOX_DECLARATIONS_E
 static const QString BLACK_BOX_ASSIGN_START = "-- ##KACTUS2_BLACK_BOX_ASSIGNMENTS_BEGIN##";
 static const QString BLACK_BOX_ASSIGN_END = "-- ##KACTUS2_BLACK_BOX_ASSIGNMENTS_END##";
 
-VhdlGenerator2::VhdlGenerator2(LibraryInterface* handler, HWDesignWidget* parent):
-QObject(parent),
-handler_(handler),
-component_(),
-design_(),
-desConf_(),
-viewName_(),
-topLevelEntity_(),
-libraries_(),
-typeDefinitions_(),
-userModifiedDeclarations_(),
-userModifiedAssignments_(),
-topGenerics_(),
-topPorts_(),
-signals_(),
-components_(),
-instances_() {
-
-	Q_ASSERT(handler);
-	connect(this, SIGNAL(errorMessage(const QString&)),
-		parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-	connect(this, SIGNAL(noticeMessage(const QString&)),
-		parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-}
-
 VhdlGenerator2::VhdlGenerator2( LibraryInterface* handler, 
-							   ComponentEditor* parent ):
+							   QObject* parent ):
 QObject(parent),
 handler_(handler),
 component_(),
@@ -90,13 +64,9 @@ topGenerics_(),
 topPorts_(),
 signals_(),
 components_(),
-instances_() {
-
+instances_() 
+{
 	Q_ASSERT(handler);
-	connect(this, SIGNAL(errorMessage(const QString&)),
-		parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-	connect(this, SIGNAL(noticeMessage(const QString&)),
-		parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 }
 
 VhdlGenerator2::~VhdlGenerator2() {

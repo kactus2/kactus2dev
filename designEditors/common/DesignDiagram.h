@@ -26,7 +26,6 @@
 #include <QStringList>
 #include <QUndoCommand>
 
-class MainWindow;
 class LibraryInterface;
 class GenericEditProvider;
 class Component;
@@ -53,12 +52,10 @@ public:
      *  Constructor.
      *
      *      @param [in] lh            The library interface.
-     *      @param [in] mainWnd       The main window.
      *      @param [in] editProvider  The edit provider.
      *      @param [in] parent        The parent widget.
      */
-    DesignDiagram(LibraryInterface* lh, MainWindow* mainWnd,
-                  GenericEditProvider& editProvider, DesignWidget* parent = 0);
+    DesignDiagram(LibraryInterface* lh, GenericEditProvider& editProvider, DesignWidget* parent = 0);
 
     /*!
      *  Destructor.
@@ -160,11 +157,6 @@ public:
     virtual void addColumn(ColumnDesc const& desc) = 0;
 
     /*!
-     *  Returns the diagram column layout.
-     */
-    virtual GraphicsColumnLayout* getColumnLayout() = 0;
-
-    /*!
      *  Returns the current draw mode.
      */
     DrawMode getMode() const;
@@ -183,11 +175,6 @@ public:
      *  Returns the library interface.
      */
     LibraryInterface* getLibraryInterface() const;
-
-    /*!
-     *  Returns the main window.
-     */
-    MainWindow* getMainWindow() const;
 
     /*!
      *  Returns the parent design widget.
@@ -226,6 +213,13 @@ public:
      */
     static bool sortByX(QGraphicsItem* lhs, QGraphicsItem* rhs);
 
+     /*!
+      *  Gets the graphics column layout of the design.
+      *
+      *      @return The column layout of the design.
+      */
+     QSharedPointer<GraphicsColumnLayout> getLayout() const;
+
 public slots:
     //! Called when the diagram is shown.
     void onShow();
@@ -236,7 +230,7 @@ public slots:
     void selectAll();
 
     //! Called when the view has been scrolled vertically.
-    virtual void onVerticalScroll(qreal y) = 0;
+    virtual void onVerticalScroll(qreal y);
 
     //! Called when a component instance is added to the diagram.
     virtual void onComponentInstanceAdded(ComponentItem* item);
@@ -305,6 +299,9 @@ signals:
 	void copyItem();
 
 protected:
+
+    virtual void wheelEvent(QGraphicsSceneWheelEvent* event);
+
     /*!
      *  Creates a unique instance name for the given component.
      *
@@ -402,6 +399,10 @@ private:
      */
     virtual void loadDesign(QSharedPointer<Design> design) = 0;
 
+
+     //! Clears and resets the current layout.
+     void clearLayout();
+
     //! Creates sticky notes from vendor extensions.
     void loadStickyNotes();
 
@@ -432,9 +433,6 @@ private:
     //! Library interface.
     LibraryInterface* lh_;
 
-    //! A pointer to the main window.
-    MainWindow* mainWnd_;
-
     //! The edit provider for undo/redo.
     GenericEditProvider& editProvider_;
 
@@ -443,6 +441,9 @@ private:
 
     //! The design configuration.
     QSharedPointer<DesignConfiguration> designConf_;
+
+    // Graphics column layout.
+    QSharedPointer<GraphicsColumnLayout> layout_;
 
     //! The current draw mode.
     DrawMode mode_;
@@ -456,9 +457,10 @@ private:
     //! If true, the diagram is locked and cannot be modified.
     bool locked_;
 
-	//! \brief Contains the XML header comments of the design.
+	//! Contains the XML header comments of the design.
 	QStringList XMLComments_;
 
+    //! The design vendor extensions.
     QList<QSharedPointer<VendorExtension> > vendorExtensions_;
     
     interactionMode interactionMode_;

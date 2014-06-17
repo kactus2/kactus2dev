@@ -18,7 +18,7 @@
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 
-#include <designEditors/common/Association.h>
+#include <designEditors/common/Association/Association.h>
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
 #include <designEditors/common/StickyNote/StickyNoteAddCommand.h>
@@ -42,15 +42,15 @@
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::DesignDiagram()
 //-----------------------------------------------------------------------------
-DesignDiagram::DesignDiagram(LibraryInterface* lh, MainWindow* mainWnd,
+DesignDiagram::DesignDiagram(LibraryInterface* lh,
                              GenericEditProvider& editProvider, DesignWidget* parent)
     : QGraphicsScene(parent),
       parent_(parent),
       lh_(lh),
-      mainWnd_(mainWnd),
       editProvider_(editProvider),
       component_(),
       designConf_(),
+      layout_(new GraphicsColumnLayout(this)),
       mode_(MODE_SELECT),
       instanceNames_(),
       loading_(false),
@@ -104,6 +104,7 @@ bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointe
     emit clearItemSelection();
 
     // Clear the scene.
+    layout_ = ;
     clearScene();
     getParent()->clearRelatedVLNVs();
     getParent()->addRelatedVLNV(*component->getVlnv());
@@ -214,14 +215,6 @@ bool DesignDiagram::isProtected() const
 LibraryInterface* DesignDiagram::getLibraryInterface() const
 {
     return lh_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignDiagram::getMainWindow()
-//-----------------------------------------------------------------------------
-MainWindow* DesignDiagram::getMainWindow() const
-{
-    return mainWnd_;
 }
 
 //-----------------------------------------------------------------------------
@@ -471,10 +464,18 @@ void DesignDiagram::selectAll()
 {
     clearSelection();
 
-    foreach (GraphicsColumn* column, getColumnLayout()->getColumns())
+    foreach (GraphicsColumn* column, getLayout()->getColumns())
     {
         column->setSelected(true);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: onVerticalScroll()
+//-----------------------------------------------------------------------------
+void DesignDiagram::onVerticalScroll(qreal y)
+{
+    getLayout()->setOffsetY(y);
 }
 
 //-----------------------------------------------------------------------------
@@ -570,6 +571,23 @@ int DesignDiagram::getCommonItemType(QList<QGraphicsItem*> const& items)
 bool DesignDiagram::sortByX(QGraphicsItem* lhs, QGraphicsItem* rhs)
 {
     return lhs->x() < rhs->x();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::getLayout()
+//-----------------------------------------------------------------------------
+QSharedPointer<GraphicsColumnLayout> DesignDiagram::getLayout() const
+{
+    return layout_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::setLayout()
+//-----------------------------------------------------------------------------
+void DesignDiagram::clearLayout()
+{
+    layout_.clear();
+    layout_ = QSharedPointer<GraphicsColumnLayout>(new GraphicsColumnLayout(this));
 }
 
 //-----------------------------------------------------------------------------
@@ -725,4 +743,22 @@ QSharedPointer<StickyNoteAddCommand> DesignDiagram::createNoteAddCommand(StickyN
         this, SLOT(onVendorExtensionRemoved(QSharedPointer<VendorExtension>)), Qt::UniqueConnection);
 
     return cmd;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::wheelEvent()
+//-----------------------------------------------------------------------------
+void DesignDiagram::wheelEvent(QGraphicsSceneWheelEvent* event)
+{
+    if (event->modifiers() == Qt::CTRL)
+    {
+        // Set the zoom level and center the view.
+        getParent()->setZoomLevel(getParent()->getZoomLevel() + event->delta() / 12);
+
+        // Retrieve the center point in diagram coordinates.
+        QPointF centerPos = itemsBoundingRect().center();
+        getParent()->centerViewTo(centerPos);        
+
+        event->accept();
+    }
 }

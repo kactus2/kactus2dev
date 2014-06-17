@@ -11,7 +11,7 @@
 
 #include "AssociationRemoveCommand.h"
 
-#include <designEditors/common/Association.h>
+#include <designEditors/common/Association/Association.h>
 
 #include <QGraphicsScene>
 

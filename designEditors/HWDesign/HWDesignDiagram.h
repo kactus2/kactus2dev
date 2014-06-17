@@ -249,11 +249,6 @@ public:
      */
     void removeColumn(GraphicsColumn* column);
 
-    /*!
-     *  Returns the diagram column layout.
-     */
-    GraphicsColumnLayout* getColumnLayout();
-
     /*! \brief Get pointer to the parent of this scene.
 	 *
 	 * \return Pointer to the design widget that owns this scene.
@@ -281,11 +276,6 @@ public slots:
     void selectionToFront();
 
     /*!
-     *  Called when the view has been scrolled vertically.
-     */
-    virtual void onVerticalScroll(qreal y);
-
-    /*!
      *  Called when the selection changes in the diagram.
      */
     void onSelectionChanged();
@@ -300,23 +290,20 @@ public slots:
      */
 	virtual void onPasteAction();
 
-
     /*!
      *  Called when add to library is selected from the context menu.
      */
-	virtual void onAddAction();
+	virtual void onAddToLibraryAction();
 
     /*!
      *  Called when open component is selected from the context menu.
      */
 	virtual void onOpenComponentAction();
 
-
     /*!
      *  Called when open HW design is selected from the context menu.
      */
 	virtual void onOpenDesignAction();
-
 
 protected:
     //! Handler for mouse click events.
@@ -330,9 +317,6 @@ protected:
 
     //! Handler for mouse double click events.
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent);
-
-    //! Handler for mouse wheel events.
-    void wheelEvent(QGraphicsSceneWheelEvent *event);
 
     //! Called when a key has been release.
     void keyReleaseEvent(QKeyEvent *event);
@@ -639,9 +623,6 @@ private:
 
     //! The highlighted end point to which the connection could be snapped automatically.
     HWConnectionEndpoint* highlightedEndPoint_;
-
-    //! The column layout.
-    QSharedPointer<GraphicsColumnLayout> layout_;
 
     //! The type of the item being dragged.
     ColumnItemType dragCompType_;

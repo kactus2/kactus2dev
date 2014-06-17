@@ -3298,7 +3298,7 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool fo
 		return;
 	}
 
-	SystemDesignWidget* designWidget = new SystemDesignWidget(true, libraryHandler_, this, this);
+	SystemDesignWidget* designWidget = new SystemDesignWidget(true, libraryHandler_, this);
 
 	if (!designWidget->setDesign(vlnv, viewName))
 	{
@@ -3356,7 +3356,7 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-	SystemDesignWidget* designWidget = new SystemDesignWidget(false, libraryHandler_, this, this);
+	SystemDesignWidget* designWidget = new SystemDesignWidget(false, libraryHandler_, this);
     
 	if (!designWidget->setDesign(vlnv, viewName))
 	{

@@ -57,12 +57,11 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignDiagram()
 //-----------------------------------------------------------------------------
-MemoryDesignDiagram::MemoryDesignDiagram(LibraryInterface* lh, MainWindow* mainWnd,
+MemoryDesignDiagram::MemoryDesignDiagram(LibraryInterface* lh, 
                                          GenericEditProvider& editProvider,
                                          MemoryDesignWidget* parent)
-    : DesignDiagram(lh, mainWnd, editProvider, parent),
+    : DesignDiagram(lh, editProvider, parent),
       parent_(parent),
-      layout_(),
       oldSelection_(0),
       resizingSubsection_(false),
       dualSubsectionResize_(false),
@@ -84,7 +83,7 @@ MemoryDesignDiagram::~MemoryDesignDiagram()
 //-----------------------------------------------------------------------------
 void MemoryDesignDiagram::clearScene()
 {
-    layout_.clear();
+    getLayout().clear();
     DesignDiagram::clearScene();
 }
 
@@ -93,10 +92,8 @@ void MemoryDesignDiagram::clearScene()
 //-----------------------------------------------------------------------------
 void MemoryDesignDiagram::loadDesign(QSharedPointer<Design> design)
 {
-    // Create the column layout.
-    layout_ = QSharedPointer<GraphicsColumnLayout>(new GraphicsColumnLayout(this));
-    layout_->setAutoReorganized(true);
-    layout_->setAutoCreateColumnFunction(&MemoryDesignDiagram::createDefaultColumn);
+    getLayout()->setAutoReorganized(true);
+    getLayout()->setAutoCreateColumnFunction(&MemoryDesignDiagram::createDefaultColumn);
 
     if (!design->getColumns().isEmpty())
     {
@@ -108,8 +105,8 @@ void MemoryDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
     foreach(ColumnDesc const& desc, design->getColumns())
     {
-        GraphicsColumn* column = new MemoryColumn(desc, layout_.data());
-        layout_->addColumn(column, true);
+        GraphicsColumn* column = new MemoryColumn(desc, getLayout().data());
+        getLayout()->addColumn(column, true);
     }
 
     // Create (HW) component instances.
@@ -133,19 +130,19 @@ void MemoryDesignDiagram::loadDesign(QSharedPointer<Design> design)
         {
             MemoryItem* item = new MemoryItem(getLibraryInterface(), instance.getInstanceName(),
                                               component, map, 0);
-            layout_->addItem(item);
+            getLayout()->addItem(item);
         }
 
         foreach (QSharedPointer<AddressSpace> addressSpace, component->getAddressSpaces())
         {
             AddressSpaceItem* item = new AddressSpaceItem(getLibraryInterface(), instance.getInstanceName(),
                                                           component, addressSpace, 0);
-            layout_->getColumns().at(1)->addItem(item);
+            getLayout()->getColumns().at(1)->addItem(item);
         }
     }
 
     // Refresh the layout so that all components are placed in correct positions according to the stacking.
-    layout_->updatePositions();
+    getLayout()->updatePositions();
 
     design_ = design;
 }
@@ -184,21 +181,12 @@ void MemoryDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 void MemoryDesignDiagram::onSelected(QGraphicsItem* newSelection)
 {
+    ComponentItem* selectedComponent = dynamic_cast<ComponentItem*>(newSelection);
+
     // Activate the correct views when something has been selected.
-    if (newSelection)
+    if (selectedComponent)
     { 
-        // Check if the selected item was a component.
-        if (dynamic_cast<ComponentItem*>(newSelection) != 0)
-        {
-            ComponentItem* item = static_cast<ComponentItem*>(newSelection);
-            emit componentSelected(item);
-        }
-        else
-        {
-            // Otherwise inform others that nothing is currently selected.
-            emit clearItemSelection();
-            emit helpUrlRequested("memorydesign/memorydesign.html");
-        }
+        emit componentSelected(selectedComponent);
     }
     else
     {
@@ -226,36 +214,6 @@ void MemoryDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: onVerticalScroll()
-//-----------------------------------------------------------------------------
-void MemoryDesignDiagram::onVerticalScroll(qreal y)
-{
-    layout_->setOffsetY(y);
-}
-
-//-----------------------------------------------------------------------------
-// Function: wheelEvent()
-//-----------------------------------------------------------------------------
-void MemoryDesignDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
-{
-    if (event->modifiers() == Qt::CTRL)
-    {
-        MemoryDesignWidget* doc = static_cast<MemoryDesignWidget*>(parent());
-        QGraphicsView* view = doc->getView();
-
-        // Retrieve the center point in scene coordinates.
-        //QPointF origCenterPos = view->mapToScene(view->rect().center());
-        QPointF centerPos = itemsBoundingRect().center();
-
-        // Set the zoom level and center the view.
-        doc->setZoomLevel(doc->getZoomLevel() + event->delta() / 12);
-
-        view->centerOn(centerPos);
-        event->accept();
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: createDesign()
 //-----------------------------------------------------------------------------
 QSharedPointer<Design> MemoryDesignDiagram::createDesign(VLNV const& vlnv) const
@@ -270,9 +228,9 @@ QSharedPointer<Design> MemoryDesignDiagram::createDesign(VLNV const& vlnv) const
 //-----------------------------------------------------------------------------
 void MemoryDesignDiagram::addColumn(ColumnDesc const& desc)
 {
-    GraphicsColumn* column = new MemoryColumn(desc, layout_.data());
+    GraphicsColumn* column = new MemoryColumn(desc, getLayout().data());
 
-    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(layout_.data(), column));
+    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(getLayout().data(), column));
     getEditProvider().addCommand(cmd);
     cmd->redo();
 }
@@ -322,22 +280,6 @@ void MemoryDesignDiagram::addColumn(ColumnDesc const& desc)
 //         }
 //     }
 // }
-
-//-----------------------------------------------------------------------------
-// Function: getColumnLayout()
-//-----------------------------------------------------------------------------
-GraphicsColumnLayout* MemoryDesignDiagram::getColumnLayout()
-{
-    return layout_.data();
-}
-
-//-----------------------------------------------------------------------------
-// Function: parent()
-//-----------------------------------------------------------------------------
-MemoryDesignWidget* MemoryDesignDiagram::parent() const
-{
-    return parent_;
-}
 
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignDiagram::updateHierComponent()
@@ -444,7 +386,7 @@ void MemoryDesignDiagram::drawMemoryDividers(QPainter* painter, QRectF const& re
     // Draw section dividers to the address spaces based on the memory map positions.
     MemoryColumn* memoryColumn = 0;
 
-    foreach (GraphicsColumn* column, layout_->getColumns())
+    foreach (GraphicsColumn* column, getLayout()->getColumns())
     {
         MemoryColumn* memColumn = static_cast<MemoryColumn*>(column);
 
@@ -466,7 +408,7 @@ void MemoryDesignDiagram::drawMemoryDividers(QPainter* painter, QRectF const& re
                 
             if (top >= rect.top() && top < rect.bottom())
             {
-                foreach (GraphicsColumn* column, layout_->getColumns())
+                foreach (GraphicsColumn* column, getLayout()->getColumns())
                 {
                     MemoryBaseItem* addrSpaceItem = static_cast<MemoryColumn*>(column)->findItemAt(top);
                     
@@ -480,7 +422,7 @@ void MemoryDesignDiagram::drawMemoryDividers(QPainter* painter, QRectF const& re
 
             if (bottom >= rect.top() && bottom < rect.bottom())
             {
-                foreach (GraphicsColumn* column, layout_->getColumns())
+                foreach (GraphicsColumn* column, getLayout()->getColumns())
                 {
                     MemoryBaseItem* addrSpaceItem = static_cast<MemoryColumn*>(column)->findItemAt(bottom);
 
@@ -494,7 +436,7 @@ void MemoryDesignDiagram::drawMemoryDividers(QPainter* painter, QRectF const& re
         }
     }
 
-    foreach (GraphicsColumn* column, layout_->getColumns())
+    foreach (GraphicsColumn* column, getLayout()->getColumns())
     {
         // Check if this is an address space column.
         if (column->getContentType() == COLUMN_CONTENT_COMPONENTS)

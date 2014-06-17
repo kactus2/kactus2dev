@@ -18,7 +18,6 @@
 
 #include <QVector>
 
-class MainWindow;
 class Component;
 class Design;
 class LibraryInterface;
@@ -48,12 +47,10 @@ public:
      *  Constructor.
      *
      *      @param [in] lh            The library interface.
-     *      @param [in] mainWnd       The main window.
      *      @param [in] editProvider  The edit provider.
      *      @param [in] parent        The parent widget.
      */    
-    MemoryDesignDiagram(LibraryInterface* lh, MainWindow* mainWnd,
-                        GenericEditProvider& editProvider, MemoryDesignWidget* parent = 0);
+    MemoryDesignDiagram(LibraryInterface* lh, GenericEditProvider& editProvider, MemoryDesignWidget* parent = 0);
 
     /*!
      *  Destructor.
@@ -85,18 +82,6 @@ public:
      *      @param [in] desc The column description.
      */
     void addColumn(ColumnDesc const& desc);
-
-    /*!
-     *  Returns the parent widget.
-     */
-    MemoryDesignWidget* parent() const;
-
-    /*!
-     *  Returns the column layout.
-     */
-    GraphicsColumnLayout* getColumnLayout();
-
-    void onVerticalScroll(qreal y);
 
     /*!
      *  Begins a resize of an address (sub)section.
@@ -149,9 +134,6 @@ protected:
     //! Called when the mouse is double-clicked.
     //void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
-    //! Called when the mouse wheel has scrolled.
-    void wheelEvent(QGraphicsSceneWheelEvent *event);
-
     //! Draws the foreground.
     void drawForeground(QPainter* painter, const QRectF& rect);
 
@@ -193,9 +175,6 @@ private:
 
     //! The design.
     QSharedPointer<Design> design_;
-
-    // Graphics column layout.
-    QSharedPointer<GraphicsColumnLayout> layout_;
 
     //! The old item selection.
     QGraphicsItem* oldSelection_;

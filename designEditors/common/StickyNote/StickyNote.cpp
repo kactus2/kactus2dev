@@ -18,7 +18,7 @@
 
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/diagramgrid.h>
-#include <designEditors/common/Association.h>
+#include <designEditors/common/Association/Association.h>
 
 #include <IPXACTmodels/VendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>

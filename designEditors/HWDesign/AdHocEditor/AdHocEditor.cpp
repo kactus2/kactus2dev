@@ -18,7 +18,6 @@
 
 #include <library/LibraryManager/vlnv.h>
 
-#include <designEditors/HWDesign/HWDesignDiagram.h>
 #include <designEditors/HWDesign/HWComponentItem.h>
 
 #include <designEditors/HWDesign/HWChangeCommands.h>
@@ -87,15 +86,15 @@ void AdHocEditor::setDataSource(AdHocEnabled* dataSource)
 
 	dataSource_ = dataSource;
 
-    if (dynamic_cast<DesignDiagram*>(dataSource_) != 0)
+    HWComponentItem* compItem = dynamic_cast<HWComponentItem*>(dataSource_);
+
+    if (compItem)
     {
-        nameLabel_.setText(tr("Component: top-level"));
+        nameLabel_.setText(tr("Component: %1").arg(compItem->name()));
     }
     else
     {
-        HWComponentItem* compItem = dynamic_cast<HWComponentItem*>(dataSource_);
-        Q_ASSERT(compItem != 0);
-        nameLabel_.setText(tr("Component: %1").arg(compItem->name()));
+        nameLabel_.setText(tr("Component: top-level"));
     }
 
     bool locked = dataSource_->isProtected();

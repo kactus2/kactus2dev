@@ -4,15 +4,14 @@
 
 #include "HWDesignWidget.h"
 
+#include "BusPortItem.h"
+#include "BusInterfaceItem.h"
 #include "HWDesignDiagram.h"
 #include "HWComponentItem.h"
 #include "HWConnection.h"
-#include "BusPortItem.h"
-#include "BusInterfaceItem.h"
-
 #include "HWDeleteCommands.h"
 
-#include <designEditors/common/Association.h>
+#include <designEditors/common/Association/Association.h>
 #include <designEditors/common/DiagramUtil.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
 #include <designEditors/common/Association/AssociationRemoveCommand.h>
@@ -56,7 +55,6 @@
 #include <QPrinter>
 #include <QPainter>
 #include <QPrintDialog>
-
 
 //-----------------------------------------------------------------------------
 // Function: HWDesignWidget::HWDesignWidget()
@@ -525,7 +523,7 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
             foreach (QGraphicsItem* selected, selectedItems)
             {
                 HWColumn* column = static_cast<HWColumn*>(selected);
-                QUndoCommand* childCmd = new ColumnDeleteCommand(getDiagram()->getColumnLayout(), column, cmd.data());
+                QUndoCommand* childCmd = new ColumnDeleteCommand(getDiagram()->getLayout().data(), column, cmd.data());
                 childCmd->redo();
             }
 
@@ -665,6 +663,11 @@ void HWDesignWidget::onVhdlGenerate() {
 
 	VhdlGenerator2 vhdlGen(getLibraryInterface(), this);
 	
+    connect(&vhdlGen, SIGNAL(errorMessage(const QString&)),
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+    connect(&vhdlGen, SIGNAL(noticeMessage(const QString&)),
+        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+
 	// if errors are detected during parsing
 	if (!vhdlGen.parse(getEditedComponent(), getOpenViewName())) {
 		return;
@@ -817,17 +820,20 @@ void HWDesignWidget::addColumn()
 //-----------------------------------------------------------------------------
 unsigned int HWDesignWidget::getSupportedDrawModes() const
 {
-    if (!isProtected())
+    if (isProtected())
     {
-        return (MODE_SELECT | MODE_CONNECT | MODE_INTERFACE | MODE_DRAFT | MODE_TOGGLE_OFFPAGE | MODE_LABEL);
+        // Force to selection mode in read-only mode.
+        return MODE_SELECT;        
     }
     else
     {
-        // Force to selection mode in read-only mode.
-        return MODE_SELECT;
+        return (MODE_SELECT | MODE_CONNECT | MODE_INTERFACE | MODE_DRAFT | MODE_TOGGLE_OFFPAGE | MODE_LABEL);
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::createDesign()
+//-----------------------------------------------------------------------------
 QSharedPointer<Design> HWDesignWidget::createDesign( const VLNV& vlnv ) {
 	return getDiagram()->createDesign(vlnv);
 }

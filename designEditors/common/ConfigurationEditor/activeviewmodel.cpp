@@ -7,10 +7,10 @@
 
 #include "activeviewmodel.h"
 
+#include <designEditors/common/DesignWidget.h>
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/SystemDesign/HWMappingItem.h>
 #include <designEditors/SystemDesign/SWComponentItem.h>
-#include <designEditors/HWDesign/HWDesignWidget.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
 
 #include <IPXACTmodels/component.h>

@@ -13,7 +13,7 @@
 #define COMPONENTITEM_H
 
 #include <designEditors/common/diagramgrid.h>
-#include <designEditors/common/Associable.h>
+#include <designEditors/common/Association/Associable.h>
 
 #include <QGraphicsRectItem>
 #include <QSharedPointer>

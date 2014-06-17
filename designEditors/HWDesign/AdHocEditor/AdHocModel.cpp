@@ -17,7 +17,6 @@
 #include <IPXACTmodels/component.h>
 
 #include <designEditors/HWDesign/HWComponentItem.h>
-#include <designEditors/HWDesign/HWDesignDiagram.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
 #include <designEditors/HWDesign/AdHocEnabled.h>
 

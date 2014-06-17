@@ -635,7 +635,9 @@ HEADERS += ./resource.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Position.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Value.h \
     ./designEditors/common/Association/AssociationRemoveCommand.h \
+    ./designEditors/common/Association/Associable.h \
     ./designEditors/common/Association/AssociationAddCommand.h \
+    ./designEditors/common/Association/Association.h \
     ./designEditors/common/Association/AssociationChangeEndpointCommand.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
@@ -1114,8 +1116,8 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/SystemDesign/SystemDetailsEditor/ExportSWDialog.cpp \
     ./designEditors/SystemDesign/SystemDetailsEditor/SwitchHWDialog.cpp \
     ./designEditors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.cpp \
-    ./designEditors/common/Associable.cpp \
-    ./designEditors/common/Association.cpp \
+    ./designEditors/common/Association/Association.cpp \
+    ./designEditors/common/Association/Associable.cpp \
     ./designEditors/common/DesignDiagram.cpp \
     ./designEditors/common/DesignWidget.cpp \
     ./designEditors/common/ComponentInstanceEditor/componentinstanceeditor.cpp \

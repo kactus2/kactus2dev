@@ -42,7 +42,7 @@
 #include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
 
-#include <designEditors/common/Association.h>
+#include <designEditors/common/Association/Association.h>
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DiagramUtil.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
@@ -78,13 +78,12 @@ Q_DECLARE_METATYPE(SystemDesignDiagram::ColumnCollectionCopyData)
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram()
 //-----------------------------------------------------------------------------
-SystemDesignDiagram::SystemDesignDiagram(bool onlySW, LibraryInterface* lh, MainWindow* mainWnd,
+SystemDesignDiagram::SystemDesignDiagram(bool onlySW, LibraryInterface* lh,
                                          GenericEditProvider& editProvider,
                                          SystemDesignWidget* parent)
-    : DesignDiagram(lh, mainWnd, editProvider, parent),
+    : DesignDiagram(lh, editProvider, parent),
       onlySW_(onlySW),
       parent_(parent),
-      layout_(),
       dragType_(DRAG_TYPE_NONE),
       tempConnection_(0),
       tempConnEndpoint_(0),
@@ -124,7 +123,7 @@ void SystemDesignDiagram::clearScene()
 {
     clearSelection();
     destroyConnections();
-    layout_.clear();
+    getLayout().clear();
     DesignDiagram::clearScene();
 }
 
@@ -154,9 +153,6 @@ void SystemDesignDiagram::setMode(DrawMode mode)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
 {
-    // Create the column layout.
-    layout_ = QSharedPointer<GraphicsColumnLayout>(new GraphicsColumnLayout(this));
-
     if (design->getColumns().isEmpty())
     {
         QList<ColumnDesc> columns;
@@ -179,8 +175,8 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
     foreach(ColumnDesc const& desc, design->getColumns())
     {
-        SystemColumn* column = new SystemColumn(desc, layout_.data());
-        layout_->addColumn(column, true);
+        SystemColumn* column = new SystemColumn(desc, getLayout().data());
+        getLayout()->addColumn(column, true);
     }
 
     unsigned int colIndex = 0;
@@ -265,14 +261,14 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         // Check if the position is not found.
         if (instance.getPosition().isNull())
         {
-            layout_->getColumns().at(colIndex)->addItem(item);
-            colIndex = (colIndex + 1) % layout_->getColumns().size();
+            getLayout()->getColumns().at(colIndex)->addItem(item);
+            colIndex = (colIndex + 1) % getLayout()->getColumns().size();
         }
         else
         {
             item->setPos(instance.getPosition());
 
-            GraphicsColumn* column = layout_->findColumnAt(instance.getPosition());
+            GraphicsColumn* column = getLayout()->findColumnAt(instance.getPosition());
 
             if (column != 0)
             {
@@ -280,8 +276,8 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
             }
             else
             {
-                layout_->getColumns().at(colIndex)->addItem(item);
-                colIndex = (colIndex + 1) % layout_->getColumns().size();
+                getLayout()->getColumns().at(colIndex)->addItem(item);
+                colIndex = (colIndex + 1) % getLayout()->getColumns().size();
             }
         }
 
@@ -326,12 +322,12 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
             // Check if the position is not found.
             if (instance.getPosition().isNull())
             {
-                layout_->getColumns().at(colIndex)->addItem(item);
-                colIndex = (colIndex + 1) % layout_->getColumns().size();
+                getLayout()->getColumns().at(colIndex)->addItem(item);
+                colIndex = (colIndex + 1) % getLayout()->getColumns().size();
             }
             else
             {
-                GraphicsColumn* column = layout_->findColumnAt(instance.getPosition());
+                GraphicsColumn* column = getLayout()->findColumnAt(instance.getPosition());
 
                 if (column != 0)
                 {
@@ -339,8 +335,8 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 }
                 else
                 {
-                    layout_->getColumns().at(colIndex)->addItem(item);
-                    colIndex = (colIndex + 1) % layout_->getColumns().size();
+                    getLayout()->getColumns().at(colIndex)->addItem(item);
+                    colIndex = (colIndex + 1) % getLayout()->getColumns().size();
                 }
             }
         }
@@ -355,8 +351,8 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
             }
             else
             {
-                layout_->getColumns().at(colIndex)->addItem(item);
-                colIndex = (colIndex + 1) % layout_->getColumns().size();
+                getLayout()->getColumns().at(colIndex)->addItem(item);
+                colIndex = (colIndex + 1) % getLayout()->getColumns().size();
             }
         }
 
@@ -369,7 +365,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         SWInterfaceItem* item = new SWInterfaceItem(getEditedComponent(), apiIf);
 
         // Add the interface to the first column where it is allowed to be placed.
-        layout_->addItem(item);
+        getLayout()->addItem(item);
     }
 
     foreach (QSharedPointer<ComInterface> comIf, getEditedComponent()->getComInterfaces())
@@ -377,7 +373,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         SWInterfaceItem* item = new SWInterfaceItem(getEditedComponent(), comIf);
 
         // Add the interface to the first column where it is allowed to be placed.
-        layout_->addItem(item);
+        getLayout()->addItem(item);
     }
 
     loadApiDependencies(design);
@@ -394,7 +390,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
     }
 
     // Refresh the layout so that all components are placed in correct positions according to the stacking.
-    layout_->updatePositions();
+    getLayout()->updatePositions();
 }
 
 //-----------------------------------------------------------------------------
@@ -533,7 +529,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 
             if (stack == 0)
             {
-                stack = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
+                stack = getLayout()->findColumnAt(snapPointToGrid(event->scenePos()));
             }
             
             if (stack != 0)
@@ -568,20 +564,6 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
                 dynamic_cast<SystemComponentItem*>(getTopmostComponent(event->scenePos()));
 
             Q_ASSERT(oldCompItem != 0);
-
-            // TODO: Determine connectivity issues and ask confirmation from the user.
-            //             QStringList detailList;
-            // 
-            //             foreach (ConnectionEndpoint* endpoint, oldCompItem->getEndpoints())
-            //             {
-            //                 if (endpoint->isConnected())
-            //                 {
-            //                     // Check if the endpoint is not found in the new component.
-            //                     if (endpoint->getType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS)
-            //                     {
-            //                     }
-            //                 }
-            //             }
 
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                 tr("Component instance '%1' is about to be replaced "
@@ -733,7 +715,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         QSharedPointer<Design> design = libComp.dynamicCast<Design>();
 
         // Import elements to the column under cursor.
-        IGraphicsItemStack* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
+        IGraphicsItemStack* column = getLayout()->findColumnAt(snapPointToGrid(event->scenePos()));
         importDesign(design, column, event->scenePos());
     }
 }
@@ -890,7 +872,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
             }
             else
             {
-                stack = layout_->findColumnAt(event->scenePos());
+                stack = getLayout()->findColumnAt(event->scenePos());
             }
 
             if (stack != 0)
@@ -1257,36 +1239,6 @@ void SystemDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: onVerticalScroll()
-//-----------------------------------------------------------------------------
-void SystemDesignDiagram::onVerticalScroll(qreal y)
-{
-    layout_->setOffsetY(y);
-}
-
-//-----------------------------------------------------------------------------
-// Function: wheelEvent()
-//-----------------------------------------------------------------------------
-void SystemDesignDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
-{
-    if (event->modifiers() == Qt::CTRL)
-    {
-        SystemDesignWidget* doc = static_cast<SystemDesignWidget*>(parent());
-        QGraphicsView* view = doc->getView();
-
-        // Retrieve the center point in scene coordinates.
-        //QPointF origCenterPos = view->mapToScene(view->rect().center());
-        QPointF centerPos = itemsBoundingRect().center();
-
-        // Set the zoom level and center the view.
-        doc->setZoomLevel(doc->getZoomLevel() + event->delta() / 12);
-
-        view->centerOn(centerPos);
-        event->accept();
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: createDesign()
 //-----------------------------------------------------------------------------
 QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
@@ -1488,7 +1440,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
         }
     }
 
-    foreach (GraphicsColumn* column, layout_->getColumns())
+    foreach (GraphicsColumn* column, getLayout()->getColumns())
     {
         columns.append(column->getColumnDesc());
     }
@@ -1509,9 +1461,9 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::addColumn(ColumnDesc const& desc)
 {
-    SystemColumn* column = new SystemColumn(desc, layout_.data());
+    SystemColumn* column = new SystemColumn(desc, getLayout().data());
 
-    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(layout_.data(), column));
+    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(getLayout().data(), column));
     getEditProvider().addCommand(cmd);
     cmd->redo();
 }
@@ -1563,11 +1515,6 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
                 {
                     emit openComponent(*comp->componentModel()->getVlnv());
                 }
-                // if view was not found
-//                 else {
-//                     emit errorMessage(tr("The active view %1 was not found in "
-//                         "instance %2").arg(viewName).arg(comp->name()));
-//                 }
             }
             // If the component does not contain any hierarchical views, open the component editor.
             else if (hierViews.size() == 0)
@@ -1591,50 +1538,7 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
         else if (!isProtected())
         {
             // Otherwise this is an unpackaged component.
-
-            // Request the user to set the vlnv.
-            NewObjectDialog dialog(getLibraryInterface(), VLNV::COMPONENT, false, (QWidget*)parent());
-            dialog.setVLNV(*comp->componentModel()->getVlnv());
-            dialog.setWindowTitle(tr("Add Component to Library"));
-
-            if (dialog.exec() == QDialog::Rejected)
-            {
-                return;
-            }
-
-            VLNV vlnv = dialog.getVLNV();
-            comp->componentModel()->setVlnv(vlnv);
-            comp->componentModel()->setComponentHierarchy(dialog.getProductHierarchy());
-            comp->componentModel()->setComponentFirmness(dialog.getFirmness());
-
-            if (comp->type() == HWMappingItem::Type)
-            {
-                comp->componentModel()->createEmptyFlatView();
-            }
-
-            // Write the model to file.
-            getLibraryInterface()->writeModelToFile(dialog.getPath(), comp->componentModel());
-
-            // Create an undo command.
-            QSharedPointer<ComponentPacketizeCommand> cmd(new ComponentPacketizeCommand(comp, vlnv));
-            getEditProvider().addCommand(cmd);
-            cmd->redo();
-
-            // Ask the user if he wants to complete the component.
-            QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
-                               "Do you want to continue packaging the component completely?",
-                               QMessageBox::NoButton, (QWidget*)parent());
-            msgBox.setInformativeText("Pressing Continue opens up the component editor.");
-            QPushButton* btnContinue = msgBox.addButton(tr("Continue"), QMessageBox::ActionRole);
-            msgBox.addButton(tr("Skip"), QMessageBox::RejectRole);
-
-            msgBox.exec();
-
-            if (msgBox.clickedButton() == btnContinue)
-            {
-                // Open up the component editor.
-                emit openComponent(*comp->componentModel()->getVlnv());
-            }
+            onAddToLibraryAction();
         }
     }
     else if (item->type() == SystemColumn::Type)
@@ -1680,30 +1584,6 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
             }
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: getColumnLayout()
-//-----------------------------------------------------------------------------
-GraphicsColumnLayout* SystemDesignDiagram::getColumnLayout()
-{
-    return layout_.data();
-}
-
-//-----------------------------------------------------------------------------
-// Function: onComponentInstanceAdded()
-//-----------------------------------------------------------------------------
-void SystemDesignDiagram::onComponentInstanceAdded(ComponentItem* item)
-{
-    DesignDiagram::onComponentInstanceAdded(item);
-}
-
-//-----------------------------------------------------------------------------
-// Function: onComponentInstanceRemoved()
-//-----------------------------------------------------------------------------
-void SystemDesignDiagram::onComponentInstanceRemoved(ComponentItem* item)
-{
-    DesignDiagram::onComponentInstanceRemoved(item);
 }
 
 //-----------------------------------------------------------------------------
@@ -2053,7 +1933,7 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
             interface->setPos(dependency.getPosition());
             interface->setDirection(dependency.getDirection());
 
-            GraphicsColumn* column = layout_->findColumnAt(dependency.getPosition());
+            GraphicsColumn* column = getLayout()->findColumnAt(dependency.getPosition());
 
             if (column != 0)
             {
@@ -2061,7 +1941,7 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
             }
             else
             {
-                layout_->addItem(interface);
+                getLayout()->addItem(interface);
             }
         }
 
@@ -2227,7 +2107,7 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
             interface->setPos(hierConn.getPosition());
             interface->setDirection(hierConn.getDirection());
 
-            GraphicsColumn* column = layout_->findColumnAt(hierConn.getPosition());
+            GraphicsColumn* column = getLayout()->findColumnAt(hierConn.getPosition());
 
             if (column != 0)
             {
@@ -2235,7 +2115,7 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
             }
             else
             {
-                layout_->addItem(interface);
+                getLayout()->addItem(interface);
             }
         }
 
@@ -2726,7 +2606,7 @@ void SystemDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
         else
         {
             // Otherwise check which column should receive the SW component.
-            GraphicsColumn* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
+            GraphicsColumn* column = getLayout()->findColumnAt(snapPointToGrid(event->scenePos()));
 
             if (column != 0)
             {
@@ -2881,7 +2761,7 @@ void SystemDesignDiagram::pasteSWInstances(ComponentCollectionCopyData const& co
             targetStack = 0;
 
             // Find the first column that accepts the component.
-            foreach (GraphicsColumn* otherColumn, layout_->getColumns())
+            foreach (GraphicsColumn* otherColumn, getLayout()->getColumns())
             {
                 if (otherColumn->isItemAllowed(comp))
                 {
@@ -3003,11 +2883,11 @@ void SystemDesignDiagram::onPasteAction()
                 if (mimeData->imageData().canConvert<PortCollectionCopyData>() && items.empty())
                 {
                     // Find a valid column for the interfaces.
-                    IGraphicsItemStack* stack = layout_->findColumnAt(parent()->mapFromGlobal(contextPos_));
+                    IGraphicsItemStack* stack = getLayout()->findColumnAt(parent()->mapFromGlobal(contextPos_));
 
                     if (stack && stack->getContentType() != COLUMN_CONTENT_IO)
                     {
-                        foreach (GraphicsColumn* col, layout_->getColumns())
+                        foreach (GraphicsColumn* col, getLayout()->getColumns())
                         {
                             if (col->getContentType() == COLUMN_CONTENT_IO)
                             {
@@ -3038,7 +2918,7 @@ void SystemDesignDiagram::onPasteAction()
                     }
                     else
                     {
-                        stack = layout_->findColumnAt(parent()->mapFromGlobal(contextPos_));
+                        stack = getLayout()->findColumnAt(parent()->mapFromGlobal(contextPos_));
                     }
 
                     if (stack != 0)
@@ -3059,9 +2939,9 @@ void SystemDesignDiagram::onPasteAction()
 
                     foreach (ColumnCopyData const& columnData, collection.columns)
                     {
-                        SystemColumn* column = new SystemColumn(columnData.desc, layout_.data());
+                        SystemColumn* column = new SystemColumn(columnData.desc, getLayout().data());
 
-                        new GraphicsColumnAddCommand(layout_.data(), column, parentCmd.data());
+                        new GraphicsColumnAddCommand(getLayout().data(), column, parentCmd.data());
                         pasteSWInstances(columnData.components, column, parentCmd.data(), false);
                         pasteInterfaces(columnData.interfaces, column, parentCmd.data(), false);
                     }
@@ -3077,7 +2957,7 @@ void SystemDesignDiagram::onPasteAction()
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::onAddAction()
 //-----------------------------------------------------------------------------
-void SystemDesignDiagram::onAddAction()
+void SystemDesignDiagram::onAddToLibraryAction()
 {
     if (selectedItems().size() == 1)
     {
@@ -3086,7 +2966,7 @@ void SystemDesignDiagram::onAddAction()
         {
             SystemComponentItem* comp = static_cast<SystemComponentItem*>(item);
             // Request the user to set the vlnv.
-            NewObjectDialog dialog(getLibraryInterface(), VLNV::COMPONENT, false, (QWidget*)parent());
+            NewObjectDialog dialog(getLibraryInterface(), VLNV::COMPONENT, false, parent());
             dialog.setVLNV(*comp->componentModel()->getVlnv());
             dialog.setWindowTitle(tr("Add Component to Library"));
 
@@ -3246,7 +3126,7 @@ void SystemDesignDiagram::setupActions()
     connect(&pasteAction_, SIGNAL(triggered()),this, SLOT(onPasteAction()), Qt::UniqueConnection);	
 
     parent()->addAction(&addAction_);
-    connect(&addAction_, SIGNAL(triggered()), this, SLOT(onAddAction()), Qt::UniqueConnection);
+    connect(&addAction_, SIGNAL(triggered()), this, SLOT(onAddToLibraryAction()), Qt::UniqueConnection);
 
     parent()->addAction(&openComponentAction_);
     connect(&openComponentAction_, SIGNAL(triggered()), this, SLOT(onOpenComponentAction()), Qt::UniqueConnection);

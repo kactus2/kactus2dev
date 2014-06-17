@@ -9,7 +9,8 @@
 
 #include "activeviewdelegate.h"
 
-#include <designEditors/HWDesign/HWDesignWidget.h>
+#include <designEditors/common/DesignDiagram.h>
+#include <designEditors/common/DesignWidget.h>
 
 #include <IPXACTmodels/designconfiguration.h>
 

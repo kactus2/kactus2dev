@@ -76,13 +76,12 @@ Q_DECLARE_METATYPE(HWDesignDiagram::ColumnCollectionCopyData)
 // Function: HWDesignDiagram()
 //-----------------------------------------------------------------------------
 HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, HWDesignWidget *parent)
-    : DesignDiagram(lh, NULL, editProvider, parent),
+    : DesignDiagram(lh, editProvider, parent),
       parent_(parent),
       tempConnection_(0),
       tempConnEndPoint_(0), 
       tempPotentialEndingEndPoints_(),
       highlightedEndPoint_(0),
-      layout_(),
       dragCompType_(CIT_NONE),
       dragBus_(false),
       offPageMode_(false),
@@ -110,7 +109,7 @@ void HWDesignDiagram::clearScene()
 {
     clearSelection();
     destroyConnections();
-    layout_.clear();
+    getLayout().clear();
     DesignDiagram::clearScene();
 }
 
@@ -119,9 +118,6 @@ void HWDesignDiagram::clearScene()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 {
-    // Create the column layout.
-    layout_ = QSharedPointer<GraphicsColumnLayout>(new GraphicsColumnLayout(this));
-
     if (design->getColumns().isEmpty())
     {
         addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO, 0, IO_COLUMN_WIDTH));
@@ -133,8 +129,8 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
     {
         foreach (ColumnDesc const& desc, design->getColumns())
         {
-            HWColumn* column = new HWColumn(desc, layout_.data());
-            layout_->addColumn(column, true);
+            HWColumn* column = new HWColumn(desc, getLayout().data());
+            getLayout()->addColumn(column, true);
         }
     }
 
@@ -144,7 +140,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         BusInterfaceItem* diagIf = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), busIf, 0);
 
         // Add the diagram interface to the first column where it is allowed to be placed.
-        layout_->addItem(diagIf);
+        getLayout()->addItem(diagIf);
     }
 
     /* component instances */
@@ -180,13 +176,13 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         if (instance.getPosition().isNull())
         {
             // Migrate from the old layout to the column based layout.
-            layout_->addItem(item);
+            getLayout()->addItem(item);
         }
         else
         {
             item->setPos(instance.getPosition());
 
-            GraphicsColumn* column = layout_->findColumnAt(instance.getPosition());
+            GraphicsColumn* column = getLayout()->findColumnAt(instance.getPosition());
             
             if (column != 0)
             {
@@ -194,7 +190,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
             }
             else
             {
-                layout_->addItem(item);
+                getLayout()->addItem(item);
             }
         }
 
@@ -322,7 +318,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
             diagIf->setPos(hierConn.getPosition());
             diagIf->setDirection(hierConn.getDirection());
 
-            GraphicsColumn* column = layout_->findColumnAt(hierConn.getPosition());
+            GraphicsColumn* column = getLayout()->findColumnAt(hierConn.getPosition());
             
             if (column != 0)
             {
@@ -330,7 +326,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
             }
             else
             {
-                layout_->addItem(diagIf);
+                getLayout()->addItem(diagIf);
             }
         }
 
@@ -400,10 +396,8 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 adHocIf->setPos(pos);
             }
 
-            //layout_->addItem(adHocIf);
-
             // Add the ad-hoc interface to the first column where it is allowed to be placed.
-            GraphicsColumn* column = layout_->findColumnAt(adHocIf->scenePos());
+            GraphicsColumn* column = getLayout()->findColumnAt(adHocIf->scenePos());
 
             if (column != 0 && adHocPortPositions.contains(name))
             {
@@ -411,7 +405,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
             }
             else
             {
-                layout_->addItem(adHocIf);
+                getLayout()->addItem(adHocIf);
             }
         }
     }
@@ -569,7 +563,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
     }
 
     // Update the stacking of the columns.
-    foreach (GraphicsColumn* column, layout_->getColumns())
+    foreach (GraphicsColumn* column, getLayout()->getColumns())
     {
         column->updateItemPositions();
     }
@@ -755,7 +749,7 @@ QSharedPointer<Design> HWDesignDiagram::createDesign(const VLNV &vlnv) const
         }
 	}
 
-    foreach(GraphicsColumn* column, layout_->getColumns())
+    foreach(GraphicsColumn* column, getLayout()->getColumns())
     {
         columns.append(column->getColumnDesc());
     }
@@ -1008,7 +1002,7 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
         else if (!isProtected())
         {           
             // Request the user to set the vlnv.
-           onAddAction();
+           onAddToLibraryAction();
         }
     }
     else if (item->type() == HWColumn::Type)
@@ -1291,7 +1285,7 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             HWComponentItem *newItem = new HWComponentItem(getLibraryInterface(), comp, instanceName);
             newItem->setPos(snapPointToGrid(event->scenePos()));
 
-            GraphicsColumn* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
+            GraphicsColumn* column = getLayout()->findColumnAt(snapPointToGrid(event->scenePos()));
 
             if (column != 0)
             {
@@ -1416,15 +1410,6 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             highlightedEndPoint_ = 0;
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: onVerticalScroll()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::onVerticalScroll(qreal y)
-{
-	Q_ASSERT(layout_);
-    layout_->setOffsetY(y);
 }
 
 //-----------------------------------------------------------------------------
@@ -1659,7 +1644,7 @@ void HWDesignDiagram::onPasteAction(){
                 // Paste components.
                 if (mimeData->imageData().canConvert<ComponentCollectionCopyData>() && items.empty())
                 {
-                    GraphicsColumn* column = layout_->findColumnAt(parent()->mapFromGlobal(contextPos_));
+                    GraphicsColumn* column = getLayout()->findColumnAt(parent()->mapFromGlobal(contextPos_));
 
                     if (column != 0)
                     {
@@ -1679,9 +1664,9 @@ void HWDesignDiagram::onPasteAction(){
 
                     foreach (ColumnCopyData const& columnData, collection.columns)
                     {
-                        HWColumn* column = new HWColumn(columnData.desc, layout_.data());
+                        HWColumn* column = new HWColumn(columnData.desc, getLayout().data());
                         
-                        QUndoCommand* columnCmd = new GraphicsColumnAddCommand(layout_.data(), column, parentCmd.data());
+                        QUndoCommand* columnCmd = new GraphicsColumnAddCommand(getLayout().data(), column, parentCmd.data());
                         columnCmd->redo();
 
                         pasteInstances(columnData.components, column, parentCmd.data(), false);
@@ -1696,7 +1681,7 @@ void HWDesignDiagram::onPasteAction(){
                 else if (mimeData->imageData().canConvert<BusInterfaceCollectionCopyData>() &&
                          items.empty()) 
                 {
-                    GraphicsColumn* column = layout_->findColumnAt(parent()->mapFromGlobal(contextPos_));
+                    GraphicsColumn* column = getLayout()->findColumnAt(parent()->mapFromGlobal(contextPos_));
                                        
                     if (column != 0 )
                     {
@@ -1720,7 +1705,7 @@ void HWDesignDiagram::onPasteAction(){
 //-----------------------------------------------------------------------------
 // Function: onAddAction()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::onAddAction()
+void HWDesignDiagram::onAddToLibraryAction()
 {
     if (selectedItems().size() == 1)
     {
@@ -1821,9 +1806,9 @@ void HWDesignDiagram::onOpenDesignAction()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::addColumn(ColumnDesc const& desc)
 {
-    HWColumn* column = new HWColumn(desc, layout_.data());
+    HWColumn* column = new HWColumn(desc, getLayout().data());
 
-    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(layout_.data(), column));
+    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(getLayout().data(), column));
     getEditProvider().addCommand(cmd);
     cmd->redo();
 }
@@ -1833,31 +1818,9 @@ void HWDesignDiagram::addColumn(ColumnDesc const& desc)
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::removeColumn(GraphicsColumn* column)
 {
-    QSharedPointer<QUndoCommand> cmd(new ColumnDeleteCommand(layout_.data(), column));
+    QSharedPointer<QUndoCommand> cmd(new ColumnDeleteCommand(getLayout().data(), column));
     getEditProvider().addCommand(cmd);
     cmd->redo();
-}
-
-//-----------------------------------------------------------------------------
-// Function: wheelEvent()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
-{
-    if (event->modifiers() == Qt::CTRL)
-    {
-        HWDesignWidget* doc = static_cast<HWDesignWidget*>(parent());
-        QGraphicsView* view = doc->getView();
-
-        // Retrieve the center point in scene coordinates.
-        //QPointF origCenterPos = view->mapToScene(view->rect().center());
-        QPointF centerPos = itemsBoundingRect().center();
-
-        // Set the zoom level and center the view.
-        doc->setZoomLevel(doc->getZoomLevel() + event->delta() / 12);
-
-        view->centerOn(centerPos);
-        event->accept();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1960,14 +1923,6 @@ void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
         emit clearItemSelection();
         emit helpUrlRequested("hwdesign/hwdesign.html");
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: getColumnLayout()
-//-----------------------------------------------------------------------------
-GraphicsColumnLayout* HWDesignDiagram::getColumnLayout()
-{
-    return layout_.data();
 }
 
 //-----------------------------------------------------------------------------
@@ -2196,7 +2151,7 @@ void HWDesignDiagram::highlightConnectableEndpoints()
 void HWDesignDiagram::addInterfaceAt(QPointF const& position)
 {
     // Find the column under the cursor.
-    GraphicsColumn* column = layout_->findColumnAt(position);
+    GraphicsColumn* column = getLayout()->findColumnAt(position);
 
     // Add a new diagram interface to the column it it is allowed.
     if (column != 0 && column->getColumnDesc().getAllowedItems() & CIT_INTERFACE)
@@ -2268,7 +2223,7 @@ void HWDesignDiagram::draftAt(QPointF const& clickedPosition)
     // to the column under cursor.
     if (clickedItem == 0)
     {
-        GraphicsColumn* column = layout_->findColumnAt(clickedPosition);
+        GraphicsColumn* column = getLayout()->findColumnAt(clickedPosition);
 
         if (column != 0)
         {
@@ -2680,7 +2635,7 @@ void HWDesignDiagram::onAdHocVisibilityChanged(QString const& portName, bool vis
                                                              getLibraryInterface(), 0);
 
         // Add the ad-hoc interface to the first column where it is allowed to be placed.
-        layout_->addItem(adHocIf);
+        getLayout()->addItem(adHocIf);
     }
     else
     {
@@ -2775,7 +2730,7 @@ void HWDesignDiagram::setupActions()
     connect(&pasteAction_, SIGNAL(triggered()),this, SLOT(onPasteAction()), Qt::UniqueConnection);	
 
     parent()->addAction(&addAction_);
-    connect(&addAction_, SIGNAL(triggered()), this, SLOT(onAddAction()), Qt::UniqueConnection);
+    connect(&addAction_, SIGNAL(triggered()), this, SLOT(onAddToLibraryAction()), Qt::UniqueConnection);
 
     parent()->addAction(&openComponentAction_);
     connect(&openComponentAction_, SIGNAL(triggered()), this, SLOT(onOpenComponentAction()), Qt::UniqueConnection);
@@ -2802,7 +2757,7 @@ void HWDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
         else
         {
             // Otherwise check whether the component can be placed to the underlying column.
-            GraphicsColumn* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
+            GraphicsColumn* column = getLayout()->findColumnAt(snapPointToGrid(event->scenePos()));
 
             if (column != 0 && column->getColumnDesc().getAllowedItems() & dragCompType_)
             {
@@ -2992,7 +2947,7 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
             ioColumn = 0;
 
             // Find the first column that is.
-            foreach (GraphicsColumn* otherColumn, layout_->getColumns())
+            foreach (GraphicsColumn* otherColumn, getLayout()->getColumns())
             {
                 if (otherColumn->getContentType() == COLUMN_CONTENT_IO)
                 {
@@ -3128,7 +3083,7 @@ void HWDesignDiagram::pasteInstances(ComponentCollectionCopyData const& collecti
             compColumn = 0;
 
             // Find the first column that accepts it.
-            foreach (GraphicsColumn* otherColumn, layout_->getColumns())
+            foreach (GraphicsColumn* otherColumn, getLayout()->getColumns())
             {
                 if (otherColumn->isItemAllowed(comp))
                 {
@@ -3171,7 +3126,7 @@ void HWDesignDiagram::prepareContextMenuActions()
         // If the selection is empty, check if the clipboard contains components or a column.
         QMimeData const* mimeData = QApplication::clipboard()->mimeData();
 
-        GraphicsColumn* column = layout_->findColumnAt(parent()->mapFromGlobal(contextPos_));
+        GraphicsColumn* column = getLayout()->findColumnAt(parent()->mapFromGlobal(contextPos_));
 
         pasteAction_.setEnabled(mimeData != 0 && mimeData->hasImage() &&                
                                 (mimeData->imageData().canConvert<ColumnCollectionCopyData>() || 

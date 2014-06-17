@@ -16,7 +16,7 @@
 #include <common/GenericEditProvider.h>
 
 #include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
-#include <designEditors/common/Association.h>
+#include <designEditors/common/Association/Association.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
 
 #include <library/LibraryManager/libraryinterface.h>
@@ -37,10 +37,10 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignWidget()
 //-----------------------------------------------------------------------------
-MemoryDesignWidget::MemoryDesignWidget(LibraryInterface* lh, MainWindow* mainWnd, QWidget* parent)
+MemoryDesignWidget::MemoryDesignWidget(LibraryInterface* lh, QWidget* parent)
     : DesignWidget(lh, parent)
 {
-    setDiagram(new MemoryDesignDiagram(lh, mainWnd, *getGenericEditProvider(), this));
+    setDiagram(new MemoryDesignDiagram(lh, *getGenericEditProvider(), this));
 }
 
 //-----------------------------------------------------------------------------
@@ -161,13 +161,13 @@ bool MemoryDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
 //-----------------------------------------------------------------------------
 unsigned int MemoryDesignWidget::getSupportedDrawModes() const
 {
-    if (getView()->isInteractive())
+    if (isProtected())
     {
-        return (MODE_SELECT | MODE_DRAFT | MODE_LABEL);
+        return MODE_SELECT;
     }
     else
     {
-        return MODE_SELECT;
+        return (MODE_SELECT | MODE_DRAFT | MODE_LABEL);
     }
 }
 

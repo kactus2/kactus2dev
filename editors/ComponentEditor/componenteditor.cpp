@@ -383,6 +383,11 @@ bool ComponentEditor::onVhdlGenerate() {
 
 	VhdlGenerator2 vhdlGen(libHandler_, this);
 
+    connect(&vhdlGen, SIGNAL(errorMessage(const QString&)),
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+    connect(&vhdlGen, SIGNAL(noticeMessage(const QString&)),
+        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+
 	// if errors are detected during parsing
 	if (!vhdlGen.parse(component_, QString())) {
 		return false;

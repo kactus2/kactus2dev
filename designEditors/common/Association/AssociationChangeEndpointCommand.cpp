@@ -11,8 +11,8 @@
 
 #include "AssociationChangeEndpointCommand.h"
 
-#include <designEditors/common/Associable.h>
-#include <designEditors/common/Association.h>
+#include <designEditors/common/Association/Associable.h>
+#include <designEditors/common/Association/Association.h>
 #include <designEditors/common/DesignDiagram.h>
 
 //-----------------------------------------------------------------------------

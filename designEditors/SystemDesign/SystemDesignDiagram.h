@@ -20,7 +20,6 @@
 
 #include <QVector>
 
-class MainWindow;
 class Component;
 class Design;
 class DesignConfiguration;
@@ -181,11 +180,10 @@ public:
      *  Constructor.
      *
      *      @param [in] lh            The library interface.
-     *      @param [in] mainWnd       The main window.
      *      @param [in] editProvider  The edit provider.
      *      @param [in] parent        The parent widget.
      */
-    SystemDesignDiagram(bool onlySW, LibraryInterface* lh, MainWindow* mainWnd,
+    SystemDesignDiagram(bool onlySW, LibraryInterface* lh,
                         GenericEditProvider& editProvider, SystemDesignWidget* parent = 0);
 
     /*!
@@ -229,20 +227,7 @@ public:
      */
     SystemDesignWidget* parent() const;
 
-    /*!
-     *  Returns the column layout.
-     */
-    GraphicsColumnLayout* getColumnLayout();
-
-    void onVerticalScroll(qreal y);
-
 public slots:
-
-    //! Called when a component instance is added to the diagram.
-    virtual void onComponentInstanceAdded(ComponentItem* item);
-
-    //! Called when a component instance is remove from the diagram.
-    virtual void onComponentInstanceRemoved(ComponentItem* item);
 
     /*!
      *  Called when the selection changes in the diagram.
@@ -259,11 +244,10 @@ public slots:
      */
 	void onPasteAction();
 
-
     /*!
      *  Called when add to library is selected from the context menu.
      */
-	virtual void onAddAction();
+	virtual void onAddToLibraryAction();
 
     /*!
      *  Called when open component is selected from the context menu.
@@ -287,22 +271,19 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
     //! Called when the mouse is double-clicked.
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent);
-
-    //! Called when the mouse wheel has scrolled.
-    void wheelEvent(QGraphicsSceneWheelEvent *event);
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* mouseEvent);
 
     //! Called when an drag enters the diagram.
-    void dragEnterEvent(QGraphicsSceneDragDropEvent * event);
+    void dragEnterEvent(QGraphicsSceneDragDropEvent* event);
 
     //! Called when an object is dragged within the diagram.
-    void dragMoveEvent(QGraphicsSceneDragDropEvent * event);
+    void dragMoveEvent(QGraphicsSceneDragDropEvent* event);
 
     //! Called when the drag leaves the diagram.
-    void dragLeaveEvent(QGraphicsSceneDragDropEvent * event);
+    void dragLeaveEvent(QGraphicsSceneDragDropEvent* event);
 
     //! Called when an object is dropped to the diagram.
-    void dropEvent(QGraphicsSceneDragDropEvent *event);
+    void dropEvent(QGraphicsSceneDragDropEvent* event);
 
     //! Called when a key has been released.
     void keyReleaseEvent(QKeyEvent *event);
@@ -513,9 +494,6 @@ private:
 
     //! The parent widget.
     SystemDesignWidget* parent_;
-
-    // Graphics column layout.
-    QSharedPointer<GraphicsColumnLayout> layout_;
 
     //! Indicates what type of object is being dragged into the diagram.
     DragType dragType_;

@@ -24,7 +24,7 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
 #include <designEditors/HWDesign/columnview/ColumnEditDialog.h>
-#include <designEditors/common/Association.h>
+#include <designEditors/common/Association/Association.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
 #include <designEditors/common/Association/AssociationRemoveCommand.h>
 
@@ -48,7 +48,7 @@
 //-----------------------------------------------------------------------------
 // Function: SystemDesignWidget()
 //-----------------------------------------------------------------------------
-SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, MainWindow* mainWnd, QWidget* parent)
+SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, QWidget* parent)
     : DesignWidget(lh, parent),
       onlySW_(onlySW)
 {
@@ -59,7 +59,7 @@ SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, MainWi
         supportedWindows_ |= SYSTEM_DETAILS_WINDOW;
     }
 
-    setDiagram(new SystemDesignDiagram(onlySW, lh, mainWnd, *getGenericEditProvider(), this));
+    setDiagram(new SystemDesignDiagram(onlySW, lh, *getGenericEditProvider(), this));
 }
 
 //-----------------------------------------------------------------------------
@@ -210,13 +210,13 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
 //-----------------------------------------------------------------------------
 unsigned int SystemDesignWidget::getSupportedDrawModes() const
 {
-    if (getView()->isInteractive())
+    if (isProtected())
     {
-        return (MODE_SELECT | MODE_CONNECT | MODE_DRAFT | MODE_TOGGLE_OFFPAGE | MODE_LABEL);
+        return MODE_SELECT;
     }
     else
     {
-        return MODE_SELECT;
+        return (MODE_SELECT | MODE_CONNECT | MODE_DRAFT | MODE_TOGGLE_OFFPAGE | MODE_LABEL);
     }
 }
 
@@ -285,7 +285,7 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
             foreach (QGraphicsItem* selected, selectedItems)
             {
                 SystemColumn* column = static_cast<SystemColumn*>(selected);
-                QUndoCommand* childCmd = new SystemColumnDeleteCommand(getDiagram()->getColumnLayout(), column, cmd.data());
+                QUndoCommand* childCmd = new SystemColumnDeleteCommand(getDiagram()->getLayout().data(), column, cmd.data());
                 childCmd->redo();
             }
 

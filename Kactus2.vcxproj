@@ -425,8 +425,8 @@ CreateHelp
     <ClCompile Include="common\views\EditableTableView\editabletableview.cpp" />
     <ClCompile Include="common\views\EditableListView\editablelistview.cpp" />
     <ClCompile Include="common\models\ParameterModel\parametersmodel.cpp" />
-    <ClCompile Include="designEditors\common\Associable.cpp" />
-    <ClCompile Include="designEditors\common\Association.cpp" />
+    <ClCompile Include="designEditors\common\Association\Associable.cpp" />
+    <ClCompile Include="designEditors\common\Association\Association.cpp" />
     <ClCompile Include="designEditors\common\Association\AssociationAddCommand.cpp" />
     <ClCompile Include="designEditors\common\Association\AssociationChangeEndpointCommand.cpp" />
     <ClCompile Include="designEditors\common\Association\AssociationRemoveCommand.cpp" />
@@ -2469,6 +2469,8 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
       </Command>
     </CustomBuild>
+    <ClInclude Include="designEditors\common\Association\Associable.h" />
+    <ClInclude Include="designEditors\common\Association\Association.h" />
     <ClInclude Include="designEditors\common\ColumnTypes.h" />
     <CustomBuild Include="designEditors\common\DesignDiagram.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
