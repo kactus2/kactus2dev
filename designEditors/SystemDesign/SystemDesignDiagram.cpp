@@ -1164,7 +1164,7 @@ void SystemDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
     if (inAssociationMode())
     {
-        updateAssociation(event->scenePos());
+        updateAssociationLineDraw(event->scenePos());
         return;
     }
 
@@ -1187,7 +1187,7 @@ void SystemDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         return;
     }
 
-    if (associationEnds())
+    if (canEndAssociation())
     {
         endAssociation(event->scenePos());
         return;

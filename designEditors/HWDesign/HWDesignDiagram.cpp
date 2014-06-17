@@ -908,7 +908,7 @@ void HWDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent)
 
     if (inAssociationMode())
     {
-        updateAssociation(mouseEvent->scenePos());
+        updateAssociationLineDraw(mouseEvent->scenePos());
         return;
     }
 
@@ -927,7 +927,7 @@ void HWDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         endComponentReplace(mouseEvent->scenePos());        
     }
     
-    if (associationEnds())
+    if (canEndAssociation())
     {
         endAssociation(mouseEvent->scenePos());
         return;
