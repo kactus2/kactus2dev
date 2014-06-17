@@ -962,47 +962,7 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
 
         if (getLibraryInterface()->contains(*comp->componentModel()->getVlnv()))
         {
-			QString viewName;
-			QStringList hierViews = comp->componentModel()->getHierViews();
-			
-			// if configuration is used and it contains an active view for the instance
-			if (getDesignConfiguration() && getDesignConfiguration()->hasActiveView(comp->name())) {
-				viewName = getDesignConfiguration()->getActiveView(comp->name());
-
-				View* view = comp->componentModel()->findView(viewName);
-
-				// if view was found and it is hierarchical
-				if (view && view->isHierarchical()) {
-					emit openDesign(*comp->componentModel()->getVlnv(), viewName);
-				}
-				// if view was found but it is not hierarchical
-				else if (view && !view->isHierarchical()) {
-					emit openComponent(*comp->componentModel()->getVlnv());
-				}
-				// if view was not found
-				else {
-					emit errorMessage(tr("The active view %1 was not found in "
-						"instance %2").arg(viewName).arg(comp->name()));
-				}
-			}
-			// If the component does not contain any hierarchical views, open the component editor.
-			else if (hierViews.size() == 0)
-            {
-                if (comp->componentModel()->hasViews())
-                {
-				    emit noticeMessage(tr("No active view was selected for instance %1, "
-                        "opening component editor.").arg(comp->name()));
-                }
-
-				emit openComponent(*comp->componentModel()->getVlnv());
-			}
-			// Open the first design if there is one or multiple hierarchical view.
-			else
-            {
-				emit noticeMessage(tr("No active view was selected for instance %1, "
-					"opening the only hierarchical view of the component.").arg(comp->name()));
-				emit openDesign(*comp->componentModel()->getVlnv(), hierViews.first());
-			}
+            openComponentItem(comp);
         }
         else if (!isProtected())
         {           
@@ -2718,6 +2678,84 @@ BusPortItem* HWDesignDiagram::createMissingPort(QString const& portName, HWCompo
 }
 
 //-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::openComponentItem()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::openComponentItem(HWComponentItem * comp)
+{
+    QStringList hierViews = comp->componentModel()->getHierViews();
+
+    // if configuration is used and it contains an active view for the instance
+    QSharedPointer<DesignConfiguration> designConf = getDesignConfiguration();
+    if (designConf && designConf->hasActiveView(comp->name())) 
+    {
+        openComponentByActiveView(comp);
+    }
+    // If the component does not contain any hierarchical views, open the component editor.
+    else if (hierViews.size() == 0)
+    {
+        openInComponentEditor(comp);
+    }
+    // Open the first design if there is one or multiple hierarchical view.
+    else
+    {
+        openComponentByView(comp, hierViews.first());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::openByActiveView()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::openComponentByActiveView(HWComponentItem * comp)
+{
+    QString activeViewName = getDesignConfiguration()->getActiveView(comp->name());
+
+    if (comp->componentModel()->hasView(activeViewName)) 
+    {        
+        VLNV componentVLNV = *comp->componentModel()->getVlnv();
+        View* activeView = comp->componentModel()->findView(activeViewName);        
+
+        if (activeView->isHierarchical())
+        {
+            emit openDesign(componentVLNV, activeViewName);
+        }
+        else
+        {
+            emit openComponent(componentVLNV);
+        }
+    }
+    // if view was not found
+    else 
+    {
+        emit errorMessage(tr("The active view %1 was not found in "
+            "instance %2").arg(activeViewName).arg(comp->name()));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::openInComponentEditor()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::openInComponentEditor(HWComponentItem* comp)
+{
+    if (comp->componentModel()->hasViews())
+    {
+        emit noticeMessage(tr("No active view was selected for instance %1, "
+            "opening component editor.").arg(comp->name()));
+    }
+
+    emit openComponent(*comp->componentModel()->getVlnv());
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::openComponentDesign()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::openComponentByView(HWComponentItem* comp, QString const& viewName)
+{
+    emit noticeMessage(tr("No active view was selected for instance %1, "
+        "opening the only hierarchical view of the component.").arg(comp->name()));
+    emit openDesign(*comp->componentModel()->getVlnv(), viewName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::setupActions()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::setupActions()
@@ -3150,19 +3188,19 @@ void HWDesignDiagram::prepareContextMenuActions()
         else if (type == HWComponentItem::Type)
         {
             HWComponentItem* compItem = qgraphicsitem_cast<HWComponentItem *>(items.back());
-            bool draft = !compItem->componentModel()->getVlnv()->isValid();
+            bool isDraft = !compItem->componentModel()->getVlnv()->isValid();
+            bool singleSelection = items.count() == 1;
 
-            addAction_.setEnabled(!isProtected() && draft && items.count() == 1);
-            openComponentAction_.setEnabled(!draft && items.count() == 1);
-            openDesignAction_.setEnabled(!draft && compItem->componentModel()->isHierarchical() &&
-                                         items.count() == 1);
+            addAction_.setEnabled(!isProtected() && isDraft && singleSelection);
+            openComponentAction_.setEnabled(!isDraft && singleSelection);
+            openDesignAction_.setEnabled(!isDraft && hasActiveHierarchicalView(compItem) && singleSelection);
 
             // Allow copying components (single or multiple).
             copyAction_.setEnabled(!isProtected());
 
             // Enable paste action, if a draft component and bus ports on the clipboard.
             QMimeData const* mimedata = QApplication::clipboard()->mimeData();
-            pasteAction_.setEnabled(!isProtected() && items.count() == 1 && draft && mimedata != 0 && 
+            pasteAction_.setEnabled(!isProtected() && singleSelection && isDraft && mimedata != 0 && 
                                     mimedata->hasImage() && 
                                     mimedata->imageData().canConvert<BusInterfaceCollectionCopyData>());
         }
@@ -3178,4 +3216,23 @@ void HWDesignDiagram::prepareContextMenuActions()
         }
 
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::hasActiveHierarchicalView()
+//-----------------------------------------------------------------------------
+bool HWDesignDiagram::hasActiveHierarchicalView(HWComponentItem* compItem)
+{
+    QSharedPointer<DesignConfiguration> designConf = getDesignConfiguration();
+    if (designConf && designConf->hasActiveView(compItem->name())) 
+    {
+        QString activeViewName = designConf->getActiveView(compItem->name());
+
+        if (compItem->componentModel()->hasView(activeViewName)) 
+        {
+            View* activeView = compItem->componentModel()->findView(activeViewName);
+            return activeView->isHierarchical();
+        }
+    }
+    return false;
 }

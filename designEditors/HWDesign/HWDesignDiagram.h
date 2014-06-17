@@ -545,6 +545,14 @@ private:
      */
     BusPortItem* createMissingPort(QString const& portName, HWComponentItem* component, QSharedPointer<Design> design);
 
+    void openComponentItem(HWComponentItem * comp);
+
+    void openComponentByView(HWComponentItem* comp, QString const& viewName);
+
+    void openInComponentEditor(HWComponentItem * comp);
+
+    void openComponentByActiveView(HWComponentItem * comp);
+
     /*!
      *  Initializes the context menu actions.
      */
@@ -604,7 +612,7 @@ private:
      *  Enables/disable context menu actions based on the current selection.
      */
     void prepareContextMenuActions();
-
+    bool hasActiveHierarchicalView(HWComponentItem* compItem);
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
