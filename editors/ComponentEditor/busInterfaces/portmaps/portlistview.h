@@ -35,11 +35,9 @@ public:
 
 	/*! \brief Get names of the currently selected ports.
 	 * 
-	 * \param remove If true then the selected ports are also removed.
-	 * 
 	 * \return QStringList containing the names of the ports that are selected.
 	*/
-	QStringList getSelectedPorts(bool remove);
+    QStringList getSelectedPorts();
 
 signals:
 
@@ -108,8 +106,6 @@ private:
 	//! No assignment
 	PortListView& operator=(const PortListView& other);
 
-	//! Boolean for removing a port from the list on connection.
-    bool removeConnected_;
 };
 
 #endif // PORTLISTVIEW_H

@@ -49,11 +49,6 @@ class BusIfPortmapTab : public QWidget {
 
 public:
 
-	//! Connection mode specifies how multiple selections are handled
-	enum ConnectionMode {
-		ONE2ONE = 0, 
-		ONE2MANY};
-
 	/*! The constructor
 	 *
 	 * @param libHandler Pointer to the instance that manages the library.
@@ -145,17 +140,13 @@ private slots:
     //! The handler for connecting port to first unmapped logical bits.
     void onMapPortToLastBit();
 
-    // One to one and one to many removed as obsolete.
-	//! Handler for when user changes the connection mode.    
-	//void onConnectionModeChange();
-
 	/*! Make connections between physical signals and logical signals.
 	 *
 	 * @param physicals List of physical signal names.
 	 * @param logicals List of logical signal names.
 	 *
 	*/
-	void onMakeConnections(const QStringList& physicals, const QStringList& logicals);
+    void onMakeConnections(QStringList const& physicalPorts, QStringList const& logicalPorts);
 
     /*!
      *  The handler for change in logical port selection.
@@ -163,7 +154,6 @@ private slots:
      *      @param [in] index   The index of the selected logical port.     
      */
     void onLogicalChanged(const QModelIndex& index);
-
 
     /*!
      *  The handler for changing bit field mapping visibility.
@@ -184,9 +174,32 @@ private:
 
 	//! Set up the layout of the GUI items
 	void setupLayout();
-   
-	//! Specifies the connection mode
-	ConnectionMode mode_;
+
+    void setupFilterButton(QPushButton& button);
+
+    /*!
+     *  Maps each given physical port to one corresponding logical port.
+     *
+     *      @param [in] physicalPorts   The physical ports to map.
+     *      @param [in] logicalPorts    The logical ports to map.
+     */
+    void mapOneToOne(QStringList const& physicalPorts, QStringList const& logicalPorts);
+
+    /*!
+     *  Maps all the given physical ports to all the given logical ports.
+     *
+     *      @param [in] physicalPorts   The physical ports to map.
+     *      @param [in] logicalPorts    The logical ports to map.
+     */
+    void mapOneToMany(QStringList const& physicalPorts, QStringList const& logicalPorts);
+
+    /*!
+     *  Maps a single physical port to a single logical port.
+     *
+     *      @param [in] physicalPort   The physical port to map.
+     *      @param [in] logicalPort    The logical port to map.
+     */
+    void mapPorts(QString physicalPort, QString logicalPort);
 
 	//! Pointer to the currently selected port map.
 	QSharedPointer<General::PortMap> portMap_;
@@ -244,14 +257,6 @@ private:
 
     //! The button to clear port filter.
     QCheckBox showAllButton_;
-
-	//! The button to select the one to one connection mode.
-    // One to one and one to many removed as obsolete.
-	//QPushButton one2OneButton_;
-
-	//! The button to select the one to many connection mode.
-    // One to one and one to many removed as obsolete.
-	//QPushButton one2ManyButton_;
 
     //! The button to show/hide bit-level mapping.
     QCheckBox showHideMappingButton_;

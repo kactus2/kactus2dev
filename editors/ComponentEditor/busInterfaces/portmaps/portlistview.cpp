@@ -17,8 +17,7 @@
 
 PortListView::PortListView(QWidget *parent): 
 QListView(parent),
-startPos_(),
-removeConnected_(true) 
+startPos_()
 {
 
 	// the view accepts drops from drag & drop actions
@@ -135,7 +134,8 @@ void PortListView::mousePressEvent( QMouseEvent* event ) {
 	QListView::mousePressEvent(event);
 }
 
-QStringList PortListView::getSelectedPorts(bool remove) {
+QStringList PortListView::getSelectedPorts()
+{
 	QStringList portList;
 	QModelIndexList indexList = selectedIndexes();
 	
@@ -150,10 +150,6 @@ QStringList PortListView::getSelectedPorts(bool remove) {
 		// append the names of the selected ports
 		portList.append(index.model()->data(index, Qt::DisplayRole).toString());
 	}
-
-	// if items are to be removed
-	if (remove)
-		emit removeItems(indexList);
 
 	return portList;
 }
