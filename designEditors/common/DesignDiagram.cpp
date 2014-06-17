@@ -102,9 +102,10 @@ bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointe
 
     // Deselect items.
     emit clearItemSelection();
+    clearSelection();
 
-    // Clear the scene.
-    layout_ = ;
+    // Clear the scene.    
+    clearLayout();
     clearScene();
     getParent()->clearRelatedVLNVs();
     getParent()->addRelatedVLNV(*component->getVlnv());
