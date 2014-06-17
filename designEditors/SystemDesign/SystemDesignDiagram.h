@@ -413,6 +413,28 @@ private:
      *  Updates the drop action for a drag-dropped object.
      */
     void updateDropAction(QGraphicsSceneDragDropEvent* event);
+
+    /*!
+     *  Begins replacing another component with a component at the given position.
+     *
+     *      @param [in] startpoint   The position to start replacing from.     
+     */
+    void beginComponentReplace(QPointF const& startpoint);
+
+    /*!
+     *  Updates the cursor according to design content at the given position while replacing.
+     *
+     *      @param [in] cursorPosition   The cursor position.
+     */
+    void updateComponentReplaceCursor(QPointF const& cursorPosition);
+
+    /*!
+     *  Ends the component replace at the given position. If another component is in the given position,
+     *  it is replaced with the component being dragged.
+     *
+     *      @param [in] endpoint   The point to end the replacing.
+     */
+    void endComponentReplace(QPointF const& endpoint);
     
     /*!
      *  Copies SW component instances in a format which can be saved to clipboard.
@@ -509,12 +531,6 @@ private:
     
     //! The highlighted endpoint to which the connection could be snapped automatically.
     SWConnectionEndpoint* highlightedEndpoint_;
-
-    //! If true, the off-page connection mode is active.
-    bool offPageMode_;
-
-    //! If true, we're in replace component mode.
-    bool replaceMode_;
 
     //! The component that is used to replace another component in replace mode.
     SystemComponentItem* sourceComp_;

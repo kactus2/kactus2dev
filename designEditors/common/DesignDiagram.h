@@ -374,18 +374,97 @@ protected:
      */
 	virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent* event);
 
+    /*!
+     *  Updates the association line.
+     *
+     *      @param [in] cursorPosition   The current cursor position which becomes the ending point for the line.
+     */
+    void updateAssociationLineDraw(QPointF const& cursorPosition);
 
-    void updateAssociation(QPointF const& cursorPosition);
-
+    /*!
+     *  Ends the creation of a new association.
+     *
+     *      @param [in] endpoint   The ending point of the association.
+     */
     void endAssociation(QPointF const& endpoint);
 
+    //! Ends the drawing of a new association line.
+    void endAssociationLineDraw();
+
+    /*!
+     *  Checks if two items can be associated with each other.
+     *
+     *      @param [in] startItem       The first item.
+     *      @param [in] endItem         The second item.
+     *
+     *      @return True, if the items can be associated, otherwise false.
+     */
     bool canAssociateItems(Associable* startItem, Associable* endItem);
 
-    QSharedPointer<QUndoCommand> createAssociationAddCommand(Associable* startItem, QSharedPointer<Kactus2Position> endPointExtension);
+    /*!
+     *  Creates a command for adding an association to the diagram.
+     *
+     *      @param [in] startItem           The item at the starting end of the association.
+     *      @param [in] endPointExtension   The vendor extension describing the ending point position.
+     *
+     *      @return A command for creating an association.
+     */
+    QSharedPointer<QUndoCommand> createAssociationAddCommand(Associable* startItem, 
+        QSharedPointer<Kactus2Position> endPointExtension);
 
-    bool inAssociationMode();
+    /*!
+     *  Checks if the user is currently creating a new association.
+     *
+     *      @return True, if an association is being created, otherwise false.
+     */
+    bool inAssociationMode() const;
 
-    bool associationEnds();
+    /*!
+     *  Checks if the association can end.
+     *
+     *      @return True, if an association can end, otherwise false.
+     */
+    bool canEndAssociation() const;
+
+    /*!
+     *  Checks if context menu can be displayed.     
+     *
+     *      @return True, if context menu can be displayed, otherwise false.
+     */
+    bool contextMenuEnabled() const;
+
+    /*!
+     *  Checks if the user is currently replacing a component.
+     *
+     *      @return True, if a replace is in progress, otherwise false.
+     */
+    bool inReplaceMode() const;
+
+    /*!
+     *  Checks if the user is currently creating connections in off page mode.
+     *
+     *      @return True, if off page mode is set, otherwise false.
+     */
+    bool inOffPageMode() const;
+    
+    enum interactionMode{
+        NORMAL = 0,
+        CONTEXT_MENU,
+        REPLACE,
+        OFFPAGE,
+        ASSOCIATE
+    };
+
+    /*!
+     *  Sets the interaction mode.
+     *
+     *      @param [in] mode   The mode to set.
+     *     
+     */
+    void setInteractionMode(interactionMode mode);
+
+    //! Ends the current interaction mode.
+    void endInteraction();
 
 private:
     // Disable copying.
@@ -399,29 +478,31 @@ private:
      */
     virtual void loadDesign(QSharedPointer<Design> design) = 0;
 
-
      //! Clears and resets the current layout.
      void clearLayout();
 
     //! Creates sticky notes from vendor extensions.
     void loadStickyNotes();
-
-    StickyNote* createNote(QSharedPointer<Kactus2Group> noteExtension);
-
+    
+    /*!
+     *  Creates a command for adding a sticky note to the diagram.
+     *
+     *      @param [in] note   The note for which to create the command for.
+     *
+     *      @return The command for adding the note to diagram.
+     */
     QSharedPointer<StickyNoteAddCommand> createNoteAddCommand(StickyNote* note);
 
+    /*!
+     *  Loads the associations from a sticky not from a vendor extension.
+     *
+     *      @param [in] note                    The note for whose associations to load.
+     *      @param [in] associationsExtension   The vendor extension describing the associations.
+     */
     void loadNoteAssociations(StickyNote* note, QSharedPointer<VendorExtension> associationsExtension);
 
     //! Enables/disables the sticky notes according to design protection state.
     void setProtectionForStickyNotes();
-
-
-    enum interactionMode{
-        NORMAL = 0,
-        ASSOCIATION
-    };
-
-    void setInteractionMode(interactionMode mode);
 
     //-----------------------------------------------------------------------------
     // Data.

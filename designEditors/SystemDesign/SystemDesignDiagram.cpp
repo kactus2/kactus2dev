@@ -89,8 +89,6 @@ SystemDesignDiagram::SystemDesignDiagram(bool onlySW, LibraryInterface* lh,
       tempConnEndpoint_(0),
       tempPotentialEndingEndpoints_(),
       highlightedEndpoint_(0),
-      offPageMode_(false),
-      replaceMode_(false),
       sourceComp_(0),
       oldSelectedItems_(),
       selectAllAction_(tr("Select All"), this),
@@ -98,8 +96,7 @@ SystemDesignDiagram::SystemDesignDiagram(bool onlySW, LibraryInterface* lh,
       pasteAction_(tr("Paste"), this),
       addAction_(tr("Add to Library"), this),
       openComponentAction_(tr("Open Component"), this),
-      openDesignAction_(tr("Open SW Design"), this),
-      showContextMenu_(true)
+      openDesignAction_(tr("Open SW Design"), this)
 {
     setupActions();
 
@@ -725,11 +722,15 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
-    showContextMenu_ = (getMode() == MODE_SELECT && event->button() == Qt::RightButton);
-
     // If other than left button was pressed return back to select mode.
     if (event->button() != Qt::LeftButton)
     {
+        endInteraction();
+        if (getMode() == MODE_SELECT && event->button() == Qt::RightButton)
+        {
+            setInteractionMode(CONTEXT_MENU);
+        }
+
         setMode(MODE_SELECT);
         return;
     }
@@ -744,9 +745,16 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
             createConnection(event);
         }
         // Otherwise choose a new start end point if in normal connection mode.
-        else if (!offPageMode_)
+        else if (!inOffPageMode())
         {
-            offPageMode_ = (event->modifiers() & Qt::ShiftModifier);
+            if (event->modifiers() & Qt::ShiftModifier)
+            {
+                setInteractionMode(OFFPAGE);
+            }
+            else
+            {
+                setInteractionMode(NORMAL);
+            }
 
             // Deselect all items.
             clearSelection();
@@ -760,7 +768,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
                 return;
             }
 
-            if (offPageMode_)
+            if (inOffPageMode())
             {
                 if (highlightedEndpoint_ != 0)
                 {
@@ -778,7 +786,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
             tempConnEndpoint_ = endpoint;
         }
 
-        if (offPageMode_ || !creating)
+        if (inOffPageMode() || !creating)
         {
             tempConnEndpoint_->onBeginConnect();
             
@@ -984,16 +992,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
         // Check if the user pressed Alt over a component => replace component mode.
         if (!isProtected() && event->modifiers() & Qt::AltModifier)
         {
-            // Find the top-most component at the cursor position.
-            SystemComponentItem* sourceComp =
-                dynamic_cast<SystemComponentItem*>(getTopmostComponent(event->scenePos()));
-
-            if (sourceComp != 0)
-            {
-                sourceComp_ = sourceComp;
-                QApplication::setOverrideCursor(Qt::ForbiddenCursor);
-                replaceMode_ = true;
-            }
+            beginComponentReplace(event->scenePos());
         }
         else
         {
@@ -1158,19 +1157,9 @@ void SystemDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         }
     }
 
-    if (replaceMode_)
+    if (inReplaceMode())
     {
-        SystemComponentItem* destComp =
-            dynamic_cast<SystemComponentItem*>(getTopmostComponent(event->scenePos()));
-
-        if (destComp != 0 && destComp != sourceComp_)
-        {
-            QApplication::changeOverrideCursor(Qt::ClosedHandCursor);
-        }
-        else
-        {
-            QApplication::changeOverrideCursor(Qt::ForbiddenCursor);
-        }
+        updateComponentReplaceCursor(event->scenePos());
     }
 
     if (inAssociationMode())
@@ -1192,40 +1181,10 @@ void SystemDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 void SystemDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     // Check if we're replacing a component.
-    if (replaceMode_)
-    {
-        replaceMode_ = false;
-        QApplication::restoreOverrideCursor();
-
-        SystemComponentItem* destComp =
-            dynamic_cast<SystemComponentItem*>(getTopmostComponent(event->scenePos()));
-
-        if (destComp == 0 || destComp == sourceComp_)
-        {
-            return;
-        }
-
-        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                           tr("Component instance '%1' is about to be switched in place "
-                              "with '%2'. Continue and replace?").arg(destComp->name(), sourceComp_->name()),
-                           QMessageBox::Yes | QMessageBox::No, (QWidget*)parent());
-
-        if (msgBox.exec() == QMessageBox::No)
-        {
-            return;
-        }
-
-        // Perform the replacement.
-        QSharedPointer<ReplaceSystemComponentCommand>
-            cmd(new ReplaceSystemComponentCommand(destComp, sourceComp_, true, true));
-
-        connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-        connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-
-        getEditProvider().addCommand(cmd);
-        cmd->redo();
+    if (inReplaceMode())
+    {        
+        endComponentReplace(event->scenePos());
+        return;
     }
 
     if (associationEnds())
@@ -1678,7 +1637,7 @@ void SystemDesignDiagram::createConnection(QGraphicsSceneMouseEvent* event)
     if (endpoint == 0 || endpoint == tempConnEndpoint_ || !endpoint->isVisible() ||
         !endpoint->canConnect(tempConnEndpoint_) || !tempConnEndpoint_->canConnect(endpoint))
     {
-        if (!offPageMode_)
+        if (!inOffPageMode())
         {
             tempConnEndpoint_->onEndConnect();
         }
@@ -1691,7 +1650,7 @@ void SystemDesignDiagram::createConnection(QGraphicsSceneMouseEvent* event)
         bool firstOffPage = tempConnEndpoint_->type() == SWOffPageConnectorItem::Type;
         bool secondOffPage = endpoint->type() == SWOffPageConnectorItem::Type;
 
-        if (offPageMode_ ||
+        if (inOffPageMode() ||
             ((firstOffPage || secondOffPage) && tempConnEndpoint_->type() != endpoint->type()))
         {
             delete tempConnection_;
@@ -1721,7 +1680,7 @@ void SystemDesignDiagram::createConnection(QGraphicsSceneMouseEvent* event)
 
             tempConnection_ = 0;
             
-            if (!offPageMode_)
+            if (!inOffPageMode())
             {
                 tempConnEndpoint_ = 0;
             }
@@ -2333,7 +2292,7 @@ void SystemDesignDiagram::hideOffPageConnections()
 void SystemDesignDiagram::keyReleaseEvent(QKeyEvent *event)
 {
     // Check if the user ended the off-page connection mode.
-    if ((event->key() == Qt::Key_Shift) && offPageMode_)
+    if ((event->key() == Qt::Key_Shift) && inOffPageMode())
     {
         if (tempConnEndpoint_ != 0)
         {
@@ -2359,7 +2318,7 @@ void SystemDesignDiagram::endConnect()
     disableHighlights();
     
     // Disable off-page mode.
-    offPageMode_ = false;
+    setInteractionMode(NORMAL);
 }
 
 //-----------------------------------------------------------------------------
@@ -2681,6 +2640,74 @@ void SystemDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
     else
     {
         event->setDropAction(Qt::IgnoreAction);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::beginComponentReplace()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::beginComponentReplace(QPointF const& startpoint)
+{    
+    SystemComponentItem* sourceComp = dynamic_cast<SystemComponentItem*>(getTopmostComponent(startpoint));
+
+    if (sourceComp != 0)
+    {
+        setInteractionMode(REPLACE);
+        sourceComp_ = sourceComp;
+        QApplication::setOverrideCursor(Qt::ForbiddenCursor);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::updateComponentReplaceCursor()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::updateComponentReplaceCursor(QPointF const& cursorPosition)
+{
+    SystemComponentItem* destComp = dynamic_cast<SystemComponentItem*>(getTopmostComponent(cursorPosition));
+
+    if (destComp != 0 && destComp != sourceComp_)
+    {
+        QApplication::changeOverrideCursor(Qt::ClosedHandCursor);
+    }
+    else
+    {
+        QApplication::changeOverrideCursor(Qt::ForbiddenCursor);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::endReplace()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::endComponentReplace(QPointF const& endpoint)
+{
+    QApplication::restoreOverrideCursor();
+
+    setInteractionMode(NORMAL);
+
+    SystemComponentItem* destComp = dynamic_cast<SystemComponentItem*>(getTopmostComponent(endpoint));
+    if (destComp == 0 || destComp == sourceComp_)
+    {
+        return;
+    }
+
+    QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+        tr("Component instance '%1' is about to be switched in place "
+        "with '%2'. Continue and replace?").arg(destComp->name(), sourceComp_->name()),
+        QMessageBox::Yes | QMessageBox::No, (QWidget*)parent());
+
+    if (msgBox.exec() == QMessageBox::Yes)
+    {
+        // Perform the replacement.
+        QSharedPointer<ReplaceSystemComponentCommand>
+            cmd(new ReplaceSystemComponentCommand(destComp, sourceComp_, true, true));
+
+        connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+        connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+        getEditProvider().addCommand(cmd);
+        cmd->redo();
     }
 }
 
@@ -3070,7 +3097,7 @@ QMenu* SystemDesignDiagram::createContextMenu(QPointF const& pos)
 {
     QMenu* menu = 0;
 
-    if (getMode() == MODE_SELECT && showContextMenu_)
+    if (contextMenuEnabled())
     {
         QGraphicsItem* item = itemAt(pos,QTransform());
 

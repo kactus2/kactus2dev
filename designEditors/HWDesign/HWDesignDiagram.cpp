@@ -84,8 +84,6 @@ HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& edit
       highlightedEndPoint_(0),
       dragCompType_(CIT_NONE),
       dragBus_(false),
-      offPageMode_(false),
-      replaceMode_(false),
       sourceComp_(0),
       oldSelectedItems_(),
       selectAllAction_(tr("Select All"), this),
@@ -94,7 +92,6 @@ HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& edit
       addAction_(tr("Add to Library"), this),
       openComponentAction_(tr("Open Component"), this),
       openDesignAction_(tr("Open HW Design"), this),
-      showContextMenu_(true),
       contextPos_()
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
@@ -830,20 +827,28 @@ void HWDesignDiagram::selectionToFront()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-    showContextMenu_ = (getMode() == MODE_SELECT && mouseEvent->button() == Qt::RightButton);
-
     // if other than left button was pressed return the mode back to select
 	if (mouseEvent->button() != Qt::LeftButton)
     {
+        endInteraction();
+        if (getMode() == MODE_SELECT && mouseEvent->button() == Qt::RightButton)
+        {
+            setInteractionMode(CONTEXT_MENU);
+        }
+
         setMode(MODE_SELECT);		
         return;
 	}
 
     if (getMode() == MODE_CONNECT)
     {
-        if (!creatingConnection())
+        if (mouseEvent->modifiers() & Qt::ShiftModifier)
         {
-            offPageMode_ = mouseEvent->modifiers() & Qt::ShiftModifier;
+            setInteractionMode(OFFPAGE);
+        }
+        else
+        {
+            setInteractionMode(NORMAL);
         }
                
         connectAt(mouseEvent->scenePos());
@@ -896,7 +901,7 @@ void HWDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent)
         return;
     }
 
-    if (replaceMode_)
+    if (inReplaceMode())
     {
         updateComponentReplaceCursor(mouseEvent->scenePos());
     }
@@ -917,7 +922,7 @@ void HWDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent)
 void HWDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     // Check if we're replacing a component.
-    if (replaceMode_)
+    if (inReplaceMode())
     {
         endComponentReplace(mouseEvent->scenePos());        
     }
@@ -1509,7 +1514,7 @@ QMenu* HWDesignDiagram::createContextMenu(QPointF const& pos)
 {
     QMenu* menu = 0;
 
-    if (getMode() == MODE_SELECT && showContextMenu_)
+    if (contextMenuEnabled())
     {
         QGraphicsItem* item = itemAt(pos,QTransform());
 
@@ -1829,7 +1834,7 @@ void HWDesignDiagram::removeColumn(GraphicsColumn* column)
 void HWDesignDiagram::keyReleaseEvent(QKeyEvent *event)
 {
     // Check if the user ended the off-page connection mode.
-    if ((event->key() == Qt::Key_Shift) && offPageMode_)
+    if ((event->key() == Qt::Key_Shift) && inOffPageMode())
     {
         if (tempConnEndPoint_ != 0)
         {
@@ -1858,7 +1863,7 @@ void HWDesignDiagram::endConnect()
     clearPotentialEndpoints();
 
     tempConnEndPoint_ = 0;
-    offPageMode_ = false;
+    setInteractionMode(NORMAL);
 }
 
 //-----------------------------------------------------------------------------
@@ -1946,7 +1951,7 @@ void HWDesignDiagram::connectAt(QPointF const& cursorPosition)
         endConnectionTo(cursorPosition);
 
         // In off page mode immediately continue with a new connection.
-        if (offPageMode_ && tempConnEndPoint_ != 0)
+        if (inOffPageMode() && tempConnEndPoint_ != 0)
         {
             beginCreateConnection(cursorPosition);
         }
@@ -1989,7 +1994,7 @@ void HWDesignDiagram::endConnectionTo(QPointF const& point)
         bool firstOffPage = tempConnEndPoint_->type() == OffPageConnectorItem::Type;
         bool secondOffPage = endpoint->type() == OffPageConnectorItem::Type;
 
-        if (offPageMode_ ||
+        if (inOffPageMode() ||
             ((firstOffPage || secondOffPage) && tempConnEndPoint_->type() != endpoint->type()))
         {
             if (!firstOffPage)
@@ -2025,7 +2030,7 @@ void HWDesignDiagram::endConnectionTo(QPointF const& point)
             tempConnEndPoint_ = 0;
         }
 
-        if (!offPageMode_)
+        if (!inOffPageMode())
         {
             tempConnEndPoint_ = 0;
         }
@@ -2100,7 +2105,7 @@ void HWDesignDiagram::beginCreateConnection(QPointF const& startingPoint)
 void HWDesignDiagram::setConnectionStaringPoint(QPointF const& cursorPosition)
 {
     // No need to change the starting point in off page mode.
-    if (offPageMode_ && tempConnEndPoint_ != 0)
+    if (inOffPageMode() && tempConnEndPoint_ != 0)
     {
         return;
     }
@@ -2114,7 +2119,7 @@ void HWDesignDiagram::setConnectionStaringPoint(QPointF const& cursorPosition)
         return;
     }
 
-    if (offPageMode_)
+    if (inOffPageMode())
     {
         clearHighlightedEndpoint();
 
@@ -2384,15 +2389,15 @@ void HWDesignDiagram::toggleOffPageAt(QPointF const& position)
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::beginComponenReplace()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::beginComponentReplace(QPointF const& position)
+void HWDesignDiagram::beginComponentReplace(QPointF const& startpoint)
 {
-    HWComponentItem* sourceComp =  static_cast<HWComponentItem*>(getTopmostComponent(position));
+    HWComponentItem* sourceComp =  static_cast<HWComponentItem*>(getTopmostComponent(startpoint));
 
     if (sourceComp != 0)
     {
         sourceComp_ = sourceComp;
         QApplication::setOverrideCursor(Qt::ForbiddenCursor);
-        replaceMode_ = true;
+        setInteractionMode(REPLACE);
     }
 }
 
@@ -2422,13 +2427,13 @@ void HWDesignDiagram::updateComponentReplaceCursor(QPointF const& cursorPosition
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::endComponentReplace()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::endComponentReplace(QPointF const& position)
+void HWDesignDiagram::endComponentReplace(QPointF const& endpoint)
 {
-    replaceMode_ = false;
+    setInteractionMode(NORMAL);
     QApplication::restoreOverrideCursor();
 
     HWComponentItem* destComp = 0;
-    QList<QGraphicsItem*> itemList = items(position);
+    QList<QGraphicsItem*> itemList = items(endpoint);
 
     if (!itemList.empty())
     {

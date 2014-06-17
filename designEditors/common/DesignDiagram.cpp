@@ -284,7 +284,7 @@ void DesignDiagram::onVendorExtensionRemoved(QSharedPointer<VendorExtension> ext
 //-----------------------------------------------------------------------------
 void DesignDiagram::onBeginAssociation(Associable* startingPoint)
 {
-    setInteractionMode(ASSOCIATION);
+    setInteractionMode(ASSOCIATE);
 
     QPointF start = startingPoint->connectionPoint();
     associationLine_ = new QGraphicsLineItem(QLineF(start, start));
@@ -393,8 +393,11 @@ QGraphicsItem* DesignDiagram::getBaseItemOf(QGraphicsItem* item) const
 void DesignDiagram::createNoteAt(QPointF const& position)
 {
     QSharedPointer<Kactus2Group> noteExtension(new Kactus2Group("kactus2:note"));
-    StickyNote* note = createNote(noteExtension);
+    StickyNote* note = new StickyNote(noteExtension);
     note->setPos(position);
+
+    connect(note, SIGNAL(beginAssociation(Associable*)), 
+        this, SLOT(onBeginAssociation(Associable*)), Qt::UniqueConnection);
 
     QSharedPointer<StickyNoteAddCommand> cmd = createNoteAddCommand(note);
     cmd->redo(); 
@@ -406,19 +409,6 @@ void DesignDiagram::createNoteAt(QPointF const& position)
     onSelected(note);
 
     note->beginEditing();
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignDiagram::createNote()
-//-----------------------------------------------------------------------------
-StickyNote* DesignDiagram::createNote(QSharedPointer<Kactus2Group> noteExtension)
-{
-    StickyNote* note = new StickyNote(noteExtension);
-
-    connect(note, SIGNAL(beginAssociation(Associable*)), 
-        this, SLOT(onBeginAssociation(Associable*)), Qt::UniqueConnection);
-
-    return note;
 }
 
 //-----------------------------------------------------------------------------
@@ -601,7 +591,10 @@ void DesignDiagram::loadStickyNotes()
         if (extension->type() == "kactus2:note")
         {
             QSharedPointer<Kactus2Group> noteExtension = extension.dynamicCast<Kactus2Group>();
-            StickyNote* note = createNote(noteExtension);
+            StickyNote* note = new StickyNote(noteExtension);
+
+            connect(note, SIGNAL(beginAssociation(Associable*)), 
+                this, SLOT(onBeginAssociation(Associable*)), Qt::UniqueConnection);
 
             QSharedPointer<StickyNoteAddCommand> cmd = createNoteAddCommand(note);
             cmd->redo();
@@ -662,9 +655,7 @@ void DesignDiagram::endAssociation(QPointF const& endpoint)
 {
     QPointF startingPoint = associationLine_->line().p1();
 
-    removeItem(associationLine_);
-    delete associationLine_;
-    associationLine_ = 0;
+    endAssociationLineDraw();
 
     QGraphicsItem* item = getBaseItemOf(itemAt(startingPoint, QTransform()));
     Associable* startItem = dynamic_cast<Associable*>(item);
@@ -709,17 +700,33 @@ bool DesignDiagram::canAssociateItems(Associable* startItem, Associable* endItem
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::inAssociationMode()
 //-----------------------------------------------------------------------------
-bool DesignDiagram::inAssociationMode()
+bool DesignDiagram::inAssociationMode() const
 {
-    return interactionMode_ == ASSOCIATION;
+    return interactionMode_ == ASSOCIATE;
 }
 
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::associationEnds()
 //-----------------------------------------------------------------------------
-bool DesignDiagram::associationEnds()
+bool DesignDiagram::associationEnds() const
 {
     return inAssociationMode() && associationLine_->line().p1() != associationLine_->line().p2();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::contextMenuEnabled()
+//-----------------------------------------------------------------------------
+bool DesignDiagram::contextMenuEnabled() const
+{
+    return getMode() == MODE_SELECT && interactionMode_ == CONTEXT_MENU;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::inReplaceMode()
+//-----------------------------------------------------------------------------
+bool DesignDiagram::inReplaceMode() const
+{
+    return interactionMode_ == REPLACE;
 }
 
 //-----------------------------------------------------------------------------
@@ -763,3 +770,37 @@ void DesignDiagram::wheelEvent(QGraphicsSceneWheelEvent* event)
         event->accept();
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::endInteraction()
+//-----------------------------------------------------------------------------
+void DesignDiagram::endInteraction()
+{
+    if (inAssociationMode())
+    {
+        endAssociationLineDraw();
+    }
+
+    setInteractionMode(NORMAL);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::endAssociationLineDraw()
+//-----------------------------------------------------------------------------
+void DesignDiagram::endAssociationLineDraw()
+{
+    removeItem(associationLine_);
+    delete associationLine_;
+    associationLine_ = 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::inOffPageMode()
+//-----------------------------------------------------------------------------
+bool DesignDiagram::inOffPageMode() const
+{
+    return interactionMode_ == OFFPAGE;
+}
+
+
+

@@ -486,9 +486,9 @@ private:
     /*!
      *  Begins replacing another component with a component at the given position.
      *
-     *      @param [in] position   The position to start replacing from.     
+     *      @param [in] startpoint   The position to start replacing from.     
      */
-    void beginComponentReplace(QPointF const& position);
+    void beginComponentReplace(QPointF const& startpoint);
 
     /*!
      *  Updates the cursor according to design content at the given position while replacing.
@@ -501,9 +501,9 @@ private:
      *  Ends the component replace at the given position. If another component is in the given position,
      *  it is replaced with the component being dragged.
      *
-     *      @param [in] position   The point to end the replacing.
+     *      @param [in] endpoint   The point to end the replacing.
      */
-    void endComponentReplace(QPointF const& position);
+    void endComponentReplace(QPointF const& endpoint);
 
     /*!
      *  Updates the highlights and drawing of current connection.
@@ -626,13 +626,9 @@ private:
 
     //! The type of the item being dragged.
     ColumnItemType dragCompType_;
+
+    //! Flag for indicating that the item being dragged is a bus.
     bool dragBus_;
-
-    //! If true, the off-page connection mode is active.
-    bool offPageMode_;
-
-    //! If true, we're in replace component mode.
-    bool replaceMode_;
 
     //! The component that is used to replace another component in replace mode.
     HWComponentItem* sourceComp_;
@@ -657,9 +653,6 @@ private:
 
     //! Context menu action for opening a component design.
     QAction openDesignAction_;
-
-	//! If true, context menu is enabled.
-	bool showContextMenu_;
 
     //! Cursor position where the user right-presses to open the context menu.
     QPoint contextPos_;
