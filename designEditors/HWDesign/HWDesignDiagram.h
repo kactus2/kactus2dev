@@ -612,7 +612,9 @@ private:
      *  Enables/disable context menu actions based on the current selection.
      */
     void prepareContextMenuActions();
-    bool hasActiveHierarchicalView(HWComponentItem* compItem);
+
+    bool hasActiveFlatView(ComponentItem* compItem);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

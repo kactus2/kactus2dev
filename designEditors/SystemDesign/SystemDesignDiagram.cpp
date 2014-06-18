@@ -1446,8 +1446,7 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
         return;
     }
 
-        item = getBaseItemOf(item);
-    
+    item = getBaseItemOf(item);
 
     if (dynamic_cast<SystemComponentItem*>(item) != 0)
     {
@@ -1456,43 +1455,7 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 
         if (getLibraryInterface()->contains(*comp->componentModel()->getVlnv()))
         {
-            QString viewName;
-            QStringList hierViews = comp->componentModel()->getSWViewNames();
-
-            // if configuration is used and it contains an active view for the instance
-            if (getDesignConfiguration() && getDesignConfiguration()->hasActiveView(comp->name())) {
-                viewName = getDesignConfiguration()->getActiveView(comp->name());
-
-                QSharedPointer<SWView> view = comp->componentModel()->findSWView(viewName);
-
-                // if view was found
-                if (view)
-                {
-                    emit openSWDesign(*comp->componentModel()->getVlnv(), viewName);
-                }
-                else
-                {
-                    emit openComponent(*comp->componentModel()->getVlnv());
-                }
-            }
-            // If the component does not contain any hierarchical views, open the component editor.
-            else if (hierViews.size() == 0)
-            {
-                if (comp->componentModel()->hasViews())
-                {
-                    emit noticeMessage(tr("No active view was selected for instance %1, "
-                        "opening component editor.").arg(comp->name()));
-                }
-
-                emit openComponent(*comp->componentModel()->getVlnv());
-            }
-            // Open the first design if there is one or multiple hierarchical view.
-            else
-            {
-                emit noticeMessage(tr("No active view was selected for instance %1, "
-                    "opening the only hierarhical view of the component.").arg(comp->name()));
-                emit openSWDesign(*comp->componentModel()->getVlnv(), hierViews.first());
-            }
+            openComponentItem(comp);
         }
         else if (!isProtected())
         {
@@ -2268,6 +2231,47 @@ SWPortItem* SystemDesignDiagram::createMissingPort(QString const& portName, Conn
     }
 
     return port;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::openComponentItem()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::openComponentItem(SystemComponentItem* comp)
+{
+    QStringList hierViews = comp->componentModel()->getSWViewNames();
+
+    // if configuration is used and it contains an active view for the instance
+    if (getDesignConfiguration() && getDesignConfiguration()->hasActiveView(comp->name())) {
+        QString viewName = getDesignConfiguration()->getActiveView(comp->name());
+
+        // if view was found
+        if (comp->componentModel()->hasSWView(viewName))
+        {
+            emit openSWDesign(*comp->componentModel()->getVlnv(), viewName);
+        }
+        else
+        {
+            emit openComponent(*comp->componentModel()->getVlnv());
+        }
+    }
+    // If the component does not contain any hierarchical views, open the component editor.
+    else if (hierViews.size() == 0)
+    {
+        if (comp->componentModel()->hasViews())
+        {
+            emit noticeMessage(tr("No active view was selected for instance %1, "
+                "opening component editor.").arg(comp->name()));
+        }
+
+        emit openComponent(*comp->componentModel()->getVlnv());
+    }
+    // Open the first design if there is one or multiple hierarchical view.
+    else
+    {
+        emit noticeMessage(tr("No active view was selected for instance %1, "
+            "opening the only hierarhical view of the component.").arg(comp->name()));
+        emit openSWDesign(*comp->componentModel()->getVlnv(), hierViews.first());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -3403,22 +3407,22 @@ void SystemDesignDiagram::prepareContextMenuActions()
             // Allow SW design opening, if component has at least one hierarchical view.
             SWComponentItem* swItem = qgraphicsitem_cast<SWComponentItem *>(items.back());
             Q_ASSERT(swItem);
-            QStringList hierViews = swItem->componentModel()->getSWViewNames();          
-
-             openDesignAction_.setEnabled(hierViews.size() != 0);
-
+            bool singleSelection = items.count() == 1;
+            
             // Allow copying components (single or multiple).
             copyAction_.setEnabled(!isProtected());
             
             // Enable paste action, if a draft component (no valid vlnv) and the clipboard
             // contains API/COM bus interfaces.
-            bool draft = !qgraphicsitem_cast<SWComponentItem *>(items.back())->componentModel()->getVlnv()->isValid();
-            addAction_.setEnabled(!isProtected() && draft && selectedItems().size() == 1);
-            openComponentAction_.setEnabled(!draft && items.count() == 1);
+            bool isDraft = !qgraphicsitem_cast<SWComponentItem *>(items.back())->componentModel()->getVlnv()->isValid();
+            addAction_.setEnabled(!isProtected() && isDraft && singleSelection);
+            openComponentAction_.setEnabled(!isDraft && singleSelection);
             
+            openDesignAction_.setEnabled(!isDraft && singleSelection && !hasActiveFlatView(swItem));
+
             QMimeData const* mimedata = QApplication::clipboard()->mimeData();
 
-            pasteAction_.setEnabled(!isProtected() && draft && mimedata != 0 && mimedata->hasImage() && 
+            pasteAction_.setEnabled(!isProtected() && isDraft && mimedata != 0 && mimedata->hasImage() && 
                                     mimedata->imageData().canConvert<PortCollectionCopyData>());
         }
         else if (type == SystemColumn::Type)
@@ -3438,4 +3442,19 @@ void SystemDesignDiagram::prepareContextMenuActions()
                                     mimeData->imageData().canConvert<ComponentCollectionCopyData>());
         }        
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::hasActiveHierarchicalView()
+//-----------------------------------------------------------------------------
+bool SystemDesignDiagram::hasActiveFlatView(ComponentItem* compItem)
+{
+    QSharedPointer<DesignConfiguration> designConf = getDesignConfiguration();
+    if (designConf && designConf->hasActiveView(compItem->name())) 
+    {
+        QString activeViewName = designConf->getActiveView(compItem->name());
+
+        return !compItem->componentModel()->hasSWView(activeViewName);  
+    }
+    return true;
 }

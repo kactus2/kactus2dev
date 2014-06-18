@@ -3193,7 +3193,7 @@ void HWDesignDiagram::prepareContextMenuActions()
 
             addAction_.setEnabled(!isProtected() && isDraft && singleSelection);
             openComponentAction_.setEnabled(!isDraft && singleSelection);
-            openDesignAction_.setEnabled(!isDraft && hasActiveHierarchicalView(compItem) && singleSelection);
+            openDesignAction_.setEnabled(!isDraft && !hasActiveFlatView(compItem) && singleSelection);
 
             // Allow copying components (single or multiple).
             copyAction_.setEnabled(!isProtected());
@@ -3221,7 +3221,7 @@ void HWDesignDiagram::prepareContextMenuActions()
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::hasActiveHierarchicalView()
 //-----------------------------------------------------------------------------
-bool HWDesignDiagram::hasActiveHierarchicalView(HWComponentItem* compItem)
+bool HWDesignDiagram::hasActiveFlatView(ComponentItem* compItem)
 {
     QSharedPointer<DesignConfiguration> designConf = getDesignConfiguration();
     if (designConf && designConf->hasActiveView(compItem->name())) 
@@ -3231,8 +3231,8 @@ bool HWDesignDiagram::hasActiveHierarchicalView(HWComponentItem* compItem)
         if (compItem->componentModel()->hasView(activeViewName)) 
         {
             View* activeView = compItem->componentModel()->findView(activeViewName);
-            return activeView->isHierarchical();
+            return !activeView->isHierarchical();
         }
     }
-    return false;
+    return true;
 }

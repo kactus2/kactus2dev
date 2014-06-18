@@ -382,6 +382,9 @@ private:
     SWPortItem* createMissingPort(QString const& portName, ConnectionEndpoint::EndpointType type,
                                   SystemComponentItem* component, QSharedPointer<Design> design);
 
+
+    void openComponentItem(SystemComponentItem* comp);
+
     /*!
      *  Hides all off-page connections.
      */
@@ -494,6 +497,8 @@ private:
      *  Enables/disable context menu actions based on the current selection.
      */
     void prepareContextMenuActions();
+   
+    bool hasActiveFlatView(ComponentItem* compItem);
 
     //-----------------------------------------------------------------------------
     //! Drag type enumeration.
