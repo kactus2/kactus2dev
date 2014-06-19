@@ -55,7 +55,8 @@ void ActiveViewEditor::clear() {
 	view_.setDisabled(true);
 }
 
-void ActiveViewEditor::setDesign( DesignWidget* designWidget, bool locked) {
+void ActiveViewEditor::setDesign(DesignWidget* designWidget)
+{
 
 	if (designWidget) {
 		QSharedPointer<DesignConfiguration> desConf = designWidget->getDiagram()->getDesignConfiguration();
@@ -66,7 +67,7 @@ void ActiveViewEditor::setDesign( DesignWidget* designWidget, bool locked) {
 
 		// if configuration is used
 		else 
-			view_.setDisabled(locked);
+			view_.setDisabled(designWidget->isProtected());
 
 		model_.setDesign(designWidget, desConf);
         view_.resizeRowsToContents();

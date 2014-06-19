@@ -2023,7 +2023,7 @@ void MainWindow::onTabChanged(int index)
 	// set the configuration manager to edit the active design
 	if (designwidget)
     {
-		configurationEditor_->setConfiguration(designwidget, designwidget->isProtected());
+		configurationEditor_->setConfiguration(designwidget);
 
         if (doc->getSupportedWindows() & TabDocument::SYSTEM_DETAILS_WINDOW)
         {

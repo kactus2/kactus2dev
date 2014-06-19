@@ -174,7 +174,7 @@ void ConfigurationEditor::onAdd() {
 	designWidget_->setProtection(false);
 
 	// update this editor
-	setConfiguration(designWidget_, false);
+	setConfiguration(designWidget_);
 
 	// now theres at least two configurations so one of them can be removed.
 	removeButton_.setEnabled(true);
@@ -315,10 +315,11 @@ void ConfigurationEditor::onRemove() {
 
 	designWidget_->setDesign(*component_->getVlnv(), newView);
 	designWidget_->setProtection(false);
-	setConfiguration(designWidget_, false);
+	setConfiguration(designWidget_);
 }
 
-void ConfigurationEditor::setConfiguration( DesignWidget* designWidget, bool locked ) {
+void ConfigurationEditor::setConfiguration(DesignWidget* designWidget)
+{
 
 	// if there was a previous design being displayed.
 	if (designWidget_)
@@ -331,8 +332,8 @@ void ConfigurationEditor::setConfiguration( DesignWidget* designWidget, bool loc
 	connect(&activeViewEditor_, SIGNAL(contentChanged()),
 		designWidget_, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-	addNewButton_.setDisabled(locked);
-	removeButton_.setDisabled(locked);
+	addNewButton_.setDisabled(designWidget_->isProtected());
+	removeButton_.setDisabled(designWidget_->isProtected());
 	configurationSelector_.setEnabled(true);
 
 	// get the component being edited
@@ -426,7 +427,7 @@ void ConfigurationEditor::setConfiguration( DesignWidget* designWidget, bool loc
 	connect(&configurationSelector_, SIGNAL(currentIndexChanged(const QString&)),
 		this, SLOT(onConfigurationChanged(const QString&)), Qt::UniqueConnection);
 
-	activeViewEditor_.setDesign(designWidget, locked);
+	activeViewEditor_.setDesign(designWidget);
 
 	// display this widget
 	parentWidget()->raise();
@@ -449,7 +450,7 @@ void ConfigurationEditor::clear() {
 }
 
 void ConfigurationEditor::onRefresh() {
-	setConfiguration(designWidget_, designWidget_->isProtected());
+	setConfiguration(designWidget_);
 }
 
 void ConfigurationEditor::onConfigurationChanged( const QString& newConfigName ) {
@@ -465,7 +466,7 @@ void ConfigurationEditor::onConfigurationChanged( const QString& newConfigName )
 
 		// keep the locked/unlocked state from the previous configuration to this configuration.
 		designWidget_->setProtection(wasLocked);
-		setConfiguration(designWidget_, wasLocked);
+		setConfiguration(designWidget_);
 	}
 }
 

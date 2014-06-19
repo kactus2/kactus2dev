@@ -43,11 +43,9 @@ public:
 	/*! \brief Set the configuration to be displayed.
 	 *
 	 * \param designWidget Pointer to the design widget used to edit the design.
-	 * \param locked If true then the configuration is only displayed, and can't be
-	 * edited.
 	 *
 	*/
-	void setConfiguration(DesignWidget* designWidget, bool locked);
+    void setConfiguration(DesignWidget* designWidget);
 
 	/*! \brief Clear the contents of this editor.
 	 *
