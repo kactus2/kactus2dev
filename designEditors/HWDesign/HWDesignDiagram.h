@@ -415,7 +415,7 @@ private:
     bool isPossibleEndpointForCurrentConnection(ConnectionEndpoint* endpoint);
 
     //! Deletes the currently drawn connection.
-    void removeCurrentConnection();
+    void discardConnection();
     
    /*!
     *  Begins drawing a connection from the given point.

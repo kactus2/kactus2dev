@@ -1813,9 +1813,7 @@ void HWDesignDiagram::keyReleaseEvent(QKeyEvent *event)
 void HWDesignDiagram::endConnect()
 {
     // Destroy the connection that was being drawn.
-    if (creatingConnection()) {
-        removeCurrentConnection();
-    }
+    discardConnection();
 
     // Disable highlights from all end points.
     clearHighlightedEndpoint();
@@ -1966,12 +1964,14 @@ void HWDesignDiagram::endConnectionTo(QPointF const& point)
                 endpoint = endpoint->getOffPageConnector();
             }
 
-            removeCurrentConnection();
+            discardConnection();
 
-            tempConnection_ = new HWConnection(tempConnEndPoint_, endpoint, false,
+            HWConnection* newTempConnection = new HWConnection(tempConnEndPoint_, endpoint, false,
                 QString(), QString(), QString(), this);
-            tempConnection_->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
-            addItem(tempConnection_);
+            newTempConnection->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
+
+            addItem(newTempConnection);
+            tempConnection_ = newTempConnection;
         }
 
         if (tempConnection_->connectEnds())
@@ -1985,7 +1985,7 @@ void HWDesignDiagram::endConnectionTo(QPointF const& point)
         }
         else
         {
-            removeCurrentConnection();
+            discardConnection();
             tempConnEndPoint_ = 0;
         }
 
@@ -1997,9 +1997,8 @@ void HWDesignDiagram::endConnectionTo(QPointF const& point)
     }
     // Delete the temporary connection.
     else
-    {
-        removeItem(tempConnection_);
-        removeCurrentConnection();
+    {        
+        discardConnection();
     }
 }
 
@@ -2026,12 +2025,16 @@ bool HWDesignDiagram::isPossibleEndpointForCurrentConnection(ConnectionEndpoint*
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::clearCurrentConnection()
+// Function: HWDesignDiagram::discardConnection()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::removeCurrentConnection()
+void HWDesignDiagram::discardConnection()
 {
-    delete tempConnection_;
-    tempConnection_ = 0;
+    if (tempConnection_)
+    {
+        removeItem(tempConnection_);
+        delete tempConnection_;
+        tempConnection_ = 0;
+    }    
 }
 
 //-----------------------------------------------------------------------------
@@ -2498,8 +2501,7 @@ void HWDesignDiagram::updateCurrentConnection(QPointF const& cursorPosition)
     }
     newTempConnection_->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
 
-    removeItem(tempConnection_);
-    removeCurrentConnection();
+    discardConnection();
 
     addItem(newTempConnection_);
     tempConnection_ = newTempConnection_;

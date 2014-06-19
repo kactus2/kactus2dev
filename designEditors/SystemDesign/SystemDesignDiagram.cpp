@@ -1661,22 +1661,13 @@ void SystemDesignDiagram::createConnection(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::destroyConnections()
 {
-    QList<QGraphicsItem*> conns;
-
-    // Search all SW connections.
     foreach (QGraphicsItem* item, items())
     {
         if (item->type() == GraphicsConnection::Type)
         {
-            conns.append(item);
+            removeItem(item);
+            delete item;
         }
-    }
-
-    // And destroy them.
-    foreach (QGraphicsItem* item, conns)
-    {
-        removeItem(item);
-        delete item;
     }
 }
 
