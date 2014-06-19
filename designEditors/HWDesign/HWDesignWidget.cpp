@@ -207,9 +207,10 @@ bool HWDesignWidget::setDesign(QSharedPointer<Component> comp, const QString& vi
     {
         return false;
     }
+    DesignWidget::setDesign(comp, viewName);
 	setDocumentName(QString("%1 (%2)").arg(getIdentifyingVLNV().getName()).arg(getIdentifyingVLNV().getVersion()));
 
-    return DesignWidget::setDesign(comp, viewName);
+    return true;
 }
 
 bool HWDesignWidget::saveAs() {

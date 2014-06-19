@@ -303,7 +303,7 @@ public slots:
     /*!
      *  Called when open HW design is selected from the context menu.
      */
-	virtual void onOpenDesignAction();
+    virtual void onOpenDesignAction(QAction* selectedAction);
 
 protected:
     //! Handler for mouse click events.
@@ -613,7 +613,21 @@ private:
      */
     void prepareContextMenuActions();
 
-    bool hasActiveFlatView(ComponentItem* compItem);
+    /*!
+     *  Gets the name of the active view for the given component item.
+     *
+     *      @param [in] compItem   The item whose active view to get.
+     *
+     *      @return The name of the active view.
+     */
+    QString getActiveViewOf(ComponentItem* compItem) const;
+
+    /*!
+     *  Updates the open design submenu according to item views.
+     *
+     *      @param [in] compItem   The component item views to display in the submenu.
+     */
+    void updateOpenDesignMenuFor(HWComponentItem* compItem);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -661,8 +675,8 @@ private:
     //! Context menu action for opening a component.
     QAction openComponentAction_;
 
-    //! Context menu action for opening a component design.
-    QAction openDesignAction_;
+    //! Context menu submenu for opening a component design.
+    QMenu openDesignMenu_;
 
     //! Cursor position where the user right-presses to open the context menu.
     QPoint contextPos_;

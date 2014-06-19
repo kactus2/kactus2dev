@@ -91,7 +91,7 @@ HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& edit
       pasteAction_(tr("Paste"), this),
       addAction_(tr("Add to Library"), this),
       openComponentAction_(tr("Open Component"), this),
-      openDesignAction_(tr("Open HW Design"), this),
+      openDesignMenu_(tr("Open HW Design")),
       contextPos_()
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
@@ -1475,25 +1475,18 @@ QMenu* HWDesignDiagram::createContextMenu(QPointF const& pos)
 
     if (contextMenuEnabled())
     {
-        QGraphicsItem* item = itemAt(pos,QTransform());
+        QGraphicsItem* item = getBaseItemOf(itemAt(pos, QTransform()));
 
-        // Deselect the currently selected items if the user clicked above nothing.
-        if (item == 0)
+        if (!selectedItems().contains(item))
         {
             clearSelection();
-        }
-        // Or select new item if the clicked item does not belong into the current selection.
-        else
-        {
-            item = getBaseItemOf(item);
-
-            if (!selectedItems().contains(item))
+            
+            if (item)
             {
-                clearSelection();
                 item->setSelected(true);
             }
         }
-
+        
         prepareContextMenuActions();
 
         menu = new QMenu(parent());
@@ -1501,10 +1494,15 @@ QMenu* HWDesignDiagram::createContextMenu(QPointF const& pos)
         menu->addSeparator();
         menu->addAction(&addAction_);
         menu->addAction(&openComponentAction_);
-        menu->addAction(&openDesignAction_);
+        menu->addMenu(&openDesignMenu_);
         menu->addSeparator();
         menu->addAction(&copyAction_);
         menu->addAction(&pasteAction_);
+
+        if (item && item->type() == HWComponentItem::Type)
+        {
+            updateOpenDesignMenuFor(static_cast<HWComponentItem*>(item));
+        }
     }
 
     return menu;
@@ -1742,24 +1740,17 @@ void HWDesignDiagram::onOpenComponentAction()
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::onOpenDesignAction()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::onOpenDesignAction()
+void HWDesignDiagram::onOpenDesignAction(QAction* selectedAction)
 {
     if (selectedItems().size() == 1)
     {
         HWComponentItem* component = qgraphicsitem_cast<HWComponentItem *>(selectedItems().first());
         if (component)
         {
-            // if configuration is used and it contains an active view for the instance
-            if (getDesignConfiguration() && getDesignConfiguration()->hasActiveView(component->name())) 
-            {
-                QString viewName = getDesignConfiguration()->getActiveView(component->name());
+            QString viewName = selectedAction->data().toString();
 
-                View* view = component->componentModel()->findView(viewName);
-
-                // if view was found and it is hierarchical
-                if (view && view->isHierarchical()) {
-                    emit openDesign(*component->componentModel()->getVlnv(), viewName);
-                }
+            if (component->componentModel()->hasView(viewName)) {
+                emit openDesign(*component->componentModel()->getVlnv(), viewName);
             }
         }
     }
@@ -2708,7 +2699,7 @@ void HWDesignDiagram::openComponentItem(HWComponentItem * comp)
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::openComponentByActiveView(HWComponentItem * comp)
 {
-    QString activeViewName = getDesignConfiguration()->getActiveView(comp->name());
+    QString activeViewName = getActiveViewOf(comp);
 
     if (comp->componentModel()->hasView(activeViewName)) 
     {        
@@ -2779,8 +2770,8 @@ void HWDesignDiagram::setupActions()
     parent()->addAction(&openComponentAction_);
     connect(&openComponentAction_, SIGNAL(triggered()), this, SLOT(onOpenComponentAction()), Qt::UniqueConnection);
 
-    parent()->addAction(&openDesignAction_);
-    connect(&openDesignAction_, SIGNAL(triggered()), this, SLOT(onOpenDesignAction()), Qt::UniqueConnection);
+    connect(&openDesignMenu_, SIGNAL(triggered(QAction*)),
+        this, SLOT(onOpenDesignAction(QAction*)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -3161,7 +3152,8 @@ void HWDesignDiagram::prepareContextMenuActions()
     // Disable all actions as default.
     addAction_.setEnabled(false);
     openComponentAction_.setEnabled(false);
-    openDesignAction_.setEnabled(false);
+    openDesignMenu_.clear();    
+    openDesignMenu_.setEnabled(false);
     copyAction_.setEnabled(false);
     pasteAction_.setEnabled(false);
 
@@ -3194,7 +3186,7 @@ void HWDesignDiagram::prepareContextMenuActions()
 
             addAction_.setEnabled(!isProtected() && isDraft && singleSelection);
             openComponentAction_.setEnabled(!isDraft && singleSelection);
-            openDesignAction_.setEnabled(!isDraft && !hasActiveFlatView(compItem) && singleSelection);
+            openDesignMenu_.setEnabled(!isDraft && singleSelection && compItem->componentModel()->isHierarchical());
 
             // Allow copying components (single or multiple).
             copyAction_.setEnabled(!isProtected());
@@ -3220,20 +3212,39 @@ void HWDesignDiagram::prepareContextMenuActions()
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::hasActiveHierarchicalView()
+// Function: HWDesignDiagram::getActiveViewOf()
 //-----------------------------------------------------------------------------
-bool HWDesignDiagram::hasActiveFlatView(ComponentItem* compItem)
+QString HWDesignDiagram::getActiveViewOf(ComponentItem* compItem) const
 {
+    QString activeViewName;
+
     QSharedPointer<DesignConfiguration> designConf = getDesignConfiguration();
     if (designConf && designConf->hasActiveView(compItem->name())) 
     {
-        QString activeViewName = designConf->getActiveView(compItem->name());
-
-        if (compItem->componentModel()->hasView(activeViewName)) 
-        {
-            View* activeView = compItem->componentModel()->findView(activeViewName);
-            return !activeView->isHierarchical();
-        }
+        activeViewName = designConf->getActiveView(compItem->name());
     }
-    return true;
+
+    return activeViewName;
 }
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::updateOpenDesignMenuFor()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::updateOpenDesignMenuFor(HWComponentItem* compItem)
+{
+    QString activeViewName = getActiveViewOf(compItem);
+    QStringList views = compItem->componentModel()->getHierViews();
+
+    foreach(QString viewName, views)
+    {
+        QString actionText = viewName;
+        if (viewName == activeViewName)
+        {
+            actionText.append(" ");
+            actionText.append(tr("(active)"));
+        }
+        QAction* action = openDesignMenu_.addAction(actionText);
+        action->setData(viewName);
+    }
+}
+

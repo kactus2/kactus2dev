@@ -295,9 +295,6 @@ signals:
     //! Signaled when all items are deselected.
     void clearItemSelection();
 
-	//! Signaled when copy is selected from the context menu.
-	void copyItem();
-
 protected:
 
     virtual void wheelEvent(QGraphicsSceneWheelEvent* event);
