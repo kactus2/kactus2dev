@@ -57,11 +57,6 @@ public:
      */
     ~MemoryDesignDiagram();
 
-    /*!
-     *  Clears the scene.
-     */
-    virtual void clearScene();
-
     /*! 
      *  Creates a design based on the contents in the diagram.
      *

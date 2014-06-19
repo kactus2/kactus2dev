@@ -105,8 +105,7 @@ HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& edit
 void HWDesignDiagram::clearScene()
 {
     clearSelection();
-    destroyConnections();
-    getLayout().clear();
+    destroyConnections();    
     DesignDiagram::clearScene();
 }
 

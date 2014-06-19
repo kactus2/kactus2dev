@@ -79,15 +79,6 @@ MemoryDesignDiagram::~MemoryDesignDiagram()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryDesignDiagram::clearScene()
-//-----------------------------------------------------------------------------
-void MemoryDesignDiagram::clearScene()
-{
-    getLayout().clear();
-    DesignDiagram::clearScene();
-}
-
-//-----------------------------------------------------------------------------
 // Function: setDesign()
 //-----------------------------------------------------------------------------
 void MemoryDesignDiagram::loadDesign(QSharedPointer<Design> design)

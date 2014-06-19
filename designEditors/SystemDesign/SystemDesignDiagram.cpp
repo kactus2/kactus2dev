@@ -120,7 +120,6 @@ void SystemDesignDiagram::clearScene()
 {
     clearSelection();
     destroyConnections();
-    getLayout().clear();
     DesignDiagram::clearScene();
 }
 

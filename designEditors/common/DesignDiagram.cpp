@@ -80,7 +80,8 @@ DesignDiagram::~DesignDiagram()
 //-----------------------------------------------------------------------------
 void DesignDiagram::clearScene()
 {
-    clear();
+    clearLayout();
+    clear();    
 }
 
 //-----------------------------------------------------------------------------
@@ -105,7 +106,6 @@ bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointe
     clearSelection();
 
     // Clear the scene.    
-    clearLayout();
     clearScene();
     getParent()->clearRelatedVLNVs();
     getParent()->addRelatedVLNV(*component->getVlnv());
