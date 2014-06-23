@@ -500,7 +500,7 @@ private:
 
     //! Enables/disables the sticky notes according to design protection state.
     void setProtectionForStickyNotes();
-
+    void updateOpenDesignMenuFor(ComponentItem* compItem);
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

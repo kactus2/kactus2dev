@@ -2744,6 +2744,7 @@ void HWDesignDiagram::openComponentByView(HWComponentItem* comp, QString const& 
 {
     emit noticeMessage(tr("No active view was selected for instance %1, "
         "opening the only hierarchical view of the component.").arg(comp->name()));
+
     emit openDesign(*comp->componentModel()->getVlnv(), viewName);
 }
 
@@ -3247,4 +3248,3 @@ void HWDesignDiagram::updateOpenDesignMenuFor(HWComponentItem* compItem)
         action->setData(viewName);
     }
 }
-

@@ -187,8 +187,8 @@ bool ActiveViewModel::setData(const QModelIndex& index, const QVariant& value,
 				table_[index.row()].viewName_ = value.toString();
 
 				// save the new active view to the design configuration
-				desConf_->addViewConfiguration(table_.at(index.row()).instanceName_,
-					table_.at(index.row()).viewName_);
+				desConf_->addViewConfiguration(table_.at(index.row()).instanceName_, 
+                    table_.at(index.row()).viewName_);
 				emit dataChanged(index, index);
 				return true;
 					}
@@ -259,8 +259,7 @@ void ActiveViewModel::renameInstance(const QString& newName,  const QString& old
 		table_[row].instanceName_ = newName;
 
 		// save the new active view to the design configuration
-		desConf_->addViewConfiguration(table_.at(row).instanceName_,
-			table_.at(row).viewName_);
+		desConf_->addViewConfiguration(table_.at(row).instanceName_, table_.at(row).viewName_);
 
 		// inform views that data has changed
 		QModelIndex modelIndex = QAbstractTableModel::index(row, 0, QModelIndex());
@@ -350,10 +349,8 @@ void ActiveViewModel::setActiveView( const QString& instanceName, const QString&
 }
 
 bool ActiveViewModel::hasConfiguration() const {
-	// if design configuration exists 
-	if (desConf_)
-		return true;
-	return false;
+	// if design configuration exists 			
+	return desConf_ != 0;
 }
 
 

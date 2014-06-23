@@ -258,7 +258,7 @@ public slots:
     /*!
      *  Called when open SW design is selected from the context menu.
      */
-	virtual void onOpenDesignAction();
+    virtual void onOpenDesignAction(QAction* selectedAction);
 
 protected:
     //! Called when the user presses a mouse button.
@@ -499,7 +499,8 @@ private:
     void prepareContextMenuActions();
    
     bool hasActiveFlatView(ComponentItem* compItem);
-
+    QString getActiveViewOf(ComponentItem* compItem) const;
+    void updateOpenDesignMenuFor(ComponentItem* compItem);
     //-----------------------------------------------------------------------------
     //! Drag type enumeration.
     //-----------------------------------------------------------------------------
@@ -559,7 +560,7 @@ private:
     QAction openComponentAction_;
 
     //! Context menu action for opening a SW component design.
-    QAction openDesignAction_;
+    QMenu openDesignAction_;
 
     //! If true, context menu is enabled.
     bool showContextMenu_;
