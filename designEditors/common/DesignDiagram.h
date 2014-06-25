@@ -179,7 +179,7 @@ public:
     /*!
      *  Returns the parent design widget.
      */
-    DesignWidget* getParent();
+     DesignWidget* getParent() const;
 
     /*!
      *  Returns the edit provider.
@@ -200,6 +200,13 @@ public:
      *  Returns a list of instances currently in the design.
      */
     QList<ComponentItem*> getInstances() const;
+
+    /*!
+     *  Ensures that all items in a given list have the same type. Items with different type are unselected.
+     *
+     *      @param [in] items   The list to check.
+     */
+    void ensureOneTypeSelected(QList<QGraphicsItem*> const& items);
 
     /*!
      *  Returns the type of the given items if they all are of the same type.
@@ -501,6 +508,7 @@ private:
     //! Enables/disables the sticky notes according to design protection state.
     void setProtectionForStickyNotes();
     void updateOpenDesignMenuFor(ComponentItem* compItem);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

@@ -518,7 +518,7 @@ bool DesignDiagram::isLoading() const
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::getParent()
 //-----------------------------------------------------------------------------
-DesignWidget* DesignDiagram::getParent()
+DesignWidget* DesignDiagram::getParent() const
 {
     return parent_;
 }
@@ -531,6 +531,30 @@ QSharedPointer<Design> DesignDiagram::createDesign( VLNV const& vlnv ) const {
 	design->setTopComments(XMLComments_);
     design->setVendorExtensions(vendorExtensions_);
 	return design;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::ensureOneTypeSelected()
+//-----------------------------------------------------------------------------
+void DesignDiagram::ensureOneTypeSelected(QList<QGraphicsItem*> const& items)
+{
+    QList<QGraphicsItem*> currentlySelectedItems = selectedItems();
+    if (currentlySelectedItems.size() > 1)
+    {
+        // Check if all selected items have the same type.
+        int type = getCommonItemType(currentlySelectedItems);
+        if (type == -1)
+        {
+            // If not, deselect those that are in the new selection but no in the old one.
+            foreach (QGraphicsItem* selectedItem, currentlySelectedItems)
+            {
+                if (!items.contains(selectedItem))
+                {
+                    selectedItem->setSelected(false);
+                }
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

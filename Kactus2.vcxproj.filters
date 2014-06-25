@@ -4132,6 +4132,12 @@
     <ClCompile Include="designEditors\common\Association\Association.cpp">
       <Filter>Source Files\designEditors\common\Association</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\common\ComponentDesignDiagram.cpp">
+      <Filter>Source Files\designEditors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentDesignDiagram.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5561,6 +5567,9 @@
     </CustomBuild>
     <CustomBuild Include="designEditors\common\Association\AssociationChangeEndpointCommand.h">
       <Filter>Header Files\designEditors\common\Association</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ComponentDesignDiagram.h">
+      <Filter>Header Files\designEditors\common</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

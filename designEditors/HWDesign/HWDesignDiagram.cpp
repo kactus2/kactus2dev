@@ -22,17 +22,15 @@
 #include "columnview/HWColumn.h"
 #include "columnview/ColumnEditDialog.h"
 
+#include <common/GenericEditProvider.h>
 #include <common/graphicsItems/GraphicsColumnUndoCommands.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/graphicsItems/ConnectionUndoCommands.h>
-#include <common/dialogs/comboSelector/comboselector.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
-#include <common/GenericEditProvider.h>
 
 #include <designEditors/common/DiagramUtil.h>
 #include <designEditors/common/diagramgrid.h>
-#include <designEditors/common/StickyNote/StickyNote.h>
 
 #include <library/LibraryManager/libraryhandler.h>
 
@@ -42,8 +40,6 @@
 #include <IPXACTmodels/portabstraction.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/model.h>
-#include <IPXACTmodels/modelparameter.h>
-#include <IPXACTmodels/channel.h>
 #include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/busdefinition.h>
 #include <IPXACTmodels/PortRef.h>
@@ -51,18 +47,13 @@
 #include <IPXACTmodels/Interface.h>
 #include <IPXACTmodels/HierConnection.h>
 #include <IPXACTmodels/design.h>
-#include <IPXACTmodels/port.h>
-#include <IPXACTmodels/view.h>
 
-#include <QPainter>
 #include <QPair>
 #include <QGraphicsSceneMouseEvent>
-#include <QUuid>
 #include <QMimeData>
 #include <QString>
 #include <QMessageBox>
 #include <QCoreApplication>
-#include <QPrinter>
 #include <QListIterator>
 #include <QApplication>
 #include <QMenu>
@@ -76,37 +67,20 @@ Q_DECLARE_METATYPE(HWDesignDiagram::ColumnCollectionCopyData)
 // Function: HWDesignDiagram()
 //-----------------------------------------------------------------------------
 HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, HWDesignWidget *parent)
-    : DesignDiagram(lh, editProvider, parent),
-      parent_(parent),
-      tempConnection_(0),
-      tempConnEndPoint_(0), 
-      tempPotentialEndingEndPoints_(),
-      highlightedEndPoint_(0),
+    : ComponentDesignDiagram(lh, editProvider, parent),
       dragCompType_(CIT_NONE),
       dragBus_(false),
-      sourceComp_(0),
-      oldSelectedItems_(),
-      selectAllAction_(tr("Select All"), this),
-      copyAction_(tr("Copy"), this),
-      pasteAction_(tr("Paste"), this),
-      addAction_(tr("Add to Library"), this),
-      openComponentAction_(tr("Open Component"), this),
-      openDesignMenu_(tr("Open HW Design")),
-      contextPos_()
+      dragEndPoint_(0)
 {
-    connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
-    connect(&editProvider, SIGNAL(modified()), this, SIGNAL(contentChanged()));
-	setupActions();
+
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::clearScene()
+// Function: ~HWDesignDiagram()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::clearScene()
+HWDesignDiagram::~HWDesignDiagram()
 {
-    clearSelection();
-    destroyConnections();    
-    DesignDiagram::clearScene();
+
 }
 
 //-----------------------------------------------------------------------------
@@ -258,7 +232,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
             {
                 diagramInterconnection->hide();
             }
-            diagramInterconnection->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
+            diagramInterconnection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
 
             connect(diagramInterconnection, SIGNAL(errorMessage(QString const&)), this,
                     SIGNAL(errorMessage(QString const&)));
@@ -359,7 +333,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         }
 
         diagConn->setVendorExtensions(hierConn.getVendorExtensions());
-        diagConn->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
+        diagConn->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
 
         connect(diagConn, SIGNAL(errorMessage(QString const&)), this,
             SIGNAL(errorMessage(QString const&)));
@@ -480,7 +454,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 {
                     conn->hide();
                 }
-                conn->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
+                conn->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
 
                 connect(conn, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
@@ -549,7 +523,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 {
                     conn->hide();
                 }
-                conn->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
+                conn->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
 
                 connect(conn, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
                 addItem(conn);
@@ -563,15 +537,6 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
     {
         column->updateItemPositions();
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~HWDesignDiagram()
-//-----------------------------------------------------------------------------
-HWDesignDiagram::~HWDesignDiagram()
-{
-    clearSelection();
-    destroyConnections();
 }
 
 //-----------------------------------------------------------------------------
@@ -595,6 +560,27 @@ HWComponentItem *HWDesignDiagram::getComponent(const QString &instanceName)
 	// if no component was found
 	emit errorMessage(tr("Component %1 was not found within design").arg(instanceName));
     return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::setVisibilityControlState()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::setVisibilityControlState(QString const& name, bool state)
+{
+    if (name == "Bus Widths")
+    {
+        foreach (QGraphicsItem* item, items())
+        {
+            HWConnection* conn = dynamic_cast<HWConnection*>(item);
+
+            if (conn != 0)
+            {
+                conn->setBusWidthVisible(state);
+            }
+        }
+    }
+
+    DesignDiagram::setVisibilityControlState(name, state);
 }
 
 //-----------------------------------------------------------------------------
@@ -762,27 +748,6 @@ QSharedPointer<Design> HWDesignDiagram::createDesign(const VLNV &vlnv) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: setMode()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::setMode(DrawMode mode)
-{
-    if (getMode() != mode)
-    {
-        if (getMode() == MODE_CONNECT)
-        {
-            endConnect();
-        }
-
-        if (mode == MODE_SELECT)
-        {
-            hideOffPageConnections();
-        }
-    }
-
-    DesignDiagram::setMode(mode);
-}
-
-//-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::updateHierComponent()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::updateHierComponent()
@@ -806,136 +771,287 @@ void HWDesignDiagram::updateHierComponent()
 }
 
 //-----------------------------------------------------------------------------
-// Function: selectionToFront()
+// Function: addColumn()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::selectionToFront()
+void HWDesignDiagram::addColumn(ColumnDesc const& desc)
 {
-    if (selectedItems().isEmpty())
-        return;
+    HWColumn* column = new HWColumn(desc, getLayout().data());
 
-    QGraphicsItem* selectedItem = selectedItems().first();
+    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(getLayout().data(), column));
+    getEditProvider().addCommand(cmd);
+    cmd->redo();
+}
 
-    if (selectedItem->type() == HWConnection::Type)
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::onAdHocVisibilityChanged()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::onAdHocVisibilityChanged(QString const& portName, bool visible)
+{
+    if (visible)
     {
-        selectedItem->setZValue(-900);
+        AdHocInterfaceItem* adHocIf = new AdHocInterfaceItem(getEditedComponent(),
+            getEditedComponent()->getPort(portName).data(),
+            getLibraryInterface(), 0);
+
+        // Add the ad-hoc interface to the first column where it is allowed to be placed.
+        getLayout()->addItem(adHocIf);
+    }
+    else
+    {
+        // Search for the ad-hoc interface and delete it.
+        ConnectionEndpoint* found = getDiagramAdHocPort(portName);
+        Q_ASSERT(found != 0);
+
+        static_cast<GraphicsColumn*>(found->parentItem())->removeItem(found);
+        delete found;
+        found = 0;
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: mousePressEvent()
+// Function: HWDesignDiagram::getDiagramAdHocPort()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
+HWConnectionEndpoint* HWDesignDiagram::getDiagramAdHocPort(QString const& portName)
 {
-    // if other than left button was pressed return the mode back to select
-	if (mouseEvent->button() != Qt::LeftButton)
+    foreach (QGraphicsItem* item, items())
     {
-        endInteraction();
-        if (getMode() == MODE_SELECT && mouseEvent->button() == Qt::RightButton)
+        if (item->type() == AdHocInterfaceItem::Type &&
+            static_cast<AdHocInterfaceItem*>(item)->name() == portName)
         {
-            setInteractionMode(CONTEXT_MENU);
+            return static_cast<HWConnectionEndpoint*>(item);
         }
+    }
 
-        setMode(MODE_SELECT);		
-        return;
-	}
+    return 0;
+}
 
-    if (getMode() == MODE_CONNECT)
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::onCopyAction()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::onCopyAction()
+{
+    if (!isProtected())
     {
-        if (mouseEvent->modifiers() & Qt::ShiftModifier)
+        QList<QGraphicsItem*> items = selectedItems();
+        int type = getCommonItemType(items);
+
+        if (type == BusInterfaceItem::Type || type == BusPortItem::Type)
         {
-            setInteractionMode(OFFPAGE);
+            BusInterfaceCollectionCopyData collection;
+            copyInterfaces(items, collection);
+
+            QMimeData* mimeData = new QMimeData();
+            mimeData->setImageData(QVariant::fromValue(collection));
+            QApplication::clipboard()->setMimeData(mimeData);
+        }
+        else if (type == HWComponentItem::Type)
+        {
+            ComponentCollectionCopyData collection;
+            copyInstances(items, collection);
+
+            QMimeData* mimeData = new QMimeData();
+            mimeData->setImageData(QVariant::fromValue(collection));
+            QApplication::clipboard()->setMimeData(mimeData);
+        }
+        else if (type == HWColumn::Type)
+        {
+            qSort(items.begin(), items.end(), &sortByX);
+
+            ColumnCollectionCopyData collection;
+
+            foreach (QGraphicsItem* item, items)
+            {
+                HWColumn* column = static_cast<HWColumn*>(item);
+
+                collection.columns.append(ColumnCopyData());
+                ColumnCopyData& columnData = collection.columns.back();
+                columnData.desc = column->getColumnDesc();
+
+                copyInstances(column->getItems(), columnData.components);
+                copyInterfaces(column->getItems(), columnData.interfaces);
+            }
+
+            QMimeData* mimeData = new QMimeData();
+            mimeData->setImageData(QVariant::fromValue(collection));
+            QApplication::clipboard()->setMimeData(mimeData);
+        }
+    }
+
+    prepareContextMenuActions();
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::onPasteAction()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::onPasteAction(){
+
+    if (!isProtected())
+    {
+        QList<QGraphicsItem*> items = selectedItems();
+        int type = getCommonItemType(items);
+
+        if (type == HWComponentItem::Type)
+        {
+            HWComponentItem* targetComp = static_cast<HWComponentItem*>(items[0]);
+
+            // Paste interfaces only to draft components.
+            if ( !targetComp->componentModel()->getVlnv()->isValid() )
+            {
+                QMimeData const* mimedata = QApplication::clipboard()->mimeData();
+
+                if ( mimedata->hasImage() && mimedata->imageData().canConvert<BusInterfaceCollectionCopyData>())
+                {				
+                    BusInterfaceCollectionCopyData collection = mimedata->imageData().value<BusInterfaceCollectionCopyData>();
+
+                    QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+                    pasteInterfaces(collection, targetComp, cmd.data());
+                    getEditProvider().addCommand(cmd);
+
+                    // Update sidebar view.
+                    emit componentSelected(targetComp);
+                    emit helpUrlRequested("hwdesign/hwinstance.html");
+                }
+            }	
         }
         else
         {
-            setInteractionMode(NORMAL);
-        }
-               
-        connectAt(mouseEvent->scenePos());
-    }
-    else if (getMode() == MODE_INTERFACE)
-    {
-        addInterfaceAt(mouseEvent->scenePos());
-    }
-    else if (getMode() == MODE_DRAFT)
-    {
-        draftAt(mouseEvent->scenePos());
-    }
-    else if (getMode() == MODE_TOGGLE_OFFPAGE)
-    {
-        toggleOffPageAt(mouseEvent->scenePos());
-    }
-    else if (getMode() == MODE_SELECT)
-    {
-        // Check if the user pressed Alt over a component => replace component mode.
-        if (!isProtected() && mouseEvent->modifiers() & Qt::AltModifier)
-        {
-            beginComponentReplace(mouseEvent->scenePos());
-        }
-        else
-        {
-            // Handle the mouse press and bring the new selection to front.
-            QGraphicsScene::mousePressEvent(mouseEvent);
-        }
-    }
-    else if(getMode() == MODE_LABEL)
-    {
-        if (!isProtected())
-        {
-            createNoteAt(mouseEvent->scenePos());
+            // Check the mime data.
+            QMimeData const* mimeData = QApplication::clipboard()->mimeData();
+
+            if (mimeData->hasImage())
+            {
+                // Paste components.
+                if (mimeData->imageData().canConvert<ComponentCollectionCopyData>() && items.empty())
+                {
+                    GraphicsColumn* column = getLayout()->findColumnAt(contextMenuPosition());
+
+                    if (column != 0)
+                    {
+                        ComponentCollectionCopyData collection = mimeData->imageData().value<ComponentCollectionCopyData>();
+
+                        QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+                        pasteInstances(collection, column, cmd.data(), true);
+                        getEditProvider().addCommand(cmd);
+                    }
+                }
+                // Paste columns.
+                else if (mimeData->imageData().canConvert<ColumnCollectionCopyData>() &&
+                    (items.empty() || type == HWColumn::Type))
+                {
+                    ColumnCollectionCopyData collection = mimeData->imageData().value<ColumnCollectionCopyData>();
+                    QSharedPointer<QUndoCommand> parentCmd(new QUndoCommand());
+
+                    foreach (ColumnCopyData const& columnData, collection.columns)
+                    {
+                        HWColumn* column = new HWColumn(columnData.desc, getLayout().data());
+
+                        QUndoCommand* columnCmd = new GraphicsColumnAddCommand(getLayout().data(), column, parentCmd.data());
+                        columnCmd->redo();
+
+                        pasteInstances(columnData.components, column, parentCmd.data(), false);
+                        pasteInterfaces(columnData.interfaces, column, parentCmd.data(), false);
+                    }
+
+                    getEditProvider().addCommand(parentCmd);
+                    // Update sidebar view.
+                    emit clearItemSelection();            
+                }
+                // Paste top-level interfaces.
+                else if (mimeData->imageData().canConvert<BusInterfaceCollectionCopyData>() &&
+                    items.empty()) 
+                {
+                    GraphicsColumn* column = getLayout()->findColumnAt(contextMenuPosition());
+
+                    if (column != 0 )
+                    {
+                        BusInterfaceCollectionCopyData collection = mimeData->imageData().value<BusInterfaceCollectionCopyData>();
+
+                        QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+                        pasteInterfaces(collection, column, cmd.data(), true);
+                        if (cmd->childCount() > 0)
+                        {
+                            getEditProvider().addCommand(cmd); 
+                        }
+                        // Update sidebar view .
+                        emit clearItemSelection();       
+                    }
+                }                
+            }
         }
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: mouseMoveEvent()
+// Function: HWDesignDiagram::onAddAction()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent)
+void HWDesignDiagram::onAddToLibraryAction()
 {
-    contextPos_ = QCursor::pos();
-
-    // Check if the connect mode is active.
-    if (getMode() == MODE_CONNECT || getMode() == MODE_TOGGLE_OFFPAGE)
+    if (singleSelection())
     {
-        updateConnectionDisplay(mouseEvent->scenePos());
-        return;
-    }
+        QGraphicsItem *item = selectedItems().first();
+        if (item != 0 && item->type() == HWComponentItem::Type)
+        {
+            item->setSelected(true);
+            HWComponentItem *comp = qgraphicsitem_cast<HWComponentItem *>(item);
 
-    if (inReplaceMode())
-    {
-        updateComponentReplaceCursor(mouseEvent->scenePos());
-    }
+            // Set the instance name as default name suggestion.
+            comp->componentModel()->getVlnv()->setName(comp->name());
 
-    if (inAssociationMode())
-    {
-        updateAssociationLineDraw(mouseEvent->scenePos());
-        return;
-    }
+            NewObjectDialog dialog(getLibraryInterface(), VLNV::COMPONENT, true, getParent());
+            dialog.setVLNV(*comp->componentModel()->getVlnv());
+            dialog.setWindowTitle(tr("Add Component to Library"));
 
-    // Allow moving items only when a single item is selected.
-    if (selectedItems().count() == 1)
-    {
-        QGraphicsScene::mouseMoveEvent(mouseEvent);
+            if (dialog.exec() == QDialog::Rejected)
+            {
+                return;
+            }
+
+            VLNV vlnv = dialog.getVLNV();
+            comp->componentModel()->setVlnv(vlnv);
+            comp->componentModel()->setComponentHierarchy(dialog.getProductHierarchy());
+            comp->componentModel()->setComponentFirmness(dialog.getFirmness());
+            comp->componentModel()->createEmptyFlatView();
+
+            // Write the model to file.
+            getLibraryInterface()->writeModelToFile(dialog.getPath(), comp->componentModel());
+
+            // Create an undo command.
+            QSharedPointer<QUndoCommand> cmd(new ComponentPacketizeCommand(comp, vlnv));
+            getEditProvider().addCommand(cmd);
+            cmd->redo();
+
+            // Ask the user if he wants to complete the component.
+            QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
+                "Do you want to continue packaging the component completely?",
+                QMessageBox::NoButton, getParent());
+            msgBox.setInformativeText("Pressing Continue opens up the component editor.");
+            QPushButton* btnContinue = msgBox.addButton(tr("Continue"), QMessageBox::ActionRole);
+            msgBox.addButton(tr("Skip"), QMessageBox::RejectRole);
+
+            msgBox.exec();
+
+            if (msgBox.clickedButton() == btnContinue)
+            {
+                // Open up the component editor.
+                openInComponentEditor(comp);
+            }
+        }
     }
 }
 
-void HWDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::openDesignForComponent()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::openDesignForComponent(ComponentItem* component, QString const& viewName)
 {
-    // Check if we're replacing a component.
-    if (inReplaceMode())
-    {
-        endComponentReplace(mouseEvent->scenePos());        
+    if (component->componentModel()->hasView(viewName)) {
+        emit openDesign(*component->componentModel()->getVlnv(), viewName);
     }
-    
-    if (canEndAssociation())
-    {
-        endAssociation(mouseEvent->scenePos());
-        return;
-    }
-
-    // process the normal mouse release event
-	QGraphicsScene::mouseReleaseEvent(mouseEvent);
 }
 
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::mouseDoubleClickEvent()
+//-----------------------------------------------------------------------------
 void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     // Allow double click only when the mode is select.
@@ -976,7 +1092,7 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
             item->setSelected(true);
             HWColumn* column = qgraphicsitem_cast<HWColumn*>(item);
 
-            ColumnEditDialog dialog((QWidget*)parent(), false, column);
+            ColumnEditDialog dialog(getParent(), false, column);
 
             if (dialog.exec() == QDialog::Accepted)
             {
@@ -1004,114 +1120,121 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
     else if (item->type() == BusPortItem::Type || item->type() == BusInterfaceItem::Type)
     {
         HWConnectionEndpoint* endpoint = static_cast<HWConnectionEndpoint*>(item);
+        addBusToLibrary(endpoint);
+    }
+}
 
-        // Check if the bus is unpackaged.
-        if (endpoint->isBus() &&
-            (endpoint->getBusInterface() == 0 || !endpoint->getBusInterface()->getBusType().isValid()))
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::addBusToLibrary()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::addBusToLibrary(HWConnectionEndpoint* endpoint)
+{
+    // Check if the bus is unpackaged.
+    if (endpoint->isBus() &&
+        (endpoint->getBusInterface() == 0 || !endpoint->getBusInterface()->getBusType().isValid()))
+    {
+        // Request the user to set the vlnv.
+        NewObjectDialog dialog(getLibraryInterface(), VLNV::BUSDEFINITION, true, getParent());
+        dialog.setWindowTitle(tr("Create New Bus"));
+
+        if (dialog.exec() == QDialog::Rejected)
         {
-            // Request the user to set the vlnv.
-            NewObjectDialog dialog(getLibraryInterface(), VLNV::BUSDEFINITION, true, parent());
-            dialog.setWindowTitle(tr("Create New Bus"));
-
-            if (dialog.exec() == QDialog::Rejected)
-            {
-                return;
-            }
-
-            VLNV busVLNV = dialog.getVLNV();
-            VLNV absVLNV = busVLNV;
-            absVLNV.setName(busVLNV.getName() + ".absDef");
-            absVLNV.setType(VLNV::ABSTRACTIONDEFINITION);
-
-            // Make sure that both VLNVs are not yet used.
-            if (getLibraryInterface()->contains(busVLNV))
-            {
-                emit errorMessage(tr("Bus definition %1:%2:%3:%4 was already found in the library").arg(
-                    busVLNV.getVendor()).arg(
-                    busVLNV.getLibrary()).arg(
-                    busVLNV.getName()).arg(
-                    busVLNV.getVersion()));
-                return;
-            }
-            else if (getLibraryInterface()->contains(absVLNV)) {
-                emit errorMessage(tr("Abstraction definition %1:%2:%3:%4 was already found in the library").arg(
-                    absVLNV.getVendor()).arg(
-                    absVLNV.getLibrary()).arg(
-                    absVLNV.getName()).arg(
-                    absVLNV.getVersion()));
-                return;
-            }
-
-            // Create a bus definition.
-            QSharedPointer<BusDefinition> busDef = QSharedPointer<BusDefinition>(new BusDefinition());
-            busDef->setVlnv(busVLNV);
-
-            // Create the file for the bus definition.
-            getLibraryInterface()->writeModelToFile(dialog.getPath(), busDef);
-
-            // Create an abstraction definition.
-            QSharedPointer<AbstractionDefinition> absDef = QSharedPointer<AbstractionDefinition>(new AbstractionDefinition());
-            absDef->setVlnv(absVLNV);
-
-            // Set the reference from abstraction definition to bus definition.
-            absDef->setBusType(busVLNV);
-
-            // Create the file for the abstraction definition.
-            getLibraryInterface()->writeModelToFile(dialog.getPath(), absDef);
-
-            // Ask the user for the interface mode.
-            endpoint->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
-
-            bool editName = endpoint->type() == BusInterfaceItem::Type &&
-                            endpoint->getConnections().empty();
-
-            BusInterfaceDialog modeDialog(editName, parent());
-            modeDialog.addMode(General::MIRROREDMASTER);
-            modeDialog.addMode(General::SLAVE);
-            modeDialog.addMode(General::MIRROREDSLAVE);
-            modeDialog.addMode(General::SYSTEM);
-            modeDialog.addMode(General::MIRROREDSYSTEM);
-            modeDialog.addMode(General::MASTER);
-
-            if (modeDialog.exec() == QDialog::Rejected)
-            {
-                endpoint->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
-                return;
-            }
-
-            endpoint->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
-
-            // Save old settings.
-            VLNV oldBusType;
-            VLNV oldAbsType;
-            General::InterfaceMode oldMode = General::MASTER;
-            QString oldName = "";
-
-            if (endpoint->getBusInterface() != 0)
-            {
-                oldBusType = endpoint->getBusInterface()->getBusType();
-                oldAbsType = endpoint->getBusInterface()->getAbstractionType();
-                oldMode = endpoint->getBusInterface()->getInterfaceMode();
-                oldName = endpoint->getBusInterface()->getName();
-            }
-
-            // Set the types for the end point.
-            endpoint->setTypes(busVLNV, absVLNV, modeDialog.getSelectedMode());
-
-            if (editName)
-            {
-                endpoint->getBusInterface()->setName(modeDialog.getName());
-            }
-
-            endpoint->updateInterface();
-
-            QSharedPointer<QUndoCommand> cmd(new EndPointTypesCommand(endpoint, oldBusType,
-                                                                      oldAbsType, oldMode, oldName));
-            getEditProvider().addCommand(cmd);
-
-            emit interfaceSelected(endpoint);
-            emit openBus(busVLNV, absVLNV, true);
+            return;
         }
+
+        VLNV busVLNV = dialog.getVLNV();
+        VLNV absVLNV = busVLNV;
+        absVLNV.setName(busVLNV.getName() + ".absDef");
+        absVLNV.setType(VLNV::ABSTRACTIONDEFINITION);
+
+        // Make sure that both VLNVs are not yet used.
+        if (getLibraryInterface()->contains(busVLNV))
+        {
+            emit errorMessage(tr("Bus definition %1:%2:%3:%4 was already found in the library").arg(
+                busVLNV.getVendor()).arg(
+                busVLNV.getLibrary()).arg(
+                busVLNV.getName()).arg(
+                busVLNV.getVersion()));
+            return;
+        }
+        else if (getLibraryInterface()->contains(absVLNV)) {
+            emit errorMessage(tr("Abstraction definition %1:%2:%3:%4 was already found in the library").arg(
+                absVLNV.getVendor()).arg(
+                absVLNV.getLibrary()).arg(
+                absVLNV.getName()).arg(
+                absVLNV.getVersion()));
+            return;
+        }
+
+        // Create a bus definition.
+        QSharedPointer<BusDefinition> busDef = QSharedPointer<BusDefinition>(new BusDefinition());
+        busDef->setVlnv(busVLNV);
+
+        // Create the file for the bus definition.
+        getLibraryInterface()->writeModelToFile(dialog.getPath(), busDef);
+
+        // Create an abstraction definition.
+        QSharedPointer<AbstractionDefinition> absDef = QSharedPointer<AbstractionDefinition>(new AbstractionDefinition());
+        absDef->setVlnv(absVLNV);
+
+        // Set the reference from abstraction definition to bus definition.
+        absDef->setBusType(busVLNV);
+
+        // Create the file for the abstraction definition.
+        getLibraryInterface()->writeModelToFile(dialog.getPath(), absDef);
+
+        // Ask the user for the interface mode.
+        endpoint->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
+
+        bool editName = endpoint->type() == BusInterfaceItem::Type &&
+            endpoint->getConnections().empty();
+
+        BusInterfaceDialog modeDialog(editName, getParent());
+        modeDialog.addMode(General::MIRROREDMASTER);
+        modeDialog.addMode(General::SLAVE);
+        modeDialog.addMode(General::MIRROREDSLAVE);
+        modeDialog.addMode(General::SYSTEM);
+        modeDialog.addMode(General::MIRROREDSYSTEM);
+        modeDialog.addMode(General::MASTER);
+
+        if (modeDialog.exec() == QDialog::Rejected)
+        {
+            endpoint->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
+            return;
+        }
+
+        endpoint->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
+
+        // Save old settings.
+        VLNV oldBusType;
+        VLNV oldAbsType;
+        General::InterfaceMode oldMode = General::MASTER;
+        QString oldName = "";
+
+        if (endpoint->getBusInterface() != 0)
+        {
+            oldBusType = endpoint->getBusInterface()->getBusType();
+            oldAbsType = endpoint->getBusInterface()->getAbstractionType();
+            oldMode = endpoint->getBusInterface()->getInterfaceMode();
+            oldName = endpoint->getBusInterface()->getName();
+        }
+
+        // Set the types for the end point.
+        endpoint->setTypes(busVLNV, absVLNV, modeDialog.getSelectedMode());
+
+        if (editName)
+        {
+            endpoint->getBusInterface()->setName(modeDialog.getName());
+        }
+
+        endpoint->updateInterface();
+
+        QSharedPointer<QUndoCommand> cmd(new EndPointTypesCommand(endpoint, oldBusType,
+            oldAbsType, oldMode, oldName));
+        getEditProvider().addCommand(cmd);
+
+        emit interfaceSelected(endpoint);
+        emit openBus(busVLNV, absVLNV, true);
     }
 }
 
@@ -1180,14 +1303,6 @@ void HWDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: dragMoveEvent()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
-{
-    updateDropAction(event);
-}
-
-//-----------------------------------------------------------------------------
 // Function: dragLeaveEvent()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::dragLeaveEvent(QGraphicsSceneDragDropEvent*)
@@ -1195,7 +1310,11 @@ void HWDesignDiagram::dragLeaveEvent(QGraphicsSceneDragDropEvent*)
     dragCompType_ = CIT_NONE;
     dragBus_ = false;
     
-    clearHighlightedEndpoint();
+    if (dragEndPoint_)
+    {
+        dragEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
+        dragEndPoint_ = 0;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1209,23 +1328,23 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         return;
     }
 
-    VLNV vlnv = data.value<VLNV>();
+    VLNV droppedVLNV = data.value<VLNV>();
     updateDropAction(event);
 
     // Check if the dragged item was a valid one.
     if (dragCompType_ != CIT_NONE)
     {
         // Disallow self-instantiation.
-        if (vlnv == *getEditedComponent()->getVlnv())
+        if (droppedVLNV == *getEditedComponent()->getVlnv())
         {
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                tr("Component cannot be instantiated to its own design."), QMessageBox::Ok, parent());
+                tr("Component cannot be instantiated to its own design."), QMessageBox::Ok, getParent());
             msgBox.exec();
             return;
         }
 
         // Create the component model.
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(vlnv);
+        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(droppedVLNV);
         QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
         // Disallow instantiation of components marked as template.
@@ -1234,7 +1353,7 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                                tr("Template component cannot be directly instantiated in a design. "
                                   "Save the template component as a new non-template component to enable instantiation."),
-                               QMessageBox::Ok, (QWidget*)parent());
+                               QMessageBox::Ok, getParent());
             msgBox.exec();
             return;
         }
@@ -1272,8 +1391,8 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                                tr("Component instance '%1' is about to be replaced "
-                                  "with an instance of %2. Continue and replace?").arg(oldCompItem->name(), vlnv.toString()),
-                               QMessageBox::Yes | QMessageBox::No, (QWidget*)parent());
+                                  "with an instance of %2. Continue and replace?").arg(oldCompItem->name(), droppedVLNV.toString()),
+                               QMessageBox::Yes | QMessageBox::No, getParent());
             
             if (msgBox.exec() == QMessageBox::Yes)
             {
@@ -1295,37 +1414,37 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
     }
     else if (dragBus_)
     {
-        if (highlightedEndPoint_ != 0)
+        if (dragEndPoint_ != 0)
         {
-            Q_ASSERT(getLibraryInterface()->contains(vlnv));
-			vlnv.setType(getLibraryInterface()->getDocumentType(vlnv));
+            Q_ASSERT(getLibraryInterface()->contains(droppedVLNV));
+			droppedVLNV.setType(getLibraryInterface()->getDocumentType(droppedVLNV));
 
 			VLNV absdefVLNV;
 
 			// if the dropped was an abstraction definition
-			if (vlnv.getType() == VLNV::ABSTRACTIONDEFINITION) {
-				absdefVLNV = vlnv;
+			if (droppedVLNV.getType() == VLNV::ABSTRACTIONDEFINITION) {
+				absdefVLNV = droppedVLNV;
 
 				// parse the abstraction definition
-				QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(vlnv);
+				QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(droppedVLNV);
 				QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
 
 				// get the bus definition referenced by the abstraction definition
 				VLNV busdefVLNV = absDef->getBusType();
 
 				// set the bus definition used
-				vlnv = busdefVLNV;
+				droppedVLNV = busdefVLNV;
 
 				Q_ASSERT(absdefVLNV.getType() == VLNV::ABSTRACTIONDEFINITION);
 			}
-			Q_ASSERT(vlnv.getType() == VLNV::BUSDEFINITION);
+			Q_ASSERT(droppedVLNV.getType() == VLNV::BUSDEFINITION);
 
-            bool editName = highlightedEndPoint_->type() == BusInterfaceItem::Type &&
-                            !highlightedEndPoint_->getBusInterface()->getBusType().isValid() &&
-                            highlightedEndPoint_->getConnections().empty();
+            bool editName = dragEndPoint_->type() == BusInterfaceItem::Type &&
+                            !dragEndPoint_->getBusInterface()->getBusType().isValid() &&
+                            dragEndPoint_->getConnections().empty();
 
             // Ask the user for the interface mode.
-            BusInterfaceDialog dialog(editName, (QWidget*)parent());
+            BusInterfaceDialog dialog(editName, getParent());
             dialog.addMode(General::MIRROREDMASTER);
             dialog.addMode(General::SLAVE);
             dialog.addMode(General::MIRROREDSLAVE);
@@ -1335,11 +1454,11 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 
             if (dialog.exec() == QDialog::Rejected)
             {
-                highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
+                dragEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
                 return;
             }
 
-            highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
+            dragEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
 
             // Save old settings.
             VLNV oldBusType;
@@ -1347,471 +1466,226 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             General::InterfaceMode oldMode = General::MASTER;
             QString oldName = "";
 
-            if (highlightedEndPoint_->getBusInterface() != 0)
+            if (dragEndPoint_->getBusInterface() != 0)
             {
-                oldBusType = highlightedEndPoint_->getBusInterface()->getBusType();
-                oldAbsType = highlightedEndPoint_->getBusInterface()->getAbstractionType();
-                oldMode = highlightedEndPoint_->getBusInterface()->getInterfaceMode();
-                oldName = highlightedEndPoint_->getBusInterface()->getName();
+                oldBusType = dragEndPoint_->getBusInterface()->getBusType();
+                oldAbsType = dragEndPoint_->getBusInterface()->getAbstractionType();
+                oldMode = dragEndPoint_->getBusInterface()->getInterfaceMode();
+                oldName = dragEndPoint_->getBusInterface()->getName();
             }
 
             // Define the bus for the end point.
-            highlightedEndPoint_->setTypes(vlnv, absdefVLNV, dialog.getSelectedMode());
+            dragEndPoint_->setTypes(droppedVLNV, absdefVLNV, dialog.getSelectedMode());
             
             if (editName)
             {
-                highlightedEndPoint_->getBusInterface()->setName(dialog.getName());
+                dragEndPoint_->getBusInterface()->setName(dialog.getName());
             }
 
-            highlightedEndPoint_->updateInterface();
+            dragEndPoint_->updateInterface();
 
             // Create an undo command.
-            QSharedPointer<QUndoCommand> cmd(new EndPointTypesCommand(highlightedEndPoint_,
+            QSharedPointer<QUndoCommand> cmd(new EndPointTypesCommand(dragEndPoint_,
                                                                       oldBusType, oldAbsType,
                                                                       oldMode, oldName));
             getEditProvider().addCommand(cmd);
 
-            highlightedEndPoint_ = 0;
+            dragEndPoint_ = 0;
         }
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: onSelectionChanged()
+// Function: HWDesignDiagram::updateDropAction()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::onSelectionChanged()
+void HWDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
 {
-    // Disallow selecting elements of different type.
-    if (selectedItems().size() > 1)
+    if (dragCompType_ != CIT_NONE)
     {
-        // Check if all selected items have the same type.
-        int type = getCommonItemType(selectedItems());
+        // Find the topmost component under the cursor.
+        ComponentItem* item = getTopmostComponent(event->scenePos());
 
-        if (type == -1)
+        // If the item is a HW component, determine whether the component can be replaced with the dragged one.
+        if (item != 0 && item->type() == HWComponentItem::Type)
         {
-            // If not, deselect those that are in the new selection but no in the old one.
-            for (int i = 0; i < selectedItems().size(); ++i)
-            {
-                QGraphicsItem* item = selectedItems()[i];
-
-                if (!oldSelectedItems_.contains(item))
-                {
-                    item->setSelected(false);
-                }
-            }
-        }
-    }
-
-    selectionToFront();
-
-    // Retrieve the new selection.
-    QGraphicsItem* newSelection = 0;
-
-    if (!selectedItems().isEmpty())
-    {
-        newSelection = selectedItems().front();
-    }
-
-    // If the old selection was an off-page connector, hide its connections.
-    // Also hide the previously selected connection if it was an off-page connection.
-    for (int i = 0; i < oldSelectedItems_.size(); ++i)
-    {
-        QGraphicsItem* oldSelection = oldSelectedItems_[i];
-
-        if (oldSelection->type() == OffPageConnectorItem::Type)
-        {
-            OffPageConnectorItem* connector = static_cast<OffPageConnectorItem*>(oldSelection);
-
-            foreach (GraphicsConnection* conn, connector->getConnections())
-            {
-                if (conn != newSelection)
-                {
-                    conn->hide();
-                }
-            }
-        }
-        else if (oldSelection->type() == HWConnection::Type && !selectedItems().contains(oldSelection))
-        {
-            HWConnection* conn = static_cast<HWConnection*>(oldSelection);
-
-            if (conn->endpoint1() != 0)
-            {
-                if (conn->endpoint1()->type() == OffPageConnectorItem::Type)
-                {
-                    oldSelection->hide();
-                }
-                else
-                {
-                    oldSelection->setZValue(-1000);
-                }
-            }
-        }
-    }
-
-    // If the new selection is an off-page connector, show its connections.
-    if (newSelection != 0 && newSelection->type() == OffPageConnectorItem::Type)
-    {
-        OffPageConnectorItem* connector = static_cast<OffPageConnectorItem*>(newSelection);
-
-        foreach (GraphicsConnection* conn, connector->getConnections())
-        {
-            conn->show();
-        }
-    }
-
-    onSelected(newSelection);
-
-    // Save the current selection as the old selection.
-    oldSelectedItems_ = selectedItems();
-    prepareContextMenuActions();
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::createContextMenu()
-//-----------------------------------------------------------------------------
-QMenu* HWDesignDiagram::createContextMenu(QPointF const& pos)
-{
-    QMenu* menu = 0;
-
-    if (contextMenuEnabled())
-    {
-        QGraphicsItem* item = getBaseItemOf(itemAt(pos, QTransform()));
-
-        if (!selectedItems().contains(item))
-        {
-            clearSelection();
-            
-            if (item)
-            {
-                item->setSelected(true);
-            }
-        }
-        
-        prepareContextMenuActions();
-
-        menu = new QMenu(parent());
-        menu->addAction(&selectAllAction_);
-        menu->addSeparator();
-        menu->addAction(&addAction_);
-        menu->addAction(&openComponentAction_);
-        menu->addMenu(&openDesignMenu_);
-        menu->addSeparator();
-        menu->addAction(&copyAction_);
-        menu->addAction(&pasteAction_);
-
-        if (item && item->type() == HWComponentItem::Type)
-        {
-            updateOpenDesignMenuFor(static_cast<HWComponentItem*>(item));
-        }
-    }
-
-    return menu;
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::onCopyAction()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::onCopyAction()
-{
-    if (!isProtected())
-    {
-        QList<QGraphicsItem*> items = selectedItems();
-        int type = getCommonItemType(items);
-
-        if (type == BusInterfaceItem::Type || type == BusPortItem::Type)
-        {
-            BusInterfaceCollectionCopyData collection;
-            copyInterfaces(items, collection);
-
-            QMimeData* mimeData = new QMimeData();
-            mimeData->setImageData(QVariant::fromValue(collection));
-            QApplication::clipboard()->setMimeData(mimeData);
-        }
-        else if (type == HWComponentItem::Type)
-        {
-            ComponentCollectionCopyData collection;
-            copyInstances(items, collection);
-            
-            QMimeData* mimeData = new QMimeData();
-            mimeData->setImageData(QVariant::fromValue(collection));
-            QApplication::clipboard()->setMimeData(mimeData);
-        }
-        else if (type == HWColumn::Type)
-        {
-            qSort(items.begin(), items.end(), &sortByX);
-
-            ColumnCollectionCopyData collection;
-            
-            foreach (QGraphicsItem* item, items)
-            {
-                HWColumn* column = static_cast<HWColumn*>(item);
-
-                collection.columns.append(ColumnCopyData());
-                ColumnCopyData& columnData = collection.columns.back();
-                columnData.desc = column->getColumnDesc();
-
-                copyInstances(column->getItems(), columnData.components);
-                copyInterfaces(column->getItems(), columnData.interfaces);
-            }
-
-            QMimeData* mimeData = new QMimeData();
-            mimeData->setImageData(QVariant::fromValue(collection));
-            QApplication::clipboard()->setMimeData(mimeData);
-        }
-    }
-
-    prepareContextMenuActions();
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::onPasteAction()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::onPasteAction(){
-
-    if (!isProtected())
-    {
-        QList<QGraphicsItem*> items = selectedItems();
-        int type = getCommonItemType(items);
-
-        if (type == HWComponentItem::Type)
-        {
-            HWComponentItem* targetComp = static_cast<HWComponentItem*>(items[0]);
-
-            // Paste interfaces only to draft components.
-            if ( !targetComp->componentModel()->getVlnv()->isValid() )
-            {
-                QMimeData const* mimedata = QApplication::clipboard()->mimeData();
-                
-                if ( mimedata->hasImage() && mimedata->imageData().canConvert<BusInterfaceCollectionCopyData>())
-                {				
-                    BusInterfaceCollectionCopyData collection = mimedata->imageData().value<BusInterfaceCollectionCopyData>();
-
-                    QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
-                    pasteInterfaces(collection, targetComp, cmd.data());
-                    getEditProvider().addCommand(cmd);
-
-                    // Update sidebar view.
-                    emit componentSelected(targetComp);
-                    emit helpUrlRequested("hwdesign/hwinstance.html");
-                }
-            }	
+            event->setDropAction(Qt::MoveAction);
         }
         else
         {
-            // Check the mime data.
-            QMimeData const* mimeData = QApplication::clipboard()->mimeData();
+            // Otherwise check whether the component can be placed to the underlying column.
+            GraphicsColumn* column = getLayout()->findColumnAt(snapPointToGrid(event->scenePos()));
 
-            if (mimeData->hasImage())
+            if (column != 0 && column->getColumnDesc().getAllowedItems() & dragCompType_)
             {
-                // Paste components.
-                if (mimeData->imageData().canConvert<ComponentCollectionCopyData>() && items.empty())
-                {
-                    GraphicsColumn* column = getLayout()->findColumnAt(parent()->mapFromGlobal(contextPos_));
-
-                    if (column != 0)
-                    {
-                        ComponentCollectionCopyData collection = mimeData->imageData().value<ComponentCollectionCopyData>();
-
-                        QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
-                        pasteInstances(collection, column, cmd.data(), true);
-                        getEditProvider().addCommand(cmd);
-                    }
-                }
-                // Paste columns.
-                else if (mimeData->imageData().canConvert<ColumnCollectionCopyData>() &&
-                        (items.empty() || type == HWColumn::Type))
-                {
-                    ColumnCollectionCopyData collection = mimeData->imageData().value<ColumnCollectionCopyData>();
-                    QSharedPointer<QUndoCommand> parentCmd(new QUndoCommand());
-
-                    foreach (ColumnCopyData const& columnData, collection.columns)
-                    {
-                        HWColumn* column = new HWColumn(columnData.desc, getLayout().data());
-                        
-                        QUndoCommand* columnCmd = new GraphicsColumnAddCommand(getLayout().data(), column, parentCmd.data());
-                        columnCmd->redo();
-
-                        pasteInstances(columnData.components, column, parentCmd.data(), false);
-                        pasteInterfaces(columnData.interfaces, column, parentCmd.data(), false);
-                    }
-
-                    getEditProvider().addCommand(parentCmd);
-                    // Update sidebar view.
-                    emit clearItemSelection();            
-                }
-                // Paste top-level interfaces.
-                else if (mimeData->imageData().canConvert<BusInterfaceCollectionCopyData>() &&
-                         items.empty()) 
-                {
-                    GraphicsColumn* column = getLayout()->findColumnAt(parent()->mapFromGlobal(contextPos_));
-                                       
-                    if (column != 0 )
-                    {
-                        BusInterfaceCollectionCopyData collection = mimeData->imageData().value<BusInterfaceCollectionCopyData>();
-                                      
-                        QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
-                        pasteInterfaces(collection, column, cmd.data(), true);
-                        if (cmd->childCount() > 0)
-                        {
-                            getEditProvider().addCommand(cmd); 
-                        }
-                        // Update sidebar view .
-                        emit clearItemSelection();       
-                    }
-                }                
+                event->setDropAction(Qt::CopyAction);
             }
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: onAddAction()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::onAddToLibraryAction()
-{
-    if (selectedItems().size() == 1)
-    {
-        QGraphicsItem *item = selectedItems().first();
-        if (item != 0 && item->type() == HWComponentItem::Type)
-        {
-            item->setSelected(true);
-            HWComponentItem *comp = qgraphicsitem_cast<HWComponentItem *>(item);
-
-            // Set the instance name as default name suggestion.
-            comp->componentModel()->getVlnv()->setName(comp->name());
-
-            NewObjectDialog dialog(getLibraryInterface(), VLNV::COMPONENT, true, (QWidget*)parent());
-            dialog.setVLNV(*comp->componentModel()->getVlnv());
-            dialog.setWindowTitle(tr("Add Component to Library"));
-
-            if (dialog.exec() == QDialog::Rejected)
+            else
             {
-                return;
-            }
-
-            VLNV vlnv = dialog.getVLNV();
-            comp->componentModel()->setVlnv(vlnv);
-            comp->componentModel()->setComponentHierarchy(dialog.getProductHierarchy());
-            comp->componentModel()->setComponentFirmness(dialog.getFirmness());
-            comp->componentModel()->createEmptyFlatView();
-
-            // Write the model to file.
-            getLibraryInterface()->writeModelToFile(dialog.getPath(), comp->componentModel());
-
-            // Create an undo command.
-            QSharedPointer<QUndoCommand> cmd(new ComponentPacketizeCommand(comp, vlnv));
-            getEditProvider().addCommand(cmd);
-            cmd->redo();
-
-            // Ask the user if he wants to complete the component.
-            QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
-                "Do you want to continue packaging the component completely?",
-                QMessageBox::NoButton, (QWidget*)parent());
-            msgBox.setInformativeText("Pressing Continue opens up the component editor.");
-            QPushButton* btnContinue = msgBox.addButton(tr("Continue"), QMessageBox::ActionRole);
-            msgBox.addButton(tr("Skip"), QMessageBox::RejectRole);
-
-            msgBox.exec();
-
-            if (msgBox.clickedButton() == btnContinue)
-            {
-                // Open up the component editor.
-                emit openComponent(*comp->componentModel()->getVlnv());
+                event->setDropAction(Qt::IgnoreAction);
             }
         }
-    }
-}
 
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::onOpenComponentAction()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::onOpenComponentAction()
-{
-    if (selectedItems().size() == 1)
-    {
-        HWComponentItem* component = qgraphicsitem_cast<HWComponentItem *>(selectedItems().first());
-        if (component)
+        event->accept();
+    }
+    else if (dragBus_)
+    {        
+        if (dragEndPoint_)
         {
-            emit openComponent(*component->componentModel()->getVlnv());
+            dragEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
         }
-    }
-}
 
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::onOpenDesignAction()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::onOpenDesignAction(QAction* selectedAction)
-{
-    if (selectedItems().size() == 1)
-    {
-        HWComponentItem* component = qgraphicsitem_cast<HWComponentItem *>(selectedItems().first());
-        if (component)
+        dragEndPoint_ =  DiagramUtil::snapToItem<HWConnectionEndpoint>(event->scenePos(), this, GridSize);     
+
+        // Allow the drop event if the end point is undefined or there are no connections
+        // and the encompassing component is unpackaged.
+        if (dragEndPoint_ != 0 && dragEndPoint_->isBus() &&
+            (dragEndPoint_->getBusInterface() == 0 || !dragEndPoint_->getBusInterface()->getBusType().isValid() || 
+                (!dragEndPoint_->isConnected() && dragEndPoint_->encompassingComp() != 0 && !dragEndPoint_->encompassingComp()->componentModel()->getVlnv()->isValid())))
         {
-            QString viewName = selectedAction->data().toString();
-
-            if (component->componentModel()->hasView(viewName)) {
-                emit openDesign(*component->componentModel()->getVlnv(), viewName);
-            }
+            event->setDropAction(Qt::CopyAction);
+            dragEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
         }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: addColumn()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::addColumn(ColumnDesc const& desc)
-{
-    HWColumn* column = new HWColumn(desc, getLayout().data());
-
-    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(getLayout().data(), column));
-    getEditProvider().addCommand(cmd);
-    cmd->redo();
-}
-
-//-----------------------------------------------------------------------------
-// Function: removeColumn()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::removeColumn(GraphicsColumn* column)
-{
-    QSharedPointer<QUndoCommand> cmd(new ColumnDeleteCommand(getLayout().data(), column));
-    getEditProvider().addCommand(cmd);
-    cmd->redo();
-}
-
-//-----------------------------------------------------------------------------
-// Function: keyReleaseEvent()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::keyReleaseEvent(QKeyEvent *event)
-{
-    // Check if the user ended the off-page connection mode.
-    if ((event->key() == Qt::Key_Shift) && inOffPageMode())
-    {
-        if (tempConnEndPoint_ != 0)
+        else
         {
-            if (tempConnEndPoint_->getConnections().size() == 0)
-            {
-                tempConnEndPoint_->hide();
-            }
+            event->setDropAction(Qt::IgnoreAction);
         }
 
-        endConnect();
+        event->accept();
+    }
+    else
+    {
+        event->setDropAction(Qt::IgnoreAction);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: endConnect()
+// Function: HWDesignDiagram::openComponentActionEnabled()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::endConnect()
+bool HWDesignDiagram::openComponentActionEnabled() const
 {
-    // Destroy the connection that was being drawn.
-    discardConnection();
+    return singleSelection() && selectedItems().first()->type() == componentType() && !draftSelected();
+}
 
-    // Disable highlights from all end points.
-    clearHighlightedEndpoint();
-    clearPotentialEndpoints();
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::isHierarchicalComponent()
+//-----------------------------------------------------------------------------
+bool HWDesignDiagram::isHierarchicalComponent(QGraphicsItem* item) const
+{
+    HWComponentItem* component = qgraphicsitem_cast<HWComponentItem*>(item);
+    if (component)
+    {
+        return component->componentModel()->isHierarchical();
+    }
 
-    tempConnEndPoint_ = 0;
-    setInteractionMode(NORMAL);
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::copyActionEnabled()
+//-----------------------------------------------------------------------------
+bool HWDesignDiagram::copyActionEnabled() const
+{
+    if (selectedItems().empty())
+    {
+        return false;
+    }
+
+    int itemType = getCommonItemType(selectedItems());
+    return (!isProtected() && 
+        (itemType == BusPortItem::Type || itemType == BusInterfaceItem::Type || 
+         itemType == HWComponentItem::Type || itemType == HWColumn::Type));  
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::pasteActionEnabled()
+//-----------------------------------------------------------------------------
+bool HWDesignDiagram::pasteActionEnabled() const
+{
+    // If the selection is empty, check if the clipboard contains components or a column.
+    QMimeData const* mimeData = QApplication::clipboard()->mimeData();
+
+    if (isProtected() || !mimeData || !mimeData->hasImage())
+    {
+        return false;
+    }
+
+    bool pasteEnabled = false;
+
+    QList<QGraphicsItem*> items = selectedItems();
+    if (items.empty())
+    {
+        GraphicsColumn* column = getLayout()->findColumnAt(contextMenuPosition());
+
+        pasteEnabled = (mimeData->imageData().canConvert<ColumnCollectionCopyData>() || 
+            (column != 0 && mimeData->imageData().canConvert<ComponentCollectionCopyData>()) ||                                    
+            (column != 0 && mimeData->imageData().canConvert<BusInterfaceCollectionCopyData>()));
+    }
+    else
+    {
+        int type = getCommonItemType(items);
+
+        if (type == HWColumn::Type)
+        {
+            pasteEnabled = mimeData->imageData().canConvert<ColumnCollectionCopyData>();
+        }
+        else
+        {
+            pasteEnabled = singleSelection() && draftSelected() &&
+                mimeData->imageData().canConvert<BusInterfaceCollectionCopyData>();
+        }
+    }
+
+    return pasteEnabled;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::openComponentByActiveView()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::openComponentByActiveView(ComponentItem* comp)
+{
+    QString viewName = getActiveViewOf(comp);
+
+    // if view was found
+    if (comp->componentModel()->hasView(viewName))
+    {
+        openDesignForComponent(comp, viewName);
+    }
+    else
+    {
+        openInComponentEditor(comp);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::hierarchicalViewsOf()
+//-----------------------------------------------------------------------------
+QStringList HWDesignDiagram::hierarchicalViewsOf(ComponentItem* component) const
+{
+    return component->componentModel()->getHierViews();
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::componentType()
+//-----------------------------------------------------------------------------
+unsigned int HWDesignDiagram::componentType() const
+{
+    return HWComponentItem::Type;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::offpageConnectorType()
+//-----------------------------------------------------------------------------
+unsigned int HWDesignDiagram::offpageConnectorType() const
+{
+    return OffPageConnectorItem::Type;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::connectionType()
+//-----------------------------------------------------------------------------
+unsigned int HWDesignDiagram::connectionType() const
+{
+    return HWConnection::Type;
 }
 
 //-----------------------------------------------------------------------------
@@ -1879,249 +1753,59 @@ void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::parent()
+// Function: HWDesignDiagram::createConnection()
 //-----------------------------------------------------------------------------
-HWDesignWidget* HWDesignDiagram::parent() const
+GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint)
 {
-	return parent_;
+    HWConnection* connection = new HWConnection(startPoint, endPoint, false, QString(), QString(), QString(), this);
+
+    if (startPoint->isAdHoc())
+    {
+        connection->setLineWidth(1);
+    }
+    connection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
+
+    return connection;
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::connectAt()
+// Function: HWDesignDiagram::createConnection()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::connectAt(QPointF const& cursorPosition)
+GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startPoint, QPointF const& endPoint)
 {
-    // no items are selected if the mode is connect
-    clearSelection();
+    HWConnection* connection = new HWConnection(startPoint->scenePos(),
+        startPoint->getDirection(), endPoint,
+        QVector2D(0.0f, 0.0f), QString(), QString(), this);
 
-    if (creatingConnection())
+    if (startPoint->isAdHoc())
     {
-        endConnectionTo(cursorPosition);
-
-        // In off page mode immediately continue with a new connection.
-        if (inOffPageMode() && tempConnEndPoint_ != 0)
-        {
-            beginCreateConnection(cursorPosition);
-        }
+        connection->setLineWidth(1);
     }
-    // Otherwise choose a new start end point.
-    else
-    {
-        setConnectionStaringPoint(cursorPosition);
+    connection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
 
-        if (tempConnEndPoint_ != 0)
-        {
-            beginCreateConnection(cursorPosition);
-        }
-    }
+    return connection;
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::creatingConnection()
+// Function: HWDesignDiagram::createAddCommandForConnection()
 //-----------------------------------------------------------------------------
-bool HWDesignDiagram::creatingConnection()
+QSharedPointer<QUndoCommand> HWDesignDiagram::createAddCommandForConnection(GraphicsConnection* connection)
 {
-    return tempConnection_ != 0;
+    QSharedPointer<QUndoCommand> command;
+
+    HWConnection* hwConnection = dynamic_cast<HWConnection*>(connection);
+    if (hwConnection)
+    {
+        command = QSharedPointer<QUndoCommand>(new ConnectionAddCommand(this, hwConnection));
+    }
+
+    return command;
 }
 
 //-----------------------------------------------------------------------------
-// Function: endConnectionTo()
+// Function: HWDesignDiagram::addTopLevelInterface()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::endConnectionTo(QPointF const& point)
-{
-    // Disable highlights from all potential end points.
-    clearPotentialEndpoints();
-
-    ConnectionEndpoint* endpoint = DiagramUtil::snapToItem<ConnectionEndpoint>(point, this, GridSize);
-
-    // Check if there is an end point close enough to the cursor and the
-    // end points can be connected together.
-    if (isPossibleEndpointForCurrentConnection(endpoint))
-    {
-        // Check if the connection should be converted to an off-page connection.
-        bool firstOffPage = tempConnEndPoint_->type() == OffPageConnectorItem::Type;
-        bool secondOffPage = endpoint->type() == OffPageConnectorItem::Type;
-
-        if (inOffPageMode() ||
-            ((firstOffPage || secondOffPage) && tempConnEndPoint_->type() != endpoint->type()))
-        {
-            if (!firstOffPage)
-            {
-                tempConnEndPoint_ = tempConnEndPoint_->getOffPageConnector();
-            }
-
-            if (!secondOffPage)
-            {
-                endpoint = endpoint->getOffPageConnector();
-            }
-
-            discardConnection();
-
-            HWConnection* newTempConnection = new HWConnection(tempConnEndPoint_, endpoint, false,
-                QString(), QString(), QString(), this);
-            newTempConnection->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
-
-            addItem(newTempConnection);
-            tempConnection_ = newTempConnection;
-        }
-
-        if (tempConnection_->connectEnds())
-        {
-            tempConnection_->fixOverlap();
-
-            QSharedPointer<QUndoCommand> cmd(new ConnectionAddCommand(this, tempConnection_));
-            getEditProvider().addCommand(cmd);
-
-            tempConnection_ = 0;
-        }
-        else
-        {
-            discardConnection();
-            tempConnEndPoint_ = 0;
-        }
-
-        if (!inOffPageMode())
-        {
-            tempConnEndPoint_ = 0;
-        }
-
-    }
-    // Delete the temporary connection.
-    else
-    {        
-        discardConnection();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::clearPotentialEndpoints()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::clearPotentialEndpoints()
-{
-    foreach (ConnectionEndpoint* endpoint, tempPotentialEndingEndPoints_)
-    {
-        endpoint->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
-    }
-    tempPotentialEndingEndPoints_.clear();
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::canConnectEndpoints()
-//-----------------------------------------------------------------------------
-bool HWDesignDiagram::isPossibleEndpointForCurrentConnection(ConnectionEndpoint* endpoint)
-{
-    return endpoint != 0 && endpoint->isVisible() && endpoint != tempConnEndPoint_ &&
-        endpoint->getOffPageConnector() != tempConnEndPoint_ &&
-        endpoint->canConnect(tempConnEndPoint_) && tempConnEndPoint_->canConnect(endpoint);
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::discardConnection()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::discardConnection()
-{
-    if (tempConnection_)
-    {
-        removeItem(tempConnection_);
-        delete tempConnection_;
-        tempConnection_ = 0;
-    }    
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::beginCreateConnection()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::beginCreateConnection(QPointF const& startingPoint)
-{
-    Q_ASSERT(tempConnEndPoint_ != 0);
-
-    // Create the connection.
-    tempConnection_ = new HWConnection(tempConnEndPoint_->scenePos(),
-        tempConnEndPoint_->getDirection(), startingPoint, QVector2D(0.0f, 0.0f), QString(), QString(), this);
-
-    if (tempConnEndPoint_->isAdHoc())
-    {
-        tempConnection_->setLineWidth(1);
-    }
-    tempConnection_->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
-
-    addItem(tempConnection_);
-
-    // Determine all potential end points to which the starting end point could be connected
-    // and highlight them.
-    highlightConnectableEndpoints();
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::getConnectionStaringPoint()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::setConnectionStaringPoint(QPointF const& cursorPosition)
-{
-    // No need to change the starting point in off page mode.
-    if (inOffPageMode() && tempConnEndPoint_ != 0)
-    {
-        return;
-    }
-
-    // Try to snap to a connection end point.
-    ConnectionEndpoint* endpoint = DiagramUtil::snapToItem<ConnectionEndpoint>(cursorPosition, this, GridSize);
-
-    if (endpoint == 0 || !endpoint->isVisible())
-    {
-        tempConnEndPoint_ = 0;
-        return;
-    }
-
-    if (inOffPageMode())
-    {
-        clearHighlightedEndpoint();
-
-        if (endpoint->type() != OffPageConnectorItem::Type)
-        {
-            endpoint = endpoint->getOffPageConnector();
-            endpoint->show();
-        }
-    }
-
-    tempConnEndPoint_ = endpoint;
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::highlightConnectableEndpoints()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::highlightConnectableEndpoints()
-{
-    foreach(QGraphicsItem* item, items())
-    {
-        ConnectionEndpoint* endpoint = dynamic_cast<ConnectionEndpoint*>(item);
-
-        if (isPossibleEndpointForCurrentConnection(endpoint))
-        {
-            endpoint->setHighlight(ConnectionEndpoint::HIGHLIGHT_ALLOWED);
-            tempPotentialEndingEndPoints_.append(endpoint);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::addInterfaceAt()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::addInterfaceAt(QPointF const& position)
-{
-    // Find the column under the cursor.
-    GraphicsColumn* column = getLayout()->findColumnAt(position);
-
-    // Add a new diagram interface to the column it it is allowed.
-    if (column != 0 && column->getColumnDesc().getAllowedItems() & CIT_INTERFACE)
-    {
-        addInterface(column, position);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: addInterface()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::addInterface(GraphicsColumn* column, QPointF const& pos)
+void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const& pos)
 {
     QSharedPointer<BusInterface> busif(new BusInterface());
     BusInterfaceItem *newItem = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), busif, 0);
@@ -2191,11 +1875,11 @@ void HWDesignDiagram::draftAt(QPointF const& clickedPosition)
             // Create the item based on the selected/determined type.
             if (itemType == CIT_INTERFACE)
             {
-                addInterface(column, clickedPosition);
+                addTopLevelInterface(column, clickedPosition);
             }
             else if (itemType != CIT_NONE)
             {
-                addDraftInstance(column, clickedPosition);
+                addDraftComponentInstance(column, clickedPosition);
             }
         }
     }
@@ -2204,9 +1888,10 @@ void HWDesignDiagram::draftAt(QPointF const& clickedPosition)
     else if (clickedItem->type() == HWComponentItem::Type)
     {
         HWComponentItem* component = static_cast<HWComponentItem*>(clickedItem);
-        addDraftInterface(component, clickedPosition);
+        addDraftComponentInterface(component, clickedPosition);
     }
 }
+
 
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::findItemTypeForColumn()
@@ -2219,7 +1904,7 @@ unsigned int HWDesignDiagram::findColumnItemType(GraphicsColumn* column) const
     if (itemType != CIT_INTERFACE && itemType & CIT_INTERFACE)
     {
         // Open a dialog to determine which type of item to create.
-        SelectItemTypeDialog dialog((QWidget*)parent(), column->getColumnDesc().getAllowedItems());
+        SelectItemTypeDialog dialog(getParent(), column->getColumnDesc().getAllowedItems());
 
         if (dialog.exec() == QDialog::Accepted)
         {
@@ -2237,7 +1922,7 @@ unsigned int HWDesignDiagram::findColumnItemType(GraphicsColumn* column) const
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::createDraftInnstance()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::addDraftInstance(GraphicsColumn* column, QPointF const& position)
+void HWDesignDiagram::addDraftComponentInstance(GraphicsColumn* column, QPointF const& position)
 {
     // Determine an unused name for the component instance.
     QString name = createInstanceName("instance");
@@ -2265,7 +1950,7 @@ void HWDesignDiagram::addDraftInstance(GraphicsColumn* column, QPointF const& po
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::addDraftInterface()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::addDraftInterface(HWComponentItem* targetComponent, QPointF const& position)
+void HWDesignDiagram::addDraftComponentInterface(HWComponentItem* targetComponent, QPointF const& position)
 {
     // The component is unpackaged if it has an invalid vlnv.
     if (!targetComponent->componentModel()->getVlnv()->isValid())
@@ -2301,112 +1986,19 @@ void HWDesignDiagram::addDraftInterface(HWComponentItem* targetComponent, QPoint
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::toggleOffPageAt()
+// Function: HWDesignDiagram::replace()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::toggleOffPageAt(QPointF const& position)
+void HWDesignDiagram::replace(ComponentItem* destComp, ComponentItem* sourceComp)
 {
-    // Try to snap to a connection end point.
-    ConnectionEndpoint* endpoint = DiagramUtil::snapToItem<ConnectionEndpoint>(position, this, GridSize);
+    HWComponentItem* destHWComponent = qgraphicsitem_cast<HWComponentItem*>(destComp);
+    HWComponentItem* sourceHWComponent = qgraphicsitem_cast<HWComponentItem*>(sourceComp);
 
-    QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
-
-    if (endpoint != 0 && endpoint->isVisible())
-    {
-        QList<GraphicsConnection*> connections = endpoint->getConnections();
-        if (connections.size() > 0)
-        {
-            hideOffPageConnections();
-
-            foreach (GraphicsConnection* conn, connections)
-            {
-                toggleConnectionStyle(conn, cmd.data());
-            }
-        }
-    }
-    else
-    {
-        QGraphicsItem* item = itemAt(position, QTransform());
-
-        if (item != 0 && item->type() == HWConnection::Type)
-        {
-            toggleConnectionStyle(static_cast<HWConnection*>(item), cmd.data());
-        }
-    }
-
-    if (cmd->childCount() > 0)
-    {
-        getEditProvider().addCommand(cmd);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::beginComponenReplace()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::beginComponentReplace(QPointF const& startpoint)
-{
-    HWComponentItem* sourceComp =  static_cast<HWComponentItem*>(getTopmostComponent(startpoint));
-
-    if (sourceComp != 0)
-    {
-        sourceComp_ = sourceComp;
-        QApplication::setOverrideCursor(Qt::ForbiddenCursor);
-        setInteractionMode(REPLACE);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::updaceComponenReplaceCursor()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::updateComponentReplaceCursor(QPointF const& cursorPosition)
-{
-    HWComponentItem* destComp = 0;
-    QList<QGraphicsItem*> itemList = items(cursorPosition);
-
-    if (!itemList.empty())
-    {
-        destComp = dynamic_cast<HWComponentItem*>(itemList.back());
-    }
-
-    if (destComp != 0 && destComp != sourceComp_)
-    {
-        QApplication::changeOverrideCursor(Qt::ClosedHandCursor);
-    }
-    else
-    {
-        QApplication::changeOverrideCursor(Qt::ForbiddenCursor);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::endComponentReplace()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::endComponentReplace(QPointF const& endpoint)
-{
-    setInteractionMode(NORMAL);
-    QApplication::restoreOverrideCursor();
-
-    HWComponentItem* destComp = 0;
-    QList<QGraphicsItem*> itemList = items(endpoint);
-
-    if (!itemList.empty())
-    {
-        destComp = dynamic_cast<HWComponentItem*>(itemList.back());
-    }
-
-    if (destComp == 0 || destComp == sourceComp_)
-    {
-        return;
-    }
-
-    QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-        tr("Component instance '%1' is about to be switched in place "
-        "with '%2'. Continue and replace?").arg(destComp->name(), sourceComp_->name()),
-        QMessageBox::Yes | QMessageBox::No, (QWidget*)parent());
-
-    if (msgBox.exec() == QMessageBox::Yes)
+    if (destHWComponent && sourceHWComponent)
     {
         // Perform the replacement.
-        QSharedPointer<ReplaceComponentCommand> cmd(new ReplaceComponentCommand(destComp, sourceComp_, true, true));
+        QSharedPointer<ReplaceComponentCommand> 
+            cmd(new ReplaceComponentCommand(destHWComponent, sourceHWComponent, true, true));
+
         connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
         connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
@@ -2415,233 +2007,6 @@ void HWDesignDiagram::endComponentReplace(QPointF const& endpoint)
         getEditProvider().addCommand(cmd);
         cmd->redo();
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::updateConnectionDisplay()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::updateConnectionDisplay(QPointF const& cursorPosition)
-{
-    if (creatingConnection())
-    {
-        updateConnectionHighlight(cursorPosition);
-        updateCurrentConnection(cursorPosition);
-    }
-    else
-    {
-        updateHighlightForNewConnection(cursorPosition);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::updateConnectionHighlight()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::updateConnectionHighlight(QPointF const& cursorPosition)
-{
-    // Find out if there is an end point currently under the cursor.
-    HWConnectionEndpoint* endpoint = DiagramUtil::snapToItem<HWConnectionEndpoint>(cursorPosition, this, GridSize);
-
-    if (highlightedEndPoint_ != 0)
-    {
-        if (tempConnEndPoint_ != 0 && highlightedEndPoint_ != tempConnEndPoint_ &&
-            tempPotentialEndingEndPoints_.contains(highlightedEndPoint_))
-        {
-            highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_ALLOWED);
-        }
-        else
-        {
-            highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
-        }
-
-        highlightedEndPoint_ = 0;
-    }
-
-    // Check if there was an valid endpoint close enough.
-    if (endpoint != 0 && tempPotentialEndingEndPoints_.contains(endpoint))
-    {
-        // Highlight the end point.          
-        highlightedEndPoint_ = endpoint;
-        highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::updateCurrentConnection()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::updateCurrentConnection(QPointF const& cursorPosition)
-{
-    Q_ASSERT(tempConnection_->route().size() != 0);
-
-    HWConnection* newTempConnection_ = 0;
-
-    if (highlightedEndPoint_ != 0)
-    {
-        newTempConnection_ = new HWConnection(tempConnEndPoint_, highlightedEndPoint_, false,
-            QString(), QString(), QString(), this);                
-    }
-    else
-    {
-        newTempConnection_ = new HWConnection(tempConnEndPoint_->scenePos(),
-            tempConnEndPoint_->getDirection(), snapPointToGrid(cursorPosition),
-            QVector2D(0.0f, 0.0f), QString(), QString(), this);
-    }
-
-    if (tempConnEndPoint_->isAdHoc())
-    {
-        newTempConnection_->setLineWidth(1);
-    }
-    newTempConnection_->setBusWidthVisible(parent()->getVisibilityControls().value("Bus Widths"));
-
-    discardConnection();
-
-    addItem(newTempConnection_);
-    tempConnection_ = newTempConnection_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::updateHighlightForNewConnection()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::updateHighlightForNewConnection(QPointF const& cursorPosition)
-{
-    clearHighlightedEndpoint();
-
-    // Find out if there is an end point currently under the cursor.
-    HWConnectionEndpoint* endpoint = DiagramUtil::snapToItem<HWConnectionEndpoint>(cursorPosition, this, GridSize);
-    if (endpoint != 0 && endpoint->isVisible())
-    {
-        highlightedEndPoint_ = endpoint;
-        highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
-
-        if (highlightedEndPoint_->type() == OffPageConnectorItem::Type)
-        {
-            hideOffPageConnections();
-
-            foreach (GraphicsConnection* conn, highlightedEndPoint_->getConnections())
-            {
-                conn->show();
-            }
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::clearHighlightedEndpoint()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::clearHighlightedEndpoint()
-{
-    if (highlightedEndPoint_ != 0)
-    {
-        highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
-        highlightedEndPoint_ = 0;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: toggleConnectionStyle()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::toggleConnectionStyle(GraphicsConnection* conn, QUndoCommand* parentCmd)
-{
-    Q_ASSERT(parentCmd != 0);
-    emit clearItemSelection();
-
-    conn->toggleOffPage();
-    new ConnectionToggleOffPageCommand(conn, parentCmd);
-}
-
-//-----------------------------------------------------------------------------
-// Function: hideOffPageConnections()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::hideOffPageConnections()
-{
-    foreach (QGraphicsItem* item, items())
-    {
-        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-
-        if (conn != 0 && conn->endpoint1()->type() == OffPageConnectorItem::Type)
-        {
-            conn->hide();
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: destroyConnections()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::destroyConnections()
-{
-    foreach (QGraphicsItem* item, items()) 
-    {
-        // if the item is an interconnection
-        if (item->type() == HWConnection::Type) 
-        {
-            removeItem(item);
-            delete item;
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::onAdHocVisibilityChanged()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::onAdHocVisibilityChanged(QString const& portName, bool visible)
-{
-    if (visible)
-    {
-        AdHocInterfaceItem* adHocIf = new AdHocInterfaceItem(getEditedComponent(),
-                                                             getEditedComponent()->getPort(portName).data(),
-                                                             getLibraryInterface(), 0);
-
-        // Add the ad-hoc interface to the first column where it is allowed to be placed.
-        getLayout()->addItem(adHocIf);
-    }
-    else
-    {
-        // Search for the ad-hoc interface and delete it.
-        ConnectionEndpoint* found = getDiagramAdHocPort(portName);
-        Q_ASSERT(found != 0);
-
-        static_cast<GraphicsColumn*>(found->parentItem())->removeItem(found);
-        delete found;
-        found = 0;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::getDiagramAdHocPort()
-//-----------------------------------------------------------------------------
-HWConnectionEndpoint* HWDesignDiagram::getDiagramAdHocPort(QString const& portName)
-{
-    foreach (QGraphicsItem* item, items())
-    {
-        if (item->type() == AdHocInterfaceItem::Type &&
-            static_cast<AdHocInterfaceItem*>(item)->name() == portName)
-        {
-            return static_cast<HWConnectionEndpoint*>(item);
-        }
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::setVisibilityControlState()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::setVisibilityControlState(QString const& name, bool state)
-{
-    if (name == "Bus Widths")
-    {
-        foreach (QGraphicsItem* item, items())
-        {
-            HWConnection* conn = dynamic_cast<HWConnection*>(item);
-
-            if (conn != 0)
-            {
-                conn->setBusWidthVisible(state);
-            }
-        }
-    }
-   
-    DesignDiagram::setVisibilityControlState(name, state);
 }
 
 //-----------------------------------------------------------------------------
@@ -2667,178 +2032,6 @@ BusPortItem* HWDesignDiagram::createMissingPort(QString const& portName, HWCompo
     }
 
     return port;
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::openComponentItem()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::openComponentItem(HWComponentItem * comp)
-{
-    QStringList hierViews = comp->componentModel()->getHierViews();
-
-    // if configuration is used and it contains an active view for the instance
-    QSharedPointer<DesignConfiguration> designConf = getDesignConfiguration();
-    if (designConf && designConf->hasActiveView(comp->name())) 
-    {
-        openComponentByActiveView(comp);
-    }
-    // If the component does not contain any hierarchical views, open the component editor.
-    else if (hierViews.size() == 0)
-    {
-        openInComponentEditor(comp);
-    }
-    // Open the first design if there is one or multiple hierarchical view.
-    else
-    {
-        openComponentByView(comp, hierViews.first());
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::openByActiveView()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::openComponentByActiveView(HWComponentItem * comp)
-{
-    QString activeViewName = getActiveViewOf(comp);
-
-    if (comp->componentModel()->hasView(activeViewName)) 
-    {        
-        VLNV componentVLNV = *comp->componentModel()->getVlnv();
-        View* activeView = comp->componentModel()->findView(activeViewName);        
-
-        if (activeView->isHierarchical())
-        {
-            emit openDesign(componentVLNV, activeViewName);
-        }
-        else
-        {
-            emit openComponent(componentVLNV);
-        }
-    }
-    // if view was not found
-    else 
-    {
-        emit errorMessage(tr("The active view %1 was not found in "
-            "instance %2").arg(activeViewName).arg(comp->name()));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::openInComponentEditor()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::openInComponentEditor(HWComponentItem* comp)
-{
-    if (comp->componentModel()->hasViews())
-    {
-        emit noticeMessage(tr("No active view was selected for instance %1, "
-            "opening component editor.").arg(comp->name()));
-    }
-
-    emit openComponent(*comp->componentModel()->getVlnv());
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::openComponentDesign()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::openComponentByView(HWComponentItem* comp, QString const& viewName)
-{
-    emit noticeMessage(tr("No active view was selected for instance %1, "
-        "opening the only hierarchical view of the component.").arg(comp->name()));
-
-    emit openDesign(*comp->componentModel()->getVlnv(), viewName);
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::setupActions()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::setupActions()
-{
-    parent()->addAction(&selectAllAction_);
-    selectAllAction_.setShortcut(QKeySequence::SelectAll);
-    connect(&selectAllAction_, SIGNAL(triggered()),this, SLOT(selectAll()), Qt::UniqueConnection);
-
-    parent()->addAction(&copyAction_);
-    copyAction_.setShortcut(QKeySequence::Copy);
-    connect(&copyAction_, SIGNAL(triggered()),this, SLOT(onCopyAction()), Qt::UniqueConnection);
-
-    parent()->addAction(&pasteAction_);
-    pasteAction_.setShortcut(QKeySequence::Paste);
-    connect(&pasteAction_, SIGNAL(triggered()),this, SLOT(onPasteAction()), Qt::UniqueConnection);	
-
-    parent()->addAction(&addAction_);
-    connect(&addAction_, SIGNAL(triggered()), this, SLOT(onAddToLibraryAction()), Qt::UniqueConnection);
-
-    parent()->addAction(&openComponentAction_);
-    connect(&openComponentAction_, SIGNAL(triggered()), this, SLOT(onOpenComponentAction()), Qt::UniqueConnection);
-
-    connect(&openDesignMenu_, SIGNAL(triggered(QAction*)),
-        this, SLOT(onOpenDesignAction(QAction*)), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::updateDropAction()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
-{
-    if (dragCompType_ != CIT_NONE)
-    {
-        // Find the topmost component under the cursor.
-        ComponentItem* item = getTopmostComponent(event->scenePos());
-
-        // If the item is a HW component, determine whether the component can be replaced with the dragged one.
-        if (item != 0 && item->type() == HWComponentItem::Type)
-        {
-            event->setDropAction(Qt::MoveAction);
-        }
-        else
-        {
-            // Otherwise check whether the component can be placed to the underlying column.
-            GraphicsColumn* column = getLayout()->findColumnAt(snapPointToGrid(event->scenePos()));
-
-            if (column != 0 && column->getColumnDesc().getAllowedItems() & dragCompType_)
-            {
-                event->setDropAction(Qt::CopyAction);
-            }
-            else
-            {
-                event->setDropAction(Qt::IgnoreAction);
-            }
-        }
-
-        event->accept();
-    }
-    else if (dragBus_)
-    {
-        // Check if there is a connection endpoint close enough the cursor.
-        HWConnectionEndpoint* endpoint =
-            DiagramUtil::snapToItem<HWConnectionEndpoint>(event->scenePos(), this, GridSize);
-
-        clearHighlightedEndpoint();
-        highlightedEndPoint_ = endpoint;
-
-        // Allow the drop event if the end point is undefined or there are no connections
-        // and the encompassing component is unpackaged.
-        if (highlightedEndPoint_ != 0 && highlightedEndPoint_->isBus() &&
-            (highlightedEndPoint_->getBusInterface() == 0 ||
-            !highlightedEndPoint_->getBusInterface()->getBusType().isValid() ||
-            (!highlightedEndPoint_->isConnected() &&
-            highlightedEndPoint_->encompassingComp() != 0 &&
-            !highlightedEndPoint_->encompassingComp()->componentModel()->getVlnv()->isValid())))
-        {
-            event->setDropAction(Qt::CopyAction);
-            highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
-        }
-        else
-        {
-            event->setDropAction(Qt::IgnoreAction);
-        }
-
-        event->accept();
-    }
-    else
-    {
-        event->setDropAction(Qt::IgnoreAction);
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -2921,7 +2114,7 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
 
         // Create a bus port with the copied bus interface.
         BusPortItem* port = new BusPortItem(copyBusIf, getLibraryInterface(), false, component);        			
-        port->setPos(snapPointToGrid(component->mapFromScene(parent()->mapFromGlobal(contextPos_))));
+        port->setPos(snapPointToGrid(component->mapFromScene(contextMenuPosition())));
         
         // Lock the interface type for non-draft interfaces.
         if (copyBusIf->getInterfaceMode() != General::INTERFACE_MODE_COUNT)
@@ -3007,7 +2200,7 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
             BusInterfacePasteCommand* pasteCmd = 0;            
             if (!instance.topLevelIf && instance.busInterface->getInterfaceMode() != General::INTERFACE_MODE_COUNT)
             {
-                BusInterfaceDialog dialog(false, parent());
+                BusInterfaceDialog dialog(false, getParent());
                 dialog.addMode(instance.busInterface->getInterfaceMode());
                 dialog.setBusInterfaces(instance.srcComponent, instance.busInterface, getEditedComponent(), 
                     getLibraryInterface());
@@ -3033,7 +2226,7 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
 
             if (useCursorPos)
             {
-                port->setPos(parent()->mapFromGlobal(contextPos_));
+                port->setPos(contextMenuPosition());
             }
             else
             {
@@ -3101,7 +2294,7 @@ void HWDesignDiagram::pasteInstances(ComponentCollectionCopyData const& collecti
 
         if (useCursorPos)
         {
-            comp->setPos(parent()->mapFromGlobal(contextPos_));
+            comp->setPos(contextMenuPosition());
         }
         else
         {
@@ -3140,111 +2333,5 @@ void HWDesignDiagram::pasteInstances(ComponentCollectionCopyData const& collecti
 
             childCmd->redo();
         }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::prepareContextMenuActions()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::prepareContextMenuActions()
-{
-    QList<QGraphicsItem*> items = selectedItems();
-
-    // Disable all actions as default.
-    addAction_.setEnabled(false);
-    openComponentAction_.setEnabled(false);
-    openDesignMenu_.clear();    
-    openDesignMenu_.setEnabled(false);
-    copyAction_.setEnabled(false);
-    pasteAction_.setEnabled(false);
-
-    if (items.empty())
-    {
-        // If the selection is empty, check if the clipboard contains components or a column.
-        QMimeData const* mimeData = QApplication::clipboard()->mimeData();
-
-        GraphicsColumn* column = getLayout()->findColumnAt(parent()->mapFromGlobal(contextPos_));
-
-        pasteAction_.setEnabled(mimeData != 0 && mimeData->hasImage() &&                
-                                (mimeData->imageData().canConvert<ColumnCollectionCopyData>() || 
-                                (column != 0 && mimeData->imageData().canConvert<ComponentCollectionCopyData>()) ||                                    
-                                (column != 0 && mimeData->imageData().canConvert<BusInterfaceCollectionCopyData>())));
-    }
-    else
-    {        
-        int type = getCommonItemType(items);
-
-        // Allow copying interfaces (single or multiple).
-        if (type == BusPortItem::Type || type == BusInterfaceItem::Type)
-        {
-            copyAction_.setEnabled(!isProtected());
-        }
-        else if (type == HWComponentItem::Type)
-        {
-            HWComponentItem* compItem = qgraphicsitem_cast<HWComponentItem *>(items.back());
-            bool isDraft = !compItem->componentModel()->getVlnv()->isValid();
-            bool singleSelection = items.count() == 1;
-
-            addAction_.setEnabled(!isProtected() && isDraft && singleSelection);
-            openComponentAction_.setEnabled(!isDraft && singleSelection);
-            openDesignMenu_.setEnabled(!isDraft && singleSelection && compItem->componentModel()->isHierarchical());
-
-            // Allow copying components (single or multiple).
-            copyAction_.setEnabled(!isProtected());
-
-            // Enable paste action, if a draft component and bus ports on the clipboard.
-            QMimeData const* mimedata = QApplication::clipboard()->mimeData();
-            pasteAction_.setEnabled(!isProtected() && singleSelection && isDraft && mimedata != 0 && 
-                                    mimedata->hasImage() && 
-                                    mimedata->imageData().canConvert<BusInterfaceCollectionCopyData>());
-        }
-        else if (type == HWColumn::Type)
-        {
-            // Allow copying columns (single or multiple).
-            copyAction_.setEnabled(!isProtected());
-
-            // Allow pasting if the clipboard contains column data.
-            QMimeData const* mimedata = QApplication::clipboard()->mimeData();
-            pasteAction_.setEnabled(!isProtected() && mimedata != 0 && mimedata->hasImage() && 
-                                    mimedata->imageData().canConvert<ColumnCollectionCopyData>());
-        }
-
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::getActiveViewOf()
-//-----------------------------------------------------------------------------
-QString HWDesignDiagram::getActiveViewOf(ComponentItem* compItem) const
-{
-    QString activeViewName;
-
-    QSharedPointer<DesignConfiguration> designConf = getDesignConfiguration();
-    if (designConf && designConf->hasActiveView(compItem->name())) 
-    {
-        activeViewName = designConf->getActiveView(compItem->name());
-    }
-
-    return activeViewName;
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::updateOpenDesignMenuFor()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::updateOpenDesignMenuFor(HWComponentItem* compItem)
-{
-    QString activeViewName = getActiveViewOf(compItem);
-    QStringList views = compItem->componentModel()->getHierViews();
-
-    foreach(QString viewName, views)
-    {
-        QString actionText = viewName;
-        if (viewName == activeViewName)
-        {
-            actionText.append(" ");
-            actionText.append(tr("(active)"));
-        }
-        QAction* action = openDesignMenu_.addAction(actionText);
-        action->setData(viewName);
     }
 }

@@ -12,33 +12,29 @@
 #ifndef SYSTEMDESIGNDIAGRAM_H
 #define SYSTEMDESIGNDIAGRAM_H
 
-#include "SWConnectionEndpoint.h"
+#include <designEditors/common/ComponentDesignDiagram.h>
 
-#include <common/graphicsItems/GraphicsColumnLayout.h>
-#include <common/KactusAttribute.h>
-#include <designEditors/common/DesignDiagram.h>
+#include <common/graphicsItems/ConnectionEndpoint.h>
 
-#include <QVector>
+#include <QSharedPointer>
 
 class Component;
 class Design;
-class DesignConfiguration;
 class LibraryInterface;
-class VLNV;
+class IGraphicsItemStack;
 class GenericEditProvider;
 class SystemDesignWidget;
 class HWMappingItem;
 class SystemComponentItem;
 class GraphicsConnection;
-class SystemComponentItem;
 class SWComponentItem;
 class SWPortItem;
-class SWInstance;
+class SWConnectionEndpoint;
 
 //-----------------------------------------------------------------------------
 //! SystemDesignDiagram class.
 //-----------------------------------------------------------------------------
-class SystemDesignDiagram : public DesignDiagram
+class SystemDesignDiagram : public ComponentDesignDiagram
 {
     Q_OBJECT
 
@@ -191,11 +187,6 @@ public:
      */
     ~SystemDesignDiagram();
 
-    /*!
-     *  Clears the scene.
-     */
-    virtual void clearScene();
-
     /*! 
      *  Creates a design based on the contents in the diagram.
      *
@@ -211,28 +202,13 @@ public:
     virtual void updateHierComponent();
 
     /*!
-     *  Sets the draw mode.
-     */
-    virtual void setMode(DrawMode mode);
-
-    /*!
      *  Adds a new column to the diagram.
      *
      *      @param [in] desc The column description.
      */
     void addColumn(ColumnDesc const& desc);
 
-    /*!
-     * Returns the parent widget.
-     */
-    SystemDesignWidget* parent() const;
-
 public slots:
-
-    /*!
-     *  Called when the selection changes in the diagram.
-     */
-    void onSelectionChanged();
 
     /*!
      *  Called when copy is selected from the context menu.
@@ -249,26 +225,15 @@ public slots:
      */
 	virtual void onAddToLibraryAction();
 
-    /*!
-     *  Called when open component is selected from the context menu.
-     */
-	virtual void onOpenComponentAction();
-
-
-    /*!
-     *  Called when open SW design is selected from the context menu.
-     */
-    virtual void onOpenDesignAction(QAction* selectedAction);
-
 protected:
-    //! Called when the user presses a mouse button.
-    void mousePressEvent(QGraphicsSceneMouseEvent* event);
 
-    //! Called when the user moves the mouse.
-    void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
-
-    //! Called when the user release a mouse button.
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
+    /*!
+     *  Opens a design for a given component.
+     *
+     *      @param [in] component   The component whose design to open.
+     *      @param [in] viewName    The name of the view to open.
+     */
+    virtual void openDesignForComponent(ComponentItem* component, QString const& viewName);
 
     //! Called when the mouse is double-clicked.
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* mouseEvent);
@@ -276,26 +241,81 @@ protected:
     //! Called when an drag enters the diagram.
     void dragEnterEvent(QGraphicsSceneDragDropEvent* event);
 
-    //! Called when an object is dragged within the diagram.
-    void dragMoveEvent(QGraphicsSceneDragDropEvent* event);
-
     //! Called when the drag leaves the diagram.
     void dragLeaveEvent(QGraphicsSceneDragDropEvent* event);
 
     //! Called when an object is dropped to the diagram.
     void dropEvent(QGraphicsSceneDragDropEvent* event);
 
-    //! Called when a key has been released.
-    void keyReleaseEvent(QKeyEvent *event);
+    //! Updates the dropAction and highlight according to underlying element.
+    virtual void updateDropAction(QGraphicsSceneDragDropEvent* event);
 
     /*!
-     *  Creates the context menu for function contextMenuEvent().
+     *  Checks if open component action should be enabled.
      *
-     *      @param [in] pos Mouse position when the menu is requested.
-	 *
-	 *      @return The menu with allowed actions or 0 if no menu is allowed or nothing to show.
+     *      @return True, if action should be enabled, otherwise false.
      */
-	virtual QMenu* createContextMenu(QPointF const& pos);
+    virtual bool openComponentActionEnabled() const;
+
+    /*!
+     *  Checks if the given item is a hierarchical component.
+     *
+     *      @param [in] item   The item to check.
+     *
+     *      @return True, if item is a hierarchical component, otherwise false.
+     */
+    virtual bool isHierarchicalComponent(QGraphicsItem* item) const;
+
+    /*!
+     *  Checks if copy action should be enabled.
+     *
+     *      @return True, if action should be enabled, otherwise false.
+     */
+    virtual bool copyActionEnabled() const;
+
+    /*!
+     *  Checks if paste action should be enabled.
+     *
+     *      @return True, if action should be enabled, otherwise false.
+     */
+    virtual bool pasteActionEnabled() const;
+
+    /*!
+     *  Opens the given component according to the active view of the component.
+     *
+     *      @param [in] comp   The component to open.
+     */
+    virtual void openComponentByActiveView(ComponentItem* comp);
+
+   /*!
+    *  Gets the names of hierarchical views of a component.
+    *
+    *      @param [in] component   The component whose hierarchical views to get.
+    *
+    *      @return The names of the hierarchical views.
+    */
+    virtual QStringList hierarchicalViewsOf(ComponentItem* component) const;
+
+    /*!
+     *  Gets the graphics item type of the components in the diagram.
+     *     
+     *      @return The type of the components.
+     */
+    virtual unsigned int componentType() const;
+
+    /*!
+     *  Gets the graphics item type of the off page connectors in the diagram.
+     *     
+     *      @return The type of the components.
+     */
+    virtual unsigned int offpageConnectorType() const;
+
+    /*!
+     *  Gets the graphics item type of the connections in the diagram.
+     *     
+     *      @return The type of the components.
+     */
+    virtual unsigned int connectionType() const;
 
 private:
     // Disable copying.
@@ -344,34 +364,6 @@ private:
     SystemComponentItem* getComponent(QString const& instanceName);
 
     /*!
-     *  Creates the currently drawn connection.
-     *
-     *      @param [in] event The ending mouse press event.
-     */
-    void createConnection(QGraphicsSceneMouseEvent* event);
-
-    /*!
-     *  Discards and destroys the temporary (currently drawn) connection.
-     */
-    void discardConnection();
-
-    /*!
-     *  Destroys all connections in the diagram.
-     */
-    void destroyConnections();
-
-    /*!
-     *  Disables all highlights.
-     */
-    void disableHighlights();
-
-    /*!
-     *  Disables the current highlight. In case of a potential ending endpoint, the highlight is
-     *  set to allowed state.
-     */
-    void disableCurrentHighlight();
-
-    /*!
      *  Creates a missing port to the given component item.
      *
      *      @param [in] portName   The name of the port to create.
@@ -381,27 +373,6 @@ private:
      */
     SWPortItem* createMissingPort(QString const& portName, ConnectionEndpoint::EndpointType type,
                                   SystemComponentItem* component, QSharedPointer<Design> design);
-
-
-    void openComponentItem(SystemComponentItem* comp);
-
-    /*!
-     *  Hides all off-page connections.
-     */
-    void hideOffPageConnections();
-
-    /*!
-     *  Ends connection mode.
-     */
-    void endConnect();
-
-    /*!
-     *  Toggles the connection style of the given connection between normal and off-page style.
-     *
-     *      @param [in] conn      The connection.
-     *      @param [in] parentCmd The parent undo command.
-     */
-    void toggleConnectionStyle(GraphicsConnection* conn, QUndoCommand* parentCmd);
 
     /*!
      *  Imports SW instances and related connections from the given design to the diagram.
@@ -413,32 +384,58 @@ private:
     void importDesign(QSharedPointer<Design> design, IGraphicsItemStack* stack, QPointF const& guidePos);
 
     /*!
-     *  Updates the drop action for a drag-dropped object.
+     *  Creates a connection between the given two endpoints.
+     *
+     *      @param [in] startPoint  The starting connection end point.
+     *      @param [in] endPoint    The ending connection end point.
+     *
+     *      @return The created connection.
      */
-    void updateDropAction(QGraphicsSceneDragDropEvent* event);
+    virtual  GraphicsConnection* createConnection(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint);
 
     /*!
-     *  Begins replacing another component with a component at the given position.
+     *  Creates a connection between the given endpoint and a coordinate point.
      *
-     *      @param [in] startpoint   The position to start replacing from.     
+     *      @param [in] startPoint  The starting connection end point.
+     *      @param [in] endPoint    The ending coordinate point.
+     *
+     *      @return The created connection.
      */
-    void beginComponentReplace(QPointF const& startpoint);
+    virtual GraphicsConnection* createConnection(ConnectionEndpoint* startPoint, QPointF const& endPoint);
 
     /*!
-     *  Updates the cursor according to design content at the given position while replacing.
+     *  Creates an add command for a given connection.
      *
-     *      @param [in] cursorPosition   The cursor position.
+     *      @param [in] connection  The connection to create a command for.     
+     *
+     *      @return The created add command.
      */
-    void updateComponentReplaceCursor(QPointF const& cursorPosition);
+    virtual QSharedPointer<QUndoCommand> createAddCommandForConnection(GraphicsConnection* connection);
 
     /*!
-     *  Ends the component replace at the given position. If another component is in the given position,
-     *  it is replaced with the component being dragged.
+     *  Adds a new top-level interface to the given diagram column.
      *
-     *      @param [in] endpoint   The point to end the replacing.
+     *      @param [in] column The column where to add the interface.
+     *      @param [in] pos    The interface position.
      */
-    void endComponentReplace(QPointF const& endpoint);
-    
+    virtual void addTopLevelInterface(GraphicsColumn* column, QPointF const& pos);
+
+    /*!
+     *  Handler for draft tool clicks. Creates a draft component instance or a draft interface according to the
+     *  clicked position.
+     *
+     *      @param [in] clickedPosition   The position to create the draft item to.     
+     */
+    virtual void draftAt(QPointF const& clickedPosition);
+
+    /*!
+     *  Performs the replacing of destination component with source component.
+     *
+     *      @param [in] destComp        The component to replace.
+     *      @param [in] sourceComp      The replacing component.     
+     */
+    virtual void replace(ComponentItem* destComp, ComponentItem* sourceComp);
+
     /*!
      *  Copies SW component instances in a format which can be saved to clipboard.
      *
@@ -488,19 +485,6 @@ private:
     void pasteInterfaces(PortCollectionCopyData const& collection, IGraphicsItemStack* stack, QUndoCommand* cmd,
                          bool useCursorPos);
 
-    /*!
-     *  Initializes the context menu actions.
-     */
-	void setupActions();
-
-    /*!
-     *  Enables/disable context menu actions based on the current selection.
-     */
-    void prepareContextMenuActions();
-   
-    bool hasActiveFlatView(ComponentItem* compItem);
-    QString getActiveViewOf(ComponentItem* compItem) const;
-    void updateOpenDesignMenuFor(ComponentItem* compItem);
     //-----------------------------------------------------------------------------
     //! Drag type enumeration.
     //-----------------------------------------------------------------------------
@@ -520,53 +504,11 @@ private:
     //! If true, the widget is used for editing SW designs.
     bool onlySW_;
 
-    //! The parent widget.
-    SystemDesignWidget* parent_;
-
     //! Indicates what type of object is being dragged into the diagram.
     DragType dragType_;
 
-    //! The connection that is being drawn.
-    GraphicsConnection* tempConnection_;
-
-    //! The starting endpoint of a connection that is being drawn.
-    SWConnectionEndpoint* tempConnEndpoint_;
-
-    //! The potential endpoints that can be connected to the starting end point.
-    QVector<SWConnectionEndpoint*> tempPotentialEndingEndpoints_;
-    
-    //! The highlighted endpoint to which the connection could be snapped automatically.
-    SWConnectionEndpoint* highlightedEndpoint_;
-
-    //! The component that is used to replace another component in replace mode.
-    SystemComponentItem* sourceComp_;
-
-    //! Old selected items.
-    QList<QGraphicsItem*> oldSelectedItems_;
-
-    //! Context menu select all action.
-    QAction selectAllAction_;
-
-    //! Context menu copy action.
-    QAction copyAction_;
-
-    //! Context menu paste action.
-    QAction pasteAction_;
-
-    //! Context menu action for adding a draft component to library.
-    QAction addAction_;
-
-    //! Context menu action for opening a SW component.
-    QAction openComponentAction_;
-
-    //! Context menu action for opening a SW component design.
-    QMenu openDesignAction_;
-
-    //! If true, context menu is enabled.
-    bool showContextMenu_;
-
-    //! Cursor position where the user right-presses to open the context menu.
-    QPoint contextPos_;
+    //! The possible end point under cursor while performing drag.
+    SWConnectionEndpoint* dragEndPoint_;
 };
 
 //-----------------------------------------------------------------------------
