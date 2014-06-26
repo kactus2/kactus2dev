@@ -47,13 +47,13 @@ HierConnection::HierConnection(QDomNode& hierConnectionNode)
 //-----------------------------------------------------------------------------
 // Function: HierConnection::HierConnection()
 //-----------------------------------------------------------------------------
-HierConnection::HierConnection(QString interfaceRef_,
-                                       Interface interface_,
+HierConnection::HierConnection(QString interfaceRef,
+                                       Interface interface,
                                        QPointF const& position,
                                        QVector2D const& direction,
                                        QList<QPointF> const& route,
                                        bool offPage)
-    : interfaceRef_(interfaceRef_), interface_(interface_),
+    : interfaceRef_(interfaceRef), interface_(interface),
       position_(position), direction_(direction), route_(route), offPage_(offPage), vendorExtensions_()
 {
 }

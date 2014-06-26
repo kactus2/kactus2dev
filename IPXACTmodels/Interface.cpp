@@ -32,9 +32,10 @@ busRef_("")
 //-----------------------------------------------------------------------------
 // Function: Interface::Interface()
 //-----------------------------------------------------------------------------
-Interface::Interface(QString componentRef_, QString busRef_)
-    : componentRef_(componentRef_), busRef_(busRef_)
+Interface::Interface(QString componentRef, QString busRef)
+    : componentRef_(componentRef), busRef_(busRef)
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -42,7 +43,9 @@ Interface::Interface(QString componentRef_, QString busRef_)
 //-----------------------------------------------------------------------------
 Interface::Interface( const Interface& other ):
 componentRef_(other.componentRef_),
-busRef_(other.busRef_) {
+busRef_(other.busRef_) 
+{
+
 }
 
 //-----------------------------------------------------------------------------
@@ -59,7 +62,7 @@ Interface::~Interface()
 Interface& Interface::operator=( const Interface& other )
 {
 	if (this != &other) 
-{
+    {
 		componentRef_ = other.componentRef_;
 		busRef_ = other.busRef_;
 	}
@@ -166,7 +169,7 @@ bool Interface::isValid( const QStringList& instanceNames ) const
 //-----------------------------------------------------------------------------
 void Interface::write(QXmlStreamWriter& writer) const
 {
-    writer.writeEmptyElement("spirit:activeInterface");
+    writer.writeEmptyElement("spirit:interface");
 
     writer.writeAttribute("spirit:componentRef", componentRef_);
     writer.writeAttribute("spirit:busRef", busRef_);

@@ -42,8 +42,8 @@ public:
     HierConnection(QDomNode &hierConnectionNode);
 
     //! Convenience constructor for initializing fields    
-    HierConnection(QString interfaceRef_ = QString(""),
-        Interface interface_ = Interface(),
+    HierConnection(QString interfaceRef = QString(""),
+        Interface interface = Interface(),
         QPointF const& position = QPointF(),
         QVector2D const& direction = QVector2D(),
         QList<QPointF> const& route = QList<QPointF>(),
