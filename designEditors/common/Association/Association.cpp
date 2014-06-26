@@ -11,7 +11,7 @@
 
 #include "Association.h"
 
-#include <IPXACTmodels\kactusExtensions\Kactus2Position.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 
 #include <QPen>
 

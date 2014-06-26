@@ -638,7 +638,8 @@ HEADERS += ./resource.h \
     ./designEditors/common/Association/Associable.h \
     ./designEditors/common/Association/AssociationAddCommand.h \
     ./designEditors/common/Association/Association.h \
-    ./designEditors/common/Association/AssociationChangeEndpointCommand.h
+    ./designEditors/common/Association/AssociationChangeEndpointCommand.h \
+    ./designEditors/common/ComponentDesignDiagram.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
@@ -1240,5 +1241,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
     ./designEditors/common/Association/AssociationRemoveCommand.cpp \
     ./designEditors/common/Association/AssociationAddCommand.cpp \
-    ./designEditors/common/Association/AssociationChangeEndpointCommand.cpp
+    ./designEditors/common/Association/AssociationChangeEndpointCommand.cpp \
+    ./designEditors/common/ComponentDesignDiagram.cpp
 RESOURCES += kactus.qrc
