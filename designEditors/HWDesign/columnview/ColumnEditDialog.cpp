@@ -11,76 +11,44 @@
 
 #include "ColumnEditDialog.h"
 
-#include <QPushButton>
 #include <QMessageBox>
-#include <QCloseEvent>
 #include <QCoreApplication>
 
+namespace
+{
+    const unsigned int ALLOWED_ITEMS[COLUMN_CONTENT_CUSTOM] = 
+    {
+        CIT_INTERFACE,              //<! For COLUMN_CONTENT_IO.
+        CIT_CHANNEL | CIT_BRIDGE,   //<! For COLUMN_CONTENT_BUSES.
+        CIT_COMPONENT               //<! For COLUMN_CONTENT_COMPONENTS.
+    };
+
+    const QString ITEM_NAMES[CIT_COUNT] = 
+    {
+        QObject::tr("Interfaces"),
+        QObject::tr("Components"),
+        QObject::tr("Channels"),
+        QObject::tr("Bridges")        
+    };
+}
+
 //-----------------------------------------------------------------------------
-// Function: ColumnEditDialog()
+// Function: ColumnEditDialog::ColumnEditDialog()
 //-----------------------------------------------------------------------------
 ColumnEditDialog::ColumnEditDialog(QWidget* parent, bool sw, GraphicsColumn const* column)
-    : QDialog(parent), layout_(0), nameLabel_(0), typeLabel_(0), typeCombo_(0),
-      allowedItemsGroup_(0), column_(column)
+    : QDialog(parent), 
+      layout_(new QVBoxLayout(this)), 
+      nameLabel_(new QLabel(tr("Name:"), this)), 
+      nameEdit_(new QLineEdit(this)),
+      typeLabel_(new QLabel(tr("Type:"), this)), 
+      typeCombo_(new QComboBox(this)),
+      allowedItemsGroup_(new QGroupBox(tr("Allowed Items"), this)),       
+      buttons_(new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this)),
+      column_(column),
+      types_()
 {
-    layout_ = new QGridLayout(this);
-    
-    // Create the name label and line edit.
-    nameLabel_ = new QLabel(tr("Name:"), this);
-    layout_->addWidget(nameLabel_, 0, 0, 1, 2);
-
-    nameEdit_ = new QLineEdit(this);
-    layout_->addWidget(nameEdit_, 1, 0, 1, 2);
-
-    // Create the type label and combo box.
-    typeLabel_ = new QLabel(tr("Type:"), this);
-    layout_->addWidget(typeLabel_, 2, 0, 1, 2);
-
-    typeCombo_ = new QComboBox(this);
-    typeCombo_->addItem(tr("IO"));
-    typeCombo_->addItem(tr("Components"));
-
-    if (!sw)
-    {
-        typeCombo_->addItem(tr("Buses"));
-        typeCombo_->addItem(tr("Custom"));
-    }
-
-    typeCombo_->setCurrentIndex(-1);
-
-    layout_->addWidget(typeCombo_, 3, 0, 1, 2);
-
-    // Create the allowed items group box and check boxes.
-    allowedItemsGroup_ = new QGroupBox(tr("Allowed Items"), this);
-
-    QGridLayout* itemLayout = new QGridLayout(allowedItemsGroup_);
-
-    itemCheckBoxes_[0] = new QCheckBox(tr("Interfaces"), allowedItemsGroup_);
-    itemCheckBoxes_[1] = new QCheckBox(tr("Components"), allowedItemsGroup_);
-    itemCheckBoxes_[2] = new QCheckBox(tr("Channels"), allowedItemsGroup_);
-    itemCheckBoxes_[3] = new QCheckBox(tr("Bridges"), allowedItemsGroup_);
-
-    for (int i = 0; i < CIT_COUNT; ++i)
-    {
-        itemLayout->addWidget(itemCheckBoxes_[i], i, 0, 1, 1);
-    }
-
-    layout_->addWidget(allowedItemsGroup_, 4, 0, 1, 2);
-    allowedItemsGroup_->setVisible(!sw);
-
-    // Create the OK and Cancel buttons.
-    QPushButton* btnOK = new QPushButton(this);
-    btnOK->setText(tr("&OK"));
-    layout_->addWidget(btnOK, 5, 0, 1, 1);
-
-    QPushButton* btnCancel = new QPushButton(this);
-    btnCancel->setText(tr("&Cancel"));
-    layout_->addWidget(btnCancel, 5, 1, 1, 1);
-
-    // Connect the button signals to accept() and reject().
-    QObject::connect(btnOK, SIGNAL(clicked()), this, SLOT(accept()));
-    QObject::connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
-    QObject::connect(typeCombo_, SIGNAL(currentIndexChanged(QString const&)), this, SLOT(onTypeChange(QString const&)));
+    setupLayout(sw);
+    initializeTypes(sw);
 
     // Fill the fields with the data from the column, if given.
     if (column_ != 0)
@@ -89,54 +57,29 @@ ColumnEditDialog::ColumnEditDialog(QWidget* parent, bool sw, GraphicsColumn cons
         nameEdit_->setText(column_->getName());
         setAllowedItems(column_->getColumnDesc().getAllowedItems());
 
-        switch (column_->getContentType())
-        {
-        case COLUMN_CONTENT_IO:
-            {
-                typeCombo_->setCurrentIndex(typeCombo_->findText("IO"));
-                break;
-            }
-
-        case COLUMN_CONTENT_BUSES:
-            {
-                typeCombo_->setCurrentIndex(typeCombo_->findText("Buses"));
-                break;
-            }
-
-        case COLUMN_CONTENT_COMPONENTS:
-            {
-                typeCombo_->setCurrentIndex(typeCombo_->findText("Components"));
-                break;
-            }
-
-        case COLUMN_CONTENT_CUSTOM:
-            {
-                typeCombo_->setCurrentIndex(typeCombo_->findText("Custom"));
-                break;
-            }
-
-        default:
-            {
-                Q_ASSERT(false);
-                break;
-            }
-        }
+        QString typeName = types_.key(column_->getContentType(), tr("IO"));
+        typeCombo_->setCurrentIndex(typeCombo_->findText(typeName));
     }
     else
     {
         setWindowTitle(tr("Add Column"));
         setAllowedItems(CIT_NONE);
-        typeCombo_->setCurrentIndex(0);
+        typeCombo_->setCurrentIndex((typeCombo_->findText(tr("IO"))));
     }
 
-    setFixedSize(sizeHint());
+    onTypeChange(typeCombo_->currentText());
+
+    connect(typeCombo_, SIGNAL(currentIndexChanged(QString const&)), this, SLOT(onTypeChange(QString const&)));
+    connect(buttons_, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttons_, SIGNAL(rejected()), this, SLOT(reject()));
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~ColumnEditDialog()
+// Function: ColumnEditDialog::~ColumnEditDialog()
 //-----------------------------------------------------------------------------
 ColumnEditDialog::~ColumnEditDialog()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -144,34 +87,21 @@ ColumnEditDialog::~ColumnEditDialog()
 //-----------------------------------------------------------------------------
 void ColumnEditDialog::hideContentSettings()
 {
-    typeLabel_->setVisible(false);
-    typeCombo_->setVisible(false);
-    allowedItemsGroup_->setVisible(false);
+    typeLabel_->hide();
+    typeCombo_->hide();
+    allowedItemsGroup_->hide();
 
     layout_->activate();
     setFixedSize(sizeHint());
 }
 
 //-----------------------------------------------------------------------------
-// Function: onTypeChange()
+// Function: ColumnEditDialog::onTypeChange()
 //-----------------------------------------------------------------------------
 void ColumnEditDialog::onTypeChange(QString const& type)
 {
     // Convert the index to a column content type.
-    ColumnContentType contentType = COLUMN_CONTENT_CUSTOM;
-
-    if (type == "Components")
-    {
-        contentType = COLUMN_CONTENT_COMPONENTS;
-    }
-    else if (type == "Buses")
-    {
-        contentType = COLUMN_CONTENT_BUSES;
-    }
-    else if (type == "IO")
-    {
-        contentType = COLUMN_CONTENT_IO;
-    }
+    ColumnContentType contentType = types_.value(type, COLUMN_CONTENT_CUSTOM);
     
     // Set enabled/disabled based on the content type.
     for (int i = 0; i < CIT_COUNT; ++i)
@@ -179,35 +109,14 @@ void ColumnEditDialog::onTypeChange(QString const& type)
         itemCheckBoxes_[i]->setEnabled(contentType == COLUMN_CONTENT_CUSTOM);
     }
 
-    switch (contentType)
+    if (contentType != COLUMN_CONTENT_CUSTOM)
     {
-    case COLUMN_CONTENT_IO:
-        {
-            setAllowedItems(CIT_INTERFACE);
-            break;
-        }
-
-    case COLUMN_CONTENT_BUSES:
-        {
-            setAllowedItems(CIT_CHANNEL | CIT_BRIDGE);
-            break;
-        }
-
-    case COLUMN_CONTENT_COMPONENTS:
-        {
-            setAllowedItems(CIT_COMPONENT);
-            break;
-        }
-
-    default:
-        {
-            break;
-        }
+        setAllowedItems(ALLOWED_ITEMS[contentType]);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: onTypeChange()
+// Function: ColumnEditDialog::setAllowedItems()
 //-----------------------------------------------------------------------------
 void ColumnEditDialog::setAllowedItems(unsigned int allowedItems)
 {
@@ -219,7 +128,7 @@ void ColumnEditDialog::setAllowedItems(unsigned int allowedItems)
 }
 
 //-----------------------------------------------------------------------------
-// Function: getName()
+// Function: ColumnEditDialog::getName()
 //-----------------------------------------------------------------------------
 QString ColumnEditDialog::getName() const
 {
@@ -227,32 +136,17 @@ QString ColumnEditDialog::getName() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: getContentType()
+// Function: ColumnEditDialog::getContentType()
 //-----------------------------------------------------------------------------
 ColumnContentType ColumnEditDialog::getContentType() const
 {
-    // Convert the index to a column content type.
-    ColumnContentType contentType = COLUMN_CONTENT_CUSTOM;
+    // Convert the index to a column content type.   
     QString type = typeCombo_->currentText();
-
-    if (type == "Components")
-    {
-        contentType = COLUMN_CONTENT_COMPONENTS;
-    }
-    else if (type == "Buses")
-    {
-        contentType = COLUMN_CONTENT_BUSES;
-    }
-    else if (type == "IO")
-    {
-        contentType = COLUMN_CONTENT_IO;
-    }
-
-    return contentType;
+    return types_.value(type, COLUMN_CONTENT_CUSTOM);
 }
 
 //-----------------------------------------------------------------------------
-// Function: getAllowedItems()
+// Function: ColumnEditDialog::getAllowedItems()
 //-----------------------------------------------------------------------------
 unsigned int ColumnEditDialog::getAllowedItems() const
 {
@@ -267,24 +161,66 @@ unsigned int ColumnEditDialog::getAllowedItems() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: accept()
+// Function: ColumnEditDialog::accept()
 //-----------------------------------------------------------------------------
 void ColumnEditDialog::accept()
 {
-    if (column_ != 0)
+    if (column_ != 0 && !column_->isAllowedItemsValid(getAllowedItems()))
     {
-        if (!column_->isAllowedItemsValid(getAllowedItems()))
-        {
-            QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-                               tr("The column contains items that would not be "
-                                  "allowed in the new column configuration. Please "
-                                  "delete the items of the unallowed type before "
-                                  "changing the column configuration."),
-                               QMessageBox::Ok, (QWidget*)parent());
-            msgBox.exec();
-            return;
-        }
+        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
+            tr("The column contains items that would not be allowed in the new column configuration." 
+            "Please delete the items of the unallowed type before changing the column configuration."),
+            QMessageBox::Ok, (QWidget*)parent());
+        msgBox.exec();
+        return;
     }
 
     QDialog::accept();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ColumnEditDialog::initializeTypes()
+//-----------------------------------------------------------------------------
+void ColumnEditDialog::initializeTypes(bool sw)
+{
+    types_.insert(tr("IO"), COLUMN_CONTENT_IO);
+    types_.insert(tr("Components"), COLUMN_CONTENT_COMPONENTS);    
+
+    if (!sw)
+    {
+        types_.insert(tr("Buses"), COLUMN_CONTENT_BUSES);
+        types_.insert(tr("Custom"), COLUMN_CONTENT_CUSTOM);
+    }
+
+    foreach(QString typeName, types_.keys())
+    {
+        typeCombo_->addItem(typeName);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ColumnEditDialog::setupLayout()
+//-----------------------------------------------------------------------------
+void ColumnEditDialog::setupLayout(bool sw)
+{
+    layout_->addWidget(nameLabel_);
+    layout_->addWidget(nameEdit_);
+    layout_->addWidget(typeLabel_);
+    layout_->addWidget(typeCombo_);
+
+    // Create the allowed items group box and check boxes.
+    QVBoxLayout* itemLayout = new QVBoxLayout(allowedItemsGroup_);
+
+    for (int i = 0; i < CIT_COUNT; ++i)
+    {
+        itemCheckBoxes_[i] = new QCheckBox(ITEM_NAMES[i], allowedItemsGroup_);
+        itemLayout->addWidget(itemCheckBoxes_[i]);
+    }
+
+    allowedItemsGroup_->setVisible(!sw);
+
+    layout_->addWidget(allowedItemsGroup_);
+    layout_->addWidget(buttons_);
+
+    setFixedSize(sizeHint());
 }

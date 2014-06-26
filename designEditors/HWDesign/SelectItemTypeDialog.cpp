@@ -41,13 +41,11 @@ SelectItemTypeDialog::SelectItemTypeDialog(QWidget* parent,
     // Create the radio button group and a layout for it.
     allowedItemsGroup_ = new QGroupBox(tr("Item Type"), this);
     QGridLayout* itemLayout = new QGridLayout(allowedItemsGroup_);
-
-    //bool found = false;
     
     // Create the item radio buttons.
     if (allowedItems & CIT_INTERFACE)
     {
-        itemRadioButtons_[0] = new QRadioButton("Interface", allowedItemsGroup_);
+        itemRadioButtons_[0] = new QRadioButton(ITEM_NAMES[CIT_COMPONENT], allowedItemsGroup_);
         itemRadioButtons_[0]->setChecked(true);
         itemLayout->addWidget(itemRadioButtons_[0], 0, 0, 1, 1);
     }
@@ -56,17 +54,17 @@ SelectItemTypeDialog::SelectItemTypeDialog(QWidget* parent,
 
     if (allowedItems & CIT_COMPONENT)
     {
-        text += "Component/";
+        text += ITEM_NAMES[CIT_COMPONENT];
     }
     
     if (allowedItems & CIT_CHANNEL)
     {
-        text += "Channel/";
+        text += ITEM_NAMES[CIT_CHANNEL];
     }
 
     if (allowedItems & CIT_BRIDGE)
     {
-        text += "Bridge/";
+        text += ITEM_NAMES[CIT_BRIDGE];
     }
 
     text = text.left(text.length() - 1);
@@ -76,29 +74,6 @@ SelectItemTypeDialog::SelectItemTypeDialog(QWidget* parent,
         itemRadioButtons_[1] = new QRadioButton(text, allowedItemsGroup_);
         itemLayout->addWidget(itemRadioButtons_[1], 1, 0, 1, 1);
     }
-
-    /*for (unsigned int i = 0; i < CIT_COUNT; ++i)
-    {
-        // Generate the correct type constant.
-        ColumnItemType type = static_cast<ColumnItemType>(1 << i);
-
-        if (allowedItems & type)
-        {
-            itemRadioButtons_[i] = new QRadioButton(ITEM_NAMES[i], allowedItemsGroup_);
-            itemLayout->addWidget(itemRadioButtons_[i], i, 0, 1, 1);
-
-            // Select the first allowed type by default.
-            if (!found)
-            {
-                itemRadioButtons_[i]->setChecked(true);
-                found = true;
-            }
-        }
-        else
-        {
-            itemRadioButtons_[i] = 0;
-        }
-    }*/
 
     layout_->addWidget(allowedItemsGroup_, 0, 0, 1, 2);
 

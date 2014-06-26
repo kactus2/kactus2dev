@@ -63,6 +63,7 @@ ComponentDesignDiagram::ComponentDesignDiagram(LibraryInterface* lh, GenericEdit
 //-----------------------------------------------------------------------------
 ComponentDesignDiagram::~ComponentDesignDiagram()
 {
+    disconnect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
     clearSelection();
     destroyConnections();
 }
@@ -580,7 +581,7 @@ void ComponentDesignDiagram::destroyConnections()
     foreach (QGraphicsItem* item, items()) 
     {
         // if the item is an interconnection
-        if (item->type() == connectionType()) 
+        if (dynamic_cast<GraphicsConnection*>(item)) 
         {
             removeItem(item);
             delete item;

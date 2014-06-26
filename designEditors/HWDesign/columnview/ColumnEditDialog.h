@@ -18,7 +18,8 @@
 #include <QComboBox>
 #include <QGroupBox>
 #include <QCheckBox>
-#include <QGridLayout>
+#include <QVBoxLayout>
+#include <QDialogButtonBox>
 
 #include <common/graphicsItems/GraphicsColumn.h>
 
@@ -69,12 +70,29 @@ private slots:
     //! Called when the content type has changed.
     void onTypeChange(QString const& type);
 
+    //! Called when OK button has been clicked.
     virtual void accept();
 
 private:
     // Disable copying.
     ColumnEditDialog(ColumnEditDialog const& rhs);
+    
+    // Disable assignment.
     ColumnEditDialog& operator=(ColumnEditDialog const& rhs);
+
+    /*!
+     *  Initializes the selectable types.
+     *
+     *      @param [in] sw   True if editing sw columns.     
+     */
+    void initializeTypes(bool sw);
+
+    /*!
+     *  Sets the dialog layout.
+     *
+     *      @param [in] sw   True if editing sw columns.     
+     */
+    void setupLayout(bool sw);
 
     /*!
      *  Sets the allowed items in the dialog.
@@ -88,7 +106,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The layout for the UI widgets.
-    QGridLayout* layout_;
+    QVBoxLayout* layout_;
 
     //! The label for the name line edit.
     QLabel* nameLabel_;
@@ -108,8 +126,14 @@ private:
     //! The check boxes for the allowed column items.
     QCheckBox* itemCheckBoxes_[CIT_COUNT];
 
+    //! Dialog buttons.
+    QDialogButtonBox* buttons_;
+
     //! The column that is being edited. If null, we're creating a new column.
     GraphicsColumn const* column_;
+
+    //! The names and types of possible columns.
+    QMap<QString, ColumnContentType> types_;
 };
 
 //-----------------------------------------------------------------------------
