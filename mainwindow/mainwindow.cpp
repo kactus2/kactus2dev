@@ -639,8 +639,7 @@ void MainWindow::setupActions()
 		tr("Toggle Off-Page Tool"), this);
 	actToolToggleOffPage_->setCheckable(true);
 
-    actToolLabel_ = new QAction(QIcon(":/icons/common/graphics/sticky-note.png"),
-        tr("Sticky Note Tool"), this);
+    actToolLabel_ = new QAction(QIcon(":/icons/common/graphics/balloon.png"), tr("Sticky Note Tool"), this);
     actToolLabel_->setCheckable(true);
 
 	modeActionGroup_ = new QActionGroup(this);
@@ -656,8 +655,7 @@ void MainWindow::setupActions()
 	// Initialize the action to zoom in.
 	actZoomIn_ = new QAction(QIcon(":/icons/common/graphics/view-zoom_in.png"), tr("Zoom In"), this);
 	actZoomIn_->setEnabled(false);
-	connect(actZoomIn_, SIGNAL(triggered()), 
-		this, SLOT(zoomIn()));
+	connect(actZoomIn_, SIGNAL(triggered()), this, SLOT(zoomIn()));
 
 	// Initialize the action to zoom out.
 	actZoomOut_ = new QAction(QIcon(":/icons/common/graphics/view-zoom_out.png"), tr("Zoom Out"), this);

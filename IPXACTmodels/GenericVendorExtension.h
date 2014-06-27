@@ -51,6 +51,9 @@ public:
      */
     virtual QString type() const;
 
+    //! Returns the DOM node presentation of the extension.
+    QDomNode node();
+
     /*!
      *  Writes the vendor extension to XML.
      *
@@ -88,7 +91,7 @@ private:
      *      @param [in] writer      The XML writer to use.
      */
     void writeAttributes(QDomNode const& node, QXmlStreamWriter &writer) const;
-
+    
 	//-----------------------------------------------------------------------------
 	// Data.
 	//-----------------------------------------------------------------------------

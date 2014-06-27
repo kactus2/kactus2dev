@@ -30,6 +30,7 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/design.h>
+#include <IPXACTmodels/GenericVendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 
@@ -38,7 +39,6 @@
 #include <QMenu>
 #include <QGraphicsItem>
 #include <QSharedPointer>
-
 
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::DesignDiagram()
@@ -393,8 +393,7 @@ QGraphicsItem* DesignDiagram::getBaseItemOf(QGraphicsItem* item) const
 //-----------------------------------------------------------------------------
 void DesignDiagram::createNoteAt(QPointF const& position)
 {
-    QSharedPointer<Kactus2Group> noteExtension(new Kactus2Group("kactus2:note"));
-    StickyNote* note = new StickyNote(noteExtension);
+    StickyNote* note = new StickyNote();
     note->setPos(position);
 
     connect(note, SIGNAL(beginAssociation(Associable*)), 
@@ -615,20 +614,19 @@ void DesignDiagram::loadStickyNotes()
     {
         if (extension->type() == "kactus2:note")
         {
-            QSharedPointer<Kactus2Group> noteExtension = extension.dynamicCast<Kactus2Group>();
-            StickyNote* note = new StickyNote(noteExtension);
+            QSharedPointer<GenericVendorExtension> noteExtension = extension.dynamicCast<GenericVendorExtension>();
+            StickyNote* note = new StickyNote();
+            note->parseValuesFrom(noteExtension->node());
 
             connect(note, SIGNAL(beginAssociation(Associable*)), 
                 this, SLOT(onBeginAssociation(Associable*)), Qt::UniqueConnection);
 
             QSharedPointer<StickyNoteAddCommand> cmd = createNoteAddCommand(note);
             cmd->redo();
-            
-            QList<QSharedPointer<VendorExtension> > associations = noteExtension->getByType("kactus2:associations");
-            if (!associations.empty())
-            {
-                loadNoteAssociations(note, associations.first());
-            }            
+                
+            loadNoteAssociations(note);          
+
+            vendorExtensions_.removeAll(extension); //<! extension is replaced by one created by Sticky Note.
         }
     }
 }
@@ -636,15 +634,15 @@ void DesignDiagram::loadStickyNotes()
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::loadNoteAssociations()
 //-----------------------------------------------------------------------------
-void DesignDiagram::loadNoteAssociations(StickyNote* note, QSharedPointer<VendorExtension> associationsExtension)
+void DesignDiagram::loadNoteAssociations(StickyNote* note)
 {
-    QSharedPointer<Kactus2Group> associationGroup = associationsExtension.dynamicCast<Kactus2Group>();
+    QSharedPointer<Kactus2Group> associations = note->getAssociationExtensions();
 
-    foreach(QSharedPointer<VendorExtension> endpoint, associationGroup->getByType("kactus2:position"))
+    foreach(QSharedPointer<VendorExtension> endpoint, associations->getByType("kactus2:position"))
     {
-        QSharedPointer<Kactus2Position> endpointExtension = endpoint.dynamicCast<Kactus2Position>();
+        QSharedPointer<Kactus2Position> extension = endpoint.dynamicCast<Kactus2Position>();
 
-        QSharedPointer<QUndoCommand> addCommand = createAssociationAddCommand(note, endpointExtension);
+        QSharedPointer<QUndoCommand> addCommand = createAssociationAddCommand(note, extension);
         addCommand->redo();
     }
 }
@@ -685,9 +683,9 @@ void DesignDiagram::endAssociation(QPointF const& endpoint)
     QGraphicsItem* item = getBaseItemOf(itemAt(startingPoint, QTransform()));
     Associable* startItem = dynamic_cast<Associable*>(item);
 
-    QSharedPointer<Kactus2Position> endPositionExtension(new Kactus2Position(endpoint));
+    QSharedPointer<Kactus2Position> endPointExtension(new Kactus2Position(endpoint));
 
-    QSharedPointer<QUndoCommand> addCommand = createAssociationAddCommand(startItem, endPositionExtension);
+    QSharedPointer<QUndoCommand> addCommand = createAssociationAddCommand(startItem, endPointExtension);
     addCommand->redo();
     getEditProvider().addCommand(addCommand);
 

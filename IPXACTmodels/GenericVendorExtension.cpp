@@ -44,7 +44,15 @@ GenericVendorExtension::~GenericVendorExtension()
 //-----------------------------------------------------------------------------
 QString GenericVendorExtension::type() const
 {
-    return "any";
+    return vendorExtension_.nodeName();
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenericVendorExtension::node()
+//-----------------------------------------------------------------------------
+QDomNode GenericVendorExtension::node()
+{
+    return vendorExtension_;
 }
 
 //-----------------------------------------------------------------------------

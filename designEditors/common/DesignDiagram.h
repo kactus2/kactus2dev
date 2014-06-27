@@ -501,13 +501,11 @@ private:
      *  Loads the associations from a sticky not from a vendor extension.
      *
      *      @param [in] note                    The note for whose associations to load.
-     *      @param [in] associationsExtension   The vendor extension describing the associations.
      */
-    void loadNoteAssociations(StickyNote* note, QSharedPointer<VendorExtension> associationsExtension);
+     void loadNoteAssociations(StickyNote* note);
 
     //! Enables/disables the sticky notes according to design protection state.
     void setProtectionForStickyNotes();
-    void updateOpenDesignMenuFor(ComponentItem* compItem);
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -19,6 +19,8 @@
 #include <common/graphicsItems/GraphicsItemTypes.h>
 #include <designEditors/common/Association/Associable.h>
 
+#include <QDomNode>
+
 class VendorExtension;
 class Kactus2Group;
 class Kactus2Position;
@@ -41,10 +43,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] extension   The vendor extension representing the note.
      *      @param [in] parent      The parent item.
      */
-    StickyNote(QSharedPointer<Kactus2Group> extension, QGraphicsItem* parent = 0);
+    explicit StickyNote(QGraphicsItem* parent = 0);
 
     //! The destructor.
     virtual ~StickyNote();
@@ -53,16 +54,6 @@ public:
      *  Begins the editing of the note.
      */
     void beginEditing();
-
-    /*!
-     *  Handler for item state changes.
-     *
-     *      @param [in] change      The parameter of the item changing.
-     *      @param [in] value       The new value of the parameter.
-     *
-     *      @return The set new value.
-     */
-    virtual QVariant itemChange(GraphicsItemChange change, const QVariant& value);
 
     /*!
      *  Gets the vendor extension visualized by the note.
@@ -86,7 +77,7 @@ public:
      *
      *      @param [in] association   The association to remove.     
      */
-    virtual void removeAssociation(Association* association);
+    virtual void removeAssociation(Association* association);    
 
     /*!
      *  Defines the connection point for associations in scene coordinates.
@@ -96,6 +87,16 @@ public:
      *      @return The connection point of the item.
      */
     virtual QPointF connectionPoint(QPointF const& otherEnd = QPointF()) const;
+
+    //! Gets the vendor extension for the associations of the note.
+    QSharedPointer<Kactus2Group> getAssociationExtensions() const;
+
+    /*!
+     *  Parses the values for position, content, associations and timestamp from a DOM node.
+     *
+     *      @param [in] node   The DOM node to parse.
+     */
+    void parseValuesFrom(QDomNode const &node);
 
 signals:
    
@@ -109,13 +110,23 @@ protected:
 
     //! Handler for mouse release event.
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
-    
+
     /*!
      *  Checks if the item's position has changed as a result of a mouse drag.
      *
      *      @return True, if the position has changed, otherwise false.
      */
     bool positionChanged();
+
+    /*!
+     *  Handler for item state changes.
+     *
+     *      @param [in] change      The parameter of the item changing.
+     *      @param [in] value       The new value of the parameter.
+     *
+     *      @return The set new value.
+     */
+    virtual QVariant itemChange(GraphicsItemChange change, const QVariant& value);
 
 private slots:
 
@@ -125,7 +136,7 @@ private slots:
 private:
 
     //! Disable copying.
-    StickyNote(StickyNote const& rhs);
+    StickyNote(StickyNote const& rhs);    
 
     //! Disable assignment.
     StickyNote& operator=(StickyNote const& rhs);
@@ -139,22 +150,11 @@ private:
     //! Creates the writing area of the note.
     void createWritableArea();
 
+    //! Creates a button for initiating an association.
     void createAssociationButton();
 
     //! Initializes the vendor extensions for the note.
-    void initializeExtensions();
-
-    //! Initializes the vendor extension for tracking the note position.
-    void initializePosition();
-
-    //! Initializes the vendor extension for tracking the note text.
-    void initializeContent();
-
-    //! Initializes the vendor extension for tracking the note associations.
-    void initializeAssociations();
-
-    //! Initializes the vendor extension for note timestamp.
-    void initializeTimestamp();
+    void initializeExtensions(); 
 
     /*!
      *  Checks if clicking a given position hits the association button.
@@ -190,6 +190,7 @@ private:
     //! Editor item for the notes.
     ColorFillTextItem* textArea_;
 
+    //! Label for displaying the edit timestamp.
     QGraphicsSimpleTextItem* timeLabel_;
 
     //! Item acting as a button for creating new associations.

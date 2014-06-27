@@ -105,7 +105,7 @@
 	  <file>common/graphics/control-180.png</file>
  	  <file>common/graphics/control-dual.png</file>
 	  <file>common/graphics/cross.png</file>
-      <file>common/graphics/sticky-note.png</file>
+      <file>common/graphics/balloon.png</file>
 	  <file>common/graphics/pin--plus.png</file>
   </qresource>
     <qresource prefix="/">        

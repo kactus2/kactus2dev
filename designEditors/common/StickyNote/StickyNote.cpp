@@ -24,6 +24,7 @@
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
+#include <IPXACTmodels/XmlUtils.h>
 
 #include <QGraphicsPixmapItem>
 #include <QObject>
@@ -37,11 +38,11 @@
 //-----------------------------------------------------------------------------
 // Function: StickyNote::StickyNote()
 //-----------------------------------------------------------------------------
-StickyNote::StickyNote(QSharedPointer<Kactus2Group> extension, QGraphicsItem* parent):
+StickyNote::StickyNote(QGraphicsItem* parent):
     QGraphicsItemGroup(parent),
     Associable(),
     oldPos_(),
-    extension_(extension),
+    extension_(),
     positionExtension_(),
     contentExtension_(),
     associationExtensions_(),
@@ -50,12 +51,12 @@ StickyNote::StickyNote(QSharedPointer<Kactus2Group> extension, QGraphicsItem* pa
     timeLabel_(0),
     associationButton_(0)
 {
+    initializeExtensions();
+
     setItemOptions();
     createGluedEdge();
     createWritableArea();
-    createAssociationButton();
-
-    initializeExtensions();
+    createAssociationButton();    
 
     connect(textArea_, SIGNAL(contentChanged()), this, SLOT(onTextEdited()), Qt::UniqueConnection);
 }
@@ -66,6 +67,14 @@ StickyNote::StickyNote(QSharedPointer<Kactus2Group> extension, QGraphicsItem* pa
 StickyNote::~StickyNote()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::beginEditing()
+//-----------------------------------------------------------------------------
+void StickyNote::beginEditing()
+{
+    textArea_->setFocus();
 }
 
 //-----------------------------------------------------------------------------
@@ -108,14 +117,6 @@ void StickyNote::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 bool StickyNote::positionChanged()
 {
     return pos() != oldPos_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: StickyNote::beginEditing()
-//-----------------------------------------------------------------------------
-void StickyNote::beginEditing()
-{
-    textArea_->setFocus();
 }
 
 //-----------------------------------------------------------------------------
@@ -168,6 +169,14 @@ void StickyNote::removeAssociation(Association* association)
 QPointF StickyNote::connectionPoint(QPointF const&) const
 {
     return mapToScene(boundingRect().center());
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::getAssociationExtensions()
+//-----------------------------------------------------------------------------
+QSharedPointer<Kactus2Group> StickyNote::getAssociationExtensions() const
+{
+    return associationExtensions_;
 }
 
 //-----------------------------------------------------------------------------
@@ -245,88 +254,67 @@ void StickyNote::createAssociationButton()
 //-----------------------------------------------------------------------------
 void StickyNote::initializeExtensions()
 {
-    initializePosition();
-    initializeContent();
-    initializeAssociations();
-    initializeTimestamp();
+    extension_ = QSharedPointer<Kactus2Group>(new Kactus2Group("kactus2:note"));
+
+    positionExtension_ = QSharedPointer<Kactus2Position>(new Kactus2Position(QPointF()));
+    extension_->addToGroup(positionExtension_);
+
+    contentExtension_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:content", ""));
+    extension_->addToGroup(contentExtension_);
+
+    associationExtensions_ = QSharedPointer<Kactus2Group>(new Kactus2Group("kactus2:associations"));
+    extension_->addToGroup(associationExtensions_);
+
+    timestampExtension_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:timestamp", ""));
+    extension_->addToGroup(timestampExtension_);
 }
 
 //-----------------------------------------------------------------------------
-// Function: StickyNote::initializePosition()
+// Function: StickyNote::parseValues()
 //-----------------------------------------------------------------------------
-void StickyNote::initializePosition()
+void StickyNote::parseValuesFrom(QDomNode const &node)
 {
-    QList<QSharedPointer<VendorExtension> > positionExtensions = extension_->getByType("kactus2:position");
-
-    if (positionExtensions.isEmpty())
+    int childCount = node.childNodes().count();
+    for (int i = 0; i < childCount; ++i)
     {
-        positionExtension_ = QSharedPointer<Kactus2Position>(new Kactus2Position(QPointF()));
-        extension_->addToGroup(positionExtension_);
+        QDomNode childNode = node.childNodes().at(i);
+
+        if (childNode.nodeName() == positionExtension_->type())
+        {
+            QPointF position = XmlUtils::parsePoint(childNode);
+            positionExtension_->setPosition(position);
+            setPos(position);
+        }
+        else if (childNode.nodeName() == contentExtension_->type())
+        {
+            QString content = childNode.childNodes().at(0).nodeValue();
+            contentExtension_->setValue(content);
+            textArea_->setPlainText(content);
+        }
+        else if (childNode.nodeName() == associationExtensions_->type())
+        {            
+            int associationCount = childNode.childNodes().count();
+            for(int j = 0; j < associationCount; j++)
+            {
+                QDomNode assocationNode = childNode.childNodes().at(j);
+
+                QPointF position = XmlUtils::parsePoint(assocationNode);
+                QSharedPointer<Kactus2Position> associationEnd(new Kactus2Position(position));
+
+                associationExtensions_->addToGroup(associationEnd);
+            }
+        }
+        else if (childNode.nodeName() == timestampExtension_->type())
+        {
+            QString content = childNode.childNodes().at(0).nodeValue();
+            timestampExtension_->setValue(content);
+            timeLabel_->setText(content);
+        }
+        else
+        {
+            extension_->addToGroup(XmlUtils::createVendorExtensionFromNode(childNode));
+        }
     }
-    else
-    {
-        positionExtension_ = positionExtensions.first().dynamicCast<Kactus2Position>();
-    }
-
-    setPos(positionExtension_->position());
-}
-
-//-----------------------------------------------------------------------------
-// Function: StickyNote::initializeContent()
-//-----------------------------------------------------------------------------
-void StickyNote::initializeContent()
-{
-    QList<QSharedPointer<VendorExtension> > contentExtensions = extension_->getByType("kactus2:content");
-
-    if (contentExtensions.isEmpty())
-    {
-        contentExtension_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:content", ""));
-        extension_->addToGroup(contentExtension_);
-    }
-    else
-    {
-        contentExtension_ = contentExtensions.first().dynamicCast<Kactus2Value>();
-    }
-
-    textArea_->setPlainText(contentExtension_->value());
-}
-
-//-----------------------------------------------------------------------------
-// Function: StickyNote::initializeAssociations()
-//-----------------------------------------------------------------------------
-void StickyNote::initializeAssociations()
-{
-    QList<QSharedPointer<VendorExtension> > existingExtensions = extension_->getByType("kactus2:associations");
-
-    if (existingExtensions.isEmpty())
-    {
-        associationExtensions_ = QSharedPointer<Kactus2Group>(new Kactus2Group("kactus2:associations"));
-        extension_->addToGroup(associationExtensions_);
-    }
-    else
-    {
-        associationExtensions_ = existingExtensions.first().dynamicCast<Kactus2Group>();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: StickyNote::initializeAssociations()
-//-----------------------------------------------------------------------------
-void StickyNote::initializeTimestamp()
-{
-    QList<QSharedPointer<VendorExtension> > existingExtensions = extension_->getByType("kactus2:timestamp");
-
-    if (existingExtensions.isEmpty())
-    {
-        timestampExtension_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:timestamp", ""));
-        extension_->addToGroup(timestampExtension_);
-    }
-    else
-    {
-        timestampExtension_ = existingExtensions.first().dynamicCast<Kactus2Value>();
-    }
-
-    timeLabel_->setText(timestampExtension_->value());
 }
 
 //-----------------------------------------------------------------------------

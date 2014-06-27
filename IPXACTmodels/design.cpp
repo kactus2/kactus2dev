@@ -24,10 +24,6 @@
 #include <QDomNamedNodeMap>
 #include <QXmlStreamWriter>
 
-#include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
-#include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
-#include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
-
 
 //-----------------------------------------------------------------------------
 // Function: Design::Design()
@@ -857,10 +853,6 @@ void Design::parseVendorExtensions(QDomNode &node)
         {
             parseKactus2Attributes(childNode);
         }
-        else if (childNode.nodeName() == "kactus2:note")
-        {
-            parseStickyNote(childNode);
-        }
         else
         {
             QSharedPointer<VendorExtension> extension = XmlUtils::createVendorExtensionFromNode(childNode);
@@ -1046,56 +1038,6 @@ void Design::parseHierComConnections(QDomNode& hierComConnectionsNode)
             hierComConnections_.append(HierComConnection(comNode));
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Design::parseStickyNote()
-//-----------------------------------------------------------------------------
-void Design::parseStickyNote(QDomNode& noteNode)
-{
-    QSharedPointer<Kactus2Group> noteExtension(new Kactus2Group("kactus2:note"));
-
-    for (int i = 0; i < noteNode.childNodes().count(); ++i)
-    {
-        QDomNode childNode = noteNode.childNodes().at(i);
-
-        if (childNode.nodeName() == "kactus2:position")
-        {
-            QPointF position = XmlUtils::parsePoint(childNode);
-            QSharedPointer<Kactus2Position> notePosition(new Kactus2Position(position));
-            noteExtension->addToGroup(notePosition);
-        }
-        else if (childNode.nodeName() == "kactus2:content")
-        {
-            QString content = childNode.childNodes().at(0).nodeValue();
-            QSharedPointer<Kactus2Value> noteContent(new Kactus2Value("kactus2:content", content));
-            noteExtension->addToGroup(noteContent);
-        }
-        else if (childNode.nodeName() == "kactus2:associations")
-        {            
-            QSharedPointer<Kactus2Group> associations(new Kactus2Group("kactus2:associations"));
-            int associationCount = childNode.childNodes().count();
-            for(int j = 0; j < associationCount; j++)
-            {
-                QDomNode assocationNode = childNode.childNodes().at(j);
-
-                QPointF position = XmlUtils::parsePoint(assocationNode);
-                QSharedPointer<Kactus2Position> associationEnd(new Kactus2Position(position));
-
-                associations->addToGroup(associationEnd);
-            }
-
-            noteExtension->addToGroup(associations);
-        }
-        else if (childNode.nodeName() == "kactus2:timestamp")
-        {
-            QString content = childNode.childNodes().at(0).nodeValue();
-            QSharedPointer<Kactus2Value> noteContent(new Kactus2Value("kactus2:timestamp", content));
-            noteExtension->addToGroup(noteContent);
-        }
-    }
-
-    vendorExtensions_.append(noteExtension);
 }
 
 //-----------------------------------------------------------------------------
