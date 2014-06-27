@@ -27,8 +27,9 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/component.h>
+#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/design.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 

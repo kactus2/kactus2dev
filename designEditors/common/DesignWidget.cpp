@@ -22,6 +22,7 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/component.h>
+#include <IPXACTmodels/design.h>
 
 #include <QScrollBar>
 #include <QVBoxLayout>

@@ -10,13 +10,12 @@
 
 #include "vlnv.h"
 
-#include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/design.h>
-
 #include <QObject>
 #include <QSharedPointer>
 
+class Design;
 class LibraryItem;
+class LibraryComponent;
 
 /*! \brief LibraryInterface defines an interface to operate the IP-Xact-library.
  * 

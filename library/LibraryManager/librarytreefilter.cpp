@@ -11,6 +11,7 @@
 #include <library/LibraryManager/VLNVDialer/vlnvdialer.h>
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/busdefinition.h>
+#include <IPXACTmodels/design.h>
 #include <IPXACTmodels/designconfiguration.h>
 
 #include <QRegExp>
