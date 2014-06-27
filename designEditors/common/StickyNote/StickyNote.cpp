@@ -32,6 +32,7 @@
 #include <QPolygonF>
 #include <QStyleOptionGraphicsItem>
 #include <QSharedPointer>
+#include <QDateTime>
 
 //-----------------------------------------------------------------------------
 // Function: StickyNote::StickyNote()
@@ -44,7 +45,9 @@ StickyNote::StickyNote(QSharedPointer<Kactus2Group> extension, QGraphicsItem* pa
     positionExtension_(),
     contentExtension_(),
     associationExtensions_(),
+    timestampExtension_(),
     textArea_(0),
+    timeLabel_(0),
     associationButton_(0)
 {
     setItemOptions();
@@ -173,6 +176,10 @@ QPointF StickyNote::connectionPoint(QPointF const&) const
 void StickyNote::onTextEdited()
 {
     contentExtension_->setValue(textArea_->toPlainText());
+
+    QString timestamp = QDateTime::currentDateTime().toString(Qt::SystemLocaleShortDate);
+    timestampExtension_->setValue(timestamp);
+    timeLabel_->setText(timestamp);
 }
 
 //-----------------------------------------------------------------------------
@@ -201,6 +208,11 @@ void StickyNote::createGluedEdge()
     glueEdge->setBrush(topColor);
 
     addToGroup(glueEdge);
+
+    timeLabel_ = new QGraphicsSimpleTextItem();
+    timeLabel_->setBrush(Qt::gray);
+    timeLabel_->setPos(5, TOP_OFFSET/2 - QFontMetrics(timeLabel_->font()).height()/2);
+    addToGroup(timeLabel_);
 }
 
 //-----------------------------------------------------------------------------
@@ -236,6 +248,7 @@ void StickyNote::initializeExtensions()
     initializePosition();
     initializeContent();
     initializeAssociations();
+    initializeTimestamp();
 }
 
 //-----------------------------------------------------------------------------
@@ -294,6 +307,26 @@ void StickyNote::initializeAssociations()
     {
         associationExtensions_ = existingExtensions.first().dynamicCast<Kactus2Group>();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::initializeAssociations()
+//-----------------------------------------------------------------------------
+void StickyNote::initializeTimestamp()
+{
+    QList<QSharedPointer<VendorExtension> > existingExtensions = extension_->getByType("kactus2:timestamp");
+
+    if (existingExtensions.isEmpty())
+    {
+        timestampExtension_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:timestamp", ""));
+        extension_->addToGroup(timestampExtension_);
+    }
+    else
+    {
+        timestampExtension_ = existingExtensions.first().dynamicCast<Kactus2Value>();
+    }
+
+    timeLabel_->setText(timestampExtension_->value());
 }
 
 //-----------------------------------------------------------------------------

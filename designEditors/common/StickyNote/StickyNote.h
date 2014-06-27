@@ -153,6 +153,9 @@ private:
     //! Initializes the vendor extension for tracking the note associations.
     void initializeAssociations();
 
+    //! Initializes the vendor extension for note timestamp.
+    void initializeTimestamp();
+
     /*!
      *  Checks if clicking a given position hits the association button.
      *
@@ -160,7 +163,7 @@ private:
      *
      *      @return True, if the click hits the association button, otherwise false.
      */
-    bool hitsAssociationButton(QPointF const& clickPosition) const;
+    bool hitsAssociationButton(QPointF const& clickPosition) const;   
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -181,8 +184,13 @@ private:
     //! The vendor extension containing the text of the note.
     QSharedPointer<Kactus2Group> associationExtensions_;
 
+    //! The vendor extension containing the timestamp of the note.
+    QSharedPointer<Kactus2Value> timestampExtension_;
+
     //! Editor item for the notes.
     ColorFillTextItem* textArea_;
+
+    QGraphicsSimpleTextItem* timeLabel_;
 
     //! Item acting as a button for creating new associations.
     QGraphicsPixmapItem* associationButton_;

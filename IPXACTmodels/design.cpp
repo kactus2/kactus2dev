@@ -1087,6 +1087,12 @@ void Design::parseStickyNote(QDomNode& noteNode)
 
             noteExtension->addToGroup(associations);
         }
+        else if (childNode.nodeName() == "kactus2:timestamp")
+        {
+            QString content = childNode.childNodes().at(0).nodeValue();
+            QSharedPointer<Kactus2Value> noteContent(new Kactus2Value("kactus2:timestamp", content));
+            noteExtension->addToGroup(noteContent);
+        }
     }
 
     vendorExtensions_.append(noteExtension);
