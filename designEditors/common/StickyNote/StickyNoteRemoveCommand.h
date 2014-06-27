@@ -22,8 +22,6 @@
 #include <QObject>
 #include <QSharedPointer>
 
-class DesignDiagram;
-
 //-----------------------------------------------------------------------------
 //! FloatingItemRemoveCommand class.
 //-----------------------------------------------------------------------------
@@ -38,7 +36,7 @@ public:
      *      @param [in] item        The item to remove.
      *      @param [in] parent      The parent command.
      */
-    StickyNoteRemoveCommand(StickyNote* noteItem, DesignDiagram* diagram, QUndoCommand* parent = 0);
+    StickyNoteRemoveCommand(StickyNote* noteItem, QGraphicsScene* diagram, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -74,7 +72,7 @@ private:
     StickyNote* note_;
 
     //! The item's parent scene.
-    QGraphicsScene* diagram_;
+    QGraphicsScene* scene_;
 
     //! Boolean flag for indicating if the items should be deleted in the destructor.
     bool del_;

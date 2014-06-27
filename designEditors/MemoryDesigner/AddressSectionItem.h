@@ -20,7 +20,6 @@
 #include <QSharedPointer>
 
 class AddressBlock;
-class MemoryItem;
 class AddressSubsection;
 
 //-----------------------------------------------------------------------------

@@ -11,8 +11,6 @@
 
 #include "AssociationAddCommand.h"
 
-
-#include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/Association/Association.h>
 
 //-----------------------------------------------------------------------------

@@ -14,9 +14,9 @@
 #include "SwitchHWDialog.h"
 #include "ExportSWDialog.h"
 
-#include <designEditors/SystemDesign/SystemDesignWidget.h>
-
+#include <designEditors/common/DesignWidget.h>
 #include <designEditors/common/DesignDiagram.h>
+
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
 #include <IPXACTmodels/SystemView.h>
@@ -66,7 +66,7 @@ SystemDetailsEditor::~SystemDetailsEditor()
 //-----------------------------------------------------------------------------
 // Function: SystemDetailsEditor::setSystem()
 //-----------------------------------------------------------------------------
-void SystemDetailsEditor::setSystem(DesignWidget* designWidget, bool locked)
+void SystemDetailsEditor::setSystem(DesignWidget* designWidget)
 {
     // if there was a previous design being displayed.
     if (designWidget_)
@@ -102,9 +102,10 @@ void SystemDetailsEditor::setSystem(DesignWidget* designWidget, bool locked)
         }
     }
 
-    hwRefEditor_->setEnabled(!locked);
-    viewSelector_->setEnabled(!locked);
-    removeMappingButton_->setEnabled(!locked && component_->getComponentImplementation() != KactusAttribute::KTS_SYS);
+    hwRefEditor_->setEnabled(!designWidget_->isProtected());
+    viewSelector_->setEnabled(!designWidget_->isProtected());
+    removeMappingButton_->setEnabled(!designWidget_->isProtected() && 
+        component_->getComponentImplementation() != KactusAttribute::KTS_SYS);
     exportButton_->setEnabled(component_->getComponentImplementation() != KactusAttribute::KTS_SYS);
     revertButton_->setDisabled(true);
 
@@ -147,7 +148,7 @@ void SystemDetailsEditor::clear()
 //-----------------------------------------------------------------------------
 void SystemDetailsEditor::onRefresh()
 {
-    setSystem(designWidget_, designWidget_->isProtected());
+    setSystem(designWidget_);
 }
 
 //-----------------------------------------------------------------------------
@@ -472,11 +473,6 @@ void SystemDetailsEditor::exportSW()
 
     newComponent->addSystemView(newView);
     handler_->writeModelToFile(dialog.getPath(), newComponent);
-
-    // Refresh the design widget.
-//     designWidget_->setDesign(dialog.getVLNV(), designWidget_->getOpenViewName());
-//     designWidget_->setProtection(false);
-//     designWidget_->refresh();
 
     handler_->endSave();
 }

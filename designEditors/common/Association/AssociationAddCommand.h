@@ -12,14 +12,11 @@
 #ifndef ASSOCIATIONADDCOMMAND_H
 #define ASSOCIATIONADDCOMMAND_H
 
-
 #include <QUndoCommand>
 #include <QGraphicsScene>
 #include <QObject>
 
-
 class Association;
-class DesignDiagram;
 
 //-----------------------------------------------------------------------------
 //! FloatingItemRemoveCommand class.

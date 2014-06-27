@@ -11,22 +11,22 @@
 
 #include "StickyNoteRemoveCommand.h"
 
-#include <IPXACTmodels/VendorExtension.h>
-#include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/Association/AssociationRemoveCommand.h>
+
+#include <IPXACTmodels/VendorExtension.h>
 
 //-----------------------------------------------------------------------------
 // Function: FloatingItemRemoveCommand()
 //-----------------------------------------------------------------------------
-StickyNoteRemoveCommand::StickyNoteRemoveCommand(StickyNote* noteItem, DesignDiagram* diagram, 
+StickyNoteRemoveCommand::StickyNoteRemoveCommand(StickyNote* noteItem, QGraphicsScene* scene, 
     QUndoCommand* parent) : 
     QUndoCommand(parent), note_(noteItem),
-    diagram_(diagram), 
+    scene_(scene), 
     del_(true)
 {
     foreach(Association* association, noteItem->getAssociations())
     {
-        new AssociationRemoveCommand(association, diagram, this);
+        new AssociationRemoveCommand(association, scene_, this);
     }
 }
 
@@ -46,7 +46,7 @@ StickyNoteRemoveCommand::~StickyNoteRemoveCommand()
 //-----------------------------------------------------------------------------
 void StickyNoteRemoveCommand::undo()
 {
-    diagram_->addItem(note_);
+    scene_->addItem(note_);
     del_ = false;
 
     emit addVendorExtension(note_->getVendorExtension());
@@ -60,7 +60,7 @@ void StickyNoteRemoveCommand::undo()
 //-----------------------------------------------------------------------------
 void StickyNoteRemoveCommand::redo()
 {
-    diagram_->removeItem(note_);
+    scene_->removeItem(note_);
     del_ = true;
 
     emit removeVendorExtension(note_->getVendorExtension());

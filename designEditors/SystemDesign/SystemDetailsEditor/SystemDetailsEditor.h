@@ -51,9 +51,8 @@ public:
      *  Set the system to be displayed.
 	 *
 	 *      @param [in] designWidget The system design widget containing the opened system.
-	 *      @param [in] locked       If true, the system details are locked and cannot be modified.
 	 */
-	void setSystem(DesignWidget* designWidget, bool locked);
+    void setSystem(DesignWidget* designWidget);
 
 	/*!
      *  Clear the contents of this editor.

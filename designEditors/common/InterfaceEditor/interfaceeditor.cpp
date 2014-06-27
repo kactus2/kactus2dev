@@ -16,15 +16,12 @@
 #include <IPXACTmodels/ComProperty.h>
 
 #include <common/GenericEditProvider.h>
-
-#include <designEditors/HWDesign/HWConnectionEndpoint.h>
-#include <designEditors/HWDesign/BusPortItem.h>
-#include <designEditors/HWDesign/BusInterfaceItem.h>
-#include <designEditors/HWDesign/HWChangeCommands.h>
-#include <designEditors/HWDesign/HWDesignDiagram.h>
-#include <designEditors/HWDesign/HWComponentItem.h>
-
+#include <common/graphicsItems/ComponentItem.h>
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
+
+#include <designEditors/common/DesignDiagram.h>
+#include <designEditors/HWDesign/HWConnectionEndpoint.h>
+#include <designEditors/HWDesign/HWChangeCommands.h>
 
 #include <QVBoxLayout>
 #include <QStringList>

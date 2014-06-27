@@ -8,14 +8,16 @@
 #ifndef BUSIFGENERALTAB_H
 #define BUSIFGENERALTAB_H
 
+#include "busifgeneraldetails.h"
+#include "interfacemodestack.h"
+
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 #include <common/widgets/interfaceModeSelector/interfacemodeselector.h>
-#include "busifgeneraldetails.h"
+
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/businterface.h>
-#include "interfacemodestack.h"
 
 #include <QWidget>
 #include <QSharedPointer>

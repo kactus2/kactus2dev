@@ -13,7 +13,6 @@
 
 #include <designEditors/common/Association/Associable.h>
 #include <designEditors/common/Association/Association.h>
-#include <designEditors/common/DesignDiagram.h>
 
 //-----------------------------------------------------------------------------
 // Function: AssociationChangeEndpointCommand()

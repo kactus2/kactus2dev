@@ -21,7 +21,7 @@ namespace
         CIT_INTERFACE,              //<! For COLUMN_CONTENT_IO.
         CIT_CHANNEL | CIT_BRIDGE,   //<! For COLUMN_CONTENT_BUSES.
         CIT_COMPONENT,              //<! For COLUMN_CONTENT_COMPONENTS.
-        CIT_COMPONENT
+        CIT_COMPONENT               //<! For COLUMN_CONTENT_MEMORY.
     };
 
     const QString ITEM_NAMES[CIT_COUNT] = 

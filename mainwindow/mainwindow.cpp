@@ -2027,7 +2027,7 @@ void MainWindow::onTabChanged(int index)
 
         if (doc->getSupportedWindows() & TabDocument::SYSTEM_DETAILS_WINDOW)
         {
-            systemDetailsEditor_->setSystem(designwidget, designwidget->isProtected());
+            systemDetailsEditor_->setSystem(designwidget);
         }
         else
         {

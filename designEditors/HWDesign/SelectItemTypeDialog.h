@@ -13,8 +13,6 @@
 #define SELECTITEMTYPEDIALOG_H
 
 #include <QDialog>
-#include <QLabel>
-#include <QPushButton>
 #include <QRadioButton>
 #include <QVBoxLayout>
 #include <QGroupBox>

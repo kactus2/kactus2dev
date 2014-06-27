@@ -15,7 +15,6 @@
 
 #include <common/graphicsItems/IGraphicsItemStack.h>
 #include <common/graphicsItems/GraphicsConnection.h>
-#include <common/layouts/HCollisionLayout.h>
 #include <common/layouts/VCollisionLayout.h>
 
 #include <IPXACTmodels/component.h>
@@ -259,8 +258,6 @@ void SystemComponentItem::onAddPort(SWPortItem* port, PortDirection dir)
     else if (dir == PORT_BOTTOM)
     {
         bottomPorts_.append(port);
-//         HCollisionLayout::updateItemMove(bottomPorts_, port, 0.0, SPACING);
-//         HCollisionLayout::setItemPos(bottomPorts_, port, rect().bottom(), 0.0, SPACING);
     }
 }
 
@@ -277,12 +274,7 @@ void SystemComponentItem::onMovePort(SWPortItem* port)
     // Restrict the position so that the port cannot be placed too high.
     port->setPos(snapPointToGrid(port->x(), qMax(MIN_Y_PLACEMENT - port->boundingRect().top(), port->y())));
 
-    // Check on which side the port is to determine the stack to which it should be placed.
-    /*if (port->y() - rect().bottom() >= -35.0 && qAbs(port->x()) <= 50.0)
-    {
-        HCollisionLayout::updateItemMove(bottomPorts_, port, 0.0, SPACING);
-    }
-    else*/ if (port->x() < 0.0)
+    if (port->x() < 0.0)
     {
         portLayout_->updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT);
     }
