@@ -12,11 +12,8 @@
 #ifndef HWCHANGECOMMANDS_H
 #define HWCHANGECOMMANDS_H
 
-#include <IPXACTmodels/ColumnDesc.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/ApiInterface.h>
-
-#include <designEditors/common/ColumnTypes.h>
 
 #include <QUndoCommand>
 #include <QGraphicsItem>
