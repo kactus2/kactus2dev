@@ -13,82 +13,28 @@
 
 #include <QGridLayout>
 
-namespace
-{
-    QString const ITEM_NAMES[CIT_COUNT] =
-    {
-        "Interface",
-        "Component",
-        "Channel",
-        "Bridge"
-    };
-}
-
 //-----------------------------------------------------------------------------
 // Function: SelectItemTypeDialog()
 //-----------------------------------------------------------------------------
-SelectItemTypeDialog::SelectItemTypeDialog(QWidget* parent,
-                                           unsigned int allowedItems) : QDialog(parent),
-                                                                        allowedItems_(allowedItems),
-                                                                        layout_(0), allowedItemsGroup_(0)
+SelectItemTypeDialog::SelectItemTypeDialog(unsigned int allowedItems, QWidget* parent) : 
+    QDialog(parent),
+    allowedItems_(allowedItems),
+    layout_(new QVBoxLayout(this)), 
+    allowedItemsGroup_(new QGroupBox(tr("Item Type"), this)),    
+    interfaceButton_(new QRadioButton(tr("Interface"), allowedItemsGroup_)),
+    componentButton_(new QRadioButton(allowedItemsGroup_)),
+    dialogButtons_(new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this))
 {
     Q_ASSERT(allowedItems != CIT_NONE);
 
     setWindowTitle(tr("Add Item"));
 
-    layout_ = new QGridLayout(this);
+    setupLayout();
 
-    // Create the radio button group and a layout for it.
-    allowedItemsGroup_ = new QGroupBox(tr("Item Type"), this);
-    QGridLayout* itemLayout = new QGridLayout(allowedItemsGroup_);
-    
-    // Create the item radio buttons.
-    if (allowedItems & CIT_INTERFACE)
-    {
-        itemRadioButtons_[0] = new QRadioButton(ITEM_NAMES[CIT_COMPONENT], allowedItemsGroup_);
-        itemRadioButtons_[0]->setChecked(true);
-        itemLayout->addWidget(itemRadioButtons_[0], 0, 0, 1, 1);
-    }
+    setComponentButtonLabel();
 
-    QString text = "";
-
-    if (allowedItems & CIT_COMPONENT)
-    {
-        text += ITEM_NAMES[CIT_COMPONENT];
-    }
-    
-    if (allowedItems & CIT_CHANNEL)
-    {
-        text += ITEM_NAMES[CIT_CHANNEL];
-    }
-
-    if (allowedItems & CIT_BRIDGE)
-    {
-        text += ITEM_NAMES[CIT_BRIDGE];
-    }
-
-    text = text.left(text.length() - 1);
-
-    if (!text.isEmpty())
-    {
-        itemRadioButtons_[1] = new QRadioButton(text, allowedItemsGroup_);
-        itemLayout->addWidget(itemRadioButtons_[1], 1, 0, 1, 1);
-    }
-
-    layout_->addWidget(allowedItemsGroup_, 0, 0, 1, 2);
-
-    // Create the OK and Cancel buttons.
-    QPushButton* btnOK = new QPushButton(this);
-    btnOK->setText(tr("&Add"));
-    layout_->addWidget(btnOK, 1, 0, 1, 1);
-
-    QPushButton* btnCancel = new QPushButton(this);
-    btnCancel->setText(tr("&Cancel"));
-    layout_->addWidget(btnCancel, 1, 1, 1, 1);
-
-    // Connect the button signals to accept() and reject().
-    QObject::connect(btnOK, SIGNAL(clicked()), this, SLOT(accept()));
-    QObject::connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(dialogButtons_, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(dialogButtons_, SIGNAL(rejected()), this, SLOT(reject()));
 }
 
 //-----------------------------------------------------------------------------
@@ -104,15 +50,62 @@ SelectItemTypeDialog::~SelectItemTypeDialog()
 //-----------------------------------------------------------------------------
 ColumnItemType SelectItemTypeDialog::getSelectedItemType() const
 {
-    for (unsigned int i = 0; i < CIT_COUNT; ++i)
+    ColumnItemType type = CIT_NONE;
+
+    if (interfaceButton_->isChecked())
     {
-        if (itemRadioButtons_[i] != 0 && itemRadioButtons_[i]->isChecked())
-        {
-            return static_cast<ColumnItemType>(1 << i);
-        }
+        type = CIT_INTERFACE;
+    }
+    else if (componentButton_->isChecked())
+    {
+        type = CIT_COMPONENT;
+    }
+    else
+    {
+        // We should not get here at all.
+        Q_ASSERT(false);     
     }
 
-    // We should not get here at all.
-    Q_ASSERT(false);
-    return CIT_NONE;
+    return type;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SelectItemTypeDialog::setupLayout()
+//-----------------------------------------------------------------------------
+void SelectItemTypeDialog::setupLayout()
+{
+    QVBoxLayout* itemLayout = new QVBoxLayout(allowedItemsGroup_);
+    itemLayout->addWidget(interfaceButton_);
+    itemLayout->addWidget(componentButton_);
+
+    layout_->addWidget(allowedItemsGroup_);
+    layout_->addWidget(dialogButtons_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SelectItemTypeDialog::setComponentButtonLabel()
+//-----------------------------------------------------------------------------
+void SelectItemTypeDialog::setComponentButtonLabel()
+{
+    QString componentButtonLabel = "";
+
+    if (allowedItems_ & CIT_COMPONENT)
+    {
+        componentButtonLabel += tr("Component/");
+    }
+
+    if (allowedItems_ & CIT_CHANNEL)
+    {
+        componentButtonLabel += tr("Channel/");
+    }
+
+    if (allowedItems_ & CIT_BRIDGE)
+    {
+        componentButtonLabel += tr("Bridge/");
+    }
+
+    Q_ASSERT(!componentButtonLabel.isEmpty());
+
+    componentButtonLabel.chop(1);   //<! Remove last slash.
+    componentButton_->setText(componentButtonLabel);
 }

@@ -20,7 +20,8 @@ namespace
     {
         CIT_INTERFACE,              //<! For COLUMN_CONTENT_IO.
         CIT_CHANNEL | CIT_BRIDGE,   //<! For COLUMN_CONTENT_BUSES.
-        CIT_COMPONENT               //<! For COLUMN_CONTENT_COMPONENTS.
+        CIT_COMPONENT,              //<! For COLUMN_CONTENT_COMPONENTS.
+        CIT_COMPONENT
     };
 
     const QString ITEM_NAMES[CIT_COUNT] = 
@@ -189,6 +190,7 @@ void ColumnEditDialog::initializeTypes(bool sw)
     if (!sw)
     {
         types_.insert(tr("Buses"), COLUMN_CONTENT_BUSES);
+        types_.insert(tr("Memory"), COLUMN_CONTENT_MEMORY);
         types_.insert(tr("Custom"), COLUMN_CONTENT_CUSTOM);
     }
 

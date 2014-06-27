@@ -16,8 +16,9 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QRadioButton>
-#include <QGridLayout>
+#include <QVBoxLayout>
 #include <QGroupBox>
+#include <QDialogButtonBox>
 
 #include <designEditors/common/ColumnTypes.h>
 
@@ -31,26 +32,30 @@ class SelectItemTypeDialog : public QDialog
 public:
     /*!
      *  Constructor.
-     *
-     *      @param [in] parent        The parent widget.
+     *     
      *      @param [in] allowedItems  The item types from which the user can select from.
+     *      @param [in] parent        The parent widget.
      */
-    SelectItemTypeDialog(QWidget* parent, unsigned int allowedItems);
+    SelectItemTypeDialog(unsigned int allowedItems, QWidget* parent);
 
-    /*!
-     *  Destructor.
-     */
+    //! The destructor.
     ~SelectItemTypeDialog();
 
-    /*!
-     *  Returns the selected item type.
-     */
+    //!  Returns the selected item type.
     ColumnItemType getSelectedItemType() const;
 
 private:
     // Disable copying.
     SelectItemTypeDialog(SelectItemTypeDialog const& rhs);
+    
+    //! Disable assignment.
     SelectItemTypeDialog& operator=(SelectItemTypeDialog const& rhs);
+    
+    //! Sets the dialog layout.
+    void setupLayout();
+
+    //! Sets the label for selecting component/channel/bridge according to allowed item types.
+    void setComponentButtonLabel();    
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -60,13 +65,19 @@ private:
     unsigned int allowedItems_;
 
     //! The layout for the UI widgets.
-    QGridLayout* layout_;
+    QVBoxLayout* layout_;
 
     //! The group box for the allowed column items selection.
     QGroupBox* allowedItemsGroup_;
 
-    //! The item radio buttons.
-    QRadioButton* itemRadioButtons_[CIT_COUNT];
+    //! The radio button for selecting interface.
+    QRadioButton* interfaceButton_;
+
+    //! The radio button for selecting component/channel/bridge.
+    QRadioButton* componentButton_;
+    
+    //! Dialog OK and Cancel buttons.
+    QDialogButtonBox* dialogButtons_;
 };
 
 //-----------------------------------------------------------------------------

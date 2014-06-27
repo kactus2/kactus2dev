@@ -1904,7 +1904,7 @@ unsigned int HWDesignDiagram::findColumnItemType(GraphicsColumn* column) const
     if (itemType != CIT_INTERFACE && itemType & CIT_INTERFACE)
     {
         // Open a dialog to determine which type of item to create.
-        SelectItemTypeDialog dialog(getParent(), column->getColumnDesc().getAllowedItems());
+        SelectItemTypeDialog dialog(column->getColumnDesc().getAllowedItems(), getParent());
 
         if (dialog.exec() == QDialog::Accepted)
         {
