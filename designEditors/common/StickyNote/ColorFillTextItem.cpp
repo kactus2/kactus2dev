@@ -25,9 +25,9 @@ QGraphicsTextItem(parent),
 fillColor_()
 { 
     setFlag(ItemIsFocusable);
-    setTextInteractionFlags(Qt::TextEditable);
+    setTextInteractionFlags(Qt::TextEditorInteraction);
 
-    connect(document(), SIGNAL(contentsChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(document(), SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);    
 }
 
 //-----------------------------------------------------------------------------
@@ -56,5 +56,16 @@ void ColorFillTextItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*
     QGraphicsTextItem::paint(painter, option, widget);
 }
 
+//-----------------------------------------------------------------------------
+// Function: ColorFillTextItem::focusOutEvent()
+//-----------------------------------------------------------------------------
+void ColorFillTextItem::focusOutEvent(QFocusEvent *event)
+{
+    if (document()->isModified())
+    {
+        emit contentChanged();
+        document()->setModified(false);
+    }
 
-
+    QGraphicsTextItem::focusOutEvent(event);
+}

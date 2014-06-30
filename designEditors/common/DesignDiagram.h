@@ -250,8 +250,20 @@ public slots:
 
     //! Called when a vendor extension is removed from the design.
     virtual void onVendorExtensionRemoved(QSharedPointer<VendorExtension> extension);
-
+   
+    /*!
+     *  Called when an association creation is requested.
+     *
+     *      @param [in] startingPoint   The item requesting the new association.
+     */
     void onBeginAssociation(Associable* startingPoint);
+
+    /*!
+     *  Called when an item has been modified.
+     *
+     *      @param [in] undoCommand   The undo command to undo/redo the modification.
+     */
+    void onItemModified(QUndoCommand* undoCommand);
 
 signals:
     //! Emitted when component with given vlnv should be opened in editor.
@@ -487,7 +499,10 @@ private:
 
     //! Creates sticky notes from vendor extensions.
     void loadStickyNotes();
-    
+
+    //! Creates a new sticky note.
+    StickyNote* createStickyNote();
+
     /*!
      *  Creates a command for adding a sticky note to the diagram.
      *

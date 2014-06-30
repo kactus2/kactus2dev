@@ -13,10 +13,10 @@
 
 #include "ColorFillTextItem.h"
 #include "StickyNoteMoveCommand.h"
+#include "StickyNoteEditCommand.h"
 
 #include <common/GenericEditProvider.h>
 
-#include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/Association/Association.h>
 
@@ -34,6 +34,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QSharedPointer>
 #include <QDateTime>
+
 
 //-----------------------------------------------------------------------------
 // Function: StickyNote::StickyNote()
@@ -59,6 +60,8 @@ StickyNote::StickyNote(QGraphicsItem* parent):
     createAssociationButton();    
 
     connect(textArea_, SIGNAL(contentChanged()), this, SLOT(onTextEdited()), Qt::UniqueConnection);
+    connect(textArea_, SIGNAL(undoAdded(QTextDocument*)), 
+        this, SLOT(onTextUndoCommandAdded(QTextDocument*)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -91,19 +94,12 @@ void StickyNote::mousePressEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 void StickyNote::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
-    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
-
-    if (diagram == 0)
-    {
-        return;
-    }
-
     QGraphicsItemGroup::mouseReleaseEvent(event);
 
     if (positionChanged())
     {
-        QSharedPointer<StickyNoteMoveCommand> moveCommand(new StickyNoteMoveCommand(this, oldPos_));
-        diagram->getEditProvider().addCommand(moveCommand);
+        StickyNoteMoveCommand* moveCommand(new StickyNoteMoveCommand(this, oldPos_));
+        emit modified(moveCommand);
     }
     else if (hitsAssociationButton(event->pos()))
     {
@@ -180,15 +176,82 @@ QSharedPointer<Kactus2Group> StickyNote::getAssociationExtensions() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: StickyNote::parseValuesFrom()
+//-----------------------------------------------------------------------------
+void StickyNote::parseValuesFrom(QDomNode const &node)
+{
+    int childCount = node.childNodes().count();
+    for (int i = 0; i < childCount; ++i)
+    {
+        QDomNode childNode = node.childNodes().at(i);
+
+        if (childNode.nodeName() == positionExtension_->type())
+        {
+            QPointF position = XmlUtils::parsePoint(childNode);
+            positionExtension_->setPosition(position);
+            setPos(position);
+        }
+        else if (childNode.nodeName() == contentExtension_->type())
+        {
+            QString content = childNode.childNodes().at(0).nodeValue();
+            setText(content);
+        }
+        else if (childNode.nodeName() == associationExtensions_->type())
+        {            
+            int associationCount = childNode.childNodes().count();
+            for(int j = 0; j < associationCount; j++)
+            {
+                QDomNode assocationNode = childNode.childNodes().at(j);
+
+                QPointF position = XmlUtils::parsePoint(assocationNode);
+                QSharedPointer<Kactus2Position> associationEnd(new Kactus2Position(position));
+
+                associationExtensions_->addToGroup(associationEnd);
+            }
+        }
+        else if (childNode.nodeName() == timestampExtension_->type())
+        {
+            QString timestamp = childNode.childNodes().at(0).nodeValue();
+            setTimestamp(timestamp);
+        }
+        else
+        {
+            extension_->addToGroup(XmlUtils::createVendorExtensionFromNode(childNode));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::setText()
+//-----------------------------------------------------------------------------
+void StickyNote::setText(QString const& text)
+{
+    contentExtension_->setValue(text);
+    textArea_->setPlainText(text);   
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::setTimestamp()
+//-----------------------------------------------------------------------------
+void StickyNote::setTimestamp(QString const& timestamp)
+{
+    timestampExtension_->setValue(timestamp);
+    timeLabel_->setText(timestamp);
+}
+
+//-----------------------------------------------------------------------------
 // Function: StickyNote::onTextEdited()
 //-----------------------------------------------------------------------------
 void StickyNote::onTextEdited()
 {
-    contentExtension_->setValue(textArea_->toPlainText());
+    QString timestamp = QDateTime::currentDateTime().toString(Qt::SystemLocaleShortDate);    
+    
+    StickyNoteEditCommand* command = new StickyNoteEditCommand(this, 
+        textArea_->toPlainText(), contentExtension_->value(), timestamp, timestampExtension_->value());
+    
+    command->redo();
 
-    QString timestamp = QDateTime::currentDateTime().toString(Qt::SystemLocaleShortDate);
-    timestampExtension_->setValue(timestamp);
-    timeLabel_->setText(timestamp);
+    emit modified(command);    
 }
 
 //-----------------------------------------------------------------------------
@@ -267,54 +330,6 @@ void StickyNote::initializeExtensions()
 
     timestampExtension_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:timestamp", ""));
     extension_->addToGroup(timestampExtension_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: StickyNote::parseValues()
-//-----------------------------------------------------------------------------
-void StickyNote::parseValuesFrom(QDomNode const &node)
-{
-    int childCount = node.childNodes().count();
-    for (int i = 0; i < childCount; ++i)
-    {
-        QDomNode childNode = node.childNodes().at(i);
-
-        if (childNode.nodeName() == positionExtension_->type())
-        {
-            QPointF position = XmlUtils::parsePoint(childNode);
-            positionExtension_->setPosition(position);
-            setPos(position);
-        }
-        else if (childNode.nodeName() == contentExtension_->type())
-        {
-            QString content = childNode.childNodes().at(0).nodeValue();
-            contentExtension_->setValue(content);
-            textArea_->setPlainText(content);
-        }
-        else if (childNode.nodeName() == associationExtensions_->type())
-        {            
-            int associationCount = childNode.childNodes().count();
-            for(int j = 0; j < associationCount; j++)
-            {
-                QDomNode assocationNode = childNode.childNodes().at(j);
-
-                QPointF position = XmlUtils::parsePoint(assocationNode);
-                QSharedPointer<Kactus2Position> associationEnd(new Kactus2Position(position));
-
-                associationExtensions_->addToGroup(associationEnd);
-            }
-        }
-        else if (childNode.nodeName() == timestampExtension_->type())
-        {
-            QString content = childNode.childNodes().at(0).nodeValue();
-            timestampExtension_->setValue(content);
-            timeLabel_->setText(content);
-        }
-        else
-        {
-            extension_->addToGroup(XmlUtils::createVendorExtensionFromNode(childNode));
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------

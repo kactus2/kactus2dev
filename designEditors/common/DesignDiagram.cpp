@@ -293,6 +293,14 @@ void DesignDiagram::onBeginAssociation(Associable* startingPoint)
 }
 
 //-----------------------------------------------------------------------------
+// Function: DesignDiagram::onItemModified()
+//-----------------------------------------------------------------------------
+void DesignDiagram::onItemModified(QUndoCommand* undoCommand)
+{
+    getEditProvider().addCommand(QSharedPointer<QUndoCommand>(undoCommand));
+}
+
+//-----------------------------------------------------------------------------
 // Function: DesignDiagram::createInstanceName()
 //-----------------------------------------------------------------------------
 QString DesignDiagram::createInstanceName(QSharedPointer<Component> component)
@@ -393,11 +401,8 @@ QGraphicsItem* DesignDiagram::getBaseItemOf(QGraphicsItem* item) const
 //-----------------------------------------------------------------------------
 void DesignDiagram::createNoteAt(QPointF const& position)
 {
-    StickyNote* note = new StickyNote();
+    StickyNote* note = createStickyNote();
     note->setPos(position);
-
-    connect(note, SIGNAL(beginAssociation(Associable*)), 
-        this, SLOT(onBeginAssociation(Associable*)), Qt::UniqueConnection);
 
     QSharedPointer<StickyNoteAddCommand> cmd = createNoteAddCommand(note);
     cmd->redo(); 
@@ -615,11 +620,8 @@ void DesignDiagram::loadStickyNotes()
         if (extension->type() == "kactus2:note")
         {
             QSharedPointer<GenericVendorExtension> noteExtension = extension.dynamicCast<GenericVendorExtension>();
-            StickyNote* note = new StickyNote();
+            StickyNote* note = createStickyNote();
             note->parseValuesFrom(noteExtension->node());
-
-            connect(note, SIGNAL(beginAssociation(Associable*)), 
-                this, SLOT(onBeginAssociation(Associable*)), Qt::UniqueConnection);
 
             QSharedPointer<StickyNoteAddCommand> cmd = createNoteAddCommand(note);
             cmd->redo();
@@ -629,6 +631,20 @@ void DesignDiagram::loadStickyNotes()
             vendorExtensions_.removeAll(extension); //<! extension is replaced by one created by Sticky Note.
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::createStickyNote()
+//-----------------------------------------------------------------------------
+StickyNote* DesignDiagram::createStickyNote()
+{
+    StickyNote* note = new StickyNote();
+    connect(note, SIGNAL(beginAssociation(Associable*)), 
+        this, SLOT(onBeginAssociation(Associable*)), Qt::UniqueConnection);
+    connect(note, SIGNAL(modified(QUndoCommand*)), 
+        this, SLOT(onItemModified(QUndoCommand*)), Qt::UniqueConnection);
+
+    return note;
 }
 
 //-----------------------------------------------------------------------------
@@ -824,6 +840,4 @@ bool DesignDiagram::inOffPageMode() const
 {
     return interactionMode_ == OFFPAGE;
 }
-
-
 

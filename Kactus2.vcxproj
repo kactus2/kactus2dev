@@ -318,6 +318,7 @@ CreateHelp
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="common\commands\DocumentUndoCommand.cpp" />
     <ClCompile Include="common\dialogs\commandLineGeneratorDialog\commandlineconsole.cpp" />
     <ClCompile Include="common\dialogs\commandLineGeneratorDialog\commandlinegeneratordialog.cpp" />
     <ClCompile Include="common\dialogs\fileSaveDialog\filesavedialog.cpp" />
@@ -448,6 +449,7 @@ CreateHelp
     <ClCompile Include="designEditors\common\StickyNote\ColorFillTextItem.cpp" />
     <ClCompile Include="designEditors\common\StickyNote\StickyNote.cpp" />
     <ClCompile Include="designEditors\common\StickyNote\StickyNoteAddCommand.cpp" />
+    <ClCompile Include="designEditors\common\StickyNote\StickyNoteEditCommand.cpp" />
     <ClCompile Include="designEditors\common\StickyNote\StickyNoteMoveCommand.cpp" />
     <ClCompile Include="designEditors\common\StickyNote\StickyNoteRemoveCommand.cpp" />
     <ClCompile Include="designEditors\HWDesign\AddressEditor\AddressDelegate.cpp" />
@@ -2337,6 +2339,7 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
     </CustomBuild>
+    <ClInclude Include="common\commands\DocumentUndoCommand.h" />
     <ClInclude Include="designEditors\common\Associable.h" />
     <ClInclude Include="designEditors\common\Association.h" />
     <CustomBuild Include="designEditors\common\Association\AssociationRemoveCommand.h">
@@ -2659,6 +2662,7 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
     </CustomBuild>
+    <ClInclude Include="designEditors\common\StickyNote\StickyNoteEditCommand.h" />
     <ClInclude Include="designEditors\common\StickyNote\StickyNoteMoveCommand.h" />
     <ClInclude Include="designEditors\HWDesign\AddressEditor\AddressEntry.h" />
     <CustomBuild Include="designEditors\HWDesign\AddressEditor\AddressModel.h">

@@ -14,6 +14,7 @@
 
 #include <QGraphicsRectItem>
 #include <QGraphicsTextItem>
+#include <QFocusEvent>
 
 //-----------------------------------------------------------------------------
 //! ColorFillTextItem class.
@@ -44,6 +45,12 @@ public:
 
     //! Draws the item.
     virtual void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget );
+
+
+protected:
+
+    //! Called when item loses focus.
+    virtual void focusOutEvent(QFocusEvent *event);
 
 signals:
 

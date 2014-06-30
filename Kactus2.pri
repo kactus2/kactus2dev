@@ -639,7 +639,9 @@ HEADERS += ./resource.h \
     ./designEditors/common/Association/AssociationAddCommand.h \
     ./designEditors/common/Association/Association.h \
     ./designEditors/common/Association/AssociationChangeEndpointCommand.h \
-    ./designEditors/common/ComponentDesignDiagram.h
+    ./designEditors/common/ComponentDesignDiagram.h \
+    ./common/commands/DocumentUndoCommand.h \
+    ./designEditors/common/StickyNote/StickyNoteEditCommand.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
@@ -1242,5 +1244,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/common/Association/AssociationRemoveCommand.cpp \
     ./designEditors/common/Association/AssociationAddCommand.cpp \
     ./designEditors/common/Association/AssociationChangeEndpointCommand.cpp \
-    ./designEditors/common/ComponentDesignDiagram.cpp
+    ./designEditors/common/ComponentDesignDiagram.cpp \
+    ./common/commands/DocumentUndoCommand.cpp \
+    ./designEditors/common/StickyNote/StickyNoteEditCommand.cpp
 RESOURCES += kactus.qrc

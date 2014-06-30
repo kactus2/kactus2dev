@@ -20,6 +20,8 @@
 #include <designEditors/common/Association/Associable.h>
 
 #include <QDomNode>
+#include <QGraphicsSceneMouseEvent>
+#include <QUndoCommand>
 
 class VendorExtension;
 class Kactus2Group;
@@ -98,10 +100,32 @@ public:
      */
     void parseValuesFrom(QDomNode const &node);
 
+    /*!
+     *  Sets the note text.
+     *
+     *      @param [in] text   The text to set.
+     */
+    void setText(QString const& text);
+
+    /*!
+     *  Sets the note timestamp.
+     *
+     *      @param [in] timestamp   The timestamp to set.
+     */
+    void setTimestamp(QString const& timestamp);
+
 signals:
    
     //! Emitted when a new association should be created for the item.
     void beginAssociation(Associable* originator);
+
+
+    /*!
+     *  Emitted when the note has been modified.
+     *
+     *      @param [in] undoCommand   The undo command to undo/redo the modification.
+     */
+    void modified(QUndoCommand* undoCommand);
 
 protected:
 
@@ -130,7 +154,7 @@ protected:
 
 private slots:
 
-    //! Called when the notes text has changed.
+    //! Called when the note text has changed.
     virtual void onTextEdited();
 
 private:
