@@ -34,8 +34,6 @@
 
 #include <common/utils.h>
 
-#include <editors/ComponentEditor/componenteditor.h>
-
 #include <QFile>
 #include <QFileInfo>
 #include <QTime>

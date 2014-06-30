@@ -32,7 +32,6 @@
 class LibraryInterface;
 class VhdlConnectionEndPoint;
 class HWDesignWidget;
-class ComponentEditor;
 
 /*! \brief Vhdl Generator generates top-level vhdl for hierarchical component.
  *

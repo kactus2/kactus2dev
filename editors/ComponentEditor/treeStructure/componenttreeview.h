@@ -48,7 +48,7 @@ public:
 	//! \brief The destructor
     virtual ~ComponentTreeView();
 
-	//! \brief Set the locked state (enables/disables the dragging)
+	//! \brief Set the locked state (enables/disables the dragging).
 	void setLocked(bool locked);
 
 	/*! \brief Select the specified item and deselect all others.
@@ -86,9 +86,6 @@ protected:
 	//! \brief Handler for mouse move events
 	virtual void mouseMoveEvent(QMouseEvent* event);
 
-	//! \brief Handler for key press events
-	virtual void keyPressEvent(QKeyEvent* event);
-
 	//! \brief The context menu event handler
 	virtual void contextMenuEvent(QContextMenuEvent* event);
 
@@ -99,9 +96,6 @@ private slots:
 
 	//! \brief Open an item at position pressedPoint_
 	void onFileOpen();
-
-    //! \brief Open an item at position pressedPoint_
-    void onFileOpenDefault();
 
 private:
 
@@ -117,11 +111,8 @@ private:
 	//! \brief The current locked state (enables/disables dragging)
 	bool locked_;
 
-	//! \brief The action to open files from the component editor to the built-in editor (if available).
-	QAction fileOpenAction_;
-
-    //! The action to open files to the default editor.
-    QAction fileOpenDefaultAction_;
+	//! \brief The action to open files from the component editor for editing.
+	QAction fileEditAction_;
 
 	//! \brief Pointer to the instance that manages the library.
 	LibraryInterface* handler_;

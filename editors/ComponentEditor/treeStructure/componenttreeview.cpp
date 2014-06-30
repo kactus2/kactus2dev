@@ -7,27 +7,26 @@
 #include "componenttreeview.h"
 #include "componenteditoritem.h"
 #include <library/LibraryManager/libraryinterface.h>
-#include <IPXACTmodels/generaldeclarations.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
 
 #include <QEvent>
 #include <QCursor>
-#include <QApplication>
 #include <QMenu>
-#include <QDesktopServices>
 #include <QUrl>
 
+//-----------------------------------------------------------------------------
+// Function: ComponentTreeView::ComponentTreeView()
+//-----------------------------------------------------------------------------
 ComponentTreeView::ComponentTreeView(LibraryInterface* handler,
 									 const VLNV& compVLNV,
 									 QWidget *parent):
 QTreeView(parent),
 pressedPoint_(),
 locked_(true),
-fileOpenAction_(tr("Open"), this),
-fileOpenDefaultAction_(tr("Open in Default Editor"), this),
+fileEditAction_(tr("Edit"), this),
 handler_(handler),
-componentVLNV_(compVLNV) {
-
+componentVLNV_(compVLNV) 
+{
 	// can be used in debugging to identify the object
 	setObjectName(tr("ComponentTreeView"));
 
@@ -41,21 +40,24 @@ componentVLNV_(compVLNV) {
 
 	setSelectionBehavior(QAbstractItemView::SelectItems);
 
-	connect(&fileOpenAction_, SIGNAL(triggered()),
+	connect(&fileEditAction_, SIGNAL(triggered()),
 		this, SLOT(onFileOpen()), Qt::UniqueConnection);
-    connect(&fileOpenDefaultAction_, SIGNAL(triggered()),
-        this, SLOT(onFileOpenDefault()), Qt::UniqueConnection);
 
-    fileOpenAction_.setToolTip(tr("Open the file for editing."));
-    fileOpenAction_.setStatusTip(tr("Open the file for editing."));
-
-	fileOpenDefaultAction_.setToolTip(tr("Open the file in operating system's default editor."));
-	fileOpenDefaultAction_.setStatusTip(tr("Open the file in operating system's default editor."));
+    fileEditAction_.setToolTip(tr("Open the file for editing."));
+    fileEditAction_.setStatusTip(tr("Open the file for editing."));
 }
 
-ComponentTreeView::~ComponentTreeView() {
+//-----------------------------------------------------------------------------
+// Function: ComponentTreeView::~ComponentTreeView()
+//-----------------------------------------------------------------------------
+ComponentTreeView::~ComponentTreeView() 
+{
+
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentTreeView::currentChanged()
+//-----------------------------------------------------------------------------
 void ComponentTreeView::currentChanged(const QModelIndex & current, 
 									   const QModelIndex & previous ) 
 {
@@ -66,23 +68,23 @@ void ComponentTreeView::currentChanged(const QModelIndex & current,
 	emit activated(current);
 }
 
-void ComponentTreeView::keyPressEvent( QKeyEvent* event ) {
-	QTreeView::keyPressEvent(event);
-}
-
-void ComponentTreeView::mousePressEvent( QMouseEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentTreeView::mousePressEvent()
+//-----------------------------------------------------------------------------
+void ComponentTreeView::mousePressEvent( QMouseEvent* event )
+{
 	pressedPoint_ = event->pos();
 	QTreeView::mousePressEvent(event);
 }
 
-void ComponentTreeView::mouseReleaseEvent( QMouseEvent* event ) {
-
-	// calculate the distance of the drag
-	//int distance = (event->pos() - pressedPoint_).manhattanLength();
-
+//-----------------------------------------------------------------------------
+// Function: ComponentTreeView::mouseReleaseEvent()
+//-----------------------------------------------------------------------------
+void ComponentTreeView::mouseReleaseEvent( QMouseEvent* event ) 
+{
 	// make sure widget is not locked
-	if (!locked_) {
-
+	if (!locked_) 
+    {
 		QModelIndex pressedIndex = indexAt(pressedPoint_);
 
 		QModelIndex releaseIndex = indexAt(event->pos());
@@ -117,14 +119,19 @@ void ComponentTreeView::mouseReleaseEvent( QMouseEvent* event ) {
 	QTreeView::mouseReleaseEvent(event);
 }
 
-void ComponentTreeView::mouseMoveEvent( QMouseEvent* event ) {
-
+//-----------------------------------------------------------------------------
+// Function: ComponentTreeView::mouseMoveEvent()
+//-----------------------------------------------------------------------------
+void ComponentTreeView::mouseMoveEvent( QMouseEvent* event )
+{
 	// if not dragging an item or item is locked
 	if (event->buttons() == Qt::NoButton || locked_)
+    {
 		QTreeView::mouseMoveEvent(event);
-	
+	}
 	// if dragging item
-	else {
+	else 
+    {
 		QModelIndex startIndex = indexAt(pressedPoint_);
 		QModelIndex thisIndex = indexAt(event->pos());
 
@@ -138,24 +145,38 @@ void ComponentTreeView::mouseMoveEvent( QMouseEvent* event ) {
 		QModelIndex parent2 = thisIndex.model()->parent(thisIndex);
 
 		// if both have same parent
-		if (parent1 == parent2) {
+		if (parent1 == parent2) 
+        {
 			setCursor(QCursor(Qt::ClosedHandCursor));
 		}
-		else {
+		else
+        {
 			setCursor(QCursor(Qt::ForbiddenCursor));
 		}
 	}
 }
 
-void ComponentTreeView::setLocked( bool locked ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentTreeView::setLocked()
+//-----------------------------------------------------------------------------
+void ComponentTreeView::setLocked( bool locked )
+{
 	locked_ = locked;
 }
 
-void ComponentTreeView::selectItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentTreeView::selectItem()
+//-----------------------------------------------------------------------------
+void ComponentTreeView::selectItem( const QModelIndex& index )
+{
 	selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
 }
 
-void ComponentTreeView::contextMenuEvent( QContextMenuEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentTreeView::contextMenuEvent()
+//-----------------------------------------------------------------------------
+void ComponentTreeView::contextMenuEvent( QContextMenuEvent* event )
+{
 	QModelIndex index = indexAt(event->pos());
 
 	if (!index.isValid()) {
@@ -171,22 +192,21 @@ void ComponentTreeView::contextMenuEvent( QContextMenuEvent* event ) {
 	ComponentEditorItem* item = static_cast<ComponentEditorItem*>(proxy->mapToSource(index).internalPointer());
 	
 	// if item can be opened then show the context menu
-	if (item->canBeOpened()) {
+	if (item->canBeOpened()) 
+    {
 		QMenu menu(this);
-		menu.addAction(&fileOpenAction_);
-        
-        if (item->hasBuiltinEditor())
-        {
-            menu.addAction(&fileOpenDefaultAction_);
-        }
-
+		menu.addAction(&fileEditAction_);
 		menu.exec(event->globalPos());
 	}
 
 	event->accept();
 }
 
-void ComponentTreeView::mouseDoubleClickEvent( QMouseEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentTreeView::mouseDoubleClickEvent()
+//-----------------------------------------------------------------------------
+void ComponentTreeView::mouseDoubleClickEvent( QMouseEvent* event )
+{
 	event->accept();
 
 	QModelIndex index = indexAt(event->pos());
@@ -197,14 +217,15 @@ void ComponentTreeView::mouseDoubleClickEvent( QMouseEvent* event ) {
 
 	// save the position where click occurred
 	pressedPoint_ = event->pos();
-
-	//ComponentEditorItem* item = static_cast<ComponentEditorItem*>(index.internalPointer());
 	
 	onFileOpen();
 }
 
-
-void ComponentTreeView::onFileOpen() {
+//-----------------------------------------------------------------------------
+// Function: ComponentTreeView::onFileOpen()
+//-----------------------------------------------------------------------------
+void ComponentTreeView::onFileOpen()
+{
 	const QString xmlPath = handler_->getPath(componentVLNV_);
 	
 	QModelIndex index = indexAt(pressedPoint_);
@@ -214,19 +235,5 @@ void ComponentTreeView::onFileOpen() {
     Q_ASSERT(proxy != 0);
 	ComponentEditorItem* item = static_cast<ComponentEditorItem*>(proxy->mapToSource(index).internalPointer());
     
-	item->openItem(true);
-}
-
-void ComponentTreeView::onFileOpenDefault() {
-    const QString xmlPath = handler_->getPath(componentVLNV_);
-
-    QModelIndex index = indexAt(pressedPoint_);
-
-    // To get correct internal pointer, the index from source model must be used. Proxy performs the mapping.
-    ComponentEditorTreeProxyModel* proxy = dynamic_cast<ComponentEditorTreeProxyModel*>(model());
-    Q_ASSERT(proxy != 0);
-    ComponentEditorItem* item = static_cast<ComponentEditorItem*>(proxy->mapToSource(index).internalPointer());
-    Q_ASSERT(item->canBeOpened());
-
-    item->openItem(false);
+	item->openItem(item->hasBuiltinEditor());
 }
