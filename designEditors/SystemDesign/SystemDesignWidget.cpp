@@ -36,7 +36,6 @@
 #include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/SystemView.h>
 
-#include <mainwindow/mainwindow.h>
 
 #include <QScrollBar>
 #include <QKeyEvent>

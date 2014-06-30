@@ -26,6 +26,7 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <common/utils.h>
 #include <common/GenericEditProvider.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/graphicsItems/ComponentItem.h>
@@ -51,8 +52,6 @@
 #include <IPXACTmodels/mirroredslaveinterface.h>
 #include <IPXACTmodels/Interconnection.h>
 #include <IPXACTmodels/Interface.h>
-
-#include <mainwindow/mainwindow.h>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignDiagram()

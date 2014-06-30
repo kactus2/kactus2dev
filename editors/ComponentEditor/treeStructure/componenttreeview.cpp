@@ -9,6 +9,8 @@
 #include <library/LibraryManager/libraryinterface.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
 
+#include <QProcess>
+#include <QFileDialog>
 #include <QEvent>
 #include <QCursor>
 #include <QMenu>
@@ -24,6 +26,7 @@ QTreeView(parent),
 pressedPoint_(),
 locked_(true),
 fileEditAction_(tr("Edit"), this),
+fileEditWithAction_(tr("Edit with..."), this),
 handler_(handler),
 componentVLNV_(compVLNV) 
 {
@@ -45,6 +48,14 @@ componentVLNV_(compVLNV)
 
     fileEditAction_.setToolTip(tr("Open the file for editing."));
     fileEditAction_.setStatusTip(tr("Open the file for editing."));
+
+    connect(&fileEditWithAction_, SIGNAL(triggered()),
+        this, SLOT(onFileOpenWith()), Qt::UniqueConnection);
+
+    fileEditWithAction_.setToolTip(tr("Open the file for editing with a chosen editor."));
+    fileEditWithAction_.setStatusTip(tr("Open the file for editing with a chosen editor.."));
+
+    
 }
 
 //-----------------------------------------------------------------------------
@@ -196,6 +207,7 @@ void ComponentTreeView::contextMenuEvent( QContextMenuEvent* event )
     {
 		QMenu menu(this);
 		menu.addAction(&fileEditAction_);
+        menu.addAction(&fileEditWithAction_);
 		menu.exec(event->globalPos());
 	}
 
@@ -226,14 +238,33 @@ void ComponentTreeView::mouseDoubleClickEvent( QMouseEvent* event )
 //-----------------------------------------------------------------------------
 void ComponentTreeView::onFileOpen()
 {
-	const QString xmlPath = handler_->getPath(componentVLNV_);
-	
-	QModelIndex index = indexAt(pressedPoint_);
-	
+    ComponentEditorItem* item = getPressedItem();
+	item->openItem(item->hasBuiltinEditor());
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentTreeView::onFileOpenWith()
+//-----------------------------------------------------------------------------
+void ComponentTreeView::onFileOpenWith()
+{    
+    QString xmlPath = handler_->getPath(componentVLNV_);
+
+    ComponentEditorItem* fileItem = getPressedItem();
+    QString filePath = xmlPath.left(xmlPath.lastIndexOf("/")) + "/" + fileItem->text();
+
+    emit openFile(filePath);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentTreeView::getPressedItem()
+//-----------------------------------------------------------------------------
+ComponentEditorItem* ComponentTreeView::getPressedItem()
+{
     // To get correct internal pointer, the index from source model must be used. Proxy performs the mapping.
     ComponentEditorTreeProxyModel* proxy = dynamic_cast<ComponentEditorTreeProxyModel*>(model());
     Q_ASSERT(proxy != 0);
-	ComponentEditorItem* item = static_cast<ComponentEditorItem*>(proxy->mapToSource(index).internalPointer());
-    
-	item->openItem(item->hasBuiltinEditor());
+
+    QModelIndex index = indexAt(pressedPoint_);
+
+    return static_cast<ComponentEditorItem*>(proxy->mapToSource(index).internalPointer());    
 }

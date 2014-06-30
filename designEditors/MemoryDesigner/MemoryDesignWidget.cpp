@@ -26,8 +26,6 @@
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/designconfiguration.h>
 
-#include <mainwindow/mainwindow.h>
-
 #include <QScrollBar>
 #include <QKeyEvent>
 #include <QVBoxLayout>

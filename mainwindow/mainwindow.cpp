@@ -98,6 +98,7 @@
 #include <QCoreApplication>
 #include <QApplication>
 #include <QSettings>
+#include <QStringList>
 #include <QToolBar>
 #include <QMenu>
 #include <QAction>
@@ -117,6 +118,7 @@
 #include <QDesktopServices>
 #include <QDebug>
 #include <QPainter>
+#include <QProcess>
 
 class LibraryItem;
 
@@ -3443,6 +3445,8 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 		this, SLOT(openSWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 	connect(editor, SIGNAL(openSystemDesign(const VLNV&, const QString&)),
 		this, SLOT(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+    connect(editor, SIGNAL(openFile(QString const&)), 
+        this, SLOT(selectApplicationAndOpenFile(QString const&)), Qt::UniqueConnection);
 
     registerDocument(editor, forceUnlocked);
 
@@ -3524,6 +3528,25 @@ void MainWindow::openApiDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
     registerDocument(editor, forceUnlocked);
 }
 
+//-----------------------------------------------------------------------------
+// Function: MainWindow::selectApplicationAndOpenFile()
+//-----------------------------------------------------------------------------
+void MainWindow::selectApplicationAndOpenFile(QString const& fileAbsolutePath)
+{
+    QString applicationPath = QFileDialog::getOpenFileName(this, tr("Select Application"));
+
+    if (!applicationPath.isEmpty())
+    {
+        QStringList arguments(fileAbsolutePath);
+
+        QProcess* application = new QProcess(this);
+        application->start(applicationPath, arguments);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::isOpen()
+//-----------------------------------------------------------------------------
 bool MainWindow::isOpen( const VLNV& vlnv ) const {
 	if (!vlnv.isValid()) {
 		return false;
@@ -3540,29 +3563,6 @@ bool MainWindow::isOpen( const VLNV& vlnv ) const {
 	}
 	// document was not open
 	return false;
-}
-
-
-//-----------------------------------------------------------------------------
-// Function: MainWindow::isDocumentOpen()
-//-----------------------------------------------------------------------------
-bool MainWindow::isDocumentOpen(VLNV const& vlnv) const
-{
-    if (!vlnv.isValid()) {
-        return false;
-    }
-
-    for (int i = 0; i < designTabs_->count(); i++) {
-        TabDocument* document = dynamic_cast<TabDocument*>(designTabs_->widget(i));
-
-        // if the document is already open is some tab
-        if (document && document->getDocumentVLNV() == vlnv) {
-            designTabs_->setCurrentIndex(i);
-            return true;
-        }
-    }
-    // document was not open
-    return false;
 }
 
 //-----------------------------------------------------------------------------

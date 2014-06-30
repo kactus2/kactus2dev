@@ -17,7 +17,7 @@
 #include <QAction>
 
 class LibraryInterface;
-
+class ComponentEditorItem;
 /*! \brief ComponentTreeView is a widget to display the navigation tree.
  * 
  * This tree view displays a navigation tree in IPXactComponentEditor that
@@ -63,6 +63,9 @@ signals:
 	//! \brief Emitted when user wants to move item from one place to another.
 	void moveItem(const QModelIndex& source, const QModelIndex& target);
 
+    //! Emitted when user wants to open a file with a specified application.
+    void openFile(QString const& fileAbsolutePath);
+
 protected:
 
 	/*! \brief Called when a new item becomes the current item.
@@ -97,6 +100,9 @@ private slots:
 	//! \brief Open an item at position pressedPoint_
 	void onFileOpen();
 
+    //! \brief Open an item at position pressedPoint_
+    void onFileOpenWith();
+
 private:
 
 	//! No copying
@@ -104,6 +110,13 @@ private:
 
 	//! No assignment
 	ComponentTreeView& operator=(const ComponentTreeView& other);
+
+    /*!
+     *  Finds the clicked item.     
+     *
+     *      @return The clicked item.
+     */
+    ComponentEditorItem* getPressedItem();
 
 	//! \brief The mouse position where the mouse was pressed.
 	QPoint pressedPoint_;
@@ -113,6 +126,9 @@ private:
 
 	//! \brief The action to open files from the component editor for editing.
 	QAction fileEditAction_;
+
+    //! The action to open a file with a user-specified editor.
+    QAction fileEditWithAction_;
 
 	//! \brief Pointer to the instance that manages the library.
 	LibraryInterface* handler_;

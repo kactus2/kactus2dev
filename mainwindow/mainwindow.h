@@ -155,6 +155,13 @@ public slots:
      */
     void openApiDefinition(VLNV const& vlnv, bool forceUnlocked = false);
 
+    /*!
+     *  Asks user for an application to open a given file and opens it.
+     *
+     *      @param [in] fileAbsolutePath   Absolute path to file to open.          
+     */
+    void selectApplicationAndOpenFile(QString const& fileAbsolutePath);
+
     /*! \brief Called when user wants to close a design tab
 	 *
 	 * \param index Index of the tab to close
@@ -648,16 +655,6 @@ private:
 	 * \return True if the document was already open in some tab.
 	*/
 	bool isOpen(const VLNV& vlnv) const;
-
-    /*! \brief Check if a document with the given vlnv is already open in some tab.
-	 *
-	 * \param vlnv The vlnv that identifies the document.
-	 * 
-	 * \remark If a document with given vlnv is open then the tab is selected.
-	 * 
-	 * \return True if the document was already open in some tab.
-	*/
-	bool isDocumentOpen(VLNV const& vlnv) const;
 
     /*!
      *  Sets the visibility for a given window type if it is supported in the current document.

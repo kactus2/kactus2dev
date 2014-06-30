@@ -138,6 +138,13 @@ signals:
      */
     void openCSource(QString const& filename, QSharedPointer<Component> component);
 
+    /*!
+     *  Emitted to request opening of a specific file.
+     *
+     *      @param [in] fileAbsolutePath   The absolute path to the file to open.
+     */
+    void openFile(QString const& fileAbsolutePath);
+
 private:
 	//! \brief No copying
 	ComponentEditor(const ComponentEditor& other);
