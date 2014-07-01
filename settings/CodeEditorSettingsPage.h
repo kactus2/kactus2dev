@@ -12,7 +12,7 @@
 #ifndef CODEEDITORSETTINGSPAGE_H
 #define CODEEDITORSETTINGSPAGE_H
 
-#include <common/dialogs/propertyPageDialog/PropertyPageView.h>
+#include "SettingsPage.h"
 #include <common/widgets/colorBox/ColorBox.h>
 #include <common/widgets/assistedTextEdit/HighlightStyleDesc.h>
 
@@ -30,7 +30,7 @@
 //-----------------------------------------------------------------------------
 //! CodeEditorSettingsPage class.
 //-----------------------------------------------------------------------------
-class CodeEditorSettingsPage : public PropertyPageView
+class CodeEditorSettingsPage : public SettingsPage
 {
     Q_OBJECT
 
@@ -45,7 +45,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~CodeEditorSettingsPage();
+    virtual ~CodeEditorSettingsPage();
 
     /*!
      *  Validates the contents of the page thoroughly.
@@ -60,13 +60,6 @@ public:
      *  Applies the changes that were done in the page.
      */
     void apply();
-
-    /*!
-     *  Called when the page is to be changed and this page would be hidden.
-     *
-     *      @return False, if the page change should be rejected. Otherwise true.
-     */
-    bool onPageChange();
 
 public slots:
     //! Requests the user to select a color.
@@ -84,8 +77,12 @@ public slots:
 
 private:
     // Disable copying.
-    CodeEditorSettingsPage(CodeEditorSettingsPage const& rhs);
+    CodeEditorSettingsPage(CodeEditorSettingsPage const& rhs);    
+
     CodeEditorSettingsPage& operator=(CodeEditorSettingsPage const& rhs);
+    
+    //! Sets the page layout.
+    void setupLayout();
 
     /*!
      *  Loads the current settings.
@@ -101,9 +98,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The settings store.
-    QSettings& settings_;
 
     //! Indent width edit.
     QLineEdit* indentWidthEdit_;

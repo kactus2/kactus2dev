@@ -9,16 +9,16 @@
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 #include "k2envvarmodel.h"
 
-#include <QVBoxLayout>
-#include <QMessageBox>
 #include <QCoreApplication>
+#include <QMessageBox>
+#include <QSettings>
+#include <QVBoxLayout>
 
 K2EnvVariableSettingsPage::K2EnvVariableSettingsPage(QSettings& settings, PluginManager& pluginMgr):
-PropertyPageView(),
-settings_(settings),
+SettingsPage(settings),
 view_(NULL),
-model_(NULL) {
-
+model_(NULL) 
+{
 	// set up the view
 	view_ = new EditableTableView(this);
 	view_->setAllowImportExport(false);
@@ -27,7 +27,7 @@ model_(NULL) {
 	view_->setItemDelegate(new LineEditDelegate(this));
 
 	// set up the model
-	model_ = new K2EnvVarModel(settings_, pluginMgr, this);
+	model_ = new K2EnvVarModel(settings, pluginMgr, this);
 	view_->setModel(model_);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
@@ -39,25 +39,27 @@ model_(NULL) {
 		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
 
-K2EnvVariableSettingsPage::~K2EnvVariableSettingsPage() {
+K2EnvVariableSettingsPage::~K2EnvVariableSettingsPage()
+{
+
 }
 
-void K2EnvVariableSettingsPage::apply() {
-	model_->apply(settings_);
+void K2EnvVariableSettingsPage::apply()
+{
+	model_->apply(settings());
 }
 
-bool K2EnvVariableSettingsPage::prevalidate() const {
+bool K2EnvVariableSettingsPage::prevalidate() const
+{
 	return !model_->containsEmptyVariables();
 }
 
-bool K2EnvVariableSettingsPage::validate() {
-	if (model_->containsEmptyVariables()) {
+bool K2EnvVariableSettingsPage::validate()
+{
+	if (!prevalidate())
+    {
 		QMessageBox::critical(this, QCoreApplication::applicationName(), tr("All environment variables must have defined name."));
 		return false;
 	}
 	return true;
-}
-
-bool K2EnvVariableSettingsPage::onPageChange() {
-	return !model_->containsEmptyVariables();
 }

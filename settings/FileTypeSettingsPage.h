@@ -14,7 +14,7 @@
 
 #include "FileTypesModel.h"
 
-#include <common/dialogs/propertyPageDialog/PropertyPageView.h>
+#include "SettingsPage.h"
 #include "filetypesview.h"
 
 #include <QLineEdit>
@@ -24,7 +24,7 @@
 //-----------------------------------------------------------------------------
 //! FileTypeSettingsPage class.
 //-----------------------------------------------------------------------------
-class FileTypeSettingsPage : public PropertyPageView
+class FileTypeSettingsPage : public SettingsPage
 {
     Q_OBJECT
 
@@ -39,28 +39,12 @@ public:
     /*!
      *  Destructor.
      */
-    ~FileTypeSettingsPage();
-
-    /*!
-     *  Validates the contents of the page thoroughly.
-     *
-     *      @return True, if the contents are valid. False, if they are invalid.
-     *
-     *      @remarks Showing message boxes for errors is allowed.
-     */
-    bool validate();
+    virtual ~FileTypeSettingsPage();
 
     /*!
      *  Applies the changes that were done in the page.
      */
     virtual void apply();
-
-    /*!
-     *  Called when the page is to be changed and this page would be hidden.
-     *
-     *      @return False, if the page change should be rejected. Otherwise true.
-     */
-    bool onPageChange();
 
 private:
     // Disable copying.
@@ -70,9 +54,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The settings store.
-    QSettings& settings_;
 
     //! The file types data model.
     FileTypesModel model_;

@@ -21,7 +21,7 @@
 // Function: FileTypeSettingsPage()
 //-----------------------------------------------------------------------------
 FileTypeSettingsPage::FileTypeSettingsPage(QSettings& settings)
-    : settings_(settings),
+    : SettingsPage(settings),
       model_(settings, this),
       proxyModel_(this),
       view_(this),
@@ -57,32 +57,10 @@ FileTypeSettingsPage::~FileTypeSettingsPage()
 }
 
 //-----------------------------------------------------------------------------
-// Function: validate()
-//-----------------------------------------------------------------------------
-bool FileTypeSettingsPage::validate()
-{
-    return true;
-}
-
-//-----------------------------------------------------------------------------
 // Function: apply()
 //-----------------------------------------------------------------------------
 void FileTypeSettingsPage::apply()
 {
-    model_.apply(settings_);
-    settings_.setValue("FileTypes/IgnoredExtensions", ignoredExtensionsEdit_.text());
-}
-
-//-----------------------------------------------------------------------------
-// Function: onPageChange()
-//-----------------------------------------------------------------------------
-bool FileTypeSettingsPage::onPageChange()
-{
-    // Do not change the page if the settings are invalid.
-    if (!validate())
-    {
-        return false;
-    }
-
-    return true;
+    model_.apply(settings());
+    settings().setValue("FileTypes/IgnoredExtensions", ignoredExtensionsEdit_.text());
 }

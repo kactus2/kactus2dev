@@ -12,7 +12,7 @@
 #ifndef NAMINGPOLICYSETTINGSPAGE_H
 #define NAMINGPOLICYSETTINGSPAGE_H
 
-#include <common/dialogs/propertyPageDialog/PropertyPageView.h>
+#include "SettingsPage.h"
 
 #include <QComboBox>
 #include <QLabel>
@@ -26,7 +26,7 @@ class SnippetTextEdit;
 //-----------------------------------------------------------------------------
 //! NamingPolicySettingsPage class.
 //-----------------------------------------------------------------------------
-class NamingPolicySettingsPage : public PropertyPageView
+class NamingPolicySettingsPage : public SettingsPage
 {
     Q_OBJECT
 
@@ -41,28 +41,12 @@ public:
     /*!
      *  Destructor.
      */
-    ~NamingPolicySettingsPage();
-
-    /*!
-     *  Validates the contents of the page thoroughly.
-     *
-     *      @return True, if the contents are valid. False, if they are invalid.
-     *
-     *      @remarks Showing message boxes for errors is allowed.
-     */
-    bool validate();
+    virtual ~NamingPolicySettingsPage();
 
     /*!
      *  Applies the changes that were done in the page.
      */
     void apply();
-
-    /*!
-     *  Called when the page is to be changed and this page would be hidden.
-     *
-     *      @return False, if the page change should be rejected. Otherwise true.
-     */
-    bool onPageChange();
 
 private slots:
     /*!
@@ -117,9 +101,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The settings store.
-    QSettings& settings_;
 
     //! Policy categories data.
     QList<PolicyCategory> categories_;

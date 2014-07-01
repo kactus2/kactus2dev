@@ -13,25 +13,23 @@
 
 #include <common/utils.h>
 
-#include <QVBoxLayout>
-#include <QDir>
-#include <QPushButton>
-#include <QFileDialog>
-#include <QLabel>
 #include <QCoreApplication>
+#include <QLabel>
 #include <QMessageBox>
+#include <QSettings>
+#include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: GeneralSettingsPage()
 //-----------------------------------------------------------------------------
 GeneralSettingsPage::GeneralSettingsPage(QSettings& settings):
-settings_(settings),
+SettingsPage(settings),
 usernameEdit_(0)
 {
     // Create the username line edit and label.
     QLabel* usernameLabel = new QLabel(tr("User name:"), this);
 
-    QString username = settings_.value("General/Username", Utils::getCurrentUser()).toString();
+    QString username = settings.value("General/Username", Utils::getCurrentUser()).toString();
     usernameEdit_ = new QLineEdit(username, this);
 
     // Setup the layout.
@@ -46,6 +44,7 @@ usernameEdit_(0)
 //-----------------------------------------------------------------------------
 GeneralSettingsPage::~GeneralSettingsPage()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -73,19 +72,5 @@ bool GeneralSettingsPage::validate()
 void GeneralSettingsPage::apply()
 {
     // Save the settings.
-    settings_.setValue("General/Username", usernameEdit_->text());
-}
-
-//-----------------------------------------------------------------------------
-// Function: onPageChange()
-//-----------------------------------------------------------------------------
-bool GeneralSettingsPage::onPageChange()
-{
-    // Do not change the page if the settings are invalid.
-    if (!validate())
-    {
-        return false;
-    }
-
-    return true;
+    settings().setValue("General/Username", usernameEdit_->text());
 }

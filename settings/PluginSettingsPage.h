@@ -12,7 +12,8 @@
 #ifndef PLUGINSETTINGSPAGE_H
 #define PLUGINSETTINGSPAGE_H
 
-#include <common/dialogs/propertyPageDialog/PropertyPageView.h>
+#include "SettingsPage.h"
+
 #include <common/widgets/DirectoryListSelector/DirectoryListSelector.h>
 #include <Plugins/PluginSystem/PluginManager.h>
 
@@ -23,7 +24,7 @@
 //-----------------------------------------------------------------------------
 //! PluginSettingsPage class.
 //-----------------------------------------------------------------------------
-class PluginSettingsPage : public PropertyPageView
+class PluginSettingsPage : public SettingsPage
 {
     Q_OBJECT
 
@@ -39,7 +40,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~PluginSettingsPage();
+    virtual  ~PluginSettingsPage();
 
     /*!
      *  Validates the contents of the page thoroughly.
@@ -54,13 +55,6 @@ public:
      *  Applies the changes that were done in the page.
      */
     void apply();
-
-    /*!
-     *  Called when the page is to be changed and this page would be hidden.
-     *
-     *      @return False, if the page change should be rejected. Otherwise true.
-     */
-    bool onPageChange();
 
 private slots:
     /*!

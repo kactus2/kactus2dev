@@ -12,7 +12,7 @@
 #ifndef GENERALSETTINGSPAGE_H
 #define GENERALSETTINGSPAGE_H
 
-#include <common/dialogs/propertyPageDialog/PropertyPageView.h>
+#include "SettingsPage.h"
 
 #include <QLineEdit>
 #include <QSettings>
@@ -20,7 +20,7 @@
 //-----------------------------------------------------------------------------
 //! GeneralSettingsPage class.
 //-----------------------------------------------------------------------------
-class GeneralSettingsPage : public PropertyPageView
+class GeneralSettingsPage : public SettingsPage
 {
     Q_OBJECT
 
@@ -35,7 +35,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~GeneralSettingsPage();
+    virtual ~GeneralSettingsPage();
 
     /*!
      *  Validates the contents of the page thoroughly.
@@ -51,13 +51,6 @@ public:
      */
     void apply();
 
-    /*!
-     *  Called when the page is to be changed and this page would be hidden.
-     *
-     *      @return False, if the page change should be rejected. Otherwise true.
-     */
-    bool onPageChange();
-
 private:
     // Disable copying.
     GeneralSettingsPage(GeneralSettingsPage const& rhs);
@@ -66,9 +59,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The settings store.
-    QSettings& settings_;
 
     //! Username line edit.
     QLineEdit* usernameEdit_;

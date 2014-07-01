@@ -8,7 +8,7 @@
 #ifndef K2ENVVARIABLESETTINGSPAGE_H
 #define K2ENVVARIABLESETTINGSPAGE_H
 
-#include <common/dialogs/propertyPageDialog/PropertyPageView.h>
+#include "SettingsPage.h"
 #include <common/views/EditableTableView/editabletableview.h>
 #include <Plugins/PluginSystem/PluginManager.h>
 
@@ -19,7 +19,8 @@ class K2EnvVarModel;
 /*! \brief Displays the Kactus2 environment variables in settings dialog.
  *
  */
-class K2EnvVariableSettingsPage : public PropertyPageView {
+class K2EnvVariableSettingsPage : public SettingsPage 
+{
 	Q_OBJECT
 
 public:
@@ -71,17 +72,6 @@ public:
     */
     virtual bool validate();
 
-    /*! \brief Checks that all variables have a defined name.
-     *
-     * Method: 		onPageChange
-     * Full name:	K2EnvVariableSettingsPage::onPageChange
-     * Access:		virtual public 
-     *
-     *
-     * \return False if at least one variable is unnamed.
-    */
-    virtual bool onPageChange();
-
 private:
 
 	//! \brief No copying
@@ -89,9 +79,6 @@ private:
 
 	//! \brief No assignment
 	K2EnvVariableSettingsPage& operator=(const K2EnvVariableSettingsPage& other);
-
-	//! \brief The settings for Kactus2.
-	QSettings& settings_;
 
 	//! \brief Displays the environment variables.
 	EditableTableView* view_;

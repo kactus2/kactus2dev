@@ -641,6 +641,7 @@ HEADERS += ./resource.h \
     ./designEditors/common/Association/AssociationChangeEndpointCommand.h \
     ./designEditors/common/ComponentDesignDiagram.h \
     ./common/commands/DocumentUndoCommand.h \
+    ./settings/SettingsPage.h \
     ./designEditors/common/StickyNote/StickyNoteEditCommand.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
@@ -1241,6 +1242,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
+    ./settings/SettingsPage.cpp \
     ./designEditors/common/Association/AssociationRemoveCommand.cpp \
     ./designEditors/common/Association/AssociationAddCommand.cpp \
     ./designEditors/common/Association/AssociationChangeEndpointCommand.cpp \

@@ -39,7 +39,8 @@ namespace
 // Function: PluginSettingsPage::PluginSettingsPage()
 //-----------------------------------------------------------------------------
 PluginSettingsPage::PluginSettingsPage(QSettings& settings, PluginManager& pluginMgr)
-    : settings_(settings),
+    : SettingsPage(settings),
+    settings_(settings),
     pluginMgr_(pluginMgr),
     localManager_(QStringList()),
     pluginDirSelector_(QApplication::applicationDirPath(), 
@@ -136,20 +137,6 @@ void PluginSettingsPage::apply()
     }
 
     settings_.endGroup();
-}
-
-//-----------------------------------------------------------------------------
-// Function: PluginSettingsPage::onPageChange()
-//-----------------------------------------------------------------------------
-bool PluginSettingsPage::onPageChange()
-{
-    // Do not change the page if the settings are invalid.
-    if (!validate())
-    {
-        return false;
-    }
-
-    return true;
 }
 
 //-----------------------------------------------------------------------------

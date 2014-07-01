@@ -26,7 +26,7 @@
 // Function: NamingPolicySettingsPage()
 //-----------------------------------------------------------------------------
 NamingPolicySettingsPage::NamingPolicySettingsPage(QSettings& settings)
-    : settings_(settings),
+    : SettingsPage(settings),
       categories_(),
       curCategoryIndex_(-1),
       categoryLabel_(new QLabel(tr("Show naming policy for:"), this)),
@@ -73,15 +73,7 @@ NamingPolicySettingsPage::NamingPolicySettingsPage(QSettings& settings)
 //-----------------------------------------------------------------------------
 NamingPolicySettingsPage::~NamingPolicySettingsPage()
 {
-}
 
-//-----------------------------------------------------------------------------
-// Function: validate()
-//-----------------------------------------------------------------------------
-bool NamingPolicySettingsPage::validate()
-{
-    Q_ASSERT(prevalidate());
-    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -93,23 +85,8 @@ void NamingPolicySettingsPage::apply()
 
     foreach (PolicyCategory const& category, categories_)
     {
-        settings_.setValue(category.key, category.values);
+        settings().setValue(category.key, category.values);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: onPageChange()
-//-----------------------------------------------------------------------------
-bool NamingPolicySettingsPage::onPageChange()
-{
-    // Do not change the page if the settings are invalid.
-    if (!validate())
-    {
-        return false;
-    }
-
-    // Allow the page to be changed.
-    return true;
 }
 
 //-----------------------------------------------------------------------------

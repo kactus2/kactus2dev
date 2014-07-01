@@ -4147,6 +4147,12 @@
     <ClCompile Include="designEditors\common\StickyNote\StickyNoteEditCommand.cpp">
       <Filter>Source Files\designEditors\common\StickyNote</Filter>
     </ClCompile>
+    <ClCompile Include="settings\SettingsPage.cpp">
+      <Filter>Source Files\settings</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SettingsPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5579,6 +5585,9 @@
     </CustomBuild>
     <CustomBuild Include="designEditors\common\ComponentDesignDiagram.h">
       <Filter>Header Files\designEditors\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="settings\SettingsPage.h">
+      <Filter>Header Files\settings</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
