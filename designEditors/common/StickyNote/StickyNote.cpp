@@ -60,8 +60,6 @@ StickyNote::StickyNote(QGraphicsItem* parent):
     createAssociationButton();    
 
     connect(textArea_, SIGNAL(contentChanged()), this, SLOT(onTextEdited()), Qt::UniqueConnection);
-    connect(textArea_, SIGNAL(undoAdded(QTextDocument*)), 
-        this, SLOT(onTextUndoCommandAdded(QTextDocument*)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

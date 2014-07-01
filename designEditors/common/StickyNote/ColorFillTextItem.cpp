@@ -25,9 +25,7 @@ QGraphicsTextItem(parent),
 fillColor_()
 { 
     setFlag(ItemIsFocusable);
-    setTextInteractionFlags(Qt::TextEditorInteraction);
-
-    connect(document(), SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);    
+    setTextInteractionFlags(Qt::TextEditorInteraction);  
 }
 
 //-----------------------------------------------------------------------------
