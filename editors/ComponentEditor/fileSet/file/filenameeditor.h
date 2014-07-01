@@ -1,61 +1,49 @@
-/* 
- *
- *  Created on: 5.2.2011
- *      Author: Antti Kamppi
- * 		filename: filenameeditor.h
- */
+//-----------------------------------------------------------------------------
+// File: filenameeditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 5.2.2011
+//
+// Description:
+// FileNameEditor is a widget to display the name element in FileSet.
+//-----------------------------------------------------------------------------
 
 #ifndef FILENAMEEDITOR_H
 #define FILENAMEEDITOR_H
 
-#include "filenamelineedit.h"
-#include <IPXACTmodels/component.h>
-
 #include <QGroupBox>
-#include <QMap>
 #include <QString>
-#include <QFileInfo>
 #include <QSharedPointer>
 #include <QLabel>
 
-class LibraryInterface;
-
-/*! \brief FileNameEditor is a widget to edit the name element in FileSet.
- * 
- * This widget is also used to manage the attributes for the name-element.
- */
-class FileNameEditor : public QGroupBox {
-	Q_OBJECT
-
+class File;
+//-----------------------------------------------------------------------------
+// Class FileNameEditor.
+//-----------------------------------------------------------------------------
+class FileNameEditor : public QGroupBox 
+{
 public:
-
 	
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param parent Pointer to the owner of this widget
-     * \param file Pointer to the file being edited.
+	 *      @param [in] file    Pointer to the file being edited.
+     *      @param [in] parent  Pointer to the owner of this widget     
 	 *
 	*/
-	FileNameEditor(QWidget *parent,
-        QSharedPointer<File> file);
+	FileNameEditor(QSharedPointer<File> file, QWidget *parent);
 
-	//! \brief The destructor
+	//! The destructor
 	virtual ~FileNameEditor();
 
-	/*! \brief Checks that the widget has valid inputs.
+	/*! Checks that the widget has valid inputs.
 	 *
-	 *
-	 * \return True if the widget is in valid state and changes can be applied.
-	*/
+	 * @return True if the widget is in valid state and changes can be applied.
+	 */
 	bool isValid() const;
 
-	//! \brief Refresh the editor.
+	//! Refresh the editor.
 	void refresh();
-
-signals:
-
-	//! \brief Emitted when contents of the widget change.
-	void contentChanged();
 
 private:
 
@@ -65,11 +53,10 @@ private:
 	//! No assignment
 	FileNameEditor& operator=(const FileNameEditor& other);
 	
-	//! \brief The editor to edit the name of the file.
-	//FileNameLineEdit nameEdit_;
-    QLabel nameEdit_;
+	//! The label to display the file name.
+    QLabel fileNameLabel_;
 
-	//! \brief Pointer to the file being edited.
+	//! Pointer to the file being edited.
 	QSharedPointer<File> file_;
 };
 

@@ -1,80 +1,106 @@
-/* 
- *
- *  Created on: 7.2.2011
- *      Author: Antti Kamppi
- * 		filename: filegeneraltab.cpp
- */
+//-----------------------------------------------------------------------------
+// File: filegeneraltab.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 7.2.2011
+//
+// Description:
+// FileGeneralTab is a widget to edit File's general settings.
+//-----------------------------------------------------------------------------
 
 #include "filegeneraltab.h"
 
-#include <QVBoxLayout>
-#include <QStringList>
 #include <QGroupBox>
+#include <QStringList>
+#include <QVBoxLayout>
 
+//-----------------------------------------------------------------------------
+// Function: FileGeneralTab::FileGeneralTab()
+//-----------------------------------------------------------------------------
 FileGeneralTab::FileGeneralTab(LibraryInterface* handler,
 							   QSharedPointer<Component> component,
 							   QSharedPointer<File> file, 
 							   QWidget *parent ):
 QWidget(parent), 
 file_(file),
-nameEditor_(this, file),
+nameEditor_(file, this),
 generalEditor_(this, file),
 fileTypeEditor_(this, file),
-buildCommand_(this, handler, component, file) {
+buildCommand_(this, handler, component, file)
+{	
+    setupLayout();
 
-	fileTypeEditor_.initialize();
+    fileTypeEditor_.initialize();
 
-	// the group box that contains the build command so it is clearly separated
-	QGroupBox* buildBox = new QGroupBox(tr("Build command"), this);
-	QVBoxLayout* buildLayout = new QVBoxLayout(buildBox);
-	buildLayout->addWidget(&buildCommand_);
-	buildLayout->setContentsMargins(0, 0, 0, 0);
-
-	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(&nameEditor_);
-	layout->addWidget(&fileTypeEditor_);
-	layout->addWidget(&generalEditor_);
-	layout->addWidget(buildBox);
-
-	connect(&nameEditor_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&generalEditor_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&fileTypeEditor_, SIGNAL(contentChanged()),
-		this, SLOT(onFileTypesChanged()), Qt::UniqueConnection);
-	connect(&buildCommand_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-
-	setLayout(layout);
+	connect(&generalEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&fileTypeEditor_, SIGNAL(contentChanged()),	this, SLOT(onFileTypesChanged()), Qt::UniqueConnection);
+	connect(&buildCommand_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
-FileGeneralTab::~FileGeneralTab() {
+//-----------------------------------------------------------------------------
+// Function: FileGeneralTab::~FileGeneralTab()
+//-----------------------------------------------------------------------------
+FileGeneralTab::~FileGeneralTab()
+{
 
 }
 
-bool FileGeneralTab::isValid() const {
-	
-	// at least one file type has to be defined and the file name must be 
-	// specified.
+//-----------------------------------------------------------------------------
+// Function: FileGeneralTab::isValid()
+//-----------------------------------------------------------------------------
+bool FileGeneralTab::isValid() const
+{	
+	// at least one file type has to be defined and the file name must be specified.
 	return (fileTypeEditor_.isValid() && nameEditor_.isValid());
 }
 
-void FileGeneralTab::refresh() {
+//-----------------------------------------------------------------------------
+// Function: FileGeneralTab::refresh()
+//-----------------------------------------------------------------------------
+void FileGeneralTab::refresh()
+{
 	nameEditor_.refresh();
-
 	generalEditor_.refresh();
 	fileTypeEditor_.restore();
 	buildCommand_.refresh();
 }
 
-void FileGeneralTab::onFileTypesChanged() {
+//-----------------------------------------------------------------------------
+// Function: FileGeneralTab::onFileTypesChanged()
+//-----------------------------------------------------------------------------
+void FileGeneralTab::onFileTypesChanged()
+{
 	// get the file types from the editor to file model
 	QStringList fileTypes = fileTypeEditor_.items();
 	file_->setAllFileTypes(fileTypes);
 	emit contentChanged();
 }
 
-void FileGeneralTab::showEvent( QShowEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: FileGeneralTab::showEvent()
+//-----------------------------------------------------------------------------
+void FileGeneralTab::showEvent( QShowEvent* event )
+{
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/filegeneral.html");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileGeneralTab::setupLayout()
+//-----------------------------------------------------------------------------
+void FileGeneralTab::setupLayout()
+{    
+    QVBoxLayout* topLayout = new QVBoxLayout(this);
+
+    topLayout->addWidget(&nameEditor_);
+    topLayout->addWidget(&fileTypeEditor_);
+    topLayout->addWidget(&generalEditor_);
+
+    QGroupBox* buildBox = new QGroupBox(tr("Build command"), this);
+    QVBoxLayout* buildLayout = new QVBoxLayout(buildBox);
+    buildLayout->addWidget(&buildCommand_);
+    buildLayout->setContentsMargins(0, 0, 0, 0);
+
+    topLayout->addWidget(buildBox);
 }
