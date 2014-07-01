@@ -76,12 +76,19 @@ public:
 	*/
 	virtual bool canBeOpened() const;
 
+    /*!
+     *  Returns the possible actions for opening the item.
+     *
+     *      @return The actions to open the item.
+     */
+    virtual QList<QAction*> actions() const;
+
 public slots:
 	
 	/*! \brief Open the bus definition/abstraction definition in a bus editor.
 	 * 
 	*/
-	virtual void openItem(bool builtinEditor = false);
+	virtual void openItem();
 
 private:
 	//! \brief No copying
@@ -95,6 +102,9 @@ private:
 
 	//! \brief Pointer to the parent window.
 	QWidget* parentWnd_;
+
+    //! Action to open the bus interface for editing.
+    QAction* editAction_;
 };
 
 #endif // COMPONENTEDITORBUSINTERFACEITEM_H

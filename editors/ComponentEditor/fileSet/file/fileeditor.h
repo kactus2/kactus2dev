@@ -55,6 +55,11 @@ public:
 	*/
 	virtual void refresh();
 
+signals:
+
+    //! Emitted when the file should be opened in default editor.
+    void editFile();
+
 private:
 
 	//! No copying

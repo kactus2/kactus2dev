@@ -30,6 +30,8 @@ files_(fileSet->getFiles()) {
 
         connect(fileItem.data(), SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
                 model, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
+        connect(fileItem.data(), SIGNAL(openFile(QString const&, QString const&)),
+            model, SIGNAL(openFile(QString const&, QString const&)), Qt::UniqueConnection);
 
 		childItems_.append(fileItem);
 	}
@@ -109,6 +111,8 @@ void ComponentEditorFileSetItem::createChild( int index ) {
 
     connect(fileItem.data(), SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
             model_, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
+    connect(fileItem.data(), SIGNAL(openFile(QString const&, QString const&)),
+        model_, SIGNAL(openFile(QString const&, QString const&)), Qt::UniqueConnection);
 
 	fileItem->setLocked(locked_);
 	childItems_.insert(index, fileItem);

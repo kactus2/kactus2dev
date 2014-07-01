@@ -73,12 +73,19 @@ public:
 	*/
 	virtual bool canBeOpened() const;
 
+    /*!
+     *  Returns the possible actions for opening the item.
+     *
+     *      @return The actions to open the item.
+     */
+    virtual QList<QAction*> actions() const;
+
 public slots:
 	
 	/*! \brief Open the COM definition in an editor.
 	 * 
 	*/
-	virtual void openItem(bool builtinEditor = false);
+	virtual void openItem();
 
 private:
 	//! \brief No copying
@@ -89,6 +96,9 @@ private:
 
 	//! \brief Pointer to the com interface being edited.
 	QSharedPointer<ComInterface> interface_;
+
+    //! Action to open the COM interface for editing.
+    QAction* editAction_;
 };
 
 #endif // COMPONENTEDITORCOMINTERFACEITEM_H

@@ -252,18 +252,18 @@ bool ComponentEditorItem::canBeOpened() const {
 	return false;
 }
 
-void ComponentEditorItem::openItem(bool /*builtinEditor*/) {
-
+void ComponentEditorItem::openItem()
+{
 	// Normally items can't be opened
 	return;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentEditorItem::hasBuiltinEditor()
+// Function: ComponentEditorItem::actions()
 //-----------------------------------------------------------------------------
-bool ComponentEditorItem::hasBuiltinEditor() const
+QList<QAction* > ComponentEditorItem::actions() const
 {
-    return false;
+    return QList<QAction*>();
 }
 
 QGraphicsItem* ComponentEditorItem::getGraphicsItem() {

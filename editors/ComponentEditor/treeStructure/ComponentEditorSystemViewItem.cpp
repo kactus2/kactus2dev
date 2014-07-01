@@ -22,9 +22,11 @@ ComponentEditorSystemViewItem::ComponentEditorSystemViewItem(
 	QSharedPointer<Component> component,
 	ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-systemView_(systemView) {
-
+systemView_(systemView),
+editAction_(new QAction(tr("Edit"), this))
+{
 	Q_ASSERT(systemView_);
+    connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection);
 }
 
 ComponentEditorSystemViewItem::~ComponentEditorSystemViewItem() {
@@ -89,7 +91,19 @@ bool ComponentEditorSystemViewItem::canBeOpened() const {
 	return originalRef == systemView_->getHierarchyRef();
 }
 
-void ComponentEditorSystemViewItem::openItem( bool /*builtinEditor = false*/ ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorSystemViewItem::actions()
+//-----------------------------------------------------------------------------
+QList<QAction*> ComponentEditorSystemViewItem::actions() const
+{
+    QList<QAction*> actionList;
+    actionList.append(editAction_);
+
+    return actionList;   
+}
+
+void ComponentEditorSystemViewItem::openItem()
+{
 	// if item can't be opened
 	if (!canBeOpened()) {
 		emit errorMessage(tr("The changes to component must be saved before view can be opened."));

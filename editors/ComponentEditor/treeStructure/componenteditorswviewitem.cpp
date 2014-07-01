@@ -18,9 +18,11 @@ ComponentEditorSWViewItem::ComponentEditorSWViewItem(
 	QSharedPointer<Component> component,
 	ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-swView_(swView) {
-
-	Q_ASSERT(swView_);
+swView_(swView),
+editAction_(new QAction(tr("Edit"), this))
+{
+    Q_ASSERT(swView_);
+    connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection);
 }
 
 ComponentEditorSWViewItem::~ComponentEditorSWViewItem() {
@@ -85,7 +87,22 @@ bool ComponentEditorSWViewItem::canBeOpened() const {
 	return originalRef == swView_->getHierarchyRef();
 }
 
-void ComponentEditorSWViewItem::openItem( bool /*builtinEditor = false*/ ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorSWViewItem::actions()
+//-----------------------------------------------------------------------------
+QList<QAction*> ComponentEditorSWViewItem::actions() const
+{
+    QList<QAction*> actionList;
+    actionList.append(editAction_);
+
+    return actionList;   
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorSWViewItem::openItem()
+//-----------------------------------------------------------------------------
+void ComponentEditorSWViewItem::openItem()
+{
 	// if item can't be opened
 	if (!canBeOpened()) {
 		emit errorMessage(tr("The changes to component must be saved before view can be opened."));

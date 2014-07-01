@@ -17,6 +17,7 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QFileInfo>
+#include <QFileDialog>
 
 ComponentEditorFileItem::ComponentEditorFileItem(QSharedPointer<File> file,
 												 ComponentEditorTreeModel* model,
@@ -26,7 +27,12 @@ ComponentEditorFileItem::ComponentEditorFileItem(QSharedPointer<File> file,
 ComponentEditorItem(model, libHandler, component, parent),
 file_(file),
 urlTester_(new QRegExpValidator(Utils::URL_IDENTIFY_REG_EXP, this)),
-urlValidator_(new QRegExpValidator(Utils::URL_VALIDITY_REG_EXP, this)) {
+urlValidator_(new QRegExpValidator(Utils::URL_VALIDITY_REG_EXP, this)),
+editAction_(new QAction(tr("Edit"), this)),
+editWithAction_(new QAction(tr("Edit with..."), this))
+{
+    connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection);
+    connect(editWithAction_, SIGNAL(triggered(bool)), this, SLOT(openWith()), Qt::UniqueConnection);
 }
 
 ComponentEditorFileItem::~ComponentEditorFileItem() {
@@ -87,10 +93,9 @@ ItemEditor* ComponentEditorFileItem::editor() {
 	if (!editor_) {
 		editor_ = new FileEditor(libHandler_, component_, file_);
 		editor_->setDisabled(locked_);
-		connect(editor_, SIGNAL(contentChanged()),
-			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-			this, SIGNAL(helpUrlRequested(QString const&)));
+		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
+        connect(editor_, SIGNAL(editFile()), this, SLOT(openItem()), Qt::UniqueConnection);
 	}
 	return editor_;
 }
@@ -107,36 +112,49 @@ bool ComponentEditorFileItem::canBeOpened() const {
 	return true;
 }
 
-void ComponentEditorFileItem::openItem(bool builtinEditor) {
-
-	// create the necessary paths
-	const QString relPath = file_->getName();
-	const QString xmlPath = libHandler_->getPath(*component_->getVlnv());
-	const QString absolutePath = General::getAbsolutePath(xmlPath, relPath);
-
-    if (builtinEditor &&
-        (QFileInfo(absolutePath).completeSuffix().toLower() == "c" ||
-         QFileInfo(absolutePath).completeSuffix().toLower() == "h"))
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::openItem()
+//-----------------------------------------------------------------------------
+void ComponentEditorFileItem::openItem()
+{
+    if (useKactusCSourceEditor())
     {
-        emit openCSource(absolutePath, component_);
+        emit openCSource(fileAbsolutePath(), component_);
     }
     else
     {
-        QDesktopServices::openUrl(QUrl::fromLocalFile(absolutePath));
+        QDesktopServices::openUrl(QUrl::fromLocalFile(fileAbsolutePath()));
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentEditorFileItem::hasBuiltinEditor()
+// Function: ComponentEditorFileItem::openWith()
 //-----------------------------------------------------------------------------
-bool ComponentEditorFileItem::hasBuiltinEditor() const
+void ComponentEditorFileItem::openWith()
 {
-    const QString relPath = file_->getName();
-    const QString xmlPath = libHandler_->getPath(*component_->getVlnv());
-    const QString absolutePath = General::getAbsolutePath(xmlPath, relPath);
-    return QFileInfo(absolutePath).completeSuffix().toLower() == "c";
+    QString applicationPath = QFileDialog::getOpenFileName(0, tr("Select Application"));
+
+    if (QFileInfo(applicationPath).isExecutable())
+    {
+        emit openFile(fileAbsolutePath(), applicationPath);
+    }
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::actions()
+//-----------------------------------------------------------------------------
+QList<QAction*> ComponentEditorFileItem::actions() const
+{
+    QList<QAction*> actionList;
+    actionList.append(editAction_);
+    actionList.append(editWithAction_);
+
+    return actionList;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::onEditorChanged()
+//-----------------------------------------------------------------------------
 void ComponentEditorFileItem::onEditorChanged() {
 	
 	// on file also the grand parent must be updated
@@ -146,4 +164,26 @@ void ComponentEditorFileItem::onEditorChanged() {
 
 	// call the base class to update this and parent
 	ComponentEditorItem::onEditorChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::absolutePath()
+//-----------------------------------------------------------------------------
+QString ComponentEditorFileItem::fileAbsolutePath() const
+{
+    const QString relPath = file_->getName();
+    const QString xmlPath = libHandler_->getPath(*component_->getVlnv());
+
+    return General::getAbsolutePath(xmlPath, relPath);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::useKactusCSourceEditor()
+//-----------------------------------------------------------------------------
+bool ComponentEditorFileItem::useKactusCSourceEditor() const
+{
+    QString filePath = fileAbsolutePath();
+    QString fileSuffix = QFileInfo(filePath).completeSuffix().toLower();
+
+    return fileSuffix == "c" || fileSuffix == "h";
 }

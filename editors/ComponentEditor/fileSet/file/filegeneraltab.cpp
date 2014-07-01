@@ -12,6 +12,7 @@
 #include "filegeneraltab.h"
 
 #include <QGroupBox>
+#include <QHBoxLayout>
 #include <QStringList>
 #include <QVBoxLayout>
 
@@ -25,6 +26,7 @@ FileGeneralTab::FileGeneralTab(LibraryInterface* handler,
 QWidget(parent), 
 file_(file),
 nameEditor_(file, this),
+editButton_(new QPushButton(tr("Edit"), this)),
 generalEditor_(this, file),
 fileTypeEditor_(this, file),
 buildCommand_(this, handler, component, file)
@@ -33,6 +35,7 @@ buildCommand_(this, handler, component, file)
 
     fileTypeEditor_.initialize();
 
+    connect(editButton_, SIGNAL(clicked(bool)), this, SIGNAL(editFile()), Qt::UniqueConnection);
 	connect(&generalEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&fileTypeEditor_, SIGNAL(contentChanged()),	this, SLOT(onFileTypesChanged()), Qt::UniqueConnection);
 	connect(&buildCommand_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -93,7 +96,12 @@ void FileGeneralTab::setupLayout()
 {    
     QVBoxLayout* topLayout = new QVBoxLayout(this);
 
-    topLayout->addWidget(&nameEditor_);
+    QHBoxLayout* nameLayout = new QHBoxLayout();
+    nameLayout->addWidget(&nameEditor_);
+    nameLayout->addWidget(editButton_);    
+
+    topLayout->addLayout(nameLayout);
+
     topLayout->addWidget(&fileTypeEditor_);
     topLayout->addWidget(&generalEditor_);
 

@@ -11,6 +11,7 @@
 #include <library/LibraryManager/libraryinterface.h>
 #include <IPXACTmodels/component.h>
 
+#include <QAction>
 #include <QObject>
 #include <QSharedPointer>
 #include <QFont>
@@ -185,15 +186,18 @@ public:
 	 * The base class implementation always returns false.
 	 * Reimplement this if the item can be opened to some other editor.
 	 * 
-	 * Note: If item can be opened then also reimplement openItem() to perform the opening.
+	 * Note: If item can be opened then also reimplement actions() and openItem() to perform the opening.
 	 *
 	*/
 	virtual bool canBeOpened() const;
 
     /*!
-     *  Returns true if the item has a built-in editor available.
+     *  Returns the possible actions for opening the item.
+	 *  The base class implementation never returns actions.
+     *
+     *      @return The actions to open the item.
      */
-    virtual bool hasBuiltinEditor() const;
+    virtual QList<QAction* > actions() const;
 
 	/*! \brief Get the visualizer graphics item for the element.
 	 *
@@ -238,9 +242,9 @@ public slots:
 	 * The base class implementation does nothing. 
 	 * Reimplement this in sub class to make it possible for item to be opened.
 	 * 
-	 * Note: If item can be opened then also reimplement canBeOpened() to return true.
+	 * Note: If item can be opened then also reimplement actions() and canBeOpened() to return true.
 	*/
-	virtual void openItem(bool builtinEditor);
+    virtual void openItem();
 
 signals:
 	

@@ -2770,9 +2770,6 @@
     <ClCompile Include="GeneratedFiles\moc_filegeneraltab.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_filenameeditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_filenamelineedit.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>

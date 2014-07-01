@@ -72,13 +72,20 @@ public:
 	 * If the hasn't changed then it can be opened.
 	*/
 	virtual bool canBeOpened() const;
+    
+    /*!
+     *  Returns the possible actions for opening the item.
+     *
+     *      @return The actions to open the item.
+     */
+    virtual QList<QAction*> actions() const;
 
 public slots:
 	
 	/*! \brief Open the view in a design editor.
 	 * 
 	*/
-	virtual void openItem(bool builtinEditor = false);
+	virtual void openItem();
 
 private:
 	//! \brief No copying
@@ -86,9 +93,12 @@ private:
 
 	//! \brief No assignment
 	ComponentEditorSWViewItem& operator=(const ComponentEditorSWViewItem& other);
-
+   
 	//! \brief Pointer to the view being edited.
 	QSharedPointer<SWView> swView_;
+
+    //! Action to open the SW view for editing.
+    QAction* editAction_;
 };
 
 #endif // COMPONENTEDITORSWVIEWITEM_H

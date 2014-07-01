@@ -94,12 +94,19 @@ public:
 	*/
     virtual QIcon getIcon() const;
 
+    /*!
+     *  Returns the possible actions for opening the item.
+     *
+     *      @return The actions to open the item.
+     */
+    virtual QList<QAction*> actions() const;
+
 public slots:
 	
 	/*! \brief Open the view in a design editor.
 	 * 
 	*/
-	virtual void openItem(bool builtinEditor = false);
+	virtual void openItem();
 
 private:
 	//! \brief No copying
@@ -110,6 +117,9 @@ private:
 
 	//! \brief Pointer to the view being edited.
 	QSharedPointer<View> view_;
+
+    //! Action to open the view for editing.
+    QAction* editAction_;
 };
 
 #endif // COMPONENTEDITORVIEWITEM_H

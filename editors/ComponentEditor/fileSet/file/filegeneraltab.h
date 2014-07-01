@@ -73,6 +73,9 @@ signals:
 	//! Emitted when a help page should be changed in the context help window.
 	void helpUrlRequested(QString const& url);
 
+    //! Emitted when the file should be opened in default editor.
+    void editFile();
+
 private slots:
 
 	//! Handler for file type editor's changes.
@@ -94,6 +97,9 @@ private:
 
 	//! The widget to edit file's name and name-attributes.
 	FileNameEditor nameEditor_;
+
+    //! Button for opening the file in default editor.
+    QPushButton* editButton_;
 
 	//! The editor to edit the general settings of the file
 	FileGeneralEditor generalEditor_;

@@ -19,8 +19,10 @@ ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem(QSharedPointer<
                                                                  QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
 busif_(busif),
-parentWnd_(parentWnd) {
-
+parentWnd_(parentWnd),
+editAction_(new QAction(tr("Edit"), this))
+{
+    connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection);
 }
 
 ComponentEditorBusInterfaceItem::~ComponentEditorBusInterfaceItem() {
@@ -106,7 +108,19 @@ bool ComponentEditorBusInterfaceItem::canBeOpened() const {
 	}
 }
 
-void ComponentEditorBusInterfaceItem::openItem( bool /*builtinEditor = false*/ ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorBusInterfaceItem::actions()
+//-----------------------------------------------------------------------------
+QList<QAction*> ComponentEditorBusInterfaceItem::actions() const
+{
+    QList<QAction*> actionList;
+    actionList.append(editAction_);
+    
+    return actionList;   
+}
+
+void ComponentEditorBusInterfaceItem::openItem() 
+{
 	VLNV busdefVLNV = busif_->getBusType();
 	VLNV absdefVLNV = busif_->getAbstractionType();
 	emit openBus(busdefVLNV, absdefVLNV);

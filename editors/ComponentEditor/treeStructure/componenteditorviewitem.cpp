@@ -20,11 +20,14 @@ ComponentEditorViewItem::ComponentEditorViewItem(QSharedPointer<View> view,
 												 QSharedPointer<Component> component,
 												 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-view_(view) {
-	
+    view_(view),
+    editAction_(new QAction(tr("Edit"), this))
+{
 	Q_ASSERT(view_);
 
 	setObjectName(tr("ComponentEditorViewItem: %1").arg(view->getName()));
+
+    connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection); 
 }
 
 //-----------------------------------------------------------------------------
@@ -109,9 +112,20 @@ bool ComponentEditorViewItem::canBeOpened() const {
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentEditorViewItem::actions()
+//-----------------------------------------------------------------------------
+QList<QAction*> ComponentEditorViewItem::actions() const
+{
+    QList<QAction*> actionList;
+    actionList.append(editAction_);
+
+    return actionList;   
+}
+
+//-----------------------------------------------------------------------------
 // Function: openItem()
 //-----------------------------------------------------------------------------
-void ComponentEditorViewItem::openItem( bool ) {
+void ComponentEditorViewItem::openItem() {
 	// if item can't be opened
 	if (!canBeOpened()) {
 		return;

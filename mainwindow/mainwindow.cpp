@@ -3445,8 +3445,8 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 		this, SLOT(openSWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 	connect(editor, SIGNAL(openSystemDesign(const VLNV&, const QString&)),
 		this, SLOT(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
-    connect(editor, SIGNAL(openFile(QString const&)), 
-        this, SLOT(selectApplicationAndOpenFile(QString const&)), Qt::UniqueConnection);
+    connect(editor, SIGNAL(openFile(QString const&, QString const&)), 
+        this, SLOT(openFileInApplication(QString const&, QString const&)), Qt::UniqueConnection);
 
     registerDocument(editor, forceUnlocked);
 
@@ -3529,19 +3529,14 @@ void MainWindow::openApiDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainWindow::selectApplicationAndOpenFile()
+// Function: MainWindow::openFileInApplication()
 //-----------------------------------------------------------------------------
-void MainWindow::selectApplicationAndOpenFile(QString const& fileAbsolutePath)
+void MainWindow::openFileInApplication(QString const& fileAbsolutePath, QString const& applicationPath)
 {
-    QString applicationPath = QFileDialog::getOpenFileName(this, tr("Select Application"));
+    QStringList arguments(fileAbsolutePath);
 
-    if (!applicationPath.isEmpty())
-    {
-        QStringList arguments(fileAbsolutePath);
-
-        QProcess* application = new QProcess(this);
-        application->start(applicationPath, arguments);
-    }
+    QProcess* application = new QProcess(this);
+    application->start(applicationPath, arguments);
 }
 
 //-----------------------------------------------------------------------------

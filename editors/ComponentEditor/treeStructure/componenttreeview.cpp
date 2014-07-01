@@ -5,12 +5,12 @@
  */
 
 #include "componenttreeview.h"
+
 #include "componenteditoritem.h"
+
 #include <library/LibraryManager/libraryinterface.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
 
-#include <QProcess>
-#include <QFileDialog>
 #include <QEvent>
 #include <QCursor>
 #include <QMenu>
@@ -25,8 +25,6 @@ ComponentTreeView::ComponentTreeView(LibraryInterface* handler,
 QTreeView(parent),
 pressedPoint_(),
 locked_(true),
-fileEditAction_(tr("Edit"), this),
-fileEditWithAction_(tr("Edit with..."), this),
 handler_(handler),
 componentVLNV_(compVLNV) 
 {
@@ -42,20 +40,6 @@ componentVLNV_(compVLNV)
 	setSelectionMode(QAbstractItemView::SingleSelection);
 
 	setSelectionBehavior(QAbstractItemView::SelectItems);
-
-	connect(&fileEditAction_, SIGNAL(triggered()),
-		this, SLOT(onFileOpen()), Qt::UniqueConnection);
-
-    fileEditAction_.setToolTip(tr("Open the file for editing."));
-    fileEditAction_.setStatusTip(tr("Open the file for editing."));
-
-    connect(&fileEditWithAction_, SIGNAL(triggered()),
-        this, SLOT(onFileOpenWith()), Qt::UniqueConnection);
-
-    fileEditWithAction_.setToolTip(tr("Open the file for editing with a chosen editor."));
-    fileEditWithAction_.setStatusTip(tr("Open the file for editing with a chosen editor.."));
-
-    
 }
 
 //-----------------------------------------------------------------------------
@@ -196,20 +180,16 @@ void ComponentTreeView::contextMenuEvent( QContextMenuEvent* event )
 	
 	// save the position where click occurred
 	pressedPoint_ = event->pos();
-
-    // To get correct internal pointer, the index from source model must be used. Proxy performs the mapping.
-    ComponentEditorTreeProxyModel* proxy = dynamic_cast<ComponentEditorTreeProxyModel*>(model());
-    Q_ASSERT(proxy != 0);
-	ComponentEditorItem* item = static_cast<ComponentEditorItem*>(proxy->mapToSource(index).internalPointer());
+    ComponentEditorItem* item = getPressedItem();
 	
 	// if item can be opened then show the context menu
-	if (item->canBeOpened()) 
+    QMenu menu(this);
+
+    if (item->canBeOpened())
     {
-		QMenu menu(this);
-		menu.addAction(&fileEditAction_);
-        menu.addAction(&fileEditWithAction_);
-		menu.exec(event->globalPos());
-	}
+        menu.addActions(item->actions());
+    }
+    menu.exec(event->globalPos());
 
 	event->accept();
 }
@@ -230,29 +210,7 @@ void ComponentTreeView::mouseDoubleClickEvent( QMouseEvent* event )
 	// save the position where click occurred
 	pressedPoint_ = event->pos();
 	
-	onFileOpen();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentTreeView::onFileOpen()
-//-----------------------------------------------------------------------------
-void ComponentTreeView::onFileOpen()
-{
-    ComponentEditorItem* item = getPressedItem();
-	item->openItem(item->hasBuiltinEditor());
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentTreeView::onFileOpenWith()
-//-----------------------------------------------------------------------------
-void ComponentTreeView::onFileOpenWith()
-{    
-    QString xmlPath = handler_->getPath(componentVLNV_);
-
-    ComponentEditorItem* fileItem = getPressedItem();
-    QString filePath = xmlPath.left(xmlPath.lastIndexOf("/")) + "/" + fileItem->text();
-
-    emit openFile(filePath);
+	getPressedItem()->openItem();
 }
 
 //-----------------------------------------------------------------------------

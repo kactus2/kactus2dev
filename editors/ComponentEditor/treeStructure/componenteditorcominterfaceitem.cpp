@@ -17,8 +17,10 @@ ComponentEditorComInterfaceItem::ComponentEditorComInterfaceItem(QSharedPointer<
 																 QSharedPointer<Component> component,
 																 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-interface_(comInterface) {
-
+interface_(comInterface),
+editAction_(new QAction(tr("Edit"), this))
+{
+    connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection);
 }
 
 ComponentEditorComInterfaceItem::~ComponentEditorComInterfaceItem() {
@@ -73,7 +75,22 @@ bool ComponentEditorComInterfaceItem::canBeOpened() const {
 	}
 }
 
-void ComponentEditorComInterfaceItem::openItem( bool /*builtinEditor = false*/ ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorComInterfaceItem::actions()
+//-----------------------------------------------------------------------------
+QList<QAction*> ComponentEditorComInterfaceItem::actions() const
+{
+    QList<QAction*> actionList;
+    actionList.append(editAction_);
+
+    return actionList;   
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorComInterfaceItem::openItem()
+//-----------------------------------------------------------------------------
+void ComponentEditorComInterfaceItem::openItem() 
+{
 	VLNV comdefVLNV = interface_->getComType();
 	emit openComDefinition(comdefVLNV);
 }

@@ -76,16 +76,24 @@ public:
 	virtual bool canBeOpened() const;
 
     /*!
-     *  Returns true if the item has a built-in editor available.
+     *  Returns the possible actions for opening the item.
+     *
+     *      @return The actions to open the item.
      */
-    virtual bool hasBuiltinEditor() const;
+    virtual QList<QAction*> actions() const;
+
+signals:
+
+    //! Emitted when a file should be opened with a selected application.
+    void openFile(QString const& fileAbsolutePath, QString const& applicationAbsolutePath);
 
 public slots:
 	
-	/*! \brief Open the item in an editor.
-	 * 
-	*/
-	virtual void openItem(bool builtinEditor = false);
+	//! Called to open the item in a default editor.
+	virtual void openItem();
+
+    //! Called to let the user choose an editor to open the item.
+    virtual void openWith();
 
 protected slots:
 
@@ -100,6 +108,14 @@ private:
 
 	//! \brief No assignment
 	ComponentEditorFileItem& operator=(const ComponentEditorFileItem& other);
+   
+    //! Finds the absolute path of the file represented by the item.
+    QString fileAbsolutePath() const;
+
+    /*!
+     *  Returns true if the item has a built-in editor available.
+     */
+    virtual bool useKactusCSourceEditor() const;
 
 	//! \brief Pointer to the file being edited.
 	QSharedPointer<File> file_;
@@ -109,6 +125,13 @@ private:
 
 	//! \brief Validates the file path to check if they are valid URLs.
 	QRegExpValidator* urlValidator_;
+
+    //! Action to open the file for editing with default editor.
+    QAction* editAction_;
+
+    //! Action to open the file for editing with a chosen editor.
+    QAction* editWithAction_;
+
 };
 
 #endif // COMPONENTEDITORFILEITEM_H
