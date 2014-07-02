@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 16.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorfileitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditorfileitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 16.05.2012
+//
+// Description:
+// The item for a single file in component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #include "componenteditorfileitem.h"
 
@@ -21,7 +25,9 @@
 #include <QStringList>
 #include <QUrl>
 
-
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::ComponentEditorFileItem()
+//-----------------------------------------------------------------------------
 ComponentEditorFileItem::ComponentEditorFileItem(QSharedPointer<File> file,
 												 ComponentEditorTreeModel* model,
 												 LibraryInterface* libHandler,
@@ -39,15 +45,26 @@ runAction_(new QAction(tr("Run"), this))
     connect(editWithAction_, SIGNAL(triggered(bool)), this, SLOT(openWith()), Qt::UniqueConnection);
     connect(runAction_, SIGNAL(triggered(bool)), this, SLOT(run()), Qt::UniqueConnection);
 }
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::~ComponentEditorFileItem()
+//-----------------------------------------------------------------------------
+ComponentEditorFileItem::~ComponentEditorFileItem()
+{
 
-ComponentEditorFileItem::~ComponentEditorFileItem() {
 }
-
-QString ComponentEditorFileItem::text() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::text()
+//-----------------------------------------------------------------------------
+QString ComponentEditorFileItem::text() const
+{
 	return file_->getName();
 }
 
-bool ComponentEditorFileItem::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::isValid()
+//-----------------------------------------------------------------------------
+bool ComponentEditorFileItem::isValid() const
+{
 	// if the file is not valid
 	if (!file_->isValid(true)) {
 		return false;
@@ -93,8 +110,11 @@ bool ComponentEditorFileItem::isValid() const {
 	}
 }
 
-ItemEditor* ComponentEditorFileItem::editor() {
-
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::editor()
+//-----------------------------------------------------------------------------
+ItemEditor* ComponentEditorFileItem::editor()
+{
 	if (!editor_) {
 		editor_ = new FileEditor(libHandler_, component_, file_);
 		editor_->setDisabled(locked_);
@@ -105,15 +125,27 @@ ItemEditor* ComponentEditorFileItem::editor() {
 	return editor_;
 }
 
-QFont ComponentEditorFileItem::getFont() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::getFont()
+//-----------------------------------------------------------------------------
+QFont ComponentEditorFileItem::getFont() const
+{
 	return QApplication::font();
 }
 
-QString ComponentEditorFileItem::getTooltip() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::getTooltip()
+//-----------------------------------------------------------------------------
+QString ComponentEditorFileItem::getTooltip() const
+{
 	return tr("Specifies a single file associated with the file set");
 }
 
-bool ComponentEditorFileItem::canBeOpened() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::canBeOpened()
+//-----------------------------------------------------------------------------
+bool ComponentEditorFileItem::canBeOpened() const
+{
 	return true;
 }
 
@@ -168,10 +200,9 @@ QList<QAction*> ComponentEditorFileItem::actions() const
     QList<QAction*> actionList;
     actionList.append(editAction_);
     actionList.append(editWithAction_);
-    if (runExecutableSet())
-    {
-        actionList.append(runAction_);
-    }    
+    actionList.append(runAction_);
+
+    runAction_->setEnabled(runExecutableSet());
 
     return actionList;
 }
@@ -232,6 +263,8 @@ QString ComponentEditorFileItem::executablePath() const
         QString key = "FileTypes/" + fileType + "/Executable";
         QString executableName = settings.value(key).toString();
 
+        executableName = resolveEnvironmentVariables(executableName);
+
         if (QFileInfo(executableName).isExecutable())
         {
             return executableName;
@@ -239,4 +272,33 @@ QString ComponentEditorFileItem::executablePath() const
     }
 
     return QString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::resolveEnvironmentVariables()
+//-----------------------------------------------------------------------------
+QString ComponentEditorFileItem::resolveEnvironmentVariables(QString const& text) const
+{
+    QRegExp environmental("(\\$\\(?\\w+\\)?)");
+    QString parsed = text;
+    QSettings settings;
+
+    parsed.indexOf(environmental);
+   
+    int variableCount = environmental.captureCount();
+    for (int i = 1; i <= variableCount; i++)            //!< i = 0 contains the whole text, skip it.
+    {
+        QString variable = environmental.cap(i);
+        QString variableName = variable;
+        variableName.remove("$");
+        variableName.remove("(");
+        variableName.remove(")");
+
+        QString key = "K2Variables/" + variableName + "/value";
+        QString variableValue = settings.value(key).toString();
+
+        parsed.replace(variable, variableValue);
+    }
+
+    return parsed;
 }

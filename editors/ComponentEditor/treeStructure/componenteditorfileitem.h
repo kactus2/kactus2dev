@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 16.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorfileitem.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditorfileitem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 16.05.2012
+//
+// Description:
+// The item for a single file in component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #ifndef COMPONENTEDITORFILEITEM_H
 #define COMPONENTEDITORFILEITEM_H
@@ -13,9 +17,7 @@
 
 #include <QRegExpValidator>
 
-/*! \brief The item for a single file in component editor's navigation tree.
- *
- */
+
 class ComponentEditorFileItem : public ComponentEditorItem {
 	Q_OBJECT
 
@@ -116,7 +118,7 @@ private:
     QString fileAbsolutePath() const;
 
     /*!
-     *  Returns true if the item should be opened in Kactus CSource editor.
+     *  Returns true if the item should be opened in Kactus2 CSource editor.
      */
     virtual bool useKactusCSourceEditor() const;
 
@@ -133,6 +135,15 @@ private:
      *      @return The path to executable.
      */
     QString executablePath() const;
+
+    /*!
+     *  Finds all the environmental variables in a text and replaces them with the variable value.
+     *
+	 *      @param [in] text    The text to search through.
+     *
+     *      @return A text where variables have been replaced with their values.
+     */
+    QString resolveEnvironmentVariables(QString const& text) const;
 
     //! \brief Pointer to the file being edited.
 	QSharedPointer<File> file_;

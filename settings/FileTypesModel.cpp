@@ -83,7 +83,7 @@ QVariant FileTypesModel::data(QModelIndex const& index, int role /*= Qt::Display
         return QVariant();
     }
 
-    if (role == Qt::DisplayRole)
+    if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
         FileTypeEntry const& entry = entries_.at(index.row());
 
@@ -108,15 +108,17 @@ QVariant FileTypesModel::data(QModelIndex const& index, int role /*= Qt::Display
             }
         }
     }
-	 else if (Qt::UserRole == role) {
-		 QStringList specifiedFileTypes;
-		 foreach (FileTypeEntry const& entry, entries_) {
-			 specifiedFileTypes.append(entry.name);
-		 }
+	else if (Qt::UserRole == role)
+    {
+        QStringList specifiedFileTypes;
+        foreach (FileTypeEntry const& entry, entries_) 
+        {
+            specifiedFileTypes.append(entry.name);
+        }
 
-		 return specifiedFileTypes;
-	 }
-    
+        return specifiedFileTypes;
+	}
+
     return QVariant();
 }
 
