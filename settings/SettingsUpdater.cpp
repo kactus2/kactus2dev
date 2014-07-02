@@ -223,8 +223,8 @@ namespace SettingsUpdater
                     lineStream >> oldKey >> newKey;
                     
                     QVariant value = settings.value(oldKey);
-                    settings.setValue(newKey, value);
                     settings.remove(oldKey);
+                    settings.setValue(newKey, value);                    
                 }
                 else if (token == "copy")
                 {

@@ -23,15 +23,16 @@ FileTypesModel::FileTypesModel(QSettings& settings, QObject *parent)
     beginResetModel();
     settings.beginGroup("FileTypes");
 
-    QStringList typeNames = settings.childKeys();
-
-    foreach (QString const& typeName, typeNames)
+    foreach (QString const& typeName, settings.childGroups())
     {
+        settings.beginGroup(typeName);
         FileTypeEntry entry;
         entry.name = typeName;
-        entry.extensions = settings.value(typeName).toString();
+        entry.extensions = settings.value("Extensions").toString();
+        entry.executable = settings.value("Executable").toString();
 
         entries_.append(entry);
+        settings.endGroup();
     }
 
     settings.endGroup();
@@ -97,7 +98,10 @@ QVariant FileTypesModel::data(QModelIndex const& index, int role /*= Qt::Display
             {
                 return entry.extensions;
             }
-
+        case FILE_TYPES_COL_EXECUTABLE:
+            {
+                return entry.executable;
+            }
         default:
             {
                 return QVariant();
@@ -136,7 +140,10 @@ QVariant FileTypesModel::headerData(int section, Qt::Orientation orientation, in
                 {
                     return tr("Extensions");
                 }
-
+            case FILE_TYPES_COL_EXECUTABLE:
+                {
+                    return tr("Executed with");
+                }
             default:
                 {
                     return QVariant();
@@ -183,7 +190,10 @@ bool FileTypesModel::setData(const QModelIndex& index, const QVariant& value, in
                 entries_[index.row()].extensions = value.toString();
                 break;
             }
-
+        case  FILE_TYPES_COL_EXECUTABLE:
+            {
+                entries_[index.row()].executable = value.toString();
+            }
         default:
             {
                 return false;
@@ -211,6 +221,7 @@ Qt::ItemFlags FileTypesModel::flags(const QModelIndex& index) const
     {
     case FILE_TYPES_COL_NAME:
     case FILE_TYPES_COL_EXTENSIONS:
+    case FILE_TYPES_COL_EXECUTABLE:
         {
             return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
         }
@@ -296,8 +307,13 @@ void FileTypesModel::apply(QSettings& settings)
 	// first clear all previous defined file types to remove duplicates
 	settings.remove("FileTypes");
 
+    settings.beginGroup("FileTypes");
     foreach (FileTypeEntry const& entry, entries_)
     {
-        settings.setValue("FileTypes/" + entry.name, entry.extensions);
+        settings.beginGroup(entry.name);
+        settings.setValue("Extensions", entry.extensions);
+        settings.setValue("Executable", entry.executable);
+        settings.endGroup();
     }
+    settings.endGroup();
 }

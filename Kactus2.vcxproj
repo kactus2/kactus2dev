@@ -318,7 +318,6 @@ CreateHelp
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="common\commands\DocumentUndoCommand.cpp" />
     <ClCompile Include="common\dialogs\commandLineGeneratorDialog\commandlineconsole.cpp" />
     <ClCompile Include="common\dialogs\commandLineGeneratorDialog\commandlinegeneratordialog.cpp" />
     <ClCompile Include="common\dialogs\fileSaveDialog\filesavedialog.cpp" />
@@ -2340,7 +2339,6 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
     </CustomBuild>
-    <ClInclude Include="common\commands\DocumentUndoCommand.h" />
     <ClInclude Include="designEditors\common\Associable.h" />
     <ClInclude Include="designEditors\common\Association.h" />
     <CustomBuild Include="designEditors\common\Association\AssociationRemoveCommand.h">
@@ -14129,6 +14127,7 @@ CreateHelp
     <None Include="ClassDiagram6.cd" />
     <None Include="ClassDiagram7.cd" />
     <None Include="ClassDiagram8.cd" />
+    <None Include="ClassDiagram9.cd" />
     <None Include="common\graphics\abs-def.png" />
     <None Include="common\graphics\add.png" />
     <None Include="common\graphics\appicon.png" />

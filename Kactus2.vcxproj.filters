@@ -950,12 +950,6 @@
     <Filter Include="Header Files\designEditors\common\Association">
       <UniqueIdentifier>{639b5694-b994-4740-a403-6ec20fab5862}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\common\commands">
-      <UniqueIdentifier>{6887e4fd-d6b1-45d7-93ff-271ef4aa5d05}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\commands">
-      <UniqueIdentifier>{25e4efde-0d91-4b28-93aa-b0942ea31fd7}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4141,9 +4135,6 @@
     <ClCompile Include="GeneratedFiles\moc_ComponentDesignDiagram.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="common\commands\DocumentUndoCommand.cpp">
-      <Filter>Source Files\common\commands</Filter>
-    </ClCompile>
     <ClCompile Include="designEditors\common\StickyNote\StickyNoteEditCommand.cpp">
       <Filter>Source Files\designEditors\common\StickyNote</Filter>
     </ClCompile>
@@ -6092,9 +6083,6 @@
     <ClInclude Include="designEditors\common\Association\Association.h">
       <Filter>Header Files\designEditors\common\Association</Filter>
     </ClInclude>
-    <ClInclude Include="common\commands\DocumentUndoCommand.h">
-      <Filter>Header Files\common\commands</Filter>
-    </ClInclude>
     <ClInclude Include="designEditors\common\StickyNote\StickyNoteEditCommand.h">
       <Filter>Header Files\designEditors\common\StickyNote</Filter>
     </ClInclude>
@@ -6439,5 +6427,6 @@
     <None Include="ClassDiagram6.cd" />
     <None Include="ClassDiagram7.cd" />
     <None Include="ClassDiagram8.cd" />
+    <None Include="ClassDiagram9.cd" />
   </ItemGroup>
 </Project>
