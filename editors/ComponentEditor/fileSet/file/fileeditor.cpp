@@ -39,6 +39,7 @@ file_(file) {
 	connect(&generalTab_, SIGNAL(helpUrlRequested(const QString&)),
 		this, SIGNAL(helpUrlRequested(const QString&)), Qt::UniqueConnection);
     connect(&generalTab_, SIGNAL(editFile()), this, SIGNAL(editFile()), Qt::UniqueConnection);
+    connect(&generalTab_, SIGNAL(runFile()), this, SIGNAL(runFile()), Qt::UniqueConnection);
 
 	connect(&extraTab_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&extraTab_, SIGNAL(helpUrlRequested(const QString&)),

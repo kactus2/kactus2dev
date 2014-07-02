@@ -60,6 +60,9 @@ signals:
     //! Emitted when the file should be opened in default editor.
     void editFile();
 
+    //! Emitted when the file should be run.
+    void runFile();
+
 private:
 
 	//! No copying

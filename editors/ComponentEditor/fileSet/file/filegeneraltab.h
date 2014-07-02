@@ -76,6 +76,9 @@ signals:
     //! Emitted when the file should be opened in default editor.
     void editFile();
 
+    //! Emitted when the file should be run.
+    void runFile();
+
 private slots:
 
 	//! Handler for file type editor's changes.
@@ -100,6 +103,9 @@ private:
 
     //! Button for opening the file in default editor.
     QPushButton* editButton_;
+
+    //! Button for running the file.
+    QPushButton* runButton_;
 
 	//! The editor to edit the general settings of the file
 	FileGeneralEditor generalEditor_;
