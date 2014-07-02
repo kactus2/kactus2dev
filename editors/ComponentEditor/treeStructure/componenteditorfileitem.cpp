@@ -38,7 +38,7 @@ file_(file),
 urlTester_(new QRegExpValidator(Utils::URL_IDENTIFY_REG_EXP, this)),
 urlValidator_(new QRegExpValidator(Utils::URL_VALIDITY_REG_EXP, this)),
 editAction_(new QAction(tr("Edit"), this)),
-editWithAction_(new QAction(tr("Edit with..."), this)),
+editWithAction_(new QAction(tr("Edit/Run with..."), this)),
 runAction_(new QAction(tr("Run"), this))
 {
     connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection);
@@ -292,8 +292,13 @@ QString ComponentEditorFileItem::resolveEnvironmentVariables(QString const& text
         QString variable = environmental.cap(i);
         QString variableName = variable;
         variableName.remove("$");
-        variableName.remove("(");
-        variableName.remove(")");
+        
+        // Remove enclosing parathesis.
+        if (variableName.startsWith("("))
+        {
+            variableName = variableName.mid(1);
+            variableName.chop(1);
+        }
 
         QString key = "K2Variables/" + variableName + "/value";
         QString variableValue = settings.value(key).toString();
