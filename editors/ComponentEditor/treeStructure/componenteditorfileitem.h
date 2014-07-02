@@ -95,6 +95,9 @@ public slots:
     //! Called to let the user choose an editor to open the item.
     virtual void openWith();
 
+    //! Called to run the file with the executable set for the file type.
+    virtual void run();
+
 protected slots:
 
 	/*! \brief Handler for editor's contentChanged signal.
@@ -113,11 +116,25 @@ private:
     QString fileAbsolutePath() const;
 
     /*!
-     *  Returns true if the item has a built-in editor available.
+     *  Returns true if the item should be opened in Kactus CSource editor.
      */
     virtual bool useKactusCSourceEditor() const;
 
-	//! \brief Pointer to the file being edited.
+    /*!
+     *  Checks if an executable has been set for the file type.
+     *
+     *      @return True, if valid executable has been set, otherwise false.
+     */
+    bool runExecutableSet() const;
+
+    /*!
+     *  Gets the absolute path to the executable set for the file type.
+     *
+     *      @return The path to executable.
+     */
+    QString executablePath() const;
+
+    //! \brief Pointer to the file being edited.
 	QSharedPointer<File> file_;
 
 	//! \brief Checks if the given string is a URL (invalids are allowed) or not.
@@ -132,6 +149,8 @@ private:
     //! Action to open the file for editing with a chosen editor.
     QAction* editWithAction_;
 
+    //! Action to run the file for editing with an application.
+    QAction* runAction_;
 };
 
 #endif // COMPONENTEDITORFILEITEM_H

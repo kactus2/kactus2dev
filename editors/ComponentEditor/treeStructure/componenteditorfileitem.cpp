@@ -12,12 +12,15 @@
 #include <IPXACTmodels/generaldeclarations.h>
 #include <common/utils.h>
 
-#include <QFont>
 #include <QApplication>
 #include <QDesktopServices>
-#include <QUrl>
 #include <QFileInfo>
 #include <QFileDialog>
+#include <QFont>
+#include <QSettings>
+#include <QStringList>
+#include <QUrl>
+
 
 ComponentEditorFileItem::ComponentEditorFileItem(QSharedPointer<File> file,
 												 ComponentEditorTreeModel* model,
@@ -29,10 +32,12 @@ file_(file),
 urlTester_(new QRegExpValidator(Utils::URL_IDENTIFY_REG_EXP, this)),
 urlValidator_(new QRegExpValidator(Utils::URL_VALIDITY_REG_EXP, this)),
 editAction_(new QAction(tr("Edit"), this)),
-editWithAction_(new QAction(tr("Edit with..."), this))
+editWithAction_(new QAction(tr("Edit with..."), this)),
+runAction_(new QAction(tr("Run"), this))
 {
     connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection);
     connect(editWithAction_, SIGNAL(triggered(bool)), this, SLOT(openWith()), Qt::UniqueConnection);
+    connect(runAction_, SIGNAL(triggered(bool)), this, SLOT(run()), Qt::UniqueConnection);
 }
 
 ComponentEditorFileItem::~ComponentEditorFileItem() {
@@ -141,6 +146,21 @@ void ComponentEditorFileItem::openWith()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::run()
+//-----------------------------------------------------------------------------
+void ComponentEditorFileItem::run()
+{
+    if (runExecutableSet())
+    {
+        emit openFile(fileAbsolutePath(), executablePath());
+    }
+    else
+    {
+        emit errorMessage(tr("No executable set for file type(s)."));
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentEditorFileItem::actions()
 //-----------------------------------------------------------------------------
 QList<QAction*> ComponentEditorFileItem::actions() const
@@ -148,6 +168,10 @@ QList<QAction*> ComponentEditorFileItem::actions() const
     QList<QAction*> actionList;
     actionList.append(editAction_);
     actionList.append(editWithAction_);
+    if (runExecutableSet())
+    {
+        actionList.append(runAction_);
+    }    
 
     return actionList;
 }
@@ -186,4 +210,33 @@ bool ComponentEditorFileItem::useKactusCSourceEditor() const
     QString fileSuffix = QFileInfo(filePath).completeSuffix().toLower();
 
     return fileSuffix == "c" || fileSuffix == "h";
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::runExecutableSet()
+//-----------------------------------------------------------------------------
+bool ComponentEditorFileItem::runExecutableSet() const
+{
+    return !executablePath().isEmpty();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::executablePath()
+//-----------------------------------------------------------------------------
+QString ComponentEditorFileItem::executablePath() const
+{
+    QSettings settings;
+
+    foreach(QString fileType, file_->getAllFileTypes())
+    {
+        QString key = "FileTypes/" + fileType + "/Executable";
+        QString executableName = settings.value(key).toString();
+
+        if (QFileInfo(executableName).isExecutable())
+        {
+            return executableName;
+        }
+    }
+
+    return QString();
 }
