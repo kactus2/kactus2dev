@@ -14,17 +14,9 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
-#include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 #include <common/widgets/kactusAttributeEditor/KactusAttributeEditor.h>
 
 #include <QVBoxLayout>
-#include <QFont>
-#include <QDir>
-#include <QPushButton>
-#include <QFileDialog>
-#include <QLabel>
-#include <QCoreApplication>
-#include <QMessageBox>
 
 //-----------------------------------------------------------------------------
 // Function: NewDesignPage()
@@ -62,9 +54,8 @@ NewDesignPage::~NewDesignPage()
 //-----------------------------------------------------------------------------
 bool NewDesignPage::validate()
 {
-    Q_ASSERT(prevalidate());
-
     VLNV vlnv = vlnvEditor_->getVLNV();
+    bool validVLNV = NewPage::validate();
 
     VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
         vlnv.getName().remove(".comp") + ".design", vlnv.getVersion());
@@ -72,30 +63,21 @@ bool NewDesignPage::validate()
         vlnv.getName().remove(".comp") + ".designcfg", vlnv.getVersion());
 
     // Check if any of the VLNVs already exists.
-    if (libInterface_->contains(vlnv))
+    if (!validVLNV)
     {
-        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-            tr("The component cannot be created because the VLNV %1 already exists in the library.").arg(vlnv.toString()),
-            QMessageBox::Ok, this);
-        msgBox.exec();
+        showErrorForReservedVLVN(vlnv);
         return false;
     }
 
-    if (libInterface_->contains(designVLNV))
+    if (!isUnusedVLNV(designVLNV))
     {
-        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-            tr("The component cannot be created because the VLNV %1 already exists in the library.").arg(designVLNV.toString()),
-            QMessageBox::Ok, this);
-        msgBox.exec();
+        showErrorForReservedVLVN(designVLNV);
         return false;
     }
 
-    if (libInterface_->contains(desConfVLNV))
+    if (!isUnusedVLNV(desConfVLNV))
     {
-        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-            tr("The component cannot be created because the VLNV %1 already exists in the library.").arg(desConfVLNV.toString()),
-            QMessageBox::Ok, this);
-        msgBox.exec();
+        showErrorForReservedVLVN(desConfVLNV);
         return false;
     }    
 
@@ -109,7 +91,7 @@ void NewDesignPage::apply()
 {
     emit createDesign(attributeEditor_->getProductHierarchy(),
                       attributeEditor_->getFirmness(),
-                      vlnvEditor_->getVLNV(), librarySelector_->getPath());
+                      vlnvEditor_->getVLNV(), selectedPath());
 }
 
 //-----------------------------------------------------------------------------

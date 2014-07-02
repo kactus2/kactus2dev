@@ -12,20 +12,12 @@
 #include "NewComponentPage.h"
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
-#include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 #include <common/widgets/kactusAttributeEditor/KactusAttributeEditor.h>
 
 #include <library/LibraryManager/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
-#include <QFont>
-#include <QDir>
-#include <QPushButton>
-#include <QFileDialog>
-#include <QLabel>
-#include <QCoreApplication>
-#include <QMessageBox>
 
 //-----------------------------------------------------------------------------
 // Function: NewComponentPage()
@@ -54,6 +46,7 @@ NewComponentPage::NewComponentPage(LibraryInterface* libInterface, QWidget* pare
 //-----------------------------------------------------------------------------
 NewComponentPage::~NewComponentPage()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -61,19 +54,15 @@ NewComponentPage::~NewComponentPage()
 //-----------------------------------------------------------------------------
 bool NewComponentPage::validate()
 {
-    Q_ASSERT(prevalidate());
+    bool valid = NewPage::validate();
 
     // Check if the VLNV already exists.
-    if (libInterface_->contains(vlnvEditor_->getVLNV()))
-    {
-        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-                           tr("The component cannot be created because the VLNV already exists in the library."),
-                           QMessageBox::Ok, this);
-        msgBox.exec();
-        return false;
+    if (!valid)
+    {        
+        showErrorForReservedVLVN(vlnvEditor_->getVLNV());     
     }
 
-    return true;
+    return valid;
 }
 
 //-----------------------------------------------------------------------------
@@ -83,7 +72,7 @@ void NewComponentPage::apply()
 {
     emit createComponent(attributeEditor_->getProductHierarchy(),
                          attributeEditor_->getFirmness(),
-                         vlnvEditor_->getVLNV(), librarySelector_->getPath());
+                         vlnvEditor_->getVLNV(), selectedPath());
 }
 
 //-----------------------------------------------------------------------------

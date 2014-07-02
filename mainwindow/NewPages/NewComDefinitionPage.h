@@ -13,10 +13,8 @@
 #define NEWCOMDEFINITIONPAGE_H
 
 #include "NewPage.h"
-#include <common/dialogs/propertyPageDialog/PropertyPageView.h>
-#include <common/widgets/vlnvEditor/vlnveditor.h>
 
-#include <QPushButton>
+#include <common/widgets/vlnvEditor/vlnveditor.h>
 
 class LibraryInterface;
 //-----------------------------------------------------------------------------

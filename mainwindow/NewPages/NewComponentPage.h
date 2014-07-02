@@ -15,11 +15,7 @@
 #include "NewPage.h"
 #include <common/KactusAttribute.h>
 
-
-#include <QPushButton>
-
 class LibraryInterface;
-class VLNVEditor;
 class KactusAttributeEditor;
 class VLNV;
 

@@ -33,9 +33,9 @@
 //-----------------------------------------------------------------------------
 NewPage::NewPage(LibraryInterface* libInterface, VLNV::IPXactType vlnvType, 
     QString title, QString description, QWidget* parentDlg)
-    : PropertyPageView(),
+    : PropertyPageView(),      
+      vlnvEditor_(new VLNVEditor(vlnvType, libInterface, parentDlg, this, true)),      
       libInterface_(libInterface),
-      vlnvEditor_(new VLNVEditor(vlnvType, libInterface, parentDlg, this, true)),
       librarySelector_(new LibrarySelectorWidget(this)),
       titleLabel_(new QLabel(title,this)),
       descLabel_(new QLabel(description,this))
@@ -75,17 +75,7 @@ bool NewPage::validate()
 {
     Q_ASSERT(prevalidate());
 
-    // Check if the VLNV already exists.
-    if (libInterface_->contains(vlnvEditor_->getVLNV()))
-    {
-        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-                           tr("The component cannot be created because the VLNV already exists in the library."),
-                           QMessageBox::Ok, this);
-        msgBox.exec();
-        return false;
-    }
-
-    return true;
+    return isUnusedVLNV(vlnvEditor_->getVLNV());
 }
 
 //-----------------------------------------------------------------------------
@@ -129,6 +119,34 @@ void NewPage::updateDirectory()
     }
 
     librarySelector_->updatePath(vlnvDir);
+}
+
+//-----------------------------------------------------------------------------
+// Function: NewPage::isUnusedVLNV()
+//-----------------------------------------------------------------------------
+bool NewPage::isUnusedVLNV(VLNV const& vlnv) const
+{
+    return !libInterface_->contains(vlnv);
+}
+
+//-----------------------------------------------------------------------------
+// Function: NewPage::selectedPath()
+//-----------------------------------------------------------------------------
+QString NewPage::selectedPath() const
+{
+    return librarySelector_->getPath();
+}
+
+//-----------------------------------------------------------------------------
+// Function: NewPage::showErrorForReservedVLVN()
+//-----------------------------------------------------------------------------
+void NewPage::showErrorForReservedVLVN(VLNV const& vlnv)
+{
+    QString type = VLNV::type2Show(vlnv.getType());
+    QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
+        tr("The %1 cannot be created because the VLNV %2" 
+        " already exists in the library.").arg(type, vlnv.toString()), QMessageBox::Ok, this);
+    msgBox.exec();
 }
 
 //-----------------------------------------------------------------------------

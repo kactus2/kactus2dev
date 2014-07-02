@@ -10,10 +10,7 @@
 
 #include "NewPage.h"
 
-#include <library/LibraryManager/libraryinterface.h>
-
-
-#include <QPushButton>
+class LibraryInterface;
 
 class NewBusPage : public NewPage 
 {
@@ -25,7 +22,6 @@ public:
 	
 	//! \brief The destructor
 	virtual ~NewBusPage();
-
 	
     /*!
      *  Validates the contents of the page thoroughly.

@@ -15,10 +15,6 @@
 #include "NewPage.h"
 #include <common/KactusAttribute.h>
 
-#include <QGroupBox>
-#include <QRadioButton>
-#include <QPushButton>
-
 class LibraryInterface;
 class VLNVEditor;
 class KactusAttributeEditor;

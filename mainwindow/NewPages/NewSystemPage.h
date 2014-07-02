@@ -19,9 +19,7 @@
 #include <QGroupBox>
 #include <QRadioButton>
 #include <QButtonGroup>
-#include <QPushButton>
 #include <QLabel>
-#include <QVBoxLayout>
 
 class LibraryInterface;
 class LibraryItem;
@@ -142,9 +140,6 @@ private:
 
     //! View selection combo box.
     QComboBox* viewComboBox_;
-
-    //! The layout for UI widgets.
-    QVBoxLayout* layout_;
 
 };
 

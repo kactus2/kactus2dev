@@ -12,19 +12,9 @@
 #include "NewSWComponentPage.h"
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
-#include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 
 #include <library/LibraryManager/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>
-
-#include <QVBoxLayout>
-#include <QFont>
-#include <QDir>
-#include <QPushButton>
-#include <QFileDialog>
-#include <QLabel>
-#include <QCoreApplication>
-#include <QMessageBox>
 
 //-----------------------------------------------------------------------------
 // Function: NewSWComponentPage()
@@ -43,6 +33,7 @@ NewPage(libInterface, VLNV::COMPONENT, tr("New SW Component"), tr("Creates a SW 
 //-----------------------------------------------------------------------------
 NewSWComponentPage::~NewSWComponentPage()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -50,19 +41,15 @@ NewSWComponentPage::~NewSWComponentPage()
 //-----------------------------------------------------------------------------
 bool NewSWComponentPage::validate()
 {
-    Q_ASSERT(prevalidate());
+    bool valid = NewPage::validate();
 
     // Check if the VLNV already exists.
-    if (libInterface_->contains(vlnvEditor_->getVLNV()))
-    {
-        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-            tr("The SW component cannot be created because the VLNV already exists in the library."),
-            QMessageBox::Ok, this);
-        msgBox.exec();
-        return false;
+    if (!valid)
+    {        
+        showErrorForReservedVLVN(vlnvEditor_->getVLNV());
     }
 
-    return true;
+    return valid;
 }
 
 //-----------------------------------------------------------------------------
@@ -70,5 +57,5 @@ bool NewSWComponentPage::validate()
 //-----------------------------------------------------------------------------
 void NewSWComponentPage::apply()
 {
-    emit createSWComponent(vlnvEditor_->getVLNV(), librarySelector_->getPath());
+    emit createSWComponent(vlnvEditor_->getVLNV(), selectedPath());
 }

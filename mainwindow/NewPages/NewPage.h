@@ -80,25 +80,48 @@ public slots:
     void updateDirectory();
 
 protected:
+    
+    /*!
+     *  Checks if the given VLNV is not found in the library.
+     *
+     *      @param [in] vlnv   The VLNV to check.
+     *
+     *      @return True, if the VLNV is not already in the library, otherwise false.
+     */
+    bool isUnusedVLNV(VLNV const& vlnv) const;
 
     /*!
-     *  Sets the basic layout for the page.
+     *  Gets the selected path within the library.
+     *
+     *      @return The selected path.
      */
-   void setupLayout();
-    
-	//! The library interface.
-    LibraryInterface* libInterface_;
+    QString selectedPath() const;
+
+    /*!
+     *  Shows an error message for a VLNV already found in the library.
+     *
+     *      @param [in] vlnv    The reserved VLNV.     
+     */
+    void showErrorForReservedVLVN(VLNV const& vlnv);
 
     //! VLNV editor.
     VLNVEditor* vlnvEditor_;
 
-    //! Library selector.
-    LibrarySelectorWidget* librarySelector_;
+    //! The library interface.
+    LibraryInterface* libInterface_;
 
 private:
     // Disable copying.
     NewPage(NewPage const& rhs);
     NewPage& operator=(NewPage const& rhs);
+
+    /*!
+     *  Sets the basic layout for the page.
+     */
+    void setupLayout();
+
+    //! Library selector.
+    LibrarySelectorWidget* librarySelector_;
 
     //! Page title.
     QLabel* titleLabel_;

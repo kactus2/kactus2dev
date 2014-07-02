@@ -13,9 +13,6 @@
 #define NEWAPIDEFINITIONPAGE_H
 
 #include "NewPage.h"
-#include <common/widgets/vlnvEditor/vlnveditor.h>
-
-#include <QPushButton>
 
 class LibraryInterface;
 

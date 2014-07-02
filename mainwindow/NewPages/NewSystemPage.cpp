@@ -17,17 +17,10 @@
 #include <IPXACTmodels/component.h>
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
-#include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 
-#include <QLabel>
-#include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QHeaderView>
 #include <QPushButton>
-#include <QDir>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QCoreApplication>
 
 //-----------------------------------------------------------------------------
 // Function: NewSystemPage()
@@ -44,8 +37,7 @@ mapDescLabel_(new QLabel(tr("Creates a SW architecture and maps it to selected t
               treeLabel_(new QLabel(tr("Select top-level HW component:"), this)),
               compTreeWidget_(new QTreeWidget(this)),             
               viewLabel_(new QLabel(tr("Select view of top-level HW component:"), this)),
-              viewComboBox_(new QComboBox(this)),
-              layout_(0)
+              viewComboBox_(new QComboBox(this))
 {
     emptyDescLabel_->setStyleSheet("QLabel { padding-left: 19px; }");
     emptyDescLabel_->setWordWrap(true);
@@ -106,13 +98,13 @@ mapDescLabel_(new QLabel(tr("Creates a SW architecture and maps it to selected t
     groupLayout->addWidget(mapDescLabel_);
 
     // Setup the layout.
-    layout_ = dynamic_cast<QVBoxLayout*>(layout());
-    Q_ASSERT(layout_);
-    layout_->insertWidget(3, actionGroupBox_);
-    layout_->insertWidget(4, treeLabel_);
-    layout_->insertWidget(5, compTreeWidget_, 1);
-    layout_->insertWidget(6, viewLabel_);
-    layout_->insertWidget(7, viewComboBox_);
+    QVBoxLayout* topLayout = dynamic_cast<QVBoxLayout*>(layout());
+    Q_ASSERT(topLayout);
+    topLayout->insertWidget(3, actionGroupBox_);
+    topLayout->insertWidget(4, treeLabel_);
+    topLayout->insertWidget(5, compTreeWidget_, 1);
+    topLayout->insertWidget(6, viewLabel_);
+    topLayout->insertWidget(7, viewComboBox_);
 
     connect(actionGroup_, SIGNAL(buttonClicked(QAbstractButton*)),
         this, SLOT(actionChanged(QAbstractButton*)), Qt::UniqueConnection);
@@ -160,6 +152,7 @@ bool NewSystemPage::validate()
     Q_ASSERT(prevalidate());
 
     VLNV vlnv = vlnvEditor_->getVLNV();
+    bool validVLNV = NewPage::validate();
 
     VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
         vlnv.getName().remove(".comp") + ".sysdesign", vlnv.getVersion());
@@ -167,30 +160,21 @@ bool NewSystemPage::validate()
         vlnv.getName().remove(".comp") + ".sysdesigncfg", vlnv.getVersion());
 
     // Check if any of the VLNVs already exists.
-    if (emptyRadioButton_->isChecked() && libInterface_->contains(vlnv))
+    if (emptyRadioButton_->isChecked() && !validVLNV)
     {
-        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-            tr("VLNV %1 already exists in the library.").arg(vlnv.toString()),
-            QMessageBox::Ok, this);
-        msgBox.exec();
+        showErrorForReservedVLVN(vlnv);
         return false;
     }
 
-    if (libInterface_->contains(designVLNV))
+    if (!isUnusedVLNV(designVLNV))
     {
-        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-            tr("VLNV %1 already exists in the library.").arg(designVLNV.toString()),
-            QMessageBox::Ok, this);
-        msgBox.exec();
+        showErrorForReservedVLVN(designVLNV);
         return false;
     }
 
-    if (libInterface_->contains(desConfVLNV))
+    if (!isUnusedVLNV(desConfVLNV))
     {
-        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-            tr("VLNV %1 already exists in the library.").arg(desConfVLNV.toString()),
-            QMessageBox::Ok, this);
-        msgBox.exec();
+        showErrorForReservedVLVN(desConfVLNV);        
         return false;
     }    
 
@@ -209,11 +193,11 @@ void NewSystemPage::apply()
         QVariant data = compTreeWidget_->currentItem()->data(0, Qt::UserRole);
 
         emit createSystem(data.value<VLNV>(), viewComboBox_->currentText(),
-            vlnvEditor_->getVLNV(), librarySelector_->getPath());
+            vlnvEditor_->getVLNV(), selectedPath());
     }
     else
     {
-        emit createSystem(VLNV(), "", vlnvEditor_->getVLNV(),librarySelector_->getPath());
+        emit createSystem(VLNV(), "", vlnvEditor_->getVLNV(),selectedPath());
     }
 }
 
@@ -338,6 +322,5 @@ void NewSystemPage::actionChanged(QAbstractButton* button)
     viewLabel_->setEnabled(button == mapRadioButton_);
     viewComboBox_->setEnabled(button == mapRadioButton_);
 
-    //     layout_->activate();
     emit contentChanged();
 }

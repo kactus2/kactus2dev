@@ -7,17 +7,11 @@
 
 #include "newbuspage.h"
 
-#include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
-#include <QVBoxLayout>
+#include <library/LibraryManager/libraryinterface.h>
+
 #include <QHBoxLayout>
-#include <QDir>
-#include <QLabel>
-#include <QFileDialog>
-#include <QPushButton>
-#include <QMessageBox>
-#include <QCoreApplication>
 
 //-----------------------------------------------------------------------------
 // Function: NewBusPage()
@@ -33,46 +27,31 @@ NewPage(libHandler, VLNV::BUSDEFINITION, tr("New Bus"), tr("Creates a new bus"),
 //-----------------------------------------------------------------------------
 // Function: ~NewBusPage()
 //-----------------------------------------------------------------------------
-NewBusPage::~NewBusPage() {
-}
+NewBusPage::~NewBusPage()
+{
 
+}
 
 //-----------------------------------------------------------------------------
 // Function: validate()
 //-----------------------------------------------------------------------------
-bool NewBusPage::validate() {
-	Q_ASSERT(prevalidate());
-
-    VLNV vlnv = vlnvEditor_->getVLNV();
-
-    /*VLNV absVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
-                 vlnv.getName().remove(".busDef", Qt::CaseInsensitive) + ".absDef", vlnv.getVersion());*/
-
+bool NewBusPage::validate()
+{
     // Check if any of the VLNVs already exists.
-    if (libInterface_->contains(vlnv))
-    {
-        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-            tr("The bus cannot be created because the VLNV %1 already exists in the library.").arg(vlnv.toString()),
-            QMessageBox::Ok, this);
-        msgBox.exec();
-        return false;
+    bool validVLNV = NewPage::validate();
+
+    if (!validVLNV)
+    {        
+        showErrorForReservedVLVN(vlnvEditor_->getVLNV());
     }
 
-    /*if (libInterface_->contains(absVLNV))
-    {
-        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-            tr("The bus cannot be created because the VLNV %1 already exists in the library.").arg(absVLNV.toString()),
-            QMessageBox::Ok, this);
-        msgBox.exec();
-        return false;
-    }*/
-
-	return true;
+	return validVLNV;
 }
 
 //-----------------------------------------------------------------------------
 // Function: apply()
 //-----------------------------------------------------------------------------
-void NewBusPage::apply() {
-	 emit createBus(vlnvEditor_->getVLNV(), librarySelector_->getPath());
+void NewBusPage::apply()
+{
+	 emit createBus(vlnvEditor_->getVLNV(), selectedPath());
 }
