@@ -3534,9 +3534,7 @@ void MainWindow::openApiDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
 void MainWindow::openFileInApplication(QString const& fileAbsolutePath, QString const& applicationPath)
 {
     QStringList arguments(fileAbsolutePath);
-
-    QProcess* application = new QProcess(this);
-    application->start(applicationPath, arguments);
+    QProcess::startDetached(applicationPath, arguments);
 }
 
 //-----------------------------------------------------------------------------
