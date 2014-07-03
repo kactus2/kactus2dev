@@ -17,8 +17,6 @@
 #include "filetypeeditor.h"
 #include "filebuildcommand.h"
 
-#include <common/widgets/attributeBox/attributebox.h>
-
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/file.h>
 

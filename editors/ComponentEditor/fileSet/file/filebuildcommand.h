@@ -10,7 +10,6 @@
 
 #include "targetnameedit.h"
 
-#include <common/widgets/attributeBox/attributebox.h>
 #include <IPXACTmodels/buildcommand.h>
 #include <IPXACTmodels/file.h>
 #include <IPXACTmodels/component.h>

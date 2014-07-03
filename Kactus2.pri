@@ -15,8 +15,6 @@ HEADERS += ./resource.h \
     ./common/utils.h \
     ./common/IEditProvider.h \
     ./common/GenericEditProvider.h \
-    ./common/widgets/attributeBox/attributemodel.h \
-    ./common/widgets/attributeBox/attributebox.h \
     ./common/widgets/libraryRefGenerator/libraryrefgenerator.h \
     ./common/widgets/listManager/dirlistmanagermodel.h \
     ./common/widgets/listManager/listmanagermodel.h \
@@ -110,9 +108,6 @@ HEADERS += ./resource.h \
     ./common/views/EditableTableView/editabletableview.h \
     ./common/views/EditableListView/editablelistview.h \
     ./common/models/ParameterModel/parametersmodel.h \
-    ./common/dialogs/createVLNVDialog/createvlnvdialog.h \
-    ./common/dialogs/renameDialog/renamedialog.h \
-    ./common/dialogs/attributeDialog/attributedialog.h \
     ./common/dialogs/comboSelector/comboselector.h \
     ./common/dialogs/propertyPageDialog/PropertyPageView.h \
     ./common/dialogs/propertyPageDialog/PropertyPageDialog.h \
@@ -646,10 +641,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
-    ./common/dialogs/attributeDialog/attributedialog.cpp \
     ./common/dialogs/comboSelector/comboselector.cpp \
-    ./common/dialogs/createVLNVDialog/createvlnvdialog.cpp \
-    ./common/dialogs/renameDialog/renamedialog.cpp \
     ./common/dialogs/propertyPageDialog/PropertyPageDialog.cpp \
     ./common/dialogs/propertyPageDialog/PropertyPageView.cpp \
     ./common/dialogs/newObjectDialog/newobjectdialog.cpp \
@@ -674,8 +666,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
     ./common/widgets/assistedLineEdit/BasicLineContentMatcher.cpp \
     ./common/widgets/assistedLineEdit/LineContentAssistWidget.cpp \
-    ./common/widgets/attributeBox/attributebox.cpp \
-    ./common/widgets/attributeBox/attributemodel.cpp \
     ./common/widgets/libraryRefGenerator/libraryrefgenerator.cpp \
     ./common/widgets/listManager/dirlistmanager.cpp \
     ./common/widgets/listManager/dirlistmanagermodel.cpp \

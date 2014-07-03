@@ -11,17 +11,8 @@
     <Filter Include="Source Files\common\dialogs">
       <UniqueIdentifier>{128d8c08-5d81-4b17-a027-fe5abee57430}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\dialogs\attributeDialog">
-      <UniqueIdentifier>{477433d3-3bd2-4c82-b3fa-ce31caf908d2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\dialogs\comboSelector">
       <UniqueIdentifier>{0982a198-ea3b-4b12-8727-d97a825328eb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\dialogs\createVLNVDialog">
-      <UniqueIdentifier>{1ce3870b-9de7-4514-a74b-532c3b71bf78}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\dialogs\renameDialog">
-      <UniqueIdentifier>{e007dfc6-bbe2-4d9a-b249-90ff7f4f6cf6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\dialogs\propertyPageDialog">
       <UniqueIdentifier>{d0a6998c-b8be-44d9-990c-5bae5098f4b4}</UniqueIdentifier>
@@ -67,9 +58,6 @@
     </Filter>
     <Filter Include="Source Files\common\widgets\assistedLineEdit">
       <UniqueIdentifier>{19f9c0a7-402c-4d71-83fd-40ce94b287fa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\widgets\attributeBox">
-      <UniqueIdentifier>{059e2863-e5f5-496d-8b4e-8d8e16608700}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\libraryRefGenerator">
       <UniqueIdentifier>{7d0d629c-9128-4406-b23d-dc8304c7b5f9}</UniqueIdentifier>
@@ -209,9 +197,6 @@
     </Filter>
     <Filter Include="Header Files\common\widgets">
       <UniqueIdentifier>{f6f5f3e0-6e98-4f04-92e8-de7d11fc9525}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\widgets\attributeBox">
-      <UniqueIdentifier>{ee9dd9a3-a97f-4b53-8237-54858ad84b2c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\libraryRefGenerator">
       <UniqueIdentifier>{578279f0-7545-41d0-b096-e3d4b9b2cbab}</UniqueIdentifier>
@@ -356,15 +341,6 @@
     </Filter>
     <Filter Include="Header Files\common\dialogs">
       <UniqueIdentifier>{748059de-87cd-4e11-b299-00c41a923369}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\dialogs\createVLNVDialog">
-      <UniqueIdentifier>{c0368c46-5bd5-483a-939e-767572412bbf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\dialogs\renameDialog">
-      <UniqueIdentifier>{8ab49488-2c34-4ef7-bd7a-4f81840ccafa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\dialogs\attributeDialog">
-      <UniqueIdentifier>{7b065beb-8e3c-4d92-9847-561589119754}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\dialogs\comboSelector">
       <UniqueIdentifier>{29cb5044-f4e8-42ce-a210-4f58af3072fc}</UniqueIdentifier>
@@ -964,17 +940,8 @@
     <ClCompile Include="common\utils.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="common\dialogs\attributeDialog\attributedialog.cpp">
-      <Filter>Source Files\common\dialogs\attributeDialog</Filter>
-    </ClCompile>
     <ClCompile Include="common\dialogs\comboSelector\comboselector.cpp">
       <Filter>Source Files\common\dialogs\comboSelector</Filter>
-    </ClCompile>
-    <ClCompile Include="common\dialogs\createVLNVDialog\createvlnvdialog.cpp">
-      <Filter>Source Files\common\dialogs\createVLNVDialog</Filter>
-    </ClCompile>
-    <ClCompile Include="common\dialogs\renameDialog\renamedialog.cpp">
-      <Filter>Source Files\common\dialogs\renameDialog</Filter>
     </ClCompile>
     <ClCompile Include="common\dialogs\propertyPageDialog\PropertyPageDialog.cpp">
       <Filter>Source Files\common\dialogs\propertyPageDialog</Filter>
@@ -1029,12 +996,6 @@
     </ClCompile>
     <ClCompile Include="common\widgets\assistedLineEdit\LineContentAssistWidget.cpp">
       <Filter>Source Files\common\widgets\assistedLineEdit</Filter>
-    </ClCompile>
-    <ClCompile Include="common\widgets\attributeBox\attributebox.cpp">
-      <Filter>Source Files\common\widgets\attributeBox</Filter>
-    </ClCompile>
-    <ClCompile Include="common\widgets\attributeBox\attributemodel.cpp">
-      <Filter>Source Files\common\widgets\attributeBox</Filter>
     </ClCompile>
     <ClCompile Include="common\widgets\libraryRefGenerator\libraryrefgenerator.cpp">
       <Filter>Source Files\common\widgets\libraryRefGenerator</Filter>
@@ -1288,9 +1249,6 @@
     <ClCompile Include="GeneratedFiles\moc_scanprogresswidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_renamedialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_readactioncombobox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -1426,9 +1384,6 @@
     <ClCompile Include="GeneratedFiles\moc_DeleteWorkspaceDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_createvlnvdialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_createconfigurationdialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -1460,12 +1415,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_booleancombobox.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_attributemodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_attributebox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_AssistedTextEdit.cpp">
@@ -4194,9 +4143,6 @@
     <CustomBuild Include="common\dialogs\createConfigurationDialog\createconfigurationdialog.h">
       <Filter>Header Files\common\dialogs\createConfigurationDialog</Filter>
     </CustomBuild>
-    <CustomBuild Include="common\dialogs\createVLNVDialog\createvlnvdialog.h">
-      <Filter>Header Files\common\dialogs\createVLNVDialog</Filter>
-    </CustomBuild>
     <CustomBuild Include="common\dialogs\LibrarySettingsDialog\LibrarySettingsDialog.h">
       <Filter>Header Files\common\dialogs\LibrarySettingsDialog</Filter>
     </CustomBuild>
@@ -4217,9 +4163,6 @@
     </CustomBuild>
     <CustomBuild Include="common\dialogs\propertyPageDialog\PropertyPageView.h">
       <Filter>Header Files\common\dialogs\propertyPageDialog</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\dialogs\renameDialog\renamedialog.h">
-      <Filter>Header Files\common\dialogs\renameDialog</Filter>
     </CustomBuild>
     <CustomBuild Include="common\dialogs\selectDirectoryDialog\selectdirectorydialog.h">
       <Filter>Header Files\common\dialogs\selectDirectoryDialog</Filter>
@@ -4289,12 +4232,6 @@
     </CustomBuild>
     <CustomBuild Include="common\widgets\assistedTextEdit\ToolTipHintWidget.h">
       <Filter>Header Files\common\widgets\assistedTextEdit</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\widgets\attributeBox\attributebox.h">
-      <Filter>Header Files\common\widgets\attributeBox</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\widgets\attributeBox\attributemodel.h">
-      <Filter>Header Files\common\widgets\attributeBox</Filter>
     </CustomBuild>
     <CustomBuild Include="common\widgets\booleanComboBox\booleancombobox.h">
       <Filter>Header Files\common\widgets\booleanComboBox</Filter>
@@ -5582,9 +5519,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="common\dialogs\attributeDialog\attributedialog.h">
-      <Filter>Header Files\common\dialogs\attributeDialog</Filter>
-    </ClInclude>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
       <Filter>Header Files\common\dialogs\listSelectDialog</Filter>
     </ClInclude>
