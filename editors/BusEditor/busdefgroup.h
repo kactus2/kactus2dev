@@ -13,6 +13,7 @@
 #include <QCheckBox>
 #include <QLineEdit>
 #include <QSharedPointer>
+#include <QPlainTextEdit>
 
 /*! \brief BusDefGroup contains elements to set the settings for the bus definition.
  *
@@ -58,6 +59,8 @@ private slots:
 	//! \brief Handler for changes in max slaves line edit.
 	void onSlavesChanged();
 
+    void onDescriptionChanged();
+
 private:
 	//! \brief No copying
 	BusDefGroup(const BusDefGroup& other);
@@ -65,6 +68,9 @@ private:
 	//! \brief No assignment
 	BusDefGroup& operator=(const BusDefGroup& other);
 
+    //! Sets the widget layout.
+    void setupLayout();
+    
 	//! \brief Pointer to the bus definition to edit.
 	QSharedPointer<BusDefinition> busDef_;
 
@@ -79,6 +85,9 @@ private:
 
 	//! \brief Spin box to set the maximum number of slaves
 	QLineEdit maxSlaves_;
+
+    //! Editor for bus definition description.
+    QPlainTextEdit descriptionEditor_;
 };
 
 #endif // BUSDEFGROUP_H
