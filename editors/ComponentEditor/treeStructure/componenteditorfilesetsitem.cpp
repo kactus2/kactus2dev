@@ -49,7 +49,7 @@ QString ComponentEditorFileSetsItem::text() const {
 ItemEditor* ComponentEditorFileSetsItem::editor() {
 	if (!editor_) {
 		editor_ = new FileSetsEditor(component_, libHandler_, pluginMgr_);
-		editor_->setDisabled(locked_);
+		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(fileAdded(File*)),
 			this, SLOT(onFileAdded(File*)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(filesUpdated()),

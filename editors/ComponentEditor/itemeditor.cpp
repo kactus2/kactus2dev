@@ -33,6 +33,14 @@ bool ItemEditor::confirmEditorChange()
     return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: ItemEditor::setProtection()
+//-----------------------------------------------------------------------------
+void ItemEditor::setProtection(bool locked)
+{
+    setDisabled(locked);
+}
+
 LibraryInterface* ItemEditor::handler() const {
 	return handler_;
 }

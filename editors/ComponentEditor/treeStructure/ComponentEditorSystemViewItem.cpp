@@ -62,7 +62,7 @@ bool ComponentEditorSystemViewItem::isValid() const {
 ItemEditor* ComponentEditorSystemViewItem::editor() {
 	if (!editor_) {
 		editor_ = new SystemViewEditor(component_, systemView_, libHandler_, NULL);
-		editor_->setDisabled(locked_);
+		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()),
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),

@@ -52,7 +52,7 @@ bool ComponentEditorAPIInterfaceItem::isValid() const {
 ItemEditor* ComponentEditorAPIInterfaceItem::editor() {
 	if (!editor_) {
 		editor_ = new ApiInterfaceEditor(libHandler_, component_, apiIf_, NULL);
-		editor_->setDisabled(locked_);
+		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()),
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),

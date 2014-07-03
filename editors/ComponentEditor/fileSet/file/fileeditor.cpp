@@ -60,3 +60,12 @@ void FileEditor::refresh() {
 	generalTab_.refresh();
 	extraTab_.refresh();
 }
+
+//-----------------------------------------------------------------------------
+// Function: FileEditor::setProtection()
+//-----------------------------------------------------------------------------
+void FileEditor::setProtection(bool locked)
+{
+    generalTab_.setDisabled(locked);
+    extraTab_.setDisabled(locked);
+}

@@ -186,11 +186,7 @@ void ComponentEditorItem::onEditorChanged() {
 void ComponentEditorItem::setLocked( bool locked ) {
 	// if this item contains an editor
 	if (editor_) {
-		editor_->setDisabled(locked);
-	}
-	// if this item contains a visualizer
-	if (visualizer()) {
-		visualizer()->setDisabled(locked);
+		editor_->setProtection(locked);
 	}
 
 	// also tell child items

@@ -42,7 +42,7 @@ QString ComponentEditorComInterfacesItem::text() const {
 ItemEditor* ComponentEditorComInterfacesItem::editor() {
 	if (!editor_) {
 		editor_ = new ComInterfacesEditor(libHandler_, component_);
-		editor_->setDisabled(locked_);
+		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), 
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childAdded(int)),

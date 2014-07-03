@@ -78,7 +78,7 @@ bool ComponentEditorFileSetItem::isValid() const {
 ItemEditor* ComponentEditorFileSetItem::editor() {
 	if (!editor_) {
 		 editor_ = new FileSetEditor(libHandler_, component_, fileSet_, NULL);
-		 editor_->setDisabled(locked_);
+		 editor_->setProtection(locked_);
 		 connect(editor_, SIGNAL(contentChanged()),
 			 this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		 connect(editor_, SIGNAL(childAdded(int)),

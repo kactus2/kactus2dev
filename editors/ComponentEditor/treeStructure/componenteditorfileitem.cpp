@@ -117,7 +117,7 @@ ItemEditor* ComponentEditorFileItem::editor()
 {
 	if (!editor_) {
 		editor_ = new FileEditor(libHandler_, component_, file_);
-		editor_->setDisabled(locked_);
+		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
         connect(editor_, SIGNAL(editFile()), this, SLOT(openItem()), Qt::UniqueConnection);

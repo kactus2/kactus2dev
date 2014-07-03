@@ -54,6 +54,13 @@ public:
 	*/
 	virtual void refresh();
 
+    /*!
+     *  Sets the protection state of the editor.
+     *
+     *      @param [in] locked  True for locked state; false for unlocked.
+     */
+    virtual void setProtection(bool locked);
+
 private slots:
 	//! \brief When tab page changes
 	void onTabChange(int index);
@@ -65,7 +72,7 @@ private:
 
 	//! No assignment
 	BusInterfaceEditor& operator=(const BusInterfaceEditor& other);
-
+   
 	//! \brief Pointer to the bus interface being edited.
 	QSharedPointer<BusInterface> busif_;
 

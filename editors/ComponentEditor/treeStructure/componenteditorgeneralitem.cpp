@@ -31,7 +31,7 @@ bool ComponentEditorGeneralItem::isValid() const {
 ItemEditor* ComponentEditorGeneralItem::editor() {
 	if (!editor_) {
 		editor_ = new GeneralEditor(libHandler_, component_);
-		editor_->setDisabled(locked_);
+		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()),
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),

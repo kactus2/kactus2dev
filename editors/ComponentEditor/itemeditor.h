@@ -58,6 +58,16 @@ public:
 	*/
 	virtual void refresh() = 0;
 
+    /*!
+     *  Sets the protection state of the editor.
+     *
+     *  The base class implementation enables/disables the editor widget. Override to e.g. enable/disable
+     *  individual editor tabs.
+     *
+     *      @param [in] locked  True for locked state; false for unlocked.
+     */
+    virtual void setProtection(bool locked);
+
 signals:
 
 	/*! \brief Emitted when the contents of the widget change

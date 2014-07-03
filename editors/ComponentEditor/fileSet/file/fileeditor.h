@@ -55,6 +55,13 @@ public:
 	*/
 	virtual void refresh();
 
+    /*!
+     *  Sets the protection state of the editor.
+     *
+     *      @param [in] locked  True for locked state; false for unlocked.
+     */
+    virtual void setProtection(bool locked);
+
 signals:
 
     //! Emitted when the file should be opened in default editor.

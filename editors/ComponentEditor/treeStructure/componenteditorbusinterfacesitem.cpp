@@ -45,7 +45,7 @@ QString ComponentEditorBusInterfacesItem::text() const {
 ItemEditor* ComponentEditorBusInterfacesItem::editor() {
 	if (!editor_) {
 		editor_ = new BusInterfacesEditor(libHandler_, component_);
-		editor_->setDisabled(locked_);
+		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), 
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childAdded(int)),

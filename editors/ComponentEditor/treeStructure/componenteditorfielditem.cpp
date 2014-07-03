@@ -52,7 +52,7 @@ bool ComponentEditorFieldItem::isValid() const {
 ItemEditor* ComponentEditorFieldItem::editor() {
 	if (!editor_) {
 		editor_ = new FieldEditor(field_, component_, libHandler_);
-		editor_->setDisabled(locked_);
+		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), 
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),

@@ -86,3 +86,12 @@ void BusInterfaceEditor::refresh() {
 	general_.refresh();
 	portmaps_.refresh();
 }
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEditor::setProtection()
+//-----------------------------------------------------------------------------
+void BusInterfaceEditor::setProtection(bool locked)
+{
+    general_.setDisabled(locked);
+    portmaps_.setDisabled(locked);
+}

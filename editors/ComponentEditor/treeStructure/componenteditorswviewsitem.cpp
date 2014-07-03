@@ -48,7 +48,7 @@ QString ComponentEditorSWViewsItem::text() const {
 ItemEditor* ComponentEditorSWViewsItem::editor() {
 	if (!editor_) {
 		editor_ = new SWViewsEditor(component_, libHandler_);
-		editor_->setDisabled(locked_);
+		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), 
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childAdded(int)),

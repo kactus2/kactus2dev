@@ -59,7 +59,7 @@ bool ComponentEditorSWViewItem::isValid() const {
 ItemEditor* ComponentEditorSWViewItem::editor() {
 	if (!editor_) {
 		editor_ = new SWViewEditor(component_, swView_, libHandler_, NULL);
-		editor_->setDisabled(locked_);
+		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()),
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
