@@ -499,12 +499,14 @@ void LibraryData::performIntegrityCheckStep()
 
 			// remove the pair from the map and move on
 			QMap<VLNV, QString>::iterator i = libraryItems_.find(iterObjects_.key());
-			libraryItems_.erase(i);
-			return;
+			++iterObjects_;
+            libraryItems_.erase(i);
 		}
-
-		checkObject(libComp, iterObjects_.value());
-		++iterObjects_;
+        else
+        {
+            checkObject(libComp, iterObjects_.value());
+            ++iterObjects_;
+        }
 	}
 	else
 	{
