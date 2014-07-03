@@ -9,8 +9,6 @@
 
 #include "LibraryErrorModel.h"
 
-#include <mainwindow/mainwindow.h>
-
 // the dialog files
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/ObjectRemoveDialog/objectremovedialog.h>
@@ -38,7 +36,7 @@
 #include <QSettings>
 #include <QApplication>
 
-LibraryHandler::LibraryHandler(VLNVDialer* dialer, MainWindow* parent): 
+LibraryHandler::LibraryHandler(VLNVDialer* dialer, QWidget* parent): 
 QTabWidget(parent), 
 data_(), 
 treeModel_(),
@@ -47,13 +45,8 @@ treeWidget_(0),
 hierarchyWidget_(0),
 objects_(),
 saveInProgress_(false),
-itemsToAdd_() {
-
-	connect(this, SIGNAL(errorMessage(const QString&)),
-		parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-	connect(this, SIGNAL(noticeMessage(const QString&)),
-		parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-
+itemsToAdd_() 
+{
 	setWindowTitle(tr("LibraryHandler"));
 
 	data_ = QSharedPointer<LibraryData>(new LibraryData(this, parent));   

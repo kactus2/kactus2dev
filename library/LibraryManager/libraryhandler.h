@@ -31,7 +31,6 @@ typedef QList<QFileInfo> fileList;
 class LibraryItem;
 class LibraryComponent;
 class VLNVDialer;
-class MainWindow;
 
 /*! \brief LibraryHandler is the class that implements the services to manage library
  *
@@ -45,9 +44,9 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param dialer Pointer to the dialer that provides search options.
-	 * \param parent A pointer to the owner of this instance
+	 * \param parent A pointer to the parent widget of this instance
 	 */
-    LibraryHandler(VLNVDialer* dialer, MainWindow* parent);
+    LibraryHandler(VLNVDialer* dialer, QWidget* parent);
 
 	//! \brief The destructor
     virtual ~LibraryHandler();
