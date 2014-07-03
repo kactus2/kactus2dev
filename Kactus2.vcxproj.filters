@@ -29,9 +29,6 @@
     <Filter Include="Source Files\common\dialogs\listSelectDialog">
       <UniqueIdentifier>{38b93673-aaa0-4212-87f5-3500dd285e0f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\dialogs\selectDirectoryDialog">
-      <UniqueIdentifier>{a9346435-4585-43ef-9171-59d7ccadff18}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\dialogs\NewDesignDialog">
       <UniqueIdentifier>{7c710c32-349c-4574-8c04-d597c3aa6914}</UniqueIdentifier>
     </Filter>
@@ -356,9 +353,6 @@
     </Filter>
     <Filter Include="Header Files\common\dialogs\listSelectDialog">
       <UniqueIdentifier>{b0e0cdc7-b4f9-4aa8-b8f7-64a71cb6361b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\dialogs\selectDirectoryDialog">
-      <UniqueIdentifier>{439bce7b-f84f-4641-b210-49f1b05063a3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\dialogs\NewDesignDialog">
       <UniqueIdentifier>{9464f315-a3ce-41fc-8a42-a00ac607406f}</UniqueIdentifier>
@@ -964,9 +958,6 @@
     <ClCompile Include="common\dialogs\listSelectDialog\ListSelectDialog.cpp">
       <Filter>Source Files\common\dialogs\listSelectDialog</Filter>
     </ClCompile>
-    <ClCompile Include="common\dialogs\selectDirectoryDialog\selectdirectorydialog.cpp">
-      <Filter>Source Files\common\dialogs\selectDirectoryDialog</Filter>
-    </ClCompile>
     <ClCompile Include="common\dialogs\NewDesignDialog\NewDesignDialog.cpp">
       <Filter>Source Files\common\dialogs\NewDesignDialog</Filter>
     </ClCompile>
@@ -1241,9 +1232,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SettingsDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_selectdirectorydialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_scanprogresswidget.cpp">
@@ -4163,9 +4151,6 @@
     </CustomBuild>
     <CustomBuild Include="common\dialogs\propertyPageDialog\PropertyPageView.h">
       <Filter>Header Files\common\dialogs\propertyPageDialog</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\dialogs\selectDirectoryDialog\selectdirectorydialog.h">
-      <Filter>Header Files\common\dialogs\selectDirectoryDialog</Filter>
     </CustomBuild>
     <CustomBuild Include="common\graphicsItems\CommonGraphicsUndoCommands.h">
       <Filter>Header Files\common\graphicsItems</Filter>

@@ -115,7 +115,6 @@ HEADERS += ./resource.h \
     ./common/dialogs/ObjectRemoveDialog/objectremovemodel.h \
     ./common/dialogs/ObjectRemoveDialog/objectremovedialog.h \
     ./common/dialogs/listSelectDialog/ListSelectDialog.h \
-    ./common/dialogs/selectDirectoryDialog/selectdirectorydialog.h \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.h \
     ./common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.h \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
@@ -649,7 +648,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/dialogs/ObjectRemoveDialog/objectremovemodel.cpp \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.cpp \
     ./common/dialogs/listSelectDialog/ListSelectDialog.cpp \
-    ./common/dialogs/selectDirectoryDialog/selectdirectorydialog.cpp \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.cpp \
     ./common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.cpp \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
