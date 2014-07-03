@@ -8,22 +8,18 @@
 #define LIBRARYDATA_H
 
 #include "vlnv.h"
-#include <IPXACTmodels/librarycomponent.h>
-#include <common/widgets/ScanProgressWidget/scanprogresswidget.h>
 
 #include <QObject>
-#include <QModelIndex>
-#include <QVariant>
-#include <QFileInfo>
 #include <QList>
-#include <QXmlSchema>
 #include <QMap>
 #include <QSharedPointer>
-#include <QMainWindow>
 #include <QTimer>
 #include <QRegExpValidator>
+#include <QWidget>
 
 class LibraryHandler;
+class LibraryComponent;
+class ScanProgressWidget;
 
 /*! \brief LibraryData is the data model that manages the actual VLNV library.
  * 
@@ -43,7 +39,7 @@ public:
 	 * \param parent Pointer to the owner of this widget.
 	 *
 	*/
-	LibraryData(LibraryHandler *parent, QMainWindow* mainWnd);
+	LibraryData(LibraryHandler *parent, QWidget* parentWidget);
 
 	//! \brief The destructor
 	virtual ~LibraryData();
@@ -94,10 +90,8 @@ public:
 	 * The found objects are displayed in the library.
 	 * When search is complete the library integrity is checked.
 	 * 
-	 * \param showProgress If true then the progress bar displaying the progress
-	 * of check is displayed to user.
 	*/
-	void parseLibrary(bool showProgress = true);
+	void parseLibrary();
 
     /*! \brief Get a model that matches given VLNV.
 	 *
@@ -113,10 +107,8 @@ public:
 
 	/*! \brief Check the integrity of the library.
 	 *
-	 * \param showProgress If true then the progress bar displaying the progress
-	 * of check is displayed to user.
 	*/
-	void checkLibraryIntegrity(bool showProgress = true);
+	void checkLibraryIntegrity();
 
 	/*! \brief Check the specified library object's validity.
 	 * 
@@ -204,8 +196,8 @@ private:
 	*/
 	void parseFile(const QString& filePath);
 
-    //! The main window.
-    QMainWindow* mainWnd_;
+    //! The parent widget.
+    QWidget* parentWidget_;
 
 	/*! \brief Map containing all the VLNVs that are in the library.
 	 *

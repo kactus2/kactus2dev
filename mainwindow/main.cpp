@@ -44,11 +44,13 @@ int main(int argc, char *argv[])
 
 	QTimer::singleShot(1500, &splash, SLOT(close()));
 	QTimer::singleShot(1500, &w, SLOT(show()));
-	
+	QTimer::singleShot(1700, &w, SLOT(onLibrarySearch()));
+
 	// the debug mode
 	#else
-	w.show();
-	#endif
+    QTimer::singleShot(200, &w, SLOT(onLibrarySearch()));
+	w.show();    
+	#endif    
     
 	return a.exec();
 }

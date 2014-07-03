@@ -16,11 +16,8 @@
 
 #include <common/KactusAttribute.h>
 
-#include <QWidget>
 #include <QString>
 #include <QTabWidget>
-#include <QSet>
-#include <QVBoxLayout>
 #include <QStringList>
 #include <QDir>
 #include <QList>

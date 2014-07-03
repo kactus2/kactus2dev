@@ -5,10 +5,15 @@
  */
 
 #include "librarydata.h"
+
 #include "libraryhandler.h"
 #include "ipxactwidget.h"
 #include "ipxactmodel.h"
 #include "librarytreemodel.h"
+#include "vlnv.h"
+
+#include <common/utils.h>
+#include <common/widgets/ScanProgressWidget/scanprogresswidget.h>
 
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/abstractiondefinition.h>
@@ -20,41 +25,28 @@
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/ComDefinition.h>
 #include <IPXACTmodels/ApiDefinition.h>
-#include <common/utils.h>
-
-#include "vlnv.h"
 
 #include <QFile>
 #include <QDir>
 #include <QStringList>
 #include <QTextStream>
 #include <QFileInfo>
-#include <QXmlSchema>
-#include <QXmlSchemaValidator>
 #include <QDomDocument>
 #include <QString>
 #include <QObject>
-#include <QBitArray>
-#include <stdexcept>
 #include <QWidget>
 #include <QFileDialog>
-#include <QColor>
 #include <QSettings>
 #include <QList>
 #include <QProgressBar>
 #include <QMap>
 #include <QSharedPointer>
-#include <QMutableMapIterator>
-#include <QApplication>
-#include <QCoreApplication>
 #include <QTimer>
 #include <QUrl>
 
-#include <QDebug>
-
-LibraryData::LibraryData(LibraryHandler* parent, QMainWindow* mainWnd)
+LibraryData::LibraryData(LibraryHandler* parent, QWidget* parentWidget)
     : QObject(parent),
-      mainWnd_(mainWnd),
+      parentWidget_(parentWidget),
       libraryItems_(),
       handler_(parent),
       progWidget_(0),
@@ -170,10 +162,8 @@ void LibraryData::onRemoveVLNV( const VLNV& vlnv ) {
 		return;
 	}
 
-	// remove the vlnv, no delete operation is needed because VLNVs are statically
-	// created
+	// remove the vlnv, no delete operation is needed because VLNVs are statically created
     libraryItems_.remove(vlnv);
-
 }
 
 VLNV::IPXactType LibraryData::getType( const VLNV& vlnv ) const {
@@ -191,7 +181,7 @@ void LibraryData::resetLibrary() {
 	emit resetModel();
 }
 
-void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
+void LibraryData::checkLibraryIntegrity() {
 
 	int max = libraryItems_.size();
 	errors_ = 0;
@@ -203,43 +193,21 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 
 	emit noticeMessage(tr("------ Library Integrity Check ------"));
 
-	if (showProgress) {
-		timerStep_ = 0;
-		timerSteps_ = max;
-		iterObjects_ = libraryItems_.begin();
+    timerStep_ = 0;
+    timerSteps_ = max;
+    iterObjects_ = libraryItems_.begin();
 
-		// create the progress bar that displays the progress of the check
-		progWidget_ = new ScanProgressWidget(mainWnd_);
-		progWidget_->setWindowTitle(tr("Checking integrity..."));
-		progWidget_->setRange(0, max);
-		progWidget_->setMessage(tr("Processing item %1 of %2...").arg(QString::number(timerStep_ + 1),
-			QString::number(libraryItems_.size())));
-		timer_ = new QTimer(this);
-		connect(timer_, SIGNAL(timeout()), this, SLOT(performIntegrityCheckStep()));
-		timer_->start();
+    // create the progress bar that displays the progress of the check
+    progWidget_ = new ScanProgressWidget(parentWidget_);
+    progWidget_->setWindowTitle(tr("Checking integrity..."));
+    progWidget_->setRange(0, max);
+    progWidget_->setMessage(tr("Processing item %1 of %2...").arg(QString::number(timerStep_ + 1),
+        QString::number(libraryItems_.size())));
+    timer_ = new QTimer(this);
+    connect(timer_, SIGNAL(timeout()), this, SLOT(performIntegrityCheckStep()));
+    timer_->start();
 
-		progWidget_->exec();
-	}
-	else {
-		QMap<VLNV, QString>::iterator i = libraryItems_.begin();
-		while (i != libraryItems_.end()) {
-
-			QSharedPointer<LibraryComponent> libComp = getModel(i.key());
-			// if the object could not be parsed
-			if (!libComp) {
-
-				// remove the pair from the map and move on
-				QMap<VLNV, QString>::iterator i = libraryItems_.find(i.key());
-				libraryItems_.erase(i);
-				continue;
-			}
-			checkObject(libComp, i.value());
-			++i;
-		}
-
-		// inform tree model that it needs to reset model also
-		emit resetModel();
-	}
+    progWidget_->exec();
 
 	emit noticeMessage(tr("========== Library integrity check complete =========="));
 	emit noticeMessage(tr("Total library object count: %1").arg(libraryItems_.size()));
@@ -254,10 +222,8 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 	}
 }
 
-void LibraryData::parseLibrary( bool showProgress /*= true*/ ) {
-	
-    //Q_ASSERT(_CrtCheckMemory());
-
+void LibraryData::parseLibrary()
+{
 	// clear the previous items in the library
 	libraryItems_.clear();
 
@@ -267,54 +233,29 @@ void LibraryData::parseLibrary( bool showProgress /*= true*/ ) {
 	QStringList locations = settings.value("Library/ActiveLocations", QStringList()).toStringList();
 
 	// if there are no library locations
-	if (locations.isEmpty()) {
+	if (locations.isEmpty()) 
+    {
 		locations_.clear();
-		libraryItems_.clear();
-		checkLibraryIntegrity(showProgress);
-		return;
-	}
-
-	// create the progress bar that displays the progress of the scan
-	if (showProgress) {
-        progWidget_ = new ScanProgressWidget(mainWnd_);
+    }
+    else
+    {
+        // create the progress bar that displays the progress of the scan
+        progWidget_ = new ScanProgressWidget(parentWidget_);
         progWidget_->setRange(0, locations.size());
         progWidget_->setMessage("Scanning location: \n" + locations.first());
         timerStep_ = 0;
         timerSteps_ = locations.size();
         locations_ = locations;
 
-		//progWidget.move(handler_->mapToGlobal(handler_->geometry().topRight()));
-		timer_ = new QTimer(this);
+        timer_ = new QTimer(this);
         connect(timer_, SIGNAL(timeout()), this, SLOT(performParseLibraryStep()));
         timer_->start();
 
         progWidget_->exec();
-	}
-    else
-    {
-        QApplication::setOverrideCursor(Qt::WaitCursor);
-
-        foreach (QString const& location, locations)
-        {
-            QFileInfo locationInfo(location);
-
-            // if the location is a directory
-            if (locationInfo.isDir())
-            {
-                parseDirectory(location);
-            }
-            // if the location is a direct file
-            else if (locationInfo.isFile())
-            {
-                parseFile(location);
-            }
-        }
-
-        QApplication::restoreOverrideCursor();
     }
 
     // check the integrity of the items in the library
-	checkLibraryIntegrity(showProgress);
+	checkLibraryIntegrity();
 }
 
 void LibraryData::parseDirectory( const QString& directoryPath ) {

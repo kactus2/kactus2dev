@@ -12,47 +12,31 @@
 #include <mainwindow/mainwindow.h>
 
 // the dialog files
-#include <common/dialogs/renameDialog/renamedialog.h>
-#include <common/dialogs/createVLNVDialog/createvlnvdialog.h>
-#include <common/dialogs/comboSelector/comboselector.h>
+#include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/ObjectRemoveDialog/objectremovedialog.h>
 #include <common/dialogs/ObjectRemoveDialog/objectremovemodel.h>
 #include <common/dialogs/TableViewDialog/TableViewDialog.h>
 
 // the model files
-#include <IPXACTmodels/busdefinition.h>
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/generatorchain.h>
 #include <IPXACTmodels/abstractiondefinition.h>
 #include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/design.h>
 
-#include <common/dialogs/newObjectDialog/newobjectdialog.h>
-
-#include <QLabel>
 #include <QString>
 #include <QStringList>
-#include <QVBoxLayout>
 #include <QTabWidget>
 #include <QFileDialog>
-#include <QTreeView>
-#include <QWidget>
 #include <QFile>
-#include <QDomDocument>
 #include <QList>
 #include <QSharedPointer>
 #include <QMap>
 #include <QFileInfo>
 #include <QMessageBox>
-#include <stdexcept>
-#include <QObject>
 #include <QCoreApplication>
 #include <QSettings>
 #include <QApplication>
-#include <QVariant>
-#include <QElapsedTimer>
-#include <QDebug>
 
 LibraryHandler::LibraryHandler(VLNVDialer* dialer, MainWindow* parent): 
 QTabWidget(parent), 
@@ -72,9 +56,7 @@ itemsToAdd_() {
 
 	setWindowTitle(tr("LibraryHandler"));
 
-	data_ = QSharedPointer<LibraryData>(new LibraryData(this, parent));
-
-    data_->parseLibrary(false);
+	data_ = QSharedPointer<LibraryData>(new LibraryData(this, parent));   
 
     treeModel_ = QSharedPointer<LibraryTreeModel>(
 			new LibraryTreeModel(this, data_.data(), this));
