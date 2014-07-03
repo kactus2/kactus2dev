@@ -1154,7 +1154,7 @@ bool SystemDesignDiagram::pasteActionEnabled() const
     {
         pasteEnabled = mimeData->imageData().canConvert<ComponentCollectionCopyData>() ||
             mimeData->imageData().canConvert<ColumnCollectionCopyData>() ||
-            mimeData->imageData().canConvert<PortCollectionCopyData>();
+            (onlySW_ && mimeData->imageData().canConvert<PortCollectionCopyData>());
     }
     else
     {
