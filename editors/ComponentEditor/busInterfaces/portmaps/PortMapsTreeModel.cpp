@@ -35,14 +35,14 @@ PortMapsTreeModel::PortMapsTreeModel(BusInterface* busif,
     QSharedPointer<Component> component,
     LibraryInterface* handler,
     QObject *parent)
-    : QAbstractItemModel(parent),
-    root_(new PortMapsTreeItem()),
-    busif_(busif),
-    portMaps_(busif->getPortMaps()),
+    : QAbstractItemModel(parent),    
     component_(component),
     handler_(handler),
-    absDef_(),
-    interfaceMode_(General::MASTER)          
+    root_(new PortMapsTreeItem()),
+    busif_(busif),    
+    absDef_(),    
+    interfaceMode_(General::MASTER),
+    portMaps_(busif->getPortMaps())
 {
 }
 
@@ -182,18 +182,8 @@ QModelIndex PortMapsTreeModel::parent(QModelIndex const& child) const
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeModel::setData()
 //-----------------------------------------------------------------------------
-bool PortMapsTreeModel::setData(const QModelIndex &index, const QVariant &value, int role /* = Qt::EditRole */)
+bool PortMapsTreeModel::setData(QModelIndex const&, QVariant const&, int  /* = Qt::EditRole */)
 {
-    if (!index.isValid())
-    {
-        return false;
-    }
-
-    if (role != Qt::EditRole)
-    {
-        return false;
-    }
-
     return false;
 }
 

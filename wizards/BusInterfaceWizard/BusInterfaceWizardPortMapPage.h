@@ -81,17 +81,18 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+    //! The component whose interface is being edited.
+    QSharedPointer<Component> component_;
+
+    //! The target bus interface.
+    QSharedPointer<BusInterface> busIf_;
+
     //! The library interface.
     LibraryInterface* handler_;
 
     //! The widget for editing port maps.
     BusIfPortmapTab portMapTab_;
 
-    //! The target bus interface.
-    QSharedPointer<BusInterface> busIf_;
-
-    //! The component whose interface is being edited.
-    QSharedPointer<Component> component_;
 };
 
 #endif // BUSINTERFACEWIZARDPORTMAPPAGE_H

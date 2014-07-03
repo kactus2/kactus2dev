@@ -55,11 +55,11 @@ physModel_(component, &model_, this),
 cleanButton_(QIcon(":/icons/common/graphics/cleanup.png"), tr("Clean up"), this),
 connectButton_(QIcon(":/icons/common/graphics/connect.png"), tr("Connect"), this),
 showAllButton_(tr("Show all ports in component"), this),
-hideConnectedBox_(tr("Hide connected ports"), this),
 showHideMappingButton_(tr("Show bit-field mapping"),this),
+nameFilterEditor_(new QLineEdit(this)),
 inButton_(QIcon(":/icons/common/graphics/control-180.png"), "", this),
 outButton_(QIcon(":/icons/common/graphics/control.png"), "", this),
-nameFilterEditor_(new QLineEdit(this)),
+hideConnectedBox_(tr("Hide connected ports"), this),
 portSet_()
 {
     view_.setModel(&model_);

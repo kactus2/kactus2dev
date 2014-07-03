@@ -287,23 +287,23 @@ private:
     //! The parent component.
     QSharedPointer<Component> component_;
 
+    //! Pointer to the instance that manages the library.
+    LibraryInterface* handler_;
+
     //! The dependency tree root.
     PortMapsTreeItem* root_;
 
     //! Pointer to the bus interface being edited.
-    BusInterface* busif_;
-
-    //! Pointer to the data structure within the model containing the port maps.
-    QList<QSharedPointer<General::PortMap> >& portMaps_;
-
-    //! Pointer to the instance that manages the library.
-    LibraryInterface* handler_;
+    BusInterface* busif_;    
 
     //! Pointer to the abstraction definition that is used.
     QSharedPointer<AbstractionDefinition> absDef_;
 
     //! Specifies the interface mode of this bus interface
     General::InterfaceMode interfaceMode_;
+
+    //! Pointer to the data structure within the model containing the port maps.
+    QList<QSharedPointer<General::PortMap> >& portMaps_;
 };
 
 //-----------------------------------------------------------------------------

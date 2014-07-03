@@ -39,15 +39,15 @@ Q_DECLARE_METATYPE(General::PortBounds)
 //-----------------------------------------------------------------------------
 // Function: BitMappingView::BitMappingView()
 //-----------------------------------------------------------------------------
-BitMappingView::BitMappingView(QSharedPointer<Component> component, QWidget *parent)
-    : component_(component),
+BitMappingView::BitMappingView(QSharedPointer<Component> component, QWidget *parent) :         
       QTableView(parent),
+      component_(component),
       pressedPoint_(),
       dropPoint_(),
       droppedData_(0),
       clearAction_(tr("Clear"), this),
       selectBitsAction_(tr("Select bits to map"), this),
-    logicalPort_()
+      logicalPort_()
 {
     Q_ASSERT(component_);
     

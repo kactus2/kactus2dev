@@ -19,9 +19,9 @@
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeItem::PortMapsTreeItem()
 //-----------------------------------------------------------------------------
-PortMapsTreeItem::PortMapsTreeItem()
-    : parent_(0),
+PortMapsTreeItem::PortMapsTreeItem() : 
     component_(0),
+    parent_(0),    
     type_(ITEM_TYPE_ROOT),
     name_("root"),
     children_()
@@ -64,7 +64,7 @@ void PortMapsTreeItem::refresh()
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeItem::data()
 //-----------------------------------------------------------------------------
-QVariant PortMapsTreeItem::data(int section) const
+QVariant PortMapsTreeItem::data(int) const
 {
     return QVariant();
 }

@@ -78,19 +78,9 @@ private:
     */
     void setupLayout();
    
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! Flag for indicating, if a new bus is created.
-    bool newBus_;
-
-    //! Editor for bus interface general options.
-    BusIfGeneralTab* generalTab_;
-
-    //! The library handler.
-    LibraryInterface* handler_;
 
     //! The component whose bus interface is being edited.
     QSharedPointer<Component> component_;
@@ -98,6 +88,14 @@ private:
     //! The bus interface being edited.
     QSharedPointer<BusInterface> busIf_;
 
+    //! The library handler.
+    LibraryInterface* handler_;
+
+    //! Flag for indicating, if a new bus is created.
+    bool newBus_;
+
+    //! Editor for bus interface general options.
+    BusIfGeneralTab* generalTab_;
 };
 
 #endif // BUSINTERFACEWIZARDGENERALOPTIONSPAGE_H

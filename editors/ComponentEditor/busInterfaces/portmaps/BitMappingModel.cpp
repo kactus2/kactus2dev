@@ -43,23 +43,21 @@ namespace
 
 Q_DECLARE_METATYPE(General::PortBounds)
 
-    //-----------------------------------------------------------------------------
-    // Function: BitMappingModel()
-    //-----------------------------------------------------------------------------
-    BitMappingModel::BitMappingModel(BusInterface* busif,
-    QSharedPointer<Component> component,
-    LibraryInterface* libHandler, 
-    QObject* parent)
-    : QAbstractTableModel(parent), 
-    busif_(busif),
-    mode_(General::INTERFACE_MODE_COUNT),
-    logicalPort_(),
-    portMaps_(busif->getPortMaps()),
-    component_(component),
-    handler_(libHandler),        
-    rows_(),
-    mappings_(),
-    canEdit_(false)
+//-----------------------------------------------------------------------------
+// Function: BitMappingModel()
+//-----------------------------------------------------------------------------
+BitMappingModel::BitMappingModel(BusInterface* busif, QSharedPointer<Component> component, 
+    LibraryInterface* libHandler, QObject* parent) : 
+      QAbstractTableModel(parent), 
+      rows_(),
+      mappings_(),
+      busif_(busif),
+      mode_(General::INTERFACE_MODE_COUNT),
+      logicalPort_(),
+      portMaps_(busif->getPortMaps()),
+      component_(component),
+      handler_(libHandler),                    
+      canEdit_(false)
 {
     Q_ASSERT(busif);
     Q_ASSERT(component);

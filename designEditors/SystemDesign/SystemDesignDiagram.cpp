@@ -1207,7 +1207,7 @@ QStringList SystemDesignDiagram::hierarchicalViewsOf(ComponentItem* component) c
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::componentType()
 //-----------------------------------------------------------------------------
-unsigned int SystemDesignDiagram::componentType() const
+int SystemDesignDiagram::componentType() const
 {
     return SWComponentItem::Type;
 }
@@ -1215,7 +1215,7 @@ unsigned int SystemDesignDiagram::componentType() const
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::offpageConnectorType()
 //-----------------------------------------------------------------------------
-unsigned int SystemDesignDiagram::offpageConnectorType() const
+int SystemDesignDiagram::offpageConnectorType() const
 {
     return SWOffPageConnectorItem::Type;
 }
@@ -1223,7 +1223,7 @@ unsigned int SystemDesignDiagram::offpageConnectorType() const
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::connectionType()
 //-----------------------------------------------------------------------------
-unsigned int SystemDesignDiagram::connectionType() const
+int SystemDesignDiagram::connectionType() const
 {
     return GraphicsConnection::Type;
 }

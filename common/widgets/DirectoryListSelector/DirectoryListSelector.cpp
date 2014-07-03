@@ -20,12 +20,12 @@
 //-----------------------------------------------------------------------------
 DirectoryListSelector::DirectoryListSelector(QString const& basePath,
                                              QStringList const& initialDirs,                                             
-                                             QWidget* parent)
-    : QWidget(parent),
+                                             QWidget* parent) : 
+    QWidget(parent),
     buttonAdd_(new QPushButton(QIcon(":/icons/common/graphics/add.png"), QString(), this)),
-    buttonRemove_(new QPushButton(QIcon(":/icons/common/graphics/remove.png"), QString(), this)),
-    directoryListModel_(new QStringListModel(initialDirs)),
+    buttonRemove_(new QPushButton(QIcon(":/icons/common/graphics/remove.png"), QString(), this)),    
     directoryListView_(new QListView(this)),
+    directoryListModel_(new QStringListModel(initialDirs)),
     basePath_(QFileInfo(basePath).canonicalFilePath()),
     persistentDirectories_()
 {

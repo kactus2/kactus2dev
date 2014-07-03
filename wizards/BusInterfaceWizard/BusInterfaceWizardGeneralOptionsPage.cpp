@@ -23,11 +23,8 @@
 // Function: BusInterfaceWizardVLNVSelectionPage::BusInterfaceWizardVLNVSelectionPage()
 //-----------------------------------------------------------------------------
 BusInterfaceWizardGeneralOptionsPage::BusInterfaceWizardGeneralOptionsPage(QSharedPointer<Component> component,
-    QSharedPointer<BusInterface> busIf,
-    LibraryInterface* lh, 
-    bool absDefEditable,
-    BusInterfaceWizard* parent)
-    : QWizardPage(parent),
+    QSharedPointer<BusInterface> busIf, LibraryInterface* lh,  bool absDefEditable, BusInterfaceWizard* parent) : 
+    QWizardPage(parent),
     component_(component),
     busIf_(busIf),
     handler_(lh),

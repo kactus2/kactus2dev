@@ -92,9 +92,6 @@ protected:
      */
     virtual void dropEvent(QDropEvent *event);
 
-	//! The point where mouse was clicked
-	QPoint pressedPoint_;
-
 protected slots:
 
 	//! Handler for cell clear action.
@@ -117,6 +114,9 @@ private:
     //! The component being edited.
     QSharedPointer<Component> component_;
 
+    //! The point where mouse was clicked.
+    QPoint pressedPoint_;
+
     //! The point where drag-drop ended.
     QPoint dropPoint_;
 
@@ -129,6 +129,7 @@ private:
     //! Action to select bits to connect.
     QAction selectBitsAction_;
 
+    //! Name of the logical port.
     QString logicalPort_;
 };
 

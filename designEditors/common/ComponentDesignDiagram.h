@@ -242,21 +242,21 @@ protected:
      *     
      *      @return The type of the components.
      */
-    virtual unsigned int componentType() const = 0;
+    virtual int componentType() const = 0;
 
     /*!
      *  Gets the graphics item type of the off page connectors in the diagram.
      *     
      *      @return The type of the components.
      */
-    virtual unsigned int offpageConnectorType() const = 0;
+    virtual int offpageConnectorType() const = 0;
 
     /*!
      *  Gets the graphics item type of the connections in the diagram.
      *     
      *      @return The type of the components.
      */
-    virtual unsigned int connectionType() const = 0;
+    virtual int connectionType() const = 0;
 
 private:
     // Disable copying.

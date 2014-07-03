@@ -213,9 +213,6 @@ private:
 	//! Pointer to the instance that manages the library.
 	LibraryInterface* libHandler_;
 
-	//! The proxy filter that does sorting for port maps.
-	//QSortFilterProxyModel mapProxy_;
-
 	//! The model to manage the port maps.
 	PortMapsTreeModel model_;
 

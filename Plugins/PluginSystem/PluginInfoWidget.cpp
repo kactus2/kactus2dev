@@ -17,9 +17,9 @@
 //-----------------------------------------------------------------------------
 // Function: PluginInfoWidget::PluginInfoWidget()
 //-----------------------------------------------------------------------------
-PluginInfoWidget::PluginInfoWidget(IPlugin* plugin, QWidget *parent)
-    : plugin_(plugin),
-    QWidget(parent)
+PluginInfoWidget::PluginInfoWidget(IPlugin* plugin, QWidget *parent) : 
+QWidget(parent),
+plugin_(plugin)
 {
     setupLayout();
 }

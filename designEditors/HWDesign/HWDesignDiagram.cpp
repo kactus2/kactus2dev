@@ -1667,7 +1667,7 @@ QStringList HWDesignDiagram::hierarchicalViewsOf(ComponentItem* component) const
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::componentType()
 //-----------------------------------------------------------------------------
-unsigned int HWDesignDiagram::componentType() const
+int HWDesignDiagram::componentType() const
 {
     return HWComponentItem::Type;
 }
@@ -1675,7 +1675,7 @@ unsigned int HWDesignDiagram::componentType() const
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::offpageConnectorType()
 //-----------------------------------------------------------------------------
-unsigned int HWDesignDiagram::offpageConnectorType() const
+int HWDesignDiagram::offpageConnectorType() const
 {
     return OffPageConnectorItem::Type;
 }
@@ -1683,7 +1683,7 @@ unsigned int HWDesignDiagram::offpageConnectorType() const
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::connectionType()
 //-----------------------------------------------------------------------------
-unsigned int HWDesignDiagram::connectionType() const
+int HWDesignDiagram::connectionType() const
 {
     return HWConnection::Type;
 }
