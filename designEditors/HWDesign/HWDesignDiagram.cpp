@@ -1646,7 +1646,7 @@ void HWDesignDiagram::openComponentByActiveView(ComponentItem* comp)
     QString viewName = getActiveViewOf(comp);
 
     // if view was found
-    if (comp->componentModel()->hasView(viewName))
+    if (comp->componentModel()->hasView(viewName) && hierarchicalViewsOf(comp).contains(viewName))
     {
         openDesignForComponent(comp, viewName);
     }
