@@ -76,6 +76,7 @@ Interconnection::Interconnection(QString name,
     route_(route), 
     offPage_(offPage)
 {
+    nameGroup_.name_ = name;
     nameGroup_.description_ = description;
     nameGroup_.displayName_ = displayName;
 }
