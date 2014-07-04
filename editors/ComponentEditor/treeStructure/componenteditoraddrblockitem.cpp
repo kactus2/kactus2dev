@@ -13,9 +13,6 @@
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h>
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 
-#include <QApplication>
-
-#include <QDebug>
 
 ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem(QSharedPointer<AddressBlock> addrBlock,
 														   ComponentEditorTreeModel* model,
@@ -77,9 +74,6 @@ ItemEditor* ComponentEditorAddrBlockItem::editor() {
 	return editor_;
 }
 
-QFont ComponentEditorAddrBlockItem::getFont() const {
-	return QApplication::font();
-}
 
 void ComponentEditorAddrBlockItem::createChild( int index ) {
 	QSharedPointer<RegisterModel> regmodel = regItems_[index];

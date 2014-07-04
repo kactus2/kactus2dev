@@ -41,10 +41,7 @@ ComponentEditorMemMapsItem::~ComponentEditorMemMapsItem() {
 
 QFont ComponentEditorMemMapsItem::getFont() const {
     QFont font(ComponentEditorItem::getFont());
-    if ( childItems_.empty())
-    {
-        font.setBold(false);
-    }
+    font.setBold(!memoryMaps_.isEmpty());
     return font;
 }
 

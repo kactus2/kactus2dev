@@ -16,11 +16,11 @@
 #include <IPXACTmodels/generaldeclarations.h>
 #include <common/utils.h>
 
-#include <QApplication>
 #include <QDesktopServices>
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QFont>
+#include <QProcess>
 #include <QSettings>
 #include <QStringList>
 #include <QUrl>
@@ -127,14 +127,6 @@ ItemEditor* ComponentEditorFileItem::editor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentEditorFileItem::getFont()
-//-----------------------------------------------------------------------------
-QFont ComponentEditorFileItem::getFont() const
-{
-	return QApplication::font();
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentEditorFileItem::getTooltip()
 //-----------------------------------------------------------------------------
 QString ComponentEditorFileItem::getTooltip() const
@@ -174,7 +166,7 @@ void ComponentEditorFileItem::openWith()
 
     if (QFileInfo(applicationPath).isExecutable())
     {
-        emit openFile(fileAbsolutePath(), applicationPath);
+        runInApplication(applicationPath);
     }
 }
 
@@ -185,7 +177,7 @@ void ComponentEditorFileItem::run()
 {
     if (runExecutableSet())
     {
-        emit openFile(fileAbsolutePath(), executablePath());
+        runInApplication(executablePath()); 
     }
     else
     {
@@ -231,6 +223,15 @@ QString ComponentEditorFileItem::fileAbsolutePath() const
     const QString xmlPath = libHandler_->getPath(*component_->getVlnv());
 
     return General::getAbsolutePath(xmlPath, relPath);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::runInApplication()
+//-----------------------------------------------------------------------------
+void ComponentEditorFileItem::runInApplication(QString const& applicationPath)
+{
+    QStringList arguments(fileAbsolutePath());
+    QProcess::startDetached(applicationPath, arguments);
 }
 
 //-----------------------------------------------------------------------------

@@ -22,10 +22,7 @@ ComponentEditorChannelsItem::~ComponentEditorChannelsItem() {
 
 QFont ComponentEditorChannelsItem::getFont() const {
     QFont font(ComponentEditorItem::getFont());
-    if ( channels_.isEmpty() )
-    {
-        font.setBold(false);
-    }
+    font.setBold(!channels_.isEmpty());
     return font;
 }
 

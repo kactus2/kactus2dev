@@ -83,11 +83,6 @@ private slots:
      */
     void onFileAdded(File* file);
 
-    /*!
-     *  Updates the items for files.
-     */
-    void updateFileItems();
-
 private:
 	//! \brief No copying
 	ComponentEditorFileSetsItem(const ComponentEditorFileSetsItem& other);

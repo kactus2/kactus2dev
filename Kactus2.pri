@@ -275,7 +275,6 @@ HEADERS += ./resource.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsBitMapItem.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsLogicalItem.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/portmapsmodel.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeItem.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeModel.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeView.h \
@@ -865,7 +864,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsBitMapItem.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsLogicalItem.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/portmapsmodel.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeItem.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeModel.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeView.cpp \

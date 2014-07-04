@@ -41,12 +41,6 @@ public:
 	//! \brief The destructor
 	virtual ~ComponentEditorFileItem();
 
-	/*! \brief Get the font to be used for text of this item.
-	*
-	* \return QFont instance that defines the font to be used.
-	*/
-	virtual QFont getFont() const;
-
 	/*! \brief Get the tool tip for the item.
 	 * 
 	 * \return The text for the tool tip to print to user.
@@ -84,11 +78,6 @@ public:
      */
     virtual QList<QAction*> actions() const;
 
-signals:
-
-    //! Emitted when a file should be opened with a selected application.
-    void openFile(QString const& fileAbsolutePath, QString const& applicationAbsolutePath);
-
 public slots:
 	
 	//! Called to open the item in a default editor.
@@ -116,6 +105,13 @@ private:
    
     //! Finds the absolute path of the file represented by the item.
     QString fileAbsolutePath() const;
+
+    /*!
+     *  Starts the selected application and runs the file with it.
+     *
+     *      @param [in] applicationPath   Absolute path to the application executable.     
+     */
+    void runInApplication(QString const& applicationPath);
 
     /*!
      *  Returns true if the item should be opened in Kactus2 CSource editor.

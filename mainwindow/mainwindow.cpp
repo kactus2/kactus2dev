@@ -3450,8 +3450,6 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 		this, SLOT(openSWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 	connect(editor, SIGNAL(openSystemDesign(const VLNV&, const QString&)),
 		this, SLOT(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
-    connect(editor, SIGNAL(openFile(QString const&, QString const&)), 
-        this, SLOT(openFileInApplication(QString const&, QString const&)), Qt::UniqueConnection);
 
     registerDocument(editor, forceUnlocked);
 
@@ -3531,15 +3529,6 @@ void MainWindow::openApiDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
 
     ApiDefinitionEditor* editor = new ApiDefinitionEditor(this, libraryHandler_, apiDef);
     registerDocument(editor, forceUnlocked);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainWindow::openFileInApplication()
-//-----------------------------------------------------------------------------
-void MainWindow::openFileInApplication(QString const& fileAbsolutePath, QString const& applicationPath)
-{
-    QStringList arguments(fileAbsolutePath);
-    QProcess::startDetached(applicationPath, arguments);
 }
 
 //-----------------------------------------------------------------------------

@@ -38,12 +38,6 @@ public:
 	//! \brief The destructor
 	virtual ~ComponentEditorFileSetItem();
 
-	/*! \brief Get the font to be used for text of this item.
-	*
-	* \return QFont instance that defines the font to be used.
-	*/
-	virtual QFont getFont() const;
-
 	/*! \brief Get the tool tip for the item.
 	 * 
 	 * \return The text for the tool tip to print to user.
@@ -79,11 +73,6 @@ public:
      *  Handles the addition of a file outside the editor.
      */
     void onFileAdded(File* file);
-
-    /*!
-     *  Updates the file items.
-     */
-    void updateFileItems();
 
     /*!
      *  Returns the file set corresponding to this item.

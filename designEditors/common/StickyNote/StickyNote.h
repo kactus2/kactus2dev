@@ -188,6 +188,13 @@ private:
      *      @return True, if the click hits the association button, otherwise false.
      */
     bool hitsAssociationButton(QPointF const& clickPosition) const;   
+    
+    /*!
+     *  Gets the timestamp for current time and date as formatted string.
+     *
+     *      @return Current time and date.
+     */
+    QString getFormattedTimestamp();
 
     //-----------------------------------------------------------------------------
     // Data.

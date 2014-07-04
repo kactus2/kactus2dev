@@ -23,10 +23,7 @@ ComponentEditorSWPropertiesItem::~ComponentEditorSWPropertiesItem() {
 
 QFont ComponentEditorSWPropertiesItem::getFont() const {
     QFont font(ComponentEditorItem::getFont());
-    if ( swProperties_.isEmpty() )
-    {
-        font.setBold(false);
-    }
+    font.setBold(!swProperties_.isEmpty());
     return font;
 }
 

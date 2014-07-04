@@ -12,9 +12,6 @@
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h>
 
-#include <QFont>
-#include <QApplication>
-
 ComponentEditorRegisterItem::ComponentEditorRegisterItem(QSharedPointer<Register> reg,
 														 ComponentEditorTreeModel* model,
 														 LibraryInterface* libHandler, 
@@ -68,10 +65,6 @@ ItemEditor* ComponentEditorRegisterItem::editor() {
 			this, SIGNAL(helpUrlRequested(QString const&)));
 	}
 	return editor_;
-}
-
-QFont ComponentEditorRegisterItem::getFont() const {
-	return QApplication::font();
 }
 
 void ComponentEditorRegisterItem::createChild( int index ) {

@@ -10,9 +10,9 @@
 #include "componenteditortreemodel.h"
 #include <editors/ComponentEditor/fileSet/fileseteditor.h>
 
-#include <QFont>
-#include <QApplication>
-
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileSetItem::ComponentEditorFileSetItem()
+//-----------------------------------------------------------------------------
 ComponentEditorFileSetItem::ComponentEditorFileSetItem(QSharedPointer<FileSet> fileSet,
 													   ComponentEditorTreeModel* model,
 													   LibraryInterface* libHandler,
@@ -20,30 +20,33 @@ ComponentEditorFileSetItem::ComponentEditorFileSetItem(QSharedPointer<FileSet> f
 													   ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 fileSet_(fileSet),
-files_(fileSet->getFiles()) {
-
+files_(fileSet->getFiles()) 
+{
 	Q_ASSERT(fileSet);
 
-	foreach (QSharedPointer<File> file, files_) {
-		QSharedPointer<ComponentEditorFileItem> fileItem(new ComponentEditorFileItem(
-			                                             file, model, libHandler, component, this));
-
-        connect(fileItem.data(), SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
-                model, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
-        connect(fileItem.data(), SIGNAL(openFile(QString const&, QString const&)),
-            model, SIGNAL(openFile(QString const&, QString const&)), Qt::UniqueConnection);
-
-		childItems_.append(fileItem);
-	}
+    int childCount = files_.size();
+    for (int i = 0; i < childCount; i++)
+    {
+        createChild(i);
+    }
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileSetItem::~ComponentEditorFileSetItem()
+//-----------------------------------------------------------------------------
 ComponentEditorFileSetItem::~ComponentEditorFileSetItem() {
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileSetItem::text()
+//-----------------------------------------------------------------------------
 QString ComponentEditorFileSetItem::text() const {
 	return fileSet_->getName();
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileSetItem::isValid()
+//-----------------------------------------------------------------------------
 bool ComponentEditorFileSetItem::isValid() const {
 	// check that the file set is valid
 	if (!fileSet_->isValid(true)) {
@@ -75,6 +78,9 @@ bool ComponentEditorFileSetItem::isValid() const {
 	return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileSetItem::editor()
+//-----------------------------------------------------------------------------
 ItemEditor* ComponentEditorFileSetItem::editor() {
 	if (!editor_) {
 		 editor_ = new FileSetEditor(libHandler_, component_, fileSet_, NULL);
@@ -96,23 +102,24 @@ ItemEditor* ComponentEditorFileSetItem::editor() {
 	return editor_;
 }
 
-QFont ComponentEditorFileSetItem::getFont() const {
-	return QApplication::font();
-}
-
-QString ComponentEditorFileSetItem::getTooltip() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileSetItem::getTooltip()
+//-----------------------------------------------------------------------------
+QString ComponentEditorFileSetItem::getTooltip() const
+{
 	return tr("Contains a list of files and their build commands");
 }
 
-void ComponentEditorFileSetItem::createChild( int index ) {
-
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileSetItem::createChild()
+//-----------------------------------------------------------------------------
+void ComponentEditorFileSetItem::createChild(int index)
+{
 	QSharedPointer<ComponentEditorFileItem> fileItem(new ComponentEditorFileItem(
 		files_.at(index), model_, libHandler_, component_, this));
 
     connect(fileItem.data(), SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
             model_, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
-    connect(fileItem.data(), SIGNAL(openFile(QString const&, QString const&)),
-        model_, SIGNAL(openFile(QString const&, QString const&)), Qt::UniqueConnection);
 
 	fileItem->setLocked(locked_);
 	childItems_.insert(index, fileItem);
@@ -138,27 +145,4 @@ void ComponentEditorFileSetItem::onFileAdded(File* file)
 FileSet const* ComponentEditorFileSetItem::getFileSet() const
 {
     return fileSet_.data();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorFileSetItem::updateFileItems()
-//-----------------------------------------------------------------------------
-void ComponentEditorFileSetItem::updateFileItems()
-{
-//     childItems_.clear();
-// 
-//     foreach (QSharedPointer<File> file, files_) {
-//         QSharedPointer<ComponentEditorFileItem> fileItem(new ComponentEditorFileItem(
-//             file, model_, libHandler_, component_, this));
-// 		  fileItem->setLocked(locked_);
-// 
-//         connect(fileItem.data(), SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
-//                 model_, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
-// 
-//         childItems_.append(fileItem);
-//     }
-// 
-//     emit contentChanged(this);
-
-    //onEditorChanged();
 }

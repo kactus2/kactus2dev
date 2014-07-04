@@ -168,9 +168,6 @@ signals:
      */
     void openCSource(QString const& filename, QSharedPointer<Component> component);
 
-    //! Emitted when a file should be opened in a selected application.
-    void openFile(QString const& fileAbsolutePath, QString const& applicationAbsolutePath);
-
     //! Emitted when a help page should be changed in the context help window.
     void helpUrlRequested(QString const& url);
 

@@ -30,10 +30,7 @@ ComponentEditorSWViewsItem::~ComponentEditorSWViewsItem() {
 
 QFont ComponentEditorSWViewsItem::getFont() const {
     QFont font(ComponentEditorItem::getFont());
-    if ( childItems_.empty())
-    {
-        font.setBold(false);
-    }
+    font.setBold(!swViews_.isEmpty());
     return font;
 }
 

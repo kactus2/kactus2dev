@@ -29,6 +29,20 @@ views_(component->getViews()) {
 ComponentEditorViewsItem::~ComponentEditorViewsItem() {
 }
 
+QString ComponentEditorViewsItem::getTooltip() const {
+    return tr("Contains the views of the component");
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorViewsItem::getFont()
+//-----------------------------------------------------------------------------
+QFont ComponentEditorViewsItem::getFont() const
+{
+    QFont font(ComponentEditorItem::getFont());
+    font.setBold(!views_.isEmpty());
+    return font;
+}
+
 QString ComponentEditorViewsItem::text() const {
 	return tr("Views");
 }
@@ -47,10 +61,6 @@ ItemEditor* ComponentEditorViewsItem::editor() {
 			this, SIGNAL(helpUrlRequested(QString const&)));
 	}
 	return editor_;
-}
-
-QString ComponentEditorViewsItem::getTooltip() const {
-	return tr("Contains the views of the component");
 }
 
 void ComponentEditorViewsItem::createChild( int index ) {

@@ -52,6 +52,12 @@ public:
 	*/
 	virtual QString text() const;
 
+	/*! \brief Get the font to be used for text of this item.
+	*
+	* \return QFont instance that defines the font to be used.
+	*/
+    virtual QFont getFont() const;
+
 	/*! \brief Check the validity of this item and sub items.
 	 *
 	 * \return bool True if item is in valid state.
@@ -70,6 +76,7 @@ private:
 
 	//! \brief No assignment
 	ComponentEditorGeneralItem& operator=(const ComponentEditorGeneralItem& other);
+
 };
 
 #endif // COMPONENTEDITORGENERALITEM_H

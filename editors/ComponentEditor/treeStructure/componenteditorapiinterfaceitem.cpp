@@ -8,8 +8,6 @@
 #include "componenteditorapiinterfaceitem.h"
 #include <editors/ComponentEditor/software/apiInterface/ApiInterfaceEditor.h>
 
-#include <QApplication>
-
 ComponentEditorAPIInterfaceItem::ComponentEditorAPIInterfaceItem(
 	QSharedPointer<ApiInterface> APIInterface,
 	ComponentEditorTreeModel* model,
@@ -59,8 +57,4 @@ ItemEditor* ComponentEditorAPIInterfaceItem::editor() {
 			this, SIGNAL(helpUrlRequested(QString const&)));
 	}
 	return editor_;
-}
-
-QFont ComponentEditorAPIInterfaceItem::getFont() const {
-	return QApplication::font();
 }

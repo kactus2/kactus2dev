@@ -59,6 +59,8 @@ StickyNote::StickyNote(QGraphicsItem* parent):
     createWritableArea();
     createAssociationButton();    
 
+    setTimestamp(getFormattedTimestamp());    
+
     connect(textArea_, SIGNAL(contentChanged()), this, SLOT(onTextEdited()), Qt::UniqueConnection);
 }
 
@@ -242,7 +244,7 @@ void StickyNote::setTimestamp(QString const& timestamp)
 //-----------------------------------------------------------------------------
 void StickyNote::onTextEdited()
 {
-    QString timestamp = QDateTime::currentDateTime().toString(Qt::SystemLocaleShortDate);    
+    QString timestamp = getFormattedTimestamp();
     
     StickyNoteEditCommand* command = new StickyNoteEditCommand(this, 
         textArea_->toPlainText(), contentExtension_->value(), timestamp, timestampExtension_->value());
@@ -337,4 +339,12 @@ bool StickyNote::hitsAssociationButton(QPointF const& clickPosition) const
 {
     QPolygonF buttonArea = mapFromItem(associationButton_, associationButton_->boundingRect());
     return buttonArea.containsPoint(clickPosition, Qt::OddEvenFill);
+}
+
+//-----------------------------------------------------------------------------
+// Function: StickyNote::getFormattedTimestamp()
+//-----------------------------------------------------------------------------
+QString StickyNote::getFormattedTimestamp()
+{
+    return QDateTime::currentDateTime().toString(Qt::SystemLocaleShortDate);
 }

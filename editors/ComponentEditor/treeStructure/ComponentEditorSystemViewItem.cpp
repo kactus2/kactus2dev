@@ -12,9 +12,6 @@
 #include "ComponentEditorSystemViewItem.h"
 #include <editors/ComponentEditor/software/systemView/SystemViewEditor.h>
 
-#include <QApplication>
-#include <QFont>
-
 ComponentEditorSystemViewItem::ComponentEditorSystemViewItem(
 	QSharedPointer<SystemView> systemView,
 	ComponentEditorTreeModel* model,
@@ -69,10 +66,6 @@ ItemEditor* ComponentEditorSystemViewItem::editor() {
 			this, SIGNAL(helpUrlRequested(QString const&)));
 	}
 	return editor_;
-}
-
-QFont ComponentEditorSystemViewItem::getFont() const {
-	return QApplication::font();
 }
 
 bool ComponentEditorSystemViewItem::canBeOpened() const {

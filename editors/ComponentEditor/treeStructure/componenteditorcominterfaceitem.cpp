@@ -8,9 +8,6 @@
 #include "componenteditorcominterfaceitem.h"
 #include <editors/ComponentEditor/software/comInterface/ComInterfaceEditor.h>
 
-#include <QFont>
-#include <QApplication>
-
 ComponentEditorComInterfaceItem::ComponentEditorComInterfaceItem(QSharedPointer<ComInterface> comInterface,
 																 ComponentEditorTreeModel* model,
 																 LibraryInterface* libHandler,
@@ -56,10 +53,6 @@ ItemEditor* ComponentEditorComInterfaceItem::editor() {
 			this, SIGNAL(helpUrlRequested(QString const&)));
 	}
 	return editor_;
-}
-
-QFont ComponentEditorComInterfaceItem::getFont() const {
-	return QApplication::font();
 }
 
 QString ComponentEditorComInterfaceItem::getTooltip() const {

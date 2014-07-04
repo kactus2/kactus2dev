@@ -29,10 +29,7 @@ ComponentEditorAddrSpacesItem::~ComponentEditorAddrSpacesItem() {
 
 QFont ComponentEditorAddrSpacesItem::getFont() const {
     QFont font(ComponentEditorItem::getFont());
-    if ( childItems_.empty())
-    {
-        font.setBold(false);
-    }
+    font.setBold(!addrSpaces_.empty());
     return font;
 }
 

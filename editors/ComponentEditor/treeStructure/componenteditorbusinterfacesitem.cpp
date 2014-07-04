@@ -31,10 +31,7 @@ ComponentEditorBusInterfacesItem::~ComponentEditorBusInterfacesItem() {
 
 QFont ComponentEditorBusInterfacesItem::getFont() const {
     QFont font(ComponentEditorItem::getFont());
-    if ( !component_->hasInterfaces() )
-    {
-        font.setBold(false);
-    }
+    font.setBold(component_->hasInterfaces());
     return font;
 }
 

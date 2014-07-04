@@ -8,9 +8,6 @@
 #include "componenteditorswviewitem.h"
 #include <editors/ComponentEditor/software/swView/SWViewEditor.h>
 
-#include <QApplication>
-#include <QFont>
-
 ComponentEditorSWViewItem::ComponentEditorSWViewItem(
 	QSharedPointer<SWView> swView,
 	ComponentEditorTreeModel* model,
@@ -66,10 +63,6 @@ ItemEditor* ComponentEditorSWViewItem::editor() {
 			this, SIGNAL(helpUrlRequested(QString const&)));
 	}
 	return editor_;
-}
-
-QFont ComponentEditorSWViewItem::getFont() const {
-	return QApplication::font();
 }
 
 bool ComponentEditorSWViewItem::canBeOpened() const {

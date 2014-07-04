@@ -80,22 +80,6 @@ QVariant PortMapsTreeModel::headerData(int section, Qt::Orientation /*orientatio
             {
                 return tr("Physical Width");
             }
-/*        case  COLUMN_LEFT_LOGICAL:            
-            {
-                return tr("Logical Left");
-            }
-        case  COLUMN_RIGHT_LOGICAL:            
-            {
-                return tr("Logical Right");
-            }
-        case  COLUMN_LEFT_PHYSICAL:            
-            {
-                return tr("Physical Left");
-            }
-        case  COLUMN_RIGHT_PHYSICAL:          
-            {
-                return tr("Physical Right");
-            }*/
         }
     }
     else if (role == Qt::TextAlignmentRole)

@@ -22,11 +22,8 @@ ComponentEditorParametersItem::~ComponentEditorParametersItem() {
 }
 
 QFont ComponentEditorParametersItem::getFont() const {
-    QFont font(ComponentEditorItem::getFont());
-    if ( parameters_.empty())
-    {
-        font.setBold(false);
-    }
+    QFont font(ComponentEditorItem::getFont());    
+    font.setBold(!parameters_.isEmpty());    
     return font;
 }
 

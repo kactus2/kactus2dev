@@ -13,10 +13,6 @@
 #include <IPXACTmodels/addressblock.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
 
-#include <QFont>
-#include <QApplication>
-#include <QGraphicsScene>
-
 ComponentEditorMemMapItem::ComponentEditorMemMapItem(QSharedPointer<MemoryMap> memoryMap, 
 													 ComponentEditorTreeModel* model,
 													 LibraryInterface* libHandler,
@@ -70,10 +66,6 @@ ItemEditor* ComponentEditorMemMapItem::editor() {
 			this, SIGNAL(helpUrlRequested(QString const&)));
 	}
 	return editor_;
-}
-
-QFont ComponentEditorMemMapItem::getFont() const {
-	return QApplication::font();
 }
 
 QString ComponentEditorMemMapItem::getTooltip() const {

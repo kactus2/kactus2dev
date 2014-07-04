@@ -28,10 +28,7 @@ ComponentEditorComInterfacesItem::~ComponentEditorComInterfacesItem() {
 
 QFont ComponentEditorComInterfacesItem::getFont() const {
     QFont font(ComponentEditorItem::getFont());
-    if ( childItems_.isEmpty() )
-    {
-        font.setBold(false);
-    }
+    font.setBold(!interfaces_.isEmpty());
     return font;
 }
 

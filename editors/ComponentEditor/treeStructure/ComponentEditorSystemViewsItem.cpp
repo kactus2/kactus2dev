@@ -33,12 +33,8 @@ ComponentEditorSystemViewsItem::~ComponentEditorSystemViewsItem() {
 }
 
 QFont ComponentEditorSystemViewsItem::getFont() const {
-    QFont font(ComponentEditorItem::getFont());
-    font.setBold(true);
-    if ( childItems_.empty())
-    {
-        font.setBold(false);
-    }
+    QFont font(ComponentEditorItem::getFont());        
+    font.setBold(!systemViews_.isEmpty());    
     return font;
 }
 

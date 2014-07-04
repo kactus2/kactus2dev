@@ -22,10 +22,7 @@ ComponentEditorCpusItem::~ComponentEditorCpusItem() {
 
 QFont ComponentEditorCpusItem::getFont() const {
     QFont font(ComponentEditorItem::getFont());
-    if ( cpus_.isEmpty() )
-    {
-        font.setBold(false);
-    }
+    font.setBold(!cpus_.isEmpty());
     return font;
 }
 

@@ -8,9 +8,6 @@
 #include "componenteditorviewitem.h"
 #include <editors/ComponentEditor/views/vieweditor.h>
 
-#include <QFont>
-#include <QApplication>
-
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorViewItem()
 //-----------------------------------------------------------------------------
@@ -73,13 +70,6 @@ ItemEditor* ComponentEditorViewItem::editor() {
 			this, SIGNAL(helpUrlRequested(QString const&)));
 	}
 	return editor_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: getFont()
-//-----------------------------------------------------------------------------
-QFont ComponentEditorViewItem::getFont() const {
-	return QApplication::font();
 }
 
 //-----------------------------------------------------------------------------

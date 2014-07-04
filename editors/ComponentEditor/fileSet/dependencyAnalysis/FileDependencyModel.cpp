@@ -154,7 +154,7 @@ QModelIndex FileDependencyModel::parent(const QModelIndex &child) const
     FileDependencyItem* childItem = static_cast<FileDependencyItem*>(child.internalPointer());
     FileDependencyItem* parent = childItem->getParent();
 
-    if (parent == 0)
+    if (parent == 0 || parent == root_)
     {
         return QModelIndex();
     }

@@ -22,10 +22,7 @@ ComponentEditorOtherClocksItem::~ComponentEditorOtherClocksItem() {
 
 QFont ComponentEditorOtherClocksItem::getFont() const {
     QFont font(ComponentEditorItem::getFont());
-    if ( otherClocks_.isEmpty() )
-    {
-        font.setBold(false);
-    }
+    font.setBold(!otherClocks_.isEmpty());
     return font;
 }
 

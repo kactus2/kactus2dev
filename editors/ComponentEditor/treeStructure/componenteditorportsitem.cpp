@@ -23,10 +23,7 @@ ComponentEditorPortsItem::~ComponentEditorPortsItem() {
 
 QFont ComponentEditorPortsItem::getFont() const {
     QFont font(ComponentEditorItem::getFont());
-    if ( ports_.empty())
-    {
-        font.setBold(false);
-    }
+    font.setBold(!ports_.empty());
     return font;
 }
 

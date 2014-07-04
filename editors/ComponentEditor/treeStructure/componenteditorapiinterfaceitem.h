@@ -43,12 +43,6 @@ public:
 	*/
 	virtual QString getTooltip() const;
 
-	/*! \brief Get the font to be used for text of this item.
-	*
-	* \return QFont instance that defines the font to be used.
-	*/
-	virtual QFont getFont() const;
-
 	/*! \brief Get the text to be displayed to user in the tree for this item.
 	 *
 	 * \return QString Contains the text to display.

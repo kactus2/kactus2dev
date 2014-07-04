@@ -35,10 +35,7 @@ ComponentEditorFileSetsItem::~ComponentEditorFileSetsItem() {
 
 QFont ComponentEditorFileSetsItem::getFont() const {
     QFont font(ComponentEditorItem::getFont());
-    if ( fileSets_.empty() )
-    {
-        font.setBold(false);
-    }
+    font.setBold(!fileSets_.empty());
     return font;
 }
 
@@ -52,8 +49,6 @@ ItemEditor* ComponentEditorFileSetsItem::editor() {
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(fileAdded(File*)),
 			this, SLOT(onFileAdded(File*)), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(filesUpdated()),
-			this, SLOT(updateFileItems()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(contentChanged()), 
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(dependenciesChanged()), 
@@ -104,15 +99,3 @@ void ComponentEditorFileSetsItem::onFileAdded(File* file)
     }
 }
 
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorFileSetsItem::onFilesUpdated()
-//-----------------------------------------------------------------------------
-void ComponentEditorFileSetsItem::updateFileItems()
-{
-    foreach (QSharedPointer<ComponentEditorItem> item, childItems_)
-    {
-        QSharedPointer<ComponentEditorFileSetItem> fileSetItem = item.dynamicCast<ComponentEditorFileSetItem>();
-        Q_ASSERT(fileSetItem != 0);
-        fileSetItem->updateFileItems();
-    }
-}

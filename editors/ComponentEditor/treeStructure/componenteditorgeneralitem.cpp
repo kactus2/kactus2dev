@@ -23,6 +23,16 @@ QString ComponentEditorGeneralItem::text() const {
 	return tr("General");
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorGeneralItem::getFont()
+//-----------------------------------------------------------------------------
+QFont ComponentEditorGeneralItem::getFont() const
+{
+    QFont font(ComponentEditorItem::getFont());
+    font.setBold(true);
+    return font;
+}
+
 bool ComponentEditorGeneralItem::isValid() const {
 	// general editor is always valid because it contains no mandatory elements
 	return true;

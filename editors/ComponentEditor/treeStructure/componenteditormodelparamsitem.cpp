@@ -22,11 +22,7 @@ ComponentEditorModelParamsItem::~ComponentEditorModelParamsItem() {
 
 QFont ComponentEditorModelParamsItem::getFont() const {
     QFont font(ComponentEditorItem::getFont());
-    font.setBold(true);
-    if ( modelParams_.empty())
-    {
-        font.setBold(false);
-    }
+    font.setBold(!modelParams_.empty());
     return font;
 }
 

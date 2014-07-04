@@ -11,8 +11,6 @@
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h>
 
-#include <QApplication>
-
 ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Register> reg,
 												   QSharedPointer<Field> field,
 												   ComponentEditorTreeModel* model,
@@ -31,10 +29,6 @@ graphItem_(NULL) {
 }
 
 ComponentEditorFieldItem::~ComponentEditorFieldItem() {
-}
-
-QFont ComponentEditorFieldItem::getFont() const {
-	return QApplication::font();
 }
 
 QString ComponentEditorFieldItem::getTooltip() const {

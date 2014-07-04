@@ -12,9 +12,6 @@
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.h>
 
-#include <QFont>
-#include <QApplication>
-
 ComponentEditorAddrSpaceItem::ComponentEditorAddrSpaceItem(QSharedPointer<AddressSpace> addrSpace,
 														   ComponentEditorTreeModel* model,
 														   LibraryInterface* libHandler,
@@ -83,10 +80,6 @@ ItemEditor* ComponentEditorAddrSpaceItem::editor() {
 			this, SIGNAL(helpUrlRequested(QString const&)));
 	}
 	return editor_;
-}
-
-QFont ComponentEditorAddrSpaceItem::getFont() const {
-	return QApplication::font();
 }
 
 QString ComponentEditorAddrSpaceItem::getTooltip() const {

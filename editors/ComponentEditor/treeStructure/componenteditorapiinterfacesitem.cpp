@@ -29,10 +29,7 @@ ComponentEditorAPIInterfacesItem::~ComponentEditorAPIInterfacesItem() {
 
 QFont ComponentEditorAPIInterfacesItem::getFont() const {
     QFont font(ComponentEditorItem::getFont());
-    if ( childItems_.empty())
-    {
-        font.setBold(false);
-    }
+    font.setBold(!apiInterfaces_.empty());
     return font;
 }
 

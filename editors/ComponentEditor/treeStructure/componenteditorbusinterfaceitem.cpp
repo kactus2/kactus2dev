@@ -8,9 +8,6 @@
 #include "componenteditorbusinterfaceitem.h"
 #include <editors/ComponentEditor/busInterfaces/businterfaceeditor.h>
 
-#include <QFont>
-#include <QApplication>
-
 ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem(QSharedPointer<BusInterface> busif,
 																 ComponentEditorTreeModel* model,
 																 LibraryInterface* libHandler,
@@ -86,10 +83,6 @@ ItemEditor* ComponentEditorBusInterfaceItem::editor() {
 	}
     setHighlight(false);
 	return editor_;
-}
-
-QFont ComponentEditorBusInterfaceItem::getFont() const {
-	return QApplication::font();
 }
 
 QString ComponentEditorBusInterfaceItem::getTooltip() const {

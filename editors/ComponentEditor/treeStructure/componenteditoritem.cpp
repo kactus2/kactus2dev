@@ -121,10 +121,7 @@ ComponentEditorItem* ComponentEditorItem::parent() {
 }
 
 QFont ComponentEditorItem::getFont() const {
-	QFont font(QApplication::font());
-	//font.setPointSize(font.pointSize() + 2);
-	font.setBold(true);
-	return font;
+	return QApplication::font();	
 }
 
 bool ComponentEditorItem::isValid() const {

@@ -155,14 +155,6 @@ public slots:
      */
     void openApiDefinition(VLNV const& vlnv, bool forceUnlocked = false);
 
-    /*!
-     *  Opens a file in an external application.
-     *
-     *      @param [in] fileAbsolutePath    Absolute path to the file to open.          
-     *      @param [in] applicationPath     Absolute path to application to open the file with. 
-     */
-    void openFileInApplication(QString const& fileAbsolutePath, QString const& applicationPath);
-
     /*! \brief Called when user wants to close a design tab
 	 *
 	 * \param index Index of the tab to close
