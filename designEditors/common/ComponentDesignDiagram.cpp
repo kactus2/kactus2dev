@@ -303,6 +303,7 @@ void ComponentDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent
     }
     else if (inAssociationMode())
     {
+        updateAssociationCursor(mouseEvent->scenePos());
         updateAssociationLineDraw(mouseEvent->scenePos());
     }
     // Allow moving items only when a single item is selected.

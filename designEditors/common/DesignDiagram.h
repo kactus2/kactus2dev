@@ -390,6 +390,8 @@ protected:
      */
 	virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent* event);
 
+     void updateAssociationCursor(QPointF const& cursorPosition);
+
     /*!
      *  Updates the association line.
      *

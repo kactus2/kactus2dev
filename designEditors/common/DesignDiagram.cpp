@@ -39,7 +39,7 @@
 #include <QMenu>
 #include <QGraphicsItem>
 #include <QSharedPointer>
-
+#include <QApplication>
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::DesignDiagram()
 //-----------------------------------------------------------------------------
@@ -286,6 +286,7 @@ void DesignDiagram::onVendorExtensionRemoved(QSharedPointer<VendorExtension> ext
 void DesignDiagram::onBeginAssociation(Associable* startingPoint)
 {
     setInteractionMode(ASSOCIATE);
+    QApplication::setOverrideCursor(Qt::ArrowCursor);
 
     QPointF start = startingPoint->connectionPoint();
     associationLine_ = new QGraphicsLineItem(QLineF(start, start));
@@ -678,13 +679,29 @@ void DesignDiagram::setProtectionForStickyNotes()
 }
 
 //-----------------------------------------------------------------------------
+// Function: DesignDiagram::updateAssociationCursor()
+//-----------------------------------------------------------------------------
+void DesignDiagram::updateAssociationCursor(QPointF const& cursorPosition)
+{
+    bool possibleEndpoint = dynamic_cast<Associable*>(getBaseItemOf(itemAt(cursorPosition, QTransform())));
+    if (possibleEndpoint)
+    {
+        QApplication::changeOverrideCursor(Qt::CrossCursor);
+    }
+    else
+    {
+        QApplication::changeOverrideCursor(Qt::ArrowCursor);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: DesignDiagram::updateAssociationLine()
 //-----------------------------------------------------------------------------
 void DesignDiagram::updateAssociationLineDraw(QPointF const& cursorPosition)
 {
     QLineF line = associationLine_->line();
     line.setP2(cursorPosition);
-    associationLine_->setLine(line);
+    associationLine_->setLine(line);    
 }
 
 //-----------------------------------------------------------------------------
@@ -705,6 +722,7 @@ void DesignDiagram::endAssociation(QPointF const& endpoint)
     addCommand->redo();
     getEditProvider().addCommand(addCommand);
 
+    QApplication::restoreOverrideCursor();
     setInteractionMode(NORMAL);
 }
 
