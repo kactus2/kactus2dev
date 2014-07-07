@@ -14,10 +14,13 @@
 #include <IPXACTmodels/abstractiondefinition.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/port.h>
+
 #include <library/LibraryManager/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>
+
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.h>
+#include <editors/ComponentEditor/busInterfaces/portmaps/BitSelectionDialog.h>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -37,7 +40,6 @@ BusIfPortmapTab::BusIfPortmapTab( LibraryInterface* libHandler,
 								 BusInterface* busif, 
 								 QWidget* parent ):
 QWidget(parent), 
-portMap_(),
 busif_(busif),
 component_(component), 
 libHandler_(libHandler), 
@@ -401,7 +403,7 @@ void BusIfPortmapTab::onMakeConnections(QStringList const& physicalPorts, QStrin
 }
 
 //-----------------------------------------------------------------------------
-// Function: PinMapTab::onLogicalChanged()
+// Function: BusIfPortmapTab::onLogicalChanged()
 //-----------------------------------------------------------------------------
 void BusIfPortmapTab::onLogicalChanged(const QModelIndex& index)
 {
@@ -516,10 +518,7 @@ void BusIfPortmapTab::mapOneToOne(QStringList const& physicalPorts, QStringList 
     int portCount = physicalPorts.size();
     for (int i = 0; i < portCount; ++i) 
     {
-        if (model_.canCreateMap(physicalPorts.at(i), logicalPorts.at(i))) 
-        {
-            mapPorts(physicalPorts.at(i), logicalPorts.at(i));                
-        }
+         mapPorts(physicalPorts.at(i), logicalPorts.at(i));                
     }
 }
 
@@ -532,10 +531,7 @@ void BusIfPortmapTab::mapOneToMany(QStringList const& physicalPorts, QStringList
     {
         foreach (QString logical, logicalPorts) 
         {
-            if (model_.canCreateMap(physical, logical)) 
-            {
-                mapPorts(physical, logical);
-            }
+            mapPorts(physical, logical);
         }
     }
 }
@@ -543,10 +539,100 @@ void BusIfPortmapTab::mapOneToMany(QStringList const& physicalPorts, QStringList
 //-----------------------------------------------------------------------------
 // Function: BusIfPortmapTab::mapPorts()
 //-----------------------------------------------------------------------------
-void BusIfPortmapTab::mapPorts(QString physicalPort, QString logicalPort)
+void BusIfPortmapTab::mapPorts(QString const& physicalPort, QString const& logicalPort)
 {
-    model_.createMap(physicalPort, logicalPort);
+    // Both port names must be non-empty.
+    if (physicalPort.isEmpty() || logicalPort.isEmpty())
+    {
+        return;	    
+    }
+
+    // The port must be found on the component.
+    if (!component_->hasPort(physicalPort)) 
+    {
+        return;
+    }
+
+    if (!model_.canCreateMap(physicalPort, logicalPort)) 
+    {
+        return;
+    }
+
+    int logicalSize = getLogicalSize(logicalPort, physicalPort);
+    int physicalSize = getPhysicalSize(physicalPort, physicalSize);
+
+    QSharedPointer<General::PortMap> portMap(new General::PortMap());
+    portMap->physicalPort_ = physicalPort;
+    portMap->logicalPort_ = logicalPort;
+
+    if (physicalSize > logicalSize)
+    {
+        BitSelectionDialog dialog(logicalPort, 0, physicalPort, physicalSize, logicalSize, this);
+           
+        if (dialog.exec() == QDialog::Rejected)
+        {
+            return;
+        }
+        
+        portMap->physicalVector_->setLeft(dialog.getHigherBound());
+        portMap->physicalVector_->setRight(dialog.getLowerBound());
+        physicalSize = abs(dialog.getHigherBound() - dialog.getLowerBound()) + 1;
+    }
+    else
+    {
+        portMap->physicalVector_->setLeft(component_->getPortLeftBound(physicalPort));
+        portMap->physicalVector_->setRight(component_->getPortRightBound(physicalPort));
+    }
+
+    if (portMap->physicalVector_->getLeft() > portMap->physicalVector_->getRight())
+    {
+        portMap->logicalVector_->setLeft(physicalSize - 1);
+        portMap->logicalVector_->setRight(0);         
+    }
+    else
+    {
+        portMap->logicalVector_->setLeft(0);
+        portMap->logicalVector_->setRight(physicalSize - 1);  
+    }          
+
+    model_.createMap(portMap);
 
     physProxy_.onPortConnected(physicalPort);
     logicalModel_.removePort(logicalPort);    
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::getLogicalSize()
+//-----------------------------------------------------------------------------
+int BusIfPortmapTab::getLogicalSize(QString const& logicalPort, QString const& physicalPort)
+{
+    int logicalSize = 0;
+
+    VLNV absDefVLNV = busif_->getAbstractionType();
+    if (libHandler_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION)
+    {
+        QSharedPointer<AbstractionDefinition> absDef = 
+            libHandler_->getModel(absDefVLNV).staticCast<AbstractionDefinition>();     
+
+        logicalSize = absDef->getPortSize(logicalPort, busif_->getInterfaceMode());    
+        if (logicalSize < 0)
+        {
+            logicalSize = component_->getPortWidth(physicalPort);
+        }
+    }	
+    return logicalSize;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::getPhysicalSize()
+//-----------------------------------------------------------------------------
+int BusIfPortmapTab::getPhysicalSize(QString const& physicalPort)
+{
+    int size = component_->getPortWidth(physicalPort);
+    if (size < 0)
+    {
+        size = abs(component_->getPortLeftBound(physicalPort) - component_->getPortRightBound(physicalPort)) + 1;
+    }	
+    
+    return size;
 }

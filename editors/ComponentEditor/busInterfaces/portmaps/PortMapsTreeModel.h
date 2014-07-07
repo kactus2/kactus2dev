@@ -73,14 +73,6 @@ public:
      */
     void reset();
 
-   	/*! Create a port map for given ports
-	 *
-	 * @param [in] physicalPort Name of the physical port
-	 * @param [in] logicalPort Name of the logical port
-	 *
-	*/
-	void createMap(const QString& physicalPort, const QString& logicalPort);
-
 	/*! Create a port map for given port map
 	 *
 	 * @param [in] portMap Port map to add to model.

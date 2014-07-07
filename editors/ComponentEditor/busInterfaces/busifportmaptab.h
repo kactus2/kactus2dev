@@ -199,10 +199,26 @@ private:
      *      @param [in] physicalPort   The physical port to map.
      *      @param [in] logicalPort    The logical port to map.
      */
-    void mapPorts(QString physicalPort, QString logicalPort);
+    void mapPorts(QString const& physicalPort, QString const& logicalPort);
 
-	//! Pointer to the currently selected port map.
-	QSharedPointer<General::PortMap> portMap_;
+    /*!
+     *  Gets the size of a logical port.
+     *
+     *      @param [in] logicalPort     The name of the logical port.
+     *      @param [in] physicalPort    The name of the physical port to map the logical port to.
+     *
+     *      @return  The logical port size.
+     */
+    int getLogicalSize(QString const& logicalPort, QString const& physicalPort);
+
+    /*!
+     *  Gets the size of a physical port.
+     *
+     *      @param [in] physicalPort   The name of the physical port.
+     *
+     *      @return  The port size.
+     */
+    int getPhysicalSize(QString const& physicalPort);
 
 	//! Pointer to the bus interface being edited.
 	BusInterface* busif_;

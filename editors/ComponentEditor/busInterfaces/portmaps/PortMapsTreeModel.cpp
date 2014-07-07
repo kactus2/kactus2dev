@@ -14,7 +14,6 @@
 #include "PortMapsTreeItem.h"
 #include "PortMapsLogicalItem.h"
 #include "PortMapsBitMapItem.h"
-#include "BitSelectionDialog.h"
 
 #include <IPXACTmodels/abstractiondefinition.h>
 #include <IPXACTmodels/businterface.h>
@@ -331,75 +330,6 @@ void PortMapsTreeModel::reset()
     }
 
     endResetModel();
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapsTreeModel::createMap()
-//-----------------------------------------------------------------------------
-void PortMapsTreeModel::createMap(const QString& physicalPort, const QString& logicalPort)
-{
-    // both port names must be non-empty
-    if (physicalPort.isEmpty() || logicalPort.isEmpty())
-        return;	    
-
-    QSharedPointer<General::PortMap> portMap(new General::PortMap());
-    portMap->logicalPort_ = logicalPort;
-    portMap->physicalPort_ = physicalPort;
-
-    int logicalSize = 0;
-    // if abs def is used
-    if (absDef_) {
-        logicalSize = absDef_->getPortSize(logicalPort, interfaceMode_);    
-        if (logicalSize < 0)
-        {
-            logicalSize = component_->getPortWidth(physicalPort);
-        }   
-    }
-
-    // if the port is found on the component
-    if (!component_->hasPort(physicalPort)) 
-    {
-        return;
-    }
-
-    int physLeft = component_->getPortLeftBound(physicalPort);
-    int physRight = component_->getPortRightBound(physicalPort);
-    int physSize = component_->getPortWidth(physicalPort);
-    if (physSize < 0)
-    {
-        physSize = abs(physLeft - physRight) + 1;
-    }
-
-    if (physSize > logicalSize)
-    {
-        BitSelectionDialog dialog(logicalPort, 0, physicalPort, physSize, logicalSize);            
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            physLeft = dialog.getHigherBound();
-            physRight = dialog.getLowerBound();
-            physSize = abs(physLeft - physRight) + 1;
-        }
-        else
-        {
-            return;
-        }
-    }
-
-    portMap->physicalVector_->setLeft(physLeft);
-    portMap->physicalVector_->setRight(physRight);
-    if (physLeft > physRight)
-    {
-        portMap->logicalVector_->setLeft(physSize - 1);
-        portMap->logicalVector_->setRight(0);         
-    }
-    else
-    {
-        portMap->logicalVector_->setLeft(0);
-        portMap->logicalVector_->setRight(physSize - 1);  
-    }          
-
-    createMap(portMap);
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
