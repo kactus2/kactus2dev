@@ -143,6 +143,7 @@ HEADERS += ./resource.h \
     ./mainwindow/NewPages/NewSystemPage.h \
     ./mainwindow/EditorArea/EditorArea.h \
     ./settings/SettingsUpdater.h \
+    ./settings/SettingsPage.h \
     ./settings/PluginSettingsPage.h \
     ./settings/FileTypeSettingsPage.h \
     ./settings/FileTypesModel.h \
@@ -508,6 +509,7 @@ HEADERS += ./resource.h \
     ./designEditors/common/DrawMode.h \
     ./designEditors/common/DesignDiagram.h \
     ./designEditors/common/DesignWidget.h \
+    ./designEditors/common/ComponentDesignDiagram.h \
     ./designEditors/common/ComponentInstanceEditor/componentinstanceeditor.h \
     ./designEditors/common/ComponentInstanceEditor/componentinstancemodel.h \
     ./designEditors/common/ComponentInstanceEditor/configurableelementdelegate.h \
@@ -520,11 +522,17 @@ HEADERS += ./resource.h \
     ./designEditors/common/ConfigurationEditor/activevieweditor.h \
     ./designEditors/common/ConfigurationEditor/activeviewmodel.h \
     ./designEditors/common/ConfigurationEditor/configurationeditor.h \
+    ./designEditors/common/StickyNote/StickyNoteEditCommand.h \
     ./designEditors/common/StickyNote/StickyNoteMoveCommand.h \
     ./designEditors/common/StickyNote/StickyNote.h \
     ./designEditors/common/StickyNote/ColorFillTextItem.h \
     ./designEditors/common/StickyNote/StickyNoteRemoveCommand.h \
     ./designEditors/common/StickyNote/StickyNoteAddCommand.h \
+    ./designEditors/common/Association/Associable.h \
+    ./designEditors/common/Association/Association.h \
+    ./designEditors/common/Association/AssociationRemoveCommand.h \
+    ./designEditors/common/Association/AssociationAddCommand.h \
+    ./designEditors/common/Association/AssociationChangeEndpointCommand.h \
     ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.h \
     ./kactusGenerators/vhdlGenerator/vhdlgeneral.h \
     ./kactusGenerators/vhdlGenerator/vhdlportmap.h \
@@ -627,14 +635,7 @@ HEADERS += ./resource.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Position.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Value.h \
-    ./designEditors/common/Association/AssociationRemoveCommand.h \
-    ./designEditors/common/Association/Associable.h \
-    ./designEditors/common/Association/AssociationAddCommand.h \
-    ./designEditors/common/Association/Association.h \
-    ./designEditors/common/Association/AssociationChangeEndpointCommand.h \
-    ./designEditors/common/ComponentDesignDiagram.h \
-    ./settings/SettingsPage.h \
-    ./designEditors/common/StickyNote/StickyNoteEditCommand.h
+    ./Plugins/PluginSystem/PluginUtilityAdapter.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
@@ -765,6 +766,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./settings/GeneralSettingsPage.cpp \
     ./settings/NamingPolicySettingsPage.cpp \
     ./settings/SettingsDialog.cpp \
+    ./settings/SettingsPage.cpp \
     ./settings/SettingsUpdater.cpp \
     ./wizards/ComponentWizard/ComponentWizard.cpp \
     ./wizards/ComponentWizard/ComponentWizardConclusionPage.cpp \
@@ -1105,8 +1107,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/SystemDesign/SystemDetailsEditor/ExportSWDialog.cpp \
     ./designEditors/SystemDesign/SystemDetailsEditor/SwitchHWDialog.cpp \
     ./designEditors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.cpp \
-    ./designEditors/common/Association/Association.cpp \
-    ./designEditors/common/Association/Associable.cpp \
+    ./designEditors/common/ComponentDesignDiagram.cpp \
     ./designEditors/common/DesignDiagram.cpp \
     ./designEditors/common/DesignWidget.cpp \
     ./designEditors/common/ComponentInstanceEditor/componentinstanceeditor.cpp \
@@ -1124,8 +1125,14 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/common/StickyNote/ColorFillTextItem.cpp \
     ./designEditors/common/StickyNote/StickyNote.cpp \
     ./designEditors/common/StickyNote/StickyNoteAddCommand.cpp \
+    ./designEditors/common/StickyNote/StickyNoteEditCommand.cpp \
     ./designEditors/common/StickyNote/StickyNoteMoveCommand.cpp \
     ./designEditors/common/StickyNote/StickyNoteRemoveCommand.cpp \
+    ./designEditors/common/Association/Associable.cpp \
+    ./designEditors/common/Association/Association.cpp \
+    ./designEditors/common/Association/AssociationAddCommand.cpp \
+    ./designEditors/common/Association/AssociationChangeEndpointCommand.cpp \
+    ./designEditors/common/Association/AssociationRemoveCommand.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlcomponentdeclaration.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlcomponentinstance.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.cpp \
@@ -1227,10 +1234,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
-    ./settings/SettingsPage.cpp \
-    ./designEditors/common/Association/AssociationRemoveCommand.cpp \
-    ./designEditors/common/Association/AssociationAddCommand.cpp \
-    ./designEditors/common/Association/AssociationChangeEndpointCommand.cpp \
-    ./designEditors/common/ComponentDesignDiagram.cpp \
-    ./designEditors/common/StickyNote/StickyNoteEditCommand.cpp
+    ./Plugins/PluginSystem/PluginUtilityAdapter.cpp
 RESOURCES += kactus.qrc

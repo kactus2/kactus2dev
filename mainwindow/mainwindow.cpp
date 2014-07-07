@@ -88,7 +88,10 @@
 #include <IPXACTmodels/SWInstance.h>
 
 #include <Plugins/PluginSystem/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/IPluginUtility.h>
 #include <Plugins/PluginSystem/PluginListDialog.h>
+#include <Plugins/PluginSystem/PluginUtilityAdapter.h>
+
 
 #include <settings/SettingsDialog.h>
 #include <settings/SettingsUpdater.h>
@@ -1708,7 +1711,14 @@ void MainWindow::runGeneratorPlugin()
         IGeneratorPlugin* genPlugin = dynamic_cast<IGeneratorPlugin*>(plugin);
         Q_ASSERT(genPlugin != 0);
 
-        genPlugin->runGenerator(this, libComp, libDesConf, libDes);
+        PluginUtilityAdapter adapter(libraryHandler_, this);
+
+        connect(&adapter, SIGNAL(errorMessage(QString const&)), 
+            this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
+        connect(&adapter, SIGNAL(infoMessage(QString const&)), 
+            this, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
+
+        genPlugin->runGenerator(&adapter, libComp, libDesConf, libDes);
         doc->refresh();
     }
 }
@@ -1790,8 +1800,15 @@ void MainWindow::runGeneratorPlugin(QAction* action)
     IGeneratorPlugin* plugin = reinterpret_cast<IGeneratorPlugin*>(action->data().value<void*>());
     Q_ASSERT(plugin != 0);
 
+    PluginUtilityAdapter adapter(libraryHandler_, this);
+
+    connect(&adapter, SIGNAL(errorMessage(QString const&)), 
+        this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
+    connect(&adapter, SIGNAL(infoMessage(QString const&)), 
+        this, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
+
     // Run the generator and refresh the document.
-    plugin->runGenerator(this, libComp, libDesConf, libDes);
+    plugin->runGenerator(&adapter, libComp, libDesConf, libDes);
     doc->refresh();
 }
 
@@ -4359,38 +4376,6 @@ bool MainWindow::isDesignOpen(VLNV const& vlnv, KactusAttribute::Implementation 
     }
 
     return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainWindow::printError()
-//-----------------------------------------------------------------------------
-void MainWindow::printError(QString const& message)
-{
-    emit errorMessage(message);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainWindow::printInfo()
-//-----------------------------------------------------------------------------
-void MainWindow::printInfo(QString const& message)
-{
-    emit noticeMessage(message);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainWindow::getLibraryInterface()
-//-----------------------------------------------------------------------------
-LibraryInterface* MainWindow::getLibraryInterface()
-{
-    return libraryHandler_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainWindow::getParentWidget()
-//-----------------------------------------------------------------------------
-QWidget* MainWindow::getParentWidget()
-{
-    return this;
 }
 
 //-----------------------------------------------------------------------------

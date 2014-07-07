@@ -4075,6 +4075,12 @@
     <ClCompile Include="GeneratedFiles\moc_SettingsPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PluginUtilityAdapter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\PluginSystem\PluginUtilityAdapter.cpp">
+      <Filter>Source Files\Plugins\PluginSystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5492,6 +5498,9 @@
     </CustomBuild>
     <CustomBuild Include="settings\SettingsPage.h">
       <Filter>Header Files\settings</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Plugins\PluginSystem\PluginUtilityAdapter.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

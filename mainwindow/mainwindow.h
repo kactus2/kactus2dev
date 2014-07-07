@@ -55,7 +55,7 @@ class HelpWindow;
 class Ribbon;
 class RibbonGroup;
 
-class MainWindow : public QMainWindow, public IPluginUtility {
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
@@ -397,30 +397,6 @@ public slots:
      *  Shows the help window.
      */
     void showHelp();
-
-    /*!
-     *  Prints an error message to the console window.
-     *
-     *      @param [in] message The error message to print.
-     */
-    virtual void printError(QString const& message);
-
-    /*!
-     *  Prints an info message to the console window.
-     *
-     *      @param [in] message The info message to print.
-     */
-    virtual void printInfo(QString const& message);
-
-    /*!
-     *  Returns the library interface.
-     */
-    virtual LibraryInterface* getLibraryInterface();
-
-    /*!
-     *  Returns the parent widget to be used for e.g. dialogs.
-     */
-    virtual QWidget* getParentWidget();
 
 signals:
 
