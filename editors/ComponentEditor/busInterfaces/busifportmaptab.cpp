@@ -559,7 +559,7 @@ void BusIfPortmapTab::mapPorts(QString const& physicalPort, QString const& logic
     }
 
     int logicalSize = getLogicalSize(logicalPort, physicalPort);
-    int physicalSize = getPhysicalSize(physicalPort, physicalSize);
+    int physicalSize = getPhysicalSize(physicalPort);
 
     QSharedPointer<General::PortMap> portMap(new General::PortMap());
     portMap->physicalPort_ = physicalPort;

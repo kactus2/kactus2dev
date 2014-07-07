@@ -501,8 +501,6 @@ HEADERS += ./resource.h \
     ./designEditors/HWDesign/AdHocEditor/AdHocDelegate.h \
     ./designEditors/HWDesign/AdHocEditor/AdHocEditor.h \
     ./designEditors/HWDesign/AdHocEditor/AdHocModel.h \
-    ./designEditors/common/Associable.h \
-    ./designEditors/common/Association.h \
     ./designEditors/common/ColumnTypes.h \
     ./designEditors/common/diagramgrid.h \
     ./designEditors/common/DiagramUtil.h \
