@@ -30,7 +30,7 @@ VhdlImportEditor::VhdlImportEditor(const QString& basePath,
     vhdlPath_(),
     parserWidget_(new VhdlParserWidget(basePath,component, &splitter_)),    
     modelParams_(new ModelParameterEditor(component, handler, &splitter_)),
-    ports_(new PortsEditor(component, handler, false, &splitter_))
+    ports_(new PortsEditor(component, handler, &splitter_))
 {
 	Q_ASSERT(component);
 

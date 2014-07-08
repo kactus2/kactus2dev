@@ -5990,12 +5990,6 @@
     <ClInclude Include="IPXACTmodels\HierConnection.h">
       <Filter>Header Files\IPXACTmodels</Filter>
     </ClInclude>
-    <ClInclude Include="designEditors\common\Associable.h">
-      <Filter>Header Files\designEditors\common</Filter>
-    </ClInclude>
-    <ClInclude Include="designEditors\common\Association.h">
-      <Filter>Header Files\designEditors\common</Filter>
-    </ClInclude>
     <ClInclude Include="designEditors\common\Association\Associable.h">
       <Filter>Header Files\designEditors\common\Association</Filter>
     </ClInclude>
@@ -6337,15 +6331,5 @@
     <None Include="common\graphics\workspace.png">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="icon1.ico" />
-    <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
-    <None Include="ClassDiagram3.cd" />
-    <None Include="ClassDiagram4.cd" />
-    <None Include="ClassDiagram5.cd" />
-    <None Include="ClassDiagram6.cd" />
-    <None Include="ClassDiagram7.cd" />
-    <None Include="ClassDiagram8.cd" />
-    <None Include="ClassDiagram9.cd" />
   </ItemGroup>
 </Project>

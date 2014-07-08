@@ -2328,8 +2328,6 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
     </CustomBuild>
-    <ClInclude Include="designEditors\common\Associable.h" />
-    <ClInclude Include="designEditors\common\Association.h" />
     <CustomBuild Include="designEditors\common\Association\AssociationRemoveCommand.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -13977,15 +13975,6 @@ CreateHelp
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
-    <None Include="ClassDiagram3.cd" />
-    <None Include="ClassDiagram4.cd" />
-    <None Include="ClassDiagram5.cd" />
-    <None Include="ClassDiagram6.cd" />
-    <None Include="ClassDiagram7.cd" />
-    <None Include="ClassDiagram8.cd" />
-    <None Include="ClassDiagram9.cd" />
     <None Include="common\graphics\abs-def.png" />
     <None Include="common\graphics\add.png" />
     <None Include="common\graphics\appicon.png" />
@@ -14096,7 +14085,6 @@ CreateHelp
     <None Include="common\graphics\workspace.png" />
     <None Include="designEditors\common\DiagramUtil.inl" />
     <None Include="executable\Kactus2_d.exe" />
-    <None Include="icon1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

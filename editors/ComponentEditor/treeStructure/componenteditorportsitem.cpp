@@ -43,7 +43,7 @@ bool ComponentEditorPortsItem::isValid() const {
 
 ItemEditor* ComponentEditorPortsItem::editor() {
 	if (!editor_) {
-		editor_ = new PortsEditor(component_, libHandler_, false);
+		editor_ = new PortsEditor(component_, libHandler_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()),
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);

@@ -29,27 +29,18 @@
 
 PortsEditor::PortsEditor(QSharedPointer<Component> component,
 						 LibraryInterface* handler,
-						 bool showButtons,
 						 QWidget *parent):
 ItemEditor(component, handler, parent),
-importButton_(QIcon(":/icons/common/graphics/import.png"), tr("Import CSV-file"), this),
-exportButton_(QIcon(":/icons/common/graphics/export.png"), tr("Export CSV-file"), this),
 view_(this), 
 model_(component, this),
 proxy_(this),
 component_(component),
 handler_(handler)
- {
-
+{
 	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/portListing.csv").arg(compPath);
 	view_.setDefaultImportExportPath(defPath);
 	view_.setAllowImportExport(true);
-
-	connect(&importButton_, SIGNAL(clicked(bool)),
-		&view_, SLOT(onCSVImport()), Qt::UniqueConnection);
-	connect(&exportButton_, SIGNAL(clicked(bool)),
-		&view_, SLOT(onCSVExport()), Qt::UniqueConnection);
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -80,7 +71,7 @@ handler_(handler)
 
 	view_.setItemDelegate(new PortsDelegate(this));
 
-	view_.verticalHeader()->show();
+    view_.verticalHeader()->show();
 
 	// set source model for proxy
 	proxy_.setSourceModel(&model_);
@@ -90,20 +81,6 @@ handler_(handler)
     // Set case-insensitive sorting.
     proxy_.setSortCaseSensitivity(Qt::CaseInsensitive);
 
-	// sort the view
-	// view_.sortByColumn(0, Qt::AscendingOrder);
-
-	QHBoxLayout* buttonLayout = new QHBoxLayout();
-	buttonLayout->addWidget(&importButton_, 0, Qt::AlignLeft);
-	buttonLayout->addWidget(&exportButton_, 0, Qt::AlignLeft);
-	buttonLayout->addStretch();
-
-	// if buttons are not displayed
-	if (!showButtons) {
-		importButton_.hide();
-		exportButton_.hide();
-	}
-
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Ports"), this);
 
@@ -111,7 +88,6 @@ handler_(handler)
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
 	layout->addWidget(&view_, 1);
-	layout->addLayout(buttonLayout);
 	layout->setContentsMargins(0, 0, 0, 0);
 }
 

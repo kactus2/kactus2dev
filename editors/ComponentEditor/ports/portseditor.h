@@ -34,13 +34,11 @@ public:
 	 *
 	 * \param component Pointer to the component being edited.
 	 * \param handler Pointer to the instance that manages the library
-	 * \param showButton When set to true, the import/export buttons are displayed.
 	 * \param parent Pointer to the owner of this widget.
 	 *
 	*/
 	PortsEditor(QSharedPointer<Component> component, 
 		LibraryInterface* handler,
-		bool showButtons = true,
 		QWidget *parent = 0);
 
 	//! \brief The destructor
@@ -130,12 +128,6 @@ private:
 
 	//! No assignment
 	PortsEditor& operator=(const PortsEditor& other);
-
-	//! \brief The button to import a csv file
-	QPushButton importButton_;
-
-	//! \brief The button to export a csv file
-	QPushButton exportButton_;
 
 	//! \brief The view that displays the parameters.
 	PortsView view_;
