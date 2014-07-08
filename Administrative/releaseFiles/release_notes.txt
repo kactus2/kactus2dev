@@ -8,6 +8,21 @@
               * Changed or Information
 ===============================================================================
 
+07/07/2014 2.5.0
+----------------------------------------------------
+
++ All vendor extensions are conserved in IP-XACT documents.
++ Added feature to insert notes in designs.
++ Added feature to run files e.g. script files from Filesets.
++ Added feature to define default run executable for file types.
++ Improved lock operation: Enables browsing of tabs while the document is locked.
++ Added design column for memories.
++ Improved opening of hierarchical components in design.
++ Added feature to reorder bus interfaces in component editor.
+
+- Fixed library crashing with Abstractor objects.
+- Fixed other minor bugs and usability issues.
+
 07/02/2014 2.4.17
 ----------------------------------------------------
 
