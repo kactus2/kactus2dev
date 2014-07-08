@@ -7,33 +7,25 @@
 
 #include "vhdlcomponentdeclaration.h"
 
-#include "vhdlgenerator2.h"
 #include "vhdlgeneral.h"
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
-VhdlComponentDeclaration::VhdlComponentDeclaration( QSharedPointer<Component> component,
-												   VhdlGenerator2* parent ):
+VhdlComponentDeclaration::VhdlComponentDeclaration(QSharedPointer<Component> component, QObject* parent):
 QObject(parent),
-parent_(parent),
 component_(component),
 typeName_(component->getVlnv()->getName()),
 generics_(),
 ports_(),
-instantations_() {
-
-	Q_ASSERT(parent);
+instantations_() 
+{
 	Q_ASSERT(component);
-	connect(this, SIGNAL(noticeMessage(const QString&)),
-		parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-	connect(this, SIGNAL(errorMessage(const QString&)),
-		parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 
 	// parse the generics for the component declaration
 	QList<QSharedPointer<ModelParameter> > modelParams = component_->getModelParameters();
 	foreach (QSharedPointer<ModelParameter> modelParam, modelParams) {
-		QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(this, modelParam.data()));
+		QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(modelParam.data(), this));
 		generics_.insert(generic->name(), generic);
 	}
 
@@ -48,7 +40,7 @@ instantations_() {
 		}
 
 		// create the actual port
-		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(this, port.data()));
+		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(port.data(), this));
 
 		// create the sorter instance
 		VhdlPortSorter sorter(component_->getInterfaceNameForPort(vhdlPort->name()),

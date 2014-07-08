@@ -8,14 +8,10 @@
 #ifndef VHDLPORT_H
 #define VHDLPORT_H
 
-#include <IPXACTmodels/generaldeclarations.h>
-
 #include "vhdlobject.h"
 #include "vhdlportsorter.h"
 
 class Port;
-class VhdlGenerator2;
-class VhdlComponentDeclaration;
 
 /*! \brief VhdlPort represents one port declaration in vhdl.
  * 
@@ -28,20 +24,12 @@ class VhdlPort : public VhdlObject {
 public:
 
 	/*! \brief The constructor
-	 *
-	 * \param parent Pointer to the owner of this port.
+	 *	 
 	 * \param port Pointer to the port that contains the details for this port.
+     * \param parent Pointer to the owner of this port.
 	 *
 	*/
-	VhdlPort(VhdlGenerator2* parent, Port* port);
-
-	/*! \brief The constructor
-	 *
-	 * \param parent Pointer to the owner of this port.
-	 * \param port Pointer to the port that contains the details for this port.
-	 *
-	*/
-	VhdlPort(VhdlComponentDeclaration* parent, Port* port);
+	VhdlPort(Port* port, QObject* parent = 0);
 	
 	//! \brief The destructor
 	virtual ~VhdlPort();

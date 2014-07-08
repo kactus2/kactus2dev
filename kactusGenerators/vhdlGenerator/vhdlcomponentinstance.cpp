@@ -7,7 +7,7 @@
 
 #include "vhdlcomponentinstance.h"
 
-#include "vhdlgenerator2.h"
+
 #include "vhdlcomponentdeclaration.h"
 #include "vhdlgeneral.h"
 #include <IPXACTmodels/component.h>
@@ -22,7 +22,8 @@
 #include <QMultiMap>
 #include <QChar>
 
-VhdlComponentInstance::VhdlComponentInstance( VhdlGenerator2* parent,
+VhdlComponentInstance::VhdlComponentInstance(QObject* parent,
+                                             LibraryInterface* handler,
 											 VhdlComponentDeclaration* compDeclaration,
 											 const QString& instanceName,
 											 const QString& viewName,
@@ -35,14 +36,8 @@ architecture_(),
 description_(description),
 defaultPortConnections_(),
 genericMap_(),
-portMap_() {
-
-	connect(this, SIGNAL(noticeMessage(const QString&)),
-		parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-	connect(this, SIGNAL(errorMessage(const QString&)),
-		parent, SIGNAL(errorMessage(const QString)), Qt::UniqueConnection);
-
-	LibraryInterface* handler = parent->handler();
+portMap_() 
+{
 	Q_ASSERT(handler);
 
 	QSharedPointer<Component> component = compDeclaration_->componentModel();

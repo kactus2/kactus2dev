@@ -21,9 +21,9 @@
 #include <QMap>
 #include <QTextStream>
 
-class VhdlGenerator2;
 class VhdlComponentDeclaration;
 class BusInterface;
+class LibraryInterface;
 
 /*! \brief Represents one vhdl component instantiation.
  *
@@ -42,7 +42,8 @@ public:
 	 * \param description The description for the instance.
 	 *
 	*/
-	VhdlComponentInstance(VhdlGenerator2* parent,
+	VhdlComponentInstance(QObject* parent,
+        LibraryInterface* handler,
 		VhdlComponentDeclaration* compDeclaration,
 		const QString& instanceName,
 		const QString& viewName = QString(),

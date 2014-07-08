@@ -26,32 +26,14 @@ public:
 	 * \param defaultValue The default value for the signal.
 	 *
 	*/
-	VhdlSignal(VhdlGenerator2* parent, 
+	VhdlSignal(QObject* parent, 
 		const QString& name = QString(),
-		const QString& type = QString(),
+		const QString& signalType = QString(),
 		int leftBound = -1,
 		int rightBound = -1,
 		const QString& description = QString(),
 		const QString& defaultValue = QString());
 
-	/*! \brief The constructor
-	 *
-	 * \param parent Pointer to the owner of this vhdl object.
-	 * \param name Name for this vhdl object.
-	 * \param type Type for this vhdl object.
-	 * \param leftBound The left bound for the signal.
-	 * \param rightBound The right bound for the signal.
-	 * \param description The description for this vhdl object.
-	 * \param defaultValue The default value for the signal.
-	 *
-	*/
-	VhdlSignal(VhdlComponentDeclaration* parent,
-		const QString& name = QString(),
-		const QString& type = QString(),
-		int leftBound = -1,
-		int rightBound = -1,
-		const QString& description = QString(),
-		const QString& defaultValue = QString());
 	
 	//! \brief The destructor
 	virtual ~VhdlSignal();

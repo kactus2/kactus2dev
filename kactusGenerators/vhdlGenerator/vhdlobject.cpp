@@ -7,10 +7,7 @@
 
 #include "vhdlobject.h"
 
-#include "vhdlcomponentdeclaration.h"
-#include "vhdlgenerator2.h"
-
-VhdlObject::VhdlObject( VhdlGenerator2* parent, 
+VhdlObject::VhdlObject( QObject* parent, 
 					   const QString& name /*= QString()*/, 
 					   const QString& type /*= QString()*/, 
 					   const QString& defaultValue /*= QString()*/, 
@@ -19,29 +16,9 @@ QObject(parent),
 name_(name),
 type_(type),
 description_(description),
-defaultValue_(defaultValue) {
+defaultValue_(defaultValue) 
+{
 
-	connect(this, SIGNAL(noticeMessage(const QString&)),
-		parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-	connect(this, SIGNAL(errorMessage(const QString&)),
-		parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-}
-
-VhdlObject::VhdlObject( VhdlComponentDeclaration* parent, 
-					   const QString& name /*= QString()*/,
-					   const QString& type /*= QString()*/, 
-					   const QString& defaultValue /*= QString()*/, 
-					   const QString& description /*= QString()*/ ):
-QObject(parent),
-name_(name),
-type_(type),
-description_(description),
-defaultValue_(defaultValue) {
-
-	connect(this, SIGNAL(noticeMessage(const QString&)),
-		parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-	connect(this, SIGNAL(errorMessage(const QString&)),
-		parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 }
 
 VhdlObject::~VhdlObject() {

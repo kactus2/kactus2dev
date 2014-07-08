@@ -12,8 +12,6 @@
 
 #include <QString>
 
-class VhdlComponentDeclaration;
-class VhdlGenerator2;
 class ModelParameter;
 
 /*! \brief VhdlGeneric represents a vhdl generic in a component or entity declaration.
@@ -27,48 +25,10 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param parent Pointer to the owner of this vhdl generic.
-	 * \param name Name for this vhdl object.
-	 * \param type Type for this vhdl object.
-	 * \param defaultValue The default value for the generic.
-	 * \param description The description for this vhdl object.
-	 *
-	*/
-	VhdlGeneric(VhdlGenerator2* parent, 
-		const QString& name = QString(),
-		const QString& type = QString(),
-		const QString& defaultValue = QString(),
-		const QString& description = QString());
-
-	/*! \brief The constructor
-	 *
-	 * \param parent Pointer to the owner of this vhdl generic.
 	 * \param generic Pointer to the model parameter to create the generic from.
 	 *
 	*/
-	VhdlGeneric(VhdlGenerator2* parent, ModelParameter* generic);
-
-	/*! \brief The constructor
-	 *
-	 * \param parent Pointer to the owner of this vhdl generic.
-	 * \param name Name for this vhdl object.
-	 * \param type Type for this vhdl object.
-	 * \param defaultValue The default value for the generic.
-	 * \param description The description for this vhdl object.
-	 *
-	*/
-	VhdlGeneric(VhdlComponentDeclaration* parent,
-		const QString& name = QString(),
-		const QString& type = QString(),
-		const QString& defaultValue = QString(),
-		const QString& description = QString());
-
-	/*! \brief The constructor
-	 *
-	 * \param parent Pointer to the owner of this vhdl generic.
-	 * \param generic Pointer to the model parameter to create the generic from.
-	 *
-	*/
-	VhdlGeneric(VhdlComponentDeclaration* parent, ModelParameter* generic);
+	VhdlGeneric(ModelParameter* generic, QObject* parent = 0);
 	
 	//! \brief The destructor
 	virtual ~VhdlGeneric();

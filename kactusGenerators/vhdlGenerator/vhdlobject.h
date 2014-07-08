@@ -12,9 +12,6 @@
 #include <QString>
 #include <QTextStream>
 
-class VhdlComponentDeclaration;
-class VhdlGenerator2;
-
 /*! \brief VhdlObject is a pure virtual class that is used as a base class.
  * 
  * VhdlObject is used as base class for the following classes:
@@ -37,22 +34,7 @@ public:
 	 * \param description The description for this vhdl object.
 	 *
 	*/
-	VhdlObject(VhdlGenerator2* parent, 
-		const QString& name = QString(),
-		const QString& type = QString(),
-		const QString& defaultValue = QString(),
-		const QString& description = QString());
-
-	/*! \brief The constructor
-	 *
-	 * \param parent Pointer to the owner of this vhdl object.
-	 * \param name Name for this vhdl object.
-	 * \param type Type for this vhdl object.
-	 * \param defaultValue The default value for the object.
-	 * \param description The description for this vhdl object.
-	 *
-	*/
-	VhdlObject(VhdlComponentDeclaration* parent,
+	VhdlObject(QObject* parent, 
 		const QString& name = QString(),
 		const QString& type = QString(),
 		const QString& defaultValue = QString(),
@@ -126,34 +108,24 @@ public:
 	*/
 	virtual void setDefaultValue(const QString& defaultValue);
 
-signals:
-
-	//! \brief Send a notification to user.
-	void noticeMessage(const QString& noticeMessage);
-
-	//! \brief Send an error message to user.
-	void errorMessage(const QString& errorMessage);
-
-protected:
-
-	//! \brief The name of the vhdl object.
-	QString name_;
-
-	//! \brief The type of the vhdl object.
-	QString type_;
-
-	//! \brief The description of the vhdl object.
-	QString description_;
-
-	//! \brief The default value for the object.
-	QString defaultValue_;
-
 private:
 	//! \brief No copying
 	VhdlObject(const VhdlObject& other);
 
 	//! \brief No assignment
 	VhdlObject& operator=(const VhdlObject& other);
+
+    //! \brief The name of the vhdl object.
+    QString name_;
+
+    //! \brief The type of the vhdl object.
+    QString type_;
+
+    //! \brief The description of the vhdl object.
+    QString description_;
+
+    //! \brief The default value for the object.
+    QString defaultValue_;
 };
 
 #endif // VHDLOBJECT_H

@@ -11,8 +11,6 @@
 #include <QString>
 #include <QTextStream>
 
-class VhdlComponentInstance;
-
 /*! \brief VhdlPortMap represents a port and it's optional bounds in vhdl.
  * 
  * This class is used in VhdlComponentInstance to store a mapped port and the 

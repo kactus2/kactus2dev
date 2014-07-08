@@ -442,7 +442,7 @@ void VhdlGenerator2::parseTopGenerics() {
 	QList<QSharedPointer<ModelParameter> > modelParams = component_->getModelParameters();
 	foreach (QSharedPointer<ModelParameter> modelParam, modelParams) {
 		QString name = modelParam->getName();
-		QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(this, modelParam.data()));
+		QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(modelParam.data(), this));
 
 		topGenerics_.insert(name, generic);
 	}
@@ -460,7 +460,7 @@ void VhdlGenerator2::parseTopPorts() {
 		}
 
 		// create the actual port
-		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(this, port.data()));
+		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(port.data(), this));
 
 		// create the sorter instance
 		VhdlPortSorter sorter(component_->getInterfaceNameForPort(vhdlPort->name()),
@@ -524,8 +524,13 @@ void VhdlGenerator2::parseInstances() {
 
 		// create the instance
 		QSharedPointer<VhdlComponentInstance> compInstance(new VhdlComponentInstance(
-			this, compDeclaration.data(), instance.getInstanceName(), instanceActiveView,
+			this, handler_, compDeclaration.data(), instance.getInstanceName(), instanceActiveView,
 			instance.getDescription()));
+
+        connect(compInstance.data(), SIGNAL(noticeMessage(const QString&)),
+            this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+        connect(compInstance.data(), SIGNAL(errorMessage(const QString&)),
+            this, SIGNAL(errorMessage(const QString)), Qt::UniqueConnection);
 
 		// add the libraries of the instantiated component to the library list.
 		libraries_.append(compInstance->componentModel()->getVhdlLibraries(instanceActiveView));

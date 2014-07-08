@@ -23,8 +23,6 @@
 #include <QList>
 #include <QTextStream>
 
-class VhdlGenerator2;
-
 class VhdlComponentDeclaration : public QObject {
 	Q_OBJECT
 
@@ -36,8 +34,7 @@ public:
 	 * \param parent Pointer to the owner of this declaration.
 	 *
 	*/
-	VhdlComponentDeclaration(QSharedPointer<Component> component, 
-		VhdlGenerator2* parent);
+	VhdlComponentDeclaration(QSharedPointer<Component> component, QObject* parent);
 	
 	//! \brief The destructor
 	virtual ~VhdlComponentDeclaration();
@@ -139,23 +136,12 @@ public:
 	*/
 	int getPortPhysRightBound(const QString& portName) const;
 
-signals:
-
-	//! \brief Send a notification to user.
-	void noticeMessage(const QString& noticeMessage);
-
-	//! \brief Send an error message to user.
-	void errorMessage(const QString& errorMessage);
-
 private:
 	//! \brief No copying
 	VhdlComponentDeclaration(const VhdlComponentDeclaration& other);
 
 	//! \brief No assignment
 	VhdlComponentDeclaration& operator=(const VhdlComponentDeclaration& other);
-
-	//! \brief Pointer to the parent of this declaration.
-	VhdlGenerator2* parent_;
 
 	//! \brief Pointer to the component that this declaration represents.
 	QSharedPointer<Component> component_;

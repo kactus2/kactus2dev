@@ -9,54 +9,37 @@
 
 #include "vhdlgeneral.h"
 
-VhdlSignal::VhdlSignal( VhdlGenerator2* parent, 
+VhdlSignal::VhdlSignal( QObject* parent, 
 					   const QString& name /*= QString()*/,
-					   const QString& type /*= QString()*/,
+					   const QString& signalType /*= QString()*/,
 					   int leftBound /*= -1*/, 
 					   int rightBound /*= -1*/, 
 					   const QString& description /*= QString()*/,
 					   const QString& defaultValue /*= QString()*/):
-VhdlObject(parent, name, type, defaultValue, description),
+VhdlObject(parent, name, signalType, defaultValue, description),
 left_(leftBound),
 right_(rightBound) {
 
-	if (type_.isEmpty()) {
-		type_ = VhdlGeneral::useDefaultType(left_, right_);
+	if (type().isEmpty()) {
+		setType(VhdlGeneral::useDefaultType(left_, right_));
 	}	
-	Q_ASSERT(!type_.isEmpty());
-}
-
-VhdlSignal::VhdlSignal( VhdlComponentDeclaration* parent, 
-					   const QString& name /*= QString()*/, 
-					   const QString& type /*= QString()*/, 
-					   int leftBound /*= -1*/, 
-					   int rightBound /*= -1*/,
-					   const QString& description /*= QString()*/,
-					   const QString& defaultValue /*= QString()*/):
-VhdlObject(parent, name, type, defaultValue, description),
-left_(leftBound),
-right_(rightBound) {
-
-	if (type_.isEmpty()) {
-		type_ = VhdlGeneral::useDefaultType(left_, right_);
-	}
-	Q_ASSERT(!type_.isEmpty());
+	Q_ASSERT(!type().isEmpty());
 }
 
 VhdlSignal::~VhdlSignal() {
 }
 
 void VhdlSignal::write( QTextStream& stream ) const {
-	Q_ASSERT(!name_.isEmpty());
-	Q_ASSERT(!type_.isEmpty());
+	Q_ASSERT(!name().isEmpty());
+	Q_ASSERT(!type().isEmpty());
 
-	if (!description_.isEmpty()) {
-		VhdlGeneral::writeDescription(description_, stream, QString("  "));
+	if (!description().isEmpty()) {
+		VhdlGeneral::writeDescription(description(), stream, QString("  "));
 	}
 	stream << "  signal "; 
-	stream << name_.leftJustified(16, ' '); //align colons (:) at least roughly
+	stream << name().leftJustified(16, ' '); //align colons (:) at least roughly
 	stream << " : ";
-	QString typeDefinition = VhdlGeneral::vhdlType2String(type_, left_, right_);
+	QString typeDefinition = VhdlGeneral::vhdlType2String(type(), left_, right_);
 	stream << typeDefinition << ";" << endl;
 }
 
@@ -81,13 +64,13 @@ void VhdlSignal::setBounds( int left, int right ) {
 	right_ = right;
 
 	// if scalar port changed to vectored
-	if (type_ == "std_logic" && left != right) {
-		type_ = "std_logic_vector";
+	if (type() == "std_logic" && left != right) {
+		setType("std_logic_vector");
 	}
 
 	// if vectored port changed to scalar
-	else if (type_ == "std_logic_vector" && left == right) {
-		type_ = "std_logic";
+	else if (type() == "std_logic_vector" && left == right) {
+		setType("std_logic");
 	}
 }
 

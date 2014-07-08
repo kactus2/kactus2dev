@@ -9,10 +9,9 @@
 
 #include "vhdlgeneral.h"
 
-#include <IPXACTmodels/vector.h>
 #include <IPXACTmodels/port.h>
 
-VhdlPort::VhdlPort( VhdlGenerator2* parent, Port* port ):
+VhdlPort::VhdlPort(Port* port, QObject* parent):
 VhdlObject(parent, port->getName(), 
 		   port->getTypeName(),
 		   port->getDefaultValue(), 
@@ -20,50 +19,21 @@ VhdlObject(parent, port->getName(),
 direction_(port->getDirection()),
 left_(port->getLeftBound()),
 right_(port->getRightBound()),
-commentOut_(true) {
-
-	Q_ASSERT(parent);
+commentOut_(true) 
+{
 	Q_ASSERT(port);
 
 	// if type is not set then use the defaults
-	if (type_.isEmpty()) {
+	if (type().isEmpty()) {
 
 		int size = left_ - right_ + 1;
 
 		// if port is scalar
 		if (size == 1) {
-			type_ = QString("std_logic");
+			setType(QString("std_logic"));
 		}
 		else {
-			type_ = QString("std_logic_vector");
-		}
-	}
-}
-
-VhdlPort::VhdlPort( VhdlComponentDeclaration* parent, Port* port ):
-VhdlObject(parent, port->getName(), 
-		   port->getTypeName(),
-		   port->getDefaultValue(), 
-		   port->getDescription()),
-direction_(port->getDirection()),
-left_(port->getLeftBound()),
-right_(port->getRightBound()),
-commentOut_(true) {
-
-	Q_ASSERT(parent);
-	Q_ASSERT(port);
-
-	// if type is not set then use the defaults
-	if (type_.isEmpty()) {
-
-		int size = left_ - right_ + 1;
-
-		// if port is scalar
-		if (size == 1) {
-			type_ = QString("std_logic");
-		}
-		else {
-			type_ = QString("std_logic_vector");
+			setType(QString("std_logic_vector"));
 		}
 	}
 }
@@ -76,10 +46,10 @@ void VhdlPort::write( QTextStream& stream ) const {
 		stream << "-- ";
 	}
 
-	stream << name_.leftJustified(16, ' '); //align colons (:) at least roughly
+	stream << name().leftJustified(16, ' '); //align colons (:) at least roughly
 	stream << " : " << General::direction2Str(direction_) << " ";
 
-	stream << VhdlGeneral::vhdlType2String(type_, left_, right_);
+	stream << VhdlGeneral::vhdlType2String(type(), left_, right_);
 }
 
 int VhdlPort::size() const {

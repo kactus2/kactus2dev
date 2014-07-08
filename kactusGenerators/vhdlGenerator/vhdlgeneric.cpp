@@ -6,45 +6,18 @@
  */
 
 #include "vhdlgeneric.h"
-#include "vhdlgeneral.h"
 
 #include <IPXACTmodels/modelparameter.h>
 
 #include <QChar>
 
-VhdlGeneric::VhdlGeneric( VhdlGenerator2* parent, 
-						 const QString& name /*= QString()*/, 
-						 const QString& type /*= QString()*/, 
-						 const QString& defaultValue /*= QString()*/, 
-						 const QString& description /*= QString()*/ ):
-VhdlObject(parent, name, type, defaultValue, description) {
-}
-
-VhdlGeneric::VhdlGeneric( VhdlComponentDeclaration* parent,
-						 const QString& name /*= QString()*/,
-						 const QString& type /*= QString()*/, 
-						 const QString& defaultValue /*= QString()*/,
-						 const QString& description /*= QString()*/ ):
-VhdlObject(parent, name, type, defaultValue, description) {
-}
-
-VhdlGeneric::VhdlGeneric( VhdlGenerator2* parent, ModelParameter* generic ):
+VhdlGeneric::VhdlGeneric(ModelParameter* generic, QObject* parent):
 VhdlObject(parent,
 		   generic->getName(),
 		   generic->getDataType(),
 		   generic->getValue(),
-		   generic->getDescription()) {
-	Q_ASSERT(parent);
-	Q_ASSERT(generic);
-}
-
-VhdlGeneric::VhdlGeneric( VhdlComponentDeclaration* parent, ModelParameter* generic ):
-VhdlObject(parent,
-		   generic->getName(),
-		   generic->getDataType(),
-		   generic->getValue(),
-		   generic->getDescription()) {
-	Q_ASSERT(parent);
+		   generic->getDescription()) 
+{
 	Q_ASSERT(generic);
 }
 
@@ -52,29 +25,29 @@ VhdlGeneric::~VhdlGeneric() {
 }
 
 void VhdlGeneric::write( QTextStream& stream ) const {
-	Q_ASSERT(!name_.isEmpty());
-	Q_ASSERT(!type_.isEmpty());
+	Q_ASSERT(!name().isEmpty());
+	Q_ASSERT(!type().isEmpty());
 
-	stream << name_.leftJustified(16, ' '); //align colons (:) at least roughly
-	stream<< " : " << type_;
+	stream << name().leftJustified(16, ' '); //align colons (:) at least roughly
+	stream<< " : " << type();
 
 	// check if type is string then quotations must be used for default value
-	bool addQuotation = type_.compare(QString("string"), Qt::CaseInsensitive) == 0;
+	bool addQuotation = type().compare(QString("string"), Qt::CaseInsensitive) == 0;
 	
 	// if a default value has been specified
-	if (!defaultValue_.isEmpty()) {
+	if (!defaultValue().isEmpty()) {
 		stream << " := ";
 		
 		// if default value does not start with quotation
-		if (addQuotation && *defaultValue_.begin() != QChar('"')) {
+		if (addQuotation && !defaultValue().startsWith(QChar('"'))) {
 			stream << "\"";
 		}
 		
 		// write the default value
-		stream << defaultValue_;
+		stream << defaultValue();
 
 		// if default value does not end with quotation
-		if (addQuotation && *(defaultValue_.end() - 1) != QChar('"')) {
+		if (addQuotation && !defaultValue().endsWith(QChar('"'))) {
 			stream << "\"";
 		}
 	}	

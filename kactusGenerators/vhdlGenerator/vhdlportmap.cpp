@@ -7,9 +7,6 @@
 
 #include "vhdlportmap.h"
 
-#include "vhdlcomponentinstance.h"
-
-
 VhdlPortMap::VhdlPortMap():
 name_(),
 left_(-1),
