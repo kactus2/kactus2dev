@@ -57,7 +57,7 @@ vendorExtensions_()
 		}
 		else if (tempNode.nodeName() == QString("spirit:bitWidth")) {
 			bitWidth_ = tempNode.childNodes().at(0).nodeValue().toInt();
-			General::parseAttributes(tempNode, bitWidthAttributes_);
+			bitWidthAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
 		else if (tempNode.nodeName() == QString("spirit:enumeratedValues")) {
 
@@ -273,7 +273,7 @@ void Field::write(QXmlStreamWriter& writer) {
 
     writer.writeStartElement("spirit:bitWidth");
 
-    General::writeAttributes(writer, bitWidthAttributes_);
+    XmlUtils::writeAttributes(writer, bitWidthAttributes_);
     writer.writeCharacters(QString::number(bitWidth_));
 
     writer.writeEndElement(); // spirit:bitWidth

@@ -6,6 +6,7 @@
 
 #include "memorymapitem.h"
 #include "generaldeclarations.h"
+#include "XmlUtils.h"
 
 #include <QString>
 #include <QMap>
@@ -21,7 +22,7 @@ baseAddress_(),
 baseAddrAttributes_() {
 
 	// parse the attributes
-	General::parseAttributes(memoryMapNode, attributes_);
+	attributes_ = XmlUtils::parseAttributes(memoryMapNode);
 
 	for (int i = 0; i < memoryMapNode.childNodes().count(); ++i) {
 
@@ -48,7 +49,7 @@ baseAddrAttributes_() {
 			baseAddress_ = tempNode.childNodes().at(0).nodeValue();
 
 			// get the base address attributes
-			General::parseAttributes(tempNode, baseAddrAttributes_);
+			baseAddrAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
 	}
 	return;
@@ -90,7 +91,7 @@ MemoryMapItem::~MemoryMapItem() {
 void MemoryMapItem::write(QXmlStreamWriter& writer) {
 	// the root element must be called just before calling this function
 	// otherwise the attributes are printed under the wrong element
-	General::writeAttributes(writer, attributes_);
+	XmlUtils::writeAttributes(writer, attributes_);
 
 	writer.writeTextElement("spirit:name", name_);
 
@@ -109,7 +110,7 @@ void MemoryMapItem::write(QXmlStreamWriter& writer) {
 		writer.writeStartElement("spirit:baseAddress");
 
 		// write the attributes for the element
-		General::writeAttributes(writer, baseAddrAttributes_);
+		XmlUtils::writeAttributes(writer, baseAddrAttributes_);
 
 		// write the value of the element and close the tag
 		writer.writeCharacters(baseAddress_);

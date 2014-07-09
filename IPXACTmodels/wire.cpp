@@ -7,6 +7,7 @@
 #include "wire.h"
 #include "generaldeclarations.h"
 #include "vector.h"
+#include "XmlUtils.h"
 
 #include <QString>
 #include <QList>
@@ -144,20 +145,11 @@ Wire::Wire(QDomNode &wireNode): direction_(General::DIRECTION_INVALID),
 					defaultDriverValue_ =
 							driverNode.childNodes().at(0).nodeValue();
 
-					General::parseAttributes(driverNode,
-							defaultValueAttributes_);
+					defaultValueAttributes_ = XmlUtils::parseAttributes(driverNode);
 				}
 			}
 		}
 	}
-
-	// if mandatory element spirit:direction was not successfully defined
-// 	if (direction_ == General::DIRECTION_INVALID) {
-// 		throw Parse_error(QObject::tr("Mandatory element direction invalid in"
-// 			" spirit:wire"));
-// 	}
-
-	return;
 }
 
 //-----------------------------------------------------------------------------
@@ -303,7 +295,7 @@ void Wire::write( QXmlStreamWriter& writer, const QStringList& viewNames ) {
 		writer.writeStartElement("spirit:defaultValue");
 
 		// write the attributes for the element
-		General::writeAttributes(writer, defaultValueAttributes_);
+		XmlUtils::writeAttributes(writer, defaultValueAttributes_);
 
 		// write the value of the element and close the tag
 		writer.writeCharacters(defaultDriverValue_);

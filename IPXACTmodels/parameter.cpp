@@ -5,7 +5,7 @@
  */
 
 #include "parameter.h"
-#include "generaldeclarations.h"
+#include "XmlUtils.h"
 
 #include <QDomNode>
 #include <QString>
@@ -29,7 +29,7 @@ value_(QString()), valueAttributes_(), description_() {
 			value_ = tempNode.childNodes().at(0).nodeValue();
 
 			// parse all the attributes
-			General::parseAttributes(tempNode, valueAttributes_);
+			valueAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
 		else if (tempNode.nodeName() == QString("spirit:description")) {
 			description_ = tempNode.childNodes().at(0).nodeValue();
@@ -87,7 +87,7 @@ void Parameter::write(QXmlStreamWriter& writer) {
     writer.writeStartElement("spirit:value");
 
     // write the attributes for the element
-    General::writeAttributes(writer, valueAttributes_);
+    XmlUtils::writeAttributes(writer, valueAttributes_);
 
     // write the value of the element and close the tag
     writer.writeCharacters(value_);

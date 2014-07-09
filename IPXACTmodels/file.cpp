@@ -134,7 +134,7 @@ vendorExtensions_()
 
 		if (tempNode.nodeName() == QString("spirit:name")) {
 			name_ = tempNode.childNodes().at(0).nodeValue();
-			General::parseAttributes(tempNode, nameAttributes_);
+			nameAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:fileType")) {
@@ -352,13 +352,13 @@ void File::write(QXmlStreamWriter& writer) {
 	if (!fileId_.isEmpty()) {
 		writer.writeAttribute("spirit:fileId", fileId_);
 	}
-	General::writeAttributes(writer, attributes_);
+	XmlUtils::writeAttributes(writer, attributes_);
 
     // start the spirit:name tag
     writer.writeStartElement("spirit:name");
 
     // write the attributes for the element
-    General::writeAttributes(writer, nameAttributes_);
+    XmlUtils::writeAttributes(writer, nameAttributes_);
 
     // write the value of the element and close the tag
     writer.writeCharacters(name_);

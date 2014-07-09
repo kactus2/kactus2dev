@@ -20,6 +20,7 @@
 #include "channel.h"
 #include "choice.h"
 #include "file.h"
+#include "XmlUtils.h"
 
 #include "ComInterface.h"
 #include "ApiInterface.h"
@@ -802,7 +803,7 @@ void Component::write(QFile& file) {
 	setXMLNameSpaceAttributes(attributes_);
 
 	// write the attributes for the spirit:component element
-	General::writeAttributes(writer, attributes_);
+	XmlUtils::writeAttributes(writer, attributes_);
 
 	// call base class to write the VLNV info
 	LibraryComponent::writeVLNV(writer);

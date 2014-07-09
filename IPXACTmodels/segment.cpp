@@ -27,13 +27,13 @@ vendorExtensions_()
 		if (tempNode.nodeName() == QString("spirit:addressOffset")) {
 			addressOffset_ = tempNode.childNodes().at(0).nodeValue();
 
-			General::parseAttributes(tempNode, offsetAttributes_);
+			offsetAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:range")) {
 			range_ = tempNode.childNodes().at(0).nodeValue();
 
-			General::parseAttributes(tempNode, rangeAttributes_);
+			rangeAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
         else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
         {
@@ -104,7 +104,7 @@ void Segment::write( QXmlStreamWriter& writer ) {
 	if (!addressOffset_.isEmpty()) {
 		writer.writeStartElement("spirit:addressOffset");
 		
-		General::writeAttributes(writer, offsetAttributes_);
+		XmlUtils::writeAttributes(writer, offsetAttributes_);
 		writer.writeCharacters(addressOffset_);
 
 		writer.writeEndElement(); // spirit:addressOffset
@@ -113,7 +113,7 @@ void Segment::write( QXmlStreamWriter& writer ) {
 	if (!range_.isEmpty()) {
 		writer.writeStartElement("spirit:range");
 
-		General::writeAttributes(writer, rangeAttributes_);
+		XmlUtils::writeAttributes(writer, rangeAttributes_);
 		writer.writeCharacters(range_);
 
 		writer.writeEndElement(); // spirit:range

@@ -8,7 +8,7 @@
 #include "portabstraction.h"
 #include <library/LibraryManager/vlnv.h>
 #include "librarycomponent.h"
-
+#include "XmlUtils.h"
 
 #include <QDomDocument>
 #include <QDomNode>
@@ -152,7 +152,7 @@ void AbstractionDefinition::write(QFile& file) {
 	setXMLNameSpaceAttributes(attributes_);
 
 	// write the attributes for the spirit:designConfiguration element
-	General::writeAttributes(writer, attributes_);
+	XmlUtils::writeAttributes(writer, attributes_);
 
 	// call base class to write the VLNV info
 	LibraryComponent::writeVLNV(writer);

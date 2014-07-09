@@ -7,6 +7,7 @@
 #include "librarycomponent.h"
 #include "designconfiguration.h"
 #include "generaldeclarations.h"
+#include "XmlUtils.h"
 #include <library/LibraryManager/vlnv.h>
 #include "designconfabstractor.h"
 #include "generatorchain.h"
@@ -206,7 +207,7 @@ attributes_() {
 	QDomNode designConfNode = doc.childNodes().item(i);
 
 	// parse the attributes
-	General::parseAttributes(designConfNode, attributes_);
+	attributes_ = XmlUtils::parseAttributes(designConfNode);
 
 	// go through all childNodes
 	for (int i = 0; i < designConfNode.childNodes().count(); ++i) {
@@ -373,7 +374,7 @@ void DesignConfiguration::write(QFile& file) {
 	setXMLNameSpaceAttributes(attributes_);
 
     // write the attributes for the spirit:designConfiguration element
-    General::writeAttributes(writer, attributes_);
+    XmlUtils::writeAttributes(writer, attributes_);
 
     // call base class to write the VLNV info
     LibraryComponent::writeVLNV(writer);

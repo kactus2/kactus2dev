@@ -26,6 +26,23 @@ class VendorExtension;
 
 namespace XmlUtils
 {
+    /*! Parses the attributes from the root of the given node to a QMap.
+     *
+     *       @param [in] node       A QDomNode to parse the attributes from.
+     *
+     *       @return    A QMap with the parsed attributes.
+     */
+    QMap<QString, QString> parseAttributes(const QDomNode &node);
+
+    /*! Reads the attributes from the QMap and uses writer to write them. The
+     *  element to write the attributes to must be opened by the writer before
+     *  calling this function.
+     *
+     *  @param [in] writer      A QXmlStreamWriter instance that has been set up to write a document.
+     *  @param [in] attributes  A reference to a QMap that contains the attributes to be written.
+     */
+    void writeAttributes(QXmlStreamWriter& writer, const QMap<QString, QString>& attributes);
+
     /*!
      *  Parses named positions from the given XML node.
      *

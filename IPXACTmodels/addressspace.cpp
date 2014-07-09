@@ -42,7 +42,7 @@ vendorExtensions_()
 			range_ = tempNode.childNodes().at(0).nodeValue();
 
 			// get the attributes
-			General::parseAttributes(tempNode, rangeAttributes_);
+			rangeAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
 
 		// get width
@@ -50,7 +50,7 @@ vendorExtensions_()
 			width_ = tempNode.childNodes().at(0).nodeValue().toInt();
 
 			// get the attributes
-			General::parseAttributes(tempNode, widthAttributes_);
+			widthAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:segments")) {
@@ -203,7 +203,7 @@ void AddressSpace::write(QXmlStreamWriter& writer) {
     writer.writeStartElement("spirit:range");
 
     // write the attributes for the element
-    General::writeAttributes(writer, rangeAttributes_);
+    XmlUtils::writeAttributes(writer, rangeAttributes_);
 
     // write the value of the element and close the tag
     writer.writeCharacters(range_);
@@ -213,7 +213,7 @@ void AddressSpace::write(QXmlStreamWriter& writer) {
     writer.writeStartElement("spirit:width");
 
     // write the attributes for the element
-    General::writeAttributes(writer, widthAttributes_);
+    XmlUtils::writeAttributes(writer, widthAttributes_);
 
     // write the value of the element and close the tag
     writer.writeCharacters(QString::number(width_));

@@ -38,7 +38,7 @@ vendorExtensions_()
 		}
 		else if (tempNode.nodeName() == QString("spirit:range")) {
 			range_ = tempNode.childNodes().at(0).nodeValue().toInt();
-			General::parseAttributes(tempNode, rangeAttributes_);
+			rangeAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
 		else if (tempNode.nodeName() == QString("spirit:register")) {
 			
@@ -168,7 +168,7 @@ void RegisterFile::write(QXmlStreamWriter& writer) {
 
     writer.writeStartElement("spirit:range");
 
-    General::writeAttributes(writer, rangeAttributes_);
+    XmlUtils::writeAttributes(writer, rangeAttributes_);
     writer.writeCharacters(QString::number(range_));
 
     writer.writeEndElement(); // spirit:range

@@ -6,6 +6,8 @@
 
 #include "buildmodel.h"
 
+#include "XmlUtils.h"
+
 #include <QMap>
 #include <QString>
 #include <QDomNode>
@@ -22,18 +24,18 @@ replaceDefaultFlags_(false), defaultFlagAttributes_() {
 
 		if (tempNode.nodeName() == QString("spirit:command")) {
 			command_ = tempNode.childNodes().at(0).nodeValue();
-			General::parseAttributes(tempNode, commandAttributes_);
+			commandAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:flags")) {
 			flags_ = tempNode.childNodes().at(0).nodeValue();
-			General::parseAttributes(tempNode, flagAttributes_);
+			flagAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:replaceDefaultFlags")) {
 			QString temp = tempNode.childNodes().at(0).nodeValue();
 			replaceDefaultFlags_ = General::str2Bool(temp, false);
-			General::parseAttributes(tempNode, defaultFlagAttributes_);
+			defaultFlagAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
 	}
 }
@@ -75,7 +77,7 @@ void BuildModel::write(QXmlStreamWriter& writer) {
 		writer.writeStartElement("spirit:command");
 
 		// write the attributes for the element
-		General::writeAttributes(writer, commandAttributes_);
+		XmlUtils::writeAttributes(writer, commandAttributes_);
 
 		// write the value of the element and close the tag
 		writer.writeCharacters(command_);
@@ -87,7 +89,7 @@ void BuildModel::write(QXmlStreamWriter& writer) {
 		writer.writeStartElement("spirit:flags");
 
 		// write the attributes for the element
-		General::writeAttributes(writer, flagAttributes_);
+		XmlUtils::writeAttributes(writer, flagAttributes_);
 
 		// write the value of the element and close the tag
 		writer.writeCharacters(flags_);
@@ -98,7 +100,7 @@ void BuildModel::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:replaceDefaultFlags");
 
 	// write the attributes for the element
-	General::writeAttributes(writer, defaultFlagAttributes_);
+	XmlUtils::writeAttributes(writer, defaultFlagAttributes_);
 
 	// write the value of the element and close the tag
         writer.writeCharacters(General::bool2Str(replaceDefaultFlags_));

@@ -5,10 +5,11 @@
  */
 
 #include "vector.h"
-#include "generaldeclarations.h"
+#include "XmlUtils.h"
 
 #include <QDomNode>
 #include <QXmlStreamWriter>
+#include <QStringList>
 #include <QString>
 #include <QMap>
 
@@ -24,7 +25,7 @@ right_(-1), rightAttributes_() {
 			left_ = tempNode.childNodes().at(0).nodeValue().toInt();
 
 			// get the attributes for the left-element
-			General::parseAttributes(tempNode, leftAttributes_);
+			leftAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:right")) {
@@ -32,7 +33,7 @@ right_(-1), rightAttributes_() {
 			right_ = tempNode.childNodes().at(0).nodeValue().toInt();
 
 			// get the attributes for the right-element
-			General::parseAttributes(tempNode, rightAttributes_);
+			rightAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
 	}
 
@@ -92,7 +93,7 @@ void Vector::write(QXmlStreamWriter& writer) {
     writer.writeStartElement("spirit:left");
 
     // write the attributes for the element
-    General::writeAttributes(writer, leftAttributes_);
+    XmlUtils::writeAttributes(writer, leftAttributes_);
 
     // write the value of the element and close the tag
     writer.writeCharacters(QString::number(left_));
@@ -102,7 +103,7 @@ void Vector::write(QXmlStreamWriter& writer) {
     writer.writeStartElement("spirit:right");
 
     // write the attributes for the element
-    General::writeAttributes(writer, rightAttributes_);
+    XmlUtils::writeAttributes(writer, rightAttributes_);
 
     // write the value of the element and close the tag
     writer.writeCharacters(QString::number(right_));

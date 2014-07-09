@@ -1036,7 +1036,7 @@ struct NameGroup {
 
 /*! \brief Convert a boolean value into QString
  *
- * \param value The varable to convert into QString
+ * \param value The variable to convert into QString
  * \return if value = true, returns "true"
  * 			if value = false, returns "false"
  */
@@ -1100,30 +1100,6 @@ General::BooleanValue str2BooleanValue(const QString& str);
  * empty QString is returned.
  */
 QString booleanValue2Str(const General::BooleanValue value);
-
-/*! \brief Parse attributes to QMap
- *
- * Parses the attributes from the root of the given node to the QMap given
- * as a parameter.
- *
- * \param node A reference to a QDomNode to parse the attributes from
- * \param map A reference to a QMap to store the parsen attributes to.
- */
-void parseAttributes(const QDomNode &node, QMap<QString, QString> &map);
-
-/*! \brief Write the attributes from the QMap to the writer
- *
- * Reads the attributes from the QMap and uses writer to write them. The
- * element to write the attributes to must be opened by the writer before
- * calling this function.
- *
- * \param writer A reference to a QXmlStreamWriter instance that has been
- * set up to write a document.
- * \param attributes A reference to a QMap that contains the attributes to
- * be written.
- */
-void writeAttributes(QXmlStreamWriter& writer, const QMap<QString, QString>&
-		attributes);
 
 /*! \brief Parse a vlnv tag from the attributes in the node
  *

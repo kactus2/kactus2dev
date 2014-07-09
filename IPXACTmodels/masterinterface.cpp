@@ -6,7 +6,7 @@
 
 #include "masterinterface.h"
 #include "generaldeclarations.h"
-
+#include "XmlUtils.h"
 
 
 #include <QString>
@@ -45,7 +45,7 @@ baseAttributes_() {
 				}
 			}
 			// get the base address attributes
-			General::parseAttributes(tempNode, baseAttributes_);
+			baseAttributes_ = XmlUtils::parseAttributes(tempNode);
 
 			// if contains the optional attribute prompt then set the
 			// prompt value in prompt_ and remove the attribute from the
@@ -118,7 +118,7 @@ void MasterInterface::write(QXmlStreamWriter& writer) {
 			writer.writeAttribute("spirit:prompt", prompt_);
 		}
 		// write rest of the attributes
-		General::writeAttributes(writer, baseAttributes_);
+		XmlUtils::writeAttributes(writer, baseAttributes_);
 
 		// write the value of the baseAddress element and close the tag
 		writer.writeCharacters(baseAddress_);

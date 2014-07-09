@@ -10,7 +10,7 @@
 #include "generator.h"
 #include "librarycomponent.h"
 #include "choice.h"
-
+#include "XmlUtils.h"
 
 
 #include <QList>
@@ -78,7 +78,7 @@ attributes_() {
 	QDomNode generatorChainNode = doc.childNodes().item(i);
 
 	// parse the attributes
-	General::parseAttributes(generatorChainNode, attributes_);
+	attributes_ = XmlUtils::parseAttributes(generatorChainNode);
 
 	// get the hidden attribute
 	QDomNamedNodeMap attributeMap = generatorChainNode.attributes();
@@ -248,7 +248,7 @@ void GeneratorChain::write(QFile& file) {
 	setXMLNameSpaceAttributes(attributes_);
 
 	// write the attributes for the spirit:component element
-	General::writeAttributes(writer, attributes_);
+	XmlUtils::writeAttributes(writer, attributes_);
 
 	// call base class to write the VLNV info
 	LibraryComponent::writeVLNV(writer);

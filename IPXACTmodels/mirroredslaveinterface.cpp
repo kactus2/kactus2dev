@@ -5,7 +5,7 @@
  */
 
 #include "mirroredslaveinterface.h"
-#include "generaldeclarations.h"
+#include "XmlUtils.h"
 
 #include <QMap>
 #include <QString>
@@ -23,7 +23,7 @@ remapAttributes_() {
 	remapAddress_ = remapNode.childNodes().at(0).nodeValue();
 
 	// get the attributes
-	General::parseAttributes(remapNode, remapAttributes_);
+	remapAttributes_ = XmlUtils::parseAttributes(remapNode);
 
 	QMap<QString, QString>::iterator i = remapAttributes_.find(
 			QString("spirit:prompt"));
@@ -88,7 +88,7 @@ MirroredSlaveInterface::MirroredSlaveInterface(QDomNode& mirrorNode):
 			range_ = tempNode.childNodes().at(0).nodeValue();
 
 			// get attributes
-			General::parseAttributes(tempNode, rangeAttributes_);
+			rangeAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
 	}
 	return;
@@ -162,7 +162,7 @@ void MirroredSlaveInterface::write(QXmlStreamWriter& writer) {
 			}
 
 			// write rest of the attributes
-			General::writeAttributes(writer,
+			XmlUtils::writeAttributes(writer,
 					remapAddresses_.at(i)->remapAttributes_);
 
 			writer.writeCharacters(remapAddresses_.at(i)->remapAddress_);
@@ -171,7 +171,7 @@ void MirroredSlaveInterface::write(QXmlStreamWriter& writer) {
 
 		if (!range_.isEmpty()) {
 			writer.writeStartElement("spirit:range");
-			General::writeAttributes(writer, rangeAttributes_);
+			XmlUtils::writeAttributes(writer, rangeAttributes_);
 
 			writer.writeCharacters(range_);
 			writer.writeEndElement(); // spirit:range

@@ -5,7 +5,7 @@
  */
 
 #include "buildcommand.h"
-#include "generaldeclarations.h"
+#include "XmlUtils.h"
 #include "buildmodel.h"
  
 #include <QString>
@@ -24,7 +24,7 @@ targetNameAttributes_() {
 
 		if (tempNode.nodeName() == QString("spirit:targetName")) {
 			targetName_ = tempNode.childNodes().at(0).nodeValue();
-			General::parseAttributes(tempNode, targetNameAttributes_);
+			targetNameAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
 	}
 	return;
@@ -72,7 +72,7 @@ void BuildCommand::write(QXmlStreamWriter& writer) {
 		writer.writeStartElement("spirit:targetName");
 
 		// write the attributes for the element
-		General::writeAttributes(writer, targetNameAttributes_);
+		XmlUtils::writeAttributes(writer, targetNameAttributes_);
 
 		// write the value of the element and close the tag
 		writer.writeCharacters(targetName_);

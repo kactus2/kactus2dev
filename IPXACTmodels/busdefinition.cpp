@@ -7,6 +7,7 @@
 #include "busdefinition.h"
 #include "librarycomponent.h"
 #include "generaldeclarations.h"
+#include "XmlUtils.h"
   
 #include <QDomDocument>
 #include <QString>
@@ -159,7 +160,7 @@ void BusDefinition::write(QFile& file) {
 	setXMLNameSpaceAttributes(attributes_);
 
 	// write the attributes for the spirit:busDefinition element
-	General::writeAttributes(writer, attributes_);
+	XmlUtils::writeAttributes(writer, attributes_);
 
 	// call base class to write the VLNV info
 	LibraryComponent::writeVLNV(writer);

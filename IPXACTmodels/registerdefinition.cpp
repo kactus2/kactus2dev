@@ -8,6 +8,7 @@
 #include "generaldeclarations.h"
 #include "reset.h"
 #include "field.h"
+#include "XmlUtils.h"
 
 #include <QString>
 #include <QXmlStreamWriter>
@@ -37,7 +38,7 @@ fields_() {
 		}
 		else if (tempNode.nodeName() == QString("spirit:size")) {
 			size_ = tempNode.childNodes().at(0).nodeValue().toInt();
-			General::parseAttributes(tempNode, sizeAttributes_);
+			sizeAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
 		else if (tempNode.nodeName() == QString("spirit:volatile")) {
 			volatile_ = General::str2BooleanValue(
@@ -130,7 +131,7 @@ void RegisterDefinition::write(QXmlStreamWriter& writer) {
     // open the spirit:size tag
     writer.writeStartElement("spirit:size");
 
-    General::writeAttributes(writer, sizeAttributes_);
+    XmlUtils::writeAttributes(writer, sizeAttributes_);
     writer.writeCharacters(QString::number(size_));
 
     writer.writeEndElement(); // spirit:size

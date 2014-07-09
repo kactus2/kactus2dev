@@ -20,6 +20,38 @@
 namespace XmlUtils
 {
     //-----------------------------------------------------------------------------
+    // Function: parseAttributes()
+    //-----------------------------------------------------------------------------
+    QMap<QString, QString> parseAttributes(const QDomNode &node)
+    {
+        QMap<QString, QString> map;
+
+            // parse all the attributes
+            QDomNamedNodeMap attributeMap = node.attributes();
+            for (int j = 0; j < attributeMap.size(); ++j) 
+            {
+                QString name = attributeMap.item(j).nodeName();
+                QString value = attributeMap.item(j).nodeValue();
+
+                map.insert(name, value);
+            }            
+        return map;
+    }
+
+    //-----------------------------------------------------------------------------
+    // Function: writeAttributes()
+    //-----------------------------------------------------------------------------
+    void writeAttributes(QXmlStreamWriter& writer, const QMap<QString, QString>& attributes)
+    {
+        // go through all attributes in the map
+        for (QMap<QString, QString>::const_iterator i = attributes.begin(); i != attributes.end(); ++i)
+        {        
+                writer.writeAttribute(i.key(), i.value());
+        }
+        return;
+    }
+
+    //-----------------------------------------------------------------------------
     // Function: parsePositionsMap()
     //-----------------------------------------------------------------------------
     void parsePositionsMap(QDomNode& node, QString const& identifier,

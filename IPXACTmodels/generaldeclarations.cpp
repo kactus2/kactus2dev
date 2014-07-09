@@ -1022,7 +1022,7 @@ attributes_() {
 	value_ = value.toInt(&ok);
 
 	// get the attributes
-	General::parseAttributes(clockNode, attributes_);
+	//XmlUtils::parseAttributes(clockNode, attributes_);
 }
 
 General::ClockPulseValue::ClockPulseValue( unsigned int value ):
@@ -1044,29 +1044,6 @@ General::ClockPulseValue& General::ClockPulseValue::operator=( const ClockPulseV
 	return *this;
 }
 
-void General::parseAttributes(const QDomNode &node,
-		QMap<QString, QString> &map) {
-	// parse all the attributes
-	QDomNamedNodeMap attributeMap = node.attributes();
-	for (int j = 0; j < attributeMap.size(); ++j) {
-		QString name = attributeMap.item(j).nodeName();
-		QString value = attributeMap.item(j).nodeValue();
-		map[name] = value;
-	}
-	return;
-}
-
-void General::writeAttributes(QXmlStreamWriter& writer,
-		const QMap<QString, QString>& attributes) {
-
-	// go through all attributes in the map
-	for (QMap<QString, QString>::const_iterator i = attributes.begin();
-			i != attributes.end(); ++i) {
-		// write the current attribute
-		writer.writeAttribute(i.key(), i.value());
-	}
-	return;
-}
 
 General::InterfaceMode General::str2Interfacemode(const QString& str, InterfaceMode defaultValue) {
 	

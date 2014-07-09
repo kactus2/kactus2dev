@@ -19,7 +19,7 @@
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
 #include <common/KactusAttribute.h>
 #include <library/LibraryManager/vlnv.h>
-#include "generaldeclarations.h"
+#include "XmlUtils.h"
 
 #include <QDomNamedNodeMap>
 #include <QXmlStreamWriter>
@@ -212,7 +212,7 @@ void Design::write(QFile& file)
 	setXMLNameSpaceAttributes(attributes_);
 
 	// write the attributes for the spirit:designConfiguration element
-	General::writeAttributes(writer, attributes_);
+	XmlUtils::writeAttributes(writer, attributes_);
 
 	LibraryComponent::writeVLNV(writer);
 

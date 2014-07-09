@@ -6,6 +6,7 @@
 
 #include "otherclockdriver.h"
 #include "generaldeclarations.h"
+#include "XmlUtils.h"
 
 #include <QString>
 #include <QList>
@@ -177,7 +178,7 @@ void OtherClockDriver::write(QXmlStreamWriter& writer) {
 		writer.writeStartElement("spirit:clockPulseValue");
 
 		// write the attributes for the element
-		General::writeAttributes(writer, clockPulseValue_->attributes_);
+		XmlUtils::writeAttributes(writer, clockPulseValue_->attributes_);
 
 		// write the value of the element and close the tag
                 writer.writeCharacters(QString::number(clockPulseValue_->value_));

@@ -5,7 +5,6 @@
  */
 
 #include "modelparameter.h"
-#include "generaldeclarations.h"
 
 #include <QString>
 #include <QDomNode>
@@ -24,7 +23,7 @@ vendorExtensions_()
 {
 
 	// get the modelParameter attributes
-	General::parseAttributes(modelParameterNode, attributes_);
+	attributes_ = XmlUtils::parseAttributes(modelParameterNode);
 
 	for (int i = 0; i < modelParameterNode.childNodes().count(); ++i) {
 		QDomNode tempNode = modelParameterNode.childNodes().at(i);
@@ -33,7 +32,7 @@ vendorExtensions_()
 			value_ = tempNode.childNodes().at(0).nodeValue();
 
 			// get the value attributes that define the value
-			General::parseAttributes(tempNode, valueAttributes_);
+			valueAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
         else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
         {
@@ -86,7 +85,7 @@ ModelParameter::~ModelParameter() {
 
 void ModelParameter::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:modelParameter");
-	General::writeAttributes(writer, attributes_);
+	XmlUtils::writeAttributes(writer, attributes_);
 
 	writer.writeTextElement("spirit:name", nameGroup_.name_);
 
@@ -102,7 +101,7 @@ void ModelParameter::write(QXmlStreamWriter& writer) {
     writer.writeStartElement("spirit:value");
 
     // write the attributes for the element
-    General::writeAttributes(writer, valueAttributes_);
+    XmlUtils::writeAttributes(writer, valueAttributes_);
 
     // write the value of the element and close the tag
     writer.writeCharacters(value_);

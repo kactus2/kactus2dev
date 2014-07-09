@@ -218,7 +218,7 @@ monitor_() {
 
 			// get the attributes for bitSteering element
 			QDomNode tempNode = children.at(i);
-			General::parseAttributes(tempNode, bitSteeringAttributes_);
+			bitSteeringAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
 
 		// get endianness
@@ -430,7 +430,7 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:busInterface");
 
 	if (!attributes_.isEmpty())
-		General::writeAttributes(writer, attributes_);
+		XmlUtils::writeAttributes(writer, attributes_);
 
 	writer.writeTextElement("spirit:name", nameGroup_.name_);
 
@@ -578,7 +578,7 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 		writer.writeStartElement("spirit:bitSteering");
 
 		// write the attributes for the element
-		General::writeAttributes(writer, bitSteeringAttributes_);
+		XmlUtils::writeAttributes(writer, bitSteeringAttributes_);
 
 		// write the value of the element and close the tag
 		writer.writeCharacters(General::bitSteering2Str(bitSteering_));

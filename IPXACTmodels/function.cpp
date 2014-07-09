@@ -182,7 +182,7 @@ arguments_(), disabled_(false), disabledAttributes_(), sourceFiles_() {
 			QString disabled = tempNode.childNodes().at(0).nodeValue();
 			disabled_ = General::str2Bool(disabled, false);
 
-			General::parseAttributes(tempNode, disabledAttributes_);
+			disabledAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:sourceFile")) {
@@ -291,7 +291,7 @@ void Function::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:disabled");
 
 	// write the attributes for the element
-	General::writeAttributes(writer, disabledAttributes_);
+	XmlUtils::writeAttributes(writer, disabledAttributes_);
 
 	// write the value of the element and close the tag
 	writer.writeCharacters(General::bool2Str(disabled_));
