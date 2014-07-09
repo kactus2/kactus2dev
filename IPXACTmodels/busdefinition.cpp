@@ -89,7 +89,7 @@ attributes_()  {
 	QDomNodeList temp6 = doc.elementsByTagName("spirit:extends");
 	if (temp6.size() > 0) {
 		QDomNode extendNode = temp6.item(0);
-		extends_ = General::createVLNV(extendNode, VLNV::BUSDEFINITION);
+		extends_ = VLNV::createVLNV(extendNode, VLNV::BUSDEFINITION);
 	}
 
 	return;
@@ -178,7 +178,7 @@ void BusDefinition::write(QFile& file) {
 
 	if (extends_.isValid()) {
 		writer.writeEmptyElement("spirit:extends");
-		General::writeVLNVAttributes(writer, &extends_);
+		extends_.writeAsAttributes(writer);
 	}
 
 	// write only if value defined

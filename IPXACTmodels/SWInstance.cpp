@@ -90,7 +90,7 @@ SWInstance::SWInstance(QDomNode& node)
         }
         else if (childNode.nodeName() == "kactus2:componentRef")
         {
-            componentRef_ = General::createVLNV(childNode, VLNV::COMPONENT);
+            componentRef_ = VLNV::createVLNV(childNode, VLNV::COMPONENT);
         }
         else if (childNode.nodeName() == "kactus2:fileSetRef")
         {
@@ -153,7 +153,7 @@ void SWInstance::write(QXmlStreamWriter& writer) const
     if (!componentRef_.isEmpty())
     {
         writer.writeEmptyElement("kactus2:componentRef");
-        General::writeVLNVAttributes(writer, &componentRef_);
+        componentRef_.writeAsAttributes(writer);
     }
     
     if (!fileSetRef_.isEmpty())

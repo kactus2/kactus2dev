@@ -35,17 +35,6 @@ value_(QString()), valueAttributes_(), description_() {
 			description_ = tempNode.childNodes().at(0).nodeValue();
 		}
 	}
-	// if name or value was not found then document is invalid
-// 	if (name_.isNull() ) {
-// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
-// 				"spirit:parameter"));
-// 	}
-// 
-// 	if (value_.isNull()) {
-// 		throw Parse_error(QObject::tr("Mandatory element value missing in"
-// 				" spirit:parameter"));
-// 	}
-	return;
 }
 
 Parameter::Parameter(): name_(), value_(), valueAttributes_(), description_() {

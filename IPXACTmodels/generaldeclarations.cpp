@@ -1099,30 +1099,6 @@ General::InterfaceMode General::getCompatibleInterfaceMode(InterfaceMode mode)
     }
 }
 
-VLNV General::createVLNV(const QDomNode& node,
-		VLNV::IPXactType type) {
-	// the vlnv info is found as attributes in the node
-	QDomNamedNodeMap attributeMap = node.attributes();
-	QString vendor =
-			attributeMap.namedItem(SPIRIT_VENDOR).nodeValue();
-	QString library =
-			attributeMap.namedItem(SPIRIT_LIBRARY).nodeValue();
-	QString name =
-			attributeMap.namedItem(SPIRIT_NAME).nodeValue();
-	QString version =
-			attributeMap.namedItem(SPIRIT_VERSION).nodeValue();
-
-	// if invalid vlnv tag
-	if (vendor.isNull() ||
-			library.isNull() ||
-			name.isNull() ||
-			version.isNull() ) {
-		return VLNV();
-	}
-
-	return VLNV(type, vendor, library, name, version);
-}
-
 QString General::removeWhiteSpace(QString str) {
 	QTextStream stream(&str);
 	QString resultStr;
@@ -1222,15 +1198,6 @@ General::LibraryFilePair& General::LibraryFilePair::operator=( const LibraryFile
 		libraryName_ = other.libraryName_;
 	}
 	return *this;
-}
-
-void General::writeVLNVAttributes(QXmlStreamWriter& writer,
-		const VLNV* vlnv) {
-	writer.writeAttribute(SPIRIT_VENDOR, vlnv->getVendor());
-	writer.writeAttribute(SPIRIT_LIBRARY, vlnv->getLibrary());
-	writer.writeAttribute(SPIRIT_NAME, vlnv->getName());
-	writer.writeAttribute(SPIRIT_VERSION, vlnv->getVersion());
-	return;
 }
 
 QString General::getRelativePath(const QString from, const QString to) {

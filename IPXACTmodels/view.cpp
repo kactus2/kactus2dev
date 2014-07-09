@@ -87,7 +87,7 @@ vendorExtensions_()
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:hierarchyRef")) {
-			hierarchyRef_ = General::createVLNV(tempNode, VLNV::DESIGN);
+			hierarchyRef_ = VLNV::createVLNV(tempNode, VLNV::DESIGN);
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:defaultFileBuilder")) {
@@ -218,7 +218,7 @@ void View::write(QXmlStreamWriter& writer) {
 	// write spirit:hierarchyRef if one exists
 	if (hierarchyRef_.isValid()) {
 		writer.writeEmptyElement("spirit:hierarchyRef");
-		General::writeVLNVAttributes(writer, &hierarchyRef_);
+		hierarchyRef_.writeAsAttributes(writer);
 	}
 
 	// if optional spirit:language is defined

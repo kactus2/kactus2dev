@@ -24,7 +24,7 @@ SystemView::SystemView(QDomNode& viewNode)
         QDomNode tempNode = viewNode.childNodes().at(i);
 
         if (tempNode.nodeName() == QString("spirit:hierarchyRef")) {
-            hierarchyRef_ = General::createVLNV(tempNode, VLNV::DESIGN);
+            hierarchyRef_ = VLNV::createVLNV(tempNode, VLNV::DESIGN);
         }
         else if (tempNode.nodeName() == "kactus2:hwViewRef")
         {
@@ -111,7 +111,7 @@ void SystemView::write(QXmlStreamWriter& writer)
 
     // write spirit:hierarchyRef if one exists
     writer.writeEmptyElement("spirit:hierarchyRef");
-    General::writeVLNVAttributes(writer, &hierarchyRef_);
+    hierarchyRef_.writeAsAttributes(writer);
 
     // Write HW view reference.
     writer.writeTextElement("kactus2:hwViewRef", hwViewRef_);

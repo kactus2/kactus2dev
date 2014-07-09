@@ -6,8 +6,8 @@
 
 #include "librarycomponent.h"
 #include "designconfiguration.h"
-#include "generaldeclarations.h"
 #include "XmlUtils.h"
+
 #include <library/LibraryManager/vlnv.h>
 #include "designconfabstractor.h"
 #include "generatorchain.h"
@@ -90,7 +90,7 @@ DesignConfiguration::GeneratorChainConfiguration::GeneratorChainConfiguration(
 	QDomNode tempNode = genChainNode.childNodes().at(i);
 
 	if (tempNode.nodeName() == QString("spirit:generatorChainRef")) {
-	    generatorChainRef_ = General::createVLNV(tempNode, VLNV::GENERATORCHAIN);
+	    generatorChainRef_ = VLNV::createVLNV(tempNode, VLNV::GENERATORCHAIN);
 	}
 
 	else if (tempNode.nodeName() ==
@@ -214,7 +214,7 @@ attributes_() {
 		QDomNode tempNode = designConfNode.childNodes().at(i);
 
 		if (tempNode.nodeName() == QString("spirit:designRef")) {
-			designRef_ = General::createVLNV(tempNode, VLNV::DESIGN);
+			designRef_ = VLNV::createVLNV(tempNode, VLNV::DESIGN);
 		}
 
 		else if (tempNode.nodeName() ==
@@ -385,13 +385,13 @@ void DesignConfiguration::write(QFile& file) {
 	}
 
     writer.writeEmptyElement("spirit:designRef");
-    General::writeVLNVAttributes(writer, &designRef_);
+    designRef_.writeAsAttributes(writer);
     
     for (int i = 0; i < generatorChainConfs_.size(); ++i) {
     	writer.writeStartElement("spirit:generatorChainConfiguration");
 
     	writer.writeEmptyElement("spirit:generatorChainRef");
-    	General::writeVLNVAttributes(writer, &generatorChainConfs_.at(i)->generatorChainRef_);
+    	generatorChainConfs_.at(i)->generatorChainRef_.writeAsAttributes(writer);
 
     	if (generatorChainConfs_.at(i)->configurableElements_.size() != 0) {
     		writer.writeStartElement("spirit:configurableElementValues");

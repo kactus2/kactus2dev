@@ -12,7 +12,6 @@
 #include "ComponentInstance.h"
 
 #include "XmlUtils.h"
-#include "generaldeclarations.h"
 
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
 
@@ -115,7 +114,7 @@ ComponentInstance::ComponentInstance(QDomNode& node)
         }
         else if (node.nodeName() == "spirit:componentRef")
         {
-            componentRef_ = General::createVLNV(node, VLNV::COMPONENT);
+            componentRef_ = VLNV::createVLNV(node, VLNV::COMPONENT);
         }
         else if (node.nodeName() == "spirit:configurableElementValues")
         {
@@ -198,7 +197,7 @@ void ComponentInstance::write(QXmlStreamWriter& writer) const
     writer.writeTextElement("spirit:description", desc_);
 
     writer.writeEmptyElement("spirit:componentRef");
-    General::writeVLNVAttributes(writer, &componentRef_);
+    componentRef_.writeAsAttributes(writer);
 
     writer.writeStartElement("spirit:configurableElementValues");
 

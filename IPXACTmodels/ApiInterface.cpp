@@ -92,7 +92,7 @@ ApiInterface::ApiInterface(QDomNode& node)
 
         if (childNode.nodeName() == "kactus2:apiType")
         {
-            apiType_ = General::createVLNV(childNode, VLNV::APIDEFINITION);
+            apiType_ = VLNV::createVLNV(childNode, VLNV::APIDEFINITION);
         }
         else if (childNode.nodeName() == "kactus2:dependencyDirection")
         {
@@ -126,7 +126,7 @@ void ApiInterface::write(QXmlStreamWriter& writer) const
     writer.writeTextElement("spirit:description", nameGroup_.description_);
 
     writer.writeEmptyElement("kactus2:apiType");
-    General::writeVLNVAttributes(writer, &apiType_);
+    apiType_.writeAsAttributes(writer);
 
     writer.writeTextElement("kactus2:dependencyDirection", dependencyDirection2Str(dependencyDir_));
 

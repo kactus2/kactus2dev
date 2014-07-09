@@ -26,14 +26,6 @@
 
 class Port;
 
-/*!
- * The VLNV tags that name the elements containing information
- */
-const QString SPIRIT_VENDOR("spirit:vendor");
-const QString SPIRIT_LIBRARY("spirit:library");
-const QString SPIRIT_NAME("spirit:name");
-const QString SPIRIT_VERSION("spirit:version");
-
 /*! \brief Namespace General is used to store the commonly used structs and enums
  *
  * This module holds the information structures that are used by many modules
@@ -1101,15 +1093,6 @@ General::BooleanValue str2BooleanValue(const QString& str);
  */
 QString booleanValue2Str(const General::BooleanValue value);
 
-/*! \brief Parse a vlnv tag from the attributes in the node
- *
- * The node parameter must have attributes matching a vlnv tag
- *
- * \param node A reference to a QDomNode to parse the vlnv from.
- * \return A pointer to the new vlnv instance.
- */
-VLNV createVLNV(const QDomNode& node, VLNV::IPXactType type);
-
 /*! \brief removes white spaces from the given QString
  *
  *	This function removes white spaces from the beginning and end of the string
@@ -1231,14 +1214,6 @@ struct LibraryFilePair {
 	*/
 	LibraryFilePair& operator=(const LibraryFilePair& other);
 };
-
-/*! \brief Write the attributes using the writer.
- *
- * \param writer A reference to a QXmlStreamwriter instance that is used to
- * write the attributes.
- * \param vlnv A pointer to the VLNV instance that is written as attributes.
- */
-void writeVLNVAttributes(QXmlStreamWriter& writer, const VLNV* vlnv);
 
 /*! \brief Get a relative file path from one location to another.
  *

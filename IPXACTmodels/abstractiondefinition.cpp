@@ -57,11 +57,11 @@ attributes_() {
 		}
 
 		if (tempNode.nodeName() == QString("spirit:busType")) {
-			busType_ = General::createVLNV(tempNode, VLNV::BUSDEFINITION);
+			busType_ = VLNV::createVLNV(tempNode, VLNV::BUSDEFINITION);
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:extends")) {
-			extends_ = General::createVLNV(tempNode, VLNV::ABSTRACTIONDEFINITION);
+			extends_ = VLNV::createVLNV(tempNode, VLNV::ABSTRACTIONDEFINITION);
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:ports")) {
@@ -163,12 +163,12 @@ void AbstractionDefinition::write(QFile& file) {
 	}
 
 	writer.writeEmptyElement("spirit:busType");
-	General::writeVLNVAttributes(writer, &busType_);
+	busType_.writeAsAttributes(writer);
 
 	// if extension is defined
 	if (extends_.isValid()) {
 		writer.writeEmptyElement("spirit:extends");
-		General::writeVLNVAttributes(writer, &extends_);
+		extends_.writeAsAttributes(writer);
 	}
 
 	if (!ports_.isEmpty()) {

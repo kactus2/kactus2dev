@@ -12,14 +12,27 @@
 #include <QStringList>
 #include <QMetaType>
 
+#include <QDomNode>
+#include <QXmlStreamWriter>
+
+
+
 /*! \brief The class to hold VLNV information of a single IP-XACT document
  *
  * This class provides services to store, read and write VLNV information
  * easily in classes that handle IP-XACT data.
  */
-class KACTUS2_API VLNV {
-
+class KACTUS2_API VLNV
+{
 public:
+
+    /*!
+    * The VLNV tags that name the elements containing information
+    */
+    static const QString SPIRIT_VENDOR;
+    static const QString SPIRIT_LIBRARY;
+    static const QString SPIRIT_NAME;
+    static const QString SPIRIT_VERSION;
 
 	/*! \brief Enum Type is used to tell the type of IP-XACT document
 	 *
@@ -203,6 +216,13 @@ public:
 	 */
 	bool operator!=(const VLNV &other) const;
 
+    /*! \brief Write the VLNV as attributes using the given XML writer.
+     *
+     *  \param writer A reference to a QXmlStreamwriter instance that is used to
+     *   write the attributes.
+     */
+    void writeAsAttributes(QXmlStreamWriter& writer) const;
+
 	// create relative filepath of the vlnv and return it in a QString
 	QString createDirPath() const;
 
@@ -288,6 +308,15 @@ public:
 	 *
 	*/
 	void clear();
+
+    /*! \brief Parse a vlnv tag from the attributes in the node
+    *
+    * The node parameter must have attributes matching a vlnv tag
+    *
+    * \param node A reference to a QDomNode to parse the vlnv from.
+    * \return A pointer to the new vlnv instance.
+    */
+    static VLNV createVLNV(const QDomNode& node, IPXactType type);
 
 private:
 

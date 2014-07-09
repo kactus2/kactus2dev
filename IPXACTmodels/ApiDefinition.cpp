@@ -84,7 +84,7 @@ ApiDefinition::ApiDefinition(QDomDocument& doc)
         }
         else if (childNode.nodeName() == "kactus2:comDefinitionRef")
         {
-            comDefRef_ = General::createVLNV(childNode, VLNV::COMDEFINITION);
+            comDefRef_ = VLNV::createVLNV(childNode, VLNV::COMDEFINITION);
         }
         else if (childNode.nodeName() == "kactus2:dataTypes")
         {
@@ -135,7 +135,7 @@ void ApiDefinition::write(QFile& file)
 
     // Write COM definition reference.
     writer.writeEmptyElement("kactus2:comDefinitionRef");
-    General::writeVLNVAttributes(writer, &comDefRef_);
+    comDefRef_.writeAsAttributes(writer);
 
     // Write data types.
     writer.writeStartElement("kactus2:dataTypes");

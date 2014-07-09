@@ -65,7 +65,7 @@ ComInterface::ComInterface(QDomNode& node)
 
         if (childNode.nodeName() == "kactus2:comType")
         {
-            comType_ = General::createVLNV(childNode, VLNV::COMDEFINITION);
+            comType_ = VLNV::createVLNV(childNode, VLNV::COMDEFINITION);
         }
         else if (childNode.nodeName() == "kactus2:transferType")
         {
@@ -81,7 +81,7 @@ ComInterface::ComInterface(QDomNode& node)
         }
         else if (childNode.nodeName() == "kactus2:comImplementationRef")
         {
-            comImplementation_ = General::createVLNV(childNode, VLNV::COMPONENT);
+            comImplementation_ = VLNV::createVLNV(childNode, VLNV::COMPONENT);
         }
         else if (childNode.nodeName() == "kactus2:position")
         {
@@ -113,7 +113,7 @@ void ComInterface::write(QXmlStreamWriter& writer) const
 
     // Write communication type, data type and communication direction.
     writer.writeEmptyElement("kactus2:comType");
-    General::writeVLNVAttributes(writer, &comType_);
+    comType_.writeAsAttributes(writer);
 
     writer.writeTextElement("kactus2:transferType", transferType_);
     writer.writeTextElement("kactus2:comDirection", General::direction2Str(dir_));
@@ -135,7 +135,7 @@ void ComInterface::write(QXmlStreamWriter& writer) const
     writer.writeEndElement(); // kactus2:propertyValues
 
 	writer.writeEmptyElement("kactus2:comImplementationRef");
-    General::writeVLNVAttributes(writer, &comImplementation_);
+    comImplementation_.writeAsAttributes(writer);
 
     if (!defaultPos_.isNull())
     {

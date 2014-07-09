@@ -30,7 +30,7 @@ nameGroup_(viewNode),
 		  }
 
         else if (tempNode.nodeName() == QString("spirit:hierarchyRef")) {
-            hierarchyRef_ = General::createVLNV(tempNode, VLNV::DESIGN);
+            hierarchyRef_ = VLNV::createVLNV(tempNode, VLNV::DESIGN);
         }
 		  else if (tempNode.nodeName() == QString("kactus2:fileSetRef")) {
 			  QString ref = tempNode.childNodes().at(0).nodeValue();
@@ -145,7 +145,7 @@ void SWView::write( QXmlStreamWriter& writer, bool withinHWComp ) {
 	// write spirit:hierarchyRef if one exists
 	if (hierarchyRef_.isValid()) {
 		writer.writeEmptyElement("spirit:hierarchyRef");
-		General::writeVLNVAttributes(writer, &hierarchyRef_);
+		hierarchyRef_.writeAsAttributes(writer);
 	}
 
 	// write the file set references

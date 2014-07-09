@@ -6,7 +6,6 @@
 
 #include "designconfabstractor.h"
 #include <library/LibraryManager/vlnv.h>
-#include "generaldeclarations.h"
 
 #include <QString>
 #include <QSharedPointer>
@@ -34,7 +33,7 @@ abstractorRef_(), configurableElements_(), viewName_(QString()) {
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:abstractorRef")) {
-			abstractorRef_ = General::createVLNV(tempNode, VLNV::ABSTRACTOR);
+			abstractorRef_ = VLNV::createVLNV(tempNode, VLNV::ABSTRACTOR);
 		}
 
 		else if (tempNode.nodeName() ==
@@ -101,7 +100,7 @@ void DesignConfAbstractor::write(QXmlStreamWriter& writer) {
 	}
 
 	writer.writeEmptyElement("spirit:abstractorRef");
-	General::writeVLNVAttributes(writer, &abstractorRef_);
+	abstractorRef_.writeAsAttributes(writer);
 
 	// if there are any configurable elements
 	if (configurableElements_.size() != 0) {

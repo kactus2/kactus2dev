@@ -36,19 +36,6 @@ right_(-1), rightAttributes_() {
 			rightAttributes_ = XmlUtils::parseAttributes(tempNode);
 		}
 	}
-
-	// if left bound was not specified
-// 	if (left_ < 0) {
-// 		throw Parse_error(QString("Mandatory element spirit:left missing in"
-// 				" spirit:vector"));
-// 	}
-// 
-// 	// if right was not specified
-// 	if (right_ < 0) {
-// 		throw Parse_error(QString("Mandatory element spirit:right missing"
-// 				" in spirit:vector"));
-// 	}
-	return;
 }
 
 //-----------------------------------------------------------------------------

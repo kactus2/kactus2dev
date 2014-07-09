@@ -40,7 +40,7 @@ unique_(false), operator_(General::OR), groupNames_(), generatorChainRef_() {
 
 		else if (tempNode.nodeName() == QString("spirit:generatorChainRef")) {
 
-			generatorChainRef_ =General::createVLNV(tempNode, VLNV::GENERATORCHAIN);
+			generatorChainRef_ = VLNV::createVLNV(tempNode, VLNV::GENERATORCHAIN);
 		}
 	}
 	return;

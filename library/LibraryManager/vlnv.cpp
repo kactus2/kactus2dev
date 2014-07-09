@@ -9,6 +9,16 @@
 #include <QStringList>
 #include <QObject>
 
+#include <QDomNode>
+#include <QDomNamedNodeMap>
+
+
+const QString VLNV::SPIRIT_VENDOR = "spirit:vendor";
+const QString VLNV::SPIRIT_LIBRARY = "spirit:library";
+const QString VLNV::SPIRIT_NAME = "spirit:name";
+const QString VLNV::SPIRIT_VERSION = "spirit:version";
+
+
 // constructor
 VLNV::VLNV(const QString &type, 
 		   const QString &vendor,
@@ -195,6 +205,17 @@ bool VLNV::operator!=(const VLNV &other) const {
 		return false;
 }
 
+//-----------------------------------------------------------------------------
+// Function: VLNV::writeAsAttributes()
+//-----------------------------------------------------------------------------
+void VLNV::writeAsAttributes(QXmlStreamWriter& writer) const
+{
+    writer.writeAttribute(SPIRIT_VENDOR, getVendor());
+    writer.writeAttribute(SPIRIT_LIBRARY, getLibrary());
+    writer.writeAttribute(SPIRIT_NAME, getName());
+    writer.writeAttribute(SPIRIT_VERSION, getVersion());
+}
+
 // static function
 VLNV::IPXactType VLNV::string2Type(const QString &type) {
 
@@ -334,6 +355,27 @@ QString VLNV::type2Show(const IPXactType &type) {
     default:
         return QObject::tr("Invalid");
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: vlnv::createVLNV()
+//-----------------------------------------------------------------------------
+VLNV VLNV::createVLNV(const QDomNode& node, IPXactType type)
+{
+    // the vlnv info is found as attributes in the node
+    QDomNamedNodeMap attributeMap = node.attributes();
+    QString vendor = attributeMap.namedItem(SPIRIT_VENDOR).nodeValue();
+    QString library = attributeMap.namedItem(SPIRIT_LIBRARY).nodeValue();
+    QString name = attributeMap.namedItem(SPIRIT_NAME).nodeValue();
+    QString version = attributeMap.namedItem(SPIRIT_VERSION).nodeValue();
+
+    // if invalid vlnv tag
+    if (vendor.isNull() || library.isNull() || name.isNull() || version.isNull() ) 
+    {
+        return VLNV();
+    }
+
+    return VLNV(type, vendor, library, name, version);
 }
 
 QString VLNV::createDirPath() const {

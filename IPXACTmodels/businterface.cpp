@@ -90,7 +90,7 @@ monitor_() {
 			QDomNode busTypeNode = children.at(i);
 
 			// create the vlnv and set a pointer for it
-			busType_ = General::createVLNV(busTypeNode, VLNV::BUSDEFINITION);
+			busType_ = VLNV::createVLNV(busTypeNode, VLNV::BUSDEFINITION);
 		}
 
 		// get abstraction type
@@ -99,7 +99,7 @@ monitor_() {
 			QDomNode abstractionNode = children.at(i);
 
 			// create the vlnv and set a pointer for it
-			abstractionType_ = General::createVLNV(abstractionNode,
+			abstractionType_ = VLNV::createVLNV(abstractionNode,
 							VLNV::ABSTRACTIONDEFINITION);
 		}
 
@@ -441,10 +441,10 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 		writer.writeTextElement("spirit:description", nameGroup_.description_);
 
 	writer.writeEmptyElement("spirit:busType");
-	General::writeVLNVAttributes(writer, &busType_);
+	busType_.writeAsAttributes(writer);
 
 	writer.writeEmptyElement("spirit:abstractionType");
-	General::writeVLNVAttributes(writer, &abstractionType_);
+	abstractionType_.writeAsAttributes(writer);
 
 	// write the interface mode
     switch (interfaceMode_)
