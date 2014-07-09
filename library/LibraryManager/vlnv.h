@@ -15,7 +15,13 @@
 #include <QDomNode>
 #include <QXmlStreamWriter>
 
-
+/*!
+* The VLNV tags that name the elements containing information
+*/
+const QString SPIRIT_VENDOR("spirit:vendor");
+const QString SPIRIT_LIBRARY("spirit:library");
+const QString SPIRIT_NAME("spirit:name");
+const QString SPIRIT_VERSION("spirit:version");
 
 /*! \brief The class to hold VLNV information of a single IP-XACT document
  *
@@ -25,14 +31,6 @@
 class KACTUS2_API VLNV
 {
 public:
-
-    /*!
-    * The VLNV tags that name the elements containing information
-    */
-    static const QString SPIRIT_VENDOR;
-    static const QString SPIRIT_LIBRARY;
-    static const QString SPIRIT_NAME;
-    static const QString SPIRIT_VERSION;
 
 	/*! \brief Enum Type is used to tell the type of IP-XACT document
 	 *
@@ -216,6 +214,13 @@ public:
 	 */
 	bool operator!=(const VLNV &other) const;
 
+    /*! \brief Write the VLNV as XML elements using the given XML writer.
+     *
+     *  \param writer A reference to a QXmlStreamwriter instance that is used to
+     *   write the elements.
+     */
+    void writeAsElements(QXmlStreamWriter& writer) const;
+
     /*! \brief Write the VLNV as attributes using the given XML writer.
      *
      *  \param writer A reference to a QXmlStreamwriter instance that is used to
@@ -317,7 +322,7 @@ public:
     * \return A pointer to the new vlnv instance.
     */
     static VLNV createVLNV(const QDomNode& node, IPXactType type);
-
+   
 private:
 
 	//! \brief The name of the vendor

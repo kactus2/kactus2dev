@@ -152,22 +152,22 @@ VLNV LibraryComponent::findVLNV(QDomDocument &doc) {
 	type = General::removeWhiteSpace(type);
 
 	// the vendor information
-	QDomNodeList vendorList = doc.elementsByTagName(VLNV::SPIRIT_VENDOR);
+	QDomNodeList vendorList = doc.elementsByTagName(SPIRIT_VENDOR);
 	QString vendor(vendorList.item(0).childNodes().item(0).nodeValue());
 	vendor = General::removeWhiteSpace(vendor);
 
 	// the library information
-	QDomNodeList libraryList = doc.elementsByTagName(VLNV::SPIRIT_LIBRARY);
+	QDomNodeList libraryList = doc.elementsByTagName(SPIRIT_LIBRARY);
 	QString library(libraryList.item(0).childNodes().item(0).nodeValue());
 	library = General::removeWhiteSpace(library);
 
 	// The name information
-	QDomNodeList nameList = doc.elementsByTagName(VLNV::SPIRIT_NAME);
+	QDomNodeList nameList = doc.elementsByTagName(SPIRIT_NAME);
 	QString name(nameList.item(0).childNodes().item(0).nodeValue());
 	name = General::removeWhiteSpace(name);
 
 	// The version information
-	QDomNodeList versionList = doc.elementsByTagName(VLNV::SPIRIT_VERSION);
+	QDomNodeList versionList = doc.elementsByTagName(SPIRIT_VERSION);
 	QString version(versionList.item(0).childNodes().item(0).nodeValue());
 	version = General::removeWhiteSpace(version);
 
@@ -219,10 +219,7 @@ void LibraryComponent::write(QXmlStreamWriter& writer) {
 
 void LibraryComponent::writeVLNV(QXmlStreamWriter& writer) {
 	// write the VLNV info
-	writer.writeTextElement(VLNV::SPIRIT_VENDOR, LibraryComponent::vlnv_->getVendor());
-	writer.writeTextElement(VLNV::SPIRIT_LIBRARY, LibraryComponent::vlnv_->getLibrary());
-	writer.writeTextElement(VLNV::SPIRIT_NAME, LibraryComponent::vlnv_->getName());
-	writer.writeTextElement(VLNV::SPIRIT_VERSION, LibraryComponent::vlnv_->getVersion());
+    vlnv_->writeAsElements(writer);
 }
 
 void LibraryComponent::writeKactus2Attributes( QXmlStreamWriter& writer ) {

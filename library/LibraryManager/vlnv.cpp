@@ -12,13 +12,6 @@
 #include <QDomNode>
 #include <QDomNamedNodeMap>
 
-
-const QString VLNV::SPIRIT_VENDOR = "spirit:vendor";
-const QString VLNV::SPIRIT_LIBRARY = "spirit:library";
-const QString VLNV::SPIRIT_NAME = "spirit:name";
-const QString VLNV::SPIRIT_VERSION = "spirit:version";
-
-
 // constructor
 VLNV::VLNV(const QString &type, 
 		   const QString &vendor,
@@ -203,6 +196,17 @@ bool VLNV::operator!=(const VLNV &other) const {
 		return true;
 	else
 		return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VLNV::writeAsElements()
+//-----------------------------------------------------------------------------
+void VLNV::writeAsElements(QXmlStreamWriter& writer) const
+{
+    writer.writeTextElement(SPIRIT_VENDOR, getVendor());
+    writer.writeTextElement(SPIRIT_LIBRARY, getLibrary());
+    writer.writeTextElement(SPIRIT_NAME, getName());
+    writer.writeTextElement(SPIRIT_VERSION, getVersion());
 }
 
 //-----------------------------------------------------------------------------
