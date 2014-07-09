@@ -17,6 +17,8 @@
 
 #include <common/Global.h>
 
+#include <library/LibraryManager/vlnv.h>
+
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>

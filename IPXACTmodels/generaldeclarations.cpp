@@ -1400,38 +1400,6 @@ General::TestConstraint General::str2TestConstraint( const QString& str ) {
 	return General::TESTCONSTRAINT_COUNT;
 }
 
-//-----------------------------------------------------------------------------
-// Function: General::isFileIPXact()
-//-----------------------------------------------------------------------------
-bool General::isFileIPXact(QString const& filename)
-{
-    // Try to open the file for reading.
-    QFile file(filename);
-
-    if (!file.open(QFile::ReadOnly))
-    {
-        return false;
-    }
-
-    QXmlStreamReader reader(&file);
-
-    if (!reader.readNextStartElement())
-    {
-        return false;
-    }
-    
-    if (reader.hasError())
-    {
-        return false;
-    }
-
-    QString type = reader.qualifiedName().toString();
-    file.close();
-
-    // Check if the type is a valid IP-XACT/Kactus2 object type.
-    return (VLNV::string2Type(type) != VLNV::INVALID);
-}
-
 General::NameGroup::NameGroup(): 
 name_(),
 displayName_(),

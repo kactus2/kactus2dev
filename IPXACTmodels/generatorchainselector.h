@@ -11,12 +11,12 @@
 
 #include <common/Global.h>
 
+#include <library/LibraryManager/vlnv.h>
+
 #include <QString>
 #include <QList>
 #include <QDomNode>
 #include <QSharedPointer>
-
-class VLNV;
 
 /*! \brief Equals the spirit:generatorChainSelector element in IP-Xact
  *

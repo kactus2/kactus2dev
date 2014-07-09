@@ -22,6 +22,8 @@
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/file.h>
 
+#include <library/LibraryManager/vlnv.h>
+
 #include <Plugins/PluginSystem/PluginManager.h>
 #include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
 
@@ -253,7 +255,7 @@ void FileDependencyEditor::scanFiles(QString const& path)
         // Otherwise add the file if it does not belong to ignored extensions or
         // is not an IP-XACT file.
         else if (!ignoreExtList_.contains(info.completeSuffix()) &&
-                 !General::isFileIPXact(info.absoluteFilePath()))
+                 !isFileIPXact(info.absoluteFilePath()))
         {
             // Otherwise the entry is a file.
             // Check which file type corresponds to the extension.
@@ -293,6 +295,39 @@ void FileDependencyEditor::scanFiles(QString const& path)
             folderItem->addFile(component_.data(), relativePath, fileType, fileRefs);
         }
     }
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyEditor::isFileIPXact()
+//-----------------------------------------------------------------------------
+bool FileDependencyEditor::isFileIPXact(QString const& filename) const
+{
+    // Try to open the file for reading.
+    QFile file(filename);
+
+    if (!file.open(QFile::ReadOnly))
+    {
+        return false;
+    }
+
+    QXmlStreamReader reader(&file);
+
+    if (!reader.readNextStartElement())
+    {
+        return false;
+    }
+
+    if (reader.hasError())
+    {
+        return false;
+    }
+
+    QString type = reader.qualifiedName().toString();
+    file.close();
+
+    // Check if the type is a valid IP-XACT/Kactus2 object type.
+    return (VLNV::string2Type(type) != VLNV::INVALID);
 }
 
 //-----------------------------------------------------------------------------

@@ -150,6 +150,13 @@ private:
      */
     void scanFiles(QString const& path);
 
+    /*!
+     *  Returns true if the given file is IP-XACT.
+     *
+     *      @param [in] filename The name of the file to check.
+     */
+    bool isFileIPXact(QString const& filename) const;
+
     /*
      *  Adds a filter button to the toolbar.
      *
