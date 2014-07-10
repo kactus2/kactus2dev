@@ -6,8 +6,10 @@
 
 #include "registerfile.h"
 #include "registermodel.h"
-#include "generaldeclarations.h"
 #include "register.h"
+#include "GenericVendorExtension.h"
+
+#include <IPXACTmodels/XmlUtils.h>
 
 #include <QString>
 #include <QDomNode>
@@ -30,11 +32,11 @@ vendorExtensions_()
 		}
 		else if (tempNode.nodeName() == QString("spirit:addressOffset")) {
 			addressOffset_ = tempNode.childNodes().at(0).nodeValue();
-			addressOffset_ = General::removeWhiteSpace(addressOffset_);
+			addressOffset_ = XmlUtils::removeWhiteSpace(addressOffset_);
 		}
 		else if (tempNode.nodeName() == QString("spirit:typeIdentifier")) {
 			typeIdentifier_ = tempNode.childNodes().at(0).nodeValue();
-			typeIdentifier_ = General::removeWhiteSpace(typeIdentifier_);
+			typeIdentifier_ = XmlUtils::removeWhiteSpace(typeIdentifier_);
 		}
 		else if (tempNode.nodeName() == QString("spirit:range")) {
 			range_ = tempNode.childNodes().at(0).nodeValue().toInt();
@@ -57,9 +59,7 @@ vendorExtensions_()
             int extensionCount = tempNode.childNodes().count();
             for (int j = 0; j < extensionCount; ++j) {
                 QDomNode extensionNode = tempNode.childNodes().at(j);
-                QSharedPointer<VendorExtension> extension = 
-                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
-                vendorExtensions_.append(extension);
+                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
             }
         }
 	}

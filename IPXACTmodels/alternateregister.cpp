@@ -6,7 +6,7 @@
 
 #include "alternateregister.h"
 #include "registerdefinition.h"
-#include "generaldeclarations.h"
+#include "GenericVendorExtension.h"
 
 #include <QXmlStreamWriter>
 #include <QDomNode>
@@ -27,7 +27,7 @@ vendorExtensions_()
 
 			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
 				QString groupName = tempNode.childNodes().at(j).nodeValue();
-				alternateGroups_.append(General::removeWhiteSpace(groupName));
+				alternateGroups_.append(XmlUtils::removeWhiteSpace(groupName));
 			}
 		}
         else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
@@ -35,14 +35,11 @@ vendorExtensions_()
             int extensionCount = tempNode.childNodes().count();
             for (int j = 0; j < extensionCount; ++j) {
                 QDomNode extensionNode = tempNode.childNodes().at(j);
-                QSharedPointer<VendorExtension> extension = 
-                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
-                vendorExtensions_.append(extension);
+                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
             }
         }
 	}
-	alternateRegisterDef_ = QSharedPointer<RegisterDefinition>(
-			new RegisterDefinition(registerNode));
+	alternateRegisterDef_ = QSharedPointer<RegisterDefinition>(new RegisterDefinition(registerNode));
 
 }
 

@@ -5,7 +5,9 @@
  */
 
 #include "memorymap.h"
+
 #include "generaldeclarations.h"
+#include "GenericVendorExtension.h"
 #include "memorymapitem.h"
 #include "subspacemap.h"
 #include "addressblock.h"
@@ -33,7 +35,7 @@ vendorExtensions_()
 
 		QDomNamedNodeMap attributeMap = memoryMapNode.attributes();
 		id_ = attributeMap.namedItem("spirit:id").nodeValue();
-		id_ = General::removeWhiteSpace(id_);
+		id_ = XmlUtils::removeWhiteSpace(id_);
 
 		QDomNode tempNode = memoryMapNode.childNodes().at(i);
 
@@ -53,9 +55,7 @@ vendorExtensions_()
             int extensionCount = tempNode.childNodes().count();
             for (int j = 0; j < extensionCount; ++j) {
                 QDomNode extensionNode = tempNode.childNodes().at(j);
-                QSharedPointer<VendorExtension> extension = 
-                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
-                vendorExtensions_.append(extension);
+                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
             }
         }
 	}

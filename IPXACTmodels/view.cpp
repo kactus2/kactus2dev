@@ -4,17 +4,20 @@
  */
 
 #include "view.h"
-#include <library/LibraryManager/vlnv.h>
 #include "parameter.h"
 #include "generaldeclarations.h"
+#include "GenericVendorExtension.h"
+#include "XmlUtils.h"
+
+#include <library/LibraryManager/vlnv.h>
+
+#include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
 #include <QDomNode>
 #include <QObject>
 #include <QString>
 #include <QDomNamedNodeMap>
 #include <QXmlStreamWriter>
-#include "XmlUtils.h"
-#include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
 View::View(QDomNode &viewNode): 
 nameGroup_(viewNode),
@@ -61,7 +64,7 @@ vendorExtensions_()
 					// strip the name of embedded whitespace characters
 					QString localName = tempNode.childNodes().at(j).
 							childNodes().at(0).nodeValue();
-					localName = General::removeWhiteSpace(localName);
+					localName = XmlUtils::removeWhiteSpace(localName);
 					fileSetRefs_.append(localName);
 				}
 			}
@@ -71,7 +74,7 @@ vendorExtensions_()
 			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
 				QString constraintSetRef = tempNode.childNodes().
 						at(j).childNodes().at(0).nodeValue();
-				constraintSetRef = General::removeWhiteSpace(constraintSetRef);
+				constraintSetRef = XmlUtils::removeWhiteSpace(constraintSetRef);
 				constraintSetRefs_.append(constraintSetRef);
 			}
 		}
@@ -575,8 +578,7 @@ void View::parseVendorExtensions(QDomNode const& extensionsNode)
         }
         else
         {
-            QSharedPointer<VendorExtension> extension = XmlUtils::createVendorExtensionFromNode(extensionNode); 
-            vendorExtensions_.append(extension);
+            vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
         }
     }
 }

@@ -13,7 +13,7 @@
 
 #include "IPlugin.h"
 
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/XmlUtils.h>
 
 #include <QApplication>
 #include <QDir>
@@ -51,7 +51,7 @@ QList<IPlugin*> PluginManager::getActivePlugins() const
 
     foreach (IPlugin* plugin, plugins_)
     {
-        if (settings.value("PluginSettings/" + General::removeWhiteSpace(plugin->getName()) + "/Active", true).toBool())
+        if (settings.value("PluginSettings/" + XmlUtils::removeWhiteSpace(plugin->getName()) + "/Active", true).toBool())
         {
             activePlugins.append(plugin);
         }

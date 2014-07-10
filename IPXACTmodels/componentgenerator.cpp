@@ -6,6 +6,7 @@
 
 #include "componentgenerator.h"
 #include "generaldeclarations.h"
+#include "XmlUtils.h"
 
 #include <QList>
 #include <QString>
@@ -36,7 +37,7 @@ groups_() {
 
 		if (tempNode.nodeName() == QString("spirit:group")) {
 			QString groupName = tempNode.childNodes().at(0).nodeValue();
-			groupName = General::removeWhiteSpace(groupName);
+			groupName = XmlUtils::removeWhiteSpace(groupName);
 			groups_.append(groupName);
 		}
 	}

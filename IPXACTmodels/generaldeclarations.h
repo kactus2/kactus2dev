@@ -885,22 +885,6 @@ struct PortMap {
     General::PortBounds getLogicalRange(QSharedPointer<Port> referencedPhysicalPort) const;
 };
 
-/*! \brief Convert the physical port into string.
- * 
- * \param portMap reference to the port map that's physical port is converted to string.
- *
- * \return QString Contains the physical port in string.
-*/
-QString toPhysString(const PortMap& portMap);
-
-/*! \brief Convert the logical port into string.
- *
- * \param portMap reference to the port map that's logical port is converted to string.
- *
- * \return QString Contains the logical port in string.
-*/
-QString toLogicalString(const PortMap& portMap);
-
 /*! \brief Convert the info into string.
  *
  * \param portName The name of the port.
@@ -1028,28 +1012,6 @@ General::BooleanValue str2BooleanValue(const QString& str);
  * empty QString is returned.
  */
 QString booleanValue2Str(const General::BooleanValue value);
-
-/*! \brief removes white spaces from the given QString
- *
- *	This function removes white spaces from the beginning and end of the string
- *	and also replaces any embedded whitespaces with characted '_'. If you only
- *	want to remove the white spaces from the start and end use
- *	QString::trimmed() instead of this.
- *
- *	IP-Xact types used for this function:
- *	-Name
- *	-NMTOKEN
- *	-PortName
- *	-ID
- *	-IDREF
- *
- * \param str A reference to the QString where white spaces are wanted to
- * be removed from.
- *
- * \return QString containing the string that has been stripped from
- * whitespaces and embedded whitespaces have been replaces with '_'
- */
-QString removeWhiteSpace(QString str);
 
 /*! \brief Equals the spirit:qualifier element in IP-Xact specification
  *

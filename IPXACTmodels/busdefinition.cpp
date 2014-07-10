@@ -81,7 +81,7 @@ attributes_()  {
 	for (int i = 0; i < temp5.item(0).childNodes().size(); ++i) {
 		QString systemGName = temp5.item(0).childNodes().item(i).
 				childNodes().item(0).nodeValue();
-		systemGName = General::removeWhiteSpace(systemGName);
+		systemGName = XmlUtils::removeWhiteSpace(systemGName);
 		systemGroupNames_.append(systemGName);
 	}
 

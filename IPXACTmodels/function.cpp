@@ -5,9 +5,9 @@
  */
 
 #include "function.h"
-#include "generaldeclarations.h"
 
-#include <stdexcept>
+#include "generaldeclarations.h"
+#include "GenericVendorExtension.h"
 
 #include <QMap>
 #include <QSharedPointer>
@@ -43,9 +43,7 @@ value_(QString()), dataType_(QString()), vendorExtensions_() {
             int extensionCount = tempNode.childNodes().count();
             for (int j = 0; j < extensionCount; ++j) {
                 QDomNode extensionNode = tempNode.childNodes().at(j);
-                QSharedPointer<VendorExtension> extension = 
-                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
-                vendorExtensions_.append(extension);
+                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
             }
         }
     }
@@ -162,7 +160,7 @@ arguments_(), disabled_(false), disabledAttributes_(), sourceFiles_() {
 
 		if (tempNode.nodeName() == QString("spirit:entryPoint")) {
 			entryPoint_ = tempNode.childNodes().at(0).nodeValue();
-			entryPoint_ = General::removeWhiteSpace(entryPoint_);
+			entryPoint_ = XmlUtils::removeWhiteSpace(entryPoint_);
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:fileRef")) {

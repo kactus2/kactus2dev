@@ -5,8 +5,9 @@
  */
 
 #include "registermodel.h"
-#include "generaldeclarations.h"
 #include "parameter.h"
+
+#include <IPXACTmodels/XmlUtils.h>
 
 #include <QList>
 #include <QDomNode>
@@ -23,7 +24,7 @@ parameters_() {
 	// get the spirit:id attribute
 	QDomNamedNodeMap attributeMap = registerNode.attributes();
 	id_ = attributeMap.namedItem(QString("spirit:id")).nodeValue();
-	id_ = General::removeWhiteSpace(id_);
+	id_ = XmlUtils::removeWhiteSpace(id_);
 
 	// go through child nodes and parse info
 	for (int i = 0; i < registerNode.childNodes().count(); ++i) {

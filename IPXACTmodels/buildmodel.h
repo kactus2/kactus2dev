@@ -7,8 +7,6 @@
 #ifndef BUILDMODEL_H_
 #define BUILDMODEL_H_
 
-#include "generaldeclarations.h"
-
 #include <common/Global.h>
 
 #include <QMap>

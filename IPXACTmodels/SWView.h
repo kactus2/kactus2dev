@@ -22,6 +22,7 @@
 #include <IPXACTmodels/bspbuildcommand.h>
 
 #include <QString>
+#include <QSharedPointer>
 #include <QDomNode>
 #include <QXmlStreamWriter>
 #include <QStringList>

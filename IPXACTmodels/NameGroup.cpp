@@ -12,6 +12,8 @@
 #include "NameGroup.h"
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include "XmlUtils.h"
+
 //-----------------------------------------------------------------------------
 // Function: NameGroup::NameGroup()
 //-----------------------------------------------------------------------------
@@ -37,7 +39,7 @@ NameGroup::NameGroup(QDomNode& node):
 
         if (tempNode.nodeName() == QString("spirit:name")) {
             name_ = tempNode.childNodes().at(0).nodeValue();
-            name_ = General::removeWhiteSpace(name_);
+            name_ = XmlUtils::removeWhiteSpace(name_);
         }
         else if (tempNode.nodeName() == QString("spirit:displayName")) {
             displayName_ = tempNode.childNodes().at(0).nodeValue();

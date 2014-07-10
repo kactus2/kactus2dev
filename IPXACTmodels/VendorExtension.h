@@ -12,14 +12,12 @@
 #ifndef VENDOREXTENSION_H
 #define VENDOREXTENSION_H
 
-#include <common/Global.h>
-
 #include <QXmlStreamWriter>
 
 //-----------------------------------------------------------------------------
 // class VendorExtension.
 //-----------------------------------------------------------------------------
-class KACTUS2_API VendorExtension
+class VendorExtension
 {
 
 public:

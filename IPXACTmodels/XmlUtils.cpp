@@ -11,14 +11,45 @@
 
 #include "XmlUtils.h"
 #include "VendorExtension.h"
-#include "GenericVendorExtension.h"
 
+#include <QTextStream>
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
 
 namespace XmlUtils
 {
+
+    //-----------------------------------------------------------------------------
+    // Function: removeWhiteSpace()
+    //-----------------------------------------------------------------------------
+    QString removeWhiteSpace(QString str)
+    {
+        QTextStream stream(&str);
+        QString resultStr;
+
+        // remove white spaces from the start and the end
+        str = str.trimmed();
+
+        // keep parsing until the end is reached
+        while (!stream.atEnd()) {
+            QString temp;
+
+            // strip the whitespace if any is found
+            stream.skipWhiteSpace();
+            stream >> temp;
+            // if there is still characters left in the stream
+            if (!stream.atEnd()) {
+                // replace the skipped whitespace with '_'
+                temp.append("_");
+            }
+            // add the parsed string to the total string
+            resultStr += temp;
+        }
+        // return the string that has been stripped from white spaces
+        return resultStr;
+    }
+
     //-----------------------------------------------------------------------------
     // Function: parseAttributes()
     //-----------------------------------------------------------------------------
@@ -185,14 +216,6 @@ namespace XmlUtils
 
             writer.writeEndElement();
         }
-    }
-
-    //-----------------------------------------------------------------------------
-    // Function: createVendorExtensionFromNode()
-    //-----------------------------------------------------------------------------
-    QSharedPointer<VendorExtension> createVendorExtensionFromNode(QDomNode const& node)
-    {
-        return QSharedPointer<VendorExtension>(new GenericVendorExtension(node));
     }
 
     //-----------------------------------------------------------------------------

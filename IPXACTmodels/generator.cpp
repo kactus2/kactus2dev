@@ -5,8 +5,10 @@
  */
 
 #include "generator.h"
+
 #include "parameter.h"
 #include "generaldeclarations.h"
+#include "GenericVendorExtension.h"
 
 #include <QList>
 #include <QString>
@@ -75,9 +77,7 @@ phase_(-1), parameters_(), apiType_(Generator::NONE), generatorExe_(), vendorExt
             int extensionCount = tempNode.childNodes().count();
             for (int j = 0; j < extensionCount; ++j) {
                 QDomNode extensionNode = tempNode.childNodes().at(j);
-                QSharedPointer<VendorExtension> extension = 
-                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
-                vendorExtensions_.append(extension);
+                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
             }
         }
 	}

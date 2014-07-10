@@ -34,7 +34,7 @@ fields_() {
 
 		if (tempNode.nodeName() == QString("spirit:typeIdentifier")) {
 			typeIdentifier_ = tempNode.childNodes().at(0).nodeValue();
-			typeIdentifier_ = General::removeWhiteSpace(typeIdentifier_);
+			typeIdentifier_ = XmlUtils::removeWhiteSpace(typeIdentifier_);
 		}
 		else if (tempNode.nodeName() == QString("spirit:size")) {
 			size_ = tempNode.childNodes().at(0).nodeValue().toInt();

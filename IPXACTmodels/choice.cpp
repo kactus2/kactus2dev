@@ -6,6 +6,7 @@
 
 #include "choice.h"
 #include "generaldeclarations.h"
+#include "XmlUtils.h"
 
 #include <QList>
 #include <QString>
@@ -21,7 +22,7 @@ enumerations_() {
 		// get name
 		if (children.at(i).nodeName() == QString("spirit:name")) {
 			choiceName_ = children.at(i).childNodes().at(0).nodeValue();
-			choiceName_ = General::removeWhiteSpace(choiceName_);
+			choiceName_ = XmlUtils::removeWhiteSpace(choiceName_);
 		}
 
 		// get enumerations

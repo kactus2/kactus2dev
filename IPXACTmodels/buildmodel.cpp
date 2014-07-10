@@ -6,6 +6,7 @@
 
 #include "buildmodel.h"
 
+#include "generaldeclarations.h"
 #include "XmlUtils.h"
 
 #include <QMap>

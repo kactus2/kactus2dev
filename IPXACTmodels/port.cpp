@@ -5,10 +5,15 @@
  */
 
 #include "port.h"
+
 #include "parameter.h"
 #include "transactional.h"
 #include "wire.h"
+#include "GenericVendorExtension.h"
 #include "XmlUtils.h"
+
+#include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 
 #include <QDomNode>
 #include <QString>
@@ -17,9 +22,6 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
-#include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
-#include "GenericVendorExtension.h"
-#include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 
 // the constructor
 Port::Port(QDomNode &portNode): 
@@ -716,8 +718,7 @@ void Port::parseVendorExtensions(QDomNode const& extensionsNode)
         }
         else
         {                    
-            QSharedPointer<VendorExtension> extension = XmlUtils::createVendorExtensionFromNode(extensionNode); 
-            vendorExtensions_.append(extension);
+            vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
         }
     }
 }

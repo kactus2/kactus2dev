@@ -6,7 +6,8 @@
 
 #include "remapstate.h"
 #include "remapport.h"
-#include "generaldeclarations.h"
+
+#include <IPXACTmodels/XmlUtils.h>
 
 #include <QList>
 #include <QString>
@@ -24,7 +25,7 @@ RemapState::RemapState(QDomNode &remapNode): name_(QString()), remapPorts_() {
 
 			// strip all whitespace characters
 			name_ = tempNode.childNodes().at(0).nodeValue();
-			name_ = General::removeWhiteSpace(name_);
+			name_ = XmlUtils::removeWhiteSpace(name_);
 		}
 
 		// get remapPorts

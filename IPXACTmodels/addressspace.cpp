@@ -8,7 +8,8 @@
 #include "memorymap.h"
 #include "parameter.h"
 #include "XmlUtils.h"
-#include "VendorExtension.h"
+#include "GenericVendorExtension.h"
+
 #include <common/utils.h>
 
 #include <QDomNode>
@@ -82,10 +83,8 @@ vendorExtensions_()
         {
             int extensionCount = tempNode.childNodes().count();
             for (int j = 0; j < extensionCount; ++j) {
-                QDomNode extensionNode = tempNode.childNodes().at(j);
-                QSharedPointer<VendorExtension> extension = 
-                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
-                vendorExtensions_.append(extension);
+                QDomNode extensionNode = tempNode.childNodes().at(j);                
+                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
             }
         }
 	}	

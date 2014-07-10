@@ -116,7 +116,7 @@ Wire::Wire(QDomNode &wireNode): direction_(General::DIRECTION_INVALID),
 
 		if (tempNode.nodeName() ==	QString("spirit:direction")) {
 			direction_ = General::str2Direction(
-				General::removeWhiteSpace(tempNode.childNodes().at(0).
+				XmlUtils::removeWhiteSpace(tempNode.childNodes().at(0).
 					nodeValue()),
 					General::DIRECTION_INVALID);
 		}

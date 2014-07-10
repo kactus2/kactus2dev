@@ -17,7 +17,7 @@
 #include <Plugins/PluginSystem/PluginListDialog.h>
 #include <Plugins/PluginSystem/PluginInfoWidget.h>
 
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/XmlUtils.h>
 
 #include <QApplication>
 #include <QVBoxLayout>
@@ -129,7 +129,7 @@ void PluginSettingsPage::apply()
             Q_ASSERT(settingsWidget != 0);
 
             // Save the active state.
-            settings_.beginGroup(General::removeWhiteSpace(plugin->getName()));
+            settings_.beginGroup(XmlUtils::removeWhiteSpace(plugin->getName()));
             settings_.setValue("Active", item->checkState(0) == Qt::Checked);
             settingsWidget->saveSettings(settings_);
             settings_.endGroup();
@@ -239,7 +239,7 @@ void PluginSettingsPage::refreshPluginsTree(bool displayChanges)
     settings_.beginGroup("PluginSettings");
     foreach (IPlugin* plugin, localManager_.getAllPlugins())
     {
-        settings_.beginGroup(General::removeWhiteSpace(plugin->getName()));
+        settings_.beginGroup(XmlUtils::removeWhiteSpace(plugin->getName()));
 
         // Create the tree item.
         QTreeWidgetItem* pluginItem = createPluginItem(plugin);

@@ -8,6 +8,8 @@
 #include "parameter.h"
 #include "generaldeclarations.h"
 
+#include <IPXACTmodels/XmlUtils.h>
+
 #include <QDomNode>
 #include <QString>
 #include <QList>
@@ -24,7 +26,7 @@ ServiceTypeDef::ServiceTypeDef(QDomNode &serviceTypeNode): typeName_(QString()),
 
 		if (tempNode.nodeName() == QString("spirit:typeName")) {
 			typeName_ = tempNode.childNodes().at(0).nodeValue();
-			typeName_ = General::removeWhiteSpace(typeName_);
+			typeName_ = XmlUtils::removeWhiteSpace(typeName_);
 
 			// get attributes
 			QDomNamedNodeMap attributeMap = tempNode.attributes();

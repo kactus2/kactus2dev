@@ -32,7 +32,7 @@ group_() {
 	QDomNamedNodeMap attributeMap = monitorNode.attributes();
 	QString interfaceMode = attributeMap.namedItem(QString(
 			"spirit:interfaceMode")).nodeValue();
-	interfaceMode = General::removeWhiteSpace(interfaceMode);
+	interfaceMode = XmlUtils::removeWhiteSpace(interfaceMode);
 
 	interfaceMode_ = General::str2Interfacemode(interfaceMode,
 			General::MONITOR);
@@ -43,7 +43,7 @@ group_() {
 				"spirit:group")) {
 			group_ = monitorNode.childNodes().at(i).childNodes().at(0).
 					nodeValue();
-			group_ = General::removeWhiteSpace(group_);
+			group_ = XmlUtils::removeWhiteSpace(group_);
 		}
 	}
 }
@@ -149,7 +149,7 @@ monitor_() {
 						QString("spirit:group")) {
 					system_ = tempNode.childNodes().at(j).childNodes().at(0).
 							nodeValue();
-					system_ = General::removeWhiteSpace(system_);
+					system_ = XmlUtils::removeWhiteSpace(system_);
 				}
 			}
 		}
@@ -164,7 +164,7 @@ monitor_() {
 						QString("spirit:group")) {
 					system_ = tempNode.childNodes().at(j).childNodes().at(0).
 							nodeValue();
-					system_ = General::removeWhiteSpace(system_);
+					system_ = XmlUtils::removeWhiteSpace(system_);
 				}
 			}
 		}

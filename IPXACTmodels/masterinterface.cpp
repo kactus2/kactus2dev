@@ -5,7 +5,6 @@
  */
 
 #include "masterinterface.h"
-#include "generaldeclarations.h"
 #include "XmlUtils.h"
 
 
@@ -32,7 +31,7 @@ baseAttributes_() {
 			QDomNamedNodeMap attributeMap = tempNode.attributes();
 			addressSpaceRef_ = attributeMap.namedItem(QString(
 					"spirit:addressSpaceRef")).nodeValue();
-			addressSpaceRef_ = General::removeWhiteSpace(addressSpaceRef_);
+			addressSpaceRef_ = XmlUtils::removeWhiteSpace(addressSpaceRef_);
 
 			// search the baseAddress element
 			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
@@ -40,7 +39,7 @@ baseAttributes_() {
 						"spirit:baseAddress")) {
 					tempNode = tempNode.childNodes().at(j);
 					baseAddress_ = tempNode.childNodes().at(0).nodeValue();
-					baseAddress_ = General::removeWhiteSpace(baseAddress_);
+					baseAddress_ = XmlUtils::removeWhiteSpace(baseAddress_);
 					break;
 				}
 			}

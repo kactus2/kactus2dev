@@ -8,6 +8,7 @@
 #include "generaldeclarations.h"
 #include "subspacemap.h"
 #include "parameter.h"
+#include "GenericVendorExtension.h"
 
 #include <QList>
 #include <QSharedPointer>
@@ -42,9 +43,7 @@ vendorExtensions_()
             int extensionCount = memoryMapNode.childNodes().count();
             for (int j = 0; j < extensionCount; ++j) {
                 QDomNode extensionNode = memoryMapNode.childNodes().at(j);
-                QSharedPointer<VendorExtension> extension = 
-                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
-                vendorExtensions_.append(extension);
+                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
             }
         }
 	}

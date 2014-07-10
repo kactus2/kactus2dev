@@ -26,6 +26,29 @@ class VendorExtension;
 
 namespace XmlUtils
 {
+
+    /*! \brief removes white spaces from the given QString
+     *
+     *	This function removes white spaces from the beginning and end of the string
+     *	and also replaces any embedded whitespaces with characted '_'. If you only
+     *	want to remove the white spaces from the start and end use
+     *	QString::trimmed() instead of this.
+     *
+     *	IP-Xact types used for this function:
+     *	-Name
+     *	-NMTOKEN
+     *	-PortName
+     *	-ID
+     *	-IDREF
+     *
+     * \param str A reference to the QString where white spaces are wanted to
+     * be removed from.
+     *
+     * \return QString containing the string that has been stripped from
+     * whitespaces and embedded whitespaces have been replaces with '_'
+     */
+    QString removeWhiteSpace(QString str);
+
     /*! Parses the attributes from the root of the given node to a QMap.
      *
      *       @param [in] node       A QDomNode to parse the attributes from.
@@ -105,15 +128,6 @@ namespace XmlUtils
      */
     void writePositionsMap(QXmlStreamWriter& writer, QMap<QString, QPointF> const& positions,
                            QString const& identifier, QString const& refIdentifier);
-
-    /*!
-     *  Creates a vendor extension from an XML node.
-     *
-     *      @param [in] node   The node to create from.
-     *
-     *      @return The created vendor extension.
-     */
-    QSharedPointer<VendorExtension> createVendorExtensionFromNode(QDomNode const& node);
 
     /*!
      *  Writes the vendor extensions to an XML using the given XML writer.

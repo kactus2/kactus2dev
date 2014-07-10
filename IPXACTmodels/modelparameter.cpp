@@ -6,6 +6,8 @@
 
 #include "modelparameter.h"
 
+#include "GenericVendorExtension.h"
+
 #include <QString>
 #include <QDomNode>
 #include <QMap>
@@ -39,9 +41,7 @@ vendorExtensions_()
             int extensionCount = tempNode.childNodes().count();
             for (int j = 0; j < extensionCount; ++j) {
                 QDomNode extensionNode = tempNode.childNodes().at(j);
-                QSharedPointer<VendorExtension> extension = 
-                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
-                vendorExtensions_.append(extension);
+                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
             }
         }
 	}

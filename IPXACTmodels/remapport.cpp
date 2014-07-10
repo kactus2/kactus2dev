@@ -4,8 +4,9 @@
  *      Author: Antti Kamppi
  */
 
-#include "generaldeclarations.h"
 #include "remapport.h"
+
+#include <IPXACTmodels/XmlUtils.h>
 
 #include <QString>
 #include <QList>
@@ -22,7 +23,7 @@ portNameRef_(QString()), portIndex_(-1) {
 	// get the portNameRef attribute and strip the whitespace characters
 	portNameRef_ = attributeMap.namedItem(QString("spirit:portNameRef")).
 			childNodes().at(0).nodeValue();
-	portNameRef_ = General::removeWhiteSpace(portNameRef_);
+	portNameRef_ = XmlUtils::removeWhiteSpace(portNameRef_);
 
 	QString portIndex = attributeMap.namedItem(QString("spirit:portIndex")).
 			childNodes().at(0).nodeValue();

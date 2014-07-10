@@ -20,11 +20,11 @@
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/Association/Association.h>
 
+#include <IPXACTmodels/XmlUtils.h>
 #include <IPXACTmodels/VendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
-#include <IPXACTmodels/XmlUtils.h>
 
 #include <QGraphicsPixmapItem>
 #include <QObject>
@@ -213,10 +213,6 @@ void StickyNote::parseValuesFrom(QDomNode const &node)
         {
             QString timestamp = childNode.childNodes().at(0).nodeValue();
             setTimestamp(timestamp);
-        }
-        else
-        {
-            extension_->addToGroup(XmlUtils::createVendorExtensionFromNode(childNode));
         }
     }
 }

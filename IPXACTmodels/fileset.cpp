@@ -9,6 +9,7 @@
 #include "filebuilder.h"
 #include "function.h"
 #include "generaldeclarations.h"
+#include "GenericVendorExtension.h"
 #include "XmlUtils.h"
 
 #include <IPXACTmodels/NameGroup.h>
@@ -40,7 +41,7 @@ vendorExtensions_()
 
 		if (tempNode.nodeName() == QString("spirit:group")) {
 			QString groupName = tempNode.childNodes().at(0).nodeValue();
-			groupName = General::removeWhiteSpace(groupName);
+			groupName = XmlUtils::removeWhiteSpace(groupName);
 			groups_.append(groupName);
 		}
 
@@ -795,8 +796,7 @@ void FileSet::parseVendorExtensions(QDomNode const& extensionsNode)
         }
         else
         {
-            QSharedPointer<VendorExtension> extension = XmlUtils::createVendorExtensionFromNode(extensionNode); 
-            vendorExtensions_.append(extension);
+            vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
         }
     }
 }

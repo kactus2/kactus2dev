@@ -7,6 +7,7 @@
 #include "addressblock.h"
 #include "memorymapitem.h"
 #include "generaldeclarations.h"
+#include "GenericVendorExtension.h"
 #include "parameter.h"
 #include "registerfile.h"
 #include "register.h"
@@ -96,9 +97,7 @@ vendorExtensions_()
             int extensionCount = tempNode.childNodes().count();
             for (int j = 0; j < extensionCount; ++j) {
                 QDomNode extensionNode = tempNode.childNodes().at(j);
-                QSharedPointer<VendorExtension> extension = 
-                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
-                vendorExtensions_.append(extension);
+                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
             }
         }
 	}

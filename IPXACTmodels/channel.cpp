@@ -6,7 +6,7 @@
 
 #include "channel.h"
 
-#include "generaldeclarations.h"
+#include "XmlUtils.h"
 
 #include <QXmlStreamWriter>
 #include <QDomNode>
@@ -25,7 +25,7 @@ displayName_(), description_(), busInterfaces_() {
 
 			// strip all whitespace characters
 			name_ = tempNode.childNodes().at(0).nodeValue();
-			name_ = General::removeWhiteSpace(name_);
+			name_ = XmlUtils::removeWhiteSpace(name_);
 		}
 
 		// get the display name
@@ -45,7 +45,7 @@ displayName_(), description_(), busInterfaces_() {
 
 			// appends string stripped of white space characters
 			QString temp = tempNode.childNodes().at(0).nodeValue();
-			busInterfaces_.append(General::removeWhiteSpace(temp));
+			busInterfaces_.append(XmlUtils::removeWhiteSpace(temp));
 		}
 	}
 

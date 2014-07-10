@@ -7,6 +7,8 @@
 #include "slaveinterface.h"
 #include "generaldeclarations.h"
 
+#include <IPXACTmodels/XmlUtils.h>
+
 #include <QString>
 #include <QList>
 #include <QSharedPointer>
@@ -23,11 +25,11 @@ opaque_(false) {
 	QDomNamedNodeMap attributeMap = bridgeNode.attributes();
 	masterRef_ = attributeMap.namedItem(QString("spirit:masterRef")).
 			nodeValue();
-	masterRef_ = General::removeWhiteSpace(masterRef_);
+	masterRef_ = XmlUtils::removeWhiteSpace(masterRef_);
 
 	QString opaque = attributeMap.namedItem(QString("spirit:opaque")).
 			nodeValue();
-	opaque = General::removeWhiteSpace(opaque);
+	opaque = XmlUtils::removeWhiteSpace(opaque);
 
 	opaque_ = General::str2Bool(opaque, false);
 	return;
@@ -51,7 +53,7 @@ fileSetRefs_() {
 
 			// strip whitespace characters
 			group_ = tempNode.childNodes().at(0).nodeValue();
-			group_ = General::removeWhiteSpace(group_);
+			group_ = XmlUtils::removeWhiteSpace(group_);
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:fileSetRef")) {
@@ -59,7 +61,7 @@ fileSetRefs_() {
 
 			// strip whitespace characters
 			QString temp = tempNode.childNodes().at(0).nodeValue();
-			temp = General::removeWhiteSpace(temp);
+			temp = XmlUtils::removeWhiteSpace(temp);
 			fileSetRefs_.append(temp);
 		}
 	}
@@ -83,7 +85,7 @@ fileSetRefGroup_() {
 			// strip whitespace characters
 			memoryMapRef_ = attributeMap.namedItem(QString(
 					"spirit:memoryMapRef")).nodeValue();
-			memoryMapRef_ = General::removeWhiteSpace(memoryMapRef_);
+			memoryMapRef_ = XmlUtils::removeWhiteSpace(memoryMapRef_);
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:bridge")) {

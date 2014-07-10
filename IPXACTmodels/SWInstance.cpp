@@ -78,7 +78,7 @@ SWInstance::SWInstance(QDomNode& node)
 
         if (childNode.nodeName() == "spirit:instanceName")
         {
-            instanceName_ = General::removeWhiteSpace(childNode.childNodes().at(0).nodeValue());
+            instanceName_ = XmlUtils::removeWhiteSpace(childNode.childNodes().at(0).nodeValue());
         }
         else if (childNode.nodeName() == "spirit:displayName")
         {

@@ -12,7 +12,7 @@
 #include "HierConnection.h"
 
 #include "Interface.h"
-#include "VendorExtension.h"
+#include "GenericVendorExtension.h"
 #include "XmlUtils.h"
 
 #include <QString>
@@ -270,8 +270,7 @@ void HierConnection::parseVendorExtensions(QDomNode & extensionsNode)
         }
         else
         {
-            QSharedPointer<VendorExtension> extension = XmlUtils::createVendorExtensionFromNode(childNode); 
-            vendorExtensions_.append(extension);
+            vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(childNode)));
         }
     }
 }

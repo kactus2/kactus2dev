@@ -5,7 +5,6 @@
  */
 
 #include "memorymapitem.h"
-#include "generaldeclarations.h"
 #include "XmlUtils.h"
 
 #include <QString>
@@ -31,7 +30,7 @@ baseAddrAttributes_() {
 		// get name
 		if (tempNode.nodeName() == QString("spirit:name")) {
 			name_ = tempNode.childNodes().at(0).nodeValue();
-			name_ = General::removeWhiteSpace(name_);
+			name_ = XmlUtils::removeWhiteSpace(name_);
 		}
 
 		else if (tempNode.nodeName() == QString("spirit:displayName")) {

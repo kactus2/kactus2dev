@@ -64,14 +64,11 @@ vendorExtensions_()
                 QDomNode extensionNode = children.at(i).childNodes().at(j);
                 if (!extensionNode.nodeName().contains("kactus2:"))
                 {
-                    QSharedPointer<VendorExtension> extension = 
-                        XmlUtils::createVendorExtensionFromNode(extensionNode);
-                    vendorExtensions_.append(extension);
+                    vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
                 }                
             }
         }
-	}
-	return;
+	}    
 }
 
 // the default constructor
@@ -149,27 +146,27 @@ VLNV LibraryComponent::findVLNV(QDomDocument &doc) {
 	}
 
 	QString type(nodeList.at(i).nodeName());
-	type = General::removeWhiteSpace(type);
+	type = XmlUtils::removeWhiteSpace(type);
 
 	// the vendor information
 	QDomNodeList vendorList = doc.elementsByTagName(SPIRIT_VENDOR);
 	QString vendor(vendorList.item(0).childNodes().item(0).nodeValue());
-	vendor = General::removeWhiteSpace(vendor);
+	vendor = XmlUtils::removeWhiteSpace(vendor);
 
 	// the library information
 	QDomNodeList libraryList = doc.elementsByTagName(SPIRIT_LIBRARY);
 	QString library(libraryList.item(0).childNodes().item(0).nodeValue());
-	library = General::removeWhiteSpace(library);
+	library = XmlUtils::removeWhiteSpace(library);
 
 	// The name information
 	QDomNodeList nameList = doc.elementsByTagName(SPIRIT_NAME);
 	QString name(nameList.item(0).childNodes().item(0).nodeValue());
-	name = General::removeWhiteSpace(name);
+	name = XmlUtils::removeWhiteSpace(name);
 
 	// The version information
 	QDomNodeList versionList = doc.elementsByTagName(SPIRIT_VERSION);
 	QString version(versionList.item(0).childNodes().item(0).nodeValue());
-	version = General::removeWhiteSpace(version);
+	version = XmlUtils::removeWhiteSpace(version);
 
 	// if one of the mandatory elements is missing then return invalid VLNV.
 	if (type.isNull() || vendor.isNull() || library.isNull() ||	name.isNull() || version.isNull())

@@ -506,7 +506,13 @@ void InterfaceEditor::setPortMaps() {
 	int row = 0;
 	foreach (QSharedPointer<General::PortMap> portMap, portMaps) {
 
-		QString logicalPort = General::toLogicalString(*portMap);
+		QString logicalPort = portMap->logicalPort_;
+
+        // if the logical port is vectored
+        if (portMap->logicalVector_) {
+            logicalPort += portMap->logicalVector_->toString();
+        }
+
 		QTableWidgetItem* logicalItem = new QTableWidgetItem(logicalPort);
 		logicalItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		// if no abs type is specified
@@ -531,7 +537,11 @@ void InterfaceEditor::setPortMaps() {
 		QString physicalPort = portMap->physicalPort_;
 		// if port map contains vectored physical port.
 		if (portMap->physicalVector_) {
-			physicalPort = General::toPhysString(*portMap);
+			physicalPort = portMap->physicalPort_;
+            // if the physical port is vectored.
+            if (portMap->physicalVector_) {
+                physicalPort += portMap->physicalVector_->toString();
+            }
 		}
 		// if port map does not contain physical vector but port is found on the component
 		else if (component->hasPort(physicalPort)) {

@@ -30,7 +30,7 @@ clockPulseDuration_(0) {
 
 	clockName_ = attributeMap.namedItem(QString(
 			"spirit:clockName")).nodeValue();
-	clockName_ = General::removeWhiteSpace(clockName_);
+	clockName_ = XmlUtils::removeWhiteSpace(clockName_);
 	clockSource_ = attributeMap.namedItem(QString("spirit:clockSource")).
 			nodeValue();
 

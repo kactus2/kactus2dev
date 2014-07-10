@@ -6,6 +6,7 @@
 
 #include "generaldeclarations.h"
 #include "port.h"
+#include "XmlUtils.h"
 
 #include <QDomNode>
 #include <QString>
@@ -98,7 +99,7 @@ physicalVector_() {
 					// get the logical name and strip whitespace characters
 					logicalPort_= tempNode.childNodes().at(j).childNodes().
 							at(0).nodeValue();
-					logicalPort_ = General::removeWhiteSpace(logicalPort_);
+					logicalPort_ = XmlUtils::removeWhiteSpace(logicalPort_);
 				}
 
 				else if (tempNode.childNodes().at(j).nodeName() ==
@@ -122,7 +123,7 @@ physicalVector_() {
 					// get the physical name and strip the whitespace characters
 					physicalPort_ = tempNode.childNodes().at(j).childNodes().
 							at(0).nodeValue();
-					physicalPort_ = General::removeWhiteSpace(physicalPort_);
+					physicalPort_ = XmlUtils::removeWhiteSpace(physicalPort_);
 				}
 
 				else if (tempNode.childNodes().at(j).nodeName() ==
@@ -551,24 +552,6 @@ General::PortAlignment General::calculatePortAlignment(
 	return alignment;
 }
 
-QString General::toPhysString( const PortMap& portMap ) {
-	QString str = portMap.physicalPort_;
-	// if the physical port is vectored.
-	if (portMap.physicalVector_) {
-		str += portMap.physicalVector_->toString();
-	}
-	return str;
-}
-
-QString General::toLogicalString( const PortMap& portMap ) {
-	QString str = portMap.logicalPort_;
-	// if the logical port is vectored
-	if (portMap.logicalVector_) {
-		str += portMap.logicalVector_->toString();
-	}
-	return str;
-}
-
 QString General::port2String(const QString& portName, int leftBound, int rightBound) {
 	QString str(portName);
 	str += QString("[%1..%2]").arg(leftBound).arg(rightBound);
@@ -967,7 +950,7 @@ timeUnit_(General::NS),
 attributes_() {
 
 	QString value = clockNode.childNodes().at(0).nodeValue();
-	value = General::removeWhiteSpace(value);
+	value = XmlUtils::removeWhiteSpace(value);
 	bool ok = false;
 	value_ = value.toDouble(&ok);
 
@@ -1097,32 +1080,6 @@ General::InterfaceMode General::getCompatibleInterfaceMode(InterfaceMode mode)
             return MASTER;
         }
     }
-}
-
-QString General::removeWhiteSpace(QString str) {
-	QTextStream stream(&str);
-	QString resultStr;
-
-	// remove white spaces from the start and the end
-	str = str.trimmed();
-
-	// keep parsing until the end is reached
-	while (!stream.atEnd()) {
-		QString temp;
-
-		// strip the whitespace if any is found
-		stream.skipWhiteSpace();
-		stream >> temp;
-		// if there is still characters left in the stream
-		if (!stream.atEnd()) {
-			// replace the skipped whitespace with '_'
-			temp.append("_");
-		}
-		// add the parsed string to the total string
-		resultStr += temp;
-	}
-	// return the string that has been stripped from white spaces
-	return resultStr;
 }
 
 General::Qualifier::Qualifier(QDomNode& qualifierNode): isAddress_(false),

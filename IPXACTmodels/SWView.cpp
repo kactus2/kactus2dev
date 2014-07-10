@@ -11,6 +11,8 @@
 
 #include "SWView.h"
 
+#include <IPXACTmodels/XmlUtils.h>
+
 //-----------------------------------------------------------------------------
 // Function: SWView::SWView()
 //-----------------------------------------------------------------------------
@@ -34,7 +36,7 @@ nameGroup_(viewNode),
         }
 		  else if (tempNode.nodeName() == QString("kactus2:fileSetRef")) {
 			  QString ref = tempNode.childNodes().at(0).nodeValue();
-			  ref = General::removeWhiteSpace(ref);
+			  ref = XmlUtils::removeWhiteSpace(ref);
 			  filesetRefs_.append(ref);
 		  }
 		  else if (tempNode.nodeName() == QString("kactus2:SWBuildCommand")) {

@@ -14,6 +14,7 @@
 #include "AdHocConnection.h"
 #include "Interconnection.h"
 #include "HierConnection.h"
+#include "GenericVendorExtension.h"
 #include "XmlUtils.h"
 
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
@@ -855,8 +856,7 @@ void Design::parseVendorExtensions(QDomNode &node)
         }
         else
         {
-            QSharedPointer<VendorExtension> extension = XmlUtils::createVendorExtensionFromNode(childNode);
-            vendorExtensions_.append(extension);
+            vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(childNode)));
         }
     }
 }

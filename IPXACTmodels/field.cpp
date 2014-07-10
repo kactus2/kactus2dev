@@ -8,6 +8,7 @@
 #include "generaldeclarations.h"
 #include "parameter.h"
 #include "enumeratedvalue.h"
+#include "GenericVendorExtension.h"
 
 #include <QString>
 #include <QXmlStreamWriter>
@@ -42,7 +43,7 @@ vendorExtensions_()
 	// parse the spirit:id attribute
 	QDomNamedNodeMap attributeMap = fieldNode.attributes();
 	id_ = attributeMap.namedItem("spirit:id").nodeValue();
-	id_ = General::removeWhiteSpace(id_);
+	id_ = XmlUtils::removeWhiteSpace(id_);
 
 	// go through all nodes and parse them
 	for (int i = 0; i < fieldNode.childNodes().count(); ++i) {
@@ -53,7 +54,7 @@ vendorExtensions_()
 		}
 		else if (tempNode.nodeName() == QString("spirit:typeIdentifier")) {
 			typeIdentifier_ = tempNode.childNodes().at(0).nodeValue();
-			typeIdentifier_ = General::removeWhiteSpace(typeIdentifier_);
+			typeIdentifier_ = XmlUtils::removeWhiteSpace(typeIdentifier_);
 		}
 		else if (tempNode.nodeName() == QString("spirit:bitWidth")) {
 			bitWidth_ = tempNode.childNodes().at(0).nodeValue().toInt();
@@ -106,9 +107,7 @@ vendorExtensions_()
             int extensionCount = tempNode.childNodes().count();
             for (int j = 0; j < extensionCount; ++j) {
                 QDomNode extensionNode = tempNode.childNodes().at(j);
-                QSharedPointer<VendorExtension> extension = 
-                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
-                vendorExtensions_.append(extension);
+                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
             }
         }
 	}

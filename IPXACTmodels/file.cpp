@@ -9,6 +9,7 @@
 #include "generaldeclarations.h"
 #include "buildcommand.h"
 #include "fileset.h"
+#include "GenericVendorExtension.h"
 
 #include <QSharedPointer>
 #include <QString>
@@ -39,9 +40,7 @@ nameGroup_(defineNode), value_(), vendorExtensions_() {
             int extensionCount = tempNode.childNodes().count();
             for (int j = 0; j < extensionCount; ++j) {
                 QDomNode extensionNode = tempNode.childNodes().at(j);
-                QSharedPointer<VendorExtension> extension = 
-                    XmlUtils::createVendorExtensionFromNode(extensionNode); 
-                vendorExtensions_.append(extension);
+                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
             }
         }
 	}
@@ -121,7 +120,7 @@ vendorExtensions_()
 
 		if (name == QString("spirit:fileId")) {
 			fileId_ = value;
-			fileId_ = General::removeWhiteSpace(fileId_);
+			fileId_ = XmlUtils::removeWhiteSpace(fileId_);
 		}
 		else {
 			attributes_[name] = value;
@@ -159,7 +158,7 @@ vendorExtensions_()
 
 		else if (tempNode.nodeName() == QString("spirit:logicalName")) {
 			logicalName_ = tempNode.childNodes().at(0).nodeValue();
-			logicalName_ = General::removeWhiteSpace(logicalName_);
+			logicalName_ = XmlUtils::removeWhiteSpace(logicalName_);
 
 			// get the default-attribute
 			QDomNamedNodeMap attributeMap = tempNode.attributes();
@@ -170,7 +169,7 @@ vendorExtensions_()
 
 		else if (tempNode.nodeName() == QString("spirit:exportedName")) {
 			QString name = tempNode.childNodes().at(0).nodeValue();
-			name = General::removeWhiteSpace(name);
+			name = XmlUtils::removeWhiteSpace(name);
 			exportedNames_.append(name);
 		}
 
@@ -221,9 +220,7 @@ vendorExtensions_()
                 }
                 else 
                 {
-                    QSharedPointer<VendorExtension> extension = 
-                        XmlUtils::createVendorExtensionFromNode(extensionNode); 
-                    vendorExtensions_.append(extension);
+                    vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
                 }
             }
         }
