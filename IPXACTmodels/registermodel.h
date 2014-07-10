@@ -8,7 +8,7 @@
 #define REGISTERMODEL_H_
 
 #include <common/Global.h>
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/NameGroup.h>
 
 #include <QList>
 #include <QDomNode>
@@ -163,7 +163,7 @@ protected:
 	QString id_;
 
 	//! \brief Contains the name, display name and description of the register item.
-	General::NameGroup nameGroup_;
+	NameGroup nameGroup_;
 
 	/*! \brief Contains the parameters.
 	 * OPTIONAL spirit:parameters

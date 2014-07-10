@@ -36,15 +36,15 @@ Interconnection::Interconnection(QDomNode& interconnectionNode):
 
         if (node.nodeName() == "spirit:name") 
         {
-            nameGroup_.name_ = node.firstChild().nodeValue();
+            nameGroup_.setName(node.firstChild().nodeValue());
         } 
         else if (node.nodeName() == "spirit:displayName")
         {
-            nameGroup_.displayName_ = node.firstChild().nodeValue();
+            nameGroup_.setDisplayName(node.firstChild().nodeValue());
         } 
         else if (node.nodeName() == "spirit:description")
         {
-            nameGroup_.description_ = node.firstChild().nodeValue();
+            nameGroup_.setDescription(node.firstChild().nodeValue());
         }
         else if (node.nodeName() == "spirit:activeInterface")
         {
@@ -70,15 +70,13 @@ Interconnection::Interconnection(QString name,
     bool offPage,
     QString displayName,
     QString description): 
-    nameGroup_(),
+    nameGroup_(name, displayName, description),
     interface1(interface1), 
     interface2(interface2), 
     route_(route), 
     offPage_(offPage)
 {
-    nameGroup_.name_ = name;
-    nameGroup_.description_ = description;
-    nameGroup_.displayName_ = displayName;
+
 }
 
 //-----------------------------------------------------------------------------
@@ -120,7 +118,7 @@ Interconnection& Interconnection::operator=( const Interconnection& other ) {
 //-----------------------------------------------------------------------------
 QString Interconnection::name() const
 {
-    return nameGroup_.name_;
+    return nameGroup_.name();
 }
 
 //-----------------------------------------------------------------------------
@@ -128,7 +126,7 @@ QString Interconnection::name() const
 //-----------------------------------------------------------------------------
 QString Interconnection::displayName() const
 {
-    return nameGroup_.displayName_;
+    return nameGroup_.displayName();
 }
 
 //-----------------------------------------------------------------------------
@@ -136,7 +134,7 @@ QString Interconnection::displayName() const
 //-----------------------------------------------------------------------------
 QString Interconnection::description() const
 {
-    return nameGroup_.description_;
+    return nameGroup_.description();
 }
 
 //-----------------------------------------------------------------------------
@@ -189,7 +187,7 @@ bool Interconnection::isValid( const QStringList& instanceNames,
         const QString thisIdentifier(QObject::tr("interconnection within %1").arg(
             parentIdentifier));
 
-        if (nameGroup_.name_.isEmpty()) {
+        if (nameGroup_.name().isEmpty()) {
             errorList.append(QObject::tr("No name specified for interconnection"
                 " within %1").arg(parentIdentifier));
             valid = false;
@@ -210,7 +208,7 @@ bool Interconnection::isValid( const QStringList& instanceNames,
 // Function: Interconnection::isValid()
 //-----------------------------------------------------------------------------
 bool Interconnection::isValid( const QStringList& instanceNames ) const {
-    if (nameGroup_.name_.isEmpty()) {
+    if (nameGroup_.name().isEmpty()) {
         return false;
     }
 

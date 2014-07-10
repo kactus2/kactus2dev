@@ -87,14 +87,14 @@ void ModelParameter::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:modelParameter");
 	XmlUtils::writeAttributes(writer, attributes_);
 
-	writer.writeTextElement("spirit:name", nameGroup_.name_);
+	writer.writeTextElement("spirit:name", nameGroup_.name());
 
-	if (!nameGroup_.displayName_.isEmpty()) {
-		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
+	if (!nameGroup_.displayName().isEmpty()) {
+		writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
 	}
 
-	if (!nameGroup_.description_.isEmpty()) {
-		writer.writeTextElement("spirit:description", nameGroup_.description_);
+	if (!nameGroup_.description().isEmpty()) {
+		writer.writeTextElement("spirit:description", nameGroup_.description());
 	}
 
     // start the spirit:value tag
@@ -129,7 +129,7 @@ bool ModelParameter::isValid() const {
 	}
 
 	// name and value must be defined
-	if (nameGroup_.name_.isEmpty() || value_.isEmpty())
+	if (nameGroup_.name().isEmpty() || value_.isEmpty())
 		return false;
 
 	return true;
@@ -138,7 +138,7 @@ bool ModelParameter::isValid() const {
 bool ModelParameter::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
 	bool valid = true;
 
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		valid = false;
 
 		errorList.append(QObject::tr("No name set for model parameter within %1").arg(
@@ -153,7 +153,7 @@ bool ModelParameter::isValid( QStringList& errorList, const QString& parentIdent
 
 			errorList.append(QObject::tr("Invalid usage type set for model "
 				"parameter %1 within %2").arg(
-				nameGroup_.name_).arg(parentIdentifier));
+				nameGroup_.name()).arg(parentIdentifier));
 		}
 	}
 
@@ -161,7 +161,7 @@ bool ModelParameter::isValid( QStringList& errorList, const QString& parentIdent
 		valid = false;
 
 		errorList.append(QObject::tr("No value set for model parameter %1"
-			" within %2").arg(nameGroup_.name_).arg(parentIdentifier));
+			" within %2").arg(nameGroup_.name()).arg(parentIdentifier));
 	}
 
 	return valid;
@@ -197,27 +197,27 @@ void ModelParameter::setValueAttributes(const
 }
 
 QString ModelParameter::getName() const {
-	return nameGroup_.name_;
+	return nameGroup_.name();
 }
 
 void ModelParameter::setName(const QString &name) {
-	nameGroup_.name_ = name;
+	nameGroup_.setName(name);
 }
 
 QString ModelParameter::getDisplayName() const {
-	return nameGroup_.displayName_;
+	return nameGroup_.displayName();
 }
 
 void ModelParameter::setDisplayName( const QString& displayName ) {
-	nameGroup_.displayName_ = displayName;
+	nameGroup_.setDisplayName(displayName);
 }
 
 QString ModelParameter::getDescription() const {
-	return nameGroup_.description_;
+	return nameGroup_.description();
 }
 
 void ModelParameter::setDescription( const QString& description ) {
-	nameGroup_.description_ = description;
+	nameGroup_.setDescription(description);
 }
 
 QString ModelParameter::getValue() const {

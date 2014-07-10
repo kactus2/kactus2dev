@@ -12,6 +12,7 @@
 #include "buildcommand.h"
 
 #include <common/Global.h>
+#include <IPXACTmodels/NameGroup.h>
 
 #include <QString>
 #include <QList>
@@ -37,7 +38,7 @@ public:
 	struct Define {
 
 		//! \brief Contains the nameGroup element of the define
-		General::NameGroup nameGroup_;
+		NameGroup nameGroup_;
 
 		//! \brief The value of the define parameter.
 		QString value_;

@@ -191,9 +191,9 @@ void RegisterFile::write(QXmlStreamWriter& writer) {
 bool RegisterFile::isValid( QStringList& errorList,
 						   const QString& parentIdentifier ) const {
 	bool valid = true;
-	const QString thisIdentifier(QObject::tr("register file %1").arg(nameGroup_.name_));
+	const QString thisIdentifier(QObject::tr("register file %1").arg(nameGroup_.name()));
 
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		errorList.append(QObject::tr("No name specified for register file"
 			" within %1").arg(parentIdentifier));
 		valid = false;
@@ -228,7 +228,7 @@ bool RegisterFile::isValid( QStringList& errorList,
 
 bool RegisterFile::isValid() const {
 
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		return false;
 	}
 

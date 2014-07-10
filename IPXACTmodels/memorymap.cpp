@@ -118,14 +118,14 @@ void MemoryMap::write(QXmlStreamWriter& writer) {
 		writer.writeAttribute("spirit:id", id_);
 	}
 
-	writer.writeTextElement("spirit:name", nameGroup_.name_);
+	writer.writeTextElement("spirit:name", nameGroup_.name());
 
-	if (!nameGroup_.displayName_.isEmpty()) {
-		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
+	if (!nameGroup_.displayName().isEmpty()) {
+		writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
 	}
 
-	if (!nameGroup_.description_.isEmpty()) {
-		writer.writeTextElement("spirit:description", nameGroup_.description_);
+	if (!nameGroup_.description().isEmpty()) {
+		writer.writeTextElement("spirit:description", nameGroup_.description());
 	}
 
 	// write all address block, bank and subspaceMap elements
@@ -149,9 +149,9 @@ void MemoryMap::write(QXmlStreamWriter& writer) {
 bool MemoryMap::isValid( QStringList& errorList, 
 						const QString& parentIdentifier ) const {
 	bool valid = true;
-	const QString thisIdentifier(QObject::tr("memory map %1").arg(nameGroup_.name_));
+	const QString thisIdentifier(QObject::tr("memory map %1").arg(nameGroup_.name()));
 
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		errorList.append(QObject::tr("No name specified for memory map within %1").arg(
 			parentIdentifier));
 		valid = false;
@@ -179,7 +179,7 @@ bool MemoryMap::isValid( QStringList& errorList,
 
 bool MemoryMap::isValid() const {
 
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		return false;
 	}
 
@@ -206,7 +206,7 @@ bool MemoryMap::containsSubItems() const {
 }
 
 void MemoryMap::setName(const QString &name) {
-	nameGroup_.name_ = name;
+	nameGroup_.setName(name);
 }
 
 void MemoryMap::setAddressUnitBits(unsigned int addressUnitBits) {
@@ -222,7 +222,7 @@ QList<QSharedPointer<MemoryMapItem> >& MemoryMap::getItems() {
 }	
 
 QString MemoryMap::getName() const {
-	return nameGroup_.name_;
+	return nameGroup_.name();
 }
 
 unsigned int MemoryMap::getAddressUnitBits() const {
@@ -238,19 +238,19 @@ void MemoryMap::setItems(const QList<QSharedPointer<MemoryMapItem> > &items) {
 }
 
 QString MemoryMap::getDisplayName() const {
-	return nameGroup_.displayName_;
+	return nameGroup_.displayName();
 }
 
 void MemoryMap::setDisplayName( const QString& displayName ) {
-	nameGroup_.displayName_ = displayName;
+	nameGroup_.setDisplayName(displayName);
 }
 
 QString MemoryMap::getDescription() const {
-	return nameGroup_.description_;
+	return nameGroup_.description();
 }
 
 void MemoryMap::setDescription( const QString& description ) {
-	nameGroup_.description_ = description;
+	nameGroup_.setDescription(description);
 }
 
 //-----------------------------------------------------------------------------
@@ -386,11 +386,11 @@ QString MemoryMap::getFirstAddressStr() const {
 }
 
 bool MemoryMap::isEmpty() const {
-	return items_.isEmpty() && nameGroup_.name_.isEmpty() &&
-		nameGroup_.displayName_.isEmpty() && nameGroup_.description_.isEmpty();
+	return items_.isEmpty() && nameGroup_.name().isEmpty() &&
+		nameGroup_.displayName().isEmpty() && nameGroup_.description().isEmpty();
 }	
 
-General::NameGroup& MemoryMap::getNameGroup() {
+NameGroup& MemoryMap::getNameGroup() {
 	return nameGroup_;
 }
 

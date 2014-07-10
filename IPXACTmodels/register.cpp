@@ -171,9 +171,9 @@ void Register::write(QXmlStreamWriter& writer) {
 bool Register::isValid( QStringList& errorList,
 					   const QString& parentIdentifier ) const {
 	bool valid = true;
-	const QString thisIdentifier(QObject::tr("register %1").arg(nameGroup_.name_));
+	const QString thisIdentifier(QObject::tr("register %1").arg(nameGroup_.name()));
 
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		errorList.append(QObject::tr("No name specified for register within %1").arg(
 			parentIdentifier));
 		valid = false;
@@ -181,7 +181,7 @@ bool Register::isValid( QStringList& errorList,
 
 	if (addressOffset_.isEmpty()) {
 		errorList.append(QObject::tr("No address offset set for register %1"
-			" within %2").arg(nameGroup_.name_).arg(parentIdentifier));
+			" within %2").arg(nameGroup_.name()).arg(parentIdentifier));
 		valid = false;
 	}
 
@@ -206,7 +206,7 @@ bool Register::isValid( QStringList& errorList,
 
 bool Register::isValid() const {
 
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		return false;
 	}
 
@@ -341,20 +341,20 @@ void Register::writeHeaderInfo( QTextStream& stream, quint64 offset, const QStri
 	offsetStr.prepend("0x");
 
 	stream << "/*" << endl;
-	stream << " * Register name: " << nameGroup_.name_ << endl;
+	stream << " * Register name: " << nameGroup_.name() << endl;
 	
-	if (!nameGroup_.description_.isEmpty()) {
+	if (!nameGroup_.description().isEmpty()) {
 		stream << " * Description:" << endl;
-		stream << " * " << nameGroup_.description_ << endl;
+		stream << " * " << nameGroup_.description() << endl;
 	}
 
 	stream << "*/" << endl;
 	stream << "#define ";
 
 	if (idString.isEmpty()) {
-		stream << nameGroup_.name_.toUpper() << " " << offsetStr << endl; 
+		stream << nameGroup_.name().toUpper() << " " << offsetStr << endl; 
 	}
 	else {
-		stream << idString.toUpper() << "_" << nameGroup_.name_.toUpper() << " " << offsetStr << endl;
+		stream << idString.toUpper() << "_" << nameGroup_.name().toUpper() << " " << offsetStr << endl;
 	}
 }

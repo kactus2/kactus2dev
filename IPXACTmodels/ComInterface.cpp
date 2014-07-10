@@ -107,9 +107,9 @@ void ComInterface::write(QXmlStreamWriter& writer) const
     writer.writeStartElement("kactus2:comInterface");
 
     // Write basic name info.
-    writer.writeTextElement("spirit:name", nameGroup_.name_);
-    writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
-    writer.writeTextElement("spirit:description", nameGroup_.description_);
+    writer.writeTextElement("spirit:name", nameGroup_.name());
+    writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
+    writer.writeTextElement("spirit:description", nameGroup_.description());
 
     // Write communication type, data type and communication direction.
     writer.writeEmptyElement("kactus2:comType");
@@ -150,10 +150,10 @@ void ComInterface::write(QXmlStreamWriter& writer) const
 //-----------------------------------------------------------------------------
 bool ComInterface::isValid(QStringList& errorList, QString const& parentId) const
 {
-    QString const thisId = QObject::tr("COM interface '%1'").arg(nameGroup_.name_);
+    QString const thisId = QObject::tr("COM interface '%1'").arg(nameGroup_.name());
     bool valid = true;
 
-    if (nameGroup_.name_.isEmpty())
+    if (nameGroup_.name().isEmpty())
     {
         errorList.append(QObject::tr("No name specified for a COM interface in %1").arg(parentId));
         valid = false;
@@ -192,7 +192,7 @@ bool ComInterface::isValid(QStringList& errorList, QString const& parentId) cons
 //-----------------------------------------------------------------------------
 bool ComInterface::isValid() const
 {
-    if (nameGroup_.name_.isEmpty())
+    if (nameGroup_.name().isEmpty())
     {
         return false;
     }
@@ -227,7 +227,7 @@ bool ComInterface::isValid() const
 //-----------------------------------------------------------------------------
 void ComInterface::setName(QString const& name)
 {
-    nameGroup_.name_ = name;
+    nameGroup_.setName(name);
 }
 
 //-----------------------------------------------------------------------------
@@ -235,7 +235,7 @@ void ComInterface::setName(QString const& name)
 //-----------------------------------------------------------------------------
 void ComInterface::setDisplayName(QString const& displayName)
 {
-    nameGroup_.displayName_ = displayName;
+    nameGroup_.setDisplayName(displayName);
 }
 
 //-----------------------------------------------------------------------------
@@ -243,7 +243,7 @@ void ComInterface::setDisplayName(QString const& displayName)
 //-----------------------------------------------------------------------------
 void ComInterface::setDescription(QString const& desc)
 {
-    nameGroup_.description_ = desc;
+    nameGroup_.setDescription(desc);
 }
 
 //-----------------------------------------------------------------------------
@@ -281,25 +281,25 @@ void ComInterface::setPropertyValues(QMap<QString, QString> const& values)
 //-----------------------------------------------------------------------------
 // Function: ComInterface::getName()
 //-----------------------------------------------------------------------------
-QString const& ComInterface::getName() const
+QString ComInterface::getName() const
 {
-    return nameGroup_.name_;
+    return nameGroup_.name();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComInterface::getDisplayName()
 //-----------------------------------------------------------------------------
-QString const& ComInterface::getDisplayName() const
+QString ComInterface::getDisplayName() const
 {
-    return nameGroup_.displayName_;
+    return nameGroup_.displayName();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComInterface::getDescription()
 //-----------------------------------------------------------------------------
-QString const& ComInterface::getDescription() const
+QString ComInterface::getDescription() const
 {
-    return nameGroup_.description_;
+    return nameGroup_.description();
 }
 
 //-----------------------------------------------------------------------------
@@ -341,9 +341,9 @@ ComInterface& ComInterface::operator=(ComInterface const& rhs)
 {
     if (&rhs != this)
     {
-        nameGroup_.name_ = rhs.nameGroup_.name_;
-        nameGroup_.displayName_ = rhs.nameGroup_.displayName_;
-        nameGroup_.description_ = rhs.nameGroup_.description_;
+        nameGroup_.setName(rhs.nameGroup_.name());
+        nameGroup_.setDisplayName(rhs.nameGroup_.displayName());
+        nameGroup_.setDescription(rhs.nameGroup_.description());
         comType_ = rhs.comType_;
         dir_ = rhs.dir_;
     }
@@ -370,11 +370,11 @@ void ComInterface::parsePropertyValues(QDomNode& node)
     }
 }
 
-General::NameGroup& ComInterface::getNameGroup() {
+NameGroup& ComInterface::getNameGroup() {
 	return nameGroup_;
 }
 
-const General::NameGroup& ComInterface::getNameGroup() const {
+const NameGroup& ComInterface::getNameGroup() const {
 	return nameGroup_;
 }
 

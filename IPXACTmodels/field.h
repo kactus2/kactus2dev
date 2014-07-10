@@ -11,6 +11,8 @@
 #include <common/Global.h>
 #include "writevalueconstraint.h"
 
+#include <IPXACTmodels/NameGroup.h>
+
 #include <QString>
 #include <QXmlStreamWriter>
 #include <QMap>
@@ -325,7 +327,7 @@ private:
 	QString id_;
 
 	//! \brief Contains the name, display name and description of field.
-	General::NameGroup nameGroup_;
+	NameGroup nameGroup_;
 
 	/*! \brief Describes the offset where this bit field starts.
 	 * MANDATORY spirit:bitOffset

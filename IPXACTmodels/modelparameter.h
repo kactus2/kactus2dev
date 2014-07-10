@@ -7,7 +7,7 @@
 #ifndef MODELPARAMETER_H_
 #define MODELPARAMETER_H_
 
-#include "generaldeclarations.h"
+#include <IPXACTmodels/NameGroup.h>
 
 #include <common/Global.h>
 
@@ -195,7 +195,7 @@ public:
 private:
 
 	//! \brief Contains the name, display name and description of model parameter.
-	General::NameGroup nameGroup_;
+	NameGroup nameGroup_;
 
 	/*!
 	 * MANDATORY

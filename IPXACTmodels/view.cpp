@@ -282,16 +282,16 @@ bool View::isValid( const QStringList& fileSetNames,
 				   const QString& parentIdentifier ) const {
 
 	bool valid = true;
-	const QString thisIdentifier(QObject::tr("view %1").arg(nameGroup_.name_));
+	const QString thisIdentifier(QObject::tr("view %1").arg(nameGroup_.name()));
 
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		errorList.append(QObject::tr("No name specified for view within %1").arg(parentIdentifier));
 		valid = false;
 	}
 
 	if (envIdentifiers_.isEmpty()) {
 		errorList.append(QObject::tr("No environment identifier specified for "
-			"view %1 within %2").arg(nameGroup_.name_).arg(parentIdentifier));
+			"view %1 within %2").arg(nameGroup_.name()).arg(parentIdentifier));
 		valid = false;
 	}
 
@@ -309,7 +309,7 @@ bool View::isValid( const QStringList& fileSetNames,
 			if (!fileSetNames.contains(fileSetRef)) {
 				errorList.append(QObject::tr("View %1 contained reference to file"
 					" set %2 which is not found within %3").arg(
-					nameGroup_.name_).arg(fileSetRef).arg(parentIdentifier));
+					nameGroup_.name()).arg(fileSetRef).arg(parentIdentifier));
 				valid = false;
 			}
 		}
@@ -325,7 +325,7 @@ bool View::isValid( const QStringList& fileSetNames,
 }
 
 bool View::isValid( const QStringList& fileSetNames ) const {
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		return false;
 	}
 
@@ -372,7 +372,7 @@ QString View::getLanguage() const {
 }
 
 QString View::getName() const {
-	return nameGroup_.name_;
+	return nameGroup_.name();
 }
 
 VLNV View::getHierarchyRef() const {
@@ -453,7 +453,7 @@ const QList<QSharedPointer<Parameter> >& View::getParameters() const {
 }
 
 void View::setName(const QString &name) {
-	nameGroup_.name_ = name;
+	nameGroup_.setName(name);
 }
 
 void View::setModelName(const QString &modelName) {
@@ -484,19 +484,19 @@ void View::addFileSetRef(const QString fileSetRef) {
 }
 
 QString View::getDisplayName() const {
-	return nameGroup_.displayName_;
+	return nameGroup_.displayName();
 }
 
 QString View::getDescription() const {
-	return nameGroup_.description_;
+	return nameGroup_.description();
 }
 
 void View::setDisplayName( const QString& displayName ) {
-	nameGroup_.displayName_ = displayName;
+	nameGroup_.setDisplayName(displayName);
 }
 
 void View::setDescription( const QString& description ) {
-	nameGroup_.description_ = description;
+	nameGroup_.setDescription(description);
 }
 
 bool View::isHierarchical() const {
@@ -548,11 +548,11 @@ void View::setTopLevelView( const QString& viewName ) {
 	parameters_.clear();
 }
 
-General::NameGroup& View::getNameGroup() {
+NameGroup& View::getNameGroup() {
 	return nameGroup_;
 }
 
-const General::NameGroup& View::getNameGroup() const {
+const NameGroup& View::getNameGroup() const {
 	return nameGroup_;
 }
 

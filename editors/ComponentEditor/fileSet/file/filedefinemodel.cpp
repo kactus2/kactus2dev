@@ -211,9 +211,9 @@ void FileDefineModel::restore() {
 
 		// append the defines to the model
 		defines_.append(FileDefineModel::Define(
-			defines.value(i).nameGroup_.name_,
-			defines.value(i).nameGroup_.displayName_,
-			defines.value(i).nameGroup_.description_,
+			defines.value(i).nameGroup_.name(),
+			defines.value(i).nameGroup_.displayName(),
+			defines.value(i).nameGroup_.description(),
 			defines.value(i).value_));
 	}
 }

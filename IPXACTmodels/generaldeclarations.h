@@ -960,63 +960,7 @@ PortAlignment calculatePortAlignment(const PortMap* portMap1,
 									 int phys2LeftBound,
 									 int phys2RightBound);
 
-/*! \brief The  NameGroup matches the spirit:nameGroup element in IP-Xact.
- * 
- */
-struct NameGroup {
 
-	//! \brief The name matches the spirit:name field within nameGroup.
-	QString name_;
-
-	//! \brief The displayName matches the spirit:displayName field within nameGroup.
-	QString displayName_;
-
-	//! \brief description matches the spirit:description field within nameGroup.
-	QString description_;
-
-	/*! \brief The default constructor
-	*
-	* Constructs NameGroup with all elements null.
-	*/
-	NameGroup();
-
-	/*! \brief The constructor
-	*
-	* Constructs a nameGroup and parses the info from the nameNode
-	* 
-	* \param nameNode Reference to the QDomNode to parse the information from.
-	*/
-	NameGroup(QDomNode& node);
-
-	/*! \brief The constructor
-	 *
-	 * \param name The name element
-	 *
-	*/
-	NameGroup(const QString name);
-
-	/*! \brief The copy constructor
-	 *
-	 * \param other Reference to the NameGroup to copy.
-	 *
-	*/
-	NameGroup(const NameGroup& other);
-
-	/*! \brief The assignment operator
-	 *
-	 * \param other Reference to the NameGroup to assign.
-	 *
-	 * \return Reference to this NameGroup.
-	*/
-	NameGroup& operator=(const NameGroup& other);
-
-    /*!
-     *  Writes the NameGroup to XML.
-     *
-     *      @param [in] writer   The writer used for writing the XML.
-     */
-    void write(QXmlStreamWriter& writer) const;
-};
 
 /*! \brief Convert a boolean value into QString
  *

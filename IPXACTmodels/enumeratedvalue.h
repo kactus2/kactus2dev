@@ -8,7 +8,8 @@
 #define ENUMERATEDVALUE_H_
 
 #include <common/Global.h>
-#include "generaldeclarations.h"
+
+#include <IPXACTmodels/NameGroup.h>
 
 #include <QDomNode>
 #include <QString>
@@ -169,7 +170,7 @@ private:
     EnumeratedUsage usage_;
 
 	//! \brief Contains the name, display name and description of the enumerated value.
-	General::NameGroup nameGroup_;
+	NameGroup nameGroup_;
 
     /*! \brief The value of the enumeratedValue
      * MANDATORY spirit:value

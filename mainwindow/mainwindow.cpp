@@ -2825,7 +2825,8 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     if (success)
     {
         // Open the design.
-        openSystemDesign(vlnv, view->getName(), true);
+        QString viewName = view->getName();
+        openSystemDesign(vlnv, viewName, true);
     }
     else
     {

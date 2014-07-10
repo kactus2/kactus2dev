@@ -11,6 +11,7 @@
 #include "generaldeclarations.h"
 #include "XmlUtils.h"
 
+#include <IPXACTmodels/NameGroup.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
 #include <QString>
@@ -68,7 +69,7 @@ vendorExtensions_()
 // Function: FileSet::FileSet()
 //-----------------------------------------------------------------------------
 FileSet::FileSet(const QString& name, const QString& group):
-nameGroup_(),
+nameGroup_(name),
 	groups_(),
 	files_(), defaultFileBuilders_(),
 	dependencies_(), 
@@ -80,7 +81,6 @@ nameGroup_(),
 		groups_.append(group);
 	}
 		
-	nameGroup_.name_ = name;
 }
 
 //-----------------------------------------------------------------------------
@@ -220,9 +220,9 @@ void FileSet::write(QXmlStreamWriter& writer)
 bool FileSet::isValid( QStringList& errorList, const QString& parentIdentifier, 
 					  bool checkChildren /*= true*/ ) const {
 	bool valid = true;
-	const QString thisIdentifier = QObject::tr("file set %1").arg(nameGroup_.name_);
+	const QString thisIdentifier = QObject::tr("file set %1").arg(nameGroup_.name());
 
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		errorList.append(QObject::tr("Name of the file set missing within %1").arg(
 			parentIdentifier));
 		valid = false;
@@ -269,7 +269,7 @@ bool FileSet::isValid( QStringList& errorList, const QString& parentIdentifier,
 }
 
 bool FileSet::isValid( bool checkChildren ) const {
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		return false;
 	}
 
@@ -361,11 +361,11 @@ void FileSet::setDefaultFileBuilders(
 }
 
 QString FileSet::getName() const {
-	return nameGroup_.name_;
+	return nameGroup_.name();
 }
 
 void FileSet::setName(const QString &name) {
-	nameGroup_.name_ = name;
+	nameGroup_.setName(name);
 }
 
 const QStringList& FileSet::getGroups() {
@@ -543,22 +543,22 @@ QStringList FileSet::getFileNames() const {
 
 QString FileSet::getDisplayName() const
 {
-	return nameGroup_.displayName_;
+	return nameGroup_.displayName();
 }
 
 QString FileSet::getDescription() const
 {
-	return nameGroup_.description_;
+	return nameGroup_.description();
 }
 
 void FileSet::setDisplayName( const QString& displayName )
 {
-	nameGroup_.displayName_ = displayName;
+	nameGroup_.setDisplayName(displayName);
 }
 
 void FileSet::setDescription( const QString& description )
 {
-	nameGroup_.description_ = description;
+	nameGroup_.setDescription(description);
 }
 
 void FileSet::removeFile( const QString& fileName ) {
@@ -729,11 +729,11 @@ void FileSet::clearFiles() {
 	files_.clear();
 }
 
-General::NameGroup& FileSet::getNameGroup() {
+NameGroup& FileSet::getNameGroup() {
 	return nameGroup_;
 }
 
-const General::NameGroup& FileSet::getNameGroup() const {
+const NameGroup& FileSet::getNameGroup() const {
 	return nameGroup_;
 }
 

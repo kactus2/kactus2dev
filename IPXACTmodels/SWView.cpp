@@ -132,15 +132,15 @@ SWView::~SWView() {
 void SWView::write( QXmlStreamWriter& writer, bool withinHWComp ) {
 	writer.writeStartElement("kactus2:swView");
 
-	writer.writeTextElement("spirit:name", nameGroup_.name_);
+	writer.writeTextElement("spirit:name", nameGroup_.name());
 
 	// if display name is defined
-	if (!nameGroup_.displayName_.isEmpty())
-		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
+	if (!nameGroup_.displayName().isEmpty())
+		writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
 
 	// if description is defined
-	if (!nameGroup_.description_.isEmpty())
-		writer.writeTextElement("spirit:description", nameGroup_.description_);
+	if (!nameGroup_.description().isEmpty())
+		writer.writeTextElement("spirit:description", nameGroup_.description());
 
 	// write spirit:hierarchyRef if one exists
 	if (hierarchyRef_.isValid()) {
@@ -175,9 +175,9 @@ bool SWView::isValid(const QStringList& fileSetNames,
 	const QString& parentIdentifier) const
 {
     bool valid = true;
-    const QString thisIdentifier(QObject::tr("SW view %1").arg(nameGroup_.name_));
+    const QString thisIdentifier(QObject::tr("SW view %1").arg(nameGroup_.name()));
 
-    if (nameGroup_.name_.isEmpty())
+    if (nameGroup_.name().isEmpty())
     {
         errorList.append(QObject::tr("No name specified for SW view in %1").arg(
             parentIdentifier));
@@ -189,7 +189,7 @@ bool SWView::isValid(const QStringList& fileSetNames,
 		if (!fileSetNames.contains(fileSetRef)) {
 			errorList.append(QObject::tr("SW View %1 contained reference to file"
 				" set %2 which is not found within %3").arg(
-				nameGroup_.name_).arg(fileSetRef).arg(parentIdentifier));
+				nameGroup_.name()).arg(fileSetRef).arg(parentIdentifier));
 			valid = false;
 		}
 	}
@@ -212,7 +212,7 @@ bool SWView::isValid(const QStringList& fileSetNames,
 //-----------------------------------------------------------------------------
 bool SWView::isValid(const QStringList& fileSetNames, const QStringList& cpuNames) const
 {
-    if (nameGroup_.name_.isEmpty()) {
+    if (nameGroup_.name().isEmpty()) {
         return false;
     }
 
@@ -241,7 +241,7 @@ bool SWView::isValid(const QStringList& fileSetNames, const QStringList& cpuName
 //-----------------------------------------------------------------------------
 QString SWView::getName() const
 {
-    return nameGroup_.name_;
+    return nameGroup_.name();
 }
 
 //-----------------------------------------------------------------------------
@@ -265,7 +265,7 @@ void SWView::setHierarchyRef(const VLNV& hierarchyRef)
 //-----------------------------------------------------------------------------
 void SWView::setName(const QString &name)
 {
-    nameGroup_.name_ = name;
+    nameGroup_.setName(name);
 }
 
 //-----------------------------------------------------------------------------
@@ -273,14 +273,14 @@ void SWView::setName(const QString &name)
 //-----------------------------------------------------------------------------
 QString SWView::getDisplayName() const
 {
-    return nameGroup_.displayName_;
+    return nameGroup_.displayName();
 }
 
 //-----------------------------------------------------------------------------
 // Function: SWView::getDescription()
 //-----------------------------------------------------------------------------
 QString SWView::getDescription() const {
-    return nameGroup_.description_;
+    return nameGroup_.description();
 }
 
 //-----------------------------------------------------------------------------
@@ -288,7 +288,7 @@ QString SWView::getDescription() const {
 //-----------------------------------------------------------------------------
 void SWView::setDisplayName( const QString& displayName )
 {
-    nameGroup_.displayName_ = displayName;
+    nameGroup_.setDisplayName(displayName);
 }
 
 //-----------------------------------------------------------------------------
@@ -296,14 +296,14 @@ void SWView::setDisplayName( const QString& displayName )
 //-----------------------------------------------------------------------------
 void SWView::setDescription( const QString& description )
 {
-    nameGroup_.description_ = description;
+    nameGroup_.setDescription(description);
 }
 
-General::NameGroup& SWView::getNameGroup() {
+NameGroup& SWView::getNameGroup() {
 	return nameGroup_;
 }
 
-const General::NameGroup& SWView::getNameGroup() const {
+const NameGroup& SWView::getNameGroup() const {
 	return nameGroup_;
 }
 

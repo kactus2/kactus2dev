@@ -9,7 +9,7 @@
 #ifndef SEGMENT_H_
 #define SEGMENT_H_
 
-#include "generaldeclarations.h"
+#include <IPXACTmodels/NameGroup.h>
 
 #include <common/Global.h>
 
@@ -163,7 +163,7 @@ public:
 private:
 
 	//! \brief Contains the name and description of the segment
-	General::NameGroup nameGroup_;
+	NameGroup nameGroup_;
 
 	//! \brief The offset of the segment from the beginning of the containing address space.
 	QString addressOffset_;

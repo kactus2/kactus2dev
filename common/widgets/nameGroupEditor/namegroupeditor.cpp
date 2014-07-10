@@ -11,7 +11,7 @@
 #include <QLabel>
 #include <QGridLayout>
 
-NameGroupEditor::NameGroupEditor( General::NameGroup& nameGroup,
+NameGroupEditor::NameGroupEditor( NameGroup& nameGroup,
 								 QWidget *parent,
 								 const QString& title /*= QString("Names")*/ ):
 QGroupBox(title, parent),
@@ -60,43 +60,43 @@ NameGroupEditor::~NameGroupEditor() {
 }
 
 QString NameGroupEditor::getName() const {
-	return nameGroup_.name_;
+	return nameGroup_.name();
 }
 
 QString NameGroupEditor::getDisplayName() const {
-	return nameGroup_.displayName_;
+	return nameGroup_.displayName();
 }
 
 QString NameGroupEditor::getDescription() const {
-	return nameGroup_.description_;
+	return nameGroup_.description();
 }
 
 void NameGroupEditor::onNameChanged( const QString& newName ) {
-	nameGroup_.name_ = newName;
+	nameGroup_.setName(newName);
 	emit contentChanged();
 }
 
 void NameGroupEditor::onDisplayNameChanged( const QString& newName ) {
-	nameGroup_.displayName_ = newName;
+	nameGroup_.setDisplayName(newName);
 	emit contentChanged();
 }
 
 void NameGroupEditor::onDescriptionChanged() {
-	nameGroup_.description_ = descriptionEdit_.toPlainText();
+	nameGroup_.setDescription(descriptionEdit_.toPlainText());
 	emit contentChanged();
 }
 
 bool NameGroupEditor::isValid() const {
-	return !nameGroup_.name_.isEmpty();
+	return !nameGroup_.name().isEmpty();
 }
 
 void NameGroupEditor::refresh() {
-	nameEdit_.setText(nameGroup_.name_);
-	displayNameEdit_.setText(nameGroup_.displayName_);
+	nameEdit_.setText(nameGroup_.name());
+	displayNameEdit_.setText(nameGroup_.displayName());
 	
 	disconnect(&descriptionEdit_, SIGNAL(textChanged()),
 		this, SLOT(onDescriptionChanged()));
-	descriptionEdit_.setPlainText(nameGroup_.description_);
+	descriptionEdit_.setPlainText(nameGroup_.description());
 	connect(&descriptionEdit_, SIGNAL(textChanged()),
 		this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 }

@@ -12,8 +12,8 @@
 #ifndef ADHOCCONNECTION_H
 #define ADHOCCONNECTION_H
 
-#include "generaldeclarations.h"
 #include "PortRef.h"
+#include "NameGroup.h"
 
 #include <common/Global.h>
 
@@ -163,7 +163,7 @@ private:
      *  OPTIONAL spirit:displayName
      *  OPTIONAL spirit:description
      */
-    General::NameGroup nameGroup_;
+    NameGroup nameGroup_;
 
     /*! OPTIONAL spirit:tiedValue
      *

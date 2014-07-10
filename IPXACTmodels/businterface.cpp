@@ -268,7 +268,7 @@ monitor_() {
 // 				" in spirit:busInterface"));
 // 	}
 // 
-// 	if (nameGroup_.name_.isNull()) {
+// 	if (nameGroup_.name().isNull()) {
 // 		throw Parse_error(QString("Mandatory element spirit:name missing"
 // 				" in spirit:busInterface"));
 // 	}
@@ -432,13 +432,13 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 	if (!attributes_.isEmpty())
 		XmlUtils::writeAttributes(writer, attributes_);
 
-	writer.writeTextElement("spirit:name", nameGroup_.name_);
+	writer.writeTextElement("spirit:name", nameGroup_.name());
 
-	if (!nameGroup_.displayName_.isEmpty())
-		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
+	if (!nameGroup_.displayName().isEmpty())
+		writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
 
-	if (!nameGroup_.description_.isEmpty())
-		writer.writeTextElement("spirit:description", nameGroup_.description_);
+	if (!nameGroup_.description().isEmpty())
+		writer.writeTextElement("spirit:description", nameGroup_.description());
 
 	writer.writeEmptyElement("spirit:busType");
 	busType_.writeAsAttributes(writer);
@@ -618,9 +618,9 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts,
 						   const QString& parentIdentifier ) const {
 
 	bool valid = true;
-	const QString thisIdentifier(QObject::tr("bus interface %1").arg(nameGroup_.name_));
+	const QString thisIdentifier(QObject::tr("bus interface %1").arg(nameGroup_.name()));
 
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		errorList.append(QObject::tr("No name specified for bus interface within %1").arg(
 			parentIdentifier));
 		valid = false;
@@ -709,7 +709,7 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts,
 
 bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts ) const {
 	
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		return false;
 	}
 
@@ -798,7 +798,7 @@ void BusInterface::setConnectionRequired(bool connectionRequired) {
 }
 
 QString BusInterface::getName() const {
-	return nameGroup_.name_;
+	return nameGroup_.name();
 }
 
 void BusInterface::setEndianness(General::Endianness endianness) {
@@ -853,7 +853,7 @@ VLNV BusInterface::getBusType() const {
 }
 
 void BusInterface::setName(const QString &name) {
-	nameGroup_.name_ = name;
+	nameGroup_.setName(name);
 }
 
 const QMap<QString, QString>& BusInterface::getBitSteeringAttributes() {
@@ -1064,19 +1064,19 @@ bool BusInterface::hasBridge() const {
 }
 
 void BusInterface::setDisplayName( const QString& displayName ) {
-	nameGroup_.displayName_ = displayName;
+	nameGroup_.setDisplayName(displayName);
 }
 
 void BusInterface::setDescription( const QString& description ) {
-	nameGroup_.description_ = description;
+	nameGroup_.setDescription(description);
 }
 
 QString BusInterface::getDisplayName() const {
-	return nameGroup_.displayName_;
+	return nameGroup_.displayName();
 }
 
 QString BusInterface::getDescription() const {
-	return nameGroup_.description_;
+	return nameGroup_.description();
 }
 
 const QMap<QString, QString>& BusInterface::getAttributes() const {
@@ -1187,11 +1187,11 @@ int BusInterface::getMCAPIPortID() const
     return -1;
 }
 
-General::NameGroup& BusInterface::getNameGroup() {
+NameGroup& BusInterface::getNameGroup() {
 	return nameGroup_;
 }
 
-const General::NameGroup& BusInterface::getNameGroup() const {
+const NameGroup& BusInterface::getNameGroup() const {
 	return nameGroup_;
 }
 

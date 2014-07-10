@@ -14,7 +14,8 @@
 
 #include <library/LibraryManager/vlnv.h>
 
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/NameGroup.h>
+
 #include <IPXACTmodels/filebuilder.h>
 #include <common/Global.h>
 #include <IPXACTmodels/swbuildcommand.h>
@@ -158,13 +159,13 @@ public:
 	 *
 	 * \return Reference to the name group.
 	*/
-	General::NameGroup& getNameGroup();
+	NameGroup& getNameGroup();
 
 	/*! \brief Get the name group of the software view.
 	 *
 	 * \return Reference to the name group.
 	*/
-	const General::NameGroup& getNameGroup() const;
+	const NameGroup& getNameGroup() const;
 
 	/*! \brief Get the file set references of the SW view.
 	 *
@@ -224,7 +225,7 @@ public:
 
 private:
 	//! \brief Contains the name, display name and description of view.
-	General::NameGroup nameGroup_;
+	NameGroup nameGroup_;
 
 	/*!
 	 * OPTIONAL spirit:hierarchyRef

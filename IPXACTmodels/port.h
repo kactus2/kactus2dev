@@ -11,6 +11,8 @@
 
 #include <common/Global.h>
 
+#include <IPXACTmodels/NameGroup.h>
+
 #include <QString>
 #include <QDomNode>
 #include <QList>
@@ -449,7 +451,7 @@ private:
     void createAdHocVisibleExtension();
     void createPositionExtension();
 	//! \brief Contains the name, display name and description for the port.
-	General::NameGroup nameGroup_;
+	NameGroup nameGroup_;
 
 	/*!
 	 * Defines the port type

@@ -14,7 +14,7 @@
 
 #include <library/LibraryManager/vlnv.h>
 
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/NameGroup.h>
 
 #include <common/Global.h>
 
@@ -142,19 +142,19 @@ public:
 	 *
 	 * \return QString containing the name
 	 */
-	QString const& getName() const;
+	QString getName() const;
 
 	/*! \brief Get the display name of the view
 	 *
 	 * \return QString containing the display name.
 	*/
-	QString const& getDisplayName() const;
+	QString getDisplayName() const;
 
 	/*! \brief Get the description of the view.
 	 *
 	 * \return QString containing the description.
 	*/
-	QString const& getDescription() const;
+	QString getDescription() const;
 
     /*!
      *  Returns the reference to HW view to which the system is mapped.
@@ -165,13 +165,7 @@ public:
 	 *
 	 * \return Reference to the name group.
 	*/
-	General::NameGroup& getNameGroup();
-
-	/*! \brief Get the name group of the software view.
-	 *
-	 * \return Reference to the name group.
-	*/
-	const General::NameGroup& getNameGroup() const;
+	NameGroup& getNameGroup();
 
 	/*! \brief Get the file set references of the system view.
 	 *
@@ -197,7 +191,7 @@ public:
 
 private:
 	//! \brief Contains the name, display name and description of view.
-	General::NameGroup nameGroup_;
+	NameGroup nameGroup_;
 
 	/*!
 	 * MANDATORY spirit:hierarchyRef

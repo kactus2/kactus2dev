@@ -920,6 +920,12 @@
     <Filter Include="Header Files\designEditors\common\Association">
       <UniqueIdentifier>{639b5694-b994-4740-a403-6ec20fab5862}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\IPXACTmodels\common">
+      <UniqueIdentifier>{115896de-3f30-4e65-99da-c70d1d09c49d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IPXACTmodels\common">
+      <UniqueIdentifier>{1409d5e2-71e2-4fad-ad9d-19dfc1b8743d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4081,6 +4087,9 @@
     <ClCompile Include="Plugins\PluginSystem\PluginUtilityAdapter.cpp">
       <Filter>Source Files\Plugins\PluginSystem</Filter>
     </ClCompile>
+    <ClCompile Include="IPXACTmodels\NameGroup.cpp">
+      <Filter>Source Files\IPXACTmodels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5998,6 +6007,9 @@
     </ClInclude>
     <ClInclude Include="designEditors\common\StickyNote\StickyNoteEditCommand.h">
       <Filter>Header Files\designEditors\common\StickyNote</Filter>
+    </ClInclude>
+    <ClInclude Include="IPXACTmodels\NameGroup.h">
+      <Filter>Header Files\IPXACTmodels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

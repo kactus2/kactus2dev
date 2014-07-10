@@ -13,6 +13,8 @@
 
 #include <common/Global.h>
  
+#include <IPXACTmodels/NameGroup.h>
+
 #include <QDomNode>
 #include <QString>
 #include <QList>
@@ -505,13 +507,13 @@ public:
 	 *
 	 * \return Reference to the struct.
 	*/
-	General::NameGroup& getNameGroup();
+	NameGroup& getNameGroup();
 
 	/*! \brief Get the struct that contains name, display name and description.
 	 *
 	 * \return Reference to the struct.
 	*/
-	const General::NameGroup& getNameGroup() const;
+	const NameGroup& getNameGroup() const;
 
 	/*! \brief Get the memory map reference of a slave interface.
 	 *
@@ -533,7 +535,7 @@ public:
 private:
 
 	//! \brief Contains the name, display name and description of bus interface.
-	General::NameGroup nameGroup_;
+	NameGroup nameGroup_;
 
 	//! \brief Contains the attributes for the bus interface
 	QMap<QString, QString> attributes_;

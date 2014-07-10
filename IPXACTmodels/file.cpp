@@ -68,7 +68,7 @@ File::Define& File::Define::operator=( const Define& other ) {
 
 bool File::Define::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
 	bool valid = true;
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		errorList.append(QObject::tr(
 			"Mandatory name missing for define within %1").arg(parentIdentifier));
 		valid = false;
@@ -82,7 +82,7 @@ bool File::Define::isValid( QStringList& errorList, const QString& parentIdentif
 }
 
 bool File::Define::isValid() const {
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		return false;
 	}
 	if (value_.isEmpty()) {
@@ -424,9 +424,9 @@ void File::write(QXmlStreamWriter& writer) {
 		writer.writeStartElement("spirit:define");
 
 		// write the name-value pair
-		writer.writeTextElement("spirit:name", i->nameGroup_.name_);
-		writer.writeTextElement("spirit:displayName", i->nameGroup_.displayName_);
-		writer.writeTextElement("spirit:description", i->nameGroup_.description_);
+		writer.writeTextElement("spirit:name", i->nameGroup_.name());
+		writer.writeTextElement("spirit:displayName", i->nameGroup_.displayName());
+		writer.writeTextElement("spirit:description", i->nameGroup_.description());
 		writer.writeTextElement("spirit:value", i->value_);
 
         if (!i->vendorExtensions_.isEmpty())

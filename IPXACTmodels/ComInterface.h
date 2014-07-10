@@ -14,6 +14,7 @@
 #define COMINTERFACE_H
 
 #include "generaldeclarations.h"
+#include "NameGroup.h"
 
 #include <common/Global.h>
 
@@ -131,17 +132,17 @@ public:
     /*!
      *  Returns the name of the COM interface.
      */
-    QString const& getName() const;
+    QString getName() const;
 
     /*!
      *  Returns the display name of the COM interface.
      */
-    QString const& getDisplayName() const;
+    QString getDisplayName() const;
 
     /*!
      *  Returns the COM interface description.
      */
-    QString const& getDescription() const;
+    QString getDescription() const;
 
     /*!
      *  Returns the COM type (COM definition VLNV).
@@ -177,13 +178,13 @@ public:
 	 *
 	 * \return Reference to the name group.
 	*/
-	General::NameGroup& getNameGroup();
+	NameGroup& getNameGroup();
 
 	/*! \brief Get the name group of the com interface.
 	 *
 	 * \return Reference to the name group.
 	*/
-	const General::NameGroup& getNameGroup() const;
+	const NameGroup& getNameGroup() const;
 
 	/*! \brief Get reference to the COM interface implementation driver.
 	 *
@@ -211,7 +212,7 @@ private:
     //-----------------------------------------------------------------------------
 
 	//! \brief Contains the name, display name and description.
-	General::NameGroup nameGroup_;
+	NameGroup nameGroup_;
 
     //! The COM type (i.e. a VLNV reference to a COM definition).
     VLNV comType_;

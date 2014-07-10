@@ -7,7 +7,8 @@
 #ifndef CPU_H_
 #define CPU_H_
 
-#include <IPXACTmodels/generaldeclarations.h>
+#include "NameGroup.h"
+
 
 #include <common/Global.h>
 
@@ -160,7 +161,7 @@ public:
 private:
 
 	//! \brief Contains the name and description.
-	General::NameGroup nameGroup_;
+	NameGroup nameGroup_;
 
 	/*! \brief References a name of an address space within component.
 	 * MANDATORY spirit:addressSpaceRef

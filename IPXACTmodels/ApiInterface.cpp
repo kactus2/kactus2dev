@@ -12,7 +12,6 @@
 
 #include "ApiInterface.h"
 
-#include "generaldeclarations.h"
 #include "XmlUtils.h"
 
 //-----------------------------------------------------------------------------
@@ -121,9 +120,9 @@ void ApiInterface::write(QXmlStreamWriter& writer) const
 {
     writer.writeStartElement("kactus2:apiInterface");
 
-    writer.writeTextElement("spirit:name", nameGroup_.name_);
-    writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
-    writer.writeTextElement("spirit:description", nameGroup_.description_);
+    writer.writeTextElement("spirit:name", nameGroup_.name());
+    writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
+    writer.writeTextElement("spirit:description", nameGroup_.description());
 
     writer.writeEmptyElement("kactus2:apiType");
     apiType_.writeAsAttributes(writer);
@@ -143,10 +142,10 @@ void ApiInterface::write(QXmlStreamWriter& writer) const
 //-----------------------------------------------------------------------------
 bool ApiInterface::isValid(QStringList& errorList, QString const& parentId) const
 {
-    QString const thisId = QObject::tr("API interface '%1'").arg(nameGroup_.name_);
+    QString const thisId = QObject::tr("API interface '%1'").arg(nameGroup_.name());
     bool valid = true;
 
-    if (nameGroup_.name_.isEmpty())
+    if (nameGroup_.name().isEmpty())
     {
         errorList.append(QObject::tr("No name specified for an API interface in %1").arg(parentId));
         valid = false;
@@ -166,7 +165,7 @@ bool ApiInterface::isValid(QStringList& errorList, QString const& parentId) cons
 //-----------------------------------------------------------------------------
 bool ApiInterface::isValid() const
 {
-    return (!nameGroup_.name_.isEmpty() && (apiType_.isEmpty() || apiType_.isValid()));
+    return (!nameGroup_.name().isEmpty() && (apiType_.isEmpty() || apiType_.isValid()));
 }
 
 //-----------------------------------------------------------------------------
@@ -174,7 +173,7 @@ bool ApiInterface::isValid() const
 //-----------------------------------------------------------------------------
 void ApiInterface::setName(QString const& name)
 {
-    nameGroup_.name_ = name;
+    nameGroup_.setName(name);
 }
 
 //-----------------------------------------------------------------------------
@@ -182,7 +181,7 @@ void ApiInterface::setName(QString const& name)
 //-----------------------------------------------------------------------------
 void ApiInterface::setDisplayName(QString const& displayName)
 {
-    nameGroup_.displayName_ = displayName;
+    nameGroup_.setDisplayName(displayName);
 }
 
 //-----------------------------------------------------------------------------
@@ -190,7 +189,7 @@ void ApiInterface::setDisplayName(QString const& displayName)
 //-----------------------------------------------------------------------------
 void ApiInterface::setDescription(QString const& desc)
 {
-    nameGroup_.description_ = desc;
+    nameGroup_.setDescription(desc);
 }
 
 //-----------------------------------------------------------------------------
@@ -212,25 +211,25 @@ void ApiInterface::setDependencyDirection(DependencyDirection dir)
 //-----------------------------------------------------------------------------
 // Function: ApiInterface::getName()
 //-----------------------------------------------------------------------------
-QString const& ApiInterface::getName() const
+QString ApiInterface::getName() const
 {
-    return nameGroup_.name_;
+    return nameGroup_.name();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ApiInterface::getDisplayName()
 //-----------------------------------------------------------------------------
-QString const& ApiInterface::getDisplayName() const
+QString ApiInterface::getDisplayName() const
 {
-    return nameGroup_.displayName_;
+    return nameGroup_.displayName();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ApiInterface::getDescription()
 //-----------------------------------------------------------------------------
-QString const& ApiInterface::getDescription() const
+QString ApiInterface::getDescription() const
 {
-    return nameGroup_.description_;
+    return nameGroup_.description();
 }
 
 //-----------------------------------------------------------------------------
@@ -256,9 +255,9 @@ ApiInterface& ApiInterface::operator=(ApiInterface const& rhs)
 {
     if (&rhs != this)
     {
-        nameGroup_.name_ = rhs.nameGroup_.name_;
-        nameGroup_.displayName_ = rhs.nameGroup_.displayName_;
-        nameGroup_.description_ = rhs.nameGroup_.description_;
+        nameGroup_.setName(rhs.nameGroup_.name());
+        nameGroup_.setDisplayName(rhs.nameGroup_.displayName());
+        nameGroup_.setDescription(rhs.nameGroup_.description());
         apiType_ = rhs.apiType_;
         dependencyDir_ = rhs.dependencyDir_;
     }
@@ -266,11 +265,11 @@ ApiInterface& ApiInterface::operator=(ApiInterface const& rhs)
     return *this;
 }
 
-General::NameGroup& ApiInterface::getNameGroup() {
+NameGroup& ApiInterface::getNameGroup() {
 	return nameGroup_;
 }
 
-const General::NameGroup& ApiInterface::getNameGroup() const {
+const NameGroup& ApiInterface::getNameGroup() const {
 	return nameGroup_;
 }
 

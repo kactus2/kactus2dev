@@ -15,6 +15,7 @@
 
 #include <library/LibraryManager/vlnv.h>
 #include "generaldeclarations.h"
+#include <IPXACTmodels/NameGroup.h>
 
 #include <common/Global.h>
 
@@ -138,17 +139,17 @@ public:
     /*!
      *  Returns the name of the API interface.
      */
-    QString const& getName() const;
+    QString getName() const;
 
     /*!
      *  Returns the display name of the API interface.
      */
-    QString const& getDisplayName() const;
+    QString getDisplayName() const;
 
     /*!
      *  Returns the API interface description.
      */
-    QString const& getDescription() const;
+    QString getDescription() const;
 
     /*!
      *  Returns the API type (API definition VLNV).
@@ -169,13 +170,13 @@ public:
 	 *
 	 * \return Reference to the name group.
 	*/
-	General::NameGroup& getNameGroup();
+	NameGroup& getNameGroup();
 
 	/*! \brief Get the name group of the API interface.
 	 *
 	 * \return Reference to the name group.
 	*/
-	const General::NameGroup& getNameGroup() const;
+	const NameGroup& getNameGroup() const;
 
     /*!
      *  Assignment operator.
@@ -188,7 +189,7 @@ private:
     //-----------------------------------------------------------------------------
 
 	//! \brief Contains the name, display name and description.
-	General::NameGroup nameGroup_;
+	NameGroup nameGroup_;
 
     //! The API type (i.e. a VLNV reference to an API definition).
     VLNV apiType_;

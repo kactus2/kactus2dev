@@ -99,15 +99,15 @@ void SystemView::write(QXmlStreamWriter& writer)
 {
     writer.writeStartElement("kactus2:systemView");
 
-    writer.writeTextElement("spirit:name", nameGroup_.name_);
+    writer.writeTextElement("spirit:name", nameGroup_.name());
 
     // if display name is defined
-    if (!nameGroup_.displayName_.isEmpty())
-        writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
+    if (!nameGroup_.displayName().isEmpty())
+        writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
 
     // if description is defined
-    if (!nameGroup_.description_.isEmpty())
-        writer.writeTextElement("spirit:description", nameGroup_.description_);
+    if (!nameGroup_.description().isEmpty())
+        writer.writeTextElement("spirit:description", nameGroup_.description());
 
     // write spirit:hierarchyRef if one exists
     writer.writeEmptyElement("spirit:hierarchyRef");
@@ -130,9 +130,9 @@ bool SystemView::isValid(const QStringList& fileSetNames, const QStringList& HWV
 	QStringList& errorList, const QString& parentIdentifier) const
 {
     bool valid = true;
-    const QString thisIdentifier(QObject::tr("system view %1").arg(nameGroup_.name_));
+    const QString thisIdentifier(QObject::tr("system view %1").arg(nameGroup_.name()));
 
-    if (nameGroup_.name_.isEmpty())
+    if (nameGroup_.name().isEmpty())
     {
         errorList.append(QObject::tr("No name specified for system view in %1").arg(
             parentIdentifier));
@@ -144,7 +144,7 @@ bool SystemView::isValid(const QStringList& fileSetNames, const QStringList& HWV
 		 if (!fileSetNames.contains(fileSetRef)) {
 			 errorList.append(QObject::tr("System View %1 contained reference to file"
 				 " set %2 which is not found within %3").arg(
-				 nameGroup_.name_).arg(fileSetRef).arg(parentIdentifier));
+				 nameGroup_.name()).arg(fileSetRef).arg(parentIdentifier));
 			 valid = false;
 		 }
 	 }
@@ -152,7 +152,7 @@ bool SystemView::isValid(const QStringList& fileSetNames, const QStringList& HWV
 	 // if HW view is specified but not found
 	 if (!hwViewRef_.isEmpty() &&  !HWViewNames.contains(hwViewRef_)) {
 		 errorList.append(QObject::tr("System view %1 contained reference to HW view %2"
-			 " which is not found withing %3.").arg(nameGroup_.name_).arg(
+			 " which is not found withing %3.").arg(nameGroup_.name()).arg(
 			 hwViewRef_).arg(parentIdentifier));
 		 valid = false;
 	 }
@@ -165,7 +165,7 @@ bool SystemView::isValid(const QStringList& fileSetNames, const QStringList& HWV
 //-----------------------------------------------------------------------------
 bool SystemView::isValid(const QStringList& fileSetNames, const QStringList& HWViewNames) const
 {
-    if (nameGroup_.name_.isEmpty())
+    if (nameGroup_.name().isEmpty())
     {
         return false;
     }
@@ -198,7 +198,7 @@ void SystemView::setHierarchyRef(const VLNV& hierarchyRef)
 //-----------------------------------------------------------------------------
 void SystemView::setName(const QString &name)
 {
-    nameGroup_.name_ = name;
+    nameGroup_.setName(name);
 }
 
 //-----------------------------------------------------------------------------
@@ -206,7 +206,7 @@ void SystemView::setName(const QString &name)
 //-----------------------------------------------------------------------------
 void SystemView::setDisplayName( const QString& displayName )
 {
-    nameGroup_.displayName_ = displayName;
+    nameGroup_.setDisplayName(displayName);
 }
 
 //-----------------------------------------------------------------------------
@@ -214,7 +214,7 @@ void SystemView::setDisplayName( const QString& displayName )
 //-----------------------------------------------------------------------------
 void SystemView::setDescription( const QString& description )
 {
-    nameGroup_.description_ = description;
+    nameGroup_.setDescription(description);
 }
 
 //-----------------------------------------------------------------------------
@@ -236,26 +236,26 @@ VLNV SystemView::getHierarchyRef() const
 //-----------------------------------------------------------------------------
 // Function: SystemView::getName()
 //-----------------------------------------------------------------------------
-QString const& SystemView::getName() const
-{
-    return nameGroup_.name_;
+QString SystemView::getName() const
+{    
+    return nameGroup_.name();
 }
 
 //-----------------------------------------------------------------------------
 // Function: SystemView::getDisplayName()
 //-----------------------------------------------------------------------------
-QString const& SystemView::getDisplayName() const
+QString SystemView::getDisplayName() const
 {
-    return nameGroup_.displayName_;
+    return nameGroup_.displayName();
 }
 
 //-----------------------------------------------------------------------------
 // Function: SystemView::getDescription()
 //-----------------------------------------------------------------------------
-QString const& SystemView::getDescription() const {
-    return nameGroup_.description_;
+QString SystemView::getDescription() const
+{
+    return nameGroup_.description();
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: SystemView::getHWViewRef()
@@ -265,11 +265,7 @@ QString const& SystemView::getHWViewRef() const
     return hwViewRef_;
 }
 
-General::NameGroup& SystemView::getNameGroup() {
-    return nameGroup_;
-}
-
-const General::NameGroup& SystemView::getNameGroup() const {
+NameGroup& SystemView::getNameGroup() {
     return nameGroup_;
 }
 

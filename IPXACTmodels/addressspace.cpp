@@ -189,14 +189,14 @@ AddressSpace::~AddressSpace() {
 void AddressSpace::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:addressSpace");
 
-	writer.writeTextElement("spirit:name", nameGroup_.name_);
+	writer.writeTextElement("spirit:name", nameGroup_.name());
 
-	if (!nameGroup_.displayName_.isEmpty()) {
-		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
+	if (!nameGroup_.displayName().isEmpty()) {
+		writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
 	}
 
-	if (!nameGroup_.description_.isEmpty()) {
-		writer.writeTextElement("spirit:description", nameGroup_.description_);
+	if (!nameGroup_.description().isEmpty()) {
+		writer.writeTextElement("spirit:description", nameGroup_.description());
 	}
 
     // start the spirit:range tag
@@ -261,9 +261,9 @@ void AddressSpace::write(QXmlStreamWriter& writer) {
 bool AddressSpace::isValid( QStringList& errorList, 
 						   const QString& parentIdentifier ) const {
 	bool valid = true;
-	const QString thisIdentifier(QObject::tr("address space %1").arg(nameGroup_.name_));
+	const QString thisIdentifier(QObject::tr("address space %1").arg(nameGroup_.name()));
 
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		errorList.append(QObject::tr("No name specified for %1 within %2").arg(
 			thisIdentifier).arg(parentIdentifier));
 		valid = false;
@@ -306,7 +306,7 @@ bool AddressSpace::isValid( QStringList& errorList,
 
 bool AddressSpace::isValid() const {
 	
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		return false;
 	}
 
@@ -370,7 +370,7 @@ void AddressSpace::setRangeAttributes(
 }
 
 void AddressSpace::setName(const QString &name) {
-	nameGroup_.name_ = name;
+	nameGroup_.setName(name);
 }
 
 int AddressSpace::getWidth() const {
@@ -391,7 +391,7 @@ void AddressSpace::setWidthAttributes(
 }
 
 QString AddressSpace::getName() const {
-	return nameGroup_.name_;
+	return nameGroup_.name();
 }
 
 void AddressSpace::setWidth(int width) {
@@ -429,19 +429,19 @@ void AddressSpace::setSegments( const QList<QSharedPointer<Segment> >& segments 
 }
 
 void AddressSpace::setDisplayName( const QString& dispName ) {
-	nameGroup_.displayName_ = dispName;
+	nameGroup_.setDisplayName(dispName);
 }
 
 QString AddressSpace::getDisplayName() const {
-	return nameGroup_.displayName_;
+	return nameGroup_.displayName();
 }
 
 void AddressSpace::setDescription( const QString& description ) {
-	nameGroup_.description_ = description;
+	nameGroup_.setDescription(description);
 }
 
 QString AddressSpace::getDescription() const {
-	return nameGroup_.description_;
+	return nameGroup_.description();
 }
 
 QList<QSharedPointer<Parameter> >& AddressSpace::getParameters() {
@@ -452,11 +452,11 @@ const QList<QSharedPointer<Parameter> >& AddressSpace::getParameters() const {
 	return parameters_;
 }
 
-General::NameGroup& AddressSpace::getNameGroup() {
+NameGroup& AddressSpace::getNameGroup() {
 	return nameGroup_;
 }
 
-const General::NameGroup& AddressSpace::getNameGroup() const {
+const NameGroup& AddressSpace::getNameGroup() const {
 	return nameGroup_;
 }
 

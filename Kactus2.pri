@@ -181,6 +181,7 @@ HEADERS += ./resource.h \
     ./Plugins/PluginSystem/PluginSettingsWidget.h \
     ./Plugins/PluginSystem/NewPluginsDialog.h \
     ./Plugins/PluginSystem/PluginListDialog.h \
+    ./Plugins/PluginSystem/PluginUtilityAdapter.h \
     ./library/LibraryManager/ipxactitem.h \
     ./library/LibraryManager/libraryinterface.h \
     ./library/LibraryManager/LibraryUtils.h \
@@ -633,7 +634,7 @@ HEADERS += ./resource.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Position.h \
     ./IPXACTmodels/kactusExtensions/Kactus2Value.h \
-    ./Plugins/PluginSystem/PluginUtilityAdapter.h
+    ./IPXACTmodels/NameGroup.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
@@ -787,6 +788,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./Plugins/PluginSystem/PluginInfoWidget.cpp \
     ./Plugins/PluginSystem/PluginListDialog.cpp \
     ./Plugins/PluginSystem/PluginManager.cpp \
+    ./Plugins/PluginSystem/PluginUtilityAdapter.cpp \
     ./library/LibraryManager/ipxactitem.cpp \
     ./library/LibraryManager/ipxactmodel.cpp \
     ./library/LibraryManager/ipxactwidget.cpp \
@@ -1232,5 +1234,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
     ./IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
-    ./Plugins/PluginSystem/PluginUtilityAdapter.cpp
+    ./IPXACTmodels/NameGroup.cpp
 RESOURCES += kactus.qrc

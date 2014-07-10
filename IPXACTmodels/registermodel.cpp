@@ -87,16 +87,16 @@ void RegisterModel::write(QXmlStreamWriter& writer) {
 		writer.writeAttribute("spirit:id", id_);
 	}
 
-	writer.writeTextElement("spirit:name", nameGroup_.name_);
+	writer.writeTextElement("spirit:name", nameGroup_.name());
 
 	// if optional displayName defined
-	if (!nameGroup_.displayName_.isEmpty()) {
-		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
+	if (!nameGroup_.displayName().isEmpty()) {
+		writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
 	}
 
 	// if optional description is defined
-	if (!nameGroup_.description_.isEmpty()) {
-		writer.writeTextElement("spirit:description", nameGroup_.description_);
+	if (!nameGroup_.description().isEmpty()) {
+		writer.writeTextElement("spirit:description", nameGroup_.description());
 	}
 
 	// if optional parameters are defined
@@ -114,11 +114,11 @@ void RegisterModel::write(QXmlStreamWriter& writer) {
 }
 
 QString RegisterModel::getDescription() const {
-    return nameGroup_.description_;
+    return nameGroup_.description();
 }
 
 QString RegisterModel::getDisplayName() const {
-    return nameGroup_.displayName_;
+    return nameGroup_.displayName();
 }
 
 QString RegisterModel::getId() const {
@@ -126,7 +126,7 @@ QString RegisterModel::getId() const {
 }
 
 QString RegisterModel::getName() const {
-    return nameGroup_.name_;
+    return nameGroup_.name();
 }
 
 const QList<QSharedPointer<Parameter> >& RegisterModel::getParameters() const {
@@ -134,11 +134,11 @@ const QList<QSharedPointer<Parameter> >& RegisterModel::getParameters() const {
 }
 
 void RegisterModel::setDescription(const QString& description) {
-    nameGroup_.description_ = description;
+    nameGroup_.setDescription(description);
 }
 
 void RegisterModel::setDisplayName(const QString& displayName) {
-    nameGroup_.displayName_ = displayName;
+    nameGroup_.setDisplayName(displayName);
 }
 
 void RegisterModel::setId(const QString& id) {
@@ -146,7 +146,7 @@ void RegisterModel::setId(const QString& id) {
 }
 
 void RegisterModel::setName(const QString& name) {
-    nameGroup_.name_ = name;
+    nameGroup_.setName(name);
 }
 
 void RegisterModel::setParameters(

@@ -6,7 +6,6 @@
 
 #include "cpu.h"
 #include "parameter.h"
-#include "generaldeclarations.h"
 
 #include <QDomNode>
 #include <QString>
@@ -119,14 +118,14 @@ Cpu::~Cpu() {
 void Cpu::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:cpu");
 
-	writer.writeTextElement("spirit:name", nameGroup_.name_);
+	writer.writeTextElement("spirit:name", nameGroup_.name());
 
-	if (!nameGroup_.displayName_.isEmpty()) {
-		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
+	if (!nameGroup_.displayName().isEmpty()) {
+		writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
 	}
 
-	if (!nameGroup_.description_.isEmpty()) {
-		writer.writeTextElement("spirit:description", nameGroup_.description_);
+	if (!nameGroup_.description().isEmpty()) {
+		writer.writeTextElement("spirit:description", nameGroup_.description());
 	}
 
     for (int i = 0; i < addressSpaceRefs_.size(); ++i) {
@@ -164,9 +163,9 @@ bool Cpu::isValid(const QStringList& addrSpaceNames,
 				  QStringList& errorList, 
 				  const QString& parentIdentifier ) const {
 	bool valid = true;
-	const QString thisIdentifier(QObject::tr("cpu %1").arg(nameGroup_.name_));
+	const QString thisIdentifier(QObject::tr("cpu %1").arg(nameGroup_.name()));
 
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		errorList.append(QObject::tr("No name specified for a cpu within %1").arg(
 			parentIdentifier));
 		valid = false;
@@ -174,7 +173,7 @@ bool Cpu::isValid(const QStringList& addrSpaceNames,
 
 	if (addressSpaceRefs_.isEmpty()) {
 		errorList.append(QObject::tr("No address space reference defined for"
-			" cpu %1 within %2").arg(nameGroup_.name_).arg(parentIdentifier));
+			" cpu %1 within %2").arg(nameGroup_.name()).arg(parentIdentifier));
 		valid = false;
 	}
 	// if there are references then check that they are valid
@@ -183,7 +182,7 @@ bool Cpu::isValid(const QStringList& addrSpaceNames,
 			if (!addrSpaceNames.contains(addrRef)) {
 				errorList.append(QObject::tr("Cpu %1 contained reference to "
 					"address space %2 which is not found within %3").arg(
-					nameGroup_.name_).arg(addrRef).arg(parentIdentifier));
+					nameGroup_.name()).arg(addrRef).arg(parentIdentifier));
 				valid = false;
 			}
 		}
@@ -199,7 +198,7 @@ bool Cpu::isValid(const QStringList& addrSpaceNames,
 }
 
 bool Cpu::isValid(const QStringList& addrSpaceNames) const {
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		return false;
 	}
 
@@ -240,11 +239,11 @@ void Cpu::setParameters(QList<QSharedPointer<Parameter> > &parameters) {
 }
 
 QString Cpu::getName() const {
-	return nameGroup_.name_;
+	return nameGroup_.name();
 }
 
 void Cpu::setName(const QString &name) {
-	nameGroup_.name_ = name;
+	nameGroup_.setName(name);
 }
 
 const QStringList& Cpu::getAddressSpaceRefs() {
@@ -258,17 +257,17 @@ void Cpu::setAddressSpaceRefs(const QStringList& addressSpaceRefs) {
 }
 
 QString Cpu::getDisplayName() const {
-	return nameGroup_.displayName_;
+	return nameGroup_.displayName();
 }
 
 QString Cpu::getDescription() const {
-	return nameGroup_.description_;
+	return nameGroup_.description();
 }
 
 void Cpu::setDisplayName( const QString& displayName ) {
-	nameGroup_.displayName_ = displayName;
+	nameGroup_.setDisplayName(displayName);
 }
 
 void Cpu::setDescription( const QString& description ) {
-	nameGroup_.description_ = description;
+	nameGroup_.setDescription(description);
 }

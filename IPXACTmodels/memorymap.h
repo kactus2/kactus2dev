@@ -11,6 +11,8 @@
 #include "generaldeclarations.h"
 #include <common/Global.h>
 
+#include <IPXACTmodels/NameGroup.h>
+
 #include <QList>
 #include <QString>
 #include <QSharedPointer>
@@ -249,7 +251,7 @@ public:
 	 *
 	 * \return Reference to the name group.
 	*/
-	General::NameGroup& getNameGroup();
+	NameGroup& getNameGroup();
 
 	/*! \brief Get the largest bit width contained in the memory map.
 	 *
@@ -260,7 +262,7 @@ public:
 private:
 
 	//! \brief Contains the name, display name and description of the memory map.
-	General::NameGroup nameGroup_;
+	NameGroup nameGroup_;
 
 	/*!
 	 * OPTIONAL (spirit:id)

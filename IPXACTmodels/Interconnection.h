@@ -14,7 +14,7 @@
 
 #include "Interface.h"
 
-#include "generaldeclarations.h"
+#include "NameGroup.h"
 
 #include <common/Global.h>
 
@@ -150,7 +150,7 @@ private:
      *  OPTIONAL spirit:displayName
      *  OPTIONAL spirit:description
      */
-    General::NameGroup nameGroup_;
+    NameGroup nameGroup_;
 
     //! First of the two interfaces that form this interconnection.
     Interface interface1;

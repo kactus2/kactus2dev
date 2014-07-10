@@ -8,7 +8,7 @@
 #ifndef NAMEGROUPEDITOR_H
 #define NAMEGROUPEDITOR_H
 
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/NameGroup.h>
 
 #include <QGroupBox>
 #include <QLineEdit>
@@ -33,7 +33,7 @@ public:
 	 * \param title The title for the group box.
 	 *
 	*/
-	NameGroupEditor(General::NameGroup& nameGroup,
+	NameGroupEditor(NameGroup& nameGroup,
 		QWidget *parent,
 		const QString& title = QString("Names"));
 
@@ -105,7 +105,7 @@ private:
 	NameGroupEditor& operator=(const NameGroupEditor& other);
 
 	//! \brief The name group to edit.
-	General::NameGroup& nameGroup_;
+	NameGroup& nameGroup_;
 
 	//! \brief Line edit to set the name.
 	QLineEdit nameEdit_;

@@ -1253,6 +1253,7 @@ CreateHelp
     <ClCompile Include="IPXACTmodels\mirroredslaveinterface.cpp" />
     <ClCompile Include="IPXACTmodels\model.cpp" />
     <ClCompile Include="IPXACTmodels\modelparameter.cpp" />
+    <ClCompile Include="IPXACTmodels\NameGroup.cpp" />
     <ClCompile Include="IPXACTmodels\otherclockdriver.cpp" />
     <ClCompile Include="IPXACTmodels\parameter.cpp" />
     <ClCompile Include="IPXACTmodels\port.cpp" />
@@ -10107,6 +10108,7 @@ CreateHelp
     <ClInclude Include="IPXACTmodels\mirroredslaveinterface.h" />
     <ClInclude Include="IPXACTmodels\model.h" />
     <ClInclude Include="IPXACTmodels\modelparameter.h" />
+    <ClInclude Include="IPXACTmodels\NameGroup.h" />
     <ClInclude Include="IPXACTmodels\otherclockdriver.h" />
     <ClInclude Include="IPXACTmodels\parameter.h" />
     <ClInclude Include="IPXACTmodels\port.h" />

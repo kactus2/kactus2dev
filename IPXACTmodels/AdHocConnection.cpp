@@ -11,7 +11,6 @@
 
 #include "AdHocConnection.h"
 
-#include "generaldeclarations.h"
 #include "PortRef.h"
 
 #include <QList>
@@ -31,11 +30,11 @@ AdHocConnection::AdHocConnection(QDomNode &adHocConnectionNode):
         QDomNode node = adHocConnectionNode.childNodes().at(i);
 
         if (node.nodeName() == "spirit:name") {
-            nameGroup_.name_ = node.firstChild().nodeValue();
+            nameGroup_.setName(node.firstChild().nodeValue());
         } else if (node.nodeName() == "spirit:displayName") {
-            nameGroup_.displayName_ = node.firstChild().nodeValue();
+            nameGroup_.setDisplayName(node.firstChild().nodeValue());
         } else if (node.nodeName() == "spirit:description") {
-            nameGroup_.description_ = node.firstChild().nodeValue();
+            nameGroup_.setDescription(node.firstChild().nodeValue());
         } else if (node.nodeName() == "spirit:internalPortReference") {
             internalPortReferences_.append(PortRef(node));
         } else if (node.nodeName() == "spirit:externalPortReference") {
@@ -60,14 +59,12 @@ AdHocConnection::AdHocConnection(QString name,
     QList<PortRef> internalPortReference,
     QList<PortRef> externalPortReference,
     QList<QPointF> const& route, bool offPage):
-    nameGroup_(name),
+    nameGroup_(name, displayName, description),
     tiedValue_(tiedValue), 
     internalPortReferences_(internalPortReference),
     externalPortReferences_(externalPortReference),
     route_(route), offPage_(offPage)
 {
-    nameGroup_.displayName_ = displayName; 
-    nameGroup_.description_ = description;
 
 }
 
@@ -111,7 +108,7 @@ AdHocConnection& AdHocConnection::operator=( const AdHocConnection& other ) {
 //-----------------------------------------------------------------------------
 QString AdHocConnection::name() const
 {
-    return nameGroup_.name_;
+    return nameGroup_.name();
 }
 
 //-----------------------------------------------------------------------------
@@ -119,7 +116,7 @@ QString AdHocConnection::name() const
 //-----------------------------------------------------------------------------
 QString AdHocConnection::displayName() const
 {
-    return nameGroup_.displayName_;
+    return nameGroup_.displayName();
 }
 
 //-----------------------------------------------------------------------------
@@ -127,7 +124,7 @@ QString AdHocConnection::displayName() const
 //-----------------------------------------------------------------------------
 QString AdHocConnection::description() const
 {
-    return nameGroup_.description_;
+    return nameGroup_.description();
 }
 
 //-----------------------------------------------------------------------------
@@ -185,9 +182,9 @@ bool AdHocConnection::isValid(const QStringList& instanceNames,
     const QString& parentIdentifier) const 
 {
     bool valid = true;
-    const QString thisIdentifier(QObject::tr("ad hoc connection %1").arg(nameGroup_.name_));
+    const QString thisIdentifier(QObject::tr("ad hoc connection %1").arg(nameGroup_.name()));
 
-    if (nameGroup_.name_.isEmpty())
+    if (nameGroup_.name().isEmpty())
     {
         errorList.append(QObject::tr("No name specified for ad hoc connection"
             " within %1").arg(parentIdentifier));
@@ -227,7 +224,7 @@ bool AdHocConnection::isValid(const QStringList& instanceNames,
 //-----------------------------------------------------------------------------
 bool AdHocConnection::isValid( const QStringList& instanceNames ) const
 {
-    if (nameGroup_.name_.isEmpty())
+    if (nameGroup_.name().isEmpty())
     {
         return false;
     }

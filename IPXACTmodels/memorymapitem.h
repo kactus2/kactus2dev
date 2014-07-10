@@ -7,8 +7,6 @@
 #ifndef MEMORYMAPITEM_H_
 #define MEMORYMAPITEM_H_
 
-#include "generaldeclarations.h"
-
 #include <common/Global.h>
 
 #include <QDomNode>

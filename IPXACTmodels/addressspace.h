@@ -7,7 +7,6 @@
 #ifndef ADDRESSSPACE_H_
 #define ADDRESSSPACE_H_
 
-#include "generaldeclarations.h"
 #include "memorymap.h"
 #include "segment.h"
 
@@ -232,13 +231,13 @@ public:
 	 *
 	 * \return Reference to the group.
 	*/
-	General::NameGroup& getNameGroup();
+	NameGroup& getNameGroup();
 
 	/*! \brief Get the name group that contains the name, display name and description.
 	 *
 	 * \return Reference to the group.
 	*/
-	const General::NameGroup& getNameGroup() const;
+	const NameGroup& getNameGroup() const;
 
 	/*! \brief Get the segments contained in this address space.
 	*
@@ -277,7 +276,7 @@ public:
 private:
 
 	//! \brief Contains the name and description.
-	General::NameGroup nameGroup_;
+	NameGroup nameGroup_;
 
 	//! \brief MANDATORY, address range of an address space.
 	QString range_;

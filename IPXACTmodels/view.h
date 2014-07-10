@@ -9,6 +9,7 @@
 
 #include <library/LibraryManager/vlnv.h>
 
+#include <IPXACTmodels/NameGroup.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/filebuilder.h>
 
@@ -299,13 +300,13 @@ public:
 	 *
 	 * \return Reference to the struct containing the name group.
 	*/
-	General::NameGroup& getNameGroup();
+	NameGroup& getNameGroup();
 
 	/*! \brief Get the name group struct of this view.
 	 *
 	 * \return Reference to the struct containing the name group.
 	*/
-	const General::NameGroup& getNameGroup() const;
+	const NameGroup& getNameGroup() const;
 
 	/*! \brief Clear the hierarchical reference and the top level reference.
 	 *
@@ -339,7 +340,7 @@ private:
     void copyVendorExtensions(const View & other);
 
 	//! \brief Contains the name, display name and description of view.
-	General::NameGroup nameGroup_;
+	NameGroup nameGroup_;
 
 	/*!
 	 * MANDATORY spirit:envIdentifier

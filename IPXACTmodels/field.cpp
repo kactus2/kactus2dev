@@ -252,16 +252,16 @@ void Field::write(QXmlStreamWriter& writer) {
 		writer.writeAttribute("spirit:id", id_);
 	}
 
-	writer.writeTextElement("spirit:name", nameGroup_.name_);
+	writer.writeTextElement("spirit:name", nameGroup_.name());
 
 	// if optional displayName is defined
-	if (!nameGroup_.displayName_.isEmpty()) {
-		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
+	if (!nameGroup_.displayName().isEmpty()) {
+		writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
 	}
 
 	// if optional description is defined
-	if (!nameGroup_.description_.isEmpty()) {
-		writer.writeTextElement("spirit:description", nameGroup_.description_);
+	if (!nameGroup_.description().isEmpty()) {
+		writer.writeTextElement("spirit:description", nameGroup_.description());
 	}
 
 	writer.writeTextElement("spirit:bitOffset", QString::number(bitOffset_));
@@ -343,7 +343,7 @@ void Field::write(QXmlStreamWriter& writer) {
 bool Field::isValid(unsigned int registerSize, QStringList& errorList, const QString& parentIdentifier ) const {
 	bool valid = true;
 
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		errorList.append(QObject::tr("No name specified for a field within %1").arg(
 			parentIdentifier));
 		valid = false;
@@ -351,13 +351,13 @@ bool Field::isValid(unsigned int registerSize, QStringList& errorList, const QSt
 
 	if (bitOffset_ < 0) {
 		errorList.append(QObject::tr("No bit offset set for field %1 within %2").arg(
-			nameGroup_.name_).arg(parentIdentifier));
+			nameGroup_.name()).arg(parentIdentifier));
 		valid = false;
 	}
 
 	if (bitWidth_ <= 0) {
 		errorList.append(QObject::tr("No bit width set for field %1 within %2").arg(
-			nameGroup_.name_).arg(parentIdentifier));
+			nameGroup_.name()).arg(parentIdentifier));
 		valid = false;
 	}
 
@@ -368,13 +368,13 @@ bool Field::isValid(unsigned int registerSize, QStringList& errorList, const QSt
 	}
 
 	foreach (QSharedPointer<EnumeratedValue> enumValue, enumeratedValues_) {
-		if (!enumValue->isValid(errorList, QObject::tr("field %1").arg(nameGroup_.name_))) {
+		if (!enumValue->isValid(errorList, QObject::tr("field %1").arg(nameGroup_.name()))) {
 			valid = false;
 		}
 	}
 
 	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid(errorList, QObject::tr("field %1").arg(nameGroup_.name_))) {
+		if (!param->isValid(errorList, QObject::tr("field %1").arg(nameGroup_.name()))) {
 			valid = false;
 		}
 	}
@@ -383,7 +383,7 @@ bool Field::isValid(unsigned int registerSize, QStringList& errorList, const QSt
 }
 
 bool Field::isValid(unsigned int registerSize) const {
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		return false;
 	}
 
@@ -439,11 +439,11 @@ const QMap<QString,QString>& Field::getBitWidthAttributes() const {
 }
 
 QString Field::getDescription() const {
-    return nameGroup_.description_;
+    return nameGroup_.description();
 }
 
 QString Field::getDisplayName() const {
-    return nameGroup_.displayName_;
+    return nameGroup_.displayName();
 }
 
 const QList<QSharedPointer<EnumeratedValue> >&
@@ -456,7 +456,7 @@ QList<QSharedPointer<EnumeratedValue> >& Field::getEnumeratedValues() {
 }
 
 QString Field::getName() const {
-    return nameGroup_.name_;
+    return nameGroup_.name();
 }
 
 const QList<QSharedPointer<Parameter> >& Field::getParameters() const {
@@ -481,11 +481,11 @@ void Field::setBitWidthAttributes(
 }
 
 void Field::setDescription(const QString& description) {
-    nameGroup_.description_ = description;
+    nameGroup_.setDescription(description);
 }
 
 void Field::setDisplayName(const QString& displayName) {
-    nameGroup_.displayName_ = displayName;
+    nameGroup_.setDisplayName(displayName);
 }
 
 void Field::setEnumeratedValues(
@@ -494,7 +494,7 @@ void Field::setEnumeratedValues(
 }
 
 void Field::setName(const QString& name) {
-    nameGroup_.name_ = name;
+    nameGroup_.setName(name);
 }
 
 void Field::setParameters(const QList<QSharedPointer<Parameter> >& parameters) {

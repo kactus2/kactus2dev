@@ -76,7 +76,7 @@ vendorExtensions_()
 // Function: Port()
 //-----------------------------------------------------------------------------
 Port::Port(QString const& name, Port const& other): 
-nameGroup_(), portType_(other.portType_),
+nameGroup_(name), portType_(other.portType_),
 wire_(), 
 transactional_(other.transactional_),
 portAccessHandle_(other.portAccessHandle_),
@@ -85,8 +85,6 @@ adHocVisible_(),
 defaultPos_(),
 vendorExtensions_()
 {	
-	nameGroup_.name_ = name;
-
     if (other.wire_ != 0) {
         wire_ = QSharedPointer<Wire>(new Wire(*other.wire_));
     }
@@ -184,7 +182,7 @@ Port::Port( const QString& name,
 		   int rightBound, 
 		   const QString& defaultValue, 
 		   bool allLogicalDirections ):
-nameGroup_(), 
+nameGroup_(name), 
 portType_(General::WIRE),
 wire_(), 
 transactional_(),
@@ -194,8 +192,6 @@ adHocVisible_(),
 defaultPos_(),
 vendorExtensions_()
 {
-	nameGroup_.name_ = name;
-
 	wire_ = QSharedPointer<Wire>(new Wire(direction, leftBound, rightBound, defaultValue, allLogicalDirections));
     
     createAdHocVisibleExtension();
@@ -213,7 +209,7 @@ Port::Port( const QString& name,
 		   const QString& typeDefinition,
 		   const QString& defaultValue,
 		   const QString& description ):
-nameGroup_(),
+nameGroup_(name, QString(), description),
 portType_(General::WIRE),
 wire_(),
 transactional_(),
@@ -223,9 +219,6 @@ adHocVisible_(),
 defaultPos_(),
 vendorExtensions_()
 {
-
-	nameGroup_.name_ = name;
-	nameGroup_.description_ = description;
 
 	wire_ = QSharedPointer<Wire>(new Wire(direction, leftBound, rightBound, defaultValue, false));
 	wire_->setTypeName(typeName);
@@ -296,7 +289,7 @@ void Port::write(QXmlStreamWriter& writer, const QStringList& viewNames)
 
 bool Port::isValid(bool hasViews) const {
 
-	if (nameGroup_.name_.isEmpty())
+	if (nameGroup_.name().isEmpty())
 		return false;
 
 	// if port is type wire but the element is not defined.
@@ -320,7 +313,7 @@ bool Port::isValid( bool hasViews,
 
 	bool valid = true;
 
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		errorList.append(QObject::tr("Port has no name within %1").arg(parentIdentifier));
 		valid = false;
 	}
@@ -338,7 +331,7 @@ bool Port::isValid( bool hasViews,
 	}
 
 	if (wire_) {
-		if (!wire_->isValid(hasViews, errorList, QObject::tr("Port %1").arg(nameGroup_.name_))) {
+		if (!wire_->isValid(hasViews, errorList, QObject::tr("Port %1").arg(nameGroup_.name()))) {
 			valid = false;
 		}
 	}
@@ -367,27 +360,27 @@ Transactional *Port::getTransactional() const {
 }
 
 void Port::setName(const QString &name) {
-	nameGroup_.name_ = name;
+	nameGroup_.setName(name);
 }
 
 QString Port::getName() const {
-	return nameGroup_.name_;
+	return nameGroup_.name();
 }
 
 QString Port::getDisplayName() const {
-	return nameGroup_.displayName_;
+	return nameGroup_.displayName();
 }
 
 void Port::setDisplayName( const QString& displayName ) {
-	nameGroup_.displayName_ = displayName;
+	nameGroup_.setDisplayName(displayName);
 }
 
 QString Port::getDescription() const {
-	return nameGroup_.description_;
+	return nameGroup_.description();
 }
 
 void Port::setDescription( const QString& description ) {
-	nameGroup_.description_ = description;
+	nameGroup_.setDescription(description);
 }
 
 General::PortType Port::getPortType() const {

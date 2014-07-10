@@ -5,8 +5,8 @@
  */
 
 #include "enumeratedvalue.h"
-#include "generaldeclarations.h"
 
+#include <QStringList>
 #include <QDomNode>
 #include <QString>
 #include <QXmlStreamWriter>
@@ -81,16 +81,16 @@ void EnumeratedValue::write(QXmlStreamWriter& writer) {
 	// write the spirit:usage attribute
 	writer.writeAttribute("spirit:usage", EnumeratedValue::usage2Str(usage_));
 
-	writer.writeTextElement("spirit:name", nameGroup_.name_);
+	writer.writeTextElement("spirit:name", nameGroup_.name());
 	
 	// if optional displayName is defined
-	if (!nameGroup_.displayName_.isEmpty()) {
-		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
+	if (!nameGroup_.displayName().isEmpty()) {
+		writer.writeTextElement("spirit:displayName", nameGroup_.displayName());
 	}
 
 	// is optional description is defined
-	if (!nameGroup_.description_.isEmpty()) {
-		writer.writeTextElement("spirit:description", nameGroup_.description_);
+	if (!nameGroup_.description().isEmpty()) {
+		writer.writeTextElement("spirit:description", nameGroup_.description());
 	}
 
 	writer.writeTextElement("spirit:value", value_);
@@ -110,7 +110,7 @@ bool EnumeratedValue::isValid( QStringList& errorList,
 
 	bool valid = true;
 
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		errorList.append(QObject::tr("No name specified for enumerated value"
 			" within %1").arg(parentIdentifier));
 		valid = false;
@@ -118,7 +118,7 @@ bool EnumeratedValue::isValid( QStringList& errorList,
 
 	if (value_.isEmpty()) {
 		errorList.append(QObject::tr("No value set for enumerated value %1 "
-			"within %2").arg(nameGroup_.name_).arg(parentIdentifier));
+			"within %2").arg(nameGroup_.name()).arg(parentIdentifier));
 		valid = false;
 	}
 
@@ -126,7 +126,7 @@ bool EnumeratedValue::isValid( QStringList& errorList,
 }
 
 bool EnumeratedValue::isValid() const {
-	if (nameGroup_.name_.isEmpty()) {
+	if (nameGroup_.name().isEmpty()) {
 		return false;
 	}
 
@@ -138,15 +138,15 @@ bool EnumeratedValue::isValid() const {
 }	
 
 QString EnumeratedValue::getDescription() const {
-    return nameGroup_.description_;
+    return nameGroup_.description();
 }
 
 QString EnumeratedValue::getDisplayName() const {
-    return nameGroup_.displayName_;
+    return nameGroup_.displayName();
 }
 
 QString EnumeratedValue::getName() const {
-    return nameGroup_.name_;
+    return nameGroup_.name();
 }
 
 EnumeratedValue::EnumeratedUsage EnumeratedValue::getUsage() const {
@@ -158,15 +158,15 @@ QString EnumeratedValue::getValue() const {
 }
 
 void EnumeratedValue::setDescription(const QString& description) {
-    nameGroup_.description_ = description;
+    nameGroup_.setDescription(description);
 }
 
 void EnumeratedValue::setDisplayName(const QString& displayName) {
-    nameGroup_.displayName_ = displayName;
+    nameGroup_.setDisplayName(displayName);
 }
 
 void EnumeratedValue::setName(const QString& name) {
-    nameGroup_.name_ = name;
+    nameGroup_.setName(name);
 }
 
 void EnumeratedValue::setUsage(EnumeratedValue::EnumeratedUsage usage) {
