@@ -11,19 +11,26 @@
 
 #include <QChar>
 
+//-----------------------------------------------------------------------------
+// Function: VhdlGeneric::VhdlGeneric()
+//-----------------------------------------------------------------------------
 VhdlGeneric::VhdlGeneric(ModelParameter* generic, QObject* parent):
-VhdlObject(parent,
-		   generic->getName(),
-		   generic->getDataType(),
-		   generic->getValue(),
-		   generic->getDescription()) 
+HDLModelParameter(generic, parent)
 {
-	Q_ASSERT(generic);
+
 }
 
-VhdlGeneric::~VhdlGeneric() {
+//-----------------------------------------------------------------------------
+// Function: VhdlGeneric::~VhdlGeneric()
+//-----------------------------------------------------------------------------
+VhdlGeneric::~VhdlGeneric()
+{
+
 }
 
+//-----------------------------------------------------------------------------
+// Function: VhdlGeneric::write()
+//-----------------------------------------------------------------------------
 void VhdlGeneric::write( QTextStream& stream ) const {
 	Q_ASSERT(!name().isEmpty());
 	Q_ASSERT(!type().isEmpty());

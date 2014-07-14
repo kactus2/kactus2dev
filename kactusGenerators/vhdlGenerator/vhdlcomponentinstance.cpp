@@ -22,33 +22,22 @@
 #include <QMultiMap>
 #include <QChar>
 
+//-----------------------------------------------------------------------------
+// Function: VhdlComponentInstance::VhdlComponentInstance()
+//-----------------------------------------------------------------------------
 VhdlComponentInstance::VhdlComponentInstance(QObject* parent,
                                              LibraryInterface* handler,
-											 VhdlComponentDeclaration* compDeclaration,
-											 const QString& instanceName,
-											 const QString& viewName,
-											 const QString& description):
-QObject(parent), 
-compDeclaration_(compDeclaration),
-instanceName_(instanceName),
-typeName_(compDeclaration->typeName()),
-architecture_(),
-description_(description),
+											 QSharedPointer<Component> component,
+											 QString const& instanceName,
+											 QString const& viewName,
+											 QString const& description):
+HDLComponentInstance(parent, component, instanceName, viewName, description), 
 defaultPortConnections_(),
-genericMap_(),
+modelParameterValues_(),
 portMap_() 
 {
 	Q_ASSERT(handler);
-
-	QSharedPointer<Component> component = compDeclaration_->componentModel();
 	Q_ASSERT(component);
- 	
-	// set the entity name that is used
-	typeName_ = component->getEntityName(viewName);
-	compDeclaration_->setEntityName(typeName_);
-
-	// get the architecture name for this instance
-	architecture_ = component->getArchitectureName(viewName);
 
 	// get the default values of the in and inout ports
 	QMap<QString, QString> defaultValues = component->getPortDefaultValues();
@@ -104,70 +93,43 @@ portMap_()
 	defaultPortConnections_ = tempDefaults;
 }
 
-VhdlComponentInstance::~VhdlComponentInstance() {
+//-----------------------------------------------------------------------------
+// Function: VhdlComponentInstance::~VhdlComponentInstance()
+//-----------------------------------------------------------------------------
+VhdlComponentInstance::~VhdlComponentInstance()
+{
+
 }
 
+//-----------------------------------------------------------------------------
+// Function: VhdlComponentInstance::write()
+//-----------------------------------------------------------------------------
 void VhdlComponentInstance::write( QTextStream& stream ) const {
 	// if instance has description
-	if (!description_.isEmpty()) {
+	if (!description().isEmpty()) {
 		stream << "  ";
-		VhdlGeneral::writeDescription(description_, stream, QString("  "));
+		VhdlGeneral::writeDescription(description(), stream, QString("  "));
 	}
 
 	// write the instance name and type
-	stream << "  " << instanceName_ << " : " << typeName_;
+	stream << "  " << name() << " : " << type();
 
 	// if architecture has been defined
-	if (!architecture_.isEmpty()) {
-		stream << "(" << architecture_ << ")";
+	if (!getArchitecture().isEmpty()) {
+		stream << "(" << getArchitecture() << ")";
 	}
 	stream << endl;
 
-	// print the generic map
-	if (!genericMap_.isEmpty()) {
-		stream << "  " << "  " << "generic map (" << endl;
-		for (QMap<QString, QString>::const_iterator i = genericMap_.begin(); i != genericMap_.end(); ++i) {
+    writeGenericAssignments(stream);
+    writePortMaps(stream);
 
-			stream << "  " << "  " << "  ";
-			stream << i.key().leftJustified(16, ' '); //align colons (:) at least roughly
-			stream << " => " << i.value();
-
-			// if this is not the last generic to print
-			if (i + 1 != genericMap_.end()) {
-				stream << "," << endl;
-			}
-		}
-		stream << endl << "  " << "  " << ")" << endl;
-	}
-
-	// print the port map
-	if (!portMap_.isEmpty()) {
-		stream << "  " << "  " << "port map (" << endl;
-
-        for (QMap<VhdlPortMap, VhdlPortMap>::const_iterator i = portMap_.begin(); i != portMap_.end(); ++i) {
-
-			stream << "  " << "  " << "  " ;
-			i.key().write(stream);
-			stream << " => ";
-			stream << i.value().toString();
-			//i.value().write(stream);
-
-			// if this is not the last port map to print, add comma (,)
-			if (i + 1 != portMap_.end()) {
-				stream << "," << endl;
-			}
-		}
-		stream << endl << "  " << "  " << ");" << endl;
-	}
 }
 
-QString VhdlComponentInstance::name() const {
-	return instanceName_;
-}
-
-void VhdlComponentInstance::addPortMap( const VhdlConnectionEndPoint& endpoint, 
-									   const QString& signalName ) {
-
+//-----------------------------------------------------------------------------
+// Function: VhdlComponentInstance::mapToPort()
+//-----------------------------------------------------------------------------
+void VhdlComponentInstance::mapToPort(const VhdlConnectionEndPoint& endpoint, QString const& signalName)
+{
 	// create a map for the port of this instance
 	VhdlPortMap instancePort(endpoint.portName(), endpoint.portLeft(), endpoint.portRight());
 
@@ -177,15 +139,12 @@ void VhdlComponentInstance::addPortMap( const VhdlConnectionEndPoint& endpoint,
 	addMapping(instancePort, signalMapping);
 }
 
-void VhdlComponentInstance::addPortMap( const QString& portName,
-									   int portLeft, 
-									   int portRight,
-									   const QString& portType,
-									   const QString& signalName,
-									   int signalLeft, 
-									   int signalRight,
-									   const QString& signalType) {
-	
+//-----------------------------------------------------------------------------
+// Function: VhdlComponentInstance::mapToSignal()
+//-----------------------------------------------------------------------------
+void VhdlComponentInstance::mapToSignal(QString const& portName, int portLeft, int portRight, 
+    QString const& portType, QString const& signalName, int signalLeft, int signalRight, QString const& signalType)
+{	
 	// create a map for the port of this instance
 	VhdlPortMap instancePort(portName, portLeft, portRight, portType);
 
@@ -195,141 +154,169 @@ void VhdlComponentInstance::addPortMap( const QString& portName,
 	addMapping(instancePort, signalMapping);
 }
 
-void VhdlComponentInstance::addMapping(const VhdlPortMap &instancePort,
-									   const VhdlPortMap &signalMapping ) {
-	// if the same bits of port are already connected
-	if (portMap_.contains(instancePort)) {
-		VhdlPortMap previousValue = portMap_.value(instancePort);
-
-		// inform user that the mapping for those bits already existed.
-		emit noticeMessage(tr("The instance %1:%2 already contains mapping "
-			"\"%3 => %4\"").arg(
-			typeName_).arg(
-			instanceName_).arg(
-			instancePort.toString()).arg(
-			previousValue.toString()));
-
-		// inform user that the new mapping is also added
-		emit noticeMessage(tr("Instance %1:%2 now has also port mapping "
-			"\"%3 => %4\"").arg(
-			typeName_).arg(
-			instanceName_).arg(
-			instancePort.toString()).arg(
-			signalMapping.toString()));
-	}
-
-	portMap_.insertMulti(instancePort, signalMapping);
-}
-
-void VhdlComponentInstance::addGenericMap( const QString& genericName,
-										  const QString& genericValue ) {
-											  
-	// if the generics already contains a mapping for the generic
-	if (genericMap_.contains(genericName)) {
-		QString oldValue = genericMap_.value(genericName);
-		
-		// print a notification to user that the previous value for the generic
-		// is overwritten with new value
-		emit noticeMessage(tr("The instance %1:%2 already contained generic mapping"
-			" \"%3 => %4\" but \"%3 => %5\" replaced it.").arg(
-			typeName_).arg(
-			instanceName_).arg(
-			genericName).arg(
-			oldValue).arg(
-			genericValue));
-	}
-
-	genericMap_.insert(genericName, genericValue);
-}
-
-bool VhdlComponentInstance::hasConnection( const QString& portName ) {
-	for (QMap<VhdlPortMap, VhdlPortMap>::iterator i = portMap_.begin();
-		i != portMap_.end(); ++i) {
-			
-			// if the mapping is for port with same name
-			if (i.key().name().compare(portName, Qt::CaseInsensitive) == 0) {
-				return true;
-			}
-	}
+//-----------------------------------------------------------------------------
+// Function: VhdlComponentInstance::hasConnection()
+//-----------------------------------------------------------------------------
+bool VhdlComponentInstance::hasConnection( QString const& portName )
+{
+	for (QMap<VhdlPortMap, VhdlPortMap>::iterator i = portMap_.begin();	i != portMap_.end(); ++i)
+    {		
+        // if the mapping is for port with same name
+        if (i.key().name().compare(portName, Qt::CaseInsensitive) == 0)
+        {
+            return true;
+        }
+    }
 
 	// not port mapping for named port was found
 	return false;
 }
 
-void VhdlComponentInstance::useDefaultsForOtherPorts() {
+//-----------------------------------------------------------------------------
+// Function: VhdlComponentInstance::useDefaultsForOtherPorts()
+//-----------------------------------------------------------------------------
+void VhdlComponentInstance::useDefaultsForOtherPorts()
+{
 	// check all ports that have a connection
-	for (QMap<VhdlPortMap, VhdlPortMap>::iterator i = portMap_.begin();
-		i != portMap_.end(); ++i) {
-			defaultPortConnections_.remove(i.key().name());
+	for (QMap<VhdlPortMap, VhdlPortMap>::iterator i = portMap_.begin();	i != portMap_.end(); ++i)
+    {
+        defaultPortConnections_.remove(i.key().name());
 	}
 
 	// now default values remain only for ports with no connections at all
 
 	// go through each default port value
 	for (QMap<QString, QString>::iterator i = defaultPortConnections_.begin();
-		i != defaultPortConnections_.end(); ++i) {
-		
-			// if the default value is not set
-			if (i.value().isEmpty()) {
-				continue;
-			}
+        i != defaultPortConnections_.end(); ++i)
+    {	
+        // if the default value is set
+        if (!i.value().isEmpty())
+        {
+            VhdlPortMap port(i.key());
 
-		VhdlPortMap port(i.key());
+            // get the type of the port
+            QString portTypeStr(portType(i.key()));
 
-		// get the type of the port
-		QString portTypeStr(portType(i.key()));
+            // make sure the default value is in correct form
+            QString defaultStr = VhdlGeneral::convertDefaultValue(i.value(), portTypeStr);
 
-		// make sure the default value is in correct form
-		QString defaultStr = VhdlGeneral::convertDefaultValue(i.value(), portTypeStr);
-
-		VhdlPortMap defaultValue(defaultStr);
-		addMapping(port, defaultValue);
+            VhdlPortMap defaultValue(defaultStr);
+            addMapping(port, defaultValue);
+        }
 	}
 }
 
-QSharedPointer<BusInterface> VhdlComponentInstance::interface( const QString& interfaceName ) const {
-	return compDeclaration_->componentModel()->getBusInterface(interfaceName);
+//-----------------------------------------------------------------------------
+// Function: VhdlComponentInstance::isScalarPort()
+//-----------------------------------------------------------------------------
+bool VhdlComponentInstance::isScalarPort(QString const& portName) const
+{
+    QString type = portType(portName);
+    return VhdlGeneral::isScalarType(type);
 }
 
-VLNV VhdlComponentInstance::vlnv() const {
-	Q_ASSERT(compDeclaration_);
-	Q_ASSERT(compDeclaration_->componentModel());
-	return *compDeclaration_->componentModel()->getVlnv();
+//-----------------------------------------------------------------------------
+// Function: VhdlComponentInstance::portType()
+//-----------------------------------------------------------------------------
+QString VhdlComponentInstance::portType(QString const& portName) const
+{
+    foreach(QSharedPointer<Port> port, componentModel()->getPorts())
+    {
+        if (port->getName() == portName)
+        {
+            QString type = port->getTypeName();
+
+            if (type.isEmpty())
+            {
+                type = VhdlGeneral::useDefaultType(port->getLeftBound(), port->getRightBound());
+            }
+
+            return type;
+        }
+    }
+    return QString("undefined port");
 }
 
-QSharedPointer<Component> VhdlComponentInstance::componentModel() const {
-	Q_ASSERT(compDeclaration_);
-	return compDeclaration_->componentModel();
+//-----------------------------------------------------------------------------
+// Function: VhdlComponentInstance::writeGenericAssignments()
+//-----------------------------------------------------------------------------
+void VhdlComponentInstance::writeGenericAssignments(QTextStream& stream) const
+{
+    if (modelParameterValues_.isEmpty())
+    {
+        return;
+    }
+
+    // print the generic map
+    stream << "  " << "  " << "generic map (" << endl;
+    for (QMap<QString, QString>::const_iterator i = modelParameterValues_.begin(); 
+        i != modelParameterValues_.end(); ++i)
+    {
+        stream << "  " << "  " << "  ";
+        stream << i.key().leftJustified(16, ' '); //align colons (:) at least roughly
+        stream << " => " << i.value();
+
+        // if this is not the last generic to print
+        if (i + 1 != modelParameterValues_.end())
+        {
+            stream << "," << endl;
+        }
+    }
+    stream << endl << "  " << "  " << ")" << endl;
 }
 
-QString VhdlComponentInstance::portType( const QString& portName ) const {
-	Q_ASSERT(compDeclaration_);
-	return compDeclaration_->portType(portName);
+//-----------------------------------------------------------------------------
+// Function: VhdlComponentInstance::writePortMaps()
+//-----------------------------------------------------------------------------
+void VhdlComponentInstance::writePortMaps(QTextStream& stream) const
+{
+    if (portMap_.isEmpty())
+    {
+        return;
+    }
+
+    // print the port map
+    stream << "  " << "  " << "port map (" << endl;
+    for (QMap<VhdlPortMap, VhdlPortMap>::const_iterator i = portMap_.begin(); i != portMap_.end(); ++i) {
+
+        stream << "  " << "  " << "  " ;
+        i.key().write(stream);
+        stream << " => ";
+        stream << i.value().toString();
+        //i.value().write(stream);
+
+        // if this is not the last port map to print, add comma (,)
+        if (i + 1 != portMap_.end())
+        {
+            stream << "," << endl;
+        }
+    }
+    stream << endl << "  " << "  " << ");" << endl;
+
 }
 
-bool VhdlComponentInstance::hasPort( const QString& portName ) const {
-	Q_ASSERT(compDeclaration_);
-	Q_ASSERT(compDeclaration_->componentModel());
-	return compDeclaration_->componentModel()->hasPort(portName);
-}
+void VhdlComponentInstance::addMapping(const VhdlPortMap &instancePort,
+    const VhdlPortMap &signalMapping ) {
+        // if the same bits of port are already connected
+        if (portMap_.contains(instancePort)) {
+            VhdlPortMap previousValue = portMap_.value(instancePort);
 
-QString VhdlComponentInstance::typeName() const {
-	return typeName_;
-}
+            // inform user that the mapping for those bits already existed.
+            emit noticeMessage(tr("The instance %1:%2 already contains mapping "
+                "\"%3 => %4\"").arg(
+                type()).arg(
+                name()).arg(
+                instancePort.toString()).arg(
+                previousValue.toString()));
 
-bool VhdlComponentInstance::isScalarPort( const QString& portName ) const {
-	Q_ASSERT(compDeclaration_);
-	return compDeclaration_->isScalarPort(portName);
-}
+            // inform user that the new mapping is also added
+            emit noticeMessage(tr("Instance %1:%2 now has also port mapping "
+                "\"%3 => %4\"").arg(
+                type()).arg(
+                name()).arg(
+                instancePort.toString()).arg(
+                signalMapping.toString()));
+        }
 
-General::Direction VhdlComponentInstance::portDirection( const QString& portName ) const {
-	return compDeclaration_->portDirection(portName);
-}
-
-int VhdlComponentInstance::getPortPhysLeftBound( const QString& portName ) const {
-	return compDeclaration_->getPortPhysLeftBound(portName);
-}
-
-int VhdlComponentInstance::getPortPhysRightBound( const QString& portName ) const {
-	return compDeclaration_->getPortPhysRightBound(portName);
+        portMap_.insertMulti(instancePort, signalMapping);
 }

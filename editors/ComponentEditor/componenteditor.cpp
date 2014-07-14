@@ -395,7 +395,7 @@ bool ComponentEditor::onVhdlGenerate() {
 	}
 
 	// generate the vhdl code
-	vhdlGen.generateVhdl(path);
+	vhdlGen.generate(path);
 
 	// check if the file already exists in the metadata
 	QString basePath = libHandler_->getPath(*component_->getVlnv());

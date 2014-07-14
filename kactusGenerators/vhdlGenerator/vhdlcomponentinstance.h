@@ -9,7 +9,9 @@
 #define VHDLCOMPONENTINSTANCE_H
 
 #include "vhdlportmap.h"
-#include "vhdlconnectionendpoint.h"
+
+#include <kactusGenerators/HDLGenerator/vhdlconnectionendpoint.h>
+#include <kactusGenerators/HDLGenerator/HDLComponentInstance.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/component.h>
@@ -28,7 +30,7 @@ class LibraryInterface;
 /*! \brief Represents one vhdl component instantiation.
  *
  */
-class VhdlComponentInstance : public QObject {
+class VhdlComponentInstance : public HDLComponentInstance {
 	Q_OBJECT
 
 public:
@@ -44,10 +46,10 @@ public:
 	*/
 	VhdlComponentInstance(QObject* parent,
         LibraryInterface* handler,
-		VhdlComponentDeclaration* compDeclaration,
-		const QString& instanceName,
-		const QString& viewName = QString(),
-		const QString& description = QString());
+		QSharedPointer<Component> component,
+		QString const& instanceName,
+		QString const& viewName = QString(),
+		QString const& description = QString());
 	
 	//! \brief The destructor
 	virtual ~VhdlComponentInstance();
@@ -59,25 +61,13 @@ public:
 	*/
 	void write(QTextStream& stream) const;
 
-	/*! \brief Get the name of the component instance.
-	 *
-	 * \return QString contains the name of the instance.
-	*/
-	QString name() const;
-
-	/*! \brief Get the type name of the instance.
-	 *
-	 * \return QString contains the type name.
-	*/
-	QString typeName() const;
-
 	/*! \brief Add a new port map for the instance.
 	 *
 	 * \param endpoint The end point that specifies the port and signal bounds.
 	 * \param signalName The name of the signal/top port to map the port to.
 	 *
 	*/
-	void addPortMap(const VhdlConnectionEndPoint& endpoint, const QString& signalName);
+	void mapToPort(const VhdlConnectionEndPoint& endpoint, QString const& signalName);
 
 	/*! \brief Add a new port map for the instance.
 	 *
@@ -91,22 +81,14 @@ public:
 	 * \param signalType The type of the signal.
 	 *
 	*/
-	void addPortMap(const QString& portName, 
+	void mapToSignal(QString const& portName, 
 		int portLeft, 
 		int portRight,
-		const QString& portType,
-		const QString& signalName,
+		QString const& portType,
+		QString const& signalName,
 		int signalLeft,
 		int signalRight,
-		const QString& signalType);
-
-	/*! \brief Add a new generic map to the instance.
-	 *
-	 * \param genericName The name of the generic on this instance.
-	 * \param genericValue The value to map the generic to.
-	 *
-	*/
-	void addGenericMap(const QString& genericName, const QString& genericValue);
+		QString const& signalType);
 
 	/*! \brief Check if the specified port is connected within this instance.
 	 *
@@ -114,7 +96,7 @@ public:
 	 *
 	 * \return bool True if connection is found.
 	*/
-	bool hasConnection(const QString& portName);
+	bool hasConnection(QString const& portName);
 
 	/*! \brief Use default values for ports that don't have any connection.
 	 * 
@@ -130,7 +112,7 @@ public:
 	 *
 	 * \return BusInterface* Pointer to the bus interface.
 	*/
-	QSharedPointer<BusInterface> interface(const QString& interfaceName) const;
+	QSharedPointer<BusInterface> interface(QString const& interfaceName) const;
 
 	/*! \brief Get the vlnv of the instance's IP-Xact model.
 	 *
@@ -139,27 +121,13 @@ public:
 	*/
 	VLNV vlnv() const;
 
-	/*! \brief Get pointer to the IP-Xact model of the component type.
-	 *
-	 * \return QSharedPointer<Component> Pointer to the IP-Xact model.
-	*/
-	QSharedPointer<Component> componentModel() const;
-
-	/*! \brief Get the type of the specified port.
-	 *
-	 * \param portName The name of the port on the component.
-	 *
-	 * \return QString The type of the port.
-	*/
-	QString portType(const QString& portName) const;
-
 	/*! \brief Check if the instance has a specified port.
 	 *
 	 * \param portName The name of the port to check.
 	 *
 	 * \return bool True if the port is found.
 	*/
-	bool hasPort(const QString& portName) const;
+	bool hasPort(QString const& portName) const;
 
 	/*! \brief Check if the type of the port is scalar.
 	 *
@@ -167,7 +135,7 @@ public:
 	 *
 	 * \return bool True if port is scalar.
 	*/
-	bool isScalarPort(const QString& portName) const;
+	bool isScalarPort(QString const& portName) const;
 
 	/*! \brief Get the direction of the specified port on this instance.
 	 *
@@ -175,7 +143,7 @@ public:
 	 *
 	 * \return General::Direction Specifies the direction of the port.
 	*/
-	General::Direction portDirection(const QString& portName) const;
+	General::Direction portDirection(QString const& portName) const;
 
 	/*! \brief Get the physical left bound of the port.
 	 *
@@ -183,7 +151,7 @@ public:
 	 *
 	 * \return int The left bound.
 	*/
-	int getPortPhysLeftBound(const QString& portName) const;
+	int getPortPhysLeftBound(QString const& portName) const;
 
 	/*! \brief Get the physical right bound of the port.
 	 *
@@ -191,15 +159,15 @@ public:
 	 *
 	 * \return int The right bound.
 	*/
-	int getPortPhysRightBound(const QString& portName) const;
+	int getPortPhysRightBound(QString const& portName) const;
 
 signals:
 
 	//! \brief Send a notification to user.
-	void noticeMessage(const QString& noticeMessage);
+	void noticeMessage(QString const& noticeMessage);
 
 	//! \brief Send an error message to user.
-	void errorMessage(const QString& errorMessage);
+	void errorMessage(QString const& errorMessage);
 
 private:
 	//! \brief No copying
@@ -208,21 +176,14 @@ private:
 	//! \brief No assignment
 	VhdlComponentInstance& operator=(const VhdlComponentInstance& other);
 
-	void addMapping(const VhdlPortMap& instancePort, const VhdlPortMap& signalMapping );
+    void writePortMaps(QTextStream& stream) const;
 
-	VhdlComponentDeclaration* compDeclaration_;
+    void writeGenericAssignments(QTextStream& stream) const;
 
-	//! \brief The name of the component instance.
-	QString instanceName_;
+    void addMapping(const VhdlPortMap& instancePort, const VhdlPortMap& signalMapping );
 
-	//! \brief The name of the type that is is an instantiation of.
-	QString typeName_;
+    virtual QString portType(QString const& portName) const;
 
-	//! \brief The name of the architecture used in this instance.
-	QString architecture_;
-
-	//! \brief The description of the instance.
-	QString description_;
 
 	/*! \brief Contains the default values for the ports of this instance.
 	 * 
@@ -236,7 +197,7 @@ private:
 	 * Key: The name of the generic.
 	 * Value: The value mapped for the generic.
 	 */
-	QMap<QString, QString> genericMap_;
+	QMap<QString, QString> modelParameterValues_;
 
 	/*! \brief Contains the port mappings for this instance.
 	 * 

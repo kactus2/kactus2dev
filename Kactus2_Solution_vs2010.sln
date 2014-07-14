@@ -145,9 +145,9 @@ Global
 		{C0DBF909-F12F-473F-8AC3-2248ABA68B92} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		Qt5Version = 5.2.0
-		BuildVersion_UpdateFileVersion = True
-		BuildVersion_UpdateAssemblyVersion = True
 		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
+		BuildVersion_UpdateAssemblyVersion = True
+		BuildVersion_UpdateFileVersion = True
+		Qt5Version = 5.2.0
 	EndGlobalSection
 EndGlobal
