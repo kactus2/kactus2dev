@@ -932,6 +932,12 @@
     <Filter Include="Header Files\kactusGenerators\HDLGenerator">
       <UniqueIdentifier>{221a5839-e1f5-4a2f-9ada-eb77e50a5d39}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\kactusGenerators\VerilogGenerator">
+      <UniqueIdentifier>{55427433-08a5-4518-bcb3-78854d099567}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\kactusGenerators\VerilogGenerator">
+      <UniqueIdentifier>{7edc4152-1a8f-497f-b448-b6ec8ace89cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4132,6 +4138,12 @@
     <ClCompile Include="kactusGenerators\HDLGenerator\HDLComponentInstance.cpp">
       <Filter>Source Files\kactusGenerators\HDLGenerator</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_VerilogParameter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusGenerators\verilogGenerator\VerilogParameter.cpp">
+      <Filter>Source Files\kactusGenerators\VerilogGenerator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5570,6 +5582,9 @@
     </CustomBuild>
     <CustomBuild Include="kactusGenerators\HDLGenerator\HDLComponentInstance.h">
       <Filter>Header Files\kactusGenerators\HDLGenerator</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kactusGenerators\verilogGenerator\VerilogParameter.h">
+      <Filter>Header Files\kactusGenerators\VerilogGenerator</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

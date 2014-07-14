@@ -23,7 +23,7 @@ HDLObject(parent,
 		   modelPararameter->getValue(),
 		   modelPararameter->getDescription()) 
 {
-	Q_ASSERT(modelPararameter);
+
 }
 
 //-----------------------------------------------------------------------------
