@@ -40,6 +40,11 @@ void VerilogParameter::write(QTextStream& stream) const
         return;
     }
 
+    if (!description().isEmpty())
+    {
+        stream << "// " << description() << endl;
+    }
+
     stream << "parameter ";
     
     if (!type().isEmpty())

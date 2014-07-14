@@ -45,6 +45,7 @@ private Q_SLOTS:
     void testWriteASCIIString();
     void testWriteASCIIStringWithoutQuotation();
     void testNonTypedModelParameter();
+    void testWriteDescription();
 };
 
 //-----------------------------------------------------------------------------
@@ -212,6 +213,23 @@ void Tst_verilogParameter::testNonTypedModelParameter()
     parameter.write(stream);
 
     QCOMPARE(*outputString_, QString("parameter BITS = 8;"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: Tst_verilogParameter::testWriteDescription()
+//-----------------------------------------------------------------------------
+void Tst_verilogParameter::testWriteDescription()
+{
+    modelParam_->setName("BITS");
+    modelParam_->setValue("8");
+    modelParam_->setDescription("Number of register bits");
+    VerilogParameter parameter(modelParam_);
+
+    QTextStream stream(outputString_);
+
+    parameter.write(stream);
+
+    QCOMPARE(*outputString_, QString("// Number of register bits\nparameter BITS = 8;"));
 }
 
 QTEST_APPLESS_MAIN(Tst_verilogParameter)
