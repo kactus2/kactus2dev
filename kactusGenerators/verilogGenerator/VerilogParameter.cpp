@@ -11,6 +11,8 @@
 
 #include "VerilogParameter.h"
 
+#include <kactusGenerators/HDLGenerator/HDLUtils.h>
+
 #include <IPXACTmodels/modelparameter.h>
 
 //-----------------------------------------------------------------------------
@@ -40,11 +42,6 @@ void VerilogParameter::write(QTextStream& stream) const
         return;
     }
 
-    if (!description().isEmpty())
-    {
-        stream << "// " << description() << endl;
-    }
-
     stream << "parameter ";
     
     if (!type().isEmpty())
@@ -53,6 +50,12 @@ void VerilogParameter::write(QTextStream& stream) const
     }
     
     stream << name() <<  " = " << formattedValue() << ";";
+
+    if (!description().isEmpty())
+    {
+        stream << " ";
+        HDLUtils::writeDescription(description(), stream, "//");
+    }
 }    
 
 //-----------------------------------------------------------------------------
@@ -77,5 +80,3 @@ QString VerilogParameter::formattedValue() const
 
     return value;
 }
-
-

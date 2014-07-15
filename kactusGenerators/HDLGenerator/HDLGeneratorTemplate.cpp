@@ -18,9 +18,10 @@
 
 #include "HDLGeneratorTemplate.h"
 
-#include <library/LibraryManager/libraryinterface.h>
-
+#include "HDLUtils.h"
 #include "vhdlconnectionendpoint.h"
+
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/view.h>
 #include <IPXACTmodels/librarycomponent.h>
@@ -326,10 +327,7 @@ bool HDLGeneratorTemplate::parseDesignConfiguration(VLNV const& hierarchyRef)
                 emit errorMessage(error);
             }
             return false;
-        }
-
-        return true;
-
+        }                
     }
     else if (documentType == VLNV::INVALID)    
     {
@@ -340,6 +338,8 @@ bool HDLGeneratorTemplate::parseDesignConfiguration(VLNV const& hierarchyRef)
             viewName_));
         return false;
     }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -1068,7 +1068,7 @@ void HDLGeneratorTemplate::writeModelParameters( QTextStream& outputStream ) {
 
 			if (!i.value()->description().isEmpty()) {
 				outputStream << " ";
-				writeDescription(i.value()->description(), outputStream);
+				HDLUtils::writeDescription(i.value()->description(), outputStream, commentTag());
 			}
 			else {
 				outputStream << endl;
@@ -1111,7 +1111,7 @@ void HDLGeneratorTemplate::writePorts( QTextStream& outputStream ) {
 						const QString description = component_->getInterfaceDescription(
 							interfaceName);
 						if (!description.isEmpty()) {							
-							writeDescription(description, outputStream, QString("    "));
+							HDLUtils::writeDescription(description, outputStream, commentTag(), QString("    "));
 						}
 					}
 					previousInterface = interfaceName;
@@ -1128,7 +1128,7 @@ void HDLGeneratorTemplate::writePorts( QTextStream& outputStream ) {
 				
 				if (!i.value()->description().isEmpty()) {
 					outputStream << " ";
-                    writeDescription(i.value()->description(), outputStream);					
+                    HDLUtils::writeDescription(i.value()->description(), outputStream, commentTag());					
 				}
 				else {
 					outputStream << endl;

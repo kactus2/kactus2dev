@@ -9,6 +9,8 @@
 
 #include "vhdlgeneral.h"
 
+#include <kactusGenerators/HDLGenerator/HDLUtils.h>
+
 //-----------------------------------------------------------------------------
 // Function: VhdlSignal::VhdlSignal()
 //-----------------------------------------------------------------------------
@@ -44,7 +46,7 @@ void VhdlSignal::write( QTextStream& stream ) const {
 	Q_ASSERT(!type().isEmpty());
 
 	if (!description().isEmpty()) {
-		VhdlGeneral::writeDescription(description(), stream, QString("  "));
+		HDLUtils::writeDescription(description(), stream, "--", QString("  "));
 	}
 	stream << "  signal "; 
 	stream << name().leftJustified(16, ' '); //align colons (:) at least roughly

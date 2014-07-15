@@ -20,6 +20,7 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 #include <kactusGenerators/HDLGenerator/vhdlconnectionendpoint.h>
+#include <kactusGenerators/HDLGenerator/HDLUtils.h>
 
 #include <IPXACTmodels/view.h>
 #include <IPXACTmodels/modelparameter.h>
@@ -144,7 +145,7 @@ void VhdlGenerator2::writeFileHeader( QTextStream& vhdlStream, QString const& fi
     vhdlStream << "-- Creation date: " << QDate::currentDate().toString(QString("dd.MM.yyyy")) << endl;
     vhdlStream << "-- Creation time: " << QTime::currentTime().toString(QString("hh:mm:ss")) << endl;
     vhdlStream << "-- Description  : " << endl;
-    VhdlGeneral::writeDescription(component_->getDescription(), vhdlStream, QString(""));
+    HDLUtils::writeDescription(component_->getDescription(), vhdlStream, commentTag(), QString(""));
     vhdlStream << "-- " << endl;
 
     QSettings settings;
@@ -155,14 +156,6 @@ void VhdlGenerator2::writeFileHeader( QTextStream& vhdlStream, QString const& fi
     vhdlStream << "-- based on IP-XACT component " << vlnv->toString() << endl;
     vhdlStream << "-- whose XML file is " << handler()->getPath(*vlnv) << endl;
     vhdlStream << "-- ***************************************************" << endl;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VhdlGenerator2::writeDescription()
-//-----------------------------------------------------------------------------
-void VhdlGenerator2::writeDescription(QString const& description, QTextStream& stream, QString const& indentation)
-{
-    VhdlGeneral::writeDescription(description, stream, indentation);
 }
 
 //-----------------------------------------------------------------------------
@@ -221,7 +214,7 @@ void VhdlGenerator2::writeStructuralStartTag(QTextStream& vhdlStream)
 {
     // if view has description
     QString viewDescription = component_->getViewDescription(viewName_);
-    writeDescription(viewDescription, vhdlStream);
+    HDLUtils::writeDescription(viewDescription, vhdlStream, commentTag());
 
     QString archName = viewName_;
 
@@ -280,7 +273,7 @@ void VhdlGenerator2::writeModelParameterEndTag(QTextStream& vhdlStream)
 //-----------------------------------------------------------------------------
 QString VhdlGenerator2::commentTag() const
 {
-    return "-- ";
+    return "--";
 }
 
 //-----------------------------------------------------------------------------

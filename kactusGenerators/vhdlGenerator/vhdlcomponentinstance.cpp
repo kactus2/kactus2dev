@@ -7,9 +7,11 @@
 
 #include "vhdlcomponentinstance.h"
 
-
 #include "vhdlcomponentdeclaration.h"
 #include "vhdlgeneral.h"
+
+#include <kactusGenerators/HDLGenerator/HDLUtils.h>
+
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/view.h>
 #include <IPXACTmodels/librarycomponent.h>
@@ -108,7 +110,7 @@ void VhdlComponentInstance::write( QTextStream& stream ) const {
 	// if instance has description
 	if (!description().isEmpty()) {
 		stream << "  ";
-		VhdlGeneral::writeDescription(description(), stream, QString("  "));
+		HDLUtils::writeDescription(description(), stream, "--", QString("  "));
 	}
 
 	// write the instance name and type

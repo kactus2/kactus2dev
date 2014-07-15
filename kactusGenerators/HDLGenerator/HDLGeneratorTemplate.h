@@ -161,16 +161,6 @@ private:
 	virtual void writeFileHeader(QTextStream& outputStream, QString const& fileName) = 0;
 
     /*!
-     *  Writes a commented section for a description.
-     *
-     *      @param [in] description     The description to write.
-     *      @param [in] outputStream    The output stream to write to.
-     *      @param [in] indentation     The indentation for the lines.          
-     */
-    virtual void writeDescription(QString const& description, QTextStream& outputStream, 
-        QString const& indentation = QString("")) = 0;
-
-    /*!
      *  Writes the includes for all required libraries.
      *
      *      @param [in] outputStream    The output stream to write to.    

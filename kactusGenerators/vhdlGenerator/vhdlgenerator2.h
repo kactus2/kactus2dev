@@ -133,8 +133,6 @@ private:
 
     virtual void writePortsStartTag(QTextStream& outputStream);
 
-    virtual void writeDescription(QString const& description, QTextStream& stream, QString const& indentation = QString(""));
-
     virtual QString commentTag() const;
 
 };

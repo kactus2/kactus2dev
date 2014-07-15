@@ -12,6 +12,7 @@
 #include "vhdlport.h"
 
 #include <kactusGenerators/HDLGenerator/HDLComponentInstance.h>
+#include <kactusGenerators/HDLGenerator/HDLUtils.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/modelparameter.h>
@@ -76,7 +77,7 @@ void VhdlComponentDeclaration::write( QTextStream& stream ) const
 	// if component contains a description
 	if (!description().isEmpty())
     {
-		VhdlGeneral::writeDescription(description(), stream, QString("  "));
+		HDLUtils::writeDescription(description(), stream, "--", QString("  "));
 	}
 	stream << "  " << "-- IP-XACT VLNV: " << componentModel()->getVlnv()->toString() << endl;
 	stream << "  " << "component " << type() << endl;
@@ -158,7 +159,7 @@ void VhdlComponentDeclaration::writeGenerics(QTextStream& stream) const
         if (!i.value()->description().isEmpty())
         {
             stream << " ";
-            VhdlGeneral::writeDescription(i.value()->description(), stream);
+            HDLUtils::writeDescription(i.value()->description(), stream, "--");
         }
         else
         {
@@ -205,7 +206,7 @@ void VhdlComponentDeclaration::writePorts(QTextStream& stream) const
                 const QString description = componentModel()->getInterfaceDescription(interfaceName);
                 if (!description.isEmpty())
                 {
-                    VhdlGeneral::writeDescription(description, stream, QString("      "));
+                    HDLUtils::writeDescription(description, stream, "--", QString("      "));
                 }
             }
             previousInterface = interfaceName;
@@ -224,7 +225,7 @@ void VhdlComponentDeclaration::writePorts(QTextStream& stream) const
         if (!i.value()->description().isEmpty())
         {
             stream << " ";
-            VhdlGeneral::writeDescription(i.value()->description(), stream);
+            HDLUtils::writeDescription(i.value()->description(), stream, "--");
         }
         else
         {

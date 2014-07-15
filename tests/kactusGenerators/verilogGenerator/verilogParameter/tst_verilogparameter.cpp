@@ -222,14 +222,14 @@ void Tst_verilogParameter::testWriteDescription()
 {
     modelParam_->setName("BITS");
     modelParam_->setValue("8");
-    modelParam_->setDescription("Number of register bits");
+    modelParam_->setDescription("Number of register bits.\nMust be set.");
     VerilogParameter parameter(modelParam_);
 
     QTextStream stream(outputString_);
 
     parameter.write(stream);
 
-    QCOMPARE(*outputString_, QString("// Number of register bits\nparameter BITS = 8;"));
+    QCOMPARE(*outputString_, QString("parameter BITS = 8; // Number of register bits.\n// Must be set.\n"));
 }
 
 QTEST_APPLESS_MAIN(Tst_verilogParameter)
