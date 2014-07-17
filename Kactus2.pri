@@ -7,7 +7,96 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./resource.h \
+HEADERS += ./IPXACTmodels/abstractiondefinition.h \
+    ./IPXACTmodels/addressblock.h \
+    ./IPXACTmodels/addressspace.h \
+    ./IPXACTmodels/alternateregister.h \
+    ./IPXACTmodels/ApiDefinition.h \
+    ./IPXACTmodels/ApiDependency.h \
+    ./IPXACTmodels/ApiFunction.h \
+    ./IPXACTmodels/ApiFunctionParameter.h \
+    ./IPXACTmodels/ApiInterface.h \
+    ./IPXACTmodels/bank.h \
+    ./IPXACTmodels/bspbuildcommand.h \
+    ./IPXACTmodels/buildcommand.h \
+    ./IPXACTmodels/buildmodel.h \
+    ./IPXACTmodels/busdefinition.h \
+    ./IPXACTmodels/businterface.h \
+    ./IPXACTmodels/channel.h \
+    ./IPXACTmodels/choice.h \
+    ./IPXACTmodels/ColumnDesc.h \
+    ./IPXACTmodels/ComConnection.h \
+    ./IPXACTmodels/ComDefinition.h \
+    ./IPXACTmodels/ComInterface.h \
+    ./IPXACTmodels/component.h \
+    ./IPXACTmodels/componentgenerator.h \
+    ./IPXACTmodels/ComponentInstance.h \
+    ./IPXACTmodels/ComProperty.h \
+    ./IPXACTmodels/cpu.h \
+    ./IPXACTmodels/design.h \
+    ./IPXACTmodels/designconfabstractor.h \
+    ./IPXACTmodels/designconfiguration.h \
+    ./IPXACTmodels/enumeratedvalue.h \
+    ./IPXACTmodels/field.h \
+    ./IPXACTmodels/file.h \
+    ./IPXACTmodels/filebuilder.h \
+    ./IPXACTmodels/FileDependency.h \
+    ./IPXACTmodels/fileset.h \
+    ./IPXACTmodels/function.h \
+    ./IPXACTmodels/generaldeclarations.h \
+    ./IPXACTmodels/generator.h \
+    ./IPXACTmodels/generatorchain.h \
+    ./IPXACTmodels/generatorchainselector.h \
+    ./IPXACTmodels/HierApiDependency.h \
+    ./IPXACTmodels/HierComConnection.h \
+    ./IPXACTmodels/HierConnection.h \
+    ./IPXACTmodels/Interconnection.h \
+    ./IPXACTmodels/Interface.h \
+    ./IPXACTmodels/kactusExtensions/Kactus2Group.h \
+    ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
+    ./IPXACTmodels/kactusExtensions/Kactus2Position.h \
+    ./IPXACTmodels/kactusExtensions/Kactus2Value.h \
+    ./IPXACTmodels/librarycomponent.h \
+    ./IPXACTmodels/masterinterface.h \
+    ./IPXACTmodels/memoryblockdata.h \
+    ./IPXACTmodels/memorymap.h \
+    ./IPXACTmodels/memorymapitem.h \
+    ./IPXACTmodels/mirroredslaveinterface.h \
+    ./IPXACTmodels/model.h \
+    ./IPXACTmodels/modelparameter.h \
+    ./IPXACTmodels/NameGroup.h \
+    ./IPXACTmodels/otherclockdriver.h \
+    ./IPXACTmodels/parameter.h \
+    ./IPXACTmodels/port.h \
+    ./IPXACTmodels/portabstraction.h \
+    ./IPXACTmodels/PortRef.h \
+    ./IPXACTmodels/register.h \
+    ./IPXACTmodels/registerdefinition.h \
+    ./IPXACTmodels/registerfile.h \
+    ./IPXACTmodels/registermodel.h \
+    ./IPXACTmodels/remapport.h \
+    ./IPXACTmodels/remapstate.h \
+    ./IPXACTmodels/reset.h \
+    ./IPXACTmodels/segment.h \
+    ./IPXACTmodels/servicetypedef.h \
+    ./IPXACTmodels/slaveinterface.h \
+    ./IPXACTmodels/subspacemap.h \
+    ./IPXACTmodels/swbuildcommand.h \
+    ./IPXACTmodels/SWInstance.h \
+    ./IPXACTmodels/SWView.h \
+    ./IPXACTmodels/SystemView.h \
+    ./IPXACTmodels/transactional.h \
+    ./IPXACTmodels/transactionalabstraction.h \
+    ./IPXACTmodels/vector.h \
+    ./IPXACTmodels/view.h \
+    ./IPXACTmodels/wire.h \
+    ./IPXACTmodels/wireabstraction.h \
+    ./IPXACTmodels/writevalueconstraint.h \
+    ./IPXACTmodels/XmlUtils.h \
+    ./resource.h \
+    ./IPXACTmodels/AdHocConnection.h \
+    ./IPXACTmodels/GenericVendorExtension.h \
+    ./IPXACTmodels/VendorExtension.h \
     ./common/Global.h \
     ./common/KactusAttribute.h \
     ./common/KactusColors.h \
@@ -532,7 +621,6 @@ HEADERS += ./resource.h \
     ./designEditors/common/Association/AssociationRemoveCommand.h \
     ./designEditors/common/Association/AssociationAddCommand.h \
     ./designEditors/common/Association/AssociationChangeEndpointCommand.h \
-    ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.h \
     ./kactusGenerators/vhdlGenerator/vhdlgeneral.h \
     ./kactusGenerators/vhdlGenerator/vhdlportmap.h \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.h \
@@ -546,96 +634,107 @@ HEADERS += ./resource.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./IPXACTmodels/abstractiondefinition.h \
-    ./IPXACTmodels/addressblock.h \
-    ./IPXACTmodels/addressspace.h \
-    ./IPXACTmodels/alternateregister.h \
-    ./IPXACTmodels/ApiDefinition.h \
-    ./IPXACTmodels/ApiDependency.h \
-    ./IPXACTmodels/ApiFunction.h \
-    ./IPXACTmodels/ApiFunctionParameter.h \
-    ./IPXACTmodels/ApiInterface.h \
-    ./IPXACTmodels/bank.h \
-    ./IPXACTmodels/bspbuildcommand.h \
-    ./IPXACTmodels/buildcommand.h \
-    ./IPXACTmodels/buildmodel.h \
-    ./IPXACTmodels/busdefinition.h \
-    ./IPXACTmodels/businterface.h \
-    ./IPXACTmodels/channel.h \
-    ./IPXACTmodels/choice.h \
-    ./IPXACTmodels/ColumnDesc.h \
-    ./IPXACTmodels/ComConnection.h \
-    ./IPXACTmodels/ComDefinition.h \
-    ./IPXACTmodels/ComInterface.h \
-    ./IPXACTmodels/component.h \
-    ./IPXACTmodels/componentgenerator.h \
-    ./IPXACTmodels/ComponentInstance.h \
-    ./IPXACTmodels/ComProperty.h \
-    ./IPXACTmodels/cpu.h \
-    ./IPXACTmodels/design.h \
-    ./IPXACTmodels/designconfabstractor.h \
-    ./IPXACTmodels/designconfiguration.h \
-    ./IPXACTmodels/enumeratedvalue.h \
-    ./IPXACTmodels/field.h \
-    ./IPXACTmodels/file.h \
-    ./IPXACTmodels/filebuilder.h \
-    ./IPXACTmodels/FileDependency.h \
-    ./IPXACTmodels/fileset.h \
-    ./IPXACTmodels/function.h \
-    ./IPXACTmodels/generaldeclarations.h \
-    ./IPXACTmodels/generator.h \
-    ./IPXACTmodels/generatorchain.h \
-    ./IPXACTmodels/generatorchainselector.h \
-    ./IPXACTmodels/HierApiDependency.h \
-    ./IPXACTmodels/HierComConnection.h \
-    ./IPXACTmodels/HierConnection.h \
-    ./IPXACTmodels/Interconnection.h \
-    ./IPXACTmodels/Interface.h \
-    ./IPXACTmodels/librarycomponent.h \
-    ./IPXACTmodels/masterinterface.h \
-    ./IPXACTmodels/memoryblockdata.h \
-    ./IPXACTmodels/memorymap.h \
-    ./IPXACTmodels/memorymapitem.h \
-    ./IPXACTmodels/mirroredslaveinterface.h \
-    ./IPXACTmodels/model.h \
-    ./IPXACTmodels/modelparameter.h \
-    ./IPXACTmodels/otherclockdriver.h \
-    ./IPXACTmodels/parameter.h \
-    ./IPXACTmodels/port.h \
-    ./IPXACTmodels/portabstraction.h \
-    ./IPXACTmodels/PortRef.h \
-    ./IPXACTmodels/register.h \
-    ./IPXACTmodels/registerdefinition.h \
-    ./IPXACTmodels/registerfile.h \
-    ./IPXACTmodels/registermodel.h \
-    ./IPXACTmodels/remapport.h \
-    ./IPXACTmodels/remapstate.h \
-    ./IPXACTmodels/reset.h \
-    ./IPXACTmodels/segment.h \
-    ./IPXACTmodels/servicetypedef.h \
-    ./IPXACTmodels/slaveinterface.h \
-    ./IPXACTmodels/subspacemap.h \
-    ./IPXACTmodels/swbuildcommand.h \
-    ./IPXACTmodels/SWInstance.h \
-    ./IPXACTmodels/SWView.h \
-    ./IPXACTmodels/SystemView.h \
-    ./IPXACTmodels/transactional.h \
-    ./IPXACTmodels/transactionalabstraction.h \
-    ./IPXACTmodels/vector.h \
-    ./IPXACTmodels/view.h \
-    ./IPXACTmodels/wire.h \
-    ./IPXACTmodels/wireabstraction.h \
-    ./IPXACTmodels/writevalueconstraint.h \
-    ./IPXACTmodels/XmlUtils.h \
-    ./IPXACTmodels/AdHocConnection.h \
-    ./IPXACTmodels/GenericVendorExtension.h \
-    ./IPXACTmodels/VendorExtension.h \
-    ./IPXACTmodels/kactusExtensions/Kactus2Group.h \
-    ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
-    ./IPXACTmodels/kactusExtensions/Kactus2Position.h \
-    ./IPXACTmodels/kactusExtensions/Kactus2Value.h \
-    ./IPXACTmodels/NameGroup.h
-SOURCES += ./common/GenericEditProvider.cpp \
+    ./kactusGenerators/HDLGenerator/HDLPort.h \
+    ./kactusGenerators/HDLGenerator/HDLUtils.h \
+    ./kactusGenerators/HDLGenerator/vhdlconnectionendpoint.h \
+    ./kactusGenerators/HDLGenerator/vhdlportsorter.h \
+    ./kactusGenerators/HDLGenerator/HDLGeneratorTemplate.h \
+    ./kactusGenerators/HDLGenerator/HDLModelParameter.h \
+    ./kactusGenerators/HDLGenerator/HDLObject.h \
+    ./kactusGenerators/HDLGenerator/HDLComponentDeclaration.h \
+    ./kactusGenerators/HDLGenerator/HDLComponentInstance.h \
+    ./kactusGenerators/HDLGenerator/HDLSignal.h \
+    ./kactusGenerators/verilogGenerator/VerilogParameter.h \
+    ./kactusGenerators/verilogGenerator/VerilogPort.h
+SOURCES += ./IPXACTmodels/abstractiondefinition.cpp \
+    ./IPXACTmodels/addressblock.cpp \
+    ./IPXACTmodels/addressspace.cpp \
+    ./IPXACTmodels/AdHocConnection.cpp \
+    ./IPXACTmodels/alternateregister.cpp \
+    ./IPXACTmodels/ApiDefinition.cpp \
+    ./IPXACTmodels/ApiDependency.cpp \
+    ./IPXACTmodels/ApiFunction.cpp \
+    ./IPXACTmodels/ApiFunctionParameter.cpp \
+    ./IPXACTmodels/ApiInterface.cpp \
+    ./IPXACTmodels/bank.cpp \
+    ./IPXACTmodels/bspbuildcommand.cpp \
+    ./IPXACTmodels/buildcommand.cpp \
+    ./IPXACTmodels/buildmodel.cpp \
+    ./IPXACTmodels/busdefinition.cpp \
+    ./IPXACTmodels/businterface.cpp \
+    ./IPXACTmodels/channel.cpp \
+    ./IPXACTmodels/choice.cpp \
+    ./IPXACTmodels/ColumnDesc.cpp \
+    ./IPXACTmodels/ComConnection.cpp \
+    ./IPXACTmodels/ComDefinition.cpp \
+    ./IPXACTmodels/ComInterface.cpp \
+    ./IPXACTmodels/component.cpp \
+    ./IPXACTmodels/componentgenerator.cpp \
+    ./IPXACTmodels/ComponentInstance.cpp \
+    ./IPXACTmodels/ComProperty.cpp \
+    ./IPXACTmodels/cpu.cpp \
+    ./IPXACTmodels/design.cpp \
+    ./IPXACTmodels/designconfabstractor.cpp \
+    ./IPXACTmodels/designconfiguration.cpp \
+    ./IPXACTmodels/enumeratedvalue.cpp \
+    ./IPXACTmodels/field.cpp \
+    ./IPXACTmodels/file.cpp \
+    ./IPXACTmodels/filebuilder.cpp \
+    ./IPXACTmodels/FileDependency.cpp \
+    ./IPXACTmodels/fileset.cpp \
+    ./IPXACTmodels/function.cpp \
+    ./IPXACTmodels/generaldeclarations.cpp \
+    ./IPXACTmodels/generator.cpp \
+    ./IPXACTmodels/generatorchain.cpp \
+    ./IPXACTmodels/generatorchainselector.cpp \
+    ./IPXACTmodels/GenericVendorExtension.cpp \
+    ./IPXACTmodels/HierApiDependency.cpp \
+    ./IPXACTmodels/HierComConnection.cpp \
+    ./IPXACTmodels/HierConnection.cpp \
+    ./IPXACTmodels/Interconnection.cpp \
+    ./IPXACTmodels/Interface.cpp \
+    ./IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
+    ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
+    ./IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
+    ./IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
+    ./IPXACTmodels/librarycomponent.cpp \
+    ./IPXACTmodels/masterinterface.cpp \
+    ./IPXACTmodels/memoryblockdata.cpp \
+    ./IPXACTmodels/memorymap.cpp \
+    ./IPXACTmodels/memorymapitem.cpp \
+    ./IPXACTmodels/mirroredslaveinterface.cpp \
+    ./IPXACTmodels/model.cpp \
+    ./IPXACTmodels/modelparameter.cpp \
+    ./IPXACTmodels/NameGroup.cpp \
+    ./IPXACTmodels/otherclockdriver.cpp \
+    ./IPXACTmodels/parameter.cpp \
+    ./IPXACTmodels/port.cpp \
+    ./IPXACTmodels/portabstraction.cpp \
+    ./IPXACTmodels/PortRef.cpp \
+    ./IPXACTmodels/register.cpp \
+    ./IPXACTmodels/registerdefinition.cpp \
+    ./IPXACTmodels/registerfile.cpp \
+    ./IPXACTmodels/registermodel.cpp \
+    ./IPXACTmodels/remapport.cpp \
+    ./IPXACTmodels/remapstate.cpp \
+    ./IPXACTmodels/reset.cpp \
+    ./IPXACTmodels/segment.cpp \
+    ./IPXACTmodels/servicetypedef.cpp \
+    ./IPXACTmodels/slaveinterface.cpp \
+    ./IPXACTmodels/subspacemap.cpp \
+    ./IPXACTmodels/swbuildcommand.cpp \
+    ./IPXACTmodels/SWInstance.cpp \
+    ./IPXACTmodels/SWView.cpp \
+    ./IPXACTmodels/SystemView.cpp \
+    ./IPXACTmodels/transactional.cpp \
+    ./IPXACTmodels/transactionalabstraction.cpp \
+    ./IPXACTmodels/vector.cpp \
+    ./IPXACTmodels/view.cpp \
+    ./IPXACTmodels/wire.cpp \
+    ./IPXACTmodels/wireabstraction.cpp \
+    ./IPXACTmodels/writevalueconstraint.cpp \
+    ./IPXACTmodels/XmlUtils.cpp \
+    ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1135,104 +1234,26 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/common/Association/AssociationRemoveCommand.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlcomponentdeclaration.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlcomponentinstance.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlgeneral.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlgenerator2.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlgeneric.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlobject.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlport.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportmap.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./IPXACTmodels/abstractiondefinition.cpp \
-    ./IPXACTmodels/addressblock.cpp \
-    ./IPXACTmodels/addressspace.cpp \
-    ./IPXACTmodels/AdHocConnection.cpp \
-    ./IPXACTmodels/alternateregister.cpp \
-    ./IPXACTmodels/ApiDefinition.cpp \
-    ./IPXACTmodels/ApiDependency.cpp \
-    ./IPXACTmodels/ApiFunction.cpp \
-    ./IPXACTmodels/ApiFunctionParameter.cpp \
-    ./IPXACTmodels/ApiInterface.cpp \
-    ./IPXACTmodels/bank.cpp \
-    ./IPXACTmodels/bspbuildcommand.cpp \
-    ./IPXACTmodels/buildcommand.cpp \
-    ./IPXACTmodels/buildmodel.cpp \
-    ./IPXACTmodels/busdefinition.cpp \
-    ./IPXACTmodels/businterface.cpp \
-    ./IPXACTmodels/channel.cpp \
-    ./IPXACTmodels/choice.cpp \
-    ./IPXACTmodels/ColumnDesc.cpp \
-    ./IPXACTmodels/ComConnection.cpp \
-    ./IPXACTmodels/ComDefinition.cpp \
-    ./IPXACTmodels/ComInterface.cpp \
-    ./IPXACTmodels/component.cpp \
-    ./IPXACTmodels/componentgenerator.cpp \
-    ./IPXACTmodels/ComponentInstance.cpp \
-    ./IPXACTmodels/ComProperty.cpp \
-    ./IPXACTmodels/cpu.cpp \
-    ./IPXACTmodels/design.cpp \
-    ./IPXACTmodels/designconfabstractor.cpp \
-    ./IPXACTmodels/designconfiguration.cpp \
-    ./IPXACTmodels/enumeratedvalue.cpp \
-    ./IPXACTmodels/field.cpp \
-    ./IPXACTmodels/file.cpp \
-    ./IPXACTmodels/filebuilder.cpp \
-    ./IPXACTmodels/FileDependency.cpp \
-    ./IPXACTmodels/fileset.cpp \
-    ./IPXACTmodels/function.cpp \
-    ./IPXACTmodels/generaldeclarations.cpp \
-    ./IPXACTmodels/generator.cpp \
-    ./IPXACTmodels/generatorchain.cpp \
-    ./IPXACTmodels/generatorchainselector.cpp \
-    ./IPXACTmodels/GenericVendorExtension.cpp \
-    ./IPXACTmodels/HierApiDependency.cpp \
-    ./IPXACTmodels/HierComConnection.cpp \
-    ./IPXACTmodels/HierConnection.cpp \
-    ./IPXACTmodels/Interconnection.cpp \
-    ./IPXACTmodels/Interface.cpp \
-    ./IPXACTmodels/librarycomponent.cpp \
-    ./IPXACTmodels/masterinterface.cpp \
-    ./IPXACTmodels/memoryblockdata.cpp \
-    ./IPXACTmodels/memorymap.cpp \
-    ./IPXACTmodels/memorymapitem.cpp \
-    ./IPXACTmodels/mirroredslaveinterface.cpp \
-    ./IPXACTmodels/model.cpp \
-    ./IPXACTmodels/modelparameter.cpp \
-    ./IPXACTmodels/otherclockdriver.cpp \
-    ./IPXACTmodels/parameter.cpp \
-    ./IPXACTmodels/port.cpp \
-    ./IPXACTmodels/portabstraction.cpp \
-    ./IPXACTmodels/PortRef.cpp \
-    ./IPXACTmodels/register.cpp \
-    ./IPXACTmodels/registerdefinition.cpp \
-    ./IPXACTmodels/registerfile.cpp \
-    ./IPXACTmodels/registermodel.cpp \
-    ./IPXACTmodels/remapport.cpp \
-    ./IPXACTmodels/remapstate.cpp \
-    ./IPXACTmodels/reset.cpp \
-    ./IPXACTmodels/segment.cpp \
-    ./IPXACTmodels/servicetypedef.cpp \
-    ./IPXACTmodels/slaveinterface.cpp \
-    ./IPXACTmodels/subspacemap.cpp \
-    ./IPXACTmodels/swbuildcommand.cpp \
-    ./IPXACTmodels/SWInstance.cpp \
-    ./IPXACTmodels/SWView.cpp \
-    ./IPXACTmodels/SystemView.cpp \
-    ./IPXACTmodels/transactional.cpp \
-    ./IPXACTmodels/transactionalabstraction.cpp \
-    ./IPXACTmodels/vector.cpp \
-    ./IPXACTmodels/view.cpp \
-    ./IPXACTmodels/wire.cpp \
-    ./IPXACTmodels/wireabstraction.cpp \
-    ./IPXACTmodels/writevalueconstraint.cpp \
-    ./IPXACTmodels/XmlUtils.cpp \
-    ./IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
-    ./IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
-    ./IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
-    ./IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
-    ./IPXACTmodels/NameGroup.cpp
+    ./kactusGenerators/HDLGenerator/HDLComponentDeclaration.cpp \
+    ./kactusGenerators/HDLGenerator/HDLComponentInstance.cpp \
+    ./kactusGenerators/HDLGenerator/HDLGeneratorTemplate.cpp \
+    ./kactusGenerators/HDLGenerator/HDLModelParameter.cpp \
+    ./kactusGenerators/HDLGenerator/HDLObject.cpp \
+    ./kactusGenerators/HDLGenerator/HDLPort.cpp \
+    ./kactusGenerators/HDLGenerator/HDLSignal.cpp \
+    ./kactusGenerators/HDLGenerator/HDLUtils.cpp \
+    ./kactusGenerators/HDLGenerator/vhdlconnectionendpoint.cpp \
+    ./kactusGenerators/HDLGenerator/vhdlportsorter.cpp \
+    ./kactusGenerators/verilogGenerator/VerilogParameter.cpp \
+    ./kactusGenerators/verilogGenerator/VerilogPort.cpp
 RESOURCES += kactus.qrc

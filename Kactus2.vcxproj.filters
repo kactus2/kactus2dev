@@ -884,12 +884,6 @@
     <Filter Include="Source Files\editors\ComponentEditor\visualization">
       <UniqueIdentifier>{8548c639-7a0c-4828-894c-1badeb9906d2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\IPXACTmodels">
-      <UniqueIdentifier>{5699db78-6b6a-4065-bf5d-4a38d6d6980d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\IPXACTmodels">
-      <UniqueIdentifier>{8816236b-c7b5-414c-bc68-c09bf8e216bf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\editors\CSourceEditor">
       <UniqueIdentifier>{0d6b0b85-6278-4e56-919e-ea7d6f9c1d58}</UniqueIdentifier>
     </Filter>
@@ -902,12 +896,6 @@
     <Filter Include="Header Files\editors\NotesEditor">
       <UniqueIdentifier>{817d192c-ff75-4c77-b9cc-aa9f6c3025c7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\IPXACTmodels\kactusExtensions">
-      <UniqueIdentifier>{a262b241-ffd8-4a05-8038-b920bb36c334}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\IPXACTmodels\kactusExtensions">
-      <UniqueIdentifier>{a4b97ef0-265f-4fe5-805f-7482e8921ea0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\designEditors\common\StickyNote">
       <UniqueIdentifier>{b64dd13f-cfeb-43a3-91b9-83197b195916}</UniqueIdentifier>
     </Filter>
@@ -919,12 +907,6 @@
     </Filter>
     <Filter Include="Header Files\designEditors\common\Association">
       <UniqueIdentifier>{639b5694-b994-4740-a403-6ec20fab5862}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\IPXACTmodels\common">
-      <UniqueIdentifier>{115896de-3f30-4e65-99da-c70d1d09c49d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\IPXACTmodels\common">
-      <UniqueIdentifier>{1409d5e2-71e2-4fad-ad9d-19dfc1b8743d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\kactusGenerators\HDLGenerator">
       <UniqueIdentifier>{9596ec4f-e618-4b21-9048-011de982051b}</UniqueIdentifier>
@@ -3712,237 +3694,6 @@
     <ClCompile Include="GeneratedFiles\moc_itemvisualizer.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="IPXACTmodels\abstractiondefinition.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\addressblock.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\addressspace.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\alternateregister.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\ApiDefinition.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\ApiDependency.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\ApiFunction.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\ApiFunctionParameter.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\ApiInterface.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\bank.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\bspbuildcommand.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\buildcommand.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\buildmodel.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\busdefinition.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\businterface.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\channel.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\choice.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\ColumnDesc.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\ComConnection.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\ComDefinition.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\ComInterface.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\component.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\componentgenerator.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\ComponentInstance.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\ComProperty.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\cpu.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\design.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\designconfabstractor.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\designconfiguration.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\enumeratedvalue.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\field.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\file.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\filebuilder.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\FileDependency.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\fileset.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\function.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\generaldeclarations.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\generator.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\generatorchain.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\generatorchainselector.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\HierApiDependency.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\HierComConnection.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\librarycomponent.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\masterinterface.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\memoryblockdata.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\memorymap.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\memorymapitem.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\mirroredslaveinterface.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\model.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\modelparameter.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\otherclockdriver.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\parameter.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\port.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\portabstraction.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\register.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\registerdefinition.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\registerfile.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\registermodel.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\remapport.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\remapstate.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\reset.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\segment.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\servicetypedef.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\slaveinterface.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\subspacemap.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\swbuildcommand.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\SWInstance.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\SWView.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\SystemView.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\transactional.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\transactionalabstraction.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\vector.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\view.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\wire.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\wireabstraction.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\writevalueconstraint.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\XmlUtils.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_DesignDiagram.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -3997,18 +3748,6 @@
     <ClCompile Include="GeneratedFiles\moc_NotesStack.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="IPXACTmodels\GenericVendorExtension.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Placeholder.cpp">
-      <Filter>Source Files\IPXACTmodels\kactusExtensions</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Position.cpp">
-      <Filter>Source Files\IPXACTmodels\kactusExtensions</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Value.cpp">
-      <Filter>Source Files\IPXACTmodels\kactusExtensions</Filter>
-    </ClCompile>
     <ClCompile Include="designEditors\common\StickyNote\StickyNote.cpp">
       <Filter>Source Files\designEditors\common\StickyNote</Filter>
     </ClCompile>
@@ -4035,24 +3774,6 @@
     </ClCompile>
     <ClCompile Include="designEditors\common\StickyNote\StickyNoteMoveCommand.cpp">
       <Filter>Source Files\designEditors\common\StickyNote</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Group.cpp">
-      <Filter>Source Files\IPXACTmodels\kactusExtensions</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\AdHocConnection.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\PortRef.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\Interconnection.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\Interface.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\HierConnection.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
     </ClCompile>
     <ClCompile Include="designEditors\common\Association\AssociationRemoveCommand.cpp">
       <Filter>Source Files\designEditors\common\Association</Filter>
@@ -4089,9 +3810,6 @@
     </ClCompile>
     <ClCompile Include="Plugins\PluginSystem\PluginUtilityAdapter.cpp">
       <Filter>Source Files\Plugins\PluginSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXACTmodels\NameGroup.cpp">
-      <Filter>Source Files\IPXACTmodels</Filter>
     </ClCompile>
     <ClCompile Include="kactusGenerators\HDLGenerator\HDLGeneratorTemplate.cpp">
       <Filter>Source Files\kactusGenerators\HDLGenerator</Filter>
@@ -4152,6 +3870,12 @@
     </ClCompile>
     <ClCompile Include="kactusGenerators\HDLGenerator\HDLUtils.cpp">
       <Filter>Source Files\kactusGenerators\HDLGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_VerilogComponentInstance.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusGenerators\verilogGenerator\VerilogComponentInstance.cpp">
+      <Filter>Source Files\kactusGenerators\VerilogGenerator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5535,12 +5259,6 @@
     <CustomBuild Include="editors\NotesEditor\NotesStack.h">
       <Filter>Header Files\editors\NotesEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="IPXACTmodels\VendorExtension.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXACTmodels\GenericVendorExtension.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </CustomBuild>
     <CustomBuild Include="designEditors\common\StickyNote\StickyNote.h">
       <Filter>Header Files\designEditors\common\StickyNote</Filter>
     </CustomBuild>
@@ -5552,9 +5270,6 @@
     </CustomBuild>
     <CustomBuild Include="designEditors\common\StickyNote\StickyNoteAddCommand.h">
       <Filter>Header Files\designEditors\common\StickyNote</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXACTmodels\AdHocConnection.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\common\Association\AssociationRemoveCommand.h">
       <Filter>Header Files\designEditors\common\Association</Filter>
@@ -5596,6 +5311,9 @@
       <Filter>Header Files\kactusGenerators\VerilogGenerator</Filter>
     </CustomBuild>
     <CustomBuild Include="kactusGenerators\verilogGenerator\VerilogPort.h">
+      <Filter>Header Files\kactusGenerators\VerilogGenerator</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kactusGenerators\verilogGenerator\VerilogComponentInstance.h">
       <Filter>Header Files\kactusGenerators\VerilogGenerator</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -5804,237 +5522,6 @@
     <ClInclude Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySortFilter.h">
       <Filter>Header Files\editors\ComponentEditor\fileSet\dependencyAnalysis</Filter>
     </ClInclude>
-    <ClInclude Include="IPXACTmodels\abstractiondefinition.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\addressblock.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\addressspace.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\alternateregister.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\ApiDefinition.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\ApiDependency.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\ApiFunction.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\ApiFunctionParameter.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\ApiInterface.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\bank.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\bspbuildcommand.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\buildcommand.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\buildmodel.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\busdefinition.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\businterface.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\channel.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\choice.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\ColumnDesc.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\ComConnection.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\ComDefinition.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\ComInterface.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\component.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\componentgenerator.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\ComponentInstance.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\ComProperty.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\cpu.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\design.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\designconfabstractor.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\designconfiguration.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\enumeratedvalue.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\field.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\file.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\filebuilder.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\FileDependency.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\fileset.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\function.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\generaldeclarations.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\generator.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\generatorchain.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\generatorchainselector.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\HierApiDependency.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\HierComConnection.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\librarycomponent.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\masterinterface.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\memoryblockdata.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\memorymap.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\memorymapitem.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\mirroredslaveinterface.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\model.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\modelparameter.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\otherclockdriver.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\parameter.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\port.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\portabstraction.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\register.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\registerdefinition.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\registerfile.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\registermodel.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\remapport.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\remapstate.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\reset.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\segment.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\servicetypedef.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\slaveinterface.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\subspacemap.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\swbuildcommand.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\SWInstance.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\SWView.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\SystemView.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\transactional.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\transactionalabstraction.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\vector.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\view.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\wire.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\wireabstraction.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\writevalueconstraint.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\XmlUtils.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
     <ClInclude Include="designEditors\common\ColumnTypes.h">
       <Filter>Header Files\designEditors\common</Filter>
     </ClInclude>
@@ -6056,32 +5543,8 @@
     <ClInclude Include="editors\CSourceEditor\CSourceWriter.h">
       <Filter>Header Files\editors\CSourceEditor</Filter>
     </ClInclude>
-    <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Placeholder.h">
-      <Filter>Header Files\IPXACTmodels\kactusExtensions</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Position.h">
-      <Filter>Header Files\IPXACTmodels\kactusExtensions</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Value.h">
-      <Filter>Header Files\IPXACTmodels\kactusExtensions</Filter>
-    </ClInclude>
     <ClInclude Include="designEditors\common\StickyNote\StickyNoteMoveCommand.h">
       <Filter>Header Files\designEditors\common\StickyNote</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Group.h">
-      <Filter>Header Files\IPXACTmodels\kactusExtensions</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\PortRef.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\Interconnection.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\Interface.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\HierConnection.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
     </ClInclude>
     <ClInclude Include="designEditors\common\Association\Associable.h">
       <Filter>Header Files\designEditors\common\Association</Filter>
@@ -6091,9 +5554,6 @@
     </ClInclude>
     <ClInclude Include="designEditors\common\StickyNote\StickyNoteEditCommand.h">
       <Filter>Header Files\designEditors\common\StickyNote</Filter>
-    </ClInclude>
-    <ClInclude Include="IPXACTmodels\NameGroup.h">
-      <Filter>Header Files\IPXACTmodels</Filter>
     </ClInclude>
     <ClInclude Include="kactusGenerators\HDLGenerator\HDLPort.h">
       <Filter>Header Files\kactusGenerators\HDLGenerator</Filter>
