@@ -7,7 +7,7 @@
 #ifndef SLAVEINTERFACE_H_
 #define SLAVEINTERFACE_H_
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QList>
@@ -20,7 +20,7 @@
  *
  * Slave interface is one that responds to transactions.
  */
-class KACTUS2_API SlaveInterface {
+class IPXACTMODELS_EXPORT SlaveInterface {
 
 public:
 
@@ -54,7 +54,7 @@ public:
 		/*! \brief The default constructor.
 		 *
 		*/
-		Bridge();
+		IPXACTMODELS_EXPORT  Bridge();
 	};
 
 	/*! \brief Equals the spirit:fileSetRefGroup in IP-Xact specifitation.

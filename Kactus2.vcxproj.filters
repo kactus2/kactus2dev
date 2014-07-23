@@ -925,9 +925,6 @@
     <ClCompile Include="common\GenericEditProvider.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="common\KactusAttribute.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="common\TextEditProvider.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
@@ -1706,9 +1703,6 @@
       <Filter>Source Files\library\LibraryManager</Filter>
     </ClCompile>
     <ClCompile Include="library\LibraryManager\LibraryUtils.cpp">
-      <Filter>Source Files\library\LibraryManager</Filter>
-    </ClCompile>
-    <ClCompile Include="library\LibraryManager\vlnv.cpp">
       <Filter>Source Files\library\LibraryManager</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ipxactmodel.cpp">
@@ -3871,12 +3865,6 @@
     <ClCompile Include="kactusGenerators\HDLGenerator\HDLUtils.cpp">
       <Filter>Source Files\kactusGenerators\HDLGenerator</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_VerilogComponentInstance.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\verilogGenerator\VerilogComponentInstance.cpp">
-      <Filter>Source Files\kactusGenerators\VerilogGenerator</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -3896,9 +3884,6 @@
     </CustomBuild>
     <CustomBuild Include="common\layouts\VStaticLayout.inl">
       <Filter>Source Files\common\layouts</Filter>
-    </CustomBuild>
-    <CustomBuild Include="resource.h">
-      <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="version.h">
       <Filter>Header Files</Filter>
@@ -5313,9 +5298,6 @@
     <CustomBuild Include="kactusGenerators\verilogGenerator\VerilogPort.h">
       <Filter>Header Files\kactusGenerators\VerilogGenerator</Filter>
     </CustomBuild>
-    <CustomBuild Include="kactusGenerators\verilogGenerator\VerilogComponentInstance.h">
-      <Filter>Header Files\kactusGenerators\VerilogGenerator</Filter>
-    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -5396,9 +5378,6 @@
     <ClInclude Include="common\Global.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="common\KactusAttribute.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="common\KactusColors.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
@@ -5469,9 +5448,6 @@
       <Filter>Header Files\library\LibraryManager</Filter>
     </ClInclude>
     <ClInclude Include="library\LibraryManager\LibraryUtils.h">
-      <Filter>Header Files\library\LibraryManager</Filter>
-    </ClInclude>
-    <ClInclude Include="library\LibraryManager\vlnv.h">
       <Filter>Header Files\library\LibraryManager</Filter>
     </ClInclude>
     <ClInclude Include="wizards\BusInterfaceWizard\BusInterfaceWizard.h">

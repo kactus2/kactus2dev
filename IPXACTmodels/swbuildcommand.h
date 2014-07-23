@@ -8,7 +8,7 @@
 #ifndef SWBUILDCOMMAND_H_
 #define SWBUILDCOMMAND_H_
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -19,7 +19,7 @@
  * 
  * Specifies the build commands for software objects.
  */
-class KACTUS2_API SWBuildCommand {
+class IPXACTMODELS_EXPORT SWBuildCommand {
 
 public:
 

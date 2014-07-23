@@ -8,7 +8,7 @@
 #ifndef SYSTEMHEADERSAVEMODEL_H
 #define SYSTEMHEADERSAVEMODEL_H
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 #include <IPXACTmodels/component.h>
 
 #include <QAbstractTableModel>

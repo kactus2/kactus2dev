@@ -12,7 +12,7 @@
 #ifndef COMPONENTPREVIEWBOX_H
 #define COMPONENTPREVIEWBOX_H
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QSharedPointer>
 #include <QGraphicsView>

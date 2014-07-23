@@ -12,8 +12,8 @@
 #ifndef VLNVDATATREE_H
 #define VLNVDATATREE_H
 
-#include <common/KactusAttribute.h>
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QString>
 #include <QSharedPointer>

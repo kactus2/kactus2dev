@@ -15,7 +15,7 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/designconfiguration.h>
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 #include <designEditors/HWDesign/HWDesignDiagram.h>
 #include <designEditors/HWDesign/HWDesignWidget.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>

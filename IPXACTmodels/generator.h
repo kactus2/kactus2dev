@@ -7,7 +7,7 @@
 #ifndef GENERATOR_H_
 #define GENERATOR_H_
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QList>
@@ -24,7 +24,7 @@ class VendorExtension;
  * be used as a base class to generalize ComponentGenerator class to
  * represent spirit:componentGenerator element.
  */
-class KACTUS2_API Generator {
+class IPXACTMODELS_EXPORT Generator {
 
 public:
 

@@ -7,6 +7,7 @@
 #include "registerfile.h"
 #include "registermodel.h"
 #include "register.h"
+#include "parameter.h"
 #include "GenericVendorExtension.h"
 
 #include <IPXACTmodels/XmlUtils.h>

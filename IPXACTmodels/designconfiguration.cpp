@@ -8,10 +8,10 @@
 #include "designconfiguration.h"
 #include "XmlUtils.h"
 
-#include <library/LibraryManager/vlnv.h>
+#include"vlnv.h"
 #include "designconfabstractor.h"
 #include "generatorchain.h"
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QList>
 #include <QDomNode>

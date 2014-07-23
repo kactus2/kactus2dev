@@ -8,7 +8,7 @@
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>

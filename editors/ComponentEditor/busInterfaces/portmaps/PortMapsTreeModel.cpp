@@ -19,7 +19,7 @@
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
 #include <library/LibraryManager/libraryinterface.h>
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QColor>
 #include <QFont>

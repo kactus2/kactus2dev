@@ -11,7 +11,7 @@
 #include <common/dialogs/NewBusDialog/NewBusDialog.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <library/LibraryManager/libraryinterface.h>
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 #include <IPXACTmodels/component.h>
 
 #include <IPXACTmodels/businterface.h>

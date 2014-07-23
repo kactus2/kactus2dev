@@ -10,7 +10,7 @@
 #include "librarytreeview.h"
 #include "librarytreefilter.h"
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QWidget>
 

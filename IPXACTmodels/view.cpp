@@ -9,7 +9,7 @@
 #include "GenericVendorExtension.h"
 #include "XmlUtils.h"
 
-#include <library/LibraryManager/vlnv.h>
+#include"vlnv.h"
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 

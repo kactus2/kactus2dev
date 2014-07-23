@@ -9,8 +9,8 @@
 #include "generaldeclarations.h"
 #include "GenericVendorExtension.h"
 
-#include <library/LibraryManager/vlnv.h>
-#include <common/KactusAttribute.h>
+#include"vlnv.h"
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QString>
 #include <QDomDocument>

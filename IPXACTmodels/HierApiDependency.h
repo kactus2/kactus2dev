@@ -14,7 +14,7 @@
 
 #include "ApiDependency.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QDomNode>
@@ -26,7 +26,7 @@
 //-----------------------------------------------------------------------------
 //! Class encapsulating API dependency connection data.
 //-----------------------------------------------------------------------------
-class KACTUS2_API HierApiDependency
+class IPXACTMODELS_EXPORT HierApiDependency
 {
 public:
     /*!

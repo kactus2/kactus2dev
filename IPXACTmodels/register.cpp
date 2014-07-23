@@ -7,6 +7,7 @@
 #include "register.h"
 #include "generaldeclarations.h"
 #include "alternateregister.h"
+#include "parameter.h"
 #include "registermodel.h"
 #include "GenericVendorExtension.h"
 
@@ -237,7 +238,7 @@ QString Register::getAddressOffset() const {
 }
 
 quint64 Register::getOffset() const {
-	return Utils::str2Uint(addressOffset_);
+	return General::str2Uint(addressOffset_);
 }
 
 const QList<QSharedPointer<AlternateRegister> >&
@@ -334,7 +335,7 @@ unsigned int Register::getMSB() const {
 void Register::writeHeaderInfo( QTextStream& stream, quint64 offset, const QString& idString /*= QString()*/ ) const {
 
 	// calculate the total address of the register
-	quint64 regOffset = Utils::str2Uint(addressOffset_);
+	quint64 regOffset = General::str2Uint(addressOffset_);
 	regOffset += offset;
 
 	QString offsetStr = QString::number(regOffset, 16);

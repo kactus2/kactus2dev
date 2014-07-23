@@ -5,9 +5,9 @@
 TEMPLATE = lib
 TARGET = QuartusPinImportPlugin
 DESTDIR = ../../executable/Plugins
-QT += core xml widgets gui printsupport
+QT += core xml widgets gui
 CONFIG += plugin release
-DEFINES += QT_DLL QUARTUSPINIMPORTPLUGIN_LIB QT_WIDGETS_LIB QT_PRINTSUPPORT_LIB QT_XML_LIB
+DEFINES += QT_DLL QUARTUSPINIMPORTPLUGIN_LIB QT_WIDGETS_LIB QT_XML_LIB
 INCLUDEPATH += ./GeneratedFiles \
     . \
     ./GeneratedFiles/$(Configuration) \
@@ -16,7 +16,8 @@ INCLUDEPATH += ./GeneratedFiles \
     $(QTDIR)/../qttools/include \
     ./../..
 LIBS += -L"./../../executable" \
-    -lKactus2
+    -lKactus2 \
+    -lIPXACTmodels
 DEPENDPATH += .
 MOC_DIR += ./GeneratedFiles/release
 OBJECTS_DIR += release

@@ -12,7 +12,7 @@
 #ifndef PORTREF_H
 #define PORTREF_H
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QStringList>
@@ -29,7 +29,7 @@
 // External port (spirit:externalPortReference) is a port on the component containing 
 // this design and has no componentRef.
 //-----------------------------------------------------------------------------
-class KACTUS2_API PortRef
+class IPXACTMODELS_EXPORT PortRef
 {
 
 public:

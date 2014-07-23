@@ -9,7 +9,7 @@
 
 #include "memorymapitem.h"
 #include "generaldeclarations.h"
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <IPXACTmodels/NameGroup.h>
 
@@ -26,7 +26,7 @@ class VendorExtension;
  *
  * MemoryMap contains an unbounded list of memoryMap elements
  */
-class KACTUS2_API MemoryMap {
+class IPXACTMODELS_EXPORT MemoryMap {
 
 public:
 

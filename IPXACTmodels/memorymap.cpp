@@ -268,7 +268,7 @@ quint64 MemoryMap::getLastAddress() const {
         {
             bool ok = true;
             
-            unsigned int baseAddress = Utils::str2Uint(block->getBaseAddress());
+            unsigned int baseAddress = General::str2Uint(block->getBaseAddress());
 
             if (ok)
             {
@@ -286,7 +286,7 @@ quint64 MemoryMap::getLastAddress() const {
         return 0;
     }
     
-    return lastBaseAddress + Utils::str2Uint(static_cast<AddressBlock*>(items_.at(index).data())->getRange()) - 1;
+    return lastBaseAddress + General::str2Uint(static_cast<AddressBlock*>(items_.at(index).data())->getRange()) - 1;
 }
 
 QString MemoryMap::getLastAddressStr() const {
@@ -303,7 +303,7 @@ QString MemoryMap::getLastAddressStr() const {
 		}
 
 		// get the base of the current block
-		quint64 base = Utils::str2Uint(block->getBaseAddress());
+		quint64 base = General::str2Uint(block->getBaseAddress());
 
 		// find the last lastBlock in the memory map
 		if (base >= lastBaseAddress) {
@@ -320,7 +320,7 @@ QString MemoryMap::getLastAddressStr() const {
 	QSharedPointer<AddressBlock> lastBlock = items_.at(index).staticCast<AddressBlock>();
 	Q_ASSERT(lastBlock);
 
-	quint64 range = Utils::str2Uint(lastBlock->getRange());
+	quint64 range = General::str2Uint(lastBlock->getRange());
 	quint64 lastAddress = range + lastBaseAddress - 1;
 
 	// if base and range were undefined then there is no last address
@@ -343,7 +343,7 @@ quint64 MemoryMap::getFirstAddress() const {
 		}
 		// convert the base address to numerical format
 		QString addrStr = block->getBaseAddress();
-		quint64 addr = Utils::str2Uint(addrStr);
+		quint64 addr = General::str2Uint(addrStr);
 
 		// if this is the first block then it must be smallest so far
 		if (i == 0) {	
@@ -369,7 +369,7 @@ QString MemoryMap::getFirstAddressStr() const {
 
 		// convert the base address to numerical format
 		QString addrStr = block->getBaseAddress();
-		quint64 addr = Utils::str2Uint(addrStr);
+		quint64 addr = General::str2Uint(addrStr);
 
 		// if this is the first lastBlock then it must be smallest so far
 		if (i == 0) {	
@@ -480,7 +480,7 @@ void MemoryMap::writeMemoryAddresses( QTextStream& stream,
 			addrBlock->getUsage() == General::RESERVED)) {
 
 			// calculate the total offset of the memory
-			quint64 memoryOffset = Utils::str2Uint(addrBlock->getBaseAddress());
+			quint64 memoryOffset = General::str2Uint(addrBlock->getBaseAddress());
 			quint64 totalOffset = offset + memoryOffset;
 			
 			// the start address of the block
@@ -488,7 +488,7 @@ void MemoryMap::writeMemoryAddresses( QTextStream& stream,
 			offsetStr.prepend("0x");
 
 			// the last address contained in the block
-			quint64 endAddr = Utils::str2Uint(addrBlock->getLastAddressStr());
+			quint64 endAddr = General::str2Uint(addrBlock->getLastAddressStr());
 			
 			// the last address is the total offset incremented with the last address without the base
 			endAddr += offset;

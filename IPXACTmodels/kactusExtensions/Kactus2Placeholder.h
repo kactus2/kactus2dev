@@ -13,13 +13,14 @@
 #define KACTUS2PLACEHOLDER_H
 
 #include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QMap>
 
 //-----------------------------------------------------------------------------
 // class Kactus2Placeholder.
 //-----------------------------------------------------------------------------
-class Kactus2Placeholder : public VendorExtension
+class IPXACTMODELS_EXPORT Kactus2Placeholder : public VendorExtension
 {
 public:
 	/*!

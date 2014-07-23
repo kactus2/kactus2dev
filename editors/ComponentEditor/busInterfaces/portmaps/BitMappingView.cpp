@@ -13,7 +13,7 @@
 
 #include "BitMappingModel.h"
 #include "physlistview.h"
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/BitSelectionDialog.h>
 

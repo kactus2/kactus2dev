@@ -12,6 +12,8 @@
 #ifndef XMLUTILS_H
 #define XMLUTILS_H
 
+#include "ipxactmodels_global.h"
+
 #include <QXmlStreamWriter>
 #include <QDomNode>
 #include <QString>
@@ -47,7 +49,7 @@ namespace XmlUtils
      * \return QString containing the string that has been stripped from
      * whitespaces and embedded whitespaces have been replaces with '_'
      */
-    QString removeWhiteSpace(QString str);
+    IPXACTMODELS_EXPORT QString removeWhiteSpace(QString str);
 
     /*! Parses the attributes from the root of the given node to a QMap.
      *
@@ -87,7 +89,7 @@ namespace XmlUtils
     void parseAdHocVisibilities(QDomNode& node, QMap<QString, bool>& portAdHocVisibilities,
                                 QMap<QString, QPointF>& adHocPortPositions);
 
-    QPointF parsePoint(QDomNode const& node);
+    IPXACTMODELS_EXPORT QPointF parsePoint(QDomNode const& node);
 
     /*!
      *  Writes a kactus2:position to the XML stream.

@@ -19,7 +19,7 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/GenericEditProvider.h>
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include "columnview/ColumnEditDialog.h"

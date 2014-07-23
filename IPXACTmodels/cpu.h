@@ -10,7 +10,7 @@
 #include "NameGroup.h"
 
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QStringList>
@@ -26,7 +26,7 @@ class VendorExtension;
  * Describes a containing component with a programmable core that has some
  * sized address space.
  */
-class KACTUS2_API Cpu {
+class IPXACTMODELS_EXPORT Cpu {
 
 public:
     /*!

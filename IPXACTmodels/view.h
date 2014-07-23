@@ -7,13 +7,13 @@
 #ifndef VIEW_H_
 #define VIEW_H_
 
-#include <library/LibraryManager/vlnv.h>
+#include"vlnv.h"
 
 #include <IPXACTmodels/NameGroup.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/filebuilder.h>
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QList>
@@ -31,7 +31,7 @@ class Kactus2Value;
  *
  * Specifies a representation level of a component.
  */
-class KACTUS2_API View {
+class IPXACTMODELS_EXPORT View {
 
 public:
 

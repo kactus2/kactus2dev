@@ -16,7 +16,7 @@
 
 #include "NameGroup.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QDomNode>
 #include <QString>
@@ -29,7 +29,7 @@
 // Specifies a connection between one bus interface of a component
 // and another bus interface of a component.
 //-----------------------------------------------------------------------------
-class KACTUS2_API Interconnection
+class IPXACTMODELS_EXPORT Interconnection
 {
 public:
     /*! The constructor

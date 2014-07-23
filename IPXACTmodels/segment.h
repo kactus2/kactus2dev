@@ -11,7 +11,7 @@
 
 #include <IPXACTmodels/NameGroup.h>
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QXmlStreamWriter>
 #include <QDomNode>
@@ -23,7 +23,7 @@ class VendorExtension;
 /*! \brief Segment describes the location and size of an area in containing address space.
  *
  */
-class KACTUS2_API Segment {
+class IPXACTMODELS_EXPORT Segment {
 
 public:
 

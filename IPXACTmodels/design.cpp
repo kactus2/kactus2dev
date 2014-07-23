@@ -18,8 +18,8 @@
 #include "XmlUtils.h"
 
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
-#include <common/KactusAttribute.h>
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
+#include"vlnv.h"
 #include "XmlUtils.h"
 
 #include <QDomNamedNodeMap>

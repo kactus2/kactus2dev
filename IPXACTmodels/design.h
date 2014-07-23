@@ -24,10 +24,10 @@
 #include "HierConnection.h"
 
 #include "librarycomponent.h"
-#include <library/LibraryManager/vlnv.h>
+#include"vlnv.h"
 
-#include <common/Global.h>
-#include <common/KactusAttribute.h>
+#include "ipxactmodels_global.h"
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QSharedPointer>
 #include <QList>
@@ -45,7 +45,7 @@
  *
  * Describes the spirit:design element in an IP-XACT document
  */
-class KACTUS2_API Design: public LibraryComponent {
+class IPXACTMODELS_EXPORT Design: public LibraryComponent {
 
 public:
 	/*! \brief The constructor

@@ -12,7 +12,7 @@
 #ifndef SYSTEMCHANGECOMMANDS_H
 #define SYSTEMCHANGECOMMANDS_H
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QMap>
 #include <QUndoCommand>

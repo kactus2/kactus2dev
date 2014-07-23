@@ -12,7 +12,7 @@
 #ifndef INTERFACE_H
 #define INTERFACE_H
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QDomNode>
 #include <QString>
@@ -24,7 +24,7 @@
 // Specifies the bus interface of a design component instance that
 // is part of an interconnection.
 //-----------------------------------------------------------------------------
-class KACTUS2_API Interface
+class IPXACTMODELS_EXPORT Interface
 {
 
 public:

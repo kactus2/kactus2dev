@@ -11,7 +11,7 @@
 
 #include "ApiCreateDialog.h"
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QVBoxLayout>
 #include <QLabel>

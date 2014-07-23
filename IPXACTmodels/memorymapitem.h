@@ -7,7 +7,7 @@
 #ifndef MEMORYMAPITEM_H_
 #define MEMORYMAPITEM_H_
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QDomNode>
 #include <QMap>
@@ -20,7 +20,7 @@
  * MemoryMapItem instances don't represent any element in IP-Xact specification
  * so only it is meant to be purely a base class.
  */
-class KACTUS2_API MemoryMapItem {
+class IPXACTMODELS_EXPORT MemoryMapItem {
 
 public:
 

@@ -9,7 +9,7 @@
 
 #include "generaldeclarations.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QSharedPointer>
 #include <QDomNode>
@@ -21,7 +21,7 @@ struct Qualifier;
  *
  * Represents a port that carries logic values or an array of logic values.
  */
-class KACTUS2_API WireAbstraction {
+class IPXACTMODELS_EXPORT WireAbstraction {
 
 public:
 

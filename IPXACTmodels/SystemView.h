@@ -12,11 +12,11 @@
 #ifndef SYSTEMVIEW_H
 #define SYSTEMVIEW_H
 
-#include <library/LibraryManager/vlnv.h>
+#include"vlnv.h"
 
 #include <IPXACTmodels/NameGroup.h>
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QDomNode>
@@ -26,7 +26,7 @@
 //-----------------------------------------------------------------------------
 //! System view class for making VLNV references to system designs.
 //-----------------------------------------------------------------------------
-class KACTUS2_API SystemView
+class IPXACTMODELS_EXPORT SystemView
 {
 public:
     /*!

@@ -13,7 +13,7 @@
 #define HWDELETECOMMANDS_H
 
 #include <IPXACTmodels/generaldeclarations.h>
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QUndoCommand>
 #include <QGraphicsItem>

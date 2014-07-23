@@ -12,7 +12,7 @@
 #ifndef FILEDEPENDENCY_H
 #define FILEDEPENDENCY_H
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QDomNode>
@@ -24,7 +24,7 @@ class FileDependencyItem;
 //-----------------------------------------------------------------------------
 //! File dependency class.
 //-----------------------------------------------------------------------------
-class KACTUS2_API FileDependency : public QObject
+class IPXACTMODELS_EXPORT FileDependency : public QObject
 {
 public:
     //-----------------------------------------------------------------------------

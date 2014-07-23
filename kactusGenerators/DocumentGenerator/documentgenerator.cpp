@@ -24,7 +24,7 @@
 #include <IPXACTmodels/designconfiguration.h>
 
 #include <common/utils.h>
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 
 #include <designEditors/HWDesign/HWDesignWidget.h>

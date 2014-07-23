@@ -7,9 +7,9 @@
 #ifndef DESIGNCONFABSTRACTOR_H_
 #define DESIGNCONFABSTRACTOR_H_
 
-#include <library/LibraryManager/vlnv.h>
+#include"vlnv.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QMap>
@@ -24,7 +24,7 @@ class VLNV;
  * This element is used inside DesignConfiguration's
  * interconectionConfiguration element.
  */
-class KACTUS2_API DesignConfAbstractor {
+class IPXACTMODELS_EXPORT DesignConfAbstractor {
 
 public:
 

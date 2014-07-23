@@ -6,6 +6,7 @@
 
 #include "memoryblockdata.h"
 #include "generaldeclarations.h"
+#include "parameter.h"
 
 #include <QSharedPointer>
 #include <QList>

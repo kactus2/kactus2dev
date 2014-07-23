@@ -13,7 +13,7 @@
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 //-----------------------------------------------------------------------------

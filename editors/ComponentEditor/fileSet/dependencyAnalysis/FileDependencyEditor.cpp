@@ -22,7 +22,7 @@
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/file.h>
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <Plugins/PluginSystem/PluginManager.h>
 #include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>

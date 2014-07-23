@@ -5,7 +5,7 @@
  */
 
 #include "generatorchainselector.h"
-#include <library/LibraryManager/vlnv.h>
+#include"vlnv.h"
 #include "generaldeclarations.h"
 
 

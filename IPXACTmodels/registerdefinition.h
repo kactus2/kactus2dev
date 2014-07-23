@@ -9,7 +9,7 @@
 
 #include "generaldeclarations.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QXmlStreamWriter>
@@ -25,7 +25,7 @@ class Field;
  *
  * Contains additional elements for the register.
  */
-class KACTUS2_API RegisterDefinition {
+class IPXACTMODELS_EXPORT RegisterDefinition {
 
 public:
 

@@ -14,7 +14,7 @@
 
 #include "generaldeclarations.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QDomNode>
@@ -23,7 +23,7 @@
 //-----------------------------------------------------------------------------
 //! API function parameter class for API definitions.
 //-----------------------------------------------------------------------------
-class KACTUS2_API ApiFunctionParameter
+class IPXACTMODELS_EXPORT ApiFunctionParameter
 {
 public:
     /*!

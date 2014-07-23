@@ -9,7 +9,7 @@
 #include <library/LibraryManager/libraryinterface.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 #include <IPXACTmodels/component.h>
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include "alterabspgeneratordialog.h"
 #include <IPXACTmodels/SWView.h>
 #include <IPXACTmodels/generaldeclarations.h>

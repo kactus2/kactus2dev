@@ -11,7 +11,7 @@
 
 #include "HDLComponentDeclaration.h"
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <IPXACTmodels/component.h>
 

@@ -11,7 +11,7 @@
 
 #include <IPXACTmodels/NameGroup.h>
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QList>
@@ -33,7 +33,7 @@ class Kactus2Value;
  *
  * Contains a list of files and directories associated with a component.
  */
-class KACTUS2_API FileSet {
+class IPXACTMODELS_EXPORT FileSet {
 
 public:
 

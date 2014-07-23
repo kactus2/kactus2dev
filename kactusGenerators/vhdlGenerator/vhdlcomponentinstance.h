@@ -16,7 +16,7 @@
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/component.h>
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QObject>
 #include <QString>

@@ -10,7 +10,7 @@
 #include "ipxactwidget.h"
 #include "ipxactmodel.h"
 #include "librarytreemodel.h"
-#include "vlnv.h"
+#include <IPXACTmodels/vlnv.h>
 
 #include <common/utils.h>
 #include <common/widgets/ScanProgressWidget/scanprogresswidget.h>

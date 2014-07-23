@@ -14,7 +14,7 @@
 
 #include "ComConnection.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QDomNode>
@@ -26,7 +26,7 @@
 //-----------------------------------------------------------------------------
 //! Class encapsulating COM dependency connection data.
 //-----------------------------------------------------------------------------
-class KACTUS2_API HierComConnection
+class IPXACTMODELS_EXPORT HierComConnection
 {
 public:
     /*!

@@ -12,6 +12,8 @@
 #ifndef KACTUSATTRIBUTE_H
 #define KACTUSATTRIBUTE_H
 
+#include <IPXACTmodels/ipxactmodels_global.h>
+
 #include <QString>
 
 //-----------------------------------------------------------------------------
@@ -41,7 +43,7 @@ namespace KactusAttribute
      *
      *      @return The equivalent string.
      */
-    QString valueToString(ProductHierarchy prodHier);
+    IPXACTMODELS_EXPORT QString valueToString(ProductHierarchy prodHier);
 
     /*!
      *  Converts the given string to a product hierarchy enum value.
@@ -71,7 +73,7 @@ namespace KactusAttribute
      *
      *      @return The equivalent string.
      */
-    QString valueToString(Firmness firmness);
+    IPXACTMODELS_EXPORT QString valueToString(Firmness firmness);
 
     /*!
      *  Converts the given string to a firmness enum value.
@@ -101,7 +103,7 @@ namespace KactusAttribute
      *
      *      @return The equivalent string.
      */
-    QString valueToString(Implementation implementation);
+    IPXACTMODELS_EXPORT QString valueToString(Implementation implementation);
 
     /*!
      *  Converts the given string to a firmness enum value.

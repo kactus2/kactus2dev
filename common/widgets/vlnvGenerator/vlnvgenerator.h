@@ -7,7 +7,7 @@
 #ifndef VLNVGENERATOR_H_
 #define VLNVGENERATOR_H_
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QGroupBox>
 #include <QLineEdit>

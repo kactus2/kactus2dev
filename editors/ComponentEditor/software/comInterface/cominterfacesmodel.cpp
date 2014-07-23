@@ -9,7 +9,7 @@
 #include "cominterfacesdelegate.h"
 #include <IPXACTmodels/generaldeclarations.h>
 #include <library/LibraryManager/libraryinterface.h>
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 #include <IPXACTmodels/ComDefinition.h>
 
 #include <QColor>

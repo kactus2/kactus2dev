@@ -9,7 +9,7 @@
 #include <common/views/EditableTableView/editabletableview.h>
 #include "swbuildcommandmodel.h"
 #include "swbuilddelegate.h"
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QVBoxLayout>
 

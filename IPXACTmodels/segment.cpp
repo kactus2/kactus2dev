@@ -7,7 +7,7 @@
 
 #include "segment.h"
 
-#include <common/utils.h>
+#include <generaldeclarations.h>
 
 #include "GenericVendorExtension.h"
 #include "XmlUtils.h"
@@ -218,8 +218,8 @@ void Segment::setRange( const QString& range ) {
 }
 
 quint64 Segment::getLastAddress() const {
-	quint64 base = Utils::str2Uint(addressOffset_);
-	quint64 range = Utils::str2Uint(range_);
+	quint64 base = General::str2Uint(addressOffset_);
+	quint64 range = General::str2Uint(range_);
 
 	quint64 lastAddr = base + range;
 

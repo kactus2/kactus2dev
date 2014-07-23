@@ -7,7 +7,7 @@
 #ifndef VECTOR_H_
 #define VECTOR_H_
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -18,7 +18,7 @@
  *
  * Determines the left and right vector bounds and attributes for them
  */
-class KACTUS2_API Vector {
+class IPXACTMODELS_EXPORT Vector {
 
 public:
 

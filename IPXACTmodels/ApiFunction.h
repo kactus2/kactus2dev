@@ -12,7 +12,7 @@
 #ifndef APIFUNCTION_H
 #define APIFUNCTION_H
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QDomNode>
@@ -24,7 +24,7 @@ class ApiFunctionParameter;
 //-----------------------------------------------------------------------------
 //! API function class.
 //-----------------------------------------------------------------------------
-class KACTUS2_API ApiFunction
+class IPXACTMODELS_EXPORT ApiFunction
 {
 public:
     /*!

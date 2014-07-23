@@ -16,9 +16,9 @@
 #include "generaldeclarations.h"
 #include "NameGroup.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
-#include <library/LibraryManager/vlnv.h>
+#include"vlnv.h"
 
 #include <QString>
 #include <QDomNode>
@@ -30,7 +30,7 @@
 //! COM interface class for defining properties of a specific COM interface
 //! in a SW component.
 //-----------------------------------------------------------------------------
-class KACTUS2_API ComInterface
+class IPXACTMODELS_EXPORT ComInterface
 {
 public:
     /*!

@@ -14,7 +14,7 @@
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/kactusAttributeEditor/KactusAttributeEditor.h>
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>

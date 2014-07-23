@@ -9,7 +9,7 @@
 #include <IPXACTmodels/generaldeclarations.h>
 #include "busifgeneraltab.h"
 #include <library/LibraryManager/libraryinterface.h>
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 #include <IPXACTmodels/busdefinition.h>
 
 #include <QGridLayout>

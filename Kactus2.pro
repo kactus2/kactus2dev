@@ -5,7 +5,7 @@
 TEMPLATE = app
 TARGET = Kactus2
 DESTDIR = ./executable
-QT += core xml widgets gui printsupport help xmlpatterns
+QT += core xml widgets gui printsupport help
 CONFIG += release
 DEFINES += _WINDOWS QT_DLL QT_XMLPATTERNS_LIB QT_XML_LIB QT_HAVE_MMX QT_HAVE_3DNOW QT_HAVE_SSE QT_HAVE_MMXEXT QT_HAVE_SSE2 KACTUS2_EXPORTS QT_HELP_LIB QT_PRINTSUPPORT_LIB QT_WIDGETS_LIB
 INCLUDEPATH += . \
@@ -14,6 +14,8 @@ INCLUDEPATH += . \
     $(QTDIR)/../qttools/include/QtHelp \
     $(QTDIR)/../qtxmlpatterns/include/QtXmlPatterns \
     $(QTDIR)/../qtxmlpatterns/include
+LIBS += -L"$(SolutionDir)executable" \
+    -lIPXACTmodels
 DEPENDPATH += .
 linux-g++*:QMAKE_CXXFLAGS += -fPIE
 linux-g++*:LIBS += -pie -rdynamic

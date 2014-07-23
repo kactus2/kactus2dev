@@ -11,7 +11,7 @@
 #include "memorymapitem.h"
 #include "memoryblockdata.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QList>
 #include <QString>
@@ -19,6 +19,7 @@
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
 
+class Parameter;
 class VendorExtension;
 
 /*! \brief Equals the spirit:bank element in IP-Xact specification
@@ -27,7 +28,7 @@ class VendorExtension;
  * Bank is a generalization of a class MemoryMapItem which is the base class
  * also for classes AddressBlock and SubspaceMap.
  */
-class KACTUS2_API Bank : public MemoryMapItem {
+class IPXACTMODELS_EXPORT Bank : public MemoryMapItem {
 
 public:
 

@@ -12,7 +12,7 @@
 #ifndef FILEDEPENDENCYITEM_H
 #define FILEDEPENDENCYITEM_H
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QObject>
 #include <QString>

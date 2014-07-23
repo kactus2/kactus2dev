@@ -15,7 +15,7 @@ INCLUDEPATH += ./GeneratedFiles \
     $(QTDIR)/../qttools/include \
     $(QTDIR)/../qttools/include/QtHelp
 LIBS += -L"./../../executable" \
-    -lKactus2
+    -lIPXACTmodels
 DEPENDPATH += .
 MOC_DIR += ./GeneratedFiles/release
 OBJECTS_DIR += release

@@ -5,7 +5,7 @@
  */
 
 #include "libraryhandler.h"
-#include "vlnv.h"
+#include <IPXACTmodels/vlnv.h>
 
 #include "LibraryErrorModel.h"
 

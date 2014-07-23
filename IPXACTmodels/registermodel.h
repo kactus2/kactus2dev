@@ -7,8 +7,8 @@
 #ifndef REGISTERMODEL_H_
 #define REGISTERMODEL_H_
 
-#include <common/Global.h>
-#include <IPXACTmodels/NameGroup.h>
+#include "ipxactmodels_global.h"
+#include "NameGroup.h"
 
 #include <QList>
 #include <QDomNode>
@@ -30,7 +30,7 @@ class Parameter;
  * AlternateRegister = 	spirit:alternateRegister
  * RegisterFile = 		spirit:registerFile
  */
-class KACTUS2_API RegisterModel {
+class IPXACTMODELS_EXPORT RegisterModel {
 
 public:
 

@@ -9,7 +9,7 @@
 
 #include <IPXACTmodels/NameGroup.h>
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QDomNode>
 #include <QString>
@@ -24,7 +24,7 @@ class VendorExtension;
  * ModelParameter desribes the properties for a single parameter that is
  * applied to all the models specified under the model/views element.
  */
-class KACTUS2_API ModelParameter {
+class IPXACTMODELS_EXPORT ModelParameter {
 
 public:
 

@@ -8,6 +8,8 @@
 #ifndef FILESELECTOR_H
 #define FILESELECTOR_H
 
+#include <common/Global.h>
+
 #include <IPXACTmodels/component.h>
 
 #include <QComboBox>

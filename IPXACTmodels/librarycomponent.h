@@ -7,10 +7,10 @@
 #ifndef LIBRARYCOMPONENT_H_
 #define LIBRARYCOMPONENT_H_
 
-#include <library/LibraryManager/vlnv.h>
+#include"vlnv.h"
 #include "generaldeclarations.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QList>
@@ -28,7 +28,7 @@ class VendorExtension;
  * of the components, designs, busdefinitions, etc.
  *
  */
-class KACTUS2_API LibraryComponent {
+class IPXACTMODELS_EXPORT LibraryComponent {
 
 public:
 

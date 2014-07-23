@@ -7,7 +7,7 @@
 #ifndef COMPONENT_H_
 #define COMPONENT_H_
 
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include "librarycomponent.h"
 #include "generaldeclarations.h"
@@ -15,7 +15,7 @@
 #include "port.h"
 #include "modelparameter.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QList>
 #include <QDomDocument>
@@ -54,7 +54,7 @@ class FileDependency;
  * Class component is a generalization from base class LibraryComponent.
  * Component can be used to describe cores, peripherals and buses.
  */
-class KACTUS2_API Component: public LibraryComponent {
+class IPXACTMODELS_EXPORT Component: public LibraryComponent {
 
 public:
 

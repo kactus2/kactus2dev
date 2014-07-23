@@ -10,7 +10,7 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/view.h>
 #include <library/LibraryManager/libraryinterface.h>
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 #include <IPXACTmodels/filebuilder.h>
 
 #include <QVBoxLayout>

@@ -9,7 +9,7 @@
 
 #include "generaldeclarations.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QDomNode>
 #include <QList>
@@ -22,7 +22,7 @@
  * Consists of a number of sub-elements which define the format of the clock
  * waveform.
  */
-class KACTUS2_API OtherClockDriver {
+class IPXACTMODELS_EXPORT OtherClockDriver {
 
 public:
 

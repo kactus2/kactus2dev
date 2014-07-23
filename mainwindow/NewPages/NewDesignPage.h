@@ -13,7 +13,7 @@
 #define NEWDESIGNPAGE_H
 
 #include "NewPage.h"
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 class KactusAttributeEditor;
 

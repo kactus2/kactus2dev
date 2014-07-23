@@ -27,7 +27,7 @@
 #include <IPXACTmodels/portabstraction.h>
 
 #include <library/LibraryManager/libraryinterface.h>
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/BitSelectionDialog.h>
 
 namespace

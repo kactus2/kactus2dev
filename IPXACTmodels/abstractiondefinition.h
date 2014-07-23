@@ -10,7 +10,7 @@
 #include "librarycomponent.h"
 #include "generaldeclarations.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
   
 #include <QList>
 #include <QDomDocument>
@@ -29,7 +29,7 @@ class PortAbstraction;
  * AbstractionDefinitions describes the low-level aspects of a bus or
  * interconnect.
  */
-class KACTUS2_API AbstractionDefinition: public LibraryComponent {
+class IPXACTMODELS_EXPORT AbstractionDefinition: public LibraryComponent {
 
 public:
 

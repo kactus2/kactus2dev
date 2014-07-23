@@ -13,11 +13,11 @@
 #ifndef APIINTERFACE_H
 #define APIINTERFACE_H
 
-#include <library/LibraryManager/vlnv.h>
+#include"vlnv.h"
 #include "generaldeclarations.h"
 #include <IPXACTmodels/NameGroup.h>
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QDomNode>
@@ -36,7 +36,7 @@ enum DependencyDirection
 /*!
  *  Converts the string to an equivalent enumeration value.
  */
-DependencyDirection str2DependencyDirection(QString const& str, DependencyDirection defaultValue);
+IPXACTMODELS_EXPORT DependencyDirection str2DependencyDirection(QString const& str, DependencyDirection defaultValue);
 
 /*!
  *  Converts the enumeration value to an equivalent string.
@@ -45,13 +45,13 @@ DependencyDirection str2DependencyDirection(QString const& str, DependencyDirect
  *
  *      @return The equivalent string.
  */
-QString dependencyDirection2Str(DependencyDirection dir);
+IPXACTMODELS_EXPORT QString dependencyDirection2Str(DependencyDirection dir);
 
 //-----------------------------------------------------------------------------
 //! API interface class for defining properties of a specific API interface
 //! in a SW component.
 //-----------------------------------------------------------------------------
-class KACTUS2_API ApiInterface
+class IPXACTMODELS_EXPORT ApiInterface
 {
 public:
     /*!

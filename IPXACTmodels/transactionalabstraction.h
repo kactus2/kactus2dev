@@ -9,7 +9,7 @@
 
 #include "generaldeclarations.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QSharedPointer>
 #include <QList>
@@ -23,7 +23,7 @@ class TransactionalPort;
  *
  * Defines a logical transactional port of the abstraction definition.
  */
-class KACTUS2_API TransactionalAbstraction {
+class IPXACTMODELS_EXPORT TransactionalAbstraction {
 
 public:
 

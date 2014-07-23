@@ -9,8 +9,8 @@
 #include <QDialog>
 #include <QPushButton>
 
-#include <common/KactusAttribute.h>
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
+#include <IPXACTmodels/vlnv.h>
 #include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 
 class LibraryInterface;

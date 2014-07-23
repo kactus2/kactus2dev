@@ -14,7 +14,7 @@
 #include "GenericVendorExtension.h"
 #include "XmlUtils.h"
 
-#include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
+#include <QRegExpValidator>
 
 #include <QUuid>
 
@@ -276,7 +276,7 @@ bool ComponentInstance::isValid(QStringList& errorList, QString const& parentIde
     }
 
     // if the instance name contains characters that are not allowed in vhdl
-    VhdlNameValidator nameValidator;
+    QRegExpValidator nameValidator(QRegExp("^[a-zA-Z]+[a-zA-Z0-9_]*$"));
     int pos = 0;
     QString instName(instanceName_);
 
@@ -322,7 +322,7 @@ bool ComponentInstance::isValid() const
     }
 
     // if the instance name contains characters that are not allowed in vhdl
-    VhdlNameValidator nameValidator;
+    QRegExpValidator nameValidator;
     int pos = 0;
     QString instName(instanceName_);
 

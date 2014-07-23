@@ -1,0 +1,326 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5C0CA59D-CFCE-49C6-B62A-9E3065CA34DD}</ProjectGuid>
+    <Keyword>Qt4VSv1.0</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)executable\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)x64\executable\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)executable\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)x64\executable\</OutDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)d</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_XML_LIB;IPXACTMODELS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtXml;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)\$(ProjectName)d.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Xmld.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_XML_LIB;IPXACTMODELS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtXml;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)\$(ProjectName)d.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Xmld.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_XML_LIB;IPXACTMODELS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtXml;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Xml.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_XML_LIB;IPXACTMODELS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtXml;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Xml.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="abstractiondefinition.cpp" />
+    <ClCompile Include="addressblock.cpp" />
+    <ClCompile Include="addressspace.cpp" />
+    <ClCompile Include="AdHocConnection.cpp" />
+    <ClCompile Include="alternateregister.cpp" />
+    <ClCompile Include="ApiDefinition.cpp" />
+    <ClCompile Include="ApiDependency.cpp" />
+    <ClCompile Include="ApiFunction.cpp" />
+    <ClCompile Include="ApiFunctionParameter.cpp" />
+    <ClCompile Include="ApiInterface.cpp" />
+    <ClCompile Include="bank.cpp" />
+    <ClCompile Include="bspbuildcommand.cpp" />
+    <ClCompile Include="buildcommand.cpp" />
+    <ClCompile Include="buildmodel.cpp" />
+    <ClCompile Include="busdefinition.cpp" />
+    <ClCompile Include="businterface.cpp" />
+    <ClCompile Include="channel.cpp" />
+    <ClCompile Include="choice.cpp" />
+    <ClCompile Include="ColumnDesc.cpp" />
+    <ClCompile Include="ComConnection.cpp" />
+    <ClCompile Include="ComDefinition.cpp" />
+    <ClCompile Include="ComInterface.cpp" />
+    <ClCompile Include="component.cpp" />
+    <ClCompile Include="componentgenerator.cpp" />
+    <ClCompile Include="ComponentInstance.cpp" />
+    <ClCompile Include="ComProperty.cpp" />
+    <ClCompile Include="cpu.cpp" />
+    <ClCompile Include="design.cpp" />
+    <ClCompile Include="designconfabstractor.cpp" />
+    <ClCompile Include="designconfiguration.cpp" />
+    <ClCompile Include="enumeratedvalue.cpp" />
+    <ClCompile Include="field.cpp" />
+    <ClCompile Include="file.cpp" />
+    <ClCompile Include="filebuilder.cpp" />
+    <ClCompile Include="FileDependency.cpp" />
+    <ClCompile Include="fileset.cpp" />
+    <ClCompile Include="function.cpp" />
+    <ClCompile Include="generaldeclarations.cpp" />
+    <ClCompile Include="generator.cpp" />
+    <ClCompile Include="generatorchain.cpp" />
+    <ClCompile Include="generatorchainselector.cpp" />
+    <ClCompile Include="GenericVendorExtension.cpp" />
+    <ClCompile Include="HierApiDependency.cpp" />
+    <ClCompile Include="HierComConnection.cpp" />
+    <ClCompile Include="HierConnection.cpp" />
+    <ClCompile Include="Interconnection.cpp" />
+    <ClCompile Include="Interface.cpp" />
+    <ClCompile Include="kactusExtensions\Kactus2Group.cpp" />
+    <ClCompile Include="kactusExtensions\Kactus2Placeholder.cpp" />
+    <ClCompile Include="kactusExtensions\Kactus2Position.cpp" />
+    <ClCompile Include="kactusExtensions\Kactus2Value.cpp" />
+    <ClCompile Include="kactusExtensions\KactusAttribute.cpp" />
+    <ClCompile Include="librarycomponent.cpp" />
+    <ClCompile Include="masterinterface.cpp" />
+    <ClCompile Include="memoryblockdata.cpp" />
+    <ClCompile Include="memorymap.cpp" />
+    <ClCompile Include="memorymapitem.cpp" />
+    <ClCompile Include="mirroredslaveinterface.cpp" />
+    <ClCompile Include="model.cpp" />
+    <ClCompile Include="modelparameter.cpp" />
+    <ClCompile Include="NameGroup.cpp" />
+    <ClCompile Include="otherclockdriver.cpp" />
+    <ClCompile Include="parameter.cpp" />
+    <ClCompile Include="port.cpp" />
+    <ClCompile Include="portabstraction.cpp" />
+    <ClCompile Include="PortRef.cpp" />
+    <ClCompile Include="register.cpp" />
+    <ClCompile Include="registerdefinition.cpp" />
+    <ClCompile Include="registerfile.cpp" />
+    <ClCompile Include="registermodel.cpp" />
+    <ClCompile Include="remapport.cpp" />
+    <ClCompile Include="remapstate.cpp" />
+    <ClCompile Include="reset.cpp" />
+    <ClCompile Include="segment.cpp" />
+    <ClCompile Include="servicetypedef.cpp" />
+    <ClCompile Include="slaveinterface.cpp" />
+    <ClCompile Include="subspacemap.cpp" />
+    <ClCompile Include="swbuildcommand.cpp" />
+    <ClCompile Include="SWInstance.cpp" />
+    <ClCompile Include="SWView.cpp" />
+    <ClCompile Include="SystemView.cpp" />
+    <ClCompile Include="transactional.cpp" />
+    <ClCompile Include="transactionalabstraction.cpp" />
+    <ClCompile Include="vector.cpp" />
+    <ClCompile Include="view.cpp" />
+    <ClCompile Include="vlnv.cpp" />
+    <ClCompile Include="wire.cpp" />
+    <ClCompile Include="wireabstraction.cpp" />
+    <ClCompile Include="writevalueconstraint.cpp" />
+    <ClCompile Include="XmlUtils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\resource.h" />
+    <ClInclude Include="abstractiondefinition.h" />
+    <ClInclude Include="addressblock.h" />
+    <ClInclude Include="addressspace.h" />
+    <ClInclude Include="AdHocConnection.h" />
+    <ClInclude Include="alternateregister.h" />
+    <ClInclude Include="ApiDefinition.h" />
+    <ClInclude Include="ApiDependency.h" />
+    <ClInclude Include="ApiFunction.h" />
+    <ClInclude Include="ApiFunctionParameter.h" />
+    <ClInclude Include="ApiInterface.h" />
+    <ClInclude Include="bank.h" />
+    <ClInclude Include="bspbuildcommand.h" />
+    <ClInclude Include="buildcommand.h" />
+    <ClInclude Include="buildmodel.h" />
+    <ClInclude Include="busdefinition.h" />
+    <ClInclude Include="businterface.h" />
+    <ClInclude Include="channel.h" />
+    <ClInclude Include="choice.h" />
+    <ClInclude Include="ColumnDesc.h" />
+    <ClInclude Include="ComConnection.h" />
+    <ClInclude Include="ComDefinition.h" />
+    <ClInclude Include="ComInterface.h" />
+    <ClInclude Include="component.h" />
+    <ClInclude Include="componentgenerator.h" />
+    <ClInclude Include="ComponentInstance.h" />
+    <ClInclude Include="ComProperty.h" />
+    <ClInclude Include="cpu.h" />
+    <ClInclude Include="design.h" />
+    <ClInclude Include="designconfabstractor.h" />
+    <ClInclude Include="designconfiguration.h" />
+    <ClInclude Include="enumeratedvalue.h" />
+    <ClInclude Include="field.h" />
+    <ClInclude Include="file.h" />
+    <ClInclude Include="filebuilder.h" />
+    <ClInclude Include="FileDependency.h" />
+    <ClInclude Include="fileset.h" />
+    <ClInclude Include="function.h" />
+    <ClInclude Include="generaldeclarations.h" />
+    <ClInclude Include="generator.h" />
+    <ClInclude Include="generatorchain.h" />
+    <ClInclude Include="generatorchainselector.h" />
+    <ClInclude Include="GenericVendorExtension.h" />
+    <ClInclude Include="HierApiDependency.h" />
+    <ClInclude Include="HierComConnection.h" />
+    <ClInclude Include="HierConnection.h" />
+    <ClInclude Include="Interconnection.h" />
+    <ClInclude Include="Interface.h" />
+    <ClInclude Include="ipxactmodels_global.h" />
+    <ClInclude Include="kactusExtensions\Kactus2Group.h" />
+    <ClInclude Include="kactusExtensions\Kactus2Placeholder.h" />
+    <ClInclude Include="kactusExtensions\Kactus2Position.h" />
+    <ClInclude Include="kactusExtensions\Kactus2Value.h" />
+    <ClInclude Include="kactusExtensions\KactusAttribute.h" />
+    <ClInclude Include="librarycomponent.h" />
+    <ClInclude Include="masterinterface.h" />
+    <ClInclude Include="memoryblockdata.h" />
+    <ClInclude Include="memorymap.h" />
+    <ClInclude Include="memorymapitem.h" />
+    <ClInclude Include="mirroredslaveinterface.h" />
+    <ClInclude Include="model.h" />
+    <ClInclude Include="modelparameter.h" />
+    <ClInclude Include="NameGroup.h" />
+    <ClInclude Include="otherclockdriver.h" />
+    <ClInclude Include="parameter.h" />
+    <ClInclude Include="port.h" />
+    <ClInclude Include="portabstraction.h" />
+    <ClInclude Include="PortRef.h" />
+    <ClInclude Include="register.h" />
+    <ClInclude Include="registerdefinition.h" />
+    <ClInclude Include="registerfile.h" />
+    <ClInclude Include="registermodel.h" />
+    <ClInclude Include="remapport.h" />
+    <ClInclude Include="remapstate.h" />
+    <ClInclude Include="reset.h" />
+    <ClInclude Include="segment.h" />
+    <ClInclude Include="servicetypedef.h" />
+    <ClInclude Include="slaveinterface.h" />
+    <ClInclude Include="subspacemap.h" />
+    <ClInclude Include="swbuildcommand.h" />
+    <ClInclude Include="SWInstance.h" />
+    <ClInclude Include="SWView.h" />
+    <ClInclude Include="SystemView.h" />
+    <ClInclude Include="transactional.h" />
+    <ClInclude Include="transactionalabstraction.h" />
+    <ClInclude Include="vector.h" />
+    <ClInclude Include="VendorExtension.h" />
+    <ClInclude Include="view.h" />
+    <ClInclude Include="vlnv.h" />
+    <ClInclude Include="wire.h" />
+    <ClInclude Include="wireabstraction.h" />
+    <ClInclude Include="writevalueconstraint.h" />
+    <ClInclude Include="XmlUtils.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties UicDir=".\GeneratedFiles" MocDir=".\GeneratedFiles\$(ConfigurationName)" MocOptions="" RccDir=".\GeneratedFiles" lupdateOnBuild="0" lupdateOptions="" lreleaseOptions="" Qt5Version_x0020_Win32="5.2.0" Qt5Version_x0020_x64="5.2.0x64" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

@@ -7,7 +7,7 @@
 #ifndef CHANNEL_H_
 #define CHANNEL_H_
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QXmlStreamWriter>
 #include <QString>
@@ -19,7 +19,7 @@
  * This struct contains a list of all the mirrored bus interfaces in the
  * containing component that belong to the same channel
  */
-class KACTUS2_API Channel {
+class IPXACTMODELS_EXPORT Channel {
 
 public:
 

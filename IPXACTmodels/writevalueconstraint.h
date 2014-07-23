@@ -8,7 +8,7 @@
 #ifndef WRITEVALUECONSTRAINT_H
 #define WRITEVALUECONSTRAINT_H
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QXmlStreamWriter>
@@ -18,7 +18,7 @@
  *
  * Describes a set of constraint values that can be written to a containing field.
  */
-class KACTUS2_API WriteValueConstraint {
+class IPXACTMODELS_EXPORT WriteValueConstraint {
 
 
 public:

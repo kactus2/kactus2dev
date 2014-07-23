@@ -10,7 +10,7 @@
 #include <common/utils.h>
 #include <IPXACTmodels/component.h>
 
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QSortFilterProxyModel>
 #include <QString>

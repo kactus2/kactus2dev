@@ -11,7 +11,7 @@
 #include "librarycomponent.h"
 #include "choice.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QList>
 #include <QString>
@@ -29,7 +29,7 @@ class GeneratorChainSelector;
  * Class GeneratorChain is a generalization of from base class LibraryComponent.
  * GeneratorChain describes a single generator chain.
  */
-class KACTUS2_API GeneratorChain: public LibraryComponent {
+class IPXACTMODELS_EXPORT GeneratorChain: public LibraryComponent {
 
 public:
 

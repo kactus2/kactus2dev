@@ -17,7 +17,7 @@
 #include "MemoryColumn.h"
 #include "MemoryDesignDiagram.h"
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <common/utils.h>
 #include <designEditors/common/DesignDiagram.h>

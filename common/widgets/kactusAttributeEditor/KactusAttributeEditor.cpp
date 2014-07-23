@@ -11,7 +11,7 @@
 
 #include "KactusAttributeEditor.h"
 
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QGridLayout>
 #include <QString>

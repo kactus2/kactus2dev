@@ -12,7 +12,7 @@
 #ifndef COLUMNDESC_H
 #define COLUMNDESC_H
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 #include <designEditors/common/ColumnTypes.h>
 
 #include <QString>
@@ -23,7 +23,7 @@
 //! ColumnDesc structure which describes the kactus2:column element
 //! in an IP-XACT document.
 //-----------------------------------------------------------------------------
-class KACTUS2_API ColumnDesc
+class IPXACTMODELS_EXPORT ColumnDesc
 {
 public:
     /*!

@@ -9,7 +9,7 @@
 
 #include "generaldeclarations.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QList>
@@ -19,7 +19,7 @@
  *
  * Contains the name of the choice and the enumerations defined in it.
  */
-class KACTUS2_API Choice {
+class IPXACTMODELS_EXPORT Choice {
 
 public:
 

@@ -5,7 +5,7 @@
 TEMPLATE = lib
 TARGET = CppSourceAnalyzer
 DESTDIR = ../../executable/Plugins
-QT += core xml widgets gui help
+QT += core xml widgets gui
 CONFIG += plugin release
 DEFINES += CPPSOURCEANALYZER_LIB QT_XML_LIB QT_XMLPATTERNS_LIB QT_DLL QT_HELP_LIB QT_WIDGETS_LIB
 INCLUDEPATH += ./GeneratedFiles \

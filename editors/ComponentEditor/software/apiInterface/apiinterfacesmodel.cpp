@@ -8,7 +8,7 @@
 #include "apiinterfacesmodel.h"
 #include "apiinterfacesdelegate.h"
 #include <IPXACTmodels/ApiInterface.h>
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QColor>
 #include <QMimeData>

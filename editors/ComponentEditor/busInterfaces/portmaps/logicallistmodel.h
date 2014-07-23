@@ -11,7 +11,7 @@
 #include "portlistmodel.h"
 
 #include <IPXACTmodels/generaldeclarations.h>
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 class LibraryInterface;
 class PortMapsTreeModel;

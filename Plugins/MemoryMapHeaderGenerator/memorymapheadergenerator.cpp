@@ -16,7 +16,6 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <common/dialogs/fileSaveDialog/filesavedialog.h>
-#include <common/KactusAttribute.h>
 #include <common/utils.h>
 
 #include <IPXACTmodels/SWView.h>
@@ -32,6 +31,7 @@
 #include <IPXACTmodels/mirroredslaveinterface.h>
 #include <IPXACTmodels/slaveinterface.h>
 #include <IPXACTmodels/Interface.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QtPlugin>
 #include <QFileInfo>

@@ -5,7 +5,7 @@
  */
 
 #include "designconfabstractor.h"
-#include <library/LibraryManager/vlnv.h>
+#include"vlnv.h"
 
 #include <QString>
 #include <QSharedPointer>

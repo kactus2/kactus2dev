@@ -9,7 +9,7 @@
 
 #include "generaldeclarations.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <IPXACTmodels/NameGroup.h>
 
@@ -31,7 +31,7 @@ class Kactus2Position;
  *
  * Port describes a single external port on the component
  */
-class KACTUS2_API Port {
+class IPXACTMODELS_EXPORT Port {
 
 public:
 

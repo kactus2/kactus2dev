@@ -13,7 +13,7 @@
 #include "PadsPartGenerator.h"
 #include "PadsAsciiSyntax.h"
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>
 #include <IPXACTmodels/abstractiondefinition.h>
 #include <IPXACTmodels/businterface.h>

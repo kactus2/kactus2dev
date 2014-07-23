@@ -9,7 +9,7 @@
 
 #include "remapport.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QList>
@@ -20,7 +20,7 @@
  * Defines a conditional remap state where each state is conditioned by a remap
  * port specified with a remapPort instance.
  */
-class KACTUS2_API RemapState {
+class IPXACTMODELS_EXPORT RemapState {
 
 public:
 

@@ -10,8 +10,8 @@
 #include "librarycomponent.h"
 #include "designconfabstractor.h"
 
-#include <common/Global.h>
-#include <common/KactusAttribute.h>
+#include "ipxactmodels_global.h"
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QSharedPointer>
 #include <QList>
@@ -31,7 +31,7 @@ class VLNV;
  *
  * Details the configuration for a design or generator chain description.
  */
-class KACTUS2_API DesignConfiguration : public LibraryComponent {
+class IPXACTMODELS_EXPORT DesignConfiguration : public LibraryComponent {
 
 public:
 

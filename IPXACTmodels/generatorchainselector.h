@@ -9,9 +9,9 @@
 
 #include "generaldeclarations.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
-#include <library/LibraryManager/vlnv.h>
+#include"vlnv.h"
 
 #include <QString>
 #include <QList>
@@ -23,7 +23,7 @@
  * GeneratorChainSelector defines which generator(s) to invoke based on a
  * selection criteria.
  */
-class KACTUS2_API GeneratorChainSelector {
+class IPXACTMODELS_EXPORT GeneratorChainSelector {
 
 public:
 

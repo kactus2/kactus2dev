@@ -6,7 +6,7 @@
  */
 
 #include "editabletableview.h"
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QHeaderView>
 #include <QMenu>

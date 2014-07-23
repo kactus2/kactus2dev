@@ -12,7 +12,7 @@
 #ifndef APIDEPENDENCY_H
 #define APIDEPENDENCY_H
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QDomNode>
@@ -48,7 +48,7 @@ struct ApiInterfaceRef
 //-----------------------------------------------------------------------------
 //! Class encapsulating API dependency connection data.
 //-----------------------------------------------------------------------------
-class KACTUS2_API ApiDependency
+class IPXACTMODELS_EXPORT ApiDependency
 {
 public:
     /*!

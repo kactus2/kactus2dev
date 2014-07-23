@@ -15,7 +15,7 @@
 #include <IPXACTmodels/ComDefinition.h>
 #include <IPXACTmodels/design.h>
 
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QObject>
 #include <QSharedPointer>

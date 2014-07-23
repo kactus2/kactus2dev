@@ -7,7 +7,7 @@
 #ifndef PARAMETER_H_
 #define PARAMETER_H_
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QDomNode>
 #include <QString>
@@ -19,7 +19,7 @@
  *
  * Parameter defines a configurable element related to the containing element.
  */
-class KACTUS2_API Parameter {
+class IPXACTMODELS_EXPORT Parameter {
 
 public:
 

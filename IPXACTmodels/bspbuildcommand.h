@@ -8,7 +8,7 @@
 #ifndef BSPBUILDCOMMAND_H_
 #define BSPBUILDCOMMAND_H_
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -19,7 +19,7 @@
  * 
  * Specifies the command to build a board support package for CPU components.
  */
-class KACTUS2_API BSPBuildCommand {
+class IPXACTMODELS_EXPORT BSPBuildCommand {
 
 public:
 

@@ -18,9 +18,9 @@
 #include <editors/NotesEditor/NotesStack.h>
 #include <designEditors/common/DrawMode.h>
 #include <common/widgets/tabDocument/TabDocument.h>
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <IPXACTmodels/component.h>
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 #include <library/LibraryManager/VLNVDialer/vlnvdialer.h>
 
 #include <QMainWindow>

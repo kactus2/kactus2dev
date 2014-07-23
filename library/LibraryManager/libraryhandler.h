@@ -14,7 +14,7 @@
 #include "HierarchyView/hierarchymodel.h"
 #include "HierarchyView/hierarchywidget.h"
 
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QString>
 #include <QTabWidget>

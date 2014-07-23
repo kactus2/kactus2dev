@@ -12,7 +12,7 @@
 #ifndef COMCONNECTION_H
 #define COMCONNECTION_H
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QDomNode>
@@ -47,7 +47,7 @@ struct ComInterfaceRef
 //-----------------------------------------------------------------------------
 //! Class encapsulating API connection connection data.
 //-----------------------------------------------------------------------------
-class KACTUS2_API ComConnection
+class IPXACTMODELS_EXPORT ComConnection
 {
 public:
     /*!

@@ -9,7 +9,7 @@
 
 #include "buildmodel.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QMap>
@@ -23,7 +23,7 @@ struct AttributePair;
  * BuildCommand contains flags or commands for building the containing source
  * file.
  */
-class KACTUS2_API BuildCommand : public BuildModel {
+class IPXACTMODELS_EXPORT BuildCommand : public BuildModel {
 
 public:
 

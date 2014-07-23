@@ -12,11 +12,11 @@
 #ifndef NEWDESIGNDIALOG_H
 #define NEWDESIGNDIALOG_H
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/assistedLineEdit/BasicLineContentMatcher.h>
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QDialog>
 #include <QPushButton>

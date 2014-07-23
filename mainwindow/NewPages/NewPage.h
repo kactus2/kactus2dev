@@ -13,8 +13,8 @@
 #define NEWPAGE_H
 
 #include <common/dialogs/propertyPageDialog/PropertyPageView.h>
-#include <common/KactusAttribute.h>
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QLabel>
 #include <QPushButton>

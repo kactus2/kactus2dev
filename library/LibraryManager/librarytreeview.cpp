@@ -7,13 +7,13 @@
 #include "librarytreeview.h"
 #include "libraryitem.h"
 #include "libraryinterface.h"
-#include "vlnv.h"
+#include <IPXACTmodels/vlnv.h>
 
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/busdefinition.h>
 
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QMenu>
 #include <QApplication>

@@ -9,7 +9,7 @@
 
 #include "generaldeclarations.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QList>
@@ -25,7 +25,7 @@ class VendorExtension;
  *
  * Specifies information about a software function.
  */
-class KACTUS2_API Function {
+class IPXACTMODELS_EXPORT Function {
 
 public:
 

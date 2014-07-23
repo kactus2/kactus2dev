@@ -9,7 +9,7 @@
 
 #include "registermodel.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QDomNode>
@@ -23,7 +23,7 @@ class VendorExtension;
  *
  * This class is inherited from RegisterModel base class.
  */
-class KACTUS2_API RegisterFile: public RegisterModel {
+class IPXACTMODELS_EXPORT RegisterFile: public RegisterModel {
 
 public:
 

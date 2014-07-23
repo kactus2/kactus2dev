@@ -9,17 +9,19 @@
 
 #include "generaldeclarations.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QSharedPointer>
 #include <QList>
 #include <QXmlStreamWriter>
 
+class Parameter;
+
 /*! \brief Equals the spirit:memoryBlockData element in IP-Xact specification.
  *
  * MemoryBlockData is an optional part of AddressBlock and Bank.
  */
-class KACTUS2_API MemoryBlockData {
+class IPXACTMODELS_EXPORT MemoryBlockData {
 
 public:
 

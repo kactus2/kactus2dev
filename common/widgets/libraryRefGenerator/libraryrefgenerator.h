@@ -7,7 +7,7 @@
 #ifndef LIBRARYREFGENERATOR_H_
 #define LIBRARYREFGENERATOR_H_
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QGroupBox>
 #include <QLineEdit>

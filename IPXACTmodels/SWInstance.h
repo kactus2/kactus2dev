@@ -12,9 +12,9 @@
 #ifndef SWINSTANCE_H
 #define SWINSTANCE_H
 
-#include <library/LibraryManager/vlnv.h>
+#include"vlnv.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QPointF>
@@ -29,7 +29,7 @@ class ComInterface;
 //-----------------------------------------------------------------------------
 //! SW instance class for extending IP-XACT designs.
 //-----------------------------------------------------------------------------
-class KACTUS2_API SWInstance
+class IPXACTMODELS_EXPORT SWInstance
 {
 public:
     /*!

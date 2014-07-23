@@ -8,7 +8,7 @@
 #define FIELD_H_
 
 #include "generaldeclarations.h"
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 #include "writevalueconstraint.h"
 
 #include <IPXACTmodels/NameGroup.h>
@@ -28,7 +28,7 @@ class VendorExtension;
  *
  * Describes a smaller bit field of a register.
  */
-class KACTUS2_API Field {
+class IPXACTMODELS_EXPORT Field {
 
 public:
 

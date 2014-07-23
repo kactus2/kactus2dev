@@ -7,7 +7,7 @@
 
 #include "businterfacesmodel.h"
 #include <library/LibraryManager/libraryinterface.h>
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 #include "businterfacesdelegate.h"
 #include <IPXACTmodels/generaldeclarations.h>
 

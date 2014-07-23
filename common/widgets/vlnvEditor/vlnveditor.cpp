@@ -13,7 +13,7 @@
 
 #include <common/widgets/assistedLineEdit/AssistedLineEdit.h>
 #include <common/validators/nameValidator/namevalidator.h>
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/libraryitem.h>
 #include <library/LibraryManager/libraryhandler.h>

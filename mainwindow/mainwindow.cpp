@@ -29,7 +29,7 @@
 #include <mainwindow/NewPages/newbuspage.h>
 #include <mainwindow/EditorArea/EditorArea.h>
 
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h>
 #include <common/dialogs/NewDesignDialog/NewDesignDialog.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
@@ -68,7 +68,7 @@
 #include <kactusGenerators/DocumentGenerator/documentgenerator.h>
 
 #include <library/LibraryManager/libraryhandler.h>
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 #include <library/LibraryManager/LibraryUtils.h>
 
 #include <IPXACTmodels/view.h>

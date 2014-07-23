@@ -6,7 +6,7 @@
 
 #include "remapport.h"
 
-#include <IPXACTmodels/XmlUtils.h>
+#include "XmlUtils.h"
 
 #include <QString>
 #include <QList>

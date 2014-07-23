@@ -7,7 +7,7 @@
 #ifndef MIRROREDSLAVEINTERFACE_H_
 #define MIRROREDSLAVEINTERFACE_H_
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QMap>
@@ -21,7 +21,7 @@
  * MirroredSlave can provide addition address offsets connected to the
  * slave interface.
  */
-class KACTUS2_API MirroredSlaveInterface {
+class IPXACTMODELS_EXPORT MirroredSlaveInterface {
 
 public:
 

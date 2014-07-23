@@ -7,11 +7,9 @@
 #ifndef GENERALDECLARATIONS_H_
 #define GENERALDECLARATIONS_H_
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
-#include "parameter.h"
 #include "vector.h"
-#include <common/Global.h>
 
 #include <QDomNode>
 #include <QList>
@@ -78,7 +76,7 @@ namespace General {
 	 *
 	 * \return True if the file type is one of the specified ones.
 	*/
-	KACTUS2_API bool isIpXactFileType(const QString& fileType);
+	IPXACTMODELS_EXPORT bool isIpXactFileType(const QString& fileType);
 
 	/*! \brief Get the file types which are associated with the given file suffix.
 	 *
@@ -87,7 +85,7 @@ namespace General {
 	 *
 	 * \return QStringList containing the file types.
 	*/
-	KACTUS2_API QStringList getFileTypes(QSettings& settings, const QString& fileSuffix);
+	IPXACTMODELS_EXPORT QStringList getFileTypes(QSettings& settings, const QString& fileSuffix);
 
 	/*! \brief Get the file types which are associated with the given file suffix.
 	 *
@@ -96,7 +94,7 @@ namespace General {
 	 *
 	 * \return QStringList containing the file types.
 	*/
-	KACTUS2_API QStringList getFileTypes(QSettings& settings, const QFileInfo& file);
+	IPXACTMODELS_EXPORT QStringList getFileTypes(QSettings& settings, const QFileInfo& file);
 
 /*!
  * Provides the capability to require or forbid a port to appear in a
@@ -117,7 +115,7 @@ enum Presence {
  * \param defaultValue The value that will be returned if no match is found
  * \return General::Presence that matches the str or default value.
  */
-General::Presence str2Presence(QString str, General::Presence defaultValue);
+IPXACTMODELS_EXPORT General::Presence str2Presence(QString str, General::Presence defaultValue);
 
 /*! \brief Convert the enum presence to QString.
  *
@@ -125,7 +123,7 @@ General::Presence str2Presence(QString str, General::Presence defaultValue);
  *
  * \return QString matching the enum value.
  */
-QString presence2Str(General::Presence presence);
+IPXACTMODELS_EXPORT QString presence2Str(General::Presence presence);
 
 enum BitSteering {
 	ON,
@@ -142,7 +140,7 @@ enum BitSteering {
  *
  * \return BitSteering value that matches string or BITSTEERING_UNSPECIFIED
  */
-General::BitSteering str2BitSteering(const QString& str);
+IPXACTMODELS_EXPORT General::BitSteering str2BitSteering(const QString& str);
 
 /*! \brief Converts the enum BitSteering into QString
  *
@@ -150,7 +148,7 @@ General::BitSteering str2BitSteering(const QString& str);
  *
  * \return QString that matches the bitSteering value
  */
-QString bitSteering2Str(const General::BitSteering bitSteering);
+IPXACTMODELS_EXPORT QString bitSteering2Str(const General::BitSteering bitSteering);
 
 /*! \brief Convert the value of the QString into enum Presence
  *
@@ -161,7 +159,7 @@ QString bitSteering2Str(const General::BitSteering bitSteering);
  * \param defaultValue The value that will be returned if no match is found
  * \return General::Presence that matches the str or default value.
  */
-General::Presence str2Presence(QString str, General::Presence defaultValue);
+IPXACTMODELS_EXPORT General::Presence str2Presence(QString str, General::Presence defaultValue);
 
 //! \brief Describes the mode for an interface.
 enum InterfaceMode {
@@ -195,7 +193,7 @@ const QString INTERFACE_MODE_NAMES[] = {
  *
  * \return InterfaceMode matching the str or default value
  */
-InterfaceMode str2Interfacemode(const QString& str, InterfaceMode defaultValue);
+IPXACTMODELS_EXPORT InterfaceMode str2Interfacemode(const QString& str, InterfaceMode defaultValue);
 
 /*! \brief Convert InterfaceMode to QString
  *
@@ -203,7 +201,7 @@ InterfaceMode str2Interfacemode(const QString& str, InterfaceMode defaultValue);
  *
  * \return QString that matches the enum value.
  */
-QString interfaceMode2Str(const General::InterfaceMode mode);
+IPXACTMODELS_EXPORT QString interfaceMode2Str(const General::InterfaceMode mode);
 
 /*!
  *  Returns an interface mode that is compatible with the given interface mode.
@@ -257,7 +255,7 @@ enum Endianness {
  * conversion was not successful
  * \return General:Endianness The value found in the string or defaultValue
  */
-General::Endianness str2Endianness(QString str,
+IPXACTMODELS_EXPORT General::Endianness str2Endianness(QString str,
 		General::Endianness defaultValue);
 
 /*! \brief Convert the Endianness to QString
@@ -266,7 +264,7 @@ General::Endianness str2Endianness(QString str,
  *
  * \return QString that matches the enum value.
  */
-QString endianness2Str(const General::Endianness endianness);
+IPXACTMODELS_EXPORT QString endianness2Str(const General::Endianness endianness);
 
 /*! \brief Specifies the time unit of a time value
  *
@@ -285,7 +283,7 @@ enum TimeUnit {
  * \param defaultValue The value that will be returned if no match is found
  * \return General::TimeUnit that matches the str or default value.
  */
-General::TimeUnit str2TimeUnit(QString str, General::TimeUnit defaultValue);
+IPXACTMODELS_EXPORT General::TimeUnit str2TimeUnit(QString str, General::TimeUnit defaultValue);
 
 /*! \brief Convert the value of the time unit to QString
  *
@@ -293,7 +291,7 @@ General::TimeUnit str2TimeUnit(QString str, General::TimeUnit defaultValue);
  *
  * \return QString, "ns" if timeUnit is 'NS'. "ps" if timeUnit is 'PS'.
  */
-QString timeUnit2Str(General::TimeUnit& timeUnit);
+IPXACTMODELS_EXPORT QString timeUnit2Str(General::TimeUnit& timeUnit);
 
 /*! \brief  Defines the type of access.
  *
@@ -372,7 +370,7 @@ enum Direction {
  *
  * \return General::Direction The mirrored version of the direction.
 */
-General::Direction convert2Mirrored(const General::Direction originalDirection);
+IPXACTMODELS_EXPORT General::Direction convert2Mirrored(const General::Direction originalDirection);
 
 /*! \brief Convert the value of the QString into enum Direction
  *
@@ -383,7 +381,7 @@ General::Direction convert2Mirrored(const General::Direction originalDirection);
  * \param defaultValue The value that will be returned if no match is found
  * \return General::Direction that matches the str or default value.
  */
-KACTUS2_API General::Direction str2Direction(QString str, General::Direction defaultValue);
+IPXACTMODELS_EXPORT General::Direction str2Direction(QString str, General::Direction defaultValue);
 
 /*! \brief Convert the Direction value to QString.
  *
@@ -391,7 +389,7 @@ KACTUS2_API General::Direction str2Direction(QString str, General::Direction def
  *
  * \return QString that matches the enum value.
  */
-KACTUS2_API QString direction2Str(const General::Direction direction);
+IPXACTMODELS_EXPORT QString direction2Str(const General::Direction direction);
 
 /*! \brief Equals to spirit:usage element within spirit:memoryBlockData
  *
@@ -414,7 +412,7 @@ enum Usage {
  * \param defaultValue The value that will be returned if no match is found
  * \return General::Usage that matches the str or default value.
  */
-General::Usage str2Usage(QString str, General::Usage defaultValue);
+IPXACTMODELS_EXPORT General::Usage str2Usage(QString str, General::Usage defaultValue);
 
 /*! \brief Convert the Usage value to QString
  *
@@ -422,7 +420,7 @@ General::Usage str2Usage(QString str, General::Usage defaultValue);
  *
  * \return QString that matches the enum value.
  */
-QString usage2Str(const General::Usage usage);
+IPXACTMODELS_EXPORT QString usage2Str(const General::Usage usage);
 
 /*! \brief Equals to spirit:access element within spirit:memoryBlockData
  *
@@ -446,7 +444,7 @@ enum Access {
  * \param defaultValue The value that will be returned if no match is found
  * \return General::Access that matches the str or default value.
  */
-General::Access str2Access(QString str, General::Access defaultValue);
+IPXACTMODELS_EXPORT General::Access str2Access(QString str, General::Access defaultValue);
 
 /*! \brief Convert the Access value to QString.
  *
@@ -454,7 +452,7 @@ General::Access str2Access(QString str, General::Access defaultValue);
  *
  * \return QString that matches the enum value.
  */
-QString access2Str(const General::Access access);
+IPXACTMODELS_EXPORT QString access2Str(const General::Access access);
 
 /*! \brief Equals to spirit:modifiedWriteValue within spirit:fieldData.
  * 
@@ -496,7 +494,7 @@ const QString MODIFIED_WRITE_STRINGS[] = {
  *
  * \return The enum value that matches the string.
 */
-General::ModifiedWrite str2ModifiedWrite(const QString& str);
+IPXACTMODELS_EXPORT General::ModifiedWrite str2ModifiedWrite(const QString& str);
 
 /*! \brief Convert the enum value to a matching string.
  *
@@ -504,7 +502,7 @@ General::ModifiedWrite str2ModifiedWrite(const QString& str);
  *
  * \return QString that matches the enum value.
 */
-QString modifiedWrite2Str(const General::ModifiedWrite modWrite);
+IPXACTMODELS_EXPORT QString modifiedWrite2Str(const General::ModifiedWrite modWrite);
 
 /*! \brief Equals the spirit:readAction within spirit:fieldData.
  * 
@@ -531,7 +529,7 @@ const QString READ_ACTION_STRINGS[] = {
  *
  * \return QString that matches the enum value.
 */
-QString readAction2Str(const General::ReadAction readAction);
+IPXACTMODELS_EXPORT QString readAction2Str(const General::ReadAction readAction);
 
 /*! \brief Convert the string into matching enum ReadAction value.
  * 
@@ -542,7 +540,7 @@ QString readAction2Str(const General::ReadAction readAction);
  *
  * \return The enum value that matches the string.
 */
-General::ReadAction str2ReadAction(const QString& str);
+IPXACTMODELS_EXPORT General::ReadAction str2ReadAction(const QString& str);
 
 /*! \brief Equals the spirit:testConstraint attribute within spirit:fieldData.
  * 
@@ -571,7 +569,7 @@ const QString TEST_CONSTRAINT_STRINGS[] = {
  *
  * \return QString that matches the enum value.
 */
-QString testConstraint2Str(const General::TestConstraint testConstraint);
+IPXACTMODELS_EXPORT QString testConstraint2Str(const General::TestConstraint testConstraint);
 
 /*! \brief Convert the string into matching enum TestConstraint value.
  * 
@@ -582,7 +580,7 @@ QString testConstraint2Str(const General::TestConstraint testConstraint);
  *
  * \return The enum value that matches the string.
 */
-General::TestConstraint str2TestConstraint(const QString& str);
+IPXACTMODELS_EXPORT General::TestConstraint str2TestConstraint(const QString& str);
 
 /*! \brief Used by the struct Choice to hold information
  *
@@ -751,7 +749,7 @@ struct PortBounds {
 	int right_;
 
 	//! \brief Default constructor
-	PortBounds();
+	IPXACTMODELS_EXPORT PortBounds();
 
 	/*! \brief The constructor
 	* 
@@ -760,7 +758,7 @@ struct PortBounds {
 	* \param portName The name of the port.
 	*
 	*/
-	PortBounds(const QString& portName);
+	IPXACTMODELS_EXPORT PortBounds(const QString& portName);
 
 	/*! \brief The constructor
 	*
@@ -769,10 +767,10 @@ struct PortBounds {
 	* \param right The right bound of the port.
 	*
 	*/
-	PortBounds(const QString& portName, const int left, const int right);
+	IPXACTMODELS_EXPORT PortBounds(const QString& portName, const int left, const int right);
 
 	//! \brief Copy constructor
-	PortBounds(const PortBounds& other);
+	IPXACTMODELS_EXPORT PortBounds(const PortBounds& other);
 
 	//! \brief Assignment operator
 	PortBounds& operator=(const PortBounds& other);
@@ -781,7 +779,7 @@ struct PortBounds {
 	bool operator<(const PortBounds& other) const;
 
 	//! \brief Operator ==
-	bool operator==(const PortBounds& other) const;
+	IPXACTMODELS_EXPORT bool operator==(const PortBounds& other) const;
 
 	//! \brief Operator !=
 	bool operator!=(const PortBounds& other) const;
@@ -831,10 +829,10 @@ struct PortMap {
 	/*! \brief Default constructor
 	 *
 	 */
-	PortMap();
+	IPXACTMODELS_EXPORT  PortMap();
 
 	//! \brief The copy constructor
-	PortMap(const PortMap& other);
+	IPXACTMODELS_EXPORT  PortMap(const PortMap& other);
 
 	/*! \brief The assignment operator
 	 *
@@ -852,7 +850,7 @@ struct PortMap {
 	 *
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(const QList<General::PortBounds>& physicalPorts, 
+	IPXACTMODELS_EXPORT bool isValid(const QList<General::PortBounds>& physicalPorts, 
 		QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
@@ -862,7 +860,7 @@ struct PortMap {
 	 * 
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(const QList<General::PortBounds>& physicalPorts) const;
+	IPXACTMODELS_EXPORT  bool isValid(const QList<General::PortBounds>& physicalPorts) const;
 
     /*!
      *  Gets the physical range in the port map.
@@ -872,7 +870,7 @@ struct PortMap {
      *
      *      @return The physical range in the port map.
      */
-    General::PortBounds getPhysicalRange(QSharedPointer<Port> referencedPhysicalPort) const;
+    IPXACTMODELS_EXPORT General::PortBounds getPhysicalRange(QSharedPointer<Port> referencedPhysicalPort) const;
 
     /*!
      *  Gets the logical range in the port map.
@@ -882,7 +880,7 @@ struct PortMap {
      *
      *      @return The logical range in the port map.
      */
-    General::PortBounds getLogicalRange(QSharedPointer<Port> referencedPhysicalPort) const;
+    IPXACTMODELS_EXPORT General::PortBounds getLogicalRange(QSharedPointer<Port> referencedPhysicalPort) const;
 };
 
 /*! \brief Convert the info into string.
@@ -893,7 +891,7 @@ struct PortMap {
  *
  * \return QString String that matches the info ( <portName>[<left>..<right>] )
 */
-QString port2String(const QString& portName, int leftBound, int rightBound);
+IPXACTMODELS_EXPORT QString port2String(const QString& portName, int leftBound, int rightBound);
 
 //! \brief Port alignment is used to contain the physical bounds of two ports.
 struct PortAlignment {
@@ -937,7 +935,7 @@ struct PortAlignment {
  *
  * \return General::PortAlignment Contains the alignments for the ports.
 */
-PortAlignment calculatePortAlignment(const PortMap* portMap1, 
+IPXACTMODELS_EXPORT PortAlignment calculatePortAlignment(const PortMap* portMap1, 
 									 int phys1LeftBound,
 									 int phys1RightBound,
 									 const PortMap* portMap2,
@@ -952,7 +950,7 @@ PortAlignment calculatePortAlignment(const PortMap* portMap1,
  * \return if value = true, returns "true"
  * 			if value = false, returns "false"
  */
-QString bool2Str(bool value);
+IPXACTMODELS_EXPORT QString bool2Str(bool value);
 
 /*! \brief Convert QString into boolean value
  *
@@ -984,7 +982,7 @@ enum BooleanValue {
  *
  * \return bool that matched the BooleanValue.
  */
-bool BooleanValue2Bool(const General::BooleanValue value,
+IPXACTMODELS_EXPORT bool BooleanValue2Bool(const General::BooleanValue value,
 		const bool defaultValue);
 
 /*! \brief Convert bool to BooleanValue
@@ -993,7 +991,7 @@ bool BooleanValue2Bool(const General::BooleanValue value,
  *
  * \return BooleanValue that matches the bool.
  */
-General::BooleanValue bool2BooleanValue(const bool value);
+IPXACTMODELS_EXPORT General::BooleanValue bool2BooleanValue(const bool value);
 
 /*! \brief Convert QString to booleanValue.
  *
@@ -1126,7 +1124,7 @@ struct LibraryFilePair {
  *
  * \return QString containing the relative path.
  */
-KACTUS2_API QString getRelativePath(const QString from, const QString to);
+IPXACTMODELS_EXPORT QString getRelativePath(const QString from, const QString to);
 
 /*! \brief Get a relative file path from one location to another.
  *
@@ -1141,7 +1139,7 @@ KACTUS2_API QString getRelativePath(const QString from, const QString to);
  *
  * \return QString containing the relative path.
  */
-KACTUS2_API QString getRelativeSavePath(const QString& from, const QString& to);
+IPXACTMODELS_EXPORT QString getRelativeSavePath(const QString& from, const QString& to);
 
 /*! \brief Get an absolute path of a file.
  *
@@ -1157,8 +1155,22 @@ KACTUS2_API QString getRelativeSavePath(const QString& from, const QString& to);
  *
  * \return The absolute path of the target directory/file
  */
-KACTUS2_API QString getAbsolutePath(const QString& originalPath, const QString& relativePath);
+IPXACTMODELS_EXPORT QString getAbsolutePath(const QString& originalPath, const QString& relativePath);
 
+	/*! \brief Convert a string to unsigned int format.
+	 * 
+	 * The multiples in the string are converted as following:
+	 * k/K = 2^10
+	 * M   = 2^20
+	 * G   = 2^30
+	 * T   = 2^40
+	 * P   = 2^50
+	 * 
+	 * \param str The string to convert.
+	 *
+	 * \return The result of the conversion.
+	*/
+	quint64 str2Uint(const QString& str);
 }
 
 #endif /* GENERALDECLARATIONS_H_ */

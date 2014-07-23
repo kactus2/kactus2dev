@@ -7,9 +7,9 @@
 #ifndef PORTABSTRACTION_H_
 #define PORTABSTRACTION_H_
 
-#include <IPXACTmodels/wireabstraction.h>
+#include "wireabstraction.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QDomNode>
 #include <QSharedPointer>
@@ -22,7 +22,7 @@ class TransactionalAbstraction;
  * Defines the logical port information for the containing abstraction
  * definition.
  */
-class KACTUS2_API PortAbstraction {
+class IPXACTMODELS_EXPORT PortAbstraction {
 
 public:
 

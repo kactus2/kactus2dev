@@ -13,13 +13,14 @@
 #define KACTUS2GROUP_H
 
 #include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QMap>
 
 //-----------------------------------------------------------------------------
 // class Kactus2Group.
 //-----------------------------------------------------------------------------
-class Kactus2Group : public VendorExtension
+class IPXACTMODELS_EXPORT Kactus2Group : public VendorExtension
 {
 public:
 	/*!

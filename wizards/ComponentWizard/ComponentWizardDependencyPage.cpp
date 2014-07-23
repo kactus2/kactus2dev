@@ -15,7 +15,7 @@
 
 #include <editors/ComponentEditor/fileSet/filesetsdelegate.h>
 
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <IPXACTmodels/component.h>
 
 #include <QLabel>

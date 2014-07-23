@@ -12,12 +12,12 @@
 #ifndef SWVIEW_H
 #define SWVIEW_H
 
-#include <library/LibraryManager/vlnv.h>
+#include"vlnv.h"
 
 #include <IPXACTmodels/NameGroup.h>
 
 #include <IPXACTmodels/filebuilder.h>
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 #include <IPXACTmodels/swbuildcommand.h>
 #include <IPXACTmodels/bspbuildcommand.h>
 
@@ -31,7 +31,7 @@
 //-----------------------------------------------------------------------------
 //! SW view class for making VLNV references to SW designs.
 //-----------------------------------------------------------------------------
-class KACTUS2_API SWView
+class IPXACTMODELS_EXPORT SWView
 {
 public:
     /*!

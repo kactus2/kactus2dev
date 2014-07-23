@@ -8,7 +8,7 @@
 #include "port.h"
 #include "view.h"
 #include "modelparameter.h"
-#include <library/LibraryManager/vlnv.h>
+#include"vlnv.h"
 
 #include <QDomNode>
 #include <QString>

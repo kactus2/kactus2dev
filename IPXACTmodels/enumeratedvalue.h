@@ -7,7 +7,7 @@
 #ifndef ENUMERATEDVALUE_H_
 #define ENUMERATEDVALUE_H_
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <IPXACTmodels/NameGroup.h>
 
@@ -21,7 +21,7 @@ class VendorExtension;
  *
  * Describes a name and value pair for the given field.
  */
-class KACTUS2_API EnumeratedValue {
+class IPXACTMODELS_EXPORT EnumeratedValue {
 
 public:
 

@@ -6,7 +6,7 @@
 
 #include "quartusgenerator.h"
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 #include <library/LibraryManager/libraryhandler.h>
 
 #include <IPXACTmodels/component.h>

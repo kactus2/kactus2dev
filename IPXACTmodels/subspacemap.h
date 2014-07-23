@@ -11,7 +11,7 @@
 #include "generaldeclarations.h"
 #include "parameter.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QDomNode>
 #include <QList>
@@ -26,7 +26,7 @@ class VendorExtension;
  * SubspaceMap maps the address space of a master interface from an opaque bus
  * bridge into the memory map.
  */
-class KACTUS2_API SubspaceMap: public MemoryMapItem {
+class IPXACTMODELS_EXPORT SubspaceMap: public MemoryMapItem {
 
 public:
 

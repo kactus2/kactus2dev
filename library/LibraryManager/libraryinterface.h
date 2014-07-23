@@ -8,7 +8,7 @@
 #ifndef LIBRARYINTERFACE_H
 #define LIBRARYINTERFACE_H
 
-#include "vlnv.h"
+#include <IPXACTmodels/vlnv.h>
 
 #include <QObject>
 #include <QSharedPointer>

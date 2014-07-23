@@ -7,7 +7,7 @@
 #ifndef MASTERINTERFACE_H_
 #define MASTERINTERFACE_H_
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QMap>
@@ -19,7 +19,7 @@
  *	This class also equals the spirit:mirroredMaster element.
  * Contains the elements that define the master interface.
  */
-class KACTUS2_API MasterInterface {
+class IPXACTMODELS_EXPORT MasterInterface {
 
 public:
 

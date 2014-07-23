@@ -9,7 +9,7 @@
 
 #include "generaldeclarations.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QList>
@@ -28,7 +28,7 @@ class Vector;
  *
  * Describes the properties for ports that are of wire style.
  */
-class KACTUS2_API Wire {
+class IPXACTMODELS_EXPORT Wire {
 
 public:
 

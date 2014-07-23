@@ -9,7 +9,7 @@
 
 #include "buildmodel.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QList>
@@ -21,7 +21,7 @@
  *
  * Contains flags or commands for building the containing source file types.
  */
-class KACTUS2_API FileBuilder: public BuildModel {
+class IPXACTMODELS_EXPORT FileBuilder: public BuildModel {
 
 public:
 

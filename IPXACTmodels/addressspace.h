@@ -10,7 +10,7 @@
 #include "memorymap.h"
 #include "segment.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QSharedPointer>
 #include <QDomNode>
@@ -19,7 +19,7 @@
 #include <QMap>
 #include <QXmlStreamWriter>
 
-class parameter;
+class Parameter;
 class VendorExtension;
 
 /*! \brief Equals the spirit:addressSpace element in the IP-Xact specification
@@ -27,7 +27,7 @@ class VendorExtension;
  * Each AddressSpace defines a logical address space seen by a master bus
  * interface.
  */
-class KACTUS2_API AddressSpace {
+class IPXACTMODELS_EXPORT AddressSpace {
 
 public:
 

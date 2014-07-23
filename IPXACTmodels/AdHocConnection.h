@@ -15,7 +15,7 @@
 #include "PortRef.h"
 #include "NameGroup.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QPointF>
 #include <QList>
@@ -28,7 +28,7 @@
 // component instance ports or between component instance ports and ports 
 // of the encompassing component (in the case of a hierarchical component).
 //-----------------------------------------------------------------------------
-class KACTUS2_API AdHocConnection
+class IPXACTMODELS_EXPORT AdHocConnection
 {
 public:
     /*! The constructor

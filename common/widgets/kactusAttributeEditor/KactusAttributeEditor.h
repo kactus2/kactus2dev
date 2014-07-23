@@ -12,7 +12,7 @@
 #ifndef KACTUSATTRIBUTEEDITOR_H
 #define KACTUSATTRIBUTEEDITOR_H
 
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QGroupBox>
 #include <QComboBox>

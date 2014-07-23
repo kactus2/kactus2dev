@@ -12,7 +12,7 @@
 #ifndef COMPROPERTY_H
 #define COMPROPERTY_H
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QDomNode>
@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 //! Property class for communication definitions.
 //-----------------------------------------------------------------------------
-class KACTUS2_API ComProperty
+class IPXACTMODELS_EXPORT ComProperty
 {
 public:
     /*!

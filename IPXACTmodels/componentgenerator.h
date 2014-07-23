@@ -9,7 +9,7 @@
 
 #include "generator.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QList>
 #include <QString>
@@ -21,7 +21,7 @@
  * Defines a generator that is assigned and may be run on this component.
  * This class is a generalization of class Generator and uses it's services.
  */
-class KACTUS2_API ComponentGenerator: public Generator {
+class IPXACTMODELS_EXPORT ComponentGenerator: public Generator {
 
 public:
 

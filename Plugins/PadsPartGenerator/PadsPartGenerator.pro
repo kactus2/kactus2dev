@@ -5,9 +5,9 @@
 TEMPLATE = lib
 TARGET = PadsPartGenerator
 DESTDIR = ../../executable/Plugins
-QT += core xml xmlpatterns widgets gui printsupport
+QT += core xml widgets gui
 CONFIG += release
-DEFINES += QT_DLL QT_PRINTSUPPORT_LIB QT_WIDGETS_LIB QT_XML_LIB
+DEFINES += QT_DLL QT_WIDGETS_LIB QT_XML_LIB
 INCLUDEPATH += ./GeneratedFiles \
     . \
     ./GeneratedFiles/Release \
@@ -15,7 +15,8 @@ INCLUDEPATH += ./GeneratedFiles \
     $(QTDIR)/../qtxmlpatterns/include \
     ./../..
 LIBS += -L"./../../executable" \
-    -lKactus2
+    -lKactus2 \
+    -lIPXACTmodels
 DEPENDPATH += .
 MOC_DIR += ./GeneratedFiles/release
 OBJECTS_DIR += release

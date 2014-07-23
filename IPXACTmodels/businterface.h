@@ -7,11 +7,11 @@
 #ifndef BUSINTERFACE_H_
 #define BUSINTERFACE_H_
 
-#include <library/LibraryManager/vlnv.h>
+#include"vlnv.h"
 #include "generaldeclarations.h"
 #include "parameter.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
  
 #include <IPXACTmodels/NameGroup.h>
 
@@ -33,7 +33,7 @@ class MirroredSlaveInterface;
  *
  * BusInterface defines properties of the specific interface in a component.
  */
-class KACTUS2_API BusInterface {
+class IPXACTMODELS_EXPORT BusInterface {
 
 public:
 
@@ -69,7 +69,7 @@ public:
 		/*! \brief The default contructor
 		 *
 		*/
-		MonitorInterface();
+		IPXACTMODELS_EXPORT MonitorInterface();
 	};
 
 	/*! \brief The constructor

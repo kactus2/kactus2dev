@@ -7,7 +7,7 @@
 #ifndef BUILDMODEL_H_
 #define BUILDMODEL_H_
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QMap>
 #include <QString>
@@ -19,7 +19,7 @@
  * There is no use for BuildModel instances, this class is meant to be
  * purely a base class for generalization.
  */
-class KACTUS2_API BuildModel {
+class IPXACTMODELS_EXPORT BuildModel {
 
 public:
 

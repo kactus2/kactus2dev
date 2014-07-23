@@ -8,7 +8,7 @@
 #include "createconfigurationdialog.h"
 
 #include <library/LibraryManager/libraryinterface.h>
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <common/widgets/LineEditEx/LineEditEx.h>
 

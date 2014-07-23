@@ -11,7 +11,7 @@
 #include "field.h"
 #include "registerdefinition.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -28,7 +28,7 @@ class VendorExtension;
  *
  * This class is inherited from RegisterModel base class.
  */
-class KACTUS2_API Register: public RegisterModel {
+class IPXACTMODELS_EXPORT Register: public RegisterModel {
 
 public:
 

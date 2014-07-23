@@ -7,7 +7,7 @@
 #ifndef RESET_H_
 #define RESET_H_
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QDomNode>
 #include <QList>
@@ -19,7 +19,7 @@
  *
  * This class describes the value of a register at reset.
  */
-class KACTUS2_API Reset {
+class IPXACTMODELS_EXPORT Reset {
 
 public:
 

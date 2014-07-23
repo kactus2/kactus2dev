@@ -129,10 +129,10 @@
     </PreLinkEvent>
     <Link>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type=%27win32%27 name=%27Microsoft.Windows.Common-Controls%27 version=%276.0.0.0%27 publicKeyToken=%276595b64144ccf1df%27 language=%27*%27 processorArchitecture=%27*%27" %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>qtmaind.lib;Qt5Xmld.lib;Qt5Guid.lib;Qt5Cored.lib;Qt5Helpd.lib;Qt5PrintSupportd.lib;Qt5Widgetsd.lib;Qt5XmlPatternsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;Qt5Xmld.lib;Qt5Guid.lib;Qt5Cored.lib;Qt5Helpd.lib;Qt5PrintSupportd.lib;Qt5Widgetsd.lib;IPXACTmodelsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>executable\Kactus2_d.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(SolutionDir)executable;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>
       </ProgramDatabaseFile>
@@ -187,10 +187,10 @@ CreateHelp
     </PreLinkEvent>
     <Link>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type=%27win32%27 name=%27Microsoft.Windows.Common-Controls%27 version=%276.0.0.0%27 publicKeyToken=%276595b64144ccf1df%27 language=%27*%27 processorArchitecture=%27*%27" %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>qtmaind.lib;Qt5Xmld.lib;Qt5Guid.lib;Qt5Cored.lib;Qt5Helpd.lib;Qt5PrintSupportd.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;Qt5Xmld.lib;Qt5Guid.lib;Qt5Cored.lib;Qt5Helpd.lib;Qt5PrintSupportd.lib;Qt5Widgetsd.lib;IPXACTmodelsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>x64\executable\Kactus2_d.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(SolutionDir)x64\executable%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>
       </ProgramDatabaseFile>
@@ -236,10 +236,10 @@ CreateHelp
     </ResourceCompile>
     <Link>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type=%27win32%27 name=%27Microsoft.Windows.Common-Controls%27 version=%276.0.0.0%27 publicKeyToken=%276595b64144ccf1df%27 language=%27*%27 processorArchitecture=%27*%27" %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>qtmain.lib;Qt5Xml.lib;Qt5Gui.lib;Qt5Core.lib;Qt5Help.lib;Qt5PrintSupport.lib;Qt5Widgets.lib;Qt5XmlPatterns.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmain.lib;Qt5Xml.lib;Qt5Gui.lib;Qt5Core.lib;Qt5Help.lib;Qt5PrintSupport.lib;Qt5Widgets.lib;Qt5XmlPatterns.lib;IPXACTmodels.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>executable\Kactus2.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(SolutionDir)executable;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>
       </ProgramDatabaseFile>
@@ -284,10 +284,10 @@ CreateHelp
     </ResourceCompile>
     <Link>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type=%27win32%27 name=%27Microsoft.Windows.Common-Controls%27 version=%276.0.0.0%27 publicKeyToken=%276595b64144ccf1df%27 language=%27*%27 processorArchitecture=%27*%27" %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>qtmain.lib;Qt5XmlPatterns.lib;Qt5Xml.lib;Qt5Gui.lib;Qt5Core.lib;Qt5Help.lib;Qt5PrintSupport.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmain.lib;Qt5Xml.lib;Qt5Gui.lib;Qt5Core.lib;Qt5Help.lib;Qt5PrintSupport.lib;Qt5Widgets.lib;IPXACTmodels.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>x64\executable\Kactus2.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(SolutionDir)x64\executable;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <ProgramDatabaseFile>
       </ProgramDatabaseFile>
@@ -325,7 +325,6 @@ CreateHelp
     <ClCompile Include="common\dialogs\LibrarySettingsDialog\librarysettingsdelegate.cpp" />
     <ClCompile Include="common\dialogs\NewBusDialog\NewBusDialog.cpp" />
     <ClCompile Include="common\GenericEditProvider.cpp" />
-    <ClCompile Include="common\KactusAttribute.cpp" />
     <ClCompile Include="common\TextEditProvider.cpp" />
     <ClCompile Include="common\utils.cpp" />
     <ClCompile Include="common\dialogs\comboSelector\comboselector.cpp" />
@@ -1201,94 +1200,6 @@ CreateHelp
     <ClCompile Include="Help\HelpSystem\ContextHelpBrowser.cpp" />
     <ClCompile Include="Help\HelpSystem\HelpSearchWidget.cpp" />
     <ClCompile Include="Help\HelpSystem\HelpWindow.cpp" />
-    <ClCompile Include="IPXACTmodels\abstractiondefinition.cpp" />
-    <ClCompile Include="IPXACTmodels\addressblock.cpp" />
-    <ClCompile Include="IPXACTmodels\addressspace.cpp" />
-    <ClCompile Include="IPXACTmodels\AdHocConnection.cpp" />
-    <ClCompile Include="IPXACTmodels\alternateregister.cpp" />
-    <ClCompile Include="IPXACTmodels\ApiDefinition.cpp" />
-    <ClCompile Include="IPXACTmodels\ApiDependency.cpp" />
-    <ClCompile Include="IPXACTmodels\ApiFunction.cpp" />
-    <ClCompile Include="IPXACTmodels\ApiFunctionParameter.cpp" />
-    <ClCompile Include="IPXACTmodels\ApiInterface.cpp" />
-    <ClCompile Include="IPXACTmodels\bank.cpp" />
-    <ClCompile Include="IPXACTmodels\bspbuildcommand.cpp" />
-    <ClCompile Include="IPXACTmodels\buildcommand.cpp" />
-    <ClCompile Include="IPXACTmodels\buildmodel.cpp" />
-    <ClCompile Include="IPXACTmodels\busdefinition.cpp" />
-    <ClCompile Include="IPXACTmodels\businterface.cpp" />
-    <ClCompile Include="IPXACTmodels\channel.cpp" />
-    <ClCompile Include="IPXACTmodels\choice.cpp" />
-    <ClCompile Include="IPXACTmodels\ColumnDesc.cpp" />
-    <ClCompile Include="IPXACTmodels\ComConnection.cpp" />
-    <ClCompile Include="IPXACTmodels\ComDefinition.cpp" />
-    <ClCompile Include="IPXACTmodels\ComInterface.cpp" />
-    <ClCompile Include="IPXACTmodels\component.cpp" />
-    <ClCompile Include="IPXACTmodels\componentgenerator.cpp" />
-    <ClCompile Include="IPXACTmodels\ComponentInstance.cpp" />
-    <ClCompile Include="IPXACTmodels\ComProperty.cpp" />
-    <ClCompile Include="IPXACTmodels\cpu.cpp" />
-    <ClCompile Include="IPXACTmodels\design.cpp" />
-    <ClCompile Include="IPXACTmodels\designconfabstractor.cpp" />
-    <ClCompile Include="IPXACTmodels\designconfiguration.cpp" />
-    <ClCompile Include="IPXACTmodels\enumeratedvalue.cpp" />
-    <ClCompile Include="IPXACTmodels\field.cpp" />
-    <ClCompile Include="IPXACTmodels\file.cpp" />
-    <ClCompile Include="IPXACTmodels\filebuilder.cpp" />
-    <ClCompile Include="IPXACTmodels\FileDependency.cpp" />
-    <ClCompile Include="IPXACTmodels\fileset.cpp" />
-    <ClCompile Include="IPXACTmodels\function.cpp" />
-    <ClCompile Include="IPXACTmodels\generaldeclarations.cpp" />
-    <ClCompile Include="IPXACTmodels\generator.cpp" />
-    <ClCompile Include="IPXACTmodels\generatorchain.cpp" />
-    <ClCompile Include="IPXACTmodels\generatorchainselector.cpp" />
-    <ClCompile Include="IPXACTmodels\GenericVendorExtension.cpp" />
-    <ClCompile Include="IPXACTmodels\HierApiDependency.cpp" />
-    <ClCompile Include="IPXACTmodels\HierComConnection.cpp" />
-    <ClCompile Include="IPXACTmodels\HierConnection.cpp" />
-    <ClCompile Include="IPXACTmodels\Interconnection.cpp" />
-    <ClCompile Include="IPXACTmodels\Interface.cpp" />
-    <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Group.cpp" />
-    <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Placeholder.cpp" />
-    <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Position.cpp" />
-    <ClCompile Include="IPXACTmodels\kactusExtensions\Kactus2Value.cpp" />
-    <ClCompile Include="IPXACTmodels\librarycomponent.cpp" />
-    <ClCompile Include="IPXACTmodels\masterinterface.cpp" />
-    <ClCompile Include="IPXACTmodels\memoryblockdata.cpp" />
-    <ClCompile Include="IPXACTmodels\memorymap.cpp" />
-    <ClCompile Include="IPXACTmodels\memorymapitem.cpp" />
-    <ClCompile Include="IPXACTmodels\mirroredslaveinterface.cpp" />
-    <ClCompile Include="IPXACTmodels\model.cpp" />
-    <ClCompile Include="IPXACTmodels\modelparameter.cpp" />
-    <ClCompile Include="IPXACTmodels\NameGroup.cpp" />
-    <ClCompile Include="IPXACTmodels\otherclockdriver.cpp" />
-    <ClCompile Include="IPXACTmodels\parameter.cpp" />
-    <ClCompile Include="IPXACTmodels\port.cpp" />
-    <ClCompile Include="IPXACTmodels\portabstraction.cpp" />
-    <ClCompile Include="IPXACTmodels\PortRef.cpp" />
-    <ClCompile Include="IPXACTmodels\register.cpp" />
-    <ClCompile Include="IPXACTmodels\registerdefinition.cpp" />
-    <ClCompile Include="IPXACTmodels\registerfile.cpp" />
-    <ClCompile Include="IPXACTmodels\registermodel.cpp" />
-    <ClCompile Include="IPXACTmodels\remapport.cpp" />
-    <ClCompile Include="IPXACTmodels\remapstate.cpp" />
-    <ClCompile Include="IPXACTmodels\reset.cpp" />
-    <ClCompile Include="IPXACTmodels\segment.cpp" />
-    <ClCompile Include="IPXACTmodels\servicetypedef.cpp" />
-    <ClCompile Include="IPXACTmodels\slaveinterface.cpp" />
-    <ClCompile Include="IPXACTmodels\subspacemap.cpp" />
-    <ClCompile Include="IPXACTmodels\swbuildcommand.cpp" />
-    <ClCompile Include="IPXACTmodels\SWInstance.cpp" />
-    <ClCompile Include="IPXACTmodels\SWView.cpp" />
-    <ClCompile Include="IPXACTmodels\SystemView.cpp" />
-    <ClCompile Include="IPXACTmodels\transactional.cpp" />
-    <ClCompile Include="IPXACTmodels\transactionalabstraction.cpp" />
-    <ClCompile Include="IPXACTmodels\vector.cpp" />
-    <ClCompile Include="IPXACTmodels\view.cpp" />
-    <ClCompile Include="IPXACTmodels\wire.cpp" />
-    <ClCompile Include="IPXACTmodels\wireabstraction.cpp" />
-    <ClCompile Include="IPXACTmodels\writevalueconstraint.cpp" />
-    <ClCompile Include="IPXACTmodels\XmlUtils.cpp" />
     <ClCompile Include="kactusGenerators\DocumentGenerator\documentgenerator.cpp" />
     <ClCompile Include="kactusGenerators\HDLGenerator\HDLComponentDeclaration.cpp" />
     <ClCompile Include="kactusGenerators\HDLGenerator\HDLComponentInstance.cpp" />
@@ -1330,7 +1241,6 @@ CreateHelp
     <ClCompile Include="library\LibraryManager\librarytreeview.cpp" />
     <ClCompile Include="library\LibraryManager\librarytreewidget.cpp" />
     <ClCompile Include="library\LibraryManager\LibraryUtils.cpp" />
-    <ClCompile Include="library\LibraryManager\vlnv.cpp" />
     <ClCompile Include="library\LibraryManager\VLNVDialer\dialerwidget.cpp" />
     <ClCompile Include="library\LibraryManager\VLNVDialer\filterwidget.cpp" />
     <ClCompile Include="library\LibraryManager\VLNVDialer\firmnessgroup.cpp" />
@@ -1645,28 +1555,6 @@ CreateHelp
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="resource.h">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Performing Custom Build Step</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing Custom Build Step</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Performing Custom Build Step</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing Custom Build Step</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Outputs)</Outputs>
-    </CustomBuild>
     <CustomBuild Include="version.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Performing Custom Build Step</Message>
@@ -9980,224 +9868,6 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
     </CustomBuild>
-    <ClInclude Include="IPXACTmodels\abstractiondefinition.h" />
-    <ClInclude Include="IPXACTmodels\addressblock.h" />
-    <ClInclude Include="IPXACTmodels\addressspace.h" />
-    <CustomBuild Include="IPXACTmodels\AdHocConnection.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
-      </Command>
-    </CustomBuild>
-    <ClInclude Include="IPXACTmodels\alternateregister.h" />
-    <ClInclude Include="IPXACTmodels\ApiDefinition.h" />
-    <ClInclude Include="IPXACTmodels\ApiDependency.h" />
-    <ClInclude Include="IPXACTmodels\ApiFunction.h" />
-    <ClInclude Include="IPXACTmodels\ApiFunctionParameter.h" />
-    <ClInclude Include="IPXACTmodels\ApiInterface.h" />
-    <ClInclude Include="IPXACTmodels\bank.h" />
-    <ClInclude Include="IPXACTmodels\bspbuildcommand.h" />
-    <ClInclude Include="IPXACTmodels\buildcommand.h" />
-    <ClInclude Include="IPXACTmodels\buildmodel.h" />
-    <ClInclude Include="IPXACTmodels\busdefinition.h" />
-    <ClInclude Include="IPXACTmodels\businterface.h" />
-    <ClInclude Include="IPXACTmodels\channel.h" />
-    <ClInclude Include="IPXACTmodels\choice.h" />
-    <ClInclude Include="IPXACTmodels\ColumnDesc.h" />
-    <ClInclude Include="IPXACTmodels\ComConnection.h" />
-    <ClInclude Include="IPXACTmodels\ComDefinition.h" />
-    <ClInclude Include="IPXACTmodels\ComInterface.h" />
-    <ClInclude Include="IPXACTmodels\component.h" />
-    <ClInclude Include="IPXACTmodels\componentgenerator.h" />
-    <ClInclude Include="IPXACTmodels\ComponentInstance.h" />
-    <ClInclude Include="IPXACTmodels\ComProperty.h" />
-    <ClInclude Include="IPXACTmodels\cpu.h" />
-    <ClInclude Include="IPXACTmodels\design.h" />
-    <ClInclude Include="IPXACTmodels\designconfabstractor.h" />
-    <ClInclude Include="IPXACTmodels\designconfiguration.h" />
-    <ClInclude Include="IPXACTmodels\enumeratedvalue.h" />
-    <ClInclude Include="IPXACTmodels\field.h" />
-    <ClInclude Include="IPXACTmodels\file.h" />
-    <ClInclude Include="IPXACTmodels\filebuilder.h" />
-    <ClInclude Include="IPXACTmodels\FileDependency.h" />
-    <ClInclude Include="IPXACTmodels\fileset.h" />
-    <ClInclude Include="IPXACTmodels\function.h" />
-    <ClInclude Include="IPXACTmodels\generaldeclarations.h" />
-    <ClInclude Include="IPXACTmodels\generator.h" />
-    <ClInclude Include="IPXACTmodels\generatorchain.h" />
-    <ClInclude Include="IPXACTmodels\generatorchainselector.h" />
-    <CustomBuild Include="IPXACTmodels\GenericVendorExtension.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
-      </Command>
-    </CustomBuild>
-    <ClInclude Include="IPXACTmodels\HierApiDependency.h" />
-    <ClInclude Include="IPXACTmodels\HierComConnection.h" />
-    <ClInclude Include="IPXACTmodels\HierConnection.h" />
-    <ClInclude Include="IPXACTmodels\Interconnection.h" />
-    <ClInclude Include="IPXACTmodels\Interface.h" />
-    <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Group.h" />
-    <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Placeholder.h" />
-    <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Position.h" />
-    <ClInclude Include="IPXACTmodels\kactusExtensions\Kactus2Value.h" />
-    <ClInclude Include="IPXACTmodels\librarycomponent.h" />
-    <ClInclude Include="IPXACTmodels\masterinterface.h" />
-    <ClInclude Include="IPXACTmodels\memoryblockdata.h" />
-    <ClInclude Include="IPXACTmodels\memorymap.h" />
-    <ClInclude Include="IPXACTmodels\memorymapitem.h" />
-    <ClInclude Include="IPXACTmodels\mirroredslaveinterface.h" />
-    <ClInclude Include="IPXACTmodels\model.h" />
-    <ClInclude Include="IPXACTmodels\modelparameter.h" />
-    <ClInclude Include="IPXACTmodels\NameGroup.h" />
-    <ClInclude Include="IPXACTmodels\otherclockdriver.h" />
-    <ClInclude Include="IPXACTmodels\parameter.h" />
-    <ClInclude Include="IPXACTmodels\port.h" />
-    <ClInclude Include="IPXACTmodels\portabstraction.h" />
-    <ClInclude Include="IPXACTmodels\PortRef.h" />
-    <ClInclude Include="IPXACTmodels\register.h" />
-    <ClInclude Include="IPXACTmodels\registerdefinition.h" />
-    <ClInclude Include="IPXACTmodels\registerfile.h" />
-    <ClInclude Include="IPXACTmodels\registermodel.h" />
-    <ClInclude Include="IPXACTmodels\remapport.h" />
-    <ClInclude Include="IPXACTmodels\remapstate.h" />
-    <ClInclude Include="IPXACTmodels\reset.h" />
-    <ClInclude Include="IPXACTmodels\segment.h" />
-    <ClInclude Include="IPXACTmodels\servicetypedef.h" />
-    <ClInclude Include="IPXACTmodels\slaveinterface.h" />
-    <ClInclude Include="IPXACTmodels\subspacemap.h" />
-    <ClInclude Include="IPXACTmodels\swbuildcommand.h" />
-    <ClInclude Include="IPXACTmodels\SWInstance.h" />
-    <ClInclude Include="IPXACTmodels\SWView.h" />
-    <ClInclude Include="IPXACTmodels\SystemView.h" />
-    <ClInclude Include="IPXACTmodels\transactional.h" />
-    <ClInclude Include="IPXACTmodels\transactionalabstraction.h" />
-    <ClInclude Include="IPXACTmodels\vector.h" />
-    <CustomBuild Include="IPXACTmodels\VendorExtension.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
-      </Command>
-    </CustomBuild>
-    <ClInclude Include="IPXACTmodels\view.h" />
-    <ClInclude Include="IPXACTmodels\wire.h" />
-    <ClInclude Include="IPXACTmodels\wireabstraction.h" />
-    <ClInclude Include="IPXACTmodels\writevalueconstraint.h" />
-    <ClInclude Include="IPXACTmodels\XmlUtils.h" />
     <CustomBuild Include="kactusGenerators\HDLGenerator\HDLGeneratorTemplate.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing HDLGeneratorTemplate.h...</Message>
@@ -10824,7 +10494,6 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
     </CustomBuild>
     <ClInclude Include="library\LibraryManager\LibraryUtils.h" />
-    <ClInclude Include="library\LibraryManager\vlnv.h" />
     <CustomBuild Include="library\LibraryManager\VLNVDialer\dialerwidget.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing dialerwidget.h...</Message>
@@ -11727,7 +11396,6 @@ CreateHelp
     </CustomBuild>
     <ClInclude Include="common\dialogs\NewBusDialog\NewBusDialog.h" />
     <ClInclude Include="common\Global.h" />
-    <ClInclude Include="common\KactusAttribute.h" />
     <ClInclude Include="common\KactusColors.h" />
     <ClInclude Include="common\TextEditProvider.h" />
     <ClInclude Include="common\utils.h" />

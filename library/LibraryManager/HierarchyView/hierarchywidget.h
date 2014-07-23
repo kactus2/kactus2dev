@@ -11,7 +11,7 @@
 #include "hierarchyview.h"
 #include "hierarchyfilter.h"
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QWidget>
 

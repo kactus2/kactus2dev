@@ -11,7 +11,7 @@
 #include "view.h"
 #include "modelparameter.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QList>
 #include <QDomNode>
@@ -26,7 +26,7 @@ class VLNV;
  * The Model describes the views, ports and model-related parameters of a
  * component.
  */
-class KACTUS2_API Model {
+class IPXACTMODELS_EXPORT Model {
 
 public:
 

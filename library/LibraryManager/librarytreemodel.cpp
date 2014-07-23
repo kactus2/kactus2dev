@@ -13,7 +13,7 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/design.h>
 
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QSharedPointer>
 #include <QBrush>

@@ -11,7 +11,7 @@
 #include "slaveinterface.h"
 #include "mirroredslaveinterface.h"
 
-#include <library/LibraryManager/vlnv.h>
+#include"vlnv.h"
 
 #include <QString>
 #include <QList>

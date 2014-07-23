@@ -15,7 +15,7 @@
 
 #include "QuartusPinSyntax.h"
 
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/generaldeclarations.h>
 

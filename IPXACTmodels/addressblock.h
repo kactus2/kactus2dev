@@ -12,7 +12,7 @@
 #include "parameter.h"
 #include "memoryblockdata.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QDomNode>
 #include <QString>
@@ -32,7 +32,7 @@ class VendorExtension;
  * AddressBlock is a generalization of a class MemoryMapItem which is also the
  * base class for classes Bank and SubspaceMap.
  */
-class KACTUS2_API AddressBlock: public MemoryMapItem {
+class IPXACTMODELS_EXPORT AddressBlock: public MemoryMapItem {
 
 public:
 

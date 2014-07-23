@@ -12,12 +12,14 @@
 #ifndef VENDOREXTENSION_H
 #define VENDOREXTENSION_H
 
+#include "ipxactmodels_global.h"
+
 #include <QXmlStreamWriter>
 
 //-----------------------------------------------------------------------------
 // class VendorExtension.
 //-----------------------------------------------------------------------------
-class VendorExtension
+class IPXACTMODELS_EXPORT VendorExtension
 {
 
 public:

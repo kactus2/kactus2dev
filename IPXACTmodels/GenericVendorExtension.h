@@ -14,6 +14,8 @@
 
 #include "VendorExtension.h"
 
+#include "ipxactmodels_global.h"
+
 #include <QDomNode>
 #include <QObject>
 #include <QXmlStreamWriter>
@@ -21,7 +23,7 @@
 //-----------------------------------------------------------------------------
 // class GenericVendorExtension.
 //-----------------------------------------------------------------------------
-class GenericVendorExtension : public VendorExtension
+class IPXACTMODELS_EXPORT GenericVendorExtension : public VendorExtension
 {
 
 public:

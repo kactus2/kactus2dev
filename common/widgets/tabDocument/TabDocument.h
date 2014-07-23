@@ -12,7 +12,7 @@
 #ifndef TABDOCUMENT_H
 #define TABDOCUMENT_H
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <designEditors/common/DrawMode.h>
 #include <common/IEditProvider.h>

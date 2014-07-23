@@ -15,7 +15,7 @@
 #include "Interface.h"
 #include "VendorExtension.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QList>
 #include <QPointF>
@@ -31,7 +31,7 @@
 // between a bus interface on the encompassing component and a bus
 // interface on a component instance of the design.
 //-----------------------------------------------------------------------------
-class KACTUS2_API HierConnection
+class IPXACTMODELS_EXPORT HierConnection
 {
 public:
 

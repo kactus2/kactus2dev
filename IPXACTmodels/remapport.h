@@ -9,7 +9,7 @@
 
 #include "generaldeclarations.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QList>
@@ -21,7 +21,7 @@
  * Specifies when the remap state gets effective. A collection of remapPort
  * instances make up the condition for the containing remap state.
  */
-class KACTUS2_API RemapPort {
+class IPXACTMODELS_EXPORT RemapPort {
 
 public:
 

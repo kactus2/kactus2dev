@@ -7,6 +7,7 @@
 #include "alternateregister.h"
 #include "registerdefinition.h"
 #include "GenericVendorExtension.h"
+#include "parameter.h"
 
 #include <QXmlStreamWriter>
 #include <QDomNode>

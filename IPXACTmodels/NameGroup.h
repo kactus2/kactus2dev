@@ -12,6 +12,8 @@
 #ifndef NAMEGROUP_H
 #define NAMEGROUP_H
 
+#include "ipxactmodels_global.h"
+
 #include <QDomNode>
 #include <QString>
 #include <QXmlStreamWriter>
@@ -19,7 +21,7 @@
 //-----------------------------------------------------------------------------
 //! NameGroup matches the spirit:nameGroup element in IP-Xact.
 //-----------------------------------------------------------------------------
-class NameGroup
+class IPXACTMODELS_EXPORT NameGroup
 {
 
 public:

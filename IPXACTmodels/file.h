@@ -11,7 +11,7 @@
 #include "generaldeclarations.h"
 #include "buildcommand.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 #include <IPXACTmodels/NameGroup.h>
 
 #include <QString>
@@ -30,7 +30,7 @@ class VendorExtension;
  *
  * The File is a reference to a file or directory.
  */
-class KACTUS2_API File {
+class IPXACTMODELS_EXPORT File {
 
 public:
 
@@ -68,10 +68,10 @@ public:
 		/*! \brief The default constructor
 		 *
 		*/
-		Define();
+		IPXACTMODELS_EXPORT Define();
 
 		//! \brief Copy constructor
-		Define(const Define& other);
+		IPXACTMODELS_EXPORT Define(const Define& other);
 
 		//! \brief Assignment operator
 		Define& operator=(const Define& other);

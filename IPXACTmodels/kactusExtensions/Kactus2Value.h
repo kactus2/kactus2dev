@@ -12,12 +12,14 @@
 #ifndef KACTUS2VALUE_H
 #define KACTUS2VALUE_H
 
+#include <IPXACTmodels/ipxactmodels_global.h>
+
 #include <IPXACTmodels/VendorExtension.h>
 
 //-----------------------------------------------------------------------------
 // class Kactus2Value.
 //-----------------------------------------------------------------------------
-class Kactus2Value : public VendorExtension
+class IPXACTMODELS_EXPORT Kactus2Value : public VendorExtension
 {
 public:
 	/*!

@@ -12,9 +12,9 @@
 #ifndef COMPONENTINSTANCE_H
 #define COMPONENTINSTANCE_H
 
-#include <library/LibraryManager/vlnv.h>
+#include"vlnv.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QPointF>
@@ -27,7 +27,7 @@ class VendorExtension;
 //-----------------------------------------------------------------------------
 //! IP-XACT component instance class.
 //-----------------------------------------------------------------------------
-class KACTUS2_API ComponentInstance
+class IPXACTMODELS_EXPORT ComponentInstance
 {
 public:
     /*!

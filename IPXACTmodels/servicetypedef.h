@@ -7,7 +7,7 @@
 #ifndef SERVICETYPEDEF_H_
 #define SERVICETYPEDEF_H_
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QDomNode>
 #include <QString>
@@ -21,7 +21,7 @@ class Parameter;
  *
  * Defines a single service type definition.
  */
-class KACTUS2_API ServiceTypeDef {
+class IPXACTMODELS_EXPORT ServiceTypeDef {
 
 public:
 

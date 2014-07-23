@@ -7,7 +7,7 @@
 
 #include "hierarchyfilter.h"
 
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <library/LibraryManager/VLNVDialer/vlnvdialer.h>
 #include "hierarchyitem.h"
 

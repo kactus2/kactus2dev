@@ -7,6 +7,7 @@
 #include "componentgenerator.h"
 #include "generaldeclarations.h"
 #include "XmlUtils.h"
+#include "parameter.h"
 
 #include <QList>
 #include <QString>

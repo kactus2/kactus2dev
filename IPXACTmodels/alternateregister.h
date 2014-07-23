@@ -9,7 +9,7 @@
 
 #include "registermodel.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QXmlStreamWriter>
 #include <QDomNode>
@@ -25,7 +25,7 @@ class VendorExtension;
  * This is a subclass of RegisterModel that holds the base class information for
  * alternateRegister, Register and RegisterFile classes.
  */
-class KACTUS2_API AlternateRegister : public RegisterModel {
+class IPXACTMODELS_EXPORT AlternateRegister : public RegisterModel {
 
 public:
 

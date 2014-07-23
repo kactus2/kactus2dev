@@ -12,7 +12,7 @@
 #ifndef NotesStack_H
 #define NotesStack_H
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QSplitter>
 #include <QTextEdit>

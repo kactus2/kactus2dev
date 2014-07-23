@@ -13,7 +13,7 @@
 #define MEMORYDESIGNDIAGRAM_H
 
 #include <common/graphicsItems/GraphicsColumnLayout.h>
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <designEditors/common/DesignDiagram.h>
 
 #include <QVector>

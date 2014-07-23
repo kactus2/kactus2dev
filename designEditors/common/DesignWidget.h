@@ -13,7 +13,7 @@
 #define DESIGNWIDGET_H
 
 #include <common/widgets/tabDocument/TabDocument.h>
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QGraphicsView>
 #include <QWheelEvent>

@@ -16,7 +16,7 @@
 #include "librarycomponent.h"
 #include "ComProperty.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QStringList>
 #include <QList>
@@ -27,7 +27,7 @@ class VLNV;
 //-----------------------------------------------------------------------------
 //! Communication definition class.
 //-----------------------------------------------------------------------------
-class KACTUS2_API ComDefinition : public LibraryComponent
+class IPXACTMODELS_EXPORT ComDefinition : public LibraryComponent
 {
 public:
     /*!

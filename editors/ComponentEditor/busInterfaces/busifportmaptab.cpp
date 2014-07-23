@@ -15,7 +15,7 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/port.h>
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h>

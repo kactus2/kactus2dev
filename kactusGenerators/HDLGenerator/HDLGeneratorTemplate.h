@@ -23,7 +23,7 @@
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/designconfiguration.h>
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <kactusGenerators/HDLGenerator/HDLModelParameter.h>
 #include <kactusGenerators/HDLGenerator/HDLPort.h>

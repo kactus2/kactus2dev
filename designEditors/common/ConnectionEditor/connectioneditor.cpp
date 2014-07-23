@@ -16,7 +16,7 @@
 #include <designEditors/HWDesign/HWComponentItem.h>
 
 #include <library/LibraryManager/libraryinterface.h>
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>

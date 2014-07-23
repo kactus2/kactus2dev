@@ -8,7 +8,7 @@
 #ifndef GLOBALHEADERSAVEMODEL_H
 #define GLOBALHEADERSAVEMODEL_H
 
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/design.h>
 

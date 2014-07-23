@@ -20,7 +20,7 @@
 #include <editors/BusEditor/busdefgroup.h>
 #include <editors/ComponentEditor/ports/portsdelegate.h>
 #include <library/LibraryManager/libraryinterface.h>
-#include <library/LibraryManager/vlnv.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QVBoxLayout>
 #include <QLabel>

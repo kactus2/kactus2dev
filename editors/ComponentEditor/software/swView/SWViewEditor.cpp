@@ -13,7 +13,7 @@
 #include <mainwindow/mainwindow.h>
 #include "swbuildcommandeditor.h"
 #include "bspbuildeditor.h"
-#include <common/KactusAttribute.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <IPXACTmodels/SWView.h>
 #include <QApplication>

@@ -9,7 +9,7 @@
 
 #include "generaldeclarations.h"
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QDomNode>
 #include <QList>
@@ -24,7 +24,7 @@ class ServiceTypeDef;
  * Defines a physical transactional port of the component, which implements or
  * uses a service. A service can be implemented with functions or methods.
  */
-class KACTUS2_API Transactional {
+class IPXACTMODELS_EXPORT Transactional {
 
 public:
 

@@ -6,7 +6,7 @@
 #ifndef VLNV_H_
 #define VLNV_H_
 
-#include <common/Global.h>
+#include "ipxactmodels_global.h"
 
 #include <QString>
 #include <QStringList>
@@ -28,7 +28,7 @@ const QString SPIRIT_VERSION("spirit:version");
  * This class provides services to store, read and write VLNV information
  * easily in classes that handle IP-XACT data.
  */
-class KACTUS2_API VLNV
+class IPXACTMODELS_EXPORT VLNV
 {
 public:
 
