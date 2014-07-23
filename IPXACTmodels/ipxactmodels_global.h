@@ -1,8 +1,6 @@
 #ifndef IPXACTMODELS_GLOBAL_H
 #define IPXACTMODELS_GLOBAL_H
 
-#include <QtCore/qglobal.h>
-
 #ifdef IPXACTMODELS_LIB
 # define IPXACTMODELS_EXPORT Q_DECL_EXPORT
 #else
