@@ -28,10 +28,10 @@
 #include <kactusGenerators/HDLGenerator/HDLModelParameter.h>
 #include <kactusGenerators/HDLGenerator/HDLPort.h>
 #include <kactusGenerators/HDLGenerator/vhdlportsorter.h>
-#include <kactusGenerators/HDLGenerator/VhdlConnectionEndPoint.h>
+#include <kactusGenerators/HDLGenerator/vhdlconnectionendpoint.h>
 #include <kactusGenerators/HDLGenerator/HDLSignal.h>
-#include <kactusGenerators/HDLGenerator/HDLcomponentdeclaration.h>
-#include <kactusGenerators/HDLGenerator/HDLcomponentinstance.h>
+#include <kactusGenerators/HDLGenerator/HDLComponentDeclaration.h>
+#include <kactusGenerators/HDLGenerator/HDLComponentInstance.h>
 
 #include <QObject>
 #include <QSharedPointer>

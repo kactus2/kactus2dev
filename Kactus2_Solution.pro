@@ -8,8 +8,10 @@
 
 
 TEMPLATE = subdirs
-SUBDIRS += Kactus2.pro \
-    Plugins/MCAPICodeGenerator/MCAPICodeGenerator.pro \
+CONFIG += ordered
+SUBDIRS += IPXACTmodels/IPXACTmodels.pro \
+        Kactus2.pro \
+        Plugins/MCAPICodeGenerator/MCAPICodeGenerator.pro \
 	Plugins/CppSourceAnalyzer/CppSourceAnalyzer.pro \
 	Plugins/VHDLAnalyzer/VHDLSourceAnalyzer.pro \
 	Plugins/MemoryMapHeaderGenerator/MemoryMapHeaderGenerator.pro \

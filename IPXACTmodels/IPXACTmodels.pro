@@ -18,3 +18,6 @@ OBJECTS_DIR += release
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(IPXACTmodels.pri)
+
+target.path = /usr/lib
+INSTALLS += target

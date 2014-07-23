@@ -13,7 +13,7 @@
 #define HDLPort_H
 
 #include "HDLObject.h"
-#include "VhdlPortsorter.h"
+#include "vhdlportsorter.h"
 
 #include <IPXACTmodels/generaldeclarations.h>
 

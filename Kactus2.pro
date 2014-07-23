@@ -14,7 +14,7 @@ INCLUDEPATH += . \
     $(QTDIR)/../qttools/include/QtHelp \
     $(QTDIR)/../qtxmlpatterns/include/QtXmlPatterns \
     $(QTDIR)/../qtxmlpatterns/include
-LIBS += -L"$(SolutionDir)executable" \
+LIBS += -L./executable \
     -lIPXACTmodels
 DEPENDPATH += .
 linux-g++*:QMAKE_CXXFLAGS += -fPIE

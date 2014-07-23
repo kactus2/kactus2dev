@@ -13,7 +13,7 @@
 #define HDLCOMPONENTINSTANCE_H
 
 #include "HDLObject.h"
-#include "VhdlConnectionEndPoint.h"
+#include "vhdlconnectionendpoint.h"
 
 #include <IPXACTmodels/component.h>
 

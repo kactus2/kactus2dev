@@ -16,6 +16,7 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QDomNode>
+#include <QPointF>
 
 //-----------------------------------------------------------------------------
 // class Kactus2Position.
