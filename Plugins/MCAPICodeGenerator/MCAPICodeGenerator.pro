@@ -9,7 +9,6 @@ QT += core xml widgets gui
 CONFIG += plugin release
 DEFINES += MCAPICODEGENERATOR_LIB QT_DLL QT QT_WIDGETS_LIB QT_XML_LIB QT_
 INCLUDEPATH += ./GeneratedFiles \
-    ./GeneratedFiles/$(Configuration) \
     . \
     ./../.. \
     $(QTDIR)/../qttools/include 

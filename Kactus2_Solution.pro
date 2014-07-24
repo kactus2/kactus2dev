@@ -17,8 +17,9 @@ SUBDIRS += IPXACTmodels/IPXACTmodels.pro \
 	Plugins/MemoryMapHeaderGenerator/MemoryMapHeaderGenerator.pro \
 	Plugins/AlteraBSPGenerator/AlteraBSPGenerator.pro \
 	Plugins/QuartusPinImportPlugin/QuartusPinImportPlugin.pro \
-	Plugins/PadsPartGenerator/PadsPartGenerator.pro 
+	Plugins/PadsPartGenerator/PadsPartGenerator.pro \
 
+	
 unix:upgrade.path = /usr/share/kactus2
 unix:upgrade.files = ./Administrative/releaseFiles/upgrade.cfg
 

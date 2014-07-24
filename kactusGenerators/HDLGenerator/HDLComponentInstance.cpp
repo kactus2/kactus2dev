@@ -141,3 +141,11 @@ QString HDLComponentInstance::getArchitecture() const
 {
     return architecture_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: HDLComponentInstance::getAssignedModelParameters()
+//-----------------------------------------------------------------------------
+QMap<QString, QString> HDLComponentInstance::getAssignedModelParameters() const
+{
+    return modelParameterValues_;
+}

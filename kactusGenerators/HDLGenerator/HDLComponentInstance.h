@@ -185,6 +185,8 @@ protected:
      */
     QString getArchitecture() const;
     
+    QMap<QString, QString> getAssignedModelParameters() const;
+
 private:
 	//! No copying
 	HDLComponentInstance(const HDLComponentInstance& other);
