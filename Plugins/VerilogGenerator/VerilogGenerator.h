@@ -18,6 +18,8 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/design.h>
 
+#include <kactusGenerators\HDLGenerator\vhdlportsorter.h>
+
 #include <Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.h>
 
 class VerilogGenerator
@@ -28,21 +30,26 @@ public:
 
     void write(QTextStream& outputStream) const;
 
-    void writeComponentInstances(QTextStream& outputStream) const;
-
-    void writeParameterDeclarations(QTextStream& outputStream) const;
-
-    void writeModuleEnd(QTextStream& outputStream) const;
-
-    void writePortDeclarations(QTextStream& outputStream) const;
-
-    void writeModuleBegin(QTextStream& outputStream) const;
-
+ 
     void parse(QSharedPointer<const Component> component, 
         QSharedPointer<const Design> design = QSharedPointer<const Design>());
 
+
 private:
-    
+    void writeModuleBegin(QTextStream& outputStream) const;
+
+    void writePortNames(QTextStream& outputStream) const;
+
+    void writePortDeclarations(QTextStream& outputStream) const;
+
+    void writeParameterDeclarations(QTextStream& outputStream) const;
+
+    void writeComponentInstances(QTextStream& outputStream) const;
+
+    void writeModuleEnd(QTextStream& outputStream) const;
+
+    QList<QSharedPointer<Port> > sortedPorts() const;
+
     QString name_;
 
     QList<PortVerilogWriter> portWriters_;

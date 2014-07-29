@@ -3856,12 +3856,6 @@
     <ClCompile Include="kactusGenerators\verilogGenerator\VerilogParameter.cpp">
       <Filter>Source Files\kactusGenerators\VerilogGenerator</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_VerilogPort.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\verilogGenerator\VerilogPort.cpp">
-      <Filter>Source Files\kactusGenerators\VerilogGenerator</Filter>
-    </ClCompile>
     <ClCompile Include="kactusGenerators\HDLGenerator\HDLUtils.cpp">
       <Filter>Source Files\kactusGenerators\HDLGenerator</Filter>
     </ClCompile>
@@ -5293,9 +5287,6 @@
       <Filter>Header Files\kactusGenerators\HDLGenerator</Filter>
     </CustomBuild>
     <CustomBuild Include="kactusGenerators\verilogGenerator\VerilogParameter.h">
-      <Filter>Header Files\kactusGenerators\VerilogGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kactusGenerators\verilogGenerator\VerilogPort.h">
       <Filter>Header Files\kactusGenerators\VerilogGenerator</Filter>
     </CustomBuild>
   </ItemGroup>

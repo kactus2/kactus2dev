@@ -3,10 +3,12 @@
 # ------------------------------------------------------
 
 HEADERS += ../../../../kactusGenerators/HDLGenerator/HDLUtils.h \
+           ../../../../kactusGenerators/HDLGenerator/vhdlportsorter.h \
            ../../../../Plugins/VerilogGenerator/VerilogGenerator.h \
            ../../../../Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.h
 
 SOURCES += ../../../../kactusGenerators/HDLGenerator/HDLUtils.cpp \
+           ../../../../kactusGenerators/HDLGenerator/vhdlportsorter.cpp \
            ../../../../Plugins/VerilogGenerator/VerilogGenerator.cpp \
            ../../../../Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.cpp \
            ./tst_VerilogGenerator.cpp

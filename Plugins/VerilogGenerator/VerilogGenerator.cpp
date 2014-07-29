@@ -11,11 +11,17 @@
 
 #include "VerilogGenerator.h"
 
+//-----------------------------------------------------------------------------
+// Function: VerilogGenerator::VerilogGenerator()
+//-----------------------------------------------------------------------------
 VerilogGenerator::VerilogGenerator(): name_(), portDeclarations_(), portWriters_(), parameterDeclarations_(), componentInstances_(), parseCalled_(false), component_()
 {
 
 }
 
+//-----------------------------------------------------------------------------
+// Function: VerilogGenerator::~VerilogGenerator()
+//-----------------------------------------------------------------------------
 VerilogGenerator::~VerilogGenerator()
 {
 
@@ -49,14 +55,14 @@ void VerilogGenerator::parse(QSharedPointer<const Component> component, QSharedP
 {
     component_ = component;
 
-    name_ = component->getVlnv()->getName();
+    name_ = component_->getVlnv()->getName();
 
-    foreach(QSharedPointer<Port> port, component->getPorts())
+    foreach(QSharedPointer<Port> port, sortedPorts())
     {
         portWriters_.append(PortVerilogWriter(port));
     }
 
-    foreach(QSharedPointer<ModelParameter> parameter, component->getModelParameters())
+    foreach(QSharedPointer<ModelParameter> parameter, component_->getModelParameters())
     {
         parameterDeclarations_.append("    ");
         parameterDeclarations_.append("parameter ");
@@ -88,9 +94,24 @@ void VerilogGenerator::writeModuleBegin(QTextStream& outputStream) const
 {
     outputStream << "module " << name_ << "(";
 
-    outputStream << component_->getPortNames().join(", ");
+    writePortNames(outputStream);
+
     
     outputStream << ");" << endl;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogGenerator::writePortNames()
+//-----------------------------------------------------------------------------
+void VerilogGenerator::writePortNames(QTextStream& outputStream) const
+{
+    QStringList portNames;
+    foreach(QSharedPointer<Port> port, sortedPorts())
+    {
+        portNames.append(port->getName());
+    }
+
+    outputStream << portNames.join(", ");
 }
 
 //-----------------------------------------------------------------------------
@@ -126,4 +147,19 @@ void VerilogGenerator::writeParameterDeclarations(QTextStream& outputStream) con
 void VerilogGenerator::writeComponentInstances(QTextStream& outputStream) const
 {
     outputStream << componentInstances_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogGenerator::sortedPorts()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<Port> > VerilogGenerator::sortedPorts() const
+{
+    QMap<VhdlPortSorter, QSharedPointer<Port> > ports;
+    foreach(QSharedPointer<Port> port, component_->getPorts())
+    {
+        VhdlPortSorter sorter(component_->getInterfaceNameForPort(port->getName()), port->getName(), port->getDirection());
+        ports.insertMulti(sorter, port);
+    }
+
+    return ports.values();
 }
