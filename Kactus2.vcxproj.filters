@@ -56,23 +56,14 @@
     <Filter Include="Source Files\common\widgets\assistedLineEdit">
       <UniqueIdentifier>{19f9c0a7-402c-4d71-83fd-40ce94b287fa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\widgets\libraryRefGenerator">
-      <UniqueIdentifier>{7d0d629c-9128-4406-b23d-dc8304c7b5f9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\widgets\listManager">
       <UniqueIdentifier>{e015c02b-66b4-460c-97c8-90cb481826d7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\nameGroupBox">
       <UniqueIdentifier>{e7e74448-026d-43cb-94f1-9d7fde390615}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\widgets\vectorEditor">
-      <UniqueIdentifier>{7cecaba9-8bb0-43f1-b5c8-905ae71639e8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\widgets\vlnvDisplayer">
       <UniqueIdentifier>{92b3960c-d9ae-4d9f-8f6e-ef2500695fd2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\widgets\vlnvGenerator">
-      <UniqueIdentifier>{22da4c35-28b3-475d-a5e8-1c7fad94f565}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\assistedTextEdit">
       <UniqueIdentifier>{81107c0b-459e-4f73-908c-9d98eb5ddd88}</UniqueIdentifier>
@@ -195,17 +186,11 @@
     <Filter Include="Header Files\common\widgets">
       <UniqueIdentifier>{f6f5f3e0-6e98-4f04-92e8-de7d11fc9525}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\common\widgets\libraryRefGenerator">
-      <UniqueIdentifier>{578279f0-7545-41d0-b096-e3d4b9b2cbab}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\common\widgets\listManager">
       <UniqueIdentifier>{46aae604-21e9-4d2d-b59e-aa4a1d490d44}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\nameGroupBox">
       <UniqueIdentifier>{19886b51-94c4-4e94-86bc-f397b610f64d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\widgets\vlnvGenerator">
-      <UniqueIdentifier>{a206d1de-1541-4829-aa1d-ed50a6c8b6ed}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\assistedLineEdit">
       <UniqueIdentifier>{e30fe0ab-418e-448b-87d7-d9195b7fd258}</UniqueIdentifier>
@@ -215,9 +200,6 @@
     </Filter>
     <Filter Include="Header Files\common\widgets\booleanComboBox">
       <UniqueIdentifier>{420c19f9-c40b-4cd3-aeab-b6c4ae973e3f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\widgets\vectorEditor">
-      <UniqueIdentifier>{aeedb2ff-fb0d-47fb-835b-6bbb92eb96cb}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\tabDocument">
       <UniqueIdentifier>{10b24e58-7d7a-4ebb-b44b-815bcd42d095}</UniqueIdentifier>
@@ -985,9 +967,6 @@
     <ClCompile Include="common\widgets\assistedLineEdit\LineContentAssistWidget.cpp">
       <Filter>Source Files\common\widgets\assistedLineEdit</Filter>
     </ClCompile>
-    <ClCompile Include="common\widgets\libraryRefGenerator\libraryrefgenerator.cpp">
-      <Filter>Source Files\common\widgets\libraryRefGenerator</Filter>
-    </ClCompile>
     <ClCompile Include="common\widgets\listManager\dirlistmanager.cpp">
       <Filter>Source Files\common\widgets\listManager</Filter>
     </ClCompile>
@@ -1006,14 +985,8 @@
     <ClCompile Include="common\widgets\nameGroupBox\namegroupbox.cpp">
       <Filter>Source Files\common\widgets\nameGroupBox</Filter>
     </ClCompile>
-    <ClCompile Include="common\widgets\vectorEditor\vectoreditor.cpp">
-      <Filter>Source Files\common\widgets\vectorEditor</Filter>
-    </ClCompile>
     <ClCompile Include="common\widgets\vlnvDisplayer\vlnvdisplayer.cpp">
       <Filter>Source Files\common\widgets\vlnvDisplayer</Filter>
-    </ClCompile>
-    <ClCompile Include="common\widgets\vlnvGenerator\vlnvgenerator.cpp">
-      <Filter>Source Files\common\widgets\vlnvGenerator</Filter>
     </ClCompile>
     <ClCompile Include="common\widgets\assistedTextEdit\AssistedTextEdit.cpp">
       <Filter>Source Files\common\widgets\assistedTextEdit</Filter>
@@ -1205,9 +1178,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_vhdlnamevalidator.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vectoreditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_usagecombobox.cpp">
@@ -4077,9 +4047,6 @@
     <CustomBuild Include="common\widgets\usageComboBox\usagecombobox.h">
       <Filter>Header Files\common\widgets\usageComboBox</Filter>
     </CustomBuild>
-    <CustomBuild Include="common\widgets\vectorEditor\vectoreditor.h">
-      <Filter>Header Files\common\widgets\vectorEditor</Filter>
-    </CustomBuild>
     <CustomBuild Include="common\widgets\vlnvDisplayer\vlnvdisplayer.h">
       <Filter>Header Files\common\widgets\vlnvDisplayer</Filter>
     </CustomBuild>
@@ -5351,9 +5318,6 @@
     <ClInclude Include="common\widgets\assistedTextEdit\TextContentAssistWidget.h">
       <Filter>Header Files\common\widgets\assistedTextEdit</Filter>
     </ClInclude>
-    <ClInclude Include="common\widgets\libraryRefGenerator\libraryrefgenerator.h">
-      <Filter>Header Files\common\widgets\libraryRefGenerator</Filter>
-    </ClInclude>
     <ClInclude Include="common\widgets\SnippetTextEdit\SnippetHighlighter.h">
       <Filter>Header Files\common\widgets\SnippetTextEdit</Filter>
     </ClInclude>
@@ -5362,9 +5326,6 @@
     </ClInclude>
     <ClInclude Include="common\widgets\vlnvEditor\VLNVDataTree.h">
       <Filter>Header Files\common\widgets\vlnvEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="common\widgets\vlnvGenerator\vlnvgenerator.h">
-      <Filter>Header Files\common\widgets\vlnvGenerator</Filter>
     </ClInclude>
     <ClInclude Include="common\Global.h">
       <Filter>Header Files\common</Filter>

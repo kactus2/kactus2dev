@@ -7,14 +7,12 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./version.h \
-    ./common/Global.h \
+HEADERS += ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
     ./common/IEditProvider.h \
     ./common/GenericEditProvider.h \
-    ./common/widgets/libraryRefGenerator/libraryrefgenerator.h \
     ./common/widgets/listManager/dirlistmanagermodel.h \
     ./common/widgets/listManager/listmanagermodel.h \
     ./common/widgets/listManager/listmanager.h \
@@ -22,14 +20,12 @@ HEADERS += ./version.h \
     ./common/widgets/listManager/filelistmanager.h \
     ./common/widgets/listManager/dirlistmanager.h \
     ./common/widgets/nameGroupBox/namegroupbox.h \
-    ./common/widgets/vlnvGenerator/vlnvgenerator.h \
     ./common/widgets/assistedLineEdit/BasicLineContentMatcher.h \
     ./common/widgets/assistedLineEdit/ILineContentMatcher.h \
     ./common/widgets/assistedLineEdit/LineContentAssistWidget.h \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.h \
     ./common/widgets/vlnvDisplayer/vlnvdisplayer.h \
     ./common/widgets/booleanComboBox/booleancombobox.h \
-    ./common/widgets/vectorEditor/vectoreditor.h \
     ./common/widgets/tabDocument/TabDocument.h \
     ./common/widgets/assistedTextEdit/HighlightStyleDesc.h \
     ./common/widgets/assistedTextEdit/ITextContentMatcher.h \
@@ -553,8 +549,7 @@ HEADERS += ./version.h \
     ./kactusGenerators/HDLGenerator/HDLComponentDeclaration.h \
     ./kactusGenerators/HDLGenerator/HDLComponentInstance.h \
     ./kactusGenerators/HDLGenerator/HDLSignal.h \
-    ./kactusGenerators/verilogGenerator/VerilogParameter.h \
-    ./kactusGenerators/verilogGenerator/VerilogPort.h
+    ./kactusGenerators/verilogGenerator/VerilogParameter.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -582,7 +577,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
     ./common/widgets/assistedLineEdit/BasicLineContentMatcher.cpp \
     ./common/widgets/assistedLineEdit/LineContentAssistWidget.cpp \
-    ./common/widgets/libraryRefGenerator/libraryrefgenerator.cpp \
     ./common/widgets/listManager/dirlistmanager.cpp \
     ./common/widgets/listManager/dirlistmanagermodel.cpp \
     ./common/widgets/listManager/filelistmanager.cpp \
@@ -590,9 +584,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/listManager/listmanager.cpp \
     ./common/widgets/listManager/listmanagermodel.cpp \
     ./common/widgets/nameGroupBox/namegroupbox.cpp \
-    ./common/widgets/vectorEditor/vectoreditor.cpp \
     ./common/widgets/vlnvDisplayer/vlnvdisplayer.cpp \
-    ./common/widgets/vlnvGenerator/vlnvgenerator.cpp \
     ./common/widgets/assistedTextEdit/AssistedTextEdit.cpp \
     ./common/widgets/assistedTextEdit/TextContentAssistWidget.cpp \
     ./common/widgets/assistedTextEdit/ToolTipHintWidget.cpp \
@@ -1073,6 +1065,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/HDLGenerator/HDLUtils.cpp \
     ./kactusGenerators/HDLGenerator/vhdlconnectionendpoint.cpp \
     ./kactusGenerators/HDLGenerator/vhdlportsorter.cpp \
-    ./kactusGenerators/verilogGenerator/VerilogParameter.cpp \
-    ./kactusGenerators/verilogGenerator/VerilogPort.cpp
+    ./kactusGenerators/verilogGenerator/VerilogParameter.cpp
 RESOURCES += kactus.qrc
