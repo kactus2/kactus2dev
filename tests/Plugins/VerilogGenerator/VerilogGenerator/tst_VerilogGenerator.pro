@@ -1,48 +1,50 @@
 #-----------------------------------------------------------------------------
-# File: tst_verilogPort.pro
+# File: unittest.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
 # Date: 24.27.2014
 #
 # Description:
-# Qt project file for running unit tests for VerilogPort.
+# Qt project file for running unit tests for Verilog Generator.
 #-----------------------------------------------------------------------------
 
-win32-msvc {
-    TEMPLATE = vcapp
-}
-else {
-    TEMPLATE = app
-}
+TEMPLATE = app
 
-TARGET = tst_verilogport
+TARGET = tst_VerilogGenerator
 
 QT += core xml gui testlib
-CONFIG += testcase console debug
+CONFIG += testcase console
 
 win32:CONFIG(release, debug|release) {
     LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodels
+	LIBS += -L$$PWD/../../../../executable/Plugins -lVerilogGenerator
     DESTDIR = ./release
 }
 else:win32:CONFIG(debug, debug|release) {
     LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodelsd
+	LIBS += -L$$PWD/../../../../executable/Plugins -lVerilogGeneratord	
     DESTDIR = ./debug
 }
 else:unix {
     LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodels
+	LIBS += -L$$PWD/../../../../executable/Plugins -lVerilogGenerator
     DESTDIR = ./release
 }
 
 INCLUDEPATH += $$PWD/../../../../
+INCLUDEPATH += $$PWD/../../../../executable
+INCLUDEPATH += $$PWD/../../../../executable/Plugins
 INCLUDEPATH += $$DESTDIR
 
 DEPENDPATH += $$PWD/../../../../
+DEPENDPATH += $$PWD/../../../../executable
+DEPENDPATH += $$PWD/../../../../executable/Plugins
 DEPENDPATH += .
 
 OBJECTS_DIR += $$DESTDIR
 
-MOC_DIR += ./GeneratedFiles
-UI_DIR += ./GeneratedFiles
-RCC_DIR += ./GeneratedFiles
-include(tst_verilogport.pri)
+MOC_DIR += ./generatedFiles
+UI_DIR += ./generatedFiles
+RCC_DIR += ./generatedFiles
+include(tst_VerilogGenerator.pri)

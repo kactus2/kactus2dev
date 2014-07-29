@@ -3,18 +3,13 @@
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
-# Date: 24.27.2014
+# Date: 24.7.2014
 #
 # Description:
 # Qt project file template for running unit tests for a single module.
 #-----------------------------------------------------------------------------
 
-win32-msvc {
-    TEMPLATE = vcapp
-}
-else {
-    TEMPLATE = app
-}
+TEMPLATE = app
 
 TARGET = <module_name>
 
@@ -37,7 +32,7 @@ DEPENDPATH += .
 
 OBJECTS_DIR += $$DESTDIR
 
-MOC_DIR += ./GeneratedFiles
-UI_DIR += ./GeneratedFiles
-RCC_DIR += ./GeneratedFiles
+MOC_DIR += ./generatedFiles
+UI_DIR += ./generatedFiles
+RCC_DIR += ./generatedFiles
 include(<module_name>.pri)

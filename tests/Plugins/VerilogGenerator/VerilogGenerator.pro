@@ -1,17 +1,16 @@
 #-----------------------------------------------------------------------------
-# File: test_all.pro
+# File: subdirs.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
 # Date: 24.27.2014
 #
 # Description:
-# Qt project file for running all unit tests.
+# Qt project file template for running unit tests for Verilog generation.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = subdirs
 
 CONFIG += testcase
-
-SUBDIRS += Plugins/plugins.pro \
-           kactusGenerators/kactusGenerators.pro
+SUBDIRS += VerilogGenerator/tst_VerilogGenerator.pro \
+           PortVerilogWriter/tst_PortVerilogWriter.pro 

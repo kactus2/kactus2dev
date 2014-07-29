@@ -9,12 +9,7 @@
 # Qt project file template for running unit tests in subdirectories.
 #-----------------------------------------------------------------------------
 
-win32-msvc {
-    TEMPLATE = vcsubdirs
-}
-else {
-    TEMPLATE = subdirs
-}
+TEMPLATE = subdirs
 
 CONFIG += testcase
 SUBDIRS += <subdir/subproject.pro>

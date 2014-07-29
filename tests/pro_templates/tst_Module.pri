@@ -1,17 +1,12 @@
 #-----------------------------------------------------------------------------
-# File: test_all.pro
+# File: unittest.pri
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
-# Date: 24.27.2014
+# Date: 28.7.2014
 #
 # Description:
-# Qt project file for running all unit tests.
+# Qt project include file template.
 #-----------------------------------------------------------------------------
 
-TEMPLATE = subdirs
-
-CONFIG += testcase
-
-SUBDIRS += Plugins/plugins.pro \
-           kactusGenerators/kactusGenerators.pro
+SOURCES += ./tst_<Module>.cpp
