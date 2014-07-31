@@ -20,7 +20,7 @@
 class ModelParameter;
 
 //-----------------------------------------------------------------------------
-//! ModelParameterVerilogWriter represents a Verilog parameter in a component or entity declaration.
+//! Class for writing model parameter declarations in Verilog.
 //-----------------------------------------------------------------------------
 class ModelParameterVerilogWriter
 {
@@ -31,14 +31,13 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] modelParameter   The model parameter represented by this object.
-	 *      @param [in] parent           The parent object.
 	 */
 	ModelParameterVerilogWriter(QSharedPointer<ModelParameter> modelParameter);
 	
 	//! The destructor
-	virtual ~ModelParameterVerilogWriter();
+	~ModelParameterVerilogWriter();
 
-	/*! Write the contents of the parameter into text stream.
+	/*! Write the contents of the model parameter into text stream.
 	 *
 	 *      @param [in] output   The text stream to write the model parameter into.
 	*/
@@ -51,7 +50,21 @@ private:
 
 	//! No assignment.
 	ModelParameterVerilogWriter& operator=(const ModelParameterVerilogWriter& other);
-    
+
+    /*!
+     *  Checks if the writer should write nothing.
+     *
+     *      @return True, if the writer has nothing to write, otherwise false.
+     */
+    bool nothingToWrite() const;
+
+    /*!
+     *  Creates a Verilog parameter declaration from the model parameter.
+     *
+     *      @return A Verilog parameter declaration.
+     */
+    QString createDeclaration() const;
+
     /*!
      *  Returns the formatted model parameter value.
      *     
@@ -59,6 +72,7 @@ private:
      */
     QString formattedValue() const;
 
+    //! The model parameter to write to Verilog.
     QSharedPointer<ModelParameter> modelParameter_;
 };
 

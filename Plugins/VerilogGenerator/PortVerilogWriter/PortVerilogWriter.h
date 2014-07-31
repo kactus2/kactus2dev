@@ -16,29 +16,67 @@
 
 #include <QTextStream>
 
-
+//-----------------------------------------------------------------------------
+// Class for writing port declarations in Verilog.
+//-----------------------------------------------------------------------------
 class PortVerilogWriter 
 {
 public:
+
+
+    /*!
+     *  The constructor.
+     *
+     *      @param [in] port   The port to Verilog.
+     */
     PortVerilogWriter(QSharedPointer<const Port> port);
+
+    //! The destructor.
     ~PortVerilogWriter();
 
-    void write(QTextStream& outputStream);
+	/*! Writes the Verilog port declaration into a text stream.
+	 *
+	 *      @param [in] output   The text stream to write the port into.
+	 */
+    void write(QTextStream& outputStream) const;
 
 private:
+    
+    //! No copying.
+    PortVerilogWriter(const PortVerilogWriter& other);
 
-    bool shouldNotWrite();
+    //! No assignment.
+    PortVerilogWriter& operator=(const PortVerilogWriter& other);
 
-    void writeIndent(QTextStream& outputStream);
+    /*!
+     *  Checks if the writer should write nothing.
+     *
+     *      @return True, if the writer has nothing to write, otherwise false.
+     */
+    bool nothingToWrite() const;
 
-    void writeDirection(QTextStream& outputStream);
+    /*!
+     *  Creates a Verilog port declaration from the port model.     
+     *
+     *      @return A Verilog port declaration.
+     */
+    QString createDeclaration() const; 
 
-    void writeType(QTextStream& outputStream);
+    /*!
+     *  Creates a string representation of the port direction.
+     *
+     *      @return The port direction.
+     */
+    QString direction() const;
 
-    void writeName(QTextStream& outputStream);
+    /*!
+     *  Creates a port bounds representation for the port.
+     *
+     *      @return Port bounds for the port.
+     */
+    QString bounds() const;
 
-    void writeDescription(QTextStream& outputStream);
-
+    //! The port to write to Verilog.
     QSharedPointer<const Port> port_;
 };
 

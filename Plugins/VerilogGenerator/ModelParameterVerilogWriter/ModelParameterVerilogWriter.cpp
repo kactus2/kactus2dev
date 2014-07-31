@@ -36,30 +36,31 @@ ModelParameterVerilogWriter::~ModelParameterVerilogWriter()
 //-----------------------------------------------------------------------------
 void ModelParameterVerilogWriter::write(QTextStream& output) const
 {
-    if (modelParameter_.isNull() || modelParameter_->getName().isEmpty())
+    if (nothingToWrite())
     {
         return;
     }
-
-    QString result("parameter <type> <name> = <default>;");
-
-    result.replace("<type>", modelParameter_->getDataType());
-    result.replace("<name>", modelParameter_->getName());
-    result.replace("<default>", formattedValue());
-
-    if (modelParameter_->getValue().isEmpty())
-    {
-        result.remove(" = ");
-    }
  
-    output << result.simplified();
+    output << createDeclaration();
 
-    if (!modelParameter_->getDescription().isEmpty())
+    if (modelParameter_->getDescription().isEmpty())
+    {
+        output << endl;
+    }
+    else
     {
          output << " ";
          HDLUtils::writeDescription(modelParameter_->getDescription(), output, "//");
     }
 }    
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameterVerilogWriter::shouldNotWrite()
+//-----------------------------------------------------------------------------
+bool ModelParameterVerilogWriter::nothingToWrite() const
+{
+    return modelParameter_.isNull() || modelParameter_->getName().isEmpty();
+}
 
 //-----------------------------------------------------------------------------
 // Function: ModelParameterVerilogWriter::formatValue()
@@ -82,4 +83,23 @@ QString ModelParameterVerilogWriter::formattedValue() const
     }
 
     return value;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameterVerilogWriter::createDeclaration()
+//-----------------------------------------------------------------------------
+QString ModelParameterVerilogWriter::createDeclaration() const
+{
+    QString parameterDeclaration("parameter <type> <name> = <default>;");
+
+    parameterDeclaration.replace("<type>", modelParameter_->getDataType());
+    parameterDeclaration.replace("<name>", modelParameter_->getName());
+    parameterDeclaration.replace("<default>", formattedValue());
+
+    if (modelParameter_->getValue().isEmpty())
+    {
+        parameterDeclaration.remove(" = ");
+    }
+
+    return parameterDeclaration.simplified();
 }

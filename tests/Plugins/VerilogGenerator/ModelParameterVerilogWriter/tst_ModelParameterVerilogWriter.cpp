@@ -127,7 +127,7 @@ void tst_ModelParameterVerilogWriter::testNameButNoValue()
     ModelParameterVerilogWriter parameter(modelParam_);
     parameter.write(outputStream_);
 
-    QCOMPARE(outputString_, QString("parameter testParameter;"));
+    QCOMPARE(outputString_, QString("parameter testParameter;\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -142,7 +142,7 @@ void tst_ModelParameterVerilogWriter::testWriteTypedModelParameter()
     ModelParameterVerilogWriter parameter(modelParam_);
     parameter.write(outputStream_);
 
-    QCOMPARE(outputString_, QString("parameter integer WIDTH = 1;"));
+    QCOMPARE(outputString_, QString("parameter integer WIDTH = 1;\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -157,7 +157,7 @@ void tst_ModelParameterVerilogWriter::testWriteASCIIString()
     ModelParameterVerilogWriter parameter(modelParam_);
     parameter.write(outputStream_);
 
-    QCOMPARE(outputString_, QString("parameter string ASCII = \"Hello world!\";"));
+    QCOMPARE(outputString_, QString("parameter string ASCII = \"Hello world!\";\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -172,7 +172,7 @@ void tst_ModelParameterVerilogWriter::testWriteASCIIStringWithoutQuotation()
     ModelParameterVerilogWriter parameter(modelParam_);
     parameter.write(outputStream_);
 
-    QCOMPARE(outputString_, QString("parameter string ASCII = \"Hello world!\";"));
+    QCOMPARE(outputString_, QString("parameter string ASCII = \"Hello world!\";\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -186,7 +186,7 @@ void tst_ModelParameterVerilogWriter::testNonTypedModelParameter()
     ModelParameterVerilogWriter parameter(modelParam_);
     parameter.write(outputStream_);
 
-    QCOMPARE(outputString_, QString("parameter BITS = 8;"));
+    QCOMPARE(outputString_, QString("parameter BITS = 8;\n"));
 }
 
 //-----------------------------------------------------------------------------

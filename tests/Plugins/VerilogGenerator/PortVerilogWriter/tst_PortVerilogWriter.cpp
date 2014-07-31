@@ -31,6 +31,7 @@ private Q_SLOTS:
     void cleanupTestCase();
     void init();
     void cleanup();
+    void testNullPointerAsConstructorParameter();
     void testWriteEmptyPort();
     void testWriteNormalPort();
     void testWriteNormalPort_data();
@@ -95,6 +96,18 @@ void tst_PortVerilogWriter::cleanup()
 //-----------------------------------------------------------------------------
 // Function: tst_PortVerilogWriter::testWriteEmptyPort()
 //-----------------------------------------------------------------------------
+void tst_PortVerilogWriter::testNullPointerAsConstructorParameter()
+{
+    PortVerilogWriter verilogPort(QSharedPointer<Port>(0));
+
+    verilogPort.write(outputStream_);
+
+    QCOMPARE(outputString_, QString());
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_PortVerilogWriter::testWriteEmptyPort()
+//-----------------------------------------------------------------------------
 void tst_PortVerilogWriter::testWriteEmptyPort()
 {
     PortVerilogWriter verilogPort(port_);
@@ -111,7 +124,7 @@ void tst_PortVerilogWriter::testWriteNormalPort()
 {
     QFETCH(General::Direction, direction);
     QFETCH(QString, type);
-    QFETCH(QString, expected);
+    QFETCH(QString, expectedOutput);
 
     port_->setName("Data");
     port_->setDirection(direction);
@@ -121,7 +134,7 @@ void tst_PortVerilogWriter::testWriteNormalPort()
 
     verilogPort.write(outputStream_);
 
-    QCOMPARE(outputString_, expected);
+    QCOMPARE(outputString_, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------
@@ -131,7 +144,7 @@ void tst_PortVerilogWriter::testWriteNormalPort_data()
 {
     QTest::addColumn<General::Direction>("direction");
     QTest::addColumn<QString>("type");
-    QTest::addColumn<QString>("expected");
+    QTest::addColumn<QString>("expectedOutput");
 
     QTest::newRow("input port") << General::IN << "integer" << INDENT + "input integer Data;\n";
     QTest::newRow("output port") << General::OUT << "reg" << INDENT + "output reg Data;\n";
