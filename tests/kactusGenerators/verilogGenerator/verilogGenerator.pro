@@ -14,6 +14,4 @@ TEMPLATE = subdirs
 CONFIG += testcase
 
 SUBDIRS += \
-           verilogParameter/tst_verilogParameter.pro \
-           verilogPort/tst_verilogPort.pro \
            verilogComponentInstance/tst_verilogComponentInstance.pro

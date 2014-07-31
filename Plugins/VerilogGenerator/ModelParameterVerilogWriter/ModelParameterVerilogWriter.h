@@ -1,29 +1,29 @@
 //-----------------------------------------------------------------------------
-// File: VerilogParameter.h
+// File: ModelParameterVerilogWriter.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
 // Date: 14.7.2014
 //
 // Description:
-// VerilogParameter represents a Verilog parameter in a component or entity declaration.
+// Class for writing model parameter declarations in Verilog.
 //-----------------------------------------------------------------------------
 
-#ifndef VERILOGPARAMETER_H
-#define VERILOGPARAMETER_H
+#ifndef ModelParameterVerilogWriter_H
+#define ModelParameterVerilogWriter_H
 
 #include <kactusGenerators/HDLGenerator/HDLModelParameter.h>
 
 #include <QString>
+#include <QSharedPointer>
 
 class ModelParameter;
 
 //-----------------------------------------------------------------------------
-//! VerilogParameter represents a Verilog parameter in a component or entity declaration.
+//! ModelParameterVerilogWriter represents a Verilog parameter in a component or entity declaration.
 //-----------------------------------------------------------------------------
-class VerilogParameter : public HDLModelParameter
+class ModelParameterVerilogWriter
 {
-	Q_OBJECT
 
 public:
 
@@ -33,24 +33,24 @@ public:
 	 *      @param [in] modelParameter   The model parameter represented by this object.
 	 *      @param [in] parent           The parent object.
 	 */
-	VerilogParameter(ModelParameter* modelParameter, QObject* parent = 0);
+	ModelParameterVerilogWriter(QSharedPointer<ModelParameter> modelParameter);
 	
 	//! The destructor
-	virtual ~VerilogParameter();
+	virtual ~ModelParameterVerilogWriter();
 
 	/*! Write the contents of the parameter into text stream.
 	 *
-	 *      @param [in] stream   The text stream to write the parameter into.
+	 *      @param [in] output   The text stream to write the model parameter into.
 	*/
-	virtual void write(QTextStream& stream) const;
+	virtual void write(QTextStream& output) const;
 
 private:
 	
 	//! No copying.
-	VerilogParameter(const VerilogParameter& other);
+	ModelParameterVerilogWriter(const ModelParameterVerilogWriter& other);
 
 	//! No assignment.
-	VerilogParameter& operator=(const VerilogParameter& other);
+	ModelParameterVerilogWriter& operator=(const ModelParameterVerilogWriter& other);
     
     /*!
      *  Returns the formatted model parameter value.
@@ -58,6 +58,8 @@ private:
      *      @return The formatted model parameter value.
      */
     QString formattedValue() const;
+
+    QSharedPointer<ModelParameter> modelParameter_;
 };
 
-#endif // VERILOGPARAMETER_H
+#endif // ModelParameterVerilogWriter_H

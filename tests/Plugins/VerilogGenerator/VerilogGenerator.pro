@@ -13,4 +13,5 @@ TEMPLATE = subdirs
 
 CONFIG += testcase
 SUBDIRS += VerilogGenerator/tst_VerilogGenerator.pro \
-           PortVerilogWriter/tst_PortVerilogWriter.pro 
+           PortVerilogWriter/tst_PortVerilogWriter.pro \
+		   ModelParameterVerilogWriter/tst_ModelParameterVerilogWriter.pro
