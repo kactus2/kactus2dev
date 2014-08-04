@@ -7,8 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../kactusGenerators/HDLGenerator/HDLUtils.h \
-    ../../../../Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.h
-SOURCES += ../../../../kactusGenerators/HDLGenerator/HDLUtils.cpp \
-    ../../../../Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.cpp \
-    ./tst_PortVerilogWriter.cpp
+HEADERS += ../../../../Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.h \
+    ../../../../kactusGenerators/HDLGenerator/HDLUtils.h
+SOURCES += ./tst_VerilogHeaderWriter.cpp \
+    ../../../../Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.cpp \
+    ../../../../kactusGenerators/HDLGenerator/HDLUtils.cpp

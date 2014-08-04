@@ -6,15 +6,20 @@
 // Date: 28.7.2014
 //
 // Description:
-// <Short description of the class/file contents>
+// Verilog file generator.
 //-----------------------------------------------------------------------------
 
 #include "VerilogGenerator.h"
 
+#include <kactusGenerators/HDLGenerator/vhdlportsorter.h>
+#include <kactusGenerators/HDLGenerator/HDLUtils.h>
+
+#include <QDate>
+
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::VerilogGenerator()
 //-----------------------------------------------------------------------------
-VerilogGenerator::VerilogGenerator(): name_(), portDeclarations_(), portWriters_(), parameterDeclarations_(), componentInstances_(), parseCalled_(false), component_()
+VerilogGenerator::VerilogGenerator(): headerWriter_(0), topWriter_(0), topComponent_()
 {
 
 }
@@ -24,142 +29,60 @@ VerilogGenerator::VerilogGenerator(): name_(), portDeclarations_(), portWriters_
 //-----------------------------------------------------------------------------
 VerilogGenerator::~VerilogGenerator()
 {
+    delete headerWriter_;
+    headerWriter_ = 0;
 
+    delete topWriter_;
+    topWriter_ = 0;
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogGenerator::write()
+// Function: VerilogGenerator::generate()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::write(QTextStream& outputStream) const
+void VerilogGenerator::generate(QString const& outputPath) const
 {
-    if (!parseCalled_)
+    if (nothingToWrite())
     {
         return;
     }
 
-    writeModuleBegin(outputStream);
+    QFile outputFile(outputPath); 
+    if (!outputFile.open(QIODevice::WriteOnly))
+    {
+        return;
+    }
 
-    writePortDeclarations(outputStream);
+    QTextStream outputStream(&outputFile);
 
-    writeParameterDeclarations(outputStream);
+    QString fileName = outputPath.mid(outputPath.lastIndexOf("/") + 1);
 
-    writeComponentInstances(outputStream);
+    headerWriter_->write(outputStream, fileName, topComponent_->getDescription(), QDateTime::currentDateTime());
+    topWriter_->write(outputStream);
 
-    writeModuleEnd(outputStream);
+    outputFile.close();
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::parse()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::parse(QSharedPointer<const Component> component, QSharedPointer<const Design> design)
+void VerilogGenerator::parse(QSharedPointer<const Component> component)
 {
-    component_ = component;
+    topComponent_ = component;
 
-    name_ = component_->getVlnv()->getName();
+    QString mockUsername = "user";
+    QString mockPath = "C:/Test/TestLibrary/TestComponent/1.0/TestComponent.1.0.xml";
 
-    foreach(QSharedPointer<Port> port, sortedPorts())
-    {
-        portWriters_.append(PortVerilogWriter(port));
-    }
+    delete headerWriter_;
+    headerWriter_ = new VerilogHeaderWriter(*topComponent_->getVlnv(), mockPath, mockUsername);
 
-    foreach(QSharedPointer<ModelParameter> parameter, component_->getModelParameters())
-    {
-        parameterDeclarations_.append("    ");
-        parameterDeclarations_.append("parameter ");
-        parameterDeclarations_.append(parameter->getName() + " ");
-        parameterDeclarations_.append("= " + parameter->getValue());
-        parameterDeclarations_.append(";\n");
-    }
-
-    if (design)
-    {        
-        componentInstances_.append("\n");
-        foreach(ComponentInstance instance, design->getComponentInstances())
-        {
-            componentInstances_.append("    ");
-            componentInstances_.append(instance.getInstanceName() + " " + instance.getComponentRef().getName()  + 
-                "(");           
-            componentInstances_.append(");\n");
-            componentInstances_.append("\n");
-        }        
-    }
-
-    parseCalled_ = true;
+    delete topWriter_;
+    topWriter_ = new ComponentVerilogWriter(topComponent_);
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogGenerator::writeModuleBegin()
+// Function: VerilogGenerator::nothingToWrite()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::writeModuleBegin(QTextStream& outputStream) const
+bool VerilogGenerator::nothingToWrite() const
 {
-    outputStream << "module " << name_ << "(";
-
-    writePortNames(outputStream);
-
-    
-    outputStream << ");" << endl;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogGenerator::writePortNames()
-//-----------------------------------------------------------------------------
-void VerilogGenerator::writePortNames(QTextStream& outputStream) const
-{
-    QStringList portNames;
-    foreach(QSharedPointer<Port> port, sortedPorts())
-    {
-        portNames.append(port->getName());
-    }
-
-    outputStream << portNames.join(", ");
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogGenerator::writePortDeclarations()
-//-----------------------------------------------------------------------------
-void VerilogGenerator::writePortDeclarations(QTextStream& outputStream) const
-{
-    foreach(PortVerilogWriter portWriter, portWriters_)
-    {
-        portWriter.write(outputStream);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogGenerator::writeModuleEnd()
-//-----------------------------------------------------------------------------
-void VerilogGenerator::writeModuleEnd(QTextStream& outputStream) const
-{
-    outputStream << "endmodule" << endl;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogGenerator::writeParameterDeclarations()
-//-----------------------------------------------------------------------------
-void VerilogGenerator::writeParameterDeclarations(QTextStream& outputStream) const
-{
-    outputStream << parameterDeclarations_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogGenerator::writeComponentInstances()
-//-----------------------------------------------------------------------------
-void VerilogGenerator::writeComponentInstances(QTextStream& outputStream) const
-{
-    outputStream << componentInstances_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogGenerator::sortedPorts()
-//-----------------------------------------------------------------------------
-QList<QSharedPointer<Port> > VerilogGenerator::sortedPorts() const
-{
-    QMap<VhdlPortSorter, QSharedPointer<Port> > ports;
-    foreach(QSharedPointer<Port> port, component_->getPorts())
-    {
-        VhdlPortSorter sorter(component_->getInterfaceNameForPort(port->getName()), port->getName(), port->getDirection());
-        ports.insertMulti(sorter, port);
-    }
-
-    return ports.values();
+    return topWriter_ == 0;
 }

@@ -39,10 +39,8 @@ void PortVerilogWriter::write( QTextStream& outputStream ) const
     {
         return;
     }
-    
-    QString indentation = "    ";
 
-    outputStream << indentation << createDeclaration();
+    outputStream << createDeclaration();
 
     if (port_->getDescription().isEmpty())
     {
@@ -69,7 +67,7 @@ bool PortVerilogWriter::nothingToWrite() const
 //-----------------------------------------------------------------------------
 QString PortVerilogWriter::createDeclaration() const
 {
-    QString portDeclaration("<direction> <type><bounds> <name>;");
+    QString portDeclaration("<direction> <type> <bounds> <name>;");
 
     portDeclaration.replace("<direction>", direction());
     portDeclaration.replace("<type>", port_->getTypeName());

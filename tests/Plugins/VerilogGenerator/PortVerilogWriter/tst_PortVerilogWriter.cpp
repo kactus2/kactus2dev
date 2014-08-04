@@ -146,9 +146,9 @@ void tst_PortVerilogWriter::testWriteNormalPort_data()
     QTest::addColumn<QString>("type");
     QTest::addColumn<QString>("expectedOutput");
 
-    QTest::newRow("input port") << General::IN << "integer" << INDENT + "input integer Data;\n";
-    QTest::newRow("output port") << General::OUT << "reg" << INDENT + "output reg Data;\n";
-    QTest::newRow("inout port") << General::INOUT << "tri" << INDENT + "inout tri Data;\n";
+    QTest::newRow("input port") << General::IN << "integer" << "input integer Data;\n";
+    QTest::newRow("output port") << General::OUT << "reg" << "output reg Data;\n";
+    QTest::newRow("inout port") << General::INOUT << "tri" << "inout tri Data;\n";
     QTest::newRow("phantom port") << General::DIRECTION_PHANTOM << "phantom" << "";
     QTest::newRow("invalid direction port") << General::DIRECTION_INVALID << "invalid" << "";
 }
@@ -165,7 +165,7 @@ void tst_PortVerilogWriter::testWriteNonTypedPort()
 
     verilogPort.write(outputStream_);
 
-    QCOMPARE(outputString_, QString(INDENT + "input Data;\n"));
+    QCOMPARE(outputString_, QString("input Data;\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -173,12 +173,16 @@ void tst_PortVerilogWriter::testWriteNonTypedPort()
 //-----------------------------------------------------------------------------
 void tst_PortVerilogWriter::testWriteVectorPort()
 {
+    QFETCH(QString, portName);
+    QFETCH(QString, type);
+
     QFETCH(int, leftBound);
     QFETCH(int, rightBound);
-    QFETCH(QString, expected);
+    QFETCH(QString, expectedOutput);
 
-    port_->setName("DataBus");
+    port_->setName(portName);
     port_->setDirection(General::OUT);
+    port_->setTypeName(type);
     port_->setLeftBound(leftBound);
     port_->setRightBound(rightBound);
 
@@ -186,7 +190,7 @@ void tst_PortVerilogWriter::testWriteVectorPort()
 
     verilogPort.write(outputStream_);
 
-    QCOMPARE(outputString_, expected);
+    QCOMPARE(outputString_, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------
@@ -194,14 +198,16 @@ void tst_PortVerilogWriter::testWriteVectorPort()
 //-----------------------------------------------------------------------------
 void tst_PortVerilogWriter::testWriteVectorPort_data()
 {
+    QTest::addColumn<QString>("portName");
+    QTest::addColumn<QString>("type");
     QTest::addColumn<int>("leftBound");
     QTest::addColumn<int>("rightBound");
-    QTest::addColumn<QString>("expected");
+    QTest::addColumn<QString>("expectedOutput");
 
-    QTest::newRow("scalar port") << 0 << 0 << INDENT + "output DataBus;\n";
-    QTest::newRow("normal vector port") << 7 << 0 << INDENT + "output [7:0] DataBus;\n";
-    QTest::newRow("sliced vector port") << 7 << 4 << INDENT + "output [7:4] DataBus;\n";
-    QTest::newRow("big endian vector port") << 0 << 15 << INDENT + "output [0:15] DataBus;\n";
+    QTest::newRow("scalar port") << "enable" << "" << 0 << 0 << "output enable;\n";
+    QTest::newRow("normal vector port") << "bus" << "reg" << 7 << 0 << "output reg [7:0] bus;\n";
+    QTest::newRow("sliced vector port") << "slicedBus" << "" << 7 << 4 << "output [7:4] slicedBus;\n";
+    QTest::newRow("big endian vector port") << "reversed" << "" << 0 << 15 << "output [0:15] reversed;\n";
 }
 
 //-----------------------------------------------------------------------------
@@ -217,10 +223,9 @@ void tst_PortVerilogWriter::testWriteDescription()
 
     verilogPort.write(outputStream_);
 
-    compareLineByLine(QString(INDENT + "output DAT; // Data from IP to bus.\n"
+    compareLineByLine(QString("output DAT; // Data from IP to bus.\n"
         "// Remember to connect.\n"));
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::compareLineByLine()

@@ -1,20 +1,20 @@
 #-----------------------------------------------------------------------------
-# File: tst_verilogPort.pro
+# File: tst_VerilogHeaderWriter.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
-# Date: 24.27.2014
+# Date: 04.08.2014
 #
 # Description:
-# Qt project file for running unit tests for VerilogPort.
+# Qt project file for running unit tests for VerilogHeaderWriter.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = app
 
-TARGET = tst_PortVerilogWriter
+TARGET = tst_VerilogHeaderWriter
 
 QT += core xml gui testlib
-CONFIG += _WINDOWS testcase console
+CONFIG += testcase console
 
 win32:CONFIG(release, debug|release) {
     LIBS += -L$$PWD/../../../../executable -lIPXACTmodels
@@ -40,4 +40,4 @@ OBJECTS_DIR += $$DESTDIR
 MOC_DIR += ./generatedFiles
 UI_DIR += ./generatedFiles
 RCC_DIR += ./generatedFiles
-include(tst_PortVerilogWriter.pri)
+include(tst_VerilogHeaderWriter.pri)

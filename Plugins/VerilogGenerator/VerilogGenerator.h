@@ -6,7 +6,7 @@
 // Date: 28.7.2014
 //
 // Description:
-// <Short description of the class/file contents>
+// Verilog file generator.
 //-----------------------------------------------------------------------------
 
 #ifndef VERILOGGENERATOR_H
@@ -18,50 +18,60 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/design.h>
 
-#include <kactusGenerators\HDLGenerator\vhdlportsorter.h>
+#include <Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.h>
+#include <Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h>
 
-#include <Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.h>
-
+//-----------------------------------------------------------------------------
+// Verilog file generator.
+//-----------------------------------------------------------------------------
 class VerilogGenerator
 {
 public:
+    //! The constructor.
     VerilogGenerator();
+
+    //! The destructor.
     ~VerilogGenerator();
 
-    void write(QTextStream& outputStream) const;
+    /*!
+     *  Generates the component Verilog to a given file.
+     *
+     *      @param [in] outputPath   The path to the output file.
+     *
+     *      @remark If parse() is not called before generate(), nothing is generated.
+     */
+    void generate(QString const& outputPath) const;
 
- 
-    void parse(QSharedPointer<const Component> component, 
-        QSharedPointer<const Design> design = QSharedPointer<const Design>());
-
+    /*!
+     *  Parses a given component for generation.
+     *
+     *      @param [in] component   The component to parse for generation.
+     *
+     *      @remark If parse() is not called before generate(), nothing is generated.
+     */
+    void parse(QSharedPointer<const Component> component);
 
 private:
-    void writeModuleBegin(QTextStream& outputStream) const;
+    
+    /*!
+    *  Checks if the generator should write nothing.
+    *
+    *      @return True, if the generator has nothing to write, otherwise false.
+    */
+    bool nothingToWrite() const;
 
-    void writePortNames(QTextStream& outputStream) const;
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
-    void writePortDeclarations(QTextStream& outputStream) const;
+    //! Writer for generating file header.
+    VerilogHeaderWriter* headerWriter_;
 
-    void writeParameterDeclarations(QTextStream& outputStream) const;
+    //! Writer for top level component.
+    ComponentVerilogWriter* topWriter_;
 
-    void writeComponentInstances(QTextStream& outputStream) const;
-
-    void writeModuleEnd(QTextStream& outputStream) const;
-
-    QList<QSharedPointer<Port> > sortedPorts() const;
-
-    QString name_;
-
-    QList<PortVerilogWriter> portWriters_;
-    QString portDeclarations_;
-
-    QString parameterDeclarations_;
-
-    QString componentInstances_;
-
-    bool parseCalled_;
-
-    QSharedPointer<const Component> component_;
+    //! The top level component.
+    QSharedPointer<const Component> topComponent_;
 };
 
 #endif // VERILOGGENERATOR_H

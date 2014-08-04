@@ -6,12 +6,14 @@
 # Date: 24.27.2014
 #
 # Description:
-# Qt project file template for running unit tests for Verilog generation.
+# Qt project file for running unit tests for Verilog generation.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = subdirs
 
 CONFIG += testcase
 SUBDIRS += VerilogGenerator/tst_VerilogGenerator.pro \
+		   VerilogHeaderWriter/tst_VerilogHeaderWriter.pro \
+		   ComponentVerilogWriter/tst_ComponentVerilogWriter.pro \
            PortVerilogWriter/tst_PortVerilogWriter.pro \
 		   ModelParameterVerilogWriter/tst_ModelParameterVerilogWriter.pro

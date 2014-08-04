@@ -22,8 +22,6 @@
 class PortVerilogWriter 
 {
 public:
-
-
     /*!
      *  The constructor.
      *
