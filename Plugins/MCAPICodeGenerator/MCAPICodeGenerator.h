@@ -13,7 +13,8 @@
 #define MCAPICODEGENERATOR_H
 
 #include <Plugins/PluginSystem/IGeneratorPlugin.h>
-
+#include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/ComInterface.h>
 #include <QObject>
 
 class Component;
@@ -173,7 +174,40 @@ private:
      *      @param [in] writer     The source writer.
      *      @param [in] component  The owner component.
      */
-    void generateCreateConnectionsFunc(CSourceWriter& writer, QSharedPointer<Component> component);
+	void generateCreateConnectionsFunc(CSourceWriter& writer, QSharedPointer<Component> component);
+
+	/*!
+	 *  Add generated MCAPI code files to the fileset of the associated component.
+	 *
+	 *      @param [in] QSharedPointer<Component> component   The component, which fileset will be expanded.
+	 */
+	void addGeneratedMCAPIToFileset(QSharedPointer<Component> component);
+
+	/*!
+	 *  Generates MCAPI code for the given component.
+	 *
+	 *      @param [in] QString dir   The directory for the generated code.
+	 *      @param [in] QSharedPointer<Component> component   The component which MCAPI code will be generated.
+	 */
+	void generateMCAPIForComponent(QString dir, QSharedPointer<Component> component);
+
+	/*!
+	 *  Checks if MCAPI code may be generated for the given component.
+	 *
+	 *      @param [in] component   The component, which is checked.
+	 *      @return   True, if MCAPI code can be generated for the component.
+	 */
+	bool canGenerateMCAPIComponent(QSharedPointer<Component> component);
+
+	/*!
+	 *  Checks if all properties required in given ComDefintion are set in the given ComInterface.
+	 *
+	 *      @param [in] comDef   The ComDefinition under inspection.
+	 *      @param [in] comIf   The ComInterface under inspection.
+	 *      @param [in] errorList   Missing properties will be reported in this list.
+	 */
+	 void checkRequiredPropertiesSet(QSharedPointer<ComDefinition> comDef, QSharedPointer<ComInterface> comIf,
+		 QStringList &errorList);
 
     //-----------------------------------------------------------------------------
     // Data.

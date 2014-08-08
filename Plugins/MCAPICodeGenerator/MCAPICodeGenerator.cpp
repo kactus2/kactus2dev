@@ -24,6 +24,8 @@
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/ComInterface.h>
+#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/fileset.h>
 
 #include <library/LibraryManager/libraryinterface.h>
@@ -108,15 +110,17 @@ PluginSettingsWidget* MCAPICodeGenerator::getSettingsWidget()
 //-----------------------------------------------------------------------------
 bool MCAPICodeGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent const> libComp,
     QSharedPointer<LibraryComponent const> libDesConf,
-    QSharedPointer<LibraryComponent const> /*libDes*/ ) const {
+    QSharedPointer<LibraryComponent const> libDes ) const {
 
 	// MCAPI code generator is only run for SW component editor
-	if (libDesConf) {
+	/*if (libDesConf) {
 		return false;
-	}
-
+	}*/
+	
     QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
-    return (comp != 0 && comp->getComponentImplementation() == KactusAttribute::KTS_SW);
+    QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
+
+    return libDes != 0 && desgConf != 0 && desgConf->getDesignConfigImplementation() == KactusAttribute::KTS_SYS;
 }
 
 //-----------------------------------------------------------------------------
@@ -125,93 +129,31 @@ bool MCAPICodeGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent 
 void MCAPICodeGenerator::runGenerator( IPluginUtility* utility, 
 	QSharedPointer<LibraryComponent> libComp,
     QSharedPointer<LibraryComponent> /*libDesConf*/,
-    QSharedPointer<LibraryComponent> /*libDes*/)
+    QSharedPointer<LibraryComponent> libDes)
 {
     utility_ = utility;
 
-    QString dir = QFileInfo(utility->getLibraryInterface()->getPath(*libComp->getVlnv())).absolutePath();
-    QSharedPointer<Component> component = libComp.dynamicCast<Component>();
+	QSharedPointer<Design const> design = libDes.dynamicCast<Design const>();
 
-    // Validate MCAPI COM interfaces.
-    QStringList errorList;
+	foreach ( SWInstance instance, design->getSWInstances() )
+	{
+		VLNV instanceVLNV = instance.getComponentRef();
 
-    foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
-    {
-        if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "1.063")
-        {
-            continue;
-        }
+		QSharedPointer<LibraryComponent> instanceLibComp = utility_->getLibraryInterface()->getModel(instanceVLNV);
+		QSharedPointer<Component> instanceComp = instanceLibComp.dynamicCast<Component>();
 
-        if (comIf->getPropertyValues().value("handle_name").isEmpty())
-        {
-            errorList.append(tr("Property handle_name of COM interface '%1' is not set").arg(comIf->getName()));
-        }
+		// Check if can generate the component, return if cannot
+		if ( canGenerateMCAPIComponent(instanceComp) )
+		{
+			QString dir = QFileInfo(utility->getLibraryInterface()->getPath(instanceVLNV)).absolutePath();
 
-        if (comIf->getPropertyValues().value("remote_endpoint_name").isEmpty())
-        {
-            errorList.append(tr("Property remote_endpoint_name of COM interface '%1' is not set").arg(comIf->getName()));
-        }
+			generateMCAPIForComponent(dir, instanceComp);
 
-        if (comIf->getPropertyValues().value("port_id").isEmpty())
-        {
-            errorList.append(tr("Property port_id of COM interface '%1' is not set").arg(comIf->getName()));
-        }
-    }
+			addGeneratedMCAPIToFileset(instanceComp);
 
-    if (!errorList.isEmpty())
-    {
-        foreach (QString const& msg, errorList)
-        {
-            utility_->printError(msg);
-        }
-
-        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-                           tr("The component contained %1 error(s). MCAPI code was not generated.").arg(errorList.size()),
-                           QMessageBox::Ok, utility_->getParentWidget());
-        msgBox.setDetailedText(tr("The following error(s) were found: \n* ") + errorList.join("\n* "));
-
-        msgBox.exec();
-        return;
-    }
-
-    // Create the template only if it does not exist.
-    if (!QFileInfo(dir + "/ktsmcapicode.h").exists())
-    {
-        generateMainTemplate(dir + "/main.c", component);
-    }
-
-    // Update the ktsmcapicode module.
-    generateHeader(dir + "/ktsmcapicode.h", component);
-    generateSource(dir + "/ktsmcapicode.c", component);
-
-    // Add the files to the component metadata.
-    QSharedPointer<FileSet> fileSet = component->getFileSet("cSources");
-
-	 QSettings settings;
-
-    if (fileSet == 0)
-    {
-        fileSet = QSharedPointer<FileSet>(new FileSet("cSources", "sourceFiles"));
-        component->addFileSet(fileSet);
-    }
-
-    if (!fileSet->contains("ktsmcapicode.h"))
-    {
-        fileSet->addFile("ktsmcapicode.h", settings);
-    }
-
-    if (!fileSet->contains("ktsmcapicode.c"))
-    {
-        fileSet->addFile("ktsmcapicode.c", settings);
-    }
-
-    if (!fileSet->contains("main.c"))
-    {
-        fileSet->addFile("main.c", settings);
-    }
-
-    utility_->getLibraryInterface()->writeModelToFile(component);
+			utility_->getLibraryInterface()->writeModelToFile(instanceComp);
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -245,8 +187,7 @@ void MCAPICodeGenerator::generateHeader(QString const& filename, QSharedPointer<
     
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
-        if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "1.063")
+        if (comIf->getComType().getName().toLower() != "mcapi" )
         {
             continue;
         }
@@ -286,8 +227,7 @@ void MCAPICodeGenerator::generateHeader(QString const& filename, QSharedPointer<
 
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
-        if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "1.063")
+        if (comIf->getComType().getName().toLower() != "mcapi" )
         {
             continue;
         }
@@ -361,8 +301,7 @@ void MCAPICodeGenerator::generateSource(QString const& filename, QSharedPointer<
 
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
-        if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "1.063")
+        if (comIf->getComType().getName().toLower() != "mcapi" )
         {
             continue;
         }
@@ -381,8 +320,7 @@ void MCAPICodeGenerator::generateSource(QString const& filename, QSharedPointer<
 
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
-        if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "1.063")
+        if (comIf->getComType().getName().toLower() != "mcapi" )
         {
             continue;
         }
@@ -422,8 +360,7 @@ void MCAPICodeGenerator::generateSource(QString const& filename, QSharedPointer<
 
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
-        if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "1.063")
+        if (comIf->getComType().getName().toLower() != "mcapi" )
         {
             continue;
         }
@@ -542,8 +479,7 @@ void MCAPICodeGenerator::generateCreateConnectionsFunc(CSourceWriter& writer, QS
 
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
-        if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "1.063")
+        if (comIf->getComType().getName().toLower() != "mcapi" )
         {
             continue;
         }
@@ -629,8 +565,7 @@ void MCAPICodeGenerator::generateCloseConnectionsFunc(CSourceWriter& writer, QSh
 
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
-        if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "1.063")
+        if (comIf->getComType().getName().toLower() != "mcapi" )
         {
             continue;
         }
@@ -699,8 +634,7 @@ void MCAPICodeGenerator::generateInitializeMCAPIFunc(CSourceWriter& writer, QSha
 
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
-        if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "1.063")
+        if (comIf->getComType().getName().toLower() != "mcapi" )
         {
             continue;
         }
@@ -721,8 +655,7 @@ void MCAPICodeGenerator::generateInitializeMCAPIFunc(CSourceWriter& writer, QSha
 
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
-        if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "1.063")
+        if (comIf->getComType().getName().toLower() != "mcapi" )
         {
             continue;
         }
@@ -779,6 +712,124 @@ QIcon MCAPICodeGenerator::getIcon() const
     return QIcon(":icons/mcapi-generator.png");
 }
 
+//-----------------------------------------------------------------------------
+// Function: MCAPICodeGenerator::getProgramRequirements()
+//-----------------------------------------------------------------------------
 QList<IPlugin::ExternalProgramRequirement> MCAPICodeGenerator::getProgramRequirements() {
 	return QList<IPlugin::ExternalProgramRequirement>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MCAPICodeGenerator::canGenerateMCAPIComponent()
+//-----------------------------------------------------------------------------
+bool MCAPICodeGenerator::canGenerateMCAPIComponent(QSharedPointer<Component> component)
+{
+	// Will not generate a null component.
+	if ( component == 0 )
+	{
+		return false;
+	}
+
+	// Errors found in interfaces.
+	QStringList errorList;
+	// Must have at least one MCAPI interface to generate.
+	bool hasMcapi = false;
+
+	// Go over each com interface and check for that each required property is set.
+	foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
+	{
+		// Check API support for generated interface
+		if (comIf->getComType().getName().toLower() == "mcapi" )
+		{
+			hasMcapi = true;
+		}
+
+		QSharedPointer<LibraryComponent> libCom = utility_->getLibraryInterface()->getModel(comIf->getComType());
+		QSharedPointer<ComDefinition> comDef = libCom.dynamicCast<ComDefinition>();
+
+		checkRequiredPropertiesSet(comDef, comIf, errorList);
+	}
+
+	// If errors exist, print about it and return false.
+	if ( hasMcapi && !errorList.isEmpty())
+	{
+		foreach (QString const& msg, errorList)
+		{
+			utility_->printError(msg);
+		}
+
+		QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
+			tr("The component contained %1 error(s). MCAPI code was not generated.").arg(errorList.size()),
+			QMessageBox::Ok, utility_->getParentWidget());
+		msgBox.setDetailedText(tr("The following error(s) were found: \n* ") + errorList.join("\n* "));
+
+		msgBox.exec();
+	}
+
+	// If no errors, we can generate the component.
+	return errorList.isEmpty() && hasMcapi;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MCAPICodeGenerator::generateMCAPIForComponent()
+//-----------------------------------------------------------------------------
+void MCAPICodeGenerator::generateMCAPIForComponent(QString dir, QSharedPointer<Component> component)
+{
+	// Create the template only if it does not exist.
+	if (!QFileInfo(dir + "/ktsmcapicode.h").exists())
+	{
+		generateMainTemplate(dir + "/main.c", component);
+	}
+
+	// Update the ktsmcapicode module.
+	generateHeader(dir + "/ktsmcapicode.h", component);
+	generateSource(dir + "/ktsmcapicode.c", component);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MCAPICodeGenerator::addGeneratedMCAPIToFileset()
+//-----------------------------------------------------------------------------
+void MCAPICodeGenerator::addGeneratedMCAPIToFileset(QSharedPointer<Component> component)
+{
+	// Add the files to the component metadata.
+	QSharedPointer<FileSet> fileSet = component->getFileSet("cSources");
+
+	QSettings settings;
+
+	if (fileSet == 0)
+	{
+		fileSet = QSharedPointer<FileSet>(new FileSet("cSources", "sourceFiles"));
+		component->addFileSet(fileSet);
+	}
+
+	if (!fileSet->contains("ktsmcapicode.h"))
+	{
+		fileSet->addFile("ktsmcapicode.h", settings);
+	}
+
+	if (!fileSet->contains("ktsmcapicode.c"))
+	{
+		fileSet->addFile("ktsmcapicode.c", settings);
+	}
+
+	if (!fileSet->contains("main.c"))
+	{
+		fileSet->addFile("main.c", settings);
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: MCAPICodeGenerator::checkRequiredPropertiesSet()
+//-----------------------------------------------------------------------------
+void MCAPICodeGenerator::checkRequiredPropertiesSet(QSharedPointer<ComDefinition> comDef,
+	QSharedPointer<ComInterface> comIf, QStringList &errorList)
+{
+	foreach ( QSharedPointer<ComProperty> property, comDef->getProperties() )
+	{
+		if ( property->isRequired() && comIf->getPropertyValues().value(property->getName()).isEmpty() )
+		{
+			errorList.append(tr("Property %1 of COM interface '%2' is not set").arg(property->getName(),
+				comIf->getName()));
+		}
+	}
 }
