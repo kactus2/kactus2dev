@@ -32,8 +32,9 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::ComponentVerilogWriter
 //-----------------------------------------------------------------------------
-ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<const Component> component) :
-component_(component)
+ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<const Component> component,
+    QSharedPointer<const PortSorter> sorter) :
+component_(component), sorter_(sorter), instanceWriters_()
 {
 
 }
@@ -43,7 +44,11 @@ component_(component)
 //-----------------------------------------------------------------------------
 ComponentVerilogWriter::~ComponentVerilogWriter()
 {
-
+    foreach(ComponentInstanceVerilogWriter* instanceWriter, instanceWriters_)
+    {
+        delete instanceWriter;
+    }
+    instanceWriters_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -62,7 +67,17 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
 
     writePortDeclarations(outputStream);
 
+    writeComponentInstances(outputStream);
+
     writeModuleEnd(outputStream);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentVerilogWriter::add()
+//-----------------------------------------------------------------------------
+void ComponentVerilogWriter::add(ComponentInstanceVerilogWriter* writer)
+{
+    instanceWriters_.append(writer);
 }
 
 //-----------------------------------------------------------------------------
@@ -86,29 +101,7 @@ void ComponentVerilogWriter::writeModuleDeclaration( QTextStream& outputStream )
 //-----------------------------------------------------------------------------
 QString ComponentVerilogWriter::portNames() const
 {
-    QStringList portNames;
-    foreach(QSharedPointer<Port> port, sortedPorts())
-    {
-        portNames.append(port->getName());
-    }
-
-    return portNames.join(", ");
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentVerilogWriter::sortedPorts()
-//-----------------------------------------------------------------------------
-QList<QSharedPointer<Port> > ComponentVerilogWriter::sortedPorts() const
-{
-    QMap<VhdlPortSorter, QSharedPointer<Port> > ports;
-    foreach(QSharedPointer<Port> port, component_->getPorts())
-    {
-        QString portName = port->getName();
-        VhdlPortSorter sorter(component_->getInterfaceNameForPort(portName), portName, port->getDirection());
-        ports.insertMulti(sorter, port);
-    }
-
-    return ports.values();
+    return sorter_->sortedPortNames(component_).join(", ");
 }
 
 //-----------------------------------------------------------------------------
@@ -131,13 +124,13 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
 {
     QString previousInterfaceName = "";
 
-    foreach(QSharedPointer<Port> port, sortedPorts())
+    foreach(QString portName, sorter_->sortedPortNames(component_))
     {    
-        writeInterfaceIntroduction(component_->getInterfaceNameForPort(port->getName()), previousInterfaceName, 
+        writeInterfaceIntroduction(component_->getInterfaceNameForPort(portName), previousInterfaceName, 
             outputStream);
 
         outputStream << INDENT;
-        PortVerilogWriter writer(port);
+        PortVerilogWriter writer(component_->getPort(portName));
         writer.write(outputStream);
     }
 
@@ -178,6 +171,17 @@ void ComponentVerilogWriter::writeInterfaceIntroduction(QString const& interface
             }
         }        
         previousInterfaceName = interfaceName;                
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentVerilogWriter::writeComponentInstances()
+//-----------------------------------------------------------------------------
+void ComponentVerilogWriter::writeComponentInstances(QTextStream& outputStream) const
+{
+    foreach(ComponentInstanceVerilogWriter* writer, instanceWriters_)
+    {
+        writer->write(outputStream);
     }
 }
 

@@ -13,6 +13,7 @@
 #include <QSharedPointer>
 
 #include <Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h>
+#include <Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/businterface.h>
@@ -52,16 +53,17 @@ private:
 
     void addPort(QString const& portName, int portSize, General::Direction direction);
 
-    void addModelParameter(QString const& name, QString const& value);
+    void addModelParameter(QString const& name, QString const& value, QString description = "");
 
     void addInterface( QString const& interfaceName );
 
     void mapPortToInterface( QString const& portName, QString const& interfaceName );
 
-    void compareLineByLine(QString const& expectedOutput);
-
     //! The top component to write to Verilog.
     QSharedPointer<Component> component_;
+
+    //! Sorter for top component's ports.
+    QSharedPointer<PortSorter> sorter_;
 
     //! The writer output as a string.
     QString outputString_;
@@ -73,8 +75,12 @@ private:
 //-----------------------------------------------------------------------------
 // Function: tst_ComponentVerilogWriter::tst_ComponentVerilogWriter()
 //-----------------------------------------------------------------------------
-tst_ComponentVerilogWriter::tst_ComponentVerilogWriter(): component_(), outputString_(), outputStream_()
+tst_ComponentVerilogWriter::tst_ComponentVerilogWriter(): component_(), 
+    sorter_(new InterfaceDirectionNameSorter()),
+    outputString_(), 
+    outputStream_()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -120,7 +126,7 @@ void tst_ComponentVerilogWriter::cleanup()
 //-----------------------------------------------------------------------------
 void tst_ComponentVerilogWriter::testNullPointerAsConstructorParameter()
 {
-    ComponentVerilogWriter writer(QSharedPointer<Component>(0));
+    ComponentVerilogWriter writer(QSharedPointer<Component>(0), QSharedPointer<PortSorter>(0));
 
     writer.write(outputStream_);
 
@@ -135,12 +141,12 @@ void tst_ComponentVerilogWriter::testNamedModule()
     QFETCH(QString, name);
     QFETCH(QString, expectedOutput);
 
-    VLNV vlnv(VLNV::COMPONENT, "Test", "TestLibrary", name, "1.0");
+    VLNV vlnv(VLNV::COMPONENT, "", "", name, "");
     component_ = QSharedPointer<Component>(new Component(vlnv));
 
     writeComponent();
 
-    compareLineByLine(expectedOutput);
+    QCOMPARE(outputString_, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------
@@ -174,7 +180,7 @@ void tst_ComponentVerilogWriter::testNamedModule_data()
 //-----------------------------------------------------------------------------
 void tst_ComponentVerilogWriter::writeComponent()
 {
-    ComponentVerilogWriter writer(component_);    
+    ComponentVerilogWriter writer(component_, sorter_);    
     writer.write(outputStream_);
 }
 
@@ -194,7 +200,7 @@ void tst_ComponentVerilogWriter::testInterfaceDescriptionIsPrinted()
 
     writeComponent();
 
-    compareLineByLine(expectedOutput);
+    QCOMPARE(outputString_, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------
@@ -243,7 +249,8 @@ void tst_ComponentVerilogWriter::testPortsOrderedByName()
 
     writeComponent();
 
-    compareLineByLine(QString("module TestComponent(a, b, c);\n"
+    QCOMPARE(outputString_, QString(
+        "module TestComponent(a, b, c);\n"
         "    // These ports are not in any interface\n" 
         "    input a;\n"
         "    input b;\n"
@@ -275,7 +282,8 @@ void tst_ComponentVerilogWriter::testPortsOrderedByDirectionThenName()
 
     writeComponent();
 
-    compareLineByLine(QString("module TestComponent(a_in, x_in, a_out, y_out, a_inout, z_inout);\n"
+    QCOMPARE(outputString_, QString(
+        "module TestComponent(a_in, x_in, a_out, y_out, a_inout, z_inout);\n"
         "    // These ports are not in any interface\n" 
         "    input a_in;\n" 
         "    input x_in;\n" 
@@ -312,7 +320,8 @@ void tst_ComponentVerilogWriter::testPortsOrderedByInterfaceThenDirectionThenNam
 
     writeComponent();
 
-    compareLineByLine(QString("module TestComponent(a_in, c_in, b_out, d_in, portInNoInterface, portInSeveralInterfaces);\n"
+    QCOMPARE(outputString_, QString(
+        "module TestComponent(a_in, c_in, b_out, d_in, portInSeveralInterfaces, portInNoInterface);\n"
         "    // Interface: A\n" 
         "    input a_in;\n" 
         "    input c_in;\n" 
@@ -321,15 +330,15 @@ void tst_ComponentVerilogWriter::testPortsOrderedByInterfaceThenDirectionThenNam
         "    // Interface: B\n" 
         "    input d_in;\n" 
         "\n"
+        "    // There ports are contained in many interfaces\n" 
+        "    input portInSeveralInterfaces;\n"
+
+        "\n"
         "    // These ports are not in any interface\n" 
         "    input portInNoInterface;\n"
         "\n"
-        "    // There ports are contained in many interfaces\n" 
-        "    input portInSeveralInterfaces;\n"
-        "\n"
         "endmodule\n"));
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: tst_ComponentVerilogWriter::addInterface()
@@ -360,13 +369,14 @@ void tst_ComponentVerilogWriter::mapPortToInterface( QString const& portName, QS
 void tst_ComponentVerilogWriter::testComponentWithModelParameters()
 {
     addModelParameter("freq", "5000");
-    addModelParameter("dataWidth", "8");    
+    addModelParameter("dataWidth", "8", "Description for dataWidth.");    
 
     writeComponent();
 
-    compareLineByLine(QString("module TestComponent();\n"
+    QCOMPARE(outputString_, QString(
+        "module TestComponent();\n"
         "    parameter freq = 5000;\n"
-        "    parameter dataWidth = 8;\n"
+        "    parameter dataWidth = 8; // Description for dataWidth.\n"
         "\n"
         "endmodule\n"));
 }
@@ -374,11 +384,12 @@ void tst_ComponentVerilogWriter::testComponentWithModelParameters()
 //-----------------------------------------------------------------------------
 // Function: tst_ComponentVerilogWriter::addModelParameter()
 //-----------------------------------------------------------------------------
-void tst_ComponentVerilogWriter::addModelParameter( QString const& name, QString const& value )
+void tst_ComponentVerilogWriter::addModelParameter(QString const& name, QString const& value, QString description)
 {
     QSharedPointer<ModelParameter> parameter = QSharedPointer<ModelParameter>(new ModelParameter());
     parameter->setName(name);
     parameter->setValue(value);
+    parameter->setDescription(description);
     component_->getModel()->addModelParameter(parameter);
 }
 
@@ -392,7 +403,8 @@ void tst_ComponentVerilogWriter::testParametersPrecedePorts()
 
     writeComponent();
 
-    compareLineByLine(QString("module TestComponent(data);\n"
+    QCOMPARE(outputString_, QString(
+        "module TestComponent(data);\n"
         "    parameter dataWidth = 8;\n"
         "    // These ports are not in any interface\n" 
         "    output [7:0] data;\n"
@@ -400,20 +412,6 @@ void tst_ComponentVerilogWriter::testParametersPrecedePorts()
         "endmodule\n"));
 }
 
-//-----------------------------------------------------------------------------
-// Function: tst_ComponentVerilogWriter::compareLineByLine()
-//-----------------------------------------------------------------------------
-void tst_ComponentVerilogWriter::compareLineByLine(QString const& expectedOutput)
-{
-    QStringList outputLines = outputString_.split("\n");
-    QStringList expectedLines = expectedOutput.split("\n");
-
-    int lineCount = qMin(outputLines.count(), expectedLines.count());
-    for (int i = 0; i < lineCount; i++)
-    {
-        QCOMPARE(outputLines.at(i), expectedLines.at(i));
-    }
-}
 
 QTEST_APPLESS_MAIN(tst_ComponentVerilogWriter)
 

@@ -312,7 +312,7 @@ bool HDLGeneratorTemplate::parseDesignConfiguration(VLNV const& hierarchyRef)
     VLNV::IPXactType documentType = handler_->getDocumentType(hierarchyRef);
 
     // if configuration is used
-    if (documentType = VLNV::DESIGNCONFIGURATION)
+    if (documentType == VLNV::DESIGNCONFIGURATION)
     {
         QSharedPointer<LibraryComponent> libComp = handler_->getModel(hierarchyRef);
         desConf_ = libComp.staticCast<DesignConfiguration>();

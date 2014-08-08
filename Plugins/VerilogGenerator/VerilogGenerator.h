@@ -16,10 +16,14 @@
 #include <QTextStream>
 
 #include <IPXACTmodels/component.h>
+#include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/design.h>
+
+#include <library/LibraryManager/libraryinterface.h>
 
 #include <Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.h>
 #include <Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h>
+#include <Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h>
 
 //-----------------------------------------------------------------------------
 // Verilog file generator.
@@ -28,7 +32,7 @@ class VerilogGenerator
 {
 public:
     //! The constructor.
-    VerilogGenerator();
+    VerilogGenerator(LibraryInterface* library);
 
     //! The destructor.
     ~VerilogGenerator();
@@ -49,7 +53,8 @@ public:
      *
      *      @remark If parse() is not called before generate(), nothing is generated.
      */
-    void parse(QSharedPointer<const Component> component);
+    void parse(QSharedPointer<Component> component, 
+        QSharedPointer<Design> design = QSharedPointer<Design>());
 
 private:
     
@@ -60,6 +65,37 @@ private:
     */
     bool nothingToWrite() const;
 
+        /*!
+    *  Method description.
+    *
+    *      @param [in]    Description.
+    *
+    *      @return Description.
+    */
+    void parseComponentInstances(QSharedPointer<Design> design);
+
+    /*!
+    *  Method description.
+    *
+    *      @param [in]    Description.
+    *
+    *      @return Description.
+    */
+    void parseHierarchicalConnectionsForInstance(QSharedPointer<Component> instanceComponent, 
+        ComponentInstanceVerilogWriter* instanceWriter, 
+        QSharedPointer<Design> design);
+
+    /*!
+    *  Method description.
+    *
+    *      @param [in]    Description.
+    *
+    *      @return Description.
+    */
+    void mapInterfacesInInstance(QSharedPointer<BusInterface> topIf, QSharedPointer<BusInterface> instanceIf, QSharedPointer<Component> instanceComponent, ComponentInstanceVerilogWriter* instanceWriter);
+   
+    QPair<General::PortBounds,General::PortBounds> getPhysicalPortBounds(QSharedPointer<General::PortMap> portMap1,
+        QSharedPointer<Component> component1, QSharedPointer<General::PortMap> portMap2, QSharedPointer<Component> component2);
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -71,7 +107,11 @@ private:
     ComponentVerilogWriter* topWriter_;
 
     //! The top level component.
-    QSharedPointer<const Component> topComponent_;
+    QSharedPointer<Component> topComponent_;
+
+    QSharedPointer<PortSorter> sorter_;
+
+    LibraryInterface* library_;
 };
 
 #endif // VERILOGGENERATOR_H

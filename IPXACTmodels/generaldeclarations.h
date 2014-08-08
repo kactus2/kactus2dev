@@ -773,16 +773,16 @@ struct PortBounds {
 	IPXACTMODELS_EXPORT PortBounds(const PortBounds& other);
 
 	//! \brief Assignment operator
-	PortBounds& operator=(const PortBounds& other);
+	IPXACTMODELS_EXPORT PortBounds& operator=(const PortBounds& other);
 
 	//! \brief Operator <
-	bool operator<(const PortBounds& other) const;
+	IPXACTMODELS_EXPORT bool operator<(const PortBounds& other) const;
 
 	//! \brief Operator ==
 	IPXACTMODELS_EXPORT bool operator==(const PortBounds& other) const;
 
 	//! \brief Operator !=
-	bool operator!=(const PortBounds& other) const;
+	IPXACTMODELS_EXPORT bool operator!=(const PortBounds& other) const;
 };
 
 /*! \brief Describes the mapping between the logical and physical ports

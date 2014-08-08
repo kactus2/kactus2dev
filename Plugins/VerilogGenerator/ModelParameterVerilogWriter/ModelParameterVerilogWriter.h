@@ -72,6 +72,10 @@ private:
      */
     QString formattedValue() const;
 
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! The model parameter to write to Verilog.
     QSharedPointer<ModelParameter> modelParameter_;
 };

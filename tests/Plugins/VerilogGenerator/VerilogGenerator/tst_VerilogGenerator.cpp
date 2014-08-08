@@ -21,6 +21,7 @@
 #include <IPXACTmodels/vlnv.h>
 
 #include <Plugins/VerilogGenerator/VerilogGenerator.h>
+#include "LibraryMock.h"
 
 class tst_VerilogGenerator : public QObject
 {
@@ -35,45 +36,60 @@ private slots:
     void init();
     void cleanup();
 
+    // Test cases:
     void testTopLevelComponent();
     void testConsecutiveParseCalls();
     void testFileHeaderIsPrinted();
+    void testHierarchicalConnections();
+    void testSlicedHierarchicalConnection();
 
 private:
 
-    void addPort( QString const& portName, int portSize, General::Direction direction );
+    void addPort( QString const& portName, int portSize, General::Direction direction, 
+        QSharedPointer<Component> component);
+
     void addModelParameter( QString const& name, QString const& value );
 
     void runGenerator();
 
+    void createHierarchicalConnection(QString const& topInterfaceRef, QString const& instanceInterfaceRef);
+
+    void createTestInstanceToLibraryAndDesign();
+
+    void mapPortToInterface(QString const& portName, QString const& logicalName, 
+        QString const& interfaceName, QSharedPointer<Component> component);
+
+    void mapPortToInterface(QString const& portName, int left, int right, 
+        QString const& logicalName, QString const& interfaceName, QSharedPointer<Component> component);
+    
+    void addInterfaceToComponent(QString const& interfaceName, QSharedPointer<Component> component);
+
     void verifyOutputContains(QString const& expectedOutput);
 
-    void compareLineByLine(QString const& expectedOutput);
+    void compareOutputTo(QString const& expectedOutput);
 
-    /*!
-    *  Method description.
-    *
-    *      @param [in]    Description.
-    *
-    *      @return Description.
-    */
     void readOutputFile();
 
-
     //! The top level component for which the generator is run.
-    QSharedPointer<Component> component_;
+    QSharedPointer<Component> topComponent_;
     
+    //! The design for which the generator is run.
+    QSharedPointer<Design> design_;
+
     //! The generator output as a string.
-    QString outputString_;
-
-
+    QString output_;
+    
+    //! The time of the generator run.
     QDateTime generationTime_;
+
+    //! The test mock for library interface.
+    LibraryMock library_;
 };
 
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::tst_VerilogGenerator()
 //-----------------------------------------------------------------------------
-tst_VerilogGenerator::tst_VerilogGenerator(): component_(), outputString_()
+tst_VerilogGenerator::tst_VerilogGenerator(): topComponent_(), design_(), output_(), library_(this)
 {
 
 }
@@ -100,7 +116,12 @@ void tst_VerilogGenerator::cleanupTestCase()
 void tst_VerilogGenerator::init()
 {
     VLNV vlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0");
-    component_ = QSharedPointer<Component>(new Component(vlnv));
+    topComponent_ = QSharedPointer<Component>(new Component(vlnv));
+
+    VLNV designVlnv(VLNV::DESIGN, "Test", "TestLibrary", "TestDesign", "1.0");
+    design_ = QSharedPointer<Design>(new Design(designVlnv));
+
+    library_.clear();
 
     QVERIFY(!QFile::exists("./generatorOutput.v"));
 }
@@ -110,9 +131,9 @@ void tst_VerilogGenerator::init()
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::cleanup()
 {
-    component_.clear();
+    topComponent_.clear();
 
-    outputString_.clear();
+    output_.clear();
 
     QFile::remove("./generatorOutput.v");
 }
@@ -122,10 +143,10 @@ void tst_VerilogGenerator::cleanup()
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::testTopLevelComponent()
 {
-    addPort("clk", 1, General::IN);
-    addPort("rst_n", 1, General::IN);
-    addPort("dataOut", 8, General::OUT);
-    addPort("dataIn", 8, General::IN);
+    addPort("clk", 1, General::IN, topComponent_);
+    addPort("rst_n", 1, General::IN, topComponent_);
+    addPort("dataOut", 8, General::OUT, topComponent_);
+    addPort("dataIn", 8, General::IN, topComponent_);
     addModelParameter("dataWidth", "8");
     addModelParameter("freq", "100000");
 
@@ -147,10 +168,11 @@ void tst_VerilogGenerator::testTopLevelComponent()
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::addPort()
 //-----------------------------------------------------------------------------
-void tst_VerilogGenerator::addPort( QString const& portName, int portSize, General::Direction direction )
+void tst_VerilogGenerator::addPort(QString const& portName, int portSize, 
+    General::Direction direction, QSharedPointer<Component> component)
 {
     QSharedPointer<Port> port = QSharedPointer<Port>(new Port(portName, direction, portSize - 1, 0, "", true));
-    component_->addPort(port);
+    component->addPort(port);
 }
 
 //-----------------------------------------------------------------------------
@@ -161,7 +183,7 @@ void tst_VerilogGenerator::addModelParameter( QString const& name, QString const
     QSharedPointer<ModelParameter> parameter = QSharedPointer<ModelParameter>(new ModelParameter());
     parameter->setName(name);
     parameter->setValue(value);
-    component_->getModel()->addModelParameter(parameter);
+    topComponent_->getModel()->addModelParameter(parameter);
 }
 
 //-----------------------------------------------------------------------------
@@ -169,9 +191,9 @@ void tst_VerilogGenerator::addModelParameter( QString const& name, QString const
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::runGenerator()
 {
-    VerilogGenerator generator;
+    VerilogGenerator generator(&library_);
 
-    generator.parse(component_);
+    generator.parse(topComponent_, design_);
 
     generationTime_ =  QDateTime::currentDateTime();
 
@@ -183,11 +205,11 @@ void tst_VerilogGenerator::runGenerator()
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::testFileHeaderIsPrinted()
 {
-    component_->setDescription("Component description\nspanning multiple\nlines.");
+    topComponent_->setDescription("Component description\nspanning multiple\nlines.");
         
     runGenerator();
     
-    compareLineByLine(QString(
+    compareOutputTo(QString(
         "//-----------------------------------------------------------------------------\n"
         "// File          : generatorOutput.v\n"
         "// Creation date : " + generationTime_.date().toString(Qt::LocalDate) + "\n"
@@ -215,16 +237,176 @@ void tst_VerilogGenerator::testConsecutiveParseCalls()
     QSharedPointer<Component> secondComponent = QSharedPointer<Component>(new Component());
     secondComponent->setVlnv(secondVlnv);
 
-    VerilogGenerator generator;
+    VerilogGenerator generator(&library_);
 
-    generator.parse(component_);
+    generator.parse(topComponent_);
     generator.parse(secondComponent);
 
     generator.generate("./generatorOutput.v");
-
+    
     verifyOutputContains(QString("module Override();\n"
         "\n"
         "endmodule\n"));
+    QVERIFY(!output_.contains("module TestComponent"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testHierarchicalConnections()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testHierarchicalConnections()
+{
+    addPort("top_clk", 1, General::IN, topComponent_);
+    addPort("data_to_instance", 8, General::IN, topComponent_);
+    addPort("enable_to_instance", 1, General::IN, topComponent_);
+    addPort("full_from_instance", 1, General::OUT, topComponent_);
+
+    addInterfaceToComponent("clk_if", topComponent_);
+    addInterfaceToComponent("data_bus", topComponent_);
+    
+    mapPortToInterface("top_clk", "CLK", "clk_if", topComponent_);
+    mapPortToInterface("data_to_instance", "DATA", "data_bus", topComponent_);
+    mapPortToInterface("enable_to_instance", "ENABLE", "data_bus", topComponent_);
+    mapPortToInterface("full_from_instance", "FULL", "data_bus", topComponent_);
+
+    createHierarchicalConnection("clk_if", "clk");
+    createHierarchicalConnection("data_bus", "data");
+
+    createTestInstanceToLibraryAndDesign();
+
+    runGenerator();
+
+    verifyOutputContains(QString(
+        "module TestComponent(top_clk, data_to_instance, enable_to_instance, full_from_instance);\n"
+        "    // Interface: clk_if\n"
+        "    input top_clk;\n"
+        "\n"
+        "    // Interface: data_bus\n"     
+        "    input [7:0] data_to_instance;\n"
+        "    input enable_to_instance;\n"
+        "    output full_from_instance;\n"
+        "\n"
+        "TestInstance instance1(\n"
+        "    .clk(top_clk),\n"
+        "    .data_in(data_to_instance),\n"
+        "    .enable(enable_to_instance),\n"
+        "    .full(full_from_instance),\n"
+        "    .data_out( ));\n"
+        "endmodule\n"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testHierarchicalConnections()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testSlicedHierarchicalConnection()
+{    
+    addInterfaceToComponent("data_bus", topComponent_);
+    addPort("enable_to_instance", 2, General::IN, topComponent_);
+    addPort("data_to_instance", 16, General::IN, topComponent_);
+    addPort("full_from_instance", 3, General::OUT, topComponent_);   
+    mapPortToInterface("enable_to_instance", 1, 1, "ENABLE", "data_bus", topComponent_);
+    mapPortToInterface("data_to_instance", 7, 0, "DATA", "data_bus", topComponent_);
+    mapPortToInterface("full_from_instance", 1, 1, "FULL", "data_bus", topComponent_);
+
+    createHierarchicalConnection("data_bus", "data");
+    createHierarchicalConnection("clk_if", "clk");
+
+    createTestInstanceToLibraryAndDesign();
+
+    runGenerator();
+
+    verifyOutputContains(QString(
+        "TestInstance instance1(\n"
+        "    .clk( ),\n"
+        "    .data_in(data_to_instance[7:0]),\n"
+        "    .enable(enable_to_instance[1]),\n"
+        "    .full(full_from_instance[1]),\n"
+        "    .data_out( ));"));
+}
+ 
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::addInterfaceToComponent()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::addInterfaceToComponent(QString const& interfaceName,
+    QSharedPointer<Component> component)
+{
+    QSharedPointer<BusInterface> busInterface(new BusInterface());
+    busInterface->setName(interfaceName);
+    component->addBusInterface(busInterface);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::addPortMap()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::mapPortToInterface(QString const& portName, QString const& logicalName, 
+    QString const& interfaceName, QSharedPointer<Component> component)
+{
+    QSharedPointer<General::PortMap> portMap(new General::PortMap());
+    portMap->logicalPort_ = logicalName;
+    portMap->physicalPort_ = portName;
+    portMap->physicalVector_->setLeft(component->getPortLeftBound(portName));
+    portMap->physicalVector_->setRight(component->getPortRightBound(portName));
+    QList<QSharedPointer<General::PortMap> > portMaps = component->getBusInterface(interfaceName)->getPortMaps();
+    portMaps.append(portMap);
+    component->getBusInterface(interfaceName)->setPortMaps(portMaps);
+}
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::mapPortToInterface()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::mapPortToInterface(QString const& portName, int left, int right, QString const& logicalName, 
+    QString const& interfaceName, QSharedPointer<Component> component)
+{
+    QSharedPointer<General::PortMap> portMap(new General::PortMap());
+    portMap->logicalPort_ = logicalName;
+    portMap->physicalPort_ = portName;
+    portMap->physicalVector_->setLeft(left);
+    portMap->physicalVector_->setRight(right);
+    QList<QSharedPointer<General::PortMap> > portMaps = component->getBusInterface(interfaceName)->getPortMaps();
+    portMaps.append(portMap);
+    component->getBusInterface(interfaceName)->setPortMaps(portMaps);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::createInstance()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::createTestInstanceToLibraryAndDesign()
+{
+    VLNV instanceVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TestInstance", "1.0");
+
+    QSharedPointer<Component> instanceComponent(new Component(instanceVlnv));
+    addPort("clk", 1, General::IN, instanceComponent);
+    addPort("data_in", 8, General::IN, instanceComponent);
+    addPort("data_out", 8, General::OUT, instanceComponent);
+    addPort("enable", 1, General::IN, instanceComponent);
+    addPort("full", 1, General::OUT, instanceComponent);
+
+    addInterfaceToComponent("clk", instanceComponent);
+
+    mapPortToInterface("clk", "CLK", "clk", instanceComponent);
+
+    addInterfaceToComponent("data", instanceComponent);
+
+    mapPortToInterface("data_in", "DATA", "data", instanceComponent);
+    mapPortToInterface("enable", "ENABLE", "data", instanceComponent);
+    mapPortToInterface("full", "FULL", "data", instanceComponent);
+
+    library_.addComponent(instanceComponent);
+
+    ComponentInstance instance("instance1", "", "", instanceVlnv, QPointF(), "");
+
+    QList<ComponentInstance> componentInstances = design_->getComponentInstances();
+    componentInstances.append(instance);
+    design_->setComponentInstances(componentInstances);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::createHierarchicalConnection()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::createHierarchicalConnection(QString const& topInterfaceRef, QString const& instanceInterfaceRef)
+{
+    HierConnection clkConnection(topInterfaceRef, Interface("instance1", instanceInterfaceRef));    
+    QList<HierConnection> hierConnections = design_->getHierarchicalConnections();
+    hierConnections.append(clkConnection);
+    design_->setHierarchicalConnections(hierConnections);
 }
 
 //-----------------------------------------------------------------------------
@@ -234,23 +416,25 @@ void tst_VerilogGenerator::verifyOutputContains(QString const& expectedOutput)
 {
     readOutputFile();
 
-    if (!outputString_.contains(expectedOutput))
+    if (!output_.contains(expectedOutput))
     {
-        QStringList outputLines = outputString_.split("\n");
+        QStringList outputLines = output_.split("\n");
         QStringList expectedLines = expectedOutput.split("\n");
 
-        int firstLine = outputLines.indexOf(expectedLines.first());
+        QVERIFY(outputLines.count() >= expectedLines.count());
 
-        if (firstLine == -1)
+        int lineOffset = outputLines.indexOf(expectedLines.first());
+
+        if (lineOffset == -1)
         {
-            compareLineByLine(expectedOutput);
+            compareOutputTo(expectedOutput);
         }
         else
         {
-            int lineCount = qMin(outputLines.count(), expectedLines.count());
-            for (int i = firstLine; i < lineCount; i++)
+            int lineCount = expectedLines.count();
+            for (int i = 0; i < lineCount; i++)
             {
-                QCOMPARE(outputLines.at(i), expectedLines.at(i));
+                QCOMPARE(outputLines.at(i + lineOffset), expectedLines.at(i));
             }
         }
     }
@@ -259,18 +443,11 @@ void tst_VerilogGenerator::verifyOutputContains(QString const& expectedOutput)
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::compareLineByLine()
 //-----------------------------------------------------------------------------
-void tst_VerilogGenerator::compareLineByLine(QString const& expectedOutput)
+void tst_VerilogGenerator::compareOutputTo(QString const& expectedOutput)
 {
     readOutputFile();
 
-    QStringList outputLines = outputString_.split("\n");
-    QStringList expectedLines = expectedOutput.split("\n");
-
-    int lineCount = qMin(outputLines.count(), expectedLines.count());
-    for (int i = 0; i < lineCount; i++)
-    {
-        QCOMPARE(outputLines.at(i), expectedLines.at(i));
-    }
+    QCOMPARE(output_, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------
@@ -282,8 +459,9 @@ void tst_VerilogGenerator::readOutputFile()
 
     QVERIFY(outputFile.open(QIODevice::ReadOnly));
 
-    outputString_ = outputFile.readAll();
+    output_ = outputFile.readAll();
 }
+
 
 QTEST_APPLESS_MAIN(tst_VerilogGenerator)
 

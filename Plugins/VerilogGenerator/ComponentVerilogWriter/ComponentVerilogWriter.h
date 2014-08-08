@@ -15,23 +15,29 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/port.h>
 
-#include <kactusGenerators/HDLGenerator/vhdlportsorter.h>
-
+#include <Plugins/VerilogGenerator/PortSorter/PortSorter.h>
 #include <Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h>
+#include <Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h>
 
 #include <QSharedPointer>
 #include <QTextStream>
 #include <QList>
 
 //-----------------------------------------------------------------------------
-// Class for writing a component as a Verilog module.
+//! Class for writing a component as a Verilog module.
 //-----------------------------------------------------------------------------
 class ComponentVerilogWriter 
 {
 public:
 
-	//! The constructor.
-	ComponentVerilogWriter(QSharedPointer<const Component> component);
+
+	/*!
+	 *  The constructor.
+	 *
+	 *      @param [in] component   The component to write to Verilog.
+	 *      @param [in] sorter      Sorter for the ports in the component.
+	 */
+	ComponentVerilogWriter(QSharedPointer<const Component> component, QSharedPointer<const PortSorter> sorter);
 
 	//! The destructor.
 	~ComponentVerilogWriter();
@@ -41,6 +47,8 @@ public:
 	 *      @param [in] output   The text stream to write the module into.
 	 */
     void write(QTextStream& outputStream) const;
+
+    void add(ComponentInstanceVerilogWriter* writer);
 
 private:
 	// Disable copying.
@@ -68,13 +76,6 @@ private:
       */
     QString portNames() const;
 
-    /*!
-     *  Gets the component ports in a sorted order.
-     *
-     *      @return The sorted ports.
-     */
-    QList<QSharedPointer<Port> > sortedPorts() const;
-
      /*!
       *  Writes the module parameter declaration.
       *
@@ -99,6 +100,8 @@ private:
     void writeInterfaceIntroduction(QString const& interfaceName, QString& previousInterfaceName,
         QTextStream& outputStream ) const;
 
+        void writeComponentInstances(QTextStream& outputStream) const;
+
     /*!
      *  Writes the ending clause for the module.
      *
@@ -112,6 +115,12 @@ private:
 
     //! The component to write to Verilog module.
     QSharedPointer<const Component> component_;
+
+    //! Sorter for the ports of the component.
+    QSharedPointer<const PortSorter> sorter_;
+
+    //! Writers for the submodule instances.
+    QList<ComponentInstanceVerilogWriter*> instanceWriters_;
 };
 
 #endif // COMPONENTVERILOGWRITER_H

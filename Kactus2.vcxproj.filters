@@ -5812,6 +5812,5 @@
     <None Include="common\graphics\workspace.png">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
 </Project>

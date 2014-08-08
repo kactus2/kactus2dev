@@ -13,5 +13,5 @@ TEMPLATE = subdirs
 
 CONFIG += testcase
 
-SUBDIRS += Plugins/plugins.pro \
-           kactusGenerators/kactusGenerators.pro
+SUBDIRS += Plugins/plugins.pro
+           

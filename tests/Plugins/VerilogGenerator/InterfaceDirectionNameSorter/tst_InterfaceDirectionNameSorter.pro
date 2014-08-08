@@ -1,48 +1,43 @@
 #-----------------------------------------------------------------------------
-# File: tst_verilogComponentInstance.pro
+# File: tst_InterfaceDirectionNameSorter.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
-# Date: 24.27.2014
+# Date: 05.08.2014
 #
 # Description:
-# Qt project file for running unit tests for VerilogComponentInstance.
+# Qt project file for running unit tests for class InterfaceDirectionNameSorter.
 #-----------------------------------------------------------------------------
 
-win32-msvc {
-    TEMPLATE = vcapp
-}
-else {
-    TEMPLATE = app
-}
+TEMPLATE = app
 
-TARGET = tst_verilogComponentInstance
+TARGET = tst_InterfaceDirectionNameSorter
 
 QT += core xml gui testlib
 CONFIG += testcase console
 
 win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodels
+    LIBS += -L$$PWD/../../../../executable -lIPXACTmodels
     DESTDIR = ./release
 }
 else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodelsd
+    LIBS += -L$$PWD/../../../../executable -lIPXACTmodelsd
     DESTDIR = ./debug
 }
 else:unix {
-    LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodels
+    LIBS += -L$$PWD/../../../../executable -lIPXACTmodels
     DESTDIR = ./release
 }
 
-INCLUDEPATH += $$PWD/../../../../
+INCLUDEPATH += $$PWD/../../../..
 INCLUDEPATH += $$DESTDIR
 
-DEPENDPATH += $$PWD/../../../../
+DEPENDPATH += $$PWD/../../../..
 DEPENDPATH += .
 
 OBJECTS_DIR += $$DESTDIR
 
-MOC_DIR += ./GeneratedFiles
-UI_DIR += ./GeneratedFiles
-RCC_DIR += ./GeneratedFiles
-include(tst_verilogComponentInstance.pri)
+MOC_DIR += ./generatedFiles
+UI_DIR += ./generatedFiles
+RCC_DIR += ./generatedFiles
+include(tst_InterfaceDirectionNameSorter.pri)

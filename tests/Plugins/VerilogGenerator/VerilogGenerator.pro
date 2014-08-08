@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# File: subdirs.pro
+# File: VerilogGenerator.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
@@ -16,4 +16,6 @@ SUBDIRS += VerilogGenerator/tst_VerilogGenerator.pro \
 		   VerilogHeaderWriter/tst_VerilogHeaderWriter.pro \
 		   ComponentVerilogWriter/tst_ComponentVerilogWriter.pro \
            PortVerilogWriter/tst_PortVerilogWriter.pro \
-		   ModelParameterVerilogWriter/tst_ModelParameterVerilogWriter.pro
+		   ModelParameterVerilogWriter/tst_ModelParameterVerilogWriter.pro \
+		   ComponentInstanceVerilogWriter/tst_ComponentInstanceVerilogWriter.pro \
+		   InterfaceDirectionNameSorter/tst_InterfaceDirectionNameSorter.pro 
