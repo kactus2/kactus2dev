@@ -1269,37 +1269,37 @@ bool General::isIpXactFileType( const QString& fileType ) {
 	return false;
 }
 
-QStringList General::getFileTypes( QSettings& settings, const QString& fileSuffix ) {
-	
+//-----------------------------------------------------------------------------
+// Function: generaldeclarations::getFileTypes()
+//-----------------------------------------------------------------------------
+QStringList General::getFileTypes( QSettings& settings, const QString& fileSuffix )
+{	
+    QStringList types;
+
 	settings.beginGroup("FileTypes");
-	QStringList typeNames = settings.childKeys();
-	settings.endGroup();
+	foreach (QString const& type, settings.childGroups())
+    {
+		// Get the extensions associated with the file type.
+		QString extensions = settings.value(type + "/Extensions").toString();
 
-	QStringList types;
-
-	// check each file type
-	foreach (QString const& typeName, typeNames)	{
-		
-		// get the extensions associated with the file type
-		QString extensionsStr = settings.value("FileTypes/" + typeName).toString();
-
-		// there may be several extensions for the file type
-		QStringList extensions = extensionsStr.split(";", QString::SkipEmptyParts);
-
-		// check each extension of the file type
-		foreach (QString extension, extensions) {
-
-			// if the file type has the searched extension defined
-			if (!extension.isEmpty() && extension.compare(fileSuffix, Qt::CaseInsensitive) == 0) {
-				types.append(typeName);
+		foreach (QString extension, extensions.split(";", QString::SkipEmptyParts))
+        {
+			if (extension.compare(fileSuffix, Qt::CaseInsensitive) == 0)
+            {
+				types.append(type);
 			}
 		}
 	}
+    settings.endGroup();
 
 	return types;
 }
 
-QStringList General::getFileTypes( QSettings& settings, const QFileInfo& file ) {
+//-----------------------------------------------------------------------------
+// Function: generaldeclarations::getFileTypes()
+//-----------------------------------------------------------------------------
+QStringList General::getFileTypes( QSettings& settings, const QFileInfo& file )
+{
 	return General::getFileTypes(settings, file.suffix());
 }
 
