@@ -368,15 +368,15 @@ void tst_ComponentVerilogWriter::mapPortToInterface( QString const& portName, QS
 //-----------------------------------------------------------------------------
 void tst_ComponentVerilogWriter::testComponentWithModelParameters()
 {
-    addModelParameter("freq", "5000");
-    addModelParameter("dataWidth", "8", "Description for dataWidth.");    
+    addModelParameter("freq", "5000",  "Description for freq.");
+    addModelParameter("dataWidth", "8");    
 
     writeComponent();
 
     QCOMPARE(outputString_, QString(
         "module TestComponent();\n"
-        "    parameter freq = 5000;\n"
-        "    parameter dataWidth = 8; // Description for dataWidth.\n"
+        "    parameter freq = 5000;    // Description for freq.\n"
+        "    parameter dataWidth = 8;\n"
         "\n"
         "endmodule\n"));
 }

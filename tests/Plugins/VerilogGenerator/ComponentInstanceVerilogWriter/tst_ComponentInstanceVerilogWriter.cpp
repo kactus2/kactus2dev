@@ -36,6 +36,8 @@ private slots:
     void testNullComponentAsConstructorParameter();
     void testNamedInstance();
     void testNamedInstance_data();
+    void testDescriptionIsPrintedAboveInstance();
+    void testDescriptionIsPrintedAboveInstance_data();    
     void testUnconnectedInstancePorts();
     void testFullyConnectedPorts();
     void testPartiallyConnectedPorts();
@@ -122,6 +124,49 @@ void tst_ComponentInstanceVerilogWriter::testNamedInstance_data()
     QTest::newRow("empty reference") << "" << "instance" << " instance();\n";
     QTest::newRow("empty instance name") << "chip" << "" << "chip ();\n";
     QTest::newRow("common") << "TestComponent" << "instance1" << "TestComponent instance1();\n";
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentInstanceVerilogWriter::testDescriptionIsPrintedAboveInstance()
+//-----------------------------------------------------------------------------
+void tst_ComponentInstanceVerilogWriter::testDescriptionIsPrintedAboveInstance()
+{
+    QFETCH(QString, description);
+    QFETCH(QString, expectedOutput);
+
+    VLNV instanceVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0");
+    QSharedPointer<Component> refComponent(new Component(instanceVLNV));
+    refComponent->setDescription(description);
+
+    ComponentInstance instance("instance1", "", "", instanceVLNV, QPointF(), "");
+
+    ComponentInstanceVerilogWriter writer(instance, refComponent, defaultSorter_);
+    writer.write(outputStream_);
+
+    QCOMPARE(output_, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentInstanceVerilogWriter::testDescriptionIsPrintedAboveInstance_data()
+//-----------------------------------------------------------------------------
+void tst_ComponentInstanceVerilogWriter::testDescriptionIsPrintedAboveInstance_data()
+{
+    QTest::addColumn<QString>("description");
+    QTest::addColumn<QString>("expectedOutput");
+
+    QTest::newRow("empty description") << "" << "TestComponent instance1();\n";
+    QTest::newRow("one line description") << "Component description." << 
+        "// Component description.\n"
+        "TestComponent instance1();\n";
+    QTest::newRow("multiline description") << 
+        "Description on\n" 
+        "multiple\n" 
+        "lines." 
+        << 
+        "// Description on\n"
+        "// multiple\n"
+        "// lines.\n"
+        "TestComponent instance1();\n";;
 }
 
 //-----------------------------------------------------------------------------

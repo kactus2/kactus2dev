@@ -11,6 +11,8 @@
 
 #include "ComponentInstanceVerilogWriter.h"
 
+#include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
+
 namespace
 {
     const int ALL_BITS = -1; //! Indicator for connecting all bits in a connection.
@@ -44,6 +46,9 @@ void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
     {
         return;
     }
+
+    CommentWriter descriptionWriter(referencedComponent_->getDescription());
+    descriptionWriter.write(outputStream);
 
     QString instanceString = "<component> <instanceName>(<portConnections>);";
     instanceString.replace("<component>", componentInstance_.getComponentRef().getName());

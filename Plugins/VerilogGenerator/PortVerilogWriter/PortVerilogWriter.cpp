@@ -11,7 +11,7 @@
 
 #include "PortVerilogWriter.h"
 
-#include <kactusGenerators/HDLGenerator/HDLUtils.h>
+#include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortVerilogWriter::PortVerilogWriter()
@@ -42,15 +42,14 @@ void PortVerilogWriter::write( QTextStream& outputStream ) const
 
     outputStream << createDeclaration();
 
+    CommentWriter descriptionWriter(port_->getDescription());
+    descriptionWriter.setIndent(4);
+    descriptionWriter.write(outputStream);
+
     if (port_->getDescription().isEmpty())
     {
         outputStream << endl;
-    }
-    else 
-    {
-        outputStream << " ";
-        HDLUtils::writeDescription(port_->getDescription(), outputStream, "//");
-    }
+    }    
 }
 
 //-----------------------------------------------------------------------------

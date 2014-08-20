@@ -14,7 +14,7 @@
 #include <Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h>
 #include <Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.h>
 
-#include <kactusGenerators/HDLGenerator/HDLUtils.h>
+#include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/businterface.h>
@@ -97,7 +97,7 @@ void ComponentVerilogWriter::writeModuleDeclaration( QTextStream& outputStream )
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentVerilogWriter::writePortNames()
+// Function: ComponentVerilogWriter::portNames()
 //-----------------------------------------------------------------------------
 QString ComponentVerilogWriter::portNames() const
 {
@@ -114,7 +114,7 @@ void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStrea
         outputStream << INDENT;
         ModelParameterVerilogWriter writer(parameter);
         writer.write(outputStream);
-    } 
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -130,6 +130,7 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
             outputStream);
 
         outputStream << INDENT;
+
         PortVerilogWriter writer(component_->getPort(portName));
         writer.write(outputStream);
     }
@@ -165,10 +166,9 @@ void ComponentVerilogWriter::writeInterfaceIntroduction(QString const& interface
             outputStream << INDENT << "// Interface: " << interfaceName << endl;
 
             QSharedPointer<const BusInterface> busInterface = component_->getBusInterface(interfaceName);
-            if (!busInterface->getDescription().isEmpty())
-            {
-                HDLUtils::writeDescription(busInterface->getDescription(), outputStream, INDENT + "//");
-            }
+            CommentWriter descriptionWriter(busInterface->getDescription());
+            descriptionWriter.setIndent(4);
+            descriptionWriter.write(outputStream);
         }        
         previousInterfaceName = interfaceName;                
     }

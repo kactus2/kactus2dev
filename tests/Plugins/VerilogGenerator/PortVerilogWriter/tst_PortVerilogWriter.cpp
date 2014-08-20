@@ -223,8 +223,8 @@ void tst_PortVerilogWriter::testWriteDescription()
 
     verilogPort.write(outputStream_);
 
-    compareLineByLine(QString("output DAT; // Data from IP to bus.\n"
-        "// Remember to connect.\n"));
+    compareLineByLine(QString("output DAT;    // Data from IP to bus.\n"
+        "    // Remember to connect.\n"));
 }
 
 //-----------------------------------------------------------------------------

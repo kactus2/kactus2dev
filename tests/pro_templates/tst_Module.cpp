@@ -18,7 +18,7 @@ class tst_<Module> : public QObject
 public:
     tst_<Module>();
 
-private Q_SLOTS:
+private slots:
     void testCase1();
 };
 

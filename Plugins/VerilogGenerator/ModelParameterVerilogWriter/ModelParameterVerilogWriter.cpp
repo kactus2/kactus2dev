@@ -12,7 +12,7 @@
 #include "ModelParameterVerilogWriter.h"
 
 #include <IPXACTmodels/modelparameter.h>
-#include <kactusGenerators/HDLGenerator/HDLUtils.h>
+#include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: ModelParameterVerilogWriter::ModelParameterVerilogWriter()
@@ -41,16 +41,15 @@ void ModelParameterVerilogWriter::write(QTextStream& output) const
         return;
     }
 
-    output << createDeclaration();
+    output << createDeclaration(); 
+    
+    CommentWriter descriptionWriter(modelParameter_->getDescription());
+    descriptionWriter.setIndent(4);
+    descriptionWriter.write(output);
 
     if (modelParameter_->getDescription().isEmpty())
     {
         output << endl;
-    }
-    else
-    {
-         output << " ";
-         HDLUtils::writeDescription(modelParameter_->getDescription(), output, "//");
     }
 }    
 

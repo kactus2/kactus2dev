@@ -202,8 +202,9 @@ void tst_ModelParameterVerilogWriter::testWriteDescription()
     ModelParameterVerilogWriter parameter(modelParam_);
     parameter.write(outputStream_);
 
-    QCOMPARE(outputString_, QString("parameter BITS = 8; // Number of register bits.\n"
-            "// Must be set.\n"));
+    QCOMPARE(outputString_, QString(
+        "parameter BITS = 8;    // Number of register bits.\n"
+        "    // Must be set.\n"));
 }
 
 QTEST_APPLESS_MAIN(tst_ModelParameterVerilogWriter)
