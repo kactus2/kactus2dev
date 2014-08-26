@@ -1073,7 +1073,7 @@ public:
 	*
 	* \param name Name of the file set that is wanted.
 	*
-	* \return pointer to the file set. Null pointer if file set was not found.
+	* \return pointer to the file set. If file set was not found, creates and returns pointer to it.
 	*/
 	QSharedPointer<FileSet> getFileSet(const QString& name) const;
 

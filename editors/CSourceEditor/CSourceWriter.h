@@ -52,7 +52,12 @@ public:
     /*!
      *  Decreases the indentation level by one.
      */
-    void decreaseIndentLevel();
+	void decreaseIndentLevel();
+	
+    /*!
+     *  Writes a header for the file, including date and time.
+     */
+	void writeFileHeader();
 
     /*!
      *  Writes a line to the source file. Newline is automatically written after the line.
