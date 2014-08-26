@@ -18,7 +18,7 @@
 #include <QCoreApplication>
 #include <QDir>
 
-#include <editors/CSourceEditor/CSourceWriter.h>
+#include <CSourceWriter.h>
 #include <editors/CSourceEditor/CSourceTextEdit.h>
 
 #include <IPXACTmodels/component.h>

@@ -43,6 +43,9 @@
     <ClCompile Include="GeneratedFiles\qrc_MCAPICodeGenerator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="CSourceWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MCAPICodeGenerator.h">
@@ -57,5 +60,10 @@
     <None Include="mcapi-generator.png">
       <Filter>Resource Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CSourceWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -3685,9 +3685,6 @@
     <ClCompile Include="editors\CSourceEditor\CSourceWidget.cpp">
       <Filter>Source Files\editors\CSourceEditor</Filter>
     </ClCompile>
-    <ClCompile Include="editors\CSourceEditor\CSourceWriter.cpp">
-      <Filter>Source Files\editors\CSourceEditor</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\componenteditor.cpp">
       <Filter>Source Files\editors\ComponentEditor</Filter>
     </ClCompile>
@@ -5451,9 +5448,6 @@
       <Filter>Header Files\editors\CSourceEditor</Filter>
     </ClInclude>
     <ClInclude Include="editors\CSourceEditor\MCAPIDesignerTypes.h">
-      <Filter>Header Files\editors\CSourceEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\CSourceEditor\CSourceWriter.h">
       <Filter>Header Files\editors\CSourceEditor</Filter>
     </ClInclude>
     <ClInclude Include="designEditors\common\StickyNote\StickyNoteMoveCommand.h">
