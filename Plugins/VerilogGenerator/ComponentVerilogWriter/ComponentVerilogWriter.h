@@ -48,7 +48,7 @@ public:
 	 */
     void write(QTextStream& outputStream) const;
 
-    void add(Writer* writer);
+    void add(QSharedPointer<Writer> writer);
 
 private:
 	// Disable copying.
@@ -100,7 +100,12 @@ private:
     void writeInterfaceIntroduction(QString const& interfaceName, QString& previousInterfaceName,
         QTextStream& outputStream ) const;
 
-        void writeComponentInstances(QTextStream& outputStream) const;
+    /*!
+     *  Writes the inserted wires and component instances of the top-level component.
+     *
+     *      @param [in] outputStream   The output to write to.
+     */
+    void writeInternalWiresAndComponentInstances(QTextStream& outputStream) const;
 
     /*!
      *  Writes the ending clause for the module.
@@ -119,8 +124,8 @@ private:
     //! Sorter for the ports of the component.
     QSharedPointer<const PortSorter> sorter_;
 
-    //! Writers for the submodule instances.
-    QList<Writer*> instanceWriters_;
+    //! Writers for the inner elements e.g. wires and subcomponent instances.
+    QList<QSharedPointer<Writer> > childWriters_;
 };
 
 #endif // COMPONENTVERILOGWRITER_H

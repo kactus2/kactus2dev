@@ -47,7 +47,10 @@ private slots:
     void testMasterToMultipleSlavesInterconnections();
     void testInterconnectionToVaryingSizeLogicalMaps();
     void testMasterInterconnectionToMirroredMaster();
-    void testMirroredSlaveInterconnectionToSlaves();      
+    void testMirroredSlaveInterconnectionToSlaves();  
+    void testAdhocConnectionBetweenComponentInstances();    
+    void testHierarchicalAdhocConnection();
+    void testAdHocConnectionToUnknownInstanceIsNotWritten();
 
 private:
 
@@ -80,13 +83,21 @@ private:
 
     void addConnectionToDesign(QString fromInstance, QString fromInterface, QString toInstance, QString toInterface);
 
+    void addAdhocConnection(QString const& connectionName, QString const& sourceInstance, QString const& sourcePort, QString const& targetInstance, QString const& targetPort);
+
+
     void verifyOutputContains(QString const& expectedOutput);
 
     void compareOutputTo(QString const& expectedOutput);
 
     void readOutputFile();   
+    //-----------------------------------------------------------------------------
+    // Function: addHierAdhocConnection()
+    //-----------------------------------------------------------------------------
+    void addHierAdhocConnection(QString const& topPort, QString const& targetInstance, QString const& targetPort);
+   
+   
 
-  
   
 
     //! The top level component for which the generator is run.
@@ -695,6 +706,137 @@ void tst_VerilogGenerator::testMirroredSlaveInterconnectionToSlaves()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testAdhocConnectionBetweenTwoComponentInstances()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testAdhocConnectionBetweenComponentInstances()
+{
+    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
+    addSenderComponentToLibrary(senderVLNV, General::MASTER);
+    addInstanceToDesign("sender", senderVLNV);
+
+    VLNV receiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver", "1.0");
+    addReceiverComponentToLibrary(receiverVLNV, General::SLAVE);
+    addInstanceToDesign("receiver1", receiverVLNV);
+    addInstanceToDesign("receiver2", receiverVLNV);
+
+    addAdhocConnection("enableAdHoc", "sender", "enable_out", "receiver1", "enable_in");
+    addAdhocConnection("enableAdHoc", "sender", "enable_out", "receiver2", "enable_in");
+    addAdhocConnection("dataAdHoc", "sender", "data_out", "receiver1", "data_in");
+
+    runGenerator();
+
+    verifyOutputContains("wire enableAdHoc;");
+    verifyOutputContains("wire [7:0] dataAdHoc;");
+
+    verifyOutputContains("TestSender sender(\n"
+        "    .data_out(dataAdHoc),\n"
+        "    .enable_out(enableAdHoc)");
+
+    verifyOutputContains("TestReceiver receiver1(\n"
+        "    .data_in(dataAdHoc),\n"
+        "    .enable_in(enableAdHoc)");
+
+    verifyOutputContains("TestReceiver receiver2(\n"
+        "    .data_in( ),\n"
+        "    .enable_in(enableAdHoc)");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::addAdhocConnection()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::addAdhocConnection(QString const& connectionName, 
+    QString const& sourceInstance, QString const& sourcePort, 
+    QString const& targetInstance, QString const& targetPort)
+{
+    QList<PortRef> internalRefs;
+
+    QList<AdHocConnection> adHocConnections = design_->getAdHocConnections();
+    for (int i = 0; i < adHocConnections.size(); i++)
+    {
+        if (adHocConnections.at(i).name() == connectionName)
+        {
+            internalRefs  = adHocConnections.at(i).internalPortReferences();
+            adHocConnections.removeAt(i);
+            break;
+        }
+    }
+
+    PortRef fromRef(sourcePort, sourceInstance);
+    PortRef toRef(targetPort, targetInstance);
+    
+    if (internalRefs.isEmpty())
+    {
+        internalRefs.append(fromRef);        
+    }
+    internalRefs.append(toRef);
+
+    AdHocConnection connection(connectionName, "", "", "", internalRefs);
+    adHocConnections.append(connection);
+    design_->setAdHocConnections(adHocConnections);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testHierarchicalAdhocConnection()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testHierarchicalAdhocConnection()
+{
+    addPort("enable_from_sender", 1, General::OUT, topComponent_);
+    addPort("data_from_sender", 8, General::OUT, topComponent_);
+
+    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
+    addSenderComponentToLibrary(senderVLNV, General::MASTER);
+    addInstanceToDesign("sender", senderVLNV);
+
+    addHierAdhocConnection("enable_from_sender", "sender", "enable_out");
+    addHierAdhocConnection("data_from_sender", "sender", "data_out");
+
+    runGenerator();
+
+    verifyOutputContains("TestSender sender(\n"
+        "    .data_out(data_from_sender),\n"
+        "    .enable_out(enable_from_sender)");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::addHierAdhocConnection()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::addHierAdhocConnection(QString const& topPort, 
+    QString const& targetInstance, QString const& targetPort)
+{    
+    PortRef topRef(topPort);
+    QList<PortRef> externalRefs;
+    externalRefs.append(topRef);
+
+    PortRef toRef(targetPort, targetInstance);
+    QList<PortRef> internalRefs;
+    internalRefs.append(toRef);
+
+    AdHocConnection connection("", "", "", "", internalRefs, externalRefs);
+
+    QList<AdHocConnection> adHocConnections = design_->getAdHocConnections();
+    adHocConnections.append(connection);
+    design_->setAdHocConnections(adHocConnections);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testAdHocConnectionToUnknownInstanceIsNotWritten()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testAdHocConnectionToUnknownInstanceIsNotWritten()
+{
+    addAdhocConnection("notConnected", "unknownInstance", "emptyPort", "unknownInstance", "emptyPort" );
+    addHierAdhocConnection("top_clk", "unknownInstance", "clk");
+
+    runGenerator();
+
+    runGenerator();
+
+    verifyOutputContains(
+        "module TestComponent();\n"
+        "\n"
+        "endmodule");
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::verifyOutputContains()
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::verifyOutputContains(QString const& expectedOutput)
@@ -752,6 +894,7 @@ void tst_VerilogGenerator::readOutputFile()
     output_ = outputFile.readAll();
     outputFile.close();
 }
+
 
 QTEST_APPLESS_MAIN(tst_VerilogGenerator)
 

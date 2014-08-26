@@ -124,6 +124,15 @@ private:
         QSharedPointer<General::PortMap> portMap) const;
 
     /*!
+     *  Finds the component referenced in the design by a given name.
+     *
+     *      @param [in] instanceName   The name of the instance referencing a component.
+     *
+     *      @return The component referenced by the instance.
+     */
+    QSharedPointer<Component> getComponentForInstanceName(QString const& instanceName) const;
+
+    /*!
      *  Finds all port maps for a logical port in an interface.
      *
      *      @param [in] logicalPort     The name of the logical port.
@@ -157,6 +166,14 @@ private:
         QString const& wireName, int const& wireSize);
 
     /*!
+     *  Adds a writer for a wire with the given name and size.
+     *
+     *      @param [in] wireName   The name of the wire.
+     *      @param [in] wireSize   The size of the wire.
+     */
+    void addWireWriter(QString wireName, int wireSize);
+
+    /*!
      *  Finds the interface mode in the component instance and bus interface described by an interface.
      *
      *      @param [in] interface   The interface whose interface mode to find.
@@ -172,21 +189,15 @@ private:
      *
      *      @return The referenced bus interface.
      */
-    QSharedPointer<BusInterface> businterfaceForInterface(Interface const& interface) const;
+    QSharedPointer<BusInterface> getBusinterfaceForInterface(Interface const& interface) const;
 
     /*!
      *  Parses all the component instances in the design.
-     *
-     *      @param [in] design   The design to parse.
      */
     void parseComponentInstances();
 
     /*!
      *  Parses all the hierarchical connections for a component instance in the design.
-     *
-     *      @param [in] instanceComponent   The component for the instance.
-     *      @param [in] instanceWriter      The the writer for the instance.
-     *      @param [in] design              The design to parse.
      */
     void parseHierarchicalConnections();
 
@@ -200,12 +211,67 @@ private:
     void mapTopBusInterfaceToInterfaceInInstance(QSharedPointer<BusInterface> topIf, 
         Interface const& instanceInterface, QSharedPointer<Component> instanceComponent);  
 
+    /*!
+     *  Parses all the ad-hoc connections in the design.
+     */
+    void parseAdHocConnections();
+
+    /*!
+     *  Checks if a given ad-hoc connection is hierarchical.
+     *
+     *      @param [in] adHocConnection   The ad-hoc connection to check.
+     *
+     *      @return True, if the ad-hoc connection is hierarchical, otherwise false.
+     */
+    bool isHierarchicalAdHocConnection(AdHocConnection const &adHocConnection);
+
+    /*!
+     *  Adds port connection to all component instances connected by the given hierarchical ad-hoc connection.
+     *
+     *      @param [in] adHocConnection   The ad-hoc connection whose connected instances to map.
+     */
+    void createPortMapsForHierarchicalAdHocConnection(AdHocConnection const& adHocConnection);
+
+    /*!
+     *  Checks if a wire should be created to represent the given ad-hoc connection.
+     *
+     *      @param [in] adHocConnection   The ad-hoc connection to check.
+     *
+     *      @return True, if a wire should be created, otherwise false.
+     */
+    bool shouldCreateWireForAdHocConnection(AdHocConnection const& adHocConnection);
+
+    /*!
+     *  Creates a wire writer to represent the given ad-hoc connection and connects ports in 
+     *  the ad-hoc connection to the wire.
+     *
+     *      @param [in] adHocConnection   The ad-hoc connection to create as wire and to connect.
+     */
+    void createWireForAdHocConnection(AdHocConnection const& adHocConnection);
+
+    /*!
+     *  Finds the required size for a wire representing a given ad-hoc connection.
+     *
+     *      @param [in] adHocConnection   The ad-hoc connection whose size to find.
+     *
+     *      @return The size of the wire required to represent the ad-hoc connection.
+     */
+    int wireSizeForAdHocConnection(AdHocConnection const &adHocConnection) const;
+
+    /*!
+     *  Connects all ports referenced in an ad-hoc connection to the given wire name.
+     *
+     *      @param [in] adHocConnection     The ad-hoc connection whose referenced ports to connect.
+     *      @param [in] wireName            The name of the wire to connect.
+     */
+    void mapPortsInAdHocConnectionToWire(AdHocConnection const &adHocConnection, QString wireName);
+
      /*!
       *  Adds the generated writers to the top writer in correct order.            
       */
     void addWritersToTopInDesiredOrder() const;
 
-     //-----------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
@@ -213,10 +279,10 @@ private:
      LibraryInterface* library_;
 
      //! Writer for generating file header.
-     VerilogHeaderWriter* headerWriter_;
+     QSharedPointer<VerilogHeaderWriter> headerWriter_;
 
      //! Writer for top level component.
-     ComponentVerilogWriter* topWriter_;
+     QSharedPointer<ComponentVerilogWriter> topWriter_;
 
      //! The top level component.
      QSharedPointer<Component> topComponent_;
@@ -225,10 +291,10 @@ private:
      QSharedPointer<Design> design_;
 
      //! Writers for Verilog wires.
-     QList<VerilogWireWriter*> wireWriters_;
+     QList<QSharedPointer<VerilogWireWriter> > wireWriters_;
 
      //! Writers for Verilog instances.
-     QMap<QString, ComponentInstanceVerilogWriter*> instanceWriters_;
+     QMap<QString, QSharedPointer<ComponentInstanceVerilogWriter> > instanceWriters_;
 
      //! Sorter for component ports.
      QSharedPointer<PortSorter> sorter_;

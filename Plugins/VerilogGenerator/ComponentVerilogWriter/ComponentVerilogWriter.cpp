@@ -35,7 +35,7 @@ namespace
 //-----------------------------------------------------------------------------
 ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<const Component> component,
     QSharedPointer<const PortSorter> sorter) :
-component_(component), sorter_(sorter), instanceWriters_()
+component_(component), sorter_(sorter), childWriters_()
 {
 
 }
@@ -45,11 +45,7 @@ component_(component), sorter_(sorter), instanceWriters_()
 //-----------------------------------------------------------------------------
 ComponentVerilogWriter::~ComponentVerilogWriter()
 {
-    foreach(Writer* instanceWriter, instanceWriters_)
-    {
-        delete instanceWriter;
-    }
-    instanceWriters_.clear();
+    childWriters_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -68,7 +64,7 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
 
     writePortDeclarations(outputStream);
 
-    writeComponentInstances(outputStream);
+    writeInternalWiresAndComponentInstances(outputStream);
 
     writeModuleEnd(outputStream);
 }
@@ -76,9 +72,9 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::add()
 //-----------------------------------------------------------------------------
-void ComponentVerilogWriter::add(Writer* writer)
+void ComponentVerilogWriter::add(QSharedPointer<Writer> writer)
 {
-    instanceWriters_.append(writer);
+    childWriters_.append(writer);
 }
 
 //-----------------------------------------------------------------------------
@@ -176,11 +172,11 @@ void ComponentVerilogWriter::writeInterfaceIntroduction(QString const& interface
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentVerilogWriter::writeComponentInstances()
+// Function: ComponentVerilogWriter::writeInternalWiresAndComponentInstances()
 //-----------------------------------------------------------------------------
-void ComponentVerilogWriter::writeComponentInstances(QTextStream& outputStream) const
+void ComponentVerilogWriter::writeInternalWiresAndComponentInstances(QTextStream& outputStream) const
 {
-    foreach(Writer* writer, instanceWriters_)
+    foreach(QSharedPointer<Writer> writer, childWriters_)
     {
         writer->write(outputStream);
     }
