@@ -4,19 +4,19 @@
 
 HEADERS += ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h \
     ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h \
-    ../../../../kactusGenerators/HDLGenerator/HDLUtils.h \
     ../../../../Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.h \
     ../../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h \
     ../../../../Plugins/VerilogGenerator/PortSorter/PortSorter.h \
     ../../../../Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.h \
     ../../../../Plugins/VerilogGenerator/VerilogGenerator.h \
     ../../../../Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.h \
-    ./LibraryMock.h
-SOURCES += ./LibraryMock.cpp \
+    ./LibraryMock.h \
+    ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h
+SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.cpp \
-    ../../../../kactusGenerators/HDLGenerator/HDLUtils.cpp \
     ../../../../Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.cpp \
+    ./LibraryMock.cpp \
     ../../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.cpp \
     ../../../../Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogGenerator.cpp \

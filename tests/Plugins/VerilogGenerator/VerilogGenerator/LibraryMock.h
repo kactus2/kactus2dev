@@ -321,15 +321,15 @@ public slots:
     */
     virtual void endSave();
 
+private:
 
-
-    private:
-
-        // Disable copying.
-        LibraryMock(LibraryMock const& rhs);
-        LibraryMock& operator=(LibraryMock const& rhs);
+    // Disable copying.
+    LibraryMock(LibraryMock const& rhs);
+    LibraryMock& operator=(LibraryMock const& rhs);
 
     QMap<VLNV, QSharedPointer<LibraryComponent> > components_;
+
+    QMap<VLNV, QString > paths_;
 
 };
 

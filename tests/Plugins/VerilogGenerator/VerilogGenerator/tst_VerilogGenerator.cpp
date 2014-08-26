@@ -42,6 +42,12 @@ private slots:
     void testFileHeaderIsPrinted();
     void testHierarchicalConnections();
     void testSlicedHierarchicalConnection();
+    void testUnknownInstanceIsNotWritten();
+    void testMasterToSlaveInterconnection();
+    void testMasterToMultipleSlavesInterconnections();
+    void testInterconnectionToVaryingSizeLogicalMaps();
+    void testMasterInterconnectionToMirroredMaster();
+    void testMirroredSlaveInterconnectionToSlaves();      
 
 private:
 
@@ -54,7 +60,9 @@ private:
 
     void createHierarchicalConnection(QString const& topInterfaceRef, QString const& instanceInterfaceRef);
 
-    void createTestInstanceToLibraryAndDesign();
+    void addTestComponentToLibrary(VLNV vlnv);
+
+    void addInstanceToDesign(QString instanceName, VLNV instanceVlnv);
 
     void mapPortToInterface(QString const& portName, QString const& logicalName, 
         QString const& interfaceName, QSharedPointer<Component> component);
@@ -64,11 +72,22 @@ private:
     
     void addInterfaceToComponent(QString const& interfaceName, QSharedPointer<Component> component);
 
+    void addSenderComponentToLibrary(VLNV senderVLNV, General::InterfaceMode mode);
+
+    void addReceiverComponentToLibrary(VLNV receiverVLNV, General::InterfaceMode mode);    
+
+    void setReceiverComponentDataWidth(VLNV receiverVLNV, int dataWidth);
+
+    void addConnectionToDesign(QString fromInstance, QString fromInterface, QString toInstance, QString toInterface);
+
     void verifyOutputContains(QString const& expectedOutput);
 
     void compareOutputTo(QString const& expectedOutput);
 
-    void readOutputFile();
+    void readOutputFile();   
+
+  
+  
 
     //! The top level component for which the generator is run.
     QSharedPointer<Component> topComponent_;
@@ -152,7 +171,8 @@ void tst_VerilogGenerator::testTopLevelComponent()
 
     runGenerator();
 
-    verifyOutputContains(QString("module TestComponent(clk, dataIn, rst_n, dataOut);\n"
+    verifyOutputContains(QString(
+        "module TestComponent(clk, dataIn, rst_n, dataOut);\n"
         "    parameter dataWidth = 8;\n"
         "    parameter freq = 100000;\n"
         "    // These ports are not in any interface\n"         
@@ -206,10 +226,11 @@ void tst_VerilogGenerator::runGenerator()
 void tst_VerilogGenerator::testFileHeaderIsPrinted()
 {
     topComponent_->setDescription("Component description\nspanning multiple\nlines.");
-        
+    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/TestComponent.1.0.xml", topComponent_);
+
     runGenerator();
     
-    compareOutputTo(QString(
+    verifyOutputContains(QString(
         "//-----------------------------------------------------------------------------\n"
         "// File          : generatorOutput.v\n"
         "// Creation date : " + generationTime_.date().toString(Qt::LocalDate) + "\n"
@@ -221,11 +242,7 @@ void tst_VerilogGenerator::testFileHeaderIsPrinted()
         "// This file was generated with Kactus2 verilog generator\n"
         "// based on IP-XACT component Test:TestLibrary:TestComponent:1.0\n"
         "// whose XML file is C:/Test/TestLibrary/TestComponent/1.0/TestComponent.1.0.xml\n"
-        "//-----------------------------------------------------------------------------\n"
-        "\n"
-        "module TestComponent();\n"
-        "\n"
-        "endmodule\n"));
+        "//-----------------------------------------------------------------------------\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -271,7 +288,9 @@ void tst_VerilogGenerator::testHierarchicalConnections()
     createHierarchicalConnection("clk_if", "clk");
     createHierarchicalConnection("data_bus", "data");
 
-    createTestInstanceToLibraryAndDesign();
+    VLNV instanceVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TestInstance", "1.0");
+    addTestComponentToLibrary(instanceVlnv);
+    addInstanceToDesign("instance1", instanceVlnv);
 
     runGenerator();
 
@@ -310,7 +329,9 @@ void tst_VerilogGenerator::testSlicedHierarchicalConnection()
     createHierarchicalConnection("data_bus", "data");
     createHierarchicalConnection("clk_if", "clk");
 
-    createTestInstanceToLibraryAndDesign();
+    VLNV instanceVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TestInstance", "1.0");
+    addTestComponentToLibrary(instanceVlnv);
+    addInstanceToDesign("instance1", instanceVlnv);
 
     runGenerator();
 
@@ -322,7 +343,23 @@ void tst_VerilogGenerator::testSlicedHierarchicalConnection()
         "    .full(full_from_instance[1]),\n"
         "    .data_out( ));"));
 }
- 
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testUnknownInstanceIsNotWritten()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testUnknownInstanceIsNotWritten()
+{
+    VLNV nonLibraryComponent(VLNV::COMPONENT, "Test", "TestLibrary", "Unknown", "1.0");
+    addInstanceToDesign("unknown", nonLibraryComponent);
+
+    runGenerator();
+
+    verifyOutputContains(
+        "module TestComponent();\n"
+        "\n"
+        "endmodule");
+}
+
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::addInterfaceToComponent()
 //-----------------------------------------------------------------------------
@@ -366,13 +403,11 @@ void tst_VerilogGenerator::mapPortToInterface(QString const& portName, int left,
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VerilogGenerator::createInstance()
+// Function: tst_VerilogGenerator::addTestComponentToLibrary()
 //-----------------------------------------------------------------------------
-void tst_VerilogGenerator::createTestInstanceToLibraryAndDesign()
+void tst_VerilogGenerator::addTestComponentToLibrary(VLNV vlnv)
 {
-    VLNV instanceVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TestInstance", "1.0");
-
-    QSharedPointer<Component> instanceComponent(new Component(instanceVlnv));
+    QSharedPointer<Component> instanceComponent(new Component(vlnv));
     addPort("clk", 1, General::IN, instanceComponent);
     addPort("data_in", 8, General::IN, instanceComponent);
     addPort("data_out", 8, General::OUT, instanceComponent);
@@ -390,8 +425,14 @@ void tst_VerilogGenerator::createTestInstanceToLibraryAndDesign()
     mapPortToInterface("full", "FULL", "data", instanceComponent);
 
     library_.addComponent(instanceComponent);
+}
 
-    ComponentInstance instance("instance1", "", "", instanceVlnv, QPointF(), "");
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::addInstanceToDesign()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::addInstanceToDesign(QString instanceName, VLNV instanceVlnv)
+{
+    ComponentInstance instance(instanceName, "", "", instanceVlnv, QPointF(), "");
 
     QList<ComponentInstance> componentInstances = design_->getComponentInstances();
     componentInstances.append(instance);
@@ -401,12 +442,256 @@ void tst_VerilogGenerator::createTestInstanceToLibraryAndDesign()
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::createHierarchicalConnection()
 //-----------------------------------------------------------------------------
-void tst_VerilogGenerator::createHierarchicalConnection(QString const& topInterfaceRef, QString const& instanceInterfaceRef)
+void tst_VerilogGenerator::createHierarchicalConnection(QString const& topInterfaceRef, 
+    QString const& instanceInterfaceRef)
 {
     HierConnection clkConnection(topInterfaceRef, Interface("instance1", instanceInterfaceRef));    
     QList<HierConnection> hierConnections = design_->getHierarchicalConnections();
     hierConnections.append(clkConnection);
     design_->setHierarchicalConnections(hierConnections);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testMasterToSlaveInterconnection()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testMasterToSlaveInterconnection()
+{
+    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
+    addSenderComponentToLibrary(senderVLNV, General::MASTER);
+    addInstanceToDesign("sender", senderVLNV);
+
+    VLNV receiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver", "1.0");
+    addReceiverComponentToLibrary(receiverVLNV, General::SLAVE);
+    addInstanceToDesign("receiver", receiverVLNV);
+
+    addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
+
+    runGenerator();
+
+    verifyOutputContains("wire sender_to_receiver_ENABLE;");
+    verifyOutputContains("wire [7:0] sender_to_receiver_DATA;");
+
+    verifyOutputContains("TestSender sender(\n"
+       "    .data_out(sender_to_receiver_DATA),\n"
+       "    .enable_out(sender_to_receiver_ENABLE)");
+
+    verifyOutputContains("TestReceiver receiver(\n"
+        "    .data_in(sender_to_receiver_DATA),\n"
+        "    .enable_in(sender_to_receiver_ENABLE)");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::addSenderComponentToLibrary()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::addSenderComponentToLibrary(VLNV senderVLNV, General::InterfaceMode mode)
+{
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+    addPort("enable_out", 1, General::OUT, senderComponent);
+    addPort("data_out", 8, General::OUT, senderComponent);
+
+    addInterfaceToComponent("data_bus", senderComponent);
+    senderComponent->getBusInterface("data_bus")->setInterfaceMode(mode);    
+    mapPortToInterface("data_out", "DATA", "data_bus", senderComponent);
+    QSharedPointer<General::PortMap> dataMap = senderComponent->getBusInterface("data_bus")->getPortMaps().first();
+    dataMap->logicalVector_->setLeft(7);
+    dataMap->logicalVector_->setRight(0);
+
+    mapPortToInterface("enable_out", "ENABLE", "data_bus", senderComponent);
+
+    library_.addComponent(senderComponent);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::addReceiverComponentToLibrary()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::addReceiverComponentToLibrary(VLNV receiverVLNV, General::InterfaceMode mode)
+{
+    QSharedPointer<Component> receiverComponent(new Component(receiverVLNV));
+    addPort("enable_in", 1, General::IN, receiverComponent);
+    addPort("data_in", 8, General::IN, receiverComponent);
+
+    addInterfaceToComponent("data_bus", receiverComponent);
+    receiverComponent->getBusInterface("data_bus")->setInterfaceMode(mode);    
+    mapPortToInterface("data_in", "DATA", "data_bus", receiverComponent);
+
+    mapPortToInterface("enable_in", "ENABLE", "data_bus", receiverComponent);
+
+    library_.addComponent(receiverComponent);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::addConnectionToDesign()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::addConnectionToDesign(QString fromInstance, QString fromInterface, 
+    QString toInstance, QString toInterface)
+{
+    Interface firstInterface(fromInstance, fromInterface);
+    Interface secondInterface(toInstance, toInterface);
+
+    Interconnection connection(fromInstance + "_to_" + toInstance, firstInterface, secondInterface);
+
+    QList<Interconnection> connections = design_->getInterconnections();
+    connections.append(connection);
+    design_->setInterconnections(connections);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testMasterToMultipleSlavesInterconnections()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testMasterToMultipleSlavesInterconnections()
+{
+    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
+    addSenderComponentToLibrary(senderVLNV, General::MASTER);
+    addInstanceToDesign("sender", senderVLNV);
+
+    VLNV receiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver", "1.0");
+    addReceiverComponentToLibrary(receiverVLNV, General::SLAVE);
+    addInstanceToDesign("receiver1", receiverVLNV);
+    addInstanceToDesign("receiver2", receiverVLNV);
+
+    addConnectionToDesign("sender", "data_bus", "receiver1", "data_bus");
+    addConnectionToDesign("sender", "data_bus", "receiver2", "data_bus");    
+
+    runGenerator();
+
+    verifyOutputContains("wire sender_data_bus_ENABLE;");
+    verifyOutputContains("wire [7:0] sender_data_bus_DATA;");
+
+    verifyOutputContains("TestSender sender(\n"
+        "    .data_out(sender_data_bus_DATA),\n"
+        "    .enable_out(sender_data_bus_ENABLE)");
+
+    verifyOutputContains("TestReceiver receiver1(\n"
+        "    .data_in(sender_data_bus_DATA),\n"
+        "    .enable_in(sender_data_bus_ENABLE)");
+
+    verifyOutputContains("TestReceiver receiver2(\n"
+        "    .data_in(sender_data_bus_DATA),\n"
+        "    .enable_in(sender_data_bus_ENABLE)");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testInterconnectionToVaryingSizeLogicalMaps()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testInterconnectionToVaryingSizeLogicalMaps()
+{
+    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
+    addSenderComponentToLibrary(senderVLNV, General::MASTER);
+    addInstanceToDesign("sender", senderVLNV);
+
+    VLNV oneBitReceiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver", "1.0");
+    addReceiverComponentToLibrary(oneBitReceiverVLNV, General::SLAVE);
+    setReceiverComponentDataWidth(oneBitReceiverVLNV, 1);
+    addInstanceToDesign("oneBitReceiver", oneBitReceiverVLNV);
+    
+    VLNV fourBitReceiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver4bit", "1.0");
+    addReceiverComponentToLibrary(fourBitReceiverVLNV, General::SLAVE);
+    setReceiverComponentDataWidth(fourBitReceiverVLNV, 4);
+    addInstanceToDesign("fourBitReceiver", fourBitReceiverVLNV);
+
+    VLNV sixteenBitReceiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver16bit", "1.0");
+    addReceiverComponentToLibrary(sixteenBitReceiverVLNV, General::SLAVE);
+    setReceiverComponentDataWidth(sixteenBitReceiverVLNV, 16);
+    addInstanceToDesign("sixteenBitReceiver", sixteenBitReceiverVLNV);
+
+    addConnectionToDesign("sender", "data_bus", "oneBitReceiver", "data_bus");
+    addConnectionToDesign("sender", "data_bus", "fourBitReceiver", "data_bus");
+    addConnectionToDesign("sender", "data_bus", "sixteenBitReceiver", "data_bus");
+
+    runGenerator();
+
+    verifyOutputContains("wire [15:0] sender_data_bus_DATA;");
+    verifyOutputContains("wire sender_data_bus_ENABLE;");    
+
+    verifyOutputContains("TestSender sender(\n"
+        "    .data_out(sender_data_bus_DATA[7:0]),\n"
+        "    .enable_out(sender_data_bus_ENABLE)");
+
+    verifyOutputContains("TestReceiver oneBitReceiver(\n"
+        "    .data_in(sender_data_bus_DATA[0]),\n"
+        "    .enable_in(sender_data_bus_ENABLE)");
+
+    verifyOutputContains("TestReceiver4bit fourBitReceiver(\n"
+        "    .data_in(sender_data_bus_DATA[3:0]),\n"
+        "    .enable_in(sender_data_bus_ENABLE)");
+
+    verifyOutputContains("TestReceiver16bit sixteenBitReceiver(\n"
+        "    .data_in(sender_data_bus_DATA),\n"
+        "    .enable_in(sender_data_bus_ENABLE)");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::setComponentDataWidth()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::setReceiverComponentDataWidth(VLNV fourBitReceiverVLNV, int dataWidth)
+{
+    QSharedPointer<Component> component = library_.getModel(fourBitReceiverVLNV).dynamicCast<Component>();
+    component->getPort("data_in")->setLeftBound(dataWidth - 1);
+    component->getPort("data_in")->setRightBound(0);
+
+    QSharedPointer<General::PortMap> dataMap = component->getBusInterface("data_bus")->getPortMaps().first();
+    dataMap->logicalVector_->setLeft(dataWidth - 1);
+    dataMap->logicalVector_->setRight(0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testMasterInterconnectionToMirroredMaster()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testMasterInterconnectionToMirroredMaster()
+{
+    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
+    addSenderComponentToLibrary(senderVLNV, General::MASTER);
+    addInstanceToDesign("sender", senderVLNV);
+
+    VLNV receiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "BusComponent", "1.0");
+    addReceiverComponentToLibrary(receiverVLNV, General::MIRROREDMASTER);
+    addInstanceToDesign("receiver", receiverVLNV);
+
+    addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
+
+    runGenerator();
+
+    verifyOutputContains("wire [7:0] sender_to_receiver_DATA;");
+    verifyOutputContains("wire sender_to_receiver_ENABLE;");    
+
+    verifyOutputContains("TestSender sender(\n"
+        "    .data_out(sender_to_receiver_DATA),\n"
+        "    .enable_out(sender_to_receiver_ENABLE)");
+
+    verifyOutputContains("BusComponent receiver(\n"
+        "    .data_in(sender_to_receiver_DATA),\n"
+        "    .enable_in(sender_to_receiver_ENABLE)");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testMirroredSlaveInterconnectionToSlaves()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testMirroredSlaveInterconnectionToSlaves()
+{
+    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
+    addSenderComponentToLibrary(senderVLNV, General::MIRROREDSLAVE);
+    addInstanceToDesign("sender", senderVLNV);
+
+    VLNV receiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "BusComponent", "1.0");
+    addReceiverComponentToLibrary(receiverVLNV, General::SLAVE);
+    addInstanceToDesign("bus1", receiverVLNV);
+    addInstanceToDesign("bus2", receiverVLNV);
+
+    addConnectionToDesign("sender", "data_bus", "bus1", "data_bus");
+    addConnectionToDesign("sender", "data_bus", "bus2", "data_bus");
+
+    runGenerator();
+
+    verifyOutputContains("wire [7:0] sender_data_bus_DATA;");
+    verifyOutputContains("wire sender_data_bus_ENABLE;");    
+
+    verifyOutputContains("TestSender sender(\n"
+        "    .data_out(sender_data_bus_DATA),\n"
+        "    .enable_out(sender_data_bus_ENABLE)");
+
+    verifyOutputContains("BusComponent bus1(\n"
+        "    .data_in(sender_data_bus_DATA),\n"
+        "    .enable_in(sender_data_bus_ENABLE)");
 }
 
 //-----------------------------------------------------------------------------
@@ -438,6 +723,11 @@ void tst_VerilogGenerator::verifyOutputContains(QString const& expectedOutput)
             }
         }
     }
+    else if(output_.count(expectedOutput) != 1)
+    {
+        QVERIFY2(false, QString(expectedOutput + " was found " + QString::number(output_.count(expectedOutput))
+            + " times in output.").toLocal8Bit());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -460,8 +750,8 @@ void tst_VerilogGenerator::readOutputFile()
     QVERIFY(outputFile.open(QIODevice::ReadOnly));
 
     output_ = outputFile.readAll();
+    outputFile.close();
 }
-
 
 QTEST_APPLESS_MAIN(tst_VerilogGenerator)
 

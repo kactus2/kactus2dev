@@ -16,6 +16,7 @@
 
 #include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
 
+
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/port.h>
@@ -44,7 +45,7 @@ component_(component), sorter_(sorter), instanceWriters_()
 //-----------------------------------------------------------------------------
 ComponentVerilogWriter::~ComponentVerilogWriter()
 {
-    foreach(ComponentInstanceVerilogWriter* instanceWriter, instanceWriters_)
+    foreach(Writer* instanceWriter, instanceWriters_)
     {
         delete instanceWriter;
     }
@@ -75,7 +76,7 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::add()
 //-----------------------------------------------------------------------------
-void ComponentVerilogWriter::add(ComponentInstanceVerilogWriter* writer)
+void ComponentVerilogWriter::add(Writer* writer)
 {
     instanceWriters_.append(writer);
 }
@@ -179,7 +180,7 @@ void ComponentVerilogWriter::writeInterfaceIntroduction(QString const& interface
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writeComponentInstances(QTextStream& outputStream) const
 {
-    foreach(ComponentInstanceVerilogWriter* writer, instanceWriters_)
+    foreach(Writer* writer, instanceWriters_)
     {
         writer->write(outputStream);
     }

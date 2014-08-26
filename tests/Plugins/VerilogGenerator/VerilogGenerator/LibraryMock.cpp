@@ -18,7 +18,9 @@
 // Function: LibraryMock::LibraryMock()
 //-----------------------------------------------------------------------------
 LibraryMock::LibraryMock(QObject* parent):
-    QObject(parent)
+    QObject(parent),
+        components_(),
+        paths_()
 {
 
 }
@@ -76,7 +78,7 @@ bool LibraryMock::contains(const VLNV& vlnv)
 //-----------------------------------------------------------------------------
 const QString LibraryMock::getPath(const VLNV& vlnv) const
 {
-    return QString();
+    return paths_.value(vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -92,7 +94,8 @@ QString LibraryMock::getDirectoryPath(const VLNV& vlnv) const
 //-----------------------------------------------------------------------------
 bool LibraryMock::writeModelToFile(const QString path, QSharedPointer<LibraryComponent> model, bool printErrors /*= true*/)
 {
-    return false;
+    paths_.insert(*model->getVlnv(), path);
+    return true;
 }
 
 //-----------------------------------------------------------------------------

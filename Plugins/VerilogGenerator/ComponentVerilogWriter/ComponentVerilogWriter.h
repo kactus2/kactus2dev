@@ -17,7 +17,7 @@
 
 #include <Plugins/VerilogGenerator/PortSorter/PortSorter.h>
 #include <Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h>
-#include <Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h>
+#include <Plugins/VerilogGenerator/common/Writer.h>
 
 #include <QSharedPointer>
 #include <QTextStream>
@@ -48,7 +48,7 @@ public:
 	 */
     void write(QTextStream& outputStream) const;
 
-    void add(ComponentInstanceVerilogWriter* writer);
+    void add(Writer* writer);
 
 private:
 	// Disable copying.
@@ -120,7 +120,7 @@ private:
     QSharedPointer<const PortSorter> sorter_;
 
     //! Writers for the submodule instances.
-    QList<ComponentInstanceVerilogWriter*> instanceWriters_;
+    QList<Writer*> instanceWriters_;
 };
 
 #endif // COMPONENTVERILOGWRITER_H

@@ -16,6 +16,7 @@
 #include <IPXACTmodels/ComponentInstance.h>
 
 #include <Plugins/VerilogGenerator/PortSorter/PortSorter.h>
+#include <Plugins/VerilogGenerator/common/Writer.h>
 
 #include <QTextStream>
 #include <QSharedPointer>
@@ -23,7 +24,7 @@
 //-----------------------------------------------------------------------------
 //! Class for writing a component instance as a Verilog instance.
 //-----------------------------------------------------------------------------
-class ComponentInstanceVerilogWriter 
+class ComponentInstanceVerilogWriter : public Writer
 {
 public:
 
@@ -45,7 +46,7 @@ public:
     *
     *      @param [in] outputStream   The output to write to.    
     */
-    void write(QTextStream& outputStream) const;
+    virtual void write(QTextStream& outputStream) const;
 
     /*!
      *  Adds a port connection assignment for the instance.
