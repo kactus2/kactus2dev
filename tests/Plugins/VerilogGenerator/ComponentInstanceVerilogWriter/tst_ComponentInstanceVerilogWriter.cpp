@@ -42,6 +42,8 @@ private slots:
     void testFullyConnectedPorts();
     void testPartiallyConnectedPorts();
     void testDefaultPortValueIsUsedForUnconnectedInputPort();
+    void testInstanceParametersAreAssigned();
+
 private:
 
     //! The writer output.
@@ -262,6 +264,32 @@ void tst_ComponentInstanceVerilogWriter::testDefaultPortValueIsUsedForUnconnecte
         "    .a_in('b0),\n"
         "    .b_out( ),\n"
         "    .c_inout( ));\n"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentInstanceVerilogWriter::testInstanceParametersAreAssigned()
+//-----------------------------------------------------------------------------
+void tst_ComponentInstanceVerilogWriter::testInstanceParametersAreAssigned()
+{
+    VLNV instanceVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0");
+    QSharedPointer<Component> refComponent(new Component(instanceVLNV));
+
+    ComponentInstance instance("instance1", "", "", instanceVLNV, QPointF(), "");
+    
+    QMap<QString, QString> parameters;
+    parameters.insert("id", "1");
+    parameters.insert("name", "tester");
+    parameters.insert("numElements", "16");    
+    instance.setConfigurableElementValues(parameters);
+
+    ComponentInstanceVerilogWriter writer(instance, refComponent, defaultSorter_); 
+    writer.write(outputStream_);
+
+    QCOMPARE(output_, QString("TestComponent #(\n"
+        "    .id(1),\n"
+        "    .name(tester),\n"
+        "    .numElements(16))\n"
+        "instance1();\n"));
 }
 
 QTEST_APPLESS_MAIN(tst_ComponentInstanceVerilogWriter)

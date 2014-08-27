@@ -50,8 +50,10 @@ void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
     CommentWriter descriptionWriter(referencedComponent_->getDescription());
     descriptionWriter.write(outputStream);
 
-    QString instanceString = "<component> <instanceName>(<portConnections>);";
+    QString instanceString = "<component> <parameters><instanceName>(<portConnections>);";
+
     instanceString.replace("<component>", componentInstance_.getComponentRef().getName());
+    instanceString.replace("<parameters>", parameterAssignments());
     instanceString.replace("<instanceName>", componentInstance_.getInstanceName());
     instanceString.replace("<portConnections>", portConnections());
 
@@ -85,11 +87,36 @@ bool ComponentInstanceVerilogWriter::nothingToWrite() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentInstanceVerilogWriter::parameterAssignments()
+//-----------------------------------------------------------------------------
+QString ComponentInstanceVerilogWriter::parameterAssignments() const
+{
+    if (componentInstance_.getConfigurableElementValues().isEmpty())
+    {
+        return "";
+    }
+
+    QStringList assignments;
+    foreach(QString parameterName, componentInstance_.getConfigurableElementValues().keys())
+    {
+        QString assignment("\n    .<parameter>(<value>)");
+        assignment.replace("<parameter>", parameterName);
+        assignment.replace("<value>", componentInstance_.getConfElementValue(parameterName));
+        assignments.append(assignment);
+    }
+
+    QString instanceParameters("#(<namesAndValues>)\n");
+    instanceParameters.replace("<namesAndValues>", assignments.join(","));
+
+    return instanceParameters;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentInstanceVerilogWriter::createPortMaps()
 //-----------------------------------------------------------------------------
 QString ComponentInstanceVerilogWriter::portConnections() const
 {
-    QStringList portMaps;
+    QStringList portAssignments;
     if (!sorter_.isNull())
     {
         foreach(QString portName, sorter_->sortedPortNames(referencedComponent_))
@@ -98,11 +125,11 @@ QString ComponentInstanceVerilogWriter::portConnections() const
             portAssignment.replace("<port>", portName);
             portAssignment.replace("<connection>", connectionForPort(portName));
 
-            portMaps.append(portAssignment);
+            portAssignments.append(portAssignment);
         }
     }
 
-    return portMaps.join(",");
+    return portAssignments.join(",");
 }
 
 //-----------------------------------------------------------------------------

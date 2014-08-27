@@ -81,6 +81,13 @@ private:
     bool nothingToWrite() const;
 
     /*!
+     *  Gets the instance-specific parameter assignments.
+     *
+     *      @return The Verilog description of the instance parameters and their values.
+     */
+    QString parameterAssignments() const;
+
+    /*!
     *  Gets the instance ports and their connections.
     *
     *      @return The Verilog description of the instance ports and their connections.
@@ -131,7 +138,7 @@ private:
     *      @return True, if one bit is connected, otherwise false.
     */
     bool assignSingleBitInConnection(General::PortBounds const& signalBounds) const;
-    
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
