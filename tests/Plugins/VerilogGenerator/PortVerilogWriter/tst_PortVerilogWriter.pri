@@ -4,6 +4,4 @@
 
 HEADERS += ../../../../Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.h \
     ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h
-SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
-    ../../../../Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.cpp \
-    ./tst_PortVerilogWriter.cpp
+SOURCES += ./tst_PortVerilogWriter.cpp

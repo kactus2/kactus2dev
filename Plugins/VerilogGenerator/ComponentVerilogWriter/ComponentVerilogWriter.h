@@ -12,6 +12,8 @@
 #ifndef COMPONENTVERILOGWRITER_H
 #define COMPONENTVERILOGWRITER_H
 
+#include "../veriloggeneratorplugin_global.h"
+
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/port.h>
 
@@ -26,7 +28,7 @@
 //-----------------------------------------------------------------------------
 //! Class for writing a component as a Verilog module.
 //-----------------------------------------------------------------------------
-class ComponentVerilogWriter 
+class VERILOGGENERATORPLUGIN_EXPORT ComponentVerilogWriter 
 {
 public:
 

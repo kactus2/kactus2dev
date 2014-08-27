@@ -14,12 +14,14 @@
 
 #include "PortSorter.h"
 
+#include "../veriloggeneratorplugin_global.h"
+
 #include <IPXACTmodels/component.h>
 
 //-----------------------------------------------------------------------------
 //! Class for sorting component port names by interface, direction and name.
 //-----------------------------------------------------------------------------
-class InterfaceDirectionNameSorter : public PortSorter
+class VERILOGGENERATORPLUGIN_EXPORT InterfaceDirectionNameSorter : public PortSorter
 {
 public:
 

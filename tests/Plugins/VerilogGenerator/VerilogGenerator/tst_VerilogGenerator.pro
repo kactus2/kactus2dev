@@ -16,15 +16,20 @@ TARGET = tst_VerilogGenerator
 QT += core xml gui testlib
 CONFIG += testcase console
 
+LIBS += -L$$PWD/../../../../executable/Plugins -lVerilogGeneratorPlugin
+
 win32:CONFIG(release, debug|release) {
+	LIBS += -L$$PWD/../../../../executable/ -lKactus2
     LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodels
     DESTDIR = ./release
 }
 else:win32:CONFIG(debug, debug|release) {
+	LIBS += -L$$PWD/../../../../executable/ -lKactus2_d
     LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodelsd
     DESTDIR = ./debug
 }
 else:unix {
+	LIBS += -L$$PWD/../../../../executable/ -lKactus2
     LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodels
     DESTDIR = ./release
 }

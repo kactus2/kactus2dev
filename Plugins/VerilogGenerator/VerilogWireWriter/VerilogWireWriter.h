@@ -13,11 +13,12 @@
 #define VERILOGWIREWRITER_H
 
 #include <Plugins/VerilogGenerator/common/Writer.h>
+#include "../veriloggeneratorplugin_global.h"
 
 //-----------------------------------------------------------------------------
 //! Class for writing a Verilog wire declaration.
 //-----------------------------------------------------------------------------
-class VerilogWireWriter : public Writer
+class VERILOGGENERATORPLUGIN_EXPORT VerilogWireWriter : public Writer
 {
 public:
 

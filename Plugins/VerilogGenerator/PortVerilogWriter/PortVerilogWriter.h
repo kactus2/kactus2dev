@@ -12,6 +12,8 @@
 #ifndef PORTVERILOGWRITER_H
 #define PORTVERILOGWRITER_H
 
+#include "../veriloggeneratorplugin_global.h"
+
 #include <IPXACTmodels/port.h>
 
 #include <QTextStream>
@@ -19,7 +21,7 @@
 //-----------------------------------------------------------------------------
 // Class for writing port declarations in Verilog.
 //-----------------------------------------------------------------------------
-class PortVerilogWriter 
+class VERILOGGENERATORPLUGIN_EXPORT PortVerilogWriter 
 {
 public:
     /*!

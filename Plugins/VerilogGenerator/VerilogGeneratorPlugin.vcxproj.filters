@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;cxx;c;def</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>moc;h;cpp</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Debug">
+      <UniqueIdentifier>{0dde34ad-54aa-4fc2-bbd2-8d5415f77af4}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Release">
+      <UniqueIdentifier>{c8453e3e-ca63-45c5-a10f-423715481c0d}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Header Files\VerilogGenerator">
+      <UniqueIdentifier>{1c531240-09d2-4215-acab-9e32c1022d3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VerilogGenerator">
+      <UniqueIdentifier>{df935c43-bdc6-4b31-9901-9c1c5a63f862}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common">
+      <UniqueIdentifier>{96e9ee6a-c016-4cf5-be38-0f78a5982b1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ComponentInstanceVerilogWriter">
+      <UniqueIdentifier>{4cdc09df-b4df-4816-a6ea-a85f4a6219b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ComponentInstanceVerilogWriter">
+      <UniqueIdentifier>{8d3944ba-0c93-4f52-a12c-23988f8ace63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ComponentVerilogWriter">
+      <UniqueIdentifier>{c53cf5e3-54c6-442c-ac00-797d093c1876}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ComponentVerilogWriter">
+      <UniqueIdentifier>{b4246f26-2288-4029-92ee-85654381f5b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ModelParameterVerilogWriter">
+      <UniqueIdentifier>{a6c7b78d-06d9-42a6-97b2-7d129017ce68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ModelParameterVerilogWriter">
+      <UniqueIdentifier>{fdc9bd50-1c26-4f38-9bb7-f42a6d6cd845}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\PortSorter">
+      <UniqueIdentifier>{73f4f98f-54f9-4a96-9a6c-80764b0f5b5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PortSorter">
+      <UniqueIdentifier>{8fe05d15-34a6-4e4f-a33a-39a6f648bc28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\PortVerilogWriter">
+      <UniqueIdentifier>{bab477dd-e7a5-42e9-9551-b5219b7a5de8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PortVerilogWriter">
+      <UniqueIdentifier>{81b9b655-1dac-4e99-af2c-c32802b5e06c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\VerilogHeaderWriter">
+      <UniqueIdentifier>{155d93fc-49dc-4ed9-b490-f4b10067aabc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VerilogHeaderWriter">
+      <UniqueIdentifier>{bf4811d2-6433-4322-9873-4823e9c92d65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\VerilogWireWriter">
+      <UniqueIdentifier>{30fdfd97-e7b3-44c9-bbc2-7dad54fdeb95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VerilogWireWriter">
+      <UniqueIdentifier>{8e320532-d8b0-4872-baf0-2e5b4264118d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CommentWriter">
+      <UniqueIdentifier>{468f1fa5-f1af-4d60-b857-c019ac60ef11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CommentWriter">
+      <UniqueIdentifier>{a47d1b0b-24ee-45bc-ba3a-98b00efca831}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="VerilogGeneratorPlugin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_VerilogGeneratorPlugin.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_VerilogGeneratorPlugin.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="VerilogGenerator\VerilogGenerator.cpp">
+      <Filter>Source Files\VerilogGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentInstanceVerilogWriter\ComponentInstanceVerilogWriter.cpp">
+      <Filter>Source Files\ComponentInstanceVerilogWriter</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentVerilogWriter\ComponentVerilogWriter.cpp">
+      <Filter>Source Files\ComponentVerilogWriter</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelParameterVerilogWriter\ModelParameterVerilogWriter.cpp">
+      <Filter>Source Files\ModelParameterVerilogWriter</Filter>
+    </ClCompile>
+    <ClCompile Include="PortSorter\InterfaceDirectionNameSorter.cpp">
+      <Filter>Source Files\PortSorter</Filter>
+    </ClCompile>
+    <ClCompile Include="PortVerilogWriter\PortVerilogWriter.cpp">
+      <Filter>Source Files\PortVerilogWriter</Filter>
+    </ClCompile>
+    <ClCompile Include="VerilogHeaderWriter\VerilogHeaderWriter.cpp">
+      <Filter>Source Files\VerilogHeaderWriter</Filter>
+    </ClCompile>
+    <ClCompile Include="VerilogWireWriter\VerilogWireWriter.cpp">
+      <Filter>Source Files\VerilogWireWriter</Filter>
+    </ClCompile>
+    <ClCompile Include="CommentWriter\CommentWriter.cpp">
+      <Filter>Source Files\CommentWriter</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="veriloggeneratorplugin_global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VerilogGenerator\VerilogGenerator.h">
+      <Filter>Header Files\VerilogGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Writer.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentInstanceVerilogWriter\ComponentInstanceVerilogWriter.h">
+      <Filter>Header Files\ComponentInstanceVerilogWriter</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentVerilogWriter\ComponentVerilogWriter.h">
+      <Filter>Header Files\ComponentVerilogWriter</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelParameterVerilogWriter\ModelParameterVerilogWriter.h">
+      <Filter>Header Files\ModelParameterVerilogWriter</Filter>
+    </ClInclude>
+    <ClInclude Include="PortSorter\InterfaceDirectionNameSorter.h">
+      <Filter>Header Files\PortSorter</Filter>
+    </ClInclude>
+    <ClInclude Include="PortSorter\PortSorter.h">
+      <Filter>Header Files\PortSorter</Filter>
+    </ClInclude>
+    <ClInclude Include="PortVerilogWriter\PortVerilogWriter.h">
+      <Filter>Header Files\PortVerilogWriter</Filter>
+    </ClInclude>
+    <ClInclude Include="VerilogHeaderWriter\VerilogHeaderWriter.h">
+      <Filter>Header Files\VerilogHeaderWriter</Filter>
+    </ClInclude>
+    <ClInclude Include="VerilogWireWriter\VerilogWireWriter.h">
+      <Filter>Header Files\VerilogWireWriter</Filter>
+    </ClInclude>
+    <ClInclude Include="CommentWriter\CommentWriter.h">
+      <Filter>Header Files\CommentWriter</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="VerilogGeneratorPlugin.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="veriloggeneratorplugin.json" />
+  </ItemGroup>
+</Project>

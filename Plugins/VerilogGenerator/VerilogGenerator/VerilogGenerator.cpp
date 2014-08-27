@@ -77,11 +77,13 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer
     topComponent_ = component;
     design_ = design;
 
-    QString mockUsername = "user";
+    QSettings settings;
+
+    QString currentUser = settings.value("General/Username").toString();
     QString componentXmlPath = library_->getPath(*topComponent_->getVlnv());
 
     headerWriter_ = QSharedPointer<VerilogHeaderWriter>(new VerilogHeaderWriter(*topComponent_->getVlnv(), 
-        componentXmlPath, mockUsername));
+        componentXmlPath, currentUser));
 
     topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(topComponent_, sorter_));
 

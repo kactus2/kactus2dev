@@ -14,14 +14,5 @@ HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.h \
     ./LibraryMock.h \
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.h
-SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
-    ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
-    ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.cpp \
-    ../../../../Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.cpp \
-    ./LibraryMock.cpp \
-    ../../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.cpp \
-    ../../../../Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.cpp \
-    ../../../../Plugins/VerilogGenerator/VerilogGenerator.cpp \
-    ../../../../Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.cpp \
-    ./tst_VerilogGenerator.cpp \
-    ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.cpp
+SOURCES += ./LibraryMock.cpp \
+    ./tst_VerilogGenerator.cpp 

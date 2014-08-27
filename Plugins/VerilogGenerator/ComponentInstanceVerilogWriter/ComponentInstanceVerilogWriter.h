@@ -12,6 +12,8 @@
 #ifndef COMPONENTINSTANCEVERILOGWRITER_H
 #define COMPONENTINSTANCEVERILOGWRITER_H
 
+#include "../veriloggeneratorplugin_global.h"
+
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/ComponentInstance.h>
 
@@ -24,7 +26,7 @@
 //-----------------------------------------------------------------------------
 //! Class for writing a component instance as a Verilog instance.
 //-----------------------------------------------------------------------------
-class ComponentInstanceVerilogWriter : public Writer
+class VERILOGGENERATORPLUGIN_EXPORT ComponentInstanceVerilogWriter : public Writer
 {
 public:
 

@@ -9,10 +9,4 @@ HEADERS += ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/C
     ../../../../Plugins/VerilogGenerator/PortSorter/PortSorter.h \
     ../../../../Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.h \
     ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h
-SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
-    ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
-    ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.cpp \
-    ../../../../Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.cpp \
-    ../../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.cpp \
-    ../../../../Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.cpp \
-    ./tst_ComponentVerilogWriter.cpp
+SOURCES += ./tst_ComponentVerilogWriter.cpp

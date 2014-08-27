@@ -20,7 +20,7 @@
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/vlnv.h>
 
-#include <Plugins/VerilogGenerator/VerilogGenerator.h>
+#include <Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h>
 #include "LibraryMock.h"
 
 class tst_VerilogGenerator : public QObject
@@ -235,9 +235,14 @@ void tst_VerilogGenerator::runGenerator()
 // Function: tst_VerilogGenerator::testFileHeaderIsPrinted()
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::testFileHeaderIsPrinted()
-{
+{    
     topComponent_->setDescription("Component description\nspanning multiple\nlines.");
     library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/TestComponent.1.0.xml", topComponent_);
+    	
+    QCoreApplication::setOrganizationName("TUT");
+    QCoreApplication::setApplicationName("TestRunner");
+    QSettings settings;
+    settings.setValue("General/Username", "testUser");
 
     runGenerator();
     
@@ -249,7 +254,7 @@ void tst_VerilogGenerator::testFileHeaderIsPrinted()
         "// Description   : Component description\n"
         "//                 spanning multiple\n"
         "//                 lines.\n"
-        "// Created by    : user\n"
+        "// Created by    : testUser\n"
         "// This file was generated with Kactus2 verilog generator\n"
         "// based on IP-XACT component Test:TestLibrary:TestComponent:1.0\n"
         "// whose XML file is C:/Test/TestLibrary/TestComponent/1.0/TestComponent.1.0.xml\n"

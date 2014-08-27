@@ -12,17 +12,18 @@
 #ifndef ModelParameterVerilogWriter_H
 #define ModelParameterVerilogWriter_H
 
-#include <kactusGenerators/HDLGenerator/HDLModelParameter.h>
+#include "../veriloggeneratorplugin_global.h"
 
 #include <QString>
 #include <QSharedPointer>
+#include <QTextStream>
 
 class ModelParameter;
 
 //-----------------------------------------------------------------------------
 //! Class for writing model parameter declarations in Verilog.
 //-----------------------------------------------------------------------------
-class ModelParameterVerilogWriter
+class VERILOGGENERATORPLUGIN_EXPORT ModelParameterVerilogWriter
 {
 
 public:

@@ -12,6 +12,8 @@
 #ifndef VERILOGHEADERWRITER_H
 #define VERILOGHEADERWRITER_H
 
+#include "../veriloggeneratorplugin_global.h"
+
 #include <QDateTime>
 #include <QString>
 #include <QTextStream>
@@ -21,7 +23,7 @@
 //-----------------------------------------------------------------------------
 // Class for generating a header for a Verilog file.
 //-----------------------------------------------------------------------------
-class VerilogHeaderWriter 
+class VERILOGGENERATORPLUGIN_EXPORT VerilogHeaderWriter 
 {
 public:
 

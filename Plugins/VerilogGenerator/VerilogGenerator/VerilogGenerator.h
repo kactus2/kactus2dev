@@ -12,24 +12,25 @@
 #ifndef VERILOGGENERATOR_H
 #define VERILOGGENERATOR_H
 
-#include <QTextStream>
+#include "../veriloggeneratorplugin_global.h"
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/design.h>
 
-#include <Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h>
+#include <QTextStream>
 
 class LibraryInterface;
+class ComponentVerilogWriter;
 class ComponentInstanceVerilogWriter;
 class VerilogHeaderWriter;
 class VerilogWireWriter;
-
+class PortSorter;
 
 //-----------------------------------------------------------------------------
 // Verilog file generator.
 //-----------------------------------------------------------------------------
-class VerilogGenerator
+class VERILOGGENERATORPLUGIN_EXPORT VerilogGenerator
 {
 public:
     //! The constructor.
