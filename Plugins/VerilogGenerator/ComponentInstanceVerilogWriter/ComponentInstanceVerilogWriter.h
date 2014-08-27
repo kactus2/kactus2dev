@@ -106,6 +106,15 @@ private:
     bool notConnected(QString portName) const;
 
     /*!
+     *  Gets the default value for a port in port connection.
+     *
+     *      @param [in] portName   The name of the port whose default value to get.
+     *
+     *      @return The default value for the port.
+     */
+    QString portDefaultValue(QString const& portName) const;
+
+    /*!
     *  Checks if all bits in a given connection are assigned to a port.
     *
     *      @param [in] signalBounds     The connection bounds.
@@ -122,7 +131,7 @@ private:
     *      @return True, if one bit is connected, otherwise false.
     */
     bool assignSingleBitInConnection(General::PortBounds const& signalBounds) const;
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

@@ -41,7 +41,7 @@ private slots:
     void testUnconnectedInstancePorts();
     void testFullyConnectedPorts();
     void testPartiallyConnectedPorts();
-
+    void testDefaultPortValueIsUsedForUnconnectedInputPort();
 private:
 
     //! The writer output.
@@ -158,6 +158,7 @@ void tst_ComponentInstanceVerilogWriter::testDescriptionIsPrintedAboveInstance_d
     QTest::newRow("one line description") << "Component description." << 
         "// Component description.\n"
         "TestComponent instance1();\n";
+
     QTest::newRow("multiline description") << 
         "Description on\n" 
         "multiple\n" 
@@ -238,6 +239,29 @@ void tst_ComponentInstanceVerilogWriter::testPartiallyConnectedPorts()
     QCOMPARE(output_, QString("TestComponent instance1(\n"
         "    .chip_select(top_select[0]),\n"
         "    .data(top_data[7:0]));\n"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentInstanceVerilogWriter::testDefaultPortValueIsUsedForUnconnectedInputPort()
+//-----------------------------------------------------------------------------
+void tst_ComponentInstanceVerilogWriter::testDefaultPortValueIsUsedForUnconnectedInputPort()
+{
+    VLNV instanceVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0");
+    QSharedPointer<Component> refComponent(new Component(instanceVLNV));
+
+    refComponent->addPort(QSharedPointer<Port>(new Port("a_in", General::IN, 0, 0, "'b0", true)));
+    refComponent->addPort(QSharedPointer<Port>(new Port("b_out", General::OUT, 7, 0, "bDefault", true)));    
+    refComponent->addPort(QSharedPointer<Port>(new Port("c_inout", General::INOUT, 0, 0, "'cDefault", true)));    
+
+    ComponentInstance instance("instance1", "", "", instanceVLNV, QPointF(), "");
+
+    ComponentInstanceVerilogWriter writer(instance, refComponent, defaultSorter_); 
+    writer.write(outputStream_);
+
+    QCOMPARE(output_, QString("TestComponent instance1(\n"
+        "    .a_in('b0),\n"
+        "    .b_out( ),\n"
+        "    .c_inout( ));\n"));
 }
 
 QTEST_APPLESS_MAIN(tst_ComponentInstanceVerilogWriter)

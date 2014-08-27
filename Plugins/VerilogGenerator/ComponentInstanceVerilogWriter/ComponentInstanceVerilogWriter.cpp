@@ -112,7 +112,7 @@ QString ComponentInstanceVerilogWriter::connectionForPort(QString portName) cons
 {
     if (notConnected(portName))
     {
-        return " ";
+        return portDefaultValue(portName);
     }
 
     General::PortBounds connectionBounds = portAssignments_.value(portName);
@@ -144,6 +144,21 @@ QString ComponentInstanceVerilogWriter::connectionForPort(QString portName) cons
 bool ComponentInstanceVerilogWriter::notConnected(QString portName) const
 {
     return !portAssignments_.contains(portName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceVerilogWriter::portDefaultValue()
+//-----------------------------------------------------------------------------
+QString ComponentInstanceVerilogWriter::portDefaultValue(QString const& portName) const
+{
+    QString defaultValue = " ";
+
+    QSharedPointer<Port> port =  referencedComponent_->getPort(portName);
+    if (port->getDirection() == General::IN && !port->getDefaultValue().isEmpty())
+    {
+        defaultValue = port->getDefaultValue();
+    }
+    return defaultValue;
 }
 
 //-----------------------------------------------------------------------------

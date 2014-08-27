@@ -828,8 +828,6 @@ void tst_VerilogGenerator::testAdHocConnectionToUnknownInstanceIsNotWritten()
 
     runGenerator();
 
-    runGenerator();
-
     verifyOutputContains(
         "module TestComponent();\n"
         "\n"
