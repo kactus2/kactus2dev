@@ -26,13 +26,16 @@ private slots:
     void testWritesMultilineComment();
     void testSplitsLines();
     void testSplitsLines_data();
-
+    void testEmptyLines();
 };
 
 tst_CommentWriter::tst_CommentWriter()
 {
 }
 
+//-----------------------------------------------------------------------------
+// Function: tst_CommentWriter::testWritesNothing()
+//-----------------------------------------------------------------------------
 void tst_CommentWriter::testWritesNothing()
 {
     CommentWriter writer("");
@@ -113,6 +116,22 @@ void tst_CommentWriter::testSplitsLines_data()
     QTest::newRow("Two words per line") << 10 << "First two, other two." << "// First two,\n// other two.\n";
 }
 
+//-----------------------------------------------------------------------------
+// Function: tst_CommentWriter::testEmptyLines()
+//-----------------------------------------------------------------------------
+void tst_CommentWriter::testEmptyLines()
+{
+    CommentWriter writer("First paragraph.\n\nSecond paragraph.");
+
+    QString output;
+    QTextStream outputStream(&output);
+
+    writer.write(outputStream);
+
+    QCOMPARE(output, QString("// First paragraph.\n"
+        "// \n"
+        "// Second paragraph.\n"));
+}
 
 QTEST_APPLESS_MAIN(tst_CommentWriter)
 

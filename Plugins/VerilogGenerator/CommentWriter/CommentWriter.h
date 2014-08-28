@@ -12,12 +12,14 @@
 #ifndef COMMENTWRITER_H
 #define COMMENTWRITER_H
 
+#include "../common/Writer.h"
+
 #include <QTextStream>
 
 //-----------------------------------------------------------------------------
 //! Class for writing C/Verilog comments.
 //-----------------------------------------------------------------------------
-class CommentWriter 
+class CommentWriter : public Writer
 {
 public:
     //! Default number of characters per comment line.
@@ -34,7 +36,7 @@ public:
      *
      *      @param [in] output   The output to write to.
      */
-    void write(QTextStream& output) const;
+    virtual void write(QTextStream& output) const;
 
     /*!
      *  Sets the maximum number of characters per line.
@@ -55,7 +57,14 @@ private:
 	// Disable copying.
 	CommentWriter(CommentWriter const& rhs);
 	CommentWriter& operator=(CommentWriter const& rhs);
-
+    
+    /*!
+     *  Checks if the writer should write nothing.
+     *
+     *      @return True, if the writer has nothing to write, otherwise false.
+     */
+    bool nothingToWrite() const;
+    
     //! The comment to write.
     QString comment_;
 

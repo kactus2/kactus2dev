@@ -34,11 +34,17 @@ CommentWriter::~CommentWriter()
 //-----------------------------------------------------------------------------
 void CommentWriter::write(QTextStream& output) const
 {
+    if (nothingToWrite())
+    {
+        return;
+    }
+
     QString indent = QString(" ").repeated(indentSize_);
 
     foreach(QString line, comment_.split("\n"))
     {
-        while (line.length() > 0)
+        bool emptyLineToWrite = line.isEmpty();
+        while (line.length() > 0 || emptyLineToWrite)
         {
             int lineEnd = line.lastIndexOf(" ", lineLength_);
             if (lineEnd == -1)
@@ -52,8 +58,17 @@ void CommentWriter::write(QTextStream& output) const
             
             output << indent << "// " << line.left(lineEnd) << endl;
             line = line.remove(0, lineEnd + 1);
+            emptyLineToWrite = false;
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: CommentWriter::nothingToWrite()
+//-----------------------------------------------------------------------------
+bool CommentWriter::nothingToWrite() const
+{
+    return comment_.isEmpty();
 }
 
 //-----------------------------------------------------------------------------

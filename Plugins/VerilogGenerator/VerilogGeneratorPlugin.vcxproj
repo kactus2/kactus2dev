@@ -55,8 +55,8 @@
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\executable\Plugins</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\x64\executable\Plugins</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\executable\Plugins</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\x64\executable\Plugins</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\executable\Plugins\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\x64\executable\Plugins\</OutDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)</TargetName>
   </PropertyGroup>
@@ -74,7 +74,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\executable;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Qt5Xmld.lib;IPXACTmodelsd.lib;kactus2_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Qt5Xmld.lib;IPXACTmodelsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -105,7 +105,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
+      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\executable;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;Qt5Xml.lib;IPXACTmodels.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -122,7 +122,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
+      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\executable;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;Qt5Xml.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -183,9 +183,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\IPXACTmodels\IPXACTmodels.vcxproj">
       <Project>{5c0ca59d-cfce-49c6-b62a-9e3065ca34dd}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Kactus2.vcxproj">
-      <Project>{09486b51-70a7-3073-b15b-6d4baf3ec8c6}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
