@@ -579,7 +579,7 @@ void EndPointTypesCommand::redo()
 // Function: EndPointPortMapCommand()
 //-----------------------------------------------------------------------------
 EndPointPortMapCommand::EndPointPortMapCommand(HWConnectionEndpoint* endpoint,
-                                               QList< QSharedPointer<General::PortMap> > newPortMaps,
+                                               QList< QSharedPointer<PortMap> > newPortMaps,
                                                QUndoCommand* parent)
     : QUndoCommand(parent), endpoint_(endpoint),
       oldPortMaps_(endpoint->getBusInterface()->getPortMaps()),

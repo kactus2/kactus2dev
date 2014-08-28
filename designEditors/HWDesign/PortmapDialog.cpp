@@ -13,7 +13,9 @@
 
 #include <editors/ComponentEditor/busInterfaces/busifportmaptab.h>
 #include <library/LibraryManager/libraryinterface.h>
+
 #include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/PortMap.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -89,15 +91,15 @@ void PortmapDialog::accept()
     // Check if all required logical ports are not mapped.
     QList<QString> missingMappings;
 
-    foreach (QSharedPointer<General::PortMap> portMap, otherBusIf_->getPortMaps())
+    foreach (QSharedPointer<PortMap> portMap, otherBusIf_->getPortMaps())
     {
         bool found = false;
         
-        foreach (QSharedPointer<General::PortMap> localPortMap, busIf_->getPortMaps())
+        foreach (QSharedPointer<PortMap> localPortMap, busIf_->getPortMaps())
         {
             // The logical port was mapped correctly if the bus interface has a
             // port map that utilizes the same logical port.
-            if (localPortMap->logicalPort_ == portMap->logicalPort_)
+            if (localPortMap->logicalPort() == portMap->logicalPort())
             {
                 found = true;
                 break;
@@ -108,7 +110,7 @@ void PortmapDialog::accept()
         // of missing mappings.
         if (!found)
         {
-            missingMappings.append(portMap->logicalPort_);
+            missingMappings.append(portMap->logicalPort());
         }
     }
 

@@ -78,7 +78,7 @@ public:
 	 * @param [in] portMap Port map to add to model.
 	 *
 	*/
-	void createMap(QSharedPointer<General::PortMap> portMap);
+	void createMap(QSharedPointer<PortMap> portMap);
 
 
     /*!
@@ -295,7 +295,7 @@ private:
     General::InterfaceMode interfaceMode_;
 
     //! Pointer to the data structure within the model containing the port maps.
-    QList<QSharedPointer<General::PortMap> >& portMaps_;
+    QList<QSharedPointer<PortMap> >& portMaps_;
 };
 
 //-----------------------------------------------------------------------------

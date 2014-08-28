@@ -786,7 +786,7 @@ public:
      *      @param [in] parent            The parent command.
      */
     EndPointPortMapCommand(HWConnectionEndpoint* endpoint,
-                           QList< QSharedPointer<General::PortMap> > newPortMaps,
+                           QList< QSharedPointer<PortMap> > newPortMaps,
                            QUndoCommand* parent = 0);
 
     /*!
@@ -817,10 +817,10 @@ private:
     HWConnectionEndpoint* endpoint_;
 
     //! The end point's old port maps.
-    QList< QSharedPointer<General::PortMap> > oldPortMaps_;
+    QList< QSharedPointer<PortMap> > oldPortMaps_;
 
     //! The end point's new port maps.
-    QList< QSharedPointer<General::PortMap> > newPortMaps_;
+    QList< QSharedPointer<PortMap> > newPortMaps_;
 };
 
 //-----------------------------------------------------------------------------

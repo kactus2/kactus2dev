@@ -140,7 +140,7 @@ private:
     QSharedPointer<AbstractionDefinition> absDef_;
 
     //! The port maps of the logical port item.
-	QList<QSharedPointer<General::PortMap> >& portMaps_;
+	QList<QSharedPointer<PortMap> >& portMaps_;
 
     //! The left bound of the logical port.
     int right_;

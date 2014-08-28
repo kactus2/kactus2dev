@@ -13,7 +13,7 @@
 #include "BusInterfaceWizard.h"
 
 #include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/PortMap.h>
 
 #include <QFormLayout>
 #include <QLabel>
@@ -73,9 +73,9 @@ void BusInterfaceWizardConclusionPage::initializePage()
 
     foreach(QString portName, ports_)
     {
-        foreach(QSharedPointer<General::PortMap> portMap, busIf_->getPortMaps())
+        foreach(QSharedPointer<PortMap> portMap, busIf_->getPortMaps())
         {
-            if (QString::compare(portName, portMap->physicalPort_) == 0 &&
+            if (QString::compare(portName, portMap->physicalPort()) == 0 &&
                 !mappedPorts.contains(portName))
             {
                 mappedPorts.append(portName);                

@@ -18,6 +18,7 @@
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/port.h>
+#include <IPXACTmodels/PortMap.h>
 #include <IPXACTmodels/vlnv.h>
 
 #include <Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h>
@@ -388,12 +389,12 @@ void tst_VerilogGenerator::addInterfaceToComponent(QString const& interfaceName,
 void tst_VerilogGenerator::mapPortToInterface(QString const& portName, QString const& logicalName, 
     QString const& interfaceName, QSharedPointer<Component> component)
 {
-    QSharedPointer<General::PortMap> portMap(new General::PortMap());
-    portMap->logicalPort_ = logicalName;
-    portMap->physicalPort_ = portName;
-    portMap->physicalVector_->setLeft(component->getPortLeftBound(portName));
-    portMap->physicalVector_->setRight(component->getPortRightBound(portName));
-    QList<QSharedPointer<General::PortMap> > portMaps = component->getBusInterface(interfaceName)->getPortMaps();
+    QSharedPointer<PortMap> portMap(new PortMap());
+    portMap->setLogicalPort(logicalName);
+    portMap->setPhysicalPort(portName);
+    portMap->setPhysicalLeft(component->getPortLeftBound(portName));
+    portMap->setPhysicalRight(component->getPortRightBound(portName));
+    QList<QSharedPointer<PortMap> > portMaps = component->getBusInterface(interfaceName)->getPortMaps();
     portMaps.append(portMap);
     component->getBusInterface(interfaceName)->setPortMaps(portMaps);
 }
@@ -403,12 +404,12 @@ void tst_VerilogGenerator::mapPortToInterface(QString const& portName, QString c
 void tst_VerilogGenerator::mapPortToInterface(QString const& portName, int left, int right, QString const& logicalName, 
     QString const& interfaceName, QSharedPointer<Component> component)
 {
-    QSharedPointer<General::PortMap> portMap(new General::PortMap());
-    portMap->logicalPort_ = logicalName;
-    portMap->physicalPort_ = portName;
-    portMap->physicalVector_->setLeft(left);
-    portMap->physicalVector_->setRight(right);
-    QList<QSharedPointer<General::PortMap> > portMaps = component->getBusInterface(interfaceName)->getPortMaps();
+    QSharedPointer<PortMap> portMap(new PortMap());
+    portMap->setLogicalPort(logicalName);
+    portMap->setPhysicalPort(portName);
+    portMap->setPhysicalLeft(left);
+    portMap->setPhysicalRight(right);
+    QList<QSharedPointer<PortMap> > portMaps = component->getBusInterface(interfaceName)->getPortMaps();
     portMaps.append(portMap);
     component->getBusInterface(interfaceName)->setPortMaps(portMaps);
 }
@@ -503,9 +504,9 @@ void tst_VerilogGenerator::addSenderComponentToLibrary(VLNV senderVLNV, General:
     addInterfaceToComponent("data_bus", senderComponent);
     senderComponent->getBusInterface("data_bus")->setInterfaceMode(mode);    
     mapPortToInterface("data_out", "DATA", "data_bus", senderComponent);
-    QSharedPointer<General::PortMap> dataMap = senderComponent->getBusInterface("data_bus")->getPortMaps().first();
-    dataMap->logicalVector_->setLeft(7);
-    dataMap->logicalVector_->setRight(0);
+    QSharedPointer<PortMap> dataMap = senderComponent->getBusInterface("data_bus")->getPortMaps().first();
+    dataMap->setLogicalLeft(7);
+    dataMap->setLogicalRight(0);
 
     mapPortToInterface("enable_out", "ENABLE", "data_bus", senderComponent);
 
@@ -640,9 +641,9 @@ void tst_VerilogGenerator::setReceiverComponentDataWidth(VLNV fourBitReceiverVLN
     component->getPort("data_in")->setLeftBound(dataWidth - 1);
     component->getPort("data_in")->setRightBound(0);
 
-    QSharedPointer<General::PortMap> dataMap = component->getBusInterface("data_bus")->getPortMaps().first();
-    dataMap->logicalVector_->setLeft(dataWidth - 1);
-    dataMap->logicalVector_->setRight(0);
+    QSharedPointer<PortMap> dataMap = component->getBusInterface("data_bus")->getPortMaps().first();
+    dataMap->setLogicalLeft(dataWidth - 1);
+    dataMap->setLogicalRight(0);
 }
 
 //-----------------------------------------------------------------------------

@@ -15,10 +15,12 @@
 #include <QColor>
 
 #include <designEditors/HWDesign/models/PortGenerationRow.h>
+
+#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/port.h>
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/abstractiondefinition.h>
+#include <IPXACTmodels/PortMap.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -381,9 +383,9 @@ void PortGenerationTableModel::initialize(QSharedPointer<Component> srcComponent
     int count = 0;
 
     // Create table rows based on ports in opposing interface. 
-    foreach ( QSharedPointer<General::PortMap> portMap, busIf->getPortMaps() )
+    foreach ( QSharedPointer<PortMap> portMap, busIf->getPortMaps() )
     {
-        QString portName = portMap->physicalPort_;          
+        QString portName = portMap->physicalPort();          
         QSharedPointer<Port> port = srcComponent->getPort(portName);
 
         if (!port)
@@ -401,7 +403,7 @@ void PortGenerationTableModel::initialize(QSharedPointer<Component> srcComponent
             row = rows_.at(count);
         }
 
-        General::Direction draftDir = absDef->getPortDirection(portMap->logicalPort_, selectedMode);
+        General::Direction draftDir = absDef->getPortDirection(portMap->logicalPort(), selectedMode);
         row->setDraftDirection(draftDir);
         row->setDraftName(generateName(portName, port->getDirection(), draftDir));
         if ( createNew )

@@ -25,6 +25,7 @@
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/portabstraction.h>
+#include <IPXACTmodels/PortMap.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 #include <IPXACTmodels/vlnv.h>
@@ -545,9 +546,9 @@ QString BitMappingModel::getLogicalSignal() const
 //-----------------------------------------------------------------------------
 // Function: BitMappingModel::getPortMaps()
 //-----------------------------------------------------------------------------
-QList< QSharedPointer<General::PortMap> > BitMappingModel::getPortMaps() const
+QList< QSharedPointer<PortMap> > BitMappingModel::getPortMaps() const
 {                    
-    QList<QSharedPointer<General::PortMap> > mappings;
+    QList<QSharedPointer<PortMap> > mappings;
 
     // Omit editing row, if exists.
     int endIndex = rows_.size();
@@ -562,7 +563,7 @@ QList< QSharedPointer<General::PortMap> > BitMappingModel::getPortMaps() const
         {           
             if (!isMapped(mappings, pin, logIndex)) 
             {               
-                QSharedPointer<General::PortMap> map = createPortMapForPin(pin, logIndex);
+                QSharedPointer<PortMap> map = createPortMapForPin(pin, logIndex);
                 mappings.append(map);     
             }                               
         }
@@ -709,11 +710,11 @@ void BitMappingModel::createInitialMappings()
 {
     int logicalPortSize = absDef_->getPortSize(logicalPort_, mode_);
 
-    QList<QSharedPointer<General::PortMap> > logicPortMaps;
+    QList<QSharedPointer<PortMap> > logicPortMaps;
 
-    foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
+    foreach (QSharedPointer<PortMap> portMap, portMaps_)
     {   
-        if (portMap->logicalPort_ == logicalPort_)
+        if (portMap->logicalPort() == logicalPort_)
         {
             logicPortMaps.append(portMap);
         }
@@ -722,9 +723,9 @@ void BitMappingModel::createInitialMappings()
     // If logical width is not defined in the abs def, find the highest bound in port maps for width.
     if (logicalPortSize == -1)
     {
-        foreach (QSharedPointer<General::PortMap> portMap, logicPortMaps)
+        foreach (QSharedPointer<PortMap> portMap, logicPortMaps)
         {   
-            General::PortBounds logicalRange = portMap->getLogicalRange(component_->getPort(portMap->physicalPort_));
+            General::PortBounds logicalRange = portMap->getLogicalRange(component_->getPort(portMap->physicalPort()));
             int higherBound = qMax(logicalRange.left_,logicalRange.right_);
             logicalPortSize = qMax(logicalPortSize, higherBound);
         }
@@ -735,17 +736,17 @@ void BitMappingModel::createInitialMappings()
     {
         QList<General::PortBounds> pins;
         // Search for previous mappings.
-        foreach(QSharedPointer<General::PortMap> portMap, logicPortMaps)
+        foreach(QSharedPointer<PortMap> portMap, logicPortMaps)
         {
 
-            General::PortBounds logicalRange = portMap->getLogicalRange(component_->getPort(portMap->physicalPort_));
+            General::PortBounds logicalRange = portMap->getLogicalRange(component_->getPort(portMap->physicalPort()));
             int logLower = qMin(logicalRange.left_, logicalRange.right_);
             int logHigher = qMax(logicalRange.left_, logicalRange.right_);
             if (logLower <= index && index <= logHigher)
             {
-                General::PortBounds physBounds = portMap->getPhysicalRange(component_->getPort(portMap->physicalPort_));
+                General::PortBounds physBounds = portMap->getPhysicalRange(component_->getPort(portMap->physicalPort()));
                 int physLower = qMin(physBounds.left_, physBounds.right_);
-                General::PortBounds toAdd(portMap->physicalPort_);     
+                General::PortBounds toAdd(portMap->physicalPort());     
                 if (abs(physBounds.left_ - physBounds.right_) + 1 > 1)
                 {
                     int physIndex = index - (logLower - physLower);
@@ -781,17 +782,17 @@ void BitMappingModel::restoreMappings()
 //-----------------------------------------------------------------------------
 // Function: BitMappingModel::isMapped()
 //-----------------------------------------------------------------------------
-bool BitMappingModel::isMapped(QList<QSharedPointer<General::PortMap> > mappings, 
+bool BitMappingModel::isMapped(QList<QSharedPointer<PortMap> > mappings, 
     General::PortBounds const& pin, int logicalIndex) const
 {
-    foreach (QSharedPointer<General::PortMap> portMap, mappings)
+    foreach (QSharedPointer<PortMap> portMap, mappings)
     {
-        if (portMap->physicalPort_ == pin.portName_)
+        if (portMap->physicalPort() == pin.portName_)
         {
-            General::PortBounds logicalRange = portMap->getLogicalRange(component_->getPort(portMap->physicalPort_));
+            General::PortBounds logicalRange = portMap->getLogicalRange(component_->getPort(portMap->physicalPort()));
             int logLowerBound = qMin(logicalRange.left_, logicalRange.right_);
             int logHigherBound = qMax(logicalRange.left_, logicalRange.right_);
-            General::PortBounds physicalRange = portMap->getPhysicalRange(component_->getPort(portMap->physicalPort_));
+            General::PortBounds physicalRange = portMap->getPhysicalRange(component_->getPort(portMap->physicalPort()));
 
             int phyLowerBound = qMin(physicalRange.left_, physicalRange.right_);
             int phyHigherBound = qMax(physicalRange.left_, physicalRange.right_);
@@ -809,7 +810,7 @@ bool BitMappingModel::isMapped(QList<QSharedPointer<General::PortMap> > mappings
 //-----------------------------------------------------------------------------
 // Function: BitMappingModel::MyMethod()
 //-----------------------------------------------------------------------------
-QSharedPointer<General::PortMap> BitMappingModel::createPortMapForPin(General::PortBounds const& pin, 
+QSharedPointer<PortMap> BitMappingModel::createPortMapForPin(General::PortBounds const& pin, 
     int firstLogicalIndex) const
 {
     bool ascending = component_->getPortLeftBound(pin.portName_) >= component_->getPortRightBound(pin.portName_);
@@ -850,20 +851,12 @@ QSharedPointer<General::PortMap> BitMappingModel::createPortMapForPin(General::P
         } 
     }
 
-    QSharedPointer<General::PortMap> map(new General::PortMap());
-    map->logicalPort_ = logicalPort_;
-    map->logicalVector_->setLeft(logLeft);
-    map->logicalVector_->setRight(logRight);
-    map->physicalPort_ = pin.portName_;
-    map->physicalVector_->setLeft(physLeft);
-    map->physicalVector_->setRight(physRight);
+    QSharedPointer<PortMap> map(new PortMap());
+    map->setLogicalPort(logicalPort_);
+    map->setLogicalLeft(logLeft);
+    map->setLogicalRight(logRight);
+    map->setPhysicalPort(pin.portName_);
+    map->setLogicalLeft(physLeft);
+    map->setPhysicalRight(physRight);
     return map;
 }
-
-
-
-
-
-
-
-

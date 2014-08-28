@@ -6,10 +6,11 @@
 
 #include "businterface.h"
 #include "generaldeclarations.h"
-#include "XmlUtils.h"
 #include "masterinterface.h"
-#include "slaveinterface.h"
 #include "mirroredslaveinterface.h"
+#include "slaveinterface.h"
+#include "PortMap.h"
+#include "XmlUtils.h"
 
 #include"vlnv.h"
 
@@ -200,8 +201,8 @@ monitor_() {
 				// single choice as parameter
 				QDomNode tempNode = children.at(i).childNodes().at(j);
 
-				General::PortMap *temp = new General::PortMap(tempNode);
-				portMaps_.append(QSharedPointer<General::PortMap>(temp));
+				PortMap *temp = new PortMap(tempNode);
+				portMaps_.append(QSharedPointer<PortMap>(temp));
 			}
 		}
 
@@ -311,10 +312,10 @@ monitor_(),
 mirroredSlave_(),
 defaultPos_(other.defaultPos_)
 {
-	foreach (QSharedPointer<General::PortMap> portMap, other.portMaps_) {
+	foreach (QSharedPointer<PortMap> portMap, other.portMaps_) {
 		if (portMap) {
-			QSharedPointer<General::PortMap> copy = QSharedPointer<General::PortMap>(
-				new General::PortMap(*portMap.data()));
+			QSharedPointer<PortMap> copy = QSharedPointer<PortMap>(
+				new PortMap(*portMap.data()));
 			portMaps_.append(copy);
 		}
 	}
@@ -366,10 +367,10 @@ BusInterface & BusInterface::operator=( const BusInterface &other )
         defaultPos_ = other.defaultPos_;
 
 		portMaps_.clear();
-		foreach (QSharedPointer<General::PortMap> portMap, other.portMaps_) {
+		foreach (QSharedPointer<PortMap> portMap, other.portMaps_) {
 			if (portMap) {
-				QSharedPointer<General::PortMap> copy = QSharedPointer<General::PortMap>(
-					new General::PortMap(*portMap.data()));
+				QSharedPointer<PortMap> copy = QSharedPointer<PortMap>(
+					new PortMap(*portMap.data()));
 				portMaps_.append(copy);
 			}
 		}
@@ -539,30 +540,9 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 		writer.writeStartElement("spirit:portMaps");
 
 		// write each port map
-		for (int i = 0; i < portMaps_.size(); ++i) {
-			writer.writeStartElement("spirit:portMap");
-
-			writer.writeStartElement("spirit:logicalPort");
-			writer.writeTextElement("spirit:name", portMaps_.at(i)->logicalPort_);
-
-            // if a logical vector is defined
-            if (portMaps_.value(i)->logicalVector_) {
-                portMaps_.value(i)->logicalVector_->write(writer);
-            }
-            writer.writeEndElement(); // spirit:logicalPort
-
-            writer.writeStartElement("spirit:physicalPort");
-            writer.writeTextElement("spirit:name",
-                portMaps_.at(i)->physicalPort_);
-
-            // if a physical vector is defined
-            if (portMaps_.value(i)->physicalVector_) {
-                portMaps_.value(i)->physicalVector_->write(writer);
-            }
-
-            writer.writeEndElement(); // spirit:physicalPort
-
-			writer.writeEndElement(); // spirit:portMap
+		foreach(QSharedPointer<PortMap> portMap, portMaps_)
+        {
+            portMap->write(writer);
 		}
 
 		writer.writeEndElement(); // spirit:portMaps
@@ -691,7 +671,7 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts,
 				 }
 	}
 
-	foreach (QSharedPointer<General::PortMap> portMap, portMaps_) {
+	foreach (QSharedPointer<PortMap> portMap, portMaps_) {
 		if (!portMap->isValid(physicalPorts, errorList, thisIdentifier)) {
 			valid = false;
 		}
@@ -757,7 +737,7 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts ) co
 				 }
 	}
 
-	foreach (QSharedPointer<General::PortMap> portMap, portMaps_) {
+	foreach (QSharedPointer<PortMap> portMap, portMaps_) {
 		if (!portMap->isValid(physicalPorts)) {
 			return false;
 		}
@@ -785,7 +765,7 @@ General::InterfaceMode BusInterface::getInterfaceMode() const {
 }
 
 void BusInterface::setPortMaps(
-        QList<QSharedPointer<General::PortMap> > const& portMaps) {
+        QList<QSharedPointer<PortMap> > const& portMaps) {
 	// delete old port maps stored
 	portMaps_.clear();
 
@@ -838,7 +818,7 @@ void BusInterface::setParameters(
 	parameters_ = parameters;
 }
 
-QList<QSharedPointer<General::PortMap> >& BusInterface::getPortMaps() {
+QList<QSharedPointer<PortMap> >& BusInterface::getPortMaps() {
 	return portMaps_;
 }
 
@@ -1090,8 +1070,8 @@ void BusInterface::setAttributes( const QMap<QString, QString>& attributes ) {
 QStringList BusInterface::getPhysicalPortNames() const {
 	// add each physical port name to the list
 	QStringList list;
-	foreach (QSharedPointer<General::PortMap> portMap, portMaps_) {
-		list.append(portMap->physicalPort_);
+	foreach (QSharedPointer<PortMap> portMap, portMaps_) {
+		list.append(portMap->physicalPort());
 	}
 	return list;
 }
@@ -1100,8 +1080,8 @@ QStringList BusInterface::getPhysicalPortNames() const {
 QStringList BusInterface::getLogicalPortNames() const {
 	// add each logical port name to the list
 	QStringList list;
-	foreach (QSharedPointer<General::PortMap> portMap, portMaps_) {
-		list.append(portMap->logicalPort_);
+	foreach (QSharedPointer<PortMap> portMap, portMaps_) {
+		list.append(portMap->logicalPort());
 	}
 	return list;
 }
@@ -1110,10 +1090,10 @@ QStringList BusInterface::getLogicalPortNames() const {
 
 bool BusInterface::hasLogicalPort( const QString& logicalPortName ) const {
 
-	foreach (QSharedPointer<General::PortMap> portMap, portMaps_) {
+	foreach (QSharedPointer<PortMap> portMap, portMaps_) {
 		
 		// if the port map contains the searched logical port.
-		if (portMap->logicalPort_.compare(logicalPortName) == 0) {
+		if (portMap->logicalPort().compare(logicalPortName) == 0) {
 			return true;
 		}
 	}
@@ -1124,10 +1104,10 @@ bool BusInterface::hasLogicalPort( const QString& logicalPortName ) const {
 
 
 bool BusInterface::hasPhysicalPort( const QString& physicalPortName ) const {
-	foreach (QSharedPointer<General::PortMap> portMap, portMaps_) {
+	foreach (QSharedPointer<PortMap> portMap, portMaps_) {
 
 		// if the port map contains the searched logical port.
-		if (portMap->physicalPort_.compare(physicalPortName) == 0) {
+		if (portMap->physicalPort().compare(physicalPortName) == 0) {
 			return true;
 		}
 	}
@@ -1137,11 +1117,11 @@ bool BusInterface::hasPhysicalPort( const QString& physicalPortName ) const {
 }
 
 QString BusInterface::getLogicalPortName( const QString& physicalPortName ) const {
-	foreach (QSharedPointer<General::PortMap> portMap, portMaps_) {
+	foreach (QSharedPointer<PortMap> portMap, portMaps_) {
 
 		// if the port map contains the searched physical port.
-		if (portMap->physicalPort_.compare(physicalPortName) == 0) {
-			return portMap->logicalPort_;
+		if (portMap->physicalPort().compare(physicalPortName) == 0) {
+			return portMap->logicalPort();
 		}
 	}
 

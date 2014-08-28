@@ -267,7 +267,7 @@ bool BusPortItem::onConnect(ConnectionEndpoint const* other)
                 !static_cast<HWDesignDiagram*>(scene())->isLoading())
             {                            
                 QList< QSharedPointer<Port> > newPorts;
-                QList< QSharedPointer<General::PortMap> > newPortMaps;
+                QList< QSharedPointer<PortMap> > newPortMaps;
 
                 General::InterfaceMode mode = otherBusIf->getInterfaceMode();
                 // Set a compatible interface mode. If the other end point is a hierarchical one,
@@ -319,7 +319,7 @@ void BusPortItem::onDisconnect(ConnectionEndpoint const*)
     {
         busInterface_->setBusType(VLNV());
         busInterface_->setAbstractionType(VLNV());      
-        busInterface_->setPortMaps(QList< QSharedPointer<General::PortMap> >());
+        busInterface_->setPortMaps(QList< QSharedPointer<PortMap> >());
         busInterface_->setName(oldName_);
         updateInterface();
     }
@@ -668,7 +668,7 @@ void BusPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 bool BusPortItem::getModeAndPorts(ConnectionEndpoint const* other,
                                     General::InterfaceMode& mode, QList< QSharedPointer<Port> >& ports,
-                                    QList< QSharedPointer<General::PortMap> >& portMaps)
+                                    QList< QSharedPointer<PortMap> >& portMaps)
 {
     // Get the possible interface modes for this item.
     QList<General::InterfaceMode> modes;

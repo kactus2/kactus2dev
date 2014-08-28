@@ -14,6 +14,8 @@
 #include <IPXACTmodels/ComInterface.h>
 #include <IPXACTmodels/ComDefinition.h>
 #include <IPXACTmodels/ComProperty.h>
+#include <IPXACTmodels/PortMap.h>
+#include <IPXACTmodels/vector.h>
 
 #include <common/GenericEditProvider.h>
 #include <common/graphicsItems/ComponentItem.h>
@@ -451,15 +453,15 @@ void InterfaceEditor::onPortMapChanged() {
 	Q_ASSERT_X(busIf, "PortmapInterfaceTab::onSave()",
 		"Null BusInterface pointer");
 
-	QList<QSharedPointer<General::PortMap> > portMaps;
+	QList<QSharedPointer<PortMap> > portMaps;
 
 	for (int i = 0; i < mappings_.rowCount(); i++) {
 		QString logical = mappings_.item(i, 0)->text();
 		QString physical = mappings_.item(i, 1)->text();
 
-		QSharedPointer<General::PortMap> portMap(new General::PortMap);
-		portMap->logicalPort_ = logical;
-		portMap->physicalPort_ = physical;
+		QSharedPointer<PortMap> portMap(new PortMap);
+		portMap->setLogicalPort(logical);
+		portMap->setPhysicalPort(physical);
 
 		portMaps.append(portMap);
 	}
@@ -481,7 +483,7 @@ void InterfaceEditor::setPortMaps() {
 
 	QSharedPointer<BusInterface> busIf = interface_->getBusInterface();
 	Q_ASSERT(busIf);
-	QList<QSharedPointer<General::PortMap> > portMaps = busIf->getPortMaps();
+	QList<QSharedPointer<PortMap> > portMaps = busIf->getPortMaps();
 
 	// get the abstraction def for the interface
 	VLNV absDefVLNV = busIf->getAbstractionType();
@@ -504,13 +506,13 @@ void InterfaceEditor::setPortMaps() {
 	// stop sorting when adding the ports to avoid sorting after each add
 	mappings_.setSortingEnabled(false);
 	int row = 0;
-	foreach (QSharedPointer<General::PortMap> portMap, portMaps) {
+	foreach (QSharedPointer<PortMap> portMap, portMaps) {
 
-		QString logicalPort = portMap->logicalPort_;
+		QString logicalPort = portMap->logicalPort();
 
         // if the logical port is vectored
-        if (portMap->logicalVector_) {
-            logicalPort += portMap->logicalVector_->toString();
+        if (portMap->logicalVector()) {
+            logicalPort += portMap->logicalVector()->toString();
         }
 
 		QTableWidgetItem* logicalItem = new QTableWidgetItem(logicalPort);
@@ -520,7 +522,7 @@ void InterfaceEditor::setPortMaps() {
 			logicalItem->setForeground(QBrush(Qt::red));
 		}
 		// if the logical port does not belong to the abs def
-		else if (!absDef->hasPort(portMap->logicalPort_, interfaceMode)) {
+		else if (!absDef->hasPort(portMap->logicalPort(), interfaceMode)) {
 			logicalItem->setForeground(QBrush(Qt::red));
 		}
 		else {
@@ -529,18 +531,18 @@ void InterfaceEditor::setPortMaps() {
 
 		// get size of the logical port
 		int logicalSize = 1;
-		if (portMap->logicalVector_) {
-			logicalSize = portMap->logicalVector_->getSize();
+		if (portMap->logicalVector()) {
+			logicalSize = portMap->logicalVector()->getSize();
 		}
 		
 		// display at least the name of physical port
-		QString physicalPort = portMap->physicalPort_;
+		QString physicalPort = portMap->physicalPort();
 		// if port map contains vectored physical port.
-		if (portMap->physicalVector_) {
-			physicalPort = portMap->physicalPort_;
+		if (portMap->physicalVector()) {
+			physicalPort = portMap->physicalPort();
             // if the physical port is vectored.
-            if (portMap->physicalVector_) {
-                physicalPort += portMap->physicalVector_->toString();
+            if (portMap->physicalVector()) {
+                physicalPort += portMap->physicalVector()->toString();
             }
 		}
 		// if port map does not contain physical vector but port is found on the component
@@ -552,7 +554,7 @@ void InterfaceEditor::setPortMaps() {
 		QTableWidgetItem* physItem = new QTableWidgetItem(physicalPort);
 		physItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		// if the port is not contained in the component
-		if (!component->hasPort(portMap->physicalPort_)) {
+		if (!component->hasPort(portMap->physicalPort())) {
 			physItem->setForeground(QBrush(Qt::red));
 		}
 		else {
@@ -561,8 +563,8 @@ void InterfaceEditor::setPortMaps() {
 
 		// get size of the physical port
 		int physicalSize = 1;
-		if (portMap->physicalVector_) {
-			physicalSize = portMap->physicalVector_->getSize();
+		if (portMap->physicalVector()) {
+			physicalSize = portMap->physicalVector()->getSize();
 		}
 
 		// if the sizes of the ports don't match

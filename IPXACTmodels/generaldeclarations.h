@@ -9,8 +9,6 @@
 
 #include "ipxactmodels_global.h"
 
-#include "vector.h"
-
 #include <QDomNode>
 #include <QList>
 #include <QString>
@@ -21,7 +19,7 @@
 #include <QStringList>
 #include <QFileInfo>
 
-class Port;
+class PortMap;
 
 /*! \brief Namespace General is used to store the commonly used structs and enums
  *
@@ -783,104 +781,6 @@ struct PortBounds {
 
 	//! \brief Operator !=
 	IPXACTMODELS_EXPORT bool operator!=(const PortBounds& other) const;
-};
-
-/*! \brief Describes the mapping between the logical and physical ports
- *
- * This struct is used to store the spirit:portMap element info. It can be used
- * to map logical ports, defined in abstraction definition to physical ports,
- * defined in component description.
- *
- */
-struct PortMap {
-	//! MANDATORY Name of the logical port
-	QString logicalPort_;
-
-	/*! \brief The optional vector element for the logical Port
-	 *
-	 * If this element exists then the port is vectored and it's type is
-	 * std_logic_vector. This element specifies the left and right bound of the
-	 * vectored port.
-	 */
-	QSharedPointer<Vector> logicalVector_;
-
-	//!MANDATORY Name of the physical port
-	QString physicalPort_;
-
-	/*! \brief The optional vector element for the physical port.
-	 *
-	 * If this element exists then the port is vectored and it's type is
-	 * std_logic_vector. This element specifies the left and right bound of the
-	 * vectored port.
-	 */
-	QSharedPointer<Vector> physicalVector_;
-
-	/*! \brief The constructor
-	 *
-	 * \param portMap a reference to the QDomNode that can used to parse the
-	 * information from.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Parse_error Occurs if a mandatory element is missing in
-	 * this portMap or one of it's members.
-	 */
-	PortMap(QDomNode &portMap);
-
-	/*! \brief Default constructor
-	 *
-	 */
-	IPXACTMODELS_EXPORT  PortMap();
-
-	//! \brief The copy constructor
-	IPXACTMODELS_EXPORT  PortMap(const PortMap& other);
-
-	/*! \brief The assignment operator
-	 *
-	 * \param other Reference to the PortMap to assign.
-	 *
-	 * \return Reference to this PortMap
-	*/
-	PortMap& operator=(const PortMap& other);
-
-	/*! \brief Check if the port map is in a valid state.
-	 *
-	 * \param physicalPorts List of the physical ports of the component and their bounds.
-	 * \param errorList The list to add the possible error messages to.
-	 * \param parentIdentifier String from parent to help to identify the location of the error.
-	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	IPXACTMODELS_EXPORT bool isValid(const QList<General::PortBounds>& physicalPorts, 
-		QStringList& errorList, 
-		const QString& parentIdentifier) const;
-
-	/*! \brief Check if the port map is in a valid state.
-	 * 
-	 * \param physicalPorts List of the physical ports of the component and their bounds.
-	 * 
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	IPXACTMODELS_EXPORT  bool isValid(const QList<General::PortBounds>& physicalPorts) const;
-
-    /*!
-     *  Gets the physical range in the port map.
-     *
-     *      @param [in] referencedPhysicalPort   The physical port referenced in the port map 
-     *                                           in the component containing the port map.
-     *
-     *      @return The physical range in the port map.
-     */
-    IPXACTMODELS_EXPORT General::PortBounds getPhysicalRange(QSharedPointer<Port> referencedPhysicalPort) const;
-
-    /*!
-     *  Gets the logical range in the port map.
-     *
-     *      @param [in] referencedPhysicalPort   The physical port referenced in the port map 
-     *                                           in the component containing the port map.
-     *
-     *      @return The logical range in the port map.
-     */
-    IPXACTMODELS_EXPORT General::PortBounds getLogicalRange(QSharedPointer<Port> referencedPhysicalPort) const;
 };
 
 /*! \brief Convert the info into string.

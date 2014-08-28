@@ -19,6 +19,7 @@
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
 #include <library/LibraryManager/libraryinterface.h>
+#include <IPXACTmodels/PortMap.h>
 #include <IPXACTmodels/vlnv.h>
 
 #include <QColor>
@@ -315,14 +316,14 @@ void PortMapsTreeModel::reset()
     root_ = new PortMapsTreeItem();
 
     // Add existing mappings.
-    foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
+    foreach (QSharedPointer<PortMap> portMap, portMaps_)
     {
 
-        PortMapsLogicalItem* logicalItem = dynamic_cast<PortMapsLogicalItem*>(findItem(portMap->logicalPort_));
+        PortMapsLogicalItem* logicalItem = dynamic_cast<PortMapsLogicalItem*>(findItem(portMap->logicalPort()));
 
         if (!logicalItem)
         {            
-            logicalItem = new PortMapsLogicalItem(root_, portMap->logicalPort_, component_, busif_, absDef_);
+            logicalItem = new PortMapsLogicalItem(root_, portMap->logicalPort(), component_, busif_, absDef_);
             root_->addChild(logicalItem);
         }
 
@@ -335,7 +336,7 @@ void PortMapsTreeModel::reset()
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeModel::createMap()
 //-----------------------------------------------------------------------------
-void PortMapsTreeModel::createMap(QSharedPointer<General::PortMap> portMap)
+void PortMapsTreeModel::createMap(QSharedPointer<PortMap> portMap)
 {
     if (!portMaps_.contains(portMap))
     {
@@ -343,12 +344,12 @@ void PortMapsTreeModel::createMap(QSharedPointer<General::PortMap> portMap)
         emit contentChanged();
     }
     
-    PortMapsLogicalItem* logicalItem = dynamic_cast<PortMapsLogicalItem*>(findItem(portMap->logicalPort_));
+    PortMapsLogicalItem* logicalItem = dynamic_cast<PortMapsLogicalItem*>(findItem(portMap->logicalPort()));
 
     if (!logicalItem)
     {
         beginInsertRows(QModelIndex(), root_->getChildCount(), root_->getChildCount());
-        logicalItem = new PortMapsLogicalItem(root_, portMap->logicalPort_, component_, busif_, absDef_);
+        logicalItem = new PortMapsLogicalItem(root_, portMap->logicalPort(), component_, busif_, absDef_);
         root_->addChild(logicalItem);
         endInsertRows();
     }
@@ -365,8 +366,8 @@ void PortMapsTreeModel::createMap(QSharedPointer<General::PortMap> portMap)
 QStringList PortMapsTreeModel::logicalPorts() const
 {
     QStringList list;
-    foreach (QSharedPointer<General::PortMap> portMap, portMaps_) {
-        list.append(portMap->logicalPort_);
+    foreach (QSharedPointer<PortMap> portMap, portMaps_) {
+        list.append(portMap->logicalPort());
     }
     return list;
 }
@@ -577,13 +578,13 @@ void PortMapsTreeModel::removeMapping(QModelIndex const& index)
     PortMapsTreeItem* item = root_->getChild(index.row());
     QString logicalName = item->getName();
     QStringList physPorts;
-    foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
+    foreach (QSharedPointer<PortMap> portMap, portMaps_)
     {
-        if (portMap->logicalPort_ == logicalName)
+        if (portMap->logicalPort() == logicalName)
         {
-            if (!physPorts.contains(portMap->physicalPort_))
+            if (!physPorts.contains(portMap->physicalPort()))
             {
-                physPorts.append(portMap->physicalPort_);
+                physPorts.append(portMap->physicalPort());
             }
             portMaps_.removeAll(portMap);
         }
@@ -593,9 +594,9 @@ void PortMapsTreeModel::removeMapping(QModelIndex const& index)
     foreach (QString physicalName, physPorts)
     {
         bool connected = false;
-        foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
+        foreach (QSharedPointer<PortMap> portMap, portMaps_)
         {
-            if (portMap->physicalPort_ == physicalName)
+            if (portMap->physicalPort() == physicalName)
             {
                 connected = true;
                 break;

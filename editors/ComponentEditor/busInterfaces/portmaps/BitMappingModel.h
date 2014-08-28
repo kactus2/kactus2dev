@@ -147,7 +147,7 @@ public:
      *
      *      @return The generated port maps.
      */
-    QList< QSharedPointer<General::PortMap> > getPortMaps() const;
+    QList< QSharedPointer<PortMap> > getPortMaps() const;
 
     /*!
      *  Returns the model's supported drop actions.
@@ -303,7 +303,7 @@ private:
      *
      *      @return True, if a mapping exists, otherwise false.
      */
-    bool isMapped( QList<QSharedPointer<General::PortMap> > mappings, General::PortBounds const& pin, 
+    bool isMapped( QList<QSharedPointer<PortMap> > mappings, General::PortBounds const& pin, 
         int logicalIndex) const;
 
 
@@ -315,7 +315,7 @@ private:
      *
      *      @return The created port map.
      */
-    QSharedPointer<General::PortMap> createPortMapForPin( General::PortBounds const& pin, 
+    QSharedPointer<PortMap> createPortMapForPin( General::PortBounds const& pin, 
         int firstLogicalIndex ) const;
 
     //-----------------------------------------------------------------------------
@@ -337,7 +337,7 @@ private:
     QString logicalPort_;
 
     //! Pointer to the data structure within the model containing the port maps.
-    QList<QSharedPointer<General::PortMap> >& portMaps_;
+    QList<QSharedPointer<PortMap> >& portMaps_;
 
     //! Pointer to the component being edited.
     QSharedPointer<Component> component_;

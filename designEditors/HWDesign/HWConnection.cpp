@@ -15,6 +15,7 @@
 
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/PortMap.h>
 
 #include <cmath>
 
@@ -159,14 +160,14 @@ int HWConnection::calculateBusWidth() const
 {
     int totalWidth = 0;
 
-    foreach (QSharedPointer<General::PortMap> portMap1, endpoint1()->getBusInterface()->getPortMaps())
+    foreach (QSharedPointer<PortMap> portMap1, endpoint1()->getBusInterface()->getPortMaps())
     {
         // Find the port map with the same logical port name from the other end point's port map.
-        QSharedPointer<General::PortMap> portMap2;
+        QSharedPointer<PortMap> portMap2;
 
-        foreach (QSharedPointer<General::PortMap> portMap, endpoint2()->getBusInterface()->getPortMaps())
+        foreach (QSharedPointer<PortMap> portMap, endpoint2()->getBusInterface()->getPortMaps())
         {
-            if (portMap->logicalPort_ == portMap1->logicalPort_)
+            if (portMap->logicalPort() == portMap1->logicalPort())
             {
                 portMap2 = portMap;
             }
@@ -177,8 +178,8 @@ int HWConnection::calculateBusWidth() const
             continue;
         }
 
-        QSharedPointer<Port> port1 = endpoint1()->getOwnerComponent()->getPort(portMap1->physicalPort_);
-        QSharedPointer<Port> port2 = endpoint2()->getOwnerComponent()->getPort(portMap2->physicalPort_);
+        QSharedPointer<Port> port1 = endpoint1()->getOwnerComponent()->getPort(portMap1->physicalPort());
+        QSharedPointer<Port> port2 = endpoint2()->getOwnerComponent()->getPort(portMap2->physicalPort());
 
         if (!port1 || !port2)
         {

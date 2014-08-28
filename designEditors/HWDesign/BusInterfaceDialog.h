@@ -96,7 +96,7 @@ public:
      *
      *      @return The port maps.
     */
-    QList< QSharedPointer<General::PortMap> > getPortMaps();
+    QList< QSharedPointer<PortMap> > getPortMaps();
 
     /*!
      *  Creates the list of ports for draft component according to 
@@ -193,7 +193,7 @@ private:
     QList< QSharedPointer<Port> > ports_;
 
     //! List of generated port maps.
-    QList< QSharedPointer<General::PortMap> > portMaps_;
+    QList< QSharedPointer<PortMap> > portMaps_;
 
     //! The bus interface the dialog is referring to.
     QSharedPointer<BusInterface> busIf_;

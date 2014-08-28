@@ -111,7 +111,7 @@ private:
      *
      *      @return The size for the wire.
      */
-    int findWireSize(Interface const& startInterface, QSharedPointer<General::PortMap> startPortMap);
+    int findWireSize(Interface const& startInterface, QSharedPointer<PortMap> startPortMap);
 
     /*!
      *  Finds the logical bounds for a port map in an instance.
@@ -122,7 +122,7 @@ private:
      *      @return The port bounds for the port map in an instance.
      */
     General::PortBounds logicalBoundsInInstance(QString const& instanceName, 
-        QSharedPointer<General::PortMap> portMap) const;
+        QSharedPointer<PortMap> portMap) const;
 
     /*!
      *  Finds the component referenced in the design by a given name.
@@ -141,7 +141,7 @@ private:
      *
      *      @return The port maps for the logcial signal in the interface.
      */
-    QList<QSharedPointer<General::PortMap> > findPortMaps(QString const& logicalPort,
+    QList<QSharedPointer<PortMap> > findPortMaps(QString const& logicalPort,
         Interface const& interface) const;
 
     /*!
@@ -152,7 +152,7 @@ private:
      *      @param [in] wireName        The name of the wire to map to.
      *      @param [in] wireSize        The size of the wire to map to.
      */
-    void mapInstancePortToWire(QString const& instanceName, QSharedPointer<General::PortMap> portMap, 
+    void mapInstancePortToWire(QString const& instanceName, QSharedPointer<PortMap> portMap, 
         QString const& wireName, int const& wireSize);
 
     /*!

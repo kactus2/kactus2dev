@@ -20,6 +20,7 @@
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/port.h>
+#include <IPXACTmodels/PortMap.h>
 #include <IPXACTmodels/vlnv.h>
 
 class tst_ComponentVerilogWriter : public QObject
@@ -212,29 +213,29 @@ void tst_ComponentVerilogWriter::testInterfaceDescriptionIsPrinted_data()
     QTest::addColumn<QString>("expectedOutput");
 
     QTest::newRow("empty description") << "" <<
-        "module TestComponent(port);\n"
+        "module TestComponent(\n"
         "    // Interface: A\n"
-        "    input port;\n"
-        "\n"
+        "    input port\n"
+        ");\n"
         "endmodule\n";
 
     QTest::newRow("basic description") << "Description of A" <<
-        "module TestComponent(port);\n"
+        "module TestComponent(\n"
         "    // Interface: A\n"
         "    // Description of A\n"
-        "    input port;\n"
-        "\n"
+        "    input port\n"
+        ");\n"
         "endmodule\n";
 
     QTest::newRow("multiline description") << "Multiline\ndescription\nfor\nA" <<
-        "module TestComponent(port);\n"
+        "module TestComponent(\n"
         "    // Interface: A\n"
         "    // Multiline\n"
         "    // description\n"
         "    // for\n"
         "    // A\n"
-        "    input port;\n"
-        "\n"
+        "    input port\n"
+        ");\n"
         "endmodule\n";
 }
 
@@ -250,12 +251,12 @@ void tst_ComponentVerilogWriter::testPortsOrderedByName()
     writeComponent();
 
     QCOMPARE(outputString_, QString(
-        "module TestComponent(a, b, c);\n"
+        "module TestComponent(\n"
         "    // These ports are not in any interface\n" 
         "    input a;\n"
         "    input b;\n"
         "    input c;\n"
-        "\n"
+        ");\n"
         "endmodule\n"));
 }
 
@@ -283,15 +284,15 @@ void tst_ComponentVerilogWriter::testPortsOrderedByDirectionThenName()
     writeComponent();
 
     QCOMPARE(outputString_, QString(
-        "module TestComponent(a_in, x_in, a_out, y_out, a_inout, z_inout);\n"
+        "module TestComponent(\n"
         "    // These ports are not in any interface\n" 
-        "    input a_in;\n" 
-        "    input x_in;\n" 
-        "    output a_out;\n" 
-        "    output y_out;\n" 
-        "    inout a_inout;\n" 
-        "    inout z_inout;\n"
-        "\n" 
+        "    input a_in,\n" 
+        "    input x_in,\n" 
+        "    output a_out,\n" 
+        "    output y_out,\n" 
+        "    inout a_inout,\n" 
+        "    inout z_inout\n"
+        ");\n" 
         "endmodule\n"));
 }
 
@@ -321,22 +322,22 @@ void tst_ComponentVerilogWriter::testPortsOrderedByInterfaceThenDirectionThenNam
     writeComponent();
 
     QCOMPARE(outputString_, QString(
-        "module TestComponent(a_in, c_in, b_out, d_in, portInSeveralInterfaces, portInNoInterface);\n"
+        "module TestComponent(\n"
         "    // Interface: A\n" 
-        "    input a_in;\n" 
-        "    input c_in;\n" 
-        "    output b_out;\n"
+        "    input a_in,\n" 
+        "    input c_in,\n" 
+        "    output b_out,\n"
         "\n"
         "    // Interface: B\n" 
-        "    input d_in;\n" 
+        "    input d_in,\n" 
         "\n"
         "    // There ports are contained in many interfaces\n" 
-        "    input portInSeveralInterfaces;\n"
+        "    input portInSeveralInterfaces,\n"
 
         "\n"
         "    // These ports are not in any interface\n" 
-        "    input portInNoInterface;\n"
-        "\n"
+        "    input portInNoInterface\n"
+        ");\n"
         "endmodule\n"));
 }
 
@@ -355,11 +356,11 @@ void tst_ComponentVerilogWriter::addInterface( QString const& interfaceName )
 //-----------------------------------------------------------------------------
 void tst_ComponentVerilogWriter::mapPortToInterface( QString const& portName, QString const& interfaceName )
 {
-    QSharedPointer<General::PortMap> portMap = QSharedPointer<General::PortMap>(new General::PortMap());
-    portMap->logicalPort_ = portName.toUpper();
-    portMap->physicalPort_ = portName;
+    QSharedPointer<PortMap> portMap = QSharedPointer<PortMap>(new PortMap());
+    portMap->setLogicalPort(portName.toUpper());
+    portMap->setPhysicalPort(portName);
 
-    QList<QSharedPointer<General::PortMap> >& portMapList = component_->getBusInterface(interfaceName)->getPortMaps();
+    QList<QSharedPointer<PortMap> >& portMapList = component_->getBusInterface(interfaceName)->getPortMaps();
     portMapList.append(portMap);
 }
 

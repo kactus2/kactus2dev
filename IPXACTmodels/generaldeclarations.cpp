@@ -5,7 +5,8 @@
  */
 
 #include "generaldeclarations.h"
-#include "port.h"
+#include "PortMap.h"
+#include "vector.h"
 #include "XmlUtils.h"
 
 #include <QDomNode>
@@ -70,311 +71,6 @@ QString General::bitSteering2Str(const General::BitSteering bitSteering) {
 		return QString();
 	}
 	}
-}
-
-General::PortMap::PortMap(): 
-logicalPort_(),
-logicalVector_(QSharedPointer<Vector>(new Vector())), 
-physicalPort_(), 
-physicalVector_(QSharedPointer<Vector>(new Vector())) {
-}
-
-General::PortMap::PortMap(QDomNode &portMap): 
-logicalPort_(),
-logicalVector_(),
-physicalPort_(), 
-physicalVector_() {
-
-	for (int i = 0; i < portMap.childNodes().count(); ++i) {
-
-		QDomNode tempNode = portMap.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:logicalPort")) {
-
-			// search childNodes for name and vector elements
-			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-
-				if (tempNode.childNodes().at(j).nodeName() ==
-						QString("spirit:name")) {
-
-					// get the logical name and strip whitespace characters
-					logicalPort_= tempNode.childNodes().at(j).childNodes().
-							at(0).nodeValue();
-					logicalPort_ = XmlUtils::removeWhiteSpace(logicalPort_);
-				}
-
-				else if (tempNode.childNodes().at(j).nodeName() ==
-						QString("spirit:vector")) {
-					QDomNode vectorNode = tempNode.childNodes().at(j);
-
-					logicalVector_ = QSharedPointer<Vector>(
-							new Vector(vectorNode));
-				}
-			}
-
-		}
-		else if (tempNode.nodeName() == QString("spirit:physicalPort")) {
-
-			// search for a spirit:vector element
-			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-
-				if (tempNode.childNodes().at(j).nodeName() ==
-						QString("spirit:name")) {
-
-					// get the physical name and strip the whitespace characters
-					physicalPort_ = tempNode.childNodes().at(j).childNodes().
-							at(0).nodeValue();
-					physicalPort_ = XmlUtils::removeWhiteSpace(physicalPort_);
-				}
-
-				else if (tempNode.childNodes().at(j).nodeName() ==
-						QString("spirit:vector")) {
-					QDomNode vectorNode = tempNode.childNodes().at(j);
-
-					physicalVector_ = QSharedPointer<Vector>(
-							new Vector(vectorNode));
-				}
-			}
-		}
-	}
-	return;
-}
-
-General::PortMap::PortMap( const PortMap& other ): 
-logicalPort_(other.logicalPort_),
-logicalVector_(),
-physicalPort_(other.physicalPort_),
-physicalVector_() {
-
-	if (other.logicalVector_)
-		logicalVector_ = QSharedPointer<Vector>(new Vector(*other.logicalVector_));
-
-	if (other.physicalVector_)
-		physicalVector_ = QSharedPointer<Vector>(new Vector(*other.physicalVector_));
-}
-
-General::PortMap& General::PortMap::operator=( const PortMap& other ) {
-	if (this != &other) {
-		logicalPort_ = other.logicalPort_;
-		if (other.logicalVector_)
-			logicalVector_ = QSharedPointer<Vector>(new Vector(*other.logicalVector_.data()));
-		else
-			logicalVector_ = QSharedPointer<Vector>();
-
-		physicalPort_ = other.physicalPort_;
-		if (other.physicalVector_)
-			physicalVector_ = QSharedPointer<Vector>(new Vector(*other.physicalVector_.data()));
-		else
-			physicalVector_ = QSharedPointer<Vector>();
-	}
-	return *this;
-}
-
-bool General::PortMap::isValid( const QList<General::PortBounds>& physicalPorts, 
-							   QStringList& errorList, 
-							   const QString& parentIdentifier ) const {
-	bool valid = true;
-
-	if (physicalPort_.isEmpty()) {
-		errorList.append(QObject::tr("No physical port specified for port map within %1").arg(
-			parentIdentifier));
-		valid = false;
-	}
-
-	if (logicalPort_.isEmpty()) {
-		errorList.append(QObject::tr("No logical port specified for port map within %1").arg(
-			parentIdentifier));
-		valid = false;
-	}
-
-	int physSize = 1;
-	int logSize = 1;
-
-	if (physicalVector_) {
-		if (!physicalVector_->isValid(errorList, 
-			QObject::tr("port map within %1").arg(parentIdentifier))) {
-				valid = false;
-		}
-
-		physSize = physicalVector_->getSize();
-	}
-	if (logicalVector_) {
-		if (!logicalVector_->isValid(errorList,
-			QObject::tr("port map within %1").arg(parentIdentifier))) {
-				valid = false;
-		}
-
-		logSize = logicalVector_->getSize();
-	}
-
-	// if the sizes of the ports don't match
-	if (physSize != logSize) {
-		errorList.append(QObject::tr("The sizes of the vectors don't match in"
-			" port map within %1").arg(parentIdentifier));
-		valid = false;
-	}
-
-	// if there is a physical port specified
-	if (!physicalPort_.isEmpty()) {
-		
-		bool foundPhysPort = false;
-		foreach (General::PortBounds port, physicalPorts) {
-
-			// if the referenced physical port was found
-			if (port.portName_ == physicalPort_) {
-				foundPhysPort = true;
-
-				// calculate the size of the actual physical port.
-				int actualPortSize = port.left_ - port.right_ + 1;
-
-				// if the actual port size is smaller than the referenced vector in 
-				// the port map
-				if (actualPortSize < physSize) {
-					errorList.append(QObject::tr("The port map within %1 is larger"
-						" than the actual size of the port %2.").arg(
-						parentIdentifier).arg(physicalPort_));
-					valid = false;
-				}
-
-				break;
-			}
-		}
-		// if the referenced port was not found within the component
-		if (!foundPhysPort) {
-			errorList.append(QObject::tr("The port map within %1 contained reference to"
-				" physical port %2 which is not found in the component.").arg(
-				parentIdentifier).arg(physicalPort_));
-			valid = false;
-		}
-	}
-
-	return valid;
-}
-
-bool General::PortMap::isValid( const QList<General::PortBounds>& physicalPorts ) const {
-
-	if (physicalPort_.isEmpty()) {
-		return false;
-	}
-
-	if (logicalPort_.isEmpty()) {
-		return false;
-	}
-
-	int physSize = 1;
-	int logSize = 1;
-
-	if (physicalVector_) {
-		if (!physicalVector_->isValid()) {
-				return false;
-		}
-
-		physSize = physicalVector_->getSize();
-	}
-	if (logicalVector_) {
-		if (!logicalVector_->isValid()) {
-				return false;
-		}
-
-		logSize = logicalVector_->getSize();
-	}
-
-	// if the sizes of the ports don't match
-	if (physSize != logSize) {
-		return false;
-	}
-
-	// if there is a physical port specified
-	if (!physicalPort_.isEmpty()) {
-
-		bool foundPhysPort = false;
-		foreach (General::PortBounds port, physicalPorts) {
-
-			// if the referenced physical port was found
-			if (port.portName_ == physicalPort_) {
-				foundPhysPort = true;
-
-				// calculate the size of the actual physical port.
-				int actualPortSize = abs(port.left_ - port.right_) + 1;
-
-				// if the actual port size is smaller than the referenced vector in 
-				// the port map
-				if (actualPortSize < physSize) {
-					return false;
-				}
-
-				break;
-			}
-		}
-		// if the referenced port was not found within the component
-		if (!foundPhysPort) {
-			return false;
-		}
-	}
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: General::PortMap::getPhysicalRange()
-//-----------------------------------------------------------------------------
-General::PortBounds General::PortMap::getPhysicalRange(QSharedPointer<Port> referencedPhysicalPort) const
-{
-    General::PortBounds physicalBounds(physicalPort_);
-    // IP-XACT Mapping rule B.1.8.b) If vector subelement exists, the range shall be according 
-    // to its left and right. If no vector subelement is present, the range is according to the
-    // referenced wire model port.
-    if (!physicalVector_.isNull())
-    {
-        physicalBounds.left_ = physicalVector_->getLeft();
-        physicalBounds.right_ = physicalVector_->getRight();        
-    }
-    else if(!referencedPhysicalPort.isNull() &&
-            referencedPhysicalPort->getPortType() == General::WIRE)
-    {
-        physicalBounds.left_ = referencedPhysicalPort->getLeftBound();
-        physicalBounds.right_ = referencedPhysicalPort->getRightBound();
-    }
-    else
-    {
-        Q_ASSERT_X(false, "Resolving port map boundaries", "No vector element or wire port defined");        
-    }
-
-    return physicalBounds;
-}
-
-//-----------------------------------------------------------------------------
-// Function: General::PortMap::getLogicalRange()
-//-----------------------------------------------------------------------------
-General::PortBounds General::PortMap::getLogicalRange(QSharedPointer<Port> referencedPhysicalPort) const
-{
-    General::PortBounds logicalBounds(logicalPort_);
-    // IP-XACT Mapping rule B.1.8.c) If vector subelement exists, the range shall be according 
-    // to its left and right. If no vector subelement is present, the range shall be taken as
-    // [abs(physical.left – physical.right): 0].
-    if (!logicalVector_.isNull())
-    {
-        logicalBounds.left_ = logicalVector_->getLeft();
-        logicalBounds.right_ = logicalVector_->getRight();        
-    }
-    else
-    {
-        // Set logical boundaries based physical mapping.
-        General::PortBounds physicalBounds = getPhysicalRange(referencedPhysicalPort);    
-
-        // Select higher boundary according to physical mapping.           
-        if (physicalBounds.left_ >= physicalBounds.right_)
-        {
-            logicalBounds.left_ = abs(physicalBounds.left_ - physicalBounds.right_);
-            logicalBounds.right_ = 0;
-        }
-        else
-        {
-            logicalBounds.right_ = abs(physicalBounds.left_ - physicalBounds.right_);
-            logicalBounds.left_ = 0;
-        }
-    }
-
-    return logicalBounds;
 }
 
 General::PortBounds::PortBounds():
@@ -460,72 +156,72 @@ General::PortAlignment General::calculatePortAlignment(
 	General::PortAlignment alignment;
 	
 	// if the port maps are for different logical ports
-	if (portMap1->logicalPort_ != portMap2->logicalPort_) {
+	if (portMap1->logicalPort() != portMap2->logicalPort()) {
 		return alignment;
 	}
 
 	// if port 1 is vectored on the port map
-	if (portMap1->physicalVector_) {
-		phys1LeftBound = portMap1->physicalVector_->getLeft();
-		phys1RightBound = portMap1->physicalVector_->getRight();
+	if (portMap1->physicalVector()) {
+		phys1LeftBound = portMap1->getPhysicalLeft();
+		phys1RightBound = portMap1->physicalVector()->getRight();
 	}
 
 	// if port 2 is vectored on the port map
-	if (portMap2->physicalVector_) {
-		phys2LeftBound = portMap2->physicalVector_->getLeft();
-		phys2RightBound = portMap2->physicalVector_->getRight();
+	if (portMap2->physicalVector()) {
+		phys2LeftBound = portMap2->getPhysicalLeft();
+		phys2RightBound = portMap2->physicalVector()->getRight();
 	}
 
 	// if both have vectored logical signals
-	if (portMap1->logicalVector_ && portMap2->logicalVector_) {
+	if (portMap1->logicalVector() && portMap2->logicalVector()) {
 
 		// if the vectored ports don't have any common bounds
-		if (portMap1->logicalVector_->getRight() > portMap2->logicalVector_->getLeft() ||
-			portMap1->logicalVector_->getLeft() < portMap2->logicalVector_->getRight()) {
+		if (portMap1->getLogicalRight() > portMap2->getLogicalLeft() ||
+			portMap1->getLogicalLeft() < portMap2->getLogicalRight()) {
 				return alignment;
 		}
 
-		int logicalLeft = qMin(portMap1->logicalVector_->getLeft(), 
-			portMap2->logicalVector_->getLeft());
-		int logicalRight = qMax(portMap1->logicalVector_->getRight(),
-			portMap2->logicalVector_->getRight());
+		int logicalLeft = qMin(portMap1->getLogicalLeft(), 
+			portMap2->getLogicalLeft());
+		int logicalRight = qMax(portMap1->getLogicalRight(),
+			portMap2->getLogicalRight());
 
 		{
 			// count how much the left bound of port 1 has to be adjusted down
-			int downSize = abs(portMap1->logicalVector_->getLeft() - logicalLeft);
+			int downSize = abs(portMap1->getLogicalLeft() - logicalLeft);
 			// count how must the right bound of  port 1 has to be adjusted up
-			int upSize = abs(logicalRight - portMap1->logicalVector_->getRight());
+			int upSize = abs(logicalRight - portMap1->getLogicalRight());
 
 			alignment.port1Left_ = phys1LeftBound - downSize;
 			alignment.port1Right_ = phys1RightBound + upSize;
 		}
 		{
 			// count how much the left bound of port 2 has to be adjusted down
-			int downSize = abs(portMap2->logicalVector_->getLeft() - logicalLeft);
+			int downSize = abs(portMap2->getLogicalLeft() - logicalLeft);
 			// count how must the right bound of  port 2 has to be adjusted up
-			int upSize = abs(logicalRight - portMap2->logicalVector_->getRight());
+			int upSize = abs(logicalRight - portMap2->getLogicalRight());
 
 			alignment.port2Left_ = phys2LeftBound - downSize;
 			alignment.port2Right_ = phys2RightBound + upSize;
 		}
 	}
 	// if port map1 has vectored logical signal
-	else if (portMap1->logicalVector_ && !portMap2->logicalVector_) {
+	else if (portMap1->logicalVector() && !portMap2->logicalVector()) {
 
 		// port 1 uses the original physical bounds
 		alignment.port1Left_ = phys1LeftBound;
 		alignment.port1Right_ = phys1RightBound;
 
 		// port 2 uses the bounds of the logical port of port 1
-		alignment.port2Left_ = portMap1->logicalVector_->getLeft();
-		alignment.port2Right_ = portMap1->logicalVector_->getRight();
+		alignment.port2Left_ = portMap1->getLogicalLeft();
+		alignment.port2Right_ = portMap1->getLogicalRight();
 	}
 	// if port map2 has vectored logical signal
-	else if (!portMap1->logicalVector_ && portMap2->logicalVector_) {
+	else if (!portMap1->logicalVector() && portMap2->logicalVector()) {
 
 		// port 1 uses the bounds of the logical port of port 2
-		alignment.port1Left_ = portMap2->logicalVector_->getLeft();
-		alignment.port1Right_ = portMap2->logicalVector_->getRight();
+		alignment.port1Left_ = portMap2->getLogicalLeft();
+		alignment.port1Right_ = portMap2->getLogicalRight();
 
 		// port 2 uses the original physical bounds
 		alignment.port2Left_ = phys2LeftBound;

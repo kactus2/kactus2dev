@@ -14,6 +14,8 @@
 #include <IPXACTmodels/abstractiondefinition.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/port.h>
+#include <IPXACTmodels/PortMap.h>
+#include <IPXACTmodels/vector.h>
 
 #include <IPXACTmodels/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>
@@ -276,7 +278,7 @@ void BusIfPortmapTab::onBitConnect()
         return;
     }
 
-    QList<QSharedPointer<General::PortMap> > portMaps = mappingModel_.getPortMaps();
+    QList<QSharedPointer<PortMap> > portMaps = mappingModel_.getPortMaps();
 
     if (portMaps.isEmpty())
     {        
@@ -285,22 +287,22 @@ void BusIfPortmapTab::onBitConnect()
    }
 
     // Remove previous mappings of the logical port, if any.
-    QList<QSharedPointer<General::PortMap> >& oldPortMaps = busif_->getPortMaps();
-    foreach (QSharedPointer<General::PortMap> oldPortMap, oldPortMaps)
+    QList<QSharedPointer<PortMap> >& oldPortMaps = busif_->getPortMaps();
+    foreach (QSharedPointer<PortMap> oldPortMap, oldPortMaps)
     {
-        if (oldPortMap->logicalPort_ == portMaps.first()->logicalPort_)
+        if (oldPortMap->logicalPort() == portMaps.first()->logicalPort())
         {
             oldPortMaps.removeAll(oldPortMap);
         }
     }
     
-    foreach (QSharedPointer<General::PortMap> map, portMaps)
+    foreach (QSharedPointer<PortMap> map, portMaps)
     {        
         model_.createMap(map);
                    
-        logicalModel_.removePort(map->logicalPort_); 
+        logicalModel_.removePort(map->logicalPort()); 
         logicalView_.onPortRemoved();
-        physProxy_.onPortConnected(map->physicalPort_);
+        physProxy_.onPortConnected(map->physicalPort());
     }    
 }
 
@@ -561,9 +563,9 @@ void BusIfPortmapTab::mapPorts(QString const& physicalPort, QString const& logic
     int logicalSize = getLogicalSize(logicalPort, physicalPort);
     int physicalSize = getPhysicalSize(physicalPort);
 
-    QSharedPointer<General::PortMap> portMap(new General::PortMap());
-    portMap->physicalPort_ = physicalPort;
-    portMap->logicalPort_ = logicalPort;
+    QSharedPointer<PortMap> portMap(new PortMap());
+    portMap->setPhysicalPort(physicalPort);
+    portMap->setLogicalPort(logicalPort);
 
     if (physicalSize > logicalSize)
     {
@@ -574,25 +576,25 @@ void BusIfPortmapTab::mapPorts(QString const& physicalPort, QString const& logic
             return;
         }
         
-        portMap->physicalVector_->setLeft(dialog.getHigherBound());
-        portMap->physicalVector_->setRight(dialog.getLowerBound());
+        portMap->physicalVector()->setLeft(dialog.getHigherBound());
+        portMap->physicalVector()->setRight(dialog.getLowerBound());
         physicalSize = abs(dialog.getHigherBound() - dialog.getLowerBound()) + 1;
     }
     else
     {
-        portMap->physicalVector_->setLeft(component_->getPortLeftBound(physicalPort));
-        portMap->physicalVector_->setRight(component_->getPortRightBound(physicalPort));
+        portMap->physicalVector()->setLeft(component_->getPortLeftBound(physicalPort));
+        portMap->physicalVector()->setRight(component_->getPortRightBound(physicalPort));
     }
 
-    if (portMap->physicalVector_->getLeft() > portMap->physicalVector_->getRight())
+    if (portMap->getPhysicalLeft() > portMap->physicalVector()->getRight())
     {
-        portMap->logicalVector_->setLeft(physicalSize - 1);
-        portMap->logicalVector_->setRight(0);         
+        portMap->logicalVector()->setLeft(physicalSize - 1);
+        portMap->logicalVector()->setRight(0);         
     }
     else
     {
-        portMap->logicalVector_->setLeft(0);
-        portMap->logicalVector_->setRight(physicalSize - 1);  
+        portMap->logicalVector()->setLeft(0);
+        portMap->logicalVector()->setRight(physicalSize - 1);  
     }          
 
     model_.createMap(portMap);

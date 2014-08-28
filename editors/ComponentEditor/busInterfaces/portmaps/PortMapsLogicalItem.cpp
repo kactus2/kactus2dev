@@ -16,7 +16,7 @@
 #include <IPXACTmodels/abstractiondefinition.h>
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
-
+#include <IPXACTmodels/PortMap.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortMapsLogicalItem::PortMapsLogicalItem()
@@ -59,12 +59,12 @@ void PortMapsLogicalItem::refresh()
     // If logical width is not defined in the abs def, find the highest bound in port maps for width.
     if (width == -1)
     {
-        foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
+        foreach (QSharedPointer<PortMap> portMap, portMaps_)
         {   
-            if (portMap->logicalPort_ == getName())
+            if (portMap->logicalPort() == getName())
             {
                 General::PortBounds logicalRange = 
-                    portMap->getLogicalRange(component_->getPort(portMap->physicalPort_));
+                    portMap->getLogicalRange(component_->getPort(portMap->physicalPort()));
                 int higherBound = qMax(logicalRange.left_, logicalRange.right_);
                 width = qMax(width, higherBound);
             }
@@ -82,17 +82,17 @@ void PortMapsLogicalItem::refresh()
     updateWidthTo(width);       
 
     // Create new mappings for childs.
-    foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
+    foreach (QSharedPointer<PortMap> portMap, portMaps_)
     {
-        if (portMap->logicalPort_ == getName())
+        if (portMap->logicalPort() == getName())
         {
             // Get the port bounds.
             General::PortBounds physicalRange =
-                portMap->getPhysicalRange(component_->getPort(portMap->physicalPort_));
+                portMap->getPhysicalRange(component_->getPort(portMap->physicalPort()));
             int lowerPhysical = qMin(physicalRange.left_, physicalRange.right_);
             int higherPhysical = qMax(physicalRange.left_, physicalRange.right_);
             General::PortBounds logicalRange = 
-                portMap->getLogicalRange(component_->getPort(portMap->physicalPort_));
+                portMap->getLogicalRange(component_->getPort(portMap->physicalPort()));
             int lowerLogical = qMin(logicalRange.left_,logicalRange.right_);
             int higherLogical = qMax(logicalRange.left_,logicalRange.right_);
 
@@ -122,7 +122,7 @@ void PortMapsLogicalItem::refresh()
                 {
                     PortMapsBitMapItem* child = dynamic_cast<PortMapsBitMapItem*>(getChild(logicalIndex));
                     Q_ASSERT(child);                    
-                    child->addMapping(portMap->physicalPort_, physicalIndex);
+                    child->addMapping(portMap->physicalPort(), physicalIndex);
                 }
             }
         }
@@ -174,9 +174,9 @@ bool PortMapsLogicalItem::isValid() const
     }
             
     QList<General::PortBounds> bounds = component_->getPortBounds();
-    foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
+    foreach (QSharedPointer<PortMap> portMap, portMaps_)
     {
-        if (QString::compare(portMap->logicalPort_, getName()) == 0)
+        if (QString::compare(portMap->logicalPort(), getName()) == 0)
         {
             // if the physical port's bounds don't match the actual port size
             if (!portMap->isValid(bounds))
@@ -188,19 +188,19 @@ bool PortMapsLogicalItem::isValid() const
             if (absDef_)
             {
                 // if port is not defined in abs def.
-                if (!absDef_->hasPort(portMap->logicalPort_, busIf_->getInterfaceMode()))
+                if (!absDef_->hasPort(portMap->logicalPort(), busIf_->getInterfaceMode()))
                 {
                     return false;
                 } 
                 // if abstraction def is set but port is not defined as optional or
                 // required
-                if (!absDef_->isRequired(portMap->logicalPort_, busIf_->getInterfaceMode()) &&
-                    !absDef_->isOptional(portMap->logicalPort_, busIf_->getInterfaceMode())) 
+                if (!absDef_->isRequired(portMap->logicalPort(), busIf_->getInterfaceMode()) &&
+                    !absDef_->isOptional(portMap->logicalPort(), busIf_->getInterfaceMode())) 
                 {
                     return false;
                 } 
                 // if abstraction def is set and logical port is illegal 
-                if (absDef_->isIllegal(portMap->logicalPort_, busIf_->getInterfaceMode()))
+                if (absDef_->isIllegal(portMap->logicalPort(), busIf_->getInterfaceMode()))
                 {
                     return false;
                 }              
@@ -225,9 +225,9 @@ bool PortMapsLogicalItem::isValid(QStringList& errorList) const
     }
 
     QList<General::PortBounds> bounds = component_->getPortBounds();
-    foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
+    foreach (QSharedPointer<PortMap> portMap, portMaps_)
     {
-        if (QString::compare(portMap->logicalPort_, getName()) == 0)
+        if (QString::compare(portMap->logicalPort(), getName()) == 0)
         {
             // if the physical port's bounds don't match the actual port size
             if (!portMap->isValid(bounds, errorList, "boo"))
@@ -239,22 +239,22 @@ bool PortMapsLogicalItem::isValid(QStringList& errorList) const
             if (absDef_)
             {
                 // if port is not defined in abs def.
-                if (!absDef_->hasPort(portMap->logicalPort_, busIf_->getInterfaceMode()))
+                if (!absDef_->hasPort(portMap->logicalPort(), busIf_->getInterfaceMode()))
                 {
-                    errorList.append(tr("Port %1 is not defined in abstraction definition.").arg(portMap->logicalPort_));
+                    errorList.append(tr("Port %1 is not defined in abstraction definition.").arg(portMap->logicalPort()));
                     valid = false;
                 }    
                 // if port is not defined as optional or required
-                else if (!absDef_->isRequired(portMap->logicalPort_, busIf_->getInterfaceMode()) &&
-                    !absDef_->isOptional(portMap->logicalPort_, busIf_->getInterfaceMode())) 
+                else if (!absDef_->isRequired(portMap->logicalPort(), busIf_->getInterfaceMode()) &&
+                    !absDef_->isOptional(portMap->logicalPort(), busIf_->getInterfaceMode())) 
                 {
-                    errorList.append(tr("Port %1 is not required or options in abstraction definition.").arg(portMap->logicalPort_));
+                    errorList.append(tr("Port %1 is not required or options in abstraction definition.").arg(portMap->logicalPort()));
                     valid = false;
                 }
                 // if abstraction def is set and logical port is illegal 
-                if (absDef_->isIllegal(portMap->logicalPort_, busIf_->getInterfaceMode()))
+                if (absDef_->isIllegal(portMap->logicalPort(), busIf_->getInterfaceMode()))
                 {
-                    errorList.append(tr("Port %1 is illegal in abstraction definition.").arg(portMap->logicalPort_));
+                    errorList.append(tr("Port %1 is illegal in abstraction definition.").arg(portMap->logicalPort()));
                     valid = false;
                 }
             }
@@ -323,18 +323,18 @@ int PortMapsLogicalItem::getConnectionCount() const
 QString PortMapsLogicalItem::getPhysPorts() const
 {
     QString physPort = "";
-    foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
+    foreach (QSharedPointer<PortMap> portMap, portMaps_)
     {
-        if (portMap->logicalPort_ == getName())
+        if (portMap->logicalPort() == getName())
         {                        
-            if (physPort == portMap->physicalPort_)
+            if (physPort == portMap->physicalPort())
             {
                 continue;
             }
 
             if (physPort.isEmpty())
             {
-                physPort = portMap->physicalPort_;
+                physPort = portMap->physicalPort();
             } 
             else
             {
@@ -351,12 +351,12 @@ QString PortMapsLogicalItem::getPhysPorts() const
 
     int left = 0;
     int right = 0;
-    foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
+    foreach (QSharedPointer<PortMap> portMap, portMaps_)
     {
-        if (portMap->logicalPort_ == getName() && portMap->physicalPort_ == physPort)
+        if (portMap->logicalPort() == getName() && portMap->physicalPort() == physPort)
         {
             General::PortBounds logicalRange = 
-                portMap->getPhysicalRange(component_->getPort(portMap->physicalPort_));
+                portMap->getPhysicalRange(component_->getPort(portMap->physicalPort()));
             left = logicalRange.left_;
             right = logicalRange.right_;
             break;

@@ -20,6 +20,7 @@
 #include <designEditors/common/DesignDiagram.h>
 #include <common/GenericEditProvider.h>
 #include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/PortMap.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortAddCommand()
@@ -117,9 +118,9 @@ ConnectionAddCommand::ConnectionAddCommand(QGraphicsScene* scene, HWConnection* 
 
     if (portsCopied_ && srcComponent != 0)
     {
-        foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
+        foreach (QSharedPointer<PortMap> portMap, portMaps_)
         {
-            QSharedPointer<Port> port = srcComponent->getPort(portMap->physicalPort_);
+            QSharedPointer<Port> port = srcComponent->getPort(portMap->physicalPort());
             // Check that port exists.
             if (!port.isNull())            
             {
@@ -232,11 +233,11 @@ PortPasteCommand::PortPasteCommand(HWComponentItem* destComponent, QSharedPointe
 		// If port name changed, it is also changed in bus interface.
 		if( uniquePortName != portName )
 		{
-			foreach (QSharedPointer<General::PortMap> portMap, port_->getBusInterface()->getPortMaps())
+			foreach (QSharedPointer<PortMap> portMap, port_->getBusInterface()->getPortMaps())
 			{
-				if( portMap->physicalPort_ == portName )
+				if( portMap->physicalPort() == portName )
 				{
-					portMap->physicalPort_ = uniquePortName;
+					portMap->setPhysicalPort(uniquePortName);
 				}
 			}
 		}
@@ -323,11 +324,11 @@ BusInterfacePasteCommand::BusInterfacePasteCommand(QSharedPointer<Component> src
         // If port name changed, it is also changed in bus interface.
         if( uniquePortName != portName )
         {
-            foreach (QSharedPointer<General::PortMap> portMap, interfaceItem->getBusInterface()->getPortMaps())
+            foreach (QSharedPointer<PortMap> portMap, interfaceItem->getBusInterface()->getPortMaps())
             {
-                if( portMap->physicalPort_ == portName )
+                if( portMap->physicalPort() == portName )
                 {
-                    portMap->physicalPort_ = uniquePortName;
+                    portMap->setPhysicalPort(uniquePortName);
                 }
             }
         }

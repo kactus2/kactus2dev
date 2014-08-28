@@ -102,9 +102,9 @@ private:
 	 *
 	*/
 	void addMap(int& row, bool invalid, 
-		QSharedPointer<General::PortMap> portMap1,
+		QSharedPointer<PortMap> portMap1,
 		QSharedPointer<Component> component1,
-		QSharedPointer<General::PortMap> portMap2,
+		QSharedPointer<PortMap> portMap2,
 		QSharedPointer<Component> component2);
 
 	//! \brief Widget to display the connection type (COM/API/bus type).

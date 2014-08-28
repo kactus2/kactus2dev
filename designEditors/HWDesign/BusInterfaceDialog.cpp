@@ -22,6 +22,7 @@
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/PortMap.h>
 #include <common/graphicsItems/ConnectionEndpoint.h>
 #include <designEditors/HWDesign/views/CellEditTableView.h>
 #include <designEditors/HWDesign/models/PortGenerationTableModel.h>
@@ -204,12 +205,12 @@ void BusInterfaceDialog::setBusInterfaces(QSharedPointer<Component> srcComponent
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceDialog::getPortMaps()
 //-----------------------------------------------------------------------------
-QList< QSharedPointer<General::PortMap> > BusInterfaceDialog::getPortMaps() 
+QList< QSharedPointer<PortMap> > BusInterfaceDialog::getPortMaps() 
 {   
     // Create port maps
     if ( tableEnable_ && portMaps_.empty())
     {
-        foreach ( QSharedPointer<General::PortMap> portMap, busIf_->getPortMaps() )
+        foreach ( QSharedPointer<PortMap> portMap, busIf_->getPortMaps() )
         {
             int row = 0;
             QModelIndex index;
@@ -217,7 +218,7 @@ QList< QSharedPointer<General::PortMap> > BusInterfaceDialog::getPortMaps()
             {
                 index = portsModel_->index(row,PortGenerationTableModel::SRC_NAME);
                 QString name = portsModel_->data(index,Qt::DisplayRole).toString();
-                if ( name == portMap->physicalPort_)
+                if ( name == portMap->physicalPort())
                 {
                     break;
                 }
@@ -225,8 +226,8 @@ QList< QSharedPointer<General::PortMap> > BusInterfaceDialog::getPortMaps()
             index = portsModel_->index(row,PortGenerationTableModel::TARGET_NAME);
             QString physDraft = portsModel_->data(index,Qt::DisplayRole).toString();
 
-            QSharedPointer<General::PortMap> generated(new General::PortMap(*portMap));
-            generated->physicalPort_ = physDraft;
+            QSharedPointer<PortMap> generated(new PortMap(*portMap));
+            generated->setPhysicalPort(physDraft);
             portMaps_.append(generated);
         }
     }

@@ -108,7 +108,7 @@ public:
      */
     bool getModeAndPorts(ConnectionEndpoint const* other, General::InterfaceMode& mode, 
                            QList< QSharedPointer<Port> >& ports,
-                           QList< QSharedPointer<General::PortMap> >& portMaps);
+                           QList< QSharedPointer<PortMap> >& portMaps);
 
     /*!
      *  Called when a connection has been removed from between this and another end point.

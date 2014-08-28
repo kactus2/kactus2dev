@@ -71,7 +71,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <OutputFile>$(OutDir)\$(ProjectName)d.dll</OutputFile>
+      <OutputFile>$(OutDir)$(ProjectName)d.dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Xmld.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -194,6 +194,7 @@
     <ClCompile Include="parameter.cpp" />
     <ClCompile Include="port.cpp" />
     <ClCompile Include="portabstraction.cpp" />
+    <ClCompile Include="PortMap.cpp" />
     <ClCompile Include="PortRef.cpp" />
     <ClCompile Include="register.cpp" />
     <ClCompile Include="registerdefinition.cpp" />
@@ -288,6 +289,7 @@
     <ClInclude Include="parameter.h" />
     <ClInclude Include="port.h" />
     <ClInclude Include="portabstraction.h" />
+    <ClInclude Include="PortMap.h" />
     <ClInclude Include="PortRef.h" />
     <ClInclude Include="register.h" />
     <ClInclude Include="registerdefinition.h" />

@@ -17,9 +17,10 @@
 #include <library/LibraryManager/libraryinterface.h>
 #include <IPXACTmodels/abstractiondefinition.h>
 #include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/file.h>
 #include <IPXACTmodels/fileset.h>
+#include <IPXACTmodels/PortMap.h>
+#include <IPXACTmodels/vector.h>
 
 #include <QApplication>
 #include <QTextCharFormat>
@@ -537,9 +538,9 @@ void PadsPartGeneratorDialog::generateGates()
         foreach(QSharedPointer<BusInterface> busInterface, busInterfaces)
         {
             int pinCount = 0;
-            foreach(QSharedPointer<General::PortMap> portMap, busInterface->getPortMaps())
+            foreach(QSharedPointer<PortMap> portMap, busInterface->getPortMaps())
             {
-                pinCount += portMap->logicalVector_->getSize();
+                pinCount += portMap->logicalVector()->getSize();
             }
             insertGate(busInterface->getName(), 1, pinCount, 0, cursor);
             insertPins(busInterface, cursor);
@@ -554,9 +555,9 @@ void PadsPartGeneratorDialog::generateGates()
         int pinCount = 0;
         foreach(QSharedPointer<BusInterface> busInterface, component_->getBusInterfaces())
         {
-            foreach(QSharedPointer<General::PortMap> portMap, busInterface->getPortMaps())
+            foreach(QSharedPointer<PortMap> portMap, busInterface->getPortMaps())
             {
-                pinCount += portMap->logicalVector_->getSize();
+                pinCount += portMap->logicalVector()->getSize();
             }
         }
 
@@ -617,18 +618,18 @@ void PadsPartGeneratorDialog::insertPins(QSharedPointer<BusInterface> busInterfa
     QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
     bool showLogicalIndex = false;     
 
-    foreach(QSharedPointer<General::PortMap> portMap, busInterface->getPortMaps())
+    foreach(QSharedPointer<PortMap> portMap, busInterface->getPortMaps())
     {
         if (absDef)
         {
-            showLogicalIndex = (absDef->getPortSize(portMap->logicalPort_, busInterface->getInterfaceMode()) > 1); 
+            showLogicalIndex = (absDef->getPortSize(portMap->logicalPort(), busInterface->getInterfaceMode()) > 1); 
         }
 
-        QString pin = portMap->physicalPort_;
+        QString pin = portMap->physicalPort();
         QStringList line = PadsAsciiSyntax::PART_GATE_PIN.split(PadsAsciiSyntax::SEPARATOR);        
         
-        int logLower = qMin(portMap->logicalVector_->getLeft(), portMap->logicalVector_->getRight());
-        int logHigher = qMax(portMap->logicalVector_->getLeft(), portMap->logicalVector_->getRight());            
+        int logLower = qMin(portMap->getLogicalLeft(), portMap->getLogicalRight());
+        int logHigher = qMax(portMap->getLogicalLeft(), portMap->getLogicalRight());            
         for (int logIndex = logLower; logIndex <= logHigher; logIndex++)
         {                    
             line.replace(PadsAsciiSyntax::PINNUMBER, pin);
@@ -636,11 +637,11 @@ void PadsPartGeneratorDialog::insertPins(QSharedPointer<BusInterface> busInterfa
             line.replace(PadsAsciiSyntax::PINTYPE, "U");
             if (showLogicalIndex)
             {
-                line.replace(PadsAsciiSyntax::PINNAME, portMap->logicalPort_  + "_" + QString::number(logIndex));
+                line.replace(PadsAsciiSyntax::PINNAME, portMap->logicalPort()  + "_" + QString::number(logIndex));
             } 
             else
             {
-                line.replace(PadsAsciiSyntax::PINNAME, portMap->logicalPort_ );
+                line.replace(PadsAsciiSyntax::PINNAME, portMap->logicalPort() );
             }  
 
             insertLine(line.join(PadsAsciiSyntax::SEPARATOR), cursor, PadsAsciiSyntax::PART_GATE_PIN_EXP);                                        

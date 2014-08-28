@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/PortMap.h>
 
 #include <QModelIndex>
 
@@ -186,11 +186,11 @@ void PortListSortProxyModel::onConnectionsReset()
     connectedPorts_.clear();
     foreach (QSharedPointer<BusInterface> busIf, component_->getBusInterfaces())
     {
-        foreach (QSharedPointer<General::PortMap> portMap, busIf->getPortMaps())
+        foreach (QSharedPointer<PortMap> portMap, busIf->getPortMaps())
         {
-            if (!connectedPorts_.contains(portMap->physicalPort_))
+            if (!connectedPorts_.contains(portMap->physicalPort()))
             {
-                connectedPorts_.append(portMap->physicalPort_);
+                connectedPorts_.append(portMap->physicalPort());
             }
         }
     }

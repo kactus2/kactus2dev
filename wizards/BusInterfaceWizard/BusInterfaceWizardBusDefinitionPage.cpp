@@ -20,6 +20,8 @@
 #include <editors/BusEditor/busdefgroup.h>
 #include <editors/ComponentEditor/ports/portsdelegate.h>
 #include <library/LibraryManager/libraryinterface.h>
+#include <IPXACTmodels/PortMap.h>
+#include <IPXACTmodels/vector.h>
 #include <IPXACTmodels/vlnv.h>
 
 #include <QVBoxLayout>
@@ -249,7 +251,7 @@ void BusInterfaceWizardBusEditorPage::createLogicalMappings(QStringList const& p
 //-----------------------------------------------------------------------------
 void BusInterfaceWizardBusEditorPage::createPortMaps()
 {
-    QList<QSharedPointer<General::PortMap> > portMaps;            
+    QList<QSharedPointer<PortMap> > portMaps;            
     if (mappingMode_ != NO_GENERATION)
     {
         QSharedPointer<LibraryComponent> libComp =  handler_->getModel(busIf_->getAbstractionType());
@@ -299,11 +301,13 @@ void BusInterfaceWizardBusEditorPage::createPortMaps()
                     if (absDef->getPortSize(logicalName, busIf_->getInterfaceMode()) == -1 ||
                         higherLogical < absDef->getPortSize(logicalName, busIf_->getInterfaceMode()))
                     {
-                        QSharedPointer<General::PortMap> portMap(new General::PortMap());
-                        portMap->logicalPort_ = logicalName;
-                        portMap->logicalVector_ = QSharedPointer<Vector>(new Vector(higherLogical, lowerLogical));
-                        portMap->physicalPort_ = port;
-                        portMap->physicalVector_ = QSharedPointer<Vector>(new Vector(portWidth - 1, 0));
+                        QSharedPointer<PortMap> portMap(new PortMap());
+                        portMap->setLogicalPort(logicalName);
+                        portMap->setLogicalLeft(higherLogical);
+                        portMap->setLogicalRight(lowerLogical);
+                        portMap->setPhysicalPort(port);
+                        portMap->setPhysicalLeft(portWidth - 1);
+                        portMap->setPhysicalRight(0);
                         portMaps.append(portMap);
                     }
                 }

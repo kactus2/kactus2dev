@@ -16,6 +16,7 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/port.h>
+#include <IPXACTmodels/PortMap.h>
 
 class tst_InterfaceDirectionNameSorter : public QObject
 {
@@ -186,11 +187,11 @@ void tst_InterfaceDirectionNameSorter::addInterface( QString const& interfaceNam
 //-----------------------------------------------------------------------------
 void tst_InterfaceDirectionNameSorter::mapPortToInterface( QString const& portName, QString const& interfaceName )
 {
-    QSharedPointer<General::PortMap> portMap = QSharedPointer<General::PortMap>(new General::PortMap());
-    portMap->logicalPort_ = portName.toUpper();
-    portMap->physicalPort_ = portName;
+    QSharedPointer<PortMap> portMap = QSharedPointer<PortMap>(new PortMap());
+    portMap->setLogicalPort(portName.toUpper());
+    portMap->setPhysicalPort(portName);
 
-    QList<QSharedPointer<General::PortMap> >& portMapList = component_->getBusInterface(interfaceName)->getPortMaps();
+    QList<QSharedPointer<PortMap> >& portMapList = component_->getBusInterface(interfaceName)->getPortMaps();
     portMapList.append(portMap);
 }
 

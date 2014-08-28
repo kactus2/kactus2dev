@@ -28,6 +28,7 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/port.h>
+#include <IPXACTmodels/PortMap.h>
 
 //-----------------------------------------------------------------------------
 // Function: ColumnDeleteCommand()
@@ -291,9 +292,9 @@ ConnectionDeleteCommand::ConnectionDeleteCommand(HWConnection* conn, QUndoComman
 
     if (portsCopied_ && lastConnection)
     {
-        foreach (QSharedPointer<General::PortMap> portMap, portMaps_)
+        foreach (QSharedPointer<PortMap> portMap, portMaps_)
         {
-            QSharedPointer<Port> port = srcComponent->getPort(portMap->physicalPort_);
+            QSharedPointer<Port> port = srcComponent->getPort(portMap->physicalPort());
             DeletePhysicalPortCommand* delCmd = new DeletePhysicalPortCommand(srcComponent, port, this);
 
             // If the port is visible as ad-hoc in the current design, it must be hidden.
@@ -401,10 +402,10 @@ PortDeleteCommand::PortDeleteCommand(HWConnectionEndpoint* port, QUndoCommand* p
         new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
     }
 
-    foreach (QSharedPointer<General::PortMap> portMap, port_->getBusInterface()->getPortMaps() )
+    foreach (QSharedPointer<PortMap> portMap, port_->getBusInterface()->getPortMaps() )
     {
         new DeletePhysicalPortCommand(parent_->componentModel(),
-                                      parent_->componentModel()->getPort(portMap->physicalPort_),
+                                      parent_->componentModel()->getPort(portMap->physicalPort()),
                                       this);
     }
 

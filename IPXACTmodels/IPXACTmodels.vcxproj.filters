@@ -301,6 +301,9 @@
     <ClCompile Include="kactusExtensions\KactusAttribute.cpp">
       <Filter>Source Files\kactusExtensions</Filter>
     </ClCompile>
+    <ClCompile Include="PortMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ipxactmodels_global.h">
@@ -581,6 +584,9 @@
     </ClInclude>
     <ClInclude Include="kactusExtensions\KactusAttribute.h">
       <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="PortMap.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

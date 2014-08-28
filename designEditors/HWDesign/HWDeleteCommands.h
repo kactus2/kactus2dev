@@ -188,7 +188,7 @@ private:
     General::InterfaceMode mode2_;
 
     //! The port maps for the hierarchical end point (if any).
-    QList< QSharedPointer<General::PortMap> > portMaps_;
+    QList< QSharedPointer<PortMap> > portMaps_;
 
     //! If true, port copy operation is a part of this undo command.
     bool portsCopied_;
@@ -311,7 +311,7 @@ private:
     General::InterfaceMode mode_;
 
     //! The port maps.
-    QList< QSharedPointer<General::PortMap> > portMaps_;
+    QList< QSharedPointer<PortMap> > portMaps_;
 
     //! The port's parent.
     GraphicsColumn* parent_;

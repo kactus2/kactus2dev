@@ -216,7 +216,7 @@ public:
 	 *
 	 * \return A QList holding the port maps for this interface.
 	 */
-	QList<QSharedPointer<General::PortMap> >& getPortMaps();
+	QList<QSharedPointer<PortMap> >& getPortMaps();
 
 	/*! \brief Set the abstractionType for this interface
 	 *
@@ -312,7 +312,7 @@ public:
 	 *
 	 * \param portMaps A QList holding the port maps for this interface.
 	 */
-    void setPortMaps(QList<QSharedPointer<General::PortMap> > const& portMaps);
+    void setPortMaps(QList<QSharedPointer<PortMap> > const& portMaps);
 
 	/*! \brief Get the pointer to the master-element
 	 *
@@ -567,7 +567,7 @@ private:
 	 * Describes the mapping between the abstraction definition's
 	 * logical ports and components physical ports.
 	 */
-	QList<QSharedPointer<General::PortMap> > portMaps_;
+	QList<QSharedPointer<PortMap> > portMaps_;
 
 	/*!\brief Number of data bits addressable in the bus interface.
 	 * OPTIONAL

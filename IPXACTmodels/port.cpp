@@ -9,6 +9,7 @@
 #include "parameter.h"
 #include "transactional.h"
 #include "wire.h"
+#include "vector.h"
 #include "GenericVendorExtension.h"
 #include "XmlUtils.h"
 

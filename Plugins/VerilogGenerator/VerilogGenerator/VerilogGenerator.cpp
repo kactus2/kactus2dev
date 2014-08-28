@@ -16,6 +16,7 @@
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/abstractiondefinition.h>
 #include <IPXACTmodels/PortRef.h>
+#include <IPXACTmodels/PortMap.h>
 
 #include <Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h>
 #include <Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h>
@@ -120,14 +121,14 @@ void VerilogGenerator::parseInterconnections()
    {
         QSharedPointer<BusInterface> startBusInterface = getBusinterfaceForInterface(startInterface);
 
-        foreach(QSharedPointer<General::PortMap> startPortMap, startBusInterface->getPortMaps())
+        foreach(QSharedPointer<PortMap> startPortMap, startBusInterface->getPortMaps())
         { 
-            QString wireName = generateWireName(startInterface, startPortMap->logicalPort_);
+            QString wireName = generateWireName(startInterface, startPortMap->logicalPort());
             int wireSize = findWireSize(startInterface, startPortMap); 
 
             mapInstancePortToWire(startInterface.getComponentRef(), startPortMap, wireName, wireSize);
 
-            mapToConnectedInstances(startInterface, startPortMap->logicalPort_, wireName, wireSize);
+            mapToConnectedInstances(startInterface, startPortMap->logicalPort(), wireName, wireSize);
 
             addWireWriter(wireName, wireSize);
         }
@@ -198,7 +199,7 @@ QString VerilogGenerator::findConnectionNameForInterface(Interface interface)
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::findWireSize()
 //-----------------------------------------------------------------------------
-int VerilogGenerator::findWireSize(Interface const& startInterface, QSharedPointer<General::PortMap> startPortMap)
+int VerilogGenerator::findWireSize(Interface const& startInterface, QSharedPointer<PortMap> startPortMap)
 {
     General::PortBounds masterBounds = logicalBoundsInInstance(startInterface.getComponentRef(), startPortMap);
 
@@ -206,8 +207,8 @@ int VerilogGenerator::findWireSize(Interface const& startInterface, QSharedPoint
 
     foreach(Interface endInterface, design_->getConnectedInterfaces(startInterface))
     {
-        foreach(QSharedPointer<General::PortMap> slavePortMap, 
-            findPortMaps(startPortMap->logicalPort_, endInterface))
+        foreach(QSharedPointer<PortMap> slavePortMap, 
+            findPortMaps(startPortMap->logicalPort(), endInterface))
         {
             General::PortBounds bounds = logicalBoundsInInstance(endInterface.getComponentRef(), slavePortMap);
             int size = abs(bounds.left_ - bounds.right_) + 1;
@@ -222,14 +223,14 @@ int VerilogGenerator::findWireSize(Interface const& startInterface, QSharedPoint
 // Function: VerilogGenerator::logicalBoundsInInstance()
 //-----------------------------------------------------------------------------
 General::PortBounds VerilogGenerator::logicalBoundsInInstance(QString const& instanceName, 
-    QSharedPointer<General::PortMap> portMap) const
+    QSharedPointer<PortMap> portMap) const
 {
     General::PortBounds bounds;
     
     QSharedPointer<Component> instanceComponent = getComponentForInstanceName(instanceName);
     if (instanceComponent)
     {
-        QSharedPointer<Port> port = instanceComponent->getPort(portMap->physicalPort_);   
+        QSharedPointer<Port> port = instanceComponent->getPort(portMap->physicalPort());   
         if (port)
         {
             bounds = portMap->getLogicalRange(port);
@@ -251,16 +252,16 @@ QSharedPointer<Component> VerilogGenerator::getComponentForInstanceName(QString 
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::getPortMapsForLogicalSignalInBusInteface()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<General::PortMap> > VerilogGenerator::findPortMaps(QString const& logicalPort, 
+QList<QSharedPointer<PortMap> > VerilogGenerator::findPortMaps(QString const& logicalPort, 
     Interface const& interface) const
 {
-    QList<QSharedPointer<General::PortMap> > portMaps;
+    QList<QSharedPointer<PortMap> > portMaps;
 
     QSharedPointer<BusInterface> slaveBusInterface = getBusinterfaceForInterface(interface);
 
-    foreach(QSharedPointer<General::PortMap> slavePortMap, slaveBusInterface->getPortMaps())
+    foreach(QSharedPointer<PortMap> slavePortMap, slaveBusInterface->getPortMaps())
     {
-        if (slavePortMap->logicalPort_ == logicalPort)
+        if (slavePortMap->logicalPort() == logicalPort)
         {
             portMaps.append(slavePortMap);
         }
@@ -273,21 +274,21 @@ QList<QSharedPointer<General::PortMap> > VerilogGenerator::findPortMaps(QString 
 // Function: VerilogGenerator::mapInstancePortToWire()
 //-----------------------------------------------------------------------------
 void VerilogGenerator::mapInstancePortToWire(QString const& instanceName, 
-    QSharedPointer<General::PortMap> portMap, QString const& wireName, int const& wireSize)
+    QSharedPointer<PortMap> portMap, QString const& wireName, int const& wireSize)
 {
     if (instanceWriters_.contains(instanceName))
     {
         QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter = instanceWriters_.value(instanceName);
         QSharedPointer<Component> instanceComponent = getComponentForInstanceName(instanceName);
 
-        if (wireSize == instanceComponent->getPortWidth(portMap->physicalPort_))
+        if (wireSize == instanceComponent->getPortWidth(portMap->physicalPort()))
         {
-            instanceWriter->assignPortForFullWidth(portMap->physicalPort_, wireName);
+            instanceWriter->assignPortForFullWidth(portMap->physicalPort(), wireName);
         }
         else
         {
-            General::PortBounds bounds = portMap->getLogicalRange(instanceComponent->getPort(portMap->physicalPort_));
-            instanceWriter->assignPortForRange(portMap->physicalPort_, wireName, bounds.left_, bounds.right_);
+            General::PortBounds bounds = portMap->getLogicalRange(instanceComponent->getPort(portMap->physicalPort()));
+            instanceWriter->assignPortForRange(portMap->physicalPort(), wireName, bounds.left_, bounds.right_);
         }
     }
 }
@@ -301,7 +302,7 @@ void VerilogGenerator::mapToConnectedInstances(Interface const& startInterface, 
     foreach(Interface endInterface, design_->getConnectedInterfaces(startInterface))
     {
         QString endInstanceName = endInterface.getComponentRef();
-        foreach(QSharedPointer<General::PortMap> endPortMap, findPortMaps(logicalPort, endInterface))
+        foreach(QSharedPointer<PortMap> endPortMap, findPortMaps(logicalPort, endInterface))
         {
             mapInstancePortToWire(endInstanceName, endPortMap, wireName, wireSize);
         }
@@ -395,13 +396,13 @@ void VerilogGenerator::mapTopBusInterfaceToInterfaceInInstance(QSharedPointer<Bu
     {
         QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter = instanceWriters_.value(instanceName);
 
-        foreach(QSharedPointer<General::PortMap> topMap, topIf->getPortMaps())
+        foreach(QSharedPointer<PortMap> topMap, topIf->getPortMaps())
         {
-            foreach(QSharedPointer<General::PortMap> instanceMap, 
-                findPortMaps(topMap->logicalPort_, instanceInterface))
+            foreach(QSharedPointer<PortMap> instanceMap, 
+                findPortMaps(topMap->logicalPort(), instanceInterface))
             {
-                QString port = instanceMap->physicalPort_;
-                QString signal = topMap->physicalPort_;
+                QString port = instanceMap->physicalPort();
+                QString signal = topMap->physicalPort();
 
                 General::PortAlignment alignment = General::calculatePortAlignment(instanceMap.data(), 
                     instanceComponent->getPortLeftBound(port),instanceComponent->getPortRightBound(port),

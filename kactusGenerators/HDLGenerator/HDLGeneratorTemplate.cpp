@@ -34,6 +34,7 @@
 #include <IPXACTmodels/PortRef.h>
 #include <IPXACTmodels/Interconnection.h>
 #include <IPXACTmodels/HierConnection.h>
+#include <IPXACTmodels/PortMap.h>
 
 #include <common/utils.h>
 
@@ -561,21 +562,21 @@ void HDLGeneratorTemplate::connectInterfaces(QString const& connectionName,
 	Q_ASSERT(interface2);
 
 	// get the port maps of both interfaces
-	QList<QSharedPointer<General::PortMap> > portMaps1 = interface1->getPortMaps();
-	QList<QSharedPointer<General::PortMap> > portMaps2 = interface2->getPortMaps();
+	QList<QSharedPointer<PortMap> > portMaps1 = interface1->getPortMaps();
+	QList<QSharedPointer<PortMap> > portMaps2 = interface2->getPortMaps();
 
 	// get the IP-Xact models of both instances
 	QSharedPointer<Component> component1 = instance1->componentModel();
 	QSharedPointer<Component> component2 = instance2->componentModel();
 
-	foreach (QSharedPointer<General::PortMap> portMap1, portMaps1) {
-		foreach(QSharedPointer<General::PortMap> portMap2, portMaps2) {
+	foreach (QSharedPointer<PortMap> portMap1, portMaps1) {
+		foreach(QSharedPointer<PortMap> portMap2, portMaps2) {
 
-			const QString port1Name = portMap1->physicalPort_;
-			const QString port2Name = portMap2->physicalPort_;
+			const QString port1Name = portMap1->physicalPort();
+			const QString port2Name = portMap2->physicalPort();
 
 			// if the port maps are not for same logical signal
-			if (portMap1->logicalPort_ != portMap2->logicalPort_) {
+			if (portMap1->logicalPort() != portMap2->logicalPort()) {
 				continue;
 			}
 			// if port does not exist in instance 1
@@ -617,7 +618,7 @@ void HDLGeneratorTemplate::connectInterfaces(QString const& connectionName,
 			}
 
 			// create the name for the new signal
-			const QString signalName = connectionName + "_" + portMap1->logicalPort_;
+			const QString signalName = connectionName + "_" + portMap1->logicalPort();
 			
 			HDLGeneratorTemplate::PortConnection port1(instance1, port1Name, 
 				alignment.port1Left_, alignment.port1Right_);
@@ -941,20 +942,20 @@ void HDLGeneratorTemplate::connectHierInterface(QSharedPointer<HDLComponentInsta
 	Q_ASSERT(topInterface);
 
 	// get the port maps of both interfaces
-	QList<QSharedPointer<General::PortMap> > portMaps = instanceInterface->getPortMaps();
-	QList<QSharedPointer<General::PortMap> > hierPortMaps = topInterface->getPortMaps();
+	QList<QSharedPointer<PortMap> > portMaps = instanceInterface->getPortMaps();
+	QList<QSharedPointer<PortMap> > hierPortMaps = topInterface->getPortMaps();
 
 	// get the IP-Xact model of the instance
 	QSharedPointer<Component> component1 = instance->componentModel();
 
-	foreach (QSharedPointer<General::PortMap> portMap, portMaps) {
-		foreach(QSharedPointer<General::PortMap> hierPortMap, hierPortMaps) {
+	foreach (QSharedPointer<PortMap> portMap, portMaps) {
+		foreach(QSharedPointer<PortMap> hierPortMap, hierPortMaps) {
 
-			const QString portName = portMap->physicalPort_;
-			const QString hierPortName = hierPortMap->physicalPort_;
+			const QString portName = portMap->physicalPort();
+			const QString hierPortName = hierPortMap->physicalPort();
 
 			// if the port maps are not for same logical signal
-			if (portMap->logicalPort_ != hierPortMap->logicalPort_) {
+			if (portMap->logicalPort() != hierPortMap->logicalPort()) {
 				continue;
 			}
 			// if port does not exist in instance 1

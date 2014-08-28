@@ -8,6 +8,8 @@
 #include "componenteditorbusinterfaceitem.h"
 #include <editors/ComponentEditor/busInterfaces/businterfaceeditor.h>
 
+#include <IPXACTmodels/PortMap.h>
+
 ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem(QSharedPointer<BusInterface> busif,
 																 ComponentEditorTreeModel* model,
 																 LibraryInterface* libHandler,
@@ -52,11 +54,11 @@ bool ComponentEditorBusInterfaceItem::isValid() const {
         if (absDef)
         {
             // If the port directions in port map do not match.
-            foreach (QSharedPointer<General::PortMap> portMap, busif_->getPortMaps())
+            foreach (QSharedPointer<PortMap> portMap, busif_->getPortMaps())
             {
-                General::Direction logDir = absDef->getPortDirection(portMap->logicalPort_, busif_->getInterfaceMode());
+                General::Direction logDir = absDef->getPortDirection(portMap->logicalPort(), busif_->getInterfaceMode());
 
-                General::Direction physDir =  component_->getPortDirection(portMap->physicalPort_);
+                General::Direction physDir =  component_->getPortDirection(portMap->physicalPort());
                 if (logDir != General::INOUT &&
                     physDir != General::INOUT &&
                     physDir != logDir) 

@@ -134,7 +134,7 @@ private:
     General::InterfaceMode mode2_;
 
     //! The port maps for the hierarchical end point (if any).
-    QList< QSharedPointer<General::PortMap> > portMaps_;
+    QList< QSharedPointer<PortMap> > portMaps_;
 
     //! The graphics scene.
     QGraphicsScene* scene_;
