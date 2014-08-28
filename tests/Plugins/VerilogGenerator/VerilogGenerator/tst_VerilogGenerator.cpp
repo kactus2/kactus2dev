@@ -83,23 +83,17 @@ private:
 
     void addConnectionToDesign(QString fromInstance, QString fromInterface, QString toInstance, QString toInterface);
 
-    void addAdhocConnection(QString const& connectionName, QString const& sourceInstance, QString const& sourcePort, QString const& targetInstance, QString const& targetPort);
-
+    void addAdhocConnection(QString const& connectionName, QString const& sourceInstance, QString const& sourcePort,
+        QString const& targetInstance, QString const& targetPort);
 
     void verifyOutputContains(QString const& expectedOutput);
 
     void compareOutputTo(QString const& expectedOutput);
 
     void readOutputFile();   
-    //-----------------------------------------------------------------------------
-    // Function: addHierAdhocConnection()
-    //-----------------------------------------------------------------------------
+
     void addHierAdhocConnection(QString const& topPort, QString const& targetInstance, QString const& targetPort);
-   
-   
-
-  
-
+ 
     //! The top level component for which the generator is run.
     QSharedPointer<Component> topComponent_;
     
@@ -326,6 +320,7 @@ void tst_VerilogGenerator::testHierarchicalConnections()
         "    .enable(enable_to_instance),\n"
         "    .full(full_from_instance),\n"
         "    .data_out( ));\n"
+        "\n"
         "endmodule\n"));
 }
 

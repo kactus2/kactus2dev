@@ -122,10 +122,10 @@ void tst_ComponentInstanceVerilogWriter::testNamedInstance_data()
     QTest::addColumn<QString>("instanceName");
     QTest::addColumn<QString>("expectedOutput");
 
-    QTest::newRow("empty") << "" << "" << " ();\n";
-    QTest::newRow("empty reference") << "" << "instance" << " instance();\n";
-    QTest::newRow("empty instance name") << "chip" << "" << "chip ();\n";
-    QTest::newRow("common") << "TestComponent" << "instance1" << "TestComponent instance1();\n";
+    QTest::newRow("empty") << "" << "" << " ();\n\n";
+    QTest::newRow("empty reference") << "" << "instance" << " instance();\n\n";
+    QTest::newRow("empty instance name") << "chip" << "" << "chip ();\n\n";
+    QTest::newRow("common") << "TestComponent" << "instance1" << "TestComponent instance1();\n\n";
 }
 
 //-----------------------------------------------------------------------------
@@ -156,10 +156,10 @@ void tst_ComponentInstanceVerilogWriter::testDescriptionIsPrintedAboveInstance_d
     QTest::addColumn<QString>("description");
     QTest::addColumn<QString>("expectedOutput");
 
-    QTest::newRow("empty description") << "" << "TestComponent instance1();\n";
+    QTest::newRow("empty description") << "" << "TestComponent instance1();\n\n";
     QTest::newRow("one line description") << "Component description." << 
         "// Component description.\n"
-        "TestComponent instance1();\n";
+        "TestComponent instance1();\n\n";
 
     QTest::newRow("multiline description") << 
         "Description on\n" 
@@ -169,7 +169,8 @@ void tst_ComponentInstanceVerilogWriter::testDescriptionIsPrintedAboveInstance_d
         "// Description on\n"
         "// multiple\n"
         "// lines.\n"
-        "TestComponent instance1();\n";;
+        "TestComponent instance1();\n"
+        "\n";
 }
 
 //-----------------------------------------------------------------------------
@@ -192,7 +193,8 @@ void tst_ComponentInstanceVerilogWriter::testUnconnectedInstancePorts()
         "TestComponent instance1(\n"
         "    .a_in( ),\n"
         "    .b_in( ),\n"
-        "    .c_out( ));\n"));
+        "    .c_out( ));\n"
+        "\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -216,7 +218,8 @@ void tst_ComponentInstanceVerilogWriter::testFullyConnectedPorts()
 
     QCOMPARE(output_, QString("TestComponent instance1(\n"
         "    .clk(top_clk),\n"
-        "    .rst_n(rst));\n"));
+        "    .rst_n(rst));\n"
+        "\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -240,7 +243,8 @@ void tst_ComponentInstanceVerilogWriter::testPartiallyConnectedPorts()
 
     QCOMPARE(output_, QString("TestComponent instance1(\n"
         "    .chip_select(top_select[0]),\n"
-        "    .data(top_data[7:0]));\n"));
+        "    .data(top_data[7:0]));\n"
+        "\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -263,7 +267,8 @@ void tst_ComponentInstanceVerilogWriter::testDefaultPortValueIsUsedForUnconnecte
     QCOMPARE(output_, QString("TestComponent instance1(\n"
         "    .a_in('b0),\n"
         "    .b_out( ),\n"
-        "    .c_inout( ));\n"));
+        "    .c_inout( ));\n"
+        "\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -289,7 +294,8 @@ void tst_ComponentInstanceVerilogWriter::testInstanceParametersAreAssigned()
         "    .id(1),\n"
         "    .name(tester),\n"
         "    .numElements(16))\n"
-        "instance1();\n"));
+        "instance1();\n"
+        "\n"));
 }
 
 QTEST_APPLESS_MAIN(tst_ComponentInstanceVerilogWriter)

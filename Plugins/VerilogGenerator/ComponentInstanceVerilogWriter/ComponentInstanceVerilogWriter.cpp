@@ -57,7 +57,7 @@ void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
     instanceString.replace("<instanceName>", componentInstance_.getInstanceName());
     instanceString.replace("<portConnections>", portConnections());
 
-    outputStream << instanceString << endl;
+    outputStream << instanceString << endl << endl;
 }
 
 //-----------------------------------------------------------------------------

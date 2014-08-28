@@ -13,13 +13,14 @@
 #define COMMENTWRITER_H
 
 #include "../common/Writer.h"
+#include "../veriloggeneratorplugin_global.h"
 
 #include <QTextStream>
 
 //-----------------------------------------------------------------------------
 //! Class for writing C/Verilog comments.
 //-----------------------------------------------------------------------------
-class CommentWriter : public Writer
+class VERILOGGENERATORPLUGIN_EXPORT CommentWriter : public Writer
 {
 public:
     //! Default number of characters per comment line.
@@ -29,7 +30,7 @@ public:
 	CommentWriter(QString const& comment);
 
 	//! The destructor.
-	~CommentWriter();
+	virtual ~CommentWriter();
 
     /*!
      *  Writes the comment to the given output.

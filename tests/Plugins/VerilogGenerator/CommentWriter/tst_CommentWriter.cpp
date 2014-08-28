@@ -29,6 +29,9 @@ private slots:
     void testEmptyLines();
 };
 
+//-----------------------------------------------------------------------------
+// Function: tst_CommentWriter::tst_CommentWriter()
+//-----------------------------------------------------------------------------
 tst_CommentWriter::tst_CommentWriter()
 {
 }
