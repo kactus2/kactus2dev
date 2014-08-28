@@ -138,9 +138,8 @@ void tst_ComponentInstanceVerilogWriter::testDescriptionIsPrintedAboveInstance()
 
     VLNV instanceVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0");
     QSharedPointer<Component> refComponent(new Component(instanceVLNV));
-    refComponent->setDescription(description);
 
-    ComponentInstance instance("instance1", "", "", instanceVLNV, QPointF(), "");
+    ComponentInstance instance("instance1", "", description, instanceVLNV, QPointF(), "");
 
     ComponentInstanceVerilogWriter writer(instance, refComponent, defaultSorter_);
     writer.write(outputStream_);

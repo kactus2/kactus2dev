@@ -47,7 +47,7 @@ void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
         return;
     }
 
-    CommentWriter descriptionWriter(referencedComponent_->getDescription());
+    CommentWriter descriptionWriter(componentInstance_.getDescription());
     descriptionWriter.write(outputStream);
 
     QString instanceString = "<component> <parameters><instanceName>(<portConnections>);";
