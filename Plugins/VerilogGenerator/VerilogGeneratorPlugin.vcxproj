@@ -130,6 +130,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CommentWriter\CommentWriter.cpp" />
+    <ClCompile Include="common\WriterGroup.cpp" />
     <ClCompile Include="ComponentInstanceVerilogWriter\ComponentInstanceVerilogWriter.cpp" />
     <ClCompile Include="ComponentVerilogWriter\ComponentVerilogWriter.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_VerilogGeneratorPlugin.cpp">
@@ -151,6 +152,7 @@
   <ItemGroup>
     <ClInclude Include="CommentWriter\CommentWriter.h" />
     <ClInclude Include="common\Writer.h" />
+    <ClInclude Include="common\WriterGroup.h" />
     <ClInclude Include="ComponentInstanceVerilogWriter\ComponentInstanceVerilogWriter.h" />
     <ClInclude Include="ComponentVerilogWriter\ComponentVerilogWriter.h" />
     <ClInclude Include="ModelParameterVerilogWriter\ModelParameterVerilogWriter.h" />

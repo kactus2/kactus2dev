@@ -178,14 +178,16 @@ void tst_VerilogGenerator::testTopLevelComponent()
     runGenerator();
 
     verifyOutputContains(QString(
-        "module TestComponent(clk, dataIn, rst_n, dataOut);\n"
-        "    parameter dataWidth = 8;\n"
-        "    parameter freq = 100000;\n"
+        "module TestComponent #(\n"
+        "    parameter dataWidth = 8,\n"
+        "    parameter freq = 100000\n"
+        ") (\n"
         "    // These ports are not in any interface\n"         
-        "    input clk;\n"
-        "    input [7:0] dataIn;\n"
-        "    input rst_n;\n"
-        "    output [7:0] dataOut;\n"
+        "    input clk,\n"
+        "    input [7:0] dataIn,\n"
+        "    input rst_n,\n"
+        "    output [7:0] dataOut\n"
+        ");\n"
         "\n"
         "endmodule\n"
         ));
@@ -306,14 +308,15 @@ void tst_VerilogGenerator::testHierarchicalConnections()
     runGenerator();
 
     verifyOutputContains(QString(
-        "module TestComponent(top_clk, data_to_instance, enable_to_instance, full_from_instance);\n"
+        "module TestComponent(\n"
         "    // Interface: clk_if\n"
-        "    input top_clk;\n"
+        "    input top_clk,\n"
         "\n"
         "    // Interface: data_bus\n"     
-        "    input [7:0] data_to_instance;\n"
-        "    input enable_to_instance;\n"
-        "    output full_from_instance;\n"
+        "    input [7:0] data_to_instance,\n"
+        "    input enable_to_instance,\n"
+        "    output full_from_instance\n"
+        ");\n"
         "\n"
         "TestInstance instance1(\n"
         "    .clk(top_clk),\n"
@@ -322,11 +325,12 @@ void tst_VerilogGenerator::testHierarchicalConnections()
         "    .full(full_from_instance),\n"
         "    .data_out( ));\n"
         "\n"
+        "\n"
         "endmodule\n"));
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VerilogGenerator::testHierarchicalConnections()
+// Function: tst_VerilogGenerator::testSlicedHierarchicalConnection()
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::testSlicedHierarchicalConnection()
 {    
@@ -365,6 +369,7 @@ void tst_VerilogGenerator::testUnknownInstanceIsNotWritten()
     addInstanceToDesign("unknown", nonLibraryComponent);
 
     runGenerator();
+
 
     verifyOutputContains(
         "module TestComponent();\n"
@@ -480,16 +485,17 @@ void tst_VerilogGenerator::testMasterToSlaveInterconnection()
 
     runGenerator();
 
-    verifyOutputContains("wire sender_to_receiver_ENABLE;");
-    verifyOutputContains("wire [7:0] sender_to_receiver_DATA;");
-
-    verifyOutputContains("TestSender sender(\n"
-       "    .data_out(sender_to_receiver_DATA),\n"
-       "    .enable_out(sender_to_receiver_ENABLE)");
-
-    verifyOutputContains("TestReceiver receiver(\n"
-        "    .data_in(sender_to_receiver_DATA),\n"
-        "    .enable_in(sender_to_receiver_ENABLE)");
+    verifyOutputContains(
+    "wire [7:0] sender_to_receiver_DATA;\n"
+    "wire sender_to_receiver_ENABLE;\n"
+    "\n"
+    "TestReceiver receiver(\n"
+    "    .data_in(sender_to_receiver_DATA),\n"
+    "    .enable_in(sender_to_receiver_ENABLE));\n"   
+    "\n"
+    "TestSender sender(\n"
+    "    .data_out(sender_to_receiver_DATA),\n"
+    "    .enable_out(sender_to_receiver_ENABLE));");
 }
 
 //-----------------------------------------------------------------------------

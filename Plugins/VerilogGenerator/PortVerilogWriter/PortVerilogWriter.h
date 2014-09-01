@@ -13,6 +13,7 @@
 #define PORTVERILOGWRITER_H
 
 #include "../veriloggeneratorplugin_global.h"
+#include "../common/Writer.h"
 
 #include <IPXACTmodels/port.h>
 
@@ -21,7 +22,7 @@
 //-----------------------------------------------------------------------------
 // Class for writing port declarations in Verilog.
 //-----------------------------------------------------------------------------
-class VERILOGGENERATORPLUGIN_EXPORT PortVerilogWriter 
+class VERILOGGENERATORPLUGIN_EXPORT PortVerilogWriter : public Writer
 {
 public:
     /*!

@@ -8,5 +8,6 @@ HEADERS += ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/C
     ../../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h \
     ../../../../Plugins/VerilogGenerator/PortSorter/PortSorter.h \
     ../../../../Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.h \
-    ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h
+    ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
+	../../../../Plugins/VerilogGenerator/common/WriterGroup.h \
 SOURCES += ./tst_ComponentVerilogWriter.cpp

@@ -3,6 +3,6 @@
 # ------------------------------------------------------
 
 HEADERS += ../../../../Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.h \
-    ../../../../Plugins/VerilogGenerator/common/Writer.h \
-	../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h
+    ../../../../Plugins/VerilogGenerator/common/Writer.h 
+
 SOURCES += ./tst_PortVerilogWriter.cpp

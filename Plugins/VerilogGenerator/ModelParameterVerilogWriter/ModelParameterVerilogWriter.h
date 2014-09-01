@@ -13,6 +13,7 @@
 #define ModelParameterVerilogWriter_H
 
 #include "../veriloggeneratorplugin_global.h"
+#include "../common/Writer.h"
 
 #include <QString>
 #include <QSharedPointer>
@@ -23,7 +24,7 @@ class ModelParameter;
 //-----------------------------------------------------------------------------
 //! Class for writing model parameter declarations in Verilog.
 //-----------------------------------------------------------------------------
-class VERILOGGENERATORPLUGIN_EXPORT ModelParameterVerilogWriter
+class VERILOGGENERATORPLUGIN_EXPORT ModelParameterVerilogWriter : public Writer
 {
 
 public:

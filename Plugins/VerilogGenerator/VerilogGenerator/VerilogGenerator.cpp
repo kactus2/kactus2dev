@@ -18,6 +18,7 @@
 #include <IPXACTmodels/PortRef.h>
 #include <IPXACTmodels/PortMap.h>
 
+#include <Plugins/VerilogGenerator/common/WriterGroup.h>
 #include <Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h>
 #include <Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h>
 #include <Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.h>
@@ -89,7 +90,8 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer
     topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(topComponent_, sorter_));
 
     instanceWriters_.clear();
-    wireWriters_.clear();
+
+    wireWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
 
     if (design_)
     {
@@ -314,7 +316,7 @@ void VerilogGenerator::mapToConnectedInstances(Interface const& startInterface, 
 //-----------------------------------------------------------------------------
 void VerilogGenerator::addWireWriter(QString wireName, int wireSize)
 {
-    wireWriters_.append(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(wireName, wireSize)));
+    wireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(wireName, wireSize)));
 }
 
 //-----------------------------------------------------------------------------
@@ -494,7 +496,6 @@ void VerilogGenerator::createWireForAdHocConnection(AdHocConnection const& adHoc
     mapPortsInAdHocConnectionToWire(adHocConnection, wireName);
 
     addWireWriter(wireName, wireSize);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -543,13 +544,15 @@ void VerilogGenerator::mapPortsInAdHocConnectionToWire(AdHocConnection const &ad
 //-----------------------------------------------------------------------------
 void VerilogGenerator::addWritersToTopInDesiredOrder() const
 {
-    foreach(QSharedPointer<VerilogWireWriter> wireWriter, wireWriters_)
+    if (!wireWriters_->hasNoWriters())
     {
-        topWriter_->add(wireWriter);
-    }
+        topWriter_->add(wireWriters_);    
+    }    
 
     foreach(QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter, instanceWriters_)
     {
-        topWriter_->add(instanceWriter);
+        QSharedPointer<WriterGroup> writer = QSharedPointer<WriterGroup>(new WriterGroup);
+        writer->add(instanceWriter);
+        topWriter_->add(writer);
     }
 }

@@ -11,8 +11,6 @@
 
 #include "PortVerilogWriter.h"
 
-#include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
-
 //-----------------------------------------------------------------------------
 // Function: PortVerilogWriter::PortVerilogWriter()
 //-----------------------------------------------------------------------------
@@ -41,15 +39,6 @@ void PortVerilogWriter::write( QTextStream& outputStream ) const
     }
 
     outputStream << createDeclaration();
-
-    CommentWriter descriptionWriter(port_->getDescription());
-    descriptionWriter.setIndent(4);
-    descriptionWriter.write(outputStream);
-
-    if (port_->getDescription().isEmpty())
-    {
-        outputStream << endl;
-    }    
 }
 
 //-----------------------------------------------------------------------------
@@ -66,7 +55,7 @@ bool PortVerilogWriter::nothingToWrite() const
 //-----------------------------------------------------------------------------
 QString PortVerilogWriter::createDeclaration() const
 {
-    QString portDeclaration("<direction> <type> <bounds> <name>;");
+    QString portDeclaration("<direction> <type> <bounds> <name>");
 
     portDeclaration.replace("<direction>", direction());
     portDeclaration.replace("<type>", port_->getTypeName());

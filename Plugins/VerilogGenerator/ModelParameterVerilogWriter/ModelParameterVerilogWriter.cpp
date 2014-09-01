@@ -12,7 +12,6 @@
 #include "ModelParameterVerilogWriter.h"
 
 #include <IPXACTmodels/modelparameter.h>
-#include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: ModelParameterVerilogWriter::ModelParameterVerilogWriter()
@@ -42,15 +41,6 @@ void ModelParameterVerilogWriter::write(QTextStream& output) const
     }
 
     output << createDeclaration(); 
-    
-    CommentWriter descriptionWriter(modelParameter_->getDescription());
-    descriptionWriter.setIndent(4);
-    descriptionWriter.write(output);
-
-    if (modelParameter_->getDescription().isEmpty())
-    {
-        output << endl;
-    }
 }    
 
 //-----------------------------------------------------------------------------
@@ -66,7 +56,7 @@ bool ModelParameterVerilogWriter::nothingToWrite() const
 //-----------------------------------------------------------------------------
 QString ModelParameterVerilogWriter::createDeclaration() const
 {
-    QString parameterDeclaration("parameter <type> <name> = <default>;");
+    QString parameterDeclaration("parameter <type> <name> = <default>");
 
     parameterDeclaration.replace("<type>", modelParameter_->getDataType());
     parameterDeclaration.replace("<name>", modelParameter_->getName());

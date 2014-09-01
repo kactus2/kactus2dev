@@ -20,6 +20,7 @@
 #include <Plugins/VerilogGenerator/PortSorter/PortSorter.h>
 #include <Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h>
 #include <Plugins/VerilogGenerator/common/Writer.h>
+#include <Plugins/VerilogGenerator/common/WriterGroup.h>
 
 #include <QSharedPointer>
 #include <QTextStream>
@@ -28,10 +29,9 @@
 //-----------------------------------------------------------------------------
 //! Class for writing a component as a Verilog module.
 //-----------------------------------------------------------------------------
-class VERILOGGENERATORPLUGIN_EXPORT ComponentVerilogWriter 
+class VERILOGGENERATORPLUGIN_EXPORT ComponentVerilogWriter : public WriterGroup
 {
 public:
-
 
 	/*!
 	 *  The constructor.
@@ -48,9 +48,7 @@ public:
 	 *
 	 *      @param [in] output   The text stream to write the module into.
 	 */
-    void write(QTextStream& outputStream) const;
-
-    void add(QSharedPointer<Writer> writer);
+    virtual void write(QTextStream& outputStream) const;
 
 private:
 	// Disable copying.
@@ -84,6 +82,7 @@ private:
       *      @param [in] outputStream   The output to write to.
       */
     void writeParameterDeclarations(QTextStream& outputStream) const;
+    void writeParameter(QTextStream& outputStream, QSharedPointer<ModelParameter> parameter, bool isLast) const;
 
     /*!
      *  Writes the module port declaration.
@@ -91,6 +90,7 @@ private:
      *      @param [in] outputStream   The output to write to.
      */
     void writePortDeclarations(QTextStream& outputStream) const;
+    void writePort(QTextStream& outputStream, QSharedPointer<Port> port, bool isLast) const;
 
     /*!
      *  Writes a bus interface introduction.

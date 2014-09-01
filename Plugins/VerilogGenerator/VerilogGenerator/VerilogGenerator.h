@@ -25,6 +25,7 @@ class ComponentVerilogWriter;
 class ComponentInstanceVerilogWriter;
 class VerilogHeaderWriter;
 class VerilogWireWriter;
+class WriterGroup;
 class PortSorter;
 
 //-----------------------------------------------------------------------------
@@ -292,7 +293,7 @@ private:
      QSharedPointer<Design> design_;
 
      //! Writers for Verilog wires.
-     QList<QSharedPointer<VerilogWireWriter> > wireWriters_;
+     QSharedPointer<WriterGroup> wireWriters_;
 
      //! Writers for Verilog instances.
      QMap<QString, QSharedPointer<ComponentInstanceVerilogWriter> > instanceWriters_;

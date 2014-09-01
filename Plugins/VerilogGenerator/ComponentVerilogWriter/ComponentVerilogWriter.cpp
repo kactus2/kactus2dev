@@ -60,21 +60,9 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
 
     writeModuleDeclaration(outputStream);
 
-    writeParameterDeclarations(outputStream);
-
-    writePortDeclarations(outputStream);
-
     writeInternalWiresAndComponentInstances(outputStream);
 
     writeModuleEnd(outputStream);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentVerilogWriter::add()
-//-----------------------------------------------------------------------------
-void ComponentVerilogWriter::add(QSharedPointer<Writer> writer)
-{
-    childWriters_.append(writer);
 }
 
 //-----------------------------------------------------------------------------
@@ -90,7 +78,11 @@ bool ComponentVerilogWriter::nothingToWrite() const
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writeModuleDeclaration( QTextStream& outputStream ) const
 {
-    outputStream << "module " << component_->getVlnv()->getName() << "(" << portNames() << ");" << endl;
+    outputStream << "module " << component_->getVlnv()->getName();
+    
+    writeParameterDeclarations(outputStream);
+
+    writePortDeclarations(outputStream);     
 }
 
 //-----------------------------------------------------------------------------
@@ -106,11 +98,43 @@ QString ComponentVerilogWriter::portNames() const
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStream) const
 {
-    foreach(QSharedPointer<ModelParameter> parameter, component_->getModelParameters())
+    if (component_->hasModelParameters())
     {
-        outputStream << INDENT;
-        ModelParameterVerilogWriter writer(parameter);
-        writer.write(outputStream);
+        outputStream << " #(" << endl;
+
+        QList<QSharedPointer<ModelParameter> > modelParameters = component_->getModelParameters();
+        foreach(QSharedPointer<ModelParameter> parameter, modelParameters)
+        {
+            bool isLastParameter = parameter == modelParameters.last();
+            writeParameter(outputStream, parameter, isLastParameter);
+        }
+
+        outputStream << ") ";
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentVerilogWriter::writeParameter()
+//-----------------------------------------------------------------------------
+void ComponentVerilogWriter::writeParameter(QTextStream& outputStream, QSharedPointer<ModelParameter> parameter,
+    bool isLast) const
+{
+    outputStream << INDENT;
+    ModelParameterVerilogWriter writer(parameter);
+    writer.write(outputStream);
+
+    if (!isLast)
+    {
+        outputStream << ",";
+    }
+
+    CommentWriter descriptionWriter(parameter->getDescription());
+    descriptionWriter.setIndent(4);
+    descriptionWriter.write(outputStream);
+
+    if (parameter->getDescription().isEmpty())
+    {
+        outputStream << endl;
     }
 }
 
@@ -121,18 +145,19 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
 {
     QString previousInterfaceName = "";
 
-    foreach(QString portName, sorter_->sortedPortNames(component_))
+    outputStream << "(";
+
+    QStringList ports = sorter_->sortedPortNames(component_);
+    foreach(QString portName, ports)
     {    
         writeInterfaceIntroduction(component_->getInterfaceNameForPort(portName), previousInterfaceName, 
             outputStream);
 
-        outputStream << INDENT;
-
-        PortVerilogWriter writer(component_->getPort(portName));
-        writer.write(outputStream);
+        bool lastPortToWrite = portName == ports.last();
+        writePort(outputStream, component_->getPort(portName), lastPortToWrite);
     }
-
-    outputStream << endl;
+    
+    outputStream << ");" << endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -145,10 +170,7 @@ void ComponentVerilogWriter::writeInterfaceIntroduction(QString const& interface
   
     if (previousInterfaceName.compare(interfaceName) != 0)
     {
-        if (!isFirstInterface)
-        {
-            outputStream << endl;
-        }
+        outputStream << endl;
 
         if (interfaceName == "none")
         {
@@ -172,14 +194,38 @@ void ComponentVerilogWriter::writeInterfaceIntroduction(QString const& interface
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentVerilogWriter::writePort()
+//-----------------------------------------------------------------------------
+void ComponentVerilogWriter::writePort(QTextStream& outputStream, QSharedPointer<Port> port, bool isLast) const
+{
+    outputStream << INDENT;
+
+    PortVerilogWriter writer(port);
+    writer.write(outputStream);
+
+    if (!isLast)
+    {
+        outputStream << ",";
+    }
+
+    CommentWriter descriptionWriter(port->getDescription());
+    descriptionWriter.setIndent(4);
+    descriptionWriter.write(outputStream);
+
+    if (port->getDescription().isEmpty())
+    {
+        outputStream << endl;
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::writeInternalWiresAndComponentInstances()
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writeInternalWiresAndComponentInstances(QTextStream& outputStream) const
 {
-    foreach(QSharedPointer<Writer> writer, childWriters_)
-    {
-        writer->write(outputStream);
-    }
+    outputStream << endl;
+
+    WriterGroup::write(outputStream);
 }
 
 //-----------------------------------------------------------------------------

@@ -4,7 +4,6 @@
 
 HEADERS += ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h \
     ../../../../Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.h \
-    ../../../../Plugins/VerilogGenerator/PortSorter/PortSorter.h \
-    ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h
+    ../../../../Plugins/VerilogGenerator/PortSorter/PortSorter.h 
 SOURCES += ./tst_ComponentInstanceVerilogWriter.cpp \
  

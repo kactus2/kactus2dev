@@ -85,6 +85,9 @@
     <Filter Include="Source Files\CommentWriter">
       <UniqueIdentifier>{a47d1b0b-24ee-45bc-ba3a-98b00efca831}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\common">
+      <UniqueIdentifier>{4a27df50-07b3-4de2-b5a0-4286e816efb4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VerilogGeneratorPlugin.cpp">
@@ -123,6 +126,9 @@
     <ClCompile Include="CommentWriter\CommentWriter.cpp">
       <Filter>Source Files\CommentWriter</Filter>
     </ClCompile>
+    <ClCompile Include="common\WriterGroup.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="veriloggeneratorplugin_global.h">
@@ -160,6 +166,9 @@
     </ClInclude>
     <ClInclude Include="CommentWriter\CommentWriter.h">
       <Filter>Header Files\CommentWriter</Filter>
+    </ClInclude>
+    <ClInclude Include="common\WriterGroup.h">
+      <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
