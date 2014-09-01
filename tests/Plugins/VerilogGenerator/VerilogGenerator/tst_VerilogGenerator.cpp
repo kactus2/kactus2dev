@@ -52,6 +52,8 @@ private slots:
     void testAdhocConnectionBetweenComponentInstances();    
     void testHierarchicalAdhocConnection();
     void testAdHocConnectionToUnknownInstanceIsNotWritten();
+    void testDescriptionAndVLNVIsPrintedAboveInstance();
+    void testDescriptionAndVLNVIsPrintedAboveInstance_data();
 
 private:
 
@@ -87,14 +89,14 @@ private:
     void addAdhocConnection(QString const& connectionName, QString const& sourceInstance, QString const& sourcePort,
         QString const& targetInstance, QString const& targetPort);
 
+    void addHierAdhocConnection(QString const& topPort, QString const& targetInstance, QString const& targetPort);
+
     void verifyOutputContains(QString const& expectedOutput);
 
     void compareOutputTo(QString const& expectedOutput);
 
     void readOutputFile();   
-
-    void addHierAdhocConnection(QString const& topPort, QString const& targetInstance, QString const& targetPort);
- 
+   
     //! The top level component for which the generator is run.
     QSharedPointer<Component> topComponent_;
     
@@ -318,12 +320,13 @@ void tst_VerilogGenerator::testHierarchicalConnections()
         "    output full_from_instance\n"
         ");\n"
         "\n"
-        "TestInstance instance1(\n"
-        "    .clk(top_clk),\n"
-        "    .data_in(data_to_instance),\n"
-        "    .enable(enable_to_instance),\n"
-        "    .full(full_from_instance),\n"
-        "    .data_out( ));\n"
+        "    // IP-XACT VLNV: Test:TestLibrary:TestInstance:1.0\n"
+        "    TestInstance instance1(\n"
+        "        .clk(top_clk),\n"
+        "        .data_in(data_to_instance),\n"
+        "        .enable(enable_to_instance),\n"
+        "        .full(full_from_instance),\n"
+        "        .data_out( ));\n"
         "\n"
         "\n"
         "endmodule\n"));
@@ -352,12 +355,12 @@ void tst_VerilogGenerator::testSlicedHierarchicalConnection()
     runGenerator();
 
     verifyOutputContains(QString(
-        "TestInstance instance1(\n"
-        "    .clk( ),\n"
-        "    .data_in(data_to_instance[7:0]),\n"
-        "    .enable(enable_to_instance[1]),\n"
-        "    .full(full_from_instance[1]),\n"
-        "    .data_out( ));"));
+        "    TestInstance instance1(\n"
+        "        .clk( ),\n"
+        "        .data_in(data_to_instance[7:0]),\n"
+        "        .enable(enable_to_instance[1]),\n"
+        "        .full(full_from_instance[1]),\n"
+        "        .data_out( ));"));
 }
 
 //-----------------------------------------------------------------------------
@@ -486,16 +489,18 @@ void tst_VerilogGenerator::testMasterToSlaveInterconnection()
     runGenerator();
 
     verifyOutputContains(
-    "wire [7:0] sender_to_receiver_DATA;\n"
-    "wire sender_to_receiver_ENABLE;\n"
+    "    wire [7:0] sender_to_receiver_DATA;\n"
+    "    wire sender_to_receiver_ENABLE;\n"
     "\n"
-    "TestReceiver receiver(\n"
-    "    .data_in(sender_to_receiver_DATA),\n"
-    "    .enable_in(sender_to_receiver_ENABLE));\n"   
+    "    // IP-XACT VLNV: Test:TestLibrary:TestReceiver:1.0\n"
+    "    TestReceiver receiver(\n"
+    "        .data_in(sender_to_receiver_DATA),\n"
+    "        .enable_in(sender_to_receiver_ENABLE));\n"   
     "\n"
-    "TestSender sender(\n"
-    "    .data_out(sender_to_receiver_DATA),\n"
-    "    .enable_out(sender_to_receiver_ENABLE));");
+    "    // IP-XACT VLNV: Test:TestLibrary:TestSender:1.0\n"
+    "    TestSender sender(\n"
+    "        .data_out(sender_to_receiver_DATA),\n"
+    "        .enable_out(sender_to_receiver_ENABLE));");
 }
 
 //-----------------------------------------------------------------------------
@@ -576,16 +581,16 @@ void tst_VerilogGenerator::testMasterToMultipleSlavesInterconnections()
     verifyOutputContains("wire [7:0] sender_data_bus_DATA;");
 
     verifyOutputContains("TestSender sender(\n"
-        "    .data_out(sender_data_bus_DATA),\n"
-        "    .enable_out(sender_data_bus_ENABLE)");
+        "        .data_out(sender_data_bus_DATA),\n"
+        "        .enable_out(sender_data_bus_ENABLE)");
 
     verifyOutputContains("TestReceiver receiver1(\n"
-        "    .data_in(sender_data_bus_DATA),\n"
-        "    .enable_in(sender_data_bus_ENABLE)");
+        "        .data_in(sender_data_bus_DATA),\n"
+        "        .enable_in(sender_data_bus_ENABLE)");
 
     verifyOutputContains("TestReceiver receiver2(\n"
-        "    .data_in(sender_data_bus_DATA),\n"
-        "    .enable_in(sender_data_bus_ENABLE)");
+        "        .data_in(sender_data_bus_DATA),\n"
+        "        .enable_in(sender_data_bus_ENABLE)");
 }
 
 //-----------------------------------------------------------------------------
@@ -621,21 +626,25 @@ void tst_VerilogGenerator::testInterconnectionToVaryingSizeLogicalMaps()
     verifyOutputContains("wire [15:0] sender_data_bus_DATA;");
     verifyOutputContains("wire sender_data_bus_ENABLE;");    
 
-    verifyOutputContains("TestSender sender(\n"
-        "    .data_out(sender_data_bus_DATA[7:0]),\n"
-        "    .enable_out(sender_data_bus_ENABLE)");
+    verifyOutputContains(
+        "    TestSender sender(\n"
+        "        .data_out(sender_data_bus_DATA[7:0]),\n"
+        "        .enable_out(sender_data_bus_ENABLE)");
 
-    verifyOutputContains("TestReceiver oneBitReceiver(\n"
-        "    .data_in(sender_data_bus_DATA[0]),\n"
-        "    .enable_in(sender_data_bus_ENABLE)");
+    verifyOutputContains(
+        "    TestReceiver oneBitReceiver(\n"
+        "        .data_in(sender_data_bus_DATA[0]),\n"
+        "        .enable_in(sender_data_bus_ENABLE)");
 
-    verifyOutputContains("TestReceiver4bit fourBitReceiver(\n"
-        "    .data_in(sender_data_bus_DATA[3:0]),\n"
-        "    .enable_in(sender_data_bus_ENABLE)");
+    verifyOutputContains(
+        "    TestReceiver4bit fourBitReceiver(\n"
+        "        .data_in(sender_data_bus_DATA[3:0]),\n"
+        "        .enable_in(sender_data_bus_ENABLE)");
 
-    verifyOutputContains("TestReceiver16bit sixteenBitReceiver(\n"
-        "    .data_in(sender_data_bus_DATA),\n"
-        "    .enable_in(sender_data_bus_ENABLE)");
+    verifyOutputContains(
+        "    TestReceiver16bit sixteenBitReceiver(\n"
+        "        .data_in(sender_data_bus_DATA),\n"
+        "        .enable_in(sender_data_bus_ENABLE)");
 }
 
 //-----------------------------------------------------------------------------
@@ -672,13 +681,15 @@ void tst_VerilogGenerator::testMasterInterconnectionToMirroredMaster()
     verifyOutputContains("wire [7:0] sender_to_receiver_DATA;");
     verifyOutputContains("wire sender_to_receiver_ENABLE;");    
 
-    verifyOutputContains("TestSender sender(\n"
-        "    .data_out(sender_to_receiver_DATA),\n"
-        "    .enable_out(sender_to_receiver_ENABLE)");
+    verifyOutputContains(
+        "    TestSender sender(\n"
+        "        .data_out(sender_to_receiver_DATA),\n"
+        "        .enable_out(sender_to_receiver_ENABLE)");
 
-    verifyOutputContains("BusComponent receiver(\n"
-        "    .data_in(sender_to_receiver_DATA),\n"
-        "    .enable_in(sender_to_receiver_ENABLE)");
+    verifyOutputContains(
+        "    BusComponent receiver(\n"
+        "        .data_in(sender_to_receiver_DATA),\n"
+        "        .enable_in(sender_to_receiver_ENABLE)");
 }
 
 //-----------------------------------------------------------------------------
@@ -703,13 +714,15 @@ void tst_VerilogGenerator::testMirroredSlaveInterconnectionToSlaves()
     verifyOutputContains("wire [7:0] sender_data_bus_DATA;");
     verifyOutputContains("wire sender_data_bus_ENABLE;");    
 
-    verifyOutputContains("TestSender sender(\n"
-        "    .data_out(sender_data_bus_DATA),\n"
-        "    .enable_out(sender_data_bus_ENABLE)");
+    verifyOutputContains(
+        "    TestSender sender(\n"
+        "        .data_out(sender_data_bus_DATA),\n"
+        "        .enable_out(sender_data_bus_ENABLE)");
 
-    verifyOutputContains("BusComponent bus1(\n"
-        "    .data_in(sender_data_bus_DATA),\n"
-        "    .enable_in(sender_data_bus_ENABLE)");
+    verifyOutputContains(
+        "    BusComponent bus1(\n"
+        "        .data_in(sender_data_bus_DATA),\n"
+        "        .enable_in(sender_data_bus_ENABLE)");
 }
 
 //-----------------------------------------------------------------------------
@@ -735,17 +748,20 @@ void tst_VerilogGenerator::testAdhocConnectionBetweenComponentInstances()
     verifyOutputContains("wire enableAdHoc;");
     verifyOutputContains("wire [7:0] dataAdHoc;");
 
-    verifyOutputContains("TestSender sender(\n"
-        "    .data_out(dataAdHoc),\n"
-        "    .enable_out(enableAdHoc)");
+    verifyOutputContains(
+        "    TestSender sender(\n"
+        "        .data_out(dataAdHoc),\n"
+        "        .enable_out(enableAdHoc)");
 
-    verifyOutputContains("TestReceiver receiver1(\n"
-        "    .data_in(dataAdHoc),\n"
-        "    .enable_in(enableAdHoc)");
+    verifyOutputContains(
+        "    TestReceiver receiver1(\n"
+        "        .data_in(dataAdHoc),\n"
+        "        .enable_in(enableAdHoc)");
 
-    verifyOutputContains("TestReceiver receiver2(\n"
-        "    .data_in( ),\n"
-        "    .enable_in(enableAdHoc)");
+    verifyOutputContains(
+        "    TestReceiver receiver2(\n"
+        "        .data_in( ),\n"
+        "        .enable_in(enableAdHoc)");
 }
 
 //-----------------------------------------------------------------------------
@@ -799,9 +815,10 @@ void tst_VerilogGenerator::testHierarchicalAdhocConnection()
 
     runGenerator();
 
-    verifyOutputContains("TestSender sender(\n"
-        "    .data_out(data_from_sender),\n"
-        "    .enable_out(enable_from_sender)");
+    verifyOutputContains(
+        "    TestSender sender(\n"
+        "        .data_out(data_from_sender),\n"
+        "        .enable_out(enable_from_sender)");
 }
 
 //-----------------------------------------------------------------------------
@@ -839,6 +856,58 @@ void tst_VerilogGenerator::testAdHocConnectionToUnknownInstanceIsNotWritten()
         "module TestComponent();\n"
         "\n"
         "endmodule");
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentInstanceVerilogWriter::testDescriptionAndVLNVIsPrintedAboveInstance()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testDescriptionAndVLNVIsPrintedAboveInstance()
+{
+    QFETCH(QString, description);
+    QFETCH(QString, expectedOutput);
+    
+    VLNV instanceVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0");
+    QSharedPointer<Component> refComponent(new Component(instanceVLNV));
+    library_.addComponent(refComponent);
+
+    ComponentInstance instance("instance1", "", description, instanceVLNV, QPointF(), "");
+
+    QList<ComponentInstance> componentInstances = design_->getComponentInstances();
+    componentInstances.append(instance);
+    design_->setComponentInstances(componentInstances);
+
+    runGenerator();
+
+    verifyOutputContains(expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentInstanceVerilogWriter::testDescriptionAndVLNVIsPrintedAboveInstance_data()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testDescriptionAndVLNVIsPrintedAboveInstance_data()
+{
+    QTest::addColumn<QString>("description");
+    QTest::addColumn<QString>("expectedOutput");
+
+    QTest::newRow("empty description") << "" <<
+        "    // IP-XACT VLNV: Test:TestLibrary:TestComponent:1.0\n"
+        "    TestComponent instance1();\n";
+    QTest::newRow("one line description") << "Instance description." << 
+        "    // Instance description.\n"
+        "    // IP-XACT VLNV: Test:TestLibrary:TestComponent:1.0\n"
+        "    TestComponent instance1();\n";
+
+    QTest::newRow("multiline description") << 
+        "Description on\n" 
+        "multiple\n" 
+        "lines." 
+        << 
+        "    // Description on\n"
+        "    // multiple\n"
+        "    // lines.\n"
+        "    // IP-XACT VLNV: Test:TestLibrary:TestComponent:1.0\n"
+        "    TestComponent instance1();\n";
 }
 
 //-----------------------------------------------------------------------------

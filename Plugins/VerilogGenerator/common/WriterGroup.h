@@ -44,18 +44,19 @@ public:
      *
      *      @param [in] writer   The writer to add.     
      */
-    void add(QSharedPointer<Writer> writer);
-        /*!
-     *  Checks if the group has no writers in it.
+     void add(QSharedPointer<Writer> writer);
+    
+    /*!
+     *  Checks if the group has writers in it.
      *
-     *      @return True, if the group has no writers, otherwise false.
+     *      @return True, if the group has writers, otherwise false.
      */
-    bool hasNoWriters() const;   
-protected:
-
- 
+    bool hasWriters() const;
 
 private:
+    // Disable copying.
+    WriterGroup(WriterGroup const& rhs);
+    WriterGroup& operator=(WriterGroup const& rhs);
 
     //! The writers in the group.
     QList<QSharedPointer<Writer> > childWriters_;

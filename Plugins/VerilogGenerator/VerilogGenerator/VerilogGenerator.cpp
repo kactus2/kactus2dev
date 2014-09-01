@@ -19,6 +19,7 @@
 #include <IPXACTmodels/PortMap.h>
 
 #include <Plugins/VerilogGenerator/common/WriterGroup.h>
+#include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
 #include <Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h>
 #include <Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h>
 #include <Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.h>
@@ -26,7 +27,6 @@
 #include <Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.h>
 
 #include <QDateTime>
-
 
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::VerilogGenerator()
@@ -97,10 +97,10 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer
     {
         parseComponentInstances();
 
-        parseHierarchicalConnections();
-        parseInterconnections();
-
         parseAdHocConnections();
+
+        parseHierarchicalConnections();
+        parseInterconnections();        
     }
 
     addWritersToTopInDesiredOrder();
@@ -363,7 +363,7 @@ void VerilogGenerator::parseComponentInstances()
         {
             QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter = 
                 QSharedPointer<ComponentInstanceVerilogWriter>(new ComponentInstanceVerilogWriter(instance, 
-                component, sorter_));            
+                component, sorter_));
             instanceWriters_.insert(instance.getInstanceName(), instanceWriter);            
         }
     }
@@ -544,15 +544,44 @@ void VerilogGenerator::mapPortsInAdHocConnectionToWire(AdHocConnection const &ad
 //-----------------------------------------------------------------------------
 void VerilogGenerator::addWritersToTopInDesiredOrder() const
 {
-    if (!wireWriters_->hasNoWriters())
+    if (wireWriters_->hasWriters())
     {
         topWriter_->add(wireWriters_);    
-    }    
+    }
 
     foreach(QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter, instanceWriters_)
     {
-        QSharedPointer<WriterGroup> writer = QSharedPointer<WriterGroup>(new WriterGroup);
-        writer->add(instanceWriter);
-        topWriter_->add(writer);
+        QString instanceName = instanceWriters_.key(instanceWriter);
+
+        QSharedPointer<WriterGroup> instanceGroup = QSharedPointer<WriterGroup>(new WriterGroup);
+        instanceGroup->add(createHeaderWriterForInstance(instanceName));
+        instanceGroup->add(createVlnvWriterForInstance(instanceName));
+        instanceGroup->add(instanceWriter);
+
+        topWriter_->add(instanceGroup);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogGenerator::createHeaderWriterForInstance()
+//-----------------------------------------------------------------------------
+QSharedPointer<Writer> VerilogGenerator::createHeaderWriterForInstance(QString const& instanceName) const
+{
+    QString description = design_->getHWInstanceDescription(instanceName);
+
+    QSharedPointer<CommentWriter> descriptionWriter(new CommentWriter(description));
+    descriptionWriter->setIndent(4);
+    return descriptionWriter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogGenerator::createVlnvWriterForInstance()
+//-----------------------------------------------------------------------------
+QSharedPointer<Writer> VerilogGenerator::createVlnvWriterForInstance(QString const& instanceName) const
+{
+    QString vlnv = design_->getHWComponentVLNV(instanceName).toString();
+    
+    QSharedPointer<CommentWriter> vlnvWriter(new CommentWriter("IP-XACT VLNV: " + vlnv));
+    vlnvWriter->setIndent(4);
+    return vlnvWriter;
 }

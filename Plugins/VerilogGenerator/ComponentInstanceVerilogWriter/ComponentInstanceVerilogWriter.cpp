@@ -47,8 +47,7 @@ void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
         return;
     }
 
-    CommentWriter descriptionWriter(componentInstance_.getDescription());
-    descriptionWriter.write(outputStream);
+
 
     QString instanceString = "<component> <parameters><instanceName>(<portConnections>);";
 
@@ -57,7 +56,7 @@ void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
     instanceString.replace("<instanceName>", componentInstance_.getInstanceName());
     instanceString.replace("<portConnections>", portConnections());
 
-    outputStream << instanceString << endl;
+    outputStream << "    " << instanceString << endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -99,13 +98,13 @@ QString ComponentInstanceVerilogWriter::parameterAssignments() const
     QStringList assignments;
     foreach(QString parameterName, componentInstance_.getConfigurableElementValues().keys())
     {
-        QString assignment("\n    .<parameter>(<value>)");
+        QString assignment("\n        .<parameter>(<value>)");
         assignment.replace("<parameter>", parameterName);
         assignment.replace("<value>", componentInstance_.getConfElementValue(parameterName));
         assignments.append(assignment);
     }
 
-    QString instanceParameters("#(<namesAndValues>)\n");
+    QString instanceParameters("#(<namesAndValues>)\n    ");
     instanceParameters.replace("<namesAndValues>", assignments.join(","));
 
     return instanceParameters;
@@ -121,7 +120,7 @@ QString ComponentInstanceVerilogWriter::portConnections() const
     {
         foreach(QString portName, sorter_->sortedPortNames(referencedComponent_))
         {
-            QString portAssignment = "\n    .<port>(<connection>)";
+            QString portAssignment = "\n        .<port>(<connection>)";
             portAssignment.replace("<port>", portName);
             portAssignment.replace("<connection>", connectionForPort(portName));
 

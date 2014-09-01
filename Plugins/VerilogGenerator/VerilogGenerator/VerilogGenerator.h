@@ -27,6 +27,7 @@ class VerilogHeaderWriter;
 class VerilogWireWriter;
 class WriterGroup;
 class PortSorter;
+class Writer;
 
 //-----------------------------------------------------------------------------
 // Verilog file generator.
@@ -272,6 +273,10 @@ private:
       *  Adds the generated writers to the top writer in correct order.            
       */
     void addWritersToTopInDesiredOrder() const;
+
+    QSharedPointer<Writer> createVlnvWriterForInstance(QString const& instanceName) const;
+
+    QSharedPointer<Writer> createHeaderWriterForInstance(QString const& instanceName) const;
 
     //-----------------------------------------------------------------------------
     // Data.
