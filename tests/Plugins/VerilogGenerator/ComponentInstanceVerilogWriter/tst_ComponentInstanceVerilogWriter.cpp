@@ -144,9 +144,9 @@ void tst_ComponentInstanceVerilogWriter::testUnconnectedInstancePorts()
 
     QCOMPARE(output_, QString(
         "    TestComponent instance1(\n"
-        "        .a_in( ),\n"
-        "        .b_in( ),\n"
-        "        .c_out( ));\n"));
+        "        .a_in                ( ),\n"
+        "        .b_in                ( ),\n"
+        "        .c_out               ( ));\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -170,8 +170,8 @@ void tst_ComponentInstanceVerilogWriter::testFullyConnectedPorts()
 
     QCOMPARE(output_, QString(
         "    TestComponent instance1(\n"
-        "        .clk(top_clk),\n"
-        "        .rst_n(rst));\n"));
+        "        .clk                 (top_clk),\n"
+        "        .rst_n               (rst));\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -195,8 +195,8 @@ void tst_ComponentInstanceVerilogWriter::testPartiallyConnectedPorts()
 
     QCOMPARE(output_, QString(
         "    TestComponent instance1(\n"
-        "        .chip_select(top_select[0]),\n"
-        "        .data(top_data[7:0]));\n"));
+        "        .chip_select         (top_select[0]),\n"
+        "        .data                (top_data[7:0]));\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -218,9 +218,9 @@ void tst_ComponentInstanceVerilogWriter::testDefaultPortValueIsUsedForUnconnecte
 
     QCOMPARE(output_, QString(
         "    TestComponent instance1(\n"
-        "        .a_in('b0),\n"
-        "        .b_out( ),\n"
-        "        .c_inout( ));\n"));
+        "        .a_in                ('b0),\n"
+        "        .b_out               ( ),\n"
+        "        .c_inout             ( ));\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -244,9 +244,9 @@ void tst_ComponentInstanceVerilogWriter::testInstanceParametersAreAssigned()
 
     QCOMPARE(output_, QString(
         "    TestComponent #(\n"
-        "        .id(1),\n"
-        "        .name(tester),\n"
-        "        .numElements(16))\n"
+        "        .id                  (1),\n"
+        "        .name                (tester),\n"
+        "        .numElements         (16))\n"
         "    instance1();\n"));
 }
 

@@ -57,12 +57,12 @@ QString PortVerilogWriter::createDeclaration() const
 {
     QString portDeclaration("<direction> <type> <bounds> <name>");
 
-    portDeclaration.replace("<direction>", direction());
-    portDeclaration.replace("<type>", port_->getTypeName());
-    portDeclaration.replace("<bounds>", bounds());
+    portDeclaration.replace("<direction>", direction().leftJustified(6));
+    portDeclaration.replace("<type>", port_->getTypeName().leftJustified(7));
+    portDeclaration.replace("<bounds>", bounds().leftJustified(6));
     portDeclaration.replace("<name>", port_->getName());
 
-    return portDeclaration.simplified();
+    return portDeclaration;
 }
 
 //-----------------------------------------------------------------------------

@@ -58,8 +58,8 @@ QString ModelParameterVerilogWriter::createDeclaration() const
 {
     QString parameterDeclaration("parameter <type> <name> = <default>");
 
-    parameterDeclaration.replace("<type>", modelParameter_->getDataType());
-    parameterDeclaration.replace("<name>", modelParameter_->getName());
+    parameterDeclaration.replace("<type>", modelParameter_->getDataType().leftJustified(7));
+    parameterDeclaration.replace("<name>", modelParameter_->getName().leftJustified(16));
     parameterDeclaration.replace("<default>", formattedValue());
 
     if (modelParameter_->getValue().isEmpty())
@@ -67,7 +67,7 @@ QString ModelParameterVerilogWriter::createDeclaration() const
         parameterDeclaration.remove(" = ");
     }
 
-    return parameterDeclaration.simplified();
+    return parameterDeclaration;
 }
 
 //-----------------------------------------------------------------------------

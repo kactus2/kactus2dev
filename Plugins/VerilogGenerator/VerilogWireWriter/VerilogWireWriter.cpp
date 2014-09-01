@@ -42,10 +42,10 @@ void VerilogWireWriter::write(QTextStream& output) const
 QString VerilogWireWriter::createDeclaration() const
 {
     QString declaration("wire <size> <name>;");    
-    declaration.replace("<size>", formattedSize());
+    declaration.replace("<size>", formattedSize().leftJustified(6));
     declaration.replace("<name>", name_);
 
-    return declaration.simplified();;
+    return declaration;
 }
 
 //-----------------------------------------------------------------------------

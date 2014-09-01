@@ -145,10 +145,10 @@ void tst_PortVerilogWriter::testWriteNormalPort_data()
     QTest::addColumn<QString>("type");
     QTest::addColumn<QString>("expectedOutput");
 
-    QTest::newRow("input port") << General::IN << "integer" << "input integer Data";
-    QTest::newRow("output port") << General::OUT << "reg" << "output reg Data";
-    QTest::newRow("inout port") << General::INOUT << "tri" << "inout tri Data";
-    QTest::newRow("phantom port") << General::DIRECTION_PHANTOM << "phantom" << "";
+    QTest::newRow("input port")     << General::IN  << "integer" << "input  integer        Data";
+    QTest::newRow("output port")    << General::OUT << "reg"     << "output reg            Data";
+    QTest::newRow("inout port")     << General::INOUT << "tri"   << "inout  tri            Data";
+    QTest::newRow("phantom port")   << General::DIRECTION_PHANTOM << "phantom" << "";
     QTest::newRow("invalid direction port") << General::DIRECTION_INVALID << "invalid" << "";
 }
 
@@ -164,7 +164,7 @@ void tst_PortVerilogWriter::testWriteNonTypedPort()
 
     verilogPort.write(outputStream_);
 
-    QCOMPARE(outputString_, QString("input Data"));
+    QCOMPARE(outputString_, QString("input                 Data"));
 }
 
 //-----------------------------------------------------------------------------
@@ -203,10 +203,10 @@ void tst_PortVerilogWriter::testWriteVectorPort_data()
     QTest::addColumn<int>("rightBound");
     QTest::addColumn<QString>("expectedOutput");
 
-    QTest::newRow("scalar port") << "enable" << "" << 0 << 0 << "output enable";
-    QTest::newRow("normal vector port") << "bus" << "reg" << 7 << 0 << "output reg [7:0] bus";
-    QTest::newRow("sliced vector port") << "slicedBus" << "" << 7 << 4 << "output [7:4] slicedBus";
-    QTest::newRow("big endian vector port") << "reversed" << "" << 0 << 15 << "output [0:15] reversed";
+    QTest::newRow("scalar port") << "enable" << "" << 0 << 0 <<                 "output                enable";
+    QTest::newRow("normal vector port") << "bus" << "reg" << 7 << 0 <<          "output reg     [7:0]  bus";
+    QTest::newRow("sliced vector port") << "slicedBus" << "" << 7 << 4 <<       "output         [7:4]  slicedBus";
+    QTest::newRow("big endian vector port") << "reversed" << "" << 0 << 15 <<   "output         [0:15] reversed";
 }
 
 //-----------------------------------------------------------------------------

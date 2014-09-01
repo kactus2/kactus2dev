@@ -202,9 +202,9 @@ void tst_ComponentVerilogWriter::testPortDescriptionIsWrittenAfterPort()
     QCOMPARE(outputString_, 
         QString("module TestComponent(\n"
         "    // These ports are not in any interface\n" 
-        "    input a,    // Description for a.\n"
-        "    input b,\n"
-        "    input c    // Description for c.\n"
+        "    input                 a,    // Description for a.\n"
+        "    input                 b,\n"
+        "    input                 c    // Description for c.\n"
         ");\n"
         "\n"
         "endmodule\n"));
@@ -240,7 +240,7 @@ void tst_ComponentVerilogWriter::testInterfaceDescriptionIsPrinted_data()
     QTest::newRow("empty description") << "" <<
         "module TestComponent(\n"
         "    // Interface: A\n"
-        "    input port\n"
+        "    input                 port\n"
         ");\n"
         "\n"
         "endmodule\n";
@@ -249,7 +249,7 @@ void tst_ComponentVerilogWriter::testInterfaceDescriptionIsPrinted_data()
         "module TestComponent(\n"
         "    // Interface: A\n"
         "    // Description of A\n"
-        "    input port\n"
+        "    input                 port\n"
         ");\n"
         "\n"
         "endmodule\n";
@@ -261,7 +261,7 @@ void tst_ComponentVerilogWriter::testInterfaceDescriptionIsPrinted_data()
         "    // description\n"
         "    // for\n"
         "    // A\n"
-        "    input port\n"
+        "    input                 port\n"
         ");\n"
         "\n"
         "endmodule\n";
@@ -281,9 +281,9 @@ void tst_ComponentVerilogWriter::testPortsOrderedByName()
     QCOMPARE(outputString_, QString(
         "module TestComponent(\n"
         "    // These ports are not in any interface\n" 
-        "    input a,\n"
-        "    input b,\n"
-        "    input c\n"
+        "    input                 a,\n"
+        "    input                 b,\n"
+        "    input                 c\n"
         ");\n"
         "\n"
         "endmodule\n"));
@@ -315,12 +315,12 @@ void tst_ComponentVerilogWriter::testPortsOrderedByDirectionThenName()
     QCOMPARE(outputString_, QString(
         "module TestComponent(\n"
         "    // These ports are not in any interface\n" 
-        "    input a_in,\n" 
-        "    input x_in,\n" 
-        "    output a_out,\n" 
-        "    output y_out,\n" 
-        "    inout a_inout,\n" 
-        "    inout z_inout\n"
+        "    input                 a_in,\n" 
+        "    input                 x_in,\n" 
+        "    output                a_out,\n" 
+        "    output                y_out,\n" 
+        "    inout                 a_inout,\n" 
+        "    inout                 z_inout\n"
         ");\n" 
         "\n"
         "endmodule\n"));
@@ -354,19 +354,19 @@ void tst_ComponentVerilogWriter::testPortsOrderedByInterfaceThenDirectionThenNam
     QCOMPARE(outputString_, QString(
         "module TestComponent(\n"
         "    // Interface: A\n" 
-        "    input a_in,\n" 
-        "    input c_in,\n" 
-        "    output b_out,\n"
+        "    input                 a_in,\n" 
+        "    input                 c_in,\n" 
+        "    output                b_out,\n"
         "\n"
         "    // Interface: B\n" 
-        "    input d_in,\n" 
+        "    input                 d_in,\n" 
         "\n"
         "    // There ports are contained in many interfaces\n" 
-        "    input portInSeveralInterfaces,\n"
+        "    input                 portInSeveralInterfaces,\n"
 
         "\n"
         "    // These ports are not in any interface\n" 
-        "    input portInNoInterface\n"
+        "    input                 portInNoInterface\n"
         ");\n"
         "\n"
         "endmodule\n"));
@@ -407,8 +407,8 @@ void tst_ComponentVerilogWriter::testComponentWithModelParameters()
 
     QCOMPARE(outputString_, QString(
         "module TestComponent #(\n"
-        "    parameter freq = 5000,    // Description for freq.\n"
-        "    parameter dataWidth = 8\n"
+        "    parameter         freq             = 5000,    // Description for freq.\n"
+        "    parameter         dataWidth        = 8\n"
         ") ();\n"
         "\n"
         "endmodule\n"));
@@ -438,10 +438,10 @@ void tst_ComponentVerilogWriter::testParametersPrecedePorts()
 
     QCOMPARE(outputString_, QString(
         "module TestComponent #(\n"
-        "    parameter dataWidth = 8\n"
+        "    parameter         dataWidth        = 8\n"
         ") (\n"
         "    // These ports are not in any interface\n" 
-        "    output [7:0] data\n"
+        "    output         [7:0]  data\n"
         ");\n"
         "\n"
         "endmodule\n"));

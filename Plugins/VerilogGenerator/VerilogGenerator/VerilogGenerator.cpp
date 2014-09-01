@@ -555,7 +555,6 @@ void VerilogGenerator::addWritersToTopInDesiredOrder() const
 
         QSharedPointer<WriterGroup> instanceGroup = QSharedPointer<WriterGroup>(new WriterGroup);
         instanceGroup->add(createHeaderWriterForInstance(instanceName));
-        instanceGroup->add(createVlnvWriterForInstance(instanceName));
         instanceGroup->add(instanceWriter);
 
         topWriter_->add(instanceGroup);
@@ -567,21 +566,16 @@ void VerilogGenerator::addWritersToTopInDesiredOrder() const
 //-----------------------------------------------------------------------------
 QSharedPointer<Writer> VerilogGenerator::createHeaderWriterForInstance(QString const& instanceName) const
 {
-    QString description = design_->getHWInstanceDescription(instanceName);
+    QString header = design_->getHWInstanceDescription(instanceName);
+    if (!header.isEmpty())
+    {
+        header.append("\n");
+    }
 
-    QSharedPointer<CommentWriter> descriptionWriter(new CommentWriter(description));
-    descriptionWriter->setIndent(4);
-    return descriptionWriter;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogGenerator::createVlnvWriterForInstance()
-//-----------------------------------------------------------------------------
-QSharedPointer<Writer> VerilogGenerator::createVlnvWriterForInstance(QString const& instanceName) const
-{
     QString vlnv = design_->getHWComponentVLNV(instanceName).toString();
-    
-    QSharedPointer<CommentWriter> vlnvWriter(new CommentWriter("IP-XACT VLNV: " + vlnv));
-    vlnvWriter->setIndent(4);
-    return vlnvWriter;
+    header.append("IP-XACT VLNV: " + vlnv);
+
+    QSharedPointer<CommentWriter> headerWriter(new CommentWriter(header));
+    headerWriter->setIndent(4);
+    return headerWriter;
 }

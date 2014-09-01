@@ -274,8 +274,13 @@ private:
       */
     void addWritersToTopInDesiredOrder() const;
 
-    QSharedPointer<Writer> createVlnvWriterForInstance(QString const& instanceName) const;
-
+    /*!
+     *  Creates a writer for writing a preceding header for a component instance.
+     *
+     *      @param [in] instanceName   The name of the component instance to create the writer for.
+     *
+     *      @return A writer for the header.
+     */
     QSharedPointer<Writer> createHeaderWriterForInstance(QString const& instanceName) const;
 
     //-----------------------------------------------------------------------------

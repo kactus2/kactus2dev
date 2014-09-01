@@ -26,15 +26,7 @@ class tst_ModelParameterVerilogWriter : public QObject
 public:
     tst_ModelParameterVerilogWriter();
 
-private:
-
-    QSharedPointer<ModelParameter> modelParam_;
-
-    QString outputString_;
-	
-	QTextStream outputStream_;
-
-private Q_SLOTS:
+private slots:
     void initTestCase();
     void cleanupTestCase();
     void init();
@@ -47,6 +39,13 @@ private Q_SLOTS:
     void testWriteASCIIStringWithoutQuotation();
     void testNonTypedModelParameter();
 
+private:
+
+    QSharedPointer<ModelParameter> modelParam_;
+
+    QString outputString_;
+
+    QTextStream outputStream_;
 };
 
 //-----------------------------------------------------------------------------
@@ -126,7 +125,7 @@ void tst_ModelParameterVerilogWriter::testNameButNoValue()
     ModelParameterVerilogWriter parameter(modelParam_);
     parameter.write(outputStream_);
 
-    QCOMPARE(outputString_, QString("parameter testParameter"));
+    QCOMPARE(outputString_, QString("parameter         testParameter   "));
 }
 
 //-----------------------------------------------------------------------------
@@ -141,7 +140,7 @@ void tst_ModelParameterVerilogWriter::testWriteTypedModelParameter()
     ModelParameterVerilogWriter parameter(modelParam_);
     parameter.write(outputStream_);
 
-    QCOMPARE(outputString_, QString("parameter integer WIDTH = 1"));
+    QCOMPARE(outputString_, QString("parameter integer WIDTH            = 1"));
 }
 
 //-----------------------------------------------------------------------------
@@ -156,7 +155,7 @@ void tst_ModelParameterVerilogWriter::testWriteASCIIString()
     ModelParameterVerilogWriter parameter(modelParam_);
     parameter.write(outputStream_);
 
-    QCOMPARE(outputString_, QString("parameter string ASCII = \"Hello world!\""));
+    QCOMPARE(outputString_, QString("parameter string  ASCII            = \"Hello world!\""));
 }
 
 //-----------------------------------------------------------------------------
@@ -171,7 +170,7 @@ void tst_ModelParameterVerilogWriter::testWriteASCIIStringWithoutQuotation()
     ModelParameterVerilogWriter parameter(modelParam_);
     parameter.write(outputStream_);
 
-    QCOMPARE(outputString_, QString("parameter string ASCII = \"Hello world!\""));
+    QCOMPARE(outputString_, QString("parameter string  ASCII            = \"Hello world!\""));
 }
 
 //-----------------------------------------------------------------------------
@@ -185,7 +184,7 @@ void tst_ModelParameterVerilogWriter::testNonTypedModelParameter()
     ModelParameterVerilogWriter parameter(modelParam_);
     parameter.write(outputStream_);
 
-    QCOMPARE(outputString_, QString("parameter BITS = 8"));
+    QCOMPARE(outputString_, QString("parameter         BITS             = 8"));
 }
 
 

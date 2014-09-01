@@ -99,7 +99,7 @@ QString ComponentInstanceVerilogWriter::parameterAssignments() const
     foreach(QString parameterName, componentInstance_.getConfigurableElementValues().keys())
     {
         QString assignment("\n        .<parameter>(<value>)");
-        assignment.replace("<parameter>", parameterName);
+        assignment.replace("<parameter>", parameterName.leftJustified(20));
         assignment.replace("<value>", componentInstance_.getConfElementValue(parameterName));
         assignments.append(assignment);
     }
@@ -121,7 +121,7 @@ QString ComponentInstanceVerilogWriter::portConnections() const
         foreach(QString portName, sorter_->sortedPortNames(referencedComponent_))
         {
             QString portAssignment = "\n        .<port>(<connection>)";
-            portAssignment.replace("<port>", portName);
+            portAssignment.replace("<port>", portName.leftJustified(20));
             portAssignment.replace("<connection>", connectionForPort(portName));
 
             portAssignments.append(portAssignment);
