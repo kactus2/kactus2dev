@@ -417,6 +417,8 @@ void MCAPICodeGenerator::generateSource(QString const& filename, QSharedPointer<
 
     writer.writeInclude("ktsmcapicode.h", true);
     writer.writeInclude("instanceheader.h", true);
+    writer.writeInclude("stdio.h");
+    writer.writeInclude("errno.h");
     writer.writeEmptyLine();
     writer.writeHeaderComment("Constants.");
     writer.writeEmptyLine();
@@ -434,6 +436,7 @@ void MCAPICodeGenerator::generateSource(QString const& filename, QSharedPointer<
     // Write the other variables.
     writer.writeLine("// Other variables.");
     writer.writeLine("mcapi_status_t status;");
+    writer.writeLine("char status_msg[MCAPI_MAX_STATUS_MSG_LEN];");
     writer.writeEmptyLine();
 
     // Generate functions.
@@ -564,6 +567,7 @@ void MCAPICodeGenerator::generateMainTemplate(QString const& filename, QSharedPo
     // Write includes.
     writer.writeInclude("stdlib.h");
     writer.writeInclude("stdio.h");
+    writer.writeInclude("errno.h");
     writer.writeEmptyLine();
 
     writer.writeLine("// This header includes the Kactus2 generated MCAPI code.");
@@ -578,18 +582,21 @@ void MCAPICodeGenerator::generateMainTemplate(QString const& filename, QSharedPo
 
     writer.writeLine("if (initializeMCAPI() != 0)");
     writer.beginBlock();
+    writer.writeLine("fprintf(stderr, \"MCAPI INITIALIZATION FAILED!!!\\n\" );");
     writer.writeLine("return EXIT_FAILURE;");
     writer.endBlock();
     writer.writeEmptyLine();
 
     writer.writeLine("if (connectChannels() != 0)");
     writer.beginBlock();
+    writer.writeLine("fprintf(stderr, \"CONNECTING CHANNELS FAILED!!!\\n\" );");
     writer.writeLine("return EXIT_FAILURE;");
     writer.endBlock();
     writer.writeEmptyLine();
 
     writer.writeLine("if (openConnections() != 0)");
     writer.beginBlock();
+    writer.writeLine("fprintf(stderr, \"OPENING CHANNELS FAILED!!!\\n\" );");
     writer.writeLine("return EXIT_FAILURE;");
     writer.endBlock();
     writer.writeEmptyLine();
@@ -601,6 +608,7 @@ void MCAPICodeGenerator::generateMainTemplate(QString const& filename, QSharedPo
     writer.writeLine("// Close connections and finalize MCAPI before exiting.");
     writer.writeLine("if (closeConnections() != 0)");
     writer.beginBlock();
+    writer.writeLine("fprintf(stderr, \"CLOSING CHANNELS FAILED!!!\\n\" );");
     writer.writeLine("return EXIT_FAILURE;");
     writer.endBlock();
     writer.writeEmptyLine();
@@ -699,6 +707,10 @@ void MCAPICodeGenerator::createLocalEndpoints(CSourceWriter &writer, QSharedPoin
 
         writer.writeLine("if (status != MCAPI_SUCCESS)");
         writer.beginBlock();
+
+        writer.writeLine("mcapi_display_status( status, status_msg, MCAPI_MAX_STATUS_MSG_LEN );");
+        writer.writeLine("fprintf(stderr, \"ERROR: %s Failed to create endpoint " + comIf->getName() + "\"" );
+        writer.writeLine( "\" at line %u.\\n\", status_msg, __LINE__ );");
         writer.writeLine("return -1;");
         writer.endBlock();
         writer.writeEmptyLine();
@@ -728,6 +740,9 @@ void MCAPICodeGenerator::getRemoteEndpoints(CSourceWriter &writer, QSharedPointe
 
         writer.writeLine("if (status != MCAPI_SUCCESS)");
         writer.beginBlock();
+        writer.writeLine("mcapi_display_status( status, status_msg, MCAPI_MAX_STATUS_MSG_LEN );");
+        writer.writeLine("fprintf(stderr, \"ERROR: %s Failed to get remote endpoint " + comIf->getName() + "\"" );
+        writer.writeLine("\" at line %u.\\n\", status_msg, __LINE__ );");
         writer.writeLine("return -1;");
         writer.endBlock();
         writer.writeEmptyLine();
@@ -985,6 +1000,9 @@ void MCAPICodeGenerator::writeCompleteCheck(CSourceWriter &writer, QString name)
     writer.beginBlock();
     writer.writeLine("if ( " + name + "_complete[ifIter] != 1 )");
     writer.beginBlock();
+    writer.writeLine("mcapi_display_status( status, status_msg, MCAPI_MAX_STATUS_MSG_LEN );");
+    writer.writeLine("fprintf(stderr, \"ERROR: %s Failed to " + name + " channel \"" );
+    writer.writeLine("\"at line %u.\\n\", status_msg, __LINE__ );");
     writer.writeLine("return -1;");
     writer.endBlock();
     writer.endBlock();
