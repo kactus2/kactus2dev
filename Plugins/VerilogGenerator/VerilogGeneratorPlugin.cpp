@@ -63,7 +63,7 @@ QString const& VerilogGeneratorPlugin::getVersion() const
 //-----------------------------------------------------------------------------
 QString const& VerilogGeneratorPlugin::getDescription() const
 {
-    static QString description(tr("Generates a top-level Verilog module."));
+    static QString description(tr("Generates a top-level Verilog module for a HW design or component."));
     return description;
 }
 //-----------------------------------------------------------------------------
@@ -114,7 +114,7 @@ QList<IPlugin::ExternalProgramRequirement> VerilogGeneratorPlugin::getProgramReq
 //-----------------------------------------------------------------------------
 QIcon VerilogGeneratorPlugin::getIcon() const
 {
-    return QIcon();
+    return QIcon(":icons/verilogGenerator.png");
 }
 
 //-----------------------------------------------------------------------------

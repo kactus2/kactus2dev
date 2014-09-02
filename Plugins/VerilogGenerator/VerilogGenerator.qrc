@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>verilogGenerator.png</file>
+    </qresource>
+</RCC>

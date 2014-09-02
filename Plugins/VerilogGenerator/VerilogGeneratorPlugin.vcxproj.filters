@@ -88,6 +88,11 @@
     <Filter Include="Source Files\common">
       <UniqueIdentifier>{4a27df50-07b3-4de2-b5a0-4286e816efb4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VerilogGeneratorPlugin.cpp">
@@ -128,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="common\WriterGroup.cpp">
       <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_VerilogGenerator.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -175,8 +183,14 @@
     <CustomBuild Include="VerilogGeneratorPlugin.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="VerilogGenerator.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <None Include="veriloggeneratorplugin.json" />
+    <None Include="verilogGenerator.png">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
