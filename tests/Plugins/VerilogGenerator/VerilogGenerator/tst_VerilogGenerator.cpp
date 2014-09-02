@@ -322,10 +322,13 @@ void tst_VerilogGenerator::testHierarchicalConnections()
         "\n"
         "    // IP-XACT VLNV: Test:TestLibrary:TestInstance:1.0\n"
         "    TestInstance instance1(\n"
+        "        // Interface: clk\n"
         "        .clk                 (top_clk),\n"
+        "        // Interface: data\n"
         "        .data_in             (data_to_instance),\n"
         "        .enable              (enable_to_instance),\n"
         "        .full                (full_from_instance),\n"
+        "        // These ports are not in any interface\n"
         "        .data_out            ( ));\n"
         "\n"
         "\n"
@@ -356,10 +359,13 @@ void tst_VerilogGenerator::testSlicedHierarchicalConnection()
 
     verifyOutputContains(QString(
         "    TestInstance instance1(\n"
+        "        // Interface: clk\n"
         "        .clk                 ( ),\n"
+        "        // Interface: data\n"
         "        .data_in             (data_to_instance[7:0]),\n"
         "        .enable              (enable_to_instance[1]),\n"
         "        .full                (full_from_instance[1]),\n"
+        "        // These ports are not in any interface\n"
         "        .data_out            ( ));"));
 }
 
@@ -494,11 +500,13 @@ void tst_VerilogGenerator::testMasterToSlaveInterconnection()
     "\n"
     "    // IP-XACT VLNV: Test:TestLibrary:TestReceiver:1.0\n"
     "    TestReceiver receiver(\n"
+    "        // Interface: data_bus\n"
     "        .data_in             (sender_to_receiver_DATA),\n"
     "        .enable_in           (sender_to_receiver_ENABLE));\n"   
     "\n"
     "    // IP-XACT VLNV: Test:TestLibrary:TestSender:1.0\n"
     "    TestSender sender(\n"
+    "        // Interface: data_bus\n"
     "        .data_out            (sender_to_receiver_DATA),\n"
     "        .enable_out          (sender_to_receiver_ENABLE));");
 }
@@ -581,14 +589,17 @@ void tst_VerilogGenerator::testMasterToMultipleSlavesInterconnections()
     verifyOutputContains("wire [7:0]  sender_data_bus_DATA;");
 
     verifyOutputContains("TestSender sender(\n"
+        "        // Interface: data_bus\n"
         "        .data_out            (sender_data_bus_DATA),\n"
         "        .enable_out          (sender_data_bus_ENABLE)");
 
     verifyOutputContains("TestReceiver receiver1(\n"
+        "        // Interface: data_bus\n"
         "        .data_in             (sender_data_bus_DATA),\n"
         "        .enable_in           (sender_data_bus_ENABLE)");
 
     verifyOutputContains("TestReceiver receiver2(\n"
+        "        // Interface: data_bus\n"
         "        .data_in             (sender_data_bus_DATA),\n"
         "        .enable_in           (sender_data_bus_ENABLE)");
 }
@@ -628,21 +639,25 @@ void tst_VerilogGenerator::testInterconnectionToVaryingSizeLogicalMaps()
 
     verifyOutputContains(
         "    TestSender sender(\n"
+        "        // Interface: data_bus\n"
         "        .data_out            (sender_data_bus_DATA[7:0]),\n"
         "        .enable_out          (sender_data_bus_ENABLE)");
 
     verifyOutputContains(
         "    TestReceiver oneBitReceiver(\n"
+        "        // Interface: data_bus\n"
         "        .data_in             (sender_data_bus_DATA[0]),\n"
         "        .enable_in           (sender_data_bus_ENABLE)");
 
     verifyOutputContains(
         "    TestReceiver4bit fourBitReceiver(\n"
+        "        // Interface: data_bus\n"
         "        .data_in             (sender_data_bus_DATA[3:0]),\n"
         "        .enable_in           (sender_data_bus_ENABLE)");
 
     verifyOutputContains(
         "    TestReceiver16bit sixteenBitReceiver(\n"
+        "        // Interface: data_bus\n"
         "        .data_in             (sender_data_bus_DATA),\n"
         "        .enable_in           (sender_data_bus_ENABLE)");
 }
@@ -683,11 +698,13 @@ void tst_VerilogGenerator::testMasterInterconnectionToMirroredMaster()
 
     verifyOutputContains(
         "    TestSender sender(\n"
+        "        // Interface: data_bus\n"
         "        .data_out            (sender_to_receiver_DATA),\n"
         "        .enable_out          (sender_to_receiver_ENABLE)");
 
     verifyOutputContains(
         "    BusComponent receiver(\n"
+        "        // Interface: data_bus\n"
         "        .data_in             (sender_to_receiver_DATA),\n"
         "        .enable_in           (sender_to_receiver_ENABLE)");
 }
@@ -716,11 +733,13 @@ void tst_VerilogGenerator::testMirroredSlaveInterconnectionToSlaves()
 
     verifyOutputContains(
         "    TestSender sender(\n"
+        "        // Interface: data_bus\n"
         "        .data_out            (sender_data_bus_DATA),\n"
         "        .enable_out          (sender_data_bus_ENABLE)");
 
     verifyOutputContains(
         "    BusComponent bus1(\n"
+        "        // Interface: data_bus\n"
         "        .data_in             (sender_data_bus_DATA),\n"
         "        .enable_in           (sender_data_bus_ENABLE)");
 }
@@ -750,16 +769,19 @@ void tst_VerilogGenerator::testAdhocConnectionBetweenComponentInstances()
 
     verifyOutputContains(
         "    TestSender sender(\n"
+        "        // Interface: data_bus\n"
         "        .data_out            (dataAdHoc),\n"
         "        .enable_out          (enableAdHoc)");
 
     verifyOutputContains(
         "    TestReceiver receiver1(\n"
+        "        // Interface: data_bus\n"
         "        .data_in             (dataAdHoc),\n"
         "        .enable_in           (enableAdHoc)");
 
     verifyOutputContains(
         "    TestReceiver receiver2(\n"
+        "        // Interface: data_bus\n"
         "        .data_in             ( ),\n"
         "        .enable_in           (enableAdHoc)");
 }
@@ -817,6 +839,7 @@ void tst_VerilogGenerator::testHierarchicalAdhocConnection()
 
     verifyOutputContains(
         "    TestSender sender(\n"
+        "        // Interface: data_bus\n"
         "        .data_out            (data_from_sender),\n"
         "        .enable_out          (enable_from_sender)");
 }

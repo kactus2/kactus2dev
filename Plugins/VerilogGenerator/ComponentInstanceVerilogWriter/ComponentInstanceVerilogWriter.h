@@ -83,6 +83,20 @@ private:
     bool nothingToWrite() const;
 
     /*!
+     *  Gets the component instance name with or without indentation as required.
+     *
+     *      @return The formatted instance name.
+     */
+    QString formattedInstanceName() const;
+
+    /*!
+     *  Gets the indentation to use.
+     *
+     *      @return The indentation to use.
+     */
+    QString indentation() const;
+
+    /*!
      *  Gets the instance-specific parameter assignments.
      *
      *      @return The Verilog description of the instance parameters and their values.
@@ -95,6 +109,16 @@ private:
     *      @return The Verilog description of the instance ports and their connections.
     */
     QString portConnections() const;
+
+    /*!
+     *  Creates an interface separator for port connections.
+     *
+     *      @param [in] interfaceName       The name of the interface for the current port.
+     *      @param [in] previousInteface    The name of the interface for the previous port.
+     *
+     *      @return Separator for port interface.
+     */
+    QString createInterfaceSeparator(QString const& interfaceName, QString const& previousInteface) const;
 
     /*!
     *  Gets the connection assignment for a port.

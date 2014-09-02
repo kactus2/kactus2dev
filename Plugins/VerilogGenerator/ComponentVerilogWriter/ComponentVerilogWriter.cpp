@@ -25,11 +25,6 @@
 
 #include <QSharedPointer>
 
-namespace
-{
-    const QString INDENT = "    ";
-}
-
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::ComponentVerilogWriter
 //-----------------------------------------------------------------------------
@@ -119,9 +114,9 @@ void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStrea
 void ComponentVerilogWriter::writeParameter(QTextStream& outputStream, QSharedPointer<ModelParameter> parameter,
     bool isLast) const
 {
-    outputStream << INDENT;
-    ModelParameterVerilogWriter writer(parameter);
-    writer.write(outputStream);
+    outputStream << indentation();
+    ModelParameterVerilogWriter parameterWriter(parameter);
+    parameterWriter.write(outputStream);
 
     if (!isLast)
     {
@@ -136,6 +131,14 @@ void ComponentVerilogWriter::writeParameter(QTextStream& outputStream, QSharedPo
     {
         outputStream << endl;
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentVerilogWriter::indentation()
+//-----------------------------------------------------------------------------
+QString ComponentVerilogWriter::indentation() const
+{
+    return "    ";
 }
 
 //-----------------------------------------------------------------------------
@@ -166,23 +169,21 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
 void ComponentVerilogWriter::writeInterfaceIntroduction(QString const& interfaceName, QString& previousInterfaceName,
     QTextStream& outputStream) const
 {
-    bool isFirstInterface = previousInterfaceName.isEmpty();
-  
     if (previousInterfaceName.compare(interfaceName) != 0)
     {
         outputStream << endl;
 
         if (interfaceName == "none")
         {
-            outputStream << INDENT << "// These ports are not in any interface" << endl;                
+            outputStream << indentation() << "// These ports are not in any interface" << endl;                
         }
         else if (interfaceName == "several")
         {
-            outputStream << INDENT << "// There ports are contained in many interfaces" << endl;       
+            outputStream << indentation() << "// There ports are contained in many interfaces" << endl;       
         }
         else
         {
-            outputStream << INDENT << "// Interface: " << interfaceName << endl;
+            outputStream << indentation() << "// Interface: " << interfaceName << endl;
 
             QSharedPointer<const BusInterface> busInterface = component_->getBusInterface(interfaceName);
             CommentWriter descriptionWriter(busInterface->getDescription());
@@ -198,7 +199,7 @@ void ComponentVerilogWriter::writeInterfaceIntroduction(QString const& interface
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writePort(QTextStream& outputStream, QSharedPointer<Port> port, bool isLast) const
 {
-    outputStream << INDENT;
+    outputStream << indentation();
 
     PortVerilogWriter writer(port);
     writer.write(outputStream);

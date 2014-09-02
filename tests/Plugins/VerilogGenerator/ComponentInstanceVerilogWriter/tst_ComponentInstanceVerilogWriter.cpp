@@ -121,8 +121,8 @@ void tst_ComponentInstanceVerilogWriter::testNamedInstance_data()
     QTest::addColumn<QString>("expectedOutput");
 
     QTest::newRow("empty") << "" << "" << "     ();\n";
-    QTest::newRow("empty reference") << "" << "instance" << "     instance();\n";
-    QTest::newRow("empty instance name") << "chip" << "" << "    chip ();\n";
+    QTest::newRow("empty reference") << "" << "instance" <<      "     instance();\n";
+    QTest::newRow("empty instance name") << "chip" << "" <<      "    chip ();\n";
     QTest::newRow("common") << "TestComponent" << "instance1" << "    TestComponent instance1();\n";
 }
 
@@ -144,6 +144,7 @@ void tst_ComponentInstanceVerilogWriter::testUnconnectedInstancePorts()
 
     QCOMPARE(output_, QString(
         "    TestComponent instance1(\n"
+        "        // These ports are not in any interface\n"    
         "        .a_in                ( ),\n"
         "        .b_in                ( ),\n"
         "        .c_out               ( ));\n"));
@@ -170,6 +171,7 @@ void tst_ComponentInstanceVerilogWriter::testFullyConnectedPorts()
 
     QCOMPARE(output_, QString(
         "    TestComponent instance1(\n"
+        "        // These ports are not in any interface\n"  
         "        .clk                 (top_clk),\n"
         "        .rst_n               (rst));\n"));
 }
@@ -195,6 +197,7 @@ void tst_ComponentInstanceVerilogWriter::testPartiallyConnectedPorts()
 
     QCOMPARE(output_, QString(
         "    TestComponent instance1(\n"
+        "        // These ports are not in any interface\n"  
         "        .chip_select         (top_select[0]),\n"
         "        .data                (top_data[7:0]));\n"));
 }
@@ -218,6 +221,7 @@ void tst_ComponentInstanceVerilogWriter::testDefaultPortValueIsUsedForUnconnecte
 
     QCOMPARE(output_, QString(
         "    TestComponent instance1(\n"
+        "        // These ports are not in any interface\n"  
         "        .a_in                ('b0),\n"
         "        .b_out               ( ),\n"
         "        .c_inout             ( ));\n"));

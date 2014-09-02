@@ -33,7 +33,7 @@ VerilogWireWriter::~VerilogWireWriter()
 //-----------------------------------------------------------------------------
 void VerilogWireWriter::write(QTextStream& output) const
 {
-    output << "    " << createDeclaration() << endl;
+    output << indentation() << createDeclaration() << endl;
 }
 
 //-----------------------------------------------------------------------------

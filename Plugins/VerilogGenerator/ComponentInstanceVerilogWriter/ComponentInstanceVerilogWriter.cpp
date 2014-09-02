@@ -47,16 +47,14 @@ void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
         return;
     }
 
-
-
     QString instanceString = "<component> <parameters><instanceName>(<portConnections>);";
 
     instanceString.replace("<component>", componentInstance_.getComponentRef().getName());
     instanceString.replace("<parameters>", parameterAssignments());
-    instanceString.replace("<instanceName>", componentInstance_.getInstanceName());
+    instanceString.replace("<instanceName>", formattedInstanceName());
     instanceString.replace("<portConnections>", portConnections());
 
-    outputStream << "    " << instanceString << endl;
+    outputStream << indentation() << instanceString << endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -86,6 +84,29 @@ bool ComponentInstanceVerilogWriter::nothingToWrite() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentInstanceVerilogWriter::formattedInstanceName()
+//-----------------------------------------------------------------------------
+QString ComponentInstanceVerilogWriter::formattedInstanceName() const
+{
+    QString instanceName = componentInstance_.getInstanceName();
+
+    if (!componentInstance_.getConfigurableElementValues().isEmpty())
+    {
+        instanceName.prepend(indentation());
+    }
+
+    return instanceName;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceVerilogWriter::indentation()
+//-----------------------------------------------------------------------------
+QString ComponentInstanceVerilogWriter::indentation() const
+{
+    return "    ";
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentInstanceVerilogWriter::parameterAssignments()
 //-----------------------------------------------------------------------------
 QString ComponentInstanceVerilogWriter::parameterAssignments() const
@@ -95,18 +116,18 @@ QString ComponentInstanceVerilogWriter::parameterAssignments() const
         return "";
     }
 
+    QString instanceParameters("#(\n<namesAndValues>)\n");
+
     QStringList assignments;
     foreach(QString parameterName, componentInstance_.getConfigurableElementValues().keys())
     {
-        QString assignment("\n        .<parameter>(<value>)");
+        QString assignment(indentation().repeated(2) + ".<parameter>(<value>)");
         assignment.replace("<parameter>", parameterName.leftJustified(20));
         assignment.replace("<value>", componentInstance_.getConfElementValue(parameterName));
         assignments.append(assignment);
     }
 
-    QString instanceParameters("#(<namesAndValues>)\n    ");
-    instanceParameters.replace("<namesAndValues>", assignments.join(","));
-
+    instanceParameters.replace("<namesAndValues>", assignments.join(",\n"));
     return instanceParameters;
 }
 
@@ -118,9 +139,15 @@ QString ComponentInstanceVerilogWriter::portConnections() const
     QStringList portAssignments;
     if (!sorter_.isNull())
     {
+        QString previousInterfaceName = "";
+
         foreach(QString portName, sorter_->sortedPortNames(referencedComponent_))
         {
-            QString portAssignment = "\n        .<port>(<connection>)";
+            QString interfaceName = referencedComponent_->getInterfaceNameForPort(portName);
+            QString interfaceSeparatorLine = createInterfaceSeparator(interfaceName, previousInterfaceName);
+            previousInterfaceName = interfaceName;
+
+            QString portAssignment = interfaceSeparatorLine + indentation().repeated(2) + ".<port>(<connection>)";
             portAssignment.replace("<port>", portName.leftJustified(20));
             portAssignment.replace("<connection>", connectionForPort(portName));
 
@@ -128,7 +155,42 @@ QString ComponentInstanceVerilogWriter::portConnections() const
         }
     }
 
-    return portAssignments.join(",");
+    return portAssignments.join(",\n");
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceVerilogWriter::createInterfaceSeparator()
+//-----------------------------------------------------------------------------
+QString ComponentInstanceVerilogWriter::createInterfaceSeparator(QString const& interfaceName, 
+    QString const& previousInteface) const
+{
+    QString interfaceIntroduction = "";
+
+    if (interfaceName.compare(previousInteface) != 0)
+    {
+        interfaceIntroduction.append(indentation().repeated(2));
+
+        if (interfaceName == "none")
+        {
+            interfaceIntroduction.append("// These ports are not in any interface\n");
+        }
+        else if (interfaceName == "several")
+        {
+            interfaceIntroduction.append("// There ports are contained in many interfaces\n");       
+        }
+        else
+        {
+            interfaceIntroduction.append("// Interface: " + interfaceName + "\n");
+        }
+    }	
+    
+    // Begin first introduction on own line.
+    if (previousInteface.isEmpty())
+    {
+        interfaceIntroduction.prepend("\n");
+    }
+
+    return interfaceIntroduction;
 }
 
 //-----------------------------------------------------------------------------

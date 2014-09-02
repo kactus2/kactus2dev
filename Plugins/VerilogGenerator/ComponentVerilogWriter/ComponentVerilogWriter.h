@@ -116,6 +116,13 @@ private:
      */
     void writeModuleEnd(QTextStream& outputStream) const;
 
+    /*!
+     *  Gets the indentation to use.
+     *
+     *      @return The indentation to use.
+     */
+    QString indentation() const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
