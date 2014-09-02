@@ -12,7 +12,7 @@
 #include "VerilogWireWriter.h"
 
 //-----------------------------------------------------------------------------
-// Function: InterconnectionVerilogWriter::InterconnectionVerilogWriter()
+// Function: VerilogWireWriter::InterconnectionVerilogWriter()
 //-----------------------------------------------------------------------------
 VerilogWireWriter::VerilogWireWriter(QString connectionName, int size) :
 name_(connectionName), size_(size)
@@ -21,7 +21,7 @@ name_(connectionName), size_(size)
 }
 
 //-----------------------------------------------------------------------------
-// Function: InterconnectionVerilogWriter::~InterconnectionVerilogWriter()
+// Function: VerilogWireWriter::~InterconnectionVerilogWriter()
 //-----------------------------------------------------------------------------
 VerilogWireWriter::~VerilogWireWriter()
 {
@@ -29,11 +29,11 @@ VerilogWireWriter::~VerilogWireWriter()
 }
 
 //-----------------------------------------------------------------------------
-// Function: InterconnectionVerilogWriter::write()
+// Function: VerilogWireWriter::write()
 //-----------------------------------------------------------------------------
 void VerilogWireWriter::write(QTextStream& output) const
 {
-    output << indentation() << createDeclaration() << endl;
+    output << "    " << createDeclaration() << endl;
 }
 
 //-----------------------------------------------------------------------------
