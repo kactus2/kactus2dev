@@ -808,7 +808,7 @@ bool BitMappingModel::isMapped(QList<QSharedPointer<PortMap> > mappings,
 }
 
 //-----------------------------------------------------------------------------
-// Function: BitMappingModel::MyMethod()
+// Function: BitMappingModel::createPortMapForPin()
 //-----------------------------------------------------------------------------
 QSharedPointer<PortMap> BitMappingModel::createPortMapForPin(General::PortBounds const& pin, 
     int firstLogicalIndex) const
@@ -856,7 +856,7 @@ QSharedPointer<PortMap> BitMappingModel::createPortMapForPin(General::PortBounds
     map->setLogicalLeft(logLeft);
     map->setLogicalRight(logRight);
     map->setPhysicalPort(pin.portName_);
-    map->setLogicalLeft(physLeft);
+    map->setPhysicalLeft(physLeft);
     map->setPhysicalRight(physRight);
     return map;
 }
