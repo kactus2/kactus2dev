@@ -16,6 +16,7 @@
 
 #include "ipxactmodels_global.h"
 
+#include <QSharedPointer>
 #include <QString>
 #include <QPointF>
 #include <QMap>
@@ -273,6 +274,7 @@ public:
      *  Assignment operator.
      */
     ComponentInstance& operator=(ComponentInstance const& other);
+    void copyVendorExtensions(ComponentInstance const &other);
 
 	 /*! \brief Get the Uuid of the instance.
 	  *
@@ -284,6 +286,8 @@ public:
 	  * \return QString containing the uuid.
 	 */
 	 QString getUuid() const;
+
+     bool isDraft() const;
 
      /*!
       *  Sets the vendor extensions of the component instance.
@@ -304,7 +308,7 @@ private:
     *  Parses the property values from the given XML node.
     */
     void parsePropertyValues(QDomNode& node);
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -360,6 +364,8 @@ private:
 
 	//! \brief The unique id used to identify the instance.
 	 QString uuid_;
+
+     QSharedPointer<VendorExtension> isDraft_;
 
     /*!
      * OPTIONAL spirit: vendorExtensions

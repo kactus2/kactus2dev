@@ -14,8 +14,10 @@
 #include "GenericVendorExtension.h"
 #include "XmlUtils.h"
 
-#include <QRegExpValidator>
+#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 
+#include <QRegExpValidator>
 #include <QUuid>
 
 //-----------------------------------------------------------------------------
@@ -40,6 +42,7 @@ ComponentInstance::ComponentInstance(QString instanceName, QString displayName,
       portAdHocVisibilities_(),
       swPropertyValues_(),
 	  uuid_(uuid),
+      isDraft_(new Kactus2Placeholder("kactus2:draft")),
       vendorExtensions_()
 {
 	if (uuid_.isEmpty()) {
@@ -66,12 +69,16 @@ ComponentInstance::ComponentInstance(ComponentInstance const& other)
       portAdHocVisibilities_(other.portAdHocVisibilities_),
       swPropertyValues_(other.swPropertyValues_),
 	  uuid_(other.uuid_),
-      vendorExtensions_(other.vendorExtensions_)
+      isDraft_(new Kactus2Placeholder("kactus2:draft")),
+      vendorExtensions_()
 {
 	// make sure instances always have uuid
-	if (uuid_.isEmpty()) {
+	if (uuid_.isEmpty())
+    {
 		uuid_ = QUuid::createUuid().toString();
 	}
+
+    copyVendorExtensions(other);    
 }
 
 //-----------------------------------------------------------------------------
@@ -93,6 +100,7 @@ ComponentInstance::ComponentInstance(QDomNode& node)
       portAdHocVisibilities_(),
       swPropertyValues_(),
 	  uuid_(),
+      isDraft_(new Kactus2Placeholder("kactus2:draft")),
       vendorExtensions_()
 {
     QDomNodeList nodes = node.childNodes();
@@ -172,6 +180,10 @@ ComponentInstance::ComponentInstance(QDomNode& node)
 				else if (childNode.nodeName() == "kactus2:uuid") {
 					uuid_ = childNode.childNodes().at(0).nodeValue();
 				}
+                else if (childNode.nodeName() == isDraft_->type())
+                {
+                    vendorExtensions_.append(isDraft_);
+                }
                 else
                 {
                     vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(childNode)));
@@ -286,7 +298,7 @@ bool ComponentInstance::isValid(QStringList& errorList, QString const& parentIde
         valid = false;
     }
 
-    if (!componentRef_.isValid(errorList, thisIdentifier))
+    if (!isDraft() && !componentRef_.isValid(errorList, thisIdentifier))
     {
         valid = false;
     }
@@ -331,7 +343,7 @@ bool ComponentInstance::isValid() const
         return false;
     }
 
-    if (!componentRef_.isValid())
+    if (!isDraft() && !componentRef_.isValid())
     {
         return false;
     }
@@ -598,7 +610,10 @@ ComponentInstance& ComponentInstance::operator=(ComponentInstance const& other)
         comInterfacePositions_ = other.comInterfacePositions_;
         portAdHocVisibilities_ = other.portAdHocVisibilities_;
         swPropertyValues_ = other.swPropertyValues_;
-		  uuid_ = other.uuid_;
+		uuid_ = other.uuid_;
+
+        copyVendorExtensions(other);
+
     }
 
     return *this;
@@ -623,16 +638,33 @@ void ComponentInstance::parsePropertyValues(QDomNode& node)
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentInstance::hasConfElementValue()
+//-----------------------------------------------------------------------------
 bool ComponentInstance::hasConfElementValue( const QString& confElementName ) const {
 	return configurableElementValues_.contains(confElementName);
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentInstance::getConfElementValue()
+//-----------------------------------------------------------------------------
 QString ComponentInstance::getConfElementValue( const QString& confElementName ) const {
 	return configurableElementValues_.value(confElementName, QString());
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentInstance::getUuid()
+//-----------------------------------------------------------------------------
 QString ComponentInstance::getUuid() const {
 	return uuid_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstance::isDraft()
+//-----------------------------------------------------------------------------
+bool ComponentInstance::isDraft() const
+{
+    return vendorExtensions_.contains(isDraft_);
 }
 
 //-----------------------------------------------------------------------------
@@ -651,4 +683,18 @@ QList<QSharedPointer<VendorExtension> > ComponentInstance::getVendorExtensions()
     return vendorExtensions_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentInstance::copyVendorExtensions()
+//-----------------------------------------------------------------------------
+void ComponentInstance::copyVendorExtensions(ComponentInstance const& other)
+{
+    foreach(QSharedPointer<VendorExtension> extension, other.vendorExtensions_)
+    {
+        vendorExtensions_.append(QSharedPointer<VendorExtension>(extension->clone()));
 
+        if (extension->type() == isDraft_->type())
+        {
+            isDraft_ = extension;
+        }
+    }
+}
