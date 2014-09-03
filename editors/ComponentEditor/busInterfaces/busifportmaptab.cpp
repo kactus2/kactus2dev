@@ -576,25 +576,25 @@ void BusIfPortmapTab::mapPorts(QString const& physicalPort, QString const& logic
             return;
         }
         
-        portMap->physicalVector()->setLeft(dialog.getHigherBound());
-        portMap->physicalVector()->setRight(dialog.getLowerBound());
+        portMap->setPhysicalLeft(dialog.getHigherBound());
+        portMap->setPhysicalRight(dialog.getLowerBound());
         physicalSize = abs(dialog.getHigherBound() - dialog.getLowerBound()) + 1;
     }
     else
     {
-        portMap->physicalVector()->setLeft(component_->getPortLeftBound(physicalPort));
-        portMap->physicalVector()->setRight(component_->getPortRightBound(physicalPort));
+        portMap->setPhysicalLeft(component_->getPortLeftBound(physicalPort));
+        portMap->setPhysicalRight(component_->getPortRightBound(physicalPort));
     }
 
-    if (portMap->getPhysicalLeft() > portMap->physicalVector()->getRight())
+    if (portMap->getPhysicalLeft() > portMap->getPhysicalRight())
     {
-        portMap->logicalVector()->setLeft(physicalSize - 1);
-        portMap->logicalVector()->setRight(0);         
+        portMap->setLogicalLeft(physicalSize - 1);
+        portMap->setLogicalRight(0);         
     }
     else
     {
-        portMap->logicalVector()->setLeft(0);
-        portMap->logicalVector()->setRight(physicalSize - 1);  
+        portMap->setLogicalLeft(0);
+        portMap->setLogicalRight(physicalSize - 1);  
     }          
 
     model_.createMap(portMap);
