@@ -113,7 +113,7 @@ private:
      *
      *      @return The size for the wire.
      */
-    int findWireSize(Interface const& startInterface, QSharedPointer<PortMap> startPortMap);
+    int findWireSize(Interface const& startInterface, QString const& logicalName);
 
     /*!
      *  Finds the logical bounds for a port map in an instance.
@@ -147,6 +147,30 @@ private:
         Interface const& interface) const;
 
     /*!
+     *  Maps a wire to all instances connected to the given interface.
+     *
+     *      @param [in] startInterface  The interface whose connected ends to map.
+     *      @param [in] logicalPort     The name of the logical signal to map.
+     *      @param [in] wireName        The name of the wire to map.
+     *      @param [in] wireSize        The size of the wire to map.
+     */
+    void mapConnectedInstances(Interface const& startInterface, QString const& logicalPort, 
+        QString const& wireName, int const& wireSize);
+
+    /*!
+     *  Maps all ports mapped to a given logical signal in an interface to a given wire.
+     *
+     *      @param [in] interface       The interface whose ports to map.
+     *      @param [in] logicalPort     The logical signal whose ports to map.
+     *      @param [in] wireName        The name of the wire to map.
+     *      @param [in] wireSize        The size of the wire to map.
+     *
+     *      @return <Description>.
+     */
+    void mapPortsInInterface(Interface const& interface, QString const& logicalPort,
+        QString const& wireName, int const& wireSize);
+
+    /*!
      *  Maps a port in an component instance to given wire.
      *
      *      @param [in] instanceName    The name of the component instance.
@@ -155,17 +179,6 @@ private:
      *      @param [in] wireSize        The size of the wire to map to.
      */
     void mapInstancePortToWire(QString const& instanceName, QSharedPointer<PortMap> portMap, 
-        QString const& wireName, int const& wireSize);
-
-    /*!
-     *  Maps a wire to all instances connected to the given interface.
-     *
-     *      @param [in] startInterface  The interface whose connected ends to map.
-     *      @param [in] logicalPort     The name of the logical signal to map.
-     *      @param [in] wireName        The name of the wire to map.
-     *      @param [in] wireSize        The size of the wire to map.
-     */
-    void mapToConnectedInstances(Interface const& startInterface, QString const& logicalPort, 
         QString const& wireName, int const& wireSize);
 
     /*!

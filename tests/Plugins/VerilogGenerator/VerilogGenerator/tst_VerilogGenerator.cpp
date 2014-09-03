@@ -47,6 +47,7 @@ private slots:
     void testMasterToSlaveInterconnection();
     void testMasterToMultipleSlavesInterconnections();
     void testInterconnectionToVaryingSizeLogicalMaps();
+    void testSlicedInterconnection();
     void testMasterInterconnectionToMirroredMaster();
     void testMirroredSlaveInterconnectionToSlaves();  
     void testAdhocConnectionBetweenComponentInstances();    
@@ -97,6 +98,7 @@ private:
 
     void readOutputFile();   
    
+
     //! The top level component for which the generator is run.
     QSharedPointer<Component> topComponent_;
     
@@ -665,15 +667,83 @@ void tst_VerilogGenerator::testInterconnectionToVaryingSizeLogicalMaps()
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::setComponentDataWidth()
 //-----------------------------------------------------------------------------
-void tst_VerilogGenerator::setReceiverComponentDataWidth(VLNV fourBitReceiverVLNV, int dataWidth)
+void tst_VerilogGenerator::setReceiverComponentDataWidth(VLNV receiverVLNV, int dataWidth)
 {
-    QSharedPointer<Component> component = library_.getModel(fourBitReceiverVLNV).dynamicCast<Component>();
+    QSharedPointer<Component> component = library_.getModel(receiverVLNV).dynamicCast<Component>();
     component->getPort("data_in")->setLeftBound(dataWidth - 1);
     component->getPort("data_in")->setRightBound(0);
 
     QSharedPointer<PortMap> dataMap = component->getBusInterface("data_bus")->getPortMaps().first();
     dataMap->setLogicalLeft(dataWidth - 1);
     dataMap->setLogicalRight(0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testSlicedInterconnection()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testSlicedInterconnection()
+{
+    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
+
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+    addPort("enable_out_low", 1, General::OUT, senderComponent);
+    addPort("enable_out_high", 1, General::OUT, senderComponent);
+
+    addInterfaceToComponent("data_bus", senderComponent);
+    QSharedPointer<BusInterface> enableIf = senderComponent->getBusInterface("data_bus");
+    enableIf->setInterfaceMode(General::MASTER);    
+
+    QSharedPointer<PortMap> enableLowPortMap(new PortMap());
+    enableLowPortMap->setLogicalPort("ENABLE");
+    enableLowPortMap->setPhysicalPort("enable_out_low");
+    enableLowPortMap->setPhysicalLeft(0);
+    enableLowPortMap->setPhysicalRight(0);
+    enableLowPortMap->setLogicalLeft(0);
+    enableLowPortMap->setLogicalRight(0);
+
+    QSharedPointer<PortMap> enableHighPortMap(new PortMap());
+    enableHighPortMap->setLogicalPort("ENABLE");
+    enableHighPortMap->setPhysicalPort("enable_out_high");
+    enableHighPortMap->setPhysicalLeft(0);
+    enableHighPortMap->setPhysicalRight(0);
+    enableHighPortMap->setLogicalLeft(1);
+    enableHighPortMap->setLogicalRight(1);
+
+    QList<QSharedPointer<PortMap> > portMaps = enableIf->getPortMaps();
+    portMaps.append(enableLowPortMap);
+    portMaps.append(enableHighPortMap);
+    enableIf->setPortMaps(portMaps);
+
+    library_.addComponent(senderComponent);
+    addInstanceToDesign("sender", senderVLNV);
+
+    VLNV receiver(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver", "1.0");
+    addReceiverComponentToLibrary(receiver, General::SLAVE);
+    QSharedPointer<Component> receiverComponent = library_.getModel(receiver).dynamicCast<Component>();
+    QSharedPointer<PortMap> enableMap = receiverComponent->getBusInterface("data_bus")->getPortMaps().last();
+    enableMap->setLogicalLeft(0);
+    enableMap->setLogicalRight(0);
+
+    addInstanceToDesign("receiver", receiver);
+
+    addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
+
+    runGenerator();
+
+    verifyOutputContains("wire [1:0]  sender_to_receiver_ENABLE;");
+
+    verifyOutputContains(
+        "    TestSender sender(\n"
+        "        // Interface: data_bus\n"
+        "        .enable_out_high     (sender_to_receiver_ENABLE[1]),\n"
+        "        .enable_out_low      (sender_to_receiver_ENABLE[0]));");
+
+    verifyOutputContains(
+        "    TestReceiver receiver(\n"
+        "        // Interface: data_bus\n"
+        "        .data_in             ( ),\n"
+        "        .enable_in           (sender_to_receiver_ENABLE[0]));");
+
 }
 
 //-----------------------------------------------------------------------------

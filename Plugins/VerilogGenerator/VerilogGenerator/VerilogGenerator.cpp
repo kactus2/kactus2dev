@@ -119,20 +119,24 @@ bool VerilogGenerator::nothingToWrite() const
 //-----------------------------------------------------------------------------
 void VerilogGenerator::parseInterconnections()
 {
-   foreach(Interface startInterface, getStartInterfacesForInterconnections())
-   {
+    QStringList wireNames;
+    foreach(Interface startInterface, getStartInterfacesForInterconnections())
+    {
         QSharedPointer<BusInterface> startBusInterface = getBusinterfaceForInterface(startInterface);
+        QStringList logicalPorts = startBusInterface->getLogicalPortNames();
+        logicalPorts.removeDuplicates();
 
-        foreach(QSharedPointer<PortMap> startPortMap, startBusInterface->getPortMaps())
-        { 
-            QString wireName = generateWireName(startInterface, startPortMap->logicalPort());
-            int wireSize = findWireSize(startInterface, startPortMap); 
+        foreach(QString logical, logicalPorts)
+        {
+            QString wireName = generateWireName(startInterface, logical);
+            int wireSize = findWireSize(startInterface, logical); 
 
-            mapInstancePortToWire(startInterface.getComponentRef(), startPortMap, wireName, wireSize);
+            mapPortsInInterface(startInterface, logical, wireName, wireSize);
 
-            mapToConnectedInstances(startInterface, startPortMap->logicalPort(), wireName, wireSize);
-
+            mapConnectedInstances(startInterface, logical, wireName, wireSize);
+             
             addWireWriter(wireName, wireSize);
+            wireNames.append(wireName);
         }
     }
 }
@@ -201,24 +205,26 @@ QString VerilogGenerator::findConnectionNameForInterface(Interface interface)
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::findWireSize()
 //-----------------------------------------------------------------------------
-int VerilogGenerator::findWireSize(Interface const& startInterface, QSharedPointer<PortMap> startPortMap)
+int VerilogGenerator::findWireSize(Interface const& startInterface, QString const& logicalName)
 {
-    General::PortBounds masterBounds = logicalBoundsInInstance(startInterface.getComponentRef(), startPortMap);
+    int higherBound =  0;
 
-    int wireSize =  abs(masterBounds.left_ - masterBounds.right_) + 1;
+    foreach(QSharedPointer<PortMap> startPortMap, findPortMaps(logicalName, startInterface))
+    {
+        General::PortBounds bounds = logicalBoundsInInstance(startInterface.getComponentRef(), startPortMap);
+        higherBound = qMax(higherBound, qMax(bounds.left_, bounds.right_));
+    }
 
     foreach(Interface endInterface, design_->getConnectedInterfaces(startInterface))
     {
-        foreach(QSharedPointer<PortMap> slavePortMap, 
-            findPortMaps(startPortMap->logicalPort(), endInterface))
+        foreach(QSharedPointer<PortMap> endPortMap, findPortMaps(logicalName, endInterface))
         {
-            General::PortBounds bounds = logicalBoundsInInstance(endInterface.getComponentRef(), slavePortMap);
-            int size = abs(bounds.left_ - bounds.right_) + 1;
-            wireSize = qMax(wireSize, size);
+            General::PortBounds bounds = logicalBoundsInInstance(endInterface.getComponentRef(), endPortMap);
+            higherBound = qMax(higherBound, qMax(bounds.left_, bounds.right_));
         }
     }
 
-    return wireSize;
+    return higherBound + 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -273,6 +279,31 @@ QList<QSharedPointer<PortMap> > VerilogGenerator::findPortMaps(QString const& lo
 }
 
 //-----------------------------------------------------------------------------
+// Function: VerilogGenerator::mapConnectedInstances()
+//-----------------------------------------------------------------------------
+void VerilogGenerator::mapConnectedInstances(Interface const& startInterface, QString const& logicalPort, 
+    QString const& wireName, int const& wireSize)
+{
+    foreach(Interface endInterface, design_->getConnectedInterfaces(startInterface))
+    {
+        mapPortsInInterface(endInterface, logicalPort, wireName, wireSize);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogGenerator::mapPortsInInterface()
+//-----------------------------------------------------------------------------
+void VerilogGenerator::mapPortsInInterface(Interface const& interface, QString const& logicalPort, 
+    QString const& wireName, int const& wireSize)
+{
+    QString instanceName = interface.getComponentRef();
+    foreach(QSharedPointer<PortMap> endPortMap, findPortMaps(logicalPort, interface))
+    {
+        mapInstancePortToWire(instanceName, endPortMap, wireName, wireSize);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: VerilogGenerator::mapInstancePortToWire()
 //-----------------------------------------------------------------------------
 void VerilogGenerator::mapInstancePortToWire(QString const& instanceName, 
@@ -291,22 +322,6 @@ void VerilogGenerator::mapInstancePortToWire(QString const& instanceName,
         {
             General::PortBounds bounds = portMap->getLogicalRange(instanceComponent->getPort(portMap->physicalPort()));
             instanceWriter->assignPortForRange(portMap->physicalPort(), wireName, bounds.left_, bounds.right_);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogGenerator::mapToConnectedInstances()
-//-----------------------------------------------------------------------------
-void VerilogGenerator::mapToConnectedInstances(Interface const& startInterface, QString const& logicalPort, 
-    QString const& wireName, int const& wireSize)
-{
-    foreach(Interface endInterface, design_->getConnectedInterfaces(startInterface))
-    {
-        QString endInstanceName = endInterface.getComponentRef();
-        foreach(QSharedPointer<PortMap> endPortMap, findPortMaps(logicalPort, endInterface))
-        {
-            mapInstancePortToWire(endInstanceName, endPortMap, wireName, wireSize);
         }
     }
 }
