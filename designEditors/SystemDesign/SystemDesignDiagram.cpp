@@ -1448,18 +1448,22 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
     // Create SW instances.
     foreach (SWInstance const& instance, design->getSWInstances())
     {
-        QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.getComponentRef());
-        QSharedPointer<Component> component = libComponent.staticCast<Component>();
+        QSharedPointer<Component> component;
 
-        if (!component)
+        if (!instance.getComponentRef().isEmpty())
         {
-            if (instance.getComponentRef().isValid())
-            {
-                emit errorMessage(tr("The SW component '%1' instantiated in the design '%2' "
-                    "was not found in the library").arg(
-                    instance.getComponentRef().getName()).arg(design->getVlnv()->getName()));
-            }
+             component = getLibraryInterface()->getModel(instance.getComponentRef()).dynamicCast<Component>();
 
+             if (!component && instance.getComponentRef().isValid())
+             {
+                 emit errorMessage(tr("The SW component '%1' instantiated in the design '%2' "
+                     "was not found in the library").arg(
+                     instance.getComponentRef().getName()).arg(design->getVlnv()->getName()));
+             }           
+        }
+        
+        if(!component)
+        {
             // Create an unpackaged component so that we can still visualize the component instance.
             component = QSharedPointer<Component>(new Component(instance.getComponentRef()));
             component->setComponentImplementation(KactusAttribute::KTS_SW);

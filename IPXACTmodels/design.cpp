@@ -1089,17 +1089,17 @@ void Design::setColumns(QList<ColumnDesc> const& columns)
 }
 
 
-QList<VLNV> Design::getComponents() const {
-
+QList<VLNV> Design::getComponents() const
+{
 	QList<VLNV> list;
 
 	foreach (ComponentInstance const& instance, componentInstances_) {
-		if (instance.getComponentRef().isValid())
+        if (!instance.isDraft())
 			list.append(instance.getComponentRef());
 	}
 
     foreach (SWInstance const& instance, swInstances_) {
-        if (instance.getComponentRef().isValid())
+        if (!instance.isDraft())
             list.append(instance.getComponentRef());
     }
 

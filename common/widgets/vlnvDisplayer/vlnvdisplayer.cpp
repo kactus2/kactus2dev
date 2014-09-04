@@ -119,19 +119,30 @@ VLNVDisplayer::~VLNVDisplayer() {
 
 void VLNVDisplayer::setVLNV( const VLNV& vlnv, bool compact )
 {
-    if (vlnv.isValid())
+
+    vendor_.setText(vlnv.getVendor());
+    library_.setText(vlnv.getLibrary());
+    name_.setText(vlnv.getName());
+    version_.setText(vlnv.getVersion());
+
+    if (!vlnv.isValid())
     {
-        vendor_.setText(vlnv.getVendor());
-        library_.setText(vlnv.getLibrary());
-        name_.setText(vlnv.getName());
-        version_.setText(vlnv.getVersion());
-    }
-    else
-    {
-        vendor_.setText("UNSET");
-        library_.setText("UNSET");
-        name_.setText("UNSET");
-        version_.setText("UNSET");
+        if (vlnv.getVendor().isEmpty())
+        {
+            vendor_.setText("UNSET");
+        }
+        if (vlnv.getLibrary().isEmpty())
+        {
+            library_.setText("UNSET");
+        }
+        if (vlnv.getName().isEmpty())
+        {
+            name_.setText("UNSET");
+        }
+        if (vlnv.getVersion().isEmpty())
+        {
+            version_.setText("UNSET");
+        }
     }
 
     if (compact)

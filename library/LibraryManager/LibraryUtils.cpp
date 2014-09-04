@@ -170,40 +170,43 @@ void parseProgrammableElementsV2(LibraryInterface* lh, VLNV designVLNV,
     // Go through all component instances and search for programmable elements.
     foreach (ComponentInstance const& instance, compDesign->getComponentInstances())
     {
-        QSharedPointer<LibraryComponent> libComp = lh->getModel(instance.getComponentRef());
-        QSharedPointer<Component> childComp = libComp.staticCast<Component>();
-
-        if (childComp)
+        if (!instance.isDraft())
         {
-            // Add the component to the system design only if it is a leaf component and has a CPU
-            // or COM interfaces.
-            if ((!childComp->isHierarchical() && childComp->isCpu()) || !childComp->getComInterfaces().isEmpty())
+            QSharedPointer<LibraryComponent> libComp = lh->getModel(instance.getComponentRef());
+            QSharedPointer<Component> childComp = libComp.staticCast<Component>();
+
+            if (childComp)
             {
-                ComponentInstance copy = instance;
-
-                // Determine a unique name for the instance.
-                QString instanceName = instance.getInstanceName();
-                int runningNumber = 1;
-
-                while (getInstanceIndex(elements, instanceName) != -1)
+                // Add the component to the system design only if it is a leaf component and has a CPU
+                // or COM interfaces.
+                if ((!childComp->isHierarchical() && childComp->isCpu()) || !childComp->getComInterfaces().isEmpty())
                 {
-                    instanceName = instance.getInstanceName() + "_" + QString::number(runningNumber);
+                    ComponentInstance copy = instance;
+
+                    // Determine a unique name for the instance.
+                    QString instanceName = instance.getInstanceName();
+                    int runningNumber = 1;
+
+                    while (getInstanceIndex(elements, instanceName) != -1)
+                    {
+                        instanceName = instance.getInstanceName() + "_" + QString::number(runningNumber);
+                    }
+
+                    copy.setInstanceName(instanceName);
+                    elements.append(copy);
                 }
-
-                copy.setInstanceName(instanceName);
-                elements.append(copy);
-            }
-            else
-            {
-                QString view = "";
-
-                if (designConf != 0)
+                else
                 {
-                    view = designConf->getActiveView(instance.getInstanceName());
-                }
+                    QString view = "";
 
-                // Otherwise parse the hierarchical components recursively.
-                parseProgrammableElementsV2(lh, childComp->getHierRef(view), elements);
+                    if (designConf != 0)
+                    {
+                        view = designConf->getActiveView(instance.getInstanceName());
+                    }
+
+                    // Otherwise parse the hierarchical components recursively.
+                    parseProgrammableElementsV2(lh, childComp->getHierRef(view), elements);
+                }
             }
         }
     }

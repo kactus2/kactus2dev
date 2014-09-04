@@ -115,20 +115,27 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
     /* component instances */
     foreach (ComponentInstance const& instance, design->getComponentInstances())
-    {        
-		QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.getComponentRef());
-        QSharedPointer<Component> component = libComponent.staticCast<Component>();
+    {
+        QSharedPointer<Component> component;
 
-		if (!component)
+        if (!instance.getComponentRef().isEmpty())
         {
-			emit errorMessage(tr("The component %1 instantiated within design "
-				                 "%2 was not found in the library").arg(
-				              instance.getComponentRef().getName()).arg(design->getVlnv()->getName()));
-			
+            component = getLibraryInterface()->getModel(instance.getComponentRef()).dynamicCast<Component>();
+
+            if (!component && instance.getComponentRef().isValid())
+            {
+                emit errorMessage(tr("The component %1 instantiated within design "
+                    "%2 was not found in the library").arg(
+                    instance.getComponentRef().getName()).arg(design->getVlnv()->getName()));
+            }           
+        }
+
+        if(!component)
+        {
             // Create an unpackaged component so that we can still visualize the component instance.
             component = QSharedPointer<Component>(new Component(instance.getComponentRef()));
-            component->setComponentImplementation(getEditedComponent()->getComponentImplementation());
-		}
+            component->setComponentImplementation(KactusAttribute::KTS_HW);         
+        }
 
         HWComponentItem* item = new HWComponentItem(getLibraryInterface(), component,
                                                     instance.getInstanceName(),
@@ -142,6 +149,11 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         item->setAdHocPortPositions(instance.getAdHocPortPositions());
         item->setVendorExtensions(instance.getVendorExtensions());
         
+        if (instance.isDraft())
+        {
+            item->setDraft();
+        }
+
         // Check if the position is not found.
         if (instance.getPosition().isNull())
         {

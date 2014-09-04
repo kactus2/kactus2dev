@@ -478,15 +478,15 @@ void HWComponentItem::updateComponent()
     VLNV* vlnv = componentModel()->getVlnv();
 
     // Check whether the component is packaged (valid vlnv) or not.
-    if (vlnv->isValid())
+    if (isDraft())
     {
-        if (!getLibraryInterface()->contains(*vlnv))
+        setBrush(QBrush(KactusColors::DRAFT_COMPONENT));
+    }
+    else if (getLibraryInterface()->contains(*vlnv))
+    {
+        if (componentModel()->isBus())
         {
-            setBrush(QBrush(KactusColors::MISSING_COMPONENT));
-        }
-        else if (componentModel()->isBus())
-        {
-            setBrush(QBrush(KactusColors::HW_BUS_COMPONENT)); 
+            setBrush(QBrush(KactusColors::HW_BUS_COMPONENT));
         }
         else
         {
@@ -495,7 +495,7 @@ void HWComponentItem::updateComponent()
     }
     else
     {
-        setBrush(QBrush(KactusColors::DRAFT_COMPONENT));
+        setBrush(QBrush(KactusColors::MISSING_COMPONENT));
     }
 
     // Create a hierarchy icon if the component is a hierarchical one.
@@ -801,6 +801,7 @@ void HWComponentItem::setPacketized()
             vendorExtensions_.removeAll(extension);
         }
     }
+    updateComponent();
 }
 
 //-----------------------------------------------------------------------------
@@ -808,19 +809,11 @@ void HWComponentItem::setPacketized()
 //-----------------------------------------------------------------------------
 void HWComponentItem::setDraft()
 {
-    bool hasDraftExtension = false;
-    foreach(QSharedPointer<VendorExtension> extension, vendorExtensions_)
-    {
-        if (extension->type() == "kactus2:draft")
-        {
-            hasDraftExtension = true;
-        }
-    }
-
-    if (!hasDraftExtension)
+    if (!isDraft())
     {
         vendorExtensions_.append(QSharedPointer<Kactus2Placeholder>(new Kactus2Placeholder("kactus2:draft")));
     }
+    updateComponent();
 }
 
 //-----------------------------------------------------------------------------

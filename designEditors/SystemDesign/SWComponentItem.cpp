@@ -215,21 +215,18 @@ void SWComponentItem::updateComponent()
 
     VLNV* vlnv = componentModel()->getVlnv();
 
-    // Check whether the component is packaged (valid vlnv) or not.
-    if (vlnv->isValid())
+    // Check whether the component is packaged or not.
+    if (isDraft())
     {
-        if (!getLibraryInterface()->contains(*vlnv))
-        {
-            setBrush(QBrush(KactusColors::MISSING_COMPONENT));
-        }
-        else
-        {
-            setBrush(QBrush(KactusColors::SW_COMPONENT));
-        }
+        setBrush(QBrush(KactusColors::DRAFT_COMPONENT));
+    }
+    else if (getLibraryInterface()->contains(*vlnv))
+    {
+        setBrush(QBrush(KactusColors::SW_COMPONENT));
     }
     else
     {
-        setBrush(QBrush(KactusColors::DRAFT_COMPONENT));
+        setBrush(QBrush(KactusColors::MISSING_COMPONENT));
     }
 
     // Create a hierarchy icon if the component is a hierarchical one.
@@ -322,6 +319,7 @@ HWMappingItem const* SWComponentItem::getLinkedHW() const
 void SWComponentItem::setPacketized()
 {
     isDraft_ = false;
+    updateComponent();
 }
 
 //-----------------------------------------------------------------------------
@@ -330,6 +328,7 @@ void SWComponentItem::setPacketized()
 void SWComponentItem::setDraft()
 {
     isDraft_ = true;
+    updateComponent();
 }
 
 //-----------------------------------------------------------------------------
