@@ -226,7 +226,17 @@ private:
      *      @param [in] dir   The port direction which determines to which side to port will be placed.
      */
     void onAddPort(SWPortItem* port, PortDirection dir);
-    
+ 
+    /*!
+     *  Marks the component as a packetized component.
+     */
+    virtual void setPacketized();
+
+    /*!
+     *  Marks the component as a draft component.
+     */
+    virtual void setDraft();
+
     enum
     {
         SPACING = 8,

@@ -174,6 +174,16 @@ public:
      */
     virtual QPointF connectionPoint(QPointF const& otherEnd = QPointF()) const;
 
+    /*!
+     *  Marks the component as a packetized component.
+     */
+    virtual void setPacketized() = 0;
+
+    /*!
+     *  Marks the component as a draft component.
+     */
+    virtual void setDraft() = 0;
+
 signals:
     //! Emitted when an endpoint has been moved.
     void endpointMoved(ConnectionEndpoint* endpoint);
@@ -210,6 +220,7 @@ private:
     // Disable copying.
     ComponentItem(ComponentItem const& rhs);
     ComponentItem& operator=(ComponentItem const& rhs);
+
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -365,8 +365,6 @@ private:
 	//! \brief The unique id used to identify the instance.
 	 QString uuid_;
 
-     QSharedPointer<VendorExtension> isDraft_;
-
     /*!
      * OPTIONAL spirit: vendorExtensions
      * Component instance vendor extensions.

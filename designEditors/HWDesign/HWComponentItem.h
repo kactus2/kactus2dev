@@ -172,6 +172,16 @@ public:
     QMap<QString, QPointF> getAdHocPortPositions() const;
 
     /*!
+     *  Marks the component as a packetized component.
+     */
+    virtual void setPacketized();
+
+    /*!
+     *  Marks the component as a draft component.
+     */
+    virtual void setDraft();
+
+    /*!
      *  Returns the instance vendor extensions.
      *
      *      @return The vendor extensions.
@@ -216,7 +226,8 @@ private:
      *  Updates the size of the component based on the port positions.
      */
     void updateSize();
-    
+
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

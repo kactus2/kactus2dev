@@ -42,7 +42,6 @@ ComponentInstance::ComponentInstance(QString instanceName, QString displayName,
       portAdHocVisibilities_(),
       swPropertyValues_(),
 	  uuid_(uuid),
-      isDraft_(new Kactus2Placeholder("kactus2:draft")),
       vendorExtensions_()
 {
 	if (uuid_.isEmpty()) {
@@ -69,7 +68,6 @@ ComponentInstance::ComponentInstance(ComponentInstance const& other)
       portAdHocVisibilities_(other.portAdHocVisibilities_),
       swPropertyValues_(other.swPropertyValues_),
 	  uuid_(other.uuid_),
-      isDraft_(new Kactus2Placeholder("kactus2:draft")),
       vendorExtensions_()
 {
 	// make sure instances always have uuid
@@ -100,7 +98,6 @@ ComponentInstance::ComponentInstance(QDomNode& node)
       portAdHocVisibilities_(),
       swPropertyValues_(),
 	  uuid_(),
-      isDraft_(new Kactus2Placeholder("kactus2:draft")),
       vendorExtensions_()
 {
     QDomNodeList nodes = node.childNodes();
@@ -180,9 +177,10 @@ ComponentInstance::ComponentInstance(QDomNode& node)
 				else if (childNode.nodeName() == "kactus2:uuid") {
 					uuid_ = childNode.childNodes().at(0).nodeValue();
 				}
-                else if (childNode.nodeName() == isDraft_->type())
+                else if (childNode.nodeName() == "kactus2:draft")
                 {
-                    vendorExtensions_.append(isDraft_);
+                    QSharedPointer<VendorExtension> draftExtension(new Kactus2Placeholder("kactus2:draft"));
+                    vendorExtensions_.append(draftExtension);
                 }
                 else
                 {
@@ -613,7 +611,6 @@ ComponentInstance& ComponentInstance::operator=(ComponentInstance const& other)
 		uuid_ = other.uuid_;
 
         copyVendorExtensions(other);
-
     }
 
     return *this;
@@ -641,21 +638,24 @@ void ComponentInstance::parsePropertyValues(QDomNode& node)
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::hasConfElementValue()
 //-----------------------------------------------------------------------------
-bool ComponentInstance::hasConfElementValue( const QString& confElementName ) const {
+bool ComponentInstance::hasConfElementValue( const QString& confElementName ) const
+{
 	return configurableElementValues_.contains(confElementName);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::getConfElementValue()
 //-----------------------------------------------------------------------------
-QString ComponentInstance::getConfElementValue( const QString& confElementName ) const {
+QString ComponentInstance::getConfElementValue( const QString& confElementName ) const
+{
 	return configurableElementValues_.value(confElementName, QString());
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::getUuid()
 //-----------------------------------------------------------------------------
-QString ComponentInstance::getUuid() const {
+QString ComponentInstance::getUuid() const
+{
 	return uuid_;
 }
 
@@ -664,7 +664,14 @@ QString ComponentInstance::getUuid() const {
 //-----------------------------------------------------------------------------
 bool ComponentInstance::isDraft() const
 {
-    return vendorExtensions_.contains(isDraft_);
+    foreach(QSharedPointer<VendorExtension> extension, vendorExtensions_)
+    {
+        if (extension->type() == "kactus2:draft")
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -690,11 +697,7 @@ void ComponentInstance::copyVendorExtensions(ComponentInstance const& other)
 {
     foreach(QSharedPointer<VendorExtension> extension, other.vendorExtensions_)
     {
-        vendorExtensions_.append(QSharedPointer<VendorExtension>(extension->clone()));
-
-        if (extension->type() == isDraft_->type())
-        {
-            isDraft_ = extension;
-        }
+        QSharedPointer<VendorExtension> copy(extension->clone());
+        vendorExtensions_.append(copy);
     }
 }

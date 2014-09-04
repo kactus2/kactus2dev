@@ -173,10 +173,11 @@ void ComponentPacketizeCommand::undo()
 {
     // Unregister the VLNV.
     static_cast<DesignDiagram*>(component_->scene())->getParent()->removeRelatedVLNV(vlnv_);
+    component_->setDraft();
 
     // Set an empty VLNV.
     component_->componentModel()->setVlnv(VLNV());
-
+    
     // Mark all endpoints as temporary.
     foreach (QGraphicsItem* item, component_->childItems())
     {
@@ -198,6 +199,7 @@ void ComponentPacketizeCommand::undo()
 void ComponentPacketizeCommand::redo()
 {
     component_->componentModel()->setVlnv(vlnv_);
+    component_->setPacketized();
 
     // Register the VLNV.
     static_cast<DesignDiagram*>(component_->scene())->getParent()->addRelatedVLNV(vlnv_);

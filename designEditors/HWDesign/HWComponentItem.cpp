@@ -15,10 +15,11 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <common/GenericEditProvider.h>
-#include <designEditors/common/diagramgrid.h>
 #include <common/KactusColors.h>
 #include <common/layouts/VCollisionLayout.h>
+#include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 
+#include <designEditors/common/diagramgrid.h>
 #include <designEditors/HWDesign/AdHocEditor/AdHocEditor.h>
 
 #include <IPXACTmodels/component.h>
@@ -26,8 +27,8 @@
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/view.h>
-
-#include <common/graphicsItems/CommonGraphicsUndoCommands.h>
+#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 
 #include <QGraphicsDropShadowEffect>
 #include <QFont>
@@ -786,4 +787,38 @@ QMap<QString, QPointF> HWComponentItem::getAdHocPortPositions() const
 QList<QSharedPointer<VendorExtension> > HWComponentItem::getVendorExtensions() const
 {
     return vendorExtensions_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::setPacketized()
+//-----------------------------------------------------------------------------
+void HWComponentItem::setPacketized()
+{
+    foreach(QSharedPointer<VendorExtension> extension, vendorExtensions_)
+    {
+        if (extension->type() == "kactus2:draft")
+        {
+            vendorExtensions_.removeAll(extension);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::setDraft()
+//-----------------------------------------------------------------------------
+void HWComponentItem::setDraft()
+{
+    bool hasDraftExtension = false;
+    foreach(QSharedPointer<VendorExtension> extension, vendorExtensions_)
+    {
+        if (extension->type() == "kactus2:draft")
+        {
+            hasDraftExtension = true;
+        }
+    }
+
+    if (!hasDraftExtension)
+    {
+        vendorExtensions_.append(QSharedPointer<Kactus2Placeholder>(new Kactus2Placeholder("kactus2:draft")));
+    }
 }

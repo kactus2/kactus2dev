@@ -141,7 +141,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         item->setBusInterfacePositions(instance.getBusInterfacePositions(), true);
         item->setAdHocPortPositions(instance.getAdHocPortPositions());
         item->setVendorExtensions(instance.getVendorExtensions());
-
+        
         // Check if the position is not found.
         if (instance.getPosition().isNull())
         {
@@ -1934,6 +1934,7 @@ void HWDesignDiagram::addDraftComponentInstance(GraphicsColumn* column, QPointF 
 
     // Create the corresponding diagram component.
     HWComponentItem* diagComp = new HWComponentItem(getLibraryInterface(), comp, name);
+    diagComp->setDraft();
     diagComp->setPos(snapPointToGrid(position));
 
     QSharedPointer<ItemAddCommand> cmd(new ItemAddCommand(column, diagComp));

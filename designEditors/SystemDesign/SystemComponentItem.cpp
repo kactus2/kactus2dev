@@ -558,3 +558,19 @@ QMap<QString, QPointF> SystemComponentItem::getComInterfacePositions() const
 
     return positions;
 }
+
+//-----------------------------------------------------------------------------
+// Function: SystemComponentItem::setPacketized()
+//-----------------------------------------------------------------------------
+void SystemComponentItem::setPacketized()
+{
+    // TODO.
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemComponentItem::setDraft()
+//-----------------------------------------------------------------------------
+void SystemComponentItem::setDraft()
+{
+    // TODO.
+}
