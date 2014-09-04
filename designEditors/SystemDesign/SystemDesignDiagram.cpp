@@ -154,6 +154,11 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
             instance.setImported(swCompItem->isImported());
             instance.setImportRef(swCompItem->getImportRef());
 
+            if (swCompItem->isDraft())
+            {
+                instance.setDraft();
+            }
+
             if (swCompItem->parentItem()->type() == HWMappingItem::Type)
             {
                 HWMappingItem const* parent = static_cast<HWMappingItem*>(swCompItem->parentItem());
@@ -1473,6 +1478,11 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         item->setApiInterfacePositions(instance.getApiInterfacePositions(), true);
         item->setComInterfacePositions(instance.getComInterfacePositions(), true);
 
+        if (instance.isDraft())
+        {
+            item->setDraft();
+        }
+
         if (instance.getMapping().isEmpty())
         {
             // Check if the position is not found.
@@ -2352,6 +2362,7 @@ void SystemDesignDiagram::draftAt(QPointF const& clickedPosition)
 
                 // Create the corresponding SW component item.
                 SWComponentItem* swCompItem = new SWComponentItem(getLibraryInterface(), comp, name);
+                swCompItem->setDraft();
                 swCompItem->setPos(snapPointToGrid(clickedPosition));
 
                 connect(swCompItem, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
@@ -2431,6 +2442,7 @@ void SystemDesignDiagram::copySWInstances(QList<QGraphicsItem*> const& items,
             instance.fileSetRef = comp->getFileSetRef();
             instance.apiInterfacePositions = comp->getApiInterfacePositions();
             instance.comInterfacePositions = comp->getComInterfacePositions();
+            instance.isDraft = comp->isDraft();
         }
     }
 }
@@ -2471,6 +2483,11 @@ void SystemDesignDiagram::pasteSWInstances(ComponentCollectionCopyData const& co
 
         comp->setApiInterfacePositions(instance.apiInterfacePositions, false);
         comp->setComInterfacePositions(instance.comInterfacePositions, false);
+
+        if (instance.isDraft)
+        {
+            comp->setDraft();
+        }
 
         IGraphicsItemStack* targetStack = stack;
 

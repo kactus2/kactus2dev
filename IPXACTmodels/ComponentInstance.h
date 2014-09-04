@@ -287,6 +287,11 @@ public:
 	 */
 	 QString getUuid() const;
 
+     /*!
+      *  Checks if the component instance is a draft.
+      *
+      *      @return True, if the instance is a draft, otherwise false.
+      */
      bool isDraft() const;
 
      /*!

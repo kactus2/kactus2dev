@@ -49,7 +49,8 @@ SWComponentItem::SWComponentItem(LibraryInterface* libInterface,
       oldStack_(0),
       oldPos_(),
       hierIcon_(0),
-      importedIcon_(0)
+      importedIcon_(0),
+      isDraft_(false)
 {
     setFlag(ItemIsMovable);
     
@@ -313,4 +314,28 @@ QString const& SWComponentItem::getFileSetRef() const
 HWMappingItem const* SWComponentItem::getLinkedHW() const
 {
     return dynamic_cast<HWMappingItem*>(parentItem());
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWComponentItem::setPacketized()
+//-----------------------------------------------------------------------------
+void SWComponentItem::setPacketized()
+{
+    isDraft_ = false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWComponentItem::setDraft()
+//-----------------------------------------------------------------------------
+void SWComponentItem::setDraft()
+{
+    isDraft_ = true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWComponentItem::isDraft()
+//-----------------------------------------------------------------------------
+bool SWComponentItem::isDraft() const
+{
+    return isDraft_;
 }

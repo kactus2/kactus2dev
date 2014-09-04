@@ -197,6 +197,16 @@ public:
      */
     QMap<QString, QPointF> getComInterfacePositions() const;
 
+    /*!
+     *  Marks the component as a packetized component.
+     */
+    virtual void setPacketized();
+
+    /*!
+     *  Marks the component as a draft component.
+     */
+    virtual void setDraft();
+
 signals:
     //! Occurs when the property values have been changed.
     void propertyValuesChanged(QMap<QString, QString> const& propertyValues);
@@ -226,16 +236,6 @@ private:
      *      @param [in] dir   The port direction which determines to which side to port will be placed.
      */
     void onAddPort(SWPortItem* port, PortDirection dir);
- 
-    /*!
-     *  Marks the component as a packetized component.
-     */
-    virtual void setPacketized();
-
-    /*!
-     *  Marks the component as a draft component.
-     */
-    virtual void setDraft();
 
     enum
     {

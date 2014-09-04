@@ -19,7 +19,7 @@
 //-----------------------------------------------------------------------------
 SWInstance::SWInstance() : instanceName_(), displayName_(), desc_(),
                            componentRef_(), fileSetRef_(), hwRef_(), pos_(),
-                           imported_(false), importRef_(),
+                           imported_(false), importRef_(), draft_(false),
                            comInterfaces_(), propertyValues_(),
                            apiInterfacePositions_(), comInterfacePositions_()
 {
@@ -38,6 +38,7 @@ SWInstance::SWInstance(SWInstance const& rhs)
       pos_(rhs.pos_),
       imported_(rhs.imported_),
       importRef_(rhs.importRef_),
+      draft_(rhs.draft_),
       comInterfaces_(),
       propertyValues_(rhs.propertyValues_),
       apiInterfacePositions_(rhs.apiInterfacePositions_),
@@ -62,6 +63,7 @@ SWInstance::SWInstance(QDomNode& node)
       pos_(),
       imported_(false),
       importRef_(),
+      draft_(false),
       comInterfaces_(),
       propertyValues_(),
       apiInterfacePositions_(),
@@ -128,6 +130,10 @@ SWInstance::SWInstance(QDomNode& node)
             XmlUtils::parsePositionsMap(childNode, "kactus2:comInterfacePosition",
                                         "kactus2:comRef", comInterfacePositions_);
         }
+        else if (childNode.nodeName() == "kactus2:draft")
+        {
+           draft_ = true;
+        }
     }
 }
 
@@ -172,6 +178,11 @@ void SWInstance::write(QXmlStreamWriter& writer) const
     {
         writer.writeEmptyElement("kactus2:imported");
         writer.writeAttribute("kactus2:importRef", importRef_);
+    }
+
+    if (draft_)
+    {
+        writer.writeEmptyElement("kactus2:draft");
     }
 
     // Write communication interfaces.
@@ -231,7 +242,7 @@ bool SWInstance::isValid(QStringList& errorList, QStringList const& hwUUIDs,
         valid = false;
     }
 
-    if (!componentRef_.isValid() && fileSetRef_.isEmpty())
+    if (!draft_ && !componentRef_.isValid() && fileSetRef_.isEmpty())
     {
         errorList.append(QObject::tr("No valid VLNV reference or a file set reference "
                                      "specified for %1").arg(thisId));
@@ -277,7 +288,7 @@ bool SWInstance::isValid( const QStringList& hwUUIDs ) const {
 		return false;
 	}
 
-	if (!componentRef_.isValid() && fileSetRef_.isEmpty()) {
+	if (!draft_ && !componentRef_.isValid() && fileSetRef_.isEmpty()) {
 		return false;
 	}
 
@@ -468,6 +479,22 @@ QString const& SWInstance::getImportRef() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: SWInstance::isDraft()
+//-----------------------------------------------------------------------------
+bool SWInstance::isDraft() const
+{
+    return draft_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInstance::setDraft()
+//-----------------------------------------------------------------------------
+void SWInstance::setDraft()
+{
+    draft_ = true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: SWInstance::operator=()
 //-----------------------------------------------------------------------------
 SWInstance& SWInstance::operator=(SWInstance const& rhs)
@@ -483,6 +510,7 @@ SWInstance& SWInstance::operator=(SWInstance const& rhs)
         pos_ = rhs.pos_;
         imported_ = rhs.imported_;
         importRef_ = rhs.importRef_;
+        draft_ = rhs.draft_;
 
         comInterfaces_.clear();
 

@@ -106,6 +106,7 @@ public:
         QString fileSetRef;                             //!< File set reference.
         QMap<QString, QPointF> apiInterfacePositions;   //!< API interface positions.
         QMap<QString, QPointF> comInterfacePositions;   //!< COM interface positions.
+        bool isDraft;                                   //!< Identifier for draft component instances.
 
         ComponentInstanceCopyData()
             : component(),

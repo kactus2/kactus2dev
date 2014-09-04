@@ -211,6 +211,18 @@ public:
     QString const& getImportRef() const;
 
     /*!
+     *  Checks if the component instance is a draft.
+     *
+     *      @return True, if the instance is a draft, otherwise false.
+     */
+    bool isDraft() const;
+
+    /*!
+     *  Marks the instance as a draft.
+     */
+    void setDraft();
+
+    /*!
      *  Returns the property values.
      */
     QMap<QString, QString> const& getPropertyValues() const;
@@ -244,7 +256,7 @@ private:
      *      @param [in] node The source XML node.
      */
     void parsePropertyValues(QDomNode& node);
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -275,6 +287,9 @@ private:
 
     //! The name of the import source instance.
     QString importRef_;
+
+    //! If true, the instance is a draft.
+    bool draft_;
 
     //! The "ad-hoc" communication interfaces.
     QList< QSharedPointer<ComInterface> > comInterfaces_;

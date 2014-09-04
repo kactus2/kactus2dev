@@ -71,6 +71,23 @@ public:
 
     virtual void updateComponent();
 
+    /*!
+     *  Marks the component as a packetized component.
+     */
+    virtual void setPacketized();
+
+    /*!
+     *  Marks the component as a draft component.
+     */
+    virtual void setDraft();
+
+    /*!
+     *  Checks if the component instance is a draft.
+     *
+     *      @return True, if the instance is a draft, otherwise false.
+     */
+    bool isDraft() const;
+
 public slots:
     void openCSource();
 
@@ -122,6 +139,9 @@ private:
 
     //! The file set reference. Empty string if no reference.
     QString fileSetRef_;
+
+    //! If true, the component instance is a draft.
+    bool isDraft_;
 };
 
 //-----------------------------------------------------------------------------
