@@ -2085,6 +2085,7 @@ void HWDesignDiagram::copyInstances(QList<QGraphicsItem*> const& items, Componen
             instance.busInterfacePositions = comp->getBusInterfacePositions();
             instance.adHocPortPositions = comp->getAdHocPortPositions();
             instance.adHocVisibilities = comp->getPortAdHocVisibilities();
+            instance.isDraft = comp->isDraft();
         }
     }
 }
@@ -2304,6 +2305,11 @@ void HWDesignDiagram::pasteInstances(ComponentCollectionCopyData const& collecti
 
         comp->setBusInterfacePositions(instance.busInterfacePositions, false);
         comp->setAdHocPortPositions(instance.adHocPortPositions);
+
+        if (instance.isDraft)
+        {
+            comp->setDraft();
+        }
 
         GraphicsColumn* compColumn = column;
 

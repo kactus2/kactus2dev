@@ -182,6 +182,13 @@ public:
     virtual void setDraft();
 
     /*!
+     *  Checks if the item is a draft component.
+     *
+     *      @return True, if the component is a draft component, otherwise false.
+     */
+    bool isDraft();
+
+    /*!
      *  Returns the instance vendor extensions.
      *
      *      @return The vendor extensions.
@@ -226,7 +233,6 @@ private:
      *  Updates the size of the component based on the port positions.
      */
     void updateSize();
-
 
     //-----------------------------------------------------------------------------
     // Data.

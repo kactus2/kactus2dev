@@ -822,3 +822,18 @@ void HWComponentItem::setDraft()
         vendorExtensions_.append(QSharedPointer<Kactus2Placeholder>(new Kactus2Placeholder("kactus2:draft")));
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::isDraft()
+//-----------------------------------------------------------------------------
+bool HWComponentItem::isDraft()
+{
+    foreach(QSharedPointer<VendorExtension> extension, vendorExtensions_)
+    {
+        if (extension->type() == "kactus2:draft")
+        {
+            return true;
+        }
+    }
+    return false;
+}

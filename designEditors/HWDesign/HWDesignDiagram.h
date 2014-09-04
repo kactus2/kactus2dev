@@ -112,6 +112,7 @@ public:
         QMap<QString, QPointF> busInterfacePositions;   //!< Bus interface positions.
         QMap<QString, QPointF> adHocPortPositions;      //!< Ad-hoc port positions.
         QMap<QString, bool> adHocVisibilities;          //!< Ad-hoc visibilities.
+        bool isDraft;                                   //!< Identifier for draft component instances.
 
         ComponentInstanceCopyData()
             : component(),
