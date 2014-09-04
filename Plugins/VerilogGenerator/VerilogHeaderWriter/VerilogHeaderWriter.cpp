@@ -11,8 +11,6 @@
 
 #include "VerilogHeaderWriter.h"
 
-#include <kactusGenerators/HDLGenerator/HDLUtils.h>
-
 #include <IPXACTmodels/vlnv.h>
 
 //-----------------------------------------------------------------------------

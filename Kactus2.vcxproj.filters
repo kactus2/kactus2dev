@@ -890,12 +890,6 @@
     <Filter Include="Header Files\designEditors\common\Association">
       <UniqueIdentifier>{639b5694-b994-4740-a403-6ec20fab5862}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\kactusGenerators\HDLGenerator">
-      <UniqueIdentifier>{9596ec4f-e618-4b21-9048-011de982051b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\kactusGenerators\HDLGenerator">
-      <UniqueIdentifier>{221a5839-e1f5-4a2f-9ada-eb77e50a5d39}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3766,53 +3760,14 @@
     <ClCompile Include="Plugins\PluginSystem\PluginUtilityAdapter.cpp">
       <Filter>Source Files\Plugins\PluginSystem</Filter>
     </ClCompile>
-    <ClCompile Include="kactusGenerators\HDLGenerator\HDLGeneratorTemplate.cpp">
-      <Filter>Source Files\kactusGenerators\HDLGenerator</Filter>
+    <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlconnectionendpoint.cpp">
+      <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
     </ClCompile>
-    <ClCompile Include="kactusGenerators\HDLGenerator\HDLObject.cpp">
-      <Filter>Source Files\kactusGenerators\HDLGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\HDLGenerator\HDLPort.cpp">
-      <Filter>Source Files\kactusGenerators\HDLGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\HDLGenerator\vhdlportsorter.cpp">
-      <Filter>Source Files\kactusGenerators\HDLGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_HDLGeneratorTemplate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_vhdlgenerator2.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_HDLModelParameter.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_HDLObject.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\HDLGenerator\HDLModelParameter.cpp">
-      <Filter>Source Files\kactusGenerators\HDLGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\HDLGenerator\HDLSignal.cpp">
-      <Filter>Source Files\kactusGenerators\HDLGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_HDLSignal.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\HDLGenerator\vhdlconnectionendpoint.cpp">
-      <Filter>Source Files\kactusGenerators\HDLGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_HDLComponentDeclaration.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_HDLComponentInstance.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\HDLGenerator\HDLComponentDeclaration.cpp">
-      <Filter>Source Files\kactusGenerators\HDLGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\HDLGenerator\HDLComponentInstance.cpp">
-      <Filter>Source Files\kactusGenerators\HDLGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\HDLGenerator\HDLUtils.cpp">
-      <Filter>Source Files\kactusGenerators\HDLGenerator</Filter>
+    <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlportsorter.cpp">
+      <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5220,24 +5175,6 @@
     <CustomBuild Include="Plugins\PluginSystem\PluginUtilityAdapter.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
     </CustomBuild>
-    <CustomBuild Include="kactusGenerators\HDLGenerator\HDLGeneratorTemplate.h">
-      <Filter>Header Files\kactusGenerators\HDLGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kactusGenerators\HDLGenerator\HDLModelParameter.h">
-      <Filter>Header Files\kactusGenerators\HDLGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kactusGenerators\HDLGenerator\HDLObject.h">
-      <Filter>Header Files\kactusGenerators\HDLGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kactusGenerators\HDLGenerator\HDLSignal.h">
-      <Filter>Header Files\kactusGenerators\HDLGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kactusGenerators\HDLGenerator\HDLComponentDeclaration.h">
-      <Filter>Header Files\kactusGenerators\HDLGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kactusGenerators\HDLGenerator\HDLComponentInstance.h">
-      <Filter>Header Files\kactusGenerators\HDLGenerator</Filter>
-    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -5462,17 +5399,8 @@
     <ClInclude Include="designEditors\common\StickyNote\StickyNoteEditCommand.h">
       <Filter>Header Files\designEditors\common\StickyNote</Filter>
     </ClInclude>
-    <ClInclude Include="kactusGenerators\HDLGenerator\HDLPort.h">
-      <Filter>Header Files\kactusGenerators\HDLGenerator</Filter>
-    </ClInclude>
-    <ClInclude Include="kactusGenerators\HDLGenerator\vhdlportsorter.h">
-      <Filter>Header Files\kactusGenerators\HDLGenerator</Filter>
-    </ClInclude>
-    <ClInclude Include="kactusGenerators\HDLGenerator\vhdlconnectionendpoint.h">
-      <Filter>Header Files\kactusGenerators\HDLGenerator</Filter>
-    </ClInclude>
-    <ClInclude Include="kactusGenerators\HDLGenerator\HDLUtils.h">
-      <Filter>Header Files\kactusGenerators\HDLGenerator</Filter>
+    <ClInclude Include="kactusGenerators\vhdlGenerator\vhdlconnectionendpoint.h">
+      <Filter>Header Files\kactusGenerators\vhdlGenerator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
