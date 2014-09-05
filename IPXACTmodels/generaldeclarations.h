@@ -580,53 +580,6 @@ IPXACTMODELS_EXPORT QString testConstraint2Str(const General::TestConstraint tes
 */
 IPXACTMODELS_EXPORT General::TestConstraint str2TestConstraint(const QString& str);
 
-/*! \brief Used by the struct Choice to hold information
- *
- */
-struct Enumeration {
-	/*!
-	 * MANDATORY spirit:enumeration
-	 * Value of the enumeration
-	 */
-	QString value_;
-
-	/*!
-	 * OPTIONAL spirit:text
-	 * The text-attribute
-	 */
-	QString attribute_text_;
-
-	/*!
-	 * OPTIONAL spirit:help
-	 * The help-attribute
-	 */
-	QString attribute_help_;
-
-	/*! \brief The constructor
-	 *
-	 * \param value The value of the enumeration
-	 * \param attText The text-attribute
-	 * \param attHelp The help-attribute
-	 */
-	Enumeration(QString &value, QString attText = QString(),
-			QString attHelp = QString());
-
-	/*! \brief Copy constructor
-	 *
-	 * \param other Reference to the Enumeration to copy
-	 *
-	*/
-	Enumeration(const Enumeration& other);
-
-	/*! \brief The assignment operator
-	 *
-	 * \param other Reference to the enumeration to assign.
-	 *
-	 * \return Reference to this enumeration.
-	*/
-	Enumeration& operator=(const Enumeration& other);
-};
-
 /*! \brief Used in spirit:clockDriver element in IP-Xact specification.
  *
  * Used to describe elements:

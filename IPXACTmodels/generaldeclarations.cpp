@@ -25,28 +25,6 @@
 
 #include <QDebug>
 
-// struct constructor
-General::Enumeration::Enumeration(QString &value, QString attText,
-		QString attHelp): value_(value), attribute_text_(attText),
-		attribute_help_(attHelp) {
-	return;
-}
-
-General::Enumeration::Enumeration( const Enumeration& other ):
-value_(other.value_), 
-attribute_text_(other.attribute_text_),
-attribute_help_(other.attribute_help_) {
-}
-
-General::Enumeration& General::Enumeration::operator=(const Enumeration& other) {
-	if (this != &other) {
-		value_ = other.value_;
-		attribute_text_ = other.attribute_text_;
-		attribute_help_ = other.attribute_help_;
-	}
-	return *this;
-}
-
 General::BitSteering General::str2BitSteering(const QString& str) {
 	if (str == QString("on")) {
 		return General::ON;

@@ -9,7 +9,7 @@
 #include "generaldeclarations.h"
 #include "GenericVendorExtension.h"
 
-#include"vlnv.h"
+#include "vlnv.h"
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QString>

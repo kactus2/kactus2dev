@@ -160,6 +160,7 @@
     <ClCompile Include="designconfabstractor.cpp" />
     <ClCompile Include="designconfiguration.cpp" />
     <ClCompile Include="enumeratedvalue.cpp" />
+    <ClCompile Include="Enumeration.cpp" />
     <ClCompile Include="field.cpp" />
     <ClCompile Include="file.cpp" />
     <ClCompile Include="filebuilder.cpp" />
@@ -254,6 +255,7 @@
     <ClInclude Include="designconfabstractor.h" />
     <ClInclude Include="designconfiguration.h" />
     <ClInclude Include="enumeratedvalue.h" />
+    <ClInclude Include="Enumeration.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="file.h" />
     <ClInclude Include="filebuilder.h" />

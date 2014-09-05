@@ -7,7 +7,7 @@
 #ifndef LIBRARYCOMPONENT_H_
 #define LIBRARYCOMPONENT_H_
 
-#include"vlnv.h"
+#include "vlnv.h"
 #include "generaldeclarations.h"
 
 #include "ipxactmodels_global.h"
