@@ -1,18 +1,15 @@
 #-----------------------------------------------------------------------------
-# File: test_all.pro
+# File: tst_VhdlParser.pri
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
-# Date: 24.27.2014
+# Date: 05.09.2014
 #
 # Description:
-# Qt project file for running all unit tests.
+# Qt project include file.
 #-----------------------------------------------------------------------------
 
-TEMPLATE = subdirs
+HEADERS += ../../../../common/widgets/vhdlParser/VhdlParser.h
 
-CONFIG += testcase
-
-SUBDIRS += Plugins/plugins.pro \
-		   common/common.pro
-           
+SOURCES += ./tst_VhdlParser.cpp \
+		   ../../../../common/widgets/vhdlParser/VhdlParser.cpp

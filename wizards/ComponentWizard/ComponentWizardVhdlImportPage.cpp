@@ -13,6 +13,9 @@
 
 #include "ComponentWizard.h"
 #include "common/widgets/vhdlParser/VhdlParserWidget.h"
+
+#include <QVBoxLayout>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardVhdlImportPage::ComponentWizardVhdlImportPage()
 //-----------------------------------------------------------------------------

@@ -22,6 +22,7 @@
 #include <common/widgets/FileSelector/fileselector.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/component.h>
+
 //-----------------------------------------------------------------------------
 // Function: VhdlParserWidget()
 //-----------------------------------------------------------------------------
@@ -31,8 +32,8 @@ VhdlParserWidget::VhdlParserWidget(const QString& basePath,	QSharedPointer<Compo
     basePath_(basePath),
 	fileSelector_(new FileSelector(component, this)),
     vhdlPath_(),
-    editButton_(tr("Open editor"),this),
-    refreshButton_(QIcon(":/icons/common/graphics/refresh.png"),"",this),
+    editButton_(tr("Open editor"), this),
+    refreshButton_(QIcon(":/icons/common/graphics/refresh.png"), "", this),
     vhdlParser_(new VhdlParser(this))
 {
 	Q_ASSERT(component);
@@ -48,7 +49,6 @@ VhdlParserWidget::VhdlParserWidget(const QString& basePath,	QSharedPointer<Compo
 		this, SIGNAL(addModelParameter(QSharedPointer<ModelParameter>)), Qt::UniqueConnection);
 	connect(vhdlParser_, SIGNAL(removeGeneric(QSharedPointer<ModelParameter>)),
 		this, SIGNAL(removeModelParameter(QSharedPointer<ModelParameter>)), Qt::UniqueConnection);
-   
 
 	// Port signals.
 	connect(vhdlParser_, SIGNAL(addPort(QSharedPointer<Port>)),
@@ -56,7 +56,6 @@ VhdlParserWidget::VhdlParserWidget(const QString& basePath,	QSharedPointer<Compo
 	connect(vhdlParser_, SIGNAL(removePort(QSharedPointer<Port>)),
 		this, SIGNAL(removePort(QSharedPointer<Port>)), Qt::UniqueConnection);
  
-
     // Pushbutton connections.
     connect(&refreshButton_, SIGNAL(clicked()),this, SLOT(onRefresh()), Qt::UniqueConnection);
     connect(&editButton_, SIGNAL(clicked()), this, SLOT(onOpenEditor()), Qt::UniqueConnection);
@@ -73,7 +72,8 @@ VhdlParserWidget::~VhdlParserWidget() {
 //-----------------------------------------------------------------------------
 // Function: initializeFileSelection()
 //-----------------------------------------------------------------------------
-void VhdlParserWidget::initializeFileSelection() {
+void VhdlParserWidget::initializeFileSelection()
+{
 	fileSelector_->refresh();
 }
 
@@ -81,15 +81,17 @@ void VhdlParserWidget::initializeFileSelection() {
 //-----------------------------------------------------------------------------
 // Function: onFileSelected()
 //-----------------------------------------------------------------------------
-void VhdlParserWidget::onFileSelected( const QString& filePath ) {
+void VhdlParserWidget::onFileSelected( const QString& filePath )
+{
 	if (filePath.isEmpty()) {
 		return;
 	}
 
-	vhdlPath_ = General::getAbsolutePath(basePath_+"/", filePath);
+	vhdlPath_ = General::getAbsolutePath(basePath_ + "/", filePath);
 
 	// if the absolute path can not be converted
-	if (vhdlPath_.isEmpty()) {
+	if (vhdlPath_.isEmpty())
+    {
 		return;
 	}
 
@@ -102,7 +104,7 @@ void VhdlParserWidget::onFileSelected( const QString& filePath ) {
 //-----------------------------------------------------------------------------
 void VhdlParserWidget::onOpenEditor() 
 {
-    if ( !vhdlPath_.isEmpty() )
+    if (!vhdlPath_.isEmpty())
     {
         QDesktopServices::openUrl(QUrl::fromLocalFile(vhdlPath_));
     }
@@ -113,7 +115,7 @@ void VhdlParserWidget::onOpenEditor()
 //-----------------------------------------------------------------------------
 void VhdlParserWidget::onRefresh() 
 {
-    if ( !vhdlPath_.isEmpty() )
+    if (!vhdlPath_.isEmpty())
     {
         vhdlParser_->parseFile(vhdlPath_);
         vhdlParser_->scrollToEntityBegin();
@@ -155,7 +157,7 @@ void VhdlParserWidget::setupLayout()
     QHBoxLayout* selectorLayout = new QHBoxLayout();
     QVBoxLayout* vhdlLayout = new QVBoxLayout();
  
-   QLabel* vhdltopLabel = new QLabel(this);
+    QLabel* vhdltopLabel = new QLabel(this);
     vhdltopLabel->setText("Top-level VHDL file:");
     selectorLayout->addWidget(vhdltopLabel);
 	selectorLayout->addWidget(fileSelector_,1);

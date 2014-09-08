@@ -9,8 +9,6 @@
 #define VHDLIMPORTEDITOR_H
 
 #include <IPXACTmodels/component.h>
-#include <editors/ComponentEditor/modelParameters/modelparametereditor.h>
-#include <editors/ComponentEditor/ports/portseditor.h>
 
 #include <QWidget>
 #include <QSharedPointer>
@@ -19,6 +17,8 @@
 #include <QTextEdit>
 #include <QSplitter>
 
+class ModelParameterEditor;
+class PortsEditor;
 class LibraryInterface;
 class FileSelector;
 class VhdlParserWidget;
@@ -109,10 +109,10 @@ private:
 	VhdlParserWidget* parserWidget_;
 
 	//! \brief Editor to set the generics.
-	ModelParameterEditor* modelParams_;
+	ModelParameterEditor* modelParameterEditor_;
 
 	//! \brief Editor to set the ports.
-	PortsEditor* ports_;
+	PortsEditor* portEditor_;
 
 };
 

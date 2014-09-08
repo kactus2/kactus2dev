@@ -1,18 +1,16 @@
 #-----------------------------------------------------------------------------
-# File: test_all.pro
+# File: widgets.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
-# Date: 24.27.2014
+# Date: 05.09.2014
 #
 # Description:
-# Qt project file for running all unit tests.
+# Qt project file template for running unit tests in widgets.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = subdirs
 
 CONFIG += testcase
 
-SUBDIRS += Plugins/plugins.pro \
-		   common/common.pro
-           
+SUBDIRS += vhdlParser/tst_VhdlParser.pro

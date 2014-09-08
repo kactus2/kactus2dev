@@ -22,7 +22,7 @@ namespace VhdlSyntax {
     const QString ENDLINE = "(\\r\\n?|\\n\\r?)";
 
     //! VHDL comment.
-    const QString COMMENT = "[-][-]" + SPACE + "([^\\r\\n]*)(?=" +ENDLINE + ")";
+    const QString COMMENT = "[-][-]" + SPACE + "([^\\r\\n]*)(?=" +ENDLINE + "|$)";
    
     //! VHDL port and generic names are separated using a colon (,).
     const QString NAMES = "\\w+(?:\\s*[,]?\\s*\\w+)*";
@@ -60,8 +60,8 @@ namespace VhdlSyntax {
      *  If there is a comment on the same line, it will be captured to the description by VhdlParser.
      *  Additional comments may follow the last declaration before the end of the string.
      */
-    const QString DECLARATION_END = "(?:\\s*[;]" + SPACE + "(?:" + COMMENT + "))|" + 
-                                    "(?:(?=\\s*[;]))|" + 
+    const QString DECLARATION_END = "(?:\\s*[;]" + SPACE + "(?:" + COMMENT + "))|"
+                                    "(?:(?=\\s*[;]))|"
                                     "(?:" + SPACE + "(?:" + COMMENT + ")?(?=(?:\\s*(?:" + COMMENT + ")*\\s*)*$))";
     
     //! Entity declaration is ENTITY <name> IS ... END [ENTITY] [<name>];
@@ -70,7 +70,7 @@ namespace VhdlSyntax {
 
     //! Ports are declared inside entity by PORT ( <port_declarations> );
     const QRegExp PORTS_BEGIN_EXP = QRegExp("(PORT)\\s*[(]", Qt::CaseInsensitive);
-    const QRegExp PORTS_END_EXP = QRegExp("[)]\\s*[;](?=\\s*(?:" + COMMENT + "\\s*)*(END|BEGIN|GENERIC))", 
+    const QRegExp PORTS_END_EXP = QRegExp("[)]\\s*[;](?=\\s*(?:" + COMMENT + "\\s*)*(END|BEGIN|GENERIC|PORT))", 
                                             Qt::CaseInsensitive);
 
     /*! Port declaration is <port_names> : <direction> <type> [<default>] [pragma] ; [description]    
