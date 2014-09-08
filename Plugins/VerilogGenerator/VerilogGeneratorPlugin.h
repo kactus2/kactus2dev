@@ -123,16 +123,21 @@ private:
      *
      *      @return The absolute path to the output file.
      */
-    QString selectOutputFile() const;
+    void selectOutputFile();
+
+    /*!
+     *  Checks if the output file for generation has been selected.     
+     *
+     *      @return True, if an output file has been selected, otherwise false.
+     */
+    bool outputFileSelected() const;
 
     /*!
      *  Checks if the generated file should be added to a file set in the top component.
      *
-     *      @param [in] absoluteOutputPath   The absolute path to the output file.
-     *
      *      @return True, if the file should be added to file set, otherwise false.
      */
-    bool fileShouldBeAddedToFileset(QString absoluteOutputPath) const;
+    bool fileShouldBeAddedToFileset() const;
     
     /*!
      *  Gets the relative path from the top component xml file to the given absolute path.
@@ -144,17 +149,19 @@ private:
     QString relativePathFromXmlToFile(QString const& filePath) const;
 
     /*!
-     *  Adds a file in the given absolute path to a file set in the top component.
+     *  Adds the generated file to a file set in the top component.
      *
-     *      @param [in] absoluteOutputPath   The absolute path to the file to add.
      */
-    void addFileToFileSet(QString absoluteOutputPath) const;
-
+    void addGeneratedFileToFileSet() const;
+    
     //! The plugin utility to use while running generation.
     IPluginUtility* utility_;
 
     //! The top component for which to run the generation.
     QSharedPointer<Component> topComponent_;
+
+    //! The path to selected output file.
+    QString outputFile_;
 };
 
 #endif // VERILOGGENERATORPLUGIN_H

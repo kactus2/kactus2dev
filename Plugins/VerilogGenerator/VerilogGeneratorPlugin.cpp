@@ -27,7 +27,7 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::()
 //-----------------------------------------------------------------------------
-VerilogGeneratorPlugin::VerilogGeneratorPlugin(): QObject(0)
+VerilogGeneratorPlugin::VerilogGeneratorPlugin(): QObject(0), utility_(0), topComponent_(0), outputFile_()
 {
 
 }
@@ -140,49 +140,72 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
     utility_ = utility;
     topComponent_ = libComp.dynamicCast<Component>();
 
-    QString outputFile = selectOutputFile();
-    if (!outputFile.isEmpty())
+    utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
+
+    VerilogGenerator generator(utility->getLibraryInterface());
+    generator.parse(topComponent_, libDes.dynamicCast<Design>());
+
+    selectOutputFile();
+
+    if (outputFileSelected())
     {
-        utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
-        utility->printInfo(tr("Generation started %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+        utility_->printInfo(tr("Generation started %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
 
-        VerilogGenerator generator(utility->getLibraryInterface());
-        generator.parse(topComponent_, libDes.dynamicCast<Design>());
-        generator.generate(outputFile);
+        generator.generate(outputFile_);
 
-        utility->printInfo(tr("Finished writing file %1.").arg(outputFile));
+        utility_->printInfo(tr("Finished writing file %1.").arg(outputFile_));
 
-        if (fileShouldBeAddedToFileset(outputFile))
+        if (fileShouldBeAddedToFileset())
         {          
-            addFileToFileSet(outputFile);
+            addGeneratedFileToFileSet();
         }
+
+        utility_->printInfo(tr("Generation complete."));
     }    
+    else
+    {
+        utility_->printInfo(tr("Generation aborted."));
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::selectOutputFile()
 //-----------------------------------------------------------------------------
-QString VerilogGeneratorPlugin::selectOutputFile() const
+void VerilogGeneratorPlugin::selectOutputFile()
 {
-    QString xmlPath = utility_->getLibraryInterface()->getPath(*topComponent_->getVlnv());
-    QString xmlDir =  QFileInfo(xmlPath).canonicalPath();
-    QString suggestedFile = xmlDir + "/" + topComponent_->getVlnv()->getName() + ".v";
+    QString suggestedFile = "";
 
-    QString selectedFile = QFileDialog::getSaveFileName(utility_->getParentWidget(),
-        tr("Select output file for verilog generation"),
-        suggestedFile, tr("Verilog files (*.v)"));	
-    
-    return selectedFile;
+    if (outputFileSelected())
+    {
+        suggestedFile  = outputFile_;
+    }
+    else
+    {
+        QString topComponentPath = utility_->getLibraryInterface()->getPath(*topComponent_->getVlnv());
+        QString xmlDir =  QFileInfo(topComponentPath).canonicalPath();
+        suggestedFile = xmlDir + "/" + topComponent_->getVlnv()->getName() + ".v";
+    }
+
+    outputFile_ = QFileDialog::getSaveFileName(utility_->getParentWidget(),
+        tr("Select output file for verilog generation"), suggestedFile, tr("Verilog files (*.v)"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogGeneratorPlugin::outputFileSelected()
+//-----------------------------------------------------------------------------
+bool VerilogGeneratorPlugin::outputFileSelected() const
+{
+    return !outputFile_.isEmpty();
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::fileShouldBeAddedToFileset()
 //-----------------------------------------------------------------------------
-bool VerilogGeneratorPlugin::fileShouldBeAddedToFileset(QString absoluteOutputPath) const
+bool VerilogGeneratorPlugin::fileShouldBeAddedToFileset() const
 {
     bool addToFileset = false;
 
-    QString filePath = relativePathFromXmlToFile(absoluteOutputPath);
+    QString filePath = relativePathFromXmlToFile(outputFile_);
 
     if (!topComponent_->hasFile(filePath))
     {
@@ -209,9 +232,9 @@ QString VerilogGeneratorPlugin::relativePathFromXmlToFile(QString const& filePat
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::addFileToFileSet()
 //-----------------------------------------------------------------------------
-void VerilogGeneratorPlugin::addFileToFileSet(QString absoluteOutputPath) const
+void VerilogGeneratorPlugin::addGeneratedFileToFileSet() const
 {
-    QString filePath = relativePathFromXmlToFile(absoluteOutputPath);
+    QString filePath = relativePathFromXmlToFile(outputFile_);
 
     QSettings settings;
     QSharedPointer<FileSet> fileSet = topComponent_->getFileSet("verilogSource");
@@ -220,7 +243,7 @@ void VerilogGeneratorPlugin::addFileToFileSet(QString absoluteOutputPath) const
     bool saveSucceeded = utility_->getLibraryInterface()->writeModelToFile(topComponent_);
     if (saveSucceeded)
     {
-        utility_->printInfo(tr("Added file %1 to fileset %2.").arg(absoluteOutputPath, fileSet->getName()));
+        utility_->printInfo(tr("Added file %1 to fileset %2.").arg(outputFile_, fileSet->getName()));
     }    
     else
     {
