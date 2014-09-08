@@ -69,6 +69,7 @@ HEADERS += ../resource.h \
     ./parameter.h \
     ./port.h \
     ./portabstraction.h \
+    ./PortMap.h \
     ./PortRef.h \
     ./register.h \
     ./registerdefinition.h \
@@ -99,7 +100,8 @@ HEADERS += ../resource.h \
     ./kactusExtensions/Kactus2Placeholder.h \
     ./kactusExtensions/Kactus2Position.h \
     ./kactusExtensions/Kactus2Value.h \
-    ./kactusExtensions/KactusAttribute.h
+    ./kactusExtensions/KactusAttribute.h \
+    ./Enumeration.h
 SOURCES += ./abstractiondefinition.cpp \
     ./addressblock.cpp \
     ./addressspace.cpp \
@@ -160,6 +162,7 @@ SOURCES += ./abstractiondefinition.cpp \
     ./parameter.cpp \
     ./port.cpp \
     ./portabstraction.cpp \
+    ./PortMap.cpp \
     ./PortRef.cpp \
     ./register.cpp \
     ./registerdefinition.cpp \
@@ -189,4 +192,5 @@ SOURCES += ./abstractiondefinition.cpp \
     ./kactusExtensions/Kactus2Placeholder.cpp \
     ./kactusExtensions/Kactus2Position.cpp \
     ./kactusExtensions/Kactus2Value.cpp \
-    ./kactusExtensions/KactusAttribute.cpp
+    ./kactusExtensions/KactusAttribute.cpp \
+    ./Enumeration.cpp

@@ -431,7 +431,6 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/visualization/memorygapitem.h \
     ./editors/ComponentEditor/visualization/memoryvisualizationitem.h \
     ./editors/CSourceEditor/CSourceContentMatcher.h \
-    ./editors/CSourceEditor/CSourceWriter.h \
     ./editors/CSourceEditor/MCAPIDesignerTypes.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
     ./editors/CSourceEditor/CSourceTextEdit.h \
@@ -539,17 +538,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./kactusGenerators/HDLGenerator/HDLPort.h \
-    ./kactusGenerators/HDLGenerator/HDLUtils.h \
-    ./kactusGenerators/HDLGenerator/vhdlconnectionendpoint.h \
-    ./kactusGenerators/HDLGenerator/vhdlportsorter.h \
-    ./kactusGenerators/HDLGenerator/HDLGeneratorTemplate.h \
-    ./kactusGenerators/HDLGenerator/HDLModelParameter.h \
-    ./kactusGenerators/HDLGenerator/HDLObject.h \
-    ./kactusGenerators/HDLGenerator/HDLComponentDeclaration.h \
-    ./kactusGenerators/HDLGenerator/HDLComponentInstance.h \
-    ./kactusGenerators/HDLGenerator/HDLSignal.h \
-    ./kactusGenerators/verilogGenerator/VerilogParameter.h
+    ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -956,7 +945,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/CSourceEditor/CSourceHighlighter.cpp \
     ./editors/CSourceEditor/CSourceTextEdit.cpp \
     ./editors/CSourceEditor/CSourceWidget.cpp \
-    ./editors/CSourceEditor/CSourceWriter.cpp \
     ./editors/NotesEditor/NotesEditor.cpp \
     ./editors/NotesEditor/NotesStack.cpp \
     ./designEditors/HWDesign/AdHocEnabled.cpp \
@@ -1055,15 +1043,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./kactusGenerators/HDLGenerator/HDLComponentDeclaration.cpp \
-    ./kactusGenerators/HDLGenerator/HDLComponentInstance.cpp \
-    ./kactusGenerators/HDLGenerator/HDLGeneratorTemplate.cpp \
-    ./kactusGenerators/HDLGenerator/HDLModelParameter.cpp \
-    ./kactusGenerators/HDLGenerator/HDLObject.cpp \
-    ./kactusGenerators/HDLGenerator/HDLPort.cpp \
-    ./kactusGenerators/HDLGenerator/HDLSignal.cpp \
-    ./kactusGenerators/HDLGenerator/HDLUtils.cpp \
-    ./kactusGenerators/HDLGenerator/vhdlconnectionendpoint.cpp \
-    ./kactusGenerators/HDLGenerator/vhdlportsorter.cpp \
-    ./kactusGenerators/verilogGenerator/VerilogParameter.cpp
+    ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
+    ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.cpp
 RESOURCES += kactus.qrc
