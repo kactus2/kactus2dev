@@ -60,7 +60,7 @@ QString const& MCAPICodeGenerator::getName() const
 //-----------------------------------------------------------------------------
 QString const& MCAPICodeGenerator::getVersion() const
 {
-    static QString version("1.0");
+    static QString version("1.1");
     return version;
 }
 
