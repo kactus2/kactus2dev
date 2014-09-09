@@ -8,44 +8,44 @@
 #ifndef VHDLGENERIC_H
 #define VHDLGENERIC_H
 
-#include <kactusGenerators/HDLGenerator/HDLModelParameter.h>
+#include "vhdlobject.h"
 
 #include <QString>
 
 class ModelParameter;
 
-/*! VhdlGeneric represents a vhdl generic in a component or entity declaration.
+/*! \brief VhdlGeneric represents a vhdl generic in a component or entity declaration.
  *
  */
-class VhdlGeneric : public HDLModelParameter {
+class VhdlGeneric : public VhdlObject {
 	Q_OBJECT
 
 public:
 
-	/*! The constructor
+	/*! \brief The constructor
 	 *
-	 * @param [in] parent   Pointer to the owner of this vhdl generic.
-	 * @param [in] generic  Pointer to the model parameter to create the generic from.
+	 * \param parent Pointer to the owner of this vhdl generic.
+	 * \param generic Pointer to the model parameter to create the generic from.
 	 *
 	*/
 	VhdlGeneric(ModelParameter* generic, QObject* parent = 0);
 	
-	//! The destructor
+	//! \brief The destructor
 	virtual ~VhdlGeneric();
 
-	/*! Write the contents of the generic into text stream.
+	/*! \brief Write the contents of the generic into text stream.
 	 *
-	 * @param [in] stream   The text stream to write the generic into.
+	 * \param stream The text stream to write the generic into.
 	 *
 	*/
 	virtual void write(QTextStream& stream) const;
 
 private:
 	
-	//! No copying.
+	//! \brief No copying
 	VhdlGeneric(const VhdlGeneric& other);
 
-	//! No assignment.
+	//! \brief No assignment
 	VhdlGeneric& operator=(const VhdlGeneric& other);
 };
 

@@ -8,14 +8,13 @@
 #ifndef VHDLCOMPONENTDECLARATION_H
 #define VHDLCOMPONENTDECLARATION_H
 
-#include <kactusGenerators/HDLGenerator/HDLComponentDeclaration.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/generaldeclarations.h>
 
 #include "vhdlgeneric.h"
-
-#include <kactusGenerators/HDLGenerator/vhdlportsorter.h>
-#include <kactusGenerators/HDLGenerator/HDLPort.h>
-
-#include <IPXACTmodels/component.h>
+#include "vhdlport.h"
+#include "vhdlportsorter.h"
+#include "vhdlcomponentinstance.h"
 
 #include <QObject>
 #include <QSharedPointer>
@@ -24,85 +23,148 @@
 #include <QList>
 #include <QTextStream>
 
-class VhdlComponentDeclaration : public HDLComponentDeclaration {
+class VhdlComponentDeclaration : public QObject {
 	Q_OBJECT
 
 public:
 
-	/*! The constructor
+	/*! \brief The constructor
 	 *
-	 *      @param [in] component Pointer to the component model for this vhdl component.
-	 *      @param [in] parent Pointer to the owner of this declaration.
+	 * \param component Pointer to the component model for this vhdl component.
+	 * \param parent Pointer to the owner of this declaration.
 	 *
 	*/
 	VhdlComponentDeclaration(QSharedPointer<Component> component, QObject* parent);
 	
-	//! The destructor
+	//! \brief The destructor
 	virtual ~VhdlComponentDeclaration();
 
-	/*! Write the component declaration to the text stream.
+	/*! \brief Write the component declaration to the text stream.
 	 *
-	 *      @param [in] stream The text stream to write into.
+	 * \param stream The text stream to write into.
 	 *
 	*/
 	void write(QTextStream& stream) const;
 
-	/*! Check for port connections of the instances.
+	/*! \brief Get the type name of the vhdl component declaration.
+	 *
+	 * \return QString contains the type name.
+	*/
+	QString typeName() const;
+
+	/*! \brief Get the description of the vhdl component declaration.
+	 *
+	 * \return QString contains the description for the component declaration.
+	*/
+	QString description() const;
+
+	/*! \brief Get pointer to the IP-Xact model of the component declaration.
+	 *
+	 *
+	 * \return QSharedPointer<Component> Pointer to the IP-Xact model of component.
+	*/
+	QSharedPointer<Component> componentModel() const;
+
+	/*! \brief Add an instantiation of this component.
+	 *
+	 * \param instance Pointer to the instance.
+	 *
+	*/
+	void addInstantiation(QSharedPointer<VhdlComponentInstance> instance);
+
+	/*! \brief Check if the component has generic with given name.
+	 *
+	 * \param genericName The name of the generic to search for.
+	 *
+	 * \return bool True if the generic is found.
+	*/
+	bool hasGeneric(const QString& genericName) const;
+
+	/*! \brief Check for port connections of the instances.
 	 * 
 	 * The ports that are not connected or don't have default value in any 
 	 * of the instances are commented out and removed from the instance's 
 	 * port maps.
 	 *
 	*/
-	virtual void checkPortConnections();
+	void checkPortConnections();
 
-	/*! Get the type of specified port.
+	/*! \brief Get the type of specified port.
 	 *
-	 *      @param [in] portName The name of the port.
+	 * \param portName The name of the port.
 	 *
-	 *      @return The type of the specified port.
+	 * \return QString The type of the specified port.
 	*/
-	virtual QString portType(QString const& portName) const;
+	QString portType(const QString& portName) const;
+
+	/*! \brief Check if the type of the port is scalar.
+	 *
+	 * \param portName Specifies the port to check.
+	 *
+	 * \return bool True if port is scalar.
+	*/
+	bool isScalarPort(const QString& portName) const;
+
+	/*! \brief Set the name of the entity for the component.
+	 *
+	 * \param entityName The name for the entity of this component.
+	 *
+	*/
+	void setEntityName(const QString& entityName);
+
+	/*! \brief Get the direction of the specified port on this component.
+	 *
+	 * \param portName The name of the port that's direction is requested.
+	 *
+	 * \return General::Direction Specifies the direction of the port.
+	*/
+	General::Direction portDirection(const QString& portName) const;
+
+	/*! \brief Get the physical left bound of the port.
+	 *
+	 * \param portName The name of the port that's bound is wanted.
+	 *
+	 * \return int The left bound.
+	*/
+	int getPortPhysLeftBound(const QString& portName) const;
+
+	/*! \brief Get the physical right bound of the port.
+	 *
+	 * \param portName The name of the port that's bound is wanted.
+	 *
+	 * \return int The right bound.
+	*/
+	int getPortPhysRightBound(const QString& portName) const;
 
 private:
-	//! No copying
+	//! \brief No copying
 	VhdlComponentDeclaration(const VhdlComponentDeclaration& other);
 
-	//! No assignment
+	//! \brief No assignment
 	VhdlComponentDeclaration& operator=(const VhdlComponentDeclaration& other);
 
-    /*!
-     *  Writes the generic declarations.
-     *
-     *      @param [in] stream   The output stream to write to.
-     */
-    void writeGenerics(QTextStream& stream) const;
+	//! \brief Pointer to the component that this declaration represents.
+	QSharedPointer<Component> component_;
 
-    /*!
-     *  Writes the port declarations.
-     *
-     *      @param [in] stream   The output stream to write to.
-     */
-    void writePorts(QTextStream& stream) const;
+	//! \brief The type of the vhdl component.
+	QString typeName_;
 
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-	/*! Contains the generic declarations for this component.
+	/*! \brief Contains the generic declarations for this component.
 	 *
 	 * Key: The name of the generic.
 	 * Value: Pointer to the generic.
 	 */ 
 	QMap<QString, QSharedPointer<VhdlGeneric> > generics_;
 
-	/*! Contains the ports for this component.
+	/*! \brief Contains the ports for this component.
 	* 
 	* Key: Class used to sort the ports in correct order.
 	* Value: Pointer to the port.
 	*/
-	QMap<VhdlPortSorter, QSharedPointer<HDLPort> > ports_;
+	QMap<VhdlPortSorter, QSharedPointer<VhdlPort> > ports_;
 
+	//! \brief Contains pointer to the instances of this port.
+	QList<QSharedPointer<VhdlComponentInstance> > instantations_;
 };
 
 #endif // VHDLCOMPONENTDECLARATION_H

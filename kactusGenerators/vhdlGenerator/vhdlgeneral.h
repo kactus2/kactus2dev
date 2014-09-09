@@ -90,6 +90,17 @@ namespace VhdlGeneral {
 		const int leftBound = -1,
 		const int rightBound = -1);
 
+	/*! \brief Write a description of some element to the stream.
+	 * 
+	 * \param description The description to write.
+	 * \param stream      The text stream to write into.
+	 * \param indentation Added to the beginning of each new line, e.g."  " or  "\t"
+	 *
+	*/
+	void writeDescription(const QString& description,
+		QTextStream& stream, 
+		const QString& indentation = QString(""));
+
 	/*! \brief Check the vhdl types if they can be connected to each other.
 	 *
 	 * \param type1 The first type to compare.

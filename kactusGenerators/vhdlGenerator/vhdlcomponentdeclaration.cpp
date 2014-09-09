@@ -8,39 +8,31 @@
 #include "vhdlcomponentdeclaration.h"
 
 #include "vhdlgeneral.h"
-#include "vhdlgeneric.h"
-#include "vhdlport.h"
-
-#include <kactusGenerators/HDLGenerator/HDLComponentInstance.h>
-#include <kactusGenerators/HDLGenerator/HDLUtils.h>
-
-#include <IPXACTmodels/component.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
-#include <QSharedPointer>
-
-//-----------------------------------------------------------------------------
-// Function: VhdlComponentDeclaration::VhdlComponentDeclaration()
-//-----------------------------------------------------------------------------
 VhdlComponentDeclaration::VhdlComponentDeclaration(QSharedPointer<Component> component, QObject* parent):
-HDLComponentDeclaration(component, parent),
+QObject(parent),
+component_(component),
+typeName_(component->getVlnv()->getName()),
 generics_(),
-ports_()
+ports_(),
+instantations_() 
 {
+	Q_ASSERT(component);
+
 	// parse the generics for the component declaration
-	QList<QSharedPointer<ModelParameter> > modelParams = component->getModelParameters();
-	foreach (QSharedPointer<ModelParameter> modelParam, modelParams)
-    {
+	QList<QSharedPointer<ModelParameter> > modelParams = component_->getModelParameters();
+	foreach (QSharedPointer<ModelParameter> modelParam, modelParams) {
 		QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(modelParam.data(), this));
 		generics_.insert(generic->name(), generic);
 	}
 
 	// parse the ports for the component declaration
-	QList<QSharedPointer<Port> > ports = component->getPorts();
-	foreach (QSharedPointer<Port> port, ports)
-    {	
+	QList<QSharedPointer<Port> > ports = component_->getPorts();
+	foreach (QSharedPointer<Port> port, ports) {
+		
 		// do not add ports with invalid direction or phantom direction
 		if (port->getDirection() == General::DIRECTION_INVALID ||
 			port->getDirection() == General::DIRECTION_PHANTOM) {
@@ -51,8 +43,8 @@ ports_()
 		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(port.data(), this));
 
 		// create the sorter instance
-		VhdlPortSorter sorter(component->getInterfaceNameForPort(vhdlPort->name()), vhdlPort->name(), 
-            port->getDirection());
+		VhdlPortSorter sorter(component_->getInterfaceNameForPort(vhdlPort->name()),
+			vhdlPort->name(), port->getDirection());
 
 		// this port can not be created yet
 		Q_ASSERT(!ports_.contains(sorter));
@@ -61,176 +53,179 @@ ports_()
 	}
 }
 
-//-----------------------------------------------------------------------------
-// Function: VhdlComponentDeclaration::~VhdlComponentDeclaration()
-//-----------------------------------------------------------------------------
-VhdlComponentDeclaration::~VhdlComponentDeclaration()
-{
-
+VhdlComponentDeclaration::~VhdlComponentDeclaration() {
 }
 
-//-----------------------------------------------------------------------------
-// Function: vhdlcomponentdeclaration::write()
-//-----------------------------------------------------------------------------
-void VhdlComponentDeclaration::write( QTextStream& stream ) const
-{
+void VhdlComponentDeclaration::write( QTextStream& stream ) const {
 	// if component contains a description
-	if (!description().isEmpty())
-    {
-		HDLUtils::writeDescription(description(), stream, "--", QString("  "));
+	if (!description().isEmpty()) {
+		VhdlGeneral::writeDescription(description(), stream, QString("  "));
 	}
-	stream << "  " << "-- IP-XACT VLNV: " << componentModel()->getVlnv()->toString() << endl;
-	stream << "  " << "component " << type() << endl;
+	stream << "  " << "-- IP-XACT VLNV: " << component_->getVlnv()->toString() << endl;
+	stream << "  " << "component " << typeName_ << endl;
 
-    writeGenerics(stream);
+	// write the generic declarations
+	if (!generics_.isEmpty()) {
+		stream << "  "<< "  "  << "generic (" << endl;
+        for (QMap<QString, QSharedPointer<VhdlGeneric> >::const_iterator i = generics_.begin(); i != generics_.end(); ++i) {
+			stream << "  " << "  " << "  " ;
+			i.value()->write(stream);
 
-    writePorts(stream);
+			// if this is not the last generic to write
+			if (i + 1 != generics_.end()) {
+				stream << ";";
+			}
+
+			if (!i.value()->description().isEmpty()) {
+				stream << " ";
+				VhdlGeneral::writeDescription(i.value()->description(), stream);
+			}
+			else {
+				stream << endl;
+			}
+		}
+		stream << "  " << "  " << ");" << endl;
+	}
+
+	// write the port declarations
+	if (!ports_.isEmpty() && VhdlPort::hasRealPorts(ports_)) {
+		stream << "  " << "  " << "port (" << endl;
+		QString previousInterface;
+		for (QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >::const_iterator i = ports_.begin(); i != ports_.end(); ++i) {
+			
+			// if the port is first in the interface, then introduce the interface
+			if (i.key().interface() != previousInterface) {
+				const QString interfaceName = i.key().interface();
+
+				stream << endl << "  " << "  " << "  " << "-- ";
+
+				if (interfaceName == QString("none")) {
+					stream << "These ports are not in any interface" << endl;
+				}
+				else if (interfaceName == QString("several")) {
+					stream << "There ports are contained in many interfaces" << endl;
+				}
+				else {	
+					stream << "Interface: " << interfaceName << endl;
+					const QString description = component_->getInterfaceDescription(
+						interfaceName);
+					if (!description.isEmpty()) {
+						VhdlGeneral::writeDescription(description, stream, QString("      "));
+					}
+				}
+				previousInterface = interfaceName;
+			}
+			
+			stream << "  " << "  " << "  "; //3 indents
+			i.value()->write(stream); // print the actual port definition
+
+
+			// if this is not the last port to write
+			if (i + 1 != ports_.end()) {
+				stream << ";";
+			}
+
+			if (!i.value()->description().isEmpty()) {
+				stream << " ";
+				VhdlGeneral::writeDescription(i.value()->description(), stream);
+			}
+			else {
+				stream << endl;
+			}
+		}
+		stream << "    );" << endl;
+	}
 
 	stream << "  end component;" << endl;
 }
 
-//-----------------------------------------------------------------------------
-// Function: vhdlcomponentdeclaration::checkPortConnections()
-//-----------------------------------------------------------------------------
-void VhdlComponentDeclaration::checkPortConnections()
-{
+QString VhdlComponentDeclaration::typeName() const {
+	return typeName_;
+}
+
+QString VhdlComponentDeclaration::description() const {
+	return component_->getDescription();
+}
+
+QSharedPointer<Component> VhdlComponentDeclaration::componentModel() const {
+	return component_;
+}
+
+void VhdlComponentDeclaration::addInstantiation( 
+	QSharedPointer<VhdlComponentInstance> instance ) {
+
+	Q_ASSERT(!instantations_.contains(instance));
+
+	instantations_.append(instance);
+}
+
+bool VhdlComponentDeclaration::hasGeneric( const QString& genericName ) const {
+	return generics_.contains(genericName);
+}
+
+void VhdlComponentDeclaration::checkPortConnections() {
 	// check each vhdl port
-	foreach (QSharedPointer<HDLPort> port, ports_)
-    {		
+	foreach (QSharedPointer<VhdlPort> port, ports_) {
+		
 		// check each instance of this type
-		foreach (QSharedPointer<HDLComponentInstance> instantation, instances())
-        {			
+		foreach (QSharedPointer<VhdlComponentInstance> instantation, instantations_) {
+			
 			// if the named port is connected in this instance
 			if (instantation->hasConnection(port->name())) {
 				
 				// port is needed so it can not be commented and search can be 
 				// stopped for this port
-				port->setConnected(true);
+				port->setCommented(false);
 				break;
 			}
 		}
 	}
 }
 
-//-----------------------------------------------------------------------------
-// Function: vhdlcomponentdeclaration::portType()
-//-----------------------------------------------------------------------------
-QString VhdlComponentDeclaration::portType(QString const& portName) const
-{
+QString VhdlComponentDeclaration::portType( const QString& portName ) const {
+
 	// used to search for the correct port
-	VhdlPortSorter sorter(componentModel()->getInterfaceNameForPort(portName),
-		portName, componentModel()->getPortDirection(portName));
+	VhdlPortSorter sorter(component_->getInterfaceNameForPort(portName),
+		portName, component_->getPortDirection(portName));
 	
 	// if the named port is found
-	if (ports_.contains(sorter))
-    {
+	if (ports_.contains(sorter)) {
 		return ports_.value(sorter)->type();
 	}
-	else
-    {
+	else {
 		return QString("undefined port");
 	}
 }
 
-//-----------------------------------------------------------------------------
-// Function: VhdlComponentDeclaration::writeGenerics()
-//-----------------------------------------------------------------------------
-void VhdlComponentDeclaration::writeGenerics(QTextStream& stream) const
-{
-    if (generics_.isEmpty())
-    {
-        return;
-    }
+bool VhdlComponentDeclaration::isScalarPort( const QString& portName ) const {
 
-    // Write the generic declarations.
-    stream << "    "  << "generic (" << endl;
-    for (QMap<QString, QSharedPointer<VhdlGeneric> >::const_iterator i = generics_.begin(); i != generics_.end(); 
-        ++i)
-    {
-        stream << "      " ;
-        i.value()->write(stream);
+	VhdlPortSorter sorter(component_->getInterfaceNameForPort(portName),
+		portName, component_->getPortDirection(portName));
 
-        // if this is not the last generic to write
-        if (i + 1 != generics_.end())
-        {
-            stream << ";";
-        }
+	QString type;
 
-        if (!i.value()->description().isEmpty())
-        {
-            stream << " ";
-            HDLUtils::writeDescription(i.value()->description(), stream, "--");
-        }
-        else
-        {
-            stream << endl;
-        }
-    }
-    stream << "    " << ");" << endl;
+	if (ports_.contains(sorter)) {
+		type = ports_.value(sorter)->type();
+		return VhdlGeneral::isScalarType(type);
+	}
+	// if port is not found then it is not scalar
+	else {
+		return false;
+	}
 }
 
-//-----------------------------------------------------------------------------
-// Function: VhdlComponentDeclaration::writePorts()
-//-----------------------------------------------------------------------------
-void VhdlComponentDeclaration::writePorts(QTextStream& stream) const
-{
-    if (ports_.isEmpty() && !HDLPort::hasConnectedPorts(ports_.values()))
-    {
-        return;
-    }
-
-    // write the port declarations
-    stream << "  " << "  " << "port (" << endl;
-    QString previousInterface;
-    for (QMap<VhdlPortSorter, QSharedPointer<HDLPort> >::const_iterator i = ports_.begin(); i != ports_.end(); ++i)
-    {
-        // if the port is first in the interface, then introduce the interface
-        if (i.key().interface() != previousInterface)
-        {
-            stream << endl << "      -- ";
-
-            const QString interfaceName = i.key().interface();
-
-            if (interfaceName == QString("none"))
-            {
-                stream << "These ports are not in any interface" << endl;
-            }
-            else if (interfaceName == QString("several"))
-            {
-                stream << "There ports are contained in many interfaces" << endl;
-            }
-            else
-            {	
-                stream << "Interface: " << interfaceName << endl;
-
-                const QString description = componentModel()->getInterfaceDescription(interfaceName);
-                if (!description.isEmpty())
-                {
-                    HDLUtils::writeDescription(description, stream, "--", QString("      "));
-                }
-            }
-            previousInterface = interfaceName;
-        }
-
-        stream << "  " << "  " << "  "; //3 indents
-        i.value()->write(stream); // print the actual port definition
-
-
-        // if this is not the last port to write
-        if (i + 1 != ports_.end())
-        {
-            stream << ";";
-        }
-
-        if (!i.value()->description().isEmpty())
-        {
-            stream << " ";
-            HDLUtils::writeDescription(i.value()->description(), stream, "--");
-        }
-        else
-        {
-            stream << endl;
-        }
-    }
-    stream << "    );" << endl;
+void VhdlComponentDeclaration::setEntityName( const QString& entityName ) {
+	typeName_ = entityName;
 }
+
+General::Direction VhdlComponentDeclaration::portDirection( const QString& portName ) const {
+	return component_->getPortDirection(portName);
+}
+
+int VhdlComponentDeclaration::getPortPhysLeftBound( const QString& portName ) const {
+	return component_->getPortLeftBound(portName);
+}
+
+int VhdlComponentDeclaration::getPortPhysRightBound( const QString& portName ) const {
+	return component_->getPortRightBound(portName);
+}	
