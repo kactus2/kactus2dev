@@ -10,9 +10,11 @@
 //-----------------------------------------------------------------------------
 
 #include "ComponentWizardVhdlImportPage.h"
+#include "ComponentWizardPages.h"
 
-#include "ComponentWizard.h"
-#include "common/widgets/vhdlParser/VhdlParserWidget.h"
+#include <IPXACTmodels/component.h>
+
+#include <wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.h>
 
 #include <QVBoxLayout>
 
@@ -20,12 +22,9 @@
 // Function: ComponentWizardVhdlImportPage::ComponentWizardVhdlImportPage()
 //-----------------------------------------------------------------------------
 ComponentWizardVhdlImportPage::ComponentWizardVhdlImportPage(QSharedPointer<Component> component, 
-	LibraryInterface* handler, 
-	ComponentWizard* parent)
+	LibraryInterface* handler, QWidget* parent)
     : QWizardPage(parent),
-      parent_(parent),
-      //editor_(parent->getComponent(), parent->getBasePath(), this)
-		editor_(new VhdlImportEditor(parent->getBasePath(), component, handler, this))
+      editor_(new VhdlImportEditor(component, handler, this))
 {
     setTitle(tr("Import VHDL"));
     setSubTitle(tr("Choose the top-level VHDL file to import ports and generics."));
@@ -34,8 +33,7 @@ ComponentWizardVhdlImportPage::ComponentWizardVhdlImportPage(QSharedPointer<Comp
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(editor_);
 
-	 connect(editor_, SIGNAL(contentChanged()),
-		 this, SIGNAL(completeChanged()), Qt::UniqueConnection);
+    connect(editor_, SIGNAL(contentChanged()), this, SIGNAL(completeChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -50,21 +48,21 @@ ComponentWizardVhdlImportPage::~ComponentWizardVhdlImportPage()
 //-----------------------------------------------------------------------------
 int ComponentWizardVhdlImportPage::nextId() const
 {
-    return ComponentWizard::PAGE_CONCLUSION;
+    return ComponentWizardPages::CONCLUSION;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardVhdlImportPage::initializePage()
 //-----------------------------------------------------------------------------
-void ComponentWizardVhdlImportPage::initializePage() {	
-   
-    editor_->initializeFileSelection();       
+void ComponentWizardVhdlImportPage::initializePage()
+{	
+    editor_->initializeFileSelection();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardVhdlImportPage::isComplete()
 //-----------------------------------------------------------------------------
-bool ComponentWizardVhdlImportPage::isComplete() const {
+bool ComponentWizardVhdlImportPage::isComplete() const
+{
 	return editor_->checkEditorValidity();
 }
-

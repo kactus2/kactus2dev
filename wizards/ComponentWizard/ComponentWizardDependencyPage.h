@@ -35,7 +35,7 @@ public:
      *      @param [in] pluginMgr  The plugin manager.
      *      @param [in] parent     The parent wizard.
      */
-    ComponentWizardDependencyPage(PluginManager& pluginMgr, ComponentWizard* parent);
+    ComponentWizardDependencyPage(PluginManager const& pluginMgr, ComponentWizard* parent);
 
     /*!
      *  Destructor.

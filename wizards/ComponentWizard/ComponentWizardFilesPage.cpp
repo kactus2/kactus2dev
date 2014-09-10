@@ -12,6 +12,7 @@
 #include "ComponentWizardFilesPage.h"
 
 #include "ComponentWizard.h"
+#include "ComponentWizardPages.h"
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <IPXACTmodels/component.h>
@@ -45,7 +46,7 @@ ComponentWizardFilesPage::~ComponentWizardFilesPage()
 //-----------------------------------------------------------------------------
 int ComponentWizardFilesPage::nextId() const
 {
-    return ComponentWizard::PAGE_DEPENDENCY;
+    return ComponentWizardPages::DEPENDENCY;
 }
 
 //-----------------------------------------------------------------------------

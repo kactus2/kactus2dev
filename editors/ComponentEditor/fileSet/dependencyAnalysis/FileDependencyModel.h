@@ -52,7 +52,7 @@ public:
      *      @param [in] component  The component to which this model is made.
      *      @param [in] basePath   The component's base path.
      */
-    FileDependencyModel(PluginManager& pluginMgr, QSharedPointer<Component> component,
+    FileDependencyModel(PluginManager const& pluginMgr, QSharedPointer<Component> component,
                         QString const& basePath);
 
     /*!
@@ -346,7 +346,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The plugin manager.
-    PluginManager& pluginMgr_;
+    PluginManager const& pluginMgr_;
 
     //! The parent component.
     QSharedPointer<Component> component_;

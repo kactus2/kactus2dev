@@ -66,7 +66,6 @@ HEADERS += ./common/Global.h \
     ./common/widgets/FileSelector/fileselector.h \
     ./common/widgets/vhdlParser/VhdlSyntax.h \
     ./common/widgets/vhdlParser/VhdlParser.h \
-    ./common/widgets/vhdlParser/VhdlParserWidget.h \
     ./common/widgets/fileViewer/FileViewer.h \
     ./common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.h \
@@ -538,7 +537,8 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.h
+    ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.h \
+    ./wizards/ComponentWizard/ComponentWizardPages.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -612,7 +612,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.cpp \
     ./common/widgets/FileSelector/fileselector.cpp \
     ./common/widgets/vhdlParser/VhdlParser.cpp \
-    ./common/widgets/vhdlParser/VhdlParserWidget.cpp \
     ./common/widgets/fileViewer/FileViewer.cpp \
     ./common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.cpp \
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.cpp \

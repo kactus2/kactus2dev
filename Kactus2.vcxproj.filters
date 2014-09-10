@@ -1486,13 +1486,7 @@
     <ClCompile Include="common\widgets\vhdlParser\VhdlParser.cpp">
       <Filter>Source Files\common\widgets\vhdlParser</Filter>
     </ClCompile>
-    <ClCompile Include="common\widgets\vhdlParser\VhdlParserWidget.cpp">
-      <Filter>Source Files\common\widgets\vhdlParser</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_VhdlParser.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_VhdlParserWidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="common\widgets\fileViewer\FileViewer.cpp">
@@ -4077,9 +4071,6 @@
     <CustomBuild Include="common\widgets\vhdlParser\VhdlParser.h">
       <Filter>Header Files\common\widgets\vhdlParser</Filter>
     </CustomBuild>
-    <CustomBuild Include="common\widgets\vhdlParser\VhdlParserWidget.h">
-      <Filter>Header Files\common\widgets\vhdlParser</Filter>
-    </CustomBuild>
     <CustomBuild Include="common\widgets\fileViewer\FileViewer.h">
       <Filter>Header Files\common\widgets\fileViewer</Filter>
     </CustomBuild>
@@ -5401,6 +5392,9 @@
     </ClInclude>
     <ClInclude Include="kactusGenerators\vhdlGenerator\vhdlconnectionendpoint.h">
       <Filter>Header Files\kactusGenerators\vhdlGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="wizards\ComponentWizard\ComponentWizardPages.h">
+      <Filter>Header Files\wizards\ComponentWizard</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

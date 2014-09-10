@@ -49,7 +49,7 @@ public:
      */
     FileDependencyEditor(QSharedPointer<Component> component,
                          QString const& basePath,
-                         PluginManager& pluginMgr, QWidget* parent);
+                         PluginManager const& pluginMgr, QWidget* parent);
 
     /*!
      *  Destructor.

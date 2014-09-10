@@ -24,16 +24,7 @@ class LibraryInterface;
 class ComponentWizard : public QWizard
 {
 public:
-    enum Page
-    {
-        PAGE_INTRO = 0,
-        PAGE_GENERAL,        
-        PAGE_FILES,
-        PAGE_DEPENDENCY,
-        PAGE_VHDL_IMPORT,
-        PAGE_CONCLUSION
-	 };
-
+ 
 	 /*!
 	 *  Constructor.
 	 *
@@ -44,7 +35,7 @@ public:
 	 *      @param [in] parent     The parent widget.
 	 */
 	 ComponentWizard(QSharedPointer<Component> component, QString const& basePath,
-		             PluginManager& pluginMgr, LibraryInterface* handler, 
+		             PluginManager const& pluginMgr, LibraryInterface* handler, 
 		             QWidget* parent);
 
 	 /*!

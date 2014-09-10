@@ -2245,9 +2245,6 @@ void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier,
     ComponentWizard wizard(component, directory, *pluginMgr_, libraryHandler_, this);
     wizard.exec();
 
-//     VHDLtoIPXACT editor(component, directory, this);
-//     editor.exec();
-
 	// Save wizard changes.
 	if (!libraryHandler_->writeModelToFile(component))
     {

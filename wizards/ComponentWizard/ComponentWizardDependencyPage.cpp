@@ -12,6 +12,7 @@
 #include "ComponentWizardDependencyPage.h"
 
 #include "ComponentWizard.h"
+#include "ComponentWizardPages.h"
 
 #include <editors/ComponentEditor/fileSet/filesetsdelegate.h>
 
@@ -23,7 +24,7 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardDependencyPage::ComponentWizardDependencyPage()
 //-----------------------------------------------------------------------------
-ComponentWizardDependencyPage::ComponentWizardDependencyPage(PluginManager& pluginMgr, ComponentWizard* parent)
+ComponentWizardDependencyPage::ComponentWizardDependencyPage(PluginManager const& pluginMgr, ComponentWizard* parent)
     : QWizardPage(parent),
       parent_(parent),
       splitter_(Qt::Vertical, this),
@@ -105,11 +106,11 @@ int ComponentWizardDependencyPage::nextId() const
 {
      if (parent_->getComponent()->getComponentImplementation() == KactusAttribute::KTS_HW)
     {
-        return ComponentWizard::PAGE_VHDL_IMPORT;
+        return ComponentWizardPages::VHDL_IMPORT;
     }
     else
     {
-        return ComponentWizard::PAGE_CONCLUSION;
+        return ComponentWizardPages::CONCLUSION;
     }
 }
 

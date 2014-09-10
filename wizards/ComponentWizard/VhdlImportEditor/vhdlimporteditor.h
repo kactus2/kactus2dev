@@ -16,12 +16,13 @@
 
 #include <QTextEdit>
 #include <QSplitter>
+#include <QPushButton>
 
 class ModelParameterEditor;
 class PortsEditor;
 class LibraryInterface;
 class FileSelector;
-class VhdlParserWidget;
+class VhdlParser;
 /*! \brief Used to parse VHDL files and generating IP-XACT packages of them.
  *
  */
@@ -36,14 +37,12 @@ public:
 	 * Full name:	VhdlImportEditor::VhdlImportEditor
 	 * Access:		private 
 	 *
-	 * \param basePath Path to the component's xml file, used as base when operating on relative file paths.
 	 * \param component Pointer to the component being edited.
 	 * \param handler Pointer to the instance which manages the library.
 	 * \param parent Pointer to the owner of this widget.
 	 *
 	*/
-	VhdlImportEditor(const QString& basePath,
-		QSharedPointer<Component> component,
+	VhdlImportEditor(QSharedPointer<Component> component,
 		LibraryInterface* handler,
 		QWidget *parent);
 	
@@ -82,6 +81,11 @@ signals:
 	//! \brief Emitted when the contents of the editors change.
 	void contentChanged();
 
+private slots:
+
+    void onFileSelected( const QString& filePath );
+    void onOpenEditor();
+    void onRefresh();
 
 private:
 	
@@ -100,19 +104,28 @@ private:
     QSplitter splitter_;
 
 	//! \brief Path to the containing xml
-	QString basePath_;
+	QString componentXmlPath_;
 
     //! \brief Top-level vhdl file absolute path.
-    QString vhdlPath_;
-
-	//! \brief Displays and parses the vhdl code
-	VhdlParserWidget* parserWidget_;
+    QString selectedSourceFile_;
 
 	//! \brief Editor to set the generics.
 	ModelParameterEditor* modelParameterEditor_;
 
 	//! \brief Editor to set the ports.
 	PortsEditor* portEditor_;
+
+    //! \brief Used to select the top-level vhdl file.
+    FileSelector* fileSelector_;
+
+    //! \brief Button for opening an editor for vhdl file.
+    QPushButton* editButton_;
+
+    //! \brief Button for refreshing ports and model parameters from file.
+    QPushButton* refreshButton_;
+
+    //! \brief Displays and parses the vhdl code
+    VhdlParser* vhdlParser_;
 
 };
 

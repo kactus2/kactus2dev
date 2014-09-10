@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "ComponentWizard.h"
+#include "ComponentWizardPages.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -21,14 +22,12 @@
 #include "ComponentWizardVhdlImportPage.h"
 #include "ComponentWizardConclusionPage.h"
 
-#include "common/widgets/vhdlParser/VhdlParserWidget.h"
-
 //-----------------------------------------------------------------------------
 // Function: ComponentWizard::ComponentWizard()
 //-----------------------------------------------------------------------------
 ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
 	                             QString const& basePath,
-	                             PluginManager& pluginMgr,
+	                             PluginManager const& pluginMgr,
 	                             LibraryInterface* handler,
 	                             QWidget* parent)
     : QWizard(parent),
@@ -42,13 +41,13 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
     setOption(NoDefaultButton, true);
     setOption(HaveFinishButtonOnEarlyPages, true);
     resize(800, 800);
-
-    setPage(PAGE_INTRO, new ComponentWizardIntroPage(this));
-    setPage(PAGE_GENERAL, new ComponentWizardGeneralInfoPage(component, this));    
-    setPage(PAGE_FILES, new ComponentWizardFilesPage(this));
-    setPage(PAGE_DEPENDENCY, new ComponentWizardDependencyPage(pluginMgr, this));    
-    setPage(PAGE_VHDL_IMPORT, new ComponentWizardVhdlImportPage(component, handler, this));
-    setPage(PAGE_CONCLUSION, new ComponentWizardConclusionPage(handler, this));
+    
+    setPage(ComponentWizardPages::INTRO, new ComponentWizardIntroPage(this));
+    setPage(ComponentWizardPages::GENERAL, new ComponentWizardGeneralInfoPage(component, this));    
+    setPage(ComponentWizardPages::FILES, new ComponentWizardFilesPage(this));
+    setPage(ComponentWizardPages::DEPENDENCY, new ComponentWizardDependencyPage(pluginMgr, this));    
+    setPage(ComponentWizardPages::VHDL_IMPORT, new ComponentWizardVhdlImportPage(component, handler, this));
+    setPage(ComponentWizardPages::CONCLUSION, new ComponentWizardConclusionPage(handler, this));
 }
 
 //-----------------------------------------------------------------------------

@@ -12,6 +12,7 @@
 #include "ComponentWizardIntroPage.h"
 
 #include "ComponentWizard.h"
+#include "ComponentWizardPages.h"
 
 #include <QVBoxLayout>
 
@@ -62,5 +63,5 @@ ComponentWizardIntroPage::~ComponentWizardIntroPage()
 //-----------------------------------------------------------------------------
 int ComponentWizardIntroPage::nextId() const
 {
-    return ComponentWizard::PAGE_GENERAL;
+    return ComponentWizardPages::GENERAL;
 }

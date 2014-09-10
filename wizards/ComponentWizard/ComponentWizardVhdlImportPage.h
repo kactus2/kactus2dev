@@ -12,15 +12,13 @@
 #ifndef COMPONENTWIZARDVHDLIMPORTPAGE_H
 #define COMPONENTWIZARDVHDLIMPORTPAGE_H
 
-#include <IPXACTmodels/component.h>
-#include <wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.h>
 
 #include <QWizardPage>
 #include <QSharedPointer>
 
-class ComponentWizard;
+class Component;
 class LibraryInterface;
-
+class VhdlImportEditor;
 //-----------------------------------------------------------------------------
 //! Intro page for the component wizard.
 //-----------------------------------------------------------------------------
@@ -36,7 +34,7 @@ public:
      */
     ComponentWizardVhdlImportPage(QSharedPointer<Component> component,
 		 LibraryInterface* handler,
-		 ComponentWizard* parent);
+		 QWidget* parent);
 
     /*!
      *  Destructor.
@@ -81,15 +79,6 @@ private:
 	//-----------------------------------------------------------------------------
 	// Data.
 	//-----------------------------------------------------------------------------
-
-	//! The parent wizard.
-	ComponentWizard* parent_;
-
-	//! The VHDL import editor.
-	//VHDLtoIPXACT editor_;
-
-    //! Splitter for the fileset table and dependency graph.
-    QSplitter splitter_;
 
 	//! \brief Editor to set the generics and ports.
 	VhdlImportEditor* editor_;

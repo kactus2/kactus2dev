@@ -41,7 +41,7 @@
 //-----------------------------------------------------------------------------
 FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
                                            QString const& basePath,
-                                           PluginManager& pluginMgr, QWidget* parent)
+                                           PluginManager const& pluginMgr, QWidget* parent)
     : QWidget(parent),
       toolbar_(this),
       progressBar_(this),
@@ -211,24 +211,20 @@ void FileDependencyEditor::resolveExtensionFileTypes()
 
     settings.beginGroup("FileTypes");
 
-    QStringList fileTypes = settings.childKeys();
-
-    foreach (QString const& fileType, fileTypes)
+    foreach (QString const& fileType, settings.childGroups())
     {
-        if (fileType != "IgnoredExtensions")
-        {
-            // Enumerate all extensions for the currently investigated file type.
-            QStringList extensions = settings.value(fileType).toString().split(';');
+        settings.beginGroup(fileType);
 
-            foreach (QString const& ext, extensions)
+        QStringList fileTypeExtensions = settings.value("Extensions").toString().split(';');
+        foreach (QString const& extension, fileTypeExtensions)
+        {
+            // Add to the lookup map only if the extension is not already in use.
+            if (!fileTypeLookup_.contains(extension))
             {
-                // Add to the lookup map only if the extension is not already in use.
-                if (!fileTypeLookup_.contains(ext))
-                {
-                    fileTypeLookup_.insert(ext, fileType);
-                }
+                fileTypeLookup_.insert(extension, fileType);
             }
         }
+        settings.endGroup();
     }
 
     settings.endGroup();
