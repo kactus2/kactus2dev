@@ -338,6 +338,18 @@ void tst_VerilogGenerator::testHierarchicalConnections()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::createHierarchicalConnection()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::createHierarchicalConnection(QString const& topInterfaceRef, 
+    QString const& instanceInterfaceRef)
+{
+    HierConnection connection(topInterfaceRef, Interface("instance1", instanceInterfaceRef));    
+    QList<HierConnection> hierConnections = design_->getHierarchicalConnections();
+    hierConnections.append(connection);
+    design_->setHierarchicalConnections(hierConnections);
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::testSlicedHierarchicalConnection()
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::testSlicedHierarchicalConnection()
@@ -465,18 +477,6 @@ void tst_VerilogGenerator::addInstanceToDesign(QString instanceName, VLNV instan
     QList<ComponentInstance> componentInstances = design_->getComponentInstances();
     componentInstances.append(instance);
     design_->setComponentInstances(componentInstances);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VerilogGenerator::createHierarchicalConnection()
-//-----------------------------------------------------------------------------
-void tst_VerilogGenerator::createHierarchicalConnection(QString const& topInterfaceRef, 
-    QString const& instanceInterfaceRef)
-{
-    HierConnection clkConnection(topInterfaceRef, Interface("instance1", instanceInterfaceRef));    
-    QList<HierConnection> hierConnections = design_->getHierarchicalConnections();
-    hierConnections.append(clkConnection);
-    design_->setHierarchicalConnections(hierConnections);
 }
 
 //-----------------------------------------------------------------------------
