@@ -29,10 +29,13 @@
 #include <common/widgets/vhdlParser/VhdlSyntax.h>
 #include <common/KactusColors.h>
 
+#include <wizards/ComponentWizard/VhdlImportEditor/SourceFileDisplayer.h>
+
 //-----------------------------------------------------------------------------
 // Function: VhdlParser()
 //-----------------------------------------------------------------------------
-VhdlParser::VhdlParser(QWidget*parent) : QPlainTextEdit( parent ), 
+VhdlParser::VhdlParser(SourceFileDisplayer* display, QObject* parent) : 
+QObject(parent),
     ports_(), 
     generics_(), 
     genericsInPorts_(), 
@@ -44,20 +47,9 @@ VhdlParser::VhdlParser(QWidget*parent) : QPlainTextEdit( parent ),
     outsideEntityFormat_(),
     selectedPortFormat_(),
     selectedGenericFormat_(),
-    notSelectedFormat_()
+    notSelectedFormat_(),
+    display_(display)
 {
-    QFont font("Courier");
-    font.setStyleHint(QFont::Monospace);
-    font.setFixedPitch(true);
-    font.setPointSize(9);
-    setFont(font);
-
-    int tabStop = 4;
-    setTabStopWidth(tabStop * fontMetrics().width(' '));
-
-    setReadOnly(true);
-    setCursorWidth(0);
-
     insideEntityFormat_.setForeground(QColor("black"));
 
     outsideEntityFormat_.setForeground(QColor("gray"));
@@ -77,6 +69,7 @@ VhdlParser::VhdlParser(QWidget*parent) : QPlainTextEdit( parent ),
 //-----------------------------------------------------------------------------
 VhdlParser::~VhdlParser()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -84,13 +77,13 @@ VhdlParser::~VhdlParser()
 //-----------------------------------------------------------------------------
 void VhdlParser::scrollToEntityBegin()
 {  
-    setEntityEndExp(toPlainText());    
-    if (checkEntityStructure(toPlainText()))
+    setEntityEndExp(display_->toPlainText());    
+    if (checkEntityStructure(display_->toPlainText()))
     {
-        QTextCursor cursor = textCursor();
-        cursor.setPosition(VhdlSyntax::ENTITY_BEGIN_EXP.indexIn(toPlainText()));
+        QTextCursor cursor = display_->textCursor();
+        cursor.setPosition(VhdlSyntax::ENTITY_BEGIN_EXP.indexIn(display_->toPlainText()));
         int rowNumber = cursor.block().firstLineNumber();
-        verticalScrollBar()->setSliderPosition(rowNumber);
+        display_->verticalScrollBar()->setSliderPosition(rowNumber);
     }
 }
 
@@ -104,14 +97,14 @@ void VhdlParser::parseFile(QString absolutePath)
     QFile vhdlFile(absolutePath);
     if (!vhdlFile.open(QIODevice::ReadOnly))
     {
-        QMessageBox::information(this, "Error", vhdlFile.errorString()+": "+absolutePath);
+        QMessageBox::information(0, "Error ", vhdlFile.errorString() + ": " + absolutePath);
         return;
     }
 
     removePorts();
     removeGenerics();
 
-    setPlainText("");
+    display_->setPlainText("");
     createDocument(vhdlFile);       
 
     importGenerics();
@@ -156,7 +149,7 @@ void VhdlParser::editorRemovedModelParameter(QSharedPointer<ModelParameter> remo
         {
             SelectionInfo info = generics_.key(parameterList);
             
-            QTextCursor cursor = textCursor();
+            QTextCursor cursor = display_->textCursor();
             cursor.setPosition(info.beginPos);
             cursor.setPosition(info.endPos,QTextCursor::KeepAnchor);
             cursor.setCharFormat(notSelectedFormat_);
@@ -182,7 +175,7 @@ void VhdlParser::editorRemovedPort(QSharedPointer<Port> removedPort)
         {
             SelectionInfo info = ports_.key(portList);
 
-            QTextCursor cursor = textCursor();
+            QTextCursor cursor = display_->textCursor();
             cursor.setPosition(info.beginPos);
             cursor.setPosition(info.endPos,QTextCursor::KeepAnchor);
             cursor.setCharFormat(notSelectedFormat_);
@@ -197,16 +190,13 @@ void VhdlParser::editorRemovedPort(QSharedPointer<Port> removedPort)
 }
 
 //-----------------------------------------------------------------------------
-// Function: mouseDoubleClickEvent()
+// Function: VhdlParser::toggleAt()
 //-----------------------------------------------------------------------------
-void VhdlParser::mouseDoubleClickEvent(QMouseEvent *e)
+void VhdlParser::toggleAt(int characterPosition)
 {
-    QTextCursor cursor = cursorForPosition( e->pos() ); 
-    int pos = cursor.position();
-
     foreach( SelectionInfo info, ports_.keys() )
     {
-        if( info.beginPos <= pos && pos <= info.endPos )
+        if( info.beginPos <= characterPosition && characterPosition <= info.endPos )
         {           
             toggleSelection(info);
             QList<QSharedPointer<Port> > portList = ports_.take(info);
@@ -217,7 +207,7 @@ void VhdlParser::mouseDoubleClickEvent(QMouseEvent *e)
 
     foreach( SelectionInfo info, generics_.keys() )
     {
-        if( info.beginPos <= pos && pos <= info.endPos )
+        if( info.beginPos <= characterPosition && characterPosition <= info.endPos )
         {           
             toggleSelection(info);
             QList<QSharedPointer<ModelParameter> > genericList = generics_.take(info);
@@ -305,7 +295,7 @@ void VhdlParser::assignGenerics(QSharedPointer<Port> port)
         }
     }
     
-    QString declaration = toPlainText().mid(info.beginPos,info.endPos-info.beginPos);
+    QString declaration = display_->toPlainText().mid(info.beginPos, info.endPos - info.beginPos);
     VhdlSyntax::PORT_EXP.indexIn(declaration);
     QString portType = VhdlSyntax::PORT_EXP.cap(3);
     QString defaultValue = VhdlSyntax::PORT_EXP.cap(4).trimmed();        
@@ -356,7 +346,7 @@ void VhdlParser::assignGenerics(QSharedPointer<ModelParameter> param)
         }
     }
 
-    QString declaration = toPlainText().mid(info.beginPos,info.endPos-info.beginPos);
+    QString declaration = display_->toPlainText().mid(info.beginPos, info.endPos - info.beginPos);
     VhdlSyntax::GENERIC_EXP.indexIn(declaration);
     QString cap = VhdlSyntax::GENERIC_EXP.cap(0);
     QString defaultValue = VhdlSyntax::GENERIC_EXP.cap(3);        
@@ -394,7 +384,7 @@ void VhdlParser::createDocument(QFile& vhdlFile)
 
     setEntityEndExp(fileString);
 
-    QTextCursor cursor = textCursor();    
+    QTextCursor cursor = display_->textCursor();    
     cursor.insertText(fileString, outsideEntityFormat_);
 
     if (!checkEntityStructure(fileString))
@@ -402,8 +392,8 @@ void VhdlParser::createDocument(QFile& vhdlFile)
         return;
     }
 
-    const int entityBeginIndex = VhdlSyntax::ENTITY_BEGIN_EXP.indexIn(toPlainText());  
-    const int entityEndIndex = entityEnd_.indexIn(toPlainText(),entityBeginIndex);  
+    const int entityBeginIndex = VhdlSyntax::ENTITY_BEGIN_EXP.indexIn(fileString);  
+    const int entityEndIndex = entityEnd_.indexIn(fileString, entityBeginIndex);  
 
     formatSection(entityBeginIndex, entityEndIndex + entityEnd_.matchedLength() - entityBeginIndex,
                     insideEntityFormat_);
@@ -500,11 +490,10 @@ QString VhdlParser::parseSectionContent(QRegExp const& begin, QRegExp const& end
 //-----------------------------------------------------------------------------
 void VhdlParser::parsePorts()
 {
-    QString entity = parseSection(VhdlSyntax::ENTITY_BEGIN_EXP,entityEnd_, toPlainText());
-    QString ports = parseSectionContent(VhdlSyntax::PORTS_BEGIN_EXP,VhdlSyntax::PORTS_END_EXP,entity);
+    QString entity = parseSection(VhdlSyntax::ENTITY_BEGIN_EXP,entityEnd_, display_->toPlainText());
+    QString ports = parseSectionContent(VhdlSyntax::PORTS_BEGIN_EXP, VhdlSyntax::PORTS_END_EXP,entity);
 
-    QTextCursor cursor = textCursor();
-    int offset = toPlainText().indexOf(ports);
+    int offset = display_->toPlainText().indexOf(ports);
     int index = 0;
 
     while ( index < ports.length() )
@@ -572,11 +561,10 @@ void VhdlParser::parsePorts()
 //-----------------------------------------------------------------------------
 void VhdlParser::parseGenerics()
 {
-    QString entity = parseSection(VhdlSyntax::ENTITY_BEGIN_EXP,entityEnd_, toPlainText());
+    QString entity = parseSection(VhdlSyntax::ENTITY_BEGIN_EXP,entityEnd_, display_->toPlainText());
     QString generics = parseSectionContent(VhdlSyntax::GENERICS_BEGIN_EXP,VhdlSyntax::GENERICS_END_EXP,entity);
 
-    QTextCursor cursor = textCursor();
-    int offset = toPlainText().indexOf(generics);
+    int offset = display_->toPlainText().indexOf(generics);
     int index = 0;
 
     while ( index < generics.length() )
@@ -891,9 +879,9 @@ void VhdlParser::toggleSelection(SelectionInfo& info)
             {
                 emit removePort(port);
             } 
-            QTextCursor cursor = textCursor();
+            QTextCursor cursor = display_->textCursor();
             cursor.setPosition(info.beginPos);
-            cursor.setPosition(info.endPos,QTextCursor::KeepAnchor);
+            cursor.setPosition(info.endPos, QTextCursor::KeepAnchor);
             cursor.setCharFormat(notSelectedFormat_);
         }
         else
@@ -903,9 +891,9 @@ void VhdlParser::toggleSelection(SelectionInfo& info)
             {
                 emit addPort(port);
             } 
-            QTextCursor cursor = textCursor();
+            QTextCursor cursor = display_->textCursor();
             cursor.setPosition(info.beginPos);
-            cursor.setPosition(info.endPos,QTextCursor::KeepAnchor);
+            cursor.setPosition(info.endPos, QTextCursor::KeepAnchor);
             cursor.setCharFormat(selectedPortFormat_);
         }
     }
@@ -919,9 +907,9 @@ void VhdlParser::toggleSelection(SelectionInfo& info)
             {
                 emit removeGeneric(parameter);
             } 
-            QTextCursor cursor = textCursor();
+            QTextCursor cursor = display_->textCursor();
             cursor.setPosition(info.beginPos);
-            cursor.setPosition(info.endPos,QTextCursor::KeepAnchor);
+            cursor.setPosition(info.endPos, QTextCursor::KeepAnchor);
             cursor.setCharFormat(notSelectedFormat_);
         }
         else
@@ -931,9 +919,9 @@ void VhdlParser::toggleSelection(SelectionInfo& info)
             {
                 emit addGeneric(parameter);
             } 
-            QTextCursor cursor = textCursor();
+            QTextCursor cursor = display_->textCursor();
             cursor.setPosition(info.beginPos);
-            cursor.setPosition(info.endPos,QTextCursor::KeepAnchor);
+            cursor.setPosition(info.endPos, QTextCursor::KeepAnchor);
             cursor.setCharFormat(selectedGenericFormat_);
         }
 
@@ -982,7 +970,7 @@ void VhdlParser::formatSection(int const pos, int const lenght, QTextCharFormat 
 {
     if ( pos >= 0 && lenght > 0 )
     {
-        QTextCursor cursor = textCursor();
+        QTextCursor cursor = display_->textCursor();
         cursor.setPosition(pos);
         cursor.setPosition(pos+lenght,QTextCursor::KeepAnchor);
         cursor.setCharFormat(format);

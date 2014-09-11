@@ -21,12 +21,12 @@
 
 class ModelParameter;
 class Port;
-
+class SourceFileDisplayer;
 
 //-----------------------------------------------------------------------------
 //! Class VhdlParser.
 //-----------------------------------------------------------------------------
-class VhdlParser : public QPlainTextEdit 
+class VhdlParser : public QObject
 {
     Q_OBJECT
 public:
@@ -36,7 +36,7 @@ public:
 	 *
      *      @param [in] parent The parent widget.
      */
-    VhdlParser(QWidget* parent = 0);
+    VhdlParser(SourceFileDisplayer* display, QObject* parent);
 
     /*!
      *  Destructor.
@@ -68,6 +68,8 @@ public slots:
     //! Called when a port is removed outside the text editor.
     virtual void editorRemovedPort(QSharedPointer<Port> removedPort);
 
+    virtual void toggleAt(int characterPosition);
+
 signals:
     
     //! Emitted when a port is created or selected.
@@ -81,11 +83,6 @@ signals:
 
     //! Emitted when a generic is removed or deselected.
     void removeGeneric(QSharedPointer<ModelParameter> modelParam);
-
-protected:
- 
-    //! Called when mouse is double clicked.
-    virtual void mouseDoubleClickEvent(QMouseEvent *e);
 
 private:
 
@@ -300,6 +297,8 @@ private:
 
     //! Formatting for not selected port or generic.
     QTextCharFormat notSelectedFormat_;
+
+    SourceFileDisplayer* display_;
 };
 
 #endif // VhdlParser_H

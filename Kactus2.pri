@@ -154,6 +154,7 @@ HEADERS += ./common/Global.h \
     ./wizards/ComponentWizard/ComponentWizardDependencyPage.h \
     ./wizards/ComponentWizard/ComponentWizardFilesPage.h \
     ./wizards/ComponentWizard/ComponentWizardIntroPage.h \
+    ./wizards/ComponentWizard/ComponentWizardPages.h \
     ./wizards/ComponentWizard/ComponentWizardVhdlImportPage.h \
     ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.h \
     ./wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.h \
@@ -524,6 +525,7 @@ HEADERS += ./common/Global.h \
     ./designEditors/common/Association/AssociationRemoveCommand.h \
     ./designEditors/common/Association/AssociationAddCommand.h \
     ./designEditors/common/Association/AssociationChangeEndpointCommand.h \
+    ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.h \
     ./kactusGenerators/vhdlGenerator/vhdlgeneral.h \
     ./kactusGenerators/vhdlGenerator/vhdlportmap.h \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.h \
@@ -537,8 +539,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.h \
-    ./wizards/ComponentWizard/ComponentWizardPages.h
+    ./wizards/ComponentWizard/VhdlImportEditor/ImportSourceDisplayer.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1032,16 +1033,17 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/common/Association/AssociationRemoveCommand.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlcomponentdeclaration.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlcomponentinstance.cpp \
+    ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlgeneral.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlgenerator2.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlgeneric.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlobject.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlport.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportmap.cpp \
+    ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
-    ./kactusGenerators/vhdlGenerator/vhdlconnectionendpoint.cpp
+    ./wizards/ComponentWizard/VhdlImportEditor/ImportSourceDisplayer.cpp
 RESOURCES += kactus.qrc

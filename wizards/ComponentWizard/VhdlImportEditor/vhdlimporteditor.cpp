@@ -1,9 +1,13 @@
-/* 
- *	Created on:	10.6.2013
- *	Author:		Antti Kamppi
- *	File name:	vhdlimporteditor.cpp
- *	Project:		Kactus 2
-*/
+//-----------------------------------------------------------------------------
+// File: vhdlimporteditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 10.6.2013
+//
+// Description:
+// Used to parse VHDL files and generating IP-XACT packages of them.
+//-----------------------------------------------------------------------------
 
 #include "vhdlimporteditor.h"
 
@@ -14,6 +18,8 @@
 #include <editors/ComponentEditor/ports/portseditor.h>
 
 #include <library/LibraryManager/libraryinterface.h>
+
+#include <wizards/ComponentWizard/VhdlImportEditor/SourceFileDisplayer.h>
 
 #include <QApplication>
 #include <QHBoxLayout>
@@ -32,12 +38,13 @@ VhdlImportEditor::VhdlImportEditor(QSharedPointer<Component> component,
     splitter_(Qt::Vertical, this),
 	componentXmlPath_(handler->getPath(*component->getVlnv())),
     selectedSourceFile_(),
+    modelParameterEditor_(new ModelParameterEditor(component, handler, &splitter_)),
+    portEditor_(new PortsEditor(component, handler, &splitter_)),
+    sourceDisplayer_(new SourceFileDisplayer(this)),
     fileSelector_(new FileSelector(component, this)),
     editButton_(new QPushButton(tr("Open editor"), this)),
     refreshButton_(new QPushButton(QIcon(":/icons/common/graphics/refresh.png"), "", this)),
-    vhdlParser_(new VhdlParser(this)),
-    modelParameterEditor_(new ModelParameterEditor(component, handler, &splitter_)),
-    portEditor_(new PortsEditor(component, handler, &splitter_))
+    vhdlParser_(new VhdlParser(sourceDisplayer_, this))
 {
 	Q_ASSERT(component);
 
@@ -69,6 +76,8 @@ VhdlImportEditor::VhdlImportEditor(QSharedPointer<Component> component,
 		portEditor_, SLOT(removePort(QSharedPointer<Port>)), Qt::UniqueConnection);
     connect(portEditor_, SIGNAL(lockedPortRemoved(QSharedPointer<Port>)),
 		vhdlParser_, SLOT(editorRemovedPort(QSharedPointer<Port>)), Qt::UniqueConnection);
+
+    connect(sourceDisplayer_, SIGNAL(doubleClicked(int)), vhdlParser_, SLOT(toggleAt(int)), Qt::UniqueConnection);
 
     connect(fileSelector_, SIGNAL(fileSelected(const QString&)),
         this, SLOT(onFileSelected(const QString&)), Qt::UniqueConnection);
@@ -179,7 +188,7 @@ void VhdlImportEditor::setupLayout()
     selectorLayout->addWidget(refreshButton_);    
 
     sourceLayout->addLayout(selectorLayout);
-    sourceLayout->addWidget(vhdlParser_);
+    sourceLayout->addWidget(sourceDisplayer_);
 
     splitter_.addWidget(sourceWidget);
     splitter_.addWidget(modelParameterEditor_);

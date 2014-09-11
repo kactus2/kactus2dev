@@ -18,6 +18,8 @@
 #include <common/KactusColors.h>
 #include <common/widgets/vhdlParser/VhdlParser.h>
 
+#include <wizards/ComponentWizard/VhdlImportEditor/SourceFileDisplayer.h>
+
 #include <QSharedPointer>
 
 
@@ -67,6 +69,9 @@ private slots:
     void testFontInsideEntityIsBlackAndOutsideEntityGray();
 
 private:
+
+    SourceFileDisplayer displayEditor_;
+
     VhdlParser parser_;
      
     QSignalSpy* createdPorts_;
@@ -89,13 +94,16 @@ private:
 //-----------------------------------------------------------------------------
 // Function: tst_VhdlParser::tst_VhdlParser()
 //-----------------------------------------------------------------------------
-tst_VhdlParser::tst_VhdlParser(): parser_(), createdPorts_(0), createdGenerics_(0)
+tst_VhdlParser::tst_VhdlParser(): displayEditor_(), parser_(&displayEditor_, this), 
+    createdPorts_(0), createdGenerics_(0)
 {
     qRegisterMetaType<QSharedPointer<Port> >();
     qRegisterMetaType<QSharedPointer<ModelParameter> >();
 
     createdPorts_ = new QSignalSpy(&parser_, SIGNAL(addPort(QSharedPointer<Port>)));
     createdGenerics_ = new QSignalSpy(&parser_, SIGNAL(addGeneric(QSharedPointer<ModelParameter>)));
+
+    connect(&displayEditor_, SIGNAL(doubleClicked(int)), &parser_, SLOT(toggleAt(int)));
 }
 
 //-----------------------------------------------------------------------------
@@ -449,7 +457,7 @@ void tst_VhdlParser::testPortIsHighlighted_data()
 //-----------------------------------------------------------------------------
 void tst_VhdlParser::verifyNotHighlightedBeforeDeclaration(int declarationStartIndex, QColor const& highlightColor)
 {
-    QTextCursor cursor = parser_.textCursor();
+    QTextCursor cursor = displayEditor_.textCursor();
     cursor.setPosition(declarationStartIndex);
 
     QVERIFY2(cursor.charFormat().background().color() != highlightColor, 
@@ -462,7 +470,7 @@ void tst_VhdlParser::verifyNotHighlightedBeforeDeclaration(int declarationStartI
 void tst_VhdlParser::verifyDeclarationIsHighlighted(const int declarationStartIndex, 
     const int declarationLength, QColor const& expectedHighlight) const
 {
-    QTextCursor cursor = parser_.textCursor();
+    QTextCursor cursor = displayEditor_.textCursor();
 
     for (int i = 1; i <= declarationLength; i++)
     {
@@ -478,7 +486,7 @@ void tst_VhdlParser::verifyDeclarationIsHighlighted(const int declarationStartIn
 void tst_VhdlParser::verifyNotHighlightedAfterDeclartion(const int declarationStartIndex, 
     const int declarationLength, QColor const& highlightColor) const
 {
-    QTextCursor cursor = parser_.textCursor();
+    QTextCursor cursor = displayEditor_.textCursor();
 
     cursor.setPosition(declarationStartIndex + declarationLength + 1);
     QVERIFY2(cursor.charFormat().background().color() != highlightColor,
@@ -528,13 +536,13 @@ void tst_VhdlParser::testPortUnselectedWithDoubleClick()
 
     parser_.parseFile(".input.vhd");
     
-    QFontMetrics metrics = parser_.fontMetrics();
+    QFontMetrics metrics = displayEditor_.fontMetrics();
 
     QPoint positionInEditor;    
     positionInEditor.setX(8*metrics.width(' ') + metrics.width('c'));
     positionInEditor.setY(3*metrics.height());
 
-    QTest::mouseDClick(parser_.viewport(), Qt::LeftButton, Qt::NoModifier, positionInEditor);    
+    QTest::mouseDClick(displayEditor_.viewport(), Qt::LeftButton, Qt::NoModifier, positionInEditor);    
 
     QColor unselectedColor = KactusColors::MISSING_COMPONENT;
     verifyNotHighlightedBeforeDeclaration(declarationStartIndex, unselectedColor);
@@ -816,13 +824,13 @@ void tst_VhdlParser::testGenericUnselectedWithDoubleClick()
 
     parser_.parseFile(".input.vhd");
 
-    QFontMetrics metrics = parser_.fontMetrics();
+    QFontMetrics metrics = displayEditor_.fontMetrics();
 
     QPoint positionInEditor;    
     positionInEditor.setX(8*metrics.width(' ') + metrics.width('c'));
     positionInEditor.setY(3*metrics.height());
 
-    QTest::mouseDClick(parser_.viewport(), Qt::LeftButton, Qt::NoModifier, positionInEditor);    
+    QTest::mouseDClick(displayEditor_.viewport(), Qt::LeftButton, Qt::NoModifier, positionInEditor);    
 
     QColor unselectedColor = KactusColors::MISSING_COMPONENT;
     verifyNotHighlightedBeforeDeclaration(declarationStartIndex, unselectedColor);
@@ -865,7 +873,7 @@ void tst_VhdlParser::testFontInsideEntityIsBlackAndOutsideEntityGray()
 //-----------------------------------------------------------------------------
 void tst_VhdlParser::verifySectionFontColorIs(int startIndex, int endIndex, QColor const& expectedFontColor)
 {
-    QTextCursor cursor = parser_.textCursor();
+    QTextCursor cursor = displayEditor_.textCursor();
 
     int sectionLength = endIndex - startIndex;
     for (int i = 0; i < sectionLength; i++)
