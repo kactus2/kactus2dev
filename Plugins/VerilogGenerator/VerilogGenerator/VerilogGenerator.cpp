@@ -606,10 +606,7 @@ void VerilogGenerator::connectPortsInAdHocConnectionToWire(AdHocConnection const
 //-----------------------------------------------------------------------------
 void VerilogGenerator::addWritersToTopInDesiredOrder() const
 {
-    if (wireWriters_->hasWriters())
-    {
-        topWriter_->add(wireWriters_);    
-    }
+    topWriter_->add(wireWriters_);    
 
     foreach(QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter, instanceWriters_)
     {

@@ -84,7 +84,7 @@ const QString LibraryMock::getPath(const VLNV& vlnv) const
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::getDirectoryPath()
 //-----------------------------------------------------------------------------
-QString LibraryMock::getDirectoryPath(const VLNV& vlnv) const
+QString LibraryMock::getDirectoryPath(const VLNV& /*vlnv*/) const
 {
     return QString();
 }
@@ -92,7 +92,7 @@ QString LibraryMock::getDirectoryPath(const VLNV& vlnv) const
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::writeModelToFile()
 //-----------------------------------------------------------------------------
-bool LibraryMock::writeModelToFile(const QString path, QSharedPointer<LibraryComponent> model, bool printErrors /*= true*/)
+bool LibraryMock::writeModelToFile(const QString path, QSharedPointer<LibraryComponent> model, bool /*printErrors*/)
 {
     paths_.insert(*model->getVlnv(), path);
     return true;
@@ -101,7 +101,7 @@ bool LibraryMock::writeModelToFile(const QString path, QSharedPointer<LibraryCom
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::writeModelToFile()
 //-----------------------------------------------------------------------------
-bool LibraryMock::writeModelToFile(QSharedPointer<LibraryComponent> model, bool printErrors /*= true*/)
+bool LibraryMock::writeModelToFile(QSharedPointer<LibraryComponent> /*model*/, bool /*printErrors*/)
 {
     return false;
 }
@@ -117,7 +117,7 @@ void LibraryMock::searchForIPXactFiles()
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::getNeededVLNVs()
 //-----------------------------------------------------------------------------
-void LibraryMock::getNeededVLNVs(const VLNV& vlnv, QList<VLNV>& list)
+void LibraryMock::getNeededVLNVs(const VLNV& /*vlnv*/, QList<VLNV>& /*list*/)
 {
     
 }
@@ -125,7 +125,7 @@ void LibraryMock::getNeededVLNVs(const VLNV& vlnv, QList<VLNV>& list)
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::getDependencyFiles()
 //-----------------------------------------------------------------------------
-void LibraryMock::getDependencyFiles(const VLNV& vlnv, QStringList& list)
+void LibraryMock::getDependencyFiles(const VLNV& /*vlnv*/, QStringList& /*list*/)
 {
 
 }
@@ -133,7 +133,7 @@ void LibraryMock::getDependencyFiles(const VLNV& vlnv, QStringList& list)
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::getHierarchicalDependencyFiles()
 //-----------------------------------------------------------------------------
-void LibraryMock::getHierarchicalDependencyFiles(const VLNV& vlnv, QStringList& list)
+void LibraryMock::getHierarchicalDependencyFiles(const VLNV& /*vlnv*/, QStringList& /*list*/)
 {
     
 }
@@ -149,7 +149,7 @@ LibraryItem const* LibraryMock::getTreeRoot() const
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::getDocumentType()
 //-----------------------------------------------------------------------------
-VLNV::IPXactType LibraryMock::getDocumentType(const VLNV& vlnv)
+VLNV::IPXactType LibraryMock::getDocumentType(const VLNV& /*vlnv*/)
 {
     return VLNV::INVALID;
 }
@@ -157,7 +157,7 @@ VLNV::IPXactType LibraryMock::getDocumentType(const VLNV& vlnv)
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::referenceCount()
 //-----------------------------------------------------------------------------
-int LibraryMock::referenceCount(const VLNV& vlnv) const
+int LibraryMock::referenceCount(const VLNV& /*vlnv*/) const
 {
     return 0;
 }
@@ -165,7 +165,7 @@ int LibraryMock::referenceCount(const VLNV& vlnv) const
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::getOwners()
 //-----------------------------------------------------------------------------
-int LibraryMock::getOwners(QList<VLNV>& list, const VLNV& vlnvToSearch) const
+int LibraryMock::getOwners(QList<VLNV>& /*list*/, const VLNV& /*vlnvToSearch*/) const
 {
     return 0;
 }
@@ -173,7 +173,7 @@ int LibraryMock::getOwners(QList<VLNV>& list, const VLNV& vlnvToSearch) const
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::getChildren()
 //-----------------------------------------------------------------------------
-int LibraryMock::getChildren(QList<VLNV>& list, const VLNV& vlnvToSearch) const
+int LibraryMock::getChildren(QList<VLNV>& /*list*/, const VLNV& /*vlnvToSearch*/) const
 {
     return 0;
 }
@@ -181,7 +181,7 @@ int LibraryMock::getChildren(QList<VLNV>& list, const VLNV& vlnvToSearch) const
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::getDesignVLNV()
 //-----------------------------------------------------------------------------
-VLNV LibraryMock::getDesignVLNV(const VLNV& hierarchyRef)
+VLNV LibraryMock::getDesignVLNV(const VLNV& /*hierarchyRef*/)
 {
     return VLNV();
 }
@@ -197,7 +197,7 @@ QSharedPointer<Design> LibraryMock::getDesign(const VLNV& hierarchyRef)
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::isValid()
 //-----------------------------------------------------------------------------
-bool LibraryMock::isValid(const VLNV& vlnv)
+bool LibraryMock::isValid(const VLNV& /*vlnv*/)
 {
     return false;
 }
@@ -213,7 +213,7 @@ void LibraryMock::onCheckLibraryIntegrity()
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::onSelectionChanged()
 //-----------------------------------------------------------------------------
-void LibraryMock::onSelectionChanged(const VLNV& vlnv)
+void LibraryMock::onSelectionChanged(const VLNV& /*vlnv*/)
 {
     Q_ASSERT(false);
 }
@@ -229,7 +229,7 @@ void LibraryMock::onClearSelection()
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::onEditItem()
 //-----------------------------------------------------------------------------
-void LibraryMock::onEditItem(const VLNV& vlnv)
+void LibraryMock::onEditItem(const VLNV& /*vlnv*/)
 {
     Q_ASSERT(false);
 }
@@ -237,7 +237,7 @@ void LibraryMock::onEditItem(const VLNV& vlnv)
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::onOpenDesign()
 //-----------------------------------------------------------------------------
-void LibraryMock::onOpenDesign(const VLNV& vlnv)
+void LibraryMock::onOpenDesign(const VLNV& /*vlnv*/)
 {
     Q_ASSERT(false);
 }
@@ -245,7 +245,7 @@ void LibraryMock::onOpenDesign(const VLNV& vlnv)
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::onCreateNewItem()
 //-----------------------------------------------------------------------------
-void LibraryMock::onCreateNewItem(const VLNV& vlnv)
+void LibraryMock::onCreateNewItem(const VLNV& /*vlnv*/)
 {
     Q_ASSERT(false);
 }
@@ -253,7 +253,7 @@ void LibraryMock::onCreateNewItem(const VLNV& vlnv)
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::onCreateDesign()
 //-----------------------------------------------------------------------------
-void LibraryMock::onCreateDesign(const VLNV& vlnv)
+void LibraryMock::onCreateDesign(const VLNV& /*vlnv*/)
 {
     Q_ASSERT(false);
 }
@@ -261,7 +261,7 @@ void LibraryMock::onCreateDesign(const VLNV& vlnv)
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::removeObject()
 //-----------------------------------------------------------------------------
-void LibraryMock::removeObject(const VLNV& vlnv)
+void LibraryMock::removeObject(const VLNV& /*vlnv*/)
 {
     Q_ASSERT(false);
 }
@@ -269,7 +269,7 @@ void LibraryMock::removeObject(const VLNV& vlnv)
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::removeObjects()
 //-----------------------------------------------------------------------------
-void LibraryMock::removeObjects(const QList<VLNV>& vlnvList)
+void LibraryMock::removeObjects(const QList<VLNV>& /*vlnvList*/)
 {
     Q_ASSERT(false);
 }

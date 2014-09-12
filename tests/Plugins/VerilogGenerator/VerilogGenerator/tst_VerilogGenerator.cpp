@@ -193,6 +193,7 @@ void tst_VerilogGenerator::testTopLevelComponent()
         "    output         [7:0]  dataOut\n"
         ");\n"
         "\n"
+		"\n"
         "endmodule\n"
         ));
 }
@@ -280,6 +281,7 @@ void tst_VerilogGenerator::testConsecutiveParseCalls()
     
     verifyOutputContains(QString("module Override();\n"
         "\n"
+		"\n"
         "endmodule\n"));
     QVERIFY(!output_.contains("module TestComponent"));
 }
@@ -397,6 +399,7 @@ void tst_VerilogGenerator::testUnknownInstanceIsNotWritten()
     verifyOutputContains(
         "module TestComponent();\n"
         "\n"
+		"\n"
         "endmodule");
 }
 
@@ -948,9 +951,9 @@ void tst_VerilogGenerator::testAdHocConnectionToUnknownInstanceIsNotWritten()
     verifyOutputContains(
         "module TestComponent();\n"
         "\n"
+		"\n"
         "endmodule");
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: tst_ComponentInstanceVerilogWriter::testDescriptionAndVLNVIsPrintedAboveInstance()
@@ -1061,7 +1064,6 @@ void tst_VerilogGenerator::readOutputFile()
     output_ = outputFile.readAll();
     outputFile.close();
 }
-
 
 QTEST_APPLESS_MAIN(tst_VerilogGenerator)
 

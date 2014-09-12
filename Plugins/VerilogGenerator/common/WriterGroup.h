@@ -46,13 +46,6 @@ public:
      */
      void add(QSharedPointer<Writer> writer);
     
-    /*!
-     *  Checks if the group has writers in it.
-     *
-     *      @return True, if the group has writers, otherwise false.
-     */
-    bool hasWriters() const;
-
 private:
     // Disable copying.
     WriterGroup(WriterGroup const& rhs);

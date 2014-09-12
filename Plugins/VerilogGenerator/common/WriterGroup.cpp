@@ -50,11 +50,3 @@ void WriterGroup::add(QSharedPointer<Writer> writer)
 {
     childWriters_.append(writer);
 }
-
-//-----------------------------------------------------------------------------
-// Function: WriterGroup::hasWriters()
-//-----------------------------------------------------------------------------
-bool WriterGroup::hasWriters() const
-{
-    return !childWriters_.isEmpty();
-}
