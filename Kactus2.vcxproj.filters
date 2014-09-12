@@ -3769,6 +3769,12 @@
     <ClCompile Include="GeneratedFiles\moc_SourceFileDisplayer.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_VHDLHighlighter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\VHDLHighlighter.cpp">
+      <Filter>Source Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5173,6 +5179,9 @@
       <Filter>Header Files\Plugins\PluginSystem</Filter>
     </CustomBuild>
     <CustomBuild Include="wizards\componentwizard\vhdlimporteditor\SourceFileDisplayer.h">
+      <Filter>Header Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="wizards\ComponentWizard\VhdlImportEditor\VHDLHighlighter.h">
       <Filter>Header Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
     </CustomBuild>
   </ItemGroup>

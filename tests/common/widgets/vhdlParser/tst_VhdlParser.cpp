@@ -46,6 +46,7 @@ private slots:
     void testPortIsParsed_data();
     void testMultiplePortsAreParsed();
     void testMultiplePortsAreParsed_data();
+    void testCommentedPortIsNotParsed();
 
     void testPortIsHighlighted();
     void testPortIsHighlighted_data();
@@ -58,6 +59,7 @@ private slots:
     void testGenericIsParsed_data();
     void testMultipleGenericsAreParsed();
     void testMultipleGenericsAreParsed_data();
+    void testCommentedGenericIsNotParsed();
 
     void testGenericIsHighlighted();
     void testGenericIsHighlighted_data();
@@ -88,7 +90,9 @@ private:
     void verifyNotHighlightedBeforeDeclaration(int declarationStartIndex, QColor const& highlightColor);
 
     void verifySectionFontColorIs(int startIndex, int endIndex, QColor const& expectedFontColor);
- 
+   
+
+
 };
 
 //-----------------------------------------------------------------------------
@@ -169,21 +173,21 @@ void tst_VhdlParser::nothingParsedFromMalformedEntity_data()
         "entity noPortBracket is"
         "port (\n"
         "   clk: in std_logic\n"
-        "-- no closing bracket after ports."
+        "-- no closing bracket after ports.\n"
         "end noPortBracket;";
 
     QTest::newRow("no closing bracket for generics") << 
         "entity noGenericBracket is"
         "generic (\n"
         "   local_memory_addr_bits  : integer\n"
-        "-- no closing bracket after generics."
+        "-- no closing bracket after generics.\n"
         "end noGenericBracket;";
 
     QTest::newRow("no end for entity") << 
         "entity noBracket is"
         "generic (\n"
         "   local_memory_addr_bits  : integer\n"
-        ");"
+        ");\n"
         "port (\n"
         "   clk: in std_logic\n"
         ");";
@@ -292,7 +296,7 @@ void tst_VhdlParser::testPortIsParsed_data()
         "port (clk\n"
         ":\n"
         "in\n"
-        "std_logic := '1' -- Clk from top.\n"
+        "std_logic := '1' --       Clk from top.\n"
         ");\n"
         "end test;"
         << "clk" << General::IN << 1 << "std_logic" << "'1'" << "Clk from top.";
@@ -370,6 +374,24 @@ void tst_VhdlParser::testMultiplePortsAreParsed_data()
         "   );\n"
         "end test;"
         << 3;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VhdlParser::testCommentedPortIsNotParsed()
+//-----------------------------------------------------------------------------
+void tst_VhdlParser::testCommentedPortIsNotParsed()
+{
+    QString fileContent =
+        "entity test is\n"
+        "   port (\n"
+        "--       clk : in std_logic\n"
+        "   );\n"
+        "end test;";
+    writeToInputFile(fileContent);
+
+    parser_.parseFile(".input.vhd");
+
+    QCOMPARE(createdPorts_->count(), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -702,6 +724,25 @@ void tst_VhdlParser::testMultipleGenericsAreParsed_data()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_VhdlParser::testCommentedGenericIsNotParsed()
+//-----------------------------------------------------------------------------
+void tst_VhdlParser::testCommentedGenericIsNotParsed()
+{
+    QString fileContent =
+        "entity test is\n"
+        "   generic (\n"
+        "--       dataWidth_g : integer\n"
+        "   );\n"
+        "end test;";
+
+    writeToInputFile(fileContent);
+
+    parser_.parseFile(".input.vhd");
+
+    QCOMPARE(createdGenerics_->count(), 0);
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_VhdlParser::testGenericIsHighlighted()
 //-----------------------------------------------------------------------------
 void tst_VhdlParser::testGenericIsHighlighted()
@@ -861,9 +902,9 @@ void tst_VhdlParser::testFontInsideEntityIsBlackAndOutsideEntityGray()
 
     parser_.parseFile(".input.vhd");
 
-    verifySectionFontColorIs(0, 13, QColor("gray"));
+    verifySectionFontColorIs(1, 13, QColor("gray"));
 
-    verifySectionFontColorIs(14, 39, QColor("black"));
+    verifySectionFontColorIs(15, 39, QColor("black"));
 
     verifySectionFontColorIs(40, 58, QColor("gray"));
 }

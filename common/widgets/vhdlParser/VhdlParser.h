@@ -12,7 +12,6 @@
 #ifndef VhdlParser_H
 #define VhdlParser_H
 
-#include <QPlainTextEdit>
 #include <QMouseEvent>
 #include <QList>
 #include <QMap>
@@ -22,7 +21,7 @@
 class ModelParameter;
 class Port;
 class SourceFileDisplayer;
-
+class VHDLHighlighter;
 //-----------------------------------------------------------------------------
 //! Class VhdlParser.
 //-----------------------------------------------------------------------------
@@ -31,10 +30,11 @@ class VhdlParser : public QObject
     Q_OBJECT
 public:
 
-     /*!
-     *  Constructor.
-	 *
-     *      @param [in] parent The parent widget.
+    /*!
+     * The constructor.
+     *
+     *      @param [in] display   The display widget for the parsed source file content.
+     *      @param [in] parent    The parent object.
      */
     VhdlParser(SourceFileDisplayer* display, QObject* parent);
 
@@ -50,10 +50,10 @@ public:
 	 *
 	 *      @return False, if file could not be read, otherwise true.
      */
-     virtual void  parseFile(QString absolutePath);
+    virtual void parseFile(QString const& absolutePath);
 
     /*!
-     *   Scrolls the texteditor to the beginning of a valid entity declaration.
+     *   Scrolls the source display to the beginning of a valid entity declaration.
      */
     void scrollToEntityBegin();
 
@@ -127,13 +127,13 @@ private:
     void createDocument(QFile& vhdlFile);
 
     /*!
-     *   Checks if given vhdl file is valid.
+     *   Checks if given vhdl file has a valid entity declaration.
      *
      *      @param [in] fileString The vhdl file as string.
 	 *
-	 *      @return True if the file is valid, otherwise false.
+	 *      @return True if the file has a valid entity, otherwise false.
      */
-    bool checkEntityStructure(QString const& fileString) const;
+    bool hasValidEntity(QString const& fileString) const;
 
 
     /*!
@@ -142,21 +142,6 @@ private:
      *      @param [in] fileString The vhdl file as string.
      */
     void setEntityEndExp(QString const& fileString);
-
-    /*!
-     *   Cuts out a section of a text leaving delimiting expressions.
-     *
-     *      @param [in] begin The beginning of the cut section.
-	 *
-     *      @param [in] end The end of the cut section.
-	 *
-     *      @param [in] text The text where to cut from.
-	 *
-	 *      @return The text section inside begin and end. 
-     *              The beginning and the end are included.
-     */
-    QString parseSection(QRegExp const& begin, QRegExp const& end, 
-        QString const& text) const;
 
     /*!
      *   Cuts out a section of a text omitting delimiting expressions.
@@ -213,14 +198,14 @@ private:
      *
      *      @param [in] info The selection info for the created port.
      */
-    void createPort(SelectionInfo const& info);
+    void createPort(SelectionInfo const& info, QString const& portDeclaration);
 
     /*!
      *   Creates a model parameter and maps it to corresponding selection info.
 	 *
      *      @param [in] info The selection info for the created generic.
      */
-    void createGeneric(SelectionInfo const& info);
+    void createGeneric(SelectionInfo const& info, QString const& declaration);
     
     /*!
      *   Assigns the generic values used in port declaration for left and right bound
@@ -255,8 +240,6 @@ private:
   	 *      @return The value as integer or -1 if value cannot be converted.
      */
     int valueForString(QString const& string, bool& ok) const;
-    
-    void formatSection(int const pos, int const lenght, QTextCharFormat const& format);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -273,32 +256,12 @@ private:
 
     //! Maps a generic to other generics using it.
     QMap< QSharedPointer<ModelParameter>, QList< QSharedPointer<ModelParameter> > > genericsInGenerics_;
-
-    //! The entity end definition in vhdl.
-    QRegExp entityEnd_;
-
-    //! The type declaration definition in vhdl.
-    QRegExp typeExp_;
-
-    //! Pattern for equations in default values and vector bounds.
-    QRegExp equationExp_;
-    
-    //! Formatting for text inside entity.
-    QTextCharFormat insideEntityFormat_;
-
-    //! Formatting for text outside entity.
-    QTextCharFormat outsideEntityFormat_;
-
-    //! Formatting for selected port.
-    QTextCharFormat selectedPortFormat_;
-
-    //! Formatting for selected generic.
-    QTextCharFormat selectedGenericFormat_;
-
-    //! Formatting for not selected port or generic.
-    QTextCharFormat notSelectedFormat_;
-
+   
+    //! Display widget for the source file content.
     SourceFileDisplayer* display_;
+
+    //! The selection highlighter for the display widget.
+    VHDLHighlighter* highlighter_;
 };
 
 #endif // VhdlParser_H

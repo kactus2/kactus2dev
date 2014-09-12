@@ -157,6 +157,8 @@ HEADERS += ./common/Global.h \
     ./wizards/ComponentWizard/ComponentWizardPages.h \
     ./wizards/ComponentWizard/ComponentWizardVhdlImportPage.h \
     ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.h \
+    ./wizards/ComponentWizard/VhdlImportEditor/VHDLHighlighter.h \
+    ./wizards/componentwizard/vhdlimporteditor/SourceFileDisplayer.h \
     ./wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizard.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardGeneralOptionsPage.h \
@@ -538,8 +540,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./wizards/ComponentWizard/VhdlImportEditor/ImportSourceDisplayer.h
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -674,6 +675,8 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.cpp \
     ./wizards/ComponentWizard/ComponentWizardIntroPage.cpp \
     ./wizards/ComponentWizard/ComponentWizardVhdlImportPage.cpp \
+    ./wizards/ComponentWizard/VhdlImportEditor/SourceFileDisplayer.cpp \
+    ./wizards/ComponentWizard/VhdlImportEditor/VHDLHighlighter.cpp \
     ./wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizard.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardBusDefinitionPage.cpp \
@@ -1044,6 +1047,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./wizards/ComponentWizard/VhdlImportEditor/ImportSourceDisplayer.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
 RESOURCES += kactus.qrc

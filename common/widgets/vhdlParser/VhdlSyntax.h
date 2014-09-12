@@ -66,7 +66,7 @@ namespace VhdlSyntax {
     
     //! Entity declaration is ENTITY <name> IS ... END [ENTITY] [<name>];
     const QRegExp ENTITY_BEGIN_EXP = QRegExp("(?:ENTITY)\\s+(\\w+)\\s+(?:IS)", Qt::CaseInsensitive);   
-    const QRegExp ENTITY_END_EXP = QRegExp("(END)\\s*(ENTITY)?\\s*(NAME)?\\s*[;]", Qt::CaseInsensitive);
+    const QRegExp ENTITY_END_EXP = QRegExp("(END)\\s*(ENTITY)?\\s*(\\w+)?\\s*[;]", Qt::CaseInsensitive);
 
     //! Ports are declared inside entity by PORT ( <port_declarations> );
     const QRegExp PORTS_BEGIN_EXP = QRegExp("(PORT)\\s*[(]", Qt::CaseInsensitive);
@@ -85,8 +85,8 @@ namespace VhdlSyntax {
     const QRegExp TYPE_EXP = QRegExp(PORT_TYPE);
 
     //! Generics are declared inside entity by GENERIC ( <generic_declarations> );
-    const QRegExp GENERICS_BEGIN_EXP = QRegExp("(GENERIC)\\s*[(]" + SPACE + "(" + ENDLINE + ")?", 
-                                                Qt::CaseInsensitive);    
+    const QRegExp GENERICS_BEGIN_EXP = QRegExp("(GENERIC)\\s*[(]", Qt::CaseInsensitive);    
+
     const QRegExp GENERICS_END_EXP = QRegExp("[)]\\s*[;](?=(?:\\s*(" + COMMENT + ")\\s*)*(END|BEGIN|PORT))*");   
  
     //! Generic declaration is <generic_names> : <type> [<default>] [pragma]; [description]    
