@@ -60,6 +60,7 @@
 #include <IPXACTmodels/ApiInterface.h>
 #include <IPXACTmodels/ComInterface.h>
 #include <IPXACTmodels/SystemView.h>
+#include <IPXACTmodels/SWView.h>
 
 Q_DECLARE_METATYPE(SystemDesignDiagram::PortCollectionCopyData)
 Q_DECLARE_METATYPE(SystemDesignDiagram::ComponentCollectionCopyData)
@@ -1206,7 +1207,19 @@ void SystemDesignDiagram::openComponentByActiveView(ComponentItem* comp)
 //-----------------------------------------------------------------------------
 QStringList SystemDesignDiagram::hierarchicalViewsOf(ComponentItem* component) const
 {
-    return component->componentModel()->getSWViewNames();
+    QStringList hierarchicalViews;
+
+    foreach( QString viewName, component->componentModel()->getSWViewNames() )
+    {
+        QSharedPointer<SWView> view = component->componentModel()->getSWView( viewName );
+
+        if ( view->getHierarchyRef().isValid() )
+        {
+            hierarchicalViews.append( viewName );
+        }
+    }
+
+    return hierarchicalViews;
 }
 
 //-----------------------------------------------------------------------------
