@@ -3775,6 +3775,9 @@
     <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\VHDLHighlighter.cpp">
       <Filter>Source Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
     </ClCompile>
+    <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\EquationParser.cpp">
+      <Filter>Source Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5413,6 +5416,9 @@
     </ClInclude>
     <ClInclude Include="wizards\ComponentWizard\ComponentWizardPages.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
+    </ClInclude>
+    <ClInclude Include="wizards\ComponentWizard\VhdlImportEditor\EquationParser.h">
+      <Filter>Header Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -17,6 +17,7 @@
 #include <QMap>
 
 #include <common/widgets/vhdlParser/VhdlSyntax.h>
+#include <wizards/ComponentWizard/VhdlImportEditor/EquationParser.h>
 
 class ModelParameter;
 class Port;
@@ -44,6 +45,11 @@ public:
     ~VhdlParser();
 
     /*!
+     *   Scrolls the source display to the beginning of a valid entity declaration.
+     */
+    void scrollToEntityBegin();
+
+    /*!
      *   Reads a vhdl file and creates generics and ports.
      *
      *      @param [in] absolutePath The absolute path of the file.
@@ -52,10 +58,7 @@ public:
      */
     virtual void parseFile(QString const& absolutePath);
 
-    /*!
-     *   Scrolls the source display to the beginning of a valid entity declaration.
-     */
-    void scrollToEntityBegin();
+    void clear();
 
 public slots:
 
@@ -101,6 +104,9 @@ private:
         bool operator<(const SelectionInfo& other) const{return beginPos < other.beginPos;}
     };
 
+
+    void loadFileToDisplay(QString const& absolutePath);
+
 	/*!
      *  Signals add for all ports.
      */
@@ -109,7 +115,7 @@ private:
 	/*!
      *  Signals remove for all ports and empties lists to ports.
      */
-    void removePorts();
+    void removePreviousPorts();
 
 	/*!
      *  Signals add for all model parameters.
@@ -119,12 +125,7 @@ private:
 	/*!
      *  Signals remove for all model parameters and empties lists to model parameters.
      */
-    void removeGenerics();
-
-	/*!
-     *  Parses, formats, checks and displays a vhdl file.
-     */
-    void createDocument(QFile& vhdlFile);
+    void removePreviousGenerics();
 
     /*!
      *   Checks if given vhdl file has a valid entity declaration.
@@ -133,7 +134,7 @@ private:
 	 *
 	 *      @return True if the file has a valid entity, otherwise false.
      */
-    bool hasValidEntity(QString const& fileString) const;
+    bool hasValidEntity() const;
 
 
     /*!
@@ -172,16 +173,9 @@ private:
      */
     void parseGenerics();
 
-    /*!
-     *   Parses the values for vector bounds.
-     *
-     *      @param [in] rangeDeclaration The range declaration e.g "(32 downto 0)".
-     *
-     *      @param [out] leftBound The left bound of the vector.
-     *
-     *      @param [out] rightBound The right bound of the vector.
-     */
-    void parseBounds(QString const& rangeDeclaration, int& leftBound, int& rightBound) const;
+    int parseLeftBound(QString const& rangeDeclaration, EquationParser const& parser) const;
+
+    int parseRightBound(QString const& rangeDeclaration, EquationParser const& parser) const;
 
     /*!
      *  Parses the value of a simple equation. The equation may contain literals and
@@ -221,6 +215,7 @@ private:
      *      @param [in] param The parameter to assign to.
      */
     void assignGenerics(QSharedPointer<ModelParameter> param);
+    QList<QSharedPointer<ModelParameter> > getAllModelParameters() const;
 
 
     /*!
@@ -240,6 +235,7 @@ private:
   	 *      @return The value as integer or -1 if value cannot be converted.
      */
     int valueForString(QString const& string, bool& ok) const;
+    
 
     //-----------------------------------------------------------------------------
     // Data.

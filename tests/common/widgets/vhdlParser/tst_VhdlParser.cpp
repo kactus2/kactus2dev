@@ -70,6 +70,14 @@ private slots:
 
     void testFontInsideEntityIsBlackAndOutsideEntityGray();
 
+    void testModelParameterIsAssignedToPort();
+    void testModelParameterIsAssignedToPort_data();
+
+    void testModelParameterIsAssignedToModelParameter();
+    void testModelParameterIsAssignedToModelParameter_data();
+
+    void consecutiveParses();
+
 private:
 
     SourceFileDisplayer displayEditor_;
@@ -78,6 +86,9 @@ private:
      
     QSignalSpy* createdPorts_;
     QSignalSpy* createdGenerics_;
+
+    QSignalSpy* removedPorts_;
+    QSignalSpy* removedGenerics_;
 
     void writeToInputFile(QString const& content);
     
@@ -91,8 +102,6 @@ private:
 
     void verifySectionFontColorIs(int startIndex, int endIndex, QColor const& expectedFontColor);
    
-
-
 };
 
 //-----------------------------------------------------------------------------
@@ -106,6 +115,9 @@ tst_VhdlParser::tst_VhdlParser(): displayEditor_(), parser_(&displayEditor_, thi
 
     createdPorts_ = new QSignalSpy(&parser_, SIGNAL(addPort(QSharedPointer<Port>)));
     createdGenerics_ = new QSignalSpy(&parser_, SIGNAL(addGeneric(QSharedPointer<ModelParameter>)));
+
+    removedPorts_ = new QSignalSpy(&parser_, SIGNAL(removePort(QSharedPointer<Port>)));
+    removedGenerics_ = new QSignalSpy(&parser_, SIGNAL(removeGeneric(QSharedPointer<ModelParameter>)));
 
     connect(&displayEditor_, SIGNAL(doubleClicked(int)), &parser_, SLOT(toggleAt(int)));
 }
@@ -127,7 +139,7 @@ void tst_VhdlParser::init()
     QVERIFY(createdPorts_->isEmpty());
     QVERIFY(createdGenerics_->isEmpty());
 
-    QVERIFY(!QFileInfo::exists(".input.vhd"));
+    QVERIFY2(!QFileInfo::exists(".input.vhd"), "Test input file input.vhd should not exist.");
 }
 
 //-----------------------------------------------------------------------------
@@ -135,8 +147,13 @@ void tst_VhdlParser::init()
 //-----------------------------------------------------------------------------
 void tst_VhdlParser::cleanup()
 {
+    parser_.clear();
+
     createdPorts_->clear();
     createdGenerics_->clear();
+
+    removedPorts_->clear();
+    removedGenerics_->clear();    
 
     QFile::remove(".input.vhd");
 }
@@ -923,6 +940,173 @@ void tst_VhdlParser::verifySectionFontColorIs(int startIndex, int endIndex, QCol
         QVERIFY2(cursor.charFormat().foreground().color() == expectedFontColor,
             "Highlight is not applied to declaration.");
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VhdlParser::testModelParameterIsAssignedToPort()
+//-----------------------------------------------------------------------------
+void tst_VhdlParser::testModelParameterIsAssignedToPort()
+{
+    QFETCH(QString, fileContent);
+    QFETCH(int, expectedPortSize);
+
+    writeToInputFile(fileContent);
+
+    parser_.parseFile(".input.vhd");
+
+    QCOMPARE(createdPorts_->count(), 1);
+    QSharedPointer<Port> createdPort = createdPorts_->first().first().value<QSharedPointer<Port> >();
+
+    QCOMPARE(createdPort->getPortSize(), expectedPortSize);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VhdlParser::testModelParameterIsAssignedToPort_data()
+//-----------------------------------------------------------------------------
+void tst_VhdlParser::testModelParameterIsAssignedToPort_data()
+{
+    QTest::addColumn<QString>("fileContent");
+    QTest::addColumn<int>("expectedPortSize");
+
+    QTest::newRow("Parametrized port width.") <<
+        "entity test is\n"
+        "   port (\n"
+        "       data : out std_logic_vector(dataWidth_g downto 0)\n"
+        "   );\n"
+        "   generic (\n"
+        "       dataWidth_g : integer := 31\n"
+        "   );\n"
+        "end test;"
+        << 32 ;
+
+    QTest::newRow("Parametrized port width with subtraction.") <<
+        "entity test is\n"
+        "   port (\n"
+        "       data : out std_logic_vector(dataWidth_g-1 downto 0)\n"
+        "   );\n"
+        "   generic (\n"
+        "       dataWidth_g : integer := 16\n"
+        "   );\n"
+        "end test;"
+        << 16 ;
+
+    QTest::newRow("Parametrized port width with equation of generics.") <<
+        "entity test is\n"
+        "   port (\n"
+        "       data : out std_logic_vector(dataWidth_g+addrWidth_g-1 downto 0)\n"
+        "   );\n"
+        "   generic (\n"
+        "       dataWidth_g : integer := 16;\n"
+        "       addrWidth_g : integer := 8\n"
+        "   );\n"
+        "end test;"
+        << 24 ;
+
+    QTest::newRow("Parametrized port width with power of two.") <<
+        "entity test is\n"
+        "   port (\n"
+        "       data : out std_logic_vector(max_g**2-1 downto 0)\n"
+        "   );\n"
+        "   generic (\n"
+        "       max_g : integer := 8\n"
+        "   );\n"
+        "end test;"
+        << 64 ;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VhdlParser::testModelParameterIsAssignedToModelParameter()
+//-----------------------------------------------------------------------------
+void tst_VhdlParser::testModelParameterIsAssignedToModelParameter()
+{
+    QFETCH(QString, fileContent);
+    QFETCH(QString, expectedValue);
+
+    writeToInputFile(fileContent);
+
+    parser_.parseFile(".input.vhd");
+
+    QVERIFY2(!createdGenerics_->isEmpty(), "Did not create a valid model parameter.");
+
+    QSharedPointer<ModelParameter> createdGeneric = 
+        createdGenerics_->last().first().value<QSharedPointer<ModelParameter> >();
+    QCOMPARE(createdGeneric->getValue(), expectedValue);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VhdlParser::testModelParameterIsAssignedToModelParameter_data()
+//-----------------------------------------------------------------------------
+void tst_VhdlParser::testModelParameterIsAssignedToModelParameter_data()
+{
+    QTest::addColumn<QString>("fileContent");
+    QTest::addColumn<QString>("expectedValue");
+
+    QTest::newRow("Parametrized generic with other generic.") <<
+        "entity test is\n"
+        "   generic (\n"
+        "       width_g : integer := 8;\n"
+        "       dataWidth_g : integer := width_g\n"        
+        "   );\n"
+        "end test;"
+        << "8" ;
+
+    QTest::newRow("Parametrized generic with subtraction.") <<
+        "entity test is\n"
+        "   generic (\n"
+        "       width_g : integer := 8;\n"
+        "       dataWidth_g : integer := width_g-2\n"        
+        "   );\n"
+        "end test;"
+        << "6" ;
+
+    QTest::newRow("Parametrized generic with equation of generics.") <<
+        "entity test is\n"
+        "   generic (\n"
+        "       base_width_g : integer := 8;\n"
+        "       addrWidth_g : integer := 7;\n"
+        "       dataWidth_g : integer := base_width_g+addrWidth_g+1\n"        
+        "   );\n"
+        "end test;"
+        << "16" ;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VhdlParser::consecutiveParses()
+//-----------------------------------------------------------------------------
+void tst_VhdlParser::consecutiveParses()
+{
+    QString firstFile =         
+        "entity test is\n"
+        "   generic (\n"
+        "       data_width_g : integer := 8\n"
+        "   );\n"
+        "   port (\n"
+        "       clk : in std_logic := '1';\n"
+        "       data : in std_logic_vector(7 downto 0)\n"
+        "   );\n"
+        "end test;";
+
+    writeToInputFile(firstFile);
+
+    parser_.parseFile(".input.vhd");
+
+    QString secondFile =         
+        "entity override is\n"
+        "   generic (\n"
+        "       addr_width_g : integer := 8\n"
+        "   );\n"
+        "   port (\n"
+        "       clk : in std_logic := '1';\n"
+        "       address : in std_logic_vector(7 downto 0)\n"
+        "   );\n"
+        "end override;";
+
+    writeToInputFile(secondFile);
+
+    parser_.parseFile(".input.vhd");
+    
+    QCOMPARE(createdGenerics_->count() - removedGenerics_->count(), 1);
+    QCOMPARE(createdPorts_->count() - removedPorts_->count(), 2);
 }
 
 QTEST_MAIN(tst_VhdlParser)

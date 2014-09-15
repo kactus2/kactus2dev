@@ -6,7 +6,7 @@
 // Date: 11.09.2014
 //
 // Description:
-// <Short description of the class/file contents>
+// Display widget for source files.
 //-----------------------------------------------------------------------------
 
 #ifndef SOURCEFILEDISPLAYER_H
@@ -15,6 +15,9 @@
 #include <QObject>
 #include <QPlainTextEdit>
 
+//-----------------------------------------------------------------------------
+//! Display widget for source files.
+//-----------------------------------------------------------------------------
 class SourceFileDisplayer : public QPlainTextEdit
 {
     Q_OBJECT
@@ -26,8 +29,16 @@ public:
 	//! The destructor.
 	~SourceFileDisplayer();
 
+    /*!
+     *  Scrolls the text to the row containing the given character position.
+     *
+     *      @param [in] characterPosition   The character position to scroll to.
+     */
+    void scrollToCharacterPosition(int characterPosition);
+
 signals:
 
+    //! Emitted when the text is double clicked.
     void doubleClicked(int characterPosition);
 
 protected:
@@ -40,7 +51,7 @@ private:
 	// Disable copying.
 	SourceFileDisplayer(SourceFileDisplayer const& rhs);
 	SourceFileDisplayer& operator=(SourceFileDisplayer const& rhs);
-
+    
 };
 
 #endif // SOURCEFILEDISPLAYER_H

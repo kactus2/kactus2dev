@@ -6,12 +6,14 @@
 // Date: 11.09.2014
 //
 // Description:
-// <Short description of the class/file contents>
+// Display widget for source files.
 //-----------------------------------------------------------------------------
 
 #include "SourceFileDisplayer.h"
 
 #include <QObject>
+#include <QScrollBar>
+#include <QTextBlock>
 
 //-----------------------------------------------------------------------------
 // Function: SourceFileDisplayer::SourceFileDisplayer()
@@ -24,9 +26,8 @@ SourceFileDisplayer::SourceFileDisplayer(QWidget* parent)
     font.setFixedPitch(true);
     font.setPointSize(9);
     setFont(font);
-
-    int tabStop = 4;
-    setTabStopWidth(tabStop * fontMetrics().width(' '));
+    
+    setTabStopWidth(4 * fontMetrics().width(' '));
 
     setReadOnly(true);
     setCursorWidth(0);
@@ -47,4 +48,16 @@ void SourceFileDisplayer::mouseDoubleClickEvent(QMouseEvent *e)
 {
     int characterPosition = cursorForPosition(e->pos()).position();
     emit doubleClicked(characterPosition);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SourceFileDisplayer::scrollToCharacterPosition()
+//-----------------------------------------------------------------------------
+void SourceFileDisplayer::scrollToCharacterPosition(int characterPosition)
+{
+    QTextCursor cursor = textCursor();
+    cursor.setPosition(characterPosition);
+
+    int rowNumber = cursor.block().firstLineNumber();
+    verticalScrollBar()->setSliderPosition(rowNumber);
 }
