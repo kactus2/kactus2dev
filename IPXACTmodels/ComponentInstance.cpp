@@ -209,21 +209,24 @@ void ComponentInstance::write(QXmlStreamWriter& writer) const
     writer.writeEmptyElement("spirit:componentRef");
     componentRef_.writeAsAttributes(writer);
 
-    writer.writeStartElement("spirit:configurableElementValues");
-
-    QMapIterator<QString, QString> i(configurableElementValues_);
-    
-    while (i.hasNext())
+    if (!configurableElementValues_.isEmpty())
     {
-        i.next();
+        writer.writeStartElement("spirit:configurableElementValues");
 
-        writer.writeStartElement("spirit:configurableElementValue");
-        writer.writeAttribute("spirit:referenceId", i.key());
-        writer.writeCharacters(i.value());
-        writer.writeEndElement();
+        QMapIterator<QString, QString> i(configurableElementValues_);
+
+        while (i.hasNext())
+        {
+            i.next();
+
+            writer.writeStartElement("spirit:configurableElementValue");
+            writer.writeAttribute("spirit:referenceId", i.key());
+            writer.writeCharacters(i.value());
+            writer.writeEndElement();
+        }
+
+        writer.writeEndElement(); // spirit:configurableElementValues
     }
-
-    writer.writeEndElement(); // spirit:configurableElementValues
 
     // Write custom data to vendor extensions.
     writer.writeStartElement("spirit:vendorExtensions");
