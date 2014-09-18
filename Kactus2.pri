@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./common/Global.h \
+HEADERS += ./Plugins/VHDLParser/VHDLPortParser.h \
+    ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
@@ -158,7 +159,6 @@ HEADERS += ./common/Global.h \
     ./wizards/ComponentWizard/ComponentWizardVhdlImportPage.h \
     ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.h \
     ./wizards/ComponentWizard/VhdlImportEditor/VHDLHighlighter.h \
-    ./wizards/componentwizard/vhdlimporteditor/SourceFileDisplayer.h \
     ./wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizard.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardGeneralOptionsPage.h \
@@ -540,7 +540,11 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
+    ./Plugins/VHDLParser/EquationParser.h \
+    ./Plugins/PluginSystem/ImportParser.h \
+    ./Plugins/PluginSystem/ImportElementParser.h \
+    ./Plugins/VHDLParser/VHDLGenericParser.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -675,7 +679,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.cpp \
     ./wizards/ComponentWizard/ComponentWizardIntroPage.cpp \
     ./wizards/ComponentWizard/ComponentWizardVhdlImportPage.cpp \
-    ./wizards/ComponentWizard/VhdlImportEditor/SourceFileDisplayer.cpp \
     ./wizards/ComponentWizard/VhdlImportEditor/VHDLHighlighter.cpp \
     ./wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizard.cpp \
@@ -1047,5 +1050,8 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
+    ./Plugins/VHDLParser/EquationParser.cpp \
+    ./Plugins/VHDLParser/VHDLGenericParser.cpp \
+    ./Plugins/VHDLParser/VHDLPortParser.cpp
 RESOURCES += kactus.qrc

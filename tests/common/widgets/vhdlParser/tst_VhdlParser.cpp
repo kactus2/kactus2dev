@@ -11,6 +11,7 @@
 
 #include <QtTest>
 
+#include <IPXACTmodels/component.h>
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/generaldeclarations.h>
@@ -18,8 +19,7 @@
 #include <common/KactusColors.h>
 #include <common/widgets/vhdlParser/VhdlParser.h>
 
-#include <wizards/ComponentWizard/VhdlImportEditor/SourceFileDisplayer.h>
-
+#include <QPlainTextEdit>
 #include <QSharedPointer>
 
 
@@ -50,11 +50,7 @@ private slots:
 
     void testPortIsHighlighted();
     void testPortIsHighlighted_data();
-    void testPortUnselectedFromEditor();
-    void testPortUnselectedFromEditor_data();
-    void testPortUnselectedWithDoubleClick();
-    void testPortUnselectedWithDoubleClick_data();
-
+   
     void testGenericIsParsed();
     void testGenericIsParsed_data();
     void testMultipleGenericsAreParsed();
@@ -63,15 +59,12 @@ private slots:
 
     void testGenericIsHighlighted();
     void testGenericIsHighlighted_data();
-    void testGenerictUnselectedFromEditor();
-    void testGenerictUnselectedFromEditor_data();
-    void testGenericUnselectedWithDoubleClick();
-    void testGenericUnselectedWithDoubleClick_data();
 
     void testFontInsideEntityIsBlackAndOutsideEntityGray();
 
     void testModelParameterIsAssignedToPort();
     void testModelParameterIsAssignedToPort_data();
+    void testModelParameterChangeAppliesToPort();
 
     void testModelParameterIsAssignedToModelParameter();
     void testModelParameterIsAssignedToModelParameter_data();
@@ -80,10 +73,12 @@ private slots:
 
 private:
 
-    SourceFileDisplayer displayEditor_;
+    QPlainTextEdit displayEditor_;
 
     VhdlParser parser_;
-     
+    
+    QSharedPointer<Component> importComponent_;
+
     QSignalSpy* createdPorts_;
     QSignalSpy* createdGenerics_;
 
@@ -101,25 +96,22 @@ private:
     void verifyNotHighlightedBeforeDeclaration(int declarationStartIndex, QColor const& highlightColor);
 
     void verifySectionFontColorIs(int startIndex, int endIndex, QColor const& expectedFontColor);
-   
 };
 
 //-----------------------------------------------------------------------------
 // Function: tst_VhdlParser::tst_VhdlParser()
 //-----------------------------------------------------------------------------
 tst_VhdlParser::tst_VhdlParser(): displayEditor_(), parser_(&displayEditor_, this), 
-    createdPorts_(0), createdGenerics_(0)
+    createdPorts_(0), createdGenerics_(0), importComponent_(0)
 {
     qRegisterMetaType<QSharedPointer<Port> >();
     qRegisterMetaType<QSharedPointer<ModelParameter> >();
 
-    createdPorts_ = new QSignalSpy(&parser_, SIGNAL(addPort(QSharedPointer<Port>)));
-    createdGenerics_ = new QSignalSpy(&parser_, SIGNAL(addGeneric(QSharedPointer<ModelParameter>)));
+    createdPorts_ = new QSignalSpy(&parser_, SIGNAL(add(QSharedPointer<Port>)));
+    createdGenerics_ = new QSignalSpy(&parser_, SIGNAL(add(QSharedPointer<ModelParameter>)));
 
     removedPorts_ = new QSignalSpy(&parser_, SIGNAL(removePort(QSharedPointer<Port>)));
     removedGenerics_ = new QSignalSpy(&parser_, SIGNAL(removeGeneric(QSharedPointer<ModelParameter>)));
-
-    connect(&displayEditor_, SIGNAL(doubleClicked(int)), &parser_, SLOT(toggleAt(int)));
 }
 
 //-----------------------------------------------------------------------------
@@ -140,6 +132,8 @@ void tst_VhdlParser::init()
     QVERIFY(createdGenerics_->isEmpty());
 
     QVERIFY2(!QFileInfo::exists(".input.vhd"), "Test input file input.vhd should not exist.");
+
+    importComponent_ = QSharedPointer<Component>(new Component());
 }
 
 //-----------------------------------------------------------------------------
@@ -166,7 +160,7 @@ void tst_VhdlParser::nothingParsedFromMalformedEntity()
     QFETCH(QString, fileContent);
 
     writeToInputFile(fileContent);
-    parser_.parseFile(".input.vhd");
+    parser_.runParser(".input.vhd", importComponent_);
 
     QCOMPARE(createdPorts_->count(), 0);
     QCOMPARE(createdGenerics_->count(), 0);
@@ -186,12 +180,24 @@ void tst_VhdlParser::nothingParsedFromMalformedEntity_data()
         "begin\n"
         "end;";
 
+    QTest::newRow("no begin of ports") << 
+        "entity test is"
+        "   clk: in std_logic\n"
+        ");\n"
+        "end test;";
+
     QTest::newRow("no closing bracket for ports") << 
         "entity noPortBracket is"
         "port (\n"
         "   clk: in std_logic\n"
         "-- no closing bracket after ports.\n"
         "end noPortBracket;";
+
+    QTest::newRow("no begin of generics") << 
+        "entity test is"
+        "   local_memory_addr_bits  : integer\n"
+        ");\n"
+        "end test;";
 
     QTest::newRow("no closing bracket for generics") << 
         "entity noGenericBracket is"
@@ -255,7 +261,7 @@ void tst_VhdlParser::testPortIsParsed()
 
     writeToInputFile(fileContent);
 
-    parser_.parseFile(".input.vhd");
+    parser_.runParser(".input.vhd", importComponent_);
 
     QCOMPARE(createdPorts_->count(), 1);
 
@@ -317,6 +323,15 @@ void tst_VhdlParser::testPortIsParsed_data()
         ");\n"
         "end test;"
         << "clk" << General::IN << 1 << "std_logic" << "'1'" << "Clk from top.";
+   
+    QTest::newRow("port after comment.") << 
+        "entity test is\n"
+        "    port (\n"
+        "            -- DCT signals\n"
+        "        i_clk : in std_logic\n"
+        ");\n"
+        "end test;"
+        << "i_clk" << General::IN << 1 << "std_logic" << "" << "";
 }
 
 //-----------------------------------------------------------------------------
@@ -329,7 +344,7 @@ void tst_VhdlParser::testMultiplePortsAreParsed()
 
     writeToInputFile(fileContent);
 
-    parser_.parseFile(".input.vhd");
+    parser_.runParser(".input.vhd", importComponent_);
 
     QCOMPARE(createdPorts_->count(), expectedNumberOfPorts);
 }
@@ -391,6 +406,27 @@ void tst_VhdlParser::testMultiplePortsAreParsed_data()
         "   );\n"
         "end test;"
         << 3;
+
+    QTest::newRow("empty ports") << 
+        "entity test is\n"
+        "   port (\n"
+        "   );\n"
+        "end test;"
+        << 0;
+
+    QTest::newRow("Comments between ports.") << 
+        "entity test is\n"
+        "   port (-- Ports are declared here.\n"        
+        "-- Clock to test.\n"
+        "       clk   : in  std_logic;\n"
+        "    -- Reset to test.\n"
+        "-- Remember to connect.\n"
+        "       rst_n : in  std_logic;\n"     
+        "       data  : out std_logic_vector(31 downto 0)\n"
+        "-- End of all ports.\n"
+        "   );\n"
+        "end test;"
+        << 3;
 }
 
 //-----------------------------------------------------------------------------
@@ -406,7 +442,7 @@ void tst_VhdlParser::testCommentedPortIsNotParsed()
         "end test;";
     writeToInputFile(fileContent);
 
-    parser_.parseFile(".input.vhd");
+    parser_.runParser(".input.vhd", importComponent_);
 
     QCOMPARE(createdPorts_->count(), 0);
 }
@@ -422,7 +458,7 @@ void tst_VhdlParser::testPortIsHighlighted()
 
     writeToInputFile(fileContent);
 
-    parser_.parseFile(".input.vhd");
+    parser_.runParser(".input.vhd", importComponent_);
 
     QColor selectedColor = KactusColors::SW_COMPONENT;
     verifyNotHighlightedBeforeDeclaration(declarationStartIndex, selectedColor);
@@ -533,71 +569,6 @@ void tst_VhdlParser::verifyNotHighlightedAfterDeclartion(const int declarationSt
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::testPortUnselectedFromEditor()
-//-----------------------------------------------------------------------------
-void tst_VhdlParser::testPortUnselectedFromEditor()
-{
-    QFETCH(QString, fileContent);
-    QFETCH(int, declarationStartIndex);
-    QFETCH(int, declarationLength);
-
-    writeToInputFile(fileContent);
-
-    parser_.parseFile(".input.vhd");
-
-    QSharedPointer<Port> createdPort = createdPorts_->first().first().value<QSharedPointer<Port> >();
-    parser_.editorRemovedPort(createdPort);    
-
-    QColor unselectedColor = KactusColors::MISSING_COMPONENT;
-    verifyNotHighlightedBeforeDeclaration(declarationStartIndex, unselectedColor);
-    verifyDeclarationIsHighlighted(declarationStartIndex, declarationLength, unselectedColor);
-    verifyNotHighlightedAfterDeclartion(declarationStartIndex, declarationLength, unselectedColor);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::testPortUnselectedFromEditor_data()
-//-----------------------------------------------------------------------------
-void tst_VhdlParser::testPortUnselectedFromEditor_data()
-{
-    testPortIsHighlighted_data();
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::testPortUnselectedWithDoubleClick()
-//-----------------------------------------------------------------------------
-void tst_VhdlParser::testPortUnselectedWithDoubleClick()
-{
-    QFETCH(QString, fileContent);
-    QFETCH(int, declarationStartIndex);
-    QFETCH(int, declarationLength);
-
-    writeToInputFile(fileContent);
-
-    parser_.parseFile(".input.vhd");
-    
-    QFontMetrics metrics = displayEditor_.fontMetrics();
-
-    QPoint positionInEditor;    
-    positionInEditor.setX(8*metrics.width(' ') + metrics.width('c'));
-    positionInEditor.setY(3*metrics.height());
-
-    QTest::mouseDClick(displayEditor_.viewport(), Qt::LeftButton, Qt::NoModifier, positionInEditor);    
-
-    QColor unselectedColor = KactusColors::MISSING_COMPONENT;
-    verifyNotHighlightedBeforeDeclaration(declarationStartIndex, unselectedColor);
-    verifyDeclarationIsHighlighted(declarationStartIndex, declarationLength, unselectedColor);
-    verifyNotHighlightedAfterDeclartion(declarationStartIndex, declarationLength, unselectedColor);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::testPortUnselectedFromEditor_data()
-//-----------------------------------------------------------------------------
-void tst_VhdlParser::testPortUnselectedWithDoubleClick_data()
-{
-    testPortIsHighlighted_data();
-}
-
-//-----------------------------------------------------------------------------
 // Function: tst_VhdlParser::testWellFormedGenericIsParsed()
 //-----------------------------------------------------------------------------
 void tst_VhdlParser::testGenericIsParsed()
@@ -610,7 +581,7 @@ void tst_VhdlParser::testGenericIsParsed()
 
     writeToInputFile(fileContent);
 
-    parser_.parseFile(".input.vhd");
+    parser_.runParser(".input.vhd", importComponent_);
 
     QCOMPARE(createdGenerics_->count(), 1);
 
@@ -677,7 +648,7 @@ void tst_VhdlParser::testMultipleGenericsAreParsed()
 
     writeToInputFile(fileContent);
 
-    parser_.parseFile(".input.vhd");
+    parser_.runParser(".input.vhd", importComponent_);
 
     QCOMPARE(createdGenerics_->count(), expectedNumberOfGenerics);
 }
@@ -738,6 +709,18 @@ void tst_VhdlParser::testMultipleGenericsAreParsed_data()
         "   );\n"
         "end test;"
         << 3;
+
+    QTest::newRow("comments along generics") << 
+        "entity test is\n"
+        "   generic (--here there be generics\n"
+        "       local_memory_start_addr : integer := 16#1000#;\n"
+        "-- first comment\n"
+        "-- second comment\n"
+        "       local_memory_addr_bits  : integer := 12\n"
+        "-- last comment\n"
+        "   );\n"
+        "end test;"
+        << 2;
 }
 
 //-----------------------------------------------------------------------------
@@ -754,7 +737,7 @@ void tst_VhdlParser::testCommentedGenericIsNotParsed()
 
     writeToInputFile(fileContent);
 
-    parser_.parseFile(".input.vhd");
+    parser_.runParser(".input.vhd", importComponent_);
 
     QCOMPARE(createdGenerics_->count(), 0);
 }
@@ -770,7 +753,7 @@ void tst_VhdlParser::testGenericIsHighlighted()
 
     writeToInputFile(fileContent);
 
-    parser_.parseFile(".input.vhd");
+    parser_.runParser(".input.vhd", importComponent_);
 
     QColor selectedColor = KactusColors::HW_BUS_COMPONENT;
     verifyNotHighlightedBeforeDeclaration(declarationStartIndex, selectedColor);
@@ -839,72 +822,6 @@ void tst_VhdlParser::testGenericIsHighlighted_data()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::testGenerictUnselectedFromEditor()
-//-----------------------------------------------------------------------------
-void tst_VhdlParser::testGenerictUnselectedFromEditor()
-{
-    QFETCH(QString, fileContent);
-    QFETCH(int, declarationStartIndex);
-    QFETCH(int, declarationLength);
-
-    writeToInputFile(fileContent);
-
-    parser_.parseFile(".input.vhd");
-
-    QSharedPointer<ModelParameter> createdModelParameter = 
-        createdGenerics_->first().first().value<QSharedPointer<ModelParameter> >();
-    parser_.editorRemovedModelParameter(createdModelParameter);    
-
-    QColor unselectedColor = KactusColors::MISSING_COMPONENT;
-    verifyNotHighlightedBeforeDeclaration(declarationStartIndex, unselectedColor);
-    verifyDeclarationIsHighlighted(declarationStartIndex, declarationLength, unselectedColor);
-    verifyNotHighlightedAfterDeclartion(declarationStartIndex, declarationLength, unselectedColor);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::testPortUnselectedFromEditor_data()
-//-----------------------------------------------------------------------------
-void tst_VhdlParser::testGenerictUnselectedFromEditor_data()
-{
-    testGenericIsHighlighted_data();
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::testGenericUnselectedWithDoubleClick()
-//-----------------------------------------------------------------------------
-void tst_VhdlParser::testGenericUnselectedWithDoubleClick()
-{
-    QFETCH(QString, fileContent);
-    QFETCH(int, declarationStartIndex);
-    QFETCH(int, declarationLength);
-
-    writeToInputFile(fileContent);
-
-    parser_.parseFile(".input.vhd");
-
-    QFontMetrics metrics = displayEditor_.fontMetrics();
-
-    QPoint positionInEditor;    
-    positionInEditor.setX(8*metrics.width(' ') + metrics.width('c'));
-    positionInEditor.setY(3*metrics.height());
-
-    QTest::mouseDClick(displayEditor_.viewport(), Qt::LeftButton, Qt::NoModifier, positionInEditor);    
-
-    QColor unselectedColor = KactusColors::MISSING_COMPONENT;
-    verifyNotHighlightedBeforeDeclaration(declarationStartIndex, unselectedColor);
-    verifyDeclarationIsHighlighted(declarationStartIndex, declarationLength, unselectedColor);
-    verifyNotHighlightedAfterDeclartion(declarationStartIndex, declarationLength, unselectedColor);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::testGenericUnselectedWithDoubleClick_data()
-//-----------------------------------------------------------------------------
-void tst_VhdlParser::testGenericUnselectedWithDoubleClick_data()
-{
-    testGenericIsHighlighted_data();
-}
-
-//-----------------------------------------------------------------------------
 // Function: tst_VhdlParser::testFontInsideEntityIsBlackAndOutsideEntityGray()
 //-----------------------------------------------------------------------------
 void tst_VhdlParser::testFontInsideEntityIsBlackAndOutsideEntityGray()
@@ -917,7 +834,7 @@ void tst_VhdlParser::testFontInsideEntityIsBlackAndOutsideEntityGray()
 
     writeToInputFile(fileContent);
 
-    parser_.parseFile(".input.vhd");
+    parser_.runParser(".input.vhd", importComponent_);
 
     verifySectionFontColorIs(1, 13, QColor("gray"));
 
@@ -952,7 +869,7 @@ void tst_VhdlParser::testModelParameterIsAssignedToPort()
 
     writeToInputFile(fileContent);
 
-    parser_.parseFile(".input.vhd");
+    parser_.runParser(".input.vhd", importComponent_);
 
     QCOMPARE(createdPorts_->count(), 1);
     QSharedPointer<Port> createdPort = createdPorts_->first().first().value<QSharedPointer<Port> >();
@@ -995,9 +912,9 @@ void tst_VhdlParser::testModelParameterIsAssignedToPort_data()
         "   port (\n"
         "       data : out std_logic_vector(dataWidth_g+addrWidth_g-1 downto 0)\n"
         "   );\n"
-        "   generic (\n"
-        "       dataWidth_g : integer := 16;\n"
-        "       addrWidth_g : integer := 8\n"
+        "   generic (\n"        
+        "       addrWidth_g : integer := 8;\n"
+        "       dataWidth_g : integer := 16\n"
         "   );\n"
         "end test;"
         << 24 ;
@@ -1015,6 +932,35 @@ void tst_VhdlParser::testModelParameterIsAssignedToPort_data()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_VhdlParser::testModelParameterChangeAppliesToPort()
+//-----------------------------------------------------------------------------
+void tst_VhdlParser::testModelParameterChangeAppliesToPort()
+{
+    writeToInputFile("entity test is\n"
+        "   port (\n"
+        "       data : out std_logic_vector(dataWidth_g-1 downto 0)\n"
+        "   );\n"
+        "   generic (\n"        
+        "       dataWidth_g : integer := 8\n"
+        "   );\n"
+        "end test;");
+
+    parser_.runParser(".input.vhd", importComponent_);
+
+    QSharedPointer<Port> createdPort = createdPorts_->last().first().value<QSharedPointer<Port> >();
+
+    QCOMPARE(createdPort->getPortSize(), 8);
+
+    QSharedPointer<ModelParameter> createdGeneric = 
+        createdGenerics_->last().first().value<QSharedPointer<ModelParameter> >();
+    createdGeneric->setValue("16");
+
+    parser_.editorChangedModelParameter(createdGeneric);
+
+    QCOMPARE(createdPort->getPortSize(), 16);
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_VhdlParser::testModelParameterIsAssignedToModelParameter()
 //-----------------------------------------------------------------------------
 void tst_VhdlParser::testModelParameterIsAssignedToModelParameter()
@@ -1024,7 +970,7 @@ void tst_VhdlParser::testModelParameterIsAssignedToModelParameter()
 
     writeToInputFile(fileContent);
 
-    parser_.parseFile(".input.vhd");
+    parser_.runParser(".input.vhd", importComponent_);
 
     QVERIFY2(!createdGenerics_->isEmpty(), "Did not create a valid model parameter.");
 
@@ -1048,7 +994,7 @@ void tst_VhdlParser::testModelParameterIsAssignedToModelParameter_data()
         "       dataWidth_g : integer := width_g\n"        
         "   );\n"
         "end test;"
-        << "8" ;
+        << "width_g" ;
 
     QTest::newRow("Parametrized generic with subtraction.") <<
         "entity test is\n"
@@ -1057,7 +1003,7 @@ void tst_VhdlParser::testModelParameterIsAssignedToModelParameter_data()
         "       dataWidth_g : integer := width_g-2\n"        
         "   );\n"
         "end test;"
-        << "6" ;
+        << "width_g-2" ;
 
     QTest::newRow("Parametrized generic with equation of generics.") <<
         "entity test is\n"
@@ -1067,8 +1013,9 @@ void tst_VhdlParser::testModelParameterIsAssignedToModelParameter_data()
         "       dataWidth_g : integer := base_width_g+addrWidth_g+1\n"        
         "   );\n"
         "end test;"
-        << "16" ;
+        << "base_width_g+addrWidth_g+1" ;
 }
+
 
 //-----------------------------------------------------------------------------
 // Function: tst_VhdlParser::consecutiveParses()
@@ -1088,7 +1035,7 @@ void tst_VhdlParser::consecutiveParses()
 
     writeToInputFile(firstFile);
 
-    parser_.parseFile(".input.vhd");
+    parser_.runParser(".input.vhd", importComponent_);
 
     QString secondFile =         
         "entity override is\n"
@@ -1103,10 +1050,10 @@ void tst_VhdlParser::consecutiveParses()
 
     writeToInputFile(secondFile);
 
-    parser_.parseFile(".input.vhd");
+    parser_.runParser(".input.vhd", importComponent_);
     
-    QCOMPARE(createdGenerics_->count() - removedGenerics_->count(), 1);
-    QCOMPARE(createdPorts_->count() - removedPorts_->count(), 2);
+    //QCOMPARE(importComponent_->getModelParameters().count(), 1);
+    //QCOMPARE(importComponent_->getPorts().count(), 2);
 }
 
 QTEST_MAIN(tst_VhdlParser)

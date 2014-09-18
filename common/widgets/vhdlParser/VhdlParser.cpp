@@ -11,42 +11,65 @@
 //-----------------------------------------------------------------------------
 #include "VhdlParser.h"
 
+#include <QApplication>
 #include <QFile>
 #include <QFont>
-#include <QTextCursor>
-#include <QMessageBox>
-#include <QTextStream>
+#include <QScrollBar>
 #include <QTextBlock>
+#include <QTextCursor>
+#include <QTextStream>
+#include <QMessageBox>
 #include <QRegExp>
 #include <QList>
-#include <QApplication>
 
+#include <common/KactusColors.h>
+
+#include <IPXACTmodels/component.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/port.h>
 #include <common/widgets/vhdlParser/VhdlSyntax.h>
 
-#include <wizards/ComponentWizard/VhdlImportEditor/EquationParser.h>
-#include <wizards/ComponentWizard/VhdlImportEditor/SourceFileDisplayer.h>
 #include <wizards/ComponentWizard/VhdlImportEditor/VHDLHighlighter.h>
 
+#include <Plugins/VHDLParser/VHDLPortParser.h>
+#include <Plugins/VHDLParser/VHDLGenericParser.h>
 
-//-----------------------------------------------------------------------------
-// Function: VhdlParser()
-//-----------------------------------------------------------------------------
-VhdlParser::VhdlParser(SourceFileDisplayer* display, QObject* parent) : 
-QObject(parent),
-    ports_(),
-    generics_(),
-    genericsInPorts_(),
-    genericsInGenerics_(),
-    display_(display),
-    highlighter_(new VHDLHighlighter(display, this))    
+namespace
 {
-    
+    const QRegExp ENTITY_EXP = QRegExp("ENTITY\\s+(\\w+)\\s+IS\\s+.*END\\s+(?:ENTITY\\s+)?(\\1)?\\s*[;]", 
+        Qt::CaseInsensitive);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~VhdlParser()
+// Function: VhdlParser::VhdlParser()
+//-----------------------------------------------------------------------------
+VhdlParser::VhdlParser(QPlainTextEdit* display, QObject* parent) : 
+QObject(parent),
+    parsedGenerics_(),
+    dependedGenerics_(),
+    display_(display),
+    highlighter_(new VHDLHighlighter(display, this)),
+    portParser_(this),
+    genericParser_(this),
+    targetComponent_(0),
+    parsedPortDeclarations_()
+{
+    highlighter_->registerHighlightSource(&portParser_);
+    highlighter_->registerHighlightSource(&genericParser_);
+
+    connect(&portParser_, SIGNAL(add(QSharedPointer<Port>, QString const&)), 
+        this, SLOT(onPortParsed(QSharedPointer<Port>, QString const&)), Qt::UniqueConnection);
+    connect(&portParser_, SIGNAL(add(QSharedPointer<Port>, QString const&)), 
+        this, SIGNAL(add(QSharedPointer<Port>)), Qt::UniqueConnection);
+
+    connect(&genericParser_, SIGNAL(add(QSharedPointer<ModelParameter>, QString const&)), 
+        this, SLOT(onGenericParsed(QSharedPointer<ModelParameter>)), Qt::UniqueConnection);
+    connect(&genericParser_, SIGNAL(add(QSharedPointer<ModelParameter>, QString const&)), 
+        this, SIGNAL(add(QSharedPointer<ModelParameter>)), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VhdlParser::~VhdlParser()
 //-----------------------------------------------------------------------------
 VhdlParser::~VhdlParser()
 {
@@ -54,35 +77,43 @@ VhdlParser::~VhdlParser()
 }
 
 //-----------------------------------------------------------------------------
-// Function: scrollToEntityBegin()
+// Function: VhdlParser::scrollToEntityBegin()
 //-----------------------------------------------------------------------------
 void VhdlParser::scrollToEntityBegin()
 {  
     int entityBegin = VhdlSyntax::ENTITY_BEGIN_EXP.indexIn(display_->toPlainText());
     if (entityBegin != -1)
     {
-        display_->scrollToCharacterPosition(entityBegin);
+        QTextCursor cursor = display_->textCursor();
+        cursor.setPosition(entityBegin);
+
+        display_->verticalScrollBar()->setValue(cursor.block().firstLineNumber());
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: parseFile()
+// Function: VhdlParser::parseFile()
 //-----------------------------------------------------------------------------
-void VhdlParser::parseFile(QString const& absolutePath)
+void VhdlParser::runParser(QString const& absolutePath, QSharedPointer<Component> targetComponent)
 {
     QApplication::setOverrideCursor(Qt::WaitCursor);    
+
+    targetComponent_ = targetComponent;
 
     clear();
 
     loadFileToDisplay(absolutePath);
 
-    if (hasValidEntity())
-    {        
-        parseGenerics();
-        parsePorts();
+    QString fileContent = display_->toPlainText();
 
-        importGenerics();
-        importPorts();
+    grayOutFileContent(fileContent);
+
+    if (hasValidEntity(fileContent))
+    {        
+        highlightEntity(fileContent);
+
+        genericParser_.runParser(display_->toPlainText(), targetComponent);
+        portParser_.runParser(display_->toPlainText(), targetComponent);
     }
 
     QApplication::restoreOverrideCursor();
@@ -95,6 +126,33 @@ void VhdlParser::clear()
 {
     removePreviousGenerics();
     removePreviousPorts();
+}
+
+//-----------------------------------------------------------------------------
+// Function: VhdlParser::onPortParsed()
+//-----------------------------------------------------------------------------
+void VhdlParser::onPortParsed(QSharedPointer<Port> parsedPort, QString const& declaration)
+{
+    parsedPortDeclarations_.insert(parsedPort, declaration);
+
+    foreach(QSharedPointer<ModelParameter> modelParameter, targetComponent_->getModelParameters())
+    {
+        if (declaration.contains(modelParameter->getName()))
+        {
+            addDependencyOfGenericToPort(modelParameter, parsedPort);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VhdlParser::onGenericParsed()
+//-----------------------------------------------------------------------------
+void VhdlParser::onGenericParsed(QSharedPointer<ModelParameter> parsedGeneric)
+{
+    if (!parsedGenerics_.contains(parsedGeneric))
+    {
+        parsedGenerics_.append(parsedGeneric);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -113,556 +171,93 @@ void VhdlParser::loadFileToDisplay(QString const& absolutePath)
     QString const& fileString = stream.readAll();
     vhdlFile.close();    
 
-    display_->setPlainText(fileString);
-    highlighter_->onSourceFileChanged();
+    display_->setPlainText(fileString);       
 }
 
 //-----------------------------------------------------------------------------
-// Function: modelParameterChanged()
+// Function: VhdlParser::editorChangedModelParameter()
 //-----------------------------------------------------------------------------
-void VhdlParser::editorChangedModelParameter(QSharedPointer<ModelParameter> changedParameter)
+void VhdlParser::editorChangedModelParameter(QSharedPointer<ModelParameter> changedParameter) const
 {
-    if ( genericsInPorts_.contains(changedParameter) )
+    foreach(QSharedPointer<Port> affectedPort, dependedGenerics_.value(changedParameter))
     {
-        foreach (QSharedPointer<Port> port, genericsInPorts_.value(changedParameter) )
-        {
-            assignGenerics(port);
-        } 
-    }
+        QString portDeclaration = parsedPortDeclarations_.value(affectedPort);
 
-    if ( genericsInGenerics_.contains(changedParameter) )
-    {
-        foreach (QSharedPointer<ModelParameter> param, genericsInGenerics_.value(changedParameter) )
-        {
-            if ( param != changedParameter )
-            {
-                assignGenerics(param);
-            } 
-        } 
+        affectedPort->setLeftBound(portParser_.parseLeftBound(portDeclaration, targetComponent_));
+        affectedPort->setRightBound(portParser_.parseRightBound(portDeclaration, targetComponent_));
+        affectedPort->setDefaultValue(portParser_.parseDefaultValue(portDeclaration));
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: editorRemovedModelParameter()
-//-----------------------------------------------------------------------------
-void VhdlParser::editorRemovedModelParameter(QSharedPointer<ModelParameter> removedParameter)
-{
-    foreach ( QList< QSharedPointer<ModelParameter> > parameterList, generics_.values() )
-    {
-        if ( parameterList.contains(removedParameter) )
-        {
-            SelectionInfo info = generics_.key(parameterList);
-            
-            highlighter_->unSelect(info.beginPos, info.endPos);
-
-            generics_.remove(info);
-            info.enabled = false;
-            generics_.insert(info,parameterList);
-
-            return;
-        }
-    }
-}
-
-
-//-----------------------------------------------------------------------------
-// Function: editorRemovedPort()
-//-----------------------------------------------------------------------------
-void VhdlParser::editorRemovedPort(QSharedPointer<Port> removedPort)
-{
-    foreach ( QList< QSharedPointer<Port> > portList, ports_.values() )
-    {
-        if ( portList.contains(removedPort) )
-        {
-            SelectionInfo info = ports_.key(portList);
-
-            highlighter_->unSelect(info.beginPos, info.endPos);
-              
-            ports_.remove(info);   
-            info.enabled = false;
-            ports_.insert(info,portList);
-        
-            return;
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: VhdlParser::toggleAt()
-//-----------------------------------------------------------------------------
-void VhdlParser::toggleAt(int characterPosition)
-{
-    foreach( SelectionInfo info, ports_.keys() )
-    {
-        if( info.beginPos <= characterPosition && characterPosition <= info.endPos )
-        {           
-            toggleSelection(info);
-            QList<QSharedPointer<Port> > portList = ports_.take(info);
-            ports_.insert(info, portList);
-            return;
-        }
-    }
-
-    foreach( SelectionInfo info, generics_.keys() )
-    {
-        if( info.beginPos <= characterPosition && characterPosition <= info.endPos )
-        {           
-            toggleSelection(info);
-            QList<QSharedPointer<ModelParameter> > genericList = generics_.take(info);
-            generics_.insert(info, genericList);
-            return;
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: importPorts()
-//-----------------------------------------------------------------------------
-void VhdlParser::importPorts()
-{
-    foreach ( QList< QSharedPointer<Port> > list, ports_.values() )
-    {
-        foreach ( QSharedPointer<Port> port, list )
-        {
-            assignGenerics(port);
-            emit addPort(port);
-        }
-    }
-}   
-
-//-----------------------------------------------------------------------------
-// Function: removePorts()
+// Function: VhdlParser::removePorts()
 //-----------------------------------------------------------------------------
 void VhdlParser::removePreviousPorts()
 {
-    foreach ( QList< QSharedPointer<Port> > list, ports_.values() )
+    foreach (QSharedPointer<Port> port, parsedPortDeclarations_.keys())
     {
-        foreach ( QSharedPointer<Port> port, list )
-        {
-            emit removePort(port);
-        }
+        emit removePort(port);
     }
-    ports_.clear();
-}   
+
+    parsedPortDeclarations_.clear();
+}
 
 //-----------------------------------------------------------------------------
-// Function: importGenerics()
-//-----------------------------------------------------------------------------
-void VhdlParser::importGenerics()
-{
-    foreach (QSharedPointer<ModelParameter> parameter, getAllModelParameters() )
-    {
-        assignGenerics(parameter);
-        emit addGeneric(parameter);
-    }
-}  
-
-//-----------------------------------------------------------------------------
-// Function: removeGenerics()
+// Function: VhdlParser::removeGenerics()
 //-----------------------------------------------------------------------------
 void VhdlParser::removePreviousGenerics()
 {
-    foreach (QSharedPointer<ModelParameter> parameter, getAllModelParameters())
+    foreach (QSharedPointer<ModelParameter> parsedGeneric, parsedGenerics_)
     {
-        emit removeGeneric(parameter);
+        emit removeGeneric(parsedGeneric);
     }
 
-    generics_.clear();
-    genericsInPorts_.clear();
-    genericsInGenerics_.clear();
-}  
-
-//-----------------------------------------------------------------------------
-// Function: assignGenerics()
-//-----------------------------------------------------------------------------
-void VhdlParser::assignGenerics(QSharedPointer<Port> port)
-{
-    SelectionInfo info = SelectionInfo();
-    foreach (QList< QSharedPointer<Port> > portList, ports_.values())
-    {
-        if ( portList.contains(port) )
-        {
-            info = ports_.key(portList); 
-            break;
-        }
-    }
-    
-    QString declaration = display_->toPlainText().mid(info.beginPos, info.endPos - info.beginPos);
-    VhdlSyntax::PORT_EXP.indexIn(declaration);
-    QString portType = VhdlSyntax::PORT_EXP.cap(3);
-    QString defaultValueString = VhdlSyntax::PORT_EXP.cap(4).trimmed();        
-
-    QRegExp typeExpression = QRegExp(VhdlSyntax::TYPE_EXP.pattern().replace("(?:","("), Qt::CaseInsensitive);
-    typeExpression.indexIn(portType);
-    QString plainType = typeExpression.cap(1);
-    QString bounded = typeExpression.cap(2);
-
-    EquationParser equationParser(getAllModelParameters());   
-      
-    if (!bounded.isEmpty())
-    {
-        port->setLeftBound(parseLeftBound(bounded, equationParser));
-        port->setRightBound(parseRightBound(bounded, equationParser));
-    }
-
-    int defaultValue = equationParser.parse(defaultValueString);
-    if (defaultValue != -1)
-    {
-        port->setDefaultValue(QString::number(defaultValue));
-    }
-
-    foreach ( QSharedPointer<ModelParameter> parameter, getAllModelParameters() ) 
-    {
-        if ( declaration.contains(parameter->getName()) )
-        {
-            QList< QSharedPointer<Port> > ports = genericsInPorts_.value(parameter);
-            if ( !ports.contains(port) )
-            {
-                ports.append(port);
-                genericsInPorts_.insert(parameter, ports);
-            }   
-        }
-    }
+    parsedGenerics_.clear();
+    dependedGenerics_.clear();
 }
 
 //-----------------------------------------------------------------------------
-// Function: assignGenerics()
+// Function: VhdlParser::hasValidEntity()
 //-----------------------------------------------------------------------------
-void VhdlParser::assignGenerics(QSharedPointer<ModelParameter> param)
+bool VhdlParser::hasValidEntity(QString const& fileContent) const
 {
-    SelectionInfo info = SelectionInfo();
-    foreach ( QList< QSharedPointer<ModelParameter> > genericList, generics_.values() )
-    {
-        if ( genericList.contains(param) ){
-            info = generics_.key(genericList); 
-            break;
-        }
-    }
-
-    QString declaration = display_->toPlainText().mid(info.beginPos, info.endPos - info.beginPos);
-    
-    VhdlSyntax::GENERIC_EXP.indexIn(declaration);
-    QString defaultValue = VhdlSyntax::GENERIC_EXP.cap(3);        
-    
-    EquationParser equationParser(getAllModelParameters());
-
-    int def = equationParser.parse(defaultValue);
-    if ( def != -1 )
-    {
-        param->setValue(QString::number(def));
-    }
-
-    foreach ( QSharedPointer<ModelParameter> parameter, getAllModelParameters() ) 
-    {
-        if ( declaration.contains(parameter->getName()) )
-        {
-            QList< QSharedPointer<ModelParameter> > generics = genericsInGenerics_.value(parameter);
-            if ( !generics.contains(param) )
-            {
-                generics.append(param);
-                genericsInGenerics_.insert(parameter,generics);
-            }   
-        }
-    }             
-}
-
-//-----------------------------------------------------------------------------
-// Function: hasValidEntity()
-//-----------------------------------------------------------------------------
-bool VhdlParser::hasValidEntity() const
-{
-    QRegExp entityExp = QRegExp("ENTITY\\s+(\\w+)\\s+IS\\s+.*END\\s+(?:ENTITY\\s+)?(\\1)?\\s*[;]", 
-        Qt::CaseInsensitive);
-
-    QString const& sourceContent = display_->toPlainText();
-
-    int entityStartIndex = entityExp.indexIn(sourceContent);
+    int entityStartIndex = ENTITY_EXP.indexIn(fileContent);
     bool hasEntity = entityStartIndex != -1;
-    bool hasOnlyOneEntity = entityStartIndex == entityExp.lastIndexIn(sourceContent);
+    bool hasOnlyOneEntity = entityStartIndex == ENTITY_EXP.lastIndexIn(fileContent);
 
     return hasEntity && hasOnlyOneEntity;
 }
 
 //-----------------------------------------------------------------------------
-// Function: parseSectionContent()
+// Function: VhdlParser::VhdlParser::grayOutFileContent()
 //-----------------------------------------------------------------------------
-QString VhdlParser::parseSectionContent(QRegExp const& begin, QRegExp const& end, 
-    QString const& text) const
-{   
-    int sectionBeginIndex = begin.indexIn(text);
-    int sectionEndIndex = end.indexIn(text,sectionBeginIndex);
-
-    if ( sectionBeginIndex == -1 || sectionEndIndex == -1 )
-    {
-        return QString();
-    }
-
-    sectionBeginIndex += begin.matchedLength();
-    return text.mid(sectionBeginIndex, sectionEndIndex - sectionBeginIndex);
+void VhdlParser::grayOutFileContent(QString const& fileContent) const
+{    
+    highlighter_->applyFontColor(fileContent, QColor("gray"));
 }
 
 //-----------------------------------------------------------------------------
-// Function: parsePorts()
+// Function: VhdlParser::highlightEntity()
 //-----------------------------------------------------------------------------
-void VhdlParser::parsePorts()
-{   
-    QString ports = parseSectionContent(VhdlSyntax::PORTS_BEGIN_EXP, VhdlSyntax::PORTS_END_EXP, display_->toPlainText());
-
-    int offset = display_->toPlainText().indexOf(ports);
-
-    QRegExp portExp = VhdlSyntax::PORT_EXP;
-
-    int portIndex = portExp.indexIn(ports, 0);    
-
-    while ( portIndex != -1 )
-    {
-        int length = 0;
-
-        int lastNewline = ports.lastIndexOf(QRegExp("\n"), portIndex);
-
-        int lastComment = VhdlSyntax::COMMENT_LINE_EXP.indexIn(ports, lastNewline);
-
-        if (lastComment != -1 && lastComment < portIndex)
-        {
-            length =  VhdlSyntax::COMMENT_LINE_EXP.matchedLength();
-        }
-        else
-        {
-            length = portExp.matchedLength();
-
-            SelectionInfo info;
-            info.beginPos = portIndex + offset;
-            info.endPos = info.beginPos + length;
-            info.enabled = true;
-
-            highlighter_->selectPort(info.beginPos, info.endPos);
-            createPort(info, portExp.cap());
-        }
-
-        portIndex = portExp.indexIn(ports, portIndex + length);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: parseGenerics()
-//-----------------------------------------------------------------------------
-void VhdlParser::parseGenerics()
+void VhdlParser::highlightEntity(QString const& fileContent) const
 {
-    QString generics = parseSectionContent(VhdlSyntax::GENERICS_BEGIN_EXP, VhdlSyntax::GENERICS_END_EXP, display_->toPlainText());
+    ENTITY_EXP.indexIn(fileContent);
 
-    int offset = display_->toPlainText().indexOf(generics);
-
-    QRegExp genericExp = VhdlSyntax::GENERIC_EXP;
-
-    int genericIndex = genericExp.indexIn(generics, 0);
-
-    while ( genericIndex != -1 )
-    {
-        int length = 0;   
-
-        int lastNewline = generics.lastIndexOf(QRegExp("(^|\n)"), genericIndex);
-
-        int lastComment = VhdlSyntax::COMMENT_LINE_EXP.indexIn(generics, lastNewline);
-
-        if (lastComment != -1 && lastComment < genericIndex)
-        {
-            length =  VhdlSyntax::COMMENT_LINE_EXP.matchedLength();
-        }
-        else
-        {       
-            length =  genericExp.matchedLength();
-
-            SelectionInfo info;
-            info.beginPos = genericIndex + offset;
-            info.endPos = info.beginPos + length;
-            info.enabled = true;
-
-            highlighter_->selectModelParameter(info.beginPos, info.endPos);
-            createGeneric(info, genericExp.cap());
-
-        }
-
-        genericIndex = genericExp.indexIn(generics, genericIndex + length);
-    }
+    highlighter_->applyFontColor(ENTITY_EXP.cap(0), QColor("black"));
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::parseLeftBound()
+// Function: VhdlParser::addDependencyOfGenericToPort()
 //-----------------------------------------------------------------------------
-int VhdlParser::parseLeftBound(QString const& rangeDeclaration, EquationParser const& parser) const
+void VhdlParser::addDependencyOfGenericToPort(QSharedPointer<ModelParameter> modelParameter, 
+    QSharedPointer<Port> parsedPort)
 {
-    static QRegExp rangeExp = QRegExp("[(]\\s*(" + VhdlSyntax::MATH_EXP + ")\\s+\\w+\\s+" + 
-                                             "(" + VhdlSyntax::MATH_EXP + ")\\s*[)]");
+    QList<QSharedPointer<Port> > portList = dependedGenerics_.value(modelParameter);
 
-    if( rangeExp.indexIn(rangeDeclaration) != -1 )
+    if (!portList.contains(parsedPort))
     {
-        QString leftEquation = rangeExp.cap(1);
-        return parser.parse(leftEquation);
+        portList.append(parsedPort);
     }
 
-    return -1;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VhdlParser::parseRightBound()
-//-----------------------------------------------------------------------------
-int VhdlParser::parseRightBound(QString const& rangeDeclaration, EquationParser const& parser) const
-{
-    static QRegExp rangeExp = QRegExp("[(]\\s*(" + VhdlSyntax::MATH_EXP + ")\\s+\\w+\\s+" + 
-        "(" + VhdlSyntax::MATH_EXP + ")\\s*[)]");
-
-    if( rangeExp.indexIn(rangeDeclaration) != -1 )
-    {
-        QString rightEquation = rangeExp.cap(2);
-        return parser.parse(rightEquation);
-    }
-
-    return -1;
-}
-
-//-----------------------------------------------------------------------------
-// Function: createPort()
-//-----------------------------------------------------------------------------
-void VhdlParser::createPort(SelectionInfo const& info, QString const& portDeclaration)
-{
-    VhdlSyntax::PORT_EXP.indexIn(portDeclaration);
-    QString portNames = VhdlSyntax::PORT_EXP.cap(1);
-	General::Direction direction = General::str2Direction(VhdlSyntax::PORT_EXP.cap(2).toLower(),General::DIRECTION_INVALID);
-    QString portType = VhdlSyntax::PORT_EXP.cap(3);
-    QString defaultValue = VhdlSyntax::PORT_EXP.cap(4).trimmed();
-    QString description = VhdlSyntax::PORT_EXP.cap(5).trimmed();
-
-    if ( description.isEmpty() )
-    {
-        description = VhdlSyntax::PORT_EXP.cap(6).trimmed();
-    }
-
-    QRegExp typeExpression = QRegExp(VhdlSyntax::TYPE_EXP.pattern().replace("(?:","("), Qt::CaseInsensitive);
-    typeExpression.indexIn(portType);
-    QString type = typeExpression.cap(1); 
-    QString bounded = typeExpression.cap(2);
-
-    EquationParser equationParser(getAllModelParameters());
-    
-    int leftBound = 0;
-    int rightBound = 0;
-
-    if (!bounded.isEmpty())
-    {
-        leftBound = parseLeftBound(bounded, equationParser);
-        rightBound = parseRightBound(bounded, equationParser);
-    }    
-
-    // Port names are separated by a colon (,).
-    QList< QSharedPointer<Port> > ports;
-    QRegExp nameDelimiter("\\s*[,]\\s*");
-    foreach( QString name, portNames.split(nameDelimiter, QString::SkipEmptyParts) )
-    {   
-        QSharedPointer<Port> port(new Port(name, direction, leftBound, rightBound, type, "", 
-                                            defaultValue, description));
-        ports.append(port);
-    } 
-
-    ports_.insert(info, ports);
-}
-
-//-----------------------------------------------------------------------------
-// Function: createGeneric()
-//-----------------------------------------------------------------------------
-void VhdlParser::createGeneric(SelectionInfo const& info, QString const& declaration)
-{
-    VhdlSyntax::GENERIC_EXP.indexIn(declaration);
-    QString genericNames = VhdlSyntax::GENERIC_EXP.cap(1);
-    QString type = VhdlSyntax::GENERIC_EXP.cap(2);
-    QString defaultValue = VhdlSyntax::GENERIC_EXP.cap(3);
-    QString description = VhdlSyntax::GENERIC_EXP.cap(4).trimmed();
-
-    if ( description.isEmpty() )
-    {
-        description = VhdlSyntax::GENERIC_EXP.cap(5).trimmed();
-    }
-
-    // Generic names are separated by a colon (,).
-    QRegExp nameDelimiter("\\s*[,]\\s*");
-    QList< QSharedPointer<ModelParameter> > generics;
-    foreach( QString name, genericNames.split(nameDelimiter, QString::SkipEmptyParts) )
-    {   
-        QSharedPointer<ModelParameter> parameter(new ModelParameter());
-        parameter->setName(name.trimmed());
-        parameter->setDataType(type);
-        parameter->setDescription(description);
-        parameter->setValue(defaultValue);
-        parameter->setUsageType("nontyped");
-        generics.append(parameter);            
-    } 
-
-    generics_.insert(info,generics);
-}
-
-//-----------------------------------------------------------------------------
-// Function: toggleSelection()
-//-----------------------------------------------------------------------------
-void VhdlParser::toggleSelection(SelectionInfo& info)
-{
-    if ( ports_.contains(info) )
-    {
-        if ( info.enabled )
-        {    
-            foreach (QSharedPointer<Port> port, ports_.value(info) )
-            {
-                emit removePort(port);
-            } 
-            
-            highlighter_->unSelect(info.beginPos, info.endPos);
-        }
-        else
-        {            
-            foreach (QSharedPointer<Port> port, ports_.value(info) )
-            {
-                emit addPort(port);
-            } 
-
-            highlighter_->selectPort(info.beginPos, info.endPos);
-        }
-
-        info.enabled = !info.enabled;     
-    }
-
-    else if (generics_.contains(info))
-    {
-        if ( info.enabled )
-        {         
-            foreach (QSharedPointer<ModelParameter> parameter, generics_.value(info) )
-            {
-                emit removeGeneric(parameter);
-            } 
-            
-            highlighter_->unSelect(info.beginPos, info.endPos);
-        }
-        else
-        {            
-            foreach (QSharedPointer<ModelParameter> parameter, generics_.value(info) )
-            {
-                emit addGeneric(parameter);
-            } 
-
-            highlighter_->selectModelParameter(info.beginPos, info.endPos);
-        }
-
-        info.enabled = !info.enabled;   
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: VhdlParser::getAllModelParameters()
-//-----------------------------------------------------------------------------
-QList<QSharedPointer<ModelParameter> > VhdlParser::getAllModelParameters() const
-{
-    QList<QSharedPointer<ModelParameter> > modelParamters;
-    foreach(QList<QSharedPointer<ModelParameter> > parameters, generics_.values())
-    {
-        modelParamters.append(parameters);
-    }
-
-    return modelParamters;
+    dependedGenerics_.insert(modelParameter, portList);
 }

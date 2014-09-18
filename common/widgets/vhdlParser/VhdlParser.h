@@ -15,18 +15,21 @@
 #include <QMouseEvent>
 #include <QList>
 #include <QMap>
+#include <QPlainTextEdit>
 
-#include <common/widgets/vhdlParser/VhdlSyntax.h>
-#include <wizards/ComponentWizard/VhdlImportEditor/EquationParser.h>
+#include <Plugins/VHDLParser/VHDLPortParser.h>
+#include <Plugins/VHDLParser/VHDLGenericParser.h>
+
+#include <Plugins/PluginSystem/Importparser.h>
 
 class ModelParameter;
 class Port;
-class SourceFileDisplayer;
 class VHDLHighlighter;
+
 //-----------------------------------------------------------------------------
 //! Class VhdlParser.
 //-----------------------------------------------------------------------------
-class VhdlParser : public QObject
+class VhdlParser : public QObject, public ImportParser
 {
     Q_OBJECT
 public:
@@ -37,7 +40,7 @@ public:
      *      @param [in] display   The display widget for the parsed source file content.
      *      @param [in] parent    The parent object.
      */
-    VhdlParser(SourceFileDisplayer* display, QObject* parent);
+    VhdlParser(QPlainTextEdit* display, QObject* parent);
 
     /*!
      *  Destructor.
@@ -56,33 +59,29 @@ public:
 	 *
 	 *      @return False, if file could not be read, otherwise true.
      */
-    virtual void parseFile(QString const& absolutePath);
+    virtual void runParser(QString const& absolutePath, QSharedPointer<Component> targetComponent);
 
     void clear();
 
 public slots:
 
     //! Called when a model parameter is outside the text editor.
-    virtual void editorChangedModelParameter(QSharedPointer<ModelParameter> changedParameter);
+    virtual void editorChangedModelParameter(QSharedPointer<ModelParameter> changedParameter) const;
 
-    //! Called when a model parameter is removed outside the text editor.
-    virtual void editorRemovedModelParameter(QSharedPointer<ModelParameter> removedParameter);
+    void onPortParsed(QSharedPointer<Port> parsedPort, QString const& declaration);   
 
-    //! Called when a port is removed outside the text editor.
-    virtual void editorRemovedPort(QSharedPointer<Port> removedPort);
-
-    virtual void toggleAt(int characterPosition);
+    void onGenericParsed(QSharedPointer<ModelParameter> parsedGeneric);
 
 signals:
     
     //! Emitted when a port is created or selected.
-    void addPort(QSharedPointer<Port> port);
+    void add(QSharedPointer<Port> port);
 
     //! Emitted when a port is removed or deselected.
     void removePort(QSharedPointer<Port> port);
 
     //! Emitted when a generic is created or selected.
-    void addGeneric(QSharedPointer<ModelParameter> modelParam);
+    void add(QSharedPointer<ModelParameter> modelParam);
 
     //! Emitted when a generic is removed or deselected.
     void removeGeneric(QSharedPointer<ModelParameter> modelParam);
@@ -100,7 +99,6 @@ private:
     {
         int beginPos;
         int endPos;
-        bool enabled;      
         bool operator<(const SelectionInfo& other) const{return beginPos < other.beginPos;}
     };
 
@@ -108,19 +106,9 @@ private:
     void loadFileToDisplay(QString const& absolutePath);
 
 	/*!
-     *  Signals add for all ports.
-     */
-    void importPorts();
-
-	/*!
      *  Signals remove for all ports and empties lists to ports.
      */
     void removePreviousPorts();
-
-	/*!
-     *  Signals add for all model parameters.
-     */
-    void importGenerics();
 
 	/*!
      *  Signals remove for all model parameters and empties lists to model parameters.
@@ -134,130 +122,42 @@ private:
 	 *
 	 *      @return True if the file has a valid entity, otherwise false.
      */
-    bool hasValidEntity() const;
+    bool hasValidEntity(QString const& fileContent) const;
 
+    void grayOutFileContent(QString const& fileContent) const;
 
-    /*!
-     *   Sets the entity name in the ending expression.
-     *
-     *      @param [in] fileString The vhdl file as string.
-     */
-    void setEntityEndExp(QString const& fileString);
-
-    /*!
-     *   Cuts out a section of a text omitting delimiting expressions.
-     *
-     *      @param [in] begin The beginning of the cut section.
-	 *
-     *      @param [in] end The end of the cut section.
-	 *
-     *      @param [in] text The text where to cut from.
-	 *
-	 *      @return The text section inside begin and end. 
-     *              The beginning and the end are omitted.
-     */
-    QString parseSectionContent(QRegExp const& begin, QRegExp const& end, 
-        QString const& text) const;
-
-    /*!
-     *   Finds the port declarations in a vhdl file and creates ports accordingly 
-     *   with createPort().
-     *
-     */
-    void parsePorts();
-
-    /*!
-     *   Finds the generic declarations in a vhdl file and creates model parameters
-     *   accordingly with createGeneric().
-     *
-     */
-    void parseGenerics();
-
-    int parseLeftBound(QString const& rangeDeclaration, EquationParser const& parser) const;
-
-    int parseRightBound(QString const& rangeDeclaration, EquationParser const& parser) const;
-
-    /*!
-     *  Parses the value of a simple equation. The equation may contain literals and
-     *  generics but not parathesis.
-     *
-     *      @param [in] equation The equation to solve.
-     *
-     *      @return The result of the equation.
-     */
-    int parseEquation(QString const& equation) const;
-
-    /*!
-     *   Creates a port and maps it to corresponding selection info.
-     *
-     *      @param [in] info The selection info for the created port.
-     */
-    void createPort(SelectionInfo const& info, QString const& portDeclaration);
-
-    /*!
-     *   Creates a model parameter and maps it to corresponding selection info.
-	 *
-     *      @param [in] info The selection info for the created generic.
-     */
-    void createGeneric(SelectionInfo const& info, QString const& declaration);
+    void highlightEntity(QString const& fileContent) const;
     
-    /*!
-     *   Assigns the generic values used in port declaration for left and right bound
-     *   and default value in a port.
-	 *
-     *      @param [in] port The port to assign to.
-     */
-    void assignGenerics(QSharedPointer<Port> port);
-   
-    /*!
-     *   Assigns the generic values used in parameter declaration for default value.
-	 *
-     *      @param [in] param The parameter to assign to.
-     */
-    void assignGenerics(QSharedPointer<ModelParameter> param);
-    QList<QSharedPointer<ModelParameter> > getAllModelParameters() const;
-
-
-    /*!
-     *   Changes the state of selection from selected to not selected and vice versa.
-     *
-     *      @param [in] info The selection whose state to change.
-     */
-    void toggleSelection(SelectionInfo& info);
-
-    /*!
-     *   Converts a generic or a number to an integer.
-	 *
-     *      @param [in] value The string to convert.
-	 *
-     *      @param [out] ok Flag for successful conversion.
-     *
-  	 *      @return The value as integer or -1 if value cannot be converted.
-     */
-    int valueForString(QString const& string, bool& ok) const;
-    
+    void addDependencyOfGenericToPort(QSharedPointer<ModelParameter> modelParameter, 
+        QSharedPointer<Port> parsedPort);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Maps ports to a declaration.
-    QMap< SelectionInfo, QList< QSharedPointer<Port> > > ports_;
+    //! All parsed generics.
+     QList< QSharedPointer<ModelParameter> > parsedGenerics_;
 
-    //! Maps generics to a declaration.
-    QMap< SelectionInfo, QList< QSharedPointer<ModelParameter> > > generics_;
-
-    //! Maps a generic to ports using it.
-    QMap< QSharedPointer<ModelParameter>, QList< QSharedPointer<Port> > > genericsInPorts_;
-
-    //! Maps a generic to other generics using it.
-    QMap< QSharedPointer<ModelParameter>, QList< QSharedPointer<ModelParameter> > > genericsInGenerics_;
+    //! Maps a generic to ports depending on it.
+    QMap< QSharedPointer<ModelParameter>, QList< QSharedPointer<Port> > > dependedGenerics_;
    
+    //! All parsed ports and their declarations in source file.
+    QMap<QSharedPointer<Port>, QString> parsedPortDeclarations_;
+
     //! Display widget for the source file content.
-    SourceFileDisplayer* display_;
+    QPlainTextEdit* display_;
 
     //! The selection highlighter for the display widget.
     VHDLHighlighter* highlighter_;
+
+    //! Parser for ports.
+    VHDLPortParser portParser_;
+
+    //! Parser for generics.
+    VHDLGenericParser genericParser_;
+
+    //! The component to which add all parsed elements.
+    QSharedPointer<Component> targetComponent_;
 };
 
 #endif // VhdlParser_H

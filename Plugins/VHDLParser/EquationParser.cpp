@@ -165,9 +165,9 @@ int EquationParser::valueFromModelParameter(QString const& term) const
 {
     foreach (QSharedPointer<ModelParameter> parameter, knownValues_) 
     {
-        if ( parameter->getName() == term )
+        if (parameter->getName() == term)
         {
-            return parameter->getValue().toInt();
+            return parse(parameter->getValue());
         }
     }
 

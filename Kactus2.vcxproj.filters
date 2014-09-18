@@ -890,6 +890,12 @@
     <Filter Include="Header Files\designEditors\common\Association">
       <UniqueIdentifier>{639b5694-b994-4740-a403-6ec20fab5862}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Plugins\VhdlParser">
+      <UniqueIdentifier>{a7f2fa4e-310c-45bb-99d4-553551618593}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Plugins\VHDLParser">
+      <UniqueIdentifier>{8dae5544-e468-4a76-91f0-0018cadb3077}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3763,20 +3769,26 @@
     <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlportsorter.cpp">
       <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
     </ClCompile>
-    <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\SourceFileDisplayer.cpp">
-      <Filter>Source Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_SourceFileDisplayer.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_VHDLHighlighter.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\VHDLHighlighter.cpp">
       <Filter>Source Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
     </ClCompile>
-    <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\EquationParser.cpp">
-      <Filter>Source Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
+    <ClCompile Include="Plugins\VHDLParser\VHDLGenericParser.cpp">
+      <Filter>Source Files\Plugins\VHDLParser</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\VHDLParser\VHDLPortParser.cpp">
+      <Filter>Source Files\Plugins\VHDLParser</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\VHDLParser\EquationParser.cpp">
+      <Filter>Source Files\Plugins\VHDLParser</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_VHDLGenericParser.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_VHDLPortParser.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5181,11 +5193,14 @@
     <CustomBuild Include="Plugins\PluginSystem\PluginUtilityAdapter.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
     </CustomBuild>
-    <CustomBuild Include="wizards\componentwizard\vhdlimporteditor\SourceFileDisplayer.h">
-      <Filter>Header Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
-    </CustomBuild>
     <CustomBuild Include="wizards\ComponentWizard\VhdlImportEditor\VHDLHighlighter.h">
       <Filter>Header Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Plugins\VHDLParser\VHDLGenericParser.h">
+      <Filter>Header Files\Plugins\VhdlParser</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Plugins\VHDLParser\VHDLPortParser.h">
+      <Filter>Header Files\Plugins\VhdlParser</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -5417,8 +5432,14 @@
     <ClInclude Include="wizards\ComponentWizard\ComponentWizardPages.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
     </ClInclude>
-    <ClInclude Include="wizards\ComponentWizard\VhdlImportEditor\EquationParser.h">
-      <Filter>Header Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
+    <ClInclude Include="Plugins\PluginSystem\ImportElementParser.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\ImportParser.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\VHDLParser\EquationParser.h">
+      <Filter>Header Files\Plugins\VhdlParser</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

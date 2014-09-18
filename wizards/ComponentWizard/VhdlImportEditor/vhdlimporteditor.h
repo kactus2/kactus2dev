@@ -21,13 +21,13 @@
 #include <QTextEdit>
 #include <QSplitter>
 #include <QPushButton>
+#include <QPlainTextEdit>
 
 class ModelParameterEditor;
 class PortsEditor;
 class LibraryInterface;
 class FileSelector;
 class VhdlParser;
-class SourceFileDisplayer;
 
 //-----------------------------------------------------------------------------
 //! Used to parse VHDL files and generating IP-XACT packages of them.
@@ -99,6 +99,8 @@ private:
 	//! Path to the xml file containing the target component.
 	QString componentXmlPath_;
 
+    QSharedPointer<Component> component_;
+
     //! Top-level vhdl file absolute path.
     QString selectedSourceFile_;
 
@@ -109,7 +111,7 @@ private:
 	PortsEditor* portEditor_;
 
     //! Display widget for selected source file content.
-    SourceFileDisplayer* sourceDisplayer_;
+    QPlainTextEdit* sourceDisplayer_;
 
     //! Used to select the top-level vhdl file.
     FileSelector* fileSelector_;

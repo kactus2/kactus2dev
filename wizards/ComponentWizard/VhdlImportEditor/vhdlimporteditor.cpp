@@ -19,7 +19,6 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <wizards/ComponentWizard/VhdlImportEditor/SourceFileDisplayer.h>
 
 #include <QApplication>
 #include <QHBoxLayout>
@@ -37,10 +36,11 @@ VhdlImportEditor::VhdlImportEditor(QSharedPointer<Component> component,
     QWidget(parent),
     splitter_(Qt::Vertical, this),
 	componentXmlPath_(handler->getPath(*component->getVlnv())),
+    component_(component),
     selectedSourceFile_(),
     modelParameterEditor_(new ModelParameterEditor(component, handler, &splitter_)),
     portEditor_(new PortsEditor(component, handler, &splitter_)),
-    sourceDisplayer_(new SourceFileDisplayer(this)),
+    sourceDisplayer_(new QPlainTextEdit(this)),
     fileSelector_(new FileSelector(component, this)),
     editButton_(new QPushButton(tr("Open editor"), this)),
     refreshButton_(new QPushButton(QIcon(":/icons/common/graphics/refresh.png"), "", this)),
@@ -55,29 +55,33 @@ VhdlImportEditor::VhdlImportEditor(QSharedPointer<Component> component,
     fileSelector_->addFilter("vhd");
     fileSelector_->addFilter("vhdl");
 
+    QFont font("Courier");
+    font.setStyleHint(QFont::Monospace);
+    font.setFixedPitch(true);
+    font.setPointSize(9);
+
+    sourceDisplayer_->setFont(font);
+    sourceDisplayer_->setTabStopWidth(4 * fontMetrics().width(' '));
+    sourceDisplayer_->setReadOnly(true);
+    sourceDisplayer_->setCursorWidth(0);
+
     // Connections between model parameter editor and vhdlParser.
 	connect(modelParameterEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(vhdlParser_, SIGNAL(addGeneric(QSharedPointer<ModelParameter>)),
+	connect(vhdlParser_, SIGNAL(add(QSharedPointer<ModelParameter>)),
 		modelParameterEditor_, SLOT(addModelParameter(QSharedPointer<ModelParameter>)), Qt::UniqueConnection);
 	connect(vhdlParser_, SIGNAL(removeGeneric(QSharedPointer<ModelParameter>)),
 		modelParameterEditor_, SLOT(removeModelParameter(QSharedPointer<ModelParameter>)), Qt::UniqueConnection);
     connect(modelParameterEditor_, SIGNAL(parameterChanged(QSharedPointer<ModelParameter>)),
              vhdlParser_, SLOT(editorChangedModelParameter(QSharedPointer<ModelParameter>)), Qt::UniqueConnection);
-    connect(modelParameterEditor_, SIGNAL(modelParameterRemoved(QSharedPointer<ModelParameter>)),
-            vhdlParser_, SLOT(editorRemovedModelParameter(QSharedPointer<ModelParameter>)), Qt::UniqueConnection);
 
     // Connections between port editor and vhdlParser.
 	connect(portEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(vhdlParser_, SIGNAL(addPort(QSharedPointer<Port>)),
+	connect(vhdlParser_, SIGNAL(add(QSharedPointer<Port>)),
 		portEditor_, SLOT(addPort(QSharedPointer<Port>)), Qt::UniqueConnection);
 	connect(vhdlParser_, SIGNAL(removePort(QSharedPointer<Port>)),
 		portEditor_, SLOT(removePort(QSharedPointer<Port>)), Qt::UniqueConnection);
-    connect(portEditor_, SIGNAL(lockedPortRemoved(QSharedPointer<Port>)),
-		vhdlParser_, SLOT(editorRemovedPort(QSharedPointer<Port>)), Qt::UniqueConnection);
-
-    connect(sourceDisplayer_, SIGNAL(doubleClicked(int)), vhdlParser_, SLOT(toggleAt(int)), Qt::UniqueConnection);
 
     connect(fileSelector_, SIGNAL(fileSelected(const QString&)),
         this, SLOT(onFileSelected(const QString&)), Qt::UniqueConnection);
@@ -145,8 +149,10 @@ void VhdlImportEditor::onRefresh()
 {
     if (!selectedSourceFile_.isEmpty())
     {
-        vhdlParser_->parseFile(selectedSourceFile_);
+        vhdlParser_->parse(selectedSourceFile_, component_);
         vhdlParser_->scrollToEntityBegin();
+        portEditor_->refresh();
+        modelParameterEditor_->refresh();
     }
 }
 

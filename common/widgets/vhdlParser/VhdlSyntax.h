@@ -22,13 +22,10 @@ namespace VhdlSyntax {
     const QString ENDLINE = "(\\r\\n?|\\n\\r?)";
 
     //! VHDL comment.
-    const QString COMMENT = "[-][-]" + SPACE + "([^\\r\\n]*)(?=" +ENDLINE + "|$)";
+    const QString COMMENT = "[-][-]" + SPACE + "([^\\r\\n]*)(?=" + ENDLINE + "|$)";
    
     //! VHDL port and generic names are separated using a colon (,).
     const QString NAMES = "\\w+(?:\\s*[,]?\\s*\\w+)*";
-
-    //! VHDL port direction.
-    const QString DIRECTION = "in|out|inout|buffer|linkage";
 
     //! Supported mathematical operations in math expressions.
     const QString OPERATIONS = "[+-/*/]|[/*][/*]";
@@ -41,10 +38,13 @@ namespace VhdlSyntax {
 
     //! Mathematical expressions e.g. x or x + y.
     const QString MATH_EXP = "(?:\\w+)(?:\\s*(?:" + OPERATIONS + ")\\s*(?:\\w+))*";
-        
+
     //! VHDL port type definition is <typename>[(<left> downto <right>)].
-    const QString PORT_TYPE = "(?:\\w+)(?:\\s*[(]\\s*(?:" + MATH_EXP +
-                              ")\\s+\\w+\\s+(?:" + MATH_EXP + ")\\s*[)])?";
+    const QString PORT_TYPE = "(?:\\w+)(?:\\s*[(]\\s*(?:" + VhdlSyntax::MATH_EXP +
+        ")\\s+\\w+\\s+(?:" + VhdlSyntax::MATH_EXP + ")\\s*[)])?";
+
+    //! Type definition in port declaration is <typename>[(<left> downto <right>)].
+    const QRegExp TYPE_EXP = QRegExp(PORT_TYPE);
 
     //! VHDL default value definition is mathematical expression, vector assignment with others, logical value
     // or other string value.
@@ -68,31 +68,8 @@ namespace VhdlSyntax {
     const QRegExp ENTITY_BEGIN_EXP = QRegExp("(?:ENTITY)\\s+(\\w+)\\s+(?:IS)", Qt::CaseInsensitive);   
     const QRegExp ENTITY_END_EXP = QRegExp("(END)\\s*(ENTITY)?\\s*(\\w+)?\\s*[;]", Qt::CaseInsensitive);
 
-    //! Ports are declared inside entity by PORT ( <port_declarations> );
-    const QRegExp PORTS_BEGIN_EXP = QRegExp("(PORT)\\s*[(]", Qt::CaseInsensitive);
-    const QRegExp PORTS_END_EXP = QRegExp("[)]\\s*[;](?=\\s*(?:" + COMMENT + "\\s*)*(END|BEGIN|GENERIC|PORT))", 
-                                            Qt::CaseInsensitive);
 
-    /*! Port declaration is <port_names> : <direction> <type> [<default>] [pragma] ; [description]    
-     *  A pragma e.g. synthesis translate_off may be inserted in the declaration before the ending
-     *  semicolon or string's end.
-     */
-    const QRegExp PORT_EXP = QRegExp("(" + NAMES + ")+\\s*[:]\\s*(" + DIRECTION + ")\\s+(" + PORT_TYPE + ")" +
-                                     "(?:\\s*" + DEFAULT + ")?(?:\\s*" + PRAGMA + ")?(?:" + DECLARATION_END + ")",
-                                     Qt::CaseInsensitive);
 
-    //! Type definition in port declaration is <typename>[(<left> downto <right>)].
-    const QRegExp TYPE_EXP = QRegExp(PORT_TYPE);
-
-    //! Generics are declared inside entity by GENERIC ( <generic_declarations> );
-    const QRegExp GENERICS_BEGIN_EXP = QRegExp("(GENERIC)\\s*[(]", Qt::CaseInsensitive);    
-
-    const QRegExp GENERICS_END_EXP = QRegExp("[)]\\s*[;](?=(?:\\s*(" + COMMENT + ")\\s*)*(END|BEGIN|PORT))*");   
- 
-    //! Generic declaration is <generic_names> : <type> [<default>] [pragma]; [description]    
-    const QRegExp GENERIC_EXP = QRegExp("(" + NAMES + ")\\s*[:]\\s*(\\w+)(?:\\s*" + DEFAULT + ")?" +
-                                        "(?:\\s*" + PRAGMA + ")?(?:" + DECLARATION_END + ")", 
-                                        Qt::CaseInsensitive);
 }
 
 #endif // VHDLSYNTAX_H
