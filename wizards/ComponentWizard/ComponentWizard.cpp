@@ -46,7 +46,8 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
     setPage(ComponentWizardPages::GENERAL, new ComponentWizardGeneralInfoPage(component, this));    
     setPage(ComponentWizardPages::FILES, new ComponentWizardFilesPage(this));
     setPage(ComponentWizardPages::DEPENDENCY, new ComponentWizardDependencyPage(pluginMgr, this));    
-    setPage(ComponentWizardPages::VHDL_IMPORT, new ComponentWizardVhdlImportPage(component, handler, this));
+    setPage(ComponentWizardPages::VHDL_IMPORT, new ComponentWizardVhdlImportPage(component, handler, pluginMgr, 
+        this));
     setPage(ComponentWizardPages::CONCLUSION, new ComponentWizardConclusionPage(handler, this));
 }
 

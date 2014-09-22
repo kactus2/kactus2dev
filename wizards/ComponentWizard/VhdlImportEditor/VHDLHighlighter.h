@@ -12,6 +12,8 @@
 #ifndef VHDLHIGHLIGHTER_H
 #define VHDLHIGHLIGHTER_H
 
+#include <Plugins/PluginSystem/Highlighter.h>
+
 #include <QObject>
 #include <QTextCharFormat>
 #include <QPlainTextEdit>
@@ -19,7 +21,7 @@
 //-----------------------------------------------------------------------------
 //! Source file highlighter for VHDL files.
 //-----------------------------------------------------------------------------
-class VHDLHighlighter : public QObject
+class VHDLHighlighter : public QObject, public Highlighter
 {
     Q_OBJECT
 
@@ -35,23 +37,11 @@ public:
 	//! The destructor.
 	~VHDLHighlighter();
 
-    /*!
-     *  Registers a new highlight source for the highlighter.
-     *
-     *      @param [in] highlightSource   The highlight source to register.
-     *
-     *      @remark The source must have and emit a signal with the following signature:
-     *              highlight(QString const& textToHighlight, QColor const& highlightColor);
-     */
-    void registerHighlightSource(QObject* highlightSource);
-
-public slots:
-    
-    //! Called when the font color of a text should be changed to the given color.
-    void applyFontColor(QString const& text, QColor const& color);
-
     //! Called when the text should be highlighted with the given color.
-    void applyHighlight(QString const& text, QColor const& highlightColor) const;
+    virtual void applyHighlight(QString const& text, QColor const& highlightColor);
+
+    //! Called when the font color of a text should be changed to the given color.
+    virtual void applyFontColor(QString const& text, QColor const& color);
 
 private:
 

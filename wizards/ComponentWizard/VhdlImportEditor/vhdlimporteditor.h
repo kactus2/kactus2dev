@@ -6,11 +6,14 @@
 // Date: 10.6.2013
 //
 // Description:
-// Used to parse VHDL files and generating IP-XACT packages of them.
+// Used to parse source files and generating IP-XACT packages of them.
 //-----------------------------------------------------------------------------
 
 #ifndef VHDLIMPORTEDITOR_H
 #define VHDLIMPORTEDITOR_H
+
+#include "ModelParameterEditorAdapter.h"
+#include "PortEditorAdapter.h"
 
 #include <IPXACTmodels/component.h>
 
@@ -23,16 +26,22 @@
 #include <QPushButton>
 #include <QPlainTextEdit>
 
-class ModelParameterEditor;
-class PortsEditor;
-class LibraryInterface;
 class FileSelector;
+class ImportRunner;
+class LibraryInterface;
+class ModelParameterEditor;
+class ModelParameterEditorAdapter;
+class PluginManager;
+class PortEditorAdapter;
+class PortsEditor;
 class VhdlParser;
+class VHDLHighlighter;
 
 //-----------------------------------------------------------------------------
-//! Used to parse VHDL files and generating IP-XACT packages of them.
+//! Used to parse source files and generating IP-XACT packages of them.
 //-----------------------------------------------------------------------------
-class VhdlImportEditor : public QWidget {
+class VhdlImportEditor : public QWidget
+{
 	Q_OBJECT
 
 public:
@@ -45,7 +54,8 @@ public:
 	 *  @param [in]   parent    The owner of this widget.
 	 *
 	 */
-	VhdlImportEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget *parent);
+	VhdlImportEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
+        PluginManager const& pluginMgr, QWidget *parent);
 	
 	//! The destructor.
 	~VhdlImportEditor();
@@ -85,23 +95,59 @@ private slots:
 private:
 	
 	//! No copying
-	VhdlImportEditor(const VhdlImportEditor& other);
+	VhdlImportEditor(const VhdlImportEditor& other);    
 
 	//! No assignment
 	VhdlImportEditor& operator=(const VhdlImportEditor& other);
 
+    /*!
+     *  Sets the formatting of text in the source file displayer.
+     */
+    void setSourceDisplayFormatting();
+
+    /*!
+     *  Finds the file extensions for given file types.
+     *
+     *      @param [in] possibleFileTypes   The file types whose extensions to find.
+     *
+     *      @return The file extensions for the file types.
+     */
+    QStringList fileExtensionsForTypes(QStringList possibleFileTypes) const;
+
+
+    /*!
+     *  Loads a selected file to the source file display.
+     */
+    void loadFileToDisplay();
+
+    /*!
+     *  Gets the absolute path to the selected source file.
+     *
+     *      @return The absolute path to the selected source file.
+     */
+    QString selectedFileAbsolutePath() const;
+
+    /*!
+     *  Scrolls the source displayer to the first highlighted line, if any.
+     */
+    void scrollSourceDisplayToFirstHighlight() const;
+
     //! Creates the layout for the editor.            
     void setupLayout();
+
+    //-----------------------------------------------------------------------------
+    //! Data.
+    //-----------------------------------------------------------------------------
 
     //! Splitter for source file view and editors.
     QSplitter splitter_;
 
-	//! Path to the xml file containing the target component.
+	//! Path to the XML file containing the target component.
 	QString componentXmlPath_;
 
     QSharedPointer<Component> component_;
 
-    //! Top-level vhdl file absolute path.
+    //! Top-level source file relative path from component XML file.
     QString selectedSourceFile_;
 
 	//! Editor for the imported generics.
@@ -113,17 +159,26 @@ private:
     //! Display widget for selected source file content.
     QPlainTextEdit* sourceDisplayer_;
 
-    //! Used to select the top-level vhdl file.
+    //! Used to select the top-level source file.
     FileSelector* fileSelector_;
 
-    //! Button for opening an editor for vhdl file.
+    //! Button for opening an editor for the selected source file.
     QPushButton* editButton_;
 
     //! Button for refreshing ports and model parameters from the selected file.
     QPushButton* refreshButton_;
+    
+    //! Adapter for ports editor to be used in plugins.
+    PortEditorAdapter portAdapter_;
 
-    //! Parser for the vhdl code file.
-    VhdlParser* vhdlParser_;
+    //! Adapter for model parameter editor to be used in plugins.
+    ModelParameterEditorAdapter modelParameterAdapter_;
+
+    //! Highlighter for source display.
+    VHDLHighlighter* highlighter_;
+
+    //! Runner for all available import parsers.
+    ImportRunner* runner_;
 };
 
 #endif // VHDLIMPORTEDITOR_H

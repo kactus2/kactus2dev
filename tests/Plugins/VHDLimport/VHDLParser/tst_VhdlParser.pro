@@ -16,6 +16,8 @@ TARGET = tst_VhdlParser
 QT += core xml gui widgets testlib
 CONFIG += testcase
 
+DEFINES += VHDLIMPORT_LIB
+
 win32:CONFIG(release, debug|release) {
     LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodels
     DESTDIR = ./release

@@ -1,16 +1,17 @@
 #-----------------------------------------------------------------------------
-# File: widgets.pro
+# File: VHDLimport.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
-# Date: 05.09.2014
+# Date: 19.09.2014
 #
 # Description:
-# Qt project file template for running unit tests in widgets.
+# Qt project file template for running unit tests for VHDLimport.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = subdirs
 
 CONFIG += testcase
-
-SUBDIRS += vhdlParser/tst_VhdlParser.pro
+SUBDIRS += VHDLPortParser/tst_VHDLPortParser.pro \
+		   VHDLGenericParser/tst_VHDLGenericParser.pro \
+		   VHDLParser/tst_VHDLParser.pro 

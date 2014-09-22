@@ -1,20 +1,21 @@
-/* 
- *
- *  Created on: 4.7.2013
- *      Author: Esko Pekkarinen
- * 		filename: VhdlSyntax.h
- * 		
- * 		Description: This file contains common elements of the vhdl language.
- */
+//-----------------------------------------------------------------------------
+// File: VhdlSyntax.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Esko Pekkarinen
+// Date: 4.7.2013
+//
+// Description:
+// This file contains common elements of the VHDL language
+//-----------------------------------------------------------------------------
 
 #ifndef VHDLSYNTAX_H
 #define VHDLSYNTAX_H
 
 #include <QRegExp>
 
-
-namespace VhdlSyntax {
-
+namespace VhdlSyntax
+{
     //! Whitespace without line end.
     const QString SPACE = "[ \\t]*";    
 
@@ -39,13 +40,6 @@ namespace VhdlSyntax {
     //! Mathematical expressions e.g. x or x + y.
     const QString MATH_EXP = "(?:\\w+)(?:\\s*(?:" + OPERATIONS + ")\\s*(?:\\w+))*";
 
-    //! VHDL port type definition is <typename>[(<left> downto <right>)].
-    const QString PORT_TYPE = "(?:\\w+)(?:\\s*[(]\\s*(?:" + VhdlSyntax::MATH_EXP +
-        ")\\s+\\w+\\s+(?:" + VhdlSyntax::MATH_EXP + ")\\s*[)])?";
-
-    //! Type definition in port declaration is <typename>[(<left> downto <right>)].
-    const QRegExp TYPE_EXP = QRegExp(PORT_TYPE);
-
     //! VHDL default value definition is mathematical expression, vector assignment with others, logical value
     // or other string value.
     const QString DEFAULT = "[:][=]\\s*((?:" + MATH_EXP + ")|" + OTHERS_EXP + "|[^\\s:;]+)";
@@ -65,10 +59,8 @@ namespace VhdlSyntax {
                                     "(?:" + SPACE + "(?:" + COMMENT + ")?(?=(?:\\s*(?:" + COMMENT + ")*\\s*)*$))";
     
     //! Entity declaration is ENTITY <name> IS ... END [ENTITY] [<name>];
-    const QRegExp ENTITY_BEGIN_EXP = QRegExp("(?:ENTITY)\\s+(\\w+)\\s+(?:IS)", Qt::CaseInsensitive);   
+    const QRegExp ENTITY_BEGIN_EXP = QRegExp("(ENTITY)\\s+(\\w+)\\s+(IS)", Qt::CaseInsensitive);   
     const QRegExp ENTITY_END_EXP = QRegExp("(END)\\s*(ENTITY)?\\s*(\\w+)?\\s*[;]", Qt::CaseInsensitive);
-
-
 
 }
 

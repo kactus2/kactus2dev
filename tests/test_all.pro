@@ -13,6 +13,5 @@ TEMPLATE = subdirs
 
 CONFIG += testcase
 
-SUBDIRS += Plugins/plugins.pro \
-		   common/common.pro
+SUBDIRS += Plugins/plugins.pro 
            

@@ -11,8 +11,9 @@
 
 #include "VHDLGenericParser.h"
 
+#include "VhdlSyntax.h"
+
 #include <common/KactusColors.h>
-#include <common/widgets/vhdlParser/VhdlSyntax.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/model.h>
@@ -34,7 +35,8 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: VHDLGenericParser::VHDLGenericParser()
 //-----------------------------------------------------------------------------
-VHDLGenericParser::VHDLGenericParser(QObject* parent): QObject(parent)
+VHDLGenericParser::VHDLGenericParser(QObject* parent): QObject(parent), generics_(), 
+    highlighter_(0), genericVisualizer_(0)
 {
 
 }
@@ -55,7 +57,40 @@ void VHDLGenericParser::runParser(QString const& input, QSharedPointer<Component
     foreach(QString declaration, findGenericDeclarations(input))
     {
         createModelParameterFromDeclaration(declaration, targetComponent);
-        emit highlight(declaration, KactusColors::HW_BUS_COMPONENT);
+        if (highlighter_)
+        {
+            highlighter_->applyHighlight(declaration, KactusColors::HW_BUS_COMPONENT);
+        }        
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLGenericParser::setHighlighter()
+//-----------------------------------------------------------------------------
+void VHDLGenericParser::setHighlighter(Highlighter* highlighter)
+{
+    highlighter_ = highlighter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLGenericParser::setModelParameterVisualizer()
+//-----------------------------------------------------------------------------
+void VHDLGenericParser::setModelParameterVisualizer(ModelParameterVisualizer* visualizer)
+{
+    genericVisualizer_ = visualizer;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLGenericParser::removePreviousGenerics()
+//-----------------------------------------------------------------------------
+void VHDLGenericParser::removePreviousGenerics()
+{
+    if (genericVisualizer_)
+    {
+        foreach (QSharedPointer<ModelParameter> parsedGeneric, generics_)
+        {
+            genericVisualizer_->removeModelParameter(parsedGeneric);
+        }
     }
 }
 
@@ -85,8 +120,13 @@ void VHDLGenericParser::createModelParameterFromDeclaration(QString const& decla
         parameter->setValue(defaultValue);
         parameter->setUsageType("nontyped");
 
-        emit add(parameter, declaration);
+        if (genericVisualizer_)
+        {
+            genericVisualizer_->addModelParameter(parameter);
+        }
+
         targetComponent->getModel()->addModelParameter(parameter);
+        generics_.append(parameter);
     } 
 }
 
@@ -117,12 +157,20 @@ QStringList VHDLGenericParser::findGenericDeclarations(QString const& input) con
 //-----------------------------------------------------------------------------
 QString VHDLGenericParser::findGenericsSection(QString const &input) const
 {
-    int beginIndex = GENERICS_BEGIN_EXP.indexIn(input);
-    beginIndex += GENERICS_BEGIN_EXP.matchedLength();
+    int entityBegin = VhdlSyntax::ENTITY_BEGIN_EXP.indexIn(input);
+    int entityEnd = VhdlSyntax::ENTITY_END_EXP.indexIn(input, entityBegin);
 
-    int endIndex = GENERICS_END_EXP.indexIn(input, beginIndex);
+    int genericsBeginIndex = GENERICS_BEGIN_EXP.indexIn(input);
+    genericsBeginIndex += GENERICS_BEGIN_EXP.matchedLength();
 
-    return input.mid(beginIndex, endIndex - beginIndex);
+    if (genericsBeginIndex > entityEnd)
+    {
+        return QString();
+    }
+
+    int genericsEndIndex = GENERICS_END_EXP.indexIn(input, genericsBeginIndex);
+
+    return input.mid(genericsBeginIndex, genericsEndIndex - genericsBeginIndex);
 }
 
 //-----------------------------------------------------------------------------

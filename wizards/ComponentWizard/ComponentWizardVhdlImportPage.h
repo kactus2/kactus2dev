@@ -19,6 +19,7 @@
 class Component;
 class LibraryInterface;
 class VhdlImportEditor;
+class PluginManager;
 //-----------------------------------------------------------------------------
 //! Intro page for the component wizard.
 //-----------------------------------------------------------------------------
@@ -34,6 +35,7 @@ public:
      */
     ComponentWizardVhdlImportPage(QSharedPointer<Component> component,
 		 LibraryInterface* handler,
+         PluginManager const& pluginMgr,
 		 QWidget* parent);
 
     /*!

@@ -32,12 +32,21 @@ VHDLHighlighter::~VHDLHighlighter()
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLHighlighter::registerParser()
+// Function: VHDLHighlighter::highlight()
 //-----------------------------------------------------------------------------
-void VHDLHighlighter::registerHighlightSource(QObject* highlightSource)
+void VHDLHighlighter::applyHighlight(QString const& text, QColor const& highlightColor)
 {
-    connect(highlightSource, SIGNAL(highlight(QString const&, QColor const&)), 
-        this, SLOT(applyHighlight(QString const&, QColor const&)), Qt::UniqueConnection);
+    int beginIndex = display_->toPlainText().indexOf(text);
+    if (beginIndex != -1)
+    {
+        QTextCharFormat highlighFormat;
+        highlighFormat.setBackground(QBrush(highlightColor));
+
+        QTextCursor cursor = display_->textCursor();
+        cursor.setPosition(beginIndex);
+        cursor.setPosition(beginIndex + text.length(), QTextCursor::KeepAnchor);
+        cursor.setCharFormat(highlighFormat);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -54,24 +63,6 @@ void VHDLHighlighter::applyFontColor(QString const& text, QColor const& color)
 
         QTextCharFormat highlighFormat;
         highlighFormat.setForeground(QBrush(color));
-        cursor.setCharFormat(highlighFormat);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLHighlighter::highlight()
-//-----------------------------------------------------------------------------
-void VHDLHighlighter::applyHighlight(QString const& text, QColor const& highlightColor) const
-{
-    int beginIndex = display_->toPlainText().indexOf(text);
-    if (beginIndex != -1)
-    {
-        QTextCharFormat highlighFormat;
-        highlighFormat.setBackground(QBrush(highlightColor));
-
-        QTextCursor cursor = display_->textCursor();
-        cursor.setPosition(beginIndex);
-        cursor.setPosition(beginIndex + text.length(), QTextCursor::KeepAnchor);
         cursor.setCharFormat(highlighFormat);
     }
 }

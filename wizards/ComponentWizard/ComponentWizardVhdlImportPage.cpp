@@ -22,9 +22,9 @@
 // Function: ComponentWizardVhdlImportPage::ComponentWizardVhdlImportPage()
 //-----------------------------------------------------------------------------
 ComponentWizardVhdlImportPage::ComponentWizardVhdlImportPage(QSharedPointer<Component> component, 
-	LibraryInterface* handler, QWidget* parent)
+	LibraryInterface* handler, PluginManager const& pluginMgr, QWidget* parent)
     : QWizardPage(parent),
-      editor_(new VhdlImportEditor(component, handler, this))
+      editor_(new VhdlImportEditor(component, handler, pluginMgr, this))
 {
     setTitle(tr("Import VHDL"));
     setSubTitle(tr("Choose the top-level VHDL file to import ports and generics."));

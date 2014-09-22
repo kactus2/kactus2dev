@@ -362,7 +362,6 @@ CreateHelp
     <ClCompile Include="common\widgets\listManager\listmanagermodel.cpp" />
     <ClCompile Include="common\widgets\nameGroupBox\namegroupbox.cpp" />
     <ClCompile Include="common\widgets\parameterComboBox\parametercombobox.cpp" />
-    <ClCompile Include="common\widgets\vhdlParser\VhdlParser.cpp" />
     <ClCompile Include="common\widgets\viewSelector\viewselector.cpp" />
     <ClCompile Include="common\widgets\vlnvDisplayer\vlnvdisplayer.cpp" />
     <ClCompile Include="common\widgets\assistedTextEdit\AssistedTextEdit.cpp" />
@@ -993,6 +992,7 @@ CreateHelp
     <ClCompile Include="GeneratedFiles\moc_IEditProvider.cpp" />
     <ClCompile Include="GeneratedFiles\moc_impexpgroup.cpp" />
     <ClCompile Include="GeneratedFiles\moc_implementationgroup.cpp" />
+    <ClCompile Include="GeneratedFiles\moc_ImportRunner.cpp" />
     <ClCompile Include="GeneratedFiles\moc_interfaceeditor.cpp" />
     <ClCompile Include="GeneratedFiles\moc_interfacemodeselector.cpp" />
     <ClCompile Include="GeneratedFiles\moc_interfacemodestack.cpp" />
@@ -1088,6 +1088,7 @@ CreateHelp
     <ClCompile Include="GeneratedFiles\moc_PluginListDialog.cpp" />
     <ClCompile Include="GeneratedFiles\moc_PluginSettingsPage.cpp" />
     <ClCompile Include="GeneratedFiles\moc_PluginUtilityAdapter.cpp" />
+    <ClCompile Include="GeneratedFiles\moc_PortEditorAdapter.cpp" />
     <ClCompile Include="GeneratedFiles\moc_PortGenerationRow.cpp" />
     <ClCompile Include="GeneratedFiles\moc_PortGenerationTableModel.cpp" />
     <ClCompile Include="GeneratedFiles\moc_portlistmodel.cpp" />
@@ -1168,14 +1169,11 @@ CreateHelp
     <ClCompile Include="GeneratedFiles\moc_vhdlcomponentinstance.cpp" />
     <ClCompile Include="GeneratedFiles\moc_vhdlgenerator2.cpp" />
     <ClCompile Include="GeneratedFiles\moc_vhdlgeneric.cpp" />
-    <ClCompile Include="GeneratedFiles\moc_VHDLGenericParser.cpp" />
     <ClCompile Include="GeneratedFiles\moc_VHDLHighlighter.cpp" />
     <ClCompile Include="GeneratedFiles\moc_vhdlimporteditor.cpp" />
     <ClCompile Include="GeneratedFiles\moc_vhdlnamevalidator.cpp" />
     <ClCompile Include="GeneratedFiles\moc_vhdlobject.cpp" />
-    <ClCompile Include="GeneratedFiles\moc_VhdlParser.cpp" />
     <ClCompile Include="GeneratedFiles\moc_vhdlport.cpp" />
-    <ClCompile Include="GeneratedFiles\moc_VHDLPortParser.cpp" />
     <ClCompile Include="GeneratedFiles\moc_vhdlsignal.cpp" />
     <ClCompile Include="GeneratedFiles\moc_vieweditor.cpp" />
     <ClCompile Include="GeneratedFiles\moc_viewseditor.cpp" />
@@ -1250,9 +1248,6 @@ CreateHelp
     <ClCompile Include="Plugins\PluginSystem\PluginListDialog.cpp" />
     <ClCompile Include="Plugins\PluginSystem\PluginManager.cpp" />
     <ClCompile Include="Plugins\PluginSystem\PluginUtilityAdapter.cpp" />
-    <ClCompile Include="Plugins\VHDLParser\EquationParser.cpp" />
-    <ClCompile Include="Plugins\VHDLParser\VHDLGenericParser.cpp" />
-    <ClCompile Include="Plugins\VHDLParser\VHDLPortParser.cpp" />
     <ClCompile Include="settings\FileTypesDelegate.cpp" />
     <ClCompile Include="settings\FileTypeSettingsPage.cpp" />
     <ClCompile Include="settings\FileTypesModel.cpp" />
@@ -1289,6 +1284,9 @@ CreateHelp
     <ClCompile Include="wizards\ComponentWizard\ComponentWizardGeneralInfoPage.cpp" />
     <ClCompile Include="wizards\ComponentWizard\ComponentWizardIntroPage.cpp" />
     <ClCompile Include="wizards\ComponentWizard\ComponentWizardVhdlImportPage.cpp" />
+    <ClCompile Include="wizards\ComponentWizard\ImportRunner.cpp" />
+    <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\ModelParameterEditorAdapter.cpp" />
+    <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\PortEditorAdapter.cpp" />
     <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\VHDLHighlighter.cpp" />
     <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\vhdlimporteditor.cpp" />
   </ItemGroup>
@@ -1567,9 +1565,105 @@ CreateHelp
     <ResourceCompile Include="Kactus2.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Plugins\PluginSystem\ImportElementParser.h" />
+    <ClInclude Include="Plugins\PluginSystem\Highlighter.h" />
+    <ClInclude Include="Plugins\PluginSystem\HighlightSource.h" />
     <ClInclude Include="Plugins\PluginSystem\ImportParser.h" />
-    <ClInclude Include="Plugins\VHDLParser\EquationParser.h" />
+    <CustomBuild Include="wizards\ComponentWizard\VhdlImportEditor\ModelParameterEditorAdapter.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+      </Command>
+    </CustomBuild>
+    <CustomBuild Include="wizards\ComponentWizard\VhdlImportEditor\PortEditorAdapter.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing PortEditorAdapter.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing PortEditorAdapter.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing PortEditorAdapter.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\addressSpaces\localMemoryMap" "-I.\common\graphicsItems" "-I.\IPXactWrapper\ComponentEditor\visualization" "-I.\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer" "-I.\IPXactWrapper\ComponentEditor\memoryMaps" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing PortEditorAdapter.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">Moc%27ing PortEditorAdapter.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|x64'">Moc%27ing PortEditorAdapter.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp"</Command>
+    </CustomBuild>
+    <CustomBuild Include="wizards\ComponentWizard\ImportRunner.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing ImportRunner.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing ImportRunner.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing ImportRunner.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\addressSpaces\localMemoryMap" "-I.\common\graphicsItems" "-I.\IPXactWrapper\ComponentEditor\visualization" "-I.\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer" "-I.\IPXactWrapper\ComponentEditor\memoryMaps" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing ImportRunner.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">Moc%27ing ImportRunner.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|x64'">Moc%27ing ImportRunner.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp"</Command>
+    </CustomBuild>
     <CustomBuild Include="wizards\ComponentWizard\VhdlImportEditor\VHDLHighlighter.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing VHDLHighlighter.h...</Message>
@@ -10801,6 +10895,8 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB  "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp"</Command>
     </CustomBuild>
+    <ClInclude Include="Plugins\PluginSystem\ModelParameterSource.h" />
+    <ClInclude Include="Plugins\PluginSystem\ModelParameterVisualizer.h" />
     <ClInclude Include="Plugins\PluginSystem\PluginInfoWidget.h" />
     <CustomBuild Include="Plugins\PluginSystem\PluginListDialog.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -10882,58 +10978,8 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB  "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp"</Command>
     </CustomBuild>
-    <CustomBuild Include="Plugins\VHDLParser\VHDLGenericParser.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing VHDLGenericParser.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing VHDLGenericParser.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing VHDLGenericParser.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\addressSpaces\localMemoryMap" "-I.\common\graphicsItems" "-I.\IPXactWrapper\ComponentEditor\visualization" "-I.\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer" "-I.\IPXactWrapper\ComponentEditor\memoryMaps" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing VHDLGenericParser.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">Moc%27ing VHDLGenericParser.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|x64'">Moc%27ing VHDLGenericParser.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp"</Command>
-    </CustomBuild>
-    <CustomBuild Include="Plugins\VHDLParser\VHDLPortParser.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing VHDLPortParser.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing VHDLPortParser.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing VHDLPortParser.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\addressSpaces\localMemoryMap" "-I.\common\graphicsItems" "-I.\IPXactWrapper\ComponentEditor\visualization" "-I.\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer" "-I.\IPXactWrapper\ComponentEditor\memoryMaps" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing VHDLPortParser.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">Moc%27ing VHDLPortParser.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|x64'">Moc%27ing VHDLPortParser.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp"</Command>
-    </CustomBuild>
+    <ClInclude Include="Plugins\PluginSystem\PortSource.h" />
+    <ClInclude Include="Plugins\PluginSystem\PortVisualizer.h" />
     <ClInclude Include="wizards\BusInterfaceWizard\BusInterfaceWizard.h" />
     <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizardBusDefinitionPage.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -11564,33 +11610,6 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB  "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp"</Command>
     </CustomBuild>
-    <CustomBuild Include="common\widgets\vhdlParser\VhdlParser.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing VhdlParser.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing VhdlParser.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing VhdlParser.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\addressSpaces\localMemoryMap" "-I.\common\graphicsItems" "-I.\IPXactWrapper\ComponentEditor\visualization" "-I.\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer" "-I.\IPXactWrapper\ComponentEditor\memoryMaps" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing VhdlParser.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DKACTUS2_EXPORTS -DQT_HELP_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtHelp" "-I." "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include" "-I.\GeneratedFiles" "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">Moc%27ing VhdlParser.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB  "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|x64'">Moc%27ing VhdlParser.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB  "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp"</Command>
-    </CustomBuild>
-    <ClInclude Include="common\widgets\vhdlParser\VhdlSyntax.h" />
     <CustomBuild Include="mainwindow\NewWorkspaceDialog.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing NewWorkspaceDialog.h...</Message>

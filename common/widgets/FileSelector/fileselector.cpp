@@ -24,6 +24,31 @@ filters_() {
 FileSelector::~FileSelector() {
 }
 
+//-----------------------------------------------------------------------------
+// Function: FileSelector::addFilter()
+//-----------------------------------------------------------------------------
+void FileSelector::addFilter( const QString& suffix )
+{
+    if (suffix.isEmpty()) {
+        return;
+    }
+
+    // add the new filter
+    filters_.append(suffix);
+
+    // and refresh the combo box to display changes
+    refresh();
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileSelector::clearFilters()
+//-----------------------------------------------------------------------------
+void FileSelector::clearFilters()
+{
+    filters_.clear();
+    refresh();
+}
+
 void FileSelector::refresh() {
 	disconnect(this, SIGNAL(currentIndexChanged(int)),
 		this, SLOT(onIndexChange(int)));
@@ -100,14 +125,3 @@ void FileSelector::onIndexChange( int newIndex ) {
 	emit fileSelected(filePath);
 }
 
-void FileSelector::addFilter( const QString& suffix ) {
-	if (suffix.isEmpty()) {
-		return;
-	}
-
-	// add the new filter
-	filters_.append(suffix);
-
-	// and refresh the combo box to display changes
-	refresh();
-}

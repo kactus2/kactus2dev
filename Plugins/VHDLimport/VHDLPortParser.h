@@ -17,9 +17,11 @@
 #include <QSharedPointer>
 #include <QString>
 
+#include "EquationParser.h"
+
 #include <Plugins/PluginSystem/ImportParser.h>
 #include <Plugins/PluginSystem/HighlightSource.h>
-#include <Plugins/VHDLParser/EquationParser.h>
+#include <Plugins/PluginSystem/PortSource.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 
@@ -28,20 +30,44 @@ class Port;
 //-----------------------------------------------------------------------------
 //! Parser for VHDL ports.
 //-----------------------------------------------------------------------------
-class VHDLPortParser : public QObject, public ImportParser
+class VHDLPortParser : public QObject, public HighlightSource, public PortSource
 {
     Q_OBJECT
 
 public:
 
-	//! The constructor.
+	/*!
+	 *  The constructor..
+	 *
+	 *      @param [in] parent   The parent object.	 
+	 */
 	VHDLPortParser(QObject* parent = 0);
 
 	//! The destructor.
 	virtual ~VHDLPortParser();
 
+    /*!
+     *  Runs the port parsing for the given input and adds the parsed ports to the given component.
+     *
+     *      @param [in] input               The input text to parse.
+     *      @param [in] targetComponent     The component to add all the imported ports to.
+     */
     virtual void runParser(QString const& input, QSharedPointer<Component> targetComponent);
  
+    /*!
+     *  Sets the given highlighter to be used by the port parser.
+     *
+     *      @param [in] highlighter   The highlighter to use.          
+     */
+    virtual void setHighlighter(Highlighter* highlighter);
+    
+    /*!
+     *  Sets the given visualizer to be used by the port parser.
+     *
+     *      @param [in] visualizer   The visualizer to use.          
+     */
+    virtual void setPortVisualizer(PortVisualizer* visualizer);
+
     /*!
      *  Parses the port left bound value from a VHDL port declaration.
      *
@@ -71,13 +97,15 @@ public:
      */
     QString parseDefaultValue(QString const& input) const;
 
+    /*!
+     *  Removes all previously parsed ports from the visualization.
+     */
+    void removePreviousPorts();
+
 signals:
 
-    //! Emitted when a port should be added to target component.
+    //! Emitted when a port has been added to target component.
     void add(QSharedPointer<Port> port, QString const& declaration) const;
-
-    //! Emitted when a port declaration should be highlighted.
-    void highlight(QString const& declaration, QColor const& highlightColor) const;
 
 private:
 
@@ -194,6 +222,15 @@ private:
      *      @return The vector bounds.
      */
     QString parseVectorBounds(QString const& declaration) const;
+
+    //! Parsed ports.
+    QList<QSharedPointer<Port> > ports_;
+
+    //! The highlighter to use.
+    Highlighter* highlighter_;
+
+    //! The visualizer to use.
+    PortVisualizer* portVisualizer_;
 };
 
 #endif // VHDLPORTPARSER_H

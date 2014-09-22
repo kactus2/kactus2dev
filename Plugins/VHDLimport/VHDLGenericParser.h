@@ -13,6 +13,8 @@
 #define VHDLGENERICPARSER_H
 
 #include <Plugins/PluginSystem/ImportParser.h>
+#include <Plugins/PluginSystem/HighlightSource.h>
+#include <Plugins/PluginSystem/ModelParameterSource.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -22,7 +24,7 @@ class ModelParameter;
 //-----------------------------------------------------------------------------
 //! Parser for VHDL generics.
 //-----------------------------------------------------------------------------
-class VHDLGenericParser : public QObject, public ImportParser
+class VHDLGenericParser : public QObject, public HighlightSource, public ModelParameterSource
 {    
     Q_OBJECT
 public:
@@ -33,16 +35,32 @@ public:
 	//! The destructor.
 	virtual ~VHDLGenericParser();
 
-
+    /*!
+     *  Runs the generic parser for the given input and adds the model parameters to the given component.
+     *
+     *      @param [in] input               The input text to parse.
+     *      @param [in] targetComponent     The component to add the model parameters to.
+     */
     virtual void runParser(QString const& input, QSharedPointer<Component> targetComponent);
 
+    /*!
+     *  Sets the given highlighter to be used by the generic parser.
+     *
+     *      @param [in] highlighter   The highlighter to use.          
+     */
+    virtual void setHighlighter(Highlighter* highlighter);
+        
+    /*!
+     *  Sets the given visualizer to be used by the generic parser.
+     *
+     *      @param [in] visualizer   The visualizer to use.          
+     */
+    virtual void setModelParameterVisualizer(ModelParameterVisualizer* visualizer);
 
-signals:
-
-    void add(QSharedPointer<ModelParameter> modelParameter, QString const& declaration) const;
-
-    //! Emitted when a generic declaration should be highlighted.
-    void highlight(QString const& declaration, QColor const& highlightColor) const;
+    /*!
+     *  Removes all previously parsed model parameters from the visualization.
+     */
+    void removePreviousGenerics();
 
 private:
 
@@ -96,6 +114,20 @@ private:
      */
     void createModelParameterFromDeclaration(QString const& declaration, 
         QSharedPointer<Component> targetComponent);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! Parsed generics.
+    QList<QSharedPointer<ModelParameter> > generics_;
+
+    //! The highlighter to use.
+    Highlighter* highlighter_;
+
+    //! Visualizer e.g. editor for parsed generics.
+    ModelParameterVisualizer* genericVisualizer_;
+    
 };
 
 #endif // VHDLGENERICPARSER_H

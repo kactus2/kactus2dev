@@ -6,22 +6,25 @@
 // Date: 12.09.2014
 //
 // Description:
-// Parser for simple math equations.
+// Parser for simple math equations in VHDL.
 //-----------------------------------------------------------------------------
 
 #include "EquationParser.h"
 
 #include <IPXACTmodels/modelparameter.h>
 
-#include <common/widgets/vhdlParser/VhdlSyntax.h>
-
 #include <qmath.h>
 
 namespace
 {
-    const QRegExp POWER = QRegExp("[/*][/*]");
-    const QRegExp MULTIPLYDIVIDE = QRegExp("[/*/]");
-    
+    const QRegExp POWER = QRegExp("[/*][/*]");          //! Power operator **.
+    const QRegExp MULTIPLYDIVIDE = QRegExp("[/*/]");    //! Multiply * and divide /.
+
+    //! Basic arithmetic operators.
+    const QString OPERATOR = "[+-]|" + POWER.pattern() + "|" + MULTIPLYDIVIDE.pattern(); 
+
+    //! Basic arithmetic operations e.g. x + y or x*y.
+    const QRegExp OPERATION = QRegExp("(\\w+)(?:\\s*(?:" + OPERATOR + ")\\s*(\\w+))*");
 }
 
 //-----------------------------------------------------------------------------
@@ -88,15 +91,14 @@ int EquationParser::parse(QString const& equation) const
 //-----------------------------------------------------------------------------
 QStringList EquationParser::toStringList(QString const& equation) const
 {    
-    QRegExp equationExp = QRegExp(QString(VhdlSyntax::MATH_EXP).replace("(?:","("));
-    equationExp.indexIn(equation);  
+    OPERATION.indexIn(equation);  
 
-    QString firstTerm = equationExp.cap(1);
-    QString otherTerms = equationExp.cap(0).mid(firstTerm.length());
+    QString firstTerm = OPERATION.cap(1);
+    QString otherTerms = OPERATION.cap(0).mid(firstTerm.length());
 
     QStringList listedEquation = QStringList(firstTerm);
 
-    static QRegExp nextTerm = QRegExp("(" + VhdlSyntax::OPERATIONS + ")\\s*(\\w+)");
+    static QRegExp nextTerm = QRegExp("(" + OPERATOR + ")\\s*(\\w+)");
     int index = 0;
     while (nextTerm.indexIn(otherTerms, index) != -1)
     {

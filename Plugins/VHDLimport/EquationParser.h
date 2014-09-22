@@ -6,7 +6,7 @@
 // Date: 12.09.2014
 //
 // Description:
-// Parser for simple math equations.
+// Parser for simple math equations in VHDL.
 //-----------------------------------------------------------------------------
 
 #ifndef EQUATIONPARSER_H
@@ -18,7 +18,7 @@
 class ModelParameter;
 
 //-----------------------------------------------------------------------------
-//! Parser for simple math equations.
+//! Parser for simple math equations in VHDL.
 //-----------------------------------------------------------------------------
 class EquationParser 
 {
@@ -45,6 +45,13 @@ private:
 	EquationParser(EquationParser const& rhs);
 	EquationParser& operator=(EquationParser const& rhs);
    
+    /*!
+     *  Converts a given equation to a list of operands and operations.
+     *
+     *      @param [in] equation   The equation to convert.
+     *
+     *      @return List of operands and operations in the equation.
+     */
     QStringList toStringList(QString const& equation) const;
 
     /*!

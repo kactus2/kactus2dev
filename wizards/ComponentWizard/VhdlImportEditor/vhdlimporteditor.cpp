@@ -6,19 +6,23 @@
 // Date: 10.6.2013
 //
 // Description:
-// Used to parse VHDL files and generating IP-XACT packages of them.
+// Used to parse source files and generating IP-XACT packages of them.
 //-----------------------------------------------------------------------------
 
 #include "vhdlimporteditor.h"
 
+#include "PortEditorAdapter.h"
+#include "ModelParameterEditorAdapter.h"
+
 #include <common/widgets/FileSelector/fileselector.h>
-#include <common/widgets/vhdlParser/VhdlParser.h>
 
 #include <editors/ComponentEditor/modelParameters/modelparametereditor.h>
 #include <editors/ComponentEditor/ports/portseditor.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <wizards/ComponentWizard/ImportRunner.h>
+#include <wizards/ComponentWizard/VhdlImportEditor/VHDLHighlighter.h>
 
 #include <QApplication>
 #include <QHBoxLayout>
@@ -26,12 +30,17 @@
 #include <QLabel>
 #include <QFileDialog>
 #include <QDesktopServices>
+#include <QMessageBox>
+#include <QScrollBar>
+#include <QTextStream>
+#include <QTextBlock>
 
 //-----------------------------------------------------------------------------
 // Function: VhdlImportEditor::VhdlImportEditor()
 //-----------------------------------------------------------------------------
 VhdlImportEditor::VhdlImportEditor(QSharedPointer<Component> component, 
 	LibraryInterface* handler,
+    PluginManager const& pluginMgr,
 	QWidget *parent):
     QWidget(parent),
     splitter_(Qt::Vertical, this),
@@ -44,7 +53,10 @@ VhdlImportEditor::VhdlImportEditor(QSharedPointer<Component> component,
     fileSelector_(new FileSelector(component, this)),
     editButton_(new QPushButton(tr("Open editor"), this)),
     refreshButton_(new QPushButton(QIcon(":/icons/common/graphics/refresh.png"), "", this)),
-    vhdlParser_(new VhdlParser(sourceDisplayer_, this))
+    highlighter_(new VHDLHighlighter(sourceDisplayer_, this)),
+    portAdapter_(portEditor_),
+    modelParameterAdapter_(modelParameterEditor_),
+    runner_(new ImportRunner(this))
 {
 	Q_ASSERT(component);
 
@@ -52,36 +64,18 @@ VhdlImportEditor::VhdlImportEditor(QSharedPointer<Component> component,
 	modelParameterEditor_->setAllowImportExport(false);
 	portEditor_->setAllowImportExport(false);
 
-    fileSelector_->addFilter("vhd");
-    fileSelector_->addFilter("vhdl");
+    runner_->setHighlighter(highlighter_);
+    runner_->setPortVisualizer(&portAdapter_);
+    runner_->setModelParameterVisualizer(&modelParameterAdapter_);
+    runner_->loadImportPlugins(pluginMgr);
 
-    QFont font("Courier");
-    font.setStyleHint(QFont::Monospace);
-    font.setFixedPitch(true);
-    font.setPointSize(9);
+    setSourceDisplayFormatting();
 
-    sourceDisplayer_->setFont(font);
-    sourceDisplayer_->setTabStopWidth(4 * fontMetrics().width(' '));
-    sourceDisplayer_->setReadOnly(true);
-    sourceDisplayer_->setCursorWidth(0);
+    connect(modelParameterEditor_, SIGNAL(contentChanged()),
+        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-    // Connections between model parameter editor and vhdlParser.
-	connect(modelParameterEditor_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(vhdlParser_, SIGNAL(add(QSharedPointer<ModelParameter>)),
-		modelParameterEditor_, SLOT(addModelParameter(QSharedPointer<ModelParameter>)), Qt::UniqueConnection);
-	connect(vhdlParser_, SIGNAL(removeGeneric(QSharedPointer<ModelParameter>)),
-		modelParameterEditor_, SLOT(removeModelParameter(QSharedPointer<ModelParameter>)), Qt::UniqueConnection);
-    connect(modelParameterEditor_, SIGNAL(parameterChanged(QSharedPointer<ModelParameter>)),
-             vhdlParser_, SLOT(editorChangedModelParameter(QSharedPointer<ModelParameter>)), Qt::UniqueConnection);
-
-    // Connections between port editor and vhdlParser.
-	connect(portEditor_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(vhdlParser_, SIGNAL(add(QSharedPointer<Port>)),
-		portEditor_, SLOT(addPort(QSharedPointer<Port>)), Qt::UniqueConnection);
-	connect(vhdlParser_, SIGNAL(removePort(QSharedPointer<Port>)),
-		portEditor_, SLOT(removePort(QSharedPointer<Port>)), Qt::UniqueConnection);
+    connect(portEditor_, SIGNAL(contentChanged()),
+        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(fileSelector_, SIGNAL(fileSelected(const QString&)),
         this, SLOT(onFileSelected(const QString&)), Qt::UniqueConnection);
@@ -105,7 +99,15 @@ VhdlImportEditor::~VhdlImportEditor()
 //-----------------------------------------------------------------------------
 void VhdlImportEditor::initializeFileSelection()
 {
-    fileSelector_->refresh();
+    QStringList possibleFileTypes = runner_->importFileTypes();
+
+    fileSelector_->clearFilters();
+
+    QStringList possibleSuffixes = fileExtensionsForTypes(possibleFileTypes);
+    foreach(QString possibleFileSuffix, possibleSuffixes)
+    {
+        fileSelector_->addFilter(possibleFileSuffix);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -119,14 +121,14 @@ bool VhdlImportEditor::checkEditorValidity() const
 //-----------------------------------------------------------------------------
 // Function: VhdlImportEditor::onFileSelected()
 //-----------------------------------------------------------------------------
-void VhdlImportEditor::onFileSelected( const QString& filePath )
+void VhdlImportEditor::onFileSelected(QString const& filePath)
 {
     if (filePath.isEmpty())
     {
         return;
     }
 
-    selectedSourceFile_ = General::getAbsolutePath(componentXmlPath_, filePath);
+    selectedSourceFile_ = filePath;
 
     onRefresh();
 }
@@ -138,7 +140,7 @@ void VhdlImportEditor::onOpenEditor()
 {
     if (!selectedSourceFile_.isEmpty())
     {
-        QDesktopServices::openUrl(QUrl::fromLocalFile(selectedSourceFile_));
+        QDesktopServices::openUrl(QUrl::fromLocalFile(selectedFileAbsolutePath()));
     }
 }
 
@@ -149,10 +151,101 @@ void VhdlImportEditor::onRefresh()
 {
     if (!selectedSourceFile_.isEmpty())
     {
-        vhdlParser_->parse(selectedSourceFile_, component_);
-        vhdlParser_->scrollToEntityBegin();
-        portEditor_->refresh();
-        modelParameterEditor_->refresh();
+        loadFileToDisplay();
+        runner_->parse(selectedSourceFile_, componentXmlPath_, component_);
+
+        scrollSourceDisplayToFirstHighlight();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VhdlImportEditor::setSourceEditorFormatting()
+//-----------------------------------------------------------------------------
+void VhdlImportEditor::setSourceDisplayFormatting()
+{
+    QFont font("Courier");
+    font.setStyleHint(QFont::Monospace);
+    font.setFixedPitch(true);
+    font.setPointSize(9);
+
+    sourceDisplayer_->setFont(font);
+    sourceDisplayer_->setTabStopWidth(4 * fontMetrics().width(' '));
+    sourceDisplayer_->setReadOnly(true);
+    sourceDisplayer_->setCursorWidth(0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VhdlImportEditor::fileSuffixesForTypes()
+//-----------------------------------------------------------------------------
+QStringList VhdlImportEditor::fileExtensionsForTypes(QStringList possibleFileTypes) const
+{
+    QStringList fileSuffixes;
+
+    QSettings settings;
+    settings.beginGroup("FileTypes");
+
+    foreach (QString const& fileType, possibleFileTypes)
+    {
+        settings.beginGroup(fileType);
+
+        QStringList fileTypeExtensions = settings.value("Extensions").toString().split(';');
+        foreach (QString const& extension, fileTypeExtensions)
+        {
+            if (!fileSuffixes.contains(extension))
+            {
+                fileSuffixes.append(extension);
+            }
+        }
+        settings.endGroup();
+    }
+
+    settings.endGroup();
+
+    return fileSuffixes;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VhdlImportEditor::selectedFileAbsolutePath()
+//-----------------------------------------------------------------------------
+QString VhdlImportEditor::selectedFileAbsolutePath() const
+{
+    return General::getAbsolutePath(componentXmlPath_, selectedSourceFile_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VhdlImportEditor::loadFileToDisplay()
+//-----------------------------------------------------------------------------
+void VhdlImportEditor::loadFileToDisplay()
+{
+    QFile importFile(selectedFileAbsolutePath());
+    if (!importFile.open(QIODevice::ReadOnly))
+    {
+        QMessageBox::information(0, "Error ", importFile.errorString() + ": " + selectedFileAbsolutePath());
+        return;
+    }
+
+    QTextStream stream(&importFile);
+    sourceDisplayer_->setPlainText(stream.readAll());       
+    importFile.close();   
+}
+
+//-----------------------------------------------------------------------------
+// Function: VhdlImportEditor::scrollToFirstHighlight()
+//-----------------------------------------------------------------------------
+void VhdlImportEditor::scrollSourceDisplayToFirstHighlight() const
+{
+    QTextCursor cursor = sourceDisplayer_->textCursor();
+    cursor.movePosition(QTextCursor::Start);
+    QTextCharFormat initialFormat = cursor.charFormat();
+
+    while (cursor.movePosition(QTextCursor::NextBlock) && cursor.charFormat() == initialFormat)
+    {
+    }
+
+    if (!cursor.atEnd())
+    {
+        int row = cursor.block().firstLineNumber();
+        sourceDisplayer_->verticalScrollBar()->setValue(row);
     }
 }
 

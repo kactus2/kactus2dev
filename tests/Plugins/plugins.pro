@@ -12,4 +12,5 @@
 TEMPLATE = subdirs
 
 CONFIG += testcase
-SUBDIRS += VerilogGenerator/VerilogGenerator.pro
+SUBDIRS += VerilogGenerator/VerilogGenerator.pro \
+		   VHDLimport/VHDLimport.pro

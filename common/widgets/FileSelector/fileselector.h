@@ -51,6 +51,8 @@ public:
 	*/
 	void addFilter(const QString& suffix);
 
+    void clearFilters();
+
 public slots:
 
 	//! \brief Refresh the items to be selected in the combo box.

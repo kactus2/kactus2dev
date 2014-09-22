@@ -18,7 +18,7 @@
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/modelparameter.h>
 
-#include <common/widgets/vhdlParser/VhdlSyntax.h>
+#include "VhdlSyntax.h"
 
 namespace
 {
@@ -29,30 +29,28 @@ namespace
     const QString PORT_TYPE = "(?:\\w+)(?:\\s*[(]\\s*(?:" + VhdlSyntax::MATH_EXP +
         ")\\s+\\w+\\s+(?:" + VhdlSyntax::MATH_EXP + ")\\s*[)])?";
 
-    //! Type definition in port declaration is <typename>[(<left> downto <right>)].
-    const QRegExp TYPE_EXP = QRegExp(PORT_TYPE);
+    //! Vector bounds are defined as (<left> downto <right>).
+    const QRegExp VECTOR_BOUNDS_EXP("[(]\\s*(" + VhdlSyntax::MATH_EXP + ")\\s+\\w+\\s+" + 
+        "(" + VhdlSyntax::MATH_EXP + ")\\s*[)]");
 
-        /*! Port declaration is <port_names> : <direction> <type> [<default>] [pragma] ; [description]    
+    /*! Port declaration is <port_names> : <direction> <type> [<default>] [pragma] ; [description]    
      *  A pragma e.g. synthesis translate_off may be inserted in the declaration before the ending
      *  semicolon or string's end.
      */
-    const QRegExp PORT_EXP = QRegExp("(" + VhdlSyntax::NAMES + ")+\\s*[:]\\s*(" + DIRECTION + ")\\s+(" + PORT_TYPE + ")" +
-                                     "(?:\\s*" + VhdlSyntax::DEFAULT + ")?(?:\\s*" + VhdlSyntax::PRAGMA + ")?(?:" + VhdlSyntax::DECLARATION_END + ")",
-                                     Qt::CaseInsensitive);
+    const QRegExp PORT_EXP("(" + VhdlSyntax::NAMES + ")+\\s*[:]\\s*(" + DIRECTION + ")\\s+(" + PORT_TYPE + ")" +
+                                     "(?:\\s*" + VhdlSyntax::DEFAULT + ")?(?:\\s*" + VhdlSyntax::PRAGMA + ")?"
+                                     "(?:" + VhdlSyntax::DECLARATION_END + ")", Qt::CaseInsensitive);
 
     //! Ports are declared inside entity by PORT ( <port_declarations> );
-    const QRegExp PORTS_BEGIN_EXP = QRegExp("(PORT)\\s*[(]", Qt::CaseInsensitive);
-    const QRegExp PORTS_END_EXP = QRegExp("[)]\\s*[;](?=\\s*(?:" + VhdlSyntax::COMMENT + "\\s*)*(END|BEGIN|GENERIC|PORT))", 
+    const QRegExp PORTS_BEGIN_EXP("(PORT)\\s*[(]", Qt::CaseInsensitive);
+    const QRegExp PORTS_END_EXP("[)]\\s*[;](?=\\s*(?:" + VhdlSyntax::COMMENT + "\\s*)*(END|BEGIN|GENERIC|PORT)\\s+)", 
         Qt::CaseInsensitive);
-
-    const QRegExp RANGE_EXP = QRegExp("[(]\\s*(" + VhdlSyntax::MATH_EXP + ")\\s+\\w+\\s+" + 
-        "(" + VhdlSyntax::MATH_EXP + ")\\s*[)]");
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLPortParser::()
 //-----------------------------------------------------------------------------
-VHDLPortParser::VHDLPortParser(QObject* parent): QObject(parent)
+VHDLPortParser::VHDLPortParser(QObject* parent): QObject(parent), ports_(), highlighter_(0), portVisualizer_(0)
 {
 
 }
@@ -73,8 +71,27 @@ void VHDLPortParser::runParser(QString const& input, QSharedPointer<Component> t
     foreach (QString portDeclaration, findPortDeclarations(input))
     {
         createPortFromDeclaration(portDeclaration, targetComponent);
-        emit highlight(portDeclaration, KactusColors::SW_COMPONENT);
+        if (highlighter_)
+        {
+            highlighter_->applyHighlight(portDeclaration, KactusColors::SW_COMPONENT);
+        }        
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLPortParser::setHighlighter()
+//-----------------------------------------------------------------------------
+void VHDLPortParser::setHighlighter(Highlighter* highlighter)
+{
+    highlighter_ = highlighter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLPortParser::setPortVisualizer()
+//-----------------------------------------------------------------------------
+void VHDLPortParser::setPortVisualizer(PortVisualizer* visualizer)
+{
+    portVisualizer_ = visualizer;
 }
 
 //-----------------------------------------------------------------------------
@@ -111,6 +128,22 @@ QString VHDLPortParser::parseDefaultValue(QString const& input) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: VHDLPortParser::clear()
+//-----------------------------------------------------------------------------
+void VHDLPortParser::removePreviousPorts()
+{
+    if (portVisualizer_)
+    {
+        foreach (QSharedPointer<Port> port, ports_)
+        {
+            portVisualizer_->removePort(port);
+        }
+    }
+
+    ports_.clear();
+}
+
+//-----------------------------------------------------------------------------
 // Function: VHDLPortParser::parsePortDeclarations()
 //-----------------------------------------------------------------------------
 QStringList VHDLPortParser::findPortDeclarations(QString const& input) const
@@ -126,12 +159,20 @@ QStringList VHDLPortParser::findPortDeclarations(QString const& input) const
 //-----------------------------------------------------------------------------
 QString VHDLPortParser::findPortsSection(QString const& input) const
 {
-    int beginIndex = PORTS_BEGIN_EXP.indexIn(input);
-    beginIndex += PORTS_BEGIN_EXP.matchedLength();
+    int entityBegin = VhdlSyntax::ENTITY_BEGIN_EXP.indexIn(input);
+    int entityEnd = VhdlSyntax::ENTITY_END_EXP.indexIn(input, entityBegin);
 
-    int endIndex = PORTS_END_EXP.indexIn(input, beginIndex);
+    int portsBeginIndex = PORTS_BEGIN_EXP.indexIn(input, entityBegin);
+    portsBeginIndex += PORTS_BEGIN_EXP.matchedLength();
 
-    return input.mid(beginIndex, endIndex - beginIndex);
+    if (portsBeginIndex > entityEnd)
+    {
+        return QString();
+    }
+
+    int portsEndIndex = PORTS_END_EXP.indexIn(input, portsBeginIndex);
+
+    return input.mid(portsBeginIndex, portsEndIndex - portsBeginIndex);
 }
 
 //-----------------------------------------------------------------------------
@@ -182,7 +223,13 @@ void VHDLPortParser::createPortFromDeclaration(QString const& declaration, QShar
         QSharedPointer<Port> port(new Port(name, direction, leftBound, rightBound, type, "", defaultValue, 
             description));
         
+        ports_.append(port);
         emit add(port, declaration);
+
+        if (portVisualizer_)
+        {
+            portVisualizer_->addPort(port);
+        }
         targetComponent->addPort(port);
     }
 }
@@ -217,7 +264,10 @@ QString VHDLPortParser::parsePortType(QString const& declaration) const
     PORT_EXP.indexIn(declaration);
     QString fullType = PORT_EXP.cap(3);
 
-    QRegExp typeExpression = QRegExp(TYPE_EXP.pattern().replace("(?:","("), Qt::CaseInsensitive);
+    QString typePattern = PORT_TYPE;
+    typePattern.replace("(?:","(");
+
+    QRegExp typeExpression(typePattern, Qt::CaseInsensitive);
     typeExpression.indexIn(fullType);
     
     return typeExpression.cap(1); 
@@ -247,9 +297,9 @@ int VHDLPortParser::parseLeftValue(QString const& vectorBounds, QSharedPointer<C
 {
     int value = 0;
 
-    if(!vectorBounds.isEmpty() && RANGE_EXP.indexIn(vectorBounds) != -1 )
+    if(!vectorBounds.isEmpty() && VECTOR_BOUNDS_EXP.indexIn(vectorBounds) != -1 )
     {
-        QString leftEquation = RANGE_EXP.cap(1);
+        QString leftEquation = VECTOR_BOUNDS_EXP.cap(1);
 
         EquationParser equationParser(ownerComponent->getModelParameters());
         value = equationParser.parse(leftEquation);
@@ -265,9 +315,9 @@ int VHDLPortParser::parseRightValue(QString const& vectorBounds, QSharedPointer<
 {
     int value = 0;
 
-    if(!vectorBounds.isEmpty() && RANGE_EXP.indexIn(vectorBounds) != -1 )
+    if(!vectorBounds.isEmpty() && VECTOR_BOUNDS_EXP.indexIn(vectorBounds) != -1 )
     {
-        QString rightEquation = RANGE_EXP.cap(2);
+        QString rightEquation = VECTOR_BOUNDS_EXP.cap(2);
 
         EquationParser equationParser(ownerComponent->getModelParameters());
         value = equationParser.parse(rightEquation);
@@ -284,7 +334,10 @@ QString VHDLPortParser::parseVectorBounds(QString const& declaration) const
     PORT_EXP.indexIn(declaration);
     QString fullType = PORT_EXP.cap(3);
 
-    QRegExp typeExpression = QRegExp(TYPE_EXP.pattern().replace("(?:","("), Qt::CaseInsensitive);
+    QString typePattern = PORT_TYPE;
+    typePattern.replace("(?:","(");
+
+    QRegExp typeExpression(typePattern, Qt::CaseInsensitive);
     typeExpression.indexIn(fullType);
     
     return typeExpression.cap(2);

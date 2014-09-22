@@ -419,12 +419,6 @@
     <Filter Include="Source Files\common\widgets\FileSelector">
       <UniqueIdentifier>{4fd994f9-e99b-4608-a6c2-0fbc6df9d786}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\common\widgets\vhdlParser">
-      <UniqueIdentifier>{fd78eee9-a351-4049-a37a-3620cde863de}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\widgets\vhdlParser">
-      <UniqueIdentifier>{552e424b-c294-49c3-8b41-a07215491e35}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\common\widgets\fileViewer">
       <UniqueIdentifier>{aaa49640-80b3-474a-8b0e-d08bf87911ad}</UniqueIdentifier>
     </Filter>
@@ -889,12 +883,6 @@
     </Filter>
     <Filter Include="Header Files\designEditors\common\Association">
       <UniqueIdentifier>{639b5694-b994-4740-a403-6ec20fab5862}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Plugins\VhdlParser">
-      <UniqueIdentifier>{a7f2fa4e-310c-45bb-99d4-553551618593}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Plugins\VHDLParser">
-      <UniqueIdentifier>{8dae5544-e468-4a76-91f0-0018cadb3077}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1488,12 +1476,6 @@
     </ClCompile>
     <ClCompile Include="common\widgets\FileSelector\fileselector.cpp">
       <Filter>Source Files\common\widgets\FileSelector</Filter>
-    </ClCompile>
-    <ClCompile Include="common\widgets\vhdlParser\VhdlParser.cpp">
-      <Filter>Source Files\common\widgets\vhdlParser</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_VhdlParser.cpp">
-      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="common\widgets\fileViewer\FileViewer.cpp">
       <Filter>Source Files\common\widgets\fileViewer</Filter>
@@ -3775,20 +3757,20 @@
     <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\VHDLHighlighter.cpp">
       <Filter>Source Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
     </ClCompile>
-    <ClCompile Include="Plugins\VHDLParser\VHDLGenericParser.cpp">
-      <Filter>Source Files\Plugins\VHDLParser</Filter>
-    </ClCompile>
-    <ClCompile Include="Plugins\VHDLParser\VHDLPortParser.cpp">
-      <Filter>Source Files\Plugins\VHDLParser</Filter>
-    </ClCompile>
-    <ClCompile Include="Plugins\VHDLParser\EquationParser.cpp">
-      <Filter>Source Files\Plugins\VHDLParser</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_VHDLGenericParser.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ImportRunner.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_VHDLPortParser.cpp">
+    <ClCompile Include="wizards\ComponentWizard\ImportRunner.cpp">
+      <Filter>Source Files\wizards\ComponentWizard</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\PortEditorAdapter.cpp">
+      <Filter>Source Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortEditorAdapter.cpp">
       <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\ModelParameterEditorAdapter.cpp">
+      <Filter>Source Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4094,9 +4076,6 @@
     </CustomBuild>
     <CustomBuild Include="common\widgets\FileSelector\fileselector.h">
       <Filter>Header Files\common\widgets\FileSelector</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\widgets\vhdlParser\VhdlParser.h">
-      <Filter>Header Files\common\widgets\vhdlParser</Filter>
     </CustomBuild>
     <CustomBuild Include="common\widgets\fileViewer\FileViewer.h">
       <Filter>Header Files\common\widgets\fileViewer</Filter>
@@ -5196,11 +5175,14 @@
     <CustomBuild Include="wizards\ComponentWizard\VhdlImportEditor\VHDLHighlighter.h">
       <Filter>Header Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="Plugins\VHDLParser\VHDLGenericParser.h">
-      <Filter>Header Files\Plugins\VhdlParser</Filter>
+    <CustomBuild Include="wizards\ComponentWizard\ImportRunner.h">
+      <Filter>Header Files\wizards\ComponentWizard</Filter>
     </CustomBuild>
-    <CustomBuild Include="Plugins\VHDLParser\VHDLPortParser.h">
-      <Filter>Header Files\Plugins\VhdlParser</Filter>
+    <CustomBuild Include="wizards\ComponentWizard\VhdlImportEditor\PortEditorAdapter.h">
+      <Filter>Header Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="wizards\ComponentWizard\VhdlImportEditor\ModelParameterEditorAdapter.h">
+      <Filter>Header Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -5290,9 +5272,6 @@
     </ClInclude>
     <ClInclude Include="mainwindow\SplashScreen.h">
       <Filter>Header Files\mainwindow</Filter>
-    </ClInclude>
-    <ClInclude Include="common\widgets\vhdlParser\VhdlSyntax.h">
-      <Filter>Header Files\common\widgets\vhdlParser</Filter>
     </ClInclude>
     <ClInclude Include="common\dialogs\NewBusDialog\NewBusDialog.h">
       <Filter>Header Files\common\dialogs\NewBusDialog</Filter>
@@ -5432,14 +5411,26 @@
     <ClInclude Include="wizards\ComponentWizard\ComponentWizardPages.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ImportElementParser.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
-    </ClInclude>
     <ClInclude Include="Plugins\PluginSystem\ImportParser.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\VHDLParser\EquationParser.h">
-      <Filter>Header Files\Plugins\VhdlParser</Filter>
+    <ClInclude Include="Plugins\PluginSystem\HighlightSource.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\Highlighter.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\PortSource.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\PortVisualizer.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\ModelParameterVisualizer.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\ModelParameterSource.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
