@@ -18,9 +18,9 @@
 
 #include <common/KactusColors.h>
 
-#include <Plugins/VHDLimport/VhdlParser.h>
+#include <Plugins/VHDLimport/VHDLimport.h>
 
-#include <wizards/ComponentWizard/VhdlImportEditor/VHDLHighlighter.h>
+#include <wizards/ComponentWizard/VhdlImportEditor/ImportHighlighter.h>
 
 #include <QPlainTextEdit>
 #include <QSharedPointer>
@@ -69,9 +69,9 @@ private:
 
     QPlainTextEdit displayEditor_;
 
-    VhdlParser parser_;
+    VHDLimport parser_;
     
-    VHDLHighlighter* highlighter_;
+    ImportHighlighter* highlighter_;
 
     QSharedPointer<Component> importComponent_;
 
@@ -96,7 +96,7 @@ private:
 // Function: tst_VhdlParser::tst_VhdlParser()
 //-----------------------------------------------------------------------------
 tst_VhdlParser::tst_VhdlParser(): displayEditor_(), parser_(), 
-    highlighter_(new VHDLHighlighter(&displayEditor_, this)),
+    highlighter_(new ImportHighlighter(&displayEditor_, this)),
     createdPorts_(0), createdGenerics_(0), importComponent_(0)
 {
     qRegisterMetaType<QSharedPointer<Port> >();

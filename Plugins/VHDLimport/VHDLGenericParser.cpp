@@ -24,11 +24,11 @@ namespace
     //! Generics are declared inside entity by GENERIC ( <generic_declarations> );
     const QRegExp GENERICS_BEGIN_EXP = QRegExp("(GENERIC)\\s*[(]", Qt::CaseInsensitive);    
 
-    const QRegExp GENERICS_END_EXP = QRegExp("[)]\\s*[;](?=(?:\\s*(" + VhdlSyntax::COMMENT + ")\\s*)*(END|BEGIN|PORT))*");   
+    const QRegExp GENERICS_END_EXP = QRegExp("[)]\\s*[;](?=(?:\\s*(" + VHDLSyntax::COMMENT + ")\\s*)*(END|BEGIN|PORT))*");   
 
     //! Generic declaration is <generic_names> : <type> [<default>] [pragma]; [description]    
-    const QRegExp GENERIC_EXP = QRegExp("(" + VhdlSyntax::NAMES + ")\\s*[:]\\s*(\\w+)(?:\\s*" + VhdlSyntax::DEFAULT + ")?" +
-        "(?:\\s*" + VhdlSyntax::PRAGMA + ")?(?:" + VhdlSyntax::DECLARATION_END + ")", 
+    const QRegExp GENERIC_EXP = QRegExp("(" + VHDLSyntax::NAMES + ")\\s*[:]\\s*(\\w+)(?:\\s*" + VHDLSyntax::DEFAULT + ")?" +
+        "(?:\\s*" + VHDLSyntax::PRAGMA + ")?(?:" + VHDLSyntax::DECLARATION_END + ")", 
         Qt::CaseInsensitive);
 }
 
@@ -135,8 +135,8 @@ void VHDLGenericParser::createModelParameterFromDeclaration(QString const& decla
 //-----------------------------------------------------------------------------
 QString VHDLGenericParser::removeCommentLines(QString section) const
 {
-    QRegExp commentLine("^" + VhdlSyntax::SPACE + VhdlSyntax::COMMENT_LINE_EXP.pattern() + "|" +
-        VhdlSyntax::ENDLINE + VhdlSyntax::SPACE + VhdlSyntax::COMMENT_LINE_EXP.pattern());
+    QRegExp commentLine("^" + VHDLSyntax::SPACE + VHDLSyntax::COMMENT_LINE_EXP.pattern() + "|" +
+        VHDLSyntax::ENDLINE + VHDLSyntax::SPACE + VHDLSyntax::COMMENT_LINE_EXP.pattern());
 
     return section.remove(commentLine);
 }
@@ -157,8 +157,8 @@ QStringList VHDLGenericParser::findGenericDeclarations(QString const& input) con
 //-----------------------------------------------------------------------------
 QString VHDLGenericParser::findGenericsSection(QString const &input) const
 {
-    int entityBegin = VhdlSyntax::ENTITY_BEGIN_EXP.indexIn(input);
-    int entityEnd = VhdlSyntax::ENTITY_END_EXP.indexIn(input, entityBegin);
+    int entityBegin = VHDLSyntax::ENTITY_BEGIN_EXP.indexIn(input);
+    int entityEnd = VHDLSyntax::ENTITY_END_EXP.indexIn(input, entityBegin);
 
     int genericsBeginIndex = GENERICS_BEGIN_EXP.indexIn(input);
     genericsBeginIndex += GENERICS_BEGIN_EXP.matchedLength();

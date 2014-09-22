@@ -20,15 +20,15 @@ class ModelParameter;
 //-----------------------------------------------------------------------------
 //! Parser for simple math equations in VHDL.
 //-----------------------------------------------------------------------------
-class EquationParser 
+class VHDLEquationParser 
 {
 public:
 
 	//! The constructor.
-	EquationParser(QList<QSharedPointer<ModelParameter> > modelParameters);
+	VHDLEquationParser(QList<QSharedPointer<ModelParameter> > modelParameters);
 
 	//! The destructor.
-	~EquationParser();
+	~VHDLEquationParser();
 
     /*!
      *  Parses a given equation.
@@ -42,8 +42,8 @@ public:
 private:
 
 	// Disable copying.
-	EquationParser(EquationParser const& rhs);
-	EquationParser& operator=(EquationParser const& rhs);
+	VHDLEquationParser(VHDLEquationParser const& rhs);
+	VHDLEquationParser& operator=(VHDLEquationParser const& rhs);
    
     /*!
      *  Converts a given equation to a list of operands and operations.

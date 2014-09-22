@@ -6,7 +6,7 @@
 // Date: 10.06.2013
 //
 // Description:
-// VhdlParser reads a given input, creates ports and generics accordingly
+// VHDLimport reads a given input, creates ports and generics accordingly
 // and highlights the created ports and generics. 
 //-----------------------------------------------------------------------------
 #ifndef VhdlParser_H
@@ -33,9 +33,9 @@ class VHDLPortParser;
 class VHDLGenericParser;
 
 //-----------------------------------------------------------------------------
-//! Class VhdlParser.
+//! Class VHDLimport.
 //-----------------------------------------------------------------------------
-class VHDLIMPORT_EXPORT VhdlParser : public QObject, public ImportParser, public HighlightSource, 
+class VHDLIMPORT_EXPORT VHDLimport : public QObject, public ImportParser, public HighlightSource, 
     public PortSource, public ModelParameterSource
 {
     Q_OBJECT
@@ -48,12 +48,12 @@ public:
     /*!
      * The constructor.
      */
-    VhdlParser();
+    VHDLimport();
 
     /*!
      *  Destructor.
      */
-    ~VhdlParser();
+    ~VHDLimport();
     
     /*!
      *  Returns the name of the plugin.
@@ -136,10 +136,10 @@ public slots:
 private:
 
     //! No copying.
-    VhdlParser(const VhdlParser&);
+    VHDLimport(const VHDLimport&);
 
     //! No assignment.
-    VhdlParser& operator=(const VhdlParser&);
+    VHDLimport& operator=(const VHDLimport&);
 
 	/*!
      *  Signals remove for all ports and empties lists to ports.

@@ -1,22 +1,22 @@
 //-----------------------------------------------------------------------------
-// File: VHDLHighlighter.cpp
+// File: ImportHighlighter.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
 // Date: 11.09.2014
 //
 // Description:
-// Source file highlighter for VHDL files.
+// Source file highlighter for import files.
 //-----------------------------------------------------------------------------
 
-#include "VHDLHighlighter.h"
+#include "ImportHighlighter.h"
 
 #include <Plugins/PluginSystem/HighlightSource.h>
 
 //-----------------------------------------------------------------------------
 // Function: VHDLHighlighter::VHDLHighlighter()
 //-----------------------------------------------------------------------------
-VHDLHighlighter::VHDLHighlighter(QPlainTextEdit* display, QObject *parent)
+ImportHighlighter::ImportHighlighter(QPlainTextEdit* display, QObject *parent)
     : QObject(parent),
     display_(display)
 {
@@ -26,7 +26,7 @@ VHDLHighlighter::VHDLHighlighter(QPlainTextEdit* display, QObject *parent)
 //-----------------------------------------------------------------------------
 // Function: VHDLHighlighter::~VHDLHighlighter()
 //-----------------------------------------------------------------------------
-VHDLHighlighter::~VHDLHighlighter()
+ImportHighlighter::~ImportHighlighter()
 {
 
 }
@@ -34,7 +34,7 @@ VHDLHighlighter::~VHDLHighlighter()
 //-----------------------------------------------------------------------------
 // Function: VHDLHighlighter::highlight()
 //-----------------------------------------------------------------------------
-void VHDLHighlighter::applyHighlight(QString const& text, QColor const& highlightColor)
+void ImportHighlighter::applyHighlight(QString const& text, QColor const& highlightColor)
 {
     int beginIndex = display_->toPlainText().indexOf(text);
     if (beginIndex != -1)
@@ -52,7 +52,7 @@ void VHDLHighlighter::applyHighlight(QString const& text, QColor const& highligh
 //-----------------------------------------------------------------------------
 // Function: VHDLHighlighter::setFontColor()
 //-----------------------------------------------------------------------------
-void VHDLHighlighter::applyFontColor(QString const& text, QColor const& color)
+void ImportHighlighter::applyFontColor(QString const& text, QColor const& color)
 {
     int beginIndex = display_->toPlainText().indexOf(text);
     if (beginIndex != -1)

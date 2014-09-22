@@ -17,7 +17,7 @@
 #include <QSharedPointer>
 #include <QString>
 
-#include "EquationParser.h"
+#include "VHDLEquationParser.h"
 
 #include <Plugins/PluginSystem/ImportParser.h>
 #include <Plugins/PluginSystem/HighlightSource.h>

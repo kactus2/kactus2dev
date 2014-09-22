@@ -26,24 +26,24 @@ namespace
     const QString DIRECTION = "in|out|inout|buffer|linkage";
 
     //! VHDL port type definition is <typename>[(<left> downto <right>)].
-    const QString PORT_TYPE = "(?:\\w+)(?:\\s*[(]\\s*(?:" + VhdlSyntax::MATH_EXP +
-        ")\\s+\\w+\\s+(?:" + VhdlSyntax::MATH_EXP + ")\\s*[)])?";
+    const QString PORT_TYPE = "(?:\\w+)(?:\\s*[(]\\s*(?:" + VHDLSyntax::MATH_EXP +
+        ")\\s+\\w+\\s+(?:" + VHDLSyntax::MATH_EXP + ")\\s*[)])?";
 
     //! Vector bounds are defined as (<left> downto <right>).
-    const QRegExp VECTOR_BOUNDS_EXP("[(]\\s*(" + VhdlSyntax::MATH_EXP + ")\\s+\\w+\\s+" + 
-        "(" + VhdlSyntax::MATH_EXP + ")\\s*[)]");
+    const QRegExp VECTOR_BOUNDS_EXP("[(]\\s*(" + VHDLSyntax::MATH_EXP + ")\\s+\\w+\\s+" + 
+        "(" + VHDLSyntax::MATH_EXP + ")\\s*[)]");
 
     /*! Port declaration is <port_names> : <direction> <type> [<default>] [pragma] ; [description]    
      *  A pragma e.g. synthesis translate_off may be inserted in the declaration before the ending
      *  semicolon or string's end.
      */
-    const QRegExp PORT_EXP("(" + VhdlSyntax::NAMES + ")+\\s*[:]\\s*(" + DIRECTION + ")\\s+(" + PORT_TYPE + ")" +
-                                     "(?:\\s*" + VhdlSyntax::DEFAULT + ")?(?:\\s*" + VhdlSyntax::PRAGMA + ")?"
-                                     "(?:" + VhdlSyntax::DECLARATION_END + ")", Qt::CaseInsensitive);
+    const QRegExp PORT_EXP("(" + VHDLSyntax::NAMES + ")+\\s*[:]\\s*(" + DIRECTION + ")\\s+(" + PORT_TYPE + ")" +
+                                     "(?:\\s*" + VHDLSyntax::DEFAULT + ")?(?:\\s*" + VHDLSyntax::PRAGMA + ")?"
+                                     "(?:" + VHDLSyntax::DECLARATION_END + ")", Qt::CaseInsensitive);
 
     //! Ports are declared inside entity by PORT ( <port_declarations> );
     const QRegExp PORTS_BEGIN_EXP("(PORT)\\s*[(]", Qt::CaseInsensitive);
-    const QRegExp PORTS_END_EXP("[)]\\s*[;](?=\\s*(?:" + VhdlSyntax::COMMENT + "\\s*)*(END|BEGIN|GENERIC|PORT)\\s+)", 
+    const QRegExp PORTS_END_EXP("[)]\\s*[;](?=\\s*(?:" + VHDLSyntax::COMMENT + "\\s*)*(END|BEGIN|GENERIC|PORT)\\s+)", 
         Qt::CaseInsensitive);
 }
 
@@ -159,8 +159,8 @@ QStringList VHDLPortParser::findPortDeclarations(QString const& input) const
 //-----------------------------------------------------------------------------
 QString VHDLPortParser::findPortsSection(QString const& input) const
 {
-    int entityBegin = VhdlSyntax::ENTITY_BEGIN_EXP.indexIn(input);
-    int entityEnd = VhdlSyntax::ENTITY_END_EXP.indexIn(input, entityBegin);
+    int entityBegin = VHDLSyntax::ENTITY_BEGIN_EXP.indexIn(input);
+    int entityEnd = VHDLSyntax::ENTITY_END_EXP.indexIn(input, entityBegin);
 
     int portsBeginIndex = PORTS_BEGIN_EXP.indexIn(input, entityBegin);
     portsBeginIndex += PORTS_BEGIN_EXP.matchedLength();
@@ -180,8 +180,8 @@ QString VHDLPortParser::findPortsSection(QString const& input) const
 //-----------------------------------------------------------------------------
 QString VHDLPortParser::removeCommentLines(QString input) const
 {
-    QRegExp commentLine("^" + VhdlSyntax::SPACE + VhdlSyntax::COMMENT_LINE_EXP.pattern() + "|" +
-        VhdlSyntax::ENDLINE + VhdlSyntax::SPACE + VhdlSyntax::COMMENT_LINE_EXP.pattern());
+    QRegExp commentLine("^" + VHDLSyntax::SPACE + VHDLSyntax::COMMENT_LINE_EXP.pattern() + "|" +
+        VHDLSyntax::ENDLINE + VHDLSyntax::SPACE + VHDLSyntax::COMMENT_LINE_EXP.pattern());
 
     return input.remove(commentLine);
 }
@@ -301,7 +301,7 @@ int VHDLPortParser::parseLeftValue(QString const& vectorBounds, QSharedPointer<C
     {
         QString leftEquation = VECTOR_BOUNDS_EXP.cap(1);
 
-        EquationParser equationParser(ownerComponent->getModelParameters());
+        VHDLEquationParser equationParser(ownerComponent->getModelParameters());
         value = equationParser.parse(leftEquation);
     }	
 
@@ -319,7 +319,7 @@ int VHDLPortParser::parseRightValue(QString const& vectorBounds, QSharedPointer<
     {
         QString rightEquation = VECTOR_BOUNDS_EXP.cap(2);
 
-        EquationParser equationParser(ownerComponent->getModelParameters());
+        VHDLEquationParser equationParser(ownerComponent->getModelParameters());
         value = equationParser.parse(rightEquation);
     }	
 

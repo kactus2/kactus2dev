@@ -14,7 +14,7 @@
 
 #include <QRegExp>
 
-namespace VhdlSyntax
+namespace VHDLSyntax
 {
     //! Whitespace without line end.
     const QString SPACE = "[ \\t]*";    

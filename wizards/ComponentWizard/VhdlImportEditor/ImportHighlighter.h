@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------------
-// File: VHDLHighlighter.h
+// File: ImportHighlighter.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
 // Date: 11.09.2014
 //
 // Description:
-// Source file highlighter for VHDL files.
+// Source file highlighter for import files.
 //-----------------------------------------------------------------------------
 
 #ifndef VHDLHIGHLIGHTER_H
@@ -19,9 +19,9 @@
 #include <QPlainTextEdit>
 
 //-----------------------------------------------------------------------------
-//! Source file highlighter for VHDL files.
+//! Source file highlighter for import files.
 //-----------------------------------------------------------------------------
-class VHDLHighlighter : public QObject, public Highlighter
+class ImportHighlighter : public QObject, public Highlighter
 {
     Q_OBJECT
 
@@ -32,10 +32,10 @@ public:
      *      @param [in] display   The display widget for the parsed source file content.
      *      @param [in] parent    The parent object.
      */
-	VHDLHighlighter(QPlainTextEdit* display, QObject* parent);
+	ImportHighlighter(QPlainTextEdit* display, QObject* parent);
 
 	//! The destructor.
-	~VHDLHighlighter();
+	~ImportHighlighter();
 
     //! Called when the text should be highlighted with the given color.
     virtual void applyHighlight(QString const& text, QColor const& highlightColor);
@@ -46,8 +46,8 @@ public:
 private:
 
 	// Disable copying.
-	VHDLHighlighter(VHDLHighlighter const& rhs);
-	VHDLHighlighter& operator=(VHDLHighlighter const& rhs);
+	ImportHighlighter(ImportHighlighter const& rhs);
+	ImportHighlighter& operator=(ImportHighlighter const& rhs);
  
     //! Display widget for the source file content.
     QPlainTextEdit* display_;
