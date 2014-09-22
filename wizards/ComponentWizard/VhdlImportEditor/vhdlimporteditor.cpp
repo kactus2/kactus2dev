@@ -22,7 +22,7 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <wizards/ComponentWizard/ImportRunner.h>
-#include <wizards/ComponentWizard/VhdlImportEditor/VHDLHighlighter.h>
+#include <wizards/ComponentWizard/VhdlImportEditor/ImportHighlighter.h>
 
 #include <QApplication>
 #include <QHBoxLayout>
@@ -53,7 +53,7 @@ VhdlImportEditor::VhdlImportEditor(QSharedPointer<Component> component,
     fileSelector_(new FileSelector(component, this)),
     editButton_(new QPushButton(tr("Open editor"), this)),
     refreshButton_(new QPushButton(QIcon(":/icons/common/graphics/refresh.png"), "", this)),
-    highlighter_(new VHDLHighlighter(sourceDisplayer_, this)),
+    highlighter_(new ImportHighlighter(sourceDisplayer_, this)),
     portAdapter_(portEditor_),
     modelParameterAdapter_(modelParameterEditor_),
     runner_(new ImportRunner(this))

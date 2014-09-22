@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./common/Global.h \
+HEADERS += ./wizards/ComponentWizard/VhdlImportEditor/ImportHighlighter.h \
+    ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
@@ -156,7 +157,6 @@ HEADERS += ./common/Global.h \
     ./wizards/ComponentWizard/ComponentWizardVhdlImportPage.h \
     ./wizards/ComponentWizard/ImportRunner.h \
     ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.h \
-    ./wizards/ComponentWizard/VhdlImportEditor/VHDLHighlighter.h \
     ./wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizard.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardGeneralOptionsPage.h \
@@ -682,7 +682,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./wizards/ComponentWizard/ComponentWizardIntroPage.cpp \
     ./wizards/ComponentWizard/ComponentWizardVhdlImportPage.cpp \
     ./wizards/ComponentWizard/ImportRunner.cpp \
-    ./wizards/ComponentWizard/VhdlImportEditor/VHDLHighlighter.cpp \
     ./wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizard.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardBusDefinitionPage.cpp \
@@ -1055,5 +1054,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
     ./wizards/ComponentWizard/VhdlImportEditor/PortEditorAdapter.cpp \
-    ./wizards/ComponentWizard/VhdlImportEditor/ModelParameterEditorAdapter.cpp
+    ./wizards/ComponentWizard/VhdlImportEditor/ModelParameterEditorAdapter.cpp \
+    ./wizards/ComponentWizard/VhdlImportEditor/ImportHighlighter.cpp
 RESOURCES += kactus.qrc

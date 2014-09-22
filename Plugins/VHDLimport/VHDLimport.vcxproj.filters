@@ -38,21 +38,15 @@
     <ClInclude Include="vhdlimport_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EquationParser.h">
+    <ClInclude Include="VHDLEquationParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VhdlSyntax.h">
+    <ClInclude Include="VHDLSyntax.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EquationParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="VHDLGenericParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VhdlParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VHDLPortParser.cpp">
@@ -64,27 +58,33 @@
     <ClCompile Include="GeneratedFiles\Release\moc_VHDLGenericParser.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_VhdlParser.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_VhdlParser.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_VHDLPortParser.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_VHDLPortParser.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="VHDLimport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_VHDLimport.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_VHDLimport.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="VHDLEquationParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="VHDLGenericParser.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="VhdlParser.h">
+    <CustomBuild Include="VHDLPortParser.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="VHDLPortParser.h">
+    <CustomBuild Include="VHDLimport.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

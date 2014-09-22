@@ -28,6 +28,7 @@
 
 class FileSelector;
 class ImportRunner;
+class ImportHighlighter;
 class LibraryInterface;
 class ModelParameterEditor;
 class ModelParameterEditorAdapter;
@@ -35,7 +36,7 @@ class PluginManager;
 class PortEditorAdapter;
 class PortsEditor;
 class VhdlParser;
-class VHDLHighlighter;
+
 
 //-----------------------------------------------------------------------------
 //! Used to parse source files and generating IP-XACT packages of them.
@@ -175,7 +176,7 @@ private:
     ModelParameterEditorAdapter modelParameterAdapter_;
 
     //! Highlighter for source display.
-    VHDLHighlighter* highlighter_;
+    ImportHighlighter* highlighter_;
 
     //! Runner for all available import parsers.
     ImportRunner* runner_;

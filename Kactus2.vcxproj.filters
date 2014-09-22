@@ -3751,12 +3751,6 @@
     <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlportsorter.cpp">
       <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_VHDLHighlighter.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\VHDLHighlighter.cpp">
-      <Filter>Source Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ImportRunner.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -3770,6 +3764,12 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\ModelParameterEditorAdapter.cpp">
+      <Filter>Source Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ImportHighlighter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\ImportHighlighter.cpp">
       <Filter>Source Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5172,9 +5172,6 @@
     <CustomBuild Include="Plugins\PluginSystem\PluginUtilityAdapter.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
     </CustomBuild>
-    <CustomBuild Include="wizards\ComponentWizard\VhdlImportEditor\VHDLHighlighter.h">
-      <Filter>Header Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
-    </CustomBuild>
     <CustomBuild Include="wizards\ComponentWizard\ImportRunner.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
     </CustomBuild>
@@ -5182,6 +5179,9 @@
       <Filter>Header Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="wizards\ComponentWizard\VhdlImportEditor\ModelParameterEditorAdapter.h">
+      <Filter>Header Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="wizards\ComponentWizard\VhdlImportEditor\ImportHighlighter.h">
       <Filter>Header Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
     </CustomBuild>
   </ItemGroup>
