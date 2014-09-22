@@ -19,12 +19,12 @@
 
 #include "VHDLEquationParser.h"
 
-#include <Plugins/PluginSystem/ImportParser.h>
-#include <Plugins/PluginSystem/HighlightSource.h>
-#include <Plugins/PluginSystem/PortSource.h>
+#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
+#include <Plugins/PluginSystem/ImportPlugin/PortSource.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 
+class Component;
 class Port;
 
 //-----------------------------------------------------------------------------

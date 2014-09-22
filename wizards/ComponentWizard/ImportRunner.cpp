@@ -12,10 +12,10 @@
 #include "ImportRunner.h"
 
 #include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/ImportParser.h>
-#include <Plugins/PluginSystem/HighlightSource.h>
-#include <Plugins/PluginSystem/PortSource.h>
-#include <Plugins/PluginSystem/ModelParameterSource.h>
+#include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
+#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
+#include <Plugins/PluginSystem/ImportPlugin/PortSource.h>
+#include <Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/file.h>
@@ -27,7 +27,7 @@
 // Function: ImportRunner::ImportRunner()
 //-----------------------------------------------------------------------------
 ImportRunner::ImportRunner(QObject* parent)
-    : QObject(parent), importParsers_(), portVisualizer_(), highlighter_()
+    : QObject(parent), ImportPlugins_(), portVisualizer_(), highlighter_()
 {
 
 }
@@ -52,7 +52,7 @@ void ImportRunner::parse(QString const& importFile, QString const& componentXmlP
     
     QString const& fileContent = readInputFile(importFile, componentXmlPath);
 
-    foreach(ImportParser* parser, parsersForFileTypes(filetypes))
+    foreach(ImportPlugin* parser, parsersForFileTypes(filetypes))
     {
         parser->runParser(fileContent, targetComponent);
     }
@@ -67,7 +67,7 @@ QStringList ImportRunner::importFileTypes() const
 {
     QStringList fileTypes;
 
-    foreach(ImportParser* parser, importParsers_)
+    foreach(ImportPlugin* parser, ImportPlugins_)
     {
         fileTypes.append(parser->acceptedFileTypes());
     }
@@ -100,10 +100,10 @@ QStringList ImportRunner::filetypesOfImportFile(QString const& importFile,
 //-----------------------------------------------------------------------------
 // Function: ImportRunner::parsersForFileTypes()
 //-----------------------------------------------------------------------------
-QList<ImportParser*> ImportRunner::parsersForFileTypes(QStringList const& filetypes) const
+QList<ImportPlugin*> ImportRunner::parsersForFileTypes(QStringList const& filetypes) const
 {
-    QList<ImportParser*> parsersForFiletype;
-    foreach(ImportParser* parser, importParsers_)
+    QList<ImportPlugin*> parsersForFiletype;
+    foreach(ImportPlugin* parser, ImportPlugins_)
     {
         QStringList parserAcceptedFiletypes = parser->acceptedFileTypes();
         foreach(QString filetype, filetypes)
@@ -135,7 +135,7 @@ QString ImportRunner::readInputFile(QString const& relativePath, QString const& 
         importFile.close();
     }
       
-    return fileContent;
+    return fileContent.replace("\r\n", "\n");
 }
 
 //-----------------------------------------------------------------------------
@@ -145,10 +145,10 @@ void ImportRunner::loadImportPlugins(PluginManager const &pluginManager)
 {
     foreach(IPlugin* plugin, pluginManager.getActivePlugins())
     {
-        ImportParser* parser = dynamic_cast<ImportParser*>(plugin);
+        ImportPlugin* parser = dynamic_cast<ImportPlugin*>(plugin);
         if (parser)
         {
-            importParsers_.append(parser);
+            ImportPlugins_.append(parser);
 
             addHighlightIfPossible(parser);
             addPortVisualizationIfPossible(parser);
@@ -184,7 +184,7 @@ void ImportRunner::setModelParameterVisualizer(ModelParameterVisualizer* visuali
 //-----------------------------------------------------------------------------
 // Function: ImportRunner::addHighlightIfPossible()
 //-----------------------------------------------------------------------------
-void ImportRunner::addHighlightIfPossible(ImportParser* parser)
+void ImportRunner::addHighlightIfPossible(ImportPlugin* parser)
 {
     if (highlighter_)
     {
@@ -199,7 +199,7 @@ void ImportRunner::addHighlightIfPossible(ImportParser* parser)
 //-----------------------------------------------------------------------------
 // Function: ImportRunner::addPortVisualizationIfPossible()
 //-----------------------------------------------------------------------------
-void ImportRunner::addPortVisualizationIfPossible(ImportParser* parser)
+void ImportRunner::addPortVisualizationIfPossible(ImportPlugin* parser)
 {
     if (portVisualizer_)
     {
@@ -214,7 +214,7 @@ void ImportRunner::addPortVisualizationIfPossible(ImportParser* parser)
 //-----------------------------------------------------------------------------
 // Function: ImportRunner::addModelParameterVisualizationIfPossible()
 //-----------------------------------------------------------------------------
-void ImportRunner::addModelParameterVisualizationIfPossible(ImportParser* parser)
+void ImportRunner::addModelParameterVisualizationIfPossible(ImportPlugin* parser)
 {
     if (modelParameterVisualizer_)
     {

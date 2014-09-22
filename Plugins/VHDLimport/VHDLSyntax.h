@@ -48,7 +48,7 @@ namespace VHDLSyntax
     const QString PRAGMA = "[-][-]" + SPACE + "(?:PRAGMA|SYNTHESIS|SYNOPSYS)[^\\r\\n]*";
 
     //! VHDL comment line.
-    const QRegExp COMMENT_LINE_EXP = QRegExp(SPACE + COMMENT + ENDLINE);
+    const QRegExp COMMENT_LINE_EXP = QRegExp(SPACE + COMMENT + "(?=" + ENDLINE + ")");
 
     /*! All except the last port/generic declaration ends with a semicolon. 
      *  If there is a comment on the same line, it will be captured to the description by VhdlParser.

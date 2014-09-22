@@ -12,7 +12,7 @@
 #ifndef PORTEDITORADAPTER_H
 #define PORTEDITORADAPTER_H
 
-#include <Plugins/PluginSystem/PortVisualizer.h>
+#include <Plugins/PluginSystem/ImportPlugin/PortVisualizer.h>
 
 class Port;
 class PortsEditor;

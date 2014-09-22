@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: VhdlParser.h
+// File: VHDLimport.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
@@ -9,16 +9,16 @@
 // VHDLimport reads a given input, creates ports and generics accordingly
 // and highlights the created ports and generics. 
 //-----------------------------------------------------------------------------
-#ifndef VhdlParser_H
-#define VhdlParser_H
+#ifndef VHDLIMPORT_H
+#define VHDLIMPORT_H
 
 #include "vhdlimport_global.h"
 
 #include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/Importparser.h>
-#include <Plugins/PluginSystem/HighlightSource.h>
-#include <Plugins/PluginSystem/PortSource.h>
-#include <Plugins/PluginSystem/ModelParameterSource.h>
+#include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
+#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
+#include <Plugins/PluginSystem/ImportPlugin/PortSource.h>
+#include <Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h>
 
 #include <QList>
 #include <QMap>
@@ -35,13 +35,13 @@ class VHDLGenericParser;
 //-----------------------------------------------------------------------------
 //! Class VHDLimport.
 //-----------------------------------------------------------------------------
-class VHDLIMPORT_EXPORT VHDLimport : public QObject, public ImportParser, public HighlightSource, 
+class VHDLIMPORT_EXPORT VHDLimport : public QObject, public ImportPlugin, public HighlightSource, 
     public PortSource, public ModelParameterSource
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "kactus2.plugins.vhdlimportplugin" FILE "vhdlimportplugin.json")
     Q_INTERFACES(IPlugin)
-    Q_INTERFACES(ImportParser)
+    Q_INTERFACES(ImportPlugin)
 
 public:
 
@@ -206,4 +206,4 @@ private:
     QMap<QSharedPointer<Port>, QString> parsedPortDeclarations_;
 };
 
-#endif // VhdlParser_H
+#endif // VHDLIMPORT_H

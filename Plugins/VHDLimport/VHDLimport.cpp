@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------------
-// File: VhdlParser.cpp
+// File: VHDLimport.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
 // Date: 10.06.2013
 //
 // Description:
-// VhdlParser reads a given input, creates ports and generics accordingly
+// VHDLimport reads a given input, creates ports and generics accordingly
 // and highlights the created ports and generics. 
 //-----------------------------------------------------------------------------
 
@@ -21,9 +21,9 @@
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/port.h>
 
-#include <Plugins/PluginSystem/Highlighter.h>
-#include <Plugins/PluginSystem/PortVisualizer.h>
-#include <Plugins/PluginSystem/ModelParameterVisualizer.h>
+#include <Plugins/PluginSystem/ImportPlugin/Highlighter.h>
+#include <Plugins/PluginSystem/ImportPlugin/PortVisualizer.h>
+#include <Plugins/PluginSystem/ImportPlugin/ModelParameterVisualizer.h>
 
 #include "VHDLPortParser.h"
 #include "VHDLGenericParser.h"
@@ -36,7 +36,7 @@ namespace
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::VhdlParser()
+// Function: VHDLimport::VHDLimport()
 //-----------------------------------------------------------------------------
 VHDLimport::VHDLimport() : QObject(0),
 
@@ -59,7 +59,7 @@ VHDLimport::VHDLimport() : QObject(0),
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::~VhdlParser()
+// Function: VHDLimport::~VHDLimport()
 //-----------------------------------------------------------------------------
 VHDLimport::~VHDLimport()
 {
@@ -67,7 +67,7 @@ VHDLimport::~VHDLimport()
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::getName()
+// Function: VHDLimport::getName()
 //-----------------------------------------------------------------------------
 QString const& VHDLimport::getName() const
 {
@@ -76,7 +76,7 @@ QString const& VHDLimport::getName() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::getVersion()
+// Function: VHDLimport::getVersion()
 //-----------------------------------------------------------------------------
 QString const& VHDLimport::getVersion() const
 {
@@ -85,7 +85,7 @@ QString const& VHDLimport::getVersion() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::getDescription()
+// Function: VHDLimport::getDescription()
 //-----------------------------------------------------------------------------
 QString const& VHDLimport::getDescription() const
 {
@@ -94,7 +94,7 @@ QString const& VHDLimport::getDescription() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::getVendor()
+// Function: VHDLimport::getVendor()
 //-----------------------------------------------------------------------------
 QString const& VHDLimport::getVendor() const
 {
@@ -103,7 +103,7 @@ QString const& VHDLimport::getVendor() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::getLicence()
+// Function: VHDLimport::getLicence()
 //-----------------------------------------------------------------------------
 QString const& VHDLimport::getLicence() const
 {
@@ -112,7 +112,7 @@ QString const& VHDLimport::getLicence() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::getLicenceHolder()
+// Function: VHDLimport::getLicenceHolder()
 //-----------------------------------------------------------------------------
 QString const& VHDLimport::getLicenceHolder() const
 {
@@ -121,7 +121,7 @@ QString const& VHDLimport::getLicenceHolder() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::getSettingsWidget()
+// Function: VHDLimport::getSettingsWidget()
 //-----------------------------------------------------------------------------
 PluginSettingsWidget* VHDLimport::getSettingsWidget()
 {
@@ -129,7 +129,7 @@ PluginSettingsWidget* VHDLimport::getSettingsWidget()
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::getProgramRequirements()
+// Function: VHDLimport::getProgramRequirements()
 //-----------------------------------------------------------------------------
 QList<IPlugin::ExternalProgramRequirement> VHDLimport::getProgramRequirements()
 {
@@ -137,7 +137,7 @@ QList<IPlugin::ExternalProgramRequirement> VHDLimport::getProgramRequirements()
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::acceptedFileTypes()
+// Function: VHDLimport::acceptedFileTypes()
 //-----------------------------------------------------------------------------
 QStringList VHDLimport::acceptedFileTypes() const
 {
@@ -148,7 +148,7 @@ QStringList VHDLimport::acceptedFileTypes() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::parseFile()
+// Function: VHDLimport::parseFile()
 //-----------------------------------------------------------------------------
 void VHDLimport::runParser(QString const& input, QSharedPointer<Component> targetComponent)
 {
@@ -168,7 +168,7 @@ void VHDLimport::runParser(QString const& input, QSharedPointer<Component> targe
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::clear()
+// Function: VHDLimport::clear()
 //-----------------------------------------------------------------------------
 void VHDLimport::clear()
 {
@@ -177,7 +177,7 @@ void VHDLimport::clear()
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::setHighlighter()
+// Function: VHDLimport::setHighlighter()
 //-----------------------------------------------------------------------------
 void VHDLimport::setHighlighter(Highlighter* highlighter)
 {
@@ -188,7 +188,7 @@ void VHDLimport::setHighlighter(Highlighter* highlighter)
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::setPortVisualizer()
+// Function: VHDLimport::setPortVisualizer()
 //-----------------------------------------------------------------------------
 void VHDLimport::setPortVisualizer(PortVisualizer* visualizer)
 {
@@ -196,7 +196,7 @@ void VHDLimport::setPortVisualizer(PortVisualizer* visualizer)
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::setModelParameterVisualizer()
+// Function: VHDLimport::setModelParameterVisualizer()
 //-----------------------------------------------------------------------------
 void VHDLimport::setModelParameterVisualizer(ModelParameterVisualizer* visualizer)
 {
@@ -206,7 +206,7 @@ void VHDLimport::setModelParameterVisualizer(ModelParameterVisualizer* visualize
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::onPortParsed()
+// Function: VHDLimport::onPortParsed()
 //-----------------------------------------------------------------------------
 void VHDLimport::onPortParsed(QSharedPointer<Port> parsedPort, QString const& declaration)
 {
@@ -222,7 +222,7 @@ void VHDLimport::onPortParsed(QSharedPointer<Port> parsedPort, QString const& de
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::highlight()
+// Function: VHDLimport::highlight()
 //-----------------------------------------------------------------------------
 void VHDLimport::highlight(QString const& text, QColor const& highlightColor) const
 {
@@ -234,7 +234,7 @@ void VHDLimport::highlight(QString const& text, QColor const& highlightColor) co
 
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::editorChangedModelParameter()
+// Function: VHDLimport::editorChangedModelParameter()
 //-----------------------------------------------------------------------------
 void VHDLimport::onModelParameterChanged(QSharedPointer<ModelParameter> changedParameter) const
 {
@@ -249,7 +249,7 @@ void VHDLimport::onModelParameterChanged(QSharedPointer<ModelParameter> changedP
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::removePorts()
+// Function: VHDLimport::removePorts()
 //-----------------------------------------------------------------------------
 void VHDLimport::removePreviousPorts()
 {
@@ -259,7 +259,7 @@ void VHDLimport::removePreviousPorts()
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::removeGenerics()
+// Function: VHDLimport::removeGenerics()
 //-----------------------------------------------------------------------------
 void VHDLimport::removePreviousGenerics()
 {
@@ -269,7 +269,7 @@ void VHDLimport::removePreviousGenerics()
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::hasValidEntity()
+// Function: VHDLimport::hasValidEntity()
 //-----------------------------------------------------------------------------
 bool VHDLimport::hasValidEntity(QString const& fileContent) const
 {
@@ -281,7 +281,7 @@ bool VHDLimport::hasValidEntity(QString const& fileContent) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::VhdlParser::grayOutFileContent()
+// Function: VHDLimport::VHDLimport::grayOutFileContent()
 //-----------------------------------------------------------------------------
 void VHDLimport::grayOutFileContent(QString const& fileContent) const
 {    
@@ -292,7 +292,7 @@ void VHDLimport::grayOutFileContent(QString const& fileContent) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::highlightEntity()
+// Function: VHDLimport::highlightEntity()
 //-----------------------------------------------------------------------------
 void VHDLimport::highlightEntity(QString const& fileContent) const
 {
@@ -304,7 +304,7 @@ void VHDLimport::highlightEntity(QString const& fileContent) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlParser::addDependencyOfGenericToPort()
+// Function: VHDLimport::addDependencyOfGenericToPort()
 //-----------------------------------------------------------------------------
 void VHDLimport::addDependencyOfGenericToPort(QSharedPointer<ModelParameter> modelParameter, 
     QSharedPointer<Port> parsedPort)

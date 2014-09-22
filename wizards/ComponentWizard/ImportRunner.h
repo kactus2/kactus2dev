@@ -18,7 +18,7 @@
 #include <QSharedPointer>
 
 class Component;
-class ImportParser;
+class ImportPlugin;
 class Highlighter;
 class PortVisualizer;
 class ModelParameterVisualizer;
@@ -95,7 +95,7 @@ private:
      *
      *      @return Import plugins capable of reading the given file types.
      */
-    QList<ImportParser*> parsersForFileTypes(QStringList const& filetypes) const;
+    QList<ImportPlugin*> parsersForFileTypes(QStringList const& filetypes) const;
 
     /*!
      *  Finds the file types of a given file.
@@ -122,21 +122,21 @@ private:
      *
      *      @param [in] parser   The plugin to add visualization to.     
      */
-    void addModelParameterVisualizationIfPossible(ImportParser* parser);
+    void addModelParameterVisualizationIfPossible(ImportPlugin* parser);
     
     /*!
      *  Adds port visualization to a given import plugin if possible.
      *
      *      @param [in] parser   The plugin to add visualization to.     
      */
-    void addPortVisualizationIfPossible(ImportParser* parser);
+    void addPortVisualizationIfPossible(ImportPlugin* parser);
     
     /*!
      *  Adds highlighting to a given import plugin if possible.
      *
      *      @param [in] parser   The plugin to add highlighting to.     
      */
-    void addHighlightIfPossible(ImportParser* parser);
+    void addHighlightIfPossible(ImportPlugin* parser);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -152,7 +152,7 @@ private:
     ModelParameterVisualizer* modelParameterVisualizer_;
 
     //! All loaded import plugins.
-    QList<ImportParser*> importParsers_;
+    QList<ImportPlugin*> ImportPlugins_;
 };
 
 #endif // IMPORTRUNNER_H

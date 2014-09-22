@@ -225,7 +225,7 @@ void VhdlImportEditor::loadFileToDisplay()
     }
 
     QTextStream stream(&importFile);
-    sourceDisplayer_->setPlainText(stream.readAll());       
+    sourceDisplayer_->setPlainText(stream.readAll().replace("\r\n", "\n"));       
     importFile.close();   
 }
 

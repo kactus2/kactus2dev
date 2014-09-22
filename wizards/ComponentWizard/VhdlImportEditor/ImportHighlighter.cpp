@@ -11,7 +11,7 @@
 
 #include "ImportHighlighter.h"
 
-#include <Plugins/PluginSystem/HighlightSource.h>
+#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
 
 //-----------------------------------------------------------------------------
 // Function: VHDLHighlighter::VHDLHighlighter()

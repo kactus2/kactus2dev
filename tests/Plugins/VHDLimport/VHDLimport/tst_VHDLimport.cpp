@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------------
-// File: tst_VhdlParser.cpp
+// File: tst_VHDLimport.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
 // Date: 05.09.2014
 //
 // Description:
-// Unit test for class VhdlParser.
+// Unit test for class VHDLimport.
 //-----------------------------------------------------------------------------
 
 #include <QtTest>
@@ -25,16 +25,15 @@
 #include <QPlainTextEdit>
 #include <QSharedPointer>
 
-
 Q_DECLARE_METATYPE(QSharedPointer<Port>)
 Q_DECLARE_METATYPE(QSharedPointer<ModelParameter>)
 
-class tst_VhdlParser : public QObject
+class tst_VHDLimport : public QObject
 {
     Q_OBJECT
 
 public:
-    tst_VhdlParser();
+    tst_VHDLimport();
 
 private slots:
     void initTestCase();
@@ -53,6 +52,7 @@ private slots:
     void testGenericIsHighlighted_data();
 
     void testFontInsideEntityIsBlackAndOutsideEntityGray();
+    void testFontInsideEntityIsBlackAndOutsideEntityGray_data();
 
     void testModelParameterIsAssignedToPort();
     void testModelParameterIsAssignedToPort_data();
@@ -65,7 +65,7 @@ private slots:
 
 private:
 
-    void runParser(QString const& input);
+    void runParser(QString& input);
 
     QPlainTextEdit displayEditor_;
 
@@ -93,9 +93,9 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::tst_VhdlParser()
+// Function: tst_VHDLimport::tst_VHDLimport()
 //-----------------------------------------------------------------------------
-tst_VhdlParser::tst_VhdlParser(): displayEditor_(), parser_(), 
+tst_VHDLimport::tst_VHDLimport(): displayEditor_(), parser_(), 
     highlighter_(new ImportHighlighter(&displayEditor_, this)),
     createdPorts_(0), createdGenerics_(0), importComponent_(0)
 {
@@ -106,33 +106,33 @@ tst_VhdlParser::tst_VhdlParser(): displayEditor_(), parser_(),
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::initTestCase()
+// Function: tst_VHDLimport::initTestCase()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::initTestCase()
+void tst_VHDLimport::initTestCase()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::init()
+// Function: tst_VHDLimport::init()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::init()
+void tst_VHDLimport::init()
 {
     importComponent_ = QSharedPointer<Component>(new Component());
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::cleanup()
+// Function: tst_VHDLimport::cleanup()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::cleanup()
+void tst_VHDLimport::cleanup()
 {
     parser_.clear();
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::nothingParsedFromMalformedEntity()
+// Function: tst_VHDLimport::nothingParsedFromMalformedEntity()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::nothingParsedFromMalformedEntity()
+void tst_VHDLimport::nothingParsedFromMalformedEntity()
 {
     QFETCH(QString, fileContent);
 
@@ -143,9 +143,9 @@ void tst_VhdlParser::nothingParsedFromMalformedEntity()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::nothingParsedFromMalformedEntity_data()
+// Function: tst_VHDLimport::nothingParsedFromMalformedEntity_data()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::nothingParsedFromMalformedEntity_data()
+void tst_VHDLimport::nothingParsedFromMalformedEntity_data()
 {
     QTest::addColumn<QString>("fileContent");
 
@@ -212,39 +212,41 @@ void tst_VhdlParser::nothingParsedFromMalformedEntity_data()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::runParser()
+// Function: tst_VHDLimport::runParser()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::runParser(QString const& input)
+void tst_VHDLimport::runParser(QString& input)
 {
-    displayEditor_.setPlainText(input);
-    parser_.runParser(input, importComponent_);
+    displayEditor_.setPlainText(input.replace("\r\n", "\n"));    
+
+    parser_.runParser(input.replace("\r\n", "\n"), importComponent_);
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::testPortHighlight()
+// Function: tst_VHDLimport::testPortHighlight()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::testPortIsHighlighted()
+void tst_VHDLimport::testPortIsHighlighted()
 {
     QFETCH(QString, fileContent);
-    QFETCH(int, declarationStartIndex);
-    QFETCH(int, declarationLength);
+    QFETCH(QString, portDeclaration);
 
     runParser(fileContent);
 
+    int begin = fileContent.indexOf(portDeclaration);
+    
+
     QColor selectedColor = KactusColors::SW_COMPONENT;
-    verifyNotHighlightedBeforeDeclaration(declarationStartIndex, selectedColor);
-    verifyDeclarationIsHighlighted(declarationStartIndex, declarationLength, selectedColor);
-    verifyNotHighlightedAfterDeclartion(declarationStartIndex, declarationLength, selectedColor);
+    verifyNotHighlightedBeforeDeclaration(begin, selectedColor);
+    verifyDeclarationIsHighlighted(begin, portDeclaration.length(), selectedColor);
+    verifyNotHighlightedAfterDeclartion(begin, portDeclaration.length(), selectedColor);
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::testPortHighlight()
+// Function: tst_VHDLimport::testPortHighlight()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::testPortIsHighlighted_data()
+void tst_VHDLimport::testPortIsHighlighted_data()
 {
     QTest::addColumn<QString>("fileContent");
-    QTest::addColumn<int>("declarationStartIndex");
-    QTest::addColumn<int>("declarationLength");
+    QTest::addColumn<QString>("portDeclaration");
     
     QTest::newRow("simplest possible port declaration") <<
         "entity test is\n"
@@ -252,7 +254,7 @@ void tst_VhdlParser::testPortIsHighlighted_data()
         "        clk : in std_logic\n"
         "   );\n"
         "end test;"
-        << 34 << 18;
+        << "clk : in std_logic";
 
     QTest::newRow("port declaration with default value") <<
         "entity test is\n"
@@ -260,7 +262,7 @@ void tst_VhdlParser::testPortIsHighlighted_data()
         "        clk : in std_logic := '1'\n"
         "   );\n"
         "end test;"
-        << 34 << 25;
+        << "clk : in std_logic := '1'";
 
     QTest::newRow("port declaration with description") <<
         "entity test is\n"
@@ -268,16 +270,16 @@ void tst_VhdlParser::testPortIsHighlighted_data()
         "        clk : in std_logic -- Clk from top\n"
         "   );\n"
         "end test;"
-        << 34 << 34;
+        << "clk : in std_logic -- Clk from top";
 
     QTest::newRow("port declaration followed by another port") <<
         "entity test is\n"
         "    port (\n"
         "        clk : in std_logic; -- Clk from top\n"
-        "        enable : in std_logic"
+        "        enable : in std_logic\n"
         "   );\n"
         "end test;"
-        << 34 << 35;
+        << "clk : in std_logic; -- Clk from top";
 
     QTest::newRow("port declaration with multiple ports") <<
         "entity test is\n"
@@ -285,7 +287,7 @@ void tst_VhdlParser::testPortIsHighlighted_data()
         "        clk, enable : in std_logic -- One bit ports\n"
         "   );\n"
         "end test;"
-        << 34 << 43;
+        << "clk, enable : in std_logic -- One bit ports";
 
     QTest::newRow("name type, direction and default value on separate lines") << 
         "entity test is\n"
@@ -295,13 +297,30 @@ void tst_VhdlParser::testPortIsHighlighted_data()
         "std_logic := '1' -- Clk from top.\n"
         ");\n"
         "end test;"
-        << 21 << 42;
+        << 
+        "clk\n"
+        ":\n"
+        "in\n"
+        "std_logic := '1' -- Clk from top.";
+
+    QTest::newRow("Double comment line") << 
+        "entity test is\n"
+        "    port ( \n"
+        "        clk       : IN     std_logic;\n"
+        "      --first comment.\n"
+        "      --second comment.\n"
+        "      -- third comment.\n"
+        "        rst_n     : IN     std_logic\n"
+        "    );\n"
+        "end test;"
+        << 
+        "clk       : IN     std_logic";
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::verifyNotHighlightedBeforeDeclaration()
+// Function: tst_VHDLimport::verifyNotHighlightedBeforeDeclaration()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::verifyNotHighlightedBeforeDeclaration(int declarationStartIndex, QColor const& highlightColor)
+void tst_VHDLimport::verifyNotHighlightedBeforeDeclaration(int declarationStartIndex, QColor const& highlightColor)
 {
     QTextCursor cursor = displayEditor_.textCursor();
     cursor.setPosition(declarationStartIndex);
@@ -311,9 +330,9 @@ void tst_VhdlParser::verifyNotHighlightedBeforeDeclaration(int declarationStartI
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::verifyDeclarationIsHighlighed()
+// Function: tst_VHDLimport::verifyDeclarationIsHighlighed()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::verifyDeclarationIsHighlighted(const int declarationStartIndex, 
+void tst_VHDLimport::verifyDeclarationIsHighlighted(const int declarationStartIndex, 
     const int declarationLength, QColor const& expectedHighlight) const
 {
     QTextCursor cursor = displayEditor_.textCursor();
@@ -327,9 +346,9 @@ void tst_VhdlParser::verifyDeclarationIsHighlighted(const int declarationStartIn
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::verifyNotHighlightedAfterDeclartion()
+// Function: tst_VHDLimport::verifyNotHighlightedAfterDeclartion()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::verifyNotHighlightedAfterDeclartion(const int declarationStartIndex, 
+void tst_VHDLimport::verifyNotHighlightedAfterDeclartion(const int declarationStartIndex, 
     const int declarationLength, QColor const& highlightColor) const
 {
     QTextCursor cursor = displayEditor_.textCursor();
@@ -341,9 +360,9 @@ void tst_VhdlParser::verifyNotHighlightedAfterDeclartion(const int declarationSt
 
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::testGenericIsHighlighted()
+// Function: tst_VHDLimport::testGenericIsHighlighted()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::testGenericIsHighlighted()
+void tst_VHDLimport::testGenericIsHighlighted()
 {
     QFETCH(QString, fileContent);
     QFETCH(int, declarationStartIndex);
@@ -358,9 +377,9 @@ void tst_VhdlParser::testGenericIsHighlighted()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::testGenericIsHighlighted_data()
+// Function: tst_VHDLimport::testGenericIsHighlighted_data()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::testGenericIsHighlighted_data()
+void tst_VHDLimport::testGenericIsHighlighted_data()
 {
     QTest::addColumn<QString>("fileContent");
     QTest::addColumn<int>("declarationStartIndex");
@@ -418,29 +437,60 @@ void tst_VhdlParser::testGenericIsHighlighted_data()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::testFontInsideEntityIsBlackAndOutsideEntityGray()
+// Function: tst_VHDLimport::testFontInsideEntityIsBlackAndOutsideEntityGray()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::testFontInsideEntityIsBlackAndOutsideEntityGray()
+void tst_VHDLimport::testFontInsideEntityIsBlackAndOutsideEntityGray()
 {
-    QString fileContent = 
-        "library IEEE;\n"
-        "entity test is\n"        
-        "end test;\n"
-        "begin rtl of test\n";
+    QFETCH(QString, fileContent);
+    QFETCH(QString, entity);
 
     runParser(fileContent);
 
-    verifySectionFontColorIs(1, 13, QColor("gray"));
+    int begin = 1;
+    int entityBegin = fileContent.indexOf(entity);
+    int entityEnd = fileContent.indexOf(entity) + entity.length();
+    int end = fileContent.length();
 
-    verifySectionFontColorIs(15, 39, QColor("black"));
+    verifySectionFontColorIs(begin, entityBegin, QColor("gray"));
 
-    verifySectionFontColorIs(40, 58, QColor("gray"));
+    verifySectionFontColorIs(entityBegin, entityEnd, QColor("black"));
+
+    verifySectionFontColorIs(entityEnd, end, QColor("gray"));
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::verifySectionFontColorIs()
+// Function: tst_VHDLimport::testFontInsideEntityIsBlackAndOutsideEntityGray_data()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::verifySectionFontColorIs(int startIndex, int endIndex, QColor const& expectedFontColor)
+void tst_VHDLimport::testFontInsideEntityIsBlackAndOutsideEntityGray_data()
+{
+    QTest::addColumn<QString>("fileContent");
+    QTest::addColumn<QString>("entity");
+
+    QTest::newRow("Library usage and empty entity") <<
+        "-- Comment on first line.\n"
+        "library IEEE;\n"
+        "ENTITY test IS\n"        
+        "end test;\n"
+        "begin rtl of test\n"
+        <<  
+        "ENTITY test IS\n"        
+        "end test;\n";
+
+    QTest::newRow("Windows newline") <<
+        "-- Comment.\r\n"
+        "entity test is\r\n"
+        "end test;\r\n"
+        "begin rtl of test\r\n"
+        "end rtl;\r\n"
+        << 
+        "entity test is\n"
+        "end test;\n";
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VHDLimport::verifySectionFontColorIs()
+//-----------------------------------------------------------------------------
+void tst_VHDLimport::verifySectionFontColorIs(int startIndex, int endIndex, QColor const& expectedFontColor)
 {
     QTextCursor cursor = displayEditor_.textCursor();
 
@@ -454,9 +504,9 @@ void tst_VhdlParser::verifySectionFontColorIs(int startIndex, int endIndex, QCol
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::testModelParameterIsAssignedToPort()
+// Function: tst_VHDLimport::testModelParameterIsAssignedToPort()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::testModelParameterIsAssignedToPort()
+void tst_VHDLimport::testModelParameterIsAssignedToPort()
 {
     QFETCH(QString, fileContent);
     QFETCH(int, expectedPortSize);
@@ -470,9 +520,9 @@ void tst_VhdlParser::testModelParameterIsAssignedToPort()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::testModelParameterIsAssignedToPort_data()
+// Function: tst_VHDLimport::testModelParameterIsAssignedToPort_data()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::testModelParameterIsAssignedToPort_data()
+void tst_VHDLimport::testModelParameterIsAssignedToPort_data()
 {
     QTest::addColumn<QString>("fileContent");
     QTest::addColumn<int>("expectedPortSize");
@@ -524,9 +574,9 @@ void tst_VhdlParser::testModelParameterIsAssignedToPort_data()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::testModelParameterChangeAppliesToPort()
+// Function: tst_VHDLimport::testModelParameterChangeAppliesToPort()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::testModelParameterChangeAppliesToPort()
+void tst_VHDLimport::testModelParameterChangeAppliesToPort()
 {
     QString fileContent = "entity test is\n"
         "   port (\n"
@@ -553,9 +603,9 @@ void tst_VhdlParser::testModelParameterChangeAppliesToPort()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::testModelParameterIsAssignedToModelParameter()
+// Function: tst_VHDLimport::testModelParameterIsAssignedToModelParameter()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::testModelParameterIsAssignedToModelParameter()
+void tst_VHDLimport::testModelParameterIsAssignedToModelParameter()
 {
     QFETCH(QString, fileContent);
     QFETCH(QString, expectedValue);
@@ -569,9 +619,9 @@ void tst_VhdlParser::testModelParameterIsAssignedToModelParameter()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::testModelParameterIsAssignedToModelParameter_data()
+// Function: tst_VHDLimport::testModelParameterIsAssignedToModelParameter_data()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::testModelParameterIsAssignedToModelParameter_data()
+void tst_VHDLimport::testModelParameterIsAssignedToModelParameter_data()
 {
     QTest::addColumn<QString>("fileContent");
     QTest::addColumn<QString>("expectedValue");
@@ -606,9 +656,9 @@ void tst_VhdlParser::testModelParameterIsAssignedToModelParameter_data()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VhdlParser::testPortsAndModelParametersAreNotParsedOutsideEntity()
+// Function: tst_VHDLimport::testPortsAndModelParametersAreNotParsedOutsideEntity()
 //-----------------------------------------------------------------------------
-void tst_VhdlParser::testPortsAndModelParametersAreNotParsedOutsideEntity()
+void tst_VHDLimport::testPortsAndModelParametersAreNotParsedOutsideEntity()
 {
     QString fileContent(
         "entity empty is\n"
@@ -633,6 +683,6 @@ void tst_VhdlParser::testPortsAndModelParametersAreNotParsedOutsideEntity()
     QCOMPARE(importComponent_->getModelParameters().count(), 0);
 }
 
-QTEST_MAIN(tst_VhdlParser)
+QTEST_MAIN(tst_VHDLimport)
 
-#include "tst_VhdlParser.moc"
+#include "tst_VHDLimport.moc"

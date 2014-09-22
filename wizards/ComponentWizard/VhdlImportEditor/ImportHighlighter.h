@@ -12,7 +12,7 @@
 #ifndef VHDLHIGHLIGHTER_H
 #define VHDLHIGHLIGHTER_H
 
-#include <Plugins/PluginSystem/Highlighter.h>
+#include <Plugins/PluginSystem/ImportPlugin/Highlighter.h>
 
 #include <QObject>
 #include <QTextCharFormat>

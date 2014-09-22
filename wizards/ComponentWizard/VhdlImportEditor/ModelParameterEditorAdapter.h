@@ -12,7 +12,7 @@
 #ifndef MODELPARAMETEREDITORADAPTER_H
 #define MODELPARAMETEREDITORADAPTER_H
 
-#include <Plugins/PluginSystem/ModelParameterVisualizer.h>
+#include <Plugins/PluginSystem/ImportPlugin/ModelParameterVisualizer.h>
 
 class ModelParameter;
 class ModelParameterEditor;

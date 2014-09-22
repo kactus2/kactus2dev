@@ -12,13 +12,13 @@
 #ifndef VHDLGENERICPARSER_H
 #define VHDLGENERICPARSER_H
 
-#include <Plugins/PluginSystem/ImportParser.h>
-#include <Plugins/PluginSystem/HighlightSource.h>
-#include <Plugins/PluginSystem/ModelParameterSource.h>
+#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
+#include <Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h>
 
 #include <QSharedPointer>
 #include <QString>
 
+class Component;
 class ModelParameter;
 
 //-----------------------------------------------------------------------------

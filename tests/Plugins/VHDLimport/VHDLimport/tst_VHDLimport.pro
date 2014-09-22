@@ -1,17 +1,17 @@
 #-----------------------------------------------------------------------------
-# File: tst_VhdlParser.pro
+# File: tst_VHDLimport.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
 # Date: 05.09.2014
 #
 # Description:
-# Qt project file template for running unit tests for VhdlParser.
+# Qt project file template for running unit tests for VHDLimport.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = app
 
-TARGET = tst_VhdlParser
+TARGET = tst_VHDLimport
 
 QT += core xml gui widgets testlib
 CONFIG += testcase
@@ -42,4 +42,4 @@ OBJECTS_DIR += $$DESTDIR
 MOC_DIR += ./generatedFiles
 UI_DIR += ./generatedFiles
 RCC_DIR += ./generatedFiles
-include(tst_VhdlParser.pri)
+include(tst_VHDLimport.pri)

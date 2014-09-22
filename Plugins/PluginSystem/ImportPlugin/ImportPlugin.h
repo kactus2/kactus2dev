@@ -12,7 +12,7 @@
 #ifndef IMPORTPARSER_H
 #define IMPORTPARSER_H
 
-#include "IPlugin.h"
+#include <Plugins/PluginSystem/IPlugin.h>
 
 #include <QSharedPointer>
 #include <QtPlugin>
@@ -22,17 +22,17 @@ class Component;
 //-----------------------------------------------------------------------------
 //! Interface for import parser plugins.
 //-----------------------------------------------------------------------------
-class ImportParser : public IPlugin
+class ImportPlugin : public IPlugin
 {
 public:
     
     //! The destructor.
-    virtual ~ImportParser() {};
+    virtual ~ImportPlugin() {};
 
     /*!
      *  Returns the supported import file types.
      *
-     *      @return The file types the import parser supports.
+     *      @return The file types the import plugin supports.
      */
     virtual QStringList acceptedFileTypes() const = 0;
 
@@ -45,6 +45,6 @@ public:
     virtual void runParser(QString const& input, QSharedPointer<Component> targetComponent) = 0;
 };
 
-Q_DECLARE_INTERFACE(ImportParser, "com.tut.Kactus2.ImportParser/1.0")
+Q_DECLARE_INTERFACE(ImportPlugin, "com.tut.Kactus2.ImportPlugin/1.0")
 
 #endif // IMPORTPARSER_H

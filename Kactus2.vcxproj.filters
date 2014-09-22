@@ -884,6 +884,9 @@
     <Filter Include="Header Files\designEditors\common\Association">
       <UniqueIdentifier>{639b5694-b994-4740-a403-6ec20fab5862}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Plugins\PluginSystem\ImportPlugin">
+      <UniqueIdentifier>{5b9bbccb-bfbc-422d-8af7-bb4584e68f58}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3760,9 +3763,6 @@
     <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\PortEditorAdapter.cpp">
       <Filter>Source Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_PortEditorAdapter.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\ModelParameterEditorAdapter.cpp">
       <Filter>Source Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
     </ClCompile>
@@ -5411,26 +5411,26 @@
     <ClInclude Include="wizards\ComponentWizard\ComponentWizardPages.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ImportParser.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\Highlighter.h">
+      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\HighlightSource.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\HighlightSource.h">
+      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\Highlighter.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ImportPlugin.h">
+      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\PortSource.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ModelParameterSource.h">
+      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\PortVisualizer.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ModelParameterVisualizer.h">
+      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ModelParameterVisualizer.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\PortSource.h">
+      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ModelParameterSource.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\PortVisualizer.h">
+      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

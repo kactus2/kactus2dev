@@ -250,7 +250,7 @@ void tst_VHDLPortParser::testMultiplePortsAreParsed_data()
         "-- Clock to test.\n"
         "       clk   : in  std_logic;\n"
         "    -- Reset to test.\n"
-        "-- Remember to connect.\n"
+        "    -- Remember to connect.\n"
         "       rst_n : in  std_logic;\n"     
         "       data  : out std_logic_vector(31 downto 0)\n"
         "-- End of all ports.\n"
