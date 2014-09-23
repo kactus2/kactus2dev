@@ -44,9 +44,6 @@ public:
      *  Called to receive future notifications of model parameter changes in the visualization.
      *
      *      @param [in] listener   The the listener to receive notifications in.
-     *
-     *      @remark listener must have a slot with the following signature:
-     *              onModelParameterChanged(QSharedPointer<ModelParameter> changedParameter);
      */
     virtual void registerChangeListener(QObject const* listener) = 0;
 };

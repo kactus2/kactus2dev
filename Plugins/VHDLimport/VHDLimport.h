@@ -31,6 +31,7 @@ class Port;
 class PortVisualizer;
 class VHDLPortParser;
 class VHDLGenericParser;
+class View;
 
 //-----------------------------------------------------------------------------
 //! Class VHDLimport.
@@ -103,11 +104,10 @@ public:
     virtual QStringList acceptedFileTypes() const;
 
     /*!
-     *   Reads a vhdl file and creates generics and ports.
+     *   Parses a vhdl input, sets up an rtl view and creates generics and ports.
      *
-     *      @param [in] absolutePath The absolute path of the file.
-	 *
-	 *      @return False, if file could not be read, otherwise true.
+     *      @param [in] input               The input text to parse.
+     *      @param [in] targetComponent     The component to apply all imported changes to.
      */
     virtual void runParser(QString const& input, QSharedPointer<Component> targetComponent);
 
@@ -116,10 +116,25 @@ public:
      */
     void clear();
 
+    /*!
+     *  Sets the given highlighter to be used by the import.
+     *
+     *      @param [in] highlighter   The highlighter to use.          
+     */
     virtual void setHighlighter(Highlighter* highlighter);
     
+    /*!
+     *  Sets the given visualizer to be used by the import.
+     *
+     *      @param [in] visualizer   The visualizer to use.          
+     */
     virtual void setPortVisualizer(PortVisualizer* visualizer);
-
+        
+    /*!
+     *  Sets the given visualizer to be used by the import.
+     *
+     *      @param [in] visualizer   The visualizer to use.          
+     */
     virtual void setModelParameterVisualizer(ModelParameterVisualizer* visualizer);
 
 public slots:
@@ -175,6 +190,25 @@ private:
     void highlightEntity(QString const& fileContent) const;
     
     /*!
+     *  Parses the model name from the input and sets it in the rtl view.
+     *
+     *      @param [in] input   The input text to parse the model name from.
+     */
+    void parseModelName(QString const& input) const;
+
+    /*!
+     *  Sets the language and environmental identifiers in the rtl view.
+     */
+    void setLanguageAndEnvironmentalIdentifiers() const;
+
+    /*!
+     *  Finds a flat (rtl) view from the target component or creates one, if none are found.
+     *
+     *      @return Flat view to set up with model name and environmental identifiers.
+     */
+    View* findOrCreateFlatView() const;
+
+    /*!
      *  Adds a port dependency to a model parameter.
      *
      *      @param [in] modelParameter   The model parameter depended on.
@@ -182,7 +216,7 @@ private:
      */
     void addDependencyOfGenericToPort(QSharedPointer<ModelParameter> modelParameter, 
         QSharedPointer<Port> parsedPort);
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

@@ -20,6 +20,7 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/port.h>
+#include <IPXACTmodels/view.h>
 
 #include <Plugins/PluginSystem/ImportPlugin/Highlighter.h>
 #include <Plugins/PluginSystem/ImportPlugin/PortVisualizer.h>
@@ -32,7 +33,7 @@ namespace
 {
     //!  Regual expression for VHDL entity.
     const QRegExp ENTITY_EXP = QRegExp("ENTITY\\s+(\\w+)\\s+IS\\s+.*END\\s+(?:ENTITY\\s+)?(\\1)?\\s*[;]", 
-        Qt::CaseInsensitive);
+        Qt::CaseInsensitive);    
 }
 
 //-----------------------------------------------------------------------------
@@ -161,6 +162,9 @@ void VHDLimport::runParser(QString const& input, QSharedPointer<Component> targe
     if (hasValidEntity(input))
     {        
         highlightEntity(input);
+
+        parseModelName(input);
+        setLanguageAndEnvironmentalIdentifiers();
 
         genericParser_->runParser(input, targetComponent);
         portParser_->runParser(input, targetComponent);
@@ -304,6 +308,65 @@ void VHDLimport::highlightEntity(QString const& fileContent) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: VHDLimport::parseModelName()
+//-----------------------------------------------------------------------------
+void VHDLimport::parseModelName(QString const& input) const
+{
+    ENTITY_EXP.indexIn(input);
+    QString entityName = ENTITY_EXP.cap(1);
+
+    QRegExp architectureExp("ARCHITECTURE\\s+(\\w+)\\s+OF\\s+" + entityName + "\\s+IS\\s+", Qt::CaseInsensitive);
+
+    architectureExp.indexIn(input);
+    QString architectureName = architectureExp.cap(1);
+
+    QString modelName = entityName + "(" + architectureName + ")";
+
+    View* rtlView = findOrCreateFlatView();
+
+    rtlView->setModelName(modelName);    
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLimport::findOrCreateFlatView()
+//-----------------------------------------------------------------------------
+View* VHDLimport::findOrCreateFlatView() const
+{
+    QStringList flatViews = targetComponent_->getFlatViews();
+    if (flatViews.isEmpty())
+    {
+        targetComponent_->createEmptyFlatView();
+        flatViews = targetComponent_->getFlatViews();
+    }
+
+    return targetComponent_->findView(flatViews.first());
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLimport::setLanguageAndEnvironmentalIdentifiers()
+//-----------------------------------------------------------------------------
+void VHDLimport::setLanguageAndEnvironmentalIdentifiers() const
+{
+    View* rtlView = findOrCreateFlatView();
+    rtlView->setLanguage("vhdl");
+
+    QString envIdentifierForVHDL = "VHDL:Kactus2:";
+
+    QStringList envIdentifiers = rtlView->getEnvIdentifiers();
+    QString& envIdentifier = envIdentifiers.first();
+    if (envIdentifier == "::")
+    {
+        envIdentifier = envIdentifierForVHDL;
+    }
+    else
+    {
+        envIdentifiers.append(envIdentifierForVHDL);
+    }
+
+    rtlView->setEnvIdentifiers(envIdentifiers);
+}
+
+//-----------------------------------------------------------------------------
 // Function: VHDLimport::addDependencyOfGenericToPort()
 //-----------------------------------------------------------------------------
 void VHDLimport::addDependencyOfGenericToPort(QSharedPointer<ModelParameter> modelParameter, 
@@ -318,3 +381,4 @@ void VHDLimport::addDependencyOfGenericToPort(QSharedPointer<ModelParameter> mod
 
     dependedGenerics_.insert(modelParameter, portList);
 }
+

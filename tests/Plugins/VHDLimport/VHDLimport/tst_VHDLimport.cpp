@@ -63,6 +63,8 @@ private slots:
 
     void testPortsAndModelParametersAreNotParsedOutsideEntity();
 
+    void testModelNameAndEnvironmentIsImportedToView();
+
 private:
 
     void runParser(QString& input);
@@ -681,6 +683,34 @@ void tst_VHDLimport::testPortsAndModelParametersAreNotParsedOutsideEntity()
 
     QCOMPARE(importComponent_->getPorts().count(), 0);
     QCOMPARE(importComponent_->getModelParameters().count(), 0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VHDLimport::testModelNameAndEnvironmentIsImportedToView()
+//-----------------------------------------------------------------------------
+void tst_VHDLimport::testModelNameAndEnvironmentIsImportedToView()
+{
+    QString fileContent(
+        "entity testbench is\n"
+        "end testbench;\n"
+        "\n"
+        "architecture structural of testbench is\n"
+        "\n"
+        "component dut"
+        "   port (\n"
+        "       clk : in std_logic\n"
+        "   );\n"
+        "end dut;\n"
+        "\n"
+        "end structural;\n");
+
+    runParser(fileContent);
+
+    QVERIFY2(importComponent_->hasView("flat"), "No view 'flat' found in component.");
+
+    QCOMPARE(importComponent_->getViews().first()->getModelName(), QString("testbench(structural)"));
+    QCOMPARE(importComponent_->getViews().first()->getLanguage(), QString("vhdl"));
+    QCOMPARE(importComponent_->getViews().first()->getEnvIdentifiers().first(), QString("VHDL:Kactus2:"));
 }
 
 QTEST_MAIN(tst_VHDLimport)
