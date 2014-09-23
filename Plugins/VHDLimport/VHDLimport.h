@@ -195,6 +195,17 @@ private:
      *      @param [in] input   The input text to parse the model name from.
      */
     void parseModelName(QString const& input) const;
+    void highlightConfiguration(QRegExp const& configurationExp) const;
+
+    QString createModelNameFromConfiguration(QRegExp const& configurationExp) const;
+
+    bool hasConfiguration(QRegExp const& configurationExp, QString const& input) const;
+
+    void highlightArchitecture(QRegExp const& architectureExp) const;
+
+    QString createModelNameFromArchitecture(QRegExp const& architectureExp) const;
+
+    bool hasArchitecture(QRegExp const& architectureExp, QString const& input) const;
 
     /*!
      *  Sets the language and environmental identifiers in the rtl view.

@@ -33,7 +33,7 @@ namespace
 {
     //!  Regual expression for VHDL entity.
     const QRegExp ENTITY_EXP = QRegExp("ENTITY\\s+(\\w+)\\s+IS\\s+.*END\\s+(?:ENTITY\\s+)?(\\1)?\\s*[;]", 
-        Qt::CaseInsensitive);    
+        Qt::CaseInsensitive);
 }
 
 //-----------------------------------------------------------------------------
@@ -315,20 +315,87 @@ void VHDLimport::parseModelName(QString const& input) const
     ENTITY_EXP.indexIn(input);
     QString entityName = ENTITY_EXP.cap(1);
 
-    QRegExp architectureExp("ARCHITECTURE\\s+((\\w+)\\s+OF\\s+" + entityName + ")\\s+IS(?=\\s+)", Qt::CaseInsensitive);
-    architectureExp.indexIn(input);
+    QRegExp architectureExp("ARCHITECTURE\\s+((\\w+)\\s+OF\\s+(" + entityName + "))\\s+IS(?=\\s+)", 
+        Qt::CaseInsensitive);
 
+    QRegExp configurationExp("CONFIGURATION\\s+((\\w+)\\s+OF\\s+" + entityName + ")\\s+IS(?=\\s+)", 
+        Qt::CaseInsensitive);
+
+   QString modelName = "";
+
+   if (hasArchitecture(architectureExp, input))
+    {
+        modelName = createModelNameFromArchitecture(architectureExp);
+        highlightArchitecture(architectureExp);
+    }
+   else if(hasConfiguration(configurationExp, input))
+    {
+        modelName = createModelNameFromConfiguration(configurationExp);
+        highlightConfiguration(configurationExp);
+    }
+    
+    View* rtlView = findOrCreateFlatView();
+    rtlView->setModelName(modelName);    
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLimport::hasArchitecture()
+//-----------------------------------------------------------------------------
+bool VHDLimport::hasArchitecture(QRegExp const& architectureExp, QString const& input) const
+{
+    return architectureExp.indexIn(input) != -1;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLimport::createModelNameForArchitecture()
+//-----------------------------------------------------------------------------
+QString VHDLimport::createModelNameFromArchitecture(QRegExp const& architectureExp) const
+{
+    QString entityName = architectureExp.cap(3);
+    QString architectureName = architectureExp.cap(2);
+
+    return entityName + "(" + architectureName + ")";	
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLimport::highlightArchitecture()
+//-----------------------------------------------------------------------------
+void VHDLimport::highlightArchitecture(QRegExp const& architectureExp) const
+{
     if (highlighter_)
     {
         highlighter_->applyFontColor(architectureExp.cap(0), QColor("black"));
         highlighter_->applyHighlight(architectureExp.cap(1), KactusColors::REGISTER_COLOR);
     }
+}
 
-    QString architectureName = architectureExp.cap(2);
+//-----------------------------------------------------------------------------
+// Function: VHDLimport::hasConfiguration()
+//-----------------------------------------------------------------------------
+bool VHDLimport::hasConfiguration(QRegExp const& configurationExp, QString const& input) const
+{
+    return configurationExp.indexIn(input) != -1;
+}
 
-    QString modelName = entityName + "(" + architectureName + ")";
-    View* rtlView = findOrCreateFlatView();
-    rtlView->setModelName(modelName);    
+//-----------------------------------------------------------------------------
+// Function: VHDLimport::createModelNameFromConfiguration()
+//-----------------------------------------------------------------------------
+QString VHDLimport::createModelNameFromConfiguration(QRegExp const& configurationExp) const
+{
+    QString configurationName = configurationExp.cap(2);
+    return configurationName;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLimport::highlightConfiguration()
+//-----------------------------------------------------------------------------
+void VHDLimport::highlightConfiguration(QRegExp const& configurationExp) const
+{
+    if (highlighter_)
+    {
+        highlighter_->applyFontColor(configurationExp.cap(0), QColor("black"));
+        highlighter_->applyHighlight(configurationExp.cap(2), KactusColors::REGISTER_COLOR);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -389,4 +456,3 @@ void VHDLimport::addDependencyOfGenericToPort(QSharedPointer<ModelParameter> mod
 
     dependedGenerics_.insert(modelParameter, portList);
 }
-

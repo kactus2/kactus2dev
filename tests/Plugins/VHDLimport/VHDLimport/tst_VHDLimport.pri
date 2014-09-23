@@ -5,16 +5,16 @@
 HEADERS += ../../../../Plugins/PluginSystem/ImportPlugin/HighlightSource.h \
     ../../../../Plugins/PluginSystem/ImportPlugin/Highlighter.h \
     ../../../../Plugins/PluginSystem/ImportPlugin/ImportPlugin.h \
+    ../../../../Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h \
     ../../../../Plugins/PluginSystem/ImportPlugin/PortSource.h \
     ../../../../Plugins/VHDLimport/VHDLEquationParser.h \
+    ../../../../Plugins/VHDLimport/VHDLSyntax.h \
     ../../../../Plugins/VHDLimport/vhdlimport_global.h \
-    ../../../../wizards/ComponentWizard/VhdlImportEditor/ImportHighlighter.h \
+    ../../../../wizards/ComponentWizard/ImportEditor/ImportHighlighter.h \
     ../../../../Plugins/VHDLimport/VHDLGenericParser.h \
     ../../../../Plugins/VHDLimport/VHDLPortParser.h \
-    ../../../../Plugins/VHDLimport/VHDLimport.h \
-    ../../../../Plugins/VHDLimport/VHDLSyntax.h \
-    ../../../../Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h
-SOURCES += ../../../../wizards/ComponentWizard/VhdlImportEditor/ImportHighlighter.cpp \
+    ../../../../Plugins/VHDLimport/VHDLimport.h
+SOURCES += ../../../../wizards/ComponentWizard/ImportEditor/ImportHighlighter.cpp \
     ../../../../Plugins/VHDLimport/VHDLEquationParser.cpp \
     ../../../../Plugins/VHDLimport/VHDLGenericParser.cpp \
     ../../../../Plugins/VHDLimport/VHDLPortParser.cpp \

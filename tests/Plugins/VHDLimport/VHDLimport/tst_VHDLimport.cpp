@@ -20,7 +20,7 @@
 
 #include <Plugins/VHDLimport/VHDLimport.h>
 
-#include <wizards/ComponentWizard/VhdlImportEditor/ImportHighlighter.h>
+#include <wizards/ComponentWizard/ImportEditor/ImportHighlighter.h>
 
 #include <QPlainTextEdit>
 #include <QSharedPointer>
@@ -64,6 +64,8 @@ private slots:
     void testPortsAndModelParametersAreNotParsedOutsideEntity();
 
     void testModelNameAndEnvironmentIsImportedToView();
+    void testArchitecturePrecedesConfigurationForModelName();
+    void testConfigurationIsImportedToViewIfNoArchitectureAvailable();
 
 private:
 
@@ -531,45 +533,45 @@ void tst_VHDLimport::testModelParameterIsAssignedToPort_data()
 
     QTest::newRow("Parametrized port width.") <<
         "entity test is\n"
-        "   port (\n"
-        "       data : out std_logic_vector(dataWidth_g downto 0)\n"
-        "   );\n"
         "   generic (\n"
         "       dataWidth_g : integer := 31\n"
+        "   );\n"
+        "   port (\n"
+        "       data : out std_logic_vector(dataWidth_g downto 0)\n"
         "   );\n"
         "end test;"
         << 32 ;
 
     QTest::newRow("Parametrized port width with subtraction.") <<
         "entity test is\n"
-        "   port (\n"
-        "       data : out std_logic_vector(dataWidth_g-1 downto 0)\n"
-        "   );\n"
         "   generic (\n"
         "       dataWidth_g : integer := 16\n"
+        "   );\n"
+        "   port (\n"
+        "       data : out std_logic_vector(dataWidth_g-1 downto 0)\n"
         "   );\n"
         "end test;"
         << 16 ;
 
     QTest::newRow("Parametrized port width with equation of generics.") <<
         "entity test is\n"
-        "   port (\n"
-        "       data : out std_logic_vector(dataWidth_g+addrWidth_g-1 downto 0)\n"
-        "   );\n"
         "   generic (\n"        
         "       addrWidth_g : integer := 8;\n"
         "       dataWidth_g : integer := 16\n"
+        "   );\n"
+        "   port (\n"
+        "       data : out std_logic_vector(dataWidth_g+addrWidth_g-1 downto 0)\n"
         "   );\n"
         "end test;"
         << 24 ;
 
     QTest::newRow("Parametrized port width with power of two.") <<
         "entity test is\n"
-        "   port (\n"
-        "       data : out std_logic_vector(max_g**2-1 downto 0)\n"
-        "   );\n"
         "   generic (\n"
         "       max_g : integer := 8\n"
+        "   );\n"
+        "   port (\n"
+        "       data : out std_logic_vector(max_g**2-1 downto 0)\n"
         "   );\n"
         "end test;"
         << 64 ;
@@ -580,12 +582,13 @@ void tst_VHDLimport::testModelParameterIsAssignedToPort_data()
 //-----------------------------------------------------------------------------
 void tst_VHDLimport::testModelParameterChangeAppliesToPort()
 {
-    QString fileContent = "entity test is\n"
-        "   port (\n"
-        "       data : out std_logic_vector(dataWidth_g-1 downto 0)\n"
-        "   );\n"
+    QString fileContent = 
+        "entity test is\n"
         "   generic (\n"        
         "       dataWidth_g : integer := 8\n"
+        "   );\n"
+        "   port (\n"
+        "       data : out std_logic_vector(dataWidth_g-1 downto 0)\n"
         "   );\n"
         "end test;";
 
@@ -692,17 +695,17 @@ void tst_VHDLimport::testModelNameAndEnvironmentIsImportedToView()
 {
     QString fileContent(
         "entity testbench is\n"
-        "end testbench;\n"
+        "end entity testbench;\n"
         "\n"
-        "architecture structural of testbench is\n"
+        "ARCHITECTURE structural OF testbench IS\n"
         "\n"
         "component dut"
         "   port (\n"
         "       clk : in std_logic\n"
         "   );\n"
-        "end dut;\n"
+        "END dut;\n"
         "\n"
-        "end structural;\n");
+        "END ARCHITECTURE structural;\n");
 
     runParser(fileContent);
 
@@ -711,6 +714,80 @@ void tst_VHDLimport::testModelNameAndEnvironmentIsImportedToView()
     QCOMPARE(importComponent_->getViews().first()->getModelName(), QString("testbench(structural)"));
     QCOMPARE(importComponent_->getViews().first()->getLanguage(), QString("vhdl"));
     QCOMPARE(importComponent_->getViews().first()->getEnvIdentifiers().first(), QString("VHDL:Kactus2:"));
+
+    QString architecture = "ARCHITECTURE structural OF testbench";
+    QString modelNameSection = "structural OF testbench";
+
+    verifySectionFontColorIs(fileContent.indexOf(architecture), architecture.length(), QColor("black"));
+    verifyDeclarationIsHighlighted(fileContent.indexOf(modelNameSection), modelNameSection.length(), 
+        KactusColors::REGISTER_COLOR);    
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VHDLimport::testArchitecturePrecedesConfigurationForModelName()
+//-----------------------------------------------------------------------------
+void tst_VHDLimport::testArchitecturePrecedesConfigurationForModelName()
+{
+    QString fileContent(
+        "entity testbench is\n"
+        "end testbench;\n"
+        "\n"
+        "ARCHITECTURE structural OF testbench IS\n"
+        "\n"
+        "component Dut"
+        "   port (\n"
+        "       clk : in std_logic\n"
+        "   );\n"
+        "END Dut;\n"
+        "\n"
+        "END ARCHITECTURE structural;\n"
+        "\n"
+        "CONFIGURATION behavioral OF testbench is\n"
+        "    FOR default_architecture\n"
+        "         FOR ALL : Dut USE ENTITY WORK.half_adder(rtl)\n"
+        "    END FOR;"
+        "end CONFIGURATION behavioral;\n");
+
+    runParser(fileContent);
+
+    QVERIFY2(importComponent_->hasView("flat"), "No view 'flat' found in component.");
+    QCOMPARE(importComponent_->getViews().first()->getModelName(), QString("testbench(structural)"));
+
+
+    QString architecture = "ARCHITECTURE structural OF testbench IS";
+    QString modelNameSection = "structural OF testbench";
+
+    verifySectionFontColorIs(fileContent.indexOf(architecture), architecture.length(), QColor("black"));
+    verifyDeclarationIsHighlighted(fileContent.indexOf(modelNameSection), modelNameSection.length(), 
+        KactusColors::REGISTER_COLOR);    
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VHDLimport::testConfigurationIsImportedToViewIfNoArchitectureAvailable()
+//-----------------------------------------------------------------------------
+void tst_VHDLimport::testConfigurationIsImportedToViewIfNoArchitectureAvailable()
+{
+    QString fileContent(
+        "entity testbench is\n"
+        "end testbench;\n"
+        "\n"
+        "CONFIGURATION behavioral OF testbench is\n"
+        "    FOR default_architecture\n"
+        "         FOR ALL : Dut USE ENTITY WORK.half_adder(rtl)\n"
+        "    END FOR;"
+        "end CONFIGURATION behavioral;\n");
+
+    runParser(fileContent);
+
+    QVERIFY2(importComponent_->hasView("flat"), "No view 'flat' found in component.");
+    QCOMPARE(importComponent_->getViews().first()->getModelName(), QString("behavioral"));
+
+    QString configuration = "CONFIGURATION behavioral OF testbench";
+    QString modelNameSection = "behavioral";
+
+    verifySectionFontColorIs(fileContent.indexOf(configuration), configuration.length(), QColor("black"));
+    verifyDeclarationIsHighlighted(fileContent.indexOf(modelNameSection), modelNameSection.length(), 
+        KactusColors::REGISTER_COLOR);    
 }
 
 QTEST_MAIN(tst_VHDLimport)
