@@ -315,15 +315,19 @@ void VHDLimport::parseModelName(QString const& input) const
     ENTITY_EXP.indexIn(input);
     QString entityName = ENTITY_EXP.cap(1);
 
-    QRegExp architectureExp("ARCHITECTURE\\s+(\\w+)\\s+OF\\s+" + entityName + "\\s+IS\\s+", Qt::CaseInsensitive);
-
+    QRegExp architectureExp("ARCHITECTURE\\s+((\\w+)\\s+OF\\s+" + entityName + ")\\s+IS(?=\\s+)", Qt::CaseInsensitive);
     architectureExp.indexIn(input);
-    QString architectureName = architectureExp.cap(1);
+
+    if (highlighter_)
+    {
+        highlighter_->applyFontColor(architectureExp.cap(0), QColor("black"));
+        highlighter_->applyHighlight(architectureExp.cap(1), KactusColors::REGISTER_COLOR);
+    }
+
+    QString architectureName = architectureExp.cap(2);
 
     QString modelName = entityName + "(" + architectureName + ")";
-
     View* rtlView = findOrCreateFlatView();
-
     rtlView->setModelName(modelName);    
 }
 
@@ -350,18 +354,22 @@ void VHDLimport::setLanguageAndEnvironmentalIdentifiers() const
     View* rtlView = findOrCreateFlatView();
     rtlView->setLanguage("vhdl");
 
-    QString envIdentifierForVHDL = "VHDL:Kactus2:";
+    QString createdEnvIdentifier = "VHDL:Kactus2:";
 
     QStringList envIdentifiers = rtlView->getEnvIdentifiers();
-    QString& envIdentifier = envIdentifiers.first();
-    if (envIdentifier == "::")
+
+    if (envIdentifiers.isEmpty())
     {
-        envIdentifier = envIdentifierForVHDL;
+       rtlView->addEnvIdentifier(createdEnvIdentifier);
     }
-    else
+    else if (envIdentifiers.first() == "::")
     {
-        envIdentifiers.append(envIdentifierForVHDL);
+        envIdentifiers.first() = createdEnvIdentifier;
     }
+    else if (!envIdentifiers.contains(createdEnvIdentifier, Qt::CaseInsensitive))
+    {
+        rtlView->addEnvIdentifier(createdEnvIdentifier);
+    }     
 
     rtlView->setEnvIdentifiers(envIdentifiers);
 }
