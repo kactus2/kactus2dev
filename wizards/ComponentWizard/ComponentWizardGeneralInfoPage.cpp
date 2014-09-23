@@ -37,7 +37,7 @@ ComponentWizardGeneralInfoPage::ComponentWizardGeneralInfoPage(QSharedPointer<Co
 
     // Pre-assign username to author field.
     QSettings settings;
-    authorEditor_.setText(settings.value("General/Username",  Utils::getCurrentUser()).toString());
+    authorEditor_.setText(settings.value("General/Username", Utils::getCurrentUser()).toString());
 
     setupLayout();
 }

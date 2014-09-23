@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: vhdlimporteditor.cpp
+// File: ImportEditor.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Antti Kamppi
@@ -9,7 +9,7 @@
 // Used to parse source files and generating IP-XACT packages of them.
 //-----------------------------------------------------------------------------
 
-#include "vhdlimporteditor.h"
+#include "ImportEditor.h"
 
 #include "PortEditorAdapter.h"
 #include "ModelParameterEditorAdapter.h"
@@ -22,7 +22,7 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <wizards/ComponentWizard/ImportRunner.h>
-#include <wizards/ComponentWizard/VhdlImportEditor/ImportHighlighter.h>
+#include <wizards/ComponentWizard/ImportEditor/ImportHighlighter.h>
 
 #include <QApplication>
 #include <QHBoxLayout>
@@ -38,7 +38,7 @@
 //-----------------------------------------------------------------------------
 // Function: VhdlImportEditor::VhdlImportEditor()
 //-----------------------------------------------------------------------------
-VhdlImportEditor::VhdlImportEditor(QSharedPointer<Component> component, 
+ImportEditor::ImportEditor(QSharedPointer<Component> component, 
 	LibraryInterface* handler,
     PluginManager const& pluginMgr,
 	QWidget *parent):
@@ -89,7 +89,7 @@ VhdlImportEditor::VhdlImportEditor(QSharedPointer<Component> component,
 //-----------------------------------------------------------------------------
 // Function: VhdlImportEditor::~VhdlImportEditor()
 //-----------------------------------------------------------------------------
-VhdlImportEditor::~VhdlImportEditor()
+ImportEditor::~ImportEditor()
 {
 
 }
@@ -97,7 +97,7 @@ VhdlImportEditor::~VhdlImportEditor()
 //-----------------------------------------------------------------------------
 // Function: VhdlImportEditor::initializeFileSelection()
 //-----------------------------------------------------------------------------
-void VhdlImportEditor::initializeFileSelection()
+void ImportEditor::initializeFileSelection()
 {
     QStringList possibleFileTypes = runner_->importFileTypes();
 
@@ -113,7 +113,7 @@ void VhdlImportEditor::initializeFileSelection()
 //-----------------------------------------------------------------------------
 // Function: VhdlImportEditor::checkEditorValidity()
 //-----------------------------------------------------------------------------
-bool VhdlImportEditor::checkEditorValidity() const
+bool ImportEditor::checkEditorValidity() const
 {
     return modelParameterEditor_->isValid() && portEditor_->isValid();
 }
@@ -121,7 +121,7 @@ bool VhdlImportEditor::checkEditorValidity() const
 //-----------------------------------------------------------------------------
 // Function: VhdlImportEditor::onFileSelected()
 //-----------------------------------------------------------------------------
-void VhdlImportEditor::onFileSelected(QString const& filePath)
+void ImportEditor::onFileSelected(QString const& filePath)
 {
     if (filePath.isEmpty())
     {
@@ -136,7 +136,7 @@ void VhdlImportEditor::onFileSelected(QString const& filePath)
 //-----------------------------------------------------------------------------
 // Function: VhdlImportEditor::onOpenEditor()
 //-----------------------------------------------------------------------------
-void VhdlImportEditor::onOpenEditor() 
+void ImportEditor::onOpenEditor() 
 {
     if (!selectedSourceFile_.isEmpty())
     {
@@ -147,7 +147,7 @@ void VhdlImportEditor::onOpenEditor()
 //-----------------------------------------------------------------------------
 // Function: VhdlImportEditor::onRefresh()
 //-----------------------------------------------------------------------------
-void VhdlImportEditor::onRefresh() 
+void ImportEditor::onRefresh() 
 {
     if (!selectedSourceFile_.isEmpty())
     {
@@ -161,7 +161,7 @@ void VhdlImportEditor::onRefresh()
 //-----------------------------------------------------------------------------
 // Function: VhdlImportEditor::setSourceEditorFormatting()
 //-----------------------------------------------------------------------------
-void VhdlImportEditor::setSourceDisplayFormatting()
+void ImportEditor::setSourceDisplayFormatting()
 {
     QFont font("Courier");
     font.setStyleHint(QFont::Monospace);
@@ -177,7 +177,7 @@ void VhdlImportEditor::setSourceDisplayFormatting()
 //-----------------------------------------------------------------------------
 // Function: VhdlImportEditor::fileSuffixesForTypes()
 //-----------------------------------------------------------------------------
-QStringList VhdlImportEditor::fileExtensionsForTypes(QStringList possibleFileTypes) const
+QStringList ImportEditor::fileExtensionsForTypes(QStringList possibleFileTypes) const
 {
     QStringList fileSuffixes;
 
@@ -207,7 +207,7 @@ QStringList VhdlImportEditor::fileExtensionsForTypes(QStringList possibleFileTyp
 //-----------------------------------------------------------------------------
 // Function: VhdlImportEditor::selectedFileAbsolutePath()
 //-----------------------------------------------------------------------------
-QString VhdlImportEditor::selectedFileAbsolutePath() const
+QString ImportEditor::selectedFileAbsolutePath() const
 {
     return General::getAbsolutePath(componentXmlPath_, selectedSourceFile_);
 }
@@ -215,7 +215,7 @@ QString VhdlImportEditor::selectedFileAbsolutePath() const
 //-----------------------------------------------------------------------------
 // Function: VhdlImportEditor::loadFileToDisplay()
 //-----------------------------------------------------------------------------
-void VhdlImportEditor::loadFileToDisplay()
+void ImportEditor::loadFileToDisplay()
 {
     QFile importFile(selectedFileAbsolutePath());
     if (!importFile.open(QIODevice::ReadOnly))
@@ -232,7 +232,7 @@ void VhdlImportEditor::loadFileToDisplay()
 //-----------------------------------------------------------------------------
 // Function: VhdlImportEditor::scrollToFirstHighlight()
 //-----------------------------------------------------------------------------
-void VhdlImportEditor::scrollSourceDisplayToFirstHighlight() const
+void ImportEditor::scrollSourceDisplayToFirstHighlight() const
 {
     QTextCursor cursor = sourceDisplayer_->textCursor();
     cursor.movePosition(QTextCursor::Start);
@@ -252,7 +252,7 @@ void VhdlImportEditor::scrollSourceDisplayToFirstHighlight() const
 //-----------------------------------------------------------------------------
 // Function: VhdlImportEditor::setupLayout()
 //-----------------------------------------------------------------------------
-void VhdlImportEditor::setupLayout()
+void ImportEditor::setupLayout()
 {
     // Make the splitter handles visible by creating lines. Handle 0 is always invisible.
     const int handles = 3;

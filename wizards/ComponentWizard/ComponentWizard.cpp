@@ -19,7 +19,7 @@
 #include "ComponentWizardFilesPage.h"
 #include "ComponentWizardDependencyPage.h"
 #include "ComponentWizardGeneralInfoPage.h"
-#include "ComponentWizardVhdlImportPage.h"
+#include "ComponentWizardImportPage.h"
 #include "ComponentWizardConclusionPage.h"
 
 //-----------------------------------------------------------------------------
@@ -42,11 +42,11 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
     setOption(HaveFinishButtonOnEarlyPages, true);
     resize(800, 800);
     
-    setPage(ComponentWizardPages::INTRO, new ComponentWizardIntroPage(this));
+    setPage(ComponentWizardPages::INTRO, new ComponentWizardIntroPage(component, this));
     setPage(ComponentWizardPages::GENERAL, new ComponentWizardGeneralInfoPage(component, this));    
     setPage(ComponentWizardPages::FILES, new ComponentWizardFilesPage(this));
     setPage(ComponentWizardPages::DEPENDENCY, new ComponentWizardDependencyPage(pluginMgr, this));    
-    setPage(ComponentWizardPages::VHDL_IMPORT, new ComponentWizardVhdlImportPage(component, handler, pluginMgr, 
+    setPage(ComponentWizardPages::IMPORT, new ComponentWizardImportPage(component, handler, pluginMgr, 
         this));
     setPage(ComponentWizardPages::CONCLUSION, new ComponentWizardConclusionPage(handler, this));
 }

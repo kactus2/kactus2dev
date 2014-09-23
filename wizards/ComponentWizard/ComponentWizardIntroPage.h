@@ -15,7 +15,7 @@
 #include <QWizardPage>
 #include <QLabel>
 
-class ComponentWizard;
+class Component;
 
 //-----------------------------------------------------------------------------
 //! Intro page for the component wizard.
@@ -26,9 +26,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent wizard.
+     *		@param [in, out] component  The component being edited.
+     *      @param [in] parent          The parent widget.
      */
-    ComponentWizardIntroPage(ComponentWizard* parent);
+    ComponentWizardIntroPage(QSharedPointer<Component> component, QWidget* parent);
 
     /*!
      *  Destructor.
@@ -48,9 +49,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The parent wizard.
-    ComponentWizard* parent_;
 
     //! The label for information.
     QLabel infoLabel_;

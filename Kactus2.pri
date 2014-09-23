@@ -7,8 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./wizards/ComponentWizard/VhdlImportEditor/ImportHighlighter.h \
-    ./common/Global.h \
+HEADERS += ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
@@ -154,10 +153,9 @@ HEADERS += ./wizards/ComponentWizard/VhdlImportEditor/ImportHighlighter.h \
     ./wizards/ComponentWizard/ComponentWizardFilesPage.h \
     ./wizards/ComponentWizard/ComponentWizardIntroPage.h \
     ./wizards/ComponentWizard/ComponentWizardPages.h \
-    ./wizards/ComponentWizard/ComponentWizardVhdlImportPage.h \
+    ./wizards/ComponentWizard/ComponentWizardImportPage.h \
     ./wizards/ComponentWizard/ImportRunner.h \
     ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.h \
-    ./wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizard.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardGeneralOptionsPage.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardBusDefinitionPage.h \
@@ -167,9 +165,6 @@ HEADERS += ./wizards/ComponentWizard/VhdlImportEditor/ImportHighlighter.h \
     ./Help/HelpSystem/HelpWindow.h \
     ./Help/HelpSystem/ContextHelpBrowser.h \
     ./Help/HelpSystem/HelpSearchWidget.h \
-    ./Plugins/PluginSystem/Highlighter.h \
-    ./Plugins/PluginSystem/HighlightSource.h \
-    ./Plugins/PluginSystem/ImportParser.h \
     ./Plugins/PluginSystem/IGeneratorPlugin.h \
     ./Plugins/PluginSystem/IPlugin.h \
     ./Plugins/PluginSystem/IPluginUtility.h \
@@ -180,6 +175,13 @@ HEADERS += ./wizards/ComponentWizard/VhdlImportEditor/ImportHighlighter.h \
     ./Plugins/PluginSystem/NewPluginsDialog.h \
     ./Plugins/PluginSystem/PluginListDialog.h \
     ./Plugins/PluginSystem/PluginUtilityAdapter.h \
+    ./Plugins/PluginSystem/ImportPlugin/Highlighter.h \
+    ./Plugins/PluginSystem/ImportPlugin/HighlightSource.h \
+    ./Plugins/PluginSystem/ImportPlugin/ImportPlugin.h \
+    ./Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h \
+    ./Plugins/PluginSystem/ImportPlugin/ModelParameterVisualizer.h \
+    ./Plugins/PluginSystem/ImportPlugin/PortSource.h \
+    ./Plugins/PluginSystem/ImportPlugin/PortVisualizer.h \
     ./library/LibraryManager/ipxactitem.h \
     ./library/LibraryManager/libraryinterface.h \
     ./library/LibraryManager/LibraryUtils.h \
@@ -542,12 +544,10 @@ HEADERS += ./wizards/ComponentWizard/VhdlImportEditor/ImportHighlighter.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./wizards/ComponentWizard/VhdlImportEditor/PortEditorAdapter.h \
-    ./Plugins/PluginSystem/PortSource.h \
-    ./Plugins/PluginSystem/PortVisualizer.h \
-    ./wizards/ComponentWizard/VhdlImportEditor/ModelParameterEditorAdapter.h \
-    ./Plugins/PluginSystem/ModelParameterVisualizer.h \
-    ./Plugins/PluginSystem/ModelParameterSource.h
+    ./wizards/ComponentWizard/ImportEditor/ImportEditor.h \
+    ./wizards/ComponentWizard/ImportEditor/PortEditorAdapter.h \
+    ./wizards/ComponentWizard/ImportEditor/ImportHighlighter.h \
+    ./wizards/ComponentWizard/ImportEditor/ModelParameterEditorAdapter.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -680,9 +680,8 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./wizards/ComponentWizard/ComponentWizardFilesPage.cpp \
     ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.cpp \
     ./wizards/ComponentWizard/ComponentWizardIntroPage.cpp \
-    ./wizards/ComponentWizard/ComponentWizardVhdlImportPage.cpp \
+    ./wizards/ComponentWizard/ComponentWizardImportPage.cpp \
     ./wizards/ComponentWizard/ImportRunner.cpp \
-    ./wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizard.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardBusDefinitionPage.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardConclusionPage.cpp \
@@ -1053,7 +1052,8 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./wizards/ComponentWizard/VhdlImportEditor/PortEditorAdapter.cpp \
-    ./wizards/ComponentWizard/VhdlImportEditor/ModelParameterEditorAdapter.cpp \
-    ./wizards/ComponentWizard/VhdlImportEditor/ImportHighlighter.cpp
+    ./wizards/ComponentWizard/ImportEditor/ImportEditor.cpp \
+    ./wizards/ComponentWizard/ImportEditor/PortEditorAdapter.cpp \
+    ./wizards/ComponentWizard/ImportEditor/ModelParameterEditorAdapter.cpp \
+    ./wizards/ComponentWizard/ImportEditor/ImportHighlighter.cpp
 RESOURCES += kactus.qrc

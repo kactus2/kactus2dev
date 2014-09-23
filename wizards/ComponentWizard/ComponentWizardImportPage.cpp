@@ -1,33 +1,33 @@
 //-----------------------------------------------------------------------------
-// File: ComponentWizardVhdlImportPage.cpp
+// File: ComponentWizardImportPage.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
 // Date: 06.06.2013
 //
 // Description:
-// VHDL import page for the component wizard.
+// Import page for the component wizard.
 //-----------------------------------------------------------------------------
 
-#include "ComponentWizardVhdlImportPage.h"
+#include "ComponentWizardImportPage.h"
 #include "ComponentWizardPages.h"
 
 #include <IPXACTmodels/component.h>
 
-#include <wizards/ComponentWizard/VhdlImportEditor/vhdlimporteditor.h>
+#include <wizards/ComponentWizard/ImportEditor/ImportEditor.h>
 
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardVhdlImportPage::ComponentWizardVhdlImportPage()
 //-----------------------------------------------------------------------------
-ComponentWizardVhdlImportPage::ComponentWizardVhdlImportPage(QSharedPointer<Component> component, 
+ComponentWizardImportPage::ComponentWizardImportPage(QSharedPointer<Component> component, 
 	LibraryInterface* handler, PluginManager const& pluginMgr, QWidget* parent)
     : QWizardPage(parent),
-      editor_(new VhdlImportEditor(component, handler, pluginMgr, this))
+      editor_(new ImportEditor(component, handler, pluginMgr, this))
 {
-    setTitle(tr("Import VHDL"));
-    setSubTitle(tr("Choose the top-level VHDL file to import ports and generics."));
+    setTitle(tr("Import file"));
+    setSubTitle(tr("Choose the top-level file to import into component."));
     setFinalPage(true);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
@@ -39,14 +39,14 @@ ComponentWizardVhdlImportPage::ComponentWizardVhdlImportPage(QSharedPointer<Comp
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardVhdlImportPage::~ComponentWizardVhdlImportPage()
 //-----------------------------------------------------------------------------
-ComponentWizardVhdlImportPage::~ComponentWizardVhdlImportPage()
+ComponentWizardImportPage::~ComponentWizardImportPage()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardVhdlImportPage::nextId()
 //-----------------------------------------------------------------------------
-int ComponentWizardVhdlImportPage::nextId() const
+int ComponentWizardImportPage::nextId() const
 {
     return ComponentWizardPages::CONCLUSION;
 }
@@ -54,7 +54,7 @@ int ComponentWizardVhdlImportPage::nextId() const
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardVhdlImportPage::initializePage()
 //-----------------------------------------------------------------------------
-void ComponentWizardVhdlImportPage::initializePage()
+void ComponentWizardImportPage::initializePage()
 {	
     editor_->initializeFileSelection();
 }
@@ -62,7 +62,7 @@ void ComponentWizardVhdlImportPage::initializePage()
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardVhdlImportPage::isComplete()
 //-----------------------------------------------------------------------------
-bool ComponentWizardVhdlImportPage::isComplete() const
+bool ComponentWizardImportPage::isComplete() const
 {
 	return editor_->checkEditorValidity();
 }

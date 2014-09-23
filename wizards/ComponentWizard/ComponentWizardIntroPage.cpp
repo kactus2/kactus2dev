@@ -11,7 +11,6 @@
 
 #include "ComponentWizardIntroPage.h"
 
-#include "ComponentWizard.h"
 #include "ComponentWizardPages.h"
 
 #include <QVBoxLayout>
@@ -22,9 +21,8 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardIntroPage::ComponentWizardIntroPage()
 //-----------------------------------------------------------------------------
-ComponentWizardIntroPage::ComponentWizardIntroPage(ComponentWizard* parent)
+ComponentWizardIntroPage::ComponentWizardIntroPage(QSharedPointer<Component> component, QWidget* parent)
     : QWizardPage(parent),
-      parent_(parent),
       infoLabel_(this)
 {
     setTitle(tr("Introduction"));
@@ -36,9 +34,9 @@ ComponentWizardIntroPage::ComponentWizardIntroPage(ComponentWizard* parent)
     infoText += "<li>" + tr("Add Files");
     infoText += "<li>" + tr("Dependency Analysis & File Sets");
 
-    if (parent_->getComponent()->getComponentImplementation() == KactusAttribute::KTS_HW)
+    if (component->getComponentImplementation() == KactusAttribute::KTS_HW)
     {
-        infoText += "<li>" + tr("Import VHDL");
+        infoText += "<li>" + tr("Import elements from file.");
     }
 
     infoText += "<li>" + tr("Summary") + "</ul>";

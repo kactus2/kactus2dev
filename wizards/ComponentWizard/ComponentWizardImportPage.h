@@ -1,29 +1,29 @@
 //-----------------------------------------------------------------------------
-// File: ComponentWizardVhdlImportPage.h
+// File: ComponentWizardImportPage.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
 // Date: 06.06.2013
 //
 // Description:
-// VHDL import page for the component wizard.
+// Import page for the component wizard.
 //-----------------------------------------------------------------------------
 
 #ifndef COMPONENTWIZARDVHDLIMPORTPAGE_H
 #define COMPONENTWIZARDVHDLIMPORTPAGE_H
-
 
 #include <QWizardPage>
 #include <QSharedPointer>
 
 class Component;
 class LibraryInterface;
-class VhdlImportEditor;
+class ImportEditor;
 class PluginManager;
+
 //-----------------------------------------------------------------------------
-//! Intro page for the component wizard.
+//! Import page for the component wizard.
 //-----------------------------------------------------------------------------
-class ComponentWizardVhdlImportPage : public QWizardPage
+class ComponentWizardImportPage : public QWizardPage
 {
 public:
     /*!
@@ -31,9 +31,10 @@ public:
      *
      *		@param [in, out] component  Pointer to the component being edited.
      *		@param [in]      handler    Pointer to the instance which manages the library.
+     *		@param [in]      pluginMgr  Manager for all plugins.
      *      @param [in]      parent     The parent wizard.
      */
-    ComponentWizardVhdlImportPage(QSharedPointer<Component> component,
+    ComponentWizardImportPage(QSharedPointer<Component> component,
 		 LibraryInterface* handler,
          PluginManager const& pluginMgr,
 		 QWidget* parent);
@@ -41,7 +42,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~ComponentWizardVhdlImportPage();
+    ~ComponentWizardImportPage();
 
     /*!
      *  Returns the ID of the next page.
@@ -75,15 +76,15 @@ public:
 
 private:
 	// Disable copying.
-	ComponentWizardVhdlImportPage(ComponentWizardVhdlImportPage const& rhs);
-	ComponentWizardVhdlImportPage& operator=(ComponentWizardVhdlImportPage const& rhs);
+	ComponentWizardImportPage(ComponentWizardImportPage const& rhs);
+	ComponentWizardImportPage& operator=(ComponentWizardImportPage const& rhs);
 
 	//-----------------------------------------------------------------------------
 	// Data.
 	//-----------------------------------------------------------------------------
 
 	//! \brief Editor to set the generics and ports.
-	VhdlImportEditor* editor_;
+	ImportEditor* editor_;
 };
 
 #endif // COMPONENTWIZARDVHDLIMPORTPAGE_H

@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: vhdlimporteditor.h
+// File: ImportEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Antti Kamppi
@@ -41,7 +41,7 @@ class VhdlParser;
 //-----------------------------------------------------------------------------
 //! Used to parse source files and generating IP-XACT packages of them.
 //-----------------------------------------------------------------------------
-class VhdlImportEditor : public QWidget
+class ImportEditor : public QWidget
 {
 	Q_OBJECT
 
@@ -55,11 +55,11 @@ public:
 	 *  @param [in]   parent    The owner of this widget.
 	 *
 	 */
-	VhdlImportEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
+	ImportEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
         PluginManager const& pluginMgr, QWidget *parent);
 	
 	//! The destructor.
-	~VhdlImportEditor();
+	~ImportEditor();
 
 	/*! 
      * Initialize the combo box to select the top-level vhdl vfile.
@@ -96,10 +96,10 @@ private slots:
 private:
 	
 	//! No copying
-	VhdlImportEditor(const VhdlImportEditor& other);    
+	ImportEditor(const ImportEditor& other);    
 
 	//! No assignment
-	VhdlImportEditor& operator=(const VhdlImportEditor& other);
+	ImportEditor& operator=(const ImportEditor& other);
 
     /*!
      *  Sets the formatting of text in the source file displayer.

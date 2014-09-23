@@ -22,7 +22,7 @@ namespace ComponentWizardPages
         GENERAL,        
         FILES,
         DEPENDENCY,
-        VHDL_IMPORT,
+        IMPORT,
         CONCLUSION
 	 };
 

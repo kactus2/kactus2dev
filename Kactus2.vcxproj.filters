@@ -467,17 +467,11 @@
     <Filter Include="Source Files\wizards\ComponentWizard">
       <UniqueIdentifier>{190bc156-118d-4358-89b7-bcb53a73473e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\wizards\ComponentWizard\VhdlImportEditor">
-      <UniqueIdentifier>{422da0ac-c2db-421c-af28-fabb10d08b2d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\wizards">
       <UniqueIdentifier>{a0326c42-2235-4dee-bb2a-69019ebc7bc7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\wizards\ComponentWizard">
       <UniqueIdentifier>{be6e1e65-e2a7-44ab-8df0-5daa1ac8ab14}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\wizards\ComponentWizard\VhdlImportEditor">
-      <UniqueIdentifier>{42ebc0a2-4349-4e91-86c1-c398df9f57b9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Help">
       <UniqueIdentifier>{49a211ee-ccfc-4853-a9a6-099a139b1dab}</UniqueIdentifier>
@@ -886,6 +880,12 @@
     </Filter>
     <Filter Include="Header Files\Plugins\PluginSystem\ImportPlugin">
       <UniqueIdentifier>{5b9bbccb-bfbc-422d-8af7-bb4584e68f58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\wizards\ComponentWizard\ImportEditor">
+      <UniqueIdentifier>{ae90d55b-cb79-493b-afc2-530d57060ce5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\wizards\ComponentWizard\ImportEditor">
+      <UniqueIdentifier>{9ecb70ee-8042-4071-8310-8ec61afc3be9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1516,12 +1516,6 @@
     <ClCompile Include="GeneratedFiles\moc_ComponentWizardGeneralInfoPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vhdlimporteditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\vhdlimporteditor.cpp">
-      <Filter>Source Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
-    </ClCompile>
     <ClCompile Include="wizards\ComponentWizard\ComponentWizard.cpp">
       <Filter>Source Files\wizards\ComponentWizard</Filter>
     </ClCompile>
@@ -1538,9 +1532,6 @@
       <Filter>Source Files\wizards\ComponentWizard</Filter>
     </ClCompile>
     <ClCompile Include="wizards\ComponentWizard\ComponentWizardIntroPage.cpp">
-      <Filter>Source Files\wizards\ComponentWizard</Filter>
-    </ClCompile>
-    <ClCompile Include="wizards\ComponentWizard\ComponentWizardVhdlImportPage.cpp">
       <Filter>Source Files\wizards\ComponentWizard</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ContextHelpBrowser.cpp">
@@ -3760,17 +3751,26 @@
     <ClCompile Include="wizards\ComponentWizard\ImportRunner.cpp">
       <Filter>Source Files\wizards\ComponentWizard</Filter>
     </ClCompile>
-    <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\PortEditorAdapter.cpp">
-      <Filter>Source Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
+    <ClCompile Include="wizards\ComponentWizard\ComponentWizardImportPage.cpp">
+      <Filter>Source Files\wizards\ComponentWizard</Filter>
     </ClCompile>
-    <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\ModelParameterEditorAdapter.cpp">
-      <Filter>Source Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
+    <ClCompile Include="GeneratedFiles\moc_ImportEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\ComponentWizard\ImportEditor\ModelParameterEditorAdapter.cpp">
+      <Filter>Source Files\wizards\ComponentWizard\ImportEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\ComponentWizard\ImportEditor\PortEditorAdapter.cpp">
+      <Filter>Source Files\wizards\ComponentWizard\ImportEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\ComponentWizard\ImportEditor\ImportEditor.cpp">
+      <Filter>Source Files\wizards\ComponentWizard\ImportEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\ComponentWizard\ImportEditor\ImportHighlighter.cpp">
+      <Filter>Source Files\wizards\ComponentWizard\ImportEditor</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ImportHighlighter.cpp">
       <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wizards\ComponentWizard\VhdlImportEditor\ImportHighlighter.cpp">
-      <Filter>Source Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4097,9 +4097,6 @@
     </CustomBuild>
     <CustomBuild Include="wizards\ComponentWizard\ComponentWizardGeneralInfoPage.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
-    </CustomBuild>
-    <CustomBuild Include="wizards\ComponentWizard\VhdlImportEditor\vhdlimporteditor.h">
-      <Filter>Header Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="Help\HelpSystem\ContextHelpBrowser.h">
       <Filter>Header Files\Help\HelpSystem</Filter>
@@ -5175,14 +5172,11 @@
     <CustomBuild Include="wizards\ComponentWizard\ImportRunner.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
     </CustomBuild>
-    <CustomBuild Include="wizards\ComponentWizard\VhdlImportEditor\PortEditorAdapter.h">
-      <Filter>Header Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
+    <CustomBuild Include="wizards\ComponentWizard\ImportEditor\ImportEditor.h">
+      <Filter>Header Files\wizards\ComponentWizard\ImportEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="wizards\ComponentWizard\VhdlImportEditor\ModelParameterEditorAdapter.h">
-      <Filter>Header Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="wizards\ComponentWizard\VhdlImportEditor\ImportHighlighter.h">
-      <Filter>Header Files\wizards\ComponentWizard\VhdlImportEditor</Filter>
+    <CustomBuild Include="wizards\ComponentWizard\ImportEditor\ImportHighlighter.h">
+      <Filter>Header Files\wizards\ComponentWizard\ImportEditor</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -5289,9 +5283,6 @@
       <Filter>Header Files\wizards\ComponentWizard</Filter>
     </ClInclude>
     <ClInclude Include="wizards\ComponentWizard\ComponentWizardIntroPage.h">
-      <Filter>Header Files\wizards\ComponentWizard</Filter>
-    </ClInclude>
-    <ClInclude Include="wizards\ComponentWizard\ComponentWizardVhdlImportPage.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
     </ClInclude>
     <ClInclude Include="Help\HelpSystem\HelpWindow.h">
@@ -5431,6 +5422,15 @@
     </ClInclude>
     <ClInclude Include="Plugins\PluginSystem\ImportPlugin\PortVisualizer.h">
       <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="wizards\ComponentWizard\ComponentWizardImportPage.h">
+      <Filter>Header Files\wizards\ComponentWizard</Filter>
+    </ClInclude>
+    <ClInclude Include="wizards\ComponentWizard\ImportEditor\PortEditorAdapter.h">
+      <Filter>Header Files\wizards\ComponentWizard\ImportEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="wizards\ComponentWizard\ImportEditor\ModelParameterEditorAdapter.h">
+      <Filter>Header Files\wizards\ComponentWizard\ImportEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
