@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# File: subdirs.pro
+# File: plugins.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
@@ -13,4 +13,5 @@ TEMPLATE = subdirs
 
 CONFIG += testcase
 SUBDIRS += VerilogGenerator/VerilogGenerator.pro \
+		   MakefileGenerator/tst_MakefileGenerator.pro \
 		   VHDLimport/VHDLimport.pro

@@ -3,7 +3,7 @@
 # ------------------------------------------------------
 
 HEADERS += ../../../../Plugins/VHDLimport/VHDLPortParser.h \
-    ../../../../Plugins/VHDLimport/EquationParser.h
-SOURCES += ./tst_VHDLPortParser.cpp \
+    ../../../../Plugins/VHDLimport/VHDLEquationParser.h
+SOURCES += ../../../../Plugins/VHDLimport/VHDLEquationParser.cpp \
     ../../../../Plugins/VHDLimport/VHDLPortParser.cpp \
-    ../../../../Plugins/VHDLimport/EquationParser.cpp
+    ./tst_VHDLPortParser.cpp

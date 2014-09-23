@@ -14,17 +14,18 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/ComponentInstance.h>
 #include <IPXACTmodels/design.h>
-
-#include <Plugins/MakefileGenerator/MakefileParser.h>
-#include <Plugins/MakefileGenerator/MakefileGenerator.h>
-#include <LibraryMock.h>
 #include <IPXACTmodels/SWView.h>
 #include <IPXACTmodels/SystemView.h>
 #include <IPXACTmodels/file.h>
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/ApiInterface.h>
 
-#include <qregexp.h>
+#include "LibraryMock.h"
+
+#include <Plugins/MakefileGenerator/MakefileParser.h>
+#include <Plugins/MakefileGenerator/MakefileGenerator.h>
+
+#include <QRegExp>
 
 class tst_MakefileGenerator : public QObject
 {
