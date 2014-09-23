@@ -195,17 +195,58 @@ private:
      *      @param [in] input   The input text to parse the model name from.
      */
     void parseModelName(QString const& input) const;
-    void highlightConfiguration(QRegExp const& configurationExp) const;
 
-    QString createModelNameFromConfiguration(QRegExp const& configurationExp) const;
+    /*!
+     *  Checks if the given input contains architecture definition for entity.
+     *
+     *      @param [in] architectureExp     Regular expression for capturing architecture.
+     *      @param [in] input               The input text to parse the architecture from.
+     *
+     *      @return True, if an architecture is defined, otherwise false.
+     */
+    bool hasArchitecture(QRegExp const& architectureExp, QString const& input) const;
 
-    bool hasConfiguration(QRegExp const& configurationExp, QString const& input) const;
-
-    void highlightArchitecture(QRegExp const& architectureExp) const;
-
+    /*!
+     *  Creates model name from architecture definition.
+     *
+     *      @param [in] architectureExp   Regular expression for capturing architecture.
+     *
+     *      @return Model name based on the architecture.
+     */
     QString createModelNameFromArchitecture(QRegExp const& architectureExp) const;
 
-    bool hasArchitecture(QRegExp const& architectureExp, QString const& input) const;
+    /*!
+     *  Highlights the architecture from which the model name was created.
+     *
+     *      @param [in] architectureExp   Regular expression for capturing architecture.
+     */
+    void highlightArchitecture(QRegExp const& architectureExp) const;
+    
+    /*!
+     *  Checks if the given input contains configuration definition for entity.
+     *
+     *      @param [in] configurationExp    Regular expression for capturing configuration.
+     *      @param [in] input               The input text to parse the configuration from.
+     *
+     *      @return True, if an configuration is defined, otherwise false.
+     */
+    bool hasConfiguration(QRegExp const& configurationExp, QString const& input) const;
+    
+    /*!
+     *  Creates model name from configuration definition.
+     *
+     *      @param [in] configurationExp   Regular expression for capturing configuration.
+     *
+     *      @return Model name based on the configuration.
+     */
+    QString createModelNameFromConfiguration(QRegExp const& configurationExp) const;
+
+    /*!
+     *  Highlights the configuration from which the model name was created.
+     *
+     *      @param [in] configurationExp   Regular expression for capturing configuration.
+     */
+    void highlightConfiguration(QRegExp const& configurationExp) const;
 
     /*!
      *  Sets the language and environmental identifiers in the rtl view.
