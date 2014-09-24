@@ -16,6 +16,7 @@
 #include <IPXACTmodels/ComDefinition.h>
 #include <IPXACTmodels/ComInterface.h>
 #include <IPXACTmodels/design.h>
+#include <IPXACTmodels/designconfiguration.h>
 #include <QObject>
 
 class Component;
@@ -199,14 +200,6 @@ private:
     void generateMainTemplate(QString const& filename, QSharedPointer<Component> component);
 
     /*!
-     *  Add generated MCAPI code files to the Fileset of the associated component.
-     *
-     *      @param [in] QSharedPointer<Component> component   The component, which Fileset will be expanded.
-     */
-    void addGeneratedMCAPIToFileset(QString directory, QSharedPointer<Component> topComponent,
-        QString instanceName);
-
-    /*!
      *  Generates the initializeMCAPI() function based on the component.
      *
      *      @param [in] writer     The source writer.
@@ -335,7 +328,7 @@ private:
      *      @param [in] design   The design subject to generation.
      *      @param [in] libComp   The top level component associated with the design.
      */
-     void generateTopLevel(QSharedPointer<const Design> design, QSharedPointer<LibraryComponent> &libComp);
+    void generateTopLevel(QSharedPointer<const Design> design, QSharedPointer<Component> topComponent, QSharedPointer<DesignConfiguration const> desgConf);
 
     /*!
      *  Generates the MCAPI code source file.
@@ -346,6 +339,14 @@ private:
      */
     void generateInstanceHeader(QString& directory, SWInstance& ourInstance, QSharedPointer<Component> component,
         QSharedPointer<const Design> design);
+
+    /*!
+     *  Add generated MCAPI code files to the Fileset of the associated component.
+     *
+     *      @param [in] QSharedPointer<Component> component   The component, which Fileset will be expanded.
+     */
+    void addGeneratedMCAPIToFileset(QString directory, QSharedPointer<Component> topComponent,
+        QString instanceName, QSharedPointer<DesignConfiguration const> desgConf);
 
     /*!
      *  Writes node ID and domain ID for the given software instance.

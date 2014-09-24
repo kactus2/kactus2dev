@@ -23,14 +23,15 @@
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/ComInterface.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/file.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <Plugins/PluginSystem/IPluginUtility.h>
+#include "IPXACTmodels/SWView.h"
+#include "common/dialogs/comboSelector/comboselector.h"
+#include "IPXACTmodels/SystemView.h"
 
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGenerator::MCAPICodeGenerator()
@@ -154,7 +155,7 @@ void MCAPICodeGenerator::runGenerator( IPluginUtility* utility,
     else if ( libDes != 0 && desgConf != 0 &&
         desgConf->getDesignConfigImplementation() == KactusAttribute::KTS_SYS )
     {
-        generateTopLevel(design, libComp);
+        generateTopLevel(design, comp, desgConf);
     }
 
     utility_->getLibraryInterface()->writeModelToFile(libComp);
@@ -274,8 +275,33 @@ void MCAPICodeGenerator::generateMCAPIForComponent(QString dir, QSharedPointer<C
     generateSource(dir + "/ktsmcapicode.c", component);
 
     // Add the files to the component metadata.
-    QSharedPointer<FileSet> fileSet = component->getFileSet("cSources");
+    QSharedPointer<FileSet> fileSet = component->getFileSet("generatedMCAPI");
     fileSet->setGroups("sourceFiles");
+
+    QList<QSharedPointer<FileBuilder>> fblist = fileSet->getDefaultFileBuilders();
+
+    bool hasCBuild = false;
+
+    // Check if there is already a builder for c sources specified.
+    foreach ( QSharedPointer<FileBuilder> builder, fblist )
+    {
+        if ( builder->getFileTypes().contains("cSource") )
+        {
+            hasCBuild = true;
+            break;
+        }
+    }
+
+    // If there is no pre-existing builder for c sources, make a new one.
+    if ( !hasCBuild )
+    {
+        QSharedPointer<FileBuilder> newBuilder = QSharedPointer<FileBuilder>(new FileBuilder);
+        newBuilder->setCommand( "gcc -c -o" );
+        newBuilder->setFileType("cSource");
+        newBuilder->setReplaceDefaultFlags( true);
+        fblist.append(newBuilder);
+        fileSet->setDefaultFileBuilders(fblist);
+    }
 
     QSettings settings;
 
@@ -287,6 +313,7 @@ void MCAPICodeGenerator::generateMCAPIForComponent(QString dir, QSharedPointer<C
     {
         file = fileSet->addFile("ktsmcapicode.h", settings);
         file->setAllFileTypes( types );
+        file->setIncludeFile( true );
     }
     if (!fileSet->contains("ktsmcapicode.c"))
     {
@@ -298,6 +325,33 @@ void MCAPICodeGenerator::generateMCAPIForComponent(QString dir, QSharedPointer<C
         file = fileSet->addFile("main.c", settings);
         file->setAllFileTypes( types );
     } 
+
+    int viewCount = component->getSWViews().size();
+
+    if ( viewCount > 1 )
+    {
+        // Add fileSet to selected software view
+
+        ComboSelector cs(utility_->getParentWidget());
+        cs.setComboBoxItems( component->getSWViewNames() );
+        cs.setLabelText(  tr("Select a software view which shall include reference to the generated MCAPI") );
+
+        QString viewName = cs.execDialog();
+
+        //QString viewName = ComboSelector::selectView(component, utility_->getParentWidget(), QString(),
+        //    tr("Select a software view which shall include reference to the generated MCAPI"));
+
+        if ( !viewName.isEmpty() )
+        {
+            QSharedPointer<SWView> view = component->getSWView( viewName );
+            view->addFileSetRef( fileSet->getName() );
+        }
+    }
+    else if ( viewCount > 0 )
+    {
+        // Add fileSet to the existing software view
+        component->getSWViews().first()->addFileSetRef( fileSet->getName() );
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -421,6 +475,8 @@ void MCAPICodeGenerator::generateSource(QString const& filename, QSharedPointer<
     writer.writeInclude("errno.h");
     writer.writeEmptyLine();
     writer.writeHeaderComment("Constants.");
+    writer.writeEmptyLine();
+    writer.writeLine("const mcapi_timeout_t TIMEOUT = 1000;");
     writer.writeEmptyLine();
 
     // Write local port IDs.
@@ -620,31 +676,6 @@ void MCAPICodeGenerator::generateMainTemplate(QString const& filename, QSharedPo
 }
 
 //-----------------------------------------------------------------------------
-// Function: MCAPICodeGenerator::addGeneratedMCAPIToFileset()
-//-----------------------------------------------------------------------------
-void MCAPICodeGenerator::addGeneratedMCAPIToFileset(QString directory, QSharedPointer<Component> topComponent,
-    QString instanceName)
-{
-    QString fileSetName = instanceName + "_headers";
-
-    // Add the files to the component metadata.
-    QSharedPointer<FileSet> fileSet = topComponent->getFileSet(fileSetName);
-    fileSet->setGroups("sourceFiles");
-
-    QSettings settings;
-
-    QSharedPointer<File> file;
-    QStringList types;
-    types.append("cSource");
-
-    if (!fileSet->contains(directory + "instanceheader.h"))
-    {
-        file = fileSet->addFile(directory + "instanceheader.h", settings);
-        file->setAllFileTypes( types );
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: MCAPICodeGenerator::generateInitializeMCAPIFunc()
 //-----------------------------------------------------------------------------
 void MCAPICodeGenerator::generateInitializeMCAPIFunc(CSourceWriter& writer, QSharedPointer<Component> component)
@@ -656,7 +687,6 @@ void MCAPICodeGenerator::generateInitializeMCAPIFunc(CSourceWriter& writer, QSha
     writer.beginBlock();
     writer.writeLine("mcapi_status_t status;");
     writer.writeLine("mcapi_info_t info;");
-    writer.writeLine("const mcapi_timeout_t TIMEOUT = 100;");
     writer.writeEmptyLine();
 
     createInitialization(writer);
@@ -682,6 +712,9 @@ void MCAPICodeGenerator::createInitialization(CSourceWriter &writer)
 
     writer.writeLine("if (status != MCAPI_SUCCESS)");
     writer.beginBlock();
+    writer.writeLine("mcapi_display_status( status, status_msg, MCAPI_MAX_STATUS_MSG_LEN );");
+    writer.writeLine("fprintf(stderr, \"ERROR: %s Failed to initialized node %u at domain %u\"" );
+    writer.writeLine( "\" at line %u.\\n\", status_msg, LOCAL_NODE_ID, LOCAL_DOMAIN_ID, __LINE__ );");
     writer.writeLine("return -1;");
     writer.endBlock();
 }
@@ -759,7 +792,7 @@ void MCAPICodeGenerator::generateConnectChannelsFunc(CSourceWriter& writer, QSha
     writer.writeLine("int connectChannels()");
 
     // Must have request for each interface, and a value used to check if it opened already.
-    QString interfaceCount = QString::number( component->getComInterfaces().size()) ;
+    QString interfaceCount = QString::number( component->getComInterfaces().size());
 
     writer.beginBlock();
     writeConnectionVariables(writer, interfaceCount, "connect");
@@ -983,7 +1016,7 @@ void MCAPICodeGenerator::writeIterationWait(CSourceWriter &writer, QString name)
 {
     writer.writeLine("if ( " + name + "_complete[ifIter] != 1 )");
     writer.beginBlock();
-    writer.writeLine("if (mcapi_wait(&" + name + "_request[ifIter], &size, 10, &status)");
+    writer.writeLine("if (mcapi_wait(&" + name + "_request[ifIter], &size, TIMEOUT, &status)");
     writer.writeLine("== MCAPI_TRUE && status == MCAPI_SUCCESS)");
     writer.beginBlock();
     writer.writeLine(name + "_complete[ifIter] = 1;");
@@ -1021,6 +1054,9 @@ void MCAPICodeGenerator::writePendStatusCheck(CSourceWriter &writer, QString nam
 
     writer.writeLine("else if (status != MCAPI_SUCCESS)");
     writer.beginBlock();
+    writer.writeLine("mcapi_display_status( status, status_msg, MCAPI_MAX_STATUS_MSG_LEN );");
+    writer.writeLine("fprintf(stderr, \"ERROR: %s Failed to " + name + " channel \"" );
+    writer.writeLine("\"at line %u.\\n\", status_msg, __LINE__ );");
     writer.writeLine("return -1;");
     writer.endBlock();
 
@@ -1035,13 +1071,14 @@ void MCAPICodeGenerator::writePendStatusCheck(CSourceWriter &writer, QString nam
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGenerator::generateTopLevel()
 //-----------------------------------------------------------------------------
-void MCAPICodeGenerator::generateTopLevel(QSharedPointer<const Design> design,
-    QSharedPointer<LibraryComponent> &libComp)
+void MCAPICodeGenerator::generateTopLevel(QSharedPointer<const Design> design, QSharedPointer<Component> topComponent,
+    QSharedPointer<DesignConfiguration const> desgConf)
 {
     foreach ( SWInstance instance, design->getSWInstances() )
     {
         VLNV instanceVLNV = instance.getComponentRef();
-        VLNV topVLNV = *libComp->getVlnv();
+        VLNV* topVLNV = topComponent->getVlnv();
+        VLNV* designVLNV = design->getVlnv();
 
         QSharedPointer<LibraryComponent> instanceLibComp = utility_->getLibraryInterface()->getModel(instanceVLNV);
         QSharedPointer<Component> instanceComp = instanceLibComp.dynamicCast<Component>();
@@ -1049,12 +1086,13 @@ void MCAPICodeGenerator::generateTopLevel(QSharedPointer<const Design> design,
         // Check if can generate the component, return if cannot
         if ( canGenerateMCAPIComponent(instanceComp) )
         {
-            QString subDir = "/headers/" + instance.getInstanceName() + "/";
-            QString dir = QFileInfo(utility_->getLibraryInterface()->getPath(topVLNV)).absolutePath() + subDir;
+            QString subDir = "/sw/" + instance.getInstanceName() + "/";
+            QString dir = QFileInfo(utility_->getLibraryInterface()->getPath(*designVLNV)).absolutePath() + subDir;
+            QString topDir = QFileInfo(utility_->getLibraryInterface()->getPath(*topVLNV)).absolutePath();
 
             generateInstanceHeader(dir, instance, instanceComp, design);
 
-            addGeneratedMCAPIToFileset("." + subDir, libComp.dynamicCast<Component>(), instance.getInstanceName());
+            addGeneratedMCAPIToFileset(General::getRelativePath(topDir,dir), topComponent, instance.getInstanceName(), desgConf);
         }
     }
 }
@@ -1099,6 +1137,44 @@ void MCAPICodeGenerator::generateInstanceHeader(QString& directory, SWInstance& 
     writer.writeLine("#endif");
 
     writer.writeEmptyLine();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MCAPICodeGenerator::addGeneratedMCAPIToFileset()
+//-----------------------------------------------------------------------------
+void MCAPICodeGenerator::addGeneratedMCAPIToFileset(QString directory, QSharedPointer<Component> topComponent,
+    QString instanceName, QSharedPointer<DesignConfiguration const> desgConf)
+{
+    QString sysViewName;
+
+    foreach( QSharedPointer<SystemView> view, topComponent->getSystemViews() )
+    {
+        if ( view->getHierarchyRef() == *desgConf->getVlnv() )
+        {
+           sysViewName = view->getName();
+           break;
+        }
+    }
+
+    QString fileSetName = sysViewName + "_" + instanceName + "_headers";
+
+    // Add the files to the component metadata.
+    QSharedPointer<FileSet> fileSet = topComponent->getFileSet(fileSetName);
+    fileSet->setGroups("sourceFiles");
+
+    QSettings settings;
+
+    QSharedPointer<File> file;
+    QStringList types;
+    types.append("cSource");
+    QString filePath = directory + "/instanceheader.h";
+
+    if (!fileSet->contains(filePath))
+    {
+        file = fileSet->addFile(filePath, settings);
+        file->setAllFileTypes( types );
+        file->setIncludeFile( true );
+    }
 }
 
 //-----------------------------------------------------------------------------
