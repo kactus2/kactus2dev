@@ -43,7 +43,7 @@ namespace
 
     //! Ports are declared inside entity by PORT ( <port_declarations> );
     const QRegExp PORTS_BEGIN_EXP("(PORT)\\s*[(]", Qt::CaseInsensitive);
-    const QRegExp PORTS_END_EXP("[)]\\s*[;](?=\\s*(?:" + VHDLSyntax::COMMENT + "\\s*)*(END|BEGIN)\\s+)", 
+    const QRegExp PORTS_END_EXP("[)]\\s*[;](?=\\s*(?:" + VHDLSyntax::COMMENT + "\\s*)*(END|BEGIN|PORT)\\s+)", 
         Qt::CaseInsensitive);
 }
 

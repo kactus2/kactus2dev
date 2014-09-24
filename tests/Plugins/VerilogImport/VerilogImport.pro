@@ -1,18 +1,16 @@
 #-----------------------------------------------------------------------------
-# File: plugins.pro
+# File: VerilogImport.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
-# Date: 24.27.2014
+# Date: 23.09.2014
 #
 # Description:
-# Qt project file template for running unit tests for all plugins.
+# Qt project file template for running unit tests for Verilog import.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = subdirs
 
 CONFIG += testcase
-SUBDIRS += VerilogGenerator/VerilogGenerator.pro \
-		   MakefileGenerator/tst_MakefileGenerator.pro \
-		   VHDLimport/VHDLimport.pro \
-		   VerilogImport/VerilogImport.pro
+SUBDIRS += VerilogImporter/tst_VerilogImporter.pro \
+		   VerilogPortParser/tst_VerilogPortParser.pro 
