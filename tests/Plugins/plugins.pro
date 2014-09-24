@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# File: plugins.pro
+# File: subdirs.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
@@ -12,7 +12,10 @@
 TEMPLATE = subdirs
 
 CONFIG += testcase
+<<<<<<< .mine
 SUBDIRS += VerilogGenerator/VerilogGenerator.pro \
-		   MakefileGenerator/tst_MakefileGenerator.pro \
-		   VHDLimport/VHDLimport.pro \
-		   VerilogImport/VerilogImport.pro
+			MakefileGenerator/tst_MakefileGenerator.pro
+=======
+SUBDIRS += VerilogGenerator/VerilogGenerator.pro \
+		   VHDLimport/VHDLimport.pro
+>>>>>>> .r1557
