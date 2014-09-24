@@ -35,6 +35,8 @@ public:
         BuildCommand* fileBuildCmd;
         // The build command of the file set where file belong to.
         QSharedPointer<FileBuilder> fileSetBuildCmd;
+        // The build command of the active software view of the software instance.
+        QSharedPointer<SWBuildCommand> swBuildCmd;
         // The absolute path of the file.
         QString path;
         // The name of the file.
@@ -48,10 +50,10 @@ public:
         QList<MakeObjectData> swObjects;
         // Parsed files found in software views of hardware components.
         QList<MakeObjectData> hwObjects;
-        // The build command of the active software view of the software instance.
-        QSharedPointer<SWBuildCommand> swBuildCmd;
         // The build command of the active software view of the hardware instance.
         QSharedPointer<SWBuildCommand> hwBuildCmd;
+        // Flags passed down from software views.
+        QStringList softViewFlags;
         // The name of the instance.
         QString name;
         // The list of all included directories.
@@ -97,11 +99,12 @@ private:
      *
      *      @param [in] library   The library containing all components in the design.
      *      @param [in] topComponent   The top component associated with the design.
+     *      @param [in] desgConf   The design configuration object associated with the design.
      *      @param [in] softInstance   The software instance which instance headers are to be found.
      *      @param [in] makeData   The make data associated with the makefile as whole.
      */
      void findInstanceHeaders(LibraryInterface* library, QSharedPointer<Component> topComponent,
-         SWInstance &softInstance, MakeFileData &makeData);
+         QSharedPointer<DesignConfiguration const> desgConf, SWInstance &softInstance, MakeFileData &makeData);
 
     /*!
      *  Finds active software view of the given hardware instance and parses its files.
@@ -140,9 +143,11 @@ private:
      *      @param [in] component   The component of softInstance.
      *      @param [in] makeData   The make data associated with the makefile as whole.
      *      @param [in] objects   The collection of the parsed data of the files.
+     *      @param [in] pickSWView   True, if flags corresponding file type are culled from the software view.
      */
-     void parseMakeObjects(LibraryInterface* library, QSharedPointer<SWView> view,
-         QSharedPointer<Component> component, MakeFileData &makeData, QList<MakeObjectData>& objects);
+      void parseMakeObjects(LibraryInterface* library, QSharedPointer<SWView> view,
+          QSharedPointer<Component> component, MakeFileData &makeData, QList<MakeObjectData>& objects,
+          bool pickSWView);
 
     /*!
      *  Tries to find a software instance by name and the component associated with it.
@@ -164,7 +169,7 @@ private:
      *      @param [in] softView   Software view of the software component.
      *      @param [in] hardView   Software view of the hardware component.
      */
-     void findBuildCommands(MakeFileData &makeData, QSharedPointer<SWView> softView, QSharedPointer<SWView> hardView);
+     void findHardwareBuildCommand(MakeFileData &makeData, QSharedPointer<SWView> softView, QSharedPointer<SWView> hardView);
 
     //! Collection of data sets, one for each make file.
     QList<MakeFileData> parsedData_;

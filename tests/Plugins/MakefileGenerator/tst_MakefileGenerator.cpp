@@ -173,7 +173,6 @@ void tst_MakefileGenerator::fileBuildOverride()
     MakefileGenerator generator( parser );
     generator.generate(outputDir_);
 
-    verifyOutputContains("software_0", "EBUILDER= gcc -o");
     verifyOutputContains("software_0", "EFLAGS= $(includes) -sw");
     verifyOutputContains("software_0", "python $(ODIR)/array.c.o ../../array.c $(includes) -l -sw");
 }
@@ -212,7 +211,6 @@ void tst_MakefileGenerator::fileSetBuildOverride()
 
     generator.generate(outputDir_);
 
-    verifyOutputContains("software_0", "EBUILDER= gcc -o");
     verifyOutputContains("software_0", "EFLAGS= $(includes) -sw");
     verifyOutputContains("software_0", "javac -beef $(ODIR)/array.c.o ../../array.c $(includes) -lrt -sw");
 }
@@ -255,7 +253,6 @@ void tst_MakefileGenerator::fileFlagReplace()
 
     generator.generate(outputDir_);
 
-    verifyOutputContains("software_0", "EBUILDER= gcc -o");
     verifyOutputContains("software_0", "EFLAGS= $(includes) -sw");
     verifyOutputContains("software_0", "gcc -o $(ODIR)/array.c.o ../../array.c $(includes) -u");
 }
@@ -294,7 +291,6 @@ void tst_MakefileGenerator::fileSetFlagReplace()
 
     generator.generate(outputDir_);
 
-    verifyOutputContains("software_0", "EBUILDER= gcc -o");
     verifyOutputContains("software_0", "EFLAGS= $(includes) -sw");
     verifyOutputContains("software_0", "javac -beef $(ODIR)/array.c.o ../../array.c $(includes) -lrt");
 }
@@ -338,7 +334,7 @@ void tst_MakefileGenerator::includeFile()
 
     verifyOutputContains("software_0", "_OBJ= array.c.o\n");
     verifyOutputContains("software_0", "EBUILDER= gcc -o");
-    verifyOutputContains("software_0", "EFLAGS= $(includes) -sw -hw");;
+    verifyOutputContains("software_0", "EFLAGS= $(includes) -hw -sw");
     verifyOutputContains("software_0", "gcc -o $(ODIR)/array.c.o ../../array.c $(includes) -sw -hw");
 }
 
@@ -379,8 +375,8 @@ void tst_MakefileGenerator::swSWViewFlagReplace()
     generator.generate(outputDir_);
 
     verifyOutputContains("software_0", "EBUILDER= gcc -o");
-    verifyOutputContains("software_0", "EFLAGS= $(includes) -sw");
-    verifyOutputContains("software_0", "gcc -o $(ODIR)/array.c.o ../../array.c $(includes)");
+    verifyOutputContains("software_0", "EFLAGS= $(includes) -hw -sw");
+    verifyOutputContains("software_0", "gcc -o $(ODIR)/array.c.o ../../array.c $(includes) -sw\n");
 }
 
 void tst_MakefileGenerator::hwBuilder()
@@ -425,7 +421,7 @@ void tst_MakefileGenerator::hwBuilder()
     generator.generate(outputDir_);
 
     verifyOutputContains("software_0", "EBUILDER= super_asm -g");
-    verifyOutputContains("software_0", "EFLAGS= $(includes) -sw -hw");
+    verifyOutputContains("software_0", "EFLAGS= $(includes) -hw -sw");
     verifyOutputContains("software_0", "super_asm -g $(ODIR)/array.c.o ../../array.c $(includes) -u -lrt -sw -hw");
 }
 
@@ -537,10 +533,8 @@ void tst_MakefileGenerator::hwandswRef()
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QString hfileSetName = "hardFileSet";
-    addFileSet(hw, hfileSetName, hardView);
+    QSharedPointer<FileSet> hfileSet = addFileSet(hw, "hardFileSet", hardView);
 
-    QSharedPointer<FileSet> hfileSet = hw->getFileSet(hfileSetName);
     addFileToSet(hfileSet, "harray.c");
     addFileSetBuilder(hfileSet, "", "cSource", "-hset", false);
     addCmd2View(hardView, "super_asm -g", "cSource", "-hw", false);
@@ -573,7 +567,7 @@ void tst_MakefileGenerator::hwandswRef()
 
     verifyOutputContains("software_0", "_OBJ= sarray.c.o harray.c.o");
     verifyOutputContains("software_0", "EBUILDER= super_asm -g");
-    verifyOutputContains("software_0", "EFLAGS= $(includes) -sw -hw");
+    verifyOutputContains("software_0", "EFLAGS= $(includes) -hw -sw");
     verifyOutputContains("software_0", "super_asm -g $(ODIR)/sarray.c.o ../../sarray.c $(includes) -su -sset -sw -hw");
     verifyOutputContains("software_0", "super_asm -g $(ODIR)/harray.c.o ../../harray.c $(includes) -hu -hset -hw");
 }
@@ -668,7 +662,7 @@ void tst_MakefileGenerator::multipleFiles()
 
     verifyOutputContains("software_0", "_OBJ= array.c.o support.c.o additional.c.o hiterbehn.c.o");
     verifyOutputContains("software_0", "EBUILDER= gcc -o");
-    verifyOutputContains("software_0", "EFLAGS= $(includes) -sw -hw");
+    verifyOutputContains("software_0", "EFLAGS= $(includes) -hw -sw");
     verifyOutputContains("software_0", "gcc -o $(ODIR)/array.c.o ../../array.c $(includes) -sw -hw");
     verifyOutputContains("software_0", "continental $(ODIR)/support.c.o ../../support.c $(includes) -y -sw -hw");
     verifyOutputContains("software_0", "gcc -o $(ODIR)/additional.c.o ../../additional.c $(includes) -sw -hw");
@@ -721,7 +715,7 @@ void tst_MakefileGenerator::multipleFileSets()
 
     verifyOutputContains("software_0", "_OBJ= array.c.o support.c.o additional.c.o hiterbehn.c.o");
     verifyOutputContains("software_0", "EBUILDER= gcc -o");
-    verifyOutputContains("software_0", "EFLAGS= $(includes) -sw -hw");
+    verifyOutputContains("software_0", "EFLAGS= $(includes) -hw -sw");
     verifyOutputContains("software_0", "gcc -o $(ODIR)/array.c.o ../../array.c $(includes) -sw -hw");
     verifyOutputContains("software_0", "continental $(ODIR)/support.c.o ../../support.c $(includes) -y -sw -hw");
     verifyOutputContains("software_0", "gcc -o $(ODIR)/additional.c.o ../../additional.c $(includes) -sw -hw");
@@ -777,8 +771,8 @@ void tst_MakefileGenerator::multipleComponents()
     verifyOutputContains("crapware_0", "hopo -s $(ODIR)/array.c.o ../../array.c $(includes) -hw");
     verifyOutputContains("crapware_0", "continental $(ODIR)/support.c.o ../../support.c $(includes) -y -hw");
 
-    verifyOutputContains("stackware_0", "EBUILDER= asm-meister -g");
-    verifyOutputContains("stackware_0", "EFLAGS= $(includes) -bmw -hw");
+    verifyOutputContains("stackware_0", "EBUILDER= hopo -s");
+    verifyOutputContains("stackware_0", "EFLAGS= $(includes) -hw -bmw");
     verifyOutputContains("stackware_0", "_OBJ= additional.c.o hiterbehn.c.o");
     verifyOutputContains("stackware_0", "asm-meister -g $(ODIR)/additional.c.o ../../additional.c $(includes) -bmw -hw");
     verifyOutputContains("stackware_0", "asm-meister -g $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -bmw -hw");
@@ -836,8 +830,8 @@ void tst_MakefileGenerator::multipleHardWare()
     verifyOutputContains("crapware_0", "hopo -s $(ODIR)/array.c.o ../../array.c $(includes) -ahw");
     verifyOutputContains("crapware_0", "continental $(ODIR)/support.c.o ../../support.c $(includes) -y -ahw");
 
-    verifyOutputContains("stackware_0", "EBUILDER= asm-meister -g");
-    verifyOutputContains("stackware_0", "EFLAGS= $(includes) -bmw -bhw");
+    verifyOutputContains("stackware_0", "EBUILDER= juu -f");
+    verifyOutputContains("stackware_0", "EFLAGS= $(includes) -bhw -bmw");
     verifyOutputContains("stackware_0", "_OBJ= additional.c.o hiterbehn.c.o");
     verifyOutputContains("stackware_0", "asm-meister -g $(ODIR)/additional.c.o ../../additional.c $(includes) -bmw -bhw");
     verifyOutputContains("stackware_0", "asm-meister -g $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -bmw -bhw");
@@ -901,8 +895,8 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
     verifyOutputContains("crapware_0", "hopo -s $(ODIR)/array.c.o ../../array.c $(includes) -ahw");
     verifyOutputContains("crapware_0", "continental $(ODIR)/support.c.o ../../support.c $(includes) -y -ahw");
 
-    verifyOutputContains("stackware_0", "EBUILDER= asm-meister -g");
-    verifyOutputContains("stackware_0", "EFLAGS= $(includes) -bmw -bhw");
+    verifyOutputContains("stackware_0", "EBUILDER= juu -f");
+    verifyOutputContains("stackware_0", "EFLAGS= $(includes) -bhw -bmw");
     verifyOutputContains("stackware_0", "_OBJ= additional.c.o hiterbehn.c.o");
     verifyOutputContains("stackware_0", "asm-meister -g $(ODIR)/additional.c.o ../../additional.c $(includes) -bmw -bhw");
     verifyOutputContains("stackware_0", "asm-meister -g $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -bmw -bhw");
@@ -936,7 +930,7 @@ void tst_MakefileGenerator::noHardWare()
 
     verifyOutputContains("software_0", "_OBJ= array.c.o");
     verifyOutputContains("software_0", "OBJ= $(patsubst %,$(ODIR)/%,$(_OBJ))");
-    verifyOutputContains("software_0", "EBUILDER= gcc -o");
+    verifyOutputContains("software_0", "EBUILDER= ");
     verifyOutputContains("software_0", "EFLAGS= $(includes) -sw");
     verifyOutputContains("software_0", "gcc -o $(ODIR)/array.c.o ../../array.c $(includes) -sw");
 }
@@ -988,11 +982,11 @@ void tst_MakefileGenerator::multipleInstances()
 
     generator.generate(outputDir_);
 
-    verifyOutputContains("stackware_0", "EBUILDER= asm-meister -g");
-    verifyOutputContains("stackware_0", "EFLAGS= $(includes) -bmw -hw");
+    verifyOutputContains("stackware_0", "EBUILDER= hopo -s");
+    verifyOutputContains("stackware_0", "EFLAGS= $(includes) -hw -bmw");
 
-    verifyOutputContains("stackware_1", "EBUILDER= asm-meister -g");
-    verifyOutputContains("stackware_1", "EFLAGS= $(includes) -bmw -hw");
+    verifyOutputContains("stackware_1", "EBUILDER= hopo -s");
+    verifyOutputContains("stackware_1", "EFLAGS= $(includes) -hw -bmw");
 }
 
 void tst_MakefileGenerator::apiUsage()
@@ -1060,8 +1054,8 @@ void tst_MakefileGenerator::apiUsage()
     verifyOutputContains("crapware_0", "hopo -s $(ODIR)/array.c.o ../../array.c $(includes) -hw");
     verifyOutputContains("crapware_0", "continental $(ODIR)/support.c.o ../../support.c $(includes) -y -hw");
 
-    verifyOutputContains("crapware_0", "hopo -s $(ODIR)/additional.c.o ../../additional.c $(includes) -hw");
-    verifyOutputContains("crapware_0", "hopo -s $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -hw");
+    verifyOutputContains("crapware_0", "asm-meister -g $(ODIR)/additional.c.o ../../additional.c $(includes) -bmw -hw");
+    verifyOutputContains("crapware_0", "asm-meister -g $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -bmw -hw");
 }
 
 void tst_MakefileGenerator::threeLevelStack()

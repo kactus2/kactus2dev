@@ -88,9 +88,7 @@ private:
      *      @param [in] objects   The list of the objects written.
      *      @param [in] instancePath   Path of the makefile and thus the path where it is called from.
      */
-     void writeMakeObjects(MakefileParser::MakeFileData &mfd, QTextStream& outStream,
-         QList<MakefileParser::MakeObjectData>& objects, QSharedPointer<SWBuildCommand>swBuildCmd,
-         QString instancePath) const;
+     void writeMakeObjects(MakefileParser::MakeFileData &mfd, QTextStream& outStream, QList<MakefileParser::MakeObjectData>& objects, QString instancePath) const;
 
     /*!
      *  Gets the compiler used for the file.
@@ -98,8 +96,7 @@ private:
      *      @param [in] mod   The make data associated with the object file.
      *      @param [in] mfd   The make data associated with the makefile as whole.
      */
-     QString getFileCompiler(MakefileParser::MakeObjectData &mod, QSharedPointer<SWBuildCommand> swBuildCmd,
-         MakefileParser::MakeFileData &mfd) const;
+     QString getFileCompiler(MakefileParser::MakeObjectData &mod, MakefileParser::MakeFileData &mfd) const;
 
     /*!
      *  Gets concatenates the build flags of the file with those fileSet and software views.
@@ -107,8 +104,7 @@ private:
      *      @param [in] mod   The make data associated with the object file.
      *      @param [in] mfd   The make data associated with the makefile as whole.
      */
-     QString getFileFlags(MakefileParser::MakeObjectData &mod, QSharedPointer<SWBuildCommand> swBuildCmd,
-         MakefileParser::MakeFileData &mfd) const;
+     QString getFileFlags(MakefileParser::MakeObjectData &mod, MakefileParser::MakeFileData &mfd) const;
 
     //! Collection of data sets, one for each make file.
     QList<MakefileParser::MakeFileData> parsedData_;

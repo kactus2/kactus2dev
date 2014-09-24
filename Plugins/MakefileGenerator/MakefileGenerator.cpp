@@ -85,8 +85,8 @@ void MakefileGenerator::generateInstanceMakefile(QString basePath, MakefileParse
     writeObjectList(mfd, outStream);
     writeExeBuild(outStream);
 
-    writeMakeObjects(mfd, outStream, mfd.swObjects, mfd.swBuildCmd, instancePath);
-    writeMakeObjects(mfd, outStream, mfd.hwObjects, QSharedPointer<SWBuildCommand>(), instancePath);
+    writeMakeObjects(mfd, outStream, mfd.swObjects, instancePath);
+    writeMakeObjects(mfd, outStream, mfd.hwObjects, instancePath);
 
     // Close after it is done.
     makeFile.close();
@@ -129,32 +129,19 @@ void MakefileGenerator::writeFinalFlagsAndBuilder(MakefileParser::MakeFileData &
 {
     QString finalFlags = "$(includes)";
     QString finalBuilder;
-    bool allowHWFlags = true;
-
-    // If build command of software view of the software instance exist, its properties are used.
-    if ( mfd.swBuildCmd != 0 )
-    {
-        finalBuilder = mfd.swBuildCmd->getCommand();
-
-        allowHWFlags = !mfd.swBuildCmd->getReplaceDefaultFlags();
-
-        finalFlags += " " + mfd.swBuildCmd->getFlags();
-    }
 
     // If build command of software view of the hardware instance exist, its properties are used.
     if ( mfd.hwBuildCmd != 0 )
     {
-        // Use the hardware builder only if no software builder exist. Should never happen, though.
-        if ( finalBuilder.isEmpty() )
-        {
-            finalBuilder = mfd.hwBuildCmd->getCommand();
-        }
+        finalBuilder = mfd.hwBuildCmd->getCommand();
 
-        // If software command disallows use of hardware flags, respect it.
-        if ( allowHWFlags )
-        {
-            finalFlags += " " + mfd.hwBuildCmd->getFlags();
-        }
+        finalFlags += " " + mfd.hwBuildCmd->getFlags();
+    }
+
+    // All flags of all software views must be appended to the flags.
+    foreach ( QString flag, mfd.softViewFlags )
+    {
+        finalFlags += " " + flag;
     }
 
     // Finally, write down what we learned.
@@ -210,7 +197,7 @@ void MakefileGenerator::writeExeBuild(QTextStream& outStream) const
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::writeMakeObjects()
 //-----------------------------------------------------------------------------
-void MakefileGenerator::writeMakeObjects(MakefileParser::MakeFileData &mfd, QTextStream& outStream, QList<MakefileParser::MakeObjectData>& objects, QSharedPointer<SWBuildCommand>swBuildCmd, QString instancePath) const
+void MakefileGenerator::writeMakeObjects(MakefileParser::MakeFileData &mfd, QTextStream& outStream, QList<MakefileParser::MakeObjectData>& objects, QString instancePath) const
 {
     foreach(MakefileParser::MakeObjectData mod, objects)
     {
@@ -221,14 +208,14 @@ void MakefileGenerator::writeMakeObjects(MakefileParser::MakeFileData &mfd, QTex
         }
 
         // Find out the compiler.
-        QString compiler = getFileCompiler(mod, swBuildCmd, mfd);
+        QString compiler = getFileCompiler(mod, mfd);
 
         // Flags will always include at least the includes.
         QString cFlags = "$(includes) ";
 
         // The other flags are not hard coded.
         cFlags += mod.fileBuildCmd->getFlags();
-        cFlags += getFileFlags(mod, swBuildCmd, mfd);
+        cFlags += getFileFlags(mod, mfd);
 
         QString fileName = mod.fileName;
 
@@ -243,8 +230,7 @@ void MakefileGenerator::writeMakeObjects(MakefileParser::MakeFileData &mfd, QTex
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::getFileCompiler()
 //-----------------------------------------------------------------------------
-QString MakefileGenerator::getFileCompiler(MakefileParser::MakeObjectData &mod, QSharedPointer<SWBuildCommand>
-    swBuildCmd, MakefileParser::MakeFileData &mfd) const
+QString MakefileGenerator::getFileCompiler(MakefileParser::MakeObjectData &mod, MakefileParser::MakeFileData &mfd) const
 {
     QString compiler;
 
@@ -256,13 +242,13 @@ QString MakefileGenerator::getFileCompiler(MakefileParser::MakeObjectData &mod, 
     {
         if ( mod.fileSetBuildCmd == 0 || mod.fileSetBuildCmd->getCommand().isEmpty() )
         {
-            if ( ( swBuildCmd == 0 || swBuildCmd->getCommand().isEmpty() ) && mfd.hwBuildCmd != 0 )
+            if ( ( mod.swBuildCmd == 0 || mod.swBuildCmd->getCommand().isEmpty() ) && mfd.hwBuildCmd != 0 )
             {
                 compiler = mfd.hwBuildCmd->getCommand();
             }
-            else if ( swBuildCmd != 0 )
+            else if ( mod.swBuildCmd != 0 )
             {
-                compiler = swBuildCmd->getCommand();
+                compiler = mod.swBuildCmd->getCommand();
             }
         }
         else if ( mod.fileSetBuildCmd != 0 )
@@ -281,8 +267,7 @@ QString MakefileGenerator::getFileCompiler(MakefileParser::MakeObjectData &mod, 
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::getFileFlags()
 //-----------------------------------------------------------------------------
-QString MakefileGenerator::getFileFlags(MakefileParser::MakeObjectData &mod, QSharedPointer<SWBuildCommand>
-    swBuildCmd, MakefileParser::MakeFileData &mfd) const
+QString MakefileGenerator::getFileFlags(MakefileParser::MakeObjectData &mod, MakefileParser::MakeFileData &mfd) const
 {
     QString cFlags;
 
@@ -299,12 +284,12 @@ QString MakefileGenerator::getFileFlags(MakefileParser::MakeObjectData &mod, QSh
 
         if ( mod.fileSetBuildCmd == 0 || !mod.fileSetBuildCmd->getReplaceDefaultFlags() )
         {
-            if ( swBuildCmd != 0 )
+            if ( mod.swBuildCmd != 0 )
             {
-                cFlags += " " + swBuildCmd->getFlags();
+                cFlags += " " + mod.swBuildCmd->getFlags();
             }   
 
-            if ( ( swBuildCmd == 0 || !swBuildCmd->getReplaceDefaultFlags() ) && mfd.hwBuildCmd != 0 )
+            if ( ( mod.swBuildCmd == 0 || !mod.swBuildCmd->getReplaceDefaultFlags() ) && mfd.hwBuildCmd != 0 )
             {
                 cFlags += " " + mfd.hwBuildCmd->getFlags();
             }
