@@ -14,8 +14,10 @@
 #include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/IGeneratorPlugin.h>
 #include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
+#include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
 #include <Plugins/PluginSystem/PluginListDialog.h>
 #include <Plugins/PluginSystem/PluginInfoWidget.h>
+
 
 #include <IPXACTmodels/XmlUtils.h>
 
@@ -232,6 +234,8 @@ void PluginSettingsPage::refreshPluginsTree(bool displayChanges)
         QIcon(":icons/common/graphics/plugin-generator.png"));
     QTreeWidgetItem* analyzersItem = createCategoryItem(tr("Source Analyzers"),
         QIcon(":icons/common/graphics/plugin-source_analyzer.png"));
+    QTreeWidgetItem* importItems = createCategoryItem(tr("Import Plugins"),
+        QIcon(":icons/common/graphics/import.png"));
 
     // Enumerate all plugins and add them to the correct root.
     localManager_.setPluginPaths(pluginDirSelector_.getDirectories());
@@ -253,6 +257,10 @@ void PluginSettingsPage::refreshPluginsTree(bool displayChanges)
         else if (dynamic_cast<ISourceAnalyzerPlugin*>(plugin) != 0)
         {
             analyzersItem->addChild(pluginItem);
+        }
+        else if(dynamic_cast<ImportPlugin*>(plugin) != 0)
+        {
+            importItems->addChild(pluginItem);
         }
 
         // Check if the plugin has not been visible before.

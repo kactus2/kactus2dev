@@ -14,6 +14,8 @@
 #include "IGeneratorPlugin.h"
 #include "IPlugin.h"
 #include "PluginInfoWidget.h"
+#include "ISourceAnalyzerPlugin.h"
+#include "ImportPlugin/ImportPlugin.h"
 
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -82,11 +84,15 @@ void NewPluginsDialog::addPlugin(IPlugin* plugin)
     {
         item->setIcon(generator->getIcon());
     }
-    else // if(dynamic_cast<ISourceAnalyzerPlugin*>(plugin) != 0)
+    else if(dynamic_cast<ISourceAnalyzerPlugin*>(plugin) != 0)
     {
         item->setIcon(QIcon(":icons/common/graphics/plugin-source_analyzer.png"));
     }
-    
+    else if(dynamic_cast<ImportPlugin*>(plugin) != 0)
+    {
+        item->setIcon(QIcon(":icons/common/graphics/import.png"));
+    }
+
     pluginsList_.addItem(item);    
     detailsStack_.addWidget(new PluginInfoWidget(plugin));
 }
