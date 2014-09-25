@@ -32,9 +32,9 @@ public:
     ~MakefileGenerator();
 
     /*!
-     *  Generates all make files based on the parsed data.
+     *  Generates all makefiles based on the parsed data.
      *
-     *      @param [in] targetPath   The path, where the make files are created.
+     *      @param [in] targetPath   The path, where the makefiles are created.
      */
      void generate(QString targetPath) const;
 
@@ -43,7 +43,7 @@ private:
     /*!
      *  Creates a makefile for a single software instance, and thus for a single executable.
      *
-     *      @param [in] basePath    The path, where the make files are created.
+     *      @param [in] basePath    The path, where the makefiles are created.
      *      @param [in] mfd   The make data associated with the makefile as whole.
      *      @param [in] makeNames   The directory of the created makefile must be added here.
      */
@@ -52,16 +52,24 @@ private:
     /*!
      *  Creates a makefile calling all the other makefiles associated with the design.
      *
-     *      @param [in] basePath   The path, where the make file is created.
-     *      @param [in] makeNames   The directories of all other makefiles.
+     *      @param [in] basePath   The path, where the makefile is created.
+     *      @param [in] makeNames   The paths of all other makefiles.
      */
      void generateMainMakefile(QString basePath, QStringList makeNames) const;
+
+     /*!
+      *  Creates a launcher script starting executables created by the makefiles.
+      *
+      *      @param [in] basePath   The path, where the launcher is created.
+      *      @param [in] makeNames   The paths of all other makefiles.
+      */
+      void generateLauncher(QString basePath, QStringList makeNames) const;
 
     /*!
      *  Writes data used in building the executable to the stream.
      *
      *      @param [in] mfd   The make data associated with the makefile as whole.
-     *      @param [in] outStream   The stream where the make file is written.
+     *      @param [in] outStream   The stream where the makefile is written.
      */
      void writeFinalFlagsAndBuilder(MakefileParser::MakeFileData &mfd, QTextStream& outStream) const;
 
@@ -69,22 +77,22 @@ private:
      *  Writes the list of the built and used objects to the stream.
      *
      *      @param [in] mfd   The make data associated with the makefile as whole.
-     *      @param [in] outStream   The stream where the make file is written.
+     *      @param [in] outStream   The stream where the makefile is written.
      */
      void writeObjectList(MakefileParser::MakeFileData &mfd, QTextStream& outStream) const;
 
     /*!
      *  Writes the build command of the executable to the stream.
      *
-     *      @param [in] outStream   The stream where the make file is written.
+     *      @param [in] outStream   The stream where the makefile is written.
      */
      void writeExeBuild(QTextStream& outStream) const;
 
     /*!
-     *  Writes the build rules for the object files of the make file.
+     *  Writes the build rules for the object files of the makefile.
      *
      *      @param [in] mfd  The make data associated with the makefile as whole.
-     *      @param [in] outStream   The stream where the make file is written.
+     *      @param [in] outStream   The stream where the makefile is written.
      *      @param [in] objects   The list of the objects written.
      *      @param [in] instancePath   Path of the makefile and thus the path where it is called from.
      */
@@ -106,7 +114,37 @@ private:
      */
      QString getFileFlags(MakefileParser::MakeObjectData &mod, MakefileParser::MakeFileData &mfd) const;
 
-    //! Collection of data sets, one for each make file.
+     /*!
+      *  Writes list of launched executables.
+      *
+      *      @param [in] outStream   The stream where the launcher is written.
+      *      @param [in] basePath   The path, where the launcher is created.
+      *      @param [in] makeNames   The paths of all other makefiles.
+      */
+      void writeProcessList(QTextStream& outStream, QStringList makeNames, QString basePath) const;
+
+     /*!
+      *  Writes shell functions called from the script.
+      *
+      *      @param [in] outStream   The stream where the launcher is written.
+      */
+      void writeShellFunctions(QTextStream& outStream) const;
+
+     /*!
+      *  Writes a loop starting the processes.
+      *
+      *      @param [in] outStream   The stream where the launcher is written.
+      */
+      void writeProcessLaunch(QTextStream& outStream) const;
+
+     /*!
+      *  Write lines needed to terminate processes and wait call.
+      *
+      *      @param [in] outStream   The stream where the launcher is written.
+      */
+      void writeEnding(QTextStream& outStream) const;
+
+    //! Collection of data sets, one for each makefile.
     QList<MakefileParser::MakeFileData> parsedData_;
 };
 

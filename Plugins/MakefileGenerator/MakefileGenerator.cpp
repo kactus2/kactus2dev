@@ -47,6 +47,8 @@ void MakefileGenerator::generate(QString targetPath) const
     }
 
     generateMainMakefile(basePath, makeNames);
+
+    generateLauncher(basePath, makeNames);
 }
 
 //-----------------------------------------------------------------------------
@@ -119,6 +121,27 @@ void MakefileGenerator::generateMainMakefile(QString basePath, QStringList makeN
 
     // Close after it is done.
     makeFile.close();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MakefileGenerator::generateLauncher()
+//-----------------------------------------------------------------------------
+void MakefileGenerator::generateLauncher(QString basePath, QStringList makeNames) const
+{
+    QFile launcherFile( basePath + "launcher.sh" );
+    launcherFile.open(QIODevice::WriteOnly);
+    QTextStream outStream(&launcherFile);
+
+    writeProcessList(outStream, makeNames, basePath);
+
+    writeShellFunctions(outStream);
+
+    writeProcessLaunch(outStream);
+
+    writeEnding(outStream);
+
+    // Close after it is done.
+    launcherFile.close();
 }
 
 //-----------------------------------------------------------------------------
@@ -296,5 +319,91 @@ QString MakefileGenerator::getFileFlags(MakefileParser::MakeObjectData &mod, Mak
     }
 
     return cFlags;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MakefileGenerator::writeProcessList()
+//-----------------------------------------------------------------------------
+void MakefileGenerator::writeProcessList(QTextStream& outStream, QStringList makeNames, QString basePath) const
+{
+    outStream << "PROCESSES=(";
+
+    // The list consists of relative path to each executable.
+    foreach( QString directory, makeNames )
+    {
+        QFileInfo qfi = QFileInfo( directory );
+
+        outStream << General::getRelativePath(basePath,directory) << "/bin_" << qfi.fileName() << " ";
+    }
+
+    outStream << ")" << endl;
+    outStream << "echo ${PROCESSES[@]}" << endl << endl;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MakefileGenerator::writeShellFunctions()
+//-----------------------------------------------------------------------------
+void MakefileGenerator::writeShellFunctions(QTextStream& outStream) const
+{
+    // Function called from the signal trap to first kill all processes, then quit the script.
+    outStream << "terminate () {" << endl;
+    outStream << "\tcommit_hits" << endl;
+    outStream << "\texit" << endl;
+    outStream << "}" << endl << endl;
+
+    // Function killing all processes, if none exists.
+    outStream << "commit_hits () {" << endl;
+    outStream << "\thitlist=hitlist.txt" << endl << endl;
+
+    // Check first there is existing hit list.
+    outStream << "\tif [ -f $hitlist ]; then" << endl;
+
+    // If does, loop through it and kill by name.
+    outStream << "\t\techo \"KILLING PROCESSES\"" << endl << endl;
+    outStream << "\t\twhile read line" << endl;
+    outStream << "\t\tdo" << endl;
+    outStream << "\t\t\tkillall $line &> /dev/null" << endl;
+    outStream << "\t\tdone < $hitlist" << endl;
+
+    outStream << "\tfi" << endl;
+    outStream << "}" << endl << endl;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MakefileGenerator::writeProcessLaunch()
+//-----------------------------------------------------------------------------
+void MakefileGenerator::writeProcessLaunch(QTextStream& outStream) const
+{
+    // Before launch proper, kill pre existing processes and remove the hit list.
+    outStream << "commit_hits" << endl;
+    outStream << "rm $hitlist &> /dev/null" << endl << endl;
+
+    outStream << "echo \"LAUNCHING NEW PROCESSES\"" << endl;
+
+    // Loop throug the list of processes.
+    outStream << "for name in \"${PROCESSES[@]}\"" << endl << "do" << endl;
+        // Launch it and record the pid for later use.
+        outStream << "\t./$name &" << endl;
+        outStream << "\tmypid=$!" << endl;
+        outStream << "\tpids=$pids\"$mypid \"" << endl;
+
+        // Record the name to hit list.
+        outStream << "\techo \"$name\" >> $hitlist" << endl;
+    outStream << "done" << endl << endl;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MakefileGenerator::writeEnding()
+//-----------------------------------------------------------------------------
+void MakefileGenerator::writeEnding(QTextStream& outStream) const
+{
+    // Signal trap to called when calling suspend process.
+    outStream << "trap \"terminate\" SIGTSTP" << endl;
+
+    // Wait for the processes to finish before exiting the script execution.
+    outStream << "echo \"PROCESSES LAUNCHED\"" << endl;
+    outStream << "wait $pids" << endl << endl;
+
+    outStream << "echo \"DONE\"" << endl;
 }
 
