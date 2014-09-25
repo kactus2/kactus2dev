@@ -65,6 +65,33 @@ private:
     QString findPortsSection(QString const& input) const;
 
     /*!
+     *  Checks if the given input has ports declared in Verilog-1995 style.
+     *
+     *      @param [in] input   The input to check.
+     *
+     *      @return True, if Verilog-1995 style ports are found, otherwise false.
+     */
+    bool hasVerilog1995Ports(QString const& input) const;
+
+    /*!
+     *  Finds the section in the input containing all Verilog-1995 style ports.
+     *
+     *      @param [in] input   The input to search for.
+     *
+     *      @return The section of the input containing all Verilog-1995 style ports.
+     */
+    QString findVerilog1995PortsSectionInModule(QString const& input) const;
+
+    /*!
+     *  Finds the section in the input containing all Verilog-2001 style ports.
+     *
+     *      @param [in] input   The input to search for.
+     *
+     *      @return The section of the input containing all Verilog-2001 style ports.
+     */
+    QString findVerilog2001PortsSection(QString const& input) const;
+
+    /*!
      *  Removes all comment lines from a given input.
      *
      *      @param [in] input   The input to remove comments from.
@@ -138,7 +165,7 @@ private:
      *      @return The port description.
      */
     QString parseDescription(QString const& portDeclaration) const;
-
+    
 };
 
 #endif // VERILOGPORTPARSER_H
