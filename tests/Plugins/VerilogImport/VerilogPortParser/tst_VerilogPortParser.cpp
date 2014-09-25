@@ -104,6 +104,19 @@ void tst_VerilogPortParser::testNothingIsParsedFromMalformedInput_data()
         "    in data\n"
         ");\n"
         "endmodule";
+
+    QTest::newRow("Typed 1995-style port") <<
+        "module test (data);\n"
+        "    output reg data;\n"
+        "\n"
+        "endmodule";
+
+    QTest::newRow("Signed 1995-style port.") <<
+        "module test (data);\n"
+        "    output wire signed [2:0] data; // 2's complement data.\n"
+        "\n"
+        "endmodule";
+
 }
 
 //-----------------------------------------------------------------------------
@@ -228,7 +241,25 @@ void tst_VerilogPortParser::testVerilog2001PortIsParsed_data()
 //-----------------------------------------------------------------------------
 void tst_VerilogPortParser::testVerilog1995PortIsParsed()
 {
-    testVerilog2001PortIsParsed();
+    QFETCH(QString, input);
+    QFETCH(QString, expectedPortName);
+    QFETCH(General::Direction, expectedDirection);
+    QFETCH(int, expectedLeft);
+    QFETCH(int, expectedRight);
+    QFETCH(QString, expectedDescription);
+
+    runParser(input);
+
+    QCOMPARE(importComponent_->getPorts().count(), 1);
+
+    QSharedPointer<Port> createdPort = importComponent_->getPorts().first();
+
+    QCOMPARE(createdPort->getName(), expectedPortName);
+    QCOMPARE(createdPort->getTypeName(), QString(""));
+    QCOMPARE(createdPort->getDirection(), expectedDirection);
+    QCOMPARE(createdPort->getLeftBound(), expectedLeft);
+    QCOMPARE(createdPort->getRightBound(), expectedRight);
+    QCOMPARE(createdPort->getDescription(), expectedDescription);
 }
 
 //-----------------------------------------------------------------------------
@@ -238,7 +269,6 @@ void tst_VerilogPortParser::testVerilog1995PortIsParsed_data()
 {
     QTest::addColumn<QString>("input");
     QTest::addColumn<QString>("expectedPortName");
-    QTest::addColumn<QString>("expectedType");
     QTest::addColumn<General::Direction>("expectedDirection");
     QTest::addColumn<int>("expectedLeft");
     QTest::addColumn<int>("expectedRight");
@@ -249,63 +279,37 @@ void tst_VerilogPortParser::testVerilog1995PortIsParsed_data()
         "    input clk;\n"
         "\n"
         "endmodule"
-        << "clk" << "" << General::IN << 0 << 0 << "";
-
-
-    QTest::newRow("Typed port") <<
-    "module test (data);\n"
-    "    output reg data;\n"
-    "\n"
-    "endmodule"
-    << "data" << "reg" <<  General::OUT << 0 << 0 << "";
-
+        << "clk" << General::IN << 0 << 0 << "";
 
     QTest::newRow("Little-endian port") <<
     "module test (data);\n"
     "    input [7:0] data;\n"
     "\n"
     "endmodule"
-    << "data" << "" <<  General::IN << 7 << 0 << "";
+    << "data" <<  General::IN << 7 << 0 << "";
 
     QTest::newRow("Big-endian port") <<
     "module test (data);\n"
     "    input [0:7] data;\n"
     "\n"
     "endmodule"
-    << "data" << "" <<  General::IN << 0 << 7 << "";
-
-    
-    QTest::newRow("Typed four-bit port") <<
-    "module test (data);\n"
-    "    inout tri [3:0] data;\n"
-    "\n"
-    "endmodule"
-    << "data" << "tri" <<  General::INOUT << 3 << 0 << "";
-
+    << "data" <<  General::IN << 0 << 7 << "";
     
     QTest::newRow("Comment as a description.") <<
     "module test (rst_n);\n"
     "    input rst_n; // Active low reset.\n"
     "\n"
     "endmodule"
-    << "rst_n" << "" <<  General::IN << 0 << 0 << "Active low reset.";
-
-    QTest::newRow("Signed port.") <<
-    "module test (data);\n"
-    "    output wire signed [2:0] data; // 2's complement data.\n"
-    "\n"
-    "endmodule"
-    << "data" << "wire" <<  General::OUT << 2 << 0 << "2's complement data.";
+    << "rst_n" <<  General::IN << 0 << 0 << "Active low reset.";
 
     QTest::newRow("Additional whitespaces in port declaration") <<
     "module test (cs);output \n"
-    "reg\n"
     "\n"
     "    [1:0] \n"
     "    cs  ;  //Chip select\n"
     "\n"
     "endmodule"
-    << "cs" << "reg" <<  General::OUT << 1 << 0 << "Chip select";
+    << "cs" <<  General::OUT << 1 << 0 << "Chip select";
 
     QTest::newRow("Module with parameters.") <<
     "module test (clk);\n"
@@ -313,7 +317,7 @@ void tst_VerilogPortParser::testVerilog1995PortIsParsed_data()
     "    input clk;\n"
     "\n"
     "endmodule"
-    << "clk" << "" <<  General::IN << 0 << 0 << "";
+    << "clk" <<  General::IN << 0 << 0 << "";
     
 }
 
@@ -374,6 +378,28 @@ void tst_VerilogPortParser::testMultipleVerilog2001PortsAreParsed_data()
         ");\n"
         "endmodule"
         << 3;
+
+    QTest::newRow("Commented out ports") << 
+        "module test(\n"
+        "    //input clk,\n"
+        "    //input rst,\n"
+        "    input enable\n"
+        ");\n"
+        "endmodule"
+        << 1;
+
+    QTest::newRow("Commented out ports using multiline comment") << 
+        "module test(\n"
+        "    input clk,\n"        
+        "    input rst,\n"
+        "/* COMMENT OUT FOR SYNTHESIS\n"
+        "    output sim_value,\n"
+        "    output sim_debug,\n"
+        "*/\n"
+        "    input enable \n"
+        ");\n"
+        "endmodule"
+        << 3;
 }
 
 
@@ -397,7 +423,7 @@ void tst_VerilogPortParser::testMultipleVerilog1995PortsAreParsed_data()
         "module test (clk, rst_n, data);\n"
         "    input clk;\n"
         "    input rst_n;\n"
-        "    output reg [7:0] data;\n"
+        "    output [7:0] data;\n"
         "\n"
         "endmodule"
         << 3;
@@ -431,7 +457,29 @@ void tst_VerilogPortParser::testMultipleVerilog1995PortsAreParsed_data()
         "\n"
         "endmodule"
         << 2;
-    
+
+    QTest::newRow("Commented out ports") << 
+        "module test(//clk, rst, \n"
+        "            enable);\n"
+        "    //input clk;\n"
+        "    //input rst;\n"
+        "    input enable;\n"
+        "\n"
+        "endmodule"
+        << 1;
+
+    QTest::newRow("Commented out ports using multiline commments") << 
+        "module test(clk, rst, /* sim_value, sim_debug, */ enable);\n"
+        "    input clk;\n"
+        "    input rst;\n"
+        "/* COMMENT OUT FOR SYNTHESIS\n"
+        "    output sim_value;\n"
+        "    output sim_debug;\n"
+        "*/\n"
+        "    input enable;\n"
+        "\n"
+        "endmodule"
+        << 3;    
 }
 
 QTEST_APPLESS_MAIN(tst_VerilogPortParser)

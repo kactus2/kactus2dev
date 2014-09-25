@@ -23,10 +23,15 @@ namespace
     const QString TYPE("wire|reg|integer|time|tri|tri0|tri1|triand|trior|trireg|supply0|supply1|wand|wor|logic");
     const QString RANGE("[\\[]\\w+\\s*[:]\\s*\\w+[\\]]");
     const QString NAMES("\\w+(?:\\s*[,]\\s*\\w+)*");
-    const QString COMMENT("//[ \\t]*([^\\r?\\n]*)(?=\\r?\\n|$)");
+    const QString COMMENT("//[ \\t]*([^\\r\\n]*)(?=\\r?\\n|$)");
 
     const QRegExp PORT_EXP("(" + DIRECTION + ")\\s+(" + TYPE + ")?\\s*(?:signed)?\\s*(" + RANGE + ")?\\s*"
         "(" + NAMES + ")\\s*(?:[,;][ \\t]*(?:"+ COMMENT + ")?|[ \\t]*(?:"+ COMMENT + ")?\\s*$)");
+
+    const QRegExp PORT_1995("(" + DIRECTION + ")\\s+(" + RANGE + ")?\\s*(" + NAMES + ")\\s*[;]"
+        "[ \\t]*(?:"+ COMMENT + ")?");
+
+    const QRegExp MODULE_DECLARATION("module\\s+\\w+\\s*(#\\s*[(][^)]*[)])?\\s*[(]");
 }
 
 //-----------------------------------------------------------------------------
@@ -72,13 +77,11 @@ QStringList VerilogPortParser::findPortDeclarations(QString const& input) const
 //-----------------------------------------------------------------------------
 QString VerilogPortParser::findPortsSection(QString const& input) const
 {
-    QRegExp moduleDeclaration("module\\s+\\w+\\s*(#\\s*[(][^)]*[)])?\\s*[(]");
     QRegExp moduleEnd("endmodule", Qt::CaseSensitive);
 
-    bool noModuleDeclaration = (moduleDeclaration.indexIn(input) == -1);
-    bool noModuleEnd = (moduleEnd.indexIn(input) == -1);
+    bool noValidModule = (MODULE_DECLARATION.indexIn(input) == -1 || moduleEnd.indexIn(input) == -1);
 
-    if (noModuleDeclaration || noModuleEnd)
+    if (noValidModule)
     {
         return QString();
     }
@@ -92,7 +95,6 @@ QString VerilogPortParser::findPortsSection(QString const& input) const
     {
         portSection = findVerilog2001PortsSection(input);
     }
-    
     return portSection;
 }
 
@@ -101,10 +103,9 @@ QString VerilogPortParser::findPortsSection(QString const& input) const
 //-----------------------------------------------------------------------------
 bool VerilogPortParser::hasVerilog1995Ports(QString const& input) const
 {
-    QRegExp moduleDeclaration("module\\s+\\w+\\s*[(].*[)];*");
-    int endOfModuleDeclaration = moduleDeclaration.indexIn(input) + moduleDeclaration.matchedLength();
+    int endOfModuleDeclaration = MODULE_DECLARATION.indexIn(input) + MODULE_DECLARATION.matchedLength();
 
-    bool hasPortsAfterModuleDeclaration = (PORT_EXP.indexIn(input, endOfModuleDeclaration) != -1);
+    bool hasPortsAfterModuleDeclaration = (PORT_1995.indexIn(input, endOfModuleDeclaration) != -1);
 
     return hasPortsAfterModuleDeclaration;
 }
@@ -114,20 +115,28 @@ bool VerilogPortParser::hasVerilog1995Ports(QString const& input) const
 //-----------------------------------------------------------------------------
 QString VerilogPortParser::findVerilog1995PortsSectionInModule(QString const& input) const
 {    
-    QRegExp moduleDeclaration("module\\s+\\w+\\s*[(].*[)];*");
     QRegExp moduleEnd("endmodule", Qt::CaseSensitive);    
 
-    int endOfModuleDeclaration = moduleDeclaration.indexIn(input) + moduleDeclaration.matchedLength();    
+    int endOfModuleDeclaration = MODULE_DECLARATION.indexIn(input) + MODULE_DECLARATION.matchedLength();    
     int endOfModule = moduleEnd.indexIn(input, endOfModuleDeclaration);
 
-    int firstPort = PORT_EXP.indexIn(input, endOfModuleDeclaration);
-    int lastPort = PORT_EXP.lastIndexIn(input, endOfModule);
+    QString section = input.mid(endOfModuleDeclaration, endOfModule - endOfModuleDeclaration);
+    section = removeCommentLines(section);
 
-    int endOfPorts = lastPort += PORT_EXP.matchedLength();
+    int firstPort = PORT_1995.indexIn(section);
+    int lastPort = PORT_1995.lastIndexIn(section);
+    int endOfPorts = lastPort += PORT_1995.matchedLength();
+
+    bool noPorts = (firstPort == -1 || lastPort == -1);
+    if (noPorts)
+    {
+        return QString();
+    }
+
 
     int portSectionLength = endOfPorts - firstPort;
 
-    return input.mid(firstPort, portSectionLength);
+    return section.mid(firstPort, portSectionLength);
 }
 
 //-----------------------------------------------------------------------------
@@ -135,10 +144,9 @@ QString VerilogPortParser::findVerilog1995PortsSectionInModule(QString const& in
 //-----------------------------------------------------------------------------
 QString VerilogPortParser::findVerilog2001PortsSection(QString const& input) const
 {
-    QRegExp moduleBegin("module\\s+\\w+\\s*(#\\s*[(][^)]*[)])?\\s*[(]\\s*", Qt::CaseSensitive);
     QRegExp portsEnd("[)];");
 
-    int portSectionBegin = moduleBegin.indexIn(input) + moduleBegin.matchedLength();
+    int portSectionBegin = MODULE_DECLARATION.indexIn(input) + MODULE_DECLARATION.matchedLength();
     int portSectionEnd = portsEnd.indexIn(input, portSectionBegin);
 
     int portSectionLength = portSectionEnd - portSectionBegin;
@@ -151,8 +159,11 @@ QString VerilogPortParser::findVerilog2001PortsSection(QString const& input) con
 //-----------------------------------------------------------------------------
 QString VerilogPortParser::removeCommentLines(QString portSection) const
 {
-    QRegExp commentLineExp("(^|\\r?\\n)[ \\t]*//([^\\r?\\n]*)(?=\\r?\\n)");
-    return portSection.remove(commentLineExp);
+    QRegExp commentLines("(^|\\r?\\n)[ \\t]*" + COMMENT);
+    QRegExp multilineComments("/\\*.*\\*/");
+    multilineComments.setMinimal(true);
+
+    return portSection.remove(commentLines).remove(multilineComments);
 }
 
 //-----------------------------------------------------------------------------
