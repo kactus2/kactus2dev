@@ -128,6 +128,7 @@ public:
      *  Returns a list of SW instances in the design.
      */
     QList<SWInstance> const& getSWInstances() const;
+    QList<SWInstance>& getSWInstances();
 
 	/*! \brief Get list of the interconnections
 	*

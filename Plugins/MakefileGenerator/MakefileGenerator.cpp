@@ -44,7 +44,6 @@ void MakefileGenerator::generate(QString targetPath) const
     foreach(MakefileParser::MakeFileData mfd, parsedData_)
     {
         generateInstanceMakefile(basePath, mfd, makeNames);
-
     }
 
     generateMainMakefile(basePath, makeNames);

@@ -328,7 +328,7 @@ private:
      *      @param [in] design   The design subject to generation.
      *      @param [in] libComp   The top level component associated with the design.
      */
-    void generateTopLevel(QSharedPointer<const Design> design, QSharedPointer<Component> topComponent, QSharedPointer<DesignConfiguration const> desgConf);
+    void generateTopLevel(QSharedPointer<Design> design, QSharedPointer<Component> topComponent, QSharedPointer<DesignConfiguration const> desgConf);
 
     /*!
      *  Generates the MCAPI code source file.
@@ -345,8 +345,7 @@ private:
      *
      *      @param [in] QSharedPointer<Component> component   The component, which Fileset will be expanded.
      */
-    void addGeneratedMCAPIToFileset(QString directory, QSharedPointer<Component> topComponent,
-        QString instanceName, QSharedPointer<DesignConfiguration const> desgConf);
+    void addGeneratedMCAPIToFileset(QString directory, QSharedPointer<Component> topComponent, SWInstance& instance, QSharedPointer<DesignConfiguration const> desgConf);
 
     /*!
      *  Writes node ID and domain ID for the given software instance.

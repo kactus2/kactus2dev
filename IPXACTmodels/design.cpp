@@ -1150,6 +1150,10 @@ QList<SWInstance> const& Design::getSWInstances() const
 {
     return swInstances_;
 }
+QList<SWInstance>& Design::getSWInstances()
+{
+    return swInstances_;
+}
 
 //-----------------------------------------------------------------------------
 // Function: Design::setSWInstances()

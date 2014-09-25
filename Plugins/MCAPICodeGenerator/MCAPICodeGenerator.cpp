@@ -143,7 +143,7 @@ void MCAPICodeGenerator::runGenerator( IPluginUtility* utility,
 {
     utility_ = utility;
 
-    QSharedPointer<const Design> design = libDes.dynamicCast<Design const>();
+    QSharedPointer<Design> design = libDes.dynamicCast<Design>();
     QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
 
@@ -156,6 +156,7 @@ void MCAPICodeGenerator::runGenerator( IPluginUtility* utility,
         desgConf->getDesignConfigImplementation() == KactusAttribute::KTS_SYS )
     {
         generateTopLevel(design, comp, desgConf);
+        utility_->getLibraryInterface()->writeModelToFile(design);
     }
 
     utility_->getLibraryInterface()->writeModelToFile(libComp);
@@ -324,22 +325,18 @@ void MCAPICodeGenerator::generateMCAPIForComponent(QString dir, QSharedPointer<C
     {
         file = fileSet->addFile("main.c", settings);
         file->setAllFileTypes( types );
-    } 
+    }
 
     int viewCount = component->getSWViews().size();
 
     if ( viewCount > 1 )
     {
         // Add fileSet to selected software view
-
         ComboSelector cs(utility_->getParentWidget());
         cs.setComboBoxItems( component->getSWViewNames() );
         cs.setLabelText(  tr("Select a software view which shall include reference to the generated MCAPI") );
 
         QString viewName = cs.execDialog();
-
-        //QString viewName = ComboSelector::selectView(component, utility_->getParentWidget(), QString(),
-        //    tr("Select a software view which shall include reference to the generated MCAPI"));
 
         if ( !viewName.isEmpty() )
         {
@@ -1071,11 +1068,13 @@ void MCAPICodeGenerator::writePendStatusCheck(CSourceWriter &writer, QString nam
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGenerator::generateTopLevel()
 //-----------------------------------------------------------------------------
-void MCAPICodeGenerator::generateTopLevel(QSharedPointer<const Design> design, QSharedPointer<Component> topComponent,
-    QSharedPointer<DesignConfiguration const> desgConf)
+void MCAPICodeGenerator::generateTopLevel(QSharedPointer<Design> design, QSharedPointer<Component> topComponent, QSharedPointer<DesignConfiguration const> desgConf)
 {
-    foreach ( SWInstance instance, design->getSWInstances() )
+    QList<SWInstance>& instances = design->getSWInstances();
+
+    for ( int i = 0; i < instances.size(); ++i )
     {
+        SWInstance& instance = instances[i];
         VLNV instanceVLNV = instance.getComponentRef();
         VLNV* topVLNV = topComponent->getVlnv();
         VLNV* designVLNV = design->getVlnv();
@@ -1092,7 +1091,16 @@ void MCAPICodeGenerator::generateTopLevel(QSharedPointer<const Design> design, Q
 
             generateInstanceHeader(dir, instance, instanceComp, design);
 
-            addGeneratedMCAPIToFileset(General::getRelativePath(topDir,dir), topComponent, instance.getInstanceName(), desgConf);
+            addGeneratedMCAPIToFileset(General::getRelativePath(topDir,dir), topComponent, instance, desgConf);
+
+
+            QList<SWInstance>& instances = design->getSWInstances();
+
+            for ( int i = 0; i < instances.size(); ++i )
+            {
+                SWInstance& instance = instances[i];
+                QString ref = instance.getFileSetRef();
+            }
         }
     }
 }
@@ -1143,7 +1151,7 @@ void MCAPICodeGenerator::generateInstanceHeader(QString& directory, SWInstance& 
 // Function: MCAPICodeGenerator::addGeneratedMCAPIToFileset()
 //-----------------------------------------------------------------------------
 void MCAPICodeGenerator::addGeneratedMCAPIToFileset(QString directory, QSharedPointer<Component> topComponent,
-    QString instanceName, QSharedPointer<DesignConfiguration const> desgConf)
+    SWInstance& instance, QSharedPointer<DesignConfiguration const> desgConf)
 {
     QString sysViewName;
 
@@ -1156,21 +1164,36 @@ void MCAPICodeGenerator::addGeneratedMCAPIToFileset(QString directory, QSharedPo
         }
     }
 
-    QString fileSetName = sysViewName + "_" + instanceName + "_headers";
-
     // Add the files to the component metadata.
+    QString fileSetName;
+
+    // Check if the software instance has and existing fileSet reference. 
+    if ( instance.getFileSetRef().isEmpty() )
+    {
+        // If not, make a new one.
+        fileSetName = sysViewName + "_" + instance.getInstanceName() + "_headers";
+        instance.setFileSetRef( fileSetName );
+    }
+    else
+    {
+        // If there is pre-existing reference, use it.
+        fileSetName = instance.getFileSetRef();
+    }
+
+    // Obtain the the fileSet by name and set it as a source file group.
     QSharedPointer<FileSet> fileSet = topComponent->getFileSet(fileSetName);
     fileSet->setGroups("sourceFiles");
 
-    QSettings settings;
-
-    QSharedPointer<File> file;
-    QStringList types;
-    types.append("cSource");
+    // Path of the file, including file name.
     QString filePath = directory + "/instanceheader.h";
 
-    if (!fileSet->contains(filePath))
+    // Create file if does not already exist.
+    if ( !fileSet->contains(filePath) )
     {
+        QSharedPointer<File> file;
+        QStringList types;
+        types.append("cSource");
+        QSettings settings;
         file = fileSet->addFile(filePath, settings);
         file->setAllFileTypes( types );
         file->setIncludeFile( true );

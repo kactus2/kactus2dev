@@ -145,7 +145,7 @@ void MakefileParser::findInstanceHeaders(LibraryInterface* library, QSharedPoint
     foreach ( QSharedPointer<FileSet> fileSet, topComponent->getFileSets() )
     {
         // The fileSet names of the instance headers are hard coded.
-        if ( fileSet->getName() == sysViewName + "_" + softInstance.getInstanceName() + "_headers" )
+        if ( fileSet->getName() == softInstance.getFileSetRef() )
         {
             foreach( QSharedPointer<File> file, fileSet->getFiles())
             {
