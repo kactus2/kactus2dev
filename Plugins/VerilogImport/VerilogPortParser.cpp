@@ -11,6 +11,8 @@
 
 #include "VerilogPortParser.h"
 
+#include "VerilogSyntax.h"
+
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/port.h>
 
@@ -19,19 +21,15 @@
 
 namespace
 {
-    const QString DIRECTION("input|output|inout");
-    const QString TYPE("wire|reg|integer|time|tri|tri0|tri1|triand|trior|trireg|supply0|supply1|wand|wor|logic");
-    const QString RANGE("[\\[]\\w+\\s*[:]\\s*\\w+[\\]]");
-    const QString NAMES("\\w+(?:\\s*[,]\\s*\\w+)*");
-    const QString COMMENT("//[ \\t]*([^\\r\\n]*)(?=\\r?\\n|$)");
+    const QString PORT_DIRECTION("input|output|inout");
+    const QString PORT_TYPE("wire|reg|integer|time|tri|tri0|tri1|triand|trior|trireg|supply0|supply1|wand|wor");
 
-    const QRegExp PORT_EXP("(" + DIRECTION + ")\\s+(" + TYPE + ")?\\s*(?:signed)?\\s*(" + RANGE + ")?\\s*"
-        "(" + NAMES + ")\\s*(?:[,;][ \\t]*(?:"+ COMMENT + ")?|[ \\t]*(?:"+ COMMENT + ")?\\s*$)");
+    const QRegExp PORT_EXP("(" + PORT_DIRECTION + ")\\s+(" + PORT_TYPE + ")?\\s*(?:signed)?\\s*"
+        "(" + VerilogSyntax::RANGE + ")?\\s*(" + VerilogSyntax::NAMES + ")\\s*"
+        "(?:[,;][ \\t]*(?:"+ VerilogSyntax::COMMENT + ")?|[ \\t]*(?:"+ VerilogSyntax::COMMENT + ")?\\s*$)");
 
-    const QRegExp PORT_1995("(" + DIRECTION + ")\\s+(" + RANGE + ")?\\s*(" + NAMES + ")\\s*[;]"
-        "[ \\t]*(?:"+ COMMENT + ")?");
-
-    const QRegExp MODULE_DECLARATION("module\\s+\\w+\\s*(#\\s*[(][^)]*[)])?\\s*[(]");
+    const QRegExp PORT_1995("(" + PORT_DIRECTION + ")\\s+(" + VerilogSyntax::RANGE + ")?\\s*"
+        "(" + VerilogSyntax::NAMES + ")\\s*[;][ \\t]*(?:"+ VerilogSyntax::COMMENT + ")?");
 }
 
 //-----------------------------------------------------------------------------
@@ -77,9 +75,8 @@ QStringList VerilogPortParser::findPortDeclarations(QString const& input) const
 //-----------------------------------------------------------------------------
 QString VerilogPortParser::findPortsSection(QString const& input) const
 {
-    QRegExp moduleEnd("endmodule", Qt::CaseSensitive);
-
-    bool noValidModule = (MODULE_DECLARATION.indexIn(input) == -1 || moduleEnd.indexIn(input) == -1);
+    bool noValidModule = (VerilogSyntax::MODULE_BEGIN.indexIn(input) == -1 || 
+        VerilogSyntax::MODULE_END.indexIn(input) == -1);
 
     if (noValidModule)
     {
@@ -103,11 +100,16 @@ QString VerilogPortParser::findPortsSection(QString const& input) const
 //-----------------------------------------------------------------------------
 bool VerilogPortParser::hasVerilog1995Ports(QString const& input) const
 {
-    int endOfModuleDeclaration = MODULE_DECLARATION.indexIn(input) + MODULE_DECLARATION.matchedLength();
-
-    bool hasPortsAfterModuleDeclaration = (PORT_1995.indexIn(input, endOfModuleDeclaration) != -1);
-
+    bool hasPortsAfterModuleDeclaration = (PORT_1995.indexIn(input, findEndOfModuleDeclaration(input)) != -1);
     return hasPortsAfterModuleDeclaration;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogPortParser::findEndOfModuleDeclaration()
+//-----------------------------------------------------------------------------
+int VerilogPortParser::findEndOfModuleDeclaration(QString const& input) const
+{
+    return VerilogSyntax::MODULE_BEGIN.indexIn(input) + VerilogSyntax::MODULE_BEGIN.matchedLength();
 }
 
 //-----------------------------------------------------------------------------
@@ -115,10 +117,8 @@ bool VerilogPortParser::hasVerilog1995Ports(QString const& input) const
 //-----------------------------------------------------------------------------
 QString VerilogPortParser::findVerilog1995PortsSectionInModule(QString const& input) const
 {    
-    QRegExp moduleEnd("endmodule", Qt::CaseSensitive);    
-
-    int endOfModuleDeclaration = MODULE_DECLARATION.indexIn(input) + MODULE_DECLARATION.matchedLength();    
-    int endOfModule = moduleEnd.indexIn(input, endOfModuleDeclaration);
+    int endOfModuleDeclaration = findEndOfModuleDeclaration(input);    
+    int endOfModule = VerilogSyntax::MODULE_END.indexIn(input, endOfModuleDeclaration);
 
     QString section = input.mid(endOfModuleDeclaration, endOfModule - endOfModuleDeclaration);
     section = removeCommentLines(section);
@@ -146,7 +146,7 @@ QString VerilogPortParser::findVerilog2001PortsSection(QString const& input) con
 {
     QRegExp portsEnd("[)];");
 
-    int portSectionBegin = MODULE_DECLARATION.indexIn(input) + MODULE_DECLARATION.matchedLength();
+    int portSectionBegin = findEndOfModuleDeclaration(input);
     int portSectionEnd = portsEnd.indexIn(input, portSectionBegin);
 
     int portSectionLength = portSectionEnd - portSectionBegin;
@@ -159,11 +159,11 @@ QString VerilogPortParser::findVerilog2001PortsSection(QString const& input) con
 //-----------------------------------------------------------------------------
 QString VerilogPortParser::removeCommentLines(QString portSection) const
 {
-    QRegExp commentLines("(^|\\r?\\n)[ \\t]*" + COMMENT);
-    QRegExp multilineComments("/\\*.*\\*/");
-    multilineComments.setMinimal(true);
+    QRegExp commentLines("(^|\\r?\\n)[ \\t]*" + VerilogSyntax::COMMENT);
+    QRegExp multilineComment = VerilogSyntax::MULTILINE_COMMENT;
+    multilineComment.setMinimal(true);
 
-    return portSection.remove(commentLines).remove(multilineComments);
+    return portSection.remove(commentLines).remove(multilineComment);
 }
 
 //-----------------------------------------------------------------------------
@@ -189,9 +189,9 @@ QStringList VerilogPortParser::portDeclarationsIn(QString const& portSection) co
 void VerilogPortParser::createPortFromDeclaration(QString const& portDeclaration,
     QSharedPointer<Component> targetComponent) const
 {
-    General::Direction portDirection = parseDirection(portDeclaration);
+    General::Direction direction = parseDirection(portDeclaration);
 
-    QString typeName = PORT_EXP.cap(2);
+    QString type = PORT_EXP.cap(2);
 
     int leftBound = parseLeftBound(portDeclaration);
     int lowerBound = parseRightBound(portDeclaration);
@@ -200,10 +200,9 @@ void VerilogPortParser::createPortFromDeclaration(QString const& portDeclaration
 
     QString description = parseDescription(portDeclaration);
 
-    foreach(QString portName, portNames)
+    foreach(QString name, portNames)
     {
-        QSharedPointer<Port> port(new Port(portName, portDirection, leftBound, lowerBound, typeName, 
-            "", "", description));
+        QSharedPointer<Port> port(new Port(name, direction, leftBound, lowerBound, type, "", "", description));
         targetComponent->addPort(port);
     }
 }

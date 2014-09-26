@@ -72,6 +72,15 @@ private:
      *      @return True, if Verilog-1995 style ports are found, otherwise false.
      */
     bool hasVerilog1995Ports(QString const& input) const;
+    
+    /*!
+     *  Finds the end of module declaration in given input.
+     *
+     *      @param [in] input   The input to search for module declaration end.
+     *
+     *      @return The character index in the input for the end of module declaration.
+     */
+    int findEndOfModuleDeclaration(QString const& input) const;
 
     /*!
      *  Finds the section in the input containing all Verilog-1995 style ports.

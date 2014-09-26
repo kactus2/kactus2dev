@@ -26,6 +26,8 @@ public:
 
     private slots:
         void init();
+
+        // Test cases:
         void testNothingIsParsedFromMalformedInput();
         void testNothingIsParsedFromMalformedInput_data();
 
@@ -35,21 +37,28 @@ public:
         void testVerilog1995PortIsParsed();
         void testVerilog1995PortIsParsed_data();
 
-        void testMultipleVerilog2001PortsAreParsed();
-        void testMultipleVerilog2001PortsAreParsed_data();
+        void testMultiplePortsAreParsed();
+        void testMultiplePortsAreParsed_data();
 
         void testMultipleVerilog1995PortsAreParsed();
         void testMultipleVerilog1995PortsAreParsed_data();
 
+        void testPortsInSubmodulesAreNotParsed();
+        void testPortsInSubmodulesAreNotParsed_data();
+
 private:
 
-    void runParser(QString const& input);
-   
+    void runParser(QString const& input);   
+
     QSharedPointer<Component> importComponent_;
 };
 
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogPortParser::tst_VerilogPortParser()
+//-----------------------------------------------------------------------------
 tst_VerilogPortParser::tst_VerilogPortParser(): importComponent_(new Component())
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -105,6 +114,13 @@ void tst_VerilogPortParser::testNothingIsParsedFromMalformedInput_data()
         ");\n"
         "endmodule";
 
+
+    QTest::newRow("Illegal characters in port name") <<
+        "module test (\n"
+        "    input data%for\n"
+        ");\n"
+        "endmodule";
+
     QTest::newRow("Typed 1995-style port") <<
         "module test (data);\n"
         "    output reg data;\n"
@@ -116,6 +132,11 @@ void tst_VerilogPortParser::testNothingIsParsedFromMalformedInput_data()
         "    output wire signed [2:0] data; // 2's complement data.\n"
         "\n"
         "endmodule";
+
+    QTest::newRow("Port after endmodule") <<
+        "module test (data);\n"
+        "endmodule\n"
+        "    input data;";
 
 }
 
@@ -324,23 +345,23 @@ void tst_VerilogPortParser::testVerilog1995PortIsParsed_data()
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogPortParser::testMultiplePortsAreParsed()
 //-----------------------------------------------------------------------------
-void tst_VerilogPortParser::testMultipleVerilog2001PortsAreParsed()
+void tst_VerilogPortParser::testMultiplePortsAreParsed()
 {
     QFETCH(QString, input);
-    QFETCH(int, expectedPortCount);
+    QFETCH(QStringList, expectedPorts);
 
     runParser(input);
 
-    QCOMPARE(importComponent_->getPorts().count(), expectedPortCount);
+    QCOMPARE(importComponent_->getPortNames(), expectedPorts);
 }
 
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogPortParser::testMultiplePortsAreParsed_data()
 //-----------------------------------------------------------------------------
-void tst_VerilogPortParser::testMultipleVerilog2001PortsAreParsed_data()
+void tst_VerilogPortParser::testMultiplePortsAreParsed_data()
 {
     QTest::addColumn<QString>("input");
-    QTest::addColumn<int>("expectedPortCount");
+    QTest::addColumn<QStringList>("expectedPorts");
 
     QTest::newRow("Three basic ports") <<
         "module test (\n"
@@ -349,7 +370,7 @@ void tst_VerilogPortParser::testMultipleVerilog2001PortsAreParsed_data()
         "    output reg [7:0] data\n"
         ");\n"
         "endmodule"
-        << 3;
+        << QString("clk, rst_n, data").split(", ");
 
     QTest::newRow("Comments among ports") <<
         "module test ( // Ports are declared here.\n"
@@ -359,7 +380,7 @@ void tst_VerilogPortParser::testMultipleVerilog2001PortsAreParsed_data()
         "    // End ports.\n"
         ");\n"
         "endmodule" 
-        << 2;
+        << QString("clk, rst_n").split(", ");
 
     QTest::newRow("Multiple declarations at once") <<
         "module test (\n"
@@ -367,7 +388,7 @@ void tst_VerilogPortParser::testMultipleVerilog2001PortsAreParsed_data()
         "    output full, ack\n" 
         ");\n"
         "endmodule"
-        << 5;
+        << QString("clk, rst_n, enable, full, ack").split(", ");
 
     // TODO: Syntactical error. What is the correct behavior?
     QTest::newRow("last port with tailing colon") << 
@@ -377,7 +398,7 @@ void tst_VerilogPortParser::testMultipleVerilog2001PortsAreParsed_data()
         "    input enable,\n"
         ");\n"
         "endmodule"
-        << 3;
+        << QString("clk, rst, enable").split(", ");
 
     QTest::newRow("Commented out ports") << 
         "module test(\n"
@@ -386,7 +407,7 @@ void tst_VerilogPortParser::testMultipleVerilog2001PortsAreParsed_data()
         "    input enable\n"
         ");\n"
         "endmodule"
-        << 1;
+        << QString("enable").split(", ");
 
     QTest::newRow("Commented out ports using multiline comment") << 
         "module test(\n"
@@ -399,7 +420,7 @@ void tst_VerilogPortParser::testMultipleVerilog2001PortsAreParsed_data()
         "    input enable \n"
         ");\n"
         "endmodule"
-        << 3;
+        << QString("clk, rst, enable").split(", ");
 }
 
 
@@ -408,7 +429,7 @@ void tst_VerilogPortParser::testMultipleVerilog2001PortsAreParsed_data()
 //-----------------------------------------------------------------------------
 void tst_VerilogPortParser::testMultipleVerilog1995PortsAreParsed()
 {
-    testMultipleVerilog2001PortsAreParsed();
+    testMultiplePortsAreParsed();
 }
 
 //-----------------------------------------------------------------------------
@@ -417,7 +438,7 @@ void tst_VerilogPortParser::testMultipleVerilog1995PortsAreParsed()
 void tst_VerilogPortParser::testMultipleVerilog1995PortsAreParsed_data()
 {
     QTest::addColumn<QString>("input");
-    QTest::addColumn<int>("expectedPortCount");
+    QTest::addColumn<QStringList>("expectedPorts");
 
     QTest::newRow("Three basic ports") <<
         "module test (clk, rst_n, data);\n"
@@ -426,7 +447,7 @@ void tst_VerilogPortParser::testMultipleVerilog1995PortsAreParsed_data()
         "    output [7:0] data;\n"
         "\n"
         "endmodule"
-        << 3;
+        << QString("clk, rst_n, data").split(", ");
     
     QTest::newRow("Comments among ports") <<
         "module test ( // Ports are declared here.\n"
@@ -439,7 +460,7 @@ void tst_VerilogPortParser::testMultipleVerilog1995PortsAreParsed_data()
         "    // End ports.\n"
         "\n"
         "endmodule" 
-        << 2;
+        << QString("clk, rst_n").split(", ");
     
     QTest::newRow("Multiple declarations at once") <<
         "module test (clk, rst_n, enable, full, ack);\n"
@@ -447,7 +468,7 @@ void tst_VerilogPortParser::testMultipleVerilog1995PortsAreParsed_data()
         "    output full, ack;\n" 
         "\n"
         "endmodule"
-        << 5;
+        << QString("clk, rst_n, enable, full, ack").split(", ");
 
     QTest::newRow("last port without tailing semicolon") << 
         "module test(clk, rst, enable);\n"
@@ -456,7 +477,7 @@ void tst_VerilogPortParser::testMultipleVerilog1995PortsAreParsed_data()
         "    input enable\n"
         "\n"
         "endmodule"
-        << 2;
+        << QString("clk, rst").split(", ");
 
     QTest::newRow("Commented out ports") << 
         "module test(//clk, rst, \n"
@@ -466,7 +487,7 @@ void tst_VerilogPortParser::testMultipleVerilog1995PortsAreParsed_data()
         "    input enable;\n"
         "\n"
         "endmodule"
-        << 1;
+        << QString("enable").split(", ");
 
     QTest::newRow("Commented out ports using multiline commments") << 
         "module test(clk, rst, /* sim_value, sim_debug, */ enable);\n"
@@ -479,7 +500,98 @@ void tst_VerilogPortParser::testMultipleVerilog1995PortsAreParsed_data()
         "    input enable;\n"
         "\n"
         "endmodule"
-        << 3;    
+        << QString("clk, rst, enable").split(", ");    
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogPortParser::testPortsInSubmodulesAreNotParsed()
+//-----------------------------------------------------------------------------
+void tst_VerilogPortParser::testPortsInSubmodulesAreNotParsed()
+{
+    testMultiplePortsAreParsed();
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogPortParser::testPortsInSubmodulesAreNotParsed()
+//-----------------------------------------------------------------------------
+void tst_VerilogPortParser::testPortsInSubmodulesAreNotParsed_data()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QStringList>("expectedPorts");
+
+    QTest::newRow("Instantiation of submodule") <<
+        "module tb_half_adder();\n"
+        "    wire A;\n"
+        "    wire B;\n"
+        "    wire result_out;\n"
+        "    wire carry_out;\n"
+        "\n"
+        "    half_adder dut(\n"
+        "        .in1(A),\n"
+        "        .in2(B),\n"
+        "        .sum(result_out),\n"
+        "        .carry(carry_out)\n"
+        "    );\n"    
+        "// ... \n"
+        "\n"
+        "endmodule"
+        << QStringList();
+
+    QTest::newRow("Instantiation of multiple submodules") <<
+        "module full_adder(\n"
+        "    input A, B, carry_in,\n"
+        "    output sum, carry_out\n"
+        ");\n"                
+        "    wire ha1_ha2_sum;\n"
+        "    wire c1;\n"
+        "    wire c2;\n"
+        "\n"
+        "    half_adder ha1(\n"
+        "        .in1(A),\n"
+        "        .in2(B),\n"
+        "        .sum(ha1_ha2_sum),\n"
+        "        .carry(c1)\n"
+        "    );\n"    
+        "\n"
+        "    half_adder ha2(\n"
+        "        .in1(ha1_ha2_sum),\n"
+        "        .in2(carry_in),\n"
+        "        .sum(sum),\n"
+        "        .carry(c2)\n"
+        "    );\n"   
+        "\n"
+        "    or (carry_out, c1, c2);"
+        "\n"
+        "endmodule"
+        << QString("A, B, carry_in, sum, carry_out").split(", ");
+
+    QTest::newRow("Instantiation of multiple submodules using 1995 style module") <<
+        "module full_adder(A, B, carry_in, sum, carry_out);\n"                
+        "    input A, B, carry_in;\n"
+        "    output sum, carry_out;\n"
+        "\n"
+        "    wire ha1_ha2_sum;\n"
+        "    wire c1;\n"
+        "    wire c2;\n"
+        "\n"
+        "    half_adder ha1(\n"
+        "        .in1(A),\n"
+        "        .in2(B),\n"
+        "        .sum(ha1_ha2_sum),\n"
+        "        .carry(c1)\n"
+        "    );\n"    
+        "\n"
+        "    half_adder ha2(\n"
+        "        .in1(ha1_ha2_sum),\n"
+        "        .in2(carry_in),\n"
+        "        .sum(sum),\n"
+        "        .carry(c2)\n"
+        "    );\n"   
+        "\n"
+        "    or (carry_out, c1, c2);"
+        "\n"
+        "endmodule"
+        << QString("A, B, carry_in, sum, carry_out").split(", ");
 }
 
 QTEST_APPLESS_MAIN(tst_VerilogPortParser)
