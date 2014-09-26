@@ -16,6 +16,8 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/port.h>
 
+#include <common/KactusColors.h>
+
 #include <QString>
 #include <QRegExp>
 
@@ -25,17 +27,17 @@ namespace
     const QString PORT_TYPE("wire|reg|integer|time|tri|tri0|tri1|triand|trior|trireg|supply0|supply1|wand|wor");
 
     const QRegExp PORT_EXP("(" + PORT_DIRECTION + ")\\s+(" + PORT_TYPE + ")?\\s*(?:signed)?\\s*"
-        "(" + VerilogSyntax::RANGE + ")?\\s*(" + VerilogSyntax::NAMES + ")\\s*"
-        "(?:[,;][ \\t]*(?:"+ VerilogSyntax::COMMENT + ")?|[ \\t]*(?:"+ VerilogSyntax::COMMENT + ")?\\s*$)");
+        "(" + VerilogSyntax::RANGE + ")?\\s*(" + VerilogSyntax::NAMES + ")"
+        "(?:\\s*[,;][ \\t]*(?:"+ VerilogSyntax::COMMENT + ")?|(?:[ \\t]*"+ VerilogSyntax::COMMENT + ")?(?=\\s*$))");
 
     const QRegExp PORT_1995("(" + PORT_DIRECTION + ")\\s+(" + VerilogSyntax::RANGE + ")?\\s*"
-        "(" + VerilogSyntax::NAMES + ")\\s*[;][ \\t]*(?:"+ VerilogSyntax::COMMENT + ")?");
+        "(" + VerilogSyntax::NAMES + ")\\s*[;](?:[ \\t]*"+ VerilogSyntax::COMMENT + ")?");
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogPortParser::VerilogPortParser()
 //-----------------------------------------------------------------------------
-VerilogPortParser::VerilogPortParser()
+VerilogPortParser::VerilogPortParser(): highlighter_(0)
 {
 
 }
@@ -56,7 +58,16 @@ void VerilogPortParser::runParser(QString const& input, QSharedPointer<Component
     foreach(QString portDeclaration, findPortDeclarations(input))
     {
         createPortFromDeclaration(portDeclaration, targetComponent);
+        highlight(portDeclaration);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogPortParser::setHighlighter()
+//-----------------------------------------------------------------------------
+void VerilogPortParser::setHighlighter(Highlighter* highlighter)
+{
+    highlighter_ = highlighter;
 }
 
 //-----------------------------------------------------------------------------
@@ -203,6 +214,17 @@ void VerilogPortParser::createPortFromDeclaration(QString const& portDeclaration
     {
         QSharedPointer<Port> port(new Port(name, direction, leftBound, lowerBound, type, "", "", description));
         targetComponent->addPort(port);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogPortParser::highlight()
+//-----------------------------------------------------------------------------
+void VerilogPortParser::highlight(QString const& portDeclaration)
+{
+    if (highlighter_)
+    {
+        highlighter_->applyHighlight(portDeclaration, KactusColors::SW_COMPONENT);
     }
 }
 

@@ -18,7 +18,7 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::VerilogImporter()
 //-----------------------------------------------------------------------------
-VerilogImporter::VerilogImporter()
+VerilogImporter::VerilogImporter(): portParser_(), highlighter_(0)
 {
 
 }
@@ -35,7 +35,16 @@ VerilogImporter::~VerilogImporter()
 // Function: VerilogImporter::runParser()
 //-----------------------------------------------------------------------------
 void VerilogImporter::runParser(QString const& input, QSharedPointer<Component> targetComponent)
-{
-   
+{   
+    portParser_.runParser(input, targetComponent);
+}
 
+//-----------------------------------------------------------------------------
+// Function: VerilogImporter::setHighlighter()
+//-----------------------------------------------------------------------------
+void VerilogImporter::setHighlighter(Highlighter* highlighter)
+{
+    highlighter_ = highlighter;
+
+    portParser_.setHighlighter(highlighter);
 }

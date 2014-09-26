@@ -29,7 +29,7 @@ namespace VerilogSyntax
     const QString COMMENT("//[ \\t]*([^\\r\\n]*)(?=\\r?\\n|$)");
 
     //! Single-line comments.
-    const QRegExp COMMENTLINE("(^|\\r?\\n)[ \\t]*" + VerilogSyntax::COMMENT);
+    const QRegExp COMMENTLINE("(^|\\r?\\n)[ \\t]*" + COMMENT);
 
     //! Multiline comments.
     const QRegExp MULTILINE_COMMENT("/\\*.*\\*/");    

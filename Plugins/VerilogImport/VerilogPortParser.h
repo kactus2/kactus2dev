@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
+
 #include <QSharedPointer>
 #include <QString>
 
@@ -22,7 +24,7 @@ class Component;
 //-----------------------------------------------------------------------------
 //! Parser for Verilog ports.
 //-----------------------------------------------------------------------------
-class VerilogPortParser
+class VerilogPortParser: public HighlightSource
 {
 public:
 
@@ -39,6 +41,8 @@ public:
      *      @param [in] targetComponent     The component to add all the imported ports to.
      */
     virtual void runParser(QString const& input, QSharedPointer<Component> targetComponent);
+
+    virtual void setHighlighter(Highlighter* highlighter);
 
 private:
 
@@ -128,6 +132,8 @@ private:
     void createPortFromDeclaration(QString const& portDeclaration, 
         QSharedPointer<Component> targetComponent) const;    
 
+    void highlight(QString const& portDeclaration);
+
     /*!
      *  Parses the port direction from a Verilog port declaration.
      *
@@ -175,6 +181,7 @@ private:
      */
     QString parseDescription(QString const& portDeclaration) const;
     
+    Highlighter* highlighter_;
 };
 
 #endif // VERILOGPORTPARSER_H

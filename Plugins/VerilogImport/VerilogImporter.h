@@ -14,12 +14,16 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include "VerilogPortParser.h"
+
+#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
+
 #include <QSharedPointer>
 #include <QString>
 
 class Component;
 
-class VerilogImporter
+class VerilogImporter: public HighlightSource
 {
 public:
 
@@ -31,13 +35,18 @@ public:
 
     virtual void runParser(QString const& input, QSharedPointer<Component> targetComponent);
 
+    virtual void setHighlighter(Highlighter* highlighter);
 
 private:
 
 	// Disable copying.
 	VerilogImporter(VerilogImporter const& rhs);
 	VerilogImporter& operator=(VerilogImporter const& rhs);
+    
 
+    VerilogPortParser portParser_;
+
+    Highlighter* highlighter_;
 };
 
 #endif // VERILOGIMPORTER_H
