@@ -25,9 +25,12 @@ namespace VerilogSyntax
      */
     const QString NAMES("[a-zA-Z0-9_$]+(?:\\s*[,]\\s*[a-zA-Z0-9_$]+)*");
 
-    //! Pattern for single-line comments.
+    //! Pattern for comments.
     const QString COMMENT("//[ \\t]*([^\\r\\n]*)(?=\\r?\\n|$)");
 
-    //! Pattern for multiline comments.
+    //! Single-line comments.
+    const QRegExp COMMENTLINE("(^|\\r?\\n)[ \\t]*" + VerilogSyntax::COMMENT);
+
+    //! Multiline comments.
     const QRegExp MULTILINE_COMMENT("/\\*.*\\*/");    
 }

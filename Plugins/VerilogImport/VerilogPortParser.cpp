@@ -158,12 +158,11 @@ QString VerilogPortParser::findVerilog2001PortsSection(QString const& input) con
 // Function: VerilogPortParser::removeCommentLines()
 //-----------------------------------------------------------------------------
 QString VerilogPortParser::removeCommentLines(QString portSection) const
-{
-    QRegExp commentLines("(^|\\r?\\n)[ \\t]*" + VerilogSyntax::COMMENT);
+{    
     QRegExp multilineComment = VerilogSyntax::MULTILINE_COMMENT;
     multilineComment.setMinimal(true);
 
-    return portSection.remove(commentLines).remove(multilineComment);
+    return portSection.remove(VerilogSyntax::COMMENTLINE).remove(multilineComment);
 }
 
 //-----------------------------------------------------------------------------
