@@ -13,7 +13,7 @@
 
 #include "VhdlSyntax.h"
 
-#include <common/KactusColors.h>
+#include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/model.h>
@@ -59,7 +59,7 @@ void VHDLGenericParser::runParser(QString const& input, QSharedPointer<Component
         createModelParameterFromDeclaration(declaration, targetComponent);
         if (highlighter_)
         {
-            highlighter_->applyHighlight(declaration, KactusColors::HW_BUS_COMPONENT);
+            highlighter_->applyHighlight(declaration, ImportColors::MODELPARAMETER);
         }        
     }
 }

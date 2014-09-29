@@ -13,6 +13,8 @@
 
 #include "VerilogSyntax.h"
 
+#include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
+
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/port.h>
 
@@ -224,7 +226,7 @@ void VerilogPortParser::highlight(QString const& portDeclaration)
 {
     if (highlighter_)
     {
-        highlighter_->applyHighlight(portDeclaration, KactusColors::SW_COMPONENT);
+        highlighter_->applyHighlight(portDeclaration, ImportColors::PORT);
     }
 }
 

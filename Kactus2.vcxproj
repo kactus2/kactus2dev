@@ -1616,6 +1616,7 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp"</Command>
     </CustomBuild>
+    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ImportColors.h" />
     <ClInclude Include="wizards\ComponentWizard\ImportEditor\ModelParameterEditorAdapter.h" />
     <ClInclude Include="wizards\ComponentWizard\ImportEditor\PortEditorAdapter.h" />
     <CustomBuild Include="wizards\ComponentWizard\ImportRunner.h">

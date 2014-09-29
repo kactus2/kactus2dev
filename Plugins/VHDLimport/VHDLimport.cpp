@@ -15,7 +15,7 @@
 #include <QRegExp>
 #include <QList>
 
-#include <common/KactusColors.h>
+#include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/modelparameter.h>
@@ -365,7 +365,7 @@ void VHDLimport::highlightArchitecture(QRegExp const& architectureExp) const
     if (highlighter_)
     {
         highlighter_->applyFontColor(architectureExp.cap(0), QColor("black"));
-        highlighter_->applyHighlight(architectureExp.cap(1), KactusColors::REGISTER_COLOR);
+        highlighter_->applyHighlight(architectureExp.cap(1), ImportColors::VIEWNAME);
     }
 }
 
@@ -394,7 +394,7 @@ void VHDLimport::highlightConfiguration(QRegExp const& configurationExp) const
     if (highlighter_)
     {
         highlighter_->applyFontColor(configurationExp.cap(0), QColor("black"));
-        highlighter_->applyHighlight(configurationExp.cap(2), KactusColors::REGISTER_COLOR);
+        highlighter_->applyHighlight(configurationExp.cap(2), ImportColors::VIEWNAME);
     }
 }
 

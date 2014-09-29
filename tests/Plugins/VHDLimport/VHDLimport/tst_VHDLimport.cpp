@@ -16,9 +16,8 @@
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
-#include <common/KactusColors.h>
-
 #include <Plugins/VHDLimport/VHDLimport.h>
+#include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
 #include <wizards/ComponentWizard/ImportEditor/ImportHighlighter.h>
 
@@ -236,12 +235,10 @@ void tst_VHDLimport::testPortIsHighlighted()
     runParser(fileContent);
 
     int begin = fileContent.indexOf(portDeclaration);
-    
-
-    QColor selectedColor = KactusColors::SW_COMPONENT;
-    verifyNotHighlightedBeforeDeclaration(begin, selectedColor);
-    verifyDeclarationIsHighlighted(begin, portDeclaration.length(), selectedColor);
-    verifyNotHighlightedAfterDeclartion(begin, portDeclaration.length(), selectedColor);
+        
+    verifyNotHighlightedBeforeDeclaration(begin, ImportColors::PORT);
+    verifyDeclarationIsHighlighted(begin, portDeclaration.length(), ImportColors::PORT);
+    verifyNotHighlightedAfterDeclartion(begin, portDeclaration.length(), ImportColors::PORT);
 }
 
 //-----------------------------------------------------------------------------
@@ -374,10 +371,9 @@ void tst_VHDLimport::testGenericIsHighlighted()
 
     runParser(fileContent);
 
-    QColor selectedColor = KactusColors::HW_BUS_COMPONENT;
-    verifyNotHighlightedBeforeDeclaration(declarationStartIndex, selectedColor);
-    verifyDeclarationIsHighlighted(declarationStartIndex, declarationLength, selectedColor);
-    verifyNotHighlightedAfterDeclartion(declarationStartIndex, declarationLength, selectedColor);
+    verifyNotHighlightedBeforeDeclaration(declarationStartIndex, ImportColors::MODELPARAMETER);
+    verifyDeclarationIsHighlighted(declarationStartIndex, declarationLength, ImportColors::MODELPARAMETER);
+    verifyNotHighlightedAfterDeclartion(declarationStartIndex, declarationLength, ImportColors::MODELPARAMETER);
 }
 
 //-----------------------------------------------------------------------------
@@ -598,8 +594,7 @@ void tst_VHDLimport::testModelParameterChangeAppliesToPort()
 
     QCOMPARE(createdPort->getPortSize(), 8);
 
-    QSharedPointer<ModelParameter> createdGeneric = 
-        importComponent_->getModelParameters().first();
+    QSharedPointer<ModelParameter> createdGeneric = importComponent_->getModelParameters().first();
     createdGeneric->setValue("16");
 
     parser_.onModelParameterChanged(createdGeneric);
@@ -720,7 +715,7 @@ void tst_VHDLimport::testModelNameAndEnvironmentIsImportedToView()
 
     verifySectionFontColorIs(fileContent.indexOf(architecture), architecture.length(), QColor("black"));
     verifyDeclarationIsHighlighted(fileContent.indexOf(modelNameSection), modelNameSection.length(), 
-        KactusColors::REGISTER_COLOR);    
+        ImportColors::VIEWNAME);    
 }
 
 //-----------------------------------------------------------------------------
@@ -759,7 +754,7 @@ void tst_VHDLimport::testArchitecturePrecedesConfigurationForModelName()
 
     verifySectionFontColorIs(fileContent.indexOf(architecture), architecture.length(), QColor("black"));
     verifyDeclarationIsHighlighted(fileContent.indexOf(modelNameSection), modelNameSection.length(), 
-        KactusColors::REGISTER_COLOR);    
+        ImportColors::VIEWNAME);    
 }
 
 //-----------------------------------------------------------------------------
@@ -787,7 +782,7 @@ void tst_VHDLimport::testConfigurationIsImportedToViewIfNoArchitectureAvailable(
 
     verifySectionFontColorIs(fileContent.indexOf(configuration), configuration.length(), QColor("black"));
     verifyDeclarationIsHighlighted(fileContent.indexOf(modelNameSection), modelNameSection.length(), 
-        KactusColors::REGISTER_COLOR);    
+        ImportColors::VIEWNAME);    
 }
 
 QTEST_MAIN(tst_VHDLimport)

@@ -5432,6 +5432,9 @@
     <ClInclude Include="wizards\ComponentWizard\ImportEditor\ModelParameterEditorAdapter.h">
       <Filter>Header Files\wizards\ComponentWizard\ImportEditor</Filter>
     </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ImportColors.h">
+      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="executable\Kactus2_d.exe">
