@@ -37,14 +37,25 @@ ImportHighlighter::~ImportHighlighter()
 void ImportHighlighter::applyHighlight(QString const& text, QColor const& highlightColor)
 {
     int beginIndex = display_->toPlainText().indexOf(text);
-    if (beginIndex != -1)
+    int endIndex = beginIndex + text.length();
+
+    applyHighlight(beginIndex, endIndex, highlightColor);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ImportHighlighter::applyHighlight()
+//-----------------------------------------------------------------------------
+void ImportHighlighter::applyHighlight(int beginPosition, int endPosition, QColor const& highlightColor)
+{
+    if (beginPosition != -1 && endPosition != -1 && endPosition <= display_->toPlainText().length())
     {
-        QTextCharFormat highlighFormat;
+        QTextCursor cursor = display_->textCursor();
+        cursor.setPosition(beginPosition);
+
+        QTextCharFormat highlighFormat = cursor.charFormat();        
         highlighFormat.setBackground(QBrush(highlightColor));
 
-        QTextCursor cursor = display_->textCursor();
-        cursor.setPosition(beginIndex);
-        cursor.setPosition(beginIndex + text.length(), QTextCursor::KeepAnchor);
+        cursor.setPosition(endPosition, QTextCursor::KeepAnchor);        
         cursor.setCharFormat(highlighFormat);
     }
 }

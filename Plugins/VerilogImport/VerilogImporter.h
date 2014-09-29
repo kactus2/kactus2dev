@@ -22,6 +22,7 @@
 #include <QString>
 
 class Component;
+class View;
 
 class VerilogImporter: public HighlightSource
 {
@@ -42,8 +43,13 @@ private:
 	// Disable copying.
 	VerilogImporter(VerilogImporter const& rhs);
 	VerilogImporter& operator=(VerilogImporter const& rhs);
+
     void highlightModule(QString const& input);
 
+    void importModelName(QString const& input, QSharedPointer<Component> targetComponent);
+   
+    View* findOrCreateFlatView(QSharedPointer<Component> targetComponent) const;
+    void setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Component> targetComponent) const;
 
     VerilogPortParser portParser_;
 

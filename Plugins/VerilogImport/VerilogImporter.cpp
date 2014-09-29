@@ -14,6 +14,7 @@
 #include "VerilogSyntax.h"
 
 #include <IPXACTmodels/component.h>
+#include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
 #include <QString>
 
@@ -40,6 +41,9 @@ void VerilogImporter::runParser(QString const& input, QSharedPointer<Component> 
 {   
     highlightModule(input);
     portParser_.runParser(input, targetComponent);
+    importModelName(input, targetComponent);
+    setLanguageAndEnvironmentalIdentifiers(targetComponent);
+    
 }
 
 //-----------------------------------------------------------------------------
@@ -65,4 +69,69 @@ void VerilogImporter::highlightModule(QString const& input)
         highlighter_->applyFontColor(input, QColor("gray"));
         highlighter_->applyFontColor(input.mid(moduleBegin, moduleEnd  - moduleBegin), QColor("black"));
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogImporter::importModelName()
+//-----------------------------------------------------------------------------
+void VerilogImporter::importModelName(QString const& input, QSharedPointer<Component> targetComponent)
+{
+    int moduleBegin = VerilogSyntax::MODULE_BEGIN.indexIn(input);
+    if (moduleBegin != -1)
+    {
+        QString modelName = VerilogSyntax::MODULE_BEGIN.cap(1);
+
+        View* flatView = findOrCreateFlatView(targetComponent);
+        flatView->setModelName(modelName);
+
+        if (highlighter_)
+        {
+            int modelNameBegin = input.indexOf(modelName, moduleBegin);
+            int modelNameEnd = modelNameBegin + modelName.length();
+            highlighter_->applyHighlight(modelNameBegin, modelNameEnd, ImportColors::VIEWNAME);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogImporter::findOrCreateFlatView()
+//-----------------------------------------------------------------------------
+View* VerilogImporter::findOrCreateFlatView(QSharedPointer<Component> targetComponent) const
+{
+    QStringList flatViews = targetComponent->getFlatViews();
+    if (flatViews.isEmpty())
+    {
+        targetComponent->createEmptyFlatView();
+        flatViews = targetComponent->getFlatViews();
+    }
+
+    return targetComponent->findView(flatViews.first());
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogImporter::setLanguageAndEnvironmentalIdentifiers()
+//-----------------------------------------------------------------------------
+void VerilogImporter::setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Component> targetComponent) const
+{
+    View* flatView = findOrCreateFlatView(targetComponent);
+    flatView->setLanguage("verilog");
+
+    QString createdEnvIdentifier = "verilog:Kactus2:";
+
+    QStringList envIdentifiers = flatView->getEnvIdentifiers();
+
+    if (envIdentifiers.isEmpty())
+    {
+        envIdentifiers.append(createdEnvIdentifier);
+    }
+    else if (envIdentifiers.first() == "::")
+    {
+        envIdentifiers.first() = createdEnvIdentifier;
+    }
+    else if (!envIdentifiers.contains(createdEnvIdentifier, Qt::CaseInsensitive))
+    {
+        envIdentifiers.append(createdEnvIdentifier);
+    }     
+
+    flatView->setEnvIdentifiers(envIdentifiers);
 }

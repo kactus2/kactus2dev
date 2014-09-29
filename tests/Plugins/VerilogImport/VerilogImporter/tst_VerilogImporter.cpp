@@ -15,12 +15,14 @@
 #include <QPlainTextEdit>
 
 #include <Plugins/VerilogImport/VerilogImporter.h>
+#include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
 #include <IPXACTmodels/component.h>
 
 #include <common/KactusColors.h>
 
 #include <wizards/ComponentWizard/ImportEditor/ImportHighlighter.h>
+
 
 class tst_VerilogImporter : public QObject
 {
@@ -40,6 +42,9 @@ private slots:
     void testModuleIsHighlighted();
     void testModuleIsHighlighted_data();
 
+    void testModelNameAndEnvironmentIsImportedToView();
+    void testModelNameAndEnvironmentIsImportedToView_data();
+
 private:
 
     void runParser(QString const& input);
@@ -52,6 +57,7 @@ private:
         const int declarationLength, QColor const& highlightColor) const;
 
     void verifySectionFontColorIs(int startIndex, int endIndex, QColor const& expectedFontColor);
+   
 
     QSharedPointer<Component> importComponent_;
 
@@ -122,11 +128,10 @@ void tst_VerilogImporter::testPortIsHighlighted()
     QVERIFY2(importComponent_->getPorts().count() != 0, "No ports parsed from input.");
 
     int begin = fileContent.indexOf(portDeclaration);
-
-    QColor selectedColor = KactusColors::SW_COMPONENT;
-    verifyNotHighlightedBeforeDeclaration(begin, selectedColor);
-    verifyDeclarationIsHighlighted(begin, portDeclaration.length(), selectedColor);
-    verifyNotHighlightedAfterDeclartion(begin, portDeclaration.length(), selectedColor);
+    
+    verifyNotHighlightedBeforeDeclaration(begin, ImportColors::PORT);
+    verifyDeclarationIsHighlighted(begin, portDeclaration.length(), ImportColors::PORT);
+    verifyNotHighlightedAfterDeclartion(begin, portDeclaration.length(), ImportColors::PORT);
 }
 
 //-----------------------------------------------------------------------------
@@ -330,7 +335,7 @@ void tst_VerilogImporter::testModuleIsHighlighted_data()
         "endmodule\n";
 
     QTest::newRow("Ports and parameters") <<
-        "// File header.\n"
+        "// File header for half_adder.\n"
         "module half_adder(\n"        
         "    // inputs:\n"
         "    input bit1,\n"
@@ -378,6 +383,57 @@ void tst_VerilogImporter::verifySectionFontColorIs(int startIndex, int endIndex,
             QFAIL(erroMessage.toLocal8Bit());
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testModelNameAndEnvironmentIsImportedToView()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testModelNameAndEnvironmentIsImportedToView()
+{
+    QFETCH(QString, fileContent);
+    QFETCH(QString, modelName);
+
+    runParser(fileContent);
+
+    QVERIFY2(importComponent_->hasView("flat"), "No view 'flat' found in component.");
+
+    QCOMPARE(importComponent_->getViews().first()->getModelName(), modelName);
+    QCOMPARE(importComponent_->getViews().first()->getLanguage(), QString("verilog"));
+    QCOMPARE(importComponent_->getViews().first()->getEnvIdentifiers().first(), QString("verilog:Kactus2:"));
+
+    verifyDeclarationIsHighlighted(fileContent.lastIndexOf(modelName), modelName.length(), ImportColors::VIEWNAME);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testModelNameAndEnvironmentIsImportedToView_data()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testModelNameAndEnvironmentIsImportedToView_data()
+{
+    QTest::addColumn<QString>("fileContent");
+    QTest::addColumn<QString>("modelName");
+
+    QTest::newRow("Empty module") <<
+        "module basic();\n"
+        "endmodule\n"
+        <<
+        "basic";
+    
+    QTest::newRow("Ports and parameters") <<
+        "// File header for half_adder.\n"
+        "module half_adder(\n"        
+        "    // inputs:\n"
+        "    input bit1,\n"
+        "    input bit2,\n"
+        "    // outputs:\n"
+        "    output sum,\n"
+        "    output carry\n"
+        ");\n"
+        "    xor(sum, bit1, bit2);\n"
+        "    and(carry, bit1, bit2);\n"
+        "endmodule\n"
+        "\n"
+        <<
+        "half_adder";
 }
 
 QTEST_MAIN(tst_VerilogImporter)
