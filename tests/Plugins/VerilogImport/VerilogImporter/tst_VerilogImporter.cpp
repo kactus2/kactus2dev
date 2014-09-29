@@ -37,6 +37,9 @@ private slots:
     void testPortIsHighlighted();
     void testPortIsHighlighted_data();
 
+    void testModuleIsHighlighted();
+    void testModuleIsHighlighted_data();
+
 private:
 
     void runParser(QString const& input);
@@ -47,6 +50,8 @@ private:
         const int declarationLength, QColor const& expectedHighlight) const;
     void verifyNotHighlightedAfterDeclartion(const int declarationStartIndex, 
         const int declarationLength, QColor const& highlightColor) const;
+
+    void verifySectionFontColorIs(int startIndex, int endIndex, QColor const& expectedFontColor);
 
     QSharedPointer<Component> importComponent_;
 
@@ -66,6 +71,7 @@ tst_VerilogImporter::tst_VerilogImporter(): importComponent_(new Component()), d
 void tst_VerilogImporter::init()
 {
     importComponent_ = QSharedPointer<Component>(new Component());
+    displayEditor_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -280,6 +286,98 @@ void tst_VerilogImporter::verifyNotHighlightedAfterDeclartion(const int declarat
     QColor appliedColor = cursor.charFormat().background().color();
 
     QVERIFY2(appliedColor != highlightColor, "Highlight applied after declaration.");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testModuleIsHighlighted()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testModuleIsHighlighted()
+{
+    QFETCH(QString, fileContent);
+    QFETCH(QString, module);
+
+    runParser(fileContent);
+
+    int begin = fileContent.indexOf(module);
+
+    verifySectionFontColorIs(1, begin, QColor("gray"));
+    verifySectionFontColorIs(begin, module.length(), QColor("black"));
+    verifySectionFontColorIs(begin +  module.length(), fileContent.length(), QColor("gray"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testModuleIsHighlighted_data()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testModuleIsHighlighted_data()
+{
+    QTest::addColumn<QString>("fileContent");
+    QTest::addColumn<QString>("module");
+   
+    QTest::newRow("Empty module") <<
+        "module basic();\n"
+        "endmodule\n"
+        <<
+        "module basic();\n"
+        "endmodule\n";
+
+    QTest::newRow("Comment before and after module") <<
+        "// Testbench for another module.\n"
+        "module tb();\n"
+        "endmodule\n"
+        "// Testbench ends here.\n"
+        <<
+        "module tb();\n"
+        "endmodule\n";
+
+    QTest::newRow("Ports and parameters") <<
+        "// File header.\n"
+        "module half_adder(\n"        
+        "    // inputs:\n"
+        "    input bit1,\n"
+        "    input bit2,\n"
+        "    // outputs:\n"
+        "    output sum,\n"
+        "    output carry\n"
+        ");\n"
+        "    xor(sum, bit1, bit2);\n"
+        "    and(carry, bit1, bit2);\n"
+        "endmodule\n"
+        "\n"
+        <<
+        "module half_adder(\n"        
+        "    // inputs:\n"
+        "    input bit1,\n"
+        "    input bit2,\n"
+        "    // outputs:\n"
+        "    output sum,\n"
+        "    output carry\n"
+        ");\n"
+        "    xor(sum, bit1, bit2);\n"
+        "    and(carry, bit1, bit2);\n"
+        "endmodule\n";
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::verifySectionFontColorIs()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::verifySectionFontColorIs(int startIndex, int endIndex, QColor const& expectedFontColor)
+{
+    QTextCursor cursor = displayEditor_.textCursor();
+
+    int sectionLength = endIndex - startIndex;
+
+    for (int i = 0; i < sectionLength; i++)
+    {
+        cursor.setPosition(startIndex + i);
+        QColor fontColor = cursor.charFormat().foreground().color();
+        
+        if (fontColor != expectedFontColor)
+        {
+            QString erroMessage("Font color is " + fontColor.name() +" not " + expectedFontColor.name() + 
+                " as expected after '" + displayEditor_.toPlainText().mid(startIndex, i) + "'");
+            QFAIL(erroMessage.toLocal8Bit());
+        }
+    }
 }
 
 QTEST_MAIN(tst_VerilogImporter)

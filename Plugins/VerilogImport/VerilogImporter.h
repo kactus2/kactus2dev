@@ -42,7 +42,8 @@ private:
 	// Disable copying.
 	VerilogImporter(VerilogImporter const& rhs);
 	VerilogImporter& operator=(VerilogImporter const& rhs);
-    
+    void highlightModule(QString const& input);
+
 
     VerilogPortParser portParser_;
 

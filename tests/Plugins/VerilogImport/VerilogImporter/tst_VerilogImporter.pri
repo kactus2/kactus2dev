@@ -3,7 +3,9 @@
 # ------------------------------------------------------
 
 HEADERS += ../../../../Plugins/VerilogImport/VerilogImporter.h \
-    ../../../../Plugins/VerilogImport/VerilogPortParser.h
-SOURCES += ./tst_VerilogImporter.cpp \
-    ../../../../Plugins/VerilogImport/VerilogImporter.cpp \
-    ../../../../Plugins/VerilogImport/VerilogPortParser.cpp
+    ../../../../Plugins/VerilogImport/VerilogPortParser.h \
+    ../../../../wizards/ComponentWizard/ImportEditor/ImportHighlighter.h
+SOURCES += ../../../../Plugins/VerilogImport/VerilogImporter.cpp \
+    ../../../../Plugins/VerilogImport/VerilogPortParser.cpp \
+    ./tst_VerilogImporter.cpp \
+    ../../../../wizards/ComponentWizard/ImportEditor/ImportHighlighter.cpp
