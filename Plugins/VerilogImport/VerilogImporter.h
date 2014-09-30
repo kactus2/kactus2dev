@@ -17,6 +17,7 @@
 #include "VerilogPortParser.h"
 
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
+#include <Plugins/PluginSystem/ImportPlugin/PortSource.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -24,7 +25,7 @@
 class Component;
 class View;
 
-class VerilogImporter: public HighlightSource
+class VerilogImporter: public PortSource, public HighlightSource
 {
 public:
 
@@ -35,6 +36,8 @@ public:
 	~VerilogImporter();
 
     virtual void runParser(QString const& input, QSharedPointer<Component> targetComponent);
+
+    virtual void setPortVisualizer(PortVisualizer* visualizer);
 
     virtual void setHighlighter(Highlighter* highlighter);
 
@@ -49,7 +52,9 @@ private:
     void importModelName(QString const& input, QSharedPointer<Component> targetComponent);
    
     View* findOrCreateFlatView(QSharedPointer<Component> targetComponent) const;
+    
     void setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Component> targetComponent) const;
+    
 
     VerilogPortParser portParser_;
 

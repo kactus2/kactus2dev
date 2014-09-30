@@ -39,7 +39,7 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: VerilogPortParser::VerilogPortParser()
 //-----------------------------------------------------------------------------
-VerilogPortParser::VerilogPortParser(): highlighter_(0)
+VerilogPortParser::VerilogPortParser(): portVisualizer_(0), highlighter_(0)
 {
 
 }
@@ -62,6 +62,14 @@ void VerilogPortParser::runParser(QString const& input, QSharedPointer<Component
         createPortFromDeclaration(portDeclaration, targetComponent);
         highlight(portDeclaration);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogPortParser::setPortVisualizer()
+//-----------------------------------------------------------------------------
+void VerilogPortParser::setPortVisualizer(PortVisualizer* visualizer)
+{
+    portVisualizer_ = visualizer;
 }
 
 //-----------------------------------------------------------------------------
@@ -162,6 +170,13 @@ QString VerilogPortParser::findVerilog2001PortsSection(QString const& input) con
     int portSectionBegin = findEndOfModuleDeclaration(input);
     int portSectionEnd = portsEnd.indexIn(input, portSectionBegin);
 
+    bool noPortSection = (portSectionBegin == -1 || portSectionEnd == -1);
+
+    if (noPortSection)
+    {
+        return QString();
+    }
+
     int portSectionLength = portSectionEnd - portSectionBegin;
 
     return input.mid(portSectionBegin, portSectionLength);
@@ -215,6 +230,11 @@ void VerilogPortParser::createPortFromDeclaration(QString const& portDeclaration
     foreach(QString name, portNames)
     {
         QSharedPointer<Port> port(new Port(name, direction, leftBound, lowerBound, type, "", "", description));
+       
+        if (portVisualizer_)
+        {
+            portVisualizer_->addPort(port);
+        }
         targetComponent->addPort(port);
     }
 }

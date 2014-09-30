@@ -14,15 +14,12 @@
 #include <QTextCursor>
 #include <QPlainTextEdit>
 
+#include <IPXACTmodels/component.h>
+
 #include <Plugins/VerilogImport/VerilogImporter.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
-#include <IPXACTmodels/component.h>
-
-#include <common/KactusColors.h>
-
 #include <wizards/ComponentWizard/ImportEditor/ImportHighlighter.h>
-
 
 class tst_VerilogImporter : public QObject
 {
@@ -33,6 +30,8 @@ public:
 
 private slots:
     void init();
+
+    //! Test cases:
     void testNothingIsParsedFromMalformedInput();
     void testNothingIsParsedFromMalformedInput_data();
 
@@ -58,7 +57,6 @@ private:
 
     void verifySectionFontColorIs(int startIndex, int endIndex, QColor const& expectedFontColor);
    
-
     QSharedPointer<Component> importComponent_;
 
     QPlainTextEdit displayEditor_;
@@ -66,7 +64,10 @@ private:
     ImportHighlighter* highlighter_;
 };
 
-tst_VerilogImporter::tst_VerilogImporter(): importComponent_(new Component()), displayEditor_(), 
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::tst_VerilogImporter()
+//-----------------------------------------------------------------------------
+tst_VerilogImporter::tst_VerilogImporter(): importComponent_(0), displayEditor_(), 
     highlighter_(new ImportHighlighter(&displayEditor_, this))
 {
 }
@@ -77,7 +78,6 @@ tst_VerilogImporter::tst_VerilogImporter(): importComponent_(new Component()), d
 void tst_VerilogImporter::init()
 {
     importComponent_ = QSharedPointer<Component>(new Component());
-    displayEditor_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -101,6 +101,26 @@ void tst_VerilogImporter::testNothingIsParsedFromMalformedInput_data()
     QTest::addColumn<QString>("input");
 
     QTest::newRow("empty input") << "";
+
+    QTest::newRow("empty module name") <<
+        "module (input clk);\n"
+        "endmodule";
+
+    QTest::newRow("no module ending") <<
+        "module broken(input clk);\n";
+
+    /*
+    QTest::newRow("Commented out module") <<
+        "//module test(input clk);\n"
+        "//endmodule\n";*/
+
+    QTest::newRow("No semicolon after ports") <<
+        "module test (\n"
+        "    input clk,\n"
+        "    input rst\n"
+        ") // Missing semicolon.\n"
+        "endmodule";
+
 }
 
 //-----------------------------------------------------------------------------
@@ -378,9 +398,9 @@ void tst_VerilogImporter::verifySectionFontColorIs(int startIndex, int endIndex,
         
         if (fontColor != expectedFontColor)
         {
-            QString erroMessage("Font color is " + fontColor.name() +" not " + expectedFontColor.name() + 
+            QString errorMessage("Font color is " + fontColor.name() +" not " + expectedFontColor.name() + 
                 " as expected after '" + displayEditor_.toPlainText().mid(startIndex, i) + "'");
-            QFAIL(erroMessage.toLocal8Bit());
+            QFAIL(errorMessage.toLocal8Bit());
         }
     }
 }

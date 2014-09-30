@@ -40,10 +40,19 @@ VerilogImporter::~VerilogImporter()
 void VerilogImporter::runParser(QString const& input, QSharedPointer<Component> targetComponent)
 {   
     highlightModule(input);
+
     portParser_.runParser(input, targetComponent);
+
     importModelName(input, targetComponent);
     setLanguageAndEnvironmentalIdentifiers(targetComponent);
-    
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogImporter::setPortVisualizer()
+//-----------------------------------------------------------------------------
+void VerilogImporter::setPortVisualizer(PortVisualizer* visualizer)
+{
+    portParser_.setPortVisualizer(visualizer);
 }
 
 //-----------------------------------------------------------------------------
@@ -116,22 +125,18 @@ void VerilogImporter::setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Comp
     View* flatView = findOrCreateFlatView(targetComponent);
     flatView->setLanguage("verilog");
 
-    QString createdEnvIdentifier = "verilog:Kactus2:";
+    QString envIdentifierForImport = "verilog:Kactus2:";
 
     QStringList envIdentifiers = flatView->getEnvIdentifiers();
 
-    if (envIdentifiers.isEmpty())
+    if (envIdentifiers.contains("::"))
     {
-        envIdentifiers.append(createdEnvIdentifier);
+        envIdentifiers.replace(envIdentifiers.indexOf("::"), envIdentifierForImport);
     }
-    else if (envIdentifiers.first() == "::")
+    else if (!envIdentifiers.contains(envIdentifierForImport, Qt::CaseInsensitive))
     {
-        envIdentifiers.first() = createdEnvIdentifier;
+        envIdentifiers.append(envIdentifierForImport);
     }
-    else if (!envIdentifiers.contains(createdEnvIdentifier, Qt::CaseInsensitive))
-    {
-        envIdentifiers.append(createdEnvIdentifier);
-    }     
 
     flatView->setEnvIdentifiers(envIdentifiers);
 }
