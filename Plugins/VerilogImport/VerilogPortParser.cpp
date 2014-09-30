@@ -14,24 +14,29 @@
 #include "VerilogSyntax.h"
 
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
+#include <Plugins/common/HDLEquationParser.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/port.h>
-
-#include <common/KactusColors.h>
 
 #include <QString>
 #include <QRegExp>
 
 namespace
 {
+    //! Verilog port directions.
     const QString PORT_DIRECTION("input|output|inout");
-    const QString PORT_TYPE("wire|reg|integer|time|tri|tri0|tri1|triand|trior|trireg|supply0|supply1|wand|wor");
 
+    //! Verilog port types.
+    const QString PORT_TYPE("wire|reg|integer|time|tri|tri0|tri1|triand|trior|trireg|supply0|supply1|wand|wor|"
+        "logic");
+
+    //! Verilog ports in both ANSI-C and Verilog-1995 style.
     const QRegExp PORT_EXP("(" + PORT_DIRECTION + ")\\s+(" + PORT_TYPE + ")?\\s*(?:signed)?\\s*"
         "(" + VerilogSyntax::RANGE + ")?\\s*(" + VerilogSyntax::NAMES + ")"
         "(?:\\s*[,;][ \\t]*(?:"+ VerilogSyntax::COMMENT + ")?|(?:[ \\t]*"+ VerilogSyntax::COMMENT + ")?(?=\\s*$))");
 
+    //! Verilog ports in Verilog-1995 style.
     const QRegExp PORT_1995("(" + PORT_DIRECTION + ")\\s+(" + VerilogSyntax::RANGE + ")?\\s*"
         "(" + VerilogSyntax::NAMES + ")\\s*[;](?:[ \\t]*"+ VerilogSyntax::COMMENT + ")?");
 }
@@ -220,8 +225,10 @@ void VerilogPortParser::createPortFromDeclaration(QString const& portDeclaration
 
     QString type = PORT_EXP.cap(2);
 
-    int leftBound = parseLeftBound(portDeclaration);
-    int lowerBound = parseRightBound(portDeclaration);
+    HDLEquationParser parser(targetComponent->getModelParameters());
+
+    int leftBound = parseLeftBound(portDeclaration, parser);
+    int lowerBound = parseRightBound(portDeclaration, parser);
 
     QStringList portNames = parsePortNames(portDeclaration);
 
@@ -278,27 +285,41 @@ General::Direction VerilogPortParser::parseDirection(QString const& portDeclarat
 //-----------------------------------------------------------------------------
 // Function: VerilogPortParser::parseLeftBound()
 //-----------------------------------------------------------------------------
-int VerilogPortParser::parseLeftBound(QString const& portDeclaration) const
+int VerilogPortParser::parseLeftBound(QString const& portDeclaration, HDLEquationParser const& parser) const
 {
     PORT_EXP.indexIn(portDeclaration);
     QString bounds = PORT_EXP.cap(3);
 
-    QRegExp boundedExp("[\\[](\\w+)\\s*[:]\\s*(\\w+)[\\]]");
+    QRegExp boundedExp("\\[(" + HDLmath::TERM + ")\\s*[:]\\s*(" + HDLmath::TERM + ")\\]");
     boundedExp.indexIn(bounds);
-    return boundedExp.cap(1).toInt();
+
+    int value = 0;
+    if (!bounds.isEmpty())
+    {
+        value = parser.parse(boundedExp.cap(1));
+    }     
+
+     return value;
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogPortParser::parseRightBound()
 //-----------------------------------------------------------------------------
-int VerilogPortParser::parseRightBound(QString const& portDeclaration) const
+int VerilogPortParser::parseRightBound(QString const& portDeclaration, HDLEquationParser const& parser) const
 {
     PORT_EXP.indexIn(portDeclaration);
     QString bounds = PORT_EXP.cap(3);
 
-    QRegExp boundedExp("[\\[](\\w+)\\s*[:]\\s*(\\w+)[\\]]");
+    QRegExp boundedExp("\\[(" + HDLmath::TERM + ")\\s*[:]\\s*(" + HDLmath::TERM + ")\\]");
         boundedExp.indexIn(bounds);
-    return boundedExp.cap(2).toInt();
+
+    int value = 0;
+    if (!bounds.isEmpty())
+    {
+        value = parser.parse(boundedExp.cap(2));
+    }
+
+    return value;
 }
 
 //-----------------------------------------------------------------------------

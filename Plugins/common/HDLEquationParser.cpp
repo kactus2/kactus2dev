@@ -6,31 +6,20 @@
 // Date: 12.09.2014
 //
 // Description:
-// Parser for simple math equations in VHDL.
+// Parser for simple math equations in HDL e.g. VHDL and Verilog.
 //-----------------------------------------------------------------------------
 
-#include "VHDLEquationParser.h"
+#include "HDLEquationParser.h"
+#include "HDLmath.h"
 
 #include <IPXACTmodels/modelparameter.h>
 
 #include <qmath.h>
 
-namespace
-{
-    const QRegExp POWER = QRegExp("[/*][/*]");          //! Power operator **.
-    const QRegExp MULTIPLYDIVIDE = QRegExp("[/*/]");    //! Multiply * and divide /.
-
-    //! Basic arithmetic operators.
-    const QString OPERATOR = "[+-]|" + POWER.pattern() + "|" + MULTIPLYDIVIDE.pattern(); 
-
-    //! Basic arithmetic operations e.g. x + y or x*y.
-    const QRegExp OPERATION = QRegExp("(\\w+)(?:\\s*(?:" + OPERATOR + ")\\s*(\\w+))*");
-}
-
 //-----------------------------------------------------------------------------
 // Function: EquationParser::EquationParser()
 //-----------------------------------------------------------------------------
-VHDLEquationParser::VHDLEquationParser(QList<QSharedPointer<ModelParameter> > modelParameters) :
+HDLEquationParser::HDLEquationParser(QList<QSharedPointer<ModelParameter> > modelParameters) :
     knownValues_(modelParameters)
 {
 
@@ -39,7 +28,7 @@ VHDLEquationParser::VHDLEquationParser(QList<QSharedPointer<ModelParameter> > mo
 //-----------------------------------------------------------------------------
 // Function: EquationParser::()
 //-----------------------------------------------------------------------------
-VHDLEquationParser::~VHDLEquationParser()
+HDLEquationParser::~HDLEquationParser()
 {
 
 }
@@ -47,7 +36,7 @@ VHDLEquationParser::~VHDLEquationParser()
 //-----------------------------------------------------------------------------
 // Function: EquationParser::parse()
 //-----------------------------------------------------------------------------
-int VHDLEquationParser::parse(QString const& equation) const
+int HDLEquationParser::parse(QString const& equation) const
 {
     if (equation.isEmpty())
     {
@@ -89,16 +78,16 @@ int VHDLEquationParser::parse(QString const& equation) const
 //-----------------------------------------------------------------------------
 // Function: EquationParser::toStringList()
 //-----------------------------------------------------------------------------
-QStringList VHDLEquationParser::toStringList(QString const& equation) const
+QStringList HDLEquationParser::toStringList(QString const& equation) const
 {    
-    OPERATION.indexIn(equation);  
+    HDLmath::OPERATION_EXP.indexIn(equation);  
 
-    QString firstTerm = OPERATION.cap(1);
-    QString otherTerms = OPERATION.cap(0).mid(firstTerm.length());
+    QString firstTerm = HDLmath::OPERATION_EXP.cap(1);
+    QString otherTerms = HDLmath::OPERATION_EXP.cap(0).mid(firstTerm.length());
 
     QStringList listedEquation = QStringList(firstTerm);
 
-    static QRegExp nextTerm = QRegExp("(" + OPERATOR + ")\\s*(\\w+)");
+    static QRegExp nextTerm = QRegExp("(" + HDLmath::OPERATOR + ")\\s*(\\w+)");
     int index = 0;
     while (nextTerm.indexIn(otherTerms, index) != -1)
     {
@@ -117,17 +106,17 @@ QStringList VHDLEquationParser::toStringList(QString const& equation) const
 //-----------------------------------------------------------------------------
 // Function: EquationParser::hasPower()
 //-----------------------------------------------------------------------------
-bool VHDLEquationParser::hasPower(QStringList& listedEquation) const
+bool HDLEquationParser::hasPower(QStringList& listedEquation) const
 {
-    return listedEquation.indexOf(POWER) != -1;
+    return listedEquation.indexOf(HDLmath::POWER) != -1;
 }
 
 //-----------------------------------------------------------------------------
 // Function: EquationParser::solvePower()
 //-----------------------------------------------------------------------------
-QStringList VHDLEquationParser::solvePower(QStringList& listedEquation) const
+QStringList HDLEquationParser::solvePower(QStringList& listedEquation) const
 {
-    int powerOperator = listedEquation.indexOf(POWER);        
+    int powerOperator = listedEquation.indexOf(HDLmath::POWER);        
 
     QString leftOperand = listedEquation.at(powerOperator - 1);
     QString rightOperand = listedEquation.at(powerOperator + 1);
@@ -147,7 +136,7 @@ QStringList VHDLEquationParser::solvePower(QStringList& listedEquation) const
 //-----------------------------------------------------------------------------
 // Function: valueOf()
 //----------------------------------------------------------------------------- 
-int VHDLEquationParser::valueOf(QString const& term) const
+int HDLEquationParser::valueOf(QString const& term) const
 {
     bool isNumber = false;
     int value = term.toInt(&isNumber);
@@ -163,7 +152,7 @@ int VHDLEquationParser::valueOf(QString const& term) const
 //-----------------------------------------------------------------------------
 // Function: EquationParser::valueFromModelParameter()
 //-----------------------------------------------------------------------------
-int VHDLEquationParser::valueFromModelParameter(QString const& term) const
+int HDLEquationParser::valueFromModelParameter(QString const& term) const
 {
     foreach (QSharedPointer<ModelParameter> parameter, knownValues_) 
     {
@@ -179,17 +168,17 @@ int VHDLEquationParser::valueFromModelParameter(QString const& term) const
 //-----------------------------------------------------------------------------
 // Function: EquationParser::hasMultiplyOrDivide()
 //-----------------------------------------------------------------------------
-bool VHDLEquationParser::hasMultiplyOrDivide(QStringList& listedEquation) const
+bool HDLEquationParser::hasMultiplyOrDivide(QStringList& listedEquation) const
 {
-    return listedEquation.indexOf(MULTIPLYDIVIDE) != -1;
+    return listedEquation.indexOf(HDLmath::MULTIPLYDIVIDE) != -1;
 }
 
 //-----------------------------------------------------------------------------
 // Function: EquationParser::solveMultiplyOrDivide()
 //-----------------------------------------------------------------------------
-QStringList VHDLEquationParser::solveMultiplyAndDivide(QStringList& listedEquation) const
+QStringList HDLEquationParser::solveMultiplyAndDivide(QStringList& listedEquation) const
 {
-    int multiplyOperator = listedEquation.indexOf(MULTIPLYDIVIDE);
+    int multiplyOperator = listedEquation.indexOf(HDLmath::MULTIPLYDIVIDE);
 
     Q_ASSERT(multiplyOperator != 0 && multiplyOperator != listedEquation.length());
 
@@ -221,7 +210,7 @@ QStringList VHDLEquationParser::solveMultiplyAndDivide(QStringList& listedEquati
 //-----------------------------------------------------------------------------
 // Function: EquationParser::solveAddAndSubtract()
 //-----------------------------------------------------------------------------
-QStringList VHDLEquationParser::solveAddAndSubtract(QStringList &listedEquation) const
+QStringList HDLEquationParser::solveAddAndSubtract(QStringList &listedEquation) const
 {
     int left = valueOf(listedEquation.value(0));
     int right = valueOf(listedEquation.value(2));

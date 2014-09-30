@@ -9,6 +9,8 @@
 // Common elements of the Verilog language.
 //-----------------------------------------------------------------------------
 
+#include <Plugins/common/HDLmath.h>
+
 namespace VerilogSyntax
 {
     //! Module begins with module <name> #(<parameters>) ( followed by ports.
@@ -18,14 +20,14 @@ namespace VerilogSyntax
     const QRegExp MODULE_END("endmodule", Qt::CaseSensitive);
 
     //! Pattern for ranges for e.g. port sizes are given as [left:right].
-    const QString RANGE("[\\[]\\w+\\s*[:]\\s*\\w+[\\]]");
+    const QString RANGE("\\[" + HDLmath::TERM + "\\s*[:]\\s*" + HDLmath::TERM + "\\]");
 
     /*  Identifiers e.g. port names may contain characters a-z, A-Z, numbers, underscores and dollar signs.
      *  Multiple identifiers declared at once must be comma separated.
      */
     const QString NAMES("[a-zA-Z0-9_$]+(?:\\s*[,]\\s*[a-zA-Z0-9_$]+)*");
 
-    //! Pattern for comments.
+    //! Pattern for one-line comments.
     const QString COMMENT("//[ \\t]*([^\\r\\n]*)(?=\\r?\\n|$)");
 
     //! Single-line comments.

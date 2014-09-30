@@ -6,11 +6,11 @@
 // Date: 12.09.2014
 //
 // Description:
-// Parser for simple math equations in VHDL.
+// Parser for simple math equations in HDL e.g. VHDL and Verilog.
 //-----------------------------------------------------------------------------
 
-#ifndef EQUATIONPARSER_H
-#define EQUATIONPARSER_H
+#ifndef HDLEQUATIONPARSER_H
+#define HDLEQUATIONPARSER_H
 
 #include <QList>
 #include <QSharedPointer>
@@ -20,15 +20,15 @@ class ModelParameter;
 //-----------------------------------------------------------------------------
 //! Parser for simple math equations in VHDL.
 //-----------------------------------------------------------------------------
-class VHDLEquationParser 
+class HDLEquationParser 
 {
 public:
 
 	//! The constructor.
-	VHDLEquationParser(QList<QSharedPointer<ModelParameter> > modelParameters);
+	HDLEquationParser(QList<QSharedPointer<ModelParameter> > modelParameters);
 
 	//! The destructor.
-	~VHDLEquationParser();
+	~HDLEquationParser();
 
     /*!
      *  Parses a given equation.
@@ -42,8 +42,8 @@ public:
 private:
 
 	// Disable copying.
-	VHDLEquationParser(VHDLEquationParser const& rhs);
-	VHDLEquationParser& operator=(VHDLEquationParser const& rhs);
+	HDLEquationParser(HDLEquationParser const& rhs);
+	HDLEquationParser& operator=(HDLEquationParser const& rhs);
    
     /*!
      *  Converts a given equation to a list of operands and operations.
@@ -125,4 +125,4 @@ private:
     QList<QSharedPointer<ModelParameter> > knownValues_;
 };
 
-#endif // EQUATIONPARSER_H
+#endif // HDLEQUATIONPARSER_H

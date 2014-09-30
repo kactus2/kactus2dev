@@ -12,6 +12,8 @@
 #ifndef VHDLSYNTAX_H
 #define VHDLSYNTAX_H
 
+#include <Plugins/common/HDLmath.h>
+
 #include <QRegExp>
 
 namespace VHDLSyntax
@@ -28,21 +30,15 @@ namespace VHDLSyntax
     //! VHDL port and generic names are separated using a colon (,).
     const QString NAMES = "\\w+(?:\\s*[,]?\\s*\\w+)*";
 
-    //! Supported mathematical operations in math expressions.
-    const QString OPERATIONS = "[+-/*/]|[/*][/*]";
-
     //! Supported std_logic values.
     const QString STD_ULOGIC = "['][U|X|0|1|Z|W|L|H|-][']";
 
     //! Others is used to initialize a group of bits in std_logic_vector.
     const QString OTHERS_EXP = "[(]\\s*others\\s*=>\\s*" + STD_ULOGIC + "\\s*[)]";
 
-    //! Mathematical expressions e.g. x or x + y.
-    const QString MATH_EXP = "(?:\\w+)(?:\\s*(?:" + OPERATIONS + ")\\s*(?:\\w+))*";
-
     //! VHDL default value definition is mathematical expression, vector assignment with others, logical value
     // or other string value.
-    const QString DEFAULT = "[:][=]\\s*((?:" + MATH_EXP + ")|" + OTHERS_EXP + "|[^\\s:;]+)";
+    const QString DEFAULT = "[:][=]\\s*((?:" + HDLmath::TERM + ")|" + OTHERS_EXP + "|[^\\s:;]+)";
 
     //! VHDL pragmas begin like comments with -- followed by a reserved word.
     const QString PRAGMA = "[-][-]" + SPACE + "(?:PRAGMA|SYNTHESIS|SYNOPSYS)[^\\r\\n]*";

@@ -11,7 +11,7 @@
 
 #include "VHDLPortParser.h"
 
-
+#include <Plugins/common/HDLEquationParser.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
 #include <IPXACTmodels/component.h>
@@ -26,12 +26,12 @@ namespace
     const QString DIRECTION = "in|out|inout|buffer|linkage";
 
     //! VHDL port type definition is <typename>[(<left> downto <right>)].
-    const QString PORT_TYPE = "(?:\\w+)(?:\\s*[(]\\s*(?:" + VHDLSyntax::MATH_EXP +
-        ")\\s+\\w+\\s+(?:" + VHDLSyntax::MATH_EXP + ")\\s*[)])?";
+    const QString PORT_TYPE = "(?:\\w+)(?:\\s*[(]\\s*(?:" + HDLmath::TERM +
+        ")\\s+\\w+\\s+(?:" + HDLmath::TERM + ")\\s*[)])?";
 
     //! Vector bounds are defined as (<left> downto <right>).
-    const QRegExp VECTOR_BOUNDS_EXP("[(]\\s*(" + VHDLSyntax::MATH_EXP + ")\\s+\\w+\\s+" + 
-        "(" + VHDLSyntax::MATH_EXP + ")\\s*[)]");
+    const QRegExp VECTOR_BOUNDS_EXP("[(]\\s*(" + HDLmath::TERM + ")\\s+\\w+\\s+" + 
+        "(" + HDLmath::TERM + ")\\s*[)]");
 
     /*! Port declaration is <port_names> : <direction> <type> [<default>] [pragma] ; [description]    
      *  A pragma e.g. synthesis translate_off may be inserted in the declaration before the ending
@@ -301,7 +301,7 @@ int VHDLPortParser::parseLeftValue(QString const& vectorBounds, QSharedPointer<C
     {
         QString leftEquation = VECTOR_BOUNDS_EXP.cap(1);
 
-        VHDLEquationParser equationParser(ownerComponent->getModelParameters());
+        HDLEquationParser equationParser(ownerComponent->getModelParameters());
         value = equationParser.parse(leftEquation);
     }	
 
@@ -319,7 +319,7 @@ int VHDLPortParser::parseRightValue(QString const& vectorBounds, QSharedPointer<
     {
         QString rightEquation = VECTOR_BOUNDS_EXP.cap(2);
 
-        VHDLEquationParser equationParser(ownerComponent->getModelParameters());
+        HDLEquationParser equationParser(ownerComponent->getModelParameters());
         value = equationParser.parse(rightEquation);
     }	
 

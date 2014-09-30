@@ -38,10 +38,10 @@
     <ClInclude Include="vhdlimport_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VHDLEquationParser.h">
+    <ClInclude Include="VHDLSyntax.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VHDLSyntax.h">
+    <ClInclude Include="..\common\HDLEquationParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -73,7 +73,7 @@
     <ClCompile Include="GeneratedFiles\Release\moc_VHDLimport.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="VHDLEquationParser.cpp">
+    <ClCompile Include="..\common\HDLEquationParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

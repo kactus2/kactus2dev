@@ -15,6 +15,7 @@
 #include <QPlainTextEdit>
 
 #include <IPXACTmodels/component.h>
+#include <IPXACTmodels/model.h>
 
 #include <Plugins/VerilogImport/VerilogImporter.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>

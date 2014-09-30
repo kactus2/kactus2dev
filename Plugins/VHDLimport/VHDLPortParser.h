@@ -17,7 +17,6 @@
 #include <QSharedPointer>
 #include <QString>
 
-#include "VHDLEquationParser.h"
 
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
 #include <Plugins/PluginSystem/ImportPlugin/PortSource.h>
@@ -26,7 +25,7 @@
 
 class Component;
 class Port;
-
+class HDLEquationParser;
 //-----------------------------------------------------------------------------
 //! Parser for VHDL ports.
 //-----------------------------------------------------------------------------

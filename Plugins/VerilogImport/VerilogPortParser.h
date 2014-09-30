@@ -21,6 +21,7 @@
 #include <QString>
 
 class Component;
+class HDLEquationParser;
 
 //-----------------------------------------------------------------------------
 //! Parser for Verilog ports.
@@ -43,8 +44,18 @@ public:
      */
     virtual void runParser(QString const& input, QSharedPointer<Component> targetComponent);
 
+    /*!
+     *  Sets the given visualizer to be used by the port parser.
+     *
+     *      @param [in] visualizer   The visualizer to use.          
+     */
     virtual void setPortVisualizer(PortVisualizer* visualizer);
 
+    /*!
+     *  Sets the given highlighter to be used by the port parser.
+     *
+     *      @param [in] highlighter   The highlighter to use.          
+     */
     virtual void setHighlighter(Highlighter* highlighter);
 
 private:
@@ -135,6 +146,11 @@ private:
     void createPortFromDeclaration(QString const& portDeclaration, 
         QSharedPointer<Component> targetComponent) const;    
 
+    /*!
+     *  Highlights the given port declaration.
+     *
+     *      @param [in] portDeclaration   The port declaration to highlight.
+     */
     void highlight(QString const& portDeclaration);
 
     /*!
@@ -154,7 +170,7 @@ private:
      *
      *      @return The port left bound value in the declaration.
      */
-    int parseLeftBound(QString const& portDeclaration) const;
+    int parseLeftBound(QString const& portDeclaration, HDLEquationParser const& parser) const;
 
     /*!
      *  Parses the port right bound value from a Verilog port declaration.
@@ -164,7 +180,7 @@ private:
      *
      *      @return The port right bound value in the declaration.
      */
-    int parseRightBound(QString const& portDeclaration) const;
+    int parseRightBound(QString const& portDeclaration, HDLEquationParser const& parser) const;
 
     /*!
      *  Parses the port names from a Verilog port declaration.
@@ -184,9 +200,10 @@ private:
      */
     QString parseDescription(QString const& portDeclaration) const;
    
-
+    //! The highlighter to use.
     Highlighter* highlighter_;
 
+    //! The port visualizer to use.
     PortVisualizer* portVisualizer_;
 };
 

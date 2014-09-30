@@ -46,6 +46,9 @@ public:
         void testPortsInSubmodulesAreNotParsed();
         void testPortsInSubmodulesAreNotParsed_data();
 
+        void testEquationAsPortBound();
+        void testEquationAsPortBound_data();
+
 private:
 
     void runParser(QString const& input);   
@@ -423,7 +426,6 @@ void tst_VerilogPortParser::testMultiplePortsAreParsed_data()
         << QString("clk, rst, enable").split(", ");
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogPortParser::testMultipleVerilog1995PortsAreParsed()
 //-----------------------------------------------------------------------------
@@ -592,6 +594,83 @@ void tst_VerilogPortParser::testPortsInSubmodulesAreNotParsed_data()
         "\n"
         "endmodule"
         << QString("A, B, carry_in, sum, carry_out").split(", ");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogPortParser::testEquationAsPortBound()
+//-----------------------------------------------------------------------------
+void tst_VerilogPortParser::testEquationAsPortBound()
+{
+    QFETCH(QString, fileContent);
+    QFETCH(int, expectedLeft);
+    QFETCH(int, expectedRight);
+
+    runParser(fileContent);
+
+    QVERIFY2(importComponent_->getPorts().count() != 0, "No ports parsed from input.");
+
+    QSharedPointer<Port> createdPorts = importComponent_->getPorts().first();
+    QCOMPARE(createdPorts->getLeftBound(), expectedLeft);
+    QCOMPARE(createdPorts->getRightBound(), expectedRight);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogPortParser::testEquationAsPortBound_data()
+//-----------------------------------------------------------------------------
+void tst_VerilogPortParser::testEquationAsPortBound_data()
+{
+    QTest::addColumn<QString>("fileContent");
+    QTest::addColumn<int>("expectedLeft");
+    QTest::addColumn<int>("expectedRight");
+
+    QTest::newRow("Subtraction") <<
+        "module test(\n"
+        "    input [2-1:0] data\n"
+        ");\n"
+        "endmodule\n"
+        << 1 << 0;
+
+    QTest::newRow("Both bounds with multiply") <<
+        "module test(\n"
+        "    input [2*4-1:2*1] data\n"
+        ");\n"
+        "endmodule\n"
+        << 7 << 2;
+
+    QTest::newRow("Power of two") <<
+        "module test(\n"
+        "    input [2**4:0] data\n"
+        ");\n"
+        "endmodule\n"
+        << 16 << 0;
+
+    QTest::newRow("Power of zero") <<
+        "module test(\n"
+        "    input [8**0:0] data\n"
+        ");\n"
+        "endmodule\n"
+        << 1 << 0;
+
+    QTest::newRow("Multiple operations in mixed order") <<
+        "module test(\n"
+        "    input [32-2**4+2*4:0] data\n"
+        ");\n"
+        "endmodule\n"
+        << 24 << 0;
+
+    QTest::newRow("Division") <<
+        "module test(\n"
+        "    input [32/2:0/2] data\n"
+        ");\n"
+        "endmodule\n"
+        << 16 << 0;
+
+    QTest::newRow("Division by zero results zero") <<
+        "module test(\n"
+        "    input [32/0:0] data\n"
+        ");\n"
+        "endmodule\n"
+        << 0 << 0;
 }
 
 QTEST_APPLESS_MAIN(tst_VerilogPortParser)
