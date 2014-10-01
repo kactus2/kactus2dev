@@ -16,16 +16,16 @@
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/model.h>
 
+#include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
+
 #include <QString>
 #include <QRegExp>
-#include <QDebug>
 
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::VerilogParameterParser()
 //-----------------------------------------------------------------------------
-VerilogParameterParser::VerilogParameterParser()
+VerilogParameterParser::VerilogParameterParser() : highlighter_(0), genericVisualizer_(0)
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -33,7 +33,22 @@ VerilogParameterParser::VerilogParameterParser()
 //-----------------------------------------------------------------------------
 VerilogParameterParser::~VerilogParameterParser()
 {
+}
 
+//-----------------------------------------------------------------------------
+// Function: VerilogParameterParser::setHighlighter()
+//-----------------------------------------------------------------------------
+void VerilogParameterParser::setHighlighter(Highlighter* highlighter)
+{
+    highlighter_ = highlighter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogParameterParser::setModelParameterVisualizer()
+//-----------------------------------------------------------------------------
+void VerilogParameterParser::setModelParameterVisualizer(ModelParameterVisualizer* visualizer)
+{
+    genericVisualizer_ = visualizer;
 }
 
 //-----------------------------------------------------------------------------
@@ -111,10 +126,11 @@ void VerilogParameterParser::findOldDeclarations(QString const &input, QStringLi
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::parseDeclarations()
 //-----------------------------------------------------------------------------
-void VerilogParameterParser::parseParameters(QString const &input, QList<QSharedPointer<ModelParameter>>& parameters)
+void VerilogParameterParser::parseParameters(QString const &input,
+    QList<QSharedPointer<ModelParameter>>& parameters)
 {
+    // Find the type and the declaration. Only one per declaration is supported.
     QString type = parseType(input);
-
     QString description = parseDescription(input);
 
     // Must have name-value pair, possibly multiple times separated by comma. May have comments between.
@@ -124,17 +140,19 @@ void VerilogParameterParser::parseParameters(QString const &input, QList<QShared
     parameterRule.indexIn( input );
     QString parametersString = parameterRule.cap(0);
 
+    // We know for sure that each name value pair is separated by comma, and as such we get a list of them.
     QStringList parametersList = parametersString.split(",");
 
-    for ( int i = 0; i < parametersList.size(); ++i )
+    foreach ( QString parameter, parametersList )
     {
-        QString parameter = parametersList[i];
+        // After acquiring a name value pair, we separate the name and the value from each other.
         QRegExp splitRule("(\\w+)\\s*=\\s*(\\w+)", Qt::CaseInsensitive);
         splitRule.indexIn(parameter);
 
         QString name = splitRule.cap(1);
         QString value = splitRule.cap(2);
 
+        // Each name value pair produces a new model parameter, but the type and the description is recycled.
         QSharedPointer<ModelParameter> modelParameter(new ModelParameter());
         modelParameter->setName(name.trimmed());
         modelParameter->setDataType(type);
@@ -142,7 +160,14 @@ void VerilogParameterParser::parseParameters(QString const &input, QList<QShared
         modelParameter->setUsageType("nontyped");
         modelParameter->setDescription(description);
 
+        // Add to the list, as there may be more than one.
         parameters.append(modelParameter);
+
+        // If exists, the parameter is also passed to the visualizer.
+        if (genericVisualizer_)
+        {
+            genericVisualizer_->addModelParameter(modelParameter);
+        }
     }
 }
 
@@ -165,6 +190,12 @@ void VerilogParameterParser::findDeclarations(QRegExp &declarRule, QString &insp
 
         // Seek for the next match beginning from the end of the previous match.
         declarIndex = declarRule.indexIn(inspect, declarIndex + declarLength);
+
+        // Highlight the selection if applicable.
+        if (highlighter_)
+        {
+            highlighter_->applyHighlight(declaration, ImportColors::MODELPARAMETER);
+        }
     }
 }
 
@@ -173,6 +204,7 @@ void VerilogParameterParser::findDeclarations(QRegExp &declarRule, QString &insp
 //-----------------------------------------------------------------------------
 void VerilogParameterParser::cullStrayComments(QString &inspect)
 {
+    // Removing multi line comments needs so called non-greedy matching.
     QRegExp multiRem = QRegExp(VerilogSyntax::MULTILINE_COMMENT);
     multiRem.setMinimal(true);
     inspect = inspect.remove(multiRem);
@@ -184,6 +216,7 @@ void VerilogParameterParser::cullStrayComments(QString &inspect)
 //-----------------------------------------------------------------------------
 QString VerilogParameterParser::parseType(QString const & input)
 {
+    // The type is assumed to be the first word in the declaration.
     QRegExp typeRule("(\\w+)\\s+" +  VerilogSyntax::NAME_VALUE, Qt::CaseInsensitive);
     typeRule.indexIn( input );
     QString type = typeRule.cap( 1 );
@@ -202,20 +235,24 @@ QString VerilogParameterParser::parseType(QString const & input)
 QString VerilogParameterParser::parseDescription(QString const &input)
 {
     QString description;
+
+    // If exist, the description is the last comment in the declaration.
     QRegExp commentRule(VerilogSyntax::COMMENT, Qt::CaseInsensitive);
     int commentStart = commentRule.lastIndexIn(input);
 
     if ( commentStart != - 1 )
     {
+        // Found the index. The description is starting index + length.
         int commentLength = commentRule.matchedLength();
-
         description = input.mid(commentStart,commentLength);
 
+        // Some times the expression leaves the comment tag to the description.
         if ( description.startsWith("//") )
         {
             description = description.remove(0,2);
         }
 
+        // No need for extra white spaces.
         description = description.trimmed();
     }
 

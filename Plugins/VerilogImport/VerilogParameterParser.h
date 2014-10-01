@@ -18,12 +18,15 @@
 #include <QString>
 #include <IPXACTmodels/modelparameter.h>
 
+#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
+#include <Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h>
+
 class Component;
 
 //-----------------------------------------------------------------------------
 //! Parser for Verilog ports.
 //-----------------------------------------------------------------------------
-class VerilogParameterParser
+class VerilogParameterParser : public HighlightSource, public ModelParameterSource
 {
 public:
 
@@ -40,6 +43,20 @@ public:
      *      @param [in] targetComponent     The component to add all the imported ports to.
      */
     virtual void runParser(QString const& input, QSharedPointer<Component> targetComponent);
+    
+    /*!
+     *  Sets the given highlighter to be used by the generic parser.
+     *
+     *      @param [in] highlighter   The highlighter to use.          
+     */
+    virtual void setHighlighter(Highlighter* highlighter);
+        
+    /*!
+     *  Sets the given visualizer to be used by the generic parser.
+     *
+     *      @param [in] visualizer   The visualizer to use.          
+     */
+    virtual void setModelParameterVisualizer(ModelParameterVisualizer* visualizer);
 
     /*!
      *  Finds parameter declarations formated in ANSI-style.
@@ -100,6 +117,11 @@ private:
     VerilogParameterParser(VerilogParameterParser const& rhs);
     VerilogParameterParser& operator=(VerilogParameterParser const& rhs);
 
+    //! The highlighter to use.
+    Highlighter* highlighter_;
+
+    //! Visualizer e.g. editor for parsed generics.
+    ModelParameterVisualizer* genericVisualizer_;
 };
 
 #endif // VERILOGPARAMETERPARSER_H
