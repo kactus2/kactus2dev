@@ -41,6 +41,9 @@ private slots:
     void testPortIsHighlighted();
     void testPortIsHighlighted_data();
 
+    void testParameterIsHighlighted();
+    void testParameterIsHighlighted_data();
+
     void testModuleIsHighlighted();
     void testModuleIsHighlighted_data();
 
@@ -329,6 +332,129 @@ void tst_VerilogImporter::verifyNotHighlightedAfterDeclartion(const int declarat
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testParameterIsHighlighted()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testParameterIsHighlighted()
+{
+
+    QFETCH(QString, fileContent);
+    QFETCH(QString, parameterDeclaration);
+
+    runParser(fileContent);
+
+    QVERIFY2(importComponent_->getModelParameters().count() != 0, "No parameters parsed from input.");
+
+    int begin = fileContent.indexOf(parameterDeclaration);
+
+    verifyNotHighlightedBeforeDeclaration(begin, ImportColors::MODELPARAMETER);
+    verifyDeclarationIsHighlighted(begin, parameterDeclaration.length(), ImportColors::MODELPARAMETER);
+    verifyNotHighlightedAfterDeclartion(begin, parameterDeclaration.length(), ImportColors::MODELPARAMETER);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testParameterIsHighlighted_data()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testParameterIsHighlighted_data()
+{
+    QTest::addColumn<QString>("fileContent");
+    QTest::addColumn<QString>("parameterDeclaration");
+
+    QTest::newRow("Simplest possible parameter declaration") <<
+        "module test #(parameter size = 8) (\n"
+        "   );\n"
+        "endmodule"
+        << "parameter size = 8";   
+
+    QTest::newRow("Parameter declaration with description") <<
+        "module test #(\n"
+        "    parameter size = 8 // Size of ports.\n"
+        ") ();\n"
+        "endmodule"
+        << "parameter size = 8 // Size of ports.";  
+
+
+    QTest::newRow("Parameter declaration followed by another parameter") <<
+        "module test #(\n"
+        "    parameter size = 8, // Size of ports.\n"
+        "    parameter width = 16"
+        ") ();\n"
+        "endmodule"
+        << "parameter size = 8, // Size of ports.";  
+  
+    QTest::newRow("Parameter declaration with multiple parameters") <<
+        "module test #(\n"
+        "    parameter size = 8, width = 16, dimension = 1 // Constants for ports.\n"
+        ") ();\n"
+        "endmodule"
+        << "parameter size = 8, width = 16, dimension = 1 // Constants for ports.";
+
+
+    QTest::newRow("Type, name and value on separate lines") << 
+        "module test #(\n"
+        "    parameter\n"
+        "size \n"
+        "= 8 // Line breaks.\n"
+        ") ();\n"
+        "endmodule"
+        << 
+        "parameter\n"
+        "size \n"
+        "= 8 // Line breaks.";
+                
+    QTest::newRow("Double comment line") << 
+        "module test #(\n"
+        "    parameter size = 8,\n"
+        "    // First comment line.\n"
+        "    // Second comment line.\n"
+        "    parameter width = 16"
+        ") ();\n"
+        "endmodule"
+        << 
+        "parameter size = 8,";
+ 
+    QTest::newRow("Simplest possible 1995-style parameter declaration") <<
+        "module test ();"
+        "   parameter size = 8;\n"
+        "endmodule"
+        << "parameter size = 8;";
+
+    QTest::newRow("1995-style parameter declaration followed by another parameter") <<
+        "module test ();"
+        "   parameter size = 8; // Size of ports.\n"
+        "   parameter width = 16;"
+        "endmodule"
+        << "parameter size = 8; // Size of ports.";
+
+       
+    QTest::newRow("1995-stype parameter declarations with multiple parameter") <<
+        "module test ();\n"
+        "        parameter size = 8, width = 16; // Port sizes.\n"
+        "endmodule"
+        << "parameter size = 8, width = 16; // Port sizes.";
+
+    QTest::newRow("1995-stype parameter with type, name and value on separate lines") << 
+        "module test ();"
+        "   parameter\n"
+        "size\n"
+        "= 8; // Port size.\n"
+        "endmodule"
+        << 
+        "parameter\n"
+        "size\n"
+        "= 8; // Port size.";
+    
+    QTest::newRow("1995-style parameter with double comment line") << 
+        "module test();\n"
+        "    parameter size = 8;\n"
+        "    // First comment line.\n"
+        "    // Second comment line.\n"
+        "    parameter width = 16;"
+        "endmodule"
+        << 
+        "parameter size = 8;";
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_VerilogImporter::testModuleIsHighlighted()
 //-----------------------------------------------------------------------------
 void tst_VerilogImporter::testModuleIsHighlighted()
@@ -470,6 +596,7 @@ void tst_VerilogImporter::testModelNameAndEnvironmentIsImportedToView_data()
         <<
         "half_adder";
 }
+
 
 QTEST_MAIN(tst_VerilogImporter)
 

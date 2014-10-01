@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::VerilogImporter()
 //-----------------------------------------------------------------------------
-VerilogImporter::VerilogImporter(): QObject(0), portParser_(), highlighter_(0)
+VerilogImporter::VerilogImporter(): QObject(0), portParser_(), parameterParser_(), highlighter_(0)
 {
 
 }
@@ -122,6 +122,7 @@ void VerilogImporter::runParser(QString const& input, QSharedPointer<Component> 
     {    
         highlightModule(input);
 
+        parameterParser_.runParser(input, targetComponent);
         portParser_.runParser(input, targetComponent);
 
         importModelName(input, targetComponent);
@@ -136,6 +137,7 @@ void VerilogImporter::setHighlighter(Highlighter* highlighter)
 {
     highlighter_ = highlighter;
 
+    parameterParser_.setHighlighter(highlighter);
     portParser_.setHighlighter(highlighter);
 }
 
@@ -145,6 +147,14 @@ void VerilogImporter::setHighlighter(Highlighter* highlighter)
 void VerilogImporter::setPortVisualizer(PortVisualizer* visualizer)
 {
     portParser_.setPortVisualizer(visualizer);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogImporter::setModelParameterVisualizer()
+//-----------------------------------------------------------------------------
+void VerilogImporter::setModelParameterVisualizer(ModelParameterVisualizer* visualizer)
+{
+    parameterParser_.setModelParameterVisualizer(visualizer);
 }
 
 //-----------------------------------------------------------------------------

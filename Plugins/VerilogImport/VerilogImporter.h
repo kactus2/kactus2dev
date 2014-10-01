@@ -17,10 +17,12 @@
 #include "verilogimport_global.h"
 
 #include "VerilogPortParser.h"
+#include "VerilogParameterParser.h"
 
 #include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
 #include <Plugins/PluginSystem/ImportPlugin/PortSource.h>
+#include <Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -28,7 +30,8 @@
 class Component;
 class View;
 
-class VERILOGIMPORT_EXPORT VerilogImporter: public QObject, public ImportPlugin, public PortSource, public HighlightSource
+class VERILOGIMPORT_EXPORT VerilogImporter: public QObject, public ImportPlugin, public PortSource, 
+    public ModelParameterSource, public HighlightSource
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "kactus2.plugins.verilogimportplugin" FILE "verilogimportplugin.json")
@@ -106,11 +109,19 @@ public:
     virtual void setHighlighter(Highlighter* highlighter);
         
     /*!
-     *  Sets the given highlighter to be used by the import.
+     *  Sets the given port visualizer to be used by the import.
      *
-     *      @param [in] highlighter   The highlighter to use.          
+     *      @param [in] visualizer   The visualizer to use.          
      */
+   
     virtual void setPortVisualizer(PortVisualizer* visualizer);
+
+    /*!
+     *  Sets the given model parameter visualizer to be used by the import.
+     *
+     *      @param [in] visualizer   The visualizer to use.          
+     */
+    virtual void setModelParameterVisualizer(ModelParameterVisualizer* visualizer);
 
 private:
 
@@ -118,6 +129,16 @@ private:
 	VerilogImporter(VerilogImporter const& rhs);
 	VerilogImporter& operator=(VerilogImporter const& rhs);
     
+    
+    /*!
+     *  Checks if the given input has a valid module declaration.
+     *
+     *      @param [in] input   The input to search for module declaration.
+     *
+     *      @return True, if a valid module was found, otherwise false.
+     */
+    bool hasModuleDeclaration(QString const& input);
+
     /*!
      *  Grays the whole input.
      *
@@ -149,10 +170,13 @@ private:
     /*!
      *  Sets the language and environmental identifiers in the rtl view.
      */
-    void setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Component> targetComponent) const;
-    bool hasModuleDeclaration(QString const& input);
+    void setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Component> targetComponent) const;    
+    
     //! The port parser to use for importing ports.
     VerilogPortParser portParser_;
+
+    //! The parameter parser to use for importing model parameters.
+    VerilogParameterParser parameterParser_;
 
     //! The highlighter to use.
     Highlighter* highlighter_;
