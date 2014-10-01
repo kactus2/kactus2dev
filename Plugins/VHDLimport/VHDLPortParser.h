@@ -36,7 +36,7 @@ class VHDLPortParser : public QObject, public HighlightSource, public PortSource
 public:
 
 	/*!
-	 *  The constructor..
+	 *  The constructor.
 	 *
 	 *      @param [in] parent   The parent object.	 
 	 */

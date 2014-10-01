@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::VerilogImporter()
 //-----------------------------------------------------------------------------
-VerilogImporter::VerilogImporter(): portParser_(), highlighter_(0)
+VerilogImporter::VerilogImporter(): QObject(0), portParser_(), highlighter_(0)
 {
 
 }
@@ -35,24 +35,98 @@ VerilogImporter::~VerilogImporter()
 }
 
 //-----------------------------------------------------------------------------
+// Function: VerilogImporter::getName()
+//-----------------------------------------------------------------------------
+QString const& VerilogImporter::getName() const
+{
+    static QString name("Verilog importer");
+    return name;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogImporter::getVersion()
+//-----------------------------------------------------------------------------
+QString const& VerilogImporter::getVersion() const
+{
+    static QString version("1.0");
+    return version;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogImporter::getDescription()
+//-----------------------------------------------------------------------------
+QString const& VerilogImporter::getDescription() const
+{
+    static QString description("Imports model parameters and ports from a verilog file.");
+    return description;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogImporter::getVendor()
+//-----------------------------------------------------------------------------
+QString const& VerilogImporter::getVendor() const
+{
+    static QString vendor("TUT");
+    return vendor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogImporter::getLicence()
+//-----------------------------------------------------------------------------
+QString const& VerilogImporter::getLicence() const
+{
+    static QString licence("GLP2");
+    return licence;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogImporter::getLicenceHolder()
+//-----------------------------------------------------------------------------
+QString const& VerilogImporter::getLicenceHolder() const
+{
+    static QString licenceHolder(tr("Public"));
+    return licenceHolder;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogImporter::getSettingsWidget()
+//-----------------------------------------------------------------------------
+PluginSettingsWidget* VerilogImporter::getSettingsWidget()
+{
+    return new PluginSettingsWidget();
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogImporter::getProgramRequirements()
+//-----------------------------------------------------------------------------
+QList<IPlugin::ExternalProgramRequirement> VerilogImporter::getProgramRequirements()
+{
+    return QList<IPlugin::ExternalProgramRequirement>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogImporter::acceptedFileTypes()
+//-----------------------------------------------------------------------------
+QStringList VerilogImporter::acceptedFileTypes() const
+{
+    return QStringList("verilogSource");
+}
+
+//-----------------------------------------------------------------------------
 // Function: VerilogImporter::runParser()
 //-----------------------------------------------------------------------------
 void VerilogImporter::runParser(QString const& input, QSharedPointer<Component> targetComponent)
 {   
-    highlightModule(input);
+    grayOutFileContent(input);
+    if (hasModuleDeclaration(input))
+    {    
+        highlightModule(input);
 
-    portParser_.runParser(input, targetComponent);
+        portParser_.runParser(input, targetComponent);
 
-    importModelName(input, targetComponent);
-    setLanguageAndEnvironmentalIdentifiers(targetComponent);
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogImporter::setPortVisualizer()
-//-----------------------------------------------------------------------------
-void VerilogImporter::setPortVisualizer(PortVisualizer* visualizer)
-{
-    portParser_.setPortVisualizer(visualizer);
+        importModelName(input, targetComponent);
+        setLanguageAndEnvironmentalIdentifiers(targetComponent);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -66,6 +140,36 @@ void VerilogImporter::setHighlighter(Highlighter* highlighter)
 }
 
 //-----------------------------------------------------------------------------
+// Function: VerilogImporter::setPortVisualizer()
+//-----------------------------------------------------------------------------
+void VerilogImporter::setPortVisualizer(PortVisualizer* visualizer)
+{
+    portParser_.setPortVisualizer(visualizer);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogImporter::grayOutFileContent()
+//-----------------------------------------------------------------------------
+void VerilogImporter::grayOutFileContent(QString const& input)
+{
+    if (highlighter_)
+    {
+        highlighter_->applyFontColor(input, QColor("gray"));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogImporter::hasModuleDeclaration()
+//-----------------------------------------------------------------------------
+bool VerilogImporter::hasModuleDeclaration(QString const& input)
+{
+    int moduleBegin = VerilogSyntax::MODULE_BEGIN.indexIn(input);
+    int moduleEnd = VerilogSyntax::MODULE_END.indexIn(input,moduleBegin);
+
+    return moduleBegin != -1 && moduleEnd != -1;
+}
+
+//-----------------------------------------------------------------------------
 // Function: VerilogImporter::highlightModule()
 //-----------------------------------------------------------------------------
 void VerilogImporter::highlightModule(QString const& input)
@@ -74,8 +178,7 @@ void VerilogImporter::highlightModule(QString const& input)
     int moduleEnd = VerilogSyntax::MODULE_END.indexIn(input) + VerilogSyntax::MODULE_END.matchedLength();
 
     if (highlighter_)
-    {
-        highlighter_->applyFontColor(input, QColor("gray"));
+    {        
         highlighter_->applyFontColor(input.mid(moduleBegin, moduleEnd  - moduleBegin), QColor("black"));
     }
 }

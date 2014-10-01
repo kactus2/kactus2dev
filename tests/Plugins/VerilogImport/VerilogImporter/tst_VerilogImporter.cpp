@@ -33,6 +33,8 @@ private slots:
     void init();
 
     //! Test cases:
+    void testFileTypes();
+
     void testNothingIsParsedFromMalformedInput();
     void testNothingIsParsedFromMalformedInput_data();
 
@@ -79,6 +81,18 @@ tst_VerilogImporter::tst_VerilogImporter(): importComponent_(0), displayEditor_(
 void tst_VerilogImporter::init()
 {
     importComponent_ = QSharedPointer<Component>(new Component());
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testFileTypes()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testFileTypes()
+{
+    VerilogImporter importer;
+
+    QStringList supportedFileTypes = importer.acceptedFileTypes();
+
+    QVERIFY(supportedFileTypes.contains("verilogSource"));    
 }
 
 //-----------------------------------------------------------------------------

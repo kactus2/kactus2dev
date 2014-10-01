@@ -46,13 +46,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IPXACTmodels", "IPXACTmodel
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VerilogGeneratorPlugin", "Plugins\VerilogGenerator\VerilogGeneratorPlugin.vcxproj", "{DF1D0F97-B7D8-4DF3-AB71-B2350E08F0F4}"
 EndProject
-<<<<<<< .mine
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MakefileGenerator", "Plugins\MakefileGenerator\MakefileGenerator.vcxproj", "{7ED945F7-9538-4306-A770-4A186327F8BF}"
 EndProject
-=======
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VHDLimport", "Plugins\VHDLimport\VHDLimport.vcxproj", "{939C5230-35C3-455B-98F6-51E47E9E3DBB}"
 EndProject
->>>>>>> .r1557
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VerilogImport", "Plugins\VerilogImport\VerilogImport.vcxproj", "{85A166AC-D2CF-496C-9EFD-648765C4AC72}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -167,7 +166,6 @@ Global
 		{DF1D0F97-B7D8-4DF3-AB71-B2350E08F0F4}.Template|Win32.ActiveCfg = Release|Win32
 		{DF1D0F97-B7D8-4DF3-AB71-B2350E08F0F4}.Template|Win32.Build.0 = Release|Win32
 		{DF1D0F97-B7D8-4DF3-AB71-B2350E08F0F4}.Template|x64.ActiveCfg = Release|Win32
-<<<<<<< .mine
 		{7ED945F7-9538-4306-A770-4A186327F8BF}.Debug|Win32.ActiveCfg = Debug|Win32
 		{7ED945F7-9538-4306-A770-4A186327F8BF}.Debug|Win32.Build.0 = Debug|Win32
 		{7ED945F7-9538-4306-A770-4A186327F8BF}.Debug|x64.ActiveCfg = Debug|Win32
@@ -177,7 +175,6 @@ Global
 		{7ED945F7-9538-4306-A770-4A186327F8BF}.Template|Win32.ActiveCfg = Release|Win32
 		{7ED945F7-9538-4306-A770-4A186327F8BF}.Template|Win32.Build.0 = Release|Win32
 		{7ED945F7-9538-4306-A770-4A186327F8BF}.Template|x64.ActiveCfg = Release|Win32
-=======
 		{939C5230-35C3-455B-98F6-51E47E9E3DBB}.Debug|Win32.ActiveCfg = Debug|Win32
 		{939C5230-35C3-455B-98F6-51E47E9E3DBB}.Debug|Win32.Build.0 = Debug|Win32
 		{939C5230-35C3-455B-98F6-51E47E9E3DBB}.Debug|x64.ActiveCfg = Debug|Win32
@@ -187,7 +184,15 @@ Global
 		{939C5230-35C3-455B-98F6-51E47E9E3DBB}.Template|Win32.ActiveCfg = Release|Win32
 		{939C5230-35C3-455B-98F6-51E47E9E3DBB}.Template|Win32.Build.0 = Release|Win32
 		{939C5230-35C3-455B-98F6-51E47E9E3DBB}.Template|x64.ActiveCfg = Release|Win32
->>>>>>> .r1557
+		{85A166AC-D2CF-496C-9EFD-648765C4AC72}.Debug|Win32.ActiveCfg = Debug|Win32
+		{85A166AC-D2CF-496C-9EFD-648765C4AC72}.Debug|Win32.Build.0 = Debug|Win32
+		{85A166AC-D2CF-496C-9EFD-648765C4AC72}.Debug|x64.ActiveCfg = Debug|Win32
+		{85A166AC-D2CF-496C-9EFD-648765C4AC72}.Release|Win32.ActiveCfg = Release|Win32
+		{85A166AC-D2CF-496C-9EFD-648765C4AC72}.Release|Win32.Build.0 = Release|Win32
+		{85A166AC-D2CF-496C-9EFD-648765C4AC72}.Release|x64.ActiveCfg = Release|Win32
+		{85A166AC-D2CF-496C-9EFD-648765C4AC72}.Template|Win32.ActiveCfg = Release|Win32
+		{85A166AC-D2CF-496C-9EFD-648765C4AC72}.Template|Win32.Build.0 = Release|Win32
+		{85A166AC-D2CF-496C-9EFD-648765C4AC72}.Template|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -201,17 +206,15 @@ Global
 		{A84E0600-2A1B-4593-9D89-25098A0150AA} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
 		{C0DBF909-F12F-473F-8AC3-2248ABA68B92} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
 		{DF1D0F97-B7D8-4DF3-AB71-B2350E08F0F4} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
-<<<<<<< .mine
 		{7ED945F7-9538-4306-A770-4A186327F8BF} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
-=======
 		{939C5230-35C3-455B-98F6-51E47E9E3DBB} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
->>>>>>> .r1557
+		{85A166AC-D2CF-496C-9EFD-648765C4AC72} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
 		{5C0CA59D-CFCE-49C6-B62A-9E3065CA34DD} = {9AC1D5FF-D209-4186-8C80-027639ACC2A3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
-		BuildVersion_UpdateAssemblyVersion = True
-		BuildVersion_UpdateFileVersion = True
 		Qt5Version = 5.2.0
+		BuildVersion_UpdateFileVersion = True
+		BuildVersion_UpdateAssemblyVersion = True
+		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
 	EndGlobalSection
 EndGlobal

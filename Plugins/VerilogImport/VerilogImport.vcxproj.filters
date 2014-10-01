@@ -19,34 +19,54 @@
       <Extensions>moc;h;cpp</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
-    <Filter Include="Generated Files\Release">
-      <UniqueIdentifier>{e3dde204-e11b-4458-bdeb-652f6ac65a6f}</UniqueIdentifier>
+    <Filter Include="Generated Files\Debug">
+      <UniqueIdentifier>{f5ff4028-2a25-4a30-806f-cc5a0cb069a7}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
-    <Filter Include="Generated Files\Debug">
-      <UniqueIdentifier>{3dbdbcb3-43d2-45b2-840e-c8f065fc0cd1}</UniqueIdentifier>
+    <Filter Include="Generated Files\Release">
+      <UniqueIdentifier>{cf2f1a47-20af-43b4-9654-05624d0a95f5}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CppSourceAnalyzer.cpp">
+    <ClCompile Include="VerilogImporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_CppSourceAnalyzer.cpp">
+    <ClCompile Include="GeneratedFiles\Debug\moc_VerilogImporter.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_VerilogImporter.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_CppSourceAnalyzer.cpp">
-      <Filter>Generated Files\Debug</Filter>
+    <ClCompile Include="VerilogPortParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\HDLEquationParser.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="CppSourceAnalyzer.h">
+    <ClInclude Include="verilogimport_global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VerilogPortParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\HDLEquationParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\HDLmath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="VerilogImporter.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <None Include="CppSourceAnalyzer.json" />
+    <None Include="verilogimportplugin.json" />
   </ItemGroup>
 </Project>

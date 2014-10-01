@@ -27,7 +27,7 @@
 // Function: ImportRunner::ImportRunner()
 //-----------------------------------------------------------------------------
 ImportRunner::ImportRunner(QObject* parent)
-    : QObject(parent), ImportPlugins_(), portVisualizer_(), highlighter_()
+    : QObject(parent), ImportPlugins_(), highlighter_(0), portVisualizer_(0), modelParameterVisualizer_(0)
 {
 
 }
