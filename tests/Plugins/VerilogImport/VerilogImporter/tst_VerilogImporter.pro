@@ -16,6 +16,8 @@ TARGET = tst_VerilogImporter
 QT += core xml gui widgets testlib
 CONFIG += testcase
 
+DEFINES += VERILOGIMPORT_LIB
+
 win32:CONFIG(release, debug|release) {
     LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodels
     DESTDIR = ./release

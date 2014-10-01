@@ -12,10 +12,8 @@
 TEMPLATE = subdirs
 
 CONFIG += testcase
-<<<<<<< .mine
+
 SUBDIRS += VerilogGenerator/VerilogGenerator.pro \
-			MakefileGenerator/tst_MakefileGenerator.pro
-=======
-SUBDIRS += VerilogGenerator/VerilogGenerator.pro \
-		   VHDLimport/VHDLimport.pro
->>>>>>> .r1557
+			MakefileGenerator/tst_MakefileGenerator.pro \
+			VHDLimport/VHDLimport.pro \
+			VerilogImport/VerilogImport.pro
