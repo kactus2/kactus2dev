@@ -34,5 +34,8 @@ namespace VerilogSyntax
     const QRegExp COMMENTLINE("(^|\\r?\\n)[ \\t]*" + COMMENT);
 
     //! Multiline comments.
-    const QRegExp MULTILINE_COMMENT("/\\*.*\\*/");    
+    const QRegExp MULTILINE_COMMENT("/\\*.*\\*/");  
+    
+    //! Name + value pair, eg name=value.
+    QString NAME_VALUE = "\\w+\\s*=\\s*\\w+";  
 }
