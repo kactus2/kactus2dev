@@ -20,6 +20,7 @@
 
 #include <QString>
 #include <QRegExp>
+#include <QDebug>
 
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::VerilogParameterParser()
@@ -89,13 +90,25 @@ void VerilogParameterParser::findANSIDeclarations(QString const &input, QStringL
     // And that is why only the module header is inspected int he parsing.
     QString inspect = input.mid( 0, endIndex );
 
+    // We shall also take the last parentheses out of the string.
+    QRegExp pars(QString("[)]\\s*[(]"), Qt::CaseInsensitive);
+    int parLoc = pars.lastIndexIn(inspect);
+
+    if ( parLoc != -1 )
+    {
+        inspect = inspect.left(parLoc);
+    }
+
     cullStrayComments(inspect);
 
     // May have "parameter", may have "signed + range" OR one of those OR type. Is composed of name+value pairs,
     // possibly multiple times separated by comma. May have comments between. May have comma or comment the end.
-    QRegExp declarRule(QString("(parameter)?\\s*(((signed)?\\s*(\\w+" + VerilogSyntax::RANGE + ")?)|(\\w+))\\s*" +
-        VerilogSyntax::NAME_VALUE + "(?:\\s*,\\s*(" + VerilogSyntax::COMMENT + ")?\\s*" + VerilogSyntax::NAME_VALUE
-        + ")*((\\s*,\\s*)|(\\s*))(" + VerilogSyntax::COMMENT + ")?"), Qt::CaseInsensitive);
+    //QRegExp declarRule(QString("(parameter\\s+\\w+\\s+\\w+)|(parameter)|(parameter\\s*(signed\\s*)?(\\w+\\s*\\[(?:\\w+)(?:\\s*(?:[+-]|[/*]{2}|[/*/])\\s*(?:\\w+))*\\s*[:]\\s*(?:\\w+)(?:\\s*(?:[+-]|[/*]{2}|[/*/])\\s*(?:\\w+))*\\])?)"), Qt::CaseInsensitive);
+
+    //QRegExp declarRule(QString("(parameter)?\\s*(((signed)?\\s*(\\w+" + VerilogSyntax::RANGE + ")?)|(\\w+)))?"), Qt::CaseInsensitive);
+    QRegExp declarRule(QString("parameter\\s+"), Qt::CaseInsensitive);
+
+    //qDebug() << declarRule.pattern() << endl;
 
     findDeclarations(declarRule, inspect, declarations);
 }
@@ -116,15 +129,17 @@ void VerilogParameterParser::findOldDeclarations(QString const &input, QStringLi
 
     // MUST have "parameter", may have "signed + range" OR one of those OR type. Is composed of name+value pairs,
     // posibly multiple times separated by comma. May have comments between. May have semicolon or comment the end.
-    QRegExp declarRule(QString("parameter\\s*(((signed)?\\s*(\\w+" + VerilogSyntax::RANGE + ")?)|(\\w+))\\s*" +
+    /*QRegExp declarRule(QString("parameter\\s*(((signed)?\\s*(\\w+" + VerilogSyntax::RANGE + ")?)|(\\w+))\\s*" +
         VerilogSyntax::NAME_VALUE + "(?:\\s*,\\s*(" + VerilogSyntax::COMMENT + ")?\\s*" + VerilogSyntax::NAME_VALUE
-        + ")*((\\s*;\\s*)|(\\s*))(" + VerilogSyntax::COMMENT + ")?"), Qt::CaseInsensitive);
+        + ")*((\\s*;\\s*)|(\\s*))(" + VerilogSyntax::COMMENT + ")?"), Qt::CaseInsensitive);*/
+
+    QRegExp declarRule(QString("parameter"), Qt::CaseInsensitive);
 
     findDeclarations(declarRule, inspect, declarations);
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogParameterParser::parseDeclarations()
+// Function: VerilogParameterParser::parseParameters()
 //-----------------------------------------------------------------------------
 void VerilogParameterParser::parseParameters(QString const &input,
     QList<QSharedPointer<ModelParameter>>& parameters)
@@ -134,8 +149,8 @@ void VerilogParameterParser::parseParameters(QString const &input,
     QString description = parseDescription(input);
 
     // Must have name-value pair, possibly multiple times separated by comma. May have comments between.
-    QRegExp parameterRule("(" + VerilogSyntax::NAME_VALUE + "(\\s*,\\s*(" + VerilogSyntax::COMMENT + ")?\\s*"
-        + VerilogSyntax::NAME_VALUE + ")*)", Qt::CaseInsensitive);
+    QRegExp parameterRule("(" + VerilogSyntax::NAME_VALUE + "(\\s*,\\s*(" + VerilogSyntax::COMMENT +
+        ")?\\s*" + VerilogSyntax::NAME_VALUE + ")*)", Qt::CaseInsensitive);
 
     parameterRule.indexIn( input );
     QString parametersString = parameterRule.cap(0);
@@ -146,11 +161,17 @@ void VerilogParameterParser::parseParameters(QString const &input,
     foreach ( QString parameter, parametersList )
     {
         // After acquiring a name value pair, we separate the name and the value from each other.
-        QRegExp splitRule("(\\w+)\\s*=\\s*(\\w+)", Qt::CaseInsensitive);
+        QRegExp splitRule("(\\w+)\\s*=((\\s*(" + VerilogSyntax::OPERATION_OR_ALPHANUMERIC + "))+)", Qt::CaseInsensitive);
         splitRule.indexIn(parameter);
 
         QString name = splitRule.cap(1);
         QString value = splitRule.cap(2);
+
+        QRegExp cullRule("//", Qt::CaseInsensitive);
+        int cullIndex = cullRule.indexIn(value);
+        value = value.left(cullIndex);
+
+        value = value.trimmed();
 
         // Each name value pair produces a new model parameter, but the type and the description is recycled.
         QSharedPointer<ModelParameter> modelParameter(new ModelParameter());
@@ -176,20 +197,24 @@ void VerilogParameterParser::parseParameters(QString const &input,
 //-----------------------------------------------------------------------------
 void VerilogParameterParser::findDeclarations(QRegExp &declarRule, QString &inspect, QStringList &declarations)
 {
+    int prevIndex = 0;
     int declarIndex = declarRule.indexIn(inspect);
+    declarRule.setMinimal(true);
 
     // Repeat the parsing until no more matches are found.
     while ( declarIndex != - 1)  
     {
         int declarLength = declarRule.matchedLength();
 
+        // Seek for the next match beginning from the end of the previous match.
+        prevIndex = declarIndex;
+        declarIndex = declarRule.indexIn(inspect, declarIndex  + declarLength + 1);
+
         // Take the matching part and append to the list.
-        QString declaration = inspect.mid( declarIndex, declarLength );
+        QString declaration = inspect.mid( prevIndex, declarIndex - prevIndex );
+
         declaration = declaration.trimmed();
         declarations.append(declaration);
-
-        // Seek for the next match beginning from the end of the previous match.
-        declarIndex = declarRule.indexIn(inspect, declarIndex + declarLength);
 
         // Highlight the selection if applicable.
         if (highlighter_)

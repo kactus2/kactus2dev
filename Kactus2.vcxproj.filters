@@ -3772,12 +3772,6 @@
     <ClCompile Include="GeneratedFiles\moc_ImportHighlighter.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="wizards\ComponentWizard\ImportEditor\ImportPortsModel.cpp">
-      <Filter>Source Files\wizards\ComponentWizard\ImportEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ImportPortsModel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5182,9 +5176,6 @@
       <Filter>Header Files\wizards\ComponentWizard\ImportEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="wizards\ComponentWizard\ImportEditor\ImportHighlighter.h">
-      <Filter>Header Files\wizards\ComponentWizard\ImportEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="wizards\ComponentWizard\ImportEditor\ImportPortsModel.h">
       <Filter>Header Files\wizards\ComponentWizard\ImportEditor</Filter>
     </CustomBuild>
   </ItemGroup>

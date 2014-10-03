@@ -38,9 +38,12 @@ namespace VerilogSyntax
 
     //! Multiline comments.
     const QRegExp MULTILINE_COMMENT("/\\*.*\\*/");  
+
+    // An expression that may an operator or an alphanumeric symbol.
+    const QString OPERATION_OR_ALPHANUMERIC("([+*\\(\\)\\{\\}/-])|([']?\\{)|(\\w+)|((\\w+)?'\\w+)");
     
     //! Name + value pair, eg name=value.
-    const QString NAME_VALUE = "\\w+\\s*=\\s*\\w+";  
+    const QString NAME_VALUE = "\\w+\\s*=(\\s*(" + OPERATION_OR_ALPHANUMERIC + "))+";  
 }
 
 #endif // VERILOGSYNTAX_H
