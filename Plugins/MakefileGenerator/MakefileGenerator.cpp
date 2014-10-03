@@ -210,7 +210,7 @@ void MakefileGenerator::writeExeBuild(QTextStream& outStream) const
 {
     //Rather straight forward: write constant build rule and a cleaner rule.
     outStream << "$(ENAME): $(OBJ)" << endl;
-    outStream << "\t$(EBUILDER) bin_$(ENAME) $(OBJ) $(EFLAGS)"
+    outStream << "\t$(EBUILDER) -o bin_$(ENAME) $(OBJ) $(EFLAGS)"
         << endl << endl;
 
     outStream << "clean:\n\trm -f $(ODIR)/*" << endl;
@@ -244,7 +244,7 @@ void MakefileGenerator::writeMakeObjects(MakefileParser::MakeFileData &mfd, QTex
         // Write the rule for building the individual object file.
         outStream << endl;
         outStream << "$(ODIR)/" << fileName << ".o:" << endl;
-        outStream << "\t" << compiler << " $(ODIR)/" << fileName << ".o " <<
+        outStream << "\t" << compiler << " -c -o $(ODIR)/" << fileName << ".o " <<
             General::getRelativePath(instancePath,mod.path) << "/" << fileName << " " << cFlags << endl;
     }
 }

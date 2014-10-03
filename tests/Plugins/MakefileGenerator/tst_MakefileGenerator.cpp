@@ -109,7 +109,7 @@ void tst_MakefileGenerator::baseCase()
     SWView* softView;
 
     createHW("hardware_0", design, "firmware", activeViews, hardView);
-    addCmd2View(hardView, "gcc -o", "cSource", "-hw", false);
+    addCmd2View(hardView, "gcc", "cSource", "-hw", false);
 
     QSharedPointer<Component> sw = createSW("software", "hardware_0", design, "default", activeViews, softView,"software_0");
 
@@ -118,7 +118,7 @@ void tst_MakefileGenerator::baseCase()
 
     QSharedPointer<FileSet> fileSet = sw->getFileSet(fileSetName);
     addFileToSet(fileSet, "array.c");
-    addCmd2View(softView, "gcc -o", "cSource", "-sw", false);
+    addCmd2View(softView, "gcc", "cSource", "-sw", false);
 
     desgconf->setViewConfigurations(activeViews);
 
@@ -132,9 +132,9 @@ void tst_MakefileGenerator::baseCase()
     verifyOutputContains("software_0", "ODIR= obj");
     verifyOutputContains("software_0", "ENAME= software_0");
     verifyOutputContains("software_0", "EFLAGS= $(includes)");
-    verifyOutputContains("software_0", "EBUILDER= gcc -o");
-    verifyOutputContains("software_0", "$(ENAME): $(OBJ)\n\t$(EBUILDER) bin_$(ENAME) $(OBJ) $(EFLAGS)");
-    verifyOutputContains("software_0", "gcc -o $(ODIR)/array.c.o ../../array.c $(includes) -sw -hw");
+    verifyOutputContains("software_0", "EBUILDER= gcc");
+    verifyOutputContains("software_0", "$(ENAME): $(OBJ)\n\t$(EBUILDER) -o bin_$(ENAME) $(OBJ) $(EFLAGS)");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(includes) -sw -hw");
 }
 
 void tst_MakefileGenerator::fileBuildOverride()
@@ -174,7 +174,7 @@ void tst_MakefileGenerator::fileBuildOverride()
     generator.generate(outputDir_);
 
     verifyOutputContains("software_0", "EFLAGS= $(includes) -sw");
-    verifyOutputContains("software_0", "python $(ODIR)/array.c.o ../../array.c $(includes) -l -sw");
+    verifyOutputContains("software_0", "python -c -o $(ODIR)/array.c.o ../../array.c $(includes) -l -sw");
 }
 
 void tst_MakefileGenerator::fileSetBuildOverride()
@@ -212,7 +212,7 @@ void tst_MakefileGenerator::fileSetBuildOverride()
     generator.generate(outputDir_);
 
     verifyOutputContains("software_0", "EFLAGS= $(includes) -sw");
-    verifyOutputContains("software_0", "javac -beef $(ODIR)/array.c.o ../../array.c $(includes) -lrt -sw");
+    verifyOutputContains("software_0", "javac -beef -c -o $(ODIR)/array.c.o ../../array.c $(includes) -lrt -sw");
 }
 
 void tst_MakefileGenerator::fileFlagReplace()
@@ -239,7 +239,7 @@ void tst_MakefileGenerator::fileFlagReplace()
     QSharedPointer<FileSet> fileSet = addFileSet(sw, fileSetName, softView);
 
     addFileToSet(fileSet, "array.c");
-    addCmd2View(softView, "gcc -o", "cSource", "-sw", false);
+    addCmd2View(softView, "gcc", "cSource", "-sw", false);
 
     QSharedPointer<File> file;
     getFile(file, sw, "array.c");
@@ -254,7 +254,7 @@ void tst_MakefileGenerator::fileFlagReplace()
     generator.generate(outputDir_);
 
     verifyOutputContains("software_0", "EFLAGS= $(includes) -sw");
-    verifyOutputContains("software_0", "gcc -o $(ODIR)/array.c.o ../../array.c $(includes) -u");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(includes) -u");
 }
 
 void tst_MakefileGenerator::fileSetFlagReplace()
@@ -280,7 +280,7 @@ void tst_MakefileGenerator::fileSetFlagReplace()
     QSharedPointer<FileSet> fileSet = addFileSet(sw, fileSetName, softView);
 
     addFileToSet(fileSet, "array.c");
-    addCmd2View(softView, "gcc -o", "cSource", "-sw", false);
+    addCmd2View(softView, "gcc", "cSource", "-sw", false);
     addFileSetBuilder(fileSet, "javac -beef", "cSource", "-lrt", true);
 
     desgconf->setViewConfigurations(activeViews);
@@ -292,7 +292,7 @@ void tst_MakefileGenerator::fileSetFlagReplace()
     generator.generate(outputDir_);
 
     verifyOutputContains("software_0", "EFLAGS= $(includes) -sw");
-    verifyOutputContains("software_0", "javac -beef $(ODIR)/array.c.o ../../array.c $(includes) -lrt");
+    verifyOutputContains("software_0", "javac -beef -c -o $(ODIR)/array.c.o ../../array.c $(includes) -lrt");
 }
 
 void tst_MakefileGenerator::includeFile()
@@ -321,8 +321,8 @@ void tst_MakefileGenerator::includeFile()
     addFileToSet(fileSet, "array.c");
     addFileToSet(fileSet, "array.h", "cSource", true);
 
-    addCmd2View(hardView, "gcc -o", "cSource", "-hw", false);
-    addCmd2View(softView, "gcc -o", "cSource", "-sw", false);
+    addCmd2View(hardView, "gcc", "cSource", "-hw", false);
+    addCmd2View(softView, "gcc", "cSource", "-sw", false);
 
     desgconf->setViewConfigurations(activeViews);
 
@@ -333,9 +333,9 @@ void tst_MakefileGenerator::includeFile()
     generator.generate(outputDir_);
 
     verifyOutputContains("software_0", "_OBJ= array.c.o\n");
-    verifyOutputContains("software_0", "EBUILDER= gcc -o");
+    verifyOutputContains("software_0", "EBUILDER= gcc");
     verifyOutputContains("software_0", "EFLAGS= $(includes) -hw -sw");
-    verifyOutputContains("software_0", "gcc -o $(ODIR)/array.c.o ../../array.c $(includes) -sw -hw");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(includes) -sw -hw");
 }
 
 void tst_MakefileGenerator::swSWViewFlagReplace()
@@ -363,8 +363,8 @@ void tst_MakefileGenerator::swSWViewFlagReplace()
     QSharedPointer<FileSet> fileSet = sw->getFileSet(fileSetName);
     addFileToSet(fileSet, "array.c");
 
-    addCmd2View(hardView, "gcc -o", "cSource", "-hw", false);
-    addCmd2View(softView, "gcc -o", "cSource", "-sw", true);
+    addCmd2View(hardView, "gcc", "cSource", "-hw", false);
+    addCmd2View(softView, "gcc", "cSource", "-sw", true);
 
     desgconf->setViewConfigurations(activeViews);
 
@@ -374,9 +374,9 @@ void tst_MakefileGenerator::swSWViewFlagReplace()
 
     generator.generate(outputDir_);
 
-    verifyOutputContains("software_0", "EBUILDER= gcc -o");
+    verifyOutputContains("software_0", "EBUILDER= gcc");
     verifyOutputContains("software_0", "EFLAGS= $(includes) -hw -sw");
-    verifyOutputContains("software_0", "gcc -o $(ODIR)/array.c.o ../../array.c $(includes) -sw\n");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(includes) -sw\n");
 }
 
 void tst_MakefileGenerator::hwBuilder()
@@ -405,7 +405,7 @@ void tst_MakefileGenerator::hwBuilder()
     addFileToSet(fileSet, "array.c");
     addFileSetBuilder(fileSet, "", "cSource", "-lrt", false);
 
-    addCmd2View(hardView, "super_asm -g", "cSource", "-hw", false);
+    addCmd2View(hardView, "super_asm", "cSource", "-hw", false);
     addCmd2View(softView, "", "cSource", "-sw", false);
 
     QSharedPointer<File> file;
@@ -420,9 +420,9 @@ void tst_MakefileGenerator::hwBuilder()
 
     generator.generate(outputDir_);
 
-    verifyOutputContains("software_0", "EBUILDER= super_asm -g");
+    verifyOutputContains("software_0", "EBUILDER= super_asm");
     verifyOutputContains("software_0", "EFLAGS= $(includes) -hw -sw");
-    verifyOutputContains("software_0", "super_asm -g $(ODIR)/array.c.o ../../array.c $(includes) -u -lrt -sw -hw");
+    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/array.c.o ../../array.c $(includes) -u -lrt -sw -hw");
 }
 
 void tst_MakefileGenerator::hwBuilderWithNoSoftView()
@@ -451,7 +451,7 @@ void tst_MakefileGenerator::hwBuilderWithNoSoftView()
     addFileToSet(fileSet, "array.c");
     addFileSetBuilder(fileSet, "", "cSource", "-lrt", false);
 
-    addCmd2View(hardView, "super_asm -g", "cSource", "-hw", false);
+    addCmd2View(hardView, "super_asm", "cSource", "-hw", false);
 
     QSharedPointer<File> file;
     getFile(file, sw, "array.c");
@@ -465,9 +465,9 @@ void tst_MakefileGenerator::hwBuilderWithNoSoftView()
 
     generator.generate(outputDir_);
 
-    verifyOutputContains("software_0", "EBUILDER= super_asm -g");
+    verifyOutputContains("software_0", "EBUILDER= super_asm");
     verifyOutputContains("software_0", "EFLAGS= $(includes) -hw");
-    verifyOutputContains("software_0", "super_asm -g $(ODIR)/array.c.o ../../array.c $(includes) -u -lrt -hw");
+    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/array.c.o ../../array.c $(includes) -u -lrt -hw");
 }
 
 void tst_MakefileGenerator::hwRef()
@@ -496,7 +496,7 @@ void tst_MakefileGenerator::hwRef()
     addFileToSet(fileSet, "array.c");
     addFileSetBuilder(fileSet, "", "cSource", "-lrt", false);
 
-    addCmd2View(hardView, "super_asm -g", "cSource", "-hw", false);
+    addCmd2View(hardView, "super_asm", "cSource", "-hw", false);
     addCmd2View(softView, "", "cSource", "-sw", false);
 
     QSharedPointer<File> file;
@@ -511,9 +511,9 @@ void tst_MakefileGenerator::hwRef()
 
     generator.generate(outputDir_);
 
-    verifyOutputContains("software_0", "EBUILDER= super_asm -g");
+    verifyOutputContains("software_0", "EBUILDER= super_asm");
     verifyOutputContains("software_0", "EFLAGS= $(includes) -hw");
-    verifyOutputContains("software_0", "super_asm -g $(ODIR)/array.c.o ../../array.c $(includes) -u -lrt -hw");
+    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/array.c.o ../../array.c $(includes) -u -lrt -hw");
 }
 
 void tst_MakefileGenerator::hwandswRef()
@@ -537,7 +537,7 @@ void tst_MakefileGenerator::hwandswRef()
 
     addFileToSet(hfileSet, "harray.c");
     addFileSetBuilder(hfileSet, "", "cSource", "-hset", false);
-    addCmd2View(hardView, "super_asm -g", "cSource", "-hw", false);
+    addCmd2View(hardView, "super_asm", "cSource", "-hw", false);
 
     QSharedPointer<File> hfile;
     getFile(hfile, hw, "harray.c");
@@ -566,10 +566,10 @@ void tst_MakefileGenerator::hwandswRef()
     generator.generate(outputDir_);
 
     verifyOutputContains("software_0", "_OBJ= sarray.c.o harray.c.o");
-    verifyOutputContains("software_0", "EBUILDER= super_asm -g");
+    verifyOutputContains("software_0", "EBUILDER= super_asm");
     verifyOutputContains("software_0", "EFLAGS= $(includes) -hw -sw");
-    verifyOutputContains("software_0", "super_asm -g $(ODIR)/sarray.c.o ../../sarray.c $(includes) -su -sset -sw -hw");
-    verifyOutputContains("software_0", "super_asm -g $(ODIR)/harray.c.o ../../harray.c $(includes) -hu -hset -hw");
+    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/sarray.c.o ../../sarray.c $(includes) -su -sset -sw -hw");
+    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/harray.c.o ../../harray.c $(includes) -hu -hset -hw");
 }
 
 void tst_MakefileGenerator::instanceHeaders()
@@ -603,8 +603,8 @@ void tst_MakefileGenerator::instanceHeaders()
     QSharedPointer<FileSet> topFileSet2 = topComponent->getFileSet(topFileSetName2);
     addFileToSet(topFileSet2, "joku.h", "cSource", true);
 
-    addCmd2View(hardView, "gcc -o", "cSource", "-hw", false);
-    addCmd2View(softView, "gcc -o", "cSource", "-sw", false);
+    addCmd2View(hardView, "gcc", "cSource", "-hw", false);
+    addCmd2View(softView, "gcc", "cSource", "-sw", false);
 
     desgconf->setViewConfigurations(activeViews);
 
@@ -645,8 +645,8 @@ void tst_MakefileGenerator::multipleFiles()
     addFileToSet(fileSet, "array.h", "cSource", true);
     addFileToSet(fileSet, "support.h", "cSource", true);
 
-    addCmd2View(hardView, "gcc -o", "cSource", "-hw", false);
-    addCmd2View(softView, "gcc -o", "cSource", "-sw", false);
+    addCmd2View(hardView, "gcc", "cSource", "-hw", false);
+    addCmd2View(softView, "gcc", "cSource", "-sw", false);
 
     QSharedPointer<File> file;
     getFile(file, sw, "support.c");
@@ -661,12 +661,12 @@ void tst_MakefileGenerator::multipleFiles()
     generator.generate(outputDir_);
 
     verifyOutputContains("software_0", "_OBJ= array.c.o support.c.o additional.c.o hiterbehn.c.o");
-    verifyOutputContains("software_0", "EBUILDER= gcc -o");
+    verifyOutputContains("software_0", "EBUILDER= gcc");
     verifyOutputContains("software_0", "EFLAGS= $(includes) -hw -sw");
-    verifyOutputContains("software_0", "gcc -o $(ODIR)/array.c.o ../../array.c $(includes) -sw -hw");
-    verifyOutputContains("software_0", "continental $(ODIR)/support.c.o ../../support.c $(includes) -y -sw -hw");
-    verifyOutputContains("software_0", "gcc -o $(ODIR)/additional.c.o ../../additional.c $(includes) -sw -hw");
-    verifyOutputContains("software_0", "gcc -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -sw -hw");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(includes) -sw -hw");
+    verifyOutputContains("software_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(includes) -y -sw -hw");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/additional.c.o ../../additional.c $(includes) -sw -hw");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -sw -hw");
 }
 
 void tst_MakefileGenerator::multipleFileSets()
@@ -698,8 +698,8 @@ void tst_MakefileGenerator::multipleFileSets()
     addFileToSet(afileSet, "array.h", "cSource", true);
     addFileToSet(bfileSet, "support.h", "cSource", true);
 
-    addCmd2View(hardView, "gcc -o", "cSource", "-hw", false);
-    addCmd2View(softView, "gcc -o", "cSource", "-sw", false);
+    addCmd2View(hardView, "gcc", "cSource", "-hw", false);
+    addCmd2View(softView, "gcc", "cSource", "-sw", false);
 
     QSharedPointer<File> file;
     getFile(file, sw, "support.c");
@@ -714,12 +714,12 @@ void tst_MakefileGenerator::multipleFileSets()
     generator.generate(outputDir_);
 
     verifyOutputContains("software_0", "_OBJ= array.c.o support.c.o additional.c.o hiterbehn.c.o");
-    verifyOutputContains("software_0", "EBUILDER= gcc -o");
+    verifyOutputContains("software_0", "EBUILDER= gcc");
     verifyOutputContains("software_0", "EFLAGS= $(includes) -hw -sw");
-    verifyOutputContains("software_0", "gcc -o $(ODIR)/array.c.o ../../array.c $(includes) -sw -hw");
-    verifyOutputContains("software_0", "continental $(ODIR)/support.c.o ../../support.c $(includes) -y -sw -hw");
-    verifyOutputContains("software_0", "gcc -o $(ODIR)/additional.c.o ../../additional.c $(includes) -sw -hw");
-    verifyOutputContains("software_0", "gcc -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -sw -hw");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(includes) -sw -hw");
+    verifyOutputContains("software_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(includes) -y -sw -hw");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/additional.c.o ../../additional.c $(includes) -sw -hw");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -sw -hw");
 }
 
 void tst_MakefileGenerator::multipleComponents()
@@ -750,8 +750,8 @@ void tst_MakefileGenerator::multipleComponents()
     addFileToSet(afileSet, "array.h", "cSource", true);
     addFileToSet(bfileSet, "support.h", "cSource", true);
 
-    addCmd2View(hardView, "hopo -s", "cSource", "-hw", false);
-    addCmd2View(bsoftView, "asm-meister -g", "cSource", "-bmw", false);
+    addCmd2View(hardView, "hopo", "cSource", "-hw", false);
+    addCmd2View(bsoftView, "asm-meister", "cSource", "-bmw", false);
 
     QSharedPointer<File> file;
     getFile(file, asw, "support.c");
@@ -765,17 +765,17 @@ void tst_MakefileGenerator::multipleComponents()
 
     generator.generate(outputDir_);
 
-    verifyOutputContains("crapware_0", "EBUILDER= hopo -s");
+    verifyOutputContains("crapware_0", "EBUILDER= hopo");
     verifyOutputContains("crapware_0", "EFLAGS= $(includes) -hw");
     verifyOutputContains("crapware_0", "_OBJ= array.c.o support.c.o");
-    verifyOutputContains("crapware_0", "hopo -s $(ODIR)/array.c.o ../../array.c $(includes) -hw");
-    verifyOutputContains("crapware_0", "continental $(ODIR)/support.c.o ../../support.c $(includes) -y -hw");
+    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(includes) -hw");
+    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(includes) -y -hw");
 
-    verifyOutputContains("stackware_0", "EBUILDER= hopo -s");
+    verifyOutputContains("stackware_0", "EBUILDER= hopo");
     verifyOutputContains("stackware_0", "EFLAGS= $(includes) -hw -bmw");
     verifyOutputContains("stackware_0", "_OBJ= additional.c.o hiterbehn.c.o");
-    verifyOutputContains("stackware_0", "asm-meister -g $(ODIR)/additional.c.o ../../additional.c $(includes) -bmw -hw");
-    verifyOutputContains("stackware_0", "asm-meister -g $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -bmw -hw");
+    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(includes) -bmw -hw");
+    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -bmw -hw");
 }
 
 void tst_MakefileGenerator::multipleHardWare()
@@ -807,10 +807,10 @@ void tst_MakefileGenerator::multipleHardWare()
     addFileToSet(bfileSet, "hiterbehn.c");
     addFileToSet(bfileSet, "support.h", "cSource", true);
 
-    addCmd2View(ahardView, "hopo -s", "cSource", "-ahw", false);
+    addCmd2View(ahardView, "hopo", "cSource", "-ahw", false);
     addCmd2View(bhardView, "juu -f", "cSource", "-bhw", false);
 
-    addCmd2View(bsoftView, "asm-meister -g", "cSource", "-bmw", false);
+    addCmd2View(bsoftView, "asm-meister", "cSource", "-bmw", false);
 
     QSharedPointer<File> file;
     getFile(file, asw, "support.c");
@@ -824,17 +824,17 @@ void tst_MakefileGenerator::multipleHardWare()
 
     generator.generate(outputDir_);
 
-    verifyOutputContains("crapware_0", "EBUILDER= hopo -s");
+    verifyOutputContains("crapware_0", "EBUILDER= hopo");
     verifyOutputContains("crapware_0", "EFLAGS= $(includes) -ahw");
     verifyOutputContains("crapware_0", "_OBJ= array.c.o support.c.o");
-    verifyOutputContains("crapware_0", "hopo -s $(ODIR)/array.c.o ../../array.c $(includes) -ahw");
-    verifyOutputContains("crapware_0", "continental $(ODIR)/support.c.o ../../support.c $(includes) -y -ahw");
+    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(includes) -ahw");
+    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(includes) -y -ahw");
 
     verifyOutputContains("stackware_0", "EBUILDER= juu -f");
     verifyOutputContains("stackware_0", "EFLAGS= $(includes) -bhw -bmw");
     verifyOutputContains("stackware_0", "_OBJ= additional.c.o hiterbehn.c.o");
-    verifyOutputContains("stackware_0", "asm-meister -g $(ODIR)/additional.c.o ../../additional.c $(includes) -bmw -bhw");
-    verifyOutputContains("stackware_0", "asm-meister -g $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -bmw -bhw");
+    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(includes) -bmw -bhw");
+    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -bmw -bhw");
 }
 
 void tst_MakefileGenerator::multipleHardWareMedRefs()
@@ -872,10 +872,10 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
     addFileToSet(bfileSet, "hiterbehn.c");
     addFileToSet(bfileSet, "support.h", "cSource", true);
 
-    addCmd2View(ahardView, "hopo -s", "cSource", "-ahw", false);
-    addCmd2View(bhardView, "juu -f", "cSource", "-bhw", false);
+    addCmd2View(ahardView, "hopo", "cSource", "-ahw", false);
+    addCmd2View(bhardView, "juu", "cSource", "-bhw", false);
 
-    addCmd2View(bsoftView, "asm-meister -g", "cSource", "-bmw", false);
+    addCmd2View(bsoftView, "asm-meister", "cSource", "-bmw", false);
 
     QSharedPointer<File> file;
     getFile(file, asw, "support.c");
@@ -889,17 +889,17 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
 
     generator.generate(outputDir_);
 
-    verifyOutputContains("crapware_0", "EBUILDER= hopo -s");
+    verifyOutputContains("crapware_0", "EBUILDER= hopo");
     verifyOutputContains("crapware_0", "EFLAGS= $(includes) -ahw");
     verifyOutputContains("crapware_0", "_OBJ= array.c.o support.c.o");
-    verifyOutputContains("crapware_0", "hopo -s $(ODIR)/array.c.o ../../array.c $(includes) -ahw");
-    verifyOutputContains("crapware_0", "continental $(ODIR)/support.c.o ../../support.c $(includes) -y -ahw");
+    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(includes) -ahw");
+    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(includes) -y -ahw");
 
-    verifyOutputContains("stackware_0", "EBUILDER= juu -f");
+    verifyOutputContains("stackware_0", "EBUILDER= juu");
     verifyOutputContains("stackware_0", "EFLAGS= $(includes) -bhw -bmw");
     verifyOutputContains("stackware_0", "_OBJ= additional.c.o hiterbehn.c.o");
-    verifyOutputContains("stackware_0", "asm-meister -g $(ODIR)/additional.c.o ../../additional.c $(includes) -bmw -bhw");
-    verifyOutputContains("stackware_0", "asm-meister -g $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -bmw -bhw");
+    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(includes) -bmw -bhw");
+    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -bmw -bhw");
 }
 
 void tst_MakefileGenerator::noHardWare()
@@ -918,7 +918,7 @@ void tst_MakefileGenerator::noHardWare()
 
     QSharedPointer<FileSet> fileSet = sw->getFileSet(fileSetName);
     addFileToSet(fileSet, "array.c");
-    addCmd2View(softView, "gcc -o", "cSource", "-sw", false);
+    addCmd2View(softView, "gcc", "cSource", "-sw", false);
 
     desgconf->setViewConfigurations(activeViews);
 
@@ -932,7 +932,7 @@ void tst_MakefileGenerator::noHardWare()
     verifyOutputContains("software_0", "OBJ= $(patsubst %,$(ODIR)/%,$(_OBJ))");
     verifyOutputContains("software_0", "EBUILDER= ");
     verifyOutputContains("software_0", "EFLAGS= $(includes) -sw");
-    verifyOutputContains("software_0", "gcc -o $(ODIR)/array.c.o ../../array.c $(includes) -sw");
+    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(includes) -sw");
 }
 
 void tst_MakefileGenerator::multipleInstances()
@@ -971,8 +971,8 @@ void tst_MakefileGenerator::multipleInstances()
     addFileToSet(fileSet, "array.h", "cSource", true);
     addFileToSet(fileSet, "support.h", "cSource", true);
 
-    addCmd2View(hardView, "hopo -s", "cSource", "-hw", false);
-    addCmd2View(softView, "asm-meister -g", "cSource", "-bmw", false);
+    addCmd2View(hardView, "hopo", "cSource", "-hw", false);
+    addCmd2View(softView, "asm-meister", "cSource", "-bmw", false);
 
     desgconf->setViewConfigurations(activeViews);
 
@@ -982,10 +982,10 @@ void tst_MakefileGenerator::multipleInstances()
 
     generator.generate(outputDir_);
 
-    verifyOutputContains("stackware_0", "EBUILDER= hopo -s");
+    verifyOutputContains("stackware_0", "EBUILDER= hopo");
     verifyOutputContains("stackware_0", "EFLAGS= $(includes) -hw -bmw");
 
-    verifyOutputContains("stackware_1", "EBUILDER= hopo -s");
+    verifyOutputContains("stackware_1", "EBUILDER= hopo");
     verifyOutputContains("stackware_1", "EFLAGS= $(includes) -hw -bmw");
 }
 
@@ -1034,7 +1034,7 @@ void tst_MakefileGenerator::apiUsage()
     addFileToSet(bfileSet, "support.h", "cSource", true);
 
     addCmd2View(hardView, "hopo -s", "cSource", "-hw", false);
-    addCmd2View(bsoftView, "asm-meister -g", "cSource", "-bmw", false);
+    addCmd2View(bsoftView, "asm-meister", "cSource", "-bmw", false);
 
     QSharedPointer<File> file;
     getFile(file, asw, "support.c");
@@ -1051,11 +1051,11 @@ void tst_MakefileGenerator::apiUsage()
     verifyOutputContains("crapware_0", "EBUILDER= hopo -s");
     verifyOutputContains("crapware_0", "EFLAGS= $(includes) -hw");
     verifyOutputContains("crapware_0", "_OBJ= array.c.o support.c.o additional.c.o hiterbehn.c.o");
-    verifyOutputContains("crapware_0", "hopo -s $(ODIR)/array.c.o ../../array.c $(includes) -hw");
-    verifyOutputContains("crapware_0", "continental $(ODIR)/support.c.o ../../support.c $(includes) -y -hw");
+    verifyOutputContains("crapware_0", "hopo -s -c -o $(ODIR)/array.c.o ../../array.c $(includes) -hw");
+    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(includes) -y -hw");
 
-    verifyOutputContains("crapware_0", "asm-meister -g $(ODIR)/additional.c.o ../../additional.c $(includes) -bmw -hw");
-    verifyOutputContains("crapware_0", "asm-meister -g $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -bmw -hw");
+    verifyOutputContains("crapware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(includes) -bmw -hw");
+    verifyOutputContains("crapware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -bmw -hw");
 }
 
 void tst_MakefileGenerator::threeLevelStack()
@@ -1122,7 +1122,7 @@ void tst_MakefileGenerator::threeLevelStack()
     addFileToSet(cfileSet, "ok.c");
     addFileToSet(cfileSet, "ok.h", "cSource", true);
 
-    addCmd2View(hardView, "hopo -s", "cSource", "-hw", false);
+    addCmd2View(hardView, "hopo", "cSource", "-hw", false);
 
     QSharedPointer<File> file;
     getFile(file, asw, "support.c");
@@ -1137,16 +1137,16 @@ void tst_MakefileGenerator::threeLevelStack()
 
     generator.generate(outputDir_);
 
-    verifyOutputContains("crapware_0", "EBUILDER= hopo -s");
+    verifyOutputContains("crapware_0", "EBUILDER= hopo");
     verifyOutputContains("crapware_0", "EFLAGS= $(includes) -hw");
     verifyOutputContains("crapware_0", "_OBJ= array.c.o support.c.o additional.c.o hiterbehn.c.o ok.c.o");
-    verifyOutputContains("crapware_0", "hopo -s $(ODIR)/array.c.o ../../array.c $(includes) -hw");
-    verifyOutputContains("crapware_0", "continental $(ODIR)/support.c.o ../../support.c $(includes) -y -hw");
+    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(includes) -hw");
+    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(includes) -y -hw");
 
-    verifyOutputContains("crapware_0", "jaska $(ODIR)/additional.c.o ../../additional.c $(includes) -g -hw");
-    verifyOutputContains("crapware_0", "jaska $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -g -hw");
+    verifyOutputContains("crapware_0", "jaska -c -o $(ODIR)/additional.c.o ../../additional.c $(includes) -g -hw");
+    verifyOutputContains("crapware_0", "jaska -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -g -hw");
 
-    verifyOutputContains("crapware_0", "hopo -s $(ODIR)/ok.c.o ../../ok.c $(includes) -hw");
+    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/ok.c.o ../../ok.c $(includes) -hw");
 }
 
 void tst_MakefileGenerator::fullCircularapiUsage()
@@ -1226,7 +1226,7 @@ void tst_MakefileGenerator::fullCircularapiUsage()
     addFileToSet(cfileSet, "ok.c");
     addFileToSet(cfileSet, "ok.h", "cSource", true);
 
-    addCmd2View(hardView, "hopo -s", "cSource", "-hw", false);
+    addCmd2View(hardView, "hopo", "cSource", "-hw", false);
 
     QSharedPointer<File> file;
     getFile(file, asw, "support.c");
@@ -1323,7 +1323,7 @@ void tst_MakefileGenerator::circularapiUsage()
     addFileToSet(cfileSet, "ok.c");
     addFileToSet(cfileSet, "ok.h", "cSource", true);
 
-    addCmd2View(hardView, "hopo -s", "cSource", "-hw", false);
+    addCmd2View(hardView, "hopo", "cSource", "-hw", false);
 
     QSharedPointer<File> file;
     getFile(file, asw, "support.c");
@@ -1338,16 +1338,16 @@ void tst_MakefileGenerator::circularapiUsage()
 
     generator.generate(outputDir_);
 
-    verifyOutputContains("crapware_0", "EBUILDER= hopo -s");
+    verifyOutputContains("crapware_0", "EBUILDER= hopo");
     verifyOutputContains("crapware_0", "EFLAGS= $(includes) -hw");
     verifyOutputContains("crapware_0", "_OBJ= array.c.o support.c.o additional.c.o hiterbehn.c.o ok.c.o");
-    verifyOutputContains("crapware_0", "hopo -s $(ODIR)/array.c.o ../../array.c $(includes) -hw");
-    verifyOutputContains("crapware_0", "continental $(ODIR)/support.c.o ../../support.c $(includes) -y -hw");
+    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(includes) -hw");
+    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(includes) -y -hw");
 
-    verifyOutputContains("crapware_0", "jaska $(ODIR)/additional.c.o ../../additional.c $(includes) -g -hw");
-    verifyOutputContains("crapware_0", "jaska $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -g -hw");
+    verifyOutputContains("crapware_0", "jaska -c -o $(ODIR)/additional.c.o ../../additional.c $(includes) -g -hw");
+    verifyOutputContains("crapware_0", "jaska -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -g -hw");
 
-    verifyOutputContains("crapware_0", "hopo -s $(ODIR)/ok.c.o ../../ok.c $(includes) -hw");
+    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/ok.c.o ../../ok.c $(includes) -hw");
 }
 
 QSharedPointer<Component> tst_MakefileGenerator::createDesign(QSharedPointer<Design> &design,

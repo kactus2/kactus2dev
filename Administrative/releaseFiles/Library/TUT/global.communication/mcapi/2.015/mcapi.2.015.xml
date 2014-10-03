@@ -17,5 +17,6 @@
 		<kactus2:property kactus2:name="port_id" kactus2:required="true" kactus2:propertyType="integer" kactus2:defaultValue="0" kactus2:description=""/>
 		<kactus2:property kactus2:name="remote_endpoint_name" kactus2:required="true" kactus2:propertyType="string" kactus2:defaultValue="" kactus2:description=""/>
 		<kactus2:property kactus2:name="handle_name" kactus2:required="true" kactus2:propertyType="string" kactus2:defaultValue="" kactus2:description=""/>
+		<kactus2:property kactus2:name="scalar_size" kactus2:required="true" kactus2:propertyType="integer" kactus2:defaultValue="" kactus2:description=""/>
 	</kactus2:properties>
 </kactus2:comDefinition>
