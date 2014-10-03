@@ -46,6 +46,9 @@
     <ClCompile Include="..\common\HDLEquationParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="VerilogParameterParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="verilogimport_global.h">
@@ -58,6 +61,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\HDLmath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VerilogParameterParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

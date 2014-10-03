@@ -54,8 +54,7 @@ private:
 
     void runParser(QString const& input);
 
-    void verifyNotHighlightedBeforeDeclaration(int declarationStartIndex, 
-        QColor const& highlightColor);
+    void verifyNotHighlightedBeforeDeclaration(int declarationStartIndex, QColor const& highlightColor);
     void verifyDeclarationIsHighlighted(const int declarationStartIndex, 
         const int declarationLength, QColor const& expectedHighlight) const;
     void verifyNotHighlightedAfterDeclartion(const int declarationStartIndex, 

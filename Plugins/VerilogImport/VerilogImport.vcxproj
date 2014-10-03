@@ -79,11 +79,13 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="VerilogImporter.cpp" />
+    <ClCompile Include="VerilogParameterParser.cpp" />
     <ClCompile Include="VerilogPortParser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\HDLEquationParser.h" />
     <ClInclude Include="..\common\HDLmath.h" />
+    <ClInclude Include="VerilogParameterParser.h" />
     <ClInclude Include="VerilogPortParser.h" />
     <CustomBuild Include="VerilogImporter.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

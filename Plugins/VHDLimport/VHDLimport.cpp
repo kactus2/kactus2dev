@@ -50,13 +50,9 @@ VHDLimport::VHDLimport() : QObject(0),
 {
     connect(portParser_, SIGNAL(add(QSharedPointer<Port>, QString const&)), 
         this, SLOT(onPortParsed(QSharedPointer<Port>, QString const&)), Qt::UniqueConnection);
-    connect(portParser_, SIGNAL(highlight(QString const&, QColor const&)), 
-        this, SLOT(highlight(QString const&, QColor const&)), Qt::UniqueConnection);
 
     connect(genericParser_, SIGNAL(add(QSharedPointer<ModelParameter>)), 
         this, SLOT(onGenericParsed(QSharedPointer<ModelParameter>)), Qt::UniqueConnection);
-    connect(genericParser_, SIGNAL(highlight(QString const&, QColor const&)), 
-        this, SLOT(highlight(QString const&, QColor const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
