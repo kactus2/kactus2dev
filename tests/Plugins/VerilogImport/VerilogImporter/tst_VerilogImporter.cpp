@@ -47,6 +47,9 @@ private slots:
     void testModuleIsHighlighted();
     void testModuleIsHighlighted_data();
 
+    void testParameterInPortDeclaration();
+    void testParameterInPortDeclaration_data();
+
     void testModelNameAndEnvironmentIsImportedToView();
     void testModelNameAndEnvironmentIsImportedToView_data();
 
@@ -62,6 +65,7 @@ private:
 
     void verifySectionFontColorIs(int startIndex, int endIndex, QColor const& expectedFontColor);
    
+
     QSharedPointer<Component> importComponent_;
 
     QPlainTextEdit displayEditor_;
@@ -451,6 +455,69 @@ void tst_VerilogImporter::testParameterIsHighlighted_data()
         "endmodule"
         << 
         "parameter size = 8;";
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testParameterInPortDeclaration()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testParameterInPortDeclaration()
+{
+    QFETCH(QString, fileContent);
+    QFETCH(int, expectedLeftBound);
+    QFETCH(int, expectedRightBound);
+
+    runParser(fileContent);
+
+    QVERIFY2(importComponent_->getPorts().count() != 0, "No ports parsed from input.");
+
+    QSharedPointer<Port> createdPort = importComponent_->getPorts().first();
+    QCOMPARE(createdPort->getLeftBound(), expectedLeftBound);
+    QCOMPARE(createdPort->getRightBound(), expectedRightBound);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testParameterInPortDeclaration_data()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testParameterInPortDeclaration_data()
+{
+    QTest::addColumn<QString>("fileContent");
+    QTest::addColumn<int>("expectedLeftBound");
+    QTest::addColumn<int>("expectedRightBound");
+
+    QTest::newRow("Parameter as left port bound") <<
+        "module test #(parameter left = 4) (\n"
+        "   input [left:0] data\n"
+        ");\n"
+        "endmodule"
+        << 4 << 0;
+
+    QTest::newRow("Parameter as right port bound") <<
+        "module test #(parameter right = 4) (\n"
+        "   input [0:right] data\n"
+        ");\n"
+        "endmodule"
+        << 0 << 4;
+
+    QTest::newRow("Parameters in left bound equation") <<
+        "module test #(\n"
+        "   parameter data_bits = 32,\n"
+        "   parameter addr_bits = 8\n"
+        ")(\n"
+        "   input [data_bits + addr_bits:0] bus\n"
+        ");\n"
+        "endmodule"
+        << 32 + 8 << 0;
+
+    QTest::newRow("Parameters and constants in left bound equation") <<
+        "module test #(\n"
+        "   parameter data_bits = 8,\n"
+        "   parameter data_bus_count = 3"        
+        ")(\n"
+        "   input [data_bits ** data_bus_count - 1:0] data_bus\n"
+        ");\n"
+        "endmodule"
+        << 8*8*8 - 1 << 0;
 }
 
 //-----------------------------------------------------------------------------
