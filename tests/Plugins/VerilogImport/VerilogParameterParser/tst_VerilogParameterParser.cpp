@@ -43,6 +43,7 @@ private slots:
     void multipleOldParameters();
     void variantOldParameters();
     void multiOldParameters();
+    void oldWithEndModule();
     void doubleMultiOldParameters();
 
     void parametersToComponent();
@@ -397,6 +398,26 @@ void tst_VerilogParameterParser::multiOldParameters()
         "//vali spiikki \n"
         "olololoo= 1234, //hopotus\n"
         "juuuuu = 22;//hapatus";
+
+    VerilogParameterParser parser;
+    QStringList declarations; parser.findOldDeclarations(input, declarations);
+    QList<QSharedPointer<ModelParameter>> parameters; parser.parseParameters(declarations[0], parameters);
+
+    verifyParameter( parameters[0], "joku", "8", "", "hapatus" );
+    verifyParameter( parameters[1], "olololoo", "1234", "", "hapatus" );
+    verifyParameter( parameters[2], "juuuuu", "22", "", "hapatus" );
+}
+
+void tst_VerilogParameterParser::oldWithEndModule()
+{
+    QString input = "module shifter (\n"
+        "ok tttt=8\n"
+        ");\n"
+        "parameter joku=8, \n"
+        "//vali spiikki \n"
+        "olololoo= 1234, //hopotus\n"
+        "juuuuu = 22;//hapatus\n"
+        "endmodule";
 
     VerilogParameterParser parser;
     QStringList declarations; parser.findOldDeclarations(input, declarations);

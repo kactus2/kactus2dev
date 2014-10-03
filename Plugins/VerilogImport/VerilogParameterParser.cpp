@@ -87,7 +87,7 @@ void VerilogParameterParser::findANSIDeclarations(QString const &input, QStringL
     // In the ANSI style parameter declarations the parameters are contained WITHIN the module header.
     int endIndex = VerilogSyntax::MODULE_BEGIN.indexIn(input) + VerilogSyntax::MODULE_BEGIN.matchedLength();
 
-    // And that is why only the module header is inspected int he parsing.
+    // And that is why only the module header is inspected in the parsing.
     QString inspect = input.mid( 0, endIndex );
 
     // We shall also take the last parentheses out of the string.
@@ -101,14 +101,7 @@ void VerilogParameterParser::findANSIDeclarations(QString const &input, QStringL
 
     cullStrayComments(inspect);
 
-    // May have "parameter", may have "signed + range" OR one of those OR type. Is composed of name+value pairs,
-    // possibly multiple times separated by comma. May have comments between. May have comma or comment the end.
-    //QRegExp declarRule(QString("(parameter\\s+\\w+\\s+\\w+)|(parameter)|(parameter\\s*(signed\\s*)?(\\w+\\s*\\[(?:\\w+)(?:\\s*(?:[+-]|[/*]{2}|[/*/])\\s*(?:\\w+))*\\s*[:]\\s*(?:\\w+)(?:\\s*(?:[+-]|[/*]{2}|[/*/])\\s*(?:\\w+))*\\])?)"), Qt::CaseInsensitive);
-
-    //QRegExp declarRule(QString("(parameter)?\\s*(((signed)?\\s*(\\w+" + VerilogSyntax::RANGE + ")?)|(\\w+)))?"), Qt::CaseInsensitive);
     QRegExp declarRule(QString("parameter\\s+"), Qt::CaseInsensitive);
-
-    //qDebug() << declarRule.pattern() << endl;
 
     findDeclarations(declarRule, inspect, declarations);
 }
@@ -118,22 +111,17 @@ void VerilogParameterParser::findANSIDeclarations(QString const &input, QStringL
 //-----------------------------------------------------------------------------
 void VerilogParameterParser::findOldDeclarations(QString const &input, QStringList& declarations)
 {
-    // In the OLD style parameter declarations the parameters are after the module header.
-    int endIndex = VerilogSyntax::MODULE_BEGIN.indexIn(input) + VerilogSyntax::MODULE_BEGIN.matchedLength();
+    // In the OLD style parameter declarations the parameters are between module header and footer.
+    int startIndex = VerilogSyntax::MODULE_BEGIN.indexIn(input) + VerilogSyntax::MODULE_BEGIN.matchedLength();
+    int length = VerilogSyntax::MODULE_END.indexIn(input) - startIndex;
 
-    // And that is why the module header is ripped off before further parsing.
+    // And that is why the inspected the region between the header and footer are included to the parsing.
     QString joku = input;
-    QString inspect = joku.remove( 0, endIndex + 1 );
+    QString inspect = joku.mid( startIndex, length );
 
     cullStrayComments(inspect);
 
-    // MUST have "parameter", may have "signed + range" OR one of those OR type. Is composed of name+value pairs,
-    // posibly multiple times separated by comma. May have comments between. May have semicolon or comment the end.
-    /*QRegExp declarRule(QString("parameter\\s*(((signed)?\\s*(\\w+" + VerilogSyntax::RANGE + ")?)|(\\w+))\\s*" +
-        VerilogSyntax::NAME_VALUE + "(?:\\s*,\\s*(" + VerilogSyntax::COMMENT + ")?\\s*" + VerilogSyntax::NAME_VALUE
-        + ")*((\\s*;\\s*)|(\\s*))(" + VerilogSyntax::COMMENT + ")?"), Qt::CaseInsensitive);*/
-
-    QRegExp declarRule(QString("parameter"), Qt::CaseInsensitive);
+    QRegExp declarRule(QString("parameter\\s+"), Qt::CaseInsensitive);
 
     findDeclarations(declarRule, inspect, declarations);
 }
