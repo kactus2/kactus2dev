@@ -34,20 +34,17 @@
     <ClCompile Include="VerilogImporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VerilogPortParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\HDLEquationParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VerilogParameterParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_VerilogImporter.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_VerilogImporter.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="VerilogPortParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\HDLEquationParser.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VerilogParameterParser.cpp">
       <Filter>Source Files</Filter>
@@ -69,13 +66,16 @@
     <ClInclude Include="VerilogParameterParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="verilogimportplugin.json" />
+    <ClInclude Include="VerilogSyntax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="VerilogImporter.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="verilogimportplugin.json" />
   </ItemGroup>
 </Project>

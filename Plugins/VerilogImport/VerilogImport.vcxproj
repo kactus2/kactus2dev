@@ -87,6 +87,7 @@
     <ClInclude Include="..\common\HDLmath.h" />
     <ClInclude Include="VerilogParameterParser.h" />
     <ClInclude Include="VerilogPortParser.h" />
+    <ClInclude Include="VerilogSyntax.h" />
     <CustomBuild Include="VerilogImporter.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing VerilogImporter.h...</Message>

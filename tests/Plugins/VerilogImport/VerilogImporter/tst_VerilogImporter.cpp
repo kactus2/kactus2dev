@@ -339,7 +339,6 @@ void tst_VerilogImporter::verifyNotHighlightedAfterDeclartion(const int declarat
 //-----------------------------------------------------------------------------
 void tst_VerilogImporter::testParameterIsHighlighted()
 {
-
     QFETCH(QString, fileContent);
     QFETCH(QString, parameterDeclaration);
 
@@ -652,6 +651,12 @@ void tst_VerilogImporter::testModelNameAndEnvironmentIsImportedToView_data()
         <<
         "basic";
     
+    QTest::newRow("Module without port brackets") <<
+        "module tb;\n"
+        "endmodule\n"
+        <<
+        "tb";
+
     QTest::newRow("Ports and parameters") <<
         "// File header for half_adder.\n"
         "module half_adder(\n"        

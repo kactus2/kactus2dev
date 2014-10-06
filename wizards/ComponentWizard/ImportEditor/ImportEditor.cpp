@@ -101,6 +101,8 @@ void ImportEditor::initializeFileSelection()
     {
         fileSelector_->addFilter(possibleFileSuffix);
     }
+
+    onRefresh();
 }
 
 //-----------------------------------------------------------------------------

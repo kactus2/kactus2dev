@@ -17,7 +17,7 @@
 namespace VerilogSyntax
 {
     //! Module begins with module <name> #(<parameters>) ( followed by ports.
-    const QRegExp MODULE_BEGIN("module\\s+(\\w+)\\s*(#\\s*[(][^)]*[)])?\\s*[(]", Qt::CaseSensitive);
+    const QRegExp MODULE_BEGIN("module\\s+(\\w+)\\s*(#\\s*[(][^)]*[)])?\\s*(?=[(][^)]*[)])?", Qt::CaseSensitive);
 
     //! Module ends with keyword endmodule.
     const QRegExp MODULE_END("endmodule", Qt::CaseSensitive);
@@ -39,7 +39,7 @@ namespace VerilogSyntax
     //! Multiline comments.
     const QRegExp MULTILINE_COMMENT("/\\*.*\\*/");  
 
-    // An expression that may an operator or an alphanumeric symbol.
+    //! An expression that may an operator or an alphanumeric symbol.
     const QString OPERATION_OR_ALPHANUMERIC("([+*\\(\\)\\{\\}/-])|([']?\\{)|(\\w+)|((\\w+)?'\\w+)");
     
     //! Name + value pair, eg name=value.
