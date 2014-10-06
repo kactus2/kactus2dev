@@ -82,13 +82,22 @@ void VerilogParameterParser::findANSIDeclarations(QString const &input, QStringL
     // And that is why only the module header is inspected in the parsing.
     QString inspect = input.mid( 0, endIndex );
 
-    // We shall also take the last parentheses out of the string.
-    QRegExp pars(QString("[)]\\s*[(]"), Qt::CaseInsensitive);
-    int parLoc = pars.lastIndexIn(inspect);
+    // We shall further crop until the start of the ports or if not encountered, until the end of the module begin.
+    QRegExp ports(QString("([)]\\s*[(])"), Qt::CaseInsensitive);
+    QRegExp beginEnd(QString("([)])"), Qt::CaseInsensitive);
+    int portLoc = ports.lastIndexIn(inspect);
+    int endLoc = beginEnd.lastIndexIn(inspect);
 
-    if ( parLoc != -1 )
+    int loc = portLoc;
+
+    if ( loc == -1 )
     {
-        inspect = inspect.left(parLoc);
+        loc = endLoc;
+    }
+
+    if ( loc != -1 )
+    {
+        inspect = inspect.left(loc);
     }
 
     cullStrayComments(inspect);
