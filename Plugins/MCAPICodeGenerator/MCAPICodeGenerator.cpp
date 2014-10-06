@@ -279,7 +279,7 @@ void MCAPICodeGenerator::generateMCAPIForComponent(QString dir, QSharedPointer<C
     QSharedPointer<FileSet> fileSet = component->getFileSet("generatedMCAPI");
     fileSet->setGroups("sourceFiles");
 
-    QList<QSharedPointer<FileBuilder>> fblist = fileSet->getDefaultFileBuilders();
+    QList<QSharedPointer<FileBuilder> > fblist = fileSet->getDefaultFileBuilders();
 
     bool hasCBuild = false;
 
