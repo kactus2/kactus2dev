@@ -118,16 +118,16 @@ QString VerilogPortParser::findPortsSection(QString const& input) const
 //-----------------------------------------------------------------------------
 bool VerilogPortParser::hasVerilog1995Ports(QString const& input) const
 {
-    bool hasPortsAfterModuleDeclaration = (PORT_1995.indexIn(input, findEndOfModuleDeclaration(input)) != -1);
+    bool hasPortsAfterModuleDeclaration = (PORT_1995.indexIn(input, findStartOfPortList(input)) != -1);
     return hasPortsAfterModuleDeclaration;
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogPortParser::findEndOfModuleDeclaration()
+// Function: VerilogPortParser::findStartOfPortList()
 //-----------------------------------------------------------------------------
-int VerilogPortParser::findEndOfModuleDeclaration(QString const& input) const
+int VerilogPortParser::findStartOfPortList(QString const& input) const
 {
-    return VerilogSyntax::MODULE_BEGIN.indexIn(input) + VerilogSyntax::MODULE_BEGIN.matchedLength();
+    return input.lastIndexOf('(', VerilogSyntax::MODULE_BEGIN.indexIn(input)) + 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -135,10 +135,10 @@ int VerilogPortParser::findEndOfModuleDeclaration(QString const& input) const
 //-----------------------------------------------------------------------------
 QString VerilogPortParser::findVerilog1995PortsSectionInModule(QString const& input) const
 {    
-    int endOfModuleDeclaration = findEndOfModuleDeclaration(input);    
-    int endOfModule = VerilogSyntax::MODULE_END.indexIn(input, endOfModuleDeclaration);
+    int startOfPortList = findStartOfPortList(input);    
+    int endOfModule = VerilogSyntax::MODULE_END.indexIn(input, startOfPortList);
 
-    QString section = input.mid(endOfModuleDeclaration, endOfModule - endOfModuleDeclaration);
+    QString section = input.mid(startOfPortList, endOfModule - startOfPortList);
     section = removeCommentLines(section);
 
     int firstPort = PORT_1995.indexIn(section);
@@ -164,7 +164,7 @@ QString VerilogPortParser::findVerilog2001PortsSection(QString const& input) con
 {
     QRegExp portsEnd("[)];");
 
-    int portSectionBegin = findEndOfModuleDeclaration(input);
+    int portSectionBegin = findStartOfPortList(input);
     int portSectionEnd = portsEnd.indexIn(input, portSectionBegin);
 
     bool noPortSection = (portSectionBegin == -1 || portSectionEnd == -1);

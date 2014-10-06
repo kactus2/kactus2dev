@@ -90,7 +90,7 @@ private:
      *
      *      @return The character index in the input for the end of module declaration.
      */
-    int findEndOfModuleDeclaration(QString const& input) const;
+    int findStartOfPortList(QString const& input) const;
 
     /*!
      *  Finds the section in the input containing all Verilog-1995 style ports.

@@ -16,8 +16,8 @@
 
 namespace VerilogSyntax
 {
-    //! Module begins with module <name> #(<parameters>) ( followed by ports.
-    const QRegExp MODULE_BEGIN("module\\s+(\\w+)\\s*(#\\s*[(].*[)])?\\s*(?=[(].*[)];)?", Qt::CaseSensitive);
+    //! Module begins with module <name> #(<parameters>) (<ports>);.
+    const QRegExp MODULE_BEGIN("module\\s+(\\w+)\\s*(#\\s*[(].*[)])?\\s*(?=([(][^)][)])?\\s*;)?", Qt::CaseSensitive);
 
     //! Module ends with keyword endmodule.
     const QRegExp MODULE_END("endmodule", Qt::CaseSensitive);
