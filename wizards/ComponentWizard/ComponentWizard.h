@@ -50,11 +50,6 @@ public:
      */
     QSharedPointer<Component> getComponent();
 
-    /*!
-     *  Returns the base path.
-     */
-    QString const& getBasePath() const;
-
 protected:
 
     /*!
@@ -85,11 +80,9 @@ private:
     //! The original component before import.
     QSharedPointer<Component> originalComponent_;
 
-    //! The component after import.
+    //! The working copy of a component after import.
     QSharedPointer<Component> workingComponent_;
 
-    //! The component base path.
-    QString basePath_;
 };
 
 #endif // COMPONENTWIZARD_H

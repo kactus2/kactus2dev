@@ -11,7 +11,6 @@
 
 #include "ComponentWizardDependencyPage.h"
 
-#include "ComponentWizard.h"
 #include "ComponentWizardPages.h"
 
 #include <editors/ComponentEditor/fileSet/filesetsdelegate.h>
@@ -24,14 +23,15 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardDependencyPage::ComponentWizardDependencyPage()
 //-----------------------------------------------------------------------------
-ComponentWizardDependencyPage::ComponentWizardDependencyPage(PluginManager const& pluginMgr, ComponentWizard* parent)
+ComponentWizardDependencyPage::ComponentWizardDependencyPage(QSharedPointer<Component> component, 
+    QString const& componentPath, PluginManager const& pluginMgr, QWidget* parent)
     : QWizardPage(parent),
-      parent_(parent),
+      component_(component),
       splitter_(Qt::Vertical, this),
       view_(&splitter_),
-      model_(parent->getComponent(), this),
+      model_(component_, this),
       proxy_(this),
-      editor_(parent->getComponent(), parent->getBasePath(), pluginMgr, &splitter_)
+      editor_(component_, componentPath, pluginMgr, &splitter_)
 {
     setTitle(tr("Dependency Analysis & File Sets"));
     setSubTitle(tr("Check for missing files with dependency analysis and create file sets."));
@@ -104,7 +104,7 @@ ComponentWizardDependencyPage::~ComponentWizardDependencyPage()
 //-----------------------------------------------------------------------------
 int ComponentWizardDependencyPage::nextId() const
 {
-     if (parent_->getComponent()->getComponentImplementation() == KactusAttribute::KTS_HW)
+     if (component_->getComponentImplementation() == KactusAttribute::KTS_HW)
     {
         return ComponentWizardPages::IMPORT;
     }
@@ -120,8 +120,8 @@ int ComponentWizardDependencyPage::nextId() const
 void ComponentWizardDependencyPage::initializePage()
 {
     // Clear file sets.
-    QList< QSharedPointer<FileSet> > fileSets;
-    parent_->getComponent()->setFileSets(fileSets);
+    QList< QSharedPointer<FileSet> > emptyFileSets;
+    component_->setFileSets(emptyFileSets);
     model_.refresh();
 
     // Start the scan.
@@ -133,5 +133,5 @@ void ComponentWizardDependencyPage::initializePage()
 //-----------------------------------------------------------------------------
 bool ComponentWizardDependencyPage::isComplete() const
 {
-    return (!editor_.isScanning());
+    return !editor_.isScanning();
 }

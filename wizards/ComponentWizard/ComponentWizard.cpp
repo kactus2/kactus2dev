@@ -32,8 +32,7 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
 	                             QWidget* parent)
     : QWizard(parent),
 	  originalComponent_(component),
-      workingComponent_(component),
-	  basePath_(basePath)
+      workingComponent_(component)
 {
 	setWindowTitle(tr("Component Wizard for %1").arg(component->getVlnv()->toString()));
     setWizardStyle(ModernStyle);
@@ -43,14 +42,14 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
     setOption(NoDefaultButton, true);
     setOption(HaveFinishButtonOnEarlyPages, true);
 
+    ComponentWizardImportPage* importPage = new ComponentWizardImportPage(component, handler, pluginMgr, this);
+
     setPage(ComponentWizardPages::INTRO, new ComponentWizardIntroPage(component, this));
     setPage(ComponentWizardPages::GENERAL, new ComponentWizardGeneralInfoPage(component, this));    
-    setPage(ComponentWizardPages::FILES, new ComponentWizardFilesPage(this));
-    setPage(ComponentWizardPages::DEPENDENCY, new ComponentWizardDependencyPage(pluginMgr, this)); 
-    
-    ComponentWizardImportPage* importPage = new ComponentWizardImportPage(component, handler, pluginMgr, this);
+    setPage(ComponentWizardPages::FILES, new ComponentWizardFilesPage(component, basePath, this));
+    setPage(ComponentWizardPages::DEPENDENCY, new ComponentWizardDependencyPage(component, basePath, pluginMgr, 
+        this));     
     setPage(ComponentWizardPages::IMPORT, importPage);
-
     setPage(ComponentWizardPages::CONCLUSION, new ComponentWizardConclusionPage(handler, this));
 
     connect(importPage, SIGNAL(componentChanged(QSharedPointer<Component>)), 
@@ -71,14 +70,6 @@ ComponentWizard::~ComponentWizard()
 QSharedPointer<Component> ComponentWizard::getComponent()
 {
     return workingComponent_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentWizard::getBasePath()
-//-----------------------------------------------------------------------------
-QString const& ComponentWizard::getBasePath() const
-{
-    return basePath_;
 }
 
 //-----------------------------------------------------------------------------

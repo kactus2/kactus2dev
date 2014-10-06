@@ -76,23 +76,24 @@ int ComponentWizardConclusionPage::nextId() const
 void ComponentWizardConclusionPage::initializePage()
 {
    //QString summary = "The component will be created with the following details.<br><br>";
+    QSharedPointer<Component> component =  parent_->getComponent();
 
-    VLNV* vlnv = parent_->getComponent()->getVlnv();
+    VLNV* vlnv = component->getVlnv();
     vendorLabel_->setText(vlnv->getVendor());
     libraryLabel_->setText(vlnv->getLibrary());
     nameLabel_->setText(vlnv->getName());
     versionLabel_->setText(vlnv->getVersion());    
-    if (parent_->getComponent()->getComponentImplementation() == KactusAttribute::KTS_HW)
+    if (component->getComponentImplementation() == KactusAttribute::KTS_HW)
     {
-        hierarchyLabel_->setText(KactusAttribute::valueToString(parent_->getComponent()->getComponentHierarchy()));
-        firmnessLabel_->setText(KactusAttribute::valueToString(parent_->getComponent()->getComponentFirmness()));
+        hierarchyLabel_->setText(KactusAttribute::valueToString(component->getComponentHierarchy()));
+        firmnessLabel_->setText(KactusAttribute::valueToString(component->getComponentFirmness()));
     }
 
-	QString xmlPath = handler_->getPath(*parent_->getComponent()->getVlnv());
+	QString xmlPath = handler_->getPath(*component->getVlnv());
     directoryLabel_->setText(xmlPath);  
-    authorLabel_->setText(parent_->getComponent()->getAuthor());
+    authorLabel_->setText(component->getAuthor());
 
-    if (parent_->getComponent()->getFileSets().isEmpty())
+    if (component->getFileSets().isEmpty())
     {
         filesetsLabel_->setText("No file sets specified.");
     }
@@ -100,7 +101,7 @@ void ComponentWizardConclusionPage::initializePage()
     {
         QString fileSets = "";
 
-        foreach (QSharedPointer<FileSet> fileSet, parent_->getComponent()->getFileSets())
+        foreach (QSharedPointer<FileSet> fileSet, component->getFileSets())
         {
             if( fileSet->getFiles().count() == 1 )
             {
@@ -115,28 +116,28 @@ void ComponentWizardConclusionPage::initializePage()
         filesetsLabel_->setText(fileSets.left(fileSets.lastIndexOf("<br")));
     }
 
-    if (parent_->getComponent()->getComponentImplementation() == KactusAttribute::KTS_HW)
+    if (component->getComponentImplementation() == KactusAttribute::KTS_HW)
     {
-        if (parent_->getComponent()->getModelParameters().isEmpty())
+        if (component->getModelParameters().isEmpty())
         {
             parametersLabel_->setText("No model parameters imported.");
         }
         else
         {
-            parametersLabel_->setText(tr("%1 model parameters imported.").arg(parent_->getComponent()->getModelParameters().size()));
+            parametersLabel_->setText(tr("%1 model parameters imported.").arg(component->getModelParameters().size()));
         }
-        if (parent_->getComponent()->getPorts().isEmpty())
+        if (component->getPorts().isEmpty())
         {
             portsLabel_->setText("No ports imported.");
         }
         else
         {
-            portsLabel_->setText(tr("%1 ports imported.").arg(parent_->getComponent()->getPorts().size()));
+            portsLabel_->setText(tr("%1 ports imported.").arg(component->getPorts().size()));
         }
     }
 
-    descriptionLabel_->setText(parent_->getComponent()->getDescription());
-    previewBox_.setComponent(parent_->getComponent());
+    descriptionLabel_->setText(component->getDescription());
+    previewBox_.setComponent(component);
 }
 
 //-----------------------------------------------------------------------------
@@ -144,7 +145,6 @@ void ComponentWizardConclusionPage::initializePage()
 //-----------------------------------------------------------------------------
 void ComponentWizardConclusionPage::setupLayout()
 {
-
     QGridLayout* layout = new QGridLayout();
     int row = 0;
 

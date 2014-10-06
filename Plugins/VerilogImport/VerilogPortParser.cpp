@@ -28,8 +28,7 @@ namespace
     const QString PORT_DIRECTION("input|output|inout");
 
     //! Verilog port types.
-    const QString PORT_TYPE("wire|reg|integer|time|tri|tri0|tri1|triand|trior|trireg|supply0|supply1|wand|wor|"
-        "logic");
+    const QString PORT_TYPE("\\w+");
 
     //! Verilog ports in both ANSI-C and Verilog-1995 style.
     const QRegExp PORT_EXP("(" + PORT_DIRECTION + ")\\s+(" + PORT_TYPE + ")?\\s*(?:signed)?\\s*"

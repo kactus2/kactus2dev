@@ -11,19 +11,18 @@
 
 #include "ComponentWizardFilesPage.h"
 
-#include "ComponentWizard.h"
 #include "ComponentWizardPages.h"
 
-#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <IPXACTmodels/component.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardFilesPage::ComponentWizardFilesPage()
 //-----------------------------------------------------------------------------
-ComponentWizardFilesPage::ComponentWizardFilesPage(ComponentWizard* parent)
+ComponentWizardFilesPage::ComponentWizardFilesPage(QSharedPointer<Component> component, 
+    QString const& componentPath, QWidget* parent)
     : QWizardPage(parent),
-      parent_(parent),
-      editor_(parent->getBasePath(), QStringList(), this)
+      component_(component),
+      editor_(componentPath, QStringList(), this)
 {
     setTitle(tr("Add Files"));
     setSubTitle(tr("Add files to the component by specifying the source directories to scan."));
@@ -54,6 +53,6 @@ int ComponentWizardFilesPage::nextId() const
 //-----------------------------------------------------------------------------
 bool ComponentWizardFilesPage::validatePage()
 {
-    parent_->getComponent()->setSourceDirectories(editor_.getSourceDirectories());
+    component_->setSourceDirectories(editor_.getSourceDirectories());
     return true;
 }

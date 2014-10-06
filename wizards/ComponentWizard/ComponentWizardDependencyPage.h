@@ -21,8 +21,6 @@
 #include <QSortFilterProxyModel>
 #include <QSplitter>
 
-class ComponentWizard;
-
 //-----------------------------------------------------------------------------
 //! Files page for the component wizard.
 //-----------------------------------------------------------------------------
@@ -35,7 +33,8 @@ public:
      *      @param [in] pluginMgr  The plugin manager.
      *      @param [in] parent     The parent wizard.
      */
-    ComponentWizardDependencyPage(PluginManager const& pluginMgr, ComponentWizard* parent);
+    ComponentWizardDependencyPage(QSharedPointer<Component> component, QString const& componentPath, 
+        PluginManager const& pluginMgr, QWidget* parent);
 
     /*!
      *  Destructor.
@@ -66,8 +65,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The parent wizard.
-    ComponentWizard* parent_;
+    //! The target component.
+    QSharedPointer<Component> component_;
 
     //! Splitter for the fileset table and dependency graph.
     QSplitter splitter_;

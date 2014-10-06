@@ -16,20 +16,22 @@
 
 #include <QWizardPage>
 
-class ComponentWizard;
-
+class Component;
 //-----------------------------------------------------------------------------
 //! Files page for the component wizard.
 //-----------------------------------------------------------------------------
 class ComponentWizardFilesPage : public QWizardPage
 {
 public:
+
     /*!
-     *  Constructor.
+     *  The constructor.
      *
-     *      @param [in] parent The parent wizard.
+     *      @param [in] component       The component to edit.
+     *      @param [in] componentPath   The path to the component xml.
+     *      @param [in] parent          The parent widget.
      */
-    ComponentWizardFilesPage(ComponentWizard* parent);
+    ComponentWizardFilesPage(QSharedPointer<Component> component, QString const& componentPath, QWidget* parent);
 
     /*!
      *  Destructor.
@@ -55,8 +57,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The parent wizard.
-    ComponentWizard* parent_;
+    //! The target component.
+    QSharedPointer<Component> component_;
 
     //! The source directories editor.
     FileDependencySourceEditor editor_;
