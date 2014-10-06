@@ -21,7 +21,7 @@
 
 #include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
-#include <Plugins/PluginSystem/ImportPlugin/PortSource.h>
+
 #include <Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h>
 
 #include <QSharedPointer>
@@ -30,7 +30,7 @@
 class Component;
 class View;
 
-class VERILOGIMPORT_EXPORT VerilogImporter: public QObject, public ImportPlugin, public PortSource, 
+class VERILOGIMPORT_EXPORT VerilogImporter: public QObject, public ImportPlugin, 
     public ModelParameterSource, public HighlightSource
 {
     Q_OBJECT
@@ -107,14 +107,6 @@ public:
      *      @param [in] visualizer   The visualizer to use.          
      */
     virtual void setHighlighter(Highlighter* highlighter);
-        
-    /*!
-     *  Sets the given port visualizer to be used by the import.
-     *
-     *      @param [in] visualizer   The visualizer to use.          
-     */
-   
-    virtual void setPortVisualizer(PortVisualizer* visualizer);
 
     /*!
      *  Sets the given model parameter visualizer to be used by the import.
@@ -171,7 +163,11 @@ private:
      *  Sets the language and environmental identifiers in the rtl view.
      */
     void setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Component> targetComponent) const;    
-    
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! The port parser to use for importing ports.
     VerilogPortParser portParser_;
 

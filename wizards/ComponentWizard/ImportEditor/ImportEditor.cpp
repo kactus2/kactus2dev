@@ -10,8 +10,6 @@
 //-----------------------------------------------------------------------------
 
 #include "ImportEditor.h"
-
-#include "PortEditorAdapter.h"
 #include "ModelParameterEditorAdapter.h"
 
 #include <common/widgets/FileSelector/fileselector.h>
@@ -36,7 +34,7 @@
 #include <QTextBlock>
 
 //-----------------------------------------------------------------------------
-// Function: VhdlImportEditor::VhdlImportEditor()
+// Function: ImportEditor::ImportEditor()
 //-----------------------------------------------------------------------------
 ImportEditor::ImportEditor(QSharedPointer<Component> component, 
 	LibraryInterface* handler,
@@ -46,36 +44,31 @@ ImportEditor::ImportEditor(QSharedPointer<Component> component,
     splitter_(Qt::Vertical, this),
 	componentXmlPath_(handler->getPath(*component->getVlnv())),
     component_(component),
+    importComponent_(new Component(*component_)),
     selectedSourceFile_(),
-    modelParameterEditor_(new ModelParameterEditor(component, handler, &splitter_)),
-    portEditor_(new PortsEditor(component, handler, &splitter_)),
+    modelParameterEditor_(new ModelParameterEditor(importComponent_, handler, &splitter_)),
+    portEditor_(new PortsEditor(importComponent_, handler, &splitter_)),
     sourceDisplayer_(new QPlainTextEdit(this)),
     fileSelector_(new FileSelector(component, this)),
     editButton_(new QPushButton(tr("Open editor"), this)),
     refreshButton_(new QPushButton(QIcon(":/icons/common/graphics/refresh.png"), "", this)),
     highlighter_(new ImportHighlighter(sourceDisplayer_, this)),
-    portAdapter_(portEditor_),
     modelParameterAdapter_(modelParameterEditor_),
     runner_(new ImportRunner(this))
 {
-	Q_ASSERT(component);
-
 	// CSV import/export is disabled in the wizard.
 	modelParameterEditor_->setAllowImportExport(false);
 	portEditor_->setAllowImportExport(false);
 
     runner_->setHighlighter(highlighter_);
-    runner_->setPortVisualizer(&portAdapter_);
     runner_->setModelParameterVisualizer(&modelParameterAdapter_);
     runner_->loadImportPlugins(pluginMgr);
 
     setSourceDisplayFormatting();
 
-    connect(modelParameterEditor_, SIGNAL(contentChanged()),
-        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(modelParameterEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-    connect(portEditor_, SIGNAL(contentChanged()),
-        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(portEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(fileSelector_, SIGNAL(fileSelected(const QString&)),
         this, SLOT(onFileSelected(const QString&)), Qt::UniqueConnection);
@@ -87,7 +80,7 @@ ImportEditor::ImportEditor(QSharedPointer<Component> component,
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlImportEditor::~VhdlImportEditor()
+// Function: ImportEditor::~ImportEditor()
 //-----------------------------------------------------------------------------
 ImportEditor::~ImportEditor()
 {
@@ -95,7 +88,7 @@ ImportEditor::~ImportEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlImportEditor::initializeFileSelection()
+// Function: ImportEditor::initializeFileSelection()
 //-----------------------------------------------------------------------------
 void ImportEditor::initializeFileSelection()
 {
@@ -111,7 +104,7 @@ void ImportEditor::initializeFileSelection()
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlImportEditor::checkEditorValidity()
+// Function: ImportEditor::checkEditorValidity()
 //-----------------------------------------------------------------------------
 bool ImportEditor::checkEditorValidity() const
 {
@@ -119,22 +112,17 @@ bool ImportEditor::checkEditorValidity() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlImportEditor::onFileSelected()
+// Function: ImportEditor::onFileSelected()
 //-----------------------------------------------------------------------------
 void ImportEditor::onFileSelected(QString const& filePath)
 {
-    if (filePath.isEmpty())
-    {
-        return;
-    }
-
     selectedSourceFile_ = filePath;
 
     onRefresh();
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlImportEditor::onOpenEditor()
+// Function: ImportEditor::onOpenEditor()
 //-----------------------------------------------------------------------------
 void ImportEditor::onOpenEditor() 
 {
@@ -145,21 +133,23 @@ void ImportEditor::onOpenEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlImportEditor::onRefresh()
+// Function: ImportEditor::onRefresh()
 //-----------------------------------------------------------------------------
 void ImportEditor::onRefresh() 
 {
-    if (!selectedSourceFile_.isEmpty())
-    {
-        loadFileToDisplay();
-        runner_->parse(selectedSourceFile_, componentXmlPath_, component_);
+    loadFileToDisplay();
+    importComponent_ = runner_->parse(selectedSourceFile_, componentXmlPath_, component_);
 
-        scrollSourceDisplayToFirstHighlight();
-    }
+    scrollSourceDisplayToFirstHighlight();
+    portEditor_->setComponent(importComponent_);
+    modelParameterEditor_->setComponent(importComponent_);
+
+    emit componentChanged(importComponent_);
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlImportEditor::setSourceEditorFormatting()
+// Function: ImportEditor::setSourceEditorFormatting()
 //-----------------------------------------------------------------------------
 void ImportEditor::setSourceDisplayFormatting()
 {
@@ -175,7 +165,7 @@ void ImportEditor::setSourceDisplayFormatting()
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlImportEditor::fileSuffixesForTypes()
+// Function: ImportEditor::fileSuffixesForTypes()
 //-----------------------------------------------------------------------------
 QStringList ImportEditor::fileExtensionsForTypes(QStringList possibleFileTypes) const
 {
@@ -205,7 +195,7 @@ QStringList ImportEditor::fileExtensionsForTypes(QStringList possibleFileTypes) 
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlImportEditor::selectedFileAbsolutePath()
+// Function: ImportEditor::selectedFileAbsolutePath()
 //-----------------------------------------------------------------------------
 QString ImportEditor::selectedFileAbsolutePath() const
 {
@@ -213,10 +203,16 @@ QString ImportEditor::selectedFileAbsolutePath() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlImportEditor::loadFileToDisplay()
+// Function: ImportEditor::loadFileToDisplay()
 //-----------------------------------------------------------------------------
 void ImportEditor::loadFileToDisplay()
 {
+    if (selectedSourceFile_.isEmpty())
+    {
+        sourceDisplayer_->setPlainText(QString());
+        return;
+    }
+
     QFile importFile(selectedFileAbsolutePath());
     if (!importFile.open(QIODevice::ReadOnly))
     {
@@ -230,7 +226,7 @@ void ImportEditor::loadFileToDisplay()
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlImportEditor::scrollToFirstHighlight()
+// Function: ImportEditor::scrollToFirstHighlight()
 //-----------------------------------------------------------------------------
 void ImportEditor::scrollSourceDisplayToFirstHighlight() const
 {
@@ -250,7 +246,7 @@ void ImportEditor::scrollSourceDisplayToFirstHighlight() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VhdlImportEditor::setupLayout()
+// Function: ImportEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void ImportEditor::setupLayout()
 {
@@ -280,7 +276,7 @@ void ImportEditor::setupLayout()
     sourceLayout->setContentsMargins(0, 0, 0, 0);
 
     QHBoxLayout* selectorLayout = new QHBoxLayout();
-    QLabel* vhdlLabel = new QLabel(tr("Top-level VHDL file:"), this);
+    QLabel* vhdlLabel = new QLabel(tr("Top-level file to import:"), this);
     selectorLayout->addWidget(vhdlLabel);
     selectorLayout->addWidget(fileSelector_, 1);
     selectorLayout->addWidget(editButton_);    

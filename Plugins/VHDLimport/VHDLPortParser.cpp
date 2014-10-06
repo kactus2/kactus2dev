@@ -50,7 +50,7 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: VHDLPortParser::()
 //-----------------------------------------------------------------------------
-VHDLPortParser::VHDLPortParser(QObject* parent): QObject(parent), ports_(), highlighter_(0), portVisualizer_(0)
+VHDLPortParser::VHDLPortParser(QObject* parent): QObject(parent), highlighter_(0)
 {
 
 }
@@ -87,14 +87,6 @@ void VHDLPortParser::setHighlighter(Highlighter* highlighter)
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLPortParser::setPortVisualizer()
-//-----------------------------------------------------------------------------
-void VHDLPortParser::setPortVisualizer(PortVisualizer* visualizer)
-{
-    portVisualizer_ = visualizer;
-}
-
-//-----------------------------------------------------------------------------
 // Function: VHDLPortParser::parseLeftBound()
 //-----------------------------------------------------------------------------
 int VHDLPortParser::parseLeftBound(QString const& input, QSharedPointer<Component> ownerComponent) const
@@ -125,22 +117,6 @@ QString VHDLPortParser::parseDefaultValue(QString const& input) const
 {
     PORT_EXP.indexIn(input);
     return PORT_EXP.cap(4).trimmed();
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLPortParser::clear()
-//-----------------------------------------------------------------------------
-void VHDLPortParser::removePreviousPorts()
-{
-    if (portVisualizer_)
-    {
-        foreach (QSharedPointer<Port> port, ports_)
-        {
-            portVisualizer_->removePort(port);
-        }
-    }
-
-    ports_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -223,13 +199,8 @@ void VHDLPortParser::createPortFromDeclaration(QString const& declaration, QShar
         QSharedPointer<Port> port(new Port(name, direction, leftBound, rightBound, type, "", defaultValue, 
             description));
         
-        ports_.append(port);
-        emit add(port, declaration);
 
-        if (portVisualizer_)
-        {
-            portVisualizer_->addPort(port);
-        }
+        emit add(port, declaration);
         targetComponent->addPort(port);
     }
 }

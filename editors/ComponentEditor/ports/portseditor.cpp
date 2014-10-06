@@ -27,9 +27,7 @@
 #include <QMessageBox>
 #include <QHeaderView>
 
-PortsEditor::PortsEditor(QSharedPointer<Component> component,
-						 LibraryInterface* handler,
-						 QWidget *parent):
+PortsEditor::PortsEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget *parent):
 ItemEditor(component, handler, parent),
 view_(this), 
 model_(component, this),
@@ -50,8 +48,6 @@ handler_(handler)
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-    connect(&model_, SIGNAL(lockedPortRemoved(QSharedPointer<Port>)),
-		this, SIGNAL(lockedPortRemoved(QSharedPointer<Port>)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
@@ -115,18 +111,21 @@ void PortsEditor::setAllowImportExport( bool allow ) {
 	view_.setAllowImportExport(allow);
 }
 
-void PortsEditor::addPort( QSharedPointer<Port> port ) {
-	model_.addPort(port);
+//-----------------------------------------------------------------------------
+// Function: PortsEditor::setComponent()
+//-----------------------------------------------------------------------------
+void PortsEditor::setComponent(QSharedPointer<Component> component)
+{
+    component_ = component;
+    model_.setComponentAndLockCurrentPorts(component_);
 }
 
-void PortsEditor::removePort( QSharedPointer<Port> port ) {
-	// find the index for the model parameter
-	QModelIndex portIndex = model_.index(port);
-
-	// if the model parameter was found
-	if (portIndex.isValid()) {
-		model_.onRemoveItem(portIndex);
-	}
+//-----------------------------------------------------------------------------
+// Function: PortsEditor::addPort()
+//-----------------------------------------------------------------------------
+void PortsEditor::addPort( QSharedPointer<Port> port )
+{
+	model_.addPort(port);
 }
 
 //-----------------------------------------------------------------------------

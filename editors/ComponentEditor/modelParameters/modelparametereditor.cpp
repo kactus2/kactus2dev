@@ -99,6 +99,14 @@ void ModelParameterEditor::refresh() {
 }
 
 //-----------------------------------------------------------------------------
+// Function: ModelParameterEditor::setComponent()
+//-----------------------------------------------------------------------------
+void ModelParameterEditor::setComponent(QSharedPointer<Component> component)
+{
+    model_.setComponentAndLockCurrentModelParameters(component);
+}
+
+//-----------------------------------------------------------------------------
 // Function: showEvent()
 //-----------------------------------------------------------------------------
 void ModelParameterEditor::showEvent( QShowEvent* event ) {

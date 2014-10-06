@@ -37,9 +37,7 @@ public:
 	 * \param parent Pointer to the owner of this widget.
 	 *
 	*/
-	PortsEditor(QSharedPointer<Component> component, 
-		LibraryInterface* handler,
-		QWidget *parent = 0);
+	PortsEditor(QSharedPointer<Component> component, LibraryInterface* handler,	QWidget *parent = 0);
 
 	//! \brief The destructor
 	virtual ~PortsEditor();
@@ -65,12 +63,14 @@ public:
 	*/
 	void setAllowImportExport(bool allow);
 
-signals:
-
     /*!
-     *  Emitted when a locked port is removed from the model.
+     *  Sets the edited component.
+     *
+     *      @param [in] component   The component whose ports to edit.
      */
-    void lockedPortRemoved(QSharedPointer<Port> removedPort);
+    void setComponent(QSharedPointer<Component> component);
+
+signals:
 
     /*!
      *  Emitted when a new interface should be added to the component editor tree view.
@@ -90,18 +90,8 @@ public slots:
 	*/
 	void addPort(QSharedPointer<Port> port);
 
-	/*! \brief Remove port from the editor.
-	 *
-	 * Method: 		removePort
-	 * Full name:	PortsEditor::removePort
-	 * Access:		public 
-	 *
-	 * \param portName The name of the port to be remove.
-	 *
-	*/
-	void removePort(QSharedPointer<Port> port);
-
 protected:
+
     //! Called when the editor is shown.
     virtual void showEvent(QShowEvent* event);
 

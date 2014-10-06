@@ -13,7 +13,6 @@
 #define VHDLIMPORTEDITOR_H
 
 #include "ModelParameterEditorAdapter.h"
-#include "PortEditorAdapter.h"
 
 #include <IPXACTmodels/component.h>
 
@@ -33,10 +32,8 @@ class LibraryInterface;
 class ModelParameterEditor;
 class ModelParameterEditorAdapter;
 class PluginManager;
-class PortEditorAdapter;
 class PortsEditor;
 class VhdlParser;
-
 
 //-----------------------------------------------------------------------------
 //! Used to parse source files and generating IP-XACT packages of them.
@@ -81,6 +78,9 @@ signals:
 
 	//! Emitted when the contents of the editors change.
 	void contentChanged();
+
+    //! Emitted when a new component is imported.
+    void componentChanged(QSharedPointer<Component>);
 
 private slots:
 
@@ -148,6 +148,8 @@ private:
 
     QSharedPointer<Component> component_;
 
+    QSharedPointer<Component> importComponent_ ;
+
     //! Top-level source file relative path from component XML file.
     QString selectedSourceFile_;
 
@@ -168,9 +170,6 @@ private:
 
     //! Button for refreshing ports and model parameters from the selected file.
     QPushButton* refreshButton_;
-    
-    //! Adapter for ports editor to be used in plugins.
-    PortEditorAdapter portAdapter_;
 
     //! Adapter for model parameter editor to be used in plugins.
     ModelParameterEditorAdapter modelParameterAdapter_;

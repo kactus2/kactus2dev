@@ -375,7 +375,6 @@ void tst_VerilogImporter::testParameterIsHighlighted_data()
         "endmodule"
         << "parameter size = 8 // Size of ports.";  
 
-
     QTest::newRow("Parameter declaration followed by another parameter") <<
         "module test #(\n"
         "    parameter size = 8, // Size of ports.\n"
@@ -390,7 +389,6 @@ void tst_VerilogImporter::testParameterIsHighlighted_data()
         ") ();\n"
         "endmodule"
         << "parameter size = 8, width = 16, dimension = 1 // Constants for ports.";
-
 
     QTest::newRow("Type, name and value on separate lines") << 
         "module test #(\n"
@@ -427,7 +425,6 @@ void tst_VerilogImporter::testParameterIsHighlighted_data()
         "   parameter width = 16;"
         "endmodule"
         << "parameter size = 8; // Size of ports.";
-
        
     QTest::newRow("1995-stype parameter declarations with multiple parameter") <<
         "module test ();\n"
@@ -456,7 +453,6 @@ void tst_VerilogImporter::testParameterIsHighlighted_data()
         << 
         "parameter size = 8;";
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogImporter::testParameterInPortDeclaration()
@@ -518,6 +514,17 @@ void tst_VerilogImporter::testParameterInPortDeclaration_data()
         ");\n"
         "endmodule"
         << 8*8*8 - 1 << 0;
+
+    QTest::newRow("Parameters in other parameters") <<
+        "module test #(\n"
+        "   parameter data_bits = 8,\n"
+        "   parameter addr_bits = 4,\n"
+        "   parameter port_width = data_bits + addr_bits"        
+        ")(\n"
+        "   input [port_width - 1:0] data_bus\n"
+        ");\n"
+        "endmodule"
+        << 8 + 4 - 1 << 0;
 }
 
 //-----------------------------------------------------------------------------

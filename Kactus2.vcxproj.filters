@@ -3760,9 +3760,6 @@
     <ClCompile Include="wizards\ComponentWizard\ImportEditor\ModelParameterEditorAdapter.cpp">
       <Filter>Source Files\wizards\ComponentWizard\ImportEditor</Filter>
     </ClCompile>
-    <ClCompile Include="wizards\ComponentWizard\ImportEditor\PortEditorAdapter.cpp">
-      <Filter>Source Files\wizards\ComponentWizard\ImportEditor</Filter>
-    </ClCompile>
     <ClCompile Include="wizards\ComponentWizard\ImportEditor\ImportEditor.cpp">
       <Filter>Source Files\wizards\ComponentWizard\ImportEditor</Filter>
     </ClCompile>
@@ -3770,6 +3767,12 @@
       <Filter>Source Files\wizards\ComponentWizard\ImportEditor</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ImportHighlighter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentWizardImportPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentWizard.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5178,6 +5181,12 @@
     <CustomBuild Include="wizards\ComponentWizard\ImportEditor\ImportHighlighter.h">
       <Filter>Header Files\wizards\ComponentWizard\ImportEditor</Filter>
     </CustomBuild>
+    <CustomBuild Include="wizards\ComponentWizard\ComponentWizardImportPage.h">
+      <Filter>Header Files\wizards\ComponentWizard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="wizards\ComponentWizard\ComponentWizard.h">
+      <Filter>Header Files\wizards\ComponentWizard</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -5269,9 +5278,6 @@
     </ClInclude>
     <ClInclude Include="common\dialogs\NewBusDialog\NewBusDialog.h">
       <Filter>Header Files\common\dialogs\NewBusDialog</Filter>
-    </ClInclude>
-    <ClInclude Include="wizards\ComponentWizard\ComponentWizard.h">
-      <Filter>Header Files\wizards\ComponentWizard</Filter>
     </ClInclude>
     <ClInclude Include="wizards\ComponentWizard\ComponentWizardConclusionPage.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
@@ -5416,18 +5422,6 @@
     </ClInclude>
     <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ModelParameterVisualizer.h">
       <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\PortSource.h">
-      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\PortVisualizer.h">
-      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
-    </ClInclude>
-    <ClInclude Include="wizards\ComponentWizard\ComponentWizardImportPage.h">
-      <Filter>Header Files\wizards\ComponentWizard</Filter>
-    </ClInclude>
-    <ClInclude Include="wizards\ComponentWizard\ImportEditor\PortEditorAdapter.h">
-      <Filter>Header Files\wizards\ComponentWizard\ImportEditor</Filter>
     </ClInclude>
     <ClInclude Include="wizards\ComponentWizard\ImportEditor\ModelParameterEditorAdapter.h">
       <Filter>Header Files\wizards\ComponentWizard\ImportEditor</Filter>

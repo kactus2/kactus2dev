@@ -44,7 +44,7 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: VerilogPortParser::VerilogPortParser()
 //-----------------------------------------------------------------------------
-VerilogPortParser::VerilogPortParser(): portVisualizer_(0), highlighter_(0)
+VerilogPortParser::VerilogPortParser(): highlighter_(0)
 {
 
 }
@@ -67,14 +67,6 @@ void VerilogPortParser::runParser(QString const& input, QSharedPointer<Component
         createPortFromDeclaration(portDeclaration, targetComponent);
         highlight(portDeclaration);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogPortParser::setPortVisualizer()
-//-----------------------------------------------------------------------------
-void VerilogPortParser::setPortVisualizer(PortVisualizer* visualizer)
-{
-    portVisualizer_ = visualizer;
 }
 
 //-----------------------------------------------------------------------------
@@ -236,12 +228,7 @@ void VerilogPortParser::createPortFromDeclaration(QString const& portDeclaration
 
     foreach(QString name, portNames)
     {
-        QSharedPointer<Port> port(new Port(name, direction, leftBound, lowerBound, type, "", "", description));
-       
-        if (portVisualizer_)
-        {
-            portVisualizer_->addPort(port);
-        }
+        QSharedPointer<Port> port(new Port(name, direction, leftBound, lowerBound, type, "", "", description));       
         targetComponent->addPort(port);
     }
 }

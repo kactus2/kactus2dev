@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 31.3.2011
- *      Author: Antti Kamppi
- * 		filename: portsmodel.cpp
- */
+//-----------------------------------------------------------------------------
+// File: portsmodel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 31.3.2011
+//
+// Description:
+// Table model that can be used to display ports to be edited.
+//-----------------------------------------------------------------------------
 
 #include "portsmodel.h"
 
@@ -17,36 +21,50 @@
 #include <QStringList>
 #include <QColor>
 
-PortsModel::PortsModel(QSharedPointer<Component> component,
-					   QObject *parent ):
-QAbstractTableModel(parent),
-table_(component->getPorts()),
-component_(component), lockedIndexes_() {
-
+//-----------------------------------------------------------------------------
+// Function: PortsModel::PortsModel()
+//-----------------------------------------------------------------------------
+PortsModel::PortsModel(QSharedPointer<Component> component, QObject *parent ): QAbstractTableModel(parent), 
+    table_(component->getPorts()), component_(component), lockedIndexes_()
+{
 	Q_ASSERT(component_);
 }
 
-PortsModel::~PortsModel() {
+//-----------------------------------------------------------------------------
+// Function: PortsModel::~PortsModel()
+//-----------------------------------------------------------------------------
+PortsModel::~PortsModel()
+{
+
 }
 
-int PortsModel::rowCount(const QModelIndex& parent /*= QModelIndex() */) const {
-
+//-----------------------------------------------------------------------------
+// Function: PortsModel::rowCount()
+//-----------------------------------------------------------------------------
+int PortsModel::rowCount(const QModelIndex& parent /*= QModelIndex() */) const
+{
 	if (parent.isValid())
 		return 0;
 
 	return table_.size();
 }   
 
-int PortsModel::columnCount(const QModelIndex& parent /*= QModelIndex() */) const {
-
+//-----------------------------------------------------------------------------
+// Function: PortsModel::columnCount()
+//-----------------------------------------------------------------------------
+int PortsModel::columnCount(const QModelIndex& parent /*= QModelIndex() */) const
+{
 	if (parent.isValid())
 		return 0;
 
 	return PORT_COL_COUNT;
 }
 
-QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole */ ) const {
-
+//-----------------------------------------------------------------------------
+// Function: PortsModel::data()
+//-----------------------------------------------------------------------------
+QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole */ ) const
+{
 	if (!index.isValid()) {
 		return QVariant();
 	}
@@ -140,8 +158,11 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
 	}
 }
 
-QVariant PortsModel::headerData( int section, Qt::Orientation orientation, 
-								int role /*= Qt::DisplayRole */ ) const {
+//-----------------------------------------------------------------------------
+// Function: PortsModel::headerData()
+//-----------------------------------------------------------------------------
+QVariant PortsModel::headerData( int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole */ ) const
+{
 
 	if (role == Qt::DisplayRole) {
 
@@ -199,10 +220,11 @@ QVariant PortsModel::headerData( int section, Qt::Orientation orientation,
 	}
 }
 
-bool PortsModel::setData( const QModelIndex& index, 
-						 const QVariant& value, 
-						 int role /*= Qt::EditRole */ ) {
-	
+//-----------------------------------------------------------------------------
+// Function: PortsModel::setData()
+//-----------------------------------------------------------------------------
+bool PortsModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole */ )
+{	
 	if (!index.isValid())
 		return false;
 
@@ -358,6 +380,9 @@ bool PortsModel::setData( const QModelIndex& index,
 	 }
 }
 
+//-----------------------------------------------------------------------------
+// Function: PortsModel::flags()
+//-----------------------------------------------------------------------------
 Qt::ItemFlags PortsModel::flags( const QModelIndex& index ) const {
 	
 	if (!index.isValid())
@@ -382,6 +407,9 @@ Qt::ItemFlags PortsModel::flags( const QModelIndex& index ) const {
     return flags;
 }
 
+//-----------------------------------------------------------------------------
+// Function: PortsModel::isValid()
+//-----------------------------------------------------------------------------
 bool PortsModel::isValid() const {
 	
 	// check all ports in the table
@@ -395,16 +423,13 @@ bool PortsModel::isValid() const {
 	return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: PortsModel::onRemoveRow()
+//-----------------------------------------------------------------------------
 void PortsModel::onRemoveRow( int row ) {
 	// if row is invalid
-	if (row < 0 || row >= table_.size())
+	if (row < 0 || row >= table_.size() || rowIsLocked(row))
 		return;
-
-    QModelIndex nameIndex = QAbstractTableModel::index(row,0,QModelIndex());
-    if ( nameIndex.isValid() && isLocked(nameIndex) )
-    {
-        unlockPort(table_.at(row));
-    }
 
 	beginRemoveRows(QModelIndex(), row, row);
 
@@ -417,21 +442,20 @@ void PortsModel::onRemoveRow( int row ) {
 	emit contentChanged();
 }
 
-void PortsModel::onRemoveItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: PortsModel::onRemoveItem()
+//-----------------------------------------------------------------------------
+void PortsModel::onRemoveItem( const QModelIndex& index )
+{
 	// don't remove anything if index is invalid
 	if (!index.isValid()) {
 		return;
 	}
 	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= table_.size()) {
+	if (index.row() < 0 || index.row() >= table_.size() || rowIsLocked(index.row()))
+    {
 		return;
 	}
-
-    if ( isLocked(index) )
-    {
-        unlockPort(table_.at(index.row() ));
-        emit lockedPortRemoved(table_.at(index.row()));
-    }
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
@@ -442,7 +466,11 @@ void PortsModel::onRemoveItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
-void PortsModel::onAddRow() {
+//-----------------------------------------------------------------------------
+// Function: PortsModel::onAddRow()
+//-----------------------------------------------------------------------------
+void PortsModel::onAddRow()
+{
 	beginInsertRows(QModelIndex(), table_.size(), table_.size());
 
 	QSharedPointer<Port> port(new Port());
@@ -454,8 +482,11 @@ void PortsModel::onAddRow() {
 	emit contentChanged();
 }
 
-
-void PortsModel::onAddItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: PortsModel::onAddItem()
+//-----------------------------------------------------------------------------
+void PortsModel::onAddItem( const QModelIndex& index )
+{
 	int row = table_.size();
 
 	// if the index is valid then add the item to the correct position
@@ -471,7 +502,11 @@ void PortsModel::onAddItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
-void PortsModel::addPort( QSharedPointer<Port> port ) {
+//-----------------------------------------------------------------------------
+// Function: PortsModel::addPort()
+//-----------------------------------------------------------------------------
+void PortsModel::addPort( QSharedPointer<Port> port )
+{
 	beginInsertRows(QModelIndex(), table_.size(), table_.size());
 
 	table_.append(port);
@@ -483,13 +518,17 @@ void PortsModel::addPort( QSharedPointer<Port> port ) {
 	emit contentChanged();
 }
 
-
-QModelIndex PortsModel::index( QSharedPointer<Port> port ) const {
+//-----------------------------------------------------------------------------
+// Function: PortsModel::index()
+//-----------------------------------------------------------------------------
+QModelIndex PortsModel::index( QSharedPointer<Port> port ) const
+{
 	// find the correct row
 	int row = table_.indexOf(port);
 
-	// if the named model parameter is not found
-	if (row < 0) {
+	// if the named port is not found
+	if (row < 0)
+    {
 		return QModelIndex();
 	}
 
@@ -497,6 +536,27 @@ QModelIndex PortsModel::index( QSharedPointer<Port> port ) const {
 	return QAbstractTableModel::index(row, 0, QModelIndex());
 }
 
+//-----------------------------------------------------------------------------
+// Function: PortsModel::setComponentAndLockCurrentPorts()
+//-----------------------------------------------------------------------------
+void PortsModel::setComponentAndLockCurrentPorts(QSharedPointer<Component> component)
+{
+    beginResetModel();
+
+    lockedIndexes_.clear();
+
+    component_ = component;
+    table_ = component_->getPorts();    
+    
+    endResetModel();
+
+    foreach(QSharedPointer<Port> port, table_)
+    {
+        lockPort(port);
+    }
+
+    emit contentChanged();
+}
 
 //-----------------------------------------------------------------------------
 // Function: lockPort()
@@ -507,7 +567,7 @@ void PortsModel::lockPort(QSharedPointer<Port> port)
     QModelIndex directionIndex = nameIndex.sibling(nameIndex.row(),1);
     QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(),5);
 
-    if ( nameIndex.isValid() && typeIndex.isValid() && typeIndex.isValid() )
+    if (nameIndex.isValid() && typeIndex.isValid() && typeIndex.isValid() )
     {     
         lockIndex(nameIndex);  
         lockIndex(directionIndex);  
@@ -520,7 +580,7 @@ void PortsModel::lockPort(QSharedPointer<Port> port)
 //-----------------------------------------------------------------------------
 void PortsModel::unlockPort(QSharedPointer<Port> port)
 {
-     QModelIndex nameIndex = index(port);
+    QModelIndex nameIndex = index(port);
     QModelIndex directionIndex = nameIndex.sibling(nameIndex.row(),1);
     QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(),5);
    
@@ -558,4 +618,13 @@ void PortsModel::unlockIndex(QModelIndex const& index)
 bool PortsModel::isLocked(QModelIndex const& index) const
 {
     return lockedIndexes_.contains(QPersistentModelIndex(index));
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortsModel::rowIsLocked()
+//-----------------------------------------------------------------------------
+bool PortsModel::rowIsLocked(int row)
+{
+    QModelIndex nameIndex = QAbstractTableModel::index(row, 0, QModelIndex());
+    return nameIndex.isValid() && isLocked(nameIndex);
 }

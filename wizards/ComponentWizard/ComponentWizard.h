@@ -23,6 +23,8 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 class ComponentWizard : public QWizard
 {
+    Q_OBJECT
+
 public:
  
 	 /*!
@@ -53,6 +55,24 @@ public:
      */
     QString const& getBasePath() const;
 
+protected:
+
+    /*!
+     *  Called when back has been selected on a wizard page.
+     *
+     *      @param [in] id   The id of the page.
+     */
+    virtual void cleanupPage(int id);
+
+private slots:
+
+    /*!
+     *  Called when a new component has been imported.
+     *
+     *      @param [in] component   The newly imported component.
+     */
+    virtual void onComponentChanged(QSharedPointer<Component> component);
+
 private:
     // Disable copying.
     ComponentWizard(ComponentWizard const& rhs);
@@ -62,8 +82,11 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The component.
-    QSharedPointer<Component> component_;
+    //! The original component before import.
+    QSharedPointer<Component> originalComponent_;
+
+    //! The component after import.
+    QSharedPointer<Component> workingComponent_;
 
     //! The component base path.
     QString basePath_;

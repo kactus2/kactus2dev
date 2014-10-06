@@ -17,7 +17,6 @@
 #include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
-#include <Plugins/PluginSystem/ImportPlugin/PortSource.h>
 #include <Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h>
 
 #include <QList>
@@ -37,7 +36,7 @@ class View;
 //! Class VHDLimport.
 //-----------------------------------------------------------------------------
 class VHDLIMPORT_EXPORT VHDLimport : public QObject, public ImportPlugin, public HighlightSource, 
-    public PortSource, public ModelParameterSource
+    public ModelParameterSource
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "kactus2.plugins.vhdlimportplugin" FILE "vhdlimportplugin.json")
@@ -122,13 +121,6 @@ public:
      *      @param [in] highlighter   The highlighter to use.          
      */
     virtual void setHighlighter(Highlighter* highlighter);
-    
-    /*!
-     *  Sets the given visualizer to be used by the import.
-     *
-     *      @param [in] visualizer   The visualizer to use.          
-     */
-    virtual void setPortVisualizer(PortVisualizer* visualizer);
         
     /*!
      *  Sets the given visualizer to be used by the import.
@@ -159,12 +151,12 @@ private:
 	/*!
      *  Signals remove for all ports and empties lists to ports.
      */
-    void removePreviousPorts();
+    void removePreviousPortDeclarations();
 
 	/*!
      *  Signals remove for all model parameters and empties lists to model parameters.
      */
-    void removePreviousGenerics();
+    void removePreviouslyDependentGenerics();
 
     /*!
      *   Checks if given vhdl file has a valid entity declaration.

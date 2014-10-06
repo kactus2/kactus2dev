@@ -142,19 +142,11 @@ void VerilogImporter::setHighlighter(Highlighter* highlighter)
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogImporter::setPortVisualizer()
-//-----------------------------------------------------------------------------
-void VerilogImporter::setPortVisualizer(PortVisualizer* visualizer)
-{
-    portParser_.setPortVisualizer(visualizer);
-}
-
-//-----------------------------------------------------------------------------
 // Function: VerilogImporter::setModelParameterVisualizer()
 //-----------------------------------------------------------------------------
 void VerilogImporter::setModelParameterVisualizer(ModelParameterVisualizer* visualizer)
 {
-    parameterParser_.setModelParameterVisualizer(visualizer);
+    //visualizer->registerChangeListener(this);
 }
 
 //-----------------------------------------------------------------------------

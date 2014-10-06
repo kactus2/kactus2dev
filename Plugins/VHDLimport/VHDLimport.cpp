@@ -23,7 +23,6 @@
 #include <IPXACTmodels/view.h>
 
 #include <Plugins/PluginSystem/ImportPlugin/Highlighter.h>
-#include <Plugins/PluginSystem/ImportPlugin/PortVisualizer.h>
 #include <Plugins/PluginSystem/ImportPlugin/ModelParameterVisualizer.h>
 
 #include "VHDLPortParser.h"
@@ -50,9 +49,6 @@ VHDLimport::VHDLimport() : QObject(0),
 {
     connect(portParser_, SIGNAL(add(QSharedPointer<Port>, QString const&)), 
         this, SLOT(onPortParsed(QSharedPointer<Port>, QString const&)), Qt::UniqueConnection);
-
-    connect(genericParser_, SIGNAL(add(QSharedPointer<ModelParameter>)), 
-        this, SLOT(onGenericParsed(QSharedPointer<ModelParameter>)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -172,8 +168,8 @@ void VHDLimport::runParser(QString const& input, QSharedPointer<Component> targe
 //-----------------------------------------------------------------------------
 void VHDLimport::clear()
 {
-    removePreviousGenerics();
-    removePreviousPorts();
+    removePreviouslyDependentGenerics();
+    removePreviousPortDeclarations();    
 }
 
 //-----------------------------------------------------------------------------
@@ -188,20 +184,10 @@ void VHDLimport::setHighlighter(Highlighter* highlighter)
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLimport::setPortVisualizer()
-//-----------------------------------------------------------------------------
-void VHDLimport::setPortVisualizer(PortVisualizer* visualizer)
-{
-    portParser_->setPortVisualizer(visualizer);
-}
-
-//-----------------------------------------------------------------------------
 // Function: VHDLimport::setModelParameterVisualizer()
 //-----------------------------------------------------------------------------
 void VHDLimport::setModelParameterVisualizer(ModelParameterVisualizer* visualizer)
 {
-    genericParser_->setModelParameterVisualizer(visualizer);
-
     visualizer->registerChangeListener(this);
 }
 
@@ -232,7 +218,6 @@ void VHDLimport::highlight(QString const& text, QColor const& highlightColor) co
     }
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: VHDLimport::editorChangedModelParameter()
 //-----------------------------------------------------------------------------
@@ -249,22 +234,18 @@ void VHDLimport::onModelParameterChanged(QSharedPointer<ModelParameter> changedP
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLimport::removePorts()
+// Function: VHDLimport::removePreviousPortDeclarations()
 //-----------------------------------------------------------------------------
-void VHDLimport::removePreviousPorts()
+void VHDLimport::removePreviousPortDeclarations()
 {
-    portParser_->removePreviousPorts();
-
     parsedPortDeclarations_.clear();
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLimport::removeGenerics()
+// Function: VHDLimport::removePreviouslyDependentGenerics()
 //-----------------------------------------------------------------------------
-void VHDLimport::removePreviousGenerics()
+void VHDLimport::removePreviouslyDependentGenerics()
 {
-    genericParser_->removePreviousGenerics();
-
     dependedGenerics_.clear();
 }
 

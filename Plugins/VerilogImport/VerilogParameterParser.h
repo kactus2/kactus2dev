@@ -19,14 +19,13 @@
 #include <IPXACTmodels/modelparameter.h>
 
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
-#include <Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h>
 
 class Component;
 
 //-----------------------------------------------------------------------------
 //! Parser for Verilog ports.
 //-----------------------------------------------------------------------------
-class VerilogParameterParser : public HighlightSource, public ModelParameterSource
+class VerilogParameterParser : public HighlightSource
 {
 public:
 
@@ -50,13 +49,6 @@ public:
      *      @param [in] highlighter   The highlighter to use.          
      */
     virtual void setHighlighter(Highlighter* highlighter);
-        
-    /*!
-     *  Sets the given visualizer to be used by the generic parser.
-     *
-     *      @param [in] visualizer   The visualizer to use.          
-     */
-    virtual void setModelParameterVisualizer(ModelParameterVisualizer* visualizer);
 
     /*!
      *  Finds parameter declarations formated in ANSI-style.
@@ -120,8 +112,6 @@ private:
     //! The highlighter to use.
     Highlighter* highlighter_;
 
-    //! Visualizer e.g. editor for parsed generics.
-    ModelParameterVisualizer* genericVisualizer_;
 };
 
 #endif // VERILOGPARAMETERPARSER_H

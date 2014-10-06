@@ -13,9 +13,9 @@
 ModelParameterModel::ModelParameterModel(QSharedPointer<Component> component, 
 										 QObject *parent): 
 QAbstractTableModel(parent),
-table_(component->getModelParameters()), lockedIndexes_() {
+table_(component->getModelParameters()), lockedIndexes_()
+{
 
-	Q_ASSERT(component);
 }
 
 ModelParameterModel::~ModelParameterModel() {
@@ -204,8 +204,7 @@ void ModelParameterModel::onRemoveRow( int row ) {
 
     if ( isLocked( QAbstractTableModel::index(row, 0, QModelIndex())) )
     {
-        unlockModelParameter(table_.at(row));
-        emit modelParameterRemoved(table_.at(row));
+        return;
     }
 
 	beginRemoveRows(QModelIndex(), row, row);
@@ -229,10 +228,9 @@ void ModelParameterModel::onRemoveItem( const QModelIndex& index ) {
 		return;
     }
 
-    if ( isLocked(index) )
+    if (isLocked( QAbstractTableModel::index(index.row(), 0, QModelIndex())))
     {
-        unlockModelParameter(table_.at(index.row()));
-        emit modelParameterRemoved(table_.at(index.row()));
+        return;
     }
 
 	// remove the specified item
@@ -256,7 +254,8 @@ void ModelParameterModel::onAddRow() {
 	emit contentChanged();
 }
 
-void ModelParameterModel::onAddItem( const QModelIndex& index ) {
+void ModelParameterModel::onAddItem( const QModelIndex& index )
+{
 	int row = table_.size();
 
 	// if the index is valid then add the item to the correct position
@@ -272,11 +271,10 @@ void ModelParameterModel::onAddItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
-void ModelParameterModel::addModelParameter( QSharedPointer<ModelParameter> modelParam ) {
+void ModelParameterModel::addModelParameter( QSharedPointer<ModelParameter> modelParam )
+{
 	beginInsertRows(QModelIndex(), table_.size(), table_.size());
-
 	table_.append(modelParam);
-    lockModelParameter(modelParam);
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed
@@ -326,6 +324,25 @@ QSharedPointer<ModelParameter> ModelParameterModel::getParameter(QModelIndex con
 	Q_ASSERT(index.isValid());
     return table_.at(index.row());
 }   
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::setComponentAndLockCurrentModelParameters()
+//-----------------------------------------------------------------------------
+void ModelParameterModel::setComponentAndLockCurrentModelParameters(QSharedPointer<Component> component)
+{
+    beginResetModel();
+    
+    lockedIndexes_.clear();
+    table_ = component->getModelParameters();
+    endResetModel();
+
+    foreach(QSharedPointer<ModelParameter> modelParameter, table_)
+    {
+        lockModelParameter(modelParameter);
+    }
+
+    emit contentChanged();
+}
 
 //-----------------------------------------------------------------------------
 // Function: lockModelParameter()

@@ -35,8 +35,7 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: VHDLGenericParser::VHDLGenericParser()
 //-----------------------------------------------------------------------------
-VHDLGenericParser::VHDLGenericParser(QObject* parent): QObject(parent), generics_(), 
-    highlighter_(0), genericVisualizer_(0)
+VHDLGenericParser::VHDLGenericParser(QObject* parent): QObject(parent), highlighter_(0)
 {
 
 }
@@ -73,28 +72,6 @@ void VHDLGenericParser::setHighlighter(Highlighter* highlighter)
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLGenericParser::setModelParameterVisualizer()
-//-----------------------------------------------------------------------------
-void VHDLGenericParser::setModelParameterVisualizer(ModelParameterVisualizer* visualizer)
-{
-    genericVisualizer_ = visualizer;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLGenericParser::removePreviousGenerics()
-//-----------------------------------------------------------------------------
-void VHDLGenericParser::removePreviousGenerics()
-{
-    if (genericVisualizer_)
-    {
-        foreach (QSharedPointer<ModelParameter> parsedGeneric, generics_)
-        {
-            genericVisualizer_->removeModelParameter(parsedGeneric);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: VHDLGenericParser::createModelParameterFromDeclaration()
 //-----------------------------------------------------------------------------
 void VHDLGenericParser::createModelParameterFromDeclaration(QString const& declaration, 
@@ -120,13 +97,7 @@ void VHDLGenericParser::createModelParameterFromDeclaration(QString const& decla
         parameter->setValue(defaultValue);
         parameter->setUsageType("nontyped");
 
-        if (genericVisualizer_)
-        {
-            genericVisualizer_->addModelParameter(parameter);
-        }
-
         targetComponent->getModel()->addModelParameter(parameter);
-        generics_.append(parameter);
     } 
 }
 

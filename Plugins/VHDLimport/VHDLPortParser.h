@@ -19,7 +19,6 @@
 
 
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
-#include <Plugins/PluginSystem/ImportPlugin/PortSource.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 
@@ -29,7 +28,7 @@ class HDLEquationParser;
 //-----------------------------------------------------------------------------
 //! Parser for VHDL ports.
 //-----------------------------------------------------------------------------
-class VHDLPortParser : public QObject, public HighlightSource, public PortSource
+class VHDLPortParser : public QObject, public HighlightSource
 {
     Q_OBJECT
 
@@ -59,13 +58,6 @@ public:
      *      @param [in] highlighter   The highlighter to use.          
      */
     virtual void setHighlighter(Highlighter* highlighter);
-    
-    /*!
-     *  Sets the given visualizer to be used by the port parser.
-     *
-     *      @param [in] visualizer   The visualizer to use.          
-     */
-    virtual void setPortVisualizer(PortVisualizer* visualizer);
 
     /*!
      *  Parses the port left bound value from a VHDL port declaration.
@@ -222,14 +214,9 @@ private:
      */
     QString parseVectorBounds(QString const& declaration) const;
 
-    //! Parsed ports.
-    QList<QSharedPointer<Port> > ports_;
-
     //! The highlighter to use.
     Highlighter* highlighter_;
 
-    //! The visualizer to use.
-    PortVisualizer* portVisualizer_;
 };
 
 #endif // VHDLPORTPARSER_H

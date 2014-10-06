@@ -114,7 +114,14 @@ public:
 	*/
 	virtual QModelIndex index(QSharedPointer<ModelParameter> modelParam) const;
 
-    virtual QSharedPointer<ModelParameter> getParameter(QModelIndex const& index) const;
+    virtual QSharedPointer<ModelParameter> getParameter(QModelIndex const& index) const;    
+       
+    /*!
+     *  Sets the edited component and locks all current model parameters.
+     *
+     *      @param [in] component   The component whose model parameters to edit.
+     */
+    void setComponentAndLockCurrentModelParameters(QSharedPointer<Component> component);
 
 public slots:
 
@@ -214,7 +221,7 @@ private:
 	 *      @return True if the index is locked, otherwise false.
      */
     bool isLocked(QModelIndex const& index) const;
-
+    
 	//! \brief The table that is displayed to the user.
 	QList<QSharedPointer<ModelParameter> >& table_;
 

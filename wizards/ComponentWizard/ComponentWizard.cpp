@@ -31,24 +31,30 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
 	                             LibraryInterface* handler,
 	                             QWidget* parent)
     : QWizard(parent),
-	  component_(component),
+	  originalComponent_(component),
+      workingComponent_(component),
 	  basePath_(basePath)
 {
-    VLNV* vlnv = component->getVlnv();
-	setWindowTitle(tr("Component Wizard for %1:%2:%3:%4").arg(vlnv->getVendor()).arg(vlnv->getLibrary()).arg(vlnv->getName()).arg(vlnv->getVersion()));
+	setWindowTitle(tr("Component Wizard for %1").arg(component->getVlnv()->toString()));
     setWizardStyle(ModernStyle);
+    resize(800, 800);
+
     setOption(NoCancelButton, true);
     setOption(NoDefaultButton, true);
     setOption(HaveFinishButtonOnEarlyPages, true);
-    resize(800, 800);
-    
+
     setPage(ComponentWizardPages::INTRO, new ComponentWizardIntroPage(component, this));
     setPage(ComponentWizardPages::GENERAL, new ComponentWizardGeneralInfoPage(component, this));    
     setPage(ComponentWizardPages::FILES, new ComponentWizardFilesPage(this));
-    setPage(ComponentWizardPages::DEPENDENCY, new ComponentWizardDependencyPage(pluginMgr, this));    
-    setPage(ComponentWizardPages::IMPORT, new ComponentWizardImportPage(component, handler, pluginMgr, 
-        this));
+    setPage(ComponentWizardPages::DEPENDENCY, new ComponentWizardDependencyPage(pluginMgr, this)); 
+    
+    ComponentWizardImportPage* importPage = new ComponentWizardImportPage(component, handler, pluginMgr, this);
+    setPage(ComponentWizardPages::IMPORT, importPage);
+
     setPage(ComponentWizardPages::CONCLUSION, new ComponentWizardConclusionPage(handler, this));
+
+    connect(importPage, SIGNAL(componentChanged(QSharedPointer<Component>)), 
+        this, SLOT(onComponentChanged(QSharedPointer<Component>)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -56,6 +62,7 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
 //-----------------------------------------------------------------------------
 ComponentWizard::~ComponentWizard()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -63,7 +70,7 @@ ComponentWizard::~ComponentWizard()
 //-----------------------------------------------------------------------------
 QSharedPointer<Component> ComponentWizard::getComponent()
 {
-    return component_;
+    return workingComponent_;
 }
 
 //-----------------------------------------------------------------------------
@@ -72,4 +79,25 @@ QSharedPointer<Component> ComponentWizard::getComponent()
 QString const& ComponentWizard::getBasePath() const
 {
     return basePath_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentWizard::cleanupPage()
+//-----------------------------------------------------------------------------
+void ComponentWizard::cleanupPage(int id)
+{
+    if (id == ComponentWizardPages::IMPORT)
+    {
+        workingComponent_ = originalComponent_;
+    }
+
+    QWizard::cleanupPage(id);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentWizard::onComponentChanged()
+//-----------------------------------------------------------------------------
+void ComponentWizard::onComponentChanged(QSharedPointer<Component> component)
+{
+    workingComponent_ = component;
 }

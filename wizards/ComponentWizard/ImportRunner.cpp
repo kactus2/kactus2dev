@@ -14,7 +14,7 @@
 #include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
-#include <Plugins/PluginSystem/ImportPlugin/PortSource.h>
+
 #include <Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h>
 
 #include <IPXACTmodels/component.h>
@@ -27,7 +27,7 @@
 // Function: ImportRunner::ImportRunner()
 //-----------------------------------------------------------------------------
 ImportRunner::ImportRunner(QObject* parent)
-    : QObject(parent), ImportPlugins_(), highlighter_(0), portVisualizer_(0), modelParameterVisualizer_(0)
+    : QObject(parent), ImportPlugins_(), highlighter_(0), modelParameterVisualizer_(0)
 {
 
 }
@@ -43,21 +43,25 @@ ImportRunner::~ImportRunner()
 //-----------------------------------------------------------------------------
 // Function: ImportRunner::parse()
 //-----------------------------------------------------------------------------
-void ImportRunner::parse(QString const& importFile, QString const& componentXmlPath, 
-    QSharedPointer<Component> targetComponent)
+QSharedPointer<Component> ImportRunner::parse(QString const& importFile, QString const& componentXmlPath,
+    QSharedPointer<const Component> targetComponent)
 {
     QApplication::setOverrideCursor(Qt::WaitCursor);    
 
-    QStringList filetypes = filetypesOfImportFile(importFile, targetComponent);
+    QSharedPointer<Component> importComponent(new Component(*targetComponent.data()));
+
+    QStringList filetypes = filetypesOfImportFile(importFile, importComponent);
     
     QString const& fileContent = readInputFile(importFile, componentXmlPath);
 
     foreach(ImportPlugin* parser, parsersForFileTypes(filetypes))
     {
-        parser->runParser(fileContent, targetComponent);
+        parser->runParser(fileContent, importComponent);
     }
 
     QApplication::restoreOverrideCursor();
+
+    return importComponent;
 }
 
 //-----------------------------------------------------------------------------
@@ -151,7 +155,6 @@ void ImportRunner::loadImportPlugins(PluginManager const &pluginManager)
             ImportPlugins_.append(parser);
 
             addHighlightIfPossible(parser);
-            addPortVisualizationIfPossible(parser);
             addModelParameterVisualizationIfPossible(parser);
         }
     }
@@ -163,14 +166,6 @@ void ImportRunner::loadImportPlugins(PluginManager const &pluginManager)
 void ImportRunner::setHighlighter(Highlighter* highlighter)
 {
     highlighter_ =  highlighter;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ImportRunner::setPortVisualizer()
-//-----------------------------------------------------------------------------
-void ImportRunner::setPortVisualizer(PortVisualizer* visualizer)
-{
-    portVisualizer_ = visualizer;
 }
 
 //-----------------------------------------------------------------------------
@@ -192,21 +187,6 @@ void ImportRunner::addHighlightIfPossible(ImportPlugin* parser)
         if (highlightSource)
         {
             highlightSource->setHighlighter(highlighter_);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ImportRunner::addPortVisualizationIfPossible()
-//-----------------------------------------------------------------------------
-void ImportRunner::addPortVisualizationIfPossible(ImportPlugin* parser)
-{
-    if (portVisualizer_)
-    {
-        PortSource* portSource = dynamic_cast<PortSource*>(parser);
-        if (portSource)
-        {
-            portSource->setPortVisualizer(portVisualizer_);
         }
     }
 }

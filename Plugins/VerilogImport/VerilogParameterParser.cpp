@@ -25,7 +25,7 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::VerilogParameterParser()
 //-----------------------------------------------------------------------------
-VerilogParameterParser::VerilogParameterParser() : highlighter_(0), genericVisualizer_(0)
+VerilogParameterParser::VerilogParameterParser() : highlighter_(0)
 {
 }
 
@@ -42,14 +42,6 @@ VerilogParameterParser::~VerilogParameterParser()
 void VerilogParameterParser::setHighlighter(Highlighter* highlighter)
 {
     highlighter_ = highlighter;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogParameterParser::setModelParameterVisualizer()
-//-----------------------------------------------------------------------------
-void VerilogParameterParser::setModelParameterVisualizer(ModelParameterVisualizer* visualizer)
-{
-    genericVisualizer_ = visualizer;
 }
 
 //-----------------------------------------------------------------------------
@@ -171,12 +163,6 @@ void VerilogParameterParser::parseParameters(QString const &input,
 
         // Add to the list, as there may be more than one.
         parameters.append(modelParameter);
-
-        // If exists, the parameter is also passed to the visualizer.
-        if (genericVisualizer_)
-        {
-            genericVisualizer_->addModelParameter(modelParameter);
-        }
     }
 }
 

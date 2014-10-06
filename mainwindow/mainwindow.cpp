@@ -2225,8 +2225,7 @@ void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier,
 	Q_ASSERT(vlnv.isValid());
 
 	// Create a component.
-	QSharedPointer<Component> component = QSharedPointer<Component>(new Component());
-	component->setVlnv(vlnv);
+	QSharedPointer<Component> component = QSharedPointer<Component>(new Component(vlnv));
 
 	// Set Kactus attributes.
 	component->setComponentHierarchy(prodHier);
@@ -2243,13 +2242,15 @@ void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier,
 
     // Open the component wizard.
     ComponentWizard wizard(component, directory, *pluginMgr_, libraryHandler_, this);
-    wizard.exec();
-
-	// Save wizard changes.
-	if (!libraryHandler_->writeModelToFile(component))
+    
+    if(wizard.exec() == QDialog::Accepted)
     {
-        emit errorMessage("Error saving file to disk.");
-        return;
+        // Save wizard changes.
+        if (!libraryHandler_->writeModelToFile(wizard.getComponent()))
+        {
+            emit errorMessage("Error saving file to disk.");
+            return;
+        }
     }
 
 	// Open the component editor.

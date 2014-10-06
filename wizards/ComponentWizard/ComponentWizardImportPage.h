@@ -25,6 +25,7 @@ class PluginManager;
 //-----------------------------------------------------------------------------
 class ComponentWizardImportPage : public QWizardPage
 {
+    Q_OBJECT
 public:
     /*!
      *  Constructor.
@@ -73,12 +74,16 @@ public:
 	 */
 	 virtual bool isComplete() const;
 
+signals:
+
+     //! Emitted when a new component has been imported.
+    void componentChanged(QSharedPointer<Component>);
 
 private:
 	// Disable copying.
 	ComponentWizardImportPage(ComponentWizardImportPage const& rhs);
 	ComponentWizardImportPage& operator=(ComponentWizardImportPage const& rhs);
-
+    
 	//-----------------------------------------------------------------------------
 	// Data.
 	//-----------------------------------------------------------------------------

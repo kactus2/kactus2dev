@@ -64,6 +64,13 @@ public:
 	*/
 	void setAllowImportExport(bool allow);
 
+    /*!
+     *  Sets the edited component.
+     *
+     *      @param [in] component   The component whose model parameters to edit.
+     */
+    void setComponent(QSharedPointer<Component> component);
+
 signals:
 
     //! Emitted when a the value of a model parameter is modified.
@@ -115,7 +122,7 @@ private:
 
 	//! No assignment
 	ModelParameterEditor& operator=(const ModelParameterEditor& other);
-
+    
 	//! \brief The view that displays the parameters.
 	EditableTableView view_;
 

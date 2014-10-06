@@ -13,7 +13,6 @@
 #define VHDLGENERICPARSER_H
 
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
-#include <Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -24,7 +23,7 @@ class ModelParameter;
 //-----------------------------------------------------------------------------
 //! Parser for VHDL generics.
 //-----------------------------------------------------------------------------
-class VHDLGenericParser : public QObject, public HighlightSource, public ModelParameterSource
+class VHDLGenericParser : public QObject, public HighlightSource
 {    
     Q_OBJECT
 public:
@@ -49,18 +48,6 @@ public:
      *      @param [in] highlighter   The highlighter to use.          
      */
     virtual void setHighlighter(Highlighter* highlighter);
-        
-    /*!
-     *  Sets the given visualizer to be used by the generic parser.
-     *
-     *      @param [in] visualizer   The visualizer to use.          
-     */
-    virtual void setModelParameterVisualizer(ModelParameterVisualizer* visualizer);
-
-    /*!
-     *  Removes all previously parsed model parameters from the visualization.
-     */
-    void removePreviousGenerics();
 
 private:
 
@@ -119,14 +106,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Parsed generics.
-    QList<QSharedPointer<ModelParameter> > generics_;
-
     //! The highlighter to use.
     Highlighter* highlighter_;
-
-    //! Visualizer e.g. editor for parsed generics.
-    ModelParameterVisualizer* genericVisualizer_;
     
 };
 

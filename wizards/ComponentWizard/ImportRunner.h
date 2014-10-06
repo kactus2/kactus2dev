@@ -20,7 +20,7 @@
 class Component;
 class ImportPlugin;
 class Highlighter;
-class PortVisualizer;
+
 class ModelParameterVisualizer;
 
 //-----------------------------------------------------------------------------
@@ -43,13 +43,6 @@ public:
      *      @param [in] highlighter   The highlighter to use.          
      */
     void setHighlighter(Highlighter* highlighter);
-
-    /*!
-     *  Sets the given visualizer to be used by all port sources.
-     *
-     *      @param [in] visualizer   The visualizer to use.          
-     */
-    void setPortVisualizer(PortVisualizer* visualizer);
                 
     /*!
      *  Sets the given visualizer to be used by all model parameter sources.
@@ -72,8 +65,8 @@ public:
      *      @param [in] componentXmlPath    The path to the target component XML file.
      *      @param [in] targetComponent     The target component to which import all parsed elements.     
      */
-    void parse(QString const& importFile, QString const& componentXmlPath, 
-        QSharedPointer<Component> targetComponent);
+    QSharedPointer<Component> parse(QString const& importFile, QString const& componentXmlPath, 
+        QSharedPointer<const Component> targetComponent);
 
     /*!
      *  Gets all file types for which a import parser(s) can be run.
@@ -144,9 +137,6 @@ private:
 
     //! The highlighter used by all import plugins.
     Highlighter* highlighter_;
-
-    //! The port visualizer used by all import plugins.
-    PortVisualizer* portVisualizer_;
 
     //! The model parameter visualizer used by all import plugins.
     ModelParameterVisualizer* modelParameterVisualizer_;
