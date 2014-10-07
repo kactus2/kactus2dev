@@ -36,21 +36,6 @@ public:
     ~ModelParameterEditorAdapter();
 
     /*!
-     *  Called when a model parameter should be added to the editor.
-     *
-     *      @param [in] modelParameterToAdd   The  model parameter to add.
-     */
-    virtual void addModelParameter(QSharedPointer<ModelParameter> modelParameterToAdd);
-
-    /*!
-     *  Called when a  model parameter should be removed from the editor.
-     *
-     *      @param [in] modelParameterToRemove   The  model parameter to remove.
-     */
-
-    virtual void removeModelParameter(QSharedPointer<ModelParameter> modelParameterToRemove);
-
-    /*!
      *  Called to receive future notifications of model parameter changes in the editor.
      *
      *      @param [in] listener   The the listener to receive notifications in.

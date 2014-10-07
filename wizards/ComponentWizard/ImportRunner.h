@@ -64,6 +64,8 @@ public:
      *      @param [in] importFile          The relative path to the input file.
      *      @param [in] componentXmlPath    The path to the target component XML file.
      *      @param [in] targetComponent     The target component to which import all parsed elements.     
+     *
+     *      @return The component with all the imported elements.     
      */
     QSharedPointer<Component> parse(QString const& importFile, QString const& componentXmlPath, 
         QSharedPointer<const Component> targetComponent);
@@ -116,13 +118,6 @@ private:
      *      @param [in] parser   The plugin to add visualization to.     
      */
     void addModelParameterVisualizationIfPossible(ImportPlugin* parser);
-    
-    /*!
-     *  Adds port visualization to a given import plugin if possible.
-     *
-     *      @param [in] parser   The plugin to add visualization to.     
-     */
-    void addPortVisualizationIfPossible(ImportPlugin* parser);
     
     /*!
      *  Adds highlighting to a given import plugin if possible.

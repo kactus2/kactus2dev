@@ -221,7 +221,7 @@ void tst_VHDLimport::runParser(QString& input)
 {
     displayEditor_.setPlainText(input.replace("\r\n", "\n"));    
 
-    parser_.runParser(input.replace("\r\n", "\n"), importComponent_);
+    parser_.import(input.replace("\r\n", "\n"), importComponent_);
 }
 
 //-----------------------------------------------------------------------------

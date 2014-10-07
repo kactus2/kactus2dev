@@ -96,7 +96,7 @@ void tst_VerilogImporter::testFileTypes()
 {
     VerilogImporter importer;
 
-    QStringList supportedFileTypes = importer.acceptedFileTypes();
+    QStringList supportedFileTypes = importer.getSupportedFileTypes();
 
     QVERIFY(supportedFileTypes.contains("verilogSource"));    
 }
@@ -153,7 +153,7 @@ void tst_VerilogImporter::runParser(QString const& input)
 
     VerilogImporter parser;
     parser.setHighlighter(highlighter_);
-    parser.runParser(input, importComponent_);
+    parser.import(input, importComponent_);
 }
 
 //-----------------------------------------------------------------------------

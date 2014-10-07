@@ -27,20 +27,6 @@ public:
     virtual ~ModelParameterVisualizer() {};
 
     /*!
-     *  Called when a model parameter should be added to the visualization.
-     *
-     *      @param [in] modelParameterToAdd   The  model parameter to add.
-     */
-    virtual void addModelParameter(QSharedPointer<ModelParameter> modelParameterToAdd) = 0;
-
-    /*!
-     *  Called when a  model parameter should be removed from the visualization.
-     *
-     *      @param [in] modelParameterToRemove   The  model parameter to remove.
-     */
-    virtual void removeModelParameter(QSharedPointer<ModelParameter> modelParameterToRemove) = 0;
-
-    /*!
      *  Called to receive future notifications of model parameter changes in the visualization.
      *
      *      @param [in] listener   The the listener to receive notifications in.

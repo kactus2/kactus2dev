@@ -91,7 +91,7 @@ public:
      *
      *      @return The file types the import parser supports.
      */
-    virtual QStringList acceptedFileTypes() const;
+    virtual QStringList getSupportedFileTypes() const;
     
     /*!
      *   Parses a verilog input, sets up an rtl view and creates model parameters and ports.
@@ -99,7 +99,7 @@ public:
      *      @param [in] input               The input text to parse.
      *      @param [in] targetComponent     The component to apply all imported changes to.
      */
-    virtual void runParser(QString const& input, QSharedPointer<Component> targetComponent);
+    virtual void import(QString const& input, QSharedPointer<Component> targetComponent);
 
     /*!
      *  Sets the given visualizer to be used by the import.

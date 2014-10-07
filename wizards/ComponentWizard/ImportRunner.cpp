@@ -56,7 +56,7 @@ QSharedPointer<Component> ImportRunner::parse(QString const& importFile, QString
 
     foreach(ImportPlugin* parser, parsersForFileTypes(filetypes))
     {
-        parser->runParser(fileContent, importComponent);
+        parser->import(fileContent, importComponent);
     }
 
     QApplication::restoreOverrideCursor();
@@ -73,7 +73,7 @@ QStringList ImportRunner::importFileTypes() const
 
     foreach(ImportPlugin* parser, ImportPlugins_)
     {
-        fileTypes.append(parser->acceptedFileTypes());
+        fileTypes.append(parser->getSupportedFileTypes());
     }
     fileTypes.removeDuplicates();
 
@@ -109,7 +109,7 @@ QList<ImportPlugin*> ImportRunner::parsersForFileTypes(QStringList const& filety
     QList<ImportPlugin*> parsersForFiletype;
     foreach(ImportPlugin* parser, ImportPlugins_)
     {
-        QStringList parserAcceptedFiletypes = parser->acceptedFileTypes();
+        QStringList parserAcceptedFiletypes = parser->getSupportedFileTypes();
         foreach(QString filetype, filetypes)
         {
             if (parserAcceptedFiletypes.contains(filetype) && !parsersForFiletype.contains(parser))

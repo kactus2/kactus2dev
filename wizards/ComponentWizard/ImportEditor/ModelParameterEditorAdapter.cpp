@@ -32,22 +32,6 @@ ModelParameterEditorAdapter::~ModelParameterEditorAdapter()
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortEditorAdapter::addModelParameter()
-//-----------------------------------------------------------------------------
-void ModelParameterEditorAdapter::addModelParameter(QSharedPointer<ModelParameter> modelParameterToAdd)
-{
-    editor_->addModelParameter(modelParameterToAdd);
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortEditorAdapter::removeModelParameter()
-//-----------------------------------------------------------------------------
-void ModelParameterEditorAdapter::removeModelParameter(QSharedPointer<ModelParameter> modelParameterToRemove)
-{
-    editor_->removeModelParameter(modelParameterToRemove);
-}
-
-//-----------------------------------------------------------------------------
 // Function: ModelParameterEditorAdapter::registerChangeListener()
 //-----------------------------------------------------------------------------
 void ModelParameterEditorAdapter::registerChangeListener(QObject const* listener)

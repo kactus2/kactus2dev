@@ -107,7 +107,7 @@ QList<IPlugin::ExternalProgramRequirement> VerilogImporter::getProgramRequiremen
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::acceptedFileTypes()
 //-----------------------------------------------------------------------------
-QStringList VerilogImporter::acceptedFileTypes() const
+QStringList VerilogImporter::getSupportedFileTypes() const
 {
     return QStringList("verilogSource");
 }
@@ -115,7 +115,7 @@ QStringList VerilogImporter::acceptedFileTypes() const
 //-----------------------------------------------------------------------------
 // Function: VerilogImporter::runParser()
 //-----------------------------------------------------------------------------
-void VerilogImporter::runParser(QString const& input, QSharedPointer<Component> targetComponent)
+void VerilogImporter::import(QString const& input, QSharedPointer<Component> targetComponent)
 {   
     grayOutFileContent(input);
     if (hasModuleDeclaration(input))
@@ -123,7 +123,7 @@ void VerilogImporter::runParser(QString const& input, QSharedPointer<Component> 
         highlightModule(input);
 
         parameterParser_.runParser(input, targetComponent);
-        portParser_.runParser(input, targetComponent);
+        portParser_.import(input, targetComponent);
 
         importModelName(input, targetComponent);
         setLanguageAndEnvironmentalIdentifiers(targetComponent);

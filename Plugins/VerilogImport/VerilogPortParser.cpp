@@ -31,7 +31,7 @@ namespace
     const QString PORT_TYPE("\\w+");
 
     //! Verilog ports in both ANSI-C and Verilog-1995 style.
-    const QRegExp PORT_EXP("(" + PORT_DIRECTION + ")\\s+(" + PORT_TYPE + ")?\\s*(?:signed)?\\s*"
+    const QRegExp PORT_EXP("(" + PORT_DIRECTION + ")\\s+(?:(" + PORT_TYPE + ")\\s+)?(?:signed)?\\s*"
         "(" + VerilogSyntax::RANGE + ")?\\s*(" + VerilogSyntax::NAMES + ")"
         "(?:\\s*[,;][ \\t]*(?:"+ VerilogSyntax::COMMENT + ")?|(?:[ \\t]*"+ VerilogSyntax::COMMENT + ")?(?=\\s*$))");
 
@@ -59,7 +59,7 @@ VerilogPortParser::~VerilogPortParser()
 //-----------------------------------------------------------------------------
 // Function: VerilogPortParser::runParser()
 //-----------------------------------------------------------------------------
-void VerilogPortParser::runParser(QString const& input, QSharedPointer<Component> targetComponent)
+void VerilogPortParser::import(QString const& input, QSharedPointer<Component> targetComponent)
 {
     foreach(QString portDeclaration, findPortDeclarations(input))
     {

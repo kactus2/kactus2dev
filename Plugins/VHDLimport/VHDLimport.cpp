@@ -132,7 +132,7 @@ QList<IPlugin::ExternalProgramRequirement> VHDLimport::getProgramRequirements()
 //-----------------------------------------------------------------------------
 // Function: VHDLimport::acceptedFileTypes()
 //-----------------------------------------------------------------------------
-QStringList VHDLimport::acceptedFileTypes() const
+QStringList VHDLimport::getSupportedFileTypes() const
 {
     QStringList filetypes;
     filetypes << "vhdlSource";
@@ -143,7 +143,7 @@ QStringList VHDLimport::acceptedFileTypes() const
 //-----------------------------------------------------------------------------
 // Function: VHDLimport::parseFile()
 //-----------------------------------------------------------------------------
-void VHDLimport::runParser(QString const& input, QSharedPointer<Component> targetComponent)
+void VHDLimport::import(QString const& input, QSharedPointer<Component> targetComponent)
 {
     targetComponent_ = targetComponent;
 

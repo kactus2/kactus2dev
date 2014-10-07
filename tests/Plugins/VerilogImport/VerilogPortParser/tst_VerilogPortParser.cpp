@@ -149,7 +149,7 @@ void tst_VerilogPortParser::testNothingIsParsedFromMalformedInput_data()
 void tst_VerilogPortParser::runParser(QString const& input)
 {
     VerilogPortParser parser;
-    parser.runParser(input, importComponent_);
+    parser.import(input, importComponent_);
 }
 
 //-----------------------------------------------------------------------------
