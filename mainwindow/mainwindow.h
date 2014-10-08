@@ -15,7 +15,6 @@
 #include <Plugins/PluginSystem/PluginManager.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 
-#include <editors/NotesEditor/NotesStack.h>
 #include <designEditors/common/DrawMode.h>
 #include <common/widgets/tabDocument/TabDocument.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
@@ -485,9 +484,6 @@ private slots:
     //! \brief Handler for address action's trigger.
     void onAddressAction(bool show);
 
-    //! \brief Handler for notes action's trigger.
-    void onNotesEditorAction( bool show );
-
     /*!
      *  Handles the toggling of visibility controls.
      */
@@ -586,11 +582,6 @@ private:
      *  Sets up the context help system.
      */
     void setupContextHelp();
-
-    /*!
-     *  Sets up the notes system.
-     */
-    void setupNotesEditor();
 
 	//! Sets up the component instance editor.
 	void setupInstanceEditor();
@@ -755,9 +746,6 @@ private:
 
 	//! \brief The dock widget that contains the connection editor.
 	QDockWidget* connectionDock_;
-
-    QDockWidget* notesDock_;
-    NotesStack* notesEditor_;
 
 	/*******************************************************************/
 	// the actions in the menus

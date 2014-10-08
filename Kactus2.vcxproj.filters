@@ -860,12 +860,6 @@
     <Filter Include="Source Files\editors\CSourceEditor">
       <UniqueIdentifier>{b3a65de6-002a-4ddf-a213-84e64c40de2e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\editors\NotesEditor">
-      <UniqueIdentifier>{c2fae6de-3cc7-4555-9d50-24f133f35923}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\editors\NotesEditor">
-      <UniqueIdentifier>{817d192c-ff75-4c77-b9cc-aa9f6c3025c7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\designEditors\common\StickyNote">
       <UniqueIdentifier>{b64dd13f-cfeb-43a3-91b9-83197b195916}</UniqueIdentifier>
     </Filter>
@@ -3661,18 +3655,6 @@
     <ClCompile Include="GeneratedFiles\moc_componenteditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\NotesEditor\NotesEditor.cpp">
-      <Filter>Source Files\editors\NotesEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_NotesEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\NotesEditor\NotesStack.cpp">
-      <Filter>Source Files\editors\NotesEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_NotesStack.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="designEditors\common\StickyNote\StickyNote.cpp">
       <Filter>Source Files\designEditors\common\StickyNote</Filter>
     </ClCompile>
@@ -5135,12 +5117,6 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\componenteditor.h">
       <Filter>Header Files\editors\ComponentEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\NotesEditor\NotesEditor.h">
-      <Filter>Header Files\editors\NotesEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\NotesEditor\NotesStack.h">
-      <Filter>Header Files\editors\NotesEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\common\StickyNote\StickyNote.h">
       <Filter>Header Files\designEditors\common\StickyNote</Filter>

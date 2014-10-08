@@ -6,21 +6,16 @@ TEMPLATE = lib
 TARGET = MakefileGenerator
 DESTDIR = ../../executable/Plugins
 QT += core xml widgets gui
-CONFIG += plugin release
-DEFINES += QT_DLL QT_XML_LIB MAKEFILEGENERATOR_LIB QT_WIDGETS_LIB
+CONFIG += debug
+DEFINES += WIN64 QT_DLL QT_XML_LIB MAKEFILEGENERATOR_LIB QT_WIDGETS_LIB
 INCLUDEPATH += ./../.. \
     ./GeneratedFiles \
     . \
-    $(QTDIR)/../qttools/include 
-LIBS += -L"./../../executable" \
-    -lIPXACTmodels
+    ./GeneratedFiles/Debug
+LIBS += -L"./../../executable"
 DEPENDPATH += .
-MOC_DIR += ./GeneratedFiles/release
-OBJECTS_DIR += release
+MOC_DIR += ./GeneratedFiles/debug
+OBJECTS_DIR += debug
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(MakefileGenerator.pri)
-
-target.path = /usr/share/kactus2/plugins
-INSTALLS += target
-

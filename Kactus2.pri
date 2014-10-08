@@ -151,11 +151,14 @@ HEADERS += ./common/Global.h \
     ./wizards/ComponentWizard/ComponentWizardConclusionPage.h \
     ./wizards/ComponentWizard/ComponentWizardDependencyPage.h \
     ./wizards/ComponentWizard/ComponentWizardFilesPage.h \
+    ./wizards/ComponentWizard/ComponentWizardImportPage.h \
     ./wizards/ComponentWizard/ComponentWizardIntroPage.h \
     ./wizards/ComponentWizard/ComponentWizardPages.h \
-    ./wizards/ComponentWizard/ComponentWizardImportPage.h \
     ./wizards/ComponentWizard/ImportRunner.h \
     ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.h \
+    ./wizards/ComponentWizard/ImportEditor/ModelParameterEditorAdapter.h \
+    ./wizards/ComponentWizard/ImportEditor/ImportEditor.h \
+    ./wizards/ComponentWizard/ImportEditor/ImportHighlighter.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizard.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardGeneralOptionsPage.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardBusDefinitionPage.h \
@@ -175,13 +178,12 @@ HEADERS += ./common/Global.h \
     ./Plugins/PluginSystem/NewPluginsDialog.h \
     ./Plugins/PluginSystem/PluginListDialog.h \
     ./Plugins/PluginSystem/PluginUtilityAdapter.h \
+    ./Plugins/PluginSystem/ImportPlugin/ImportColors.h \
     ./Plugins/PluginSystem/ImportPlugin/Highlighter.h \
     ./Plugins/PluginSystem/ImportPlugin/HighlightSource.h \
     ./Plugins/PluginSystem/ImportPlugin/ImportPlugin.h \
     ./Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h \
     ./Plugins/PluginSystem/ImportPlugin/ModelParameterVisualizer.h \
-    ./Plugins/PluginSystem/ImportPlugin/PortSource.h \
-    ./Plugins/PluginSystem/ImportPlugin/PortVisualizer.h \
     ./library/LibraryManager/ipxactitem.h \
     ./library/LibraryManager/libraryinterface.h \
     ./library/LibraryManager/LibraryUtils.h \
@@ -440,8 +442,6 @@ HEADERS += ./common/Global.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
     ./editors/CSourceEditor/CSourceTextEdit.h \
     ./editors/CSourceEditor/CSourceWidget.h \
-    ./editors/NotesEditor/NotesEditor.h \
-    ./editors/NotesEditor/NotesStack.h \
     ./designEditors/SystemDesign/HWMappingItem.h \
     ./designEditors/SystemDesign/SystemMoveCommands.h \
     ./designEditors/SystemDesign/SWComponentItem.h \
@@ -543,10 +543,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./wizards/ComponentWizard/ImportEditor/ImportEditor.h \
-    ./wizards/ComponentWizard/ImportEditor/ImportHighlighter.h \
-    ./wizards/ComponentWizard/ImportEditor/ModelParameterEditorAdapter.h
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -678,9 +675,12 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./wizards/ComponentWizard/ComponentWizardDependencyPage.cpp \
     ./wizards/ComponentWizard/ComponentWizardFilesPage.cpp \
     ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.cpp \
-    ./wizards/ComponentWizard/ComponentWizardIntroPage.cpp \
     ./wizards/ComponentWizard/ComponentWizardImportPage.cpp \
+    ./wizards/ComponentWizard/ComponentWizardIntroPage.cpp \
     ./wizards/ComponentWizard/ImportRunner.cpp \
+    ./wizards/ComponentWizard/ImportEditor/ImportEditor.cpp \
+    ./wizards/ComponentWizard/ImportEditor/ImportHighlighter.cpp \
+    ./wizards/ComponentWizard/ImportEditor/ModelParameterEditorAdapter.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizard.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardBusDefinitionPage.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardConclusionPage.cpp \
@@ -951,8 +951,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/CSourceEditor/CSourceHighlighter.cpp \
     ./editors/CSourceEditor/CSourceTextEdit.cpp \
     ./editors/CSourceEditor/CSourceWidget.cpp \
-    ./editors/NotesEditor/NotesEditor.cpp \
-    ./editors/NotesEditor/NotesStack.cpp \
     ./designEditors/HWDesign/AdHocEnabled.cpp \
     ./designEditors/HWDesign/AdHocInterfaceItem.cpp \
     ./designEditors/HWDesign/AdHocPortItem.cpp \
@@ -1050,8 +1048,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./wizards/ComponentWizard/ImportEditor/ImportEditor.cpp \
-    ./wizards/ComponentWizard/ImportEditor/ModelParameterEditorAdapter.cpp \
-    ./wizards/ComponentWizard/ImportEditor/ImportHighlighter.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
 RESOURCES += kactus.qrc

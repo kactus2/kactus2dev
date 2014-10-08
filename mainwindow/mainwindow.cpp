@@ -60,7 +60,6 @@
 #include <editors/ComponentEditor/componenteditor.h>
 #include <editors/CSourceEditor/CSourceWidget.h>
 #include <editors/CSourceEditor/CSourceContentMatcher.h>
-#include <editors/NotesEditor/NotesEditor.h>
 
 #include <Help/HelpSystem/ContextHelpBrowser.h>
 #include <Help/HelpSystem/HelpWindow.h>
@@ -151,8 +150,6 @@ MainWindow::MainWindow(QWidget *parent)
       interfaceDock_(0),
       connectionEditor_(0),
       connectionDock_(0),
-      notesDock_(0),
-      notesEditor_(0),
       ribbon_(0),
       actNew_(0),
       actSave_(0),
@@ -221,7 +218,6 @@ MainWindow::MainWindow(QWidget *parent)
     // Setup windows.
     setupMessageConsole();
     setupContextHelp();
-    setupNotesEditor();
 	setupDrawBoard();
     setupLibraryDock();
     setupInstanceEditor();
@@ -1002,24 +998,6 @@ void MainWindow::setupContextHelp()
     connect(this, SIGNAL(helpUrlRequested(QString const&)),
             contextHelpBrowser_, SLOT(onHelpRequested(QString const&)), Qt::UniqueConnection);
     contextHelpBrowser_->onHelpRequested("index.html");
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainWindow::setupNotesEditor()
-//-----------------------------------------------------------------------------
-void MainWindow::setupNotesEditor()
-{
-    /*notesDock_ = new QDockWidget(tr("Notes"), this);
-    notesDock_->setObjectName(tr("Notes"));
-    notesDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
-    notesDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
-
-    notesEditor_ = new NotesStack(notesDock_);
-    notesDock_->setWidget(notesEditor_);
-    addDockWidget(Qt::BottomDockWidgetArea, notesDock_);
-
-    connect(this, SIGNAL(helpUrlRequested(QString const&)),
-        notesEditor_, SLOT(onContextChanged(QString const&)), Qt::UniqueConnection);*/
 }
 
 //-----------------------------------------------------------------------------
@@ -2011,9 +1989,6 @@ void MainWindow::onTabCloseRequested( int index )
 		}
 	}
 
-    /*VLNV vlnv = doc->getIdentifyingVLNV();
-    notesEditor_->onVLNVClosed(vlnv);*/
-
 	// remove the widget from the tabs
 	designTabs_->removeTab(index);
 
@@ -2036,8 +2011,6 @@ void MainWindow::onTabChanged(int index)
 	// update the menu 
 	if (doc) {
 		updateWindows();
-        /*VLNV vlnv = doc->getIdentifyingVLNV();
-        notesEditor_->onVLNVChanged(vlnv, libraryHandler_->getPath(vlnv));*/
 	}
 
 	// if the new tab is designWidget
@@ -3703,10 +3676,6 @@ void MainWindow::connectVisibilityControls()
     // Action to show/hide the address editor.
     connect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
         this, SLOT(onAddressAction(bool)), Qt::UniqueConnection);
-
-    // Action to show/hide the notes.
-    /*connect(notesDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
-        this, SLOT(onNotesEditorAction(bool)), Qt::UniqueConnection);*/
 }
 
 //-----------------------------------------------------------------------------
@@ -3737,8 +3706,6 @@ void MainWindow::disconnectVisibilityControls()
     disconnect(adHocDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onAdHocAction(bool)));
 
     disconnect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onAddressAction(bool)));
-   
-    //disconnect(notesDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onNotesEditorAction(bool)));
 }
 
 //-----------------------------------------------------------------------------
@@ -4274,14 +4241,6 @@ void MainWindow::onAddressAction(bool show)
 //-----------------------------------------------------------------------------
 void MainWindow::onInstanceAction( bool show ) {
     setWindowVisibilityForSupportedWindow(TabDocument::INSTANCEWINDOW, show);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::onNotesEditorAction()
-//-----------------------------------------------------------------------------
-void MainWindow::onNotesEditorAction(bool show)
-{
-    setWindowVisibilityForSupportedWindow(TabDocument::NOTES_WINDOW, show);
 }
 
 //-----------------------------------------------------------------------------
