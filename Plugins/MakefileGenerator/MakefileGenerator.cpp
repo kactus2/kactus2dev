@@ -13,7 +13,7 @@
 
 #include <QFile>
 #include <QDir>
-#include <QtextStream>
+#include <QTextStream>
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::MakefileGenerator()

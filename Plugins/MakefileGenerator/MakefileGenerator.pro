@@ -10,9 +10,10 @@ CONFIG += plugin release
 DEFINES += WIN64 QT_DLL QT_XML_LIB MAKEFILEGENERATOR_LIB QT_WIDGETS_LIB
 INCLUDEPATH += ./../.. \
     ./GeneratedFiles \
-    . \
-    ./GeneratedFiles/Debug
-LIBS += -L"./../../executable"
+    ./../.. \
+    $(QTDIR)/../qttools/include 
+LIBS += -L"./../../executable" \
+    -lIPXACTmodels
 DEPENDPATH += .
 MOC_DIR += ./GeneratedFiles/debug
 OBJECTS_DIR += debug
