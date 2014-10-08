@@ -18,6 +18,7 @@ SUBDIRS += IPXACTmodels/IPXACTmodels.pro \
 	Plugins/AlteraBSPGenerator/AlteraBSPGenerator.pro \
 	Plugins/QuartusPinImportPlugin/QuartusPinImportPlugin.pro \
 	Plugins/PadsPartGenerator/PadsPartGenerator.pro \
+	Plugins/MakefileGenerator/MakefileGenerator.pro \
 
 	
 unix:upgrade.path = /usr/share/kactus2

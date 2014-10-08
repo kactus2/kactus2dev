@@ -545,7 +545,6 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
     ./wizards/ComponentWizard/ImportEditor/ImportEditor.h \
-    ./wizards/ComponentWizard/ImportEditor/PortEditorAdapter.h \
     ./wizards/ComponentWizard/ImportEditor/ImportHighlighter.h \
     ./wizards/ComponentWizard/ImportEditor/ModelParameterEditorAdapter.h
 SOURCES += ./common/GenericEditProvider.cpp \
@@ -1053,7 +1052,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
     ./wizards/ComponentWizard/ImportEditor/ImportEditor.cpp \
-    ./wizards/ComponentWizard/ImportEditor/PortEditorAdapter.cpp \
     ./wizards/ComponentWizard/ImportEditor/ModelParameterEditorAdapter.cpp \
     ./wizards/ComponentWizard/ImportEditor/ImportHighlighter.cpp
 RESOURCES += kactus.qrc

@@ -12,8 +12,8 @@
 #include "MakefileGenerator.h"
 
 #include <QFile>
-#include <qdir>
-#include <qtextstream>
+#include <QDir>
+#include <QtextStream>
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::MakefileGenerator()
