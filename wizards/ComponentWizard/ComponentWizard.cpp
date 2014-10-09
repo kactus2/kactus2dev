@@ -20,6 +20,7 @@
 #include "ComponentWizardDependencyPage.h"
 #include "ComponentWizardGeneralInfoPage.h"
 #include "ComponentWizardImportPage.h"
+#include "ComponentWizardViewsPage.h"
 #include "ComponentWizardConclusionPage.h"
 
 //-----------------------------------------------------------------------------
@@ -50,6 +51,7 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
     setPage(ComponentWizardPages::DEPENDENCY, new ComponentWizardDependencyPage(component, basePath, pluginMgr, 
         this));     
     setPage(ComponentWizardPages::IMPORT, importPage);
+    setPage(ComponentWizardPages::VIEWS, new ComponentWizardViewsPage(handler, this));
     setPage(ComponentWizardPages::CONCLUSION, new ComponentWizardConclusionPage(handler, this));
 
     connect(importPage, SIGNAL(componentChanged(QSharedPointer<Component>)), 

@@ -23,6 +23,7 @@ namespace ComponentWizardPages
         FILES,
         DEPENDENCY,
         IMPORT,
+        VIEWS,
         CONCLUSION
 	 };
 

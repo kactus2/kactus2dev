@@ -50,7 +50,7 @@ ComponentWizardImportPage::~ComponentWizardImportPage()
 //-----------------------------------------------------------------------------
 int ComponentWizardImportPage::nextId() const
 {
-    return ComponentWizardPages::CONCLUSION;
+    return ComponentWizardPages::VIEWS;
 }
 
 //-----------------------------------------------------------------------------

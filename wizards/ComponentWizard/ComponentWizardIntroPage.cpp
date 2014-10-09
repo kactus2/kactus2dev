@@ -37,6 +37,7 @@ ComponentWizardIntroPage::ComponentWizardIntroPage(QSharedPointer<Component> com
     if (component->getComponentImplementation() == KactusAttribute::KTS_HW)
     {
         infoText += "<li>" + tr("Import elements from file.");
+        infoText += "<li>" + tr("Setup views.");
     }
 
     infoText += "<li>" + tr("Summary") + "</ul>";

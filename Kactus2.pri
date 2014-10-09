@@ -442,6 +442,7 @@ HEADERS += ./common/Global.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
     ./editors/CSourceEditor/CSourceTextEdit.h \
     ./editors/CSourceEditor/CSourceWidget.h \
+    ./wizards/ComponentWizard/ComponentWizardViewsPage.h \
     ./designEditors/SystemDesign/HWMappingItem.h \
     ./designEditors/SystemDesign/SystemMoveCommands.h \
     ./designEditors/SystemDesign/SWComponentItem.h \
@@ -1048,5 +1049,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
+    ./wizards/ComponentWizard/ComponentWizardViewsPage.cpp
 RESOURCES += kactus.qrc

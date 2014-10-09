@@ -498,8 +498,6 @@ private slots:
 private:
 	// Disable copying.
 	MainWindow(MainWindow const& rhs);
-
-
     MainWindow& operator=(MainWindow const& rhs);
 
     /*!
@@ -678,6 +676,18 @@ private:
      *  Disconnects all the visibility controls for windows.     
      */
     void disconnectVisibilityControls();
+
+    /*!
+     *  Runs the component editor for the given component.
+     *
+     *      @param [in] component   The component to run the wizard for.
+     *      @param [in] directory   The directory containing the component xml file.
+     */
+    void runComponentWizard(QSharedPointer<Component> component, QString const& directory);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! \brief The instance that manages the IP-Xact library
     LibraryHandler *libraryHandler_;

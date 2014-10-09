@@ -2213,18 +2213,7 @@ void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier,
         return;
     }
 
-    // Open the component wizard.
-    ComponentWizard wizard(component, directory, *pluginMgr_, libraryHandler_, this);
-    
-    if(wizard.exec() == QDialog::Accepted)
-    {
-        // Save wizard changes.
-        if (!libraryHandler_->writeModelToFile(wizard.getComponent()))
-        {
-            emit errorMessage("Error saving file to disk.");
-            return;
-        }
-    }
+    runComponentWizard(component, directory);    
 
 	// Open the component editor.
 	openComponent(vlnv, true);
@@ -4041,16 +4030,7 @@ void MainWindow::createSWComponent(VLNV const& vlnv, QString const& directory)
         return;
     }
 
-    // Open up the component wizard.
-    ComponentWizard wizard(component, directory, *pluginMgr_, libraryHandler_, this);
-    wizard.exec();
-
-	// Save wizard changes.
-    if (!libraryHandler_->writeModelToFile(component))
-    {
-        emit errorMessage("Error saving files to disk.");
-        return;
-    }
+    runComponentWizard(component, directory);    
 
 	openComponent(vlnv, true);
 }
@@ -4435,7 +4415,6 @@ void MainWindow::createGeneratorPluginActions()
             this, SLOT(runGeneratorPlugin(QAction*)), Qt::UniqueConnection);
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: MainWindow::updateGeneratorPluginActions()
 //-----------------------------------------------------------------------------
@@ -4458,4 +4437,25 @@ void MainWindow::updateGeneratorPluginActions()
     
     // Recreate the plugin actions.
     createGeneratorPluginActions();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::runComponentWizard()
+//-----------------------------------------------------------------------------
+void MainWindow::runComponentWizard(QSharedPointer<Component> component, QString const& directory)
+{
+    // Open the component wizard.
+    ComponentWizard wizard(component, directory, *pluginMgr_, libraryHandler_, this);
+
+    QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
+    wizard.setStyleSheet(styleSheet);
+
+    if(wizard.exec() == QDialog::Accepted)
+    {
+        // Save wizard changes.
+        if (!libraryHandler_->writeModelToFile(wizard.getComponent()))
+        {
+            emit errorMessage("Error saving file to disk.");
+        }
+    }
 }

@@ -3757,6 +3757,12 @@
     <ClCompile Include="GeneratedFiles\moc_ComponentWizard.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="wizards\ComponentWizard\ComponentWizardViewsPage.cpp">
+      <Filter>Source Files\wizards\ComponentWizard</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentWizardViewsPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5161,6 +5167,9 @@
       <Filter>Header Files\wizards\ComponentWizard</Filter>
     </CustomBuild>
     <CustomBuild Include="wizards\ComponentWizard\ComponentWizard.h">
+      <Filter>Header Files\wizards\ComponentWizard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="wizards\ComponentWizard\ComponentWizardViewsPage.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
     </CustomBuild>
   </ItemGroup>
