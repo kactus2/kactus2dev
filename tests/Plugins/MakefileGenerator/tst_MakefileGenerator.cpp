@@ -125,7 +125,7 @@ void tst_MakefileGenerator::baseCase()
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("software_0", "_OBJ= array.c.o");
     verifyOutputContains("software_0", "OBJ= $(patsubst %,$(ODIR)/%,$(_OBJ))");
@@ -171,7 +171,7 @@ void tst_MakefileGenerator::fileBuildOverride()
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("software_0", "EFLAGS= $(includes) -sw");
     verifyOutputContains("software_0", "python -c -o $(ODIR)/array.c.o ../../array.c $(includes) -l -sw");
@@ -209,7 +209,7 @@ void tst_MakefileGenerator::fileSetBuildOverride()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("software_0", "EFLAGS= $(includes) -sw");
     verifyOutputContains("software_0", "javac -beef -c -o $(ODIR)/array.c.o ../../array.c $(includes) -lrt -sw");
@@ -251,7 +251,7 @@ void tst_MakefileGenerator::fileFlagReplace()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("software_0", "EFLAGS= $(includes) -sw");
     verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(includes) -u");
@@ -289,7 +289,7 @@ void tst_MakefileGenerator::fileSetFlagReplace()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("software_0", "EFLAGS= $(includes) -sw");
     verifyOutputContains("software_0", "javac -beef -c -o $(ODIR)/array.c.o ../../array.c $(includes) -lrt");
@@ -330,7 +330,7 @@ void tst_MakefileGenerator::includeFile()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("software_0", "_OBJ= array.c.o\n");
     verifyOutputContains("software_0", "EBUILDER= gcc");
@@ -372,7 +372,7 @@ void tst_MakefileGenerator::swSWViewFlagReplace()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("software_0", "EBUILDER= gcc");
     verifyOutputContains("software_0", "EFLAGS= $(includes) -hw -sw");
@@ -418,7 +418,7 @@ void tst_MakefileGenerator::hwBuilder()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("software_0", "EBUILDER= super_asm");
     verifyOutputContains("software_0", "EFLAGS= $(includes) -hw -sw");
@@ -463,7 +463,7 @@ void tst_MakefileGenerator::hwBuilderWithNoSoftView()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("software_0", "EBUILDER= super_asm");
     verifyOutputContains("software_0", "EFLAGS= $(includes) -hw");
@@ -509,7 +509,7 @@ void tst_MakefileGenerator::hwRef()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("software_0", "EBUILDER= super_asm");
     verifyOutputContains("software_0", "EFLAGS= $(includes) -hw");
@@ -563,7 +563,7 @@ void tst_MakefileGenerator::hwandswRef()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("software_0", "_OBJ= sarray.c.o harray.c.o");
     verifyOutputContains("software_0", "EBUILDER= super_asm");
@@ -612,7 +612,7 @@ void tst_MakefileGenerator::instanceHeaders()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 }
 
 void tst_MakefileGenerator::multipleFiles()
@@ -658,7 +658,7 @@ void tst_MakefileGenerator::multipleFiles()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("software_0", "_OBJ= array.c.o support.c.o additional.c.o hiterbehn.c.o");
     verifyOutputContains("software_0", "EBUILDER= gcc");
@@ -711,7 +711,7 @@ void tst_MakefileGenerator::multipleFileSets()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("software_0", "_OBJ= array.c.o support.c.o additional.c.o hiterbehn.c.o");
     verifyOutputContains("software_0", "EBUILDER= gcc");
@@ -763,7 +763,7 @@ void tst_MakefileGenerator::multipleComponents()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("crapware_0", "EBUILDER= hopo");
     verifyOutputContains("crapware_0", "EFLAGS= $(includes) -hw");
@@ -822,7 +822,7 @@ void tst_MakefileGenerator::multipleHardWare()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("crapware_0", "EBUILDER= hopo");
     verifyOutputContains("crapware_0", "EFLAGS= $(includes) -ahw");
@@ -887,7 +887,7 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("crapware_0", "EBUILDER= hopo");
     verifyOutputContains("crapware_0", "EFLAGS= $(includes) -ahw");
@@ -926,7 +926,7 @@ void tst_MakefileGenerator::noHardWare()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("software_0", "_OBJ= array.c.o");
     verifyOutputContains("software_0", "OBJ= $(patsubst %,$(ODIR)/%,$(_OBJ))");
@@ -980,7 +980,7 @@ void tst_MakefileGenerator::multipleInstances()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("stackware_0", "EBUILDER= hopo");
     verifyOutputContains("stackware_0", "EFLAGS= $(includes) -hw -bmw");
@@ -1046,7 +1046,7 @@ void tst_MakefileGenerator::apiUsage()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("crapware_0", "EBUILDER= hopo -s");
     verifyOutputContains("crapware_0", "EFLAGS= $(includes) -hw");
@@ -1135,7 +1135,7 @@ void tst_MakefileGenerator::threeLevelStack()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("crapware_0", "EBUILDER= hopo");
     verifyOutputContains("crapware_0", "EFLAGS= $(includes) -hw");
@@ -1239,7 +1239,7 @@ void tst_MakefileGenerator::fullCircularapiUsage()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     QFile outputFile(outputDir_ + "/sw/topware_0/Makefile");
 
@@ -1336,7 +1336,7 @@ void tst_MakefileGenerator::circularapiUsage()
     parser.parse( &library_, topComponent, desgconf, design );
     MakefileGenerator generator( parser );
 
-    generator.generate(outputDir_);
+    generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("crapware_0", "EBUILDER= hopo");
     verifyOutputContains("crapware_0", "EFLAGS= $(includes) -hw");

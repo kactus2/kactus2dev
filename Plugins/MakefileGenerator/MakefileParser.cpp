@@ -11,10 +11,9 @@
 
 #include "MakefileParser.h"
 
-#include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/ApiInterface.h>
 #include "IPXACTmodels/SystemView.h"
-
+#include <QDebug>
 //-----------------------------------------------------------------------------
 // Function: MakefileParser::MakefileParser()
 //-----------------------------------------------------------------------------
@@ -38,11 +37,41 @@ const QList<MakefileParser::MakeFileData>& MakefileParser::getParsedData()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MakefileParser::getGeneralFileSet()
+//-----------------------------------------------------------------------------
+const QSharedPointer<FileSet>& MakefileParser::getGeneralFileSet()
+{
+    return generalFileSet_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MakefileParser::searchSWComponent()
 //-----------------------------------------------------------------------------
 void MakefileParser::parse( LibraryInterface* library, QSharedPointer<Component> topComponent,
     QSharedPointer<DesignConfiguration const> desgConf, QSharedPointer<const Design> design)
 {
+    // Find the name of the system view associated with the design.
+    QString sysViewName;
+
+    foreach( QSharedPointer<SystemView> view, topComponent->getSystemViews() )
+    {
+        if ( view->getHierarchyRef() == *desgConf->getVlnv() )
+        {
+            sysViewName = view->getName();
+            break;
+        }
+    }
+
+    // Fabricate name for the fileSet of design-wide files.
+    QString fileSetName = sysViewName + "_general_files";
+
+    // Obtain the the fileSet by name and set it as a source file group.
+    QSharedPointer<FileSet> fileSet = topComponent->getFileSet(fileSetName);
+    fileSet->setGroups("sourceFiles");
+
+    // This is also a fileSet referenced by the makefile generation
+    generalFileSet_ = fileSet;
+
     foreach ( SWInstance softInstance, design->getSWInstances() )
     {
         // The VLNV and the component of the instance are needed.
@@ -63,7 +92,7 @@ void MakefileParser::parse( LibraryInterface* library, QSharedPointer<Component>
         makeData.name = softInstance.getInstanceName();
 
         // The top component of the design may contain header files specific to the instance.
-        findInstanceHeaders(library, topComponent, desgConf, softInstance, makeData);
+        findInstanceHeaders(library, topComponent, desgConf, sysViewName, softInstance, makeData);
 
         // Parse files of the underlying hardware.
         QString hwName = softInstance.getMapping();
@@ -125,41 +154,38 @@ bool MakefileParser::isTopOfStack(QSharedPointer<const Design> design, SWInstanc
 // Function: MakefileParser::findInstanceHeaders()
 //-----------------------------------------------------------------------------
 void MakefileParser::findInstanceHeaders(LibraryInterface* library, QSharedPointer<Component> topComponent,
-    QSharedPointer<DesignConfiguration const> desgConf, SWInstance &softInstance, MakeFileData &makeData)
+    QSharedPointer<DesignConfiguration const> desgConf, QString sysViewName, SWInstance &softInstance,
+    MakeFileData &makeData)
 {
     // The path leading to the design.
     QFileInfo componentQfi = QFileInfo(library->getPath(*desgConf->getVlnv()));
 
-    // Find the name of the system view associated with the design.
-    QString sysViewName;
+    QString fileSetName = softInstance.getFileSetRef();
 
-    foreach( QSharedPointer<SystemView> view, topComponent->getSystemViews() )
+    // Create a new fileSet, if no reference exist
+    if ( fileSetName.isNull() )
     {
-        if ( view->getHierarchyRef() == *desgConf->getVlnv() )
-        {
-            sysViewName = view->getName();
-            break;
-        }
+        // If not, make a new one.
+        fileSetName = sysViewName + "_" + softInstance.getInstanceName() + "_headers";
+        softInstance.setFileSetRef( fileSetName );
     }
 
-    foreach ( QSharedPointer<FileSet> fileSet, topComponent->getFileSets() )
-    {
-        // The fileSet names of the instance headers are hard coded.
-        if ( fileSet->getName() == softInstance.getFileSetRef() )
-        {
-            foreach( QSharedPointer<File> file, fileSet->getFiles())
-            {
-                // We are only interested in the actual header files.
-                if ( file->getIncludeFile() )
-                {
-                    // We may assume that a file path is relative to the component path, and thus the include path
-                    // is component path + file path.
-                    QFileInfo fileQfi = QFileInfo(componentQfi.absolutePath() + "/" + file->getName());
-                    makeData.includeDirectories.append(fileQfi.absolutePath());
-                }
-            }
+    // Obtain the the fileSet by name and set it as a source file group.
+    QSharedPointer<FileSet> fileSet = topComponent->getFileSet(fileSetName);
+    fileSet->setGroups("sourceFiles");
 
-            break;
+    // This is also a fileSet referenced by the makefile generation
+    makeData.fileSet = fileSet;
+
+    foreach( QSharedPointer<File> file, fileSet->getFiles())
+    {
+        // We are only interested in the actual header files.
+        if ( file->getIncludeFile() )
+        {
+            // We may assume that a file path is relative to the component path, and thus the include path
+            // is component path + file path.
+            QFileInfo fileQfi = QFileInfo(componentQfi.absolutePath() + "/" + file->getName());
+            makeData.includeDirectories.append(fileQfi.absolutePath());
         }
     }
 }

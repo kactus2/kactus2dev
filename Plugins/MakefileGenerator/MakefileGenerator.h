@@ -35,19 +35,21 @@ public:
      *  Generates all makefiles based on the parsed data.
      *
      *      @param [in] targetPath   The path, where the makefiles are created.
+     *      @param [in] targetPath   The path, where the top component is.
      */
-     void generate(QString targetPath) const;
+    void generate(QString targetPath, QString topPath) const;
 
 private:
 
     /*!
      *  Creates a makefile for a single software instance, and thus for a single executable.
+     *  The makefile is also placed to the instance headers.
      *
      *      @param [in] basePath    The path, where the makefiles are created.
      *      @param [in] mfd   The make data associated with the makefile as whole.
      *      @param [in] makeNames   The directory of the created makefile must be added here.
      */
-     void generateInstanceMakefile(QString basePath, MakefileParser::MakeFileData &mfd, QStringList &makeNames) const;
+    void generateInstanceMakefile(QString basePath, QString topPath, MakefileParser::MakeFileData &mfd, QStringList &makeNames) const;
 
     /*!
      *  Creates a makefile calling all the other makefiles associated with the design.
@@ -55,7 +57,7 @@ private:
      *      @param [in] basePath   The path, where the makefile is created.
      *      @param [in] makeNames   The paths of all other makefiles.
      */
-     void generateMainMakefile(QString basePath, QStringList makeNames) const;
+    void generateMainMakefile(QString basePath, QString topPath, QStringList makeNames) const;
 
      /*!
       *  Creates a launcher script starting executables created by the makefiles.
@@ -63,7 +65,7 @@ private:
       *      @param [in] basePath   The path, where the launcher is created.
       *      @param [in] makeNames   The paths of all other makefiles.
       */
-      void generateLauncher(QString basePath, QStringList makeNames) const;
+    void generateLauncher(QString basePath, QString topPath, QStringList makeNames) const;
 
     /*!
      *  Writes data used in building the executable to the stream.
@@ -145,7 +147,9 @@ private:
       void writeEnding(QTextStream& outStream) const;
 
     //! Collection of data sets, one for each makefile.
-    QList<MakefileParser::MakeFileData> parsedData_;
+      QList<MakefileParser::MakeFileData> parsedData_;
+      //! The fileSet for the main makefile and the launcher.
+      QSharedPointer<FileSet> generalFileSet_;
 };
 
 #endif // MAKEFILEGENERATOR_H

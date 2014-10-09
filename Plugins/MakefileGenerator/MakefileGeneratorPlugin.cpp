@@ -123,12 +123,13 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
     QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
     
-    QString dir = QFileInfo(utility->getLibraryInterface()->getPath(*libDes->getVlnv())).absolutePath(); 
+    QString targetDir = QFileInfo(utility->getLibraryInterface()->getPath(*libDes->getVlnv())).absolutePath(); 
+    QString topDir = QFileInfo(utility->getLibraryInterface()->getPath(*libComp->getVlnv())).absolutePath(); 
 
     MakefileParser parser;
     parser.parse( utility->getLibraryInterface(), comp, desgConf, design );
     MakefileGenerator generator( parser );
-    generator.generate(dir);
+    generator.generate(targetDir, topDir);
 
     utility->getLibraryInterface()->writeModelToFile(libComp);
 

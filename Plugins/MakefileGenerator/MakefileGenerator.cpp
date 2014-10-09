@@ -14,11 +14,13 @@
 #include <QFile>
 #include <QDir>
 #include <QTextStream>
+#include <IPXACTmodels/fileset.h>
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::MakefileGenerator()
 //-----------------------------------------------------------------------------
-MakefileGenerator::MakefileGenerator( MakefileParser& parser ) : parsedData_( parser.getParsedData() )
+MakefileGenerator::MakefileGenerator( MakefileParser& parser ) : parsedData_( parser.getParsedData() ),
+    generalFileSet_( parser.getGeneralFileSet() )
 {
 }
 
@@ -32,7 +34,7 @@ MakefileGenerator::~MakefileGenerator()
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::generate()
 //-----------------------------------------------------------------------------
-void MakefileGenerator::generate(QString targetPath) const
+void MakefileGenerator::generate(QString targetPath, QString topPath) const
 {
     // Names of the created directories to be referenced by the master makefile.
     QStringList makeNames;
@@ -43,18 +45,18 @@ void MakefileGenerator::generate(QString targetPath) const
 
     foreach(MakefileParser::MakeFileData mfd, parsedData_)
     {
-        generateInstanceMakefile(basePath, mfd, makeNames);
+        generateInstanceMakefile(basePath, topPath, mfd, makeNames);
     }
 
-    generateMainMakefile(basePath, makeNames);
+    generateMainMakefile(basePath, topPath, makeNames);
 
-    generateLauncher(basePath, makeNames);
+    generateLauncher(basePath, topPath, makeNames);
 }
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::generateInstanceMakefile()
 //-----------------------------------------------------------------------------
-void MakefileGenerator::generateInstanceMakefile(QString basePath, MakefileParser::MakeFileData &mfd, QStringList &makeNames) const
+void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPath, MakefileParser::MakeFileData &mfd, QStringList &makeNames) const
 {
     // Create directory for the object files.
     QString instancePath = basePath + mfd.name;
@@ -91,13 +93,30 @@ void MakefileGenerator::generateInstanceMakefile(QString basePath, MakefileParse
 
     // Close after it is done.
     makeFile.close();
+
+    QSharedPointer<FileSet> fileSet = mfd.fileSet;
+
+    // The path in the fileSet must be relative to the basePath.
+    QString relDir = General::getRelativePath(topPath,dir);
+
+    // Add the file to instance fileSet
+    if ( !fileSet->contains(relDir) )
+    {
+        QSharedPointer<File> file;
+        QStringList types;
+        types.append("makefile");
+        QSettings settings;
+        file = fileSet->addFile(relDir, settings);
+        file->setAllFileTypes( types );
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::generateMainMakefile()
 //-----------------------------------------------------------------------------
-void MakefileGenerator::generateMainMakefile(QString basePath, QStringList makeNames) const
+void MakefileGenerator::generateMainMakefile(QString basePath, QString topPath, QStringList makeNames) const
 {
+    QString dir = basePath + "Makefile";
     // Create the master makefile.
     QFile makeFile( basePath + "Makefile" );
     makeFile.open(QIODevice::WriteOnly);
@@ -121,14 +140,29 @@ void MakefileGenerator::generateMainMakefile(QString basePath, QStringList makeN
 
     // Close after it is done.
     makeFile.close();
+
+    // The path in the fileSet must be relative to the basePath.
+    QString relDir = General::getRelativePath(topPath,dir);
+
+    // Add the file to instance fileSet
+    if ( !generalFileSet_->contains(relDir) )
+    {
+        QSharedPointer<File> file;
+        QStringList types;
+        types.append("makefile");
+        QSettings settings;
+        file = generalFileSet_->addFile(relDir, settings);
+        file->setAllFileTypes( types );
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::generateLauncher()
 //-----------------------------------------------------------------------------
-void MakefileGenerator::generateLauncher(QString basePath, QStringList makeNames) const
+void MakefileGenerator::generateLauncher(QString basePath, QString topPath, QStringList makeNames) const
 {
-    QFile launcherFile( basePath + "launcher.sh" );
+    QString dir = basePath + "launcher.sh";
+    QFile launcherFile( dir );
     launcherFile.open(QIODevice::WriteOnly);
     QTextStream outStream(&launcherFile);
 
@@ -142,6 +176,20 @@ void MakefileGenerator::generateLauncher(QString basePath, QStringList makeNames
 
     // Close after it is done.
     launcherFile.close();
+
+    // The path in the fileSet must be relative to the basePath.
+    QString relDir = General::getRelativePath(topPath,dir);
+
+    // Add the file to instance fileSet
+    if ( !generalFileSet_->contains(relDir) )
+    {
+        QSharedPointer<File> file;
+        QStringList types;
+        types.append("shellScript");
+        QSettings settings;
+        file = generalFileSet_->addFile(relDir, settings);
+        file->setAllFileTypes( types );
+    }
 }
 
 //-----------------------------------------------------------------------------

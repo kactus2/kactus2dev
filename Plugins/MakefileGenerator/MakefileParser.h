@@ -17,6 +17,7 @@
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/file.h>
+#include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/SWView.h>
 
@@ -60,6 +61,8 @@ public:
         QStringList includeDirectories;
         // The list of parsed software instances. Tracked to avoid re-parsing a dependency.
         QStringList parsedInstances;
+        // Instance specific fileSet, which is to contain the makefile generated for the instance.
+        QSharedPointer<FileSet> fileSet;
     };
 
     MakefileParser();
@@ -68,6 +71,9 @@ public:
 
     // Returns reference to all parsed MakeFileData.
     const QList<MakeFileData>& getParsedData();
+
+    // Return the general file set.
+    const QSharedPointer<FileSet>& getGeneralFileSet();
 
     /*!
      *  Parses all software components from the design for the data needed in makefiles.
@@ -95,16 +101,18 @@ private:
          QSharedPointer<Component> softComponent);
 
     /*!
-     *  Finds all files in the instance header fileset if none exist, and add their directories as includes.
+     *  Finds all files in the instance header fileSet if none exist, and add their directories as includes.
      *
      *      @param [in] library   The library containing all components in the design.
      *      @param [in] topComponent   The top component associated with the design.
      *      @param [in] desgConf   The design configuration object associated with the design.
+     *      @param [in] sysViewName   The name of the system view associated with the design.
      *      @param [in] softInstance   The software instance which instance headers are to be found.
      *      @param [in] makeData   The make data associated with the makefile as whole.
      */
      void findInstanceHeaders(LibraryInterface* library, QSharedPointer<Component> topComponent,
-         QSharedPointer<DesignConfiguration const> desgConf, SWInstance &softInstance, MakeFileData &makeData);
+         QSharedPointer<DesignConfiguration const> desgConf, QString sysViewName, SWInstance &softInstance,
+         MakeFileData &makeData);
 
     /*!
      *  Finds active software view of the given hardware instance and parses its files.
@@ -172,7 +180,9 @@ private:
      void findHardwareBuildCommand(MakeFileData &makeData, QSharedPointer<SWView> softView, QSharedPointer<SWView> hardView);
 
     //! Collection of data sets, one for each make file.
-    QList<MakeFileData> parsedData_;
+     QList<MakeFileData> parsedData_;
+     //! The fileSet for the main makefile and the launcher.
+     QSharedPointer<FileSet> generalFileSet_;
 };
 
 #endif // MakefileParser_H
