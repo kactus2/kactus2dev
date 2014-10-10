@@ -423,6 +423,7 @@ void Model::removeView(const QString& name) {
 
 			// remove the view
 			views_.removeAt(i);
+            i--;
 		}
 	}
 }
