@@ -442,6 +442,7 @@ HEADERS += ./common/Global.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
     ./editors/CSourceEditor/CSourceTextEdit.h \
     ./editors/CSourceEditor/CSourceWidget.h \
+    ./wizards/ComponentWizard/ViewListModel.h \
     ./wizards/ComponentWizard/ComponentWizardViewsPage.h \
     ./designEditors/SystemDesign/HWMappingItem.h \
     ./designEditors/SystemDesign/SystemMoveCommands.h \
@@ -952,6 +953,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/CSourceEditor/CSourceHighlighter.cpp \
     ./editors/CSourceEditor/CSourceTextEdit.cpp \
     ./editors/CSourceEditor/CSourceWidget.cpp \
+    ./wizards/ComponentWizard/ViewListModel.cpp \
     ./designEditors/HWDesign/AdHocEnabled.cpp \
     ./designEditors/HWDesign/AdHocInterfaceItem.cpp \
     ./designEditors/HWDesign/AdHocPortItem.cpp \

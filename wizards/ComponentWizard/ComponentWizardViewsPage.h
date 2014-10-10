@@ -15,6 +15,7 @@
 #include <QWizardPage>
 #include <QSharedPointer>
 #include <QTabWidget>
+#include <QListView>
 #include <QMap>
 
 class Component;
@@ -22,6 +23,7 @@ class ComponentWizard;
 class LibraryInterface;
 class View;
 class ViewEditor;
+class ViewListModel;
 
 //-----------------------------------------------------------------------------
 //! Component wizard page for setting up views.
@@ -62,10 +64,46 @@ private slots:
     //! Called when a view has been edited.
     virtual void onViewEdited();
 
+    //! Called when an new view should be added.
+    void onViewAdded();
+
+    //! Called when a view should be removed.
+    void onViewRemoved();
+
+
+    /*!
+     *  Called when a view is selected from the list.
+     *
+     *      @param [in] index   The index of the selected view.
+     */
+    void onViewSelected(QModelIndex const& index);
+
 private:
     // Disable copying.
     ComponentWizardViewsPage(ComponentWizardViewsPage const& rhs);
     ComponentWizardViewsPage& operator=(ComponentWizardViewsPage const& rhs);
+
+    /*!
+     *  Updates the icon for a given tab according to editor validity.
+     *
+     *      @param [in] tabIndex   The index of the tab to update.
+     */
+    void updateIconForTab(int tabIndex) const;
+
+    /*!
+     *  Creates an editor for a given view.
+     *
+     *      @param [in] component   The component whose view the editor is for.
+     *      @param [in] view        The view for which to create an editor.
+     */
+    void createEditorForView(QSharedPointer<Component> component, QSharedPointer<View> view);
+
+    /*!
+     *  Removes all editors for a given view.
+     *
+     *      @param [in] viewName   The name of the view whose editors to remove.
+     */
+    void removeEditorsForView(QString const& viewName);
 
     //! Sets the page layout.
     void setupLayout();
@@ -81,10 +119,19 @@ private:
     ComponentWizard* parent_;
 
     //! The child widget for holding tabs for different views.
-    QTabWidget* viewTabs_;
+    QTabWidget* editorTabs_;
 
-    //! The tab indexes and the views in them.
-    QMap<int, QSharedPointer<View> > views_;
+    //! The button for adding new views.
+    QPushButton* addButton_;
+
+    //! The button for removing the selected view.
+    QPushButton* removeButton_;
+
+    //! The widget displaying the list of views in a component.
+    QListView* viewList_;
+
+    //! The model for view list.
+    ViewListModel* viewModel_;
 };
 
 #endif // COMPONENTWIZARDVIEWSPAGE_H
