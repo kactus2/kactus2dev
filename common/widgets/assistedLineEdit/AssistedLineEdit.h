@@ -49,11 +49,6 @@ public:
     void setContentMatcher(ILineContentMatcher* matcher);
 
     /*!
-     *  Returns the content matcher.
-     */
-    ILineContentMatcher* getContentMatcher();
-
-    /*!
      *  Filters events.
      *
      *      @param [in] obj  The event owner.
@@ -68,13 +63,6 @@ protected:
      *      @param [in] e The key event.
      */
     void keyPressEvent(QKeyEvent* e);
-
-    /*!
-     *  Handles the given mouse press event.
-     *
-     *      @param [in] e The mouse press event.
-     */
-    void mousePressEvent(QMouseEvent* e);
 
     /*!
      *  Handles the focus in event.

@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 25.5.2011
- *      Author: Antti Kamppi
- * 		filename: hierarchyrefwidget.h
- */
+//-----------------------------------------------------------------------------
+// File: hierarchyrefwidget.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 25.5.2011
+//
+// Description:
+// Editor to set the hierarchy reference for a hierarchical view.
+//-----------------------------------------------------------------------------
 
 #ifndef HIERARCHYREFWIDGET_H
 #define HIERARCHYREFWIDGET_H

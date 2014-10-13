@@ -23,10 +23,11 @@
 //-----------------------------------------------------------------------------
 // Function: AssistedTextEdit()
 //-----------------------------------------------------------------------------
-AssistedLineEdit::AssistedLineEdit(QWidget* parentWnd, QWidget* parent) : QLineEdit(parent),
-                                                                          mainWnd_(parentWnd),
-                                                                          matcher_(0),
-                                                                          contentAssist_()
+AssistedLineEdit::AssistedLineEdit(QWidget* parentWnd, QWidget* parent) : 
+QLineEdit(parent),
+    mainWnd_(parentWnd),
+    matcher_(0),
+    contentAssist_()
 {
     contentAssist_ = new LineContentAssistWidget(this, parentWnd);
     
@@ -90,22 +91,7 @@ void AssistedLineEdit::keyPressEvent(QKeyEvent* e)
         // Otherwise process the key event as usual.
         QLineEdit::keyPressEvent(e);
         
-        // Update the content assist.
         contentAssist_->updateAssist(e);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: mousePressEvent()
-//-----------------------------------------------------------------------------
-void AssistedLineEdit::mousePressEvent(QMouseEvent* e)
-{
-    QLineEdit::mousePressEvent(e);
-
-    // Cancel the content assist if content is shown.
-    if (contentAssist_->isContentShown())
-    {
-        //m_contentAssist->cancel();
     }
 }
 
@@ -118,7 +104,6 @@ void AssistedLineEdit::focusInEvent(QFocusEvent* e)
 
     if (e->reason() != Qt::ActiveWindowFocusReason)
     {
-        // Update the assist.
         contentAssist_->updateAssist(0);
     }
 }
@@ -135,14 +120,6 @@ void AssistedLineEdit::focusOutEvent(QFocusEvent* e)
     {
         contentAssist_->cancel();
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AssistedLineEdit::getMatcher()
-//-----------------------------------------------------------------------------
-ILineContentMatcher* AssistedLineEdit::getContentMatcher()
-{
-    return matcher_;
 }
 
 //-----------------------------------------------------------------------------

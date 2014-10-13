@@ -1,21 +1,27 @@
-/* 
- *
- *  Created on: 25.5.2011
- *      Author: Antti Kamppi
- * 		filename: hierarchyrefwidget.cpp
- */
+//-----------------------------------------------------------------------------
+// File: hierarchyrefwidget.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 25.5.2011
+//
+// Description:
+// Editor to set the hierarchy reference for a hierarchical view.
+//-----------------------------------------------------------------------------
 
 #include "hierarchyrefwidget.h"
 
 #include <IPXACTmodels/view.h>
 #include <IPXACTmodels/component.h>
-#include <mainwindow/mainwindow.h>
 
 #include <QVBoxLayout>
 #include <QStringList>
 #include <QFormLayout>
 #include <QApplication>
 
+//-----------------------------------------------------------------------------
+// Function: HierarchyRefWidget::HierarchyRefWidget()
+//-----------------------------------------------------------------------------
 HierarchyRefWidget::HierarchyRefWidget(QSharedPointer<View> view, 
 									   QSharedPointer<Component> component,
 										LibraryInterface* libHandler,
@@ -23,29 +29,16 @@ HierarchyRefWidget::HierarchyRefWidget(QSharedPointer<View> view,
 QWidget(parent),
 view_(view),
 component_(component),
-hierarchyRef_(NULL),
-topLevelRef_(this) {
-
-	// find the main window for VLNV editor
-	QWidget* parentW = NULL;
-	foreach (QWidget* widget, QApplication::topLevelWidgets()) {
-		MainWindow* mainWnd = dynamic_cast<MainWindow*>(widget);
-		if (mainWnd) {
-			parentW = mainWnd;
-			break;
-		}
-	}
-
-	hierarchyRef_ = new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, parentW, this);
-
+hierarchyRef_(0),
+topLevelRef_(this)
+{
+	hierarchyRef_ = new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, parent->parentWidget(), this);
 	hierarchyRef_->setTitle(tr("Hierarchy reference"));
 	hierarchyRef_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-
     hierarchyRef_->addContentType(VLNV::DESIGN);
 
 	QFormLayout* extensionLayout = new QFormLayout();
-	extensionLayout->addRow(tr("VendorExtension: Reference to a top-level "
-		"implementation view"), &topLevelRef_);
+	extensionLayout->addRow(tr("VendorExtension: Reference to a top-level implementation view"), &topLevelRef_);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(hierarchyRef_);
@@ -59,15 +52,27 @@ topLevelRef_(this) {
 		this, SLOT(onTopRefChanged(const QString&)), Qt::UniqueConnection);
 }
 
-HierarchyRefWidget::~HierarchyRefWidget() {
+//-----------------------------------------------------------------------------
+// Function: HierarchyRefWidget::~HierarchyRefWidget()
+//-----------------------------------------------------------------------------
+HierarchyRefWidget::~HierarchyRefWidget()
+{
+
 }
 
-bool HierarchyRefWidget::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: HierarchyRefWidget::isValid()
+//-----------------------------------------------------------------------------
+bool HierarchyRefWidget::isValid() const
+{
 	return hierarchyRef_->isValid();
 }
 
-void HierarchyRefWidget::refresh() {
-	
+//-----------------------------------------------------------------------------
+// Function: HierarchyRefWidget::refresh()
+//-----------------------------------------------------------------------------
+void HierarchyRefWidget::refresh()
+{	
 	// ask the vlnv from the model
 	hierarchyRef_->setVLNV(view_->getHierarchyRef());
 
@@ -79,13 +84,11 @@ void HierarchyRefWidget::refresh() {
 	topLevelRef_.clear();
 
 	// ask the available views from the component
-	QStringList list;
-	// if user does not want to reference any view
-	list.append(QString(""));
+	QStringList viewList;	
+	viewList.append(QString(""));   //<! if user does not want to reference any view.
+	viewList.append(component_->getViewNames());
 
-	list.append(component_->getViewNames());
-
-	topLevelRef_.addItems(list);
+	topLevelRef_.addItems(viewList);
 
 	// find the text in the combo box and select it
 	QString topRef = view_->getTopLevelView();
@@ -97,18 +100,29 @@ void HierarchyRefWidget::refresh() {
 		this, SLOT(onTopRefChanged(const QString&)), Qt::UniqueConnection);
 }
 
-void HierarchyRefWidget::onVLNVChanged() {
+//-----------------------------------------------------------------------------
+// Function: HierarchyRefWidget::onVLNVChanged()
+//-----------------------------------------------------------------------------
+void HierarchyRefWidget::onVLNVChanged()
+{
 	view_->setHierarchyRef(hierarchyRef_->getVLNV());
 	emit contentChanged();
 }
 
-void HierarchyRefWidget::onTopRefChanged( const QString& newRef ) {
+//-----------------------------------------------------------------------------
+// Function: HierarchyRefWidget::onTopRefChanged()
+//-----------------------------------------------------------------------------
+void HierarchyRefWidget::onTopRefChanged( const QString& newRef )
+{
 	view_->setTopLevelView(newRef);
 	emit contentChanged();
 }
 
-void HierarchyRefWidget::clear() {
-	
+//-----------------------------------------------------------------------------
+// Function: HierarchyRefWidget::clear()
+//-----------------------------------------------------------------------------
+void HierarchyRefWidget::clear()
+{	
 	// clear the hierarchy ref
 	hierarchyRef_->setVLNV(VLNV());
 
@@ -126,7 +140,11 @@ void HierarchyRefWidget::clear() {
 	view_->clearHierarchy();
 }
 
-void HierarchyRefWidget::showEvent( QShowEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: HierarchyRefWidget::showEvent()
+//-----------------------------------------------------------------------------
+void HierarchyRefWidget::showEvent( QShowEvent* event )
+{
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/hierview.html");
 }
