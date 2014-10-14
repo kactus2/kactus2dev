@@ -15,6 +15,8 @@
 
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/designconfiguration.h>
+#include <QMessageBox.h>
+#include <QCoreApplication.h>
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGeneratorPlugin::MakefileGeneratorPlugin()
@@ -127,7 +129,32 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
     QString topDir = QFileInfo(utility->getLibraryInterface()->getPath(*libComp->getVlnv())).absolutePath(); 
 
     MakefileParser parser;
-    parser.parse( utility->getLibraryInterface(), comp, desgConf, design );
+    parser.parse( utility->getLibraryInterface(), comp, desgConf, design, targetDir );
+
+    QStringList replacedFiles = parser.getReplacedFiles();
+
+    // Ask verification from the user, if any file is being replaced,
+    if ( replacedFiles.size() > 0 )
+    {
+        // Details will be the list of files being replaced.
+        QString detailMsg;
+
+        foreach ( QString file, replacedFiles )
+        {
+            detailMsg += file + "\n";
+        }
+
+        QMessageBox msgBox( QMessageBox::Warning, QCoreApplication::applicationName(),
+            "Some files will be WRITTEN OVER in the generation. Proceed?",
+            QMessageBox::Yes | QMessageBox::No, utility->getParentWidget());
+        msgBox.setDetailedText(detailMsg);
+
+        // If user did not want to replace the files.
+        if (msgBox.exec() == QMessageBox::No) {
+            return;
+        }
+    }
+
     MakefileGenerator generator( parser );
     generator.generate(targetDir, topDir);
 

@@ -123,7 +123,7 @@ void tst_MakefileGenerator::baseCase()
     desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design );
+    parser.parse( &library_, topComponent, desgconf, design, outputDir_ );
     MakefileGenerator generator( parser );
     generator.generate(outputDir_,outputDir_);
 

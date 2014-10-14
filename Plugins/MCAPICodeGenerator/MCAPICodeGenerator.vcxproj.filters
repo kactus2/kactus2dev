@@ -29,21 +29,35 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="Generated Files\Template">
+      <UniqueIdentifier>{4b3ed3c7-312a-468c-9438-e86eafb40c9d}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MCAPICodeGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_McapiCodeGenerator.cpp">
-      <Filter>Generated Files\Release</Filter>
+    <ClCompile Include="CSourceWriter.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_McapiCodeGenerator.cpp">
+    <ClCompile Include="MCAPICodeGeneratorPlugin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_MCAPICodeGeneratorPlugin.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_MCAPICodeGenerator.cpp">
-      <Filter>Generated Files</Filter>
+    <ClCompile Include="GeneratedFiles\Release\moc_MCAPICodeGeneratorPlugin.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="CSourceWriter.cpp">
+    <ClCompile Include="GeneratedFiles\Template\moc_MCAPICodeGeneratorPlugin.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="MCAPIParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MCAPIHeaderGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -54,6 +68,9 @@
     <CustomBuild Include="MCAPICodeGenerator.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="MCAPICodeGeneratorPlugin.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <None Include="mcapi.json" />
@@ -63,6 +80,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CSourceWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MCAPIParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MCAPIHeaderGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

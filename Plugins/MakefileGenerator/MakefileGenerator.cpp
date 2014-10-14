@@ -56,7 +56,8 @@ void MakefileGenerator::generate(QString targetPath, QString topPath) const
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::generateInstanceMakefile()
 //-----------------------------------------------------------------------------
-void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPath, MakefileParser::MakeFileData &mfd, QStringList &makeNames) const
+void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPath,
+    MakefileParser::MakeFileData &mfd, QStringList &makeNames) const
 {
     // Create directory for the object files.
     QString instancePath = basePath + mfd.name;

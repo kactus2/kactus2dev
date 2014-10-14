@@ -75,6 +75,11 @@ public:
     // Return the general file set.
     const QSharedPointer<FileSet>& getGeneralFileSet();
 
+    // Returns list of all files to be replaced.
+    const QStringList& getReplacedFiles();
+
+    // Returns a list of all file names which may be generated but does exist
+
     /*!
      *  Parses all software components from the design for the data needed in makefiles.
      *
@@ -83,8 +88,9 @@ public:
      *      @param [in] desgConf   The design configuration object associated with the design.
      *      @param [in] design   The design object.
      */
-     void parse( LibraryInterface* library, QSharedPointer<Component> topComponent,
-        QSharedPointer<DesignConfiguration const> desgConf, QSharedPointer<const Design> design);
+    void parse( LibraryInterface* library, QSharedPointer<Component> topComponent,
+        QSharedPointer<DesignConfiguration const> desgConf, QSharedPointer<const Design> design,
+        QString targetPath = "");
 
 private:
 
@@ -179,10 +185,12 @@ private:
      */
      void findHardwareBuildCommand(MakeFileData &makeData, QSharedPointer<SWView> softView, QSharedPointer<SWView> hardView);
 
-    //! Collection of data sets, one for each make file.
+     //! Collection of data sets, one for each make file.
      QList<MakeFileData> parsedData_;
      //! The fileSet for the main makefile and the launcher.
      QSharedPointer<FileSet> generalFileSet_;
+     //! List of files that may be replaced
+     QStringList replacedFiles_;
 };
 
 #endif // MakefileParser_H

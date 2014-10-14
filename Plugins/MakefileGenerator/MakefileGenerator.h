@@ -146,7 +146,7 @@ private:
       */
       void writeEnding(QTextStream& outStream) const;
 
-    //! Collection of data sets, one for each makefile.
+      //! Collection of data sets, one for each makefile.
       QList<MakefileParser::MakeFileData> parsedData_;
       //! The fileSet for the main makefile and the launcher.
       QSharedPointer<FileSet> generalFileSet_;

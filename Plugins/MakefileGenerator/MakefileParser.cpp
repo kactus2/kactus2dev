@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/ApiInterface.h>
 #include "IPXACTmodels/SystemView.h"
-#include <QDebug>
+
 //-----------------------------------------------------------------------------
 // Function: MakefileParser::MakefileParser()
 //-----------------------------------------------------------------------------
@@ -45,10 +45,19 @@ const QSharedPointer<FileSet>& MakefileParser::getGeneralFileSet()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MakefileParser::getReplacedFiles()
+//-----------------------------------------------------------------------------
+const QStringList& MakefileParser::getReplacedFiles()
+{
+    return replacedFiles_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MakefileParser::searchSWComponent()
 //-----------------------------------------------------------------------------
-void MakefileParser::parse( LibraryInterface* library, QSharedPointer<Component> topComponent,
-    QSharedPointer<DesignConfiguration const> desgConf, QSharedPointer<const Design> design)
+void MakefileParser::parse(LibraryInterface* library, QSharedPointer<Component> topComponent,
+    QSharedPointer<DesignConfiguration const> desgConf, QSharedPointer<const Design> design,
+    QString targetPath /*= ""*/)
 {
     // Find the name of the system view associated with the design.
     QString sysViewName;
@@ -72,6 +81,31 @@ void MakefileParser::parse( LibraryInterface* library, QSharedPointer<Component>
     // This is also a fileSet referenced by the makefile generation
     generalFileSet_ = fileSet;
 
+    // The base directory for the software.
+    QString basePath = targetPath + "/sw/";
+
+    // Check if the main make file and the launcher files already exits.
+    QString mainMakeDir = basePath + "Makefile";
+    QString launcherDir = basePath + "launcher.sh";
+
+    // We also need to know if the file exists
+    QFile makeFile(mainMakeDir);
+
+    // If it does, put in the list.
+    if ( makeFile.exists() )
+    {
+        replacedFiles_.append(mainMakeDir);
+    }
+
+    // We also need to know if the file exists
+    QFile launcherFile(launcherDir);
+
+    // If it does, put in the list.
+    if ( launcherFile.exists() )
+    {
+        replacedFiles_.append(launcherDir);
+    }
+
     foreach ( SWInstance softInstance, design->getSWInstances() )
     {
         // The VLNV and the component of the instance are needed.
@@ -90,6 +124,19 @@ void MakefileParser::parse( LibraryInterface* library, QSharedPointer<Component>
         MakeFileData& makeData = parsedData_.last();
         // Since every software instance gets its own makefile, naming is after the instance name.
         makeData.name = softInstance.getInstanceName();
+
+        // We may need the absolute path of the file
+        QString instancePath = basePath + makeData.name;
+        QString dir = instancePath + "/Makefile";
+
+        // We also need to know if the file exists
+        QFile makeFile(dir);
+
+        // If it does, put in the list.
+        if ( makeFile.exists() )
+        {
+            replacedFiles_.append(dir);
+        }
 
         // The top component of the design may contain header files specific to the instance.
         findInstanceHeaders(library, topComponent, desgConf, sysViewName, softInstance, makeData);
@@ -177,13 +224,14 @@ void MakefileParser::findInstanceHeaders(LibraryInterface* library, QSharedPoint
     // This is also a fileSet referenced by the makefile generation
     makeData.fileSet = fileSet;
 
-    foreach( QSharedPointer<File> file, fileSet->getFiles())
+    // Files in the instance header may be needed as includes.
+    foreach( QSharedPointer<File> file, fileSet->getFiles() )
     {
         // We are only interested in the actual header files.
         if ( file->getIncludeFile() )
         {
-            // We may assume that a file path is relative to the component path, and thus the include path
-            // is component path + file path.
+            // We may assume that a file path is relative to the component path, and thus the include path is
+            // component path + file path.
             QFileInfo fileQfi = QFileInfo(componentQfi.absolutePath() + "/" + file->getName());
             makeData.includeDirectories.append(fileQfi.absolutePath());
         }
