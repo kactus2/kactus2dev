@@ -47,7 +47,7 @@ public:
         QString nodeID;
         QString domainID;
         QString directory;
-        QList<QPair<EndPointData,EndPointData>> connections;
+        QList<QPair<EndPointData,EndPointData> > connections;
     };
 
     MCAPIParser( IPluginUtility* utility );

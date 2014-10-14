@@ -14,8 +14,8 @@
 #include "MCAPIHeaderGenerator.h"
 #include "MCAPIParser.h"
 
-#include <QMessageBox.h>
-#include <QCoreApplication.h>
+#include <QMessageBox>
+#include <QCoreApplication>
 
 #include <IPXACTmodels/component.h>
 

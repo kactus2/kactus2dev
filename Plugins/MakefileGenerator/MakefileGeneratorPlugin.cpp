@@ -15,8 +15,8 @@
 
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/designconfiguration.h>
-#include <QMessageBox.h>
-#include <QCoreApplication.h>
+#include <QMessageBox>
+#include <QCoreApplication>
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGeneratorPlugin::MakefileGeneratorPlugin()
