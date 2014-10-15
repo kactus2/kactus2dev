@@ -16,6 +16,8 @@ TARGET = tst_CommentWriter
 QT += core xml gui testlib
 CONFIG += testcase console
 
+DEFINES += VERILOGGENERATORPLUGIN_LIB
+
 win32:CONFIG(release, debug|release) {
     LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodels
     DESTDIR = ./release
