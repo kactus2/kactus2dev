@@ -881,6 +881,12 @@
     <Filter Include="Source Files\wizards\ComponentWizard\ImportEditor">
       <UniqueIdentifier>{9ecb70ee-8042-4071-8310-8ec61afc3be9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\wizards\ImportWizard">
+      <UniqueIdentifier>{79e351da-6711-4900-a6e8-9c4458cf05b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\wizards\ImportWizard">
+      <UniqueIdentifier>{6f42427e-c506-4580-9696-80e379d55645}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3769,6 +3775,18 @@
     <ClCompile Include="wizards\ComponentWizard\ViewListModel.cpp">
       <Filter>Source Files\wizards\ComponentWizard</Filter>
     </ClCompile>
+    <ClCompile Include="wizards\ImportWizard\ImportWizard.cpp">
+      <Filter>Source Files\wizards\ImportWizard</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ImportWizard.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\ImportWizard\ImportWizardImportPage.cpp">
+      <Filter>Source Files\wizards\ImportWizard</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ImportWizardImportPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5181,6 +5199,12 @@
     <CustomBuild Include="wizards\ComponentWizard\ViewListModel.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
     </CustomBuild>
+    <CustomBuild Include="wizards\ImportWizard\ImportWizard.h">
+      <Filter>Header Files\wizards\ImportWizard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="wizards\ImportWizard\ImportWizardImportPage.h">
+      <Filter>Header Files\wizards\ImportWizard</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -5422,6 +5446,9 @@
     </ClInclude>
     <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ImportColors.h">
       <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="wizards\ImportWizard\ImportWizardPages.h">
+      <Filter>Header Files\wizards\ImportWizard</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

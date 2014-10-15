@@ -32,10 +32,10 @@ void FileTypeSelector::refresh() {
 	QSettings settings;
 
 	settings.beginGroup("FileTypes");
-	QStringList typeNames = settings.childKeys();
+	QStringList typeNames = settings.childGroups();
 	settings.endGroup();
 
-	// sort the names aphabetically
+	// sort the names alphabetically
 	typeNames.sort(Qt::CaseInsensitive);
 
 	// add the specified types to the combo box list
