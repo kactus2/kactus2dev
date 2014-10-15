@@ -16,7 +16,7 @@ TARGET = tst_PortVerilogWriter
 QT += core xml gui testlib
 CONFIG += _WINDOWS testcase console
 
-LIBS += -L$$PWD/../../../../executable/Plugins -lVerilogGeneratorPlugin
+DEFINES += VERILOGGENERATORPLUGIN_LIB
 
 win32:CONFIG(release, debug|release) {
     LIBS += -L$$PWD/../../../../executable/ -lIPXACTmodels

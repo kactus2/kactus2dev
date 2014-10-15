@@ -18,7 +18,7 @@
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/modelparameter.h>
 
-#include "VhdlSyntax.h"
+#include "VHDLSyntax.h"
 
 namespace
 {

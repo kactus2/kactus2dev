@@ -7,7 +7,7 @@ TARGET = VHDLimport
 DESTDIR = ../../executable/Plugins
 QT += core xml widgets gui
 CONFIG += debug
-DEFINES += WIN64 QT_DLL QT_WIDGETS_LIB QT_XML_LIB VHDLIMPORT_LIB
+DEFINES += QT_DLL QT_WIDGETS_LIB QT_XML_LIB VHDLIMPORT_LIB
 INCLUDEPATH += ./GeneratedFiles \
     . \
     ./GeneratedFiles/Debug \
@@ -18,3 +18,6 @@ OBJECTS_DIR += debug
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(VHDLimport.pri)
+
+target.path = /usr/share/kactus2/plugins
+INSTALLS += target

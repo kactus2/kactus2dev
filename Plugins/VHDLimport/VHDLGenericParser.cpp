@@ -11,7 +11,7 @@
 
 #include "VHDLGenericParser.h"
 
-#include "VhdlSyntax.h"
+#include "VHDLSyntax.h"
 
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 

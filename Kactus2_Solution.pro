@@ -19,8 +19,14 @@ SUBDIRS += IPXACTmodels/IPXACTmodels.pro \
 	Plugins/QuartusPinImportPlugin/QuartusPinImportPlugin.pro \
 	Plugins/PadsPartGenerator/PadsPartGenerator.pro \
 	Plugins/MakefileGenerator/MakefileGenerator.pro \
+	Plugins/VerilogGenerator/VerilogGeneratorPlugin.pro \
+	Plugins/VHDLimport/VHDLimport.pro \
+	Plugins/VerilogImport/VerilogImport.pro
 
-	
+CONFIG(test) {
+	SUBDIRS += tests/test_all.pro
+}
+
 unix:upgrade.path = /usr/share/kactus2
 unix:upgrade.files = ./Administrative/releaseFiles/upgrade.cfg
 

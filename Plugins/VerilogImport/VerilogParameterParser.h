@@ -72,7 +72,7 @@ public:
      *      @param [in] input   The input text containing a declaration of parameters.
      *      @param [in] parameters   The parsed model parameters.
      */
-     void parseParameters(QString const &input, QList<QSharedPointer<ModelParameter>>& parameters);
+     void parseParameters(QString const &input, QList<QSharedPointer<ModelParameter> >& parameters);
 
 private:
     /*!

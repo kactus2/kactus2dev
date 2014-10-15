@@ -79,7 +79,7 @@ void tst_VerilogHeaderWriter::testVlnv()
     compareLineByLine(QString(
         "//-----------------------------------------------------------------------------\n"
         "// File          : output.v\n"
-        "// Creation date : 1.4.2014\n"
+        "// Creation date : 01.04.2014\n"
         "// Creation time : 14:14:14\n"
         "// Description   : \n"
         "// Created by    : \n"
@@ -119,7 +119,7 @@ void tst_VerilogHeaderWriter::testGenerationTime()
     compareLineByLine(QString(
         "//-----------------------------------------------------------------------------\n"
         "// File          : TestComponent.v\n"
-        "// Creation date : 14.1.2014\n"
+        "// Creation date : 14.01.2014\n"
         "// Creation time : 12:00:40\n"
         "// Description   : \n"
         "// Created by    : \n"
@@ -159,7 +159,7 @@ void tst_VerilogHeaderWriter::testDescription_data()
         <<
         "//-----------------------------------------------------------------------------\n"
         "// File          : TestComponent.v\n"
-        "// Creation date : 14.4.2014\n"
+        "// Creation date : 14.04.2014\n"
         "// Creation time : 14:14:14\n"
         "// Description   : \n"
         "// Created by    : \n"
@@ -172,7 +172,7 @@ void tst_VerilogHeaderWriter::testDescription_data()
         <<
         "//-----------------------------------------------------------------------------\n"
         "// File          : TestComponent.v\n"
-        "// Creation date : 14.4.2014\n"
+        "// Creation date : 14.04.2014\n"
         "// Creation time : 14:14:14\n"
         "// Description   : Component description.\n"
         "// Created by    : \n"
@@ -188,7 +188,7 @@ void tst_VerilogHeaderWriter::testDescription_data()
         <<
         "//-----------------------------------------------------------------------------\n"
         "// File          : TestComponent.v\n"
-        "// Creation date : 14.4.2014\n"
+        "// Creation date : 14.04.2014\n"
         "// Creation time : 14:14:14\n"
         "// Description   : Component description\n"
         "//                 on several\n"

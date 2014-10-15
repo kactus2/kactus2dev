@@ -55,7 +55,7 @@ void VerilogParameterParser::runParser(QString const& input, QSharedPointer<Comp
     findOldDeclarations(input, declarations);
 
     // Parse model parameters out of declarations.
-    QList<QSharedPointer<ModelParameter>> parameters;
+    QList<QSharedPointer<ModelParameter> > parameters;
 
     foreach ( QString declaration, declarations )
     {
@@ -131,7 +131,7 @@ void VerilogParameterParser::findOldDeclarations(QString const &input, QStringLi
 // Function: VerilogParameterParser::parseParameters()
 //-----------------------------------------------------------------------------
 void VerilogParameterParser::parseParameters(QString const &input,
-    QList<QSharedPointer<ModelParameter>>& parameters)
+    QList<QSharedPointer<ModelParameter> >& parameters)
 {
     // Find the type and the declaration. Only one per declaration is supported.
     QString type = parseType(input);

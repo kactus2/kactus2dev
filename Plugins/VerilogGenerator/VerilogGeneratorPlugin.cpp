@@ -9,7 +9,7 @@
 // Plugin for structural verilog generation.
 //-----------------------------------------------------------------------------
 
-#include "veriloggeneratorplugin.h"
+#include "VerilogGeneratorPlugin.h"
 
 #include "VerilogGenerator/VerilogGenerator.h"
 

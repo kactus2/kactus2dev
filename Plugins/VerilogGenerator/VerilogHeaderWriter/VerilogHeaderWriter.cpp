@@ -40,8 +40,8 @@ void VerilogHeaderWriter::write(QTextStream& outputStream, QString const& fileNa
 
     outputStream << "//-----------------------------------------------------------------------------" << endl;
     outputStream << "// File          : " << fileName << endl;
-    outputStream << "// Creation date : " << generationTime.date().toString(Qt::LocalDate) << endl;
-    outputStream << "// Creation time : " << generationTime.time().toString(Qt::LocalDate) << endl;
+    outputStream << "// Creation date : " << generationTime.date().toString("dd.MM.yyyy") << endl;
+    outputStream << "// Creation time : " << generationTime.time().toString("hh:mm:ss") << endl;
     outputStream << "// Description   : " << descriptionLines.first() << endl;
 
     for (int i = 1; i < descriptionLines.count(); i++)

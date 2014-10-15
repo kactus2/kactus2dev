@@ -1493,7 +1493,7 @@ void tst_MakefileGenerator::getFile(QSharedPointer<File>& file, QSharedPointer<C
 void tst_MakefileGenerator::addCmd2View(SWView* view, QString command, QString fileType,
     QString flags, bool replace)
 {
-    QList<QSharedPointer<SWBuildCommand>>& coms = view->getSWBuildCommands();
+    QList<QSharedPointer<SWBuildCommand> >& coms = view->getSWBuildCommands();
     QSharedPointer<SWBuildCommand> cmd = QSharedPointer<SWBuildCommand>(new SWBuildCommand());
     cmd->setCommand(command);
     cmd->setFileType(fileType);
@@ -1515,7 +1515,7 @@ QSharedPointer<FileSet> tst_MakefileGenerator::addFileSet(QSharedPointer<Compone
 
 void tst_MakefileGenerator::addFileSetBuilder(QSharedPointer<FileSet> fileSet, QString command, QString fileType, QString flags, bool replace)
 {
-    QList<QSharedPointer<FileBuilder>> fblist = fileSet->getDefaultFileBuilders();
+    QList<QSharedPointer<FileBuilder> > fblist = fileSet->getDefaultFileBuilders();
     QSharedPointer<FileBuilder> fb = QSharedPointer<FileBuilder>(new FileBuilder);
     fb->setCommand( command);
     fb->setFileType(fileType);

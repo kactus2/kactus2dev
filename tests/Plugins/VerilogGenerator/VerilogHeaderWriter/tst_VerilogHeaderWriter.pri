@@ -3,4 +3,5 @@
 # ------------------------------------------------------
 
 HEADERS += ../../../../Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.h
-SOURCES += ./tst_VerilogHeaderWriter.cpp
+SOURCES += ./tst_VerilogHeaderWriter.cpp \
+	   ../../../../Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.cpp

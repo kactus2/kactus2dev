@@ -4,4 +4,5 @@
 
 HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
 	../../../../Plugins/VerilogGenerator/common/Writer.h
-SOURCES += ./tst_CommentWriter.cpp 
+SOURCES += ./tst_CommentWriter.cpp \
+	../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp

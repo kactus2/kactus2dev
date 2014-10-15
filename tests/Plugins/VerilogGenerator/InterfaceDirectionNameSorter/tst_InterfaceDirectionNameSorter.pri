@@ -3,4 +3,5 @@
 # ------------------------------------------------------
 
 HEADERS += ../../../../Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.h
-SOURCES += ./tst_InterfaceDirectionNameSorter.cpp
+SOURCES += ./tst_InterfaceDirectionNameSorter.cpp \
+	../../../../Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.cpp

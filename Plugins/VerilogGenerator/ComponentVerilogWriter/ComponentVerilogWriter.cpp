@@ -16,7 +16,6 @@
 
 #include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
 
-
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/port.h>

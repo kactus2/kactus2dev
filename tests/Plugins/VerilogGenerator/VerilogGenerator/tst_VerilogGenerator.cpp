@@ -118,7 +118,7 @@ private:
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::tst_VerilogGenerator()
 //-----------------------------------------------------------------------------
-tst_VerilogGenerator::tst_VerilogGenerator(): topComponent_(), design_(), output_(), library_(this)
+tst_VerilogGenerator::tst_VerilogGenerator(): topComponent_(), design_(), output_(), generationTime_(), library_(this)
 {
 
 }
@@ -251,8 +251,8 @@ void tst_VerilogGenerator::testFileHeaderIsPrinted()
     verifyOutputContains(QString(
         "//-----------------------------------------------------------------------------\n"
         "// File          : generatorOutput.v\n"
-        "// Creation date : " + generationTime_.date().toString(Qt::LocalDate) + "\n"
-        "// Creation time : " + generationTime_.time().toString(Qt::LocalDate) + "\n"
+        "// Creation date : " + generationTime_.date().toString("dd.MM.yyyy") + "\n"
+        "// Creation time : " + generationTime_.time().toString("hh:mm:ss") + "\n"
         "// Description   : Component description\n"
         "//                 spanning multiple\n"
         "//                 lines.\n"

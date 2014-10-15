@@ -323,12 +323,14 @@ public slots:
 
 private:
 
-    // Disable copying.
+    //! Disable copying.
     LibraryMock(LibraryMock const& rhs);
     LibraryMock& operator=(LibraryMock const& rhs);
 
+    //! The components in the library.
     QMap<VLNV, QSharedPointer<LibraryComponent> > components_;
 
+    //! The paths to components in the library.
     QMap<VLNV, QString > paths_;
 
 };

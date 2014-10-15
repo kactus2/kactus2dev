@@ -3,5 +3,6 @@
 # ------------------------------------------------------
 
 HEADERS += ../../../../Plugins/VerilogGenerator/common/Writer.h \
-    ../../../../IPXACTmodels/modelparameter.h
-SOURCES += ./tst_ModelParameterVerilogWriter.cpp
+	../../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h
+SOURCES += ./tst_ModelParameterVerilogWriter.cpp \
+	../../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.cpp
