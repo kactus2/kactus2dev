@@ -39,11 +39,14 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
     setWizardStyle(ModernStyle);
     resize(800, 800);
 
+    setOption(NoBackButtonOnStartPage, true);
     setOption(NoCancelButton, true);
     setOption(NoDefaultButton, true);
     setOption(HaveFinishButtonOnEarlyPages, true);
 
     ComponentWizardImportPage* importPage = new ComponentWizardImportPage(component, handler, pluginMgr, this);
+
+    ComponentWizardConclusionPage* conclusionPage = new ComponentWizardConclusionPage(component, handler, this);
 
     setPage(ComponentWizardPages::INTRO, new ComponentWizardIntroPage(component, this));
     setPage(ComponentWizardPages::GENERAL, new ComponentWizardGeneralInfoPage(component, this));    
@@ -52,10 +55,13 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
         this));     
     setPage(ComponentWizardPages::IMPORT, importPage);
     setPage(ComponentWizardPages::VIEWS, new ComponentWizardViewsPage(handler, this));
-    setPage(ComponentWizardPages::CONCLUSION, new ComponentWizardConclusionPage(handler, this));
+    setPage(ComponentWizardPages::CONCLUSION, conclusionPage);
 
     connect(importPage, SIGNAL(componentChanged(QSharedPointer<Component>)), 
         this, SLOT(onComponentChanged(QSharedPointer<Component>)), Qt::UniqueConnection);
+
+    connect(importPage, SIGNAL(componentChanged(QSharedPointer<Component>)), 
+        conclusionPage, SLOT(onComponentChanged(QSharedPointer<Component>)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

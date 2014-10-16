@@ -113,20 +113,23 @@ QStringList VerilogImporter::getSupportedFileTypes() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogImporter::runParser()
+// Function: VerilogImporter::import()
 //-----------------------------------------------------------------------------
 void VerilogImporter::import(QString const& input, QSharedPointer<Component> targetComponent)
 {   
     grayOutFileContent(input);
     if (hasModuleDeclaration(input))
-    {    
+    {
         highlightModule(input);
-
-        parameterParser_.runParser(input, targetComponent);
-        portParser_.import(input, targetComponent);
 
         importModelName(input, targetComponent);
         setLanguageAndEnvironmentalIdentifiers(targetComponent);
+
+        targetComponent->getModelParameters().clear();
+        parameterParser_.import(input, targetComponent);
+
+        targetComponent->getPorts().clear();
+        portParser_.import(input, targetComponent);
     }
 }
 

@@ -132,7 +132,7 @@ QString ImportRunner::readInputFile(QString const& relativePath, QString const& 
     QString absoluteFilePath = General::getAbsolutePath(basePath, relativePath);
 
     QFile importFile(absoluteFilePath);
-    if (importFile.open(QIODevice::ReadOnly))
+    if (QFileInfo(absoluteFilePath).exists() && importFile.open(QIODevice::ReadOnly))
     {
         QTextStream stream(&importFile);
         fileContent = stream.readAll();

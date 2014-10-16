@@ -158,8 +158,11 @@ void VHDLimport::import(QString const& input, QSharedPointer<Component> targetCo
         parseModelName(input);
         setLanguageAndEnvironmentalIdentifiers();
 
-        genericParser_->runParser(input, targetComponent);
-        portParser_->runParser(input, targetComponent);
+        targetComponent->getModelParameters().clear();
+        genericParser_->import(input, targetComponent);
+
+        targetComponent->getPorts().clear();
+        portParser_->import(input, targetComponent);
     }
 }
 
@@ -402,20 +405,16 @@ void VHDLimport::setLanguageAndEnvironmentalIdentifiers() const
 
     QStringList envIdentifiers = rtlView->getEnvIdentifiers();
 
-    if (envIdentifiers.isEmpty())
+    if (envIdentifiers.contains("::"))
     {
-       rtlView->addEnvIdentifier(createdEnvIdentifier);
-    }
-    else if (envIdentifiers.first() == "::")
-    {
-        envIdentifiers.first() = createdEnvIdentifier;
+        envIdentifiers.replace(envIdentifiers.indexOf("::"), createdEnvIdentifier);
     }
     else if (!envIdentifiers.contains(createdEnvIdentifier, Qt::CaseInsensitive))
     {
-        rtlView->addEnvIdentifier(createdEnvIdentifier);
-    }     
+        envIdentifiers.append(createdEnvIdentifier);
+    }
 
-    rtlView->setEnvIdentifiers(envIdentifiers);
+    rtlView->setEnvIdentifiers(envIdentifiers);    
 }
 
 //-----------------------------------------------------------------------------

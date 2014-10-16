@@ -49,9 +49,9 @@ VHDLGenericParser::~VHDLGenericParser()
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLGenericParser::parse()
+// Function: VHDLGenericParser::import()
 //-----------------------------------------------------------------------------
-void VHDLGenericParser::runParser(QString const& input, QSharedPointer<Component> targetComponent)
+void VHDLGenericParser::import(QString const& input, QSharedPointer<Component> targetComponent)
 {
     foreach(QString declaration, findGenericDeclarations(input))
     {

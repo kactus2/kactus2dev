@@ -3787,6 +3787,9 @@
     <ClCompile Include="GeneratedFiles\moc_ImportWizardImportPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentWizardConclusionPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5205,6 +5208,9 @@
     <CustomBuild Include="wizards\ImportWizard\ImportWizardImportPage.h">
       <Filter>Header Files\wizards\ImportWizard</Filter>
     </CustomBuild>
+    <CustomBuild Include="wizards\ComponentWizard\ComponentWizardConclusionPage.h">
+      <Filter>Header Files\wizards\ComponentWizard</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -5296,9 +5302,6 @@
     </ClInclude>
     <ClInclude Include="common\dialogs\NewBusDialog\NewBusDialog.h">
       <Filter>Header Files\common\dialogs\NewBusDialog</Filter>
-    </ClInclude>
-    <ClInclude Include="wizards\ComponentWizard\ComponentWizardConclusionPage.h">
-      <Filter>Header Files\wizards\ComponentWizard</Filter>
     </ClInclude>
     <ClInclude Include="wizards\ComponentWizard\ComponentWizardDependencyPage.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>

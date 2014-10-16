@@ -50,7 +50,7 @@ public:
      *      @param [in] input               The input text to parse.
      *      @param [in] targetComponent     The component to add all the imported ports to.
      */
-    virtual void runParser(QString const& input, QSharedPointer<Component> targetComponent);
+    virtual void import(QString const& input, QSharedPointer<Component> targetComponent);
  
     /*!
      *  Sets the given highlighter to be used by the port parser.

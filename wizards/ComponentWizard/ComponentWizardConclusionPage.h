@@ -18,7 +18,6 @@
 #include <QLabel>
 #include <QTextEdit>
 
-class ComponentWizard;
 class LibraryInterface;
 
 //-----------------------------------------------------------------------------
@@ -26,14 +25,17 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 class ComponentWizardConclusionPage : public QWizardPage
 {
+    Q_OBJECT
 public:
     /*!
     *  Constructor.
     *
-    *      @param [in] lh     The library interface.
-    *      @param [in] parent The parent wizard.
+    *      @param [in] component    The initial component to create.
+    *      @param [in] lh           The library interface.
+    *      @param [in] parent       The parent wizard.
     */
-    ComponentWizardConclusionPage(LibraryInterface* lh, ComponentWizard* parent);
+    ComponentWizardConclusionPage(QSharedPointer<Component> component, LibraryInterface* lh, 
+        QWidget* parent);
 
     /*!
     *  Destructor.
@@ -50,6 +52,10 @@ public:
     */
     virtual void initializePage();
 
+public slots:
+
+    virtual void onComponentChanged(QSharedPointer<Component> component);
+
 private:
     // Disable copying.
     ComponentWizardConclusionPage(ComponentWizardConclusionPage const& rhs);
@@ -60,8 +66,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The parent wizard.
-    ComponentWizard* parent_;
+    //! The created component.
+    QSharedPointer<Component> component_;
 
     //! Pointer to the library manager.
     LibraryInterface* handler_;
@@ -96,11 +102,14 @@ private:
     //! Label for the component filesets.
     QLabel* filesetsLabel_;
 
-    //! Label for the imported parameters.
+    //! Label for the created parameters.
     QLabel* parametersLabel_;
 
-    //! Label for the imported ports.
+    //! Label for the created ports.
     QLabel* portsLabel_;
+
+    //! Label for the created views.
+    QLabel* viewsLabel_;
 
     //! Label for the component description.
     QLabel* descriptionLabel_;

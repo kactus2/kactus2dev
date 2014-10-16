@@ -495,6 +495,9 @@ private slots:
     //! Opens a dialog for setting library locations.
     void setLibraryLocations();
 
+    //! Runs an import wizard for the currently open component.
+    void onRunImportWizard();
+
 private:
 	// Disable copying.
 	MainWindow(MainWindow const& rhs);
@@ -684,7 +687,7 @@ private:
      *      @param [in] directory   The directory containing the component xml file.
      */
     void runComponentWizard(QSharedPointer<Component> component, QString const& directory);
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -812,6 +815,9 @@ private:
 
 	//! \brief Action to generate the documentation for a component.
 	QAction* actGenDocumentation_;
+
+    //! Action to run import wizard.
+    QAction* actRunImport_;
 
     //! The Diagram Tools group.
     RibbonGroup* diagramToolsGroup_;

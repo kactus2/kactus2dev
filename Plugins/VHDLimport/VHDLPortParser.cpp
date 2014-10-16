@@ -66,7 +66,7 @@ VHDLPortParser::~VHDLPortParser()
 //-----------------------------------------------------------------------------
 // Function: VHDLPortParser::parse()
 //-----------------------------------------------------------------------------
-void VHDLPortParser::runParser(QString const& input, QSharedPointer<Component> targetComponent)
+void VHDLPortParser::import(QString const& input, QSharedPointer<Component> targetComponent)
 {
     foreach (QString portDeclaration, findPortDeclarations(input))
     {

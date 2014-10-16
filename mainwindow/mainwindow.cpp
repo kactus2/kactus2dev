@@ -96,6 +96,7 @@
 #include <settings/SettingsUpdater.h>
 
 #include <wizards/ComponentWizard/ComponentWizard.h>
+#include <wizards/ImportWizard/ImportWizard.h>
 
 #include <QCoreApplication>
 #include <QApplication>
@@ -167,6 +168,7 @@ MainWindow::MainWindow(QWidget *parent)
       actGenModelSim_(0),
       actGenQuartus_(0), 
       actGenDocumentation_(0),
+      actRunImport_(0),
       diagramToolsGroup_(0), 
       actAddColumn_(0),
       actToolSelect_(0), 
@@ -612,6 +614,10 @@ void MainWindow::setupActions()
 	connect(actGenDocumentation_, SIGNAL(triggered()),
 		this, SLOT(generateDoc()), Qt::UniqueConnection);
 
+    // initialize the action to run import wizard for component.
+    actRunImport_ = new QAction(QIcon(":icons/common/graphics/import.png"), tr("Import File to Component"), this);
+    connect(actRunImport_, SIGNAL(triggered()), this, SLOT(onRunImportWizard()), Qt::UniqueConnection);
+
 	// Initialize the action to add a new column.
 	actAddColumn_ = new QAction(QIcon(":/icons/common/graphics/diagram-add-column.png"), tr("Add Column"), this);
 	actAddColumn_->setProperty("rowSpan", 2);
@@ -774,10 +780,11 @@ void MainWindow::setupMenus()
 
     // The "Generation" group.
     generationGroup_ = ribbon_->addGroup(tr("Generation"));
-    generationGroup_->addAction(actGenVHDL_);
     generationGroup_->addAction(actGenDocumentation_);
+    generationGroup_->addAction(actRunImport_);
+    generationGroup_->addAction(actGenVHDL_);
     generationGroup_->addAction(actGenModelSim_);
-    generationGroup_->addAction(actGenQuartus_);
+    generationGroup_->addAction(actGenQuartus_);    
     generationGroup_->setVisible(false);
     generationGroup_->setEnabled(false);
 
@@ -1280,6 +1287,9 @@ void MainWindow::updateMenuStrip()
 		
 		actGenQuartus_->setEnabled(unlocked);
 		actGenQuartus_->setVisible(true);
+
+        actRunImport_->setEnabled(false);
+        actRunImport_->setVisible(false);
 	}
 	// if is hardware component then set only documentation, modelsim and vhdl enabled
 	else if (isHWComp) {
@@ -1294,12 +1304,16 @@ void MainWindow::updateMenuStrip()
        
 		actGenQuartus_->setDisabled(true);
 		actGenQuartus_->setVisible(false);
+
+        actRunImport_->setEnabled(unlocked);
+        actRunImport_->setVisible(true);
 	}
 	else {
 		actGenVHDL_->setVisible(false);
 		actGenDocumentation_->setVisible(false);
 		actGenModelSim_->setVisible(false);
 		actGenQuartus_->setVisible(false);
+        actRunImport_->setVisible(false);
 	}
 
 	editGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_EDIT_SUPPORT));
@@ -4379,6 +4393,55 @@ void MainWindow::setLibraryLocations()
     connect(&dialog, SIGNAL(scanLibrary()), this, SLOT(onLibrarySearch()), Qt::UniqueConnection);
 
     dialog.exec();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::onRunImportWizard()
+//-----------------------------------------------------------------------------
+void MainWindow::onRunImportWizard()
+{
+    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+
+    if (!doc || doc->isProtected())
+    {
+        return;
+    }
+
+    if (doc->isModified())
+    {
+        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+            tr("The document has been modified. The changes need to be saved before the "
+            "import wizard can be run. Save changes and continue?"),
+            QMessageBox::Yes | QMessageBox::No, this);
+
+        // if user does not want to save or save can't be done
+        if (msgBox.exec() == QMessageBox::No || !doc->save())
+        {
+            return;
+        }
+    }
+
+    VLNV vlnv = doc->getIdentifyingVLNV();
+    QSharedPointer<const Component> component = libraryHandler_->getModelReadOnly(vlnv).dynamicCast<const Component>();
+
+    if (component)
+    {
+        ImportWizard wizard(component, *pluginMgr_.data(), libraryHandler_, this);
+
+        if (wizard.exec() == QDialog::Accepted)
+        {
+            bool succesfulSave = libraryHandler_->writeModelToFile(wizard.getComponent());
+
+            if(succesfulSave)
+            {
+                doc->refresh();
+            }
+            else
+            {
+                emit errorMessage("Error saving file to disk.");
+            }        
+        }    
+    }
 }
 
 //-----------------------------------------------------------------------------

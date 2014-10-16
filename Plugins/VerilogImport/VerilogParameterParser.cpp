@@ -45,9 +45,9 @@ void VerilogParameterParser::setHighlighter(Highlighter* highlighter)
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogParameterParser::runParser()
+// Function: VerilogParameterParser::import()
 //-----------------------------------------------------------------------------
-void VerilogParameterParser::runParser(QString const& input, QSharedPointer<Component> targetComponent)
+void VerilogParameterParser::import(QString const& input, QSharedPointer<Component> targetComponent)
 {
     // Find parameter declarations. Try both formats, as we cannot know which one is used.
     QStringList declarations;

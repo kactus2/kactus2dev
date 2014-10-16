@@ -147,14 +147,16 @@ HEADERS += ./common/Global.h \
     ./settings/NamingPolicySettingsPage.h \
     ./settings/GeneralSettingsPage.h \
     ./settings/CodeEditorSettingsPage.h \
-    ./wizards/ComponentWizard/ComponentWizard.h \
     ./wizards/ComponentWizard/ComponentWizardConclusionPage.h \
     ./wizards/ComponentWizard/ComponentWizardDependencyPage.h \
     ./wizards/ComponentWizard/ComponentWizardFilesPage.h \
-    ./wizards/ComponentWizard/ComponentWizardImportPage.h \
     ./wizards/ComponentWizard/ComponentWizardIntroPage.h \
     ./wizards/ComponentWizard/ComponentWizardPages.h \
+    ./wizards/ComponentWizard/ViewListModel.h \
+    ./wizards/ComponentWizard/ComponentWizardViewsPage.h \
     ./wizards/ComponentWizard/ImportRunner.h \
+    ./wizards/ComponentWizard/ComponentWizard.h \
+    ./wizards/ComponentWizard/ComponentWizardImportPage.h \
     ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.h \
     ./wizards/ComponentWizard/ImportEditor/ModelParameterEditorAdapter.h \
     ./wizards/ComponentWizard/ImportEditor/ImportEditor.h \
@@ -165,6 +167,9 @@ HEADERS += ./common/Global.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardConclusionPage.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardIntroPage.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardPortMapPage.h \
+    ./wizards/ImportWizard/ImportWizardPages.h \
+    ./wizards/ImportWizard/ImportWizardImportPage.h \
+    ./wizards/ImportWizard/ImportWizard.h \
     ./Help/HelpSystem/HelpWindow.h \
     ./Help/HelpSystem/ContextHelpBrowser.h \
     ./Help/HelpSystem/HelpSearchWidget.h \
@@ -442,8 +447,6 @@ HEADERS += ./common/Global.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
     ./editors/CSourceEditor/CSourceTextEdit.h \
     ./editors/CSourceEditor/CSourceWidget.h \
-    ./wizards/ComponentWizard/ViewListModel.h \
-    ./wizards/ComponentWizard/ComponentWizardViewsPage.h \
     ./designEditors/SystemDesign/HWMappingItem.h \
     ./designEditors/SystemDesign/SystemMoveCommands.h \
     ./designEditors/SystemDesign/SWComponentItem.h \
@@ -679,7 +682,9 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.cpp \
     ./wizards/ComponentWizard/ComponentWizardImportPage.cpp \
     ./wizards/ComponentWizard/ComponentWizardIntroPage.cpp \
+    ./wizards/ComponentWizard/ComponentWizardViewsPage.cpp \
     ./wizards/ComponentWizard/ImportRunner.cpp \
+    ./wizards/ComponentWizard/ViewListModel.cpp \
     ./wizards/ComponentWizard/ImportEditor/ImportEditor.cpp \
     ./wizards/ComponentWizard/ImportEditor/ImportHighlighter.cpp \
     ./wizards/ComponentWizard/ImportEditor/ModelParameterEditorAdapter.cpp \
@@ -689,6 +694,8 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardGeneralOptionsPage.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardIntroPage.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardPortMapPage.cpp \
+    ./wizards/ImportWizard/ImportWizard.cpp \
+    ./wizards/ImportWizard/ImportWizardImportPage.cpp \
     ./Help/HelpSystem/ContextHelpBrowser.cpp \
     ./Help/HelpSystem/HelpSearchWidget.cpp \
     ./Help/HelpSystem/HelpWindow.cpp \
@@ -953,7 +960,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/CSourceEditor/CSourceHighlighter.cpp \
     ./editors/CSourceEditor/CSourceTextEdit.cpp \
     ./editors/CSourceEditor/CSourceWidget.cpp \
-    ./wizards/ComponentWizard/ViewListModel.cpp \
     ./designEditors/HWDesign/AdHocEnabled.cpp \
     ./designEditors/HWDesign/AdHocInterfaceItem.cpp \
     ./designEditors/HWDesign/AdHocPortItem.cpp \
@@ -1051,6 +1057,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./wizards/ComponentWizard/ComponentWizardViewsPage.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
 RESOURCES += kactus.qrc
