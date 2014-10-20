@@ -19,6 +19,7 @@
 #include <QTextEdit>
 
 class LibraryInterface;
+class ComponentDiffWidget;
 
 //-----------------------------------------------------------------------------
 //! Conclusion page for the component wizard.
@@ -66,8 +67,11 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+    //! The original component.
+    QSharedPointer<Component> originalComponent_;
+
     //! The created component.
-    QSharedPointer<Component> component_;
+    QSharedPointer<Component> workingComponent_;
 
     //! Pointer to the library manager.
     LibraryInterface* handler_;
@@ -116,6 +120,8 @@ private:
 
     //! The component preview box.
     ComponentPreviewBox previewBox_;
+
+    ComponentDiffWidget* diffView_;
 };
 
 #endif // COMPONENTWIZARDCONCLUSIONPAGE_H

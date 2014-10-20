@@ -1,18 +1,15 @@
 #-----------------------------------------------------------------------------
-# File: test_all.pro
+# File: wizards.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
-# Date: 24.27.2014
+# Date: 16.10.2014
 #
 # Description:
-# Qt project file for running all unit tests.
+# Qt project file template for running unit tests for wizards.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = subdirs
 
 CONFIG += testcase
-
-SUBDIRS += wizards/wizards.pro \
-		Plugins/plugins.pro 
-           
+SUBDIRS += common/common.pro

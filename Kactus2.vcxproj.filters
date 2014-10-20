@@ -887,6 +887,36 @@
     <Filter Include="Header Files\wizards\ImportWizard">
       <UniqueIdentifier>{6f42427e-c506-4580-9696-80e379d55645}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\wizards\common">
+      <UniqueIdentifier>{2cbe03c7-4c87-4b43-b27f-c503469aea86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\wizards\common\ComponentComparator">
+      <UniqueIdentifier>{78aaebcf-d7ff-4b74-8ddf-3d403c57567f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\wizards\common\ComponentDiffWidget">
+      <UniqueIdentifier>{66b96a4c-637e-491b-b711-a2867749e617}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\wizards\common\VLNVComparator">
+      <UniqueIdentifier>{58b89f97-2030-4f6a-975d-68304a6d8c9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\wizards\common">
+      <UniqueIdentifier>{d49974e3-fb2b-4058-97cf-c009c4cfba8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\wizards\common\ComponentComparator">
+      <UniqueIdentifier>{d7ac841c-e3a1-4f32-8131-4ff1e19ddcc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\wizards\common\ComponentDiffWidget">
+      <UniqueIdentifier>{320f1e99-893c-4529-9c81-78f5fb9efe47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\wizards\common\VLNVComparator">
+      <UniqueIdentifier>{a731797b-1fa9-4096-9996-badb0678bc16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\wizards\common\ModelParameterComparator">
+      <UniqueIdentifier>{21c42cbe-4288-4fdb-99fc-e4fc280a0c48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\wizards\common\ModelParameterComparator">
+      <UniqueIdentifier>{85b2c4f0-5af7-4565-8c9a-489765ce003e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3790,6 +3820,24 @@
     <ClCompile Include="GeneratedFiles\moc_ComponentWizardConclusionPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="wizards\common\IPXactDiff.cpp">
+      <Filter>Source Files\wizards\common</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\common\ComponentComparator\ComponentComparator.cpp">
+      <Filter>Source Files\wizards\common\ComponentComparator</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\common\ComponentDiffWidget\ComponentDiffWidget.cpp">
+      <Filter>Source Files\wizards\common\ComponentDiffWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\common\VLNVComparator\VLNVComparator.cpp">
+      <Filter>Source Files\wizards\common\VLNVComparator</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentDiffWidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wizards\common\ModelParameterComparator\ModelParameterComparator.cpp">
+      <Filter>Source Files\wizards\common\ModelParameterComparator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5211,6 +5259,9 @@
     <CustomBuild Include="wizards\ComponentWizard\ComponentWizardConclusionPage.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
     </CustomBuild>
+    <CustomBuild Include="wizards\common\ComponentDiffWidget\ComponentDiffWidget.h">
+      <Filter>Header Files\wizards\common\ComponentDiffWidget</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -5452,6 +5503,21 @@
     </ClInclude>
     <ClInclude Include="wizards\ImportWizard\ImportWizardPages.h">
       <Filter>Header Files\wizards\ImportWizard</Filter>
+    </ClInclude>
+    <ClInclude Include="wizards\common\IPXactDiff.h">
+      <Filter>Header Files\wizards\common</Filter>
+    </ClInclude>
+    <ClInclude Include="wizards\common\IPXactElementComparator.h">
+      <Filter>Header Files\wizards\common</Filter>
+    </ClInclude>
+    <ClInclude Include="wizards\common\VLNVComparator\VLNVComparator.h">
+      <Filter>Header Files\wizards\common\VLNVComparator</Filter>
+    </ClInclude>
+    <ClInclude Include="wizards\common\ComponentComparator\ComponentComparator.h">
+      <Filter>Header Files\wizards\common\ComponentComparator</Filter>
+    </ClInclude>
+    <ClInclude Include="wizards\common\ModelParameterComparator\ModelParameterComparator.h">
+      <Filter>Header Files\wizards\common\ModelParameterComparator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -158,7 +158,7 @@ void tst_VHDLPortParser::testPortIsParsed_data()
 //-----------------------------------------------------------------------------
 void tst_VHDLPortParser::runParser(QString const& fileContent)
 {
-    parser_.runParser(fileContent, importComponent_);
+    parser_.import(fileContent, importComponent_);
 }
 
 //-----------------------------------------------------------------------------

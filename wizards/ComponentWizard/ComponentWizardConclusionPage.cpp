@@ -15,6 +15,9 @@
 #include <IPXACTmodels/component.h>
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <wizards/common/ComponentDiffWidget/ComponentDiffWidget.h>
+
+#include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
 
@@ -24,7 +27,8 @@
 ComponentWizardConclusionPage::ComponentWizardConclusionPage(QSharedPointer<Component> component, 
     LibraryInterface* lh,  QWidget* parent)
     : QWizardPage(parent), 
-      component_(component), 
+      originalComponent_(component), 
+      workingComponent_(),
       handler_(lh), 
       summaryWidget_(this), 
       vendorLabel_(new QLabel(this)), 
@@ -40,7 +44,8 @@ ComponentWizardConclusionPage::ComponentWizardConclusionPage(QSharedPointer<Comp
       portsLabel_(new QLabel(this)), 
       viewsLabel_(new QLabel(this)), 
       descriptionLabel_(new QLabel(this)), 
-      previewBox_(lh)
+      previewBox_(lh),
+      diffView_(new ComponentDiffWidget(this))
 {
     setTitle(tr("Summary"));
     setSubTitle(tr("You have successfully completed the component wizard. Verify the choices by clicking Finish."));
@@ -75,23 +80,23 @@ int ComponentWizardConclusionPage::nextId() const
 //-----------------------------------------------------------------------------
 void ComponentWizardConclusionPage::initializePage()
 {
-    VLNV* vlnv = component_->getVlnv();
+    VLNV* vlnv = workingComponent_->getVlnv();
     vendorLabel_->setText(vlnv->getVendor());
     libraryLabel_->setText(vlnv->getLibrary());
     nameLabel_->setText(vlnv->getName());
     versionLabel_->setText(vlnv->getVersion());    
 
-    if (component_->getComponentImplementation() == KactusAttribute::KTS_HW)
+    if (workingComponent_->getComponentImplementation() == KactusAttribute::KTS_HW)
     {
-        hierarchyLabel_->setText(KactusAttribute::valueToString(component_->getComponentHierarchy()));
-        firmnessLabel_->setText(KactusAttribute::valueToString(component_->getComponentFirmness()));
+        hierarchyLabel_->setText(KactusAttribute::valueToString(workingComponent_->getComponentHierarchy()));
+        firmnessLabel_->setText(KactusAttribute::valueToString(workingComponent_->getComponentFirmness()));
     }
 
-	QString xmlPath = handler_->getPath(*component_->getVlnv());
+	QString xmlPath = handler_->getPath(*workingComponent_->getVlnv());
     directoryLabel_->setText(xmlPath);  
-    authorLabel_->setText(component_->getAuthor());
+    authorLabel_->setText(workingComponent_->getAuthor());
 
-    if (component_->getFileSets().isEmpty())
+    if (workingComponent_->getFileSets().isEmpty())
     {
         filesetsLabel_->setText("No file sets specified.");
     }
@@ -99,7 +104,7 @@ void ComponentWizardConclusionPage::initializePage()
     {
         QString fileSets = "";
 
-        foreach (QSharedPointer<FileSet> fileSet,  component_->getFileSets())
+        foreach (QSharedPointer<FileSet> fileSet,  workingComponent_->getFileSets())
         {         
             fileSets.append(tr("%1,  %2 file(s)<br>").arg(fileSet->getName()).arg(fileSet->getFiles().count()));
         }
@@ -107,17 +112,18 @@ void ComponentWizardConclusionPage::initializePage()
         filesetsLabel_->setText(fileSets.left(fileSets.lastIndexOf("<br")));
     }
 
-    if (component_->getComponentImplementation() == KactusAttribute::KTS_HW)
+    if (workingComponent_->getComponentImplementation() == KactusAttribute::KTS_HW)
     {
-        parametersLabel_->setText(tr("%1 model parameter(s) created.").arg(component_->getModelParameters().size()));
+        parametersLabel_->setText(tr("%1 model parameter(s) created.").arg(workingComponent_->getModelParameters().size()));
 
-        portsLabel_->setText(tr("%1 port(s) created.").arg(component_->getPorts().size()));     
+        portsLabel_->setText(tr("%1 port(s) created.").arg(workingComponent_->getPorts().size()));     
 
-        viewsLabel_->setText(tr("%1 view(s) created.").arg(component_->viewCount()));     
+        viewsLabel_->setText(tr("%1 view(s) created.").arg(workingComponent_->viewCount()));     
     }
 
-    descriptionLabel_->setText(component_->getDescription());
-    previewBox_.setComponent(component_);
+    descriptionLabel_->setText(workingComponent_->getDescription());
+    previewBox_.setComponent(workingComponent_);
+    diffView_->setComponents(originalComponent_, workingComponent_);
 }
 
 //-----------------------------------------------------------------------------
@@ -125,7 +131,7 @@ void ComponentWizardConclusionPage::initializePage()
 //-----------------------------------------------------------------------------
 void ComponentWizardConclusionPage::onComponentChanged(QSharedPointer<Component> component)
 {
-    component_ = component;
+    workingComponent_ = component;
 }
 
 //-----------------------------------------------------------------------------
@@ -156,7 +162,7 @@ void ComponentWizardConclusionPage::setupLayout()
     layout->addWidget(versionLabel_, row, 1, 1, 1);
     row++;
 
-    if (component_->getComponentImplementation() == KactusAttribute::KTS_HW)
+    if (originalComponent_->getComponentImplementation() == KactusAttribute::KTS_HW)
     {
         QLabel* hierarchyTitleLabel = new QLabel("<b>Product Hierarchy:</b>",  this);
         layout->addWidget(hierarchyTitleLabel, row, 0, 1, 1, Qt::AlignTop);    
@@ -189,7 +195,7 @@ void ComponentWizardConclusionPage::setupLayout()
     layout->addWidget(filesetsLabel_, row, 1, 1, 1);
     row++;
 
-    if (component_->getComponentImplementation() == KactusAttribute::KTS_HW)
+    if (originalComponent_->getComponentImplementation() == KactusAttribute::KTS_HW)
     {
         QLabel* parameterTitleLabel = new QLabel("<b>Model Parameters:</b>",  this);
         layout->addWidget(parameterTitleLabel, row, 0, 1, 1, Qt::AlignTop);    
@@ -206,14 +212,15 @@ void ComponentWizardConclusionPage::setupLayout()
         layout->addWidget(viewsLabel_, row, 1, 1, 1);   
         row++;        
     }
-    
-    layout->setRowStretch(layout->rowCount(), 1);
+
+    layout->addWidget(diffView_, row, 0, 1, 3);
+
+    layout->setRowStretch(row, 1);
     layout->setColumnStretch(1, 1);
 
-    QVBoxLayout* previewLayout = new QVBoxLayout();
-    previewLayout->addWidget(&previewBox_);
+    layout->addWidget(&previewBox_, 0, 2, row, 1);
 
     QHBoxLayout* topLayout = new QHBoxLayout(this);
     topLayout->addLayout(layout);
-    topLayout->addLayout(previewLayout, 1);
+
 }

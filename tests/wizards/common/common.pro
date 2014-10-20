@@ -1,18 +1,19 @@
 #-----------------------------------------------------------------------------
-# File: test_all.pro
+# File: common.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
-# Date: 24.27.2014
+# Date: 16.10.2014
 #
 # Description:
-# Qt project file for running all unit tests.
+# Qt project file template for running unit tests for common elements in wizards.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = subdirs
 
 CONFIG += testcase
+SUBDIRS += VLNVComparator/tst_VLNVComparator.pro \
+		ComponentComparator/tst_ComponentComparator.pro \
+		ModelParameterComparator/tst_ModelParameterComparator.pro \
+		ComponentDiffWidget/tst_ComponentDiffWidget.pro
 
-SUBDIRS += wizards/wizards.pro \
-		Plugins/plugins.pro 
-           

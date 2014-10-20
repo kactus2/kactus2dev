@@ -63,10 +63,10 @@
       <file>common/graphics/settings-code_editor.png</file>
       <file>common/graphics/settings-file_types.png</file>
       <file>common/graphics/settings-plugins.png</file>
-	  <file>common/graphics/settings-environment_vars.png</file>
+	    <file>common/graphics/settings-environment_vars.png</file>
       <file>common/graphics/triangle_arrow_down.png</file>
       <file>common/graphics/triangle_arrow_up.png</file>
-	  <file>common/graphics/triangle_arrow_right.png</file>
+	    <file>common/graphics/triangle_arrow_right.png</file>
       <file>common/graphics/protection-locked.png</file>
       <file>common/graphics/protection-unlocked.png</file>
       <file>common/graphics/edit-undo.png</file>
@@ -101,12 +101,13 @@
       <file>common/graphics/plugin-source_analyzer.png</file>
       <file>common/graphics/control-play.png</file>
       <file>common/graphics/control-stop.png</file>
-	  <file>common/graphics/control.png</file>
-	  <file>common/graphics/control-180.png</file>
- 	  <file>common/graphics/control-dual.png</file>
-	  <file>common/graphics/cross.png</file>
+	    <file>common/graphics/control.png</file>
+	    <file>common/graphics/control-180.png</file>
+ 	    <file>common/graphics/control-dual.png</file>
+	    <file>common/graphics/cross.png</file>
       <file>common/graphics/balloon.png</file>
-	  <file>common/graphics/pin--plus.png</file>
+	    <file>common/graphics/pin--plus.png</file>
+      <file>common/graphics/asterisk-yellow.png</file>
   </qresource>
     <qresource prefix="/">        
         <file>common/graphics/splash.png</file>

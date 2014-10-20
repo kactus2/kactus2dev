@@ -492,7 +492,7 @@ void tst_VerilogParameterParser::parametersToComponent()
     QSharedPointer<Component> sw = QSharedPointer<Component>(new Component(swvlvnv));
 
     VerilogParameterParser parser;
-    parser.runParser(input, sw);
+    parser.import(input, sw);
 
     verifyParameter( sw->getModel()->getModelParameter("joku"), "joku", "8", "ok", "seli" );
     verifyParameter( sw->getModel()->getModelParameter("juu"), "juu", "98", "int", "evo" );
@@ -512,7 +512,7 @@ void tst_VerilogParameterParser::oldParametersToComponent()
     QSharedPointer<Component> sw = QSharedPointer<Component>(new Component(swvlvnv));
 
     VerilogParameterParser parser;
-    parser.runParser(input, sw);
+    parser.import(input, sw);
 
     verifyParameter( sw->getModel()->getModelParameter("joku"), "joku", "8", "ok", "seli" );
     verifyParameter( sw->getModel()->getModelParameter("juu"), "juu", "98", "int", "evo" );

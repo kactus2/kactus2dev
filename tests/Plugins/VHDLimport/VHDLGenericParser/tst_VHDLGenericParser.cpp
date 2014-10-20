@@ -135,7 +135,7 @@ void tst_VHDLGenericParser::testGenericIsParsed_data()
 //-----------------------------------------------------------------------------
 void tst_VHDLGenericParser::runParser(QString const& fileContent)
 {
-    parser_.runParser(fileContent, importComponent_);
+    parser_.import(fileContent, importComponent_);
 }
 
 //-----------------------------------------------------------------------------

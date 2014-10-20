@@ -147,7 +147,6 @@ HEADERS += ./common/Global.h \
     ./settings/NamingPolicySettingsPage.h \
     ./settings/GeneralSettingsPage.h \
     ./settings/CodeEditorSettingsPage.h \
-    ./wizards/ComponentWizard/ComponentWizardConclusionPage.h \
     ./wizards/ComponentWizard/ComponentWizardDependencyPage.h \
     ./wizards/ComponentWizard/ComponentWizardFilesPage.h \
     ./wizards/ComponentWizard/ComponentWizardIntroPage.h \
@@ -156,6 +155,7 @@ HEADERS += ./common/Global.h \
     ./wizards/ComponentWizard/ComponentWizardViewsPage.h \
     ./wizards/ComponentWizard/ImportRunner.h \
     ./wizards/ComponentWizard/ComponentWizard.h \
+    ./wizards/ComponentWizard/ComponentWizardConclusionPage.h \
     ./wizards/ComponentWizard/ComponentWizardImportPage.h \
     ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.h \
     ./wizards/ComponentWizard/ImportEditor/ModelParameterEditorAdapter.h \
@@ -548,7 +548,13 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
+    ./wizards/common/VLNVComparator/VLNVComparator.h \
+    ./wizards/common/ModelParameterComparator/ModelParameterComparator.h \
+    ./wizards/common/IPXactDiff.h \
+    ./wizards/common/IPXactElementComparator.h \
+    ./wizards/common/ComponentDiffWidget/ComponentDiffWidget.h \
+    ./wizards/common/ComponentComparator/ComponentComparator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1057,5 +1063,10 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
+    ./wizards/common/IPXactDiff.cpp \
+    ./wizards/common/ComponentComparator/ComponentComparator.cpp \
+    ./wizards/common/ComponentDiffWidget/ComponentDiffWidget.cpp \
+    ./wizards/common/VLNVComparator/VLNVComparator.cpp \
+    ./wizards/common/ModelParameterComparator/ModelParameterComparator.cpp
 RESOURCES += kactus.qrc
