@@ -211,9 +211,12 @@ void FileSet::write(QXmlStreamWriter& writer)
 		functions_.at(i)->write(writer);
 	}
 
-    writer.writeStartElement("spirit:vendorExtensions");
-    XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
-    writer.writeEndElement(); // spirit:vendorExtensions   
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions   
+    }
 
 	writer.writeEndElement(); // spirit:fileSet
 }
