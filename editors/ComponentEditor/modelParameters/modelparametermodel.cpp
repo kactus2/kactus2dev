@@ -10,10 +10,13 @@
 #include <QColor>
 #include <QPersistentModelIndex>
 
-ModelParameterModel::ModelParameterModel(QSharedPointer<Component> component, 
+#include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/model.h>
+
+ModelParameterModel::ModelParameterModel(QSharedPointer<Model> model, 
 										 QObject *parent): 
 QAbstractTableModel(parent),
-table_(component->getModelParameters()), lockedIndexes_()
+model_(model), lockedIndexes_()
 {
 
 }
@@ -27,7 +30,7 @@ int ModelParameterModel::rowCount( const QModelIndex & parent /*= QModelIndex() 
 	if (parent.isValid())
 		return 0;
 
-	return table_.size();
+	return model_->getModelParameters().count();
 }
 
 int ModelParameterModel::columnCount( const QModelIndex & parent /*= QModelIndex() */ ) const {
@@ -46,22 +49,24 @@ QVariant ModelParameterModel::data( const QModelIndex & index,
 		return QVariant();
 
 	// if row is invalid
-	if (index.row() < 0 || index.row() >= table_.size())
+	if (index.row() < 0 || index.row() >= model_->getModelParameters().count())
 		return QVariant();
+
+    QList<QSharedPointer<ModelParameter> > modelParameters = model_->getModelParameters();
 
 	if (role == Qt::DisplayRole) {
 		        
 		switch (index.column()) {
 			case 0: 
-				return table_.at(index.row())->getName();
+				return modelParameters.at(index.row())->getName();
 			case 1:
-				return table_.at(index.row())->getDataType();
+				return modelParameters.at(index.row())->getDataType();
 			case 2:
-				return table_.at(index.row())->getUsageType();
+				return modelParameters.at(index.row())->getUsageType();
 			case 3:
-				return table_.at(index.row())->getValue();
+				return modelParameters.at(index.row())->getValue();
 			case 4:
-				return table_.at(index.row())->getDescription();
+				return modelParameters.at(index.row())->getDescription();
 			default:
 				return QVariant();
 		}
@@ -79,7 +84,7 @@ QVariant ModelParameterModel::data( const QModelIndex & index,
     }
     else if (Qt::ForegroundRole == role) {
 
-        if (table_.at(index.row())->isValid()) {
+        if (modelParameters.at(index.row())->isValid()) {
             if ( lockedIndexes_.contains(index) )
             {
                 return QColor("gray");
@@ -140,8 +145,10 @@ bool ModelParameterModel::setData( const QModelIndex& index,
 		return false;
 
 	// if row is invalid
-	else if (index.row() < 0 || index.row() >= table_.size())
+	else if (index.row() < 0 || index.row() >= model_->getModelParameters().count())
 		return false;
+
+    QList<QSharedPointer<ModelParameter> > modelParameters = model_->getModelParameters();
 
 	if (role == Qt::EditRole) {
 
@@ -151,23 +158,23 @@ bool ModelParameterModel::setData( const QModelIndex& index,
 
 		switch (index.column()) {
 			case 0: {
-				table_[index.row()]->setName(value.toString());
+				modelParameters[index.row()]->setName(value.toString());
 				break;				
 					}
 			case 1: {
-				table_[index.row()]->setDataType(value.toString());
+				modelParameters[index.row()]->setDataType(value.toString());
 				break;
 					}
 			case 2: {
-				table_[index.row()]->setUsageType(value.toString());
+				modelParameters[index.row()]->setUsageType(value.toString());
 				break;
 					}
 			case 3: {
-				table_[index.row()]->setValue(value.toString());
+				modelParameters[index.row()]->setValue(value.toString());
 				break;
 					}
 			case 4: {
-				table_[index.row()]->setDescription(value.toString());
+				modelParameters[index.row()]->setDescription(value.toString());
 				break;
 					}
 			default:
@@ -199,10 +206,10 @@ Qt::ItemFlags ModelParameterModel::flags(const QModelIndex& index) const {
 void ModelParameterModel::onRemoveRow( int row ) {
 	
 	// if row is invalid
-	if (row < 0 || row >= table_.size())
+	if (row < 0 || row >= model_->getModelParameters().count())
 		return;
 
-    if ( isLocked( QAbstractTableModel::index(row, 0, QModelIndex())) )
+    if (isLocked(QAbstractTableModel::index(row, 0, QModelIndex())))
     {
         return;
     }
@@ -210,7 +217,8 @@ void ModelParameterModel::onRemoveRow( int row ) {
 	beginRemoveRows(QModelIndex(), row, row);
 
 	// remove the object from the map
-	table_.removeAt(row);
+    QList<QSharedPointer<ModelParameter> >& modelParameters = model_->getModelParameters();
+	modelParameters.removeAt(row);
 
 	endRemoveRows();
 
@@ -224,7 +232,7 @@ void ModelParameterModel::onRemoveItem( const QModelIndex& index ) {
 		return;
 	}
 	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= table_.size()) {
+	else if (index.row() < 0 || index.row() >=  model_->getModelParameters().count()) {
 		return;
     }
 
@@ -235,18 +243,20 @@ void ModelParameterModel::onRemoveItem( const QModelIndex& index ) {
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	table_.removeAt(index.row());
+    QList<QSharedPointer<ModelParameter> >& modelParameters = model_->getModelParameters();
+	modelParameters.removeAt(index.row());
 	endRemoveRows();
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
 }
 
-void ModelParameterModel::onAddRow() {
-
-	beginInsertRows(QModelIndex(), table_.size(), table_.size());
+void ModelParameterModel::onAddRow()
+{
+    int row = model_->getModelParameters().count();
+	beginInsertRows(QModelIndex(), row, row);
 	
-	table_.append(QSharedPointer<ModelParameter>(new ModelParameter()));
+	model_->addModelParameter(QSharedPointer<ModelParameter>(new ModelParameter()));
 	
 	endInsertRows();
 
@@ -256,7 +266,8 @@ void ModelParameterModel::onAddRow() {
 
 void ModelParameterModel::onAddItem( const QModelIndex& index )
 {
-	int row = table_.size();
+    QList<QSharedPointer<ModelParameter> >& modelParameters = model_->getModelParameters();
+	int row = modelParameters.count();
 
 	// if the index is valid then add the item to the correct position
 	if (index.isValid()) {
@@ -264,7 +275,7 @@ void ModelParameterModel::onAddItem( const QModelIndex& index )
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	table_.insert(row, QSharedPointer<ModelParameter>(new ModelParameter()));
+	modelParameters.insert(row, QSharedPointer<ModelParameter>(new ModelParameter()));
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed
@@ -273,8 +284,9 @@ void ModelParameterModel::onAddItem( const QModelIndex& index )
 
 void ModelParameterModel::addModelParameter( QSharedPointer<ModelParameter> modelParam )
 {
-	beginInsertRows(QModelIndex(), table_.size(), table_.size());
-	table_.append(modelParam);
+    int row = model_->getModelParameters().count();
+	beginInsertRows(QModelIndex(), row, row);
+	model_->addModelParameter(modelParam);
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed
@@ -294,21 +306,23 @@ void ModelParameterModel::removeModelParameter(QSharedPointer<ModelParameter> re
 
 }
 
-bool ModelParameterModel::isValid() const {
-	
-	for (int i = 0; i < table_.size(); ++i) {
-		
-		// if one model parameter is not valid
-		if (!table_.value(i)->isValid()) {
-			return false;
-		}
-	}
+bool ModelParameterModel::isValid() const
+{	
+    foreach (QSharedPointer<ModelParameter> modelParameter, model_->getModelParameters())
+    {
+        if (!modelParameter->isValid())
+        {
+            return false;
+        }
+    }
+
 	return true;
 }
 
-QModelIndex ModelParameterModel::index( QSharedPointer<ModelParameter> modelParam ) const {
+QModelIndex ModelParameterModel::index( QSharedPointer<ModelParameter> modelParam ) const
+{
 	// find the correct row
-	int row = table_.indexOf(modelParam);
+	int row =  model_->getModelParameters().indexOf(modelParam);
 
 	// if the model parameter is not found
 	if (row < 0) {
@@ -322,21 +336,21 @@ QModelIndex ModelParameterModel::index( QSharedPointer<ModelParameter> modelPara
 QSharedPointer<ModelParameter> ModelParameterModel::getParameter(QModelIndex const& index) const
 {
 	Q_ASSERT(index.isValid());
-    return table_.at(index.row());
+    return  model_->getModelParameters().at(index.row());
 }   
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterModel::setComponentAndLockCurrentModelParameters()
+// Function: ModelParameterModel::setModelAndLockCurrentModelParameters()
 //-----------------------------------------------------------------------------
-void ModelParameterModel::setComponentAndLockCurrentModelParameters(QSharedPointer<Component> component)
+void ModelParameterModel::setModelAndLockCurrentModelParameters(QSharedPointer<Model> model)
 {
     beginResetModel();
     
     lockedIndexes_.clear();
-    table_ = component->getModelParameters();
+    model_ = model;
     endResetModel();
 
-    foreach(QSharedPointer<ModelParameter> modelParameter, table_)
+    foreach(QSharedPointer<ModelParameter> modelParameter, model_->getModelParameters())
     {
         lockModelParameter(modelParameter);
     }

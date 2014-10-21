@@ -80,9 +80,6 @@ private:
 
 	//! \brief No assignment
 	ComponentEditorPortsItem& operator=(const ComponentEditorPortsItem& other);
-
-	//! \brief Contains the ports to edit
-	QList<QSharedPointer<Port> >& ports_;
 };
 
 #endif // COMPONENTEDITORPORTSITEM_H

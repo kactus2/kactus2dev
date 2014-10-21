@@ -13,8 +13,8 @@ ComponentEditorPortsItem::ComponentEditorPortsItem(ComponentEditorTreeModel* mod
 												   LibraryInterface* libHandler,
 												   QSharedPointer<Component> component,
 												   ComponentEditorItem* parent ):
-ComponentEditorItem(model, libHandler, component, parent),
-ports_(component->getPorts()) {
+ComponentEditorItem(model, libHandler, component, parent)
+{
 
 }
 
@@ -23,7 +23,7 @@ ComponentEditorPortsItem::~ComponentEditorPortsItem() {
 
 QFont ComponentEditorPortsItem::getFont() const {
     QFont font(ComponentEditorItem::getFont());
-    font.setBold(!ports_.empty());
+    font.setBold(component_->hasPorts());
     return font;
 }
 
@@ -33,8 +33,10 @@ QString ComponentEditorPortsItem::text() const {
 
 bool ComponentEditorPortsItem::isValid() const {
 	bool hasViews = component_->hasViews();
-	foreach (QSharedPointer<Port> port, ports_) {
-		if (!port->isValid(hasViews)) {
+	foreach (QSharedPointer<Port> port, component_->getPorts()) 
+    {
+		if (!port->isValid(hasViews))
+        {
 			return false;
 		}
 	}

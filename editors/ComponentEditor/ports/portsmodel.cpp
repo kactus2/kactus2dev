@@ -13,6 +13,8 @@
 
 #include "portsdelegate.h"
 #include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/model.h>
+#include <IPXACTmodels/port.h>
 
 #include <kactusGenerators/vhdlGenerator/vhdlgeneral.h>
 
@@ -24,10 +26,10 @@
 //-----------------------------------------------------------------------------
 // Function: PortsModel::PortsModel()
 //-----------------------------------------------------------------------------
-PortsModel::PortsModel(QSharedPointer<Component> component, QObject *parent ): QAbstractTableModel(parent), 
-    table_(component->getPorts()), component_(component), lockedIndexes_()
+PortsModel::PortsModel(QSharedPointer<Model> model, QObject *parent ): QAbstractTableModel(parent), 
+    model_(model), lockedIndexes_()
 {
-	Q_ASSERT(component_);
+	Q_ASSERT(model_);
 }
 
 //-----------------------------------------------------------------------------
@@ -46,7 +48,7 @@ int PortsModel::rowCount(const QModelIndex& parent /*= QModelIndex() */) const
 	if (parent.isValid())
 		return 0;
 
-	return table_.size();
+	return model_->portCount();
 }   
 
 //-----------------------------------------------------------------------------
@@ -70,42 +72,44 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
 	}
 
 	// if row is invalid
-	if (index.row() < 0 || index.row() >= table_.size())
+	if (index.row() < 0 || index.row() >= model_->portCount())
 		return QVariant();
+
+    QList<QSharedPointer<Port> > ports = model_->getPorts();
 
 	if (role == Qt::DisplayRole) {
 
 		switch (index.column()) {
 		case PORT_COL_NAME: {
-			return table_.at(index.row())->getName();
+			return ports.at(index.row())->getName();
 								  }
 		case PORT_COL_DIRECTION: {
-			return General::direction2Str(table_.at(index.row())->getDirection());
+			return General::direction2Str(ports.at(index.row())->getDirection());
 										 }
 		case PORT_COL_WIDTH: {
-			return table_.at(index.row())->getPortSize();
+			return ports.at(index.row())->getPortSize();
 									}
 		case PORT_COL_LEFT: {
-			return table_.at(index.row())->getLeftBound();
+			return ports.at(index.row())->getLeftBound();
 								  }
 		case PORT_COL_RIGHT: {
-			return table_.at(index.row())->getRightBound();
+			return ports.at(index.row())->getRightBound();
 									}
 		case PORT_COL_TYPENAME: {
-			return table_.at(index.row())->getTypeName();
+			return ports.at(index.row())->getTypeName();
 										}
 		case PORT_COL_TYPEDEF: {
-			QString typeName = table_.at(index.row())->getTypeName();
-			return table_.at(index.row())->getTypeDefinition(typeName);
+			QString typeName = ports.at(index.row())->getTypeName();
+			return ports.at(index.row())->getTypeDefinition(typeName);
 									  }
 		case PORT_COL_DEFAULT: {
-			return table_.at(index.row())->getDefaultValue();
+			return ports.at(index.row())->getDefaultValue();
 									  }
 		case PORT_COL_DESC: {
-			return table_.at(index.row())->getDescription();
+			return ports.at(index.row())->getDescription();
 								  }
 		case PORT_COL_ADHOC_VISIBILITY: {
-			return table_.at(index.row())->isAdHocVisible();
+			return ports.at(index.row())->isAdHocVisible();
 												  }
 
 		default: {
@@ -118,7 +122,7 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
         {
             return QColor("gray");
         }
-        else if (table_.at(index.row())->isValid(component_->hasViews())) {
+        else if (ports.at(index.row())->isValid(model_->hasViews())) {
             return QColor("black");
         }
         else {
@@ -141,7 +145,7 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
 	}
 	else if (Qt::CheckStateRole == role) {
 		if (index.column() == PORT_COL_ADHOC_VISIBILITY) {
-			if (table_.at(index.row())->isAdHocVisible()) {
+			if (ports.at(index.row())->isAdHocVisible()) {
 				return Qt::Checked;
 			}
 			else {
@@ -229,155 +233,160 @@ bool PortsModel::setData( const QModelIndex& index, const QVariant& value, int r
 		return false;
 
 	// if row is invalid
-	else if (index.row() < 0 || index.row() >= table_.size())
+	else if (index.row() < 0 || index.row() >= model_->portCount())
 		return false;
 
-	if (role == Qt::EditRole) {
-	
-	 if ( isLocked(index) )
+    QList<QSharedPointer<Port> > ports = model_->getPorts();
+
+	if (role == Qt::EditRole)
+    {
+
+        if (isLocked(index))
+        {
+            return false;
+        }
+
+        switch (index.column()) {
+        case PORT_COL_NAME: {
+            ports.at(index.row())->setName(value.toString());
+
+            break;
+                            }
+        case PORT_COL_DIRECTION: {
+
+            General::Direction direction = General::str2Direction(
+                value.toString(), General::DIRECTION_INVALID);
+
+            ports.at(index.row())->setDirection(direction);
+            break;
+                                 }
+        case PORT_COL_WIDTH: {
+            int size = value.toInt();
+            ports.at(index.row())->setPortSize(size);
+
+            // if port is vectored and previous type was std_logic
+            if (size > 1 && ports.at(index.row())->getTypeName() == QString("std_logic")) {
+
+                // change the type to vectored
+                ports.at(index.row())->setTypeName("std_logic_vector");
+            }
+
+            // if port is not vectored but previous type was std_logic_vector
+            else if (size < 2 && ports.at(index.row())->getTypeName() == QString("std_logic_vector")) {
+
+                ports.at(index.row())->setTypeName("std_logic");
+            }
+
+            emit dataChanged(index, 
+                QAbstractTableModel::index(index.row(), index.column()+3, QModelIndex()));
+            return true;
+                             }
+        case PORT_COL_LEFT: {
+
+            // make sure left bound doesn't drop below right bound
+            if (value.toInt() < ports.at(index.row())->getRightBound())
+                return false;
+
+            // ok so make the change
+            ports.at(index.row())->setLeftBound(value.toInt());
+
+            int size = ports.at(index.row())->getPortSize();
+            // if port is vectored and previous type was std_logic
+            if (size > 1 && ports.at(index.row())->getTypeName() == QString("std_logic")) {
+
+                // change the type to vectored
+                ports.at(index.row())->setTypeName("std_logic_vector");
+            }
+
+            // if port is not vectored but previous type was std_logic_vector
+            else if (size < 2 && ports.at(index.row())->getTypeName() == QString("std_logic_vector")) {
+
+                ports.at(index.row())->setTypeName("std_logic");
+            }
+
+            emit dataChanged(
+                QAbstractTableModel::index(index.row(), index.column()-1, QModelIndex()),
+                QAbstractTableModel::index(index.row(), index.column()+2, QModelIndex()));
+
+            return true;
+                            }
+        case PORT_COL_RIGHT: {
+
+            // make sure right bound is not greater than left bound
+            if (value.toInt() > ports.at(index.row())->getLeftBound())
+                return false;
+
+            // ok so apply the change
+            ports.at(index.row())->setRightBound(value.toInt());
+
+            int size = ports.at(index.row())->getPortSize();
+            // if port is vectored and previous type was std_logic
+            if (size > 1 && ports.at(index.row())->getTypeName() == QString("std_logic")) {
+
+                // change the type to vectored
+                ports.at(index.row())->setTypeName("std_logic_vector");
+            }
+
+            // if port is not vectored but previous type was std_logic_vector
+            else if (size < 2 && ports.at(index.row())->getTypeName() == QString("std_logic_vector")) {
+
+                ports.at(index.row())->setTypeName("std_logic");
+            }
+
+            emit dataChanged(
+                QAbstractTableModel::index(index.row(), index.column()+1, QModelIndex()), 
+                QAbstractTableModel::index(index.row(), index.column()-2, QModelIndex()));
+            return true;
+                             }
+        case PORT_COL_TYPENAME: {
+            QString typeName = value.toString();
+            ports.at(index.row())->setTypeName(typeName);
+
+            // update the type definition for the new type name
+            ports.at(index.row())->setTypeDefinition(typeName,
+                VhdlGeneral::getDefaultVhdlTypeDef(typeName));
+
+            emit dataChanged(index,
+                QAbstractTableModel::index(index.row(), index.column()+1, QModelIndex()));
+            return true;
+                                }
+        case PORT_COL_TYPEDEF: {
+            QString typeName = ports.at(index.row())->getTypeName();
+            ports.at(index.row())->setTypeDefinition(typeName, value.toString());
+            break;
+                               }
+        case PORT_COL_DEFAULT: {
+            ports.at(index.row())->setDefaultValue(value.toString());
+            break;
+                               }
+        case PORT_COL_DESC: {
+            ports.at(index.row())->setDescription(value.toString());
+            break;
+                            }
+        case PORT_COL_ADHOC_VISIBILITY: {
+            ports.at(index.row())->setAdHocVisible(value.toBool());
+            break;
+                                        }
+
+        default: {
+            return false;
+                 }
+        }
+
+        emit dataChanged(index, index);
+        return true;
+    }
+    else if (role == Qt::CheckStateRole)
+    {
+        ports.at(index.row())->setAdHocVisible(value == Qt::Checked);
+        emit dataChanged(index, index);
+        return true;
+    }
+    // unsupported role
+    else
     {
         return false;
     }
-
-		switch (index.column()) {
-			case PORT_COL_NAME: {
-				table_.at(index.row())->setName(value.toString());
-
-				break;
-					}
-			case PORT_COL_DIRECTION: {
-
-				General::Direction direction = General::str2Direction(
-					value.toString(), General::DIRECTION_INVALID);
-				
-				table_.at(index.row())->setDirection(direction);
-				break;
-					}
-			case PORT_COL_WIDTH: {
-				int size = value.toInt();
-				table_.at(index.row())->setPortSize(size);
-				
-				// if port is vectored and previous type was std_logic
-				if (size > 1 && table_.at(index.row())->getTypeName() == QString("std_logic")) {
-					
-					// change the type to vectored
-					table_.at(index.row())->setTypeName("std_logic_vector");
-				}
-
-				// if port is not vectored but previous type was std_logic_vector
-				else if (size < 2 && table_.at(index.row())->getTypeName() == QString("std_logic_vector")) {
-
-					table_.at(index.row())->setTypeName("std_logic");
-				}
-
-				emit dataChanged(index, 
-					QAbstractTableModel::index(index.row(), index.column()+3, QModelIndex()));
-				return true;
-					}
-			case PORT_COL_LEFT: {
-
-				// make sure left bound doesn't drop below right bound
-				if (value.toInt() < table_.at(index.row())->getRightBound())
-					return false;
-
-				// ok so make the change
-				table_.at(index.row())->setLeftBound(value.toInt());
-
-				int size = table_.at(index.row())->getPortSize();
-				// if port is vectored and previous type was std_logic
-				if (size > 1 && table_.at(index.row())->getTypeName() == QString("std_logic")) {
-
-					// change the type to vectored
-					table_.at(index.row())->setTypeName("std_logic_vector");
-				}
-
-				// if port is not vectored but previous type was std_logic_vector
-				else if (size < 2 && table_.at(index.row())->getTypeName() == QString("std_logic_vector")) {
-
-					table_.at(index.row())->setTypeName("std_logic");
-				}
-
-				emit dataChanged(
-					QAbstractTableModel::index(index.row(), index.column()-1, QModelIndex()),
-					QAbstractTableModel::index(index.row(), index.column()+2, QModelIndex()));
-
-				return true;
-					}
-			case PORT_COL_RIGHT: {
-
-				// make sure right bound is not greater than left bound
-				if (value.toInt() > table_.at(index.row())->getLeftBound())
-					return false;
-
-				// ok so apply the change
-				table_.at(index.row())->setRightBound(value.toInt());
-
-				int size = table_.at(index.row())->getPortSize();
-				// if port is vectored and previous type was std_logic
-				if (size > 1 && table_.at(index.row())->getTypeName() == QString("std_logic")) {
-
-					// change the type to vectored
-					table_.at(index.row())->setTypeName("std_logic_vector");
-				}
-
-				// if port is not vectored but previous type was std_logic_vector
-				else if (size < 2 && table_.at(index.row())->getTypeName() == QString("std_logic_vector")) {
-
-					table_.at(index.row())->setTypeName("std_logic");
-				}
-
-				emit dataChanged(
-					QAbstractTableModel::index(index.row(), index.column()+1, QModelIndex()), 
-					QAbstractTableModel::index(index.row(), index.column()-2, QModelIndex()));
-				return true;
-					}
-			case PORT_COL_TYPENAME: {
-				QString typeName = value.toString();
-				table_.at(index.row())->setTypeName(typeName);
-
-				// update the type definition for the new type name
-				table_.at(index.row())->setTypeDefinition(typeName,
-					VhdlGeneral::getDefaultVhdlTypeDef(typeName));
-
-				emit dataChanged(index,
-					QAbstractTableModel::index(index.row(), index.column()+1, QModelIndex()));
-				return true;
-					}
-			case PORT_COL_TYPEDEF: {
-				QString typeName = table_.at(index.row())->getTypeName();
-				table_.at(index.row())->setTypeDefinition(typeName, value.toString());
-				break;
-					}
-			case PORT_COL_DEFAULT: {
-				table_.at(index.row())->setDefaultValue(value.toString());
-				break;
-					}
-			case PORT_COL_DESC: {
-				table_.at(index.row())->setDescription(value.toString());
-				break;
-					}
-			case PORT_COL_ADHOC_VISIBILITY: {
-				table_.at(index.row())->setAdHocVisible(value.toBool());
-				break;
-											}
-
-			default: {
-				return false;
-						}
-		}
-
-		emit dataChanged(index, index);
-		return true;
-	}
-	 else if (role == Qt::CheckStateRole) {
-		 table_.at(index.row())->setAdHocVisible(value == Qt::Checked);
-		 emit dataChanged(index, index);
-		 return true;
-	 }
-	 // unsupported role
-	 else {
-		 return false;
-	 }
 }
 
 //-----------------------------------------------------------------------------
@@ -410,14 +419,15 @@ Qt::ItemFlags PortsModel::flags( const QModelIndex& index ) const {
 //-----------------------------------------------------------------------------
 // Function: PortsModel::isValid()
 //-----------------------------------------------------------------------------
-bool PortsModel::isValid() const {
-	
+bool PortsModel::isValid() const
+{	
 	// check all ports in the table
-	foreach (QSharedPointer<Port> port, table_) {
-
-		// if one is in invalid state
-		if (!port->isValid(component_->hasViews()))
+	foreach (QSharedPointer<Port> port, model_->getPorts())
+    {	
+		if (!port->isValid(model_->hasViews()))
+        {
 			return false;
+        }
 	}
 
 	return true;
@@ -426,15 +436,16 @@ bool PortsModel::isValid() const {
 //-----------------------------------------------------------------------------
 // Function: PortsModel::onRemoveRow()
 //-----------------------------------------------------------------------------
-void PortsModel::onRemoveRow( int row ) {
+void PortsModel::onRemoveRow(int row) {
 	// if row is invalid
-	if (row < 0 || row >= table_.size() || rowIsLocked(row))
+	if (row < 0 || row >=model_->portCount() || rowIsLocked(row))
 		return;
 
 	beginRemoveRows(QModelIndex(), row, row);
 
 	// remove the object from the map
-	table_.removeAt(row);
+    QList<QSharedPointer<Port> >& ports = model_->getPorts();
+	ports.removeAt(row);
 
 	endRemoveRows();
 
@@ -452,14 +463,15 @@ void PortsModel::onRemoveItem( const QModelIndex& index )
 		return;
 	}
 	// make sure the row number if valid
-	if (index.row() < 0 || index.row() >= table_.size() || rowIsLocked(index.row()))
+	if (index.row() < 0 || index.row() >= model_->portCount() || rowIsLocked(index.row()))
     {
 		return;
 	}
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	table_.removeAt(index.row());
+    QList<QSharedPointer<Port> >& ports = model_->getPorts();
+	ports.removeAt(index.row());
 	endRemoveRows();
 
 	// tell also parent widget that contents have been changed
@@ -471,10 +483,10 @@ void PortsModel::onRemoveItem( const QModelIndex& index )
 //-----------------------------------------------------------------------------
 void PortsModel::onAddRow()
 {
-	beginInsertRows(QModelIndex(), table_.size(), table_.size());
+	beginInsertRows(QModelIndex(), model_->portCount(), model_->portCount());
 
 	QSharedPointer<Port> port(new Port());
-	table_.append(port);
+	model_->addPort(port);
 
 	endInsertRows();
 
@@ -487,7 +499,7 @@ void PortsModel::onAddRow()
 //-----------------------------------------------------------------------------
 void PortsModel::onAddItem( const QModelIndex& index )
 {
-	int row = table_.size();
+	int row = model_->portCount();
 
 	// if the index is valid then add the item to the correct position
 	if (index.isValid()) {
@@ -495,7 +507,8 @@ void PortsModel::onAddItem( const QModelIndex& index )
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	table_.insert(row, QSharedPointer<Port>(new Port()));
+    QList<QSharedPointer<Port> >& ports = model_->getPorts();
+	ports.insert(row, QSharedPointer<Port>(new Port()));
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed
@@ -507,9 +520,9 @@ void PortsModel::onAddItem( const QModelIndex& index )
 //-----------------------------------------------------------------------------
 void PortsModel::addPort( QSharedPointer<Port> port )
 {
-	beginInsertRows(QModelIndex(), table_.size(), table_.size());
+	beginInsertRows(QModelIndex(), model_->portCount(), model_->portCount());
 
-	table_.append(port);
+	model_->addPort(port);
     lockPort(port);
 
 	endInsertRows();
@@ -524,7 +537,7 @@ void PortsModel::addPort( QSharedPointer<Port> port )
 QModelIndex PortsModel::index( QSharedPointer<Port> port ) const
 {
 	// find the correct row
-	int row = table_.indexOf(port);
+	int row = model_->getPorts().indexOf(port);
 
 	// if the named port is not found
 	if (row < 0)
@@ -537,20 +550,19 @@ QModelIndex PortsModel::index( QSharedPointer<Port> port ) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortsModel::setComponentAndLockCurrentPorts()
+// Function: PortsModel::setModelAndLockCurrentPorts()
 //-----------------------------------------------------------------------------
-void PortsModel::setComponentAndLockCurrentPorts(QSharedPointer<Component> component)
+void PortsModel::setModelAndLockCurrentPorts(QSharedPointer<Model> model)
 {
     beginResetModel();
 
     lockedIndexes_.clear();
 
-    component_ = component;
-    table_ = component_->getPorts();    
+    model_ = model;
     
     endResetModel();
 
-    foreach(QSharedPointer<Port> port, table_)
+    foreach(QSharedPointer<Port> port, model_->getPorts())
     {
         lockPort(port);
     }
@@ -564,10 +576,10 @@ void PortsModel::setComponentAndLockCurrentPorts(QSharedPointer<Component> compo
 void PortsModel::lockPort(QSharedPointer<Port> port)
 {
     QModelIndex nameIndex = index(port);
-    QModelIndex directionIndex = nameIndex.sibling(nameIndex.row(),1);
-    QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(),5);
+    QModelIndex directionIndex = nameIndex.sibling(nameIndex.row(), PORT_COL_DIRECTION );
+    QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(), PORT_COL_TYPENAME);
 
-    if (nameIndex.isValid() && typeIndex.isValid() && typeIndex.isValid() )
+    if (nameIndex.isValid() && typeIndex.isValid() && typeIndex.isValid())
     {     
         lockIndex(nameIndex);  
         lockIndex(directionIndex);  
@@ -581,15 +593,14 @@ void PortsModel::lockPort(QSharedPointer<Port> port)
 void PortsModel::unlockPort(QSharedPointer<Port> port)
 {
     QModelIndex nameIndex = index(port);
-    QModelIndex directionIndex = nameIndex.sibling(nameIndex.row(),1);
-    QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(),5);
+    QModelIndex directionIndex = nameIndex.sibling(nameIndex.row(), PORT_COL_DIRECTION);
+    QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(), PORT_COL_TYPENAME);
    
-    if ( nameIndex.isValid() && typeIndex.isValid() && typeIndex.isValid() )
+    if (nameIndex.isValid() && typeIndex.isValid() && typeIndex.isValid())
     {     
         unlockIndex(nameIndex);  
         unlockIndex(directionIndex);  
         unlockIndex(typeIndex);
-       
     }
 }
 
@@ -598,7 +609,7 @@ void PortsModel::unlockPort(QSharedPointer<Port> port)
 //-----------------------------------------------------------------------------
 void PortsModel::lockIndex(QModelIndex const& index)
 {
-    if( !isLocked(index) )
+    if(!isLocked(index))
     {
         lockedIndexes_.append(QPersistentModelIndex(index));
     }

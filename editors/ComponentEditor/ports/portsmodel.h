@@ -12,15 +12,15 @@
 #ifndef PORTSMODEL_H
 #define PORTSMODEL_H
 
-#include <IPXACTmodels/port.h>
-#include <IPXACTmodels/component.h>
-
 #include <QAbstractTableModel>
 #include <QMap>
 #include <QSharedPointer>
 #include <QString>
 #include <QList>
 #include <QFile>
+
+class Model;
+class Port;
 
 /*! Table model that can be used to display ports to be edited.
  *
@@ -32,13 +32,11 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] component    Pointer to the component being edited.
-	 *      @param [in] dataPointer  Pointer to the QMap containing pointers to the ports.
+	 *      @param [in] model        Pointer to the model being edited.
 	 *      @param [in] parent       Pointer to the owner of this model.
 	 *
 	*/
-	PortsModel(QSharedPointer<Component> component, 
-		QObject *parent);
+	PortsModel(QSharedPointer<Model> model, QObject *parent);
 	
 	//! The destructor
 	virtual ~PortsModel();
@@ -115,11 +113,11 @@ public:
 	virtual QModelIndex index(QSharedPointer<Port> port) const;
    
     /*!
-     *  Sets the edited component and locks all current ports.
+     *  Sets the edited model and locks all current ports.
      *
-     *      @param [in] component   The component whose ports to edit.
+     *      @param [in] model   The model whose ports to edit.
      */
-    void setComponentAndLockCurrentPorts(QSharedPointer<Component> component);
+    void setModelAndLockCurrentPorts(QSharedPointer<Model> model);
 
 public slots:
 
@@ -216,11 +214,8 @@ private:
      */
     bool rowIsLocked(int row);
 
-    //! The table that is displayed to the user.
-    QList<QSharedPointer<Port> >& table_;
-
-    //! Pointer to the component being edited.
-    QSharedPointer<Component> component_;
+    //! Pointer to the model being edited.
+    QSharedPointer<Model> model_;
 
     //! The locked indexes that cannot be edited.
     QList<QPersistentModelIndex> lockedIndexes_;

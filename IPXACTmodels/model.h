@@ -336,14 +336,6 @@ public:
 	*/
 	QList<QSharedPointer<Port> >& getPorts();
 
-	/*! \brief Set the ports for this model
-	*
-	* Calling this function will delete the old ports of this model
-	*
-	* \param ports QList containing pointers to the ports.
-	*/
-	void setPorts(const QList<QSharedPointer<Port> > &ports);
-
 	/*! \brief Get the specific port of the model.
 	*
 	* This function can be used to find a specific port within a model. If
@@ -412,6 +404,12 @@ public:
 	* \return bool True if ports exist.
 	*/
 	bool hasPorts() const;
+
+   /*! \brief Gets the number of ports in the model.
+	*
+	* \return The number of ports.
+	*/
+    int portCount() const;
 
 	/*! \brief Check if the specified port exists on the implementation of the component.
 	*

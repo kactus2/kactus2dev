@@ -30,7 +30,7 @@
 PortsEditor::PortsEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget *parent):
 ItemEditor(component, handler, parent),
 view_(this), 
-model_(component, this),
+model_(component->getModel(), this),
 proxy_(this),
 component_(component),
 handler_(handler)
@@ -117,7 +117,7 @@ void PortsEditor::setAllowImportExport( bool allow ) {
 void PortsEditor::setComponent(QSharedPointer<Component> component)
 {
     component_ = component;
-    model_.setComponentAndLockCurrentPorts(component_);
+    model_.setModelAndLockCurrentPorts(component_->getModel());
 }
 
 //-----------------------------------------------------------------------------

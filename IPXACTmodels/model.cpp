@@ -639,14 +639,6 @@ QList<QSharedPointer<Port> >& Model::getPorts() {
 	return ports_;
 }
 
-void Model::setPorts(const QList<QSharedPointer<Port> > &ports) {
-	// delete the old ports
-	ports_.clear();
-
-	// save the new ports
-	ports_ = ports;
-}
-
 QSharedPointer<Port> Model::getPort( const QString& name ) const {
 
 	foreach (QSharedPointer<Port> port, ports_) {
@@ -720,6 +712,14 @@ General::Direction Model::getPortDirection( const QString& portName ) const {
 
 bool Model::hasPorts() const {
 	return !ports_.isEmpty();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Model::portCount()
+//-----------------------------------------------------------------------------
+int Model::portCount() const
+{
+    return ports_.count();
 }
 
 bool Model::isPhysicalPort( const QString& portName ) const {

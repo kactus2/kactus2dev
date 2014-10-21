@@ -23,7 +23,7 @@ ModelParameterEditor::ModelParameterEditor(QSharedPointer<Component> component,
 										   QWidget *parent): 
 ItemEditor(component, handler, parent), 
 view_(this),
-model_(component, this),
+model_(component->getModel(), this),
 proxy_(this) {
 
 	connect(&model_, SIGNAL(contentChanged()),
@@ -103,7 +103,7 @@ void ModelParameterEditor::refresh() {
 //-----------------------------------------------------------------------------
 void ModelParameterEditor::setComponent(QSharedPointer<Component> component)
 {
-    model_.setComponentAndLockCurrentModelParameters(component);
+    model_.setModelAndLockCurrentModelParameters(component->getModel());
 }
 
 //-----------------------------------------------------------------------------

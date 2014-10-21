@@ -8,13 +8,14 @@
 #ifndef MODELPARAMETERMODEL_H
 #define MODELPARAMETERMODEL_H
 
-#include <IPXACTmodels/modelparameter.h>
-#include <IPXACTmodels/component.h>
 
 #include <QAbstractTableModel>
 #include <QMap>
 #include <QSharedPointer>
 #include <QString>
+
+class Model;
+class ModelParameter;
 
 /*! \brief Table model that contains the model parameters for the table view.
  *
@@ -27,12 +28,11 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param component Pointer to the component being edited.
+	 * \param model Pointer to the model being edited.
 	 * \param parent Pointer to the owner of this model.
 	 *
 	*/
-	ModelParameterModel(QSharedPointer<Component> component,
-		QObject *parent);
+	ModelParameterModel(QSharedPointer<Model> model, QObject *parent);
 
 	//! \brief The destructor
 	virtual ~ModelParameterModel();
@@ -117,11 +117,11 @@ public:
     virtual QSharedPointer<ModelParameter> getParameter(QModelIndex const& index) const;    
        
     /*!
-     *  Sets the edited component and locks all current model parameters.
+     *  Sets the edited model and locks all current model parameters.
      *
-     *      @param [in] component   The component whose model parameters to edit.
+     *      @param [in] component   The model whose model parameters to edit.
      */
-    void setComponentAndLockCurrentModelParameters(QSharedPointer<Component> component);
+    void setModelAndLockCurrentModelParameters(QSharedPointer<Model> model);
 
 public slots:
 
@@ -221,9 +221,9 @@ private:
 	 *      @return True if the index is locked, otherwise false.
      */
     bool isLocked(QModelIndex const& index) const;
-    
-	//! \brief The table that is displayed to the user.
-	QList<QSharedPointer<ModelParameter> >& table_;
+
+    //! The model whose model parameters to edit.
+    QSharedPointer<Model> model_;
 
     //! \brief The locked indexes that cannot be edited.
     QList<QPersistentModelIndex> lockedIndexes_;
