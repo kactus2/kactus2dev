@@ -283,9 +283,12 @@ void Port::write(QXmlStreamWriter& writer, const QStringList& viewNames)
 		writer.writeEndElement(); // spirit:access
 	}
 
-    writer.writeStartElement("spirit:vendorExtensions");
-    XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
-    writer.writeEndElement(); // spirit:vendorExtensions
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:port
 }

@@ -273,9 +273,12 @@ void View::write(QXmlStreamWriter& writer) {
 		writer.writeEndElement(); // spirit:parameters
 	}
 
-    writer.writeStartElement("spirit:vendorExtensions");
-    XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
-    writer.writeEndElement(); // spirit:vendorExtensions
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        XmlUtils::writeVendorExtensions(writer, vendorExtensions_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:view
 }
