@@ -32,36 +32,21 @@ ModelParameterComparator::~ModelParameterComparator()
 //-----------------------------------------------------------------------------
 // Function: ModelParameterComparator::compare()
 //-----------------------------------------------------------------------------
-bool ModelParameterComparator::compare(QSharedPointer<const ModelParameter> first, 
+bool ModelParameterComparator::compare(QSharedPointer<ModelParameter> first, 
+    QSharedPointer<ModelParameter> second) const
+{
+    return IPXactElementComparator::compare(first, second);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameterComparator::compareFields()
+//-----------------------------------------------------------------------------
+bool ModelParameterComparator::compareFields(QSharedPointer<const ModelParameter> first, 
     QSharedPointer<const ModelParameter> second) const
 {
-    if (first == second)
-    {
-        return true;
-    }
-    
-    if (first.isNull() || second.isNull())
-    {
-        return false;
-    }
-
-
-    if (first->getValue() != second->getValue())
-    {
-        return false;
-    }
-
-    if (first->getDataType() != second->getDataType())
-    {
-        return false;
-    }
-
-    if (first->getUsageType() != second->getUsageType())
-    {
-        return false;
-    }
-
-    return true;
+    return first->getValue() == second->getValue() &&
+        first->getDataType() == second->getDataType() &&
+        first->getUsageType() == second->getUsageType();
 }
 
 //-----------------------------------------------------------------------------
@@ -75,16 +60,16 @@ bool ModelParameterComparator::compare(QList<QSharedPointer<ModelParameter> > co
         return false;
     }
 
-    QMap<QString, QSharedPointer<const ModelParameter> > sortedSubjects = mapById(subjects);
+    QMap<QString, QSharedPointer<const ModelParameter> > sortedSubjects = mapByName(subjects);
 
     foreach(QSharedPointer<const ModelParameter> reference, references)
     {    
-        if (!hasElementForId(sortedSubjects, reference->getName()))
+        if (!sortedSubjects.contains(reference->getName()))
         {
             return false;
         }
 
-        if (!compare(reference, elementForId(sortedSubjects, reference->getName())))
+        if (!IPXactElementComparator::compare(reference, sortedSubjects.value(reference->getName())))
         {
             return false;
         }
@@ -93,24 +78,6 @@ bool ModelParameterComparator::compare(QList<QSharedPointer<ModelParameter> > co
     return true;
 }
 
-//-----------------------------------------------------------------------------
-// Function: ModelParameterComparator::diff()
-//-----------------------------------------------------------------------------
-QList<QSharedPointer<IPXactDiff> > ModelParameterComparator::diff(QSharedPointer<const ModelParameter> reference, 
-    QSharedPointer<const ModelParameter> subject) const
-{
-    QList<QSharedPointer<IPXactDiff> > diffResult;
-
-    QSharedPointer<IPXactDiff> modification(new IPXactDiff("model parameter", reference->getName()));
-    modification->setChangeType(IPXactDiff::MODIFICATION);
-
-    modification->checkForChange("value", reference->getValue(), subject->getValue());
-    modification->checkForChange("data type", reference->getDataType(), subject->getDataType());
-    modification->checkForChange("usage type", reference->getUsageType(), subject->getUsageType());
-    
-    diffResult.append(modification);
-    return diffResult;
-}
 
 //-----------------------------------------------------------------------------
 // Function: ModelParameterComparator::diff()
@@ -121,25 +88,16 @@ QList<QSharedPointer<IPXactDiff> >
 {
    QList<QSharedPointer<IPXactDiff> > diffResult;
 
-   if (compare(references, subjects))
-   {
-       QSharedPointer<IPXactDiff> noChange(new IPXactDiff("model parameter"));
-       noChange->setChangeType(IPXactDiff::NO_CHANGE);
-       diffResult.append(noChange);
-       return diffResult;
-   }
-
-   QMap<QString, QSharedPointer<const ModelParameter> > sortedOthers = mapById(subjects);
+   QMap<QString, QSharedPointer<const ModelParameter> > subjectMap = mapByName(subjects);
 
    foreach(QSharedPointer<const ModelParameter> reference, references)
    {    
-       if (hasElementForId(sortedOthers, reference->getName()))
+       if (subjectMap.contains(reference->getName()))
        {
-           QSharedPointer<const ModelParameter> subject = elementForId(sortedOthers, reference->getName());
-
-           if (!compare(reference, subject))
+           QSharedPointer<const ModelParameter> subject = subjectMap.value(reference->getName());
+           if (!IPXactElementComparator::compare(reference, subject))
            {
-               diffResult.append(diff(reference, subject));
+               diffResult.append(IPXactElementComparator::diff(reference, subject));
            }
        }
        else
@@ -150,11 +108,11 @@ QList<QSharedPointer<IPXactDiff> >
        }
    }
 
-   QMap<QString, QSharedPointer<const ModelParameter> > sortedReference = mapById(references);
+   QMap<QString, QSharedPointer<const ModelParameter> > referenceMap = mapByName(references);
 
    foreach(QSharedPointer<const ModelParameter> other, subjects)
    {    
-       if (!hasElementForId(sortedReference, other->getName()))
+       if (!referenceMap.contains(other->getName()))
        {
            QSharedPointer<IPXactDiff> add(new IPXactDiff("model parameter", other->getName()));
            add->setChangeType(IPXactDiff::ADD);
@@ -162,38 +120,55 @@ QList<QSharedPointer<IPXactDiff> >
        }
    }
 
+   if (diffResult.isEmpty())
+   {
+       QSharedPointer<IPXactDiff> noChange(new IPXactDiff("model parameter"));
+       noChange->setChangeType(IPXactDiff::NO_CHANGE);
+       diffResult.append(noChange);
+   }
+
    return diffResult;
 }
 
+//-----------------------------------------------------------------------------
+// Function: ModelParameterComparator::diffFields()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<IPXactDiff> > ModelParameterComparator::diffFields(QSharedPointer<const ModelParameter> reference, 
+    QSharedPointer<const ModelParameter> subject) const
+{
+    QList<QSharedPointer<IPXactDiff> > diffResult;
+
+    QSharedPointer<IPXactDiff> modification(new IPXactDiff("model parameter", reference->getName()));
+    modification->setChangeType(IPXactDiff::MODIFICATION);
+
+    modification->checkForChange("value", reference->getValue(), subject->getValue());
+    modification->checkForChange("data type", reference->getDataType(), subject->getDataType());
+    modification->checkForChange("usage type", reference->getUsageType(), subject->getUsageType());
+
+    diffResult.append(modification);
+    return diffResult;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameterComparator::elementType()
+//-----------------------------------------------------------------------------
+QString ModelParameterComparator::elementType() const
+{
+    return "model parameter";
+}
 
 //-----------------------------------------------------------------------------
 // Function: ModelParameterComparator::mapById()
 //-----------------------------------------------------------------------------
-QMap<QString, QSharedPointer<const ModelParameter> > ModelParameterComparator::mapById(QList<QSharedPointer<ModelParameter> > const list)
+QMap<QString, QSharedPointer<const ModelParameter> > 
+    ModelParameterComparator::mapByName(QList<QSharedPointer<ModelParameter> > const list)
 {
-    QMap<QString, QSharedPointer<const ModelParameter> > sortedOthers;
+    QMap<QString, QSharedPointer<const ModelParameter> > mappedResult;
 
     foreach(QSharedPointer<ModelParameter> modelParameter, list)
     {
-        sortedOthers.insert(modelParameter->getName(), modelParameter);
+        mappedResult.insert(modelParameter->getName(), modelParameter);
     }
 
-    return sortedOthers;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModelParameterComparator::hasElementForId()
-//-----------------------------------------------------------------------------
-bool ModelParameterComparator::hasElementForId(QMap<QString, QSharedPointer<const ModelParameter> > mappedElements, QString const& id)
-{
-    return mappedElements.contains(id);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModelParameterComparator::elementForId()
-//-----------------------------------------------------------------------------
-QSharedPointer<const ModelParameter> ModelParameterComparator::elementForId(QMap<QString, 
-    QSharedPointer<const ModelParameter> > const& mappedElements, QString const& id)
-{
-    return mappedElements.value(id);
+    return mappedResult;
 }

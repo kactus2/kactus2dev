@@ -30,56 +30,44 @@ VLNVComparator::~VLNVComparator()
 }
 
 //-----------------------------------------------------------------------------
-// Function: VLNVComparator::compare()
+// Function: VLNVComparator::elementType()
 //-----------------------------------------------------------------------------
-bool VLNVComparator::compare(QSharedPointer<const VLNV> first, QSharedPointer<const VLNV> second) const
+QString VLNVComparator::elementType() const
 {
-    if (first.isNull() && second.isNull())
-    {
-        return true;
-    }
-
-    if (first.isNull() || second.isNull())
-    {
-        return false;
-    }
-
-    return *first.data() == *second.data();
+    return "vlnv";
 }
 
 //-----------------------------------------------------------------------------
-// Function: VLNVComparator::diff()
+// Function: VLNVComparator::compareFields()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<IPXactDiff> > VLNVComparator::diff(QSharedPointer<const VLNV> reference, 
-    QSharedPointer<const VLNV> subject) const
+bool VLNVComparator::compareFields(QSharedPointer<const VLNV> first, QSharedPointer<const VLNV> second) const
 {
-    QList<QSharedPointer<IPXactDiff> > diffResult;
+    return *first == *second;
+}
 
-    QSharedPointer<IPXactDiff> vlnvDiff(new IPXactDiff("vlnv", reference->toString()));
-
-    if (compare(reference, subject))
+//-----------------------------------------------------------------------------
+// Function: VLNVComparator::diffFields()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<IPXactDiff> > VLNVComparator::diffFields(QSharedPointer<const VLNV> reference, 
+    QSharedPointer<const VLNV> subject) const
+{   
+    if (reference->isEmpty())
     {
-        vlnvDiff->setChangeType(IPXactDiff::NO_CHANGE);
-    }
-    else if (reference->isEmpty() && !subject->isEmpty())
-    {
-        vlnvDiff->setChangeType(IPXactDiff::ADD);
-    }
-    else if (!reference->isEmpty() && subject->isEmpty())
-    {
-        vlnvDiff->setChangeType(IPXactDiff::REMOVE);
-    }
-    else
-    {
-        vlnvDiff->setChangeType(IPXactDiff::MODIFICATION);
-
-        vlnvDiff->checkForChange("vendor", reference->getVendor(), subject->getVendor());
-        vlnvDiff->checkForChange("library", reference->getLibrary(), subject->getLibrary());
-        vlnvDiff->checkForChange("name", reference->getName(), subject->getName());
-        vlnvDiff->checkForChange("version", reference->getVersion(), subject->getVersion());       
+        return addDiff();    
     }
 
-    diffResult.append(vlnvDiff);
+    if (subject->isEmpty())
+    {
+        return removeDiff();
+    }
 
-    return diffResult;
+    QList<QSharedPointer<IPXactDiff> > changeDiff;
+
+    QSharedPointer<IPXactDiff> vlnvDiff(new IPXactDiff(elementType()));
+    vlnvDiff->setChangeType(IPXactDiff::MODIFICATION);
+
+    vlnvDiff->checkForChange("vlnv", reference->toString(), subject->toString());
+
+    changeDiff.append(vlnvDiff);
+    return changeDiff;
 }

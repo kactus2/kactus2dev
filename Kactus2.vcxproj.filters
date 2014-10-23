@@ -917,6 +917,12 @@
     <Filter Include="Source Files\wizards\common\ModelParameterComparator">
       <UniqueIdentifier>{85b2c4f0-5af7-4565-8c9a-489765ce003e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\wizards\common\ViewComparator">
+      <UniqueIdentifier>{6cbed638-9038-44ab-bfe3-bbb67577f03a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\wizards\common\ViewComparator">
+      <UniqueIdentifier>{4708f5f6-8ad7-4679-8c24-3e608fd64fa5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3838,6 +3844,9 @@
     <ClCompile Include="wizards\common\ModelParameterComparator\ModelParameterComparator.cpp">
       <Filter>Source Files\wizards\common\ModelParameterComparator</Filter>
     </ClCompile>
+    <ClCompile Include="wizards\common\ViewComparator\ViewComparator.cpp">
+      <Filter>Source Files\wizards\common\ViewComparator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5518,6 +5527,9 @@
     </ClInclude>
     <ClInclude Include="wizards\common\ModelParameterComparator\ModelParameterComparator.h">
       <Filter>Header Files\wizards\common\ModelParameterComparator</Filter>
+    </ClInclude>
+    <ClInclude Include="wizards\common\ViewComparator\ViewComparator.h">
+      <Filter>Header Files\wizards\common\ViewComparator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

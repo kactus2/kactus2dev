@@ -47,26 +47,43 @@ void ComponentDiffWidget::setComponents(QSharedPointer<const Component> referenc
     ComponentComparator comparator;
     QList<QSharedPointer<IPXactDiff> > diffs = comparator.diff(reference, subject);
 
-    if (!diffs.isEmpty() && diffs.first()->changeType() != IPXactDiff::NO_CHANGE)
+    if (diffs.count() == 1 && diffs.first()->changeType() == IPXactDiff::NO_CHANGE)
     {
-        QTreeWidgetItem* item = new QTreeWidgetItem();
-        item->setText(ITEM_NAME, "Model parameters");
-        addTopLevelItem(item);
+        return;
+    }
+
+    QStringList topElements;
+    topElements << "view" << "model parameter";
+
+    QMap<QString, QTreeWidgetItem*> topItems;
+    
+    foreach(QSharedPointer<IPXactDiff> diff, diffs)
+    {
+        if (topElements.contains(diff->element()) && !topItems.contains(diff->element()))
+        {
+            QTreeWidgetItem* item = new QTreeWidgetItem();
+            QString containerName = diff->element().at(0).toUpper() + diff->element().mid(1) + "s";
+            item->setText(ITEM_NAME, containerName);
+            addTopLevelItem(item);
+            topItems.insert(diff->element(), item);
+        }
     }
 
     foreach(QSharedPointer<IPXactDiff> diff, diffs)
     {
+        QTreeWidgetItem* parentItem = topItems.value(diff->element());
+
         if (diff->changeType() == IPXactDiff::ADD)
         {    
-            addAddItem(diff->name(), topLevelItem(0));
+            addAddItem(diff->name(), parentItem);
         }
         else if (diff->changeType() == IPXactDiff::REMOVE)
         {    
-            addRemoveItem(diff->name(), topLevelItem(0));
+            addRemoveItem(diff->name(), parentItem);
         }
         else if (diff->changeType() == IPXactDiff::MODIFICATION)
         {              
-            addModificationItem(diff);
+            addModificationItem(diff, parentItem);
         }
     }
 }
@@ -94,16 +111,16 @@ void ComponentDiffWidget::addRemoveItem(QString const& name, QTreeWidgetItem* pa
 //-----------------------------------------------------------------------------
 // Function: ComponentDiffWidget::addModificationItem()
 //-----------------------------------------------------------------------------
-void ComponentDiffWidget::addModificationItem(QSharedPointer<IPXactDiff> diff)
+void ComponentDiffWidget::addModificationItem(QSharedPointer<IPXactDiff> diff, QTreeWidgetItem* parent)
 {
     QList<IPXactDiff::Modification> changelist = diff->getChangeList();
     if (changelist.size() == 1)
     {                       
-        addSingleLevelModificationItem(diff->name(), changelist.first());
+        addSingleLevelModificationItem(diff->name(), changelist.first(), parent);
     }
     else
     {
-        addMultiLevelModificationItem(diff->name(), changelist);
+        addMultiLevelModificationItem(diff->name(), changelist, parent);
     }
 }
 
@@ -111,9 +128,9 @@ void ComponentDiffWidget::addModificationItem(QSharedPointer<IPXactDiff> diff)
 // Function: ComponentDiffWidget::createSingleLevelModificationItem()
 //-----------------------------------------------------------------------------
 void ComponentDiffWidget::addSingleLevelModificationItem(QString const& name, 
-    IPXactDiff::Modification const& modification)
+    IPXactDiff::Modification const& modification, QTreeWidgetItem* parent)
 {
-    QTreeWidgetItem* modificationItem = createModificationItem(modification, topLevelItem(0));
+    QTreeWidgetItem* modificationItem = createModificationItem(modification, parent);
     modificationItem->setText(ITEM_NAME, name);  
     modificationItem->setIcon(ITEM_NAME, QIcon(":/icons/common/graphics/asterisk-yellow.png"));
 }
@@ -135,9 +152,10 @@ QTreeWidgetItem* ComponentDiffWidget::createModificationItem(IPXactDiff::Modific
 //-----------------------------------------------------------------------------
 // Function: ComponentDiffWidget::createMultiLevelModificationItem()
 //-----------------------------------------------------------------------------
-void ComponentDiffWidget::addMultiLevelModificationItem(QString const& name, QList<IPXactDiff::Modification> changelist)
+void ComponentDiffWidget::addMultiLevelModificationItem(QString const& name, 
+    QList<IPXactDiff::Modification> changelist, QTreeWidgetItem* parent)
 {
-    QTreeWidgetItem* child = new QTreeWidgetItem(topLevelItem(0));
+    QTreeWidgetItem* child = new QTreeWidgetItem(parent);
     child->setText(ITEM_NAME, name);  
     child->setIcon(ITEM_NAME, QIcon(":/icons/common/graphics/asterisk-yellow.png"));
     child->setText(CHANGE_ELEMENT, "[multiple changes]");

@@ -554,7 +554,8 @@ HEADERS += ./common/Global.h \
     ./wizards/common/IPXactDiff.h \
     ./wizards/common/IPXactElementComparator.h \
     ./wizards/common/ComponentDiffWidget/ComponentDiffWidget.h \
-    ./wizards/common/ComponentComparator/ComponentComparator.h
+    ./wizards/common/ComponentComparator/ComponentComparator.h \
+    ./wizards/common/ViewComparator/ViewComparator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1068,5 +1069,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./wizards/common/ComponentComparator/ComponentComparator.cpp \
     ./wizards/common/ComponentDiffWidget/ComponentDiffWidget.cpp \
     ./wizards/common/VLNVComparator/VLNVComparator.cpp \
-    ./wizards/common/ModelParameterComparator/ModelParameterComparator.cpp
+    ./wizards/common/ModelParameterComparator/ModelParameterComparator.cpp \
+    ./wizards/common/ViewComparator/ViewComparator.cpp
 RESOURCES += kactus.qrc

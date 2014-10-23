@@ -36,7 +36,8 @@ public:
 private slots:
     void testHasFourColumns();
     void testTreeIsEmptyForNullComponents();
-    void testAddingNewModelParameterCreatesTwoLevels();
+    void testAddingModelParameterCreatesTwoLevels();
+
     void testAddingTwoModelParameterCreatesTwoLevels();
     void testModificationShowsElementPreviousAndCurrentValue();
     void testModificationShowsElementPreviousAndCurrentValueAsChilds();
@@ -45,12 +46,40 @@ private slots:
     void testAddedElementHasIcon();
     void testRemovedElementHasIcon();
     void testModifiedElementHasIcon();
+
+    void testAddingViewCreatesTwoLevels();
+    void testViewModelNameChangeShowsPreviousAndCurrentValue();
+    
+     void testViewChangesShowsAsChilds();
+
+    void testAddingDifferentTypeElements();
 private:
     
-    void verifyItemColumnTexts(QTreeWidgetItem* item, QString const& name, QString const& element, QString const& previousValue, QString const& newValue);
+    void verifyItemColumnTexts(QTreeWidgetItem* item, QString const& name, QString const& element,
+        QString const& previousValue, QString const& newValue);
    
     void addModelParameter(QSharedPointer<Component> component, QString const& name, QString const& value) const;
    
+    void addView(QSharedPointer<Component> component, QString const& viewName);
+   
+    QTreeWidgetItem * getModelParametersItem(ComponentDiffWidget const& widget);
+
+    void verifyModelParametersItem(ComponentDiffWidget const& widget);
+
+    void verifyModelParameterChangeItem(ComponentDiffWidget const& widget, int itemIndex, QString const& expectedName);
+
+    QTreeWidgetItem* getViewsItem(ComponentDiffWidget const& widget) const;
+    QTreeWidgetItem* getTopLevelItemByName(ComponentDiffWidget const& widget, QString const& name) const;
+
+    QTreeWidgetItem* getChildItemByName(QString const& name, QTreeWidgetItem* parentItem) const;
+
+
+    void verifyViewsItem(ComponentDiffWidget const& widget);
+   
+    void verifyHasChildWithColumns(QTreeWidgetItem* viewChangeItem, QString const& expectedName,
+        QString const& expectedElement, QString const& expectedOldValue, QString const& expectedNewValue) const;
+
+    QTreeWidgetItem* getChildItemByElement(QString const& elementName, QTreeWidgetItem* parentItem);
 
 };
 
@@ -88,26 +117,23 @@ void tst_ComponentDiffWidget::testTreeIsEmptyForNullComponents()
 //-----------------------------------------------------------------------------
 // Function: tst_ComponentDiffWidget::testAddingNewModelParameterCreatesTwoLevels()
 //-----------------------------------------------------------------------------
-void tst_ComponentDiffWidget::testAddingNewModelParameterCreatesTwoLevels()
+void tst_ComponentDiffWidget::testAddingModelParameterCreatesTwoLevels()
 {    
     QSharedPointer<Component> reference(new Component());
 
     QSharedPointer<Component> subject(new Component());
-    QSharedPointer<ModelParameter> modelParameter(new ModelParameter());
-    modelParameter->setName("testParameter");
-    subject->getModel()->addModelParameter(modelParameter);
+    addModelParameter(subject, "testParameter", "");
 
     ComponentDiffWidget widget(0);
     widget.setComponents(reference, subject);
 
     QCOMPARE(widget.topLevelItemCount(), 1);
 
-    QTreeWidgetItem* modelParametersItem = widget.topLevelItem(0);
-    verifyItemColumnTexts(modelParametersItem, "Model parameters", "", "", "");    
-    QCOMPARE(modelParametersItem->childCount(), 1);
+    verifyModelParametersItem(widget);
 
-    QTreeWidgetItem* modelParameterChangeItem = modelParametersItem->child(0);
-    verifyItemColumnTexts(modelParameterChangeItem, "testParameter", "", "", "");   
+    QCOMPARE(getModelParametersItem(widget)->childCount(), 1);
+
+    verifyModelParameterChangeItem(widget, 0, "testParameter");
 }
 
 //-----------------------------------------------------------------------------
@@ -118,28 +144,19 @@ void tst_ComponentDiffWidget::testAddingTwoModelParameterCreatesTwoLevels()
     QSharedPointer<Component> reference(new Component());
 
     QSharedPointer<Component> subject(new Component());
-    QSharedPointer<ModelParameter> modelParameter(new ModelParameter());
-    modelParameter->setName("testParameter");
-    subject->getModel()->addModelParameter(modelParameter);
-
-    QSharedPointer<ModelParameter> secondParameter(new ModelParameter());
-    secondParameter->setName("parameterCount");
-    subject->getModel()->addModelParameter(secondParameter);
+    addModelParameter(subject, "testParameter", "");
+    addModelParameter(subject, "parameterCount", "");
 
     ComponentDiffWidget widget(0);
     widget.setComponents(reference, subject);
 
     QCOMPARE(widget.topLevelItemCount(), 1);
 
-    QTreeWidgetItem* modelParametersItem = widget.topLevelItem(0);
-    verifyItemColumnTexts(modelParametersItem, "Model parameters", "", "", "");
-    QCOMPARE(modelParametersItem->childCount(), 2);
+    verifyModelParametersItem(widget);
+    QCOMPARE(getModelParametersItem(widget)->childCount(), 2);
 
-    QTreeWidgetItem* testParameterChangeItem = modelParametersItem->child(0);
-    verifyItemColumnTexts(testParameterChangeItem, "testParameter", "", "", "");
-
-    QTreeWidgetItem* parameterCountChangeItem = modelParametersItem->child(1);
-    verifyItemColumnTexts(parameterCountChangeItem, "parameterCount", "", "", "");
+    verifyModelParameterChangeItem(widget, 0, "testParameter");
+    verifyModelParameterChangeItem(widget, 1, "parameterCount");
 }
 
 //-----------------------------------------------------------------------------
@@ -148,28 +165,21 @@ void tst_ComponentDiffWidget::testAddingTwoModelParameterCreatesTwoLevels()
 void tst_ComponentDiffWidget::testModificationShowsElementPreviousAndCurrentValue()
 {    
     QSharedPointer<Component> reference(new Component());
-    QSharedPointer<ModelParameter> modelParameter(new ModelParameter());
-    modelParameter->setName("testParameter");
-    reference->getModel()->addModelParameter(modelParameter);
+    addModelParameter(reference, "testParameter", "");
 
     QSharedPointer<Component> subject(new Component());
-    QSharedPointer<ModelParameter> modifiedModelParameter(new ModelParameter());
-    modifiedModelParameter->setName("testParameter");
-    modifiedModelParameter->setValue("1");    
-    subject->getModel()->addModelParameter(modifiedModelParameter);
+    addModelParameter(subject, "testParameter", "1");
 
     ComponentDiffWidget widget(0);
     widget.setComponents(reference, subject);
 
     QCOMPARE(widget.topLevelItemCount(), 1);
 
-    QTreeWidgetItem* modelParametersItem = widget.topLevelItem(0);
-    verifyItemColumnTexts(modelParametersItem, "Model parameters", "", "", "");    
-    QCOMPARE(modelParametersItem->childCount(), 1);
+    verifyModelParametersItem(widget);
+    QCOMPARE(getModelParametersItem(widget)->childCount(), 1);
 
-    QTreeWidgetItem* testParameterChangeItem = modelParametersItem->child(0);    
-    verifyItemColumnTexts(testParameterChangeItem,"testParameter", "value", "", "1");
-    QCOMPARE(testParameterChangeItem->childCount(), 0);
+    QTreeWidgetItem* testParameterChangeItem = getChildItemByName("testParameter", getModelParametersItem(widget));
+    verifyItemColumnTexts(testParameterChangeItem, "testParameter", "value", "", "1");
 }
 
 //-----------------------------------------------------------------------------
@@ -178,35 +188,31 @@ void tst_ComponentDiffWidget::testModificationShowsElementPreviousAndCurrentValu
 void tst_ComponentDiffWidget::testModificationShowsElementPreviousAndCurrentValueAsChilds()
 {    
     QSharedPointer<Component> reference(new Component());
-    QSharedPointer<ModelParameter> modelParameter(new ModelParameter());
-    modelParameter->setName("testParameter");
-    reference->getModel()->addModelParameter(modelParameter);
+    addModelParameter(reference, "testParameter", "");
 
     QSharedPointer<Component> subject(new Component());
-    QSharedPointer<ModelParameter> modifiedModelParameter(new ModelParameter());
-    modifiedModelParameter->setName("testParameter");
+    addModelParameter(subject, "testParameter", "1");
+    
+    QSharedPointer<ModelParameter> modifiedModelParameter = subject->getModelParameters().first();
     modifiedModelParameter->setUsageType("nontyped");
-    modifiedModelParameter->setValue("1");    
-    subject->getModel()->addModelParameter(modifiedModelParameter);
 
     ComponentDiffWidget widget(0);
     widget.setComponents(reference, subject);
 
     QCOMPARE(widget.topLevelItemCount(), 1);
 
-    QTreeWidgetItem* modelParametersItem = widget.topLevelItem(0);
-    verifyItemColumnTexts(modelParametersItem, "Model parameters", "", "", "");    
-    QCOMPARE(modelParametersItem->childCount(), 1);
+    verifyModelParametersItem(widget);
+    QCOMPARE(getModelParametersItem(widget)->childCount(), 1);
 
-    QTreeWidgetItem* testParameterChangeItem = modelParametersItem->child(0);
-    verifyItemColumnTexts(testParameterChangeItem, "testParameter", "[multiple changes]", "", "");    
+    verifyHasChildWithColumns(getModelParametersItem(widget), "testParameter", "[multiple changes]", "", "");
 
+    QTreeWidgetItem* testParameterChangeItem = getChildItemByName("testParameter", getModelParametersItem(widget));
     QCOMPARE(testParameterChangeItem->childCount(), 2);
 
-    QTreeWidgetItem* valueChangeItem = testParameterChangeItem->child(0);
+    QTreeWidgetItem* valueChangeItem =  getChildItemByElement("value", testParameterChangeItem);
     verifyItemColumnTexts(valueChangeItem, "" , "value", "", "1");    
 
-    QTreeWidgetItem* usageChangeItem = testParameterChangeItem->child(1);
+    QTreeWidgetItem* usageChangeItem = getChildItemByElement("usage type", testParameterChangeItem);
     verifyItemColumnTexts(usageChangeItem, "" , "usage type", "", "nontyped");    
 }
 
@@ -226,11 +232,8 @@ void tst_ComponentDiffWidget::testOneModifiedModelParameterCreatesOneModificatio
     ComponentDiffWidget widget(0);
     widget.setComponents(reference, subject);
 
-    QCOMPARE(widget.topLevelItemCount(), 1);
-
-    QTreeWidgetItem* modelParametersItem = widget.topLevelItem(0);
-    verifyItemColumnTexts(modelParametersItem, "Model parameters", "", "", "");    
-    QCOMPARE(modelParametersItem->childCount(), 1);
+    verifyModelParametersItem(widget);
+    QCOMPARE(getModelParametersItem(widget)->childCount(), 1);
 }
 
 //-----------------------------------------------------------------------------
@@ -246,13 +249,8 @@ void tst_ComponentDiffWidget::testAddedElementHasIcon()
     ComponentDiffWidget widget(0);
     widget.setComponents(reference, subject);
 
-    QCOMPARE(widget.topLevelItemCount(), 1);
-
-    QTreeWidgetItem* modelParametersItem = widget.topLevelItem(0);
-    QCOMPARE(modelParametersItem->childCount(), 1);
-
-    QTreeWidgetItem* addedItem = modelParametersItem->child(0);
-    QVERIFY2(!addedItem->icon(0).isNull(), "No icon set for added element.");
+    QTreeWidgetItem* addedItem = getModelParametersItem(widget)->child(0);
+    QVERIFY2(!addedItem->icon(NAME_COLUMN).isNull(), "No icon set for added element.");
 }
 
 //-----------------------------------------------------------------------------
@@ -268,13 +266,8 @@ void tst_ComponentDiffWidget::testRemovedElementHasIcon()
     ComponentDiffWidget widget(0);
     widget.setComponents(reference, subject);
 
-    QCOMPARE(widget.topLevelItemCount(), 1);
-
-    QTreeWidgetItem* modelParametersItem = widget.topLevelItem(0);
-    QCOMPARE(modelParametersItem->childCount(), 1);
-
-    QTreeWidgetItem* addedItem = modelParametersItem->child(0);
-    QVERIFY2(!addedItem->icon(0).isNull(), "No icon set for removed element.");
+    QTreeWidgetItem* addedItem = getModelParametersItem(widget)->child(0);
+    QVERIFY2(!addedItem->icon(NAME_COLUMN).isNull(), "No icon set for removed element.");
 }
 
 //-----------------------------------------------------------------------------
@@ -291,13 +284,109 @@ void tst_ComponentDiffWidget::testModifiedElementHasIcon()
     ComponentDiffWidget widget(0);
     widget.setComponents(reference, subject);
 
-    QCOMPARE(widget.topLevelItemCount(), 1);
+    QTreeWidgetItem* addedItem = getModelParametersItem(widget)->child(0);
+    QVERIFY2(!addedItem->icon(NAME_COLUMN).isNull(), "No icon set for modified element.");
+}
 
-    QTreeWidgetItem* modelParametersItem = widget.topLevelItem(0);
-    QCOMPARE(modelParametersItem->childCount(), 1);
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentDiffWidget::testAddingViewCreatesTwoLevels()
+//-----------------------------------------------------------------------------
+void tst_ComponentDiffWidget::testAddingViewCreatesTwoLevels()
+{
+    QSharedPointer<Component> reference(new Component());
 
-    QTreeWidgetItem* addedItem = modelParametersItem->child(0);
-    QVERIFY2(!addedItem->icon(0).isNull(), "No icon set for modified element.");
+    QSharedPointer<Component> subject(new Component());    
+    addView(subject, "testView");
+
+    ComponentDiffWidget widget(0);
+    widget.setComponents(reference, subject);
+
+    verifyViewsItem(widget);
+
+    QCOMPARE(getViewsItem(widget)->childCount(), 1);
+
+    QTreeWidgetItem* modelParameterChangeItem = getViewsItem(widget)->child(0);
+    verifyItemColumnTexts(modelParameterChangeItem, "testView", "", "", "");   
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentDiffWidget::testViewModelNameChangeShowsPreviousAndCurrentValue()
+//-----------------------------------------------------------------------------
+void tst_ComponentDiffWidget::testViewModelNameChangeShowsPreviousAndCurrentValue()
+{    
+    QSharedPointer<Component> reference(new Component());
+    addView(reference, "view1");
+    reference->getViews().first()->setModelName("old");
+
+    QSharedPointer<Component> subject(new Component());
+    addView(subject, "view1");
+    subject->getViews().first()->setModelName("new");
+
+    ComponentDiffWidget widget(0);
+    widget.setComponents(reference, subject);
+
+    verifyViewsItem(widget);
+    QCOMPARE(getViewsItem(widget)->childCount(), 1);
+
+    verifyHasChildWithColumns(getViewsItem(widget), "view1", "model name", "old", "new");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentDiffWidget::testViewChangesShowsAsChilds()
+//-----------------------------------------------------------------------------
+void tst_ComponentDiffWidget::testViewChangesShowsAsChilds()
+{    
+    QSharedPointer<Component> reference(new Component());
+    View* referenceView = new View("view1");
+    referenceView->setEnvIdentifiers(QStringList("old Env"));
+    referenceView->setLanguage("old language");
+    referenceView->setFileSetRefs(QStringList("old FileSetRef"));
+    referenceView->setModelName("old model");
+    reference->addView(referenceView);
+
+    QSharedPointer<Component> subject(new Component());
+    View* subjectView = new View("view1");
+    subjectView->setEnvIdentifiers(QStringList("new Env"));
+    subjectView->setLanguage("new language");
+    subjectView->setFileSetRefs(QStringList("new FileSetRef"));
+    subjectView->setModelName("new model");
+    subject->addView(subjectView);
+
+    ComponentDiffWidget widget(0);
+    widget.setComponents(reference, subject);
+
+    verifyViewsItem(widget);
+
+    QTreeWidgetItem* viewChangeItem = getViewsItem(widget)->child(0);
+    verifyItemColumnTexts(viewChangeItem, "view1", "[multiple changes]", "", "");
+
+    verifyHasChildWithColumns(viewChangeItem, "", "environment identifiers", "old Env", "new Env");
+    verifyHasChildWithColumns(viewChangeItem, "", "language", "old language", "new language");
+    verifyHasChildWithColumns(viewChangeItem, "", "model name", "old model", "new model");        
+    verifyHasChildWithColumns(viewChangeItem, "", "file set ref", "old FileSetRef", "new FileSetRef");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentDiffWidget::testAddingDifferentTypeElements()
+//-----------------------------------------------------------------------------
+void tst_ComponentDiffWidget::testAddingDifferentTypeElements()
+{
+    QSharedPointer<Component> reference(new Component());
+
+    QSharedPointer<Component> subject(new Component());    
+    addModelParameter(subject, "testModelParameter", "");
+    addView(subject, "testView");
+
+    ComponentDiffWidget widget(0);
+    widget.setComponents(reference, subject);
+
+    QCOMPARE(widget.topLevelItemCount(), 2);
+
+    verifyModelParametersItem(widget);
+    QCOMPARE(getModelParametersItem(widget)->childCount(), 1);
+
+    verifyViewsItem(widget);
+    QCOMPARE(getViewsItem(widget)->childCount(), 1);
 }
 
 //-----------------------------------------------------------------------------
@@ -322,6 +411,129 @@ void tst_ComponentDiffWidget::addModelParameter(QSharedPointer<Component> compon
     otherModelParameter->setName(name);
     otherModelParameter->setValue(value);
     component->getModel()->addModelParameter(otherModelParameter);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentDiffWidget::addView()
+//-----------------------------------------------------------------------------
+void tst_ComponentDiffWidget::addView(QSharedPointer<Component> component, QString const& viewName)
+{
+    component->addView(new View(viewName));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentDiffWidget::verifyModelParametersItem()
+//-----------------------------------------------------------------------------
+void tst_ComponentDiffWidget::verifyModelParametersItem(ComponentDiffWidget const& widget)
+{
+    verifyHasChildWithColumns(widget.invisibleRootItem(), "Model parameters", "", "", "");
+}
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentDiffWidget::getModelParametersItem()
+//-----------------------------------------------------------------------------
+QTreeWidgetItem * tst_ComponentDiffWidget::getModelParametersItem(ComponentDiffWidget const& widget)
+{
+    return getTopLevelItemByName(widget, "Model parameters");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentDiffWidget::verfyModelParameterChangeItem()
+//-----------------------------------------------------------------------------
+void tst_ComponentDiffWidget::verifyModelParameterChangeItem(ComponentDiffWidget const& widget, int itemIndex,
+    QString const& expectedName)
+{
+    QTreeWidgetItem* modelParameterChangeItem = getModelParametersItem(widget)->child(itemIndex);
+    verifyItemColumnTexts(modelParameterChangeItem, expectedName, "", "", "");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentDiffWidget::verifyViewsItem()
+//-----------------------------------------------------------------------------
+void tst_ComponentDiffWidget::verifyViewsItem(ComponentDiffWidget const& widget)
+{
+    verifyHasChildWithColumns(widget.invisibleRootItem(), "Views", "", "", "");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentDiffWidget::getViewsItem()
+//-----------------------------------------------------------------------------
+QTreeWidgetItem* tst_ComponentDiffWidget::getViewsItem(ComponentDiffWidget const& widget) const
+{
+    return getTopLevelItemByName(widget, "Views");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentDiffWidget::getTopLevelItemByName()
+//-----------------------------------------------------------------------------
+QTreeWidgetItem* tst_ComponentDiffWidget::getTopLevelItemByName(ComponentDiffWidget const& widget, 
+    QString const& name) const
+{
+    for (int i = 0; i < widget.topLevelItemCount(); i++)
+    {
+        if (widget.topLevelItem(i)->text(NAME_COLUMN) == name)
+        {
+            return widget.topLevelItem(i);
+        }
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentDiffWidget::verifyHasChildWithColumns()
+//-----------------------------------------------------------------------------
+void tst_ComponentDiffWidget::verifyHasChildWithColumns(QTreeWidgetItem* viewChangeItem, 
+    QString const& expectedName, QString const& expectedElement, 
+    QString const& expectedOldValue, QString const& expectedNewValue) const
+{
+    for (int i = 0; i < viewChangeItem->childCount(); i++)
+    {
+        QTreeWidgetItem* childItem = viewChangeItem->child(i);
+        if (childItem->text(NAME_COLUMN) == expectedName &&
+            childItem->text(ELEMENT_COLUMN) == expectedElement &&
+            childItem->text(PREVIOUS_VALUE_COLUMN) == expectedOldValue &&
+            childItem->text(UPDATED_VALUE_COLUMN) == expectedNewValue)
+        {
+            return;
+        }
+    }
+
+     QFAIL(QString("Item '%1' has no child with name '%2', element '%3', previous value of '%4' and "
+         "updated value of '%5'").arg(viewChangeItem->text(NAME_COLUMN), expectedName, expectedElement, 
+         expectedOldValue, expectedOldValue).toLocal8Bit());
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentDiffWidget::getChildItemByName()
+//-----------------------------------------------------------------------------
+QTreeWidgetItem* tst_ComponentDiffWidget::getChildItemByName(QString const& name, 
+    QTreeWidgetItem* parentItem) const
+{
+    for (int i = 0; i < parentItem->childCount(); i++)
+    {
+        if (parentItem->child(i)->text(NAME_COLUMN) == name)
+        {
+            return parentItem->child(i);
+        }
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentDiffWidget::getChildItemByElement()
+//-----------------------------------------------------------------------------
+QTreeWidgetItem* tst_ComponentDiffWidget::getChildItemByElement(QString const& elementName, QTreeWidgetItem* parentItem)
+{
+    for (int i = 0; i < parentItem->childCount(); i++)
+    {
+        if (parentItem->child(i)->text(ELEMENT_COLUMN) == elementName)
+        {
+            return parentItem->child(i);
+        }
+    }
+
+    return 0;
 }
 
 QTEST_MAIN(tst_ComponentDiffWidget)

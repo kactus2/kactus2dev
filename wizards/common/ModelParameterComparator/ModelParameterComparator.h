@@ -28,7 +28,28 @@ class ModelParameterComparator : public IPXactElementComparator<ModelParameter>
 public:
     ModelParameterComparator();
     ~ModelParameterComparator();
+
+    /*!
+     *  Finds the differences between the two given model parameters.
+     *
+     *      @param [in] reference   The reference model parameter to compare to.
+     *      @param [in] subject     The model parameters to compare against the reference.
+     *
+     *      @return Set of differences between the reference and subject.
+     */
+    virtual bool compare(QSharedPointer<ModelParameter> first, QSharedPointer<ModelParameter> second) const;
     
+    /*!
+     *  Compares the sub-elements of two model parameters.
+     *
+     *      @param [in] first    The first model parameters.
+     *      @param [in] second   The second model parameters.
+     *
+     *      @return True, if the sub-elements are similar, otherwise false.
+     */
+    virtual bool compareFields(QSharedPointer<const ModelParameter> first, 
+        QSharedPointer<const ModelParameter> second) const;
+
     /*!
      *  Compares the two lists of model parameters.
      *
@@ -40,8 +61,6 @@ public:
     bool compare(QList<QSharedPointer<ModelParameter> > const first, 
         QList<QSharedPointer<ModelParameter> > const second) ;
 
-    bool compare(QSharedPointer<const ModelParameter> first, QSharedPointer<const ModelParameter> second) const;
-
     /*!
      *  Finds the differences between the two given lists.
      *
@@ -52,9 +71,24 @@ public:
      */
     QList<QSharedPointer<IPXactDiff> > diff(QList<QSharedPointer<ModelParameter> > reference, 
         QList<QSharedPointer<ModelParameter> > subject);
-
-    virtual QList<QSharedPointer<IPXactDiff> > diff(QSharedPointer<const ModelParameter> reference, 
+    
+    /*!
+     *  Finds the differences between the sub-elements of two given model parameters.
+     *
+     *      @param [in] reference   The reference model parameter to compare to.
+     *      @param [in] subject     The model parameter to compare against the reference.
+     *
+     *      @return Set of differences between the sub-elements of reference and subject.
+     */
+    virtual QList<QSharedPointer<IPXactDiff> > diffFields(QSharedPointer<const ModelParameter> reference,
         QSharedPointer<const ModelParameter> subject) const;
+    
+    /*!
+     *  Returns the type for the element.
+     *
+     *      @return The element type.
+     */
+    virtual QString elementType() const;
 
 private:
 
@@ -69,12 +103,9 @@ private:
      *
      *      @return Map of model parameters.
      */
-    QMap<QString, QSharedPointer<const ModelParameter> > mapById(QList<QSharedPointer<ModelParameter> > const list);
+    QMap<QString, QSharedPointer<const ModelParameter> > 
+        mapByName(QList<QSharedPointer<ModelParameter> > const list);
 
-    bool hasElementForId(QMap<QString, QSharedPointer<const ModelParameter> > mappedElements, QString const& id);
-
-    QSharedPointer<const ModelParameter> elementForId(QMap<QString, QSharedPointer<const ModelParameter> > const& mappedElements, 
-        QString const& id);
 };
 
 #endif // MODELPARAMETERCOMPARATOR_H

@@ -23,7 +23,6 @@
 
 #include <tests/wizards/common/ComparatorTest.h>
 
-Q_DECLARE_METATYPE(QSharedPointer<Component>)
 
 class tst_ModelParameterComparator : public QObject, public ComparatorTest
 {

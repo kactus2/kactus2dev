@@ -1284,6 +1284,7 @@ CreateHelp
     <ClCompile Include="wizards\common\ComponentDiffWidget\ComponentDiffWidget.cpp" />
     <ClCompile Include="wizards\common\IPXactDiff.cpp" />
     <ClCompile Include="wizards\common\ModelParameterComparator\ModelParameterComparator.cpp" />
+    <ClCompile Include="wizards\common\ViewComparator\ViewComparator.cpp" />
     <ClCompile Include="wizards\common\VLNVComparator\VLNVComparator.cpp" />
     <ClCompile Include="wizards\ComponentWizard\ComponentWizard.cpp" />
     <ClCompile Include="wizards\ComponentWizard\ComponentWizardConclusionPage.cpp" />
@@ -1606,6 +1607,7 @@ CreateHelp
     <ClInclude Include="wizards\common\IPXactDiff.h" />
     <ClInclude Include="wizards\common\IPXactElementComparator.h" />
     <ClInclude Include="wizards\common\ModelParameterComparator\ModelParameterComparator.h" />
+    <ClInclude Include="wizards\common\ViewComparator\ViewComparator.h" />
     <ClInclude Include="wizards\common\VLNVComparator\VLNVComparator.h" />
     <ClInclude Include="wizards\ImportWizard\ImportWizardPages.h" />
     <CustomBuild Include="wizards\ImportWizard\ImportWizardImportPage.h">

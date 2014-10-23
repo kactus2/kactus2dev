@@ -49,7 +49,6 @@ public:
      */
     void setComponents(QSharedPointer<const Component> reference, QSharedPointer<const Component> subject);
 
-
 private:
 
 	// Disable copying.
@@ -78,7 +77,7 @@ private:
      *      @param [in] name        The name of the modified element.
      *      @param [in] parent      The parent item.
      */
-    void addModificationItem(QSharedPointer<IPXactDiff> diff);
+    void addModificationItem(QSharedPointer<IPXactDiff> diff, QTreeWidgetItem* parent);
 
     /*!
      *  Adds an item to the tree indicating an modified element with a single modified sub-element.
@@ -86,7 +85,7 @@ private:
      *      @param [in] name            The name of the modified element.
      *      @param [in] modification    The modification to the element.
      */
-    void addSingleLevelModificationItem(QString const& name, IPXactDiff::Modification const& modification);
+    void addSingleLevelModificationItem(QString const& name, IPXactDiff::Modification const& modification, QTreeWidgetItem* parent);
 
     /*!
      *  Creates an item to indicate a modified sub-element.
@@ -105,7 +104,7 @@ private:
      *      @param [in] name            The name of the modified element.
      *      @param [in] changelist      The modifications to the element.
      */
-    void addMultiLevelModificationItem(QString const& name, QList<IPXactDiff::Modification> changelist);
+    void addMultiLevelModificationItem(QString const& name, QList<IPXactDiff::Modification> changelist, QTreeWidgetItem* parent);
 
 };
 

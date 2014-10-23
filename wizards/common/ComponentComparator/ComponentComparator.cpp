@@ -10,8 +10,9 @@
 //-----------------------------------------------------------------------------
 
 #include "ComponentComparator.h"
-#include "../VLNVComparator/VLNVComparator.h"
-#include "../ModelParameterComparator/ModelParameterComparator.h"
+#include <wizards/common/VLNVComparator/VLNVComparator.h>
+#include <wizards/common/ModelParameterComparator/ModelParameterComparator.h>
+#include <wizards/common/ViewComparator/ViewComparator.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/modelparameter.h>
@@ -34,59 +35,74 @@ ComponentComparator::~ComponentComparator()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentComparator::compare()
-//-----------------------------------------------------------------------------
-bool ComponentComparator::compare(QSharedPointer<const Component> first,
-    QSharedPointer<const Component> second) const
-{
-    if (first == second)
-    {
-        return true;
-    }
-
-    if (first.isNull() || second.isNull())
-    {
-        return false;
-    }
-
-    return compareVLNVs(first, second) &&
-        compareModelParameters(first, second);
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentComparator::diff()
 //-----------------------------------------------------------------------------
 QList<QSharedPointer<IPXactDiff> > ComponentComparator::diff(QSharedPointer<const Component> reference, 
     QSharedPointer<const Component> subject) const
 {
+    return IPXactElementComparator::diff(reference, subject);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentComparator::compareVLNVs()
+//-----------------------------------------------------------------------------
+bool ComponentComparator::compareVLNVs(QSharedPointer<const Component> referenceComponent,
+    QSharedPointer<const Component> subjectComponent) const
+{   
+    QSharedPointer<VLNV> referenceVLNV(new VLNV(*referenceComponent->getVlnv()));
+    QSharedPointer<VLNV> subjectVLNV(new VLNV(*subjectComponent->getVlnv()));
+
+    VLNVComparator vlnvComparator;
+    return vlnvComparator.compare(referenceVLNV, subjectVLNV);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentComparator::compareModelParameters()
+//-----------------------------------------------------------------------------
+bool ComponentComparator::compareModelParameters(QSharedPointer<const Component> referenceComponent, 
+    QSharedPointer<const Component> subjectComponent) const
+{
+    ModelParameterComparator modelParameterComparator;
+    return modelParameterComparator.compare(referenceComponent->getModelParameters(),
+        subjectComponent->getModelParameters());
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentComparator::compareViews()
+//-----------------------------------------------------------------------------
+bool ComponentComparator::compareViews(QSharedPointer<const Component> first,
+    QSharedPointer<const Component> second) const
+{
+    ViewComparator viewComparator;
+    return viewComparator.compare(first->getViews(), second->getViews());
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentComparator::elementType()
+//-----------------------------------------------------------------------------
+QString ComponentComparator::elementType() const
+{
+    return "component";
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentComparator::compareFields()
+//-----------------------------------------------------------------------------
+bool ComponentComparator::compareFields(QSharedPointer<const Component> first,
+    QSharedPointer<const Component> second) const
+{
+    return compareVLNVs(first, second) &&
+        compareModelParameters(first, second) &&
+        compareViews(first, second);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentComparator::diffFields()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<IPXactDiff> > ComponentComparator::diffFields(QSharedPointer<const Component> reference, 
+    QSharedPointer<const Component> subject) const
+{
     QList<QSharedPointer<IPXactDiff> > diffResult;
-
-    if (compare(reference, subject))
-    {
-        QSharedPointer<IPXactDiff> noChanges(new IPXactDiff("component"));
-        noChanges->setChangeType(IPXactDiff::NO_CHANGE);
-
-        QList<QSharedPointer<IPXactDiff> > diffResult;
-        diffResult.append(noChanges);
-        return diffResult;
-    } 
-   
-    if (subject.isNull())
-    {
-        QSharedPointer<IPXactDiff> remove(new IPXactDiff("component"));
-        remove->setChangeType(IPXactDiff::REMOVE);
-
-        QList<QSharedPointer<IPXactDiff> > diffResult;
-        diffResult.append(remove);
-        return diffResult;
-    }    
-
-    if (reference.isNull())
-    { 
-        QSharedPointer<IPXactDiff> add(new IPXactDiff("component"));
-        add->setChangeType(IPXactDiff::ADD);
-        diffResult.append(add);
-    }
 
     if (!compareVLNVs(reference, subject))
     {
@@ -103,42 +119,11 @@ QList<QSharedPointer<IPXactDiff> > ComponentComparator::diff(QSharedPointer<cons
             subject->getModelParameters()));
     }
 
+    if (!compareViews(reference, subject))
+    {
+        ViewComparator viewComparator;
+        diffResult.append(viewComparator.diff(reference->getViews(), subject->getViews()));
+    }
+
     return diffResult;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentComparator::compareVLNVs()
-//-----------------------------------------------------------------------------
-bool ComponentComparator::compareVLNVs(QSharedPointer<const Component> referenceComponent,
-    QSharedPointer<const Component> subjectComponent) const
-{   
-    QSharedPointer<VLNV> referenceVLNV(new VLNV());
-    
-    if (!referenceComponent.isNull())
-    {
-        referenceVLNV = QSharedPointer<VLNV>(new VLNV(*referenceComponent->getVlnv()));
-    }
-
-    QSharedPointer<VLNV> otherVLNV(new VLNV(*subjectComponent->getVlnv()));
-
-    VLNVComparator vlnvComparator;
-    return vlnvComparator.compare(referenceVLNV, otherVLNV);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentComparator::compareModelParameters()
-//-----------------------------------------------------------------------------
-bool ComponentComparator::compareModelParameters(QSharedPointer<const Component> referenceComponent, 
-    QSharedPointer<const Component> subjectComponent) const
-{
-    QList<QSharedPointer<ModelParameter> > referenceModelParameters;
-    if (!referenceComponent.isNull())
-    {
-        referenceModelParameters = referenceComponent->getModelParameters();
-    }
-    QList<QSharedPointer<ModelParameter> > otherModelParameters = subjectComponent->getModelParameters();
-
-    ModelParameterComparator modelParameterComparator;
-
-    return modelParameterComparator.compare(referenceModelParameters, otherModelParameters);
 }

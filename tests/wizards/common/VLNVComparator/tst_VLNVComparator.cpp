@@ -127,20 +127,19 @@ void tst_VLNVComparator::testComparingDifferentVLNVsIsNotEqual()
 void tst_VLNVComparator::testDiffVLNVChanges()
 {
     QFETCH(QString, vlnv);
-    QFETCH(QString, modifiedElement);
     QFETCH(QString, previousValue);
 
-    QSharedPointer<VLNV> reference(new VLNV(VLNV::COMPONENT, "TUT:Tests:TestComponent:1.0"));   
+    QSharedPointer<VLNV> reference(new VLNV(VLNV::COMPONENT, previousValue));   
     QSharedPointer<VLNV> other(new VLNV(VLNV::COMPONENT, vlnv));   
 
     QList<QSharedPointer<IPXactDiff> > diff = comparator_->diff(reference, other);
 
     QCOMPARE(diff.count(), 1);
-    verifyDiffElementAndType(diff.first(), "vlnv", "TUT:Tests:TestComponent:1.0", IPXactDiff::MODIFICATION);
+    verifyDiffElementAndType(diff.first(), "vlnv", "", IPXactDiff::MODIFICATION);
 
     QList<IPXactDiff::Modification> modifications = diff.first()->getChangeList();
     QCOMPARE(modifications.count(), 1);
-    verifyModificationIs(modifications.first(), modifiedElement, previousValue, "X");
+    verifyModificationIs(modifications.first(), "vlnv" , previousValue, vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -148,14 +147,13 @@ void tst_VLNVComparator::testDiffVLNVChanges()
 //-----------------------------------------------------------------------------
 void tst_VLNVComparator::testDiffVLNVChanges_data()
 {
-    QTest::addColumn<QString>("vlnv");    
-    QTest::addColumn<QString>("modifiedElement");    
+    QTest::addColumn<QString>("vlnv");
     QTest::addColumn<QString>("previousValue");   
 
-    QTest::newRow("Different vendor") << "X:Tests:TestComponent:1.0" << "vendor" << "TUT";
-    QTest::newRow("Different library") << "TUT:X:TestComponent:1.0" << "library" << "Tests";
-    QTest::newRow("Different name") << "TUT:Tests:X:1.0" << "name" << "TestComponent";
-    QTest::newRow("Different version") << "TUT:Tests:TestComponent:X" << "version" << "1.0";
+    QTest::newRow("Different vendor") << "X:Tests:TestComponent:1.0" << "TUT:Tests:TestComponent:1.0";
+    QTest::newRow("Different library") << "TUT:X:TestComponent:1.0" << "TUT:Tests:TestComponent:1.0";
+    QTest::newRow("Different name") << "TUT:Tests:X:1.0" << "TUT:Tests:TestComponent:1.0";
+    QTest::newRow("Different version") << "TUT:Tests:TestComponent:X" << "TUT:Tests:TestComponent:1.0";
 }
 
 //-----------------------------------------------------------------------------
@@ -169,22 +167,13 @@ void tst_VLNVComparator::testDiffVLNVMultipleChanges()
     QList<QSharedPointer<IPXactDiff> > diff = comparator_->diff(reference, other);
 
     QCOMPARE(diff.count(), 1);
-    verifyDiffElementAndType(diff.first(), "vlnv", "TUT:Tests:TestComponent:1.0", IPXactDiff::MODIFICATION);
+    verifyDiffElementAndType(diff.first(), "vlnv", "", IPXactDiff::MODIFICATION);
 
     QList<IPXactDiff::Modification> modifications = diff.first()->getChangeList();
-    QCOMPARE(modifications.count(), 4);
+    QCOMPARE(modifications.count(), 1);
 
-    IPXactDiff::Modification vendorChange = modifications.at(0);
-    verifyModificationIs(vendorChange, "vendor", "TUT", "X");
-
-    IPXactDiff::Modification libraryChange = modifications.at(1);
-    verifyModificationIs(libraryChange, "library", "Tests", "Y");
-
-    IPXactDiff::Modification nameChange = modifications.at(2);
-    verifyModificationIs(nameChange, "name", "TestComponent", "Z");
-
-    IPXactDiff::Modification versionChange = modifications.at(3);
-    verifyModificationIs(versionChange, "version", "1.0", "1");
+    IPXactDiff::Modification change = modifications.at(0);
+    verifyModificationIs(change, "vlnv", "TUT:Tests:TestComponent:1.0", "X:Y:Z:1");
 }
 
 //-----------------------------------------------------------------------------
@@ -198,7 +187,7 @@ void tst_VLNVComparator::testDiffForAddingVLVNisAdd()
     QList<QSharedPointer<IPXactDiff> > diff = comparator_->diff(reference, component);
 
     QCOMPARE(diff.count(), 1);
-    verifyDiffElementAndType(diff.first(), "vlnv", ":::", IPXactDiff::ADD);
+    verifyDiffElementAndType(diff.first(), "vlnv", "", IPXactDiff::ADD);
 }
 
 //-----------------------------------------------------------------------------
@@ -212,7 +201,7 @@ void tst_VLNVComparator::testDiffForRemovingVLVNisRemove()
     QList<QSharedPointer<IPXactDiff> > diff = comparator_->diff(reference, component);
 
     QCOMPARE(diff.count(), 1);
-    verifyDiffElementAndType(diff.first(), "vlnv", "TUT:Tests:TestComponent:1.0", IPXactDiff::REMOVE);
+    verifyDiffElementAndType(diff.first(), "vlnv", "", IPXactDiff::REMOVE);
 }
 
 //-----------------------------------------------------------------------------
@@ -225,7 +214,7 @@ void tst_VLNVComparator::testDiffForSelfIsNoChange()
     QList<QSharedPointer<IPXactDiff> > diff = comparator_->diff(reference, reference);
 
     QCOMPARE(diff.count(), 1);
-    verifyDiffElementAndType(diff.first(), "vlnv", "TUT:Tests:TestComponent:1.0", IPXactDiff::NO_CHANGE);
+    verifyDiffElementAndType(diff.first(), "vlnv", "", IPXactDiff::NO_CHANGE);
 }
 
 QTEST_APPLESS_MAIN(tst_VLNVComparator)

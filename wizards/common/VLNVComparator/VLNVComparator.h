@@ -40,8 +40,8 @@ public:
      *
      *      @return True, if the VLNVs are similar, otherwise false.
      */
-    virtual bool compare(QSharedPointer<const VLNV> lhs, QSharedPointer<const VLNV> rhs) const;
-    
+    virtual bool compareFields(QSharedPointer<const VLNV> first, QSharedPointer<const VLNV> second) const;
+
     /*!
      *  Finds the differences between the two given VLNVs.
      *
@@ -50,25 +50,21 @@ public:
      *
      *      @return Set of differences between the reference and subject.
      */
-    virtual QList<QSharedPointer<IPXactDiff> > diff(QSharedPointer<const VLNV> reference, 
+    virtual QList<QSharedPointer<IPXactDiff> > diffFields(QSharedPointer<const VLNV> reference, 
         QSharedPointer<const VLNV> subject) const;
     
+    /*!
+     *  Returns the type for the element.
+     *
+     *      @return The element type.
+     */
+     virtual QString elementType() const;
+
 private:
 
 	//! Disable copying.
 	VLNVComparator(VLNVComparator const& rhs);
 	VLNVComparator& operator=(VLNVComparator const& rhs);
-
-    /*!
-     *  Adds modification to diff if value has changed.
-     *
-     *      @param [in]     elementName     The name of the element whose value to compare.
-     *      @param [in]     referenceValue  The value of the element in the reference VLVN.
-     *      @param [in]     otherValue      The value of the element in the comparable VLVN.
-     *      @param [in/out] diff            The diff to add modification to.
-     */
-    void addModificationIfChanged(QString const& elementName, QString const& referenceValue, 
-        QString const& otherValue, IPXactDiff& diff) const;
 };
 
 #endif // VLNVCOMPARATOR_H
