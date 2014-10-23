@@ -25,7 +25,7 @@ class IPXactElementComparator
 public:
 
 	//! The destructor.
-    virtual ~IPXactElementComparator() {};
+    virtual ~IPXactElementComparator();
 
     /*!
      *  Compares the two elements.
