@@ -555,7 +555,8 @@ HEADERS += ./common/Global.h \
     ./wizards/common/IPXactElementComparator.h \
     ./wizards/common/ComponentDiffWidget/ComponentDiffWidget.h \
     ./wizards/common/ComponentComparator/ComponentComparator.h \
-    ./wizards/common/ViewComparator/ViewComparator.h
+    ./wizards/common/ViewComparator/ViewComparator.h \
+    ./wizards/common/ListComparator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
