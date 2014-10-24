@@ -20,7 +20,7 @@
 #include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/ApiInterface.h>
 
-#include "LibraryMock.h"
+#include <tests/Plugins/MockObjects/LibraryMock.h>
 
 #include <Plugins/MakefileGenerator/MakefileParser.h>
 #include <Plugins/MakefileGenerator/MakefileGenerator.h>
