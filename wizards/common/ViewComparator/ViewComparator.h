@@ -12,7 +12,7 @@
 #ifndef VIEWCOMPARATOR_H
 #define VIEWCOMPARATOR_H
 
-#include <wizards/common/IPXactElementComparator.h>
+#include <wizards/common/ListComparator.h>
 #include <wizards/common/IPXactDiff.h>
 
 #include <IPXACTmodels/view.h>
@@ -20,7 +20,7 @@
 //-----------------------------------------------------------------------------
 //! Comparator for finding differences in views.
 //-----------------------------------------------------------------------------
-class ViewComparator : public IPXactElementComparator<View>
+class ViewComparator : public ListComparator<View>
 {
 public:
 
@@ -48,7 +48,7 @@ public:
      *
      *      @return True, if the lists are similar, otherwise false.
      */
-    virtual bool compare(QList<QSharedPointer<View> > first, QList<QSharedPointer<View> > second) const;
+    virtual bool compare(QList<QSharedPointer<View> > const first, QList<QSharedPointer<View> > const second) const;
         
     /*!
      *  Finds the differences between the sub-elements of two given views.
@@ -69,8 +69,8 @@ public:
      *
      *      @return Set of differences between the reference and subject.
      */
-    virtual QList<QSharedPointer<IPXactDiff> > diff(QList<QSharedPointer<View> > reference, 
-        QList<QSharedPointer<View> > subject) const;
+    virtual QList<QSharedPointer<IPXactDiff> > diff(QList<QSharedPointer<View> > const reference, 
+        QList<QSharedPointer<View> > const subject) const;
     
     /*!
      *  Returns the type for the element.
@@ -100,14 +100,6 @@ private:
      */
     QString viewHierarchyType(QSharedPointer<const View> view) const;
 
-    /*!
-     *  Creates a map of views where the view name is the key.
-     *
-     *      @param [in] list   The views to include in the map.
-     *
-     *      @return Map of views.
-     */
-    QMap<QString, QSharedPointer<View> > mapByName(QList<QSharedPointer<View> > second) const;
 
 };
 

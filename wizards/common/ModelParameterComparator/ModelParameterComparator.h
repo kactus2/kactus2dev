@@ -16,17 +16,20 @@
 #include <QSharedPointer>
 
 #include <wizards/common/IPXactDiff.h>
-#include <wizards/common/IPXactElementComparator.h>
+#include <wizards/common/ListComparator.h>
 
 class ModelParameter;
 
 //-----------------------------------------------------------------------------
 //! Comparator for finding differences in lists of model parameters.
 //-----------------------------------------------------------------------------
-class ModelParameterComparator : public IPXactElementComparator<ModelParameter>
+class ModelParameterComparator : public ListComparator<ModelParameter>
 {
 public:
+    //! The constructor.
     ModelParameterComparator();
+
+    //! The destructor.
     ~ModelParameterComparator();
 
     /*!
@@ -60,17 +63,6 @@ public:
      */
     bool compare(QList<QSharedPointer<ModelParameter> > const first, 
         QList<QSharedPointer<ModelParameter> > const second) ;
-
-    /*!
-     *  Finds the differences between the two given lists.
-     *
-     *      @param [in] reference   The reference lists to compare to.
-     *      @param [in] subject     The lists to compare against the reference.
-     *
-     *      @return Set of differences between the reference and subject.
-     */
-    QList<QSharedPointer<IPXactDiff> > diff(QList<QSharedPointer<ModelParameter> > reference, 
-        QList<QSharedPointer<ModelParameter> > subject);
     
     /*!
      *  Finds the differences between the sub-elements of two given model parameters.
@@ -95,16 +87,6 @@ private:
     //! Disable copying.
     ModelParameterComparator(ModelParameterComparator const& rhs);
     ModelParameterComparator& operator=(ModelParameterComparator const& rhs);
-
-    /*!
-     *  Creates a map of model parameters where the model parameter name is the key.
-     *
-     *      @param [in] list   The model parameters to include in the map.
-     *
-     *      @return Map of model parameters.
-     */
-    QMap<QString, QSharedPointer<const ModelParameter> > 
-        mapByName(QList<QSharedPointer<ModelParameter> > const list);
 
 };
 

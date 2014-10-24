@@ -55,79 +55,7 @@ bool ModelParameterComparator::compareFields(QSharedPointer<const ModelParameter
 bool ModelParameterComparator::compare(QList<QSharedPointer<ModelParameter> > const references,
     QList<QSharedPointer<ModelParameter> > const subjects)
 {
-    if (references.count() != subjects.count())
-    {
-        return false;
-    }
-
-    QMap<QString, QSharedPointer<const ModelParameter> > sortedSubjects = mapByName(subjects);
-
-    foreach(QSharedPointer<const ModelParameter> reference, references)
-    {    
-        if (!sortedSubjects.contains(reference->getName()))
-        {
-            return false;
-        }
-
-        if (!IPXactElementComparator::compare(reference, sortedSubjects.value(reference->getName())))
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-
-//-----------------------------------------------------------------------------
-// Function: ModelParameterComparator::diff()
-//-----------------------------------------------------------------------------
-QList<QSharedPointer<IPXactDiff> > 
-    ModelParameterComparator::diff(QList<QSharedPointer<ModelParameter> > references, 
-    QList<QSharedPointer<ModelParameter> > subjects)
-{
-   QList<QSharedPointer<IPXactDiff> > diffResult;
-
-   QMap<QString, QSharedPointer<const ModelParameter> > subjectMap = mapByName(subjects);
-
-   foreach(QSharedPointer<const ModelParameter> reference, references)
-   {    
-       if (subjectMap.contains(reference->getName()))
-       {
-           QSharedPointer<const ModelParameter> subject = subjectMap.value(reference->getName());
-           if (!IPXactElementComparator::compare(reference, subject))
-           {
-               diffResult.append(IPXactElementComparator::diff(reference, subject));
-           }
-       }
-       else
-       {
-           QSharedPointer<IPXactDiff> remove(new IPXactDiff("model parameter", reference->getName()));
-           remove->setChangeType(IPXactDiff::REMOVE);
-           diffResult.append(remove);
-       }
-   }
-
-   QMap<QString, QSharedPointer<const ModelParameter> > referenceMap = mapByName(references);
-
-   foreach(QSharedPointer<const ModelParameter> other, subjects)
-   {    
-       if (!referenceMap.contains(other->getName()))
-       {
-           QSharedPointer<IPXactDiff> add(new IPXactDiff("model parameter", other->getName()));
-           add->setChangeType(IPXactDiff::ADD);
-           diffResult.append(add);
-       }
-   }
-
-   if (diffResult.isEmpty())
-   {
-       QSharedPointer<IPXactDiff> noChange(new IPXactDiff("model parameter"));
-       noChange->setChangeType(IPXactDiff::NO_CHANGE);
-       diffResult.append(noChange);
-   }
-
-   return diffResult;
+    return ListComparator::compare(references, subjects);
 }
 
 //-----------------------------------------------------------------------------
@@ -138,7 +66,7 @@ QList<QSharedPointer<IPXactDiff> > ModelParameterComparator::diffFields(QSharedP
 {
     QList<QSharedPointer<IPXactDiff> > diffResult;
 
-    QSharedPointer<IPXactDiff> modification(new IPXactDiff("model parameter", reference->getName()));
+    QSharedPointer<IPXactDiff> modification(new IPXactDiff(elementType(), reference->getName()));
     modification->setChangeType(IPXactDiff::MODIFICATION);
 
     modification->checkForChange("value", reference->getValue(), subject->getValue());
@@ -155,20 +83,4 @@ QList<QSharedPointer<IPXactDiff> > ModelParameterComparator::diffFields(QSharedP
 QString ModelParameterComparator::elementType() const
 {
     return "model parameter";
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModelParameterComparator::mapById()
-//-----------------------------------------------------------------------------
-QMap<QString, QSharedPointer<const ModelParameter> > 
-    ModelParameterComparator::mapByName(QList<QSharedPointer<ModelParameter> > const list)
-{
-    QMap<QString, QSharedPointer<const ModelParameter> > mappedResult;
-
-    foreach(QSharedPointer<ModelParameter> modelParameter, list)
-    {
-        mappedResult.insert(modelParameter->getName(), modelParameter);
-    }
-
-    return mappedResult;
 }

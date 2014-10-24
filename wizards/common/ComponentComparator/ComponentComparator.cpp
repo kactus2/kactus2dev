@@ -82,7 +82,7 @@ bool ComponentComparator::compareViews(QSharedPointer<const Component> first,
 //-----------------------------------------------------------------------------
 QString ComponentComparator::elementType() const
 {
-    return "component";
+    return QObject::tr("component");
 }
 
 //-----------------------------------------------------------------------------
