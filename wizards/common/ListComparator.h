@@ -13,6 +13,7 @@
 #define LISTCOMPARATOR_H
 
 #include "IPXactElementComparator.h"
+#include "IPXactDiff.h"
 
 #include <QSharedPointer>
 #include <QList>
@@ -48,6 +49,13 @@ public:
      */
     virtual QList<QSharedPointer<IPXactDiff> > diff(QList<QSharedPointer<T> > const references, 
         QList<QSharedPointer<T> > const subjects) const;
+
+    /*!
+     *  Returns the type for the element.
+     *
+     *      @return The element type.
+     */
+    virtual QString elementType() const = 0;
 
 protected:
 

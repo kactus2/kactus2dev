@@ -13,8 +13,7 @@
 #define IPXACTELEMENTCOMPARATOR_H
 
 #include <QSharedPointer>
-
-class IPXactDiff;
+#include "IPXactDiff.h"
 
 //-----------------------------------------------------------------------------
 //! Base class for all IP-XACT element comparators.
