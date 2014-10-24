@@ -28,11 +28,20 @@ ViewComparator::~ViewComparator()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ViewComparator::compare()
+//-----------------------------------------------------------------------------
+bool ViewComparator::compare(QSharedPointer<const View> first, QSharedPointer<const View> second) const
+{
+    return IPXactElementComparator::compare(first, second);
+}
+
+//-----------------------------------------------------------------------------
 // Function: ViewComparator::compareFields()
 //-----------------------------------------------------------------------------
 bool ViewComparator::compareFields(QSharedPointer<const View> first, QSharedPointer<const View> second) const
 {
-    return first->isHierarchical() == second->isHierarchical() &&  
+    return first->getName() == second->getName() &&
+        first->isHierarchical() == second->isHierarchical() &&  
         first->getHierarchyRef() == second->getHierarchyRef() &&
         first->getLanguage() == second->getLanguage() &&
         first->getModelName() == second->getModelName() &&
@@ -43,9 +52,19 @@ bool ViewComparator::compareFields(QSharedPointer<const View> first, QSharedPoin
 //-----------------------------------------------------------------------------
 // Function: ViewComparator::compare()
 //-----------------------------------------------------------------------------
-bool ViewComparator::compare(QList<QSharedPointer<View> > const first, QList<QSharedPointer<View> > const second) const
+bool ViewComparator::compare(QList<QSharedPointer<View> > const first, 
+    QList<QSharedPointer<View> > const second) const
 {
     return ListComparator::compare(first, second);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ViewComparator::diff()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<IPXactDiff> > ViewComparator::diff(QSharedPointer<const View> reference,
+    QSharedPointer<const View> subject) const
+{
+    return IPXactElementComparator::diff(reference, subject);
 }
 
 //-----------------------------------------------------------------------------

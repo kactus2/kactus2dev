@@ -7,15 +7,18 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../wizards/common/ComponentDiffWidget/ComponentDiffWidget.h \
-    ../../../../wizards/common/ModelParameterComparator/ModelParameterComparator.h \
-    ../../../../wizards/common/ComponentComparator/ComponentComparator.h \
-    ../../../../wizards/common/VLNVComparator/VLNVComparator.h \
+HEADERS += ../../../../wizards/common/ComponentComparator/ComponentComparator.h \
     ../../../../wizards/common/IPXactDiff.h \
-    ../../../../wizards/common/IPXactElementComparator.h
-SOURCES += ../../../../wizards/common/ComponentDiffWidget/ComponentDiffWidget.cpp \
-    ./tst_ComponentDiffWidget.cpp \
+    ../../../../wizards/common/IPXactElementComparator.h \
+    ../../../../wizards/common/ModelParameterComparator/ModelParameterComparator.h \
+    ../../../../wizards/common/VLNVComparator/VLNVComparator.h \
+    ../../../../wizards/common/ComponentDiffWidget/ComponentDiffWidget.h \
+    ../../../../wizards/common/ViewComparator/ViewComparator.h \
+    ../../../../wizards/common/ListComparator.h
+SOURCES += ../../../../wizards/common/ComponentComparator/ComponentComparator.cpp \
+    ../../../../wizards/common/ComponentDiffWidget/ComponentDiffWidget.cpp \
+    ../../../../wizards/common/IPXactDiff.cpp \
     ../../../../wizards/common/ModelParameterComparator/ModelParameterComparator.cpp \
-    ../../../../wizards/common/ComponentComparator/ComponentComparator.cpp \
     ../../../../wizards/common/VLNVComparator/VLNVComparator.cpp \
-    ../../../../wizards/common/IPXactDiff.cpp
+    ./tst_ComponentDiffWidget.cpp \
+    ../../../../wizards/common/ViewComparator/ViewComparator.cpp

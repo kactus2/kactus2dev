@@ -704,8 +704,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardPortMapPage.cpp \
     ./wizards/ImportWizard/ImportWizard.cpp \
     ./wizards/ImportWizard/ImportWizardImportPage.cpp \
-    ./wizards/common/IPXactElementComparator.inl \
-    ./wizards/common/ListComparator.inl \
     ./Help/HelpSystem/ContextHelpBrowser.cpp \
     ./Help/HelpSystem/HelpSearchWidget.cpp \
     ./Help/HelpSystem/HelpWindow.cpp \

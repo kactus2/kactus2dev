@@ -5531,6 +5531,9 @@
     <ClInclude Include="wizards\common\ViewComparator\ViewComparator.h">
       <Filter>Header Files\wizards\common\ViewComparator</Filter>
     </ClInclude>
+    <ClInclude Include="wizards\common\ListComparator.h">
+      <Filter>Header Files\wizards\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="executable\Kactus2_d.exe">
@@ -5862,6 +5865,12 @@
     </None>
     <None Include="common\graphics\workspace.png">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="wizards\common\IPXactElementComparator.inl">
+      <Filter>Source Files\wizards\common</Filter>
+    </None>
+    <None Include="wizards\common\ListComparator.inl">
+      <Filter>Source Files\wizards\common</Filter>
     </None>
   </ItemGroup>
 </Project>

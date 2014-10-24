@@ -30,6 +30,9 @@ public:
     //! The destructor.
     virtual ~ViewComparator();
     
+
+    virtual bool compare(QSharedPointer<const View> first, QSharedPointer<const View> second) const;
+
     /*!
      *  Compares the sub-elements of two views.
      *
@@ -49,7 +52,10 @@ public:
      *      @return True, if the lists are similar, otherwise false.
      */
     virtual bool compare(QList<QSharedPointer<View> > const first, QList<QSharedPointer<View> > const second) const;
-        
+
+    virtual QList<QSharedPointer<IPXactDiff> > diff(QSharedPointer<const View> reference, 
+        QSharedPointer<const View> subject) const;
+
     /*!
      *  Finds the differences between the sub-elements of two given views.
      *

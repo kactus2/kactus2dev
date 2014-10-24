@@ -1,3 +1,13 @@
+//-----------------------------------------------------------------------------
+// File: ListComparator.inl
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Esko Pekkarinen
+// Date: 24.10.2014
+//
+// Description:
+// Base class for all IP-XACT comparators comparing lists of elements.
+//-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
 // Function: ListComparator<T>::~ListComparator()
@@ -70,12 +80,11 @@ QList<QSharedPointer<IPXactDiff> > ListComparator<T>::diff(QList<QSharedPointer<
 
     QMap<QString, QSharedPointer<const T> > referenceMap = mapByName(references);
 
-    foreach(QSharedPointer<const T> other, subjects)
+    foreach(QSharedPointer<const T> subject, subjects)
     {    
-        if (!referenceMap.contains(other->getName()))
+        if (!referenceMap.contains(subject->getName()))
         {
-            QSharedPointer<IPXactDiff> add(new IPXactDiff(elementType(), 
-                other->getName()));
+            QSharedPointer<IPXactDiff> add(new IPXactDiff(elementType(), subject->getName()));
             add->setChangeType(IPXactDiff::ADD);
             diffResult.append(add);
         }
@@ -92,16 +101,16 @@ QList<QSharedPointer<IPXactDiff> > ListComparator<T>::diff(QList<QSharedPointer<
 }
 
 //-----------------------------------------------------------------------------
-// Function: ListComparator<T>::mapById()
+// Function: ListComparator<T>::mapByName()
 //-----------------------------------------------------------------------------
 template <class T> 
 QMap<QString, QSharedPointer<const T> > ListComparator<T>::mapByName(QList<QSharedPointer<T> > const list) const
 {
     QMap<QString, QSharedPointer<const T> > mappedResult;
 
-    foreach(QSharedPointer<const T> modelParameter, list)
+    foreach(QSharedPointer<const T> element, list)
     {
-        mappedResult.insert(modelParameter->getName(), modelParameter);
+        mappedResult.insert(element->getName(), element);
     }
 
     return mappedResult;

@@ -1606,6 +1606,7 @@ CreateHelp
     <ClInclude Include="wizards\common\ComponentComparator\ComponentComparator.h" />
     <ClInclude Include="wizards\common\IPXactDiff.h" />
     <ClInclude Include="wizards\common\IPXactElementComparator.h" />
+    <ClInclude Include="wizards\common\ListComparator.h" />
     <ClInclude Include="wizards\common\ModelParameterComparator\ModelParameterComparator.h" />
     <ClInclude Include="wizards\common\ViewComparator\ViewComparator.h" />
     <ClInclude Include="wizards\common\VLNVComparator\VLNVComparator.h" />
@@ -13903,6 +13904,8 @@ CreateHelp
     <None Include="common\graphics\workspace.png" />
     <None Include="designEditors\common\DiagramUtil.inl" />
     <None Include="executable\Kactus2_d.exe" />
+    <None Include="wizards\common\IPXactElementComparator.inl" />
+    <None Include="wizards\common\ListComparator.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

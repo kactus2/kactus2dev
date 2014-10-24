@@ -11,6 +11,7 @@ HEADERS += ../ComparatorTest.h \
     ../../../../wizards/common/ComponentComparator/ComponentComparator.h \
     ../../../../wizards/common/IPXactDiff.h \
     ../../../../wizards/common/IPXactElementComparator.h \
+    ../../../../wizards/common/ListComparator.h \
     ../../../../wizards/common/ModelParameterComparator/ModelParameterComparator.h \
     ../../../../wizards/common/VLNVComparator/VLNVComparator.h \
     ../../../../wizards/common/ViewComparator/ViewComparator.h
@@ -19,5 +20,5 @@ SOURCES += ../ComparatorTest.cpp \
     ../../../../wizards/common/IPXactDiff.cpp \
     ../../../../wizards/common/ModelParameterComparator/ModelParameterComparator.cpp \
     ../../../../wizards/common/VLNVComparator/VLNVComparator.cpp \
-    ./tst_ComponentComparator.cpp \
-    ../../../../wizards/common/ViewComparator/ViewComparator.cpp
+    ../../../../wizards/common/ViewComparator/ViewComparator.cpp \
+    ./tst_ComponentComparator.cpp
