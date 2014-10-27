@@ -163,7 +163,7 @@ void ComponentDiffWidget::addSingleLevelModificationItem(QString const& name,
 {
     QTreeWidgetItem* modificationItem = createModificationItem(modification, parent);
     modificationItem->setText(ITEM_NAME, name);  
-    modificationItem->setIcon(ITEM_NAME, QIcon(":/icons/common/graphics/asterisk-yellow.png"));
+    modificationItem->setIcon(ITEM_NAME, QIcon(":/icons/common/graphics/star.png"));
 }
 
 //-----------------------------------------------------------------------------
@@ -188,7 +188,7 @@ void ComponentDiffWidget::addMultiLevelModificationItem(QString const& name,
 {
     QTreeWidgetItem* child = new QTreeWidgetItem(parent);
     child->setText(ITEM_NAME, name);  
-    child->setIcon(ITEM_NAME, QIcon(":/icons/common/graphics/asterisk-yellow.png"));
+    child->setIcon(ITEM_NAME, QIcon(":/icons/common/graphics/star.png"));
     child->setText(CHANGE_ELEMENT, "[multiple changes]");
 
     foreach(IPXactDiff::Modification modification, changelist)

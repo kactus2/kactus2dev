@@ -50,9 +50,10 @@ private slots:
     void testAddingViewCreatesTwoLevels();
     void testViewModelNameChangeShowsPreviousAndCurrentValue();
     
-     void testViewChangesShowsAsChilds();
+    void testViewChangesShowsAsChilds();
 
     void testAddingDifferentTypeElements();
+
 private:
     
     void verifyItemColumnTexts(QTreeWidgetItem* item, QString const& name, QString const& element,

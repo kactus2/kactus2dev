@@ -30,7 +30,6 @@
       <file>common/graphics/refresh.png</file>
       <file>common/graphics/refresh_16x16.png</file>
       <file>common/graphics/import.png</file>
-      <file>common/graphics/search.png</file>
       <file>common/graphics/export.png</file>
       <file>common/graphics/checkIntegrity.png</file>
       <file>common/graphics/diagram-add-column.png</file>
@@ -107,7 +106,7 @@
 	    <file>common/graphics/cross.png</file>
       <file>common/graphics/balloon.png</file>
 	    <file>common/graphics/pin--plus.png</file>
-      <file>common/graphics/asterisk-yellow.png</file>
+      <file>common/graphics/star.png</file>
   </qresource>
     <qresource prefix="/">        
         <file>common/graphics/splash.png</file>

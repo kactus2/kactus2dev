@@ -20,6 +20,7 @@
 
 class LibraryInterface;
 class ComponentDiffWidget;
+class IPXactDiff;
 
 //-----------------------------------------------------------------------------
 //! Conclusion page for the component wizard.
@@ -52,6 +53,7 @@ public:
     *  Initializes the page.
     */
     virtual void initializePage();
+    
 
 public slots:
 
@@ -62,7 +64,34 @@ private:
     ComponentWizardConclusionPage(ComponentWizardConclusionPage const& rhs);
     ComponentWizardConclusionPage& operator=(ComponentWizardConclusionPage const& rhs);
 
+    //! Struct for capturing change counts in elements.
+    struct DiffSummary
+    {
+        int added;
+        int removed;
+        int modified;
+
+        DiffSummary() : added(0), removed(0), modified(0) {};
+    };
+
+    /*!
+     *  Updates the component details e.g. number of created ports.          
+     */
+    void updateComponentDetails();
+
+    /*!
+     *  Creates a summary of changes in given element.
+     *
+     *      @param [in] element     The name of the element to summarize.
+     *      @param [in] diffs       List of changes to the component.
+     *
+     *      @return Summary of changes of the given element.
+     */
+    DiffSummary creteSummaryFor(QString const& element, QList<QSharedPointer<IPXactDiff> > const& diffs) const;
+
+    //! Sets the page layout.
     void setupLayout();
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -80,16 +109,7 @@ private:
     QWidget summaryWidget_;
 
     //! Label for VLNV vendor.
-    QLabel* vendorLabel_;
-
-    //! Label for VLNV library.
-    QLabel* libraryLabel_;
-
-    //! Label for VLNV name.
-    QLabel* nameLabel_;
-
-    //! Label for VLNV version.
-    QLabel* versionLabel_;
+    QLabel* vlnvLabel_; 
 
     //! Label for Kactus attribute hierarchy.
     QLabel* hierarchyLabel_;
@@ -121,6 +141,7 @@ private:
     //! The component preview box.
     ComponentPreviewBox previewBox_;
 
+    //! The widget for displaying changes in the component.
     ComponentDiffWidget* diffView_;
 };
 
