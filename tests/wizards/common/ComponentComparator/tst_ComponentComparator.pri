@@ -14,11 +14,13 @@ HEADERS += ../ComparatorTest.h \
     ../../../../wizards/common/ListComparator.h \
     ../../../../wizards/common/ModelParameterComparator/ModelParameterComparator.h \
     ../../../../wizards/common/VLNVComparator/VLNVComparator.h \
-    ../../../../wizards/common/ViewComparator/ViewComparator.h
+    ../../../../wizards/common/ViewComparator/ViewComparator.h \
+    ../../../../wizards/common/PortComparator/PortComparator.h
 SOURCES += ../ComparatorTest.cpp \
     ../../../../wizards/common/ComponentComparator/ComponentComparator.cpp \
     ../../../../wizards/common/IPXactDiff.cpp \
     ../../../../wizards/common/ModelParameterComparator/ModelParameterComparator.cpp \
     ../../../../wizards/common/VLNVComparator/VLNVComparator.cpp \
     ../../../../wizards/common/ViewComparator/ViewComparator.cpp \
-    ./tst_ComponentComparator.cpp
+    ./tst_ComponentComparator.cpp \
+    ../../../../wizards/common/PortComparator/PortComparator.cpp

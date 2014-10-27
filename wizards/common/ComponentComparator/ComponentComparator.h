@@ -89,8 +89,10 @@ private:
     bool compareModelParameters(QSharedPointer<const Component> referenceComponent, 
         QSharedPointer<const Component> subjectComponent) const;
 
-    bool compareViews(QSharedPointer<const Component> first, QSharedPointer<const Component> second) const;
+    bool comparePorts(QSharedPointer<const Component> first, QSharedPointer<const Component>second) const;
 
+    bool compareViews(QSharedPointer<const Component> first, QSharedPointer<const Component> second) const;
+    
 };
 
 #endif // COMPONENTCOMPARATOR_H

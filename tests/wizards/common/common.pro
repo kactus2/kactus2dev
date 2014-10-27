@@ -15,6 +15,7 @@ CONFIG += testcase
 SUBDIRS += VLNVComparator/tst_VLNVComparator.pro \
 		ComponentComparator/tst_ComponentComparator.pro \
 		ModelParameterComparator/tst_ModelParameterComparator.pro \
+		PortComparator/tst_PortComparator.pro \
 		ViewComparator/tst_ViewComparator.pro \
 		ComponentDiffWidget/tst_ComponentDiffWidget.pro
 

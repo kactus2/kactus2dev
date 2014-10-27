@@ -923,6 +923,12 @@
     <Filter Include="Header Files\wizards\common\ViewComparator">
       <UniqueIdentifier>{4708f5f6-8ad7-4679-8c24-3e608fd64fa5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\wizards\common\PortComparator">
+      <UniqueIdentifier>{b8553848-2169-48b3-902d-606dabbc6e56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\wizards\common\PortComparator">
+      <UniqueIdentifier>{3b832046-1d83-4d92-afcb-650eef30f7f7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3847,6 +3853,9 @@
     <ClCompile Include="wizards\common\ViewComparator\ViewComparator.cpp">
       <Filter>Source Files\wizards\common\ViewComparator</Filter>
     </ClCompile>
+    <ClCompile Include="wizards\common\PortComparator\PortComparator.cpp">
+      <Filter>Source Files\wizards\common\PortComparator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5533,6 +5542,9 @@
     </ClInclude>
     <ClInclude Include="wizards\common\ListComparator.h">
       <Filter>Header Files\wizards\common</Filter>
+    </ClInclude>
+    <ClInclude Include="wizards\common\PortComparator\PortComparator.h">
+      <Filter>Header Files\wizards\common\PortComparator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

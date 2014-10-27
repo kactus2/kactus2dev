@@ -47,27 +47,12 @@ void ComponentDiffWidget::setComponents(QSharedPointer<const Component> referenc
     ComponentComparator comparator;
     QList<QSharedPointer<IPXactDiff> > diffs = comparator.diff(reference, subject);
 
-    if (diffs.count() == 1 && diffs.first()->changeType() == IPXactDiff::NO_CHANGE)
+    if (nothingChanged(diffs))
     {
         return;
     }
 
-    QStringList topElements;
-    topElements << "view" << "model parameter";
-
-    QMap<QString, QTreeWidgetItem*> topItems;
-    
-    foreach(QSharedPointer<IPXactDiff> diff, diffs)
-    {
-        if (topElements.contains(diff->element()) && !topItems.contains(diff->element()))
-        {
-            QTreeWidgetItem* item = new QTreeWidgetItem();
-            QString containerName = diff->element().at(0).toUpper() + diff->element().mid(1) + "s";
-            item->setText(ITEM_NAME, containerName);
-            addTopLevelItem(item);
-            topItems.insert(diff->element(), item);
-        }
-    }
+    QMap<QString, QTreeWidgetItem*> topItems = createTopLevelItems(diffs);
 
     foreach(QSharedPointer<IPXactDiff> diff, diffs)
     {
@@ -86,6 +71,52 @@ void ComponentDiffWidget::setComponents(QSharedPointer<const Component> referenc
             addModificationItem(diff, parentItem);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentDiffWidget::nothingChanged()
+//-----------------------------------------------------------------------------
+bool ComponentDiffWidget::nothingChanged(QList<QSharedPointer<IPXactDiff> > const& diffs)
+{
+    return diffs.count() == 1 && diffs.first()->changeType() == IPXactDiff::NO_CHANGE;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentDiffWidget::createTopLevelItems()
+//-----------------------------------------------------------------------------
+QMap<QString, QTreeWidgetItem*> ComponentDiffWidget::createTopLevelItems(QList<QSharedPointer<IPXactDiff> > const& diffs)
+{
+    QMap<QString, QTreeWidgetItem*> topItems;
+
+    QStringList topElements;
+    topElements << "view" << "model parameter" << "port";
+
+    foreach(QSharedPointer<IPXactDiff> diff, diffs)
+    {
+        if (topElements.contains(diff->element()) && !topItems.contains(diff->element()))
+        {
+            topItems.insert(diff->element(), createTopLevelItemForElement(diff->element()));
+        }
+    }
+
+    return topItems;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentDiffWidget::createTopLevelItemForElement()
+//-----------------------------------------------------------------------------
+QTreeWidgetItem* ComponentDiffWidget::createTopLevelItemForElement(QString const& elementName)
+{
+    QTreeWidgetItem* item = new QTreeWidgetItem();
+    QString containerName = elementName.at(0).toUpper() + elementName.mid(1) + "s";
+    item->setText(ITEM_NAME, containerName);
+
+    for (int i = 0; i < COLUMN_COUNT; i++)
+    {
+        item->setBackgroundColor(i, QColor(230, 230, 230));
+    }            
+    addTopLevelItem(item);
+    return item;        
 }
 
 //-----------------------------------------------------------------------------

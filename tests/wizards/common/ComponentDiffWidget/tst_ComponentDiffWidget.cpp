@@ -81,6 +81,10 @@ private:
 
     QTreeWidgetItem* getChildItemByElement(QString const& elementName, QTreeWidgetItem* parentItem);
 
+    void addPort(QSharedPointer<Component> component, QString const& portName);
+
+    void verifyPortsItem(ComponentDiffWidget const& widget);
+
 };
 
 //-----------------------------------------------------------------------------
@@ -376,17 +380,21 @@ void tst_ComponentDiffWidget::testAddingDifferentTypeElements()
     QSharedPointer<Component> subject(new Component());    
     addModelParameter(subject, "testModelParameter", "");
     addView(subject, "testView");
+    addPort(subject, "testPort");
 
     ComponentDiffWidget widget(0);
     widget.setComponents(reference, subject);
 
-    QCOMPARE(widget.topLevelItemCount(), 2);
+    QCOMPARE(widget.topLevelItemCount(), 3);
 
     verifyModelParametersItem(widget);
     QCOMPARE(getModelParametersItem(widget)->childCount(), 1);
 
     verifyViewsItem(widget);
     QCOMPARE(getViewsItem(widget)->childCount(), 1);
+
+    verifyPortsItem(widget);
+    QCOMPARE(getTopLevelItemByName(widget, "Ports")->childCount(), 1);
 }
 
 //-----------------------------------------------------------------------------
@@ -414,6 +422,17 @@ void tst_ComponentDiffWidget::addModelParameter(QSharedPointer<Component> compon
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_ComponentDiffWidget::addPort()
+//-----------------------------------------------------------------------------
+void tst_ComponentDiffWidget::addPort(QSharedPointer<Component> component, QString const& portName)
+{
+    QSharedPointer<Port> port(new Port());
+    port->setName(portName);
+
+    component->addPort(port);
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_ComponentDiffWidget::addView()
 //-----------------------------------------------------------------------------
 void tst_ComponentDiffWidget::addView(QSharedPointer<Component> component, QString const& viewName)
@@ -427,7 +446,13 @@ void tst_ComponentDiffWidget::addView(QSharedPointer<Component> component, QStri
 void tst_ComponentDiffWidget::verifyModelParametersItem(ComponentDiffWidget const& widget)
 {
     verifyHasChildWithColumns(widget.invisibleRootItem(), "Model parameters", "", "", "");
+    for (int i = 0; i < widget.columnCount(); i++)
+    {
+        QVERIFY2(getModelParametersItem(widget)->backgroundColor(i) == QColor(230, 230, 230), 
+            "Item 'Model parameters' does not have gray background."); 
+    }
 }
+
 //-----------------------------------------------------------------------------
 // Function: tst_ComponentDiffWidget::getModelParametersItem()
 //-----------------------------------------------------------------------------
@@ -452,6 +477,11 @@ void tst_ComponentDiffWidget::verifyModelParameterChangeItem(ComponentDiffWidget
 void tst_ComponentDiffWidget::verifyViewsItem(ComponentDiffWidget const& widget)
 {
     verifyHasChildWithColumns(widget.invisibleRootItem(), "Views", "", "", "");
+    for (int i = 0; i < widget.columnCount(); i++)
+    {
+        QVERIFY2(getViewsItem(widget)->backgroundColor(i) == QColor(230, 230, 230), 
+            "Item 'Views' does not have gray background."); 
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -534,6 +564,19 @@ QTreeWidgetItem* tst_ComponentDiffWidget::getChildItemByElement(QString const& e
     }
 
     return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentDiffWidget::verifyPortsItem()
+//-----------------------------------------------------------------------------
+void tst_ComponentDiffWidget::verifyPortsItem(ComponentDiffWidget const& widget)
+{
+    verifyHasChildWithColumns(widget.invisibleRootItem(), "Ports", "", "", "");
+    for (int i = 0; i < widget.columnCount(); i++)
+    {
+        QVERIFY2(getViewsItem(widget)->backgroundColor(i) == QColor(230, 230, 230), 
+            "Item 'Ports' does not have gray background."); 
+    }
 }
 
 QTEST_MAIN(tst_ComponentDiffWidget)
