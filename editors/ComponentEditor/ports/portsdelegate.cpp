@@ -105,11 +105,6 @@ QWidget* PortsDelegate::createEditor( QWidget* parent,
 
     case PORT_COL_ADHOC_VISIBILITY:
         {
-//             QCheckBox* checkBox = new QCheckBox(parent);
-// 
-//             connect(checkBox, SIGNAL(stateChanged(int)), this,
-//                     SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-//             return checkBox;
             return QStyledItemDelegate::createEditor(parent, option, index);
         }
 
@@ -198,9 +193,6 @@ void PortsDelegate::setEditorData( QWidget* editor,
 
     case PORT_COL_ADHOC_VISIBILITY:
         {
-//             bool state = index.model()->data(index, Qt::DisplayRole).toBool();
-//             QCheckBox* checkBox = qobject_cast<QCheckBox*>(editor);
-//             checkBox->setChecked(state);
             QStyledItemDelegate::setEditorData(editor, index);
             break;
         }
@@ -269,8 +261,6 @@ void PortsDelegate::setModelData( QWidget* editor,
 
     case PORT_COL_ADHOC_VISIBILITY:
         {
-//             QCheckBox* checkBox = qobject_cast<QCheckBox*>(editor);
-//             model->setData(index, checkBox->isChecked(), Qt::EditRole);
             QStyledItemDelegate::setModelData(editor, model, index);
             break;
         }

@@ -67,10 +67,9 @@ handler_(handler)
 
 	view_.setItemDelegate(new PortsDelegate(this));
 
-    view_.verticalHeader()->show();
-
 	// set source model for proxy
 	proxy_.setSourceModel(&model_);
+
 	// set proxy to be the source for the view
 	view_.setModel(&proxy_);
 
@@ -87,14 +86,27 @@ handler_(handler)
 	layout->setContentsMargins(0, 0, 0, 0);
 }
 
-PortsEditor::~PortsEditor() {
+//-----------------------------------------------------------------------------
+// Function: PortsEditor::~PortsEditor()
+//-----------------------------------------------------------------------------
+PortsEditor::~PortsEditor()
+{
+
 }
 
-bool PortsEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: PortsEditor::isValid()
+//-----------------------------------------------------------------------------
+bool PortsEditor::isValid() const
+{
 	return model_.isValid();
 }
 
-void PortsEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: portseditor::refresh()
+//-----------------------------------------------------------------------------
+void PortsEditor::refresh()
+{
 	view_.update();
 }
 
@@ -107,7 +119,11 @@ void PortsEditor::showEvent(QShowEvent* event)
     emit helpUrlRequested("componenteditor/ports.html");
 }
 
-void PortsEditor::setAllowImportExport( bool allow ) {
+//-----------------------------------------------------------------------------
+// Function: portseditor::setAllowImportExport()
+//-----------------------------------------------------------------------------
+void PortsEditor::setAllowImportExport( bool allow )
+{
 	view_.setAllowImportExport(allow);
 }
 
