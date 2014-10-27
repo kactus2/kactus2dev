@@ -1302,6 +1302,7 @@ CreateHelp
     <ClCompile Include="wizards\ComponentWizard\ViewListModel.cpp" />
     <ClCompile Include="wizards\ImportWizard\ImportWizard.cpp" />
     <ClCompile Include="wizards\ImportWizard\ImportWizardImportPage.cpp" />
+    <ClCompile Include="wizards\ImportWizard\ImportWizardIntroPage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -1612,6 +1613,7 @@ CreateHelp
     <ClInclude Include="wizards\common\PortComparator\PortComparator.h" />
     <ClInclude Include="wizards\common\ViewComparator\ViewComparator.h" />
     <ClInclude Include="wizards\common\VLNVComparator\VLNVComparator.h" />
+    <ClInclude Include="wizards\ImportWizard\ImportWizardIntroPage.h" />
     <ClInclude Include="wizards\ImportWizard\ImportWizardPages.h" />
     <CustomBuild Include="wizards\ImportWizard\ImportWizardImportPage.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

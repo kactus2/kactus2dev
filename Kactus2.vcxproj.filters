@@ -3856,6 +3856,9 @@
     <ClCompile Include="wizards\common\PortComparator\PortComparator.cpp">
       <Filter>Source Files\wizards\common\PortComparator</Filter>
     </ClCompile>
+    <ClCompile Include="wizards\ImportWizard\ImportWizardIntroPage.cpp">
+      <Filter>Source Files\wizards\ImportWizard</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5545,6 +5548,9 @@
     </ClInclude>
     <ClInclude Include="wizards\common\PortComparator\PortComparator.h">
       <Filter>Header Files\wizards\common\PortComparator</Filter>
+    </ClInclude>
+    <ClInclude Include="wizards\ImportWizard\ImportWizardIntroPage.h">
+      <Filter>Header Files\wizards\ImportWizard</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -557,7 +557,8 @@ HEADERS += ./common/Global.h \
     ./wizards/common/ComponentComparator/ComponentComparator.h \
     ./wizards/common/ViewComparator/ViewComparator.h \
     ./wizards/common/ListComparator.h \
-    ./wizards/common/PortComparator/PortComparator.h
+    ./wizards/common/PortComparator/PortComparator.h \
+    ./wizards/ImportWizard/ImportWizardIntroPage.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1073,5 +1074,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./wizards/common/VLNVComparator/VLNVComparator.cpp \
     ./wizards/common/ModelParameterComparator/ModelParameterComparator.cpp \
     ./wizards/common/ViewComparator/ViewComparator.cpp \
-    ./wizards/common/PortComparator/PortComparator.cpp
+    ./wizards/common/PortComparator/PortComparator.cpp \
+    ./wizards/ImportWizard/ImportWizardIntroPage.cpp
 RESOURCES += kactus.qrc

@@ -11,6 +11,7 @@
 
 #include "ImportWizard.h"
 #include "ImportWizardPages.h"
+#include "ImportWizardIntroPage.h"
 #include "ImportWizardImportPage.h"
 
 #include <wizards/ComponentWizard/ComponentWizardConclusionPage.h>
@@ -38,7 +39,7 @@ ImportWizard::ImportWizard(QSharedPointer<const Component> component,
     ImportWizardImportPage* importPage = new ImportWizardImportPage(workingComponent_, handler, pluginMgr, this);
     ComponentWizardConclusionPage* finalPage = new ComponentWizardConclusionPage(workingComponent_, handler, this);
 
-    //setPage(ImportWizardPages::INTRO, new ImportWizardIntroPage(component, this));
+    setPage(ImportWizardPages::INTRO, new ImportWizardIntroPage(this));
     setPage(ImportWizardPages::IMPORT, importPage);
     setPage(ImportWizardPages::CONCLUSION, finalPage);
 
