@@ -101,6 +101,12 @@
       <Project>{5c0ca59d-cfce-49c6-b62a-9e3065ca34dd}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="MakefileGenerator.png" />
+    <None Include="MakefileGenerator.qrc">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

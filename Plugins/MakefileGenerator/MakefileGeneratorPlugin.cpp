@@ -98,7 +98,7 @@ PluginSettingsWidget* MakefileGeneratorPlugin::getSettingsWidget()
 //-----------------------------------------------------------------------------
 QIcon MakefileGeneratorPlugin::getIcon() const
 {
-    return QIcon("balloon.png");
+    return QIcon(":icons/MakefileGenerator.png");
 }
 
 //-----------------------------------------------------------------------------

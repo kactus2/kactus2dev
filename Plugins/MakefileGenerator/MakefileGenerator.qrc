@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/icons">
-        <file>McapiGenerator.png</file>
+        <file>MakefileGenerator.png</file>
     </qresource>
 </RCC>

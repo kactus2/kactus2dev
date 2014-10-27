@@ -254,7 +254,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="mcapi-generator.png" />
     <None Include="mcapi.json" />
     <CustomBuild Include="MCAPICodeGenerator.qrc">
       <FileType>Document</FileType>
@@ -283,6 +282,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\qrc_%(Filename).cpp;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\rcc.exe" -name "%(Filename)" -no-compress "%(FullPath)" -o .\GeneratedFiles\qrc_%(Filename).cpp</Command>
     </CustomBuild>
+    <None Include="McapiGenerator.png" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CSourceWriter.h" />

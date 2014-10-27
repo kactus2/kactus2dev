@@ -101,7 +101,7 @@ PluginSettingsWidget* MCAPICodeGeneratorPlugin::getSettingsWidget()
 //-----------------------------------------------------------------------------
 QIcon MCAPICodeGeneratorPlugin::getIcon() const
 {
-    return QIcon(":icons/mcapi-generator.png");
+    return QIcon(":icons/McapiGenerator.png");
 }
 
 //-----------------------------------------------------------------------------

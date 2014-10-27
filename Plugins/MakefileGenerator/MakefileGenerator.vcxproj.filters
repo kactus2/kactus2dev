@@ -63,4 +63,12 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="MakefileGenerator.qrc">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="MakefileGenerator.png">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

@@ -74,7 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="mcapi.json" />
-    <None Include="mcapi-generator.png">
+    <None Include="McapiGenerator.png">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
