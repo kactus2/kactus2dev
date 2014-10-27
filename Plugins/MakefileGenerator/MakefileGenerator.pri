@@ -14,3 +14,4 @@ HEADERS += ./MakefileGenerator.h \
 SOURCES += ./MakefileGenerator.cpp \
     ./MakefileGeneratorPlugin.cpp \
     ./MakefileParser.cpp
+RESOURCES += MakefileGenerator.qrc

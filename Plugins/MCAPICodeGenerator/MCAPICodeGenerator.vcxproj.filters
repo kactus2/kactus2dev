@@ -60,16 +60,19 @@
     <ClCompile Include="MCAPIHeaderGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_MCAPICodeGenerator.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MCAPICodeGenerator.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="MCAPICodeGenerator.qrc">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="MCAPICodeGeneratorPlugin.h">
       <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="MCAPICodeGenerator.qrc">
+      <Filter>Resource Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

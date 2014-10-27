@@ -46,6 +46,9 @@
     <ClCompile Include="MakefileParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_MakefileGenerator.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MakefileGenerator.h">
@@ -62,13 +65,14 @@
     <CustomBuild Include="MakefileGeneratorPlugin.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="MakefileGenerator.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <None Include="MakefileGenerator.qrc">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="MakefileGenerator.png">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="makefile.json" />
   </ItemGroup>
 </Project>
