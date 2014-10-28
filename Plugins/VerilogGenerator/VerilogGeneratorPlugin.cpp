@@ -288,8 +288,8 @@ QString VerilogGeneratorPlugin::getActiveViewName(QSharedPointer<LibraryComponen
 {    
     foreach(QSharedPointer<View> view, topComponent_->getViews())
     {
-        if (design && view->getHierarchyRef() == *design->getVlnv() ||
-            designConfig && view->getHierarchyRef() == *designConfig->getVlnv())
+        if ((design && view->getHierarchyRef() == *design->getVlnv()) ||
+            (designConfig && view->getHierarchyRef() == *designConfig->getVlnv()))
         {
             return view->getName();
         }
