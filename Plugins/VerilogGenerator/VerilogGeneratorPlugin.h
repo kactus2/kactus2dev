@@ -161,7 +161,7 @@ private:
      *  Adds the generated file to a file set in the top component.
      *
      */
-    void addGeneratedFileToFileSet() const;
+    void addGeneratedFileToFileSet() const;    
 
     /*!
      *  Adds an RTL view to the top component for the generated model.
@@ -180,6 +180,13 @@ private:
      */
     QString getActiveViewName(QSharedPointer<LibraryComponent> design, 
         QSharedPointer<LibraryComponent> designConfig) const;
+
+    //!Saves the changes made to the top component.
+    void saveChanges() const;
+
+    //-----------------------------------------------------------------------------
+    //! Data.
+    //-----------------------------------------------------------------------------
 
     //! The plugin utility to use while running generation.
     IPluginUtility* utility_;

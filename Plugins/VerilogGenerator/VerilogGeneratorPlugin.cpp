@@ -158,6 +158,7 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
         {          
             addGeneratedFileToFileSet();
             addRTLViewToTopComponent(getActiveViewName(libDes, libDesConf));
+            saveChanges();
         }
 
         utility_->printInfo(tr("Generation complete."));
@@ -246,18 +247,6 @@ void VerilogGeneratorPlugin::addGeneratedFileToFileSet() const
     QSettings settings;
     QSharedPointer<FileSet> fileSet = topComponent_->getFileSet("verilogSource");
     fileSet->addFile(filePath, settings);
-    
-    bool saveSucceeded = utility_->getLibraryInterface()->writeModelToFile(topComponent_);
-    if (saveSucceeded)
-    {
-        utility_->printInfo(tr("Added file %1 to fileset %2.").arg(outputFile_, fileSet->getName()));
-    }    
-    else
-    {
-        QString component = topComponent_->getVlnv()->toString();
-        QString savePath = utility_->getLibraryInterface()->getPath(*topComponent_->getVlnv());
-        utility_->printError(tr("Could not write component %1 to file %2.").arg(component, savePath));
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -307,4 +296,24 @@ QString VerilogGeneratorPlugin::getActiveViewName(QSharedPointer<LibraryComponen
     }
 
     return "";
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogGeneratorPlugin::saveChanges()
+//-----------------------------------------------------------------------------
+void VerilogGeneratorPlugin::saveChanges() const
+{
+    QString component = topComponent_->getVlnv()->toString();
+
+    bool saveSucceeded = utility_->getLibraryInterface()->writeModelToFile(topComponent_);            
+    if (saveSucceeded)
+    {
+        utility_->printInfo(tr("Saved changes to component %1.").arg(component));
+    }    
+    else
+    {
+
+        QString savePath = utility_->getLibraryInterface()->getPath(*topComponent_->getVlnv());
+        utility_->printError(tr("Could not write component %1 to file %2.").arg(component, savePath));
+    }
 }
