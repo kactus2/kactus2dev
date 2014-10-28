@@ -113,17 +113,26 @@ public:
         QSharedPointer<LibraryComponent> libDesConf = QSharedPointer<LibraryComponent>(), 
         QSharedPointer<LibraryComponent> libDes = QSharedPointer<LibraryComponent>());
 
+protected:
+
+    /*!
+     *  Selects the output for the generation.     
+     *
+     *      @return The absolute path to the output file.
+     */
+    virtual QString selectOutputFile() const;
+    
+    /*!
+     *  Gets the default output path.     
+     *
+     *      @return The default output path.
+     */
+    virtual QString defaultOutputPath() const;
+
 private:
 	// Disable copying.
 	VerilogGeneratorPlugin(VerilogGeneratorPlugin const& rhs);
 	VerilogGeneratorPlugin& operator=(VerilogGeneratorPlugin const& rhs);
-  
-    /*!
-     *  Asks the user to select the output for the generation.     
-     *
-     *      @return The absolute path to the output file.
-     */
-    void selectOutputFile();
 
     /*!
      *  Checks if the output file for generation has been selected.     
@@ -137,7 +146,7 @@ private:
      *
      *      @return True, if the file should be added to file set, otherwise false.
      */
-    bool fileShouldBeAddedToFileset() const;
+    virtual bool outputFileAndViewShouldBeAddedToTopComponent() const;
     
     /*!
      *  Gets the relative path from the top component xml file to the given absolute path.
@@ -153,7 +162,25 @@ private:
      *
      */
     void addGeneratedFileToFileSet() const;
-    
+
+    /*!
+     *  Adds an RTL view to the top component for the generated model.
+     *
+     *      @param [in] activeViewName   The name of the top component active view.
+     */
+    void addRTLViewToTopComponent(QString const& activeViewName) const;
+
+    /*!
+     *  Finds the active view of the top component.
+     *
+     *      @param [in] design          The design for which the generator is run.
+     *      @param [in] designConfig    The desing configuration for which the generator is run.
+     *
+     *      @return The name of the active view.
+     */
+    QString getActiveViewName(QSharedPointer<LibraryComponent> design, 
+        QSharedPointer<LibraryComponent> designConfig) const;
+
     //! The plugin utility to use while running generation.
     IPluginUtility* utility_;
 
