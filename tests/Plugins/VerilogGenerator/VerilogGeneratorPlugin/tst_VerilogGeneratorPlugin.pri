@@ -16,7 +16,7 @@ HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.h \
     ../../MockObjects/LibraryMock.h \
     ../../../../Plugins/VerilogGenerator/VerilogGeneratorPlugin.h \
-    ../../MockObjects/PluginUtilityMock.h
+    ../../../../Plugins/PluginSystem/PluginUtilityAdapter.h
 SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.cpp \
@@ -30,4 +30,4 @@ SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp 
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.cpp \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.cpp \
     ./tst_VerilogGeneratorPlugin.cpp \
-    ../../MockObjects/PluginUtilityMock.cpp
+    ../../../../Plugins/PluginSystem/PluginUtilityAdapter.cpp

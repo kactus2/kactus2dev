@@ -11,10 +11,9 @@
 
 #include <QtTest>
 
-#include <QEvent>
-
 #include <Plugins/VerilogGenerator/veriloggeneratorplugin_global.h>
 #include <Plugins/VerilogGenerator/VerilogGeneratorPlugin.h>
+#include <Plugins/PluginSystem/PluginUtilityAdapter.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/design.h>
@@ -22,7 +21,6 @@
 #include <IPXACTmodels/fileset.h>
 
 #include <tests/Plugins/MockObjects/LibraryMock.h>
-#include <tests/Plugins/MockObjects/PluginUtilityMock.h>
 
 class tst_VerilogGenerator : public VerilogGeneratorPlugin
 {
@@ -78,7 +76,7 @@ private:
     //! The test mock for library interface.
     LibraryMock library_;
 
-    PluginUtilityMock utilityMock_;
+    PluginUtilityAdapter utilityMock_;
 
     VerilogGeneratorPlugin plugin_;
 
@@ -89,7 +87,7 @@ private:
 // Function: tst_VerilogGenerator::tst_VerilogGenerator()
 //-----------------------------------------------------------------------------
 tst_VerilogGenerator::tst_VerilogGenerator(): library_(this), 
-    utilityMock_(&library_), plugin_(), activeWindow_(0)
+    utilityMock_(&library_, 0, this), plugin_(), activeWindow_(0)
 {
 
 }
