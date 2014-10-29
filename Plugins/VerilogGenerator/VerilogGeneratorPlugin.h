@@ -160,8 +160,19 @@ private:
     /*!
      *  Adds the generated file to a file set in the top component.
      *
+     *      @param [in] activeViewName   The name of the top component active view.
+     *
      */
-    void addGeneratedFileToFileSet() const;    
+    void addGeneratedFileToFileSet(QString const& activeViewName) const;    
+
+    /*!
+     *  Creates a name for the file set containing the generated file.
+     *
+     *      @param [in] activeViewName   The name of the top component active view.
+     *
+     *      @return Name for the generated file set.
+     */
+    QString fileSetNameForActiveView(QString const& activeViewName) const;
 
     /*!
      *  Adds an RTL view to the top component for the generated model.
@@ -169,7 +180,7 @@ private:
      *      @param [in] activeViewName   The name of the top component active view.
      */
     void addRTLViewToTopComponent(QString const& activeViewName) const;
-
+    
     /*!
      *  Finds the active view of the top component.
      *

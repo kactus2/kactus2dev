@@ -38,6 +38,7 @@ private slots:
     // Test cases:
     void testFilesetIsCreatedWhenRunForComponent();
     void testFilesetIsCreatedWhenRunForDesign();
+    void testFilesetIsCreatedWhenRunForDesign_data();
    
     void testRTLViewIsCreatedWhenRunForComponent();
    
@@ -144,15 +145,33 @@ void tst_VerilogGenerator::testFilesetIsCreatedWhenRunForComponent()
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::testFilesetIsCreatedWhenRunForDesign()
 {
+    QFETCH(QString, viewName);
+
     QSharedPointer<Component> targetComponent = createTestComponent();
     QSharedPointer<Design> targetDesign = createTestDesign();
+
+    View* structuralView = new View(viewName);
+    structuralView->setHierarchyRef(*targetDesign->getVlnv());
+    targetComponent->addView(structuralView);
 
     runGenerator(&utilityMock_, targetComponent, targetDesign);
 
     QVERIFY2(QFile::exists(selectOutputFile()), "No file created");
-    QVERIFY2(targetComponent->hasFileSet("verilogSource"), "No file set created");
-    QVERIFY2(targetComponent->getFileSet("verilogSource")->getFileNames().contains("test.v"), 
+    QVERIFY2(targetComponent->hasFileSet(viewName + "_verilogSource"), "No file set created");
+    QVERIFY2(targetComponent->getFileSet(viewName + "_verilogSource")->getFileNames().contains("test.v"), 
         "No file added to fileset");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testFilesetIsCreatedWhenRunForDesign_data()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testFilesetIsCreatedWhenRunForDesign_data()
+{
+    QTest::addColumn<QString>("viewName");
+
+    QTest::newRow("structural") << "structural";
+    QTest::newRow("hierarchical") << "hierarchical";
+    QTest::newRow("design") << "design";
 }
 
 //-----------------------------------------------------------------------------
@@ -198,11 +217,7 @@ void tst_VerilogGenerator::testStructuralViewIsCreatedWhenRunForDesign()
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::testStructuralViewIsCreatedWhenRunForDesign_data()
 {
-    QTest::addColumn<QString>("viewName");
-
-    QTest::newRow("structural") << "structural";
-    QTest::newRow("hierarchical") << "hierarchical";
-    QTest::newRow("design") << "design";
+    testFilesetIsCreatedWhenRunForDesign_data();
 }
 
 //-----------------------------------------------------------------------------
@@ -236,7 +251,7 @@ void tst_VerilogGenerator::testStructuralViewIsCreatedWhenRunWithDesignConfigura
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::testStructuralViewIsCreatedWhenRunWithDesignConfiguration_data()
 {
-    testStructuralViewIsCreatedWhenRunForDesign_data();
+    testFilesetIsCreatedWhenRunForDesign_data();
 }
 
 //-----------------------------------------------------------------------------
