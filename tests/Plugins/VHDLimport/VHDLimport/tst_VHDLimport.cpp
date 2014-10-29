@@ -40,6 +40,8 @@ private slots:
     void cleanup();
 
     //! Testcases:
+    void testSupportedFileTypes();
+
     void nothingParsedFromMalformedEntity();
 
     void nothingParsedFromMalformedEntity_data();
@@ -130,6 +132,19 @@ void tst_VHDLimport::init()
 void tst_VHDLimport::cleanup()
 {
     parser_.clear();
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VHDLimport::testSupportedFileTypes()
+//-----------------------------------------------------------------------------
+void tst_VHDLimport::testSupportedFileTypes()
+{
+    QStringList supportedTypes = parser_.getSupportedFileTypes();
+
+    QVERIFY(supportedTypes.contains("vhdlSource"));
+    QVERIFY(supportedTypes.contains("vhdlSource-93"));
+    QVERIFY(supportedTypes.contains("vhdlSource-87"));
+    QCOMPARE(supportedTypes.count(), 3);
 }
 
 //-----------------------------------------------------------------------------

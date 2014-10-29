@@ -7,8 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./VHDLSyntax.h \
-    ../common/HDLEquationParser.h \
+HEADERS += ../common/HDLEquationParser.h \
+    ./VHDLSyntax.h \
     ./vhdlimport_global.h \
     ./VHDLimport.h \
     ./VHDLPortParser.h \

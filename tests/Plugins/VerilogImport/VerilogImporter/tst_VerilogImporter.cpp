@@ -98,7 +98,10 @@ void tst_VerilogImporter::testFileTypes()
 
     QStringList supportedFileTypes = importer.getSupportedFileTypes();
 
-    QVERIFY(supportedFileTypes.contains("verilogSource"));    
+    QVERIFY(supportedFileTypes.contains("verilogSource"));
+    QVERIFY(supportedFileTypes.contains("verilogSource-95"));
+    QVERIFY(supportedFileTypes.contains("verilogSource-2001"));
+    QCOMPARE(supportedFileTypes.count(), 3);
 }
 
 //-----------------------------------------------------------------------------

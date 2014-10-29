@@ -135,7 +135,7 @@ QList<IPlugin::ExternalProgramRequirement> VHDLimport::getProgramRequirements()
 QStringList VHDLimport::getSupportedFileTypes() const
 {
     QStringList filetypes;
-    filetypes << "vhdlSource";
+    filetypes << "vhdlSource" << "vhdlSource-87" << "vhdlSource-93";
 
     return filetypes;
 }

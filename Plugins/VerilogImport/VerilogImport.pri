@@ -7,14 +7,14 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./VerilogPortParser.h \
-    ./verilogimport_global.h \
-    ./VerilogImporter.h \
-    ../common/HDLEquationParser.h \
+HEADERS += ../common/HDLEquationParser.h \
     ../common/HDLmath.h \
     ./VerilogParameterParser.h \
-    ./VerilogSyntax.h
-SOURCES += ./VerilogPortParser.cpp \
+    ./VerilogPortParser.h \
+    ./VerilogSyntax.h \
+    ./verilogimport_global.h \
+    ./VerilogImporter.h
+SOURCES += ../common/HDLEquationParser.cpp \
     ./VerilogImporter.cpp \
-    ../common/HDLEquationParser.cpp \
-    ./VerilogParameterParser.cpp
+    ./VerilogParameterParser.cpp \
+    ./VerilogPortParser.cpp
