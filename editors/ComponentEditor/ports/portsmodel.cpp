@@ -627,9 +627,10 @@ void PortsModel::setModelAndLockCurrentPorts(QSharedPointer<Model> model)
 //-----------------------------------------------------------------------------
 void PortsModel::lockPort(QSharedPointer<Port> port)
 {
-    QModelIndex nameIndex = index(port);
-    QModelIndex directionIndex = nameIndex.sibling(nameIndex.row(), PORT_COL_DIRECTION );
-    QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(), PORT_COL_TYPENAME);
+    QModelIndex portIndex = index(port);
+    QModelIndex nameIndex = index(port).sibling(portIndex.row(), PORT_COL_NAME);
+    QModelIndex directionIndex = nameIndex.sibling(portIndex.row(), PORT_COL_DIRECTION);
+    QModelIndex typeIndex = nameIndex.sibling(portIndex.row(), PORT_COL_TYPENAME);
 
     if (nameIndex.isValid() && typeIndex.isValid() && typeIndex.isValid())
     {     
