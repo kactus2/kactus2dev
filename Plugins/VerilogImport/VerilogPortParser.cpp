@@ -30,10 +30,27 @@ namespace
     //! Verilog port types.
     const QString PORT_TYPE("\\w+");
 
+    //! Subset of Verilog preprocessor commands.
+    const QString PREPROCESSOR_COMMAND("`(?:ifdef|ifndef|endif)[^\\r\\n]*");
+
+    //! Port declaration ends if preprocessor command is found. Preceding comment will be included.
+    const QString END_BEFORE_PREPROCESSOR("(?:[ \\t]*" + VerilogSyntax::COMMENT + ")?"
+        "(?=\\s*" + PREPROCESSOR_COMMAND + ")");
+
+    //! Port declaration ends if next port declaration is found.
+    const QString END_BEFORE_NEXT_ITEM("\\s*[,;][ \\t]*(?:"+ VerilogSyntax::COMMENT + ")?");
+
+    //! Port declaration ends if no more ports follow the declaration.
+    const QString LAST_PORT("(?:[ \\t]*" + VerilogSyntax::COMMENT + ")?(?=\\s*$)");
+
+    //! Port declaration must end with one of the conditions above.
+    const QString PORT_DECLARATION_END("(?:" + END_BEFORE_PREPROCESSOR + ")|"
+        "(?:" + END_BEFORE_NEXT_ITEM + ")|"
+        "(?:" + LAST_PORT +")");
+
     //! Verilog ports in both ANSI-C and Verilog-1995 style.
     const QRegExp PORT_EXP("(" + PORT_DIRECTION + ")\\s+(?:(" + PORT_TYPE + ")\\s+)?(?:signed)?\\s*"
-        "(" + VerilogSyntax::RANGE + ")?\\s*(" + VerilogSyntax::NAMES + ")"
-        "(?:\\s*[,;][ \\t]*(?:"+ VerilogSyntax::COMMENT + ")?|(?:[ \\t]*"+ VerilogSyntax::COMMENT + ")?(?=\\s*$))");
+        "(" + VerilogSyntax::RANGE + ")?\\s*(" + VerilogSyntax::NAMES + ")(?:" + PORT_DECLARATION_END + ")");
 
     //! Verilog ports in Verilog-1995 style.
     const QRegExp PORT_1995("(" + PORT_DIRECTION + ")\\s+(" + VerilogSyntax::RANGE + ")?\\s*"
@@ -82,7 +99,7 @@ void VerilogPortParser::setHighlighter(Highlighter* highlighter)
 QStringList VerilogPortParser::findPortDeclarations(QString const& input) const
 {
     QString portSection = findPortsSection(input);
-    portSection = removeCommentLines(portSection);
+    portSection = removeIgnoredLines(portSection);
 
     return portDeclarationsIn(portSection);
 }
@@ -138,7 +155,7 @@ QString VerilogPortParser::findVerilog1995PortsSectionInModule(QString const& in
     int endOfModule = VerilogSyntax::MODULE_END.indexIn(input, startOfPortList);
 
     QString section = input.mid(startOfPortList, endOfModule - startOfPortList);
-    section = removeCommentLines(section);
+    section = removeIgnoredLines(section);
 
     int firstPort = PORT_1995.indexIn(section);
     int lastPort = PORT_1995.lastIndexIn(section);
@@ -149,7 +166,6 @@ QString VerilogPortParser::findVerilog1995PortsSectionInModule(QString const& in
     {
         return QString();
     }
-
 
     int portSectionLength = endOfPorts - firstPort;
 
@@ -179,9 +195,9 @@ QString VerilogPortParser::findVerilog2001PortsSection(QString const& input) con
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogPortParser::removeCommentLines()
+// Function: VerilogPortParser::removeIgnoredLines()
 //-----------------------------------------------------------------------------
-QString VerilogPortParser::removeCommentLines(QString portSection) const
+QString VerilogPortParser::removeIgnoredLines(QString portSection) const
 {    
     QRegExp multilineComment = VerilogSyntax::MULTILINE_COMMENT;
     multilineComment.setMinimal(true);
@@ -324,13 +340,8 @@ QStringList VerilogPortParser::parsePortNames(QString const& portDeclaration) co
 //-----------------------------------------------------------------------------
 QString VerilogPortParser::parseDescription(QString const& portDeclaration) const
 {
-    PORT_EXP.indexIn(portDeclaration);
-    QString description = PORT_EXP.cap(5).trimmed();
+    QRegExp commentExp(VerilogSyntax::COMMENT);
+    commentExp.indexIn(portDeclaration);
 
-    if (description.isEmpty())
-    {
-        description = PORT_EXP.cap(6).trimmed();
-    }
-
-    return description;
+    return commentExp.cap(1).trimmed();
 }

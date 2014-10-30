@@ -111,13 +111,13 @@ private:
     QString findVerilog2001PortsSection(QString const& input) const;
 
     /*!
-     *  Removes all comment lines from a given input.
+     *  Removes all ignored lines e.g. comments from a given input.
      *
-     *      @param [in] input   The input to remove comments from.
+     *      @param [in] input   The input to remove lines from.
      *
-     *      @return The input without comment lines.
+     *      @return The input without ignored lines.
      */
-    QString removeCommentLines(QString portSection) const ;
+    QString removeIgnoredLines(QString portSection) const ;
     
     /*!
      *  Finds all port declarations from a ports section without comment lines.

@@ -424,6 +424,41 @@ void tst_VerilogPortParser::testMultiplePortsAreParsed_data()
         ");\n"
         "endmodule"
         << QString("clk, rst, enable").split(", ");
+
+    QTest::newRow("Misplaced comma") << 
+        "module test(\n"
+        "    input clk,\n" 
+        "    input rst\n"
+        "    ,input enable \n"
+        ");\n"
+        "endmodule"
+        << QString("clk, rst, enable").split(", ");
+
+        QTest::newRow("Conditional ports") << 
+        "module test(\n"
+        "    `ifdef SYNCHRONOUS\n"
+        "    input clk,\n" 
+        "    `endif\n"
+        "    input rst\n"
+        "    `ifdef ENABLE_PIN\n"
+        "    ,input enable \n"
+        "    `endif\n"
+        ");\n"
+        "endmodule"
+        << QString("clk, rst, enable").split(", ");
+
+        QTest::newRow("Conditional port and comma on next line") << 
+            "module test(\n"
+            "    input clk\n" 
+            "    `ifdef EXTERNAL_RESET\n"
+            "    ,input rst // reset\n"
+            "    `endif\n"
+            "    `ifdef ENABLE_PIN\n"
+            "    ,input enable\n"
+            "    `endif\n"
+            ");\n"
+            "endmodule"
+            << QString("clk, rst, enable").split(", ");
 }
 
 //-----------------------------------------------------------------------------

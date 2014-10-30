@@ -238,6 +238,28 @@ void tst_VerilogImporter::testPortIsHighlighted_data()
         << 
         "input clk,";
 
+    QTest::newRow("Conditional port") << 
+        "module test (\n"
+        "    input clk\n"
+        "    `ifdef EXTERNAL_RESET\n"
+        "    ,input rst_n\n"
+        "    `endif\n"
+        "    );\n"
+        "endmodule;"
+        << 
+        "input clk";
+
+    QTest::newRow("Conditional port with comments") << 
+        "module test (\n"
+        "    input clk // clock description\n"
+        "    `ifdef EXTERNAL_RESET\n"
+        "    ,input rst_n\n"
+        "    `endif\n"
+        "    );\n"
+        "endmodule;"
+        << 
+        "input clk // clock description";
+
     QTest::newRow("Simplest possible 1995-style port declaration") <<
         "module test (clk);"
         "   input clk;\n"
