@@ -167,9 +167,19 @@ HEADERS += ./common/Global.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardConclusionPage.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardIntroPage.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardPortMapPage.h \
+    ./wizards/ImportWizard/ImportWizardIntroPage.h \
     ./wizards/ImportWizard/ImportWizardPages.h \
     ./wizards/ImportWizard/ImportWizardImportPage.h \
     ./wizards/ImportWizard/ImportWizard.h \
+    ./wizards/common/IPXactDiff.h \
+    ./wizards/common/IPXactElementComparator.h \
+    ./wizards/common/ListComparator.h \
+    ./wizards/common/ComponentComparator/ComponentComparator.h \
+    ./wizards/common/ComponentDiffWidget/ComponentDiffWidget.h \
+    ./wizards/common/VLNVComparator/VLNVComparator.h \
+    ./wizards/common/ModelParameterComparator/ModelParameterComparator.h \
+    ./wizards/common/ViewComparator/ViewComparator.h \
+    ./wizards/common/PortComparator/PortComparator.h \
     ./Help/HelpSystem/HelpWindow.h \
     ./Help/HelpSystem/ContextHelpBrowser.h \
     ./Help/HelpSystem/HelpSearchWidget.h \
@@ -548,17 +558,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./wizards/common/VLNVComparator/VLNVComparator.h \
-    ./wizards/common/ModelParameterComparator/ModelParameterComparator.h \
-    ./wizards/common/IPXactDiff.h \
-    ./wizards/common/IPXactElementComparator.h \
-    ./wizards/common/ComponentDiffWidget/ComponentDiffWidget.h \
-    ./wizards/common/ComponentComparator/ComponentComparator.h \
-    ./wizards/common/ViewComparator/ViewComparator.h \
-    ./wizards/common/ListComparator.h \
-    ./wizards/common/PortComparator/PortComparator.h \
-    ./wizards/ImportWizard/ImportWizardIntroPage.h
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -706,6 +706,14 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardPortMapPage.cpp \
     ./wizards/ImportWizard/ImportWizard.cpp \
     ./wizards/ImportWizard/ImportWizardImportPage.cpp \
+    ./wizards/ImportWizard/ImportWizardIntroPage.cpp \
+    ./wizards/common/IPXactDiff.cpp \
+    ./wizards/common/ComponentComparator/ComponentComparator.cpp \
+    ./wizards/common/ComponentDiffWidget/ComponentDiffWidget.cpp \
+    ./wizards/common/VLNVComparator/VLNVComparator.cpp \
+    ./wizards/common/ModelParameterComparator/ModelParameterComparator.cpp \
+    ./wizards/common/ViewComparator/ViewComparator.cpp \
+    ./wizards/common/PortComparator/PortComparator.cpp \
     ./Help/HelpSystem/ContextHelpBrowser.cpp \
     ./Help/HelpSystem/HelpSearchWidget.cpp \
     ./Help/HelpSystem/HelpWindow.cpp \
@@ -1067,13 +1075,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./wizards/common/IPXactDiff.cpp \
-    ./wizards/common/ComponentComparator/ComponentComparator.cpp \
-    ./wizards/common/ComponentDiffWidget/ComponentDiffWidget.cpp \
-    ./wizards/common/VLNVComparator/VLNVComparator.cpp \
-    ./wizards/common/ModelParameterComparator/ModelParameterComparator.cpp \
-    ./wizards/common/ViewComparator/ViewComparator.cpp \
-    ./wizards/common/PortComparator/PortComparator.cpp \
-    ./wizards/ImportWizard/ImportWizardIntroPage.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
 RESOURCES += kactus.qrc

@@ -8,6 +8,22 @@
               * Changed or Information
 ===============================================================================
 
+31/10/2014 2.6.0
+----------------------------------------------------
+
++ New plugin interface for file import.
++ New plugins:
+	* Verilog import.
+	* Verilog generator for components and designs.
+	* Makefile generator.
++ Added feature to run import from component editor.
++ Added editing of views to component wizard.
++ Added feature to sort port list by port number.
+
+* Moved VHDL import tool to import plugin.
+* Updated MCAPI to version 2.015.
+* Updated MCAPI generator.
+
 08/07/2014 2.5.0
 ----------------------------------------------------
 

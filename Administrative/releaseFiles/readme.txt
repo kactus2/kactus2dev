@@ -44,7 +44,7 @@ Contributors
 ----------------------------------------------------
 
 Antti Kamppi, Joni-Matti M‰‰tt‰, Lauri Matilainen, Timo D. H‰m‰l‰inen,
-Juho J‰rvinen, Esko Pekkarinen
+Juho J‰rvinen, Esko Pekkarinen, Janne Virtanen
 
 
 Kactus2 is linked with Qt 5.2.0, copyright Digia Plc. (LGPL)

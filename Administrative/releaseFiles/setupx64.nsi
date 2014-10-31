@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Kactus2"
-!define PRODUCT_VERSION "2.5 64-bit"
+!define PRODUCT_VERSION "2.6 64-bit"
 !define PRODUCT_PUBLISHER "TUT"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Kactus2.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -102,7 +102,11 @@ Section "MainSection" SEC01
   File "..\..\x64\executable\Plugins\MemoryMapHeaderGenerator.dll"
   File "..\..\x64\executable\Plugins\PadsPartGenerator.dll"
   File "..\..\x64\executable\Plugins\QuartusPinImportPlugin.dll"
-
+  File "..\..\executable\Plugins\MakefileGenerator.dll"
+  File "..\..\executable\Plugins\VerilogGeneratorPlugin.dll"
+  File "..\..\executable\Plugins\VerilogImport.dll"
+  File "..\..\executable\Plugins\VHDLImport.dll"
+  
   SetOutPath "$INSTDIR\Help"
   SetOverwrite on
   File "..\..\Help\Kactus2Help.qhc"
@@ -119,6 +123,14 @@ Section "MainSection" SEC01
   SetOutPath "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063"
   SetOverwrite on
   File "Library\TUT\ip.swp.api\mcapi.apiDef\1.063\mcapi.apiDef.1.063.xml"
+
+  SetOutPath "$INSTDIR\Library\TUT\global.communication\mcapi\2.015"
+  SetOverwrite on
+  File "Library\TUT\global.communication\mcapi\2.015\mcapi.2.015.xml"
+
+  SetOutPath "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\2.015"
+  SetOverwrite on
+  File "Library\TUT\ip.swp.api\mcapi.apiDef\2.015\mcapi.apiDef.2.015.xml"
 
   SetOutPath "$INSTDIR"
   CreateDirectory "$SMPROGRAMS\Kactus2"
@@ -176,10 +188,16 @@ FunctionEnd
 
 Section Uninstall
   Delete "$INSTDIR\uninst.exe"
+  Delete "$INSTDIR\Library\TUT\global.communication\mcapi\2.015\mcapi.2.015.xml"
+  Delete "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\2.015\mcapi.apiDef.2.015.xml"
   Delete "$INSTDIR\Library\TUT\global.communication\mcapi\1.063\mcapi.1.063.xml"
   Delete "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063\mcapi.apiDef.1.063.xml"
   Delete "$INSTDIR\Help\Kactus2Help.qch"
   Delete "$INSTDIR\Help\Kactus2Help.qhc"
+  Delete "$INSTDIR\Plugins\VHDLImport.dll"
+  Delete "$INSTDIR\Plugins\VerilogImport.dll"
+  Delete "$INSTDIR\Plugins\VerilogGeneratorPlugin.dll"
+  Delete "$INSTDIR\Plugins\MakefileGenerator.dll"
   Delete "$INSTDIR\Plugins\QuartusPinImportPlugin.dll"
   Delete "$INSTDIR\Plugins\PadsPartGenerator.dll"
   Delete "$INSTDIR\Plugins\MemoryMapHeaderGenerator.dll"
@@ -227,9 +245,11 @@ Section Uninstall
   RMDir "$INSTDIR\sqldrivers"
   RMDir "$INSTDIR\platforms"
   RMDir "$INSTDIR\accessible"
+  RMDir "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\2.015"
   RMDir "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063"
   RMDir "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef"
   RMDir "$INSTDIR\Library\TUT\ip.swp.api"
+  RMDir "$INSTDIR\Library\TUT\global.communication\mcapi\2.015"
   RMDir "$INSTDIR\Library\TUT\global.communication\mcapi\1.063"
   RMDir "$INSTDIR\Library\TUT\global.communication\mcapi"
   RMDir "$INSTDIR\Library\TUT\global.communication"
