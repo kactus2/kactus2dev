@@ -32,8 +32,7 @@ public:
 	 * \param parent Pointer to the instance that owns this model.
 	 *
 	*/
-	ComponentEditorTreeModel(LibraryInterface* libHandler,
-		PluginManager& pluginMgr, QObject* parent, QWidget* parentWnd);
+	ComponentEditorTreeModel(QObject* parent);
 	
 	//! \brief The destructor
 	virtual ~ComponentEditorTreeModel();
@@ -43,7 +42,7 @@ public:
 	 * \param component Pointer to the component to edit.
 	 *
 	*/
-	void setComponent(QSharedPointer<Component> component);
+    void setRootItem(QSharedPointer<ComponentEditorRootItem> root);
 
 	/*! \brief Get the number of rows an item contains.
 	 *
@@ -219,17 +218,9 @@ private:
 	//! \brief No assignment
 	ComponentEditorTreeModel& operator=(const ComponentEditorTreeModel& other);
 
-	//! \brief Pointer to the instance that manages the library.
-	LibraryInterface* libHandler_;
-
-    //! The plugin manager.
-    PluginManager& pluginMgr_;
-
 	//! \brief Pointer to the root item of the tree.
 	QSharedPointer<ComponentEditorRootItem> rootItem_;
 
-    //! The parent window.
-    QWidget* parentWnd_;
 };
 
 #endif // COMPONENTEDITORTREEMODEL_H

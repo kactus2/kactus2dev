@@ -1,15 +1,21 @@
-/* 
- *  	Created on: 16.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 16.5.2012
+//
+// Description:
+// The editor to edit/packet IP-Xact components.
+//-----------------------------------------------------------------------------
 
 #ifndef COMPONENTEDITOR_H
 #define COMPONENTEDITOR_H
 
 #include <common/widgets/tabDocument/TabDocument.h>
+
 #include <IPXACTmodels/component.h>
+
 #include <editors/ComponentEditor/treeStructure/componenttreeview.h>
 #include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorgroupslot.h>
@@ -21,110 +27,111 @@
 class LibraryInterface;
 class PluginManager;
 
-
-/*! \brief The editor to edit/packet IP-Xact components.
- *
- */
-class ComponentEditor : public TabDocument {
+//-----------------------------------------------------------------------------
+//! The editor to edit/packet IP-Xact components.
+//-----------------------------------------------------------------------------
+class ComponentEditor : public TabDocument
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor.
+	/*! The constructor.
 	 *
-	 * \param libHandler Pointer to the instance that manages the library.
-	 * \param component Pointer to the component being edited.
-	 * \param parent Parent widget of the editor.
+	 *      @param [in] libHandler  The instance that manages the component library.
+     *      @param [in] pluginMgr   The instance that manages the plugins.
+	 *      @param [in] component   The component being edited.
+	 *      @param [in] parent      Parent widget of the editor.
 	 *
-	*/
+	 */
 	ComponentEditor(LibraryInterface* libHandler, 
         PluginManager& pluginMgr,
 		QSharedPointer<Component> component, 
 		QWidget *parent);
 
-	//! \brief The destructor
+	//! The destructor
 	~ComponentEditor();
 
-	/*! \brief Get the VLNV that can be used to identify the component.
+	/*! Get the VLNV that can be used to identify the component.
 	 *
-	 * \return The VLNV of the component.
+	 *      @return The VLNV of the component.
 	*/
 	virtual VLNV getIdentifyingVLNV() const;
 
-	/*! \brief Get the vlnv of the current component.
+	/*! Get the vlnv of the current component.
 	 *
-	 * \return VLNV of the component being edited.
+	 *      @return VLNV of the component being edited.
 	*/
 	virtual VLNV getDocumentVLNV() const;
 
-	/*! \brief Check if the editor is editing a hardware implementation or not.
+	/*! Check if the editor is editing a hardware implementation or not.
 	 *
-	 * \return True if the component is a hardware component.
+	 *      @return True if the component is a hardware component.
 	*/
 	virtual bool isHWImplementation() const;
 
-	//! \brief Refreshes the editor to display the changes made.
+	//! Refreshes the editor to display the changes made.
     virtual void refresh();
 
 public slots:
 
-    /*! \brief Validates the document against the IP-XACT standard.
+    /*! Validates the document against the IP-XACT standard.
      *
-     * \param errorList Error message list for reporting standard violations.
+     *      @param [in] errorList Error message list for reporting standard violations.
      *
-     * \return True if the document is valid. False if there were any violations.
+     *      @return True if the document is valid. False if there were any violations.
     */
     virtual bool validate(QStringList& errorList);
 
-	//! \brief Saves the document and resets the modified state.
+	//! Saves the document and resets the modified state.
 	virtual bool save();
 
-	//! \brief Saves the document as new object and resets modifies state
+	//! Saves the document as new object and resets modifies state
 	virtual bool saveAs();
 
-	/*! \brief Run vhdl generator for the component.
+	/*! Run vhdl generator for the component.
 	 *
-	 * \return bool True if the metadata was changed and the editor should be refreshed.
+	 *      @return bool True if the metadata was changed and the editor should be refreshed.
 	*/
 	bool onVhdlGenerate();
 
-	/*! \brief Run modelsim generator for the component.
+	/*! Run modelsim generator for the component.
 	 *
-	 * \return bool True if the metadata was changed and the editor should be refreshed.
+	 *      @return bool True if the metadata was changed and the editor should be refreshed.
 	*/
 	bool onModelsimGenerate();
 
-	/*! \brief Set the protection state of the document.
+	/*! Set the protection state of the document.
 	 *
-	 * \param locked True for locked state, false for unlocked.
+	 *      @param [in] locked True for locked state, false for unlocked.
 	 *
 	*/
 	virtual void setProtection(bool locked);
 
 private slots:
 
-	/*! \brief This slot is called when an item is selected in the navigation tree.
+	/*! This slot is called when an item is selected in the navigation tree.
 	 *
-	 * \param index The index identifying the item.
+	 *      @param [in] index The index identifying the item.
 	 *
 	*/
 	void onItemActivated(const QModelIndex& index);
 
-	/*! \brief This slot is called when navigation tree sends a selectItem signal.
+	/*! This slot is called when navigation tree sends a selectItem signal.
 	 * 
 	 * This function tells navigation view to select the index in the tree and then
 	 * calls ComponentEditor::onItemActivated() slot.
 	 * 
-	 * \param index Model index that identifies the item to select.
+	 *      @param [in] index Model index that identifies the item to select.
 	 *
 	*/
 	void onNavigationTreeSelection(const QModelIndex& index);
 
-	/*! \brief This slot is called when navigation tree sends an expandItem signal.
+	/*! This slot is called when navigation tree sends an expandItem signal.
 	 * 
 	 * This function tells navigation view to expand the index in the tree.
 	 * 
-	 * \param index Model index that identifies the item to expand.
+	 *      @param [in] index Model index that identifies the item to expand.
 	 *
 	*/
     void onExpand(const QModelIndex& index);
@@ -139,37 +146,75 @@ signals:
     void openCSource(QString const& filename, QSharedPointer<Component> component);
 
 private:
-	//! \brief No copying
-	ComponentEditor(const ComponentEditor& other);
 
-	//! \brief No assignment
+	//! No copying
+	ComponentEditor(const ComponentEditor& other);
+    
+	//! No assignment
 	ComponentEditor& operator=(const ComponentEditor& other);
 
-	//! \brief Pointer to the instance that manages the library.
+    /*!
+     *  Creates the root item for the navigation model for the given component.
+     *
+     *      @param [in] component   The component for which to create the root item.
+     *
+     *      @return The root item for the navigation model for the component.
+     */
+    QSharedPointer<ComponentEditorRootItem> createNavigationRootForComponent(QSharedPointer<Component> component);
+    
+    /*!
+     *  Creates the navigation model root item and its children for a HW component.
+     *
+     *      @param [in] component   The component for which to create the root item.
+     *
+     *      @return The root item for the navigation model for the component.
+     */
+    QSharedPointer<ComponentEditorRootItem> createHWRootItem(QSharedPointer<Component> component);
+        
+    /*!
+     *  Creates the navigation model root item and its children for a SW component.
+     *
+     *      @param [in] component   The component for which to create the root item.
+     *
+     *      @return The root item for the navigation model for the component.
+     */
+    QSharedPointer<ComponentEditorRootItem> createSWRootItem(QSharedPointer<Component> component);
+
+    //! Setups the editor layout.
+    void setupLayout();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! Pointer to the instance that manages the library.
 	LibraryInterface* libHandler_;
 
-	//! \brief The component being edited.
+    //! The instance managing all the plugins.
+    PluginManager& pluginManager_;
+
+	//! The component being edited.
 	QSharedPointer<Component> component_;
 
-	//! \brief The splitter to contain the navigation tree.
+	//! The splitter to contain the navigation tree.
 	QSplitter navigationSplitter_;
 
-	//! \brief The splitter to display the editors and visualizers.
+	//! The splitter to display the editors and visualizers.
 	QSplitter editorVisualizerSplitter_;
 
-	//! \brief The model to control the navigation view.
+	//! The model to control the navigation view.
 	ComponentEditorTreeModel navigationModel_;
 
-	//! \brief The tree view to navigate in the editor.
+	//! The tree view to navigate in the editor.
 	ComponentTreeView navigationView_;
 
-    //! \brief The proxy model for sorting the tree items.
+    //! The proxy model for sorting the tree items.
     ComponentEditorTreeProxyModel proxy_;
 
-	//! \brief The slot to display the editors in.
+	//! The slot to display the editors in.
 	ComponentEditorGroupSlot editorSlot_;
 
-	//! \brief The slot to display the visualizers in.
+	//! The slot to display the visualizers in.
 	ComponentEditorGroupSlot visualizerSlot_;
 };
 

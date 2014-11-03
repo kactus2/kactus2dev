@@ -1,29 +1,33 @@
-/* 
- *  	Created on: 9.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorrootitem.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditorrootitem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 9.5.2012
+//
+// Description:
+// The root item in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #ifndef COMPONENTEDITORROOTITEM_H
 #define COMPONENTEDITORROOTITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXACTmodels/component.h>
 
 #include <QSharedPointer>
 #include <QString>
 #include <QWidget>
 
+class Component;
 class ItemEditor;
 class ComponentEditorTreeModel;
 class LibraryInterface;
-class PluginManager;
 
-/*! \brief The root item in the component editor's navigation tree.
- *
- */
-class ComponentEditorRootItem : public ComponentEditorItem {
+//-----------------------------------------------------------------------------
+//! The root item in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
+class ComponentEditorRootItem : public ComponentEditorItem
+{
 	Q_OBJECT
 
 public:
@@ -36,10 +40,8 @@ public:
 	 *
 	*/
 	ComponentEditorRootItem(LibraryInterface* libHandler,
-        PluginManager& pluginMgr,
 		QSharedPointer<Component> component,
-		ComponentEditorTreeModel* parent,
-        QWidget* parentWnd);
+		ComponentEditorTreeModel* parent);
 	
 	//! \brief The destructor
 	virtual ~ComponentEditorRootItem();
@@ -74,6 +76,13 @@ public:
 	*/
 	virtual const ItemEditor* editor() const;
 
+    /*!
+     *  Adds a child item for the root item.
+     *
+     *      @param [in] childItem   The child item to add.
+     */
+    void addChildItem(QSharedPointer<ComponentEditorItem> childItem);
+
 	/*! \brief Get the tree item that holds the editor for given bus interface.
 	 *
 	 * \param interfaceName The name of the bus interface to get the item for.
@@ -82,9 +91,12 @@ public:
 	*/
 	QSharedPointer<ComponentEditorItem> getBusInterfaceItem(const QString& interfaceName) const;
 
-private slots:
+public slots:
 
-virtual void addInterface();
+    /*!
+     *  Called when new interface is created from a set of ports.
+     */
+    virtual void onInterfaceAdded();
 
 private:
 	//! \brief No copying
@@ -92,7 +104,8 @@ private:
 
 	//! \brief No assignment
 	ComponentEditorRootItem& operator=(const ComponentEditorRootItem& other);
-    
+
+
 };
 
 #endif // COMPONENTEDITORROOTITEM_H

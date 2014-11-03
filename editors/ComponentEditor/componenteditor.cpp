@@ -1,17 +1,43 @@
-/* 
- *  	Created on: 16.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 16.5.2012
+//
+// Description:
+// The editor to edit/packet IP-Xact components.
+//-----------------------------------------------------------------------------
 
 #include "componenteditor.h"
 
+#include <editors/ComponentEditor/treeStructure/componenteditorrootitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorgeneralitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorfilesetsitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditormodelparamsitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorparametersitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditormemmapsitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditoraddrspacesitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorviewsitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorportsitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorbusinterfacesitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorchannelsitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorcpusitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorotherclocksitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorcominterfacesitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorswviewsitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorapiinterfacesitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h>
+#include <editors/ComponentEditor/treeStructure/ComponentEditorSystemViewsItem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
 #include <editors/ComponentEditor/treeStructure/componenteditoritem.h>
+
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
+#include <common/dialogs/comboSelector/comboselector.h>
+
 #include <kactusGenerators/vhdlGenerator/vhdlgenerator2.h>
 #include <kactusGenerators/modelsimGenerator/modelsimgenerator.h>
-#include <common/dialogs/comboSelector/comboselector.h>
+
 #include <editors/ComponentEditor/itemeditor.h>
 #include <editors/ComponentEditor/itemvisualizer.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
@@ -22,31 +48,31 @@
 #include <QHBoxLayout>
 #include <QApplication>
 
-#include <QDebug>
-
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::ComponentEditor()
+//-----------------------------------------------------------------------------
 ComponentEditor::ComponentEditor(LibraryInterface* libHandler,
                                  PluginManager& pluginMgr,
 								 QSharedPointer<Component> component,
 								 QWidget *parent):
 TabDocument(parent, DOC_PROTECTION_SUPPORT),
 libHandler_(libHandler),
+pluginManager_(pluginMgr),
 component_(component),
 navigationSplitter_(Qt::Horizontal, this),
 editorVisualizerSplitter_(Qt::Horizontal, &navigationSplitter_), 
-navigationModel_(libHandler, pluginMgr, this, parent),
+navigationModel_(this),
 navigationView_(libHandler, *component->getVlnv(), &navigationSplitter_),
 proxy_(this),
 editorSlot_(&editorVisualizerSplitter_),
-visualizerSlot_(&editorVisualizerSplitter_) {
-
+visualizerSlot_(&editorVisualizerSplitter_)
+{
 	// these can be used when debugging to identify the objects
 	setObjectName(tr("ComponentEditor"));
 	navigationSplitter_.setObjectName(tr("NavigationSplitter"));
 	editorVisualizerSplitter_.setObjectName(tr("EditorVisualizerSplitter"));
 	editorSlot_.setObjectName(tr("EditorSlot"));
 	visualizerSlot_.setObjectName(tr("VisualizerSlot"));
-
-    supportedWindows_ |= NOTES_WINDOW;
 
 	Q_ASSERT(component_);
 	Q_ASSERT(libHandler_);
@@ -68,22 +94,12 @@ visualizerSlot_(&editorVisualizerSplitter_) {
         setDocumentType(tr("Unmapped System"));
     }
 
-	// the top layout contains only the navigation splitter
-	QHBoxLayout* layout = new QHBoxLayout(this);
-	layout->addWidget(&navigationSplitter_);
-	layout->setContentsMargins(5, 5, 5, 5);
+    addRelatedVLNV(*component_->getVlnv());
 
-	// editor visualizer splitter contains the editor- and visualizer slots
-	editorVisualizerSplitter_.addWidget(&editorSlot_);
-	editorVisualizerSplitter_.addWidget(&visualizerSlot_);
-
-	// navigation splitter contains the navigation tree and the other splitter
-	navigationSplitter_.addWidget(&navigationView_);
-	navigationSplitter_.addWidget(&editorVisualizerSplitter_);
-    navigationSplitter_.setStretchFactor(1, 1);
+    setupLayout();
 
 	// set the component to be displayed in the navigation model
-	navigationModel_.setComponent(component_);
+    navigationModel_.setRootItem(createNavigationRootForComponent(component_));
 
     // Set source model for the proxy.
     proxy_.setSourceModel(&navigationModel_);
@@ -92,15 +108,11 @@ visualizerSlot_(&editorVisualizerSplitter_) {
 	navigationView_.setModel(&proxy_);
     navigationView_.sortByColumn(0, Qt::AscendingOrder);
 
-	// The navigation tree takes 1/5 of the space available and editor and 
-	// visualizer take the rest
-	QList<int> navigationSize;
-	navigationSize.append(ComponentTreeView::DEFAULT_WIDTH);
-	navigationSize.append(4 * ComponentTreeView::DEFAULT_WIDTH);
-	navigationSplitter_.setSizes(navigationSize);
-
 	// when starting the component editor open the general editor.
 	onItemActivated(proxy_.index(0, 0, QModelIndex()));
+
+    // Open in unlocked mode by default only if the version is draft.
+    setProtection(component_->getVlnv()->getVersion() != "draft");
 
 	// navigation model may request an item to be expanded
 	connect(&navigationModel_, SIGNAL(expandItem(const QModelIndex&)),
@@ -133,33 +145,48 @@ visualizerSlot_(&editorVisualizerSplitter_) {
 		this, SIGNAL(openSWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 	connect(&navigationModel_, SIGNAL(openSystemDesign(const VLNV&, const QString&)),
 		this, SIGNAL(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
-
-    addRelatedVLNV(*component_->getVlnv());
-
-	// Open in unlocked mode by default only if the version is draft.
-	setProtection(component_->getVlnv()->getVersion() != "draft");
 }
 
-ComponentEditor::~ComponentEditor() {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::~ComponentEditor()
+//-----------------------------------------------------------------------------
+ComponentEditor::~ComponentEditor()
+{
+
 }
 
-void ComponentEditor::setProtection( bool locked ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::setProtection()
+//-----------------------------------------------------------------------------
+void ComponentEditor::setProtection( bool locked )
+{
 	TabDocument::setProtection(locked);
 
 	// tell tree items to change the state of the editors
 	navigationModel_.setLocked(locked);
 }
 
-VLNV ComponentEditor::getDocumentVLNV() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::getDocumentVLNV()
+//-----------------------------------------------------------------------------
+VLNV ComponentEditor::getDocumentVLNV() const
+{
 	return *component_->getVlnv();
 }
 
-bool ComponentEditor::isHWImplementation() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::isHWImplementation()
+//-----------------------------------------------------------------------------
+bool ComponentEditor::isHWImplementation() const
+{
 	return component_->getComponentImplementation() == KactusAttribute::KTS_HW;
 }
 
-void ComponentEditor::refresh() {
-
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::refresh()
+//-----------------------------------------------------------------------------
+void ComponentEditor::refresh()
+{
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	// remember the locked state
@@ -178,7 +205,7 @@ void ComponentEditor::refresh() {
 	QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
 	// rebuild the navigation tree
-	navigationModel_.setComponent(comp);
+	navigationModel_.setRootItem(createNavigationRootForComponent(comp));
 	component_.clear();
 	component_ = comp;
 
@@ -195,23 +222,35 @@ void ComponentEditor::refresh() {
 	QApplication::restoreOverrideCursor();
 }
 
-bool ComponentEditor::validate( QStringList& errorList ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::validate()
+//-----------------------------------------------------------------------------
+bool ComponentEditor::validate( QStringList& errorList )
+{
 	return component_->isValid(errorList);
 }
 
-bool ComponentEditor::save() {
-
-	if (libHandler_->writeModelToFile(component_, false)) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::save()
+//-----------------------------------------------------------------------------
+bool ComponentEditor::save()
+{
+	if (libHandler_->writeModelToFile(component_, false))
+    {
 		return TabDocument::save();
 	}
-	else {
+	else
+    {
 		emit errorMessage(tr("Component was not saved to disk."));
 		return false;
 	}
 }
 
-bool ComponentEditor::saveAs() {
-
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::saveAs()
+//-----------------------------------------------------------------------------
+bool ComponentEditor::saveAs()
+{
 	// Ask the user for a new VLNV along with attributes and directory.
 	KactusAttribute::ProductHierarchy prodHier = component_->getComponentHierarchy();
 	KactusAttribute::Firmness firmness = component_->getComponentFirmness();
@@ -258,11 +297,13 @@ bool ComponentEditor::saveAs() {
 	component_->updateFiles(*oldComponent, sourcePath, directory);
 
 	// Write the component to a file.
-	if (libHandler_->writeModelToFile(directory, component_)) {
+	if (libHandler_->writeModelToFile(directory, component_))
+    {
 		setDocumentName(compVLNV.getName() + " (" + compVLNV.getVersion() + ")");
 		return TabDocument::saveAs();
 	}
-	else {
+	else
+    {
 		emit errorMessage(tr("Component was not saved to disk."));
 		return false;
 	}
@@ -273,7 +314,11 @@ bool ComponentEditor::saveAs() {
     return true;
 }
 
-void ComponentEditor::onNavigationTreeSelection( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::onNavigationTreeSelection()
+//-----------------------------------------------------------------------------
+void ComponentEditor::onNavigationTreeSelection( const QModelIndex& index )
+{
 	navigationView_.setCurrentIndex(index);
 	onItemActivated(index);
 }
@@ -292,10 +337,14 @@ void ComponentEditor::onExpand(const QModelIndex& index)
     }    
 }
 
-void ComponentEditor::onItemActivated( const QModelIndex& index ) {
-
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::onItemActivated()
+//-----------------------------------------------------------------------------
+void ComponentEditor::onItemActivated( const QModelIndex& index )
+{
     // If tree proxy model index is used, the item must be retrieved from the source model.
-    const ComponentEditorTreeProxyModel* indexModel = dynamic_cast<const ComponentEditorTreeProxyModel*>(index.model());
+    const ComponentEditorTreeProxyModel* indexModel = 
+        dynamic_cast<const ComponentEditorTreeProxyModel*>(index.model());
     ComponentEditorItem* item = 0;
     if ( indexModel == 0 )
     {
@@ -311,29 +360,32 @@ void ComponentEditor::onItemActivated( const QModelIndex& index ) {
 	QList<int> editorVisualizerSizes;
 
 	ItemEditor* editor = item->editor();
-	if (editor) {
-
+	if (editor)
+    {
 		// the width of the previous editor
 		QWidget* prevEditor = editorSlot_.getWidget();
-		if (prevEditor) {
+		if (prevEditor)
+        {
 			int prevWidth = prevEditor->size().width();
 			editorVisualizerSizes.append(prevWidth);
 		}
 		// if there was no previous editor then use the size hint
-		else {
+		else
+        {
 			editorVisualizerSizes.append(editor->sizeHint().width());
 		}
 		editor->refresh();
 	}
 	// if there is no editor then hide the editor slot
-	else {
+	else
+    {
 		editorVisualizerSizes.append(0);
 	}
 	editorSlot_.setWidget(editor);
 
 	ItemVisualizer* visualizer = item->visualizer();
-	if (visualizer) {
-
+	if (visualizer)
+    {
 		// the width of the previous visualizer
 		QWidget* prevVisualizer = visualizerSlot_.getWidget();
 		if (prevVisualizer) {
@@ -341,12 +393,14 @@ void ComponentEditor::onItemActivated( const QModelIndex& index ) {
 			editorVisualizerSizes.append(prevWidth);
 		}
 		// if there was no previous visualizer then use the size hint
-		else {
+		else
+        {
 			editorVisualizerSizes.append(visualizer->sizeHint().width());
 		}
 	}
 	// if there is no visualizer then hide the visualizer slot
-	else {
+	else
+    {
 		editorVisualizerSizes.append(0);
 	}
 	visualizerSlot_.setWidget(visualizer);
@@ -354,16 +408,22 @@ void ComponentEditor::onItemActivated( const QModelIndex& index ) {
 	editorVisualizerSplitter_.setSizes(editorVisualizerSizes);
 }
 
-bool ComponentEditor::onVhdlGenerate() {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::onVhdlGenerate()
+//-----------------------------------------------------------------------------
+bool ComponentEditor::onVhdlGenerate()
+{
 	// if the component is hierarchical then it must be opened in design widget
-	if (component_->isHierarchical()) {
+	if (component_->isHierarchical())
+    {
 		QMessageBox::information(this, tr("Kactus2 component editor"),
 			tr("This component contains hierarchical views so you must open it"
 			" in a design editor and run the vhdl generator there."));
 		return false;
 	}
 
-	if (isModified() && askSaveFile()) {
+	if (isModified() && askSaveFile())
+    {
 		save();
 	}
 
@@ -390,7 +450,8 @@ bool ComponentEditor::onVhdlGenerate() {
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
 	// if errors are detected during parsing
-	if (!vhdlGen.parse(component_, QString())) {
+	if (!vhdlGen.parse(component_, QString()))
+    {
 		return false;
 	}
 
@@ -400,8 +461,8 @@ bool ComponentEditor::onVhdlGenerate() {
 	// check if the file already exists in the metadata
 	QString basePath = libHandler_->getPath(*component_->getVlnv());
 	QString relativePath = General::getRelativePath(basePath, path);
-	if (!component_->hasFile(relativePath)) {
-
+	if (!component_->hasFile(relativePath))
+    {
 		// ask user if he wants to save the generated vhdl into object metadata
 		QMessageBox::StandardButton button = QMessageBox::question(this, 
 			tr("Save generated file to metadata?"),
@@ -409,8 +470,8 @@ bool ComponentEditor::onVhdlGenerate() {
 			" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
 		// if the generated file is saved
-		if (button == QMessageBox::Yes) {
-
+		if (button == QMessageBox::Yes)
+        {
 			// add a rtl view to the component_
 			vhdlGen.addRTLView(path);
 
@@ -423,8 +484,13 @@ bool ComponentEditor::onVhdlGenerate() {
 	return false;
 }
 
-bool ComponentEditor::onModelsimGenerate() {
-	if (isModified() && askSaveFile()) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::onModelsimGenerate()
+//-----------------------------------------------------------------------------
+bool ComponentEditor::onModelsimGenerate()
+{
+	if (isModified() && askSaveFile())
+    {
 		save();
 	}
 
@@ -466,8 +532,8 @@ bool ComponentEditor::onModelsimGenerate() {
 	// check if the file already exists in the metadata
 	QString basePath = libHandler_->getPath(*component_->getVlnv());
 	QString relativePath = General::getRelativePath(basePath, fileName);
-	if (!component_->hasFile(relativePath)) {
-
+	if (!component_->hasFile(relativePath))
+    {
 		// ask user if he wants to save the generated modelsim script into 
 		// object metadata
 		QMessageBox::StandardButton button = QMessageBox::question(this, 
@@ -476,12 +542,13 @@ bool ComponentEditor::onModelsimGenerate() {
 			" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
 		// if the generated file is saved
-		if (button == QMessageBox::Yes) {
-
+		if (button == QMessageBox::Yes)
+        {
 			QString xmlPath = libHandler_->getPath(*component_->getVlnv());
 
 			// if the file was successfully added to the library
-			if (generator.addMakefile2IPXact(component_, fileName, xmlPath)) {
+			if (generator.addMakefile2IPXact(component_, fileName, xmlPath))
+            {
 				libHandler_->writeModelToFile(component_);
 				return true;
 			}
@@ -490,7 +557,145 @@ bool ComponentEditor::onModelsimGenerate() {
 	return false;
 }
 
-VLNV ComponentEditor::getIdentifyingVLNV() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::getIdentifyingVLNV()
+//-----------------------------------------------------------------------------
+VLNV ComponentEditor::getIdentifyingVLNV() const
+{
 	return getDocumentVLNV();
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::createNavigationRootForComponent()
+//-----------------------------------------------------------------------------
+QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootForComponent(
+    QSharedPointer<Component> component)
+{
+     if (component->getComponentImplementation() == KactusAttribute::KTS_HW)
+     {
+        return createHWRootItem(component);
+     }
+     else
+     {
+        return createSWRootItem(component);
+     }  
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::createHWRootItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QSharedPointer<Component> component)
+{
+    ComponentEditorRootItem* hwRoot = new ComponentEditorRootItem(libHandler_, component, &navigationModel_);
+
+    hwRoot->addChildItem(QSharedPointer<ComponentEditorGeneralItem>(
+        new ComponentEditorGeneralItem(&navigationModel_, libHandler_, component, hwRoot)));
+
+    hwRoot->addChildItem(QSharedPointer<ComponentEditorFileSetsItem>(
+        new ComponentEditorFileSetsItem(&navigationModel_, libHandler_, pluginManager_, component, hwRoot)));
+
+    hwRoot->addChildItem(QSharedPointer<ComponentEditorModelParamsItem>(
+        new ComponentEditorModelParamsItem(&navigationModel_, libHandler_, component, hwRoot)));
+
+    hwRoot->addChildItem(QSharedPointer<ComponentEditorParametersItem>(
+        new ComponentEditorParametersItem(&navigationModel_, libHandler_, component, hwRoot)));
+
+    hwRoot->addChildItem(QSharedPointer<ComponentEditorMemMapsItem>(
+        new ComponentEditorMemMapsItem(&navigationModel_, libHandler_, component, hwRoot)));
+
+    hwRoot->addChildItem(QSharedPointer<ComponentEditorAddrSpacesItem>(
+        new ComponentEditorAddrSpacesItem(&navigationModel_, libHandler_, component, hwRoot)));
+
+    hwRoot->addChildItem(QSharedPointer<ComponentEditorViewsItem>(
+        new ComponentEditorViewsItem(&navigationModel_, libHandler_, component, hwRoot)));
+
+    hwRoot->addChildItem(QSharedPointer<ComponentEditorSWViewsItem>(
+        new ComponentEditorSWViewsItem(&navigationModel_, libHandler_, component, hwRoot)));
+
+    hwRoot->addChildItem(QSharedPointer<ComponentEditorSystemViewsItem>(
+        new ComponentEditorSystemViewsItem(&navigationModel_, libHandler_, component, hwRoot)));
+
+    QSharedPointer<ComponentEditorPortsItem> portsItem(
+        new ComponentEditorPortsItem(&navigationModel_, libHandler_, component, hwRoot));
+
+    hwRoot->addChildItem(portsItem);
+    connect(portsItem.data(), SIGNAL(createInterface()), hwRoot, SLOT(onInterfaceAdded()), Qt::UniqueConnection);
+
+    hwRoot->addChildItem(QSharedPointer<ComponentEditorBusInterfacesItem>(
+        new ComponentEditorBusInterfacesItem(&navigationModel_, libHandler_, component, hwRoot, parentWidget())));
+
+    hwRoot->addChildItem(QSharedPointer<ComponentEditorChannelsItem>(
+        new ComponentEditorChannelsItem(&navigationModel_, libHandler_, component, hwRoot)));
+
+    hwRoot->addChildItem(QSharedPointer<ComponentEditorCpusItem>(
+        new ComponentEditorCpusItem(&navigationModel_, libHandler_, component, hwRoot)));
+
+    hwRoot->addChildItem(QSharedPointer<ComponentEditorOtherClocksItem>(
+        new ComponentEditorOtherClocksItem(&navigationModel_, libHandler_, component, hwRoot)));
+
+    hwRoot->addChildItem(QSharedPointer<ComponentEditorComInterfacesItem>(
+        new ComponentEditorComInterfacesItem(&navigationModel_, libHandler_, component, hwRoot)));
+
+    hwRoot->addChildItem(QSharedPointer<ComponentEditorSWPropertiesItem>(
+        new ComponentEditorSWPropertiesItem(&navigationModel_, libHandler_, component, hwRoot)));
+
+    return QSharedPointer<ComponentEditorRootItem>(hwRoot);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::createSWRootItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<ComponentEditorRootItem> ComponentEditor::createSWRootItem(QSharedPointer<Component> component)
+{
+    ComponentEditorRootItem* swRoot = new ComponentEditorRootItem(libHandler_, component, &navigationModel_);
+
+    swRoot->addChildItem(QSharedPointer<ComponentEditorGeneralItem>(
+        new ComponentEditorGeneralItem(&navigationModel_, libHandler_, component, swRoot)));
+
+    swRoot->addChildItem(QSharedPointer<ComponentEditorFileSetsItem>(
+        new ComponentEditorFileSetsItem(&navigationModel_, libHandler_, pluginManager_, component, swRoot)));
+
+    swRoot->addChildItem(QSharedPointer<ComponentEditorParametersItem>(
+        new ComponentEditorParametersItem(&navigationModel_, libHandler_, component, swRoot)));
+
+    swRoot->addChildItem(QSharedPointer<ComponentEditorSWViewsItem>(
+        new ComponentEditorSWViewsItem(&navigationModel_, libHandler_, component, swRoot)));
+
+    swRoot->addChildItem(QSharedPointer<ComponentEditorComInterfacesItem>(
+        new ComponentEditorComInterfacesItem(&navigationModel_, libHandler_, component, swRoot)));
+
+    swRoot->addChildItem(QSharedPointer<ComponentEditorAPIInterfacesItem>(
+        new ComponentEditorAPIInterfacesItem(&navigationModel_, libHandler_, component, swRoot)));
+
+    swRoot->addChildItem(QSharedPointer<ComponentEditorSWPropertiesItem>(
+        new ComponentEditorSWPropertiesItem(&navigationModel_, libHandler_, component, swRoot)));
+    
+    return QSharedPointer<ComponentEditorRootItem>(swRoot);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::setupLayout()
+//-----------------------------------------------------------------------------
+void ComponentEditor::setupLayout()
+{
+    // the top layout contains only the navigation splitter
+    QHBoxLayout* layout = new QHBoxLayout(this);
+    layout->addWidget(&navigationSplitter_);
+    layout->setContentsMargins(5, 5, 5, 5);
+
+    // editor visualizer splitter contains the editor- and visualizer slots
+    editorVisualizerSplitter_.addWidget(&editorSlot_);
+    editorVisualizerSplitter_.addWidget(&visualizerSlot_);
+
+    // navigation splitter contains the navigation tree and the other splitter
+    navigationSplitter_.addWidget(&navigationView_);
+    navigationSplitter_.addWidget(&editorVisualizerSplitter_);
+    navigationSplitter_.setStretchFactor(1, 1);
+
+    // The navigation tree takes 1/5 of the space available and editor and 
+    // visualizer take the rest
+    QList<int> navigationSize;
+    navigationSize.append(ComponentTreeView::DEFAULT_WIDTH);
+    navigationSize.append(4 * ComponentTreeView::DEFAULT_WIDTH);
+    navigationSplitter_.setSizes(navigationSize);
+}
