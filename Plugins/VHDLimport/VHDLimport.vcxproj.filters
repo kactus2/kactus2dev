@@ -52,11 +52,11 @@
     <ClCompile Include="VHDLPortParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_VHDLGenericParser.cpp">
-      <Filter>Generated Files\Debug</Filter>
+    <ClCompile Include="VHDLimport.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_VHDLGenericParser.cpp">
-      <Filter>Generated Files\Release</Filter>
+    <ClCompile Include="..\common\HDLEquationParser.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_VHDLPortParser.cpp">
       <Filter>Generated Files\Debug</Filter>
@@ -64,17 +64,17 @@
     <ClCompile Include="GeneratedFiles\Release\moc_VHDLPortParser.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="VHDLimport.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_VHDLimport.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_VHDLimport.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\HDLEquationParser.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GeneratedFiles\Debug\moc_VHDLGenericParser.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_VHDLGenericParser.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
