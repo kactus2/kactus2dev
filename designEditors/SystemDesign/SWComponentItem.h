@@ -88,6 +88,11 @@ public:
      */
     bool isDraft() const;
 
+    /*!
+	 *  Return the width of the component.
+	 */
+    qreal getWidth();
+
 public slots:
     void openCSource();
 
@@ -123,7 +128,6 @@ private:
     // Constants.
     enum
     {
-        WIDTH = 160,
         MIN_HEIGHT = 60
     };
 

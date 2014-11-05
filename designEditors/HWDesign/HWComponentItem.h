@@ -229,10 +229,15 @@ private:
      */
     void onAddPort(HWConnectionEndpoint* port, bool right);
 
-    /*!
-     *  Updates the size of the component based on the port positions.
-     */
-    void updateSize();
+	/*!
+	 *  Returns the height of the component.
+	 */
+	qreal getHeight();
+
+	/*!
+	 *  Returns the width of the component.
+	 */
+	qreal getWidth();
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -241,9 +246,11 @@ private:
     enum
     {
         SPACING = 8,
-        MIN_Y_PLACEMENT = 3 * GridSize
+        MIN_Y_PLACEMENT = 3 * GridSize,
+		BOTTOM_MARGIN = 2 * GridSize,
     };
 
+	//! Hierarchy icon for the component.
     QGraphicsPixmapItem* hierIcon_;
 
     //! The old column from where the mouse drag event began.

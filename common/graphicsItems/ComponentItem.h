@@ -65,6 +65,21 @@ public:
     virtual void updateComponent();
 
     /*!
+     *  Updates the size of the component box.
+     */
+    void updateSize();
+
+    /*!
+	 *  Returns the height of the component box.
+	 */
+    virtual qreal getHeight();
+    
+    /*!
+	 *  Returns the width of the component box.
+	 */
+    virtual qreal getWidth();
+
+	/*!
      *  Sets the instance name.
      *
      *      @param [in] name The instance name to set.
@@ -183,6 +198,9 @@ public:
      *  Marks the component as a draft component.
      */
     virtual void setDraft() = 0;
+	
+    // The basic width of the components.
+    static const int COMPONENTWIDTH = 220;
 
 signals:
     //! Emitted when an endpoint has been moved.
@@ -220,7 +238,6 @@ private:
     // Disable copying.
     ComponentItem(ComponentItem const& rhs);
     ComponentItem& operator=(ComponentItem const& rhs);
-
 
     //-----------------------------------------------------------------------------
     // Data.

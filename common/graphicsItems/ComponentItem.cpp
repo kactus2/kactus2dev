@@ -113,6 +113,35 @@ void ComponentItem::updateComponent()
     setToolTip(toolTipText);
 }
 
+
+//-----------------------------------------------------------------------------
+// Function: ComponentItem::updateSize()
+//-----------------------------------------------------------------------------
+void ComponentItem::updateSize()
+{
+	QRectF oldRect = rect();
+	oldRect.setHeight(getHeight());
+
+	qreal width = getWidth();
+
+	setRect(-width/2, oldRect.y(), width, oldRect.height());
+
+	IGraphicsItemStack* stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
+
+	if (stack != 0)
+	{
+		stack->updateItemPositions();
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentItem::getWidth()
+//-----------------------------------------------------------------------------
+qreal ComponentItem::getWidth()
+{
+	return COMPONENTWIDTH;
+}
+
 //-----------------------------------------------------------------------------
 // Function: setName()
 //-----------------------------------------------------------------------------
@@ -326,3 +355,7 @@ QPointF ComponentItem::connectionPoint(QPointF const&) const
     return mapToScene(rect().center());
 }
 
+qreal ComponentItem::getHeight()
+{
+	return 8*GridSize;
+}

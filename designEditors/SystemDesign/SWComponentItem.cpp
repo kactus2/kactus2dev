@@ -44,7 +44,7 @@ SWComponentItem::SWComponentItem(LibraryInterface* libInterface,
                        QString const& description,
 							  QString const& uuid,
                        QMap<QString, QString> const& configurableElementValues)
-    : SystemComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, MIN_HEIGHT), libInterface, component, instanceName,
+    : SystemComponentItem(QRectF(-COMPONENTWIDTH / 2, 0, COMPONENTWIDTH, MIN_HEIGHT), libInterface, component, instanceName,
                       displayName, description, uuid, configurableElementValues, 0),
       oldStack_(0),
       oldPos_(),
@@ -53,9 +53,11 @@ SWComponentItem::SWComponentItem(LibraryInterface* libInterface,
       isDraft_(false)
 {
     setFlag(ItemIsMovable);
-    
+
     updateComponent();
+
     updateSize();
+
 }
 
 //-----------------------------------------------------------------------------
@@ -337,4 +339,12 @@ void SWComponentItem::setDraft()
 bool SWComponentItem::isDraft() const
 {
     return isDraft_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWComponentItem::getWidth()
+//-----------------------------------------------------------------------------
+qreal SWComponentItem::getWidth()
+{
+	return COMPONENTWIDTH;
 }

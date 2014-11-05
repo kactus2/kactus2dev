@@ -130,7 +130,12 @@ protected:
     /*!
      *  Returns the height for the component box.
      */
-    qreal getHeight() const;
+    qreal getHeight();
+
+    /*!
+     *  Return the width for the component box.
+     */
+    qreal getWidth();
 
     /*!
      *  Returns the height of the component stack.
@@ -150,11 +155,13 @@ private:
     enum
     {
         MIN_HEIGHT = 100,
-        WIDTH = 180,
         TOP_MARGIN = 40,
         BOTTOM_MARGIN = 20,
         SPACING = 10,
     };
+
+	// Width of the HWMappingItem.
+    static const int WIDTH = COMPONENTWIDTH + 30;
 
     //! The old column from where the mouse drag event began.
     IGraphicsItemStack* oldStack_;

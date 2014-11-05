@@ -45,7 +45,7 @@ HWComponentItem::HWComponentItem(LibraryInterface* lh_,
                                  const QMap<QString, QString> &configurableElementValues,
                                  QMap<QString, bool> const& portAdHocVisibilities,
                                  QGraphicsItem *parent)
-    : ComponentItem(QRectF(-GridSize * 8, 0, GridSize * 8 * 2, 40),
+    : ComponentItem(QRectF(-COMPONENTWIDTH/ 2, 0, COMPONENTWIDTH, 40),
                     lh_,
                     component,
                     instanceName,
@@ -69,13 +69,13 @@ HWComponentItem::HWComponentItem(LibraryInterface* lh_,
 
     int portSpacing = 3*GridSize;
     int portCountLeft = busInterfaces.size() / 2.0 + .5;
-    setRect(-GridSize*8, 0, GridSize * 8 * 2, 
+    setRect(-COMPONENTWIDTH/ 2, 0, COMPONENTWIDTH, 
             6 * GridSize + portSpacing * qMax(portCountLeft - 1, 0));
 
     bool right = false;
     int leftY = 4 * GridSize;
     int rightY = 4 * GridSize;
-
+	
     foreach (QSharedPointer<BusInterface> busif, busInterfaces)
     {
         BusPortItem *port = new BusPortItem(busif, getLibraryInterface(), true, this);
@@ -440,32 +440,33 @@ void HWComponentItem::addPort(HWConnectionEndpoint* port)
 }
 
 //-----------------------------------------------------------------------------
-// Function: updateSize()
+// Function: HWComponentItem::getHeight()
 //-----------------------------------------------------------------------------
-void HWComponentItem::updateSize()
+qreal HWComponentItem::getHeight()
 {
-    // Update the component's size based on the port that is positioned at
-    // the lowest level of them all.
-    qreal maxY = 4 * GridSize;
+	// Update the component's size based on the port that is positioned at
+	// the lowest level of them all.
+	qreal maxY = 4 * GridSize;
 
-    if (!leftPorts_.empty())
-    {
-        maxY = leftPorts_.back()->y();
-    }
+	if (!leftPorts_.empty())
+	{
+		maxY = leftPorts_.back()->y();
+	}
 
-    if (!rightPorts_.empty())
-    {
-        maxY = qMax(maxY, rightPorts_.back()->y());
-    }
+	if (!rightPorts_.empty())
+	{
+		maxY = qMax(maxY, rightPorts_.back()->y());
+	}
 
-    setRect(-GridSize * 8, 0, GridSize * 8 * 2, maxY + 2 * GridSize);
+	return (maxY + BOTTOM_MARGIN);
+}
 
-    HWColumn* column = dynamic_cast<HWColumn*>(parentItem());
-
-    if (column != 0)
-    {
-        column->updateItemPositions();
-    }
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::getWidth()
+//-----------------------------------------------------------------------------
+qreal HWComponentItem::getWidth()
+{
+	return COMPONENTWIDTH;
 }
 
 //-----------------------------------------------------------------------------
@@ -505,7 +506,7 @@ void HWComponentItem::updateComponent()
         {
             hierIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/hierarchy.png"), this);
             hierIcon_->setToolTip(tr("Hierarchical"));
-            hierIcon_->setPos(58, 6);
+            hierIcon_->setPos(COMPONENTWIDTH/2 - hierIcon_->pixmap().width() - SPACING, SPACING);
         }
     }
     else if (hierIcon_ != 0)

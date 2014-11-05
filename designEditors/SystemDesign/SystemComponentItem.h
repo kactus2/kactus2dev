@@ -134,11 +134,6 @@ public:
     void onMovePort(SWPortItem* port);
 
     /*!
-     *  Updates the size of the component box.
-     */
-    void updateSize();
-
-    /*!
      *  Returns true if the connections should not be updated automatically in
      *  the port's itemChange() function. Otherwise false.
      */
@@ -217,7 +212,7 @@ protected:
     /*!
      *  Returns the height for the component box.
      */
-    virtual qreal getHeight() const;
+	virtual qreal getHeight();
 
     /*!
      *  Updates the port positions so that they have at minimum the given Y coordinate value.

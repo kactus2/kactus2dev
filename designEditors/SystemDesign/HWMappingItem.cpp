@@ -41,7 +41,7 @@ HWMappingItem::HWMappingItem(LibraryInterface* libInterface,
                              QString const& description,
 									  QString const& uuid,
                              QMap<QString, QString> const& configurableElementValues)
-    : SystemComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, 0), libInterface, component, instanceName,
+    : SystemComponentItem(QRectF(-WIDTH/ 2, 0, WIDTH, 0), libInterface, component, instanceName,
                       displayName, description, uuid, configurableElementValues, 0),
       oldStack_(0),
       layout_(new VStackedLayout<ComponentItem>(SPACING)),
@@ -188,7 +188,7 @@ void HWMappingItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 // Function: HWMappingItem::getHeight()
 //-----------------------------------------------------------------------------
-qreal HWMappingItem::getHeight() const
+qreal HWMappingItem::getHeight()
 {
     // Calculate the minimum height based on the stack contents.
     qreal stackHeight = getComponentStackHeight();
@@ -196,6 +196,14 @@ qreal HWMappingItem::getHeight() const
     // Determine the largest one from the stack height, minimum height (empty) and the height
     // calculated by the base class.
     return qMax<qreal>(qMax<qreal>(stackHeight, MIN_HEIGHT), SystemComponentItem::getHeight());
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWMappingItem::getWidth()
+//-----------------------------------------------------------------------------
+qreal HWMappingItem::getWidth()
+{
+	return WIDTH;
 }
 
 //-----------------------------------------------------------------------------

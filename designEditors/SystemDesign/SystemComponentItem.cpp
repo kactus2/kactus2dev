@@ -287,27 +287,9 @@ void SystemComponentItem::onMovePort(SWPortItem* port)
 }
 
 //-----------------------------------------------------------------------------
-// Function: SystemComponentItem::updateSize()
-//-----------------------------------------------------------------------------
-void SystemComponentItem::updateSize()
-{
-    QRectF oldRect = rect();
-    oldRect.setHeight(getHeight());
-
-    setRect(oldRect);
-
-    IGraphicsItemStack* stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
-
-    if (stack != 0)
-    {
-        stack->updateItemPositions();
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: SystemComponentItem::getHeight()
 //-----------------------------------------------------------------------------
-qreal SystemComponentItem::getHeight() const
+qreal SystemComponentItem::getHeight()
 {
     // Update the component's size based on the port that is positioned at
     // the lowest level of them all.
