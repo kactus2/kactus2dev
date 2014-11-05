@@ -20,7 +20,7 @@
 //-----------------------------------------------------------------------------
 // Function: Choice::Choice()
 //-----------------------------------------------------------------------------
-Choice::Choice(QDomNode &choice) : choiceName_(), enumerations_()
+Choice::Choice(QDomNode &choice) : choiceName_(), enumerations_(new QList<QSharedPointer<Enumeration> >())
 {
     QDomNodeList children = choice.childNodes();
     for (int i = 0; i < children.size(); ++i) {
@@ -35,7 +35,7 @@ Choice::Choice(QDomNode &choice) : choiceName_(), enumerations_()
         // get enumerations
         else if (children.at(i).nodeName() == QString("spirit:enumeration"))
         {
-            enumerations_.append(QSharedPointer<Enumeration>(new Enumeration(children.at((i)))));
+            enumerations_->append(QSharedPointer<Enumeration>(new Enumeration(children.at((i)))));
         }
     }
 }
@@ -45,9 +45,13 @@ Choice::Choice(QDomNode &choice) : choiceName_(), enumerations_()
 //-----------------------------------------------------------------------------
 Choice::Choice( const Choice& other ):
 choiceName_(other.choiceName_),
-enumerations_(other.enumerations_)
+enumerations_(new QList<QSharedPointer<Enumeration> >())
 {
-
+    foreach (QSharedPointer<Enumeration> enumeration, *other.enumerations_)
+    {
+        QSharedPointer<Enumeration> copy(new Enumeration(*enumeration));
+        enumerations_->append(copy);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -58,7 +62,13 @@ Choice& Choice::operator=( const Choice& other )
 	if (this != &other)
     {
 		choiceName_ = other.choiceName_;
-		enumerations_ = other.enumerations_;
+		
+        enumerations_->clear();
+        foreach (QSharedPointer<Enumeration> enumeration, *other.enumerations_)
+        {
+            QSharedPointer<Enumeration> copy(new Enumeration(*enumeration));
+            enumerations_->append(copy);
+        }
 	}
 	return *this;
 }
@@ -80,7 +90,7 @@ void Choice::write(QXmlStreamWriter& writer) const
 
 	writer.writeTextElement("spirit:name", choiceName_);
 
-    foreach (QSharedPointer<Enumeration> enumeration, enumerations_)
+    foreach (QSharedPointer<Enumeration> enumeration, *enumerations_)
     {
         enumeration->write(writer);
     }
@@ -101,12 +111,22 @@ bool Choice::isValid( QStringList& errorList, const QString& parentIdentifier ) 
 		valid = false;
 	}
 
-	if (enumerations_.isEmpty())
+	if (enumerations_->isEmpty())
     {
 		errorList.append(QObject::tr("At least one enumeration is required in choice %1"
             " within %2").arg(choiceName_).arg(parentIdentifier));
 		valid = false;
 	}
+
+    foreach (QSharedPointer<Enumeration> enumeration, *enumerations_)
+    {
+        if (enumeration->getValue().isEmpty())
+        {
+            errorList.append(QObject::tr("No value specified for enumeration in choice %1"
+                " within %2").arg(choiceName_).arg(parentIdentifier));
+            valid = false;
+        }
+    }
 
 	return valid;
 }
@@ -116,7 +136,25 @@ bool Choice::isValid( QStringList& errorList, const QString& parentIdentifier ) 
 //-----------------------------------------------------------------------------
 bool Choice::isValid() const
 {
-	return !choiceName_.isEmpty() && !enumerations_.isEmpty();
+    if (choiceName_.isEmpty())
+    {
+        return false;
+    }
+
+    if (enumerations_->isEmpty())
+    {
+        return false;
+    }
+
+    foreach (QSharedPointer<Enumeration> enumeration, *enumerations_)
+    {
+        if (enumeration->getValue().isEmpty())
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -133,4 +171,34 @@ QString Choice::getName() const
 void Choice::setName(const QString& name)
 {
 	choiceName_ = name;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Choice::enumerationCount()
+//-----------------------------------------------------------------------------
+QStringList Choice::getEnumerationValues() const
+{
+    QStringList enumerationValues;
+
+    foreach (QSharedPointer<Enumeration> enumeration, *enumerations_)
+    {
+        if (!enumeration->getText().isEmpty())
+        {
+            enumerationValues.append(enumeration->getText());
+        }
+        else
+        {
+            enumerationValues.append(enumeration->getValue());
+        }
+    }
+
+    return enumerationValues;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Choice::enumerations()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<Enumeration> > > Choice::enumerations() const
+{
+    return enumerations_;
 }

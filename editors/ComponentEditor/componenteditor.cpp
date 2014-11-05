@@ -22,6 +22,7 @@
 #include <editors/ComponentEditor/treeStructure/componenteditorportsitem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorbusinterfacesitem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorchannelsitem.h>
+#include <editors/ComponentEditor/treeStructure/ComponentEditorChoicesItem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorcpusitem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorotherclocksitem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorcominterfacesitem.h>
@@ -594,6 +595,9 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
     hwRoot->addChildItem(QSharedPointer<ComponentEditorFileSetsItem>(
         new ComponentEditorFileSetsItem(&navigationModel_, libHandler_, pluginManager_, component, hwRoot)));
 
+    hwRoot->addChildItem(QSharedPointer<ComponentEditorChoicesItem>(
+        new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, hwRoot)));
+
     hwRoot->addChildItem(QSharedPointer<ComponentEditorModelParamsItem>(
         new ComponentEditorModelParamsItem(&navigationModel_, libHandler_, component, hwRoot)));
 
@@ -654,6 +658,9 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createSWRootItem(QShare
 
     swRoot->addChildItem(QSharedPointer<ComponentEditorFileSetsItem>(
         new ComponentEditorFileSetsItem(&navigationModel_, libHandler_, pluginManager_, component, swRoot)));
+
+    swRoot->addChildItem(QSharedPointer<ComponentEditorChoicesItem>(
+        new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, swRoot)));
 
     swRoot->addChildItem(QSharedPointer<ComponentEditorParametersItem>(
         new ComponentEditorParametersItem(&navigationModel_, libHandler_, component, swRoot)));

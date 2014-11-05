@@ -185,7 +185,7 @@ public:
 	 *
 	 * \return QList containing component's choices
 	 */
-	const QList<QSharedPointer<Choice> >& getChoices() const;
+	QSharedPointer<QList<QSharedPointer<Choice> > > getChoices() const;
 
 	/*! \brief Get this components component generators
 	 *
@@ -382,12 +382,6 @@ public:
 	 * \param channels QList containing the channels to be set
 	 */
 	void setChannels(const QList<QSharedPointer<Channel> > &channels);
-
-	/*! \brief Set this component's choices
-	 *
-	 * \param choices QList containing the choices to be set
-	 */
-	void setChoices(const QList<QSharedPointer<Choice> > &choices);
 
 	/*! \brief Set this component's component generators
 	 *
@@ -1890,7 +1884,7 @@ private:
 	 * OPTIONAL spirit:choices
 	 * Specifies multiple enumerated lists.
 	 */
-	QList<QSharedPointer<Choice> > choices_;
+	QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
 
 	/*! \brief Contains the fileSets.
 	 * OPTIONAL spirit:fileSets

@@ -59,7 +59,7 @@ addressSpaces_(),
 memoryMaps_(),
 model_(), 
 compGenerators_(), 
-choices_(), 
+choices_(new QList<QSharedPointer<Choice> >()), 
 fileSets_(),
 fileDependencies_(),
 pendingFileDependencies_(),
@@ -220,8 +220,7 @@ author_()
 
 				// don't parse comments
 				if (!tempNode.isComment()) {
-					choices_.append(QSharedPointer<Choice>(
-							new Choice(tempNode)));
+					choices_->append(QSharedPointer<Choice>(new Choice(tempNode)));
 				}
 			}
 		}
@@ -371,7 +370,7 @@ addressSpaces_(),
 memoryMaps_(),
 model_(),
 compGenerators_(),
-choices_(),
+choices_(new QList<QSharedPointer<Choice> >()),
 fileSets_(),
 fileDependencies_(),
 pendingFileDependencies_(),
@@ -403,7 +402,7 @@ addressSpaces_(),
 memoryMaps_(),
 model_(),
 compGenerators_(), 
-choices_(),
+choices_(new QList<QSharedPointer<Choice> >()),
 fileSets_(), 
 fileDependencies_(),
 pendingFileDependencies_(),
@@ -433,7 +432,7 @@ addressSpaces_(),
 memoryMaps_(),
 model_(),
 compGenerators_(),
-choices_(),
+choices_(new QList<QSharedPointer<Choice> >()),
 fileSets_(),
 fileDependencies_(),
 pendingFileDependencies_(),
@@ -517,11 +516,10 @@ author_(other.author_)
 		}
 	}
 
-	foreach (QSharedPointer<Choice> choice, other.choices_) {
+	foreach (QSharedPointer<Choice> choice, *other.choices_) {
 		if (choice) {
-			QSharedPointer<Choice> copy = QSharedPointer<Choice>(
-				new Choice(*choice.data()));
-			choices_.append(copy);
+			QSharedPointer<Choice> copy = QSharedPointer<Choice>(new Choice(*choice.data()));
+			choices_->append(copy);
 		}
 	}
 
@@ -671,12 +669,13 @@ Component & Component::operator=( const Component &other ) {
 			}
 		}
 
-		choices_.clear();
-		foreach (QSharedPointer<Choice> choice, other.choices_) {
-			if (choice) {
-				QSharedPointer<Choice> copy = QSharedPointer<Choice>(
-					new Choice(*choice.data()));
-				choices_.append(copy);
+		choices_->clear();
+		foreach (QSharedPointer<Choice> choice, *other.choices_)
+        {
+			if (choice)
+            {
+				QSharedPointer<Choice> copy = QSharedPointer<Choice>(new Choice(*choice.data()));
+				choices_->append(copy);
 			}
 		}
 
@@ -771,7 +770,7 @@ Component::~Component() {
 	addressSpaces_.clear();
 	memoryMaps_.clear();
 	compGenerators_.clear();
-	choices_.clear();
+	choices_->clear();
 	fileSets_.clear();
     fileDependencies_.clear();
     pendingFileDependencies_.clear();
@@ -882,12 +881,13 @@ void Component::write(QFile& file) {
 		writer.writeEndElement(); // spirit:componeneGenerators
 	}
 
-	if (choices_.size() != 0) {
+	if (choices_->size() != 0)
+    {
 		writer.writeStartElement("spirit:choices");
 
-		// write each choice
-		for (int i = 0; i < choices_.size(); ++i) {
-			choices_.at(i)->write(writer);
+		foreach (QSharedPointer<Choice> choice, *choices_)
+        {
+			choice->write(writer);
 		}
 
 		writer.writeEndElement(); // spirit:choices
@@ -1267,8 +1267,8 @@ bool Component::isValid( QStringList& errorList ) const {
 	}
 
 	QStringList choiceNames;
-	foreach (QSharedPointer<Choice> choice, choices_) {
-
+	foreach (QSharedPointer<Choice> choice, *choices_)
+    {
 		if (choiceNames.contains(choice->getName())) {
 			errorList.append(QObject::tr("%1 contains several choices with name %2").arg(
 				thisIdentifier).arg(choice->getName()));
@@ -1493,7 +1493,7 @@ bool Component::isValid() const {
 	}
 
 	QStringList choiceNames;
-	foreach (QSharedPointer<Choice> choice, choices_) {
+	foreach (QSharedPointer<Choice> choice, *choices_) {
 
 		if (choiceNames.contains(choice->getName())) {
 			return false;
@@ -1685,14 +1685,6 @@ void Component::setChannels(const QList<QSharedPointer<Channel> > &channels) {
 	channels_ = channels;
 }
 
-void Component::setChoices(const QList<QSharedPointer<Choice> > &choices) {
-	// delete old choices
-	choices_.clear();
-
-	// save new choices
-	choices_ = choices;
-}
-
 void Component::setFileSets(const QList<QSharedPointer<FileSet> > &fileSets) {
 	// delete old file sets
 	fileSets_.clear();
@@ -1765,7 +1757,8 @@ const QList<QSharedPointer<RemapState> >& Component::getRemapStates() const {
 	return remapStates_;
 }
 
-const QList<QSharedPointer<Choice> >& Component::getChoices() const {
+QSharedPointer<QList<QSharedPointer<Choice> > > Component::getChoices() const
+{
 	return choices_;
 }
 

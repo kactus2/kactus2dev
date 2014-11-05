@@ -929,6 +929,12 @@
     <Filter Include="Source Files\wizards\common\PortComparator">
       <UniqueIdentifier>{3b832046-1d83-4d92-afcb-650eef30f7f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\choices">
+      <UniqueIdentifier>{1257e1ed-a818-4b74-a60d-b43044f8e3cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\choices">
+      <UniqueIdentifier>{6e2cfaa5-fd19-4942-b503-224f59debfe6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3859,6 +3865,36 @@
     <ClCompile Include="wizards\ImportWizard\ImportWizardIntroPage.cpp">
       <Filter>Source Files\wizards\ImportWizard</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\ComponentEditorChoicesItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentEditorChoicesItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ChoicesEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\choices\ChoicesEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\choices</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\choices\ChoicesModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\choices</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ChoicesModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\choices\EnumerationModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\choices</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\choices\ChoicesDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\choices</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_EnumerationModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ChoicesDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5282,6 +5318,21 @@
     </CustomBuild>
     <CustomBuild Include="wizards\common\ComponentDiffWidget\ComponentDiffWidget.h">
       <Filter>Header Files\wizards\common\ComponentDiffWidget</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\treeStructure\ComponentEditorChoicesItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\choices\ChoicesEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\choices</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\choices\ChoicesModel.h">
+      <Filter>Header Files\editors\ComponentEditor\choices</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\choices\EnumerationModel.h">
+      <Filter>Header Files\editors\ComponentEditor\choices</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\choices\ChoicesDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\choices</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

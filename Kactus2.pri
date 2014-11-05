@@ -413,6 +413,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapview.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h \
+    ./editors/ComponentEditor/treeStructure/ComponentEditorChoicesItem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorrootitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorswviewitem.h \
@@ -452,6 +453,10 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/visualization/fieldgapitem.h \
     ./editors/ComponentEditor/visualization/memorygapitem.h \
     ./editors/ComponentEditor/visualization/memoryvisualizationitem.h \
+    ./editors/ComponentEditor/choices/ChoicesEditor.h \
+    ./editors/ComponentEditor/choices/ChoicesModel.h \
+    ./editors/ComponentEditor/choices/ChoicesDelegate.h \
+    ./editors/ComponentEditor/choices/EnumerationModel.h \
     ./editors/CSourceEditor/CSourceContentMatcher.h \
     ./editors/CSourceEditor/MCAPIDesignerTypes.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
@@ -943,6 +948,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorbusinterfaceitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorbusinterfacesitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorchannelsitem.cpp \
+    ./editors/ComponentEditor/treeStructure/ComponentEditorChoicesItem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorcominterfaceitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorcominterfacesitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorcpusitem.cpp \
@@ -974,6 +980,10 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/visualization/fieldgapitem.cpp \
     ./editors/ComponentEditor/visualization/memorygapitem.cpp \
     ./editors/ComponentEditor/visualization/memoryvisualizationitem.cpp \
+    ./editors/ComponentEditor/choices/ChoicesDelegate.cpp \
+    ./editors/ComponentEditor/choices/ChoicesEditor.cpp \
+    ./editors/ComponentEditor/choices/ChoicesModel.cpp \
+    ./editors/ComponentEditor/choices/EnumerationModel.cpp \
     ./editors/CSourceEditor/CSourceContentMatcher.cpp \
     ./editors/CSourceEditor/CSourceHighlighter.cpp \
     ./editors/CSourceEditor/CSourceTextEdit.cpp \

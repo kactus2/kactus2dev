@@ -25,11 +25,67 @@ class IPXACTMODELS_EXPORT Enumeration
 {
 public:
     
-    //! The constructor.
+    //! The default constructor.
+    Enumeration();
+
+    /*!
+     *  The constructor.
+     *
+     *      @param [in] enumerationNode   The DOM node describing the enumeration.
+     */
     Enumeration(QDomNode const& enumerationNode);
+
+    /*!
+     *  The copy constructor.
+     *
+     *      @param [in] other   The enumeration to copy.
+     */
+    Enumeration(Enumeration const& other);
 
 	//! The destructor.
 	~Enumeration();
+
+    /*!
+     *  Sets the enumeration value.
+     *
+     *      @param [in] value   The value to set.
+     */
+    void setValue(QString const& value);
+
+    /*!
+     *  Gets the enumeration value.
+     *
+     *      @return The enumeration value.
+     */
+    QString getValue() const;
+    
+    /*!
+     *  Sets the enumeration text to display instead of value.
+     *
+     *      @param [in] text   The text to set.
+     */
+    void setText(QString const& text);
+    
+    /*!
+     *  Gets the enumeration text.
+     *
+     *      @return The enumeration text.
+     */
+    QString getText() const;
+        
+    /*!
+     *  Sets the clarifying help text.
+     *
+     *      @param [in] help   The help text to set.
+     */
+    void setHelp(QString const& help);
+        
+    /*!
+     *  Gets the clarifying help text.
+     *
+     *      @return The enumeration help text.
+     */
+    QString getHelp() const;
 
     /*!
      *  Writes the element to XML.
@@ -40,8 +96,7 @@ public:
 
 private:
 
-	// Disable copying.
-	Enumeration(Enumeration const& rhs);
+	// Disable assignment.
 	Enumeration& operator=(Enumeration const& rhs);
 
     /*!

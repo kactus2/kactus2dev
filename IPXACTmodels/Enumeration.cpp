@@ -14,6 +14,17 @@
 //-----------------------------------------------------------------------------
 // Function: Enumeration::Enumeration()
 //-----------------------------------------------------------------------------
+Enumeration::Enumeration():
+value_(), 
+    text_(),
+    help_()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: Enumeration::Enumeration()
+//-----------------------------------------------------------------------------
 Enumeration::Enumeration(QDomNode const& enumerationNode):
 value_(), 
     text_(),
@@ -26,6 +37,18 @@ value_(),
     text_ = attributeMap.namedItem("spirit:text").nodeValue();
     help_ = attributeMap.namedItem("spirit:help").nodeValue();
 }
+
+//-----------------------------------------------------------------------------
+// Function: Enumeration::Enumeration()
+//-----------------------------------------------------------------------------
+Enumeration::Enumeration(Enumeration const& other):
+value_(other.value_),
+    text_(other.text_),
+    help_(other.help_)
+{
+
+}
+
 
 //-----------------------------------------------------------------------------
 // Function: Enumeration::~Enumeration()
@@ -55,4 +78,51 @@ void Enumeration::write(QXmlStreamWriter& writer) const
     writer.writeCharacters(value_);
 
     writer.writeEndElement(); // spirit:enumeration
+}
+
+//-----------------------------------------------------------------------------
+// Function: Enumeration::setValue()
+//-----------------------------------------------------------------------------
+void Enumeration::setValue(QString const& value)
+{
+    value_ = value;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Enumeration::getValue()
+//-----------------------------------------------------------------------------
+QString Enumeration::getValue() const
+{
+    return value_;
+}
+//-----------------------------------------------------------------------------
+// Function: Enumeration::setText()
+//-----------------------------------------------------------------------------
+void Enumeration::setText(QString const& text)
+{
+    text_ = text;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Enumeration::getText()
+//-----------------------------------------------------------------------------
+QString Enumeration::getText() const
+{
+    return text_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Enumeration::setHelp()
+//-----------------------------------------------------------------------------
+void Enumeration::setHelp(QString const& help)
+{
+    help_ = help;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Enumeration::getHelp()
+//-----------------------------------------------------------------------------
+QString Enumeration::getHelp() const
+{
+    return help_;
 }
