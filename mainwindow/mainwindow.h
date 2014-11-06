@@ -34,7 +34,6 @@ class ComponentItem;
 class BusPortItem;
 class ComponentPreviewBox;
 class MessageConsole;
-class BusInterfaceItem;
 class AdHocPortItem;
 class AdHocInterfaceItem;
 class ComponentInstanceEditor;

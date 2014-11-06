@@ -1,13 +1,20 @@
+//-----------------------------------------------------------------------------
+// File: ChoicesEditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Esko Pekkarinen
+// Date: 05.11.2014
+//
+// Description:
+// Editor for component choices.
+//-----------------------------------------------------------------------------
 
-
-#ifndef ChoicesEditor_H
-#define ChoicesEditor_H
-
+#ifndef CHOICESEDITOR_H
+#define CHOICESEDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
 
 #include <IPXACTmodels/component.h>
-
 
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
@@ -15,32 +22,40 @@
 class EditableTableView;
 class ChoicesModel;
 
+//-----------------------------------------------------------------------------
+//! Editor for component choices.
+//-----------------------------------------------------------------------------
 class ChoicesEditor : public ItemEditor
 {
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param component Pointer to the component being edited.
-	 * \param handler Pointer to the instance managing the library.
-	 * \param parent Pointer to the parent of this editor.
+	 *      @param [in] component   The component whose choices to edit.
+	 *      @param [in] parent      The parent widget.
 	 *
-	*/
-	ChoicesEditor(QSharedPointer<Component> component,
-				QWidget* parent = 0);
-   
+	 *      @return <Description>.
+	 */
+	ChoicesEditor(QSharedPointer<Component> component, QWidget* parent = 0);
 
-
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ChoicesEditor();
 
+   /*! Check for the validity of the choices.
+	* 
+	*       @return True, if all the choices are valid, otherwise false.
+	*/
     virtual bool isValid() const;
-
+    
+	//! Reloads the information from the model to the editor.
     virtual void refresh();
+
 protected:
 
+    //! Called when the editor is shown.
     void showEvent( QShowEvent* event );
 
 private:
@@ -49,15 +64,18 @@ private:
     ChoicesEditor(const ChoicesEditor& other);
     ChoicesEditor& operator=(const ChoicesEditor& other);
 
+    //! Creates the editor layout.
     void setupLayout();
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
+    //! View for the choices.
     EditableTableView* view_;
 
+    //! Model for the component choices.
     ChoicesModel* model_;
 };
 
-#endif // ChoicesEditor_H
+#endif // CHOICESEDITOR_H

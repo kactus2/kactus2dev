@@ -18,6 +18,7 @@
 							<section title="File" ref="componenteditor/filegeneral.html" />
 						</section>
 					</section>
+          <section title="Choices" ref="componenteditor/choices.html" />
 					<section title="Model parameters" ref="componenteditor/modelparams.html" />
 					<section title="Parameters" ref="componenteditor/params.html" />
 					<section title="Memory maps" ref="componenteditor/memorymaps.html">
