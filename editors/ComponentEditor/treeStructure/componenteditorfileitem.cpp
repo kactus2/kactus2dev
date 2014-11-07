@@ -57,7 +57,8 @@ ComponentEditorFileItem::~ComponentEditorFileItem()
 //-----------------------------------------------------------------------------
 QString ComponentEditorFileItem::text() const
 {
-	return file_->getName();
+    QFileInfo fileQfi = QFileInfo(file_->getName());
+    return fileQfi.fileName();
 }
 
 //-----------------------------------------------------------------------------
