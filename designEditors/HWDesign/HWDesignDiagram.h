@@ -49,7 +49,7 @@ public:
     // Column widths.
     enum
     {
-        COMPONENT_COLUMN_WIDTH = 259,
+		COMPONENT_COLUMN_WIDTH = 319,
         IO_COLUMN_WIDTH = 119
     };
 		

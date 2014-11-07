@@ -3895,6 +3895,9 @@
     <ClCompile Include="GeneratedFiles\moc_ModelParameterDelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\common\NamelabelWidth.cpp">
+      <Filter>Source Files\designEditors\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5605,6 +5608,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\modelParameters\ModelParameterColumns.h">
       <Filter>Header Files\editors\ComponentEditor\modelParameters</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\common\NamelabelWidth.h">
+      <Filter>Header Files\designEditors\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

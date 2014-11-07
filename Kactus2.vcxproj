@@ -433,6 +433,7 @@ CreateHelp
     <ClCompile Include="designEditors\common\DesignDiagram.cpp" />
     <ClCompile Include="designEditors\common\DesignWidget.cpp" />
     <ClCompile Include="designEditors\common\InterfaceEditor\interfaceeditor.cpp" />
+    <ClCompile Include="designEditors\common\NamelabelWidth.cpp" />
     <ClCompile Include="designEditors\common\StickyNote\ColorFillTextItem.cpp" />
     <ClCompile Include="designEditors\common\StickyNote\StickyNote.cpp" />
     <ClCompile Include="designEditors\common\StickyNote\StickyNoteAddCommand.cpp" />
@@ -1771,6 +1772,7 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp"</Command>
     </CustomBuild>
+    <ClInclude Include="designEditors\common\NamelabelWidth.h" />
     <ClInclude Include="editors\ComponentEditor\modelParameters\ModelParameterColumns.h" />
     <ClInclude Include="wizards\common\ComponentComparator\ComponentComparator.h" />
     <ClInclude Include="wizards\common\IPXactDiff.h" />
