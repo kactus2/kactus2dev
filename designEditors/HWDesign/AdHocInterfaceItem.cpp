@@ -51,7 +51,7 @@ AdHocInterfaceItem::AdHocInterfaceItem(QSharedPointer<Component> component,
                                              QGraphicsItem *parent)
     : HWConnectionEndpoint(parent, false, QVector2D(1.0f, 0.0f)),
       lh_(lh),
-      nameLabel_(0),
+	  nameLabel_("", this),
       port_(port),
       component_(component),
       oldColumn_(0),
@@ -109,17 +109,16 @@ AdHocInterfaceItem::AdHocInterfaceItem(QSharedPointer<Component> component,
 
     setPolygon(shape);
 
-    nameLabel_ = new QGraphicsTextItem("", this);
-    QFont font = nameLabel_->font();
+	QFont font = nameLabel_.font();
     font.setPointSize(8);
-    nameLabel_->setFont(font);
-    nameLabel_->setFlag(ItemIgnoresTransformations);
-    nameLabel_->setFlag(ItemStacksBehindParent);
+	nameLabel_.setFont(font);
+	nameLabel_.setFlag(ItemIgnoresTransformations);
+	nameLabel_.setFlag(ItemStacksBehindParent);
     QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect;
     shadow->setXOffset(0);
     shadow->setYOffset(0);
     shadow->setBlurRadius(5);
-    nameLabel_->setGraphicsEffect(shadow);
+	nameLabel_.setGraphicsEffect(shadow);
 
     setFlag(ItemIsMovable);
     setFlag(ItemIsSelectable);
@@ -187,21 +186,10 @@ void AdHocInterfaceItem::updateInterface()
 
     setBrush(QBrush(Qt::black));
 
-    nameLabel_->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" +
-                        port_->getName() + "</div>");
+	nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" +
+		                    port_->getName() + "</div>");
 
-    qreal nameWidth = nameLabel_->boundingRect().width();
-
-    // Check if the port is directed to the left.
-    if (getDirection().x() < 0)
-    {
-        nameLabel_->setPos(0, GridSize * 3.0 / 4.0 - nameWidth / 2.0);
-    }
-    // Otherwise the port is directed to the right.
-    else
-    {
-        nameLabel_->setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
-    }
+	setLabelPosition();
 
     offPageConnector_->updateInterface();
 }
@@ -442,19 +430,7 @@ void AdHocInterfaceItem::setDirection(QVector2D const& dir)
 {
     HWConnectionEndpoint::setDirection(dir);
 
-    // Update the position of the name label based on the direction.
-    qreal nameWidth = nameLabel_->boundingRect().width();
-
-    // Check if the interface is directed to the left.
-    if (dir.x() < 0)
-    {
-        nameLabel_->setPos(0, GridSize * 3.0 / 4.0 - nameWidth / 2.0);
-    }
-    // Otherwise the interface is directed to the right.
-    else
-    {
-        nameLabel_->setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
-    }
+	setLabelPosition();
 }
 
 //-----------------------------------------------------------------------------
@@ -514,4 +490,23 @@ bool AdHocInterfaceItem::isExclusive() const
 {
     // Ad-hoc interfaces are always non-exclusive.
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocInterfaceItem::setLabelPosition()
+//-----------------------------------------------------------------------------
+void AdHocInterfaceItem::setLabelPosition()
+{
+	qreal nameWidth = nameLabel_.boundingRect().width();
+
+	// Check if the port is directed to the left.
+	if (getDirection().x() < 0)
+	{
+		nameLabel_.setPos(0, GridSize * 3.0 / 4.0 - nameWidth / 2.0);
+	}
+	// Otherwise the port is directed to the right.
+	else
+	{
+		nameLabel_.setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
+	}
 }

@@ -212,6 +212,11 @@ public:
      */
     virtual ConnectionEndpoint* getOffPageConnector();
 
+	/*!
+	 *  Set the position of the name label.
+	 */
+	void setLabelPosition();
+
 protected:
     virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);

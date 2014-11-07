@@ -204,6 +204,16 @@ public:
      */
     virtual ConnectionEndpoint* getOffPageConnector();
 
+	/*!
+	 *  Set the position of the name label.
+	 */
+	void setLabelPosition();
+
+	/*!
+	 *  Check the direction of the port and change it if necessary.
+	 */
+	void checkDirection();
+
 protected:
     virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);

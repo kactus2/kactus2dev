@@ -201,6 +201,11 @@ public:
      */
     virtual ConnectionEndpoint* getOffPageConnector();
 
+	/*!
+	 * Set the position of the name label.
+	 */
+	void setLabelPosition();
+
 signals:
     //! \brief Send an error message to the user.
     void errorMessage(const QString& errorMessage);
@@ -230,7 +235,7 @@ private:
     LibraryInterface* lh_;
 
     //! The name label.
-    QGraphicsTextItem *nameLabel_;
+	QGraphicsTextItem nameLabel_;
 
     //! The bus interface.
     QSharedPointer<BusInterface> busInterface_;

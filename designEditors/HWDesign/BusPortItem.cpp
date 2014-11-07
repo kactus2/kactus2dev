@@ -14,6 +14,7 @@
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/GenericEditProvider.h>
 #include <designEditors/common/diagramgrid.h>
+#include <designEditors/common/NamelabelWidth.h>
 
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
@@ -35,8 +36,9 @@
 BusPortItem::BusPortItem(QSharedPointer<BusInterface> busIf, LibraryInterface* lh,
                          bool packetized, QGraphicsItem *parent)
     : HWConnectionEndpoint(parent, !packetized),
-      lh_(lh),
-      oldPos_(), oldPortPositions_(),
+      busInterface_(busIf), nameLabel_("",this),
+	  lh_(lh), oldPos_(), 
+	  oldPortPositions_(),
       offPageConnector_(0), oldName_()
 {
     Q_ASSERT_X(busIf, "BusPortItem constructor",
@@ -46,17 +48,18 @@ BusPortItem::BusPortItem(QSharedPointer<BusInterface> busIf, LibraryInterface* l
     setTypeLocked(packetized);
     busInterface_ = busIf;
 
-    nameLabel_ = new QGraphicsTextItem("", this);
-    QFont font = nameLabel_->font();
+	QFont font = nameLabel_.font();
     font.setPointSize(8);
-    nameLabel_->setFont(font);
-    nameLabel_->setFlag(ItemIgnoresTransformations);
-    nameLabel_->setFlag(ItemStacksBehindParent);
+	nameLabel_.setFont(font);
+	nameLabel_.setFlag(ItemIgnoresTransformations);
+	nameLabel_.setFlag(ItemStacksBehindParent);
+
     QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect;
     shadow->setXOffset(0);
     shadow->setYOffset(0);
     shadow->setBlurRadius(5);
-    nameLabel_->setGraphicsEffect(shadow);
+
+	nameLabel_.setGraphicsEffect(shadow);
 
     setFlag(ItemIsMovable);
     setFlag(ItemIsSelectable);
@@ -223,21 +226,11 @@ void BusPortItem::updateInterface()
 
     setPolygon(shape);
 
-    nameLabel_->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">"
-                        + busInterface_->getName() + "</div>");
+    nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">"
+                        + name() + "</div>");
 
-    qreal nameWidth = nameLabel_->boundingRect().width();
-    qreal nameHeight = nameLabel_->boundingRect().height();
-
-    if (pos().x() < 0)
-    {
-        nameLabel_->setPos(nameHeight / 2, GridSize);
-    }
-    else
-    {
-        nameLabel_->setPos(-nameHeight / 2, GridSize + nameWidth);
-    }
-
+	setLabelPosition();
+	
     offPageConnector_->updateInterface();
 }
 
@@ -445,21 +438,8 @@ QVariant BusPortItem::itemChange(GraphicsItemChange change,
             if (!parentItem())
                 break;
 
-            qreal nameWidth = nameLabel_->boundingRect().width();
-            qreal nameHeight = nameLabel_->boundingRect().height();
-
-            // Check if the port is directed to the left.
-            if (pos().x() < 0)
-            {
-                setDirection(QVector2D(-1.0f, 0.0f));
-                nameLabel_->setPos(nameHeight/2, GridSize);
-            }
-            // Otherwise the port is directed to the right.
-            else
-            {
-                setDirection(QVector2D(1.0f, 0.0f));
-                nameLabel_->setPos(-nameHeight/2, GridSize + nameWidth);
-            }
+			checkDirection();
+			setLabelPosition();
 
             break;
         }
@@ -865,3 +845,44 @@ QList<General::InterfaceMode> BusPortItem::getOpposingModes(QSharedPointer<BusIn
     return modes;
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusPortItem::setLabelPosition()
+//-----------------------------------------------------------------------------
+void BusPortItem::setLabelPosition()
+{
+	QFont font = nameLabel_.font();
+	QString nameLabelText = NamelabelWidth::setLabelText( nameLabel_.toPlainText(), font);
+	nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">"
+		                 + nameLabelText + "</div>");
+
+	qreal nameWidth = nameLabel_.boundingRect().width();
+	qreal nameHeight = nameLabel_.boundingRect().height();
+
+	// Check if the port is directed to the left.
+	if (pos().x() < 0)
+	{
+		nameLabel_.setPos(nameHeight/2, GridSize);
+	}
+	// Otherwise the port is directed to the right.
+	else
+	{
+		nameLabel_.setPos(-nameHeight/2, GridSize + nameWidth);
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusPortItem::checkDirection()
+//-----------------------------------------------------------------------------
+void BusPortItem::checkDirection()
+{
+	// Check if the port is directed to the left
+	if (pos().x() < 0)
+	{
+		setDirection(QVector2D(-1.0f, 0.0f));
+	}
+	// Otherwise the port is directed to the right.
+	else
+	{
+		setDirection(QVector2D(1.0f, 0.0f));
+	}
+}

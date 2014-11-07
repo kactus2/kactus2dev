@@ -21,6 +21,7 @@
 #include <common/GenericEditProvider.h>
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagram.h>
+#include <designEditors/common/NamelabelWidth.h>
 #include <common/KactusColors.h>
 
 #include <IPXACTmodels/ApiInterface.h>
@@ -283,17 +284,7 @@ void SWPortItem::updateInterface()
     // Update the name label.
     nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + name() + "</div>");
 
-    qreal nameWidth = nameLabel_.boundingRect().width();
-    qreal nameHeight = nameLabel_.boundingRect().height();
-
-    if (pos().x() < 0)
-    {
-        nameLabel_.setPos(nameHeight / 2, GridSize);
-    }
-    else
-    {
-        nameLabel_.setPos(-nameHeight / 2, GridSize + nameWidth);
-    }
+	setLabelPosition();
 
     offPageConnector_->updateInterface();
     emit contentChanged();
@@ -588,20 +579,8 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
             if (!parentItem())
                 break;
 
-            qreal nameWidth = nameLabel_.boundingRect().width();
-            qreal nameHeight = nameLabel_.boundingRect().height();
-
-            if (pos().x() < 0)
-            {
-                setDirection(QVector2D(-1.0f, 0.0f));
-                nameLabel_.setPos(nameHeight/2, GridSize);
-            }
-            // Otherwise the port is directed to the right.
-            else
-            {
-                setDirection(QVector2D(1.0f, 0.0f));
-                nameLabel_.setPos(-nameHeight/2, GridSize + nameWidth);
-            }
+			checkDirection();
+			setLabelPosition();
 
             break;
         }
@@ -1039,4 +1018,47 @@ bool SWPortItem::hasInvalidConnections()
     }
 
     return false;
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: SWPortItem::setLabelPosition()
+//-----------------------------------------------------------------------------
+void SWPortItem::setLabelPosition()
+{
+	QFont font = nameLabel_.font();
+
+	QString nameLabelText = NamelabelWidth::setLabelText( nameLabel_.toPlainText(), font );
+	
+	nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">"
+		+ nameLabelText + "</div>");
+
+	qreal nameWidth = nameLabel_.boundingRect().width();
+	qreal nameHeight = nameLabel_.boundingRect().height();
+
+	if (pos().x() < 0)
+	{
+		nameLabel_.setPos(nameHeight/2, GridSize);
+	}
+	// Otherwise the port is directed to the right.
+	else
+	{
+		nameLabel_.setPos(-nameHeight/2, GridSize + nameWidth);
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWPortItem::checkDirection()
+//-----------------------------------------------------------------------------
+void SWPortItem::checkDirection()
+{
+	if (pos().x() < 0)
+	{
+		setDirection(QVector2D(-1.0f, 0.0f));
+	}
+	// Otherwise the port is directed to the right.
+	else
+	{
+		setDirection(QVector2D(1.0f, 0.0f));
+	}
 }

@@ -175,6 +175,11 @@ public:
      *  Returns the corresponding off-page connector or a null pointer if the end point does not have one.
      */
     virtual ConnectionEndpoint* getOffPageConnector();
+	
+	/*!
+	 *  Set the position of the name label.
+	 */
+	void setLabelPosition();
 
 protected:
     virtual QVariant itemChange(GraphicsItemChange change,
@@ -189,7 +194,7 @@ private:
     LibraryInterface* lh_;
 
     //! The name label.
-    QGraphicsTextItem *nameLabel_;
+	QGraphicsTextItem nameLabel_;
 
     //! The port.
     Port* port_;

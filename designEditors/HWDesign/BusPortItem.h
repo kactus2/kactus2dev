@@ -181,6 +181,16 @@ public:
      *  Returns the corresponding off-page connector or a null pointer if the end point does not have one.
      */
     virtual ConnectionEndpoint* getOffPageConnector();
+	
+	/*!
+	 *  Set the position of the name label.
+	 */
+	void setLabelPosition();
+
+	/*!
+	 *  Check the direction of the port and change it if necessary.
+	 */
+	void checkDirection();
 
 protected:
     virtual QVariant itemChange(GraphicsItemChange change,
@@ -201,8 +211,13 @@ private:
      */
     QList<General::InterfaceMode> getOpposingModes(QSharedPointer<BusInterface> busIf);
 
-    QGraphicsTextItem *nameLabel_;
-    QSharedPointer<BusInterface> busInterface_;
+	//! The name label.
+    QGraphicsTextItem nameLabel_;
+
+	//! The bus interface.
+	QSharedPointer<BusInterface> busInterface_;
+
+	//! The library interface.
     LibraryInterface* lh_;
 
     //! The position of the port before mouse move.

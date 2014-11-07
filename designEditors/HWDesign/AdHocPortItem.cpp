@@ -21,6 +21,7 @@
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/GenericEditProvider.h>
 #include <designEditors/common/diagramgrid.h>
+#include <designEditors/common/NamelabelWidth.h>
 
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
@@ -44,7 +45,8 @@
 //-----------------------------------------------------------------------------
 AdHocPortItem::AdHocPortItem(Port* port, LibraryInterface* lh,
                                    QGraphicsItem *parent) : HWConnectionEndpoint(parent, false),
-                                                            port_(port),
+                                                            nameLabel_("", this),
+															port_(port),
                                                             lh_(lh),
                                                             oldPos_(), oldPortPositions_(),
                                                             offPageConnector_(0)
@@ -100,17 +102,17 @@ AdHocPortItem::AdHocPortItem(Port* port, LibraryInterface* lh,
 
     setPolygon(shape);
 
-    nameLabel_ = new QGraphicsTextItem("", this);
-    QFont font = nameLabel_->font();
-    font.setPointSize(8);
-    nameLabel_->setFont(font);
-    nameLabel_->setFlag(ItemIgnoresTransformations);
-    nameLabel_->setFlag(ItemStacksBehindParent);
+    QFont font = nameLabel_.font();
+	font.setPointSize(8);
+	nameLabel_.setFont(font);
+	nameLabel_.setFlag(ItemIgnoresTransformations);
+	nameLabel_.setFlag(ItemStacksBehindParent);
+
     QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect;
     shadow->setXOffset(0);
     shadow->setYOffset(0);
     shadow->setBlurRadius(5);
-    nameLabel_->setGraphicsEffect(shadow);
+	nameLabel_.setGraphicsEffect(shadow);
 
     setFlag(ItemIsMovable);
     setFlag(ItemIsSelectable);
@@ -172,20 +174,10 @@ void AdHocPortItem::updateInterface()
 
     setBrush(QBrush(Qt::black));
 
-    nameLabel_->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" +
-                        port_->getName() + "</div>");
+	nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" +
+                 		port_->getName() + "</div>");
 
-    qreal nameWidth = nameLabel_->boundingRect().width();
-    qreal nameHeight = nameLabel_->boundingRect().height();
-
-    if (pos().x() < 0)
-    {
-        nameLabel_->setPos(nameHeight/2, GridSize/2);
-    }
-    else
-    {
-        nameLabel_->setPos(-nameHeight/2, GridSize/2 + nameWidth);
-    }
+	setLabelPosition();
 
     offPageConnector_->updateInterface();
 }
@@ -300,23 +292,10 @@ QVariant AdHocPortItem::itemChange(GraphicsItemChange change,
             if (!parentItem())
                 break;
 
-            qreal nameWidth = nameLabel_->boundingRect().width();
-            qreal nameHeight = nameLabel_->boundingRect().height();
-
-            // Check if the port is directed to the left.
-            if (pos().x() < 0)
-            {
-                setDirection(QVector2D(-1.0f, 0.0f));
-                nameLabel_->setPos(nameHeight/2, GridSize/2);
-            }
-            // Otherwise the port is directed to the right.
-            else
-            {
-                setDirection(QVector2D(1.0f, 0.0f));
-                nameLabel_->setPos(-nameHeight/2, GridSize/2 + nameWidth);
-            }
-
-            break;
+			checkDirection();
+			setLabelPosition();
+            
+			break;
         }
 
     case ItemScenePositionHasChanged:
@@ -525,4 +504,47 @@ bool AdHocPortItem::isExclusive() const
 {
     // Ad-hoc ports are always non-exclusive.
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocPortItem::setLabelPosition()
+//-----------------------------------------------------------------------------
+void AdHocPortItem::setLabelPosition()
+{
+	QFont font = nameLabel_.font();
+	QString nameLabelText = NamelabelWidth::setLabelText( nameLabel_.toPlainText(), font );
+
+	nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">"
+		+ nameLabelText + "</div>");
+
+	qreal nameWidth = nameLabel_.boundingRect().width();
+	qreal nameHeight = nameLabel_.boundingRect().height();
+
+	// Check if the port is directed to the left.
+	if (pos().x() < 0)
+	{
+		nameLabel_.setPos( nameHeight / 2, GridSize / 2 );
+	}
+	// Otherwise the port is directed to the right.
+	else
+	{
+		nameLabel_.setPos( -nameHeight / 2, GridSize / 2 + nameWidth);
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocPortItem::checkDirection()
+//-----------------------------------------------------------------------------
+void AdHocPortItem::checkDirection()
+{
+	// Check if the port is directed to the left.
+	if (pos().x() < 0)
+	{
+		setDirection(QVector2D(-1.0f, 0.0f));
+	}
+	// Otherwise the port is directed to the right.
+	else
+	{
+		setDirection(QVector2D(1.0f, 0.0f));
+	}
 }

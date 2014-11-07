@@ -274,18 +274,7 @@ void SWInterfaceItem::updateInterface()
     // Update the name label.
     nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + name() + "</div>");
 
-    qreal nameWidth = nameLabel_.boundingRect().width();
-    
-    // Check if the port is directed to the left.
-    if (getDirection().x() < 0)
-    {
-        nameLabel_.setPos(0, GridSize * 3.0 / 4.0 - nameWidth / 2.0);
-    }
-    // Otherwise the port is directed to the right.
-    else
-    {
-        nameLabel_.setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
-    }
+	setLabelPosition();
 
     offPageConnector_->updateInterface();
     emit contentChanged();
@@ -800,19 +789,7 @@ void SWInterfaceItem::setDirection(QVector2D const& dir)
 {
     SWConnectionEndpoint::setDirection(dir);
 
-    // Update the position of the name label based on the direction.
-    qreal nameWidth = nameLabel_.boundingRect().width();
-
-    // Check if the interface is directed to the left.
-    if (dir.x() < 0)
-    {
-        nameLabel_.setPos(0, GridSize * 3.0 / 4.0 - nameWidth / 2.0);
-    }
-    // Otherwise the interface is directed to the right.
-    else
-    {
-        nameLabel_.setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
-    }
+	setLabelPosition();	
 }
 
 //-----------------------------------------------------------------------------
@@ -882,4 +859,24 @@ void SWInterfaceItem::undefine()
     }
 
     setType(ENDPOINT_TYPE_UNDEFINED);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInterfaceItem::setLabelPosition()
+//-----------------------------------------------------------------------------
+void SWInterfaceItem::setLabelPosition()
+{
+	qreal nameWidth = nameLabel_.boundingRect().width();
+
+	// Check if the port is directed to the left.
+	if (getDirection().x() < 0)
+	{
+		nameLabel_.setPos(0, GridSize * 3.0 / 4.0 - nameWidth / 2.0);
+	}
+	// Otherwise the port is directed to the right.
+	else
+	{
+		nameLabel_.setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
+	}
+
 }
