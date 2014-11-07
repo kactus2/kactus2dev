@@ -29,7 +29,6 @@ public:
 	 *
 	 *     @param [in] choices  The choices available for model parameter value.
 	 *     @param [in] parent   The parent object
-	 *
 	*/
 	ModelParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, QObject *parent = 0);
 
@@ -70,6 +69,37 @@ private:
 
 	//! No assignment
 	ModelParameterDelegate& operator=(const ModelParameterDelegate& other);
+
+    /*!
+     *  Finds if the given index is used to select a model parameter value using a choice.
+     *
+     *      @param [in] index   The index to check.
+     *
+     *      @return True, if the index is for selecting value with a choice, otherwise false.
+     */
+    bool isIndexForValueUsingChoice(QModelIndex const& index) const;
+
+    /*!
+     *  Finds the name of the choice on the row identified by the given index.
+     *
+     *      @param [in] index   The index on whose row to find the choice name.
+     *
+     *      @return The name of the choice on the row.
+     */
+    QString choiceNameOnRow(QModelIndex const& index) const;
+
+    /*!
+     *  Finds the choice used on the row identified by the given index.
+     *
+     *      @param [in] index   The index whose row to find the choice from.
+     *
+     *      @return The choice selected on the given row.
+     */
+    QSharedPointer<Choice> findChoice(QModelIndex const& index) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! The choices available for model parameter value.
     QSharedPointer<QList<QSharedPointer<Choice> > > choices_;

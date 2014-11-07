@@ -14,6 +14,7 @@
 #include <QSharedPointer>
 #include <QString>
 
+class Choice;
 class Model;
 class ModelParameter;
 
@@ -32,7 +33,9 @@ public:
 	 * \param parent Pointer to the owner of this model.
 	 *
 	*/
-	ModelParameterModel(QSharedPointer<Model> model, QObject *parent);
+	ModelParameterModel(QSharedPointer<Model> model,
+        QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+        QObject *parent);
 
 	//! \brief The destructor
 	virtual ~ModelParameterModel();
@@ -64,6 +67,7 @@ public:
 	*/
 	virtual QVariant data(const QModelIndex& index, 
 		int role = Qt::DisplayRole ) const;
+
 
 	/*! \brief Get the data for the headers
 	 *
@@ -186,6 +190,34 @@ private:
 	ModelParameterModel& operator=(const ModelParameterModel& other);
 
     /*!
+     *  Finds the value for the given model parameter using either selected choice or model parameter value.
+     *
+     *      @param [in] modelParameter   The model parameter whose value to find.
+     *
+     *      @return The value to display for the model parameter.
+     */
+    QString evaluateValueFor(QSharedPointer<ModelParameter> modelParameter) const;
+
+    /*!
+     *  Finds the choice with the given name.
+     *
+     *      @param [in] choiceName   The name of the choice to find.
+     *
+     *      @return The found choice.
+     */
+    QSharedPointer<Choice> findChoice(QString const& choiceName) const;
+
+    /*!
+     *  Finds a human-readable value to display for a given enumeration.
+     *
+     *      @param [in] choice              The choice whose enumeration to find.
+     *      @param [in] enumerationValue    The value used to search the enumeration.
+     *
+     *      @return A value for the enumeration to display.
+     */
+    QString findDisplayValueForEnumeration(QSharedPointer<Choice> choice, QString const& enumerationValue) const;
+
+    /*!
      *   Locks the name, type and usage columns of a parameter model.
      *
      *      @param [in] modelParam The parameter model to lock.
@@ -221,9 +253,12 @@ private:
 	 *      @return True if the index is locked, otherwise false.
      */
     bool isLocked(QModelIndex const& index) const;
-
+    
     //! The model whose model parameters to edit.
     QSharedPointer<Model> model_;
+
+    //! The choices available for model parameter values.
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
 
     //! \brief The locked indexes that cannot be edited.
     QList<QPersistentModelIndex> lockedIndexes_;

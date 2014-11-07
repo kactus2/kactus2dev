@@ -174,6 +174,22 @@ void Choice::setName(const QString& name)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Choice::hasEnumeration()
+//-----------------------------------------------------------------------------
+bool Choice::hasEnumeration(QString const& enumerationValue) const
+{
+    foreach (QSharedPointer<Enumeration> enumeration, *enumerations_)
+    {
+        if (enumeration->getValue() == enumerationValue)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Choice::enumerationCount()
 //-----------------------------------------------------------------------------
 QStringList Choice::getEnumerationValues() const

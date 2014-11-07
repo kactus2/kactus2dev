@@ -12,14 +12,17 @@
 #include <QColor>
 #include <QPersistentModelIndex>
 
+#include <IPXACTmodels/choice.h>
+#include <IPXACTmodels/Enumeration.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/model.h>
 
 
 ModelParameterModel::ModelParameterModel(QSharedPointer<Model> model, 
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices,
 										 QObject *parent): 
 QAbstractTableModel(parent),
-model_(model), lockedIndexes_()
+model_(model), choices_(choices), lockedIndexes_()
 {
 
 }
@@ -76,7 +79,7 @@ QVariant ModelParameterModel::data( const QModelIndex & index, int role /*= Qt::
         case ModelParameterColumns::CHOICE:
             return modelParameter->getChoiceRef();
         case ModelParameterColumns::VALUE:
-            return modelParameter->getValue();
+            return evaluateValueFor(modelParameter);
         case ModelParameterColumns::DESCRIPTION:
             return modelParameter->getDescription();
         default:
@@ -101,18 +104,27 @@ QVariant ModelParameterModel::data( const QModelIndex & index, int role /*= Qt::
     }
     else if (Qt::ForegroundRole == role)
     {
-        if (modelParameters.at(index.row())->isValid())
+        QSharedPointer<ModelParameter> modelParameter = modelParameters.at(index.row());
+        if (modelParameter->isValid())
         {
-            if ( lockedIndexes_.contains(index) )
+            if (lockedIndexes_.contains(index) )
             {
                 return QColor("gray");
+            }
+            else if ((index.column() == ModelParameterColumns::CHOICE ||
+                index.column() == ModelParameterColumns::VALUE ) && 
+                !modelParameter->getChoiceRef().isEmpty() &&
+                !findChoice(modelParameter->getChoiceRef())->hasEnumeration(modelParameter->getValue()))
+            {
+                return QColor("red");
             }
             else
             {
                 return QColor("black");
             } 
         }
-        else {
+        else
+        {
             return QColor("red");
         }
     }
@@ -401,6 +413,55 @@ void ModelParameterModel::setModelAndLockCurrentModelParameters(QSharedPointer<M
     }
 
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::evaluateValueFor()
+//-----------------------------------------------------------------------------
+QString ModelParameterModel::evaluateValueFor(QSharedPointer<ModelParameter> modelParameter) const
+{
+    if (modelParameter->getChoiceRef().isEmpty())
+    {
+        return modelParameter->getValue();
+    }
+    else
+    {
+        QSharedPointer<Choice> choice = findChoice(modelParameter->getChoiceRef());
+        return findDisplayValueForEnumeration(choice, modelParameter->getValue());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::findChoice()
+//-----------------------------------------------------------------------------
+QSharedPointer<Choice> ModelParameterModel::findChoice(QString const& choiceName) const
+{
+    foreach (QSharedPointer<Choice> choice, *choices_)
+    {
+        if (choice->getName() == choiceName)
+        {
+            return choice;
+        }
+    }	
+
+    return QSharedPointer<Choice>(new Choice(QDomNode()));
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::findDisplayValueForEnumeration()
+//-----------------------------------------------------------------------------
+QString ModelParameterModel::findDisplayValueForEnumeration(QSharedPointer<Choice> choice,
+    QString const& enumerationValue) const
+{
+    foreach (QSharedPointer<Enumeration> enumeration, *choice->enumerations())
+    {
+        if (enumeration->getValue() == enumerationValue && !enumeration->getText().isEmpty())
+        {
+            return enumeration->getText();
+        }
+    }
+
+    return enumerationValue;
 }
 
 //-----------------------------------------------------------------------------

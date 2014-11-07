@@ -85,6 +85,15 @@ public:
 	void setName(const QString& name);
     
     /*!
+     *  Finds if the choice has an enumeration with the given value.
+     *
+     *      @param [in] enumerationValue   The enumeration value to search for.
+     *
+     *      @return True, if the choice has an enumeration with the given value, otherwise false.
+     */
+    bool hasEnumeration(QString const& enumerationValue) const;
+
+    /*!
      *  Gets the enumeration values of the choice. If a text has been specified for the enumeration,
      *  it is returned instead of the value.
      *
