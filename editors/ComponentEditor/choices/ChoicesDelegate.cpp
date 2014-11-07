@@ -18,6 +18,7 @@
 #include <IPXACTmodels/choice.h>
 
 #include <QScrollArea>
+#include <QSortFilterProxyModel>
 
 namespace
 {
@@ -72,10 +73,14 @@ void ChoicesDelegate::setEditorData(QWidget* editor, QModelIndex const& index) c
     if (index.column() == ENUMERATION_COLUMN)
     {
         EditableTableView* view = dynamic_cast<EditableTableView*>(dynamic_cast<QScrollArea*>(editor)->widget());
+        QSortFilterProxyModel* proxy = new QSortFilterProxyModel(view);
 
         EnumerationModel* model = new EnumerationModel(choices_->at(index.row())->enumerations(), view);
 
-        view->setModel(model);
+        proxy->setSourceModel(model);
+
+        view->setModel(proxy);
+        view->setSortingEnabled(true);
 
         connect(model, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
         connect(model, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),

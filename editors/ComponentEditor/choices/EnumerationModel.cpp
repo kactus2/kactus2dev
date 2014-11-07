@@ -196,7 +196,9 @@ void EnumerationModel::onAddItem(QModelIndex const& index)
     }
 
     beginInsertRows(QModelIndex(), row, row);
-    enumerations_->insert(row, QSharedPointer<Enumeration>(new Enumeration()));
+    QSharedPointer<Enumeration> enumeration(new Enumeration());
+    enumeration->setValue(QString::number(rowCount()));
+    enumerations_->insert(row, enumeration);
     endInsertRows();
 
     emit contentChanged();

@@ -17,6 +17,8 @@
 #include <editors/ComponentEditor/choices/ChoicesModel.h>
 #include <editors/ComponentEditor/choices/ChoicesDelegate.h>
 
+#include <QSortFilterProxyModel>
+
 //-----------------------------------------------------------------------------
 // Function: ChoicesEditor::ChoicesEditor()
 //-----------------------------------------------------------------------------
@@ -25,10 +27,14 @@ ItemEditor(component, 0, parent),
     view_(new EditableTableView(this)),
     model_(new ChoicesModel(component->getChoices(), this))
 {
+    QSortFilterProxyModel* proxy = new QSortFilterProxyModel(this);
+    proxy->setSourceModel(model_);
+
     ChoicesDelegate* delegate = new ChoicesDelegate(component->getChoices(), view_);
     view_->setItemDelegate(delegate);
     view_->setItemsDraggable(false);
-    view_->setModel(model_);
+    view_->setSortingEnabled(true);
+    view_->setModel(proxy);
 
     connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
@@ -39,8 +45,7 @@ ItemEditor(component, 0, parent),
     connect(view_, SIGNAL(removeItem(const QModelIndex&)),
         model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
-    connect(delegate, SIGNAL(contentChanged()),
-        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(delegate, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     setupLayout();
 }
