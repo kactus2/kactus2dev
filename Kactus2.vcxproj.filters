@@ -2785,9 +2785,6 @@
     <ClCompile Include="GeneratedFiles\moc_modelparametermodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_usagedelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_modelparametereditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -3409,9 +3406,6 @@
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\registergraphitem.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\modelParameters\usagedelegate.cpp">
-      <Filter>Source Files\editors\ComponentEditor\modelParameters</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\modelParameters\modelparametereditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\modelParameters</Filter>
     </ClCompile>
@@ -3893,6 +3887,12 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ChoicesDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\modelParameters\ModelParameterDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\modelParameters</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ModelParameterDelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -4980,9 +4980,6 @@
     <CustomBuild Include="editors\ComponentEditor\modelParameters\modelparametermodel.h">
       <Filter>Header Files\editors\ComponentEditor\modelParameters</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\modelParameters\usagedelegate.h">
-      <Filter>Header Files\editors\ComponentEditor\modelParameters</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\modelParameters\modelparametereditor.h">
       <Filter>Header Files\editors\ComponentEditor\modelParameters</Filter>
     </CustomBuild>
@@ -5334,6 +5331,9 @@
     <CustomBuild Include="editors\ComponentEditor\choices\ChoicesDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\choices</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\modelParameters\ModelParameterDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\modelParameters</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -5602,6 +5602,9 @@
     </ClInclude>
     <ClInclude Include="wizards\ImportWizard\ImportWizardIntroPage.h">
       <Filter>Header Files\wizards\ImportWizard</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\modelParameters\ModelParameterColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\modelParameters</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

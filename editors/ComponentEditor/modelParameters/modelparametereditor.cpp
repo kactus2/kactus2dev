@@ -7,9 +7,12 @@
 
 #include "modelparametereditor.h"
 
-#include "usagedelegate.h"
+#include "ModelParameterDelegate.h"
+
 #include <IPXACTmodels/component.h>
+
 #include <common/widgets/summaryLabel/summarylabel.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QHeaderView>
@@ -24,8 +27,8 @@ ModelParameterEditor::ModelParameterEditor(QSharedPointer<Component> component,
 ItemEditor(component, handler, parent), 
 view_(this),
 model_(component->getModel(), this),
-proxy_(this) {
-
+proxy_(this)
+{
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
@@ -50,7 +53,7 @@ proxy_(this) {
 	view_.setSortingEnabled(true);
 
 	// set the delegate to edit the usage column
-	view_.setItemDelegate(new UsageDelegate(2, this));
+	view_.setItemDelegate(new ModelParameterDelegate(component->getChoices(), this));
 
 	// items can not be dragged
 	view_.setItemsDraggable(false);
@@ -81,20 +84,24 @@ proxy_(this) {
 //-----------------------------------------------------------------------------
 // Function: ~ModelParameterEditor()
 //-----------------------------------------------------------------------------
-ModelParameterEditor::~ModelParameterEditor() {
+ModelParameterEditor::~ModelParameterEditor() 
+{
+
 }
 
 //-----------------------------------------------------------------------------
 // Function: isValid()
 //-----------------------------------------------------------------------------
-bool ModelParameterEditor::isValid() const {
+bool ModelParameterEditor::isValid() const
+{
 	return model_.isValid();
 }
 
 //-----------------------------------------------------------------------------
 // Function: refresh()
 //-----------------------------------------------------------------------------
-void ModelParameterEditor::refresh() {
+void ModelParameterEditor::refresh() 
+{
 	view_.update();
 }
 
@@ -109,7 +116,8 @@ void ModelParameterEditor::setComponent(QSharedPointer<Component> component)
 //-----------------------------------------------------------------------------
 // Function: showEvent()
 //-----------------------------------------------------------------------------
-void ModelParameterEditor::showEvent( QShowEvent* event ) {
+void ModelParameterEditor::showEvent( QShowEvent* event )
+{
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/modelparams.html");
 }
@@ -117,21 +125,24 @@ void ModelParameterEditor::showEvent( QShowEvent* event ) {
 //-----------------------------------------------------------------------------
 // Function: setAllowImportExport()
 //-----------------------------------------------------------------------------
-void ModelParameterEditor::setAllowImportExport( bool allow ) {
+void ModelParameterEditor::setAllowImportExport( bool allow )
+{
 	view_.setAllowImportExport(allow);
 }
 
 //-----------------------------------------------------------------------------
 // Function: addModelParameter()
 //-----------------------------------------------------------------------------
-void ModelParameterEditor::addModelParameter( QSharedPointer<ModelParameter> modelParam ) {
+void ModelParameterEditor::addModelParameter( QSharedPointer<ModelParameter> modelParam )
+{
 	model_.addModelParameter(modelParam);
 }
 
 //-----------------------------------------------------------------------------
 // Function: removeModelParameter()
 //-----------------------------------------------------------------------------
-void ModelParameterEditor::removeModelParameter( QSharedPointer<ModelParameter> removedParameter) {
+void ModelParameterEditor::removeModelParameter( QSharedPointer<ModelParameter> removedParameter)
+{
 	model_.removeModelParameter(removedParameter);
 }
 

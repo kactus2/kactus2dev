@@ -177,6 +177,20 @@ public:
 	*/
 	void setUsageType(const QString& usageType);
 
+    /*!
+     *  Gets the choice referenced by the model parameter value.
+     *
+     *      @return The choice name referenced by the value or an empty string, if no choice is referenced.
+     */
+    QString getChoiceRef() const;
+
+    /*!
+     *  Sets the choice to reference by the model parameter value.
+     *
+     *      @param [in] choiceRef   The choice name to reference.
+     */
+    void setChoiceRef(QString const& choiceRef);
+
 	/*! \brief Get the attributes linked to the value element in model parameter
 	 *
 	 * \return QMap containing pointers to the value attributes

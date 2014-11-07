@@ -239,3 +239,26 @@ QString ModelParameter::getUsageType() const {
 void ModelParameter::setUsageType( const QString& usageType ) {
 	attributes_.insert(QString("spirit:usageType"), usageType);
 }
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameter::getChoiceRef()
+//-----------------------------------------------------------------------------
+QString ModelParameter::getChoiceRef() const
+{
+    return valueAttributes_.value("spirit:choiceRef");
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameter::setChoiceRef()
+//-----------------------------------------------------------------------------
+void ModelParameter::setChoiceRef(QString const& choiceRef)
+{
+    if (!choiceRef.isEmpty())
+    {    
+        valueAttributes_.insert("spirit:choiceRef", choiceRef);
+    }
+    else
+    {
+        valueAttributes_.remove("spirit:choiceRef");
+    }
+}

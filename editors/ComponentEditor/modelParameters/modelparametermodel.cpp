@@ -7,11 +7,14 @@
 
 #include "modelparametermodel.h"
 
+#include "ModelParameterColumns.h"
+
 #include <QColor>
 #include <QPersistentModelIndex>
 
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/model.h>
+
 
 ModelParameterModel::ModelParameterModel(QSharedPointer<Model> model, 
 										 QObject *parent): 
@@ -39,14 +42,18 @@ int ModelParameterModel::columnCount( const QModelIndex & parent /*= QModelIndex
 	if (parent.isValid())
 		return 0;
 
-	return 5;
+	return ModelParameterColumns::COLUMN_COUNT;
 }
 
-QVariant ModelParameterModel::data( const QModelIndex & index, 
-								   int role /*= Qt::DisplayRole */ ) const {
-
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::data()
+//-----------------------------------------------------------------------------
+QVariant ModelParameterModel::data( const QModelIndex & index, int role /*= Qt::DisplayRole */ ) const
+{
 	if (!index.isValid())
+    {
 		return QVariant();
+    }
 
 	// if row is invalid
 	if (index.row() < 0 || index.row() >= model_->getModelParameters().count())
@@ -54,37 +61,48 @@ QVariant ModelParameterModel::data( const QModelIndex & index,
 
     QList<QSharedPointer<ModelParameter> > modelParameters = model_->getModelParameters();
 
-	if (role == Qt::DisplayRole) {
-		        
-		switch (index.column()) {
-			case 0: 
-				return modelParameters.at(index.row())->getName();
-			case 1:
-				return modelParameters.at(index.row())->getDataType();
-			case 2:
-				return modelParameters.at(index.row())->getUsageType();
-			case 3:
-				return modelParameters.at(index.row())->getValue();
-			case 4:
-				return modelParameters.at(index.row())->getDescription();
-			default:
-				return QVariant();
-		}
+	if (role == Qt::DisplayRole)
+    {
+        QSharedPointer<ModelParameter> modelParameter = modelParameters.at(index.row());
+
+        switch (index.column())
+        {
+        case ModelParameterColumns::NAME: 
+            return modelParameter->getName();
+        case ModelParameterColumns::DATA_TYPE:
+            return modelParameter->getDataType();
+        case ModelParameterColumns::USAGE_TYPE:
+            return modelParameter->getUsageType();
+        case ModelParameterColumns::CHOICE:
+            return modelParameter->getChoiceRef();
+        case ModelParameterColumns::VALUE:
+            return modelParameter->getValue();
+        case ModelParameterColumns::DESCRIPTION:
+            return modelParameter->getDescription();
+        default:
+            return QVariant();
+        }
 	}
-	else if (Qt::BackgroundRole == role) {
-		switch (index.column()) {
-			case 0:
-			case 2:
-			case 3: {
-				return QColor("LemonChiffon");
-					}
-			default: 
+    else if (Qt::BackgroundRole == role)
+    {
+        switch (index.column())
+        {
+        case ModelParameterColumns::NAME:
+        case ModelParameterColumns::USAGE_TYPE:
+        case ModelParameterColumns::VALUE:
+            {
+                return QColor("LemonChiffon");
+            }
+        default: 
+            {
                 return QColor("white");
+            }       
         }
     }
-    else if (Qt::ForegroundRole == role) {
-
-        if (modelParameters.at(index.row())->isValid()) {
+    else if (Qt::ForegroundRole == role)
+    {
+        if (modelParameters.at(index.row())->isValid())
+        {
             if ( lockedIndexes_.contains(index) )
             {
                 return QColor("gray");
@@ -99,14 +117,13 @@ QVariant ModelParameterModel::data( const QModelIndex & index,
         }
     }
 
-    // if unsupported role
-	else {
-		return QVariant();
-	}
+    return QVariant();
 }
 
-QVariant ModelParameterModel::headerData( int section, 
-										 Qt::Orientation orientation, 
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::headerData()
+//-----------------------------------------------------------------------------
+QVariant ModelParameterModel::headerData(int section, Qt::Orientation orientation,
 										 int role /*= Qt::DisplayRole */ ) const {
 
 	// only horizontal headers are supported
@@ -116,15 +133,17 @@ QVariant ModelParameterModel::headerData( int section,
 	if (role == Qt::DisplayRole) {
 		
 		switch (section) {
-			case 0:
+			case ModelParameterColumns::NAME:
 				return tr("Name");
-			case 1:
+			case ModelParameterColumns::DATA_TYPE:
 				return tr("Data type");
-			case 2:
+			case ModelParameterColumns::USAGE_TYPE:
 				return tr("Usage type");
-			case 3:
+            case ModelParameterColumns::CHOICE:
+                return tr("Choice");
+			case ModelParameterColumns::VALUE:
 				return tr("Value");
-			case 4:
+			case ModelParameterColumns::DESCRIPTION:
 				return tr("Description");
 			default:
 				return QVariant();
@@ -137,61 +156,81 @@ QVariant ModelParameterModel::headerData( int section,
 	}
 }
 
-bool ModelParameterModel::setData( const QModelIndex& index, 
-								  const QVariant& value, 
-								  int role /*= Qt::EditRole */ ) {
-
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::setData()
+//-----------------------------------------------------------------------------
+bool ModelParameterModel::setData(QModelIndex const& index, QVariant const& value, int role /*= Qt::EditRole */ )
+{
 	if (!index.isValid())
+    {
 		return false;
-
-	// if row is invalid
-	else if (index.row() < 0 || index.row() >= model_->getModelParameters().count())
+    }
+    else if (index.row() < 0 || index.row() >= model_->getModelParameters().count())
+    {
 		return false;
+    }
 
-    QList<QSharedPointer<ModelParameter> > modelParameters = model_->getModelParameters();
-
-	if (role == Qt::EditRole) {
-
-        if ( isLocked(index) ){
+	if (role == Qt::EditRole)
+    {
+        if ( isLocked(index) )
+        {
             return false;
         }
 
-		switch (index.column()) {
-			case 0: {
-				modelParameters[index.row()]->setName(value.toString());
-				break;				
-					}
-			case 1: {
-				modelParameters[index.row()]->setDataType(value.toString());
-				break;
-					}
-			case 2: {
-				modelParameters[index.row()]->setUsageType(value.toString());
-				break;
-					}
-			case 3: {
-				modelParameters[index.row()]->setValue(value.toString());
-				break;
-					}
-			case 4: {
-				modelParameters[index.row()]->setDescription(value.toString());
-				break;
-					}
-			default:
-				return false;
+        QSharedPointer<ModelParameter>  modelParameter = model_->getModelParameters().at(index.row());
 
-		}
+        switch (index.column())
+        {
+        case ModelParameterColumns::NAME:
+            {
+                modelParameter->setName(value.toString());
+                break;				
+            }
+        case ModelParameterColumns::DATA_TYPE:
+            {
+                modelParameter->setDataType(value.toString());
+                break;
+            }
+        case ModelParameterColumns::USAGE_TYPE:
+            {
+                modelParameter->setUsageType(value.toString());
+                break;
+            }
+        case ModelParameterColumns::CHOICE:
+            {
+                modelParameter->setChoiceRef(value.toString());
+                break;
+            }
+        case ModelParameterColumns::VALUE:
+            {
+                modelParameter->setValue(value.toString());
+                break;
+            }
+        case ModelParameterColumns::DESCRIPTION:
+            {
+                modelParameter->setDescription(value.toString());
+                break;
+            }
+        default:
+            {
+                return false;
+            }
+        }
 		emit dataChanged(index, index);
 		return true;
 	}
 	// if role is not supported
-	else {
+	else
+    {
 		return false;
 	}
 }
 
-Qt::ItemFlags ModelParameterModel::flags(const QModelIndex& index) const {
-
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::flags()
+//-----------------------------------------------------------------------------
+Qt::ItemFlags ModelParameterModel::flags(const QModelIndex& index) const
+{
     if (!index.isValid())
         return Qt::NoItemFlags;
 
@@ -203,8 +242,11 @@ Qt::ItemFlags ModelParameterModel::flags(const QModelIndex& index) const {
     return Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled;
 }
 
-void ModelParameterModel::onRemoveRow( int row ) {
-	
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::onRemoveRow()
+//-----------------------------------------------------------------------------
+void ModelParameterModel::onRemoveRow( int row )
+{
 	// if row is invalid
 	if (row < 0 || row >= model_->getModelParameters().count())
 		return;
@@ -226,13 +268,16 @@ void ModelParameterModel::onRemoveRow( int row ) {
 	emit contentChanged();
 }
 
-void ModelParameterModel::onRemoveItem( const QModelIndex& index ) {
+void ModelParameterModel::onRemoveItem( const QModelIndex& index )
+{
 	// don't remove anything if index is invalid
-	if (!index.isValid()) {
+	if (!index.isValid())
+    {
 		return;
 	}
 	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >=  model_->getModelParameters().count()) {
+	else if (index.row() < 0 || index.row() >=  model_->getModelParameters().count())
+    {
 		return;
     }
 

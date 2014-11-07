@@ -248,7 +248,6 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/general/desceditor.h \
     ./editors/ComponentEditor/general/generaleditor.h \
     ./editors/ComponentEditor/modelParameters/modelparametermodel.h \
-    ./editors/ComponentEditor/modelParameters/usagedelegate.h \
     ./editors/ComponentEditor/modelParameters/modelparametereditor.h \
     ./editors/ComponentEditor/ports/portsdelegate.h \
     ./editors/ComponentEditor/ports/portseditor.h \
@@ -564,7 +563,8 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./designEditors/common/NamelabelWidth.h
+    ./editors/ComponentEditor/modelParameters/ModelParameterDelegate.h \
+    ./editors/ComponentEditor/modelParameters/ModelParameterColumns.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -851,7 +851,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/general/generaleditor.cpp \
     ./editors/ComponentEditor/modelParameters/modelparametereditor.cpp \
     ./editors/ComponentEditor/modelParameters/modelparametermodel.cpp \
-    ./editors/ComponentEditor/modelParameters/usagedelegate.cpp \
+    ./editors/ComponentEditor/modelParameters/ModelParameterDelegate.cpp \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.cpp \
@@ -1086,6 +1086,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./designEditors/common/NamelabelWidth.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
 RESOURCES += kactus.qrc
