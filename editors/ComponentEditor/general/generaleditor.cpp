@@ -65,7 +65,7 @@ previewBox_(0) {
     previewBox_ = new ComponentPreviewBox(libHandler);
     previewBox_->setInteractive(true);
     previewBox_->setComponent(component);
-    previewBox_->setFixedWidth(220);
+    previewBox_->setFixedWidth(280);
     previewBox_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     layout->addWidget(vlnvDisplayer_);
