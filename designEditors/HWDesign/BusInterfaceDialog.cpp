@@ -174,12 +174,12 @@ void BusInterfaceDialog::setBusInterfaces(QSharedPointer<Component> srcComponent
             for (unsigned int i = 0; i < General::MONITOR + 1; ++i)
             {
                 modeRadioButtons_[i]->setAutoExclusive(false);  
-                modeRadioButtons_[i]->setChecked(false);
                 modeRadioButtons_[i]->setAutoExclusive(true);
             }
+			updatePortsView();
 
-            btnOK_->setEnabled(false);
-            portsView_->setEnabled(false);
+			btnOK_->setEnabled( portsModel_->isValid() );
+			portsView_->setEnabled( true );
         }
     }
    
