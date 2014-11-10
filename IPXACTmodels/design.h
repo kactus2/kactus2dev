@@ -13,7 +13,7 @@
 #define DESIGN_H
 
 #include "SWInstance.h"
-#include "ApiDependency.h"
+#include "ApiConnection.h"
 #include "HierApiDependency.h"
 #include "ComConnection.h"
 #include "HierComConnection.h"
@@ -190,7 +190,7 @@ public:
     /*!
      *  Returns the list of API dependencies.
      */
-    QList<ApiDependency> const& getApiDependencies() const;
+    QList<ApiConnection> const& getApiDependencies() const;
 
     /*!
      *  Returns the list of hierarchical API dependencies.
@@ -260,7 +260,7 @@ public:
      *
      *      @param [in] apiDependencies A list of API dependencies.
      */
-    void setApiDependencies(QList<ApiDependency> const& apiDependencies);
+    void setApiDependencies(QList<ApiConnection> const& apiDependencies);
 
     /*! Sets the hierarchical API dependencies for the design.
      *
@@ -473,7 +473,7 @@ private:
 	QMap<QString, QString> attributes_;
 
     //! The API dependencies (extension).
-    QList<ApiDependency> apiDependencies_;
+    QList<ApiConnection> apiDependencies_;
 
     //! The hierarchical API dependencies (extension).
     QList<HierApiDependency> hierApiDependencies_;

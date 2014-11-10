@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: ApiDependency.cpp
+// File: ApiConnection.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,21 +9,21 @@
 // Class encapsulating API dependency connection data.
 //-----------------------------------------------------------------------------
 
-#include "ApiDependency.h"
+#include "ApiConnection.h"
 
 //-----------------------------------------------------------------------------
-// Function: ApiDependency::ApiDependency()
+// Function: ApiConnection::ApiConnection()
 //-----------------------------------------------------------------------------
-ApiDependency::ApiDependency() : name_(), displayName_(), desc_(),
+ApiConnection::ApiConnection() : name_(), displayName_(), desc_(),
                                  interface1_(), interface2_(),
                                  route_(), imported_(false), offPage_(false)
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiDependency::ApiDependency()
+// Function: ApiConnection::ApiConnection()
 //-----------------------------------------------------------------------------
-ApiDependency::ApiDependency(QString const& name, QString const& displayName,
+ApiConnection::ApiConnection(QString const& name, QString const& displayName,
                              QString const& description, ApiInterfaceRef const& ref1,
                              ApiInterfaceRef const& ref2, QList<QPointF> const& route,
                              bool imported)
@@ -42,7 +42,7 @@ ApiDependency::ApiDependency(QString const& name, QString const& displayName,
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::ApiDependency()
 //-----------------------------------------------------------------------------
-ApiDependency::ApiDependency(ApiDependency const& rhs) : name_(rhs.name_),
+ApiConnection::ApiConnection(ApiConnection const& rhs) : name_(rhs.name_),
                                                          displayName_(rhs.displayName_),
                                                          desc_(rhs.desc_),
                                                          interface1_(rhs.interface1_),
@@ -56,7 +56,7 @@ ApiDependency::ApiDependency(ApiDependency const& rhs) : name_(rhs.name_),
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::ApiDependency()
 //-----------------------------------------------------------------------------
-ApiDependency::ApiDependency(QDomNode& node) : name_(), displayName_(), desc_(),
+ApiConnection::ApiConnection(QDomNode& node) : name_(), displayName_(), desc_(),
                                                interface1_(), interface2_(),
                                                route_(), imported_(false), offPage_(false)
 {
@@ -121,14 +121,14 @@ ApiDependency::ApiDependency(QDomNode& node) : name_(), displayName_(), desc_(),
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::~ApiDependency()
 //-----------------------------------------------------------------------------
-ApiDependency::~ApiDependency()
+ApiConnection::~ApiConnection()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::write()
 //-----------------------------------------------------------------------------
-void ApiDependency::write(QXmlStreamWriter& writer) const
+void ApiConnection::write(QXmlStreamWriter& writer) const
 {
     writer.writeStartElement("kactus2:apiDependency");
 
@@ -175,7 +175,7 @@ void ApiDependency::write(QXmlStreamWriter& writer) const
     writer.writeEndElement(); // kactus2:apiDependency
 }
 
-bool ApiDependency::isValid( QStringList& errorList, QStringList const& instanceNames, QString const& parentId ) const {
+bool ApiConnection::isValid( QStringList& errorList, QStringList const& instanceNames, QString const& parentId ) const {
 
 	bool valid = true;
 	QString const thisId(QObject::tr("API dependency in %1").arg(parentId));
@@ -225,7 +225,7 @@ bool ApiDependency::isValid( QStringList& errorList, QStringList const& instance
 	return valid;
 }
 
-bool ApiDependency::isValid( const QStringList& instanceNames ) const {
+bool ApiConnection::isValid( const QStringList& instanceNames ) const {
 	
 	if (name_.isEmpty()) {
 		return false;
@@ -267,7 +267,7 @@ bool ApiDependency::isValid( const QStringList& instanceNames ) const {
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::setName()
 //-----------------------------------------------------------------------------
-void ApiDependency::setName(QString const& name)
+void ApiConnection::setName(QString const& name)
 {
     name_ = name;
 }
@@ -275,7 +275,7 @@ void ApiDependency::setName(QString const& name)
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::setDisplayName()
 //-----------------------------------------------------------------------------
-void ApiDependency::setDisplayName(QString const& displayName)
+void ApiConnection::setDisplayName(QString const& displayName)
 {
     displayName_ = displayName;
 }
@@ -283,7 +283,7 @@ void ApiDependency::setDisplayName(QString const& displayName)
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::setDescription()
 //-----------------------------------------------------------------------------
-void ApiDependency::setDescription(QString const& description)
+void ApiConnection::setDescription(QString const& description)
 {
     desc_ = description;
 }
@@ -291,7 +291,7 @@ void ApiDependency::setDescription(QString const& description)
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::setInterface1()
 //-----------------------------------------------------------------------------
-void ApiDependency::setInterface1(ApiInterfaceRef const& ref)
+void ApiConnection::setInterface1(ApiInterfaceRef const& ref)
 {
     interface1_ = ref;
 }
@@ -299,7 +299,7 @@ void ApiDependency::setInterface1(ApiInterfaceRef const& ref)
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::setInterface2()
 //-----------------------------------------------------------------------------
-void ApiDependency::setInterface2(ApiInterfaceRef const& ref)
+void ApiConnection::setInterface2(ApiInterfaceRef const& ref)
 {
     interface2_ = ref;
 }
@@ -307,7 +307,7 @@ void ApiDependency::setInterface2(ApiInterfaceRef const& ref)
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::setRoute()
 //-----------------------------------------------------------------------------
-void ApiDependency::setRoute(QList<QPointF> const& route)
+void ApiConnection::setRoute(QList<QPointF> const& route)
 {
     route_ = route;
 }
@@ -315,7 +315,7 @@ void ApiDependency::setRoute(QList<QPointF> const& route)
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::setImported()
 //-----------------------------------------------------------------------------
-void ApiDependency::setImported(bool imported)
+void ApiConnection::setImported(bool imported)
 {
     imported_ = imported;
 }
@@ -323,7 +323,7 @@ void ApiDependency::setImported(bool imported)
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::setOffPage()
 //-----------------------------------------------------------------------------
-void ApiDependency::setOffPage(bool offPage)
+void ApiConnection::setOffPage(bool offPage)
 {
     offPage_ = offPage;
 }
@@ -331,7 +331,7 @@ void ApiDependency::setOffPage(bool offPage)
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::getName()
 //-----------------------------------------------------------------------------
-QString const& ApiDependency::getName() const
+QString const& ApiConnection::getName() const
 {
     return name_;
 }
@@ -339,7 +339,7 @@ QString const& ApiDependency::getName() const
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::getDisplayName()
 //-----------------------------------------------------------------------------
-QString const& ApiDependency::getDisplayName() const
+QString const& ApiConnection::getDisplayName() const
 {
     return displayName_;
 }
@@ -347,7 +347,7 @@ QString const& ApiDependency::getDisplayName() const
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::getDescription()
 //-----------------------------------------------------------------------------
-QString const& ApiDependency::getDescription() const
+QString const& ApiConnection::getDescription() const
 {
     return desc_;
 }
@@ -355,7 +355,7 @@ QString const& ApiDependency::getDescription() const
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::getInterface1()
 //-----------------------------------------------------------------------------
-ApiInterfaceRef const& ApiDependency::getInterface1() const
+ApiInterfaceRef const& ApiConnection::getInterface1() const
 {
     return interface1_;
 }
@@ -363,7 +363,7 @@ ApiInterfaceRef const& ApiDependency::getInterface1() const
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::getInterface2()
 //-----------------------------------------------------------------------------
-ApiInterfaceRef const& ApiDependency::getInterface2() const
+ApiInterfaceRef const& ApiConnection::getInterface2() const
 {
     return interface2_;
 }
@@ -371,7 +371,7 @@ ApiInterfaceRef const& ApiDependency::getInterface2() const
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::getRoute()
 //-----------------------------------------------------------------------------
-QList<QPointF> const& ApiDependency::getRoute() const
+QList<QPointF> const& ApiConnection::getRoute() const
 {
     return route_;
 }
@@ -379,7 +379,7 @@ QList<QPointF> const& ApiDependency::getRoute() const
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::isImported()
 //-----------------------------------------------------------------------------
-bool ApiDependency::isImported() const
+bool ApiConnection::isImported() const
 {
     return imported_;
 }
@@ -387,7 +387,7 @@ bool ApiDependency::isImported() const
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::isOffPage()
 //-----------------------------------------------------------------------------
-bool ApiDependency::isOffPage() const
+bool ApiConnection::isOffPage() const
 {
     return offPage_;
 }
@@ -395,7 +395,7 @@ bool ApiDependency::isOffPage() const
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::operator=()
 //-----------------------------------------------------------------------------
-ApiDependency& ApiDependency::operator=(ApiDependency const& rhs)
+ApiConnection& ApiConnection::operator=(ApiConnection const& rhs)
 {
     if (&rhs != this)
     {

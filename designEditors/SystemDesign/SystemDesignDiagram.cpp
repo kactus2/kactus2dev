@@ -97,7 +97,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
 
     QList<ComponentInstance> instances;
     QList<SWInstance> swInstances;
-    QList<ApiDependency> apiDependencies;
+    QList<ApiConnection> apiDependencies;
     QList<HierApiDependency> hierApiDependencies;
     QList<ComConnection> comConnections;
     QList<HierComConnection> hierComConnections;
@@ -222,7 +222,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
                     ApiInterfaceRef requesterRef(endpoint2->encompassingComp()->name(),
                         endpoint2->name());
 
-                    ApiDependency dependency(conn->name(), QString(), conn->description(),
+                    ApiConnection dependency(conn->name(), QString(), conn->description(),
                         providerRef, requesterRef, conn->route());
                     dependency.setImported(conn->isImported());
                     dependency.setOffPage(conn->endpoint1()->type() == SWOffPageConnectorItem::Type);
@@ -1755,7 +1755,7 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
 {
-    foreach (ApiDependency const& dependency, design->getApiDependencies())
+    foreach (ApiConnection const& dependency, design->getApiDependencies())
     {
         // Find the referenced components.
         SystemComponentItem* comp1 = getComponent(dependency.getInterface1().componentRef);
@@ -2091,7 +2091,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
     }
 
     // Import API dependencies.
-    foreach (ApiDependency const& dependency, design->getApiDependencies())
+    foreach (ApiConnection const& dependency, design->getApiDependencies())
     {
         // Find the referenced components.
         SystemComponentItem* comp1 = getComponent(nameMappings.value(dependency.getInterface1().componentRef));

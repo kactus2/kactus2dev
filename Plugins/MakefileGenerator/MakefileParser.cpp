@@ -171,7 +171,7 @@ bool MakefileParser::isTopOfStack(QSharedPointer<const Design> design, SWInstanc
 {
     bool goesUnder = false;
 
-    foreach ( ApiDependency connection, design->getApiDependencies() )
+    foreach ( ApiConnection connection, design->getApiDependencies() )
     {
         QSharedPointer<ApiInterface> ourInterface;
 
@@ -298,7 +298,7 @@ void MakefileParser::parseStackObjects(QSharedPointer<Component> softComponent,
     makeData.parsedInstances.append( softInstance.getInstanceName() );
 
     // Go through the list of connections in the design to retrieve remote endpoint identifiers.
-    foreach ( ApiDependency connection, design->getApiDependencies() )
+    foreach ( ApiConnection connection, design->getApiDependencies() )
     {
         QSharedPointer<ApiInterface> ourInterface;
         QSharedPointer<ApiInterface> theirInterface;

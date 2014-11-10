@@ -12,7 +12,7 @@
 #ifndef HIERAPIDEPENDENCY_H
 #define HIERAPIDEPENDENCY_H
 
-#include "ApiDependency.h"
+#include "ApiConnection.h"
 
 #include "ipxactmodels_global.h"
 

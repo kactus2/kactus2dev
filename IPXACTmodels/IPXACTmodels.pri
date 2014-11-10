@@ -7,14 +7,14 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../resource.h \
+HEADERS += ./ApiConnection.h \
+    ../resource.h \
     ./abstractiondefinition.h \
     ./addressblock.h \
     ./addressspace.h \
     ./AdHocConnection.h \
     ./alternateregister.h \
     ./ApiDefinition.h \
-    ./ApiDependency.h \
     ./ApiFunction.h \
     ./ApiFunctionParameter.h \
     ./ApiInterface.h \
@@ -39,6 +39,7 @@ HEADERS += ../resource.h \
     ./designconfabstractor.h \
     ./designconfiguration.h \
     ./enumeratedvalue.h \
+    ./Enumeration.h \
     ./field.h \
     ./file.h \
     ./filebuilder.h \
@@ -100,15 +101,13 @@ HEADERS += ../resource.h \
     ./kactusExtensions/Kactus2Placeholder.h \
     ./kactusExtensions/Kactus2Position.h \
     ./kactusExtensions/Kactus2Value.h \
-    ./kactusExtensions/KactusAttribute.h \
-    ./Enumeration.h
+    ./kactusExtensions/KactusAttribute.h
 SOURCES += ./abstractiondefinition.cpp \
     ./addressblock.cpp \
     ./addressspace.cpp \
     ./AdHocConnection.cpp \
     ./alternateregister.cpp \
     ./ApiDefinition.cpp \
-    ./ApiDependency.cpp \
     ./ApiFunction.cpp \
     ./ApiFunctionParameter.cpp \
     ./ApiInterface.cpp \
@@ -133,6 +132,7 @@ SOURCES += ./abstractiondefinition.cpp \
     ./designconfabstractor.cpp \
     ./designconfiguration.cpp \
     ./enumeratedvalue.cpp \
+    ./Enumeration.cpp \
     ./field.cpp \
     ./file.cpp \
     ./filebuilder.cpp \
@@ -193,4 +193,4 @@ SOURCES += ./abstractiondefinition.cpp \
     ./kactusExtensions/Kactus2Position.cpp \
     ./kactusExtensions/Kactus2Value.cpp \
     ./kactusExtensions/KactusAttribute.cpp \
-    ./Enumeration.cpp
+    ./ApiConnection.cpp

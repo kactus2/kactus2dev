@@ -285,7 +285,7 @@ void Design::write(QFile& file)
     {
         writer.writeStartElement("kactus2:apiDependencies");
 
-        foreach (ApiDependency const& dependency, apiDependencies_)
+        foreach (ApiConnection const& dependency, apiDependencies_)
         {
             dependency.write(writer);
         }
@@ -526,7 +526,7 @@ bool Design::isValid( QStringList& errorList ) const {
 	}
 
 	QStringList apiDepNames;
-	foreach (const ApiDependency& apiDep, apiDependencies_) {
+	foreach (const ApiConnection& apiDep, apiDependencies_) {
 		if (apiDepNames.contains(apiDep.getName())) {
 			errorList.append(QObject::tr("Design contains several API dependencies"
 				" with name %1").arg(apiDep.getName()));
@@ -694,7 +694,7 @@ bool Design::isValid() const {
 	}
 
 	QStringList apiDepNames;
-	foreach (const ApiDependency& apiDep, apiDependencies_) {
+	foreach (const ApiConnection& apiDep, apiDependencies_) {
 		if (apiDepNames.contains(apiDep.getName())) {
 			return false;
 		}
@@ -987,7 +987,7 @@ void Design::parseApiDependencies(QDomNode& dependenciesNode)
 
         if (apiNode.nodeName() == "kactus2:apiDependency")
         {
-            apiDependencies_.append(ApiDependency(apiNode));
+            apiDependencies_.append(ApiConnection(apiNode));
         }
     }
 }
@@ -1114,7 +1114,7 @@ void Design::setVlnv( const VLNV& vlnv ) {
 //-----------------------------------------------------------------------------
 // Function: Design::setApiDependencies()
 //-----------------------------------------------------------------------------
-void Design::setApiDependencies(QList<ApiDependency> const& apiDependencies)
+void Design::setApiDependencies(QList<ApiConnection> const& apiDependencies)
 {
     apiDependencies_ = apiDependencies;
 }
@@ -1166,7 +1166,7 @@ void Design::setSWInstances(QList<SWInstance> const& swInstances)
 //-----------------------------------------------------------------------------
 // Function: Design::getApiDependencies()
 //-----------------------------------------------------------------------------
-QList<ApiDependency> const& Design::getApiDependencies() const
+QList<ApiConnection> const& Design::getApiDependencies() const
 {
     return apiDependencies_;
 }

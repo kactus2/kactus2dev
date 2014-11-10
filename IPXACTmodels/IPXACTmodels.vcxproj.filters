@@ -52,9 +52,6 @@
     <ClCompile Include="ApiDefinition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ApiDependency.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ApiFunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -307,6 +304,9 @@
     <ClCompile Include="Enumeration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ApiConnection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ipxactmodels_global.h">
@@ -331,9 +331,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ApiDefinition.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ApiDependency.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ApiFunction.h">
@@ -592,6 +589,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Enumeration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ApiConnection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

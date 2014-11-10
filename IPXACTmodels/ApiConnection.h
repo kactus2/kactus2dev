@@ -48,13 +48,13 @@ struct ApiInterfaceRef
 //-----------------------------------------------------------------------------
 //! Class encapsulating API dependency connection data.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ApiDependency
+class IPXACTMODELS_EXPORT ApiConnection
 {
 public:
     /*!
      *  Default constructor.
      */
-    ApiDependency();
+    ApiConnection();
 
     /*!
      *  Constructor which sets all the values as given.
@@ -67,26 +67,26 @@ public:
      *      @param [in] route        The connection route.
      *      @param [in] imported     If true, the connection is an imported one.
      */
-    ApiDependency(QString const& name, QString const& displayName, QString const& description,
+    ApiConnection(QString const& name, QString const& displayName, QString const& description,
                   ApiInterfaceRef const& ref1, ApiInterfaceRef const& ref2,
                   QList<QPointF> const& route, bool imported = false);
 
     /*!
      *  Copy constructor.
      */
-    ApiDependency(ApiDependency const& rhs);
+    ApiConnection(ApiConnection const& rhs);
 
     /*!
      *  Constructor which reads the API dependency from an XML node.
      *
      *      @param [in] node The source XML node.
      */
-    ApiDependency(QDomNode& node);
+    ApiConnection(QDomNode& node);
 
     /*!
      *  Destructor.
      */
-    ~ApiDependency();
+    ~ApiConnection();
 
     /*!
      *  Writes the contents to an XML stream.
@@ -211,7 +211,7 @@ public:
     /*!
      *  Assignment operator.
      */
-    ApiDependency& operator=(ApiDependency const& rhs);
+    ApiConnection& operator=(ApiConnection const& rhs);
 
 private:
     //-----------------------------------------------------------------------------

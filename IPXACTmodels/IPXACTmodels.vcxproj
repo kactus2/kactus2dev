@@ -134,8 +134,8 @@
     <ClCompile Include="addressspace.cpp" />
     <ClCompile Include="AdHocConnection.cpp" />
     <ClCompile Include="alternateregister.cpp" />
+    <ClCompile Include="ApiConnection.cpp" />
     <ClCompile Include="ApiDefinition.cpp" />
-    <ClCompile Include="ApiDependency.cpp" />
     <ClCompile Include="ApiFunction.cpp" />
     <ClCompile Include="ApiFunctionParameter.cpp" />
     <ClCompile Include="ApiInterface.cpp" />
@@ -229,8 +229,8 @@
     <ClInclude Include="addressspace.h" />
     <ClInclude Include="AdHocConnection.h" />
     <ClInclude Include="alternateregister.h" />
+    <ClInclude Include="ApiConnection.h" />
     <ClInclude Include="ApiDefinition.h" />
-    <ClInclude Include="ApiDependency.h" />
     <ClInclude Include="ApiFunction.h" />
     <ClInclude Include="ApiFunctionParameter.h" />
     <ClInclude Include="ApiInterface.h" />

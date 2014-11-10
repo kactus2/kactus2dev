@@ -219,7 +219,7 @@ void addNewInstancesV2(QList<ComponentInstance> const& elements,
                        LibraryInterface* lh,
                        QList<ComponentInstance>& hwInstances,
                        QList<SWInstance>& swInstances,
-                       QList<ApiDependency>& apiDependencies)
+                       QList<ApiConnection>& apiDependencies)
 {
     foreach (ComponentInstance const& element, elements)
     {
@@ -255,7 +255,7 @@ void addNewInstancesV2(QList<ComponentInstance> const& elements,
                 swInstances.append(instance);
             }
 
-            foreach (ApiDependency const& dependency, swDesign->getApiDependencies())
+            foreach (ApiConnection const& dependency, swDesign->getApiDependencies())
             {
                 apiDependencies.append(dependency);
             }
@@ -275,7 +275,7 @@ void generateSystemDesignV2(LibraryInterface* lh, VLNV const& designVLNV, Design
     // Add them as instances to the system design.
     QList<ComponentInstance> hwInstances;
     QList<SWInstance> swInstances;
-    QList<ApiDependency> apiDependencies;
+    QList<ApiConnection> apiDependencies;
     addNewInstancesV2(elements, lh, hwInstances, swInstances, apiDependencies);
 
     sysDesign.setComponentInstances(hwInstances);
@@ -286,9 +286,9 @@ void generateSystemDesignV2(LibraryInterface* lh, VLNV const& designVLNV, Design
 //-----------------------------------------------------------------------------
 // Function: getMatchingApiDependency()
 //-----------------------------------------------------------------------------
-int getMatchingApiDependency(QList<ApiDependency> const& apiDependencies,
+int getMatchingApiDependency(QList<ApiConnection> const& apiDependencies,
                              QList<SWInstance> const& swInstances,
-                             ApiDependency const& dependency, QString const& mapping) 
+                             ApiConnection const& dependency, QString const& mapping) 
 {
     int index = -1;
 
@@ -337,7 +337,7 @@ void updateSystemDesignV2(LibraryInterface* lh,
     // Reflect changes in the programmable elements to the system design.
     QList<ComponentInstance> hwInstances;
     QList<SWInstance> swInstances;
-    QList<ApiDependency> apiDependencies;
+    QList<ApiConnection> apiDependencies;
 
     // 1. PHASE: Check already existing elements against the new list and remove those that
     // are no longer part of the new element list.
@@ -381,7 +381,7 @@ void updateSystemDesignV2(LibraryInterface* lh,
     }
 
     QList<SWInstance> oldSWInstances = sysDesign.getSWInstances();
-    QList<ApiDependency> oldApiDependencies = sysDesign.getApiDependencies();
+    QList<ApiConnection> oldApiDependencies = sysDesign.getApiDependencies();
 
     // 3. PHASE: Copy non-imported instances from the old list to the new list.
     foreach (SWInstance const& swInstance, oldSWInstances)
@@ -444,7 +444,7 @@ void updateSystemDesignV2(LibraryInterface* lh,
                 }
             }
 
-            foreach (ApiDependency dependency, swDesign->getApiDependencies())
+            foreach (ApiConnection dependency, swDesign->getApiDependencies())
             {
                 int connIndex = getMatchingApiDependency(oldApiDependencies, swInstances,
                                                          dependency, hwInstance.getInstanceName());
@@ -470,7 +470,7 @@ void updateSystemDesignV2(LibraryInterface* lh,
     }
 
     // 5. PHASE: Copy non-imported API dependencies from the old list to the new list.
-    foreach (ApiDependency const& dependency, oldApiDependencies)
+    foreach (ApiConnection const& dependency, oldApiDependencies)
     {
         if (!dependency.isImported())
         {
