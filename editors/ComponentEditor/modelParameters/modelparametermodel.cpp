@@ -371,6 +371,15 @@ bool ModelParameterModel::isValid() const
         {
             return false;
         }
+
+        if (!modelParameter->getChoiceRef().isEmpty())
+        {
+            QSharedPointer<Choice> referencedChoice = findChoice(modelParameter->getChoiceRef());
+            if(!referencedChoice->hasEnumeration(modelParameter->getValue()))
+            {
+                return false;
+            }
+        }
     }
 
 	return true;

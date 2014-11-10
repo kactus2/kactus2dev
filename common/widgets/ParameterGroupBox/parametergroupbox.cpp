@@ -7,7 +7,7 @@
 
 #include "parametergroupbox.h"
 
-#include <common/delegates/LineEditDelegate/lineeditdelegate.h>
+#include <editors/ComponentEditor/parameters/ParameterDelegate.h>
 
 #include <QVBoxLayout>
 
@@ -39,7 +39,7 @@ proxy_(this) {
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 
-	view_.setItemDelegate(new LineEditDelegate(this));
+	view_.setItemDelegate(new ParameterDelegate(choices, this));
 
 	// set source model for proxy
 	proxy_.setSourceModel(&model_);

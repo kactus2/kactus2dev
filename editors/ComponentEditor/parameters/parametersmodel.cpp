@@ -76,10 +76,10 @@ QVariant ParametersModel::data( const QModelIndex& index, int role /*= Qt::Displ
 	else if (index.row() < 0 || index.row() >= parameters_.size())
 		return QVariant();
 
+    QSharedPointer<Parameter> parameter = parameters_.at(index.row());
+
     if (role == Qt::DisplayRole)
     {
-        QSharedPointer<Parameter> parameter = parameters_.at(index.row());
-
         switch (index.column())
         {
         case ParameterColumns::NAME: {
@@ -118,7 +118,14 @@ QVariant ParametersModel::data( const QModelIndex& index, int role /*= Qt::Displ
     }
     else if (Qt::ForegroundRole == role)
     {
-        if (parameters_.at(index.row())->isValid()) 
+        if ((index.column() == ParameterColumns::CHOICE ||
+            index.column() == ParameterColumns::VALUE ) && 
+            !parameter->getChoiceRef().isEmpty() &&
+            !findChoice(parameter->getChoiceRef())->hasEnumeration(parameter->getValue()))
+        {
+            return QColor("red");
+        }
+        else if (parameter->isValid()) 
         {
             return QColor("black");
         }
@@ -240,6 +247,16 @@ bool ParametersModel::isValid() const {
 		// if one parameter is invalid
 		if (!parameter->isValid())
 			return false;
+
+        if (!parameter->getChoiceRef().isEmpty())
+        {
+            QSharedPointer<Choice> referencedChoice = findChoice(parameter->getChoiceRef());
+            if(!referencedChoice->hasEnumeration(parameter->getValue()))
+            {
+                return false;
+            }
+        }
+
 	}
 
 	// all parameters are valid
@@ -258,6 +275,18 @@ bool ParametersModel::isValid(QStringList& errorList, const QString& parentIdent
         // if one parameter is invalid, model is invalid.
         if (!parameter->isValid(errorList, parentIdentifier))
             valid = false;
+
+        if (!parameter->getChoiceRef().isEmpty())
+        {
+            QSharedPointer<Choice> referencedChoice = findChoice(parameter->getChoiceRef());
+            if(!referencedChoice->hasEnumeration(parameter->getValue()))
+            {
+                errorList.append(QObject::tr("Parameter %1 references unknown choice value %2 "
+                    "for choice %3 within %4").arg(parameter->getName(), 
+                    parameter->getValue(), parameter->getChoiceRef(), parentIdentifier));
+                valid = false;
+            }
+        }
     }
 
     return valid;

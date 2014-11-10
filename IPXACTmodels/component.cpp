@@ -1355,6 +1355,25 @@ bool Component::isValid( QStringList& errorList ) const {
 		if (!param->isValid(errorList, thisIdentifier)) {
 			valid = false;
 		}
+
+        if (!param->getChoiceRef().isEmpty())
+        {
+            QSharedPointer<Choice> referencedChoice = getChoice(param->getChoiceRef());
+            if (referencedChoice.isNull())
+            {
+                errorList.append(QObject::tr("Parameter %1 references unknown choice %2 within %3"
+                    ).arg(param->getName(), param->getChoiceRef(), thisIdentifier));
+                valid = false;
+            }
+            else if(!referencedChoice->hasEnumeration(param->getValue()))
+            {
+                errorList.append(QObject::tr("Parameter %1 references unknown choice value %2 "
+                    "for choice %3 within %4").arg(param->getName(), 
+                    param->getValue(), param->getChoiceRef(), thisIdentifier));
+                valid = false;
+            }
+        }
+
 	}
 
 	return valid;
@@ -1591,7 +1610,20 @@ bool Component::isValid() const {
 		if (!param->isValid()) {
 			return false;
 		}
-	}
+
+        if (!param->getChoiceRef().isEmpty())
+        {
+            QSharedPointer<Choice> referencedChoice = getChoice(param->getChoiceRef());
+            if (referencedChoice.isNull())
+            {
+                return false;
+            }
+            else if(!referencedChoice->hasEnumeration(param->getValue()))
+            {
+                return false;
+            }
+        }
+    }
 
 	return true;
 }
