@@ -164,12 +164,6 @@
     <Filter Include="Source Files\common\views\EditableListView">
       <UniqueIdentifier>{6de0a5bf-1732-4f2d-a253-187552c618a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\models">
-      <UniqueIdentifier>{13bca334-938d-415c-9e1c-f717756894dc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\models\ParametersModel">
-      <UniqueIdentifier>{16e2d204-d232-4602-9716-2ec950a66f7a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\mainwindow">
       <UniqueIdentifier>{5632e02c-bce4-40b7-b3e1-fa2400380d5e}</UniqueIdentifier>
     </Filter>
@@ -311,12 +305,6 @@
     </Filter>
     <Filter Include="Header Files\common\views\EditableListView">
       <UniqueIdentifier>{86e93b71-14bb-409e-b879-04d76b89c463}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\models">
-      <UniqueIdentifier>{ed18bb2c-1419-4ebc-a114-d1e02d335007}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\models\ParametersModel">
-      <UniqueIdentifier>{9930fdc7-ce95-4241-bff6-ddd560315e65}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\dialogs">
       <UniqueIdentifier>{748059de-87cd-4e11-b299-00c41a923369}</UniqueIdentifier>
@@ -1165,9 +1153,6 @@
     <ClCompile Include="common\views\EditableListView\editablelistview.cpp">
       <Filter>Source Files\common\views\EditableListView</Filter>
     </ClCompile>
-    <ClCompile Include="common\models\ParameterModel\parametersmodel.cpp">
-      <Filter>Source Files\common\models\ParametersModel</Filter>
-    </ClCompile>
     <ClCompile Include="mainwindow\DeleteWorkspaceDialog.cpp">
       <Filter>Source Files\mainwindow</Filter>
     </ClCompile>
@@ -1244,9 +1229,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_PropertyPageDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_parametersmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_parametergroupbox.cpp">
@@ -3898,6 +3880,12 @@
     <ClCompile Include="designEditors\common\NamelabelWidth.cpp">
       <Filter>Source Files\designEditors\common</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\parameters\parametersmodel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_parametersmodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -3998,9 +3986,6 @@
     </CustomBuild>
     <CustomBuild Include="common\graphicsItems\visualizeritem.h">
       <Filter>Header Files\common\graphicsItems</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\models\ParameterModel\parametersmodel.h">
-      <Filter>Header Files\common\models\ParametersModel</Filter>
     </CustomBuild>
     <CustomBuild Include="common\validators\LibraryPathValidator\librarypathvalidator.h">
       <Filter>Header Files\common\validators\LibraryPathValidator</Filter>
@@ -5336,6 +5321,9 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\modelParameters\ModelParameterDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\modelParameters</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\parameters\parametersmodel.h">
+      <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

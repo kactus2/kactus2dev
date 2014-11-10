@@ -99,7 +99,6 @@ HEADERS += ./common/Global.h \
     ./common/delegates/LineEditDelegate/lineeditdelegate.h \
     ./common/views/EditableTableView/editabletableview.h \
     ./common/views/EditableListView/editablelistview.h \
-    ./common/models/ParameterModel/parametersmodel.h \
     ./common/dialogs/comboSelector/comboselector.h \
     ./common/dialogs/propertyPageDialog/PropertyPageView.h \
     ./common/dialogs/propertyPageDialog/PropertyPageDialog.h \
@@ -247,8 +246,6 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/itemvisualizer.h \
     ./editors/ComponentEditor/general/desceditor.h \
     ./editors/ComponentEditor/general/generaleditor.h \
-    ./editors/ComponentEditor/modelParameters/ModelParameterColumns.h \
-    ./editors/ComponentEditor/modelParameters/ModelParameterDelegate.h \
     ./editors/ComponentEditor/modelParameters/modelparametermodel.h \
     ./editors/ComponentEditor/modelParameters/modelparametereditor.h \
     ./editors/ComponentEditor/ports/portsdelegate.h \
@@ -565,6 +562,9 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
+    ./editors/ComponentEditor/parameters/parametersmodel.h \
+    ./editors/ComponentEditor/modelParameters/ModelParameterDelegate.h \
+    ./editors/ComponentEditor/modelParameters/ModelParameterColumns.h \
     ./designEditors/common/NamelabelWidth.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
@@ -660,7 +660,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/delegates/LineEditDelegate/lineeditdelegate.cpp \
     ./common/views/EditableTableView/editabletableview.cpp \
     ./common/views/EditableListView/editablelistview.cpp \
-    ./common/models/ParameterModel/parametersmodel.cpp \
+    ./editors/ComponentEditor/parameters/parametersmodel.cpp \
     ./mainwindow/DeleteWorkspaceDialog.cpp \
     ./mainwindow/main.cpp \
     ./mainwindow/mainwindow.cpp \
@@ -850,9 +850,9 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.cpp \
     ./editors/ComponentEditor/general/desceditor.cpp \
     ./editors/ComponentEditor/general/generaleditor.cpp \
-    ./editors/ComponentEditor/modelParameters/ModelParameterDelegate.cpp \
     ./editors/ComponentEditor/modelParameters/modelparametereditor.cpp \
     ./editors/ComponentEditor/modelParameters/modelparametermodel.cpp \
+    ./editors/ComponentEditor/modelParameters/ModelParameterDelegate.cpp \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.cpp \

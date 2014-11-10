@@ -62,8 +62,7 @@ public:
 	 *
 	 * \return QVariant containing the data
 	*/
-	virtual QVariant data(const QModelIndex& index, 
-		int role = Qt::DisplayRole ) const;
+	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole ) const;
 
 	/*! \brief Get the data for the headers
 	 *
@@ -73,8 +72,7 @@ public:
 	 *
 	 * \return QVariant containing the data to be displayed
 	*/
-	virtual QVariant headerData(int section, Qt::Orientation orientation, 
-		int role = Qt::DisplayRole ) const;
+	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
 	/*! \brief Set the data for specified item.
 	 *
@@ -85,8 +83,7 @@ public:
 	 *
 	 * \return True if data was successfully set.
 	*/
-	virtual bool setData(const QModelIndex& index, const QVariant& value, 
-		int role = Qt::EditRole );
+	virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole );
 
 	/*! \brief Get information on how specified item can be handled.
 	 *
