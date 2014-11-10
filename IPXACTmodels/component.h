@@ -181,6 +181,15 @@ public:
 	*/
 	QList<QSharedPointer<Channel> >& getChannels();
 
+    /*!
+     *  Gets a choice by name from the component.
+     *
+     *      @param [in] choiceName   The name of the choice to find
+     *
+     *      @return The choice found with the given name.
+     */
+    QSharedPointer<Choice> getChoice(QString const& choiceName) const;
+
 	/*! \brief Get this component's choices
 	 *
 	 * \return QList containing component's choices
@@ -1828,7 +1837,7 @@ private:
      *      @param [in] node The source XML node.
      */
     void parseIgnoredFiles(QDomNode& node);
-    
+
     /*! \brief Specifies all the interfaces for this component.
 	 * OPTIONAL spirit:busInterfaces
 	 *

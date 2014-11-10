@@ -1131,6 +1131,27 @@ bool Component::isValid( QStringList& errorList ) const {
 		if (!model_->isValid(fileSetNames, errorList, thisIdentifier)) {
 			valid = false;
 		}
+
+        foreach(QSharedPointer<ModelParameter> modelParameter, model_->getModelParameters())
+        {
+            if (!modelParameter->getChoiceRef().isEmpty())
+            {
+                QSharedPointer<Choice> referencedChoice = getChoice(modelParameter->getChoiceRef());
+                if (referencedChoice.isNull())
+                {
+                    errorList.append(QObject::tr("Model parameter %1 references unknown choice %2 within %3"
+                        ).arg(modelParameter->getName(), modelParameter->getChoiceRef(), thisIdentifier));
+                    valid = false;
+                }
+                else if(!referencedChoice->hasEnumeration(modelParameter->getValue()))
+                {
+                    errorList.append(QObject::tr("Model parameter %1 references unknown choice value %2 "
+                        "for choice %3 within %4").arg(modelParameter->getName(), 
+                        modelParameter->getValue(), modelParameter->getChoiceRef(), thisIdentifier));
+                    valid = false;
+                }
+            }
+        }
 	}
 
 	QStringList busifNames;
@@ -1274,11 +1295,13 @@ bool Component::isValid( QStringList& errorList ) const {
 				thisIdentifier).arg(choice->getName()));
 			valid = false;
 		}
-		else {
+		else
+        {
 			choiceNames.append(choice->getName());
 		}
 
-		if (!choice->isValid(errorList, thisIdentifier)) {
+		if (!choice->isValid(errorList, thisIdentifier))
+        {
 			valid = false;
 		}
 	}
@@ -1365,13 +1388,31 @@ bool Component::isValid() const {
 	QList<General::PortBounds> physPorts;
 	QStringList portNames;
 
-	if (model_) {
+	if (model_)
+    {
 		physPorts = model_->getPortBounds();
 		portNames = model_->getPortNames();
 
-		if (!model_->isValid(fileSetNames)) {
+		if (!model_->isValid(fileSetNames))
+        {
 			return false;
 		}
+
+        foreach(QSharedPointer<ModelParameter> modelParameter, model_->getModelParameters())
+        {
+            if (!modelParameter->getChoiceRef().isEmpty())
+            {
+                QSharedPointer<Choice> referencedChoice = getChoice(modelParameter->getChoiceRef());
+                if (referencedChoice.isNull())
+                {
+                    return false;
+                }
+                else if(!referencedChoice->hasEnumeration(modelParameter->getValue()))
+                {
+                    return false;
+                }
+            }
+        }
 	}
 
 	QStringList busifNames;
@@ -1755,6 +1796,22 @@ const QList<QSharedPointer<AddressSpace> >& Component::getAddressSpaces() const 
 
 const QList<QSharedPointer<RemapState> >& Component::getRemapStates() const {
 	return remapStates_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::getChoice()
+//-----------------------------------------------------------------------------
+QSharedPointer<Choice> Component::getChoice(QString const& choiceName) const
+{
+    foreach(QSharedPointer<Choice> choice, *choices_)
+    {
+        if (choice->getName() == choiceName)
+        {
+            return choice;
+        }
+    }
+
+    return QSharedPointer<Choice>();
 }
 
 QSharedPointer<QList<QSharedPointer<Choice> > > Component::getChoices() const
