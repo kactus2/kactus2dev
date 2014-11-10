@@ -239,6 +239,14 @@ private:
 	 */
 	qreal getWidth();
 
+	/*!
+	 *  Check and resize the port labels to better match with the component width.
+	 *
+	 *      @param [in] port       The port that is compared to the other stack.
+	 *      @param [in] otherSide  The stack containing the ports of the other side.
+	 */
+	void checkPortLabelSize( HWConnectionEndpoint* port, QList<HWConnectionEndpoint*> otherSide );
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

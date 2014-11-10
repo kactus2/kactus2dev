@@ -181,6 +181,18 @@ public:
 	 */
 	void checkDirection();
 
+	/*!
+	 *  Gives the length of the text in the name label.
+	 */
+	qreal getNameLength();
+	
+	/*!
+	 *  Shortens the name label to better fit in the component.
+	 *
+	 *      @param [in] width   The width of the shortened name.
+	 */
+    void shortenNameLabel(qreal width);
+
 protected:
     virtual QVariant itemChange(GraphicsItemChange change,
                                 const QVariant &value);

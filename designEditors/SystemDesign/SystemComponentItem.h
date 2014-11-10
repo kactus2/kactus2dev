@@ -232,6 +232,14 @@ private:
      */
     void onAddPort(SWPortItem* port, PortDirection dir);
 
+	/*!
+	 *  Check and resize the port labels to better match with the component width.
+	 *
+	 *      @param [in] port       The port that is compared to the other stack.
+	 *      @param [in] otherSide  The stack containing the ports of the other side.
+	 */
+	void checkPortLabelSize( SWPortItem* port, QList<SWPortItem*> otherSide );
+
     enum
     {
         SPACING = 8,
@@ -252,10 +260,9 @@ private:
     //! Layout for ports.
     QSharedPointer< IVGraphicsLayout<SWPortItem> > portLayout_;
 
-    //! The left, right and bottom port stacks.
+    //! The left and right port stacks.
     QList<SWPortItem*> leftPorts_;
     QList<SWPortItem*> rightPorts_;
-    QList<SWPortItem*> bottomPorts_;
 
     //! If true, connection updates coming from ports are disabled.
     bool connUpdateDisabled_;

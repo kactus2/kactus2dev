@@ -26,47 +26,38 @@ NamelabelWidth::~NamelabelWidth()
 }
 
 //-----------------------------------------------------------------------------
-// Function: NamelabelWidth::setLabelLimit
+// Function: NamelabelWidth::getTextLength
 //-----------------------------------------------------------------------------
-qreal NamelabelWidth::setLabelLimit(qreal labelWidth)
+qreal NamelabelWidth::getTextLength( QString text, QFont font )
 {
-	// If the label width is larger, reduce the size of the label
-	if ((labelWidth + ( middleColumn / 2 )) > (ComponentItem::COMPONENTWIDTH / 2))
-	{
-		labelWidth = ComponentItem::COMPONENTWIDTH / 2 - middleColumn / 2;
-	}
+	QFontMetrics fontMetrics(font);
 
-	return labelWidth;
+	return fontMetrics.width( text );
 }
 
 //-----------------------------------------------------------------------------
-// Function: NamelabelWidth::setLabelText
+// Function: NamelabelWidth::setNameLabel
 //-----------------------------------------------------------------------------
-QString NamelabelWidth::setLabelText( QString labelName, QFont font )
+QString NamelabelWidth::setNameLabel( QString labelName, QFont font, qreal width )
 {
-	QFontMetrics fontMetrics (font);
+	QFontMetrics fontMetrics(font);
 	qreal shortWidth = fontMetrics.width(labelName);
+	QString shortLabel = labelName;
 
-	qreal givenSpace = setLabelLimit(shortWidth);
-
-	// If the width of the label is greater than the given space, the label is shortened.
-	if ( shortWidth > givenSpace)
+	if ( shortWidth + MIDDLE + PADDING > width )
 	{
-		QString shortlabel = "";
+	    for (int i = 1; i < labelName.size(); ++i)
+    	{
+	    	shortLabel = labelName.left(labelName.size() - i);
+		    shortWidth = fontMetrics.width(shortLabel);
 
-		for (int i = 1; i < labelName.size(); ++i)
-		{
-			shortlabel = labelName.left(labelName.size() - i);
-
-			shortWidth = fontMetrics.width(shortlabel);
-
-			if ( shortWidth < givenSpace)
-			{
-				// Replace the last letters with ...
-				return shortlabel.left(shortlabel.size() - 2) + "...";
-			}
-		}
+    		if ( shortWidth + MIDDLE + PADDING < width  )
+	    	{
+		    	// Replace the last letters with ...
+			    return shortLabel.left(shortLabel.size() - 2) + "...";
+    		}
+	    }
 	}
-	
-	return labelName;
+
+	return shortLabel;
 }

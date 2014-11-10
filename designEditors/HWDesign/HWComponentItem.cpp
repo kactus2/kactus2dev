@@ -353,12 +353,14 @@ void HWComponentItem::onAddPort(HWConnectionEndpoint* port, bool right)
         rightPorts_.append(port);
         portLayout_->updateItemMove(rightPorts_, port, MIN_Y_PLACEMENT);
         portLayout_->setItemPos(rightPorts_, port, rect().right(), MIN_Y_PLACEMENT);
+		checkPortLabelSize(port, leftPorts_);
     }
     else
     {
         leftPorts_.append(port);
-        portLayout_->updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT);
-        portLayout_->setItemPos(leftPorts_, port, rect().left(), MIN_Y_PLACEMENT);
+        portLayout_->updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT);		
+		portLayout_->setItemPos(leftPorts_, port, rect().left(), MIN_Y_PLACEMENT);
+		checkPortLabelSize(port, rightPorts_);
     }
 }
 
@@ -378,13 +380,54 @@ void HWComponentItem::onMovePort(HWConnectionEndpoint* port)
     if (port->x() < 0.0)
     {
         portLayout_->updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT);
+		checkPortLabelSize(port, rightPorts_);
     }
     else
     {
         portLayout_->updateItemMove(rightPorts_, port, MIN_Y_PLACEMENT);
+		checkPortLabelSize(port, leftPorts_);
     }
 
     updateSize();
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::checkPortLabelSize()
+//-----------------------------------------------------------------------------
+void HWComponentItem::checkPortLabelSize( HWConnectionEndpoint* port, QList<HWConnectionEndpoint*> otherSide )
+{
+	for ( int i = 0; i < otherSide.size(); ++i)
+	{ 
+		if (port->y() == otherSide.at(i)->y())
+		{
+			qreal portLabelWidth = port->getNameLength();
+			qreal otherLabelWidth = otherSide.at(i)->getNameLength();
+
+			// Check if both of the labels exceed the mid section of the component.
+		    if (portLabelWidth + SPACING * 2 > (ComponentItem::COMPONENTWIDTH / 2 ) &&
+				otherLabelWidth + SPACING * 2 > (ComponentItem::COMPONENTWIDTH) / 2)
+		    {
+				port->shortenNameLabel( ComponentItem::COMPONENTWIDTH / 2 );
+				otherSide.at(i)->shortenNameLabel( ComponentItem::COMPONENTWIDTH / 2 );
+		    }
+				
+			// Check if the other port is wider than the other.
+		    else if (portLabelWidth > otherLabelWidth )
+		    {
+				port->shortenNameLabel( ComponentItem::COMPONENTWIDTH - otherLabelWidth - SPACING * 2 );
+		    }
+
+		    else
+		    {
+				otherSide.at(i)->shortenNameLabel( ComponentItem::COMPONENTWIDTH - portLabelWidth - SPACING * 2 );
+		    }				
+			
+			return;
+		} 
+	}
+
+	// If the port gets here, there is no ports with the same y() value, and so the port name is restored.
+	port->shortenNameLabel( ComponentItem::COMPONENTWIDTH );
 }
 
 //-----------------------------------------------------------------------------

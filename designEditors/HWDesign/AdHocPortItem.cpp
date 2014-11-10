@@ -511,12 +511,6 @@ bool AdHocPortItem::isExclusive() const
 //-----------------------------------------------------------------------------
 void AdHocPortItem::setLabelPosition()
 {
-	QFont font = nameLabel_.font();
-	QString nameLabelText = NamelabelWidth::setLabelText( nameLabel_.toPlainText(), font );
-
-	nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">"
-		+ nameLabelText + "</div>");
-
 	qreal nameWidth = nameLabel_.boundingRect().width();
 	qreal nameHeight = nameLabel_.boundingRect().height();
 
@@ -547,4 +541,27 @@ void AdHocPortItem::checkDirection()
 	{
 		setDirection(QVector2D(1.0f, 0.0f));
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocPortItem::getNameLength()
+//-----------------------------------------------------------------------------
+qreal AdHocPortItem::getNameLength()
+{
+	QFont font = nameLabel_.font();
+
+	return NamelabelWidth::getTextLength( name(), font);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocPortItem::shortenNameLabel()
+//-----------------------------------------------------------------------------
+void AdHocPortItem::shortenNameLabel( qreal width )
+{
+	QFont font = nameLabel_.font();
+	QString nameLabelText = NamelabelWidth::setNameLabel( name(), font, width);
+	nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">"
+		+ nameLabelText + "</div>");
+
+	setLabelPosition();
 }

@@ -68,6 +68,18 @@ public:
 	*/
 	virtual void setInterfaceMode(General::InterfaceMode mode) = 0;
 
+	/*!
+	 *  Gives the length of the text in the name label.
+	 */
+	virtual qreal getNameLength();
+
+	/*!
+	 *  Shortens the name label to better fit in the component.
+	 *
+	 *      @param [in] width   The width of the shortened name.
+	 */
+	virtual void shortenNameLabel(qreal width);
+
 private:
     // Disable copying.
     HWConnectionEndpoint(HWConnectionEndpoint const& rhs);

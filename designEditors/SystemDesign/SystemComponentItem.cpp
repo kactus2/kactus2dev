@@ -200,8 +200,8 @@ void SystemComponentItem::removePort(SWPortItem* port)
 {
     leftPorts_.removeAll(port);
     rightPorts_.removeAll(port);
-    bottomPorts_.removeAll(port);
-    updateSize();
+    
+	updateSize();
 
     if (port->getType() == SWPortItem::ENDPOINT_TYPE_API)
     {
@@ -248,16 +248,16 @@ void SystemComponentItem::onAddPort(SWPortItem* port, PortDirection dir)
         rightPorts_.append(port);
         portLayout_->updateItemMove(rightPorts_, port, MIN_Y_PLACEMENT);
         portLayout_->setItemPos(rightPorts_, port, rect().right(), MIN_Y_PLACEMENT);
+
+		checkPortLabelSize( port, leftPorts_ );
     }
     else if (dir == PORT_LEFT)
     {
         leftPorts_.append(port);
         portLayout_->updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT);
         portLayout_->setItemPos(leftPorts_, port, rect().left(), MIN_Y_PLACEMENT);
-    }
-    else if (dir == PORT_BOTTOM)
-    {
-        bottomPorts_.append(port);
+
+		checkPortLabelSize( port, rightPorts_ );
     }
 }
 
@@ -269,21 +269,63 @@ void SystemComponentItem::onMovePort(SWPortItem* port)
     // Remove the port from the stacks (this simplifies code).
     leftPorts_.removeAll(port);
     rightPorts_.removeAll(port);
-    bottomPorts_.removeAll(port);
-
+    
     // Restrict the position so that the port cannot be placed too high.
     port->setPos(snapPointToGrid(port->x(), qMax(MIN_Y_PLACEMENT - port->boundingRect().top(), port->y())));
 
     if (port->x() < 0.0)
     {
         portLayout_->updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT);
+
+		checkPortLabelSize( port, rightPorts_ );
     }
     else
     {
         portLayout_->updateItemMove(rightPorts_, port, MIN_Y_PLACEMENT);
+
+		checkPortLabelSize( port, leftPorts_ );
     }
 
     updateSize();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemComponentItem::checkPortLabelSize()
+//-----------------------------------------------------------------------------
+void SystemComponentItem::checkPortLabelSize( SWPortItem* port, QList<SWPortItem*> otherSide )
+{
+	for ( int i = 0; i < otherSide.size(); ++i)
+	{ 
+		if (port->y() == otherSide.at(i)->y())
+		{
+			qreal portLabelWidth = port->getNameLength();
+			qreal otherLabelWidth = otherSide.at(i)->getNameLength();
+
+			// Check if both of the labels exceed the mid section of the component.
+			if (portLabelWidth + SPACING * 2 > (ComponentItem::COMPONENTWIDTH / 2 ) &&
+				otherLabelWidth + SPACING * 2 > (ComponentItem::COMPONENTWIDTH) / 2)
+			{
+				port->shortenNameLabel( ComponentItem::COMPONENTWIDTH / 2 );
+				otherSide.at(i)->shortenNameLabel( ComponentItem::COMPONENTWIDTH / 2 );
+			}
+
+			// Check if the other port is wider than the other.
+			else if (portLabelWidth > otherLabelWidth )
+			{
+				port->shortenNameLabel( ComponentItem::COMPONENTWIDTH - otherLabelWidth - SPACING * 2 );
+			}
+
+			else
+			{
+				otherSide.at(i)->shortenNameLabel( ComponentItem::COMPONENTWIDTH - portLabelWidth - SPACING * 2 );
+			}				
+
+			return;
+		} 
+	}
+
+	// If the port gets here, there is no ports with the same y() value, and so the port name is restored.
+	port->shortenNameLabel( ComponentItem::COMPONENTWIDTH );
 }
 
 //-----------------------------------------------------------------------------
@@ -374,11 +416,6 @@ void SystemComponentItem::offsetPortPositions(qreal minY)
     foreach (SWPortItem* port, rightPorts_)
     {
         port->setPos(port->x(), port->y() + offset);
-    }
-
-    foreach (SWPortItem* port, bottomPorts_)
-    {
-        port->setY(boundingRect().bottom());
     }
 }
 

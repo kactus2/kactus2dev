@@ -850,11 +850,6 @@ QList<General::InterfaceMode> BusPortItem::getOpposingModes(QSharedPointer<BusIn
 //-----------------------------------------------------------------------------
 void BusPortItem::setLabelPosition()
 {
-	QFont font = nameLabel_.font();
-	QString nameLabelText = NamelabelWidth::setLabelText( nameLabel_.toPlainText(), font);
-	nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">"
-		                 + nameLabelText + "</div>");
-
 	qreal nameWidth = nameLabel_.boundingRect().width();
 	qreal nameHeight = nameLabel_.boundingRect().height();
 
@@ -885,4 +880,27 @@ void BusPortItem::checkDirection()
 	{
 		setDirection(QVector2D(1.0f, 0.0f));
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusPortItem::getNameLength()
+//-----------------------------------------------------------------------------
+qreal BusPortItem::getNameLength()
+{
+	QFont font = nameLabel_.font();
+
+	return NamelabelWidth::getTextLength( name(), font);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusPortItem::shortenNameLabel()
+//-----------------------------------------------------------------------------
+void BusPortItem::shortenNameLabel( qreal width )
+{
+	QFont font = nameLabel_.font();
+	QString nameLabelText = NamelabelWidth::setNameLabel( name(), font, width);
+	nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">"
+		+ nameLabelText + "</div>");
+
+	setLabelPosition();
 }

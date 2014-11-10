@@ -29,3 +29,19 @@ HWConnectionEndpoint::HWConnectionEndpoint(QGraphicsItem* parent, bool temporary
 HWConnectionEndpoint::~HWConnectionEndpoint()
 {
 }
+
+//-----------------------------------------------------------------------------
+// Function: HWConnectionEndpont::getNameLength()
+//-----------------------------------------------------------------------------
+qreal HWConnectionEndpoint::getNameLength()
+{
+	return name().length();
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWConnectionEndpont::shortenNameLabel()
+//-----------------------------------------------------------------------------
+void HWConnectionEndpoint::shortenNameLabel(qreal width)
+{
+	width = 0;
+}
