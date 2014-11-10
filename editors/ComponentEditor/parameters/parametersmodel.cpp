@@ -11,23 +11,14 @@
 
 #include "parametersmodel.h"
 
+#include "ParameterColumns.h"
+
 #include <IPXACTmodels/choice.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/Enumeration.h>
 
 #include <QColor>
 
-namespace 
-{
-    enum columns
-    {
-        NAME = 0,
-        CHOICE,
-        VALUE,
-        DESCRIPTION,
-        COLUMN_COUNT
-    };
-}
 
 //-----------------------------------------------------------------------------
 // Function: ParametersModel::ParametersModel()
@@ -70,7 +61,7 @@ int ParametersModel::columnCount( const QModelIndex& parent /*= QModelIndex() */
 		return 0;
 	}
 
-	return COLUMN_COUNT;
+	return ParameterColumns::COLUMN_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -91,18 +82,18 @@ QVariant ParametersModel::data( const QModelIndex& index, int role /*= Qt::Displ
 
         switch (index.column())
         {
-        case NAME: {
+        case ParameterColumns::NAME: {
             return parameter->getName();
                    }
-        case CHOICE: 
+        case ParameterColumns::CHOICE: 
             {
                 return parameter->getChoiceRef();
             }
-        case VALUE:
+        case ParameterColumns::VALUE:
             {
                 return evaluateValueFor(parameter);
             }
-        case DESCRIPTION: 
+        case ParameterColumns::DESCRIPTION: 
             {
                 return parameter->getDescription();
             }
@@ -116,8 +107,8 @@ QVariant ParametersModel::data( const QModelIndex& index, int role /*= Qt::Displ
     {
         switch (index.column()) 
         {
-        case NAME:
-        case VALUE: 
+        case ParameterColumns::NAME:
+        case ParameterColumns::VALUE: 
             {
                 return QColor("LemonChiffon");
             }
@@ -156,13 +147,13 @@ QVariant ParametersModel::headerData(int section, Qt::Orientation orientation, i
     {
         switch (section)
         {
-        case NAME:
+        case ParameterColumns::NAME:
             return tr("Name");
-        case CHOICE:
+        case ParameterColumns::CHOICE:
             return tr("Choice");
-        case VALUE:
+        case ParameterColumns::VALUE:
             return tr("Value");
-        case DESCRIPTION:
+        case ParameterColumns::DESCRIPTION:
             return tr("Description");
         default:
             return QVariant();
@@ -193,22 +184,22 @@ bool ParametersModel::setData(const QModelIndex& index, const QVariant& value, i
 
         switch (index.column())
         {
-        case NAME: 
+        case ParameterColumns::NAME: 
             {
                 parameters_.value(index.row())->setName(value.toString());
                 break;
             }
-        case CHOICE: 
+        case ParameterColumns::CHOICE: 
             {
                 parameters_.value(index.row())->setChoiceRef(value.toString());
                 break;
             }
-        case VALUE:
+        case ParameterColumns::VALUE:
             {
                 parameters_.value(index.row())->setValue(value.toString());
                 break;
             }
-        case DESCRIPTION: 
+        case ParameterColumns::DESCRIPTION: 
             {
                 parameters_.value(index.row())->setDescription(value.toString());
                 break;
@@ -312,7 +303,6 @@ void ParametersModel::onAddItem( const QModelIndex& index ) {
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: ParametersModel::evaluateValueFor()

@@ -1,27 +1,25 @@
 //-----------------------------------------------------------------------------
-// File: ModelParameterDelegate.h
+// File: ParameterDelegate.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Antti Kamppi
-// Date: 31.3.2011
+// Author: Esko Pekkarinen
+// Date: 10.11.2014
 //
 // Description:
-// Delegate that provides widgets for editing model parameters.
+// Delegate that provides widgets for editing parameters.
 //-----------------------------------------------------------------------------
 
-#ifndef MODELPARAMETERDELEGATE_H
-#define MODELPARAMETERDELEGATE_H
+#ifndef PARAMETERDELEGATE_H
+#define PARAMETERDELEGATE_H
 
 #include <QStyledItemDelegate>
-
-#include <editors/ComponentEditor/parameters/ParameterDelegate.h>
 
 class Choice;
 
 //-----------------------------------------------------------------------------
-//! Delegate that provides widgets for editing model parameters.
+//! Delegate that provides widgets for editing parameters.
 //-----------------------------------------------------------------------------
-class ModelParameterDelegate : public ParameterDelegate
+class ParameterDelegate : public QStyledItemDelegate
 {
 	Q_OBJECT
 
@@ -32,10 +30,10 @@ public:
 	 *     @param [in] choices  The choices available for model parameter value.
 	 *     @param [in] parent   The parent object
 	*/
-	ModelParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, QObject *parent = 0);
+	ParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, QObject *parent = 0);
 
 	//! The destructor
-	virtual ~ModelParameterDelegate();
+	virtual ~ParameterDelegate();
 
 	/*! Create a new editor for the given item
 	 *
@@ -83,12 +81,44 @@ protected:
 private:
 
 	//! No copying
-	ModelParameterDelegate(const ModelParameterDelegate& other);
+	ParameterDelegate(const ParameterDelegate& other);
 
 	//! No assignment
-	ModelParameterDelegate& operator=(const ModelParameterDelegate& other);
+	ParameterDelegate& operator=(const ParameterDelegate& other);
 
+    /*!
+     *  Finds if the given index is used to select a model parameter value using a choice.
+     *
+     *      @param [in] index   The index to check.
+     *
+     *      @return True, if the index is for selecting value with a choice, otherwise false.
+     */
+    bool isIndexForValueUsingChoice(QModelIndex const& index) const;
+    
+    /*!
+     *  Finds the name of the choice on the row identified by the given index.
+     *
+     *      @param [in] index   The index on whose row to find the choice name.
+     *
+     *      @return The name of the choice on the row.
+     */
+    QString choiceNameOnRow(QModelIndex const& index) const;
 
+    /*!
+     *  Finds the choice used on the row identified by the given index.
+     *
+     *      @param [in] index   The index whose row to find the choice from.
+     *
+     *      @return The choice selected on the given row.
+     */
+    QSharedPointer<Choice> findChoice(QModelIndex const& index) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The choices available for model parameter value.
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
 };
 
-#endif // MODELPARAMETERDELEGATE_H
+#endif // ParameterDelegate_H

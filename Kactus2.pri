@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./common/Global.h \
+HEADERS += ./editors/ComponentEditor/parameters/ParameterColumns.h \
+    ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
@@ -565,8 +566,10 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/parameters/parametersmodel.h \
     ./editors/ComponentEditor/modelParameters/ModelParameterDelegate.h \
     ./editors/ComponentEditor/modelParameters/ModelParameterColumns.h \
-    ./designEditors/common/NamelabelWidth.h
-SOURCES += ./common/GenericEditProvider.cpp \
+    ./designEditors/common/NamelabelWidth.h \
+    ./editors/ComponentEditor/parameters/ParameterDelegate.h
+SOURCES += ./editors/ComponentEditor/parameters/ParameterDelegate.cpp \
+    ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
     ./common/dialogs/comboSelector/comboselector.cpp \

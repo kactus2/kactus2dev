@@ -3886,6 +3886,12 @@
     <ClCompile Include="GeneratedFiles\moc_parametersmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\parameters\ParameterDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ParameterDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5325,6 +5331,9 @@
     <CustomBuild Include="editors\ComponentEditor\parameters\parametersmodel.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\parameters\ParameterDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -5599,6 +5608,9 @@
     </ClInclude>
     <ClInclude Include="designEditors\common\NamelabelWidth.h">
       <Filter>Header Files\designEditors\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\parameters\ParameterColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

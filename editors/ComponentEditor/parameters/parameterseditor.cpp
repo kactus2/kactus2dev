@@ -6,8 +6,11 @@
  */
 
 #include "parameterseditor.h"
-#include <common/delegates/LineEditDelegate/lineeditdelegate.h>
+
+#include "ParameterDelegate.h"
+
 #include <common/widgets/summaryLabel/summarylabel.h>
+
 #include <IPXACTmodels/component.h>
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -46,7 +49,7 @@ proxy_(NULL) {
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 
-	view_.setItemDelegate(new LineEditDelegate(this));
+	view_.setItemDelegate(new ParameterDelegate(component->getChoices(), this));
 
 	// set proxy to do the sorting automatically
 	proxy_ = new QSortFilterProxyModel(this);

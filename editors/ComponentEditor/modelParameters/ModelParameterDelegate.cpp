@@ -24,7 +24,7 @@
 //-----------------------------------------------------------------------------
 ModelParameterDelegate::ModelParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, 
     QObject* parent):
-QStyledItemDelegate(parent), choices_(choices)
+ParameterDelegate(choices, parent)
 {
 
 }
@@ -50,38 +50,10 @@ QWidget* ModelParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewI
 		combo->addItem(QString("nontyped"));
 		return combo;
 	}
-    else if (index.column() == ModelParameterColumns::CHOICE) 
+    else
     {
-        QComboBox* combo = new QComboBox(parent);
-        combo->addItem(QString("<none>"));
-        foreach (QSharedPointer<Choice> choice, *choices_)
-        {
-            combo->addItem(choice->getName());
-        }
-
-        return combo;
+        return ParameterDelegate::createEditor(parent, option, index);
     }
-    else if (isIndexForValueUsingChoice(index)) 
-    {
-        QComboBox* combo = new QComboBox(parent);
-
-        QSharedPointer<Choice> selectedChoice = findChoice(index);
-        foreach (QSharedPointer<Enumeration> enumeration, *selectedChoice->enumerations())
-        {
-            QString itemText = enumeration->getValue();
-            if (!enumeration->getText().isEmpty())
-            {
-                itemText.append(":" + enumeration->getText());
-            }
-            combo->addItem(itemText);
-        }
-
-        return combo;
-    }
-	else 
-    {
-        return QStyledItemDelegate::createEditor(parent, option, index);
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -89,7 +61,7 @@ QWidget* ModelParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewI
 //-----------------------------------------------------------------------------
 void ModelParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const 
 {
-	if (index.column() == ModelParameterColumns::USAGE_TYPE || index.column() == ModelParameterColumns::CHOICE) 
+	if (index.column() == ModelParameterColumns::USAGE_TYPE) 
     {
 		QString text = index.model()->data(index, Qt::DisplayRole).toString();
 		QComboBox* combo = qobject_cast<QComboBox*>(editor);
@@ -97,24 +69,9 @@ void ModelParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& i
 		int comboIndex = combo->findText(text);
 		combo->setCurrentIndex(comboIndex);
 	}
-    else if (isIndexForValueUsingChoice(index)) 
+    else 
     {
-        QString text = index.model()->data(index, Qt::DisplayRole).toString();
-        QComboBox* combo = qobject_cast<QComboBox*>(editor);
-
-        int comboIndex = combo->findText(text, Qt::MatchEndsWith);
-        if (comboIndex == -1)
-        {
-            comboIndex = combo->findText(text, Qt::MatchStartsWith);
-        }
-        combo->setCurrentIndex(comboIndex);
-    }
-	else 
-    {
-        // use the line edit for other columns
-        QString text = index.model()->data(index, Qt::DisplayRole).toString();
-        QLineEdit* lineEdit = qobject_cast<QLineEdit*>(editor);
-        lineEdit->setText(text);
+        ParameterDelegate::setEditorData(editor, index);
 	}
 }
 
@@ -124,7 +81,7 @@ void ModelParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& i
 void ModelParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, 
     QModelIndex const& index) const 
 {
-    if (index.column() == ModelParameterColumns::USAGE_TYPE || index.column() == ModelParameterColumns::CHOICE)
+    if (index.column() == ModelParameterColumns::USAGE_TYPE)
     {
 		QComboBox* combo = qobject_cast<QComboBox*>(editor);
 		QString text = combo->currentText();
@@ -134,48 +91,23 @@ void ModelParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* m
         }
 		model->setData(index, text, Qt::EditRole);
 	}
-    else if (isIndexForValueUsingChoice(index)) 
+    else
     {
-        QComboBox* combo = qobject_cast<QComboBox*>(editor);
-        QString text = combo->currentText();
-        text = text.left(text.indexOf(':'));
-        model->setData(index, text, Qt::EditRole);
-    }
-	else 
-    {
-        QStyledItemDelegate::setModelData(editor, model, index);
+        ParameterDelegate::setModelData(editor, model, index);
 	}
 }
-
 //-----------------------------------------------------------------------------
-// Function: ModelParameterDelegate::choiceSelected()
+// Function: ModelParameterDelegate::choiceColumn()
 //-----------------------------------------------------------------------------
-bool ModelParameterDelegate::isIndexForValueUsingChoice(QModelIndex const& index) const
+int ModelParameterDelegate::choiceColumn() const
 {
-    return index.column() == ModelParameterColumns::VALUE && !choiceNameOnRow(index).isEmpty();
+    return ModelParameterColumns::CHOICE;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterDelegate::choiceNameOnRow()
+// Function: ModelParameterDelegate::valueColumn()
 //-----------------------------------------------------------------------------
-QString ModelParameterDelegate::choiceNameOnRow(QModelIndex const& index) const
+int ModelParameterDelegate::valueColumn() const
 {
-    return index.sibling(index.row(), ModelParameterColumns::CHOICE).data().toString();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModelParameterDelegate::findChoice()
-//-----------------------------------------------------------------------------
-QSharedPointer<Choice> ModelParameterDelegate::findChoice(QModelIndex const &index) const
-{
-    QString choiceName = choiceNameOnRow(index);
-    foreach (QSharedPointer<Choice> choice, *choices_)
-    {
-        if (choice->getName() == choiceName)
-        {
-            return choice;
-        }
-    }	
-    
-    return QSharedPointer<Choice>(new Choice(QDomNode()));
+    return ModelParameterColumns::VALUE;
 }
