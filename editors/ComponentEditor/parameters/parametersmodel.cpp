@@ -1,27 +1,59 @@
-/* 
- *
- *  Created on: 4.4.2011
- *      Author: Antti Kamppi
- * 		filename: parametersmodel.cpp
- */
+//-----------------------------------------------------------------------------
+// File: parametersmodel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 4.4.2011
+//
+// Description:
+// Table model that can be used to display parameters to be edited.
+//-----------------------------------------------------------------------------
 
 #include "parametersmodel.h"
 
+#include <IPXACTmodels/choice.h>
 #include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Enumeration.h>
 
 #include <QColor>
 
+namespace 
+{
+    enum columns
+    {
+        NAME = 0,
+        CHOICE,
+        VALUE,
+        DESCRIPTION,
+        COLUMN_COUNT
+    };
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParametersModel::ParametersModel()
+//-----------------------------------------------------------------------------
 ParametersModel::ParametersModel(QList<QSharedPointer<Parameter> >& parameters,
-								 QObject *parent): 
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+    QObject *parent): 
 QAbstractTableModel(parent), 
-parameters_(parameters) {
+parameters_(parameters), choices_(choices)
+{
+
 }
 
-ParametersModel::~ParametersModel() {
+//-----------------------------------------------------------------------------
+// Function: ParametersModel::~ParametersModel()
+//-----------------------------------------------------------------------------
+ParametersModel::~ParametersModel()
+{
+
 }
 
-int ParametersModel::rowCount(const QModelIndex& parent /*= QModelIndex() */ ) const {
-
+//-----------------------------------------------------------------------------
+// Function: ParametersModel::rowCount()
+//-----------------------------------------------------------------------------
+int ParametersModel::rowCount(const QModelIndex& parent /*= QModelIndex() */ ) const
+{
 	if (parent.isValid()) {
 		return 0;
 	}
@@ -29,18 +61,23 @@ int ParametersModel::rowCount(const QModelIndex& parent /*= QModelIndex() */ ) c
 	return parameters_.size();
 }
 
+//-----------------------------------------------------------------------------
+// Function: ParametersModel::columnCount()
+//-----------------------------------------------------------------------------
 int ParametersModel::columnCount( const QModelIndex& parent /*= QModelIndex() */ ) const {
 
 	if (parent.isValid()) {
 		return 0;
 	}
 
-	return 3;
+	return COLUMN_COUNT;
 }
 
-QVariant ParametersModel::data( const QModelIndex& index, 
-							   int role /*= Qt::DisplayRole */ ) const {
-
+//-----------------------------------------------------------------------------
+// Function: ParametersModel::data()
+//-----------------------------------------------------------------------------
+QVariant ParametersModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole */ ) const 
+{
 	if (!index.isValid())
 		return QVariant();
 
@@ -48,118 +85,153 @@ QVariant ParametersModel::data( const QModelIndex& index,
 	else if (index.row() < 0 || index.row() >= parameters_.size())
 		return QVariant();
 
-	if (role == Qt::DisplayRole) {
+    if (role == Qt::DisplayRole)
+    {
+        QSharedPointer<Parameter> parameter = parameters_.at(index.row());
 
-		switch (index.column()) {
-			case 0: {
-				return parameters_.at(index.row())->getName();
-					}
-			case 1: {
-				return parameters_.at(index.row())->getValue();
-					}
-			case 2: {
-				return parameters_.at(index.row())->getDescription();
-					}
-			default: {
-				return QVariant();
-					 }
-		}
-	}
-	else if (Qt::BackgroundRole == role) {
-		switch (index.column()) {
-			case 0:
-			case 1: {
-				return QColor("LemonChiffon");
-					}
-			default:
-				return QColor("white");
-		}
-	}
-	else if (Qt::ForegroundRole == role) {
-		if (parameters_.at(index.row())->isValid()) {
-			return QColor("black");
-		}
-		else {
-			return QColor("red");
-		}
-	}
+        switch (index.column())
+        {
+        case NAME: {
+            return parameter->getName();
+                   }
+        case CHOICE: 
+            {
+                return parameter->getChoiceRef();
+            }
+        case VALUE:
+            {
+                return evaluateValueFor(parameter);
+            }
+        case DESCRIPTION: 
+            {
+                return parameter->getDescription();
+            }
+        default: 
+            {
+                return QVariant();
+            }
+        }
+    }
+    else if (Qt::BackgroundRole == role) 
+    {
+        switch (index.column()) 
+        {
+        case NAME:
+        case VALUE: 
+            {
+                return QColor("LemonChiffon");
+            }
+        default:
+            return QColor("white");
+        }
+    }
+    else if (Qt::ForegroundRole == role)
+    {
+        if (parameters_.at(index.row())->isValid()) 
+        {
+            return QColor("black");
+        }
+        else 
+        {
+            return QColor("red");
+        }
+    }
 
 	// if unsupported role
-	else {
+	else 
+    {
 		return QVariant();
 	}
 }
 
-QVariant ParametersModel::headerData( int section, 
-									 Qt::Orientation orientation, 
-									 int role /*= Qt::DisplayRole */ ) const {
+//-----------------------------------------------------------------------------
+// Function: ParametersModel::headerData()
+//-----------------------------------------------------------------------------
+QVariant ParametersModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if (orientation != Qt::Horizontal)
+        return QVariant();
 
-	if (orientation != Qt::Horizontal)
-		return QVariant();
+    if (role == Qt::DisplayRole) 
+    {
+        switch (section)
+        {
+        case NAME:
+            return tr("Name");
+        case CHOICE:
+            return tr("Choice");
+        case VALUE:
+            return tr("Value");
+        case DESCRIPTION:
+            return tr("Description");
+        default:
+            return QVariant();
+        }
+    }
 
-	if (role == Qt::DisplayRole) {
-		switch (section) {
-			case 0:
-				return tr("Name");
-			case 1:
-				return tr("Value");
-			case 2:
-				return tr("Description");
-			default:
-				return QVariant();
-		}
-	}
-
-	// if unsupported role
-	else {
-		return QVariant();
-	}
+    // if unsupported role
+    else 
+    {
+        return QVariant();
+    }
 }
 
-bool ParametersModel::setData( const QModelIndex& index, 
-							  const QVariant& value, 
-							  int role /*= Qt::EditRole */ ) {
-
+//-----------------------------------------------------------------------------
+// Function: ParametersModel::setData()
+//-----------------------------------------------------------------------------
+bool ParametersModel::setData(const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole */) 
+{
 	if (!index.isValid())
 		return false;
 
-	// if row is invalid
-	else if (index.row() < 0 || index.row() >= parameters_.size())
-		return false;
+    // if row is invalid
+    else if (index.row() < 0 || index.row() >= parameters_.size())
+        return false;
 
-	if (role == Qt::EditRole) {
-		
-		switch (index.column()) {
-			case 0: {
-				parameters_.value(index.row())->setName(value.toString());
-				break;
-					}
-			case 1: {
-				parameters_.value(index.row())->setValue(value.toString());
-				break;
-					}
-			case 2: {
-				parameters_.value(index.row())->setDescription(value.toString());
-				break;
-					}
-			default: 
-				return false;
-		}
-		emit contentChanged();
-		return true;
-	}
+    if (role == Qt::EditRole)
+    {
 
-	// is unsupported role
-	else {
-		return false;
-	}
+        switch (index.column())
+        {
+        case NAME: 
+            {
+                parameters_.value(index.row())->setName(value.toString());
+                break;
+            }
+        case CHOICE: 
+            {
+                parameters_.value(index.row())->setChoiceRef(value.toString());
+                break;
+            }
+        case VALUE:
+            {
+                parameters_.value(index.row())->setValue(value.toString());
+                break;
+            }
+        case DESCRIPTION: 
+            {
+                parameters_.value(index.row())->setDescription(value.toString());
+                break;
+            }
+        default: 
+            return false;
+        }
+        emit contentChanged();
+        return true;
+    }
+
+    // is unsupported role
+    else 
+    {
+        return false;
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: ParametersModel::flags()
 //-----------------------------------------------------------------------------
-Qt::ItemFlags ParametersModel::flags(const QModelIndex& index ) const {
-
+Qt::ItemFlags ParametersModel::flags(const QModelIndex& index ) const
+{
 	if (!index.isValid())
 		return Qt::NoItemFlags;
 
@@ -239,4 +311,54 @@ void ParametersModel::onAddItem( const QModelIndex& index ) {
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: ParametersModel::evaluateValueFor()
+//-----------------------------------------------------------------------------
+QString ParametersModel::evaluateValueFor(QSharedPointer<Parameter> modelParameter) const
+{
+    if (modelParameter->getChoiceRef().isEmpty())
+    {
+        return modelParameter->getValue();
+    }
+    else
+    {
+        QSharedPointer<Choice> choice = findChoice(modelParameter->getChoiceRef());
+        return findDisplayValueForEnumeration(choice, modelParameter->getValue());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParametersModel::findChoice()
+//-----------------------------------------------------------------------------
+QSharedPointer<Choice> ParametersModel::findChoice(QString const& choiceName) const
+{
+    foreach (QSharedPointer<Choice> choice, *choices_)
+    {
+        if (choice->getName() == choiceName)
+        {
+            return choice;
+        }
+    }	
+
+    return QSharedPointer<Choice>(new Choice(QDomNode()));
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParametersModel::findDisplayValueForEnumeration()
+//-----------------------------------------------------------------------------
+QString ParametersModel::findDisplayValueForEnumeration(QSharedPointer<Choice> choice,
+    QString const& enumerationValue) const
+{
+    foreach (QSharedPointer<Enumeration> enumeration, *choice->enumerations())
+    {
+        if (enumeration->getValue() == enumerationValue && !enumeration->getText().isEmpty())
+        {
+            return enumeration->getText();
+        }
+    }
+
+    return enumerationValue;
 }

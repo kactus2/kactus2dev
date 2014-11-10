@@ -11,11 +11,12 @@
 
 #include <QVBoxLayout>
 
-ParameterEditor::ParameterEditor( QList<QSharedPointer<Parameter> >& parameters, 
+ParameterEditor::ParameterEditor(QList<QSharedPointer<Parameter> >& parameters, 
+                                 QSharedPointer<QList<QSharedPointer<Choice> > > choices,
 								 QWidget *parent):
 QWidget(parent),
 view_(this), 
-model_(parameters, this),
+model_(parameters, choices, this),
 proxy_(this) {
 
 	connect(&model_, SIGNAL(contentChanged()),

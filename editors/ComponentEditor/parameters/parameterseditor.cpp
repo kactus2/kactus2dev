@@ -18,7 +18,7 @@ ParametersEditor::ParametersEditor(QSharedPointer<Component> component,
 	QWidget *parent): 
 ItemEditor(component, handler, parent),
 view_(this), 
-model_(component->getParameters(), this), 
+model_(component->getParameters(), component->getChoices(), this), 
 proxy_(NULL) {
 
 	connect(&model_, SIGNAL(contentChanged()),

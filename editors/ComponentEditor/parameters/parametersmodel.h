@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 4.4.2011
- *      Author: Antti Kamppi
- * 		filename: parametersmodel.h
- */
+//-----------------------------------------------------------------------------
+// File: parametersmodel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 4.4.2011
+//
+// Description:
+// Table model that can be used to display parameters to be edited.
+//-----------------------------------------------------------------------------
 
 #ifndef PARAMETERSMODEL_H
 #define PARAMETERSMODEL_H
@@ -15,11 +19,12 @@
 #include <QSharedPointer>
 #include <QList>
 
+class Choice;
 class Component;
 
-/*! \brief Table model that can be used to display parameters to be edited.
- *
- */
+//-----------------------------------------------------------------------------
+//! Table model that can be used to display parameters to be edited.
+//-----------------------------------------------------------------------------
 class ParametersModel : public QAbstractTableModel {
 	Q_OBJECT
 
@@ -32,6 +37,7 @@ public:
 	 *
 	*/
 	ParametersModel(QList<QSharedPointer<Parameter> >& parameters, 
+        QSharedPointer<QList<QSharedPointer<Choice> > > choices,
 		QObject *parent);
 	
 	//! \brief The destructor
@@ -136,6 +142,36 @@ signals:
 	//! \brief Prints a notification to user.
 	void noticeMessage(const QString& msg) const;
 
+protected:
+
+    /*!
+     *  Finds the value for the given model parameter using either selected choice or model parameter value.
+     *
+     *      @param [in] modelParameter   The model parameter whose value to find.
+     *
+     *      @return The value to display for the model parameter.
+     */
+    QString evaluateValueFor(QSharedPointer<Parameter> modelParameter) const;
+
+    /*!
+     *  Finds the choice with the given name.
+     *
+     *      @param [in] choiceName   The name of the choice to find.
+     *
+     *      @return The found choice.
+     */
+    QSharedPointer<Choice> findChoice(QString const& choiceName) const;
+
+    /*!
+     *  Finds a human-readable value to display for a given enumeration.
+     *
+     *      @param [in] choice              The choice whose enumeration to find.
+     *      @param [in] enumerationValue    The value used to search the enumeration.
+     *
+     *      @return A value for the enumeration to display.
+     */
+    QString findDisplayValueForEnumeration(QSharedPointer<Choice> choice, QString const& enumerationValue) const;
+
 private:
 
 	//! \brief No copying
@@ -146,6 +182,10 @@ private:
 	
 	//! \brief Pointer to the component that's parameters are edited.
 	QList<QSharedPointer<Parameter> >& parameters_;
+
+    //! The choices available for model parameter values.
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
+
 };
 
 #endif // PARAMETERSMODEL_H

@@ -28,11 +28,13 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param parameters The list that contains the parameters to edit.
-	 * \param parent Pointer to the owner of this editor.
+	 * \param parameters    The list that contains the parameters to edit.
+     * \param choices       The list that contains the choices available for the parameter values.
+	 * \param parent        Pointer to the owner of this editor.
 	 *
 	*/
 	ParameterEditor(QList<QSharedPointer<Parameter> >& parameters,
+        QSharedPointer<QList<QSharedPointer<Choice> > > choices,
 		QWidget *parent);
 	
 	//! \brief The destructor
