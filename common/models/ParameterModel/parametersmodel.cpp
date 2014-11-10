@@ -155,6 +155,9 @@ bool ParametersModel::setData( const QModelIndex& index,
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: ParametersModel::flags()
+//-----------------------------------------------------------------------------
 Qt::ItemFlags ParametersModel::flags(const QModelIndex& index ) const {
 
 	if (!index.isValid())
@@ -163,11 +166,14 @@ Qt::ItemFlags ParametersModel::flags(const QModelIndex& index ) const {
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
 
+//-----------------------------------------------------------------------------
+// Function: ParametersModel::isValid()
+//-----------------------------------------------------------------------------
 bool ParametersModel::isValid() const {
 
 	// check all parameters
-	foreach (QSharedPointer<Parameter> parameter, parameters_) {
-
+	foreach (QSharedPointer<Parameter> parameter, parameters_)
+    {
 		// if one parameter is invalid
 		if (!parameter->isValid())
 			return false;
@@ -184,8 +190,8 @@ bool ParametersModel::isValid(QStringList& errorList, const QString& parentIdent
 {
     bool valid = true;
     // check all parameters.
-    foreach (QSharedPointer<Parameter> parameter, parameters_) {
-
+    foreach (QSharedPointer<Parameter> parameter, parameters_) 
+    {
         // if one parameter is invalid, model is invalid.
         if (!parameter->isValid(errorList, parentIdentifier))
             valid = false;
@@ -194,6 +200,9 @@ bool ParametersModel::isValid(QStringList& errorList, const QString& parentIdent
     return valid;
 }
 
+//-----------------------------------------------------------------------------
+// Function: ParametersModel::onRemoveItem()
+//-----------------------------------------------------------------------------
 void ParametersModel::onRemoveItem( const QModelIndex& index ) {
 	// don't remove anything if index is invalid
  	if (!index.isValid()) {
@@ -213,6 +222,9 @@ void ParametersModel::onRemoveItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: ParametersModel::onAddItem()
+//-----------------------------------------------------------------------------
 void ParametersModel::onAddItem( const QModelIndex& index ) {
 	int row = parameters_.size();
 

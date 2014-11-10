@@ -1,13 +1,20 @@
-/* 
- *
- *  Created on: 27.7.2010
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: parameter.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 27.7.2010
+//
+// Description:
+// Equals the spirit:parameter element in IP-Xact specification.
+//-----------------------------------------------------------------------------
 
 #ifndef PARAMETER_H_
 #define PARAMETER_H_
 
 #include "ipxactmodels_global.h"
+
+#include "NameGroup.h"
 
 #include <QDomNode>
 #include <QString>
@@ -15,135 +22,172 @@
 #include <QXmlStreamWriter>
 #include <QStringList>
 
-/*! \brief Equals the spirit:parameter element in IP-Xact specification
- *
- * Parameter defines a configurable element related to the containing element.
- */
-class IPXACTMODELS_EXPORT Parameter {
+class VendorExtension;
 
+//-----------------------------------------------------------------------------
+//! Equals the spirit:parameter element in IP-Xact specification.
+//-----------------------------------------------------------------------------
+class IPXACTMODELS_EXPORT Parameter
+{
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param parameterNode A reference to the QDomNode to parse the information
-	 * from.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Parse_error Occurs when a mandatory element is missing in
-	 * this class or one of it's member classes.
+	 *      @param [in] parameterNode A reference to the QDomNode to parse the information from.
 	 */
 	Parameter(QDomNode &parameterNode);
 
-	/*! \brief The default constructor
+	/*! The default constructor
 	 *
 	 * Constructs an empty invalid parameter.
 	*/
 	Parameter();
 
-	//! \brief Copy constructor
+	//! Copy constructor
 	Parameter(const Parameter &other);
 
-	//! \brief Assignment operator
+	//! Assignment operator
 	Parameter &operator=(const Parameter &other);
 
-	/*! \brief The destructor
-	 *
-	 */
-	~Parameter();
+	//! The destructor
+	virtual ~Parameter();
 
-	/*! \brief Write the contents of the class using the writer.
+	/*! Write the contents of the class using the writer.
 	*
-	* Uses the specified writer to write the class contents into file as valid
-	* IP-Xact.
+	* Uses the specified writer to write the class contents into file as valid IP-Xact.
 	*
-	* \param writer A reference to a QXmlStreamWriter instance that is used to
-	* write the document into file.
+	*      @param [in] writer A reference to a QXmlStreamWriter instance that is used to write the document.
 	*/
-	void write(QXmlStreamWriter& writer);
+	virtual void write(QXmlStreamWriter& writer);
 
-	/*! \brief Check if the Parameter is in valid state or not.
+	/*! Check if the Parameter is in valid state or not.
 	*
-	* \return True if the parameter is valid.
+	*      @return True if the parameter is valid.
 	*/
-	bool isValid() const;
+	virtual bool isValid() const;
 
-	/*! \brief Check if the parameter is in a valid state.
+	/*! Check if the parameter is in a valid state.
 	*
-	* \param errorList The list to add the possible error messages to.
-	* \param parentIdentifier String from parent to help to identify the location of the error.
+	*      @param [in] errorList            The list to add the possible error messages to.
+	*      @param [in] parentIdentifier     String from parent to help to identify the location of the error.
 	*
-	* \return bool True if the state is valid and writing is possible.
+	*      @return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(QStringList& errorList, 
-		const QString& parentIdentifier) const;
+	virtual bool isValid(QStringList& errorList, QString const& parentIdentifier) const;
 
-	/*! \brief Get the attributes for the parameter
+	/*! Get the name of the parameter
 	 *
-	 * \return QMap containing pointers to the attributes
-	 */
-	const QMap<QString, QString>& getValueAttributes();
-
-	/*! \brief Get the name of the parameter
-	 *
-	 * \return QString containing the name
+	 *      @return QString containing the name
 	 */
 	QString getName() const;
 
-	/*! \brief Get the value of the parameter
+	/*! Get the value of the parameter
 	 *
-	 * \return QString containing the value
+	 *      @return QString containing the value
 	 */
 	QString getValue() const;
 
-	/*! \brief Get the description of the parameter.
+	/*! Get the description of the parameter.
 	 *
-	 * \return QString containing the description.
+	 *      @return QString containing the description.
 	 */
 	QString getDescription() const;
 
-	/*! \brief Set the description for the parameter.
+	/*! Set the description for the parameter.
 	 *
-	 * \param description QString containing the description.
+	 *      @param [in] description QString containing the description.
 	 */
-	void setDescription(const QString& description);
+	void setDescription(QString const& description);
 
-	/*! \brief Set the attributes for the parameter
+	/*! Set the name for the parameter
 	 *
-	 * Calling this function will delete old attributes for the parameter.
-	 *
-	 * \param attributes QMap containing the attributes
+	 *      @param [in] name QString containing the name
 	 */
-	void setValueAttributes(const QMap<QString, QString> &attributes);
+	void setName(QString const& name);
 
-	/*! \brief Set the name for the parameter
+	/*! Set the value for the parameter
 	 *
-	 * \param name QString containing the name
+	 *      @param [in] value QString containing the value
 	 */
-	void setName(const QString &name);
+	void setValue(QString const& value);
+    
+    /*!
+     *  Gets the choice referenced by the parameter value.
+     *
+     *      @return The choice name referenced by the value or an empty string, if no choice is referenced.
+     */
+    QString getChoiceRef() const;
 
-	/*! \brief Set the value for the parameter
+    /*!
+     *  Sets the choice to reference by the parameter value.
+     *
+     *      @param [in] choiceRef   The choice name to reference.
+     */
+    void setChoiceRef(QString const& choiceRef);
+
+    /*!
+     *  Checks if the parameter has an attribute with the given name.
+     *
+     *      @param [in] attributeName   The name of the attribute to find.
+     *
+     *      @return True, if an attribute with the given name exists, otherwise false.
+     */
+    bool hasAttribute(QString const& attributeName) const;
+
+	/*! Get the attributes for the parameter
 	 *
-	 * \param value QString containing the value
+	 *      @return QMap containing pointers to the attributes
 	 */
-	void setValue(const QString &value);
+	 QMap<QString, QString> const& getAttributes() const;
+
+	/*! Get the attributes for the parameter
+	 *
+	 *      @return QMap containing pointers to the attributes
+	 */
+	virtual QMap<QString, QString> const& getValueAttributes() const;
+
+protected:
+        
+    /*!
+     *  Gets the name of the IP-Xact element represented by the parameter e.g. parameter or modelParameter.
+     *  The default implementation returns spirit:parameter.
+     *
+     *      @return The name of IP-Xact element.
+     */
+    virtual QString elementName() const;
+
+    /*!
+     *  Sets an attribute.
+     *
+     *      @param [in] attributeName       The name of the attribute to set.
+     *      @param [in] attributeValue      The value of the attribute.
+     */
+    void setAttribute(QString const& attributeName, QString const& attributeValue);
 
 private:
 
-	/*! \brief Identifies the parameter
-	 * MANDATORY
-	 */
-	QString name_;
+    //! Contains the name, display name and description of parameter.
+    NameGroup nameGroup_;
 
-	/*! \brief  The actual value of the parameter
+	/*!  The actual value of the parameter
 	 * MANDATORY
 	 */
 	QString value_;
 
-	//! \brief The attributes for the value
+    /*!
+	 * OPTIONAL
+	 * Contains the attributes for the parameter
+	 */
+	QMap<QString, QString> attributes_;
+
+	//! The attributes for the value
 	QMap<QString, QString> valueAttributes_;
 
-	//! \brief The description for the parameters
-	QString description_;
+    /*!
+	 * OPTIONAL spirit: vendorExtensions
+	 * Parameter vendor extensions.
+	 */
+    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 #endif /* PARAMETER_H_ */

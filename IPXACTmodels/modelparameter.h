@@ -1,13 +1,19 @@
-/* 
- *
- *  Created on: 2.8.2010
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: modelparameter.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 2.8.2010
+//
+// Description:
+// Equals the spirit:modelParameter element in IP-Xact specification.
+//-----------------------------------------------------------------------------
 
 #ifndef MODELPARAMETER_H_
 #define MODELPARAMETER_H_
 
 #include <IPXACTmodels/NameGroup.h>
+#include <IPXACTmodels/parameter.h>
 
 #include "ipxactmodels_global.h"
 
@@ -19,221 +25,85 @@
 
 class VendorExtension;
 
-/*! \brief Equals the spirit:modelParameter element in IP-Xact specification.
- *
- * ModelParameter desribes the properties for a single parameter that is
- * applied to all the models specified under the model/views element.
- */
-class IPXACTMODELS_EXPORT ModelParameter {
-
+//-----------------------------------------------------------------------------
+// Equals the spirit:modelParameter element in IP-Xact specification.
+//-----------------------------------------------------------------------------
+class IPXACTMODELS_EXPORT ModelParameter : public Parameter
+{
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param modelParameterNode A reference to a QDomNode to parse the
-	 * information from.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Parse_error Occurs when a mandatory element is missing in
-	 * this class or one of it's member classes.
+	 *      @param [in] modelParameterNode A reference to a QDomNode to parse the information from.
 	 */
 	ModelParameter(QDomNode &modelParameterNode);
 
-	/*! \brief The default constructor
+	/*! The default constructor
 	 *
 	 * Constructs an empty model parameter that is not valid
 	*/
 	ModelParameter();
 
-	/*! \brief The copy constructor
-	 * 
-	 */
+	//! The copy constructor
 	ModelParameter(const ModelParameter &other);
 
-	//! \brief Assignment operator
+	//! Assignment operator
 	ModelParameter &operator=(const ModelParameter &other);
 
-	/*! \brief The destructor
-	 *
-	 */
+	//! The destructor
 	~ModelParameter();
 
-	/*! \brief Write the contents of the class using the writer.
+   /*! Checks if the model parameter is valid IP-Xact.
 	*
-	* Uses the specified writer to write the class contents into file as valid
-	* IP-Xact.
+	*      @return True if the model parameter is in valid state.
+	*/
+    virtual bool isValid() const;
+
+	/*! Check if the model parameter is in a valid state.
 	*
-	* \param writer A reference to a QXmlStreamWriter instance that is used to
-	* write the document into file.
-	*/
-	void write(QXmlStreamWriter& writer);
-
-	/*! \brief Check if the model parameter is in a valid state.
+	*      @param [in] errorList            The list to add the possible error messages to.
+	*      @param [in] parentIdentifier     String from parent to help to identify the location of the error.
 	*
-	* \param errorList The list to add the possible error messages to.
-	* \param parentIdentifier String from parent to help to identify the location of the error.
-	*
-	* \return bool True if the state is valid and writing is possible.
+	*      @return True if the state is valid and writing is possible.
 	*/
-	bool isValid(QStringList& errorList, 
-		const QString& parentIdentifier) const;
-
-	/*! \brief Checks if the model parameter is valid IP-Xact.
-	*
-	* \return True if the model parameter is in valid state.
-	*/
-	bool isValid() const;
-
-	/*! \brief Get the attributes linked to the model parameter element
+	virtual bool isValid(QStringList& errorList, QString const& parentIdentifier) const;
+    
+	/*! Get the data type of the model parameter
 	 *
-	 * \return QMap containing pointers to the attributes
-	 */
-	const QMap<QString, QString>& getAttributes();
-
-	/*! \brief Set the attributes for the model parameter
-	*
-	* Calling this function will delete the old attributes
-	*
-	* \param attributes A QMap containing pointers to the attributes
-	*/
-	void setAttributes(const QMap<QString, QString> &attributes);
-
-	/*! \brief Get the name of the model parameter
-	 *
-	 * \return QString containing the name
-	 */
-	QString getName() const;
-
-	/*! \brief Set the name for the model parameter
-	*
-	* \param name QString containing the name.
-	*/
-	void setName(const QString &name);
-
-	/*! \brief Get the display name of the model parameter.
-	 *
-	 *
-	 * \return QString contains the display name.
-	*/
-	QString getDisplayName() const;
-
-	/*! \brief Set the display name for the model parameter.
-	 *
-	 * \param displayName The display name to set.
-	 *
-	*/
-	void setDisplayName(const QString& displayName);
-
-	/*! \brief Get the description of the model parameter.
-	 *
-	 *
-	 * \return QString contains the description of the model parameter.
-	*/
-	QString getDescription() const;
-
-	/*! \brief Set the description for the model parameter.
-	 *
-	 * \param description contains the description to set.
-	 *
-	*/
-	void setDescription(const QString& description);
-
-	/*! \brief Get the value of the model parameter
-	 *
-	 * \return QString containing the value
-	 */
-	QString getValue() const;
-
-	/*! \brief Set the value of the model parameter
-	*
-	* \param value QString containing the value
-	*/
-	void setValue(const QString &value);
-
-	/*! \brief Get the data type of the model parameter
-	 *
-	 * \return QString containing the data type
+	 *      @return QString containing the data type
 	*/
 	QString getDataType() const;
 
-	/*! \brief Set the data type of the model parameter
+	/*! Set the data type of the model parameter
 	 *
-	 * \param dataType QString containing the data type
+	 *      @param [in] dataType QString containing the data type
 	 *
 	*/
-	void setDataType(const QString& dataType);
+	void setDataType(QString const& dataType);
 
-	/*! \brief Get the usage type of the model parameter
+	/*! Get the usage type of the model parameter
 	 *
 	 *
-	 * \return QString containing the usage type
+	 *      @return QString containing the usage type
 	*/
 	QString getUsageType() const;
 
-	/*! \brief Set the usage type of the model parameter
+	/*! Set the usage type of the model parameter
 	 *
-	 * \param usageType QString containing the usage type
+	 *      @param [in] usageType QString containing the usage type
 	 *
 	*/
-	void setUsageType(const QString& usageType);
+	void setUsageType(QString const& usageType);
 
+protected:
+            
     /*!
-     *  Gets the choice referenced by the model parameter value.
+     *  Gets the name of the IP-Xact element represented by the parameter e.g. parameter or modelParameter.
      *
-     *      @return The choice name referenced by the value or an empty string, if no choice is referenced.
+     *      @return The name of IP-Xact element.
      */
-    QString getChoiceRef() const;
+    virtual QString elementName() const;
 
-    /*!
-     *  Sets the choice to reference by the model parameter value.
-     *
-     *      @param [in] choiceRef   The choice name to reference.
-     */
-    void setChoiceRef(QString const& choiceRef);
-
-	/*! \brief Get the attributes linked to the value element in model parameter
-	 *
-	 * \return QMap containing pointers to the value attributes
-	 */
-	const QMap<QString, QString>& getValueAttributes();
-
-	/*! \brief Set the attributes linked to the value element
-	 *
-	 * Calling this function will delete the old attributes linked to the
-	 * value element
-	 *
-	 * \param valueAttributes QMap containing pointers to the attributes
-	 */
-	void setValueAttributes(const QMap<QString, QString> &valueAttributes);
-
-private:
-
-	//! \brief Contains the name, display name and description of model parameter.
-	NameGroup nameGroup_;
-
-	/*!
-	 * MANDATORY
-	 * Contains the actual value of the model parameter
-	 */
-	QString value_;
-
-	/*!
-	 * OPTIONAL
-	 * Contains the attributes for the model parameter
-	 */
-	QMap<QString, QString> attributes_;
-
-	/*!
-	 * OPTIONAL
-	 * Contains the attributes for the value element
-	 */
-	QMap<QString, QString> valueAttributes_;
-
-    /*!
-	 * OPTIONAL spirit: vendorExtensions
-	 * Model Parameter vendor extensions.
-	 */
-    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 };
 
 
