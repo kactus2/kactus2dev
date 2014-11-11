@@ -18,6 +18,9 @@
 #include <IPXACTmodels/model.h>
 
 
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::ModelParameterModel()
+//-----------------------------------------------------------------------------
 ModelParameterModel::ModelParameterModel(QSharedPointer<Model> model, 
     QSharedPointer<QList<QSharedPointer<Choice> > > choices,
 										 QObject *parent): 
@@ -27,11 +30,19 @@ model_(model), choices_(choices), lockedIndexes_()
 
 }
 
-ModelParameterModel::~ModelParameterModel() {
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::~ModelParameterModel()
+//-----------------------------------------------------------------------------
+ModelParameterModel::~ModelParameterModel()
+{
+
 }
 
-int ModelParameterModel::rowCount( const QModelIndex & parent /*= QModelIndex() */ ) const {
-	
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::rowCount()
+//-----------------------------------------------------------------------------
+int ModelParameterModel::rowCount( const QModelIndex & parent /*= QModelIndex() */ ) const 
+{
 	// not hierarchical model
 	if (parent.isValid())
 		return 0;
@@ -39,8 +50,11 @@ int ModelParameterModel::rowCount( const QModelIndex & parent /*= QModelIndex() 
 	return model_->getModelParameters().count();
 }
 
-int ModelParameterModel::columnCount( const QModelIndex & parent /*= QModelIndex() */ ) const {
-	
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::columnCount()
+//-----------------------------------------------------------------------------
+int ModelParameterModel::columnCount( const QModelIndex & parent /*= QModelIndex() */ ) const
+{
 	// not hierarchical model
 	if (parent.isValid())
 		return 0;
@@ -72,6 +86,8 @@ QVariant ModelParameterModel::data( const QModelIndex & index, int role /*= Qt::
         {
         case ModelParameterColumns::NAME: 
             return modelParameter->getName();
+        case ModelParameterColumns::DISPLAY_NAME:
+            return modelParameter->getDisplayName();
         case ModelParameterColumns::DATA_TYPE:
             return modelParameter->getDataType();
         case ModelParameterColumns::USAGE_TYPE:
@@ -142,11 +158,13 @@ QVariant ModelParameterModel::headerData(int section, Qt::Orientation orientatio
 	if (orientation != Qt::Horizontal) 
 		return QVariant();
 
-	if (role == Qt::DisplayRole) {
-		
+	if (role == Qt::DisplayRole) 
+    {	
 		switch (section) {
 			case ModelParameterColumns::NAME:
 				return tr("Name");
+            case ModelParameterColumns::DISPLAY_NAME:
+                return tr("Display name");
 			case ModelParameterColumns::DATA_TYPE:
 				return tr("Data type");
 			case ModelParameterColumns::USAGE_TYPE:
@@ -196,6 +214,11 @@ bool ModelParameterModel::setData(QModelIndex const& index, QVariant const& valu
         case ModelParameterColumns::NAME:
             {
                 modelParameter->setName(value.toString());
+                break;				
+            }
+        case ModelParameterColumns::DISPLAY_NAME:
+            {
+                modelParameter->setDisplayName(value.toString());
                 break;				
             }
         case ModelParameterColumns::DATA_TYPE:
@@ -280,6 +303,9 @@ void ModelParameterModel::onRemoveRow( int row )
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::onRemoveItem()
+//-----------------------------------------------------------------------------
 void ModelParameterModel::onRemoveItem( const QModelIndex& index )
 {
 	// don't remove anything if index is invalid
@@ -308,6 +334,9 @@ void ModelParameterModel::onRemoveItem( const QModelIndex& index )
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::onAddRow()
+//-----------------------------------------------------------------------------
 void ModelParameterModel::onAddRow()
 {
     int row = model_->getModelParameters().count();
@@ -321,6 +350,9 @@ void ModelParameterModel::onAddRow()
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::onAddItem()
+//-----------------------------------------------------------------------------
 void ModelParameterModel::onAddItem( const QModelIndex& index )
 {
     QList<QSharedPointer<ModelParameter> >& modelParameters = model_->getModelParameters();
@@ -339,6 +371,9 @@ void ModelParameterModel::onAddItem( const QModelIndex& index )
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::addModelParameter()
+//-----------------------------------------------------------------------------
 void ModelParameterModel::addModelParameter( QSharedPointer<ModelParameter> modelParam )
 {
     int row = model_->getModelParameters().count();
@@ -350,6 +385,9 @@ void ModelParameterModel::addModelParameter( QSharedPointer<ModelParameter> mode
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::removeModelParameter()
+//-----------------------------------------------------------------------------
 void ModelParameterModel::removeModelParameter(QSharedPointer<ModelParameter> removedParam ) {
 
     // find the index for the model parameter
@@ -363,6 +401,9 @@ void ModelParameterModel::removeModelParameter(QSharedPointer<ModelParameter> re
 
 }
 
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::isValid()
+//-----------------------------------------------------------------------------
 bool ModelParameterModel::isValid() const
 {	
     foreach (QSharedPointer<ModelParameter> modelParameter, model_->getModelParameters())
@@ -385,6 +426,9 @@ bool ModelParameterModel::isValid() const
 	return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::index()
+//-----------------------------------------------------------------------------
 QModelIndex ModelParameterModel::index( QSharedPointer<ModelParameter> modelParam ) const
 {
 	// find the correct row
@@ -399,6 +443,9 @@ QModelIndex ModelParameterModel::index( QSharedPointer<ModelParameter> modelPara
 	return QAbstractTableModel::index(row, 0, QModelIndex());
 }
 
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::getParameter()
+//-----------------------------------------------------------------------------
 QSharedPointer<ModelParameter> ModelParameterModel::getParameter(QModelIndex const& index) const
 {
 	Q_ASSERT(index.isValid());

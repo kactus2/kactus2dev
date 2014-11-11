@@ -81,29 +81,41 @@ public:
 	 */
 	QString getName() const;
 
-	/*! Get the value of the parameter
+	/*! Get the display name of the parameter.
 	 *
-	 *      @return QString containing the value
+	 *      @return The parameter display name.
 	 */
-	QString getValue() const;
+	QString getDisplayName() const;
 
 	/*! Get the description of the parameter.
 	 *
 	 *      @return QString containing the description.
 	 */
 	QString getDescription() const;
-
-	/*! Set the description for the parameter.
+    
+	/*! Get the value of the parameter
 	 *
-	 *      @param [in] description QString containing the description.
+	 *      @return QString containing the value
 	 */
-	void setDescription(QString const& description);
+	QString getValue() const;
 
 	/*! Set the name for the parameter
 	 *
 	 *      @param [in] name QString containing the name
 	 */
 	void setName(QString const& name);
+    
+	/*! Set the display name for the parameter.
+	 *
+	 *      @param [in] displayName The display name to set.
+	 */
+	void setDisplayName(QString const& displayName);
+    
+	/*! Set the description for the parameter.
+	 *
+	 *      @param [in] description QString containing the description.
+	 */
+	void setDescription(QString const& description);
 
 	/*! Set the value for the parameter
 	 *

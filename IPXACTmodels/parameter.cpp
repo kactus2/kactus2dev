@@ -128,11 +128,43 @@ QString Parameter::getName() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: Parameter::getDisplayName()
+//-----------------------------------------------------------------------------
+QString Parameter::getDisplayName() const
+{
+    return nameGroup_.displayName();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::getDescription()
+//-----------------------------------------------------------------------------
+QString Parameter::getDescription() const 
+{
+    return nameGroup_.description();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::getValue()
+//-----------------------------------------------------------------------------
+QString Parameter::getValue() const
+{
+    return value_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Parameter::setName()
 //-----------------------------------------------------------------------------
 void Parameter::setName(QString const& name)
 {
 	nameGroup_.setName(name);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::setDisplayName()
+//-----------------------------------------------------------------------------
+void Parameter::setDisplayName(const QString& displayName)
+{
+    nameGroup_.setDisplayName(displayName);
 }
 
 //-----------------------------------------------------------------------------
@@ -149,22 +181,6 @@ void Parameter::setDescription(const QString& description)
 void Parameter::setValue(QString const& value) 
 {
 	value_ = value;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Parameter::getValue()
-//-----------------------------------------------------------------------------
-QString Parameter::getValue() const
-{
-	return value_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Parameter::getDescription()
-//-----------------------------------------------------------------------------
-QString Parameter::getDescription() const 
-{
-	return nameGroup_.description();
 }
 
 //-----------------------------------------------------------------------------

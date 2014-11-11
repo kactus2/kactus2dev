@@ -15,6 +15,7 @@ namespace ModelParameterColumns
     enum columns
     {
         NAME = 0,
+        DISPLAY_NAME,
         DATA_TYPE,
         USAGE_TYPE,
         CHOICE,
