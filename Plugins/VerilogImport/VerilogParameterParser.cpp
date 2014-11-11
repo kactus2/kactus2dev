@@ -82,24 +82,41 @@ void VerilogParameterParser::findANSIDeclarations(QString const &input, QStringL
     // And that is why only the module header is inspected in the parsing.
     QString inspect = input.mid( 0, endIndex );
 
-    // We shall further crop until the start of the ports or if not encountered, until the end of the module begin.
-    QRegExp ports(QString("([)]\\s*[(])"), Qt::CaseInsensitive);
+    // We shall further crop until the start of the ports.
+    QRegExp portsBegin(QString("([)](\\s*|(\\s*" + VerilogSyntax::COMMENT + "\\s*))[(])"), Qt::CaseInsensitive);
     QRegExp beginEnd(QString("([)])"), Qt::CaseInsensitive);
-    int portLoc = ports.lastIndexIn(inspect);
-    int endLoc = beginEnd.lastIndexIn(inspect);
-
+    int portLoc = portsBegin.lastIndexIn(inspect);
     int loc = portLoc;
 
     if ( loc == -1 )
     {
+        // If not encountered, crop until the end of the module begin.
+        int endLoc = beginEnd.lastIndexIn(inspect);
         loc = endLoc;
     }
-
-    if ( loc != -1 )
+    else
     {
+        // If encountered, rip off the port declarations.
+        QRegExp portsProper(QString("([(].*[)])"), Qt::CaseInsensitive);
+        loc = portsProper.indexIn(inspect,loc);
         inspect = inspect.left(loc);
+        loc = beginEnd.lastIndexIn(inspect);
     }
 
+    // If the last location is contained within a comment, rip off the commend and find the another last.
+    QRegExp lastComment(VerilogSyntax::COMMENT, Qt::CaseInsensitive);
+    int commentLoc = lastComment.lastIndexIn(inspect);
+
+    if ( commentLoc != -1 && commentLoc < loc && loc < commentLoc + lastComment.matchedLength() )
+    {
+        inspect = inspect.left(commentLoc);
+
+        loc = beginEnd.lastIndexIn(inspect);
+    }
+
+    inspect = inspect.left(loc);
+
+    // Cull the stray comments to avoid distractions to parsing.
     cullStrayComments(inspect);
 
     QRegExp declarRule(QString("parameter\\s+"), Qt::CaseInsensitive);
