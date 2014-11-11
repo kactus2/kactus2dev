@@ -52,6 +52,11 @@ bool ComponentEditorViewItem::isValid() const {
 	if (view_->isHierarchical() && !libHandler_->contains(view_->getHierarchyRef())) {
 		return false;
 	}
+    
+    if (!component_->validateParameters(view_->getParameters()))
+    {
+        return false;
+    }
 
 	// view was valid and the reference was found
 	return true;

@@ -42,21 +42,9 @@ bool ComponentEditorModelParamsItem::isValid() const
     // if one model parameter is invalid
     foreach (QSharedPointer<ModelParameter> modelParam, modelParams_) 
     {
-        if (!modelParam->isValid()) {
-            return false;
-        }
-
-        if (!modelParam->getChoiceRef().isEmpty())
+        if (!component_->validateParameter(modelParam))
         {
-            QSharedPointer<Choice> referencedChoice = component_->getChoice(modelParam->getChoiceRef());
-            if (referencedChoice.isNull())
-            {
-                return false;
-            }
-            else if(!referencedChoice->hasEnumeration(modelParam->getValue()))
-            {
-                return false;
-            }
+            return false;
         }
     }
 

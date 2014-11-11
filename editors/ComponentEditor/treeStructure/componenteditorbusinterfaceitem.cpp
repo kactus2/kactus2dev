@@ -69,6 +69,11 @@ bool ComponentEditorBusInterfaceItem::isValid() const {
         }
     }
 
+    if (!component_->validateParameters(busif_->getParameters()))
+    {
+        return false;
+    }
+
 	return true;
 }
 

@@ -39,28 +39,7 @@ QString ComponentEditorParametersItem::text() const
 
 bool ComponentEditorParametersItem::isValid() const
 {
-    foreach (QSharedPointer<Parameter> param, parameters_)
-    {
-        if (!param->isValid())
-        {
-            return false;
-        }
-
-        if (!param->getChoiceRef().isEmpty())
-        {
-            QSharedPointer<Choice> referencedChoice = component_->getChoice(param->getChoiceRef());
-            if (referencedChoice.isNull())
-            {
-                return false;
-            }
-            else if(!referencedChoice->hasEnumeration(param->getValue()))
-            {
-                return false;
-            }
-        }
-    }
-
-	return true;
+	return component_->validateParameters(parameters_);
 }
 
 ItemEditor* ComponentEditorParametersItem::editor()

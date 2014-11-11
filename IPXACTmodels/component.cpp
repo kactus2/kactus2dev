@@ -42,7 +42,6 @@
 #include <QDir>
 #include <QFileInfo>
 
-#include <QDebug>
 #include "GenericVendorExtension.h"
 
 //-----------------------------------------------------------------------------
@@ -109,14 +108,9 @@ author_()
 				// single choice as parameter
 				QDomNode tempNode = children.at(i).childNodes().at(j);
 
-				// don't parse comments
-				if (!tempNode.isComment()) {
-
-					// create the bus interface from the node.
-					QSharedPointer<BusInterface> interface(new BusInterface(tempNode));
-
-					// add the pointer to the map
-					busInterfaces_.append(interface);
+				if (!tempNode.isComment())
+                {
+					busInterfaces_.append(QSharedPointer<BusInterface>(new BusInterface(tempNode)));
 				}
 			}
 		}
@@ -129,10 +123,9 @@ author_()
 
 				QDomNode channelNode = children.at(i).childNodes().at(j);
 
-				// dont parse comments
-				if (!channelNode.isComment()) {
-					channels_.append(QSharedPointer<Channel>(
-							new Channel(channelNode)));
+				if (!channelNode.isComment())
+                {
+					channels_.append(QSharedPointer<Channel>(new Channel(channelNode)));
 				}
 			}
 		}
@@ -145,10 +138,9 @@ author_()
 
 				QDomNode remapStateNode = children.at(i).childNodes().at(j);
 
-				// dont parse comments
-				if (!remapStateNode.isComment()) {
-					remapStates_.append(QSharedPointer<RemapState>(
-							new RemapState(remapStateNode)));
+				if (!remapStateNode.isComment())
+                {
+					remapStates_.append(QSharedPointer<RemapState>(new RemapState(remapStateNode)));
 				}
 			}
 		}
@@ -160,10 +152,9 @@ author_()
 			for (int j = 0; j < children.at(i).childNodes().count(); ++j) {
 				QDomNode addrSpaceNode = children.at(i).childNodes().at(j);
 
-				// don't parse comments
-				if (!addrSpaceNode.isComment()) {
-					addressSpaces_.append(QSharedPointer<AddressSpace>(
-							new AddressSpace(addrSpaceNode)));
+				if (!addrSpaceNode.isComment())
+                {
+					addressSpaces_.append(QSharedPointer<AddressSpace>(new AddressSpace(addrSpaceNode)));
 				}
 			}
 		}
@@ -175,10 +166,9 @@ author_()
 			for (int j = 0; j < children.at(i).childNodes().count(); ++j) {
 				QDomNode memoryMapNode = children.at(i).childNodes().at(j);
 
-				// don't parse comments
-				if (!memoryMapNode.isComment()) {
-					memoryMaps_.append(QSharedPointer<MemoryMap>(
-							new MemoryMap(memoryMapNode)));
+				if (!memoryMapNode.isComment())
+                {
+					memoryMaps_.append(QSharedPointer<MemoryMap>(new MemoryMap(memoryMapNode)));
 				}
 			}
 		}
@@ -200,8 +190,8 @@ author_()
 				// single componentGenerator as parameter
 				QDomNode generatorNode = children.at(i).childNodes().at(j);
 
-				// don't parse comments
-				if (!generatorNode.isComment()) {
+				if (!generatorNode.isComment())
+                {
 					compGenerators_.append(QSharedPointer<ComponentGenerator>(
 							new ComponentGenerator(generatorNode)));
 				}
@@ -218,8 +208,8 @@ author_()
 				// single choice as parameter
 				QDomNode tempNode = children.at(i).childNodes().at(j);
 
-				// don't parse comments
-				if (!tempNode.isComment()) {
+				if (!tempNode.isComment())
+                {
 					choices_->append(QSharedPointer<Choice>(new Choice(tempNode)));
 				}
 			}
@@ -234,10 +224,9 @@ author_()
 				// single file set as parameter
 				QDomNode tempNode = children.at(i).childNodes().at(j);
 
-				// don't parse comments
-				if (!tempNode.isComment()) {
-					fileSets_.append(QSharedPointer<FileSet>(
-							new FileSet(tempNode)));
+				if (!tempNode.isComment())
+                {
+					fileSets_.append(QSharedPointer<FileSet>(new FileSet(tempNode)));
 				}
 			}
 		}
@@ -249,10 +238,9 @@ author_()
 			for (int j = 0; j < children.at(i).childNodes().count(); ++j) {
 				QDomNode cpuNode = children.at(i).childNodes().at(j);
 
-				// don't parse comments
-				if (!cpuNode.isComment()) {
-					cpus_.append(QSharedPointer<Cpu>(
-							new Cpu(cpuNode)));
+				if (!cpuNode.isComment())
+                {
+					cpus_.append(QSharedPointer<Cpu>(new Cpu(cpuNode)));
 				}
 			}
 		}
@@ -265,10 +253,9 @@ author_()
 			for (int j = 0; j < children.at(i).childNodes().count(); ++j) {
 				QDomNode clockNode = children.at(i).childNodes().at(j);
 
-				// don't parse comments
-				if (!clockNode.isComment()) {
-					otherClockDrivers_.append(QSharedPointer<OtherClockDriver>(
-							new OtherClockDriver(clockNode)));
+				if (!clockNode.isComment())
+                {
+					otherClockDrivers_.append(QSharedPointer<OtherClockDriver>(new OtherClockDriver(clockNode)));
 				}
 			}
 		}
@@ -280,10 +267,9 @@ author_()
 
 				QDomNode parameterNode = children.at(i).childNodes().at(j);
 
-				// don't parse comments
-				if (!parameterNode.isComment()) {
-					parameters_.append(QSharedPointer<Parameter>(
-							new Parameter(parameterNode)));
+				if (!parameterNode.isComment())
+                {
+					parameters_.append(QSharedPointer<Parameter>(new Parameter(parameterNode)));
 				}
 			}
 		}
@@ -368,7 +354,7 @@ channels_(),
 remapStates_(),
 addressSpaces_(),
 memoryMaps_(),
-model_(),
+model_(new Model()),
 compGenerators_(),
 choices_(new QList<QSharedPointer<Choice> >()),
 fileSets_(),
@@ -382,10 +368,7 @@ parameters_(),
 attributes_(),
 author_()
 {
-
 	LibraryComponent::vlnv_->setType(VLNV::COMPONENT);
-
-	model_ = QSharedPointer<Model>(new Model());
 }
 
 //-----------------------------------------------------------------------------
@@ -400,7 +383,7 @@ channels_(),
 remapStates_(),
 addressSpaces_(),
 memoryMaps_(),
-model_(),
+model_(new Model()),
 compGenerators_(), 
 choices_(new QList<QSharedPointer<Choice> >()),
 fileSets_(), 
@@ -415,7 +398,6 @@ attributes_(),
 author_()
 {
 
-	model_ = QSharedPointer<Model>(new Model());
 }
 
 //-----------------------------------------------------------------------------
@@ -447,8 +429,7 @@ author_(other.author_)
 
 	foreach (QSharedPointer<BusInterface> busif, other.busInterfaces_) {
 		if (busif) {
-			QSharedPointer<BusInterface> copy = QSharedPointer<BusInterface>(
-				new BusInterface(*busif.data()));
+			QSharedPointer<BusInterface> copy = QSharedPointer<BusInterface>(new BusInterface(*busif.data()));
 			busInterfaces_.append(copy);
 		}
 	}
@@ -471,32 +452,28 @@ author_(other.author_)
 
 	foreach (QSharedPointer<Channel> channel, other.channels_) {
 		if (channel) {
-			QSharedPointer<Channel> copy = QSharedPointer<Channel>(
-				new Channel(*channel.data()));
+			QSharedPointer<Channel> copy = QSharedPointer<Channel>(new Channel(*channel.data()));
 			channels_.append(copy);
 		}
 	}
 
 	foreach (QSharedPointer<RemapState> remState, other.remapStates_) {
 		if (remState) {
-			QSharedPointer<RemapState> copy = QSharedPointer<RemapState>(
-				new RemapState(*remState.data()));
+			QSharedPointer<RemapState> copy = QSharedPointer<RemapState>(new RemapState(*remState.data()));
 			remapStates_.append(copy);
 		}
 	}
 
 	foreach (QSharedPointer<AddressSpace> addrSpace, other.addressSpaces_) {
 		if (addrSpace) {
-			QSharedPointer<AddressSpace> copy = QSharedPointer<AddressSpace>(
-				new AddressSpace(*addrSpace.data()));
+			QSharedPointer<AddressSpace> copy = QSharedPointer<AddressSpace>(new AddressSpace(*addrSpace.data()));
 			addressSpaces_.append(copy);
 		}
 	}
 
 	foreach (QSharedPointer<MemoryMap> memMap, other.memoryMaps_) {
 		if (memMap) {
-			QSharedPointer<MemoryMap> copy = QSharedPointer<MemoryMap>(
-				new MemoryMap(*memMap.data()));
+			QSharedPointer<MemoryMap> copy = QSharedPointer<MemoryMap>(new MemoryMap(*memMap.data()));
 			memoryMaps_.append(copy);
 		}
 	}
@@ -525,8 +502,7 @@ author_(other.author_)
 
 	foreach (QSharedPointer<FileSet> fileSet, other.fileSets_) {
 		if (fileSet) {
-			QSharedPointer<FileSet> copy = QSharedPointer<FileSet>(
-				new FileSet(*fileSet.data()));
+			QSharedPointer<FileSet> copy = QSharedPointer<FileSet>(new FileSet(*fileSet.data()));
 			fileSets_.append(copy);
 		}
 	}
@@ -547,8 +523,7 @@ author_(other.author_)
 
 	foreach (QSharedPointer<Cpu> cpu, other.cpus_) {
 		if (cpu) {
-			QSharedPointer<Cpu> copy = QSharedPointer<Cpu>(
-				new Cpu(*cpu.data()));
+			QSharedPointer<Cpu> copy = QSharedPointer<Cpu>(new Cpu(*cpu.data()));
 			cpus_.append(copy);
 		}
 	}
@@ -556,15 +531,14 @@ author_(other.author_)
 	foreach (QSharedPointer<OtherClockDriver> othClock, other.otherClockDrivers_) {
 		if (othClock) {
 			QSharedPointer<OtherClockDriver> copy = QSharedPointer<OtherClockDriver>(
-				new OtherClockDriver(*othClock.data()));
+                new OtherClockDriver(*othClock.data()));
 			otherClockDrivers_.append(copy);
 		}
 	}
 
 	foreach (QSharedPointer<Parameter> param, other.parameters_) {
 		if (param) {
-			QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(
-				new Parameter(*param.data()));
+			QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*param.data()));
 			parameters_.append(copy);
 		}
 	}
@@ -594,8 +568,7 @@ Component & Component::operator=( const Component &other ) {
 		busInterfaces_.clear();
 		foreach (QSharedPointer<BusInterface> busif, other.busInterfaces_) {
 			if (busif) {
-				QSharedPointer<BusInterface> copy = QSharedPointer<BusInterface>(
-					new BusInterface(*busif.data()));
+				QSharedPointer<BusInterface> copy = QSharedPointer<BusInterface>(new BusInterface(*busif.data()));
 				busInterfaces_.append(copy);
 			}
 		}
@@ -621,8 +594,7 @@ Component & Component::operator=( const Component &other ) {
 		channels_.clear();
 		foreach (QSharedPointer<Channel> channel, other.channels_) {
 			if (channel) {
-				QSharedPointer<Channel> copy = QSharedPointer<Channel>(
-					new Channel(*channel.data()));
+				QSharedPointer<Channel> copy = QSharedPointer<Channel>(new Channel(*channel.data()));
 				channels_.append(copy);
 			}
 		}
@@ -630,8 +602,7 @@ Component & Component::operator=( const Component &other ) {
 		remapStates_.clear();
 		foreach (QSharedPointer<RemapState> remState, other.remapStates_) {
 			if (remState) {
-				QSharedPointer<RemapState> copy = QSharedPointer<RemapState>(
-					new RemapState(*remState.data()));
+				QSharedPointer<RemapState> copy = QSharedPointer<RemapState>(new RemapState(*remState.data()));
 				remapStates_.append(copy);
 			}
 		}
@@ -648,8 +619,7 @@ Component & Component::operator=( const Component &other ) {
 		memoryMaps_.clear();
 		foreach (QSharedPointer<MemoryMap> memMap, other.memoryMaps_) {
 			if (memMap) {
-				QSharedPointer<MemoryMap> copy = QSharedPointer<MemoryMap>(
-					new MemoryMap(*memMap.data()));
+				QSharedPointer<MemoryMap> copy = QSharedPointer<MemoryMap>(new MemoryMap(*memMap.data()));
 				memoryMaps_.append(copy);
 			}
 		}
@@ -682,8 +652,7 @@ Component & Component::operator=( const Component &other ) {
 		fileSets_.clear();
 		foreach (QSharedPointer<FileSet> fileSet, other.fileSets_) {
 			if (fileSet) {
-				QSharedPointer<FileSet> copy = QSharedPointer<FileSet>(
-					new FileSet(*fileSet.data()));
+				QSharedPointer<FileSet> copy = QSharedPointer<FileSet>(new FileSet(*fileSet.data()));
 				fileSets_.append(copy);
 			}
 		}
@@ -712,8 +681,7 @@ Component & Component::operator=( const Component &other ) {
 		cpus_.clear();
 		foreach (QSharedPointer<Cpu> cpu, other.cpus_) {
 			if (cpu) {
-				QSharedPointer<Cpu> copy = QSharedPointer<Cpu>(
-					new Cpu(*cpu.data()));
+				QSharedPointer<Cpu> copy = QSharedPointer<Cpu>(new Cpu(*cpu.data()));
 				cpus_.append(copy);
 			}
 		}
@@ -730,8 +698,7 @@ Component & Component::operator=( const Component &other ) {
 		parameters_.clear();
 		foreach (QSharedPointer<Parameter> param, other.parameters_) {
 			if (param) {
-				QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(
-					new Parameter(*param.data()));
+				QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*param.data()));
 				parameters_.append(copy);
 			}
 		}
@@ -763,7 +730,8 @@ Component & Component::operator=( const Component &other ) {
 }
 
 // the destructor
-Component::~Component() {
+Component::~Component()
+{
 	busInterfaces_.clear();
 	channels_.clear();
 	remapStates_.clear();
@@ -778,10 +746,10 @@ Component::~Component() {
 	otherClockDrivers_.clear();
 	parameters_.clear();
 	model_.clear();
-	return;
 }
 
-QSharedPointer<LibraryComponent> Component::clone() const {
+QSharedPointer<LibraryComponent> Component::clone() const 
+{
 	return QSharedPointer<LibraryComponent>(new Component(*this));
 }
 
@@ -807,7 +775,6 @@ void Component::write(QFile& file) {
 	// call base class to write the VLNV info
 	LibraryComponent::writeVLNV(writer);
 
-	
 	if (busInterfaces_.size() != 0) {
 		writer.writeStartElement("spirit:busInterfaces");
 
@@ -1083,8 +1050,6 @@ void Component::write(QFile& file) {
 
 	writer.writeEndElement(); // spirit:component
 	writer.writeEndDocument();
-	return;
-
 }
 
 bool Component::isValid( QStringList& errorList ) const {
@@ -1419,20 +1384,12 @@ bool Component::isValid() const {
 
         foreach(QSharedPointer<ModelParameter> modelParameter, model_->getModelParameters())
         {
-            if (!modelParameter->getChoiceRef().isEmpty())
+            if (!validateParameter(modelParameter))
             {
-                QSharedPointer<Choice> referencedChoice = getChoice(modelParameter->getChoiceRef());
-                if (referencedChoice.isNull())
-                {
-                    return false;
-                }
-                else if(!referencedChoice->hasEnumeration(modelParameter->getValue()))
-                {
-                    return false;
-                }
+                return false;
             }
         }
-	}
+    }
 
 	QStringList busifNames;
 	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
@@ -1597,33 +1554,10 @@ bool Component::isValid() const {
 		}
 	}
 
-	QStringList paramNames;
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-
-		if (paramNames.contains(param->getName())) {
-			return false;
-		}
-		else {
-			paramNames.append(param->getName());
-		}
-
-		if (!param->isValid()) {
-			return false;
-		}
-
-        if (!param->getChoiceRef().isEmpty())
-        {
-            QSharedPointer<Choice> referencedChoice = getChoice(param->getChoiceRef());
-            if (referencedChoice.isNull())
-            {
-                return false;
-            }
-            else if(!referencedChoice->hasEnumeration(param->getValue()))
-            {
-                return false;
-            }
-        }
-    }
+	if (!validateParameters(parameters_))
+	{
+        return false;
+	}
 
 	return true;
 }
@@ -1638,22 +1572,17 @@ void Component::setAttributes(const QMap<QString, QString>& attributes) {
 	attributes_ = attributes;
 }
 
-QSharedPointer<Model> Component::getModel() {
-	
-	// if model is defined for this component
-	if (model_) {
-		return model_;
-	}
-	
+QSharedPointer<Model> Component::getModel()
+{
 	// if model is not defined then create an empty model and return pointer to it
-	else {
-		model_ = QSharedPointer<Model>(new Model());
-		return model_;
+    if (!model_) {
+	    model_ = QSharedPointer<Model>(new Model());;
 	}
+	
+    return model_;
 }
 
-const QList<QSharedPointer<ComponentGenerator> >&
-Component::getCompGenerators() const {
+const QList<QSharedPointer<ComponentGenerator> >& Component::getCompGenerators() const {
 	return compGenerators_;
 }
 
@@ -1682,15 +1611,18 @@ QStringList Component::getMemoryMapNames() const {
 	return memoryMapNames;
 }
 
-QList<QSharedPointer<Cpu> >& Component::getCpus() {
+QList<QSharedPointer<Cpu> >& Component::getCpus()
+{
 	return cpus_;
 }
 
-const QList<QSharedPointer<Cpu> >& Component::getCpus() const {
+const QList<QSharedPointer<Cpu> >& Component::getCpus() const
+{
 	return cpus_;
 }
 
-QStringList Component::getCpuNames() const {
+QStringList Component::getCpuNames() const
+{
 	QStringList cpuNames;
 	foreach (QSharedPointer<Cpu> cpu, cpus_) {
 		if (cpu) {
@@ -1701,8 +1633,8 @@ QStringList Component::getCpuNames() const {
 	return cpuNames;
 }
 
-void Component::setOtherClockDrivers(const
-QList<QSharedPointer<OtherClockDriver> > &otherClockDrivers) {
+void Component::setOtherClockDrivers(QList<QSharedPointer<OtherClockDriver> > const& otherClockDrivers)
+{
 	// first remove old clock drivers and free the memory
 	otherClockDrivers_.clear();
 
@@ -1726,8 +1658,7 @@ QList<QSharedPointer<FileSet> >& Component::getFileSets() {
 	return fileSets_;
 }
 
-void Component::setParameters(const QList<QSharedPointer<Parameter> >
-&parameters) {
+void Component::setParameters(QList<QSharedPointer<Parameter> > const& parameters) {
 	// remove old parameters first
 	parameters_.clear();
 	parameters_ = parameters;
@@ -1741,8 +1672,7 @@ void Component::setCpus(const QList<QSharedPointer<Cpu> > &cpus) {
 	cpus_ = cpus;
 }
 
-void Component::setMemoryMaps(const QList<QSharedPointer<MemoryMap> >
-&memoryMaps) {
+void Component::setMemoryMaps(QList<QSharedPointer<MemoryMap> > const& memoryMaps) {
 	// remove old memory maps first
 	memoryMaps_.clear();
 
@@ -1774,8 +1704,7 @@ QList<QSharedPointer<Channel> >& Component::getChannels() {
 	return channels_;
 }
 
-void Component::setCompGenerators(const
-QList<QSharedPointer<ComponentGenerator> > &compGenerators) {
+void Component::setCompGenerators(QList<QSharedPointer<ComponentGenerator> > const& compGenerators) {
 	// delete old component generators
 	compGenerators_.clear();
 
@@ -1783,8 +1712,7 @@ QList<QSharedPointer<ComponentGenerator> > &compGenerators) {
 	compGenerators_ = compGenerators;
 }
 
-void Component::setAddressSpaces(const
-QList<QSharedPointer<AddressSpace> > &addressSpaces) {
+void Component::setAddressSpaces(QList<QSharedPointer<AddressSpace> > const& addressSpaces) {
 	// delete old address spaces
 	addressSpaces_.clear();
 
@@ -1792,31 +1720,13 @@ QList<QSharedPointer<AddressSpace> > &addressSpaces) {
 	addressSpaces_ = addressSpaces;
 }
 
-void Component::setRemapStates(const
-QList<QSharedPointer<RemapState> > &remapStates) {
+void Component::setRemapStates(QList<QSharedPointer<RemapState> > const& remapStates) {
 	// delete old remap states
 	remapStates_.clear();
 
 	// save new remap states
 	remapStates_ = remapStates;
 }
-
-// const QMap<QString, QSharedPointer<BusInterface> >& Component::getBusInterfaces() const {
-// 	return busInterfaces_;
-// }
-// 
-// QMap<QString, QSharedPointer<BusInterface> >& Component::getBusInterfaces() {
-// 	return busInterfaces_;
-// }
-// 
-// void Component::setBusInterfaces(const
-// 								 QMap<QString, QSharedPointer<BusInterface> > &busInterfaces) {
-// 									 // delete old bus interfaces
-// 									 busInterfaces_.clear();
-// 
-// 									 // save new bus interfaces
-// 									 busInterfaces_ = busInterfaces;
-// }
 
 QList<QSharedPointer<AddressSpace> >& Component::getAddressSpaces() {
 	return addressSpaces_;
@@ -2271,15 +2181,15 @@ bool Component::renamePort( const QString& oldName, const QString& newName ) {
 	return model_->renamePort(oldName, newName);
 }
 
-Channel* Component::createChannel() {
-
+Channel* Component::createChannel() 
+{
 	QSharedPointer<Channel> chan = QSharedPointer<Channel>(new Channel());
 	channels_.append(chan);
 	return chan.data();
 }
 
-const QStringList Component::getAddressSpaceNames() const {
-
+const QStringList Component::getAddressSpaceNames() const 
+{
 	// the list to store the names
 	QStringList list;
 
@@ -2334,14 +2244,10 @@ void Component::removeChannel( const QString& channelName ) {
 	}
 }
 
-void Component::updateFiles( const Component& other,
-							const QString& sourcePath, 
-							const QString& targetPath ) {
-				
-	Q_ASSERT_X(!sourcePath.isEmpty(), "Component::updateFiles",
-		"Empty source path given as parameter");
-	Q_ASSERT_X(!targetPath.isEmpty(), "Component::updateFiles",
-		"Empty targetPath given as parameter");
+void Component::updateFiles( const Component& other, const QString& sourcePath, const QString& targetPath )
+{				
+	Q_ASSERT_X(!sourcePath.isEmpty(), "Component::updateFiles", "Empty source path given as parameter");
+	Q_ASSERT_X(!targetPath.isEmpty(), "Component::updateFiles",	"Empty targetPath given as parameter");
 
 	// can't operate on the same component
 	if (&other == this)
@@ -4010,4 +3916,55 @@ void Component::setAuthor(QString const& author)
 QString Component::getAuthor() const
 {
     return author_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::validateParameters()
+//-----------------------------------------------------------------------------
+bool Component::validateParameters(QList<QSharedPointer<Parameter> > parameters) const
+{
+    QStringList parameterNames;
+    foreach (QSharedPointer<Parameter> param, parameters)
+    {
+        if (parameterNames.contains(param->getName()))
+        {
+            return false;
+        }
+        else 
+        {
+            parameterNames.append(param->getName());
+        }
+
+        if (!validateParameter(param))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::validateParameter()
+//-----------------------------------------------------------------------------
+bool Component::validateParameter(QSharedPointer<Parameter> param) const
+{
+    if (!param->isValid())
+    {
+        return false;
+    }
+
+    if (!param->getChoiceRef().isEmpty())
+    {
+        QSharedPointer<Choice> referencedChoice = getChoice(param->getChoiceRef());
+        if (referencedChoice.isNull())
+        {
+            return false;
+        }
+        else if(!referencedChoice->hasEnumeration(param->getValue()))
+        {
+            return false;
+        }
+    }
+    return true;
 }

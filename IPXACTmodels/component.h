@@ -60,9 +60,6 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * Exception guarantee: basic
-	 * \exception Parse_error Occurs when a mandatory element is missing
-	 *
 	 * \param doc A reference to a QDomDocument that holds the information
 	 * to parsed into component model.
 	 */
@@ -216,11 +213,6 @@ public:
 
 	/*! \brief Get the names of the CPU elements within component.
 	 *
-	 * Method: 		getCpuNames
-	 * Full name:	Component::getCpuNames
-	 * Access:		public 
-	 *
-	 *
 	 * \return QStringList containing the CPU names.
 	*/
 	QStringList getCpuNames() const;
@@ -309,11 +301,6 @@ public:
 
 	/*! \brief Get names of the parameters stored in the component.
 	 *
-	 * Method: 		getParameterNames
-	 * Full name:	Component::getParameterNames
-	 * Access:		public 
-	 *
-	 *
 	 * \return QStringList containing the parameter names.
 	*/
 	QStringList getParameterNames() const;
@@ -344,21 +331,12 @@ public:
 
 	/*! \brief Get the names of the parameters and model parameters contained in the component.
 	*
-	* Method: 		getAllParameterNames
-	* Full name:	Component::getAllParameterNames
-	* Access:		public 
-	*
-	*
 	* \return QStringList containing parameter and model parameter names.
 	*/
 	QStringList getAllParameterNames() const;
 
 	/*! \brief Get the default value set for specified parameter or model parameter.
-	 *
-	 * Method: 		getAllParametersDefaultValue
-	 * Full name:	Component::getAllParametersDefaultValue
-	 * Access:		public 
-	 * 
+     *
 	 * First model parameters is searched and then parameters. The first 
 	 * parameter/model parameter matching the paramName is selected.
 	 * 
@@ -396,8 +374,7 @@ public:
 	 *
 	 * \param compGererators QList containing the component generators to be set
 	 */
-	void setCompGenerators(const
-	QList<QSharedPointer<ComponentGenerator> > &compGenerators);
+	void setCompGenerators(const QList<QSharedPointer<ComponentGenerator> > &compGenerators);
 
 	/*! \brief Set this component's cpus
 	 *
@@ -415,8 +392,7 @@ public:
 	 *
 	 * \param otherClockDrivers QList containing the other clock drivers to be set
 	 */
-	void setOtherClockDrivers(const
-	QList<QSharedPointer<OtherClockDriver> > &otherClockDrivers);
+	void setOtherClockDrivers(const	QList<QSharedPointer<OtherClockDriver> > &otherClockDrivers);
 
 	/*! \brief Set remap states for this component
 	 *
@@ -516,11 +492,6 @@ public:
 
 	/*! \brief Get the implementation of the component.
 	 *
-	 * Method: 		getComponentImplementation
-	 * Full name:	Component::getComponentImplementation
-	 * Access:		public 
-	 *
-	 *
 	 * \return KactusAttribute::Implementation specifying the component implementation.
 	*/
 	KactusAttribute::Implementation getComponentImplementation() const;
@@ -546,10 +517,6 @@ public:
 	bool hasParameters() const;
 
 	/*! \brief Check all HW, SW and System views of the component for the given view name.
-	 *
-	 * Method: 		checkAllViews
-	 * Full name:	Component::checkAllViews
-	 * Access:		public 
 	 *
 	 * \param viewName The view name which is searched.
 	 *
@@ -655,11 +622,6 @@ public:
 	QStringList getHierViews() const;
 
 	/*! \brief Get the non-hierarchical views of a component.
-	 *
-	 * Method: 		getFlatViews
-	 * Full name:	Component::getFlatViews
-	 * Access:		public 
-	 *
 	 *
 	 * \return QStringList containing the names of the non-hierarchical HW views.
 	*/
@@ -815,10 +777,6 @@ public:
 	 * 
 	 * If the SW view does not exist then the SW view is created.
 	 * 
-	 * Method: 		getSWView
-	 * Full name:	Component::getSWView
-	 * Access:		public 
-	 *
 	 * \param viewName The name of the view to search/create.
 	 *
 	 * \return Pointer to the found/created SW view.
@@ -939,10 +897,6 @@ public:
 	SystemView* findSystemView(const QString name) const;
 
 	/*! \brief Find a system view which refers to the given VLNV.
-	 *
-	 * Method: 		findSystemView
-	 * Full name:	Component::findSystemView
-	 * Access:		public 
 	 *
 	 * \param hierRef The VLNV to the design/configuration that is searched among the views.
 	 *
@@ -1084,10 +1038,6 @@ public:
 	 * 
 	 * If file set with given name does not exist then one is created and pointer
 	 * to it returned.
-	 * 
-	 * Method: 		getFileSet
-	 * Full name:	Component::getFileSet
-	 * Access:		public 
 	 *
 	 * \param name The name of the file set.
 	 *
@@ -1155,10 +1105,6 @@ public:
 
 	/*! \brief Find the files that match the specified file type.
 	 *
-	 * Method: 		findFilesByFileType
-	 * Full name:	Component::findFilesByFileType
-	 * Access:		public 
-	 *
 	 * \param fileType The file type to search within the files.
 	 *
 	 * \return QStringList containing the file paths of files matching the file type.
@@ -1167,10 +1113,6 @@ public:
 
 	/*! \brief Find the file set by the file set id.
 	*
-	* Method: 		findFileSetById
-	* Full name:	Component::findFileSetById
-	* Access:		public 
-	*
 	* \param id Identifies the file set.
 	*
 	* \return Pointer to the file set found, null pointer if none found.
@@ -1178,10 +1120,6 @@ public:
 	QSharedPointer<const FileSet> findFileSetById(const QString& id) const;
 
 	/*! \brief Get file paths of all specified file sets that match the specified file types.
-	*
-	* Method: 		getFilesFromFileSets
-	* Full name:	Component::getFilesFromAllFileSets
-	* Access:		public 
 	*
 	* \param fileSetNames Contains the file sets to search from.
 	* \param fileTypes Contains the file types that are searched among the file sets.
@@ -1235,10 +1173,6 @@ public:
 	const QList<QSharedPointer<BusInterface> >& getBusInterfaces() const;
 
 	/*! \brief Get list of bus interfaces that are connected to the given interface through channel.
-	 *
-	 * Method: 		getChannelConnectedInterfaces
-	 * Full name:	Component::getChannelConnectedInterfaces
-	 * Access:		public 
 	 *
 	 * \param sourceInterfaceName The name of the interface that's channels are checked.
 	 *
@@ -1296,11 +1230,6 @@ public:
 	QStringList getMasterInterfaces(const QString& addressSpace) const;
 
 	/*! \brief Get list of the master and mirrored master interface names.
-	 *
-	 * Method: 		getMasterInterfaces
-	 * Full name:	Component::getMasterInterfaces
-	 * Access:		public 
-	 *
 	 *
 	 * \return QStringList containing the interface names.
 	*/
@@ -1686,11 +1615,6 @@ public:
 
 	/*! \brief Check if the component contains at least one local memory map.
 	 *
-	 * Method: 		hasLocalMemoryMaps
-	 * Full name:	Component::hasLocalMemoryMaps
-	 * Access:		public 
-	 *
-	 *
 	 * \return True if at least one local memory map is found.
 	*/
 	bool hasLocalMemoryMaps() const;
@@ -1736,10 +1660,6 @@ public:
 
 	/*! \brief Check if the address blocks within memory maps contains registers with given names.
 	 *
-	 * Method: 		uniqueRegisterNames
-	 * Full name:	AddressBlock::uniqueRegisterNames
-	 * Access:		public 
-	 *  
 	 * The register names are checked against the given list and appended to it. 
 	 * If all register names are unique then true is returned.
 	 *
@@ -1766,19 +1686,41 @@ public:
 
 	/*! \brief Get the directories which this component needs.
 	 *
-	 * Method: 		getDependentDirs
-	 * Full name:	Component::getDependentDirs
-	 * Access:		virtual public 
-	 *
-	 *
 	 * \return QStringList containing the relative directory paths.
 	*/
 	virtual const QStringList getDependentDirs() const;
 
-
+    /*!
+     *  Sets the author of the component.
+     *
+     *      @param [in] author   The name of the component author.
+     */
     void setAuthor(QString const& author);
 
+    /*!
+     *  Gets the author of the component.
+     *
+     *      @return The component author.
+     */
     QString getAuthor() const;
+
+    /*!
+     *  Validates a group of parameters within the component.
+     *
+     *      @param [in] parameters   The parameters to validate.
+     *
+     *      @return True, if the parameters, the group and possible choice references are valid, otherwise false.
+     */
+    bool validateParameters(QList<QSharedPointer<Parameter> > parameters) const;
+    
+    /*!
+     *  Validates a single parameter within the component.
+     *
+     *      @param [in] parameter   The parameter to validate.
+     *
+     *      @return True, if the parameter and possible choice references are valid, otherwise false.
+     */
+    bool validateParameter(QSharedPointer<Parameter> param) const;
 
 private:
 
@@ -1837,6 +1779,10 @@ private:
      *      @param [in] node The source XML node.
      */
     void parseIgnoredFiles(QDomNode& node);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     /*! \brief Specifies all the interfaces for this component.
 	 * OPTIONAL spirit:busInterfaces
