@@ -138,6 +138,20 @@ public:
     void setChoiceRef(QString const& choiceRef);
 
     /*!
+     *  Gets the format for the parameter value.
+     *
+     *      @return The format for the parameter value.
+     */
+    QString getValueFormat() const;
+    
+    /*!
+     *  Sets the format for the parameter value.
+     *
+     *      @param [in] format   The format for the parameter value.
+     */
+    void setValueFormat(QString const& format);
+
+    /*!
      *  Checks if the parameter has an attribute with the given name.
      *
      *      @param [in] attributeName   The name of the attribute to find.

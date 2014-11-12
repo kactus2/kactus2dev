@@ -18,6 +18,7 @@ namespace ModelParameterColumns
         DISPLAY_NAME,
         DATA_TYPE,
         USAGE_TYPE,
+        FORMAT,
         CHOICE,
         VALUE,
         DESCRIPTION,

@@ -1,19 +1,15 @@
 #-----------------------------------------------------------------------------
-# File: test_all.pro
+# File: editors.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
-# Date: 24.27.2014
+# Date: 12.11.2014
 #
 # Description:
-# Qt project file for running all unit tests.
+# Qt project file template for running unit tests in editors.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = subdirs
 
 CONFIG += testcase
-
-SUBDIRS += editors/editors.pro \
-		wizards/wizards.pro \
-		Plugins/plugins.pro 
-           
+SUBDIRS += ComponentEditor/ComponentEditor.pro

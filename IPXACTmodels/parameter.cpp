@@ -207,6 +207,29 @@ void Parameter::setChoiceRef(QString const& choiceRef)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Parameter::getValueFormat()
+//-----------------------------------------------------------------------------
+QString Parameter::getValueFormat() const
+{
+    return valueAttributes_.value("spirit:format");
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::setValueFormat()
+//-----------------------------------------------------------------------------
+void Parameter::setValueFormat(QString const& format)
+{
+    if (!format.isEmpty())
+    {    
+        valueAttributes_.insert("spirit:format", format);
+    }
+    else
+    {
+        valueAttributes_.remove("spirit:format");
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: Parameter::hasAttribute()
 //-----------------------------------------------------------------------------
 bool Parameter::hasAttribute(QString const& attributeName) const

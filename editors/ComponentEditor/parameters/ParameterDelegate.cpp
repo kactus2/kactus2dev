@@ -83,7 +83,7 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
 {
 	if (index.column() == choiceColumn()) 
     {
-		QString text = index.model()->data(index, Qt::DisplayRole).toString();
+		QString text = index.data(Qt::DisplayRole).toString();
 		QComboBox* combo = qobject_cast<QComboBox*>(editor);
 		
 		int comboIndex = combo->findText(text);

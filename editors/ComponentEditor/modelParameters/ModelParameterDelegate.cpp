@@ -50,6 +50,17 @@ QWidget* ModelParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewI
 		combo->addItem(QString("nontyped"));
 		return combo;
 	}
+    else if (index.column() == ModelParameterColumns::FORMAT) 
+    {
+        QComboBox* combo = new QComboBox(parent);
+        combo->addItem(QString(""));
+        combo->addItem(QString("bitString"));
+        combo->addItem(QString("bool"));
+        combo->addItem(QString("float"));
+        combo->addItem(QString("long"));
+        combo->addItem(QString("string"));
+        return combo;
+    }
     else
     {
         return ParameterDelegate::createEditor(parent, option, index);
@@ -61,9 +72,11 @@ QWidget* ModelParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewI
 //-----------------------------------------------------------------------------
 void ModelParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const 
 {
-	if (index.column() == ModelParameterColumns::USAGE_TYPE) 
+   QComboBox* combo = qobject_cast<QComboBox*>(editor);
+
+	if (combo != 0) 
     {
-		QString text = index.model()->data(index, Qt::DisplayRole).toString();
+		QString text = index.data(Qt::DisplayRole).toString();
 		QComboBox* combo = qobject_cast<QComboBox*>(editor);
 		
 		int comboIndex = combo->findText(text);
@@ -81,9 +94,10 @@ void ModelParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& i
 void ModelParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, 
     QModelIndex const& index) const 
 {
-    if (index.column() == ModelParameterColumns::USAGE_TYPE)
+    QComboBox* combo = qobject_cast<QComboBox*>(editor);
+
+    if (combo != 0)
     {
-		QComboBox* combo = qobject_cast<QComboBox*>(editor);
 		QString text = combo->currentText();
         if (text == "<none>")
         {

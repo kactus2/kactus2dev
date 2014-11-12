@@ -88,7 +88,6 @@ private:
 	//! No assignment
 	ModelParameterDelegate& operator=(const ModelParameterDelegate& other);
 
-
 };
 
 #endif // MODELPARAMETERDELEGATE_H

@@ -92,6 +92,8 @@ QVariant ModelParameterModel::data( const QModelIndex & index, int role /*= Qt::
             return modelParameter->getDataType();
         case ModelParameterColumns::USAGE_TYPE:
             return modelParameter->getUsageType();
+        case ModelParameterColumns::FORMAT:
+            return modelParameter->getValueFormat();
         case ModelParameterColumns::CHOICE:
             return modelParameter->getChoiceRef();
         case ModelParameterColumns::VALUE:
@@ -169,6 +171,8 @@ QVariant ModelParameterModel::headerData(int section, Qt::Orientation orientatio
 				return tr("Data type");
 			case ModelParameterColumns::USAGE_TYPE:
 				return tr("Usage type");
+            case  ModelParameterColumns::FORMAT:
+                return tr("Format");
             case ModelParameterColumns::CHOICE:
                 return tr("Choice");
 			case ModelParameterColumns::VALUE:
@@ -229,6 +233,11 @@ bool ModelParameterModel::setData(QModelIndex const& index, QVariant const& valu
         case ModelParameterColumns::USAGE_TYPE:
             {
                 modelParameter->setUsageType(value.toString());
+                break;
+            }
+        case ModelParameterColumns::FORMAT:
+            {
+                modelParameter->setValueFormat(value.toString());
                 break;
             }
         case ModelParameterColumns::CHOICE:
