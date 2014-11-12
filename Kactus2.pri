@@ -7,8 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./editors/ComponentEditor/parameters/ParameterColumns.h \
-    ./common/Global.h \
+HEADERS += ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
@@ -242,17 +241,23 @@ HEADERS += ./editors/ComponentEditor/parameters/ParameterColumns.h \
     ./editors/ComDefinitionEditor/ComPropertyDelegate.h \
     ./editors/ComDefinitionEditor/ComPropertyEditor.h \
     ./editors/ComDefinitionEditor/ComPropertyModel.h \
+    ./editors/ComponentEditor/SettingsListSortProxyModel.h \
     ./editors/ComponentEditor/componenteditor.h \
     ./editors/ComponentEditor/itemeditor.h \
     ./editors/ComponentEditor/itemvisualizer.h \
     ./editors/ComponentEditor/general/desceditor.h \
     ./editors/ComponentEditor/general/generaleditor.h \
+    ./editors/ComponentEditor/modelParameters/ModelParameterColumns.h \
+    ./editors/ComponentEditor/modelParameters/ModelParameterDelegate.h \
     ./editors/ComponentEditor/modelParameters/modelparametermodel.h \
     ./editors/ComponentEditor/modelParameters/modelparametereditor.h \
     ./editors/ComponentEditor/ports/portsdelegate.h \
     ./editors/ComponentEditor/ports/portseditor.h \
     ./editors/ComponentEditor/ports/portsmodel.h \
     ./editors/ComponentEditor/ports/PortsView.h \
+    ./editors/ComponentEditor/parameters/ParameterColumns.h \
+    ./editors/ComponentEditor/parameters/parametersmodel.h \
+    ./editors/ComponentEditor/parameters/ParameterDelegate.h \
     ./editors/ComponentEditor/parameters/parameterseditor.h \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.h \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.h \
@@ -519,6 +524,7 @@ HEADERS += ./editors/ComponentEditor/parameters/ParameterColumns.h \
     ./designEditors/HWDesign/AdHocEditor/AdHocDelegate.h \
     ./designEditors/HWDesign/AdHocEditor/AdHocEditor.h \
     ./designEditors/HWDesign/AdHocEditor/AdHocModel.h \
+    ./designEditors/common/NamelabelWidth.h \
     ./designEditors/common/ColumnTypes.h \
     ./designEditors/common/diagramgrid.h \
     ./designEditors/common/DiagramUtil.h \
@@ -563,13 +569,8 @@ HEADERS += ./editors/ComponentEditor/parameters/ParameterColumns.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/parameters/parametersmodel.h \
-    ./editors/ComponentEditor/modelParameters/ModelParameterDelegate.h \
-    ./editors/ComponentEditor/modelParameters/ModelParameterColumns.h \
-    ./designEditors/common/NamelabelWidth.h \
-    ./editors/ComponentEditor/parameters/ParameterDelegate.h
-SOURCES += ./editors/ComponentEditor/parameters/ParameterDelegate.cpp \
-    ./common/GenericEditProvider.cpp \
+    ./settings/ComponentEditorSettingsPage.h
+SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
     ./common/dialogs/comboSelector/comboselector.cpp \
@@ -663,7 +664,6 @@ SOURCES += ./editors/ComponentEditor/parameters/ParameterDelegate.cpp \
     ./common/delegates/LineEditDelegate/lineeditdelegate.cpp \
     ./common/views/EditableTableView/editabletableview.cpp \
     ./common/views/EditableListView/editablelistview.cpp \
-    ./editors/ComponentEditor/parameters/parametersmodel.cpp \
     ./mainwindow/DeleteWorkspaceDialog.cpp \
     ./mainwindow/main.cpp \
     ./mainwindow/mainwindow.cpp \
@@ -777,6 +777,7 @@ SOURCES += ./editors/ComponentEditor/parameters/ParameterDelegate.cpp \
     ./editors/ComponentEditor/componenteditor.cpp \
     ./editors/ComponentEditor/itemeditor.cpp \
     ./editors/ComponentEditor/itemvisualizer.cpp \
+    ./editors/ComponentEditor/SettingsListSortProxyModel.cpp \
     ./editors/ComponentEditor/busInterfaces/ApiCreateDialog.cpp \
     ./editors/ComponentEditor/busInterfaces/bridgesdelegate.cpp \
     ./editors/ComponentEditor/busInterfaces/bridgeseditor.cpp \
@@ -853,13 +854,15 @@ SOURCES += ./editors/ComponentEditor/parameters/ParameterDelegate.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.cpp \
     ./editors/ComponentEditor/general/desceditor.cpp \
     ./editors/ComponentEditor/general/generaleditor.cpp \
+    ./editors/ComponentEditor/modelParameters/ModelParameterDelegate.cpp \
     ./editors/ComponentEditor/modelParameters/modelparametereditor.cpp \
     ./editors/ComponentEditor/modelParameters/modelparametermodel.cpp \
-    ./editors/ComponentEditor/modelParameters/ModelParameterDelegate.cpp \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.cpp \
+    ./editors/ComponentEditor/parameters/ParameterDelegate.cpp \
     ./editors/ComponentEditor/parameters/parameterseditor.cpp \
+    ./editors/ComponentEditor/parameters/parametersmodel.cpp \
     ./editors/ComponentEditor/ports/portsdelegate.cpp \
     ./editors/ComponentEditor/ports/portseditor.cpp \
     ./editors/ComponentEditor/ports/portsmodel.cpp \
@@ -1054,6 +1057,7 @@ SOURCES += ./editors/ComponentEditor/parameters/ParameterDelegate.cpp \
     ./designEditors/common/ComponentDesignDiagram.cpp \
     ./designEditors/common/DesignDiagram.cpp \
     ./designEditors/common/DesignWidget.cpp \
+    ./designEditors/common/NamelabelWidth.cpp \
     ./designEditors/common/ComponentInstanceEditor/componentinstanceeditor.cpp \
     ./designEditors/common/ComponentInstanceEditor/componentinstancemodel.cpp \
     ./designEditors/common/ComponentInstanceEditor/configurableelementdelegate.cpp \
@@ -1091,5 +1095,5 @@ SOURCES += ./editors/ComponentEditor/parameters/ParameterDelegate.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./designEditors/common/NamelabelWidth.cpp
+    ./settings/ComponentEditorSettingsPage.cpp
 RESOURCES += kactus.qrc
