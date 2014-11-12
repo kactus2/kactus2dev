@@ -728,20 +728,18 @@ void ComponentEditor::setRowVisibility(QSettings& settings)
 	settings.beginGroup("ComponentEditorFilters");
 	settingsChildren = settings.childKeys();
 
-	// List of the shown rows in component editor.
-	QStringList shownRows;
-
-	shownRows.append("General");
+	// List of the hidden rows in component editor.
+	QStringList hiddenRows;
 
 	foreach (QString name, settingsChildren) 
 	{
-		if (settings.value(name, true).toBool())
+		if (settings.value(name, true).toBool() == false)
 		{
 			QString wordReplaced = name.replace("_"," ");
-			shownRows.append(wordReplaced);
+			hiddenRows.append(wordReplaced);
 		}
 	}
 	settings.endGroup();
 
-	proxy_.setRowVisibility( shownRows );
+	proxy_.setRowVisibility( hiddenRows );
 }

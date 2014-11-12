@@ -3892,12 +3892,6 @@
     <ClCompile Include="GeneratedFiles\moc_ParameterDelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\SettingsListSortProxyModel.cpp">
-      <Filter>Source Files\editors\ComponentEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_SettingsListSortProxyModel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="settings\ComponentEditorSettingsPage.cpp">
       <Filter>Source Files\settings</Filter>
     </ClCompile>
@@ -5345,9 +5339,6 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\parameters\ParameterDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\SettingsListSortProxyModel.h">
-      <Filter>Header Files\editors\ComponentEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="settings\ComponentEditorSettingsPage.h">
       <Filter>Header Files\settings</Filter>

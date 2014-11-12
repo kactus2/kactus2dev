@@ -81,20 +81,20 @@ bool ComponentEditorTreeProxyModel::filterAcceptsRow(int source_row, QModelIndex
 	QModelIndex index = sourceModel()->index(source_row, 0);
 	QString rowName = sourceModel()->data(index).toString();
 
-	if (visibleRows_.contains( rowName ))
+	if (hiddenRows_.contains( rowName ))
 	{
-		return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+		return false;
 	}
 
-	return false;
+	return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorTreeProxyModel::setRowVisibility()
 //-----------------------------------------------------------------------------
-void ComponentEditorTreeProxyModel::setRowVisibility( QList<QString> shownRows )
+void ComponentEditorTreeProxyModel::setRowVisibility( QList<QString> invisibleRows)
 {
-	visibleRows_ = shownRows;
+	hiddenRows_ = invisibleRows;
 
 	invalidateFilter();
 }

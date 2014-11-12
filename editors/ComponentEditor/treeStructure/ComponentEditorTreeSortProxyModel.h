@@ -37,7 +37,7 @@ public:
 	/*!
 	 *  Sets the visibility status for the tree view.
 	 */
-	void setRowVisibility(QList <QString> shownRows);
+	void setRowVisibility(QList <QString> invisibleRows);
 
 protected:
 
@@ -72,8 +72,8 @@ private:
     //! \brief No assignment
     ComponentEditorTreeProxyModel& operator=(const ComponentEditorTreeProxyModel& other);
 
-	//! A list of all the rows that will be shown.
-	QStringList visibleRows_;
+	//! A list of all the rows that will be hidden.
+	QStringList hiddenRows_;
 };
 
 #endif // COMPONENTEDITORTREEPROXYMODEL_H
