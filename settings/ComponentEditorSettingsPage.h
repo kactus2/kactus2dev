@@ -45,8 +45,11 @@ private:
 	 */
 	void loadSettings();
 
-	//! A list of all used check boxes.
-	QList <QCheckBox*> checkBoxes_;
+	//! A list of all used hardware check boxes.
+	QList <QCheckBox*> hwCheckBoxes_;
+
+	//! A list of all used software check boxes.
+	QList <QCheckBox*> swCheckBoxes_;
 };
 
 #endif // COMPONENTEDITORSETTINGSPAGE_H

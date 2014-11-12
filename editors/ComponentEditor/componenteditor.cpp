@@ -726,6 +726,17 @@ void ComponentEditor::setRowVisibility(QSettings& settings)
 	QStringList settingsChildren;
 
 	settings.beginGroup("ComponentEditorFilters");
+
+	if (isHWImplementation())
+	{
+		settings.beginGroup("HW");
+	}
+
+	else
+	{
+		settings.beginGroup("SW");
+	}
+
 	settingsChildren = settings.childKeys();
 
 	// List of the hidden rows in component editor.
@@ -739,6 +750,8 @@ void ComponentEditor::setRowVisibility(QSettings& settings)
 			hiddenRows.append(wordReplaced);
 		}
 	}
+
+	settings.endGroup();
 	settings.endGroup();
 
 	proxy_.setRowVisibility( hiddenRows );
