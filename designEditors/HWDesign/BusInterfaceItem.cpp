@@ -80,8 +80,8 @@ BusInterfaceItem::BusInterfaceItem(LibraryInterface* lh, QSharedPointer<Componen
 	QFont font = nameLabel_.font();
     font.setPointSize(8);
     nameLabel_.setFont(font);
-	nameLabel_.setFlag(ItemIgnoresTransformations);
-	nameLabel_.setFlag(ItemStacksBehindParent);
+    nameLabel_.setRotation(-rotation());
+    nameLabel_.setFlag(ItemStacksBehindParent);
 	
 	QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect;
     shadow->setXOffset(0);
@@ -452,10 +452,15 @@ QVariant BusInterfaceItem::itemChange(GraphicsItemChange change,
                 break;
 
         break;
-    }
 
+        }    
+    case ItemRotationHasChanged:
+        {
+            nameLabel_.setRotation(-rotation());
+            break;
+        }
     case ItemScenePositionHasChanged:
-        
+
         foreach (GraphicsConnection *interconnection, getConnections()) {
             interconnection->updatePosition();
         }

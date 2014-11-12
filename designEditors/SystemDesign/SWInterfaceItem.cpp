@@ -451,7 +451,11 @@ QVariant SWInterfaceItem::itemChange(GraphicsItemChange change, QVariant const& 
 
             break;
         }
-
+    case ItemRotationHasChanged:
+        {
+            nameLabel_.setRotation(-rotation());
+            break;
+        }
     case ItemScenePositionHasChanged:
         {
             foreach (GraphicsConnection* conn, getConnections())
@@ -641,8 +645,9 @@ void SWInterfaceItem::initialize()
     QFont font = nameLabel_.font();
     font.setPointSize(8);
     nameLabel_.setFont(font);
-    nameLabel_.setFlag(ItemIgnoresTransformations);
     nameLabel_.setFlag(ItemStacksBehindParent);
+    nameLabel_.setRotation(-rotation());
+
     QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect;
     shadow->setXOffset(0);
     shadow->setYOffset(0);

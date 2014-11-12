@@ -51,7 +51,6 @@ BusPortItem::BusPortItem(QSharedPointer<BusInterface> busIf, LibraryInterface* l
 	QFont font = nameLabel_.font();
     font.setPointSize(8);
 	nameLabel_.setFont(font);
-	nameLabel_.setFlag(ItemIgnoresTransformations);
 	nameLabel_.setFlag(ItemStacksBehindParent);
 
     QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect;
@@ -443,7 +442,11 @@ QVariant BusPortItem::itemChange(GraphicsItemChange change,
 
             break;
         }
-
+    case ItemRotationHasChanged:
+        {
+            nameLabel_.setRotation(-rotation());
+            break;
+        }
     case ItemScenePositionHasChanged:
         // Check if the updates are not disabled.
         if (!static_cast<HWComponentItem*>(parentItem())->isConnectionUpdateDisabled())

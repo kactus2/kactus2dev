@@ -584,7 +584,11 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
 
             break;
         }
-
+    case ItemRotationHasChanged:
+        {
+            nameLabel_.setRotation(-rotation());
+            break;
+        }
     case ItemScenePositionHasChanged:
         {
             // Check if the updates are not disabled.
@@ -806,8 +810,8 @@ void SWPortItem::initialize()
     QFont font = nameLabel_.font();
     font.setPointSize(8);
     nameLabel_.setFont(font);
-    nameLabel_.setFlag(ItemIgnoresTransformations);
     nameLabel_.setFlag(ItemStacksBehindParent);
+
     QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect;
     shadow->setXOffset(0);
     shadow->setYOffset(0);
