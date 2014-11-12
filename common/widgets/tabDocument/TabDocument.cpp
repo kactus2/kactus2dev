@@ -48,7 +48,7 @@ TabDocument::~TabDocument()
 //-----------------------------------------------------------------------------
 // Function: applySettings()
 //-----------------------------------------------------------------------------
-void TabDocument::applySettings(QSettings const&)
+void TabDocument::applySettings(QSettings& settings)
 {
 }
 

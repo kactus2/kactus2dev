@@ -72,3 +72,29 @@ bool ComponentEditorTreeProxyModel::lessThan(const QModelIndex &left, const QMod
         return left < right;
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorTreeProxyModel::filterAcceptsRow()
+//-----------------------------------------------------------------------------
+bool ComponentEditorTreeProxyModel::filterAcceptsRow(int source_row, QModelIndex const& source_parent) const
+{
+	QModelIndex index = sourceModel()->index(source_row, 0);
+	QString rowName = sourceModel()->data(index).toString();
+
+	if (visibleRows_.contains( rowName ))
+	{
+		return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+	}
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorTreeProxyModel::setRowVisibility()
+//-----------------------------------------------------------------------------
+void ComponentEditorTreeProxyModel::setRowVisibility( QList<QString> shownRows )
+{
+	visibleRows_ = shownRows;
+
+	invalidateFilter();
+}

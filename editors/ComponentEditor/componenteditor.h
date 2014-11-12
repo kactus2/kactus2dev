@@ -23,6 +23,7 @@
 
 #include <QSharedPointer>
 #include <QSplitter>
+#include <QSettings>
 
 class LibraryInterface;
 class PluginManager;
@@ -72,6 +73,13 @@ public:
 
 	//! Refreshes the editor to display the changes made.
     virtual void refresh();
+
+	/*!
+	 *  Applies the current settings into use.
+	 *
+	 *      @param [in] settings   The settings file.
+	 */
+	void applySettings(QSettings& settings);
 
 public slots:
 
@@ -149,7 +157,7 @@ private:
 
 	//! No copying
 	ComponentEditor(const ComponentEditor& other);
-    
+
 	//! No assignment
 	ComponentEditor& operator=(const ComponentEditor& other);
 
@@ -183,7 +191,12 @@ private:
     //! Setups the editor layout.
     void setupLayout();
 
-    //-----------------------------------------------------------------------------
+	/*!
+	 *  Set the visibility of rows in tree view.
+	 */
+	void setRowVisibility(QSettings& settings);
+    
+	//-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 

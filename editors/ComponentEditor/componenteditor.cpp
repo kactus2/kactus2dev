@@ -102,6 +102,9 @@ visualizerSlot_(&editorVisualizerSplitter_)
 	// set the component to be displayed in the navigation model
     navigationModel_.setRootItem(createNavigationRootForComponent(component_));
 
+	QSettings settings;
+	setRowVisibility(settings);
+	
     // Set source model for the proxy.
     proxy_.setSourceModel(&navigationModel_);
 
@@ -221,6 +224,14 @@ void ComponentEditor::refresh()
 	setProtection(locked);
 
 	QApplication::restoreOverrideCursor();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::applySettings()
+//-----------------------------------------------------------------------------
+void ComponentEditor::applySettings(QSettings& settings)
+{
+	setRowVisibility(settings);
 }
 
 //-----------------------------------------------------------------------------
@@ -346,7 +357,7 @@ void ComponentEditor::onItemActivated( const QModelIndex& index )
     // If tree proxy model index is used, the item must be retrieved from the source model.
     const ComponentEditorTreeProxyModel* indexModel = 
         dynamic_cast<const ComponentEditorTreeProxyModel*>(index.model());
-    ComponentEditorItem* item = 0;
+	ComponentEditorItem* item = 0;
     if ( indexModel == 0 )
     {
         item = static_cast<ComponentEditorItem*>(index.internalPointer());
@@ -705,4 +716,32 @@ void ComponentEditor::setupLayout()
     navigationSize.append(ComponentTreeView::DEFAULT_WIDTH);
     navigationSize.append(4 * ComponentTreeView::DEFAULT_WIDTH);
     navigationSplitter_.setSizes(navigationSize);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::setRowVisibility()
+//-----------------------------------------------------------------------------
+void ComponentEditor::setRowVisibility(QSettings& settings)
+{
+	QStringList settingsChildren;
+
+	settings.beginGroup("ComponentEditorFilters");
+	settingsChildren = settings.childKeys();
+
+	// List of the shown rows in component editor.
+	QStringList shownRows;
+
+	shownRows.append("General");
+
+	foreach (QString name, settingsChildren) 
+	{
+		if (settings.value(name, true).toBool())
+		{
+			QString wordReplaced = name.replace("_"," ");
+			shownRows.append(wordReplaced);
+		}
+	}
+	settings.endGroup();
+
+	proxy_.setRowVisibility( shownRows );
 }

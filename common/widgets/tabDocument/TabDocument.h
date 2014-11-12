@@ -84,7 +84,7 @@ public:
     /*!
      *  Applies the current settings into use.
      */
-    virtual void applySettings(QSettings const& settings);
+    virtual void applySettings(QSettings& settings);
 
     /*!
      *  Changes the state of a visibility control.

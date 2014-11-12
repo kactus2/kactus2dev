@@ -116,7 +116,7 @@ CSourceWidget::~CSourceWidget()
 //-----------------------------------------------------------------------------
 // Function: loadSettings()
 //-----------------------------------------------------------------------------
-void CSourceWidget::applySettings(QSettings const& settings)
+void CSourceWidget::applySettings(QSettings& settings)
 {
     // Read indentation settings.
     IndentStyle style = static_cast<IndentStyle>(settings.value("Editor/IndentStyle",

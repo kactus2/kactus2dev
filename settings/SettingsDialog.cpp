@@ -17,6 +17,7 @@
 #include "PluginSettingsPage.h"
 #include "FileTypeSettingsPage.h"
 #include "k2envvariablesettingspage.h"
+#include "ComponentEditorSettingsPage.h"
 
 //-----------------------------------------------------------------------------
 // Function: SettingsDialog()
@@ -36,6 +37,9 @@ SettingsDialog::SettingsDialog(PluginManager& pluginMgr, QWidget* parent)
 
 	addPage(QIcon(":icons/common/graphics/settings-code_editor.png"), tr("Code Editor"),
             new CodeEditorSettingsPage(settings_));
+
+	addPage(QIcon(":icons/common/graphics/visibility.png"), tr("Component Editor Visibilities"),
+		new ComponentEditorSettingsPage(settings_));
 
     addPage(QIcon(":icons/common/graphics/settings-file_types.png"), tr("File Types"),
             new FileTypeSettingsPage(settings_));

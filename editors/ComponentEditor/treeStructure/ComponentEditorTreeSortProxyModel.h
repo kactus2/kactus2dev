@@ -34,6 +34,11 @@ public:
 	 */
     ~ComponentEditorTreeProxyModel();
 
+	/*!
+	 *  Sets the visibility status for the tree view.
+	 */
+	void setRowVisibility(QList <QString> shownRows);
+
 protected:
 
     /*!
@@ -50,12 +55,25 @@ protected:
      */
     bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
 
+	/*!
+	 *  Filters the selected rows.
+	 *
+	 *      @param [in] source_row      The row to check for filtering.
+	 *      @param [in] source_parent   The parent index of the row.
+	 *
+	 *      @return True, if row passes filters, otherwise false.
+	 */
+	bool filterAcceptsRow(int source_row, QModelIndex const& source_parent) const;
+
 private:
     //! \brief No copying
     ComponentEditorTreeProxyModel(const ComponentEditorTreeProxyModel& other);
 
     //! \brief No assignment
     ComponentEditorTreeProxyModel& operator=(const ComponentEditorTreeProxyModel& other);
+
+	//! A list of all the rows that will be shown.
+	QStringList visibleRows_;
 };
 
 #endif // COMPONENTEDITORTREEPROXYMODEL_H
