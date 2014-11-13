@@ -15,6 +15,7 @@ namespace ParameterColumns
     enum columns
     {
         NAME = 0,
+        FORMAT,
         CHOICE,
         VALUE,
         DESCRIPTION,

@@ -50,17 +50,6 @@ QWidget* ModelParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewI
 		combo->addItem(QString("nontyped"));
 		return combo;
 	}
-    else if (index.column() == ModelParameterColumns::FORMAT) 
-    {
-        QComboBox* combo = new QComboBox(parent);
-        combo->addItem(QString(""));
-        combo->addItem(QString("bitString"));
-        combo->addItem(QString("bool"));
-        combo->addItem(QString("float"));
-        combo->addItem(QString("long"));
-        combo->addItem(QString("string"));
-        return combo;
-    }
     else
     {
         return ParameterDelegate::createEditor(parent, option, index);

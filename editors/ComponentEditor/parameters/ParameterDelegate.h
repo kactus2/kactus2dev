@@ -46,7 +46,6 @@ public:
 	virtual QWidget* createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
         QModelIndex const& index) const;
 
-
 	/*! Set the data for the editor.
 	 *
 	 *      @param [in] editor  Pointer to the editor where the data is to be set.
@@ -104,6 +103,52 @@ protected:
      */
     QString formatOnRow(QModelIndex const &index) const;
 
+    /*!
+     *  Creates an editor for selecting a choice.
+     *
+     *      @param [in] parent   The parent widget for the editor.
+     *
+     *      @return An editor for selecting a choice.
+     */
+    QWidget* createChoiceSelector(QWidget* parent) const;
+    
+    /*!
+     *  Creates an editor for selecting an enumeration of a choice.
+     *
+     *      @param [in] parent   The parent widget for the editor.
+     *
+     *      @return An editor for selecting an enumeration.
+     */
+    QWidget* createEnumerationSelector(QWidget* parent, QModelIndex const& index) const;
+    
+    /*!
+     *  Creates an editor for selecting a boolean value.
+     *
+     *      @param [in] parent   The parent widget for the editor.
+     *
+     *      @return An editor for selecting a boolean value.
+     */
+    QWidget* createBooleanSelector(QWidget* parent) const;
+    
+    /*!
+     *  Creates an editor for selecting a format for parameter value.
+     *
+     *      @param [in] parent   The parent widget for the editor.
+     *
+     *      @return An editor for selecting a format.
+     */
+    QWidget* createFormatSelector(QWidget* parent) const;
+    
+    /*!
+     *  Creates an editor for a value using the selected format.
+     *
+     *      @param [in] parent   The parent widget for the editor.
+     *
+     *      @return An editor for a value.
+     */
+    QWidget* createValueEditorUsingFormat(QWidget* parent, QStyleOptionViewItem const& option,
+        QModelIndex const& index) const;
+
 private:
 
 	//! No copying
@@ -129,6 +174,16 @@ private:
      *      @return The choice selected on the given row.
      */
     QSharedPointer<Choice> findChoice(QModelIndex const& index) const;
+
+    /*!
+     *  Creates a validator for an editor.
+     *
+     *      @param [in] format   The valid format in the editor.
+     *      @param [in] parent   The parent widget for the validator.
+     *
+     *      @return A validator to use in the editor.
+     */
+    QValidator* createValidatorForFormat(QString const& format, QWidget* parent) const;
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -82,9 +82,14 @@ QVariant ParametersModel::data( const QModelIndex& index, int role /*= Qt::Displ
     {
         switch (index.column())
         {
-        case ParameterColumns::NAME: {
-            return parameter->getName();
-                   }
+        case ParameterColumns::NAME: 
+            {
+                return parameter->getName();
+            }
+        case ParameterColumns::FORMAT:
+            {
+                return parameter->getValueFormat();
+            }
         case ParameterColumns::CHOICE: 
             {
                 return parameter->getChoiceRef();
@@ -156,6 +161,8 @@ QVariant ParametersModel::headerData(int section, Qt::Orientation orientation, i
         {
         case ParameterColumns::NAME:
             return tr("Name");
+        case ParameterColumns::FORMAT:
+            return tr("Format");
         case ParameterColumns::CHOICE:
             return tr("Choice");
         case ParameterColumns::VALUE:
@@ -188,27 +195,32 @@ bool ParametersModel::setData(const QModelIndex& index, const QVariant& value, i
 
     if (role == Qt::EditRole)
     {
-
+        QSharedPointer<Parameter> parameter = parameters_.value(index.row());
         switch (index.column())
         {
         case ParameterColumns::NAME: 
             {
-                parameters_.value(index.row())->setName(value.toString());
+                parameter->setName(value.toString());
+                break;
+            }
+        case ParameterColumns::FORMAT: 
+            {
+                parameter->setValueFormat(value.toString());
                 break;
             }
         case ParameterColumns::CHOICE: 
             {
-                parameters_.value(index.row())->setChoiceRef(value.toString());
+                parameter->setChoiceRef(value.toString());
                 break;
             }
         case ParameterColumns::VALUE:
             {
-                parameters_.value(index.row())->setValue(value.toString());
+                parameter->setValue(value.toString());
                 break;
             }
         case ParameterColumns::DESCRIPTION: 
             {
-                parameters_.value(index.row())->setDescription(value.toString());
+                parameter->setDescription(value.toString());
                 break;
             }
         default: 

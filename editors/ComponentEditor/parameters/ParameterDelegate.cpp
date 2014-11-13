@@ -46,65 +46,28 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
 {
     if (index.column() == choiceColumn()) 
     {
-        QComboBox* combo = new QComboBox(parent);
-        combo->addItem(QString("<none>"));
-        foreach (QSharedPointer<Choice> choice, *choices_)
-        {
-            combo->addItem(choice->getName());
-        }
-
-        return combo;
+        return createChoiceSelector(parent);
     }
     else if (isIndexForValueUsingChoice(index)) 
     {
-        QComboBox* combo = new QComboBox(parent);
-
-        QSharedPointer<Choice> selectedChoice = findChoice(index);
-        foreach (QSharedPointer<Enumeration> enumeration, *selectedChoice->enumerations())
-        {
-            QString itemText = enumeration->getValue();
-            if (!enumeration->getText().isEmpty())
-            {
-                itemText.append(":" + enumeration->getText());
-            }
-            combo->addItem(itemText);
-        }
-
-        return combo;
+        return createEnumerationSelector(parent, index);
     }
     else if (index.column() == valueColumn() && formatOnRow(index) == "bool")
     {
-        QComboBox* combo = new QComboBox(parent);
-        combo->addItem(QString("true"));
-        combo->addItem(QString("false"));
-        return combo;
+        return createBooleanSelector(parent);
     }
-	else 
+    else if (index.column() == formatColumn()) 
     {
-        QWidget* editor = QStyledItemDelegate::createEditor(parent, option, index);
-        
-        if (index.column() == valueColumn() && !formatOnRow(index).isEmpty())
-        {
-            QLineEdit* lineEdit = qobject_cast<QLineEdit*>(editor);
-            if (lineEdit && formatOnRow(index) != "string")
-            {
-                if (formatOnRow(index) == "bool")
-                {
-                    lineEdit->setValidator(new QRegExpValidator(QRegExp(StringPromptAtt::VALID_LONG_VALUE), editor));
-                }
-                else if (formatOnRow(index) == "bitString")
-                {
-                    lineEdit->setValidator(new QRegExpValidator(QRegExp(StringPromptAtt::VALID_BITSTRING_VALUE), editor));
-                }
-                else if (formatOnRow(index) == "float")
-                {
-                    lineEdit->setValidator(new QRegExpValidator(QRegExp(StringPromptAtt::VALID_FLOAT_VALUE), editor));
-                }
-            }
-        }
-
-        return editor;
-	}
+        return createFormatSelector(parent);
+    }
+    else if (index.column() == valueColumn() && !formatOnRow(index).isEmpty())
+    {
+        return createValueEditorUsingFormat(parent, option, index);
+    }
+    else
+    {
+        return QStyledItemDelegate::createEditor(parent, option, index);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -112,15 +75,9 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
 //-----------------------------------------------------------------------------
 void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const 
 {
-	if (index.column() == choiceColumn()) 
-    {
-		QString text = index.data(Qt::DisplayRole).toString();
-		QComboBox* combo = qobject_cast<QComboBox*>(editor);
-		
-		int comboIndex = combo->findText(text);
-		combo->setCurrentIndex(comboIndex);
-	}
-    else if (isIndexForValueUsingChoice(index)) 
+    QComboBox* combo = qobject_cast<QComboBox*>(editor);
+
+    if (isIndexForValueUsingChoice(index)) 
     {
         QString text = index.model()->data(index, Qt::DisplayRole).toString();
         QComboBox* combo = qobject_cast<QComboBox*>(editor);
@@ -132,6 +89,14 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
         }
         combo->setCurrentIndex(comboIndex);
     }
+    else if (combo) 
+    {
+		QString text = index.data(Qt::DisplayRole).toString();
+		QComboBox* combo = qobject_cast<QComboBox*>(editor);
+		
+		int comboIndex = combo->findText(text);
+		combo->setCurrentIndex(comboIndex);
+	}
 	else 
     {
         // use the line edit for other columns
@@ -183,7 +148,7 @@ int ParameterDelegate::choiceColumn() const
 //-----------------------------------------------------------------------------
 int ParameterDelegate::formatColumn() const
 {
-    return -1;
+    return ParameterColumns::FORMAT;
 }
 
 //-----------------------------------------------------------------------------
@@ -233,4 +198,111 @@ QSharedPointer<Choice> ParameterDelegate::findChoice(QModelIndex const& index) c
 QString ParameterDelegate::formatOnRow(QModelIndex const &index) const
 {
     return index.sibling(index.row(), formatColumn()).data().toString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::createBooleanSelector()
+//-----------------------------------------------------------------------------
+QWidget* ParameterDelegate::createBooleanSelector(QWidget* parent) const
+{
+    QComboBox* combo = new QComboBox(parent);
+    combo->addItem(QString("true"));
+    combo->addItem(QString("false"));
+    return combo;
+}
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::createFormatEditor()
+//-----------------------------------------------------------------------------
+QWidget* ParameterDelegate::createFormatSelector(QWidget* parent) const
+{
+    QComboBox* combo = new QComboBox(parent);
+    combo->addItem(QString(""));
+    combo->addItem(QString("bitString"));
+    combo->addItem(QString("bool"));
+    combo->addItem(QString("float"));
+    combo->addItem(QString("long"));
+    combo->addItem(QString("string"));
+    return combo;
+}
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::createChoiceSelector()
+//-----------------------------------------------------------------------------
+QWidget* ParameterDelegate::createChoiceSelector(QWidget* parent) const
+{
+    QComboBox* combo = new QComboBox(parent);
+    combo->addItem(QString("<none>"));
+    foreach (QSharedPointer<Choice> choice, *choices_)
+    {
+        combo->addItem(choice->getName());
+    }
+
+    return combo;
+}
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::createEnumerationSelector()
+//-----------------------------------------------------------------------------
+QWidget* ParameterDelegate::createEnumerationSelector(QWidget* parent, QModelIndex const& index) const
+{
+    QComboBox* combo = new QComboBox(parent);
+
+    QSharedPointer<Choice> selectedChoice = findChoice(index);
+    foreach (QSharedPointer<Enumeration> enumeration, *selectedChoice->enumerations())
+    {
+        QString itemText = enumeration->getValue();
+        if (!enumeration->getText().isEmpty())
+        {
+            itemText.append(":" + enumeration->getText());
+        }
+        combo->addItem(itemText);
+    }
+
+    return combo;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::createValueEditorUsingFormat()
+//-----------------------------------------------------------------------------
+QWidget* ParameterDelegate::createValueEditorUsingFormat(QWidget* parent, QStyleOptionViewItem const& option, 
+    QModelIndex const& index) const
+{
+    QWidget* editor = QStyledItemDelegate::createEditor(parent, option, index);
+
+    QLineEdit* lineEdit = qobject_cast<QLineEdit*>(editor);
+    if (lineEdit)
+    {
+        lineEdit->setValidator(createValidatorForFormat(formatOnRow(index), lineEdit));
+    }
+
+    return editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::createValidatorForFormat()
+//-----------------------------------------------------------------------------
+QValidator* ParameterDelegate::createValidatorForFormat(QString const& format, QWidget* parent) const
+{
+    if (format == "bool")
+    {
+        return new QRegExpValidator(QRegExp(StringPromptAtt::VALID_BOOL_VALUE), parent);
+    }
+    else if (format == "long")
+    {
+        return new QRegExpValidator(QRegExp(StringPromptAtt::VALID_LONG_VALUE), parent);
+    }
+    else if (format == "bitString")
+    {
+        return new QRegExpValidator(QRegExp(StringPromptAtt::VALID_BITSTRING_VALUE), parent);
+    }
+    else if (format == "float")
+    {
+         return new QRegExpValidator(QRegExp(StringPromptAtt::VALID_FLOAT_VALUE), parent);
+    }
+    else if (format == "string" || format.isEmpty())
+    {
+        return 0;
+    }
+    else
+    {
+        return new QRegExpValidator(QRegExp(), parent);
+    }
 }
