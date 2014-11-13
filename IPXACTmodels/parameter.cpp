@@ -11,6 +11,7 @@
 
 #include "parameter.h"
 
+#include "StringPromtAtt.h"
 #include "GenericVendorExtension.h"
 #include "XmlUtils.h"
 
@@ -100,7 +101,7 @@ Parameter::~Parameter()
 //-----------------------------------------------------------------------------
 void Parameter::write(QXmlStreamWriter& writer)
 {
-    writer.writeStartElement(elementName());
+    writer.writeStartElement(elementIdentifier());
 
     XmlUtils::writeAttributes(writer, attributes_);
 
@@ -259,10 +260,21 @@ QMap<QString, QString> const& Parameter::getValueAttributes()  const
 bool Parameter::isValid() const 
 {
 	if (getName().isEmpty())
+    {
 		return false;
-
+    }
 	else if (value_.isEmpty())
-		return false;
+	{
+        return false;
+    }
+    else if (!isValidFormat())
+    {
+        return false;
+    }
+    else if (!isValidValueForFormat())
+    {
+        return false;
+    }
 
 	return true;
 }
@@ -276,19 +288,40 @@ bool Parameter::isValid( QStringList& errorList, const QString& parentIdentifier
 
 	if (getName().isEmpty()) 
     {
-		errorList.append(QObject::tr("No name specified for parameter within %1").arg(
-			parentIdentifier));
+		errorList.append(QObject::tr("No name specified for %1 within %2").arg(elementName(), parentIdentifier));
 		valid = false;
 	}
 
 	if (value_.isEmpty())
     {
-		errorList.append(QObject::tr("No value specified for parameter %1 within %2").arg(
-			getName()).arg(parentIdentifier));
+		errorList.append(QObject::tr("No value specified for %1 %2 within %3").arg(
+			elementName(), getName(), parentIdentifier));
 		valid = false;
 	}
 
+    if (!isValidFormat())
+    {
+        errorList.append(QObject::tr("Invalid format %1 specified for %2 %3 within %4").arg(
+            getValueFormat(), elementName(), getName(), parentIdentifier));
+        valid = false;
+    }
+
+    if (!isValidValueForFormat())
+    {
+        errorList.append(QObject::tr("Value %1 is not valid for format %2 in %3 %4 within %5"
+            ).arg(value_, getValueFormat(), elementName(), getName(), parentIdentifier));
+        valid = false;
+    }
+
 	return valid;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::elementIdentifier()
+//-----------------------------------------------------------------------------
+QString Parameter::elementIdentifier() const
+{
+    return "spirit:parameter";
 }
 
 //-----------------------------------------------------------------------------
@@ -296,7 +329,7 @@ bool Parameter::isValid( QStringList& errorList, const QString& parentIdentifier
 //-----------------------------------------------------------------------------
 QString Parameter::elementName() const
 {
-    return "spirit:parameter";
+    return "parameter";
 }
 
 //-----------------------------------------------------------------------------
@@ -312,4 +345,45 @@ void Parameter::setAttribute(QString const& attributeName, QString const& attrib
     {
          attributes_.remove(attributeName);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::isValidValueForFormat()
+//-----------------------------------------------------------------------------
+bool Parameter::isValidValueForFormat() const
+{
+    QString format = getValueFormat();
+    if (format.isEmpty() || format == "string")
+    {
+        return true;
+    }
+
+    QRegExp validatingExp;
+    if (format == "bool")
+    {
+        validatingExp.setPattern(StringPromptAtt::VALID_BOOL_VALUE);
+    }
+    else if (format == "bitString")
+    {
+        validatingExp.setPattern(StringPromptAtt::VALID_BITSTRING_VALUE);
+    }
+    else if (format == "long")
+    {
+        validatingExp.setPattern(StringPromptAtt::VALID_LONG_VALUE);
+    }
+    else if (format == "float")
+    {
+        validatingExp.setPattern(StringPromptAtt::VALID_FLOAT_VALUE);
+    }
+
+    return validatingExp.exactMatch(value_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::isValidFormat()
+//-----------------------------------------------------------------------------
+bool Parameter::isValidFormat() const
+{
+    return getValueFormat().isEmpty() || getValueFormat() == "bool" || getValueFormat() == "bitString" ||
+        getValueFormat() == "long" || getValueFormat() == "float" || getValueFormat() == "string";
 }

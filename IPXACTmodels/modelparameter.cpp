@@ -86,14 +86,7 @@ bool ModelParameter::isValid() const
 //-----------------------------------------------------------------------------
 bool ModelParameter::isValid( QStringList& errorList, const QString& parentIdentifier ) const 
 {
-	bool valid = true;
-
-	if (getName().isEmpty()) 
-    {
-		valid = false;
-		errorList.append(QObject::tr("No name set for model parameter within %1").arg(
-			parentIdentifier));
-	}
+	bool valid = Parameter::isValid(errorList, parentIdentifier);
 
 	if (hasAttribute("spirit:usageType")) 
     {
@@ -101,17 +94,10 @@ bool ModelParameter::isValid( QStringList& errorList, const QString& parentIdent
 		QString usage = getAttributes().value(QString("spirit:usageType"));
 		if (usage != QString("nontyped") && usage != QString("typed"))
         {
-			valid = false;
-			errorList.append(QObject::tr("Invalid usage type set for model "
-				"parameter %1 within %2").arg(getName()).arg(parentIdentifier));
+			errorList.append(QObject::tr("Invalid usage type set for %1 %2 within %3"
+                ).arg(elementName(), getName(), parentIdentifier));
+            valid = false;
 		}
-	}
-
-	if (getValue().isEmpty()) 
-    {
-		valid = false;
-		errorList.append(QObject::tr("No value set for model parameter %1"
-			" within %2").arg(getName()).arg(parentIdentifier));
 	}
 
 	return valid;
@@ -150,9 +136,17 @@ void ModelParameter::setUsageType( const QString& usageType )
 }
 
 //-----------------------------------------------------------------------------
+// Function: ModelParameter::elementIdentifier()
+//-----------------------------------------------------------------------------
+QString ModelParameter::elementIdentifier() const
+{
+    return "spirit:modelParameter";
+}
+
+//-----------------------------------------------------------------------------
 // Function: ModelParameter::elementName()
 //-----------------------------------------------------------------------------
 QString ModelParameter::elementName() const
 {
-    return "spirit:modelParameter";
+     return "model parameter";
 }

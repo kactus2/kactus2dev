@@ -12,4 +12,5 @@
 TEMPLATE = subdirs
 
 CONFIG += testcase
-SUBDIRS += tst_ModelParameterDelegate.pro
+SUBDIRS += tst_ModelParameterModel.pro \
+		   tst_ModelParameterDelegate.pro

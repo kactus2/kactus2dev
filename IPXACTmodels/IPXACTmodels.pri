@@ -7,13 +7,13 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./ApiConnection.h \
-    ../resource.h \
+HEADERS += ../resource.h \
     ./abstractiondefinition.h \
     ./addressblock.h \
     ./addressspace.h \
     ./AdHocConnection.h \
     ./alternateregister.h \
+    ./ApiConnection.h \
     ./ApiDefinition.h \
     ./ApiFunction.h \
     ./ApiFunctionParameter.h \
@@ -82,6 +82,7 @@ HEADERS += ./ApiConnection.h \
     ./segment.h \
     ./servicetypedef.h \
     ./slaveinterface.h \
+    ./StringPromtAtt.h \
     ./subspacemap.h \
     ./swbuildcommand.h \
     ./SWInstance.h \
@@ -107,6 +108,7 @@ SOURCES += ./abstractiondefinition.cpp \
     ./addressspace.cpp \
     ./AdHocConnection.cpp \
     ./alternateregister.cpp \
+    ./ApiConnection.cpp \
     ./ApiDefinition.cpp \
     ./ApiFunction.cpp \
     ./ApiFunctionParameter.cpp \
@@ -192,5 +194,4 @@ SOURCES += ./abstractiondefinition.cpp \
     ./kactusExtensions/Kactus2Placeholder.cpp \
     ./kactusExtensions/Kactus2Position.cpp \
     ./kactusExtensions/Kactus2Value.cpp \
-    ./kactusExtensions/KactusAttribute.cpp \
-    ./ApiConnection.cpp
+    ./kactusExtensions/KactusAttribute.cpp

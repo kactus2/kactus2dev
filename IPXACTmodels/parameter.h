@@ -175,8 +175,14 @@ public:
 protected:
         
     /*!
-     *  Gets the name of the IP-Xact element represented by the parameter e.g. parameter or modelParameter.
-     *  The default implementation returns spirit:parameter.
+     *  Gets the identifier for the IP-Xact element represented by the parameter e.g. spirit:parameter.
+     *
+     *      @return The name of IP-Xact element.
+     */
+    virtual QString elementIdentifier() const;
+       
+    /*!
+     *  Gets the general name of the IP-Xact element represented by the parameter e.g. parameter.
      *
      *      @return The name of IP-Xact element.
      */
@@ -191,6 +197,20 @@ protected:
     void setAttribute(QString const& attributeName, QString const& attributeValue);
 
 private:
+
+    /*!
+     *  Checks if the format attribute of the value is valid.
+     *
+     *      @return True, if the format is valid, otherwise false.
+     */
+    bool isValidFormat() const;
+    
+    /*!
+     *  Checks if the parameter value is valid in the specified format (if any).
+     *
+     *      @return True, if the value is valid for the format, otherwise false.
+     */
+    bool isValidValueForFormat() const;
 
     //! Contains the name, display name and description of parameter.
     NameGroup nameGroup_;

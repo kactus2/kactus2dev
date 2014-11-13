@@ -303,6 +303,7 @@
     <ClInclude Include="segment.h" />
     <ClInclude Include="servicetypedef.h" />
     <ClInclude Include="slaveinterface.h" />
+    <ClInclude Include="StringPromtAtt.h" />
     <ClInclude Include="subspacemap.h" />
     <ClInclude Include="swbuildcommand.h" />
     <ClInclude Include="SWInstance.h" />

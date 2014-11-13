@@ -594,5 +594,8 @@
     <ClInclude Include="ApiConnection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="StringPromtAtt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

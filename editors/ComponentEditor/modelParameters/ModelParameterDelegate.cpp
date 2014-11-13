@@ -119,6 +119,14 @@ int ModelParameterDelegate::choiceColumn() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ModelParameterDelegate::formatColumn()
+//-----------------------------------------------------------------------------
+int ModelParameterDelegate::formatColumn() const
+{
+    return ModelParameterColumns::FORMAT;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ModelParameterDelegate::valueColumn()
 //-----------------------------------------------------------------------------
 int ModelParameterDelegate::valueColumn() const

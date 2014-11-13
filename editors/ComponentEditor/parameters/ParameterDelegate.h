@@ -46,6 +46,7 @@ public:
 	virtual QWidget* createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
         QModelIndex const& index) const;
 
+
 	/*! Set the data for the editor.
 	 *
 	 *      @param [in] editor  Pointer to the editor where the data is to be set.
@@ -70,7 +71,14 @@ protected:
      *      @return The column for editing choice selection.
      */
     virtual int choiceColumn() const;
-    
+
+    /*!
+     *  Gets the column for value format.
+     *
+     *      @return The column for editing format selection.
+     */
+    virtual int formatColumn() const;
+
     /*!
      *  Gets the column for values.
      *
@@ -86,6 +94,15 @@ protected:
      *      @return The name of the choice on the row.
      */
     QString choiceNameOnRow(QModelIndex const& index) const;
+    
+    /*!
+     *  Finds the selected format on the row identified by the given index.
+     *
+     *      @param [in] index   The index on whose row to find the format.
+     *
+     *      @return The format on the row.
+     */
+    QString formatOnRow(QModelIndex const &index) const;
 
 private:
 

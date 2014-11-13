@@ -93,12 +93,19 @@ public:
 	 *      @param [in] usageType QString containing the usage type
 	 *
 	*/
-	void setUsageType(QString const& usageType);
-
+	void setUsageType(QString const& usageType);           
+    
 protected:
-            
+                        
     /*!
-     *  Gets the name of the IP-Xact element represented by the parameter e.g. parameter or modelParameter.
+     *  Gets the identifier for the IP-Xact element represented by the model parameter.
+     *
+     *      @return The name of IP-Xact element.
+     */
+    virtual QString elementIdentifier() const;
+
+    /*!
+     *  Gets the general name of the IP-Xact element represented by the model parameter.
      *
      *      @return The name of IP-Xact element.
      */

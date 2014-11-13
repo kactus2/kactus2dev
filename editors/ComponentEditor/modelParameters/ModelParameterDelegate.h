@@ -74,6 +74,13 @@ protected:
     virtual int choiceColumn() const;
     
     /*!
+     *  Gets the column for value format.
+     *
+     *      @return The column for editing format selection.
+     */
+    virtual int formatColumn() const;
+
+    /*!
      *  Gets the column for values.
      *
      *      @return The column for editing value selection.
@@ -87,6 +94,7 @@ private:
 
 	//! No assignment
 	ModelParameterDelegate& operator=(const ModelParameterDelegate& other);
+
 
 };
 

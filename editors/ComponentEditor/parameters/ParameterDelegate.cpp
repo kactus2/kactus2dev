@@ -15,9 +15,11 @@
 
 #include <IPXACTmodels/choice.h>
 #include <IPXACTmodels/Enumeration.h>
+#include <IPXACTmodels/StringPromtAtt.h>
 
 #include <QComboBox>
 #include <QLineEdit>
+#include <QRegExpValidator>
 
 //-----------------------------------------------------------------------------
 // Function: ParameterDelegate::ParameterDelegate()
@@ -70,9 +72,38 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
 
         return combo;
     }
+    else if (index.column() == valueColumn() && formatOnRow(index) == "bool")
+    {
+        QComboBox* combo = new QComboBox(parent);
+        combo->addItem(QString("true"));
+        combo->addItem(QString("false"));
+        return combo;
+    }
 	else 
     {
-        return QStyledItemDelegate::createEditor(parent, option, index);
+        QWidget* editor = QStyledItemDelegate::createEditor(parent, option, index);
+        
+        if (index.column() == valueColumn() && !formatOnRow(index).isEmpty())
+        {
+            QLineEdit* lineEdit = qobject_cast<QLineEdit*>(editor);
+            if (lineEdit && formatOnRow(index) != "string")
+            {
+                if (formatOnRow(index) == "bool")
+                {
+                    lineEdit->setValidator(new QRegExpValidator(QRegExp(StringPromptAtt::VALID_LONG_VALUE), editor));
+                }
+                else if (formatOnRow(index) == "bitString")
+                {
+                    lineEdit->setValidator(new QRegExpValidator(QRegExp(StringPromptAtt::VALID_BITSTRING_VALUE), editor));
+                }
+                else if (formatOnRow(index) == "float")
+                {
+                    lineEdit->setValidator(new QRegExpValidator(QRegExp(StringPromptAtt::VALID_FLOAT_VALUE), editor));
+                }
+            }
+        }
+
+        return editor;
 	}
 }
 
@@ -148,6 +179,14 @@ int ParameterDelegate::choiceColumn() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ParameterDelegate::formatColumn()
+//-----------------------------------------------------------------------------
+int ParameterDelegate::formatColumn() const
+{
+    return -1;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ParameterDelegate::valueColumn()
 //-----------------------------------------------------------------------------
 int ParameterDelegate::valueColumn() const
@@ -186,4 +225,12 @@ QSharedPointer<Choice> ParameterDelegate::findChoice(QModelIndex const& index) c
     }	
     
     return QSharedPointer<Choice>(new Choice(QDomNode()));
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::selectedFormat()
+//-----------------------------------------------------------------------------
+QString ParameterDelegate::formatOnRow(QModelIndex const &index) const
+{
+    return index.sibling(index.row(), formatColumn()).data().toString();
 }
