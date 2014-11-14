@@ -1016,8 +1016,8 @@ void tst_MakefileGenerator::apiUsage()
     banaani->setName("banaani");
     bsw->addApiInterface( banaani );
 
-    QList<ApiDependency> deps = design->getApiDependencies();
-    ApiDependency dependency;
+    QList<ApiConnection> deps = design->getApiDependencies();
+    ApiConnection dependency;
     dependency.setInterface1(ApiInterfaceRef("crapware_0","apina"));
     dependency.setInterface2(ApiInterfaceRef("stackware_0","banaani"));
     deps.append(dependency);
@@ -1097,12 +1097,12 @@ void tst_MakefileGenerator::threeLevelStack()
     driverStack->setName("driverStack");
     gsw->addApiInterface( driverStack );
 
-    QList<ApiDependency> deps = design->getApiDependencies();
-    ApiDependency dependency1;
+    QList<ApiConnection> deps = design->getApiDependencies();
+    ApiConnection dependency1;
     dependency1.setInterface1(ApiInterfaceRef("crapware_0","apina"));
     dependency1.setInterface2(ApiInterfaceRef("stackware_0","banaani"));
     deps.append(dependency1);
-    ApiDependency dependency2;
+    ApiConnection dependency2;
     dependency2.setInterface1(ApiInterfaceRef("stackware_0","stackDriver"));
     dependency2.setInterface2(ApiInterfaceRef("driver_0","driverStack"));
     deps.append(dependency2);
@@ -1197,16 +1197,16 @@ void tst_MakefileGenerator::fullCircularapiUsage()
     upBottom->setName("upBottom");
     asw->addApiInterface( upBottom );
 
-    QList<ApiDependency> deps = design->getApiDependencies();
-    ApiDependency dependency1;
+    QList<ApiConnection> deps = design->getApiDependencies();
+    ApiConnection dependency1;
     dependency1.setInterface1(ApiInterfaceRef("topware_0","apina"));
     dependency1.setInterface2(ApiInterfaceRef("stackware_0","banaani"));
     deps.append(dependency1);
-    ApiDependency dependency2;
+    ApiConnection dependency2;
     dependency2.setInterface1(ApiInterfaceRef("stackware_0","stackDriver"));
     dependency2.setInterface2(ApiInterfaceRef("driver_0","driverStack"));
     deps.append(dependency2);
-    ApiDependency dependency3;
+    ApiConnection dependency3;
     dependency3.setInterface1(ApiInterfaceRef("topware_0","upBottom"));
     dependency3.setInterface2(ApiInterfaceRef("driver_0","bottomUp"));
     deps.append(dependency3);
@@ -1294,16 +1294,16 @@ void tst_MakefileGenerator::circularapiUsage()
     upBottom->setName("upBottom");
     bsw->addApiInterface( upBottom );
 
-    QList<ApiDependency> deps = design->getApiDependencies();
-    ApiDependency dependency1;
+    QList<ApiConnection> deps = design->getApiDependencies();
+    ApiConnection dependency1;
     dependency1.setInterface1(ApiInterfaceRef("crapware_0","apina"));
     dependency1.setInterface2(ApiInterfaceRef("stackware_0","banaani"));
     deps.append(dependency1);
-    ApiDependency dependency2;
+    ApiConnection dependency2;
     dependency2.setInterface1(ApiInterfaceRef("stackware_0","stackDriver"));
     dependency2.setInterface2(ApiInterfaceRef("driver_0","driverStack"));
     deps.append(dependency2);
-    ApiDependency dependency3;
+    ApiConnection dependency3;
     dependency3.setInterface1(ApiInterfaceRef("stackware_0","upBottom"));
     dependency3.setInterface2(ApiInterfaceRef("driver_0","bottomUp"));
     deps.append(dependency3);
