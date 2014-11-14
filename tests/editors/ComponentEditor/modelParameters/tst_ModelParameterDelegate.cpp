@@ -42,7 +42,6 @@ private slots:
     void cleanup();
 
     void testUsageIsSelectedFromPredifinedValues();
-
     void testFormatIsSelectedFromPredifinedValues();
     void testChoiceIsSelectedFromChoiceNames();
     void testValueIsSelectedUsingChoiceEnumerations();
@@ -67,6 +66,15 @@ private slots:
     void testMinimumEditingForFloatFormat();
     void testMinimumEditingForFloatFormat_data();
 
+    void testMaximumEditingForBitStringFormat();
+    void testMaximumEditingForBitStringFormat_data();   
+
+    void testMaximumEditingForLongFormat();
+    void testMaximumEditingForLongFormat_data();
+
+    void testMaximumEditingForFloatFormat();
+    void testMaximumEditingForFloatFormat_data();
+
 private:
 
     ModelParameterDelegate* createDelegate();
@@ -85,6 +93,10 @@ private:
 
     void testMinimumForEditingForFormat(QString const& format);
 
+    void testMaximumForEditingForFormat(QString const& format);
+
+    void testKeyInputForColumn(int column);
+   
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -240,14 +252,19 @@ void tst_ModelParameterDelegate::testValueEditingForBitStringFormat()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterDelegate::testValueForEditingForFormat(QString const& format)
 {
+    setFormat(format);
+    testKeyInputForColumn(ModelParameterColumns::VALUE);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterDelegate::testKeyInputForColumn()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterDelegate::testKeyInputForColumn(int column)
+{
+    QLineEdit* valueEditor = qobject_cast<QLineEdit*>(createEditorForColumn(column));
+
     QFETCH(QString, input);
     QFETCH(QString, expectedTextInEditor);
-
-    setFormat(format);
-
-    QLineEdit* valueEditor = qobject_cast<QLineEdit*>(createEditorForColumn(ModelParameterColumns::VALUE));
-
-    QVERIFY2(valueEditor != 0, "Expected line editor for setting value when using format bitString.");
 
     QTest::keyClicks(valueEditor, input);
 
@@ -360,18 +377,8 @@ void tst_ModelParameterDelegate::testMinimumEditingForBitStringFormat()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterDelegate::testMinimumForEditingForFormat(QString const& format)
 {
-    QFETCH(QString, input);
-    QFETCH(QString, expectedTextInEditor);
-
     setFormat(format);
-
-    QLineEdit* valueEditor = qobject_cast<QLineEdit*>(createEditorForColumn(ModelParameterColumns::MINIMUM));
-
-    QVERIFY2(valueEditor != 0, "Expected line editor for setting minimum when using format bitString.");
-
-    QTest::keyClicks(valueEditor, input);
-
-    QCOMPARE(valueEditor->text(), expectedTextInEditor);
+    testKeyInputForColumn(ModelParameterColumns::MINIMUM);
 }
 
 //-----------------------------------------------------------------------------
@@ -395,7 +402,7 @@ void tst_ModelParameterDelegate::testMinimumEditingForLongFormat()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterDelegate::testMinimumEditingForLongFormat_data()
 {
-  testValueEditingForLongFormat_data();
+    testValueEditingForLongFormat_data();
 }
 
 //-----------------------------------------------------------------------------
@@ -410,6 +417,64 @@ void tst_ModelParameterDelegate::testMinimumEditingForFloatFormat()
 // Function: tst_ModelParameterDelegate::testMinimumEditingForFloatFormat_data()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterDelegate::testMinimumEditingForFloatFormat_data()
+{
+    testValueEditingForFloatFormat_data();
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterDelegate::testMinimumEditingForBitStringFormat()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterDelegate::testMaximumEditingForBitStringFormat()
+{
+    testMaximumForEditingForFormat("bitString");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterDelegate::testMaximumForEditingForFormat()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterDelegate::testMaximumForEditingForFormat(QString const& format)
+{
+    setFormat(format);
+    testKeyInputForColumn(ModelParameterColumns::MAXIMUM);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterDelegate::testMaximumEditingForBitStringFormat_data()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterDelegate::testMaximumEditingForBitStringFormat_data()
+{
+    testValueEditingForBitStringFormat_data();
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterDelegate::testMaximumEditingForLongFormat()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterDelegate::testMaximumEditingForLongFormat()
+{
+    testMaximumForEditingForFormat("long");
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterDelegate::testMaximumEditingForBitStringFormat_data()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterDelegate::testMaximumEditingForLongFormat_data()
+{
+    testValueEditingForLongFormat_data();
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterDelegate::testMaximumEditingForFloatFormat()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterDelegate::testMaximumEditingForFloatFormat()
+{
+    testMaximumForEditingForFormat("float");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterDelegate::testMaximumEditingForFloatFormat_data()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterDelegate::testMaximumEditingForFloatFormat_data()
 {
     testValueEditingForFloatFormat_data();
 }
@@ -479,6 +544,7 @@ void tst_ModelParameterDelegate::setFormat(QString const& format)
     QModelIndex choiceIndex = tableModel_->QAbstractTableModel::index(0, ModelParameterColumns::FORMAT, QModelIndex());
     QVERIFY2(tableModel_->setData(choiceIndex, format, Qt::EditRole), "Could not set format.");
 }
+
 
 QTEST_MAIN(tst_ModelParameterDelegate)
 

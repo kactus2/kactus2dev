@@ -234,6 +234,22 @@ void Parameter::setMinimumValue(QString const& minimum)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Parameter::getMaximumValue()
+//-----------------------------------------------------------------------------
+QString Parameter::getMaximumValue() const
+{
+    return valueAttributes_.value("spirit:maximum");
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::setMinimumValue()
+//-----------------------------------------------------------------------------
+void Parameter::setMaximumValue(QString const& maximum)
+{
+    setValueAttribute("spirit:maximum", maximum);
+}
+
+//-----------------------------------------------------------------------------
 // Function: Parameter::hasAttribute()
 //-----------------------------------------------------------------------------
 bool Parameter::hasAttribute(QString const& attributeName) const
@@ -482,7 +498,7 @@ bool Parameter::isValidMinimuForFormat() const
 bool Parameter::shouldCompareValueToMinimum() const
 {
     return !getMinimumValue().isEmpty() && 
-        (getValueFormat() == "bitString" || getValueFormat() == "long" || getValueFormat() == "float");
+        (getValueFormat() == "long" || getValueFormat() == "float");
 }
 
 //-----------------------------------------------------------------------------
@@ -501,10 +517,6 @@ qreal Parameter::valueOf(QString const& value) const
     if (getValueFormat() == "long")
     {
         return longValueOf(value);
-    }
-    else if (getValueFormat() == "bitString")
-    {
-        return bitstringValueOf(value);
     }
     else if (getValueFormat() == "float")
     {
@@ -530,15 +542,6 @@ qreal Parameter::longValueOf(QString const& value) const
     {
         return value.toLong();
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Parameter::bitstringValueOf()
-//-----------------------------------------------------------------------------
-qreal Parameter::bitstringValueOf(QString const& value) const
-{
-    QString quotedValue = value;
-    return quotedValue.remove("\"").toLong(0, 2);
 }
 
 //-----------------------------------------------------------------------------

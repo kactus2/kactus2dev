@@ -20,6 +20,7 @@ namespace ModelParameterColumns
         USAGE_TYPE,
         FORMAT,
         MINIMUM,
+        MAXIMUM,
         CHOICE,
         VALUE,
         DESCRIPTION,

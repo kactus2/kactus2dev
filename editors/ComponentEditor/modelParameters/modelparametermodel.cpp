@@ -96,6 +96,8 @@ QVariant ModelParameterModel::data( const QModelIndex & index, int role /*= Qt::
             return modelParameter->getValueFormat();
         case ModelParameterColumns::MINIMUM:   
             return modelParameter->getMinimumValue();
+        case ModelParameterColumns::MAXIMUM:   
+            return modelParameter->getMaximumValue();
         case ModelParameterColumns::CHOICE:
             return modelParameter->getChoiceRef();
         case ModelParameterColumns::VALUE:
@@ -172,11 +174,13 @@ QVariant ModelParameterModel::headerData(int section, Qt::Orientation orientatio
 			case ModelParameterColumns::DATA_TYPE:
 				return tr("Data type");
 			case ModelParameterColumns::USAGE_TYPE:
-				return tr("Usage type");
+				return tr("Usage\ntype");
             case  ModelParameterColumns::FORMAT:
                 return tr("Format");
             case  ModelParameterColumns::MINIMUM:
-                return tr("Minimum value");
+                return tr("Minimum\nvalue");
+            case ModelParameterColumns::MAXIMUM:   
+                return tr("Maximum\nvalue");
             case ModelParameterColumns::CHOICE:
                 return tr("Choice");
 			case ModelParameterColumns::VALUE:
@@ -247,6 +251,11 @@ bool ModelParameterModel::setData(QModelIndex const& index, QVariant const& valu
         case ModelParameterColumns::MINIMUM:
             {
                 modelParameter->setMinimumValue(value.toString());
+                break;
+            }
+        case ModelParameterColumns::MAXIMUM:
+            {
+                modelParameter->setMaximumValue(value.toString());
                 break;
             }
         case ModelParameterColumns::CHOICE:

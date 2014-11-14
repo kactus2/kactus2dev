@@ -77,8 +77,20 @@ protected:
      *      @return The column for editing format selection.
      */
     virtual int formatColumn() const;
-
+    
+    /*!
+     *  Gets the column for minimum value.
+     *
+     *      @return The column for editing the minimum value.
+     */
     virtual int minimumColumn() const;
+    
+    /*!
+     *  Gets the column for maximum value.
+     *
+     *      @return The column for editing the maximum value.
+     */
+    virtual int maximumColumn() const;
 
     /*!
      *  Gets the column for values.

@@ -68,6 +68,10 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     {
         return createEditorUsingFormat(parent, option, index);
     }
+    else if (index.column() == maximumColumn())
+    {
+        return createEditorUsingFormat(parent, option, index);
+    }
     else
     {
         return QStyledItemDelegate::createEditor(parent, option, index);
@@ -162,7 +166,15 @@ int ParameterDelegate::formatColumn() const
 //-----------------------------------------------------------------------------
 int ParameterDelegate::minimumColumn() const
 {
-    return -1;
+    return ParameterColumns::MINIMUM;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::maximumColumn()
+//-----------------------------------------------------------------------------
+int ParameterDelegate::maximumColumn() const
+{
+    return ParameterColumns::MAXIMUM;
 }
 
 //-----------------------------------------------------------------------------

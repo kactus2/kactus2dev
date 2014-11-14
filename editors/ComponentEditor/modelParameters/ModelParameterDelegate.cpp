@@ -81,6 +81,14 @@ int ModelParameterDelegate::minimumColumn() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ModelParameterDelegate::maximumColumn()
+//-----------------------------------------------------------------------------
+int ModelParameterDelegate::maximumColumn() const
+{
+    return ModelParameterColumns::MAXIMUM;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ModelParameterDelegate::valueColumn()
 //-----------------------------------------------------------------------------
 int ModelParameterDelegate::valueColumn() const

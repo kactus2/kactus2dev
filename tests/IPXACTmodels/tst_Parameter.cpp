@@ -34,9 +34,6 @@ private slots:
     void testValidityWithLongMinimumValue();
     void testValidityWithLongMinimumValue_data();
 
-    void testValidityWithBitStringMinimumValue();
-    void testValidityWithBitStringMinimumValue_data();
-
     void testValidityWithFloatMinimumValue();
     void testValidityWithFloatMinimumValue_data();
 
@@ -311,37 +308,6 @@ void tst_Parameter::testValidityWithLongMinimumValue_data()
     QTest::newRow("hexadecimal minimum compared to greater hexadecimal using X") << "#1" << "#2" << true;
 
     QTest::newRow("positive decimal minimum compared to negative decimal") << "1" << "-1" << false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_Parameter::testValidityWithBitStringMinimumValue()
-//-----------------------------------------------------------------------------
-void tst_Parameter::testValidityWithBitStringMinimumValue()
-{
-    testValidityWithMinimumValueAndFormat("bitString");
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_Parameter::testValidityWithBitStringMinimumValue_data()
-//-----------------------------------------------------------------------------
-void tst_Parameter::testValidityWithBitStringMinimumValue_data()
-{
-    QTest::addColumn<QString>("minimumValue");
-    QTest::addColumn<QString>("value");
-    QTest::addColumn<bool>("expectedValid");
-
-    QTest::newRow("empty values") << "" << "" << false;
-
-    QTest::newRow("decimal zeros") << "0" << "0" << true;
-    QTest::newRow("multiple zeros") << "0000" << "0000" << true;
-
-    QTest::newRow("minimum compared to lesser bitstring") << "10" << "01" << false;
-    QTest::newRow("minimum compared to equal bitstring") << "001" << "001" << true;
-    QTest::newRow("minimum compared to greater bitstring") << "0001" << "0010" << true;
-
-    QTest::newRow("minimum compared to greater bitstring using quotes") << "\"1111\"" << "\"0111\"" << false;
-    QTest::newRow("minimum compared to equal bitstring using quotes") << "\"0010\"" << "\"0010\"" << true;
-    QTest::newRow("minimum compared to greater bitstring using quotes") << "\"0001\"" << "\"0010\"" << true;
 }
 
 //-----------------------------------------------------------------------------

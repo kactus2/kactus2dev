@@ -164,6 +164,20 @@ public:
      *      @param [in] minimum   The minimum value.
      */
     void setMinimumValue(QString const& minimum);
+    
+    /*!
+     *  Gets the maximum value for the parameter value.
+     *
+     *      @return The maximum value.
+     */
+    QString getMaximumValue() const;
+
+    /*!
+     *  Sets the maximum value for the parameter value
+     *
+     *      @param [in] maximum   The maximum value.
+     */
+    void setMaximumValue(QString const& maximum);
 
     /*!
      *  Checks if the parameter has an attribute with the given name.
@@ -279,15 +293,6 @@ private:
      *      @return The value of the string.
      */
     qreal longValueOf(QString const& value) const;
-    
-    /*!
-     *   Gets the value of a given string when the string is interpret as a bit string.
-     *
-     *      @param [in] value   The string whose value to get.
-     *
-     *      @return The value of the string.
-     */
-    qreal bitstringValueOf(QString const& value) const;  
     
     /*!
      *   Gets the value of a given string when the string is interpret as a floating point number.

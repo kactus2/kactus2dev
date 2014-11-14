@@ -17,6 +17,7 @@ namespace ParameterColumns
         NAME = 0,
         FORMAT,
         MINIMUM,
+        MAXIMUM,
         CHOICE,
         VALUE,
         DESCRIPTION,
