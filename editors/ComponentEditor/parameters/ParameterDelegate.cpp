@@ -62,7 +62,11 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     }
     else if (index.column() == valueColumn() && !formatOnRow(index).isEmpty())
     {
-        return createValueEditorUsingFormat(parent, option, index);
+        return createEditorUsingFormat(parent, option, index);
+    }
+    else if (index.column() == minimumColumn())
+    {
+        return createEditorUsingFormat(parent, option, index);
     }
     else
     {
@@ -112,21 +116,23 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
 void ParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, 
     QModelIndex const& index) const 
 {
-    if (index.column() == choiceColumn())
-    {
-		QComboBox* combo = qobject_cast<QComboBox*>(editor);
-		QString text = combo->currentText();
-        if (text == "<none>")
-        {
-            text = "";
-        }
-		model->setData(index, text, Qt::EditRole);
-	}
-    else if (isIndexForValueUsingChoice(index)) 
+    QComboBox* combo = qobject_cast<QComboBox*>(editor);
+
+    if (isIndexForValueUsingChoice(index)) 
     {
         QComboBox* combo = qobject_cast<QComboBox*>(editor);
         QString text = combo->currentText();
         text = text.left(text.indexOf(':'));
+        model->setData(index, text, Qt::EditRole);
+    }
+    else if (combo)
+    {
+        QComboBox* combo = qobject_cast<QComboBox*>(editor);
+        QString text = combo->currentText();
+        if (text == "<none>")
+        {
+            text = "";
+        }
         model->setData(index, text, Qt::EditRole);
     }
 	else 
@@ -149,6 +155,14 @@ int ParameterDelegate::choiceColumn() const
 int ParameterDelegate::formatColumn() const
 {
     return ParameterColumns::FORMAT;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::minimumColumn()
+//-----------------------------------------------------------------------------
+int ParameterDelegate::minimumColumn() const
+{
+    return -1;
 }
 
 //-----------------------------------------------------------------------------
@@ -262,7 +276,7 @@ QWidget* ParameterDelegate::createEnumerationSelector(QWidget* parent, QModelInd
 //-----------------------------------------------------------------------------
 // Function: ParameterDelegate::createValueEditorUsingFormat()
 //-----------------------------------------------------------------------------
-QWidget* ParameterDelegate::createValueEditorUsingFormat(QWidget* parent, QStyleOptionViewItem const& option, 
+QWidget* ParameterDelegate::createEditorUsingFormat(QWidget* parent, QStyleOptionViewItem const& option, 
     QModelIndex const& index) const
 {
     QWidget* editor = QStyledItemDelegate::createEditor(parent, option, index);

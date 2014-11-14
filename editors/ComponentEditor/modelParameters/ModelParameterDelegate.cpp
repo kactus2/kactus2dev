@@ -57,49 +57,6 @@ QWidget* ModelParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewI
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterDelegate::setEditorData()
-//-----------------------------------------------------------------------------
-void ModelParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const 
-{
-   QComboBox* combo = qobject_cast<QComboBox*>(editor);
-
-	if (combo != 0) 
-    {
-		QString text = index.data(Qt::DisplayRole).toString();
-		QComboBox* combo = qobject_cast<QComboBox*>(editor);
-		
-		int comboIndex = combo->findText(text);
-		combo->setCurrentIndex(comboIndex);
-	}
-    else 
-    {
-        ParameterDelegate::setEditorData(editor, index);
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModelParameterDelegate::setModelData()
-//-----------------------------------------------------------------------------
-void ModelParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, 
-    QModelIndex const& index) const 
-{
-    QComboBox* combo = qobject_cast<QComboBox*>(editor);
-
-    if (combo != 0)
-    {
-		QString text = combo->currentText();
-        if (text == "<none>")
-        {
-            text = "";
-        }
-		model->setData(index, text, Qt::EditRole);
-	}
-    else
-    {
-        ParameterDelegate::setModelData(editor, model, index);
-	}
-}
-//-----------------------------------------------------------------------------
 // Function: ModelParameterDelegate::choiceColumn()
 //-----------------------------------------------------------------------------
 int ModelParameterDelegate::choiceColumn() const
@@ -113,6 +70,14 @@ int ModelParameterDelegate::choiceColumn() const
 int ModelParameterDelegate::formatColumn() const
 {
     return ModelParameterColumns::FORMAT;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameterDelegate::minimumColumn()
+//-----------------------------------------------------------------------------
+int ModelParameterDelegate::minimumColumn() const
+{
+    return ModelParameterColumns::MINIMUM;
 }
 
 //-----------------------------------------------------------------------------

@@ -152,6 +152,20 @@ public:
     void setValueFormat(QString const& format);
 
     /*!
+     *  Gets the minimum value for the parameter value.
+     *
+     *      @return The minimum value.
+     */
+    QString getMinimumValue() const;
+
+    /*!
+     *  Sets the minimum value for the parameter value
+     *
+     *      @param [in] minimum   The minimum value.
+     */
+    void setMinimumValue(QString const& minimum);
+
+    /*!
      *  Checks if the parameter has an attribute with the given name.
      *
      *      @param [in] attributeName   The name of the attribute to find.
@@ -196,7 +210,22 @@ protected:
      */
     void setAttribute(QString const& attributeName, QString const& attributeValue);
 
+    /*!
+     *  Sets an attribute for the value.
+     *
+     *      @param [in] attributeName       The name of the attribute to set.
+     *      @param [in] attributeValue      The value of the attribute.
+     */
+    void setValueAttribute(QString const& attributeName, QString const& attributeValue);
+
 private:
+    
+    /*!
+     *  Checks if the format attribute of the value is set.
+     *
+     *      @return True, if the format is set, otherwise false.
+     */
+    bool formatSet() const;
 
     /*!
      *  Checks if the format attribute of the value is valid.
@@ -204,13 +233,74 @@ private:
      *      @return True, if the format is valid, otherwise false.
      */
     bool isValidFormat() const;
-    
+
     /*!
      *  Checks if the parameter value is valid in the specified format (if any).
      *
      *      @return True, if the value is valid for the format, otherwise false.
      */
     bool isValidValueForFormat() const;
+    
+    /*!
+     *  Checks if the parameter minimum value is valid in the specified format.
+     *
+     *      @return True, if the minimum value is valid for the format, otherwise false.
+     */
+    bool isValidMinimuForFormat() const;
+    
+    /*!
+     *  Checks if the parameter value should be compared to the minimum value.
+     *
+     *      @return True, if the value should be compared, otherwise false.
+     */
+    bool shouldCompareValueToMinimum() const;
+    
+    /*!
+     *  Checks if the parameter value is less than the minimum value.
+     *
+     *      @return True, if the value is less than the minimum value, otherwise false.
+     */
+    bool valueIsLessThanMinimum() const;
+
+    /*!
+     *   Gets the value of a given string in the format specified for the value.
+     *
+     *      @param [in] value   The string whose value to get.
+     *
+     *      @return The value of the string.
+     */
+    qreal valueOf(QString const& value) const;
+    
+    /*!
+     *   Gets the value of a given string when the string is interpret as a long integer.
+     *
+     *      @param [in] value   The string whose value to get.
+     *
+     *      @return The value of the string.
+     */
+    qreal longValueOf(QString const& value) const;
+    
+    /*!
+     *   Gets the value of a given string when the string is interpret as a bit string.
+     *
+     *      @param [in] value   The string whose value to get.
+     *
+     *      @return The value of the string.
+     */
+    qreal bitstringValueOf(QString const& value) const;  
+    
+    /*!
+     *   Gets the value of a given string when the string is interpret as a floating point number.
+     *
+     *      @param [in] value   The string whose value to get.
+     *
+     *      @return The value of the string.
+     */
+    qreal floatValueOf(QString const& value) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! Contains the name, display name and description of parameter.
     NameGroup nameGroup_;

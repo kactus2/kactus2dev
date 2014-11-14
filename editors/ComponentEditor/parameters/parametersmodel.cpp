@@ -90,6 +90,10 @@ QVariant ParametersModel::data( const QModelIndex& index, int role /*= Qt::Displ
             {
                 return parameter->getValueFormat();
             }
+        case ParameterColumns::MINIMUM:
+            {
+                return parameter->getMinimumValue();
+            }
         case ParameterColumns::CHOICE: 
             {
                 return parameter->getChoiceRef();
@@ -162,7 +166,9 @@ QVariant ParametersModel::headerData(int section, Qt::Orientation orientation, i
         case ParameterColumns::NAME:
             return tr("Name");
         case ParameterColumns::FORMAT:
-            return tr("Format");
+            return tr("Format");   
+        case ParameterColumns::MINIMUM:
+            return tr("Minimum value");
         case ParameterColumns::CHOICE:
             return tr("Choice");
         case ParameterColumns::VALUE:
@@ -206,6 +212,11 @@ bool ParametersModel::setData(const QModelIndex& index, const QVariant& value, i
         case ParameterColumns::FORMAT: 
             {
                 parameter->setValueFormat(value.toString());
+                break;
+            }
+        case ParameterColumns::MINIMUM:
+            {
+                parameter->setMinimumValue(value.toString());
                 break;
             }
         case ParameterColumns::CHOICE: 

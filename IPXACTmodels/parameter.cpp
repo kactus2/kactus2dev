@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QMap>
 #include <QXmlStreamWriter>
+#include <qmath.h>
 
 //-----------------------------------------------------------------------------
 // Function: Parameter::Parameter()
@@ -196,15 +197,8 @@ QString Parameter::getChoiceRef() const
 // Function: Parameter::setChoiceRef()
 //-----------------------------------------------------------------------------
 void Parameter::setChoiceRef(QString const& choiceRef)
-{
-    if (!choiceRef.isEmpty())
-    {    
-        valueAttributes_.insert("spirit:choiceRef", choiceRef);
-    }
-    else
-    {
-        valueAttributes_.remove("spirit:choiceRef");
-    }
+{ 
+    setValueAttribute("spirit:choiceRef", choiceRef);
 }
 
 //-----------------------------------------------------------------------------
@@ -220,14 +214,23 @@ QString Parameter::getValueFormat() const
 //-----------------------------------------------------------------------------
 void Parameter::setValueFormat(QString const& format)
 {
-    if (!format.isEmpty())
-    {    
-        valueAttributes_.insert("spirit:format", format);
-    }
-    else
-    {
-        valueAttributes_.remove("spirit:format");
-    }
+    setValueAttribute("spirit:format", format);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::getMinimumValue()
+//-----------------------------------------------------------------------------
+QString Parameter::getMinimumValue() const
+{
+    return valueAttributes_.value("spirit:minimum");
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::setMinimumValue()
+//-----------------------------------------------------------------------------
+void Parameter::setMinimumValue(QString const& minimum)
+{
+    setValueAttribute("spirit:minimum", minimum);
 }
 
 //-----------------------------------------------------------------------------
@@ -263,17 +266,33 @@ bool Parameter::isValid() const
     {
 		return false;
     }
-	else if (value_.isEmpty())
+	
+    if (value_.isEmpty())
 	{
         return false;
     }
-    else if (!isValidFormat())
-    {
-        return false;
-    }
-    else if (!isValidValueForFormat())
-    {
-        return false;
+
+    if (formatSet())
+    {    
+        if (!isValidFormat())
+        {
+            return false;
+        }
+
+        if (!isValidValueForFormat())
+        {
+            return false;
+        }
+        
+        if (!isValidMinimuForFormat())
+        { 
+            return false;
+        }
+
+        if (shouldCompareValueToMinimum() && valueIsLessThanMinimum())
+        {
+            return false;
+        }
     }
 
 	return true;
@@ -299,18 +318,35 @@ bool Parameter::isValid( QStringList& errorList, const QString& parentIdentifier
 		valid = false;
 	}
 
-    if (!isValidFormat())
+    if (formatSet())
     {
-        errorList.append(QObject::tr("Invalid format %1 specified for %2 %3 within %4").arg(
-            getValueFormat(), elementName(), getName(), parentIdentifier));
-        valid = false;
-    }
+        if (!isValidFormat())
+        {
+            errorList.append(QObject::tr("Invalid format %1 specified for %2 %3 within %4").arg(
+                getValueFormat(), elementName(), getName(), parentIdentifier));
+            valid = false;
+        }
 
-    if (!isValidValueForFormat())
-    {
-        errorList.append(QObject::tr("Value %1 is not valid for format %2 in %3 %4 within %5"
-            ).arg(value_, getValueFormat(), elementName(), getName(), parentIdentifier));
-        valid = false;
+        if (!isValidValueForFormat())
+        {
+            errorList.append(QObject::tr("Value %1 is not valid for format %2 in %3 %4 within %5"
+                ).arg(value_, getValueFormat(), elementName(), getName(), parentIdentifier));
+            valid = false;
+        }
+
+        if (!isValidMinimuForFormat())
+        {
+            errorList.append(QObject::tr("Minimum value %1 is not valid for format %2 in %3 %4 within %5"
+                ).arg(getMinimumValue(), getValueFormat(), elementName(), getName(), parentIdentifier));
+            valid = false;
+        }
+
+        if (shouldCompareValueToMinimum() && valueIsLessThanMinimum())
+        {
+            errorList.append(QObject::tr("Value %1 violates minimum value %2 in %3 %4 within %5"
+                ).arg(value_, getMinimumValue(), elementName(), getName(), parentIdentifier));
+            valid = false;
+        }
     }
 
 	return valid;
@@ -348,6 +384,21 @@ void Parameter::setAttribute(QString const& attributeName, QString const& attrib
 }
 
 //-----------------------------------------------------------------------------
+// Function: Parameter::setValueAttribute()
+//-----------------------------------------------------------------------------
+void Parameter::setValueAttribute(QString const& attributeName, QString const& attributeValue)
+{
+    if (!attributeValue.isEmpty())
+    {
+        valueAttributes_.insert(attributeName, attributeValue);
+    }
+    else
+    {
+        valueAttributes_.remove(attributeName);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: Parameter::isValidValueForFormat()
 //-----------------------------------------------------------------------------
 bool Parameter::isValidValueForFormat() const
@@ -380,10 +431,130 @@ bool Parameter::isValidValueForFormat() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: Parameter::formatSet()
+//-----------------------------------------------------------------------------
+bool Parameter::formatSet() const
+{
+    return !getValueFormat().isEmpty();
+}
+
+//-----------------------------------------------------------------------------
 // Function: Parameter::isValidFormat()
 //-----------------------------------------------------------------------------
 bool Parameter::isValidFormat() const
 {
     return getValueFormat().isEmpty() || getValueFormat() == "bool" || getValueFormat() == "bitString" ||
         getValueFormat() == "long" || getValueFormat() == "float" || getValueFormat() == "string";
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::isValidMinimuForFormat()
+//-----------------------------------------------------------------------------
+bool Parameter::isValidMinimuForFormat() const
+{
+    QString format = getValueFormat();
+    if (getMinimumValue().isEmpty() || format.isEmpty() || format == "bool" || format == "string")
+    {
+        return true;
+    }
+
+    QRegExp validatingExp;
+    if (format == "bitString")
+    {
+        validatingExp.setPattern(StringPromptAtt::VALID_BITSTRING_VALUE);
+    }
+    else if (format == "long")
+    {
+        validatingExp.setPattern(StringPromptAtt::VALID_LONG_VALUE);
+    }
+    else if (format == "float")
+    {
+        validatingExp.setPattern(StringPromptAtt::VALID_FLOAT_VALUE);
+    }
+
+    return validatingExp.exactMatch(getMinimumValue());
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::shouldCompareValueToMinimum()
+//-----------------------------------------------------------------------------
+bool Parameter::shouldCompareValueToMinimum() const
+{
+    return !getMinimumValue().isEmpty() && 
+        (getValueFormat() == "bitString" || getValueFormat() == "long" || getValueFormat() == "float");
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::valueIsLessThanMinimum()
+//-----------------------------------------------------------------------------
+bool Parameter::valueIsLessThanMinimum() const
+{
+    return valueOf(value_) < valueOf(getMinimumValue());
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::toLong()
+//-----------------------------------------------------------------------------
+qreal Parameter::valueOf(QString const& value) const
+{
+    if (getValueFormat() == "long")
+    {
+        return longValueOf(value);
+    }
+    else if (getValueFormat() == "bitString")
+    {
+        return bitstringValueOf(value);
+    }
+    else if (getValueFormat() == "float")
+    {
+        return floatValueOf(value);
+    }
+    else
+    {
+        return value.toDouble();
+    }	
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::longValueOf()
+//-----------------------------------------------------------------------------
+qreal Parameter::longValueOf(QString const& value) const
+{
+    if (value.startsWith("0x", Qt::CaseInsensitive) || value.startsWith('#'))
+    {
+        QString hexValue = value;
+        return hexValue.remove('#').toLong(0, 16);
+    }
+    else
+    {
+        return value.toLong();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::bitstringValueOf()
+//-----------------------------------------------------------------------------
+qreal Parameter::bitstringValueOf(QString const& value) const
+{
+    QString quotedValue = value;
+    return quotedValue.remove("\"").toLong(0, 2);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::floatValueOf()
+//-----------------------------------------------------------------------------
+qreal Parameter::floatValueOf(QString const& value) const
+{
+    if (value.contains('e'))
+    {
+        qreal coefficient = value.left(value.indexOf('e')).toFloat();
+        qreal exponent = value.mid(value.indexOf('e') + 1).toFloat();
+        qreal result = coefficient * qPow(10, exponent);
+        return result;
+    }
+    else
+    {
+        return value.toFloat();
+    }
 }

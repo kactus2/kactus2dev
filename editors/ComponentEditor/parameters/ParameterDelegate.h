@@ -78,6 +78,8 @@ protected:
      */
     virtual int formatColumn() const;
 
+    virtual int minimumColumn() const;
+
     /*!
      *  Gets the column for values.
      *
@@ -140,13 +142,13 @@ protected:
     QWidget* createFormatSelector(QWidget* parent) const;
     
     /*!
-     *  Creates an editor for a value using the selected format.
+     *  Creates an editor using the selected format.
      *
      *      @param [in] parent   The parent widget for the editor.
      *
-     *      @return An editor for a value.
+     *      @return An editor for the selected format.
      */
-    QWidget* createValueEditorUsingFormat(QWidget* parent, QStyleOptionViewItem const& option,
+    QWidget* createEditorUsingFormat(QWidget* parent, QStyleOptionViewItem const& option,
         QModelIndex const& index) const;
 
 private:

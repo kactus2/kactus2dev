@@ -58,6 +58,14 @@ private slots:
     void testValueEditingForFloatFormat();
     void testValueEditingForFloatFormat_data();
 
+    void testMinimumEditingForBitStringFormat();
+    void testMinimumEditingForBitStringFormat_data();
+
+    void testMinimumEditingForLongFormat();
+    void testMinimumEditingForLongFormat_data();
+
+    void testMinimumEditingForFloatFormat();
+    void testMinimumEditingForFloatFormat_data();
 
 private:
 
@@ -74,6 +82,8 @@ private:
     void setFormat(QString const& format);
 
     void testValueForEditingForFormat(QString const& format);
+
+    void testMinimumForEditingForFormat(QString const& format);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -335,7 +345,73 @@ void tst_ModelParameterDelegate::testValueEditingForFloatFormat_data()
     QTest::newRow("scientific format") << "2e5" << "2e5";
     QTest::newRow("scientific format with negative exponent") << "1E-3" << "1E-3";
     QTest::newRow("text is not valid") << "nonsense" << "";
+}
 
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterDelegate::testMinimumEditingForBitStringFormat()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterDelegate::testMinimumEditingForBitStringFormat()
+{
+    testMinimumForEditingForFormat("bitString");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterDelegate::testMinimumForEditingForFormat()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterDelegate::testMinimumForEditingForFormat(QString const& format)
+{
+    QFETCH(QString, input);
+    QFETCH(QString, expectedTextInEditor);
+
+    setFormat(format);
+
+    QLineEdit* valueEditor = qobject_cast<QLineEdit*>(createEditorForColumn(ModelParameterColumns::MINIMUM));
+
+    QVERIFY2(valueEditor != 0, "Expected line editor for setting minimum when using format bitString.");
+
+    QTest::keyClicks(valueEditor, input);
+
+    QCOMPARE(valueEditor->text(), expectedTextInEditor);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterDelegate::testValueEditingForFloatFormat_data()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterDelegate::testMinimumEditingForBitStringFormat_data()
+{
+    testValueEditingForBitStringFormat_data();
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterDelegate::testMinimumEditingForLongFormat()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterDelegate::testMinimumEditingForLongFormat()
+{
+    testMinimumForEditingForFormat("long");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterDelegate::testMinimumEditingForLongFormat_data()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterDelegate::testMinimumEditingForLongFormat_data()
+{
+  testValueEditingForLongFormat_data();
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterDelegate::testMinimumEditingForFloatFormat()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterDelegate::testMinimumEditingForFloatFormat()
+{
+    testMinimumForEditingForFormat("float");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterDelegate::testMinimumEditingForFloatFormat_data()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterDelegate::testMinimumEditingForFloatFormat_data()
+{
+    testValueEditingForFloatFormat_data();
 }
 
 //-----------------------------------------------------------------------------
