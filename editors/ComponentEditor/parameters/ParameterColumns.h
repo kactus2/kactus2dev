@@ -15,12 +15,14 @@ namespace ParameterColumns
     enum columns
     {
         NAME = 0,
+        DISPLAY_NAME,
         FORMAT,
         BITSTRINGLENGTH,
         MINIMUM,
         MAXIMUM,
         CHOICE,
         VALUE,
+        RESOLVE,
         DESCRIPTION,
         COLUMN_COUNT
     };

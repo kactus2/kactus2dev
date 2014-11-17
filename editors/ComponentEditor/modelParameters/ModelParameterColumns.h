@@ -24,6 +24,7 @@ namespace ModelParameterColumns
         MAXIMUM,
         CHOICE,
         VALUE,
+        RESOLVE,
         DESCRIPTION,
         COLUMN_COUNT
     };

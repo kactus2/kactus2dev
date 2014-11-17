@@ -131,6 +131,7 @@ void tst_Parameter::testMinimumValueIsValidForGivenFormat()
 
     Parameter parameter;
     parameter.setName("param");
+    parameter.setBitStringLength("4");
     parameter.setValue("1000000000");
 
     parameter.setValueFormat(format);
@@ -364,6 +365,7 @@ void tst_Parameter::testMaximumValueIsValidForGivenFormat()
 
     Parameter parameter;
     parameter.setName("param");
+    parameter.setBitStringLength("4");
     parameter.setValue("0");
 
     parameter.setValueFormat(format);

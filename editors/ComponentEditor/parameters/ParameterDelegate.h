@@ -107,6 +107,13 @@ protected:
     virtual int valueColumn() const;
 
     /*!
+     *  Gets the column for resolve.
+     *
+     *      @return The column for editing value selection.
+     */
+    virtual int resolveColumn() const;
+
+    /*!
      *  Finds the name of the choice on the row identified by the given index.
      *
      *      @param [in] index   The index on whose row to find the choice name.
@@ -180,6 +187,8 @@ protected:
      */
     QWidget* createNumberEditor(QWidget* parent, QStyleOptionViewItem const& option, 
         QModelIndex const& index) const;
+
+    QWidget* createResolveSelector(QWidget* parent) const;
 
 private:
 

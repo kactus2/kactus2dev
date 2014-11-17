@@ -91,6 +91,13 @@ protected:
      *      @return The column for editing value selection.
      */
     virtual int valueColumn() const;
+    
+    /*!
+     *  Gets the column for resolve.
+     *
+     *      @return The column for editing value selection.
+     */
+    virtual int resolveColumn() const;
 
 private:
 

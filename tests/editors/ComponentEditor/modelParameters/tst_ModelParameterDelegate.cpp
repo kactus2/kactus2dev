@@ -42,6 +42,7 @@ private slots:
     void cleanup();
 
     void testUsageIsSelectedFromPredifinedValues();
+    void testResolveIsSelectedFromPredifinedValues();
     void testFormatIsSelectedFromPredifinedValues();
     void testChoiceIsSelectedFromChoiceNames();
     void testValueIsSelectedUsingChoiceEnumerations();
@@ -149,6 +150,22 @@ void tst_ModelParameterDelegate::testUsageIsSelectedFromPredifinedValues()
 
     QVERIFY2(usageSelector->findText("typed") != -1, "Expected combo box to have selection for typed.");
     QVERIFY2(usageSelector->findText("nontyped") != -1, "Expected combo box to have selection for nontyped.");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterDelegate::testResolveIsSelectedFromPredifinedValues()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterDelegate::testResolveIsSelectedFromPredifinedValues()
+{
+    QWidget* editor = createEditorForColumn(ModelParameterColumns::RESOLVE);
+
+    QComboBox* usageSelector = qobject_cast<QComboBox*>(editor);
+
+    QVERIFY2(usageSelector != 0, "Expected combo box for selecting resolve type.");
+
+    QVERIFY2(usageSelector->findText("immediate") != -1, "Expected combo box to have selection for immediate.");
+    QVERIFY2(usageSelector->findText("user") != -1, "Expected combo box to have selection for user.");
+    QVERIFY2(usageSelector->findText("generated") != -1, "Expected combo box to have selection for generated.");
 }
 
 //-----------------------------------------------------------------------------

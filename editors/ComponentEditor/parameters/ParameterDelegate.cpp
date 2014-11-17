@@ -76,6 +76,10 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     {
         return createEditorUsingFormat(parent, option, index);
     }
+    else if (index.column() == resolveColumn())
+    {
+        return createResolveSelector(parent);
+    }
     else
     {
         return QStyledItemDelegate::createEditor(parent, option, index);
@@ -195,6 +199,14 @@ int ParameterDelegate::maximumColumn() const
 int ParameterDelegate::valueColumn() const
 {
     return ParameterColumns::VALUE;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::resolveColumn()
+//-----------------------------------------------------------------------------
+int ParameterDelegate::resolveColumn() const
+{
+    return ParameterColumns::RESOLVE;
 }
 
 //-----------------------------------------------------------------------------
@@ -332,6 +344,18 @@ QWidget* ParameterDelegate::createNumberEditor(QWidget* parent, QStyleOptionView
     }
 
     return editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::createResolveSelector()
+//-----------------------------------------------------------------------------
+QWidget* ParameterDelegate::createResolveSelector(QWidget* parent) const
+{
+    QComboBox* combo = new QComboBox(parent);
+    combo->addItem(QString("immediate"));
+    combo->addItem(QString("user"));
+    combo->addItem(QString("generated"));
+    return combo;
 }
 
 //-----------------------------------------------------------------------------

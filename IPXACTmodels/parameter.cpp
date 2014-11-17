@@ -266,6 +266,22 @@ void Parameter::setMaximumValue(QString const& maximum)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Parameter::getValueResolve()
+//-----------------------------------------------------------------------------
+QString Parameter::getValueResolve() const
+{
+    return valueAttributes_.value("spirit:resolve");
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::setValueResolve()
+//-----------------------------------------------------------------------------
+void Parameter::setValueResolve(QString const& resolve)
+{
+    setValueAttribute("spirit:resolve", resolve);
+}
+
+//-----------------------------------------------------------------------------
 // Function: Parameter::hasAttribute()
 //-----------------------------------------------------------------------------
 bool Parameter::hasAttribute(QString const& attributeName) const

@@ -104,6 +104,8 @@ QVariant ModelParameterModel::data( const QModelIndex & index, int role /*= Qt::
             return modelParameter->getChoiceRef();
         case ModelParameterColumns::VALUE:
             return evaluateValueFor(modelParameter);
+        case ModelParameterColumns::RESOLVE:
+            return modelParameter->getValueResolve();
         case ModelParameterColumns::DESCRIPTION:
             return modelParameter->getDescription();
         default:
@@ -199,6 +201,8 @@ QVariant ModelParameterModel::headerData(int section, Qt::Orientation orientatio
                 return tr("Choice");
 			case ModelParameterColumns::VALUE:
 				return tr("Value");
+            case ModelParameterColumns::RESOLVE:
+                return tr("Resolve");
 			case ModelParameterColumns::DESCRIPTION:
 				return tr("Description");
 			default:
@@ -285,6 +289,11 @@ bool ModelParameterModel::setData(QModelIndex const& index, QVariant const& valu
         case ModelParameterColumns::VALUE:
             {
                 modelParameter->setValue(value.toString());
+                break;
+            }
+        case ModelParameterColumns::RESOLVE:
+            {
+                modelParameter->setValueResolve(value.toString());
                 break;
             }
         case ModelParameterColumns::DESCRIPTION:

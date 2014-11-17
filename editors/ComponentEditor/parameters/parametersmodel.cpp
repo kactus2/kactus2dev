@@ -86,6 +86,10 @@ QVariant ParametersModel::data( const QModelIndex& index, int role /*= Qt::Displ
             {
                 return parameter->getName();
             }
+        case ParameterColumns::DISPLAY_NAME: 
+            {
+                return parameter->getDisplayName();
+            }
         case ParameterColumns::FORMAT:
             {
                 return parameter->getValueFormat();
@@ -109,6 +113,10 @@ QVariant ParametersModel::data( const QModelIndex& index, int role /*= Qt::Displ
         case ParameterColumns::VALUE:
             {
                 return evaluateValueFor(parameter);
+            }
+        case ParameterColumns::RESOLVE:
+            {
+                return parameter->getValueResolve();
             }
         case ParameterColumns::DESCRIPTION: 
             {
@@ -184,6 +192,8 @@ QVariant ParametersModel::headerData(int section, Qt::Orientation orientation, i
         {
         case ParameterColumns::NAME:
             return tr("Name");
+        case ParameterColumns::DISPLAY_NAME:
+            return tr("Display name");
         case ParameterColumns::FORMAT:
             return tr("Format");   
         case ParameterColumns::BITSTRINGLENGTH:
@@ -196,6 +206,8 @@ QVariant ParametersModel::headerData(int section, Qt::Orientation orientation, i
             return tr("Choice");
         case ParameterColumns::VALUE:
             return tr("Value");
+        case ParameterColumns::RESOLVE:
+            return tr("Resolve");
         case ParameterColumns::DESCRIPTION:
             return tr("Description");
         default:
@@ -232,6 +244,11 @@ bool ParametersModel::setData(const QModelIndex& index, const QVariant& value, i
                 parameter->setName(value.toString());
                 break;
             }
+        case ParameterColumns::DISPLAY_NAME: 
+            {
+                parameter->setDisplayName(value.toString());
+                break;
+            }
         case ParameterColumns::FORMAT: 
             {
                 parameter->setValueFormat(value.toString());
@@ -260,6 +277,11 @@ bool ParametersModel::setData(const QModelIndex& index, const QVariant& value, i
         case ParameterColumns::VALUE:
             {
                 parameter->setValue(value.toString());
+                break;
+            }
+        case ParameterColumns::RESOLVE:
+            {
+                parameter->setValueResolve(value.toString());
                 break;
             }
         case ParameterColumns::DESCRIPTION: 

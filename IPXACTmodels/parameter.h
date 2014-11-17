@@ -151,10 +151,18 @@ public:
      */
     void setValueFormat(QString const& format);
 
-
+    /*!
+     *  Gets the length of the bit string for storing the parameter value.
+     *
+     *      @return The length of the bit string.
+     */
     QString getBitStringLength() const;
 
-
+    /*!
+     *  Sets the length of the bit string for storing the parameter value.
+     *
+     *      @param [in] length   The bit string length for the parameter value.
+     */
     void setBitStringLength(QString const& length);
 
     /*!
@@ -184,6 +192,20 @@ public:
      *      @param [in] maximum   The maximum value.
      */
     void setMaximumValue(QString const& maximum);
+
+    /*!
+     *  Gets the resolve type for the parameter value.
+     *
+     *      @return The resolve type for the value.
+     */
+    QString getValueResolve() const;
+
+    /*!
+     *  Sets the resolve type for the parameter value
+     *
+     *      @param [in] resolve   The resolve type.
+     */
+    void setValueResolve(QString const& resolve);
 
     /*!
      *  Checks if the parameter has an attribute with the given name.
