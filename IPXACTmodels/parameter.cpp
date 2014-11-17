@@ -300,12 +300,22 @@ bool Parameter::isValid() const
             return false;
         }
         
-        if (!isValidMinimuForFormat())
+        if (!isValidBoundaryForFormat(getMinimumValue()))
+        { 
+            return false;
+        }
+
+        if (!isValidBoundaryForFormat(getMaximumValue()))
         { 
             return false;
         }
 
         if (shouldCompareValueToMinimum() && valueIsLessThanMinimum())
+        {
+            return false;
+        }
+
+        if (shouldCompareValueToMaximum() && valueIsGreaterThanMaximum())
         {
             return false;
         }
@@ -350,10 +360,17 @@ bool Parameter::isValid( QStringList& errorList, const QString& parentIdentifier
             valid = false;
         }
 
-        if (!isValidMinimuForFormat())
+        if (!isValidBoundaryForFormat(getMinimumValue()))
         {
             errorList.append(QObject::tr("Minimum value %1 is not valid for format %2 in %3 %4 within %5"
                 ).arg(getMinimumValue(), getValueFormat(), elementName(), getName(), parentIdentifier));
+            valid = false;
+        }
+
+        if (!isValidBoundaryForFormat(getMaximumValue()))
+        {
+            errorList.append(QObject::tr("Maximum value %1 is not valid for format %2 in %3 %4 within %5"
+                ).arg(getMaximumValue(), getValueFormat(), elementName(), getName(), parentIdentifier));
             valid = false;
         }
 
@@ -361,6 +378,13 @@ bool Parameter::isValid( QStringList& errorList, const QString& parentIdentifier
         {
             errorList.append(QObject::tr("Value %1 violates minimum value %2 in %3 %4 within %5"
                 ).arg(value_, getMinimumValue(), elementName(), getName(), parentIdentifier));
+            valid = false;
+        }
+
+        if (shouldCompareValueToMaximum() && valueIsGreaterThanMaximum())
+        {
+            errorList.append(QObject::tr("Value %1 violates maximum value %2 in %3 %4 within %5"
+                ).arg(value_, getMaximumValue(), elementName(), getName(), parentIdentifier));
             valid = false;
         }
     }
@@ -464,12 +488,12 @@ bool Parameter::isValidFormat() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: Parameter::isValidMinimuForFormat()
+// Function: Parameter::isValidBoundaryForFormat()
 //-----------------------------------------------------------------------------
-bool Parameter::isValidMinimuForFormat() const
+bool Parameter::isValidBoundaryForFormat(QString const& boundary) const
 {
     QString format = getValueFormat();
-    if (getMinimumValue().isEmpty() || format.isEmpty() || format == "bool" || format == "string")
+    if (boundary.isEmpty() || format.isEmpty() || format == "bool" || format == "string")
     {
         return true;
     }
@@ -488,7 +512,7 @@ bool Parameter::isValidMinimuForFormat() const
         validatingExp.setPattern(StringPromptAtt::VALID_FLOAT_VALUE);
     }
 
-    return validatingExp.exactMatch(getMinimumValue());
+    return validatingExp.exactMatch(boundary);
 }
 
 
@@ -502,11 +526,28 @@ bool Parameter::shouldCompareValueToMinimum() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: Parameter::shouldCompareValueToMaximum()
+//-----------------------------------------------------------------------------
+bool Parameter::shouldCompareValueToMaximum() const
+{
+    return !getMaximumValue().isEmpty() && 
+        (getValueFormat() == "long" || getValueFormat() == "float");
+}
+
+//-----------------------------------------------------------------------------
 // Function: Parameter::valueIsLessThanMinimum()
 //-----------------------------------------------------------------------------
 bool Parameter::valueIsLessThanMinimum() const
 {
     return valueOf(value_) < valueOf(getMinimumValue());
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::valueIsGreaterThanMaximum()
+//-----------------------------------------------------------------------------
+bool Parameter::valueIsGreaterThanMaximum() const
+{
+    return valueOf(value_) > valueOf(getMaximumValue());
 }
 
 //-----------------------------------------------------------------------------
@@ -537,6 +578,34 @@ qreal Parameter::longValueOf(QString const& value) const
     {
         QString hexValue = value;
         return hexValue.remove('#').toLong(0, 16);
+    }
+    else if (value.endsWith('k', Qt::CaseInsensitive))
+    {
+        QString coefficient = value;
+        coefficient.chop(1);
+
+        return coefficient.toLong()*1024;
+    }
+    else if (value.endsWith('M', Qt::CaseInsensitive))
+    {
+        QString coefficient = value;
+        coefficient.chop(1);
+
+        return coefficient.toLong()*1024*1024;
+    }
+    else if (value.endsWith('G', Qt::CaseInsensitive))
+    {
+        QString coefficient = value;
+        coefficient.chop(1);
+
+        return coefficient.toLong()*1024*1024*1024;
+    }
+    else if (value.endsWith('T', Qt::CaseInsensitive))
+    {
+        QString coefficient = value;
+        coefficient.chop(1);
+
+        return coefficient.toLong()*1024*1024*1024*1024;
     }
     else
     {

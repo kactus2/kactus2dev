@@ -309,19 +309,19 @@ QValidator* ParameterDelegate::createValidatorForFormat(QString const& format, Q
 {
     if (format == "bool")
     {
-        return new QRegExpValidator(QRegExp(StringPromptAtt::VALID_BOOL_VALUE), parent);
+        return new QRegExpValidator(QRegExp("(" + StringPromptAtt::VALID_BOOL_VALUE + ")?"), parent);
     }
     else if (format == "long")
     {
-        return new QRegExpValidator(QRegExp(StringPromptAtt::VALID_LONG_VALUE), parent);
+        return new QRegExpValidator(QRegExp("(" + StringPromptAtt::VALID_LONG_VALUE + ")?"), parent);
     }
     else if (format == "bitString")
     {
-        return new QRegExpValidator(QRegExp(StringPromptAtt::VALID_BITSTRING_VALUE), parent);
+        return new QRegExpValidator(QRegExp("(" + StringPromptAtt::VALID_BITSTRING_VALUE + ")?"), parent);
     }
     else if (format == "float")
     {
-         return new QRegExpValidator(QRegExp(StringPromptAtt::VALID_FLOAT_VALUE), parent);
+         return new QRegExpValidator(QRegExp("(" + StringPromptAtt::VALID_FLOAT_VALUE + ")?"), parent);
     }
     else if (format == "string" || format.isEmpty())
     {

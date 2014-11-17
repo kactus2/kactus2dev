@@ -256,11 +256,11 @@ private:
     bool isValidValueForFormat() const;
     
     /*!
-     *  Checks if the parameter minimum value is valid in the specified format.
+     *  Checks if the parameter boundary value (minimum/maximum) is valid in the specified format.
      *
-     *      @return True, if the minimum value is valid for the format, otherwise false.
+     *      @return True, if the boundary value is valid for the format, otherwise false.
      */
-    bool isValidMinimuForFormat() const;
+    bool isValidBoundaryForFormat(QString const& boundary) const;
     
     /*!
      *  Checks if the parameter value should be compared to the minimum value.
@@ -268,13 +268,17 @@ private:
      *      @return True, if the value should be compared, otherwise false.
      */
     bool shouldCompareValueToMinimum() const;
-    
+
+    bool shouldCompareValueToMaximum() const;
+
     /*!
      *  Checks if the parameter value is less than the minimum value.
      *
      *      @return True, if the value is less than the minimum value, otherwise false.
      */
     bool valueIsLessThanMinimum() const;
+
+    bool valueIsGreaterThanMaximum() const;
 
     /*!
      *   Gets the value of a given string in the format specified for the value.
