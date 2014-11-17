@@ -122,21 +122,6 @@ void MakefileParser::parse(LibraryInterface* library, QSharedPointer<Component> 
         // Initialize the data of make file to collection of parsed entities.
         parsedData_.append(MakeFileData());
         MakeFileData& makeData = parsedData_.last();
-        // Since every software instance gets its own makefile, naming is after the instance name.
-        makeData.name = softInstance.getInstanceName();
-
-        // We may need the absolute path of the file
-        QString instancePath = basePath + makeData.name;
-        QString dir = instancePath + "/Makefile";
-
-        // We also need to know if the file exists
-        QFile makeFile(dir);
-
-        // If it does, put in the list.
-        if ( makeFile.exists() )
-        {
-            replacedFiles_.append(dir);
-        }
 
         // The top component of the design may contain header files specific to the instance.
         findInstanceHeaders(library, topComponent, desgConf, sysViewName, softInstance, makeData);
@@ -156,11 +141,34 @@ void MakefileParser::parse(LibraryInterface* library, QSharedPointer<Component> 
         // Both component and hardware software views are needed to build.
         findHardwareBuildCommand(makeData, softView, hardView);
 
+        // Check if software objects found: If none, no need for a make file.
+        if ( makeData.swObjects.count() < 1 )
+        {
+            parsedData_.removeLast();
+            continue;
+        }
+
         // No need to have the same folder twice in the includes.
         makeData.includeDirectories.removeDuplicates();
 
         // Same applies to flags
         makeData.softViewFlags.removeDuplicates();
+
+        // Since every software instance gets its own makefile, naming is after the instance name.
+        makeData.name = softInstance.getInstanceName();
+
+        // We may need the absolute path of the file
+        QString instancePath = basePath + makeData.name;
+        QString dir = instancePath + "/Makefile";
+
+        // We also need to know if the file exists
+        QFile makeFile(dir);
+
+        // If it does, put in the list.
+        if ( makeFile.exists() )
+        {
+            replacedFiles_.append(dir);
+        }
     }
 }
 

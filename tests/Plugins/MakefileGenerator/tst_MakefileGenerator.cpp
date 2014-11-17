@@ -54,6 +54,7 @@ private slots:
     void multipleFiles();
     void multipleFileSets();
     void multipleComponents();
+    void noFilesComponent();
     void multipleHardWare();
     void multipleHardWareMedRefs();
 
@@ -98,6 +99,7 @@ tst_MakefileGenerator::tst_MakefileGenerator(): library_( this )
 {
 }
 
+// A rather basic and secure case testing that all the needed lines come for one file.
 void tst_MakefileGenerator::baseCase()
 {
     QSharedPointer<Design> design;
@@ -137,6 +139,7 @@ void tst_MakefileGenerator::baseCase()
     verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(includes) -sw -hw");
 }
 
+// Case used to test if file builder properly overrides other builders.
 void tst_MakefileGenerator::fileBuildOverride()
 {
     QSharedPointer<Design> design;
@@ -177,6 +180,7 @@ void tst_MakefileGenerator::fileBuildOverride()
     verifyOutputContains("software_0", "python -c -o $(ODIR)/array.c.o ../../array.c $(includes) -l -sw");
 }
 
+// Case used to test if file set builder properly overrides other builders.
 void tst_MakefileGenerator::fileSetBuildOverride()
 {
     QSharedPointer<Design> design;
@@ -215,6 +219,7 @@ void tst_MakefileGenerator::fileSetBuildOverride()
     verifyOutputContains("software_0", "javac -beef -c -o $(ODIR)/array.c.o ../../array.c $(includes) -lrt -sw");
 }
 
+// Case used to test if file flags properly replace other flags if needed.
 void tst_MakefileGenerator::fileFlagReplace()
 {
     QSharedPointer<Design> design;
@@ -257,6 +262,7 @@ void tst_MakefileGenerator::fileFlagReplace()
     verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(includes) -u");
 }
 
+// Case used to test if file set flags properly replace other flags if needed.
 void tst_MakefileGenerator::fileSetFlagReplace()
 {
     QSharedPointer<Design> design;
@@ -295,6 +301,7 @@ void tst_MakefileGenerator::fileSetFlagReplace()
     verifyOutputContains("software_0", "javac -beef -c -o $(ODIR)/array.c.o ../../array.c $(includes) -lrt");
 }
 
+// Include files shoudl not yield object files.
 void tst_MakefileGenerator::includeFile()
 {
     QSharedPointer<Design> design;
@@ -338,6 +345,7 @@ void tst_MakefileGenerator::includeFile()
     verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(includes) -sw -hw");
 }
 
+// Softwaree view of the software component should be able to replace those of hardware component.
 void tst_MakefileGenerator::swSWViewFlagReplace()
 {
     QSharedPointer<Design> design;
@@ -379,6 +387,7 @@ void tst_MakefileGenerator::swSWViewFlagReplace()
     verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(includes) -sw\n");
 }
 
+// See if hardware builder is taken account properly.
 void tst_MakefileGenerator::hwBuilder()
 {
     QSharedPointer<Design> design;
@@ -425,6 +434,7 @@ void tst_MakefileGenerator::hwBuilder()
     verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/array.c.o ../../array.c $(includes) -u -lrt -sw -hw");
 }
 
+// See if hardware builder works if there are no software view for the software component.
 void tst_MakefileGenerator::hwBuilderWithNoSoftView()
 {
     QSharedPointer<Design> design;
@@ -470,6 +480,7 @@ void tst_MakefileGenerator::hwBuilderWithNoSoftView()
     verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/array.c.o ../../array.c $(includes) -u -lrt -hw");
 }
 
+// See if hard ware's own file set references function.
 void tst_MakefileGenerator::hwRef()
 {
     QSharedPointer<Design> design;
@@ -516,6 +527,7 @@ void tst_MakefileGenerator::hwRef()
     verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/array.c.o ../../array.c $(includes) -u -lrt -hw");
 }
 
+// See if hard ware's own file set references function, while there are those of software component.
 void tst_MakefileGenerator::hwandswRef()
 {
     QSharedPointer<Design> design;
@@ -572,6 +584,7 @@ void tst_MakefileGenerator::hwandswRef()
     verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/harray.c.o ../../harray.c $(includes) -hu -hset -hw");
 }
 
+// Instance specific header files must be included to the make file.
 void tst_MakefileGenerator::instanceHeaders()
 {
     QSharedPointer<Design> design;
@@ -615,6 +628,7 @@ void tst_MakefileGenerator::instanceHeaders()
     generator.generate(outputDir_,outputDir_);
 }
 
+// Generate makefile with multiple source and header files.
 void tst_MakefileGenerator::multipleFiles()
 {
     QSharedPointer<Design> design;
@@ -669,6 +683,7 @@ void tst_MakefileGenerator::multipleFiles()
     verifyOutputContains("software_0", "gcc -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -sw -hw");
 }
 
+// Generate makefile when multiple file sets are featured.
 void tst_MakefileGenerator::multipleFileSets()
 {
     QSharedPointer<Design> design;
@@ -722,6 +737,7 @@ void tst_MakefileGenerator::multipleFileSets()
     verifyOutputContains("software_0", "gcc -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -sw -hw");
 }
 
+// Generate makefile when multiple components are featured.
 void tst_MakefileGenerator::multipleComponents()
 {
     QSharedPointer<Design> design;
@@ -778,6 +794,55 @@ void tst_MakefileGenerator::multipleComponents()
     verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -bmw -hw");
 }
 
+// Yield no makefile, if no files are present.
+void tst_MakefileGenerator::noFilesComponent()
+{
+    QSharedPointer<Design> design;
+    QSharedPointer<DesignConfiguration> desgconf;
+    QSharedPointer<Component> topComponent = createDesign(design, desgconf);
+
+    QMap<QString,QString> activeViews;
+    SWView* hardView;
+    SWView* asoftView;
+    SWView* bsoftView;
+
+    QString hwInstanceName = "hardware_0";
+    QString hardViewName = "firmware";
+    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+
+    QSharedPointer<Component> asw = createSW("whatware", hwInstanceName, design, "default", activeViews, asoftView,"whatware_0");
+    QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", activeViews, bsoftView,"stackware_0");
+
+    QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
+    QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
+
+    addFileToSet(bfileSet, "additional.c");
+    addFileToSet(bfileSet, "hiterbehn.c");
+    addFileToSet(bfileSet, "support.h", "cSource", true);
+
+    addCmd2View(hardView, "hopo", "cSource", "-hw", false);
+    addCmd2View(bsoftView, "asm-meister", "cSource", "-bmw", false);
+
+    desgconf->setViewConfigurations(activeViews);
+
+    MakefileParser parser;
+    parser.parse( &library_, topComponent, desgconf, design );
+    MakefileGenerator generator( parser );
+
+    generator.generate(outputDir_,outputDir_);
+
+    verifyOutputContains("stackware_0", "EBUILDER= hopo");
+    verifyOutputContains("stackware_0", "EFLAGS= $(includes) -hw -bmw");
+    verifyOutputContains("stackware_0", "_OBJ= additional.c.o hiterbehn.c.o");
+    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(includes) -bmw -hw");
+    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -bmw -hw");
+
+    QFile outputFile(outputDir_ + "/sw/whatware_0/Makefile");
+
+    QVERIFY(!outputFile.open(QIODevice::ReadOnly));
+}
+
+// Must work if there is multiple hardware where instances are mapped to.
 void tst_MakefileGenerator::multipleHardWare()
 {
     QSharedPointer<Design> design;
@@ -837,6 +902,7 @@ void tst_MakefileGenerator::multipleHardWare()
     verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -bmw -bhw");
 }
 
+// Multiple hardware, along with their references to their own files.
 void tst_MakefileGenerator::multipleHardWareMedRefs()
 {
     QSharedPointer<Design> design;
@@ -902,6 +968,7 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
     verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -bmw -bhw");
 }
 
+// How it works without hardware. NOTICE: presently shall have no compiler!
 void tst_MakefileGenerator::noHardWare()
 {
     QSharedPointer<Design> design;
@@ -935,6 +1002,7 @@ void tst_MakefileGenerator::noHardWare()
     verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(includes) -sw");
 }
 
+// Must work with multiple instances of the same component.
 void tst_MakefileGenerator::multipleInstances()
 {
     QSharedPointer<Design> design;
@@ -989,6 +1057,7 @@ void tst_MakefileGenerator::multipleInstances()
     verifyOutputContains("stackware_1", "EFLAGS= $(includes) -hw -bmw");
 }
 
+// Must include API dependencies to the make file.
 void tst_MakefileGenerator::apiUsage()
 {
     QSharedPointer<Design> design;
@@ -1058,6 +1127,7 @@ void tst_MakefileGenerator::apiUsage()
     verifyOutputContains("crapware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(includes) -bmw -hw");
 }
 
+// A more complex situation with API dependency.
 void tst_MakefileGenerator::threeLevelStack()
 {
     QSharedPointer<Design> design;
@@ -1149,6 +1219,7 @@ void tst_MakefileGenerator::threeLevelStack()
     verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/ok.c.o ../../ok.c $(includes) -hw");
 }
 
+// If no top level in the stack, there can be no executable!
 void tst_MakefileGenerator::fullCircularapiUsage()
 {
     QSharedPointer<Design> design;
@@ -1246,6 +1317,7 @@ void tst_MakefileGenerator::fullCircularapiUsage()
     QVERIFY(!outputFile.open(QIODevice::ReadOnly));
 }
 
+// Must be able to handle circular dependencies in lower levels.
 void tst_MakefileGenerator::circularapiUsage()
 {
     QSharedPointer<Design> design;
