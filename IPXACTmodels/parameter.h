@@ -216,17 +216,30 @@ public:
      */
     bool hasAttribute(QString const& attributeName) const;
 
-	/*! Get the attributes for the parameter
-	 *
-	 *      @return QMap containing pointers to the attributes
-	 */
-	 QMap<QString, QString> const& getAttributes() const;
+    /*!
+     *  Gets a value of an attribute.
+     *
+     *      @param [in] attributeName       The name of the attribute to get.
+     *
+     *      @return The attribute value.
+     */
+    QString getAttribute(QString const& attributeName) const;    
 
-	/*! Get the attributes for the parameter
-	 *
-	 *      @return QMap containing pointers to the attributes
-	 */
-	virtual QMap<QString, QString> const& getValueAttributes() const;
+    /*!
+     *  Sets an attribute.
+     *
+     *      @param [in] attributeName       The name of the attribute to set.
+     *      @param [in] attributeValue      The value of the attribute.
+     */
+    void setAttribute(QString const& attributeName, QString const& attributeValue);
+ 
+    /*!
+     *  Sets an attribute for the value.
+     *
+     *      @param [in] attributeName       The name of the attribute to set.
+     *      @param [in] attributeValue      The value of the attribute.
+     */
+    void setValueAttribute(QString const& attributeName, QString const& attributeValue);
 
 protected:
         
@@ -243,22 +256,6 @@ protected:
      *      @return The name of IP-Xact element.
      */
     virtual QString elementName() const;
-
-    /*!
-     *  Sets an attribute.
-     *
-     *      @param [in] attributeName       The name of the attribute to set.
-     *      @param [in] attributeValue      The value of the attribute.
-     */
-    void setAttribute(QString const& attributeName, QString const& attributeValue);
-
-    /*!
-     *  Sets an attribute for the value.
-     *
-     *      @param [in] attributeName       The name of the attribute to set.
-     *      @param [in] attributeValue      The value of the attribute.
-     */
-    void setValueAttribute(QString const& attributeName, QString const& attributeValue);
 
 private:
     

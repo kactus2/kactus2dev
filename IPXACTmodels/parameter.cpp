@@ -290,19 +290,26 @@ bool Parameter::hasAttribute(QString const& attributeName) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: Parameter::getAttributes()
+// Function: Parameter::getAttribute()
 //-----------------------------------------------------------------------------
-QMap<QString, QString> const& Parameter::getAttributes() const
+QString Parameter::getAttribute(QString const& attributeName) const
 {
-    return attributes_;
+    return attributes_.value(attributeName);
 }
 
 //-----------------------------------------------------------------------------
-// Function: Parameter::getValueAttributes()
+// Function: Parameter::setAttribute()
 //-----------------------------------------------------------------------------
-QMap<QString, QString> const& Parameter::getValueAttributes()  const
+void Parameter::setAttribute(QString const& attributeName, QString const& attributeValue)
 {
-    return valueAttributes_;
+    if (!attributeValue.isEmpty())
+    {
+        attributes_.insert(attributeName, attributeValue);
+    }
+    else
+    {
+        attributes_.remove(attributeName);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -450,21 +457,6 @@ QString Parameter::elementIdentifier() const
 QString Parameter::elementName() const
 {
     return "parameter";
-}
-
-//-----------------------------------------------------------------------------
-// Function: Parameter::setAttribute()
-//-----------------------------------------------------------------------------
-void Parameter::setAttribute(QString const& attributeName, QString const& attributeValue)
-{
-    if (!attributeValue.isEmpty())
-    {
-        attributes_.insert(attributeName, attributeValue);
-    }
-    else
-    {
-         attributes_.remove(attributeName);
-    }
 }
 
 //-----------------------------------------------------------------------------

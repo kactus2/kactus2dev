@@ -106,6 +106,10 @@ QVariant ModelParameterModel::data( const QModelIndex & index, int role /*= Qt::
             return evaluateValueFor(modelParameter);
         case ModelParameterColumns::RESOLVE:
             return modelParameter->getValueResolve();
+        case ModelParameterColumns::ARRAY_SIZE:
+            return modelParameter->getAttribute("arraySize");
+        case ModelParameterColumns::ARRAY_OFFSET:
+            return modelParameter->getAttribute("arrayOffset");
         case ModelParameterColumns::DESCRIPTION:
             return modelParameter->getDescription();
         default:
@@ -184,9 +188,9 @@ QVariant ModelParameterModel::headerData(int section, Qt::Orientation orientatio
 			case ModelParameterColumns::NAME:
 				return tr("Name");
             case ModelParameterColumns::DISPLAY_NAME:
-                return tr("Display name");
+                return tr("Display\nname");
 			case ModelParameterColumns::DATA_TYPE:
-				return tr("Data type");
+				return tr("Data\ntype");
 			case ModelParameterColumns::USAGE_TYPE:
 				return tr("Usage\ntype");
             case  ModelParameterColumns::FORMAT:
@@ -203,6 +207,10 @@ QVariant ModelParameterModel::headerData(int section, Qt::Orientation orientatio
 				return tr("Value");
             case ModelParameterColumns::RESOLVE:
                 return tr("Resolve");
+            case ModelParameterColumns::ARRAY_SIZE:
+                return tr("Array\nsize");
+            case ModelParameterColumns::ARRAY_OFFSET:
+                return tr("Array\noffset");
 			case ModelParameterColumns::DESCRIPTION:
 				return tr("Description");
 			default:
@@ -294,6 +302,16 @@ bool ModelParameterModel::setData(QModelIndex const& index, QVariant const& valu
         case ModelParameterColumns::RESOLVE:
             {
                 modelParameter->setValueResolve(value.toString());
+                break;
+            }
+        case ModelParameterColumns::ARRAY_SIZE:
+            {
+                modelParameter->setAttribute("arraySize", value.toString());
+                break;
+            }
+        case ModelParameterColumns::ARRAY_OFFSET:
+            {
+                modelParameter->setAttribute("arrayOffset", value.toString());
                 break;
             }
         case ModelParameterColumns::DESCRIPTION:

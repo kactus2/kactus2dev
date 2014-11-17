@@ -73,7 +73,7 @@ bool ModelParameter::isValid() const
 	if (hasAttribute("spirit:usageType"))
     {
 		// if usage is not valid type
-		QString usage = getAttributes().value(QString("spirit:usageType"));
+		QString usage = getAttribute("spirit:usageType");
 		if (usage != QString("nontyped") && usage != QString("typed"))
 			return false;
 	}
@@ -91,7 +91,7 @@ bool ModelParameter::isValid( QStringList& errorList, const QString& parentIdent
 	if (hasAttribute("spirit:usageType")) 
     {
 		// if usage is not valid type
-		QString usage = getAttributes().value(QString("spirit:usageType"));
+		QString usage = getAttribute("spirit:usageType");
 		if (usage != QString("nontyped") && usage != QString("typed"))
         {
 			errorList.append(QObject::tr("Invalid usage type set for %1 %2 within %3"
@@ -108,7 +108,7 @@ bool ModelParameter::isValid( QStringList& errorList, const QString& parentIdent
 //-----------------------------------------------------------------------------
 QString ModelParameter::getDataType() const
 {
-	return getAttributes().value(QString("spirit:dataType"));
+	return getAttribute("spirit:dataType");
 }
 
 //-----------------------------------------------------------------------------
@@ -124,7 +124,7 @@ void ModelParameter::setDataType( const QString& dataType )
 //-----------------------------------------------------------------------------
 QString ModelParameter::getUsageType() const
 {
-	return getAttributes().value(QString("spirit:usageType"));
+	return getAttribute("spirit:usageType");
 }
 
 //-----------------------------------------------------------------------------

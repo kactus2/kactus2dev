@@ -23,6 +23,8 @@ namespace ParameterColumns
         CHOICE,
         VALUE,
         RESOLVE,
+        ARRAY_SIZE,
+        ARRAY_OFFSET,
         DESCRIPTION,
         COLUMN_COUNT
     };

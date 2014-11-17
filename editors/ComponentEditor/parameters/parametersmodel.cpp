@@ -118,6 +118,14 @@ QVariant ParametersModel::data( const QModelIndex& index, int role /*= Qt::Displ
             {
                 return parameter->getValueResolve();
             }
+        case ParameterColumns::ARRAY_SIZE:
+            {
+                return parameter->getAttribute("arraySize");
+            }
+        case ParameterColumns::ARRAY_OFFSET:
+            {
+                return parameter->getAttribute("arrayOffset");
+            }
         case ParameterColumns::DESCRIPTION: 
             {
                 return parameter->getDescription();
@@ -193,7 +201,7 @@ QVariant ParametersModel::headerData(int section, Qt::Orientation orientation, i
         case ParameterColumns::NAME:
             return tr("Name");
         case ParameterColumns::DISPLAY_NAME:
-            return tr("Display name");
+            return tr("Display\nname");
         case ParameterColumns::FORMAT:
             return tr("Format");   
         case ParameterColumns::BITSTRINGLENGTH:
@@ -208,6 +216,10 @@ QVariant ParametersModel::headerData(int section, Qt::Orientation orientation, i
             return tr("Value");
         case ParameterColumns::RESOLVE:
             return tr("Resolve");
+        case ParameterColumns::ARRAY_SIZE:
+            return tr("Array\nsize");
+        case ParameterColumns::ARRAY_OFFSET:
+            return tr("Array\noffset");
         case ParameterColumns::DESCRIPTION:
             return tr("Description");
         default:
@@ -282,6 +294,16 @@ bool ParametersModel::setData(const QModelIndex& index, const QVariant& value, i
         case ParameterColumns::RESOLVE:
             {
                 parameter->setValueResolve(value.toString());
+                break;
+            }
+        case ParameterColumns::ARRAY_SIZE:
+            {
+                parameter->setAttribute("arraySize", value.toString());
+                break;
+            }
+        case ParameterColumns::ARRAY_OFFSET:
+            {
+                parameter->setAttribute("arrayOffset", value.toString());
                 break;
             }
         case ParameterColumns::DESCRIPTION: 
