@@ -11,28 +11,73 @@
       Parameters editor can be used to add, remove and modify
       parameters of a component.  Parameters are name-value pairs to
       configure or hold information related to the containing
-      component.
+      component. Note that these are not VHDL generics.
     </p>
     <p>
-      Each parameter contains mandatory <b>name</b> and <b>value</b>,
-      and optionally a freetext <b>description</b>. By selecting a
-      <b>choice</b>, the user can restrict the allowed parameter values
-      to a set of predefined values. <br> 
-      Note that these are not VHDL generics.
-      
+      Each parameter contains mandatory <b>name</b> and an optional
+      <b>display name</b> for more user-friendly identifier.
     </p>
     <p>
-      Parameters editor contains a context menu (right mouse button)
-      that provides following options:
+      <b>Format</b> defines the storage format for the parameter. 
+      Possible formats are:
     </p>
     <ul>
-      <li>Add new parameter (Add row)</li>
-      <li>Remove parameter (Remove row)</li>
-      <li>Clear the selected cells</li>
-      <li>Copy the contents of the selected cells to clipboard</li>
-      <li>Paste the contents of the clipboard to the selected cells</li>
-      <li>Import a csv-file to the editor</li>
-      <li>Export the contents of the editor to a csv-file</li>
+        <li><b>bitString</b> indicates that the the value is a string of 0's 
+        and 1's. Optionally, the string can be enclosed in double quotes.</li>
+
+        <li><b>bool</b> indicates that the value is either <b>true</b> or 
+        <b>false</b>.</li>
+
+        <li><b>float</b> indicates that the value is a floating point number.
+        Both standard and scientific format (e.g. 0.002 and 2e-3) are supported.
+        This format applies also to <b>minimum value</b> and <b>maximum value</b>.
+        </li>
+
+        <li><b>long</b> indicates that the value is either a long integer
+        or a hexadecimal number. This format applies also to <b>minimum value</b> 
+        and <b>maximum value</b>.</li>
+
+        <li><b>string</b> indicates that the value shall contain any text.</li>
     </ul>
+    <p>
+      <b>Bit string length</b> is mandatory, if bitString format is selected.
+      It defines the length of the bit string that stores the value. If any
+      other format is selected, the field must be left empty.
+    </p>
+    <p>
+      <b>Minimum value</b> and <b>maximum value</b> define the lower and upper
+      boundary for the parameter value. If the selected format is any
+      other than <b>long</b> or <b>float</b>, these fields have no effect.
+    </p>
+    <p>
+      By selecting a <b>choice</b>, the user can restrict the allowed model 
+      parameter values to a set of predefined values. Possible values
+      are defined in the choices of the containing component.
+    </p>
+    <p>
+      <b>Value</b> contains the mandatory default value of the model
+      parameter. This value can be overridden in a design that
+      instantiates this component.
+    </p>
+    <p>
+      <b>Resolve</b> specifies the configuration of the parameter. 
+      Possible resolve values are:
+    </p>
+        <ul>
+        <li><b>immediate</b> indicates that the the value is defined
+        within the containing component. The value cannot be overridden
+        by the user or a generator in design configuration.</li>
+
+        <li><b>user</b> indicates that the user can override the
+        default value in design configuration. Generators are not 
+        allowed to change the value.</li>
+
+        <li><b>generated</b> indicates that the a generator can
+        override the default value in design configuration.
+        </li>
+    </ul>
+    <p>
+        <b>Description</b> is free text for further details.
+    </p>
   </body>
 </html>

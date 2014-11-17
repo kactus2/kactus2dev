@@ -10,39 +10,85 @@
     <p>
       Model parameters editor can be used to add, remove and modify
       the model parameters of a component.  Model parameters are often
-      used in HDL configure component instances, e.g. VHDL generics.
+      used in HDL configure component instances. They represent e.g VHDL 
+      generics and Verilog module parameters.
     </p>
-    <p>
-      Model parameters editor contains a context menu (rigth mouse
-      button) that has the following options:
-  </p>
-    <ul>
-      <li>Add new model parameter (Add row)</li>
-      <li>Remove model parameter (Remove row)</li>
-      <li>Clear the selected cells</li>
-      <li>Copy the contents of the selected cells to clipboard</li>
-      <li>Paste the contents of the clipboard to the selected cells</li>
-      <li>Import a csv-file to the editor</li>
-      <li>Export the contents of the editor to a csv-file</li>
-    </ul>
     <p>
       All columns of the editor are editable.  Double-clicking an empty
       space adds a new row.
-      <b>Name</b> column is mandatory. Legal <b>data type</b> depends
-      on the language of the model. E.g.  in VHDL this could be
-      'integer' or 'std_logic', whereas in C-language int or
-      'char*'. <b>Usage type</b> is mandatory and specifies how this
-      model parameter is used. Default is 'non-typed' since such
+    </p>
+    <p>
+      <b>Name</b> column is mandatory. <b>Display name</b> provides a
+      more user-friendly name for the model parameter. Legal <b>data type</b> 
+      depends on the language of the model. For example in VHDL this could be
+      'integer' or 'std_logic', whereas in C-language int or 'char*' could be 
+      used. <b>Usage type</b> is mandatory and specifies how 
+      this model parameter is used. Default is 'non-typed' since such
       parameters are found in all languages, i.e. all VHDL types are
       non-typed. 'Typed' parameters appear in object-oriented
-      languages, i.e. in C++. By selecting a
-      <b>choice</b>, the user can restrict the allowed model parameter 
-      values to a set of predefined values.
+      languages, i.e. in C++.
+    </p>
+    <p>
+      <b>Format</b> defines the storage format for the model parameter. 
+      Possible formats are:
+    </p>
+    <ul>
+        <li><b>bitString</b> indicates that the the value is a string of 0's 
+        and 1's. Optionally, the string can be enclosed in double quotes.</li>
+
+        <li><b>bool</b> indicates that the value is either <b>true</b> or 
+        <b>false</b>.</li>
+
+        <li><b>float</b> indicates that the value is a floating point number.
+        Both standard and scientific format (e.g. 0.002 and 2e-3) are supported.
+        This format applies also to <b>minimum value</b> and <b>maximum value</b>.
+        </li>
+
+        <li><b>long</b> indicates that the value is either a long integer
+        or a hexadecimal number. This format applies also to <b>minimum value</b> 
+        and <b>maximum value</b>.</li>
+
+        <li><b>string</b> indicates that the value shall contain any text.</li>
+    </ul>
+    <p>
+      <b>Bit string length</b> is mandatory, if bitString format is selected.
+      It defines the length of the bit string that stores the value. If any
+      other format is selected, the field must be left empty.
+    </p>
+    <p>
+      <b>Minimum value</b> and <b>maximum value</b> define the lower and upper
+      boundary for the model parameter value. If the selected format is any
+      other than <b>long</b> or <b>float</b>, these fields have no effect.
+    </p>
+    <p>
+      By selecting a <b>choice</b>, the user can restrict the allowed model 
+      parameter values to a set of predefined values. Possible values
+      are defined in the choices of the containing component.
     </p>
     <p>
       <b>Value</b> contains the mandatory default value of the model
-      parameter. This value can be overridden upon in a design that
-      instantiates this component.  <b>Description</b> is freetext.
+      parameter. This value can be overridden in a design that
+      instantiates this component.
+    </p>
+    <p>
+      <b>Resolve</b> specifies the configuration of the model parameter. 
+      Possible resolve values are:
+    </p>
+        <ul>
+        <li><b>immediate</b> indicates that the the value is defined
+        within the containing component. The value cannot be overridden
+        by the user or a generator in design configuration.</li>
+
+        <li><b>user</b> indicates that the user can override the
+        default value in design configuration. Generators are not 
+        allowed to change the value.</li>
+
+        <li><b>generated</b> indicates that the a generator can
+        override the default value in design configuration.
+        </li>
+    </ul>
+    <p>
+        <b>Description</b> is free text for further details.
     </p>
     <hr>
     <p>
