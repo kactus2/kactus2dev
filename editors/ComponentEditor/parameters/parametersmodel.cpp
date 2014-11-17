@@ -90,6 +90,10 @@ QVariant ParametersModel::data( const QModelIndex& index, int role /*= Qt::Displ
             {
                 return parameter->getValueFormat();
             }
+        case ParameterColumns::BITSTRINGLENGTH:
+            {
+                return parameter->getBitStringLength();
+            }
         case ParameterColumns::MINIMUM:
             {
                 return parameter->getMinimumValue();
@@ -124,6 +128,17 @@ QVariant ParametersModel::data( const QModelIndex& index, int role /*= Qt::Displ
         case ParameterColumns::VALUE: 
             {
                 return QColor("LemonChiffon");
+            }
+        case ParameterColumns::BITSTRINGLENGTH:
+            {
+                if (parameter->getValueFormat() == "bitString")
+                {
+                    return QColor("LemonChiffon");
+                }
+                else
+                {
+                    return QColor("white");
+                }
             }
         default:
             return QColor("white");
@@ -171,6 +186,8 @@ QVariant ParametersModel::headerData(int section, Qt::Orientation orientation, i
             return tr("Name");
         case ParameterColumns::FORMAT:
             return tr("Format");   
+        case ParameterColumns::BITSTRINGLENGTH:
+            return tr("Bit string\nlength");   
         case ParameterColumns::MINIMUM:
             return tr("Minimum\nvalue");
         case ParameterColumns::MAXIMUM:
@@ -218,6 +235,11 @@ bool ParametersModel::setData(const QModelIndex& index, const QVariant& value, i
         case ParameterColumns::FORMAT: 
             {
                 parameter->setValueFormat(value.toString());
+                break;
+            }
+        case ParameterColumns::BITSTRINGLENGTH: 
+            {
+                parameter->setBitStringLength(value.toString());
                 break;
             }
         case ParameterColumns::MINIMUM:

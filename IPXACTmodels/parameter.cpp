@@ -218,6 +218,22 @@ void Parameter::setValueFormat(QString const& format)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Parameter::getBitStringLength()
+//-----------------------------------------------------------------------------
+QString Parameter::getBitStringLength() const
+{
+    return valueAttributes_.value("spirit:bitStringLength");
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::setBitStringLength()
+//-----------------------------------------------------------------------------
+void Parameter::setBitStringLength(QString const& length)
+{
+    setValueAttribute("spirit:bitStringLength", length);
+}
+
+//-----------------------------------------------------------------------------
 // Function: Parameter::getMinimumValue()
 //-----------------------------------------------------------------------------
 QString Parameter::getMinimumValue() const
@@ -295,6 +311,11 @@ bool Parameter::isValid() const
             return false;
         }
 
+        if (getValueFormat() == "bitString" && getBitStringLength().isEmpty())
+        {
+            return false;
+        }
+
         if (!isValidValueForFormat())
         {
             return false;
@@ -349,6 +370,13 @@ bool Parameter::isValid( QStringList& errorList, const QString& parentIdentifier
         if (!isValidFormat())
         {
             errorList.append(QObject::tr("Invalid format %1 specified for %2 %3 within %4").arg(
+                getValueFormat(), elementName(), getName(), parentIdentifier));
+            valid = false;
+        }
+
+        if (getValueFormat() == "bitString" && getBitStringLength().isEmpty())
+        {      
+            errorList.append(QObject::tr("No bit string length specified for %2 %3 within %4").arg(
                 getValueFormat(), elementName(), getName(), parentIdentifier));
             valid = false;
         }

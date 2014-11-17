@@ -60,6 +60,10 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     {
         return createFormatSelector(parent);
     }
+    else if (index.column() == bitwidthColumn()) 
+    {
+        return createNumberEditor(parent, option, index);
+    }
     else if (index.column() == valueColumn() && !formatOnRow(index).isEmpty())
     {
         return createEditorUsingFormat(parent, option, index);
@@ -162,6 +166,14 @@ int ParameterDelegate::formatColumn() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ParameterDelegate::bitwidthColumn()
+//-----------------------------------------------------------------------------
+int ParameterDelegate::bitwidthColumn() const
+{
+    return ParameterColumns::BITSTRINGLENGTH;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ParameterDelegate::minimumColumn()
 //-----------------------------------------------------------------------------
 int ParameterDelegate::minimumColumn() const
@@ -236,6 +248,7 @@ QWidget* ParameterDelegate::createBooleanSelector(QWidget* parent) const
     combo->addItem(QString("false"));
     return combo;
 }
+
 //-----------------------------------------------------------------------------
 // Function: ParameterDelegate::createFormatEditor()
 //-----------------------------------------------------------------------------
@@ -250,6 +263,7 @@ QWidget* ParameterDelegate::createFormatSelector(QWidget* parent) const
     combo->addItem(QString("string"));
     return combo;
 }
+
 //-----------------------------------------------------------------------------
 // Function: ParameterDelegate::createChoiceSelector()
 //-----------------------------------------------------------------------------
@@ -264,6 +278,7 @@ QWidget* ParameterDelegate::createChoiceSelector(QWidget* parent) const
 
     return combo;
 }
+
 //-----------------------------------------------------------------------------
 // Function: ParameterDelegate::createEnumerationSelector()
 //-----------------------------------------------------------------------------
@@ -303,25 +318,42 @@ QWidget* ParameterDelegate::createEditorUsingFormat(QWidget* parent, QStyleOptio
 }
 
 //-----------------------------------------------------------------------------
+// Function: ParameterDelegate::createNumberEditor()
+//-----------------------------------------------------------------------------
+QWidget* ParameterDelegate::createNumberEditor(QWidget* parent, QStyleOptionViewItem const& option, 
+    QModelIndex const& index) const
+{
+    QWidget* editor = QStyledItemDelegate::createEditor(parent, option, index);
+
+    QLineEdit* lineEdit = qobject_cast<QLineEdit*>(editor);
+    if (lineEdit)
+    {
+        lineEdit->setValidator(new QRegExpValidator(QRegExp("\\d*")));
+    }
+
+    return editor;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ParameterDelegate::createValidatorForFormat()
 //-----------------------------------------------------------------------------
 QValidator* ParameterDelegate::createValidatorForFormat(QString const& format, QWidget* parent) const
 {
     if (format == "bool")
     {
-        return new QRegExpValidator(QRegExp("(" + StringPromptAtt::VALID_BOOL_VALUE + ")?"), parent);
+        return new QRegExpValidator(QRegExp("(?:" + StringPromptAtt::VALID_BOOL_VALUE + ")?"), parent);
     }
     else if (format == "long")
     {
-        return new QRegExpValidator(QRegExp("(" + StringPromptAtt::VALID_LONG_VALUE + ")?"), parent);
+        return new QRegExpValidator(QRegExp("(?:" + StringPromptAtt::VALID_LONG_VALUE + ")?"), parent);
     }
     else if (format == "bitString")
     {
-        return new QRegExpValidator(QRegExp("(" + StringPromptAtt::VALID_BITSTRING_VALUE + ")?"), parent);
+        return new QRegExpValidator(QRegExp("(?:" + StringPromptAtt::VALID_BITSTRING_VALUE + ")?"), parent);
     }
     else if (format == "float")
     {
-         return new QRegExpValidator(QRegExp("(" + StringPromptAtt::VALID_FLOAT_VALUE + ")?"), parent);
+         return new QRegExpValidator(QRegExp("(?:" + StringPromptAtt::VALID_FLOAT_VALUE + ")?"), parent);
     }
     else if (format == "string" || format.isEmpty())
     {

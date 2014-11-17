@@ -16,6 +16,7 @@ namespace ParameterColumns
     {
         NAME = 0,
         FORMAT,
+        BITSTRINGLENGTH,
         MINIMUM,
         MAXIMUM,
         CHOICE,

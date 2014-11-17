@@ -63,6 +63,13 @@ protected:
      *      @return The column for editing format selection.
      */
     virtual int formatColumn() const;
+        
+    /*!
+     *  Gets the column for value bit string length.
+     *
+     *      @return The column for editing bit string length.
+     */
+    virtual int bitwidthColumn() const;
 
     /*!
      *  Gets the column for minimum value.
@@ -92,6 +99,7 @@ private:
 
 	//! No assignment
 	ModelParameterDelegate& operator=(const ModelParameterDelegate& other);
+
 
 };
 

@@ -73,6 +73,14 @@ int ModelParameterDelegate::formatColumn() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ModelParameterDelegate::bitwidthColumn()
+//-----------------------------------------------------------------------------
+int ModelParameterDelegate::bitwidthColumn() const
+{
+    return ModelParameterColumns::BITSTRINGLENGTH;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ModelParameterDelegate::minimumColumn()
 //-----------------------------------------------------------------------------
 int ModelParameterDelegate::minimumColumn() const

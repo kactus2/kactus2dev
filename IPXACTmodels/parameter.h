@@ -151,6 +151,12 @@ public:
      */
     void setValueFormat(QString const& format);
 
+
+    QString getBitStringLength() const;
+
+
+    void setBitStringLength(QString const& length);
+
     /*!
      *  Gets the minimum value for the parameter value.
      *

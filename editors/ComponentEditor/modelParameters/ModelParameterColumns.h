@@ -19,6 +19,7 @@ namespace ModelParameterColumns
         DATA_TYPE,
         USAGE_TYPE,
         FORMAT,
+        BITSTRINGLENGTH,
         MINIMUM,
         MAXIMUM,
         CHOICE,

@@ -79,6 +79,13 @@ protected:
     virtual int formatColumn() const;
     
     /*!
+     *  Gets the column for value bit string length.
+     *
+     *      @return The column for editing bit string length.
+     */
+    virtual int bitwidthColumn() const;
+
+    /*!
      *  Gets the column for minimum value.
      *
      *      @return The column for editing the minimum value.
@@ -130,6 +137,7 @@ protected:
      *  Creates an editor for selecting an enumeration of a choice.
      *
      *      @param [in] parent   The parent widget for the editor.
+     *      @param [in] index    The index for which to create the editor.
      *
      *      @return An editor for selecting an enumeration.
      */
@@ -161,6 +169,16 @@ protected:
      *      @return An editor for the selected format.
      */
     QWidget* createEditorUsingFormat(QWidget* parent, QStyleOptionViewItem const& option,
+        QModelIndex const& index) const;
+        
+    /*!
+     *  Creates an editor for editing a number.
+     *
+     *      @param [in] parent   The parent widget for the editor.
+     *
+     *      @return An editor for editing a number.
+     */
+    QWidget* createNumberEditor(QWidget* parent, QStyleOptionViewItem const& option, 
         QModelIndex const& index) const;
 
 private:

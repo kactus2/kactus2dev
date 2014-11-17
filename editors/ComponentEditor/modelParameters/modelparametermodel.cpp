@@ -78,10 +78,10 @@ QVariant ModelParameterModel::data( const QModelIndex & index, int role /*= Qt::
 
     QList<QSharedPointer<ModelParameter> > modelParameters = model_->getModelParameters();
 
+    QSharedPointer<ModelParameter> modelParameter = modelParameters.at(index.row());
+
 	if (role == Qt::DisplayRole)
     {
-        QSharedPointer<ModelParameter> modelParameter = modelParameters.at(index.row());
-
         switch (index.column())
         {
         case ModelParameterColumns::NAME: 
@@ -94,6 +94,8 @@ QVariant ModelParameterModel::data( const QModelIndex & index, int role /*= Qt::
             return modelParameter->getUsageType();
         case ModelParameterColumns::FORMAT:
             return modelParameter->getValueFormat();
+        case ModelParameterColumns::BITSTRINGLENGTH:
+            return modelParameter->getBitStringLength();
         case ModelParameterColumns::MINIMUM:   
             return modelParameter->getMinimumValue();
         case ModelParameterColumns::MAXIMUM:   
@@ -118,6 +120,17 @@ QVariant ModelParameterModel::data( const QModelIndex & index, int role /*= Qt::
             {
                 return QColor("LemonChiffon");
             }
+        case ModelParameterColumns::BITSTRINGLENGTH:
+            {
+                if (modelParameter->getValueFormat() == "bitString")
+                {
+                    return QColor("LemonChiffon");
+                }
+                else
+                {
+                    return QColor("white");
+                }
+            }
         default: 
             {
                 return QColor("white");
@@ -126,7 +139,6 @@ QVariant ModelParameterModel::data( const QModelIndex & index, int role /*= Qt::
     }
     else if (Qt::ForegroundRole == role)
     {
-        QSharedPointer<ModelParameter> modelParameter = modelParameters.at(index.row());
         if (modelParameter->isValid())
         {
             if (lockedIndexes_.contains(index) )
@@ -177,6 +189,8 @@ QVariant ModelParameterModel::headerData(int section, Qt::Orientation orientatio
 				return tr("Usage\ntype");
             case  ModelParameterColumns::FORMAT:
                 return tr("Format");
+            case  ModelParameterColumns::BITSTRINGLENGTH:
+                return tr("Bit string\nlength");
             case  ModelParameterColumns::MINIMUM:
                 return tr("Minimum\nvalue");
             case ModelParameterColumns::MAXIMUM:   
@@ -246,6 +260,11 @@ bool ModelParameterModel::setData(QModelIndex const& index, QVariant const& valu
         case ModelParameterColumns::FORMAT:
             {
                 modelParameter->setValueFormat(value.toString());
+                break;
+            }
+        case ModelParameterColumns::BITSTRINGLENGTH:
+            {
+                modelParameter->setBitStringLength(value.toString());
                 break;
             }
         case ModelParameterColumns::MINIMUM:
