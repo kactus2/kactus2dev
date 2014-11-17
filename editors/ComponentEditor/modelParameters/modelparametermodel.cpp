@@ -342,7 +342,7 @@ Qt::ItemFlags ModelParameterModel::flags(const QModelIndex& index) const
     if (!index.isValid())
         return Qt::NoItemFlags;
 
-    if ( isLocked(index) )
+    if (isLocked(index))
     {
         return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     }
@@ -599,8 +599,8 @@ QString ModelParameterModel::findDisplayValueForEnumeration(QSharedPointer<Choic
 void ModelParameterModel::lockModelParameter(QSharedPointer<ModelParameter> modelParam)
 {
     QModelIndex nameIndex = index(modelParam);
-    QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(),1);
-    QModelIndex usageIndex = nameIndex.sibling(nameIndex.row(),2);
+    QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(), ModelParameterColumns::DATA_TYPE);
+    QModelIndex usageIndex = nameIndex.sibling(nameIndex.row(), ModelParameterColumns::USAGE_TYPE);
     if ( nameIndex.isValid() && typeIndex.isValid() && usageIndex.isValid() )
     {     
         lockIndex(nameIndex);  
@@ -615,8 +615,8 @@ void ModelParameterModel::lockModelParameter(QSharedPointer<ModelParameter> mode
 void ModelParameterModel::unlockModelParameter(QSharedPointer<ModelParameter> modelParam)
 {
     QModelIndex nameIndex = index(modelParam);
-    QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(),1);
-    QModelIndex usageIndex = nameIndex.sibling(nameIndex.row(),2);
+    QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(), ModelParameterColumns::DATA_TYPE);
+    QModelIndex usageIndex = nameIndex.sibling(nameIndex.row(), ModelParameterColumns::USAGE_TYPE);
     if ( nameIndex.isValid() && typeIndex.isValid() && usageIndex.isValid() )
     {     
         unlockIndex(nameIndex);  
