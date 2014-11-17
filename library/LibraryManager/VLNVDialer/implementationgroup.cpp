@@ -30,12 +30,12 @@ options_() {
 	swBox_.setChecked(true);
 	systemBox_.setChecked(true);
 
-	connect(&hwBox_, SIGNAL(stateChanged(int)),
-		this, SLOT(onHWChanged(int)), Qt::UniqueConnection);
-	connect(&swBox_, SIGNAL(stateChanged(int)),
-		this, SLOT(onSWChanged(int)), Qt::UniqueConnection);
-	connect(&systemBox_, SIGNAL(stateChanged(int)),
-		this, SLOT(onSystemChanged(int)), Qt::UniqueConnection);
+	connect(&hwBox_, SIGNAL(clicked(bool)),
+		this, SLOT(onHWChanged(bool)), Qt::UniqueConnection);
+	connect(&swBox_, SIGNAL(clicked(bool)),
+		this, SLOT(onSWChanged(bool)), Qt::UniqueConnection);
+	connect(&systemBox_, SIGNAL(clicked(bool)),
+		this, SLOT(onSystemChanged(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -69,24 +69,24 @@ Utils::ImplementationOptions ImplementationGroup::getImplementation() const
 //-----------------------------------------------------------------------------
 // Function: ImplementationGroup::onHWChanged()
 //-----------------------------------------------------------------------------
-void ImplementationGroup::onHWChanged( int state ) {
-	options_.hw_ = Utils::checkBoxState2Bool(state);
+void ImplementationGroup::onHWChanged( bool checked ) {
+	options_.hw_ = checked;
 	emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ImplementationGroup::onSWChanged()
 //-----------------------------------------------------------------------------
-void ImplementationGroup::onSWChanged( int state ) {
-	options_.sw_ = Utils::checkBoxState2Bool(state);
+void ImplementationGroup::onSWChanged( bool checked ) {
+	options_.sw_ = checked;
 	emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ImplementationGroup::onSystemChanged()
 //-----------------------------------------------------------------------------
-void ImplementationGroup::onSystemChanged( int state ) {
-	options_.system_ = Utils::checkBoxState2Bool(state);
+void ImplementationGroup::onSystemChanged( bool checked ) {
+	options_.system_ = checked;
 	emit optionsChanged(options_);
 }
 

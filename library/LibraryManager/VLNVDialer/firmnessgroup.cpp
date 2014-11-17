@@ -32,12 +32,12 @@ options_() {
 	mutableBox_.setChecked(true);
 	fixedBox_.setChecked(true);
 
-    connect(&templateBox_, SIGNAL(stateChanged(int)),
-        this, SLOT(onTemplateChanged(int)), Qt::UniqueConnection);
-    connect(&mutableBox_, SIGNAL(stateChanged(int)),
-        this, SLOT(onBlockChanged(int)), Qt::UniqueConnection);
-    connect(&fixedBox_, SIGNAL(stateChanged(int)),
-        this, SLOT(onConfigurationChanged(int)), Qt::UniqueConnection);
+    connect(&templateBox_, SIGNAL(clicked(bool)),
+        this, SLOT(onTemplateChanged(bool)), Qt::UniqueConnection);
+    connect(&mutableBox_, SIGNAL(clicked(bool)),
+        this, SLOT(onBlockChanged(bool)), Qt::UniqueConnection);
+    connect(&fixedBox_, SIGNAL(clicked(bool)),
+        this, SLOT(onConfigurationChanged(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -71,23 +71,23 @@ Utils::FirmnessOptions FirmnessGroup::getFirmness() const
 //-----------------------------------------------------------------------------
 // Function: FirmnessGroup::onTemplateChanged()
 //-----------------------------------------------------------------------------
-void FirmnessGroup::onTemplateChanged( int state ) {
-	options_.templates_ = Utils::checkBoxState2Bool(state);
+void FirmnessGroup::onTemplateChanged( bool checked ) {
+	options_.templates_ = checked;
 	emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: FirmnessGroup::onBlockChanged()
 //-----------------------------------------------------------------------------
-void FirmnessGroup::onBlockChanged( int state ) {
-	options_.mutable_ = Utils::checkBoxState2Bool(state);
+void FirmnessGroup::onBlockChanged( bool checked ) {
+	options_.mutable_ = checked;
 	emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: FirmnessGroup::onConfigurationChanged()
 //-----------------------------------------------------------------------------
-void FirmnessGroup::onConfigurationChanged( int state ) {
-	options_.fixed_ = Utils::checkBoxState2Bool(state);
+void FirmnessGroup::onConfigurationChanged( bool checked ) {
+	options_.fixed_ = checked;
 	emit optionsChanged(options_);
 }

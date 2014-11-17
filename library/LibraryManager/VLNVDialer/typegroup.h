@@ -53,13 +53,13 @@ signals:
 private slots:
 
 	//! \brief Handler for componentBox state changes.
-	void onComponentChange(int state);
+    void onComponentChange(bool checked);
 
 	//! \brief Handler for busApiBox state changes.
-	void onBusChange(int state);
+    void onBusChange(bool checked);
 
 	//! \brief Handler for advancedBox state changes.
-	void onAdvancedChange(int state);
+    void onAdvancedChange(bool checked);
 
 private:
 	//! \brief No copying

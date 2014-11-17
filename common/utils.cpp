@@ -13,30 +13,6 @@
 #include <qmath.h>
 #include <QRegExp>
 
-Qt::CheckState Utils::bool2CheckState(const bool state) {
-	if (state) 
-		return Qt::Checked;
-	else
-		return Qt::Unchecked;
-
-}
-
-bool Utils::checkState2Bool(const Qt::CheckState state) {
-	if (state == Qt::Checked)
-		return true;
-	else
-		return false;
-}
-
-bool Utils::checkBoxState2Bool(const int state ) {
-	switch (state) {
-		case 2:
-			return true;
-		default:
-			return false;
-	}
-}
-
 quint64 Utils::str2Uint( const QString& str ) {
 
 	if (str.isEmpty()) {

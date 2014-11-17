@@ -18,31 +18,6 @@
 
 namespace Utils {
 
-	/*! \brief Convert QCheckBoxes checkstate to bool.
-	 *
-	 * \param state The boxes checkstate
-	 *
-	 * \return bool True if the item was checked. If not checked or partially
-	 * checked then false.
-	*/
-	bool checkState2Bool(const Qt::CheckState state);
-
-	/*! \brief Convert boolean value to Qt::CheckState
-	 *
-	 * \param state The boolean value to convert.
-	 *
-	 * \return Qt::Checked if state if true, otherwise returns Qt::Unchecked.
-	*/
-	Qt::CheckState bool2CheckState(const bool state);
-
-	/*! \brief Convert QCheckBox's signaled check state to bool
-	 *
-	 * \param state The box's check state.
-	 *
-	 * \return bool True if state was 2, otherwise false.
-	*/
-	bool checkBoxState2Bool(const int state);
-
 	//! \brief Contains firmness search settings.
 	struct ImplementationOptions {
 	

@@ -53,13 +53,13 @@ signals:
 private slots:
 
 	//! \brief Handler for hwBox state changes.
-	void onHWChanged(int state);
+	void onHWChanged(bool checked);
 
 	//! \brief Handler for swBox state changes.
-	void onSWChanged(int state);
+	void onSWChanged(bool checked);
 
 	//! \brief Handler for systemBox state changes.
-	void onSystemChanged(int state);
+	void onSystemChanged(bool checked);
 
 private:
 	//! \brief No copying

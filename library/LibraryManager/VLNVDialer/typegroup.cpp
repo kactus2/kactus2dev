@@ -30,12 +30,12 @@ options_() {
 	busApiComBox_.setChecked(true);
 	advancedBox_.setChecked(false);
 
-	connect(&componentBox_, SIGNAL(stateChanged(int)),
-		this, SLOT(onComponentChange(int)), Qt::UniqueConnection);
-	connect(&busApiComBox_, SIGNAL(stateChanged(int)),
-		this, SLOT(onBusChange(int)), Qt::UniqueConnection);
-	connect(&advancedBox_, SIGNAL(stateChanged(int)),
-		this, SLOT(onAdvancedChange(int)), Qt::UniqueConnection);
+	connect(&componentBox_, SIGNAL(clicked(bool)),
+		this, SLOT(onComponentChange(bool)), Qt::UniqueConnection);
+	connect(&busApiComBox_, SIGNAL(clicked(bool)),
+		this, SLOT(onBusChange(bool)), Qt::UniqueConnection);
+	connect(&advancedBox_, SIGNAL(clicked(bool)),
+		this, SLOT(onAdvancedChange(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -69,23 +69,26 @@ Utils::TypeOptions TypeGroup::getTypes() const
 //-----------------------------------------------------------------------------
 // Function: TypeGroup::onComponentChange()
 //-----------------------------------------------------------------------------
-void TypeGroup::onComponentChange( int state ) {
-	options_.components_ = Utils::checkBoxState2Bool(state);
+void TypeGroup::onComponentChange(bool checked)
+{
+	options_.components_ = checked;
 	emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: TypeGroup::onBusChange()
 //-----------------------------------------------------------------------------
-void TypeGroup::onBusChange( int state ) {
-	options_.buses_ = Utils::checkBoxState2Bool(state);
+void TypeGroup::onBusChange(bool checked)
+{
+	options_.buses_ = checked;
 	emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: TypeGroup::onAdvancedChange()
 //-----------------------------------------------------------------------------
-void TypeGroup::onAdvancedChange( int state ) {
-	options_.advanced_ = Utils::checkBoxState2Bool(state);
+void TypeGroup::onAdvancedChange(bool checked)
+{
+	options_.advanced_ = checked;
 	emit optionsChanged(options_);
 }

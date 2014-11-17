@@ -41,18 +41,18 @@ options_() {
 	socBox_.setChecked(true);
 	ipBox_.setChecked(true);
 
-	connect(&globalBox_, SIGNAL(stateChanged(int)),
-		this, SLOT(onGlobalChange(int)), Qt::UniqueConnection);
-	connect(&productBox_, SIGNAL(stateChanged(int)),
-		this, SLOT(onProductChange(int)), Qt::UniqueConnection);
-	connect(&boardBox_, SIGNAL(stateChanged(int)),
-		this, SLOT(onBoardChange(int)), Qt::UniqueConnection);
-	connect(&chipBox_, SIGNAL(stateChanged(int)),
-		this, SLOT(onChipChange(int)), Qt::UniqueConnection);
-	connect(&socBox_, SIGNAL(stateChanged(int)),
-		this, SLOT(onSocChange(int)), Qt::UniqueConnection);
-	connect(&ipBox_, SIGNAL(stateChanged(int)),
-		this, SLOT(onIpChange(int)), Qt::UniqueConnection);
+	connect(&globalBox_, SIGNAL(clicked(bool)),
+		this, SLOT(onGlobalChange(bool)), Qt::UniqueConnection);
+	connect(&productBox_, SIGNAL(clicked(bool)),
+		this, SLOT(onProductChange(bool)), Qt::UniqueConnection);
+	connect(&boardBox_, SIGNAL(clicked(bool)),
+		this, SLOT(onBoardChange(bool)), Qt::UniqueConnection);
+	connect(&chipBox_, SIGNAL(clicked(bool)),
+		this, SLOT(onChipChange(bool)), Qt::UniqueConnection);
+	connect(&socBox_, SIGNAL(clicked(bool)),
+		this, SLOT(onSocChange(bool)), Qt::UniqueConnection);
+	connect(&ipBox_, SIGNAL(clicked(bool)),
+		this, SLOT(onIpChange(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -92,47 +92,47 @@ Utils::HierarchyOptions HierarchyGroup::getHierarchy() const
 //-----------------------------------------------------------------------------
 // Function: HierarchyGroup::onGlobalChange()
 //-----------------------------------------------------------------------------
-void HierarchyGroup::onGlobalChange( int state ) {
-	options_.global_ = Utils::checkBoxState2Bool(state);
+void HierarchyGroup::onGlobalChange( bool checked ) {
+	options_.global_ = checked;
 	emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: HierarchyGroup::onProductChange()
 //-----------------------------------------------------------------------------
-void HierarchyGroup::onProductChange( int state ) {
-	options_.product_ = Utils::checkBoxState2Bool(state);
+void HierarchyGroup::onProductChange( bool checked ) {
+	options_.product_ = checked;
 	emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: HierarchyGroup::onBoardChange()
 //-----------------------------------------------------------------------------
-void HierarchyGroup::onBoardChange( int state ) {
-	options_.board_ = Utils::checkBoxState2Bool(state);
+void HierarchyGroup::onBoardChange( bool checked ) {
+	options_.board_ = checked;
 	emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: HierarchyGroup::onChipChange()
 //-----------------------------------------------------------------------------
-void HierarchyGroup::onChipChange( int state ) {
-	options_.chip_ = Utils::checkBoxState2Bool(state);
+void HierarchyGroup::onChipChange( bool checked ) {
+	options_.chip_ = checked;
 	emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: HierarchyGroup::onSocChange()
 //-----------------------------------------------------------------------------
-void HierarchyGroup::onSocChange( int state ) {
-	options_.soc_ = Utils::checkBoxState2Bool(state);
+void HierarchyGroup::onSocChange( bool checked ) {
+	options_.soc_ = checked;
 	emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: HierarchyGroup::onIpChange()
 //-----------------------------------------------------------------------------
-void HierarchyGroup::onIpChange( int state ) {
-	options_.ip_ = Utils::checkBoxState2Bool(state);
+void HierarchyGroup::onIpChange( bool checked ) {
+	options_.ip_ = checked;
 	emit optionsChanged(options_);
 }

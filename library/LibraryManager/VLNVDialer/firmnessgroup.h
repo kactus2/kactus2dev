@@ -53,13 +53,13 @@ signals:
 private slots:
 
 	//! \brief Handler for template check box state changes.
-	void onTemplateChanged(int state);
+	void onTemplateChanged(bool checked);
 
 	//! \brief Handler for block check box state changes.
-	void onBlockChanged(int state);
+	void onBlockChanged(bool checked);
 
 	//! \brief Handler for configuration check box state changes.
-	void onConfigurationChanged(int state);
+	void onConfigurationChanged(bool checked);
 
 private:
 	//! \brief No copying

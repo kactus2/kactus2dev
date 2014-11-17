@@ -53,22 +53,22 @@ signals:
 private slots:
 
 	//! \brief Handler for global box state changes.
-	void onGlobalChange(int state);
+	void onGlobalChange(bool checked);
 
 	//! \brief Handler for product box state changes.
-	void onProductChange(int state);
+	void onProductChange(bool checked);
 
 	//! \brief Handler for board box state changes.
-	void onBoardChange(int state);
+	void onBoardChange(bool checked);
 
 	//! \brief Handler for chip box state changes.
-	void onChipChange(int state);
+	void onChipChange(bool checked);
 
 	//! \brief Handler for soc box state changes.
-	void onSocChange(int state);
+	void onSocChange(bool checked);
 
 	//! \brief Handler for ip box state changes.
-	void onIpChange(int state);
+	void onIpChange(bool checked);
 
 private:
 	//! \brief No copying
