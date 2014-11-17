@@ -33,6 +33,8 @@
 #include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
 #include <editors/ComponentEditor/treeStructure/componenteditoritem.h>
 
+#include <editors/ComponentEditor/general/generaleditor.h>
+
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/comboSelector/comboselector.h>
 
@@ -603,6 +605,10 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
     hwRoot->addChildItem(QSharedPointer<ComponentEditorGeneralItem>(
         new ComponentEditorGeneralItem(&navigationModel_, libHandler_, component, hwRoot)));
 
+	GeneralEditor* genEditor = static_cast<GeneralEditor*>(hwRoot->child(0)->editor());
+	
+	connect(genEditor, SIGNAL(hierarchyChanged(QSettings&)), this, SLOT(setRowVisibility(QSettings&)));
+
     hwRoot->addChildItem(QSharedPointer<ComponentEditorFileSetsItem>(
         new ComponentEditorFileSetsItem(&navigationModel_, libHandler_, pluginManager_, component, hwRoot)));
 
@@ -723,13 +729,40 @@ void ComponentEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void ComponentEditor::setRowVisibility(QSettings& settings)
 {
-	QStringList settingsChildren;
 
-	settings.beginGroup("ComponentEditorFilters");
+	QString workSpace = settings.value("Workspaces/CurrentWorkspace").toString();
+
+	settings.beginGroup( "Workspaces/" + workSpace + "/ComponentEditorFilters");
 
 	if (isHWImplementation())
 	{
 		settings.beginGroup("HW");
+
+		if(component_->getComponentHierarchy() == KactusAttribute::KTS_GLOBAL)
+		{
+			settings.beginGroup("Global");
+		}
+		else if (component_->getComponentHierarchy() == KactusAttribute::KTS_PRODUCT)
+		{
+			settings.beginGroup("Product");
+		}
+		else if (component_->getComponentHierarchy() == KactusAttribute::KTS_BOARD)
+		{
+			settings.beginGroup("Board");
+		}
+		else if (component_->getComponentHierarchy() == KactusAttribute::KTS_CHIP)
+		{
+			settings.beginGroup("Chip");
+		}
+		else if (component_->getComponentHierarchy() == KactusAttribute::KTS_SOC)
+		{
+			settings.beginGroup("Soc");
+		}
+		//else if (component_->getComponentHierarchy() == KactusAttribute::KTS_IP)
+		else
+		{
+			settings.beginGroup("IP");
+		}
 	}
 
 	else
@@ -737,7 +770,7 @@ void ComponentEditor::setRowVisibility(QSettings& settings)
 		settings.beginGroup("SW");
 	}
 
-	settingsChildren = settings.childKeys();
+	QStringList settingsChildren = settings.childKeys();
 
 	// List of the hidden rows in component editor.
 	QStringList hiddenRows;
@@ -751,7 +784,16 @@ void ComponentEditor::setRowVisibility(QSettings& settings)
 		}
 	}
 
+	if (isHWImplementation())
+	{
+		// End hierarchy group.
+		settings.endGroup();
+	}
+
+	// End hardware or software group.
 	settings.endGroup();
+
+	// End Workspace/CurrentWorkspace/ComponentEditorFilters group.
 	settings.endGroup();
 
 	proxy_.setRowVisibility( hiddenRows );

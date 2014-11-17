@@ -281,8 +281,13 @@ void MainWindow::restoreSettings()
     if (settings.childGroups().empty())
     {
         settings.endGroup();
-        saveWorkspace("Default");
-        saveWorkspace("Design");
+ 
+		FilterWidget::FilterOptions defaultOptions;
+		defaultOptions.type.advanced_ = false;
+		dialer_->setFilters(defaultOptions);
+
+		createNewWorkspace("Default");
+		createNewWorkspace("Design");
     }
     else
     {
@@ -303,6 +308,179 @@ void MainWindow::saveSettings()
     // Save the active workspace.
     settings.setValue("Workspaces/CurrentWorkspace", curWorkspaceName_);
     saveWorkspace(curWorkspaceName_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::copyComponentEditorSettings()
+//-----------------------------------------------------------------------------
+void MainWindow::copyComponentEditorSettings(QString workspaceName)
+{
+	QSettings settings;
+
+	QString activeWSPath = "Workspaces/" + curWorkspaceName_ + "/ComponentEditorFilters/";
+	QString newWSPath = "Workspaces/" + workspaceName + "/ComponentEditorFilters/";
+	
+	for (unsigned int i = 0; i < KactusAttribute::KTS_PRODHIER_COUNT; ++i)
+	{
+		KactusAttribute::ProductHierarchy val = static_cast<KactusAttribute::ProductHierarchy>(i);
+		QString hwHierarchyName(KactusAttribute::valueToString(val));
+
+		hwHierarchyName = "HW/" + hwHierarchyName;
+
+		settings.setValue(newWSPath + hwHierarchyName + "/File_sets", 
+			settings.value(activeWSPath + hwHierarchyName + "/File_sets").toBool());
+		settings.setValue(newWSPath + hwHierarchyName + "/Choices", 
+			settings.value(activeWSPath + hwHierarchyName + "/Choices").toBool());
+		settings.setValue(newWSPath + hwHierarchyName + "/Model_parameters", 
+			settings.value(activeWSPath + hwHierarchyName + "/Model_parameters").toBool());
+		settings.setValue(newWSPath + hwHierarchyName + "/Parameters", 
+			settings.value(activeWSPath + hwHierarchyName + "/Parameters").toBool());
+		settings.setValue(newWSPath + hwHierarchyName + "/Memory_maps", 
+			settings.value(activeWSPath + hwHierarchyName + "/Memory_maps").toBool());
+		settings.setValue(newWSPath + hwHierarchyName + "/Address_spaces", 
+			settings.value(activeWSPath + hwHierarchyName + "/Address_spaces").toBool());
+		settings.setValue(newWSPath + hwHierarchyName + "/Views", 
+			settings.value(activeWSPath + hwHierarchyName + "/Views").toBool());
+		settings.setValue(newWSPath + hwHierarchyName + "/Software_views", 
+			settings.value(activeWSPath + hwHierarchyName + "/Software_views").toBool());
+		settings.setValue(newWSPath + hwHierarchyName + "/System_views", 
+			settings.value(activeWSPath + hwHierarchyName + "/System_views").toBool());
+		settings.setValue(newWSPath + hwHierarchyName + "/Ports", 
+			settings.value(activeWSPath + hwHierarchyName + "/Ports").toBool());
+		settings.setValue(newWSPath + hwHierarchyName + "/Bus_interfaces", 
+			settings.value(activeWSPath + hwHierarchyName + "/Bus_interfaces").toBool());
+		settings.setValue(newWSPath + hwHierarchyName + "/Channels", 
+			settings.value(activeWSPath + hwHierarchyName + "/Channels").toBool());
+		settings.setValue(newWSPath + hwHierarchyName + "/Cpus", 
+			settings.value(activeWSPath + hwHierarchyName + "/Cpus").toBool());
+		settings.setValue(newWSPath + hwHierarchyName + "/Other_clock_drivers", 
+			settings.value(activeWSPath + hwHierarchyName + "/Other_clock_drivers").toBool());
+		settings.setValue(newWSPath + hwHierarchyName + "/COM_interfaces", 
+			settings.value(activeWSPath + hwHierarchyName + "/COM_interfaces").toBool());
+		settings.setValue(newWSPath + hwHierarchyName + "/Software_properties", 
+			settings.value(activeWSPath + hwHierarchyName + "/Software_properties").toBool());
+
+	}
+
+	activeWSPath = activeWSPath + "SW/";
+	newWSPath = newWSPath + "SW/";
+
+	settings.setValue(newWSPath + "File_sets", settings.value(activeWSPath + "File_sets").toBool());
+	settings.setValue(newWSPath + "Choices", settings.value(activeWSPath + "Choices").toBool());
+	settings.setValue(newWSPath + "Parameters", settings.value(activeWSPath + "Parameters").toBool());
+	settings.setValue(newWSPath + "Software_views", settings.value(activeWSPath + "Software_views").toBool());
+	settings.setValue(newWSPath + "COM_interfaces", settings.value(activeWSPath + "COM_interfaces").toBool());
+	settings.setValue(newWSPath + "API_interfaces", settings.value(activeWSPath + "API_interfaces").toBool());
+	settings.setValue(newWSPath + "Software_properties", 
+		settings.value(activeWSPath + "Software_properties").toBool());
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::createNewWorkspace()
+//-----------------------------------------------------------------------------
+void MainWindow::createNewWorkspace(QString workspaceName)
+{
+	/*
+	FilterWidget::FilterOptions defaultOptions;
+	defaultOptions.type.advanced_ = false;
+	dialer_->setFilters(defaultOptions);
+	*/
+	QSettings settings;
+
+	QString keyName = "Workspaces/" + workspaceName;
+
+	FilterWidget::FilterOptions filters = dialer_->getFilters();
+
+	// Save the geometry and state of windows.
+	settings.beginGroup(keyName);
+
+	settings.setValue("WindowState", saveState());
+	settings.setValue("Geometry", saveGeometry());
+	settings.setValue("WindowPosition", pos());
+	settings.setValue("ConfigurationVisibility", visibilities_.value(TabDocument::CONFIGURATIONWINDOW));
+	settings.setValue("SystemDetailsVisibility", visibilities_.value(TabDocument::SYSTEM_DETAILS_WINDOW));
+	settings.setValue("ConnectionVisibility", visibilities_.value(TabDocument::CONNECTIONWINDOW));
+	settings.setValue("InstanceVisibility", visibilities_.value(TabDocument::INSTANCEWINDOW));
+	settings.setValue("AdHocVisibility", visibilities_.value(TabDocument::ADHOC_WINDOW));
+	settings.setValue("AddressVisibility", visibilities_.value(TabDocument::ADDRESS_WINDOW));
+	settings.setValue("InterfaceVisibility", visibilities_.value(TabDocument::INTERFACEWINDOW));
+	settings.setValue("LibraryVisibility", visibilities_.value(TabDocument::LIBRARYWINDOW));
+	settings.setValue("OutputVisibility", visibilities_.value(TabDocument::OUTPUTWINDOW));
+	settings.setValue("ContextHelpVisibility", visibilities_.value(TabDocument::CONTEXT_HELP_WINDOW));
+	settings.setValue("PreviewVisibility", visibilities_.value(TabDocument::PREVIEWWINDOW));
+	settings.setValue("NotesVisibility", visibilities_.value(TabDocument::NOTES_WINDOW));
+
+	// Save filters.
+	settings.beginGroup("LibraryFilters");
+	settings.beginGroup("Type");
+	settings.setValue("ShowComponents", filters.type.components_);
+	settings.setValue("ShowBuses", filters.type.buses_);
+	settings.setValue("ShowAdvanced", filters.type.advanced_);
+	settings.endGroup();
+	settings.beginGroup("Implementation");
+	settings.setValue("ShowHW", filters.implementation.hw_);
+	settings.setValue("ShowSW", filters.implementation.sw_);
+	settings.setValue("ShowSystem", filters.implementation.system_);
+	settings.endGroup();
+	settings.beginGroup("Hierarchy");
+	settings.setValue("ShowGlobal", filters.hierarchy.global_);
+	settings.setValue("ShowProduct", filters.hierarchy.product_);
+	settings.setValue("ShowBoard", filters.hierarchy.board_);
+	settings.setValue("ShowChip", filters.hierarchy.chip_);
+	settings.setValue("ShowSoC", filters.hierarchy.soc_);
+	settings.setValue("ShowIP", filters.hierarchy.ip_);
+	settings.endGroup();
+	settings.beginGroup("Firmness");
+	settings.setValue("ShowTemplates", filters.firmness.templates_);
+	settings.setValue("ShowMutable", filters.firmness.mutable_);
+	settings.setValue("ShowFixed", filters.firmness.fixed_);
+	settings.endGroup(); // Firmness
+	settings.endGroup(); // LibraryFilters
+
+	// Create the component editor filters.
+	settings.beginGroup("ComponentEditorFilters");
+	settings.beginGroup("HW");
+
+	for (unsigned int i = 0; i < KactusAttribute::KTS_PRODHIER_COUNT; ++i)
+	{
+		KactusAttribute::ProductHierarchy val = static_cast<KactusAttribute::ProductHierarchy>(i);
+		QString hwHierarchyName(KactusAttribute::valueToString(val));
+		settings.beginGroup(hwHierarchyName);
+
+		settings.setValue("File_sets", true);
+		settings.setValue("Choices", true);
+		settings.setValue("Model_parameters", true);
+		settings.setValue("Parameters", true);
+		settings.setValue("Memory_maps", true);
+		settings.setValue("Address_spaces", true);
+		settings.setValue("Views", true);
+		settings.setValue("Software_views", true);
+		settings.setValue("System_views", true);
+		settings.setValue("Ports", true);
+		settings.setValue("Bus_interfaces", true);
+		settings.setValue("Channels", true);
+		settings.setValue("Cpus", true);
+		settings.setValue("Other_clock_drivers", true);
+		settings.setValue("COM_interfaces", true);
+		settings.setValue("Software_properties", true);
+
+		settings.endGroup(); // hwHerarchyName
+	}
+
+	settings.endGroup(); // HW
+	settings.beginGroup("SW");
+	
+	settings.setValue("File_sets", true);
+	settings.setValue("Choices", true);
+	settings.setValue("Parameters", true);
+	settings.setValue("Software_views", true);
+	settings.setValue("COM_interfaces", true);
+	settings.setValue("API_interfaces", true);
+	settings.setValue("Software_properties", true);
+
+	settings.endGroup(); // SW
+	settings.endGroup(); // ComponentEditorFilters
+	settings.endGroup(); // Workspace/keyName
 }
 
 //-----------------------------------------------------------------------------
@@ -359,25 +537,19 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
     QString keyName = "Workspaces/" + workspaceName;
     settings.beginGroup(keyName);
 
-    if (!settings.contains("Geometry"))
-    {
-        settings.endGroup();
-        return;
-    }
-
-
     // Set the window to normal state (this fixed a weird error with window state).
-    //setWindowState(Qt::WindowNoState);
+    setWindowState(Qt::WindowNoState);
 
     if (settings.contains("WindowPosition"))
     {
         move(settings.value("WindowPosition").toPoint());
     }
 
-    // If geometry is saved then restore it.
-    restoreGeometry(settings.value("Geometry").toByteArray());
+	if (settings.contains("Geometry"))
+	{
+	    restoreGeometry(settings.value("Geometry").toByteArray());
+	}
 
-    // If state of widgets is saved then restore it.
     if (settings.contains("WindowState")) {
         restoreState(settings.value("WindowState").toByteArray());
     }
@@ -425,10 +597,6 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
     const bool previewVisible = settings.value("PreviewVisibility", true).toBool();
     visibilities_.insert(TabDocument::PREVIEWWINDOW, previewVisible);
     previewDock_->toggleViewAction()->setChecked(previewVisible);
-
-    /*const bool notesVisible = settings.value("NotesVisibility", true).toBool();
-    visibilities_.insert(TabDocument::NOTES_WINDOW, notesVisible);
-    notesDock_->toggleViewAction()->setChecked(notesVisible);*/
 
     updateWindows();
     
@@ -522,9 +690,12 @@ void MainWindow::saveWorkspace(QString const& workspaceName)
     settings.endGroup(); // Firmness
     settings.endGroup(); // LibraryFilters
 
-    settings.endGroup();    
+	settings.endGroup(); // Workspaces/keyName   
 }
 
+//-----------------------------------------------------------------------------
+// Function: mainwindow::setupActions()
+//-----------------------------------------------------------------------------
 void MainWindow::setupActions() 
 {
 	// the action to create a new hierarchical component
@@ -4103,6 +4274,10 @@ void MainWindow::onWorkspaceChanged(QAction* action)
     saveWorkspace(curWorkspaceName_);
 
     curWorkspaceName_ = action->text();
+
+	QSettings settings;
+	settings.setValue("Workspaces/CurrentWorkspace", curWorkspaceName_);
+
     loadWorkspace(curWorkspaceName_);
 }
 
@@ -4115,12 +4290,21 @@ void MainWindow::onNewWorkspace()
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        // Save the new workspace with current settings and set the it as the current one.
-        FilterWidget::FilterOptions defaultOptions;
-        defaultOptions.type.advanced_ = false;
-        dialer_->setFilters(defaultOptions);
+        // Save the new workspace with current settings and set it as the current one.
+        // FilterWidget::FilterOptions defaultOptions;
+        // defaultOptions.type.advanced_ = false;
+        // dialer_->setFilters(defaultOptions);
+		saveWorkspace(curWorkspaceName_);
+
+		createNewWorkspace(dialog.getName());
+		copyComponentEditorSettings(dialog.getName());
+
         saveWorkspace(dialog.getName());
         curWorkspaceName_ = dialog.getName();
+
+		QSettings settings;
+		settings.setValue("Workspaces/CurrentWorkspace", curWorkspaceName_);
+
         updateWorkspaceMenu();
     }
 }

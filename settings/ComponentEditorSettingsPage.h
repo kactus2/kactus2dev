@@ -30,6 +30,35 @@ public:
 	 */
 	void apply();
 
+public slots:
+
+	/*!
+	 *  Select all check boxes on the software side.
+	 */
+	void swSelectAll();
+
+	/*!
+	 *  Deselect all check boxes on the software side.
+	 */
+	void swDelectAll();
+
+	/*!
+	 *  Select all check boxes of the current hierarchy on the hardware side.
+	 */
+	void onHWSelectAll();
+	
+	/*!
+	 *  Deselect all check boxes of the current hierarchy on the hardware side.
+	 */
+	void onHwDeselectAll();
+
+	/*!
+	 *  Store the current hierarchy index.
+	 *
+	 *      @param [in] indexHierarchy   The new hierarchy index.
+	 */
+	void onHierarchyChanged(int indexHierarchy);
+
 private:
 	//! Disable copying.
 	ComponentEditorSettingsPage(ComponentEditorSettingsPage const& rhs);
@@ -45,11 +74,21 @@ private:
 	 */
 	void loadSettings();
 
-	//! A list of all used hardware check boxes.
-	QList <QCheckBox*> hwCheckBoxes_;
+	/*!
+	 *  Set the check boxes to their respective lists.
+	 *
+	 *      @param [in] checkBoxes   The current usable check box list.
+	 */
+	QList <QCheckBox*> setCheckBoxes(QList <QCheckBox*> checkBoxes);
+
+	//! A list of all used hardware hierarchical view check boxes.
+	QList <QList <QCheckBox*>> hwCheckBoxes_;
 
 	//! A list of all used software check boxes.
 	QList <QCheckBox*> swCheckBoxes_;
+
+	//! The current hierarchy index.
+	int currentHierarchyIndex_;
 };
 
 #endif // COMPONENTEDITORSETTINGSPAGE_H

@@ -116,6 +116,11 @@ public slots:
 	*/
 	virtual void setProtection(bool locked);
 
+	/*!
+	 *  Set the visibility of rows in tree view.
+	 */
+	void setRowVisibility(QSettings& settings);
+    
 private slots:
 
 	/*! This slot is called when an item is selected in the navigation tree.
@@ -191,11 +196,6 @@ private:
     //! Setups the editor layout.
     void setupLayout();
 
-	/*!
-	 *  Set the visibility of rows in tree view.
-	 */
-	void setRowVisibility(QSettings& settings);
-    
 	//-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

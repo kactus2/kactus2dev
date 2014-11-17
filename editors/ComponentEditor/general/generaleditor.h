@@ -62,6 +62,13 @@ public:
 	*/
 	virtual void refresh();
 
+signals:
+
+	/*!
+	 *  Signaled when the product hierarchy has changed.
+	 */
+	void hierarchyChanged(QSettings& settings);
+
 protected:
 
 	//! \brief Handler for widget's show event

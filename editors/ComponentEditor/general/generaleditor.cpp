@@ -154,6 +154,9 @@ void GeneralEditor::onAttributesChange() {
 		component()->setComponentFirmness(attributeEditor_->getFirmness());
 	}
 	emit contentChanged();
+
+	QSettings settings;
+	emit hierarchyChanged(settings);
 }
 
 void GeneralEditor::onDescriptionChange() {

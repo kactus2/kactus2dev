@@ -527,6 +527,23 @@ private:
 	 */
 	void saveSettings();
 
+	/*!
+	 *  Copy the component editor settings from the current workspace.
+	 *
+	 *      @param [in] workspaceName   The name of the new workspace.
+	 */
+	void copyComponentEditorSettings(QString workspaceName);
+
+	/*!
+	 *  Creates a new workspace.
+	 *
+	 *      @param [in] workspaceName   The name of the new workspace.
+	 */
+	void createNewWorkspace(QString workspaceName);
+
+    /*!
+     *  Updates the workspace menu.
+     */
     void updateWorkspaceMenu();
 
     /*!
