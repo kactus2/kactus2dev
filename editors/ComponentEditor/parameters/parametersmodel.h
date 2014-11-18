@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/parameter.h>
 
+#include <editors/ComponentEditor/common/AbstractParameterModel.h>
+
 #include <QAbstractTableModel>
 
 #include <QSharedPointer>
@@ -25,167 +27,165 @@ class Component;
 //-----------------------------------------------------------------------------
 //! Table model that can be used to display parameters to be edited.
 //-----------------------------------------------------------------------------
-class ParametersModel : public QAbstractTableModel {
+class ParametersModel : public AbstractParameterModel
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param parameters The QList containing pointers to the parameters.
-	 * \param parent Pointer to the owner of this model.
+	 *      @param [in]  parameters The parameters to edit in the model.
+     *      @param [in]  choices    The choices available for the parameter values.
+	 *      @param [in]  parent     The owner of this model.
 	 *
 	*/
 	ParametersModel(QList<QSharedPointer<Parameter> >& parameters, 
         QSharedPointer<QList<QSharedPointer<Choice> > > choices,
 		QObject *parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ParametersModel();
 
-	/*! \brief Get the number of rows in the model.
+	/*! Get the number of rows in the model.
 	 *
-	 * \param parent Model index of the parent of the item. Must be invalid
-	 * because this is not hierarchical model.
+	 *      @param [in]  parent Model index of the parent of the item. Must be invalid
+	 *                          because this is not hierarchical model.
 	 *
-	 * \return Number of rows currently in the model.
+	 *      @return  Number of rows currently in the model.
 	*/
-	virtual int rowCount(const QModelIndex& parent = QModelIndex() ) const;
+	virtual int rowCount(QModelIndex const& parent = QModelIndex()) const;
 
-	/*! \brief Get the number of columns in the model
+	/*! Get the number of columns in the model
 	 *
-	 * \param parent Model index of the parent of the item. Must be invalid
-	 * because this is not hierarchical model.
+	 *      @param [in]  parent Model index of the parent of the item. Must be invalid
+	 *                          because this is not hierarchical model.
 	 *
-	 * \return Always returns 3
+	 *      @return  Number of columns currently in the model.
 	*/
-	virtual int columnCount(const QModelIndex& parent = QModelIndex() ) const;
-
-	/*! \brief Get the data for the specified item for specified role.
-	 *
-	 * \param index Identifies the item that's data is wanted.
-	 * \param role Specifies what kind of data is wanted
-	 *
-	 * \return QVariant containing the data
-	*/
-	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole ) const;
-
-	/*! \brief Get the data for the headers
-	 *
-	 * \param section The column that's header is wanted
-	 * \param orientation Only Qt::Horizontal is supported
-	 * \param role Specified the type of data that is wanted.
-	 *
-	 * \return QVariant containing the data to be displayed
-	*/
-	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
-
-	/*! \brief Set the data for specified item.
-	 *
-	 * \param index Specifies the item that's data is modified
-	 * \param value The value to be set.
-	 * \param role The role that is trying to modify the data. Only Qt::EditRole
-	 * is supported.
-	 *
-	 * \return True if data was successfully set.
-	*/
-	virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole );
-
-	/*! \brief Get information on how specified item can be handled.
-	 *
-	 * \param index Specifies the item that's flags are wanted.
-	 *
-	 * \return Qt::ItemFlags that define how object can be handled.
-	*/
-	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
-
-	/*! \brief Check if the model is in valid state or not.
-	 *
-	 * \return True if all items in model are valid.
-	*/
-	bool isValid() const;
-
-    /*!
-     *  \brief Check if the model is in valid state or not.
-     *
-     *      \param [inout] errorList           The list to add the possible error messages to.
-     *      \param [in]    parentIdentifier    String from parent to help to identify the location of the error.
-     *
-     *      \return True if all items in model are valid.
-     */
-    bool isValid(QStringList& errorList, const QString& parentIdentifier) const;
+	virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
 
 public slots:
 
-	/*! \brief A new item should be added to given index.
+	/*! A new item should be added to given index.
 	 *
-	 * \param index The position where new item should be added at.
+	 *      @param [in]  index The position where new item should be added at.
 	 *
 	*/
-	void onAddItem(const QModelIndex& index);
+	virtual void onAddItem(QModelIndex const& index);
 
-	/*! \brief An item should be removed from the model.
+	/*! An item should be removed from the model.
 	 * 
-	 * \param index Identifies the item that should be removed.
+	 *      @param [in]  index Identifies the item that should be removed.
 	 *
 	*/
-	void onRemoveItem(const QModelIndex& index);
-
-signals:
-
-	//! \brief Emitted when contents of the model change
-	void contentChanged();
-
-	//! \brief Prints an error message to the user.
-	void errorMessage(const QString& msg) const;
-	
-	//! \brief Prints a notification to user.
-	void noticeMessage(const QString& msg) const;
+	virtual void onRemoveItem(QModelIndex const& index);
 
 protected:
+        
+    /*!
+     *  Gets the parameter on the given row.
+     *
+     *      @param [in] row   The row number where to get the parameter from.
+     *
+     *      @return The parameter on the given row.
+     */
+    virtual QSharedPointer<Parameter> getParameterOnRow(int row) const;
 
     /*!
-     *  Finds the value for the given model parameter using either selected choice or model parameter value.
+     *  Gets the column for value format.
      *
-     *      @param [in] modelParameter   The model parameter whose value to find.
-     *
-     *      @return The value to display for the model parameter.
+     *      @return The column for editing format selection.
      */
-    QString evaluateValueFor(QSharedPointer<Parameter> modelParameter) const;
+    virtual int nameColumn() const;
+        
+    /*!
+     *  Gets the column for value format.
+     *
+     *      @return The column for editing format selection.
+     */
+    virtual int displayNameColumn() const;
 
     /*!
-     *  Finds the choice with the given name.
+     *  Gets the column for value format.
      *
-     *      @param [in] choiceName   The name of the choice to find.
-     *
-     *      @return The found choice.
+     *      @return The column for editing format selection.
      */
-    QSharedPointer<Choice> findChoice(QString const& choiceName) const;
+    virtual int formatColumn() const;
+        
+    /*!
+     *  Gets the column for value bit string length.
+     *
+     *      @return The column for editing bit string length.
+     */
+    virtual int bitwidthColumn() const;
 
     /*!
-     *  Finds a human-readable value to display for a given enumeration.
+     *  Gets the column for minimum value.
      *
-     *      @param [in] choice              The choice whose enumeration to find.
-     *      @param [in] enumerationValue    The value used to search the enumeration.
-     *
-     *      @return A value for the enumeration to display.
+     *      @return The column for editing the minimum value.
      */
-    QString findDisplayValueForEnumeration(QSharedPointer<Choice> choice, QString const& enumerationValue) const;
+    virtual int minimumColumn() const;
+        
+    /*!
+     *  Gets the column for maximum value.
+     *
+     *      @return The column for editing the maximum value.
+     */
+    virtual int maximumColumn() const;
+        
+    /*!
+     *  Gets the column for choices.
+     *
+     *      @return The column for editing choice selection.
+     */
+    virtual int choiceColumn() const;
+
+    /*!
+     *  Gets the column for values.
+     *
+     *      @return The column for editing value selection.
+     */
+    virtual int valueColumn() const;
+    
+    /*!
+     *  Gets the column for resolve.
+     *
+     *      @return The column for editing value selection.
+     */
+    virtual int resolveColumn() const;
+    
+    /*!
+     *  Gets the column for array size.
+     *
+     *      @return The column for editing array size.
+     */
+    virtual int arraySizeColumn() const;
+        
+    /*!
+     *  Gets the column for array offset.
+     *
+     *      @return The column for editing array offset.
+     */
+    virtual int arrayOffsetColumn() const;
+        
+    /*!
+     *  Gets the column for description.
+     *
+     *      @return The column for editing description.
+     */
+    virtual int descriptionColumn() const;
 
 private:
 
-	//! \brief No copying
+	//! No copying
 	ParametersModel(const ParametersModel& other);
 
 	//! No assignment
 	ParametersModel& operator=(const ParametersModel& other);
 	
-	//! \brief Pointer to the component that's parameters are edited.
+	//! The parameters to be edited.
 	QList<QSharedPointer<Parameter> >& parameters_;
-
-    //! The choices available for model parameter values.
-    QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
-
 };
 
 #endif // PARAMETERSMODEL_H

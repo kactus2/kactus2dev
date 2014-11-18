@@ -76,32 +76,7 @@ signals:
     //! Emitted when a the value of a model parameter is modified.
     void parameterChanged(QSharedPointer<ModelParameter> changedParameter);
 
-    //! Emitted when a model parameter is removed from the editor's table.
-    void modelParameterRemoved(QSharedPointer<ModelParameter> changedParameter);
-
 public slots:
-
-	/*! \brief Add a new model parameter to the editor.
-	 *
-	 * Method: 		addModelParameter
-	 * Full name:	ModelParameterEditor::addModelParameter
-	 * Access:		public 
-	 *
-	 * \param modelParam The model parameter to add.
-	 *
-	*/
-	void addModelParameter(QSharedPointer<ModelParameter> modelParam);
-
-	/*! \brief Remove model parameter from the editor.
-	 *
-	 * Method: 		removeModelParameter
-	 * Full name:	ModelParameterEditor::removeModelParameter
-	 * Access:		public 
-	 *
-	 * \param changedParameter The identifying pointer to the model parameter to be removed.
-	 *
-	*/
-	void removeModelParameter(QSharedPointer<ModelParameter> removedParameter);
 
     /*!
      *   Emits parameterChanged when detects changes in the model data.

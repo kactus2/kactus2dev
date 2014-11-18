@@ -8,6 +8,7 @@
 #include "modelparametereditor.h"
 
 #include "ModelParameterDelegate.h"
+#include "ModelParameterColumns.h"
 
 #include <IPXACTmodels/component.h>
 
@@ -41,8 +42,6 @@ proxy_(this)
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
-    connect(&model_, SIGNAL(modelParameterRemoved(QSharedPointer<ModelParameter>)),
-            this, SIGNAL(modelParameterRemoved(QSharedPointer<ModelParameter>)),Qt::UniqueConnection);
 
 	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/modelParamList.csv").arg(compPath);
@@ -131,28 +130,12 @@ void ModelParameterEditor::setAllowImportExport( bool allow )
 }
 
 //-----------------------------------------------------------------------------
-// Function: addModelParameter()
-//-----------------------------------------------------------------------------
-void ModelParameterEditor::addModelParameter( QSharedPointer<ModelParameter> modelParam )
-{
-	model_.addModelParameter(modelParam);
-}
-
-//-----------------------------------------------------------------------------
-// Function: removeModelParameter()
-//-----------------------------------------------------------------------------
-void ModelParameterEditor::removeModelParameter( QSharedPointer<ModelParameter> removedParameter)
-{
-	model_.removeModelParameter(removedParameter);
-}
-
-//-----------------------------------------------------------------------------
 // Function: modelDataChanged()
 //-----------------------------------------------------------------------------
 void ModelParameterEditor::modelDataChanged(QModelIndex const& index)
 {
     // Only changes in the default value emits parameterChanged.
-    if ( index.column() == 3 )
+    if ( index.column() == ModelParameterColumns::VALUE )
     {
         QSharedPointer<ModelParameter> changedParameter = model_.getParameter(index);
         emit parameterChanged(changedParameter);

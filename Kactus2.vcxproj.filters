@@ -923,6 +923,12 @@
     <Filter Include="Source Files\editors\ComponentEditor\choices">
       <UniqueIdentifier>{6e2cfaa5-fd19-4942-b503-224f59debfe6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\common">
+      <UniqueIdentifier>{3559219f-8f07-404d-83e6-419e4871e352}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\common">
+      <UniqueIdentifier>{43667a89-3a58-492a-84ec-fe02b42dd193}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3898,6 +3904,12 @@
     <ClCompile Include="GeneratedFiles\moc_ComponentEditorSettingsPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\AbstractParameterModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AbstractParameterModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5342,6 +5354,9 @@
     </CustomBuild>
     <CustomBuild Include="settings\ComponentEditorSettingsPage.h">
       <Filter>Header Files\settings</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\common\AbstractParameterModel.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

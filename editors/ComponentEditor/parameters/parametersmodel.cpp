@@ -26,8 +26,8 @@
 ParametersModel::ParametersModel(QList<QSharedPointer<Parameter> >& parameters,
     QSharedPointer<QList<QSharedPointer<Choice> > > choices,
     QObject *parent): 
-QAbstractTableModel(parent), 
-parameters_(parameters), choices_(choices)
+AbstractParameterModel(choices, parent), 
+parameters_(parameters)
 {
 
 }
@@ -43,9 +43,10 @@ ParametersModel::~ParametersModel()
 //-----------------------------------------------------------------------------
 // Function: ParametersModel::rowCount()
 //-----------------------------------------------------------------------------
-int ParametersModel::rowCount(const QModelIndex& parent /*= QModelIndex() */ ) const
+int ParametersModel::rowCount(QModelIndex const& parent /*= QModelIndex() */ ) const
 {
-	if (parent.isValid()) {
+	if (parent.isValid())
+    {
 		return 0;
 	}
 
@@ -55,9 +56,11 @@ int ParametersModel::rowCount(const QModelIndex& parent /*= QModelIndex() */ ) c
 //-----------------------------------------------------------------------------
 // Function: ParametersModel::columnCount()
 //-----------------------------------------------------------------------------
-int ParametersModel::columnCount( const QModelIndex& parent /*= QModelIndex() */ ) const {
+int ParametersModel::columnCount(QModelIndex const& parent) const
+{
 
-	if (parent.isValid()) {
+	if (parent.isValid())
+    {
 		return 0;
 	}
 
@@ -65,343 +68,33 @@ int ParametersModel::columnCount( const QModelIndex& parent /*= QModelIndex() */
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParametersModel::data()
+// Function: ParametersModel::onAddItem()
 //-----------------------------------------------------------------------------
-QVariant ParametersModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole */ ) const 
+void ParametersModel::onAddItem(QModelIndex const& index)
 {
-	if (!index.isValid())
-		return QVariant();
+    int row = parameters_.size();
 
-	// if row is invalid
-	else if (index.row() < 0 || index.row() >= parameters_.size())
-		return QVariant();
-
-    QSharedPointer<Parameter> parameter = parameters_.at(index.row());
-
-    if (role == Qt::DisplayRole)
-    {
-        switch (index.column())
-        {
-        case ParameterColumns::NAME: 
-            {
-                return parameter->getName();
-            }
-        case ParameterColumns::DISPLAY_NAME: 
-            {
-                return parameter->getDisplayName();
-            }
-        case ParameterColumns::FORMAT:
-            {
-                return parameter->getValueFormat();
-            }
-        case ParameterColumns::BITSTRINGLENGTH:
-            {
-                return parameter->getBitStringLength();
-            }
-        case ParameterColumns::MINIMUM:
-            {
-                return parameter->getMinimumValue();
-            }
-        case ParameterColumns::MAXIMUM:
-            {
-                return parameter->getMaximumValue();
-            }
-        case ParameterColumns::CHOICE: 
-            {
-                return parameter->getChoiceRef();
-            }
-        case ParameterColumns::VALUE:
-            {
-                return evaluateValueFor(parameter);
-            }
-        case ParameterColumns::RESOLVE:
-            {
-                return parameter->getValueResolve();
-            }
-        case ParameterColumns::ARRAY_SIZE:
-            {
-                return parameter->getAttribute("arraySize");
-            }
-        case ParameterColumns::ARRAY_OFFSET:
-            {
-                return parameter->getAttribute("arrayOffset");
-            }
-        case ParameterColumns::DESCRIPTION: 
-            {
-                return parameter->getDescription();
-            }
-        default: 
-            {
-                return QVariant();
-            }
-        }
-    }
-    else if (Qt::BackgroundRole == role) 
-    {
-        switch (index.column()) 
-        {
-        case ParameterColumns::NAME:
-        case ParameterColumns::VALUE: 
-            {
-                return QColor("LemonChiffon");
-            }
-        case ParameterColumns::BITSTRINGLENGTH:
-            {
-                if (parameter->getValueFormat() == "bitString")
-                {
-                    return QColor("LemonChiffon");
-                }
-                else
-                {
-                    return QColor("white");
-                }
-            }
-        default:
-            return QColor("white");
-        }
-    }
-    else if (Qt::ForegroundRole == role)
-    {
-        if ((index.column() == ParameterColumns::CHOICE ||
-            index.column() == ParameterColumns::VALUE ) && 
-            !parameter->getChoiceRef().isEmpty() &&
-            !findChoice(parameter->getChoiceRef())->hasEnumeration(parameter->getValue()))
-        {
-            return QColor("red");
-        }
-        else if (parameter->isValid()) 
-        {
-            return QColor("black");
-        }
-        else 
-        {
-            return QColor("red");
-        }
+    // if the index is valid then add the item to the correct position
+    if (index.isValid()) {
+        row = index.row();
     }
 
-	// if unsupported role
-	else 
-    {
-		return QVariant();
-	}
-}
+    beginInsertRows(QModelIndex(), row, row);
+    parameters_.insert(row, QSharedPointer<Parameter>(new Parameter()));
+    endInsertRows();
 
-//-----------------------------------------------------------------------------
-// Function: ParametersModel::headerData()
-//-----------------------------------------------------------------------------
-QVariant ParametersModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    if (orientation != Qt::Horizontal)
-        return QVariant();
-
-    if (role == Qt::DisplayRole) 
-    {
-        switch (section)
-        {
-        case ParameterColumns::NAME:
-            return tr("Name");
-        case ParameterColumns::DISPLAY_NAME:
-            return tr("Display\nname");
-        case ParameterColumns::FORMAT:
-            return tr("Format");   
-        case ParameterColumns::BITSTRINGLENGTH:
-            return tr("Bit string\nlength");   
-        case ParameterColumns::MINIMUM:
-            return tr("Minimum\nvalue");
-        case ParameterColumns::MAXIMUM:
-            return tr("Maximum\nvalue");
-        case ParameterColumns::CHOICE:
-            return tr("Choice");
-        case ParameterColumns::VALUE:
-            return tr("Value");
-        case ParameterColumns::RESOLVE:
-            return tr("Resolve");
-        case ParameterColumns::ARRAY_SIZE:
-            return tr("Array\nsize");
-        case ParameterColumns::ARRAY_OFFSET:
-            return tr("Array\noffset");
-        case ParameterColumns::DESCRIPTION:
-            return tr("Description");
-        default:
-            return QVariant();
-        }
-    }
-
-    // if unsupported role
-    else 
-    {
-        return QVariant();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParametersModel::setData()
-//-----------------------------------------------------------------------------
-bool ParametersModel::setData(const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole */) 
-{
-	if (!index.isValid())
-		return false;
-
-    // if row is invalid
-    else if (index.row() < 0 || index.row() >= parameters_.size())
-        return false;
-
-    if (role == Qt::EditRole)
-    {
-        QSharedPointer<Parameter> parameter = parameters_.value(index.row());
-        switch (index.column())
-        {
-        case ParameterColumns::NAME: 
-            {
-                parameter->setName(value.toString());
-                break;
-            }
-        case ParameterColumns::DISPLAY_NAME: 
-            {
-                parameter->setDisplayName(value.toString());
-                break;
-            }
-        case ParameterColumns::FORMAT: 
-            {
-                parameter->setValueFormat(value.toString());
-                break;
-            }
-        case ParameterColumns::BITSTRINGLENGTH: 
-            {
-                parameter->setBitStringLength(value.toString());
-                break;
-            }
-        case ParameterColumns::MINIMUM:
-            {
-                parameter->setMinimumValue(value.toString());
-                break;
-            }
-        case ParameterColumns::MAXIMUM:
-            {
-                parameter->setMaximumValue(value.toString());
-                break;
-            }
-        case ParameterColumns::CHOICE: 
-            {
-                parameter->setChoiceRef(value.toString());
-                break;
-            }
-        case ParameterColumns::VALUE:
-            {
-                parameter->setValue(value.toString());
-                break;
-            }
-        case ParameterColumns::RESOLVE:
-            {
-                parameter->setValueResolve(value.toString());
-                break;
-            }
-        case ParameterColumns::ARRAY_SIZE:
-            {
-                parameter->setAttribute("arraySize", value.toString());
-                break;
-            }
-        case ParameterColumns::ARRAY_OFFSET:
-            {
-                parameter->setAttribute("arrayOffset", value.toString());
-                break;
-            }
-        case ParameterColumns::DESCRIPTION: 
-            {
-                parameter->setDescription(value.toString());
-                break;
-            }
-        default: 
-            return false;
-        }
-        emit contentChanged();
-        return true;
-    }
-
-    // is unsupported role
-    else 
-    {
-        return false;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParametersModel::flags()
-//-----------------------------------------------------------------------------
-Qt::ItemFlags ParametersModel::flags(const QModelIndex& index ) const
-{
-	if (!index.isValid())
-		return Qt::NoItemFlags;
-
-	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParametersModel::isValid()
-//-----------------------------------------------------------------------------
-bool ParametersModel::isValid() const {
-
-	// check all parameters
-	foreach (QSharedPointer<Parameter> parameter, parameters_)
-    {
-		// if one parameter is invalid
-		if (!parameter->isValid())
-			return false;
-
-        if (!parameter->getChoiceRef().isEmpty())
-        {
-            QSharedPointer<Choice> referencedChoice = findChoice(parameter->getChoiceRef());
-            if(!referencedChoice->hasEnumeration(parameter->getValue()))
-            {
-                return false;
-            }
-        }
-
-	}
-
-	// all parameters are valid
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParametersModel::isValid()
-//-----------------------------------------------------------------------------
-bool ParametersModel::isValid(QStringList& errorList, const QString& parentIdentifier) const
-{
-    bool valid = true;
-    // check all parameters.
-    foreach (QSharedPointer<Parameter> parameter, parameters_) 
-    {
-        // if one parameter is invalid, model is invalid.
-        if (!parameter->isValid(errorList, parentIdentifier))
-            valid = false;
-
-        if (!parameter->getChoiceRef().isEmpty())
-        {
-            QSharedPointer<Choice> referencedChoice = findChoice(parameter->getChoiceRef());
-            if(!referencedChoice->hasEnumeration(parameter->getValue()))
-            {
-                errorList.append(QObject::tr("Parameter %1 references unknown choice value %2 "
-                    "for choice %3 within %4").arg(parameter->getName(), 
-                    parameter->getValue(), parameter->getChoiceRef(), parentIdentifier));
-                valid = false;
-            }
-        }
-    }
-
-    return valid;
+    // tell also parent widget that contents have been changed
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ParametersModel::onRemoveItem()
 //-----------------------------------------------------------------------------
-void ParametersModel::onRemoveItem( const QModelIndex& index ) {
+void ParametersModel::onRemoveItem(QModelIndex const& index ) 
+{
 	// don't remove anything if index is invalid
- 	if (!index.isValid()) {
-		return;
-	}
-	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= parameters_.size()) {
+ 	if (!index.isValid() || index.row() < 0 || index.row() >= rowCount()) 
+    {
 		return;
 	}
 
@@ -415,69 +108,105 @@ void ParametersModel::onRemoveItem( const QModelIndex& index ) {
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParametersModel::onAddItem()
+// Function: ParametersModel::getParameterOnRow()
 //-----------------------------------------------------------------------------
-void ParametersModel::onAddItem( const QModelIndex& index ) {
-	int row = parameters_.size();
-
-	// if the index is valid then add the item to the correct position
-	if (index.isValid()) {
-		row = index.row();
-	}
-
-	beginInsertRows(QModelIndex(), row, row);
-	parameters_.insert(row, QSharedPointer<Parameter>(new Parameter()));
-	endInsertRows();
-
-	// tell also parent widget that contents have been changed
-	emit contentChanged();
+QSharedPointer<Parameter> ParametersModel::getParameterOnRow(int row) const
+{
+    return parameters_.at(row);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParametersModel::evaluateValueFor()
+// Function: ParametersModel::nameColumn()
 //-----------------------------------------------------------------------------
-QString ParametersModel::evaluateValueFor(QSharedPointer<Parameter> modelParameter) const
+int ParametersModel::nameColumn() const
 {
-    if (modelParameter->getChoiceRef().isEmpty())
-    {
-        return modelParameter->getValue();
-    }
-    else
-    {
-        QSharedPointer<Choice> choice = findChoice(modelParameter->getChoiceRef());
-        return findDisplayValueForEnumeration(choice, modelParameter->getValue());
-    }
+    return ParameterColumns::NAME;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParametersModel::findChoice()
+// Function: ParametersModel::displayNameColumn()
 //-----------------------------------------------------------------------------
-QSharedPointer<Choice> ParametersModel::findChoice(QString const& choiceName) const
+int ParametersModel::displayNameColumn() const
 {
-    foreach (QSharedPointer<Choice> choice, *choices_)
-    {
-        if (choice->getName() == choiceName)
-        {
-            return choice;
-        }
-    }	
-
-    return QSharedPointer<Choice>(new Choice(QDomNode()));
+    return ParameterColumns::DISPLAY_NAME;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParametersModel::findDisplayValueForEnumeration()
+// Function: ParameterDelegate::choiceColumn()
 //-----------------------------------------------------------------------------
-QString ParametersModel::findDisplayValueForEnumeration(QSharedPointer<Choice> choice,
-    QString const& enumerationValue) const
+int ParametersModel::choiceColumn() const
 {
-    foreach (QSharedPointer<Enumeration> enumeration, *choice->enumerations())
-    {
-        if (enumeration->getValue() == enumerationValue && !enumeration->getText().isEmpty())
-        {
-            return enumeration->getText();
-        }
-    }
+    return ParameterColumns::CHOICE;
+}
 
-    return enumerationValue;
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::formatColumn()
+//-----------------------------------------------------------------------------
+int ParametersModel::formatColumn() const
+{
+    return ParameterColumns::FORMAT;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::bitwidthColumn()
+//-----------------------------------------------------------------------------
+int ParametersModel::bitwidthColumn() const
+{
+    return ParameterColumns::BITSTRINGLENGTH;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::minimumColumn()
+//-----------------------------------------------------------------------------
+int ParametersModel::minimumColumn() const
+{
+    return ParameterColumns::MINIMUM;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::maximumColumn()
+//-----------------------------------------------------------------------------
+int ParametersModel::maximumColumn() const
+{
+    return ParameterColumns::MAXIMUM;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::valueColumn()
+//-----------------------------------------------------------------------------
+int ParametersModel::valueColumn() const
+{
+    return ParameterColumns::VALUE;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::resolveColumn()
+//-----------------------------------------------------------------------------
+int ParametersModel::resolveColumn() const
+{
+    return ParameterColumns::RESOLVE;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParametersModel::arraySizeColumn()
+//-----------------------------------------------------------------------------
+int ParametersModel::arraySizeColumn() const
+{
+    return ParameterColumns::ARRAY_SIZE;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParametersModel::arrayOffsetColumn()
+//-----------------------------------------------------------------------------
+int ParametersModel::arrayOffsetColumn() const
+{
+    return ParameterColumns::ARRAY_OFFSET;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParametersModel::descriptionColumn()
+//-----------------------------------------------------------------------------
+int ParametersModel::descriptionColumn() const
+{
+    return ParameterColumns::DESCRIPTION;
 }

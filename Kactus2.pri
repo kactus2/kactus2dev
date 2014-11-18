@@ -134,6 +134,7 @@ HEADERS += ./common/Global.h \
     ./mainwindow/NewPages/NewSystemPage.h \
     ./mainwindow/EditorArea/EditorArea.h \
     ./settings/SettingsUpdater.h \
+    ./settings/ComponentEditorSettingsPage.h \
     ./settings/SettingsPage.h \
     ./settings/PluginSettingsPage.h \
     ./settings/FileTypeSettingsPage.h \
@@ -241,7 +242,6 @@ HEADERS += ./common/Global.h \
     ./editors/ComDefinitionEditor/ComPropertyDelegate.h \
     ./editors/ComDefinitionEditor/ComPropertyEditor.h \
     ./editors/ComDefinitionEditor/ComPropertyModel.h \
-    ./editors/ComponentEditor/SettingsListSortProxyModel.h \
     ./editors/ComponentEditor/componenteditor.h \
     ./editors/ComponentEditor/itemeditor.h \
     ./editors/ComponentEditor/itemvisualizer.h \
@@ -569,7 +569,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./settings/ComponentEditorSettingsPage.h
+    ./editors/ComponentEditor/common/AbstractParameterModel.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -682,6 +682,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./mainwindow/Ribbon/Ribbon.cpp \
     ./mainwindow/Ribbon/RibbonGroup.cpp \
     ./mainwindow/EditorArea/EditorArea.cpp \
+    ./settings/ComponentEditorSettingsPage.cpp \
     ./settings/FileTypesDelegate.cpp \
     ./settings/FileTypeSettingsPage.cpp \
     ./settings/FileTypesModel.cpp \
@@ -777,7 +778,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/componenteditor.cpp \
     ./editors/ComponentEditor/itemeditor.cpp \
     ./editors/ComponentEditor/itemvisualizer.cpp \
-    ./editors/ComponentEditor/SettingsListSortProxyModel.cpp \
     ./editors/ComponentEditor/busInterfaces/ApiCreateDialog.cpp \
     ./editors/ComponentEditor/busInterfaces/bridgesdelegate.cpp \
     ./editors/ComponentEditor/busInterfaces/bridgeseditor.cpp \
@@ -1095,5 +1095,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./settings/ComponentEditorSettingsPage.cpp
+    ./editors/ComponentEditor/common/AbstractParameterModel.cpp
 RESOURCES += kactus.qrc
