@@ -293,6 +293,7 @@ bool AbstractParameterModel::setData(const QModelIndex& index, const QVariant& v
             return false;
         }
 
+        emit dataChanged(index, index);
         emit contentChanged();
         return true;
     }
