@@ -365,6 +365,11 @@ bool Parameter::isValid() const
         }
     }
 
+    if (!getBitStringLength().isEmpty() && getValueFormat() != "bitString")
+    {
+        return false;
+    }
+
 	return true;
 }
 
@@ -399,8 +404,8 @@ bool Parameter::isValid( QStringList& errorList, const QString& parentIdentifier
 
         if (getValueFormat() == "bitString" && getBitStringLength().isEmpty())
         {      
-            errorList.append(QObject::tr("No bit string length specified for %2 %3 within %4").arg(
-                getValueFormat(), elementName(), getName(), parentIdentifier));
+            errorList.append(QObject::tr("No bit string length specified for %1 %2 within %3").arg(
+                elementName(), getName(), parentIdentifier));
             valid = false;
         }
 
@@ -438,6 +443,13 @@ bool Parameter::isValid( QStringList& errorList, const QString& parentIdentifier
                 ).arg(value_, getMaximumValue(), elementName(), getName(), parentIdentifier));
             valid = false;
         }
+    }
+
+    if (!getBitStringLength().isEmpty() && getValueFormat() != "bitString")
+    {
+        errorList.append(QObject::tr("Bit string length specified for format other than bitString "
+            "for %1 %2 within %3").arg(elementName(), getName(), parentIdentifier));
+        valid = false;
     }
 
 	return valid;
@@ -551,14 +563,13 @@ bool Parameter::isValidBoundaryForFormat(QString const& boundary) const
     return validatingExp.exactMatch(boundary);
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: Parameter::shouldCompareValueToMinimum()
 //-----------------------------------------------------------------------------
 bool Parameter::shouldCompareValueToMinimum() const
 {
     return !getMinimumValue().isEmpty() && 
-        (getValueFormat() == "long" || getValueFormat() == "float");
+        (getValueFormat() == "long" || getValueFormat() == "float" || getValueFormat() == "bitString");
 }
 
 //-----------------------------------------------------------------------------
@@ -567,7 +578,7 @@ bool Parameter::shouldCompareValueToMinimum() const
 bool Parameter::shouldCompareValueToMaximum() const
 {
     return !getMaximumValue().isEmpty() && 
-        (getValueFormat() == "long" || getValueFormat() == "float");
+        (getValueFormat() == "long" || getValueFormat() == "float" || getValueFormat() == "bitString");
 }
 
 //-----------------------------------------------------------------------------

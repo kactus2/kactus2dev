@@ -40,12 +40,10 @@ AbstractParameterModel::~AbstractParameterModel()
 //-----------------------------------------------------------------------------
 QVariant AbstractParameterModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole */ ) const 
 {
-	if (!index.isValid())
+	if (!index.isValid() || index.row() < 0 || index.row() >= rowCount())
+    {
 		return QVariant();
-
-	// if row is invalid
-	else if (index.row() < 0 || index.row() >= rowCount())
-		return QVariant();
+    }
 
     QSharedPointer<Parameter> parameter = getParameterOnRow(index.row());
 
@@ -119,8 +117,14 @@ QVariant AbstractParameterModel::data( const QModelIndex& index, int role /*= Qt
             }
             else
             {
-                return QColor("white");
+                return QColor("whiteSmoke");
             }
+        }
+        else if ((index.column() == minimumColumn() || index.column() == maximumColumn()) &&
+            (parameter->getValueFormat() != "float" && parameter->getValueFormat() != "long" && 
+             parameter->getValueFormat() != "bitString"))
+        {
+            return QColor("whiteSmoke");
         }
         else
         {

@@ -25,6 +25,9 @@ private slots:
     void testValueForBoolFormat();
     void testValueForBoolFormat_data();
 
+    void testBitStringLengthIsSetForBitStringFormatAndNotSetForOtherFormats();
+    void testBitStringLengthIsSetForBitStringFormatAndNotSetForOtherFormats_data();
+
     void testMinimumValueNotCheckedForEmptyBoolOrStringFormat();
     void testMinimumValueNotCheckedForEmptyBoolOrStringFormat_data();
 
@@ -48,6 +51,7 @@ private:
     void testValidityWithMinimumValueAndFormat(QString const& format);
     void testValidityWithMaximumValueAndFormat(QString const& format);
    
+
 };
 
 //-----------------------------------------------------------------------------
@@ -89,6 +93,71 @@ void tst_Parameter::testValueForBoolFormat_data()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_Parameter::testBitStringLengthIsSetForBitStringFormatAndNotSetForOtherFormats()
+//-----------------------------------------------------------------------------
+void tst_Parameter::testBitStringLengthIsSetForBitStringFormatAndNotSetForOtherFormats()
+{
+    QFETCH(QString, bitStringLength);
+    QFETCH(QString, format);
+    QFETCH(QString, validValueForFormat);
+    QFETCH(bool, expectedValid);
+
+    Parameter parameter;
+    parameter.setName("param");
+    parameter.setValue(validValueForFormat);
+
+    parameter.setValueFormat(format);
+    parameter.setBitStringLength(bitStringLength);
+
+    QStringList errorList;
+    QString identifier = "test";
+
+    QVERIFY(parameter.isValid() == expectedValid);
+    QVERIFY(parameter.isValid(errorList, identifier) == expectedValid);
+
+    if (!expectedValid)
+    {
+        QCOMPARE(errorList.count(), 1);
+
+        if (!bitStringLength.isEmpty())
+        {
+            QCOMPARE(errorList.first(), QString("Bit string length specified for format other than bitString "
+                "for parameter param within test"));
+        }
+        else
+        {
+            QCOMPARE(errorList.first(), QString("No bit string length specified for parameter param within test"));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_Parameter::testBitStringLengthIsSetForBitStringFormatAndNotSetForOtherFormats_data()
+//-----------------------------------------------------------------------------
+void tst_Parameter::testBitStringLengthIsSetForBitStringFormatAndNotSetForOtherFormats_data()
+{
+    QTest::addColumn<QString>("bitStringLength");
+    QTest::addColumn<QString>("format");
+    QTest::addColumn<QString>("validValueForFormat");
+    QTest::addColumn<bool>("expectedValid");
+
+    QTest::newRow("No length and no format set is valid") << "" << "" << "1" << true;
+    QTest::newRow("No length and bool format set is valid") << "" << "bool" << "true" << true;
+    QTest::newRow("No length and float format set is valid") << "" << "float" << "1" << true;
+    QTest::newRow("No length and long format set is valid") << "" << "long" << "1" << true;
+    QTest::newRow("No length and string format set is valid") << "" << "string" << "text" << true;
+
+    QTest::newRow("Bit string length and bitString format set is valid") << "1" << "bitString" << "1" << true;
+    QTest::newRow("No Bit string length and bitString format set is invalid") << "" << "bitString" << "1" << false;
+
+    QTest::newRow("Bit string length set and no format set is invalid") << "1" << "" << "1" << false;
+    QTest::newRow("Bit string length and bool format set is invalid") << "1" << "bool" << "true" << false;
+    QTest::newRow("Bit string length and float format set is invalid") << "1" << "float" << "1" << false;
+    QTest::newRow("Bit string length and long format set is invalid") << "1" << "long" << "1" << false;
+    QTest::newRow("Bit string length and string format set is invalid") << "1" << "string" << "text" << false;    
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_Parameter::testMinimumValueIsValidForGivenFormat()
 //-----------------------------------------------------------------------------
 void tst_Parameter::testMinimumValueNotCheckedForEmptyBoolOrStringFormat()
@@ -104,7 +173,6 @@ void tst_Parameter::testMinimumValueNotCheckedForEmptyBoolOrStringFormat()
     parameter.setValueFormat(format);
     QVERIFY(parameter.isValid(QStringList(), QString()) == true);
     QVERIFY(parameter.isValid() == true);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -131,7 +199,10 @@ void tst_Parameter::testMinimumValueIsValidForGivenFormat()
 
     Parameter parameter;
     parameter.setName("param");
-    parameter.setBitStringLength("4");
+    if (format == "bitString")
+    {
+        parameter.setBitStringLength("4");
+    }
     parameter.setValue("1000000000");
 
     parameter.setValueFormat(format);
@@ -365,7 +436,11 @@ void tst_Parameter::testMaximumValueIsValidForGivenFormat()
 
     Parameter parameter;
     parameter.setName("param");
-    parameter.setBitStringLength("4");
+    if (format == "bitString")
+    {
+        parameter.setBitStringLength("4");
+    }
+
     parameter.setValue("0");
 
     parameter.setValueFormat(format);
