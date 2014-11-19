@@ -15,6 +15,8 @@
 #include "ComponentEditorSettingsPage.h"
 
 #include <QCheckBox>
+#include <QTableWidget>
+#include <QStackedWidget>
 
 class ComponentEditorSettingsPage : public SettingsPage
 {
@@ -33,31 +35,39 @@ public:
 public slots:
 
 	/*!
-	 *  Select all check boxes on the software side.
-	 */
-	void swSelectAll();
-
-	/*!
-	 *  Deselect all check boxes on the software side.
-	 */
-	void swDelectAll();
-
-	/*!
-	 *  Select all check boxes of the current hierarchy on the hardware side.
-	 */
-	void onHWSelectAll();
-	
-	/*!
-	 *  Deselect all check boxes of the current hierarchy on the hardware side.
-	 */
-	void onHwDeselectAll();
-
-	/*!
-	 *  Store the current hierarchy index.
+	 *  Change the workspace.
 	 *
-	 *      @param [in] indexHierarchy   The new hierarchy index.
+	 *      @param [in] workspaceIndex   The index value of the current workspace.
 	 */
-	void onHierarchyChanged(int indexHierarchy);
+	void onWorkspaceChanged(int workspaceIndex);
+
+	/*!
+	 *  Select all hardware check boxes from the selected row.
+	 *
+	 *      @param [in] rowIndex   The selected row.
+	 */
+	void onHwHorizonSelectAll(int rowIndex);
+
+	/*!
+	 *  Select all hardware check boxes from the selected column.
+	 *
+	 *      @param [in] columnIndex   The selected column.
+	 */
+	void onHwVerticalSelectAll(int columnIndex);
+
+	/*!
+	 *  Select all software check boxes from the selected row.
+	 *
+	 *      @param [in] rowIndex   The selected row.
+	 */
+	void onSwHorizonSelectAll(int rowIndex);
+
+	/*!
+	 *  Select all software check boxes from the selected column.
+	 *
+	 *      @param [in] columnIndex   If software would have hierarchy, this selects it.
+	 */
+	void onSwVerticalSelectAll(int columnIndex);
 
 private:
 	//! Disable copying.
@@ -65,9 +75,47 @@ private:
 	ComponentEditorSettingsPage& operator=(ComponentEditorSettingsPage const& rhs);
 
 	/*!
-	 *  Sets the page layout.
+	 *  Set the check box names to correct format.
+	 *
+	 *      @param [in] checkBoxNames   List of names to be changed.
 	 */
-	void setupLayOut();
+	QStringList setCheckBoxNames(QStringList checkBoxNames);
+
+	/*!
+	 *  Set the hardware table.
+	 *
+	 *      @param [in] table               The table.
+	 *      @param [in] horizontalHeaders   Horizontal headers for the table.
+	 *      @param [in] verticalHeaders     Vertical headers for the table.
+	 *      @param [in] workspaceIndex      Current workspace index.
+	 */
+	void setHwTable(QTableWidget* table, QStringList horizontalHeaders, QStringList verticalHeaders, 
+		int workspaceIndex);
+
+	/*!
+	 *  Set the software table.
+	 *
+	 *      @param [in] table               The table.
+	 *      @param [in] horizontalHeaders   Horizontal headers for the table.
+	 *      @param [in] verticalHeaders     Vertical headers for the table.
+	 *      @param [in] workspaceIndex      Current workspace index.
+	 */
+	void setSwTable(QTableWidget* table, QStringList horizontalHeaders, QStringList verticalHeaders, 
+		int workspaceIndex);
+
+	/*!
+	 *  Setup the table layout.
+	 */
+	void setupLayout();
+
+	/*!
+	 *  Assemble the layout.
+	 *
+	 *      @param [in] workspaces             StackedWidget of tables.
+	 *      @param [in] workspaceNames         Names of the workspaces.
+	 *      @param [in] currentWorkspaceName   Current workspace name.
+	 */
+	void assembleLayout(QStackedWidget* workspaces, QStringList workspaceNames, QString currentWorkspaceName);
 
 	/*!
 	 *  Loads the current settings.
@@ -79,16 +127,16 @@ private:
 	 *
 	 *      @param [in] checkBoxes   The current usable check box list.
 	 */
-	QList <QCheckBox*> setCheckBoxes(QList <QCheckBox*> checkBoxes);
+	QList <QCheckBox*> setCheckBoxes();
 
-	//! A list of all used hardware hierarchical view check boxes.
-	QList <QList <QCheckBox*>> hwCheckBoxes_;
+	//! All the hardware check boxes used by all the workspaces. Structured as workspace.hierarchy.checkboxes.
+	QList <QList <QList <QCheckBox*>>> wsHwCheckBoxes_;
 
-	//! A list of all used software check boxes.
-	QList <QCheckBox*> swCheckBoxes_;
+	//! All the software check boxes used by all the workspaces. Structured as workspace.checkboxes.
+	QList <QList <QCheckBox*>> wsSwCheckBoxes_;
 
-	//! The current hierarchy index.
-	int currentHierarchyIndex_;
+	//! The current workspace index.
+	int currentWorkspaceIndex_;
 };
 
 #endif // COMPONENTEDITORSETTINGSPAGE_H

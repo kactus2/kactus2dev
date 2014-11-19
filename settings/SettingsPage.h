@@ -44,6 +44,10 @@ public:
 
 protected:
 
+    /*!
+     *  Returns the settings to the subclasses.
+     *
+     */
     QSettings& settings() const;
 
 private:
