@@ -68,12 +68,18 @@ protected:
 private:
     //! \brief No copying
     ComponentEditorTreeProxyModel(const ComponentEditorTreeProxyModel& other);
-
     //! \brief No assignment
     ComponentEditorTreeProxyModel& operator=(const ComponentEditorTreeProxyModel& other);
 
+	/*!
+	 *  Checks if item is valid. Invalid items should not be hidden.
+	 *
+	 *      @param [in] index   Index of item.
+	 */
+	bool itemIsValidAndCanBeHidden(QModelIndex &index) const;
+
 	//! A list of all the rows that will be hidden.
-	QStringList hiddenRows_;
+	QStringList hiddenItems_;
 };
 
 #endif // COMPONENTEDITORTREEPROXYMODEL_H

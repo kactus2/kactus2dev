@@ -12,6 +12,8 @@
 #include "ComponentEditorTreeSortProxyModel.h"
 #include "componenteditorviewitem.h"
 
+#include "componenteditoritem.h"
+
 #include <QModelIndex>
 
 //-----------------------------------------------------------------------------
@@ -78,10 +80,10 @@ bool ComponentEditorTreeProxyModel::lessThan(const QModelIndex &left, const QMod
 //-----------------------------------------------------------------------------
 bool ComponentEditorTreeProxyModel::filterAcceptsRow(int source_row, QModelIndex const& source_parent) const
 {
-	QModelIndex index = sourceModel()->index(source_row, 0);
-	QString rowName = sourceModel()->data(index).toString();
+	QModelIndex itemIndex = sourceModel()->index(source_row, 0, source_parent);
+	QString itemName = sourceModel()->data(itemIndex).toString();
 
-	if (hiddenRows_.contains( rowName ))
+	if (itemIsValidAndCanBeHidden(itemIndex) && hiddenItems_.contains( itemName ))
 	{
 		return false;
 	}
@@ -92,9 +94,17 @@ bool ComponentEditorTreeProxyModel::filterAcceptsRow(int source_row, QModelIndex
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorTreeProxyModel::setRowVisibility()
 //-----------------------------------------------------------------------------
-void ComponentEditorTreeProxyModel::setRowVisibility( QList<QString> invisibleRows)
+void ComponentEditorTreeProxyModel::setRowVisibility( QList<QString> hiddenItemNames)
 {
-	hiddenRows_ = invisibleRows;
+	hiddenItems_ = hiddenItemNames;
 
 	invalidateFilter();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorTreeSortProxyModel::itemIsValidAndCanBeHidden()
+//-----------------------------------------------------------------------------
+bool ComponentEditorTreeProxyModel::itemIsValidAndCanBeHidden(QModelIndex &index) const
+{
+	return !(index.isValid() && !static_cast<ComponentEditorItem*>(index.internalPointer())->isValid());
 }
