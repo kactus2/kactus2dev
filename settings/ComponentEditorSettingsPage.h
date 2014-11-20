@@ -35,13 +35,6 @@ public:
 public slots:
 
 	/*!
-	 *  Change the workspace.
-	 *
-	 *      @param [in] workspaceIndex   The index value of the current workspace.
-	 */
-	void onWorkspaceChanged(int workspaceIndex);
-
-	/*!
 	 *  Select all hardware check boxes from the selected row.
 	 *
 	 *      @param [in] rowIndex   The selected row.
@@ -69,19 +62,55 @@ public slots:
 	 */
 	void onSwVerticalSelectAll(int columnIndex);
 
+	/*!
+	 *  Change the workspace index.
+	 *
+	 *      @param [in] workspaceIndex   The index value of the new workspace.
+	 */
+	void onWorkspaceChanged(int workspaceIndex);
+
 private:
 	//! Disable copying.
 	ComponentEditorSettingsPage(ComponentEditorSettingsPage const& rhs);
 	ComponentEditorSettingsPage& operator=(ComponentEditorSettingsPage const& rhs);
 
 	/*!
+	 *  Apply the hardware settings.
+	 *
+	 *      @param [in] workspaceIndex   The current workspace index.
+	 */
+	void applyHwSettings(int workspaceIndex);
+
+    /*!
+     *  Apply the software settings.
+     *
+     *      @param [in] workspaceIndex   The current workspace index.
+     */
+    void applySwSettings(int workspaceIndex);
+
+	/*!
+	 *  Setup the layout.
+	 */
+	void setupLayout();
+
+	/*!
+	 *  Setup the table for the layout.
+	 */
+	QStackedWidget* createWorkspacePages(QString currentWorkspaceName, QStringList workspaceNames);
+
+	/*!
+	 *  Get the names of the hierarchies.
+	 */
+	QStringList getHierarchyNames();
+
+	/*!
 	 *  Set the check box names to correct format.
 	 *
 	 *      @param [in] checkBoxNames   List of names to be changed.
 	 */
-	QStringList setCheckBoxNames(QStringList checkBoxNames);
+	QStringList changeNameSeparators(QStringList checkBoxNames);
 
-	/*!
+	 	/*!
 	 *  Set the hardware table.
 	 *
 	 *      @param [in] table               The table.
@@ -102,21 +131,14 @@ private:
 	 */
 	void setSwTable(QTableWidget* table, QStringList horizontalHeaders, QStringList verticalHeaders, 
 		int workspaceIndex);
-
+	
 	/*!
-	 *  Setup the table layout.
-	 */
-	void setupLayout();
-
-	/*!
-	 *  Assemble the layout.
+	 *  Center the check box to a table cell.
 	 *
-	 *      @param [in] workspaces             StackedWidget of tables.
-	 *      @param [in] workspaceNames         Names of the workspaces.
-	 *      @param [in] currentWorkspaceName   Current workspace name.
+	 *      @param [in] checkBox   Check box to be centered.
 	 */
-	void assembleLayout(QStackedWidget* workspaces, QStringList workspaceNames, QString currentWorkspaceName);
-
+	QWidget* centeredCheckBox(QCheckBox* checkBox);
+	
 	/*!
 	 *  Loads the current settings.
 	 */
@@ -130,10 +152,10 @@ private:
 	QList <QCheckBox*> setCheckBoxes();
 
 	//! All the hardware check boxes used by all the workspaces. Structured as workspace.hierarchy.checkboxes.
-	QList <QList <QList <QCheckBox*>>> wsHwCheckBoxes_;
+	QList <QList <QList <QCheckBox*>>> workspaceHwCheckBoxes_;
 
 	//! All the software check boxes used by all the workspaces. Structured as workspace.checkboxes.
-	QList <QList <QCheckBox*>> wsSwCheckBoxes_;
+	QList <QList <QCheckBox*>> workspaceSwCheckBoxes_;
 
 	//! The current workspace index.
 	int currentWorkspaceIndex_;
