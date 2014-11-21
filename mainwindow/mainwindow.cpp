@@ -317,8 +317,8 @@ void MainWindow::copyComponentEditorSettings(QString workspaceName)
 {
 	QSettings settings;
 
-	QString activeWSPath = "Workspaces/" + curWorkspaceName_ + "/ComponentEditorFilters/";
-	QString newWSPath = "Workspaces/" + workspaceName + "/ComponentEditorFilters/";
+	QString activeWorkspacePath = "Workspaces/" + curWorkspaceName_ + "/ComponentEditorFilters/";
+	QString newWorkspacePath = "Workspaces/" + workspaceName + "/ComponentEditorFilters/";
 	
 	for (unsigned int i = 0; i < KactusAttribute::KTS_PRODHIER_COUNT; ++i)
 	{
@@ -327,52 +327,20 @@ void MainWindow::copyComponentEditorSettings(QString workspaceName)
 
 		hwHierarchyName = "HW/" + hwHierarchyName;
 
-		settings.setValue(newWSPath + hwHierarchyName + "/File_sets", 
-			settings.value(activeWSPath + hwHierarchyName + "/File_sets").toBool());
-		settings.setValue(newWSPath + hwHierarchyName + "/Choices", 
-			settings.value(activeWSPath + hwHierarchyName + "/Choices").toBool());
-		settings.setValue(newWSPath + hwHierarchyName + "/Model_parameters", 
-			settings.value(activeWSPath + hwHierarchyName + "/Model_parameters").toBool());
-		settings.setValue(newWSPath + hwHierarchyName + "/Parameters", 
-			settings.value(activeWSPath + hwHierarchyName + "/Parameters").toBool());
-		settings.setValue(newWSPath + hwHierarchyName + "/Memory_maps", 
-			settings.value(activeWSPath + hwHierarchyName + "/Memory_maps").toBool());
-		settings.setValue(newWSPath + hwHierarchyName + "/Address_spaces", 
-			settings.value(activeWSPath + hwHierarchyName + "/Address_spaces").toBool());
-		settings.setValue(newWSPath + hwHierarchyName + "/Views", 
-			settings.value(activeWSPath + hwHierarchyName + "/Views").toBool());
-		settings.setValue(newWSPath + hwHierarchyName + "/Software_views", 
-			settings.value(activeWSPath + hwHierarchyName + "/Software_views").toBool());
-		settings.setValue(newWSPath + hwHierarchyName + "/System_views", 
-			settings.value(activeWSPath + hwHierarchyName + "/System_views").toBool());
-		settings.setValue(newWSPath + hwHierarchyName + "/Ports", 
-			settings.value(activeWSPath + hwHierarchyName + "/Ports").toBool());
-		settings.setValue(newWSPath + hwHierarchyName + "/Bus_interfaces", 
-			settings.value(activeWSPath + hwHierarchyName + "/Bus_interfaces").toBool());
-		settings.setValue(newWSPath + hwHierarchyName + "/Channels", 
-			settings.value(activeWSPath + hwHierarchyName + "/Channels").toBool());
-		settings.setValue(newWSPath + hwHierarchyName + "/Cpus", 
-			settings.value(activeWSPath + hwHierarchyName + "/Cpus").toBool());
-		settings.setValue(newWSPath + hwHierarchyName + "/Other_clock_drivers", 
-			settings.value(activeWSPath + hwHierarchyName + "/Other_clock_drivers").toBool());
-		settings.setValue(newWSPath + hwHierarchyName + "/COM_interfaces", 
-			settings.value(activeWSPath + hwHierarchyName + "/COM_interfaces").toBool());
-		settings.setValue(newWSPath + hwHierarchyName + "/Software_properties", 
-			settings.value(activeWSPath + hwHierarchyName + "/Software_properties").toBool());
-
+		foreach (QString name, ComponentEditor::getHwItemNames())
+		{
+			settings.setValue(newWorkspacePath + hwHierarchyName + "/" + name, 
+				settings.value(activeWorkspacePath + hwHierarchyName + "/" + name).toBool());
+		}
 	}
 
-	activeWSPath = activeWSPath + "SW/";
-	newWSPath = newWSPath + "SW/";
+	activeWorkspacePath = activeWorkspacePath + "SW/";
+	newWorkspacePath = newWorkspacePath + "SW/";
 
-	settings.setValue(newWSPath + "File_sets", settings.value(activeWSPath + "File_sets").toBool());
-	settings.setValue(newWSPath + "Choices", settings.value(activeWSPath + "Choices").toBool());
-	settings.setValue(newWSPath + "Parameters", settings.value(activeWSPath + "Parameters").toBool());
-	settings.setValue(newWSPath + "Software_views", settings.value(activeWSPath + "Software_views").toBool());
-	settings.setValue(newWSPath + "COM_interfaces", settings.value(activeWSPath + "COM_interfaces").toBool());
-	settings.setValue(newWSPath + "API_interfaces", settings.value(activeWSPath + "API_interfaces").toBool());
-	settings.setValue(newWSPath + "Software_properties", 
-		settings.value(activeWSPath + "Software_properties").toBool());
+	foreach (QString itemName, ComponentEditor::getSwItemNames())
+	{
+		settings.setValue(newWorkspacePath + itemName, settings.value(activeWorkspacePath + itemName).toBool());
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -380,19 +348,14 @@ void MainWindow::copyComponentEditorSettings(QString workspaceName)
 //-----------------------------------------------------------------------------
 void MainWindow::createNewWorkspace(QString workspaceName)
 {
-	/*
-	FilterWidget::FilterOptions defaultOptions;
-	defaultOptions.type.advanced_ = false;
-	dialer_->setFilters(defaultOptions);
-	*/
 	QSettings settings;
 
-	QString keyName = "Workspaces/" + workspaceName;
+	QString workspacePath = "Workspaces/" + workspaceName;
 
 	FilterWidget::FilterOptions filters = dialer_->getFilters();
 
 	// Save the geometry and state of windows.
-	settings.beginGroup(keyName);
+	settings.beginGroup(workspacePath);
 
 	settings.setValue("WindowState", saveState());
 	settings.setValue("Geometry", saveGeometry());
@@ -447,40 +410,25 @@ void MainWindow::createNewWorkspace(QString workspaceName)
 		QString hwHierarchyName(KactusAttribute::valueToString(val));
 		settings.beginGroup(hwHierarchyName);
 
-		settings.setValue("File_sets", true);
-		settings.setValue("Choices", true);
-		settings.setValue("Model_parameters", true);
-		settings.setValue("Parameters", true);
-		settings.setValue("Memory_maps", true);
-		settings.setValue("Address_spaces", true);
-		settings.setValue("Views", true);
-		settings.setValue("Software_views", true);
-		settings.setValue("System_views", true);
-		settings.setValue("Ports", true);
-		settings.setValue("Bus_interfaces", true);
-		settings.setValue("Channels", true);
-		settings.setValue("Cpus", true);
-		settings.setValue("Other_clock_drivers", true);
-		settings.setValue("COM_interfaces", true);
-		settings.setValue("Software_properties", true);
+		foreach (QString itemName, ComponentEditor::getHwItemNames())
+		{
+			settings.setValue(itemName, true);
+		}
 
-		settings.endGroup(); // hwHerarchyName
+		settings.endGroup(); // hwHierarchyName
 	}
 
 	settings.endGroup(); // HW
 	settings.beginGroup("SW");
 	
-	settings.setValue("File_sets", true);
-	settings.setValue("Choices", true);
-	settings.setValue("Parameters", true);
-	settings.setValue("Software_views", true);
-	settings.setValue("COM_interfaces", true);
-	settings.setValue("API_interfaces", true);
-	settings.setValue("Software_properties", true);
+	foreach (QString itemName, ComponentEditor::getSwItemNames())
+	{
+		settings.setValue(itemName, true);
+	}
 
 	settings.endGroup(); // SW
 	settings.endGroup(); // ComponentEditorFilters
-	settings.endGroup(); // Workspace/keyName
+	settings.endGroup(); // Workspace/workspaceName
 }
 
 //-----------------------------------------------------------------------------
@@ -628,6 +576,23 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
     filters.firmness.fixed_ =settings.value("ShowFixed", true).toBool();
     settings.endGroup();
     dialer_->setFilters(filters);
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::applySettingsToOpenDocuments()
+//-----------------------------------------------------------------------------
+void MainWindow::applySettingsToOpenDocuments()
+{
+	QSettings settings;
+
+	// Apply the settings to the open documents.
+	for (int i = 0; i < designTabs_->count(); ++i)
+	{
+		TabDocument* doc = static_cast<TabDocument*>(designTabs_->widget(i));
+		Q_ASSERT(doc != 0);
+
+		doc->applySettings(settings);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -2759,16 +2724,8 @@ void MainWindow::openSettings()
 
 	if (dialog.exec() == QDialog::Accepted)
 	{
-		QSettings settings;
+		applySettingsToOpenDocuments();
 
-		// Apply the settings to the open documents.
-		for (int i = 0; i < designTabs_->count(); ++i)
-		{
-			TabDocument* doc = static_cast<TabDocument*>(designTabs_->widget(i));
-			Q_ASSERT(doc != 0);
-
-			doc->applySettings(settings);
-		}
 
         // Update the generator plugin actions.
         updateGeneratorPluginActions();
@@ -3749,7 +3706,6 @@ void MainWindow::updateWindows()
     updateWindowAndControlVisibility(TabDocument::INSTANCEWINDOW, instanceDock_);
     updateWindowAndControlVisibility(TabDocument::ADHOC_WINDOW, adHocDock_);
     updateWindowAndControlVisibility(TabDocument::ADDRESS_WINDOW, addressDock_);   
-    //updateWindowAndControlVisibility(TabDocument::NOTES_WINDOW, notesDock_);
 }
 
 //-----------------------------------------------------------------------------
@@ -4279,6 +4235,8 @@ void MainWindow::onWorkspaceChanged(QAction* action)
 	settings.setValue("Workspaces/CurrentWorkspace", curWorkspaceName_);
 
     loadWorkspace(curWorkspaceName_);
+
+	applySettingsToOpenDocuments();
 }
 
 //-----------------------------------------------------------------------------
@@ -4290,10 +4248,6 @@ void MainWindow::onNewWorkspace()
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        // Save the new workspace with current settings and set it as the current one.
-        // FilterWidget::FilterOptions defaultOptions;
-        // defaultOptions.type.advanced_ = false;
-        // dialer_->setFilters(defaultOptions);
 		saveWorkspace(curWorkspaceName_);
 
 		createNewWorkspace(dialog.getName());

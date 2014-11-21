@@ -337,6 +337,10 @@ void ComponentEditorSettingsPage::setHwTable(QTableWidget* table, QStringList ho
 	table->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	table->setCornerButtonEnabled(false);
 
+	table->setSelectionMode(QAbstractItemView::NoSelection);
+	table->horizontalHeader()->setSelectionMode(QAbstractItemView::SingleSelection);
+	table->verticalHeader()->setSelectionMode(QAbstractItemView::SingleSelection);
+
 	connect(table->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(onHwVerticalSelectAll(int)));
 	connect(table->verticalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(onHwHorizonSelectAll(int)));
 }
@@ -359,6 +363,10 @@ void ComponentEditorSettingsPage::setSwTable(QTableWidget* table, QStringList ho
 
 	table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	table->setCornerButtonEnabled(false);
+
+	table->setSelectionMode(QAbstractItemView::NoSelection);
+	table->horizontalHeader()->setSelectionMode(QAbstractItemView::SingleSelection);
+	table->verticalHeader()->setSelectionMode(QAbstractItemView::SingleSelection);
 
 	connect(table->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(onSwVerticalSelectAll(int)));
 	connect(table->verticalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(onSwHorizonSelectAll(int)));

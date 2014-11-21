@@ -553,6 +553,12 @@ private:
      */
     void loadWorkspace(QString const& workspaceName);
 
+
+	/*!
+	 *  Apply the settings to all the documents.
+	 */
+	void applySettingsToOpenDocuments();
+
     /*!
      *  Saves the settings for the given workspace.
      *

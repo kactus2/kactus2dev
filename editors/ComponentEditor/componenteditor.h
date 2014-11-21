@@ -81,6 +81,10 @@ public:
 	 */
 	void applySettings(QSettings& settings);
 
+	static QStringList getHwItemNames();
+
+	static QStringList getSwItemNames();
+
 public slots:
 
     /*! Validates the document against the IP-XACT standard.

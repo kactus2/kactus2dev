@@ -237,6 +237,33 @@ void ComponentEditor::applySettings(QSettings& settings)
 }
 
 //-----------------------------------------------------------------------------
+// Function: componenteditor::getHwItemNames()
+//-----------------------------------------------------------------------------
+QStringList ComponentEditor::getHwItemNames()
+{
+	QStringList itemNames;
+
+	itemNames << "File_sets" << "Choices" << "Model_parameters" << "Parameters" << "Memory_maps" << 
+		"Address_spaces" << "Views" << "Software_views" << "System_views" << "Ports" << "Bus_interfaces" << 
+		"Channels" << "Cpus" << "Other_clock_drivers" << "COM_interfaces" << "Software_properties";
+
+	return itemNames;
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditor::getSwItemNames()
+//-----------------------------------------------------------------------------
+QStringList ComponentEditor::getSwItemNames()
+{
+	QStringList itemNames;
+
+	itemNames << "File_sets" << "Choices" << "Parameters" << "Software_views" << "COM_interfaces" << 
+		"API_interfaces" << "Software_properties";
+
+	return itemNames;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentEditor::validate()
 //-----------------------------------------------------------------------------
 bool ComponentEditor::validate( QStringList& errorList )
@@ -758,7 +785,6 @@ void ComponentEditor::setRowVisibility(QSettings& settings)
 		{
 			settings.beginGroup("Soc");
 		}
-		//else if (component_->getComponentHierarchy() == KactusAttribute::KTS_IP)
 		else
 		{
 			settings.beginGroup("IP");
