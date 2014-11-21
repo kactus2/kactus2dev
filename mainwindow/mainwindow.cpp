@@ -472,6 +472,8 @@ void MainWindow::updateWorkspaceMenu()
     workspaceMenu_.addSeparator();
     workspaceMenu_.addAction(addAction);
     workspaceMenu_.addAction(deleteAction);
+
+	actWorkspaces_->setText(curWorkspaceName_);
 }
 
 //-----------------------------------------------------------------------------
@@ -831,6 +833,8 @@ void MainWindow::setupActions()
 	// Initialize the action to manage workspaces.
 	actWorkspaces_ = new QAction(QIcon(":icons/common/graphics/workspace.png"),
 		tr("Workspaces"), this);
+	actWorkspaces_->setProperty("rowSpan", 2);
+	actWorkspaces_->setProperty("colSpan", 2);
 	connect(actWorkspaces_, SIGNAL(triggered()), this, SLOT(openWorkspaceMenu()), Qt::UniqueConnection);
 
 	actRefresh_ = new QAction(QIcon(":/icons/common/graphics/refresh.png"), tr("Refresh"), this);
@@ -4235,6 +4239,8 @@ void MainWindow::onWorkspaceChanged(QAction* action)
 	settings.setValue("Workspaces/CurrentWorkspace", curWorkspaceName_);
 
     loadWorkspace(curWorkspaceName_);
+
+	actWorkspaces_->setText(curWorkspaceName_);
 
 	applySettingsToOpenDocuments();
 }
