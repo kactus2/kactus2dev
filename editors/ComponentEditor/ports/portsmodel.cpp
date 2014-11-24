@@ -159,6 +159,10 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
 
         switch (index.column()) 
         {
+        case PORT_COL_ROW:
+            {
+                return QColor("whiteSmoke");
+            }
         case PORT_COL_NAME:
         case PORT_COL_DIRECTION:
         case PORT_COL_WIDTH:
