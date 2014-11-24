@@ -446,7 +446,7 @@ void tst_ParameterValidator::testValidityWithMinimumValueAndFormat(QString const
 
      ParameterValidator validator;
 
-     QVERIFY(validator.hasValidValue(parameter, QList<QSharedPointer<Choice> >()) == expectedValid);
+     QVERIFY(validator.hasValidValue(parameter, QSharedPointer<QList<QSharedPointer<Choice> >>()) == expectedValid);
 
      if (!expectedValid)
      {
@@ -691,7 +691,7 @@ void tst_ParameterValidator::testValidityWithMaximumValueAndFormat(QString const
 
     ParameterValidator validator;
 
-    QVERIFY(validator.hasValidValue(parameter, QList<QSharedPointer<Choice> >()) == expectedValid);
+    QVERIFY(validator.hasValidValue(parameter, QSharedPointer<QList<QSharedPointer<Choice> > >()) == expectedValid);
 
     if (!expectedValid)
     {
@@ -769,13 +769,13 @@ void tst_ParameterValidator::testChoiceReference()
     Parameter* parameter = createParameterWithName();
     parameter->setChoiceRef(choiceRef);
 
-    QList<QSharedPointer<Choice> > choices;
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices(new QList<QSharedPointer<Choice> >());
 
     foreach(QString choiceName, choiceNames)
     {
         QSharedPointer<Choice> choice(new Choice(QDomNode()));
         choice->setName(choiceName);
-        choices.append(choice);
+        choices->append(choice);
     }
 
     ParameterValidator validator;
@@ -824,7 +824,7 @@ void tst_ParameterValidator::testValueUsingChoice()
     parameter->setChoiceRef(choiceRef);
     parameter->setValue(value);
 
-    QList<QSharedPointer<Choice> > choices;
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices(new QList<QSharedPointer<Choice> > ());
 
     QSharedPointer<Choice> referencedChoice(new Choice(QDomNode()));
     referencedChoice->setName(choiceRef);
@@ -834,7 +834,7 @@ void tst_ParameterValidator::testValueUsingChoice()
         enumeration->setValue(enumerationValue);
         referencedChoice->enumerations()->append(enumeration);
     }
-    choices.append(referencedChoice);
+    choices->append(referencedChoice);
 
     ParameterValidator validator;
     QVERIFY(validator.hasValidValue(parameter, choices) == expectedValid);
@@ -910,7 +910,7 @@ bool tst_ParameterValidator::errorIsNotFoundInErrorlist(QString const& expectedE
 QStringList tst_ParameterValidator::findErrors(Parameter* parameter)
 {
     ParameterValidator validator; 
-    return validator.findErrorsIn(parameter, "test", QList<QSharedPointer<Choice> >());
+    return validator.findErrorsIn(parameter, "test", QSharedPointer<QList<QSharedPointer<Choice> > >());
 }
 
 QTEST_APPLESS_MAIN(tst_ParameterValidator)
