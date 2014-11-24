@@ -17,6 +17,7 @@
 #include <QList>
 #include <QSharedPointer>
 
+class Choice;
 class RegisterDefinition;
 class VendorExtension;
 
@@ -70,19 +71,23 @@ public:
 
 	/*! \brief Check if the alternate register is in a valid state.
 	 *
+     * \param componentChoices  Choices in the containing component.
 	 * \param errorList The list to add the possible error messages to.
 	 * \param parentIdentifier String from parent to help to identify the location of the error.
 	 *
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	virtual bool isValid(QStringList& errorList, 
+	virtual bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+        QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
 	/*! \brief Check if the alternate register is in a valid state.
 	 *
+     * \param componentChoices  Choices in the containing component.
+     *
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	virtual bool isValid() const;
+    virtual bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const;
 
 	/*! \brief Get the list of the alternate groups
 	 *

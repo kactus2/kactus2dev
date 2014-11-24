@@ -22,7 +22,8 @@ AddressBlockEditor::AddressBlockEditor(QSharedPointer<AddressBlock> addressBlock
 ItemEditor(component, handler, parent),
 view_(new EditableTableView(this)),
 proxy_(new AddressBlockProxy(this)),
-model_(new AddressBlockModel(addressBlock, this)) {
+model_(new AddressBlockModel(addressBlock, component->getChoices(), this))
+{
 
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Registers summary"), this);

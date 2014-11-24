@@ -14,6 +14,8 @@
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 
+class Choice;
+
 /*! \brief The model to manage the details of a single address block.
  *
  */
@@ -24,11 +26,13 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param addressBlock Pointer to the address block being edited.
+     * \param addressBlock Pointer to the address block being edited.
+     * \param componentChoices The choices available in the containing component.
 	 * \param parent Pointer to the owner of the model.
 	 *
 	*/
 	AddressBlockModel(QSharedPointer<AddressBlock> addressBlock,
+        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
 		QObject *parent);
 	
 	//! \brief The destructor
@@ -138,6 +142,9 @@ private:
 
 	//! \brief Contains the register items to display.
 	QList<QSharedPointer<RegisterModel> >& items_;
+
+    //! \brief The choices available in the containing component.
+    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices_;
 };
 
 #endif // ADDRESSBLOCKMODEL_H

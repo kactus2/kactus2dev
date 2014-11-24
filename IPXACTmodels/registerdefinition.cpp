@@ -160,7 +160,8 @@ void RegisterDefinition::write(QXmlStreamWriter& writer) {
 	return;
 }
 
-bool RegisterDefinition::isValid( QStringList& errorList, 
+bool RegisterDefinition::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+    QStringList& errorList, 
 								 const QString& parentIdentifier ) const {
 
 	bool valid = true;
@@ -175,7 +176,8 @@ bool RegisterDefinition::isValid( QStringList& errorList,
 	}
 
 	foreach (QSharedPointer<Field> field, fields_) {
-		if (!field->isValid(size_, errorList, parentIdentifier)) {
+		if (!field->isValid(size_, componentChoices, errorList, parentIdentifier))
+        {
 			valid = false;
 		}
 	}
@@ -183,18 +185,22 @@ bool RegisterDefinition::isValid( QStringList& errorList,
 	return valid;
 }
 
-bool RegisterDefinition::isValid() const {
-
-	if (size_ == 0) {
+bool RegisterDefinition::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
+{
+	if (size_ == 0)
+    {
 		return false;
 	}
 
-	if (reset_ && !reset_->isValid()) {
+	if (reset_ && !reset_->isValid())
+    {
 		return false;
 	}
 
-	foreach (QSharedPointer<Field> field, fields_) {
-		if (!field->isValid(size_)) {
+	foreach (QSharedPointer<Field> field, fields_)
+    {
+		if (!field->isValid(size_, componentChoices))
+        {
 			return false;
 		}
 	}

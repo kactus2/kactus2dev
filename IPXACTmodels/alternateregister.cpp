@@ -9,6 +9,8 @@
 #include "GenericVendorExtension.h"
 #include "parameter.h"
 
+#include <IPXACTmodels/validators/ParameterValidator.h>
+
 #include <QXmlStreamWriter>
 #include <QDomNode>
 #include <QString>
@@ -16,6 +18,9 @@
 #include <QSharedPointer>
 #include "XmlUtils.h"
 
+//-----------------------------------------------------------------------------
+// Function: AlternateRegister::AlternateRegister()
+//-----------------------------------------------------------------------------
 AlternateRegister::AlternateRegister(QDomNode& registerNode):
 RegisterModel(registerNode), alternateGroups_(), alternateRegisterDef_(),
 vendorExtensions_()
@@ -44,45 +49,68 @@ vendorExtensions_()
 
 }
 
+//-----------------------------------------------------------------------------
+// Function: AlternateRegister::AlternateRegister()
+//-----------------------------------------------------------------------------
 AlternateRegister::AlternateRegister( const AlternateRegister& other ):
 RegisterModel(other),
 alternateGroups_(other.alternateGroups_),
 alternateRegisterDef_(),
 vendorExtensions_(other.vendorExtensions_)
 {
-	if (other.alternateRegisterDef_) {
+	if (other.alternateRegisterDef_)
+    {
 		alternateRegisterDef_ = QSharedPointer<RegisterDefinition>(
 			new RegisterDefinition(*other.alternateRegisterDef_.data()));
 	}
 }
 
-AlternateRegister& AlternateRegister::operator=( const AlternateRegister& other ) {
+//-----------------------------------------------------------------------------
+// Function: AlternateRegister::operator=()
+//-----------------------------------------------------------------------------
+AlternateRegister& AlternateRegister::operator=( const AlternateRegister& other ) 
+{
 	if (this != &other) {
 		RegisterModel::operator=(other);
 
 		alternateGroups_ = other.alternateGroups_;
         vendorExtensions_ = other.vendorExtensions_;
 
-		if (other.alternateRegisterDef_) {
+		if (other.alternateRegisterDef_)
+        {
 			alternateRegisterDef_ = QSharedPointer<RegisterDefinition>(
 				new RegisterDefinition(*other.alternateRegisterDef_.data()));
 		}
 		else
+        {
 			alternateRegisterDef_ = QSharedPointer<RegisterDefinition>();
+        }
 	}
 	return *this;
 }
 
-AlternateRegister::~AlternateRegister() {
+//-----------------------------------------------------------------------------
+// Function: AlternateRegister::~AlternateRegister()
+//-----------------------------------------------------------------------------
+AlternateRegister::~AlternateRegister()
+{
 	alternateGroups_.clear();
 	alternateRegisterDef_.clear();
 }
 
-QSharedPointer<RegisterModel> AlternateRegister::clone() {
+//-----------------------------------------------------------------------------
+// Function: AlternateRegister::clone()
+//-----------------------------------------------------------------------------
+QSharedPointer<RegisterModel> AlternateRegister::clone()
+{
 	return QSharedPointer<RegisterModel>(new AlternateRegister(*this));
 }
 
-void AlternateRegister::write(QXmlStreamWriter& writer) {
+//-----------------------------------------------------------------------------
+// Function: AlternateRegister::write()
+//-----------------------------------------------------------------------------
+void AlternateRegister::write(QXmlStreamWriter& writer)
+{
 	writer.writeStartElement("spirit:alternateRegister");
 
 	// call base class to write itself
@@ -92,16 +120,17 @@ void AlternateRegister::write(QXmlStreamWriter& writer) {
     {
 		writer.writeStartElement("spirit:alternateGroups");
 
-		for (int i = 0; i < alternateGroups_.size(); ++i) {
-			writer.writeTextElement("spirit:alternateGroup",
-					alternateGroups_.at(i));
+		for (int i = 0; i < alternateGroups_.size(); ++i)
+        {
+			writer.writeTextElement("spirit:alternateGroup", alternateGroups_.at(i));
 		}
 
 		writer.writeEndElement(); // spirit:alternateGroups
 	}
 
 	// write register definition group is one exists
-	if (alternateRegisterDef_) {
+	if (alternateRegisterDef_)
+    {
 		alternateRegisterDef_->write(writer);
 	}
 
@@ -115,40 +144,54 @@ void AlternateRegister::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:alternateRegister
 }
 
-bool AlternateRegister::isValid( QStringList& errorList, 
-								const QString& parentIdentifier ) const {
+//-----------------------------------------------------------------------------
+// Function: alternateregister::isValid()
+//-----------------------------------------------------------------------------
+bool AlternateRegister::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+    QStringList& errorList, const QString& parentIdentifier ) const {
 
 	bool valid = true;
 
-	if (nameGroup_.name().isEmpty()) {
+	if (nameGroup_.name().isEmpty())
+    {
 		errorList.append(QObject::tr("No name specified for alternate register"
 			" within %1").arg(parentIdentifier));
 		valid = false;
 	}
 
-	if (alternateGroups_.isEmpty()) {
+	if (alternateGroups_.isEmpty())
+    {
 		errorList.append(QObject::tr("At least one alternate group must be "
 			"specified for alternate register %1 within %2").arg(nameGroup_.name()).arg(
 			parentIdentifier));
 		valid = false;
 	}
 
-	if (alternateRegisterDef_ && !alternateRegisterDef_->isValid(errorList, QObject::tr(
-		"alternate register %1").arg(nameGroup_.name()))) {
+	if (alternateRegisterDef_ && !alternateRegisterDef_->isValid(componentChoices, errorList, 
+        QObject::tr("alternate register %1").arg(nameGroup_.name()))) {
 		valid = false;
 	}
 
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid(errorList, QObject::tr("alternate register %1").arg(nameGroup_.name()))) {
-			valid = false;
-		}
-	}
+    ParameterValidator validator;
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        errorList.append(validator.findErrorsIn(param.data(), 
+            QObject::tr("alternate register %1").arg(nameGroup_.name()), componentChoices));
+
+        if (!validator.validate(param.data(), componentChoices)) 
+        {
+            valid = false;
+        }
+    }
 
 	return valid;
 }
 
-bool AlternateRegister::isValid() const {
-	
+//-----------------------------------------------------------------------------
+// Function: alternateregister::isValid()
+//-----------------------------------------------------------------------------
+bool AlternateRegister::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
+{
 	if (nameGroup_.name().isEmpty()) {
 		return false;
 	}
@@ -157,34 +200,51 @@ bool AlternateRegister::isValid() const {
 		return false;
 	}
 
-	if (alternateRegisterDef_ && !alternateRegisterDef_->isValid()) {
+	if (alternateRegisterDef_ && !alternateRegisterDef_->isValid(componentChoices)) {
 			return false;
 	}
 
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid()) {
-			return false;
-		}
-	}
+    ParameterValidator validator;
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        if (!validator.validate(param.data(), componentChoices))
+        {
+            return false;
+        }
+    }
 
 	return true;
 }
 
-const QList<QString>& AlternateRegister::getAlternateGroups() const {
+//-----------------------------------------------------------------------------
+// Function: AlternateRegister::getAlternateGroups()
+//-----------------------------------------------------------------------------
+const QList<QString>& AlternateRegister::getAlternateGroups() const 
+{
 	return alternateGroups_;
 }
 
-RegisterDefinition* AlternateRegister::getAlternateRegisterDef() const {
+//-----------------------------------------------------------------------------
+// Function: AlternateRegister::getAlternateRegisterDef()
+//-----------------------------------------------------------------------------
+RegisterDefinition* AlternateRegister::getAlternateRegisterDef() const 
+{
 	return alternateRegisterDef_.data();
 }
 
-void AlternateRegister::setAlternateGroups(
-		const QList<QString>& alternateGroups) {
+//-----------------------------------------------------------------------------
+// Function: AlternateRegister::setAlternateGroups()
+//-----------------------------------------------------------------------------
+void AlternateRegister::setAlternateGroups(const QList<QString>& alternateGroups)
+{
 	this->alternateGroups_.clear();
 	this->alternateGroups_ = alternateGroups;
 }
 
-void AlternateRegister::setAlternateRegisterDef(
-		RegisterDefinition* alternateRegisterDef) {
+//-----------------------------------------------------------------------------
+// Function: AlternateRegister::setAlternateRegisterDef()
+//-----------------------------------------------------------------------------
+void AlternateRegister::setAlternateRegisterDef(RegisterDefinition* alternateRegisterDef) 
+{
 	this->alternateRegisterDef_ = QSharedPointer<RegisterDefinition>(alternateRegisterDef);
 }

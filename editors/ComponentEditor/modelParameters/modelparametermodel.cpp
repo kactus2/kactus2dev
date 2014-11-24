@@ -19,6 +19,8 @@
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/model.h>
 
+#include <IPXACTmodels/validators/ModelParameterValidator.h>
+
 //-----------------------------------------------------------------------------
 // Function: ModelParameterModel::ModelParameterModel()
 //-----------------------------------------------------------------------------
@@ -107,7 +109,8 @@ QVariant ModelParameterModel::data(QModelIndex const& index, int role) const
     }
     else if (Qt::ForegroundRole == role)
     {
-        if (!modelParameter->isValid())
+        bool isValidColumnData = validateColumnForParameter(index.column(), modelParameter);
+        if (!isValidColumnData)
         {
              return QColor("red");
         }
@@ -394,6 +397,22 @@ void ModelParameterModel::setModelAndLockCurrentModelParameters(QSharedPointer<M
     }
 
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::validateColumnForParameter()
+//-----------------------------------------------------------------------------
+bool ModelParameterModel::validateColumnForParameter(int column, QSharedPointer<Parameter> parameter) const
+{
+    if (column == ModelParameterColumns::USAGE_TYPE)
+    {
+        ModelParameterValidator validator;
+        return validator.hasValidUsageType(parameter.dynamicCast<ModelParameter>().data());
+    }
+    else
+    {
+        return AbstractParameterModel::validateColumnForParameter(column, parameter);
+    }
 }
 
 //-----------------------------------------------------------------------------

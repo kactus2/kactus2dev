@@ -45,7 +45,7 @@ QString ComponentEditorViewItem::text() const {
 //-----------------------------------------------------------------------------
 bool ComponentEditorViewItem::isValid() const {
 	// check that view is valid
-	if (!view_->isValid(component_->getFileSetNames())) {
+	if (!view_->isValid(component_->getFileSetNames(), component_->getChoices())) {
 		return false;
 	}
 	// check that the reference can be found

@@ -60,21 +60,6 @@ public:
 	*/
 	virtual void write(QXmlStreamWriter& writer);
 
-	/*! Check if the Parameter is in valid state or not.
-	*
-	*      @return True if the parameter is valid.
-	*/
-	virtual bool isValid() const;
-
-	/*! Check if the parameter is in a valid state.
-	*
-	*      @param [in] errorList            The list to add the possible error messages to.
-	*      @param [in] parentIdentifier     String from parent to help to identify the location of the error.
-	*
-	*      @return bool True if the state is valid and writing is possible.
-	*/
-	virtual bool isValid(QStringList& errorList, QString const& parentIdentifier) const;
-
 	/*! Get the name of the parameter
 	 *
 	 *      @return QString containing the name
@@ -240,6 +225,13 @@ public:
      *      @param [in] attributeValue      The value of the attribute.
      */
     void setValueAttribute(QString const& attributeName, QString const& attributeValue);
+           
+    /*!
+     *  Gets the general name of the IP-Xact element represented by the parameter e.g. parameter.
+     *
+     *      @return The name of IP-Xact element.
+     */
+    virtual QString elementName() const;
 
 protected:
         
@@ -249,93 +241,9 @@ protected:
      *      @return The name of IP-Xact element.
      */
     virtual QString elementIdentifier() const;
-       
-    /*!
-     *  Gets the general name of the IP-Xact element represented by the parameter e.g. parameter.
-     *
-     *      @return The name of IP-Xact element.
-     */
-    virtual QString elementName() const;
 
 private:
-    
-    /*!
-     *  Checks if the format attribute of the value is set.
-     *
-     *      @return True, if the format is set, otherwise false.
-     */
-    bool formatSet() const;
-
-    /*!
-     *  Checks if the format attribute of the value is valid.
-     *
-     *      @return True, if the format is valid, otherwise false.
-     */
-    bool isValidFormat() const;
-
-    /*!
-     *  Checks if the parameter value is valid in the specified format (if any).
-     *
-     *      @return True, if the value is valid for the format, otherwise false.
-     */
-    bool isValidValueForFormat() const;
-    
-    /*!
-     *  Checks if the parameter boundary value (minimum/maximum) is valid in the specified format.
-     *
-     *      @return True, if the boundary value is valid for the format, otherwise false.
-     */
-    bool isValidBoundaryForFormat(QString const& boundary) const;
-    
-    /*!
-     *  Checks if the parameter value should be compared to the minimum value.
-     *
-     *      @return True, if the value should be compared, otherwise false.
-     */
-    bool shouldCompareValueToMinimum() const;
-
-    bool shouldCompareValueToMaximum() const;
-
-    /*!
-     *  Checks if the parameter value is less than the minimum value.
-     *
-     *      @return True, if the value is less than the minimum value, otherwise false.
-     */
-    bool valueIsLessThanMinimum() const;
-
-    bool valueIsGreaterThanMaximum() const;
-
-    /*!
-     *   Gets the value of a given string in the format specified for the value.
-     *
-     *      @param [in] value   The string whose value to get.
-     *
-     *      @return The value of the string.
-     */
-    qreal valueOf(QString const& value) const;
-    
-    /*!
-     *   Gets the value of a given string when the string is interpret as a long integer.
-     *
-     *      @param [in] value   The string whose value to get.
-     *
-     *      @return The value of the string.
-     */
-    qreal longValueOf(QString const& value) const;
-    
-    /*!
-     *   Gets the value of a given string when the string is interpret as a floating point number.
-     *
-     *      @param [in] value   The string whose value to get.
-     *
-     *      @return The value of the string.
-     */
-    qreal floatValueOf(QString const& value) const;
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
+ 
     //! Contains the name, display name and description of parameter.
     NameGroup nameGroup_;
 

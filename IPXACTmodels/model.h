@@ -19,6 +19,7 @@
 #include <QXmlStreamWriter>
 #include <QStringList>
 
+class Choice;
 class VLNV;
 
 /*! \brief Equals to the spirit:model element in the IP-Xact specification
@@ -69,23 +70,27 @@ public:
 
 	/*! \brief Check if the model is in a valid state.
 	 * 
-	 * \param fileSetNames List of names of the component's file sets.
-	 * \param errorList The list to add the possible error messages to.
-	 * \param parentIdentifier String from parent to help to identify the location of the error.
+	 * \param fileSetNames      List of names of the component's file sets.
+     * \param componentChoices  Choices in the containing component.
+	 * \param errorList         The list to add the possible error messages to.
+	 * \param parentIdentifier  String from parent to help to identify the location of the error.
 	 *
 	 * \return bool True if the state is valid and writing is possible.
 	*/
 	bool isValid(const QStringList& fileSetNames, 
+        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
 		QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
 	/*! \brief Check if the model is in a valid state.
 	 * 
 	 * \param fileSetNames List of names of the component's file sets.
+     * \param componentChoices  Choices in the component.
 	 * 
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(const QStringList& fileSetNames) const;
+	bool isValid(const QStringList& fileSetNames,
+         QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const;
 
 	/*! \brief Get the views of this model
 	 *

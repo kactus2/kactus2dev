@@ -1,26 +1,37 @@
 //-----------------------------------------------------------------------------
-// File: tst_Parameter.cpp
+// File: tst_ParameterValidator.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
 // Date: 13.11.2014
 //
 // Description:
-// Unit test for class Parameter.
+// Unit test for class ParameterValidator.
 //-----------------------------------------------------------------------------
 
 #include <QtTest>
 
+#include <IPXACTmodels/choice.h>
+#include <IPXACTmodels/Enumeration.h>
 #include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/validators/ParameterValidator.h>
 
-class tst_Parameter : public QObject
+class tst_ParameterValidator : public QObject
 {
     Q_OBJECT
 
 public:
-    tst_Parameter();
+    tst_ParameterValidator();
 
 private slots:
+
+    void testResolve();
+    QStringList findErrors(Parameter* parameter);
+
+    void testResolve_data();
+
+    void testFormat();
+    void testFormat_data();
 
     void testValueForBoolFormat();
     void testValueForBoolFormat_data();
@@ -46,8 +57,18 @@ private slots:
     void testValidityWithLongMaximumValue();
     void testValidityWithLongMaximumValue_data();
 
+    void testChoiceReference();
+    void testChoiceReference_data();
+
+    void testValueUsingChoice();
+    void testValueUsingChoice_data();
+
 private:
-    
+        
+    Parameter* createParameterWithName();
+
+    bool errorIsNotFoundInErrorlist(QString const& expectedError, QStringList const& errorlist) const;
+
     void testValidityWithMinimumValueAndFormat(QString const& format);
     void testValidityWithMaximumValueAndFormat(QString const& format);
    
@@ -57,31 +78,136 @@ private:
 //-----------------------------------------------------------------------------
 // Function: tst_Parameter::tst_Parameter()
 //-----------------------------------------------------------------------------
-tst_Parameter::tst_Parameter()
+tst_ParameterValidator::tst_ParameterValidator()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator::testResolve()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator::testResolve()
+{
+    QFETCH(QString, resolve);
+    QFETCH(bool, expectedValid);
+
+    Parameter* parameter = createParameterWithName();
+    parameter->setValueResolve(resolve);
+
+    ParameterValidator validator;
+    QVERIFY(validator.hasValidResolve(parameter) == expectedValid);
+
+    if (!expectedValid)
+    {
+        QStringList errorlist =  findErrors(parameter);
+
+
+        QString expectedError = "Invalid resolve " + resolve + " specified for parameter param within test";
+        if (errorIsNotFoundInErrorlist(expectedError, errorlist))
+        {
+            QFAIL("No error message found.");
+        }
+    }
+    delete parameter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator::testResolve_data()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator::testResolve_data()
+{
+    QTest::addColumn<QString>("resolve");
+    QTest::addColumn<bool>("expectedValid");
+
+    QTest::newRow("empty resolve is valid") << "" << true;
+    QTest::newRow("immediate resolve is valid") << "immediate" << true;
+    QTest::newRow("user resolve is valid") << "user" << true;
+    QTest::newRow("generated resolve is valid") << "generated" << true;
+    QTest::newRow("dependent resolve is valid") << "dependent" << true;
+
+    QTest::newRow("other resolve is invalid") << "other" << false;
+    QTest::newRow("number resolve is invalid") << "1" << false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator::testFormat()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator::testFormat()
+{
+    QFETCH(QString, format);
+    QFETCH(bool, expectedValid);
+
+    Parameter* parameter = createParameterWithName();
+    parameter->setValueFormat(format);
+
+    ParameterValidator validator;
+    QVERIFY(validator.hasValidFormat(parameter) == expectedValid);
+
+    if (!expectedValid)
+    {
+        QStringList errorlist = findErrors(parameter);
+
+        QString expectedError = "Invalid format " + format + " specified for parameter param within test";
+        if (errorIsNotFoundInErrorlist(expectedError, errorlist))
+        {
+            QFAIL("No error message found.");
+        }
+    }
+    delete parameter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator::testFormat_data()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator::testFormat_data()
+{
+    QTest::addColumn<QString>("format");
+    QTest::addColumn<bool>("expectedValid");
+
+    QTest::newRow("empty format is valid") << "" << true;
+    QTest::newRow("bitString format is valid") << "bitString" << true;
+    QTest::newRow("bool format is valid") << "bool" << true;
+    QTest::newRow("float format is valid") << "float" << true;
+    QTest::newRow("long format is valid") << "long" << true;
+    QTest::newRow("string format is valid") << "string" << true;
+
+    QTest::newRow("other format is invalid") << "other" << false;
+    QTest::newRow("number format is invalid") << "1" << false;
 }
 
 //-----------------------------------------------------------------------------
 // Function: tst_Parameter::testValueForBoolFormat()
 //-----------------------------------------------------------------------------
-void tst_Parameter::testValueForBoolFormat()
+void tst_ParameterValidator::testValueForBoolFormat()
 {
     QFETCH(QString, value);
     QFETCH(bool, expectedValid);
 
-    Parameter parameter;
-    parameter.setName("param");
-    parameter.setValueFormat("bool");
-    parameter.setValue(value);
+    Parameter* parameter = createParameterWithName();
+    parameter->setValueFormat("bool");
+    parameter->setValue(value);
 
-    QVERIFY(parameter.isValid() == expectedValid);
+    ParameterValidator validator;
+    QVERIFY(validator.hasValidValueForFormat(parameter) == expectedValid);
+
+    if (!expectedValid)
+    {
+        QStringList errorlist =  findErrors(parameter);
+
+        QString expectedError = "Value " + value + " violates format bool in parameter param within test";
+        if (errorIsNotFoundInErrorlist(expectedError, errorlist))
+        {
+            QFAIL("No error message found.");
+        }
+    }
+
+    delete parameter;
 }
 
 //-----------------------------------------------------------------------------
 // Function: tst_Parameter::testValueForBoolFormat_data()
 //-----------------------------------------------------------------------------
-void tst_Parameter::testValueForBoolFormat_data()
+void tst_ParameterValidator::testValueForBoolFormat_data()
 {
     QTest::addColumn<QString>("value");
     QTest::addColumn<bool>("expectedValid");
@@ -95,142 +221,138 @@ void tst_Parameter::testValueForBoolFormat_data()
 //-----------------------------------------------------------------------------
 // Function: tst_Parameter::testBitStringLengthIsSetForBitStringFormatAndNotSetForOtherFormats()
 //-----------------------------------------------------------------------------
-void tst_Parameter::testBitStringLengthIsSetForBitStringFormatAndNotSetForOtherFormats()
+void tst_ParameterValidator::testBitStringLengthIsSetForBitStringFormatAndNotSetForOtherFormats()
 {
     QFETCH(QString, bitStringLength);
     QFETCH(QString, format);
-    QFETCH(QString, validValueForFormat);
     QFETCH(bool, expectedValid);
 
-    Parameter parameter;
-    parameter.setName("param");
-    parameter.setValue(validValueForFormat);
+    Parameter* parameter = createParameterWithName();
+    parameter->setValueFormat(format);
+    parameter->setBitStringLength(bitStringLength);
 
-    parameter.setValueFormat(format);
-    parameter.setBitStringLength(bitStringLength);
-
-    QStringList errorList;
-    QString identifier = "test";
-
-    QVERIFY(parameter.isValid() == expectedValid);
-    QVERIFY(parameter.isValid(errorList, identifier) == expectedValid);
+    ParameterValidator validator;
+    QVERIFY(validator.hasValidBitStringLength(parameter) == expectedValid);
 
     if (!expectedValid)
     {
-        QCOMPARE(errorList.count(), 1);
+        QStringList errorlist = findErrors(parameter);
 
+        QString expectedError;
         if (!bitStringLength.isEmpty())
         {
-            QCOMPARE(errorList.first(), QString("Bit string length specified for format other than bitString "
-                "for parameter param within test"));
+            expectedError = "Bit string length specified for format other than bitString "
+                "for parameter param within test";
         }
         else
         {
-            QCOMPARE(errorList.first(), QString("No bit string length specified for parameter param within test"));
+            expectedError = "No bit string length specified for parameter param within test";
+        }
+
+        if (errorIsNotFoundInErrorlist(expectedError, errorlist))
+        {
+            QFAIL("No error message found.");
         }
     }
+
+    delete parameter;
 }
 
 //-----------------------------------------------------------------------------
 // Function: tst_Parameter::testBitStringLengthIsSetForBitStringFormatAndNotSetForOtherFormats_data()
 //-----------------------------------------------------------------------------
-void tst_Parameter::testBitStringLengthIsSetForBitStringFormatAndNotSetForOtherFormats_data()
+void tst_ParameterValidator::testBitStringLengthIsSetForBitStringFormatAndNotSetForOtherFormats_data()
 {
     QTest::addColumn<QString>("bitStringLength");
     QTest::addColumn<QString>("format");
-    QTest::addColumn<QString>("validValueForFormat");
     QTest::addColumn<bool>("expectedValid");
 
-    QTest::newRow("No length and no format set is valid") << "" << "" << "1" << true;
-    QTest::newRow("No length and bool format set is valid") << "" << "bool" << "true" << true;
-    QTest::newRow("No length and float format set is valid") << "" << "float" << "1" << true;
-    QTest::newRow("No length and long format set is valid") << "" << "long" << "1" << true;
-    QTest::newRow("No length and string format set is valid") << "" << "string" << "text" << true;
+    QTest::newRow("No length and no format set is valid") << "" << "" << true;
+    QTest::newRow("No length and bool format set is valid") << "" << "bool" << true;
+    QTest::newRow("No length and float format set is valid") << "" << "float" << true;
+    QTest::newRow("No length and long format set is valid") << "" << "long" << true;
+    QTest::newRow("No length and string format set is valid") << "" << "string" << true;
 
-    QTest::newRow("Bit string length and bitString format set is valid") << "1" << "bitString" << "1" << true;
-    QTest::newRow("No Bit string length and bitString format set is invalid") << "" << "bitString" << "1" << false;
+    QTest::newRow("Bit string length and bitString format set is valid") << "1" << "bitString" << true;
+    QTest::newRow("No Bit string length and bitString format set is invalid") << "" << "bitString"  << false;
 
-    QTest::newRow("Bit string length set and no format set is invalid") << "1" << "" << "1" << false;
-    QTest::newRow("Bit string length and bool format set is invalid") << "1" << "bool" << "true" << false;
-    QTest::newRow("Bit string length and float format set is invalid") << "1" << "float" << "1" << false;
-    QTest::newRow("Bit string length and long format set is invalid") << "1" << "long" << "1" << false;
-    QTest::newRow("Bit string length and string format set is invalid") << "1" << "string" << "text" << false;    
+    QTest::newRow("Bit string length set and no format set is invalid") << "1" << "" << false;
+    QTest::newRow("Bit string length and bool format set is invalid") << "1" << "bool" <<  false;
+    QTest::newRow("Bit string length and float format set is invalid") << "1" << "float" << false;
+    QTest::newRow("Bit string length and long format set is invalid") << "1" << "long" << false;
+    QTest::newRow("Bit string length and string format set is invalid") << "1" << "string" << false;    
 }
 
 //-----------------------------------------------------------------------------
 // Function: tst_Parameter::testMinimumValueIsValidForGivenFormat()
 //-----------------------------------------------------------------------------
-void tst_Parameter::testMinimumValueNotCheckedForEmptyBoolOrStringFormat()
+void tst_ParameterValidator::testMinimumValueNotCheckedForEmptyBoolOrStringFormat()
 {
     QFETCH(QString, format);
-    QFETCH(QString, validValue);
 
-    Parameter parameter;
-    parameter.setName("param");
-    parameter.setValue(validValue);
-    parameter.setMinimumValue("100");
+    Parameter* parameter = createParameterWithName();
+    parameter->setMinimumValue("100");
 
-    parameter.setValueFormat(format);
-    QVERIFY(parameter.isValid(QStringList(), QString()) == true);
-    QVERIFY(parameter.isValid() == true);
+    parameter->setValueFormat(format);
+
+    ParameterValidator validator;
+    QVERIFY(validator.hasValidMinimumValue(parameter) == true);
 }
 
 //-----------------------------------------------------------------------------
 // Function: tst_Parameter::testMinimumValueIsValidForGivenFormat()
 //-----------------------------------------------------------------------------
-void tst_Parameter::testMinimumValueNotCheckedForEmptyBoolOrStringFormat_data()
+void tst_ParameterValidator::testMinimumValueNotCheckedForEmptyBoolOrStringFormat_data()
 {
     QTest::addColumn<QString>("format");
-    QTest::addColumn<QString>("validValue");
 
-    QTest::newRow("no format set") << "" << "1";
-    QTest::newRow("bool format set") << "bool" << "true";
-    QTest::newRow("string format set") << "string" << "some text";
+    QTest::newRow("no format set") << "";
+    QTest::newRow("bool format set") << "bool";
+    QTest::newRow("string format set") << "string";
 }
 
 //-----------------------------------------------------------------------------
 // Function: tst_Parameter::testMinimumValueIsValidForGivenFormat()
 //-----------------------------------------------------------------------------
-void tst_Parameter::testMinimumValueIsValidForGivenFormat()
+void tst_ParameterValidator::testMinimumValueIsValidForGivenFormat()
 {
     QFETCH(QString, format);
     QFETCH(QString, boundary);
     QFETCH(bool, expectedValid);
 
-    Parameter parameter;
-    parameter.setName("param");
-    if (format == "bitString")
-    {
-        parameter.setBitStringLength("4");
-    }
-    parameter.setValue("1000000000");
+    Parameter* parameter = createParameterWithName();
 
-    parameter.setValueFormat(format);
-    parameter.setMinimumValue(boundary);
+
+    parameter->setValue("1000000000");
+
+    parameter->setValueFormat(format);
+    parameter->setMinimumValue(boundary);
 
     QStringList errorList;
-    QString identifier = "testMinimumValueIsValidForGivenFormat";
-    
-    QVERIFY(parameter.isValid(errorList, identifier) == expectedValid);
-    QVERIFY(parameter.isValid() == expectedValid);
+    ParameterValidator validator;
 
-    if (expectedValid)
+    QVERIFY(validator.hasValidMinimumValue(parameter) == expectedValid);
+
+    if (!expectedValid)
     {
-        QVERIFY(errorList.isEmpty());
+        QStringList errorlist = findErrors(parameter);
+
+        QString expectedError = "Minimum value " + boundary + " is not valid for format " + format + 
+            " in parameter param within test";
+
+        if (errorIsNotFoundInErrorlist(expectedError, errorlist))
+        {
+            QFAIL("No error message found.");
+        }
     }
-    else
-    {
-        QCOMPARE(errorList.count(), 1);
-        QCOMPARE(errorList.first(), 
-            QString("Minimum value %1 is not valid for format %2 in parameter param within "
-            "testMinimumValueIsValidForGivenFormat").arg(parameter.getMinimumValue(), parameter.getValueFormat()));
-    }
+
+    delete parameter;
 }
 
 //-----------------------------------------------------------------------------
 // Function: tst_Parameter::testMinimumValueIsValidForGivenFormat()
 //-----------------------------------------------------------------------------
-void tst_Parameter::testMinimumValueIsValidForGivenFormat_data()
+void tst_ParameterValidator::testMinimumValueIsValidForGivenFormat_data()
 {
     QTest::addColumn<QString>("format");
     QTest::addColumn<QString>("boundary");
@@ -300,7 +422,7 @@ void tst_Parameter::testMinimumValueIsValidForGivenFormat_data()
 //-----------------------------------------------------------------------------
 // Function: tst_Parameter::testValidityWithLongMinimumValue()
 //-----------------------------------------------------------------------------
-void tst_Parameter::testValidityWithLongMinimumValue()
+void tst_ParameterValidator::testValidityWithLongMinimumValue()
 {
     testValidityWithMinimumValueAndFormat("long");
 
@@ -308,46 +430,53 @@ void tst_Parameter::testValidityWithLongMinimumValue()
 //-----------------------------------------------------------------------------
 // Function: tst_Parameter::testValidityWithMinimuValueAndFormat()
 //-----------------------------------------------------------------------------
-void tst_Parameter::testValidityWithMinimumValueAndFormat(QString const& format)
+void tst_ParameterValidator::testValidityWithMinimumValueAndFormat(QString const& format)
 {
     QFETCH(QString, boundary);
     QFETCH(QString, value);
     QFETCH(bool, expectedValid);
 
-    Parameter parameter;
-    parameter.setName("param");
-    parameter.setValueFormat(format);
-    parameter.setMinimumValue(boundary);
-    parameter.setValue(value);
+    Parameter* parameter = createParameterWithName();
+    parameter->setValueFormat(format);
+    parameter->setMinimumValue(boundary);
+    parameter->setValue(value);
 
     QStringList errorList;
     QString identifier = "test";
 
-    QVERIFY(parameter.isValid(errorList, identifier) == expectedValid);
-    QVERIFY(parameter.isValid() == expectedValid);
+     ParameterValidator validator;
 
-    if (expectedValid)
-    {
-        QVERIFY(errorList.isEmpty());
-    }
-    else if (value.isEmpty())
-    {
-        QCOMPARE(errorList.first(), 
-            QString("No value specified for parameter param within test"));
-    }
-    else
-    {
-        QCOMPARE(errorList.count(), 1);
-        QCOMPARE(errorList.first(), 
-            QString("Value %1 violates minimum value %2 in parameter param within "
-            "test").arg(parameter.getValue(), parameter.getMinimumValue()));
-    }
+     QVERIFY(validator.hasValidValue(parameter, QList<QSharedPointer<Choice> >()) == expectedValid);
+
+     if (!expectedValid)
+     {
+         QStringList errorlist =  findErrors(parameter);
+
+         QString expectedError;
+
+         if (value.isEmpty())
+         {
+             expectedError = "No value specified for parameter param within test";
+         }
+         else
+         {
+             expectedError = "Value " + value + " violates minimum value " + boundary + " in parameter "
+                 "param within test";
+         }
+
+         if (errorIsNotFoundInErrorlist(expectedError, errorlist))
+         {
+             QFAIL("No error message found.");
+         }
+     }
+
+     delete parameter;
 }
 
 //-----------------------------------------------------------------------------
 // Function: tst_Parameter::testValidityWithLongMinimumValue_data()
 //-----------------------------------------------------------------------------
-void tst_Parameter::testValidityWithLongMinimumValue_data()
+void tst_ParameterValidator::testValidityWithLongMinimumValue_data()
 {
     QTest::addColumn<QString>("boundary");
     QTest::addColumn<QString>("value");
@@ -392,7 +521,7 @@ void tst_Parameter::testValidityWithLongMinimumValue_data()
 //-----------------------------------------------------------------------------
 // Function: tst_Parameter::testValidityWithFloatMinimumValue()
 //-----------------------------------------------------------------------------
-void tst_Parameter::testValidityWithFloatMinimumValue()
+void tst_ParameterValidator::testValidityWithFloatMinimumValue()
 {
     testValidityWithMinimumValueAndFormat("float");
 }
@@ -400,7 +529,7 @@ void tst_Parameter::testValidityWithFloatMinimumValue()
 //-----------------------------------------------------------------------------
 // Function: tst_Parameter::testValidityWithFloatMinimumValue_data()
 //-----------------------------------------------------------------------------
-void tst_Parameter::testValidityWithFloatMinimumValue_data()
+void tst_ParameterValidator::testValidityWithFloatMinimumValue_data()
 {
     QTest::addColumn<QString>("boundary");
     QTest::addColumn<QString>("value");
@@ -428,47 +557,45 @@ void tst_Parameter::testValidityWithFloatMinimumValue_data()
 //-----------------------------------------------------------------------------
 // Function: tst_Parameter::tesMaximumValueIsValidForGivenFormat()
 //-----------------------------------------------------------------------------
-void tst_Parameter::testMaximumValueIsValidForGivenFormat()
+void tst_ParameterValidator::testMaximumValueIsValidForGivenFormat()
 {
     QFETCH(QString, format);
     QFETCH(QString, boundary);
     QFETCH(bool, expectedValid);
 
-    Parameter parameter;
-    parameter.setName("param");
-    if (format == "bitString")
-    {
-        parameter.setBitStringLength("4");
-    }
+    Parameter* parameter = createParameterWithName();
 
-    parameter.setValue("0");
+    parameter->setValue("0");
 
-    parameter.setValueFormat(format);
-    parameter.setMaximumValue(boundary);
+    parameter->setValueFormat(format);
+    parameter->setMaximumValue(boundary);
 
     QStringList errorList;
     QString identifier = "testMaximumValueIsValidForGivenFormat";
 
-    QVERIFY(parameter.isValid(errorList, identifier) == expectedValid);
-    QVERIFY(parameter.isValid() == expectedValid);
+    ParameterValidator validator;
 
-    if (expectedValid)
+    QVERIFY(validator.hasValidMaximumValue(parameter) == expectedValid);
+
+    if (!expectedValid)
     {
-        QVERIFY(errorList.isEmpty());
+        QStringList errorlist = findErrors(parameter);
+
+        QString expectedError = "Maximum value " + boundary + " is not valid for format " + format + 
+            " in parameter param within test";
+
+        if (errorIsNotFoundInErrorlist(expectedError, errorlist))
+        {
+            QFAIL("No error message found.");
+        }
     }
-    else
-    {
-        QCOMPARE(errorList.count(), 1);
-        QCOMPARE(errorList.first(), 
-            QString("Maximum value %1 is not valid for format %2 in parameter param within "
-            "testMaximumValueIsValidForGivenFormat").arg(parameter.getMaximumValue(), parameter.getValueFormat()));
-    }
+    delete parameter;
 }
 
 //-----------------------------------------------------------------------------
 // Function: tst_Parameter::testMaximumValueIsValidForGivenFormat_data()
 //-----------------------------------------------------------------------------
-void tst_Parameter::testMaximumValueIsValidForGivenFormat_data()
+void tst_ParameterValidator::testMaximumValueIsValidForGivenFormat_data()
 {
     QTest::addColumn<QString>("format");
     QTest::addColumn<QString>("boundary");
@@ -540,55 +667,59 @@ void tst_Parameter::testMaximumValueIsValidForGivenFormat_data()
 //-----------------------------------------------------------------------------
 // Function: tst_Parameter::testValidityWithLongMaximumValue()
 //-----------------------------------------------------------------------------
-void tst_Parameter::testValidityWithLongMaximumValue()
+void tst_ParameterValidator::testValidityWithLongMaximumValue()
 {
     testValidityWithMaximumValueAndFormat("long");
-
 }
 
 //-----------------------------------------------------------------------------
 // Function: tst_Parameter::testValidityWithMinimuValueAndFormat()
 //-----------------------------------------------------------------------------
-void tst_Parameter::testValidityWithMaximumValueAndFormat(QString const& format)
+void tst_ParameterValidator::testValidityWithMaximumValueAndFormat(QString const& format)
 {
     QFETCH(QString, boundary);
     QFETCH(QString, value);
     QFETCH(bool, expectedValid);
 
-    Parameter parameter;
-    parameter.setName("param");
-    parameter.setValueFormat(format);
-    parameter.setMaximumValue(boundary);
-    parameter.setValue(value);
+    Parameter* parameter = createParameterWithName();
+    parameter->setValueFormat(format);
+    parameter->setMaximumValue(boundary);
+    parameter->setValue(value);
 
     QStringList errorList;
     QString identifier = "test";
 
-    QVERIFY(parameter.isValid(errorList, identifier) == expectedValid);
-    QVERIFY(parameter.isValid() == expectedValid);
+    ParameterValidator validator;
 
-    if (expectedValid)
+    QVERIFY(validator.hasValidValue(parameter, QList<QSharedPointer<Choice> >()) == expectedValid);
+
+    if (!expectedValid)
     {
-        QVERIFY(errorList.isEmpty());
+        QStringList errorlist =  findErrors(parameter);
+
+        QString expectedError;
+        if (value.isEmpty())
+        {
+            expectedError = "No value specified for parameter param within test";
+        }
+        else
+        {
+            expectedError = "Value " + value + " violates maximum value " + boundary + " in parameter "
+                "param within test";
+        }
+
+        if (errorIsNotFoundInErrorlist(expectedError, errorlist))
+        {
+            QFAIL("No error message found.");
+        }
     }
-    else if (value.isEmpty())
-    {
-        QCOMPARE(errorList.first(), 
-            QString("No value specified for parameter param within test"));
-    }
-    else
-    {
-        QCOMPARE(errorList.count(), 1);
-        QCOMPARE(errorList.first(), 
-            QString("Value %1 violates maximum value %2 in parameter param within "
-            "test").arg(parameter.getValue(), parameter.getMaximumValue()));
-    }
+    delete parameter;
 }
 
 //-----------------------------------------------------------------------------
 // Function: tst_Parameter::testValidityWithLongMaximumValue_data()
 //-----------------------------------------------------------------------------
-void tst_Parameter::testValidityWithLongMaximumValue_data()
+void tst_ParameterValidator::testValidityWithLongMaximumValue_data()
 {
     QTest::addColumn<QString>("boundary");
     QTest::addColumn<QString>("value");
@@ -626,6 +757,162 @@ void tst_Parameter::testValidityWithLongMaximumValue_data()
     QTest::newRow("positive decimal maximum compared to negative decimal") << "1" << "-1" << true;
 }
 
-QTEST_APPLESS_MAIN(tst_Parameter)
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator::testChoiceReference()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator::testChoiceReference()
+{
+    QFETCH(QStringList, choiceNames);
+    QFETCH(QString, choiceRef);
+    QFETCH(bool, expectedValid);
 
-#include "tst_Parameter.moc"
+    Parameter* parameter = createParameterWithName();
+    parameter->setChoiceRef(choiceRef);
+
+    QList<QSharedPointer<Choice> > choices;
+
+    foreach(QString choiceName, choiceNames)
+    {
+        QSharedPointer<Choice> choice(new Choice(QDomNode()));
+        choice->setName(choiceName);
+        choices.append(choice);
+    }
+
+    ParameterValidator validator;
+    QVERIFY(validator.hasValidChoice(parameter, choices) == expectedValid);
+
+    if (!expectedValid)
+    {
+        QStringList errorlist =  validator.findErrorsIn(parameter, "test", choices);
+
+        QString expectedError = "Choice choice1 referenced in parameter param is not specified within test";
+
+        if (errorIsNotFoundInErrorlist(expectedError, errorlist))
+        {
+            QFAIL("No error message found.");
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_Parameter::testChoiceReference_data()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator::testChoiceReference_data()
+{
+    QTest::addColumn<QStringList>("choiceNames");
+    QTest::addColumn<QString>("choiceRef");
+    QTest::addColumn<bool>("expectedValid");
+
+    QTest::newRow("Empty choice is valid") << QStringList() << "" << true;
+    QTest::newRow("Empty choice is valid if choices available") << QStringList("choice1") << "" << true;
+
+    QTest::newRow("No choices available but reference set is not valid") << QStringList() << "choice1" << false;
+    QTest::newRow("Reference to unavailable choice is not valid") << QStringList("choice0") << "choice1" << false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator::testValueUsingChoice()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator::testValueUsingChoice()
+{
+    QFETCH(QString, choiceRef);
+    QFETCH(QStringList, enumerations);
+    QFETCH(QString, value);
+    QFETCH(bool, expectedValid);
+
+    Parameter* parameter = createParameterWithName();
+    parameter->setChoiceRef(choiceRef);
+    parameter->setValue(value);
+
+    QList<QSharedPointer<Choice> > choices;
+
+    QSharedPointer<Choice> referencedChoice(new Choice(QDomNode()));
+    referencedChoice->setName(choiceRef);
+    foreach(QString enumerationValue, enumerations)
+    {
+        QSharedPointer<Enumeration> enumeration(new Enumeration());
+        enumeration->setValue(enumerationValue);
+        referencedChoice->enumerations()->append(enumeration);
+    }
+    choices.append(referencedChoice);
+
+    ParameterValidator validator;
+    QVERIFY(validator.hasValidValue(parameter, choices) == expectedValid);
+
+    if (!expectedValid && !value.isEmpty())
+    {
+        QStringList errorlist =  validator.findErrorsIn(parameter, "test", choices);
+
+        QString expectedError = "Value " + value + " references unknown enumeration "
+            "for choice " + choiceRef + " in parameter param within test";
+
+        if (errorIsNotFoundInErrorlist(expectedError, errorlist))
+        {
+            QFAIL("No error message found.");
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_Parameter::testValueUsingChoice_data()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator::testValueUsingChoice_data()
+{
+    QTest::addColumn<QString>("choiceRef");
+    QTest::addColumn<QStringList>("enumerations");
+    QTest::addColumn<QString>("value");
+    QTest::addColumn<bool>("expectedValid");
+
+    QTest::newRow("Empty choice and numeric value is valid") << "" << QStringList() << "1" << true;
+    QTest::newRow("Choice and empty value is not valid") << "choice1" << QStringList() << "" << false;
+
+    QTest::newRow("Choice with no enumerations is not valid") << "choice1" << QStringList() << "1" << false;
+    QTest::newRow("Choice and value not in enumerations is not valid") 
+        << "choice1" << QStringList("0") << "1" << false;
+
+    QTest::newRow("Choice and value in enumeration is valid") << "choice1" << QStringList("1") << "1" << true;
+    QTest::newRow("Choice and value in enumerations is valid") 
+        << "choice1" << QString("0,1,2").split(',') << "1" << true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator::createParameterWithName()
+//-----------------------------------------------------------------------------
+Parameter* tst_ParameterValidator::createParameterWithName()
+{
+    Parameter* parameter = new Parameter();
+    parameter->setName("param");
+
+    return parameter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator::verifyErrorIsFoundInErrorlist()
+//-----------------------------------------------------------------------------
+bool tst_ParameterValidator::errorIsNotFoundInErrorlist(QString const& expectedError, QStringList const& errorlist) const
+{
+    if (!errorlist.contains(expectedError))
+    {
+        qDebug() << "The following error:" << endl << expectedError << endl << "was not found in errorlist:";
+        foreach(QString error, errorlist)
+        {
+            qDebug() << error; 
+        }
+        return true;
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator::findErrors()
+//-----------------------------------------------------------------------------
+QStringList tst_ParameterValidator::findErrors(Parameter* parameter)
+{
+    ParameterValidator validator; 
+    return validator.findErrorsIn(parameter, "test", QList<QSharedPointer<Choice> >());
+}
+
+QTEST_APPLESS_MAIN(tst_ParameterValidator)
+
+#include "tst_ParameterValidator.moc"

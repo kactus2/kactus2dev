@@ -124,7 +124,7 @@ QVariant CpusModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole
 		// address space names are needed to check that references to address spaces are valid
 		QStringList addrSpaceNames = component_->getAddressSpaceNames();
 
-		if (cpus_.at(index.row())->isValid(addrSpaceNames)) {
+		if (cpus_.at(index.row())->isValid(addrSpaceNames, component_->getChoices())) {
 			return QColor("black");
 		}
 		else {
@@ -202,8 +202,10 @@ bool CpusModel::isValid() const {
 	QStringList addrSpaceNames = component_->getAddressSpaceNames();
 
 	// if at least one address space is invalid
-	foreach (QSharedPointer<Cpu> cpu, cpus_) {
-		if (!cpu->isValid(addrSpaceNames)) {
+	foreach (QSharedPointer<Cpu> cpu, cpus_)
+    {
+		if (!cpu->isValid(addrSpaceNames, component_->getChoices()))
+        {
 			return false;
 		}
 	}

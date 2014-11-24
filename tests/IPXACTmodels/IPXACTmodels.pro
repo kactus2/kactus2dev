@@ -12,4 +12,4 @@
 TEMPLATE = subdirs
 
 CONFIG += testcase
-SUBDIRS += tst_Parameter.pro
+SUBDIRS += tst_ParameterValidator.pro

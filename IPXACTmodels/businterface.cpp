@@ -11,8 +11,9 @@
 #include "slaveinterface.h"
 #include "PortMap.h"
 #include "XmlUtils.h"
-
 #include"vlnv.h"
+
+#include <IPXACTmodels/validators/ParameterValidator.h>
 
 #include <QString>
 #include <QList>
@@ -594,6 +595,7 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 }
 
 bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, 
+    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
 						   QStringList& errorList,
 						   const QString& parentIdentifier ) const {
 
@@ -677,17 +679,22 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts,
 		}
 	}
 
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid(errorList, thisIdentifier)) {
-			valid = false;
-		}
-
-	}
+    ParameterValidator validator;
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, componentChoices));
+        if (!validator.validate(param.data(), componentChoices)) 
+        {
+            valid = false;
+        }
+    }
 
 	return valid;
 }
 
-bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts ) const {
+bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts,
+    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const 
+{
 	
 	if (nameGroup_.name().isEmpty()) {
 		return false;
@@ -743,12 +750,15 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts ) co
 		}
 	}
 
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid()) {
-			return false;
-		}
+    ParameterValidator validator;
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        if (!validator.validate(param.data(), componentChoices)) 
+        {
+            return false;
+        }
+    }
 
-	}
 	return true;
 }
 

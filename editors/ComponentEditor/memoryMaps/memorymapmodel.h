@@ -15,6 +15,8 @@
 #include <QSharedPointer>
 #include <QList>
 
+class Choice;
+
 /*! \brief The model to manage the details of a single memory map.
  *
  */
@@ -26,10 +28,12 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param memoryMap Pointer to the memory map being edited.
+     * \param componentChoices  Choices in the containing component.
 	 * \param parent Pointer to the owner of this model.
 	 *
 	*/
-	MemoryMapModel(QSharedPointer<MemoryMap> memoryMap,
+	MemoryMapModel(QSharedPointer<MemoryMap> memoryMap, 
+        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
 		QObject *parent);
 	
 	//! \brief The destructor
@@ -133,6 +137,9 @@ private:
 
 	//! \brief Pointer to the memory map being edited.
 	QSharedPointer<MemoryMap> memoryMap_;
+
+    //! The choices available in the containing component;
+    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices_;
 
 	//! \brief Contains the memory map items being edited.
 	QList<QSharedPointer<MemoryMapItem> >& items_;

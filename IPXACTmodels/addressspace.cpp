@@ -12,6 +12,8 @@
 
 #include <common/utils.h>
 
+#include <IPXACTmodels/validators/ParameterValidator.h>
+
 #include <QDomNode>
 #include <QDomNamedNodeMap>
 #include <QSharedPointer>
@@ -257,7 +259,8 @@ void AddressSpace::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:addressSpace
 }
 
-bool AddressSpace::isValid( QStringList& errorList, 
+bool AddressSpace::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+    QStringList& errorList, 
 						   const QString& parentIdentifier ) const {
 	bool valid = true;
 	const QString thisIdentifier(QObject::tr("address space %1").arg(nameGroup_.name()));
@@ -289,21 +292,25 @@ bool AddressSpace::isValid( QStringList& errorList,
 	if (localMemoryMap_) {
 		
 		// if the local memory map contains definitions but is not valid
-		if (!localMemoryMap_->isEmpty() && !localMemoryMap_->isValid(errorList, thisIdentifier)) {
+		if (!localMemoryMap_->isEmpty() && !localMemoryMap_->isValid(componentChoices, errorList, thisIdentifier)) {
 			valid = false;
 		}
 	}
 
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid(errorList, thisIdentifier)) {
-			valid = false;
-		}
-	}
+    ParameterValidator validator;
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        errorList.append(validator.findErrorsIn(param.data(), parentIdentifier, componentChoices));
+        if (!validator.validate(param.data(), componentChoices)) 
+        {
+            valid = false;
+        }
+    }
 
 	return valid;
 }
 
-bool AddressSpace::isValid() const {
+bool AddressSpace::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const {
 	
 	if (nameGroup_.name().isEmpty()) {
 		return false;
@@ -326,16 +333,20 @@ bool AddressSpace::isValid() const {
 	if (localMemoryMap_) {
 
 		// if the memory map contains definitions but is not valid
-		if (!localMemoryMap_->isEmpty() && !localMemoryMap_->isValid()) {
+		if (!localMemoryMap_->isEmpty() && !localMemoryMap_->isValid(componentChoices))
+        {
 			return false;
 		}
 	}
 
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid()) {
-			return false;
-		}
-	}
+    ParameterValidator validator;
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        if (!validator.validate(param.data(), componentChoices)) 
+        {
+            return false;
+        }
+    }
 	return true;
 }
 

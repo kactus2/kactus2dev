@@ -11,11 +11,13 @@
 #include <QColor>
 
 RegisterTableModel::RegisterTableModel(QSharedPointer<Register> reg, 
+        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
 									   QObject *parent):
 QAbstractTableModel(parent),
 reg_(reg),
-fields_(reg->getFields()) {
-
+componentChoices_(componentChoices),
+fields_(reg->getFields())
+{
 	Q_ASSERT(reg);
 }
 
@@ -143,7 +145,7 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
 	}
 	else if (Qt::ForegroundRole == role) {
 
-		if (fields_.at(index.row())->isValid(reg_->getSize())) {
+		if (fields_.at(index.row())->isValid(reg_->getSize(), componentChoices_)) {
 			return QColor("black");
 		}
 		else {
@@ -238,10 +240,13 @@ bool RegisterTableModel::setData( const QModelIndex& index, const QVariant& valu
 	}
 }
 
-bool RegisterTableModel::isValid() const {
+bool RegisterTableModel::isValid() const 
+{
 	unsigned int regSize = reg_->getSize();
-	foreach (QSharedPointer<Field> field, fields_) {
-		if (!field->isValid(regSize)) {
+	foreach (QSharedPointer<Field> field, fields_) 
+    {
+		if (!field->isValid(regSize, componentChoices_))
+        {
 			return false;
 		}
 	}

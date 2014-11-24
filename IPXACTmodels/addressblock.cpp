@@ -205,7 +205,8 @@ void AddressBlock::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:addressBlock
 }
 
-bool AddressBlock::isValid( QStringList& errorList,
+bool AddressBlock::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+    QStringList& errorList,
 						   const QString& parentIdentifier ) const {
 	bool valid = true;
 	const QString thisIdentifier(QObject::tr("address block %1").arg(name_));
@@ -234,7 +235,8 @@ bool AddressBlock::isValid( QStringList& errorList,
 		valid = false;
 	}
 
-	if (!memoryBlockData_.isValid(errorList, thisIdentifier)) {
+	if (!memoryBlockData_.isValid(componentChoices, errorList, thisIdentifier))
+    {
 		valid = false;
 	}
 
@@ -246,8 +248,10 @@ bool AddressBlock::isValid( QStringList& errorList,
         valid = false;
     }
 
-	foreach (QSharedPointer<RegisterModel> regModel, registerData_) {
-		if (!regModel->isValid(errorList, thisIdentifier)) {
+	foreach (QSharedPointer<RegisterModel> regModel, registerData_)
+    {
+		if (!regModel->isValid(componentChoices, errorList, thisIdentifier))
+        {
 			valid = false;
 		}
 	}
@@ -255,8 +259,8 @@ bool AddressBlock::isValid( QStringList& errorList,
 	return valid;
 }
 
-bool AddressBlock::isValid() const {
-	
+bool AddressBlock::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
+{
 	if (name_.isEmpty()) {
 		return false;
 	}
@@ -273,7 +277,8 @@ bool AddressBlock::isValid() const {
 		return false;
 	}
 
-	if (!memoryBlockData_.isValid()) {
+	if (!memoryBlockData_.isValid(componentChoices))
+    {
 		return false;
 	}
 
@@ -283,8 +288,10 @@ bool AddressBlock::isValid() const {
         return false;
     }
 
-	foreach (QSharedPointer<RegisterModel> regModel, registerData_) {
-		if (!regModel->isValid()) {
+	foreach (QSharedPointer<RegisterModel> regModel, registerData_)
+    {
+		if (!regModel->isValid(componentChoices))
+        {
 			return false;
 		}
 	}

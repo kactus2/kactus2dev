@@ -22,7 +22,7 @@ MemoryMapEditor::MemoryMapEditor(QSharedPointer<Component> component,
 ItemEditor(component, handler, parent),
 view_(new EditableTableView(this)),
 proxy_(new MemoryMapProxy(this)),
-model_(new MemoryMapModel(memoryMap, this)) {
+model_(new MemoryMapModel(memoryMap, component->getChoices(), this)) {
 
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Address blocks summary"), this);

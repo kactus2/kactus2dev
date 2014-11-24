@@ -15,6 +15,8 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/Enumeration.h>
 
+#include <IPXACTmodels/validators/ParameterValidator.h>
+
 #include <QColor>
 
 //-----------------------------------------------------------------------------
@@ -133,6 +135,8 @@ QVariant AbstractParameterModel::data( const QModelIndex& index, int role /*= Qt
     }
     else if (Qt::ForegroundRole == role)
     {
+
+        bool isValidColumnData = validateColumnForParameter(index.column(), parameter);
         if ((index.column() == choiceColumn() ||
             index.column() == valueColumn() ) && 
             !parameter->getChoiceRef().isEmpty() &&
@@ -140,7 +144,7 @@ QVariant AbstractParameterModel::data( const QModelIndex& index, int role /*= Qt
         {
             return QColor("red");
         }
-        else if (parameter->isValid()) 
+        else if (isValidColumnData)
         {
             return QColor("black");
         }
@@ -325,21 +329,16 @@ Qt::ItemFlags AbstractParameterModel::flags(const QModelIndex& index ) const
 //-----------------------------------------------------------------------------
 bool AbstractParameterModel::isValid() const
 {
+    ParameterValidator validator;
+
 	// check all parameters
 	for (int i = 0; i < rowCount(); i++)
 	{
         QSharedPointer<Parameter> parameter = getParameterOnRow(i);
 
-        if (!parameter->isValid())
-            return false;
-
-        if (!parameter->getChoiceRef().isEmpty())
+        if (!validator.validate(parameter.data(), choices_)) 
         {
-            QSharedPointer<Choice> referencedChoice = findChoice(parameter->getChoiceRef());
-            if(!referencedChoice->hasEnumeration(parameter->getValue()))
-            {
-                return false;
-            }
+            return false;
         }
 	}
 	
@@ -354,26 +353,17 @@ bool AbstractParameterModel::isValid(QStringList& errorList, const QString& pare
 {
     bool valid = true;
 
+    ParameterValidator validator;
     for (int i = 0; i < rowCount(); i++)
     {
         QSharedPointer<Parameter> parameter = getParameterOnRow(i);
 
+        errorList.append(validator.findErrorsIn(parameter.data(), parentIdentifier, choices_));
+
         // if one parameter is invalid, model is invalid.
-        if (!parameter->isValid(errorList, parentIdentifier))
+        if (!validator.validate(parameter.data(), choices_))
         {
             valid = false;
-        }
-
-        if (!parameter->getChoiceRef().isEmpty())
-        {
-            QSharedPointer<Choice> referencedChoice = findChoice(parameter->getChoiceRef());
-            if(!referencedChoice->hasEnumeration(parameter->getValue()))
-            {
-                errorList.append(QObject::tr("Parameter %1 references unknown choice value %2 "
-                    "for choice %3 within %4").arg(parameter->getName(), 
-                    parameter->getValue(), parameter->getChoiceRef(), parentIdentifier));
-                valid = false;
-            }
         }
     }
 
@@ -427,4 +417,51 @@ QString AbstractParameterModel::findDisplayValueForEnumeration(QSharedPointer<Ch
     }
 
     return enumerationValue;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractParameterModel::validateColumnForParameter()
+//-----------------------------------------------------------------------------
+bool AbstractParameterModel::validateColumnForParameter(int column, QSharedPointer<Parameter> parameter) const
+{
+    ParameterValidator validator;
+
+    if (column == nameColumn())
+    {
+        return validator.hasValidName(parameter.data());
+    }
+    else if (column == formatColumn())
+    {
+        return validator.hasValidFormat(parameter.data()) &&
+            validator.hasValidBitStringLength(parameter.data()) &&
+            validator.hasValidValueForFormat(parameter->getValue(), parameter->getValueFormat());
+    }
+    else if (column == bitwidthColumn())
+    {
+        return validator.hasValidBitStringLength(parameter.data());
+    }
+    else if (column == minimumColumn())
+    {
+        return validator.hasValidMinimumValue(parameter.data()) && 
+            !validator.valueIsLessThanMinimum(parameter.data());
+    }
+    else if (column == maximumColumn())
+    {
+        return validator.hasValidMaximumValue(parameter.data()) && 
+            !validator.valueIsGreaterThanMaximum(parameter.data());
+    }
+    else if (column == choiceColumn())
+    {
+        return validator.hasValidChoice(parameter.data(), choices_);
+    }
+    else if (column == valueColumn())
+    {
+        return validator.hasValidValue(parameter.data(), choices_);
+    }
+    else if (column == resolveColumn())
+    {
+        return validator.hasValidResolve(parameter.data());
+    }
+
+    return true;
 }

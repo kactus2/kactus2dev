@@ -20,6 +20,7 @@
 #include <QDomNode>
 #include <QSharedPointer>
 
+class Choice;
 class Parameter;
 class EnumeratedValue;
 class VendorExtension;
@@ -28,7 +29,8 @@ class VendorExtension;
  *
  * Describes a smaller bit field of a register.
  */
-class IPXACTMODELS_EXPORT Field {
+class IPXACTMODELS_EXPORT Field 
+{
 
 public:
 
@@ -75,21 +77,24 @@ public:
 	/*! \brief Check if the field is in a valid state.
 	 * 
 	 * \param registerSize The size of the containing register, field must not extend beyond this.
+     * \param componentChoices  Choices in the containing component.
 	 * \param errorList The list to add the possible error messages to.
 	 * \param parentIdentifier String from parent to help to identify the location of the error.
 	 *
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(unsigned int registerSize, QStringList& errorList, 
-		const QString& parentIdentifier) const;
+	bool isValid(unsigned int registerSize, QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+        QStringList& errorList, const QString& parentIdentifier) const;
 
 	/*! \brief Check if the field is in a valid state.
 	 * 
 	 * \param registerSize The size of the containing register, field must not extend beyond this.
+     * \param componentChoices  Choices in the containing component.
 	 * 
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(unsigned int registerSize) const;
+	bool isValid(unsigned int registerSize,
+        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const;
 
 	/*! \brief Get the bit offset.
 	 *

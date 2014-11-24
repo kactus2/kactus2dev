@@ -29,7 +29,7 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
       nameEditor_(new NameGroupEditor(memoryMap->getNameGroup(), this)),
       view_(new EditableTableView(this)),
       proxy_(new MemoryMapProxy(this)),
-      model_(new MemoryMapModel(memoryMap, this)),
+      model_(new MemoryMapModel(memoryMap, component->getChoices(), this)),
       component_(component),
       handler_(handler)
 {

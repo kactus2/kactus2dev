@@ -8,7 +8,9 @@
 #include "port.h"
 #include "view.h"
 #include "modelparameter.h"
-#include"vlnv.h"
+#include "vlnv.h"
+
+#include <IPXACTmodels/validators/ModelParameterValidator.h>
 
 #include <QDomNode>
 #include <QString>
@@ -179,7 +181,11 @@ void Model::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:model
 }
 
-bool Model::isValid( const QStringList& fileSetNames, 
+//-----------------------------------------------------------------------------
+// Function: model::isValid()
+//-----------------------------------------------------------------------------
+bool Model::isValid( const QStringList& fileSetNames,
+                    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
 					QStringList& errorList, 
 					const QString& parentIdentifier ) const {
 	bool valid = true;
@@ -214,11 +220,12 @@ bool Model::isValid( const QStringList& fileSetNames,
 			viewNames.append(view->getName());
 		}
 
-		if (!view->isValid(fileSetNames, errorList, parentIdentifier)) {
+		if (!view->isValid(fileSetNames, componentChoices, errorList, parentIdentifier)) {
 			valid = false;
 		}
 	}
 
+    ModelParameterValidator validator;
 	QStringList modelParamNames;
 	foreach (QSharedPointer<ModelParameter> modelParam, modelParameters_) {
 
@@ -227,19 +234,26 @@ bool Model::isValid( const QStringList& fileSetNames,
 				" with name %2").arg(parentIdentifier).arg(modelParam->getName()));
 			valid = false;
 		}
-		else {
+		else 
+        {
 			modelParamNames.append(modelParam->getName());
 		}
 
-		if (!modelParam->isValid(errorList, parentIdentifier)) {
-			valid = false;
-		}
+        errorList.append(validator.findErrorsIn(modelParam.data(), parentIdentifier, componentChoices));
+        if (!validator.validate(modelParam.data(), componentChoices))
+        {
+            valid = false;
+        }
 	}
 
 	return valid;
 }
 
-bool Model::isValid(const QStringList& fileSetNames) const {
+//-----------------------------------------------------------------------------
+// Function: model::isValid()
+//-----------------------------------------------------------------------------
+bool Model::isValid(const QStringList& fileSetNames,
+     QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const {
 	bool hasViews = !views_.isEmpty();
 
 	QStringList portNames;
@@ -267,22 +281,26 @@ bool Model::isValid(const QStringList& fileSetNames) const {
 			viewNames.append(view->getName());
 		}
 
-		if (!view->isValid(fileSetNames)) {
+		if (!view->isValid(fileSetNames, componentChoices)) {
 			return false;
 		}
 	}
 
+    ModelParameterValidator validator;
 	QStringList modelParamNames;
-	foreach (QSharedPointer<ModelParameter> modelParam, modelParameters_) {
-
-		if (modelParamNames.contains(modelParam->getName())) {
+	foreach (QSharedPointer<ModelParameter> modelParam, modelParameters_)
+    {
+		if (modelParamNames.contains(modelParam->getName()))
+        {
 			return false;
 		}
-		else {
+		else
+        {
 			modelParamNames.append(modelParam->getName());
 		}
 
-		if (!modelParam->isValid()) {
+		if (!validator.validate(modelParam.data(), componentChoices))
+        {
 			return false;
 		}
 	}

@@ -9,6 +9,8 @@
 #include "XmlUtils.h"
 #include "parameter.h"
 
+#include <IPXACTmodels/validators/ParameterValidator.h>
+
 #include <QList>
 #include <QString>
 #include <QDomNode>
@@ -129,7 +131,8 @@ void ComponentGenerator::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:componentGenerator
 }
 
-bool ComponentGenerator::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
+bool ComponentGenerator::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+    QStringList& errorList, const QString& parentIdentifier ) const {
 	bool valid = true;
 
 	if (name_.isEmpty()) {
@@ -138,13 +141,19 @@ bool ComponentGenerator::isValid( QStringList& errorList, const QString& parentI
 		valid = false;
 	}
 
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid(errorList, QObject::tr("component generator %1").arg(name_))) {
-			valid = false;
-		}
-	}
+    ParameterValidator validator;
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        errorList.append(validator.findErrorsIn(param.data(), QObject::tr("component generator %1").arg(name_),
+            componentChoices));
+        if (!validator.validate(param.data(), componentChoices)) 
+        {
+            valid = false;
+        }
+    }
 
-	if (generatorExe_.isEmpty()) {
+	if (generatorExe_.isEmpty())
+    {
 		errorList.append(QObject::tr("No path to the generator executable specified"
 			" for component generator %1 within %2").arg(name_).arg(parentIdentifier));
 		valid = false;
@@ -153,16 +162,19 @@ bool ComponentGenerator::isValid( QStringList& errorList, const QString& parentI
 	return valid;
 }
 
-bool ComponentGenerator::isValid() const {
+bool ComponentGenerator::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const {
 	if (name_.isEmpty()) {
 		return false;
 	}
 
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid()) {
-			return false;
-		}
-	}
+    ParameterValidator validator;
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        if (!validator.validate(param.data(), componentChoices)) 
+        {
+            return false;
+        }
+    }
 
 	if (generatorExe_.isEmpty()) {
 		return false;

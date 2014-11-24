@@ -118,7 +118,7 @@ QVariant ViewsModel::data( const QModelIndex& index, int role /*= Qt::DisplayRol
 		// file set names are needed to check that each view has valid references
 		QStringList fileSetNames = component_->getFileSetNames();
 
-		if (views_.at(index.row())->isValid(fileSetNames)) {
+		if (views_.at(index.row())->isValid(fileSetNames, component_->getChoices())) {
 			return QColor("black");
 		}
 		else {
@@ -177,14 +177,16 @@ bool ViewsModel::setData( const QModelIndex& index, const QVariant& value, int r
 	}
 }
 
-bool ViewsModel::isValid() const {
-
+bool ViewsModel::isValid() const
+{
 	// file set names are needed to check that references within views are valid
 	QStringList fileSetNames = component_->getFileSetNames();
 
 	// if at least one view is invalid
-	foreach (QSharedPointer<View> view, views_) {
-		if (!view->isValid(fileSetNames)) {
+	foreach (QSharedPointer<View> view, views_)
+    {
+		if (!view->isValid(fileSetNames, component_->getChoices()))
+        {
 			return false;
 		}
 	}

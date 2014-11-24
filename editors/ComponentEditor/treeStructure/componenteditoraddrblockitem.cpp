@@ -52,8 +52,9 @@ QString ComponentEditorAddrBlockItem::text() const {
 	return addrBlock_->getName();
 }
 
-bool ComponentEditorAddrBlockItem::isValid() const {
-	return addrBlock_->isValid();
+bool ComponentEditorAddrBlockItem::isValid() const 
+{
+	return addrBlock_->isValid(component_->getChoices());
 }
 
 ItemEditor* ComponentEditorAddrBlockItem::editor() {

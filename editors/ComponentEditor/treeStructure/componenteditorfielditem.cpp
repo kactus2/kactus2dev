@@ -39,8 +39,9 @@ QString ComponentEditorFieldItem::text() const {
 	return field_->getName();
 }
 
-bool ComponentEditorFieldItem::isValid() const {
-	return field_->isValid(reg_->getSize());
+bool ComponentEditorFieldItem::isValid() const 
+{
+	return field_->isValid(reg_->getSize(), component_->getChoices());
 }
 
 ItemEditor* ComponentEditorFieldItem::editor() {

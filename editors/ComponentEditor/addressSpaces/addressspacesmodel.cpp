@@ -130,7 +130,7 @@ QVariant AddressSpacesModel::data( const QModelIndex& index, int role /*= Qt::Di
 		return component_->getMasterInterfaces(addrSpaces_.at(index.row())->getName());
 	}
 	else if (Qt::ForegroundRole == role) {
-		if (addrSpaces_.at(index.row())->isValid()) {
+		if (addrSpaces_.at(index.row())->isValid(component_->getChoices())) {
 			return QColor("black");
 		}
 		else {
@@ -240,10 +240,13 @@ void AddressSpacesModel::onRemoveItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
-bool AddressSpacesModel::isValid() const {
+bool AddressSpacesModel::isValid() const
+{
 	// if at least one address space is invalid
-	foreach (QSharedPointer<AddressSpace> addrSpace, addrSpaces_) {
-		if (!addrSpace->isValid()) {
+	foreach (QSharedPointer<AddressSpace> addrSpace, addrSpaces_) 
+    {
+		if (!addrSpace->isValid(component_->getChoices()))
+        {
 			return false;
 		}
 	}

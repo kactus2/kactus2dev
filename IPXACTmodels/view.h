@@ -22,6 +22,7 @@
 #include <QXmlStreamWriter>
 #include <QStringList>
 
+class Choice;
 class VLNV;
 class Parameter;
 class VendorExtension;
@@ -84,22 +85,26 @@ public:
 	/*! \brief Check if the view is in a valid state.
 	 * 
 	 * \param fileSetNames Contains the names of the file sets of the component.
+     * \param componentChoices  Choices in the component.
 	 * \param errorList The list to add the possible error messages to.
 	 * \param parentIdentifier String from parent to help to identify the location of the error.
 	 *
 	 * \return bool True if the state is valid and writing is possible.
 	*/
 	bool isValid(const QStringList& fileSetNames, 
+        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
 		QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
 	/*! \brief Check if the view is in a valid state.
 	 * 
 	 * \param fileSetNames Contains the names of the file sets of the component.
+     * \param componentChoices  Choices in the component.
 	 * 
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(const QStringList& fileSetNames) const;
+	bool isValid(const QStringList& fileSetNames,
+        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const;
 
 	/*! \brief Get list of the envIdentifiers for this view
 	 *

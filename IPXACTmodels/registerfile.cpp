@@ -11,6 +11,7 @@
 #include "GenericVendorExtension.h"
 
 #include <IPXACTmodels/XmlUtils.h>
+#include <IPXACTmodels/validators/ParameterValidator.h>
 
 #include <QString>
 #include <QDomNode>
@@ -189,7 +190,8 @@ void RegisterFile::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:registerFile
 }
 
-bool RegisterFile::isValid( QStringList& errorList,
+bool RegisterFile::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+    QStringList& errorList,
 						   const QString& parentIdentifier ) const {
 	bool valid = true;
 	const QString thisIdentifier(QObject::tr("register file %1").arg(nameGroup_.name()));
@@ -213,45 +215,56 @@ bool RegisterFile::isValid( QStringList& errorList,
 	}
 
 	foreach (QSharedPointer<RegisterModel> regModel, registerData_) {
-		if (!regModel->isValid(errorList, thisIdentifier)) {
+		if (!regModel->isValid(componentChoices, errorList, thisIdentifier)) {
 			valid = false;
 		}
 	}
 
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid(errorList, thisIdentifier)) {
-			valid = false;
-		}
+    ParameterValidator validator;
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        errorList.append(validator.findErrorsIn(param.data(), parentIdentifier, componentChoices));
+        if (!validator.validate(param.data(), componentChoices)) 
+        {
+            valid = false;
+        }
 	}
 
 	return valid;
 }
 
-bool RegisterFile::isValid() const {
-
-	if (nameGroup_.name().isEmpty()) {
+bool RegisterFile::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
+{
+	if (nameGroup_.name().isEmpty())
+    {
 		return false;
 	}
 
-	if (addressOffset_.isEmpty()) {
+	if (addressOffset_.isEmpty())
+    {
 		return false;
 	}
 
-	if (range_ == 0) {
+	if (range_ == 0)
+    {
 		return false;
 	}
 
-	foreach (QSharedPointer<RegisterModel> regModel, registerData_) {
-		if (!regModel->isValid()) {
+	foreach (QSharedPointer<RegisterModel> regModel, registerData_)
+    {
+		if (!regModel->isValid(componentChoices)) {
 			return false;
 		}
 	}
 
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid()) {
-			return false;
-		}
-	}
+    ParameterValidator validator;
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        if (!validator.validate(param.data(), componentChoices)) 
+        {
+            return false;
+        }
+    }
 	return true;
 }
 

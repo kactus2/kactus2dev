@@ -10,6 +10,8 @@
 #include "parameter.h"
 #include "GenericVendorExtension.h"
 
+#include <IPXACTmodels/validators/ParameterValidator.h>
+
 #include <QList>
 #include <QSharedPointer>
 #include <QDomNode>
@@ -116,7 +118,8 @@ void SubspaceMap::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:subspaceMap
 }
 
-bool SubspaceMap::isValid( QStringList& errorList, 
+bool SubspaceMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+    QStringList& errorList, 
 						  const QString& parentIdentifier ) const {
 	bool valid = true;
 	const QString thisIdentifier(QObject::tr("subspace map %1").arg(name_));
@@ -139,16 +142,20 @@ bool SubspaceMap::isValid( QStringList& errorList,
 		valid = false;
 	}
 
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid(errorList, thisIdentifier)) {
-			valid = false;
-		}
+    ParameterValidator validator;
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        errorList.append(validator.findErrorsIn(param.data(), parentIdentifier, componentChoices));
+        if (!validator.validate(param.data(), componentChoices)) 
+        {
+            valid = false;
+        }
 	}
 
 	return valid;
 }
 
-bool SubspaceMap::isValid() const {
+bool SubspaceMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const {
 	
 	if (name_.isEmpty()) {
 		return false;
@@ -162,11 +169,15 @@ bool SubspaceMap::isValid() const {
 		return false;
 	}
 
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid()) {
-			return false;
-		}
-	}
+    ParameterValidator validator;
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        if (!validator.validate(param.data(), componentChoices)) 
+        {
+            return false;
+        }
+    }
+
 	return true;
 }
 

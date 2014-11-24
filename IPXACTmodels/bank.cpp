@@ -216,7 +216,8 @@ void Bank::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:bank
 }
 
-bool Bank::isValid( QStringList& errorList, 
+bool Bank::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+    QStringList& errorList, 
 				   const QString& parentIdentifier ) const {
 	bool valid = true;
 	const QString thisIdentifier(QObject::tr("bank %1").arg(name_));
@@ -239,7 +240,7 @@ bool Bank::isValid( QStringList& errorList,
 		valid = false;
 	}
 
-	if (memoryBlockData_ && !memoryBlockData_->isValid(errorList, thisIdentifier)) {
+	if (memoryBlockData_ && !memoryBlockData_->isValid(componentChoices, errorList, thisIdentifier)) {
 		valid = false;
 	}
 
@@ -250,7 +251,7 @@ bool Bank::isValid( QStringList& errorList,
 	}
 	else {
 		foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
-			if (!memItem->isValid(errorList, thisIdentifier)) {
+			if (!memItem->isValid(componentChoices, errorList, thisIdentifier)) {
 				valid = false;
 			}
 		}
@@ -259,7 +260,7 @@ bool Bank::isValid( QStringList& errorList,
 	return valid;
 }
 
-bool Bank::isValid() const {
+bool Bank::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const {
 	
 	if (name_.isEmpty()) {
 		return false;
@@ -273,7 +274,8 @@ bool Bank::isValid() const {
 		return false;
 	}
 
-	if (memoryBlockData_ && !memoryBlockData_->isValid()) {
+	if (memoryBlockData_ && !memoryBlockData_->isValid(componentChoices))
+    {
 		return false;
 	}
 
@@ -282,7 +284,7 @@ bool Bank::isValid() const {
 	}
 	else {
 		foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
-			if (!memItem->isValid()) {
+			if (!memItem->isValid(componentChoices)) {
 				return false;
 			}
 		}

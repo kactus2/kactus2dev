@@ -15,6 +15,7 @@
 #include <QSharedPointer>
 #include <QList>
 
+class Choice;
 /*! \brief The model to manage the details of a single register.
  *
  */
@@ -26,10 +27,12 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param reg Pointer to the register being edited.
+     * \param componentChoices  Choices in the containing component.
 	 * \param parent Pointer to the owner of the model.
 	 *
 	*/
 	RegisterTableModel(QSharedPointer<Register> reg,
+        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
 		QObject *parent);
 	
 	//! \brief The destructor
@@ -133,6 +136,9 @@ private:
 
 	//! \brief Pointer to the register being edited.
 	QSharedPointer<Register> reg_;
+
+    //! The choices available in the containing component;
+    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices_;
 
 	//! \brief Contains the fields being edited.
 	QList<QSharedPointer<Field> >& fields_;

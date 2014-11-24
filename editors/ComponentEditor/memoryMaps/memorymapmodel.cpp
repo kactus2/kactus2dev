@@ -13,9 +13,11 @@
 #include <QDebug>
 
 MemoryMapModel::MemoryMapModel(QSharedPointer<MemoryMap> memoryMap,
+    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
 							   QObject *parent):
 QAbstractTableModel(parent),
 memoryMap_(memoryMap),
+componentChoices_(componentChoices),
 items_(memoryMap->getItems()) {
 
 	Q_ASSERT(memoryMap_);
@@ -158,7 +160,7 @@ QVariant MemoryMapModel::data( const QModelIndex& index, int role /*= Qt::Displa
 	}
 	else if (Qt::ForegroundRole == role) {
 
-		if (items_.at(index.row())->isValid()) {
+		if (items_.at(index.row())->isValid(componentChoices_)) {
 			return QColor("black");
 		}
 		else {
@@ -272,9 +274,12 @@ bool MemoryMapModel::setData( const QModelIndex& index, const QVariant& value, i
 	}
 }
 
-bool MemoryMapModel::isValid() const {
-	foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
-		if (!memItem->isValid()) {
+bool MemoryMapModel::isValid() const
+{
+	foreach (QSharedPointer<MemoryMapItem> memItem, items_)
+    {
+		if (!memItem->isValid(componentChoices_)) 
+        {
 			return false;
 		}
 	}

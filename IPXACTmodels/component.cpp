@@ -29,6 +29,8 @@
 #include "SystemView.h"
 #include "FileDependency.h"
 
+#include <IPXACTmodels/validators/ParameterValidator.h>
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomNode>
@@ -1093,30 +1095,9 @@ bool Component::isValid( QStringList& errorList ) const {
 		physPorts = model_->getPortBounds();
 		portNames = model_->getPortNames();
 
-		if (!model_->isValid(fileSetNames, errorList, thisIdentifier)) {
+		if (!model_->isValid(fileSetNames, choices_, errorList, thisIdentifier)) {
 			valid = false;
 		}
-
-        foreach(QSharedPointer<ModelParameter> modelParameter, model_->getModelParameters())
-        {
-            if (!modelParameter->getChoiceRef().isEmpty())
-            {
-                QSharedPointer<Choice> referencedChoice = getChoice(modelParameter->getChoiceRef());
-                if (referencedChoice.isNull())
-                {
-                    errorList.append(QObject::tr("Model parameter %1 references unknown choice %2 within %3"
-                        ).arg(modelParameter->getName(), modelParameter->getChoiceRef(), thisIdentifier));
-                    valid = false;
-                }
-                else if(!referencedChoice->hasEnumeration(modelParameter->getValue()))
-                {
-                    errorList.append(QObject::tr("Model parameter %1 references unknown choice value %2 "
-                        "for choice %3 within %4").arg(modelParameter->getName(), 
-                        modelParameter->getValue(), modelParameter->getChoiceRef(), thisIdentifier));
-                    valid = false;
-                }
-            }
-        }
 	}
 
 	QStringList busifNames;
@@ -1131,7 +1112,7 @@ bool Component::isValid( QStringList& errorList ) const {
 			busifNames.append(busif->getName());
 		}
 
-		if (!busif->isValid(physPorts, errorList, thisIdentifier)) {
+		if (!busif->isValid(physPorts, choices_, errorList, thisIdentifier)) {
 			valid = false;
 		}
 	}
@@ -1213,7 +1194,7 @@ bool Component::isValid( QStringList& errorList ) const {
 			addSpaceNames.append(addrSpace->getName());
 		}
 
-		if (!addrSpace->isValid(errorList, thisIdentifier)) {
+		if (!addrSpace->isValid(choices_, errorList, thisIdentifier)) {
 			valid = false;
 		}
 	}
@@ -1230,7 +1211,7 @@ bool Component::isValid( QStringList& errorList ) const {
 			memoryMapNames.append(memMap->getName());
 		}
 
-		if (!memMap->isValid(errorList, thisIdentifier)) {
+		if (!memMap->isValid(choices_, errorList, thisIdentifier)) {
 			valid = false;
 		}
 	}
@@ -1247,7 +1228,7 @@ bool Component::isValid( QStringList& errorList ) const {
 			compGenNames.append(compGen->getName());
 		}
 
-		if (!compGen->isValid(errorList, thisIdentifier)) {
+		if (!compGen->isValid(choices_, errorList, thisIdentifier)) {
 			valid = false;
 		}
 	}
@@ -1283,7 +1264,7 @@ bool Component::isValid( QStringList& errorList ) const {
 			cpuNames.append(cpu->getName());
 		}
 
-		if (!cpu->isValid(addSpaceNames, errorList, thisIdentifier)) {
+		if (!cpu->isValid(addSpaceNames, choices_, errorList, thisIdentifier)) {
 			valid = false;
 		}
 	}
@@ -1305,40 +1286,26 @@ bool Component::isValid( QStringList& errorList ) const {
 		}
 	}
 
-	QStringList paramNames;
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-
-		if (paramNames.contains(param->getName())) {
-			errorList.append(QObject::tr("%1 contains several parameters with"
-				" name %2").arg(thisIdentifier).arg(param->getName()));
+    ParameterValidator validator;
+    QStringList paramNames;
+	foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+		if (paramNames.contains(param->getName())) 
+        {
+			errorList.append(QObject::tr("%1 contains several parameters with name %2").arg(thisIdentifier, 
+                param->getName()));
 			valid = false;
 		}
-		else {
+		else 
+        {
 			paramNames.append(param->getName());
 		}
 
-		if (!param->isValid(errorList, thisIdentifier)) {
-			valid = false;
-		}
-
-        if (!param->getChoiceRef().isEmpty())
+        errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, choices_));
+        if (!validateParameter(param))
         {
-            QSharedPointer<Choice> referencedChoice = getChoice(param->getChoiceRef());
-            if (referencedChoice.isNull())
-            {
-                errorList.append(QObject::tr("Parameter %1 references unknown choice %2 within %3"
-                    ).arg(param->getName(), param->getChoiceRef(), thisIdentifier));
-                valid = false;
-            }
-            else if(!referencedChoice->hasEnumeration(param->getValue()))
-            {
-                errorList.append(QObject::tr("Parameter %1 references unknown choice value %2 "
-                    "for choice %3 within %4").arg(param->getName(), 
-                    param->getValue(), param->getChoiceRef(), thisIdentifier));
-                valid = false;
-            }
+            valid = false;
         }
-
 	}
 
 	return valid;
@@ -1377,7 +1344,7 @@ bool Component::isValid() const {
 		physPorts = model_->getPortBounds();
 		portNames = model_->getPortNames();
 
-		if (!model_->isValid(fileSetNames))
+		if (!model_->isValid(fileSetNames, choices_))
         {
 			return false;
 		}
@@ -1401,7 +1368,8 @@ bool Component::isValid() const {
 			busifNames.append(busif->getName());
 		}
 
-		if (!busif->isValid(physPorts)) {
+		if (!busif->isValid(physPorts, choices_))
+        {
 			return false;
 		}
 	}
@@ -1474,7 +1442,8 @@ bool Component::isValid() const {
 			addSpaceNames.append(addrSpace->getName());
 		}
 
-		if (!addrSpace->isValid()) {
+		if (!addrSpace->isValid(choices_))
+        {
 			return false;
 		}
 	}
@@ -1489,7 +1458,8 @@ bool Component::isValid() const {
 			memoryMapNames.append(memMap->getName());
 		}
 
-		if (!memMap->isValid()) {
+		if (!memMap->isValid(choices_))
+        {
 			return false;
 		}
 	}
@@ -1504,7 +1474,8 @@ bool Component::isValid() const {
 			compGenNames.append(compGen->getName());
 		}
 
-		if (!compGen->isValid()) {
+		if (!compGen->isValid(choices_))
+        {
 			return false;
 		}
 	}
@@ -1534,7 +1505,8 @@ bool Component::isValid() const {
 			cpuNames.append(cpu->getName());
 		}
 
-		if (!cpu->isValid(addSpaceNames)) {
+		if (!cpu->isValid(addSpaceNames, choices_))
+        {
 			return false;
 		}
 	}
@@ -3949,22 +3921,6 @@ bool Component::validateParameters(QList<QSharedPointer<Parameter> > parameters)
 //-----------------------------------------------------------------------------
 bool Component::validateParameter(QSharedPointer<Parameter> param) const
 {
-    if (!param->isValid())
-    {
-        return false;
-    }
-
-    if (!param->getChoiceRef().isEmpty())
-    {
-        QSharedPointer<Choice> referencedChoice = getChoice(param->getChoiceRef());
-        if (referencedChoice.isNull())
-        {
-            return false;
-        }
-        else if(!referencedChoice->hasEnumeration(param->getValue()))
-        {
-            return false;
-        }
-    }
-    return true;
+    ParameterValidator validator;
+    return validator.validate(param.data(), choices_);
 }

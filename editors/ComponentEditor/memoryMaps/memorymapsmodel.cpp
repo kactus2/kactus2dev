@@ -119,7 +119,7 @@ QVariant MemoryMapsModel::data( const QModelIndex& index, int role /*= Qt::Displ
 	}
 	else if (Qt::ForegroundRole == role) {
 
-		if (memMaps_.at(index.row())->isValid()) {
+		if (memMaps_.at(index.row())->isValid(component_->getChoices())) {
 			return QColor("black");
 		}
 		else {
@@ -177,9 +177,12 @@ bool MemoryMapsModel::setData( const QModelIndex& index, const QVariant& value, 
 	}
 }
 
-bool MemoryMapsModel::isValid() const {
-	foreach (QSharedPointer<MemoryMap> memMap, memMaps_) {
-		if (!memMap->isValid()) {
+bool MemoryMapsModel::isValid() const 
+{
+	foreach (QSharedPointer<MemoryMap> memMap, memMaps_)
+    {
+		if (!memMap->isValid(component_->getChoices()))
+        {
 			return false;
 		}
 	}

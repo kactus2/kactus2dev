@@ -48,7 +48,7 @@ QString ComponentEditorRegisterItem::text() const {
 }
 
 bool ComponentEditorRegisterItem::isValid() const {
-	return reg_->isValid();
+	return reg_->isValid(component_->getChoices());
 }
 
 ItemEditor* ComponentEditorRegisterItem::editor() {

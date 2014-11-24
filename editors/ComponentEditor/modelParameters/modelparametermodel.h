@@ -224,6 +224,16 @@ protected:
      */
     virtual int descriptionColumn() const;
 
+    /*!
+     *  Validates the data in a model parameter corresponding to a given column.
+     *
+     *      @param [in] column      The column whose data to validate.
+     *      @param [in] parameter   The model parameter whose data to validate.
+     *
+     *      @return True, if the data in the parameter is valid, otherwise false.
+     */
+    virtual bool validateColumnForParameter(int column, QSharedPointer<Parameter> parameter) const;
+
 private:
 
 	//! No copying

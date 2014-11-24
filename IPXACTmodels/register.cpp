@@ -12,6 +12,7 @@
 #include "GenericVendorExtension.h"
 
 #include <common/utils.h>
+#include <IPXACTmodels/validators/ParameterValidator.h>
 
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -169,67 +170,94 @@ void Register::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:register
 }
 
-bool Register::isValid( QStringList& errorList,
-					   const QString& parentIdentifier ) const {
+//-----------------------------------------------------------------------------
+// Function: Register::isValid()
+//-----------------------------------------------------------------------------
+bool Register::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+    QStringList& errorList, const QString& parentIdentifier ) const
+{
 	bool valid = true;
 	const QString thisIdentifier(QObject::tr("register %1").arg(nameGroup_.name()));
 
-	if (nameGroup_.name().isEmpty()) {
+	if (nameGroup_.name().isEmpty())
+    {
 		errorList.append(QObject::tr("No name specified for register within %1").arg(
 			parentIdentifier));
 		valid = false;
 	}
 
-	if (addressOffset_.isEmpty()) {
+	if (addressOffset_.isEmpty())
+    {
 		errorList.append(QObject::tr("No address offset set for register %1"
 			" within %2").arg(nameGroup_.name()).arg(parentIdentifier));
 		valid = false;
 	}
 
-	if (!registerDefinition_.isValid(errorList, thisIdentifier)) {
+	if (!registerDefinition_.isValid(componentChoices, errorList, thisIdentifier))
+    {
 			valid = false;
 	}
 
-	foreach (QSharedPointer<AlternateRegister> alterRegister, alternateRegisters_) {
-		if (!alterRegister->isValid(errorList, thisIdentifier)) {
+	foreach (QSharedPointer<AlternateRegister> alterRegister, alternateRegisters_)
+    {
+		if (!alterRegister->isValid(componentChoices, errorList, thisIdentifier))
+        {
 			valid = false;
 		}
 	}
 
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid(errorList, thisIdentifier)) {
-			valid = false;
-		}
+    ParameterValidator validator;
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, componentChoices));
+
+        if (!validator.validate(param.data(), componentChoices)) 
+        {
+            valid = false;
+        }
 	}
 
 	return valid;
 }
 
-bool Register::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: Register::isValid()
+//-----------------------------------------------------------------------------
+bool Register::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const
+{
 
-	if (nameGroup_.name().isEmpty()) {
+	if (nameGroup_.name().isEmpty()) 
+    {
 		return false;
 	}
 
-	if (addressOffset_.isEmpty()) {
+	if (addressOffset_.isEmpty())
+    {
 		return false;
 	}
 
-	if (!registerDefinition_.isValid()) {
+	if (!registerDefinition_.isValid(componentChoices))
+    {
 		return false;
 	}
 
-	foreach (QSharedPointer<AlternateRegister> alterRegister, alternateRegisters_) {
-		if (!alterRegister->isValid()) {
+	foreach (QSharedPointer<AlternateRegister> alterRegister, alternateRegisters_)
+    {
+		if (!alterRegister->isValid(componentChoices))
+        {
 			return false;
 		}
 	}
 
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid()) {
-			return false;
-		}
-	}
+    ParameterValidator validator;
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        if (!validator.validate(param.data(), componentChoices)) 
+        {
+            return false;
+        }
+    }
+
 	return true;
 }
 

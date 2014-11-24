@@ -15,6 +15,7 @@
 #include <QList>
 #include <QXmlStreamWriter>
 
+class Choice;
 class Parameter;
 
 /*! \brief Equals the spirit:memoryBlockData element in IP-Xact specification.
@@ -64,19 +65,22 @@ public:
 
 	/*! \brief Check if the memory block data is in a valid state.
 	 *
+     * \param componentChoices  Choices in the containing component.
 	 * \param errorList The list to add the possible error messages to.
 	 * \param parentIdentifier String from parent to help to identify the location of the error.
 	 *
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(QStringList& errorList, 
+	bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices, QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
 	/*! \brief Check if the memory block data is in a valid state.
 	 *
+     * \param componentChoices  Choices in the containing component.
+     *
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid() const;
+	bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const;
 
 	/*! \brief Get the usage
 	 *

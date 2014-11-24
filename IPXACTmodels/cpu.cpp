@@ -9,6 +9,8 @@
 #include "parameter.h"
 #include "GenericVendorExtension.h"
 
+#include <IPXACTmodels/validators/ParameterValidator.h>
+
 #include <QDomNode>
 #include <QString>
 #include <QList>
@@ -160,6 +162,7 @@ void Cpu::write(QXmlStreamWriter& writer) {
 }
 
 bool Cpu::isValid(const QStringList& addrSpaceNames,
+    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
 				  QStringList& errorList, 
 				  const QString& parentIdentifier ) const {
 	bool valid = true;
@@ -188,17 +191,24 @@ bool Cpu::isValid(const QStringList& addrSpaceNames,
 		}
 	}
 
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid(errorList, thisIdentifier)) {
-			valid = false;
-		}
+    ParameterValidator validator;
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, componentChoices));
+        if (!validator.validate(param.data(), componentChoices)) 
+        {
+            valid = false;
+        }
 	}
 
 	return valid;
 }
 
-bool Cpu::isValid(const QStringList& addrSpaceNames) const {
-	if (nameGroup_.name().isEmpty()) {
+bool Cpu::isValid(const QStringList& addrSpaceNames, 
+    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const 
+{
+	if (nameGroup_.name().isEmpty()) 
+    {
 		return false;
 	}
 
@@ -214,11 +224,15 @@ bool Cpu::isValid(const QStringList& addrSpaceNames) const {
 		}
 	}
 
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid()) {
-			return false;
-		}
-	}
+    ParameterValidator validator;
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        if (!validator.validate(param.data(), componentChoices)) 
+        {
+            return false;
+        }
+    }
+
 	return true;
 }
 

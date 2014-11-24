@@ -21,7 +21,7 @@ RegisterEditor::RegisterEditor(QSharedPointer<Register> reg,
 ItemEditor(component, handler, parent),
 view_(new EditableTableView(this)),
 proxy_(new QSortFilterProxyModel(this)),
-model_(new RegisterTableModel(reg, this)) {
+model_(new RegisterTableModel(reg, component->getChoices(), this)) {
 
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Fields summary"), this);

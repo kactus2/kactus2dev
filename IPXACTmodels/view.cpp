@@ -12,6 +12,7 @@
 #include"vlnv.h"
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
+#include <IPXACTmodels/validators/ParameterValidator.h>
 
 #include <QDomNode>
 #include <QObject>
@@ -284,6 +285,7 @@ void View::write(QXmlStreamWriter& writer) {
 }
 
 bool View::isValid( const QStringList& fileSetNames, 
+                    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
 				   QStringList& errorList, 
 				   const QString& parentIdentifier ) const {
 
@@ -320,22 +322,30 @@ bool View::isValid( const QStringList& fileSetNames,
 			}
 		}
 
-		foreach (QSharedPointer<Parameter> param, parameters_) {
-			if (!param->isValid(errorList, thisIdentifier)) {
-				valid = false;
-			}
+        ParameterValidator validator;
+        foreach (QSharedPointer<Parameter> param, parameters_)
+        {
+            errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, componentChoices));
+            if (!validator.validate(param.data(), componentChoices)) 
+            {
+                valid = false;
+            }
 		}
 	}
 	
 	return valid;
 }
 
-bool View::isValid( const QStringList& fileSetNames ) const {
-	if (nameGroup_.name().isEmpty()) {
+bool View::isValid( const QStringList& fileSetNames, 
+    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices ) const 
+{
+	if (nameGroup_.name().isEmpty()) 
+    {
 		return false;
 	}
 
-	if (envIdentifiers_.isEmpty()) {
+	if (envIdentifiers_.isEmpty())
+    {
 		return false;
 	}
 
@@ -355,11 +365,14 @@ bool View::isValid( const QStringList& fileSetNames ) const {
 			}
 		}
 
-		foreach (QSharedPointer<Parameter> param, parameters_) {
-			if (!param->isValid()) {
-				return false;
-			}
-		}
+        ParameterValidator validator;
+        foreach (QSharedPointer<Parameter> param, parameters_)
+        {
+            if (!validator.validate(param.data(), componentChoices)) 
+            {
+                return false;
+            }
+        }
 	}
 
 	return true;

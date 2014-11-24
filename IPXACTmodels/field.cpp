@@ -10,6 +10,8 @@
 #include "enumeratedvalue.h"
 #include "GenericVendorExtension.h"
 
+#include <IPXACTmodels/validators/ParameterValidator.h>
+
 #include <QString>
 #include <QXmlStreamWriter>
 #include <QMap>
@@ -339,7 +341,8 @@ void Field::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:field
 }
 
-bool Field::isValid(unsigned int registerSize, QStringList& errorList, const QString& parentIdentifier ) const {
+bool Field::isValid(unsigned int registerSize, QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+    QStringList& errorList, const QString& parentIdentifier ) const {
 	bool valid = true;
 
 	if (nameGroup_.name().isEmpty()) {
@@ -366,51 +369,67 @@ bool Field::isValid(unsigned int registerSize, QStringList& errorList, const QSt
 		valid = false;
 	}
 
-	foreach (QSharedPointer<EnumeratedValue> enumValue, enumeratedValues_) {
-		if (!enumValue->isValid(errorList, QObject::tr("field %1").arg(nameGroup_.name()))) {
+	foreach (QSharedPointer<EnumeratedValue> enumValue, enumeratedValues_)
+    {
+		if (!enumValue->isValid(errorList, QObject::tr("field %1").arg(nameGroup_.name())))
+        {
 			valid = false;
 		}
 	}
 
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid(errorList, QObject::tr("field %1").arg(nameGroup_.name()))) {
-			valid = false;
-		}
-	}
+    ParameterValidator validator;
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        errorList.append(validator.findErrorsIn(param.data(), QObject::tr("field %1").arg(nameGroup_.name()),
+            componentChoices));
+        if (!validator.validate(param.data(), componentChoices)) 
+        {
+            valid = false;
+        }
+    }
 
 	return valid;
 }
 
-bool Field::isValid(unsigned int registerSize) const {
-	if (nameGroup_.name().isEmpty()) {
-		return false;
-	}
+bool Field::isValid(unsigned int registerSize, 
+    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const 
+{
+    if (nameGroup_.name().isEmpty()) 
+    {
+        return false;
+    }
 
-	if (bitOffset_ < 0) {
-		return false;
-	}
+    if (bitOffset_ < 0)
+    {
+        return false;
+    }
 
-	if (bitWidth_ <= 0) {
-		return false;
-	}
+    if (bitWidth_ <= 0)
+    {
+        return false;
+    }
 
-	if ((bitOffset_ + bitWidth_) > registerSize) {
-		return false;
-	}
+    if ((bitOffset_ + bitWidth_) > registerSize)
+    {
+        return false;
+    }
 
-	foreach (QSharedPointer<EnumeratedValue> enumValue, enumeratedValues_) {
-		if (!enumValue->isValid()) {
-			return false;
-		}
-	}
+    foreach (QSharedPointer<EnumeratedValue> enumValue, enumeratedValues_) {
+        if (!enumValue->isValid()) {
+            return false;
+        }
+    }
 
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid()) {
-			return false;
-		}
-	}
+    ParameterValidator validator;
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        if (!validator.validate(param.data(), componentChoices)) 
+        {
+            return false;
+        }
+    }
 
-	return true;
+    return true;
 }
 
 int Field::getBitOffset() const {

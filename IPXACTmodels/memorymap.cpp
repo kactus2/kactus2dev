@@ -146,7 +146,8 @@ void MemoryMap::write(QXmlStreamWriter& writer) {
     }
 }
 
-bool MemoryMap::isValid( QStringList& errorList, 
+bool MemoryMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+    QStringList& errorList, 
 						const QString& parentIdentifier ) const {
 	bool valid = true;
 	const QString thisIdentifier(QObject::tr("memory map %1").arg(nameGroup_.name()));
@@ -169,7 +170,7 @@ bool MemoryMap::isValid( QStringList& errorList,
 			memItemNames.append(memItem->getName());
 		}
 
-		if (!memItem->isValid(errorList, thisIdentifier)) {
+		if (!memItem->isValid(componentChoices, errorList, thisIdentifier)) {
 			valid = false;
 		}
 	}
@@ -177,23 +178,29 @@ bool MemoryMap::isValid( QStringList& errorList,
 	return valid;
 }
 
-bool MemoryMap::isValid() const {
+bool MemoryMap::isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const 
+{
 
-	if (nameGroup_.name().isEmpty()) {
+	if (nameGroup_.name().isEmpty())
+    {
 		return false;
 	}
 
 	QStringList memItemNames;
-	foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
+	foreach (QSharedPointer<MemoryMapItem> memItem, items_) 
+    {
 
-		if (memItemNames.contains(memItem->getName())) {
+		if (memItemNames.contains(memItem->getName()))
+        {
 			return false;
 		}
-		else {
+		else
+        {
 			memItemNames.append(memItem->getName());
 		}
 
-		if (!memItem->isValid()) {
+		if (!memItem->isValid(componentChoices))
+        {
 			return false;
 		}
 	}

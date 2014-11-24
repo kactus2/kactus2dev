@@ -7,17 +7,20 @@
 
 #include "addressblockmodel.h"
 #include "addressblockdelegate.h"
+
+#include <IPXACTmodels/choice.h>
 #include <IPXACTmodels/register.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <QColor>
 
 AddressBlockModel::AddressBlockModel(QSharedPointer<AddressBlock> addressBlock,
-									 QObject *parent):
+    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices, QObject *parent):
 QAbstractTableModel(parent),
 addressBlock_(addressBlock),
-items_(addressBlock->getRegisterData()) {
-
+items_(addressBlock->getRegisterData()),
+componentChoices_(componentChoices)
+{
 	Q_ASSERT(addressBlock_);
 }
 
@@ -176,7 +179,7 @@ QVariant AddressBlockModel::data( const QModelIndex& index, int role /*= Qt::Dis
 	}
 	else if (Qt::ForegroundRole == role) {
 
-		if (items_.at(index.row())->isValid()) {
+		if (items_.at(index.row())->isValid(componentChoices_)) {
 			return QColor("black");
 		}
 		else {
@@ -327,7 +330,8 @@ bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value
 	}
 }
 
-bool AddressBlockModel::isValid() const { 
+bool AddressBlockModel::isValid() const 
+{ 
     // Usage must be register or unspecified, if address block has children (registers).
     if (!items_.empty() && 
         (addressBlock_->getUsage() == General::MEMORY || addressBlock_->getUsage() == General::RESERVED))
@@ -335,8 +339,10 @@ bool AddressBlockModel::isValid() const {
         return false;
     }
 
-	foreach (QSharedPointer<RegisterModel> regModel, items_) {
-		if (!regModel->isValid()) {
+	foreach (QSharedPointer<RegisterModel> regModel, items_)
+    {
+		if (!regModel->isValid(componentChoices_))
+        {
 			return false;
 		}
 	}

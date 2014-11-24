@@ -29,6 +29,12 @@
     <Filter Include="Source Files\kactusExtensions">
       <UniqueIdentifier>{9a1ab151-3ac8-45ec-910d-4264f073bda9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\validators">
+      <UniqueIdentifier>{12b4e7f6-efbf-4e71-a494-ce7e5f017b79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\validators">
+      <UniqueIdentifier>{f47be731-33bb-4e30-a675-92f57ecb2303}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="abstractiondefinition.cpp">
@@ -306,6 +312,12 @@
     </ClCompile>
     <ClCompile Include="ApiConnection.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="validators\ParameterValidator.cpp">
+      <Filter>Source Files\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="validators\ModelParameterValidator.cpp">
+      <Filter>Source Files\validators</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -596,6 +608,12 @@
     </ClInclude>
     <ClInclude Include="StringPromtAtt.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="validators\ParameterValidator.h">
+      <Filter>Header Files\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="validators\ModelParameterValidator.h">
+      <Filter>Header Files\validators</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

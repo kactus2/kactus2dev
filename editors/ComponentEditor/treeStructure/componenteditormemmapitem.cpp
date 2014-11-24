@@ -48,8 +48,9 @@ QString ComponentEditorMemMapItem::text() const {
 	return memoryMap_->getName();
 }
 
-bool ComponentEditorMemMapItem::isValid() const {
-	return memoryMap_->isValid();
+bool ComponentEditorMemMapItem::isValid() const
+{
+	return memoryMap_->isValid(component_->getChoices());
 }
 
 ItemEditor* ComponentEditorMemMapItem::editor() {

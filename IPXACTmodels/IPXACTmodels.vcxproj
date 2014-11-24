@@ -214,6 +214,8 @@
     <ClCompile Include="SystemView.cpp" />
     <ClCompile Include="transactional.cpp" />
     <ClCompile Include="transactionalabstraction.cpp" />
+    <ClCompile Include="validators\ModelParameterValidator.cpp" />
+    <ClCompile Include="validators\ParameterValidator.cpp" />
     <ClCompile Include="vector.cpp" />
     <ClCompile Include="view.cpp" />
     <ClCompile Include="vlnv.cpp" />
@@ -311,6 +313,8 @@
     <ClInclude Include="SystemView.h" />
     <ClInclude Include="transactional.h" />
     <ClInclude Include="transactionalabstraction.h" />
+    <ClInclude Include="validators\ModelParameterValidator.h" />
+    <ClInclude Include="validators\ParameterValidator.h" />
     <ClInclude Include="vector.h" />
     <ClInclude Include="VendorExtension.h" />
     <ClInclude Include="view.h" />

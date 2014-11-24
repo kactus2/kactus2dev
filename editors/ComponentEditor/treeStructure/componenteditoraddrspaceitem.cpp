@@ -60,8 +60,9 @@ QString ComponentEditorAddrSpaceItem::text() const {
 	return addrSpace_->getName();
 }
 
-bool ComponentEditorAddrSpaceItem::isValid() const {
-	return addrSpace_->isValid();
+bool ComponentEditorAddrSpaceItem::isValid() const
+{
+	return addrSpace_->isValid(component_->getChoices());
 }
 
 ItemEditor* ComponentEditorAddrSpaceItem::editor() {

@@ -18,6 +18,7 @@
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
 
+class Choice;
 class Parameter;
 class VendorExtension;
 
@@ -69,22 +70,26 @@ public:
 	/*! \brief Check if the cpu is in a valid state.
 	 *
 	 * \param addrSpaceNames Contains the names of address spaces the component has.
+     * \param componentChoices  Choices in the containing component.
 	 * \param errorList The list to add the possible error messages to.
 	 * \param parentIdentifier String from parent to help to identify the location of the error.
 	 *
 	 * \return bool True if the state is valid and writing is possible.
 	*/
 	bool isValid(const QStringList& addrSpaceNames,
+        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
 		QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
 	/*! \brief Check if the cpu is in a valid state.
 	 * 
 	 * \param addrSpaceNames Contains the names of address spaces the component has.
+     * \param componentChoices  Choices in the containing component.
 	 * 
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(const QStringList& addrSpaceNames) const;
+	bool isValid(const QStringList& addrSpaceNames,
+        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const;
 
 	/*! \brief Get list of the address space references for this cpu
 	 *

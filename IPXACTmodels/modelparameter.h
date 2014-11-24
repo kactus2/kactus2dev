@@ -52,21 +52,6 @@ public:
 
 	//! The destructor
 	~ModelParameter();
-
-   /*! Checks if the model parameter is valid IP-Xact.
-	*
-	*      @return True if the model parameter is in valid state.
-	*/
-    virtual bool isValid() const;
-
-	/*! Check if the model parameter is in a valid state.
-	*
-	*      @param [in] errorList            The list to add the possible error messages to.
-	*      @param [in] parentIdentifier     String from parent to help to identify the location of the error.
-	*
-	*      @return True if the state is valid and writing is possible.
-	*/
-	virtual bool isValid(QStringList& errorList, QString const& parentIdentifier) const;
     
 	/*! Get the data type of the model parameter
 	 *
@@ -95,6 +80,13 @@ public:
 	*/
 	void setUsageType(QString const& usageType);           
     
+    /*!
+     *  Gets the general name of the IP-Xact element represented by the model parameter.
+     *
+     *      @return The name of IP-Xact element.
+     */
+    virtual QString elementName() const;
+
 protected:
                         
     /*!
@@ -103,13 +95,6 @@ protected:
      *      @return The name of IP-Xact element.
      */
     virtual QString elementIdentifier() const;
-
-    /*!
-     *  Gets the general name of the IP-Xact element represented by the model parameter.
-     *
-     *      @return The name of IP-Xact element.
-     */
-    virtual QString elementName() const;
 
 };
 

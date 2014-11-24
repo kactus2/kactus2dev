@@ -14,6 +14,8 @@
 #include <QString>
 #include <QXmlStreamWriter>
 
+class Choice;
+
 /*! \brief MemoryMapItem is a base class to be used for generalization
  *
  * This class is base class for AddressBlock, Bank and SubspaceMap classes.
@@ -74,19 +76,23 @@ public:
 	 * 
 	 * This is pure virtual function and should be reimplemented in all sub-classes.
 	 * 
+     * \param componentChoices  Choices in the containing component.
 	 * \param errorList The list to add the possible error messages to.
 	 * \param parentIdentifier String from parent to help to identify the location of the error.
 	 *
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	virtual bool isValid(QStringList& errorList, 
+	virtual bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+        QStringList& errorList, 
 		const QString& parentIdentifier) const = 0;
 
 	/*! \brief Check if the memory map item is in a valid state.
 	 *
+     * \param componentChoices  Choices in the containing component.
+     *
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	 virtual bool isValid() const = 0;
+	 virtual bool isValid(QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const = 0;
 
 	/*! \brief Get list of attributes for this element
 	 *
