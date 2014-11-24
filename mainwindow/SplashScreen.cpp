@@ -69,8 +69,8 @@ void SplashScreen::drawContents(QPainter *painter)
                             "kactus2@cs.tut.fi\n" 
                             "Kactus2 is available for dual licensing.\n"
                             "This software is licensed under the General Public License Version 2.\n"
-                            "Contributors: Antti Kamppi, Esko Pekkarinen, Janne Virtanen,\n"
-                            " Joni-Matti M‰‰tt‰, Juho J‰rvinen, Lauri Matilainen, Timo D. H‰m‰l‰inen"));
+                            "Contributors: Antti Kamppi, Esko Pekkarinen, Janne Virtanen, Joni-Matti M‰‰tt‰, \n"
+                            "Juho J‰rvinen, Lauri Matilainen, Mikko Teuho, Timo D. H‰m‰l‰inen"));
 }
 
 void SplashScreen::mousePressEvent( QMouseEvent* event ) {
