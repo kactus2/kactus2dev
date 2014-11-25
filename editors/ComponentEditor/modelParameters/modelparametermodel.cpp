@@ -13,13 +13,14 @@
 
 #include "ModelParameterColumns.h"
 
-#include <QColor>
-#include <QPersistentModelIndex>
-
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/model.h>
 
 #include <IPXACTmodels/validators/ModelParameterValidator.h>
+
+#include <QColor>
+#include <QPersistentModelIndex>
+#include <QUuid>
 
 //-----------------------------------------------------------------------------
 // Function: ModelParameterModel::ModelParameterModel()
@@ -98,19 +99,11 @@ QVariant ModelParameterModel::data(QModelIndex const& index, int role) const
     }
     else if (Qt::BackgroundRole == role)
     {
-        if (index.column() == ModelParameterColumns::USAGE_TYPE)
-        {
-            return QColor("LemonChiffon");
-        }
-        else
-        {
-            return AbstractParameterModel::data(index, role);
-        }       
+        return AbstractParameterModel::data(index, role);     
     }
     else if (Qt::ForegroundRole == role)
     {
-        bool isValidColumnData = validateColumnForParameter(index.column(), modelParameter);
-        if (!isValidColumnData)
+        if (!validateColumnForParameter(index.column(), modelParameter))
         {
              return QColor("red");
         }
@@ -232,9 +225,12 @@ void ModelParameterModel::onAddItem(QModelIndex const& index)
         row = index.row();
     }
 
-    beginInsertRows(QModelIndex(), row, row);
     QList<QSharedPointer<ModelParameter> >& modelParameters = model_->getModelParameters();
-    modelParameters.insert(row, QSharedPointer<ModelParameter>(new ModelParameter()));
+
+    beginInsertRows(QModelIndex(), row, row);
+    QSharedPointer<ModelParameter> createdModelParameter(new ModelParameter());
+    createdModelParameter->setValueId(QUuid::createUuid().toString());
+    modelParameters.insert(row, createdModelParameter);
     endInsertRows();
 
     // tell also parent widget that contents have been changed

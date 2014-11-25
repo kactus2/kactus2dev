@@ -40,47 +40,15 @@ ParameterValidator::~ParameterValidator()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::validate(Parameter const* parameter, QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const
 {
-    if (!hasValidName(parameter))
-    {
-        return false;
-    }
-
-    if (!hasValidValue(parameter, availableChoices))
-    {
-        return false;
-    }
-
-    if (!hasValidFormat(parameter))
-    {
-        return false;
-    }
-
-    if (!hasValidBitStringLength(parameter))
-    {
-        return false;
-    }
-
-    if (!hasValidMinimumValue(parameter))
-    { 
-        return false;
-    }
-
-    if (!hasValidMaximumValue(parameter))
-    { 
-        return false;
-    }
-
-    if (!hasValidChoice(parameter, availableChoices))
-    {
-        return false;
-    }
-
-    if (!hasValidResolve(parameter))
-    { 
-        return false;
-    }
-
-    return true;
+   return hasValidName(parameter) &&
+       hasValidValue(parameter, availableChoices) &&
+       hasValidFormat(parameter) &&
+       hasValidBitStringLength(parameter)&&
+       hasValidMinimumValue(parameter) &&
+       hasValidMaximumValue(parameter) &&
+       hasValidChoice(parameter, availableChoices) &&
+       hasValidResolve(parameter) &&
+       hasValidValueId(parameter);
 }
 
 //-----------------------------------------------------------------------------
@@ -251,6 +219,21 @@ bool ParameterValidator::hasValidResolve(Parameter const* parameter) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ParameterValidator::hasValidValueId()
+//-----------------------------------------------------------------------------
+bool ParameterValidator::hasValidValueId(Parameter const* parameter) const
+{
+    QString resolve = parameter->getValueResolve();
+
+    if (resolve == "user" || resolve == "generated")
+    {
+        return !parameter->getValueId().isEmpty();
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ParameterValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
 QStringList ParameterValidator::findErrorsIn(Parameter const* parameter, QString const& context, 
@@ -265,6 +248,7 @@ QStringList ParameterValidator::findErrorsIn(Parameter const* parameter, QString
     errors.append(findErrorsInMaximumValue(parameter, context));
     errors.append(findErrorsInChoice(parameter, context, availableChoices));
     errors.append(findErrorsInResolve(parameter, context));
+    errors.append(findErrorsInId(parameter, context));
 
     return errors;
 }
@@ -528,6 +512,23 @@ QStringList ParameterValidator::findErrorsInResolve(Parameter const* parameter, 
     }
 
     return resolveErrors;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterValidator::findErrorsInId()
+//-----------------------------------------------------------------------------
+QStringList ParameterValidator::findErrorsInId(Parameter const* parameter, 
+    QString const& context) const
+{
+    QStringList idErrors;
+
+    if (!hasValidValueId(parameter))
+    {
+        idErrors.append(QObject::tr("No id specified for %1 %2 with resolve %3 within %4").arg(
+            parameter->elementName(), parameter->getName(), parameter->getValueResolve(), context));
+    }
+
+    return idErrors;
 }
 
 //-----------------------------------------------------------------------------

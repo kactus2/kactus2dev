@@ -136,10 +136,28 @@ public:
      *      @return True, if the value is greater than maximum, otherwise false.
      */   
     bool valueIsGreaterThanMaximum(Parameter const* parameter) const;
-
-    bool hasValidChoice(Parameter const* parameter, QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
-
-    bool hasValidValueForChoice(Parameter const* parameter, QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
+     
+    /*!
+     *  Validates the choice reference of the given parameter.
+     *
+     *      @param [in] parameter           The parameter whose choice to validate.
+     *      @param [in] availableChoices    The choices available for the parameter.
+     *
+     *      @return True, if the choice reference is valid, otherwise false.
+     */  
+    bool hasValidChoice(Parameter const* parameter, 
+        QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
+ 
+    /*!
+     *  Checks if the value of the given parameter is valid for the selected choice.
+     *
+     *      @param [in] parameter           The parameter whose value to check.
+     *      @param [in] availableChoices    The choices available for the parameter.
+     *
+     *      @return True, if the value is valid, otherwise false.
+     */ 
+    bool hasValidValueForChoice(Parameter const* parameter, 
+        QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
 
     /*!
      *  Validates the resolve type of the given parameter.
@@ -149,6 +167,15 @@ public:
      *      @return True, if the resolve type is valid, otherwise false.
      */      
     bool hasValidResolve(Parameter const* parameter) const;
+
+    /*!
+     *  Validates the id of the given parameter.
+     *
+     *      @param [in] parameter   The parameter whose id to validate.
+     *
+     *      @return True, if the id is valid, otherwise false.
+     */   
+    bool hasValidValueId(Parameter const* parameter) const;
 
     /*!
      *  Finds possible errors in a parameter and creates a list of the.
@@ -224,7 +251,8 @@ private:
      *
      *      @return List of the found errors in the parameter value.
      */
-    virtual QStringList findErrorsInValue(Parameter const* parameter, QString const& context, QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
+    virtual QStringList findErrorsInValue(Parameter const* parameter, QString const& context, 
+        QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
             
     /*!
      *  Finds possible errors in a parameter value format.
@@ -265,8 +293,17 @@ private:
      *      @return List of the found errors in the parameter maximum value.
      */
     virtual QStringList findErrorsInMaximumValue(Parameter const* parameter, QString const& context) const;
-         
-    virtual QStringList findErrorsInChoice(Parameter const* parameter, QString const& context, QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
+                     
+    /*!
+     *  Finds possible errors in a parameter choice reference.
+     *
+     *      @param [in] parameter   The parameter whose errors to find.
+     *      @param [in] context     Context to help locate the errors.
+     *
+     *      @return List of the found errors in the choice reference.
+     */    
+    virtual QStringList findErrorsInChoice(Parameter const* parameter, QString const& context,
+        QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
 
     /*!
      *  Finds possible errors in a parameter resolve type.
@@ -278,9 +315,28 @@ private:
      */
     virtual QStringList findErrorsInResolve(Parameter const* parameter, QString const& context) const;
    
-    QSharedPointer<Choice> findChoiceByName(QString const& choiceName, QSharedPointer<QList<QSharedPointer<Choice> > > choices) const;
+    /*!
+     *  Finds possible errors in a parameter id.
+     *
+     *      @param [in] parameter   The parameter whose errors to find.
+     *      @param [in] context     Context to help locate the errors.
+     *
+     *      @return List of the found errors in the parameter id.
+     */
+    virtual QStringList findErrorsInId(Parameter const* parameter, QString const& context) const;
 
-    
+    /*!
+     *  Finds a choice with the given name from a set of choices.
+     *
+     *      @param [in] choiceName   The name to search for.
+     *      @param [in] choices     The set of choices to search in.
+     *
+     *      @return The found choice.
+     */
+    QSharedPointer<Choice> findChoiceByName(QString const& choiceName, 
+        QSharedPointer<QList<QSharedPointer<Choice> > > choices) const;
+
+
 };
 
 #endif // PARAMETERVALIDATOR_H

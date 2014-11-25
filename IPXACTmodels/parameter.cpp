@@ -282,6 +282,22 @@ void Parameter::setValueResolve(QString const& resolve)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Parameter::getValueId()
+//-----------------------------------------------------------------------------
+QString Parameter::getValueId() const
+{
+     return valueAttributes_.value("spirit:id");
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::setValueId()
+//-----------------------------------------------------------------------------
+void Parameter::setValueId(QString const& id)
+{
+     setValueAttribute("spirit:id", id);
+}
+
+//-----------------------------------------------------------------------------
 // Function: Parameter::hasAttribute()
 //-----------------------------------------------------------------------------
 bool Parameter::hasAttribute(QString const& attributeName) const

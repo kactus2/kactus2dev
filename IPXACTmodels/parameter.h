@@ -191,6 +191,20 @@ public:
      *      @param [in] resolve   The resolve type.
      */
     void setValueResolve(QString const& resolve);
+    
+    /*!
+     *  Gets the unique id for the parameter value.
+     *
+     *      @return The unique id for the value.
+     */
+    QString getValueId() const;
+
+    /*!
+     *  Sets the unique id for referencing the parameter value
+     *
+     *      @param [in] id   The id to set.
+     */
+     void setValueId(QString const& id);
 
     /*!
      *  Checks if the parameter has an attribute with the given name.

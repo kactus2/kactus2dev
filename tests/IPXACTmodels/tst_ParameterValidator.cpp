@@ -26,9 +26,10 @@ public:
 private slots:
 
     void testResolve();
-    QStringList findErrors(Parameter* parameter);
-
     void testResolve_data();
+
+    void testIdIsSpecifiedForResolveUserAndGenerated();
+    void testIdIsSpecifiedForResolveUserAndGenerated_data();
 
     void testFormat();
     void testFormat_data();
@@ -66,6 +67,8 @@ private slots:
 private:
         
     Parameter* createParameterWithName();
+
+    QStringList findErrors(Parameter* parameter);
 
     bool errorIsNotFoundInErrorlist(QString const& expectedError, QStringList const& errorlist) const;
 
@@ -127,6 +130,60 @@ void tst_ParameterValidator::testResolve_data()
 
     QTest::newRow("other resolve is invalid") << "other" << false;
     QTest::newRow("number resolve is invalid") << "1" << false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator::testIdIsSpecifiedForResolveUserAndGenerated()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator::testIdIsSpecifiedForResolveUserAndGenerated()
+{
+    QFETCH(QString, id);
+    QFETCH(QString, resolve);
+    QFETCH(bool, expectedValid);
+
+    Parameter* parameter = createParameterWithName();
+    parameter->setValueId(id);
+    parameter->setValueResolve(resolve);
+
+    ParameterValidator validator;
+    QVERIFY(validator.hasValidValueId(parameter) == expectedValid);
+
+   if (!expectedValid)
+    {
+        QStringList errorlist =  findErrors(parameter);
+
+        QString expectedError = "No id specified for parameter param with resolve " + resolve + " within test";
+        if (errorIsNotFoundInErrorlist(expectedError, errorlist))
+        {
+            QFAIL("No error message found.");
+        }
+    }
+    delete parameter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator::testIdIsSpecifiedForResolveUserAndGenerated()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator::testIdIsSpecifiedForResolveUserAndGenerated_data()
+{
+    QTest::addColumn<QString>("id");
+    QTest::addColumn<QString>("resolve");
+    QTest::addColumn<bool>("expectedValid");
+
+    QTest::newRow("No id for unspecified resolve is valid") << "" << "" << true;
+    QTest::newRow("Id for unspecified resolve is valid") << "1" << "" << true;
+
+    QTest::newRow("No id for resolve user is invalid") << "" << "user" << false;
+    QTest::newRow("Id for resolve user is valid") << "1" << "user" << true;
+
+    QTest::newRow("No id for resolve generated is invalid") << "" << "generated" << false;
+    QTest::newRow("Id for resolve generated is valid") << "1" << "generated" << true;
+
+    QTest::newRow("No id for resolve immediate is valid") << "" << "immediate" << true;
+    QTest::newRow("Id for resolve immediate is valid") << "1" << "immediate" << true;
+
+    QTest::newRow("No id for resolve dependent is valid") << "" << "dependent" << true;
+    QTest::newRow("Id for resolve dependent is valid") << "1" << "dependent" << true;
 }
 
 //-----------------------------------------------------------------------------

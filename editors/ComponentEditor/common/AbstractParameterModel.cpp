@@ -40,7 +40,7 @@ AbstractParameterModel::~AbstractParameterModel()
 //-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::data()
 //-----------------------------------------------------------------------------
-QVariant AbstractParameterModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole */ ) const 
+QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt::DisplayRole */ ) const 
 {
 	if (!index.isValid() || index.row() < 0 || index.row() >= rowCount())
     {
@@ -109,13 +109,13 @@ QVariant AbstractParameterModel::data( const QModelIndex& index, int role /*= Qt
         if (index.column() == nameColumn() ||
             index.column() == valueColumn()) 
         {
-            return QColor("LemonChiffon");
+            return QColor("lemonChiffon");
         }
         else if (index.column() == bitwidthColumn())
         {
             if (parameter->getValueFormat() == "bitString")
             {
-                return QColor("LemonChiffon");
+                return QColor("lemonChiffon");
             }
             else
             {
@@ -135,16 +135,7 @@ QVariant AbstractParameterModel::data( const QModelIndex& index, int role /*= Qt
     }
     else if (Qt::ForegroundRole == role)
     {
-
-        bool isValidColumnData = validateColumnForParameter(index.column(), parameter);
-        if ((index.column() == choiceColumn() ||
-            index.column() == valueColumn() ) && 
-            !parameter->getChoiceRef().isEmpty() &&
-            !findChoice(parameter->getChoiceRef())->hasEnumeration(parameter->getValue()))
-        {
-            return QColor("red");
-        }
-        else if (isValidColumnData)
+        if (validateColumnForParameter(index.column(), parameter))
         {
             return QColor("black");
         }
@@ -235,14 +226,12 @@ QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orienta
 //-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::setData()
 //-----------------------------------------------------------------------------
-bool AbstractParameterModel::setData(const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole */) 
+bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& value, int role /*= Qt::EditRole */) 
 {
-	if (!index.isValid())
+	if (!index.isValid() || index.row() < 0 || index.row() >= rowCount())
+    {
 		return false;
-
-    // if row is invalid
-    else if (index.row() < 0 || index.row() >= rowCount())
-        return false;
+    }
 
     if (role == Qt::EditRole)
     {
@@ -316,10 +305,12 @@ bool AbstractParameterModel::setData(const QModelIndex& index, const QVariant& v
 //-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::flags()
 //-----------------------------------------------------------------------------
-Qt::ItemFlags AbstractParameterModel::flags(const QModelIndex& index ) const
+Qt::ItemFlags AbstractParameterModel::flags(QModelIndex const& index ) const
 {
 	if (!index.isValid())
+    {
 		return Qt::NoItemFlags;
+    }
 
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
@@ -349,7 +340,7 @@ bool AbstractParameterModel::isValid() const
 //-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::isValid()
 //-----------------------------------------------------------------------------
-bool AbstractParameterModel::isValid(QStringList& errorList, const QString& parentIdentifier) const
+bool AbstractParameterModel::isValid(QStringList& errorList, QString const& parentIdentifier) const
 {
     bool valid = true;
 
@@ -452,7 +443,8 @@ bool AbstractParameterModel::validateColumnForParameter(int column, QSharedPoint
     }
     else if (column == choiceColumn())
     {
-        return validator.hasValidChoice(parameter.data(), choices_);
+        return validator.hasValidChoice(parameter.data(), choices_) &&
+            validator.hasValidValueForChoice(parameter.data(), choices_);
     }
     else if (column == valueColumn())
     {

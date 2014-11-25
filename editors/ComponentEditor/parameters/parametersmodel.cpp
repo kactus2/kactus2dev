@@ -18,7 +18,7 @@
 #include <IPXACTmodels/Enumeration.h>
 
 #include <QColor>
-
+#include <QUuid>
 
 //-----------------------------------------------------------------------------
 // Function: ParametersModel::ParametersModel()
@@ -80,7 +80,9 @@ void ParametersModel::onAddItem(QModelIndex const& index)
     }
 
     beginInsertRows(QModelIndex(), row, row);
-    parameters_.insert(row, QSharedPointer<Parameter>(new Parameter()));
+    QSharedPointer<Parameter> createdParameter(new Parameter());
+    createdParameter->setValueId(QUuid::createUuid().toString());
+    parameters_.insert(row, createdParameter);
     endInsertRows();
 
     // tell also parent widget that contents have been changed
