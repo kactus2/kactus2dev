@@ -668,57 +668,43 @@ void MainWindow::setupActions()
 	// the action to create a new hierarchical component
 	actNew_ = new QAction(QIcon(":/icons/common/graphics/file-new.png"), tr("New"), this);
 	actNew_->setShortcut(QKeySequence::New);
-	actNew_->setProperty("rowSpan", 2);
-	actNew_->setProperty("colSpan", 2);
 	connect(actNew_, SIGNAL(triggered()), this, SLOT(createNew()));
 
 	actSave_ = new QAction(QIcon(":/icons/common/graphics/file-save.png"), tr("Save"), this);
 	actSave_->setShortcut(QKeySequence::Save);
-	actSave_->setProperty("rowSpan", 2);
-	actSave_->setProperty("colSpan", 2);
 	actSave_->setEnabled(false);
 	connect(actSave_, SIGNAL(triggered()), this, SLOT(saveCurrent()));
 
-	actSaveAs_ = new QAction(QIcon(":/icons/common/graphics/file-save.png"), tr("Save As"), this);
+	actSaveAs_ = new QAction(QIcon(":/icons/common/graphics/file-save-as.png"), tr("Save As"), this);
 	actSaveAs_->setShortcut(QKeySequence::SaveAs);
-	actSaveAs_->setProperty("rowSpan", 2);
-	actSaveAs_->setProperty("colSpan", 2);
 	actSaveAs_->setEnabled(false);
 	connect(actSaveAs_, SIGNAL(triggered()), this, SLOT(saveCurrentAs()));
 
 	actSaveAll_ = new QAction(QIcon(":/icons/common/graphics/file-save_all.png"), tr("Save All"), this);
 	actSaveAll_->setShortcut(QKeySequence("Ctrl+Shift+S"));
-	actSaveAll_->setProperty("rowSpan", 2);
-	actSaveAll_->setProperty("colSpan", 2);
 	connect(actSaveAll_, SIGNAL(triggered()), this, SLOT(saveAll()));
 
 	actPrint_ = new QAction(QIcon(":/icons/common/graphics/file-print.png"), tr("Print"), this);
 	actPrint_->setShortcut(QKeySequence::Print);
-	actPrint_->setProperty("rowSpan", 2);
-	actPrint_->setProperty("colSpan", 2);
 	actPrint_->setEnabled(false);
 	connect(actPrint_, SIGNAL(triggered()), this, SLOT(printCurrent()));
 
 	actUndo_ = new QAction(QIcon(":/icons/common/graphics/edit-undo.png"), tr("Undo"), this);
 	actUndo_->setShortcut(QKeySequence::Undo);
-	actUndo_->setProperty("rowSpan", 2);
-	actUndo_->setProperty("colSpan", 2);
 	connect(actUndo_, SIGNAL(triggered()), this, SLOT(undo()));
 
 	actRedo_ = new QAction(QIcon(":/icons/common/graphics/edit-redo.png"), tr("Redo"), this);
 	actRedo_->setShortcut(QKeySequence::Redo);
-	actRedo_->setProperty("rowSpan", 2);
-	actRedo_->setProperty("colSpan", 2);
 	connect(actRedo_, SIGNAL(triggered()), this, SLOT(redo()));
 
 	actLibraryLocations_ = new QAction(QIcon(":/icons/common/graphics/library-config.png"),
-		tr("Configure Library"), this);
+		tr("Configure library"), this);
 	connect(actLibraryLocations_, SIGNAL(triggered()),
 		this, SLOT(setLibraryLocations()), Qt::UniqueConnection);
 
 	// the action to search for IP-Xact documents in file system
 	actLibrarySearch_ = new QAction(QIcon(":/icons/common/graphics/library-refresh.png"),
-		tr("Refresh Library"), this);
+		tr("Refresh library"), this);
 	connect(actLibrarySearch_, SIGNAL(triggered()),
 		this, SLOT(onLibrarySearch()), Qt::UniqueConnection);
 
@@ -758,8 +744,6 @@ void MainWindow::setupActions()
 
 	// Initialize the action to add a new column.
 	actAddColumn_ = new QAction(QIcon(":/icons/common/graphics/diagram-add-column.png"), tr("Add Column"), this);
-	actAddColumn_->setProperty("rowSpan", 2);
-	actAddColumn_->setProperty("colSpan", 2);
 	connect(actAddColumn_, SIGNAL(triggered()), 
 		this, SLOT(addColumn()), Qt::UniqueConnection);
 
@@ -833,19 +817,13 @@ void MainWindow::setupActions()
 	// Initialize the action to manage workspaces.
 	actWorkspaces_ = new QAction(QIcon(":icons/common/graphics/workspace.png"),
 		tr("Workspaces"), this);
-	actWorkspaces_->setProperty("rowSpan", 2);
-	actWorkspaces_->setProperty("colSpan", 2);
 	connect(actWorkspaces_, SIGNAL(triggered()), this, SLOT(openWorkspaceMenu()), Qt::UniqueConnection);
 
 	actRefresh_ = new QAction(QIcon(":/icons/common/graphics/refresh.png"), tr("Refresh"), this);
-	actRefresh_->setProperty("rowSpan", 2);
-	actRefresh_->setProperty("colSpan", 2);
 	actRefresh_->setShortcut(QKeySequence("F5"));
 	connect(actRefresh_, SIGNAL(triggered(bool)), this, SLOT(refresh()));
 
 	actProtect_ = new QAction(QIcon(":/icons/common/graphics/protection-unlocked.png"), tr("Unlocked"), this);
-	actProtect_->setProperty("rowSpan", 2);
-	actProtect_->setProperty("colSpan", 2);
 	actProtect_->setCheckable(true);
 	actProtect_->setEnabled(false);
 	actProtect_->setShortcut(QKeySequence("Ctrl+Space"));
@@ -853,26 +831,18 @@ void MainWindow::setupActions()
 
 	// Initialize the action to open Kactus2 settings.
 	actSettings_ = new QAction(QIcon(":/icons/common/graphics/system-settings.png"), tr("Settings"), this);
-	actSettings_->setProperty("rowSpan", 2);
-	actSettings_->setProperty("colSpan", 2);
 	connect(actSettings_, SIGNAL(triggered()), this, SLOT(openSettings()));
 
 	// Initialize the action to open the about box.
 	actAbout_= new QAction(QIcon(":/icons/common/graphics/system-about.png"), tr("About"), this);
-	actAbout_->setProperty("rowSpan", 2);
-	actAbout_->setProperty("colSpan", 2);
 	connect(actAbout_, SIGNAL(triggered()), this, SLOT(showAbout()), Qt::UniqueConnection);
 
 	// Initialize the action to open the help window.
 	actHelp_= new QAction(QIcon(":/icons/common/graphics/system-help.png"), tr("Help"), this);
-	actHelp_->setProperty("rowSpan", 2);
-	actHelp_->setProperty("colSpan", 2);
 	connect(actHelp_, SIGNAL(triggered()), this, SLOT(showHelp()), Qt::UniqueConnection);
 
 	// Initialize the action to exit the program.
 	actExit_ = new QAction(QIcon(":/icons/common/graphics/system-exit.png"), tr("Exit"), this);
-	actExit_->setProperty("rowSpan", 2);
-	actExit_->setProperty("colSpan", 2);
 	connect(actExit_, SIGNAL(triggered()), this, SLOT(close()), Qt::UniqueConnection);
 
     connectVisibilityControls();
@@ -904,19 +874,19 @@ void MainWindow::setupMenus()
 	fileGroup->addAction(actSaveAll_);
 	fileGroup->addAction(actPrint_);
 
+	// The "Library" group.
+	RibbonGroup* libGroup = ribbon_->addGroup(tr("Library"));
+	libGroup->addAction(actLibraryLocations_);
+	libGroup->addAction(actLibrarySearch_);
+	libGroup->addAction(actCheckIntegrity_);
+
 	// The "Edit" group.
 	editGroup_ = ribbon_->addGroup(tr("Edit"));
 	editGroup_->addAction(actUndo_);
 	editGroup_->addAction(actRedo_);
+	editGroup_->addAction(actRefresh_);
 	editGroup_->setVisible(false);
 	editGroup_->setEnabled(false);
-
-	// The "Library" group.
-	RibbonGroup* libGroup = ribbon_->addGroup(tr("Library"));
-    libGroup->addAction(actLibraryLocations_);
-	libGroup->addAction(actLibrarySearch_);
-	libGroup->addAction(actCheckIntegrity_);
-    libGroup->setAutoCollapse(false);
 
     // The "Generation" group.
     generationGroup_ = ribbon_->addGroup(tr("Generation"));
@@ -949,12 +919,15 @@ void MainWindow::setupMenus()
 	viewGroup->addAction(actFitInView_);
 	viewGroup->addAction(actVisibleDocks_);
     viewGroup->addAction(actVisibilityControl_);
-    viewGroup->addAction(actWorkspaces_);
+
+	//! The "Workspace" group.
+	RibbonGroup* workspacesGroup = ribbon_->addGroup(tr("Workspace"));
+	workspacesGroup->addAction(actWorkspaces_);
+	workspacesGroup->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
 	//! The Protection group.
 	protectGroup_ = ribbon_->addGroup(tr("Protection"));
 	protectGroup_->addAction(actProtect_);
-    protectGroup_->addAction(actRefresh_);
 	protectGroup_->setVisible(false);
 
 	//! The "System" group.
@@ -963,7 +936,6 @@ void MainWindow::setupMenus()
     sysGroup->addAction(actHelp_);
 	sysGroup->addAction(actAbout_);
 	sysGroup->addAction(actExit_);
-    sysGroup->setAutoCollapse(false);
 
 	// the menu to display the dock widgets
     windowsMenu_.addAction(addressDock_->toggleViewAction());	
@@ -976,7 +948,6 @@ void MainWindow::setupMenus()
     windowsMenu_.addAction(systemDetailsDock_->toggleViewAction());
     windowsMenu_.addAction(libraryDock_->toggleViewAction());       
     windowsMenu_.addAction(interfaceDock_->toggleViewAction());
-    //windowsMenu_.addAction(notesDock_->toggleViewAction()); 
     windowsMenu_.addAction(consoleDock_->toggleViewAction());
     
 }
@@ -1456,11 +1427,13 @@ void MainWindow::updateMenuStrip()
         actRunImport_->setVisible(false);
 	}
 
-	editGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_EDIT_SUPPORT));
-	editGroup_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_EDIT_SUPPORT) && unlocked);
+	editGroup_->setVisible(doc != 0);
+	editGroup_->setEnabled(doc != 0 && unlocked);
+	actUndo_->setVisible(doc != 0 && doc->getEditProvider() != 0);
+	actRedo_->setVisible(doc != 0 && doc->getEditProvider() != 0);
 	actUndo_->setEnabled(doc != 0 && doc->getEditProvider() != 0 && doc->getEditProvider()->canUndo());
 	actRedo_->setEnabled(doc != 0 && doc->getEditProvider() != 0 && doc->getEditProvider()->canRedo());
-
+	
 	diagramToolsGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT));
 	diagramToolsGroup_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT) &&
 		!doc->isProtected());
@@ -1483,70 +1456,7 @@ void MainWindow::updateMenuStrip()
 
     actVisibilityControl_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_VISIBILITY_CONTROL_SUPPORT));
 
-	 // Enable/disable the plugin generator actions based on the component being edited in the document.
-	 VLNV compVLNV;
-	 VLNV desVLNV;
-	 QSharedPointer<LibraryComponent const> libComp;
-	 QSharedPointer<LibraryComponent const> libDes;
-	 QSharedPointer<LibraryComponent const> libDesConf;
-	 if (doc != 0) {
-		 compVLNV = doc->getDocumentVLNV();
-		 desVLNV = doc->getIdentifyingVLNV();
-		 libComp = libraryHandler_->getModelReadOnly(compVLNV);
-
-		 // if the design is supported by the document type
-		 DesignWidget* desWidget = qobject_cast<DesignWidget*>(doc);
-		 if (desWidget) {
-
-			 // the vlnvs must be for different objects
-			 Q_ASSERT(compVLNV != desVLNV);
-
-			 // design is the object that identifies the editor
-			 libDes = libraryHandler_->getModelReadOnly(desVLNV);
-
-			 // find the design config is one exists
-			 QString viewName = desWidget->getOpenViewName();
-
-			 QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
-			 VLNV desConfVLNV;
-
-			 // the implementation defines where to search for the hierarchy ref
-			 switch (desWidget->getImplementation()) {
-			 case KactusAttribute::KTS_HW: {
-				 desConfVLNV = comp->getHierRef(viewName);
-				 break;
-													 }
-			 case KactusAttribute::KTS_SW: {
-				 desConfVLNV = comp->getHierSWRef(viewName);
-				 break;
-													 }
-			 case KactusAttribute::KTS_SYS: {
-				 desConfVLNV = comp->getHierSystemRef(viewName);
-				 break;
-													  }
-			 default: {
-				 Q_ASSERT(false);
-				 return;
-						 }
-			 }
-
-			 // the hierarchy reference must be valid
-			 Q_ASSERT(desConfVLNV.isValid());
-
-			 // if the hierarchy ref is not directly to the design but design config is in between
-			 if (desConfVLNV != desVLNV) {
-				 libDesConf = libraryHandler_->getModelReadOnly(desConfVLNV);
-			 }
-		 }
-	 }
-
-    foreach (QAction* action, pluginActionGroup_->actions())
-    {
-        IGeneratorPlugin* plugin = reinterpret_cast<IGeneratorPlugin*>(action->data().value<void*>());
-        Q_ASSERT(plugin != 0);
-
-        action->setEnabled(libComp != 0 && plugin->checkGeneratorSupport(libComp, libDesConf, libDes));
-    }
+	setPluginVisibilities();
 
 	updateZoomTools();
 }
@@ -4604,15 +4514,15 @@ void MainWindow::createGeneratorPluginActions()
             // Add a small overlay icon to the plugin icon to visualize that this is a plugin.
             QIcon pluginBaseIcon = genPlugin->getIcon();
 
-            QPixmap icon(24, 24);
+			QPixmap icon(32, 32);
             icon.fill(Qt::transparent);
 
             QPainter painter(&icon);
-            painter.drawPixmap(0, 0, pluginBaseIcon.pixmap(24, 24));
-            painter.drawPixmap(14, 14, QPixmap(":icons/common/graphics/generator_plugin_overlay.png"));
+			painter.drawPixmap(0, 0, pluginBaseIcon.pixmap(32, 32));
 
             QAction* action = new QAction(icon, genPlugin->getName(), this);
             action->setData(qVariantFromValue((void*)genPlugin));
+
             generationGroup_->addAction(action);
             pluginActionGroup_->addAction(action);
         }
@@ -4644,6 +4554,8 @@ void MainWindow::updateGeneratorPluginActions()
     
     // Recreate the plugin actions.
     createGeneratorPluginActions();
+
+	setPluginVisibilities();
 }
 
 //-----------------------------------------------------------------------------
@@ -4665,4 +4577,77 @@ void MainWindow::runComponentWizard(QSharedPointer<Component> component, QString
             emit errorMessage("Error saving file to disk.");
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::setPluginVisibilities()
+//-----------------------------------------------------------------------------
+void MainWindow::setPluginVisibilities()
+{
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+
+	// Enable/disable the plugin generator actions based on the component being edited in the document.
+	VLNV compVLNV;
+	VLNV desVLNV;
+	QSharedPointer<LibraryComponent const> libComp;
+	QSharedPointer<LibraryComponent const> libDes;
+	QSharedPointer<LibraryComponent const> libDesConf;
+	if (doc != 0) {
+		compVLNV = doc->getDocumentVLNV();
+		desVLNV = doc->getIdentifyingVLNV();
+		libComp = libraryHandler_->getModelReadOnly(compVLNV);
+
+		// if the design is supported by the document type
+		DesignWidget* desWidget = qobject_cast<DesignWidget*>(doc);
+		if (desWidget) {
+
+			// the vlnvs must be for different objects
+			Q_ASSERT(compVLNV != desVLNV);
+
+			// design is the object that identifies the editor
+			libDes = libraryHandler_->getModelReadOnly(desVLNV);
+
+			// find the design config is one exists
+			QString viewName = desWidget->getOpenViewName();
+
+			QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
+			VLNV desConfVLNV;
+
+			// the implementation defines where to search for the hierarchy ref
+			switch (desWidget->getImplementation()) {
+			case KactusAttribute::KTS_HW: {
+				desConfVLNV = comp->getHierRef(viewName);
+				break;
+										  }
+			case KactusAttribute::KTS_SW: {
+				desConfVLNV = comp->getHierSWRef(viewName);
+				break;
+										  }
+			case KactusAttribute::KTS_SYS: {
+				desConfVLNV = comp->getHierSystemRef(viewName);
+				break;
+										   }
+			default: {
+				Q_ASSERT(false);
+				return;
+					 }
+			}
+
+			// the hierarchy reference must be valid
+			Q_ASSERT(desConfVLNV.isValid());
+
+			// if the hierarchy ref is not directly to the design but design config is in between
+			if (desConfVLNV != desVLNV) {
+				libDesConf = libraryHandler_->getModelReadOnly(desConfVLNV);
+			}
+		}
+	}
+
+	foreach (QAction* action, pluginActionGroup_->actions())
+	{
+		IGeneratorPlugin* plugin = reinterpret_cast<IGeneratorPlugin*>(action->data().value<void*>());
+		Q_ASSERT(plugin != 0);
+
+		action->setVisible(libComp != 0 && plugin->checkGeneratorSupport(libComp, libDesConf, libDes));
+	}
 }

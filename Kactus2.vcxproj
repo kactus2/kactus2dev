@@ -1885,6 +1885,7 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp"</Command>
     </CustomBuild>
+    <ClInclude Include="mainwindow\Ribbon\RibbonTheme.h" />
     <ClInclude Include="wizards\common\ComponentComparator\ComponentComparator.h" />
     <ClInclude Include="wizards\common\IPXactDiff.h" />
     <ClInclude Include="wizards\common\IPXactElementComparator.h" />

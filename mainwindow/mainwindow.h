@@ -710,6 +710,12 @@ private:
      */
     void runComponentWizard(QSharedPointer<Component> component, QString const& directory);
     
+
+	/*!
+	 *  Set the visibilities for the plug ins.
+	 */
+	void setPluginVisibilities();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

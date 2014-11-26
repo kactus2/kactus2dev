@@ -461,6 +461,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/choices/ChoicesModel.h \
     ./editors/ComponentEditor/choices/ChoicesDelegate.h \
     ./editors/ComponentEditor/choices/EnumerationModel.h \
+    ./editors/ComponentEditor/common/AbstractParameterModel.h \
     ./editors/CSourceEditor/CSourceContentMatcher.h \
     ./editors/CSourceEditor/MCAPIDesignerTypes.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
@@ -569,7 +570,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/common/AbstractParameterModel.h
+    ./mainwindow/Ribbon/RibbonTheme.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -992,6 +993,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/choices/ChoicesEditor.cpp \
     ./editors/ComponentEditor/choices/ChoicesModel.cpp \
     ./editors/ComponentEditor/choices/EnumerationModel.cpp \
+    ./editors/ComponentEditor/common/AbstractParameterModel.cpp \
     ./editors/CSourceEditor/CSourceContentMatcher.cpp \
     ./editors/CSourceEditor/CSourceHighlighter.cpp \
     ./editors/CSourceEditor/CSourceTextEdit.cpp \
@@ -1094,6 +1096,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./editors/ComponentEditor/common/AbstractParameterModel.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
 RESOURCES += kactus.qrc

@@ -5636,6 +5636,9 @@
     <ClInclude Include="editors\ComponentEditor\parameters\ParameterColumns.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
     </ClInclude>
+    <ClInclude Include="mainwindow\Ribbon\RibbonTheme.h">
+      <Filter>Header Files\mainwindow\Ribbon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="executable\Kactus2_d.exe">
