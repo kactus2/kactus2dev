@@ -33,6 +33,8 @@ private slots:
     void testParseMultipleOperations_data();
     void testParseDivision();
     void testParseDivision_data();
+    void testParseExpressionWithParathesis();
+    void testParseExpressionWithParathesis_data();
 };
 
 //-----------------------------------------------------------------------------
@@ -382,7 +384,52 @@ void tst_SystemVerilogExpressionParser::testParseMultipleOperations_data()
 
     QTest::newRow("Division and multiplication evaluated from left to right") << "6/2*4*3/1" << "36";
     QTest::newRow("Division, multiplication, addition and subtraction mixed") << "8*2 - 4/2 + 4 - 3*2*2" << "6";
+}
 
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testParseExpressionWithParathesis()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testParseExpressionWithParathesis()
+{
+    QFETCH(QString, expression);
+    QFETCH(QString, expectedResult);
+
+    SystemVerilogExpressionParser parser;
+    QCOMPARE(parser.parseExpression(expression), expectedResult);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testParseExpressionWithParathesis_data()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testParseExpressionWithParathesis_data()
+{
+    QTest::addColumn<QString>("expression");
+    QTest::addColumn<QString>("expectedResult");
+
+    QTest::newRow("Empty parenthesis") << "()" << "x" ;
+    QTest::newRow("Single constant in parenthesis") << "(1)" << "1" ;
+    QTest::newRow("Single operation in parenthesis") << "(1+1)" << "2" ;
+    QTest::newRow("Single operation and whitespace in parenthesis") << " ( 1 + 1 ) " << "2" ;
+
+    QTest::newRow("Addition in parenthesis precedes multiplication") << "(1 + 1)*4" << "8";
+    QTest::newRow("Subtraction in parenthesis precedes multiplication") << "(4 - 1)*3" << "9";
+    QTest::newRow("Multiplication in parenthesis precedes division") << "9/(3*3)" << "1";
+
+    QTest::newRow("Nested parentheses") << "2*(3*(1 + 1) - 5)" << "2";
+
+    QTest::newRow("Double parentheses") << "((1 + 3)*4)/2" << "8";
+    QTest::newRow("Double parentheses with whitespace") << "( (1 + 3)*4 ) /2" << "8";
+    QTest::newRow("Triple parentheses") << "(((1 + 3))*4)/2" << "8";    
+    QTest::newRow("Deeply nested parentheses") << "((((2))))" << "2";
+
+    QTest::newRow("Parallel parentheses") << "(1 + 1)*(1 + 1)" << "4";
+    QTest::newRow("Parallel and nested parentheses") << "(2 * (1 + 1))*(1 + 1)" << "8";
+    QTest::newRow("Multiple parallel parentheses") << "(1+1)*(1+1)*(1+1)*(1+1)*(1+1)" << "32";
+
+    QTest::newRow("Mismatched open parentheses") << "((1)" << "x";
+    QTest::newRow("Mismatched closed parentheses") << "(1))" << "x";
+
+    QTest::newRow("Random user") << "" << "0";
 }
 
 QTEST_APPLESS_MAIN(tst_SystemVerilogExpressionParser)

@@ -35,7 +35,7 @@ public:
      *      @return The decimal value of the constant.
      */
     QString parseExpression(QString const& expression) const;
-    
+
     /*!
      *  Parses a constant number to decimal number.
      *
@@ -70,22 +70,60 @@ private:
     QStringList toStringList(QString const& expression) const;
 
     /*!
-     *  Solves multiply and division operations in given equation.
+     *  Splits the given operand to string list with terms and parentheses as separate items.
+     *
+     *      @param [in] operand   The operand to split.
+     *
+     *      @return The separated list.
+     */
+    QStringList parseLiteralAndParentheses(QString const& operand) const;
+
+    /*!
+     *  Solves expressions in parentheses in a given equation.
      *
      *      @param [in] equation   The equation to solve.
      *
-     *      @return Equation where the results of the multiply and divide operations have replaced the
-     *              terms and operators.
+     *      @return Equation where the expression in parenthesis has been replaced with the solved result
+     *              and without the parentheses.
+     */
+    QStringList solveExpressionsInParentheses(QStringList const& equation) const;
+
+    /*!
+     *  Finds the matching end parenthesis in the given equation for the opening parenthesis in given position.
+     *
+     *      @param [in] equation            The equation to search for ending parenthesis.
+     *      @param [in] parenthesesStart    The position of the opening parenthesis.
+     *
+     *      @return The position of the ending parenthesis.
+     */
+    int findMatchingEndParenthesis(QStringList const& equation, int parenthesesStart) const;
+
+    /*!
+     *  Solves multiply and division operations in a given equation.
+     *
+     *      @param [in] equation   The equation to solve.
+     *
+     *      @return Equation where the terms and operators have been replaced with the result.
      */
     QStringList solveMultiplyAndDivide(QStringList const& equation) const;
-    
+
+    /*!
+     *  Solves a binary operation.
+     *
+     *      @param [in] firstTerm   The first term of the operation.
+     *      @param [in] operation   The operation to solve.
+     *      @param [in] secondTerm  The second term of the operation.
+     *
+     *      @return The result of the operation.
+     */
+    QString solve(int firstTerm, QString const& operation, int secondTerm) const;
+
     /*!
      *  Solves addition and subtraction operations in given equation.
      *
      *      @param [in] equation   The equation to solve.
      *
-     *      @return Equation where the results of the addition and subtraction operations have replaced the
-     *              terms and operators.
+     *      @return Equation where the terms and operators have been replaced with the result.
      */
     QStringList solveAdditionAndSubtraction(QStringList const& equation) const;
 
