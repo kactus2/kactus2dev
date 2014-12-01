@@ -13,13 +13,15 @@
 
 #include <QRegExp>
 #include <QStringList>
+#include <qmath.h>
+
 
 namespace
 {
-    const QRegExp OPERATOR("[+-/*//]");
+    const QRegExp BINARY_OPERATOR("[+-/*//]|[/*][/*]");
     const QRegExp LITERAL("((?:[(]\\s*)*)(\\s*[+-]?(?:[1-9]?[0-9]*'[sS]?[hHoObBdD])?[0-9a-fA-F_]+\\s*)([)]*)");
 
-    const QRegExp NEXT_OPERAND("(" + OPERATOR.pattern() + ")\\s*(" + LITERAL.pattern() + ")");
+    const QRegExp NEXT_OPERAND("(" + BINARY_OPERATOR.pattern() + ")\\s*(" + LITERAL.pattern() + ")");
 }
 
 //-----------------------------------------------------------------------------
@@ -61,16 +63,30 @@ QString SystemVerilogExpressionParser::parseExpression(QString const& expression
     else
     {
         equation = solveExpressionsInParentheses(equation);
+        equation = solvePower(equation);
         equation = solveMultiplyAndDivide(equation);
         equation = solveAdditionAndSubtraction(equation);
         return equation.first();
     }
 }
+//-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::parseConstantToString()
+//-----------------------------------------------------------------------------
+QString SystemVerilogExpressionParser::parseConstantToString(QString const& constantNumber) const
+{
+    int precision = 0;
+    if (constantNumber.contains('.'))
+    {
+        precision = constantNumber.size() - constantNumber.indexOf('.') - 1;
+    }
+
+    return QString::number(parseConstant(constantNumber), 'f', precision);
+}
 
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::parseConstant()
 //-----------------------------------------------------------------------------
-int SystemVerilogExpressionParser::parseConstant(QString const& constantNumber) const
+qreal SystemVerilogExpressionParser::parseConstant(QString const& constantNumber) const
 {
     QRegExp size("([1-9][0-9_]*)?(?=')");
     QRegExp sign("[sS]?");
@@ -84,7 +100,14 @@ int SystemVerilogExpressionParser::parseConstant(QString const& constantNumber) 
     result.remove(baseFormat);
     result.remove('_');
 
-    return result.toInt(0, baseForFormat(baseFormat.cap(1)));
+    if (constantNumber.contains('.'))
+    {
+        return result.toDouble();
+    }
+    else
+    {
+        return result.toInt(0, baseForFormat(baseFormat.cap(1)));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -241,16 +264,42 @@ int SystemVerilogExpressionParser::findMatchingEndParenthesis(QStringList const&
 }
 
 //-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::solvePower()
+//-----------------------------------------------------------------------------
+QStringList SystemVerilogExpressionParser::solvePower(QStringList const& equation) const
+{
+    QRegExp power("[/*][/*]");
+    return solveBinaryOperationsFromLeftToRight(equation, power);
+}
+
+//-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::parseMultiplyAndDivide()
 //-----------------------------------------------------------------------------
 QStringList SystemVerilogExpressionParser::solveMultiplyAndDivide(QStringList const& equation) const
 {
     QRegExp multiplyDivide("[/*//]");
+    return solveBinaryOperationsFromLeftToRight(equation, multiplyDivide);
+}
 
+//-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::solveAdditionAndSubtraction()
+//-----------------------------------------------------------------------------
+QStringList SystemVerilogExpressionParser::solveAdditionAndSubtraction(QStringList const& equation) const
+{
+    QRegExp addSubtract("[+-]");
+    return solveBinaryOperationsFromLeftToRight(equation, addSubtract);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::solveBinaryOperations()
+//-----------------------------------------------------------------------------
+QStringList SystemVerilogExpressionParser::solveBinaryOperationsFromLeftToRight(QStringList const& equation, 
+    QRegExp const& binaryOperator) const
+{
     QStringList solvedEquation = equation;
-    while(solvedEquation.indexOf(multiplyDivide) != -1)
+    while(solvedEquation.indexOf(binaryOperator) != -1)
     {
-        int operatorPosition = solvedEquation.indexOf(multiplyDivide);
+        int operatorPosition = solvedEquation.indexOf(binaryOperator);
         int firstOperandPosition = operatorPosition - 1;
         int secondOperandPosition = operatorPosition + 1;
 
@@ -287,6 +336,15 @@ QString SystemVerilogExpressionParser::solve(int firstTerm, QString const& opera
     {
         result = firstTerm * secondTerm;
     }
+    else if (operation == "**")
+    {
+        if (firstTerm == 0 && secondTerm < 0)
+        {
+            return "x";
+        }
+
+        result = qPow(firstTerm, secondTerm);
+    }
     else if (operation == "/")
     {
         if (secondTerm == 0)
@@ -298,27 +356,4 @@ QString SystemVerilogExpressionParser::solve(int firstTerm, QString const& opera
     }
 
     return QString::number(result);
-}
-
-//-----------------------------------------------------------------------------
-// Function: SystemVerilogExpressionParser::solveAdditionAndSubtraction()
-//-----------------------------------------------------------------------------
-QStringList SystemVerilogExpressionParser::solveAdditionAndSubtraction(QStringList const& equation) const
-{
-    QStringList solvedEquation = equation;
-
-    while(solvedEquation.size() > 2)
-    {
-        QString operation = solvedEquation.at(1);
-        int firstTerm = parseConstant(solvedEquation.at(0));
-        int secondTerm = parseConstant(solvedEquation.at(2));
-
-        QString result = solve(firstTerm, operation, secondTerm);
-
-        solvedEquation.replace(0, result);
-        solvedEquation.removeAt(2);
-        solvedEquation.removeAt(1);
-    }
-
-    return solvedEquation;
 }
