@@ -35,22 +35,13 @@ public:
      *      @return The decimal value of the constant.
      */
     QString parseExpression(QString const& expression) const;
-    
-    /*!
-     *  Parses a constant number to decimal number.
-     *
-     *      @param [in] constantNumber   The constant to parse.
-     *
-     *      @return The string representation of the decimal value.
-     */
-    QString parseConstantToString(QString const& constantNumber) const;
 
     /*!
-     *  Parses a constant number to a decimal number.
+     *  Parses a constant number to a real number.
      *
      *      @param [in] constantNumber   The constant to parse.
      *
-     *      @return The decimal value of the constant.
+     *      @return The real value of the constant.
      */
     qreal parseConstant(QString const& constantNumber) const;
 
@@ -67,7 +58,16 @@ private:
      *
      *      @return True, if the expression is not in valid format, otherwise false.
      */
-    bool isNotValidExpression(QString const& expression) const;
+    bool isValidExpression(QString const& expression) const;
+
+    /*!
+     *  Checks if the given expression is a string.
+     *
+     *      @param [in] expression   The expression to check.
+     *
+     *      @return True, if the expression is a string, otherwise false.
+     */
+    bool isStringLiteral(QString const &expression) const;
 
     /*!
      *  Splits the given expression to string list with terms and operations as separate items.
@@ -154,7 +154,7 @@ private:
     *
     *      @return The result of the operation.
     */
-    QString solve(int firstTerm, QString const& operation, int secondTerm) const;
+    QString solve(QString const& firstTerm, QString const& operation, QString const& secondTerm) const;
 
     /*!
      *  Converts the base format to the base number e.g. h to 16.

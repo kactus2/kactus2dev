@@ -18,10 +18,15 @@
 
 namespace
 {
-    const QRegExp BINARY_OPERATOR("[+-/*//]|[/*][/*]");
-    const QRegExp LITERAL("((?:[(]\\s*)*)(\\s*[+-]?(?:[1-9]?[0-9]*'[sS]?[hHoObBdD])?[0-9a-fA-F_]+\\s*)([)]*)");
+    const QString STRING_LITERAL("\".*\"");
+    const QString REAL_NUMBER("[+-]?[0-9_]+[.][0-9_]+");
+    const QString INTEGRAL_NUMBER("[+-]?(?:[1-9]?[0-9]*'[sS]?[hHoObBdD])?[0-9a-fA-F_]+");
 
-    const QRegExp NEXT_OPERAND("(" + BINARY_OPERATOR.pattern() + ")\\s*(" + LITERAL.pattern() + ")");
+    const QRegExp PRIMARY_LITERAL("((?:[(]\\s*)*)\\s*(" + INTEGRAL_NUMBER + "|" + REAL_NUMBER + "|" + 
+        STRING_LITERAL + ")\\s*((?:[)]\\s*)*)");
+
+    const QRegExp BINARY_OPERATOR("[+-/*//]|[/*][/*]");
+    const QRegExp NEXT_OPERAND("(" + BINARY_OPERATOR.pattern() + ")\\s*(" + PRIMARY_LITERAL.pattern() + ")");
 }
 
 //-----------------------------------------------------------------------------
@@ -45,42 +50,37 @@ SystemVerilogExpressionParser::~SystemVerilogExpressionParser()
 //-----------------------------------------------------------------------------
 QString SystemVerilogExpressionParser::parseExpression(QString const& expression) const
 {
-    if (expression.isEmpty())
-    {
-        return "0";
-    }
-    
-    if (isNotValidExpression(expression))
+    if (!isValidExpression(expression))
     {
         return "x";
     }
 
-    QStringList equation = toStringList(expression);
-    if (equation.size() == 1)
+    if (isStringLiteral(expression))
     {
-        return QString::number(parseConstant(equation.first()));
+        return expression.trimmed();
+    }
+
+    QStringList equation = toStringList(expression);
+
+    equation = solveExpressionsInParentheses(equation);
+    equation = solvePower(equation);
+    equation = solveMultiplyAndDivide(equation);
+    equation = solveAdditionAndSubtraction(equation);
+
+    if (equation.first() == "x")
+    {
+        return "x";
     }
     else
     {
-        equation = solveExpressionsInParentheses(equation);
-        equation = solvePower(equation);
-        equation = solveMultiplyAndDivide(equation);
-        equation = solveAdditionAndSubtraction(equation);
-        return equation.first();
-    }
-}
-//-----------------------------------------------------------------------------
-// Function: SystemVerilogExpressionParser::parseConstantToString()
-//-----------------------------------------------------------------------------
-QString SystemVerilogExpressionParser::parseConstantToString(QString const& constantNumber) const
-{
-    int precision = 0;
-    if (constantNumber.contains('.'))
-    {
-        precision = constantNumber.size() - constantNumber.indexOf('.') - 1;
-    }
+        int precision = 0;
+        if (equation.first().contains('.'))
+        {
+            precision = equation.first().size() - equation.first().indexOf('.') - 1;
+        }
 
-    return QString::number(parseConstant(constantNumber), 'f', precision);
+        return QString::number(parseConstant(equation.first()), 'f', precision);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -136,16 +136,25 @@ int SystemVerilogExpressionParser::baseForFormat(QString const& baseFormat) cons
 }
 
 //-----------------------------------------------------------------------------
-// Function: SystemVerilogExpressionParser::isNotValidExpression()
+// Function: SystemVerilogExpressionParser::isValidExpression()
 //-----------------------------------------------------------------------------
-bool SystemVerilogExpressionParser::isNotValidExpression(QString const& expression) const
+bool SystemVerilogExpressionParser::isValidExpression(QString const& expression) const
 {
-    QRegExp validatingExp("\\s*" + LITERAL.pattern() + "(\\s*" + NEXT_OPERAND.pattern() + ")*\\s*");
+    QRegExp validatingExp("\\s*(?:" + PRIMARY_LITERAL.pattern() + "(\\s*" + NEXT_OPERAND.pattern() + ")*)\\s*");
 
     int openParenthesisCount = expression.count('(');
     int closeParenthesisCount = expression.count(')');
 
-    return !validatingExp.exactMatch(expression) || openParenthesisCount != closeParenthesisCount;
+    return validatingExp.exactMatch(expression) && openParenthesisCount == closeParenthesisCount;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::isStringLiteral()
+//-----------------------------------------------------------------------------
+bool SystemVerilogExpressionParser::isStringLiteral(QString const &expression) const
+{
+    QRegExp stringExpression("^\\s*" + STRING_LITERAL + "\\s*$");
+    return expression.indexOf(stringExpression) == 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -155,8 +164,8 @@ QStringList SystemVerilogExpressionParser::toStringList(QString const& expressio
 {
     QStringList equationList;
 
-    LITERAL.indexIn(expression);
-    QString firstOperand = LITERAL.cap();
+    PRIMARY_LITERAL.indexIn(expression);
+    QString firstOperand = PRIMARY_LITERAL.cap();
 
     equationList.append(parseLiteralAndParentheses(firstOperand));
 
@@ -181,17 +190,17 @@ QStringList SystemVerilogExpressionParser::toStringList(QString const& expressio
 QStringList SystemVerilogExpressionParser::parseLiteralAndParentheses(QString const& operand) const
 {
     QStringList parseResult;
-    LITERAL.indexIn(operand);
+    PRIMARY_LITERAL.indexIn(operand);
 
-    int openParentheses = LITERAL.cap(1).count('(');
-    int closingParentheses = LITERAL.cap(3).count(')');
+    int openParentheses = PRIMARY_LITERAL.cap(1).count('(');
+    int closingParentheses = PRIMARY_LITERAL.cap(3).count(')');
 
     for (int i = 0; i < openParentheses; i++)
     {
         parseResult.append("(");
     }
 
-    parseResult.append(LITERAL.cap(2));
+    parseResult.append(PRIMARY_LITERAL.cap(2));
 
     for (int i = 0; i < closingParentheses; i++)
     {
@@ -304,8 +313,8 @@ QStringList SystemVerilogExpressionParser::solveBinaryOperationsFromLeftToRight(
         int secondOperandPosition = operatorPosition + 1;
 
         QString operation = solvedEquation.at(operatorPosition);
-        int operand1 = parseConstant(solvedEquation.at(firstOperandPosition));
-        int operand2 = parseConstant(solvedEquation.at(secondOperandPosition));
+        QString operand1 = solvedEquation.at(firstOperandPosition);
+        QString operand2 = solvedEquation.at(secondOperandPosition);
 
         QString result = solve(operand1, operation, operand2);
 
@@ -320,40 +329,52 @@ QStringList SystemVerilogExpressionParser::solveBinaryOperationsFromLeftToRight(
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::solve()
 //-----------------------------------------------------------------------------
-QString SystemVerilogExpressionParser::solve(int firstTerm, QString const& operation, int secondTerm) const
+QString SystemVerilogExpressionParser::solve(QString const& firstTerm, QString const& operation, 
+    QString const& secondTerm) const
 {
-    int result = 0;
+    qreal leftOperand = parseConstant(firstTerm);
+    qreal rightOperand = parseConstant(secondTerm);
+
+    qreal result = 0;
 
     if (operation == "+")
     {
-        result = firstTerm + secondTerm;
+        result = leftOperand + rightOperand;
     }
     else if (operation == "-")
     {
-        result = firstTerm - secondTerm;
+        result = leftOperand - rightOperand;
     }
     else if (operation == "*")
     {
-        result = firstTerm * secondTerm;
+        result = leftOperand*rightOperand;
     }
     else if (operation == "**")
     {
-        if (firstTerm == 0 && secondTerm < 0)
+        if (leftOperand == 0 && rightOperand < 0)
         {
             return "x";
         }
 
-        result = qPow(firstTerm, secondTerm);
+        result = qPow(leftOperand, rightOperand);
     }
     else if (operation == "/")
     {
-        if (secondTerm == 0)
+        if (rightOperand == 0)
         {
             return "x";
         }
 
-        result = firstTerm  / secondTerm;
+        result = leftOperand/rightOperand;
     }
 
-    return QString::number(result);
+    if (!firstTerm.contains('.'))
+    {
+        int integerResult = result;
+        return QString::number(integerResult);
+    }
+    else
+    {
+        return QString::number(result);
+    }
 }

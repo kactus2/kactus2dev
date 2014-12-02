@@ -62,7 +62,7 @@ void tst_SystemVerilogExpressionParser::testParseConstant()
     QFETCH(QString, expectedValue);
 
     SystemVerilogExpressionParser parser;
-    QCOMPARE(parser.parseConstantToString(constant), expectedValue);
+    QCOMPARE(parser.parseExpression(constant), expectedValue);
 }
 
 //-----------------------------------------------------------------------------
@@ -73,7 +73,7 @@ void tst_SystemVerilogExpressionParser::testParseConstant_data()
     QTest::addColumn<QString>("constant");
     QTest::addColumn<QString>("expectedValue");
 
-    QTest::newRow("Empty expression should evaluate to zero") << "" << "0";
+    QTest::newRow("Empty expression should evaluate to unknown") << "" << "x";
 
     //! Decimal numbers.
     QTest::newRow("Decimal number 0 should evaluate to 0") << "0" << "0";
@@ -162,6 +162,13 @@ void tst_SystemVerilogExpressionParser::testParseConstant_data()
         << "'o1_0" << "8";
     QTest::newRow("Octal number with multiple underscores should evaluate to decimal without underscores") 
         << "'o1_0_0" << "64";
+
+    QTest::newRow("Empty string literal") << "\"\"" << "\"\"";
+    QTest::newRow("Non-empty string literal") << "\"text\"" << "\"text\"";
+    QTest::newRow("Non-empty string literal with whitespace") << "\" text \"" << "\" text \"";
+    QTest::newRow("Whitespace before and after string is ignored") << "  \"text\" " << "\"text\"";
+
+    QTest::newRow("String missing a double quote is unknown") << "\"text" << "x";
 }
 
 //-----------------------------------------------------------------------------
@@ -184,11 +191,11 @@ void tst_SystemVerilogExpressionParser::testParseAddition_data()
     QTest::addColumn<QString>("additionExpression");
     QTest::addColumn<QString>("expectedSum");
 
-    QTest::newRow("Empty expression equals zero") << "" << "0";
     QTest::newRow("No addition on constant equals constant") << "1" << "1";
     QTest::newRow("Addition without second operand is unknown") << "1+" << "x";
     QTest::newRow("Addition without second operand and whitespaces is unknown") << " 1 + " << "x";
 
+    //! Decimal numbers.
     QTest::newRow("Constant plus zero equals constant") << "1+0" << "1";
     QTest::newRow("One plus one equals two") << "1+1" << "2";
     QTest::newRow("One plus two equals three") << "1+2" << "3";
@@ -197,15 +204,25 @@ void tst_SystemVerilogExpressionParser::testParseAddition_data()
     QTest::newRow("Multiple whitespaces") << " 1  +     1 " << "2";
     QTest::newRow("Sum of decimal values with sizes and signs") << "8'sd8 + 8'sd9" << "17";
 
+    //! Fixed-point numbers.
+    QTest::newRow("One plus one equals exactly two") << "1.0+1.0" << "2";
+    QTest::newRow("One plus decimal two equals three") << "1.0+2" << "3";
+    QTest::newRow("Decimal one plus real two equals three") << "1+2.0" << "3";
+    QTest::newRow("Half plus one quarter equals 0.75") << "0.5 + 0.25" << "0.75";
+    QTest::newRow("Four quarters equals 1") << "0.25 + 0.25 + 0.25 + 0.25" << "1";
+
+    //! Hexadecimal numbers.
     QTest::newRow("Sum of hexadecimal 'h10 + 'h0 equals 16") << "'h10 + 'h0" << "16";
     QTest::newRow("Sum of hexadecimal 'h10 + 'h10 equals 32") << "'h10 + 'h10" << "32";
     QTest::newRow("Sum of hexadecimal values with sizes and signs") << "8'sh10 + 8'sh02" << "18";
     QTest::newRow("Constant hexadecimal with long size") << "32'h00000001" << "1";
 
+    //! Binary numbers.
     QTest::newRow("Sum of binary 'b100 + 'b010 equals 6") << "'b100 + 'b010" << "6";
     QTest::newRow("Sum of binary 'b0001 + 'b0111 equals 8") << "'b0001 + 'b0111" << "8";
     QTest::newRow("Sum of binary values with sizes and signs") << "4'sb0010 + 4'sb0001" << "3";
 
+    //! Octal numbers.
     QTest::newRow("Sum of octal 'o1 + 'o1 equals 2") << "'o1 + 'o1" << "2";
     QTest::newRow("Sum of octal 'o2 + 'o7 equals 9") << "'o2 + 'o7" << "9";
     QTest::newRow("Sum of octal values with sizes and signs") << "3'so3 + 3'so4" << "7";
@@ -237,6 +254,7 @@ void tst_SystemVerilogExpressionParser::testParseSubtraction_data()
     QTest::addColumn<QString>("minusExpression");
     QTest::addColumn<QString>("expectedResult");
 
+    //! Decimal numbers.
     QTest::newRow("Constant minus zero equals constant") << "1-0" << "1";
     QTest::newRow("Constant minus constant equals zero") << "1-1" << "0";
     QTest::newRow("Four minus two equals two") << "4-2" << "2";
@@ -247,14 +265,21 @@ void tst_SystemVerilogExpressionParser::testParseSubtraction_data()
     QTest::newRow("Multiple whitespaces") << " 2  -     1 " << "1";
     QTest::newRow("Subtraction of decimal values with sizes and signs") << "8'sd9 - 8'sd2" << "7";
 
+    //! Fixed-point numbers.
+    QTest::newRow("4 - 2.25 two equals 1.75") << "4.0 - 2.25" << "1.75";
+    QTest::newRow("Negative fixed-point result") << "0.5 - 2.0" << "-1.5";
+
+    //! Hexadecimal numbers.
     QTest::newRow("Subtraction of hexadecimal 'h10 - 'h1 equals 15") << "'h10 - 'h1" << "15";
     QTest::newRow("Subtraction of hexadecimal 'h0E - 'h4 equals 10") << "'h0E - 'h4" << "10";
     QTest::newRow("Subtraction of hexadecimal values with sizes and signs") << "8'sh0B - 8'sh04" << "7";
 
+    //! Binary numbers.
     QTest::newRow("Subtraction of binary 'b100 - 'b010 equals 2") << "'b100 - 'b010" << "2";
     QTest::newRow("Subtraction of binary 'b0111 - 'b011 equals 4") << "'b0111 - 'b011" << "4";
     QTest::newRow("Subtraction of binary values with sizes and signs") << "4'sb0010 - 4'sb0001" << "1";
 
+    //! Octal numbers.
     QTest::newRow("Subtraction of octal 'o3 - 'o1 equals 2") << "'o3 - 'o1" << "2";
     QTest::newRow("Subtraction of octal 'o7 - 'o2 equals 5") << "'o7 - 'o2" << "5";
     QTest::newRow("Subtraction of octal values with sizes and signs") << "3'so6 - 3'so3" << "3";
@@ -287,6 +312,7 @@ void tst_SystemVerilogExpressionParser::testParseMultiply_data()
     QTest::newRow("Zero times constant equals zero") << "0*1" << "0";
     QTest::newRow("Constant times zero equals zero") << "1*0" << "0";
 
+    //! Decimal numbers.
     QTest::newRow("One times constant equals constant") << "1*2" << "2";
     QTest::newRow("Two times two equals four") << "2*2" << "4";
     QTest::newRow("Two times three with whitespaces equals six") << "2 * 3" << "6";
@@ -297,14 +323,22 @@ void tst_SystemVerilogExpressionParser::testParseMultiply_data()
     QTest::newRow("Negative constant times positive constant gives negative value") << "-2*2" << "-4";
     QTest::newRow("Positive constant times negative constant gives negative value") << "2*-2" << "-4";
 
+    //! Fixed-point numbers.
+    QTest::newRow("Two times one half equals one") << "2*0.5" << "1";
+    QTest::newRow("Multiple fraction digits") << "0.25*0.25" << "0.0625";
+    QTest::newRow("Zero times anything is zero") << "0.0*42" << "0";
+
+    //! Hexadecimal numbers.
     QTest::newRow("Multiply of hexadecimal 'h10 * 'h2 equals 32") << "'h10 * 'h2" << "32";
     QTest::newRow("Multiply of hexadecimal 'hA * 'h3 equals 30") << "'hA * 'h3" << "30";
     QTest::newRow("Multiply of hexadecimal values with sizes and signs") << "8'sh0A * 8'sh05" << "50";
-
+    
+    //! Binary numbers.
     QTest::newRow("Multiply of binary 'b100 * 'b010 equals 8") << "'b100 * 'b010" << "8";
     QTest::newRow("Multiply of binary 'b0111 * 'b001 equals 7") << "'b0111 * 'b001" << "7";
     QTest::newRow("Multiply of binary values with sizes and signs") << "4'sb0010 * 4'sb0011" << "6";
-
+    
+    //! Octal numbers.
     QTest::newRow("Multiply of octal 'o3 * 'o7 equals 21") << "'o3 * 'o7" << "21";
     QTest::newRow("Multiply of octal 'o7 * 'o10 equals 56") << "'o7 * 'o10" << "56";
     QTest::newRow("Multiply of octal values with sizes and signs") << "6'so6 * 6'so3" << "18";
@@ -337,8 +371,9 @@ void tst_SystemVerilogExpressionParser::testParseDivision_data()
     QTest::newRow("Constant divided by one equals the same constant") << "2/1" << "2";
     QTest::newRow("Constant divided by zero equals x") << "1/0" << "x";
 
-    QTest::newRow("Division result should be truncated towards zero") << "3/2" << "1";
- 
+    //! Decimal numbers.
+    QTest::newRow("Division result for integer truncates towards zero") << "3/2" << "1";
+
     QTest::newRow("Four divided by two equals two") << "4/2" << "2";
     QTest::newRow("Ten divided by two equals five") << "10/2" << "5";
     QTest::newRow("Division with whitespaces") << "7 / 3" << "2";
@@ -349,14 +384,23 @@ void tst_SystemVerilogExpressionParser::testParseDivision_data()
     QTest::newRow("Negative constant divided by positive constant gives negative value") << "-2/2" << "-1";
     QTest::newRow("Positive constant divided by negative constant gives negative value") << "2/-2" << "-1";
 
+    //! Fixed-point numbers.
+    QTest::newRow("Division result for integer divisor truncates towards zero") << "3/2.0" << "1";
+    QTest::newRow("Division result for real does not truncate towards zero") << "3.0/2" << "1.5";
+    QTest::newRow("Number of fractional digits is five by default") << "10.0/3" << "3.33333";
+    QTest::newRow("Division by zero is unknown") << "3.0/0.0" << "x";
+
+    //! Hexadecimal numbers.
     QTest::newRow("Division of hexadecimal 'h10 / 'h2 equals 8") << "'h10 / 'h2" << "8";
     QTest::newRow("Division of hexadecimal 'hA / 'h3 equals 3") << "'hA / 'h3" << "3";
     QTest::newRow("Division of hexadecimal values with sizes and signs") << "8'sh0A / 8'sh05" << "2";
 
+    //! Binary numbers.
     QTest::newRow("Division of binary 'b100 / 'b010 equals 2") << "'b100 / 'b010" << "2";
     QTest::newRow("Division of binary 'b0111 / 'b010 equals 3") << "'b0111 / 'b010" << "3";
     QTest::newRow("Division of binary values with sizes and signs") << "4'sb1000 / 4'sb0010" << "4";
 
+    //! Octal numbers.
     QTest::newRow("Division of octal 'o10 / 'o2 equals 4") << "'o10 /'o2" << "4";
     QTest::newRow("Division of octal 'o20 / 'o4 equals 4") << "'o20 / 'o4" << "4";
     QTest::newRow("Division of octal values with sizes and signs") << "6'so6 / 6'so3" << "2";
@@ -385,6 +429,7 @@ void tst_SystemVerilogExpressionParser::testParsePower_data()
     QTest::addColumn<QString>("powerExpression");
     QTest::addColumn<QString>("expectedResult");
 
+    //! Decimal numbers.
     QTest::newRow("One to the power of zero equals one") << "1**0" << "1";
     QTest::newRow("Zero to the power of zero equals one") << "0**0" << "1";
     QTest::newRow("Anything to the power of zero equals one") << "42**0" << "1";
@@ -398,6 +443,8 @@ void tst_SystemVerilogExpressionParser::testParsePower_data()
 
     QTest::newRow("Negative one to the power of an even negative value equals one") << "-1**-2" << "1";
     QTest::newRow("Negative one to the power of an odd negative value equals negative one") << "-1**-1" << "-1";
+    
+    QTest::newRow("Integer truncates to zero") << "2 ** -1" << "0";
 
     QTest::newRow("Two to the power of two equals four") << "2**2" << "4";
     QTest::newRow("Negative Two to the power of two equals four") << "-2**2" << "4";
@@ -407,11 +454,12 @@ void tst_SystemVerilogExpressionParser::testParsePower_data()
     QTest::newRow("Three to the power of three equals 27") << "3**3" << "27";
     QTest::newRow("Power operation with whitespaces") << "4 ** 3" << "64";
 
-    QTest::newRow("Integer truncates to zero") << "2 ** -1" << "0";
-    //QTest::newRow("Real gives real reciprocal") << "2.0 ** -1" << "0.5";
-
     QTest::newRow("Multiple power operations") << "2**2**2" << "16";
     QTest::newRow("Power of multiple different bases") << "'h02 ** 'b0010 ** 'o2 ** 2" << "256";
+
+    //! Fixed-point numbers.
+    QTest::newRow("Real gives real reciprocal") << "2.0 ** -1" << "0.5";
+    QTest::newRow("2.5 to the power of two") << "2.5 ** 2" << "6.25";
 }
 
 //-----------------------------------------------------------------------------
@@ -452,8 +500,6 @@ void tst_SystemVerilogExpressionParser::testParseMultipleOperations_data()
     QTest::newRow("Power precedes addition") << "1 + 2**3" << "9";
     QTest::newRow("Power precedes multiplication") << "4*2**3" << "32";
     QTest::newRow("Power precedes division") << "16/2**3" << "2";
-
-    //QTest::newRow("Power precedes division") << "5*(3*2 - 6/2)/3" << "5";
 }
 
 //-----------------------------------------------------------------------------
@@ -490,6 +536,7 @@ void tst_SystemVerilogExpressionParser::testParseExpressionWithParathesis_data()
     QTest::newRow("Double parentheses with whitespace") << "( (1 + 3)*4 ) /2" << "8";
     QTest::newRow("Triple parentheses") << "(((1 + 3))*4)/2" << "8";    
     QTest::newRow("Deeply nested parentheses") << "((((2))))" << "2";
+    QTest::newRow("Deeply nested parentheses with whitespace") << " ( ((  (2 ) ))  ) " << "2";
 
     QTest::newRow("Parallel parentheses") << "(1 + 1)*(1 + 1)" << "4";
     QTest::newRow("Parallel and nested parentheses") << "(2 * (1 + 1))*(1 + 1)" << "8";
@@ -498,7 +545,6 @@ void tst_SystemVerilogExpressionParser::testParseExpressionWithParathesis_data()
     QTest::newRow("Mismatched open parentheses") << "((1)" << "x";
     QTest::newRow("Mismatched closed parentheses") << "(1))" << "x";
     QTest::newRow("Parentheses wrong way") << ")1(" << "x";
-
 }
 
 QTEST_APPLESS_MAIN(tst_SystemVerilogExpressionParser)

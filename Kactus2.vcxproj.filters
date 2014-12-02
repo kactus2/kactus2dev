@@ -3910,6 +3910,9 @@
     <ClCompile Include="GeneratedFiles\moc_AbstractParameterModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5638,6 +5641,9 @@
     </ClInclude>
     <ClInclude Include="mainwindow\Ribbon\RibbonTheme.h">
       <Filter>Header Files\mainwindow\Ribbon</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
