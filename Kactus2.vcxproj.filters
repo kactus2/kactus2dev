@@ -3910,6 +3910,9 @@
     <ClCompile Include="GeneratedFiles\moc_AbstractParameterModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_Ribbon.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
@@ -5361,6 +5364,9 @@
     <CustomBuild Include="editors\ComponentEditor\common\AbstractParameterModel.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </CustomBuild>
+    <CustomBuild Include="mainwindow\Ribbon\Ribbon.h">
+      <Filter>Header Files\mainwindow\Ribbon</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -5536,9 +5542,6 @@
     </ClInclude>
     <ClInclude Include="designEditors\HWDesign\AddressEditor\AddressEntry.h">
       <Filter>Header Files\designEditors\HWDesign\AddressEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="mainwindow\Ribbon\Ribbon.h">
-      <Filter>Header Files\mainwindow\Ribbon</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySortFilter.h">
       <Filter>Header Files\editors\ComponentEditor\fileSet\dependencyAnalysis</Filter>

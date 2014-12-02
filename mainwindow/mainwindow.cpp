@@ -781,26 +781,32 @@ void MainWindow::setupActions()
     modeActionGroup_->addAction(actToolLabel_);
 	connect(modeActionGroup_, SIGNAL(triggered(QAction *)), this, SLOT(drawModeChange(QAction *)));
 
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+
 	// Initialize the action to zoom in.
 	actZoomIn_ = new QAction(QIcon(":/icons/common/graphics/view-zoom_in.png"), tr("Zoom In"), this);
 	actZoomIn_->setEnabled(false);
+	actZoomIn_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_ZOOM_SUPPORT));
 	connect(actZoomIn_, SIGNAL(triggered()), this, SLOT(zoomIn()));
 
 	// Initialize the action to zoom out.
 	actZoomOut_ = new QAction(QIcon(":/icons/common/graphics/view-zoom_out.png"), tr("Zoom Out"), this);
 	actZoomOut_->setEnabled(false);
+	actZoomOut_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_ZOOM_SUPPORT));
 	connect(actZoomOut_, SIGNAL(triggered()), this, SLOT(zoomOut()));
 
 	// Initialize the action to reset the zoom to original 1:1 ratio.
 	actZoomOriginal_ = new QAction(QIcon(":/icons/common/graphics/view-zoom_original.png"),
 		tr("Original 1:1 Zoom"), this);
 	actZoomOriginal_->setEnabled(false);
+	actZoomOriginal_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_ZOOM_SUPPORT));
 	connect(actZoomOriginal_, SIGNAL(triggered()), this, SLOT(zoomOriginal()));
 
 	// Initialize the action to fit the document into the view.
 	actFitInView_ = new QAction(QIcon(":/icons/common/graphics/view-fit_best.png"),
 		tr("Fit Document to View"), this);
 	actFitInView_->setEnabled(false);
+	actFitInView_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_ZOOM_SUPPORT));
 	connect(actFitInView_, SIGNAL(triggered()), this, SLOT(fitInView()));
 
 	// the action for user to select the visible docks
@@ -811,6 +817,7 @@ void MainWindow::setupActions()
 	// Initialize the action to manage visibility control.
 	actVisibilityControl_ = new QAction(QIcon(":icons/common/graphics/visibility.png"), tr("Visibility Control"), this);
 	actVisibilityControl_->setEnabled(false);
+	actVisibilityControl_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_VISIBILITY_CONTROL_SUPPORT));
 	connect(actVisibilityControl_, SIGNAL(triggered()),
 		this, SLOT(openVisibilityControlMenu()), Qt::UniqueConnection);
 
@@ -862,10 +869,9 @@ void MainWindow::setupMenus()
 	menuDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
 
     ribbon_ = new Ribbon(menuDock);
-
     menuDock->setWidget(ribbon_);
 	addDockWidget(Qt::TopDockWidgetArea, menuDock);
-
+	
 	// The "File" group.
 	RibbonGroup* fileGroup = ribbon_->addGroup(tr("File"));
 	fileGroup->addAction(actNew_);
@@ -874,11 +880,21 @@ void MainWindow::setupMenus()
 	fileGroup->addAction(actSaveAll_);
 	fileGroup->addAction(actPrint_);
 
+	fileGroup->widgetForAction(actNew_)->installEventFilter(ribbon_);
+	fileGroup->widgetForAction(actSave_)->installEventFilter(ribbon_);
+	fileGroup->widgetForAction(actSaveAs_)->installEventFilter(ribbon_);
+	fileGroup->widgetForAction(actSaveAll_)->installEventFilter(ribbon_);
+	fileGroup->widgetForAction(actPrint_)->installEventFilter(ribbon_);
+
 	// The "Library" group.
 	RibbonGroup* libGroup = ribbon_->addGroup(tr("Library"));
 	libGroup->addAction(actLibraryLocations_);
 	libGroup->addAction(actLibrarySearch_);
 	libGroup->addAction(actCheckIntegrity_);
+
+	libGroup->widgetForAction(actLibraryLocations_)->installEventFilter(ribbon_);
+	libGroup->widgetForAction(actLibrarySearch_)->installEventFilter(ribbon_);
+	libGroup->widgetForAction(actCheckIntegrity_)->installEventFilter(ribbon_);
 
 	// The "Edit" group.
 	editGroup_ = ribbon_->addGroup(tr("Edit"));
@@ -887,6 +903,10 @@ void MainWindow::setupMenus()
 	editGroup_->addAction(actRefresh_);
 	editGroup_->setVisible(false);
 	editGroup_->setEnabled(false);
+
+	editGroup_->widgetForAction(actUndo_)->installEventFilter(ribbon_);
+	editGroup_->widgetForAction(actRedo_)->installEventFilter(ribbon_);
+	editGroup_->widgetForAction(actRefresh_)->installEventFilter(ribbon_);
 
     // The "Generation" group.
     generationGroup_ = ribbon_->addGroup(tr("Generation"));
@@ -897,6 +917,12 @@ void MainWindow::setupMenus()
     generationGroup_->addAction(actGenQuartus_);    
     generationGroup_->setVisible(false);
     generationGroup_->setEnabled(false);
+
+	generationGroup_->widgetForAction(actGenDocumentation_)->installEventFilter(ribbon_);
+	generationGroup_->widgetForAction(actRunImport_)->installEventFilter(ribbon_);
+	generationGroup_->widgetForAction(actGenVHDL_)->installEventFilter(ribbon_);
+	generationGroup_->widgetForAction(actGenModelSim_)->installEventFilter(ribbon_);
+	generationGroup_->widgetForAction(actGenQuartus_)->installEventFilter(ribbon_);
 
     createGeneratorPluginActions();
     
@@ -911,6 +937,14 @@ void MainWindow::setupMenus()
     diagramToolsGroup_->addAction(actToolLabel_);
 	diagramToolsGroup_->setVisible(false);
 
+	diagramToolsGroup_->widgetForAction(actAddColumn_)->installEventFilter(ribbon_);
+	diagramToolsGroup_->widgetForAction(actToolSelect_)->installEventFilter(ribbon_);
+	diagramToolsGroup_->widgetForAction(actToolConnect_)->installEventFilter(ribbon_);
+	diagramToolsGroup_->widgetForAction(actToolInterface_)->installEventFilter(ribbon_);
+	diagramToolsGroup_->widgetForAction(actToolDraft_)->installEventFilter(ribbon_);
+	diagramToolsGroup_->widgetForAction(actToolToggleOffPage_)->installEventFilter(ribbon_);
+	diagramToolsGroup_->widgetForAction(actToolLabel_)->installEventFilter(ribbon_);
+
 	//! The "View" group.
 	RibbonGroup* viewGroup = ribbon_->addGroup(tr("View"));
 	viewGroup->addAction(actZoomIn_);
@@ -920,15 +954,26 @@ void MainWindow::setupMenus()
 	viewGroup->addAction(actVisibleDocks_);
     viewGroup->addAction(actVisibilityControl_);
 
+	viewGroup->widgetForAction(actZoomIn_)->installEventFilter(ribbon_);
+	viewGroup->widgetForAction(actZoomOut_)->installEventFilter(ribbon_);
+	viewGroup->widgetForAction(actZoomOriginal_)->installEventFilter(ribbon_);
+	viewGroup->widgetForAction(actFitInView_)->installEventFilter(ribbon_);
+	viewGroup->widgetForAction(actVisibleDocks_)->installEventFilter(ribbon_);
+	viewGroup->widgetForAction(actVisibilityControl_)->installEventFilter(ribbon_);
+
 	//! The "Workspace" group.
 	RibbonGroup* workspacesGroup = ribbon_->addGroup(tr("Workspace"));
 	workspacesGroup->addAction(actWorkspaces_);
 	workspacesGroup->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
+	workspacesGroup->widgetForAction(actWorkspaces_)->installEventFilter(ribbon_);
+
 	//! The Protection group.
 	protectGroup_ = ribbon_->addGroup(tr("Protection"));
 	protectGroup_->addAction(actProtect_);
 	protectGroup_->setVisible(false);
+
+	protectGroup_->widgetForAction(actProtect_)->installEventFilter(ribbon_);
 
 	//! The "System" group.
 	RibbonGroup* sysGroup = ribbon_->addGroup(tr("System"));
@@ -936,6 +981,11 @@ void MainWindow::setupMenus()
     sysGroup->addAction(actHelp_);
 	sysGroup->addAction(actAbout_);
 	sysGroup->addAction(actExit_);
+
+	sysGroup->widgetForAction(actSettings_)->installEventFilter(ribbon_);
+	sysGroup->widgetForAction(actHelp_)->installEventFilter(ribbon_);
+	sysGroup->widgetForAction(actAbout_)->installEventFilter(ribbon_);
+	sysGroup->widgetForAction(actExit_)->installEventFilter(ribbon_);
 
 	// the menu to display the dock widgets
     windowsMenu_.addAction(addressDock_->toggleViewAction());	
@@ -1455,6 +1505,7 @@ void MainWindow::updateMenuStrip()
 		onProtectionChanged(actProtect_->isChecked());
 
     actVisibilityControl_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_VISIBILITY_CONTROL_SUPPORT));
+	actVisibilityControl_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_VISIBILITY_CONTROL_SUPPORT));
 
 	setPluginVisibilities();
 
@@ -2179,6 +2230,11 @@ void MainWindow::updateZoomTools()
 {
 	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
 	bool canZoom = doc != 0 && (doc->getFlags() & TabDocument::DOC_ZOOM_SUPPORT);
+
+	actZoomIn_->setVisible(canZoom);
+	actZoomOut_->setVisible(canZoom);
+	actZoomOriginal_->setVisible(canZoom);
+	actFitInView_->setVisible(canZoom);
 
 	actZoomIn_->setEnabled(canZoom && doc->getZoomLevel() < doc->getMaxZoomLevel());
 	actZoomOut_->setEnabled(canZoom && doc->getZoomLevel() > doc->getMinZoomLevel());
@@ -4525,6 +4581,8 @@ void MainWindow::createGeneratorPluginActions()
 
             generationGroup_->addAction(action);
             pluginActionGroup_->addAction(action);
+
+			generationGroup_->widgetForAction(action)->installEventFilter(ribbon_);
         }
     }
 
