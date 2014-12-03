@@ -35,6 +35,16 @@
     <Filter Include="Header Files\validators">
       <UniqueIdentifier>{f47be731-33bb-4e30-a675-92f57ecb2303}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Generated Files\Debug">
+      <UniqueIdentifier>{a1bee4a2-7ee8-4820-9673-b6c6e7a03481}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Release">
+      <UniqueIdentifier>{3512f2ef-cd60-43f9-8388-f194f8eff4e9}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="abstractiondefinition.cpp">
@@ -318,6 +328,24 @@
     </ClCompile>
     <ClCompile Include="validators\ModelParameterValidator.cpp">
       <Filter>Source Files\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="validators\namevalidator.cpp">
+      <Filter>Source Files\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_namevalidator.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_namevalidator.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="validators\NMTokenValidator.cpp">
+      <Filter>Source Files\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_NMTokenValidator.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_NMTokenValidator.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -615,5 +643,13 @@
     <ClInclude Include="validators\ModelParameterValidator.h">
       <Filter>Header Files\validators</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="validators\namevalidator.h">
+      <Filter>Header Files\validators</Filter>
+    </CustomBuild>
+    <CustomBuild Include="validators\NMTokenValidator.h">
+      <Filter>Header Files\validators</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

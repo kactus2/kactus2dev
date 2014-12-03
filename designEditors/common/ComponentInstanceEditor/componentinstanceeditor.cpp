@@ -20,8 +20,6 @@
 #include <designEditors/HWDesign/HWDesignWidget.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
 
-#include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
-
 #include <QVBoxLayout>
 #include <QDockWidget>
 
@@ -46,10 +44,6 @@ ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent)
 
 	vlnvDisplayer_->setTitle(tr("Instance model VLNV"));
 	vlnvDisplayer_->setFlat(false);
-
-	// set validator for the instance name
-	VhdlNameValidator* vhdlNameValidator = new VhdlNameValidator(NULL);
-	nameGroup_->setNameValidator(vhdlNameValidator);
 
     QVBoxLayout* swGroupLayout = new QVBoxLayout(swGroup_);
     swGroupLayout->addWidget(new QLabel(tr("File set reference:"), this));

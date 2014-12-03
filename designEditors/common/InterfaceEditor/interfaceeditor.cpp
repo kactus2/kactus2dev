@@ -19,7 +19,8 @@
 
 #include <common/GenericEditProvider.h>
 #include <common/graphicsItems/ComponentItem.h>
-#include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
+
+#include <IPXACTmodels/validators/namevalidator.h>
 
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/HWDesign/HWConnectionEndpoint.h>
@@ -70,7 +71,7 @@ InterfaceEditor::InterfaceEditor(QWidget *parent, LibraryInterface* handler)
 	absType_.setFlat(false);
 
 	// set validator for interface name editor
-	nameEdit_.setValidator(new VhdlNameValidator(&nameEdit_));
+    nameEdit_.setValidator(new NameValidator(&nameEdit_));
 
 	// set the possible modes to the mode editor
 	QStringList modes;

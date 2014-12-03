@@ -29,7 +29,8 @@
 
 #include <common/graphicsItems/ConnectionUndoCommands.h>
 #include <common/GenericEditProvider.h>
-#include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
+
+#include <IPXACTmodels/validators/namevalidator.h>
 
 #include <QVBoxLayout>
 #include <QSharedPointer>
@@ -77,7 +78,7 @@ adHocBoundsModel_(this)
 	separator_.setFlat(true);
 
 	// set validator for name edit
-	nameEdit_.setValidator(new VhdlNameValidator(&nameEdit_));
+    nameEdit_.setValidator(new NameValidator(&nameEdit_));
 
 	// There are always 2 columns.
 	portWidget_.setColumnCount(2);

@@ -6,7 +6,7 @@
  */
 
 #include "namegroupeditor.h"
-#include <common/validators/nameValidator/namevalidator.h>
+#include <IPXACTmodels/validators/namevalidator.h>
 
 #include <QLabel>
 #include <QGridLayout>

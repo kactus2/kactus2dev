@@ -6,7 +6,7 @@
 
 #include "namegroupbox.h"
 
-#include <common/validators/nameValidator/namevalidator.h>
+#include <IPXACTmodels/validators/namevalidator.h>
 
 #include <QSizePolicy>
 #include <QLabel>
@@ -108,9 +108,4 @@ void NameGroupBox::setDescription( const QString& description ) {
 void NameGroupBox::onDescriptionChanged() {
 	emit contentChanged();
 	emit descriptionChanged(descriptionEdit_->toPlainText());
-}
-
-void NameGroupBox::setNameValidator( QValidator* validator ) {
-	validator->setParent(nameEdit_);
-	nameEdit_->setValidator(validator);
 }

@@ -12,7 +12,10 @@
 #include "vlnveditor.h"
 
 #include <common/widgets/assistedLineEdit/AssistedLineEdit.h>
-#include <common/validators/nameValidator/namevalidator.h>
+#include <IPXACTmodels/validators/namevalidator.h>
+
+#include <IPXACTmodels/validators/NMTokenValidator.h>
+
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/libraryitem.h>
@@ -214,12 +217,12 @@ void VLNVEditor::initWidgets(QWidget* parentWnd, bool compact)
 
     nameEdit_ = new AssistedLineEdit(parentWnd, this);
     nameEdit_->setContentMatcher(&nameMatcher_);
-	nameEdit_->setValidator(new NameValidator(this, true));
+	nameEdit_->setValidator(new NMTokenValidator(this));
 	nameEdit_->setProperty("mandatoryField", true);
 
     versionEdit_ = new AssistedLineEdit(parentWnd, this);
     versionEdit_->setContentMatcher(&versionMatcher_);
-	versionEdit_->setValidator(new NameValidator(this, true));
+	versionEdit_->setValidator(new NMTokenValidator(this));
 	versionEdit_->setProperty("mandatoryField", true);
 
     QHBoxLayout* nameLayout = new QHBoxLayout();

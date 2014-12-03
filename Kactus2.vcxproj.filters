@@ -41,12 +41,6 @@
     <Filter Include="Source Files\common\validators">
       <UniqueIdentifier>{9599a4e0-6552-4be6-8137-6e14f125627f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\validators\nameValidator">
-      <UniqueIdentifier>{d128198c-7e68-4f0d-bf4c-8c3e1b26751d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\validators\vhdlNameValidator">
-      <UniqueIdentifier>{8553e00f-01a7-40b3-9d6c-6c4593a33951}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\validators\LibraryPathValidator">
       <UniqueIdentifier>{b1695f49-12de-4829-b90d-500b8fdd0d38}</UniqueIdentifier>
     </Filter>
@@ -272,12 +266,6 @@
     </Filter>
     <Filter Include="Header Files\common\validators">
       <UniqueIdentifier>{f5ae2583-95fe-4538-a9a4-9bbdcf0d40fd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\validators\nameValidator">
-      <UniqueIdentifier>{05124686-7be8-4ef9-bc3d-d6a89ecf760a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\validators\vhdlNameValidator">
-      <UniqueIdentifier>{fba0f30f-3052-455c-a3e8-21f6eff61b53}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\validators\LibraryPathValidator">
       <UniqueIdentifier>{db8e622f-3a71-4cbe-ba2a-483c24c45b56}</UniqueIdentifier>
@@ -976,12 +964,6 @@
     <ClCompile Include="common\validators\AddressValidator.cpp">
       <Filter>Source Files\common\validators</Filter>
     </ClCompile>
-    <ClCompile Include="common\validators\nameValidator\namevalidator.cpp">
-      <Filter>Source Files\common\validators\nameValidator</Filter>
-    </ClCompile>
-    <ClCompile Include="common\validators\vhdlNameValidator\vhdlnamevalidator.cpp">
-      <Filter>Source Files\common\validators\vhdlNameValidator</Filter>
-    </ClCompile>
     <ClCompile Include="common\validators\LibraryPathValidator\librarypathvalidator.cpp">
       <Filter>Source Files\common\validators\LibraryPathValidator</Filter>
     </ClCompile>
@@ -1201,9 +1183,6 @@
     <ClCompile Include="GeneratedFiles\moc_visualizeritem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vhdlnamevalidator.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_usagecombobox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -1262,9 +1241,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_NamingPolicySettingsPage.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_namevalidator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_namegroupeditor.cpp">
@@ -4019,12 +3995,6 @@
     </CustomBuild>
     <CustomBuild Include="common\validators\LibraryPathValidator\librarypathvalidator.h">
       <Filter>Header Files\common\validators\LibraryPathValidator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\validators\nameValidator\namevalidator.h">
-      <Filter>Header Files\common\validators\nameValidator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\validators\vhdlNameValidator\vhdlnamevalidator.h">
-      <Filter>Header Files\common\validators\vhdlNameValidator</Filter>
     </CustomBuild>
     <CustomBuild Include="common\views\EditableListView\editablelistview.h">
       <Filter>Header Files\common\views\EditableListView</Filter>

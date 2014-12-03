@@ -103,8 +103,10 @@ HEADERS += ../resource.h \
     ./kactusExtensions/Kactus2Position.h \
     ./kactusExtensions/Kactus2Value.h \
     ./kactusExtensions/KactusAttribute.h \
+    ./validators/ModelParameterValidator.h \
     ./validators/ParameterValidator.h \
-    ./validators/ModelParameterValidator.h
+    ./validators/namevalidator.h \
+    ./validators/NMTokenValidator.h
 SOURCES += ./abstractiondefinition.cpp \
     ./addressblock.cpp \
     ./addressspace.cpp \
@@ -197,5 +199,7 @@ SOURCES += ./abstractiondefinition.cpp \
     ./kactusExtensions/Kactus2Position.cpp \
     ./kactusExtensions/Kactus2Value.cpp \
     ./kactusExtensions/KactusAttribute.cpp \
+    ./validators/ModelParameterValidator.cpp \
     ./validators/ParameterValidator.cpp \
-    ./validators/ModelParameterValidator.cpp
+    ./validators/namevalidator.cpp \
+    ./validators/NMTokenValidator.cpp

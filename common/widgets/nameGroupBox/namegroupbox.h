@@ -61,15 +61,6 @@ public:
 	 */
 	bool isValid() const;
 
-	/*! \brief Set validator for the name field.
-	 * 
-	 * By default NameValidator is used but it can be replaced by using this function.
-	 * 
-	 * \param validator Pointer to the validator to be used for the name-field.
-	 *
-	*/
-	void setNameValidator(QValidator* validator);
-
 public slots:
 
 	/*! \brief Set the value for the name-field.

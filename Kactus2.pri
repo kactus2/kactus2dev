@@ -70,8 +70,6 @@ HEADERS += ./common/Global.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h \
     ./common/widgets/DirectoryListSelector/DirectoryListSelector.h \
     ./common/validators/AddressValidator.h \
-    ./common/validators/nameValidator/namevalidator.h \
-    ./common/validators/vhdlNameValidator/vhdlnamevalidator.h \
     ./common/validators/LibraryPathValidator/librarypathvalidator.h \
     ./common/layouts/HCollisionLayout.h \
     ./common/layouts/HStackedLayout.h \
@@ -121,6 +119,7 @@ HEADERS += ./common/Global.h \
     ./mainwindow/DeleteWorkspaceDialog.h \
     ./mainwindow/mainwindow.h \
     ./mainwindow/MessageConsole/messageconsole.h \
+    ./mainwindow/Ribbon/RibbonTheme.h \
     ./mainwindow/Ribbon/Ribbon.h \
     ./mainwindow/Ribbon/RibbonGroup.h \
     ./mainwindow/NewPages/NewApiDefinitionPage.h \
@@ -461,6 +460,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/choices/ChoicesModel.h \
     ./editors/ComponentEditor/choices/ChoicesDelegate.h \
     ./editors/ComponentEditor/choices/EnumerationModel.h \
+    ./editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ./editors/ComponentEditor/common/AbstractParameterModel.h \
     ./editors/CSourceEditor/CSourceContentMatcher.h \
     ./editors/CSourceEditor/MCAPIDesignerTypes.h \
@@ -569,8 +569,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./mainwindow/Ribbon/RibbonTheme.h
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -592,8 +591,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/dialogs/commandLineGeneratorDialog/commandlinegeneratordialog.cpp \
     ./common/dialogs/NewBusDialog/NewBusDialog.cpp \
     ./common/validators/AddressValidator.cpp \
-    ./common/validators/nameValidator/namevalidator.cpp \
-    ./common/validators/vhdlNameValidator/vhdlnamevalidator.cpp \
     ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
     ./common/widgets/assistedLineEdit/BasicLineContentMatcher.cpp \
@@ -994,6 +991,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/choices/ChoicesModel.cpp \
     ./editors/ComponentEditor/choices/EnumerationModel.cpp \
     ./editors/ComponentEditor/common/AbstractParameterModel.cpp \
+    ./editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./editors/CSourceEditor/CSourceContentMatcher.cpp \
     ./editors/CSourceEditor/CSourceHighlighter.cpp \
     ./editors/CSourceEditor/CSourceTextEdit.cpp \
