@@ -329,6 +329,14 @@ void Parameter::setAttribute(QString const& attributeName, QString const& attrib
 }
 
 //-----------------------------------------------------------------------------
+// Function: Parameter::getValueAttribute()
+//-----------------------------------------------------------------------------
+QString Parameter::getValueAttribute(QString const& attributeName) const
+{
+    return valueAttributes_.value(attributeName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: Parameter::elementIdentifier()
 //-----------------------------------------------------------------------------
 QString Parameter::elementIdentifier() const

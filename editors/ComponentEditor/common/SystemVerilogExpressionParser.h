@@ -12,12 +12,14 @@
 #ifndef SYSTEMVERILOGEXPRESSIONPARSER_H
 #define SYSTEMVERILOGEXPRESSIONPARSER_H
 
+#include "ExpressionParser.h"
+
 #include <QString>
 
 //-----------------------------------------------------------------------------
 //! Parser for SystemVerilog expressions.
 //-----------------------------------------------------------------------------
-class SystemVerilogExpressionParser 
+class SystemVerilogExpressionParser : public ExpressionParser
 {
 public:
 
@@ -25,7 +27,7 @@ public:
 	SystemVerilogExpressionParser();
 
 	//! The destructor.
-	~SystemVerilogExpressionParser();
+	virtual ~SystemVerilogExpressionParser();
 
     /*!
      *  Parses an expression to decimal number.
@@ -34,22 +36,7 @@ public:
      *
      *      @return The decimal value of the constant.
      */
-    QString parseExpression(QString const& expression) const;
-
-    /*!
-     *  Parses a constant number to a real number.
-     *
-     *      @param [in] constantNumber   The constant to parse.
-     *
-     *      @return The real value of the constant.
-     */
-    qreal parseConstant(QString const& constantNumber) const;
-
-private:
-
-	// Disable copying.
-	SystemVerilogExpressionParser(SystemVerilogExpressionParser const& rhs);
-	SystemVerilogExpressionParser& operator=(SystemVerilogExpressionParser const& rhs);
+    virtual QString parseExpression(QString const& expression) const;
 
     /*!
      *  Checks if the given expression is not valid for parsing.
@@ -58,7 +45,13 @@ private:
      *
      *      @return True, if the expression is not in valid format, otherwise false.
      */
-    bool isValidExpression(QString const& expression) const;
+    virtual bool isValidExpression(QString const& expression) const;
+
+private:
+
+	// Disable copying.
+	SystemVerilogExpressionParser(SystemVerilogExpressionParser const& rhs);
+	SystemVerilogExpressionParser& operator=(SystemVerilogExpressionParser const& rhs);
 
     /*!
      *  Checks if the given expression is a string.
@@ -155,6 +148,15 @@ private:
     *      @return The result of the operation.
     */
     QString solve(QString const& firstTerm, QString const& operation, QString const& secondTerm) const;
+        
+    /*!
+     *  Parses a constant number to a real number.
+     *
+     *      @param [in] constantNumber   The constant to parse.
+     *
+     *      @return The real value of the constant.
+     */
+    qreal parseConstant(QString const& constantNumber) const;
 
     /*!
      *  Converts the base format to the base number e.g. h to 16.

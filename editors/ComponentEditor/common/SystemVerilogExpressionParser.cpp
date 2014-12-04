@@ -84,58 +84,6 @@ QString SystemVerilogExpressionParser::parseExpression(QString const& expression
 }
 
 //-----------------------------------------------------------------------------
-// Function: SystemVerilogExpressionParser::parseConstant()
-//-----------------------------------------------------------------------------
-qreal SystemVerilogExpressionParser::parseConstant(QString const& constantNumber) const
-{
-    QRegExp size("([1-9][0-9_]*)?(?=')");
-    QRegExp sign("[sS]?");
-    QRegExp baseFormat("'[sS]?([dDbBoOhH])");
-
-    baseFormat.indexIn(constantNumber);
-
-    QString result = constantNumber;
-    result.remove(size);
-    result.remove(sign);
-    result.remove(baseFormat);
-    result.remove('_');
-
-    if (constantNumber.contains('.'))
-    {
-        return result.toDouble();
-    }
-    else
-    {
-        return result.toInt(0, baseForFormat(baseFormat.cap(1)));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: SystemVerilogExpressionParser::baseForFormat()
-//-----------------------------------------------------------------------------
-int SystemVerilogExpressionParser::baseForFormat(QString const& baseFormat) const
-{
-    if (baseFormat == "h" || baseFormat == "H")
-    {
-        return 16;
-    }
-    else if (baseFormat == "d" || baseFormat == "D")
-    {
-        return 10;
-    }
-    else if (baseFormat == "o" || baseFormat == "O")
-    {
-        return  8;
-    }
-    else if (baseFormat == "b" || baseFormat == "B")
-    {
-        return 2;
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::isValidExpression()
 //-----------------------------------------------------------------------------
 bool SystemVerilogExpressionParser::isValidExpression(QString const& expression) const
@@ -153,7 +101,7 @@ bool SystemVerilogExpressionParser::isValidExpression(QString const& expression)
 //-----------------------------------------------------------------------------
 bool SystemVerilogExpressionParser::isStringLiteral(QString const &expression) const
 {
-    QRegExp stringExpression("^\\s*" + STRING_LITERAL + "\\s*$");
+    QRegExp stringExpression("^\\s*([(]\\s*)*" + STRING_LITERAL + "\\s*([)]\\s*)*$");
     return expression.indexOf(stringExpression) == 0;
 }
 
@@ -377,4 +325,56 @@ QString SystemVerilogExpressionParser::solve(QString const& firstTerm, QString c
     {
         return QString::number(result);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::parseConstant()
+//-----------------------------------------------------------------------------
+qreal SystemVerilogExpressionParser::parseConstant(QString const& constantNumber) const
+{
+    QRegExp size("([1-9][0-9_]*)?(?=')");
+    QRegExp sign("[sS]?");
+    QRegExp baseFormat("'[sS]?([dDbBoOhH])");
+
+    baseFormat.indexIn(constantNumber);
+
+    QString result = constantNumber;
+    result.remove(size);
+    result.remove(sign);
+    result.remove(baseFormat);
+    result.remove('_');
+
+    if (constantNumber.contains('.'))
+    {
+        return result.toDouble();
+    }
+    else
+    {
+        return result.toInt(0, baseForFormat(baseFormat.cap(1)));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::baseForFormat()
+//-----------------------------------------------------------------------------
+int SystemVerilogExpressionParser::baseForFormat(QString const& baseFormat) const
+{
+    if (baseFormat == "h" || baseFormat == "H")
+    {
+        return 16;
+    }
+    else if (baseFormat == "d" || baseFormat == "D")
+    {
+        return 10;
+    }
+    else if (baseFormat == "o" || baseFormat == "O")
+    {
+        return  8;
+    }
+    else if (baseFormat == "b" || baseFormat == "B")
+    {
+        return 2;
+    }
+
+    return 0;
 }

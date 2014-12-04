@@ -216,7 +216,7 @@ public:
     bool hasAttribute(QString const& attributeName) const;
 
     /*!
-     *  Gets a value of an attribute.
+     *  Gets the value of an attribute.
      *
      *      @param [in] attributeName       The name of the attribute to get.
      *
@@ -231,7 +231,16 @@ public:
      *      @param [in] attributeValue      The value of the attribute.
      */
     void setAttribute(QString const& attributeName, QString const& attributeValue);
- 
+   
+    /*!
+     *  Gets the value of an attribute of the paraemter value.
+     *
+     *      @param [in] attributeName       The name of the attribute to get.
+     *
+     *      @return The value attribute value.
+     */
+    QString getValueAttribute(QString const& attributeName) const;
+
     /*!
      *  Sets an attribute for the value.
      *
