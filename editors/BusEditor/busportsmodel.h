@@ -17,46 +17,47 @@
 #include <QList>
 #include <QString>
 
-/*! \brief Model to provide the signals of abstraction definition for editing.
- *
- */
+//-----------------------------------------------------------------------------
+//! Model to provide the signals of abstraction definition for editing.
+//-----------------------------------------------------------------------------
 class BusPortsModel : public QAbstractTableModel {
 	Q_OBJECT
 
 public:
 
-	//! \brief Enum that is used to select the mode of a port.
+	//! Enum that is used to select the mode of a port.
 	enum PortMode {
 		MODE_MASTER = 0,
 		MODE_SLAVE,
 		MODE_SYSTEM,
 		MODE_ANY
 	};
-	/*! \brief Convert PortMode to string
+	
+    /*!
+	 *  Convert PortMode to string.
 	 *
-	 * \param mode The mode to convert
-	 *
-	 * \return QString that matches the mode.
-	*/
+	 *      @param [in] mode    The mode to convert.
+     *      @return             QString that matches the mode
+	 */
 	QString portMode2Str(PortMode mode) const;
 
-	/*! \brief Convert a string to PortMode
+	/*!
+	 *  Convert a string to PortMode.
 	 *
-	 * \param str QString that contains the mode.
-	 *
-	 * \return BusPortsModel::PortMode
-	*/
+	 *      @param [in] str     QString that contains the mode.
+     *      @return             BusPortsModel::PortMode
+	 */
 	PortMode str2PortMode(const QString& str) const;
 
-	/*! \brief Convert a PortMode to interface mode
-	 *
-	 * \param mode The PortMode to convert.
-	 *
-	 * \return The mode that matches the PortMode.
-	*/
+    /*!
+     *  Convert a PortMode to interface mode.
+     *
+     *      @param [in] mode   The PortMode to convert.
+     *      @return             The mode that matches the PortMode.
+     */
     General::InterfaceMode portMode2Mode(const PortMode mode) const;
 
-	//! \brief Enum PortDirection is used to select the direction of a port.
+	//! Enum PortDirection is used to select the direction of a port.
 	enum PortDirection {
 		DIRECTION_IN = 0,
 		DIRECTION_OUT,
@@ -217,225 +218,260 @@ public:
 		bool operator<(const Port& other) const;
 	};
 
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param parent Pointer to the owner of this model.
-	 *
-	 * \return 
-	*/
+	 *      @param [in] parent   Pointer to the owner of this model.
+	 */
 	BusPortsModel(QObject *parent);
 	
-	//! \brief The destructor
+	/*!
+	 *  The destructor.
+	 */
 	virtual ~BusPortsModel();
 
-	/*! \brief Get the number of rows an item contains.
+	/*!
+	 *  Get the number of rows an item contains.
 	 *
-	 * \param parent This should always be invalid model index.
-	 *
-	 * \return Number of rows to item has
-	*/
+	 *      @param [in] parent      This should always be invalid model index.
+     *      @return                 Number of rows the item has.
+	 */
 	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
-	/*! \brief Get the number of columns the model contains
+	/*!
+	 *  Get the number of columns the model contains.
 	 *
-	 * \param parent This should always be invalid model index.
-	 *
-	 * \return Always returns 9 for invalid model indexes.
-	*/
+	 *      @param [in] parent      This should always be invalid model index.
+     *      @return                 Always returns 9 for invalid model indexes.
+	 */
 	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
 
-	/*! \brief Get the data for specified item.
+	/*!
+	 *  Get the data for the specified item.
 	 *
-	 * \param index Specifies the item that's data is requested.
-	 * \param role The role that defines what kind of data is requested.
-	 *
-	 * \return QVariant Contains the data for the item.
-	*/
+	 *      @param [in] index       Specifies the item that's data is requested.
+	 *      @param [in] role        The role that defines what kind of data is requested.
+     *      @return                 QVariant contains the data for the item.
+	 */
 	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
-	/*! \brief Get the header data for specified header.
+	/*!
+	 *  Get the header data for specified header.
 	 *
-	 * \param section The section specifies the row/column number for the header.
-	 * \param orientation Specified if horizontal or vertical header is wanted.
-	 * \param role Specifies the type of the requested data.
-	 *
-	 * \return QVariant Contains the requested data.
-	*/
+	 *      @param [in] section         The section specifies the row/column number for the header.
+	 *      @param [in] orientation     Specifies if horizontal or vertical header is wanted.
+	 *      @param [in] role            Specifies the type of the requested data.
+     *      @return                     QVariant contains the requested data.
+	 */
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-	/*! \brief Save the data to the model for specified item
+	/*!
+	 *  Save the data to the model for specified item.
 	 *
-	 * \param index The model index of the item that's data is to be saved.
-	 * \param value The data that is to be saved.
-	 * \param role The role specifies what kind of data should be saved.
-	 *
-	 * \return True if saving happened successfully.
-	*/
+	 *      @param [in] index   The model index of the item that's data is to be saved.
+	 *      @param [in] value   The data that is to be saved.
+	 *      @param [in] role    The role specifies what kind of data should be saved.
+     *      @return             True if saving happened successfully.
+	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
-	/*! \brief Get the item flags that defines the possible operations for the item.
+	/*!
+	 *  Get the item flags that defines the possible operations for the item.
 	 *
-	 * \param index Model index that identifies the item.
-	 *
-	 * \return Qt::ItemFlags specify the possible operations for the item.
-	*/
+	 *      @param [in] index       Model index that identifies the item.
+     *      @return                 Qt::ItemFlags specify the possible operations for the item.
+	 */
 	Qt::ItemFlags flags(const QModelIndex& index) const;
 
-	/*! \brief Set the abstraction definition for the model.
+	/*!
+	 *  Set the abstraction definition for the model.
 	 *
-	 * \param absDef Pointer to the Abstraction definition
-	 *
-	*/
+	 *      @param [in] absDef      Pointer to the Abstraction definition.
+	 */
 	void setAbsDef(QSharedPointer<AbstractionDefinition> absDef);
 
-	/*! \brief Write the ports from the table to the abstraction definition
-	 *
-	*/
+	/*!
+	 *  Write the ports from the table to the abstraction definition.
+	 */
 	void save();
 
 public slots:
 
-	//! \brief Adds a new signal with mode as "any"
+	/*!
+	 *  Adds a new signal with mode as "any".
+	 */
 	void addSignal();
 
-	//! \brief Adds all signal modes for selected ports.
+	/*!
+	 *  Adds all signal modes for selected ports.
+	 *
+	 *      @param [in] indexes     The indexes of the selected ports.
+	 */
 	void addSignalOptions(const QModelIndexList& indexes);
 
-	/*! \brief Remove the items with given indexes from the model
+	/*!
+	 *  Remove the items with given indexes from the model.
 	 *
-	 * \param indexes List of QModelIndexes that identify items to remove.
-	 *
-	*/
+	 *      @param [in] indexes     List of QModelIndexes that identify items to be removed.
+	 */
 	void removeIndexes(const QModelIndexList& indexes);
 
-void onRemoveItem(QModelIndex const& index);
+    /*!
+     *  Remove the item with the given index.
+     *
+     *      @param [in] index       The index where to remove the item.
+     */
+    void onRemoveItem(QModelIndex const& index);
 
-	/*! \brief Copy the items with given indexes in the model.
+	/*!
+	 *  Copy the items with given indexes in the model.
 	 *
-	 * \param indexes List of QModelIndexes that identify items to copy.
-	 *
-	*/
+	 *      @param [in] indexes     List of QModelIndexes that identify items to copy.
+	 */
 	void copyIndexes(const QModelIndexList& indexes);
 
-	/*! \brief Export the ports from the model to a csv-file.
+	/*!
+	 *  Export the ports from the model to a csv-file.
 	 *
-	 * \param path Path to the file the ports are exported to.
-	 *
-	*/
+	 *      @param [in] path    Path to the file the ports are exported to.
+	 */
 	void exportCSV(const QString& path);
 
-	/*! \brief Import ports from a csv-file to the model.
+	/*!
+	 *  Import ports from a csv-file to the model.
 	 *
-	 * \param path Path to the file to read the ports from.
-	 *
-	*/
+	 *      @param [in] path    Path to the file to read the ports from.
+	 */
 	void importCSV(const QString& path);
 
 signals:
 
-	//! \brief Inform that the state of the model has changed.
+	/*!
+	 *  Inform that the state of the model has changed.
+	 */
 	void contentChanged();
 
-	//! \brief Sends error message to be printed to user.
+	/*!
+	 *  Sends error message to be printed for the user.
+	 *
+	 *      @param [in] msg     The error message.
+	 */
 	void errorMessage(const QString& msg);
 
-	//! \brief Sends notification to be printed to user.
+	/*!
+	 *  Sends notification to be printed to user.
+	 *
+	 *      @param [in] msg   The notification message.
+	 */
 	void noticeMessage(const QString& msg);
 
-    //! \brief Inform that a port abstraction has been renamed.
+    /*!
+     *  Inform that a port abstraction has been removed.
+     *
+     *      @param [in] oldName   Old name of the port.
+     *      @param [in] newName   New name of the port.
+     */
     void portRenamed(const QString& oldName, const QString& newName);
 
-    //! \brief Inform that a port abstraction has been removed.
+    /*!
+     *  Inform that a port abstraction has been removed.
+     *
+     *      @param [in] portName    The port name.
+     *      @param [in] mode        The interface mode.
+     */
     void portRemoved(const QString& portName, const General::InterfaceMode mode);
 
 private:
-	//! \brief No copying
+	//! No copying
 	BusPortsModel(const BusPortsModel& other);
 
-	//! \brief No assignment
+	//! No assignment
 	BusPortsModel& operator=(const BusPortsModel& other);
 
-	//! \brief Read the ports from the abstraction definition to the table
+	/*!
+	 *  Read the ports from the abstraction defition to the table.
+	 */
 	void readPorts();
 
-	/*! \brief Read a single port into table from port abstraction
+	/*!
+	 *  Read a single port into table from port abstraction.
 	 *
-	 * \param portAbs Pointer to the port abstraction of the port.
-	 * \param modeSpesific Pointer to the mode specific definitions of the port.
-	 * \param mode The mode of the port to be created
-	 *
-	*/
+	 *      @param [in] portAbs         Pointer to the port abstraction of the port.
+	 *      @param [in] modeSpesific    Pointer to the mode specific definitions of the port.
+	 *      @param [in] mode            The mode of the port to be created.
+	 */
 	void readPort(QSharedPointer<PortAbstraction> portAbs,
 		WireAbstraction::WirePort* modeSpesific,
 		BusPortsModel::PortMode mode);
 
-	/*! \brief Rename port(s) with given name to another name.
+	/*!
+	 *  Rename port(s) with given name to another name.
 	 *
-	 * \param oldPort The name of the port to rename.
-	 * \param newPort The new name for the port.
-	 *
-	*/
+	 *      @param [in] oldPort   The name of the port to rename.
+	 *      @param [in] newPort   The new name for the port.
+	 */
 	void renamePort(const QString oldPort, const QString newPort);
 
-	/*! \brief Set qualifier(s) for port(s) with given name.
+	/*!
+	 *  Set qualifier(s) for port(s) with given name.
 	 *
-	 * \param portName Identifies the port that's qualifier is to be changed
-	 * \param qualifier The value to set for the qualifier.
-	 *
-	*/
+	 *      @param [in] portName    Identifies the port that's qualifier is to be changed.
+	 *      @param [in] qualifier   The value to set for the qualifier.
+	 */
 	void setQualifier(const QString& portName, const QString& qualifier);
 
-	/*! \brief Set default value(s) for port(s) with given name.
+	/*!
+	 *  Set default value(s) for port(s) with the given name.
 	 *
-	 * \param portName Identifies the port that's default value is to be set.
-	 * \param defaultValue The value to set as default value.
-	 *
-	*/
+	 *      @param [in] portName        Identifies the port that's default value is to be set.
+	 *      @param [in] defaultValue    The value to set as default value.
+	 */
 	void setDefaultValue(const QString& portName, const QString& defaultValue);
 
-	/*! \brief Set the driver(s) for port(s) with given name.
+	/*!
+	 *  Set the driver(s) for port(s) with given name.
 	 *
-	 * \param portName Identifies the port that's driver is to be set.
-	 * \param driverValue The driver value to set.
-	 *
-	*/
+	 *      @param [in] portName        Identifies the port that's driver is to be set.
+	 *      @param [in] driverValue     The driver value to set.
+	 */
 	void setDriver(const QString& portName, const QString& driverValue);
 
-	/*! \brief Set the comment(s) for port(s) with given name.
+	/*!
+	 *  Set the comment(s) for port(s) with given name.
 	 *
-	 * \param portName Identifies the port that's comment is to be set.
-	 * \param comment The comment to set for the port(s)
-	 *
-	*/
+	 *      @param [in] portName    Identifies the port that's comment is to be set.
+	 *      @param [in] comment     The comment to set for the port(s).
+	 */
 	void setComment(const QString& portName, const QString& comment);
 
-	/*! \brief Set the width(s) for port(s) with given name.
-	 *
-	 * \param portName Identifies the port that's width is to be set.
-	 * \param width The width to set for the port(s)
-	 *
-	*/
-    void setWidth(const QString& portName, const int width );
+    /*!
+     *  Set the width for the port with the given name.
+     *
+     *      @param [in] portName    Identifies the port that's width is to be set.
+     *      @param [in] width       The width to set for the port.
+     *      @param [in] mode        The port mode (master, slave, system, any).
+     */
+    void setWidth(const QString& portName, const int width, PortMode mode);
 
-	/*! \brief Save the port from table to a port abstraction.
+	/*!
+	 *  Save the port from table to a port abstraction.
 	 *
-	 * \param portAbs Pointer to the port abstraction to save the port to.
-	 * \param i Index of the port in the table.
-	 *
-	*/
+	 *      @param [in] portAbs     Pointer to the port abstraction to save the port to.
+	 *      @param [in] i           Index of the port in the table.
+	 */
 	void savePort(QSharedPointer<PortAbstraction> portAbs, int i);
     
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! \brief Pointer to the abstraction definition being edited.
+	//! Pointer to the abstraction definition being edited.
 	QSharedPointer<AbstractionDefinition> absDef_;
 
-	//! \brief The pointer to the list containing the ports
+	//! The pointer to the list containing the ports
 	QList<QSharedPointer<PortAbstraction> >* ports_;
 
-	//! \brief Contains the editable ports
+	//! Contains the editable ports
 	QList<Port> table_;
 };
 

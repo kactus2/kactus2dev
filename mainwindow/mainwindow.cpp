@@ -1421,6 +1421,7 @@ void MainWindow::updateMenuStrip()
 	}
 
 	bool isHWDesign = dynamic_cast<HWDesignWidget*>(doc) != 0;
+    bool isSystemDesign = dynamic_cast<SystemDesignWidget*>(doc) != 0;
 
 	actSave_->setEnabled(doc != 0 && doc->isModified());
 	actSaveAs_->setEnabled(doc != 0);
@@ -1428,7 +1429,7 @@ void MainWindow::updateMenuStrip()
 
 	// generation group is always visible when there is open editor but disabled when locked
 	generationGroup_->setEnabled(unlocked);
-	if (doc) {
+	if (doc != 0 && (ipEditor != 0 || isHWDesign || isSystemDesign)) {
 		generationGroup_->setVisible(true);
 	}
 	else {
