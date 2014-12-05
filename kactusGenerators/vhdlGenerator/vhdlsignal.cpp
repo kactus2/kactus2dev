@@ -9,14 +9,13 @@
 
 #include "vhdlgeneral.h"
 
-VhdlSignal::VhdlSignal( QObject* parent, 
-					   const QString& name /*= QString()*/,
+VhdlSignal::VhdlSignal(const QString& name /*= QString()*/,
 					   const QString& signalType /*= QString()*/,
 					   int leftBound /*= -1*/, 
 					   int rightBound /*= -1*/, 
 					   const QString& description /*= QString()*/,
 					   const QString& defaultValue /*= QString()*/):
-VhdlObject(parent, name, signalType, defaultValue, description),
+VhdlTypedObject(name, signalType, defaultValue, description),
 left_(leftBound),
 right_(rightBound) {
 
@@ -37,7 +36,7 @@ void VhdlSignal::write( QTextStream& stream ) const {
 		VhdlGeneral::writeDescription(description(), stream, QString("  "));
 	}
 	stream << "  signal "; 
-	stream << name().leftJustified(16, ' '); //align colons (:) at least roughly
+    stream << getVhdlLegalName().leftJustified(16, ' '); // align colons (:) at least roughly
 	stream << " : ";
 	QString typeDefinition = VhdlGeneral::vhdlType2String(type(), left_, right_);
 	stream << typeDefinition << ";" << endl;

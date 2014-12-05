@@ -8,6 +8,7 @@
 #ifndef VHDLGENERIC_H
 #define VHDLGENERIC_H
 
+#include "VhdlTypedObject.h"
 #include "vhdlobject.h"
 
 #include <QString>
@@ -17,8 +18,8 @@ class ModelParameter;
 /*! \brief VhdlGeneric represents a vhdl generic in a component or entity declaration.
  *
  */
-class VhdlGeneric : public VhdlObject {
-	Q_OBJECT
+class VhdlGeneric : public VhdlTypedObject
+{
 
 public:
 
@@ -28,7 +29,7 @@ public:
 	 * \param generic Pointer to the model parameter to create the generic from.
 	 *
 	*/
-	VhdlGeneric(ModelParameter* generic, QObject* parent = 0);
+	VhdlGeneric(ModelParameter* generic);
 	
 	//! \brief The destructor
 	virtual ~VhdlGeneric();
@@ -42,10 +43,10 @@ public:
 
 private:
 	
-	//! \brief No copying
+	//! No copying
 	VhdlGeneric(const VhdlGeneric& other);
 
-	//! \brief No assignment
+	//! No assignment
 	VhdlGeneric& operator=(const VhdlGeneric& other);
 };
 

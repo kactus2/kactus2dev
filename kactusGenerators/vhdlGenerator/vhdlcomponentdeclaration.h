@@ -11,6 +11,7 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include "vhdlobject.h"
 #include "vhdlgeneric.h"
 #include "vhdlport.h"
 #include "vhdlportsorter.h"
@@ -23,8 +24,8 @@
 #include <QList>
 #include <QTextStream>
 
-class VhdlComponentDeclaration : public QObject {
-	Q_OBJECT
+class VhdlComponentDeclaration : public VhdlObject
+{
 
 public:
 
@@ -34,7 +35,7 @@ public:
 	 * \param parent Pointer to the owner of this declaration.
 	 *
 	*/
-	VhdlComponentDeclaration(QSharedPointer<Component> component, QObject* parent);
+	VhdlComponentDeclaration(QSharedPointer<Component> component);
 	
 	//! \brief The destructor
 	virtual ~VhdlComponentDeclaration();

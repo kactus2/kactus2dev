@@ -8,6 +8,7 @@
 #ifndef VHDLCOMPONENTINSTANCE_H
 #define VHDLCOMPONENTINSTANCE_H
 
+#include "vhdlobject.h"
 #include "vhdlportmap.h"
 #include "vhdlconnectionendpoint.h"
 
@@ -28,8 +29,9 @@ class LibraryInterface;
 /*! \brief Represents one vhdl component instantiation.
  *
  */
-class VhdlComponentInstance : public QObject {
-	Q_OBJECT
+class VhdlComponentInstance : public QObject, public VhdlObject
+{
+    Q_OBJECT
 
 public:
 
@@ -212,33 +214,33 @@ private:
 
 	VhdlComponentDeclaration* compDeclaration_;
 
-	//! \brief The name of the component instance.
+	//! The name of the component instance.
 	QString instanceName_;
 
-	//! \brief The name of the type that is is an instantiation of.
-	QString typeName_;
+	//! The name of the type that is is an instantiation of.
+	QString componentEntityName_;
 
-	//! \brief The name of the architecture used in this instance.
+	//! The name of the architecture used in this instance.
 	QString architecture_;
 
-	//! \brief The description of the instance.
+	//! The description of the instance.
 	QString description_;
 
-	/*! \brief Contains the default values for the ports of this instance.
+	/*! Contains the default values for the ports of this instance.
 	 * 
 	 * Key: The name of the port.
 	 * Value: The default value for the port.
 	 */
 	QMap<QString, QString> defaultPortConnections_;
 
-	/*! \brief Contains the generic mappings for this instance.
+	/*! Contains the generic mappings for this instance.
 	 * 
 	 * Key: The name of the generic.
 	 * Value: The value mapped for the generic.
 	 */
 	QMap<QString, QString> genericMap_;
 
-	/*! \brief Contains the port mappings for this instance.
+	/*! Contains the port mappings for this instance.
 	 * 
 	 * Key: The port name and bounds of this instance.
 	 * Value: The name of the signal/top port and it's bounds the port is connected to.

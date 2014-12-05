@@ -11,8 +11,8 @@
 
 #include <IPXACTmodels/port.h>
 
-VhdlPort::VhdlPort(Port* port, QObject* parent):
-VhdlObject(parent, port->getName(), 
+VhdlPort::VhdlPort(Port* port):
+VhdlTypedObject(port->getName(),
 		   port->getTypeName(),
 		   port->getDefaultValue(), 
 		   port->getDescription()),
@@ -46,7 +46,7 @@ void VhdlPort::write( QTextStream& stream ) const {
 		stream << "-- ";
 	}
 
-	stream << name().leftJustified(16, ' '); //align colons (:) at least roughly
+    stream << getVhdlLegalName().leftJustified(16, ' ');     //align colons (:) at least roughly
 	stream << " : " << General::direction2Str(direction_) << " ";
 
 	stream << VhdlGeneral::vhdlType2String(type(), left_, right_);

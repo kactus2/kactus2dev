@@ -17,7 +17,6 @@
 #include "GenericVendorExtension.h"
 #include "XmlUtils.h"
 
-#include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include"vlnv.h"
 #include "XmlUtils.h"

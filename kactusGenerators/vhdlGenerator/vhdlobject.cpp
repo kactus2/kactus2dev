@@ -7,51 +7,67 @@
 
 #include "vhdlobject.h"
 
-VhdlObject::VhdlObject( QObject* parent, 
-					   const QString& name /*= QString()*/, 
-					   const QString& type /*= QString()*/, 
-					   const QString& defaultValue /*= QString()*/, 
-					   const QString& description /*= QString()*/ ):
-QObject(parent),
-name_(name),
-type_(type),
-description_(description),
-defaultValue_(defaultValue) 
-{
+#include <QRegExp>
+#include <QRegularExpression>
 
+//-----------------------------------------------------------------------------
+// Function: vhdlobject::VhdlObject()
+//-----------------------------------------------------------------------------
+VhdlObject::VhdlObject(const QString& name /*= QString()*/,
+					   const QString& description /*= QString()*/ ):
+name_(name),
+description_(description)
+{
 }
 
+//-----------------------------------------------------------------------------
+// Function: vhdlobject::~VhdlObject()
+//-----------------------------------------------------------------------------
 VhdlObject::~VhdlObject() {
 }
 
+//-----------------------------------------------------------------------------
+// Function: vhdlobject::name()
+//-----------------------------------------------------------------------------
 QString VhdlObject::name() const {
 	return name_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: vhdlobject::setName()
+//-----------------------------------------------------------------------------
 void VhdlObject::setName( const QString& name ) {
 	name_ = name;
 }
 
-QString VhdlObject::type() const {
-	return type_;
-}
-
-void VhdlObject::setType( const QString& type ) {
-	type_ = type;
-}
-
+//-----------------------------------------------------------------------------
+// Function: vhdlobject::description()
+//-----------------------------------------------------------------------------
 QString VhdlObject::description() const {
 	return description_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: vhdlobject::setDescription()
+//-----------------------------------------------------------------------------
 void VhdlObject::setDescription( const QString& description ) {
 	description_ = description;
 }
 
-QString VhdlObject::defaultValue() const {
-	return defaultValue_;
-}
+//-----------------------------------------------------------------------------
+// Function: vhdlobject::getVhdlLegalName()
+//-----------------------------------------------------------------------------
+QString VhdlObject::getVhdlLegalName() const
+{
+    QString vhdlLegalName = name_;
 
-void VhdlObject::setDefaultValue( const QString& defaultValue ) {
-	defaultValue_ = defaultValue;
+    QRegExp illegalCharacters("[:_.-]+");
+    vhdlLegalName = vhdlLegalName.replace(illegalCharacters, "_");
+
+    QRegExp leadingUnderScore("^[_]");
+    vhdlLegalName.remove(leadingUnderScore);
+    QRegExp trailingUnderScore("[_]$");
+    vhdlLegalName.remove(trailingUnderScore);
+
+    return vhdlLegalName;
 }

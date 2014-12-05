@@ -11,12 +11,11 @@
 
 #include <QChar>
 
-VhdlGeneric::VhdlGeneric(ModelParameter* generic, QObject* parent):
-VhdlObject(parent,
-		   generic->getName(),
-		   generic->getDataType(),
-		   generic->getValue(),
-		   generic->getDescription()) 
+VhdlGeneric::VhdlGeneric(ModelParameter* generic):
+VhdlTypedObject(generic->getName(),
+		        generic->getDataType(),
+    	        generic->getValue(),
+		        generic->getDescription()) 
 {
 	Q_ASSERT(generic);
 }
@@ -28,8 +27,9 @@ void VhdlGeneric::write( QTextStream& stream ) const {
 	Q_ASSERT(!name().isEmpty());
 	Q_ASSERT(!type().isEmpty());
 
-	stream << name().leftJustified(16, ' '); //align colons (:) at least roughly
-	stream<< " : " << type();
+    // align colons (:) at least roughly
+	stream << getVhdlLegalName().leftJustified(16, ' ');
+    stream<< " : " << type();
 
 	// check if type is string then quotations must be used for default value
 	bool addQuotation = type().compare(QString("string"), Qt::CaseInsensitive) == 0;

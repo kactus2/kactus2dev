@@ -2095,24 +2095,6 @@
     <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlsignal.cpp">
       <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vhdlcomponentdeclaration.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vhdlcomponentinstance.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vhdlgeneric.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vhdlobject.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vhdlport.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_vhdlsignal.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_quartusgenerator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -3892,6 +3874,12 @@
     <ClCompile Include="editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
+    <ClCompile Include="kactusGenerators\vhdlGenerator\VhdlTypedObject.cpp">
+      <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_vhdlcomponentinstance.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5336,6 +5324,9 @@
     </CustomBuild>
     <CustomBuild Include="mainwindow\Ribbon\Ribbon.h">
       <Filter>Header Files\mainwindow\Ribbon</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kactusGenerators\vhdlGenerator\VhdlTypedObject.h">
+      <Filter>Header Files\kactusGenerators\vhdlGenerator</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

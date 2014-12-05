@@ -28,10 +28,11 @@ VhdlComponentInstance::VhdlComponentInstance(QObject* parent,
 											 const QString& instanceName,
 											 const QString& viewName,
 											 const QString& description):
-QObject(parent), 
+QObject(parent),
+VhdlObject(instanceName, description),
 compDeclaration_(compDeclaration),
 instanceName_(instanceName),
-typeName_(compDeclaration->typeName()),
+componentEntityName_(compDeclaration->typeName()),
 architecture_(),
 description_(description),
 defaultPortConnections_(),
@@ -44,8 +45,8 @@ portMap_()
 	Q_ASSERT(component);
  	
 	// set the entity name that is used
-	typeName_ = component->getEntityName(viewName);
-	compDeclaration_->setEntityName(typeName_);
+	componentEntityName_ = component->getEntityName(viewName);
+	compDeclaration_->setEntityName(componentEntityName_);
 
 	// get the architecture name for this instance
 	architecture_ = component->getArchitectureName(viewName);
@@ -115,7 +116,7 @@ void VhdlComponentInstance::write( QTextStream& stream ) const {
 	}
 
 	// write the instance name and type
-	stream << "  " << instanceName_ << " : " << typeName_;
+    stream << " " << getVhdlLegalName() << " : " << compDeclaration_->getVhdlLegalName();
 
 	// if architecture has been defined
 	if (!architecture_.isEmpty()) {
@@ -204,7 +205,7 @@ void VhdlComponentInstance::addMapping(const VhdlPortMap &instancePort,
 		// inform user that the mapping for those bits already existed.
 		emit noticeMessage(tr("The instance %1:%2 already contains mapping "
 			"\"%3 => %4\"").arg(
-			typeName_).arg(
+			componentEntityName_).arg(
 			instanceName_).arg(
 			instancePort.toString()).arg(
 			previousValue.toString()));
@@ -212,7 +213,7 @@ void VhdlComponentInstance::addMapping(const VhdlPortMap &instancePort,
 		// inform user that the new mapping is also added
 		emit noticeMessage(tr("Instance %1:%2 now has also port mapping "
 			"\"%3 => %4\"").arg(
-			typeName_).arg(
+			componentEntityName_).arg(
 			instanceName_).arg(
 			instancePort.toString()).arg(
 			signalMapping.toString()));
@@ -232,7 +233,7 @@ void VhdlComponentInstance::addGenericMap( const QString& genericName,
 		// is overwritten with new value
 		emit noticeMessage(tr("The instance %1:%2 already contained generic mapping"
 			" \"%3 => %4\" but \"%3 => %5\" replaced it.").arg(
-			typeName_).arg(
+			componentEntityName_).arg(
 			instanceName_).arg(
 			genericName).arg(
 			oldValue).arg(
@@ -314,7 +315,7 @@ bool VhdlComponentInstance::hasPort( const QString& portName ) const {
 }
 
 QString VhdlComponentInstance::typeName() const {
-	return typeName_;
+	return componentEntityName_;
 }
 
 bool VhdlComponentInstance::isScalarPort( const QString& portName ) const {

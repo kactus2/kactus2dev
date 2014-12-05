@@ -17,6 +17,8 @@
 #include <IPXACTmodels/VendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 
+#include <IPXACTmodels/validators/namevalidator.h>
+
 #include <QRegExpValidator>
 #include <QUuid>
 
@@ -289,7 +291,8 @@ bool ComponentInstance::isValid(QStringList& errorList, QString const& parentIde
     }
 
     // if the instance name contains characters that are not allowed in vhdl
-    QRegExpValidator nameValidator(QRegExp("^[a-zA-Z]+[a-zA-Z0-9_]*$"));
+    //QRegExpValidator nameValidator(QRegExp("^[a-zA-Z]+[a-zA-Z0-9_]*$"));
+    NameValidator nameValidator(0);
     int pos = 0;
     QString instName(instanceName_);
 
@@ -335,7 +338,8 @@ bool ComponentInstance::isValid() const
     }
 
     // if the instance name contains characters that are not allowed in vhdl
-    QRegExpValidator nameValidator;
+    //QRegExpValidator nameValidator;
+    NameValidator nameValidator(0);
     int pos = 0;
     QString instName(instanceName_);
 

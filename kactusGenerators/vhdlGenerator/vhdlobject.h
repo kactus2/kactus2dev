@@ -20,8 +20,8 @@
  * - VhdlPort
  * 
  */
-class VhdlObject : public QObject {
-	Q_OBJECT
+class VhdlObject 
+{
 
 public:
 
@@ -34,11 +34,7 @@ public:
 	 * \param description The description for this vhdl object.
 	 *
 	*/
-	VhdlObject(QObject* parent, 
-		const QString& name = QString(),
-		const QString& type = QString(),
-		const QString& defaultValue = QString(),
-		const QString& description = QString());
+	VhdlObject(const QString& name = QString(), const QString& description = QString());
 	
 	//! \brief The destructor
 	virtual ~VhdlObject();
@@ -67,20 +63,6 @@ public:
 	*/
 	virtual void setName(const QString& name);
 
-	/*! \brief Get the type of the vhdl object.
-	 *
-	 *
-	 * \return QString contains the type of the object.
-	*/
-	virtual QString type() const;
-
-	/*! \brief Set the type for the vhdl object.
-	 *
-	 * \param type contains the type for the object.
-	 *
-	*/
-	virtual void setType(const QString& type);
-
 	/*! \brief Get the description of the vhdl object.
 	 *
 	 *
@@ -95,37 +77,25 @@ public:
 	*/
 	virtual void setDescription(const QString& description);
 
-	/*! \brief Get the default value of the object.
-	 *
-	 * \return QString contains the default value of the object.
-	*/
-	virtual QString defaultValue() const;
-
-	/*! \brief Set the default value for the object.
-	 *
-	 * \param defaultValue Contains the default value to set for the object.
-	 *
-	*/
-	virtual void setDefaultValue(const QString& defaultValue);
+    /*!
+     *  Return the object name, where separators have been replaced with _.
+     *
+     *  @return     The replaced name.
+     */
+    virtual QString getVhdlLegalName() const;
 
 private:
-	//! \brief No copying
+	//! No copying
 	VhdlObject(const VhdlObject& other);
 
-	//! \brief No assignment
+	//! No assignment
 	VhdlObject& operator=(const VhdlObject& other);
 
-    //! \brief The name of the vhdl object.
+    //! The name of the vhdl object.
     QString name_;
 
-    //! \brief The type of the vhdl object.
-    QString type_;
-
-    //! \brief The description of the vhdl object.
+    //! The description of the vhdl object.
     QString description_;
-
-    //! \brief The default value for the object.
-    QString defaultValue_;
 };
 
 #endif // VHDLOBJECT_H

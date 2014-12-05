@@ -8,6 +8,8 @@
 #ifndef VHDLPORTMAP_H
 #define VHDLPORTMAP_H
 
+#include "VhdlTypedObject.h"
+
 #include <QString>
 #include <QTextStream>
 
@@ -16,7 +18,8 @@
  * This class is used in VhdlComponentInstance to store a mapped port and the 
  * boundaries of the mapping.
  */
-class VhdlPortMap  {
+class VhdlPortMap  : public VhdlTypedObject
+{
 
 public:
 
@@ -95,6 +98,8 @@ public:
 
 private:
 	
+    //QString getReplacedName(QString nameToBeReplaced) const;
+
 	//! \brief The name of the port for the port map
 	QString name_;
 

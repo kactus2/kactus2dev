@@ -444,7 +444,7 @@ void VhdlGenerator2::parseTopGenerics() {
 	QList<QSharedPointer<ModelParameter> > modelParams = component_->getModelParameters();
 	foreach (QSharedPointer<ModelParameter> modelParam, modelParams) {
 		QString name = modelParam->getName();
-		QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(modelParam.data(), this));
+		QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(modelParam.data()));
 
 		topGenerics_.insert(name, generic);
 	}
@@ -462,7 +462,7 @@ void VhdlGenerator2::parseTopPorts() {
 		}
 
 		// create the actual port
-		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(port.data(), this));
+		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(port.data()));
 
 		// create the sorter instance
 		VhdlPortSorter sorter(component_->getInterfaceNameForPort(vhdlPort->name()),
@@ -512,7 +512,7 @@ void VhdlGenerator2::parseInstances() {
 			QSharedPointer<Component> component = libComp.staticCast<Component>();
 			Q_ASSERT(component);
 			compDeclaration = QSharedPointer<VhdlComponentDeclaration>(
-				new VhdlComponentDeclaration(component, this));
+				new VhdlComponentDeclaration(component));
 
 			components_.insert(instance.getComponentRef(), compDeclaration);
 		}
@@ -784,8 +784,7 @@ void VhdlGenerator2::connectPorts(const QString& connectionName,
 	}
 	// if signal was not found then create a new one 
 	if (!signal) {
-		signal = QSharedPointer<VhdlSignal>(new VhdlSignal(this, connectionName,
-			type, left, right, description));
+		signal = QSharedPointer<VhdlSignal>(new VhdlSignal(connectionName, type, left, right, description));
 		signal->setBounds(left, right);
 	}
 

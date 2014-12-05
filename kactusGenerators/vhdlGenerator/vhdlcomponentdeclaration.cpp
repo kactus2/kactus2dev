@@ -12,8 +12,8 @@
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
-VhdlComponentDeclaration::VhdlComponentDeclaration(QSharedPointer<Component> component, QObject* parent):
-QObject(parent),
+VhdlComponentDeclaration::VhdlComponentDeclaration(QSharedPointer<Component> component):
+VhdlObject(component->getVlnv()->getName(), ""),
 component_(component),
 typeName_(component->getVlnv()->getName()),
 generics_(),
@@ -25,7 +25,7 @@ instantations_()
 	// parse the generics for the component declaration
 	QList<QSharedPointer<ModelParameter> > modelParams = component_->getModelParameters();
 	foreach (QSharedPointer<ModelParameter> modelParam, modelParams) {
-		QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(modelParam.data(), this));
+		QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(modelParam.data() ));
 		generics_.insert(generic->name(), generic);
 	}
 
@@ -40,7 +40,7 @@ instantations_()
 		}
 
 		// create the actual port
-		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(port.data(), this));
+		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(port.data() ));
 
 		// create the sorter instance
 		VhdlPortSorter sorter(component_->getInterfaceNameForPort(vhdlPort->name()),
@@ -62,7 +62,7 @@ void VhdlComponentDeclaration::write( QTextStream& stream ) const {
 		VhdlGeneral::writeDescription(description(), stream, QString("  "));
 	}
 	stream << "  " << "-- IP-XACT VLNV: " << component_->getVlnv()->toString() << endl;
-	stream << "  " << "component " << typeName_ << endl;
+    stream << "  " << "component " << getVhdlLegalName() << endl;
 
 	// write the generic declarations
 	if (!generics_.isEmpty()) {
@@ -228,4 +228,4 @@ int VhdlComponentDeclaration::getPortPhysLeftBound( const QString& portName ) co
 
 int VhdlComponentDeclaration::getPortPhysRightBound( const QString& portName ) const {
 	return component_->getPortRightBound(portName);
-}	
+}

@@ -8,7 +8,7 @@
 #ifndef VHDLPORT_H
 #define VHDLPORT_H
 
-#include "vhdlobject.h"
+#include "VhdlTypedObject.h"
 #include "vhdlportsorter.h"
 
 class Port;
@@ -18,8 +18,8 @@ class Port;
  * VhdlPort is used within top component entity and component declarations
  * to print the declaration for one port.
  */
-class VhdlPort : public VhdlObject {
-	Q_OBJECT
+class VhdlPort : public VhdlTypedObject
+{
 
 public:
 
@@ -29,7 +29,7 @@ public:
      * \param parent Pointer to the owner of this port.
 	 *
 	*/
-	VhdlPort(Port* port, QObject* parent = 0);
+	VhdlPort(Port* port);
 	
 	//! \brief The destructor
 	virtual ~VhdlPort();
@@ -83,22 +83,22 @@ public:
 	static bool hasRealPorts(const QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >& ports);
 
 private:
-	//! \brief No copying
+	//! No copying
 	VhdlPort(const VhdlPort& other);
 
-	//! \brief No assignment
+	//! No assignment
 	VhdlPort& operator=(const VhdlPort& other);
 
-	//! \brief The direction of the port.
+	//! The direction of the port.
 	General::Direction direction_;
 
-	//! \brief The left bound of the port.
+	//! The left bound of the port.
 	int left_;
 
-	//! \brief The right bound of the port.
+	//! The right bound of the port.
 	int right_;
 
-	//! \brief If true then the port is commented out when printed to text stream
+	//! If true then the port is commented out when printed to text stream
 	bool commentOut_;
 };
 

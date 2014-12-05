@@ -8,10 +8,10 @@
 #ifndef VHDLSIGNAL_H
 #define VHDLSIGNAL_H
 
-#include "vhdlobject.h"
+#include "VhdlTypedObject.h"
 
-class VhdlSignal : public VhdlObject {
-	Q_OBJECT
+class VhdlSignal : public VhdlTypedObject
+{
 
 public:
 
@@ -26,8 +26,7 @@ public:
 	 * \param defaultValue The default value for the signal.
 	 *
 	*/
-	VhdlSignal(QObject* parent, 
-		const QString& name = QString(),
+	VhdlSignal(const QString& name = QString(),
 		const QString& signalType = QString(),
 		int leftBound = -1,
 		int rightBound = -1,
@@ -82,16 +81,16 @@ public:
 	void setBounds(int left, int right);
 
 private:
-	//! \brief No copying
+	//! No copying
 	VhdlSignal(const VhdlSignal& other);
 
-	//! \brief No assignment
+	//! No assignment
 	VhdlSignal& operator=(const VhdlSignal& other);
 
-	//! \brief The left bound of the signal.
+	//! The left bound of the signal.
 	int left_;
 
-	//! \brief The right bound of the signal.
+	//! The right bound of the signal.
 	int right_;
 };
 
