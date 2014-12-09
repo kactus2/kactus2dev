@@ -218,6 +218,22 @@ void Parameter::setValueFormat(QString const& format)
 }
 
 //-----------------------------------------------------------------------------
+// Function: parameter::getType()
+//-----------------------------------------------------------------------------
+QString Parameter::getType() const
+{
+    return attributes_.value("type");
+}
+
+//-----------------------------------------------------------------------------
+// Function: parameter::setType()
+//-----------------------------------------------------------------------------
+void Parameter::setType(QString const& type)
+{
+    setAttribute("type", type);
+}
+
+//-----------------------------------------------------------------------------
 // Function: Parameter::getBitStringLength()
 //-----------------------------------------------------------------------------
 QString Parameter::getBitStringLength() const
@@ -234,11 +250,27 @@ void Parameter::setBitStringLength(QString const& length)
 }
 
 //-----------------------------------------------------------------------------
+// Function: parameter::getBitWidth()
+//-----------------------------------------------------------------------------
+QString Parameter::getBitWidth() const
+{
+    return attributes_.value("kactus2:bitWidth");
+}
+
+//-----------------------------------------------------------------------------
+// Function: parameter::setBitWidth()
+//-----------------------------------------------------------------------------
+void Parameter::setBitWidth(QString const& length)
+{
+    setAttribute("kactus2:bitWidth", length);
+}
+
+//-----------------------------------------------------------------------------
 // Function: Parameter::getMinimumValue()
 //-----------------------------------------------------------------------------
 QString Parameter::getMinimumValue() const
 {
-    return valueAttributes_.value("spirit:minimum");
+    return attributes_.value("minimum");
 }
 
 //-----------------------------------------------------------------------------
@@ -246,7 +278,7 @@ QString Parameter::getMinimumValue() const
 //-----------------------------------------------------------------------------
 void Parameter::setMinimumValue(QString const& minimum)
 {
-    setValueAttribute("spirit:minimum", minimum);
+    setAttribute("minimum", minimum);
 }
 
 //-----------------------------------------------------------------------------
@@ -254,15 +286,15 @@ void Parameter::setMinimumValue(QString const& minimum)
 //-----------------------------------------------------------------------------
 QString Parameter::getMaximumValue() const
 {
-    return valueAttributes_.value("spirit:maximum");
+    return attributes_.value("maximum");
 }
 
 //-----------------------------------------------------------------------------
-// Function: Parameter::setMinimumValue()
+// Function: Parameter::setMaximumValue()
 //-----------------------------------------------------------------------------
 void Parameter::setMaximumValue(QString const& maximum)
 {
-    setValueAttribute("spirit:maximum", maximum);
+    setAttribute("maximum", maximum);
 }
 
 //-----------------------------------------------------------------------------

@@ -136,12 +136,12 @@ bool ParameterValidator::hasValidBitStringLength(Parameter const* parameter) con
 //-----------------------------------------------------------------------------
 bool ParameterValidator::hasValidMinimumValue(Parameter const* parameter) const
 {
-    if (!shouldCompareValueAndBoundary(parameter->getMinimumValue(), parameter->getValueFormat()))
+    if (!shouldCompareValueAndBoundary(parameter->getValueAttribute("spirit:minimum"), parameter->getValueFormat()))
     {
         return true;
     }
 
-    return hasValidValueForFormat(parameter->getMinimumValue(), parameter->getValueFormat());
+    return hasValidValueForFormat(parameter->getValueAttribute("spirit:minimum"), parameter->getValueFormat());
 }
 
 //-----------------------------------------------------------------------------
@@ -149,12 +149,12 @@ bool ParameterValidator::hasValidMinimumValue(Parameter const* parameter) const
 //-----------------------------------------------------------------------------
 bool ParameterValidator::hasValidMaximumValue(Parameter const* parameter) const
 {
-    if (!shouldCompareValueAndBoundary(parameter->getMaximumValue(), parameter->getValueFormat()))
+    if (!shouldCompareValueAndBoundary(parameter->getValueAttribute("spirit:maximum"), parameter->getValueFormat()))
     {
         return true;
     }
 
-    return hasValidValueForFormat(parameter->getMaximumValue(), parameter->getValueFormat());
+    return hasValidValueForFormat(parameter->getValueAttribute("spirit:maximum"), parameter->getValueFormat());
 }
 
 //-----------------------------------------------------------------------------
@@ -162,7 +162,7 @@ bool ParameterValidator::hasValidMaximumValue(Parameter const* parameter) const
 //-----------------------------------------------------------------------------
 bool ParameterValidator::valueIsLessThanMinimum(Parameter const* parameter) const
 {
-    QString minimum = parameter->getMinimumValue();
+    QString minimum = parameter->getValueAttribute("spirit:minimum");
     QString format = parameter->getValueFormat();
     QString value = parameter->getValue();
 
@@ -174,7 +174,7 @@ bool ParameterValidator::valueIsLessThanMinimum(Parameter const* parameter) cons
 //-----------------------------------------------------------------------------
 bool ParameterValidator::valueIsGreaterThanMaximum(Parameter const* parameter) const
 {
-    QString maximum = parameter->getMaximumValue();
+    QString maximum = parameter->getValueAttribute("spirit:maximum");
     QString format = parameter->getValueFormat();
     QString value = parameter->getValue();
 
@@ -384,15 +384,15 @@ QStringList ParameterValidator::findErrorsInValue(Parameter const* parameter, QS
         if (valueIsLessThanMinimum(parameter))
         {
             valueErrors.append(QObject::tr("Value %1 violates minimum value %2 in %3 %4 within %5"
-                ).arg(parameter->getValue(), parameter->getMinimumValue(), parameter->elementName(), 
-                parameter->getName(), context));
+                ).arg(parameter->getValue(), parameter->getValueAttribute("spirit:minimum"), 
+                parameter->elementName(), parameter->getName(), context));
         }
 
         if (valueIsGreaterThanMaximum(parameter))
         {
             valueErrors.append(QObject::tr("Value %1 violates maximum value %2 in %3 %4 within %5"
-                ).arg(parameter->getValue(), parameter->getMaximumValue(), parameter->elementName(), 
-                parameter->getName(), context));
+                ).arg(parameter->getValue(), parameter->getValueAttribute("spirit:maximum"), 
+                parameter->elementName(), parameter->getName(), context));
         }
 
         if (!hasValidValueForChoice(parameter, availableChoices))
@@ -452,11 +452,11 @@ QStringList ParameterValidator::findErrorsInMinimumValue(Parameter const* parame
 {
     QStringList minimumErrors;
 
-    if (shouldCompareValueAndBoundary(parameter->getMinimumValue(), parameter->getValueFormat()) &&
-        !hasValidValueForFormat(parameter->getMinimumValue(), parameter->getValueFormat()))
+    if (shouldCompareValueAndBoundary(parameter->getValueAttribute("spirit:minimum"), parameter->getValueFormat()) 
+        && !hasValidValueForFormat(parameter->getValueAttribute("spirit:minimum"), parameter->getValueFormat()))
     {
         minimumErrors.append(QObject::tr("Minimum value %1 is not valid for format %2 in %3 %4 within %5").arg(
-            parameter->getMinimumValue(), parameter->getValueFormat(),parameter->elementName(),
+            parameter->getValueAttribute("spirit:minimum"), parameter->getValueFormat(),parameter->elementName(),
             parameter->getName(), context));
     }
 
@@ -470,11 +470,11 @@ QStringList ParameterValidator::findErrorsInMaximumValue(Parameter const* parame
 {
     QStringList maximumErrors;
 
-    if (shouldCompareValueAndBoundary(parameter->getMaximumValue(), parameter->getValueFormat()) &&
-        !hasValidValueForFormat(parameter->getMaximumValue(), parameter->getValueFormat()))
+    if (shouldCompareValueAndBoundary(parameter->getValueAttribute("spirit:maximum"), parameter->getValueFormat()) 
+        && !hasValidValueForFormat(parameter->getValueAttribute("spirit:maximum"), parameter->getValueFormat()))
     {
         maximumErrors.append(QObject::tr("Maximum value %1 is not valid for format %2 in %3 %4 within %5").arg(
-            parameter->getMaximumValue(), parameter->getValueFormat(),parameter->elementName(),
+            parameter->getValueAttribute("spirit:maximum"), parameter->getValueFormat(),parameter->elementName(),
             parameter->getName(), context));
     }
 

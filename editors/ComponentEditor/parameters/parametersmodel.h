@@ -111,14 +111,14 @@ protected:
      *
      *      @return The column for editing format selection.
      */
-    virtual int formatColumn() const;
+    virtual int typeColumn() const;
         
     /*!
      *  Gets the column for value bit string length.
      *
      *      @return The column for editing bit string length.
      */
-    virtual int bitwidthColumn() const;
+    virtual int bitWidthColumn() const;
 
     /*!
      *  Gets the column for minimum value.

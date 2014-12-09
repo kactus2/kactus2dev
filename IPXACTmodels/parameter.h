@@ -137,6 +137,18 @@ public:
     void setValueFormat(QString const& format);
 
     /*!
+     *  Gets the IP-Xact format type.
+     */
+    QString getType() const;
+
+    /*!
+     *  Sets the IP-Xact format type.
+     *
+     *      @param [in] type   The format type.
+     */
+    void setType(QString const& type);
+
+    /*!
      *  Gets the length of the bit string for storing the parameter value.
      *
      *      @return The length of the bit string.
@@ -149,6 +161,18 @@ public:
      *      @param [in] length   The bit string length for the parameter value.
      */
     void setBitStringLength(QString const& length);
+
+    /*!
+     *  Gets the length of the bit string for storing in kactus2:bitStringLength.
+     */
+    QString getBitWidth() const;
+
+    /*!
+     *  Sets the length of the bit string for storing int kactus2:bitStringLength.
+     *
+     *      @param [in] length   The bit string length for the parameter value.
+     */
+    void setBitWidth(QString const& length);
 
     /*!
      *  Gets the minimum value for the parameter value.

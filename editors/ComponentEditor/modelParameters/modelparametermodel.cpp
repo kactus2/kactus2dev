@@ -290,17 +290,17 @@ int ModelParameterModel::displayNameColumn() const
 //-----------------------------------------------------------------------------
 // Function: ModelParameterModel::formatColumn()
 //-----------------------------------------------------------------------------
-int ModelParameterModel::formatColumn() const
+int ModelParameterModel::typeColumn() const
 {
-    return ModelParameterColumns::FORMAT;
+    return ModelParameterColumns::TYPE;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ModelParameterModel::bitwidthColumn()
 //-----------------------------------------------------------------------------
-int ModelParameterModel::bitwidthColumn() const
+int ModelParameterModel::bitWidthColumn() const
 {
-    return ModelParameterColumns::BITSTRINGLENGTH;
+    return ModelParameterColumns::BITWIDTH;
 }
 
 //-----------------------------------------------------------------------------

@@ -69,7 +69,7 @@ int ModelParameterDelegate::choiceColumn() const
 //-----------------------------------------------------------------------------
 int ModelParameterDelegate::formatColumn() const
 {
-    return ModelParameterColumns::FORMAT;
+    return ModelParameterColumns::TYPE;
 }
 
 //-----------------------------------------------------------------------------
@@ -77,7 +77,7 @@ int ModelParameterDelegate::formatColumn() const
 //-----------------------------------------------------------------------------
 int ModelParameterDelegate::bitwidthColumn() const
 {
-    return ModelParameterColumns::BITSTRINGLENGTH;
+    return ModelParameterColumns::BITWIDTH;
 }
 
 //-----------------------------------------------------------------------------

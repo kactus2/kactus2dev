@@ -52,10 +52,6 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     {
         return createEnumerationSelector(parent, index);
     }
-    else if (index.column() == valueColumn() && formatOnRow(index) == "bool")
-    {
-        return createBooleanSelector(parent);
-    }
     else if (index.column() == formatColumn()) 
     {
         return createFormatSelector(parent);
@@ -63,10 +59,6 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     else if (index.column() == bitwidthColumn()) 
     {
         return createNumberEditor(parent, option, index);
-    }
-    else if (index.column() == valueColumn() && !formatOnRow(index).isEmpty())
-    {
-        return createEditorUsingFormat(parent, option, index);
     }
     else if (index.column() == minimumColumn())
     {
@@ -166,7 +158,7 @@ int ParameterDelegate::choiceColumn() const
 //-----------------------------------------------------------------------------
 int ParameterDelegate::formatColumn() const
 {
-    return ParameterColumns::FORMAT;
+    return ParameterColumns::TYPE;
 }
 
 //-----------------------------------------------------------------------------
@@ -174,7 +166,7 @@ int ParameterDelegate::formatColumn() const
 //-----------------------------------------------------------------------------
 int ParameterDelegate::bitwidthColumn() const
 {
-    return ParameterColumns::BITSTRINGLENGTH;
+    return ParameterColumns::BITWIDTH;
 }
 
 //-----------------------------------------------------------------------------
@@ -251,27 +243,19 @@ QString ParameterDelegate::formatOnRow(QModelIndex const &index) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterDelegate::createBooleanSelector()
-//-----------------------------------------------------------------------------
-QWidget* ParameterDelegate::createBooleanSelector(QWidget* parent) const
-{
-    QComboBox* combo = new QComboBox(parent);
-    combo->addItem(QString("true"));
-    combo->addItem(QString("false"));
-    return combo;
-}
-
-//-----------------------------------------------------------------------------
 // Function: ParameterDelegate::createFormatEditor()
 //-----------------------------------------------------------------------------
 QWidget* ParameterDelegate::createFormatSelector(QWidget* parent) const
 {
     QComboBox* combo = new QComboBox(parent);
     combo->addItem(QString(""));
-    combo->addItem(QString("bitString"));
-    combo->addItem(QString("bool"));
-    combo->addItem(QString("float"));
-    combo->addItem(QString("long"));
+    combo->addItem(QString("bit"));
+    combo->addItem(QString("byte"));
+    combo->addItem(QString("shortint"));
+    combo->addItem(QString("int"));
+    combo->addItem(QString("longint"));
+    combo->addItem(QString("shortreal"));
+    combo->addItem(QString("real"));
     combo->addItem(QString("string"));
     return combo;
 }

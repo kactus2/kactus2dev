@@ -151,15 +151,6 @@ protected:
     QWidget* createEnumerationSelector(QWidget* parent, QModelIndex const& index) const;
     
     /*!
-     *  Creates an editor for selecting a boolean value.
-     *
-     *      @param [in] parent   The parent widget for the editor.
-     *
-     *      @return An editor for selecting a boolean value.
-     */
-    QWidget* createBooleanSelector(QWidget* parent) const;
-    
-    /*!
      *  Creates an editor for selecting a format for parameter value.
      *
      *      @param [in] parent   The parent widget for the editor.

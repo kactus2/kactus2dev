@@ -144,17 +144,17 @@ int ParametersModel::choiceColumn() const
 //-----------------------------------------------------------------------------
 // Function: ParameterDelegate::formatColumn()
 //-----------------------------------------------------------------------------
-int ParametersModel::formatColumn() const
+int ParametersModel::typeColumn() const
 {
-    return ParameterColumns::FORMAT;
+    return ParameterColumns::TYPE;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ParameterDelegate::bitwidthColumn()
 //-----------------------------------------------------------------------------
-int ParametersModel::bitwidthColumn() const
+int ParametersModel::bitWidthColumn() const
 {
-    return ParameterColumns::BITSTRINGLENGTH;
+    return ParameterColumns::BITWIDTH;
 }
 
 //-----------------------------------------------------------------------------

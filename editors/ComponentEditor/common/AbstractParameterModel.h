@@ -133,32 +133,32 @@ protected:
     virtual QSharedPointer<Parameter> getParameterOnRow(int row) const = 0;
 
     /*!
-     *  Gets the column for value format.
+     *  Gets the column for name.
      *
-     *      @return The column for editing format selection.
+     *      @return The column for editing name selection.
      */
     virtual int nameColumn() const = 0;
         
     /*!
-     *  Gets the column for value format.
+     *  Gets the column for display name.
      *
-     *      @return The column for editing format selection.
+     *      @return The column for editing display name selection.
      */
     virtual int displayNameColumn() const = 0;
 
     /*!
-     *  Gets the column for value format.
+     *  Gets the column for value type.
      *
-     *      @return The column for editing format selection.
+     *      @return The column for editing type selection.
      */
-    virtual int formatColumn() const = 0;
+    virtual int typeColumn() const = 0;
         
     /*!
      *  Gets the column for value bit string length.
      *
      *      @return The column for editing bit string length.
      */
-    virtual int bitwidthColumn() const = 0;
+    virtual int bitWidthColumn() const = 0;
 
     /*!
      *  Gets the column for minimum value.

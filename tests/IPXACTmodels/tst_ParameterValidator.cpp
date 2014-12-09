@@ -348,7 +348,7 @@ void tst_ParameterValidator::testMinimumValueNotCheckedForEmptyBoolOrStringForma
     QFETCH(QString, format);
 
     Parameter* parameter = createParameterWithName();
-    parameter->setMinimumValue("100");
+    parameter->setValueAttribute("spirit:minimum", "100");
 
     parameter->setValueFormat(format);
 
@@ -383,7 +383,7 @@ void tst_ParameterValidator::testMinimumValueIsValidForGivenFormat()
     parameter->setValue("1000000000");
 
     parameter->setValueFormat(format);
-    parameter->setMinimumValue(boundary);
+    parameter->setValueAttribute("spirit:minimum", boundary);
 
     QStringList errorList;
     ParameterValidator validator;
@@ -495,7 +495,7 @@ void tst_ParameterValidator::testValidityWithMinimumValueAndFormat(QString const
 
     Parameter* parameter = createParameterWithName();
     parameter->setValueFormat(format);
-    parameter->setMinimumValue(boundary);
+    parameter->setValueAttribute("spirit:minimum", boundary);
     parameter->setValue(value);
 
     QStringList errorList;
@@ -625,7 +625,7 @@ void tst_ParameterValidator::testMaximumValueIsValidForGivenFormat()
     parameter->setValue("0");
 
     parameter->setValueFormat(format);
-    parameter->setMaximumValue(boundary);
+    parameter->setValueAttribute("spirit:maximum", boundary);
 
     QStringList errorList;
     QString identifier = "testMaximumValueIsValidForGivenFormat";
@@ -740,7 +740,7 @@ void tst_ParameterValidator::testValidityWithMaximumValueAndFormat(QString const
 
     Parameter* parameter = createParameterWithName();
     parameter->setValueFormat(format);
-    parameter->setMaximumValue(boundary);
+    parameter->setValueAttribute("spirit:maximum", boundary);
     parameter->setValue(value);
 
     QStringList errorList;

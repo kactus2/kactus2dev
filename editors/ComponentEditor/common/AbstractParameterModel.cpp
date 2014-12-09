@@ -59,13 +59,13 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
         {
             return parameter->getDisplayName();
         }
-        else if (index.column() == formatColumn())
+        else if (index.column() == typeColumn())
         {
-            return parameter->getValueFormat();
+            return parameter->getType();
         }
-        else if (index.column() == bitwidthColumn())
+        else if (index.column() == bitWidthColumn())
         {
-            return parameter->getBitStringLength();
+            return parameter->getBitWidth();
         }
         else if (index.column() == minimumColumn())
         {
@@ -111,20 +111,8 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
         {
             return QColor("lemonChiffon");
         }
-        else if (index.column() == bitwidthColumn())
-        {
-            if (parameter->getValueFormat() == "bitString")
-            {
-                return QColor("lemonChiffon");
-            }
-            else
-            {
-                return QColor("whiteSmoke");
-            }
-        }
         else if ((index.column() == minimumColumn() || index.column() == maximumColumn()) &&
-            (parameter->getValueFormat() != "float" && parameter->getValueFormat() != "long" && 
-             parameter->getValueFormat() != "bitString"))
+            (parameter->getType() == "bit" || parameter->getType() == "string"))
         {
             return QColor("whiteSmoke");
         }
@@ -170,13 +158,13 @@ QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orienta
         {
             return tr("Display\nname");
         }
-        else if (section == formatColumn())
+        else if (section == typeColumn())
         {
-            return tr("Format");   
+            return tr("Type");   
         }
-        else if (section == bitwidthColumn())
+        else if (section == bitWidthColumn())
         {
-            return tr("Bit string\nlength");   
+            return tr("Bit width");   
         }
         else if (section == minimumColumn())
         {
@@ -245,13 +233,13 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
         {
             parameter->setDisplayName(value.toString());
         }
-        else if (index.column() == formatColumn())
+        else if (index.column() == typeColumn())
         {
-            parameter->setValueFormat(value.toString());
+            parameter->setType(value.toString());
         }
-        else if (index.column() == bitwidthColumn())
+        else if (index.column() == bitWidthColumn())
         {
-            parameter->setBitStringLength(value.toString());
+            parameter->setBitWidth(value.toString());
         }
         else if (index.column() == minimumColumn())
         {
@@ -421,15 +409,13 @@ bool AbstractParameterModel::validateColumnForParameter(int column, QSharedPoint
     {
         return validator.hasValidName(parameter.data());
     }
-    else if (column == formatColumn())
+    else if (column == typeColumn())
     {
-        return validator.hasValidFormat(parameter.data()) &&
-            validator.hasValidBitStringLength(parameter.data()) &&
-            validator.hasValidValueForFormat(parameter->getValue(), parameter->getValueFormat());
+        return true;
     }
-    else if (column == bitwidthColumn())
+    else if (column == bitWidthColumn())
     {
-        return validator.hasValidBitStringLength(parameter.data());
+        return true;
     }
     else if (column == minimumColumn())
     {
