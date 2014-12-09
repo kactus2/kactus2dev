@@ -9,15 +9,21 @@
 
 #include <editors/ComponentEditor/parameters/ParameterDelegate.h>
 
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+
+#include <IPXACTmodels/component.h>
+
 #include <QVBoxLayout>
 
 ParameterGroupBox::ParameterGroupBox(QList<QSharedPointer<Parameter> >& parameters,
-                                     QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+                                     QSharedPointer<Component> component,
 									 QWidget *parent):
 QGroupBox(tr("Parameters"), parent),
 view_(this), 
-model_(parameters, choices, this),
-proxy_(this) {
+model_(parameters, component->getChoices(),
+    QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(component)), this),
+proxy_(this)
+{
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -39,7 +45,7 @@ proxy_(this) {
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 
-	view_.setItemDelegate(new ParameterDelegate(choices, this));
+	view_.setItemDelegate(new ParameterDelegate(component->getChoices(), this));
 
 	// set source model for proxy
 	proxy_.setSourceModel(&model_);

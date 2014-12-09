@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include "IPXactValueParser.h"
+
 #include <QList>
 #include <QString>
 #include <QSharedPointer>
@@ -214,24 +216,6 @@ private:
      *      @return The evaluated value.
      */
     qreal valueOf(QString const& value, QString const& format) const;
-    
-    /*!
-     *  Evaluates the value of the given value using format long.
-     *
-     *      @param [in] value   The value to evaluate.
-     *
-     *      @return The evaluated value.
-     */
-    qreal longValueOf(QString const& value) const;
-    
-    /*!
-     *  Evaluates the value of the given value using format float.
-     *
-     *      @param [in] value   The value to evaluate.
-     *
-     *      @return The evaluated value.
-     */
-    qreal floatValueOf(QString const& value) const;
         
     /*!
      *  Finds possible errors in a parameter name.
@@ -336,7 +320,12 @@ private:
     QSharedPointer<Choice> findChoiceByName(QString const& choiceName, 
         QSharedPointer<QList<QSharedPointer<Choice> > > choices) const;
 
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
+    //! Parser for resolving the parameter value, minumum and maximum.
+    IPXactValueParser valueParser_;
 };
 
 #endif // PARAMETERVALIDATOR_H

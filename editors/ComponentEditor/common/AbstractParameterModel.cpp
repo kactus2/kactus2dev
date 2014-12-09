@@ -17,14 +17,16 @@
 
 #include <IPXACTmodels/validators/ParameterValidator.h>
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <QColor>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::AbstractParameterModel()
 //-----------------------------------------------------------------------------
 AbstractParameterModel::AbstractParameterModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-    QObject *parent): 
-QAbstractTableModel(parent), choices_(choices)
+    QSharedPointer<ExpressionParser> expressionParser, QObject *parent): 
+QAbstractTableModel(parent), choices_(choices), expressionParser_(expressionParser)
 {
 
 }
@@ -49,7 +51,7 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
 
     QSharedPointer<Parameter> parameter = getParameterOnRow(index.row());
 
-    if (role == Qt::DisplayRole)
+    if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
         if (index.column() == nameColumn())
         {
@@ -81,7 +83,14 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
         }
         else if (index.column() == valueColumn())
         {
-            return evaluateValueFor(parameter);
+            if (role == Qt::EditRole && !parameter->getValueAttribute("kactus2:expr").isEmpty())
+            {
+                return parameter->getValueAttribute("kactus2:expr");
+            }
+            else
+            {
+                return evaluateValueFor(parameter);
+            }
         }
         else if (index.column() == resolveColumn())
         {
@@ -132,9 +141,7 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
             return QColor("red");
         }
     }
-
-	// if unsupported role
-	else 
+	else // if unsupported role
     {
 		return QVariant();
 	}
@@ -256,6 +263,17 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
         else if (index.column() == valueColumn())
         {
             parameter->setValue(value.toString());
+
+            if (parameter->getChoiceRef().isEmpty() && expressionParser_->isValidExpression(value.toString()))
+            {
+                parameter->setValueAttribute("kactus2:expr", value.toString());
+            }
+            else
+            {
+                parameter->setValueAttribute("kactus2:expr", "");
+            }
+
+            updateReferencingValues();
         }
         else if (index.column() == resolveColumn())
         {
@@ -354,14 +372,25 @@ bool AbstractParameterModel::isValid(QStringList& errorList, QString const& pare
 //-----------------------------------------------------------------------------
 QString AbstractParameterModel::evaluateValueFor(QSharedPointer<Parameter> parameter) const
 {
-    if (parameter->getChoiceRef().isEmpty())
-    {
-        return parameter->getValue();
-    }
-    else
+    if (!parameter->getChoiceRef().isEmpty())
     {
         QSharedPointer<Choice> choice = findChoice(parameter->getChoiceRef());
         return findDisplayValueForEnumeration(choice, parameter->getValue());
+    }
+    else if (!parameter->getValueAttribute("kactus2:expr").isEmpty())
+    {
+        if (expressionParser_->isValidExpression(parameter->getValueAttribute("kactus2:expr")))
+        {
+            return expressionParser_->parseExpression(parameter->getValueAttribute("kactus2:expr"));
+        }
+        else
+        {
+            return "n/a";
+        }
+    }
+    else
+    {
+        return parameter->getValue();
     }
 }
 
@@ -442,4 +471,26 @@ bool AbstractParameterModel::validateColumnForParameter(int column, QSharedPoint
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractParameterModel::updateReferencingValues()
+//-----------------------------------------------------------------------------
+void AbstractParameterModel::updateReferencingValues()
+{
+    for (int i = 0; i < rowCount(); i++)
+    {
+        QSharedPointer<Parameter> parameter = getParameterOnRow(i);
+
+        QString oldValue = parameter->getValue();
+        QString newValue = evaluateValueFor(parameter);
+        if (oldValue != newValue && parameter->getChoiceRef().isEmpty())
+        {
+            parameter->setValue(newValue);
+
+            QModelIndex changedValueIndex = createIndex(i, valueColumn(), (void*)parameter.data());
+            emit dataChanged(changedValueIndex, changedValueIndex);
+            emit contentChanged();
+        }
+    }
 }

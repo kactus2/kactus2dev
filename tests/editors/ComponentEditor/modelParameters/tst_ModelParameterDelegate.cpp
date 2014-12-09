@@ -23,6 +23,7 @@
 #include <editors/ComponentEditor/modelParameters/ModelParameterDelegate.h>
 #include <editors/ComponentEditor/modelParameters/modelparametermodel.h>
 #include <editors/ComponentEditor/modelParameters/ModelParameterColumns.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <IPXACTmodels/choice.h>
 #include <IPXACTmodels/Enumeration.h>
@@ -43,20 +44,10 @@ private slots:
 
     void testUsageIsSelectedFromPredifinedValues();
     void testResolveIsSelectedFromPredifinedValues();
-    void testFormatIsSelectedFromPredifinedValues();
+    void testTypeIsSelectedFromPredifinedValues();
     void testChoiceIsSelectedFromChoiceNames();
     void testValueIsSelectedUsingChoiceEnumerations();
-    void testValueIsSelectedUsingBoolFormat();
     void testValueIsSelectedUsingChoiceEnumerationsIfFormatSelected();
-
-    void testValueEditingForBitStringFormat();
-    void testValueEditingForBitStringFormat_data();
-
-    void testValueEditingForLongFormat();
-    void testValueEditingForLongFormat_data();
-
-    void testValueEditingForFloatFormat();
-    void testValueEditingForFloatFormat_data();
 
     void testMinimumEditingForBitStringFormat();
     void testMinimumEditingForBitStringFormat_data();
@@ -88,7 +79,7 @@ private:
 
     QSharedPointer<Enumeration> createEnumeration(QString const& value, QString const& text) const;
 
-    void setFormat(QString const& format);
+    void setType(QString const& format);
 
     void testValueForEditingForFormat(QString const& format);
 
@@ -98,6 +89,12 @@ private:
 
     void testKeyInputForColumn(int column);
    
+    void bitStringFormatTestData();
+
+    void longFormatTestData();
+
+    void floatFormatTestData();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -169,21 +166,24 @@ void tst_ModelParameterDelegate::testResolveIsSelectedFromPredifinedValues()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ModelParameterDelegate::testFormatIsSelectedFromPredifinedValues()
+// Function: tst_ModelParameterDelegate::testTypeIsSelectedFromPredifinedValues()
 //-----------------------------------------------------------------------------
-void tst_ModelParameterDelegate::testFormatIsSelectedFromPredifinedValues()
+void tst_ModelParameterDelegate::testTypeIsSelectedFromPredifinedValues()
 {
-    QWidget* editor = createEditorForColumn(ModelParameterColumns::FORMAT);
+    QWidget* editor = createEditorForColumn(ModelParameterColumns::TYPE);
 
     QComboBox* formatSelector = qobject_cast<QComboBox*>(editor);
 
     QVERIFY2(formatSelector != 0, "Expected combo box for selecting format.");
 
     QVERIFY2(formatSelector->findText("") != -1, "Expected combo box to have selection for empty format.");
-    QVERIFY2(formatSelector->findText("bitString") != -1, "Expected combo box to have selection for bitString.");
-    QVERIFY2(formatSelector->findText("bool") != -1, "Expected combo box to have selection for bool.");
-    QVERIFY2(formatSelector->findText("float") != -1, "Expected combo box to have selection for float.");
-    QVERIFY2(formatSelector->findText("long") != -1, "Expected combo box to have selection for long.");
+    QVERIFY2(formatSelector->findText("bit") != -1, "Expected combo box to have selection for bit.");
+    QVERIFY2(formatSelector->findText("byte") != -1, "Expected combo box to have selection for byte.");
+    QVERIFY2(formatSelector->findText("shortint") != -1, "Expected combo box to have selection for shortint.");
+    QVERIFY2(formatSelector->findText("int") != -1, "Expected combo box to have selection for int.");
+    QVERIFY2(formatSelector->findText("longint") != -1, "Expected combo box to have selection for longint.");
+    QVERIFY2(formatSelector->findText("shortreal") != -1, "Expected combo box to have selection for shortreal.");
+    QVERIFY2(formatSelector->findText("real") != -1, "Expected combo box to have selection for real.");
     QVERIFY2(formatSelector->findText("string") != -1, "Expected combo box to have selection for string.");
 }
 
@@ -231,46 +231,12 @@ void tst_ModelParameterDelegate::testValueIsSelectedUsingChoiceEnumerations()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ModelParameterDelegate::testValueIsSelectedUsingBoolFormat()
-//-----------------------------------------------------------------------------
-void tst_ModelParameterDelegate::testValueIsSelectedUsingBoolFormat()
-{
-    setFormat("bool");
-
-    QWidget* editor = createEditorForColumn(ModelParameterColumns::VALUE);
-
-    QComboBox* valueSelector = qobject_cast<QComboBox*>(editor);
-
-    QVERIFY2(valueSelector != 0, "Expected combo box for selecting value when using format bool.");
-
-    QVERIFY2(valueSelector->findText("true") != -1, "Expected combo box to have selection for true.");
-    QVERIFY2(valueSelector->findText("false") != -1, "Expected combo box to have selection for false.");
-}
-
-//-----------------------------------------------------------------------------
 // Function: tst_ModelParameterDelegate::testValueIsSelectedUsingChoiceEnumerationsIfFormatSelected()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterDelegate::testValueIsSelectedUsingChoiceEnumerationsIfFormatSelected()
 {
-    setFormat("bool");
+    setType("bool");
     testValueIsSelectedUsingChoiceEnumerations();
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ModelParameterDelegate::testValueEditingForBitStringFormat()
-//-----------------------------------------------------------------------------
-void tst_ModelParameterDelegate::testValueEditingForBitStringFormat()
-{
-    testValueForEditingForFormat("bitString");
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ModelParameterDelegate::testValueForEditingForFormat()
-//-----------------------------------------------------------------------------
-void tst_ModelParameterDelegate::testValueForEditingForFormat(QString const& format)
-{
-    setFormat(format);
-    testKeyInputForColumn(ModelParameterColumns::VALUE);
 }
 
 //-----------------------------------------------------------------------------
@@ -289,99 +255,6 @@ void tst_ModelParameterDelegate::testKeyInputForColumn(int column)
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ModelParameterDelegate::testValueEditingForBitStringFormat_data()
-//-----------------------------------------------------------------------------
-void tst_ModelParameterDelegate::testValueEditingForBitStringFormat_data()
-{
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QString>("expectedTextInEditor");
-
-    QTest::newRow("empty input") << "" << "";
-    QTest::newRow("single zero") << "0" << "0";
-    QTest::newRow("single number") << "9" << "";
-    QTest::newRow("single character") << "c" << "";
-    QTest::newRow("text") << "invalid input" << "";
-    QTest::newRow("zeros and ones") << "01010101" << "01010101";
-    QTest::newRow("zeros and other numbers") << "002003008" << "000000";
-    QTest::newRow("zeros and ones in double quotes") << "\"0011\"" << "\"0011\"";
-    QTest::newRow("zeros and ones missing first double quote") << "0011\"" << "0011";
-    QTest::newRow("zeros and ones missing last double quote") << "\"0011" << "\"0011";
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ModelParameterDelegate::testValueEditingForLongFormat()
-//-----------------------------------------------------------------------------
-void tst_ModelParameterDelegate::testValueEditingForLongFormat()
-{
-    testValueForEditingForFormat("long");
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ModelParameterDelegate::testValueEditingForBitStringFormat_data()
-//-----------------------------------------------------------------------------
-void tst_ModelParameterDelegate::testValueEditingForLongFormat_data()
-{
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QString>("expectedTextInEditor");
-
-    QTest::newRow("empty input") << "" << "";
-    QTest::newRow("single number") << "0" << "0";
-    QTest::newRow("negative number") << "-1" << "-1";
-    QTest::newRow("positive number") << "+1" << "+1";
-    QTest::newRow("long number") << "12345678910" << "12345678910";
-    QTest::newRow("expression") << "12+12" << "1212";
-
-    QTest::newRow("single hexadecimal character") << "A" << "A";
-    QTest::newRow("single non-hexadecimal character") << "z" << "";
-    QTest::newRow("only characters a-f are valid") << "nonsense" << "ee";
-    QTest::newRow("hexadecimal with preceding 0x") << "0xFFFF" << "0xFFFF";
-    QTest::newRow("hexadecimal with preceding 0X") << "0XAAAA" << "0XAAAA";
-    QTest::newRow("hexadecimal with invalid prefix") << "000x000" << "000000";
-    QTest::newRow("hexadecimal with preceding #") << "#010" << "#010";
-
-    QTest::newRow("number with magnitude suffix k") << "10k" << "10k";
-    QTest::newRow("number with magnitude suffix K") << "10K" << "10K";
-    QTest::newRow("number with magnitude suffix m") << "10m" << "10m";
-    QTest::newRow("number with magnitude suffix M") << "10M" << "10M";
-    QTest::newRow("number with magnitude suffix g") << "10g" << "10g";
-    QTest::newRow("number with magnitude suffix G") << "10G" << "10G";
-    QTest::newRow("number with magnitude suffix t") << "10t" << "10t";
-    QTest::newRow("number with magnitude suffix T") << "10T" << "10T";
-    QTest::newRow("number with invalid magnitude suffix") << "10Q" << "10";
-    QTest::newRow("number with multiple magnitude suffixes") << "10Mk" << "10M";
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ModelParameterDelegate::testValueEditingForFloatFormat()
-//-----------------------------------------------------------------------------
-void tst_ModelParameterDelegate::testValueEditingForFloatFormat()
-{
-    testValueForEditingForFormat("float");
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ModelParameterDelegate::testValueEditingForFloatFormat_data()
-//-----------------------------------------------------------------------------
-void tst_ModelParameterDelegate::testValueEditingForFloatFormat_data()
-{
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QString>("expectedTextInEditor");
-
-    QTest::newRow("empty input") << "" << "";
-    QTest::newRow("single number") << "0" << "0";
-    QTest::newRow("negative number") << "-1" << "-1";
-    QTest::newRow("positive number") << "+1" << "+1";
-    QTest::newRow("long number") << "12345678910" << "12345678910";
-    QTest::newRow("expression") << "12+12" << "1212";
-
-    QTest::newRow("single decimal") << "1.0" << "1.0";
-    QTest::newRow("four decimals") << "0.0005" << "0.0005";
-    QTest::newRow("scientific format") << "2e5" << "2e5";
-    QTest::newRow("scientific format with negative exponent") << "1E-3" << "1E-3";
-    QTest::newRow("text is not valid") << "nonsense" << "";
-}
-
-//-----------------------------------------------------------------------------
 // Function: tst_ModelParameterDelegate::testMinimumEditingForBitStringFormat()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterDelegate::testMinimumEditingForBitStringFormat()
@@ -394,7 +267,7 @@ void tst_ModelParameterDelegate::testMinimumEditingForBitStringFormat()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterDelegate::testMinimumForEditingForFormat(QString const& format)
 {
-    setFormat(format);
+    setType(format);
     testKeyInputForColumn(ModelParameterColumns::MINIMUM);
 }
 
@@ -403,7 +276,7 @@ void tst_ModelParameterDelegate::testMinimumForEditingForFormat(QString const& f
 //-----------------------------------------------------------------------------
 void tst_ModelParameterDelegate::testMinimumEditingForBitStringFormat_data()
 {
-    testValueEditingForBitStringFormat_data();
+    bitStringFormatTestData();
 }
 
 //-----------------------------------------------------------------------------
@@ -419,7 +292,7 @@ void tst_ModelParameterDelegate::testMinimumEditingForLongFormat()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterDelegate::testMinimumEditingForLongFormat_data()
 {
-    testValueEditingForLongFormat_data();
+    longFormatTestData();
 }
 
 //-----------------------------------------------------------------------------
@@ -435,7 +308,7 @@ void tst_ModelParameterDelegate::testMinimumEditingForFloatFormat()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterDelegate::testMinimumEditingForFloatFormat_data()
 {
-    testValueEditingForFloatFormat_data();
+    floatFormatTestData();
 }
 
 //-----------------------------------------------------------------------------
@@ -451,7 +324,7 @@ void tst_ModelParameterDelegate::testMaximumEditingForBitStringFormat()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterDelegate::testMaximumForEditingForFormat(QString const& format)
 {
-    setFormat(format);
+    setType(format);
     testKeyInputForColumn(ModelParameterColumns::MAXIMUM);
 }
 
@@ -460,7 +333,7 @@ void tst_ModelParameterDelegate::testMaximumForEditingForFormat(QString const& f
 //-----------------------------------------------------------------------------
 void tst_ModelParameterDelegate::testMaximumEditingForBitStringFormat_data()
 {
-    testValueEditingForBitStringFormat_data();
+    bitStringFormatTestData();
 }
 
 //-----------------------------------------------------------------------------
@@ -477,7 +350,7 @@ void tst_ModelParameterDelegate::testMaximumEditingForLongFormat()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterDelegate::testMaximumEditingForLongFormat_data()
 {
-    testValueEditingForLongFormat_data();
+    longFormatTestData();
 }
 
 //-----------------------------------------------------------------------------
@@ -493,7 +366,7 @@ void tst_ModelParameterDelegate::testMaximumEditingForFloatFormat()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterDelegate::testMaximumEditingForFloatFormat_data()
 {
-    testValueEditingForFloatFormat_data();
+    floatFormatTestData();
 }
 
 //-----------------------------------------------------------------------------
@@ -512,7 +385,7 @@ ModelParameterModel* tst_ModelParameterDelegate::createModelWithSimpleModelParam
     QSharedPointer<Model> model(new Model());
     model->addModelParameter(QSharedPointer<ModelParameter>(new ModelParameter()));
 
-    return new ModelParameterModel(model, choices_, this);
+    return new ModelParameterModel(model, choices_, QSharedPointer<ExpressionParser>(0), this);
 }
 
 //-----------------------------------------------------------------------------
@@ -554,14 +427,91 @@ QWidget* tst_ModelParameterDelegate::createEditorForColumn(int column)
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ModelParameterDelegate::setFormat()
+// Function: tst_ModelParameterDelegate::setType()
 //-----------------------------------------------------------------------------
-void tst_ModelParameterDelegate::setFormat(QString const& format)
+void tst_ModelParameterDelegate::setType(QString const& format)
 {
-    QModelIndex choiceIndex = tableModel_->QAbstractTableModel::index(0, ModelParameterColumns::FORMAT, QModelIndex());
-    QVERIFY2(tableModel_->setData(choiceIndex, format, Qt::EditRole), "Could not set format.");
+    QModelIndex choiceIndex = tableModel_->QAbstractTableModel::index(0, ModelParameterColumns::TYPE, QModelIndex());
+    QVERIFY2(tableModel_->setData(choiceIndex, format, Qt::EditRole), "Could not set type.");
 }
 
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterDelegate::bitStringFormatTestData()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterDelegate::bitStringFormatTestData()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QString>("expectedTextInEditor");
+
+    QTest::newRow("empty input") << "" << "";
+    QTest::newRow("single zero") << "0" << "0";
+    QTest::newRow("single number") << "9" << "";
+    QTest::newRow("single character") << "c" << "";
+    QTest::newRow("text") << "invalid input" << "";
+    QTest::newRow("zeros and ones") << "01010101" << "01010101";
+    QTest::newRow("zeros and other numbers") << "002003008" << "000000";
+    QTest::newRow("zeros and ones in double quotes") << "\"0011\"" << "\"0011\"";
+    QTest::newRow("zeros and ones missing first double quote") << "0011\"" << "0011";
+    QTest::newRow("zeros and ones missing last double quote") << "\"0011" << "\"0011";
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterDelegate::longFormatTestData()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterDelegate::longFormatTestData()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QString>("expectedTextInEditor");
+
+    QTest::newRow("empty input") << "" << "";
+    QTest::newRow("single number") << "0" << "0";
+    QTest::newRow("negative number") << "-1" << "-1";
+    QTest::newRow("positive number") << "+1" << "+1";
+    QTest::newRow("long number") << "12345678910" << "12345678910";
+    QTest::newRow("expression") << "12+12" << "1212";
+
+    QTest::newRow("single hexadecimal character") << "A" << "A";
+    QTest::newRow("single non-hexadecimal character") << "z" << "";
+    QTest::newRow("only characters a-f are valid") << "nonsense" << "ee";
+    QTest::newRow("hexadecimal with preceding 0x") << "0xFFFF" << "0xFFFF";
+    QTest::newRow("hexadecimal with preceding 0X") << "0XAAAA" << "0XAAAA";
+    QTest::newRow("hexadecimal with invalid prefix") << "000x000" << "000000";
+    QTest::newRow("hexadecimal with preceding #") << "#010" << "#010";
+
+    QTest::newRow("number with magnitude suffix k") << "10k" << "10k";
+    QTest::newRow("number with magnitude suffix K") << "10K" << "10K";
+    QTest::newRow("number with magnitude suffix m") << "10m" << "10m";
+    QTest::newRow("number with magnitude suffix M") << "10M" << "10M";
+    QTest::newRow("number with magnitude suffix g") << "10g" << "10g";
+    QTest::newRow("number with magnitude suffix G") << "10G" << "10G";
+    QTest::newRow("number with magnitude suffix t") << "10t" << "10t";
+    QTest::newRow("number with magnitude suffix T") << "10T" << "10T";
+    QTest::newRow("number with invalid magnitude suffix") << "10Q" << "10";
+    QTest::newRow("number with multiple magnitude suffixes") << "10Mk" << "10M";
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModelParameterDelegate::floatFormatTestData()
+//-----------------------------------------------------------------------------
+void tst_ModelParameterDelegate::floatFormatTestData()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QString>("expectedTextInEditor");
+
+    QTest::newRow("empty input") << "" << "";
+    QTest::newRow("single number") << "0" << "0";
+    QTest::newRow("negative number") << "-1" << "-1";
+    QTest::newRow("positive number") << "+1" << "+1";
+    QTest::newRow("long number") << "12345678910" << "12345678910";
+    QTest::newRow("expression") << "12+12" << "1212";
+
+    QTest::newRow("single decimal") << "1.0" << "1.0";
+    QTest::newRow("four decimals") << "0.0005" << "0.0005";
+    QTest::newRow("scientific format") << "2e5" << "2e5";
+    QTest::newRow("scientific format with negative exponent") << "1E-3" << "1E-3";
+    QTest::newRow("text is not valid") << "nonsense" << "";
+}
 
 QTEST_MAIN(tst_ModelParameterDelegate)
 

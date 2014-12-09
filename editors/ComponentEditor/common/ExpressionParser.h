@@ -34,11 +34,11 @@ public:
     virtual QString parseExpression(QString const& expression) const = 0;
 
     /*!
-     *  Checks if the given expression is not valid for parsing.
+     *  Checks if the given expression is valid for parsing.
      *
      *      @param [in] expression   The expression to check.
      *
-     *      @return True, if the expression is not in valid format, otherwise false.
+     *      @return True, if the expression is in valid format, otherwise false.
      */
     virtual bool isValidExpression(QString const& expression) const = 0;
 

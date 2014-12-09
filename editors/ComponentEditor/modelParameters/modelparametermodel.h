@@ -17,7 +17,8 @@
 #include <QSharedPointer>
 #include <QString>
 
-class Choice;
+class Component;
+class ExpressionParser;
 class Model;
 class ModelParameter;
 
@@ -32,11 +33,14 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in]  model      The model being edited.
-     *      @param [in]  choices    The choices available for the model parameter values.
-	 *      @param [in]  parent     The owner of this model.
+	 *      @param [in]  model               The model being edited.
+     *      @param [in]  choices             The choices available for the model parameter values.
+     *      @param [in]  expressionParser    Expression parser for configurable elements.
+	 *      @param [in]  parent              The owner of this model.
 	*/
-	ModelParameterModel(QSharedPointer<Model> model, QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+    ModelParameterModel(QSharedPointer<Model> model, 
+        QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+        QSharedPointer<ExpressionParser> expressionParser,
         QObject *parent);
 
 	//! The destructor

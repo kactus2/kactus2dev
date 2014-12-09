@@ -43,13 +43,14 @@ IPXactSystemVerilogParser::~IPXactSystemVerilogParser()
 //-----------------------------------------------------------------------------
 QString IPXactSystemVerilogParser::parseExpression(QString const& expression) const
 {
-    if (isBooleanExpression(expression))
-    {
-        return expression;
-    }
-
     QString evaluatedExpression = evaluateParameterValuesIn(expression, findParametersInComponent(), 0);
-    return SystemVerilogExpressionParser::parseExpression(evaluatedExpression);
+  
+    if (isValidExpression(evaluatedExpression))
+    {
+          return SystemVerilogExpressionParser::parseExpression(evaluatedExpression);
+    }
+  
+    return expression;
 }
 
 //-----------------------------------------------------------------------------
@@ -57,17 +58,13 @@ QString IPXactSystemVerilogParser::parseExpression(QString const& expression) co
 //-----------------------------------------------------------------------------
 bool IPXactSystemVerilogParser::isValidExpression(QString const& expression) const
 {
-    if (isBooleanExpression(expression))
-    {
-        return true;
-    }
-
     QString evaluatedExpression = evaluateParameterValuesIn(expression, findParametersInComponent(), 0);
+ 
     return SystemVerilogExpressionParser::isValidExpression(evaluatedExpression);
 }
 
 //-----------------------------------------------------------------------------
-// Function: IPXactSystemVerilogParser::evaluateParameters()
+// Function: IPXactSystemVerilogParser::evaluateParameterValuesIn()
 //-----------------------------------------------------------------------------
 QString IPXactSystemVerilogParser::evaluateParameterValuesIn(QString const& expression, 
     QList<QSharedPointer<Parameter> > const& componentParameters, int recursionStep) const
@@ -85,10 +82,7 @@ QString IPXactSystemVerilogParser::evaluateParameterValuesIn(QString const& expr
             QString parameterValue = 
                 evaluateParameterValuesIn(parameter->getValue(), componentParameters, recursionStep + 1);
 
-            if (SystemVerilogExpressionParser::isValidExpression(parameterValue))
-            {
-                parameterValue = SystemVerilogExpressionParser::parseExpression(parameterValue);
-            }
+            parameterValue = SystemVerilogExpressionParser::parseExpression(parameterValue);
 
             evaluated.replace(parameter->getValueId(), parameterValue);
         }
@@ -136,12 +130,4 @@ QList<QSharedPointer<Parameter> > IPXactSystemVerilogParser::findParametersInCom
     }
 
     return componentParameters;
-}
-
-//-----------------------------------------------------------------------------
-// Function: IPXactSystemVerilogParser::isBooleanExpression()
-//-----------------------------------------------------------------------------
-bool IPXactSystemVerilogParser::isBooleanExpression(QString const& expression) const
-{
-    return expression == "true" || expression == "false";
 }

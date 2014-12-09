@@ -14,6 +14,8 @@
 
 #include <common/widgets/summaryLabel/summarylabel.h>
 
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QHeaderView>
@@ -27,7 +29,8 @@ ModelParameterEditor::ModelParameterEditor(QSharedPointer<Component> component,
 										   QWidget *parent): 
 ItemEditor(component, handler, parent), 
 view_(this),
-model_(component->getModel(), component->getChoices(), this),
+model_(component->getModel(), component->getChoices(), 
+QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(component)), this),
 proxy_(this)
 {
 	connect(&model_, SIGNAL(contentChanged()),

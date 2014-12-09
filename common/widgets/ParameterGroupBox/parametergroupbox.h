@@ -31,12 +31,12 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param parameters    The list containing the parameters.
-     * \param choices       The list containing the choices available for parameter values.
+     * \param component     The containing component whose parameters are being edited.
 	 * \param parent        Pointer to the owner of this editor.
 	 *
 	*/
 	ParameterGroupBox(QList<QSharedPointer<Parameter> >& parameters,
-        QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+        QSharedPointer<Component> component,
 		QWidget *parent);
 	
 	//! \brief The destructor

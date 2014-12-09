@@ -9,16 +9,22 @@
 
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+
+#include <IPXACTmodels/component.h>
+
 #include <QVBoxLayout>
 
-ParameterEditor::ParameterEditor(QList<QSharedPointer<Parameter> >& parameters, 
-                                 QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-								 QWidget *parent):
+//-----------------------------------------------------------------------------
+// Function: ParameterEditor::ParameterEditor()
+//-----------------------------------------------------------------------------
+ParameterEditor::ParameterEditor(QSharedPointer<Component> component, QWidget *parent):
 QWidget(parent),
 view_(this), 
-model_(parameters, choices, this),
-proxy_(this) {
-
+model_(component->getParameters(), component->getChoices(), 
+QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(component)), this),
+proxy_(this)
+{
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
@@ -55,25 +61,42 @@ proxy_(this) {
 	refresh();
 }
 
-ParameterEditor::~ParameterEditor() {
+//-----------------------------------------------------------------------------
+// Function: ParameterEditor::~ParameterEditor()
+//-----------------------------------------------------------------------------
+ParameterEditor::~ParameterEditor()
+{
 }
 
-bool ParameterEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: ParameterEditor::isValid()
+//-----------------------------------------------------------------------------
+bool ParameterEditor::isValid() const
+{
 	return model_.isValid();
 }
 
-void ParameterEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: ParameterEditor::refresh()
+//-----------------------------------------------------------------------------
+void ParameterEditor::refresh() 
+{
 	view_.update();
 }
 
-void ParameterEditor::onAddItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: ParameterEditor::onAddItem()
+//-----------------------------------------------------------------------------
+void ParameterEditor::onAddItem( const QModelIndex& index )
+{
 	model_.onAddItem(proxy_.mapToSource(index));
 }
 
-void ParameterEditor::onRemoveItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: ParameterEditor::onRemoveItem()
+//-----------------------------------------------------------------------------
+void ParameterEditor::onRemoveItem( const QModelIndex& index )
+{
 	model_.onRemoveItem(proxy_.mapToSource(index));
 }
 
-void ParameterEditor::makeChanges() {
-	// TODO remove this in final
-}

@@ -33,7 +33,7 @@ envIdentifier_(view, this),
 stack_(this),
 flatElements_(&stack_),
 generalTab_(component, view, &flatElements_),
-parameters_(view->getParameters(), component->getChoices(), this),
+parameters_(view->getParameters(), component, this),
 fileBuilders_(view->getDefaultFileBuilders(), this),
 hierarchyRef_(view, component, libHandler, &stack_) {
 

@@ -30,7 +30,7 @@ absType_(VLNV::ABSTRACTIONDEFINITION, libHandler, parentWnd, this),
 modeSelector_(this, busif),
 modeStack_(busif, component, libHandler, this),
 details_(busif, this),
-parameters_(busif->getParameters(), component->getChoices(), this),
+parameters_(busif->getParameters(), component, this),
 libHandler_(libHandler) {
 
 	Q_ASSERT_X(libHandler, "BusIfGeneralTab constructor",

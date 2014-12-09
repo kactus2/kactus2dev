@@ -1288,9 +1288,6 @@
     <ClCompile Include="GeneratedFiles\moc_interfacemodeselector.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_IEditProvider.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_GraphicsRectButton.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -3874,6 +3871,12 @@
     <ClCompile Include="editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_IEditProvider.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
     <ClCompile Include="kactusGenerators\vhdlGenerator\VhdlTypedObject.cpp">
       <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
     </ClCompile>
@@ -5609,11 +5612,14 @@
     <ClInclude Include="editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\ExpressionParser.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="executable\Kactus2_d.exe">
-      <Filter>Header Files\common</Filter>
-    </None>
     <None Include="designEditors\common\DiagramUtil.inl">
       <Filter>Source Files\designEditors\common</Filter>
     </None>

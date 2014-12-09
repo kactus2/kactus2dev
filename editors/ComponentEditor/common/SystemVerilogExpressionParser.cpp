@@ -18,12 +18,25 @@
 
 namespace
 {
-    const QString STRING_LITERAL("\".*\"");
+    const QString SIZE = "[1-9]?[0-9]*";
+    const QString SIGNED = "[sS]?";
+
+    const QString DECIMAL_NUMBER = SIZE + "(?:'" + SIGNED + "[dD]?)?[0-9_]+";
+    const QString HEXADECIMAL_NUMBER = SIZE + "'" + SIGNED + "[hH][0-9a-fA-F_]+";
+    const QString OCTAL_NUMBER = SIZE + "'" + SIGNED + "[oO][0-7_]+";
+    const QString BINARY_NUMBER = SIZE + "'" + SIGNED + "[bB][01_]+";
+
+    const QString INTEGRAL_NUMBER("[+-]?" + DECIMAL_NUMBER + "|" + HEXADECIMAL_NUMBER + "|" +
+        OCTAL_NUMBER + "|" + BINARY_NUMBER);
+
+    const QString CLOG2_FUNCTION = "[$]clog2[(](?:[^)]+)[)]";
+
     const QString REAL_NUMBER("[+-]?[0-9_]+[.][0-9_]+");
-    const QString INTEGRAL_NUMBER("[+-]?(?:[1-9]?[0-9]*'[sS]?[hHoObBdD])?[0-9a-fA-F_]+");
+
+    const QString STRING_LITERAL("\".*\"");
 
     const QRegExp PRIMARY_LITERAL("((?:[(]\\s*)*)\\s*(" + INTEGRAL_NUMBER + "|" + REAL_NUMBER + "|" + 
-        STRING_LITERAL + ")\\s*((?:[)]\\s*)*)");
+        STRING_LITERAL + "|" + CLOG2_FUNCTION + ")\\s*((?:[)]\\s*)*)");
 
     const QRegExp BINARY_OPERATOR("[+-/*//]|[/*][/*]");
     const QRegExp NEXT_OPERAND("(" + BINARY_OPERATOR.pattern() + ")\\s*(" + PRIMARY_LITERAL.pattern() + ")");
@@ -62,6 +75,7 @@ QString SystemVerilogExpressionParser::parseExpression(QString const& expression
 
     QStringList equation = toStringList(expression);
 
+    equation = solveMathFuctions(equation);
     equation = solveExpressionsInParentheses(equation);
     equation = solvePower(equation);
     equation = solveMultiplyAndDivide(equation);
@@ -156,6 +170,54 @@ QStringList SystemVerilogExpressionParser::parseLiteralAndParentheses(QString co
     }
 
     return parseResult;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::solveMathFuctions()
+//-----------------------------------------------------------------------------
+QStringList SystemVerilogExpressionParser::solveMathFuctions(QStringList const& equation) const
+{
+    QStringList solvedEquation = equation;
+   
+    QRegExp clog2(QString(CLOG2_FUNCTION).replace("(?:", "("));
+
+    int functionIndex = solvedEquation.indexOf(clog2);
+    while (functionIndex != -1)
+    {
+        QString argument = clog2.cap(1);
+
+        solvedEquation.replace(functionIndex, solveClog2(argument));
+
+        functionIndex = solvedEquation.indexOf(clog2);
+    }
+
+    return solvedEquation;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::solveClog2()
+//-----------------------------------------------------------------------------
+QString SystemVerilogExpressionParser::solveClog2(QString const& value) const
+{
+    qreal quotient = parseConstant(parseExpression(value));
+    
+    if (quotient < 0)
+    {
+        return "x";
+    }
+    else if (quotient == 1)
+    {
+        return "1";
+    }    
+
+    int answer = 0;
+    while (quotient > 1)
+    {
+        quotient /= 2;
+        answer++;
+    }
+
+    return QString::number(answer);
 }
 
 //-----------------------------------------------------------------------------
@@ -333,14 +395,12 @@ QString SystemVerilogExpressionParser::solve(QString const& firstTerm, QString c
 qreal SystemVerilogExpressionParser::parseConstant(QString const& constantNumber) const
 {
     QRegExp size("([1-9][0-9_]*)?(?=')");
-    QRegExp sign("[sS]?");
     QRegExp baseFormat("'[sS]?([dDbBoOhH])");
 
     baseFormat.indexIn(constantNumber);
 
     QString result = constantNumber;
     result.remove(size);
-    result.remove(sign);
     result.remove(baseFormat);
     result.remove('_');
 

@@ -21,6 +21,7 @@
 
 class Choice;
 class Component;
+class ExpressionParser;
 
 //-----------------------------------------------------------------------------
 //! Base class for models editing parameters and model parameters.
@@ -34,11 +35,13 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] choices     The choices available for the parameter values.
-	 *      @param [in] parent      The parent object.
+	 *      @param [in] choices             The choices available for the parameter values.
+     *      @param [in] expressionParser    Expression parser for configurable elements.
+	 *      @param [in] parent              The parent object.
 	 */
 	AbstractParameterModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-		QObject *parent);
+	QSharedPointer<ExpressionParser> expressionParser,
+        QObject *parent);
 	
     //! The destructor.
 	virtual ~AbstractParameterModel();
@@ -254,6 +257,13 @@ protected:
      */
     virtual bool validateColumnForParameter(int column, QSharedPointer<Parameter> parameter) const;
 
+protected:
+        
+    /*!
+     *  Re-evaluates all parameter values.
+     */
+    virtual void updateReferencingValues();
+
 private:
 
 	//! No copying
@@ -264,6 +274,9 @@ private:
 
     //! The choices available for model parameter values.
     QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
+
+    //! Expression parser for configurable elements.
+    QSharedPointer<ExpressionParser> expressionParser_;
 
 };
 

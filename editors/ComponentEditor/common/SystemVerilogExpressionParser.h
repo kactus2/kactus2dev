@@ -81,11 +81,30 @@ private:
     QStringList parseLiteralAndParentheses(QString const& operand) const;
 
     /*!
+     *  Solves function calls to math functions in a given equation.
+     *
+     *      @param [in] equation   The equation to solve.
+     *
+     *      @return Equation where the function calls have been replaced with the solved results
+     *              and without the parentheses.
+     */
+    QStringList solveMathFuctions(QStringList const& equation) const;
+    
+    /*!
+     *  Solves the SystemVerilog $clog2 function.
+     *
+     *      @param [in] value   The value for which the function is called.
+     *
+     *      @return The solved value.
+     */
+    QString solveClog2(QString const& value) const;
+
+    /*!
      *  Solves expressions in parentheses in a given equation.
      *
      *      @param [in] equation   The equation to solve.
      *
-     *      @return Equation where the expression in parenthesis has been replaced with the solved result
+     *      @return Equation where the expressions in parenthesis have been replaced with the solved results
      *              and without the parentheses.
      */
     QStringList solveExpressionsInParentheses(QStringList const& equation) const;
@@ -166,6 +185,7 @@ private:
      *      @return The base number for the format.
      */
     int baseForFormat(QString const& baseFormat) const;
+
 
 };
 

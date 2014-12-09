@@ -6,10 +6,12 @@
 // Date: 18.11.2014
 //
 // Description:
-// <Short description of the class/file contents>
+// Validator for the IP-XACT Parameter element.
 //-----------------------------------------------------------------------------
 
 #include "ParameterValidator.h"
+
+#include "IPXactValueParser.h"
 
 #include <IPXACTmodels/choice.h>
 #include <IPXACTmodels/Enumeration.h>
@@ -22,7 +24,7 @@
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator::ParameterValidator()
 //-----------------------------------------------------------------------------
-ParameterValidator::ParameterValidator()
+ParameterValidator::ParameterValidator(): valueParser_()
 {
 
 }
@@ -38,7 +40,8 @@ ParameterValidator::~ParameterValidator()
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator::validate()
 //-----------------------------------------------------------------------------
-bool ParameterValidator::validate(Parameter const* parameter, QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const
+bool ParameterValidator::validate(Parameter const* parameter, 
+    QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const
 {
    return hasValidName(parameter) &&
        hasValidValue(parameter, availableChoices) &&
@@ -88,30 +91,7 @@ bool ParameterValidator::hasValidFormat(Parameter const* parameter) const
 //-----------------------------------------------------------------------------
 bool ParameterValidator::hasValidValueForFormat(QString const& value, QString const& format) const
 {
-    if (format.isEmpty() || format == "string")
-    {
-        return true;
-    }
-
-    QRegExp validatingExp;
-    if (format == "bool")
-    {
-        validatingExp.setPattern(StringPromptAtt::VALID_BOOL_VALUE);
-    }
-    else if (format == "bitString")
-    {
-        validatingExp.setPattern(StringPromptAtt::VALID_BITSTRING_VALUE);
-    }
-    else if (format == "long")
-    {
-        validatingExp.setPattern(StringPromptAtt::VALID_LONG_VALUE);
-    }
-    else if (format == "float")
-    {
-        validatingExp.setPattern(StringPromptAtt::VALID_FLOAT_VALUE);
-    }
-
-    return validatingExp.exactMatch(value);
+    return valueParser_.isValidExpression(value, format);
 }
 
 //-----------------------------------------------------------------------------
@@ -262,84 +242,11 @@ bool ParameterValidator::shouldCompareValueAndBoundary(QString const& boundaryVa
 }
 
 //-----------------------------------------------------------------------------
-// Function: Parameter::toLong()
+// Function: Parameter::valueOf()
 //-----------------------------------------------------------------------------
 qreal ParameterValidator::valueOf(QString const& value, QString const& format) const
 {
-    if (format == "long")
-    {
-        return longValueOf(value);
-    }
-    else if (format == "float")
-    {
-        return floatValueOf(value);
-    }
-    else
-    {
-        return value.toDouble();
-    }	
-}
-
-//-----------------------------------------------------------------------------
-// Function: Parameter::longValueOf()
-//-----------------------------------------------------------------------------
-qreal ParameterValidator::longValueOf(QString const& value) const
-{
-    if (value.startsWith("0x", Qt::CaseInsensitive) || value.startsWith('#'))
-    {
-        QString hexValue = value;
-        return hexValue.remove('#').toLong(0, 16);
-    }
-    else if (value.endsWith('k', Qt::CaseInsensitive))
-    {
-        QString coefficient = value;
-        coefficient.chop(1);
-
-        return coefficient.toLong()*1024;
-    }
-    else if (value.endsWith('M', Qt::CaseInsensitive))
-    {
-        QString coefficient = value;
-        coefficient.chop(1);
-
-        return coefficient.toLong()*1024*1024;
-    }
-    else if (value.endsWith('G', Qt::CaseInsensitive))
-    {
-        QString coefficient = value;
-        coefficient.chop(1);
-
-        return coefficient.toLong()*1024*1024*1024;
-    }
-    else if (value.endsWith('T', Qt::CaseInsensitive))
-    {
-        QString coefficient = value;
-        coefficient.chop(1);
-
-        return coefficient.toLong()*1024*1024*1024*1024;
-    }
-    else
-    {
-        return value.toLong();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Parameter::floatValueOf()
-//-----------------------------------------------------------------------------
-qreal ParameterValidator::floatValueOf(QString const& value) const
-{
-    if (value.contains('e'))
-    {
-        qreal coefficient = value.left(value.indexOf('e')).toFloat();
-        qreal exponent = value.mid(value.indexOf('e') + 1).toFloat();
-        qreal result = coefficient * qPow(10, exponent);
-        return result;
-    }
-    else
-    {
-        return value.toFloat();
-    }
+    return valueParser_.parseConstant(value, format);
 }
 
 //-----------------------------------------------------------------------------

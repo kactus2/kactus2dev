@@ -38,6 +38,9 @@ private slots:
     void testParsePower();
     void testParsePower_data();
 
+    void testClog2Function();
+    void testClog2Function_data();
+
     void testParseMultipleOperations();
     void testParseMultipleOperations_data();
 
@@ -107,7 +110,7 @@ void tst_SystemVerilogExpressionParser::testParseConstant_data()
     QTest::newRow("Negative fixed-point number") << "-1.0" << "-1.0";
 
     //! Hexadecimal numbers.
-    QTest::newRow("Hexadecimal number without base should evaluate to zero") << "ff" << "0";
+    QTest::newRow("Hexadecimal number without base should evaluate to unknown") << "ff" << "x";
     QTest::newRow("Hexadecimal number 'h1 should evaluate to 1") << "'h1" << "1";
     QTest::newRow("Hexadecimal number 'hA should evaluate to 10") << "'hA" << "10";
     QTest::newRow("Hexadecimal number 'Hf should evaluate to 15") << "'Hf" << "15";
@@ -463,6 +466,46 @@ void tst_SystemVerilogExpressionParser::testParsePower_data()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testClog2Function()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testClog2Function()
+{
+    QFETCH(QString, expression);
+    QFETCH(QString, expectedResult);
+
+    SystemVerilogExpressionParser parser;
+    QCOMPARE(parser.parseExpression(expression), expectedResult);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testClog2Function_data()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testClog2Function_data()
+{
+    QTest::addColumn<QString>("expression");
+    QTest::addColumn<QString>("expectedResult");
+
+    QTest::newRow("$clog(0) equals 0") << "$clog2(0)" << "0";
+    QTest::newRow("$clog(1) equals 1") << "$clog2(1)" << "1";
+    QTest::newRow("$clog(2) equals 1") << "$clog2(2)" << "1";
+    QTest::newRow("$clog(3) equals 2") << "$clog2(3)" << "2";
+    QTest::newRow("$clog(127) equals 7") << "$clog2(127)" << "7";
+    QTest::newRow("$clog(128) equals 7") << "$clog2(128)" << "7";
+    QTest::newRow("$clog(129) equals 8") << "$clog2(129)" << "8";
+    QTest::newRow("$clog(2048) equals 11") << "$clog2(2048)" << "11";
+
+    QTest::newRow("$clog() for negative value is undefined") << "$clog2(-1)" << "x";
+
+    QTest::newRow("$clog('h0F) for hexadecimal value equals 4") << "$clog2('h0F)" << "4";
+    QTest::newRow("$clog('hFF) for hexadecimal value equals 8") << "$clog2('hFF)" << "8";
+
+    QTest::newRow("Multiple clog2-functions") << "$clog2(2) + $clog2(4) + $clog2(4)" << "5";
+
+    QTest::newRow("Simple expression as argument") << "$clog2(2 + 2)" << "2";
+    QTest::newRow("Expression as argument") << "$clog2(2**12)" << "12";
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_SystemVerilogExpressionParser::testParseMultipleOperations()
 //-----------------------------------------------------------------------------
 void tst_SystemVerilogExpressionParser::testParseMultipleOperations()
@@ -500,6 +543,10 @@ void tst_SystemVerilogExpressionParser::testParseMultipleOperations_data()
     QTest::newRow("Power precedes addition") << "1 + 2**3" << "9";
     QTest::newRow("Power precedes multiplication") << "4*2**3" << "32";
     QTest::newRow("Power precedes division") << "16/2**3" << "2";
+
+    QTest::newRow("clog2() precedes power operation") << "2**$clog2(4) + 1" << "5";
+
+    QTest::newRow("Value of clog2() preceds other operations") << "(2 + 2)*3*$clog2(4*2*2) + 2" << "50";
 }
 
 //-----------------------------------------------------------------------------

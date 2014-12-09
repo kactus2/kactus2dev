@@ -10,7 +10,7 @@
 
 #include <IPXACTmodels/parameter.h>
 
-#include <editors/ComponentEditor/parameters//parametersmodel.h>
+#include <editors/ComponentEditor/parameters/parametersmodel.h>
 #include <common/views/EditableTableView/editabletableview.h>
 
 #include <QWidget>
@@ -18,7 +18,9 @@
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
 
-/*! \brief A general purpose editor to edit parameters in a list.
+class Component;
+
+/*! \brief An editor to edit parameters in a component.
  *
 */
 class ParameterEditor : public QWidget {
@@ -28,14 +30,11 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param parameters    The list that contains the parameters to edit.
-     * \param choices       The list that contains the choices available for the parameter values.
+     * \param component     The component whose parameters to edit.
 	 * \param parent        Pointer to the owner of this editor.
 	 *
 	*/
-	ParameterEditor(QList<QSharedPointer<Parameter> >& parameters,
-        QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-		QWidget *parent);
+	ParameterEditor(QSharedPointer<Component> component, QWidget *parent);
 	
 	//! \brief The destructor
 	virtual ~ParameterEditor();
@@ -50,11 +49,6 @@ public:
 	*
 	*/
 	virtual void refresh();
-
-	/*! \brief Make the changes from the widgets editors to the IPXact model.
-	 *
-	*/
-	virtual void makeChanges();
 
 signals:
 

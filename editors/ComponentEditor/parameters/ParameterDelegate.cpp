@@ -108,7 +108,7 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
 	else 
     {
         // use the line edit for other columns
-        QString text = index.model()->data(index, Qt::DisplayRole).toString();
+        QString text = index.model()->data(index, Qt::EditRole).toString();
         QLineEdit* lineEdit = qobject_cast<QLineEdit*>(editor);
         lineEdit->setText(text);
 	}

@@ -11,19 +11,24 @@
 
 #include <common/widgets/summaryLabel/summarylabel.h>
 
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+
 #include <IPXACTmodels/component.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 
-ParametersEditor::ParametersEditor(QSharedPointer<Component> component,
-	LibraryInterface* handler,
-	QWidget *parent): 
+//-----------------------------------------------------------------------------
+// Function: ParametersEditor::ParametersEditor()
+//-----------------------------------------------------------------------------
+ParametersEditor::ParametersEditor(QSharedPointer<Component> component, LibraryInterface* handler,	
+    QWidget* parent): 
 ItemEditor(component, handler, parent),
 view_(this), 
-model_(component->getParameters(), component->getChoices(), this), 
-proxy_(NULL) {
-
+model_(component->getParameters(), component->getChoices(), 
+    QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(component)), this), 
+proxy_(0)
+{
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
@@ -77,18 +82,35 @@ proxy_(NULL) {
 	refresh();
 }
 
-ParametersEditor::~ParametersEditor() {
+//-----------------------------------------------------------------------------
+// Function: ParametersEditor::~ParametersEditor()
+//-----------------------------------------------------------------------------
+ParametersEditor::~ParametersEditor()
+{
+
 }
 
-bool ParametersEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: ParametersEditor::isValid()
+//-----------------------------------------------------------------------------
+bool ParametersEditor::isValid() const
+{
 	return model_.isValid();
 }
 
-void ParametersEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: ParametersEditor::refresh()
+//-----------------------------------------------------------------------------
+void ParametersEditor::refresh()
+{
 	view_.update();
 }
 
-void ParametersEditor::showEvent( QShowEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: ParametersEditor::showEvent()
+//-----------------------------------------------------------------------------
+void ParametersEditor::showEvent( QShowEvent* event )
+{
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/params.html");
 }

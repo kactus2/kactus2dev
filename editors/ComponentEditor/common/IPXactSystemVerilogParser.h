@@ -45,8 +45,6 @@ public:
      *      @return The decimal value of the constant.
      */
     virtual QString parseExpression(QString const& expression) const;
-    bool isBooleanExpression(QString const& expression) const;
-
 
     /*!
      *  Checks if the given expression is not valid for parsing.
@@ -63,13 +61,29 @@ private:
     IPXactSystemVerilogParser(IPXactSystemVerilogParser const& rhs);
     IPXactSystemVerilogParser& operator=(IPXactSystemVerilogParser const& rhs);
 
+    /*!
+     *  Evaluates the values of references parameter in the given expression recursively.
+     *
+     *      @param [in] expression              The expression to evaluate.
+     *      @param [in] componentParameters     The parameters available in the component.
+     *      @param [in] recursionStep           The current depth in recursion.
+     *
+     *      @return The expression where the references have been replaced with the evaluated values.
+     */
     QString evaluateParameterValuesIn(QString const& expression, 
         QList<QSharedPointer<Parameter> > const& componentParameters, int recursionStep) const;
 
+    /*!
+     *  Finds the parameters available for reference in the component.
+     *
+     *      @return The parameters in the component.
+     */
     QList<QSharedPointer<Parameter> > findParametersInComponent() const;
 
-    static const int MAX_RECURSION_STEPS = 32;
-
+    //! Maximum number of recursion steps in finding value for a parameter.
+    static const int MAX_RECURSION_STEPS = 24;
+    
+    //! The component whose parameters are available in the SystemVerilog expressions.
     QSharedPointer<Component> component_;
 };
 

@@ -90,8 +90,15 @@ void tst_IPXactSystemVerilogParser::testParseConstant_data()
     QTest::addColumn<QString>("expression");
     QTest::addColumn<QString>("expectedResult");
 
-    QTest::newRow("Boolean true is valid") << "true" << "true";
-    QTest::newRow("Boolean false is valid") << "false" << "false";
+    QTest::newRow("Boolean true is invalid") << "true" << "true";
+    QTest::newRow("Boolean false is invalid") << "false" << "false";
+
+    QTest::newRow("Decimal value 1 is valid") << "1" << "1";
+
+    QTest::newRow("Hexadecimal value 0xff is invalid") << "0xff" << "0xff";
+    QTest::newRow("Hexadecimal value #ff is invalid") << "#ff" << "#ff";
+    QTest::newRow("Hexadecimal value ff is invalid") << "ff" << "ff";
+
 }
 
 //-----------------------------------------------------------------------------
@@ -103,7 +110,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithUnknownReference()
 
     IPXactSystemVerilogParser parser(emptyComponent);
 
-    QCOMPARE(parser.parseExpression("unknownParameter"), QString("x"));
+    QCOMPARE(parser.parseExpression("unknownParameter"), QString("unknownParameter"));
 }
 
 //-----------------------------------------------------------------------------
@@ -119,7 +126,7 @@ void tst_IPXactSystemVerilogParser::testParameterWithoutId()
 
     IPXactSystemVerilogParser parser(testComponent);
 
-    QCOMPARE(parser.parseExpression("unknownParameter"), QString("x"));
+    QCOMPARE(parser.parseExpression("unknownParameter"), QString("unknownParameter"));
 }
 
 //-----------------------------------------------------------------------------
@@ -159,8 +166,8 @@ void tst_IPXactSystemVerilogParser::testExpressionWithParameterReferences_data()
     QTest::newRow("Parameter value plus parameter value") << "one + one" << "2";
     QTest::newRow("Parameter value multiplied") << "4*one" << "4";
 
-    QTest::newRow("Reference to unknown parameter") << "unknown" << "x" ;
-    QTest::newRow("Parameter value plus unknown parameter value") << "one + unknown" << "x" ;
+    QTest::newRow("Reference to unknown parameter") << "unknown" << "unknown" ;
+    QTest::newRow("Parameter value plus unknown parameter value") << "one + unknown" << "one + unknown";
 
     QTest::newRow("Two parameters") << "one + two" << "3";
 }
@@ -196,6 +203,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithModelParameterReferences_d
 {
     testExpressionWithParameterReferences_data();
 }
+
 
 //-----------------------------------------------------------------------------
 // Function: tst_IPXactSystemVerilogParser::testExpressionWithViewParameterReferences()
@@ -377,7 +385,7 @@ void tst_IPXactSystemVerilogParser::testLoopTerminatesEventually()
 
     IPXactSystemVerilogParser parser(testComponent);
 
-    QCOMPARE(parser.parseExpression("second"), QString("x"));
+    QCOMPARE(parser.parseExpression("second"), QString("second"));
 }
 
 QTEST_APPLESS_MAIN(tst_IPXactSystemVerilogParser)

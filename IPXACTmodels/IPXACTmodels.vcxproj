@@ -230,6 +230,7 @@
     <ClCompile Include="SystemView.cpp" />
     <ClCompile Include="transactional.cpp" />
     <ClCompile Include="transactionalabstraction.cpp" />
+    <ClCompile Include="validators\IPXactValueParser.cpp" />
     <ClCompile Include="validators\ModelParameterValidator.cpp" />
     <ClCompile Include="validators\namevalidator.cpp" />
     <ClCompile Include="validators\NMTokenValidator.cpp" />
@@ -331,6 +332,7 @@
     <ClInclude Include="SystemView.h" />
     <ClInclude Include="transactional.h" />
     <ClInclude Include="transactionalabstraction.h" />
+    <ClInclude Include="validators\IPXactValueParser.h" />
     <ClInclude Include="validators\ModelParameterValidator.h" />
     <CustomBuild Include="validators\namevalidator.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

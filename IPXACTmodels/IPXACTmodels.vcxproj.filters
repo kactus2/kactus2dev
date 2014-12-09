@@ -347,6 +347,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_NMTokenValidator.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="validators\IPXactValueParser.cpp">
+      <Filter>Source Files\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ipxactmodels_global.h">
@@ -641,6 +644,9 @@
       <Filter>Header Files\validators</Filter>
     </ClInclude>
     <ClInclude Include="validators\ModelParameterValidator.h">
+      <Filter>Header Files\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="validators\IPXactValueParser.h">
       <Filter>Header Files\validators</Filter>
     </ClInclude>
   </ItemGroup>
