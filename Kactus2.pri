@@ -535,7 +535,6 @@ HEADERS += ./common/Global.h \
     ./designEditors/common/DesignWidget.h \
     ./designEditors/common/ComponentDesignDiagram.h \
     ./designEditors/common/ComponentInstanceEditor/componentinstanceeditor.h \
-    ./designEditors/common/ComponentInstanceEditor/componentinstancemodel.h \
     ./designEditors/common/ComponentInstanceEditor/configurableelementdelegate.h \
     ./designEditors/common/ComponentInstanceEditor/configurableelementeditor.h \
     ./designEditors/common/ConnectionEditor/AdHocBoundsDelegate.h \
@@ -570,7 +569,8 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
+    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsModel.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1060,7 +1060,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/common/DesignWidget.cpp \
     ./designEditors/common/NamelabelWidth.cpp \
     ./designEditors/common/ComponentInstanceEditor/componentinstanceeditor.cpp \
-    ./designEditors/common/ComponentInstanceEditor/componentinstancemodel.cpp \
+    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsModel.cpp \
     ./designEditors/common/ComponentInstanceEditor/configurableelementdelegate.cpp \
     ./designEditors/common/ComponentInstanceEditor/configurableelementeditor.cpp \
     ./designEditors/common/ConnectionEditor/AdHocBoundsDelegate.cpp \

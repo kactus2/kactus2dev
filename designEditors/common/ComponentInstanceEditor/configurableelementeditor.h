@@ -10,7 +10,7 @@
 
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include "componentinstancemodel.h"
+#include "ConfigurableElementsModel.h"
 
 #include <QGroupBox>
 #include <QSortFilterProxyModel>
@@ -18,9 +18,9 @@
 
 class ComponentItem;
 
-/*! \brief Editor for configurable elements of a component instance.
- *
- */
+//-----------------------------------------------------------------------------
+//! Editor for configurable elements of a component instance.
+//-----------------------------------------------------------------------------
 class ConfigurableElementEditor : public QGroupBox {
 	Q_OBJECT
 
@@ -77,7 +77,7 @@ private:
 	QSortFilterProxyModel filter_;
 
 	//! \brief The model to edit the configurable elements of a component instance.
-	ComponentInstanceModel model_;
+	ConfigurableElementsModel model_;
 };
 
 #endif // CONFIGURABLEELEMENTEDITOR_H

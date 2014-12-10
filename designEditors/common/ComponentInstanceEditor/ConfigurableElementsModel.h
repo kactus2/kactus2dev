@@ -5,10 +5,13 @@
  *		Project: Kactus 2
  */
 
-#ifndef COMPONENTINSTANCEMODEL_H
-#define COMPONENTINSTANCEMODEL_H
+#ifndef CONFIGURABLEELEMENTSMODEL_H
+#define CONFIGURABLEELEMENTSMODEL_H
 
 #include <common/GenericEditProvider.h>
+#include <designEditors/HWDesign/HWComponentItem.h>
+#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/modelparameter.h>
 
 #include <QAbstractTableModel>
 #include <QMap>
@@ -18,10 +21,10 @@
 
 class ComponentItem;
 
-/*! \brief Model class to manage the configurable element values being edited.
- *
- */
-class ComponentInstanceModel : public QAbstractTableModel {
+//-----------------------------------------------------------------------------
+//! Model class to manage the configurable element values being edited.
+//-----------------------------------------------------------------------------
+class ConfigurableElementsModel : public QAbstractTableModel {
 	Q_OBJECT
 
 public:
@@ -31,10 +34,10 @@ public:
 	 * \param parent Pointer to the owner of this model.
 	 *
 	*/
-	ComponentInstanceModel(QObject *parent);
+	ConfigurableElementsModel(QObject *parent);
 	
 	//! \brief The destructor
-	virtual ~ComponentInstanceModel();
+	virtual ~ConfigurableElementsModel();
 
 	/*! \brief Set the component being edited.
 	 *
@@ -98,20 +101,6 @@ public:
 
 public slots:
 
-	/*! \brief Add a new configurable element to the table
-	 *
-	 * \param name Name of the configurable element
-	 *
-	*/
-	void onAdd();
-
-	/*! \brief A new item should be added to given index.
-	 *
-	 * \param index The position where new item should be added at.
-	 *
-	*/
-	void onAddItem(const QModelIndex& index);
-
 	/*! \brief Remove the specified item from the model.
 	 *
 	 * \param index Identifies the configurable element to remove.
@@ -140,20 +129,37 @@ signals:
 	void contentChanged();
 
 private:
-	//! \brief No copying
-	ComponentInstanceModel(const ComponentInstanceModel& other);
+	//! No copying
+	ConfigurableElementsModel(const ConfigurableElementsModel& other);
 
-	//! \brief No assignment
-	ComponentInstanceModel& operator=(const ComponentInstanceModel& other);
+	//! No assignment
+	ConfigurableElementsModel& operator=(const ConfigurableElementsModel& other);
 
-	//! \brief Struct that contains the name-value pair for configurable element.
+    //! The values for the model columns.
+    enum modelColumns
+    {
+        NAME = 0,
+        VALUE,
+        DEFAULT_VALUE
+    };
+
+	//! Struct that contains the name-value pair for configurable element.
 	struct ConfigurableElement {
 
-		//! \brief The name of the configurable element.
+		//! The name of the configurable element.
 		QString name_;
 
-		//! \brief The value of the configurable element.
+        //! The unique id of the configurable element
+        QString uuID_;
+
+		//! The value of the configurable element.
 		QString value_;
+
+        //! The default value of the configurable element.
+        QString defaultValue_;
+
+        //! True if item is editable.
+        bool isEditable_;
 
 		/*! \brief Struct constructor
 		 *
@@ -161,14 +167,17 @@ private:
 		 * \param value Value of the configurable element.
 		 *
 		*/
-		ConfigurableElement(const QString& name, const QString& value);
+		ConfigurableElement(const QString& name, const QString& uuID, 
+                            const QString& value, const QString& defaultValue, const bool& isEditable);
+        //ConfigurableElement(const QSharedPointer <Parameter> parameter, const QString& value);
 
 		/*! \brief Constructs struct with empty value
 		 * 
 		 * \param name Name of the configurable element
 		 *
 		*/
-		ConfigurableElement(const QString& name);
+		ConfigurableElement(const QString& name, const QString& value);
+        //ConfigurableElement(const QSharedPointer <Parameter> parameter);
 
 		/*! \brief Operator ==
 		 *
@@ -179,23 +188,55 @@ private:
 		bool operator==(const ConfigurableElement& other) const;
 	};
 
-	//! \brief Save the elements from the table to values_ map.
+	//! Save the elements from the table to values_ map.
 	void save();
 
-	//! \brief Read the values_ and add the items to the table to be displayed.
+	/*!
+	 *  Read the configurable elements from the component and from the saved values.
+	 */
 	void readValues();
 
-	//! \brief Pointer to the component instance being edited.
+    /*!
+     *  Read the configurable elements from the component.
+     */
+    void readComponentConfigurableElements();
+
+    /*!
+     *  Read the configurable parameters from the component.
+     *
+     *      @param [in] componentModel      The component pointer.
+     *      @param [in] unEditableResolve   The text for uneditable resolve value.
+     */
+    void readConfigurableParameters(QSharedPointer <Component> componentModel, QString unEditableResolve);
+
+    /*!
+     *  Read the configurable model parameters from the component.
+     *
+     *      @param [in] componentModel      The component pointer.
+     *      @param [in] unEditableResolve   The text for uneditable resolve value.
+     */
+    void readConfigurableModelParameters(QSharedPointer <Component> componentModel, QString unEditableResolve);
+
+    /*!
+     *  Add parameter to the table, if it has an id.
+     *
+     *      @param [in] parameterPointer        Pointer to the parameter or model parameter.
+     *      @param [in] unEditableResolveValue  The text for uneditable resolve value.
+     */
+    void addParameterWithIDToVisibleElements(QSharedPointer <Parameter> parameterPointer,
+        QString unEditableResolveValue);
+
+	//! Pointer to the component instance being edited.
 	ComponentItem* component_;
 
-	//! \brief Reference to the map containing the actual configurable elements.
-	QMap<QString, QString> values_;
+	//! Reference to the map containing the actual configurable elements.
+	QMap<QString, QString> currentElementValues_;
 
-	//! \brief The list that is used to display the elements in a table form.
-	QList<ConfigurableElement> table_;
+	//! The list that is used to display the elements in a table form.
+	QList<ConfigurableElement> visibleConfigurableElements_;
 
-	//! \brief Pointer to the generic edit provider that manages the undo/redo stack.
+	//! Pointer to the generic edit provider that manages the undo/redo stack.
 	GenericEditProvider* editProvider_;
 };
 
-#endif // COMPONENTINSTANCEMODEL_H
+#endif // CONFIGURABLEELEMENTSMODEL_H

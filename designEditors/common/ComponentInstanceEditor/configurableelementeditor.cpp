@@ -17,14 +17,17 @@
 #include <QSharedPointer>
 #include <QAbstractItemDelegate>
 
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementEditor::ConfigurableElementEditor()
+//-----------------------------------------------------------------------------
 ConfigurableElementEditor::ConfigurableElementEditor(QWidget *parent,
 													 const QString& title):
 QGroupBox(title, parent),
 component_(0),
 view_(this),
 filter_(this),
-model_(this) {
-
+model_(this) 
+{
 	filter_.setSourceModel(&model_);
 	view_.setModel(&filter_);
 
@@ -51,11 +54,19 @@ model_(this) {
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
 
-ConfigurableElementEditor::~ConfigurableElementEditor() {
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementEditor::~ConfigurableElementEditor()
+//-----------------------------------------------------------------------------
+ConfigurableElementEditor::~ConfigurableElementEditor() 
+{
+
 }
 
-void ConfigurableElementEditor::setComponent( ComponentItem* component ) {
-
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementEditor::setComponent()
+//-----------------------------------------------------------------------------
+void ConfigurableElementEditor::setComponent( ComponentItem* component ) 
+{
 	// set the component for the item delegate.
 	QAbstractItemDelegate* absDelegate = view_.itemDelegate();
 	ConfigurableElementDelegate* delegate = qobject_cast<ConfigurableElementDelegate*>(absDelegate);
@@ -66,13 +77,20 @@ void ConfigurableElementEditor::setComponent( ComponentItem* component ) {
 	model_.setComponent(component);
 }
 
-void ConfigurableElementEditor::clear() {
-
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementEditor::clear()
+//-----------------------------------------------------------------------------
+void ConfigurableElementEditor::clear() 
+{
 	component_ = 0;
 	model_.clear();
 }
 
-void ConfigurableElementEditor::onRemoveClick() {
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementEditor::onRemoveClick()
+//-----------------------------------------------------------------------------
+void ConfigurableElementEditor::onRemoveClick() 
+{
 	QModelIndex index = view_.currentIndex();
 	QModelIndex sourceIndex = filter_.mapToSource(index);
 	if (sourceIndex.isValid())

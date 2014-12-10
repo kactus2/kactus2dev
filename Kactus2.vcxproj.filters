@@ -2104,9 +2104,6 @@
     <ClCompile Include="GeneratedFiles\moc_componentinstanceeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_componentinstancemodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_configurableelementdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2114,9 +2111,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="designEditors\common\ComponentInstanceEditor\componentinstanceeditor.cpp">
-      <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\common\ComponentInstanceEditor\componentinstancemodel.cpp">
       <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
     </ClCompile>
     <ClCompile Include="designEditors\common\ComponentInstanceEditor\configurableelementdelegate.cpp">
@@ -3883,6 +3877,12 @@
     <ClCompile Include="GeneratedFiles\moc_vhdlcomponentinstance.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\common\ComponentInstanceEditor\ConfigurableElementsModel.cpp">
+      <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ConfigurableElementsModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4465,9 +4465,6 @@
       <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\common\ComponentInstanceEditor\componentinstanceeditor.h">
-      <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designEditors\common\ComponentInstanceEditor\componentinstancemodel.h">
       <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\common\ComponentInstanceEditor\configurableelementdelegate.h">
@@ -5330,6 +5327,9 @@
     </CustomBuild>
     <CustomBuild Include="kactusGenerators\vhdlGenerator\VhdlTypedObject.h">
       <Filter>Header Files\kactusGenerators\vhdlGenerator</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ComponentInstanceEditor\ConfigurableElementsModel.h">
+      <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

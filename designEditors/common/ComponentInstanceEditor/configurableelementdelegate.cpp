@@ -14,26 +14,39 @@
 #include <QMap>
 #include <QStringList>
 
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::ConfigurableElemenetDelegate()
+//-----------------------------------------------------------------------------
 ConfigurableElementDelegate::ConfigurableElementDelegate(QSharedPointer<Component> component,
 														 QObject *parent):
 QStyledItemDelegate(parent),
-component_(component) {
+component_(component) 
+{
+
 }
 
-ConfigurableElementDelegate::~ConfigurableElementDelegate() {
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::~ConfigurableElementDelegate()
+//-----------------------------------------------------------------------------
+ConfigurableElementDelegate::~ConfigurableElementDelegate() 
+{
+
 }
 
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::createEditor()
+//-----------------------------------------------------------------------------
 QWidget* ConfigurableElementDelegate::createEditor(QWidget* parent, 
 												   const QStyleOptionViewItem& option,
-												   const QModelIndex& index ) const {
-
+												   const QModelIndex& index ) const 
+{
 	switch (index.column()) {
 
 		// if editing name of configurable element
 		case 0: {
 			QComboBox* box = new QComboBox(parent);
 			// set box to be editable
-			box->setEditable(true);
+			//box->setEditable(true);
 
 			if (component_) {
 				QStringList paramNames = component_->getModelParameterNames();
@@ -54,9 +67,12 @@ QWidget* ConfigurableElementDelegate::createEditor(QWidget* parent,
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::setEditorData()
+//-----------------------------------------------------------------------------
 void ConfigurableElementDelegate::setEditorData( QWidget* editor, 
-												const QModelIndex& index ) const {
-	
+												const QModelIndex& index ) const 
+{
 	switch (index.column()) {
 		
 		// if name of configurable element
@@ -89,10 +105,13 @@ void ConfigurableElementDelegate::setEditorData( QWidget* editor,
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::setModelData()
+//-----------------------------------------------------------------------------
 void ConfigurableElementDelegate::setModelData( QWidget* editor,
 											   QAbstractItemModel* model,
-											   const QModelIndex& index ) const {
-
+											   const QModelIndex& index ) const 
+{
 	switch (index.column()) {
 	
 		// if name of the configurable element
@@ -122,12 +141,19 @@ void ConfigurableElementDelegate::setModelData( QWidget* editor,
 	}
 }
 
-void ConfigurableElementDelegate::setComponent( QSharedPointer<Component> component ) {
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::setComponent()
+//-----------------------------------------------------------------------------
+void ConfigurableElementDelegate::setComponent( QSharedPointer<Component> component ) 
+{
 	component_ = component;
 }
 
-void ConfigurableElementDelegate::commitAndCloseEditor() {
-
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::commitAndCloseEditor()
+//-----------------------------------------------------------------------------
+void ConfigurableElementDelegate::commitAndCloseEditor() 
+{
 	QLineEdit* lineEdit = qobject_cast<QLineEdit*>(sender());
 
 	// if editor was line edit
