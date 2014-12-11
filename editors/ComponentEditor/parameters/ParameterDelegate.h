@@ -158,16 +158,6 @@ protected:
      *      @return An editor for selecting a format.
      */
     QWidget* createFormatSelector(QWidget* parent) const;
-    
-    /*!
-     *  Creates an editor using the selected format.
-     *
-     *      @param [in] parent   The parent widget for the editor.
-     *
-     *      @return An editor for the selected format.
-     */
-    QWidget* createEditorUsingFormat(QWidget* parent, QStyleOptionViewItem const& option,
-        QModelIndex const& index) const;
         
     /*!
      *  Creates an editor for editing a number.
@@ -206,16 +196,6 @@ private:
      *      @return The choice selected on the given row.
      */
     QSharedPointer<Choice> findChoice(QModelIndex const& index) const;
-
-    /*!
-     *  Creates a validator for an editor.
-     *
-     *      @param [in] format   The valid format in the editor.
-     *      @param [in] parent   The parent widget for the validator.
-     *
-     *      @return A validator to use in the editor.
-     */
-    QValidator* createValidatorForFormat(QString const& format, QWidget* parent) const;
 
     //-----------------------------------------------------------------------------
     // Data.

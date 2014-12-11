@@ -15,9 +15,7 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/Enumeration.h>
 
-#include <IPXACTmodels/validators/ParameterValidator.h>
-
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <IPXACTmodels/validators/ParameterValidator2014.h>
 
 #include <QColor>
 
@@ -83,9 +81,9 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
         }
         else if (index.column() == valueColumn())
         {
-            if (role == Qt::EditRole && !parameter->getValueAttribute("kactus2:expr").isEmpty())
+            if (role == Qt::EditRole)
             {
-                return parameter->getValueAttribute("kactus2:expr");
+                return parameter->getValue();
             }
             else
             {
@@ -121,7 +119,7 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
             return QColor("lemonChiffon");
         }
         else if ((index.column() == minimumColumn() || index.column() == maximumColumn()) &&
-            (parameter->getType() == "bit" || parameter->getType() == "string"))
+            (parameter->getType() == "bit" || parameter->getType() == "string" || parameter->getType().isEmpty()))
         {
             return QColor("whiteSmoke");
         }
@@ -139,6 +137,17 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
         else 
         {
             return QColor("red");
+        }
+    }
+    else if (role == Qt::ToolTipRole)
+    {
+        if (index.column() == valueColumn())
+        {
+            return parameter->getValue();
+        }
+        else
+        {
+            return QVariant();
         }
     }
 	else // if unsupported role
@@ -175,11 +184,11 @@ QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orienta
         }
         else if (section == minimumColumn())
         {
-            return tr("Minimum\nvalue");
+            return tr("Min");
         }
         else if (section == maximumColumn())
         {        
-            return tr("Maximum\nvalue");
+            return tr("Max");
         }
         else if (section == choiceColumn())
         {        
@@ -210,7 +219,6 @@ QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orienta
             return QVariant();
         }
     }
-
     // if unsupported role
     else 
     {
@@ -263,17 +271,6 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
         else if (index.column() == valueColumn())
         {
             parameter->setValue(value.toString());
-
-            if (parameter->getChoiceRef().isEmpty() && expressionParser_->isValidExpression(value.toString()))
-            {
-                parameter->setValueAttribute("kactus2:expr", value.toString());
-            }
-            else
-            {
-                parameter->setValueAttribute("kactus2:expr", "");
-            }
-
-            updateReferencingValues();
         }
         else if (index.column() == resolveColumn())
         {
@@ -300,9 +297,7 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
         emit contentChanged();
         return true;
     }
-
-    // is unsupported role
-    else 
+    else // is unsupported role
     {
         return false;
     }
@@ -377,20 +372,13 @@ QString AbstractParameterModel::evaluateValueFor(QSharedPointer<Parameter> param
         QSharedPointer<Choice> choice = findChoice(parameter->getChoiceRef());
         return findDisplayValueForEnumeration(choice, parameter->getValue());
     }
-    else if (!parameter->getValueAttribute("kactus2:expr").isEmpty())
+    else if (expressionParser_->isValidExpression(parameter->getValue()))
     {
-        if (expressionParser_->isValidExpression(parameter->getValueAttribute("kactus2:expr")))
-        {
-            return expressionParser_->parseExpression(parameter->getValueAttribute("kactus2:expr"));
-        }
-        else
-        {
-            return "n/a";
-        }
+        return expressionParser_->parseExpression(parameter->getValue());
     }
     else
     {
-        return parameter->getValue();
+        return "n/a";
     }
 }
 
@@ -432,7 +420,7 @@ QString AbstractParameterModel::findDisplayValueForEnumeration(QSharedPointer<Ch
 //-----------------------------------------------------------------------------
 bool AbstractParameterModel::validateColumnForParameter(int column, QSharedPointer<Parameter> parameter) const
 {
-    ParameterValidator validator;
+    ParameterValidator2014 validator(expressionParser_);
 
     if (column == nameColumn())
     {
@@ -440,7 +428,7 @@ bool AbstractParameterModel::validateColumnForParameter(int column, QSharedPoint
     }
     else if (column == typeColumn())
     {
-        return true;
+        return validator.hasValidValueForType(parameter->getValue(), parameter->getType());
     }
     else if (column == bitWidthColumn())
     {
@@ -473,24 +461,3 @@ bool AbstractParameterModel::validateColumnForParameter(int column, QSharedPoint
     return true;
 }
 
-//-----------------------------------------------------------------------------
-// Function: AbstractParameterModel::updateReferencingValues()
-//-----------------------------------------------------------------------------
-void AbstractParameterModel::updateReferencingValues()
-{
-    for (int i = 0; i < rowCount(); i++)
-    {
-        QSharedPointer<Parameter> parameter = getParameterOnRow(i);
-
-        QString oldValue = parameter->getValue();
-        QString newValue = evaluateValueFor(parameter);
-        if (oldValue != newValue && parameter->getChoiceRef().isEmpty())
-        {
-            parameter->setValue(newValue);
-
-            QModelIndex changedValueIndex = createIndex(i, valueColumn(), (void*)parameter.data());
-            emit dataChanged(changedValueIndex, changedValueIndex);
-            emit contentChanged();
-        }
-    }
-}

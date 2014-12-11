@@ -128,7 +128,7 @@ public:
      *
      *      @return True, if the value is less than minimum, otherwise false.
      */
-    bool valueIsLessThanMinimum(Parameter const* parameter) const;
+    virtual bool valueIsLessThanMinimum(Parameter const* parameter) const;
  
     /*!
      *  Checks if the value of the given parameter is greater than the specified maximum value.
@@ -137,7 +137,7 @@ public:
      *
      *      @return True, if the value is greater than maximum, otherwise false.
      */   
-    bool valueIsGreaterThanMaximum(Parameter const* parameter) const;
+    virtual bool valueIsGreaterThanMaximum(Parameter const* parameter) const;
      
     /*!
      *  Validates the choice reference of the given parameter.
@@ -190,13 +190,8 @@ public:
      */
     virtual QStringList findErrorsIn(Parameter const* parameter, QString const& context,
         QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
-
-private:
-
-	// Disable copying.
-	ParameterValidator(ParameterValidator const& rhs);
-	ParameterValidator& operator=(ParameterValidator const& rhs);
-     
+protected:
+         
     /*!
      *  Checks if the parameter value and the given boundary value, minimum or maximum, should be compared.
      *
@@ -205,8 +200,8 @@ private:
      *
      *      @return True, if the value and boundary should be compared, otherwise false.
      */  
-    bool shouldCompareValueAndBoundary(QString const& boundaryValue, QString const& format) const;
-
+    virtual bool shouldCompareValueAndBoundary(QString const& boundaryValue, QString const& format) const;
+    
     /*!
      *  Evaluates the value of the given value for the given format.
      *
@@ -215,8 +210,14 @@ private:
      *
      *      @return The evaluated value.
      */
-    qreal valueOf(QString const& value, QString const& format) const;
-        
+    virtual qreal valueOf(QString const& value, QString const& format) const;
+
+private:
+
+	// Disable copying.
+	ParameterValidator(ParameterValidator const& rhs);
+	ParameterValidator& operator=(ParameterValidator const& rhs);
+  
     /*!
      *  Finds possible errors in a parameter name.
      *

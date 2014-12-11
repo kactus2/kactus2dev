@@ -150,7 +150,7 @@ bool ParameterValidator::valueIsLessThanMinimum(Parameter const* parameter) cons
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator::valueIsLessThanMinimum()
+// Function: ParameterValidator::valueIsGreaterThanMaximum()
 //-----------------------------------------------------------------------------
 bool ParameterValidator::valueIsGreaterThanMaximum(Parameter const* parameter) const
 {

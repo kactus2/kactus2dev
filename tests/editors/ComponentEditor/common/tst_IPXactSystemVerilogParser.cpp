@@ -58,6 +58,8 @@ private slots:
     void testParameterDefinedUsingOtherParameter_data();
 
     void testLoopTerminatesEventually();
+
+    void testReferenceToStringInExpression();
 };
 
 //-----------------------------------------------------------------------------
@@ -167,7 +169,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithParameterReferences_data()
     QTest::newRow("Parameter value multiplied") << "4*one" << "4";
 
     QTest::newRow("Reference to unknown parameter") << "unknown" << "unknown" ;
-    QTest::newRow("Parameter value plus unknown parameter value") << "one + unknown" << "one + unknown";
+    QTest::newRow("Parameter value plus unknown parameter value") << "one + unknown" << "1 + unknown";
 
     QTest::newRow("Two parameters") << "one + two" << "3";
 }
@@ -203,7 +205,6 @@ void tst_IPXactSystemVerilogParser::testExpressionWithModelParameterReferences_d
 {
     testExpressionWithParameterReferences_data();
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: tst_IPXactSystemVerilogParser::testExpressionWithViewParameterReferences()
@@ -385,7 +386,29 @@ void tst_IPXactSystemVerilogParser::testLoopTerminatesEventually()
 
     IPXactSystemVerilogParser parser(testComponent);
 
-    QCOMPARE(parser.parseExpression("second"), QString("second"));
+    QCOMPARE(parser.parseExpression("second"), QString("x"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_IPXactSystemVerilogParser::testReferenceToString()
+//-----------------------------------------------------------------------------
+void tst_IPXactSystemVerilogParser::testReferenceToStringInExpression()
+{
+    QSharedPointer<Component> testComponent(new Component());
+    QSharedPointer<Parameter> firstParameter(new Parameter());
+    firstParameter->setValueId("first");
+    firstParameter->setValue("\"text\"");
+    testComponent->getParameters().append(firstParameter);
+
+    QSharedPointer<Parameter> secondParameter(new Parameter());
+    secondParameter->setValueId("second");
+    secondParameter->setValue("first + 2");
+    testComponent->getParameters().append(secondParameter);
+
+    IPXactSystemVerilogParser parser(testComponent);
+
+    QCOMPARE(parser.parseExpression("first"), QString("\"text\""));
+    QCOMPARE(parser.parseExpression("second"), QString("\"text\" + 2"));
 }
 
 QTEST_APPLESS_MAIN(tst_IPXactSystemVerilogParser)

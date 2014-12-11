@@ -1,17 +1,17 @@
 #-----------------------------------------------------------------------------
-# File: tst_ParameterValidator.pro
+# File: tst_ParameterValidator2014.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
-# Date: 13.11.2014
+# Date: 11.12.2014
 #
 # Description:
-# Qt project file template for running unit tests for ParameterValidator.
+# Qt project file template for running unit tests for SystemVerilogExpressionParser.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = app
 
-TARGET = tst_ParameterValidator
+TARGET = tst_ParameterValidator2014
 
 QT += core xml gui testlib
 CONFIG += testcase console
@@ -19,29 +19,24 @@ CONFIG += testcase console
 DEFINES += IPXACTMODELS_LIB
 
 win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels
+    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
     DESTDIR = ./release
 }
 else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodelsd
+    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodelsd
     DESTDIR = ./debug
 }
 else:unix {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels
+    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
     DESTDIR = ./release
 }
 
-INCLUDEPATH += $$PWD/../../
-INCLUDEPATH += $$PWD/../../executable
-INCLUDEPATH += $$PWD/../../executable/Plugins
+INCLUDEPATH += $$PWD/../../../
+INCLUDEPATH += $$PWD/../../../executable
 INCLUDEPATH += $$DESTDIR
 
-DEPENDPATH += $$PWD/../../
-DEPENDPATH += $$PWD/../../executable
-DEPENDPATH += $$PWD/../../executable/Plugins
-DEPENDPATH += .
-INCLUDEPATH += $$DESTDIR
-
+DEPENDPATH += $$PWD/../../../
+DEPENDPATH += $$PWD/../../../executable
 DEPENDPATH += .
 
 OBJECTS_DIR += $$DESTDIR
@@ -49,4 +44,5 @@ OBJECTS_DIR += $$DESTDIR
 MOC_DIR += ./generatedFiles
 UI_DIR += ./generatedFiles
 RCC_DIR += ./generatedFiles
-include(tst_ParameterValidator.pri)
+
+include(tst_ParameterValidator2014.pri)

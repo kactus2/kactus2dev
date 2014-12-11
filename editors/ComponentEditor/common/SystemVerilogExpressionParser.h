@@ -39,13 +39,14 @@ public:
     virtual QString parseExpression(QString const& expression) const;
 
     /*!
-     *  Checks if the given expression is not valid for parsing.
+     *  Checks if the given expression is valid for parsing.
      *
      *      @param [in] expression   The expression to check.
      *
-     *      @return True, if the expression is not in valid format, otherwise false.
+     *      @return True, if the expression is in valid format, otherwise false.
      */
     virtual bool isValidExpression(QString const& expression) const;
+
 
 private:
 
@@ -175,7 +176,8 @@ private:
      *
      *      @return The real value of the constant.
      */
-    qreal parseConstant(QString const& constantNumber) const;
+    qreal parseConstantToDecimal(QString const& constantNumber) const;
+    int getBaseForNumber(QString const& constantNumber) const;
 
     /*!
      *  Converts the base format to the base number e.g. h to 16.
@@ -185,8 +187,7 @@ private:
      *      @return The base number for the format.
      */
     int baseForFormat(QString const& baseFormat) const;
-
-
+    bool isLiteral(QString const& expression) const;
 };
 
 #endif // SYSTEMVERILOGEXPRESSIONPARSER_H

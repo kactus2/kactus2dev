@@ -7,8 +7,6 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../IPXACTmodels/XmlUtils.h \
-    ../../IPXACTmodels/parameter.h
-SOURCES += ../../IPXACTmodels/XmlUtils.cpp \
-    ../../IPXACTmodels/parameter.cpp \
-    ./tst_ParameterValidator.cpp
+HEADERS += ../XmlUtils.h \
+    ../parameter.h
+SOURCES += ./tst_ParameterValidator.cpp

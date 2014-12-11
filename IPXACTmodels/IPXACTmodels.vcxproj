@@ -235,6 +235,7 @@
     <ClCompile Include="validators\namevalidator.cpp" />
     <ClCompile Include="validators\NMTokenValidator.cpp" />
     <ClCompile Include="validators\ParameterValidator.cpp" />
+    <ClCompile Include="validators\ParameterValidator2014.cpp" />
     <ClCompile Include="vector.cpp" />
     <ClCompile Include="view.cpp" />
     <ClCompile Include="vlnv.cpp" />
@@ -371,6 +372,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DIPXACTMODELS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(SolutionDir)\."</Command>
     </CustomBuild>
     <ClInclude Include="validators\ParameterValidator.h" />
+    <ClInclude Include="validators\ParameterValidator2014.h" />
     <ClInclude Include="vector.h" />
     <ClInclude Include="VendorExtension.h" />
     <ClInclude Include="view.h" />

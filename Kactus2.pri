@@ -70,7 +70,6 @@ HEADERS += ./common/Global.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h \
     ./common/widgets/DirectoryListSelector/DirectoryListSelector.h \
     ./common/validators/AddressValidator.h \
-    ./kactusGenerators/vhdlGenerator/VhdlTypedObject.h \
     ./common/validators/LibraryPathValidator/librarypathvalidator.h \
     ./common/layouts/HCollisionLayout.h \
     ./common/layouts/HStackedLayout.h \
@@ -461,6 +460,8 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/choices/ChoicesModel.h \
     ./editors/ComponentEditor/choices/ChoicesDelegate.h \
     ./editors/ComponentEditor/choices/EnumerationModel.h \
+    ./editors/ComponentEditor/common/ExpressionParser.h \
+    ./editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ./editors/ComponentEditor/common/AbstractParameterModel.h \
     ./editors/CSourceEditor/CSourceContentMatcher.h \
@@ -560,6 +561,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlgeneral.h \
     ./kactusGenerators/vhdlGenerator/vhdlportmap.h \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.h \
+    ./kactusGenerators/vhdlGenerator/VhdlTypedObject.h \
     ./kactusGenerators/vhdlGenerator/vhdlcomponentdeclaration.h \
     ./kactusGenerators/vhdlGenerator/vhdlcomponentinstance.h \
     ./kactusGenerators/vhdlGenerator/vhdlgenerator2.h \
@@ -992,6 +994,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/choices/ChoicesModel.cpp \
     ./editors/ComponentEditor/choices/EnumerationModel.cpp \
     ./editors/ComponentEditor/common/AbstractParameterModel.cpp \
+    ./editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./editors/CSourceEditor/CSourceContentMatcher.cpp \
     ./editors/CSourceEditor/CSourceHighlighter.cpp \
@@ -1093,8 +1096,8 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportmap.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
+    ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
 RESOURCES += kactus.qrc

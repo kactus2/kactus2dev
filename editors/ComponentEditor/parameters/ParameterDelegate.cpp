@@ -60,14 +60,6 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     {
         return createNumberEditor(parent, option, index);
     }
-    else if (index.column() == minimumColumn())
-    {
-        return createEditorUsingFormat(parent, option, index);
-    }
-    else if (index.column() == maximumColumn())
-    {
-        return createEditorUsingFormat(parent, option, index);
-    }
     else if (index.column() == resolveColumn())
     {
         return createResolveSelector(parent);
@@ -297,23 +289,6 @@ QWidget* ParameterDelegate::createEnumerationSelector(QWidget* parent, QModelInd
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterDelegate::createValueEditorUsingFormat()
-//-----------------------------------------------------------------------------
-QWidget* ParameterDelegate::createEditorUsingFormat(QWidget* parent, QStyleOptionViewItem const& option, 
-    QModelIndex const& index) const
-{
-    QWidget* editor = QStyledItemDelegate::createEditor(parent, option, index);
-
-    QLineEdit* lineEdit = qobject_cast<QLineEdit*>(editor);
-    if (lineEdit)
-    {
-        lineEdit->setValidator(createValidatorForFormat(formatOnRow(index), lineEdit));
-    }
-
-    return editor;
-}
-
-//-----------------------------------------------------------------------------
 // Function: ParameterDelegate::createNumberEditor()
 //-----------------------------------------------------------------------------
 QWidget* ParameterDelegate::createNumberEditor(QWidget* parent, QStyleOptionViewItem const& option, 
@@ -340,35 +315,4 @@ QWidget* ParameterDelegate::createResolveSelector(QWidget* parent) const
     combo->addItem(QString("user"));
     combo->addItem(QString("generated"));
     return combo;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterDelegate::createValidatorForFormat()
-//-----------------------------------------------------------------------------
-QValidator* ParameterDelegate::createValidatorForFormat(QString const& format, QWidget* parent) const
-{
-    if (format == "bool")
-    {
-        return new QRegExpValidator(QRegExp("(?:" + StringPromptAtt::VALID_BOOL_VALUE + ")?"), parent);
-    }
-    else if (format == "long")
-    {
-        return new QRegExpValidator(QRegExp("(?:" + StringPromptAtt::VALID_LONG_VALUE + ")?"), parent);
-    }
-    else if (format == "bitString")
-    {
-        return new QRegExpValidator(QRegExp("(?:" + StringPromptAtt::VALID_BITSTRING_VALUE + ")?"), parent);
-    }
-    else if (format == "float")
-    {
-         return new QRegExpValidator(QRegExp("(?:" + StringPromptAtt::VALID_FLOAT_VALUE + ")?"), parent);
-    }
-    else if (format == "string" || format.isEmpty())
-    {
-        return 0;
-    }
-    else
-    {
-        return new QRegExpValidator(QRegExp(), parent);
-    }
 }

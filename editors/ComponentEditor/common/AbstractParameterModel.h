@@ -257,13 +257,6 @@ protected:
      */
     virtual bool validateColumnForParameter(int column, QSharedPointer<Parameter> parameter) const;
 
-protected:
-        
-    /*!
-     *  Re-evaluates all parameter values.
-     */
-    virtual void updateReferencingValues();
-
 private:
 
 	//! No copying

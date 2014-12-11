@@ -5953,6 +5953,5 @@
     <None Include="wizards\common\ListComparator.inl">
       <Filter>Source Files\wizards\common</Filter>
     </None>
-    <None Include="ClassDiagram11.cd" />
   </ItemGroup>
 </Project>

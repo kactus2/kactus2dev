@@ -47,10 +47,10 @@ QString IPXactSystemVerilogParser::parseExpression(QString const& expression) co
   
     if (isValidExpression(evaluatedExpression))
     {
-          return SystemVerilogExpressionParser::parseExpression(evaluatedExpression);
+        return SystemVerilogExpressionParser::parseExpression(evaluatedExpression);
     }
   
-    return expression;
+    return evaluatedExpression;
 }
 
 //-----------------------------------------------------------------------------
@@ -82,7 +82,10 @@ QString IPXactSystemVerilogParser::evaluateParameterValuesIn(QString const& expr
             QString parameterValue = 
                 evaluateParameterValuesIn(parameter->getValue(), componentParameters, recursionStep + 1);
 
-            parameterValue = SystemVerilogExpressionParser::parseExpression(parameterValue);
+            if (SystemVerilogExpressionParser::isValidExpression(parameterValue))
+            {
+                parameterValue = SystemVerilogExpressionParser::parseExpression(parameterValue);
+            }
 
             evaluated.replace(parameter->getValueId(), parameterValue);
         }

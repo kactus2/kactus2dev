@@ -8,6 +8,8 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ../../../../editors/ComponentEditor/common/ExpressionParser.h \
-    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h
+    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../../../editors/ComponentEditor/common/SystemVerilogValidator.h
 SOURCES += ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ./tst_SystemVerilogExpressionParser.cpp
+    ./tst_ParameterValidator2014.cpp \
+    ../../../../editors/ComponentEditor/common/SystemVerilogValidator.cpp
