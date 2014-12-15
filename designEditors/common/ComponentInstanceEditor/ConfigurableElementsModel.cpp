@@ -420,7 +420,14 @@ void ConfigurableElementsModel::addParameterWithIDToVisibleElements(
         QString value = parameterPointer->getValue();
         QString uuId = parameterPointer->getValueId();
         QString defaultValue = parameterPointer->getValue();
-        bool isEditable = parameterPointer->getValueResolve() != unEditableResolveValue;
+        
+        bool isEditable = true;
+
+        if (parameterPointer->getValueResolve() == unEditableResolveValue ||
+            parameterPointer->getValueResolve().isEmpty())
+        {
+            isEditable = false;
+        }
 
         if (currentElementValues_.contains(uuId))
         {
