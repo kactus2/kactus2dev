@@ -9,6 +9,7 @@
 
 #include "ModelParameterDelegate.h"
 #include "ModelParameterColumns.h"
+#include "ModelParameterEditorHeaderView.h"
 
 #include <IPXACTmodels/component.h>
 
@@ -48,8 +49,15 @@ proxy_(this)
 
 	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/modelParamList.csv").arg(compPath);
-	view_.setDefaultImportExportPath(defPath);
-	view_.setAllowImportExport(true);
+	
+    ModelParameterEditorHeaderView* modelParameterHorizontalHeader = 
+        new ModelParameterEditorHeaderView(Qt::Horizontal, this);
+    view_.setHorizontalHeader(modelParameterHorizontalHeader);
+    view_.horizontalHeader()->setSectionsClickable(true);
+    view_.horizontalHeader()->setStretchLastSection(true);
+
+    view_.setDefaultImportExportPath(defPath);
+    view_.setAllowImportExport(true);
 
 	// set view to be sortable
 	view_.setSortingEnabled(true);
@@ -70,6 +78,8 @@ proxy_(this)
 
 	// sort the view
 	view_.sortByColumn(0, Qt::AscendingOrder);;
+
+    view_.setColumnHidden(ModelParameterColumns::VALUEID, true);
 
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Model parameters"), this);

@@ -229,6 +229,13 @@ protected:
     virtual int descriptionColumn() const;
 
     /*!
+     *  Gets the column index for description.
+     *
+     *      @return     The column index for value id.
+     */
+    virtual int valueIdColumn() const;
+
+    /*!
      *  Validates the data in a model parameter corresponding to a given column.
      *
      *      @param [in] column      The column whose data to validate.

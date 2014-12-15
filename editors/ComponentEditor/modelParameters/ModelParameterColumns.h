@@ -16,18 +16,19 @@ namespace ModelParameterColumns
     {
         NAME = 0,
         DISPLAY_NAME,
+        DESCRIPTION,
+        VALUEID,
         DATA_TYPE,
-        USAGE_TYPE,
         TYPE,
+        VALUE,
+        CHOICE,
         MINIMUM,
         MAXIMUM,
-        CHOICE,
-        VALUE,
+        USAGE_TYPE,
         RESOLVE,
         BITWIDTH,
         ARRAY_SIZE,
         ARRAY_OFFSET,
-        DESCRIPTION,
-        COLUMN_COUNT
+        COLUMN_COUNT,
     };
 }

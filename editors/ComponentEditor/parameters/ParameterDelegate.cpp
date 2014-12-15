@@ -20,6 +20,7 @@
 #include <QComboBox>
 #include <QLineEdit>
 #include <QRegExpValidator>
+#include <QPainter>
 
 //-----------------------------------------------------------------------------
 // Function: ParameterDelegate::ParameterDelegate()
@@ -138,6 +139,25 @@ void ParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
 }
 
 //-----------------------------------------------------------------------------
+// Function: ParameterDelegate::paint()
+//-----------------------------------------------------------------------------
+void ParameterDelegate::paint(
+    QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    QStyledItemDelegate::paint(painter, option, index);
+
+    if (index.column() == maximumColumn() || index.column() == valueColumn())
+    {
+        QPen oldPen = painter->pen();
+        QPen newPen(Qt::lightGray);
+        newPen.setWidth(2);
+        painter->setPen(newPen);
+        painter->drawLine(option.rect.topRight() + QPoint(1,1), option.rect.bottomRight() + QPoint(1,1));
+        painter->setPen(oldPen);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: ParameterDelegate::choiceColumn()
 //-----------------------------------------------------------------------------
 int ParameterDelegate::choiceColumn() const
@@ -191,6 +211,14 @@ int ParameterDelegate::valueColumn() const
 int ParameterDelegate::resolveColumn() const
 {
     return ParameterColumns::RESOLVE;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::descriptionColumn()
+//-----------------------------------------------------------------------------
+int ParameterDelegate::descriptionColumn() const
+{
+    return ParameterColumns::DESCRIPTION;
 }
 
 //-----------------------------------------------------------------------------

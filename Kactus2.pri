@@ -40,7 +40,6 @@ HEADERS += ./common/Global.h \
     ./common/widgets/componentPreviewBox/ComponentPreviewBox.h \
     ./common/widgets/dirLineEdit/dirlineedit.h \
     ./common/widgets/ScanProgressWidget/scanprogresswidget.h \
-    ./common/widgets/ParameterEditor/parametereditor.h \
     ./common/widgets/ParameterGroupBox/parametergroupbox.h \
     ./common/widgets/NumberLineEdit/numberlineedit.h \
     ./common/widgets/nameGroupEditor/namegroupeditor.h \
@@ -247,6 +246,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/general/desceditor.h \
     ./editors/ComponentEditor/general/generaleditor.h \
     ./editors/ComponentEditor/modelParameters/ModelParameterColumns.h \
+    ./editors/ComponentEditor/modelParameters/ModelParameterEditorHeaderView.h \
     ./editors/ComponentEditor/modelParameters/ModelParameterDelegate.h \
     ./editors/ComponentEditor/modelParameters/modelparametermodel.h \
     ./editors/ComponentEditor/modelParameters/modelparametereditor.h \
@@ -257,6 +257,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/parameters/ParameterColumns.h \
     ./editors/ComponentEditor/parameters/parametersmodel.h \
     ./editors/ComponentEditor/parameters/ParameterDelegate.h \
+    ./editors/ComponentEditor/parameters/ParameterEditorHeaderView.h \
     ./editors/ComponentEditor/parameters/parameterseditor.h \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.h \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.h \
@@ -535,6 +536,7 @@ HEADERS += ./common/Global.h \
     ./designEditors/common/DesignDiagram.h \
     ./designEditors/common/DesignWidget.h \
     ./designEditors/common/ComponentDesignDiagram.h \
+    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsModel.h \
     ./designEditors/common/ComponentInstanceEditor/componentinstanceeditor.h \
     ./designEditors/common/ComponentInstanceEditor/configurableelementdelegate.h \
     ./designEditors/common/ComponentInstanceEditor/configurableelementeditor.h \
@@ -571,8 +573,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsModel.h
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -618,7 +619,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/dirLineEdit/dirlineedit.cpp \
     ./common/widgets/booleanComboBox/booleancombobox.cpp \
     ./common/widgets/ScanProgressWidget/scanprogresswidget.cpp \
-    ./common/widgets/ParameterEditor/parametereditor.cpp \
     ./common/widgets/ParameterGroupBox/parametergroupbox.cpp \
     ./common/widgets/NumberLineEdit/numberlineedit.cpp \
     ./common/widgets/nameGroupEditor/namegroupeditor.cpp \
@@ -857,11 +857,13 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/general/generaleditor.cpp \
     ./editors/ComponentEditor/modelParameters/ModelParameterDelegate.cpp \
     ./editors/ComponentEditor/modelParameters/modelparametereditor.cpp \
+    ./editors/ComponentEditor/modelParameters/ModelParameterEditorHeaderView.cpp \
     ./editors/ComponentEditor/modelParameters/modelparametermodel.cpp \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.cpp \
     ./editors/ComponentEditor/parameters/ParameterDelegate.cpp \
+    ./editors/ComponentEditor/parameters/ParameterEditorHeaderView.cpp \
     ./editors/ComponentEditor/parameters/parameterseditor.cpp \
     ./editors/ComponentEditor/parameters/parametersmodel.cpp \
     ./editors/ComponentEditor/ports/portsdelegate.cpp \
@@ -1063,9 +1065,9 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/common/DesignWidget.cpp \
     ./designEditors/common/NamelabelWidth.cpp \
     ./designEditors/common/ComponentInstanceEditor/componentinstanceeditor.cpp \
-    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsModel.cpp \
     ./designEditors/common/ComponentInstanceEditor/configurableelementdelegate.cpp \
     ./designEditors/common/ComponentInstanceEditor/configurableelementeditor.cpp \
+    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsModel.cpp \
     ./designEditors/common/ConnectionEditor/AdHocBoundsDelegate.cpp \
     ./designEditors/common/ConnectionEditor/AdHocBoundsModel.cpp \
     ./designEditors/common/ConnectionEditor/connectioneditor.cpp \

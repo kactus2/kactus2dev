@@ -62,6 +62,15 @@ public:
 	*/
 	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const;
 
+    /*!
+     *  Paint the delegate.
+     *
+     *      @param [in] painter     The painter used.
+     *      @param [in] option      Style option in use.
+     *      @param [in] index       Index of model.
+     */
+    virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
 protected:
 
     /*!
@@ -112,6 +121,13 @@ protected:
      *      @return The column for editing value selection.
      */
     virtual int resolveColumn() const;
+
+    /*!
+     *  Gets the column for description.
+     *
+     *      @return     The column for description.
+     */
+    virtual int descriptionColumn() const;
 
     /*!
      *  Finds the name of the choice on the row identified by the given index.

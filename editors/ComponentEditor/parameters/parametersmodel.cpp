@@ -81,7 +81,6 @@ void ParametersModel::onAddItem(QModelIndex const& index)
 
     beginInsertRows(QModelIndex(), row, row);
     QSharedPointer<Parameter> createdParameter(new Parameter());
-    createdParameter->setValueId(QUuid::createUuid().toString());
     parameters_.insert(row, createdParameter);
     endInsertRows();
 
@@ -211,4 +210,12 @@ int ParametersModel::arrayOffsetColumn() const
 int ParametersModel::descriptionColumn() const
 {
     return ParameterColumns::DESCRIPTION;
+}
+
+//-----------------------------------------------------------------------------
+// Function: parametersmodel::valueIdColumn()
+//-----------------------------------------------------------------------------
+int ParametersModel::valueIdColumn() const
+{
+    return ParameterColumns::VALUEID;
 }

@@ -24,6 +24,8 @@
 #include <QXmlStreamWriter>
 #include <qmath.h>
 
+#include <QUuid>
+
 //-----------------------------------------------------------------------------
 // Function: Parameter::Parameter()
 //-----------------------------------------------------------------------------
@@ -40,6 +42,11 @@ value_(), valueAttributes_()
         {
 			value_ = tempNode.childNodes().at(0).nodeValue();
 			valueAttributes_ = XmlUtils::parseAttributes(tempNode);
+
+            if (getValueId().isEmpty())
+            {
+                setValueId(QUuid::createUuid().toString());
+            }
 		}
         else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
         {
@@ -58,7 +65,7 @@ value_(), valueAttributes_()
 //-----------------------------------------------------------------------------
 Parameter::Parameter(): nameGroup_(), value_(), attributes_(), valueAttributes_()
 {
-
+    setValueId(QUuid::createUuid().toString());
 }
 
 //-----------------------------------------------------------------------------

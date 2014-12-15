@@ -111,3 +111,11 @@ int ModelParameterDelegate::resolveColumn() const
 {
     return ModelParameterColumns::RESOLVE;
 }
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameterDelegate::descriptionColumn()
+//-----------------------------------------------------------------------------
+int ModelParameterDelegate::descriptionColumn() const
+{
+    return ModelParameterColumns::DESCRIPTION;
+}

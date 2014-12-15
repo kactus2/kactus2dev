@@ -7,7 +7,9 @@
 
 #include "parameterseditor.h"
 
+#include "ParameterColumns.h"
 #include "ParameterDelegate.h"
+#include "ParameterEditorHeaderView.h"
 
 #include <common/widgets/summaryLabel/summarylabel.h>
 
@@ -45,7 +47,15 @@ proxy_(0)
 
 	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/parameterList.csv").arg(compPath);
-	view_.setDefaultImportExportPath(defPath);
+
+    ParameterEditorHeaderView* parameterHorizontalHeader = new ParameterEditorHeaderView(Qt::Horizontal, this);
+    //view_.setHorizontalHeader(false);
+    view_.setHorizontalHeader(parameterHorizontalHeader);
+
+    view_.horizontalHeader()->setSectionsClickable(true);
+    view_.horizontalHeader()->setStretchLastSection(true);
+
+    view_.setDefaultImportExportPath(defPath);
 	view_.setAllowImportExport(true);
 
 	// set view to be sortable
@@ -70,7 +80,9 @@ proxy_(0)
 	// sort the view
 	view_.sortByColumn(0, Qt::AscendingOrder);
 
-	// display a label on top the table
+    view_.setColumnHidden(ParameterColumns::VALUEID, true);
+
+    // display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Parameters"), this);
 
 	// create the layout, add widgets to it

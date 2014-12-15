@@ -131,6 +131,7 @@ QVariant ModelParameterModel::headerData(int section, Qt::Orientation orientatio
     {
 		return QVariant();
     }
+
 	else if (role == Qt::DisplayRole) 
     {	
 		if (section ==  ModelParameterColumns::DATA_TYPE)
@@ -139,7 +140,7 @@ QVariant ModelParameterModel::headerData(int section, Qt::Orientation orientatio
         }
         else if (section == ModelParameterColumns::USAGE_TYPE)
         {
-            return tr("Usage\ntype");
+            return tr("OO usage");
         }
         else
         {
@@ -148,7 +149,7 @@ QVariant ModelParameterModel::headerData(int section, Qt::Orientation orientatio
 	}
 	else 
     {
-		return QVariant();
+        return AbstractParameterModel::headerData(section, orientation, role);
 	}
 }
 
@@ -366,6 +367,14 @@ int ModelParameterModel::arrayOffsetColumn() const
 int ModelParameterModel::descriptionColumn() const
 {
     return ModelParameterColumns::DESCRIPTION;
+}
+
+//-----------------------------------------------------------------------------
+// Function: modelparametermodel::valueIdColumn()
+//-----------------------------------------------------------------------------
+int ModelParameterModel::valueIdColumn() const
+{
+    return ModelParameterColumns::VALUEID;
 }
 
 //-----------------------------------------------------------------------------

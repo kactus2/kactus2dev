@@ -12,52 +12,60 @@
       parameters of a component.  Parameters are name-value pairs to
       configure or hold information related to the containing
       component. Note that these are not VHDL generics.
+	  In the columns, f(x) means that the value can be given as an equation.
     </p>
     <p>
-      Each parameter contains mandatory <b>name</b> and an optional
-      <b>display name</b> for more user-friendly identifier.
+      Each parameter contains a mandatory <b>name</b> and an optional
+      <b>display name</b> for more user-friendly identifier. 
+	  <b>Description</b> is free text for further details.
     </p>
     <p>
-      <b>Format</b> defines the storage format for the parameter. 
-      Possible formats are:
+      <b>Type</b> is the type to which the parameter value resolves. 
+      Possible types are:
     </p>
     <ul>
-        <li><b>bitString</b> indicates that the the value is a string of 0's 
-        and 1's. Optionally, the string can be enclosed in double quotes.</li>
+        <li><b>bit</b> indicates that the value shall resolve to a System Verilog bit,
+		which by default is resolved to a 1-bit value, unless a vector size has been 
+		specified.</li>
 
-        <li><b>bool</b> indicates that the value is either <b>true</b> or 
-        <b>false</b>.</li>
+        <li><b>byte</b> indicates that the value shall resolve to a System Verilog byte,
+		which is resolved to an 8-bit integer value.</li>
 
-        <li><b>float</b> indicates that the value is a floating point number.
-        Both standard and scientific format (e.g. 0.002 and 2e-3) are supported.
-        This format applies also to <b>minimum value</b> and <b>maximum value</b>.
-        </li>
-
-        <li><b>long</b> indicates that the value is either a long integer
-        or a hexadecimal number. This format applies also to <b>minimum value</b> 
-        and <b>maximum value</b>.</li>
-
-        <li><b>string</b> indicates that the value shall contain any text.</li>
+        <li><b>shortint</b> indicates that the value shall resolve to a System Verilog shortint,
+		which is resolved to a 16-bit integer value.</li>
+		
+		<li><b>int</b> indicates that the value shall resolve to a System Verilog int, which
+		is resolved to a 32-bit integer value.</li>
+		
+		<li><b>longint</b> indicates that the value shall resolve to a System Verilog longint,
+		which is resolved to a 64-bit integer value.</li>
+		
+		<li><b>shortreal</b> indicates that the value shall resolve to a System Verilog
+		shorint, which is resolved to a 32-bit floating point value. Both standard and 
+		scientific format (e.g 0.002 and 2e-3) are supported. This type applies also to
+		<b>minimum value</b> and <b>maximum value</b>.</li>
+		
+		<li><b>real</b> indicates that the value shall resolve to a System Verilog shortreal,
+		which is resolved to a 64-bit floating point value. Both standard and scientific 
+		format (e.g. 0.002 and 2e-3) are supported. This type applies also to 
+		<b>minimum value</b> and <b>maximum value</b>.</li>
+		
+		<li><b>string</b> indicates that the value shall contain any text.</li>
     </ul>
     <p>
-      <b>Bit string length</b> is mandatory, if bitString format is selected.
-      It defines the length of the bit string that stores the value. If any
-      other format is selected, the field must be left empty.
+      By selecting a <b>choice</b>, the user can restrict the allowed parameter 
+	  values to a set of predefined values. Possible values are defined in the
+	  choices of the containing component.
+    </p>
+    <p>
+      <b>Value</b> contains the mandatory default value of the parameter. This 
+	  value can be overridden in a design that instantiates this component.
+	  The value can be given as an equation.
     </p>
     <p>
       <b>Minimum value</b> and <b>maximum value</b> define the lower and upper
-      boundary for the parameter value. If the selected format is any
-      other than <b>long</b> or <b>float</b>, these fields have no effect.
-    </p>
-    <p>
-      By selecting a <b>choice</b>, the user can restrict the allowed model 
-      parameter values to a set of predefined values. Possible values
-      are defined in the choices of the containing component.
-    </p>
-    <p>
-      <b>Value</b> contains the mandatory default value of the model
-      parameter. This value can be overridden in a design that
-      instantiates this component.
+      boundary for the parameter value. If the selected type is <b>bit</b> or 
+	  <b>string</b>, these fields have no effect.
     </p>
     <p>
       <b>Resolve</b> specifies the configuration of the parameter. 
@@ -66,7 +74,8 @@
         <ul>
         <li><b>immediate</b> indicates that the the value is defined
         within the containing component. The value cannot be overridden
-        by the user or a generator in design configuration.</li>
+        by the user or a generator in design configuration. This is the 
+		default value</li>
 
         <li><b>user</b> indicates that the user can override the
         default value in design configuration. Generators are not 
@@ -77,17 +86,18 @@
         </li>
     </ul>
     <p>
+      <b>Bit width</b> defines the length of the bit string that stores the value.
+	  f(x) means that the value can be given as an equation.
+    </p>
+    <p>
       <b>Array size</b> specifies the array dimension for the 
       parameter in an output language e.g. Verilog. This is a vendor
-      attribute.
+      attribute. The value can be given as an equation.
     </p>
     <p>
       <b>Array offset</b> specifies the starting point in the array
       dimension in an output language e.g. Verilog. This is a vendor
-      attribute.
-    </p>
-    <p>
-        <b>Description</b> is free text for further details.
+      attribute. The value can be given as an equation.
     </p>
     <p>
       Parameters editor contains a context menu (right mouse button)

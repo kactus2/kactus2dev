@@ -220,6 +220,13 @@ protected:
     virtual int descriptionColumn() const = 0;
 
     /*!
+     *  Gets the column index for uuID.
+     *
+     *      @return     The column index for uuID.
+     */
+    virtual int valueIdColumn() const = 0;
+
+    /*!
      *  Finds the value for the given model parameter using either selected choice or model parameter value.
      *
      *      @param [in] modelParameter   The model parameter whose value to find.

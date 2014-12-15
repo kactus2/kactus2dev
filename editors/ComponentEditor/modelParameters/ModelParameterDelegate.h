@@ -95,9 +95,16 @@ protected:
     /*!
      *  Gets the column for resolve.
      *
-     *      @return The column for editing value selection.
+     *      @return The column for resolve selection.
      */
     virtual int resolveColumn() const;
+
+    /*!
+     *  Gets the column index for description.
+     *
+     *      @return     The column index for description section.
+     */
+    virtual int descriptionColumn() const;
 
 private:
 

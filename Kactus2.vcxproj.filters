@@ -83,9 +83,6 @@
     <Filter Include="Source Files\common\widgets\ScanProgressWidget">
       <UniqueIdentifier>{e3ef319b-6662-4df0-a9d8-691d3d45b236}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\widgets\ParameterEditor">
-      <UniqueIdentifier>{9dd69997-9a5e-4dee-8b81-6d0c81880ef8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\widgets\ParameterGroupBox">
       <UniqueIdentifier>{ad13bc80-2bc0-4bec-96bc-d47541c21bde}</UniqueIdentifier>
     </Filter>
@@ -212,9 +209,6 @@
     </Filter>
     <Filter Include="Header Files\common\widgets\ScanProgressWidget">
       <UniqueIdentifier>{2dce8bcc-4b84-4cbc-a486-4180e81a598a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\widgets\ParameterEditor">
-      <UniqueIdentifier>{ee6cb2b4-43cc-4264-a3da-9f89717107a7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\ParameterGroupBox">
       <UniqueIdentifier>{84b4b9a9-cae5-43bc-bac4-f574ebe3ece8}</UniqueIdentifier>
@@ -1036,9 +1030,6 @@
     <ClCompile Include="common\widgets\ScanProgressWidget\scanprogresswidget.cpp">
       <Filter>Source Files\common\widgets\ScanProgressWidget</Filter>
     </ClCompile>
-    <ClCompile Include="common\widgets\ParameterEditor\parametereditor.cpp">
-      <Filter>Source Files\common\widgets\ParameterEditor</Filter>
-    </ClCompile>
     <ClCompile Include="common\widgets\ParameterGroupBox\parametergroupbox.cpp">
       <Filter>Source Files\common\widgets\ParameterGroupBox</Filter>
     </ClCompile>
@@ -1217,9 +1208,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_parametergroupbox.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_parametereditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_objectremovemodel.cpp">
@@ -3883,6 +3871,12 @@
     <ClCompile Include="GeneratedFiles\moc_ConfigurableElementsModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\parameters\ParameterEditorHeaderView.cpp">
+      <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\modelParameters\ModelParameterEditorHeaderView.cpp">
+      <Filter>Source Files\editors\ComponentEditor\modelParameters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4064,9 +4058,6 @@
     </CustomBuild>
     <CustomBuild Include="common\widgets\NumberLineEdit\numberlineedit.h">
       <Filter>Header Files\common\widgets\NumberLineEdit</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\widgets\ParameterEditor\parametereditor.h">
-      <Filter>Header Files\common\widgets\ParameterEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="common\widgets\ParameterGroupBox\parametergroupbox.h">
       <Filter>Header Files\common\widgets\ParameterGroupBox</Filter>
@@ -5331,6 +5322,9 @@
     <CustomBuild Include="designEditors\common\ComponentInstanceEditor\ConfigurableElementsModel.h">
       <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\parameters\ParameterEditorHeaderView.h">
+      <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -5617,6 +5611,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ExpressionParser.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\modelParameters\ModelParameterEditorHeaderView.h">
+      <Filter>Header Files\editors\ComponentEditor\modelParameters</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -48,7 +48,7 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
     }
 
     QSharedPointer<Parameter> parameter = getParameterOnRow(index.row());
-
+    
     if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
         if (index.column() == nameColumn())
@@ -106,6 +106,11 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
         {
             return parameter->getDescription();
         }
+        else if (index.column() == valueIdColumn())
+        {
+            return parameter->getValueId();
+        }
+
         else 
         {
             return QVariant();
@@ -166,6 +171,8 @@ QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orienta
 
     if (role == Qt::DisplayRole) 
     {
+        QString mathSymbolFunction(0x0192);
+
         if (section == nameColumn())
         {
             return tr("Name");
@@ -180,39 +187,43 @@ QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orienta
         }
         else if (section == bitWidthColumn())
         {
-            return tr("Bit width");   
+            return QString(tr("Bit width, ") + mathSymbolFunction + "(x)");
         }
         else if (section == minimumColumn())
         {
             return tr("Min");
         }
         else if (section == maximumColumn())
-        {        
+        {
             return tr("Max");
         }
         else if (section == choiceColumn())
-        {        
+        {
             return tr("Choice");
         }     
         else if (section == valueColumn())
-        {        
-            return tr("Value");
+        {
+            return QString(tr("Value, ") + mathSymbolFunction + "(x)");
         }  
         else if (section == resolveColumn())
-        {        
+        {     
             return tr("Resolve");
         }  
         else if (section == arraySizeColumn())
-        {        
-            return tr("Array\nsize");
+        {
+            return QString(tr("Array\nsize, ") + mathSymbolFunction + "(x)");
         }  
         else if (section == arrayOffsetColumn())
-        {        
-            return tr("Array\noffset");
+        {
+            return QString(tr("Array\noffset, ") + mathSymbolFunction + "(x)");
         } 
         else if (section == descriptionColumn())
         { 
             return tr("Description");
+        }
+        else if (section == valueIdColumn())
+        {
+            return tr("Value ID");
         }
         else
         {
@@ -287,6 +298,10 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
         else if (index.column() == descriptionColumn())
         {
             parameter->setDescription(value.toString());
+        }
+        else if (index.column() == valueIdColumn())
+        {
+            parameter->setValueId(value.toString());
         }
         else
         {

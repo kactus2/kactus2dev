@@ -178,6 +178,13 @@ protected:
      */
     virtual int descriptionColumn() const;
 
+    /*!
+     *  Gets the column index for value id.
+     *
+     *      @return     The column index for value id.
+     */
+    virtual int valueIdColumn() const;
+
 private:
 
 	//! No copying

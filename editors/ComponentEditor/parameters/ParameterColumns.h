@@ -16,16 +16,17 @@ namespace ParameterColumns
     {
         NAME = 0,
         DISPLAY_NAME,
+        DESCRIPTION,
+        VALUEID,
         TYPE,
+        VALUE,
+        CHOICE,
         MINIMUM,
         MAXIMUM,
-        CHOICE,
-        VALUE,
         RESOLVE,
         BITWIDTH,
         ARRAY_SIZE,
         ARRAY_OFFSET,
-        DESCRIPTION,
-        COLUMN_COUNT
+        COLUMN_COUNT,
     };
 }
