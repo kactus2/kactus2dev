@@ -7,8 +7,9 @@
 
 #include "parametergroupbox.h"
 
+#include <editors/ComponentEditor/parameters/ParameterColumns.h>
 #include <editors/ComponentEditor/parameters/ParameterDelegate.h>
-
+#include <editors/ComponentEditor/parameters/ParameterEditorHeaderView.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <IPXACTmodels/component.h>
@@ -39,6 +40,11 @@ proxy_(this)
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
+    ParameterEditorHeaderView* parameterHorizontalHeader = new ParameterEditorHeaderView(Qt::Horizontal, this);
+    view_.setHorizontalHeader(parameterHorizontalHeader);
+    view_.horizontalHeader()->setSectionsClickable(true);
+    view_.horizontalHeader()->setStretchLastSection(true);
+
 	// set view to be sortable
 	view_.setSortingEnabled(true);
 
@@ -54,6 +60,8 @@ proxy_(this)
 
 	// sort the view
 	view_.sortByColumn(0, Qt::AscendingOrder);
+
+    view_.setColumnHidden(ParameterColumns::VALUEID, true);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
