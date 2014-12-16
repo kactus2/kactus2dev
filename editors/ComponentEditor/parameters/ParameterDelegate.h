@@ -69,7 +69,7 @@ public:
      *      @param [in] option      Style option in use.
      *      @param [in] index       Index of model.
      */
-    virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    virtual void paint(QPainter *painter, QStyleOptionViewItem const& option, QModelIndex const& index) const;
 
 protected:
 

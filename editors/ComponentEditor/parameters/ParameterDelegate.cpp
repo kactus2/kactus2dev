@@ -19,7 +19,6 @@
 
 #include <QComboBox>
 #include <QLineEdit>
-#include <QRegExpValidator>
 #include <QPainter>
 
 //-----------------------------------------------------------------------------
@@ -137,8 +136,8 @@ void ParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
 //-----------------------------------------------------------------------------
 // Function: ParameterDelegate::paint()
 //-----------------------------------------------------------------------------
-void ParameterDelegate::paint(
-    QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void ParameterDelegate::paint(QPainter *painter, QStyleOptionViewItem const& option, 
+    QModelIndex const& index) const
 {
     QStyledItemDelegate::paint(painter, option, index);
 

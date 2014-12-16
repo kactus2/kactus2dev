@@ -181,8 +181,7 @@ private:
     *
     *      @return Equation where the terms and operators have been replaced with the result.
     */
-    QStringList solveBinaryOperationsFromLeftToRight(QStringList const& equation, 
-        QRegExp const& binaryOperator) const;
+    QStringList solveBinaryOperationsFromLeftToRight(QStringList const& equation, QRegularExpression const& binaryOperator) const;
 
     /*!
     *  Solves a binary operation.
