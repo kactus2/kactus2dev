@@ -176,15 +176,12 @@ protected:
     QWidget* createFormatSelector(QWidget* parent) const;
         
     /*!
-     *  Creates an editor for editing a number.
+     *  Creates an editor for selecting resolve attribute of a parameter.
      *
      *      @param [in] parent   The parent widget for the editor.
      *
-     *      @return An editor for editing a number.
+     *      @return An editor for selecting resolve attribute.
      */
-    QWidget* createNumberEditor(QWidget* parent, QStyleOptionViewItem const& option, 
-        QModelIndex const& index) const;
-
     QWidget* createResolveSelector(QWidget* parent) const;
 
 private:

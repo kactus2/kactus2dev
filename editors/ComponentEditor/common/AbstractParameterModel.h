@@ -22,7 +22,7 @@
 class Choice;
 class Component;
 class ExpressionParser;
-
+class ParameterValidator2014;
 //-----------------------------------------------------------------------------
 //! Base class for models editing parameters and model parameters.
 //-----------------------------------------------------------------------------
@@ -227,6 +227,15 @@ protected:
     virtual int valueIdColumn() const = 0;
 
     /*!
+     *  Checks if the given column is mandatory.
+     *
+     *      @param [in] column   The column to check.
+     *
+     *      @return True, if the column is mandatory, otherwise false.
+     */
+    virtual bool isMandatoryColumn(int column) const;
+
+    /*!
      *  Finds the value for the given model parameter using either selected choice or model parameter value.
      *
      *      @param [in] modelParameter   The model parameter whose value to find.
@@ -272,12 +281,72 @@ private:
 	//! No assignment
 	AbstractParameterModel& operator=(const AbstractParameterModel& other);
 
+    /*!
+     *  Gets the value for the given index.
+     *
+     *      @param [in] index   The index whose data to get.
+     *
+     *      @return The data in the given index.
+     */
+    QVariant valueForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Gets a formatted value for a given expression.
+     *
+     *      @param [in] expression   The expression whose value to format.
+     *
+     *      @return The formatted value for the expression.
+     */
+    QString formattedValueFor(QString const& expression) const;
+        
+    /*!
+     *  Evaluates a value for an expression.
+     *
+     *      @param [in] expression   The expression to evaluate.
+     *
+     *      @return The evaluated value or n/a if the expression could not be evaluated.
+     */
+    QString evaluateExpression(QString const& expression) const;
+
+    /*!
+     *  Gets the expression for the given index or the plain value if expression is not available.
+     *
+     *      @param [in] index   The index whose expression to get.
+     *
+     *      @return The expression for the index if available, otherwise the value for the given index.
+     */
+    QVariant expressionOrValueForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Gets the background color for the given index.
+     *
+     *      @param [in] index   The index whose background color to get.
+     *
+     *      @return The color for the background.
+     */
+    QVariant backgroundColorForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Gets a black color for valid index and red color for invalid index.
+     *
+     *      @param [in] index   The index for which to get the color.
+     *
+     *      @return Black for valid index, red for invalid index.
+     */
+    QVariant blackForValidOrRedForInvalidIndex(QModelIndex const& index) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! The choices available for model parameter values.
     QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
 
     //! Expression parser for configurable elements.
     QSharedPointer<ExpressionParser> expressionParser_;
 
+    //! Validator for parameters.
+    ParameterValidator2014* validator_;
 };
 
 #endif // ABSTRACTPARAMETERMODEL_H

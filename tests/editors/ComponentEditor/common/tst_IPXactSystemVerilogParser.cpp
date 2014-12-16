@@ -60,6 +60,9 @@ private slots:
     void testLoopTerminatesEventually();
 
     void testReferenceToStringInExpression();
+
+    void testGetBaseForExpression();
+
 };
 
 //-----------------------------------------------------------------------------
@@ -240,6 +243,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithViewParameterReferences_da
     testExpressionWithParameterReferences_data();
 }
 
+
 //-----------------------------------------------------------------------------
 // Function: tst_IPXactSystemVerilogParser::testExpressionWithRegisterParameterReferences()
 //-----------------------------------------------------------------------------
@@ -409,6 +413,22 @@ void tst_IPXactSystemVerilogParser::testReferenceToStringInExpression()
 
     QCOMPARE(parser.parseExpression("first"), QString("\"text\""));
     QCOMPARE(parser.parseExpression("second"), QString("\"text\" + 2"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_IPXactSystemVerilogParser::testGetBaseForExpression()
+//-----------------------------------------------------------------------------
+void tst_IPXactSystemVerilogParser::testGetBaseForExpression()
+{
+    QSharedPointer<Component> testComponent(new Component());
+    QSharedPointer<Parameter> firstParameter(new Parameter());
+    firstParameter->setValueId("first");
+    firstParameter->setValue("'h1");
+    testComponent->getParameters().append(firstParameter);
+
+    IPXactSystemVerilogParser parser(testComponent);
+
+    QCOMPARE(parser.baseForExpression("2*first"), 16);
 }
 
 QTEST_APPLESS_MAIN(tst_IPXactSystemVerilogParser)

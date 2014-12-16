@@ -47,6 +47,23 @@ public:
      */
     virtual bool isValidExpression(QString const& expression) const;
 
+    /*!
+     *  Checks if the given expression is a plain value and does not need evaluation.
+     *
+     *      @param [in] expression   The expression to check.
+     *
+     *      @return True, if the expression is a plain value, otherwise false.
+     */
+    virtual bool isPlainValue(QString const& expression) const;
+
+    /*!
+     *  Finds the common base in the expression.
+     *
+     *      @param [in] expression   The expression to search in.
+     *
+     *      @return The common base for the expression.
+     */
+    virtual int baseForExpression(QString const& expression) const;
 
 private:
 
@@ -62,6 +79,15 @@ private:
      *      @return True, if the expression is a string, otherwise false.
      */
     bool isStringLiteral(QString const &expression) const;
+
+    /*!
+     *  Checks if the given expression is a numeric literal.
+     *
+     *      @param [in] expression   The expression to check.
+     *
+     *      @return True, if the expression is a literal, otherwise false.
+     */
+    bool isLiteral(QString const& expression) const;
 
     /*!
      *  Splits the given expression to string list with terms and operations as separate items.
@@ -177,6 +203,7 @@ private:
      *      @return The real value of the constant.
      */
     qreal parseConstantToDecimal(QString const& constantNumber) const;
+
     int getBaseForNumber(QString const& constantNumber) const;
 
     /*!
@@ -187,7 +214,8 @@ private:
      *      @return The base number for the format.
      */
     int baseForFormat(QString const& baseFormat) const;
-    bool isLiteral(QString const& expression) const;
+
+
 };
 
 #endif // SYSTEMVERILOGEXPRESSIONPARSER_H

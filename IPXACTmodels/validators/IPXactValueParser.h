@@ -67,6 +67,24 @@ public:
      *      @return The best matching format fot the expression.
      */
     QString getFormatForExpression(QString const& expression) const;
+    
+    /*!
+     *  Checks if the given expression is a plain value and does not need evaluation.
+     *
+     *      @param [in] expression   The expression to check.
+     *
+     *      @return True, if the expression is a plain value, otherwise false.
+     */
+    virtual bool isPlainValue(QString const& expression) const;
+        
+    /*!
+     *  Finds the common base in the expression.
+     *
+     *      @param [in] expression   The expression to search in.
+     *
+     *      @return The common base for the expression.
+     */
+    virtual int baseForExpression(QString const& expression) const;
 
 private:
 
@@ -82,7 +100,16 @@ private:
      *      @return The evaluated value.
      */
     qreal longValueOf(QString const& value) const;
-       
+
+    /*!
+     *  Checks if the given value is a hexadecimal number.
+     *
+     *      @param [in] value  The value to check.
+     *
+     *      @return True, if the expression is a hexadecimal number, otherwise false.
+     */
+    bool isHexadecimal(QString const& value) const;
+
     /*!
      *  Evaluates the value of the given value using format float.
      *
@@ -91,6 +118,7 @@ private:
      *      @return The evaluated value.
      */
     qreal floatValueOf(QString const& value) const;
+
 
 };
 

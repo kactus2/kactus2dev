@@ -83,7 +83,8 @@ void tst_ParameterValidator2014::testValueIsValidForGivenType_data()
     QTest::newRow("-1 is valid for byte type") << "-1" << "byte" << true;
     QTest::newRow("-100 is valid for byte type") << "-100" << "byte" << true;
     QTest::newRow("-128 is valid for byte type") << "-128" << "byte" << true;
-    QTest::newRow("-129 is valid for byte type") << "-129" << "byte" << false;
+    QTest::newRow("-129 is invalid for byte type") << "-129" << "byte" << false;
+    QTest::newRow("-9999999999 is invalid for byte type") << "-9999999999" << "byte" << false;
     QTest::newRow("Expression is valid for byte type") << "'h01 + 'h0E" << "byte" << true;
 
     QTest::newRow("0 is valid for shortint type") << "0" << "shortint" << true;

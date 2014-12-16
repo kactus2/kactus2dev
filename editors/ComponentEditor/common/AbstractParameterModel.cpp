@@ -11,6 +11,8 @@
 
 #include "AbstractParameterModel.h"
 
+#include "ValueFormatter.h"
+
 #include <IPXACTmodels/choice.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/Enumeration.h>
@@ -24,7 +26,10 @@
 //-----------------------------------------------------------------------------
 AbstractParameterModel::AbstractParameterModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
     QSharedPointer<ExpressionParser> expressionParser, QObject *parent): 
-QAbstractTableModel(parent), choices_(choices), expressionParser_(expressionParser)
+QAbstractTableModel(parent), 
+    choices_(choices), 
+    expressionParser_(expressionParser), 
+    validator_(new ParameterValidator2014(expressionParser))
 {
 
 }
@@ -34,7 +39,7 @@ QAbstractTableModel(parent), choices_(choices), expressionParser_(expressionPars
 //-----------------------------------------------------------------------------
 AbstractParameterModel::~AbstractParameterModel()
 {
-
+    delete validator_;
 }
 
 //-----------------------------------------------------------------------------
@@ -46,114 +51,23 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
     {
 		return QVariant();
     }
-
-    QSharedPointer<Parameter> parameter = getParameterOnRow(index.row());
     
-    if (role == Qt::DisplayRole || role == Qt::EditRole)
+    if (role == Qt::DisplayRole)
     {
-        if (index.column() == nameColumn())
-        {
-            return parameter->getName();
-        }
-        else if (index.column() == displayNameColumn())
-        {
-            return parameter->getDisplayName();
-        }
-        else if (index.column() == typeColumn())
-        {
-            return parameter->getType();
-        }
-        else if (index.column() == bitWidthColumn())
-        {
-            return parameter->getBitWidth();
-        }
-        else if (index.column() == minimumColumn())
-        {
-            return parameter->getMinimumValue();
-        }
-        else if (index.column() == maximumColumn())
-        {
-            return parameter->getMaximumValue();
-        }
-        else if (index.column() == choiceColumn())
-        {
-            return parameter->getChoiceRef();
-        }
-        else if (index.column() == valueColumn())
-        {
-            if (role == Qt::EditRole)
-            {
-                return parameter->getValue();
-            }
-            else
-            {
-                return evaluateValueFor(parameter);
-            }
-        }
-        else if (index.column() == resolveColumn())
-        {
-            return parameter->getValueResolve();
-        }
-        else if (index.column() == arraySizeColumn())
-        {
-            return parameter->getAttribute("arraySize");
-        }
-        else if (index.column() == arrayOffsetColumn())
-        {
-            return parameter->getAttribute("arrayOffset");
-        }
-        else if (index.column() == descriptionColumn())
-        {
-            return parameter->getDescription();
-        }
-        else if (index.column() == valueIdColumn())
-        {
-            return parameter->getValueId();
-        }
-
-        else 
-        {
-            return QVariant();
-        }
+        return valueForIndex(index);
+    }
+    else if (role == Qt::ToolTipRole || role == Qt::EditRole)
+    {
+        return expressionOrValueForIndex(index);
     }
     else if (Qt::BackgroundRole == role) 
     {
-        if (index.column() == nameColumn() ||
-            index.column() == valueColumn()) 
-        {
-            return QColor("lemonChiffon");
-        }
-        else if ((index.column() == minimumColumn() || index.column() == maximumColumn()) &&
-            (parameter->getType() == "bit" || parameter->getType() == "string" || parameter->getType().isEmpty()))
-        {
-            return QColor("whiteSmoke");
-        }
-        else
-        {
-            return QColor("white");
-        }
+        return backgroundColorForIndex(index);
     }
     else if (Qt::ForegroundRole == role)
     {
-        if (validateColumnForParameter(index.column(), parameter))
-        {
-            return QColor("black");
-        }
-        else 
-        {
-            return QColor("red");
-        }
-    }
-    else if (role == Qt::ToolTipRole)
-    {
-        if (index.column() == valueColumn())
-        {
-            return parameter->getValue();
-        }
-        else
-        {
-            return QVariant();
-        }
+        return blackForValidOrRedForInvalidIndex(index);
+
     }
 	else // if unsupported role
     {
@@ -167,7 +81,9 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
 QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation != Qt::Horizontal)
+    {
         return QVariant();
+    }
 
     if (role == Qt::DisplayRole) 
     {
@@ -336,14 +252,12 @@ Qt::ItemFlags AbstractParameterModel::flags(QModelIndex const& index ) const
 //-----------------------------------------------------------------------------
 bool AbstractParameterModel::isValid() const
 {
-    ParameterValidator validator;
-
 	// check all parameters
 	for (int i = 0; i < rowCount(); i++)
 	{
         QSharedPointer<Parameter> parameter = getParameterOnRow(i);
 
-        if (!validator.validate(parameter.data(), choices_)) 
+        if (!validator_->validate(parameter.data(), choices_)) 
         {
             return false;
         }
@@ -359,22 +273,28 @@ bool AbstractParameterModel::isValid() const
 bool AbstractParameterModel::isValid(QStringList& errorList, QString const& parentIdentifier) const
 {
     bool valid = true;
-
-    ParameterValidator validator;
     for (int i = 0; i < rowCount(); i++)
     {
         QSharedPointer<Parameter> parameter = getParameterOnRow(i);
 
-        errorList.append(validator.findErrorsIn(parameter.data(), parentIdentifier, choices_));
+        errorList.append(validator_->findErrorsIn(parameter.data(), parentIdentifier, choices_));
 
         // if one parameter is invalid, model is invalid.
-        if (!validator.validate(parameter.data(), choices_))
+        if (!validator_->validate(parameter.data(), choices_))
         {
             valid = false;
         }
     }
 
     return valid;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractParameterModel::isMandatoryColumn()
+//-----------------------------------------------------------------------------
+bool AbstractParameterModel::isMandatoryColumn(int column) const
+{
+    return column == nameColumn() || column == valueColumn();
 }
 
 //-----------------------------------------------------------------------------
@@ -387,13 +307,9 @@ QString AbstractParameterModel::evaluateValueFor(QSharedPointer<Parameter> param
         QSharedPointer<Choice> choice = findChoice(parameter->getChoiceRef());
         return findDisplayValueForEnumeration(choice, parameter->getValue());
     }
-    else if (expressionParser_->isValidExpression(parameter->getValue()))
-    {
-        return expressionParser_->parseExpression(parameter->getValue());
-    }
     else
     {
-        return "n/a";
+        return formattedValueFor(parameter->getValue());
     }
 }
 
@@ -435,15 +351,13 @@ QString AbstractParameterModel::findDisplayValueForEnumeration(QSharedPointer<Ch
 //-----------------------------------------------------------------------------
 bool AbstractParameterModel::validateColumnForParameter(int column, QSharedPointer<Parameter> parameter) const
 {
-    ParameterValidator2014 validator(expressionParser_);
-
     if (column == nameColumn())
     {
-        return validator.hasValidName(parameter.data());
+        return validator_->hasValidName(parameter.data());
     }
     else if (column == typeColumn())
     {
-        return validator.hasValidValueForType(parameter->getValue(), parameter->getType());
+        return validator_->hasValidValueForType(parameter->getValue(), parameter->getType());
     }
     else if (column == bitWidthColumn())
     {
@@ -451,28 +365,199 @@ bool AbstractParameterModel::validateColumnForParameter(int column, QSharedPoint
     }
     else if (column == minimumColumn())
     {
-        return validator.hasValidMinimumValue(parameter.data()) && 
-            !validator.valueIsLessThanMinimum(parameter.data());
+        return validator_->hasValidMinimumValue(parameter.data()) && 
+            !validator_->valueIsLessThanMinimum(parameter.data());
     }
     else if (column == maximumColumn())
     {
-        return validator.hasValidMaximumValue(parameter.data()) && 
-            !validator.valueIsGreaterThanMaximum(parameter.data());
+        return validator_->hasValidMaximumValue(parameter.data()) && 
+            !validator_->valueIsGreaterThanMaximum(parameter.data());
     }
     else if (column == choiceColumn())
     {
-        return validator.hasValidChoice(parameter.data(), choices_) &&
-            validator.hasValidValueForChoice(parameter.data(), choices_);
+        return validator_->hasValidChoice(parameter.data(), choices_) &&
+            validator_->hasValidValueForChoice(parameter.data(), choices_);
     }
     else if (column == valueColumn())
     {
-        return validator.hasValidValue(parameter.data(), choices_);
+        return validator_->hasValidValue(parameter.data(), choices_);
     }
     else if (column == resolveColumn())
     {
-        return validator.hasValidResolve(parameter.data());
+        return validator_->hasValidResolve(parameter.data());
     }
 
     return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: AbstractParameterModel::valueForIndex()
+//-----------------------------------------------------------------------------
+QVariant AbstractParameterModel::valueForIndex(QModelIndex const& index) const
+{
+    QSharedPointer<Parameter> parameter = getParameterOnRow(index.row());
+
+    if (index.column() == nameColumn())
+    {
+        return parameter->getName();
+    }
+    else if (index.column() == displayNameColumn())
+    {
+        return parameter->getDisplayName();
+    }
+    else if (index.column() == typeColumn())
+    {
+        return parameter->getType();
+    }
+    else if (index.column() == bitWidthColumn())
+    {
+        return formattedValueFor(parameter->getBitWidth());
+    }
+    else if (index.column() == minimumColumn())
+    {
+        return parameter->getMinimumValue();
+    }
+    else if (index.column() == maximumColumn())
+    {
+        return parameter->getMaximumValue();
+    }
+    else if (index.column() == choiceColumn())
+    {
+        return parameter->getChoiceRef();
+    }
+    else if (index.column() == valueColumn())
+    {
+        return evaluateValueFor(parameter);
+    }
+    else if (index.column() == resolveColumn())
+    {
+        return parameter->getValueResolve();
+    }
+    else if (index.column() == arraySizeColumn())
+    {
+        return formattedValueFor(parameter->getAttribute("arraySize"));
+    }
+    else if (index.column() == arrayOffsetColumn())
+    {
+        return formattedValueFor(parameter->getAttribute("arrayOffset"));
+    }
+    else if (index.column() == descriptionColumn())
+    {
+        return parameter->getDescription();
+    }
+    else if (index.column() == valueIdColumn())
+    {
+        return parameter->getValueId();
+    }
+    else 
+    {
+        return QVariant();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractParameterModel::formattedValueFor()
+//-----------------------------------------------------------------------------
+QString AbstractParameterModel::formattedValueFor(QString const& expression) const
+{
+    if (expressionParser_->isPlainValue(expression))
+    {
+        return expression;
+    }
+    else
+    {
+        ValueFormatter formatter;
+        return formatter.format(evaluateExpression(expression), expressionParser_->baseForExpression(expression));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractParameterModel::evaluateExpression()
+//-----------------------------------------------------------------------------
+QString AbstractParameterModel::evaluateExpression(QString const& expression) const
+{
+    if (expressionParser_->isValidExpression(expression))
+    {
+        return expressionParser_->parseExpression(expression);
+    }
+    else
+    {
+        return "n/a";
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractParameterModel::expressionOrValueForColumn()
+//-----------------------------------------------------------------------------
+QVariant AbstractParameterModel::expressionOrValueForIndex(QModelIndex const& index) const
+{
+    QSharedPointer<Parameter> parameter = getParameterOnRow(index.row());
+
+    if (index.column() == valueColumn())
+    {
+        return parameter->getValue();
+    }
+    else if (index.column() == minimumColumn())
+    {
+        return parameter->getMinimumValue();
+    }
+    else if (index.column() == maximumColumn())
+    {
+        return parameter->getMaximumValue();
+    }
+    else if (index.column() == arraySizeColumn())
+    {
+        return parameter->getAttribute("arraySize");
+    }
+    else if (index.column() == arrayOffsetColumn())
+    {
+        return parameter->getAttribute("arrayOffset");
+    }
+    else if (index.column() == bitWidthColumn())
+    {
+        return parameter->getBitWidth();
+    }
+    else
+    {
+        return data(index, Qt::DisplayRole);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractParameterModel::backgroundColorForIndex()
+//-----------------------------------------------------------------------------
+QVariant AbstractParameterModel::backgroundColorForIndex(QModelIndex const& index) const
+{
+    QSharedPointer<Parameter> parameter = getParameterOnRow(index.row());
+
+    if (isMandatoryColumn(index.column())) 
+    {
+        return QColor("lemonChiffon");
+    }
+    else if ((index.column() == minimumColumn() || index.column() == maximumColumn()) &&
+        (parameter->getType().isEmpty() || parameter->getType() == "bit" || parameter->getType() == "string"))
+    {
+        return QColor("whiteSmoke");
+    }
+    else
+    {
+        return QColor("white");
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractParameterModel::blackForValidOrRedForInvalidIndex()
+//-----------------------------------------------------------------------------
+QVariant AbstractParameterModel::blackForValidOrRedForInvalidIndex(QModelIndex const& index) const
+{
+    QSharedPointer<Parameter> parameter = getParameterOnRow(index.row());
+
+    if (validateColumnForParameter(index.column(), parameter))
+    {
+        return QColor("black");
+    }
+    else 
+    {
+        return QColor("red");
+    }
+}

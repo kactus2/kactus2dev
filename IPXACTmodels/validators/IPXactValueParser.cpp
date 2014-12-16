@@ -96,12 +96,48 @@ bool IPXactValueParser::isValidExpression(QString const& expression, QString con
 }
 
 //-----------------------------------------------------------------------------
+// Function: IPXactValueParser::isPlainValue()
+//-----------------------------------------------------------------------------
+bool IPXactValueParser::isPlainValue(QString const& expression) const
+{
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: IPXactValueParser::baseForExpression()
+//-----------------------------------------------------------------------------
+int IPXactValueParser::baseForExpression(QString const& expression) const
+{
+    QString format = getFormatForExpression(expression);
+    if (format == "bitString")
+    {
+        return 2;
+    }
+    else if (format == "long")
+    {
+        if (isHexadecimal(expression))
+        {
+            return 16;
+        }
+        else
+        {
+            return 10;
+        }
+    }
+    else if (format == "float")
+    {
+        return 10;
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
 // Function: IPXactValueParser::longValueOf()
 //-----------------------------------------------------------------------------
 qreal IPXactValueParser::longValueOf(QString const& value) const
 {
-    if (value.startsWith("0x", Qt::CaseInsensitive) || value.startsWith('#') || 
-        value.contains(QRegExp("[a-fA-F]")))
+    if (isHexadecimal(value))
     {
         QString hexValue = value;
         return hexValue.remove('#').toLong(0, 16);
@@ -138,6 +174,15 @@ qreal IPXactValueParser::longValueOf(QString const& value) const
     {
         return value.toLong();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: IPXactValueParser::isHexadecimal()
+//-----------------------------------------------------------------------------
+bool IPXactValueParser::isHexadecimal(QString const& value) const
+{
+    return value.startsWith("0x", Qt::CaseInsensitive) || value.startsWith('#') || 
+        value.contains(QRegExp("[a-fA-F]"));
 }
 
 //-----------------------------------------------------------------------------

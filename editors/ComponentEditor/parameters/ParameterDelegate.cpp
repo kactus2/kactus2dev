@@ -57,10 +57,6 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     {
         return createFormatSelector(parent);
     }
-    else if (index.column() == bitwidthColumn()) 
-    {
-        return createNumberEditor(parent, option, index);
-    }
     else if (index.column() == resolveColumn())
     {
         return createResolveSelector(parent);
@@ -314,23 +310,6 @@ QWidget* ParameterDelegate::createEnumerationSelector(QWidget* parent, QModelInd
     }
 
     return combo;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterDelegate::createNumberEditor()
-//-----------------------------------------------------------------------------
-QWidget* ParameterDelegate::createNumberEditor(QWidget* parent, QStyleOptionViewItem const& option, 
-    QModelIndex const& index) const
-{
-    QWidget* editor = QStyledItemDelegate::createEditor(parent, option, index);
-
-    QLineEdit* lineEdit = qobject_cast<QLineEdit*>(editor);
-    if (lineEdit)
-    {
-        lineEdit->setValidator(new QRegExpValidator(QRegExp("\\d*")));
-    }
-
-    return editor;
 }
 
 //-----------------------------------------------------------------------------

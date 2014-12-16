@@ -44,7 +44,8 @@ public:
      *
      *      @return True, if the parameter is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(Parameter const* parameter, QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
+    virtual bool validate(Parameter const* parameter,
+        QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
 
     /*!
      *  Validates the name of the given parameter.

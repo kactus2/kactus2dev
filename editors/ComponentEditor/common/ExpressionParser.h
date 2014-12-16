@@ -41,7 +41,24 @@ public:
      *      @return True, if the expression is in valid format, otherwise false.
      */
     virtual bool isValidExpression(QString const& expression) const = 0;
+    
+    /*!
+     *  Checks if the given expression is a plain value and does not need evaluation.
+     *
+     *      @param [in] expression   The expression to check.
+     *
+     *      @return True, if the expression is a plain value, otherwise false.
+     */
+    virtual bool isPlainValue(QString const& expression) const = 0;
 
+    /*!
+     *  Finds the common base in the expression.
+     *
+     *      @param [in] expression   The expression to search in.
+     *
+     *      @return The common base for the expression.
+     */
+    virtual int baseForExpression(QString const& expression) const = 0;
 };
 
 #endif // EXPRESSIONPARSER_H

@@ -33,6 +33,21 @@ ParameterValidator2014::~ParameterValidator2014()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ParameterValidator2014::validate()
+//-----------------------------------------------------------------------------
+bool ParameterValidator2014::validate(Parameter const* parameter, 
+    QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const
+{
+    return hasValidName(parameter) &&
+        hasValidValue(parameter, availableChoices) &&
+        hasValidMinimumValue(parameter) &&
+        hasValidMaximumValue(parameter) &&
+        hasValidChoice(parameter, availableChoices) &&
+        hasValidResolve(parameter) &&
+        hasValidValueId(parameter);
+}
+
+//-----------------------------------------------------------------------------
 // Function: SystemVerilogValidator::hasValidValueForType()
 //-----------------------------------------------------------------------------
 bool ParameterValidator2014::hasValidValueForType(QString const& value, QString const& type) const
@@ -47,33 +62,37 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
         return false;
     }
 
+    bool canConvert = false;
     QString solvedValue = expressionParser_->parseExpression(value);
-    
+
     if (type == "bit")
     {
         return solvedValue == "0" || solvedValue == "1";
     }
     else if (type == "byte")
     {
-        return -128 <= solvedValue.toInt() && solvedValue.toInt() <= 127;
+        solvedValue.toShort(&canConvert);
+        return canConvert && -128 <= solvedValue.toShort() && solvedValue.toShort() <= 127;
     }
     else if (type == "shortint")
     {
-        bool canConvert = false;
         solvedValue.toShort(&canConvert);
-        return canConvert;
     }
     else if (type == "int")
     {
-        bool canConvert = false;
         solvedValue.toInt(&canConvert);
-        return canConvert;
     }
     else if (type == "longint")
     {
-        bool canConvert = false;
         solvedValue.toLongLong(&canConvert);
-        return canConvert;
+    }
+    else if (type == "shortreal")
+    {
+        solvedValue.toFloat(&canConvert);
+    }
+    else if (type == "real")
+    {
+        solvedValue.toDouble(&canConvert);
     }
     else if (type == "string")
     {
@@ -81,7 +100,7 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
         return stringExpression.indexIn(value) == 0;
     }
 
-    return false;
+    return canConvert;
 }
 
 //-----------------------------------------------------------------------------
@@ -111,7 +130,13 @@ bool ParameterValidator2014::hasValidValue(Parameter const* parameter,
 bool ParameterValidator2014::hasValidMinimumValue(Parameter const* parameter) const
 {
     QString minimumValue = parameter->getMinimumValue();
-    return minimumValue.isEmpty() || hasValidValueForType(minimumValue, parameter->getType());
+
+    if (!shouldCompareValueAndBoundary(minimumValue, parameter->getType()))
+    {
+        return true;
+    }
+
+    return hasValidValueForType(minimumValue, parameter->getType());
 }
 
 //-----------------------------------------------------------------------------
@@ -120,7 +145,13 @@ bool ParameterValidator2014::hasValidMinimumValue(Parameter const* parameter) co
 bool ParameterValidator2014::hasValidMaximumValue(Parameter const* parameter) const
 {
     QString maximumValue = parameter->getMaximumValue();
-    return maximumValue.isEmpty() || hasValidValueForType(maximumValue, parameter->getType());
+
+    if (!shouldCompareValueAndBoundary(maximumValue, parameter->getType()))
+    {
+        return true;
+    }
+
+    return hasValidValueForType(maximumValue, parameter->getType());
 }
 
 //-----------------------------------------------------------------------------
@@ -159,7 +190,7 @@ bool ParameterValidator2014::shouldCompareValueAndBoundary(QString const& bounda
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::valueOf()
 //-----------------------------------------------------------------------------
-qreal ParameterValidator2014::valueOf(QString const& value, QString const& format) const
+qreal ParameterValidator2014::valueOf(QString const& value, QString const& /*format*/) const
 {
     return expressionParser_->parseExpression(value).toLongLong();
 }

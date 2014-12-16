@@ -575,6 +575,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\common\AbstractParameterModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
+    <ClCompile Include="editors\ComponentEditor\common\ValueFormatter.cpp" />
     <ClCompile Include="editors\ComponentEditor\componenteditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\cpus\addressspacerefdelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\cpus\cpusdelegate.cpp" />
@@ -1829,6 +1830,7 @@ CreateHelp
     <ClInclude Include="editors\ComponentEditor\common\ExpressionParser.h" />
     <ClInclude Include="editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
     <ClInclude Include="editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
+    <ClInclude Include="editors\ComponentEditor\common\ValueFormatter.h" />
     <ClInclude Include="editors\ComponentEditor\modelParameters\ModelParameterColumns.h" />
     <CustomBuild Include="editors\ComponentEditor\parameters\parametersmodel.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

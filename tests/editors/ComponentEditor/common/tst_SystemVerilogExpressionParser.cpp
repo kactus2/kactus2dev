@@ -46,6 +46,13 @@ private slots:
 
     void testParseExpressionWithParathesis();
     void testParseExpressionWithParathesis_data();
+
+    void testGetBaseForExpression();
+    void testGetBaseForExpression_data();
+
+    void testIsPlainValue();
+    void testIsPlainValue_data();
+
 };
 
 //-----------------------------------------------------------------------------
@@ -96,6 +103,8 @@ void tst_SystemVerilogExpressionParser::testParseConstant_data()
     QTest::newRow("Decimal number 'SD3 should evaluate to 3") << "'SD3" << "3";
     
     QTest::newRow("Decimal number 1'd3 with size should evaluate to 3") << "1'd3" << "3";
+
+    QTest::newRow("Decimal number '2 should evaluate to 2") << "'2" << "2";
 
     QTest::newRow("Decimal number with underscore should evaluate without underscore") << "10_000" << "10000";
     QTest::newRow("Decimal number with multiple underscores should evaluate without underscores") 
@@ -592,6 +601,81 @@ void tst_SystemVerilogExpressionParser::testParseExpressionWithParathesis_data()
     QTest::newRow("Mismatched open parentheses") << "((1)" << "x";
     QTest::newRow("Mismatched closed parentheses") << "(1))" << "x";
     QTest::newRow("Parentheses wrong way") << ")1(" << "x";
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testGetBaseForExpression()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testGetBaseForExpression()
+{
+    QFETCH(QString, expression);
+    QFETCH(int, expectedBase);
+
+    SystemVerilogExpressionParser parser;
+    
+    QCOMPARE(parser.baseForExpression(expression), expectedBase);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testGetBaseForExpression_data()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testGetBaseForExpression_data()
+{
+    QTest::addColumn<QString>("expression");
+    QTest::addColumn<int>("expectedBase");
+
+    QTest::newRow("Decimal constant has base 10") << "1" << 10;
+    QTest::newRow("Hexadecimal constant has base 16") << "'h1" << 16;
+    QTest::newRow("Octal constant has base 8") << "'o1" << 8;
+    QTest::newRow("Binary constant has base 2") << "'b1" << 2;
+
+    QTest::newRow("String constant has base 0") << "\"text\"" << 0;
+
+    QTest::newRow("Expression with binary values has base 2") << "'b1 + 'b1" << 2;
+    QTest::newRow("Expression with hexadecimal values has base 2") << "'h0F + 'h01" << 16;
+
+    QTest::newRow("Expression with binary and hexadecimal values has base 16") << "'b01 + 'h01" << 16;
+    QTest::newRow("Expression with decimal and hexadecimal values has base 16") << "'h01 + 12" << 16;
+    QTest::newRow("Expression with multiple bases values has the greatest base") << "'b01 + 'o1 + 'h01 + 'd1" << 16;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testIsPlainValue()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testIsPlainValue()
+{
+    QFETCH(QString, expression);
+    QFETCH(bool, explectedPlain);
+
+    SystemVerilogExpressionParser parser;
+
+    QCOMPARE(parser.isPlainValue(expression), explectedPlain);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testIsPlainValue_data()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testIsPlainValue_data()
+{
+    QTest::addColumn<QString>("expression");
+    QTest::addColumn<bool>("explectedPlain");
+
+   QTest::newRow("Decimal constant is plain") << "1" << true;
+   QTest::newRow("Hexadecimal constant is plain") << "'h1" << true;
+   QTest::newRow("Octal constant is plain") << "'o1" << true;
+   QTest::newRow("Binary constant is plain") << "'b1" << true;
+   QTest::newRow("String is plain") << "\"text\"" << true;
+   QTest::newRow("Empty value is plain") << "" << true;
+
+   QTest::newRow("Addition is not plain") << "'h1 + 'h1" << false;
+   QTest::newRow("Subtraction is not plain") << "'o2 - 'o1" << false;
+   QTest::newRow("Multiply is not plain") << "2 * 2" << false;
+   QTest::newRow("Division is not plain") << "4/2" << false;
+   QTest::newRow("Power is not plain") << "2**8" << false;
+   QTest::newRow("clog2 function is not plain") << "$clog2(8)" << false;
+
+   QTest::newRow("Constant in parentheses is plain") << "(8)" << true;
+   QTest::newRow("Addition in parentheses is not plain") << "(8 + 2)" << false;
 }
 
 QTEST_APPLESS_MAIN(tst_SystemVerilogExpressionParser)

@@ -118,7 +118,7 @@ QVariant ModelParameterModel::data(QModelIndex const& index, int role) const
         } 
     }
 
-    return QVariant();
+    return AbstractParameterModel::data(index, role);
 }
 
 //-----------------------------------------------------------------------------

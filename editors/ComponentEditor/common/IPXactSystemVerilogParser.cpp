@@ -43,9 +43,13 @@ IPXactSystemVerilogParser::~IPXactSystemVerilogParser()
 //-----------------------------------------------------------------------------
 QString IPXactSystemVerilogParser::parseExpression(QString const& expression) const
 {
-    QString evaluatedExpression = evaluateParameterValuesIn(expression, findParametersInComponent(), 0);
-  
-    if (isValidExpression(evaluatedExpression))
+    if (SystemVerilogExpressionParser::isValidExpression(expression))
+    {
+        return SystemVerilogExpressionParser::parseExpression(expression);
+    }
+
+    QString evaluatedExpression = evaluateReferencesIn(expression, findParametersInComponent(), 0);
+    if (SystemVerilogExpressionParser::isValidExpression(evaluatedExpression))
     {
         return SystemVerilogExpressionParser::parseExpression(evaluatedExpression);
     }
@@ -58,20 +62,44 @@ QString IPXactSystemVerilogParser::parseExpression(QString const& expression) co
 //-----------------------------------------------------------------------------
 bool IPXactSystemVerilogParser::isValidExpression(QString const& expression) const
 {
-    QString evaluatedExpression = evaluateParameterValuesIn(expression, findParametersInComponent(), 0);
- 
+    if (SystemVerilogExpressionParser::isValidExpression(expression))
+    {
+        return true;
+    }
+
+    QString evaluatedExpression = replaceReferencesIn(expression, findParametersInComponent(), 0);
     return SystemVerilogExpressionParser::isValidExpression(evaluatedExpression);
 }
 
 //-----------------------------------------------------------------------------
-// Function: IPXactSystemVerilogParser::evaluateParameterValuesIn()
+// Function: IPXactSystemVerilogParser::baseForExpression()
 //-----------------------------------------------------------------------------
-QString IPXactSystemVerilogParser::evaluateParameterValuesIn(QString const& expression, 
+int IPXactSystemVerilogParser::baseForExpression(QString const& expression) const
+{
+    if (SystemVerilogExpressionParser::isValidExpression(expression))
+    {
+        return SystemVerilogExpressionParser::baseForExpression(expression);
+    }
+
+    QString evaluatedExpression = replaceReferencesIn(expression, findParametersInComponent(), 0);
+
+    return SystemVerilogExpressionParser::baseForExpression(evaluatedExpression);
+}
+
+//-----------------------------------------------------------------------------
+// Function: IPXactSystemVerilogParser::evaluateReferencesIn()
+//-----------------------------------------------------------------------------
+QString IPXactSystemVerilogParser::evaluateReferencesIn(QString const& expression, 
     QList<QSharedPointer<Parameter> > const& componentParameters, int recursionStep) const
 {
-    if (recursionStep == MAX_RECURSION_STEPS)
+    if (shouldTerminateRecursion(recursionStep))
     {
         return "x";
+    }
+
+    if (SystemVerilogExpressionParser::isValidExpression(expression))
+    {
+        return expression;
     }
 
     QString evaluated = expression;
@@ -80,7 +108,7 @@ QString IPXactSystemVerilogParser::evaluateParameterValuesIn(QString const& expr
         if (!parameter->getValueId().isEmpty() && expression.contains(parameter->getValueId()))
         {
             QString parameterValue = 
-                evaluateParameterValuesIn(parameter->getValue(), componentParameters, recursionStep + 1);
+                evaluateReferencesIn(parameter->getValue(), componentParameters, recursionStep + 1);
 
             if (SystemVerilogExpressionParser::isValidExpression(parameterValue))
             {
@@ -92,6 +120,45 @@ QString IPXactSystemVerilogParser::evaluateParameterValuesIn(QString const& expr
     }
 
     return evaluated;
+}
+
+//-----------------------------------------------------------------------------
+// Function: IPXactSystemVerilogParser::replaceReferencesIn()
+//-----------------------------------------------------------------------------
+QString IPXactSystemVerilogParser::replaceReferencesIn(QString const& expression, 
+    QList<QSharedPointer<Parameter> > const& componentParameters, int recursionStep) const
+{
+    if (shouldTerminateRecursion(recursionStep))
+    {
+        return "x";
+    }
+
+    if (SystemVerilogExpressionParser::isValidExpression(expression))
+    {
+        return expression;
+    }
+
+    QString evaluated = expression;
+    foreach(QSharedPointer<Parameter> parameter, componentParameters)
+    {
+        if (!parameter->getValueId().isEmpty() && expression.contains(parameter->getValueId()))
+        {
+            QString parameterValue = 
+                replaceReferencesIn(parameter->getValue(), componentParameters, recursionStep + 1);
+
+            evaluated.replace(parameter->getValueId(), parameterValue);
+        }
+    }
+
+    return evaluated;
+}
+
+//-----------------------------------------------------------------------------
+// Function: IPXactSystemVerilogParser::shouldTerminateRecursion()
+//-----------------------------------------------------------------------------
+bool IPXactSystemVerilogParser::shouldTerminateRecursion(int recursionStep) const
+{
+    return recursionStep == MAX_RECURSION_STEPS;
 }
 
 //-----------------------------------------------------------------------------
