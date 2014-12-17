@@ -13,7 +13,8 @@
 
 #include <IPXACTmodels/parameter.h>
 
-#include <QRegExp>
+#include <QRegularExpression>
+#include <QStringList>
 
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogValidator::SystemVerilogValidator()
@@ -48,6 +49,31 @@ bool ParameterValidator2014::validate(Parameter const* parameter,
 }
 
 //-----------------------------------------------------------------------------
+// Function: ParameterValidator2014::hasValidValue()
+//-----------------------------------------------------------------------------
+bool ParameterValidator2014::hasValidValue(Parameter const* parameter, 
+    QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const
+{
+    return !parameter->getValue().isEmpty() &&
+        hasValidValueForType(parameter) &&
+        !valueIsLessThanMinimum(parameter) &&
+        !valueIsGreaterThanMaximum(parameter) &&
+        hasValidValueForChoice(parameter, availableChoices);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterValidator2014::hasValidType()
+//-----------------------------------------------------------------------------
+bool ParameterValidator2014::hasValidType(Parameter const* parameter) const
+{
+    QString type = parameter->getType();
+
+    return type.isEmpty() || type == "bit" || type == "byte" || type == "shortint" ||
+        type == "int" || type == "longint" || type == "shortreal" || type == "real" || 
+        type == "string";
+}
+
+//-----------------------------------------------------------------------------
 // Function: SystemVerilogValidator::hasValidValueForType()
 //-----------------------------------------------------------------------------
 bool ParameterValidator2014::hasValidValueForType(QString const& value, QString const& type) const
@@ -67,7 +93,8 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
 
     if (type == "bit")
     {
-        return solvedValue == "0" || solvedValue == "1";
+        QRegularExpression bitExpression("^([01]|[1-9]+[0-9]*'([bB][01]+|[hH][0-9a-fA-F]+))$");
+        return bitExpression.match(value).hasMatch() || bitExpression.match(solvedValue).hasMatch();
     }
     else if (type == "byte")
     {
@@ -109,19 +136,6 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
 bool ParameterValidator2014::hasValidValueForType(Parameter const* parameter) const
 {
     return hasValidValueForType(parameter->getValue(), parameter->getType());
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::hasValidValue()
-//-----------------------------------------------------------------------------
-bool ParameterValidator2014::hasValidValue(Parameter const* parameter, 
-    QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const
-{
-    return !parameter->getValue().isEmpty() &&
-        hasValidValueForType(parameter) &&
-        !valueIsLessThanMinimum(parameter) &&
-        !valueIsGreaterThanMaximum(parameter) &&
-        hasValidValueForChoice(parameter, availableChoices);
 }
 
 //-----------------------------------------------------------------------------
@@ -179,6 +193,24 @@ bool ParameterValidator2014::valueIsGreaterThanMaximum(Parameter const* paramete
 }
 
 //-----------------------------------------------------------------------------
+// Function: ParameterValidator2014::findErrorsIn()
+//-----------------------------------------------------------------------------
+QStringList ParameterValidator2014::findErrorsIn(Parameter const* parameter, QString const& context, 
+    QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const
+{
+    QStringList errors;
+    errors.append(findErrorsInName(parameter, context));
+    errors.append(findErrorsInValue(parameter, context, availableChoices));
+    errors.append(findErrorsInType(parameter, context));
+    errors.append(findErrorsInMinimumValue(parameter, context));
+    errors.append(findErrorsInMaximumValue(parameter, context));
+    errors.append(findErrorsInChoice(parameter, context, availableChoices));
+    errors.append(findErrorsInResolve(parameter, context));
+
+    return errors;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::shouldCompareValueAndBoundary()
 //-----------------------------------------------------------------------------
 bool ParameterValidator2014::shouldCompareValueAndBoundary(QString const& boundaryValue, QString const& type) const
@@ -193,4 +225,67 @@ bool ParameterValidator2014::shouldCompareValueAndBoundary(QString const& bounda
 qreal ParameterValidator2014::valueOf(QString const& value, QString const& /*format*/) const
 {
     return expressionParser_->parseExpression(value).toLongLong();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterValidator2014::findErrorsInType()
+//-----------------------------------------------------------------------------
+QStringList ParameterValidator2014::findErrorsInType(Parameter const* parameter, QString const& context) const
+{
+    QStringList typeErrors;
+
+    if (!hasValidType(parameter))
+    {
+        typeErrors.append(QObject::tr("Invalid type %1 specified for %2 %3 within %4").arg(
+            parameter->getType(), parameter->elementName(), parameter->getName(), context));
+    }
+
+    return typeErrors;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterValidator2014::findErrorsInValue()
+//-----------------------------------------------------------------------------
+QStringList ParameterValidator2014::findErrorsInValue(Parameter const* parameter, QString const& context, 
+    QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const
+{
+    QStringList valueErrors;
+
+    if (parameter->getValue().isEmpty())
+    {
+        valueErrors.append(QObject::tr("No value specified for %1 %2 within %3").arg(
+            parameter->elementName(), parameter->getName(), context));
+    }
+    else
+    {
+        if (!hasValidValueForType(parameter))
+        {
+            valueErrors.append(QObject::tr("Value %1 is not valid for type %2 in %3 %4 within %5").arg(
+                parameter->getValue(), parameter->getType(), parameter->elementName(), 
+                parameter->getName(), context));
+        }
+
+        if (valueIsLessThanMinimum(parameter))
+        {
+            valueErrors.append(QObject::tr("Value %1 violates minimum value %2 in %3 %4 within %5"
+                ).arg(parameter->getValue(), parameter->getMinimumValue(), 
+                parameter->elementName(), parameter->getName(), context));
+        }
+
+        if (valueIsGreaterThanMaximum(parameter))
+        {
+            valueErrors.append(QObject::tr("Value %1 violates maximum value %2 in %3 %4 within %5"
+                ).arg(parameter->getValue(), parameter->getMaximumValue(), 
+                parameter->elementName(), parameter->getName(), context));
+        }
+
+        if (!hasValidValueForChoice(parameter, availableChoices))
+        {           
+            valueErrors.append(QObject::tr("Value %1 references unknown enumeration for choice "
+                "%2 in %3 %4 within %5").arg(parameter->getValue(), parameter->getChoiceRef(), 
+                parameter->elementName(), parameter->getName(), context));
+        }
+    }
+
+    return valueErrors;
 }

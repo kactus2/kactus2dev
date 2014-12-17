@@ -244,6 +244,9 @@ void tst_SystemVerilogExpressionParser::testParseAddition_data()
 
     QTest::newRow("Sum of multiple values of same base") << "'h10 + 'h10 + 'h01" << "33";
     QTest::newRow("Sum of multiple values of different bases") << "'hA + 'b1010 + 'o12 + 10" << "40";
+
+    QTest::newRow("Sum of ascii characters and a number is unknown") << "text + 2" << "x";
+
 }
 
 //-----------------------------------------------------------------------------

@@ -20,6 +20,7 @@
 #include <IPXACTmodels/validators/ParameterValidator2014.h>
 
 #include <QColor>
+#include <QFont>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::AbstractParameterModel()
@@ -67,7 +68,10 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
     else if (Qt::ForegroundRole == role)
     {
         return blackForValidOrRedForInvalidIndex(index);
-
+    }
+    else if (role == Qt::FontRole)
+    {
+        return italicForEvaluatedValue(index);
     }
 	else // if unsupported role
     {
@@ -464,21 +468,11 @@ QString AbstractParameterModel::formattedValueFor(QString const& expression) con
     {
         return expression;
     }
-    else
+    else if (expressionParser_->isValidExpression(expression))
     {
         ValueFormatter formatter;
-        return formatter.format(evaluateExpression(expression), expressionParser_->baseForExpression(expression));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractParameterModel::evaluateExpression()
-//-----------------------------------------------------------------------------
-QString AbstractParameterModel::evaluateExpression(QString const& expression) const
-{
-    if (expressionParser_->isValidExpression(expression))
-    {
-        return expressionParser_->parseExpression(expression);
+        return formatter.format(expressionParser_->parseExpression(expression), 
+            expressionParser_->baseForExpression(expression));
     }
     else
     {
@@ -559,5 +553,24 @@ QVariant AbstractParameterModel::blackForValidOrRedForInvalidIndex(QModelIndex c
     else 
     {
         return QColor("red");
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractParameterModel::italicForEvaluatedValue()
+//-----------------------------------------------------------------------------
+QVariant AbstractParameterModel::italicForEvaluatedValue(QModelIndex const& index) const
+{
+    QString value = expressionOrValueForIndex(index).toString();
+
+    if (!expressionParser_->isPlainValue(value))
+    {
+        QFont italicFont;
+        italicFont.setItalic(true);
+        return italicFont;
+    }
+    else
+    {
+        return QVariant();
     }
 }

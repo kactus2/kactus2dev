@@ -181,7 +181,7 @@ public:
     bool hasValidValueId(Parameter const* parameter) const;
 
     /*!
-     *  Finds possible errors in a parameter and creates a list of the.
+     *  Finds possible errors in a parameter and creates a list of them.
      *
      *      @param [in] parameter           The parameter whose errors to find.
      *      @param [in] context             Context to help locate the errors.
@@ -213,12 +213,6 @@ protected:
      */
     virtual qreal valueOf(QString const& value, QString const& format) const;
 
-private:
-
-	// Disable copying.
-	ParameterValidator(ParameterValidator const& rhs);
-	ParameterValidator& operator=(ParameterValidator const& rhs);
-  
     /*!
      *  Finds possible errors in a parameter name.
      *
@@ -239,27 +233,7 @@ private:
      */
     virtual QStringList findErrorsInValue(Parameter const* parameter, QString const& context, 
         QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
-            
-    /*!
-     *  Finds possible errors in a parameter value format.
-     *
-     *      @param [in] parameter   The parameter whose errors to find.
-     *      @param [in] context     Context to help locate the errors.
-     *
-     *      @return List of the found errors in the parameter value format.
-     */
-    QStringList findErrorsInFormat(Parameter const* parameter, QString const& context) const;
-            
-    /*!
-     *  Finds possible errors in a parameter bit string lenght.
-     *
-     *      @param [in] parameter   The parameter whose errors to find.
-     *      @param [in] context     Context to help locate the errors.
-     *
-     *      @return List of the found errors in the parameter bit string length.
-     */
-    QStringList findErrorsInBitStringLength(Parameter const* parameter, QString const& context) const;
-            
+
     /*!
      *  Finds possible errors in a parameter minimum value.
      *
@@ -301,6 +275,32 @@ private:
      */
     virtual QStringList findErrorsInResolve(Parameter const* parameter, QString const& context) const;
    
+private:
+
+	// Disable copying.
+	ParameterValidator(ParameterValidator const& rhs);
+	ParameterValidator& operator=(ParameterValidator const& rhs);
+      
+    /*!
+     *  Finds possible errors in a parameter value format.
+     *
+     *      @param [in] parameter   The parameter whose errors to find.
+     *      @param [in] context     Context to help locate the errors.
+     *
+     *      @return List of the found errors in the parameter value format.
+     */
+    QStringList findErrorsInFormat(Parameter const* parameter, QString const& context) const;
+            
+    /*!
+     *  Finds possible errors in a parameter bit string lenght.
+     *
+     *      @param [in] parameter   The parameter whose errors to find.
+     *      @param [in] context     Context to help locate the errors.
+     *
+     *      @return List of the found errors in the parameter bit string length.
+     */
+    QStringList findErrorsInBitStringLength(Parameter const* parameter, QString const& context) const;
+            
     /*!
      *  Finds possible errors in a parameter id.
      *

@@ -41,7 +41,7 @@ public:
      */
     virtual bool validate(Parameter const* parameter, 
         QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
-    
+
     /*!
      *  Validates the value of the given parameter.
      *
@@ -52,6 +52,15 @@ public:
      */
      virtual bool hasValidValue(Parameter const* parameter, 
          QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
+         
+    /*!
+     *  Validates the value type of the given parameter.
+     *
+     *      @param [in] parameter   The parameter whose type to validate.
+     *
+     *      @return True, if the parameter type is valid, otherwise false.
+     */
+    virtual bool hasValidType(Parameter const* parameter) const;
 
     /*!
      *   Checks if the given value is valid for the given type.
@@ -108,6 +117,18 @@ public:
      */   
     virtual bool valueIsGreaterThanMaximum(Parameter const* parameter) const;
 
+    /*!
+     *  Finds possible errors in a parameter and creates a list of them.
+     *
+     *      @param [in] parameter           The parameter whose errors to find.
+     *      @param [in] context             Context to help locate the errors.
+     *      @param [in] availableChoices    The choices available for the parameter.
+     *
+     *      @return List of the found errors in the parameter.
+     */
+    virtual QStringList findErrorsIn(Parameter const* parameter, QString const& context, 
+        QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
+
 protected:
              
     /*!
@@ -129,6 +150,27 @@ protected:
      *      @return The evaluated value.
      */    
     virtual qreal valueOf(QString const& value, QString const& type) const;
+            
+    /*!
+     *  Finds possible errors in a parameter value.
+     *
+     *      @param [in] parameter   The parameter whose errors to find.
+     *      @param [in] context     Context to help locate the errors.
+     *
+     *      @return List of the found errors in the parameter value.
+     */
+    virtual QStringList findErrorsInValue(Parameter const* parameter, QString const& context, 
+        QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
+          
+    /*!
+     *  Finds possible errors in a parameter value type.
+     *
+     *      @param [in] parameter   The parameter whose errors to find.
+     *      @param [in] context     Context to help locate the errors.
+     *
+     *      @return List of the found errors in the parameter value format.
+     */
+    virtual QStringList findErrorsInType(Parameter const* parameter, QString const& context) const;
 
 private:
 
@@ -136,6 +178,7 @@ private:
 	ParameterValidator2014(ParameterValidator2014 const& rhs);
 	ParameterValidator2014& operator=(ParameterValidator2014 const& rhs);
 
+    //! The expression parser to use for solving minimum, maximum and value.
     QSharedPointer<ExpressionParser> expressionParser_;
 };
 

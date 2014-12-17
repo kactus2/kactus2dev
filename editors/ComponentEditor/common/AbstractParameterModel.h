@@ -298,15 +298,6 @@ private:
      *      @return The formatted value for the expression.
      */
     QString formattedValueFor(QString const& expression) const;
-        
-    /*!
-     *  Evaluates a value for an expression.
-     *
-     *      @param [in] expression   The expression to evaluate.
-     *
-     *      @return The evaluated value or n/a if the expression could not be evaluated.
-     */
-    QString evaluateExpression(QString const& expression) const;
 
     /*!
      *  Gets the expression for the given index or the plain value if expression is not available.
@@ -334,6 +325,15 @@ private:
      *      @return Black for valid index, red for invalid index.
      */
     QVariant blackForValidOrRedForInvalidIndex(QModelIndex const& index) const;
+    
+    /*!
+     *  Gets an italic font for an index with evaluated value and normal font for others.
+     *
+     *      @param [in] index   The index for which to get the font.
+     *
+     *      @return Italic font for evaluated index, normal for others.
+     */
+    QVariant italicForEvaluatedValue(QModelIndex const& index) const;
 
     //-----------------------------------------------------------------------------
     // Data.

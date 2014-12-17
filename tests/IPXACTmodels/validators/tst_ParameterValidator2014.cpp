@@ -14,6 +14,7 @@
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
 #include <IPXACTmodels/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/parameter.h>
 
 class tst_ParameterValidator2014 : public QObject
 {
@@ -26,6 +27,10 @@ private slots:
 
     void testValueIsValidForGivenType();
     void testValueIsValidForGivenType_data();
+
+private:
+
+    bool errorIsNotFoundInErrorlist(QString const& expectedError, QStringList const& errorlist);
 
 };
 
@@ -50,6 +55,24 @@ void tst_ParameterValidator2014::testValueIsValidForGivenType()
 
     ParameterValidator2014 validator(parser);
     QCOMPARE(validator.hasValidValueForType(value, type), isValid);
+
+    if (!isValid && !value.isEmpty())
+    {
+        Parameter* parameter = new Parameter();
+        parameter->setName("param");
+        parameter->setType(type);
+        parameter->setValue(value);
+
+        QStringList errorlist = validator.findErrorsIn(parameter, "test", 
+            QSharedPointer<QList<QSharedPointer<Choice> > >());
+
+        QString expectedError = "Value " + value + " is not valid for type " + type + " in parameter param within test";
+        if (errorIsNotFoundInErrorlist(expectedError, errorlist))
+        {
+            QFAIL("No error message found.");
+        }
+        delete parameter;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -63,11 +86,21 @@ void tst_ParameterValidator2014::testValueIsValidForGivenType_data()
 
     QTest::newRow("0 is valid for bit type") << "0" << "bit" << true;
     QTest::newRow("1 is valid for bit type") << "1" << "bit" << true;
+    QTest::newRow("'1 is valid for bit type") << "'1" << "bit" << true;
     QTest::newRow("Binary 'b0 is valid for bit type") << "'b0" << "bit" << true;
     QTest::newRow("Binary 'b1 is valid for bit type") << "'b1" << "bit" << true;
-    //QTest::newRow("Binary 'b11 is valid for bit type") << "'b11" << "bit" << true;
+    QTest::newRow("Binary 2'b11 with size is valid for bit type") << "2'b11" << "bit" << true;
+    
+    QTest::newRow("Binary 'b11 without size is not valid for bit type") << "'b11" << "bit" << false;
+    QTest::newRow("Binary 3'b13 is not valid for bit type") << "3'b13" << "bit" << false;
+    QTest::newRow("Binary with hexadecimal numbers is not valid for bit type") << "3'b3f" << "bit" << false;
+
     QTest::newRow("Hexadecimal 'h1 is valid for bit type") << "'h1" << "bit" << true;
-    //QTest::newRow("Hexadecimal with size is valid for bit type") << "8'h11" << "bit" << true;
+    QTest::newRow("Hexadecimal with size is valid for bit type") << "8'h11" << "bit" << true;
+    QTest::newRow("Hexadecimal with size and numbers 1-9 is valid for bit type") << "16'h1289" << "bit" << true;
+    QTest::newRow("Hexadecimal with size and a-f characters is valid for bit type") << "8'haf" << "bit" << true;
+    QTest::newRow("Hexadecimal with size and upper case is valid for bit type") << "8'hED" << "bit" << true;
+
     QTest::newRow("Hexadecimal without size is invalid for bit type") << "'h11" << "bit" << false;
     QTest::newRow("2 is invalid for bit type") << "2" << "bit" << false;
     QTest::newRow("-1 is invalid for bit type") << "-1" << "bit" << false;
@@ -126,6 +159,24 @@ void tst_ParameterValidator2014::testValueIsValidForGivenType_data()
     QTest::newRow("String in double quotes is valid") << "\"text\"" << "string" << true;
     QTest::newRow("Decimal number is invalid for string type") << "1" << "string" << false;
     QTest::newRow("Expression is invalid for string type") << "12 + 12" << "string" << false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator2014::errorIsNotFoundInErrorlist()
+//-----------------------------------------------------------------------------
+bool tst_ParameterValidator2014::errorIsNotFoundInErrorlist(QString const& expectedError, QStringList const& errorlist)
+{
+    if (!errorlist.contains(expectedError))
+    {
+        qDebug() << "The following error:" << endl << expectedError << endl << "was not found in errorlist:";
+        foreach(QString error, errorlist)
+        {
+            qDebug() << error; 
+        }
+        return true;
+    }
+
+    return false;
 }
 
 QTEST_APPLESS_MAIN(tst_ParameterValidator2014)
