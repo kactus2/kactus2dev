@@ -222,9 +222,16 @@ bool ParameterValidator2014::shouldCompareValueAndBoundary(QString const& bounda
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::valueOf()
 //-----------------------------------------------------------------------------
-qreal ParameterValidator2014::valueOf(QString const& value, QString const& /*format*/) const
+qreal ParameterValidator2014::valueOf(QString const& value, QString const& type) const
 {
-    return expressionParser_->parseExpression(value).toLongLong();
+    if (type == "real" || type == "shortreal")
+    {
+        return expressionParser_->parseExpression(value).toDouble();
+    }
+    else
+    {
+        return expressionParser_->parseExpression(value).toLongLong();
+    }
 }
 
 //-----------------------------------------------------------------------------

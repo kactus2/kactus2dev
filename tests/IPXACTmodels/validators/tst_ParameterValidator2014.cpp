@@ -28,6 +28,9 @@ private slots:
     void testValueIsValidForGivenType();
     void testValueIsValidForGivenType_data();
 
+    void testValidityWithMaximumValueAndType();
+    void testValidityWithMaximumValueAndType_data();
+
 private:
 
     bool errorIsNotFoundInErrorlist(QString const& expectedError, QStringList const& errorlist);
@@ -159,6 +162,56 @@ void tst_ParameterValidator2014::testValueIsValidForGivenType_data()
     QTest::newRow("String in double quotes is valid") << "\"text\"" << "string" << true;
     QTest::newRow("Decimal number is invalid for string type") << "1" << "string" << false;
     QTest::newRow("Expression is invalid for string type") << "12 + 12" << "string" << false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator2014::testValidityWithMaximumValueAndType()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator2014::testValidityWithMaximumValueAndType()
+{  
+    QFETCH(QString, type);   
+    QFETCH(QString, value);   
+    QFETCH(QString, maximum);
+    QFETCH(bool, isValid);
+
+    Parameter* parameter = new Parameter();
+    parameter->setName("param");
+    parameter->setType(type);
+    parameter->setValue(value);
+    parameter->setMaximumValue(maximum);
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+
+    ParameterValidator2014 validator(parser);
+    QCOMPARE(validator.hasValidValue(parameter, QSharedPointer<QList<QSharedPointer<Choice> > >()), isValid);
+
+    delete parameter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterValidator2014::testValidityWithMaximumValueAndType_data()
+//-----------------------------------------------------------------------------
+void tst_ParameterValidator2014::testValidityWithMaximumValueAndType_data()
+{
+    QTest::addColumn<QString>("type");
+    QTest::addColumn<QString>("value");
+    QTest::addColumn<QString>("maximum");
+    QTest::addColumn<bool>("isValid");
+
+    QTest::newRow("Any value is valid for empty type") << "" << "value42" << "" << true;
+    QTest::newRow("Any double quoted string is valid for string type") << "string" << "\"42\"" << "1" << true;
+
+    QTest::newRow("Real value is valid for real type") << "real" << "2.0" << "" << true;
+    QTest::newRow("Real value is valid for shortreal type") << "shortreal" << "2.0" << "4.0" << true;
+    QTest::newRow("Real value is valid for greater maximum") << "real" << "2.0" << "4.0" << true;
+    QTest::newRow("Real value is not valid for smaller maximum") << "real" << "2.0" << "1.0" << false;
+   
+    QTest::newRow("Real value is not valid for int type") << "int" << "2.0" << "" << false;
+
+    QTest::newRow("Int value is valid") << "int" << "1" << "" << true;
+    QTest::newRow("Int value is valid with greater maximum") << "int" << "1" << "3" << true;
+    QTest::newRow("Int value is not valid with smaller maximum") << "int" << "1" << "0" << false;
+    QTest::newRow("Int value is not valid with invalid maximum") << "int" << "1" << "f" << true;
 }
 
 //-----------------------------------------------------------------------------
