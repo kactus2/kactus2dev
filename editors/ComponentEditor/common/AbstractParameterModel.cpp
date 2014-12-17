@@ -563,7 +563,11 @@ QVariant AbstractParameterModel::italicForEvaluatedValue(QModelIndex const& inde
 {
     QString value = expressionOrValueForIndex(index).toString();
 
-    if (!expressionParser_->isPlainValue(value))
+    int column = index.column();
+
+    if ((column == valueColumn() || column == bitWidthColumn() || 
+        column == arraySizeColumn() || column == arrayOffsetColumn()) 
+        && !expressionParser_->isPlainValue(value))
     {
         QFont italicFont;
         italicFont.setItalic(true);
