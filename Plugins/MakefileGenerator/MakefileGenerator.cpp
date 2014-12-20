@@ -74,14 +74,18 @@ void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPa
     makeNames.append( instancePath );
 
     // Begin the file with the includes.
-    outStream << "includes=";
+    outStream << "_INCLUDES=";
 
     foreach( QString path, mfd.includeDirectories )
     {
-        outStream << " -I" << General::getRelativePath(instancePath,path);
+        outStream << " " << General::getRelativePath(instancePath,path);
     }
 
-    outStream << endl << endl;
+    outStream << endl;
+    outStream << "INCLUDES=$(patsubst %, -I%, $(_INCLUDES))" << endl << endl;
+
+    // These are also dependencies of the source files.
+    outStream << "DEPS= $(_INCLUDES)/*.h" << endl;
 
     // Other stuff is in their own functions.
     writeFinalFlagsAndBuilder(mfd, outStream);
@@ -198,7 +202,7 @@ void MakefileGenerator::generateLauncher(QString basePath, QString topPath, QStr
 //-----------------------------------------------------------------------------
 void MakefileGenerator::writeFinalFlagsAndBuilder(MakefileParser::MakeFileData &mfd, QTextStream& outStream) const
 {
-    QString finalFlags = "$(includes)";
+    QString finalFlags = "$(INCLUDES)";
     QString finalBuilder;
 
     // If build command of software view of the hardware instance exist, its properties are used.
@@ -226,7 +230,7 @@ void MakefileGenerator::writeFinalFlagsAndBuilder(MakefileParser::MakeFileData &
 //-----------------------------------------------------------------------------
 void MakefileGenerator::writeObjectList(MakefileParser::MakeFileData &mfd, QTextStream& outStream) const
 {
-    // Since hardware and software filesets are different entities, both have to be looped through.
+    // Since hardware and software fileSets are different entities, both have to be looped through.
     // Include files are skipped and the object file is simply original filename + ".o".
     outStream << "_OBJ=";
 
@@ -272,7 +276,7 @@ void MakefileGenerator::writeMakeObjects(MakefileParser::MakeFileData &mfd, QTex
 {
     foreach(MakefileParser::MakeObjectData mod, objects)
     {
-        // Skip the include files.
+        // Skip the include files. Those do not need their own object files.
         if ( mod.file->getIncludeFile() )
         {
             continue;
@@ -282,19 +286,21 @@ void MakefileGenerator::writeMakeObjects(MakefileParser::MakeFileData &mfd, QTex
         QString compiler = getFileCompiler(mod, mfd);
 
         // Flags will always include at least the includes.
-        QString cFlags = "$(includes) ";
+        QString cFlags = "$(INCLUDES) ";
 
         // The other flags are not hard coded.
         cFlags += mod.fileBuildCmd->getFlags();
         cFlags += getFileFlags(mod, mfd);
 
+        // The relative path is needed by the make and the builder to access the source file.
+        QString relPath = General::getRelativePath(instancePath,mod.path);
         QString fileName = mod.fileName;
 
-        // Write the rule for building the individual object file.
+        // Write the rule for building the individual object file, including dependencies.
         outStream << endl;
-        outStream << "$(ODIR)/" << fileName << ".o:" << endl;
+        outStream << "$(ODIR)/" << fileName << ".o: $(DEPS) " << relPath << "/" << fileName << endl;
         outStream << "\t" << compiler << " -c -o $(ODIR)/" << fileName << ".o " <<
-            General::getRelativePath(instancePath,mod.path) << "/" << fileName << " " << cFlags << endl;
+            relPath << "/" << fileName << " " << cFlags << endl;
     }
 }
 
