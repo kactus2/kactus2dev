@@ -111,7 +111,14 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
     }
     else if (type == "longint")
     {
-        solvedValue.toLongLong(&canConvert);
+        if (solvedValue.startsWith("-"))
+        {
+            solvedValue.toLongLong(&canConvert);
+        }
+        else
+        {
+            solvedValue.toULongLong(&canConvert);
+        }
     }
     else if (type == "shortreal")
     {
@@ -123,8 +130,8 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
     }
     else if (type == "string")
     {
-        QRegExp stringExpression("^\\s*\".*\"\\s*$");
-        return stringExpression.indexIn(value) == 0;
+        QRegularExpression stringExpression("^\\s*\".*\"\\s*$");
+        return stringExpression.match(value).hasMatch();
     }
 
     return canConvert;

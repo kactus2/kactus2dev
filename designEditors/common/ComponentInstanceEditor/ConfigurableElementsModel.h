@@ -12,6 +12,7 @@
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <IPXACTmodels/parameter.h>
 #include <IPXACTmodels/modelparameter.h>
+#include <editors/ComponentEditor/common/ParameterModelEquations.h>
 
 #include <QAbstractTableModel>
 #include <QMap>
@@ -20,11 +21,11 @@
 #include <QSharedPointer>
 
 class ComponentItem;
-
 //-----------------------------------------------------------------------------
 //! Model class to manage the configurable element values being edited.
 //-----------------------------------------------------------------------------
-class ConfigurableElementsModel : public QAbstractTableModel {
+class ConfigurableElementsModel : public QAbstractTableModel, public ParameterModelEquations
+{
 	Q_OBJECT
 
 public:
@@ -128,12 +129,50 @@ signals:
 	//! \brief Emitted when contents of the model changes.
 	void contentChanged();
 
+protected:
+
+    /*!
+     *  Check if the column index is valid for containing expressions.
+     *
+     *      @param [in] index   The index being evaluated.
+     *
+     *      @return     True, if column can have expressions, false otherwise.
+     */
+    virtual bool isValidExpressionColumn(QModelIndex const& index) const;
+
+    /*!
+     *  Gets the expression for the given index, or plain value if there is no expression.
+     *
+     *      @param [in] index   The index of target data.
+     *
+     *      @return     Expression in the given index if there is one, or plain value.
+     */
+    virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Validates the data in a parameter corresponding to a given column.
+     *
+     *      @param [in] index   The index whose data to validate.
+     *
+     *      @return True, if the data in the parameter is valid, otherwise false.
+     */
+    virtual bool validateColumnForParameter(QModelIndex const& index) const;
+
 private:
 	//! No copying
 	ConfigurableElementsModel(const ConfigurableElementsModel& other);
 
 	//! No assignment
 	ConfigurableElementsModel& operator=(const ConfigurableElementsModel& other);
+
+    /*!
+     *  Gets the value for the given index.
+     *
+     *      @param [in] index   The index of target data.
+     *
+     *      @return     The data in the given index.
+     */
+    QVariant valueForIndex(QModelIndex const& index) const;
 
     //! The values for the model columns.
     enum modelColumns

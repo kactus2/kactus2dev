@@ -63,6 +63,8 @@ private slots:
 
     void testGetBaseForExpression();
 
+    void testExpressionWithRealValueParameterReferences();
+    void testExpressionWithRealValueParameterReferences_data();
 };
 
 //-----------------------------------------------------------------------------
@@ -429,6 +431,46 @@ void tst_IPXactSystemVerilogParser::testGetBaseForExpression()
     IPXactSystemVerilogParser parser(testComponent);
 
     QCOMPARE(parser.baseForExpression("2*first"), 16);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_IPXactSystemVerilogParser::testExpressionWithRealParameterReferences()
+//-----------------------------------------------------------------------------
+void tst_IPXactSystemVerilogParser::testExpressionWithRealValueParameterReferences()
+{
+    QFETCH(QString, expression);
+    QFETCH(QString, expectedResult);
+
+    QSharedPointer<Component> testComponent(new Component());
+    QSharedPointer<Parameter> firstParameter(new Parameter());
+    firstParameter->setValueId("firstValue");
+    firstParameter->setValue("30");
+    testComponent->getParameters().append(firstParameter);
+
+    QSharedPointer<Parameter> secondParameter(new Parameter());
+    secondParameter->setValueId("secondValue");
+    secondParameter->setValue("0.751");
+    testComponent->getParameters().append(secondParameter);
+
+    IPXactSystemVerilogParser parser(testComponent);
+
+    QCOMPARE(parser.parseExpression(expression), expectedResult);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_IPXactSystemVerilogParser::testExpressionWithRealParameterReferences_data()
+//-----------------------------------------------------------------------------
+void tst_IPXactSystemVerilogParser::testExpressionWithRealValueParameterReferences_data()
+{
+    QTest::addColumn<QString>("expression");
+    QTest::addColumn<QString>("expectedResult");
+
+    QTest::newRow("Two parameters multiplication, integer and floating point") <<
+        "firstValue * secondValue" << "22.53";
+    QTest::newRow("Two parameters division, integer and floating point") << "firstValue / secondValue" << "39";
+    QTest::newRow("Two parameters addition, integer and floating point") << "firstValue + secondValue" << "30.751";
+    QTest::newRow("Two parameters subtraction, integer and floating point") <<
+        "firstValue - secondValue" << "29.249";
 }
 
 QTEST_APPLESS_MAIN(tst_IPXactSystemVerilogParser)

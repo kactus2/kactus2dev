@@ -94,7 +94,7 @@ void ConfigurableElementDelegate::setEditorData( QWidget* editor,
 			Q_ASSERT_X(line, "ConfigurableElementDelegate::setEditorData",
 				"Type conversion failed for QLineEdit");
 
-			QString text = index.model()->data(index, Qt::DisplayRole).toString();
+			QString text = index.model()->data(index, Qt::EditRole).toString();
 			line->setText(text);
 			return;
 				}

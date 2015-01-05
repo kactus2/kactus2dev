@@ -243,7 +243,7 @@ protected:
      *
      *      @return True, if the data in the parameter is valid, otherwise false.
      */
-    virtual bool validateColumnForParameter(int column, QSharedPointer<Parameter> parameter) const;
+    virtual bool validateColumnForParameter(QModelIndex const& index) const;
 
 private:
 

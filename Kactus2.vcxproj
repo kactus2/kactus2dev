@@ -574,6 +574,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\choices\EnumerationModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\AbstractParameterModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
+    <ClCompile Include="editors\ComponentEditor\common\ParameterModelEquations.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ValueFormatter.cpp" />
     <ClCompile Include="editors\ComponentEditor\componenteditor.cpp" />
@@ -1829,6 +1830,7 @@ CreateHelp
     </CustomBuild>
     <ClInclude Include="editors\ComponentEditor\common\ExpressionParser.h" />
     <ClInclude Include="editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
+    <ClInclude Include="editors\ComponentEditor\common\ParameterModelEquations.h" />
     <ClInclude Include="editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
     <ClInclude Include="editors\ComponentEditor\common\ValueFormatter.h" />
     <ClInclude Include="editors\ComponentEditor\modelParameters\ModelParameterColumns.h" />

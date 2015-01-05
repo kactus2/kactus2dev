@@ -679,6 +679,10 @@ void tst_SystemVerilogExpressionParser::testIsPlainValue_data()
 
    QTest::newRow("Constant in parentheses is plain") << "(8)" << true;
    QTest::newRow("Addition in parentheses is not plain") << "(8 + 2)" << false;
+
+   QTest::newRow("Large negative number is plain") << "-99999" << true;
+   QTest::newRow("Even larger negative number is plain") << "-9999999999999999" << true;
+   QTest::newRow("Even larger negative number is plain") << "-9999999999999999999" << true;
 }
 
 QTEST_APPLESS_MAIN(tst_SystemVerilogExpressionParser)

@@ -116,7 +116,7 @@ bool SystemVerilogExpressionParser::isValidExpression(QString const& expression)
 //-----------------------------------------------------------------------------
 bool SystemVerilogExpressionParser::isPlainValue(QString const& expression) const
 {
-    return expression.isEmpty() || (!expression.contains(BINARY_OPERATOR) && 
+    return expression.isEmpty() || isLiteral(expression) || (!expression.contains(BINARY_OPERATOR) && 
         !expression.contains(QRegularExpression(CLOG2_FUNCTION)));
 }
 
@@ -151,7 +151,9 @@ bool SystemVerilogExpressionParser::isStringLiteral(QString const &expression) c
 //-----------------------------------------------------------------------------
 bool SystemVerilogExpressionParser::isLiteral(QString const& expression) const
 {
-    return QRegularExpression(INTEGRAL_NUMBER).match(expression).hasMatch();
+    QRegularExpression literalExpression("^(" + INTEGRAL_NUMBER + "|" + REAL_NUMBER + ")$");
+
+    return literalExpression.match(expression).hasMatch();
 }
 
 //-----------------------------------------------------------------------------
@@ -413,13 +415,15 @@ QString SystemVerilogExpressionParser::solve(QString const& firstTerm, QString c
         }
 
         result = leftOperand/rightOperand;
+
     }
 
-    if (!firstTerm.contains('.'))
+    if (!firstTerm.contains('.') && (operation == "/" || (operation == "**" && rightOperand < 0)))
     {
         int integerResult = result;
         return QString::number(integerResult);
     }
+
     else
     {
         return QString::number(result);

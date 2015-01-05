@@ -64,6 +64,13 @@ public:
      */
     virtual int baseForExpression(QString const& expression) const;
 
+    /*!
+     *  Set the component whose parameters are available in the SystemVerilog expressions.
+     *
+     *      @param [in] component   The component whose parameters are used.
+     */
+    void setComponent(QSharedPointer <Component> component);
+
 private:
 
     // Disable copying.

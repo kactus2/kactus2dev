@@ -15,10 +15,11 @@
 //-----------------------------------------------------------------------------
 ConfigurableElementsModel::ConfigurableElementsModel(QObject *parent):
 QAbstractTableModel(parent),
+ParameterModelEquations(),
 component_(0),
 currentElementValues_(),
 visibleConfigurableElements_(),
-editProvider_(0) 
+editProvider_(0)
 {
 
 }
@@ -108,14 +109,9 @@ int ConfigurableElementsModel::columnCount( const QModelIndex& parent /*= QModel
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::data()
 //-----------------------------------------------------------------------------
-QVariant ConfigurableElementsModel::data( const QModelIndex& index, 
-									  int role /*= Qt::DisplayRole*/ ) const 
+QVariant ConfigurableElementsModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const 
 {
-	if (!index.isValid())
-    {
-		return QVariant();
-    }
-	else if (index.row() < 0 || index.row() >= visibleConfigurableElements_.size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= visibleConfigurableElements_.size())
     {
 		return QVariant();
     }
@@ -126,30 +122,28 @@ QVariant ConfigurableElementsModel::data( const QModelIndex& index,
         {
             return QColor(Qt::red);
         }
+        
+        else if (visibleConfigurableElements_.at(index.row()).isEditable_ && index.column() == VALUE)
+        {
+            return blackForValidOrRedForInvalidIndex(index);
+        }
     }
 
 	else if (role == Qt::DisplayRole) 
     {
-		switch (index.column()) 
-        {
-		case NAME:
-            {
-                return visibleConfigurableElements_.at(index.row()).name_;
-            }
-        case VALUE:
-            {
-                return visibleConfigurableElements_.at(index.row()).value_;
-            }
-        case DEFAULT_VALUE:
-            {
-                return visibleConfigurableElements_.at(index.row()).defaultValue_;
-            }
-        default:
-            {
-                return QVariant();
-            }
-		}
+        return valueForIndex(index);
 	}
+
+    else if (role == Qt::ToolTipRole || role == Qt::EditRole)
+    {
+        return expressionOrValueForIndex(index);
+    }
+
+    else if (role == Qt::FontRole)
+    {
+        return italicForEvaluatedValue(index);
+    }
+
 	else 
     {
 		return QVariant();
@@ -171,17 +165,23 @@ QVariant ConfigurableElementsModel::headerData( int section,
 
 	if (role == Qt::DisplayRole) 
     {
-		switch (section) 
+        if (section == NAME)
         {
-        case NAME:
             return tr("Name");
-        case VALUE:
-            return tr("Value");
-        case DEFAULT_VALUE:
-            return tr("Default Value");
-        default:
+        }
+        else if (section == VALUE)
+        {
+            QString valueHeader = tr("Value") + getExpressionSymbol();
+            return valueHeader;
+        }
+        else if (section == DEFAULT_VALUE)
+        {
+            return tr("Default value");
+        }
+        else
+        {
             return QVariant();
-		}
+        }
 	}
 	else
     {
@@ -207,24 +207,14 @@ bool ConfigurableElementsModel::setData( const QModelIndex& index,
 
 	if (role == Qt::EditRole) 
     {
-		switch (index.column()) 
+        if (index.column() == VALUE)
         {
-			case NAME: 
-                {
-    				break;
-				}
-			case VALUE: 
-                {
-				    visibleConfigurableElements_[index.row()].value_ = value.toString();
-    				break;
-	    		}
-            case DEFAULT_VALUE: 
-                {
-                    break;
-                }
-			default:
-				return false;
-		}
+            visibleConfigurableElements_[index.row()].value_ = value.toString();
+        }
+        else if (index.column() != NAME && index.column() != DEFAULT_VALUE)
+        {
+            return false;
+        }
 		save();
 		emit dataChanged(index, index);
 		emit contentChanged();
@@ -259,6 +249,77 @@ Qt::ItemFlags ConfigurableElementsModel::flags( const QModelIndex& index ) const
     {
         return Qt::ItemIsSelectable;
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsModel::isValidExpressionColumn()
+//-----------------------------------------------------------------------------
+bool ConfigurableElementsModel::isValidExpressionColumn(QModelIndex const& index) const
+{
+    if (index.column() == VALUE || index.column() == DEFAULT_VALUE)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsModel::valueForIndex()
+//-----------------------------------------------------------------------------
+QVariant ConfigurableElementsModel::valueForIndex(QModelIndex const& index) const
+{
+    if (index.column() == NAME)
+    {
+        return visibleConfigurableElements_.at(index.row()).name_;
+    }
+    else if (index.column() == VALUE)
+    {
+        return formattedValueFor(visibleConfigurableElements_.at(index.row()).value_);
+    }
+    else if (index.column() == DEFAULT_VALUE)
+    {
+        return formattedValueFor(visibleConfigurableElements_.at(index.row()).defaultValue_);
+    }
+    else
+    {
+        return QVariant();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsModel::expressionOrValueForIndex()
+//-----------------------------------------------------------------------------
+QVariant ConfigurableElementsModel::expressionOrValueForIndex(QModelIndex const& index) const
+{
+    if (index.column() == NAME)
+    {
+        return visibleConfigurableElements_.at(index.row()).name_;
+    }
+    else if (index.column() == VALUE)
+    {
+        return visibleConfigurableElements_.at(index.row()).value_;
+    }
+    else if (index.column() == DEFAULT_VALUE)
+    {
+        return visibleConfigurableElements_.at(index.row()).defaultValue_;
+    }
+    else
+    {
+        return data(index, Qt::DisplayRole);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsModel::validateColumnForParameter()
+//-----------------------------------------------------------------------------
+bool ConfigurableElementsModel::validateColumnForParameter(QModelIndex const& index) const
+{
+    QString value = visibleConfigurableElements_.at(index.row()).value_;
+
+    return isValuePlainOrExpression(value);
 }
 
 //-----------------------------------------------------------------------------

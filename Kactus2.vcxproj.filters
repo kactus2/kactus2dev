@@ -3873,12 +3873,15 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\parameters\ParameterEditorHeaderView.cpp">
       <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\common\ValueFormatter.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\modelParameters\ModelParameterEditorHeaderView.cpp">
       <Filter>Source Files\editors\ComponentEditor\modelParameters</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ParameterModelEquations.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5617,8 +5620,11 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\modelParameters\ModelParameterEditorHeaderView.h">
       <Filter>Header Files\editors\ComponentEditor\modelParameters</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ValueFormatter.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\ParameterModelEquations.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
   </ItemGroup>

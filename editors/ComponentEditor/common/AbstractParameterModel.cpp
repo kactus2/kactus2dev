@@ -27,12 +27,12 @@
 //-----------------------------------------------------------------------------
 AbstractParameterModel::AbstractParameterModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
     QSharedPointer<ExpressionParser> expressionParser, QObject *parent): 
-QAbstractTableModel(parent), 
+    QAbstractTableModel(parent),
+    ParameterModelEquations(),
     choices_(choices), 
-    expressionParser_(expressionParser), 
     validator_(new ParameterValidator2014(expressionParser))
 {
-
+    setExpressionParser(expressionParser);
 }
 
 //-----------------------------------------------------------------------------
@@ -91,8 +91,6 @@ QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orienta
 
     if (role == Qt::DisplayRole) 
     {
-        QString mathSymbolFunction(0x0192);
-
         if (section == nameColumn())
         {
             return tr("Name");
@@ -107,7 +105,8 @@ QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orienta
         }
         else if (section == bitWidthColumn())
         {
-            return QString(tr("Bit width, ") + mathSymbolFunction + "(x)");
+            QString bitWidthHeader = tr("Bit width") + getExpressionSymbol();
+            return bitWidthHeader;
         }
         else if (section == minimumColumn())
         {
@@ -123,7 +122,8 @@ QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orienta
         }     
         else if (section == valueColumn())
         {
-            return QString(tr("Value, ") + mathSymbolFunction + "(x)");
+            QString valueHeader = tr("Value") + getExpressionSymbol();
+            return valueHeader;
         }  
         else if (section == resolveColumn())
         {     
@@ -131,11 +131,13 @@ QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orienta
         }  
         else if (section == arraySizeColumn())
         {
-            return QString(tr("Array\nsize, ") + mathSymbolFunction + "(x)");
+            QString arraySizeHeader = tr("Array\nsize") + getExpressionSymbol();
+            return arraySizeHeader;
         }  
         else if (section == arrayOffsetColumn())
         {
-            return QString(tr("Array\noffset, ") + mathSymbolFunction + "(x)");
+            QString arrayOffsetHeader = tr("Array\noffset") + getExpressionSymbol();
+            return arrayOffsetHeader;
         } 
         else if (section == descriptionColumn())
         { 
@@ -353,45 +355,66 @@ QString AbstractParameterModel::findDisplayValueForEnumeration(QSharedPointer<Ch
 //-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::validateColumnForParameter()
 //-----------------------------------------------------------------------------
-bool AbstractParameterModel::validateColumnForParameter(int column, QSharedPointer<Parameter> parameter) const
+bool AbstractParameterModel::validateColumnForParameter(QModelIndex const& index) const
 {
-    if (column == nameColumn())
+    QSharedPointer<Parameter> parameter = getParameterOnRow(index.row());
+
+    if (index.column() == nameColumn())
     {
         return validator_->hasValidName(parameter.data());
     }
-    else if (column == typeColumn())
+    else if (index.column() == typeColumn())
     {
         return validator_->hasValidValueForType(parameter->getValue(), parameter->getType());
     }
-    else if (column == bitWidthColumn())
+    else if (index.column() == bitWidthColumn())
     {
         return true;
     }
-    else if (column == minimumColumn())
+    else if (index.column() == minimumColumn())
     {
         return validator_->hasValidMinimumValue(parameter.data()) && 
             !validator_->valueIsLessThanMinimum(parameter.data());
     }
-    else if (column == maximumColumn())
+    else if (index.column() == maximumColumn())
     {
         return validator_->hasValidMaximumValue(parameter.data()) && 
             !validator_->valueIsGreaterThanMaximum(parameter.data());
     }
-    else if (column == choiceColumn())
+    else if (index.column() == choiceColumn())
     {
         return validator_->hasValidChoice(parameter.data(), choices_) &&
             validator_->hasValidValueForChoice(parameter.data(), choices_);
     }
-    else if (column == valueColumn())
+    else if (index.column() == valueColumn())
     {
         return validator_->hasValidValue(parameter.data(), choices_);
     }
-    else if (column == resolveColumn())
+    else if (index.column() == resolveColumn())
     {
         return validator_->hasValidResolve(parameter.data());
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractParameterModel::isValidExpressionColumn()
+//-----------------------------------------------------------------------------
+bool AbstractParameterModel::isValidExpressionColumn(QModelIndex const& index) const
+{
+     QSharedPointer<Parameter> parameter = getParameterOnRow(index.row());
+
+    if ((index.column() == valueColumn() && parameter->getType() != "string") || 
+        index.column() == bitWidthColumn()|| index.column() == arraySizeColumn() ||
+        index.column() == arrayOffsetColumn())
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -460,28 +483,7 @@ QVariant AbstractParameterModel::valueForIndex(QModelIndex const& index) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractParameterModel::formattedValueFor()
-//-----------------------------------------------------------------------------
-QString AbstractParameterModel::formattedValueFor(QString const& expression) const
-{
-    if (expressionParser_->isPlainValue(expression))
-    {
-        return expression;
-    }
-    else if (expressionParser_->isValidExpression(expression))
-    {
-        ValueFormatter formatter;
-        return formatter.format(expressionParser_->parseExpression(expression), 
-            expressionParser_->baseForExpression(expression));
-    }
-    else
-    {
-        return "n/a";
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractParameterModel::expressionOrValueForColumn()
+// Function: AbstractParameterModel::expressionOrValueForIndex()
 //-----------------------------------------------------------------------------
 QVariant AbstractParameterModel::expressionOrValueForIndex(QModelIndex const& index) const
 {
@@ -536,45 +538,5 @@ QVariant AbstractParameterModel::backgroundColorForIndex(QModelIndex const& inde
     else
     {
         return QColor("white");
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractParameterModel::blackForValidOrRedForInvalidIndex()
-//-----------------------------------------------------------------------------
-QVariant AbstractParameterModel::blackForValidOrRedForInvalidIndex(QModelIndex const& index) const
-{
-    QSharedPointer<Parameter> parameter = getParameterOnRow(index.row());
-
-    if (validateColumnForParameter(index.column(), parameter))
-    {
-        return QColor("black");
-    }
-    else 
-    {
-        return QColor("red");
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractParameterModel::italicForEvaluatedValue()
-//-----------------------------------------------------------------------------
-QVariant AbstractParameterModel::italicForEvaluatedValue(QModelIndex const& index) const
-{
-    QString value = expressionOrValueForIndex(index).toString();
-
-    int column = index.column();
-
-    if ((column == valueColumn() || column == bitWidthColumn() || 
-        column == arraySizeColumn() || column == arrayOffsetColumn()) 
-        && !expressionParser_->isPlainValue(value))
-    {
-        QFont italicFont;
-        italicFont.setItalic(true);
-        return italicFont;
-    }
-    else
-    {
-        return QVariant();
     }
 }

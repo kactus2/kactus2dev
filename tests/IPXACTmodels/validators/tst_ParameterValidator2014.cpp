@@ -122,6 +122,11 @@ void tst_ParameterValidator2014::testValueIsValidForGivenType_data()
     QTest::newRow("-129 is invalid for byte type") << "-129" << "byte" << false;
     QTest::newRow("-9999999999 is invalid for byte type") << "-9999999999" << "byte" << false;
     QTest::newRow("Expression is valid for byte type") << "'h01 + 'h0E" << "byte" << true;
+    QTest::newRow("Octal number 'o2 is valid for byte type") << "'o2" << "byte" << true;
+    QTest::newRow("Negative octal number -'o4 is valid for byte type") << "-'h4" << "byte" << true;
+    QTest::newRow("text is invalid for byte type") << "some text" << "byte" << false;
+    QTest::newRow("string is invalid for byte type") << "\"some other text\"" << "byte" << false;
+    QTest::newRow("Fractional number 0.123 is invalid for byte type") << "0.123" << "byte" << false;
 
     QTest::newRow("0 is valid for shortint type") << "0" << "shortint" << true;
     QTest::newRow("1 is valid for shortint type") << "1" << "shortint" << true;
@@ -133,6 +138,11 @@ void tst_ParameterValidator2014::testValueIsValidForGivenType_data()
     QTest::newRow("-32768 is valid for shortint type") << "-32768" << "shortint" << true;
     QTest::newRow("-32769 is valid for shortint type") << "-32769" << "shortint" << false;
     QTest::newRow("Expression is valid for shortint type") << "12 + 12" << "shortint" << true;
+    QTest::newRow("Hexadecimal number 'ha is valid for shortint type") << "'ha" << "shortint" << true;
+    QTest::newRow("Negative octal number -'o5 is valid for shortint type") << "-'o5" << "shortint" << true;
+    QTest::newRow("text is invalid for shortint type") << "some text" << "shortint" << false;
+    QTest::newRow("string is invalid for shortint type") << "\"some other text\"" << "shortint" << false;
+    QTest::newRow("Fractional number 0.123 is invalid for shortint type") << "0.123" << "shortint" << false;
 
     QTest::newRow("0 is valid for int type") << "0" << "int" << true;
     QTest::newRow("1 is valid for int type") << "1" << "int" << true;
@@ -144,21 +154,47 @@ void tst_ParameterValidator2014::testValueIsValidForGivenType_data()
     QTest::newRow("-2147483648 is valid for int type") << "-2147483648" << "int" << true;
     QTest::newRow("-2147483649 is invalid for int type") << "-2147483649" << "int" << false;
     QTest::newRow("Expression is valid for int type") << "12 + 12" << "int" << true;
+    QTest::newRow("Binary number 'b01 is valid for int type") << "'b01" << "int" << true;
+    QTest::newRow("Negative hexadecimal number -'hf is valid for int type") << "-'hf" << "int" << true;
+    QTest::newRow("text is invalid for int type") << "some text" << "int" << false;
+    QTest::newRow("string is invalid for int type") << "\"some other text\"" << "int" << false;
+    QTest::newRow("Fractional number 0.123 is invalid for int type") << "0.123" << "int" << false;
 
     QTest::newRow("0 is valid for longint type") << "0" << "longint" << true;
     QTest::newRow("1 is valid for longint type") << "1" << "longint" << true;
     QTest::newRow("2147483648 is valid for longint type") << "2147483648" << "longint" << true;
-    //QTest::newRow("9223372036854775807 is valid for longint type") << "9223372036854775807" << "longint" << true;
+    QTest::newRow("9223372036854775807 is valid for longint type") << "9223372036854775807" << "longint" << true;
     //QTest::newRow("9223372036854775808 is invalid for longint type") << "9223372036854775808" << "longint" << false;
     QTest::newRow("-1 is valid for longint type") << "-1" << "longint" << true;
     QTest::newRow("-2147483649 is valid for longint type") << "-2147483649" << "longint" << true;
     QTest::newRow("-9223372036854775808 is valid for longint type") << "-9223372036854775808" << "longint" << true;
     //QTest::newRow("-9223372036854775809 is invalid for longint type") << "-9223372036854775809" << "longint" << false;
     QTest::newRow("Expression is valid for longint type") << "12 + 12" << "longint" << true;
+    QTest::newRow("Octal number 'o6 is valid for longint type") << "'o6" << "longint" << true;
+    QTest::newRow("Negative binary number -'b101 is valid for longint type") << "-'b101" << "longint" << true;
+    QTest::newRow("text is invalid for longint type") << "some text" << "longint" << false;
+    QTest::newRow("string is invalid for longint type") << "\"some other text\"" << "longint" << false;
+    QTest::newRow("Fractional number 0.123 is invalid for longint type") << "0.123" << "longint" << false;
 
-    QTest::newRow("Emtpy is invalid for string type") << "" << "string" << false;
+    QTest::newRow("0.0 is valid for shortreal type") << "0.0" << "shortreal" << true;
+    QTest::newRow("10.18 is valid for shortreal type") << "10.18" << "shortreal" << true;
+    QTest::newRow("-28.1423 is valid for shortreal type") << "-28.1423" << "shortreal" << true;
+    QTest::newRow("Octal number 'o5 is valid for shortreal type") << "'o5" << "shortreal" << true;
+    QTest::newRow("Negative binary number -'b010 is valid for shortreal type") << "-'b010" << "shortreal" << true;
+    QTest::newRow("text is invalid for shortreal type") << "some text" << "shortreal" << false;
+    QTest::newRow("string is invalid for shortreal type") << "\"some other text\"" << "shortreal" << false;
+
+    QTest::newRow("0.0 is valid for real type") << "0.0" << "real" << true;
+    QTest::newRow("10.18 is valid for real type") << "10.18" << "real" << true;
+    QTest::newRow("-28.1423 is valid for real type") << "-28.1423" << "real" << true;
+    QTest::newRow("Hexadecimal number 'ha4 is valid for real type") << "'ha4" << "real" << true;
+    QTest::newRow("Negative octal number -'o12 is valid for real type") << "-'o12" << "real" << true;
+    QTest::newRow("text is invalid for real type") << "some text" << "real" << false;
+    QTest::newRow("string is invalid for real type") << "\"some other text\"" << "real" << false;
+
+    QTest::newRow("Empty is invalid for string type") << "" << "string" << false;
     QTest::newRow("String without double quotes is invalid") << "text" << "string" << false;
-    QTest::newRow("Emtpy string is valid for string type") << "\"\"" << "string" << true;
+    QTest::newRow("Empty string is valid for string type") << "\"\"" << "string" << true;
     QTest::newRow("String in double quotes is valid") << "\"text\"" << "string" << true;
     QTest::newRow("Decimal number is invalid for string type") << "1" << "string" << false;
     QTest::newRow("Expression is invalid for string type") << "12 + 12" << "string" << false;

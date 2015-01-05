@@ -87,6 +87,14 @@ int IPXactSystemVerilogParser::baseForExpression(QString const& expression) cons
 }
 
 //-----------------------------------------------------------------------------
+// Function: IPXactSystemVerilogParser::setComponent()
+//-----------------------------------------------------------------------------
+void IPXactSystemVerilogParser::setComponent(QSharedPointer<Component> component)
+{
+    component_ = component;
+}
+
+//-----------------------------------------------------------------------------
 // Function: IPXactSystemVerilogParser::evaluateReferencesIn()
 //-----------------------------------------------------------------------------
 QString IPXactSystemVerilogParser::evaluateReferencesIn(QString const& expression, 

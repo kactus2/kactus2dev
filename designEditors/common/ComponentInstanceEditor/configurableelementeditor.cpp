@@ -10,6 +10,7 @@
 #include "configurableelementdelegate.h"
 #include <IPXACTmodels/component.h>
 #include <designEditors/HWDesign/HWComponentItem.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <QIcon>
 #include <QHBoxLayout>
@@ -26,7 +27,7 @@ QGroupBox(title, parent),
 component_(0),
 view_(this),
 filter_(this),
-model_(this) 
+model_(this)
 {
 	filter_.setSourceModel(&model_);
 	view_.setModel(&filter_);
@@ -41,6 +42,8 @@ model_(this)
 
 	// the delegate for editing
 	view_.setItemDelegate(new ConfigurableElementDelegate(QSharedPointer<Component>(), this));
+
+    view_.setAlternatingRowColors(false);
 
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
 	topLayout->addWidget(&view_);
@@ -75,6 +78,9 @@ void ConfigurableElementEditor::setComponent( ComponentItem* component )
 
 	component_ = component;
 	model_.setComponent(component);
+
+    model_.setExpressionParser(
+        QSharedPointer <IPXactSystemVerilogParser> (new IPXactSystemVerilogParser(component->componentModel())));
 }
 
 //-----------------------------------------------------------------------------
