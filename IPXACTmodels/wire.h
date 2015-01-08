@@ -265,6 +265,58 @@ public:
 	*/
 	void setRightBound(int rightBound);
 
+    /*!
+     *  Set the left bound expression.
+     *
+     *      @param [in] expression   The expression.
+     */
+    void setLeftBoundExpression(QString const& expression);
+
+    /*!
+     *  Set the right bound expression.
+     *
+     *      @param [in] expression   The expression.
+     */
+    void setRightBoundExpression(QString const& expression);
+
+    /*!
+     *  Check if the wire has an expression as a left bound.
+     *
+     *      @return     True, if there is an expression, otherwise false.
+     */
+    bool hasLeftBoundExpression();
+
+    /*!
+     *  Check if the wire has an expression as a right bound.
+     *
+     *      @return     True, if there is an expression, otherwise false.
+     */
+    bool hasRightBoundExpression();
+
+    /*!
+     *  Get the left bound expression.
+     *
+     *      @return     The expression.
+     */
+    QString getLeftBoundExpression();
+
+    /*!
+     *  Get the right bound expression.
+     *
+     *      @return     The expression.
+     */
+    QString getRightBoundExpression();
+
+    /*!
+     *  Remove the left bound expression.
+     */
+    void removeLeftBoundExpression();
+
+    /*!
+     *  Remove the right bound expression.
+     */
+    void removeRightBoundExpression();
+
 	/*! \brief Get the type name of the port for given view.
 	 *
 	 * \param viewName The name of the view used.
@@ -362,7 +414,6 @@ private:
 
 	//! \brief OPTIONAL Attributes for the defaultDriverValue element.
 	QMap<QString, QString> defaultValueAttributes_;
-
 };
 
 #endif /* WIRE_H_ */

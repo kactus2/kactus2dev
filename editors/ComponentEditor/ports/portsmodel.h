@@ -19,13 +19,16 @@
 #include <QList>
 #include <QFile>
 
+#include <editors/ComponentEditor/common/ParameterModelEquations.h>
+
 class Model;
 class Port;
 
 /*! Table model that can be used to display ports to be edited.
  *
  */
-class PortsModel : public QAbstractTableModel {
+class PortsModel : public QAbstractTableModel, public ParameterModelEquations 
+{
 	Q_OBJECT
 
 public:
@@ -36,7 +39,7 @@ public:
 	 *      @param [in] parent       Pointer to the owner of this model.
 	 *
 	*/
-	PortsModel(QSharedPointer<Model> model, QObject *parent);
+	PortsModel(QSharedPointer<Model> model, QSharedPointer <ExpressionParser> expressionParser, QObject *parent);
 	
 	//! The destructor
 	virtual ~PortsModel();
@@ -118,6 +121,35 @@ public:
      *      @param [in] model   The model whose ports to edit.
      */
     void setModelAndLockCurrentPorts(QSharedPointer<Model> model);
+
+protected:
+
+    /*!
+     *  Check if the column index is valid for containing expressions.
+     *
+     *      @param [in] index   The index being evaluated.
+     *
+     *      return      True, if column can have expressions, false otherwise.
+     */
+    virtual bool isValidExpressionColumn(QModelIndex const& index) const;
+
+    /*!
+     *  Gets the expression for the given index, or plain value if there is no expression.
+     *
+     *      @param [in] index   The index of target data.
+     *
+     *      return      Expression in the given index, or plain value.
+     */
+    virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Validates the data in the cell given by the column.
+     *
+     *      @param [in] index   The index being validated.
+     *
+     *      return      True, if the data in the parameter is valid, false otherwise.
+     */
+    virtual bool validateColumnForParameter(QModelIndex const& index) const;
 
 public slots:
 
@@ -213,6 +245,15 @@ private:
 	 *      @return True if the row is locked, otherwise false.
      */
     bool rowIsLocked(int row);
+
+    /*!
+     *  Gets the value for the given index.
+     *
+     *      @param [in] index   The index of target data.
+     *
+     *      return      The data in the given index.
+     */
+    QVariant valueForIndex(QModelIndex const& index) const;
 
     //! Pointer to the model being edited.
     QSharedPointer<Model> model_;

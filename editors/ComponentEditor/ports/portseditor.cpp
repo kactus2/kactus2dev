@@ -17,6 +17,8 @@
 #include <IPXACTmodels/businterface.h>
 #include <wizards/BusInterfaceWizard/BusInterfaceWizard.h>
 
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QHeaderView>
@@ -30,7 +32,8 @@
 PortsEditor::PortsEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget *parent):
 ItemEditor(component, handler, parent),
 view_(this), 
-model_(component->getModel(), this),
+model_(component->getModel(),QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(component)),
+        this),
 proxy_(this),
 component_(component),
 handler_(handler)

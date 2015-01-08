@@ -26,10 +26,14 @@
 //-----------------------------------------------------------------------------
 // Function: PortsModel::PortsModel()
 //-----------------------------------------------------------------------------
-PortsModel::PortsModel(QSharedPointer<Model> model, QObject *parent ): QAbstractTableModel(parent), 
+PortsModel::PortsModel(QSharedPointer<Model> model, QSharedPointer<ExpressionParser> expressionParser, 
+    QObject *parent):
+    QAbstractTableModel(parent),
+    ParameterModelEquations(),
     model_(model), lockedIndexes_()
 {
 	Q_ASSERT(model_);
+    setExpressionParser(expressionParser);
 }
 
 //-----------------------------------------------------------------------------
@@ -84,70 +88,30 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
 
     QList<QSharedPointer<Port> > ports = model_->getPorts();
 
-    if (role == Qt::DisplayRole) {
-
-        switch (index.column())
-        {
-        case PORT_COL_ROW: 
-            {
-                return index.row() + 1;
-            }
-        case PORT_COL_NAME:
-            {
-                return ports.at(index.row())->getName();
-            }
-        case PORT_COL_DIRECTION:
-            {
-                return General::direction2Str(ports.at(index.row())->getDirection());
-            }
-        case PORT_COL_WIDTH:
-            {
-                return ports.at(index.row())->getPortSize();
-            }
-        case PORT_COL_LEFT:
-            {
-                return ports.at(index.row())->getLeftBound();
-            }
-        case PORT_COL_RIGHT:
-            {
-                return ports.at(index.row())->getRightBound();
-            }
-        case PORT_COL_TYPENAME:
-            {
-                return ports.at(index.row())->getTypeName();
-            }
-        case PORT_COL_TYPEDEF:
-            {
-                QString typeName = ports.at(index.row())->getTypeName();
-                return ports.at(index.row())->getTypeDefinition(typeName);
-            }
-        case PORT_COL_DEFAULT:
-            {
-                return ports.at(index.row())->getDefaultValue();
-            }
-        case PORT_COL_DESC:
-            {
-                return ports.at(index.row())->getDescription();
-            }
-        case PORT_COL_ADHOC_VISIBILITY:
-            {
-                return ports.at(index.row())->isAdHocVisible();
-            }
-        default:
-            {
-                return QVariant();
-            }
-        }
+    if (role == Qt::DisplayRole) 
+    {
+        return valueForIndex(index);
     }
+    else if (role == Qt::ToolTipRole || role == Qt::EditRole)
+    {
+        return expressionOrValueForIndex(index);
+    }
+
+    else if (role == Qt::FontRole)
+    {
+        return italicForEvaluatedValue(index);
+    }
+
     else if (Qt::ForegroundRole == role)
     {
         if ( isLocked(index) )
         {
             return QColor("gray");
         }
+
         else if (ports.at(index.row())->isValid(model_->hasViews()))
         {
-            return QColor("black");
+            return blackForValidOrRedForInvalidIndex(index);
         }
         else
         {
@@ -156,22 +120,18 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
     }
 	else if (Qt::BackgroundRole == role)
     {
-
-        switch (index.column()) 
+        if (index.column() == PORT_COL_ROW)
         {
-        case PORT_COL_ROW:
-            {
-                return QColor("whiteSmoke");
-            }
-        case PORT_COL_NAME:
-        case PORT_COL_DIRECTION:
-        case PORT_COL_WIDTH:
-        case PORT_COL_LEFT:
-        case PORT_COL_RIGHT:
-            {
-                return QColor("LemonChiffon");
-            }
-        default:
+            return QColor("whiteSmoke");
+        }
+        else if (index.column() == PORT_COL_NAME || index.column() == PORT_COL_DIRECTION || 
+            index.column() == PORT_COL_WIDTH || index.column() == PORT_COL_LEFT || 
+            index.column() == PORT_COL_RIGHT)
+        {
+            return QColor("LemonChiffon");
+        }
+        else
+        {
             return QColor("white");
         }
     }
@@ -213,56 +173,56 @@ QVariant PortsModel::headerData( int section, Qt::Orientation orientation, int r
     {
         if (orientation == Qt::Horizontal)
         {
-            switch (section)
+            if (section == PORT_COL_ROW)
             {
-            case PORT_COL_ROW:
-                {
-                    return tr("#");
-                }
-            case PORT_COL_NAME:
-                {
-                    return tr("Name");
-                }
-            case PORT_COL_DIRECTION:
-                {
-                    return tr("Direction");
-                }
-            case PORT_COL_WIDTH:
-                {
-                    return tr("Width");
-                }
-            case PORT_COL_LEFT:
-                {
-                    return tr("Left\n(higher)\nbound");
-                }
-            case PORT_COL_RIGHT:
-                {
-                    return tr("Right\n(lower)\nbound");
-                }
-            case PORT_COL_TYPENAME:
-                {
-                    return tr("Type");
-                }
-            case PORT_COL_TYPEDEF:
-                {
-                    return tr("Type\ndefinition");
-                }
-            case PORT_COL_DEFAULT:
-                {
-                    return tr("Default\nvalue");
-                }
-            case PORT_COL_DESC:
-                {
-                    return tr("Description");
-                }
-            case PORT_COL_ADHOC_VISIBILITY:
-                {
-                    return tr("Ad-hoc");
-                }
-            default:
-                {
-                    return QVariant();
-                }
+                return tr("#");
+            }
+            else if (section == PORT_COL_NAME)
+            {
+                return tr("Name");
+            }
+            else if (section == PORT_COL_DIRECTION)
+            {
+                return tr("Direction");
+            }
+            else if (section == PORT_COL_WIDTH)
+            {
+                return tr("Width");
+            }
+            else if (section == PORT_COL_LEFT)
+            {
+                QString leftBoundHeader = tr("Left\n(higher)\nbound") + getExpressionSymbol();
+                return leftBoundHeader;
+            }
+            else if (section == PORT_COL_RIGHT)
+            {
+                QString rightBoundHeader = tr("Right\n(lower)\nbound") + getExpressionSymbol();
+                return rightBoundHeader;
+            }
+            else if (section == PORT_COL_TYPENAME)
+            {
+                return tr("Type");
+            }
+            else if (section == PORT_COL_TYPEDEF)
+            {
+                return tr("Type\ndefinition");
+            }
+            else if (section == PORT_COL_DEFAULT)
+            {
+                QString defaultHeader = tr("Default\nvalue") + getExpressionSymbol();
+                return defaultHeader;
+            }
+            else if (section == PORT_COL_DESC)
+            {
+                return tr("Description");
+            }
+            else if (section == PORT_COL_ADHOC_VISIBILITY)
+            {
+                return tr("Ad-hoc");
+            }
+            else
+            {
+                return QVariant();
             }
         } 
     }
@@ -292,64 +252,76 @@ bool PortsModel::setData( const QModelIndex& index, const QVariant& value, int r
             return false;
         }
 
-        switch (index.column()) {
-        case PORT_COL_ROW: {
+        if (index.column() == PORT_COL_ROW)
+        {
             return false;
-                           }
-        case PORT_COL_NAME: {
+        }
+        else if (index.column() == PORT_COL_NAME)
+        {
             ports.at(index.row())->setName(value.toString());
-
-            break;
-                            }
-        case PORT_COL_DIRECTION: {
-
-            General::Direction direction = General::str2Direction(
-                value.toString(), General::DIRECTION_INVALID);
+        }
+        else if (index.column() == PORT_COL_DIRECTION)
+        {
+            General::Direction direction = General::str2Direction(value.toString(), General::DIRECTION_INVALID);
 
             ports.at(index.row())->setDirection(direction);
-            break;
-                                 }
-        case PORT_COL_WIDTH: {
+        }
+        else if (index.column() == PORT_COL_WIDTH)
+        {
+            ports.at(index.row())->removeLeftBoundExpression();
+            ports.at(index.row())->removeRightBoundExpression();
+
             int size = value.toInt();
             ports.at(index.row())->setPortSize(size);
 
             // if port is vectored and previous type was std_logic
-            if (size > 1 && ports.at(index.row())->getTypeName() == QString("std_logic")) {
-
+            if (size > 1 && ports.at(index.row())->getTypeName() == QString("std_logic")) 
+            {
                 // change the type to vectored
                 ports.at(index.row())->setTypeName("std_logic_vector");
             }
 
             // if port is not vectored but previous type was std_logic_vector
-            else if (size < 2 && ports.at(index.row())->getTypeName() == QString("std_logic_vector")) {
-
+            else if (size < 2 && ports.at(index.row())->getTypeName() == QString("std_logic_vector")) 
+            {
                 ports.at(index.row())->setTypeName("std_logic");
             }
 
-            emit dataChanged(index, 
-                QAbstractTableModel::index(index.row(), index.column()+3, QModelIndex()));
+            emit dataChanged(index, QAbstractTableModel::index(index.row(), index.column()+3, QModelIndex()));
             return true;
-                             }
-        case PORT_COL_LEFT: {
-
+        }
+        else if (index.column() == PORT_COL_LEFT)
+        {
             // make sure left bound doesn't drop below right bound
-            if (value.toInt() < ports.at(index.row())->getRightBound())
+            QString calculatedExpression = parseExpressionToDecimal(value.toString(), index);
+
+            if(calculatedExpression.toInt() < ports.at(index.row())->getRightBound() ||
+                calculatedExpression == "n/a")
+            {
                 return false;
+            }
 
             // ok so make the change
-            ports.at(index.row())->setLeftBound(value.toInt());
+            ports.at(index.row())->removeLeftBoundExpression();
+            
+            if (calculatedExpression != value.toString())
+            {
+                ports.at(index.row())->setLeftBoundExpression(value.toString());
+            }
+
+            ports.at(index.row())->setLeftBound(calculatedExpression.toInt());
 
             int size = ports.at(index.row())->getPortSize();
             // if port is vectored and previous type was std_logic
-            if (size > 1 && ports.at(index.row())->getTypeName() == QString("std_logic")) {
-
+            if (size > 1 && ports.at(index.row())->getTypeName() == QString("std_logic")) 
+            {
                 // change the type to vectored
                 ports.at(index.row())->setTypeName("std_logic_vector");
             }
 
             // if port is not vectored but previous type was std_logic_vector
-            else if (size < 2 && ports.at(index.row())->getTypeName() == QString("std_logic_vector")) {
-
+            else if (size < 2 && ports.at(index.row())->getTypeName() == QString("std_logic_vector")) 
+            {
                 ports.at(index.row())->setTypeName("std_logic");
             }
 
@@ -358,27 +330,39 @@ bool PortsModel::setData( const QModelIndex& index, const QVariant& value, int r
                 QAbstractTableModel::index(index.row(), index.column()+2, QModelIndex()));
 
             return true;
-                            }
-        case PORT_COL_RIGHT: {
-
+        }
+        else if (index.column() == PORT_COL_RIGHT)
+        {
             // make sure right bound is not greater than left bound
-            if (value.toInt() > ports.at(index.row())->getLeftBound())
+            QString calculatedExpression = parseExpressionToDecimal(value.toString(), index);
+
+            if (calculatedExpression.toInt() > ports.at(index.row())->getLeftBound() || 
+                calculatedExpression == "n/a")
+            {
                 return false;
+            }
 
             // ok so apply the change
-            ports.at(index.row())->setRightBound(value.toInt());
+            ports.at(index.row())->removeRightBoundExpression();
+            
+            if (calculatedExpression != value.toString())
+            {
+                ports.at(index.row())->setRightBoundExpression(value.toString());
+            }
+
+            ports.at(index.row())->setRightBound(calculatedExpression.toInt());
 
             int size = ports.at(index.row())->getPortSize();
             // if port is vectored and previous type was std_logic
-            if (size > 1 && ports.at(index.row())->getTypeName() == QString("std_logic")) {
-
+            if (size > 1 && ports.at(index.row())->getTypeName() == QString("std_logic")) 
+            {
                 // change the type to vectored
                 ports.at(index.row())->setTypeName("std_logic_vector");
             }
 
             // if port is not vectored but previous type was std_logic_vector
-            else if (size < 2 && ports.at(index.row())->getTypeName() == QString("std_logic_vector")) {
-
+            else if (size < 2 && ports.at(index.row())->getTypeName() == QString("std_logic_vector")) 
+            {
                 ports.at(index.row())->setTypeName("std_logic");
             }
 
@@ -386,8 +370,9 @@ bool PortsModel::setData( const QModelIndex& index, const QVariant& value, int r
                 QAbstractTableModel::index(index.row(), index.column()+1, QModelIndex()), 
                 QAbstractTableModel::index(index.row(), index.column()-2, QModelIndex()));
             return true;
-                             }
-        case PORT_COL_TYPENAME: {
+        }
+        else if (index.column() == PORT_COL_TYPENAME)
+        {
             QString typeName = value.toString();
             ports.at(index.row())->setTypeName(typeName);
 
@@ -398,28 +383,27 @@ bool PortsModel::setData( const QModelIndex& index, const QVariant& value, int r
             emit dataChanged(index,
                 QAbstractTableModel::index(index.row(), index.column()+1, QModelIndex()));
             return true;
-                                }
-        case PORT_COL_TYPEDEF: {
+        }
+        else if (index.column() == PORT_COL_TYPEDEF)
+        {
             QString typeName = ports.at(index.row())->getTypeName();
             ports.at(index.row())->setTypeDefinition(typeName, value.toString());
-            break;
-                               }
-        case PORT_COL_DEFAULT: {
+        }
+        else if (index.column() == PORT_COL_DEFAULT)
+        {
             ports.at(index.row())->setDefaultValue(value.toString());
-            break;
-                               }
-        case PORT_COL_DESC: {
+        }
+        else if (index.column() == PORT_COL_DESC)
+        {
             ports.at(index.row())->setDescription(value.toString());
-            break;
-                            }
-        case PORT_COL_ADHOC_VISIBILITY: {
+        }
+        else if (index.column() == PORT_COL_ADHOC_VISIBILITY)
+        {
             ports.at(index.row())->setAdHocVisible(value.toBool());
-            break;
-                                        }
-
-        default: {
+        }
+        else
+        {
             return false;
-                 }
         }
 
         emit dataChanged(index, index);
@@ -695,4 +679,135 @@ bool PortsModel::rowIsLocked(int row)
 {
     QModelIndex nameIndex = QAbstractTableModel::index(row, 0, QModelIndex());
     return nameIndex.isValid() && isLocked(nameIndex);
+}
+
+//-----------------------------------------------------------------------------
+// Function: portsmodel::valueForIndex()
+//-----------------------------------------------------------------------------
+QVariant PortsModel::valueForIndex(QModelIndex const& index) const
+{
+    QList<QSharedPointer<Port> > ports = model_->getPorts();
+
+    if (index.column() == PORT_COL_ROW)
+    {
+        return index.row() + 1;
+    }
+    else if (index.column() == PORT_COL_NAME)
+    {
+        return ports.at(index.row())->getName();
+    }
+    else if (index.column() == PORT_COL_DIRECTION)
+    {
+        return General::direction2Str(ports.at(index.row())->getDirection());
+    }
+    else if (index.column() == PORT_COL_WIDTH)
+    {
+        return ports.at(index.row())->getPortSize();
+    }
+    // Expression OK
+    else if (index.column() == PORT_COL_LEFT)
+    {
+        //return ports.at(index.row())->getLeftBound();
+        QString leftBound = QString::number(ports.at(index.row())->getLeftBound());
+        return formattedValueFor(leftBound);
+    }
+    // Expression OK
+    else if (index.column() == PORT_COL_RIGHT)
+    {
+        //return ports.at(index.row())->getRightBound();
+        QString rightBound = QString::number(ports.at(index.row())->getRightBound());
+        return formattedValueFor(rightBound);
+    }
+    else if (index.column() == PORT_COL_TYPENAME)
+    {
+        return ports.at(index.row())->getTypeName();
+    }
+    else if (index.column() == PORT_COL_TYPEDEF)
+    {
+        QString typeName = ports.at(index.row())->getTypeName();
+        return ports.at(index.row())->getTypeDefinition(typeName);
+    }
+    // Expression OK
+    else if (index.column() == PORT_COL_DEFAULT)
+    {
+        //return ports.at(index.row())->getDefaultValue();
+        return formattedValueFor(ports.at(index.row())->getDefaultValue());
+    }
+    else if (index.column() == PORT_COL_DESC)
+    {
+        return ports.at(index.row())->getDescription();
+    }
+    else if (index.column() == PORT_COL_ADHOC_VISIBILITY)
+    {
+        return ports.at(index.row())->isAdHocVisible();
+    }
+    else
+    {
+        return QVariant();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: portsmodel::isValidExpressionColumn()
+//-----------------------------------------------------------------------------
+bool PortsModel::isValidExpressionColumn(QModelIndex const& index) const
+{
+    if (index.column() == PORT_COL_LEFT || index.column() == PORT_COL_RIGHT || index.column() == PORT_COL_DEFAULT)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: portsmodel::expressionOrValueForIndex()
+//-----------------------------------------------------------------------------
+QVariant PortsModel::expressionOrValueForIndex(QModelIndex const& index) const
+{
+    QList<QSharedPointer<Port> > ports = model_->getPorts();
+
+    if (index.column() == PORT_COL_LEFT)
+    {
+        return ports.at(index.row())->getLeftBoundExpression();
+    }
+    else if (index.column() == PORT_COL_RIGHT)
+    {
+        return ports.at(index.row())->getRightBoundExpression();
+    }
+    else if (index.column() == PORT_COL_DEFAULT)
+    {
+        return ports.at(index.row())->getDefaultValue();
+    }
+    else
+    {
+        return data(index, Qt::DisplayRole);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: portsmodel::validateColumnForParameter()
+//-----------------------------------------------------------------------------
+bool PortsModel::validateColumnForParameter(QModelIndex const& index) const
+{
+    QList < QSharedPointer < Port > > ports = model_->getPorts();
+
+    if (index.column() == PORT_COL_LEFT)
+    {
+        QString leftBound = QString::number(ports.at(index.row())->getLeftBound());
+        return isValuePlainOrExpression(leftBound);
+    }
+    else if (index.column() == PORT_COL_RIGHT)
+    {
+        QString rightBound = QString::number(ports.at(index.row())->getRightBound());
+        return isValuePlainOrExpression(rightBound);
+    }
+    else if (index.column() == PORT_COL_DEFAULT)
+    {
+        return isValuePlainOrExpression(ports.at(index.row())->getDefaultValue());
+    }
+
+    return true;
 }

@@ -34,7 +34,7 @@ QString ValueFormatter::format(QString const& value, int base) const
 {
     if (base == 2)
     {
-        return "'o" + QString::number(value.toInt(), 2);
+        return "'b" + QString::number(value.toInt(), 2);
     }
     else if (base == 8)
     {

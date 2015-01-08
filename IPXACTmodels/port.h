@@ -314,6 +314,44 @@ public:
 	*/
 	void setRightBound(int rightBound);
 
+    /*!
+     *  Set the left bound expression.
+     *
+     *      @param [in] expression   The expression.
+     */
+    void setLeftBoundExpression(QString const& expression);
+
+    /*!
+     *  Set the right bound expression.
+     *
+     *      @param [in] expression   The expression.
+     */
+    void setRightBoundExpression(QString const& expression);
+
+    /*!
+     *  Get the left bound expression.
+     *
+     *      @return     The expression.
+     */
+    QString getLeftBoundExpression();
+
+    /*!
+     *  Get the right bound expression.
+     *
+     *      @return     The expression.
+     */
+    QString getRightBoundExpression();
+
+    /*!
+     *  Remove the left bound expression.
+     */
+    void removeLeftBoundExpression();
+
+    /*!
+     *  Remove the right bound expression.
+     */
+    void removeRightBoundExpression();
+
 	/*! \brief Set the size of the port
 	 * 
 	 * The port bound are set to size-1 downto 0

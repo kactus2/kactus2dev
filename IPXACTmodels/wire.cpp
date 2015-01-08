@@ -17,6 +17,11 @@
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
 
+namespace
+{
+    const QString EXPRESSION_KEY = QString("expression");
+}
+
 Wire::WireTypeDef::WireTypeDef(QDomNode &wireTypeNode): typeName_(QString()),
 constrained_(false), typeDefinitions_(), viewNameRefs_() {
 
@@ -437,6 +442,110 @@ void Wire::setRightBound( int rightBound ) {
 	else {
 		vector_ = QSharedPointer<Vector>(new Vector(0, rightBound));
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: wire::setLeftBoundExpression()
+//-----------------------------------------------------------------------------
+void Wire::setLeftBoundExpression(QString const& expression)
+{
+    if (!vector_)
+    {
+        vector_ = QSharedPointer<Vector>(new Vector(0,0));
+    }
+
+    vector_->setLeftAttribute(EXPRESSION_KEY, expression);
+}
+
+//-----------------------------------------------------------------------------
+// Function: wire::setRightBoundExpression()
+//-----------------------------------------------------------------------------
+void Wire::setRightBoundExpression(QString const& expression)
+{
+    if (!vector_)
+    {
+        vector_ = QSharedPointer<Vector>(new Vector(0,0));
+    }
+
+    vector_->setRightAttribute(EXPRESSION_KEY, expression);
+}
+
+//-----------------------------------------------------------------------------
+// Function: wire::hasLeftBoundExpression()
+//-----------------------------------------------------------------------------
+bool Wire::hasLeftBoundExpression()
+{
+    if (!vector_)
+    {
+        return false;
+    }
+    else
+    {
+        return vector_->hasLeftAttribute(EXPRESSION_KEY);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: wire::hasRightBoundExpression()
+//-----------------------------------------------------------------------------
+bool Wire::hasRightBoundExpression()
+{
+    if (!vector_)
+    {
+        return false;
+    }
+    else
+    {
+        return vector_->hasRightAttribute(EXPRESSION_KEY);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: wire::getLeftBoundExpression()
+//-----------------------------------------------------------------------------
+QString Wire::getLeftBoundExpression()
+{
+    if (!vector_)
+    {
+        vector_ = QSharedPointer<Vector>(new Vector());
+    }
+
+    return vector_->getLeftAttribute(EXPRESSION_KEY);
+}
+
+//-----------------------------------------------------------------------------
+// Function: wire::getRightBoundExpression()
+//-----------------------------------------------------------------------------
+QString Wire::getRightBoundExpression()
+{
+    if (!vector_)
+    {
+        vector_ = QSharedPointer<Vector>(new Vector());
+    }
+
+    return vector_->getRightAttribute(EXPRESSION_KEY);
+}
+
+//-----------------------------------------------------------------------------
+// Function: wire::removeLeftBoundExpression()
+//-----------------------------------------------------------------------------
+void Wire::removeLeftBoundExpression()
+{
+    if (vector_)
+    {
+        vector_->removeLeftAttribute(EXPRESSION_KEY);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: wire::removeRightBoundExpression()
+//-----------------------------------------------------------------------------
+void Wire::removeRightBoundExpression()
+{
+    if (vector_)
+    {
+        vector_->removeRightAttribute(EXPRESSION_KEY);
+    }
 }
 
 QString Wire::getTypeName( const QString& viewName /*= QString("")*/ ) const {

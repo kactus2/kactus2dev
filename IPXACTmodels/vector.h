@@ -108,6 +108,72 @@ public:
 	 */
 	const QMap<QString, QString>& getRightAttributes();
 
+    /*!
+     *  Sets a left attribute.
+     *
+     *      @param [in] attributeName       The name of the attribute to set.
+     *      @param [in] attributeValue      The value for the attribute.
+     */
+    void setLeftAttribute(QString const& attributeName, QString const& attributeValue);
+
+    /*!
+     *  Sets a right attribute.
+     *
+     *      @param [in] attributeName       The name of the attribute to set.
+     *      @param [in] attributeValue      The value for the attribute.
+     */
+    void setRightAttribute(QString const& attributeName, QString const& attributeValue);
+
+    /*!
+     *  Remove a left attribute.
+     *
+     *      @param [in] attributeName       The name of the attribute to be removed.
+     */
+    void removeLeftAttribute(QString const& attributeName);
+
+    /*!
+     *  Remove a right attribute.
+     *
+     *      @param [in] attributeName       The name of the attribute to be removed.
+     */
+    void removeRightAttribute(QString const& attributeName);
+
+    /*!
+     *  Gets the value of a left attribute.
+     *
+     *      @param [in] attributeName   The name of the attribute to get.
+     *
+     *      @return     The attribute value.
+     */
+    QString getLeftAttribute(QString const& attributeName);
+
+    /*!
+     *  Gets the value of a right attribute.
+     *
+     *      @param [in] attributeName   The name of the attribute to get.
+     *
+     *      @return     The attribute value.
+     */
+    QString getRightAttribute(QString const& attributeName);
+
+    /*!
+     *  Checks if the vector has a left attribute with the given name.
+     *
+     *      @param [in] attributeName   The name of the attribute to find.
+     *
+     *      @return     True, if the attribute is found, otherwise false.
+     */
+    bool hasLeftAttribute(QString const& attributeName);
+
+    /*!
+     *  Checks if the vector has a right attribute with the given name.
+     *
+     *      @param [in] attributeName   The name of the attribute to find.
+     *
+     *      @return     True, if the attribute is found, otherwise false.
+     */
+    bool hasRightAttribute(QString const& attributeName);
+
 	/*! \brief Set the left bound of the vector.
 	 *
 	 * \param left The left bound.

@@ -55,6 +55,12 @@ QWidget* PortsDelegate::createEditor( QWidget* parent,
 
     case PORT_COL_LEFT:
     case PORT_COL_RIGHT:
+        {
+            QLineEdit* boundaryEdit = new QLineEdit(parent);
+            connect(boundaryEdit, SIGNAL(editingFinished()), 
+                this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+            return boundaryEdit;
+        }
     case PORT_COL_WIDTH:
         {
             QSpinBox* spinBox = new QSpinBox(parent);
@@ -139,6 +145,13 @@ void PortsDelegate::setEditorData( QWidget* editor,
 
     case PORT_COL_LEFT:
     case PORT_COL_RIGHT:
+        {
+            QLineEdit* boundaryEdit = qobject_cast<QLineEdit*>(editor);
+            QString value = index.model()->data(index, Qt::EditRole).toString().simplified();
+            boundaryEdit->setText(value);
+            break;
+        }
+
     case PORT_COL_WIDTH:
         {
             QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
@@ -150,7 +163,7 @@ void PortsDelegate::setEditorData( QWidget* editor,
     case PORT_COL_DEFAULT:
         {
             QLineEdit* defaultEdit = qobject_cast<QLineEdit*>(editor);
-            QString value = index.model()->data(index, Qt::DisplayRole).toString().simplified();
+            QString value = index.model()->data(index, Qt::EditRole).toString().simplified();
             defaultEdit->setText(value);
             break;
         }
@@ -227,6 +240,12 @@ void PortsDelegate::setModelData( QWidget* editor,
 
     case PORT_COL_LEFT:
     case PORT_COL_RIGHT:
+        {
+            QLineEdit* boundaryEdit = qobject_cast<QLineEdit*>(editor);
+            QString value = boundaryEdit->text().simplified();
+            model->setData(index, value, Qt::EditRole);
+            break;
+        }
     case PORT_COL_WIDTH:
         {
             QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);

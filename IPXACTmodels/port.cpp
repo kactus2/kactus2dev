@@ -536,6 +536,88 @@ void Port::setRightBound( int rightBound ) {
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: port::setLeftBoundExpression()
+//-----------------------------------------------------------------------------
+void Port::setLeftBoundExpression(QString const& expression)
+{
+    if (!wire_)
+    {
+        wire_ = QSharedPointer<Wire>(new Wire());
+        portType_ = General::WIRE;
+    }
+
+    wire_->setLeftBoundExpression(expression);
+}
+
+//-----------------------------------------------------------------------------
+// Function: port::setRightBoundExpression()
+//-----------------------------------------------------------------------------
+void Port::setRightBoundExpression(QString const& expression)
+{
+    if (!wire_)
+    {
+        wire_ = QSharedPointer<Wire>(new Wire());
+        portType_ = General::WIRE;
+    }
+
+    wire_->setRightBoundExpression(expression);
+}
+
+//-----------------------------------------------------------------------------
+// Function: port::getLeftBoundExpression()
+//-----------------------------------------------------------------------------
+QString Port::getLeftBoundExpression()
+{
+    if (wire_)
+    {
+        if (wire_->hasLeftBoundExpression())
+        {
+            return wire_->getLeftBoundExpression();
+        }
+    }
+
+    return QString::number(getLeftBound());
+}
+
+//-----------------------------------------------------------------------------
+// Function: port::getRightBoundExpression()
+//-----------------------------------------------------------------------------
+QString Port::getRightBoundExpression()
+{
+    if (wire_)
+    {
+        if (wire_->hasRightBoundExpression())
+        {
+            return wire_->getRightBoundExpression();
+        }
+    }
+
+    return QString::number(getRightBound());
+}
+
+//-----------------------------------------------------------------------------
+// Function: port::removeLeftBoundExpression()
+//-----------------------------------------------------------------------------
+void Port::removeLeftBoundExpression()
+{
+    if (wire_)
+    {
+        wire_->removeLeftBoundExpression();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: port::removeRightBoundExpression()
+//-----------------------------------------------------------------------------
+void Port::removeRightBoundExpression()
+{
+    if (wire_)
+    {
+        wire_->removeRightBoundExpression();
+    }
+}
+
 void Port::setPortSize( int size ) {
 	setLeftBound(size-1);
 	setRightBound(0);

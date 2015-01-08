@@ -142,6 +142,76 @@ const QMap<QString, QString>& Vector::getRightAttributes() {
 	return rightAttributes_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: vector::setLeftAttribute()
+//-----------------------------------------------------------------------------
+void Vector::setLeftAttribute(QString const& attributeName, QString const& attributeValue)
+{
+    if (!attributeValue.isEmpty())
+    {
+        leftAttributes_.insert(attributeName, attributeValue);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: vector::setRigthAttribute()
+//-----------------------------------------------------------------------------
+void Vector::setRightAttribute(QString const& attributeName, QString const& attributeValue)
+{
+    if (!attributeValue.isEmpty())
+    {
+        rightAttributes_.insert(attributeName, attributeValue);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: vector::removeLeftAttribute()
+//-----------------------------------------------------------------------------
+void Vector::removeLeftAttribute(QString const& attributeName)
+{
+    leftAttributes_.remove(attributeName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: vector::removeRightAttribute()
+//-----------------------------------------------------------------------------
+void Vector::removeRightAttribute(QString const& attributeName)
+{
+    rightAttributes_.remove(attributeName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: vector::getLeftAttribute()
+//-----------------------------------------------------------------------------
+QString Vector::getLeftAttribute(QString const& attributeName)
+{
+    return leftAttributes_.value(attributeName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: vector::getRightAttribute()
+//-----------------------------------------------------------------------------
+QString Vector::getRightAttribute(QString const& attributeName)
+{
+    return rightAttributes_.value(attributeName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: vector::hasLeftAttribute()
+//-----------------------------------------------------------------------------
+bool Vector::hasLeftAttribute(QString const& attributeName)
+{
+    return leftAttributes_.contains(attributeName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: vector::hasRightAttribute()
+//-----------------------------------------------------------------------------
+bool Vector::hasRightAttribute(QString const& attributeName)
+{
+    return rightAttributes_.contains(attributeName);
+}
+
 void Vector::setLeft( int left ) {
 	left_ = left;
 }

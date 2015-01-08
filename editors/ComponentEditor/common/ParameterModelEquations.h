@@ -110,6 +110,16 @@ protected:
      */
     bool isValuePlainOrExpression(QString const& value) const;
 
+    /*!
+     *  Parse expression to decimal number.
+     *
+     *      @param [in] expression  The expression to be parsed.
+     *      @param [in] index       The model index of the expression.
+     *
+     *      @return     The decimal version of the number.
+     */
+    QString parseExpressionToDecimal(QString const& expression, QModelIndex const& index) const;
+
 private:
 
     //! Disable copying and assignment.

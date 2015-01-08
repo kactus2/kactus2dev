@@ -112,12 +112,29 @@ QVariant ParameterModelEquations::blackForValidOrRedForInvalidIndex(QModelIndex 
 //-----------------------------------------------------------------------------
 bool ParameterModelEquations::isValuePlainOrExpression(QString const& value) const
 {
-    if (!expressionParser_->isPlainValue(value) && !expressionParser_->isValidExpression(value))
+    if (expressionParser_->isPlainValue(value) || expressionParser_->isValidExpression(value))
     {
-        return false;
+        return true;
     }
     else
     {
-        return true;
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterModelEquations::parsedExpression()
+//-----------------------------------------------------------------------------
+QString ParameterModelEquations::parseExpressionToDecimal
+    (QString const& expression, QModelIndex const& index) const
+{
+    if (expressionParser_->isValidExpression(expression) && isValidExpressionColumn(index))
+    {
+        return expressionParser_->parseExpression(expression);
+    }
+
+    else
+    {
+        return "n/a";
     }
 }

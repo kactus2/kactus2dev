@@ -18,9 +18,9 @@ enum PortEditorColumn
     PORT_COL_ROW = 0,           //!< Column for the row number.
     PORT_COL_NAME ,             //!< Column for the port name.
     PORT_COL_DIRECTION,         //!< Column for the port direction.
-    PORT_COL_WIDTH,             //!< Column for the port width.
     PORT_COL_LEFT,              //!< Column for specifying the left bound of the port.
     PORT_COL_RIGHT,             //!< Column for specifying the right bound of the port.
+    PORT_COL_WIDTH,             //!< Column for the port width.
     PORT_COL_TYPENAME,          //!< Column for the port typename.
     PORT_COL_TYPEDEF,           //!< Column for the port type definition.
     PORT_COL_DEFAULT,           //!< Column for setting the default value for the port.
