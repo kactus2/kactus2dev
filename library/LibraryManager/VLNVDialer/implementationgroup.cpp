@@ -51,7 +51,10 @@ void ImplementationGroup::setImplementation(Utils::ImplementationOptions options
 {
     hwBox_.setChecked(options.hw_);
     swBox_.setChecked(options.sw_);
-    systemBox_.setChecked(options.system_);    
+    systemBox_.setChecked(options.system_);
+
+    options_ = options;
+    emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------

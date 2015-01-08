@@ -53,7 +53,10 @@ void FirmnessGroup::setFirmness(Utils::FirmnessOptions options)
 {    
     templateBox_.setChecked(options.templates_);
     mutableBox_.setChecked(options.mutable_);
-    fixedBox_.setChecked(options.fixed_);    
+    fixedBox_.setChecked(options.fixed_);
+
+    options_ = options;
+    emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------

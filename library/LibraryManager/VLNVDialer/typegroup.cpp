@@ -51,7 +51,10 @@ void TypeGroup::setTypes(Utils::TypeOptions options)
 {
     componentBox_.setChecked(options.components_);
     busApiComBox_.setChecked(options.buses_);
-    advancedBox_.setChecked(options.advanced_);    
+    advancedBox_.setChecked(options.advanced_);
+
+    options_ = options;
+    emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------

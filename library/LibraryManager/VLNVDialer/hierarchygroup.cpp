@@ -71,7 +71,10 @@ void HierarchyGroup::setHierarchy(Utils::HierarchyOptions options)
     boardBox_.setChecked(options.board_);    
     chipBox_.setChecked(options.chip_);
     socBox_.setChecked(options.soc_);
-    ipBox_.setChecked(options.ip_);   
+    ipBox_.setChecked(options.ip_);
+
+    options_ = options;
+    emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------
