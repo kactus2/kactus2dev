@@ -12,6 +12,7 @@
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include "addressblockproxy.h"
 #include <library/LibraryManager/libraryinterface.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <QVBoxLayout>
 
@@ -22,7 +23,8 @@ AddressBlockEditor::AddressBlockEditor(QSharedPointer<AddressBlock> addressBlock
 ItemEditor(component, handler, parent),
 view_(new EditableTableView(this)),
 proxy_(new AddressBlockProxy(this)),
-model_(new AddressBlockModel(addressBlock, component->getChoices(), this))
+model_(new AddressBlockModel(addressBlock, component->getChoices(), 
+    QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(component)), this))
 {
 
 	// display a label on top the table

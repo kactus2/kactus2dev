@@ -10,8 +10,9 @@
 #include "registermodel.h"
 #include "field.h"
 #include "registerdefinition.h"
-
 #include "ipxactmodels_global.h"
+
+#include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -137,6 +138,32 @@ public:
      * \return The value of the dim-element.
      */
     int getDim() const;
+
+    /*!
+     *  Set the expression for dimension.
+     *
+     *      @param [in] expression   [Description].
+     */
+    void setDimensionExpression(QString const& expression);
+
+    /*!
+     *  Get the expression for dimension.
+     *
+     *      @return     The dimension expression.
+     */
+    QString getDimensionExpression();
+
+    /*!
+     *  Remove the dimension expression.
+     */
+    void removeDimensionExpression();
+
+    /*!
+     *  Check if the dimension has an expression.
+     *
+     *      @return     True, if expression for dimension is found, otherwise false.
+     */
+    bool hasDimensionExpression();
 
     /*! \brief Set the addressOffset for this register.
      *
@@ -267,6 +294,27 @@ public:
 
 private:
 
+    /*!
+     *  Parses the vendor extensions from a DOM node.
+     *
+     *      @param [in] extensionsNode  The DOM node containing all vendor extensions.
+     */
+    void parseVendorExtensions(QDomNode const& extensionsNode);
+
+    /*!
+     *  Creates a vendor extension for expression.
+     *
+     *      @param [in] expression  The initial expression to set.
+     */
+    void createDimensionExpressionExtension(QString const& expression);
+
+    /*!
+     *  Copies vendor extensions from another register.
+     *
+     *      @param [in] other   The register to copy extensions from.
+     */
+    void copyVendorExtensions(const Register & other);
+
 	/*! \brief Assigns an unbounded dimension to the register
 	 * OPTIONAL spirit:dim
 	 */
@@ -292,6 +340,9 @@ private:
 	 * Register vendor extensions.
 	 */
     QList<QSharedPointer<VendorExtension> > vendorExtensions_;
+
+    //! Expression used for register dimension.
+    QSharedPointer<Kactus2Value> dimensionExpression_;
 };
 
 #endif /* REGISTER_H_ */

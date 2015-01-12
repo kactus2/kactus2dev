@@ -39,13 +39,13 @@ QWidget* AddressBlockDelegate::createEditor( QWidget* parent, const QStyleOption
 			spinBox->setRange(1, 4096);
 			return spinBox;
 												}
-		case AddressBlockDelegate::DIM_COLUMN: {
-			QSpinBox* spinBox = new QSpinBox(parent);
-			connect(spinBox, SIGNAL(editingFinished()),
-				this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-			spinBox->setRange(0, 4096);
-			return spinBox;
-											   }
+		case AddressBlockDelegate::DIM_COLUMN: 
+            {
+                QLineEdit* dimensionEdit = new QLineEdit(parent);
+                connect(dimensionEdit, SIGNAL(editingFinished()), 
+                    this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+                return dimensionEdit;
+            }
 		case AddressBlockDelegate::VOLATILE_COLUMN: {
 			BooleanComboBox* boolBox = new BooleanComboBox(parent);
 			return boolBox;
@@ -63,7 +63,6 @@ QWidget* AddressBlockDelegate::createEditor( QWidget* parent, const QStyleOption
 void AddressBlockDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const {
 	switch (index.column()) {
 		case AddressBlockDelegate::NAME_COLUMN:
-		case AddressBlockDelegate::OFFSET_COLUMN:
 		case AddressBlockDelegate::DESC_COLUMN:
 		case AddressBlockDelegate::RESET_VALUE_COLUMN:
 		case AddressBlockDelegate::RESET_MASK_COLUMN: {
@@ -74,8 +73,16 @@ void AddressBlockDelegate::setEditorData( QWidget* editor, const QModelIndex& in
 			edit->setText(text);
 			break;
 													  }
-		case AddressBlockDelegate::SIZE_COLUMN:
-		case AddressBlockDelegate::DIM_COLUMN: {
+        case AddressBlockDelegate::OFFSET_COLUMN:
+            {
+                QLineEdit* offsetEdit = qobject_cast<QLineEdit*>(editor);
+                Q_ASSERT(offsetEdit);
+
+                const QString text = index.model()->data(index, Qt::EditRole).toString();
+                offsetEdit->setText(text);
+                break;
+            }
+		case AddressBlockDelegate::SIZE_COLUMN: {
 			QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
 			Q_ASSERT(spinBox);
 
@@ -83,6 +90,15 @@ void AddressBlockDelegate::setEditorData( QWidget* editor, const QModelIndex& in
 			spinBox->setValue(value);
 			break;
 											   }
+        case AddressBlockDelegate::DIM_COLUMN:
+            {
+                QLineEdit* dimensionEdit = qobject_cast<QLineEdit*>(editor);
+                Q_ASSERT(dimensionEdit);
+
+                const QString text = index.model()->data(index, Qt::EditRole).toString();
+                dimensionEdit->setText(text);
+                break;
+            }
 		case AddressBlockDelegate::VOLATILE_COLUMN: {
 			BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
 			Q_ASSERT(boolBox);
@@ -121,8 +137,7 @@ void AddressBlockDelegate::setModelData( QWidget* editor, QAbstractItemModel* mo
 			model->setData(index, text, Qt::EditRole);
 			break;
 													  }
-		case AddressBlockDelegate::SIZE_COLUMN:
-		case AddressBlockDelegate::DIM_COLUMN: {
+		case AddressBlockDelegate::SIZE_COLUMN: {
 			QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
 			Q_ASSERT(spinBox);
 
@@ -130,6 +145,15 @@ void AddressBlockDelegate::setModelData( QWidget* editor, QAbstractItemModel* mo
 			model->setData(index, value, Qt::EditRole);
 			break;
 											   }
+        case AddressBlockDelegate::DIM_COLUMN:
+            {
+                QLineEdit* dimensionEdit = qobject_cast<QLineEdit*>(editor);
+                Q_ASSERT(dimensionEdit);
+
+                QString text = dimensionEdit->text();
+                model->setData(index, text, Qt::EditRole);
+                break;
+            }
 		case AddressBlockDelegate::VOLATILE_COLUMN: {
 			BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
 			Q_ASSERT(boolBox);

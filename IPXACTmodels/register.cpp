@@ -27,7 +27,8 @@ dim_(-1),
 addressOffset_(),
 alternateRegisters_(), 
 registerDefinition_(registerNode),
-vendorExtensions_()
+vendorExtensions_(),
+dimensionExpression_()
 {
 
 	for (int i = 0; i < registerNode.childNodes().count(); ++i) {
@@ -52,11 +53,7 @@ vendorExtensions_()
 		}
         else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
         {
-            int extensionCount = tempNode.childNodes().count();
-            for (int j = 0; j < extensionCount; ++j) {
-                QDomNode extensionNode = tempNode.childNodes().at(j);
-                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
-            }
+            parseVendorExtensions(tempNode);
         }
 	}
 }
@@ -67,7 +64,8 @@ dim_(-1),
 addressOffset_("0x0"),
 alternateRegisters_(), 
 registerDefinition_(),
-vendorExtensions_()
+vendorExtensions_(),
+dimensionExpression_()
 {
 }
 
@@ -78,7 +76,8 @@ dim_(-1),
 addressOffset_(),
 alternateRegisters_(), 
 registerDefinition_(),
-vendorExtensions_()
+vendorExtensions_(),
+dimensionExpression_()
 {
 	registerDefinition_.setVolatile(volatileValue);
 	registerDefinition_.setAccess(access);
@@ -90,7 +89,8 @@ dim_(other.dim_),
 addressOffset_(other.addressOffset_),
 alternateRegisters_(),
 registerDefinition_(other.registerDefinition_),
-vendorExtensions_(other.vendorExtensions_)
+vendorExtensions_(),
+dimensionExpression_()
 {
 
 	foreach (QSharedPointer<AlternateRegister> altReg, other.alternateRegisters_) {
@@ -100,6 +100,8 @@ vendorExtensions_(other.vendorExtensions_)
 			alternateRegisters_.append(copy);
 		}
 	}
+
+    copyVendorExtensions(other);
 }
 
 Register& Register::operator=( const Register& other ) {
@@ -109,7 +111,6 @@ Register& Register::operator=( const Register& other ) {
 		dim_ = other.dim_;
 		addressOffset_ = other.addressOffset_;
 		registerDefinition_ = other.registerDefinition_;
-        vendorExtensions_ = other.vendorExtensions_;
 
 		alternateRegisters_.clear();
 		foreach (QSharedPointer<AlternateRegister> altReg, other.alternateRegisters_) {
@@ -119,6 +120,8 @@ Register& Register::operator=( const Register& other ) {
 				alternateRegisters_.append(copy);
 			}
 		}
+
+        copyVendorExtensions(other);
 	}
 	return *this;
 }
@@ -278,6 +281,64 @@ int Register::getDim() const {
     return dim_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: register::setDimExpression()
+//-----------------------------------------------------------------------------
+void Register::setDimensionExpression(QString const& expression)
+{
+    if (dimensionExpression_.isNull())
+    {
+        createDimensionExpressionExtension(expression);
+    }
+
+    dimensionExpression_->setValue(expression);
+}
+
+//-----------------------------------------------------------------------------
+// Function: register::getDimExpression()
+//-----------------------------------------------------------------------------
+QString Register::getDimensionExpression()
+{
+    if (hasDimensionExpression())
+    {
+        return dimensionExpression_->value();
+    }
+    else
+    {
+        return QString::number(getDim());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: register::removeDimExpression()
+//-----------------------------------------------------------------------------
+void Register::removeDimensionExpression()
+{
+    vendorExtensions_.removeAll(dimensionExpression_);
+    dimensionExpression_.clear();
+}
+
+//-----------------------------------------------------------------------------
+// Function: register::hasDimExpression()
+//-----------------------------------------------------------------------------
+bool Register::hasDimensionExpression()
+{
+    if (dimensionExpression_.isNull())
+    {
+        return false;
+    }
+    QString dimensionValue = dimensionExpression_->value();
+
+    if (dimensionValue.isEmpty())
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
 void Register::setAddressOffset(const QString& addressOffset) {
     this->addressOffset_ = addressOffset;
 }
@@ -386,4 +447,55 @@ void Register::writeHeaderInfo( QTextStream& stream, quint64 offset, const QStri
 	else {
 		stream << idString.toUpper() << "_" << nameGroup_.name().toUpper() << " " << offsetStr << endl;
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: register::parseVendorExtensions()
+//-----------------------------------------------------------------------------
+void Register::parseVendorExtensions(QDomNode const& registerNode)
+{
+    int extensionCount = registerNode.childNodes().count();
+    for (int j = 0; j < extensionCount; ++j) {
+        QDomNode extensionNode = registerNode.childNodes().at(j);
+
+        if (extensionNode.nodeName() == QString("kactus2:dimExpression"))
+        {
+            createDimensionExpressionExtension(extensionNode.childNodes().at(0).nodeValue());
+        }
+        else
+        {
+            vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: register::createExpressionExtension()
+//-----------------------------------------------------------------------------
+void Register::createDimensionExpressionExtension(QString const& expression)
+{
+    if (dimensionExpression_.isNull())
+    {
+        dimensionExpression_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:dimExpression", expression));
+        vendorExtensions_.append(dimensionExpression_);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: register::copyVendorExtensions()
+//-----------------------------------------------------------------------------
+void Register::copyVendorExtensions(const Register & other)
+{
+    foreach (QSharedPointer<VendorExtension> extension, other.vendorExtensions_)
+    {
+        if (extension->type() == "kactus2:dimExpression")
+        {
+            dimensionExpression_ = QSharedPointer<Kactus2Value>(other.dimensionExpression_->clone());
+            vendorExtensions_.append(dimensionExpression_);
+        }
+        else
+        {
+            vendorExtensions_.append(QSharedPointer<VendorExtension>(extension->clone()));
+        }
+    }
 }

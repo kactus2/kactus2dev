@@ -11,6 +11,8 @@
 #include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/registermodel.h>
 
+#include <editors/ComponentEditor/common/ParameterModelEquations.h>
+
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 
@@ -19,7 +21,8 @@ class Choice;
 /*! \brief The model to manage the details of a single address block.
  *
  */
-class AddressBlockModel : public QAbstractTableModel {
+class AddressBlockModel : public QAbstractTableModel, public ParameterModelEquations 
+{
 	Q_OBJECT
 
 public:
@@ -33,6 +36,7 @@ public:
 	*/
 	AddressBlockModel(QSharedPointer<AddressBlock> addressBlock,
         QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+        QSharedPointer<ExpressionParser> expressionParser,
 		QObject *parent);
 	
 	//! \brief The destructor
@@ -99,6 +103,35 @@ public:
 	*/
 	bool isValid() const;
 
+protected:
+
+    /*!
+     *  Check if the column is valid for containing expressions.
+     *
+     *      @param [in] index   The index of the column.
+     *
+     *      @return     True, if the column is valid for expressions, otherwise false.
+     */
+    virtual bool isValidExpressionColumn(QModelIndex const& index) const;
+
+    /*!
+     *  Gets the expression for the given index, or plain value if there is no expression.
+     *
+     *      @param [in] index   The index of target data.
+     *
+     *      @return     Expression or plain value for the given index.
+     */
+    virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Validates the data in the index.
+     *
+     *      @param [in] index   The index of target data.
+     *
+     *      @return     True, if the data is valid, otherwise false.
+     */
+    virtual bool validateColumnForParameter(QModelIndex const& index) const;
+
 public slots:
 
 	/*! \brief Add a new item to the given index.
@@ -136,6 +169,13 @@ private:
 
 	//! \brief No assignment
 	AddressBlockModel& operator=(const AddressBlockModel& other);
+
+    /*!
+     *  Get the value for the corresponding index.
+     *
+     *      @param [in] index   The index whose value is being searched for.
+     */
+    QVariant valueForIndex(const QModelIndex& index) const;
 
 	//! \brief Pointer to the address block being edited.
 	QSharedPointer<AddressBlock> addressBlock_;
