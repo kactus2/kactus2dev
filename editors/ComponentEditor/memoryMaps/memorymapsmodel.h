@@ -122,6 +122,13 @@ signals:
 	//! \brief Emitted when a memory map is removed from the given index.
 	void memoryMapRemoved(int index);
 
+    /*!
+     *  Emitted when address unit bits are changed.
+     *
+     *      @param [in] memoryMapIndex   The index of memory map, whose AUB has changed.
+     */
+    void aubChangedOnRow(int memoryMapIndex);
+    
 private:
 	
 	//! \brief No copying

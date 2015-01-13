@@ -118,7 +118,7 @@ protected:
      *
      *      @return     The decimal version of the number.
      */
-    QString parseExpressionToDecimal(QString const& expression, QModelIndex const& index) const;
+    QString parseExpressionToDecimal(QString const& expression) const;
 
 private:
 

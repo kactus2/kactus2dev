@@ -63,6 +63,9 @@ ItemEditor* ComponentEditorMemMapsItem::editor() {
 			this, SIGNAL(helpUrlRequested(QString const&)));
 		connect(editor_, SIGNAL(selectBusInterface(const QString&)),
 			model_, SLOT(onSelectBusInterface(const QString&)), Qt::UniqueConnection);
+
+        connect(editor_, SIGNAL(changeInAddressUnitBitsOnRow(int)), 
+            this, SLOT(addressUnitBitsChangedOnMemoryMap(int)), Qt::UniqueConnection);
 	}
 	return editor_;
 }
@@ -84,4 +87,18 @@ void ComponentEditorMemMapsItem::createChild( int index ) {
 
 ItemVisualizer* ComponentEditorMemMapsItem::visualizer() {
 	return visualizer_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapsitem::addressUnitBitsChangedOnMemoryMap()
+//-----------------------------------------------------------------------------
+void ComponentEditorMemMapsItem::addressUnitBitsChangedOnMemoryMap(int memoryMapIndex)
+{
+    QSharedPointer<ComponentEditorMemMapItem> childMemoryMap = 
+        qobject_cast<QSharedPointer<ComponentEditorMemMapItem> > ( child(memoryMapIndex) );
+    
+    if (!childMemoryMap.isNull())
+    {
+        childMemoryMap->changeAdressUnitBitsOnAddressBlocks();
+    }
 }

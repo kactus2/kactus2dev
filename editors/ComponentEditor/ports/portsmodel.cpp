@@ -293,7 +293,7 @@ bool PortsModel::setData( const QModelIndex& index, const QVariant& value, int r
         else if (index.column() == PORT_COL_LEFT)
         {
             // make sure left bound doesn't drop below right bound
-            QString calculatedExpression = parseExpressionToDecimal(value.toString(), index);
+            QString calculatedExpression = parseExpressionToDecimal(value.toString());
 
             if(calculatedExpression.toInt() < ports.at(index.row())->getRightBound() ||
                 calculatedExpression == "n/a")
@@ -334,7 +334,7 @@ bool PortsModel::setData( const QModelIndex& index, const QVariant& value, int r
         else if (index.column() == PORT_COL_RIGHT)
         {
             // make sure right bound is not greater than left bound
-            QString calculatedExpression = parseExpressionToDecimal(value.toString(), index);
+            QString calculatedExpression = parseExpressionToDecimal(value.toString());
 
             if (calculatedExpression.toInt() > ports.at(index.row())->getLeftBound() || 
                 calculatedExpression == "n/a")

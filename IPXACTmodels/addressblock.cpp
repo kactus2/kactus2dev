@@ -16,6 +16,7 @@
 #include <common/utils.h>
 
 #include <QString>
+#include <QStringList>
 #include <QMap>
 #include <QDomNode>
 #include <QDomNamedNodeMap>
@@ -363,6 +364,45 @@ quint64 AddressBlock::getLastRegisterAddress() const {
 		}
 	}
 	return lastOffset;
+}
+
+//-----------------------------------------------------------------------------
+// Function: addressblock::getAllRegisterOffsets()
+//-----------------------------------------------------------------------------
+QStringList AddressBlock::getAllRegisterOffsets()
+{
+    QStringList registerOffsets;
+
+    foreach (QSharedPointer<RegisterModel> regModel, registerData_)
+    {
+        QSharedPointer<Register> reg = regModel.dynamicCast<Register>();
+        if (reg)
+        {
+            registerOffsets.append(reg->getAddressOffset());
+        }
+    }
+
+    return registerOffsets;
+}
+
+//-----------------------------------------------------------------------------
+// Function: addressblock::getLastRegisterDimension()
+//-----------------------------------------------------------------------------
+int AddressBlock::getLastRegisterDimension(int lastRegisterIndex)
+{
+    QSharedPointer<RegisterModel> regModel = registerData_.at(lastRegisterIndex);
+    QSharedPointer<Register> reg = regModel.dynamicCast<Register>();
+    return reg->getDim();
+}
+
+//-----------------------------------------------------------------------------
+// Function: addressblock::getLastRegisterSize()
+//-----------------------------------------------------------------------------
+int AddressBlock::getLastRegisterSize(int lastRegisterIndex)
+{
+    QSharedPointer<RegisterModel> regModel = registerData_.at(lastRegisterIndex);
+    QSharedPointer<Register> reg = regModel.dynamicCast<Register>();
+    return reg->getSize();
 }
 
 void AddressBlock::setWidth( int width ) {

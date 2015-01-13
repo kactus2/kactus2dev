@@ -61,7 +61,7 @@ dimensionExpression_()
 Register::Register():
 RegisterModel(),
 dim_(-1),
-addressOffset_("0x0"),
+addressOffset_("'h0"),
 alternateRegisters_(), 
 registerDefinition_(),
 vendorExtensions_(),

@@ -107,12 +107,22 @@ public:
 	*/
 	virtual void removeGraphicsItem();
 
+    /*!
+     *  Change the address unit bits in component editor.
+     *
+     *      @param [in] newAddressUnitBits   The new value for address unit bits.
+     */
+    void addressUnitBitsChanged(int newAddressUnitBits);
+
 protected slots:
 
 	/*! \brief Handler for editor's contentChanged signal.
 	 *
 	*/
 	virtual void onEditorChanged();
+
+signals:
+    void changeInAddressUnitBits(int newAddressUnitBits);
 
 private:
 	
@@ -133,6 +143,8 @@ private:
 
 	//! \brief Pointer to the graph item which visualizes the address block.
 	AddressBlockGraphItem* graphItem_;
+
+    unsigned int addressUnitBits_;
 };
 
 #endif // COMPONENTEDITORADDRBLOCKITEM_H

@@ -69,6 +69,13 @@ signals:
 	//! \brief Emitted when a bus interface editor should be opened.
 	void selectBusInterface(const QString& interfaceName);
 
+    /*!
+     *  Emitted when address unit bits are changed.
+     *
+     *      @param [in] memoryMapIndex   The index of the changed memory map.
+     */
+    void changeInAddressUnitBitsOnRow(int memoryMapIndex);
+
 protected:
 
 	//! \brief Handler for widget's show event

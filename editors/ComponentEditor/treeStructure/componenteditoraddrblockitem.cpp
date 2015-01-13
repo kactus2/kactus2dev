@@ -23,7 +23,9 @@ ComponentEditorItem(model, libHandler, component, parent),
 addrBlock_(addrBlock),
 regItems_(addrBlock->getRegisterData()),
 visualizer_(NULL),
-graphItem_(NULL) {
+graphItem_(NULL),
+addressUnitBits_(0)
+{
 
 	setObjectName(tr("ComponentEditorAddrBlockItem"));
 
@@ -71,6 +73,11 @@ ItemEditor* ComponentEditorAddrBlockItem::editor() {
             this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
 			this, SIGNAL(helpUrlRequested(QString const&)));
+        
+        connect(this, SIGNAL(changeInAddressUnitBits(int)), 
+            editor_, SIGNAL(addressUnitBitsChanged(int)), Qt::UniqueConnection);
+
+        emit changeInAddressUnitBits(addressUnitBits_);
 	}
 	return editor_;
 }
@@ -166,4 +173,14 @@ void ComponentEditorAddrBlockItem::removeGraphicsItem() {
 		// tell the parent to refresh itself
 		parentItem->refresh();
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditoraddrblockitem::addressUnitBitsChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrBlockItem::addressUnitBitsChanged(int newAddressUnitBits)
+{
+    addressUnitBits_ = newAddressUnitBits;
+
+    emit(changeInAddressUnitBits(newAddressUnitBits));
 }

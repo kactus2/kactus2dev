@@ -62,6 +62,9 @@ model_(new AddressBlockModel(addressBlock, component->getChoices(),
 	connect(model_, SIGNAL(itemRemoved(int)),
 		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
+    connect(this, SIGNAL(addressUnitBitsChanged(int)), 
+        model_, SLOT(addressUnitBitsChanged(int)), Qt::UniqueConnection);
+
 	connect(view_, SIGNAL(addItem(const QModelIndex&)),
 		model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(view_, SIGNAL(removeItem(const QModelIndex&)),

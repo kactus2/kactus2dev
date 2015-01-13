@@ -31,10 +31,13 @@ graphItem_(NULL) {
 		
 		// if the item is for address block then create child for it
 		QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
-		if (addrBlock) {
+		if (addrBlock) 
+        {
 			QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
 				new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, this));
 			childItems_.append(addrBlockItem);
+
+            addrBlockItem->addressUnitBitsChanged(memoryMap_->getAddressUnitBits());
 		}
 	}
 
@@ -83,6 +86,8 @@ void ComponentEditorMemMapItem::createChild( int index ) {
 			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, this));
 		addrBlockItem->setLocked(locked_);
 		
+        addrBlockItem->addressUnitBitsChanged(memoryMap_->getAddressUnitBits());
+
 		if (visualizer_) {
 			addrBlockItem->setVisualizer(visualizer_);
 		}
@@ -132,4 +137,17 @@ void ComponentEditorMemMapItem::removeGraphicsItem() {
 	// delete the graph item
 	delete graphItem_;
 	graphItem_ = NULL;
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapitem::changeAdressUnitBitsOnAddressBlocks()
+//-----------------------------------------------------------------------------
+void ComponentEditorMemMapItem::changeAdressUnitBitsOnAddressBlocks()
+{
+    foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_)
+    {
+        QSharedPointer<ComponentEditorAddrBlockItem> castChildItem = 
+            qobject_cast<QSharedPointer<ComponentEditorAddrBlockItem> >(childItem);
+        castChildItem->addressUnitBitsChanged(memoryMap_->getAddressUnitBits());
+    }
 }

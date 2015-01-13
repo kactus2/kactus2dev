@@ -169,6 +169,31 @@ public:
 	*/
 	quint64 getLastRegisterAddress() const;
 
+    /*!
+     *  Get offsets from each of the address block's registers.
+     *
+     *      @return     A list of offsets from all the registers.
+     */
+    QStringList getAllRegisterOffsets();
+
+    /*!
+     *  Get the dimension of the last register contained in the address block.
+     *
+     *      @param [in] lastRegisterIndex   The index of the last register contained in the address block.
+     *
+     *      @return     The dimension of the last register.
+     */
+    int getLastRegisterDimension(int lastRegisterIndex);
+
+    /*!
+     *  Get the size of the last register contained in the address block.
+     *
+     *      @param [in] lastRegisterIndex   The index of the last register contained in the address block.
+     *
+     *      @return     The size of the last register.
+     */
+    int getLastRegisterSize(int lastRegisterIndex);
+
 	/*! \brief Get the type of usage for the address block
 	 *
 	 * \return Usage of the address block

@@ -125,16 +125,7 @@ bool ParameterModelEquations::isValuePlainOrExpression(QString const& value) con
 //-----------------------------------------------------------------------------
 // Function: ParameterModelEquations::parsedExpression()
 //-----------------------------------------------------------------------------
-QString ParameterModelEquations::parseExpressionToDecimal
-    (QString const& expression, QModelIndex const& index) const
+QString ParameterModelEquations::parseExpressionToDecimal (QString const& expression) const
 {
-    if (expressionParser_->isValidExpression(expression) && isValidExpressionColumn(index))
-    {
-        return expressionParser_->parseExpression(expression);
-    }
-
-    else
-    {
-        return "n/a";
-    }
+    return expressionParser_->parseExpression(expression);
 }

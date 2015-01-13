@@ -55,6 +55,9 @@ model_(new MemoryMapsModel(component, this)) {
 	connect(model_, SIGNAL(memoryMapRemoved(int)),
 		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
+    connect(model_, SIGNAL(aubChangedOnRow(int)), 
+        this, SIGNAL(changeInAddressUnitBitsOnRow(int)), Qt::UniqueConnection);
+
 	connect(view_, SIGNAL(addItem(const QModelIndex&)),
 		model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(view_, SIGNAL(removeItem(const QModelIndex&)),

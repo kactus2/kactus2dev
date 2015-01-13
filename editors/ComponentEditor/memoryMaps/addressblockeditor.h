@@ -44,7 +44,7 @@ public:
 	 */
 	AddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
 		QSharedPointer<Component> component,
-		LibraryInterface* handler, 
+		LibraryInterface* handler,
 		QWidget* parent = 0);
 
 	//! \brief The destructor
@@ -65,6 +65,15 @@ public:
 	 * \return QSize contains the size hint.
 	*/
 	virtual QSize sizeHint() const;
+
+signals:
+
+    /*!
+     *  Change the value for address unit bits in the model.
+     *
+     *      @param [in] newAddressUnitBits  The new address unit bits value.
+     */
+    void addressUnitBitsChanged(int newAddressUnitBits);
 
 protected:
 

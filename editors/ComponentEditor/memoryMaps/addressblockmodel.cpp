@@ -20,7 +20,8 @@ AddressBlockModel::AddressBlockModel(QSharedPointer<AddressBlock> addressBlock,
 QAbstractTableModel(parent),
 addressBlock_(addressBlock),
 items_(addressBlock->getRegisterData()),
-componentChoices_(componentChoices)
+componentChoices_(componentChoices),
+addressUnitBits_(0)
 {
 	Q_ASSERT(addressBlock_);
 
@@ -319,7 +320,7 @@ bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value
             QSharedPointer<Register> reg = items_[index.row()].dynamicCast<Register>();
             if (reg)
             {
-                QString calculatedExpression = parseExpressionToDecimal(value.toString(), index);
+                QString calculatedExpression = parseExpressionToDecimal(value.toString());
                 
                 if (isValuePlainOrExpression(calculatedExpression))
                 {
@@ -551,25 +552,46 @@ void AddressBlockModel::onAddItem( const QModelIndex& index ) {
 		row = index.row();
 	}
 
-	// the currently last register address
+	// the currently last register address // Old way
 	quint64 regAddress = addressBlock_->getLastRegisterAddress();
-	// if this is the first item then do not increase
-	if (regAddress != 0) {
-		// increase the address for a 32 bit register by default
-		regAddress += 4;
-	}
+
+    QStringList allRegisterOffsets = addressBlock_->getAllRegisterOffsets();
+
+    qreal lastRegDimension = 0;
+    qreal lastRegSize = 0;
+
+    for (int registerIndex = 0; registerIndex < allRegisterOffsets.size(); ++registerIndex)
+    {
+        QString calculatedExpression = parseExpressionToDecimal(allRegisterOffsets.at(registerIndex));
+        quint64 expressionToInt = calculatedExpression.toULongLong();
+
+        if (expressionToInt > regAddress || (registerIndex == allRegisterOffsets.size()-1 && regAddress == 0))
+        {
+            regAddress = expressionToInt;
+
+            lastRegDimension = addressBlock_->getLastRegisterDimension(registerIndex);
+            lastRegSize = addressBlock_->getLastRegisterSize(registerIndex);
+        }
+    }
+
+    qreal offsetIncrease = 0;
+    if (addressUnitBits_ != 0)
+    {
+        offsetIncrease = (lastRegSize / addressUnitBits_) * lastRegDimension;
+    }
+
+    regAddress = regAddress + offsetIncrease;
 
 	// convert the address to hexadecimal form
-	QString newBase = QString::number(regAddress, 16);
-	newBase = newBase.toUpper();
-	newBase.prepend("0x");
+	QString newRegAddressInHexaForm = QString::number(regAddress, 16);
+	newRegAddressInHexaForm.prepend("'h");
 
 	beginInsertRows(QModelIndex(), row, row);
 	QSharedPointer<Register> reg(new Register(addressBlock_->getVolatile(),
 		addressBlock_->getAccess()));
 	reg->setSize(32);
 	reg->setDim(0);
-	reg->setAddressOffset(newBase);
+	reg->setAddressOffset(newRegAddressInHexaForm);
 	items_.insert(row, reg);
 	endInsertRows();
 
@@ -600,4 +622,12 @@ void AddressBlockModel::onRemoveItem( const QModelIndex& index ) {
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: addressblockmodel::addressUnitBitsChanged()
+//-----------------------------------------------------------------------------
+void AddressBlockModel::addressUnitBitsChanged(int newAddressUnitbits)
+{
+    addressUnitBits_ = newAddressUnitbits;
 }

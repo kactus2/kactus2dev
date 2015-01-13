@@ -105,6 +105,20 @@ public:
 	*/
 	virtual void removeGraphicsItem();
 
+    /*!
+     *  Change the address unit bits for the address blocks.
+     */
+    void changeAdressUnitBitsOnAddressBlocks();
+
+signals:
+
+    /*!
+     *  Emitted when address unit bits have been changed.
+     *
+     *      @param [in] newAddressUnitBits  The new address unit bit value.
+     */
+    void addressUnitBitsChanged(int newAddressUnitBits);
+
 private:
 	//! \brief No copying
 	ComponentEditorMemMapItem(const ComponentEditorMemMapItem& other);

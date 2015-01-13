@@ -157,6 +157,9 @@ bool MemoryMapsModel::setData( const QModelIndex& index, const QVariant& value, 
 										  }
 			case MemoryMapsDelegate::AUB_COLUMN: {
 				memMaps_[index.row()]->setAddressUnitBits(value.toUInt());
+                
+                emit aubChangedOnRow(index.row());
+
 				break;
 										  }
 			case MemoryMapsDelegate::DESC_COLUMN: {

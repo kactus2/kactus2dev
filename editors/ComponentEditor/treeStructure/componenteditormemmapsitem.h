@@ -77,6 +77,15 @@ public:
 	*/
 	virtual ItemVisualizer* visualizer();
 
+public slots:
+
+    /*!
+     *  Give the selected memory map order to pass its address unit bits forward.
+     *
+     *      @param [in] memoryMapIndex   The index of the selected memory map.
+     */
+    void addressUnitBitsChangedOnMemoryMap(int memoryMapIndex);
+
 private:
 	//! \brief No copying
 	ComponentEditorMemMapsItem(const ComponentEditorMemMapsItem& other);

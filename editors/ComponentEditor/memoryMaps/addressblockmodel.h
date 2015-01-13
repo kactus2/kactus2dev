@@ -148,6 +148,13 @@ public slots:
 	*/
 	virtual void onRemoveItem(const QModelIndex& index);
 
+    /*!
+     *  Change the value for address unit bits.
+     *
+     *      @param [in] newAddressUnitbits  The new value for address unit bits.
+     */
+    void addressUnitBitsChanged(int newAddressUnitbits);
+
 signals:
 
 	//! \brief Emitted when the contents of the model change.
@@ -185,6 +192,8 @@ private:
 
     //! \brief The choices available in the containing component.
     QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices_;
+
+    unsigned int addressUnitBits_;
 };
 
 #endif // ADDRESSBLOCKMODEL_H
