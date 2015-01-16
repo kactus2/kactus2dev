@@ -12,8 +12,10 @@
 #ifndef PARAMETERDELEGATE_H
 #define PARAMETERDELEGATE_H
 
+#include <QCompleter>
 #include <QStyledItemDelegate>
 
+class ParameterResolver;
 class Choice;
 
 //-----------------------------------------------------------------------------
@@ -27,10 +29,13 @@ public:
 
 	/*! The constructor
 	 *
-	 *     @param [in] choices  The choices available for model parameter value.
-	 *     @param [in] parent   The parent object
+	 *     @param [in] choices              The choices available for model parameter value.
+     *     @param [in] parameterCompleter   The completer to use for expression editors.
+     *     @param [in] resolver             The parameter resolver to use for for expression editors.
+	 *     @param [in] parent               The parent object
 	*/
-	ParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, QObject *parent = 0);
+	ParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, 
+        QCompleter* parameterCompleter, QSharedPointer<ParameterResolver> resolver, QObject *parent = 0);
 
 	//! The destructor
 	virtual ~ParameterDelegate();
@@ -183,6 +188,15 @@ protected:
      *      @return An editor for selecting resolve attribute.
      */
     QWidget* createResolveSelector(QWidget* parent) const;
+        
+    /*!
+     *  Creates an editor for expressions.
+     *
+     *      @param [in] parent   The parent widget for the editor.
+     *
+     *      @return An editor for expressions.
+     */
+    QWidget* createExpressionEditor(QWidget* parent) const;
 
 private:
 
@@ -216,6 +230,10 @@ private:
 
     //! The choices available for model parameter value.
     QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
+
+    QCompleter* parameterCompleter_;
+
+    QSharedPointer<ParameterResolver> parameterResolver_;
 };
 
 #endif // ParameterDelegate_H

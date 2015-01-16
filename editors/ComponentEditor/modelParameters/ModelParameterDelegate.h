@@ -29,10 +29,14 @@ public:
 
 	/*! The constructor
 	 *
-	 *     @param [in] choices  The choices available for model parameter value.
-	 *     @param [in] parent   The parent object
+	 *     @param [in] choices              The choices available for model parameter value.
+     *     @param [in] parameterCompleter   The completer to use for expression editors.
+     *     @param [in] resolver             The parameter resolver to use for for expression editors.
+	 *     @param [in] parent               The parent object
 	*/
-	ModelParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, QObject *parent = 0);
+	ModelParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+        QCompleter* parameterCompleter, QSharedPointer<ParameterResolver> parameterResolver,
+        QObject *parent = 0);
 
 	//! The destructor
 	virtual ~ModelParameterDelegate();

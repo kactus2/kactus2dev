@@ -102,7 +102,7 @@ private:
 	EditableTableView view_;
 
 	//! \brief The model that holds the data to be displayed to the user
-	ModelParameterModel model_;
+	ModelParameterModel* model_;
 
 	//! \brief Pointer to the proxy that is used to sort the view
 	QSortFilterProxyModel proxy_;

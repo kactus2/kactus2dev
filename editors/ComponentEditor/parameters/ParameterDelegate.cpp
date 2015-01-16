@@ -15,17 +15,23 @@
 
 #include <IPXACTmodels/choice.h>
 #include <IPXACTmodels/Enumeration.h>
-#include <IPXACTmodels/StringPromtAtt.h>
 
 #include <QComboBox>
 #include <QLineEdit>
 #include <QPainter>
 
+#include <editors/ComponentEditor/common/ParameterResolver.h>
+#include <editors/ComponentEditor/common/ParameterCompleter.h>
+
+#include <editors/ComponentEditor/common/ExpressionEditor.h>
+
 //-----------------------------------------------------------------------------
 // Function: ParameterDelegate::ParameterDelegate()
 //-----------------------------------------------------------------------------
-ParameterDelegate::ParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, QObject* parent):
-QStyledItemDelegate(parent), choices_(choices)
+ParameterDelegate::ParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, 
+    QCompleter* parameterCompleter, QSharedPointer<ParameterResolver> resolver, QObject* parent):
+QStyledItemDelegate(parent), choices_(choices), parameterCompleter_(parameterCompleter),
+    parameterResolver_(resolver)
 {
 
 }
@@ -60,6 +66,10 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     {
         return createResolveSelector(parent);
     }
+    else if (index.column() == valueColumn())
+    {
+        return createExpressionEditor(parent);
+    }
     else
     {
         return QStyledItemDelegate::createEditor(parent, option, index);
@@ -93,6 +103,12 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
 		int comboIndex = combo->findText(text);
 		combo->setCurrentIndex(comboIndex);
 	}
+    else if (index.column() == valueColumn())
+    {
+        QString text = index.model()->data(index, Qt::EditRole).toString();
+        ExpressionEditor* aEdit = qobject_cast<ExpressionEditor*>(editor);
+        aEdit->setExpression(text);
+    }
 	else 
     {
         // use the line edit for other columns
@@ -126,6 +142,12 @@ void ParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
             text = "";
         }
         model->setData(index, text, Qt::EditRole);
+    }
+    else if (index.column() == valueColumn())
+    {
+        ExpressionEditor* aEdit = qobject_cast<ExpressionEditor*>(editor);
+        QString exp = aEdit->getExpression();
+        model->setData(index, exp, Qt::EditRole);
     }
 	else 
     {
@@ -321,4 +343,14 @@ QWidget* ParameterDelegate::createResolveSelector(QWidget* parent) const
     combo->addItem(QString("user"));
     combo->addItem(QString("generated"));
     return combo;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::createExpressionEditor()
+//-----------------------------------------------------------------------------
+QWidget* ParameterDelegate::createExpressionEditor(QWidget* parent) const
+{
+    ExpressionEditor* editor = new ExpressionEditor(parameterResolver_, parent);
+    editor->setAppendingCompleter(parameterCompleter_);
+    return editor;
 }

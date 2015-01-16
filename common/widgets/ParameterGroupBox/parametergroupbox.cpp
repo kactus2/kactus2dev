@@ -7,38 +7,46 @@
 
 #include "parametergroupbox.h"
 
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/parameters/ParameterColumns.h>
 #include <editors/ComponentEditor/parameters/ParameterDelegate.h>
 #include <editors/ComponentEditor/parameters/ParameterEditorHeaderView.h>
+
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ParameterCompleter.h>
+#include <editors/ComponentEditor/common/ParameterResolver.h>
 
 #include <IPXACTmodels/component.h>
 
 #include <QVBoxLayout>
 
+//-----------------------------------------------------------------------------
+// Function: ParameterGroupBox::ParameterGroupBox()
+//-----------------------------------------------------------------------------
 ParameterGroupBox::ParameterGroupBox(QList<QSharedPointer<Parameter> >& parameters,
                                      QSharedPointer<Component> component,
 									 QWidget *parent):
 QGroupBox(tr("Parameters"), parent),
 view_(this), 
-model_(parameters, component->getChoices(),
-    QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(component)), this),
+model_(0),
 proxy_(this)
 {
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(component));
+    model_ = new ParametersModel(parameters, component->getChoices(), expressionParser, this);
 
-	connect(&model_, SIGNAL(contentChanged()),
+	connect(model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+	connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(errorMessage(const QString&)),
+	connect(model_, SIGNAL(errorMessage(const QString&)),
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(noticeMessage(const QString&)),
+	connect(model_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
-		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+		model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
-		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
     ParameterEditorHeaderView* parameterHorizontalHeader = new ParameterEditorHeaderView(Qt::Horizontal, this);
     view_.setHorizontalHeader(parameterHorizontalHeader);
@@ -51,10 +59,18 @@ proxy_(this)
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 
-	view_.setItemDelegate(new ParameterDelegate(component->getChoices(), this));
+    ComponentParameterModel* parameterModel = new ComponentParameterModel(component, this);
+    parameterModel->setExpressionParser(expressionParser);
+
+    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
+    parameterCompleter->setModel(parameterModel);
+
+	view_.setItemDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter,
+        QSharedPointer<ParameterResolver>(new ParameterResolver(component)), 
+        this));
 
 	// set source model for proxy
-	proxy_.setSourceModel(&model_);
+	proxy_.setSourceModel(model_);
 	// set proxy to be the source for the view
 	view_.setModel(&proxy_);
 
@@ -67,11 +83,20 @@ proxy_(this)
 	layout->addWidget(&view_);
 }
 
-ParameterGroupBox::~ParameterGroupBox() {
+//-----------------------------------------------------------------------------
+// Function: ParameterGroupBox::~ParameterGroupBox()
+//-----------------------------------------------------------------------------
+ParameterGroupBox::~ParameterGroupBox()
+{
+
 }
 
-bool ParameterGroupBox::isValid() const {
-	return model_.isValid();
+//-----------------------------------------------------------------------------
+// Function: ParameterGroupBox::isValid()
+//-----------------------------------------------------------------------------
+bool ParameterGroupBox::isValid() const
+{
+	return model_->isValid();
 }
 
 //-----------------------------------------------------------------------------
@@ -79,9 +104,13 @@ bool ParameterGroupBox::isValid() const {
 //-----------------------------------------------------------------------------
 bool ParameterGroupBox::isValid(QStringList& errorList, const QString& parentIdentifier) const
 {
-    return model_.isValid(errorList, parentIdentifier);
+    return model_->isValid(errorList, parentIdentifier);
 }
 
-void ParameterGroupBox::refresh() {
+//-----------------------------------------------------------------------------
+// Function: ParameterGroupBox::refresh()
+//-----------------------------------------------------------------------------
+void ParameterGroupBox::refresh() 
+{
 	view_.update();
 }

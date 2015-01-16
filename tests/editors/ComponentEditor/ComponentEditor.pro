@@ -13,6 +13,8 @@ TEMPLATE = subdirs
 
 CONFIG += testcase
 SUBDIRS += modelParameters/modelParameters.pro \
+		parameters/tst_ComponentParameterModel.pro \
 		common/tst_SystemVerilogExpressionParser.pro \
 		common/tst_IPXactSystemVerilogParser.pro \
-		common/tst_AppendingEditor.pro
+		common/tst_ExpressionEditor.pro \
+		common/tst_ParameterCompleter.pro

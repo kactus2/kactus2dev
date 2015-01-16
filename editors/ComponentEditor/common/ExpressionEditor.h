@@ -1,32 +1,34 @@
 //-----------------------------------------------------------------------------
-// File: AppendingEditor.h
+// File: ExpressionEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
 // Date: 18.12.2014
 //
 // Description:
-// LineEdit with appending word completion.
+// Editor for expressions with parameter name completion.
 //-----------------------------------------------------------------------------
 
-#ifndef APPENDINGEDITOR_H
-#define APPENDINGEDITOR_H
+#ifndef EXPRESSIONEDITOR_H
+#define EXPRESSIONEDITOR_H
 
-#include <QLineEdit>
+#include <QCompleter>
+#include <QTextEdit>
 
+class ParameterResolver;
 //-----------------------------------------------------------------------------
-//! LineEdit with appending word completion.
+//! Editor for expressions with parameter name completion.
 //-----------------------------------------------------------------------------
-class AppendingEditor : public QLineEdit
+class ExpressionEditor : public QTextEdit
 {
     Q_OBJECT
 public:
 
 	//! The constructor.
-    AppendingEditor(QWidget *parent = 0);
+    ExpressionEditor(QSharedPointer<ParameterResolver> resolver, QWidget *parent = 0);
 
 	//! The destructor.
-	virtual ~AppendingEditor();
+	virtual ~ExpressionEditor();
 
     /*!
      *  Sets a completer whose selection will be appended to the text.
@@ -34,6 +36,34 @@ public:
      *      @param [in] completer   The completer to set.
      */
     void setAppendingCompleter(QCompleter* completer);
+
+    /*!
+     *  Gets the completer for the widget.
+     *
+     *      @return The completer of the widget.
+     */
+    QCompleter* completer() const;
+
+    /*!
+     *  Gets the text to display to user. Reference ids are replaced with parameter names.
+     *
+     *      @return The human-readable text of the editor.
+     */
+    QString getDisplayText() const;
+
+    /*!
+     *  Gets the underlying expression in the editor.
+     *
+     *      @return The expression in the editor.
+     */
+    QString getExpression() const;
+    
+    /*!
+     *  Sets the expression in the editor.
+     *
+     *      @param [in] expression   The expression to set.
+     */
+    void setExpression(QString const& expression);
 
 protected:
 
@@ -47,13 +77,20 @@ private slots:
      *
      *      @param [in] word   The selected word.
      */
-    void complete(QString word);
+    void complete(QModelIndex const& index);
+
+    /*!
+     *  Called when the cursor position changes. If a different word is under the new position, it is suggested
+     *  for new completion.
+     *
+     */
+    void onCursorPositionChanged();
 
 private:
 
     // Disable copying.
-    AppendingEditor(AppendingEditor const& rhs);
-    AppendingEditor& operator=(AppendingEditor const& rhs);
+    ExpressionEditor(ExpressionEditor const& rhs);
+    ExpressionEditor& operator=(ExpressionEditor const& rhs);
 
     /*!
      *  Finds the word currently under cursor.
@@ -89,6 +126,13 @@ private:
      *      @return The length of the current word.
      */
     int currentWordLength() const;
+    
+    /*!
+     *  Checks if the current expression does not contain references.
+     *
+     *      @return True, if the expression has no references, otherwise false.
+     */
+    bool hasNoReferencesInExpression();
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -96,6 +140,12 @@ private:
 
     //! The completer whose selection is appended to the text.
     QCompleter* appendingCompleter_;
+
+    //! Resolver for parameter names.
+    QSharedPointer<ParameterResolver> parameterResolver_;
+
+    //! The underlying expression for the editor.
+    QString expression_;
 };
 
-#endif // APPENDINGEDITOR_H
+#endif // EXPRESSIONEDITOR_H
