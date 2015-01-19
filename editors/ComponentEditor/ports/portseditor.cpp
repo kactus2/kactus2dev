@@ -70,6 +70,11 @@ handler_(handler)
 
 	view_.setItemDelegate(new PortsDelegate(this));
 
+    connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)), 
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(view_.itemDelegate(), SIGNAL(decreaseReferences(QString)), 
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
 	// set source model for proxy
 	proxy_.setSourceModel(&model_);
 

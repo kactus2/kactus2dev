@@ -20,18 +20,17 @@
 #include <QLineEdit>
 #include <QPainter>
 
-#include <editors/ComponentEditor/common/ParameterResolver.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 
 //-----------------------------------------------------------------------------
 // Function: ParameterDelegate::ParameterDelegate()
 //-----------------------------------------------------------------------------
 ParameterDelegate::ParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, 
-    QCompleter* parameterCompleter, QSharedPointer<ParameterResolver> resolver, QObject* parent):
+    QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder, QObject* parent):
 QStyledItemDelegate(parent), choices_(choices), parameterCompleter_(parameterCompleter),
-    parameterResolver_(resolver)
+    parameterFinder_(parameterFinder)
 {
 
 }
@@ -163,7 +162,8 @@ void ParameterDelegate::paint(QPainter *painter, QStyleOptionViewItem const& opt
 {
     QStyledItemDelegate::paint(painter, option, index);
 
-    if (index.column() == maximumColumn() || index.column() == valueColumn())
+    if (index.column() == maximumColumn() || index.column() == valueColumn() || 
+        index.column() == arrayOffsetColumn())
     {
         QPen oldPen = painter->pen();
         QPen newPen(Qt::lightGray);
@@ -236,6 +236,14 @@ int ParameterDelegate::resolveColumn() const
 int ParameterDelegate::descriptionColumn() const
 {
     return ParameterColumns::DESCRIPTION;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::arrayOffsetColumn()
+//-----------------------------------------------------------------------------
+int ParameterDelegate::arrayOffsetColumn() const
+{
+    return ParameterColumns::ARRAY_OFFSET;
 }
 
 //-----------------------------------------------------------------------------
@@ -350,7 +358,13 @@ QWidget* ParameterDelegate::createResolveSelector(QWidget* parent) const
 //-----------------------------------------------------------------------------
 QWidget* ParameterDelegate::createExpressionEditor(QWidget* parent) const
 {
-    ExpressionEditor* editor = new ExpressionEditor(parameterResolver_, parent);
+    ExpressionEditor* editor = new ExpressionEditor(parameterFinder_, parent);
     editor->setAppendingCompleter(parameterCompleter_);
+
+    connect(editor, SIGNAL(increaseReference(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(editor, SIGNAL(decreaseReference(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
     return editor;
 }

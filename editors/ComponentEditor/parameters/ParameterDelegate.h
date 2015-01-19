@@ -15,7 +15,7 @@
 #include <QCompleter>
 #include <QStyledItemDelegate>
 
-class ParameterResolver;
+class ParameterFinder;
 class Choice;
 
 //-----------------------------------------------------------------------------
@@ -35,7 +35,7 @@ public:
 	 *     @param [in] parent               The parent object
 	*/
 	ParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, 
-        QCompleter* parameterCompleter, QSharedPointer<ParameterResolver> resolver, QObject *parent = 0);
+        QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> finder, QObject* parent = 0);
 
 	//! The destructor
 	virtual ~ParameterDelegate();
@@ -75,6 +75,22 @@ public:
      *      @param [in] index       Index of model.
      */
     virtual void paint(QPainter *painter, QStyleOptionViewItem const& option, QModelIndex const& index) const;
+
+signals:
+    
+    /*!
+     *  Increase the amount of references to the parameter with corresponding id.
+     *
+     *      @param [in] id      The id of the parameter being referenced to.
+     */
+    void increaseReferences(QString id);
+
+    /*!
+     *  Decrease the amount of references to the parameter with corresponding id.
+     *
+     *      @param [in] id      The id of the parameter that was referenced to.
+     */
+    void decreaseReferences(QString id);
 
 protected:
 
@@ -133,6 +149,13 @@ protected:
      *      @return     The column for description.
      */
     virtual int descriptionColumn() const;
+
+    /*!
+     *  Gets the column for array offset.
+     *
+     *      @return     The column index for array offset.
+     */
+    virtual int arrayOffsetColumn() const;
 
     /*!
      *  Finds the name of the choice on the row identified by the given index.
@@ -233,7 +256,7 @@ private:
 
     QCompleter* parameterCompleter_;
 
-    QSharedPointer<ParameterResolver> parameterResolver_;
+    QSharedPointer<ParameterFinder> parameterFinder_;
 };
 
 #endif // ParameterDelegate_H

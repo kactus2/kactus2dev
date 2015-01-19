@@ -73,6 +73,20 @@ signals:
 	//! \brief Prints a notification to user.
 	void noticeMessage(const QString& msg) const;
 
+    /*!
+     *  Increase the amount of references to the parameter corresponding to the id.
+     *
+     *      @param [in] id      The id of the parameter being searched for.
+     */
+    void increaseReferences(QString id);
+
+    /*!
+     *  Decrease the amount of references to the parameter corresponding to the id.
+     *
+     *      @param [in] id      The id of the parameter being searched for.
+     */
+    void decreaseReferences(QString id);
+
 private:
 	//! \brief No copying
 	ParameterGroupBox(const ParameterGroupBox& other);

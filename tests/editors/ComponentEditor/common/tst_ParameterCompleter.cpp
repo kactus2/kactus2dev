@@ -12,7 +12,8 @@
 #include <QtTest>
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-#include <editors/ComponentEditor/common/ParameterResolver.h>
+
+#include <editors/ComponentEditor/common/ParameterFinder.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
@@ -51,8 +52,6 @@ void tst_ParameterCompleter::testNameIsFoundAsCompletion()
 
     QSharedPointer<Component> targetComponent(new Component());
     targetComponent->setParameters(parameters);
-
-    QSharedPointer<ParameterResolver> resolver(new ParameterResolver(targetComponent));
 
     ComponentParameterModel* model = new ComponentParameterModel(targetComponent, this);
 

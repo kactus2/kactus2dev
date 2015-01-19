@@ -230,6 +230,23 @@ public:
      */
      void setValueId(QString const& id);
 
+     /*!
+      *  Get the amount of times the parameter has been referenced.
+      *
+      *     @return     The amount of times the parameter has been referenced.
+      */
+     int getUsageCount() const;
+
+     /*!
+      *  Increase the amount of references to this parameter.
+      */
+     void increaseUsageCount();
+
+     /*!
+      *  Decrease the amount of references to this parameter.
+      */
+     void decreaseUsageCount();
+
     /*!
      *  Checks if the parameter has an attribute with the given name.
      *

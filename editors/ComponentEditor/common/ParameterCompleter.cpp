@@ -11,7 +11,7 @@
 
 #include "ParameterCompleter.h"
 
-#include <editors/ComponentEditor/common/ParameterResolver.h>
+//#include <editors/ComponentEditor/common/ParameterResolver.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterColumns.h>
 
 #include <QHeaderView>

@@ -28,7 +28,7 @@ ComponentEditorTreeModel::~ComponentEditorTreeModel() {
 void ComponentEditorTreeModel::setRootItem(QSharedPointer<ComponentEditorRootItem> root)
 {
 	beginResetModel();
-	rootItem_ = root;
+    rootItem_ = root;
 	endResetModel();
 }
 

@@ -7,7 +7,11 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./common/Global.h \
+HEADERS += ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
+    ./editors/ComponentEditor/common/ExpressionEditor.h \
+    ./editors/ComponentEditor/common/ParameterCompleter.h \
+    ./editors/ComponentEditor/parameters/ComponentParameterModel.h \
+    ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
@@ -463,9 +467,14 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/choices/EnumerationModel.h \
     ./editors/ComponentEditor/common/ExpressionParser.h \
     ./editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ./editors/ComponentEditor/common/ParameterFinder.h \
+    ./editors/ComponentEditor/common/ParameterModelEquations.h \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ./editors/ComponentEditor/common/ValueFormatter.h \
     ./editors/ComponentEditor/common/AbstractParameterModel.h \
+    ./editors/ComponentEditor/common/ComponentParameterFinder.h \
+    ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
+    ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
     ./editors/CSourceEditor/CSourceContentMatcher.h \
     ./editors/CSourceEditor/MCAPIDesignerTypes.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
@@ -574,9 +583,14 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/common/ParameterModelEquations.h
-SOURCES += ./common/GenericEditProvider.cpp \
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h
+SOURCES += ./editors/ComponentEditor/common/ExpressionEditor.cpp \
+    ./editors/ComponentEditor/common/ParameterCompleter.cpp \
+    ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
+    ./GeneratedFiles/moc_ComponentParameterModel.cpp \
+    ./GeneratedFiles/moc_ExpressionEditor.cpp \
+    ./GeneratedFiles/moc_ParameterCompleter.cpp \
+    ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
     ./common/dialogs/comboSelector/comboselector.cpp \
@@ -998,9 +1012,12 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/choices/ChoicesModel.cpp \
     ./editors/ComponentEditor/choices/EnumerationModel.cpp \
     ./editors/ComponentEditor/common/AbstractParameterModel.cpp \
+    ./editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ./editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ./editors/ComponentEditor/common/ParameterModelEquations.cpp \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./editors/ComponentEditor/common/ValueFormatter.cpp \
+    ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.cpp \
     ./editors/CSourceEditor/CSourceContentMatcher.cpp \
     ./editors/CSourceEditor/CSourceHighlighter.cpp \
     ./editors/CSourceEditor/CSourceTextEdit.cpp \
@@ -1104,6 +1121,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./editors/ComponentEditor/common/ParameterModelEquations.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
 RESOURCES += kactus.qrc

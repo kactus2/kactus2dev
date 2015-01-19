@@ -30,7 +30,8 @@ public:
 	ComponentEditorParametersItem(ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
-		ComponentEditorItem* parent);
+		ComponentEditorItem* parent, 
+        QSharedPointer<ReferenceCounter> refCounter);
 
 	//! \brief The destructor
 	virtual ~ComponentEditorParametersItem();

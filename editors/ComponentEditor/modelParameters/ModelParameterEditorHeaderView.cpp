@@ -53,3 +53,11 @@ int ModelParameterEditorHeaderView::maximumColumn() const
 {
     return ModelParameterColumns::MAXIMUM;
 }
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameterEditorHeaderView::arrayOffsetColumn()
+//-----------------------------------------------------------------------------
+int ModelParameterEditorHeaderView::arrayOffsetColumn() const
+{
+    return ModelParameterColumns::ARRAY_OFFSET;
+}

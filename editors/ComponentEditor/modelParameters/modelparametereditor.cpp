@@ -16,12 +16,9 @@
 #include <common/widgets/summaryLabel/summarylabel.h>
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ParameterResolver.h>
-#include <editors/ComponentEditor/common/ParameterResolver.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -79,8 +76,13 @@ proxy_(this)
 	view_.setSortingEnabled(true);
 
 	// set the delegate to edit the usage column
-	view_.setItemDelegate(new ModelParameterDelegate(component->getChoices(), parameterCompleter,
-        QSharedPointer<ParameterResolver>(new ParameterResolver(component)), this));
+    view_.setItemDelegate(new ModelParameterDelegate(component->getChoices(), parameterCompleter,
+        QSharedPointer<ParameterFinder>(new ComponentParameterFinder(component)), this));
+
+    connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)), 
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(view_.itemDelegate(), SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
 	// items can not be dragged
 	view_.setItemsDraggable(false);

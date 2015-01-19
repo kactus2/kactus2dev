@@ -11,6 +11,8 @@
 #include <library/LibraryManager/libraryinterface.h>
 #include <IPXACTmodels/component.h>
 
+#include <editors/ComponentEditor/referenceCounter/ReferenceCounter.h>
+
 #include <QAction>
 #include <QObject>
 #include <QSharedPointer>
@@ -235,6 +237,18 @@ public:
 	*/
     virtual QIcon getIcon() const;
 
+    /*!
+     *  Set the reference counter for this item.
+     *
+     *      @param [in] newReferenceCounter   The counter for references.
+     */
+    void setReferenceCounter(QSharedPointer<ReferenceCounter> newReferenceCounter);
+
+    /*!
+     *  Connects this component editor items item editor to its reference counter.
+     */
+    void connectItemEditorToReferenceCounter();
+
 public slots:
 
 	/*! \brief Open the item in an editor.
@@ -337,6 +351,9 @@ protected:
 
     //! \brief Flag for indicating highlight of the item.
     bool highlight_;
+
+    //! Allows increasing and decreasing of parameter usage counts.
+    QSharedPointer<ReferenceCounter> referenceCounter_;
 
 protected slots:
 

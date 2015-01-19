@@ -911,6 +911,12 @@
     <Filter Include="Header Files\editors\ComponentEditor\common">
       <UniqueIdentifier>{43667a89-3a58-492a-84ec-fe02b42dd193}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\referenceCounter">
+      <UniqueIdentifier>{1f3d8e2d-084f-475e-be3b-56108121f86b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\referenceCounter">
+      <UniqueIdentifier>{28fdf3eb-4df2-404e-bc43-e27180093cb0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3883,6 +3889,36 @@
     <ClCompile Include="editors\ComponentEditor\common\ParameterModelEquations.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.cpp">
+      <Filter>Source Files\editors\ComponentEditor\referenceCounter</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ParameterReferenceCounter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ReferenceCounter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ComponentParameterFinder.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ExpressionEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\parameters\ComponentParameterModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentParameterModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ExpressionEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ParameterCompleter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ParameterCompleter.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5331,6 +5367,24 @@
     <CustomBuild Include="editors\ComponentEditor\parameters\ParameterEditorHeaderView.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.h">
+      <Filter>Header Files\editors\ComponentEditor\referenceCounter</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\referenceCounter\ReferenceCounter.h">
+      <Filter>Header Files\editors\ComponentEditor\referenceCounter</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\common\ComponentParameterFinder.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\common\ExpressionEditor.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\parameters\ComponentParameterModel.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\common\ParameterCompleter.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -5626,6 +5680,12 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ParameterModelEquations.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\ParameterFinder.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\parameters\ComponentParameterColumns.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

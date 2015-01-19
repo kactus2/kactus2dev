@@ -185,6 +185,13 @@ protected:
      */
     virtual int valueIdColumn() const;
 
+    /*!
+     *  Gets the column index for usage count.
+     *
+     *      @return     The column index for usage count.
+     */
+    virtual int usageCountColumn() const;
+
 private:
 
 	//! No copying

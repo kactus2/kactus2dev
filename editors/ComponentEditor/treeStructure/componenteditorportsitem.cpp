@@ -12,10 +12,11 @@
 ComponentEditorPortsItem::ComponentEditorPortsItem(ComponentEditorTreeModel* model,
 												   LibraryInterface* libHandler,
 												   QSharedPointer<Component> component,
-												   ComponentEditorItem* parent ):
+												   ComponentEditorItem* parent, 
+                                                   QSharedPointer<ReferenceCounter> refCounter ):
 ComponentEditorItem(model, libHandler, component, parent)
 {
-
+    setReferenceCounter(refCounter);
 }
 
 ComponentEditorPortsItem::~ComponentEditorPortsItem() {
@@ -53,6 +54,8 @@ ItemEditor* ComponentEditorPortsItem::editor() {
 			this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(createInterface()), 
             this, SIGNAL(createInterface()), Qt::UniqueConnection);
+
+        connectItemEditorToReferenceCounter();
 	}
 	return editor_;
 }

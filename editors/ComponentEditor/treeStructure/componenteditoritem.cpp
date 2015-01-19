@@ -25,7 +25,9 @@ childItems_(),
 editor_(NULL),
 locked_(true),
 highlight_(false),
-parent_(parent) {
+parent_(parent),
+referenceCounter_(0)
+{
 
 	connect(this, SIGNAL(contentChanged(ComponentEditorItem*)),
 		model, SLOT(onContentChanged(ComponentEditorItem*)), Qt::UniqueConnection);
@@ -285,4 +287,23 @@ QIcon ComponentEditorItem::getIcon() const
 
 void ComponentEditorItem::onSelectRequest() {    
 	emit selectItem(this);
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::setReferenceCounter()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::setReferenceCounter(QSharedPointer<ReferenceCounter> newReferenceCounter)
+{
+    referenceCounter_ = newReferenceCounter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::connectItemEditorToReferenceCounter()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::connectItemEditorToReferenceCounter()
+{
+    connect(editor_, SIGNAL(increaseReferences(QString)), 
+        referenceCounter_.data(), SLOT(increaseReferenceCount(QString)), Qt::UniqueConnection);
+    connect(editor_, SIGNAL(decreaseReferences(QString)),
+        referenceCounter_.data(), SLOT(decreaseReferenceCount(QString)), Qt::UniqueConnection);
 }

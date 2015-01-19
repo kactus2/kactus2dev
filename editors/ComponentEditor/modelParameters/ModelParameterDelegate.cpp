@@ -23,8 +23,8 @@
 // Function: ModelParameterDelegate::ModelParameterDelegate()
 //-----------------------------------------------------------------------------
 ModelParameterDelegate::ModelParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, 
-    QCompleter* parameterCompleter, QSharedPointer<ParameterResolver> parameterResolver, QObject* parent):
-ParameterDelegate(choices, parameterCompleter, parameterResolver, parent)
+    QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder, QObject* parent):
+ParameterDelegate(choices, parameterCompleter, parameterFinder, parent)
 {
 
 }
@@ -118,4 +118,12 @@ int ModelParameterDelegate::resolveColumn() const
 int ModelParameterDelegate::descriptionColumn() const
 {
     return ModelParameterColumns::DESCRIPTION;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameterDelegate::arrayOffsetColumn()
+//-----------------------------------------------------------------------------
+int ModelParameterDelegate::arrayOffsetColumn() const
+{
+    return ModelParameterColumns::ARRAY_OFFSET;
 }

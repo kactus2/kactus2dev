@@ -105,7 +105,6 @@ private:
 	//! \brief No assignment
 	ComponentEditorRootItem& operator=(const ComponentEditorRootItem& other);
 
-
 };
 
 #endif // COMPONENTEDITORROOTITEM_H

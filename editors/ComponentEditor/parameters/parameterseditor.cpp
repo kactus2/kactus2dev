@@ -14,7 +14,7 @@
 #include <common/widgets/summaryLabel/summarylabel.h>
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ParameterResolver.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
@@ -76,8 +76,13 @@ proxy_(0)
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 
-	view_.setItemDelegate(new ParameterDelegate(component->getChoices(), 
-        parameterCompleter, QSharedPointer<ParameterResolver>(new ParameterResolver(component)), this));
+    view_.setItemDelegate(new ParameterDelegate(component->getChoices(),
+        parameterCompleter, QSharedPointer<ParameterFinder>(new ComponentParameterFinder(component)), this));
+
+    connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(view_.itemDelegate(), SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
 	// set proxy to do the sorting automatically
 	proxy_ = new QSortFilterProxyModel(this);

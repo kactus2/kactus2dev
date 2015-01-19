@@ -378,6 +378,14 @@ int ModelParameterModel::valueIdColumn() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: modelparametermodel::usageCountColumn()
+//-----------------------------------------------------------------------------
+int ModelParameterModel::usageCountColumn() const
+{
+    return ModelParameterColumns::USAGE_COUNT;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ModelParameterModel::getParameter()
 //-----------------------------------------------------------------------------
 QSharedPointer<ModelParameter> ModelParameterModel::getParameter(QModelIndex const& index) const

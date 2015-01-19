@@ -227,6 +227,13 @@ protected:
     virtual int valueIdColumn() const = 0;
 
     /*!
+     *  Gets the column index for usage count.
+     *
+     *      @return     The column index for usage count.
+     */
+    virtual int usageCountColumn() const = 0;
+
+    /*!
      *  Checks if the given column is mandatory.
      *
      *      @param [in] column   The column to check.

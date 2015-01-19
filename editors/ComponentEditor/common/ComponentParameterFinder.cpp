@@ -1,0 +1,109 @@
+//-----------------------------------------------------------------------------
+// File: ComponentParameterFinder.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Mikko Teuho
+// Date: 15.01.2015
+//
+// Description:
+// The interface for finding parameters with the correct ID.
+//-----------------------------------------------------------------------------
+
+#include "ComponentParameterFinder.h"
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::ComponentParameterFinder()
+//-----------------------------------------------------------------------------
+ComponentParameterFinder::ComponentParameterFinder(QSharedPointer<Component> component):
+component_(component)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::~ComponentParameterFinder()
+//-----------------------------------------------------------------------------
+ComponentParameterFinder::~ComponentParameterFinder()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::ComponentParameterFinder()
+//-----------------------------------------------------------------------------
+QSharedPointer<Parameter> ComponentParameterFinder::getParameterWithID(QString const& parameterId) const
+{
+    foreach (QSharedPointer<Parameter> parameter, component_->getParameters())
+    {
+        if (parameter->getValueId() == parameterId)
+        {
+            return parameter;
+        }
+    }
+
+    foreach (QSharedPointer<ModelParameter> modelParameter, component_->getModelParameters())
+    {
+        if (modelParameter->getValueId() == parameterId)
+        {
+            return modelParameter;
+        }
+    }
+
+    foreach (QSharedPointer<View> view, component_->getViews())
+    {
+        foreach(QSharedPointer<Parameter> parameter, view->getParameters())
+        {
+            if (parameter->getValueId() == parameterId)
+            {
+                return parameter;
+            }
+        }
+    }
+
+    return QSharedPointer<Parameter>(new Parameter);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::hasId()
+//-----------------------------------------------------------------------------
+bool ComponentParameterFinder::hasId(QString const& id) const
+{
+    foreach (QSharedPointer<Parameter> parameter, component_->getParameters())
+    {
+        if (parameter->getValueId() == id)
+        {
+            return true;
+        }
+    }
+
+    foreach (QSharedPointer<ModelParameter> componentModelParameter, component_->getModelParameters())
+    {
+        if (componentModelParameter->getValueId() == id)
+        {
+            return true;
+        }
+    }
+
+    foreach (QSharedPointer<View> view, component_->getViews())
+    {
+        foreach (QSharedPointer<Parameter> viewParameter, view->getParameters())
+        {
+            if (viewParameter->getValueId() == id)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::nameForId()
+//-----------------------------------------------------------------------------
+QString ComponentParameterFinder::nameForId(QString const& id) const
+{
+    QSharedPointer <Parameter> targetParameter = getParameterWithID(id);
+
+    return targetParameter->getName();
+}

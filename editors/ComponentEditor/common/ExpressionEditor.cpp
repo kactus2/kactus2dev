@@ -18,14 +18,14 @@
 #include <QTextCursor>
 #include <QAbstractItemView>
 
-#include <editors/ComponentEditor/common/ParameterResolver.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterColumns.h>
 
 //-----------------------------------------------------------------------------
 // Function: ExpressionEditor::ExpressionEditor()
 //-----------------------------------------------------------------------------
-ExpressionEditor::ExpressionEditor(QSharedPointer<ParameterResolver> resolver, QWidget *parent)
-    : QTextEdit(parent), appendingCompleter_(0), parameterResolver_(resolver)
+ExpressionEditor::ExpressionEditor(QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent)
+    : QTextEdit(parent), appendingCompleter_(0), parameterFinder_(parameterFinder)
 {
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setTabChangesFocus(true);
@@ -88,9 +88,9 @@ void ExpressionEditor::setExpression(QString const& expression)
     QString replaced = expression;
     foreach(QString term, terms)
     {
-        if (parameterResolver_ && parameterResolver_->hasId(term))
+        if (parameterFinder_ && parameterFinder_->hasId(term))
         {
-            replaced.replace(term, parameterResolver_->nameForId(term));
+            replaced.replace(term, parameterFinder_->nameForId(term));
         }
     }
 
@@ -157,8 +157,6 @@ void ExpressionEditor::complete(QModelIndex const& index)
         parameterId = parameterName;
     }
 
-    emit increaseReference(parameterId);
-    
     int startAt = startOfCurrentWord();
 
     int nthWord = currentWordIndex();
@@ -175,6 +173,8 @@ void ExpressionEditor::complete(QModelIndex const& index)
     cursor.setPosition(startAt + parameterName.length());
     setTextCursor(cursor);
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(onCursorPositionChanged()), Qt::UniqueConnection);
+
+    emit(increaseReference(parameterId));
 }
 
 //-----------------------------------------------------------------------------
@@ -256,7 +256,7 @@ int ExpressionEditor::currentWordLength() const
 //-----------------------------------------------------------------------------
 bool ExpressionEditor::hasNoReferencesInExpression()
 {
-    if (parameterResolver_.isNull())
+    if (parameterFinder_.isNull())
     {
         return true;
     }
@@ -264,7 +264,7 @@ bool ExpressionEditor::hasNoReferencesInExpression()
     QStringList terms = expression_.split(wordDelimiter(), QString::SkipEmptyParts);
     foreach(QString term, terms)
     {
-        if (parameterResolver_->hasId(term))
+        if (parameterFinder_->hasId(term))
         {
             return false;
         }
@@ -323,10 +323,10 @@ QString ExpressionEditor::nthWordIn(QString const& text, int n) const
 //-----------------------------------------------------------------------------
 bool ExpressionEditor::isReference(QString const& text) const
 {
-    if (parameterResolver_.isNull())
+    if (parameterFinder_.isNull())
     {
         return false;
     }
 
-    return parameterResolver_->hasId(text);
+    return parameterFinder_->hasId(text);
 }

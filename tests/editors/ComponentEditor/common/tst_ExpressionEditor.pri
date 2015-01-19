@@ -9,18 +9,19 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../../../editors/ComponentEditor/common/ParameterModelEquations.h \
-    ../../../../editors/ComponentEditor/common/ParameterResolver.h \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../../editors/ComponentEditor/common/ValueFormatter.h \
-    ../../../../editors/ComponentEditor/common/ParameterCompleter.h \
     ../../../../editors/ComponentEditor/parameters/ComponentParameterModel.h \
-    ../../../../editors/ComponentEditor/common/ExpressionEditor.h
-SOURCES += ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../../../editors/ComponentEditor/common/ExpressionEditor.h \
+    ../../../../editors/ComponentEditor/common/ParameterCompleter.h \
+    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
+    ../../../../editors/ComponentEditor/common/ParameterFinder.h
+SOURCES += ../../../../editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
+    ../../../../editors/ComponentEditor/common/ExpressionEditor.cpp \
+    ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../../../editors/ComponentEditor/common/ParameterCompleter.cpp \
     ../../../../editors/ComponentEditor/common/ParameterModelEquations.cpp \
-    ../../../../editors/ComponentEditor/common/ParameterResolver.cpp \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../../../editors/ComponentEditor/common/ValueFormatter.cpp \
-    ../../../../editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ./tst_ExpressionEditor.cpp \
-    ../../../../editors/ComponentEditor/common/ExpressionEditor.cpp
+    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp

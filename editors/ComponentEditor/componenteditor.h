@@ -20,6 +20,8 @@
 #include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorgroupslot.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
+#include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
 
 #include <QSharedPointer>
 #include <QSplitter>
@@ -233,6 +235,9 @@ private:
 
 	//! The slot to display the visualizers in.
 	ComponentEditorGroupSlot visualizerSlot_;
+
+    //! The counter that increases the amount of references to parameters.
+    QSharedPointer<ReferenceCounter> referenceCounter_;
 };
 
 #endif // COMPONENTEDITOR_H

@@ -219,3 +219,11 @@ int ParametersModel::valueIdColumn() const
 {
     return ParameterColumns::VALUEID;
 }
+
+//-----------------------------------------------------------------------------
+// Function: parametersmodel::usageCountColumn()
+//-----------------------------------------------------------------------------
+int ParametersModel::usageCountColumn() const
+{
+    return ParameterColumns::USAGE_COUNT;
+}

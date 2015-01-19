@@ -241,7 +241,7 @@ void tst_ModelParameterDelegate::testKeyInputForColumn(int column)
 //-----------------------------------------------------------------------------
 ModelParameterDelegate* tst_ModelParameterDelegate::createDelegate()
 {
-    return new ModelParameterDelegate(choices_, 0, QSharedPointer<ParameterResolver>(), this);
+    return new ModelParameterDelegate(choices_, 0, QSharedPointer<ParameterFinder>(), this);
 }
 
 //-----------------------------------------------------------------------------

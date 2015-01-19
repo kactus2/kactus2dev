@@ -147,6 +147,11 @@ QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orienta
         {
             return tr("Value ID");
         }
+        else if (section == usageCountColumn())
+        {
+            return tr("Usage\ncount");
+        }
+
         else
         {
             return QVariant();
@@ -475,6 +480,10 @@ QVariant AbstractParameterModel::valueForIndex(QModelIndex const& index) const
     else if (index.column() == valueIdColumn())
     {
         return parameter->getValueId();
+    }
+    else if (index.column() == usageCountColumn())
+    {
+        return parameter->getUsageCount();
     }
     else 
     {

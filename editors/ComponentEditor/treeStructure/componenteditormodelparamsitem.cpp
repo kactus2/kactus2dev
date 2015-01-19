@@ -14,11 +14,12 @@
 ComponentEditorModelParamsItem::ComponentEditorModelParamsItem( ComponentEditorTreeModel* model,
 															   LibraryInterface* libHandler,
 															   QSharedPointer<Component> component,
-															   ComponentEditorItem* parent ):
+															   ComponentEditorItem* parent,
+                                                               QSharedPointer<ReferenceCounter> refCounter ):
 ComponentEditorItem(model, libHandler, component, parent),
 modelParams_(component->getModelParameters())
 {
-	
+	setReferenceCounter(refCounter);
 }
 
 ComponentEditorModelParamsItem::~ComponentEditorModelParamsItem()
@@ -60,6 +61,8 @@ ItemEditor* ComponentEditorModelParamsItem::editor()
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
 			this, SIGNAL(helpUrlRequested(QString const&)));
+
+        connectItemEditorToReferenceCounter();
 	}
 	return editor_;
 }

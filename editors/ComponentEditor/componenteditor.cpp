@@ -68,9 +68,11 @@ navigationModel_(this),
 navigationView_(libHandler, *component->getVlnv(), &navigationSplitter_),
 proxy_(this),
 editorSlot_(&editorVisualizerSplitter_),
-visualizerSlot_(&editorVisualizerSplitter_)
+visualizerSlot_(&editorVisualizerSplitter_),
+referenceCounter_(new ParameterReferenceCounter
+    (QSharedPointer<ParameterFinder>(new ComponentParameterFinder(component_))))
 {
-	// these can be used when debugging to identify the objects
+    // these can be used when debugging to identify the objects
 	setObjectName(tr("ComponentEditor"));
 	navigationSplitter_.setObjectName(tr("NavigationSplitter"));
 	editorVisualizerSplitter_.setObjectName(tr("EditorVisualizerSplitter"));
@@ -643,10 +645,10 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
         new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorModelParamsItem>(
-        new ComponentEditorModelParamsItem(&navigationModel_, libHandler_, component, hwRoot)));
+        new ComponentEditorModelParamsItem(&navigationModel_, libHandler_, component, hwRoot, referenceCounter_)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorParametersItem>(
-        new ComponentEditorParametersItem(&navigationModel_, libHandler_, component, hwRoot)));
+        new ComponentEditorParametersItem(&navigationModel_, libHandler_, component, hwRoot, referenceCounter_)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorMemMapsItem>(
         new ComponentEditorMemMapsItem(&navigationModel_, libHandler_, component, hwRoot)));
@@ -655,7 +657,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
         new ComponentEditorAddrSpacesItem(&navigationModel_, libHandler_, component, hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorViewsItem>(
-        new ComponentEditorViewsItem(&navigationModel_, libHandler_, component, hwRoot)));
+        new ComponentEditorViewsItem(&navigationModel_, libHandler_, component, hwRoot, referenceCounter_)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorSWViewsItem>(
         new ComponentEditorSWViewsItem(&navigationModel_, libHandler_, component, hwRoot)));
@@ -664,7 +666,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
         new ComponentEditorSystemViewsItem(&navigationModel_, libHandler_, component, hwRoot)));
 
     QSharedPointer<ComponentEditorPortsItem> portsItem(
-        new ComponentEditorPortsItem(&navigationModel_, libHandler_, component, hwRoot));
+        new ComponentEditorPortsItem(&navigationModel_, libHandler_, component, hwRoot, referenceCounter_));
 
     hwRoot->addChildItem(portsItem);
     connect(portsItem.data(), SIGNAL(createInterface()), hwRoot, SLOT(onInterfaceAdded()), Qt::UniqueConnection);
@@ -707,7 +709,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createSWRootItem(QShare
         new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, swRoot)));
 
     swRoot->addChildItem(QSharedPointer<ComponentEditorParametersItem>(
-        new ComponentEditorParametersItem(&navigationModel_, libHandler_, component, swRoot)));
+        new ComponentEditorParametersItem(&navigationModel_, libHandler_, component, swRoot, referenceCounter_)));
 
     swRoot->addChildItem(QSharedPointer<ComponentEditorSWViewsItem>(
         new ComponentEditorSWViewsItem(&navigationModel_, libHandler_, component, swRoot)));

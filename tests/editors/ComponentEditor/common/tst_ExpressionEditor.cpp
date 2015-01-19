@@ -19,7 +19,7 @@
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-#include <editors/ComponentEditor/common/ParameterResolver.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
@@ -491,7 +491,7 @@ void tst_ExpressionEditor::testEditingExpression_data()
 //-----------------------------------------------------------------------------
 ExpressionEditor* tst_ExpressionEditor::createEditorWithoutResolver()
 {
-    return new ExpressionEditor(QSharedPointer<ParameterResolver>());
+    return new ExpressionEditor(QSharedPointer<ParameterFinder>());
 }
 
 //-----------------------------------------------------------------------------
@@ -499,7 +499,7 @@ ExpressionEditor* tst_ExpressionEditor::createEditorWithoutResolver()
 //-----------------------------------------------------------------------------
 ExpressionEditor* tst_ExpressionEditor::createEditorForComponent(QSharedPointer<Component> component)
 {
-    QSharedPointer<ParameterResolver> resolver(new ParameterResolver(component));
+    QSharedPointer<ParameterFinder> resolver(new ComponentParameterFinder(component));
 
     ComponentParameterModel* parameterModel = new ComponentParameterModel(component, 0);
     parameterModel->setExpressionParser(QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(component)));

@@ -236,6 +236,13 @@ protected:
     virtual int valueIdColumn() const;
 
     /*!
+     *  Gets the column index for usage count.
+     *
+     *      @return     The column index for usage count.
+     */
+    virtual int usageCountColumn() const;
+
+    /*!
      *  Validates the data in a model parameter corresponding to a given column.
      *
      *      @param [in] column      The column whose data to validate.

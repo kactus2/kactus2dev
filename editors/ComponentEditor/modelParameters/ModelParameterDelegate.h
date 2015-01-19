@@ -35,7 +35,7 @@ public:
 	 *     @param [in] parent               The parent object
 	*/
 	ModelParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-        QCompleter* parameterCompleter, QSharedPointer<ParameterResolver> parameterResolver,
+        QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
         QObject *parent = 0);
 
 	//! The destructor
@@ -109,6 +109,13 @@ protected:
      *      @return     The column index for description section.
      */
     virtual int descriptionColumn() const;
+
+    /*!
+     *  Gets the column index for array offset.
+     *
+     *      @return     The column index for array offset.
+     */
+    virtual int arrayOffsetColumn() const;
 
 private:
 

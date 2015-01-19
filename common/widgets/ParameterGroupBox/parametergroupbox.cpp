@@ -14,7 +14,7 @@
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-#include <editors/ComponentEditor/common/ParameterResolver.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 
 #include <IPXACTmodels/component.h>
 
@@ -65,9 +65,13 @@ proxy_(this)
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(parameterModel);
 
-	view_.setItemDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter,
-        QSharedPointer<ParameterResolver>(new ParameterResolver(component)), 
-        this));
+    view_.setItemDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter,
+        QSharedPointer<ParameterFinder>(new ComponentParameterFinder(component)), this));
+
+    connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)), 
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(view_.itemDelegate(), SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
 	// set source model for proxy
 	proxy_.setSourceModel(model_);

@@ -54,6 +54,13 @@ protected:
      */
     virtual int maximumColumn() const;
 
+    /*!
+     *  Gets the index of array offset column.
+     *
+     *      @return     The array offset column index.
+     */
+    virtual int arrayOffsetColumn() const;
+
 private:
 
     //! Disable copying and assignment

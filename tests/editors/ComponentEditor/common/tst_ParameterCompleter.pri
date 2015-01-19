@@ -7,15 +7,13 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../editors/ComponentEditor/common/ParameterCompleter.h \
-    ../../../../editors/ComponentEditor/common/ParameterResolver.h \
-    ../../../../editors/ComponentEditor/parameters/ComponentParameterModel.h \
-    ../../../../editors/ComponentEditor/parameters/ComponentParameterColumns.h \
+HEADERS += ../../../../editors/ComponentEditor/parameters/ComponentParameterColumns.h \
     ../../../../editors/ComponentEditor/common/ParameterModelEquations.h \
-    ../../../../editors/ComponentEditor/common/ValueFormatter.h
-SOURCES += ./tst_ParameterCompleter.cpp \
+    ../../../../editors/ComponentEditor/common/ValueFormatter.h \
+    ../../../../editors/ComponentEditor/parameters/ComponentParameterModel.h \
+    ../../../../editors/ComponentEditor/common/ParameterCompleter.h
+SOURCES += ../../../../editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ../../../../editors/ComponentEditor/common/ParameterCompleter.cpp \
-    ../../../../editors/ComponentEditor/common/ParameterResolver.cpp \
-    ../../../../editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ../../../../editors/ComponentEditor/common/ParameterModelEquations.cpp \
-    ../../../../editors/ComponentEditor/common/ValueFormatter.cpp
+    ../../../../editors/ComponentEditor/common/ValueFormatter.cpp \
+    ./tst_ParameterCompleter.cpp

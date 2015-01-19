@@ -220,7 +220,6 @@ private:
 
 	//! \brief Pointer to the root item of the tree.
 	QSharedPointer<ComponentEditorRootItem> rootItem_;
-
 };
 
 #endif // COMPONENTEDITORTREEMODEL_H

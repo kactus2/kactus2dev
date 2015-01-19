@@ -15,7 +15,7 @@
 #include <QCompleter>
 #include <QTextEdit>
 
-class ParameterResolver;
+class ParameterFinder;
 //-----------------------------------------------------------------------------
 //! Editor for expressions with parameter name completion.
 //-----------------------------------------------------------------------------
@@ -25,7 +25,7 @@ class ExpressionEditor : public QTextEdit
 public:
 
 	//! The constructor.
-    ExpressionEditor(QSharedPointer<ParameterResolver> resolver, QWidget *parent = 0);
+    ExpressionEditor(QSharedPointer<ParameterFinder> parameterFinader, QWidget* parent = 0);
 
 	//! The destructor.
 	virtual ~ExpressionEditor();
@@ -72,8 +72,18 @@ protected:
 
 signals:
 
+    /*!
+     *  Increase the amount of references to a parameter corresponding to the id.
+     *
+     *      @param [in] parameterId     The id of the parameter being referenced.
+     */
     void increaseReference(QString const& parameterId);
 
+    /*!
+     *  Decrease the amount of references to a parameter corresponding to the id.
+     *
+     *      @param [in] parameterId     The id of the parameter being referenced.
+     */
     void decreaseReference(QString const& parameterId);
 
 private slots:
@@ -154,7 +164,7 @@ private:
     QCompleter* appendingCompleter_;
 
     //! Resolver for parameter names.
-    QSharedPointer<ParameterResolver> parameterResolver_;
+    QSharedPointer<ParameterFinder> parameterFinder_;
 
     //! The underlying expression for the editor.
     QString expression_;

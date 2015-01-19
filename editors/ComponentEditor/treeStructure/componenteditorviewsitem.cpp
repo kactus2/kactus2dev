@@ -12,16 +12,23 @@
 ComponentEditorViewsItem::ComponentEditorViewsItem(ComponentEditorTreeModel* model,
 												   LibraryInterface* libHandler,
 												   QSharedPointer<Component> component,
-												   ComponentEditorItem* parent):
+												   ComponentEditorItem* parent,
+                                                   QSharedPointer<ReferenceCounter> referenceCounter):
 ComponentEditorItem(model, libHandler, component, parent),
-views_(component->getViews()) {
+views_(component->getViews()) 
+{
 
 	setObjectName(tr("ComponentEditorViewsItem"));
+
+    setReferenceCounter(referenceCounter);
 
 	foreach (QSharedPointer<View> view, views_) {
 
 		QSharedPointer<ComponentEditorViewItem> viewItem(new ComponentEditorViewItem(
 			view, model, libHandler, component, this));
+
+        viewItem->setReferenceCounter(referenceCounter);
+
 		childItems_.append(viewItem);
 	}
 }
@@ -67,5 +74,8 @@ void ComponentEditorViewsItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorViewItem> viewItem(
 		new ComponentEditorViewItem(views_.at(index), model_, libHandler_, component_, this));
 	viewItem->setLocked(locked_);
+
+    viewItem->setReferenceCounter(referenceCounter_);
+
 	childItems_.insert(index, viewItem);
 }

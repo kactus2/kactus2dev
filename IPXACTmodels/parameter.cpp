@@ -337,6 +337,38 @@ void Parameter::setValueId(QString const& id)
 }
 
 //-----------------------------------------------------------------------------
+// Function: parameter::getUsageCount()
+//-----------------------------------------------------------------------------
+int Parameter::getUsageCount() const
+{
+    return attributes_.value("usage count", "0").toInt();
+}
+
+//-----------------------------------------------------------------------------
+// Function: parameter::increaseUsageCount()
+//-----------------------------------------------------------------------------
+void Parameter::increaseUsageCount()
+{
+    attributes_.insert("usage count", QString::number(getUsageCount() + 1));
+}
+
+//-----------------------------------------------------------------------------
+// Function: parameter::decreaseUsageCount()
+//-----------------------------------------------------------------------------
+void Parameter::decreaseUsageCount()
+{
+    if (getUsageCount() < 2)
+    {
+        attributes_.remove("usage count");
+    }
+
+    else
+    {
+        attributes_.insert("usage count", QString::number(getUsageCount() - 1));
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: Parameter::hasAttribute()
 //-----------------------------------------------------------------------------
 bool Parameter::hasAttribute(QString const& attributeName) const
