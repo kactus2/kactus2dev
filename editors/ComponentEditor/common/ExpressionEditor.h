@@ -70,6 +70,12 @@ protected:
     //! Handler for key press events.
     virtual void keyPressEvent(QKeyEvent* keyEvent);
 
+signals:
+
+    void increaseReference(QString const& parameterId);
+
+    void decreaseReference(QString const& parameterId);
+
 private slots:
 
     /*!
@@ -78,6 +84,9 @@ private slots:
      *      @param [in] word   The selected word.
      */
     void complete(QModelIndex const& index);
+    int currentWordIndex();
+
+    QString replaceNthWordWith(QString const& oldText, int n, QString const& after) const;
 
     /*!
      *  Called when the cursor position changes. If a different word is under the new position, it is suggested
@@ -85,6 +94,8 @@ private slots:
      *
      */
     void onCursorPositionChanged();
+
+    void onTextChanged(int position, int charsRemoved, int charsAdded);
 
 private:
 
@@ -133,7 +144,8 @@ private:
      *      @return True, if the expression has no references, otherwise false.
      */
     bool hasNoReferencesInExpression();
-
+    QString nthWordIn(QString const& text, int n) const;
+    bool isReference(QString const& text) const;
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

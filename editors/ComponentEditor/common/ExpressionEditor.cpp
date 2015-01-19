@@ -31,6 +31,8 @@ ExpressionEditor::ExpressionEditor(QSharedPointer<ParameterResolver> resolver, Q
     setTabChangesFocus(true);
 
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(onCursorPositionChanged()), Qt::UniqueConnection);
+    connect(document(), SIGNAL(contentsChange(int, int, int)), 
+        this, SLOT(onTextChanged(int, int, int)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -86,7 +88,7 @@ void ExpressionEditor::setExpression(QString const& expression)
     QString replaced = expression;
     foreach(QString term, terms)
     {
-        if (parameterResolver_->hasId(term))
+        if (parameterResolver_ && parameterResolver_->hasId(term))
         {
             replaced.replace(term, parameterResolver_->nameForId(term));
         }
@@ -108,17 +110,21 @@ void ExpressionEditor::keyPressEvent(QKeyEvent* keyEvent)
         return;
     }
 
+    //    setExpression(replaceNthWordWith(expression_, currentWordIndex(), currentWord()));
+    
+    if (keyEvent->key() == Qt::Key_Space)
+    {
+        QTextCursor cursor = textCursor();
+        cursor.select(QTextCursor::WordUnderCursor);
+
+        QString word = cursor.selectedText();
+        QTextCharFormat redFormat;
+        redFormat.setForeground(QBrush(Qt::red));
+        cursor.setCharFormat(redFormat);
+    }
+
     QTextEdit::keyPressEvent(keyEvent);
-
-    if (hasNoReferencesInExpression())
-    {
-        expression_ = toPlainText();
-    }
-    else
-    {
-        expression_.append(keyEvent->text());
-    }
-
+    
     if (appendingCompleter_)
     {
         if (!currentWord().isEmpty() || 
@@ -150,22 +156,25 @@ void ExpressionEditor::complete(QModelIndex const& index)
     {
         parameterId = parameterName;
     }
+
+    emit increaseReference(parameterId);
     
     int startAt = startOfCurrentWord();
 
-    QString oldText = toPlainText();
-    int len = currentWordLength();
+    int nthWord = currentWordIndex();
 
-    setText(toPlainText().replace(startAt, len, parameterName));
+    expression_ = replaceNthWordWith(expression_, nthWord, parameterId);
+
+    disconnect(document(), SIGNAL(contentsChange(int, int, int)), this, SLOT(onTextChanged(int, int, int)));
+    setText(replaceNthWordWith(toPlainText(), nthWord, parameterName));
+    connect(document(), SIGNAL(contentsChange(int, int, int)), 
+        this, SLOT(onTextChanged(int, int, int)), Qt::UniqueConnection);
 
     disconnect(this, SIGNAL(cursorPositionChanged()), this, SLOT(onCursorPositionChanged()));
     QTextCursor cursor = textCursor();
     cursor.setPosition(startAt + parameterName.length());
     setTextCursor(cursor);
-
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(onCursorPositionChanged()), Qt::UniqueConnection);
-
-    expression_ = oldText.replace(startAt, len, parameterId);
 }
 
 //-----------------------------------------------------------------------------
@@ -173,14 +182,26 @@ void ExpressionEditor::complete(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 void ExpressionEditor::onCursorPositionChanged()
 {
-    QString word = currentWord();
-
     if(appendingCompleter_)
     {
-        appendingCompleter_->setCompletionPrefix(word);
+        appendingCompleter_->setCompletionPrefix(currentWord());
     }
+}
 
-    //expression_ = toPlainText();
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::onTextChanged()
+//-----------------------------------------------------------------------------
+void ExpressionEditor::onTextChanged(int position, int charsRemoved, int charsAdded)
+{
+    if (hasNoReferencesInExpression())
+    {
+        expression_ = toPlainText();
+    }
+    else
+    {
+
+        expression_.append(toPlainText().mid(position, charsAdded));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -219,7 +240,7 @@ int ExpressionEditor::endOfCurrentWord() const
 //-----------------------------------------------------------------------------
 QRegularExpression ExpressionEditor::wordDelimiter() const
 {
-     return QRegularExpression("[+-/*() ]");
+    return QRegularExpression("[+/*() ]|[-](?![a-fA-F0-9]+([-][a-fA-F0-9]+)*[}])");
 }
 
 //-----------------------------------------------------------------------------
@@ -250,4 +271,62 @@ bool ExpressionEditor::hasNoReferencesInExpression()
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::replaceNthWordWith()
+//-----------------------------------------------------------------------------
+QString ExpressionEditor::replaceNthWordWith(QString const& oldText, int n, QString const& after) const
+{
+    int startIndex = 0;
+    for (int i = 0; i < n; i++)
+    {
+        startIndex = oldText.indexOf(wordDelimiter(), startIndex) + 1;
+    }
+    
+    QString replaced = oldText;
+    replaced.replace(startIndex, nthWordIn(oldText, n).length(), after);
+    return replaced;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::currentWordIndex()
+//-----------------------------------------------------------------------------
+int ExpressionEditor::currentWordIndex()
+{
+    return toPlainText().left(textCursor().position()).count(wordDelimiter());
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::nthWordIn()
+//-----------------------------------------------------------------------------
+QString ExpressionEditor::nthWordIn(QString const& text, int n) const
+{
+    int startIndex = 0;
+    for (int i = 0; i < n; i++)
+    {
+        startIndex = text.indexOf(wordDelimiter(), startIndex) + 1;
+    }
+
+    int endIndex = text.indexOf(wordDelimiter(), startIndex);
+    if (endIndex == -1)
+    {
+        endIndex = text.length();
+    }
+
+    int wordLength = endIndex - startIndex;
+    return text.mid(startIndex, wordLength);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::isReference()
+//-----------------------------------------------------------------------------
+bool ExpressionEditor::isReference(QString const& text) const
+{
+    if (parameterResolver_.isNull())
+    {
+        return false;
+    }
+
+    return parameterResolver_->hasId(text);
 }

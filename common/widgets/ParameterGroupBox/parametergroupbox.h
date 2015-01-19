@@ -84,7 +84,7 @@ private:
 	EditableTableView view_;
 
 	//! \brief The model that holds the data to be displayed to the user
-	ParametersModel model_;
+	ParametersModel* model_;
 
 	//! \brief The proxy that is used to do the sorting of parameters.
 	QSortFilterProxyModel proxy_;
