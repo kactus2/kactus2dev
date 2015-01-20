@@ -3919,6 +3919,12 @@
     <ClCompile Include="editors\ComponentEditor\common\ParameterCompleter.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\CompleterPopupTable.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_CompleterPopupTable.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5383,6 +5389,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\common\ParameterCompleter.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\common\CompleterPopupTable.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </CustomBuild>
   </ItemGroup>

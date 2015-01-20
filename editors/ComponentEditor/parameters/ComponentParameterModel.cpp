@@ -12,13 +12,12 @@
 #include "ComponentParameterModel.h"
 #include "ComponentParameterColumns.h"
 
-#include <IPXACTmodels/component.h>
-
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterModel::ComponentParameterModel()
 //-----------------------------------------------------------------------------
-ComponentParameterModel::ComponentParameterModel(QSharedPointer<Component> component, QObject *parent)
-    : QAbstractTableModel(parent), component_(component)
+ComponentParameterModel::ComponentParameterModel(QObject *parent, QSharedPointer<ParameterFinder> parameterFinder):
+    QAbstractTableModel(parent),
+    parameterFinder_(parameterFinder)
 {
 
 }
@@ -36,7 +35,7 @@ ComponentParameterModel::~ComponentParameterModel()
 //-----------------------------------------------------------------------------
 int ComponentParameterModel::rowCount(QModelIndex const& parent /*= QModelIndex() */) const
 {
-    return component_->getParameters().count();
+    return parameterFinder_->getNumberOfParameters();
 }
 
 //-----------------------------------------------------------------------------
@@ -80,21 +79,21 @@ QVariant ComponentParameterModel::data(QModelIndex const& index, int role /*= Qt
         return QVariant();
     }
 
-    QSharedPointer<Parameter> parameter = component_->getParameters().at(index.row());
+    QStringList parameterIds = parameterFinder_->getAllParameterIds();
 
     if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
         if (index.column() == ComponentParameterColumns::NAME)
         {
-            return parameter->getName();
+            return parameterFinder_->nameForId(parameterIds.at(index.row()));
         }
         else if (index.column() == ComponentParameterColumns::VALUE)
         {
-            return formattedValueFor(parameter->getValue());
+            return formattedValueFor(parameterFinder_->valueForId(parameterIds.at(index.row())));
         }
         else if (index.column() == ComponentParameterColumns::ID)
         {
-            return parameter->getValueId();
+            return parameterIds.at(index.row());
         }
     }
 
@@ -133,4 +132,13 @@ bool ComponentParameterModel::validateColumnForParameter(QModelIndex const& inde
    }
 
    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterModel::resetParameters()
+//-----------------------------------------------------------------------------
+void ComponentParameterModel::resetParameterModel()
+{
+    beginResetModel();
+    endResetModel();
 }

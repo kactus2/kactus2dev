@@ -41,7 +41,9 @@ proxy_(this)
     model_ = new ModelParameterModel(component->getModel(), component->getChoices(), 
         expressionParser, this);
 
-    ComponentParameterModel* componentParametersModel = new ComponentParameterModel(component, this);
+    QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(component));
+
+    ComponentParameterModel* componentParametersModel = new ComponentParameterModel(this, parameterFinder);
     componentParametersModel->setExpressionParser(expressionParser);
 
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
@@ -76,8 +78,8 @@ proxy_(this)
 	view_.setSortingEnabled(true);
 
 	// set the delegate to edit the usage column
-    view_.setItemDelegate(new ModelParameterDelegate(component->getChoices(), parameterCompleter,
-        QSharedPointer<ParameterFinder>(new ComponentParameterFinder(component)), this));
+    view_.setItemDelegate(new ModelParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
+        this));
 
     connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)), 
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

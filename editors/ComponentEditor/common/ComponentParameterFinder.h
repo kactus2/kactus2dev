@@ -62,6 +62,29 @@ public:
      */
     virtual QString nameForId(QString const& id) const;
 
+    /*!
+     *  Finds the value of the parameter with the given id.
+     *
+     *      @param [in] id      The id of the parameter to search for.
+     *
+     *      @return The value of the parameter.
+     */
+    virtual QString valueForId(QString const& id) const;
+
+    /*!
+     *  Gets all of the ids of components parameters.
+     *
+     *      @return A list containing all of the ids.
+     */
+    virtual QStringList getAllParameterIds() const;
+
+    /*!
+     *  Gets the number of parameters in the component.
+     *
+     *      @return The number of parameters in the component.
+     */
+    virtual int getNumberOfParameters() const;
+
 private:
 
 	//! No copying

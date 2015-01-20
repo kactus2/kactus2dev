@@ -16,8 +16,6 @@
 #include <QSharedPointer>
 #include <QObject>
 
-class ParameterResolver;
-
 //-----------------------------------------------------------------------------
 //! Completer for selecting parameter references.
 //-----------------------------------------------------------------------------

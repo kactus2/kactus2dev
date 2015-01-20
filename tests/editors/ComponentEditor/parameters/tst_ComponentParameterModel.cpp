@@ -19,6 +19,7 @@
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/parameter.h>
@@ -135,7 +136,9 @@ void tst_ComponentParameterModel::testFunctionAsValue()
 //-----------------------------------------------------------------------------
 ComponentParameterModel* tst_ComponentParameterModel::make(QSharedPointer<Component> component)
 {
-    ComponentParameterModel* model = new ComponentParameterModel(component, this);
+    QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(component));
+
+    ComponentParameterModel* model = new ComponentParameterModel(this, parameterFinder);
     
     QSharedPointer<ExpressionParser> parser(new IPXactSystemVerilogParser(component));
     model->setExpressionParser(parser);

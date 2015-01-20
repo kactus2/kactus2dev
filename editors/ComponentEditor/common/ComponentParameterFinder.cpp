@@ -107,3 +107,49 @@ QString ComponentParameterFinder::nameForId(QString const& id) const
 
     return targetParameter->getName();
 }
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::valueForId()
+//-----------------------------------------------------------------------------
+QString ComponentParameterFinder::valueForId(QString const& id) const
+{
+    QSharedPointer <Parameter> targetParameter = getParameterWithID(id);
+
+    return targetParameter->getValue();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::()
+//-----------------------------------------------------------------------------
+QStringList ComponentParameterFinder::getAllParameterIds() const
+{
+    QStringList allParameterIds;
+
+    foreach (QSharedPointer<Parameter> parameter, component_->getParameters())
+    {
+        allParameterIds.append(parameter->getValueId());
+    }
+    foreach (QSharedPointer<ModelParameter> modelParameter, component_->getModelParameters())
+    {
+        allParameterIds.append(modelParameter->getValueId());
+    }
+    foreach (QSharedPointer<View> view, component_->getViews())
+    {
+        foreach (QSharedPointer<Parameter> viewParameter, view->getParameters())
+        {
+            allParameterIds.append(viewParameter->getValueId());
+        }
+    }
+
+    return allParameterIds;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::getNumberOfParameters()
+//-----------------------------------------------------------------------------
+int ComponentParameterFinder::getNumberOfParameters() const
+{
+    QStringList allParameterIds = getAllParameterIds();
+
+    return allParameterIds.size();
+}

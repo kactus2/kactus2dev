@@ -15,6 +15,8 @@
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <IPXACTmodels/component.h>
@@ -53,7 +55,9 @@ void tst_ParameterCompleter::testNameIsFoundAsCompletion()
     QSharedPointer<Component> targetComponent(new Component());
     targetComponent->setParameters(parameters);
 
-    ComponentParameterModel* model = new ComponentParameterModel(targetComponent, this);
+    QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(targetComponent));
+
+    ComponentParameterModel* model = new ComponentParameterModel(this, parameterFinder);
 
     QCompleter* completer = new ParameterCompleter(this);
     completer->setModel(model);

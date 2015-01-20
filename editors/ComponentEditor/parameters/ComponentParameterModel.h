@@ -16,8 +16,7 @@
 #include <QSharedPointer>
 
 #include <editors/ComponentEditor/common/ParameterModelEquations.h>
-
-class Component;
+#include <editors/ComponentEditor/common/ParameterFinder.h>
 
 //-----------------------------------------------------------------------------
 //! Model for all parameters within a single component.
@@ -28,7 +27,7 @@ class ComponentParameterModel : public QAbstractTableModel, public ParameterMode
 public:
 
 	//! The constructor.
-	ComponentParameterModel(QSharedPointer<Component> component, QObject *parent);
+	ComponentParameterModel(QObject *parent, QSharedPointer<ParameterFinder> parameterFinder);
 
 	//! The destructor.
 	~ComponentParameterModel();
@@ -79,6 +78,13 @@ public:
      */
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
+public slots:
+
+    /*!
+     *  Reset the model to show the correct parameters.
+     */
+    void resetParameterModel();
+
 protected:
        
     /*!
@@ -114,9 +120,8 @@ private:
 	ComponentParameterModel(ComponentParameterModel const& rhs);
 	ComponentParameterModel& operator=(ComponentParameterModel const& rhs);
 
-    //! The component whose parameter the model contains.
-    QSharedPointer<Component> component_;
-
+    //! The parameter finder for searching all the parameters.
+    QSharedPointer<ParameterFinder> parameterFinder_;
 };
 
 #endif // COMPONENTPARAMETERMODEL_H

@@ -14,9 +14,11 @@ HEADERS += ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.
     ../../../../editors/ComponentEditor/parameters/ComponentParameterModel.h \
     ../../../../editors/ComponentEditor/common/ExpressionEditor.h \
     ../../../../editors/ComponentEditor/common/ParameterCompleter.h \
+    ../../../../editors/ComponentEditor/common/CompleterPopupTable.h \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../../editors/ComponentEditor/common/ParameterFinder.h
-SOURCES += ../../../../editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
+SOURCES += ../../../../editors/ComponentEditor/common/CompleterPopupTable.cpp \
+    ../../../../editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ../../../../editors/ComponentEditor/common/ExpressionEditor.cpp \
     ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../../../editors/ComponentEditor/common/ParameterCompleter.cpp \

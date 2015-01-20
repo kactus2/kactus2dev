@@ -11,7 +11,7 @@
 
 #include "ParameterCompleter.h"
 
-//#include <editors/ComponentEditor/common/ParameterResolver.h>
+#include <editors/ComponentEditor/common/CompleterPopupTable.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterColumns.h>
 
 #include <QHeaderView>
@@ -43,6 +43,10 @@ void ParameterCompleter::setModel(QAbstractItemModel* model)
 {
     QCompleter::setModel(model);
     setupPopup();
+
+    setModelSorting(QCompleter::CaseInsensitivelySortedModel);
+
+    connect(popup(), SIGNAL(resetParameterModel()), model, SLOT(resetParameterModel()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -50,7 +54,7 @@ void ParameterCompleter::setModel(QAbstractItemModel* model)
 //-----------------------------------------------------------------------------
 void ParameterCompleter::setupPopup()
 {
-    QTableView* popup = new QTableView();
+    CompleterPopupTable* popup = new CompleterPopupTable;
 
     setPopup(popup);
 

@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
+HEADERS += ./editors/ComponentEditor/common/CompleterPopupTable.h \
+    ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
     ./editors/ComponentEditor/common/ExpressionEditor.h \
     ./editors/ComponentEditor/common/ParameterCompleter.h \
     ./editors/ComponentEditor/parameters/ComponentParameterModel.h \
@@ -586,6 +587,7 @@ HEADERS += ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h
 SOURCES += ./editors/ComponentEditor/common/ExpressionEditor.cpp \
     ./editors/ComponentEditor/common/ParameterCompleter.cpp \
+    ./editors/ComponentEditor/common/CompleterPopupTable.cpp \
     ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ./GeneratedFiles/moc_ComponentParameterModel.cpp \
     ./GeneratedFiles/moc_ExpressionEditor.cpp \

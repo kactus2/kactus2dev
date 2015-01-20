@@ -59,14 +59,16 @@ proxy_(this)
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 
-    ComponentParameterModel* parameterModel = new ComponentParameterModel(component, this);
+    QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(component));
+
+    ComponentParameterModel* parameterModel = new ComponentParameterModel(this, parameterFinder);
     parameterModel->setExpressionParser(expressionParser);
 
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(parameterModel);
 
-    view_.setItemDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter,
-        QSharedPointer<ParameterFinder>(new ComponentParameterFinder(component)), this));
+    view_.setItemDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
+        this));
 
     connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)), 
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

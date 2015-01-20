@@ -254,6 +254,10 @@ Qt::ItemFlags AbstractParameterModel::flags(QModelIndex const& index ) const
     {
 		return Qt::NoItemFlags;
     }
+    else if (index.column() == usageCountColumn())
+    {
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    }
 
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }

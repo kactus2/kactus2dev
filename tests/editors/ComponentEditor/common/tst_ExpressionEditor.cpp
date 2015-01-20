@@ -23,7 +23,6 @@
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
-
 #include <IPXACTmodels/component.h>
 
 class tst_ExpressionEditor : public QObject
@@ -501,7 +500,7 @@ ExpressionEditor* tst_ExpressionEditor::createEditorForComponent(QSharedPointer<
 {
     QSharedPointer<ParameterFinder> resolver(new ComponentParameterFinder(component));
 
-    ComponentParameterModel* parameterModel = new ComponentParameterModel(component, 0);
+    ComponentParameterModel* parameterModel = new ComponentParameterModel(0, resolver);
     parameterModel->setExpressionParser(QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(component)));
 
     QCompleter* completer = new QCompleter(this);
