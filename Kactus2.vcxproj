@@ -1967,6 +1967,7 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp"</Command>
     </CustomBuild>
     <ClInclude Include="editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
+    <ClInclude Include="editors\ComponentEditor\common\SystemVerilogSyntax.h" />
     <ClInclude Include="editors\ComponentEditor\common\ValueFormatter.h" />
     <ClInclude Include="editors\ComponentEditor\modelParameters\ModelParameterColumns.h" />
     <CustomBuild Include="editors\ComponentEditor\parameters\parametersmodel.h">

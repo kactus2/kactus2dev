@@ -33,7 +33,7 @@ ComponentParameterModel::~ComponentParameterModel()
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterModel::rowCount()
 //-----------------------------------------------------------------------------
-int ComponentParameterModel::rowCount(QModelIndex const& parent /*= QModelIndex() */) const
+int ComponentParameterModel::rowCount(QModelIndex const& /*parent= QModelIndex() */) const
 {
     return parameterFinder_->getNumberOfParameters();
 }
@@ -41,7 +41,7 @@ int ComponentParameterModel::rowCount(QModelIndex const& parent /*= QModelIndex(
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterModel::columnCount()
 //-----------------------------------------------------------------------------
-int ComponentParameterModel::columnCount(QModelIndex const& parent /*= QModelIndex() */) const
+int ComponentParameterModel::columnCount(QModelIndex const& /*parent = QModelIndex() */) const
 {
     return ComponentParameterColumns::COLUMN_COUNT;
 }
@@ -64,7 +64,7 @@ Qt::ItemFlags ComponentParameterModel::flags(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterModel::parent()
 //-----------------------------------------------------------------------------
-QModelIndex ComponentParameterModel::parent(QModelIndex const& child) const
+QModelIndex ComponentParameterModel::parent(QModelIndex const& /*child*/) const
 {
     return QModelIndex();
 }

@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "SystemVerilogExpressionParser.h"
+#include "SystemVerilogSyntax.h"
 
 #include <QRegularExpression>
 #include <QStringList>
@@ -17,24 +18,12 @@
 
 namespace
 {
-    const QString SIZE = "[1-9]?[0-9]*";
-    const QString SIGNED = "[sS]?";
-
-    const QString DECIMAL_NUMBER = "(?:" + SIZE + "'" + SIGNED + "[dD]?)?[0-9_]+";
-    const QString HEXADECIMAL_NUMBER = SIZE + "'" + SIGNED + "[hH][0-9a-fA-F_]+";
-    const QString OCTAL_NUMBER = SIZE + "'" + SIGNED + "[oO][0-7_]+";
-    const QString BINARY_NUMBER = SIZE + "'" + SIGNED + "[bB][01_]+";
-
-    const QString INTEGRAL_NUMBER("[+-]?(?:" + HEXADECIMAL_NUMBER + "|" +
-        OCTAL_NUMBER + "|" + BINARY_NUMBER + "|" + DECIMAL_NUMBER + ")");
-
     const QString CLOG2_FUNCTION = "[$]clog2[(](?:[^)]+)[)]";
 
     const QString REAL_NUMBER("[+-]?[0-9_]+[.][0-9_]+");
 
-    const QString STRING_LITERAL("\".*\"");
-
-    const QRegularExpression PRIMARY_LITERAL("((?:[(]\\s*)*)\\s*(" + REAL_NUMBER + "|" + INTEGRAL_NUMBER + "|"  + 
+    const QRegularExpression PRIMARY_LITERAL("((?:[(]\\s*)*)\\s*(" + REAL_NUMBER + "|" + 
+        SystemVerilogSyntax::INTEGRAL_NUMBER + "|"  + 
         CLOG2_FUNCTION + ")\\s*((?:[)]\\s*)*)");
 
     const QRegularExpression BINARY_OPERATOR("[+-/*//]|[/*][/*]");
@@ -102,7 +91,7 @@ QString SystemVerilogExpressionParser::parseExpression(QString const& expression
 //-----------------------------------------------------------------------------
 bool SystemVerilogExpressionParser::isValidExpression(QString const& expression) const
 {
-    QRegularExpression validatingExp("^\\s*(" + STRING_LITERAL + "|"
+    QRegularExpression validatingExp("^\\s*(" + SystemVerilogSyntax::STRING_LITERAL + "|"
         "(" + PRIMARY_LITERAL.pattern() + "(\\s*" + NEXT_OPERAND.pattern() + ")*))\\s*$");
 
     int openParenthesisCount = expression.count('(');
@@ -142,7 +131,7 @@ int SystemVerilogExpressionParser::baseForExpression(QString const& expression) 
 //-----------------------------------------------------------------------------
 bool SystemVerilogExpressionParser::isStringLiteral(QString const &expression) const
 {
-    QRegularExpression stringExpression("^\\s*" + STRING_LITERAL + "\\s*$");
+    QRegularExpression stringExpression("^\\s*" + SystemVerilogSyntax::STRING_LITERAL + "\\s*$");
     return expression.indexOf(stringExpression) == 0;
 }
 
@@ -151,7 +140,8 @@ bool SystemVerilogExpressionParser::isStringLiteral(QString const &expression) c
 //-----------------------------------------------------------------------------
 bool SystemVerilogExpressionParser::isLiteral(QString const& expression) const
 {
-    QRegularExpression literalExpression("^(" + INTEGRAL_NUMBER + "|" + REAL_NUMBER + ")$");
+    QRegularExpression literalExpression("^(" + SystemVerilogSyntax::INTEGRAL_NUMBER 
+        + "|" + REAL_NUMBER + ")$");
 
     return literalExpression.match(expression).hasMatch();
 }
@@ -436,7 +426,7 @@ QString SystemVerilogExpressionParser::solve(QString const& firstTerm, QString c
 qreal SystemVerilogExpressionParser::parseConstantToDecimal(QString const& constantNumber) const
 {
     QRegularExpression size("([1-9][0-9_]*)?(?=')");
-    QRegularExpression baseFormat("'" + SIGNED + "[dDbBoOhH]?");
+    QRegularExpression baseFormat("'" + SystemVerilogSyntax::SIGNED + "[dDbBoOhH]?");
 
     QString result = constantNumber;
     result.remove(size);
@@ -458,7 +448,7 @@ qreal SystemVerilogExpressionParser::parseConstantToDecimal(QString const& const
 //-----------------------------------------------------------------------------
 int SystemVerilogExpressionParser::getBaseForNumber(QString const& constantNumber) const
 {
-    QRegularExpression baseFormat("'" + SIGNED + "([dDbBoOhH]?)");
+    QRegularExpression baseFormat("'" + SystemVerilogSyntax::SIGNED + "([dDbBoOhH]?)");
     QString base = baseFormat.match(constantNumber).captured(1);
 
     return baseForFormat(base);

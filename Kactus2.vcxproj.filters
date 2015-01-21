@@ -3924,8 +3924,7 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_CompleterPopupTable.cpp">
       <Filter>Generated Files</Filter>
-    </ClCompile>
-  </ItemGroup>
+    </ClCompile>  </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
   </ItemGroup>
@@ -5372,8 +5371,7 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\parameters\ParameterEditorHeaderView.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.h">
+    </CustomBuild>    <CustomBuild Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.h">
       <Filter>Header Files\editors\ComponentEditor\referenceCounter</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\referenceCounter\ReferenceCounter.h">
@@ -5394,7 +5392,24 @@
     <CustomBuild Include="editors\ComponentEditor\common\CompleterPopupTable.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </CustomBuild>
-  </ItemGroup>
+    <CustomBuild Include="editors\ComponentEditor\common\ParameterCompleter.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\parameters\ComponentParameterModel.h">
+      <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\common\ExpressionEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\common\ComponentParameterFinder.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\referenceCounter\ReferenceCounter.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
       <Filter>Header Files\common\dialogs\listSelectDialog</Filter>
@@ -5695,6 +5710,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\parameters\ComponentParameterColumns.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\SystemVerilogSyntax.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

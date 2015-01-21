@@ -35,32 +35,33 @@ public:
 private slots:
 
     void testWithoutSettingCompleter();
-
-
-    void testLastWrittenWordIsCompleted();
-    void testLastWrittenWordIsCompleted_data();
     
     void testSelectedCompletionIsAppendedToText();
 
     void testWordUnderCursorIsCompleted();
     void testWordUnderCursorIsCompleted_data();
-    
-    void testOnlyWordUnderCursorIsReplaced();
+
     void testNoCompletionIsShownForEmptyInput();
     void testCompletionsAreShownOnCtrlSpace();
-    void testReferenceIDIsReplacedWithName();
 
-    void testReferenceIDIsReplacedWithName_data();
+    void testExpressionInitialization();
+    void testExpressionInitialization_data();
+
     void testExpressionIsUpdatedForSelectedCompletion();
     void testExpressionIsUpdatedForSelectedCompletion_data();
 
-    void testEditingExpression();
-    void testEditingExpression_data();
+    void testColorsAreSetWhenWritingText();
+
+    void testColorsAreSetWhenRemovingText();
+
+    void testReferenceCannotBeEditedInTheMiddleOfTheName();
+    
+    void testRemovingReference();
+
 private:
 
     ExpressionEditor* createEditorWithoutResolver();
     ExpressionEditor* createEditorForComponent(QSharedPointer<Component> component);
-   
 };
 
 //-----------------------------------------------------------------------------
@@ -80,57 +81,9 @@ void tst_ExpressionEditor::testWithoutSettingCompleter()
 
     QTest::keyClicks(editor, "one t");
 
-    QCOMPARE(editor->getDisplayText(), QString("one t"));
+    QCOMPARE(editor->toPlainText(), QString("one t"));
 
     delete editor;
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ExpressionEditor::testLastWrittenWordIsCompleted()
-//-----------------------------------------------------------------------------
-void tst_ExpressionEditor::testLastWrittenWordIsCompleted()
-{
-    QFETCH(QString, input);
-    QFETCH(QString, expectedCompletion);
-
-    ExpressionEditor* editor = createEditorWithoutResolver();
-
-    QStringList availableWords;
-    availableWords << "one" << "two";
-
-    QCompleter* completer = new QCompleter(availableWords);
-    editor->setAppendingCompleter(completer);
-
-    QTest::keyClicks(editor, input);
-
-    QVERIFY2(completer->popup()->isVisible(), "Completer popup not visible.");
-    QCOMPARE(completer->currentCompletion(), expectedCompletion);
-
-    QCOMPARE(editor->getDisplayText(), input);
-    QCOMPARE(editor->getExpression(), input);
-
-    delete editor;
-    delete completer;
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ExpressionEditor::testLastWrittenWordIsCompleted_data()
-//-----------------------------------------------------------------------------
-void tst_ExpressionEditor::testLastWrittenWordIsCompleted_data()
-{
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QString>("expectedCompletion");
-
-    QTest::newRow("single character input") << "o" << "one";
-    QTest::newRow("second word completion") << "one t" << "two";
-    QTest::newRow("third word completion") << "one two o" << "one";
-
-    QTest::newRow("plus as a word separator") << "1+o" << "one";
-    QTest::newRow("minus as a word separator") << "1-o" << "one";
-    QTest::newRow("multiply as a word separator") << "1*o" << "one";
-    QTest::newRow("power as a word separator") << "1**o" << "one";
-    QTest::newRow("division as a word separator") << "1/o" << "one";
-    QTest::newRow("opening parenthesis as a word separator") << "1+(o" << "one";
 }
 
 //-----------------------------------------------------------------------------
@@ -148,13 +101,15 @@ void tst_ExpressionEditor::testSelectedCompletionIsAppendedToText()
 
     QTest::keyClicks(editor, "one t");
 
+    QCOMPARE(editor->getExpression(), QString("one "));
+
     QVERIFY2(completer->popup()->isVisible(), "Completer popup not visible.");
     QCOMPARE(completer->currentCompletion(), QString("two"));
 
     QTest::keyClick(completer->popup(), Qt::Key_Down);
     QTest::keyClick(completer->popup(), Qt::Key_Return);
 
-    QCOMPARE(editor->getDisplayText(), QString("one two"));
+    QCOMPARE(editor->toPlainText(), QString("one two"));
     QCOMPARE(editor->getExpression(), QString("one two"));
 
     delete editor;
@@ -180,10 +135,9 @@ void tst_ExpressionEditor::testWordUnderCursorIsCompleted()
     QCompleter* completer = new QCompleter(availableWords);
     editor->setAppendingCompleter(completer);
 
-    editor->setText(initialText);
+    editor->setExpression(initialText);
     
     QSignalSpy referenceUpdaterSpy(editor, SIGNAL(increaseReference(QString const&)));
-
     
     QTextCursor cursor = editor->textCursor();
     cursor.setPosition(selectedPosition);
@@ -197,7 +151,7 @@ void tst_ExpressionEditor::testWordUnderCursorIsCompleted()
     QTest::keyClick(completer->popup(), Qt::Key_Down);
     QTest::keyClick(completer->popup(), Qt::Key_Return);
 
-    QCOMPARE(editor->getDisplayText(), expectedFinalText);
+    QCOMPARE(editor->toPlainText(), expectedFinalText);
     QCOMPARE(editor->getExpression(), expectedFinalText);
 
     QCOMPARE(referenceUpdaterSpy.count(), 1);
@@ -226,40 +180,8 @@ void tst_ExpressionEditor::testWordUnderCursorIsCompleted_data()
     QTest::newRow("Complete first word before power") << "o**1" << 1 << "n" << "one" << "one**1";
     QTest::newRow("Complete first word before division") << "o/1" << 1 << "n" << "one" << "one/1";
 
+    QTest::newRow("Complete first word after opening parenthesis") << "1+(o" << 4 << "n" << "one" << "1+(one";
     QTest::newRow("Complete word in parentheses") << "(t)" << 2 << "w" << "two" << "(two)";
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ExpressionEditor::testOnlyWordUnderCursorIsReplaced()
-//-----------------------------------------------------------------------------
-void tst_ExpressionEditor::testOnlyWordUnderCursorIsReplaced()
-{
-    ExpressionEditor* editor = createEditorWithoutResolver();
-
-    QStringList availableWords("one");
-
-    QCompleter* completer = new QCompleter(availableWords);
-    editor->setAppendingCompleter(completer);
-
-    editor->setText("o on only");
-
-    QTextCursor cursor = editor->textCursor();
-    cursor.setPosition(1);
-    editor->setTextCursor(cursor);
-
-    QTest::keyClicks(editor, " o");
-
-    QVERIFY2(completer->popup()->isVisible(), "Completer popup not visible.");
-    QCOMPARE(completer->currentCompletion(), QString("one"));
-
-    QTest::keyClick(completer->popup(), Qt::Key_Down);
-    QTest::keyClick(completer->popup(), Qt::Key_Return);
-
-    QCOMPARE(editor->getDisplayText(), QString("o one on only"));
-    QCOMPARE(editor->textCursor().position(), 5);
-
-    delete editor;
-    delete completer;
 }
 
 //-----------------------------------------------------------------------------
@@ -278,7 +200,7 @@ void tst_ExpressionEditor::testNoCompletionIsShownForEmptyInput()
 
     QVERIFY2(!completer->popup()->isVisible(), "Completer popup should not be visible before editing.");
 
-    QTest::keyClick(editor, Qt::Key_O);
+    QTest::keyClicks(editor, "o");
     QTest::keyClick(editor, Qt::Key_Backspace);
 
     QVERIFY2(!completer->popup()->isVisible(), "Completer popup should not be visible for emptied editor.");
@@ -310,16 +232,15 @@ void tst_ExpressionEditor::testCompletionsAreShownOnCtrlSpace()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ExpressionEditor::testReferenceIDIsReplacedWithName()
+// Function: tst_ExpressionEditor::testExpressionInitialization()
 //-----------------------------------------------------------------------------
-void tst_ExpressionEditor::testReferenceIDIsReplacedWithName()
+void tst_ExpressionEditor::testExpressionInitialization()
 {
     QFETCH(QString, parameterName);
     QFETCH(QString, parameterId);
     QFETCH(QString, expression);
     QFETCH(QString, expectedDisplayText);
-
-
+    QFETCH(QString, expectedColor);
 
     QSharedPointer<Parameter> testParameter(new Parameter());
     testParameter->setName(parameterName);
@@ -335,31 +256,48 @@ void tst_ExpressionEditor::testReferenceIDIsReplacedWithName()
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
 
     editor->setExpression(expression);
-    QCOMPARE(editor->getDisplayText(), expectedDisplayText);
+
+    QCOMPARE(editor->toPlainText(), expectedDisplayText);
     QCOMPARE(editor->getExpression(), expression);
-
-
+    QCOMPARE(editor->textColor(), QColor(expectedColor));
 
     delete editor;
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ExpressionEditor::testReferenceIDIsReplacedWithName_data()
+// Function: tst_ExpressionEditor::testExpressionInitialization_data()
 //-----------------------------------------------------------------------------
-void tst_ExpressionEditor::testReferenceIDIsReplacedWithName_data()
+void tst_ExpressionEditor::testExpressionInitialization_data()
 {
     QTest::addColumn<QString>("parameterName");
     QTest::addColumn<QString>("parameterId");
     QTest::addColumn<QString>("expression");
     QTest::addColumn<QString>("expectedDisplayText");
+    QTest::addColumn<QString>("expectedColor");
 
-    QTest::newRow("Parameter id is replaced with name") << "testParameter" << "id" << "id" << "testParameter";
+    QTest::newRow("Parameter id is replaced with name and shown in darkGreen") << "testParameter" << "id" 
+        << "id" << "testParameter" << "darkGreen";
 
-    QTest::newRow("Parameter id is replaced with name in addition") << "width" << "width_id" 
-        << "width_id + 1" << "width + 1";
+    QTest::newRow("Parameter id can be uuid") << "testParameter" << "{12345678-90ab-cdef-ffff-abcdef000000}" 
+        << "{12345678-90ab-cdef-ffff-abcdef000000}" << "testParameter" << "darkGreen";
+
+    QTest::newRow("Constant is written in black") << "testParameter" << "id" 
+        << "1" << "1" << "black";
+
+    QTest::newRow("Constant with size and base is written in black") << "testParameter" << "id" 
+        << "8'hFF" << "8'hFF" << "black";
+
+    QTest::newRow("String is written in black") << "testParameter" << "id" 
+        << "\"testParameter\"" << "\"testParameter\"" << "black";
+
+    QTest::newRow("Operator is shown in black") << "testParameter" << "id" 
+        << "+" << "+" << "black";
+
+    QTest::newRow("Non-referencing word is shown in red") << "testParameter" << "id" 
+        << "nonReferencing" << "nonReferencing" << "red";
 
     QTest::newRow("Parameter id is not replaced if part of other word") << "testParameter" << "id" 
-        << "pid + 1" << "pid + 1";
+        << "pid + 1" << "pid + 1" << "black";
 }
 
 //-----------------------------------------------------------------------------
@@ -395,17 +333,16 @@ void tst_ExpressionEditor::testExpressionIsUpdatedForSelectedCompletion()
 
     editor->setExpression(initialExpression);
 
-
     QTest::keyClick(editor, Qt::Key_End);
     QTest::keyClicks(editor, input);
 
     QTest::keyClick(editor->completer()->popup(), Qt::Key_Down);
     QTest::keyClick(editor->completer()->popup(), Qt::Key_Return);
 
-    QCOMPARE(editor->getDisplayText(), expectedDisplayText);
+    editor->finishEditingCurrentWord();
+
+    QCOMPARE(editor->toPlainText(), expectedDisplayText);
     QCOMPARE(editor->getExpression(), expectedExpression);
-
-
 
     delete editor;
 }
@@ -422,7 +359,7 @@ void tst_ExpressionEditor::testExpressionIsUpdatedForSelectedCompletion_data()
 
     QTest::newRow("Parameter id is replaced with name") << "" << "te" << "id" << "testParameter";
 
-    QTest::newRow("Adding text does not remove id") << "id" << "-1" << "id-1" << "testParameter-1";
+    QTest::newRow("Adding text does not remove id") << "id" << "-8" << "id-8" << "testParameter-8";
 
     QTest::newRow("Adding another reference does not remove id") << "id" << "+testP" 
         << "id+id" << "testParameter+testParameter";
@@ -432,19 +369,13 @@ void tst_ExpressionEditor::testExpressionIsUpdatedForSelectedCompletion_data()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ExpressionEditor::testEditingExpression()
+// Function: tst_ExpressionEditor::testColorsAreSetWhenWritingText()
 //-----------------------------------------------------------------------------
-void tst_ExpressionEditor::testEditingExpression()
+void tst_ExpressionEditor::testColorsAreSetWhenWritingText()
 {
-    QFETCH(QString, initialExpression);
-    QFETCH(int, selectedIndex);
-    QFETCH(QString, input);
-    QFETCH(QString, expectedExpression);
-    QFETCH(QString, expectedDisplayText);
-
     QSharedPointer<Parameter> testParameter(new Parameter());
     testParameter->setName("testParameter");
-    testParameter->setValueId("{12345678-90ab-cdef-ffff-abcdef000000}");
+    testParameter->setValueId("id");
     testParameter->setValue("32");
 
     QList<QSharedPointer<Parameter> > parameters;
@@ -455,34 +386,186 @@ void tst_ExpressionEditor::testEditingExpression()
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
 
-    editor->setExpression(initialExpression);
+    QTest::keyClicks(editor, "tes");
+
+    QTest::keyClick(editor->completer()->popup(), Qt::Key_Down);
+    QTest::keyClick(editor->completer()->popup(), Qt::Key_Return);
+
+    QCOMPARE(editor->getExpression(), QString("id"));
+    QCOMPARE(editor->textCursor().charFormat().foreground().color(), QColor("darkGreen"));
+
+    QTest::keyClicks(editor, "+");
+
+    QCOMPARE(editor->getExpression(), QString("id+"));
+    QCOMPARE(editor->textCursor().charFormat().foreground().color(), QColor("black"));
+
+    QTest::keyClicks(editor, "8");
+    QCOMPARE(editor->textCursor().charFormat().foreground().color(), QColor("black"));
+
+    QTest::keyClicks(editor, "'hff");
+    QCOMPARE(editor->textCursor().charFormat().foreground().color(), QColor("black"));
+
+    QTest::keyClicks(editor, "-testParameter");
+
+    QCOMPARE(editor->getExpression(), QString("id+8'hff-"));
+    QCOMPARE(editor->textCursor().charFormat().foreground().color(), QColor("black"));
+
+    QTest::keyClicks(editor, " ");
+
+    QCOMPARE(editor->getExpression(), QString("id+8'hff-testParameter "));
 
     QTextCursor cursor = editor->textCursor();
-    cursor.setPosition(selectedIndex);
-    editor->setTextCursor(cursor);
+    cursor.movePosition(QTextCursor::PreviousCharacter);
+    QCOMPARE(cursor.charFormat().foreground().color(), QColor("red"));
 
-    QTest::keyClicks(editor, input);
+    QTest::keyClicks(editor, "+ \"text\"");
 
-    QCOMPARE(editor->getDisplayText(), expectedDisplayText);
-    QCOMPARE(editor->getExpression(), expectedExpression);
-    QCOMPARE(editor->textColor(), QColor("red"));
+    editor->finishEditingCurrentWord();
+
+    QCOMPARE(editor->getExpression(), QString("id+8'hff-testParameter + \"text\""));
+    QCOMPARE(editor->textCursor().charFormat().foreground().color(), QColor("black"));
 
     delete editor;
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ExpressionEditor::testEditingExpression_data()
+// Function: tst_ExpressionEditor::testColorsAreSetWhenRemovingText()
 //-----------------------------------------------------------------------------
-void tst_ExpressionEditor::testEditingExpression_data()
+void tst_ExpressionEditor::testColorsAreSetWhenRemovingText()
 {
-    QTest::addColumn<QString>("initialExpression");
-    QTest::addColumn<int>("selectedIndex");
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QString>("expectedExpression");
-    QTest::addColumn<QString>("expectedDisplayText");
+    QSharedPointer<Parameter> testParameter(new Parameter());
+    testParameter->setName("testParameter");
+    testParameter->setValueId("id");
+    testParameter->setValue("32");
 
-    QTest::newRow("Ending non-referencing word inserts red color") << "nonReferencing" << 14 << " "
-        << "nonReferencing " << "nonReferencing ";
+    QList<QSharedPointer<Parameter> > parameters;
+    parameters.append(testParameter);
+
+    QSharedPointer<Component> targetComponent(new Component());
+    targetComponent->setParameters(parameters);
+
+    ExpressionEditor* editor = createEditorForComponent(targetComponent);
+
+    QSignalSpy referenceDecreases(editor, SIGNAL(decreaseReference(QString const&)));
+
+    QTest::keyClicks(editor, "tes");
+
+    QTest::keyClick(editor->completer()->popup(), Qt::Key_Down);
+    QTest::keyClick(editor->completer()->popup(), Qt::Key_Return);
+
+    QCOMPARE(editor->getExpression(), QString("id"));
+    QCOMPARE(editor->textCursor().charFormat().foreground().color(), QColor("darkGreen"));
+
+    QTest::keyClick(editor, Qt::Key_Backspace);
+
+    QCOMPARE(editor->getExpression(), QString("id"));
+
+    QTest::keyClicks(editor, " ");
+
+    QCOMPARE(editor->getExpression(), QString("testParamete "));
+    QCOMPARE(referenceDecreases.first().first().toString(), QString("id"));
+
+    QTextCursor cursor = editor->textCursor();
+    cursor.movePosition(QTextCursor::PreviousWord);
+    QCOMPARE(cursor.charFormat().foreground().color(), QColor("red"));
+
+    delete editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testReferenceCannotBeEditedInTheMiddleOfTheName()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testReferenceCannotBeEditedInTheMiddleOfTheName()
+{
+    QSharedPointer<Parameter> testParameter(new Parameter());
+    testParameter->setName("testParameter");
+    testParameter->setValueId("id");
+    testParameter->setValue("32");
+
+    QList<QSharedPointer<Parameter> > parameters;
+    parameters.append(testParameter);
+
+    QSharedPointer<Component> targetComponent(new Component());
+    targetComponent->setParameters(parameters);
+
+    ExpressionEditor* editor = createEditorForComponent(targetComponent);
+
+    editor->setExpression("id");
+    
+    QTextCursor cursor = editor->textCursor();
+    cursor.setPosition(4);
+    editor->setTextCursor(cursor);
+
+    QTest::keyClick(editor, Qt::Key_Space);
+
+    QCOMPARE(editor->toPlainText(), QString("testParameter"));
+    QCOMPARE(editor->getExpression(), QString("id"));
+
+    QTest::keyClick(editor, Qt::Key_Delete);
+
+    QCOMPARE(editor->toPlainText(), QString("testParameter"));
+    QCOMPARE(editor->getExpression(), QString("id"));
+
+    QTest::keyClick(editor, Qt::Key_Backspace);
+
+    QCOMPARE(editor->toPlainText(), QString("testParameter"));
+    QCOMPARE(editor->getExpression(), QString("id"));
+
+    delete editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testRemovingReference()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testRemovingReference()
+{
+    QSharedPointer<Parameter> testParameter(new Parameter());
+    testParameter->setName("testParameter");
+    testParameter->setValueId("id");
+    testParameter->setValue("32");
+
+    QList<QSharedPointer<Parameter> > parameters;
+    parameters.append(testParameter);
+
+    QSharedPointer<Component> targetComponent(new Component());
+    targetComponent->setParameters(parameters);
+
+    ExpressionEditor* editor = createEditorForComponent(targetComponent);
+
+    QSignalSpy referenceDecreases(editor, SIGNAL(decreaseReference(QString const&)));
+
+    editor->setExpression("id");
+
+    QTextCursor cursor = editor->textCursor();
+    cursor.movePosition(QTextCursor::End);
+    editor->setTextCursor(cursor);
+
+    QTest::keyClick(editor, Qt::Key_Backspace);
+
+    QCOMPARE(editor->toPlainText(), QString("testParamete"));
+    QCOMPARE(editor->getExpression(), QString("id"));
+
+    editor->finishEditingCurrentWord();
+
+    QCOMPARE(editor->toPlainText(), QString("testParamete"));
+    QCOMPARE(editor->getExpression(), QString("testParamete"));
+
+    editor->setExpression("id");
+
+    cursor.movePosition(QTextCursor::Start);
+    editor->setTextCursor(cursor);
+
+    QTest::keyClick(editor, Qt::Key_Delete);
+
+    QCOMPARE(editor->toPlainText(), QString("estParameter"));
+    QCOMPARE(editor->getExpression(), QString("id"));
+
+    editor->finishEditingCurrentWord();
+
+    QCOMPARE(editor->toPlainText(), QString("estParameter"));
+    QCOMPARE(editor->getExpression(), QString("estParameter"));
+
+    delete editor;
 }
 
 //-----------------------------------------------------------------------------

@@ -105,8 +105,8 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
     else if (index.column() == valueColumn())
     {
         QString text = index.model()->data(index, Qt::EditRole).toString();
-        ExpressionEditor* aEdit = qobject_cast<ExpressionEditor*>(editor);
-        aEdit->setExpression(text);
+        ExpressionEditor* expressionEditor = qobject_cast<ExpressionEditor*>(editor);
+        expressionEditor->setExpression(text);
     }
 	else 
     {
@@ -144,9 +144,9 @@ void ParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
     }
     else if (index.column() == valueColumn())
     {
-        ExpressionEditor* aEdit = qobject_cast<ExpressionEditor*>(editor);
-        QString exp = aEdit->getExpression();
-        model->setData(index, exp, Qt::EditRole);
+        ExpressionEditor* expressionEditor = qobject_cast<ExpressionEditor*>(editor);
+        expressionEditor->finishEditingCurrentWord();
+        model->setData(index, expressionEditor->getExpression(), Qt::EditRole);
     }
 	else 
     {

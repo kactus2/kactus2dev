@@ -25,7 +25,7 @@ class ExpressionEditor : public QTextEdit
 public:
 
 	//! The constructor.
-    ExpressionEditor(QSharedPointer<ParameterFinder> parameterFinader, QWidget* parent = 0);
+    ExpressionEditor(QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent = 0);
 
 	//! The destructor.
 	virtual ~ExpressionEditor();
@@ -45,13 +45,6 @@ public:
     QCompleter* completer() const;
 
     /*!
-     *  Gets the text to display to user. Reference ids are replaced with parameter names.
-     *
-     *      @return The human-readable text of the editor.
-     */
-    QString getDisplayText() const;
-
-    /*!
      *  Gets the underlying expression in the editor.
      *
      *      @return The expression in the editor.
@@ -64,6 +57,11 @@ public:
      *      @param [in] expression   The expression to set.
      */
     void setExpression(QString const& expression);
+
+    /*!
+     *  Ends the editing of current word and commits it to the expression.
+     */
+    void finishEditingCurrentWord();
 
 protected:
 
@@ -94,9 +92,6 @@ private slots:
      *      @param [in] word   The selected word.
      */
     void complete(QModelIndex const& index);
-    int currentWordIndex();
-
-    QString replaceNthWordWith(QString const& oldText, int n, QString const& after) const;
 
     /*!
      *  Called when the cursor position changes. If a different word is under the new position, it is suggested
@@ -105,13 +100,53 @@ private slots:
      */
     void onCursorPositionChanged();
 
-    void onTextChanged(int position, int charsRemoved, int charsAdded);
-
 private:
 
     // Disable copying.
     ExpressionEditor(ExpressionEditor const& rhs);
     ExpressionEditor& operator=(ExpressionEditor const& rhs);
+
+    /*!
+     *  Gets the delimiter for words.
+     *
+     *      @return The delimiter for words.
+     */
+    QRegularExpression wordDelimiter() const;
+
+    /*!
+     *  Inserts a given word into the text using the given cursor.
+     *
+     *      @param [in] word    The word to insert into the text.
+     *      @param [in] cursor  The cursor to use to insert the text.
+     */
+    void insertWord(QString word, QTextCursor& cursor);
+
+    /*!
+     *  Checks if a given text is a reference to a parameter.
+     *
+     *      @param [in] text   The text to check.
+     *
+     *      @return True, if the text is a reference, otherwise false.
+     */
+    bool isReference(QString const& text) const;
+
+    /*!
+     *  Checks if a given word is a constant value.
+     *
+     *      @param [in] word   The word to check.
+     *
+     *      @return True, if the word is a constant, otherwise false.
+     */
+    bool wordIsConstant(QString const& word) const;
+
+    /*!
+     *  Gives a format for a given text color.
+     *
+     *      @param [in] textColor   The name of the color in the format.
+     *
+     *      @return The format for the given color.
+     */
+    QTextCharFormat colorFormat(QString const& textColor) const;
 
     /*!
      *  Finds the word currently under cursor.
@@ -135,33 +170,60 @@ private:
     int endOfCurrentWord() const;
 
     /*!
-     *  Gets the delimiter for words.
-     *
-     *      @return The delimiter for words.
-     */
-    QRegularExpression wordDelimiter() const;
-
-    /*!
      *  Finds the length of the current word.
      *
      *      @return The length of the current word.
      */
     int currentWordLength() const;
-    
+
     /*!
-     *  Checks if the current expression does not contain references.
+     *  Gives the index of the word currently under the cursor.
      *
-     *      @return True, if the expression has no references, otherwise false.
+     *      @return The index of the word.
      */
-    bool hasNoReferencesInExpression();
+    int currentWordIndex() const;
+
+    /*!
+     *  Replaces a word in a given index with another.
+     *
+     *      @param [in] oldText     The text to replace the word in.
+     *      @param [in] n           The index of the word to replace i.e 1 for second word in a sentence.
+     *      @param [in] after       The word used to replace the old word.
+     *
+     *      @return A text where the nth word has been replaced.
+     */
+    QString replaceNthWordWith(QString const& oldText, int n, QString const& after) const;
+
+    /*!
+     *  Finds the nth word in a text.
+     *
+     *      @param [in] text    The text to search in.
+     *      @param [in] n       The word index to find.
+     *
+     *      @return The nth word in a text.
+     */
     QString nthWordIn(QString const& text, int n) const;
-    bool isReference(QString const& text) const;
+
+    /*!
+     *  Changes the color of the font for the current word to red.
+     */
+    void colorCurrentWordRed();
+
+    /*!
+     *  Checks if the given text is a word delimiter.
+     *
+     *      @param [in] text   The text to check.
+     *
+     *      @return True, if the text is a word delimiter, otherwise false.
+     */
+    bool isWordDelimiter(QString const& text) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The completer whose selection is appended to the text.
-    QCompleter* appendingCompleter_;
+    //! The completer whose selection is used in the text.
+    QCompleter* nameCompleter_;
 
     //! Resolver for parameter names.
     QSharedPointer<ParameterFinder> parameterFinder_;
