@@ -147,6 +147,64 @@ private:
      *      @return The format for the given color.
      */
     QTextCharFormat colorFormat(QString const& textColor) const;
+        
+    /*!
+     *  Checks if the key event should not be allowed to edit the content.
+     *
+     *      @param [in] keyEvent   The key event to check.
+     *
+     *      @return True, if the key event should not be allowed, otherwise false.
+     */
+    bool editingNotAllowed(QKeyEvent* keyEvent);
+
+    /*!
+     *  Checks if the editing would change text in the middle of a referencing term.
+     *
+     *      @return True, if the edit position is in the middle of a referencing term, otherwise false.
+     */
+    bool editingMiddleOfReference() const;
+
+    /*!
+     *  Checks if the given key event will remove the last character in a word.
+     *
+     *      @param [in] keyEvent   The key event to check.
+     *
+     *      @return True, if the event will remove the last character, otherwise false.
+     */
+    bool removesLastCharacterOfWord(QKeyEvent* keyEvent);
+    
+    /*!
+     *  Removes the term currently under cursor.
+     */
+    void removeTermUnderCursor();
+    
+    /*!
+     *  Checks if the given key event will remove an operator before the cursor.
+     *
+     *      @param [in] keyEvent   The key event to check.
+     *
+     *      @return True, if the event will remove an operator, otherwise false.
+     */
+    bool removesOperatorBeforeWord(QKeyEvent* keyEvent);
+
+    /*!
+     *  Removes an operator in the expression in front of the cursor.
+     */
+    void removeOperatorBeforeCursorInExpression();
+        
+    /*!
+     *  Checks if the given key event will remove an operator after the cursor.
+     *
+     *      @param [in] keyEvent   The key event to check.
+     *
+     *      @return True, if the event will remove an operator, otherwise false.
+     */
+    bool removesOperatorAfterCursor(QKeyEvent* keyEvent);
+        
+    /*!
+     *  Removes an operator in the expression after the cursor.
+     */
+    void removeOperatorAfterCursorInExpression();
 
     /*!
      *  Finds the word currently under cursor.
@@ -186,23 +244,33 @@ private:
     /*!
      *  Replaces a word in a given index with another.
      *
-     *      @param [in] oldText     The text to replace the word in.
      *      @param [in] n           The index of the word to replace i.e 1 for second word in a sentence.
+     *      @param [in] oldText     The text to replace the word in.
      *      @param [in] after       The word used to replace the old word.
      *
      *      @return A text where the nth word has been replaced.
      */
-    QString replaceNthWordWith(QString const& oldText, int n, QString const& after) const;
+    QString replaceNthWordWith(int n, QString const& oldText, QString const& after) const;
 
     /*!
      *  Finds the nth word in a text.
      *
-     *      @param [in] text    The text to search in.
      *      @param [in] n       The word index to find.
+     *      @param [in] text    The text to search in.
      *
      *      @return The nth word in a text.
      */
-    QString nthWordIn(QString const& text, int n) const;
+    QString nthWordIn(int n, QString const& text) const;
+
+    /*!
+     *  Finds the character index of the beginning of nth word in a text.
+     *
+     *      @param [in] n       The word to search.
+     *      @param [in] text    The text to search the word in.
+     *
+     *      @return The index at the beginning of the nth word.
+     */
+    int indexOfNthWord(int n, QString const& text) const;
 
     /*!
      *  Changes the color of the font for the current word to red.
@@ -216,7 +284,7 @@ private:
      *
      *      @return True, if the text is a word delimiter, otherwise false.
      */
-    bool isWordDelimiter(QString const& text) const;
+    bool isWordDelimiter(QString const& text) const; 
 
     //-----------------------------------------------------------------------------
     // Data.

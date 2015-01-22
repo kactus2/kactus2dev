@@ -50,13 +50,21 @@ private slots:
     void testExpressionIsUpdatedForSelectedCompletion();
     void testExpressionIsUpdatedForSelectedCompletion_data();
 
+    void testCompletionChangesWithCursor();
+
     void testColorsAreSetWhenWritingText();
 
     void testColorsAreSetWhenRemovingText();
 
     void testReferenceCannotBeEditedInTheMiddleOfTheName();
     
+    void testRemovingExpression();
     void testRemovingReference();
+    void testRemovingReferenceWithBackSpaceAndDelete();
+
+    void testReplaceReferenceWithAnother();
+
+    void testCannotRemoveIfActiveSelection();
 
 private:
 
@@ -369,6 +377,47 @@ void tst_ExpressionEditor::testExpressionIsUpdatedForSelectedCompletion_data()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testCompletionChangesWithCursor()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testCompletionChangesWithCursor()
+{
+    QSharedPointer<Parameter> testParameter(new Parameter());
+    testParameter->setName("testParameter");
+    testParameter->setValueId("id");
+    testParameter->setValue("32");
+
+    QList<QSharedPointer<Parameter> > parameters;
+    parameters.append(testParameter);
+
+    QSharedPointer<Component> targetComponent(new Component());
+    targetComponent->setParameters(parameters);
+
+    ExpressionEditor* editor = createEditorForComponent(targetComponent);
+
+    editor->show();
+    QVERIFY(QTest::qWaitForWindowActive(editor));
+
+    editor->setExpression("id+1+id+\"text\"");
+
+    QTextCursor cursor = editor->textCursor();
+    cursor.setPosition(4);
+
+    QTest::mouseClick(editor->viewport(), Qt::LeftButton, 0, editor->cursorRect(cursor).center());
+
+    QVERIFY2(editor->completer()->popup()->isVisible(), "Completer popup should be visible after clicking a word.");
+    QCOMPARE(editor->completer()->currentCompletion(), QString("testParameter"));
+
+    cursor.setPosition(testParameter->getName().length() + 1);
+
+    QTest::mouseClick(editor->viewport(), Qt::LeftButton, 0, editor->cursorRect(cursor).center());
+
+    QVERIFY2(!editor->completer()->popup()->isVisible(), "Completer popup should not be visible after clicking a constant.");
+
+
+    delete editor;
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_ExpressionEditor::testColorsAreSetWhenWritingText()
 //-----------------------------------------------------------------------------
 void tst_ExpressionEditor::testColorsAreSetWhenWritingText()
@@ -497,19 +546,66 @@ void tst_ExpressionEditor::testReferenceCannotBeEditedInTheMiddleOfTheName()
     editor->setTextCursor(cursor);
 
     QTest::keyClick(editor, Qt::Key_Space);
-
     QCOMPARE(editor->toPlainText(), QString("testParameter"));
     QCOMPARE(editor->getExpression(), QString("id"));
 
     QTest::keyClick(editor, Qt::Key_Delete);
-
     QCOMPARE(editor->toPlainText(), QString("testParameter"));
     QCOMPARE(editor->getExpression(), QString("id"));
 
     QTest::keyClick(editor, Qt::Key_Backspace);
-
     QCOMPARE(editor->toPlainText(), QString("testParameter"));
     QCOMPARE(editor->getExpression(), QString("id"));
+
+    QTest::keyClicks(editor, "for");
+    QCOMPARE(editor->toPlainText(), QString("testParameter"));
+    QCOMPARE(editor->getExpression(), QString("id"));
+
+    QTest::keyClick(editor, Qt::Key_Right);
+    QCOMPARE(editor->textCursor().position(), 5);
+
+    delete editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testRemovingExpression()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testRemovingExpression()
+{
+    QSharedPointer<Component> emptyComponent(new Component());
+
+    ExpressionEditor* editor = createEditorForComponent(emptyComponent);
+    editor->setExpression("8'hff*2");
+
+    QSignalSpy referenceDecreases(editor, SIGNAL(decreaseReference(QString const&)));
+
+    QTextCursor cursor = editor->textCursor();
+    cursor.movePosition(QTextCursor::End);
+    editor->setTextCursor(cursor);
+
+    for (int i = 0; i < 7; i++)
+    {    
+        QTest::keyClick(editor, Qt::Key_Backspace);
+    }
+
+    QCOMPARE(editor->toPlainText(), QString(""));
+    QCOMPARE(editor->getExpression(), QString(""));
+    QCOMPARE(referenceDecreases.count(), 0);
+
+
+    editor->setExpression("2*2+2/2");
+
+    cursor.movePosition(QTextCursor::Start);
+    editor->setTextCursor(cursor);
+
+    for (int i = 0; i < 7; i++)
+    {    
+        QTest::keyClick(editor, Qt::Key_Delete);
+    }
+
+    QCOMPARE(editor->toPlainText(), QString(""));
+    QCOMPARE(editor->getExpression(), QString(""));
+    QCOMPARE(referenceDecreases.count(), 0);
 
     delete editor;
 }
@@ -564,6 +660,139 @@ void tst_ExpressionEditor::testRemovingReference()
 
     QCOMPARE(editor->toPlainText(), QString("estParameter"));
     QCOMPARE(editor->getExpression(), QString("estParameter"));
+
+    delete editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testRemovingReferenceWithBackSpaceAndDelete()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testRemovingReferenceWithBackSpaceAndDelete()
+{
+    QSharedPointer<Parameter> testParameter(new Parameter());
+    testParameter->setName("testParameter");
+    testParameter->setValueId("id");
+    testParameter->setValue("32");
+
+    QList<QSharedPointer<Parameter> > parameters;
+    parameters.append(testParameter);
+
+    QSharedPointer<Component> targetComponent(new Component());
+    targetComponent->setParameters(parameters);
+
+    ExpressionEditor* editor = createEditorForComponent(targetComponent);
+
+    QSignalSpy referenceDecreases(editor, SIGNAL(decreaseReference(QString const&)));
+
+    editor->setExpression("id");
+
+    QTextCursor cursor = editor->textCursor();
+    cursor.movePosition(QTextCursor::End);
+    editor->setTextCursor(cursor);
+
+    const int numberOfCharacters = QString("testParameter").length();
+    for (int i = 0; i < numberOfCharacters; i++)
+    {    
+        QTest::keyClick(editor, Qt::Key_Backspace);
+    }
+    
+    QCOMPARE(editor->toPlainText(), QString(""));
+    QCOMPARE(editor->getExpression(), QString(""));
+
+    QCOMPARE(referenceDecreases.first().first().toString(), QString("id"));
+
+
+    referenceDecreases.clear();
+    editor->setExpression("id");
+
+    cursor.movePosition(QTextCursor::Start);
+    editor->setTextCursor(cursor);
+
+    for (int i = 0; i < numberOfCharacters; i++)
+    {    
+        QTest::keyClick(editor, Qt::Key_Delete);
+    }
+
+    QCOMPARE(editor->toPlainText(), QString(""));
+    QCOMPARE(editor->getExpression(), QString(""));
+
+    QCOMPARE(referenceDecreases.first().first().toString(), QString("id"));
+
+    delete editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testReplaceReferenceWithAnother()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testReplaceReferenceWithAnother()
+{
+    QSharedPointer<Parameter> testParameter(new Parameter());
+    testParameter->setName("testParameter");
+    testParameter->setValueId("id");
+    testParameter->setValue("32");
+
+    QSharedPointer<Parameter> otherParameter(new Parameter());
+    otherParameter->setName("testParameter2");
+    otherParameter->setValueId("otherId");
+    otherParameter->setValue("32");
+
+    QList<QSharedPointer<Parameter> > parameters;
+    parameters.append(testParameter);
+    parameters.append(otherParameter);
+
+    QSharedPointer<Component> targetComponent(new Component());
+    targetComponent->setParameters(parameters);
+
+    ExpressionEditor* editor = createEditorForComponent(targetComponent);
+
+    QSignalSpy referenceIncreases(editor, SIGNAL(increaseReference(QString const&)));
+    QSignalSpy referenceDecreases(editor, SIGNAL(decreaseReference(QString const&)));
+
+    editor->setExpression("id");
+    
+    QTextCursor cursor = editor->textCursor();
+    cursor.movePosition(QTextCursor::End);
+    editor->setTextCursor(cursor);
+
+    QTest::keyClicks(editor, "2");
+
+    QVERIFY(editor->completer()->popup()->isVisible());
+    QTest::keyClick(editor->completer()->popup(), Qt::Key_Down);
+    QTest::keyClick(editor->completer()->popup(), Qt::Key_Return);
+
+    QCOMPARE(editor->toPlainText(), QString("testParameter2"));
+    QCOMPARE(editor->getExpression(), QString("otherId"));
+
+    QCOMPARE(referenceIncreases.first().first().toString(), QString("otherId"));
+    QCOMPARE(referenceDecreases.first().first().toString(), QString("id"));
+
+    delete editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testCannotRemoveIfActiveSelection()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testCannotRemoveIfActiveSelection()
+{
+    QSharedPointer<Component> emptyComponent(new Component());
+
+    ExpressionEditor* editor = createEditorForComponent(emptyComponent);
+
+    editor->setExpression("8'hff");
+
+    QTextCursor cursor = editor->textCursor();
+    cursor.movePosition(QTextCursor::Start, QTextCursor::MoveAnchor);
+    cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
+    editor->setTextCursor(cursor);
+
+    QVERIFY(cursor.hasSelection());
+
+    QTest::keyClick(editor, Qt::Key_Delete);
+    QTest::keyClick(editor, Qt::Key_Backspace);
+    QTest::keyClicks(editor, "abc");
+
+    QCOMPARE(editor->toPlainText(), QString("8'hff"));
+    QCOMPARE(editor->getExpression(), QString("8'hff"));
 
     delete editor;
 }

@@ -30,6 +30,7 @@ ExpressionEditor::ExpressionEditor(QSharedPointer<ParameterFinder> parameterFind
     : QTextEdit(parent), nameCompleter_(0), parameterFinder_(parameterFinder)
 {
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setTabChangesFocus(true);
 
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(onCursorPositionChanged()), Qt::UniqueConnection);
@@ -40,7 +41,10 @@ ExpressionEditor::ExpressionEditor(QSharedPointer<ParameterFinder> parameterFind
 //-----------------------------------------------------------------------------
 ExpressionEditor::~ExpressionEditor()
 {
-
+    if (nameCompleter_)
+    {
+        nameCompleter_->popup()->hide();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -109,21 +113,21 @@ void ExpressionEditor::setExpression(QString const& expression)
 void ExpressionEditor::finishEditingCurrentWord()
 {
     QString finishedWord = currentWord();
-    QString finishedTerm = nthWordIn(expression_, currentWordIndex());
+    QString currentTerm = nthWordIn(currentWordIndex(), expression_);
 
-    bool termIsReference = isReference(finishedTerm);
-    bool referenceHasChanged = !termIsReference || parameterFinder_->nameForId(finishedTerm) != finishedWord;
+    bool termIsReference = isReference(currentTerm);
+    bool shouldChangeTerm = !termIsReference || parameterFinder_->nameForId(currentTerm) != finishedWord;
 
-    if (referenceHasChanged)
+    if (shouldChangeTerm)
     {
-        expression_ = replaceNthWordWith(expression_, currentWordIndex(), finishedWord);
+        expression_ = replaceNthWordWith(currentWordIndex(), expression_, finishedWord);
 
         if (!finishedWord.isEmpty() && !wordIsConstant(finishedWord))
         {
             colorCurrentWordRed();
         }
 
-        emit decreaseReference(finishedTerm);
+        emit decreaseReference(currentTerm);
     }
 }
 
@@ -132,35 +136,34 @@ void ExpressionEditor::finishEditingCurrentWord()
 //-----------------------------------------------------------------------------
 void ExpressionEditor::keyPressEvent(QKeyEvent* keyEvent)
 {
-    if (keyEvent->key() == Qt::Key_Return)
+    if (editingNotAllowed(keyEvent))
     {
         QWidget::keyPressEvent(keyEvent);
         return;
     }
 
-    QString input = keyEvent->text();
-    if (keyEvent->key() == Qt::Key_Delete || keyEvent->key() == Qt::Key_Backspace || isWordDelimiter(input))
+    if (removesLastCharacterOfWord(keyEvent))
     {
-        if (isReference(nthWordIn(expression_, currentWordIndex())))
-        {
-            int cursorPosition = textCursor().position();
-            if (cursorPosition != startOfCurrentWord() && cursorPosition != endOfCurrentWord())
-            {
-                return;
-            }
-        }
+        removeTermUnderCursor();
+    }
+    else if (removesOperatorBeforeWord(keyEvent))
+    {
+        removeOperatorBeforeCursorInExpression();
+    }
+    else if (removesOperatorAfterCursor(keyEvent))
+    {
+        removeOperatorAfterCursorInExpression();
+    }
+    else if (isWordDelimiter(keyEvent->text()))
+    {
+        finishEditingCurrentWord();
 
-        if (isWordDelimiter(input))
-        {
-            finishEditingCurrentWord();
+        QString termAndDelimiter = nthWordIn(currentWordIndex(), expression_) + keyEvent->text();
+        expression_ = replaceNthWordWith(currentWordIndex(), expression_, termAndDelimiter);
 
-            QString termAndDelimiter = nthWordIn(expression_, currentWordIndex()) + input;
-            expression_ = replaceNthWordWith(expression_, currentWordIndex(), termAndDelimiter);
-
-            QTextCursor cursor = textCursor();
-            cursor.setCharFormat(colorFormat("black"));
-            setTextCursor(cursor);
-        }
+        QTextCursor cursor = textCursor();
+        cursor.setCharFormat(colorFormat("black"));
+        setTextCursor(cursor);
     }
 
     QTextEdit::keyPressEvent(keyEvent);
@@ -197,30 +200,38 @@ void ExpressionEditor::complete(QModelIndex const& index)
         parameterId = parameterName;
     }
 
-    expression_ = replaceNthWordWith(expression_, currentWordIndex(), parameterId);
+    QString previousTerm = nthWordIn(currentWordIndex(), expression_);
+    if (isReference(previousTerm))
+    {
+        emit decreaseReference(previousTerm);
+    }
+
+    expression_ = replaceNthWordWith(currentWordIndex(), expression_, parameterId);
 
     QTextCursor cursor = textCursor();
     cursor.setPosition(startOfCurrentWord());
-    cursor.movePosition(QTextCursor::StartOfWord, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
     cursor.insertText(parameterName, colorFormat("darkGreen"));
 
-    disconnect(this, SIGNAL(cursorPositionChanged()), this, SLOT(onCursorPositionChanged()));
     cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::MoveAnchor);
     setTextCursor(cursor);
-    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(onCursorPositionChanged()), Qt::UniqueConnection);
 
     emit(increaseReference(parameterId));
 }
 
 //-----------------------------------------------------------------------------
-// Function: ExpressionEditor::onTextChanged()
+// Function: ExpressionEditor::onCursorPositionChanged()
 //-----------------------------------------------------------------------------
 void ExpressionEditor::onCursorPositionChanged()
 {
     if(nameCompleter_)
     {
         nameCompleter_->setCompletionPrefix(currentWord());
+
+        if (!currentWord().isEmpty())
+        {
+            nameCompleter_->complete();
+        }
     }
 }
 
@@ -284,6 +295,87 @@ QTextCharFormat ExpressionEditor::colorFormat(QString const& textColor) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ExpressionEditor::editingNotAllowed()
+//-----------------------------------------------------------------------------
+bool ExpressionEditor::editingNotAllowed(QKeyEvent* keyEvent)
+{
+    return keyEvent->key() == Qt::Key_Return ||
+        textCursor().hasSelection() ||
+        ((keyEvent->key() == Qt::Key_Delete || keyEvent->key() == Qt::Key_Backspace ||
+        !keyEvent->text().isEmpty()) && editingMiddleOfReference());
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::editingMiddleOfReference()
+//-----------------------------------------------------------------------------
+bool ExpressionEditor::editingMiddleOfReference() const
+{
+    int cursorPosition = textCursor().position();
+
+    return isReference(nthWordIn( currentWordIndex(), expression_)) &&
+        cursorPosition != startOfCurrentWord() && cursorPosition != endOfCurrentWord();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::removesLastCharacterOfWord()
+//-----------------------------------------------------------------------------
+bool ExpressionEditor::removesLastCharacterOfWord(QKeyEvent* keyEvent)
+{
+    int cursorPosition = textCursor().position();
+    return ((keyEvent->key() == Qt::Key_Delete && cursorPosition == startOfCurrentWord()) ||
+        (keyEvent->key() == Qt::Key_Backspace && cursorPosition == endOfCurrentWord())) &&
+        currentWordLength() == 1;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::removeTermUnderCursor()
+//-----------------------------------------------------------------------------
+void ExpressionEditor::removeTermUnderCursor()
+{
+    QString removedReference = nthWordIn(currentWordIndex(), expression_);
+    expression_ = replaceNthWordWith(currentWordIndex(), expression_, "");
+
+    if (isReference(removedReference))
+    {
+            emit decreaseReference(removedReference);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::removesOperatorBeforeWord()
+//-----------------------------------------------------------------------------
+bool ExpressionEditor::removesOperatorBeforeWord(QKeyEvent* keyEvent)
+{
+    return keyEvent->key() == Qt::Key_Backspace && textCursor().position() == startOfCurrentWord();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::removeOperatorBeforeCursorInExpression()
+//-----------------------------------------------------------------------------
+void ExpressionEditor::removeOperatorBeforeCursorInExpression()
+{
+    int position = indexOfNthWord(currentWordIndex(), expression_);
+    expression_.remove(position - 1, 1);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::removesOperatorAfterCursor()
+//-----------------------------------------------------------------------------
+bool ExpressionEditor::removesOperatorAfterCursor(QKeyEvent* keyEvent)
+{
+    return keyEvent->key() == Qt::Key_Delete && textCursor().position() == endOfCurrentWord();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::removeOperatorAfterCursorInExpression()
+//-----------------------------------------------------------------------------
+void ExpressionEditor::removeOperatorAfterCursorInExpression()
+{
+    int position = indexOfNthWord(currentWordIndex() + 1, expression_);
+    expression_.remove(position - 1, 1);
+}
+
+//-----------------------------------------------------------------------------
 // Function: ExpressionEditor::currentWord()
 //-----------------------------------------------------------------------------
 QString ExpressionEditor::currentWord() const
@@ -333,29 +425,19 @@ int ExpressionEditor::currentWordIndex() const
 //-----------------------------------------------------------------------------
 // Function: ExpressionEditor::replaceNthWordWith()
 //-----------------------------------------------------------------------------
-QString ExpressionEditor::replaceNthWordWith(QString const& oldText, int n, QString const& after) const
+QString ExpressionEditor::replaceNthWordWith(int n, QString const& oldText, QString const& after) const
 {
-    int startIndex = 0;
-    for (int i = 0; i < n; i++)
-    {
-        startIndex = oldText.indexOf(wordDelimiter(), startIndex) + 1;
-    }
-
     QString replaced = oldText;
-    replaced.replace(startIndex, nthWordIn(oldText, n).length(), after);
+    replaced.replace(indexOfNthWord(n, oldText), nthWordIn(n, oldText).length(), after);
     return replaced;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ExpressionEditor::nthWordIn()
 //-----------------------------------------------------------------------------
-QString ExpressionEditor::nthWordIn(QString const& text, int n) const
+QString ExpressionEditor::nthWordIn(int n, QString const& text) const
 {
-    int startIndex = 0;
-    for (int i = 0; i < n; i++)
-    {
-        startIndex = text.indexOf(wordDelimiter(), startIndex) + 1;
-    }
+    int startIndex = indexOfNthWord(n, text);
 
     int endIndex = text.indexOf(wordDelimiter(), startIndex);
     if (endIndex == -1)
@@ -365,6 +447,20 @@ QString ExpressionEditor::nthWordIn(QString const& text, int n) const
 
     int wordLength = endIndex - startIndex;
     return text.mid(startIndex, wordLength);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::indexOfNthWord()
+//-----------------------------------------------------------------------------
+int ExpressionEditor::indexOfNthWord(int n, QString const& text) const
+{
+    int startIndex = 0;
+    for (int i = 0; i < n; i++)
+    {
+        startIndex = text.indexOf(wordDelimiter(), startIndex) + 1;
+    }
+
+    return startIndex;
 }
 
 //-----------------------------------------------------------------------------
