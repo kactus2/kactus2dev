@@ -917,6 +917,12 @@
     <Filter Include="Header Files\editors\ComponentEditor\referenceCounter">
       <UniqueIdentifier>{28fdf3eb-4df2-404e-bc43-e27180093cb0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\parameterReferenceTree">
+      <UniqueIdentifier>{249fcb85-c022-4690-a4c2-4a3f70792a22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\parameterReferenceTree">
+      <UniqueIdentifier>{0ff10db8-2913-41a7-87d9-036f51058cbc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3924,7 +3930,14 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_CompleterPopupTable.cpp">
       <Filter>Generated Files</Filter>
-    </ClCompile>  </ItemGroup>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\parameterReferenceTree\ParameterReferenceTree.cpp">
+      <Filter>Source Files\editors\ComponentEditor\parameterReferenceTree</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ParameterReferenceTree.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+  </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
   </ItemGroup>
@@ -5391,6 +5404,9 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\common\CompleterPopupTable.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\parameterReferenceTree\ParameterReferenceTree.h">
+      <Filter>Header Files\editors\ComponentEditor\parameterReferenceTree</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\common\ParameterCompleter.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>

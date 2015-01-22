@@ -341,7 +341,7 @@ void Parameter::setValueId(QString const& id)
 //-----------------------------------------------------------------------------
 int Parameter::getUsageCount() const
 {
-    return attributes_.value("usage count", "0").toInt();
+    return attributes_.value("usageCount", "0").toInt();
 }
 
 //-----------------------------------------------------------------------------
@@ -349,7 +349,7 @@ int Parameter::getUsageCount() const
 //-----------------------------------------------------------------------------
 void Parameter::increaseUsageCount()
 {
-    attributes_.insert("usage count", QString::number(getUsageCount() + 1));
+    attributes_.insert("usageCount", QString::number(getUsageCount() + 1));
 }
 
 //-----------------------------------------------------------------------------
@@ -359,12 +359,12 @@ void Parameter::decreaseUsageCount()
 {
     if (getUsageCount() < 2)
     {
-        attributes_.remove("usage count");
+        attributes_.remove("usageCount");
     }
 
     else
     {
-        attributes_.insert("usage count", QString::number(getUsageCount() - 1));
+        attributes_.insert("usageCount", QString::number(getUsageCount() - 1));
     }
 }
 

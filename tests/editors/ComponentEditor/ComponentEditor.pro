@@ -17,4 +17,5 @@ SUBDIRS += modelParameters/modelParameters.pro \
 		common/tst_SystemVerilogExpressionParser.pro \
 		common/tst_IPXactSystemVerilogParser.pro \
 		common/tst_ExpressionEditor.pro \
-		common/tst_ParameterCompleter.pro
+		common/tst_ParameterCompleter.pro \
+		parameterReferenceTree/tst_ParameterReferenceTree.pro

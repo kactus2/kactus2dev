@@ -584,7 +584,8 @@ HEADERS += ./editors/ComponentEditor/common/CompleterPopupTable.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
+    ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.h
 SOURCES += ./editors/ComponentEditor/common/ExpressionEditor.cpp \
     ./editors/ComponentEditor/common/ParameterCompleter.cpp \
     ./editors/ComponentEditor/common/CompleterPopupTable.cpp \
@@ -1123,5 +1124,6 @@ SOURCES += ./editors/ComponentEditor/common/ExpressionEditor.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
+    ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.cpp
 RESOURCES += kactus.qrc
