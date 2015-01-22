@@ -833,7 +833,7 @@ void MainWindow::setupActions()
 	actProtect_ = new QAction(QIcon(":/icons/common/graphics/protection-unlocked.png"), tr("Unlocked"), this);
 	actProtect_->setCheckable(true);
 	actProtect_->setEnabled(false);
-	actProtect_->setShortcut(QKeySequence("Ctrl+Space"));
+	actProtect_->setShortcut(QKeySequence("Ctrl+L"));
 	connect(actProtect_, SIGNAL(triggered(bool)), this, SLOT(changeProtection(bool)));
 
 	// Initialize the action to open Kactus2 settings.
