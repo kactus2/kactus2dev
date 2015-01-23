@@ -261,12 +261,14 @@ void MakefileGenerator::writeObjectList(MakefileParser::MakeFileData &mfd, QText
 //-----------------------------------------------------------------------------
 void MakefileGenerator::writeExeBuild(QTextStream& outStream) const
 {
-    //Rather straight forward: write constant build rule and a cleaner rule.
+    // Rather straight forward: write constant build rule and a cleaner rule.
     outStream << "$(ENAME): $(OBJ)" << endl;
     outStream << "\t$(EBUILDER) -o bin_$(ENAME) $(OBJ) $(EFLAGS)"
         << endl << endl;
 
-    outStream << "clean:\n\trm -f $(ODIR)/*" << endl;
+    // Delete all known object files. May leave renamed files undeleted, but is more secure than deleting all
+    // content of the object directory.
+    outStream << "clean:\n\trm -f $(OBJ);" << endl;
 }
 
 //-----------------------------------------------------------------------------
