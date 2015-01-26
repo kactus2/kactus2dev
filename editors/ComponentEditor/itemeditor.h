@@ -123,6 +123,13 @@ signals:
      */
     void decreaseReferences(QString id);
 
+    /*!
+     *  Open the reference tree of the selected parameter.
+     *
+     *      @param [in] id      Id of the selected parameter.
+     */
+    void openReferenceTree(QString const& id) const;
+
 protected:
 
 	/*! \brief Get the the component pointer from the base-class.

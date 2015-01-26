@@ -39,7 +39,7 @@ dimensionExpression_()
 		}
 		else if (tempNode.nodeName() == QString("spirit:addressOffset")) {
 			addressOffset_ = tempNode.childNodes().at(0).nodeValue();
-			addressOffset_ = XmlUtils::removeWhiteSpace(addressOffset_);
+			//addressOffset_ = XmlUtils::removeWhiteSpace(addressOffset_);
 		}
 		else if (tempNode.nodeName() == QString("spirit:alternateRegisters")) {
 

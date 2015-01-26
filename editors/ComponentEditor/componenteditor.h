@@ -22,6 +22,7 @@
 #include <editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
 #include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <QSharedPointer>
 #include <QSplitter>
@@ -127,6 +128,13 @@ public slots:
 	 */
 	void setRowVisibility(QSettings& settings);
     
+    /*!
+     *  Open the reference tree of the selected parameter.
+     *
+     *      @param [in] parameterId     The id of the parameter.
+     */
+    void openReferenceTree(QString const& parameterId);
+
 private slots:
 
 	/*! This slot is called when an item is selected in the navigation tree.
@@ -236,8 +244,14 @@ private:
 	//! The slot to display the visualizers in.
 	ComponentEditorGroupSlot visualizerSlot_;
 
+    //! Finds the specified parameter inside the component.
+    QSharedPointer<ParameterFinder> parameterFinder_;
+
     //! The counter that increases the amount of references to parameters.
     QSharedPointer<ReferenceCounter> referenceCounter_;
+
+    //! The expression formatter used to change ids to names in expressions.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 };
 
 #endif // COMPONENTEDITOR_H

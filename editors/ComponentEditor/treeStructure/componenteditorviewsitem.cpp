@@ -29,6 +29,9 @@ views_(component->getViews())
 
         viewItem->setReferenceCounter(referenceCounter);
 
+        connect(viewItem.data(), SIGNAL(openReferenceTree(QString)),
+            this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+
 		childItems_.append(viewItem);
 	}
 }
@@ -70,12 +73,16 @@ ItemEditor* ComponentEditorViewsItem::editor() {
 	return editor_;
 }
 
-void ComponentEditorViewsItem::createChild( int index ) {
+void ComponentEditorViewsItem::createChild( int index )
+{
 	QSharedPointer<ComponentEditorViewItem> viewItem(
 		new ComponentEditorViewItem(views_.at(index), model_, libHandler_, component_, this));
 	viewItem->setLocked(locked_);
 
     viewItem->setReferenceCounter(referenceCounter_);
+
+    connect(viewItem.data(), SIGNAL(openReferenceTree(QString)),
+        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
 
 	childItems_.insert(index, viewItem);
 }

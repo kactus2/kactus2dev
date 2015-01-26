@@ -127,3 +127,19 @@ int ModelParameterDelegate::arrayOffsetColumn() const
 {
     return ModelParameterColumns::ARRAY_OFFSET;
 }
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameterDelegate::usageCountColumn()
+//-----------------------------------------------------------------------------
+int ModelParameterDelegate::usageCountColumn() const
+{
+    return ModelParameterColumns::USAGE_COUNT;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameterDelegate::valueIdColumn()
+//-----------------------------------------------------------------------------
+int ModelParameterDelegate::valueIdColumn() const
+{
+    return ModelParameterColumns::VALUEID;
+}

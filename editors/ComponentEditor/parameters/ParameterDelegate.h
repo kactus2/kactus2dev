@@ -92,6 +92,13 @@ signals:
      */
     void decreaseReferences(QString id);
 
+    /*!
+     *  Open the reference tree of the selected parameter.
+     *
+     *      @param [in] id      The id of the parameter.
+     */
+    void openReferenceTree(QString const& id) const;
+
 protected:
 
     /*!
@@ -156,6 +163,20 @@ protected:
      *      @return     The column index for array offset.
      */
     virtual int arrayOffsetColumn() const;
+
+    /*!
+     *  Gets the column for usage count.
+     *
+     *      @return     The column index for usage count.
+     */
+    virtual int usageCountColumn() const;
+
+    /*!
+     *  Gets the column for the unique id.
+     *
+     *      @return     The column index for id.
+     */
+    virtual int valueIdColumn() const;
 
     /*!
      *  Finds the name of the choice on the row identified by the given index.

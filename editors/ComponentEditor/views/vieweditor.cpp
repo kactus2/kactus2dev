@@ -60,6 +60,9 @@ hierarchyRef_(view, component, libHandler, &stack_) {
     connect(&parameters_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
+    connect(&parameters_, SIGNAL(openReferenceTree(QString)),
+        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+
 	connect(&nameEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&envIdentifier_, SIGNAL(contentChanged()),

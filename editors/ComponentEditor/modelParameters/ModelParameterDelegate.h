@@ -117,6 +117,20 @@ protected:
      */
     virtual int arrayOffsetColumn() const;
 
+    /*!
+     *  Gets the column index for usage count.
+     *
+     *      @return     The column index for usage count.
+     */
+    virtual int usageCountColumn() const;
+
+    /*!
+     *  Gets the column index for the unique id.
+     *
+     *      @return     The column index for id.
+     */
+    virtual int valueIdColumn() const;
+
 private:
 
 	//! No copying

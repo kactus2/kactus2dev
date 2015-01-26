@@ -10,12 +10,14 @@
 
 #include <editors/ComponentEditor/itemeditor.h>
 
-#include <common/widgets/nameGroupEditor/namegroupeditor.h>
-#include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 #include "envidentifiereditor.h"
 #include "flatviewgeneraltab.h"
-#include <editors/ComponentEditor/fileBuilders/filebuilderseditor.h>
 #include "hierarchyrefwidget.h"
+
+#include <common/widgets/nameGroupEditor/namegroupeditor.h>
+#include <common/widgets/ParameterGroupBox/parametergroupbox.h>
+#include <editors/ComponentEditor/fileBuilders/filebuilderseditor.h>
+
 #include <IPXACTmodels/view.h>
 
 #include <QComboBox>

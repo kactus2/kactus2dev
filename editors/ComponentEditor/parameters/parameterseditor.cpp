@@ -85,6 +85,9 @@ proxy_(0)
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(view_.itemDelegate(), SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    
+    connect(view_.itemDelegate(), SIGNAL(openReferenceTree(QString)),
+        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
 
 	// set proxy to do the sorting automatically
 	proxy_ = new QSortFilterProxyModel(this);

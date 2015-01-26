@@ -75,6 +75,9 @@ handler_(handler)
     connect(view_.itemDelegate(), SIGNAL(decreaseReferences(QString)), 
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
+    //connect(view_.itemDelegate(), SIGNAL(openReferenceTree(QString)),
+    //    this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+
 	// set source model for proxy
 	proxy_.setSourceModel(&model_);
 

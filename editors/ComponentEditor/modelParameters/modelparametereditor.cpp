@@ -86,6 +86,9 @@ proxy_(this)
     connect(view_.itemDelegate(), SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
+    connect(view_.itemDelegate(), SIGNAL(openReferenceTree(QString)),
+        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 

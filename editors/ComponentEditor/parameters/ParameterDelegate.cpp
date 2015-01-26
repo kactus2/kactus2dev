@@ -69,6 +69,16 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     {
         return createExpressionEditor(parent);
     }
+    
+    else if (index.column() == usageCountColumn())
+    {
+        QModelIndex valueIdIndex = index.sibling(index.row(), valueIdColumn());
+        QString targetId = valueIdIndex.data(Qt::DisplayRole).toString();
+        emit(openReferenceTree(targetId));
+
+        return 0;
+    }
+
     else
     {
         return QStyledItemDelegate::createEditor(parent, option, index);
@@ -108,7 +118,8 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
         ExpressionEditor* expressionEditor = qobject_cast<ExpressionEditor*>(editor);
         expressionEditor->setExpression(text);
     }
-	else 
+
+	else if (index.column() != usageCountColumn())
     {
         // use the line edit for other columns
         QString text = index.model()->data(index, Qt::EditRole).toString();
@@ -148,6 +159,12 @@ void ParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
         expressionEditor->finishEditingCurrentWord();
         model->setData(index, expressionEditor->getExpression(), Qt::EditRole);
     }
+
+    else if (index.column() == usageCountColumn())
+    {
+        Q_ASSERT(false);
+    }
+
 	else 
     {
         QStyledItemDelegate::setModelData(editor, model, index);
@@ -244,6 +261,22 @@ int ParameterDelegate::descriptionColumn() const
 int ParameterDelegate::arrayOffsetColumn() const
 {
     return ParameterColumns::ARRAY_OFFSET;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::usageCountColumn()
+//-----------------------------------------------------------------------------
+int ParameterDelegate::usageCountColumn() const
+{
+    return ParameterColumns::USAGE_COUNT;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::valueIdColumn()
+//-----------------------------------------------------------------------------
+int ParameterDelegate::valueIdColumn() const
+{
+    return ParameterColumns::VALUEID;
 }
 
 //-----------------------------------------------------------------------------

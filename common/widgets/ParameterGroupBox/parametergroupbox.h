@@ -87,6 +87,13 @@ signals:
      */
     void decreaseReferences(QString id);
 
+    /*!
+     *  Open the reference tree of the parameter with the id.
+     *
+     *      @param [in] id      The id of the parameter.
+     */
+    void openReferenceTree(QString const& id) const;
+
 private:
 	//! \brief No copying
 	ParameterGroupBox(const ParameterGroupBox& other);

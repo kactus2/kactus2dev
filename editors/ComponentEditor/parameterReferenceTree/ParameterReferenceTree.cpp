@@ -21,19 +21,24 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::ParameterReferenceTree()
 //-----------------------------------------------------------------------------
-ParameterReferenceTree::ParameterReferenceTree(QSharedPointer<Component> component, 
-    QString const& targetId, QWidget *parent):
+ParameterReferenceTree::ParameterReferenceTree(QSharedPointer<Component> component,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QString const& targetID, QWidget *parent /* = 0 */):
 QTreeWidget(parent),
 component_(component),
-targetID_(targetId)
+targetID_(targetID),
+expressionFormatter_(expressionFormatter)
 {
     QStringList labels;
     labels << "Reference tree" << "Referenced in expression";
     setHeaderLabels(labels);
 
     setColumnCount(COLUMN_COUNT);
+    uniformRowHeights();
 
     setupTree();
+
+    //resizeColumnToContents(ITEM_NAME);
+    setColumnWidth(ITEM_NAME, 200);
 }
 
 //-----------------------------------------------------------------------------
@@ -74,6 +79,11 @@ void ParameterReferenceTree::setupTree()
         if (referenceExistsInPorts())
         {
             createReferencesForPorts();
+        }
+
+        if (topLevelItemCount() == 0)
+        {
+            createTopItem("No references found.");
         }
     }
     else
@@ -337,33 +347,59 @@ void ParameterReferenceTree::createReferencesForMemoryMaps()
     {
         if (referenceExistsInSingleMemoryMap(memoryMap))
         {
-            QTreeWidgetItem* memoryMapTreeItem = createMiddleItem(memoryMap->getName(), topMemoryMapItem);
+            createReferencesForSingleMemoryMap(memoryMap, topMemoryMapItem);
+        }
+    }
+}
 
-            foreach (QSharedPointer<MemoryMapItem> memorymapItem, memoryMap->getItems())
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::createReferencesForSingleMemoryMap()
+//-----------------------------------------------------------------------------
+void ParameterReferenceTree::createReferencesForSingleMemoryMap(QSharedPointer<MemoryMap> memoryMap,
+    QTreeWidgetItem* topMemoryMapItem)
+{
+    QTreeWidgetItem* memoryMapTreeItem = createMiddleItem(memoryMap->getName(), topMemoryMapItem);
+
+    QTreeWidgetItem* middleAddressBlocksItem = createMiddleItem("Address blocks", memoryMapTreeItem);
+
+    colourItemGrey(middleAddressBlocksItem);
+
+    foreach (QSharedPointer<MemoryMapItem> memorymapItem, memoryMap->getItems())
+    {
+        QSharedPointer<AddressBlock> addressBlock = memorymapItem.dynamicCast<AddressBlock>();
+
+        if (addressBlock)
+        {
+            if (referenceExistsInAddressBlock(addressBlock))
             {
-                QSharedPointer<AddressBlock> addressBlock = memorymapItem.dynamicCast<AddressBlock>();
+                createReferencesForSingleAddressBlock(addressBlock, middleAddressBlocksItem);
 
-                if (addressBlock)
-                {
-                    if (referenceExistsInAddressBlock(addressBlock))
-                    {
-                        QTreeWidgetItem* addressBlockItem = createMiddleItem(addressBlock->getName(),
-                            memoryMapTreeItem);
+            }
+        }
+    }
+}
 
-                        foreach (QSharedPointer<RegisterModel> registerModel,
-                            addressBlock->getRegisterData())
-                        {
-                            QSharedPointer<Register> targetRegister = registerModel.dynamicCast<Register>();
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::createReferencesForSingleAddressBlock()
+//-----------------------------------------------------------------------------
+void ParameterReferenceTree::createReferencesForSingleAddressBlock(QSharedPointer<AddressBlock> addressBlock,
+    QTreeWidgetItem* middleAddressBlocksItem)
+{
+    QTreeWidgetItem* addressBlockItem = createMiddleItem(addressBlock->getName(),
+        middleAddressBlocksItem);
 
-                            if (targetRegister)
-                            {
-                                QTreeWidgetItem* registerItem = createMiddleItem(targetRegister->getName(),
-                                    addressBlockItem);
-                                createItemsForRegister(targetRegister, registerItem);
-                            }
-                        }
-                    }
-                }
+    foreach (QSharedPointer<RegisterModel> registerModel,
+        addressBlock->getRegisterData())
+    {
+        QSharedPointer<Register> targetRegister = registerModel.dynamicCast<Register>();
+
+        if (targetRegister)
+        {
+            if (registerHasReference(targetRegister))
+            {
+                QTreeWidgetItem* registerItem = createMiddleItem(targetRegister->getName(),
+                    addressBlockItem);
+                createItemsForRegister(targetRegister, registerItem);
             }
         }
     }
@@ -378,6 +414,8 @@ QTreeWidgetItem* ParameterReferenceTree::createTopItem(QString const& itemName)
     newItem->setText(ITEM_NAME, itemName);
 
     addTopLevelItem(newItem);
+
+    colourItemGrey(newItem);
 
     return newItem;
 }
@@ -470,12 +508,23 @@ void ParameterReferenceTree::createItemsForRegister(QSharedPointer<Register> tar
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterReferenceTree::createReferencingItem()
+// Function: ParameterReferenceTree::createItem()
 //-----------------------------------------------------------------------------
 void ParameterReferenceTree::createItem
     (QString const& itemName, QString const& expression, QTreeWidgetItem* parent)
 {
     QTreeWidgetItem* newItem = new QTreeWidgetItem(parent);
     newItem->setText(ITEM_NAME, itemName);
-    newItem->setText(ITEM_EXPRESSION, expression);
+    newItem->setText(ITEM_EXPRESSION, expressionFormatter_->formatReferringExpression(expression));
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::colourItemGrey()
+//-----------------------------------------------------------------------------
+void ParameterReferenceTree::colourItemGrey(QTreeWidgetItem* item)
+{
+    for (int columnIndex = 0; columnIndex < COLUMN_COUNT; ++columnIndex)
+    {
+        item->setBackgroundColor(columnIndex, QColor(230, 230, 230));
+    }
 }

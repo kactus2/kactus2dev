@@ -7,6 +7,11 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.h
+HEADERS += ../../../../editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.h \
+    ../../../../editors/ComponentEditor/common/ExpressionFormatter.h \
+    ../../../../editors/ComponentEditor/common/ParameterFinder.h \
+    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h
 SOURCES += ./tst_ParameterReferenceTree.cpp \
-    ../../../../editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.cpp
+    ../../../../editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.cpp \
+    ../../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
+    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp

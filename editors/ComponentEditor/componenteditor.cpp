@@ -45,6 +45,10 @@
 #include <editors/ComponentEditor/itemvisualizer.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
 
+#include <editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.h>
+
+#include <QDialog>
+
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -69,8 +73,9 @@ navigationView_(libHandler, *component->getVlnv(), &navigationSplitter_),
 proxy_(this),
 editorSlot_(&editorVisualizerSplitter_),
 visualizerSlot_(&editorVisualizerSplitter_),
-referenceCounter_(new ParameterReferenceCounter
-    (QSharedPointer<ParameterFinder>(new ComponentParameterFinder(component_))))
+parameterFinder_(new ComponentParameterFinder(component_)),
+referenceCounter_(new ParameterReferenceCounter(parameterFinder_)),
+expressionFormatter_(new ExpressionFormatter(parameterFinder_))
 {
     // these can be used when debugging to identify the objects
 	setObjectName(tr("ComponentEditor"));
@@ -644,11 +649,21 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
     hwRoot->addChildItem(QSharedPointer<ComponentEditorChoicesItem>(
         new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, hwRoot)));
 
-    hwRoot->addChildItem(QSharedPointer<ComponentEditorModelParamsItem>(
-        new ComponentEditorModelParamsItem(&navigationModel_, libHandler_, component, hwRoot, referenceCounter_)));
+    QSharedPointer<ComponentEditorModelParamsItem> modelParamsItem(
+        new ComponentEditorModelParamsItem(&navigationModel_, libHandler_, component, hwRoot, referenceCounter_));
 
-    hwRoot->addChildItem(QSharedPointer<ComponentEditorParametersItem>(
-        new ComponentEditorParametersItem(&navigationModel_, libHandler_, component, hwRoot, referenceCounter_)));
+    hwRoot->addChildItem(modelParamsItem);
+
+    connect(modelParamsItem.data(), SIGNAL(openReferenceTree(QString)),
+        this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);
+
+    QSharedPointer<ComponentEditorParametersItem> parametersItem(
+        new ComponentEditorParametersItem(&navigationModel_, libHandler_, component, hwRoot, referenceCounter_));
+
+    hwRoot->addChildItem(parametersItem);
+
+    connect(parametersItem.data(), SIGNAL(openReferenceTree(QString)),
+        this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorMemMapsItem>(
         new ComponentEditorMemMapsItem(&navigationModel_, libHandler_, component, hwRoot)));
@@ -656,8 +671,13 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
     hwRoot->addChildItem(QSharedPointer<ComponentEditorAddrSpacesItem>(
         new ComponentEditorAddrSpacesItem(&navigationModel_, libHandler_, component, hwRoot)));
 
-    hwRoot->addChildItem(QSharedPointer<ComponentEditorViewsItem>(
-        new ComponentEditorViewsItem(&navigationModel_, libHandler_, component, hwRoot, referenceCounter_)));
+    QSharedPointer<ComponentEditorViewsItem> viewsItem(
+        new ComponentEditorViewsItem(&navigationModel_, libHandler_, component, hwRoot, referenceCounter_));
+
+    hwRoot->addChildItem(viewsItem);
+    
+    connect(viewsItem.data(), SIGNAL(openReferenceTree(QString)),
+        this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorSWViewsItem>(
         new ComponentEditorSWViewsItem(&navigationModel_, libHandler_, component, hwRoot)));
@@ -708,8 +728,13 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createSWRootItem(QShare
     swRoot->addChildItem(QSharedPointer<ComponentEditorChoicesItem>(
         new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, swRoot)));
 
-    swRoot->addChildItem(QSharedPointer<ComponentEditorParametersItem>(
-        new ComponentEditorParametersItem(&navigationModel_, libHandler_, component, swRoot, referenceCounter_)));
+    QSharedPointer<ComponentEditorParametersItem> parametersItem(
+        new ComponentEditorParametersItem(&navigationModel_, libHandler_, component, swRoot, referenceCounter_));
+
+    swRoot->addChildItem(parametersItem);
+
+    connect(parametersItem.data(), SIGNAL(openReferenceTree(QString)),
+        this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);
 
     swRoot->addChildItem(QSharedPointer<ComponentEditorSWViewsItem>(
         new ComponentEditorSWViewsItem(&navigationModel_, libHandler_, component, swRoot)));
@@ -825,4 +850,24 @@ void ComponentEditor::setRowVisibility(QSettings& settings)
 	settings.endGroup();
 
 	proxy_.setRowVisibility( hiddenRows );
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: componenteditor::openReferenceTree()
+//-----------------------------------------------------------------------------
+void ComponentEditor::openReferenceTree(QString const& parameterId)
+{
+    QDialog* referenceTreeWindow(new QDialog(this));
+
+    referenceTreeWindow->setWindowTitle("References made to " + parameterFinder_->nameForId(parameterId));
+
+    ParameterReferenceTree* referenceTree(new ParameterReferenceTree(
+        component_, expressionFormatter_, parameterId, referenceTreeWindow));
+
+    QHBoxLayout* treeWindowLayout(new QHBoxLayout);
+    treeWindowLayout->addWidget(referenceTree);
+    referenceTreeWindow->setLayout(treeWindowLayout);
+
+    referenceTreeWindow->show();
 }

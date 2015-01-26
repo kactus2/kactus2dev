@@ -307,3 +307,12 @@ void ComponentEditorItem::connectItemEditorToReferenceCounter()
     connect(editor_, SIGNAL(decreaseReferences(QString)),
         referenceCounter_.data(), SLOT(decreaseReferenceCount(QString)), Qt::UniqueConnection);
 }
+
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::connectReferenceTree()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::connectReferenceTree()
+{
+    connect(editor_, SIGNAL(openReferenceTree(QString)),
+        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+}

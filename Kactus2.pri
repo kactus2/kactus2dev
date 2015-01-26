@@ -7,10 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./editors/ComponentEditor/common/CompleterPopupTable.h \
-    ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
+HEADERS += ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
     ./editors/ComponentEditor/common/ExpressionEditor.h \
-    ./editors/ComponentEditor/common/ParameterCompleter.h \
     ./editors/ComponentEditor/parameters/ComponentParameterModel.h \
     ./common/Global.h \
     ./common/KactusColors.h \
@@ -471,11 +469,15 @@ HEADERS += ./editors/ComponentEditor/common/CompleterPopupTable.h \
     ./editors/ComponentEditor/common/ParameterFinder.h \
     ./editors/ComponentEditor/common/ParameterModelEquations.h \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ./editors/ComponentEditor/common/SystemVerilogSyntax.h \
     ./editors/ComponentEditor/common/ValueFormatter.h \
     ./editors/ComponentEditor/common/AbstractParameterModel.h \
     ./editors/ComponentEditor/common/ComponentParameterFinder.h \
+    ./editors/ComponentEditor/common/CompleterPopupTable.h \
+    ./editors/ComponentEditor/common/ParameterCompleter.h \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
     ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
+    ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.h \
     ./editors/CSourceEditor/CSourceContentMatcher.h \
     ./editors/CSourceEditor/MCAPIDesignerTypes.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
@@ -585,10 +587,8 @@ HEADERS += ./editors/ComponentEditor/common/CompleterPopupTable.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.h
+    ./editors/ComponentEditor/common/ExpressionFormatter.h
 SOURCES += ./editors/ComponentEditor/common/ExpressionEditor.cpp \
-    ./editors/ComponentEditor/common/ParameterCompleter.cpp \
-    ./editors/ComponentEditor/common/CompleterPopupTable.cpp \
     ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ./GeneratedFiles/moc_ComponentParameterModel.cpp \
     ./GeneratedFiles/moc_ExpressionEditor.cpp \
@@ -1015,12 +1015,15 @@ SOURCES += ./editors/ComponentEditor/common/ExpressionEditor.cpp \
     ./editors/ComponentEditor/choices/ChoicesModel.cpp \
     ./editors/ComponentEditor/choices/EnumerationModel.cpp \
     ./editors/ComponentEditor/common/AbstractParameterModel.cpp \
+    ./editors/ComponentEditor/common/CompleterPopupTable.cpp \
     ./editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ./editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ./editors/ComponentEditor/common/ParameterCompleter.cpp \
     ./editors/ComponentEditor/common/ParameterModelEquations.cpp \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./editors/ComponentEditor/common/ValueFormatter.cpp \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.cpp \
+    ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.cpp \
     ./editors/CSourceEditor/CSourceContentMatcher.cpp \
     ./editors/CSourceEditor/CSourceHighlighter.cpp \
     ./editors/CSourceEditor/CSourceTextEdit.cpp \
@@ -1125,5 +1128,5 @@ SOURCES += ./editors/ComponentEditor/common/ExpressionEditor.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.cpp
+    ./editors/ComponentEditor/common/ExpressionFormatter.cpp
 RESOURCES += kactus.qrc

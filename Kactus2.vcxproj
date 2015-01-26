@@ -576,6 +576,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\common\CompleterPopupTable.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ComponentParameterFinder.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ExpressionEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\common\ExpressionFormatter.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ParameterCompleter.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ParameterModelEquations.cpp" />
@@ -1938,6 +1939,7 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp"</Command>
     </CustomBuild>
+    <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatter.h" />
     <ClInclude Include="editors\ComponentEditor\common\ExpressionParser.h" />
     <ClInclude Include="editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
     <ClInclude Include="editors\ComponentEditor\common\ParameterFinder.h" />

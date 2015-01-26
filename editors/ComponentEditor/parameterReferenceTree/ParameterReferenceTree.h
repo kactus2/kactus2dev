@@ -12,14 +12,14 @@
 #ifndef PARAMETERREFERENCETREE_H
 #define PARAMETERREFERENCETREE_H
 
-#include <QTreeWidget>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <IPXACTmodels/component.h>
-
 #include <IPXACTmodels/register.h>
 #include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/memorymap.h>
 
+#include <QTreeWidget>
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
@@ -39,7 +39,8 @@ public:
     };
     
     //! The constructor.
-    ParameterReferenceTree(QSharedPointer<Component> component, QString const& targetID, QWidget *parent = 0);
+    ParameterReferenceTree(QSharedPointer<Component> component,
+        QSharedPointer<ExpressionFormatter> expressionFormatter, QString const& targetID, QWidget *parent = 0);
 
 	//! The destructor.
     ~ParameterReferenceTree();
@@ -163,6 +164,23 @@ private:
     void createReferencesForMemoryMaps();
 
     /*!
+     *  Create the references for a single memory map.
+     *
+     *      @param [in] memoryMap           The memory map.
+     *      @param [in] topMemoryMapItem    The parent tree item of the new memory map tree item.
+     */
+    void createReferencesForSingleMemoryMap(QSharedPointer<MemoryMap> memoryMap, QTreeWidgetItem* topMemoryMapItem);
+
+    /*!
+     *  Create the references for a single address block.
+     *
+     *      @param [in] addressBlock                The address block.
+     *      @param [in] middleAddressBlocksItem     The parent tree item of the new address block tree item.
+     */
+    void createReferencesForSingleAddressBlock(QSharedPointer<AddressBlock> addressBlock,
+        QTreeWidgetItem* middleAddressBlocksItem);
+
+    /*!
      *  Create a tree widget item to the top of the tree.
      *
      *      @param [in] itemName    The name of the upcoming item.
@@ -214,11 +232,21 @@ private:
      */
     void createItem(QString const& itemName, QString const& expression, QTreeWidgetItem* parent);
 
+    /*!
+     *  Colour the selected items background in grey.
+     *
+     *      @param [in] item    The selected item.
+     */
+    void colourItemGrey(QTreeWidgetItem* item);
+
     //! The component in which this id is situated.
     QSharedPointer<Component> component_;
 
     //! The parameter whose references are being searched for.
     QString targetID_;
+
+    //! The formatter for the expressions.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 };
 
 #endif // PARAMETERREFERENCETREE_H

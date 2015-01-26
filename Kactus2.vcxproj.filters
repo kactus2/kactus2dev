@@ -3937,6 +3937,9 @@
     <ClCompile Include="GeneratedFiles\moc_ParameterReferenceTree.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ExpressionFormatter.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5384,7 +5387,8 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\parameters\ParameterEditorHeaderView.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
-    </CustomBuild>    <CustomBuild Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.h">
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.h">
       <Filter>Header Files\editors\ComponentEditor\referenceCounter</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\referenceCounter\ReferenceCounter.h">
@@ -5425,7 +5429,8 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\referenceCounter\ReferenceCounter.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>  </ItemGroup>
+    </CustomBuild>
+  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
       <Filter>Header Files\common\dialogs\listSelectDialog</Filter>
@@ -5728,6 +5733,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\SystemVerilogSyntax.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatter.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
   </ItemGroup>

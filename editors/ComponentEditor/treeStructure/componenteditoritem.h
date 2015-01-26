@@ -244,11 +244,6 @@ public:
      */
     void setReferenceCounter(QSharedPointer<ReferenceCounter> newReferenceCounter);
 
-    /*!
-     *  Connects this component editor items item editor to its reference counter.
-     */
-    void connectItemEditorToReferenceCounter();
-
 public slots:
 
 	/*! \brief Open the item in an editor.
@@ -329,9 +324,26 @@ signals:
 	*/
 	void selectItem(ComponentEditorItem* item);
 
+    /*!
+     *  Open the reference tree of the selected parameter.
+     *
+     *      @param [in] id   The id of the parameter.
+     */
+    void openReferenceTree(QString const& id) const;
+
 protected:
 
-	//! \brief Pointer to the instance that manages the library.
+    /*!
+     *  Connects this component editor items item editor to its reference counter.
+     */
+    void connectItemEditorToReferenceCounter();
+
+    /*!
+     *  Connect the signals related to a reference tree.
+     */
+    void connectReferenceTree();
+
+    //! \brief Pointer to the instance that manages the library.
 	LibraryInterface* libHandler_;
 
 	//! \brief Pointer to the component being edited.

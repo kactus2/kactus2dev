@@ -54,6 +54,8 @@ ItemEditor* ComponentEditorParametersItem::editor()
 			this, SIGNAL(helpUrlRequested(QString const&)));
 
         connectItemEditorToReferenceCounter();
+
+        connectReferenceTree();
 	}
 	return editor_;
 }
