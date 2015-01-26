@@ -31,7 +31,9 @@ ExpressionEditor::ExpressionEditor(QSharedPointer<ParameterFinder> parameterFind
 {
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    
     setTabChangesFocus(true);
+    setLineWrapMode(QTextEdit::NoWrap);
 
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(onCursorPositionChanged()), Qt::UniqueConnection);
 }
@@ -121,8 +123,12 @@ void ExpressionEditor::finishEditingCurrentWord()
     if (shouldChangeTerm)
     {
         expression_ = replaceNthWordWith(currentWordIndex(), expression_, finishedWord);
-
-        if (!finishedWord.isEmpty() && !wordIsConstant(finishedWord))
+    
+        if (currentWordIsUniqueParameterName())
+        {
+            complete(nameCompleter_->currentIndex());
+        } 
+        else if (!finishedWord.isEmpty() && !wordIsConstant(finishedWord))
         {
             colorCurrentWordRed();
         }
@@ -299,10 +305,11 @@ QTextCharFormat ExpressionEditor::colorFormat(QString const& textColor) const
 //-----------------------------------------------------------------------------
 bool ExpressionEditor::editingNotAllowed(QKeyEvent* keyEvent)
 {
+    bool changesContent = keyEvent->key() == Qt::Key_Delete || keyEvent->key() == Qt::Key_Backspace ||
+        !keyEvent->text().isEmpty(); 
+
     return keyEvent->key() == Qt::Key_Return ||
-        textCursor().hasSelection() ||
-        ((keyEvent->key() == Qt::Key_Delete || keyEvent->key() == Qt::Key_Backspace ||
-        !keyEvent->text().isEmpty()) && editingMiddleOfReference());
+        (changesContent && (textCursor().hasSelection() || editingMiddleOfReference()));
 }
 
 //-----------------------------------------------------------------------------
@@ -337,7 +344,7 @@ void ExpressionEditor::removeTermUnderCursor()
 
     if (isReference(removedReference))
     {
-            emit decreaseReference(removedReference);
+        emit decreaseReference(removedReference);
     }
 }
 
@@ -461,6 +468,15 @@ int ExpressionEditor::indexOfNthWord(int n, QString const& text) const
     }
 
     return startIndex;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::currentWordIsUniqueParameterName()
+//-----------------------------------------------------------------------------
+bool ExpressionEditor::currentWordIsUniqueParameterName()
+{
+    return nameCompleter_ && nameCompleter_->completionCount() == 1 && 
+        currentWord() == nameCompleter_->currentCompletion();
 }
 
 //-----------------------------------------------------------------------------

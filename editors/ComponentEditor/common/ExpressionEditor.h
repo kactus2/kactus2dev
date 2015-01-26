@@ -273,6 +273,13 @@ private:
     int indexOfNthWord(int n, QString const& text) const;
 
     /*!
+     * Checks if the current word is unambiguous name of a parameter.
+     *
+     *      @return True, if the word is unambiguous parameter name, otherwise false.
+     */
+    bool currentWordIsUniqueParameterName();
+
+    /*!
      *  Changes the color of the font for the current word to red.
      */
     void colorCurrentWordRed();

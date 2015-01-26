@@ -52,6 +52,8 @@ private slots:
 
     void testCompletionChangesWithCursor();
 
+    void testAutomaticCompletionForSingleOption();
+
     void testColorsAreSetWhenWritingText();
 
     void testColorsAreSetWhenRemovingText();
@@ -70,6 +72,7 @@ private:
 
     ExpressionEditor* createEditorWithoutResolver();
     ExpressionEditor* createEditorForComponent(QSharedPointer<Component> component);
+
 };
 
 //-----------------------------------------------------------------------------
@@ -413,6 +416,51 @@ void tst_ExpressionEditor::testCompletionChangesWithCursor()
 
     QVERIFY2(!editor->completer()->popup()->isVisible(), "Completer popup should not be visible after clicking a constant.");
 
+    delete editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testAutomaticCompletionForSingleOption(()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testAutomaticCompletionForSingleOption()
+{
+    QSharedPointer<Parameter> testParameter(new Parameter());
+    testParameter->setName("testParameter");
+    testParameter->setValueId("id");
+
+    QSharedPointer<Parameter> nonUniqueParameter(new Parameter());
+    nonUniqueParameter->setName("none");
+    nonUniqueParameter->setValueId("noId");
+
+    QSharedPointer<Parameter> nonUniqueParameter2(new Parameter());
+    nonUniqueParameter->setName("none2");
+    nonUniqueParameter->setValueId("noId2");
+
+    QList<QSharedPointer<Parameter> > parameters;
+    parameters.append(testParameter);
+
+    QSharedPointer<Component> targetComponent(new Component());
+    targetComponent->setParameters(parameters);
+
+    ExpressionEditor* editor = createEditorForComponent(targetComponent);
+
+    QTest::keyClicks(editor, "testParameter ");
+
+    QCOMPARE(editor->getExpression(), QString("id "));
+
+    QTextCursor cursor = editor->textCursor();
+    cursor.movePosition(QTextCursor::PreviousCharacter);
+    QCOMPARE(cursor.charFormat().foreground().color(), QColor("darkGreen"));
+
+    editor->setExpression("");
+
+    QTest::keyClicks(editor, "none ");
+
+    QCOMPARE(editor->getExpression(), QString("none "));
+
+    cursor = editor->textCursor();
+    cursor.movePosition(QTextCursor::PreviousCharacter);
+    QCOMPARE(cursor.charFormat().foreground().color(), QColor("red"));
 
     delete editor;
 }
@@ -461,17 +509,17 @@ void tst_ExpressionEditor::testColorsAreSetWhenWritingText()
 
     QTest::keyClicks(editor, " ");
 
-    QCOMPARE(editor->getExpression(), QString("id+8'hff-testParameter "));
+    QCOMPARE(editor->getExpression(), QString("id+8'hff-id "));
 
     QTextCursor cursor = editor->textCursor();
     cursor.movePosition(QTextCursor::PreviousCharacter);
-    QCOMPARE(cursor.charFormat().foreground().color(), QColor("red"));
+    QCOMPARE(cursor.charFormat().foreground().color(), QColor("darkGreen"));
 
     QTest::keyClicks(editor, "+ \"text\"");
 
     editor->finishEditingCurrentWord();
 
-    QCOMPARE(editor->getExpression(), QString("id+8'hff-testParameter + \"text\""));
+    QCOMPARE(editor->getExpression(), QString("id+8'hff-id + \"text\""));
     QCOMPARE(editor->textCursor().charFormat().foreground().color(), QColor("black"));
 
     delete editor;

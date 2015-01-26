@@ -109,6 +109,13 @@ protected:
      *      @return     The column index for description section.
      */
     virtual int descriptionColumn() const;
+    
+    /*!
+     *  Gets the column index for array size.
+     *
+     *      @return     The column index for array size.
+     */
+    virtual int arraySizeColumn() const;
 
     /*!
      *  Gets the column index for array offset.

@@ -158,6 +158,13 @@ protected:
     virtual int descriptionColumn() const;
 
     /*!
+     *  Gets the column for array size.
+     *
+     *      @return     The column index for array size.
+     */
+    virtual int arraySizeColumn() const;
+
+    /*!
      *  Gets the column for array offset.
      *
      *      @return     The column index for array offset.
@@ -179,6 +186,15 @@ protected:
     virtual int valueIdColumn() const;
 
     /*!
+     *  Checks if the cells in given column accept expression as an input value.
+     *
+     *      @param [in] column   The column to check.
+     *
+     *      @return True, if the cells accept expressions, otherwise false.
+     */
+    virtual bool columnAcceptsExpression(int column) const;
+
+    /*!
      *  Finds the name of the choice on the row identified by the given index.
      *
      *      @param [in] index   The index on whose row to find the choice name.
@@ -186,15 +202,6 @@ protected:
      *      @return The name of the choice on the row.
      */
     QString choiceNameOnRow(QModelIndex const& index) const;
-    
-    /*!
-     *  Finds the selected format on the row identified by the given index.
-     *
-     *      @param [in] index   The index on whose row to find the format.
-     *
-     *      @return The format on the row.
-     */
-    QString formatOnRow(QModelIndex const &index) const;
 
     /*!
      *  Creates an editor for selecting a choice.
@@ -267,7 +274,7 @@ private:
      *      @return The choice selected on the given row.
      */
     QSharedPointer<Choice> findChoice(QModelIndex const& index) const;
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

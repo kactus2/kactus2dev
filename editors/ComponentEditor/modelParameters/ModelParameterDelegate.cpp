@@ -121,6 +121,14 @@ int ModelParameterDelegate::descriptionColumn() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ModelParameterDelegate::arraySizeColumn()
+//-----------------------------------------------------------------------------
+int ModelParameterDelegate::arraySizeColumn() const
+{
+    return ModelParameterColumns::ARRAY_SIZE;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ModelParameterDelegate::arrayOffsetColumn()
 //-----------------------------------------------------------------------------
 int ModelParameterDelegate::arrayOffsetColumn() const

@@ -65,11 +65,10 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     {
         return createResolveSelector(parent);
     }
-    else if (index.column() == valueColumn())
+    else if (columnAcceptsExpression(index.column()))
     {
         return createExpressionEditor(parent);
     }
-    
     else if (index.column() == usageCountColumn())
     {
         QModelIndex valueIdIndex = index.sibling(index.row(), valueIdColumn());
@@ -78,7 +77,6 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
 
         return 0;
     }
-
     else
     {
         return QStyledItemDelegate::createEditor(parent, option, index);
@@ -90,8 +88,6 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
 //-----------------------------------------------------------------------------
 void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const 
 {
-    QComboBox* combo = qobject_cast<QComboBox*>(editor);
-
     if (isIndexForValueUsingChoice(index)) 
     {
         QString text = index.model()->data(index, Qt::DisplayRole).toString();
@@ -104,7 +100,7 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
         }
         combo->setCurrentIndex(comboIndex);
     }
-    else if (combo) 
+    else if (qobject_cast<QComboBox*>(editor)) 
     {
 		QString text = index.data(Qt::DisplayRole).toString();
 		QComboBox* combo = qobject_cast<QComboBox*>(editor);
@@ -112,13 +108,12 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
 		int comboIndex = combo->findText(text);
 		combo->setCurrentIndex(comboIndex);
 	}
-    else if (index.column() == valueColumn())
+    else if (columnAcceptsExpression(index.column()))
     {
         QString text = index.model()->data(index, Qt::EditRole).toString();
         ExpressionEditor* expressionEditor = qobject_cast<ExpressionEditor*>(editor);
         expressionEditor->setExpression(text);
     }
-
 	else if (index.column() != usageCountColumn())
     {
         // use the line edit for other columns
@@ -134,8 +129,6 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
 void ParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, 
     QModelIndex const& index) const 
 {
-    QComboBox* combo = qobject_cast<QComboBox*>(editor);
-
     if (isIndexForValueUsingChoice(index)) 
     {
         QComboBox* combo = qobject_cast<QComboBox*>(editor);
@@ -143,7 +136,7 @@ void ParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
         text = text.left(text.indexOf(':'));
         model->setData(index, text, Qt::EditRole);
     }
-    else if (combo)
+    else if (qobject_cast<QComboBox*>(editor))
     {
         QComboBox* combo = qobject_cast<QComboBox*>(editor);
         QString text = combo->currentText();
@@ -153,18 +146,12 @@ void ParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
         }
         model->setData(index, text, Qt::EditRole);
     }
-    else if (index.column() == valueColumn())
+    else if (columnAcceptsExpression(index.column()))
     {
         ExpressionEditor* expressionEditor = qobject_cast<ExpressionEditor*>(editor);
         expressionEditor->finishEditingCurrentWord();
         model->setData(index, expressionEditor->getExpression(), Qt::EditRole);
     }
-
-    else if (index.column() == usageCountColumn())
-    {
-        Q_ASSERT(false);
-    }
-
 	else 
     {
         QStyledItemDelegate::setModelData(editor, model, index);
@@ -256,6 +243,14 @@ int ParameterDelegate::descriptionColumn() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ParameterDelegate::arraySizeColumn()
+//-----------------------------------------------------------------------------
+int ParameterDelegate::arraySizeColumn() const
+{
+    return ParameterColumns::ARRAY_SIZE;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ParameterDelegate::arrayOffsetColumn()
 //-----------------------------------------------------------------------------
 int ParameterDelegate::arrayOffsetColumn() const
@@ -277,6 +272,15 @@ int ParameterDelegate::usageCountColumn() const
 int ParameterDelegate::valueIdColumn() const
 {
     return ParameterColumns::VALUEID;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::columnAcceptsExpression()
+//-----------------------------------------------------------------------------
+bool ParameterDelegate::columnAcceptsExpression(int column) const
+{
+    return column == valueColumn() || column == bitwidthColumn() ||
+        column == arraySizeColumn() || column == arrayOffsetColumn();
 }
 
 //-----------------------------------------------------------------------------
@@ -310,14 +314,6 @@ QSharedPointer<Choice> ParameterDelegate::findChoice(QModelIndex const& index) c
     }	
     
     return QSharedPointer<Choice>(new Choice(QDomNode()));
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterDelegate::selectedFormat()
-//-----------------------------------------------------------------------------
-QString ParameterDelegate::formatOnRow(QModelIndex const &index) const
-{
-    return index.sibling(index.row(), formatColumn()).data().toString();
 }
 
 //-----------------------------------------------------------------------------
