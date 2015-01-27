@@ -7,17 +7,24 @@
 
 #include "portseditor.h"
 
+#include "portsmodel.h"
 #include "portsdelegate.h"
+
 #include <common/dialogs/NewBusDialog/NewBusDialog.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
-#include <library/LibraryManager/libraryinterface.h>
-#include <IPXACTmodels/vlnv.h>
-#include <IPXACTmodels/component.h>
-
-#include <IPXACTmodels/businterface.h>
-#include <wizards/BusInterfaceWizard/BusInterfaceWizard.h>
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/ParameterCompleter.h>
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+
+#include <library/LibraryManager/libraryinterface.h>
+
+#include <wizards/BusInterfaceWizard/BusInterfaceWizard.h>
+
+#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/businterface.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -32,32 +39,42 @@
 PortsEditor::PortsEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget *parent):
 ItemEditor(component, handler, parent),
 view_(this), 
-model_(component->getModel(), 
-QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(component)),
-        this),
+model_(0),
 proxy_(this),
 component_(component),
 handler_(handler)
 {
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(component));
+
+    model_ = new PortsModel(component->getModel(), expressionParser, this);
+
+    QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(component));
+
+    ComponentParameterModel* componentParametersModel = new ComponentParameterModel(this, parameterFinder);
+    componentParametersModel->setExpressionParser(expressionParser);
+
+    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
+    parameterCompleter->setModel(componentParametersModel);
+
 	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/portListing.csv").arg(compPath);
 	view_.setDefaultImportExportPath(defPath);
 	view_.setAllowImportExport(true);
     view_.setAlternatingRowColors(false);
 
-	connect(&model_, SIGNAL(contentChanged()),
+	connect(model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+	connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(errorMessage(const QString&)),
+	connect(model_, SIGNAL(errorMessage(const QString&)),
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(noticeMessage(const QString&)),
+	connect(model_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
-		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+		model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
-		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
   
     connect(&view_, SIGNAL(createBus(QStringList const& )),
             this, SLOT(onCreateNewInteface(QStringList const& )));
@@ -70,18 +87,15 @@ handler_(handler)
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 
-	view_.setItemDelegate(new PortsDelegate(this));
+	view_.setItemDelegate(new PortsDelegate(parameterCompleter, parameterFinder, this));
 
     connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)), 
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(view_.itemDelegate(), SIGNAL(decreaseReferences(QString)), 
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    //connect(view_.itemDelegate(), SIGNAL(openReferenceTree(QString)),
-    //    this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
-
 	// set source model for proxy
-	proxy_.setSourceModel(&model_);
+	proxy_.setSourceModel(model_);
 
 	// set proxy to be the source for the view
 	view_.setModel(&proxy_);
@@ -112,7 +126,7 @@ PortsEditor::~PortsEditor()
 //-----------------------------------------------------------------------------
 bool PortsEditor::isValid() const
 {
-	return model_.isValid();
+	return model_->isValid();
 }
 
 //-----------------------------------------------------------------------------
@@ -146,7 +160,7 @@ void PortsEditor::setAllowImportExport( bool allow )
 void PortsEditor::setComponent(QSharedPointer<Component> component)
 {
     component_ = component;
-    model_.setModelAndLockCurrentPorts(component_->getModel());
+    model_->setModelAndLockCurrentPorts(component_->getModel());
 }
 
 //-----------------------------------------------------------------------------
@@ -154,7 +168,7 @@ void PortsEditor::setComponent(QSharedPointer<Component> component)
 //-----------------------------------------------------------------------------
 void PortsEditor::addPort( QSharedPointer<Port> port )
 {
-	model_.addPort(port);
+	model_->addPort(port);
 }
 
 //-----------------------------------------------------------------------------

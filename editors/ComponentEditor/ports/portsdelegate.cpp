@@ -25,7 +25,9 @@
 //-----------------------------------------------------------------------------
 // Function: PortsDelegate::PortsDelegate()
 //-----------------------------------------------------------------------------
-PortsDelegate::PortsDelegate(QObject *parent) : QStyledItemDelegate(parent), adhocGroupModify_(false)
+PortsDelegate::PortsDelegate(QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+    QObject *parent) : ExpressionDelegate(parameterCompleter, parameterFinder, parent), 
+    adhocGroupModify_(false), adhocGroupState_(Qt::Unchecked)
 {
 
 }
@@ -58,7 +60,7 @@ QWidget* PortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const
     }
     else
     {
-        return QStyledItemDelegate::createEditor(parent, option, index);
+        return ExpressionDelegate::createEditor(parent, option, index);
     }
 }
 
@@ -67,7 +69,7 @@ QWidget* PortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const
 //-----------------------------------------------------------------------------
 void PortsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
 {
-    if (index.column() == PortColumns::DIRECTION)
+if (index.column() == PortColumns::DIRECTION)
     {
         QString text = index.data(Qt::DisplayRole).toString();
         QComboBox* combo = qobject_cast<QComboBox*>(editor);
@@ -75,14 +77,7 @@ void PortsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) con
         int comboIndex = combo->findText(text);
         combo->setCurrentIndex(comboIndex);
     }
-    else if (index.column() == PortColumns::DEFAULT_VALUE)
-    {
-        QLineEdit* defaultEdit = qobject_cast<QLineEdit*>(editor);
-        QString value = index.data(Qt::EditRole).toString().simplified();
-        defaultEdit->setText(value);
-    }
-    else if (index.column() == PortColumns::TYPE_NAME ||
-        index.column() == PortColumns::TYPE_DEF)
+    else if (index.column() == PortColumns::TYPE_NAME || index.column() == PortColumns::TYPE_DEF)
     {
         QString text = index.data(Qt::DisplayRole).toString();
         QComboBox* combo = qobject_cast<QComboBox*>(editor);
@@ -100,7 +95,7 @@ void PortsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) con
     }
     else
     {
-        QStyledItemDelegate::setEditorData(editor, index);
+        ExpressionDelegate::setEditorData(editor, index);
     }
 }
 
@@ -119,7 +114,7 @@ void PortsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QMo
     }
     else
     {
-        QStyledItemDelegate::setModelData(editor, model, index);
+        ExpressionDelegate::setModelData(editor, model, index);
     }
 }
 
@@ -238,6 +233,16 @@ void PortsDelegate::paint(QPainter* painter, QStyleOptionViewItem const& option,
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortsDelegate::columnAcceptsExpression()
+//-----------------------------------------------------------------------------
+bool PortsDelegate::columnAcceptsExpression(int column) const
+{
+    return column == PortColumns::DEFAULT_VALUE || 
+        column == PortColumns::LEFT_BOUND ||
+        column == PortColumns::RIGHT_BOUND;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortsDelegate::createSelectorForDirection()
 //-----------------------------------------------------------------------------
 QWidget* PortsDelegate::createSelectorForDirection(QWidget* parent) const
@@ -252,7 +257,7 @@ QWidget* PortsDelegate::createSelectorForDirection(QWidget* parent) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortsDelegate::createSelectorForVHDLType()
+// Function: PortsDelegate::createSelectorWithVHDLTypes()
 //-----------------------------------------------------------------------------
 QWidget* PortsDelegate::createSelectorWithVHDLTypes(QWidget* parent) const
 {
@@ -269,7 +274,7 @@ QWidget* PortsDelegate::createSelectorWithVHDLTypes(QWidget* parent) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortsDelegate::createSelectorForVHDLLibraries()
+// Function: PortsDelegate::createSelectorWithVHDLStandardLibraries()
 //-----------------------------------------------------------------------------
 QWidget* PortsDelegate::createSelectorWithVHDLStandardLibraries(QWidget* parent) const
 {

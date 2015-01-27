@@ -588,12 +588,10 @@ HEADERS += ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/ports/PortColumns.h
-SOURCES += ./editors/ComponentEditor/common/ExpressionEditor.cpp \
-    ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
-    ./GeneratedFiles/moc_ComponentParameterModel.cpp \
-    ./GeneratedFiles/moc_ExpressionEditor.cpp \
-    ./GeneratedFiles/moc_ParameterCompleter.cpp \
+    ./editors/ComponentEditor/ports/PortColumns.h \
+    ./editors/ComponentEditor/common/ExpressionDelegate.h
+SOURCES += ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
+    ./editors/ComponentEditor/common/ExpressionEditor.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1129,5 +1127,6 @@ SOURCES += ./editors/ComponentEditor/common/ExpressionEditor.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
+    ./editors/ComponentEditor/common/ExpressionDelegate.cpp
 RESOURCES += kactus.qrc

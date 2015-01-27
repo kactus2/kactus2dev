@@ -14,7 +14,8 @@ HEADERS += ../../../../editors/ComponentEditor/modelParameters/ModelParameterCol
     ../../../../editors/ComponentEditor/common/ExpressionEditor.h \
     ../../../../editors/ComponentEditor/modelParameters/ModelParameterDelegate.h \
     ../../../../editors/ComponentEditor/parameters/ParameterDelegate.h \
-    ../../../../editors/ComponentEditor/modelParameters/modelparametermodel.h
+    ../../../../editors/ComponentEditor/modelParameters/modelparametermodel.h \
+    ../../../../editors/ComponentEditor/common/ExpressionDelegate.h
 SOURCES += ../../../../editors/ComponentEditor/common/AbstractParameterModel.cpp \
     ../../../../editors/ComponentEditor/common/ExpressionEditor.cpp \
     ../../../../editors/ComponentEditor/modelParameters/ModelParameterDelegate.cpp \
@@ -22,4 +23,5 @@ SOURCES += ../../../../editors/ComponentEditor/common/AbstractParameterModel.cpp
     ../../../../editors/ComponentEditor/common/ParameterModelEquations.cpp \
     ../../../../editors/ComponentEditor/common/ValueFormatter.cpp \
     ../../../../editors/ComponentEditor/modelParameters/modelparametermodel.cpp \
-    ./tst_ModelParameterDelegate.cpp
+    ./tst_ModelParameterDelegate.cpp \
+    ../../../../editors/ComponentEditor/common/ExpressionDelegate.cpp

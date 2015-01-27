@@ -13,7 +13,7 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/port.h>
 
-#include "portsmodel.h"
+
 #include "PortsView.h"
 
 #include <QPushButton>
@@ -21,7 +21,7 @@
 #include <QSharedPointer>
 
 class LibraryInterface;
-
+class PortsModel;
 /*! \brief Editor to edit the ports of a component.
  *
  */
@@ -123,7 +123,7 @@ private:
 	PortsView view_;
 
 	//! \brief The model that holds the data to be displayed to the user
-	PortsModel model_;
+	PortsModel* model_;
 
 	//! \brief Pointer to the proxy that is used to sort the view
 	QSortFilterProxyModel proxy_;

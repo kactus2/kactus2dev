@@ -12,8 +12,9 @@
 #ifndef PARAMETERDELEGATE_H
 #define PARAMETERDELEGATE_H
 
+#include <editors/ComponentEditor/common/ExpressionDelegate.h>
+
 #include <QCompleter>
-#include <QStyledItemDelegate>
 
 class ParameterFinder;
 class Choice;
@@ -21,7 +22,7 @@ class Choice;
 //-----------------------------------------------------------------------------
 //! Delegate that provides widgets for editing parameters.
 //-----------------------------------------------------------------------------
-class ParameterDelegate : public QStyledItemDelegate
+class ParameterDelegate : public ExpressionDelegate
 {
 	Q_OBJECT
 
@@ -31,7 +32,7 @@ public:
 	 *
 	 *     @param [in] choices              The choices available for model parameter value.
      *     @param [in] parameterCompleter   The completer to use for expression editors.
-     *     @param [in] resolver             The parameter resolver to use for for expression editors.
+     *     @param [in] finder               The parameter finder to use for for expression editors.
 	 *     @param [in] parent               The parent object
 	*/
 	ParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, 
@@ -77,20 +78,6 @@ public:
     virtual void paint(QPainter *painter, QStyleOptionViewItem const& option, QModelIndex const& index) const;
 
 signals:
-    
-    /*!
-     *  Increase the amount of references to the parameter with corresponding id.
-     *
-     *      @param [in] id      The id of the parameter being referenced to.
-     */
-    void increaseReferences(QString id);
-
-    /*!
-     *  Decrease the amount of references to the parameter with corresponding id.
-     *
-     *      @param [in] id      The id of the parameter that was referenced to.
-     */
-    void decreaseReferences(QString id);
 
     /*!
      *  Open the reference tree of the selected parameter.
@@ -239,15 +226,6 @@ protected:
      *      @return An editor for selecting resolve attribute.
      */
     QWidget* createResolveSelector(QWidget* parent) const;
-        
-    /*!
-     *  Creates an editor for expressions.
-     *
-     *      @param [in] parent   The parent widget for the editor.
-     *
-     *      @return An editor for expressions.
-     */
-    QWidget* createExpressionEditor(QWidget* parent) const;
 
 private:
 
@@ -281,10 +259,6 @@ private:
 
     //! The choices available for model parameter value.
     QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
-
-    QCompleter* parameterCompleter_;
-
-    QSharedPointer<ParameterFinder> parameterFinder_;
 };
 
 #endif // ParameterDelegate_H

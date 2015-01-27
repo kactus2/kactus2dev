@@ -29,8 +29,7 @@
 //-----------------------------------------------------------------------------
 ParameterDelegate::ParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, 
     QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder, QObject* parent):
-QStyledItemDelegate(parent), choices_(choices), parameterCompleter_(parameterCompleter),
-    parameterFinder_(parameterFinder)
+ExpressionDelegate(parameterCompleter, parameterFinder, parent), choices_(choices)
 {
 
 }
@@ -65,10 +64,6 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     {
         return createResolveSelector(parent);
     }
-    else if (columnAcceptsExpression(index.column()))
-    {
-        return createExpressionEditor(parent);
-    }
     else if (index.column() == usageCountColumn())
     {
         QModelIndex valueIdIndex = index.sibling(index.row(), valueIdColumn());
@@ -79,7 +74,7 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     }
     else
     {
-        return QStyledItemDelegate::createEditor(parent, option, index);
+        return ExpressionDelegate::createEditor(parent, option, index);
     }
 }
 
@@ -108,19 +103,14 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
 		int comboIndex = combo->findText(text);
 		combo->setCurrentIndex(comboIndex);
 	}
-    else if (columnAcceptsExpression(index.column()))
+	else if (index.column() == usageCountColumn())
     {
-        QString text = index.model()->data(index, Qt::EditRole).toString();
-        ExpressionEditor* expressionEditor = qobject_cast<ExpressionEditor*>(editor);
-        expressionEditor->setExpression(text);
-    }
-	else if (index.column() != usageCountColumn())
-    {
-        // use the line edit for other columns
-        QString text = index.model()->data(index, Qt::EditRole).toString();
-        QLineEdit* lineEdit = qobject_cast<QLineEdit*>(editor);
-        lineEdit->setText(text);
+        // Do nothing.
 	}
+    else
+    {
+        ExpressionDelegate::setEditorData(editor, index);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -146,15 +136,9 @@ void ParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
         }
         model->setData(index, text, Qt::EditRole);
     }
-    else if (columnAcceptsExpression(index.column()))
-    {
-        ExpressionEditor* expressionEditor = qobject_cast<ExpressionEditor*>(editor);
-        expressionEditor->finishEditingCurrentWord();
-        model->setData(index, expressionEditor->getExpression(), Qt::EditRole);
-    }
 	else 
     {
-        QStyledItemDelegate::setModelData(editor, model, index);
+        ExpressionDelegate::setModelData(editor, model, index);
 	}
 }
 
@@ -164,7 +148,7 @@ void ParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
 void ParameterDelegate::paint(QPainter *painter, QStyleOptionViewItem const& option, 
     QModelIndex const& index) const
 {
-    QStyledItemDelegate::paint(painter, option, index);
+    ExpressionDelegate::paint(painter, option, index);
 
     if (index.column() == maximumColumn() || index.column() == valueColumn() || 
         index.column() == arrayOffsetColumn())
@@ -380,20 +364,4 @@ QWidget* ParameterDelegate::createResolveSelector(QWidget* parent) const
     combo->addItem(QString("user"));
     combo->addItem(QString("generated"));
     return combo;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterDelegate::createExpressionEditor()
-//-----------------------------------------------------------------------------
-QWidget* ParameterDelegate::createExpressionEditor(QWidget* parent) const
-{
-    ExpressionEditor* editor = new ExpressionEditor(parameterFinder_, parent);
-    editor->setAppendingCompleter(parameterCompleter_);
-
-    connect(editor, SIGNAL(increaseReference(QString)),
-        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(editor, SIGNAL(decreaseReference(QString)),
-        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
-
-    return editor;
 }
