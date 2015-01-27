@@ -1,332 +1,133 @@
-/* 
- *
- *  Created on: 1.4.2011
- *      Author: Antti Kamppi
- * 		filename: portsdelegate.cpp
- */
+//-----------------------------------------------------------------------------
+// File: portsdelegate.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 01.04.2011
+//
+// Description:
+// The delegate that provides editors to edit ports of a component.
+//-----------------------------------------------------------------------------
 
 #include "portsdelegate.h"
+
+#include "PortColumns.h"
 
 #include <kactusGenerators/vhdlGenerator/vhdlgeneral.h>
 
 #include <QComboBox>
 #include <QLineEdit>
-#include <QSpinBox>
 #include <QCheckBox>
 #include <QApplication>
 #include <QMouseEvent>
 #include <QPainter>
 
 //-----------------------------------------------------------------------------
-// Function: PortsDelegate()
+// Function: PortsDelegate::PortsDelegate()
 //-----------------------------------------------------------------------------
 PortsDelegate::PortsDelegate(QObject *parent) : QStyledItemDelegate(parent), adhocGroupModify_(false)
 {
+
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~PortsDelegate()
+// Function: PortsDelegate::~PortsDelegate()
 //-----------------------------------------------------------------------------
 PortsDelegate::~PortsDelegate()
 {
+
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsDelegate::createEditor()
 //-----------------------------------------------------------------------------
-QWidget* PortsDelegate::createEditor( QWidget* parent, 
-									 const QStyleOptionViewItem& option, 
-									 const QModelIndex& index ) const
+QWidget* PortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
+    QModelIndex const& index) const
 {
-	// if the column is the one specified for direction items 
-    switch (index.column())
+    if (index.column() == PortColumns::DIRECTION)
     {
-    case PORT_COL_DIRECTION:
-        {
-		    QComboBox* combo = new QComboBox(parent);
-		    combo->addItem(QString("in"));
-		    combo->addItem(QString("out"));
-		    combo->addItem(QString("inout"));
-		    combo->addItem(QString("phantom"));
-		    connect(combo, SIGNAL(currentIndexChanged(int)),
-			    this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-		    return combo;
-        }
-
-    case PORT_COL_LEFT:
-    case PORT_COL_RIGHT:
-        {
-            QLineEdit* boundaryEdit = new QLineEdit(parent);
-            connect(boundaryEdit, SIGNAL(editingFinished()), 
-                this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-            return boundaryEdit;
-        }
-    case PORT_COL_WIDTH:
-        {
-            QSpinBox* spinBox = new QSpinBox(parent);
-            spinBox->setRange(0, 2048);
-            spinBox->setSingleStep(1);
-            connect(spinBox, SIGNAL(editingFinished()),
-                this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-            return spinBox;
-        }
-
-    case PORT_COL_DEFAULT:
-        {
-            QLineEdit* defaultEdit = new QLineEdit(parent);
-            connect(defaultEdit, SIGNAL(editingFinished()),
-                this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-            return defaultEdit;
-        }
-
-    case PORT_COL_TYPENAME:
-        {
-            QComboBox* combo = new QComboBox(parent);
-
-            for (unsigned int i = 0; i < VhdlGeneral::VHDL_TYPE_COUNT; ++i) {
-                combo->addItem(VhdlGeneral::VHDL_TYPES[i]);
-            }
-            combo->setEditable(true);
-            combo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-
-            connect(combo, SIGNAL(currentIndexChanged(int)),
-                this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-            return combo;
-        }
-
-    case PORT_COL_TYPEDEF:
-        {
-            QComboBox* combo = new QComboBox(parent);
-
-            for (unsigned int i = 0;i < VhdlGeneral::VHDL_TYPEDEF_COUNT; ++i) {
-                combo->addItem(VhdlGeneral::VHDL_TYPE_DEFINITIONS[i]);
-            }
-            combo->setEditable(true);
-            combo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-
-            connect(combo, SIGNAL(currentIndexChanged(int)),
-                this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-            return combo;
-        }
-
-    case PORT_COL_ADHOC_VISIBILITY:
-        {
-            return QStyledItemDelegate::createEditor(parent, option, index);
-        }
-
-    default:
-        {
-            // use line edit to edit all other columns
-            QLineEdit* editor = new QLineEdit(parent);
-            connect(editor, SIGNAL(editingFinished()),
-                this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-            return editor;
-        }	
-	}
+        return createSelectorForDirection(parent);
+    }
+    else if (index.column() == PortColumns::TYPE_NAME)
+    {
+        return createSelectorWithVHDLTypes(parent);
+    }
+    else if (index.column() == PortColumns::TYPE_DEF)
+    {
+        return createSelectorWithVHDLStandardLibraries(parent);
+    }
+    else
+    {
+        return QStyledItemDelegate::createEditor(parent, option, index);
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsDelegate::setEditorData()
 //-----------------------------------------------------------------------------
-void PortsDelegate::setEditorData( QWidget* editor, 
-								  const QModelIndex& index ) const
+void PortsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
 {
-	switch (index.column())
+    if (index.column() == PortColumns::DIRECTION)
     {
-    case PORT_COL_DIRECTION:
-        {
-            QString text = index.model()->data(index, Qt::DisplayRole).toString();
-            QComboBox* combo = qobject_cast<QComboBox*>(editor);
+        QString text = index.data(Qt::DisplayRole).toString();
+        QComboBox* combo = qobject_cast<QComboBox*>(editor);
 
-            int comboIndex = combo->findText(text);
+        int comboIndex = combo->findText(text);
+        combo->setCurrentIndex(comboIndex);
+    }
+    else if (index.column() == PortColumns::DEFAULT_VALUE)
+    {
+        QLineEdit* defaultEdit = qobject_cast<QLineEdit*>(editor);
+        QString value = index.data(Qt::EditRole).toString().simplified();
+        defaultEdit->setText(value);
+    }
+    else if (index.column() == PortColumns::TYPE_NAME ||
+        index.column() == PortColumns::TYPE_DEF)
+    {
+        QString text = index.data(Qt::DisplayRole).toString();
+        QComboBox* combo = qobject_cast<QComboBox*>(editor);
+
+        int comboIndex = combo->findText(text);
+        // if the text is not found
+        if (comboIndex < 0)
+        {
+            combo->setEditText(text);
+        }
+        else
+        {
             combo->setCurrentIndex(comboIndex);
-            break;
         }
-
-    case PORT_COL_LEFT:
-    case PORT_COL_RIGHT:
-        {
-            QLineEdit* boundaryEdit = qobject_cast<QLineEdit*>(editor);
-            QString value = index.model()->data(index, Qt::EditRole).toString().simplified();
-            boundaryEdit->setText(value);
-            break;
-        }
-
-    case PORT_COL_WIDTH:
-        {
-            QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
-            int value = index.model()->data(index, Qt::DisplayRole).toInt();
-            spinBox->setValue(value);
-            break;
-        }
-
-    case PORT_COL_DEFAULT:
-        {
-            QLineEdit* defaultEdit = qobject_cast<QLineEdit*>(editor);
-            QString value = index.model()->data(index, Qt::EditRole).toString().simplified();
-            defaultEdit->setText(value);
-            break;
-        }
-
-    case PORT_COL_TYPENAME:
-        {
-            QString text = index.model()->data(index, Qt::DisplayRole).toString();
-            QComboBox* combo = qobject_cast<QComboBox*>(editor);
-
-            int comboIndex = combo->findText(text);
-            // if the text is not found
-            if (comboIndex < 0) {
-                combo->setEditText(text);
-            }
-            // if the text was found
-            else {
-                combo->setCurrentIndex(comboIndex);
-            }
-
-            break;
-        }
-
-    case PORT_COL_TYPEDEF:
-        {
-            QString text = index.model()->data(index, Qt::DisplayRole).toString();
-            QComboBox* combo = qobject_cast<QComboBox*>(editor);
-
-            int comboIndex = combo->findText(text);
-            // if the text is not found
-            if (comboIndex < 0) {
-                combo->setEditText(text);
-            }
-            // if the text was found
-            else {
-                combo->setCurrentIndex(comboIndex);
-            }
-
-            break;
-        }
-
-    case PORT_COL_ADHOC_VISIBILITY:
-        {
-            QStyledItemDelegate::setEditorData(editor, index);
-            break;
-        }
-
-    default:
-        {
-            // use the line edit for other columns
-            QString text = index.model()->data(index, Qt::DisplayRole).toString();
-            QLineEdit* lineEdit = qobject_cast<QLineEdit*>(editor);
-            lineEdit->setText(text);
-            break;
-        }
+    }
+    else
+    {
+        QStyledItemDelegate::setEditorData(editor, index);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsDelegate::setModelData()
 //-----------------------------------------------------------------------------
-void PortsDelegate::setModelData( QWidget* editor, 
-								 QAbstractItemModel* model, 
-								 const QModelIndex& index ) const
+void PortsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index ) const
 {
-    switch (index.column())
+    if (index.column() == PortColumns::DIRECTION ||
+        index.column() == PortColumns::TYPE_NAME ||
+        index.column() == PortColumns::TYPE_DEF)
     {
-    case PORT_COL_DIRECTION:
-        {
-            QComboBox* combo = qobject_cast<QComboBox*>(editor);
-            QString text = combo->currentText();
-            model->setData(index, text, Qt::EditRole);
-            break;
-        }
-
-    case PORT_COL_LEFT:
-    case PORT_COL_RIGHT:
-        {
-            QLineEdit* boundaryEdit = qobject_cast<QLineEdit*>(editor);
-            QString value = boundaryEdit->text().simplified();
-            model->setData(index, value, Qt::EditRole);
-            break;
-        }
-    case PORT_COL_WIDTH:
-        {
-            QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
-            int value = spinBox->value();
-            model->setData(index, value, Qt::EditRole);
-            break;
-        }
-
-    case PORT_COL_DEFAULT:
-        {
-            QLineEdit* defaultEdit = qobject_cast<QLineEdit*>(editor);
-            QString value = defaultEdit->text().simplified();
-            model->setData(index, value, Qt::EditRole);
-            break;
-        }
-
-    case PORT_COL_TYPENAME:
-        {
-            QComboBox* combo = qobject_cast<QComboBox*>(editor);
-            QString text = combo->currentText();
-            model->setData(index, text, Qt::EditRole);
-            break;
-        }
-
-    case PORT_COL_TYPEDEF:
-        {
-            QComboBox* combo = qobject_cast<QComboBox*>(editor);
-            QString text = combo->currentText();
-            model->setData(index, text, Qt::EditRole);
-            break;
-        }
-
-    case PORT_COL_ADHOC_VISIBILITY:
-        {
-            QStyledItemDelegate::setModelData(editor, model, index);
-            break;
-        }
-
-    default:
-        {
-            // get the text from line edit for other columns
-            QLineEdit* lineEdit = qobject_cast<QLineEdit*>(editor);
-            QString text = lineEdit->text();
-            model->setData(index, text, Qt::EditRole);
-            break;
-        }
+        QComboBox* combo = qobject_cast<QComboBox*>(editor);
+        QString text = combo->currentText();
+        model->setData(index, text, Qt::EditRole);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortsDelegate::commitAndCloseEditor()
-//-----------------------------------------------------------------------------
-void PortsDelegate::commitAndCloseEditor()
-{
-	// try to get pointer to editor in both cases
-	QComboBox* combo = qobject_cast<QComboBox*>(sender());
-	QLineEdit* lineEdit = qobject_cast<QLineEdit*>(sender());
-	QSpinBox* spinBox = qobject_cast<QSpinBox*>(sender());
-
-	// if the editor was combo box
-	if (combo) {
-		emit commitData(combo);
-	}
-
-	// if the editor was spinBox
-	else if (spinBox) {
-		emit commitData(spinBox);
-		emit closeEditor(spinBox);
-	}
-
-	// if editor was line edit
-	else {
-		emit commitData(lineEdit);
-		emit closeEditor(lineEdit);
-	}
+    else
+    {
+        QStyledItemDelegate::setModelData(editor, model, index);
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsDelegate::editorEvent()
 //-----------------------------------------------------------------------------
-bool PortsDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
+bool PortsDelegate::editorEvent(QEvent *event, QAbstractItemModel* model, 
+    QStyleOptionViewItem const& option, QModelIndex const& index)
 {
     Q_ASSERT(event);
     Q_ASSERT(model);
@@ -416,11 +217,11 @@ bool PortsDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const 
 //-----------------------------------------------------------------------------
 // Function: PortsDelegate::paint()
 //-----------------------------------------------------------------------------
-void PortsDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void PortsDelegate::paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const
 {
     QStyleOptionViewItemV4 viewItemOption(option);
 
-    if (index.column() == PORT_COL_ADHOC_VISIBILITY)
+    if (index.column() == PortColumns::ADHOC_VISIBILITY)
     {
         painter->fillRect(option.rect, Qt::white);
 
@@ -436,3 +237,50 @@ void PortsDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
     QStyledItemDelegate::paint(painter, viewItemOption, index);
 }
 
+//-----------------------------------------------------------------------------
+// Function: PortsDelegate::createSelectorForDirection()
+//-----------------------------------------------------------------------------
+QWidget* PortsDelegate::createSelectorForDirection(QWidget* parent) const
+{
+    QComboBox* directionSelector = new QComboBox(parent);
+    directionSelector->addItem("in");
+    directionSelector->addItem("out");
+    directionSelector->addItem("inout");
+    directionSelector->addItem("phantom");
+
+    return directionSelector;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortsDelegate::createSelectorForVHDLType()
+//-----------------------------------------------------------------------------
+QWidget* PortsDelegate::createSelectorWithVHDLTypes(QWidget* parent) const
+{
+    QComboBox* combo = new QComboBox(parent);
+    combo->setEditable(true);
+    combo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+
+    for (unsigned int i = 0; i < VhdlGeneral::VHDL_TYPE_COUNT; ++i)
+    {
+        combo->addItem(VhdlGeneral::VHDL_TYPES[i]);
+    }
+
+    return combo;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortsDelegate::createSelectorForVHDLLibraries()
+//-----------------------------------------------------------------------------
+QWidget* PortsDelegate::createSelectorWithVHDLStandardLibraries(QWidget* parent) const
+{
+    QComboBox* combo = new QComboBox(parent);
+    combo->setEditable(true);
+    combo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+
+    for (unsigned int i = 0;i < VhdlGeneral::VHDL_TYPEDEF_COUNT; ++i)
+    {
+        combo->addItem(VhdlGeneral::VHDL_TYPE_DEFINITIONS[i]);
+    }
+
+    return combo;
+}

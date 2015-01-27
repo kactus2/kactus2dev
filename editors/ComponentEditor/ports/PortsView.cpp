@@ -10,7 +10,8 @@
 //-----------------------------------------------------------------------------
 
 #include "PortsView.h"
-#include "portsdelegate.h"
+
+#include "PortColumns.h"
 
 #include <QMenu>
 
@@ -45,7 +46,7 @@ void PortsView::onCreateNewBus()
     foreach(QModelIndex portIndex, selectedIndexes())
     {   
 
-        QString portName =  portIndex.sibling(portIndex.row(), PORT_COL_NAME).data().toString();
+        QString portName =  portIndex.sibling(portIndex.row(), PortColumns::NAME).data().toString();
         if (!selectedPorts.contains(portName))
         {
             selectedPorts.append(portName);
@@ -64,7 +65,7 @@ void PortsView::onCreateExistingBus()
     foreach(QModelIndex portIndex, selectedIndexes())
     {   
 
-        QString portName =  portIndex.sibling(portIndex.row(), PORT_COL_NAME).data().toString();
+        QString portName =  portIndex.sibling(portIndex.row(), PortColumns::NAME).data().toString();
         if (!selectedPorts.contains(portName))
         {
             selectedPorts.append(portName);

@@ -6,12 +6,15 @@
  */
 
 #include "addressblockeditor.h"
-#include <common/views/EditableTableView/editabletableview.h>
-#include "addressblockmodel.h"
 #include "addressblockdelegate.h"
-#include <common/widgets/summaryLabel/summarylabel.h>
+#include "addressblockmodel.h"
 #include "addressblockproxy.h"
+
+#include <common/views/EditableTableView/editabletableview.h>
+#include <common/widgets/summaryLabel/summarylabel.h>
+
 #include <library/LibraryManager/libraryinterface.h>
+
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <QVBoxLayout>

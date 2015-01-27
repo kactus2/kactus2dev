@@ -32,7 +32,8 @@
 PortsEditor::PortsEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget *parent):
 ItemEditor(component, handler, parent),
 view_(this), 
-model_(component->getModel(),QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(component)),
+model_(component->getModel(), 
+QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(component)),
         this),
 proxy_(this),
 component_(component),
@@ -42,6 +43,7 @@ handler_(handler)
 	QString defPath = QString("%1/portListing.csv").arg(compPath);
 	view_.setDefaultImportExportPath(defPath);
 	view_.setAllowImportExport(true);
+    view_.setAlternatingRowColors(false);
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);

@@ -5738,6 +5738,9 @@
     <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatter.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\ports\PortColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="designEditors\common\DiagramUtil.inl">

@@ -464,6 +464,7 @@ HEADERS += ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
     ./editors/ComponentEditor/choices/ChoicesModel.h \
     ./editors/ComponentEditor/choices/ChoicesDelegate.h \
     ./editors/ComponentEditor/choices/EnumerationModel.h \
+    ./editors/ComponentEditor/common/ExpressionFormatter.h \
     ./editors/ComponentEditor/common/ExpressionParser.h \
     ./editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ./editors/ComponentEditor/common/ParameterFinder.h \
@@ -587,7 +588,7 @@ HEADERS += ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/common/ExpressionFormatter.h
+    ./editors/ComponentEditor/ports/PortColumns.h
 SOURCES += ./editors/ComponentEditor/common/ExpressionEditor.cpp \
     ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ./GeneratedFiles/moc_ComponentParameterModel.cpp \
@@ -1017,6 +1018,7 @@ SOURCES += ./editors/ComponentEditor/common/ExpressionEditor.cpp \
     ./editors/ComponentEditor/common/AbstractParameterModel.cpp \
     ./editors/ComponentEditor/common/CompleterPopupTable.cpp \
     ./editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ./editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ./editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ./editors/ComponentEditor/common/ParameterCompleter.cpp \
     ./editors/ComponentEditor/common/ParameterModelEquations.cpp \
@@ -1127,6 +1129,5 @@ SOURCES += ./editors/ComponentEditor/common/ExpressionEditor.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./editors/ComponentEditor/common/ExpressionFormatter.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
 RESOURCES += kactus.qrc
