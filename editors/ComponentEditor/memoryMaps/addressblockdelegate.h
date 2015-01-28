@@ -10,12 +10,12 @@
 
 #include "AddressBlockColumns.h"
 
-#include <QStyledItemDelegate>
+#include <editors/ComponentEditor/common/ExpressionDelegate.h>
 
 //-----------------------------------------------------------------------------
 //! The delegate that provides editors to add/remove/edit the details of address block.
 //-----------------------------------------------------------------------------
-class AddressBlockDelegate : public QStyledItemDelegate
+class AddressBlockDelegate : public ExpressionDelegate
 {
 	Q_OBJECT
 
@@ -23,10 +23,13 @@ public:
 	
 	/*! The constructor
 	 *
-	 *      @param [in] parent Pointer to the owner of this delegate.
+     *      @param [in] parameterNameCompleter      The completer to use for parameter names in expression editor.
+     *      @param [in] parameterFinder             The parameter finder to use for for expression editor.
+	 *      @param [in] parent                      Pointer to the owner of this delegate.
 	 *
 	*/
-	AddressBlockDelegate(QObject *parent);
+	AddressBlockDelegate(QCompleter* parameterNameCompleter, 
+        QSharedPointer<ParameterFinder> parameterFinder, QObject *parent);
 	
 	//! The destructor
 	virtual ~AddressBlockDelegate();
@@ -60,6 +63,17 @@ public:
 	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, 
 	        QModelIndex const& index) const;
 
+protected:
+    
+    /*!
+     *  Checks if the given column supports expressions in the editor.
+     *
+     *      @param [in] column   The column to check.
+     *
+     *      @return True, if the cells in the column allow expressions, otherwise false.
+     */
+    virtual bool columnAcceptsExpression(int column) const;
+
 private:
 	
 	//! No copying
@@ -67,6 +81,7 @@ private:
 
 	//! No assignment
 	AddressBlockDelegate& operator=(const AddressBlockDelegate& other);
+
 };
 
 #endif // ADDRESSBLOCKDELEGATE_H

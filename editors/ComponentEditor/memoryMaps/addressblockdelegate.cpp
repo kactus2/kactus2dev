@@ -16,8 +16,9 @@
 //-----------------------------------------------------------------------------
 // Function: AddressBlockDelegate::AddressBlockDelegate()
 //-----------------------------------------------------------------------------
-AddressBlockDelegate::AddressBlockDelegate(QObject *parent):
-QStyledItemDelegate(parent) 
+AddressBlockDelegate::AddressBlockDelegate(QCompleter* parameterNameCompleter, 
+    QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
+ExpressionDelegate(parameterNameCompleter, parameterFinder, parent) 
 {
 
 }
@@ -37,24 +38,24 @@ QWidget* AddressBlockDelegate::createEditor(QWidget* parent,
     QStyleOptionViewItem const& option, 
     QModelIndex const& index ) const
 {
-    if (index.column() == AddressBlockColumns::SIZE_COLUMN)
+    if (index.column() == AddressBlockColumns::REGISTER_SIZE)
     {
         QLineEdit* sizeEditor = new QLineEdit(parent);
         sizeEditor->setValidator(new QIntValidator(0, 16383, sizeEditor));
 
         return sizeEditor;
     }
-    else if (index.column() == AddressBlockColumns::VOLATILE_COLUMN)
+    else if (index.column() == AddressBlockColumns::VOLATILE)
     {
         return new BooleanComboBox(parent);
     }
-    else if (index.column() == AddressBlockColumns::ACCESS_COLUMN)
+    else if (index.column() == AddressBlockColumns::REGISTER_ACCESS)
     {
         return new AccessComboBox(parent);
     }
     else
     {
-        return QStyledItemDelegate::createEditor(parent, option, index);
+        return ExpressionDelegate::createEditor(parent, option, index);
     }
 }
 
@@ -63,7 +64,7 @@ QWidget* AddressBlockDelegate::createEditor(QWidget* parent,
 //-----------------------------------------------------------------------------
 void AddressBlockDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
 {
-    if (index.column() == AddressBlockColumns::VOLATILE_COLUMN)
+    if (index.column() == AddressBlockColumns::VOLATILE)
     {
         BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
         Q_ASSERT(boolBox);
@@ -71,7 +72,7 @@ void AddressBlockDelegate::setEditorData(QWidget* editor, QModelIndex const& ind
         bool value = index.model()->data(index, Qt::DisplayRole).toBool();
         boolBox->setCurrentValue(value);
     }
-    else if (index.column() == AddressBlockColumns::ACCESS_COLUMN)
+    else if (index.column() == AddressBlockColumns::REGISTER_ACCESS)
     {
         AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
         Q_ASSERT(accessBox);
@@ -82,7 +83,7 @@ void AddressBlockDelegate::setEditorData(QWidget* editor, QModelIndex const& ind
     }
     else
     {
-        QStyledItemDelegate::setEditorData(editor, index);
+        ExpressionDelegate::setEditorData(editor, index);
     }
 }
 
@@ -91,7 +92,7 @@ void AddressBlockDelegate::setEditorData(QWidget* editor, QModelIndex const& ind
 //-----------------------------------------------------------------------------
 void AddressBlockDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
 {
-    if (index.column() == AddressBlockColumns::VOLATILE_COLUMN)
+    if (index.column() == AddressBlockColumns::VOLATILE)
     {
         BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
         Q_ASSERT(boolBox);
@@ -99,7 +100,7 @@ void AddressBlockDelegate::setModelData(QWidget* editor, QAbstractItemModel* mod
         bool value = boolBox->getCurrentValue();
         model->setData(index, value, Qt::EditRole);
     }
-    else if (index.column() == AddressBlockColumns::ACCESS_COLUMN)
+    else if (index.column() == AddressBlockColumns::REGISTER_ACCESS)
     {
         AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
         Q_ASSERT(accessBox);
@@ -109,6 +110,15 @@ void AddressBlockDelegate::setModelData(QWidget* editor, QAbstractItemModel* mod
     }
     else 
     {
-        QStyledItemDelegate::setModelData(editor, model, index);
+        ExpressionDelegate::setModelData(editor, model, index);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockDelegate::columnAcceptsExpression()
+//-----------------------------------------------------------------------------
+bool AddressBlockDelegate::columnAcceptsExpression(int column) const
+{
+    return column == AddressBlockColumns::REGISTER_DIMENSION ||
+        column == AddressBlockColumns::REGISTER_OFFSET;
 }

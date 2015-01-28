@@ -8,8 +8,6 @@
 #ifndef ADDRESSBLOCKEDITOR_H
 #define ADDRESSBLOCKEDITOR_H
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/itemeditor.h>
 #include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/component.h>
@@ -17,12 +15,14 @@
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
 
-class EditableTableView;
 class AddressBlockModel;
 class AddressBlockProxy;
+class EditableTableView;
+class ExpressionFormatter;
 class LibraryInterface;
+class ParameterFinder;
 
-/*! \brief The editor to edit the details of an address block within component editor.
+/*! The editor to edit the details of an address block within component editor.
  *
  */
 class AddressBlockEditor : public ItemEditor {
@@ -30,7 +30,7 @@ class AddressBlockEditor : public ItemEditor {
 
 public:
 
-	//! \brief The default height and width of the editor.
+	//! The default height and width of the editor.
 	enum Sizes {
 		HEIGHT = 300,
 		WIDTH = 700
@@ -53,22 +53,22 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
 		QWidget* parent = 0);
 
-	//! \brief The destructor
+	//! The destructor
 	virtual ~AddressBlockEditor();
 
-	/*! \brief Check for the validity of the editor
+	/*! Check for the validity of the editor
 	* 
-	* \return True if the editor is in valid state.
+	*       @return True if the editor is in valid state.
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Reload the information from the model to the editor.
+	/*! Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
 
-	/*! \brief The size hint for the editor.
+	/*! The size hint for the editor.
 	 *
-	 * \return QSize contains the size hint.
+	 *      @return QSize contains the size hint.
 	*/
 	virtual QSize sizeHint() const;
 
@@ -83,24 +83,27 @@ signals:
 
 protected:
 
-	//! \brief Handler for widget's show event
+	//! Handler for widget's show event
 	virtual void showEvent(QShowEvent* event);
 
 private:
 	
-	//! \brief No copying
+	//! No copying
 	AddressBlockEditor(const AddressBlockEditor& other);
 
-	//! \brief No assignment
+	//! No assignment
 	AddressBlockEditor& operator=(const AddressBlockEditor& other);
 
-	//! \brief The view to display the items.
+    //! Sets the layout for the editor.
+    void setupLayout();
+
+	//! The view to display the items.
 	EditableTableView* view_;
 
-	//! \brief The proxy that does the sorting of items.
+	//! The proxy that does the sorting of items.
 	AddressBlockProxy* proxy_;
 
-	//! \brief Pointer to the model that manages the details of address block.
+	//! Pointer to the model that manages the details of address block.
 	AddressBlockModel* model_;
 };
 

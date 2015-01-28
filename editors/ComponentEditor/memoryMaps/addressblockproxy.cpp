@@ -35,9 +35,9 @@ bool AddressBlockProxy::lessThan(QModelIndex const& left, QModelIndex const& rig
 {
     Q_ASSERT(left.column() == right.column());
 
-    if (left.column() == AddressBlockColumns::OFFSET_COLUMN ||
-        left.column() == AddressBlockColumns::RESET_VALUE_COLUMN ||
-        left.column() == AddressBlockColumns::RESET_MASK_COLUMN)
+    if (left.column() == AddressBlockColumns::REGISTER_OFFSET ||
+        left.column() == AddressBlockColumns::RESET_VALUE ||
+        left.column() == AddressBlockColumns::RESET_MASK)
     {
         // convert the data on left index into number
         QString leftStr = left.model()->data(left, Qt::DisplayRole).toString();

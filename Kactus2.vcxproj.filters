@@ -3901,9 +3901,6 @@
     <ClCompile Include="editors\ComponentEditor\common\ComponentParameterFinder.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ExpressionEditor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\common\ParameterCompleter.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
@@ -3947,6 +3944,9 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ParameterCompleter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ExpressionEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>

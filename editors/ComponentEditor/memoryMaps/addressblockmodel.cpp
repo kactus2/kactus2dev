@@ -67,41 +67,41 @@ QVariant AddressBlockModel::headerData( int section, Qt::Orientation orientation
 	}
 	if (Qt::DisplayRole == role) 
     {
-        if (section == AddressBlockColumns::NAME_COLUMN)
+        if (section == AddressBlockColumns::NAME)
         {
             return tr("Register\nname");
         }
-        else if (section == AddressBlockColumns::OFFSET_COLUMN)
+        else if (section == AddressBlockColumns::REGISTER_OFFSET)
         {
             QString bitOffset = tr("Offset \n[AUB]") + getExpressionSymbol();
             return bitOffset;
         }
-        else if (section == AddressBlockColumns::SIZE_COLUMN)
+        else if (section == AddressBlockColumns::REGISTER_SIZE)
         {
             return tr("Size\n [bits]");
         }
-        else if (section == AddressBlockColumns::DIM_COLUMN)
+        else if (section == AddressBlockColumns::REGISTER_DIMENSION)
         {
             QString dimension = tr("Dimension") + getExpressionSymbol();
             return dimension;
         }
-        else if (section == AddressBlockColumns::DESC_COLUMN)
+        else if (section == AddressBlockColumns::DESCRIPTION)
         {
             return tr("Description");
         }
-        else if (section == AddressBlockColumns::VOLATILE_COLUMN)
+        else if (section == AddressBlockColumns::VOLATILE)
         {
             return tr("Volatile");
         }
-        else if (section == AddressBlockColumns::ACCESS_COLUMN)
+        else if (section == AddressBlockColumns::REGISTER_ACCESS)
         {
             return tr("Access");
         }
-        else if (section == AddressBlockColumns::RESET_VALUE_COLUMN)
+        else if (section == AddressBlockColumns::RESET_VALUE)
         {
             return tr("Reset value");
         }
-        else if (section == AddressBlockColumns::RESET_MASK_COLUMN)
+        else if (section == AddressBlockColumns::RESET_MASK)
         {
             return tr("Reset mask");
         }
@@ -161,9 +161,9 @@ QVariant AddressBlockModel::data( const QModelIndex& index, int role /*= Qt::Dis
 	}
 	else if (Qt::BackgroundRole == role) {
 		switch (index.column()) {
-			case AddressBlockColumns::NAME_COLUMN:
-			case AddressBlockColumns::OFFSET_COLUMN:
-			case AddressBlockColumns::SIZE_COLUMN: {
+			case AddressBlockColumns::NAME:
+			case AddressBlockColumns::REGISTER_OFFSET:
+			case AddressBlockColumns::REGISTER_SIZE: {
 				return QColor("LemonChiffon");
 												  }
 			default:
@@ -180,11 +180,11 @@ QVariant AddressBlockModel::data( const QModelIndex& index, int role /*= Qt::Dis
 //-----------------------------------------------------------------------------
 QVariant AddressBlockModel::valueForIndex(const QModelIndex& index) const
 {
-    if (index.column() == AddressBlockColumns::NAME_COLUMN)
+    if (index.column() == AddressBlockColumns::NAME)
     {
         return items_.at(index.row())->getName();
     }
-    else if (index.column() == AddressBlockColumns::OFFSET_COLUMN)
+    else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
     {
         const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
         if (reg)
@@ -196,7 +196,7 @@ QVariant AddressBlockModel::valueForIndex(const QModelIndex& index) const
             return QVariant();
         }
     }
-    else if (index.column() == AddressBlockColumns::SIZE_COLUMN)
+    else if (index.column() == AddressBlockColumns::REGISTER_SIZE)
     {
         const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
         if (reg)
@@ -208,7 +208,7 @@ QVariant AddressBlockModel::valueForIndex(const QModelIndex& index) const
             return QVariant();
         }
     }
-    else if (index.column() == AddressBlockColumns::DIM_COLUMN)
+    else if (index.column() == AddressBlockColumns::REGISTER_DIMENSION)
     {
         const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
         if (reg)
@@ -221,11 +221,11 @@ QVariant AddressBlockModel::valueForIndex(const QModelIndex& index) const
             return QVariant();
         }
     }
-    else if (index.column() == AddressBlockColumns::DESC_COLUMN)
+    else if (index.column() == AddressBlockColumns::DESCRIPTION)
     {
         return items_.at(index.row())->getDescription();
     }
-    else if (index.column() == AddressBlockColumns::VOLATILE_COLUMN)
+    else if (index.column() == AddressBlockColumns::VOLATILE)
     {
         const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
         if (reg)
@@ -237,7 +237,7 @@ QVariant AddressBlockModel::valueForIndex(const QModelIndex& index) const
             return QVariant();
         }
     }
-    else if (index.column() == AddressBlockColumns::ACCESS_COLUMN)
+    else if (index.column() == AddressBlockColumns::REGISTER_ACCESS)
     {
         const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
         if (reg)
@@ -249,7 +249,7 @@ QVariant AddressBlockModel::valueForIndex(const QModelIndex& index) const
             return QVariant();
         }
     }
-    else if (index.column() == AddressBlockColumns::RESET_VALUE_COLUMN)
+    else if (index.column() == AddressBlockColumns::RESET_VALUE)
     {
         const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
         if (reg)
@@ -261,7 +261,7 @@ QVariant AddressBlockModel::valueForIndex(const QModelIndex& index) const
             return QVariant();
         }
     }
-    else if (index.column() == AddressBlockColumns::RESET_MASK_COLUMN)
+    else if (index.column() == AddressBlockColumns::RESET_MASK)
     {
         const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
         if (reg)
@@ -295,11 +295,11 @@ bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value
 
 	if (Qt::EditRole == role) 
     {
-        if (index.column() == AddressBlockColumns::NAME_COLUMN)
+        if (index.column() == AddressBlockColumns::NAME)
         {
             items_[index.row()]->setName(value.toString());
         }
-        else if (index.column() == AddressBlockColumns::OFFSET_COLUMN)
+        else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
         {
             QSharedPointer<Register> reg = items_[index.row()].dynamicCast<Register>();
             if (reg)
@@ -311,7 +311,7 @@ bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value
                 return false;
             }
         }
-        else if (index.column() == AddressBlockColumns::SIZE_COLUMN)
+        else if (index.column() == AddressBlockColumns::REGISTER_SIZE)
         {
             QSharedPointer<Register> reg = items_[index.row()].dynamicCast<Register>();
             if (reg)
@@ -323,7 +323,7 @@ bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value
                 return false;
             }
         }
-        else if (index.column() == AddressBlockColumns::DIM_COLUMN)
+        else if (index.column() == AddressBlockColumns::REGISTER_DIMENSION)
         {
             QSharedPointer<Register> reg = items_[index.row()].dynamicCast<Register>();
             if (reg)
@@ -347,11 +347,11 @@ bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value
                 return false;
             }
         }
-        else if (index.column() == AddressBlockColumns::DESC_COLUMN)
+        else if (index.column() == AddressBlockColumns::DESCRIPTION)
         {
             items_[index.row()]->setDescription(value.toString());
         }
-        else if (index.column() == AddressBlockColumns::VOLATILE_COLUMN)
+        else if (index.column() == AddressBlockColumns::VOLATILE)
         {
             QSharedPointer<Register> reg = items_[index.row()].dynamicCast<Register>();
             if (reg)
@@ -363,7 +363,7 @@ bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value
                 return false;
             }
         }
-        else if (index.column() == AddressBlockColumns::ACCESS_COLUMN)
+        else if (index.column() == AddressBlockColumns::REGISTER_ACCESS)
         {
             QSharedPointer<Register> reg = items_[index.row()].dynamicCast<Register>();
             if (reg)
@@ -375,7 +375,7 @@ bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value
                 return false;
             }
         }
-        else if (index.column() == AddressBlockColumns::RESET_VALUE_COLUMN)
+        else if (index.column() == AddressBlockColumns::RESET_VALUE)
         {
             QSharedPointer<Register> reg = items_[index.row()].dynamicCast<Register>();
             if (reg)
@@ -402,7 +402,7 @@ bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value
                 return false;
             }
         }
-        else if (index.column() == AddressBlockColumns::RESET_MASK_COLUMN)
+        else if (index.column() == AddressBlockColumns::RESET_MASK)
         {
             QSharedPointer<Register> reg = items_[index.row()].dynamicCast<Register>();
             if (reg)
@@ -463,8 +463,8 @@ bool AddressBlockModel::isValid() const
 //-----------------------------------------------------------------------------
 bool AddressBlockModel::isValidExpressionColumn(QModelIndex const& index) const
 {
-    if (index.column() == AddressBlockColumns::DIM_COLUMN || 
-        index.column() == AddressBlockColumns::OFFSET_COLUMN)
+    if (index.column() == AddressBlockColumns::REGISTER_DIMENSION || 
+        index.column() == AddressBlockColumns::REGISTER_OFFSET)
     {
         return true;
     }
@@ -479,7 +479,7 @@ bool AddressBlockModel::isValidExpressionColumn(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant AddressBlockModel::expressionOrValueForIndex(QModelIndex const& index) const
 {
-    if (index.column() == AddressBlockColumns::DIM_COLUMN)
+    if (index.column() == AddressBlockColumns::REGISTER_DIMENSION)
     {
         const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
         if (reg)
@@ -491,7 +491,7 @@ QVariant AddressBlockModel::expressionOrValueForIndex(QModelIndex const& index) 
             return QVariant();
         }
     }
-    else if (index.column() == AddressBlockColumns::OFFSET_COLUMN)
+    else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
     {
         const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
         if (reg)
@@ -515,7 +515,7 @@ QVariant AddressBlockModel::expressionOrValueForIndex(QModelIndex const& index) 
 //-----------------------------------------------------------------------------
 bool AddressBlockModel::validateColumnForParameter(QModelIndex const& index) const
 {
-    if (index.column() == AddressBlockColumns::DIM_COLUMN)
+    if (index.column() == AddressBlockColumns::REGISTER_DIMENSION)
     {
         const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
         if (reg)
@@ -528,7 +528,7 @@ bool AddressBlockModel::validateColumnForParameter(QModelIndex const& index) con
             return false;
         }
     }
-    else if (index.column() == AddressBlockColumns::OFFSET_COLUMN)
+    else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
     {
         const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
         if (reg)
