@@ -27,7 +27,9 @@ ImportWizard::ImportWizard(QSharedPointer<const Component> component,
 	                             LibraryInterface* handler,
 	                             QWidget* parent)
     : QWizard(parent),
-      workingComponent_(new Component(*component))
+      workingComponent_(new Component(*component)),
+      parameterFinder_(new ComponentParameterFinder(workingComponent_)),
+      expressionFormatter_(new ExpressionFormatter(parameterFinder_))
 {
 	setWindowTitle(tr("Import Wizard for %1").arg(component->getVlnv()->toString()));
     setWizardStyle(ModernStyle);
@@ -36,7 +38,8 @@ ImportWizard::ImportWizard(QSharedPointer<const Component> component,
     setOption(NoBackButtonOnStartPage, true);
     setOption(HaveFinishButtonOnEarlyPages, false);
 
-    ImportWizardImportPage* importPage = new ImportWizardImportPage(workingComponent_, handler, pluginMgr, this);
+    ImportWizardImportPage* importPage = new ImportWizardImportPage(workingComponent_, handler, pluginMgr,
+        parameterFinder_, expressionFormatter_, this);
     ComponentWizardConclusionPage* finalPage = new ComponentWizardConclusionPage(workingComponent_, handler, this);
 
     setPage(ImportWizardPages::INTRO, new ImportWizardIntroPage(this));
@@ -71,4 +74,6 @@ QSharedPointer<Component> ImportWizard::getComponent()
 void ImportWizard::onComponentChanged(QSharedPointer<Component> component)
 {
     workingComponent_ = component;
+
+    parameterFinder_->setComponent(workingComponent_);
 }

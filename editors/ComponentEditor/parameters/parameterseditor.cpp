@@ -14,7 +14,6 @@
 #include <common/widgets/summaryLabel/summarylabel.h>
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
@@ -27,7 +26,8 @@
 //-----------------------------------------------------------------------------
 // Function: ParametersEditor::ParametersEditor()
 //-----------------------------------------------------------------------------
-ParametersEditor::ParametersEditor(QSharedPointer<Component> component, LibraryInterface* handler,	
+ParametersEditor::ParametersEditor(QSharedPointer<Component> component, LibraryInterface* handler,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QWidget* parent): 
 ItemEditor(component, handler, parent),
 view_(this), 
@@ -36,9 +36,8 @@ proxy_(0)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(component));
 
-    model_ = new ParametersModel(component->getParameters(), component->getChoices(), expressionParser, this);
-
-    QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(component));
+    model_ = new ParametersModel(component->getParameters(), component->getChoices(), expressionParser,
+        expressionFormatter, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(this, parameterFinder);
     componentParametersModel->setExpressionParser(expressionParser);

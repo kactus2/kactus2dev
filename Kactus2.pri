@@ -7,10 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
-    ./editors/ComponentEditor/common/ExpressionEditor.h \
-    ./editors/ComponentEditor/parameters/ComponentParameterModel.h \
-    ./common/Global.h \
+HEADERS += ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
@@ -253,12 +250,15 @@ HEADERS += ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
     ./editors/ComponentEditor/modelParameters/ModelParameterDelegate.h \
     ./editors/ComponentEditor/modelParameters/modelparametermodel.h \
     ./editors/ComponentEditor/modelParameters/modelparametereditor.h \
+    ./editors/ComponentEditor/ports/PortColumns.h \
     ./editors/ComponentEditor/ports/portsdelegate.h \
     ./editors/ComponentEditor/ports/portseditor.h \
     ./editors/ComponentEditor/ports/portsmodel.h \
     ./editors/ComponentEditor/ports/PortsView.h \
+    ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
     ./editors/ComponentEditor/parameters/ParameterColumns.h \
     ./editors/ComponentEditor/parameters/parametersmodel.h \
+    ./editors/ComponentEditor/parameters/ComponentParameterModel.h \
     ./editors/ComponentEditor/parameters/ParameterDelegate.h \
     ./editors/ComponentEditor/parameters/ParameterEditorHeaderView.h \
     ./editors/ComponentEditor/parameters/parameterseditor.h \
@@ -395,6 +395,7 @@ HEADERS += ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyModel.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceDialog.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.h \
+    ./editors/ComponentEditor/memoryMaps/AddressBlockColumns.h \
     ./editors/ComponentEditor/memoryMaps/memorymapdelegate.h \
     ./editors/ComponentEditor/memoryMaps/memorymapeditor.h \
     ./editors/ComponentEditor/memoryMaps/memorymapmodel.h \
@@ -468,13 +469,15 @@ HEADERS += ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
     ./editors/ComponentEditor/common/ExpressionParser.h \
     ./editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ./editors/ComponentEditor/common/ParameterFinder.h \
-    ./editors/ComponentEditor/common/ParameterModelEquations.h \
+    ./editors/ComponentEditor/common/ParameterizableTable.h \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ./editors/ComponentEditor/common/SystemVerilogSyntax.h \
     ./editors/ComponentEditor/common/ValueFormatter.h \
     ./editors/ComponentEditor/common/AbstractParameterModel.h \
     ./editors/ComponentEditor/common/ComponentParameterFinder.h \
     ./editors/ComponentEditor/common/CompleterPopupTable.h \
+    ./editors/ComponentEditor/common/ExpressionDelegate.h \
+    ./editors/ComponentEditor/common/ExpressionEditor.h \
     ./editors/ComponentEditor/common/ParameterCompleter.h \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
     ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
@@ -587,12 +590,8 @@ HEADERS += ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/ports/PortColumns.h \
-    ./editors/ComponentEditor/memoryMaps/AddressBlockColumns.h \
-    ./editors/ComponentEditor/common/ExpressionDelegate.h
-SOURCES += ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
-    ./editors/ComponentEditor/common/ExpressionEditor.cpp \
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h
+SOURCES += ./GeneratedFiles/moc_ExpressionEditor.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -881,6 +880,7 @@ SOURCES += ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.cpp \
+    ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ./editors/ComponentEditor/parameters/ParameterDelegate.cpp \
     ./editors/ComponentEditor/parameters/ParameterEditorHeaderView.cpp \
     ./editors/ComponentEditor/parameters/parameterseditor.cpp \
@@ -1017,10 +1017,12 @@ SOURCES += ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ./editors/ComponentEditor/common/AbstractParameterModel.cpp \
     ./editors/ComponentEditor/common/CompleterPopupTable.cpp \
     ./editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ./editors/ComponentEditor/common/ExpressionDelegate.cpp \
+    ./editors/ComponentEditor/common/ExpressionEditor.cpp \
     ./editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ./editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ./editors/ComponentEditor/common/ParameterCompleter.cpp \
-    ./editors/ComponentEditor/common/ParameterModelEquations.cpp \
+    ./editors/ComponentEditor/common/ParameterizableTable.cpp \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./editors/ComponentEditor/common/ValueFormatter.cpp \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.cpp \
@@ -1128,6 +1130,5 @@ SOURCES += ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./editors/ComponentEditor/common/ExpressionDelegate.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
 RESOURCES += kactus.qrc

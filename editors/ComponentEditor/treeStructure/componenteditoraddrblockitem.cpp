@@ -18,6 +18,8 @@ ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem(QSharedPointer<Addres
 														   ComponentEditorTreeModel* model,
 														   LibraryInterface* libHandler,
 														   QSharedPointer<Component> component,
+                                                           QSharedPointer<ParameterFinder> parameterFinder,
+                                                           QSharedPointer<ExpressionFormatter> expressionFormatter,
 														   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 addrBlock_(addrBlock),
@@ -26,6 +28,8 @@ visualizer_(NULL),
 graphItem_(NULL),
 addressUnitBits_(0)
 {
+    setParameterFinder(parameterFinder);
+    setExpressionFormatter(expressionFormatter);
 
 	setObjectName(tr("ComponentEditorAddrBlockItem"));
 
@@ -61,7 +65,8 @@ bool ComponentEditorAddrBlockItem::isValid() const
 
 ItemEditor* ComponentEditorAddrBlockItem::editor() {
 	if (!editor_) {
-		editor_ = new AddressBlockEditor(addrBlock_, component_, libHandler_);
+		editor_ = new AddressBlockEditor(addrBlock_, component_, libHandler_, parameterFinder_,
+            expressionFormatter_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), 
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);

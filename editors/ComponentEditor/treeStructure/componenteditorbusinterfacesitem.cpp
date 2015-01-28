@@ -10,17 +10,20 @@
 #include <editors/ComponentEditor/busInterfaces/businterfaceseditor.h>
 
 ComponentEditorBusInterfacesItem::ComponentEditorBusInterfacesItem(ComponentEditorTreeModel* model,
-																   LibraryInterface* libHandler,
-																   QSharedPointer<Component> component,
-																   ComponentEditorItem* parent,
-                                                                   QWidget* parentWnd):
+    LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    ComponentEditorItem* parent, QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
 busifs_(component->getBusInterfaces()),
-parentWnd_(parentWnd) {
+parentWnd_(parentWnd)
+{
+    setParameterFinder(parameterFinder);
+    setExpressionFormatter(expressionFormatter);
 
 	foreach (QSharedPointer<BusInterface> busif, busifs_) {
 		QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
-			new ComponentEditorBusInterfaceItem(busif, model, libHandler, component, this, parentWnd));
+			new ComponentEditorBusInterfaceItem(busif, model, libHandler, component, parameterFinder_,
+            expressionFormatter_, this, parentWnd));
 
 		childItems_.append(busifItem);
 	}
@@ -64,7 +67,7 @@ QString ComponentEditorBusInterfacesItem::getTooltip() const {
 void ComponentEditorBusInterfacesItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
 		new ComponentEditorBusInterfaceItem(busifs_.at(index),
-		model_, libHandler_, component_, this, parentWnd_));
+		model_, libHandler_, component_, parameterFinder_, expressionFormatter_, this, parentWnd_));
 	busifItem->setLocked(locked_);
 
 	childItems_.insert(index, busifItem);

@@ -22,21 +22,24 @@ class ComponentEditorViewItem : public ComponentEditorItem {
 
 public:
 
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param view Pointer to the view being edited.
-	 * \param model Pointer to the model that owns the items.
-	 * \param libHandler Pointer to the instance that manages the library.
-	 * \param component Pointer to the component being edited.
-	 * \param widget Pointer to the QWidget that displays the editor.
-	 * \param parent Pointer to the parent item.
-	 *
-	*/
-	ComponentEditorViewItem(QSharedPointer<View> view, 
-		ComponentEditorTreeModel* model,
-		LibraryInterface* libHandler,
-		QSharedPointer<Component> component,
-		ComponentEditorItem* parent);
+	 *      @param [in] view                    Pointer to the view being edited.
+	 *      @param [in] model                   Pointer to the model that owns the items.
+	 *      @param [in] libHandler              Pointer to the instance that manages the library.
+	 *      @param [in] component               Pointer to the component being edited.
+	 *      @param [in] parameterFinder         Pointer to the parameter finder.
+     *      @param [in] expressionFormatter     Pointer to the expression formatter.
+	 *      @param [in] parent                  Pointer to the parent item.
+	 */
+	ComponentEditorViewItem(QSharedPointer<View> view,
+        ComponentEditorTreeModel* model,
+        LibraryInterface* libHandler,
+        QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        ComponentEditorItem* parent);
 
 	//! \brief The destructor
 	virtual ~ComponentEditorViewItem();

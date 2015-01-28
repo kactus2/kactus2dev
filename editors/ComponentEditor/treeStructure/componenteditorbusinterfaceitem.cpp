@@ -11,16 +11,17 @@
 #include <IPXACTmodels/PortMap.h>
 
 ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem(QSharedPointer<BusInterface> busif,
-																 ComponentEditorTreeModel* model,
-																 LibraryInterface* libHandler,
-																 QSharedPointer<Component> component,
-																 ComponentEditorItem* parent,
-                                                                 QWidget* parentWnd):
+    ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    ComponentEditorItem* parent, QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
 busif_(busif),
 parentWnd_(parentWnd),
 editAction_(new QAction(tr("Edit"), this))
 {
+    setParameterFinder(parameterFinder);
+    setExpressionFormatter(expressionFormatter);
+
     connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection);
 }
 
@@ -80,7 +81,8 @@ bool ComponentEditorBusInterfaceItem::isValid() const {
 
 ItemEditor* ComponentEditorBusInterfaceItem::editor() {
 	if (!editor_) {
-		editor_ = new BusInterfaceEditor(libHandler_, component_, busif_, 0, parentWnd_);
+		editor_ = new BusInterfaceEditor(libHandler_, component_, busif_, parameterFinder_, expressionFormatter_,
+            0, parentWnd_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()),
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);

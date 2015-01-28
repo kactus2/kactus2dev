@@ -13,6 +13,7 @@
 #define MODELPARAMETERMODEL_H
 
 #include <editors/ComponentEditor/common/AbstractParameterModel.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -33,14 +34,16 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in]  model               The model being edited.
-     *      @param [in]  choices             The choices available for the model parameter values.
-     *      @param [in]  expressionParser    Expression parser for configurable elements.
-	 *      @param [in]  parent              The owner of this model.
+	 *      @param [in]  model                  The model being edited.
+     *      @param [in]  choices                The choices available for the model parameter values.
+     *      @param [in]  expressionParser       Expression parser for configurable elements.
+     *      @param [in]  expressionFormatter    Expression formatter.
+	 *      @param [in]  parent                 The owner of this model.
 	*/
-    ModelParameterModel(QSharedPointer<Model> model, 
+    ModelParameterModel(QSharedPointer<Model> model,
         QSharedPointer<QList<QSharedPointer<Choice> > > choices,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
         QObject *parent);
 
 	//! The destructor

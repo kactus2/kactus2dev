@@ -9,6 +9,7 @@
 #define COMPONENTEDITORPARAMETERITEM_H
 
 #include "componenteditoritem.h"
+
 #include <IPXACTmodels/parameter.h>
 
 /*! \brief The parameters-item in the component editor navigation tree.
@@ -19,19 +20,24 @@ class ComponentEditorParametersItem : public ComponentEditorItem {
 
 public:
 	
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param model Pointer to the model that owns the items.
-	 * \param libHandler Pointer to the instance that manages the library.
-	 * \param component Pointer to the component being edited.
-	 * \param parent Pointer to the parent item.
-	 *
-	*/
+	 *      @param [in] model                   Pointer to the model that owns the items.
+	 *      @param [in] libHandler              Pointer to the instance that manages the library.
+	 *      @param [in] component               Pointer to the component being edited.
+	 *      @param [in] refCounter              Pointer to the reference counter.
+	 *      @param [in] parameterFinder         Pointer to the parameter finder.
+	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+	 *      @param [in] parent                  Pointer to the parent item.
+	 */
 	ComponentEditorParametersItem(ComponentEditorTreeModel* model,
-		LibraryInterface* libHandler,
-		QSharedPointer<Component> component,
-		ComponentEditorItem* parent, 
-        QSharedPointer<ReferenceCounter> refCounter);
+        LibraryInterface* libHandler,
+        QSharedPointer<Component> component,
+        QSharedPointer<ReferenceCounter> refCounter,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+		ComponentEditorItem* parent);
 
 	//! \brief The destructor
 	virtual ~ComponentEditorParametersItem();

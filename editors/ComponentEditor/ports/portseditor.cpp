@@ -36,7 +36,9 @@
 #include <QMessageBox>
 #include <QHeaderView>
 
-PortsEditor::PortsEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget *parent):
+PortsEditor::PortsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QWidget *parent):
 ItemEditor(component, handler, parent),
 view_(this), 
 model_(0),
@@ -46,9 +48,7 @@ handler_(handler)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(component));
 
-    model_ = new PortsModel(component->getModel(), expressionParser, this);
-
-    QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(component));
+    model_ = new PortsModel(component->getModel(), expressionParser, expressionFormatter, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(this, parameterFinder);
     componentParametersModel->setExpressionParser(expressionParser);

@@ -15,6 +15,9 @@
 #include <editors/ComponentEditor/busInterfaces/busifgeneraltab.h>
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <QWizardPage>
 
 class BusInterfaceWizard;
@@ -32,13 +35,21 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component   The component whose bus interface is being edited.
-     *      @param [in] busIf       The bus interface being edited.
-     *      @param [in] lh          The component library handler.
-     *      @param [in] parent      The parent wizard.
+     *      @param [in] component               The component whose bus interface is being edited.
+     *      @param [in] busIf                   The bus interface being edited.
+     *      @param [in] lh                      The component library hunter.
+     *      @param [in] absDefEditable          The editability of abstract definition.
+     *      @param [in] parameterFinder         The parameter finder.
+     *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] parent                  The parent wizard.
      */
-    BusInterfaceWizardGeneralOptionsPage(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf, 
-        LibraryInterface* lh, bool absDefEditable, BusInterfaceWizard* parent);
+    BusInterfaceWizardGeneralOptionsPage(QSharedPointer<Component> component,
+        QSharedPointer<BusInterface> busIf, 
+        LibraryInterface* lh,
+        bool absDefEditable,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        BusInterfaceWizard* parent);
 
     /*!
     *  Destructor.

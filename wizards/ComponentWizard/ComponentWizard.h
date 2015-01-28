@@ -12,6 +12,9 @@
 #ifndef COMPONENTWIZARD_H
 #define COMPONENTWIZARD_H
 
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <QWizard>
 
 class Component;
@@ -83,6 +86,8 @@ private:
     //! The working copy of a component after import.
     QSharedPointer<Component> workingComponent_;
 
+    QSharedPointer<ParameterFinder> parameterFinder_;
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 };
 
 #endif // COMPONENTWIZARD_H

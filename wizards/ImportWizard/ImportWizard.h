@@ -12,6 +12,9 @@
 #ifndef IMPORTWIZARD_H
 #define IMPORTWIZARD_H
 
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <QWizard>
 #include <QSharedPointer>
 
@@ -69,6 +72,11 @@ private:
     //! The working copy of a component after import.
     QSharedPointer<Component> workingComponent_;
 
+    //! Parameter finder, finds the desired parameters.
+    QSharedPointer<ParameterFinder> parameterFinder_;
+
+    //! Expression formatter, formats the referencing expressions.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 };
 
 #endif // ImportWizard_H

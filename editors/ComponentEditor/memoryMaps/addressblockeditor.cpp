@@ -27,12 +27,14 @@
 AddressBlockEditor::AddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
 									   QSharedPointer<Component> component,
 									   LibraryInterface* handler,
+                                       QSharedPointer<ParameterFinder> parameterFinder,
+                                       QSharedPointer<ExpressionFormatter> expressionFormatter,
 									   QWidget* parent /*= 0*/):
 ItemEditor(component, handler, parent),
 view_(new EditableTableView(this)),
 proxy_(new AddressBlockProxy(this)),
 model_(new AddressBlockModel(addressBlock, component->getChoices(), 
-    QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(component)), this))
+    QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(component)), expressionFormatter, this))
 {
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Registers summary"), this);

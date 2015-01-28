@@ -9,8 +9,10 @@
 #define COMPONENTEDITORADDRSPACEITEM_H
 
 #include "componenteditoritem.h"
+
 #include <IPXACTmodels/addressspace.h>
 #include <IPXACTmodels/memorymap.h>
+
 #include <editors/ComponentEditor/addressSpaces/addressspaceeditor.h>
 #include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.h>
 
@@ -25,19 +27,23 @@ class ComponentEditorAddrSpaceItem : public ComponentEditorItem {
 
 public:
 
-	/*! \brief The constructor
-	 * 
-	 * \param addrSpace Pointer to the address space being edited.
-	 * \param model Pointer to the model that owns the items.
-	 * \param libHandler Pointer to the instance that manages the library.
-	 * \param component Pointer to the component being edited.
-	 * \param parent Pointer to the parent item.
+	/*!
+	 *  The constructor.
 	 *
-	*/
+	 *      @param [in] addrSpace               Pointer to the address space being edited.
+	 *      @param [in] model                   Pointer to the model that owns the items.
+	 *      @param [in] libHandler              Pointer to the instance that manages the library.
+	 *      @param [in] component               Pointer to the component being edited.
+	 *      @param [in] parameterFinder         Pointer to the parameter finder.
+	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+	 *      @param [in] parent                  Pointer to the parent item.
+	 */
 	ComponentEditorAddrSpaceItem(QSharedPointer<AddressSpace> addrSpace,
 		ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor

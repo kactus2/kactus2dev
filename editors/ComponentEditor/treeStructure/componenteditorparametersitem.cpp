@@ -11,15 +11,16 @@
 
 #include <IPXACTmodels/choice.h>
 
-ComponentEditorParametersItem::ComponentEditorParametersItem(ComponentEditorTreeModel* model,
-															 LibraryInterface* libHandler,
-															 QSharedPointer<Component> component,
-															 ComponentEditorItem* parent, 
-                                                             QSharedPointer<ReferenceCounter> refCounter ):
+ComponentEditorParametersItem::ComponentEditorParametersItem(
+    ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<ReferenceCounter> refCounter, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 parameters_(component->getParameters())
 {
     setReferenceCounter(refCounter);
+    setParameterFinder(parameterFinder);
+    setExpressionFormatter(expressionFormatter);
 }
 
 ComponentEditorParametersItem::~ComponentEditorParametersItem() 
@@ -45,8 +46,9 @@ bool ComponentEditorParametersItem::isValid() const
 
 ItemEditor* ComponentEditorParametersItem::editor()
 {
-	if (!editor_) {
-		editor_ = new ParametersEditor(component_, libHandler_);
+	if (!editor_)
+    {
+		editor_ = new ParametersEditor(component_, libHandler_, parameterFinder_, expressionFormatter_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()),
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);

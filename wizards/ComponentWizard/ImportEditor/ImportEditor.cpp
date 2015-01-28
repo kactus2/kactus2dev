@@ -36,18 +36,18 @@
 //-----------------------------------------------------------------------------
 // Function: ImportEditor::ImportEditor()
 //-----------------------------------------------------------------------------
-ImportEditor::ImportEditor(QSharedPointer<Component> component, 
-	LibraryInterface* handler,
-    PluginManager const& pluginMgr,
-	QWidget *parent):
+ImportEditor::ImportEditor(QSharedPointer<Component> component, LibraryInterface* handler,
+    PluginManager const& pluginMgr, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
     QWidget(parent),
     splitter_(Qt::Vertical, this),
 	componentXmlPath_(handler->getPath(*component->getVlnv())),
     component_(component),
     importComponent_(new Component(*component_)),
     selectedSourceFile_(),
-    modelParameterEditor_(new ModelParameterEditor(importComponent_, handler, &splitter_)),
-    portEditor_(new PortsEditor(importComponent_, handler, &splitter_)),
+    modelParameterEditor_(new ModelParameterEditor(importComponent_, handler, parameterFinder, expressionFormatter,
+        &splitter_)),
+    portEditor_(new PortsEditor(importComponent_, handler, parameterFinder, expressionFormatter, &splitter_)),
     sourceDisplayer_(new QPlainTextEdit(this)),
     fileSelector_(new FileSelector(component, this)),
     editButton_(new QPushButton(tr("Open editor"), this)),

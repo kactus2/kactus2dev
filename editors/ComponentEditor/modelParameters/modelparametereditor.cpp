@@ -28,9 +28,9 @@
 //-----------------------------------------------------------------------------
 // Function: ModelParameterEditor()
 //-----------------------------------------------------------------------------
-ModelParameterEditor::ModelParameterEditor(QSharedPointer<Component> component,
-	LibraryInterface* handler, 
-	QWidget *parent): 
+ModelParameterEditor::ModelParameterEditor(QSharedPointer<Component> component, LibraryInterface* handler,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QWidget *parent): 
 ItemEditor(component, handler, parent), 
 view_(this),
 model_(0),
@@ -38,10 +38,8 @@ proxy_(this)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(component));
 
-    model_ = new ModelParameterModel(component->getModel(), component->getChoices(), 
-        expressionParser, this);
-
-    QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(component));
+    model_ = new ModelParameterModel(component->getModel(), component->getChoices(), expressionParser,
+        expressionFormatter, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(this, parameterFinder);
     componentParametersModel->setExpressionParser(expressionParser);

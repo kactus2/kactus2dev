@@ -29,7 +29,7 @@ targetID_(targetID),
 expressionFormatter_(expressionFormatter)
 {
     QStringList labels;
-    labels << "Reference tree" << "Referenced in expression";
+    labels << "Referencing elements" << "Referencing expression";
     setHeaderLabels(labels);
 
     setColumnCount(COLUMN_COUNT);

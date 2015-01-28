@@ -13,6 +13,9 @@
 
 #include <editors/ComponentEditor/referenceCounter/ReferenceCounter.h>
 
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <QAction>
 #include <QObject>
 #include <QSharedPointer>
@@ -244,6 +247,20 @@ public:
      */
     void setReferenceCounter(QSharedPointer<ReferenceCounter> newReferenceCounter);
 
+    /*!
+     *  Set the parameter finder for this item.
+     *
+     *      @param [in] parameterFinder     The parameter finder.
+     */
+    void setParameterFinder(QSharedPointer<ParameterFinder> parameterFinder);
+
+    /*!
+     *  Set the expression formatter.
+     *
+     *      @param [in] expressionFormatter     The expression formatter.
+     */
+    void setExpressionFormatter(QSharedPointer<ExpressionFormatter> expressionFormatter);
+
 public slots:
 
 	/*! \brief Open the item in an editor.
@@ -366,6 +383,12 @@ protected:
 
     //! Allows increasing and decreasing of parameter usage counts.
     QSharedPointer<ReferenceCounter> referenceCounter_;
+
+    //! Parameter finder, finds the desired parameters.
+    QSharedPointer<ParameterFinder> parameterFinder_;
+
+    //! Expression formatter, formats the referencing expressions.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 
 protected slots:
 

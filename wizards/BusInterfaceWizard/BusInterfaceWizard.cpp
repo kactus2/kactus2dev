@@ -20,6 +20,9 @@
 #include "BusInterfaceWizardPortMapPage.h"
 #include "BusInterfaceWizardConclusionPage.h"
 
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizard::BusInterfaceWizard()
 //-----------------------------------------------------------------------------
@@ -39,6 +42,9 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component,
     setOption(HaveFinishButtonOnEarlyPages, false);
     resize(800, 800);
 
+    QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(component));
+    QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
+
     BusInterfaceWizardBusEditorPage::SignalNamingPolicy namingPolicy = BusInterfaceWizardBusEditorPage::NAME;
     if (descriptionAsLogicalName)
     {
@@ -47,7 +53,7 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component,
 
     setPage(PAGE_INTRO, new BusInterfaceWizardIntroPage(this));
     setPage(PAGE_GENERALOPTIONS, new BusInterfaceWizardGeneralOptionsPage(component, busIf, handler, 
-        !absDefVLNV.isValid(), this));
+        !absDefVLNV.isValid(), parameterFinder, expressionFormatter, this));
     setPage(PAGE_BUSDEFINITION, new BusInterfaceWizardBusEditorPage(component, busIf, handler, portNames, 
         this, absDefVLNV, namingPolicy));
     setPage(PAGE_PORTMAPS, new BusInterfaceWizardPortMapPage(component, busIf, handler, portNames, this));

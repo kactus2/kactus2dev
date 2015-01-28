@@ -14,6 +14,8 @@
 #include <IPXACTmodels/modelparameter.h>
 
 #include <editors/ComponentEditor/itemeditor.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <common/views/EditableTableView/editabletableview.h>
 
@@ -33,15 +35,20 @@ class ModelParameterEditor : public ItemEditor {
 
 public:
 
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param component Pointer to the component being edited.
-	 * \param parent Pointer to the owner of this widget.
-	 * 
-	*/
+	 *      @param [in] component               Pointer to the component being edited.
+	 *      @param [in] handler                 Pointer to the instance managing the library.
+	 *      @param [in] parameterFinder         Pointer to the parameter finder.
+	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+	 *      @param [in] parent                  Pointer to the owner of this widget.
+	 */
 	ModelParameterEditor(QSharedPointer<Component> component,
-		LibraryInterface* handler, 
-		QWidget *parent = 0);
+        LibraryInterface* handler,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer <ExpressionFormatter> expressionFormatter, 
+        QWidget *parent = 0);
 
 	//! \brief The destructor
 	virtual ~ModelParameterEditor();

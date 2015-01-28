@@ -12,11 +12,13 @@
 #ifndef ABSTRACTPARAMETERMODEL_H
 #define ABSTRACTPARAMETERMODEL_H
 
+#include "ParameterizableTable.h"
+
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <IPXACTmodels/parameter.h>
-#include "ParameterModelEquations.h"
 
 #include <QAbstractTableModel>
-
 #include <QSharedPointer>
 #include <QList>
 
@@ -26,7 +28,7 @@ class ParameterValidator2014;
 //-----------------------------------------------------------------------------
 //! Base class for models editing parameters and model parameters.
 //-----------------------------------------------------------------------------
-class AbstractParameterModel : public QAbstractTableModel, ParameterModelEquations
+class AbstractParameterModel : public QAbstractTableModel, ParameterizableTable
 {
 	Q_OBJECT
 
@@ -35,12 +37,13 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] choices             The choices available for the parameter values.
-     *      @param [in] expressionParser    Expression parser for configurable elements.
-	 *      @param [in] parent              The parent object.
+	 *      @param [in] choices                 The choices available for the parameter values.
+     *      @param [in] expressionParser        Expression parser for configurable elements.
+     *      @param [in] expressionFormatter     The expression formatter.
+	 *      @param [in] parent                  The parent object.
 	 */
 	AbstractParameterModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-	QSharedPointer<ExpressionParser> expressionParser,
+	QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
         QObject *parent);
 	
     //! The destructor.
@@ -333,6 +336,9 @@ private:
 
     //! Validator for parameters.
     ParameterValidator2014* validator_;
+
+    //! Formatter for parameter expressions.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 };
 
 #endif // ABSTRACTPARAMETERMODEL_H

@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: ParameterModelEquations.cpp
+// File: ParametrizableTable.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Mikko Teuho
@@ -9,7 +9,7 @@
 // Base class for equation usage in parameter editors.
 //-----------------------------------------------------------------------------
 
-#include "ParameterModelEquations.h"
+#include "ParameterizableTable.h"
 
 #include "ValueFormatter.h"
 
@@ -19,43 +19,43 @@
 #include <QColor>
 
 //-----------------------------------------------------------------------------
-// Function: ParameterModelEquations::ParameterModelEquations()
+// Function: ParameterizableTable::ParametrizableTable()
 //-----------------------------------------------------------------------------
-ParameterModelEquations::ParameterModelEquations():
+ParameterizableTable::ParameterizableTable():
 expressionParser_()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterModelEquations::~ParameterModelEquations()
+// Function: ParameterizableTable::~ParametrizableTable()
 //-----------------------------------------------------------------------------
-ParameterModelEquations::~ParameterModelEquations()
+ParameterizableTable::~ParameterizableTable()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterModelEquations::getExpressionSymbol()
+// Function: ParameterizableTable::getExpressionSymbol()
 //-----------------------------------------------------------------------------
-QString ParameterModelEquations::getExpressionSymbol() const
+QString ParameterizableTable::getExpressionSymbol() const
 {
     QString functionSymbol(0x0192);
     return QString(", " + functionSymbol + "(x)");
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterModelEquations::setExpressionParser()
+// Function: ParameterizableTable::setExpressionParser()
 //-----------------------------------------------------------------------------
-void ParameterModelEquations::setExpressionParser(QSharedPointer <ExpressionParser> expressionParser)
+void ParameterizableTable::setExpressionParser(QSharedPointer <ExpressionParser> expressionParser)
 {
     expressionParser_ = expressionParser;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterModelEquations::formattedValueFor()
+// Function: ParameterizableTable::formattedValueFor()
 //-----------------------------------------------------------------------------
-QString ParameterModelEquations::formattedValueFor(QString const& expression) const
+QString ParameterizableTable::formattedValueFor(QString const& expression) const
 {
     if (expressionParser_->isPlainValue(expression))
     {
@@ -74,9 +74,9 @@ QString ParameterModelEquations::formattedValueFor(QString const& expression) co
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterModelEquations::italicForEvaluatedValue()
+// Function: ParameterizableTable::italicForEvaluatedValue()
 //-----------------------------------------------------------------------------
-QVariant ParameterModelEquations::italicForEvaluatedValue(QModelIndex const& index) const
+QVariant ParameterizableTable::italicForEvaluatedValue(QModelIndex const& index) const
 {
     QString valueOrExpression = expressionOrValueForIndex(index).toString();
 
@@ -93,9 +93,9 @@ QVariant ParameterModelEquations::italicForEvaluatedValue(QModelIndex const& ind
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterModelEquations::blackForValidOrRefForInavlidIndex()
+// Function: ParameterizableTable::blackForValidOrRefForInavlidIndex()
 //-----------------------------------------------------------------------------
-QVariant ParameterModelEquations::blackForValidOrRedForInvalidIndex(QModelIndex const& index) const
+QVariant ParameterizableTable::blackForValidOrRedForInvalidIndex(QModelIndex const& index) const
 {
     if (validateColumnForParameter(index))
     {
@@ -108,9 +108,9 @@ QVariant ParameterModelEquations::blackForValidOrRedForInvalidIndex(QModelIndex 
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterModelEquations::isValuePlainOrExpression()
+// Function: ParameterizableTable::isValuePlainOrExpression()
 //-----------------------------------------------------------------------------
-bool ParameterModelEquations::isValuePlainOrExpression(QString const& value) const
+bool ParameterizableTable::isValuePlainOrExpression(QString const& value) const
 {
     if (expressionParser_->isPlainValue(value) || expressionParser_->isValidExpression(value))
     {
@@ -123,9 +123,9 @@ bool ParameterModelEquations::isValuePlainOrExpression(QString const& value) con
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterModelEquations::parsedExpression()
+// Function: ParameterizableTable::parsedExpression()
 //-----------------------------------------------------------------------------
-QString ParameterModelEquations::parseExpressionToDecimal (QString const& expression) const
+QString ParameterizableTable::parseExpressionToDecimal (QString const& expression) const
 {
     return expressionParser_->parseExpression(expression);
 }

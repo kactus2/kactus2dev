@@ -12,6 +12,9 @@
 #ifndef COMPONENTWIZARDVHDLIMPORTPAGE_H
 #define COMPONENTWIZARDVHDLIMPORTPAGE_H
 
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <QWizardPage>
 #include <QSharedPointer>
 
@@ -28,16 +31,20 @@ class ComponentWizardImportPage : public QWizardPage
     Q_OBJECT
 public:
     /*!
-     *  Constructor.
+     *  The constructor.
      *
-     *		@param [in, out] component  Pointer to the component being edited.
-     *		@param [in]      handler    Pointer to the instance which manages the library.
-     *		@param [in]      pluginMgr  Manager for all plugins.
-     *      @param [in]      parent     The parent wizard.
+     *      @param [in] component               Pointer to the component being edited.
+     *      @param [in] handler                 Pointer to the instance which manages the library.
+     *      @param [in] pluginMgr               Manager for all plugins.
+     *      @param [in] parameterFinder         The parameter finder.
+     *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] parent                  The parent wizard.
      */
     ComponentWizardImportPage(QSharedPointer<Component> component,
 		 LibraryInterface* handler,
          PluginManager const& pluginMgr,
+         QSharedPointer<ParameterFinder> parameterFinder,
+         QSharedPointer<ExpressionFormatter> expressionFormatter,
 		 QWidget* parent);
 
     /*!

@@ -22,9 +22,10 @@
 // Function: ComponentWizardVhdlImportPage::ComponentWizardVhdlImportPage()
 //-----------------------------------------------------------------------------
 ComponentWizardImportPage::ComponentWizardImportPage(QSharedPointer<Component> component, 
-	LibraryInterface* handler, PluginManager const& pluginMgr, QWidget* parent)
+	LibraryInterface* handler, PluginManager const& pluginMgr, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget* parent)
     : QWizardPage(parent),
-      editor_(new ImportEditor(component, handler, pluginMgr, this))
+      editor_(new ImportEditor(component, handler, pluginMgr, parameterFinder, expressionFormatter, this))
 {
     setTitle(tr("Import file"));
     setSubTitle(tr("Choose the top-level file to import into component."));

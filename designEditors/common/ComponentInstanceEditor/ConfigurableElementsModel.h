@@ -12,7 +12,7 @@
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <IPXACTmodels/parameter.h>
 #include <IPXACTmodels/modelparameter.h>
-#include <editors/ComponentEditor/common/ParameterModelEquations.h>
+#include <editors/ComponentEditor/common/ParameterizableTable.h>
 
 #include <QAbstractTableModel>
 #include <QMap>
@@ -24,7 +24,7 @@ class ComponentItem;
 //-----------------------------------------------------------------------------
 //! Model class to manage the configurable element values being edited.
 //-----------------------------------------------------------------------------
-class ConfigurableElementsModel : public QAbstractTableModel, public ParameterModelEquations
+class ConfigurableElementsModel : public QAbstractTableModel, public ParameterizableTable
 {
 	Q_OBJECT
 

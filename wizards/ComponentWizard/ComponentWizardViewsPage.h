@@ -18,6 +18,9 @@
 #include <QListView>
 #include <QMap>
 
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 class Component;
 class ComponentWizard;
 class LibraryInterface;
@@ -36,10 +39,15 @@ public:
     /*!
      *  The Constructor.
      *
-     *      @param [in] lh     The library interface.
-     *      @param [in] parent The parent wizard.
+     *      @param [in] lh                      The library interface.
+     *      @param [in] parameterFinder         The parameter finder.
+     *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] parent                  The parent wizard.
      */
-    ComponentWizardViewsPage(LibraryInterface* lh, ComponentWizard* parent);
+    ComponentWizardViewsPage(LibraryInterface* lh,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        ComponentWizard* parent);
 
     //! The destructor.     
     ~ComponentWizardViewsPage();
@@ -132,6 +140,12 @@ private:
 
     //! The model for view list.
     ViewListModel* viewModel_;
+
+    //! Parameter finder, finds the desired parameters.
+    QSharedPointer<ParameterFinder> parameterFinder_;
+
+    //! Expression formatter, formats referencing expressions to show names.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 };
 
 #endif // COMPONENTWIZARDVIEWSPAGE_H

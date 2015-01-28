@@ -9,10 +9,13 @@
 #define PARAMETERSEDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
-
 #include <editors/ComponentEditor/parameters/parametersmodel.h>
-#include <IPXACTmodels/component.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+
 #include <common/views/EditableTableView/editabletableview.h>
+
+#include <IPXACTmodels/component.h>
 
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
@@ -27,15 +30,19 @@ class ParametersEditor : public ItemEditor {
 
 public:
 
-	/*! \brief The constructor
+	/*!
+	 *  [Description].
 	 *
-	 * \param component Pointer to the component being edited.
-	 * \param handler Pointer to the instance managing the library.
-	 * \param parent Pointer to the owner of this widget.
-	 *
-	*/
-	ParametersEditor(QSharedPointer<Component> component, 
-		LibraryInterface* handler,
+	 *      @param [in] component               Pointer to the component being edited.
+	 *      @param [in] handler                 Pointer to the instance managing the library.
+	 *      @param [in] parameterFinder         Pointer to the instance searching for parameters.
+	 *      @param [in] expressionFormatter     Pointer to the instance formatting the expressions.
+	 *      @param [in] parent                  Pointer to the owner of this widget.
+	 */
+	ParametersEditor(QSharedPointer<Component> component,
+        LibraryInterface* handler,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
 		QWidget *parent = 0);
 	
 	//! \brief The destructor

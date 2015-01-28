@@ -14,6 +14,9 @@
 
 #include "ModelParameterEditorAdapter.h"
 
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <IPXACTmodels/component.h>
 
 #include <QWidget>
@@ -47,13 +50,19 @@ public:
 	/*! 
 	 *  The constructor.
 	 *
-	 *  @param [in]   component The component being edited.
-	 *  @param [in]   handler   The instance which manages the library.
-	 *  @param [in]   parent    The owner of this widget.
+	 *  @param [in]   component             The component being edited.
+	 *  @param [in]   handler               The instance which manages the library.
+     *  @param [in]   parameterFinder       The parameter finder.
+     *  @param [in]   expressionFormatter   The expression formatter.
+	 *  @param [in]   parent                The owner of this widget.
 	 *
 	 */
-	ImportEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
-        PluginManager const& pluginMgr, QWidget *parent);
+	ImportEditor(QSharedPointer<Component> component,
+        LibraryInterface* handler,
+        PluginManager const& pluginMgr,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QWidget *parent);
 	
 	//! The destructor.
 	~ImportEditor();

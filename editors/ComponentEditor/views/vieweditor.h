@@ -17,6 +17,8 @@
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 #include <editors/ComponentEditor/fileBuilders/filebuilderseditor.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <IPXACTmodels/view.h>
 
@@ -36,18 +38,22 @@ class ViewEditor : public ItemEditor {
 
 public:
 
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param component Pointer to the component that contains the view.
-	 * \param view Pointer to the view being edited.
-	 * \param libHandler Pointer to the instance that manages the library
-	 * \param parent Pointer to the owner of this editor.
-	 *
-	*/
-	ViewEditor(QSharedPointer<Component> component, 
-		QSharedPointer<View> view,
-		LibraryInterface* libHandler,
-		QWidget *parent = 0);
+	 *      @param [in] component               Pointer to the component that contains the view.
+	 *      @param [in] view                    Pointer to the view being edited.
+	 *      @param [in] libHandler              Pointer to the instance that manages the library.
+	 *      @param [in] parameterFinder         Pointer to the parameter finder.
+	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+	 *      @param [in] parent                  Pointer to the owner of this editor.
+	 */
+	ViewEditor(QSharedPointer<Component> component,
+        QSharedPointer<View> view,
+        LibraryInterface* libHandler,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QWidget *parent = 0);
 	
 	//! \brief The destructor
 	virtual ~ViewEditor();

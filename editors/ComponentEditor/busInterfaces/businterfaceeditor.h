@@ -9,6 +9,9 @@
 #define BUSINTERFACEEDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
 #include "busifgeneraltab.h"
@@ -27,17 +30,22 @@ class BusInterfaceEditor : public ItemEditor {
 
 public:
 
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param libHandler Pointer to the library handler instance.
-	 * \param component Pointer to the component being edited.
-	 * \param busif Pointer  to the bus interface being edited.
-	 * \param parent Pointer to the owner of this container.
-	 *
-	*/
+	 *      @param [in] libHandler              Pointer to the library handler instance.
+	 *      @param [in] component               Pointer to the component being edited.
+	 *      @param [in] busif                   Pointer to the bus interface being edited.
+	 *      @param [in] parameterFinder         Pointer to the parameter finder.
+	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+	 *      @param [in] parent                  Pointer to the owner of this container.
+	 *      @param [in] parentWnd               Pointer to the parent window.
+	 */
 	BusInterfaceEditor(LibraryInterface* libHandler,
 		QSharedPointer<Component> component, 
 		QSharedPointer<BusInterface> busif,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
 		QWidget* parent,
         QWidget* parentWnd);
 	

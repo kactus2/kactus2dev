@@ -11,15 +11,19 @@
 #include <editors/ComponentEditor/addressSpaces/addressspaceseditor.h>
 
 ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem(ComponentEditorTreeModel* model,
-															 LibraryInterface* libHandler,
-															 QSharedPointer<Component> component,
-															 ComponentEditorItem* parent):
+    LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-addrSpaces_(component->getAddressSpaces()) {
+addrSpaces_(component->getAddressSpaces())
+{
+    setParameterFinder(parameterFinder);
+    setExpressionFormatter(expressionFormatter);
 
 	foreach (QSharedPointer<AddressSpace> addrSpace, addrSpaces_) {
 		QSharedPointer<ComponentEditorAddrSpaceItem> addrItem(
-			new ComponentEditorAddrSpaceItem(addrSpace, model, libHandler, component, this));	
+			new ComponentEditorAddrSpaceItem(addrSpace, model, libHandler, component, parameterFinder_,
+            expressionFormatter_, this));	
 		childItems_.append(addrItem);
 	};
 }
@@ -61,7 +65,8 @@ QString ComponentEditorAddrSpacesItem::getTooltip() const {
 
 void ComponentEditorAddrSpacesItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorAddrSpaceItem> addrItem(
-		new ComponentEditorAddrSpaceItem(addrSpaces_.at(index), model_, libHandler_, component_, this));
+		new ComponentEditorAddrSpaceItem(addrSpaces_.at(index), model_, libHandler_, component_, parameterFinder_,
+        expressionFormatter_, this));
 	addrItem->setLocked(locked_);
 	childItems_.insert(index, addrItem);
 }

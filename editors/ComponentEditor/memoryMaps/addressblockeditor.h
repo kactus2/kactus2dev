@@ -8,6 +8,8 @@
 #ifndef ADDRESSBLOCKEDITOR_H
 #define ADDRESSBLOCKEDITOR_H
 
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/itemeditor.h>
 #include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/component.h>
@@ -34,17 +36,21 @@ public:
 		WIDTH = 700
 	};
 
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param addressBlock Pointer to the address block being edited.
-	 * \param component Pointer to the component being edited.
-	 * \param handler Pointer to the instance managing the library.
-	 * \param parent Pointer to the parent of this editor.
-	 *
+	 *      @param [in] addressBlock            Pointer to the address block being edited.
+	 *      @param [in] component               Pointer to the component being edited.
+	 *      @param [in] handler                 Pointer to the instance managing the library.
+	 *      @param [in] parameterFinder         Pointer to the parameter finder.
+	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+	 *      @param [in] parent                  Pointer to the parent of this editor.
 	 */
 	AddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
 		QSharedPointer<Component> component,
 		LibraryInterface* handler,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
 		QWidget* parent = 0);
 
 	//! \brief The destructor

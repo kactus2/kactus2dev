@@ -27,11 +27,13 @@
 //-----------------------------------------------------------------------------
 // Function: PortsModel::PortsModel()
 //-----------------------------------------------------------------------------
-PortsModel::PortsModel(QSharedPointer<Model> model, QSharedPointer<ExpressionParser> expressionParser, 
-    QObject *parent):
+PortsModel::PortsModel(QSharedPointer<Model> model, QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QObject *parent):
     QAbstractTableModel(parent),
-    ParameterModelEquations(),
-    model_(model), lockedIndexes_()
+    ParameterizableTable(),
+    model_(model),
+    lockedIndexes_(),
+    expressionFormatter_(expressionFormatter)
 {
 	Q_ASSERT(model_);
     setExpressionParser(expressionParser);
@@ -93,9 +95,14 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
     {
         return valueForIndex(index);
     }
-    else if (role == Qt::ToolTipRole || role == Qt::EditRole)
+    else if (role == Qt::EditRole)
     {
         return expressionOrValueForIndex(index);
+    }
+
+    else if (role == Qt::ToolTipRole)
+    {
+        return expressionFormatter_->formatReferringExpression(expressionOrValueForIndex(index).toString());
     }
 
     else if (role == Qt::FontRole)

@@ -21,10 +21,9 @@
 #include <QGroupBox>
 #include <QScrollArea>
 
-ViewEditor::ViewEditor( QSharedPointer<Component> component, 
-					   QSharedPointer<View> view, 
-					   LibraryInterface* libHandler,
-					   QWidget *parent ): 
+ViewEditor::ViewEditor( QSharedPointer<Component> component, QSharedPointer<View> view, 
+    LibraryInterface* libHandler, QSharedPointer<ParameterFinder> parameterFinder, 
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent ): 
 ItemEditor(component, libHandler, parent), 
 view_(view),
 nameEditor_(view->getNameGroup(), this, tr("View name and description")),
@@ -33,7 +32,7 @@ envIdentifier_(view, this),
 stack_(this),
 flatElements_(&stack_),
 generalTab_(component, view, &flatElements_),
-parameters_(view->getParameters(), component, this),
+parameters_(view->getParameters(), component, parameterFinder, expressionFormatter, this),
 fileBuilders_(view->getDefaultFileBuilders(), this),
 hierarchyRef_(view, component, libHandler, &stack_) {
 

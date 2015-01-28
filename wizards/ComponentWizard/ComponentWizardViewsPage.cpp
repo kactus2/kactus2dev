@@ -27,7 +27,9 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardViewsPage::ComponentWizardViewsPage()
 //-----------------------------------------------------------------------------
-ComponentWizardViewsPage::ComponentWizardViewsPage(LibraryInterface* lh, ComponentWizard* parent)
+ComponentWizardViewsPage::ComponentWizardViewsPage(LibraryInterface* lh,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    ComponentWizard* parent)
     : QWizardPage(parent), 
     library_(lh), 
     parent_(parent),
@@ -35,7 +37,9 @@ ComponentWizardViewsPage::ComponentWizardViewsPage(LibraryInterface* lh, Compone
     viewList_(new QListView(this)),
     viewModel_(new ViewListModel(this)),
     addButton_(new QPushButton(QIcon(":/icons/common/graphics/add.png"), QString(), this)),
-    removeButton_(new QPushButton(QIcon(":/icons/common/graphics/remove.png"), QString(), this))
+    removeButton_(new QPushButton(QIcon(":/icons/common/graphics/remove.png"), QString(), this)),
+    parameterFinder_(parameterFinder),
+    expressionFormatter_(expressionFormatter)
 {
     setTitle(tr("Views"));
     setSubTitle(tr("Setup the views for the component."));
@@ -170,7 +174,7 @@ void ComponentWizardViewsPage::onViewSelected(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 void ComponentWizardViewsPage::createEditorForView(QSharedPointer<Component> component, QSharedPointer<View> view)
 {
-    ViewEditor* editor = new ViewEditor(component, view, library_, this);       
+    ViewEditor* editor = new ViewEditor(component, view, library_, parameterFinder_, expressionFormatter_, this);       
     int editorIndex = editorTabs_->addTab(editor, view->getName());
 
     updateIconForTab(editorIndex);

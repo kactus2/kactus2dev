@@ -25,6 +25,8 @@
 //-----------------------------------------------------------------------------
 ParameterGroupBox::ParameterGroupBox(QList<QSharedPointer<Parameter> >& parameters,
                                      QSharedPointer<Component> component,
+                                     QSharedPointer<ParameterFinder> parameterFinder,
+                                     QSharedPointer<ExpressionFormatter> expressionFormatter,
 									 QWidget *parent):
 QGroupBox(tr("Parameters"), parent),
 view_(this), 
@@ -32,7 +34,7 @@ model_(0),
 proxy_(this)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(component));
-    model_ = new ParametersModel(parameters, component->getChoices(), expressionParser, this);
+    model_ = new ParametersModel(parameters, component->getChoices(), expressionParser, expressionFormatter, this);
 
 	connect(model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -58,8 +60,6 @@ proxy_(this)
 
 	// items can not be dragged
 	view_.setItemsDraggable(false);
-
-    QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(component));
 
     ComponentParameterModel* parameterModel = new ComponentParameterModel(this, parameterFinder);
     parameterModel->setExpressionParser(expressionParser);

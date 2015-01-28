@@ -19,7 +19,8 @@
 #include <QList>
 #include <QFile>
 
-#include <editors/ComponentEditor/common/ParameterModelEquations.h>
+#include <editors/ComponentEditor/common/ParameterizableTable.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 class Model;
 class Port;
@@ -27,7 +28,7 @@ class Port;
 /*! Table model that can be used to display ports to be edited.
  *
  */
-class PortsModel : public QAbstractTableModel, public ParameterModelEquations 
+class PortsModel : public QAbstractTableModel, public ParameterizableTable 
 {
 	Q_OBJECT
 
@@ -35,11 +36,14 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] model        Pointer to the model being edited.
-	 *      @param [in] parent       Pointer to the owner of this model.
+	 *      @param [in] model                   Pointer to the model being edited.
+     *      @param [in] expressionParser        Pointer to the expression parser.
+     *      @param [in] expressionFormatter     Pointer to the expression formatter.
+	 *      @param [in] parent                  Pointer to the owner of this model.
 	 *
 	*/
-	PortsModel(QSharedPointer<Model> model, QSharedPointer <ExpressionParser> expressionParser, QObject *parent);
+	PortsModel(QSharedPointer<Model> model, QSharedPointer <ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter, QObject *parent);
 	
 	//! The destructor
 	virtual ~PortsModel();
@@ -260,6 +264,9 @@ private:
 
     //! The locked indexes that cannot be edited.
     QList<QPersistentModelIndex> lockedIndexes_;
+
+    //! Expression formatter, formats the referencing expressions to show parameter names.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 };
 
 #endif // PORTSMODEL_H

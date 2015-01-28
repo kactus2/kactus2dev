@@ -153,3 +153,11 @@ int ComponentParameterFinder::getNumberOfParameters() const
 
     return allParameterIds.size();
 }
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::setComponent()
+//-----------------------------------------------------------------------------
+void ComponentParameterFinder::setComponent(QSharedPointer<Component> component)
+{
+    component_ = component;
+}

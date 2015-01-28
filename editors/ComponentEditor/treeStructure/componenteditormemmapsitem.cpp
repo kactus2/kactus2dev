@@ -14,16 +14,21 @@
 ComponentEditorMemMapsItem::ComponentEditorMemMapsItem( ComponentEditorTreeModel* model,
 													   LibraryInterface* libHandler,
 													   QSharedPointer<Component> component,
+                                                       QSharedPointer<ParameterFinder> parameterFinder,
+                                                       QSharedPointer<ExpressionFormatter> expressionFormatter,
 													   ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMaps_(component->getMemoryMaps()),
-visualizer_(new MemoryMapsVisualizer(component)) {
+visualizer_(new MemoryMapsVisualizer(component))
+{
+    setParameterFinder(parameterFinder);
+    setExpressionFormatter(expressionFormatter);
 
 	setObjectName(tr("ComponentEditorMemMapsItem"));
 
 	foreach (QSharedPointer<MemoryMap> memoryMap, memoryMaps_) {
 		QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(new ComponentEditorMemMapItem(
-			memoryMap, model, libHandler, component, this));
+			memoryMap, model, libHandler, component, parameterFinder_, expressionFormatter_, this));
 		memoryMapItem->setVisualizer(visualizer_);
 		childItems_.append(memoryMapItem);
 	}
@@ -76,7 +81,8 @@ QString ComponentEditorMemMapsItem::getTooltip() const {
 
 void ComponentEditorMemMapsItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(
-		new ComponentEditorMemMapItem(memoryMaps_.at(index), model_, libHandler_, component_, this));
+		new ComponentEditorMemMapItem(memoryMaps_.at(index), model_, libHandler_, component_, parameterFinder_,
+        expressionFormatter_, this));
 	memoryMapItem->setLocked(locked_);
 	childItems_.insert(index, memoryMapItem);
 	

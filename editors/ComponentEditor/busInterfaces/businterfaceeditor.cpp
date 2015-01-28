@@ -15,12 +15,14 @@
 BusInterfaceEditor::BusInterfaceEditor(LibraryInterface* libHandler,
 									   QSharedPointer<Component> component, 
 									   QSharedPointer<BusInterface> busif,
+                                       QSharedPointer<ParameterFinder> parameterFinder,
+                                       QSharedPointer<ExpressionFormatter> expressionFormatter,
 									   QWidget* parent,
                                        QWidget* parentWnd): 
 ItemEditor(component, libHandler, parent),
 busif_(busif),
 tabs_(this), 
-general_(libHandler, busif, component, &tabs_, parentWnd), 
+general_(libHandler, busif, component, parameterFinder, expressionFormatter, &tabs_, parentWnd), 
 portmaps_(libHandler, component, busif.data(), &tabs_) {
 
 	Q_ASSERT(component);

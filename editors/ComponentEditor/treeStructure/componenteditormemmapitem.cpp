@@ -17,12 +17,17 @@ ComponentEditorMemMapItem::ComponentEditorMemMapItem(QSharedPointer<MemoryMap> m
 													 ComponentEditorTreeModel* model,
 													 LibraryInterface* libHandler,
 													 QSharedPointer<Component> component,
+                                                     QSharedPointer<ParameterFinder> parameterFinder,
+                                                     QSharedPointer<ExpressionFormatter> expressionFormatter,
 													 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMap_(memoryMap),
 items_(memoryMap->getItems()),
 visualizer_(NULL),
-graphItem_(NULL) {
+graphItem_(NULL)
+{
+    setParameterFinder(parameterFinder);
+    setExpressionFormatter(expressionFormatter);
 
 	setObjectName(tr("ComponentEditorMemMapItem"));
 
@@ -34,7 +39,8 @@ graphItem_(NULL) {
 		if (addrBlock) 
         {
 			QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
-				new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, this));
+				new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, parameterFinder_,
+                expressionFormatter_, this));
 			childItems_.append(addrBlockItem);
 
             addrBlockItem->addressUnitBitsChanged(memoryMap_->getAddressUnitBits());
@@ -83,7 +89,8 @@ void ComponentEditorMemMapItem::createChild( int index ) {
 	QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
 	if (addrBlock) {
 		QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
-			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, this));
+			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, parameterFinder_,
+            expressionFormatter_, this));
 		addrBlockItem->setLocked(locked_);
 		
         addrBlockItem->addressUnitBitsChanged(memoryMap_->getAddressUnitBits());

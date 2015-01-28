@@ -33,7 +33,9 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
 	                             QWidget* parent)
     : QWizard(parent),
 	  originalComponent_(component),
-      workingComponent_(component)
+      workingComponent_(component),
+      parameterFinder_(new ComponentParameterFinder(workingComponent_)),
+      expressionFormatter_(new ExpressionFormatter(parameterFinder_))
 {
 	setWindowTitle(tr("Component Wizard for %1").arg(component->getVlnv()->toString()));
     setWizardStyle(ModernStyle);
@@ -44,7 +46,8 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
     setOption(NoDefaultButton, true);
     setOption(HaveFinishButtonOnEarlyPages, true);
 
-    ComponentWizardImportPage* importPage = new ComponentWizardImportPage(component, handler, pluginMgr, this);
+    ComponentWizardImportPage* importPage = new ComponentWizardImportPage(component, handler, pluginMgr,
+        parameterFinder_, expressionFormatter_, this);
 
     ComponentWizardConclusionPage* conclusionPage = new ComponentWizardConclusionPage(component, handler, this);
 
@@ -54,7 +57,8 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
     setPage(ComponentWizardPages::DEPENDENCY, new ComponentWizardDependencyPage(component, basePath, pluginMgr, 
         this));     
     setPage(ComponentWizardPages::IMPORT, importPage);
-    setPage(ComponentWizardPages::VIEWS, new ComponentWizardViewsPage(handler, this));
+    setPage(ComponentWizardPages::VIEWS, new ComponentWizardViewsPage(handler, parameterFinder_,
+        expressionFormatter_, this));
     setPage(ComponentWizardPages::CONCLUSION, conclusionPage);
 
     connect(importPage, SIGNAL(componentChanged(QSharedPointer<Component>)), 
@@ -88,6 +92,8 @@ void ComponentWizard::cleanupPage(int id)
     if (id == ComponentWizardPages::IMPORT)
     {
         workingComponent_ = originalComponent_;
+
+        parameterFinder_->setComponent(workingComponent_);
     }
 
     QWizard::cleanupPage(id);
@@ -99,4 +105,6 @@ void ComponentWizard::cleanupPage(int id)
 void ComponentWizard::onComponentChanged(QSharedPointer<Component> component)
 {
     workingComponent_ = component;
+
+    parameterFinder_->setComponent(workingComponent_);
 }

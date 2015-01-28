@@ -649,30 +649,32 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
     hwRoot->addChildItem(QSharedPointer<ComponentEditorChoicesItem>(
         new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, hwRoot)));
 
-    QSharedPointer<ComponentEditorModelParamsItem> modelParamsItem(
-        new ComponentEditorModelParamsItem(&navigationModel_, libHandler_, component, hwRoot, referenceCounter_));
+    QSharedPointer<ComponentEditorModelParamsItem> modelParamsItem(new ComponentEditorModelParamsItem(
+        &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
+        hwRoot));
 
     hwRoot->addChildItem(modelParamsItem);
 
     connect(modelParamsItem.data(), SIGNAL(openReferenceTree(QString)),
         this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);
 
-    QSharedPointer<ComponentEditorParametersItem> parametersItem(
-        new ComponentEditorParametersItem(&navigationModel_, libHandler_, component, hwRoot, referenceCounter_));
+    QSharedPointer<ComponentEditorParametersItem> parametersItem(new ComponentEditorParametersItem(
+        &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
+        hwRoot));
 
     hwRoot->addChildItem(parametersItem);
 
     connect(parametersItem.data(), SIGNAL(openReferenceTree(QString)),
         this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);
 
-    hwRoot->addChildItem(QSharedPointer<ComponentEditorMemMapsItem>(
-        new ComponentEditorMemMapsItem(&navigationModel_, libHandler_, component, hwRoot)));
+    hwRoot->addChildItem(QSharedPointer<ComponentEditorMemMapsItem>(new ComponentEditorMemMapsItem(
+        &navigationModel_, libHandler_, component, parameterFinder_, expressionFormatter_, hwRoot)));
 
-    hwRoot->addChildItem(QSharedPointer<ComponentEditorAddrSpacesItem>(
-        new ComponentEditorAddrSpacesItem(&navigationModel_, libHandler_, component, hwRoot)));
+    hwRoot->addChildItem(QSharedPointer<ComponentEditorAddrSpacesItem>(new ComponentEditorAddrSpacesItem(
+        &navigationModel_, libHandler_, component, parameterFinder_, expressionFormatter_, hwRoot)));
 
-    QSharedPointer<ComponentEditorViewsItem> viewsItem(
-        new ComponentEditorViewsItem(&navigationModel_, libHandler_, component, hwRoot, referenceCounter_));
+    QSharedPointer<ComponentEditorViewsItem> viewsItem(new ComponentEditorViewsItem(&navigationModel_, libHandler_,
+        component, referenceCounter_, parameterFinder_, expressionFormatter_, hwRoot));
 
     hwRoot->addChildItem(viewsItem);
     
@@ -685,14 +687,14 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
     hwRoot->addChildItem(QSharedPointer<ComponentEditorSystemViewsItem>(
         new ComponentEditorSystemViewsItem(&navigationModel_, libHandler_, component, hwRoot)));
 
-    QSharedPointer<ComponentEditorPortsItem> portsItem(
-        new ComponentEditorPortsItem(&navigationModel_, libHandler_, component, hwRoot, referenceCounter_));
+    QSharedPointer<ComponentEditorPortsItem> portsItem(new ComponentEditorPortsItem(&navigationModel_, libHandler_,
+        component, referenceCounter_, parameterFinder_, expressionFormatter_, hwRoot));
 
     hwRoot->addChildItem(portsItem);
     connect(portsItem.data(), SIGNAL(createInterface()), hwRoot, SLOT(onInterfaceAdded()), Qt::UniqueConnection);
 
-    hwRoot->addChildItem(QSharedPointer<ComponentEditorBusInterfacesItem>(
-        new ComponentEditorBusInterfacesItem(&navigationModel_, libHandler_, component, hwRoot, parentWidget())));
+    hwRoot->addChildItem(QSharedPointer<ComponentEditorBusInterfacesItem>(new ComponentEditorBusInterfacesItem(
+        &navigationModel_, libHandler_, component, parameterFinder_, expressionFormatter_, hwRoot, parentWidget())));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorChannelsItem>(
         new ComponentEditorChannelsItem(&navigationModel_, libHandler_, component, hwRoot)));
@@ -728,8 +730,9 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createSWRootItem(QShare
     swRoot->addChildItem(QSharedPointer<ComponentEditorChoicesItem>(
         new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, swRoot)));
 
-    QSharedPointer<ComponentEditorParametersItem> parametersItem(
-        new ComponentEditorParametersItem(&navigationModel_, libHandler_, component, swRoot, referenceCounter_));
+    QSharedPointer<ComponentEditorParametersItem> parametersItem(new ComponentEditorParametersItem(
+        &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
+        swRoot));
 
     swRoot->addChildItem(parametersItem);
 
@@ -860,7 +863,10 @@ void ComponentEditor::openReferenceTree(QString const& parameterId)
 {
     QDialog* referenceTreeWindow(new QDialog(this));
 
-    referenceTreeWindow->setWindowTitle("References made to " + parameterFinder_->nameForId(parameterId));
+    referenceTreeWindow->setWindowTitle("References to " + parameterFinder_->nameForId(parameterId));
+
+    referenceTreeWindow->setMinimumWidth(600);
+    referenceTreeWindow->setMinimumHeight(400);
 
     ParameterReferenceTree* referenceTree(new ParameterReferenceTree(
         component_, expressionFormatter_, parameterId, referenceTreeWindow));

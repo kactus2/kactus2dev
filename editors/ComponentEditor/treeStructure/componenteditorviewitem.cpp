@@ -15,11 +15,16 @@ ComponentEditorViewItem::ComponentEditorViewItem(QSharedPointer<View> view,
 												 ComponentEditorTreeModel* model,
 												 LibraryInterface* libHandler,
 												 QSharedPointer<Component> component,
+                                                 QSharedPointer<ParameterFinder> parameterFinder,
+                                                 QSharedPointer<ExpressionFormatter> expresionFormatter,
 												 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
     view_(view),
     editAction_(new QAction(tr("Edit"), this))
 {
+    setParameterFinder(parameterFinder);
+    setExpressionFormatter(expresionFormatter);
+
 	Q_ASSERT(view_);
 
 	setObjectName(tr("ComponentEditorViewItem: %1").arg(view->getName()));
@@ -67,7 +72,7 @@ bool ComponentEditorViewItem::isValid() const {
 //-----------------------------------------------------------------------------
 ItemEditor* ComponentEditorViewItem::editor() {
 	if (!editor_) {
-		editor_ = new ViewEditor(component_, view_, libHandler_);
+		editor_ = new ViewEditor(component_, view_, libHandler_, parameterFinder_, expressionFormatter_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()),
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);

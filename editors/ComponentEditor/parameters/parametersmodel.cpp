@@ -24,9 +24,9 @@
 // Function: ParametersModel::ParametersModel()
 //-----------------------------------------------------------------------------
 ParametersModel::ParametersModel(QList<QSharedPointer<Parameter> >& parameters,
-    QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-    QSharedPointer<ExpressionParser> expressionParser, QObject *parent): 
-AbstractParameterModel(choices, expressionParser, parent), 
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices, QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QObject *parent): 
+AbstractParameterModel(choices, expressionParser, expressionFormatter, parent), 
 parameters_(parameters)
 {
 

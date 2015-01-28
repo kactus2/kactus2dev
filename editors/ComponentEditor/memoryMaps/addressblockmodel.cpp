@@ -17,12 +17,14 @@
 
 AddressBlockModel::AddressBlockModel(QSharedPointer<AddressBlock> addressBlock,
     QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-    QSharedPointer<ExpressionParser> expressionParser, QObject *parent):
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QObject *parent):
 QAbstractTableModel(parent),
 addressBlock_(addressBlock),
 items_(addressBlock->getRegisterData()),
 componentChoices_(componentChoices),
-addressUnitBits_(0)
+addressUnitBits_(0),
+expressionFormatter_(expressionFormatter)
 {
 	Q_ASSERT(addressBlock_);
 
@@ -133,9 +135,14 @@ QVariant AddressBlockModel::data( const QModelIndex& index, int role /*= Qt::Dis
         return valueForIndex(index);
 	}
 
-    else if (role == Qt::ToolTipRole || role == Qt::EditRole)
+    else if (role == Qt::EditRole)
     {
         return expressionOrValueForIndex(index);
+    }
+
+    else if (role == Qt::ToolTipRole)
+    {
+        return expressionFormatter_->formatReferringExpression(expressionOrValueForIndex(index).toString());
     }
 
     else if (role == Qt::FontRole)

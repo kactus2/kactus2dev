@@ -11,7 +11,8 @@
 #include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/registermodel.h>
 
-#include <editors/ComponentEditor/common/ParameterModelEquations.h>
+#include <editors/ComponentEditor/common/ParameterizableTable.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>
@@ -21,22 +22,25 @@ class Choice;
 /*! \brief The model to manage the details of a single address block.
  *
  */
-class AddressBlockModel : public QAbstractTableModel, public ParameterModelEquations 
+class AddressBlockModel : public QAbstractTableModel, public ParameterizableTable
 {
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-     * \param addressBlock Pointer to the address block being edited.
-     * \param componentChoices The choices available in the containing component.
-	 * \param parent Pointer to the owner of the model.
-	 *
-	*/
+	 *      @param [in] addressBlock            Pointer to the address block being edited.
+	 *      @param [in] componentChoices        The choices available in the containing component.
+	 *      @param [in] expressionParser        Pointer to the expression parser.
+	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+	 *      @param [in] parent                  Pointer to the owner of the model.
+	 */
 	AddressBlockModel(QSharedPointer<AddressBlock> addressBlock,
         QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
 		QObject *parent);
 	
 	//! \brief The destructor
@@ -193,7 +197,11 @@ private:
     //! \brief The choices available in the containing component.
     QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices_;
 
+    //! The address unit bits of the memory map.
     unsigned int addressUnitBits_;
+
+    //! Expression formatter, formats the referencing expressions to show parameter names.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 };
 
 #endif // ADDRESSBLOCKMODEL_H

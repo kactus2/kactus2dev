@@ -25,6 +25,10 @@
 #include <editors/ComponentEditor/modelParameters/ModelParameterColumns.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+
+#include <IPXACTmodels/component.h>
 #include <IPXACTmodels/choice.h>
 #include <IPXACTmodels/Enumeration.h>
 #include <IPXACTmodels/model.h>
@@ -252,7 +256,11 @@ ModelParameterModel* tst_ModelParameterDelegate::createModelWithSimpleModelParam
     QSharedPointer<Model> model(new Model());
     model->addModelParameter(QSharedPointer<ModelParameter>(new ModelParameter()));
 
-    return new ModelParameterModel(model, choices_, QSharedPointer<ExpressionParser>(0), this);
+    QSharedPointer<Component> component (new Component);
+    QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(component));
+    QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
+
+    return new ModelParameterModel(model, choices_, QSharedPointer<ExpressionParser>(0), expressionFormatter, this);
 }
 
 //-----------------------------------------------------------------------------

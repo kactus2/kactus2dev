@@ -15,6 +15,7 @@
 #include <IPXACTmodels/parameter.h>
 
 #include <editors/ComponentEditor/common/AbstractParameterModel.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <QAbstractTableModel>
 
@@ -35,15 +36,17 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in]  parameters         The parameters to edit in the model.
-     *      @param [in]  choices            The choices available for the parameter values.
-     *      @param [in]  expressionParser   Expression parser for configurable elements.
-	 *      @param [in]  parent             The owner of this model.
+	 *      @param [in]  parameters             The parameters to edit in the model.
+     *      @param [in]  choices                The choices available for the parameter values.
+     *      @param [in]  expressionParser       Expression parser for configurable elements.
+     *      @param [in]  expressionFormatter    The expression formatter.
+	 *      @param [in]  parent                 The owner of this model.
 	 *
 	*/
 	ParametersModel(QList<QSharedPointer<Parameter> >& parameters, 
         QSharedPointer<QList<QSharedPointer<Choice> > > choices,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
 		QObject *parent);
 	
 	//! The destructor

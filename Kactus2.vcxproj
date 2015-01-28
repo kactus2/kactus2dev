@@ -580,7 +580,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\common\ExpressionFormatter.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ParameterCompleter.cpp" />
-    <ClCompile Include="editors\ComponentEditor\common\ParameterModelEquations.cpp" />
+    <ClCompile Include="editors\ComponentEditor\common\ParameterizableTable.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ValueFormatter.cpp" />
     <ClCompile Include="editors\ComponentEditor\componenteditor.cpp" />
@@ -1971,7 +1971,6 @@ CreateHelp
     <ClInclude Include="editors\ComponentEditor\common\ExpressionParser.h" />
     <ClInclude Include="editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
     <ClInclude Include="editors\ComponentEditor\common\ParameterFinder.h" />
-    <ClInclude Include="editors\ComponentEditor\common\ParameterModelEquations.h" />
     <CustomBuild Include="editors\ComponentEditor\common\ParameterCompleter.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing ParameterCompleter.h...</Message>
@@ -1998,6 +1997,7 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB  "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I.\editors\ComponentEditor\common"</Command>
     </CustomBuild>
+    <ClInclude Include="editors\ComponentEditor\common\ParameterizableTable.h" />
     <ClInclude Include="editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
     <ClInclude Include="editors\ComponentEditor\common\SystemVerilogSyntax.h" />
     <ClInclude Include="editors\ComponentEditor\common\ValueFormatter.h" />

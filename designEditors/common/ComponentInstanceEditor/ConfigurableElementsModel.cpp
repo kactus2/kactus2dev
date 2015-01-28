@@ -15,7 +15,7 @@
 //-----------------------------------------------------------------------------
 ConfigurableElementsModel::ConfigurableElementsModel(QObject *parent):
 QAbstractTableModel(parent),
-ParameterModelEquations(),
+ParameterizableTable(),
 component_(0),
 currentElementValues_(),
 visibleConfigurableElements_(),

@@ -26,11 +26,13 @@
 // Function: AbstractParameterModel::AbstractParameterModel()
 //-----------------------------------------------------------------------------
 AbstractParameterModel::AbstractParameterModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-    QSharedPointer<ExpressionParser> expressionParser, QObject *parent): 
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QObject *parent): 
     QAbstractTableModel(parent),
-    ParameterModelEquations(),
+    ParameterizableTable(),
     choices_(choices), 
-    validator_(new ParameterValidator2014(expressionParser))
+    validator_(new ParameterValidator2014(expressionParser)),
+    expressionFormatter_(expressionFormatter)
 {
     setExpressionParser(expressionParser);
 }
@@ -57,9 +59,13 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
     {
         return valueForIndex(index);
     }
-    else if (role == Qt::ToolTipRole || role == Qt::EditRole)
+    else if (role == Qt::EditRole)
     {
         return expressionOrValueForIndex(index);
+    }
+    else if (role == Qt::ToolTipRole)
+    {
+        return expressionFormatter_->formatReferringExpression(expressionOrValueForIndex(index).toString());
     }
     else if (Qt::BackgroundRole == role) 
     {

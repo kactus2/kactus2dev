@@ -18,10 +18,12 @@
 #include <QApplication>
 
 BusIfGeneralTab::BusIfGeneralTab( LibraryInterface* libHandler,
-								 QSharedPointer<BusInterface> busif, 
-								 QSharedPointer<Component> component,
-								 QWidget* parent,
-                                 QWidget* parentWnd):
+                                  QSharedPointer<BusInterface> busif,
+                                  QSharedPointer<Component> component,
+                                  QSharedPointer<ParameterFinder> parameterFinder,
+                                  QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                  QWidget* parent,
+                                  QWidget* parentWnd):
 QWidget(parent),
 busif_(busif),
 nameEditor_(busif->getNameGroup(), this, tr("Name and description")),
@@ -30,7 +32,7 @@ absType_(VLNV::ABSTRACTIONDEFINITION, libHandler, parentWnd, this),
 modeSelector_(this, busif),
 modeStack_(busif, component, libHandler, this),
 details_(busif, this),
-parameters_(busif->getParameters(), component, this),
+parameters_(busif->getParameters(), component, parameterFinder, expressionFormatter, this),
 libHandler_(libHandler) {
 
 	Q_ASSERT_X(libHandler, "BusIfGeneralTab constructor",

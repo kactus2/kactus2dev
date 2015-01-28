@@ -26,7 +26,9 @@ editor_(NULL),
 locked_(true),
 highlight_(false),
 parent_(parent),
-referenceCounter_(0)
+referenceCounter_(0),
+parameterFinder_(0),
+expressionFormatter_(0)
 {
 
 	connect(this, SIGNAL(contentChanged(ComponentEditorItem*)),
@@ -295,6 +297,22 @@ void ComponentEditorItem::onSelectRequest() {
 void ComponentEditorItem::setReferenceCounter(QSharedPointer<ReferenceCounter> newReferenceCounter)
 {
     referenceCounter_ = newReferenceCounter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::setParameterFinder()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::setParameterFinder(QSharedPointer<ParameterFinder> parameterFinder)
+{
+    parameterFinder_ = parameterFinder;
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::setExpressionFormatter()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::setExpressionFormatter(QSharedPointer<ExpressionFormatter> expressionFormatter)
+{
+    expressionFormatter_ = expressionFormatter;
 }
 
 //-----------------------------------------------------------------------------

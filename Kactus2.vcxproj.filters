@@ -3889,9 +3889,6 @@
     <ClCompile Include="editors\ComponentEditor\modelParameters\ModelParameterEditorHeaderView.cpp">
       <Filter>Source Files\editors\ComponentEditor\modelParameters</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\ParameterModelEquations.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.cpp">
       <Filter>Source Files\editors\ComponentEditor\referenceCounter</Filter>
     </ClCompile>
@@ -3923,6 +3920,9 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\common\ExpressionFormatter.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ParameterizableTable.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_IEditProvider.cpp">
@@ -5735,9 +5735,6 @@
     <ClInclude Include="editors\ComponentEditor\common\ValueFormatter.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\ParameterModelEquations.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ParameterFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
@@ -5745,6 +5742,9 @@
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatter.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\ParameterizableTable.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\ports\PortColumns.h">

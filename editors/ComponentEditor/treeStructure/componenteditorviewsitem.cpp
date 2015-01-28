@@ -9,14 +9,15 @@
 #include "componenteditorviewitem.h"
 #include <editors/ComponentEditor/views/viewseditor.h>
 
-ComponentEditorViewsItem::ComponentEditorViewsItem(ComponentEditorTreeModel* model,
-												   LibraryInterface* libHandler,
-												   QSharedPointer<Component> component,
-												   ComponentEditorItem* parent,
-                                                   QSharedPointer<ReferenceCounter> referenceCounter):
+ComponentEditorViewsItem::ComponentEditorViewsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
+    QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-views_(component->getViews()) 
+views_(component->getViews())
 {
+    setParameterFinder(parameterFinder);
+    setExpressionFormatter(expressionFormatter);
 
 	setObjectName(tr("ComponentEditorViewsItem"));
 
@@ -25,7 +26,7 @@ views_(component->getViews())
 	foreach (QSharedPointer<View> view, views_) {
 
 		QSharedPointer<ComponentEditorViewItem> viewItem(new ComponentEditorViewItem(
-			view, model, libHandler, component, this));
+			view, model, libHandler, component, parameterFinder_, expressionFormatter_, this));
 
         viewItem->setReferenceCounter(referenceCounter);
 
@@ -75,8 +76,8 @@ ItemEditor* ComponentEditorViewsItem::editor() {
 
 void ComponentEditorViewsItem::createChild( int index )
 {
-	QSharedPointer<ComponentEditorViewItem> viewItem(
-		new ComponentEditorViewItem(views_.at(index), model_, libHandler_, component_, this));
+	QSharedPointer<ComponentEditorViewItem> viewItem(new ComponentEditorViewItem(views_.at(index), model_,
+        libHandler_, component_, parameterFinder_, expressionFormatter_, this));
 	viewItem->setLocked(locked_);
 
     viewItem->setReferenceCounter(referenceCounter_);

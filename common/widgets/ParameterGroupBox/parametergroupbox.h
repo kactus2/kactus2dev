@@ -10,8 +10,10 @@
 
 #include <IPXACTmodels/parameter.h>
 
-#include <editors/ComponentEditor/parameters/parametersmodel.h>
 #include <common/views/EditableTableView/editabletableview.h>
+#include <editors/ComponentEditor/parameters/parametersmodel.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <QGroupBox>
 #include <QList>
@@ -28,16 +30,18 @@ class ParameterGroupBox : public QGroupBox {
 
 public:
 
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param parameters    The list containing the parameters.
-     * \param component     The containing component whose parameters are being edited.
-	 * \param parent        Pointer to the owner of this editor.
-	 *
-	*/
-	ParameterGroupBox(QList<QSharedPointer<Parameter> >& parameters,
-        QSharedPointer<Component> component,
-		QWidget *parent);
+	 *      @param [in] parameters              The list containing the parameters.
+	 *      @param [in] component               The containing component whose parameters are being edited.
+	 *      @param [in] parameterFinder         The parameter finder used to search the components parameters.
+	 *      @param [in] expressionFormatter     The expression formatter.
+	 *      @param [in] parent                  Pointer to the owner of this editor.
+	 */
+	ParameterGroupBox(QList<QSharedPointer<Parameter> >& parameters, QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QWidget *parent);
 	
 	//! \brief The destructor
 	virtual ~ParameterGroupBox();

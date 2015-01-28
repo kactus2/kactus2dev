@@ -14,12 +14,16 @@
 ComponentEditorModelParamsItem::ComponentEditorModelParamsItem( ComponentEditorTreeModel* model,
 															   LibraryInterface* libHandler,
 															   QSharedPointer<Component> component,
-															   ComponentEditorItem* parent,
-                                                               QSharedPointer<ReferenceCounter> refCounter ):
+                                                               QSharedPointer<ReferenceCounter> refCounter,
+                                                               QSharedPointer<ParameterFinder> parameterFinder,
+                                                               QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                                               ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 modelParams_(component->getModelParameters())
 {
 	setReferenceCounter(refCounter);
+    setParameterFinder(parameterFinder);
+    setExpressionFormatter(expressionFormatter);
 }
 
 ComponentEditorModelParamsItem::~ComponentEditorModelParamsItem()
@@ -55,7 +59,7 @@ bool ComponentEditorModelParamsItem::isValid() const
 ItemEditor* ComponentEditorModelParamsItem::editor()
 {
 	if (!editor_) {
-		editor_ = new ModelParameterEditor(component_, libHandler_);
+		editor_ = new ModelParameterEditor(component_, libHandler_, parameterFinder_, expressionFormatter_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()),
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);

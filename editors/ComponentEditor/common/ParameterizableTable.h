@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: ParameterModelEquations.h
+// File: Parameterizabletable.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Mikko Teuho
@@ -9,8 +9,8 @@
 // Base class for equation usage in parameter editors.
 //-----------------------------------------------------------------------------
 
-#ifndef PARAMETERMODELEQUATIONS_H
-#define PARAMETERMODELEQUATIONS_H
+#ifndef PARAMETERIZABLETABLE_H
+#define PARAMETERIZABLETABLE_H
 
 #include <IPXACTmodels/parameter.h>
 #include <IPXACTmodels/component.h>
@@ -19,19 +19,19 @@ class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Base class for models editing parameters and model parameters.
 //-----------------------------------------------------------------------------
-class ParameterModelEquations
+class ParameterizableTable
 {
 public:
 
     /*!
      *  The constructor.
      */
-    ParameterModelEquations();
-	
+	ParameterizableTable();
+
     /*!
      *  The destructor.
      */
-    virtual ~ParameterModelEquations();
+    virtual ~ParameterizableTable();
 
     /*!
      *  Sets the expression parser.
@@ -123,11 +123,11 @@ protected:
 private:
 
     //! Disable copying and assignment.
-    ParameterModelEquations(const ParameterModelEquations& other);
-    ParameterModelEquations& operator=(const ParameterModelEquations& other);
+    ParameterizableTable(const ParameterizableTable& other);
+    ParameterizableTable& operator=(const ParameterizableTable& other);
 
     //! Expression parser for configurable elements.
     QSharedPointer<ExpressionParser> expressionParser_;
 };
 
-#endif // PARAMETERMODELEQUATIONS_H
+#endif // PARAMETERIZABLETABLE_H

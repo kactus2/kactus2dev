@@ -15,13 +15,13 @@
 #include <QAbstractItemModel>
 #include <QSharedPointer>
 
-#include <editors/ComponentEditor/common/ParameterModelEquations.h>
+#include <editors/ComponentEditor/common/ParameterizableTable.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
 //-----------------------------------------------------------------------------
 //! Model for all parameters within a single component.
 //-----------------------------------------------------------------------------
-class ComponentParameterModel : public QAbstractTableModel, public ParameterModelEquations
+class ComponentParameterModel : public QAbstractTableModel, public ParameterizableTable
 {
     Q_OBJECT
 public:
