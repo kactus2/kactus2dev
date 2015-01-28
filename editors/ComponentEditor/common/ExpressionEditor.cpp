@@ -222,6 +222,8 @@ void ExpressionEditor::complete(QModelIndex const& index)
     cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::MoveAnchor);
     setTextCursor(cursor);
 
+    nameCompleter_->popup()->hide();
+
     emit(increaseReference(parameterId));
 }
 
