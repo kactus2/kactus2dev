@@ -5753,6 +5753,9 @@
     <ClInclude Include="editors\ComponentEditor\parameters\ComponentParameterColumns.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\AddressBlockColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="designEditors\common\DiagramUtil.inl">

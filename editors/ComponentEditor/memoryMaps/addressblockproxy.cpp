@@ -6,38 +6,52 @@
  */
 
 #include "addressblockproxy.h"
-#include "addressblockdelegate.h"
+
+#include "AddressBlockColumns.h"
+
 #include <common/utils.h>
 
+//-----------------------------------------------------------------------------
+// Function: AddressBlockProxy::AddressBlockProxy()
+//-----------------------------------------------------------------------------
 AddressBlockProxy::AddressBlockProxy(QObject *parent):
-QSortFilterProxyModel(parent) {
+QSortFilterProxyModel(parent)
+{
 
 }
 
-AddressBlockProxy::~AddressBlockProxy() {
+//-----------------------------------------------------------------------------
+// Function: AddressBlockProxy::~AddressBlockProxy()
+//-----------------------------------------------------------------------------
+AddressBlockProxy::~AddressBlockProxy()
+{
+
 }
 
-bool AddressBlockProxy::lessThan( const QModelIndex& left, const QModelIndex& right ) const {
-	Q_ASSERT(left.column() == right.column());
+//-----------------------------------------------------------------------------
+// Function: AddressBlockProxy::lessThan()
+//-----------------------------------------------------------------------------
+bool AddressBlockProxy::lessThan(QModelIndex const& left, QModelIndex const& right ) const
+{
+    Q_ASSERT(left.column() == right.column());
 
-	switch (left.column()) {
-		case AddressBlockDelegate::OFFSET_COLUMN: 
-		case AddressBlockDelegate::RESET_VALUE_COLUMN:
-		case AddressBlockDelegate::RESET_MASK_COLUMN: {
+    if (left.column() == AddressBlockColumns::OFFSET_COLUMN ||
+        left.column() == AddressBlockColumns::RESET_VALUE_COLUMN ||
+        left.column() == AddressBlockColumns::RESET_MASK_COLUMN)
+    {
+        // convert the data on left index into number
+        QString leftStr = left.model()->data(left, Qt::DisplayRole).toString();
+        quint64 leftNumber = Utils::str2Uint(leftStr);
 
-			// convert the data on left index into number
-			QString leftStr = left.model()->data(left, Qt::DisplayRole).toString();
-			quint64 leftNumber = Utils::str2Uint(leftStr);
+        // convert data on right index into number
+        QString rightStr = right.model()->data(right, Qt::DisplayRole).toString();
+        quint64 rightNumber = Utils::str2Uint(rightStr);
 
-			// convert data on right index into number
-			QString rightStr = right.model()->data(right, Qt::DisplayRole).toString();
-			quint64 rightNumber = Utils::str2Uint(rightStr);
-
-			// compare the numbers instead of strings to provide correct comparison results
-			return leftNumber < rightNumber;
-											  }
-		default: {
-			return QSortFilterProxyModel::lessThan(left, right);
-				 }
-	}
+        // compare the numbers instead of strings to provide correct comparison results
+        return leftNumber < rightNumber;
+    }
+    else
+    {
+        return QSortFilterProxyModel::lessThan(left, right);
+    }
 }

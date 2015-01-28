@@ -2001,6 +2001,7 @@ CreateHelp
     <ClInclude Include="editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
     <ClInclude Include="editors\ComponentEditor\common\SystemVerilogSyntax.h" />
     <ClInclude Include="editors\ComponentEditor\common\ValueFormatter.h" />
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\AddressBlockColumns.h" />
     <ClInclude Include="editors\ComponentEditor\modelParameters\ModelParameterColumns.h" />
     <CustomBuild Include="editors\ComponentEditor\parameters\parametersmodel.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

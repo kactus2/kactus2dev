@@ -589,6 +589,7 @@ HEADERS += ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
     ./editors/ComponentEditor/ports/PortColumns.h \
+    ./editors/ComponentEditor/memoryMaps/AddressBlockColumns.h \
     ./editors/ComponentEditor/common/ExpressionDelegate.h
 SOURCES += ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ./editors/ComponentEditor/common/ExpressionEditor.cpp \

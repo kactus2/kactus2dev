@@ -6,9 +6,11 @@
  */
 
 #include "addressblockeditor.h"
+
 #include "addressblockdelegate.h"
 #include "addressblockmodel.h"
 #include "addressblockproxy.h"
+#include "AddressBlockColumns.h"
 
 #include <common/views/EditableTableView/editabletableview.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
@@ -19,6 +21,9 @@
 
 #include <QVBoxLayout>
 
+//-----------------------------------------------------------------------------
+// Function: AddressBlockEditor::AddressBlockEditor()
+//-----------------------------------------------------------------------------
 AddressBlockEditor::AddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
 									   QSharedPointer<Component> component,
 									   LibraryInterface* handler,
@@ -29,7 +34,6 @@ proxy_(new AddressBlockProxy(this)),
 model_(new AddressBlockModel(addressBlock, component->getChoices(), 
     QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(component)), this))
 {
-
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Registers summary"), this);
 
@@ -54,7 +58,7 @@ model_(new AddressBlockModel(addressBlock, component->getChoices(),
 
 	view_->setItemDelegate(new AddressBlockDelegate(this));
 
-	view_->sortByColumn(AddressBlockDelegate::OFFSET_COLUMN, Qt::AscendingOrder);
+	view_->sortByColumn(AddressBlockColumns::OFFSET_COLUMN, Qt::AscendingOrder);
 
 	connect(model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -74,22 +78,43 @@ model_(new AddressBlockModel(addressBlock, component->getChoices(),
 		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
 
-AddressBlockEditor::~AddressBlockEditor() {
+//-----------------------------------------------------------------------------
+// Function: AddressBlockEditor::AddressBlockEditor()
+//-----------------------------------------------------------------------------
+AddressBlockEditor::~AddressBlockEditor()
+{
+
 }
 
-bool AddressBlockEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: AddressBlockEditor::isValid()
+//-----------------------------------------------------------------------------
+bool AddressBlockEditor::isValid() const
+{
 	return model_->isValid();
 }
 
-void AddressBlockEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: AddressBlockEditor::refresh()
+//-----------------------------------------------------------------------------
+void AddressBlockEditor::refresh()
+{
 	view_->update();
 }
 
-void AddressBlockEditor::showEvent( QShowEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: AddressBlockEditor::showEvent()
+//-----------------------------------------------------------------------------
+void AddressBlockEditor::showEvent( QShowEvent* event )
+{
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/addressblock.html");
 }
 
-QSize AddressBlockEditor::sizeHint() const {
+//-----------------------------------------------------------------------------
+// Function: AddressBlockEditor::sizeHint()
+//-----------------------------------------------------------------------------
+QSize AddressBlockEditor::sizeHint() const
+{
 	return QSize(AddressBlockEditor::WIDTH, AddressBlockEditor::HEIGHT);
 }

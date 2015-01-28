@@ -6,181 +6,109 @@
  */
 
 #include "addressblockdelegate.h"
+
 #include <common/widgets/booleanComboBox/booleancombobox.h>
 #include <common/widgets/accessComboBox/accesscombobox.h>
-#include <IPXACTmodels/generaldeclarations.h>
 
 #include <QLineEdit>
-#include <QSpinBox>
+#include <QIntValidator>
 
+//-----------------------------------------------------------------------------
+// Function: AddressBlockDelegate::AddressBlockDelegate()
+//-----------------------------------------------------------------------------
 AddressBlockDelegate::AddressBlockDelegate(QObject *parent):
-QStyledItemDelegate(parent) {
+QStyledItemDelegate(parent) 
+{
+
 }
 
-AddressBlockDelegate::~AddressBlockDelegate() {
+//-----------------------------------------------------------------------------
+// Function: AddressBlockDelegate::~AddressBlockDelegate()
+//-----------------------------------------------------------------------------
+AddressBlockDelegate::~AddressBlockDelegate()
+{
+
 }
 
-QWidget* AddressBlockDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case AddressBlockDelegate::NAME_COLUMN:
-		case AddressBlockDelegate::OFFSET_COLUMN:
-		case AddressBlockDelegate::DESC_COLUMN:
-		case AddressBlockDelegate::RESET_VALUE_COLUMN:
-		case AddressBlockDelegate::RESET_MASK_COLUMN: {
-			QLineEdit* edit = new QLineEdit(parent);
-			connect(edit, SIGNAL(editingFinished()),
-				this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-			return edit;
-													  }
-		case AddressBlockDelegate::SIZE_COLUMN: {
-			QSpinBox* spinBox = new QSpinBox(parent);
-			connect(spinBox, SIGNAL(editingFinished()),
-				this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-			spinBox->setRange(1, 4096);
-			return spinBox;
-												}
-		case AddressBlockDelegate::DIM_COLUMN: 
-            {
-                QLineEdit* dimensionEdit = new QLineEdit(parent);
-                connect(dimensionEdit, SIGNAL(editingFinished()), 
-                    this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-                return dimensionEdit;
-            }
-		case AddressBlockDelegate::VOLATILE_COLUMN: {
-			BooleanComboBox* boolBox = new BooleanComboBox(parent);
-			return boolBox;
-													}
-		case AddressBlockDelegate::ACCESS_COLUMN: {
-			AccessComboBox* accessBox = new AccessComboBox(parent);
-			return accessBox;
-												  }
-		default: {
-			return QStyledItemDelegate::createEditor(parent, option, index);
-				 }
-	}
+//-----------------------------------------------------------------------------
+// Function: AddressBlockDelegate::createEditor()
+//-----------------------------------------------------------------------------
+QWidget* AddressBlockDelegate::createEditor(QWidget* parent,  
+    QStyleOptionViewItem const& option, 
+    QModelIndex const& index ) const
+{
+    if (index.column() == AddressBlockColumns::SIZE_COLUMN)
+    {
+        QLineEdit* sizeEditor = new QLineEdit(parent);
+        sizeEditor->setValidator(new QIntValidator(0, 16383, sizeEditor));
+
+        return sizeEditor;
+    }
+    else if (index.column() == AddressBlockColumns::VOLATILE_COLUMN)
+    {
+        return new BooleanComboBox(parent);
+    }
+    else if (index.column() == AddressBlockColumns::ACCESS_COLUMN)
+    {
+        return new AccessComboBox(parent);
+    }
+    else
+    {
+        return QStyledItemDelegate::createEditor(parent, option, index);
+    }
 }
 
-void AddressBlockDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case AddressBlockDelegate::NAME_COLUMN:
-		case AddressBlockDelegate::DESC_COLUMN:
-		case AddressBlockDelegate::RESET_VALUE_COLUMN:
-		case AddressBlockDelegate::RESET_MASK_COLUMN: {
-			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-			Q_ASSERT(edit);
+//-----------------------------------------------------------------------------
+// Function: AddressBlockDelegate::setEditorData()
+//-----------------------------------------------------------------------------
+void AddressBlockDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
+{
+    if (index.column() == AddressBlockColumns::VOLATILE_COLUMN)
+    {
+        BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
+        Q_ASSERT(boolBox);
 
-			const QString text = index.model()->data(index, Qt::DisplayRole).toString();
-			edit->setText(text);
-			break;
-													  }
-        case AddressBlockDelegate::OFFSET_COLUMN:
-            {
-                QLineEdit* offsetEdit = qobject_cast<QLineEdit*>(editor);
-                Q_ASSERT(offsetEdit);
+        bool value = index.model()->data(index, Qt::DisplayRole).toBool();
+        boolBox->setCurrentValue(value);
+    }
+    else if (index.column() == AddressBlockColumns::ACCESS_COLUMN)
+    {
+        AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
+        Q_ASSERT(accessBox);
 
-                const QString text = index.model()->data(index, Qt::EditRole).toString();
-                offsetEdit->setText(text);
-                break;
-            }
-		case AddressBlockDelegate::SIZE_COLUMN: {
-			QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
-			Q_ASSERT(spinBox);
-
-			unsigned int value = index.model()->data(index, Qt::DisplayRole).toUInt();
-			spinBox->setValue(value);
-			break;
-											   }
-        case AddressBlockDelegate::DIM_COLUMN:
-            {
-                QLineEdit* dimensionEdit = qobject_cast<QLineEdit*>(editor);
-                Q_ASSERT(dimensionEdit);
-
-                const QString text = index.model()->data(index, Qt::EditRole).toString();
-                dimensionEdit->setText(text);
-                break;
-            }
-		case AddressBlockDelegate::VOLATILE_COLUMN: {
-			BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
-			Q_ASSERT(boolBox);
-
-			bool value = index.model()->data(index, Qt::DisplayRole).toBool();
-			boolBox->setCurrentValue(value);
-			break;
-													}
-		case AddressBlockDelegate::ACCESS_COLUMN: {
-			AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
-			Q_ASSERT(accessBox);
-
-			General::Access access = General::str2Access(index.model()->data(
-				index, Qt::DisplayRole).toString(), General::ACCESS_COUNT);
-			accessBox->setCurrentValue(access);
-			break;
-												  }
-		default: {
-			QStyledItemDelegate::setEditorData(editor, index);
-			break;
-				 }
-	}
+        General::Access access = General::str2Access(index.model()->data(
+            index, Qt::DisplayRole).toString(), General::ACCESS_COUNT);
+        accessBox->setCurrentValue(access);
+    }
+    else
+    {
+        QStyledItemDelegate::setEditorData(editor, index);
+    }
 }
 
-void AddressBlockDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case AddressBlockDelegate::NAME_COLUMN:
-		case AddressBlockDelegate::OFFSET_COLUMN:
-		case AddressBlockDelegate::DESC_COLUMN:
-		case AddressBlockDelegate::RESET_VALUE_COLUMN:
-		case AddressBlockDelegate::RESET_MASK_COLUMN: {
-			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-			Q_ASSERT(edit);
+//-----------------------------------------------------------------------------
+// Function: AddressBlockDelegate::setModelData()
+//-----------------------------------------------------------------------------
+void AddressBlockDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
+{
+    if (index.column() == AddressBlockColumns::VOLATILE_COLUMN)
+    {
+        BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
+        Q_ASSERT(boolBox);
 
-			QString text = edit->text();
-			model->setData(index, text, Qt::EditRole);
-			break;
-													  }
-		case AddressBlockDelegate::SIZE_COLUMN: {
-			QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
-			Q_ASSERT(spinBox);
+        bool value = boolBox->getCurrentValue();
+        model->setData(index, value, Qt::EditRole);
+    }
+    else if (index.column() == AddressBlockColumns::ACCESS_COLUMN)
+    {
+        AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
+        Q_ASSERT(accessBox);
 
-			unsigned int value = spinBox->value();
-			model->setData(index, value, Qt::EditRole);
-			break;
-											   }
-        case AddressBlockDelegate::DIM_COLUMN:
-            {
-                QLineEdit* dimensionEdit = qobject_cast<QLineEdit*>(editor);
-                Q_ASSERT(dimensionEdit);
-
-                QString text = dimensionEdit->text();
-                model->setData(index, text, Qt::EditRole);
-                break;
-            }
-		case AddressBlockDelegate::VOLATILE_COLUMN: {
-			BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
-			Q_ASSERT(boolBox);
-
-			bool value = boolBox->getCurrentValue();
-			model->setData(index, value, Qt::EditRole);
-			break;
-													}
-		case AddressBlockDelegate::ACCESS_COLUMN: {
-			AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
-			Q_ASSERT(accessBox);
-
-			General::Access access = accessBox->getCurrentValue();
-			model->setData(index, General::access2Str(access), Qt::EditRole);
-			break;
-												  }
-		default: {
-			QStyledItemDelegate::setModelData(editor, model, index);
-			break;
-				 }
-	}
-}
-
-void AddressBlockDelegate::commitAndCloseEditor() {
-	QWidget* edit = qobject_cast<QWidget*>(sender());
-	Q_ASSERT(edit);
-
-	emit commitData(edit);
-	emit closeEditor(edit);
+        General::Access access = accessBox->getCurrentValue();
+        model->setData(index, General::access2Str(access), Qt::EditRole);
+    }
+    else 
+    {
+        QStyledItemDelegate::setModelData(editor, model, index);
+    }
 }

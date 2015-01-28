@@ -37,7 +37,7 @@ protected:
 	 *
 	 * \return True if left < right.
 	*/
-	virtual bool lessThan(const QModelIndex& left, const QModelIndex& right) const;
+	virtual bool lessThan(QModelIndex const& left, QModelIndex const& right) const;
 
 private:
 	

@@ -7,25 +7,43 @@
 
 #include "accesscombobox.h"
 
+//-----------------------------------------------------------------------------
+// Function: AccessComboBox::AccessComboBox()
+//-----------------------------------------------------------------------------
 AccessComboBox::AccessComboBox(QWidget *parent):
-QComboBox(parent) {
-	// add items for all available access-values
-	for (int i = 0; i < General::ACCESS_COUNT; ++i) {
-		QString text = General::access2Str(static_cast<General::Access>(i));
-		addItem(text);
-	}
-
+QComboBox(parent) 
+{  
 	// only the available options can be selected
 	setEditable(false);
+
+    // add items for all available access-values
+    for (int i = 0; i < General::ACCESS_COUNT; ++i)
+    {
+        QString text = General::access2Str(static_cast<General::Access>(i));
+        addItem(text);
+    }
 }
 
-AccessComboBox::~AccessComboBox() {
+//-----------------------------------------------------------------------------
+// Function: AccessComboBox::~AccessComboBox()
+//-----------------------------------------------------------------------------
+AccessComboBox::~AccessComboBox() 
+{
+
 }
 
-General::Access AccessComboBox::getCurrentValue() const {
+//-----------------------------------------------------------------------------
+// Function: AccessComboBox::getCurrentValue()
+//-----------------------------------------------------------------------------
+General::Access AccessComboBox::getCurrentValue() const
+{
 	return static_cast<General::Access>(currentIndex());
 }
 
-void AccessComboBox::setCurrentValue( General::Access access ) {
+//-----------------------------------------------------------------------------
+// Function: AccessComboBox::setCurrentValue()
+//-----------------------------------------------------------------------------
+void AccessComboBox::setCurrentValue(General::Access access)
+{
 	setCurrentIndex(access);
 }	
