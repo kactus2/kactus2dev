@@ -94,8 +94,8 @@ public:
 	 *
 	 *      @return True if data was successfully set.
 	 */
-	virtual bool setData(const QModelIndex& index, const QVariant& value, 
-		int role = Qt::EditRole );
+	virtual bool setData(QModelIndex const& index, QVariant const& value, int role = Qt::EditRole);
+
 
 	/*! Get information on how specified item can be handled.
 	 *
@@ -258,6 +258,18 @@ private:
      *      return      The data in the given index.
      */
     QVariant valueForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Changes the type name and definition on a row according to the port width.
+     *
+     *      @param [in] port    The port whose type name and definition to update.
+     *      @param [in] row     The row number of the port.
+     */
+    void setTypeNameAndDefinitionOnRow(QSharedPointer<Port> port, int row);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! Pointer to the model being edited.
     QSharedPointer<Model> model_;
