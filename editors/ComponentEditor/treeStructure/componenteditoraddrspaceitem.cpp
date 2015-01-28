@@ -16,6 +16,7 @@ ComponentEditorAddrSpaceItem::ComponentEditorAddrSpaceItem(QSharedPointer<Addres
 														   ComponentEditorTreeModel* model,
 														   LibraryInterface* libHandler,
 														   QSharedPointer<Component> component,
+                                                           QSharedPointer<ReferenceCounter> referenceCounter,
                                                            QSharedPointer<ParameterFinder> parameterFinder,
                                                            QSharedPointer<ExpressionFormatter> expressionFormatter,
 														   ComponentEditorItem* parent):
@@ -27,6 +28,7 @@ graphItem_(NULL),
 localMemMapVisualizer_(new MemoryMapsVisualizer(component)),
 addrSpaceVisualizer_(new AddressSpaceVisualizer(addrSpace, component))
 {
+    setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
 
@@ -42,8 +44,8 @@ addrSpaceVisualizer_(new AddressSpaceVisualizer(addrSpace, component))
 		QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
 		if (addrBlock) {
 			QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
-				new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, parameterFinder_,
-                expressionFormatter_, this));
+				new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, referenceCounter_,
+                parameterFinder_, expressionFormatter_, this));
 
 			addrBlockItem->setVisualizer(localMemMapVisualizer_);
 			childItems_.append(addrBlockItem);
@@ -99,8 +101,8 @@ void ComponentEditorAddrSpaceItem::createChild( int index ) {
 	QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
 	if (addrBlock) {
 		QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
-			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, parameterFinder_,
-            expressionFormatter_, this));
+			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, referenceCounter_,
+            parameterFinder_, expressionFormatter_, this));
 		addrBlockItem->setLocked(locked_);
 
 		if (localMemMapVisualizer_) {

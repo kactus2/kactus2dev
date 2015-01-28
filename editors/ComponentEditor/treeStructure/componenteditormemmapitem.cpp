@@ -17,6 +17,7 @@ ComponentEditorMemMapItem::ComponentEditorMemMapItem(QSharedPointer<MemoryMap> m
 													 ComponentEditorTreeModel* model,
 													 LibraryInterface* libHandler,
 													 QSharedPointer<Component> component,
+                                                     QSharedPointer<ReferenceCounter> referenceCounter,
                                                      QSharedPointer<ParameterFinder> parameterFinder,
                                                      QSharedPointer<ExpressionFormatter> expressionFormatter,
 													 ComponentEditorItem* parent):
@@ -26,6 +27,7 @@ items_(memoryMap->getItems()),
 visualizer_(NULL),
 graphItem_(NULL)
 {
+    setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
 
@@ -39,8 +41,8 @@ graphItem_(NULL)
 		if (addrBlock) 
         {
 			QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
-				new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, parameterFinder_,
-                expressionFormatter_, this));
+				new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, referenceCounter_,
+                parameterFinder_, expressionFormatter_, this));
 			childItems_.append(addrBlockItem);
 
             addrBlockItem->addressUnitBitsChanged(memoryMap_->getAddressUnitBits());
@@ -89,8 +91,8 @@ void ComponentEditorMemMapItem::createChild( int index ) {
 	QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
 	if (addrBlock) {
 		QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
-			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, parameterFinder_,
-            expressionFormatter_, this));
+			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, referenceCounter_,
+            parameterFinder_, expressionFormatter_, this));
 		addrBlockItem->setLocked(locked_);
 		
         addrBlockItem->addressUnitBitsChanged(memoryMap_->getAddressUnitBits());

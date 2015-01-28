@@ -64,6 +64,11 @@ model_(0)
 
 	view_->setItemDelegate(new AddressBlockDelegate(parameterCompleter, parameterFinder, this));
 
+    connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+
 	view_->sortByColumn(AddressBlockColumns::REGISTER_OFFSET, Qt::AscendingOrder);
 
     setupLayout();

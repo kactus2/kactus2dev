@@ -38,14 +38,7 @@ QWidget* AddressBlockDelegate::createEditor(QWidget* parent,
     QStyleOptionViewItem const& option, 
     QModelIndex const& index ) const
 {
-    if (index.column() == AddressBlockColumns::REGISTER_SIZE)
-    {
-        QLineEdit* sizeEditor = new QLineEdit(parent);
-        sizeEditor->setValidator(new QIntValidator(0, 16383, sizeEditor));
-
-        return sizeEditor;
-    }
-    else if (index.column() == AddressBlockColumns::VOLATILE)
+    if (index.column() == AddressBlockColumns::VOLATILE)
     {
         return new BooleanComboBox(parent);
     }
@@ -120,5 +113,6 @@ void AddressBlockDelegate::setModelData(QWidget* editor, QAbstractItemModel* mod
 bool AddressBlockDelegate::columnAcceptsExpression(int column) const
 {
     return column == AddressBlockColumns::REGISTER_DIMENSION ||
+        column == AddressBlockColumns::REGISTER_SIZE ||
         column == AddressBlockColumns::REGISTER_OFFSET;
 }

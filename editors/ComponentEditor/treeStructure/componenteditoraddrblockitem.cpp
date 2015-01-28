@@ -18,6 +18,7 @@ ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem(QSharedPointer<Addres
 														   ComponentEditorTreeModel* model,
 														   LibraryInterface* libHandler,
 														   QSharedPointer<Component> component,
+                                                           QSharedPointer<ReferenceCounter> referenceCounter,
                                                            QSharedPointer<ParameterFinder> parameterFinder,
                                                            QSharedPointer<ExpressionFormatter> expressionFormatter,
 														   ComponentEditorItem* parent):
@@ -28,6 +29,7 @@ visualizer_(NULL),
 graphItem_(NULL),
 addressUnitBits_(0)
 {
+    setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
 
@@ -81,6 +83,8 @@ ItemEditor* ComponentEditorAddrBlockItem::editor() {
         
         connect(this, SIGNAL(changeInAddressUnitBits(int)), 
             editor_, SIGNAL(addressUnitBitsChanged(int)), Qt::UniqueConnection);
+
+        connectItemEditorToReferenceCounter();
 
         emit changeInAddressUnitBits(addressUnitBits_);
 	}

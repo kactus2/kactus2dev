@@ -339,6 +339,30 @@ bool Register::hasDimensionExpression()
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: register::setSizeExpression()
+//-----------------------------------------------------------------------------
+void Register::setSizeExpression(QString const& expression)
+{
+    registerDefinition_.setSizeExpression(expression);
+}
+
+//-----------------------------------------------------------------------------
+// Function: register::getSizeExpression()
+//-----------------------------------------------------------------------------
+QString Register::getSizeExpression()
+{
+    return registerDefinition_.getSizeExpression();
+}
+
+//-----------------------------------------------------------------------------
+// Function: register::removeSizeExpression()
+//-----------------------------------------------------------------------------
+void Register::removeSizeExpression()
+{
+    registerDefinition_.removeSizeExpression();
+}
+
 void Register::setAddressOffset(const QString& addressOffset) {
     this->addressOffset_ = addressOffset;
 }

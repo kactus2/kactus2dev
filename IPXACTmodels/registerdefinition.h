@@ -163,6 +163,32 @@ public:
      */
     void setSize(unsigned int size);
 
+    /*!
+     *  Set the size attribute expression.
+     *
+     *      @param [in] expression      The size expression.
+     */
+    void setSizeExpression(QString const& expression);
+
+    /*!
+     *  Get the size expression.
+     *
+     *      @return The current size expression.
+     */
+    QString getSizeExpression();
+
+    /*!
+     *  Remove the size expression from the attributes.
+     */
+    void removeSizeExpression();
+
+    /*!
+     *  Check if the register has a size expression.
+     *
+     *      @return True, if register has an expression, otherwise false.
+     */
+    bool hasSizeExpression();
+
     /*! \brief Set the attributes for the size element.
      *
      * Calling this function will erase any old attributes.

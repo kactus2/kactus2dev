@@ -268,6 +268,48 @@ void RegisterDefinition::setSize(unsigned int size) {
 	this->size_ = size;
 }
 
+//-----------------------------------------------------------------------------
+// Function: registerdefinition::setSizeExpression()
+//-----------------------------------------------------------------------------
+void RegisterDefinition::setSizeExpression(QString const& expression)
+{
+    if (!expression.isEmpty())
+    {
+        sizeAttributes_.insert("expression", expression);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: registerdefinition::getSizeExpression()
+//-----------------------------------------------------------------------------
+QString RegisterDefinition::getSizeExpression()
+{
+    if (hasSizeExpression())
+    {
+        return sizeAttributes_.value("expression");
+    }
+    else
+    {
+        return QString::number(getSize());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: registerdefinition::removeSizeExpression()
+//-----------------------------------------------------------------------------
+void RegisterDefinition::removeSizeExpression()
+{
+    sizeAttributes_.remove("expression");
+}
+
+//-----------------------------------------------------------------------------
+// Function: registerdefinition::hasSizeExpression()
+//-----------------------------------------------------------------------------
+bool RegisterDefinition::hasSizeExpression()
+{
+    return sizeAttributes_.contains("expression");
+}
+
 void RegisterDefinition::setSizeAttributes(
 		const QMap<QString,QString>& sizeAttributes) {
 	sizeAttributes_.clear();

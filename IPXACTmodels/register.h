@@ -165,6 +165,25 @@ public:
      */
     bool hasDimensionExpression();
 
+    /*!
+     *  Set the size expression.
+     *
+     *      @param [in] expression  The expression for size.
+     */
+    void setSizeExpression(QString const& expression);
+
+    /*!
+     *  Get the expression for size.
+     *
+     *      @return The expression for size.
+     */
+    QString getSizeExpression();
+
+    /*!
+     *  Remove the size expression.
+     */
+    void removeSizeExpression();
+
     /*! \brief Set the addressOffset for this register.
      *
      * \param addressOffset QString containing the addressOffset.

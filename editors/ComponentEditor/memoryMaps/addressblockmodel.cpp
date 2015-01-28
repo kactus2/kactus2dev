@@ -78,7 +78,8 @@ QVariant AddressBlockModel::headerData( int section, Qt::Orientation orientation
         }
         else if (section == AddressBlockColumns::REGISTER_SIZE)
         {
-            return tr("Size\n [bits]");
+            QString size = tr("Size\n [bits]") + getExpressionSymbol();
+            return size;
         }
         else if (section == AddressBlockColumns::REGISTER_DIMENSION)
         {
@@ -201,7 +202,8 @@ QVariant AddressBlockModel::valueForIndex(const QModelIndex& index) const
         const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
         if (reg)
         {
-            return reg->getSize();
+            QString size = QString::number(reg->getSize());
+            return formattedValueFor(size);
         }
         else
         {
@@ -316,7 +318,19 @@ bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value
             QSharedPointer<Register> reg = items_[index.row()].dynamicCast<Register>();
             if (reg)
             {
-                reg->setSize(value.toUInt());
+                QString calculatedExpression = parseExpressionToDecimal(value.toString());
+
+                if (isValuePlainOrExpression(calculatedExpression))
+                {
+                    reg->removeSizeExpression();
+
+                    if (calculatedExpression != value.toString())
+                    {
+                        reg->setSizeExpression(value.toString());
+                    }
+
+                    reg->setSize(calculatedExpression.toInt());
+                }
             }
             else
             {
@@ -463,7 +477,8 @@ bool AddressBlockModel::isValid() const
 //-----------------------------------------------------------------------------
 bool AddressBlockModel::isValidExpressionColumn(QModelIndex const& index) const
 {
-    if (index.column() == AddressBlockColumns::REGISTER_DIMENSION || 
+    if (index.column() == AddressBlockColumns::REGISTER_DIMENSION ||
+        index.column() == AddressBlockColumns::REGISTER_SIZE ||
         index.column() == AddressBlockColumns::REGISTER_OFFSET)
     {
         return true;
@@ -485,6 +500,18 @@ QVariant AddressBlockModel::expressionOrValueForIndex(QModelIndex const& index) 
         if (reg)
         {
             return reg->getDimensionExpression();
+        }
+        else
+        {
+            return QVariant();
+        }
+    }
+    else if (index.column() == AddressBlockColumns::REGISTER_SIZE)
+    {
+        const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
+        if (reg)
+        {
+            return reg->getSizeExpression();
         }
         else
         {
@@ -528,6 +555,20 @@ bool AddressBlockModel::validateColumnForParameter(QModelIndex const& index) con
             return false;
         }
     }
+    else if (index.column() == AddressBlockColumns::REGISTER_SIZE)
+    {
+        const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
+        if (reg)
+        {
+            QString size = QString::number(reg->getSize());
+            return isValuePlainOrExpression(size);
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
     {
         const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();

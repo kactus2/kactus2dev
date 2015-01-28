@@ -668,10 +668,12 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
         this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorMemMapsItem>(new ComponentEditorMemMapsItem(
-        &navigationModel_, libHandler_, component, parameterFinder_, expressionFormatter_, hwRoot)));
+        &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
+        hwRoot)));
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorAddrSpacesItem>(new ComponentEditorAddrSpacesItem(
-        &navigationModel_, libHandler_, component, parameterFinder_, expressionFormatter_, hwRoot)));
+        &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
+        hwRoot)));
 
     QSharedPointer<ComponentEditorViewsItem> viewsItem(new ComponentEditorViewsItem(&navigationModel_, libHandler_,
         component, referenceCounter_, parameterFinder_, expressionFormatter_, hwRoot));
