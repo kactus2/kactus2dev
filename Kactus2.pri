@@ -590,9 +590,9 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h
-SOURCES += ./GeneratedFiles/moc_ExpressionEditor.cpp \
-    ./common/GenericEditProvider.cpp \
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
+    ./editors/ComponentEditor/common/MultipleParameterFinder.h
+SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
     ./common/dialogs/comboSelector/comboselector.cpp \
@@ -1130,5 +1130,6 @@ SOURCES += ./GeneratedFiles/moc_ExpressionEditor.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
+    ./editors/ComponentEditor/common/MultipleParameterFinder.cpp
 RESOURCES += kactus.qrc

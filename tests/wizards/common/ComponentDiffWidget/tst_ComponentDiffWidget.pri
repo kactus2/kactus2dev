@@ -12,15 +12,19 @@ HEADERS += ../../../../wizards/common/ComponentComparator/ComponentComparator.h 
     ../../../../wizards/common/IPXactElementComparator.h \
     ../../../../wizards/common/ListComparator.h \
     ../../../../wizards/common/ModelParameterComparator/ModelParameterComparator.h \
+    ../../../../wizards/common/PortComparator/PortComparator.h \
     ../../../../wizards/common/VLNVComparator/VLNVComparator.h \
     ../../../../wizards/common/ViewComparator/ViewComparator.h \
     ../../../../wizards/common/ComponentDiffWidget/ComponentDiffWidget.h \
-    ../../../../wizards/common/PortComparator/PortComparator.h
+    ../../../../editors/ComponentEditor/common/ExpressionFormatter.h \
+    ../../../../editors/ComponentEditor/common/MultipleParameterFinder.h
 SOURCES += ../../../../wizards/common/ComponentComparator/ComponentComparator.cpp \
     ../../../../wizards/common/ComponentDiffWidget/ComponentDiffWidget.cpp \
     ../../../../wizards/common/IPXactDiff.cpp \
     ../../../../wizards/common/ModelParameterComparator/ModelParameterComparator.cpp \
+    ../../../../wizards/common/PortComparator/PortComparator.cpp \
     ../../../../wizards/common/VLNVComparator/VLNVComparator.cpp \
     ../../../../wizards/common/ViewComparator/ViewComparator.cpp \
     ./tst_ComponentDiffWidget.cpp \
-    ../../../../wizards/common/PortComparator/PortComparator.cpp
+    ../../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
+    ../../../../editors/ComponentEditor/common/MultipleParameterFinder.cpp

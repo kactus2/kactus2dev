@@ -13,6 +13,7 @@
 #define IMPORTWIZARD_H
 
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <QWizard>
@@ -75,8 +76,8 @@ private:
     //! Parameter finder, finds the desired parameters.
     QSharedPointer<ParameterFinder> parameterFinder_;
 
-    //! Expression formatter, formats the referencing expressions.
-    QSharedPointer<ExpressionFormatter> expressionFormatter_;
+    //! Finds parameters in multiple components.
+    QSharedPointer<ParameterFinder> multipleParameterFinder_;
 };
 
 #endif // ImportWizard_H

@@ -3949,6 +3949,9 @@
     <ClCompile Include="GeneratedFiles\moc_ExpressionEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\MultipleParameterFinder.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5755,6 +5758,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\AddressBlockColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\MultipleParameterFinder.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

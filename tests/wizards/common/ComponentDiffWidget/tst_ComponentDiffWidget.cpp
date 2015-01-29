@@ -13,6 +13,9 @@
 
 #include <wizards/common/ComponentDiffWidget/ComponentDiffWidget.h>
 
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/modelparameter.h>
@@ -101,7 +104,11 @@ tst_ComponentDiffWidget::tst_ComponentDiffWidget()
 //-----------------------------------------------------------------------------
 void tst_ComponentDiffWidget::testHasFourColumns()
 {
-    ComponentDiffWidget widget(0);
+    QSharedPointer<Component> component(new Component);
+    QSharedPointer<ParameterFinder> parameterFinder(new MultipleParameterFinder(component));
+    QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
+
+    ComponentDiffWidget widget(expressionFormatter, 0);
     widget.setComponents(QSharedPointer<Component>(0), QSharedPointer<Component>(0));
 
     QCOMPARE(widget.columnCount(), 4);
@@ -112,7 +119,11 @@ void tst_ComponentDiffWidget::testHasFourColumns()
 //-----------------------------------------------------------------------------
 void tst_ComponentDiffWidget::testTreeIsEmptyForNullComponents()
 {
-    ComponentDiffWidget widget(0);
+    QSharedPointer<Component> component(new Component);
+    QSharedPointer<ParameterFinder> parameterFinder(new MultipleParameterFinder(component));
+    QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
+
+    ComponentDiffWidget widget(expressionFormatter, 0);
     
     widget.setComponents(QSharedPointer<Component>(0), QSharedPointer<Component>(0));
     
@@ -129,7 +140,10 @@ void tst_ComponentDiffWidget::testAddingModelParameterCreatesTwoLevels()
     QSharedPointer<Component> subject(new Component());
     addModelParameter(subject, "testParameter", "");
 
-    ComponentDiffWidget widget(0);
+    QSharedPointer<ParameterFinder> parameterFinder(new MultipleParameterFinder(reference));
+    QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
+
+    ComponentDiffWidget widget(expressionFormatter, 0);
     widget.setComponents(reference, subject);
 
     QCOMPARE(widget.topLevelItemCount(), 1);
@@ -152,7 +166,10 @@ void tst_ComponentDiffWidget::testAddingTwoModelParameterCreatesTwoLevels()
     addModelParameter(subject, "testParameter", "");
     addModelParameter(subject, "parameterCount", "");
 
-    ComponentDiffWidget widget(0);
+    QSharedPointer<ParameterFinder> parameterFinder(new MultipleParameterFinder(reference));
+    QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
+
+    ComponentDiffWidget widget(expressionFormatter, 0);
     widget.setComponents(reference, subject);
 
     QCOMPARE(widget.topLevelItemCount(), 1);
@@ -175,7 +192,10 @@ void tst_ComponentDiffWidget::testModificationShowsElementPreviousAndCurrentValu
     QSharedPointer<Component> subject(new Component());
     addModelParameter(subject, "testParameter", "1");
 
-    ComponentDiffWidget widget(0);
+    QSharedPointer<ParameterFinder> parameterFinder(new MultipleParameterFinder(reference));
+    QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
+
+    ComponentDiffWidget widget(expressionFormatter, 0);
     widget.setComponents(reference, subject);
 
     QCOMPARE(widget.topLevelItemCount(), 1);
@@ -201,7 +221,10 @@ void tst_ComponentDiffWidget::testModificationShowsElementPreviousAndCurrentValu
     QSharedPointer<ModelParameter> modifiedModelParameter = subject->getModelParameters().first();
     modifiedModelParameter->setUsageType("nontyped");
 
-    ComponentDiffWidget widget(0);
+    QSharedPointer<ParameterFinder> parameterFinder(new MultipleParameterFinder(reference));
+    QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
+
+    ComponentDiffWidget widget(expressionFormatter, 0);
     widget.setComponents(reference, subject);
 
     QCOMPARE(widget.topLevelItemCount(), 1);
@@ -234,7 +257,10 @@ void tst_ComponentDiffWidget::testOneModifiedModelParameterCreatesOneModificatio
     addModelParameter(subject, "addr_width", "32");
     addModelParameter(subject, "data_width", "1");
 
-    ComponentDiffWidget widget(0);
+    QSharedPointer<ParameterFinder> parameterFinder(new MultipleParameterFinder(reference));
+    QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
+
+    ComponentDiffWidget widget(expressionFormatter, 0);
     widget.setComponents(reference, subject);
 
     verifyModelParametersItem(widget);
@@ -251,7 +277,10 @@ void tst_ComponentDiffWidget::testAddedElementHasIcon()
     QSharedPointer<Component> subject(new Component());
     addModelParameter(subject, "", "");
 
-    ComponentDiffWidget widget(0);
+    QSharedPointer<ParameterFinder> parameterFinder(new MultipleParameterFinder(reference));
+    QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
+
+    ComponentDiffWidget widget(expressionFormatter, 0);
     widget.setComponents(reference, subject);
 
     QTreeWidgetItem* addedItem = getModelParametersItem(widget)->child(0);
@@ -268,7 +297,10 @@ void tst_ComponentDiffWidget::testRemovedElementHasIcon()
 
     QSharedPointer<Component> subject(new Component());    
 
-    ComponentDiffWidget widget(0);
+    QSharedPointer<ParameterFinder> parameterFinder(new MultipleParameterFinder(reference));
+    QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
+
+    ComponentDiffWidget widget(expressionFormatter, 0);
     widget.setComponents(reference, subject);
 
     QTreeWidgetItem* addedItem = getModelParametersItem(widget)->child(0);
@@ -286,7 +318,10 @@ void tst_ComponentDiffWidget::testModifiedElementHasIcon()
     QSharedPointer<Component> subject(new Component());    
     addModelParameter(subject, "id", "1");
 
-    ComponentDiffWidget widget(0);
+    QSharedPointer<ParameterFinder> parameterFinder(new MultipleParameterFinder(reference));
+    QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
+
+    ComponentDiffWidget widget(expressionFormatter, 0);
     widget.setComponents(reference, subject);
 
     QTreeWidgetItem* addedItem = getModelParametersItem(widget)->child(0);
@@ -303,7 +338,10 @@ void tst_ComponentDiffWidget::testAddingViewCreatesTwoLevels()
     QSharedPointer<Component> subject(new Component());    
     addView(subject, "testView");
 
-    ComponentDiffWidget widget(0);
+    QSharedPointer<ParameterFinder> parameterFinder(new MultipleParameterFinder(reference));
+    QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
+
+    ComponentDiffWidget widget(expressionFormatter, 0);
     widget.setComponents(reference, subject);
 
     verifyViewsItem(widget);
@@ -327,7 +365,10 @@ void tst_ComponentDiffWidget::testViewModelNameChangeShowsPreviousAndCurrentValu
     addView(subject, "view1");
     subject->getViews().first()->setModelName("new");
 
-    ComponentDiffWidget widget(0);
+    QSharedPointer<ParameterFinder> parameterFinder(new MultipleParameterFinder(reference));
+    QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
+
+    ComponentDiffWidget widget(expressionFormatter, 0);
     widget.setComponents(reference, subject);
 
     verifyViewsItem(widget);
@@ -357,7 +398,10 @@ void tst_ComponentDiffWidget::testViewChangesShowsAsChilds()
     subjectView->setModelName("new model");
     subject->addView(subjectView);
 
-    ComponentDiffWidget widget(0);
+    QSharedPointer<ParameterFinder> parameterFinder(new MultipleParameterFinder(reference));
+    QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
+
+    ComponentDiffWidget widget(expressionFormatter, 0);
     widget.setComponents(reference, subject);
 
     verifyViewsItem(widget);
@@ -383,7 +427,10 @@ void tst_ComponentDiffWidget::testAddingDifferentTypeElements()
     addView(subject, "testView");
     addPort(subject, "testPort");
 
-    ComponentDiffWidget widget(0);
+    QSharedPointer<ParameterFinder> parameterFinder(new MultipleParameterFinder(reference));
+    QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
+
+    ComponentDiffWidget widget(expressionFormatter, 0);
     widget.setComponents(reference, subject);
 
     QCOMPARE(widget.topLevelItemCount(), 3);

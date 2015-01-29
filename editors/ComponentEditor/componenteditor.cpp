@@ -222,6 +222,8 @@ void ComponentEditor::refresh()
 	component_.clear();
 	component_ = comp;
 
+    parameterFinder_->setComponent(comp);
+
 	// open the general editor.
 	onItemActivated(proxy_.index(0, 0, QModelIndex()));
 

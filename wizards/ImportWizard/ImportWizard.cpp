@@ -29,7 +29,7 @@ ImportWizard::ImportWizard(QSharedPointer<const Component> component,
     : QWizard(parent),
       workingComponent_(new Component(*component)),
       parameterFinder_(new ComponentParameterFinder(workingComponent_)),
-      expressionFormatter_(new ExpressionFormatter(parameterFinder_))
+      multipleParameterFinder_(new MultipleParameterFinder(workingComponent_))
 {
 	setWindowTitle(tr("Import Wizard for %1").arg(component->getVlnv()->toString()));
     setWizardStyle(ModernStyle);
@@ -38,10 +38,14 @@ ImportWizard::ImportWizard(QSharedPointer<const Component> component,
     setOption(NoBackButtonOnStartPage, true);
     setOption(HaveFinishButtonOnEarlyPages, false);
 
+    QSharedPointer<ExpressionFormatter> singleExpressionFormatter(new ExpressionFormatter(parameterFinder_));
+    QSharedPointer<ExpressionFormatter> multipleExpressionFormatter(
+        new ExpressionFormatter(multipleParameterFinder_));
+
     ImportWizardImportPage* importPage = new ImportWizardImportPage(workingComponent_, handler, pluginMgr,
-        parameterFinder_, expressionFormatter_, this);
+        parameterFinder_, singleExpressionFormatter, this);
     ComponentWizardConclusionPage* finalPage = new ComponentWizardConclusionPage(workingComponent_, handler,
-        expressionFormatter_, this);
+        multipleExpressionFormatter, this);
 
     setPage(ImportWizardPages::INTRO, new ImportWizardIntroPage(this));
     setPage(ImportWizardPages::IMPORT, importPage);
@@ -77,4 +81,5 @@ void ImportWizard::onComponentChanged(QSharedPointer<Component> component)
     workingComponent_ = component;
 
     parameterFinder_->setComponent(workingComponent_);
+    multipleParameterFinder_->setComponent(workingComponent_);
 }
