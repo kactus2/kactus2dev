@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
     <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
@@ -13,8 +13,8 @@
       ports.
     </p>
     <p>
-      Each port has 5 mandatory parameters.  <b>Port name</b> is a
-      uniques identifier and must match the name of the port in the
+      <b>Port name</b> is a
+      unique identifier and must match the name of the port in the
       implementation language. For example, the ports listed in the
       VHDL entity declaration are listed here.
     </p>
@@ -32,20 +32,25 @@
     <p>
       <b>Left</b> and <b>right bounds</b> define the indices of a
       vectored port. The <b>width</b> of the port is <i>left bound -
-      right bound + 1</i>, e.g. 3 downto 0 requires 4 bits. In case of
-      scalar ports the <i>left bound = right bound</i>.
+      right bound + 1</i>, e.g. 3 downto 0 requires 4 bits. For
+      scalar ports <i>left bound = right bound</i>. If either left
+      bound or right bound is an expression, width cannot be set
+      manually.
     </p>
     <p>
-      The port <b>type</b> is optional. Typical values In VHDL are
+      The port <b>type</b> is optional. Typical values in VHDL are
       'std_logic' for scalar ports (i.e. 1 bit) and and
-      'std_logic_vector' for vectored ones (multibit). The <b>type
-      definition</b> is a language specific reference to where the
-      type is defined, e.g. package or header file. Type definition
-      will be included at the beginnig of the generated top-level
+      'std_logic_vector' for vectored ports (multibit). 
+    </p>
+    <p>
+      The <b>type definition</b> is a language specific reference to 
+      where the type is defined, e.g. package or header file. Type 
+      definition will be included at the beginnig of the generated top-level
       code. In VHDL, 'std_logic' types are defined in
       'IEEE.std_logic_1164.all' ('all' means that the whole package is
       included). In SystemC, the type definition is the include file
-      name, e.g. 'systemc.h'.
+      name, e.g. 'systemc.h'. Type definition has no effect if type 
+      is not set.
     </p>
     <p>
       <b>Default value</b> is useful since it assigns a value for an

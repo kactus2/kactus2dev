@@ -205,6 +205,15 @@ private:
 	PortsModel& operator=(const PortsModel& other);
  
     /*!
+     *  Gets the port in a given row.
+     *
+     *      @param [in] row   The row to search for.
+     *
+     *      @return The port on the given row.
+     */
+    QSharedPointer<Port> portOnRow(int row) const;
+
+    /*!
      *   Locks the name, direction  and type columns of a port.
      *
      *      @param [in] modelParam  The parameter model to lock.
@@ -266,6 +275,15 @@ private:
      *      @param [in] row     The row number of the port.
      */
     void setTypeNameAndDefinitionOnRow(QSharedPointer<Port> port, int row);
+
+    /*!
+     *  Checks if a given port has an expression as a left or right bound.
+     *
+     *      @param [in] port   The port to check.
+     *
+     *      @return True, if left or right bound is an expression, otherwise false.
+     */
+    bool hasExpressionInLeftOrRightBound(QSharedPointer<Port> port) const;
 
     //-----------------------------------------------------------------------------
     // Data.
