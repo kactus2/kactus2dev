@@ -31,7 +31,7 @@
 // Function: ComponentWizardConclusionPage::ComponentWizardConclusionPage()
 //-----------------------------------------------------------------------------
 ComponentWizardConclusionPage::ComponentWizardConclusionPage(QSharedPointer<Component> component, 
-    LibraryInterface* lh,  QWidget* parent)
+    LibraryInterface* lh, QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget* parent)
     : QWizardPage(parent), 
       originalComponent_(component), 
       workingComponent_(component),
@@ -49,7 +49,7 @@ ComponentWizardConclusionPage::ComponentWizardConclusionPage(QSharedPointer<Comp
       viewsLabel_(new QLabel(this)), 
       descriptionLabel_(new QLabel(this)), 
       previewBox_(lh),
-      diffView_(new ComponentDiffWidget(this))
+      diffView_(new ComponentDiffWidget(expressionFormatter, this))
 {
     setTitle(tr("Summary"));
     setSubTitle(tr("You have successfully completed the wizard. Verify the choices by clicking Finish."));

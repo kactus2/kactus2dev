@@ -40,7 +40,8 @@ ImportWizard::ImportWizard(QSharedPointer<const Component> component,
 
     ImportWizardImportPage* importPage = new ImportWizardImportPage(workingComponent_, handler, pluginMgr,
         parameterFinder_, expressionFormatter_, this);
-    ComponentWizardConclusionPage* finalPage = new ComponentWizardConclusionPage(workingComponent_, handler, this);
+    ComponentWizardConclusionPage* finalPage = new ComponentWizardConclusionPage(workingComponent_, handler,
+        expressionFormatter_, this);
 
     setPage(ImportWizardPages::INTRO, new ImportWizardIntroPage(this));
     setPage(ImportWizardPages::IMPORT, importPage);

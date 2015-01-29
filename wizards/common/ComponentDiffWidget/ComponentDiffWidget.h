@@ -16,6 +16,8 @@
 
 #include <wizards/common/IPXactDiff.h>
 
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 class Component;
 
 //-----------------------------------------------------------------------------
@@ -36,8 +38,13 @@ public:
         COLUMN_COUNT
     };
 
-	//! The constructor.
-	ComponentDiffWidget(QWidget *parent);
+	/*!
+	 *  The constructor.
+	 *
+	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+	 *      @param [in] parent                  Pointer to the parent item.
+	 */
+	ComponentDiffWidget(QSharedPointer <ExpressionFormatter> expressionFormatter, QWidget *parent);
 
 	//! The destructor.
 	~ComponentDiffWidget();
@@ -140,6 +147,8 @@ private:
     void addMultiLevelModificationItem(QString const& name, QList<IPXactDiff::Modification> changelist, 
         QTreeWidgetItem* parent);
 
+    //! Expression formatter, formats the referencing expressions.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 };
 
 #endif // COMPONENTDIFFWIDGET_H

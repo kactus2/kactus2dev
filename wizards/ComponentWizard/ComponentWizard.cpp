@@ -49,7 +49,8 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
     ComponentWizardImportPage* importPage = new ComponentWizardImportPage(component, handler, pluginMgr,
         parameterFinder_, expressionFormatter_, this);
 
-    ComponentWizardConclusionPage* conclusionPage = new ComponentWizardConclusionPage(component, handler, this);
+    ComponentWizardConclusionPage* conclusionPage = new ComponentWizardConclusionPage(component, handler,
+        expressionFormatter_, this);
 
     setPage(ComponentWizardPages::INTRO, new ComponentWizardIntroPage(component, this));
     setPage(ComponentWizardPages::GENERAL, new ComponentWizardGeneralInfoPage(component, this));    

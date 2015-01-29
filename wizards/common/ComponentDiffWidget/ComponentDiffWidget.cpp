@@ -18,8 +18,9 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentDiffWidget::ComponentDiffWidget()
 //-----------------------------------------------------------------------------
-ComponentDiffWidget::ComponentDiffWidget(QWidget *parent)
-    : QTreeWidget (parent)
+ComponentDiffWidget::ComponentDiffWidget(QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent)
+    : QTreeWidget (parent),
+      expressionFormatter_(expressionFormatter)
 {
     QStringList labels;
     labels << "Name" << "Changed element" << "Previous value" << "Updated value";
@@ -174,8 +175,10 @@ QTreeWidgetItem* ComponentDiffWidget::createModificationItem(IPXactDiff::Modific
 {
     QTreeWidgetItem* modificationItem = new QTreeWidgetItem(parent);
     modificationItem->setText(CHANGE_ELEMENT, modification.modifiedElement);
-    modificationItem->setText(PREVIOUS_VALUE, modification.previousValue);
-    modificationItem->setText(UPDATED_VALUE, modification.newValue);
+    modificationItem->setText(PREVIOUS_VALUE,
+        expressionFormatter_->formatReferringExpression(modification.previousValue));
+    modificationItem->setText(UPDATED_VALUE,
+        expressionFormatter_->formatReferringExpression(modification.newValue));
 
     return modificationItem;
 }

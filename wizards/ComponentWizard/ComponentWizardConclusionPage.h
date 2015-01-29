@@ -14,6 +14,8 @@
 
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <QWizardPage>
 #include <QLabel>
 #include <QTextEdit>
@@ -32,11 +34,14 @@ public:
     /*!
     *  Constructor.
     *
-    *      @param [in] component    The initial component to create.
-    *      @param [in] lh           The library interface.
-    *      @param [in] parent       The parent wizard.
+    *      @param [in] component                The initial component to create.
+    *      @param [in] lh                       The library interface.
+    *      @param [in] expressionFormatter      The expression formatter.
+    *      @param [in] parent                   The parent wizard.
     */
-    ComponentWizardConclusionPage(QSharedPointer<Component> component, LibraryInterface* lh, 
+    ComponentWizardConclusionPage(QSharedPointer<Component> component,
+        LibraryInterface* lh,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
         QWidget* parent);
 
     /*!
