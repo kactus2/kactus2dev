@@ -256,14 +256,17 @@ void ModelParameterModel::onRemoveItem(QModelIndex const& index)
         return;
     }
 
-	// remove the specified item
-	beginRemoveRows(QModelIndex(), index.row(), index.row());
-    QList<QSharedPointer<ModelParameter> >& modelParameters = model_->getModelParameters();
-	modelParameters.removeAt(index.row());
-	endRemoveRows();
-
-	// tell also parent widget that contents have been changed
-	emit contentChanged();
+    if (canRemoveRow(index.row()))
+    {
+        // remove the specified item
+        beginRemoveRows(QModelIndex(), index.row(), index.row());
+        QList<QSharedPointer<ModelParameter> >& modelParameters = model_->getModelParameters();
+        modelParameters.removeAt(index.row());
+        endRemoveRows();
+        
+        // tell also parent widget that contents have been changed
+        emit contentChanged();
+    }
 }
 
 //-----------------------------------------------------------------------------

@@ -202,8 +202,14 @@ QVariant AddressBlockModel::valueForIndex(const QModelIndex& index) const
         const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
         if (reg)
         {
-            QString size = QString::number(reg->getSize());
-            return formattedValueFor(size);
+            QString size = formattedValueFor(reg->getSizeExpression());
+
+            if (size == "n/a")
+            {
+                reg->setSize(0);
+            }
+
+            return size;
         }
         else
         {
@@ -215,8 +221,14 @@ QVariant AddressBlockModel::valueForIndex(const QModelIndex& index) const
         const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
         if (reg)
         {
-            QString dimension = QString::number(reg->getDim());
-            return formattedValueFor(dimension);
+            QString dimension = formattedValueFor(reg->getDimensionExpression());
+
+            if (dimension == "n/a")
+            {
+                reg->setDim(0);
+            }
+
+            return dimension;
         }
         else
         {

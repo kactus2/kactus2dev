@@ -301,6 +301,15 @@ protected:
      */
     virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const;
 
+    /*!
+     *  Check if a parameter at row can be removed.
+     *
+     *      @param [in] row     The row of the parameter.
+     *
+     *      @return True if the parameter can be removed, false otherwise.
+     */
+    bool canRemoveRow(int const& row) const;
+
 private:
 
 	//! No copying

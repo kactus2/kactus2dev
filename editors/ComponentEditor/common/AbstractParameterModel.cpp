@@ -21,6 +21,8 @@
 
 #include <QColor>
 #include <QFont>
+#include <QMessageBox>
+#include <QApplication>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::AbstractParameterModel()
@@ -532,6 +534,38 @@ QVariant AbstractParameterModel::expressionOrValueForIndex(QModelIndex const& in
     {
         return data(index, Qt::DisplayRole);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractParameterModel::canRemoveRow()
+//-----------------------------------------------------------------------------
+bool AbstractParameterModel::canRemoveRow(int const& row) const
+{
+    QSharedPointer<Parameter> parameter = getParameterOnRow(row);
+
+    if (parameter->getUsageCount() > 0)
+    {
+        QMessageBox removeWarning;
+        removeWarning.setText("Are you sure you want to remove " + parameter->getName()
+            + "? There are " + QString::number(parameter->getUsageCount()) + " references to it." +
+            " \n\nTo see where " + parameter->getName() + 
+            " has been referenced, double click its usage count.");
+        removeWarning.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        removeWarning.setDefaultButton(QMessageBox::No);
+        removeWarning.setIcon(QMessageBox::Warning);
+
+        QApplication::setOverrideCursor(Qt::ArrowCursor);
+
+        if (removeWarning.exec() == QMessageBox::No)
+        {
+            QApplication::restoreOverrideCursor();
+            return false;
+        }
+
+        QApplication::restoreOverrideCursor();
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------

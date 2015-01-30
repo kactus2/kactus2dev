@@ -670,13 +670,25 @@ QVariant PortsModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == PortColumns::LEFT_BOUND)
     {
-        QString leftBound = QString::number(port->getLeftBound());
-        return formattedValueFor(leftBound);
+        QString leftBound = formattedValueFor(port->getLeftBoundExpression());
+
+        if (leftBound == "n/a")
+        {
+            port->setLeftBound(0);
+        }
+
+        return leftBound;
     }
     else if (index.column() == PortColumns::RIGHT_BOUND)
     {
-        QString rightBound = QString::number(port->getRightBound());
-        return formattedValueFor(rightBound);
+        QString rightBound = formattedValueFor(port->getRightBoundExpression());
+
+        if (rightBound == "n/a")
+        {
+            port->setRightBound(0);
+        }
+
+        return rightBound;
     }
     else if (index.column() == PortColumns::TYPE_NAME)
     {

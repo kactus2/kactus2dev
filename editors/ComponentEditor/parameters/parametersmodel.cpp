@@ -99,13 +99,16 @@ void ParametersModel::onRemoveItem(QModelIndex const& index )
 		return;
 	}
 
-	// remove the specified item
-	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	parameters_.removeAt(index.row());
-	endRemoveRows();
+    if (canRemoveRow(index.row()))
+    {
+    	// remove the specified item
+	    beginRemoveRows(QModelIndex(), index.row(), index.row());
+    	parameters_.removeAt(index.row());
+	    endRemoveRows();
 
-	// tell also parent widget that contents have been changed
-	emit contentChanged();
+    	// tell also parent widget that contents have been changed
+	    emit contentChanged();
+    }
 }
 
 //-----------------------------------------------------------------------------
