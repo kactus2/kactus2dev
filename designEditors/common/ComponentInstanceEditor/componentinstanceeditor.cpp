@@ -7,6 +7,9 @@
 
 #include "componentinstanceeditor.h"
 
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <designEditors/SystemDesign/SystemChangeCommands.h>
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/SystemDesign/SystemComponentItem.h>
@@ -28,12 +31,16 @@ ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent)
       component_(0),
       vlnvDisplayer_(new VLNVDisplayer(this)),
       nameGroup_(new NameGroupBox(this, tr("Instance name"))),
-      configurableElements_(new ConfigurableElementEditor(this)),
+      configurableElements_(0),
       swGroup_(new QGroupBox(tr("SW"), this)),
       fileSetRefCombo_(new QComboBox(this)),
       propertyValueEditor_(new PropertyValueEditor(this)),
       editProvider_(0)
 {
+    QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(QSharedPointer<Component>(0)));
+    configurableElements_ = new ConfigurableElementEditor( parameterFinder,
+        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder)), this);
+
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
 	vlnvDisplayer_->hide();

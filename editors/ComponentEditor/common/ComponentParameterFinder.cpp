@@ -33,29 +33,32 @@ ComponentParameterFinder::~ComponentParameterFinder()
 //-----------------------------------------------------------------------------
 QSharedPointer<Parameter> ComponentParameterFinder::getParameterWithID(QString const& parameterId) const
 {
-    foreach (QSharedPointer<Parameter> parameter, component_->getParameters())
+    if (!component_.isNull())
     {
-        if (parameter->getValueId() == parameterId)
-        {
-            return parameter;
-        }
-    }
-
-    foreach (QSharedPointer<ModelParameter> modelParameter, component_->getModelParameters())
-    {
-        if (modelParameter->getValueId() == parameterId)
-        {
-            return modelParameter;
-        }
-    }
-
-    foreach (QSharedPointer<View> view, component_->getViews())
-    {
-        foreach(QSharedPointer<Parameter> parameter, view->getParameters())
+        foreach (QSharedPointer<Parameter> parameter, component_->getParameters())
         {
             if (parameter->getValueId() == parameterId)
             {
                 return parameter;
+            }
+        }
+
+        foreach (QSharedPointer<ModelParameter> modelParameter, component_->getModelParameters())
+        {
+            if (modelParameter->getValueId() == parameterId)
+            {
+                return modelParameter;
+            }
+        }
+
+        foreach (QSharedPointer<View> view, component_->getViews())
+        {
+            foreach(QSharedPointer<Parameter> parameter, view->getParameters())
+            {
+                if (parameter->getValueId() == parameterId)
+                {
+                    return parameter;
+                }
             }
         }
     }
@@ -68,33 +71,35 @@ QSharedPointer<Parameter> ComponentParameterFinder::getParameterWithID(QString c
 //-----------------------------------------------------------------------------
 bool ComponentParameterFinder::hasId(QString const& id) const
 {
-    foreach (QSharedPointer<Parameter> parameter, component_->getParameters())
+    if (!component_.isNull())
     {
-        if (parameter->getValueId() == id)
+        foreach (QSharedPointer<Parameter> parameter, component_->getParameters())
         {
-            return true;
-        }
-    }
-
-    foreach (QSharedPointer<ModelParameter> componentModelParameter, component_->getModelParameters())
-    {
-        if (componentModelParameter->getValueId() == id)
-        {
-            return true;
-        }
-    }
-
-    foreach (QSharedPointer<View> view, component_->getViews())
-    {
-        foreach (QSharedPointer<Parameter> viewParameter, view->getParameters())
-        {
-            if (viewParameter->getValueId() == id)
+            if (parameter->getValueId() == id)
             {
                 return true;
             }
         }
-    }
 
+        foreach (QSharedPointer<ModelParameter> componentModelParameter, component_->getModelParameters())
+        {
+            if (componentModelParameter->getValueId() == id)
+            {
+                return true;
+            }
+        }
+
+        foreach (QSharedPointer<View> view, component_->getViews())
+        {
+            foreach (QSharedPointer<Parameter> viewParameter, view->getParameters())
+            {
+                if (viewParameter->getValueId() == id)
+                {
+                    return true;
+                }
+            }
+        }
+    }
     return false;
 }
 
@@ -125,22 +130,24 @@ QStringList ComponentParameterFinder::getAllParameterIds() const
 {
     QStringList allParameterIds;
 
-    foreach (QSharedPointer<Parameter> parameter, component_->getParameters())
+    if (!component_.isNull())
     {
-        allParameterIds.append(parameter->getValueId());
-    }
-    foreach (QSharedPointer<ModelParameter> modelParameter, component_->getModelParameters())
-    {
-        allParameterIds.append(modelParameter->getValueId());
-    }
-    foreach (QSharedPointer<View> view, component_->getViews())
-    {
-        foreach (QSharedPointer<Parameter> viewParameter, view->getParameters())
+        foreach (QSharedPointer<Parameter> parameter, component_->getParameters())
         {
-            allParameterIds.append(viewParameter->getValueId());
+            allParameterIds.append(parameter->getValueId());
+        }
+        foreach (QSharedPointer<ModelParameter> modelParameter, component_->getModelParameters())
+        {
+            allParameterIds.append(modelParameter->getValueId());
+        }
+        foreach (QSharedPointer<View> view, component_->getViews())
+        {
+            foreach (QSharedPointer<Parameter> viewParameter, view->getParameters())
+            {
+                allParameterIds.append(viewParameter->getValueId());
+            }
         }
     }
-
     return allParameterIds;
 }
 

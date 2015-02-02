@@ -13,6 +13,7 @@
 #include <IPXACTmodels/parameter.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <QAbstractTableModel>
 #include <QMap>
@@ -30,12 +31,13 @@ class ConfigurableElementsModel : public QAbstractTableModel, public Parameteriz
 
 public:
 
-	/*! \brief The constructor.
+	/*!
+	 *  The constructor.
 	 *
-	 * \param parent Pointer to the owner of this model.
-	 *
-	*/
-	ConfigurableElementsModel(QObject *parent);
+	 *      @param [in] expressionFormatter     Pointer to the formatter for referencing expressions.
+	 *      @param [in] parent                  Pointer to the owner of this model.
+	 */
+	ConfigurableElementsModel(QSharedPointer<ExpressionFormatter> expressionFormatter, QObject *parent);
 	
 	//! \brief The destructor
 	virtual ~ConfigurableElementsModel();
@@ -174,14 +176,6 @@ private:
      */
     QVariant valueForIndex(QModelIndex const& index) const;
 
-    //! The values for the model columns.
-    enum modelColumns
-    {
-        NAME = 0,
-        VALUE,
-        DEFAULT_VALUE
-    };
-
 	//! Struct that contains the name-value pair for configurable element.
 	struct ConfigurableElement {
 
@@ -276,6 +270,9 @@ private:
 
 	//! Pointer to the generic edit provider that manages the undo/redo stack.
 	GenericEditProvider* editProvider_;
+
+    //! The formatter for referencing expressions.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 };
 
 #endif // CONFIGURABLEELEMENTSMODEL_H

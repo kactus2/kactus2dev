@@ -10,6 +10,11 @@
 
 #include <common/views/EditableTableView/editabletableview.h>
 
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+#include <editors/ComponentEditor/common/ParameterCompleter.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include "ConfigurableElementsModel.h"
 
 #include <QGroupBox>
@@ -26,13 +31,17 @@ class ConfigurableElementEditor : public QGroupBox {
 
 public:
 
-	/*! \brief The constructor.
+	/*!
+	 *  The constructor.
 	 *
-	 * \param parent Pointer to the owner of this editor.
-	 * \param title Contains the text to be set as the title of the group box.
-	 *
-	*/
-	ConfigurableElementEditor(QWidget *parent, 
+	 *      @param [in] parameterFinder         The pointer to the instance for finding parameters.
+	 *      @param [in] expressionFormatter     The pointer to the instance for formatting referencing expressions.
+	 *      @param [in] parent                  The pointer to the owner of this editor.
+	 *      @param [in] title                   Contains the text to be set as the title of the group box.
+	 */
+	ConfigurableElementEditor(QSharedPointer<ParameterFinder> parameterFinder, 
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QWidget *parent, 
 		const QString& title = tr("Configurable element values"));
 	
 	//! \brief The destructor
@@ -75,6 +84,12 @@ private:
 
 	//! \brief The filter to do the sorting of items to display.
 	QSortFilterProxyModel filter_;
+
+    //! The parameter finder.
+    QSharedPointer<ParameterFinder> parameterFinder_;
+
+    //! Model for all the parameters within a single component.
+    ComponentParameterModel* componentParameterModel_;
 
 	//! \brief The model to edit the configurable elements of a component instance.
 	ConfigurableElementsModel model_;

@@ -591,7 +591,8 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/common/MultipleParameterFinder.h
+    ./editors/ComponentEditor/common/MultipleParameterFinder.h \
+    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsColumns.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \

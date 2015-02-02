@@ -8,16 +8,14 @@
 #ifndef CONFIGURABLEELEMENTDELEGATE_H
 #define CONFIGURABLEELEMENTDELEGATE_H
 
-#include <IPXACTmodels/component.h>
-
-#include <QStyledItemDelegate>
-#include <QSharedPointer>
-#include <QWidget>
+#include <editors/ComponentEditor/common/ExpressionDelegate.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
 
 /*! \brief Delegate that provides editors to edit the configurable element values.
  *
  */
-class ConfigurableElementDelegate : public QStyledItemDelegate {
+class ConfigurableElementDelegate : public ExpressionDelegate
+ {
 	Q_OBJECT
 
 public:
@@ -28,53 +26,22 @@ public:
 	 * \param parent Pointer to the owner of this delegate.
 	 *
 	*/
-	ConfigurableElementDelegate(QSharedPointer<Component> component, QObject *parent);
+	ConfigurableElementDelegate(QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+        QObject *parent);
 	
 	//! \brief The destructor
 	virtual ~ConfigurableElementDelegate();
 
-	/*! \brief Create a new editor for the given item
-	 *
-	 * \param parent Owner for the editor.
-	 * \param option Contains options for the editor.
-	 * \param index Model index identifying the item.
-	 *
-	 * \return Pointer to the editor to be used to edit the item.
-	*/
-	virtual QWidget* createEditor(QWidget* parent, 
-		const QStyleOptionViewItem& option, const QModelIndex& index ) const;
+protected:
 
-	/*! \brief Set the data for the editor.
-	 *
-	 * \param editor Pointer to the editor where the data is to be set.
-	 * \param index Model index identifying the item that's data is to be set.
-	 *
-	*/
-	virtual void setEditorData(QWidget* editor, const QModelIndex& index) const;
-
-	/*! \brief Save the data from the editor to the model.
-	 *
-	 * \param editor Pointer to the editor that contains the data to store.
-	 * \param model Model that contains the data structure where data is to be saved to.
-	 * \param index Model index identifying the item that's data is to be saved.
-	 *
-	*/
-	virtual void setModelData(QWidget* editor, QAbstractItemModel* model,
-		const QModelIndex& index) const;
-
-	/*! \brief Set the component that identifies the component instance type.
-	 *
-	 * \param component Pointer to the component that defines the component instance type.
-	 *
-	*/
-	void setComponent(QSharedPointer<Component> component);
-
-private slots:
-
-	/*! \brief Commit the data from the sending editor and close the editor.
-	 *
-	*/
-	void commitAndCloseEditor();
+    /*!
+     *  Checks if the given column supports expressions in the editor.
+     *
+     *      @param [in] column      The column to check.
+     *
+     *      @return True, if the cells in the column accept expressions, otherwise false.
+     */
+    bool columnAcceptsExpression(int column) const;
 
 private:
 	//! \brief No copying
@@ -82,9 +49,6 @@ private:
 
 	//! \brief No assignment
 	ConfigurableElementDelegate& operator=(const ConfigurableElementDelegate& other);
-
-	//! \brief Pointer to the component that's instance is being edited.
-	QSharedPointer<Component> component_;
 };
 
 #endif // CONFIGURABLEELEMENTDELEGATE_H

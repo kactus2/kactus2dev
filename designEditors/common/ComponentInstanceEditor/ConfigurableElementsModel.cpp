@@ -6,6 +6,7 @@
  */
 
 #include "ConfigurableElementsModel.h"
+#include "ConfigurableElementsColumns.h"
 
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
@@ -13,13 +14,15 @@
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::ConfigurableElementsModel()
 //-----------------------------------------------------------------------------
-ConfigurableElementsModel::ConfigurableElementsModel(QObject *parent):
+ConfigurableElementsModel::ConfigurableElementsModel(QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QObject *parent):
 QAbstractTableModel(parent),
 ParameterizableTable(),
 component_(0),
 currentElementValues_(),
 visibleConfigurableElements_(),
-editProvider_(0)
+editProvider_(0),
+expressionFormatter_(expressionFormatter)
 {
 
 }
@@ -123,7 +126,8 @@ QVariant ConfigurableElementsModel::data( const QModelIndex& index, int role /*=
             return QColor(Qt::red);
         }
         
-        else if (visibleConfigurableElements_.at(index.row()).isEditable_ && index.column() == VALUE)
+        else if (visibleConfigurableElements_.at(index.row()).isEditable_ &&
+            index.column() == ConfigurableElementsColumns::VALUE)
         {
             return blackForValidOrRedForInvalidIndex(index);
         }
@@ -133,10 +137,14 @@ QVariant ConfigurableElementsModel::data( const QModelIndex& index, int role /*=
     {
         return valueForIndex(index);
 	}
-
-    else if (role == Qt::ToolTipRole || role == Qt::EditRole)
+    else if (role == Qt::EditRole)
     {
         return expressionOrValueForIndex(index);
+    }
+
+    else if (role == Qt::ToolTipRole)
+    {
+        return expressionFormatter_->formatReferringExpression(expressionOrValueForIndex(index).toString());
     }
 
     else if (role == Qt::FontRole)
@@ -165,16 +173,16 @@ QVariant ConfigurableElementsModel::headerData( int section,
 
 	if (role == Qt::DisplayRole) 
     {
-        if (section == NAME)
+        if (section == ConfigurableElementsColumns::NAME)
         {
             return tr("Name");
         }
-        else if (section == VALUE)
+        else if (section == ConfigurableElementsColumns::VALUE)
         {
             QString valueHeader = tr("Value") + getExpressionSymbol();
             return valueHeader;
         }
-        else if (section == DEFAULT_VALUE)
+        else if (section == ConfigurableElementsColumns::DEFAULT_VALUE)
         {
             return tr("Default value");
         }
@@ -207,11 +215,12 @@ bool ConfigurableElementsModel::setData( const QModelIndex& index,
 
 	if (role == Qt::EditRole) 
     {
-        if (index.column() == VALUE)
+        if (index.column() == ConfigurableElementsColumns::VALUE)
         {
             visibleConfigurableElements_[index.row()].value_ = value.toString();
         }
-        else if (index.column() != NAME && index.column() != DEFAULT_VALUE)
+        else if (index.column() != ConfigurableElementsColumns::NAME &&
+            index.column() != ConfigurableElementsColumns::DEFAULT_VALUE)
         {
             return false;
         }
@@ -241,7 +250,7 @@ Qt::ItemFlags ConfigurableElementsModel::flags( const QModelIndex& index ) const
         return Qt::ItemIsSelectable;
     }
 
-    if (index.column() == VALUE)
+    if (index.column() == ConfigurableElementsColumns::VALUE)
     {
     	return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
     }
@@ -256,7 +265,8 @@ Qt::ItemFlags ConfigurableElementsModel::flags( const QModelIndex& index ) const
 //-----------------------------------------------------------------------------
 bool ConfigurableElementsModel::isValidExpressionColumn(QModelIndex const& index) const
 {
-    if (index.column() == VALUE || index.column() == DEFAULT_VALUE)
+    if (index.column() == ConfigurableElementsColumns::VALUE ||
+        index.column() == ConfigurableElementsColumns::DEFAULT_VALUE)
     {
         return true;
     }
@@ -271,15 +281,15 @@ bool ConfigurableElementsModel::isValidExpressionColumn(QModelIndex const& index
 //-----------------------------------------------------------------------------
 QVariant ConfigurableElementsModel::valueForIndex(QModelIndex const& index) const
 {
-    if (index.column() == NAME)
+    if (index.column() == ConfigurableElementsColumns::NAME)
     {
         return visibleConfigurableElements_.at(index.row()).name_;
     }
-    else if (index.column() == VALUE)
+    else if (index.column() == ConfigurableElementsColumns::VALUE)
     {
         return formattedValueFor(visibleConfigurableElements_.at(index.row()).value_);
     }
-    else if (index.column() == DEFAULT_VALUE)
+    else if (index.column() == ConfigurableElementsColumns::DEFAULT_VALUE)
     {
         return formattedValueFor(visibleConfigurableElements_.at(index.row()).defaultValue_);
     }
@@ -294,15 +304,15 @@ QVariant ConfigurableElementsModel::valueForIndex(QModelIndex const& index) cons
 //-----------------------------------------------------------------------------
 QVariant ConfigurableElementsModel::expressionOrValueForIndex(QModelIndex const& index) const
 {
-    if (index.column() == NAME)
+    if (index.column() == ConfigurableElementsColumns::NAME)
     {
         return visibleConfigurableElements_.at(index.row()).name_;
     }
-    else if (index.column() == VALUE)
+    else if (index.column() == ConfigurableElementsColumns::VALUE)
     {
         return visibleConfigurableElements_.at(index.row()).value_;
     }
-    else if (index.column() == DEFAULT_VALUE)
+    else if (index.column() == ConfigurableElementsColumns::DEFAULT_VALUE)
     {
         return visibleConfigurableElements_.at(index.row()).defaultValue_;
     }

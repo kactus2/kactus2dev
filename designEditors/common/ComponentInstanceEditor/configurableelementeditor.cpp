@@ -21,27 +21,29 @@
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementEditor::ConfigurableElementEditor()
 //-----------------------------------------------------------------------------
-ConfigurableElementEditor::ConfigurableElementEditor(QWidget *parent,
+ConfigurableElementEditor::ConfigurableElementEditor(QSharedPointer<ParameterFinder> parameterFinder, 
+                                                     QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                                     QWidget *parent,
 													 const QString& title):
 QGroupBox(title, parent),
 component_(0),
 view_(this),
 filter_(this),
-model_(this)
+parameterFinder_(parameterFinder),
+componentParameterModel_(new ComponentParameterModel(this, parameterFinder_)),
+model_(expressionFormatter, this)
 {
 	filter_.setSourceModel(&model_);
 	view_.setModel(&filter_);
 
-	// set options for the view
-	
-	// set view to be sortable
-	view_.setSortingEnabled(true);
+    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
+    parameterCompleter->setModel(componentParameterModel_);
 
-	// items can not be dragged
+	// set options for the view
+	view_.setSortingEnabled(true);
 	view_.setItemsDraggable(false);
 
-	// the delegate for editing
-	view_.setItemDelegate(new ConfigurableElementDelegate(QSharedPointer<Component>(), this));
+	view_.setItemDelegate(new ConfigurableElementDelegate(parameterCompleter, parameterFinder_, this));
 
     view_.setAlternatingRowColors(false);
 
@@ -68,17 +70,15 @@ ConfigurableElementEditor::~ConfigurableElementEditor()
 //-----------------------------------------------------------------------------
 void ConfigurableElementEditor::setComponent( ComponentItem* component ) 
 {
-	// set the component for the item delegate.
-	QAbstractItemDelegate* absDelegate = view_.itemDelegate();
-	ConfigurableElementDelegate* delegate = qobject_cast<ConfigurableElementDelegate*>(absDelegate);
-	Q_ASSERT(delegate);
-	delegate->setComponent(component->componentModel());
+    parameterFinder_->setComponent(component->componentModel());
+    QSharedPointer <IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser
+        (component->componentModel()));
+    componentParameterModel_->setExpressionParser(expressionParser);
 
 	component_ = component;
 	model_.setComponent(component);
 
-    model_.setExpressionParser(
-        QSharedPointer <IPXactSystemVerilogParser> (new IPXactSystemVerilogParser(component->componentModel())));
+    model_.setExpressionParser(expressionParser);
 }
 
 //-----------------------------------------------------------------------------
