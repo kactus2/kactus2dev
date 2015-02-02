@@ -37,9 +37,6 @@
     <ClCompile Include="VerilogPortParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\HDLEquationParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="VerilogParameterParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -49,15 +46,18 @@
     <ClCompile Include="GeneratedFiles\Release\moc_VerilogImporter.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="verilogimport_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VerilogPortParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\HDLEquationParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\HDLmath.h">
@@ -67,6 +67,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VerilogSyntax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

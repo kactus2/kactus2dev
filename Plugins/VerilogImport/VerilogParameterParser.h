@@ -42,7 +42,7 @@ public:
      *      @param [in] targetComponent     The component to add all the imported ports to.
      */
     virtual void import(QString const& input, QSharedPointer<Component> targetComponent);
-    
+
     /*!
      *  Sets the given highlighter to be used by the generic parser.
      *
@@ -54,60 +54,102 @@ public:
      *  Finds parameter declarations formated in ANSI-style.
      *
      *      @param [in] input   The input text to parse.
-     *      @param [in] declarations   The resulting list of declarations.
+     *
+     *      @return   The resulting list of declarations.
      */
-     void findANSIDeclarations(QString const &input, QStringList& declarations);
+    QStringList findANSIDeclarations(QString const &input);
 
     /*!
      *  Finds parameter declarations formated in the old style.
      *
      *      @param [in] input   The input text to parse.
-     *      @param [in] declarations   The resulting list of declarations.
+     *
+     *      @return   The resulting list of declarations.
      */
-     void findOldDeclarations(QString const &input, QStringList& declarations);
+    QStringList findOldDeclarations(QString const& input);
 
     /*!
      *  Parses parameters out of declaration.
      *
      *      @param [in] input   The input text containing a declaration of parameters.
-     *      @param [in] parameters   The parsed model parameters.
+     *
+     *      @return The parsed model parameters.
      */
-     void parseParameters(QString const &input, QList<QSharedPointer<ModelParameter> >& parameters);
+    QList<QSharedPointer<ModelParameter> > parseParameters(QString const &input);
 
 private:
+
+    // Disable copying.
+    VerilogParameterParser(VerilogParameterParser const& rhs);
+    VerilogParameterParser& operator=(VerilogParameterParser const& rhs);
+
     /*!
      *  Finds parameter declarations from the inspected string with provided rule.
      *
-     *      @param [in] declarRule   The input text containing the declarations.
-     *      @param [in] inspect   The input text containing the declarations.
-     *      @param [in] declarations   The resulting list of declarations.
+     *      @param [in] declarationRule   The rule for finding a parameter.
+     *      @param [in] inspect           The input text containing the declarations.
+     *
+     *      @return   The resulting list of declarations.
      */
-     void findDeclarations(QRegExp &declarRule, QString &inspect, QStringList &declarations);
+    QStringList findDeclarations(QRegularExpression const& declarationRule, QString const& inspect);
 
     /*!
      *  Culls multi line comments and stray single line comments out of the input text.
      *
      *      @param [in] inspect   The input text to parse.
+     *
+     *      @return   The input without comments.
      */
-     void cullStrayComments(QString &inspect);
+    QString cullStrayComments(QString const& inspect);
 
     /*!
      *  Tries to parse the type of the declared parameters.
      *
      *      @param [in] input   The input text containing a declaration of parameters.
+     *
+     *      @return   The parsed type.
      */
-     QString parseType(QString const & input);
+     QString parseType(QString const& input);
 
     /*!
      *  Tries to parse the descriptions of the declared parameters.
      *
      *      @param [in] input   The input text containing a declaration of parameters.
+     *
+     *      @return   The parsed description.
      */
-     QString parseDescription(QString const &input);
+     QString parseDescription(QString const& input);
 
-    // Disable copying.
-    VerilogParameterParser(VerilogParameterParser const& rhs);
-    VerilogParameterParser& operator=(VerilogParameterParser const& rhs);
+     /*!
+      *  Copies the model parameter ids from the component to the parsed model parameters.
+      *
+      *      @param [in] parsedParameters   The parsed model parameters.
+      *      @param [in] targetComponent    The component to import to.
+      */
+     void copyIdsFromOldModelParameters(QList<QSharedPointer<ModelParameter> > parsedParameters,
+         QSharedPointer<Component> targetComponent);
+
+     /*!
+      *  Replaces the referenced model parameter names with their ids in model parameter values.
+      *
+      *      @param [in] targetComponent   The component whose model parameter values to replace.
+      */
+     void replaceNamesWithIdsInModelParameterValues(QSharedPointer<Component> targetComponent);
+
+     /*!
+      *  Replaces model parameter names found in expression with the corresponding model parameter id.
+      *
+      *      @param [in] expression         The expression to search for references.
+      *      @param [in] targetComponent    The component containing the referenced parameters.
+      *
+      *      @return The expression with replaced values.
+      */
+     QString replaceModelParameterNamesWithIds(QString const& expression,
+         QSharedPointer<Component> targetComponent) const;
+
+     //-----------------------------------------------------------------------------
+     // Data.
+     //-----------------------------------------------------------------------------
 
     //! The highlighter to use.
     Highlighter* highlighter_;

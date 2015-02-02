@@ -76,11 +76,8 @@ private:
     void addPort(QList<QSharedPointer<Port> >& list, QString const& name) const;
 
     void setElementInPort(QString const& element, QString const& value, QSharedPointer<Port> port);
-    //-----------------------------------------------------------------------------
-    // Function: getElements()
-    //-----------------------------------------------------------------------------
-    QStringList getElements() const;
 
+    QStringList getElements() const;
 
     PortComparator* comparator_;
 };

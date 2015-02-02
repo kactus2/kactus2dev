@@ -19,17 +19,21 @@
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/modelparameter.h>
 
+#include <QRegularExpression>
+
 namespace
 {
     //! Generics are declared inside entity by GENERIC ( <generic_declarations> );
-    const QRegExp GENERICS_BEGIN_EXP = QRegExp("(GENERIC)\\s*[(]", Qt::CaseInsensitive);    
+    const QRegularExpression GENERICS_BEGIN_EXP = QRegularExpression("(GENERIC)\\s*[(]", 
+        QRegularExpression::CaseInsensitiveOption);    
 
-    const QRegExp GENERICS_END_EXP = QRegExp("[)]\\s*[;](?=(?:\\s*(" + VHDLSyntax::COMMENT + ")\\s*)*(END|BEGIN|PORT))*");   
+    const QRegularExpression GENERICS_END_EXP = QRegularExpression("[)]\\s*[;](?=(?:\\s*(" + VHDLSyntax::COMMENT +
+        ")\\s*)*(END|BEGIN|PORT))*", QRegularExpression::CaseInsensitiveOption);   
 
-    //! Generic declaration is <generic_names> : <type> [<default>] [pragma]; [description]    
-    const QRegExp GENERIC_EXP = QRegExp("(" + VHDLSyntax::NAMES + ")\\s*[:]\\s*(\\w+)(?:\\s*" + VHDLSyntax::DEFAULT + ")?" +
-        "(?:\\s*" + VHDLSyntax::PRAGMA + ")?(?:" + VHDLSyntax::DECLARATION_END + ")", 
-        Qt::CaseInsensitive);
+    //! Generic declaration is <generic_names> : <type> [<default>] [pragma]; [description]
+    const QRegularExpression GENERIC_EXP = QRegularExpression("(" + VHDLSyntax::NAMES + ")\\s*[:]\\s*(\\w+)(?:\\s*"
+        + VHDLSyntax::DEFAULT + ")?" + "(?:\\s*" + VHDLSyntax::PRAGMA + ")?(?:" + VHDLSyntax::DECLARATION_END + ")", 
+        QRegularExpression::CaseInsensitiveOption);
 }
 
 //-----------------------------------------------------------------------------
@@ -53,6 +57,11 @@ VHDLGenericParser::~VHDLGenericParser()
 //-----------------------------------------------------------------------------
 void VHDLGenericParser::import(QString const& input, QSharedPointer<Component> targetComponent)
 {
+    foreach (QSharedPointer<ModelParameter> modelParameter, targetComponent->getModelParameters())
+    {
+        modelParameter->setAttribute("kactus2:import", "no");
+    }
+
     foreach(QString declaration, findGenericDeclarations(input))
     {
         createModelParameterFromDeclaration(declaration, targetComponent);
@@ -60,6 +69,14 @@ void VHDLGenericParser::import(QString const& input, QSharedPointer<Component> t
         {
             highlighter_->applyHighlight(declaration, ImportColors::MODELPARAMETER);
         }        
+    }
+
+    foreach (QSharedPointer<ModelParameter> modelParameter, targetComponent->getModelParameters())
+    {
+        if (modelParameter->getAttribute("kactus2:import") == "no")
+        {
+            targetComponent->getModelParameters().removeAll(modelParameter);
+        }
     }
 }
 
@@ -77,27 +94,35 @@ void VHDLGenericParser::setHighlighter(Highlighter* highlighter)
 void VHDLGenericParser::createModelParameterFromDeclaration(QString const& declaration, 
     QSharedPointer<Component> targetComponent)
 {
-    GENERIC_EXP.indexIn(declaration);
-    QStringList genericNames = GENERIC_EXP.cap(1).split(QRegExp("\\s*[,]\\s*"), QString::SkipEmptyParts);
-    QString type = GENERIC_EXP.cap(2);
-    QString defaultValue = GENERIC_EXP.cap(3);
+    QRegularExpressionMatch matchedDeclaration = GENERIC_EXP.match(declaration);
 
-    QString description = GENERIC_EXP.cap(4).trimmed();
+    QString cap = matchedDeclaration.captured();
+
+    QStringList genericNames = matchedDeclaration.captured(1).split(QRegularExpression("\\s*[,]\\s*"), QString::SkipEmptyParts);
+    QString type = matchedDeclaration.captured(2);
+    QString defaultValue = matchedDeclaration.captured(3);
+
+    QString description = matchedDeclaration.captured(5).trimmed();
     if (description.isEmpty())
     {
-        description = GENERIC_EXP.cap(5).trimmed();
+        description = matchedDeclaration.captured(6).trimmed();
     }
 
     foreach(QString name, genericNames)
     {   
-        QSharedPointer<ModelParameter> parameter(new ModelParameter());
+        QSharedPointer<ModelParameter> parameter = targetComponent->getModel()->getModelParameter(name.trimmed());
+        if (parameter.isNull())
+        {
+            parameter = QSharedPointer<ModelParameter>(new ModelParameter());
+            targetComponent->getModel()->addModelParameter(parameter);
+        }
+
         parameter->setName(name.trimmed());
         parameter->setDataType(type);
         parameter->setDescription(description);
         parameter->setValue(defaultValue);
         parameter->setUsageType("nontyped");
-
-        targetComponent->getModel()->addModelParameter(parameter);
+        parameter->setAttribute("kactus2:import", "");
     } 
 }
 
@@ -106,8 +131,8 @@ void VHDLGenericParser::createModelParameterFromDeclaration(QString const& decla
 //-----------------------------------------------------------------------------
 QString VHDLGenericParser::removeCommentLines(QString section) const
 {
-    QRegExp commentLine("^" + VHDLSyntax::SPACE + VHDLSyntax::COMMENT_LINE_EXP.pattern() + "|" +
-        VHDLSyntax::ENDLINE + VHDLSyntax::SPACE + VHDLSyntax::COMMENT_LINE_EXP.pattern());
+    QRegExp commentLine("^" + VHDLSyntax::SPACE + VHDLSyntax::COMMENT_LINE_EXP + "|" +
+        VHDLSyntax::ENDLINE + VHDLSyntax::SPACE + VHDLSyntax::COMMENT_LINE_EXP);
 
     return section.remove(commentLine);
 }
@@ -128,18 +153,17 @@ QStringList VHDLGenericParser::findGenericDeclarations(QString const& input) con
 //-----------------------------------------------------------------------------
 QString VHDLGenericParser::findGenericsSection(QString const &input) const
 {
-    int entityBegin = VHDLSyntax::ENTITY_BEGIN_EXP.indexIn(input);
-    int entityEnd = VHDLSyntax::ENTITY_END_EXP.indexIn(input, entityBegin);
+    int entityBegin = input.indexOf(VHDLSyntax::ENTITY_BEGIN_EXP);
+    int entityEnd = input.indexOf(VHDLSyntax::ENTITY_END_EXP, entityBegin);
 
-    int genericsBeginIndex = GENERICS_BEGIN_EXP.indexIn(input);
-    genericsBeginIndex += GENERICS_BEGIN_EXP.matchedLength();
+    int genericsBeginIndex = GENERICS_BEGIN_EXP.match(input).capturedEnd(); 
 
     if (genericsBeginIndex > entityEnd)
     {
         return QString();
     }
 
-    int genericsEndIndex = GENERICS_END_EXP.indexIn(input, genericsBeginIndex);
+    int genericsEndIndex = input.indexOf(GENERICS_END_EXP, genericsBeginIndex);
 
     return input.mid(genericsBeginIndex, genericsEndIndex - genericsBeginIndex);
 }
@@ -151,11 +175,12 @@ QStringList VHDLGenericParser::genericDeclarationsIn(QString const& sectionWitho
 {
     QStringList genericDeclarations;
 
-    int nextGeneric = GENERIC_EXP.indexIn(sectionWithoutCommentLines, 0);
+    int nextGeneric = sectionWithoutCommentLines.indexOf(GENERIC_EXP, 0);
     while (nextGeneric != -1)
     {
-        genericDeclarations.append(GENERIC_EXP.cap());
-        nextGeneric = GENERIC_EXP.indexIn(sectionWithoutCommentLines, nextGeneric + GENERIC_EXP.matchedLength());
+        QRegularExpressionMatch match = GENERIC_EXP.match(sectionWithoutCommentLines, nextGeneric);
+        genericDeclarations.append(match.captured());
+        nextGeneric = sectionWithoutCommentLines.indexOf(GENERIC_EXP, nextGeneric + match.capturedLength());
     }
 
     return genericDeclarations;

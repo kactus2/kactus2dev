@@ -48,7 +48,7 @@ QString const& VerilogImporter::getName() const
 //-----------------------------------------------------------------------------
 QString const& VerilogImporter::getVersion() const
 {
-    static QString version("1.0");
+    static QString version("1.1");
     return version;
 }
 
@@ -128,10 +128,8 @@ void VerilogImporter::import(QString const& input, QSharedPointer<Component> tar
         importModelName(input, targetComponent);
         setLanguageAndEnvironmentalIdentifiers(targetComponent);
 
-        targetComponent->getModelParameters().clear();
         parameterParser_.import(input, targetComponent);
 
-        targetComponent->getPorts().clear();
         portParser_.import(input, targetComponent);
     }
 }
@@ -145,14 +143,6 @@ void VerilogImporter::setHighlighter(Highlighter* highlighter)
 
     parameterParser_.setHighlighter(highlighter);
     portParser_.setHighlighter(highlighter);
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogImporter::setModelParameterVisualizer()
-//-----------------------------------------------------------------------------
-void VerilogImporter::setModelParameterVisualizer(ModelParameterVisualizer* visualizer)
-{
-    //visualizer->registerChangeListener(this);
 }
 
 //-----------------------------------------------------------------------------
@@ -171,8 +161,8 @@ void VerilogImporter::grayOutFileContent(QString const& input)
 //-----------------------------------------------------------------------------
 bool VerilogImporter::hasModuleDeclaration(QString const& input)
 {
-    int moduleBegin = VerilogSyntax::MODULE_BEGIN.indexIn(input);
-    int moduleEnd = VerilogSyntax::MODULE_END.indexIn(input,moduleBegin);
+    int moduleBegin = input.indexOf(VerilogSyntax::MODULE_BEGIN);
+    int moduleEnd = input.indexOf(VerilogSyntax::MODULE_END, moduleBegin);
 
     return moduleBegin != -1 && moduleEnd != -1;
 }
@@ -182,8 +172,8 @@ bool VerilogImporter::hasModuleDeclaration(QString const& input)
 //-----------------------------------------------------------------------------
 void VerilogImporter::highlightModule(QString const& input)
 {
-    int moduleBegin = VerilogSyntax::MODULE_BEGIN.indexIn(input);
-    int moduleEnd = VerilogSyntax::MODULE_END.indexIn(input) + VerilogSyntax::MODULE_END.matchedLength();
+    int moduleBegin = input.indexOf(VerilogSyntax::MODULE_BEGIN);
+    int moduleEnd = VerilogSyntax::MODULE_END.match(input).capturedEnd();
 
     if (highlighter_)
     {        
@@ -196,10 +186,10 @@ void VerilogImporter::highlightModule(QString const& input)
 //-----------------------------------------------------------------------------
 void VerilogImporter::importModelName(QString const& input, QSharedPointer<Component> targetComponent)
 {
-    int moduleBegin = VerilogSyntax::MODULE_BEGIN.indexIn(input);
+    int moduleBegin = input.indexOf(VerilogSyntax::MODULE_BEGIN);
     if (moduleBegin != -1)
     {
-        QString modelName = VerilogSyntax::MODULE_BEGIN.cap(1);
+        QString modelName = VerilogSyntax::MODULE_BEGIN.match(input).captured(1);
 
         View* flatView = findOrCreateFlatView(targetComponent);
         flatView->setModelName(modelName);

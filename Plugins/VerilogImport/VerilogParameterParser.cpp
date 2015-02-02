@@ -18,8 +18,10 @@
 
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+
 #include <QString>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QDebug>
 
 //-----------------------------------------------------------------------------
@@ -51,204 +53,207 @@ void VerilogParameterParser::import(QString const& input, QSharedPointer<Compone
 {
     // Find parameter declarations. Try both formats, as we cannot know which one is used.
     QStringList declarations;
-    findANSIDeclarations(input, declarations);
-    findOldDeclarations(input, declarations);
+    declarations.append(findANSIDeclarations(input));
+    declarations.append(findOldDeclarations(input));
 
-    // Parse model parameters out of declarations.
-    QList<QSharedPointer<ModelParameter> > parameters;
+    QList<QSharedPointer<ModelParameter> > parsedParameters;
 
-    foreach ( QString declaration, declarations )
+    foreach (QString declaration, declarations)
     {
-        parseParameters(declaration, parameters);
+        parsedParameters.append(parseParameters(declaration));
     }
 
-    // Finally, add the obtained parameters to the target component.
-    foreach ( QSharedPointer<ModelParameter> parameter, parameters )
-    {
-        targetComponent->getModel()->addModelParameter(parameter);
-    }
+    copyIdsFromOldModelParameters(parsedParameters, targetComponent);
 
-    return;
+    targetComponent->getModelParameters().clear();
+    targetComponent->getModelParameters().append(parsedParameters);
+
+    replaceNamesWithIdsInModelParameterValues(targetComponent);
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::findANSIDeclarations()
 //-----------------------------------------------------------------------------
-void VerilogParameterParser::findANSIDeclarations(QString const &input, QStringList& declarations)
+QStringList VerilogParameterParser::findANSIDeclarations(QString const &input)
 {
     // In the ANSI style parameter declarations the parameters are contained WITHIN the module header.
-    int endIndex = VerilogSyntax::MODULE_BEGIN.indexIn(input) + VerilogSyntax::MODULE_BEGIN.matchedLength();
+    int endIndex = VerilogSyntax::MODULE_BEGIN.match(input).capturedEnd();
 
     // And that is why only the module header is inspected in the parsing.
     QString inspect = input.mid( 0, endIndex );
 
     // We shall further crop until the start of the ports.
-    QRegExp portsBegin(QString("([)](\\s*|(\\s*" + VerilogSyntax::COMMENT + "\\s*))[(])"), Qt::CaseInsensitive);
-    QRegExp beginEnd(QString("([)])"), Qt::CaseInsensitive);
-    int portLoc = portsBegin.lastIndexIn(inspect);
+    QRegularExpression portsBegin("([)](\\s*|(\\s*" + VerilogSyntax::COMMENT + "\\s*))[(])", 
+        QRegularExpression::CaseInsensitiveOption);
+
+    QRegularExpression beginEnd("([)])");
+
+    int portLoc = inspect.lastIndexOf(portsBegin);
     int loc = portLoc;
 
     if ( loc == -1 )
     {
         // If not encountered, crop until the end of the module begin.
-        int endLoc = beginEnd.lastIndexIn(inspect);
+        int endLoc = inspect.lastIndexOf(beginEnd);
         loc = endLoc;
     }
     else
     {
         // If encountered, rip off the port declarations.
-        QRegExp portsProper(QString("([(].*[)])"), Qt::CaseInsensitive);
-        loc = portsProper.indexIn(inspect,loc);
+        QRegularExpression portsProper("([(].*[)])", QRegularExpression::DotMatchesEverythingOption);
+        loc = inspect.indexOf(portsProper,loc);
         inspect = inspect.left(loc);
-        loc = beginEnd.lastIndexIn(inspect);
+        loc = inspect.lastIndexOf(beginEnd);
     }
 
     // If the last location is contained within a comment, rip off the commend and find the another last.
-    QRegExp lastComment(VerilogSyntax::COMMENT, Qt::CaseInsensitive);
-    int commentLoc = lastComment.lastIndexIn(inspect);
+    QRegularExpression lastComment(VerilogSyntax::COMMENT, QRegularExpression::CaseInsensitiveOption);
+    int commentLoc = inspect.lastIndexOf(lastComment);
+    int matchedLenght = lastComment.match(inspect, commentLoc).capturedLength();
 
-    if ( commentLoc != -1 && commentLoc < loc && loc < commentLoc + lastComment.matchedLength() )
+    if (commentLoc != -1 && commentLoc < loc && loc < commentLoc + matchedLenght )
     {
         inspect = inspect.left(commentLoc);
 
-        loc = beginEnd.lastIndexIn(inspect);
+        loc = inspect.lastIndexOf(beginEnd);
     }
 
     inspect = inspect.left(loc);
 
     // Cull the stray comments to avoid distractions to parsing.
-    cullStrayComments(inspect);
+    inspect = cullStrayComments(inspect);
 
-    QRegExp declarRule(QString("parameter\\s+"), Qt::CaseInsensitive);
+    QRegularExpression declarRule("parameter\\s+", QRegularExpression::CaseInsensitiveOption);
 
-    findDeclarations(declarRule, inspect, declarations);
+    return findDeclarations(declarRule, inspect);
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::findOldDeclarations()
 //-----------------------------------------------------------------------------
-void VerilogParameterParser::findOldDeclarations(QString const &input, QStringList& declarations)
+QStringList VerilogParameterParser::findOldDeclarations(QString const& input)
 {
     // In the OLD style parameter declarations the parameters are between module header and footer.
-    int startIndex = VerilogSyntax::MODULE_BEGIN.indexIn(input) + VerilogSyntax::MODULE_BEGIN.matchedLength();
-    int length = VerilogSyntax::MODULE_END.indexIn(input) - startIndex;
+    int startIndex = VerilogSyntax::MODULE_BEGIN.match(input).capturedLength();
+    int length = input.indexOf(VerilogSyntax::MODULE_END) - startIndex;
 
     // And that is why the inspected the region between the header and footer are included to the parsing.
-    QString joku = input;
-    QString inspect = joku.mid( startIndex, length );
+    QString inspect = input.mid(startIndex, length);
+    inspect = cullStrayComments(inspect);
 
-    cullStrayComments(inspect);
+    QRegularExpression declarRule("parameter\\s+", QRegularExpression::CaseInsensitiveOption);
 
-    QRegExp declarRule(QString("parameter\\s+"), Qt::CaseInsensitive);
-
-    findDeclarations(declarRule, inspect, declarations);
+    return findDeclarations(declarRule, inspect);
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::parseParameters()
 //-----------------------------------------------------------------------------
-void VerilogParameterParser::parseParameters(QString const &input,
-    QList<QSharedPointer<ModelParameter> >& parameters)
+QList<QSharedPointer<ModelParameter> > VerilogParameterParser::parseParameters(QString const &input)
 {
+    QList<QSharedPointer<ModelParameter> > parameters;
+
     // Find the type and the declaration. Only one per declaration is supported.
     QString type = parseType(input);
     QString description = parseDescription(input);
 
     // Must have name-value pair, possibly multiple times separated by comma. May have comments between.
-    QRegExp parameterRule("(" + VerilogSyntax::NAME_VALUE + "(\\s*,\\s*(" + VerilogSyntax::COMMENT +
-        ")?\\s*" + VerilogSyntax::NAME_VALUE + ")*)", Qt::CaseInsensitive);
+    QRegularExpression parameterRule("(" + VerilogSyntax::NAME_VALUE + "(\\s*,\\s*(" + VerilogSyntax::COMMENT +
+        ")?\\s*" + VerilogSyntax::NAME_VALUE + ")*)", QRegularExpression::CaseInsensitiveOption);
 
-    parameterRule.indexIn( input );
-    QString parametersString = parameterRule.cap(0);
+    QString parametersString = parameterRule.match(input).captured();
 
     // We know for sure that each name value pair is separated by comma, and as such we get a list of them.
-    QStringList parametersList = parametersString.split(",");
-
-    foreach ( QString parameter, parametersList )
+    foreach (QString parameter, parametersString.split(","))
     {
         // After acquiring a name value pair, we separate the name and the value from each other.
-        QRegExp splitRule("(\\w+)\\s*=((\\s*(" + VerilogSyntax::OPERATION_OR_ALPHANUMERIC + "))+)", Qt::CaseInsensitive);
-        splitRule.indexIn(parameter);
+        QRegularExpression splitRule("(\\w+)\\s*=((\\s*(" + VerilogSyntax::OPERATION_OR_ALPHANUMERIC + "))+)", 
+            QRegularExpression::CaseInsensitiveOption);
 
-        QString name = splitRule.cap(1);
-        QString value = splitRule.cap(2);
+        QString name = splitRule.match(parameter).captured(1).trimmed();
+        QString value = splitRule.match(parameter).captured(2);
 
-        QRegExp cullRule("//", Qt::CaseInsensitive);
-        int cullIndex = cullRule.indexIn(value);
-        value = value.left(cullIndex);
-
-        value = value.trimmed();
+        QRegularExpression cullRule("//", QRegularExpression::CaseInsensitiveOption);
+        int cullIndex = value.indexOf(cullRule);
+        value = value.left(cullIndex).trimmed();
 
         // Each name value pair produces a new model parameter, but the type and the description is recycled.
-        QSharedPointer<ModelParameter> modelParameter(new ModelParameter());
-        modelParameter->setName(name.trimmed());
+        QSharedPointer<ModelParameter> modelParameter =  QSharedPointer<ModelParameter>(new ModelParameter());
+           
+        modelParameter->setName(name);
         modelParameter->setDataType(type);
+        modelParameter->setType(type);
         modelParameter->setValue(value);
         modelParameter->setUsageType("nontyped");
         modelParameter->setDescription(description);
 
-        // Add to the list, as there may be more than one.
         parameters.append(modelParameter);
     }
+
+    return parameters;
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::findDeclarations()
 //-----------------------------------------------------------------------------
-void VerilogParameterParser::findDeclarations(QRegExp &declarRule, QString &inspect, QStringList &declarations)
+QStringList VerilogParameterParser::findDeclarations(QRegularExpression const& declarationRule, 
+    QString const& inspect)
 {
-    int prevIndex = 0;
-    int declarIndex = declarRule.indexIn(inspect);
-    declarRule.setMinimal(true);
+    QStringList declarations;
+
+    int previousStart = 0;
+    int declarationStart = inspect.indexOf(declarationRule);
 
     // Repeat the parsing until no more matches are found.
-    while ( declarIndex != - 1)  
+    while (declarationStart != -1)  
     {
-        int declarLength = declarRule.matchedLength();
+        int declarationLength = declarationRule.match(inspect, declarationStart).capturedLength();
 
         // Seek for the next match beginning from the end of the previous match.
-        prevIndex = declarIndex;
-        declarIndex = declarRule.indexIn(inspect, declarIndex  + declarLength + 1);
+        previousStart = declarationStart;
+        declarationStart = inspect.indexOf(declarationRule, declarationStart  + declarationLength + 1);
 
         // Take the matching part and append to the list.
-        QString declaration = inspect.mid( prevIndex, declarIndex - prevIndex );
-
+        QString declaration = inspect.mid(previousStart, declarationStart - previousStart);
         declaration = declaration.trimmed();
-        declarations.append(declaration);
 
         // Highlight the selection if applicable.
         if (highlighter_)
         {
             highlighter_->applyHighlight(declaration, ImportColors::MODELPARAMETER);
         }
+
+        declarations.append(declaration);
     }
+
+    return declarations;
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::cullStrayComments()
 //-----------------------------------------------------------------------------
-void VerilogParameterParser::cullStrayComments(QString &inspect)
+QString VerilogParameterParser::cullStrayComments(QString const& inspect)
 {
-    // Removing multi line comments needs so called non-greedy matching.
-    QRegExp multiRem = QRegExp(VerilogSyntax::MULTILINE_COMMENT);
-    multiRem.setMinimal(true);
-    inspect = inspect.remove(multiRem);
-    inspect = inspect.remove(VerilogSyntax::COMMENTLINE);
+    QString inspectWithoutComments = inspect;
+    inspectWithoutComments.remove(VerilogSyntax::MULTILINE_COMMENT);
+    inspectWithoutComments.remove(VerilogSyntax::COMMENTLINE);
+
+    return inspectWithoutComments;
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::parseType()
 //-----------------------------------------------------------------------------
-QString VerilogParameterParser::parseType(QString const & input)
+QString VerilogParameterParser::parseType(QString const& input)
 {
     // The type is assumed to be the first word in the declaration.
-    QRegExp typeRule("(\\w+)\\s+" +  VerilogSyntax::NAME_VALUE, Qt::CaseInsensitive);
-    typeRule.indexIn( input );
-    QString type = typeRule.cap( 1 );
+    QRegularExpression typeRule("(\\w+)\\s+" +  VerilogSyntax::NAME_VALUE, 
+        QRegularExpression::CaseInsensitiveOption);
+    QString type = typeRule.match(input).captured(1);
 
-    if ( type == "parameter" )
+    if (type == "parameter")
     {
-        type = "";
+        type.clear();
     }
 
     return type;
@@ -257,24 +262,25 @@ QString VerilogParameterParser::parseType(QString const & input)
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::parseDescription()
 //-----------------------------------------------------------------------------
-QString VerilogParameterParser::parseDescription(QString const &input)
+QString VerilogParameterParser::parseDescription(QString const& input)
 {
     QString description;
 
     // If exist, the description is the last comment in the declaration.
-    QRegExp commentRule(VerilogSyntax::COMMENT, Qt::CaseInsensitive);
-    int commentStart = commentRule.lastIndexIn(input);
+    QRegularExpression commentRule(VerilogSyntax::COMMENT, QRegularExpression::CaseInsensitiveOption);
+    int lastCommentIndex = input.lastIndexOf(commentRule);
 
-    if ( commentStart != - 1 )
+    if (lastCommentIndex != -1)
     {
+        QRegularExpressionMatch commmentMatch = commentRule.match(input, lastCommentIndex);
+
         // Found the index. The description is starting index + length.
-        int commentLength = commentRule.matchedLength();
-        description = input.mid(commentStart,commentLength);
+        description = input.mid(commmentMatch.capturedStart(), commmentMatch.capturedLength());
 
         // Some times the expression leaves the comment tag to the description.
-        if ( description.startsWith("//") )
+        if (description.startsWith("//"))
         {
-            description = description.remove(0,2);
+            description = description.remove(0, 2);
         }
 
         // No need for extra white spaces.
@@ -282,4 +288,56 @@ QString VerilogParameterParser::parseDescription(QString const &input)
     }
 
     return description;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogParameterParser::copyIdsFromOldModelParameters()
+//-----------------------------------------------------------------------------
+void VerilogParameterParser::copyIdsFromOldModelParameters(QList<QSharedPointer<ModelParameter> > parsedParameters,
+    QSharedPointer<Component> targetComponent)
+{
+    foreach (QSharedPointer<ModelParameter> parameter, parsedParameters)
+    {
+        QSharedPointer<ModelParameter> existingParameter = 
+            targetComponent->getModel()->getModelParameter(parameter->getName());
+        if (!existingParameter.isNull())
+        {
+            parameter->setValueId(existingParameter->getValueId());
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogParameterParser::replaceReferenceNamesWithIds()
+//-----------------------------------------------------------------------------
+void VerilogParameterParser::replaceNamesWithIdsInModelParameterValues(QSharedPointer<Component> targetComponent)
+{
+    IPXactSystemVerilogParser parser(targetComponent);
+    foreach (QSharedPointer<ModelParameter> parameter, targetComponent->getModelParameters())
+    {
+        if (!parser.isValidExpression(parameter->getValue()))
+        {
+            parameter->setValue(replaceModelParameterNamesWithIds(parameter->getValue(), targetComponent));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogParameterParser::replaceModelParameterNamesWithIds()
+//-----------------------------------------------------------------------------
+QString VerilogParameterParser::replaceModelParameterNamesWithIds(QString const& expression, 
+    QSharedPointer<Component> targetComponent) const
+{
+    QString result = expression;
+
+    foreach (QSharedPointer<ModelParameter> referenced, targetComponent->getModelParameters())
+    {
+        QRegularExpression nameReference("\\b" + referenced->getName() + "\\b");
+        if (nameReference.match(expression).hasMatch())
+        {
+            result.replace(nameReference, referenced->getValueId());
+        }
+    }
+
+    return result;
 }

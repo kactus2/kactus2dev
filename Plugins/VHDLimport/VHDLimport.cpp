@@ -73,7 +73,7 @@ QString const& VHDLimport::getName() const
 //-----------------------------------------------------------------------------
 QString const& VHDLimport::getVersion() const
 {
-    static QString version("1.0");
+    static QString version("1.1");
     return version;
 }
 
@@ -158,10 +158,8 @@ void VHDLimport::import(QString const& input, QSharedPointer<Component> targetCo
         parseModelName(input);
         setLanguageAndEnvironmentalIdentifiers();
 
-        targetComponent->getModelParameters().clear();
         genericParser_->import(input, targetComponent);
 
-        targetComponent->getPorts().clear();
         portParser_->import(input, targetComponent);
     }
 }

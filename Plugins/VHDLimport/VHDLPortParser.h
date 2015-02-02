@@ -12,15 +12,14 @@
 #ifndef VHDLPORTPARSER_H
 #define VHDLPORTPARSER_H
 
+#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
+
+#include <IPXACTmodels/generaldeclarations.h>
+
 #include <QList>
 #include <QMap>
 #include <QSharedPointer>
 #include <QString>
-
-
-#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
-
-#include <IPXACTmodels/generaldeclarations.h>
 
 class Component;
 class Port;

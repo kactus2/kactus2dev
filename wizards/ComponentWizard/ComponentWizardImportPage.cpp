@@ -27,8 +27,10 @@ ComponentWizardImportPage::ComponentWizardImportPage(QSharedPointer<Component> c
     : QWizardPage(parent),
       editor_(new ImportEditor(component, handler, pluginMgr, parameterFinder, expressionFormatter, this))
 {
-    setTitle(tr("Import file"));
-    setSubTitle(tr("Choose the top-level file to import into component."));
+    setTitle(tr("Import source file"));
+    setSubTitle(tr("Choose the top-level file to import into component.\n"
+        "Any model parameter not found in the input file will be removed. Any port not found "
+        "in the input file will be set as phantom."));
     setFinalPage(true);
 
     QVBoxLayout* layout = new QVBoxLayout(this);

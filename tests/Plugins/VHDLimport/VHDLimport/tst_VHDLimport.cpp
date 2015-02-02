@@ -13,6 +13,7 @@
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/port.h>
+#include <IPXACTmodels/model.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
@@ -63,6 +64,12 @@ private slots:
     void testModelParameterIsAssignedToModelParameter_data();
 
     void testPortsAndModelParametersAreNotParsedOutsideEntity();
+     
+    void testParameterNotFoundInFileIsRemoved();
+    void testExistingModelParameterIdDoesNotChange();
+
+    void testExistingPortIsSetAsPhantom();
+    void testExistingPortIsOverriden();
 
     void testModelNameAndEnvironmentIsImportedToView();
     void testArchitecturePrecedesConfigurationForModelName();
@@ -95,6 +102,8 @@ private:
     void verifyNotHighlightedBeforeDeclaration(int declarationStartIndex, QColor const& highlightColor);
 
     void verifySectionFontColorIs(int startIndex, int endIndex, QColor const& expectedFontColor);
+   
+
 };
 
 //-----------------------------------------------------------------------------
@@ -696,6 +705,101 @@ void tst_VHDLimport::testPortsAndModelParametersAreNotParsedOutsideEntity()
 
     QCOMPARE(importComponent_->getPorts().count(), 0);
     QCOMPARE(importComponent_->getModelParameters().count(), 0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VHDLimport::testParameterNotFoundInFileIsRemoved()
+//-----------------------------------------------------------------------------
+void tst_VHDLimport::testParameterNotFoundInFileIsRemoved()
+{
+    QSharedPointer<ModelParameter> existingParameter(new ModelParameter());
+    existingParameter->setName("oldParameter");
+
+    importComponent_->getModel()->addModelParameter(existingParameter);
+
+    QString fileContent = 
+        "entity test is\n"
+        "   generic (\n"        
+        "       dataWidth_g : integer := 8\n"
+        "   );\n"
+        "end test;";
+
+    runParser(fileContent);
+
+    QCOMPARE(importComponent_->getModelParameters().count(), 1);
+    QSharedPointer<ModelParameter> importedParameter = importComponent_->getModelParameters().first();
+    QCOMPARE(importedParameter->getName(), QString("dataWidth_g"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VHDLimport::testExistingModelParameterIdDoesNotChange()
+//-----------------------------------------------------------------------------
+void tst_VHDLimport::testExistingModelParameterIdDoesNotChange()
+{
+    QSharedPointer<ModelParameter> existingParameter(new ModelParameter());
+    existingParameter->setName("dataWidth_g");
+    existingParameter->setValueId("existingId");
+
+    importComponent_->getModelParameters().append(existingParameter);
+
+    QString fileContent = 
+        "entity test is\n"
+        "   generic (\n"        
+        "       dataWidth_g : integer := 8\n"
+        "   );\n"
+        "end test;";
+
+    runParser(fileContent);
+
+    QSharedPointer<ModelParameter> importedParameter = importComponent_->getModelParameters().first();
+    QCOMPARE(importComponent_->getModelParameters().count(), 1);
+    QCOMPARE(importedParameter->getValueId(), QString("existingId"));
+    QCOMPARE(importedParameter->getValue(), QString("8"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VHDLimport::testExistingPortIsSetAsPhantom()
+//-----------------------------------------------------------------------------
+void tst_VHDLimport::testExistingPortIsSetAsPhantom()
+{
+    QSharedPointer<Port> existingPort(new Port("oldPort", General::IN, 0, 0, "", "", "", ""));
+    importComponent_->addPort(existingPort);
+
+    QString input =  
+        "entity test is\n"
+        "   port (\n"
+        "       newPort : out std_logic\n"
+        "   );\n"
+        "end test;\n";
+
+    runParser(input);
+
+    QCOMPARE(importComponent_->getPorts().count(), 2);
+    QSharedPointer<Port> importedPort = importComponent_->getPort("oldPort");
+    QCOMPARE(importedPort->getDirection(), General::DIRECTION_PHANTOM);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VHDLimport::testExistingPortIsOverriden()
+//-----------------------------------------------------------------------------
+void tst_VHDLimport::testExistingPortIsOverriden()
+{
+    QSharedPointer<Port> existingPort(new Port("oldPort", General::OUT, 0, 0, "", "", "", ""));
+    existingPort->setTypeDefinition("std_logic", "IEEE.std_logic_1164.all");
+    importComponent_->addPort(existingPort);
+
+    QString input =  
+        "entity test is\n"
+        "   port (\n"
+        "       oldPort : in std_logic\n"
+        "   );\n"
+        "end test;\n";
+
+    runParser(input);
+
+    QCOMPARE(importComponent_->getPorts().count(), 1);
+    QCOMPARE(importComponent_->getPort("oldPort")->getDirection(), General::IN);
+    QCOMPARE(importComponent_->getPort("oldPort")->getTypeDefinition("std_logic"), QString("IEEE.std_logic_1164.all"));
 }
 
 //-----------------------------------------------------------------------------

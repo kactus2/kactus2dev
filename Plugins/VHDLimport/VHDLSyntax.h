@@ -14,7 +14,7 @@
 
 #include <Plugins/common/HDLmath.h>
 
-#include <QRegExp>
+#include <QRegularExpression>
 
 namespace VHDLSyntax
 {
@@ -44,7 +44,7 @@ namespace VHDLSyntax
     const QString PRAGMA = "[-][-]" + SPACE + "(?:PRAGMA|SYNTHESIS|SYNOPSYS)[^\\r\\n]*";
 
     //! VHDL comment line.
-    const QRegExp COMMENT_LINE_EXP = QRegExp(SPACE + COMMENT + "(?=" + ENDLINE + ")");
+    const QString COMMENT_LINE_EXP = SPACE + COMMENT + "(?=" + ENDLINE + ")";
 
     /*! All except the last port/generic declaration ends with a semicolon. 
      *  If there is a comment on the same line, it will be captured to the description by VhdlParser.
@@ -55,8 +55,10 @@ namespace VHDLSyntax
                                     "(?:" + SPACE + "(?:" + COMMENT + ")?(?=(?:\\s*(?:" + COMMENT + ")*\\s*)*$))";
     
     //! Entity declaration is ENTITY <name> IS ... END [ENTITY] [<name>];
-    const QRegExp ENTITY_BEGIN_EXP = QRegExp("(ENTITY)\\s+(\\w+)\\s+(IS)", Qt::CaseInsensitive);   
-    const QRegExp ENTITY_END_EXP = QRegExp("(END)\\s*(ENTITY)?\\s*(\\w+)?\\s*[;]", Qt::CaseInsensitive);
+    const QRegularExpression ENTITY_BEGIN_EXP("(ENTITY)\\s+(\\w+)\\s+(IS)", 
+        QRegularExpression::CaseInsensitiveOption);   
+    const QRegularExpression ENTITY_END_EXP("(END)\\s*(ENTITY)?\\s*(\\w+)?\\s*[;]", 
+        QRegularExpression::CaseInsensitiveOption);
 
 }
 

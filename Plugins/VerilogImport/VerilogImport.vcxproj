@@ -131,7 +131,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\HDLEquationParser.cpp" />
+    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
+    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_VerilogImporter.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -145,7 +146,9 @@
     <ClCompile Include="VerilogPortParser.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\common\HDLEquationParser.h" />
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionParser.h" />
+    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
+    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
     <ClInclude Include="..\common\HDLmath.h" />
     <ClInclude Include="VerilogParameterParser.h" />
     <ClInclude Include="VerilogPortParser.h" />

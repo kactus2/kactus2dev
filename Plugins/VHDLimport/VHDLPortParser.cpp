@@ -11,6 +11,8 @@
 
 #include "VHDLPortParser.h"
 
+#include "VHDLSyntax.h"
+
 #include <Plugins/common/HDLEquationParser.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
@@ -18,7 +20,7 @@
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/modelparameter.h>
 
-#include "VHDLSyntax.h"
+#include <QRegularExpression>
 
 namespace
 {
@@ -30,21 +32,21 @@ namespace
         ")\\s+\\w+\\s+(?:" + HDLmath::TERM + ")\\s*[)])?";
 
     //! Vector bounds are defined as (<left> downto <right>).
-    const QRegExp VECTOR_BOUNDS_EXP("[(]\\s*(" + HDLmath::TERM + ")\\s+\\w+\\s+" + 
+    const QRegularExpression VECTOR_BOUNDS("[(]\\s*(" + HDLmath::TERM + ")\\s+\\w+\\s+" + 
         "(" + HDLmath::TERM + ")\\s*[)]");
 
     /*! Port declaration is <port_names> : <direction> <type> [<default>] [pragma] ; [description]    
      *  A pragma e.g. synthesis translate_off may be inserted in the declaration before the ending
      *  semicolon or string's end.
      */
-    const QRegExp PORT_EXP("(" + VHDLSyntax::NAMES + ")+\\s*[:]\\s*(" + DIRECTION + ")\\s+(" + PORT_TYPE + ")" +
+    const QRegularExpression PORT_EXP("(" + VHDLSyntax::NAMES + ")+\\s*[:]\\s*(" + DIRECTION + ")\\s+(" + PORT_TYPE + ")" +
                                      "(?:\\s*" + VHDLSyntax::DEFAULT + ")?(?:\\s*" + VHDLSyntax::PRAGMA + ")?"
-                                     "(?:" + VHDLSyntax::DECLARATION_END + ")", Qt::CaseInsensitive);
+                                     "(?:" + VHDLSyntax::DECLARATION_END + ")", QRegularExpression::CaseInsensitiveOption);
 
     //! Ports are declared inside entity by PORT ( <port_declarations> );
-    const QRegExp PORTS_BEGIN_EXP("(PORT)\\s*[(]", Qt::CaseInsensitive);
-    const QRegExp PORTS_END_EXP("[)]\\s*[;](?=\\s*(?:" + VHDLSyntax::COMMENT + "\\s*)*(END|BEGIN|PORT)\\s+)", 
-        Qt::CaseInsensitive);
+    const QRegularExpression PORTS_BEGIN("(PORT)\\s*[(]", QRegularExpression::CaseInsensitiveOption);
+    const QRegularExpression PORTS_END("[)]\\s*[;](?=\\s*(?:" + VHDLSyntax::COMMENT + "\\s*)*(END|BEGIN|PORT)\\s+)", 
+        QRegularExpression::CaseInsensitiveOption);
 }
 
 //-----------------------------------------------------------------------------
@@ -68,6 +70,11 @@ VHDLPortParser::~VHDLPortParser()
 //-----------------------------------------------------------------------------
 void VHDLPortParser::import(QString const& input, QSharedPointer<Component> targetComponent)
 {
+    foreach (QSharedPointer<Port> existingPort, targetComponent->getPorts())
+    {
+        existingPort->setDirection(General::DIRECTION_PHANTOM);
+    }
+
     foreach (QString portDeclaration, findPortDeclarations(input))
     {
         createPortFromDeclaration(portDeclaration, targetComponent);
@@ -115,8 +122,7 @@ int VHDLPortParser::parseRightBound(QString const& input, QSharedPointer<Compone
 //-----------------------------------------------------------------------------
 QString VHDLPortParser::parseDefaultValue(QString const& input) const
 {
-    PORT_EXP.indexIn(input);
-    return PORT_EXP.cap(4).trimmed();
+    return PORT_EXP.match(input).captured(4).trimmed();
 }
 
 //-----------------------------------------------------------------------------
@@ -135,18 +141,17 @@ QStringList VHDLPortParser::findPortDeclarations(QString const& input) const
 //-----------------------------------------------------------------------------
 QString VHDLPortParser::findPortsSection(QString const& input) const
 {
-    int entityBegin = VHDLSyntax::ENTITY_BEGIN_EXP.indexIn(input);
-    int entityEnd = VHDLSyntax::ENTITY_END_EXP.indexIn(input, entityBegin);
+    int entityBegin = input.indexOf(VHDLSyntax::ENTITY_BEGIN_EXP);
+    int entityEnd = input.indexOf(VHDLSyntax::ENTITY_END_EXP, entityBegin);
 
-    int portsBeginIndex = PORTS_BEGIN_EXP.indexIn(input, entityBegin);
-    portsBeginIndex += PORTS_BEGIN_EXP.matchedLength();
+    int portsBeginIndex = PORTS_BEGIN.match(input, entityBegin).capturedEnd();
 
     if (portsBeginIndex > entityEnd)
     {
         return QString();
     }
 
-    int portsEndIndex = PORTS_END_EXP.indexIn(input, portsBeginIndex);
+    int portsEndIndex = input.indexOf(PORTS_END, portsBeginIndex);
 
     return input.mid(portsBeginIndex, portsEndIndex - portsBeginIndex);
 }
@@ -156,8 +161,8 @@ QString VHDLPortParser::findPortsSection(QString const& input) const
 //-----------------------------------------------------------------------------
 QString VHDLPortParser::removeCommentLines(QString input) const
 {
-    QRegExp commentLine("^" + VHDLSyntax::SPACE + VHDLSyntax::COMMENT_LINE_EXP.pattern() + "|" +
-        VHDLSyntax::ENDLINE + VHDLSyntax::SPACE + VHDLSyntax::COMMENT_LINE_EXP.pattern());
+    QRegularExpression commentLine("^" + VHDLSyntax::SPACE + VHDLSyntax::COMMENT_LINE_EXP + "|" +
+        VHDLSyntax::ENDLINE + VHDLSyntax::SPACE + VHDLSyntax::COMMENT_LINE_EXP);
 
     return input.remove(commentLine);
 }
@@ -169,12 +174,13 @@ QStringList VHDLPortParser::portDeclarationsIn(QString const& portSectionWithout
 {
     QStringList portDeclarations;
 
-    int nextPort = PORT_EXP.indexIn(portSectionWithoutCommentLines, 0);
+    int nextPort = portSectionWithoutCommentLines.indexOf(PORT_EXP, 0);
     while (nextPort != -1)
     {
-        portDeclarations.append(PORT_EXP.cap());
+        QRegularExpressionMatch match = PORT_EXP.match(portSectionWithoutCommentLines, nextPort);
+        portDeclarations.append(match.captured());
 
-        nextPort = PORT_EXP.indexIn(portSectionWithoutCommentLines, nextPort + PORT_EXP.matchedLength());
+        nextPort = portSectionWithoutCommentLines.indexOf(PORT_EXP, nextPort + match.capturedLength());
     }
 
     return portDeclarations;
@@ -188,6 +194,7 @@ void VHDLPortParser::createPortFromDeclaration(QString const& declaration, QShar
     QStringList portNames = parsePortNames(declaration);
     General::Direction direction =  parsePortDirection(declaration); 
     QString type = parsePortType(declaration);
+    QString typeDefinition;
     QString defaultValue = parseDefaultValue(declaration);
     QString description = parseDescription(declaration);
 
@@ -196,12 +203,29 @@ void VHDLPortParser::createPortFromDeclaration(QString const& declaration, QShar
 
     foreach(QString name, portNames)
     {   
-        QSharedPointer<Port> port(new Port(name, direction, leftBound, rightBound, type, "", defaultValue, 
-            description));
+        QSharedPointer<Port> port;
         
+        if (targetComponent->hasPort(name))
+        {
+            port = targetComponent->getPort(name);
+            typeDefinition = port->getTypeDefinition(type);
+        }
+        else
+        {
+            port = QSharedPointer<Port>(new Port());           
+            port->setName(name);
+            targetComponent->addPort(port);
+        }
+
+        port->setDirection(direction);
+        port->setLeftBound(leftBound);
+        port->setRightBound(rightBound);
+        port->setTypeName(type);
+        port->setTypeDefinition(type, typeDefinition);
+        port->setDefaultValue(defaultValue);
+        port->setDescription(description);
 
         emit add(port, declaration);
-        targetComponent->addPort(port);
     }
 }
 
@@ -210,9 +234,7 @@ void VHDLPortParser::createPortFromDeclaration(QString const& declaration, QShar
 //-----------------------------------------------------------------------------
 QStringList VHDLPortParser::parsePortNames(QString const& declaration) const
 {
-    PORT_EXP.indexIn(declaration);
-
-    QString portNames = PORT_EXP.cap(1);
+    QString portNames = PORT_EXP.match(declaration).captured(1);
     return portNames.split(QRegExp("\\s*[,]\\s*"), QString::SkipEmptyParts);
 }
 
@@ -221,8 +243,7 @@ QStringList VHDLPortParser::parsePortNames(QString const& declaration) const
 //-----------------------------------------------------------------------------
 General::Direction VHDLPortParser::parsePortDirection(QString const& declaration) const
 {
-    PORT_EXP.indexIn(declaration);
-    QString direction = PORT_EXP.cap(2).toLower();
+    QString direction = PORT_EXP.match(declaration).captured(2).toLower();
     
     return General::str2Direction(direction, General::DIRECTION_INVALID);
 }
@@ -232,8 +253,7 @@ General::Direction VHDLPortParser::parsePortDirection(QString const& declaration
 //-----------------------------------------------------------------------------
 QString VHDLPortParser::parsePortType(QString const& declaration) const
 {
-    PORT_EXP.indexIn(declaration);
-    QString fullType = PORT_EXP.cap(3);
+    QString fullType = PORT_EXP.match(declaration).captured(3);
 
     QString typePattern = PORT_TYPE;
     typePattern.replace("(?:","(");
@@ -249,13 +269,11 @@ QString VHDLPortParser::parsePortType(QString const& declaration) const
 //-----------------------------------------------------------------------------
 QString VHDLPortParser::parseDescription(QString const& declaration)
 {
-    PORT_EXP.indexIn(declaration);
-    
-    QString description = PORT_EXP.cap(5).trimmed();
+    QString description = PORT_EXP.match(declaration).captured(6).trimmed();
 
     if (description.isEmpty())
     {
-        description = PORT_EXP.cap(6).trimmed();
+        description = PORT_EXP.match(declaration).captured(7).trimmed();
     }
 
     return description;
@@ -268,9 +286,9 @@ int VHDLPortParser::parseLeftValue(QString const& vectorBounds, QSharedPointer<C
 {
     int value = 0;
 
-    if(!vectorBounds.isEmpty() && VECTOR_BOUNDS_EXP.indexIn(vectorBounds) != -1 )
+    if(!vectorBounds.isEmpty() && vectorBounds.indexOf(VECTOR_BOUNDS) != -1 )
     {
-        QString leftEquation = VECTOR_BOUNDS_EXP.cap(1);
+        QString leftEquation = VECTOR_BOUNDS.match(vectorBounds).captured(1);
 
         HDLEquationParser equationParser(ownerComponent->getModelParameters());
         value = equationParser.parse(leftEquation);
@@ -286,9 +304,9 @@ int VHDLPortParser::parseRightValue(QString const& vectorBounds, QSharedPointer<
 {
     int value = 0;
 
-    if(!vectorBounds.isEmpty() && VECTOR_BOUNDS_EXP.indexIn(vectorBounds) != -1 )
+    if(!vectorBounds.isEmpty() && vectorBounds.indexOf(VECTOR_BOUNDS) != -1 )
     {
-        QString rightEquation = VECTOR_BOUNDS_EXP.cap(2);
+        QString rightEquation = VECTOR_BOUNDS.match(vectorBounds).captured(2);
 
         HDLEquationParser equationParser(ownerComponent->getModelParameters());
         value = equationParser.parse(rightEquation);
@@ -302,14 +320,12 @@ int VHDLPortParser::parseRightValue(QString const& vectorBounds, QSharedPointer<
 //-----------------------------------------------------------------------------
 QString VHDLPortParser::parseVectorBounds(QString const& declaration) const
 {
-    PORT_EXP.indexIn(declaration);
-    QString fullType = PORT_EXP.cap(3);
+    QString fullType = PORT_EXP.match(declaration).captured(3);
 
     QString typePattern = PORT_TYPE;
     typePattern.replace("(?:","(");
 
-    QRegExp typeExpression(typePattern, Qt::CaseInsensitive);
-    typeExpression.indexIn(fullType);
+    QRegularExpression typeExpression(typePattern, QRegularExpression::CaseInsensitiveOption);
     
-    return typeExpression.cap(2);
+    return typeExpression.match(fullType).captured(2);
 }

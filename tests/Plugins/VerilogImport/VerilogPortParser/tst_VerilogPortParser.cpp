@@ -639,14 +639,18 @@ void tst_VerilogPortParser::testEquationAsPortBound()
     QFETCH(QString, fileContent);
     QFETCH(int, expectedLeft);
     QFETCH(int, expectedRight);
+    QFETCH(QString, expectedLeftExpression);
+    QFETCH(QString, expectedRightExpression);
 
     runParser(fileContent);
 
     QVERIFY2(importComponent_->getPorts().count() != 0, "No ports parsed from input.");
 
-    QSharedPointer<Port> createdPorts = importComponent_->getPorts().first();
-    QCOMPARE(createdPorts->getLeftBound(), expectedLeft);
-    QCOMPARE(createdPorts->getRightBound(), expectedRight);
+    QSharedPointer<Port> createdPort = importComponent_->getPorts().first();
+    QCOMPARE(createdPort->getLeftBound(), expectedLeft);
+    QCOMPARE(createdPort->getRightBound(), expectedRight);
+    QCOMPARE(createdPort->getLeftBoundExpression(), expectedLeftExpression);
+    QCOMPARE(createdPort->getRightBoundExpression(), expectedRightExpression);
 }
 
 //-----------------------------------------------------------------------------
@@ -657,55 +661,57 @@ void tst_VerilogPortParser::testEquationAsPortBound_data()
     QTest::addColumn<QString>("fileContent");
     QTest::addColumn<int>("expectedLeft");
     QTest::addColumn<int>("expectedRight");
+    QTest::addColumn<QString>("expectedLeftExpression");
+    QTest::addColumn<QString>("expectedRightExpression");
 
     QTest::newRow("Subtraction") <<
         "module test(\n"
         "    input [2-1:0] data\n"
         ");\n"
         "endmodule\n"
-        << 1 << 0;
+        << 1 << 0 << "2-1" << "0";
 
     QTest::newRow("Both bounds with multiply") <<
         "module test(\n"
         "    input [2*4-1:2*1] data\n"
         ");\n"
         "endmodule\n"
-        << 7 << 2;
+        << 7 << 2 << "2*4-1" << "2*1";
 
     QTest::newRow("Power of two") <<
         "module test(\n"
         "    input [2**4:0] data\n"
         ");\n"
         "endmodule\n"
-        << 16 << 0;
+        << 16 << 0 << "2**4" << "0";
 
     QTest::newRow("Power of zero") <<
         "module test(\n"
         "    input [8**0:0] data\n"
         ");\n"
         "endmodule\n"
-        << 1 << 0;
+        << 1 << 0 << "8**0" << "0";
 
     QTest::newRow("Multiple operations in mixed order") <<
         "module test(\n"
         "    input [32-2**4+2*4:0] data\n"
         ");\n"
         "endmodule\n"
-        << 24 << 0;
+        << 24 << 0 << "32-2**4+2*4" << "0";
 
     QTest::newRow("Division") <<
         "module test(\n"
         "    input [32/2:0/2] data\n"
         ");\n"
         "endmodule\n"
-        << 16 << 0;
+        << 16 << 0 << "32/2" << "0/2";
 
     QTest::newRow("Division by zero results zero") <<
         "module test(\n"
         "    input [32/0:0] data\n"
         ");\n"
         "endmodule\n"
-        << 0 << 0;
+        << 0 << 0 << "32/0" << "0";
 }
 
 QTEST_APPLESS_MAIN(tst_VerilogPortParser)

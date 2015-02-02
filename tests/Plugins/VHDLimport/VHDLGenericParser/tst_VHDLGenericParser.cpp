@@ -40,6 +40,7 @@ private:
         
     void runParser(QString const& fileContent);
    
+
     //! The parser to test.
     VHDLGenericParser parser_;
 
@@ -237,7 +238,6 @@ void tst_VHDLGenericParser::testCommentedGenericIsNotParsed()
 
     QCOMPARE(importComponent_->getModelParameters().count(), 0);
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: tst_VHDLGenericParser::testModelParametersAreNotParsedOutsideEntity()

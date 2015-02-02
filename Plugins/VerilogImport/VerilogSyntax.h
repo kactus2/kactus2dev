@@ -14,13 +14,16 @@
 
 #include <Plugins/common/HDLmath.h>
 
+#include <QRegularExpression>
+
 namespace VerilogSyntax
 {
     //! Module begins with module <name> #(<parameters>) (<ports>);.
-    const QRegExp MODULE_BEGIN("module\\s+(\\w+)\\s*(#\\s*[(].*[)])?\\s*(?=([(][^)][)])?\\s*;)?", Qt::CaseSensitive);
+    const QRegularExpression MODULE_BEGIN("module\\s+(\\w+)\\s*(#\\s*[(].*[)])?\\s*(?=([(][^)][)])?\\s*;)?",
+        QRegularExpression::DotMatchesEverythingOption);
 
     //! Module ends with keyword endmodule.
-    const QRegExp MODULE_END("endmodule", Qt::CaseSensitive);
+    const QRegularExpression MODULE_END("endmodule");
 
     //! Pattern for ranges for e.g. port sizes are given as [left:right].
     const QString RANGE("\\[" + HDLmath::TERM + "\\s*[:]\\s*" + HDLmath::TERM + "\\]");
@@ -34,10 +37,11 @@ namespace VerilogSyntax
     const QString COMMENT("//[ \\t]*([^\\r\\n]*)(?=\\r?\\n|$)");
 
     //! Single-line comments.
-    const QRegExp COMMENTLINE("(^|\\r?\\n)[ \\t]*" + COMMENT);
+    const QRegularExpression COMMENTLINE("(^|\\r?\\n)[ \\t]*" + COMMENT);
 
     //! Multiline comments.
-    const QRegExp MULTILINE_COMMENT("/\\*.*\\*/");  
+    const QRegularExpression MULTILINE_COMMENT("/\\*.*\\*/", 
+        QRegularExpression::DotMatchesEverythingOption | QRegularExpression::InvertedGreedinessOption);  
 
     //! An expression that may an operator or an alphanumeric symbol.
     const QString OPERATION_OR_ALPHANUMERIC("([+*\\(\\)\\{\\}/-])|([']?\\{)|(\\w+)|((\\w+)?'\\w+)");

@@ -30,8 +30,7 @@
 class Component;
 class View;
 
-class VERILOGIMPORT_EXPORT VerilogImporter: public QObject, public ImportPlugin, 
-    public ModelParameterSource, public HighlightSource
+class VERILOGIMPORT_EXPORT VerilogImporter: public QObject, public ImportPlugin, public HighlightSource
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "kactus2.plugins.verilogimportplugin" FILE "verilogimportplugin.json")
@@ -107,13 +106,6 @@ public:
      *      @param [in] visualizer   The visualizer to use.          
      */
     virtual void setHighlighter(Highlighter* highlighter);
-
-    /*!
-     *  Sets the given model parameter visualizer to be used by the import.
-     *
-     *      @param [in] visualizer   The visualizer to use.          
-     */
-    virtual void setModelParameterVisualizer(ModelParameterVisualizer* visualizer);
 
 private:
 

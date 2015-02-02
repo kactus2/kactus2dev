@@ -20,7 +20,7 @@
 #include <QString>
 
 class Component;
-class HDLEquationParser;
+class ExpressionParser;
 
 //-----------------------------------------------------------------------------
 //! Parser for Verilog ports.
@@ -162,7 +162,8 @@ private:
      *
      *      @return The port left bound value in the declaration.
      */
-    int parseLeftBound(QString const& portDeclaration, HDLEquationParser const& parser) const;
+    QString parseLeftBound(QString const& portDeclaration, 
+        QSharedPointer<Component> targetComponent, ExpressionParser const& parser) const;
 
     /*!
      *  Parses the port right bound value from a Verilog port declaration.
@@ -172,7 +173,9 @@ private:
      *
      *      @return The port right bound value in the declaration.
      */
-    int parseRightBound(QString const& portDeclaration, HDLEquationParser const& parser) const;
+    QString parseRightBound(QString const& portDeclaration, QSharedPointer<Component> targetComponent, ExpressionParser const& parser) const;
+
+    QString replaceModelParameterNamesWithIds(QString const& expression, QSharedPointer<Component> targetComponent) const;
 
     /*!
      *  Parses the port names from a Verilog port declaration.

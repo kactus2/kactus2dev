@@ -50,8 +50,17 @@ private slots:
     void testParameterInPortDeclaration();
     void testParameterInPortDeclaration_data();
 
+    void testParameterInParameterDeclaration();
+    
+    void testParameterNotFoundInFileIsRemoved();
+    void testExistingModelParameterIdDoesNotChange();
+    
+    void testExistingPortIsSetAsPhantom();
+    void testExistingPortIsOverriden();
+
     void testModelNameAndEnvironmentIsImportedToView();
     void testModelNameAndEnvironmentIsImportedToView_data();
+
 
 private:
 
@@ -64,7 +73,8 @@ private:
         const int declarationLength, QColor const& highlightColor) const;
 
     void verifySectionFontColorIs(int startIndex, int endIndex, QColor const& expectedFontColor);
-   
+     
+    QString parameterUuid() const;
 
     QSharedPointer<Component> importComponent_;
 
@@ -486,14 +496,22 @@ void tst_VerilogImporter::testParameterInPortDeclaration()
     QFETCH(QString, fileContent);
     QFETCH(int, expectedLeftBound);
     QFETCH(int, expectedRightBound);
+    QFETCH(QString, expectedLeftBoundExpression);
+    QFETCH(QString, expectedRightBoundExpression);
 
     runParser(fileContent);
 
     QVERIFY2(importComponent_->getPorts().count() != 0, "No ports parsed from input.");
-
+  
     QSharedPointer<Port> createdPort = importComponent_->getPorts().first();
     QCOMPARE(createdPort->getLeftBound(), expectedLeftBound);
     QCOMPARE(createdPort->getRightBound(), expectedRightBound);
+
+    QRegularExpression leftRule(expectedLeftBoundExpression);
+    QVERIFY(leftRule.match(createdPort->getLeftBoundExpression()).hasMatch());
+
+    QRegularExpression rightRule(expectedRightBoundExpression);
+    QVERIFY(rightRule.match(createdPort->getRightBoundExpression()).hasMatch());
 }
 
 //-----------------------------------------------------------------------------
@@ -504,20 +522,23 @@ void tst_VerilogImporter::testParameterInPortDeclaration_data()
     QTest::addColumn<QString>("fileContent");
     QTest::addColumn<int>("expectedLeftBound");
     QTest::addColumn<int>("expectedRightBound");
+    QTest::addColumn<QString>("expectedLeftBoundExpression");
+    QTest::addColumn<QString>("expectedRightBoundExpression");
+    QTest::addColumn<QString>("expectedDefaultExpression");
 
     QTest::newRow("Parameter as left port bound") <<
         "module test #(parameter left = 4) (\n"
         "   input [left:0] data\n"
         ");\n"
         "endmodule"
-        << 4 << 0;
+        << 4 << 0 << parameterUuid() << "0" << "";
 
     QTest::newRow("Parameter as right port bound") <<
         "module test #(parameter right = 4) (\n"
         "   input [0:right] data\n"
         ");\n"
         "endmodule"
-        << 0 << 4;
+        << 0 << 4 << "0" << parameterUuid() << "";
 
     QTest::newRow("Parameters in left bound equation") <<
         "module test #(\n"
@@ -527,7 +548,7 @@ void tst_VerilogImporter::testParameterInPortDeclaration_data()
         "   input [data_bits + addr_bits:0] bus\n"
         ");\n"
         "endmodule"
-        << 32 + 8 << 0;
+        << 32 + 8 << 0 << parameterUuid() + " \\+ " + parameterUuid() << "0" << "";
 
     QTest::newRow("Parameters and constants in left bound equation") <<
         "module test #(\n"
@@ -537,7 +558,7 @@ void tst_VerilogImporter::testParameterInPortDeclaration_data()
         "   input [data_bits ** data_bus_count - 1:0] data_bus\n"
         ");\n"
         "endmodule"
-        << 8*8*8 - 1 << 0;
+        << 8*8*8 - 1 << 0 << parameterUuid() + " \\*\\* " + parameterUuid() + " - 1" << "0" << "";
 
     QTest::newRow("Parameters in other parameters") <<
         "module test #(\n"
@@ -548,7 +569,124 @@ void tst_VerilogImporter::testParameterInPortDeclaration_data()
         "   input [port_width - 1:0] data_bus\n"
         ");\n"
         "endmodule"
-        << 8 + 4 - 1 << 0;
+        << 8 + 4 - 1 << 0 << parameterUuid() + " - 1" << "0" << "";
+
+    QTest::newRow("Parameters with similar names") <<
+        "module test #(\n"
+        "   parameter data = 8,\n"
+        "   parameter data_bits = 4\n"
+        ")(\n"
+        "   input [data_bits-1:0] data_bus\n"
+        ");\n"
+        "endmodule"
+        << 4 - 1 << 0 << parameterUuid() + "-1" << "0" << "";
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testParameterInParameterDeclaration()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testParameterInParameterDeclaration()
+{
+    runParser(
+        "module test #(\n"
+        "   parameter first = 4,\n"
+        "   parameter second = first)\n"
+        "();\n"
+        "endmodule");
+
+
+    QSharedPointer<ModelParameter> first = importComponent_->getModelParameters().first();
+    QSharedPointer<ModelParameter> second = importComponent_->getModelParameters().last();
+
+    QCOMPARE(second->getValue(), first->getValueId());
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testParameterNotFoundInFileIsRemoved()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testParameterNotFoundInFileIsRemoved()
+{
+    QSharedPointer<ModelParameter> existingParameter(new ModelParameter());
+    existingParameter->setName("oldParameter");
+
+    importComponent_->getModel()->addModelParameter(existingParameter);
+
+    QString fileContent = 
+        "module test #(\n"
+        "   parameter dataWidth_g = 8\n"
+        "   )();\n"
+        "endmodule";
+
+    runParser(fileContent);
+
+    QCOMPARE(importComponent_->getModelParameters().count(), 1);
+    QSharedPointer<ModelParameter> importedParameter = importComponent_->getModelParameters().first();
+    QCOMPARE(importedParameter->getName(), QString("dataWidth_g"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testExistingModelParameterIdDoesNotChange()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testExistingModelParameterIdDoesNotChange()
+{
+    QSharedPointer<ModelParameter> existingParameter(new ModelParameter());
+    existingParameter->setName("dataWidth_g");
+    existingParameter->setValueId("existingId");
+
+    importComponent_->getModel()->addModelParameter(existingParameter);
+
+    QString fileContent = 
+        "module test #(\n"
+        "   parameter dataWidth_g = 8\n"
+        "   )();\n"
+        "endmodule";
+
+    runParser(fileContent);
+
+    QSharedPointer<ModelParameter> importedParameter = importComponent_->getModelParameters().first();
+    QCOMPARE(importedParameter->getValueId(), QString("existingId"));
+    QCOMPARE(importedParameter->getValue(), QString("8"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testExistingPortIsSetAsPhantom()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testExistingPortIsSetAsPhantom()
+{
+    QSharedPointer<Port> existingPort(new Port("oldPort", General::IN, 0, 0, "", "", "", ""));
+    importComponent_->addPort(existingPort);
+
+    QString input =  
+        "module test(\n"
+        "    input newPort\n"
+        ");\n"
+        "endmodule\n";
+
+    runParser(input);
+
+    QCOMPARE(importComponent_->getPorts().count(), 2);
+    QCOMPARE(importComponent_->getPort("oldPort")->getDirection(), General::DIRECTION_PHANTOM);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testExistingPortIsOverriden()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testExistingPortIsOverriden()
+{
+    QSharedPointer<Port> existingPort(new Port("oldPort", General::OUT, 0, 0, "myType", "myLib.h", "", ""));
+    importComponent_->addPort(existingPort);
+
+    QString input =  
+        "module test(\n"
+        "    input myType oldPort\n"
+        ");\n"
+        "endmodule\n";
+
+    runParser(input);
+
+    QCOMPARE(importComponent_->getPorts().count(), 1);
+    QCOMPARE(importComponent_->getPort("oldPort")->getDirection(), General::IN);
+    QCOMPARE(importComponent_->getPort("oldPort")->getTypeDefinition("myType"), QString("myLib.h"));
 }
 
 //-----------------------------------------------------------------------------
@@ -700,6 +838,13 @@ void tst_VerilogImporter::testModelNameAndEnvironmentIsImportedToView_data()
         "half_adder";
 }
 
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::parameterUuid()
+//-----------------------------------------------------------------------------
+QString tst_VerilogImporter::parameterUuid() const
+{
+    return "{[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}";
+}
 
 QTEST_MAIN(tst_VerilogImporter)
 
