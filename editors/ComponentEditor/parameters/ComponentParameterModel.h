@@ -21,12 +21,17 @@
 //-----------------------------------------------------------------------------
 //! Model for all parameters within a single component.
 //-----------------------------------------------------------------------------
-class ComponentParameterModel : public QAbstractTableModel, public ParameterizableTable
+class ComponentParameterModel : public ParameterizableTable
 {
     Q_OBJECT
 public:
 
-	//! The constructor.
+	/*!
+	 *  The constructor.
+	 *
+	 *      @param [in] parent              The owner of this model.
+	 *      @param [in] parameterFinder     The parameter finder.
+	 */
 	ComponentParameterModel(QObject *parent, QSharedPointer<ParameterFinder> parameterFinder);
 
 	//! The destructor.
@@ -113,6 +118,16 @@ protected:
      *      @return True, if the data in the parameter is valid, otherwise false.
      */
     virtual bool validateColumnForParameter(QModelIndex const& index) const;
+
+    /*!
+     *  Get all the references to the selected parameter from the selected row.
+     *
+     *      @param [in] row         The selected row.
+     *      @param [in] valueID     The id of the referenced parameter.
+     *
+     *      @return The amount of references to the selected parameter.
+     */
+    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const;
 
 private:
 

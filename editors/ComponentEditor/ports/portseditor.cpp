@@ -48,7 +48,7 @@ handler_(handler)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(component));
 
-    model_ = new PortsModel(component->getModel(), expressionParser, expressionFormatter, this);
+    model_ = new PortsModel(component->getModel(), expressionParser, parameterFinder, expressionFormatter, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(this, parameterFinder);
     componentParametersModel->setExpressionParser(expressionParser);
@@ -92,6 +92,9 @@ handler_(handler)
     connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)), 
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(view_.itemDelegate(), SIGNAL(decreaseReferences(QString)), 
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
 	// set source model for proxy

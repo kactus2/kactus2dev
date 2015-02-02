@@ -14,10 +14,9 @@
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::ConfigurableElementsModel()
 //-----------------------------------------------------------------------------
-ConfigurableElementsModel::ConfigurableElementsModel(QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QObject *parent):
-QAbstractTableModel(parent),
-ParameterizableTable(),
+ConfigurableElementsModel::ConfigurableElementsModel(QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QObject *parent):
+ParameterizableTable(parameterFinder, parent),
 component_(0),
 currentElementValues_(),
 visibleConfigurableElements_(),
@@ -330,6 +329,18 @@ bool ConfigurableElementsModel::validateColumnForParameter(QModelIndex const& in
     QString value = visibleConfigurableElements_.at(index.row()).value_;
 
     return isValuePlainOrExpression(value);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsModel::getAllReferencesToIdInItemOnRow()
+//-----------------------------------------------------------------------------
+int ConfigurableElementsModel::getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const
+{
+    int valueReferences = visibleConfigurableElements_.at(row).value_.contains(valueID);
+    int defaultReferences = visibleConfigurableElements_.at(row).value_.contains(valueID);
+
+    int totalReferences = valueReferences + defaultReferences;
+    return totalReferences;
 }
 
 //-----------------------------------------------------------------------------

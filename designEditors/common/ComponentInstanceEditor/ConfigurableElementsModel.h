@@ -14,6 +14,7 @@
 #include <IPXACTmodels/modelparameter.h>
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
 
 #include <QAbstractTableModel>
 #include <QMap>
@@ -25,19 +26,22 @@ class ComponentItem;
 //-----------------------------------------------------------------------------
 //! Model class to manage the configurable element values being edited.
 //-----------------------------------------------------------------------------
-class ConfigurableElementsModel : public QAbstractTableModel, public ParameterizableTable
+class ConfigurableElementsModel : public ParameterizableTable
 {
 	Q_OBJECT
 
 public:
 
 	/*!
-	 *  The constructor.
+	 *  [Description].
 	 *
+	 *      @param [in] parameterFinder         Pointer to the instance for finding parameters.
 	 *      @param [in] expressionFormatter     Pointer to the formatter for referencing expressions.
 	 *      @param [in] parent                  Pointer to the owner of this model.
 	 */
-	ConfigurableElementsModel(QSharedPointer<ExpressionFormatter> expressionFormatter, QObject *parent);
+	ConfigurableElementsModel(QSharedPointer<ParameterFinder> parameterFinder, 
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QObject *parent);
 	
 	//! \brief The destructor
 	virtual ~ConfigurableElementsModel();
@@ -159,6 +163,16 @@ protected:
      *      @return True, if the data in the parameter is valid, otherwise false.
      */
     virtual bool validateColumnForParameter(QModelIndex const& index) const;
+
+    /*!
+     *  Get all the references to a particular id from the configurable element value on selected row.
+     *
+     *      @param [in] row         The row of the selected configurable element value.
+     *      @param [in] valueID     The id of the parameter being searched for.
+     *
+     *      @return The amount of references to the selected id.
+     */
+    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const;
 
 private:
 	//! No copying

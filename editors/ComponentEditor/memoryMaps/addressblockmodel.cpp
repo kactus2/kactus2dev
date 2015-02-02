@@ -17,13 +17,15 @@
 
 AddressBlockModel::AddressBlockModel(QSharedPointer<AddressBlock> addressBlock,
     QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
     QObject *parent):
-QAbstractTableModel(parent),
+ParameterizableTable(parameterFinder, parent),
 addressBlock_(addressBlock),
 items_(addressBlock->getRegisterData()),
 componentChoices_(componentChoices),
 addressUnitBits_(0),
+parameterFinder_(parameterFinder),
 expressionFormatter_(expressionFormatter)
 {
 	Q_ASSERT(addressBlock_);
@@ -318,6 +320,11 @@ bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value
             QSharedPointer<Register> reg = items_[index.row()].dynamicCast<Register>();
             if (reg)
             {
+                if (!value.isValid())
+                {
+                    removeReferencesFromSingleExpression(reg->getAddressOffset());
+                }
+
                 reg->setAddressOffset(value.toString());
             }
             else
@@ -330,6 +337,11 @@ bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value
             QSharedPointer<Register> reg = items_[index.row()].dynamicCast<Register>();
             if (reg)
             {
+                if (!value.isValid())
+                {
+                    removeReferencesFromSingleExpression(reg->getSizeExpression());
+                }
+
                 QString calculatedExpression = parseExpressionToDecimal(value.toString());
 
                 if (isValuePlainOrExpression(calculatedExpression))
@@ -354,6 +366,11 @@ bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value
             QSharedPointer<Register> reg = items_[index.row()].dynamicCast<Register>();
             if (reg)
             {
+                if (!value.isValid())
+                {
+                    removeReferencesFromSingleExpression(reg->getDimensionExpression());
+                }
+
                 QString calculatedExpression = parseExpressionToDecimal(value.toString());
                 
                 if (isValuePlainOrExpression(calculatedExpression))
@@ -598,6 +615,29 @@ bool AddressBlockModel::validateColumnForParameter(QModelIndex const& index) con
     return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: addressblockmodel::getAllReferencesToIdInItemOnRow()
+//-----------------------------------------------------------------------------
+int AddressBlockModel::getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const
+{
+    const QSharedPointer<Register> reg = items_.at(row).dynamicCast<Register>();
+
+    if (reg)
+    {
+        int referencesInOffset = reg->getAddressOffset().count(valueID);
+        int referencesInSize = reg->getSizeExpression().count(valueID);
+        int referencesInDimension = reg->getDimensionExpression().count(valueID);
+
+        int totalReferences = referencesInOffset + referencesInSize + referencesInDimension;
+
+        return totalReferences;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 void AddressBlockModel::onAddItem( const QModelIndex& index ) {
     // Usage must be register or unspecified, if trying to add children (registers).
     if (addressBlock_->getUsage() == General::MEMORY || addressBlock_->getUsage() == General::RESERVED)
@@ -675,6 +715,9 @@ void AddressBlockModel::onRemoveItem( const QModelIndex& index ) {
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
+
+    removeReferencesInItemOnRow(index.row());
+
 	items_.removeAt(index.row());
 	endRemoveRows();
 

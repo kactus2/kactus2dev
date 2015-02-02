@@ -16,6 +16,7 @@
 
 #include <editors/ComponentEditor/common/AbstractParameterModel.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
 
 #include <QAbstractTableModel>
 
@@ -39,6 +40,7 @@ public:
 	 *      @param [in]  parameters             The parameters to edit in the model.
      *      @param [in]  choices                The choices available for the parameter values.
      *      @param [in]  expressionParser       Expression parser for configurable elements.
+     *      @param [in]  parameterFinder        The parameter finder.
      *      @param [in]  expressionFormatter    The expression formatter.
 	 *      @param [in]  parent                 The owner of this model.
 	 *
@@ -46,6 +48,7 @@ public:
 	ParametersModel(QList<QSharedPointer<Parameter> >& parameters, 
         QSharedPointer<QList<QSharedPointer<Choice> > > choices,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
 		QObject *parent);
 	

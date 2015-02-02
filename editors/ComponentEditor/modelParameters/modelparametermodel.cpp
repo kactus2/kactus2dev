@@ -28,9 +28,10 @@
 ModelParameterModel::ModelParameterModel(QSharedPointer<Model> model, 
     QSharedPointer<QList<QSharedPointer<Choice> > > choices,
     QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter,
     QObject *parent): 
-AbstractParameterModel(choices, expressionParser, expressionFormatter, parent),
+AbstractParameterModel(choices, expressionParser, parameterFinder, expressionFormatter, parent),
 model_(model), lockedIndexes_()
 {
 

@@ -31,7 +31,7 @@ view_(this),
 filter_(this),
 parameterFinder_(parameterFinder),
 componentParameterModel_(new ComponentParameterModel(this, parameterFinder_)),
-model_(expressionFormatter, this)
+model_(parameterFinder, expressionFormatter, this)
 {
 	filter_.setSourceModel(&model_);
 	view_.setModel(&filter_);

@@ -39,7 +39,7 @@ proxy_(this)
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(component));
 
     model_ = new ModelParameterModel(component->getModel(), component->getChoices(), expressionParser,
-        expressionFormatter, this);
+        parameterFinder, expressionFormatter, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(this, parameterFinder);
     componentParametersModel->setExpressionParser(expressionParser);
@@ -82,6 +82,9 @@ proxy_(this)
     connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)), 
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(view_.itemDelegate(), SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     connect(view_.itemDelegate(), SIGNAL(openReferenceTree(QString)),

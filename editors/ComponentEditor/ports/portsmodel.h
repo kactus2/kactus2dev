@@ -21,6 +21,7 @@
 
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
 
 class Model;
 class Port;
@@ -28,7 +29,7 @@ class Port;
 /*! Table model that can be used to display ports to be edited.
  *
  */
-class PortsModel : public QAbstractTableModel, public ParameterizableTable 
+class PortsModel : public ParameterizableTable
 {
 	Q_OBJECT
 
@@ -38,12 +39,16 @@ public:
 	 *
 	 *      @param [in] model                   Pointer to the model being edited.
      *      @param [in] expressionParser        Pointer to the expression parser.
+     *      @param [in] parameterFinder         Pointer to the parameter finder.
      *      @param [in] expressionFormatter     Pointer to the expression formatter.
 	 *      @param [in] parent                  Pointer to the owner of this model.
 	 *
 	*/
-	PortsModel(QSharedPointer<Model> model, QSharedPointer <ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionFormatter> expressionFormatter, QObject *parent);
+	PortsModel(QSharedPointer<Model> model,
+        QSharedPointer <ExpressionParser> expressionParser,
+        QSharedPointer <ParameterFinder> parameterFinder,
+        QSharedPointer <ExpressionFormatter> expressionFormatter,
+        QObject *parent);
 	
 	//! The destructor
 	virtual ~PortsModel();
@@ -154,6 +159,16 @@ protected:
      *      return      True, if the data in the parameter is valid, false otherwise.
      */
     virtual bool validateColumnForParameter(QModelIndex const& index) const;
+
+    /*!
+     *  Get all the references made to the selected parameter from the selected row.
+     *
+     *      @param [in] row         The selected row.
+     *      @param [in] valueID     The target parameter.
+     *
+     *      @return Number of references made to the selected id from the selected row.
+     */
+    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const;
 
 public slots:
 
@@ -294,6 +309,9 @@ private:
 
     //! The locked indexes that cannot be edited.
     QList<QPersistentModelIndex> lockedIndexes_;
+
+    //! The parameter finder.
+    QSharedPointer<ParameterFinder> parameterFinder_;
 
     //! Expression formatter, formats the referencing expressions to show parameter names.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;

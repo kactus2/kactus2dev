@@ -27,12 +27,13 @@
 // Function: PortsModel::PortsModel()
 //-----------------------------------------------------------------------------
 PortsModel::PortsModel(QSharedPointer<Model> model, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QObject *parent):
-    QAbstractTableModel(parent),
-    ParameterizableTable(),
-    model_(model),
-    lockedIndexes_(),
-    expressionFormatter_(expressionFormatter)
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QObject *parent):
+ParameterizableTable(parameterFinder, parent),
+model_(model),
+lockedIndexes_(),
+parameterFinder_(parameterFinder),
+expressionFormatter_(expressionFormatter)
 {
 	Q_ASSERT(model_);
     setExpressionParser(expressionParser);
@@ -287,6 +288,11 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
         }
         else if (index.column() == PortColumns::LEFT_BOUND)
         {
+            if (!value.isValid())
+            {
+                removeReferencesFromSingleExpression(port->getLeftBoundExpression());
+            }
+
             // make sure left bound doesn't drop below right bound.
             QString calculatedExpression = parseExpressionToDecimal(value.toString());
 
@@ -312,6 +318,11 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
         }
         else if (index.column() == PortColumns::RIGHT_BOUND)
         {
+            if (!value.isValid())
+            {
+                removeReferencesFromSingleExpression(port->getRightBoundExpression());
+            }
+
             // make sure right bound is not greater than left bound.
             QString calculatedExpression = parseExpressionToDecimal(value.toString());
 
@@ -352,6 +363,11 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
         }
         else if (index.column() == PortColumns::DEFAULT_VALUE)
         {
+            if (!value.isValid())
+            {
+                removeReferencesFromSingleExpression(port->getDefaultValue());
+            }
+
             port->setDefaultValue(value.toString());
         }
         else if (index.column() == PortColumns::PORT_COL_DESC)
@@ -467,6 +483,9 @@ void PortsModel::onRemoveItem( const QModelIndex& index )
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
     QList<QSharedPointer<Port> >& ports = model_->getPorts();
+
+    removeReferencesInItemOnRow(index.row());
+
 	ports.removeAt(index.row());
 	endRemoveRows();
 
@@ -774,6 +793,21 @@ bool PortsModel::validateColumnForParameter(QModelIndex const& index) const
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: portsmodel::getAllReferencesToIdInItemOnRow()
+//-----------------------------------------------------------------------------
+int PortsModel::getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const
+{
+    QSharedPointer<Port> port = model_->getPorts().at(row);
+
+    int referencesInLeftBound = port->getLeftBoundExpression().count(valueID);
+    int referencesInRightbount = port->getRightBoundExpression().count(valueID);
+    int referencesInDefaultValue = port->getDefaultValue().count(valueID);
+
+    int  totalReferences = referencesInLeftBound + referencesInRightbount + referencesInDefaultValue;
+    return totalReferences;
 }
 
 //-----------------------------------------------------------------------------

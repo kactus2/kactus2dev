@@ -14,6 +14,7 @@
 
 #include <editors/ComponentEditor/common/AbstractParameterModel.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -37,12 +38,14 @@ public:
 	 *      @param [in]  model                  The model being edited.
      *      @param [in]  choices                The choices available for the model parameter values.
      *      @param [in]  expressionParser       Expression parser for configurable elements.
+     *      @param [in]  parameterFinder        The parameter finder.
      *      @param [in]  expressionFormatter    Expression formatter.
 	 *      @param [in]  parent                 The owner of this model.
 	*/
     ModelParameterModel(QSharedPointer<Model> model,
         QSharedPointer<QList<QSharedPointer<Choice> > > choices,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QObject *parent);
 

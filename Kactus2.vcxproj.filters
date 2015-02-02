@@ -3952,6 +3952,9 @@
     <ClCompile Include="editors\ComponentEditor\common\MultipleParameterFinder.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ParameterizableTable.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5445,6 +5448,9 @@
     <CustomBuild Include="editors\ComponentEditor\parameters\ComponentParameterModel.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\common\ParameterizableTable.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -5747,9 +5753,6 @@
     <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatter.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\ParameterizableTable.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\ports\PortColumns.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </ClInclude>
@@ -5761,6 +5764,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\MultipleParameterFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\common\ComponentInstanceEditor\ConfigurableElementsColumns.h">
+      <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

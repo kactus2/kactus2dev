@@ -15,6 +15,7 @@
 #include "ParameterizableTable.h"
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
 
 #include <IPXACTmodels/parameter.h>
 
@@ -28,7 +29,7 @@ class ParameterValidator2014;
 //-----------------------------------------------------------------------------
 //! Base class for models editing parameters and model parameters.
 //-----------------------------------------------------------------------------
-class AbstractParameterModel : public QAbstractTableModel, ParameterizableTable
+class AbstractParameterModel : public ParameterizableTable
 {
 	Q_OBJECT
 
@@ -38,12 +39,15 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] choices                 The choices available for the parameter values.
-     *      @param [in] expressionParser        Expression parser for configurable elements.
-     *      @param [in] expressionFormatter     The expression formatter.
+	 *      @param [in] expressionParser        Expression parser for configurable elements.
+	 *      @param [in] parameterFinder         Pointer to the instance for finding parameters.
+	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] parent                  The parent object.
 	 */
 	AbstractParameterModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-	QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
+	    QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
         QObject *parent);
 	
     //! The destructor.
@@ -302,6 +306,16 @@ protected:
     virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const;
 
     /*!
+     *  Gets all the references to id from the register on the selected row.
+     *
+     *      @param [in] row         The row of the selected register.
+     *      @param [in] valueID     The id of the target parameter.
+     *
+     *      @return The amount of references made to the selected parameter.
+     */
+    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const;
+
+    /*!
      *  Check if a parameter at row can be removed.
      *
      *      @param [in] row     The row of the parameter.
@@ -345,6 +359,9 @@ private:
 
     //! Validator for parameters.
     ParameterValidator2014* validator_;
+
+    //! The parameter finder.
+    QSharedPointer<ParameterFinder> parameterFinder_;
 
     //! Formatter for parameter expressions.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;

@@ -260,7 +260,8 @@ ModelParameterModel* tst_ModelParameterDelegate::createModelWithSimpleModelParam
     QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(component));
     QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
 
-    return new ModelParameterModel(model, choices_, QSharedPointer<ExpressionParser>(0), expressionFormatter, this);
+    return new ModelParameterModel(model, choices_, QSharedPointer<ExpressionParser>(0), parameterFinder,
+        expressionFormatter, this);
 }
 
 //-----------------------------------------------------------------------------

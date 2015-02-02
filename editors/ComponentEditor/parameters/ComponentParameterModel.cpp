@@ -16,7 +16,7 @@
 // Function: ComponentParameterModel::ComponentParameterModel()
 //-----------------------------------------------------------------------------
 ComponentParameterModel::ComponentParameterModel(QObject *parent, QSharedPointer<ParameterFinder> parameterFinder):
-    QAbstractTableModel(parent),
+    ParameterizableTable(parameterFinder, parent),
     parameterFinder_(parameterFinder)
 {
 
@@ -132,6 +132,18 @@ bool ComponentParameterModel::validateColumnForParameter(QModelIndex const& inde
    }
 
    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterModel::getAllReferencesToIdInItemOnRow()
+//-----------------------------------------------------------------------------
+int ComponentParameterModel::getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const
+{
+    QStringList parameterIDs = parameterFinder_->getAllParameterIds();
+
+    int referencesInValue = parameterFinder_->valueForId(parameterIDs.at(row)).count(valueID);
+
+    return referencesInValue;
 }
 
 //-----------------------------------------------------------------------------

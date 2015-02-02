@@ -28,13 +28,13 @@
 // Function: AbstractParameterModel::AbstractParameterModel()
 //-----------------------------------------------------------------------------
 AbstractParameterModel::AbstractParameterModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QObject *parent): 
-    QAbstractTableModel(parent),
-    ParameterizableTable(),
-    choices_(choices), 
-    validator_(new ParameterValidator2014(expressionParser)),
-    expressionFormatter_(expressionFormatter)
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QObject *parent): 
+ParameterizableTable(parameterFinder, parent),
+choices_(choices), 
+validator_(new ParameterValidator2014(expressionParser)),
+parameterFinder_(parameterFinder),
+expressionFormatter_(expressionFormatter)
 {
     setExpressionParser(expressionParser);
 }
@@ -200,6 +200,14 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
         }
         else if (index.column() == bitWidthColumn())
         {
+            if (!value.isValid())
+            {
+                removeReferencesFromSingleExpression(parameter->getBitWidth());
+
+                emit dataChanged(QAbstractTableModel::index(0, usageCountColumn()),
+                    QAbstractTableModel::index(rowCount() - 1, usageCountColumn()));
+            }
+
             parameter->setBitWidth(value.toString());
         }
         else if (index.column() == minimumColumn())
@@ -216,6 +224,14 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
         }
         else if (index.column() == valueColumn())
         {
+            if (!value.isValid())
+            {
+                removeReferencesFromSingleExpression(parameter->getValue());
+
+                emit dataChanged(QAbstractTableModel::index(0, usageCountColumn()),
+                    QAbstractTableModel::index(rowCount() - 1, usageCountColumn()));
+            }
+
             parameter->setValue(value.toString());
         }
         else if (index.column() == resolveColumn())
@@ -224,10 +240,26 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
         }
         else if (index.column() == arraySizeColumn())
         {
+            if (!value.isValid())
+            {
+                removeReferencesFromSingleExpression(parameter->getAttribute("arraySize"));
+
+                emit dataChanged(QAbstractTableModel::index(0, usageCountColumn()),
+                    QAbstractTableModel::index(rowCount() - 1, usageCountColumn()));
+            }
+
             parameter->setAttribute("arraySize", value.toString());
         }
         else if (index.column() == arrayOffsetColumn())
         {
+            if (!value.isValid())
+            {
+                removeReferencesFromSingleExpression(parameter->getAttribute("arrayOffset"));
+
+                emit dataChanged(QAbstractTableModel::index(0, usageCountColumn()),
+                    QAbstractTableModel::index(rowCount() - 1, usageCountColumn()));
+            }
+
             parameter->setAttribute("arrayOffset", value.toString());
         }
         else if (index.column() == descriptionColumn())
@@ -565,6 +597,8 @@ bool AbstractParameterModel::canRemoveRow(int const& row) const
         QApplication::restoreOverrideCursor();
     }
 
+    removeReferencesInItemOnRow(row);
+
     return true;
 }
 
@@ -588,4 +622,22 @@ QVariant AbstractParameterModel::backgroundColorForIndex(QModelIndex const& inde
     {
         return QColor("white");
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractParameterModel::getAllReferencesToIdInItemRow()
+//-----------------------------------------------------------------------------
+int AbstractParameterModel::getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const
+{
+    QSharedPointer<Parameter> parameter = getParameterOnRow(row);
+
+    int referencesInValue = parameter->getValue().count(valueID);
+    int referencesInBitWidth = parameter->getBitWidth().count(valueID);
+    int referencesInArraySize = parameter->getAttribute("arraySize").count(valueID);
+    int referencesInArrayOffset = parameter->getAttribute("arrayOffset").count(valueID);
+
+    int totalReferencesToParameter = referencesInValue + referencesInBitWidth + referencesInArraySize +
+        referencesInArrayOffset;
+
+    return totalReferencesToParameter;
 }

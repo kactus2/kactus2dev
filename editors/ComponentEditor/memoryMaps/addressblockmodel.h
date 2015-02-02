@@ -13,6 +13,7 @@
 
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>
@@ -22,7 +23,7 @@ class Choice;
 /*! \brief The model to manage the details of a single address block.
  *
  */
-class AddressBlockModel : public QAbstractTableModel, public ParameterizableTable
+class AddressBlockModel : public ParameterizableTable
 {
 	Q_OBJECT
 
@@ -34,12 +35,14 @@ public:
 	 *      @param [in] addressBlock            Pointer to the address block being edited.
 	 *      @param [in] componentChoices        The choices available in the containing component.
 	 *      @param [in] expressionParser        Pointer to the expression parser.
+     *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
 	 *      @param [in] parent                  Pointer to the owner of the model.
 	 */
 	AddressBlockModel(QSharedPointer<AddressBlock> addressBlock,
         QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
 		QObject *parent);
 	
@@ -136,6 +139,16 @@ protected:
      */
     virtual bool validateColumnForParameter(QModelIndex const& index) const;
 
+    /*!
+     *  Gets all the references to the selected id from the selected register.
+     *
+     *      @param [in] row         The row of the selected register.
+     *      @param [in] valueID     The id of the referenced parameter.
+     *
+     *      @return The amount of references made to the target parameter.
+     */
+    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const;
+
 public slots:
 
 	/*! \brief Add a new item to the given index.
@@ -199,6 +212,9 @@ private:
 
     //! The address unit bits of the memory map.
     unsigned int addressUnitBits_;
+
+    //! The parameter finder.
+    QSharedPointer<ParameterFinder> parameterFinder_;
 
     //! Expression formatter, formats the referencing expressions to show parameter names.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;

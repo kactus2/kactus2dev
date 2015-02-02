@@ -40,8 +40,8 @@ model_(0)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(component));
 
-    model_ = new AddressBlockModel(addressBlock, component->getChoices(), 
-        expressionParser, expressionFormatter, this);
+    model_ = new AddressBlockModel(addressBlock, component->getChoices(), expressionParser, parameterFinder,
+        expressionFormatter, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(this, parameterFinder);
     componentParametersModel->setExpressionParser(expressionParser);
@@ -90,6 +90,9 @@ model_(0)
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)), 
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(view_->itemDelegate(), SIGNAL(decreaseReferences(QString)), 
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 }
 
