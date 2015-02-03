@@ -70,7 +70,7 @@ private slots:
 
 private:
 
-    ExpressionEditor* createEditorWithoutResolver();
+    ExpressionEditor* createEditorWithoutFinder();
     ExpressionEditor* createEditorForComponent(QSharedPointer<Component> component);
 
 };
@@ -88,7 +88,7 @@ tst_ExpressionEditor::tst_ExpressionEditor()
 //-----------------------------------------------------------------------------
 void tst_ExpressionEditor::testWithoutSettingCompleter()
 {
-    ExpressionEditor* editor = createEditorWithoutResolver();
+    ExpressionEditor* editor = createEditorWithoutFinder();
 
     QTest::keyClicks(editor, "one t");
 
@@ -102,7 +102,7 @@ void tst_ExpressionEditor::testWithoutSettingCompleter()
 //-----------------------------------------------------------------------------
 void tst_ExpressionEditor::testSelectedCompletionIsAppendedToText()
 {
-    ExpressionEditor* editor = createEditorWithoutResolver();
+    ExpressionEditor* editor = createEditorWithoutFinder();
 
     QStringList availableWords;
     availableWords << "one" << "two";
@@ -138,7 +138,7 @@ void tst_ExpressionEditor::testWordUnderCursorIsCompleted()
     QFETCH(QString, expectedCompletion);
     QFETCH(QString, expectedFinalText);
 
-    ExpressionEditor* editor = createEditorWithoutResolver();
+    ExpressionEditor* editor = createEditorWithoutFinder();
 
     QStringList availableWords;
     availableWords << "one" << "two";
@@ -200,7 +200,7 @@ void tst_ExpressionEditor::testWordUnderCursorIsCompleted_data()
 //-----------------------------------------------------------------------------
 void tst_ExpressionEditor::testNoCompletionIsShownForEmptyInput()
 {
-    ExpressionEditor* editor = createEditorWithoutResolver();
+    ExpressionEditor* editor = createEditorWithoutFinder();
 
     QStringList availableWords("one");
 
@@ -225,7 +225,7 @@ void tst_ExpressionEditor::testNoCompletionIsShownForEmptyInput()
 //-----------------------------------------------------------------------------
 void tst_ExpressionEditor::testCompletionsAreShownOnCtrlSpace()
 {
-    ExpressionEditor* editor = createEditorWithoutResolver();
+    ExpressionEditor* editor = createEditorWithoutFinder();
 
     QStringList availableWords("one");
 
@@ -848,7 +848,7 @@ void tst_ExpressionEditor::testCannotRemoveIfActiveSelection()
 //-----------------------------------------------------------------------------
 // Function: tst_ExpressionEditor::createEditorWithoutResolver()
 //-----------------------------------------------------------------------------
-ExpressionEditor* tst_ExpressionEditor::createEditorWithoutResolver()
+ExpressionEditor* tst_ExpressionEditor::createEditorWithoutFinder()
 {
     return new ExpressionEditor(QSharedPointer<ParameterFinder>());
 }
@@ -858,15 +858,15 @@ ExpressionEditor* tst_ExpressionEditor::createEditorWithoutResolver()
 //-----------------------------------------------------------------------------
 ExpressionEditor* tst_ExpressionEditor::createEditorForComponent(QSharedPointer<Component> component)
 {
-    QSharedPointer<ParameterFinder> resolver(new ComponentParameterFinder(component));
+    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(component));
 
-    ComponentParameterModel* parameterModel = new ComponentParameterModel(0, resolver);
-    parameterModel->setExpressionParser(QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(component)));
+    ComponentParameterModel* parameterModel = new ComponentParameterModel(0, finder);
+    parameterModel->setExpressionParser(QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(finder)));
 
     QCompleter* completer = new QCompleter(this);
     completer->setModel(parameterModel);
     
-    ExpressionEditor* editor = new ExpressionEditor(resolver);
+    ExpressionEditor* editor = new ExpressionEditor(finder);
     editor->setAppendingCompleter(completer);
 
     completer->setParent(editor);

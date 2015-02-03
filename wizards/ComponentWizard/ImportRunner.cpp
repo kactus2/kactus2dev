@@ -14,8 +14,11 @@
 #include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
-
 #include <Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h>
+
+#include <Plugins/VerilogImport/VerilogImporter.h>
+
+#include <editors/ComponentEditor/common/NullParser.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/file.h>
@@ -27,7 +30,8 @@
 // Function: ImportRunner::ImportRunner()
 //-----------------------------------------------------------------------------
 ImportRunner::ImportRunner(QObject* parent)
-    : QObject(parent), ImportPlugins_(), highlighter_(0), modelParameterVisualizer_(0)
+    : QObject(parent), ImportPlugins_(), highlighter_(0), expressionParser_(new NullParser),
+    modelParameterVisualizer_(0)
 {
 
 }
@@ -145,17 +149,23 @@ QString ImportRunner::readInputFile(QString const& relativePath, QString const& 
 //-----------------------------------------------------------------------------
 // Function: ImportRunner::loadImportPlugins()
 //-----------------------------------------------------------------------------
-void ImportRunner::loadImportPlugins(PluginManager const &pluginManager)
+void ImportRunner::loadImportPlugins(PluginManager const& pluginManager)
 {
     foreach(IPlugin* plugin, pluginManager.getActivePlugins())
     {
-        ImportPlugin* parser = dynamic_cast<ImportPlugin*>(plugin);
-        if (parser)
+        ImportPlugin* importPlugin = dynamic_cast<ImportPlugin*>(plugin);
+        if (importPlugin)
         {
-            ImportPlugins_.append(parser);
+            ImportPlugins_.append(importPlugin);
 
-            addHighlightIfPossible(parser);
-            addModelParameterVisualizationIfPossible(parser);
+            addHighlightIfPossible(importPlugin);
+            addModelParameterVisualizationIfPossible(importPlugin);
+
+            VerilogImporter* verilogImport = dynamic_cast<VerilogImporter*>(importPlugin);
+            if (verilogImport)
+            {
+                verilogImport->setExpressionParser(expressionParser_);
+            }
         }
     }
 }
@@ -166,6 +176,14 @@ void ImportRunner::loadImportPlugins(PluginManager const &pluginManager)
 void ImportRunner::setHighlighter(Highlighter* highlighter)
 {
     highlighter_ =  highlighter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ImportRunner::setVerilogExpressionParser()
+//-----------------------------------------------------------------------------
+void ImportRunner::setVerilogExpressionParser(QSharedPointer<ExpressionParser> parser)
+{
+    expressionParser_ = parser;
 }
 
 //-----------------------------------------------------------------------------

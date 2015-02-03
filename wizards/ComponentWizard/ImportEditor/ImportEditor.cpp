@@ -16,6 +16,7 @@
 
 #include <editors/ComponentEditor/modelParameters/modelparametereditor.h>
 #include <editors/ComponentEditor/ports/portseditor.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -61,6 +62,7 @@ ImportEditor::ImportEditor(QSharedPointer<Component> component, LibraryInterface
 	portEditor_->setAllowImportExport(false);
 
     runner_->setHighlighter(highlighter_);
+    runner_->setVerilogExpressionParser(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(parameterFinder)));
     runner_->setModelParameterVisualizer(&modelParameterAdapter_);
     runner_->loadImportPlugins(pluginMgr);
 

@@ -468,6 +468,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/common/ExpressionFormatter.h \
     ./editors/ComponentEditor/common/ExpressionParser.h \
     ./editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ./editors/ComponentEditor/common/MultipleParameterFinder.h \
     ./editors/ComponentEditor/common/ParameterFinder.h \
     ./editors/ComponentEditor/common/ParameterizableTable.h \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
@@ -591,8 +592,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/common/MultipleParameterFinder.h \
-    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsColumns.h
+    ./editors/ComponentEditor/common/NullParser.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1022,6 +1022,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/common/ExpressionEditor.cpp \
     ./editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ./editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ./editors/ComponentEditor/common/MultipleParameterFinder.cpp \
     ./editors/ComponentEditor/common/ParameterCompleter.cpp \
     ./editors/ComponentEditor/common/ParameterizableTable.cpp \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
@@ -1132,5 +1133,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./editors/ComponentEditor/common/MultipleParameterFinder.cpp
+    ./editors/ComponentEditor/common/NullParser.cpp
 RESOURCES += kactus.qrc

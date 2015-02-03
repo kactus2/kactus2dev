@@ -6,13 +6,11 @@
 // Date: 23.09.2014
 //
 // Description:
-// <Short description of the class/file contents>
+// Import plugin for verilog source files.
 //-----------------------------------------------------------------------------
 
 #ifndef VERILOGIMPORTER_H
 #define VERILOGIMPORTER_H
-
-#include <IPXACTmodels/generaldeclarations.h>
 
 #include "verilogimport_global.h"
 
@@ -22,14 +20,15 @@
 #include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
 
-#include <Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h>
-
 #include <QSharedPointer>
 #include <QString>
 
 class Component;
 class View;
 
+//-----------------------------------------------------------------------------
+//! Import plugin for verilog source files.
+//-----------------------------------------------------------------------------
 class VERILOGIMPORT_EXPORT VerilogImporter: public QObject, public ImportPlugin, public HighlightSource
 {
     Q_OBJECT
@@ -106,6 +105,13 @@ public:
      *      @param [in] visualizer   The visualizer to use.          
      */
     virtual void setHighlighter(Highlighter* highlighter);
+
+    /*!
+     *  Sets the parser to use for expressions.
+     *
+     *      @param [in] parser   The parser to use.
+     */
+    virtual void setExpressionParser(QSharedPointer<ExpressionParser> parser);
 
 private:
 

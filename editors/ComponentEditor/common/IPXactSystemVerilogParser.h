@@ -17,8 +17,8 @@
 #include <QSharedPointer>
 #include <QString>
 
-class Component;
 class Parameter;
+class ParameterFinder;
 
 //-----------------------------------------------------------------------------
 // Parser for SystemVerilog expressions within one IP-XACT component.
@@ -30,9 +30,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component   The component whose parameters are available in the SystemVerilog expressions.
+     *      @param [in] finder   The finder for parameters available in the SystemVerilog expressions.
      */
-    IPXactSystemVerilogParser(QSharedPointer<Component> component);
+    IPXactSystemVerilogParser(QSharedPointer<ParameterFinder> finder);
     
     //! The destructor.
     virtual ~IPXactSystemVerilogParser();
@@ -64,13 +64,6 @@ public:
      */
     virtual int baseForExpression(QString const& expression) const;
 
-    /*!
-     *  Set the component whose parameters are available in the SystemVerilog expressions.
-     *
-     *      @param [in] component   The component whose parameters are used.
-     */
-    void setComponent(QSharedPointer <Component> component);
-
 private:
 
     // Disable copying.
@@ -81,13 +74,13 @@ private:
      *  Evaluates the values of references parameter in the given expression recursively.
      *
      *      @param [in] expression              The expression to evaluate.
-     *      @param [in] componentParameters     The parameters available in the component.
+     *      @param [in] availableIds            The ids available in the expressions.
      *      @param [in] recursionStep           The current depth in recursion.
      *
      *      @return The expression where the references have been replaced with the evaluated values.
      */
-    QString evaluateReferencesIn(QString const& expression, 
-        QList<QSharedPointer<Parameter> > const& componentParameters, int recursionStep) const;
+    QString evaluateReferencesIn(QString const& expression, QStringList const& availableIds,
+        int recursionStep) const;
 
     /*!
      *  Checks if the recursion for solving references should terminate.
@@ -102,21 +95,14 @@ private:
      *  Replaces the references parameter in the given expression with their values recursively.
      *
      *      @param [in] expression              The expression to evaluate.
-     *      @param [in] componentParameters     The parameters available in the component.
+     *      @param [in] availableIds            The ids available in the expressions.
      *      @param [in] recursionStep           The current depth in recursion.
      *
      *      @return The expression where the references have been replaced with their values.
      */
-    QString replaceReferencesIn(QString const& expression, 
-        QList<QSharedPointer<Parameter> > const& componentParameters, int recursionStep) const;
+    QString replaceReferencesIn(QString const& expression, QStringList const& availableIds,
+        int recursionStep) const;
 
-    /*!
-     *  Finds the parameters available for reference in the component.
-     *
-     *      @return The parameters in the component.
-     */
-    QList<QSharedPointer<Parameter> > findParametersInComponent() const;
-   
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -124,8 +110,8 @@ private:
     //! Maximum number of recursion steps in finding value for a parameter.
     static const int MAX_RECURSION_STEPS = 24;
     
-    //! The component whose parameters are available in the SystemVerilog expressions.
-    QSharedPointer<Component> component_;
+    //! The finder for parameters available in the SystemVerilog expressions.
+    QSharedPointer<ParameterFinder> finder_;
 };
 
 #endif // IPXACTSYSTEMVERILOGPARSER_H

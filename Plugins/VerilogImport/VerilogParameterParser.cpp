@@ -134,7 +134,7 @@ QStringList VerilogParameterParser::findANSIDeclarations(QString const &input)
 QStringList VerilogParameterParser::findOldDeclarations(QString const& input)
 {
     // In the OLD style parameter declarations the parameters are between module header and footer.
-    int startIndex = VerilogSyntax::MODULE_BEGIN.match(input).capturedLength();
+    int startIndex = VerilogSyntax::MODULE_BEGIN.match(input).capturedEnd();
     int length = input.indexOf(VerilogSyntax::MODULE_END) - startIndex;
 
     // And that is why the inspected the region between the header and footer are included to the parsing.
@@ -312,32 +312,17 @@ void VerilogParameterParser::copyIdsFromOldModelParameters(QList<QSharedPointer<
 //-----------------------------------------------------------------------------
 void VerilogParameterParser::replaceNamesWithIdsInModelParameterValues(QSharedPointer<Component> targetComponent)
 {
-    IPXactSystemVerilogParser parser(targetComponent);
     foreach (QSharedPointer<ModelParameter> parameter, targetComponent->getModelParameters())
     {
-        if (!parser.isValidExpression(parameter->getValue()))
+        foreach (QSharedPointer<ModelParameter> referenced, targetComponent->getModelParameters())
         {
-            parameter->setValue(replaceModelParameterNamesWithIds(parameter->getValue(), targetComponent));
+            QString parameterValue = parameter->getValue();
+
+            QRegularExpression nameReference("\\b" + referenced->getName() + "\\b");
+            if (nameReference.match(parameterValue).hasMatch())
+            {
+                parameter->setValue(parameterValue.replace(nameReference, referenced->getValueId()));
+            }
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogParameterParser::replaceModelParameterNamesWithIds()
-//-----------------------------------------------------------------------------
-QString VerilogParameterParser::replaceModelParameterNamesWithIds(QString const& expression, 
-    QSharedPointer<Component> targetComponent) const
-{
-    QString result = expression;
-
-    foreach (QSharedPointer<ModelParameter> referenced, targetComponent->getModelParameters())
-    {
-        QRegularExpression nameReference("\\b" + referenced->getName() + "\\b");
-        if (nameReference.match(expression).hasMatch())
-        {
-            result.replace(nameReference, referenced->getValueId());
-        }
-    }
-
-    return result;
 }

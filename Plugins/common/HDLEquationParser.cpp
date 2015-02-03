@@ -40,7 +40,7 @@ int HDLEquationParser::parse(QString const& equation) const
 {
     if (equation.isEmpty())
     {
-        return -1;
+        return 0;
     } 
 
     // Do not calculate hex (or other base) values.

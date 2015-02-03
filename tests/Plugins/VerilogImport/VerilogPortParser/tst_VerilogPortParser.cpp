@@ -13,6 +13,9 @@
 
 #include <Plugins/VerilogImport/VerilogPortParser.h>
 
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+
 #include <IPXACTmodels/component.h>
 
 Q_DECLARE_METATYPE(General::Direction)
@@ -148,7 +151,11 @@ void tst_VerilogPortParser::testNothingIsParsedFromMalformedInput_data()
 //-----------------------------------------------------------------------------
 void tst_VerilogPortParser::runParser(QString const& input)
 {
+    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(importComponent_));
+    QSharedPointer<ExpressionParser> expressionParser(new IPXactSystemVerilogParser(finder));
+
     VerilogPortParser parser;
+    parser.setExpressionParser(expressionParser);
     parser.import(input, importComponent_);
 }
 

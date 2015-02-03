@@ -580,6 +580,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\common\ExpressionFormatter.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\MultipleParameterFinder.cpp" />
+    <ClCompile Include="editors\ComponentEditor\common\NullParser.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ParameterCompleter.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ParameterizableTable.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
@@ -1974,6 +1975,7 @@ CreateHelp
     <ClInclude Include="editors\ComponentEditor\common\ExpressionParser.h" />
     <ClInclude Include="editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
     <ClInclude Include="editors\ComponentEditor\common\MultipleParameterFinder.h" />
+    <ClInclude Include="editors\ComponentEditor\common\NullParser.h" />
     <ClInclude Include="editors\ComponentEditor\common\ParameterFinder.h" />
     <CustomBuild Include="editors\ComponentEditor\common\ParameterCompleter.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

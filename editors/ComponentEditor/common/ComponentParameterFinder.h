@@ -6,7 +6,7 @@
 // Date: 15.01.2015
 //
 // Description:
-// The interface for finding parameters with the correct ID.
+// The implementation for finding parameters with the correct ID.
 //-----------------------------------------------------------------------------
 
 #ifndef COMPONENTPARAMETERFINDER_H
@@ -14,11 +14,10 @@
 
 #include "ParameterFinder.h"
 
-#include <IPXACTmodels/parameter.h>
-#include <IPXACTmodels/component.h>
+class Component;
 
 //-----------------------------------------------------------------------------
-//! Component parameter finder.
+//! The implementation for finding parameters with the correct ID.
 //-----------------------------------------------------------------------------
 class ComponentParameterFinder : public ParameterFinder
 {
@@ -98,6 +97,31 @@ private:
     ComponentParameterFinder(const ComponentParameterFinder& other);
 	//! No assignment
     ComponentParameterFinder& operator=(const ComponentParameterFinder& other);
+
+    /*!
+     *  Finds all the parameters in component views.
+     *
+     *      @return The parameters in all views.
+     */
+    QList<QSharedPointer<Parameter> > allViewParameters() const;
+
+    /*!
+     *  Finds all the parameters in component bus interfaces.
+     *
+     *      @return The parameters in all bus interfaces.
+     */
+    QList<QSharedPointer<Parameter> > allBusInterfaceParameters() const;
+
+    /*!
+     *  Finds all the parameters in component registers.
+     *
+     *      @return The parameters in all registers.
+     */
+    QList<QSharedPointer<Parameter> > allRegisterParameters() const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! The parameters are searched from this component.
     QSharedPointer<Component> component_;

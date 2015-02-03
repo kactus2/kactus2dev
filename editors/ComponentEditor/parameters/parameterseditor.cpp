@@ -34,7 +34,7 @@ view_(this),
 model_(0), 
 proxy_(0)
 {
-    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(component));
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
     model_ = new ParametersModel(component->getParameters(), component->getChoices(), expressionParser,
         parameterFinder, expressionFormatter, this);

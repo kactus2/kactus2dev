@@ -49,6 +49,13 @@ public:
      *      @param [in] highlighter   The highlighter to use.          
      */
     virtual void setHighlighter(Highlighter* highlighter);
+    
+    /*!
+     *  Sets the parser to use for expressions.
+     *
+     *      @param [in] parser   The parser to use.
+     */
+    void setExpressionParser(QSharedPointer<ExpressionParser> parser);
 
 private:
 
@@ -162,8 +169,7 @@ private:
      *
      *      @return The port left bound value in the declaration.
      */
-    QString parseLeftBound(QString const& portDeclaration, 
-        QSharedPointer<Component> targetComponent, ExpressionParser const& parser) const;
+    QString parseLeftBound(QString const& portDeclaration, QSharedPointer<Component> targetComponent) const;
 
     /*!
      *  Parses the port right bound value from a Verilog port declaration.
@@ -173,7 +179,7 @@ private:
      *
      *      @return The port right bound value in the declaration.
      */
-    QString parseRightBound(QString const& portDeclaration, QSharedPointer<Component> targetComponent, ExpressionParser const& parser) const;
+    QString parseRightBound(QString const& portDeclaration, QSharedPointer<Component> targetComponent) const;
 
     QString replaceModelParameterNamesWithIds(QString const& expression, QSharedPointer<Component> targetComponent) const;
 
@@ -194,7 +200,7 @@ private:
      *      @return The port description.
      */
     QString parseDescription(QString const& portDeclaration) const;
-
+ 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -202,6 +208,8 @@ private:
     //! The highlighter to use.
     Highlighter* highlighter_;
 
+    //! The expression parser to use.
+    QSharedPointer<ExpressionParser> parser_;
 };
 
 #endif // VERILOGPORTPARSER_H

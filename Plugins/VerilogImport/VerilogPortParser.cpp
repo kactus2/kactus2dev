@@ -15,7 +15,8 @@
 
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <editors/ComponentEditor/common/NullParser.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/port.h>
@@ -61,7 +62,7 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: VerilogPortParser::VerilogPortParser()
 //-----------------------------------------------------------------------------
-VerilogPortParser::VerilogPortParser(): highlighter_(0)
+VerilogPortParser::VerilogPortParser(): highlighter_(0), parser_(new NullParser)
 {
 
 }
@@ -97,6 +98,14 @@ void VerilogPortParser::import(QString const& input, QSharedPointer<Component> t
 void VerilogPortParser::setHighlighter(Highlighter* highlighter)
 {
     highlighter_ = highlighter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogPortParser::setExpressionParser()
+//-----------------------------------------------------------------------------
+void VerilogPortParser::setExpressionParser(QSharedPointer<ExpressionParser> parser)
+{
+    parser_ = parser;
 }
 
 //-----------------------------------------------------------------------------
@@ -239,10 +248,8 @@ void VerilogPortParser::createPortFromDeclaration(QString const& portDeclaration
     QString type = PORT_EXP.match(portDeclaration).captured(2);
     QString typeDefinition;
 
-    IPXactSystemVerilogParser parser(targetComponent);
-
-    QString leftBound = parseLeftBound(portDeclaration, targetComponent, parser);
-    QString lowerBound = parseRightBound(portDeclaration, targetComponent, parser);
+    QString leftBound = parseLeftBound(portDeclaration, targetComponent);
+    QString lowerBound = parseRightBound(portDeclaration, targetComponent);
 
     QStringList portNames = parsePortNames(portDeclaration);
 
@@ -264,8 +271,8 @@ void VerilogPortParser::createPortFromDeclaration(QString const& portDeclaration
 
         port->setName(name);
         port->setDirection(direction);
-        port->setLeftBound(parser.parseExpression(leftBound).toInt());
-        port->setRightBound(parser.parseExpression(lowerBound).toInt());
+        port->setLeftBound(parser_->parseExpression(leftBound).toInt());
+        port->setRightBound(parser_->parseExpression(lowerBound).toInt());
         port->setLeftBoundExpression(leftBound);
         port->setRightBoundExpression(lowerBound);
         port->setTypeName(type);
@@ -313,7 +320,7 @@ General::Direction VerilogPortParser::parseDirection(QString const& portDeclarat
 // Function: VerilogPortParser::parseLeftBound()
 //-----------------------------------------------------------------------------
 QString VerilogPortParser::parseLeftBound(QString const& portDeclaration, 
-    QSharedPointer<Component> targetComponent, ExpressionParser const& parser) const
+    QSharedPointer<Component> targetComponent) const
 {
     QString bounds = PORT_EXP.match(portDeclaration).captured(3);
 
@@ -324,7 +331,7 @@ QString VerilogPortParser::parseLeftBound(QString const& portDeclaration,
     {
         leftBound = boundedExp.match(bounds).captured(1);
 
-        if (!parser.isValidExpression(leftBound))
+        if (!parser_->isValidExpression(leftBound))
         {
             leftBound = replaceModelParameterNamesWithIds(leftBound, targetComponent);
         }
@@ -336,8 +343,8 @@ QString VerilogPortParser::parseLeftBound(QString const& portDeclaration,
 //-----------------------------------------------------------------------------
 // Function: VerilogPortParser::parseRightBound()
 //-----------------------------------------------------------------------------
-QString VerilogPortParser::parseRightBound(QString const& portDeclaration,
-    QSharedPointer<Component> targetComponent, ExpressionParser const& parser) const
+QString VerilogPortParser::parseRightBound(QString const& portDeclaration, 
+    QSharedPointer<Component> targetComponent) const
 {
     QString bounds = PORT_EXP.match(portDeclaration).captured(3);
 
@@ -348,7 +355,7 @@ QString VerilogPortParser::parseRightBound(QString const& portDeclaration,
     {
         rightBound = boundedExp.match(bounds).captured(2);
 
-        if (!parser.isValidExpression(rightBound))
+        if (!parser_->isValidExpression(rightBound))
         {
             rightBound = replaceModelParameterNamesWithIds(rightBound, targetComponent);
         }

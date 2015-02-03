@@ -6,7 +6,7 @@
 // Date: 23.09.2014
 //
 // Description:
-// <Short description of the class/file contents>
+// Import plugin for verilog source files.
 //-----------------------------------------------------------------------------
 
 #include "VerilogImporter.h"
@@ -143,6 +143,14 @@ void VerilogImporter::setHighlighter(Highlighter* highlighter)
 
     parameterParser_.setHighlighter(highlighter);
     portParser_.setHighlighter(highlighter);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogImporter::setExpressionParser()
+//-----------------------------------------------------------------------------
+void VerilogImporter::setExpressionParser(QSharedPointer<ExpressionParser> parser)
+{
+    portParser_.setExpressionParser(parser);
 }
 
 //-----------------------------------------------------------------------------

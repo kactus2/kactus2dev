@@ -3952,6 +3952,9 @@
     <ClCompile Include="editors\ComponentEditor\common\MultipleParameterFinder.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\NullParser.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ParameterizableTable.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -5763,6 +5766,8 @@
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\MultipleParameterFinder.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>    <ClInclude Include="editors\ComponentEditor\common\NullParser.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
     <ClInclude Include="designEditors\common\ComponentInstanceEditor\ConfigurableElementsColumns.h">

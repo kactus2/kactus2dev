@@ -18,8 +18,9 @@
 #include <QSharedPointer>
 
 class Component;
-class ImportPlugin;
+class ExpressionParser;
 class Highlighter;
+class ImportPlugin;
 
 class ModelParameterVisualizer;
 
@@ -43,7 +44,14 @@ public:
      *      @param [in] highlighter   The highlighter to use.          
      */
     void setHighlighter(Highlighter* highlighter);
-                
+  
+    /*!
+     *  Sets the given highlighter to be used by all highlight sources.
+     *
+     *      @param [in] highlighter   The highlighter to use.          
+     */
+    void setVerilogExpressionParser(QSharedPointer<ExpressionParser> parser);
+
     /*!
      *  Sets the given visualizer to be used by all model parameter sources.
      *
@@ -135,6 +143,9 @@ private:
 
     //! The model parameter visualizer used by all import plugins.
     ModelParameterVisualizer* modelParameterVisualizer_;
+
+    //! The expression parser to use for verilog expressions.
+    QSharedPointer<ExpressionParser> expressionParser_;
 
     //! All loaded import plugins.
     QList<ImportPlugin*> ImportPlugins_;

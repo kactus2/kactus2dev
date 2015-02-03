@@ -46,7 +46,7 @@ proxy_(this),
 component_(component),
 handler_(handler)
 {
-    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(component));
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
     model_ = new PortsModel(component->getModel(), expressionParser, parameterFinder, expressionFormatter, this);
 

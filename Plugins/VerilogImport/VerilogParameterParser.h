@@ -136,17 +136,6 @@ private:
       */
      void replaceNamesWithIdsInModelParameterValues(QSharedPointer<Component> targetComponent);
 
-     /*!
-      *  Replaces model parameter names found in expression with the corresponding model parameter id.
-      *
-      *      @param [in] expression         The expression to search for references.
-      *      @param [in] targetComponent    The component containing the referenced parameters.
-      *
-      *      @return The expression with replaced values.
-      */
-     QString replaceModelParameterNamesWithIds(QString const& expression,
-         QSharedPointer<Component> targetComponent) const;
-
      //-----------------------------------------------------------------------------
      // Data.
      //-----------------------------------------------------------------------------

@@ -14,6 +14,8 @@
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+
 #include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
@@ -84,7 +86,7 @@ void tst_IPXactSystemVerilogParser::testParseConstant()
 
     QSharedPointer<Component> emptyComponent(new Component());
 
-    IPXactSystemVerilogParser parser(emptyComponent);
+    IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(emptyComponent)));
 
     QCOMPARE(parser.parseExpression(expression), expectedResult);
 }
@@ -115,7 +117,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithUnknownReference()
 {
     QSharedPointer<Component> emptyComponent(new Component());
 
-    IPXactSystemVerilogParser parser(emptyComponent);
+        IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(emptyComponent)));
 
     QCOMPARE(parser.parseExpression("unknownParameter"), QString("unknownParameter"));
 }
@@ -131,7 +133,7 @@ void tst_IPXactSystemVerilogParser::testParameterWithoutId()
     firstParameter->setValue("1");
     testComponent->getParameters().append(firstParameter);
 
-    IPXactSystemVerilogParser parser(testComponent);
+    IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
     QCOMPARE(parser.parseExpression("unknownParameter"), QString("unknownParameter"));
 }
@@ -155,7 +157,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithParameterReferences()
     secondParameter->setValue("2");
     testComponent->getParameters().append(secondParameter);
 
-    IPXactSystemVerilogParser parser(testComponent);
+    IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
     
     QCOMPARE(parser.parseExpression(expression), expectedResult);
 }
@@ -198,7 +200,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithModelParameterReferences()
     secondModelParameter->setValue("2");
     testComponent->getModel()->addModelParameter(secondModelParameter);
 
-    IPXactSystemVerilogParser parser(testComponent);
+    IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
     QCOMPARE(parser.parseExpression(expression), expectedResult);
 }
@@ -232,7 +234,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithViewParameterReferences()
     View* view2 = testComponent->createView();
     view2->getParameters().append(secondParameter);
 
-    IPXactSystemVerilogParser parser(testComponent);
+    IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
     QCOMPARE(parser.parseExpression(expression), expectedResult);
 }
@@ -286,7 +288,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithRegisterParameterReference
 
     addressBlock->getRegisterData().append(register2);
 
-    IPXactSystemVerilogParser parser(testComponent);
+    IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
     QCOMPARE(parser.parseExpression(expression), expectedResult);
 }
@@ -325,7 +327,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithBusInterfaceParameterRefer
     busInterface2->getParameters().append(secondParameter);
     testComponent->addBusInterface(busInterface2);
 
-    IPXactSystemVerilogParser parser(testComponent);
+    IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
     QCOMPARE(parser.parseExpression(expression), expectedResult);
 }
@@ -357,7 +359,7 @@ void tst_IPXactSystemVerilogParser::testParameterDefinedUsingOtherParameter()
     secondParameter->setValue("2*first");
     testComponent->getParameters().append(secondParameter);
 
-    IPXactSystemVerilogParser parser(testComponent);
+    IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
     QCOMPARE(parser.parseExpression(expression), QString(expectedResult));
 }
@@ -390,7 +392,7 @@ void tst_IPXactSystemVerilogParser::testLoopTerminatesEventually()
     secondParameter->setValue("first");
     testComponent->getParameters().append(secondParameter);
 
-    IPXactSystemVerilogParser parser(testComponent);
+    IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
     QCOMPARE(parser.parseExpression("second"), QString("x"));
 }
@@ -411,7 +413,7 @@ void tst_IPXactSystemVerilogParser::testReferenceToStringInExpression()
     secondParameter->setValue("first + 2");
     testComponent->getParameters().append(secondParameter);
 
-    IPXactSystemVerilogParser parser(testComponent);
+    IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
     QCOMPARE(parser.parseExpression("first"), QString("\"text\""));
     QCOMPARE(parser.parseExpression("second"), QString("\"text\" + 2"));
@@ -428,7 +430,7 @@ void tst_IPXactSystemVerilogParser::testGetBaseForExpression()
     firstParameter->setValue("'h1");
     testComponent->getParameters().append(firstParameter);
 
-    IPXactSystemVerilogParser parser(testComponent);
+    IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
     QCOMPARE(parser.baseForExpression("2*first"), 16);
 }
@@ -452,7 +454,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithRealValueParameterReferenc
     secondParameter->setValue("0.751");
     testComponent->getParameters().append(secondParameter);
 
-    IPXactSystemVerilogParser parser(testComponent);
+    IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
     QCOMPARE(parser.parseExpression(expression), expectedResult);
 }

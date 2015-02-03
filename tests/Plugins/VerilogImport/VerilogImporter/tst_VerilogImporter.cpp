@@ -20,6 +20,9 @@
 #include <Plugins/VerilogImport/VerilogImporter.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+
 #include <wizards/ComponentWizard/ImportEditor/ImportHighlighter.h>
 
 class tst_VerilogImporter : public QObject
@@ -61,14 +64,15 @@ private slots:
     void testModelNameAndEnvironmentIsImportedToView();
     void testModelNameAndEnvironmentIsImportedToView_data();
 
-
 private:
 
     void runParser(QString const& input);
 
     void verifyNotHighlightedBeforeDeclaration(int declarationStartIndex, QColor const& highlightColor);
+
     void verifyDeclarationIsHighlighted(const int declarationStartIndex, 
         const int declarationLength, QColor const& expectedHighlight) const;
+
     void verifyNotHighlightedAfterDeclartion(const int declarationStartIndex, 
         const int declarationLength, QColor const& highlightColor) const;
 
@@ -164,7 +168,11 @@ void tst_VerilogImporter::runParser(QString const& input)
 {
     displayEditor_.setPlainText(input);
 
+    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(importComponent_));
+    QSharedPointer<ExpressionParser> expressionParser(new IPXactSystemVerilogParser(finder));
+
     VerilogImporter parser;
+    parser.setExpressionParser(expressionParser);
     parser.setHighlighter(highlighter_);
     parser.import(input, importComponent_);
 }
@@ -447,6 +455,15 @@ void tst_VerilogImporter::testParameterIsHighlighted_data()
         << 
         "parameter size = 8,";
  
+    QTest::newRow("Parameter followed by port declaration") << 
+        "module test #(\n"
+        "    parameter size = 8\n"
+        ") (\n"
+        "    input wire [size-1:0] data_in);\n"
+        "endmodule"
+        << 
+        "parameter size = 8";
+
     QTest::newRow("Simplest possible 1995-style parameter declaration") <<
         "module test ();"
         "   parameter size = 8;\n"
@@ -524,21 +541,20 @@ void tst_VerilogImporter::testParameterInPortDeclaration_data()
     QTest::addColumn<int>("expectedRightBound");
     QTest::addColumn<QString>("expectedLeftBoundExpression");
     QTest::addColumn<QString>("expectedRightBoundExpression");
-    QTest::addColumn<QString>("expectedDefaultExpression");
 
     QTest::newRow("Parameter as left port bound") <<
         "module test #(parameter left = 4) (\n"
         "   input [left:0] data\n"
         ");\n"
         "endmodule"
-        << 4 << 0 << parameterUuid() << "0" << "";
+        << 4 << 0 << parameterUuid() << "0";
 
     QTest::newRow("Parameter as right port bound") <<
         "module test #(parameter right = 4) (\n"
         "   input [0:right] data\n"
         ");\n"
         "endmodule"
-        << 0 << 4 << "0" << parameterUuid() << "";
+        << 0 << 4 << "0" << parameterUuid();
 
     QTest::newRow("Parameters in left bound equation") <<
         "module test #(\n"
@@ -548,7 +564,7 @@ void tst_VerilogImporter::testParameterInPortDeclaration_data()
         "   input [data_bits + addr_bits:0] bus\n"
         ");\n"
         "endmodule"
-        << 32 + 8 << 0 << parameterUuid() + " \\+ " + parameterUuid() << "0" << "";
+        << 32 + 8 << 0 << parameterUuid() + " \\+ " + parameterUuid() << "0";
 
     QTest::newRow("Parameters and constants in left bound equation") <<
         "module test #(\n"
@@ -558,7 +574,7 @@ void tst_VerilogImporter::testParameterInPortDeclaration_data()
         "   input [data_bits ** data_bus_count - 1:0] data_bus\n"
         ");\n"
         "endmodule"
-        << 8*8*8 - 1 << 0 << parameterUuid() + " \\*\\* " + parameterUuid() + " - 1" << "0" << "";
+        << 8*8*8 - 1 << 0 << parameterUuid() + " \\*\\* " + parameterUuid() + " - 1" << "0";
 
     QTest::newRow("Parameters in other parameters") <<
         "module test #(\n"
@@ -569,7 +585,7 @@ void tst_VerilogImporter::testParameterInPortDeclaration_data()
         "   input [port_width - 1:0] data_bus\n"
         ");\n"
         "endmodule"
-        << 8 + 4 - 1 << 0 << parameterUuid() + " - 1" << "0" << "";
+        << 8 + 4 - 1 << 0 << parameterUuid() + " - 1" << "0";
 
     QTest::newRow("Parameters with similar names") <<
         "module test #(\n"
@@ -579,7 +595,7 @@ void tst_VerilogImporter::testParameterInPortDeclaration_data()
         "   input [data_bits-1:0] data_bus\n"
         ");\n"
         "endmodule"
-        << 4 - 1 << 0 << parameterUuid() + "-1" << "0" << "";
+        << 4 - 1 << 0 << parameterUuid() + "-1" << "0";
 }
 
 //-----------------------------------------------------------------------------

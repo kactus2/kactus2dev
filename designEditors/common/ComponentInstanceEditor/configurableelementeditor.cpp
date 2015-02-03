@@ -39,6 +39,10 @@ model_(parameterFinder, expressionFormatter, this)
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(componentParameterModel_);
 
+    QSharedPointer <IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder_));
+    componentParameterModel_->setExpressionParser(expressionParser);
+    model_.setExpressionParser(expressionParser);
+
 	// set options for the view
 	view_.setSortingEnabled(true);
 	view_.setItemsDraggable(false);
@@ -71,14 +75,9 @@ ConfigurableElementEditor::~ConfigurableElementEditor()
 void ConfigurableElementEditor::setComponent( ComponentItem* component ) 
 {
     parameterFinder_->setComponent(component->componentModel());
-    QSharedPointer <IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser
-        (component->componentModel()));
-    componentParameterModel_->setExpressionParser(expressionParser);
 
 	component_ = component;
 	model_.setComponent(component);
-
-    model_.setExpressionParser(expressionParser);
 }
 
 //-----------------------------------------------------------------------------
