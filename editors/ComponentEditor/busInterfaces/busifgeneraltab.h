@@ -118,6 +118,27 @@ signals:
 	//! Emitted when a help page should be changed in the context help window.
 	void helpUrlRequested(QString const& url);
 
+    /*!
+     *  Increase the amount of references to the parameter corresponding to the id.
+     *
+     *      @param [in] id      The id of the parameter being searched for.
+     */
+    void increaseReferences(QString id);
+
+    /*!
+     *  Decrease the amount of references to the parameter corresponding to the id.
+     *
+     *      @param [in] id      The id of the parameter being searched for.
+     */
+    void decreaseReferences(QString id);
+
+    /*!
+     *  Open the reference tree of the parameter corresponding to the id.
+     *
+     *      @param [in] id      The id of the parameter.
+     */
+    void openReferenceTree(QString const& id) const;
+
 protected:
 
 	//! \brief Handler for widget's show event

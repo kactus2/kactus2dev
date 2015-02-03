@@ -24,6 +24,7 @@ public:
 	 *      @param [in] model                   Pointer to the model that owns the items.
 	 *      @param [in] libHandler              Pointer to the instance that manages the library.
 	 *      @param [in] component               Pointer to the component being edited.
+     *      @param [in] referenceCounter        Pointer to the reference counter.
 	 *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
 	 *      @param [in] parent                  Pointer to the parent item.
@@ -32,6 +33,7 @@ public:
 	ComponentEditorBusInterfacesItem(ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
+        QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
 		ComponentEditorItem* parent,

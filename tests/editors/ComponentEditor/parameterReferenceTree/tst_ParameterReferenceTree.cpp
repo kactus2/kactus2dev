@@ -22,6 +22,7 @@
 #include <IPXACTmodels/register.h>
 #include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/memorymap.h>
+#include <IPXACTmodels/businterface.h>
 
 #include <QSharedPointer>
 
@@ -54,6 +55,8 @@ private slots:
     void testReferenceInRegisterDimensionAddsSixRows();
     void testReferenceInMultipleRegistersInTwoAddressBlocks();
     void testRegisterwithNoReferences();
+
+    void testReferenceInBusInterfaceParameterAddsFourRows();
 
     void testRerefencesInMultiplePlaces();
 
@@ -856,6 +859,55 @@ void tst_ParameterReferenceTree::testRegisterwithNoReferences()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_ParameterReferenceTree::testReferenceInBusInterfaceParameterAddsFourRows()
+//-----------------------------------------------------------------------------
+void tst_ParameterReferenceTree::testReferenceInBusInterfaceParameterAddsFourRows()
+{
+    QSharedPointer<Parameter> searched = createTestParameter("searchedParameter", "", "", "", "");
+    searched->setValueId("searched");
+
+    QList <QSharedPointer<Parameter> > componentParameters;
+    componentParameters.append(searched);
+
+    QSharedPointer<BusInterface> refBusInterface(new BusInterface);
+    refBusInterface->setName("refBusInterface");
+    QList<QSharedPointer<Parameter> > busInterfaceParameters;
+    QSharedPointer<Parameter> busIFParameter = createTestParameter("busIFParameterRef", "", "", "searched", "");
+    busInterfaceParameters.append(busIFParameter);
+
+    refBusInterface->setParameters(busInterfaceParameters);
+
+    QSharedPointer<Component> component(new Component);
+    component->setParameters(componentParameters);
+    component->addBusInterface(refBusInterface);
+
+    QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
+
+    ParameterReferenceTree tree(component, expressionFormatter, searched->getValueId());
+
+    QCOMPARE(tree.topLevelItemCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->text(ParameterReferenceTree::ITEM_NAME), QString("Bus Interfaces"));
+    QCOMPARE(tree.topLevelItem(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(tree.topLevelItem(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME), refBusInterface->getName());
+    QCOMPARE(tree.topLevelItem(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
+        busIFParameter->getName());
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
+        QString("Array Size"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        expressionFormatter->formatReferringExpression(busIFParameter->getAttribute("arraySize")));
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->childCount(), 0);
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_ParameterReferenceTree::testReferencesInMultiplePlaces()
 //-----------------------------------------------------------------------------
 void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
@@ -901,18 +953,28 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
     QSharedPointer<MemoryMap> memoryMapRef = createTestMemoryMap("memoryMapRef", addressBlocks);
     memoryMaps.append(memoryMapRef);
 
+
+    QSharedPointer<BusInterface> refBusInterface(new BusInterface);
+    refBusInterface->setName("refBusInterface");
+    QList<QSharedPointer<Parameter> > busInterfaceParameters;
+    QSharedPointer<Parameter> busIFParameter = createTestParameter("busIFParameterRef", "searched", "", "", "");
+    busInterfaceParameters.append(busIFParameter);
+
+    refBusInterface->setParameters(busInterfaceParameters);
+
     QSharedPointer<Component> component(new Component);
     component->setParameters(componentParameters);
     component->setModel(componentModel);
     component->addView(viewRef);
     component->addPort(portRef);
     component->setMemoryMaps(memoryMaps);
+    component->addBusInterface(refBusInterface);
 
     QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
 
     ParameterReferenceTree tree(component, expressionFormatter, searched->getValueId());
 
-    QCOMPARE(tree.topLevelItemCount(), 5);
+    QCOMPARE(tree.topLevelItemCount(), 6);
 
     // Test model parameters.
     QCOMPARE(tree.topLevelItem(0)->text(ParameterReferenceTree::ITEM_NAME), QString("Model Parameters"));
@@ -1017,6 +1079,27 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
     QCOMPARE(tree.topLevelItem(4)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
         expressionFormatter->formatReferringExpression(portRef->getDefaultValue()));
     QCOMPARE(tree.topLevelItem(4)->child(0)->child(0)->childCount(), 0);
+
+    // Test bus interfaces.
+    QCOMPARE(tree.topLevelItem(5)->text(ParameterReferenceTree::ITEM_NAME), QString("Bus Interfaces"));
+    QCOMPARE(tree.topLevelItem(5)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(tree.topLevelItem(5)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(5)->child(0)->text(ParameterReferenceTree::ITEM_NAME), refBusInterface->getName());
+    QCOMPARE(tree.topLevelItem(5)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(tree.topLevelItem(5)->child(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(5)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
+        busIFParameter->getName());
+    QCOMPARE(tree.topLevelItem(5)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    
+    QCOMPARE(tree.topLevelItem(5)->child(0)->child(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(5)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
+        QString("Value"));
+    QCOMPARE(tree.topLevelItem(5)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        expressionFormatter->formatReferringExpression(busIFParameter->getValue()));
+
+    QCOMPARE(tree.topLevelItem(5)->child(0)->child(0)->child(0)->childCount(), 0);
 }
 
 //-----------------------------------------------------------------------------

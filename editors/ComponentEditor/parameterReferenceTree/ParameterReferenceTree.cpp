@@ -12,6 +12,7 @@
 #include "ParameterReferenceTree.h"
 
 #include <IPXACTmodels/memorymapitem.h>
+#include <IPXACTmodels/businterface.h>
 
 namespace
 {
@@ -79,6 +80,11 @@ void ParameterReferenceTree::setupTree()
         if (referenceExistsInPorts())
         {
             createReferencesForPorts();
+        }
+
+        if (referenceExistsInBusInterfaces())
+        {
+            createReferencesForBusInterfaces();
         }
 
         if (topLevelItemCount() == 0)
@@ -401,6 +407,50 @@ void ParameterReferenceTree::createReferencesForSingleAddressBlock(QSharedPointe
                 QTreeWidgetItem* registerItem = createMiddleItem(targetRegister->getName(),
                     addressBlockItem);
                 createItemsForRegister(targetRegister, registerItem);
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInBusInterfaces()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInBusInterfaces()
+{
+    foreach (QSharedPointer<BusInterface> busInterface, component_->getBusInterfaces())
+    {
+        foreach(QSharedPointer<Parameter> parameter, busInterface->getParameters())
+        {
+            if (parameterHasReference(parameter))
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::createReferencesForBusInterfaces()
+//-----------------------------------------------------------------------------
+void ParameterReferenceTree::createReferencesForBusInterfaces()
+{
+    QTreeWidgetItem* topBusInterfaceItem = createTopItem("Bus Interfaces");
+
+    foreach (QSharedPointer<BusInterface> busInterface, component_->getBusInterfaces())
+    {
+        if (referenceExistsInParameters(busInterface->getParameters()))
+        {
+            QTreeWidgetItem* busInterfaceItem = createMiddleItem(busInterface->getName(), topBusInterfaceItem);
+
+            foreach (QSharedPointer<Parameter> parameter, busInterface->getParameters())
+            {
+                if (parameterHasReference(parameter))
+                {
+                    QTreeWidgetItem* parameterItem = createMiddleItem(parameter->getName(), busInterfaceItem);
+                    createItemsForParameter(parameter, parameterItem);
+                }
             }
         }
     }

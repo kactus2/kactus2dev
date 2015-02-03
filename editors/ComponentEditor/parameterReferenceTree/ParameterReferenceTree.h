@@ -181,6 +181,18 @@ private:
         QTreeWidgetItem* middleAddressBlocksItem);
 
     /*!
+     *  Check if a reference exists in bus interfaces.
+     *
+     *      @return True, if a reference exists in a bus interface, false otherwise.
+     */
+    bool referenceExistsInBusInterfaces();
+
+    /*!
+     *  Create references for bus interfaces.
+     */
+    void createReferencesForBusInterfaces();
+
+    /*!
      *  Create a tree widget item to the top of the tree.
      *
      *      @param [in] itemName    The name of the upcoming item.

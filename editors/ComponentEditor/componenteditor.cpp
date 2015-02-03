@@ -697,8 +697,14 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
     hwRoot->addChildItem(portsItem);
     connect(portsItem.data(), SIGNAL(createInterface()), hwRoot, SLOT(onInterfaceAdded()), Qt::UniqueConnection);
 
-    hwRoot->addChildItem(QSharedPointer<ComponentEditorBusInterfacesItem>(new ComponentEditorBusInterfacesItem(
-        &navigationModel_, libHandler_, component, parameterFinder_, expressionFormatter_, hwRoot, parentWidget())));
+    QSharedPointer<ComponentEditorBusInterfacesItem> busInterfaceItem (new ComponentEditorBusInterfacesItem(
+        &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
+        hwRoot, parentWidget()));
+
+    hwRoot->addChildItem(busInterfaceItem);
+
+    connect(busInterfaceItem.data(), SIGNAL(openReferenceTree(QString)),
+        this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);
 
     hwRoot->addChildItem(QSharedPointer<ComponentEditorChannelsItem>(
         new ComponentEditorChannelsItem(&navigationModel_, libHandler_, component, hwRoot)));

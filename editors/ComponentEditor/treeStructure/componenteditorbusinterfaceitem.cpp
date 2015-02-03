@@ -12,7 +12,9 @@
 
 ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem(QSharedPointer<BusInterface> busif,
     ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
     ComponentEditorItem* parent, QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
 busif_(busif),
@@ -21,6 +23,7 @@ editAction_(new QAction(tr("Edit"), this))
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
+    setReferenceCounter(referenceCounter);
 
     connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection);
 }
@@ -90,6 +93,10 @@ ItemEditor* ComponentEditorBusInterfaceItem::editor() {
             this, SIGNAL(errorMessage(const QString&)),Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
 			this, SIGNAL(helpUrlRequested(QString const&)));
+
+        connectItemEditorToReferenceCounter();
+
+        connectReferenceTree();
 	}
     setHighlight(false);
 	return editor_;

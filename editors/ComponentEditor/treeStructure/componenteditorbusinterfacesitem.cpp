@@ -11,7 +11,9 @@
 
 ComponentEditorBusInterfacesItem::ComponentEditorBusInterfacesItem(ComponentEditorTreeModel* model,
     LibraryInterface* libHandler, QSharedPointer<Component> component,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
     ComponentEditorItem* parent, QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
 busifs_(component->getBusInterfaces()),
@@ -19,11 +21,15 @@ parentWnd_(parentWnd)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
+    setReferenceCounter(referenceCounter);
 
 	foreach (QSharedPointer<BusInterface> busif, busifs_) {
 		QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
-			new ComponentEditorBusInterfaceItem(busif, model, libHandler, component, parameterFinder_,
-            expressionFormatter_, this, parentWnd));
+			new ComponentEditorBusInterfaceItem(busif, model, libHandler, component, referenceCounter_,
+            parameterFinder_, expressionFormatter_, this, parentWnd));
+
+        connect(busifItem.data(), SIGNAL(openReferenceTree(QString)),
+            this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
 
 		childItems_.append(busifItem);
 	}
@@ -66,9 +72,12 @@ QString ComponentEditorBusInterfacesItem::getTooltip() const {
 
 void ComponentEditorBusInterfacesItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
-		new ComponentEditorBusInterfaceItem(busifs_.at(index),
-		model_, libHandler_, component_, parameterFinder_, expressionFormatter_, this, parentWnd_));
+		new ComponentEditorBusInterfaceItem(busifs_.at(index), model_, libHandler_, component_, referenceCounter_,
+        parameterFinder_, expressionFormatter_, this, parentWnd_));
 	busifItem->setLocked(locked_);
+
+    connect(busifItem.data(), SIGNAL(openReferenceTree(QString)),
+        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
 
 	childItems_.insert(index, busifItem);
 }
