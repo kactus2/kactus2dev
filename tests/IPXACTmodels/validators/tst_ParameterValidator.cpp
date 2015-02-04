@@ -830,8 +830,7 @@ void tst_ParameterValidator::testChoiceReference()
 
     foreach(QString choiceName, choiceNames)
     {
-	QDomNode emptyNode;
-        QSharedPointer<Choice> choice(new Choice(emptyNode));
+        QSharedPointer<Choice> choice(new Choice());
         choice->setName(choiceName);
         choices->append(choice);
     }
@@ -884,8 +883,7 @@ void tst_ParameterValidator::testValueUsingChoice()
 
     QSharedPointer<QList<QSharedPointer<Choice> > > choices(new QList<QSharedPointer<Choice> > ());
 
-    QDomNode emptyNode;
-    QSharedPointer<Choice> referencedChoice(new Choice(emptyNode));
+    QSharedPointer<Choice> referencedChoice(new Choice());
     referencedChoice->setName(choiceRef);
     foreach(QString enumerationValue, enumerations)
     {

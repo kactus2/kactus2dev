@@ -146,11 +146,11 @@ private:
     //! The highlighter used by all import plugins.
     Highlighter* highlighter_;
 
-    //! The model parameter visualizer used by all import plugins.
-    ModelParameterVisualizer* modelParameterVisualizer_;
-
     //! The expression parser to use for verilog expressions.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! The model parameter visualizer used by all import plugins.
+    ModelParameterVisualizer* modelParameterVisualizer_;
 
     //! All loaded import plugins.
     QList<ImportPlugin*> ImportPlugins_;

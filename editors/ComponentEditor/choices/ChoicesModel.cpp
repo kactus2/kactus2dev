@@ -14,7 +14,6 @@
 #include <IPXACTmodels/choice.h>
 
 #include <QColor>
-#include <QDomNode>
 
 namespace
 {
@@ -229,8 +228,7 @@ void ChoicesModel::onAddItem(QModelIndex const& index)
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-    QDomNode emptyNode;
-	choices_->insert(row, QSharedPointer<Choice>(new Choice(emptyNode)));
+	choices_->insert(row, QSharedPointer<Choice>(new Choice()));
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed
