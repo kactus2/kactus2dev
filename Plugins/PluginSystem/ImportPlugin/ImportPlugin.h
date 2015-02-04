@@ -37,12 +37,20 @@ public:
     virtual QStringList getSupportedFileTypes() const = 0;
 
     /*!
+     *  Gets any compatibility warnings for the plugin.
+     *
+     *      @return The warning text.
+     */
+    virtual QString getCompatibilityWarnings() const = 0;
+
+    /*!
      *  Runs the import by parsing the given input and applying the parsed elements to the given component.
      *
      *      @param [in] input               The input text to parse.
      *      @param [in] targetComponent     The component to apply all imported changes to.
      */
     virtual void import(QString const& input, QSharedPointer<Component> targetComponent) = 0;
+
 };
 
 Q_DECLARE_INTERFACE(ImportPlugin, "com.tut.Kactus2.ImportPlugin/1.0")

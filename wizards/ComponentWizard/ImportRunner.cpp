@@ -58,10 +58,15 @@ QSharedPointer<Component> ImportRunner::parse(QString const& importFile, QString
     
     QString const& fileContent = readInputFile(importFile, componentXmlPath);
 
+    QStringList parserCompatibilityWarnings;
+
     foreach(ImportPlugin* parser, parsersForFileTypes(filetypes))
     {
+        parserCompatibilityWarnings.append(parser->getCompatibilityWarnings());
         parser->import(fileContent, importComponent);
     }
+    parserCompatibilityWarnings.removeAll("");
+    emit noticeMessage(parserCompatibilityWarnings.join("\n"));
 
     QApplication::restoreOverrideCursor();
 

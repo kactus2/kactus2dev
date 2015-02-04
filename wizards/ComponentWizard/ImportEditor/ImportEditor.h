@@ -24,9 +24,9 @@
 #include <QString>
 
 #include <QTextEdit>
-#include <QSplitter>
 #include <QPushButton>
 #include <QPlainTextEdit>
+#include <QSplitter>
 
 class FileSelector;
 class ImportRunner;
@@ -188,6 +188,9 @@ private:
 
     //! Runner for all available import parsers.
     ImportRunner* runner_;
+
+    //! Widget for showing notifications from import plugins.
+    QWidget* messageBox_;
 };
 
 #endif // VHDLIMPORTEDITOR_H

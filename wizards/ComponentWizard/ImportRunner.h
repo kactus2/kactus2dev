@@ -85,6 +85,11 @@ public:
      */
     QStringList importFileTypes() const;
 
+signals:
+    
+    //! Emitted to notice user.
+    void noticeMessage(QString const& message);
+
 private:
 
 	// Disable copying.

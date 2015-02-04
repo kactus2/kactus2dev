@@ -92,6 +92,13 @@ public:
     virtual QStringList getSupportedFileTypes() const;
     
     /*!
+     *  Gets any compatibility warnings for the plugin.
+     *
+     *      @return The warning text.
+     */
+    virtual QString getCompatibilityWarnings() const;
+
+    /*!
      *   Parses a verilog input, sets up an rtl view and creates model parameters and ports.
      *
      *      @param [in] input               The input text to parse.

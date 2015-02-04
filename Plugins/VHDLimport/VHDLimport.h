@@ -103,6 +103,13 @@ public:
     virtual QStringList getSupportedFileTypes() const;
 
     /*!
+     *  Gets any compatibility warnings for the plugin.
+     *
+     *      @return The warning text.
+     */
+    virtual QString getCompatibilityWarnings() const;
+
+    /*!
      *   Parses a vhdl input, sets up an rtl view and creates generics and ports.
      *
      *      @param [in] input               The input text to parse.
@@ -259,8 +266,8 @@ private:
      *      @param [in] parsedPort       The port depending on the model parameter.
      */
     void addDependencyOfGenericToPort(QSharedPointer<ModelParameter> modelParameter, 
-        QSharedPointer<Port> parsedPort);
-    
+        QSharedPointer<Port> parsedPort);;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

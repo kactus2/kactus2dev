@@ -116,6 +116,14 @@ QStringList VerilogImporter::getSupportedFileTypes() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: VerilogImporter::getCompatibilityWarnings()
+//-----------------------------------------------------------------------------
+QString VerilogImporter::getCompatibilityWarnings() const
+{
+    return QString();
+}
+
+//-----------------------------------------------------------------------------
 // Function: VerilogImporter::import()
 //-----------------------------------------------------------------------------
 void VerilogImporter::import(QString const& input, QSharedPointer<Component> targetComponent)

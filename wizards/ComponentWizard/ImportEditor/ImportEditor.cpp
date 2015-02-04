@@ -55,7 +55,8 @@ ImportEditor::ImportEditor(QSharedPointer<Component> component, LibraryInterface
     refreshButton_(new QPushButton(QIcon(":/icons/common/graphics/refresh.png"), "", this)),
     highlighter_(new ImportHighlighter(sourceDisplayer_, this)),
     modelParameterAdapter_(modelParameterEditor_),
-    runner_(new ImportRunner(this))
+    runner_(new ImportRunner(this)),
+    messageBox_(new QLabel(this))
 {
 	// CSV import/export is disabled in the wizard.
 	modelParameterEditor_->setAllowImportExport(false);
@@ -77,6 +78,9 @@ ImportEditor::ImportEditor(QSharedPointer<Component> component, LibraryInterface
 
     connect(refreshButton_, SIGNAL(clicked()),this, SLOT(onRefresh()), Qt::UniqueConnection);
     connect(editButton_, SIGNAL(clicked()), this, SLOT(onOpenEditor()), Qt::UniqueConnection);
+
+    connect(runner_, SIGNAL(noticeMessage(QString const&)), 
+        messageBox_, SLOT(setText(QString const&)), Qt::UniqueConnection);
 
     setupLayout();
 }
@@ -272,16 +276,17 @@ void ImportEditor::setupLayout()
 
 	QVBoxLayout* topLayout = new QVBoxLayout(this);    
     topLayout->addWidget(&splitter_);
+    topLayout->addWidget(messageBox_);
     topLayout->setContentsMargins(0, 0, 0, 0);
-
+    
     QWidget* sourceWidget = new QWidget(this);
     QVBoxLayout* sourceLayout = new QVBoxLayout(sourceWidget);    
 
     sourceLayout->setContentsMargins(0, 0, 0, 0);
 
     QHBoxLayout* selectorLayout = new QHBoxLayout();
-    QLabel* vhdlLabel = new QLabel(tr("Top-level file to import:"), this);
-    selectorLayout->addWidget(vhdlLabel);
+    QLabel* selectorLabel = new QLabel(tr("Top-level file to import:"), this);
+    selectorLayout->addWidget(selectorLabel);
     selectorLayout->addWidget(fileSelector_, 1);
     selectorLayout->addWidget(editButton_);    
     selectorLayout->addWidget(refreshButton_);    

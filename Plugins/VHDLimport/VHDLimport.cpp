@@ -141,6 +141,15 @@ QStringList VHDLimport::getSupportedFileTypes() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: VHDLimport::getCompatibilityWarnings()
+//-----------------------------------------------------------------------------
+QString VHDLimport::getCompatibilityWarnings() const
+{
+    return tr("Warning: %1 version 1.1 and earlier will not preserve references "
+        "to model parameters.").arg(getName());
+}
+
+//-----------------------------------------------------------------------------
 // Function: VHDLimport::parseFile()
 //-----------------------------------------------------------------------------
 void VHDLimport::import(QString const& input, QSharedPointer<Component> targetComponent)
