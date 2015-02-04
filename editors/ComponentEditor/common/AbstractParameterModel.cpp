@@ -377,7 +377,7 @@ QSharedPointer<Choice> AbstractParameterModel::findChoice(QString const& choiceN
         }
     }	
 
-    return QSharedPointer<Choice>(new Choice(QDomNode()));
+    return QSharedPointer<Choice>(new Choice());
 }
 
 //-----------------------------------------------------------------------------

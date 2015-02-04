@@ -32,7 +32,10 @@ class IPXACTMODELS_EXPORT Choice
 
 public:
 
-	/*! The constructor
+	//! The default constructor.
+	Choice();
+
+	/*! The constructor.
 	 *
 	 *      @param [in] choice A QDomNode that can be used to parse the information from.
 	 */

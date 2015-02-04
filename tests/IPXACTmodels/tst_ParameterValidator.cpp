@@ -348,7 +348,7 @@ void tst_ParameterValidator::testMinimumValueNotCheckedForEmptyBoolOrStringForma
     QFETCH(QString, format);
 
     Parameter* parameter = createParameterWithName();
-    parameter->setValueAttribute("spirit:minimum", "100");
+    parameter->setMinimumValue("100");
 
     parameter->setValueFormat(format);
 
@@ -383,7 +383,7 @@ void tst_ParameterValidator::testMinimumValueIsValidForGivenFormat()
     parameter->setValue("1000000000");
 
     parameter->setValueFormat(format);
-    parameter->setValueAttribute("spirit:minimum", boundary);
+    parameter->setMinimumValue(boundary);
 
     QStringList errorList;
     ParameterValidator validator;
@@ -495,7 +495,7 @@ void tst_ParameterValidator::testValidityWithMinimumValueAndFormat(QString const
 
     Parameter* parameter = createParameterWithName();
     parameter->setValueFormat(format);
-    parameter->setValueAttribute("spirit:minimum", boundary);
+    parameter->setMinimumValue(boundary);
     parameter->setValue(value);
 
     QStringList errorList;
@@ -625,7 +625,7 @@ void tst_ParameterValidator::testMaximumValueIsValidForGivenFormat()
     parameter->setValue("0");
 
     parameter->setValueFormat(format);
-    parameter->setValueAttribute("spirit:maximum", boundary);
+    parameter->setMaximumValue(boundary);
 
     QStringList errorList;
     QString identifier = "testMaximumValueIsValidForGivenFormat";
@@ -740,7 +740,7 @@ void tst_ParameterValidator::testValidityWithMaximumValueAndFormat(QString const
 
     Parameter* parameter = createParameterWithName();
     parameter->setValueFormat(format);
-    parameter->setValueAttribute("spirit:maximum", boundary);
+    parameter->setMaximumValue(boundary);
     parameter->setValue(value);
 
     QStringList errorList;
@@ -830,8 +830,7 @@ void tst_ParameterValidator::testChoiceReference()
 
     foreach(QString choiceName, choiceNames)
     {
-	QDomNode emptyNode;
-        QSharedPointer<Choice> choice(new Choice(emptyNode));
+        QSharedPointer<Choice> choice(new Choice());
         choice->setName(choiceName);
         choices->append(choice);
     }
@@ -884,8 +883,7 @@ void tst_ParameterValidator::testValueUsingChoice()
 
     QSharedPointer<QList<QSharedPointer<Choice> > > choices(new QList<QSharedPointer<Choice> > ());
 
-    QDomNode emptyNode;
-    QSharedPointer<Choice> referencedChoice(new Choice(emptyNode));
+    QSharedPointer<Choice> referencedChoice(new Choice());
     referencedChoice->setName(choiceRef);
     foreach(QString enumerationValue, enumerations)
     {

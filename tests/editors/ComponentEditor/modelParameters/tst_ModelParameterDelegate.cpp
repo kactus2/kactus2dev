@@ -269,7 +269,8 @@ ModelParameterModel* tst_ModelParameterDelegate::createModelWithSimpleModelParam
 //-----------------------------------------------------------------------------
 QSharedPointer<Choice> tst_ModelParameterDelegate::createChoice(QString const& choiceName) const
 {
-    QSharedPointer<Choice> choice(new Choice(QDomNode()));
+    QDomNode emptyNode;
+    QSharedPointer<Choice> choice(new Choice(emptyNode));
     choice->setName(choiceName);
 
     choices_->append(choice);

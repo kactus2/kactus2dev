@@ -322,7 +322,7 @@ void ComponentEditorSettingsPage::setHwTable(QTableWidget* table, QStringList ho
 	table->setHorizontalHeaderLabels(horizontalHeaders);
 	table->setVerticalHeaderLabels(verticalHeaders);
 
-	QList <QList <QCheckBox*>> hwCheckBoxes = workspaceHwCheckBoxes_.at(workspaceIndex);
+	QList <QList <QCheckBox*> > hwCheckBoxes = workspaceHwCheckBoxes_.at(workspaceIndex);
 
 	for (int columnIndex = 0; columnIndex <hwCheckBoxes.size(); ++columnIndex)
 	{
@@ -405,7 +405,7 @@ void ComponentEditorSettingsPage::loadSettings()
 
 	foreach (QString workspaceName, workspaceNames)
 	{
-		QList <QList <QCheckBox*>> hardwareCheckBoxes;
+		QList <QList <QCheckBox*> > hardwareCheckBoxes;
 
 		SettingsPage::settings().beginGroup(workspaceName + "/ComponentEditorFilters");
 		SettingsPage::settings().beginGroup("HW");

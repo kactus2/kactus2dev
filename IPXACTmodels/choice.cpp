@@ -20,6 +20,14 @@
 //-----------------------------------------------------------------------------
 // Function: Choice::Choice()
 //-----------------------------------------------------------------------------
+Choice::Choice() : choiceName_(), enumerations_(new QList<QSharedPointer<Enumeration> >())
+{
+    
+}
+
+//-----------------------------------------------------------------------------
+// Function: Choice::Choice()
+//-----------------------------------------------------------------------------
 Choice::Choice(QDomNode &choice) : choiceName_(), enumerations_(new QList<QSharedPointer<Enumeration> >())
 {
     QDomNodeList children = choice.childNodes();

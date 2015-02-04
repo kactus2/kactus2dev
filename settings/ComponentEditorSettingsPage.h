@@ -152,10 +152,10 @@ private:
 	QList <QCheckBox*> setCheckBoxes();
 
 	//! All the hardware check boxes used by all the workspaces. Structured as workspace.hierarchy.checkboxes.
-	QList <QList <QList <QCheckBox*>>> workspaceHwCheckBoxes_;
+	QList <QList <QList <QCheckBox*> > > workspaceHwCheckBoxes_;
 
 	//! All the software check boxes used by all the workspaces. Structured as workspace.checkboxes.
-	QList <QList <QCheckBox*>> workspaceSwCheckBoxes_;
+	QList <QList <QCheckBox*> > workspaceSwCheckBoxes_;
 
 	//! The current workspace index.
 	int currentWorkspaceIndex_;

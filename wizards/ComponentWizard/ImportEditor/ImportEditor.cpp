@@ -53,8 +53,8 @@ ImportEditor::ImportEditor(QSharedPointer<Component> component, LibraryInterface
     fileSelector_(new FileSelector(component, this)),
     editButton_(new QPushButton(tr("Open editor"), this)),
     refreshButton_(new QPushButton(QIcon(":/icons/common/graphics/refresh.png"), "", this)),
-    highlighter_(new ImportHighlighter(sourceDisplayer_, this)),
     modelParameterAdapter_(modelParameterEditor_),
+    highlighter_(new ImportHighlighter(sourceDisplayer_, this)),
     runner_(new ImportRunner(this)),
     messageBox_(new QLabel(this))
 {
