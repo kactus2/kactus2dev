@@ -97,7 +97,8 @@ void MessageConsole::printLog(const QString& path /*= QString()*/ )
 
 	// if path was not defined then print log to the same location as the 
 	// executable
-	if (path.isEmpty()) {
+	if (path.isEmpty())
+    {
 		filePath = QCoreApplication::applicationDirPath();
 		filePath += QString("/");
 		filePath += QCoreApplication::applicationName();
@@ -107,7 +108,8 @@ void MessageConsole::printLog(const QString& path /*= QString()*/ )
 	QFile logFile(filePath);
 
 	// if the file can not be opened for writing
-	if (!logFile.open(QFile::WriteOnly | QFile::Append)) {
+	if (!logFile.open(QFile::WriteOnly | QFile::Append))
+    {
 		onErrorMessage(tr("Could not open log file for writing"));
 		return;
 	}

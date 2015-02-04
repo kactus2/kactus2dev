@@ -113,8 +113,7 @@ void VerilogPortParser::setExpressionParser(QSharedPointer<ExpressionParser> par
 //-----------------------------------------------------------------------------
 QStringList VerilogPortParser::findPortDeclarations(QString const& input) const
 {
-    QString portSection = findPortsSection(input);
-    portSection = removeIgnoredLines(portSection);
+    QString portSection = findPortsSection(removeIgnoredLines(input));
 
     return portDeclarationsIn(portSection);
 }

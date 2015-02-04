@@ -3874,9 +3874,6 @@
     <ClCompile Include="designEditors\common\ComponentInstanceEditor\ConfigurableElementsModel.cpp">
       <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ConfigurableElementsModel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\parameters\ParameterEditorHeaderView.cpp">
       <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
     </ClCompile>
@@ -3955,7 +3952,9 @@
     <ClCompile Include="GeneratedFiles\moc_ParameterizableTable.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busifinterfacemslave.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ConfigurableElementsModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>    <ClCompile Include="GeneratedFiles\moc_busifinterfacemslave.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>

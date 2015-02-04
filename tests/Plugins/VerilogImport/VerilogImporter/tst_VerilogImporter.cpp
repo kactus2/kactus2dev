@@ -54,6 +54,8 @@ private slots:
     void testParameterInPortDeclaration_data();
 
     void testParameterInParameterDeclaration();
+
+    void testSemicolonInComments(); //<! Issue #203.
     
     void testParameterNotFoundInFileIsRemoved();
     void testExistingModelParameterIdDoesNotChange();
@@ -615,6 +617,25 @@ void tst_VerilogImporter::testParameterInParameterDeclaration()
     QSharedPointer<ModelParameter> second = importComponent_->getModelParameters().last();
 
     QCOMPARE(second->getValue(), first->getValueId());
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testSemicolonInComments()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testSemicolonInComments()
+{
+    runParser(
+        "module test #(\n"
+        "   parameter first = 4,\n"
+        "   parameter second = first) (\n"
+        "   //inputs \n"
+        "input   test_input,\n"
+        "//output test_output;\n"
+        ");\n"
+        "endmodule");
+
+    QCOMPARE(importComponent_->getModelParameters().count(), 2);
+    QCOMPARE(importComponent_->getPorts().count(), 1);
 }
 
 //-----------------------------------------------------------------------------
