@@ -18,6 +18,7 @@
 #include <IPXACTmodels/register.h>
 #include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/memorymap.h>
+#include <IPXACTmodels/mirroredslaveinterface.h>
 
 #include <QTreeWidget>
 #include <QSharedPointer>
@@ -191,6 +192,34 @@ private:
      *  Create references for bus interfaces.
      */
     void createReferencesForBusInterfaces();
+
+    /*!
+     *  Check if a reference exists in a single bus interface.
+     *
+     *      @param [in] busInterface    Pointer to the bus interface.
+     */
+    bool referenceExistsInSingleBusInterface(QSharedPointer<BusInterface> busInterface);
+
+    /*!
+     *  Check if a reference exists in mirrored slave.
+     *
+     *      @param [in] mirrorSlave     Pointer to the mirrored slave interface.
+     */
+    bool referenceExistsInMirroredSlave(QSharedPointer<MirroredSlaveInterface> mirrorSlave);
+
+    /*!
+     *  Check if a reference exists in mirrored slaves remap address.
+     *
+     *      @param [in] mirrorSlave     Pointer to the mirrored slave interface.
+     */
+    bool mirroredSlaveRemapAddressHasReference(QSharedPointer<MirroredSlaveInterface> mirrorSlave);
+
+    /*!
+     *  Check if a reference exists in mirrored slaves range.
+     *
+     *      @param [in] mirrorSlave     Pointer to the mirrored slave interface.
+     */
+    bool mirroredSlaveRangeHasReference(QSharedPointer<MirroredSlaveInterface> mirrorSlave);
 
     /*!
      *  Create a tree widget item to the top of the tree.

@@ -419,16 +419,84 @@ bool ParameterReferenceTree::referenceExistsInBusInterfaces()
 {
     foreach (QSharedPointer<BusInterface> busInterface, component_->getBusInterfaces())
     {
-        foreach(QSharedPointer<Parameter> parameter, busInterface->getParameters())
+        if (referenceExistsInSingleBusInterface(busInterface))
         {
-            if (parameterHasReference(parameter))
-            {
-                return true;
-            }
+            return true;
         }
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInSingleBusInterface()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInSingleBusInterface(QSharedPointer<BusInterface> busInterface)
+{
+    foreach (QSharedPointer<Parameter> parameter, busInterface->getParameters())
+    {
+        if (parameterHasReference(parameter))
+        {
+            return true;
+        }
+    }
+
+    if (busInterface->getMirroredSlave())
+    {
+        if (referenceExistsInMirroredSlave(busInterface->getMirroredSlave()))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInMirroredSlave()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInMirroredSlave(QSharedPointer<MirroredSlaveInterface> mirrorSlave)
+{
+    if (mirroredSlaveRemapAddressHasReference(mirrorSlave))
+    {
+        return true;
+    }
+    if (mirroredSlaveRangeHasReference(mirrorSlave))
+    {
+        return true;
+    }
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::mirroredSlaveRemapAddressHasReference()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::mirroredSlaveRemapAddressHasReference(
+    QSharedPointer<MirroredSlaveInterface> mirrorSlave)
+{
+    if (mirrorSlave->getRemapAddressID() == targetID_)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::mirroredSlaveRangeHasReference()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::mirroredSlaveRangeHasReference(QSharedPointer<MirroredSlaveInterface> mirrorSlave)
+{
+    if (mirrorSlave->getRangeID() == targetID_)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -440,16 +508,39 @@ void ParameterReferenceTree::createReferencesForBusInterfaces()
 
     foreach (QSharedPointer<BusInterface> busInterface, component_->getBusInterfaces())
     {
-        if (referenceExistsInParameters(busInterface->getParameters()))
+        if (referenceExistsInSingleBusInterface(busInterface))
         {
             QTreeWidgetItem* busInterfaceItem = createMiddleItem(busInterface->getName(), topBusInterfaceItem);
 
-            foreach (QSharedPointer<Parameter> parameter, busInterface->getParameters())
+            QSharedPointer<MirroredSlaveInterface> mirrorSlave(busInterface->getMirroredSlave());
+            if (mirrorSlave)
             {
-                if (parameterHasReference(parameter))
+                if (referenceExistsInMirroredSlave(mirrorSlave))
                 {
-                    QTreeWidgetItem* parameterItem = createMiddleItem(parameter->getName(), busInterfaceItem);
-                    createItemsForParameter(parameter, parameterItem);
+                    QTreeWidgetItem* mirroredInterfaceItem =
+                        createMiddleItem("Mirrored Slave Interface", busInterfaceItem);
+                    colourItemGrey(mirroredInterfaceItem);
+
+                    if (mirroredSlaveRemapAddressHasReference(mirrorSlave))
+                    {
+                        createItem("Remap Address", mirrorSlave->getRemapAddressID(), mirroredInterfaceItem);
+                    }
+                    if (mirroredSlaveRangeHasReference(mirrorSlave))
+                    {
+                        createItem("Range", mirrorSlave->getRangeID(), mirroredInterfaceItem);
+                    }
+                }
+            }
+
+            if (referenceExistsInParameters(busInterface->getParameters()))
+            {
+                foreach (QSharedPointer<Parameter> parameter, busInterface->getParameters())
+                {
+                    if (parameterHasReference(parameter))
+                    {
+                        QTreeWidgetItem* parameterItem = createMiddleItem(parameter->getName(), busInterfaceItem);
+                        createItemsForParameter(parameter, parameterItem);
+                    }
                 }
             }
         }

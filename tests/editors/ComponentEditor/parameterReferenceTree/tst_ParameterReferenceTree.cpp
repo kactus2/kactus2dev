@@ -23,6 +23,7 @@
 #include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/memorymap.h>
 #include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/mirroredslaveinterface.h>
 
 #include <QSharedPointer>
 
@@ -57,6 +58,8 @@ private slots:
     void testRegisterwithNoReferences();
 
     void testReferenceInBusInterfaceParameterAddsFourRows();
+
+    void testReferenceInBusInterfaceMirroredSlaveAddsFourRows();
 
     void testRerefencesInMultiplePlaces();
 
@@ -908,6 +911,57 @@ void tst_ParameterReferenceTree::testReferenceInBusInterfaceParameterAddsFourRow
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_ParameterReferenceTree::testReferenceInBusInterfaceMirroredSlaveAddsFourRows()
+//-----------------------------------------------------------------------------
+void tst_ParameterReferenceTree::testReferenceInBusInterfaceMirroredSlaveAddsFourRows()
+{
+    QSharedPointer<Parameter> searched = createTestParameter("searchedParameter", "", "", "", "");
+    searched->setValueId("searched");
+
+    QList <QSharedPointer<Parameter> > componentParameters;
+    componentParameters.append(searched);
+    
+    QSharedPointer<BusInterface> refBusInterface(new BusInterface);
+    refBusInterface->setName("refBusInterface");
+
+    refBusInterface->setInterfaceMode(General::MIRROREDSLAVE);
+
+    QSharedPointer<MirroredSlaveInterface> mirrorSlave(new MirroredSlaveInterface);
+    mirrorSlave->setRange("searchedParameter");
+    mirrorSlave->setRangeID(searched->getValueId());
+    refBusInterface->setMirroredSlave(mirrorSlave);
+
+    QSharedPointer<Component> component(new Component);
+    component->setParameters(componentParameters);
+    component->addBusInterface(refBusInterface);
+
+    QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
+
+    ParameterReferenceTree tree(component, expressionFormatter, searched->getValueId());
+
+    QCOMPARE(tree.topLevelItemCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->text(ParameterReferenceTree::ITEM_NAME), QString("Bus Interfaces"));
+    QCOMPARE(tree.topLevelItem(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(tree.topLevelItem(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME), refBusInterface->getName());
+    QCOMPARE(tree.topLevelItem(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
+        QString("Mirrored Slave Interface"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
+        QString("Range"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        expressionFormatter->formatReferringExpression(mirrorSlave->getRangeID()));
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->childCount(), 0);
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_ParameterReferenceTree::testReferencesInMultiplePlaces()
 //-----------------------------------------------------------------------------
 void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
@@ -962,6 +1016,13 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
 
     refBusInterface->setParameters(busInterfaceParameters);
 
+    refBusInterface->setInterfaceMode(General::MIRROREDSLAVE);
+
+    QSharedPointer<MirroredSlaveInterface> mirrorSlave(new MirroredSlaveInterface);
+    mirrorSlave->setRange("searchedParameter");
+    mirrorSlave->setRangeID(searched->getValueId());
+    refBusInterface->setMirroredSlave(mirrorSlave);
+
     QSharedPointer<Component> component(new Component);
     component->setParameters(componentParameters);
     component->setModel(componentModel);
@@ -976,7 +1037,7 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
 
     QCOMPARE(tree.topLevelItemCount(), 6);
 
-    // Test model parameters.
+    //! Test model parameters.
     QCOMPARE(tree.topLevelItem(0)->text(ParameterReferenceTree::ITEM_NAME), QString("Model Parameters"));
     QCOMPARE(tree.topLevelItem(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
@@ -991,7 +1052,7 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
         expressionFormatter->formatReferringExpression(modelRef->getValue()));
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->childCount(), 0);
 
-    // Test parameters.
+    //! Test parameters.
     QCOMPARE(tree.topLevelItem(1)->text(ParameterReferenceTree::ITEM_NAME), QString("Parameters"));
     QCOMPARE(tree.topLevelItem(1)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
@@ -1012,7 +1073,7 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
         expressionFormatter->formatReferringExpression(paramRef->getAttribute("arrayOffset")));
     QCOMPARE(tree.topLevelItem(1)->child(0)->child(1)->childCount(), 0);
 
-    // Test memory maps.
+    //! Test memory maps.
     QCOMPARE(tree.topLevelItem(2)->text(ParameterReferenceTree::ITEM_NAME), QString("Memory maps"));
     QCOMPARE(tree.topLevelItem(2)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
@@ -1045,7 +1106,7 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
         expressionFormatter->formatReferringExpression(registerRef->getAddressOffset()));
     QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->childCount(), 0);
 
-    // Test views.
+    //! Test views.
     QCOMPARE(tree.topLevelItem(3)->text(ParameterReferenceTree::ITEM_NAME), QString("Views"));
     QCOMPARE(tree.topLevelItem(3)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
@@ -1065,7 +1126,7 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
         expressionFormatter->formatReferringExpression(viewParamRef->getValue()));
     QCOMPARE(tree.topLevelItem(3)->child(0)->child(0)->child(0)->childCount(), 0);
 
-    // Test ports.
+    //! Test ports.
     QCOMPARE(tree.topLevelItem(4)->text(ParameterReferenceTree::ITEM_NAME), QString("Ports"));
     QCOMPARE(tree.topLevelItem(4)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
@@ -1080,7 +1141,7 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
         expressionFormatter->formatReferringExpression(portRef->getDefaultValue()));
     QCOMPARE(tree.topLevelItem(4)->child(0)->child(0)->childCount(), 0);
 
-    // Test bus interfaces.
+    //! Test bus interfaces.
     QCOMPARE(tree.topLevelItem(5)->text(ParameterReferenceTree::ITEM_NAME), QString("Bus Interfaces"));
     QCOMPARE(tree.topLevelItem(5)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
@@ -1088,18 +1149,33 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
     QCOMPARE(tree.topLevelItem(5)->child(0)->text(ParameterReferenceTree::ITEM_NAME), refBusInterface->getName());
     QCOMPARE(tree.topLevelItem(5)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
-    QCOMPARE(tree.topLevelItem(5)->child(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(5)->child(0)->childCount(), 2);
+
+    //! Test mirrored slave.
     QCOMPARE(tree.topLevelItem(5)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
-        busIFParameter->getName());
+        QString("Mirrored Slave Interface"));
     QCOMPARE(tree.topLevelItem(5)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
-    
+
     QCOMPARE(tree.topLevelItem(5)->child(0)->child(0)->childCount(), 1);
     QCOMPARE(tree.topLevelItem(5)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
-        QString("Value"));
+        QString("Range"));
     QCOMPARE(tree.topLevelItem(5)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
-        expressionFormatter->formatReferringExpression(busIFParameter->getValue()));
+        expressionFormatter->formatReferringExpression(mirrorSlave->getRangeID()));
 
     QCOMPARE(tree.topLevelItem(5)->child(0)->child(0)->child(0)->childCount(), 0);
+
+    //! Test bus interface parameters.
+    QCOMPARE(tree.topLevelItem(5)->child(0)->child(1)->text(ParameterReferenceTree::ITEM_NAME),
+        busIFParameter->getName());
+    QCOMPARE(tree.topLevelItem(5)->child(0)->child(1)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    
+    QCOMPARE(tree.topLevelItem(5)->child(0)->child(1)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(5)->child(0)->child(1)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
+        QString("Value"));
+    QCOMPARE(tree.topLevelItem(5)->child(0)->child(1)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        expressionFormatter->formatReferringExpression(busIFParameter->getValue()));
+
+    QCOMPARE(tree.topLevelItem(5)->child(0)->child(1)->child(0)->childCount(), 0);
 }
 
 //-----------------------------------------------------------------------------
