@@ -7,24 +7,25 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../Plugins/common/HDLEquationParser.h \
+HEADERS += ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
+    ../../../../editors/ComponentEditor/common/ExpressionParser.h \
+    ../../../../Plugins/common/HDLEquationParser.h \
+    ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../../../Plugins/importPlugins/common/ImportColors.h \
+    ../../../../editors/ComponentEditor/common/NullParser.h \
+    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../../Plugins/VerilogImport/VerilogParameterParser.h \
     ../../../../Plugins/VerilogImport/VerilogPortParser.h \
     ../../../../wizards/ComponentWizard/ImportEditor/ImportHighlighter.h \
     ../../../../Plugins/VerilogImport/VerilogImporter.h \
-    ../../../../editors/ComponentEditor/common/ExpressionParser.h \
-    ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
-    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ../../../../editors/ComponentEditor/common/NullParser.h \
-    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h
-SOURCES += ../../../../Plugins/common/HDLEquationParser.cpp \
+    ../../../../Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h
+SOURCES += ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ../../../../Plugins/common/HDLEquationParser.cpp \
+    ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../../../wizards/ComponentWizard/ImportEditor/ImportHighlighter.cpp \
+    ../../../../editors/ComponentEditor/common/NullParser.cpp \
+    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../../../Plugins/VerilogImport/VerilogImporter.cpp \
     ../../../../Plugins/VerilogImport/VerilogParameterParser.cpp \
     ../../../../Plugins/VerilogImport/VerilogPortParser.cpp \
-    ./tst_VerilogImporter.cpp \
-    ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
-    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ../../../../editors/ComponentEditor/common/NullParser.cpp \
-    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp
+    ./tst_VerilogImporter.cpp

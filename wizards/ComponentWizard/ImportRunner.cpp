@@ -15,8 +15,7 @@
 #include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
 #include <Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h>
-
-#include <Plugins/VerilogImport/VerilogImporter.h>
+#include <Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h>
 
 #include <editors/ComponentEditor/common/NullParser.h>
 
@@ -33,7 +32,7 @@ ImportRunner::ImportRunner(QObject* parent)
     : QObject(parent), ImportPlugins_(), highlighter_(0), expressionParser_(new NullParser),
     modelParameterVisualizer_(0)
 {
-
+    
 }
 
 //-----------------------------------------------------------------------------
@@ -166,10 +165,10 @@ void ImportRunner::loadImportPlugins(PluginManager const& pluginManager)
             addHighlightIfPossible(importPlugin);
             addModelParameterVisualizationIfPossible(importPlugin);
 
-            VerilogImporter* verilogImport = dynamic_cast<VerilogImporter*>(importPlugin);
-            if (verilogImport)
+            ExpressionSupport* pluginRequiringParser = dynamic_cast<ExpressionSupport*>(importPlugin);
+            if (pluginRequiringParser)
             {
-                verilogImport->setExpressionParser(expressionParser_);
+                pluginRequiringParser->setExpressionParser(expressionParser_);
             }
         }
     }

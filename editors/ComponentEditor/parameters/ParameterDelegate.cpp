@@ -19,6 +19,7 @@
 #include <QComboBox>
 #include <QLineEdit>
 #include <QPainter>
+#include <QDomNode>
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
@@ -320,8 +321,8 @@ QSharedPointer<Choice> ParameterDelegate::findChoice(QModelIndex const& index) c
             return choice;
         }
     }	
-    
-    return QSharedPointer<Choice>(new Choice(QDomNode()));
+    QDomNode emptyNode;
+    return QSharedPointer<Choice>(new Choice(emptyNode));
 }
 
 //-----------------------------------------------------------------------------

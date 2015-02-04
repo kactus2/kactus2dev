@@ -3954,7 +3954,8 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ConfigurableElementsModel.cpp">
       <Filter>Generated Files</Filter>
-    </ClCompile>    <ClCompile Include="GeneratedFiles\moc_busifinterfacemslave.cpp">
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_busifinterfacemslave.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5772,6 +5773,9 @@
     </ClInclude>
     <ClInclude Include="designEditors\common\ComponentInstanceEditor\ConfigurableElementsColumns.h">
       <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ExpressionSupport.h">
+      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

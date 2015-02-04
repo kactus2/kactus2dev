@@ -2309,6 +2309,7 @@ CreateHelp
     </CustomBuild>
     <ClInclude Include="editors\ComponentEditor\ports\PortColumns.h" />
     <ClInclude Include="mainwindow\Ribbon\RibbonTheme.h" />
+    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ExpressionSupport.h" />
     <ClInclude Include="wizards\common\ComponentComparator\ComponentComparator.h" />
     <ClInclude Include="wizards\common\IPXactDiff.h" />
     <ClInclude Include="wizards\common\IPXactElementComparator.h" />

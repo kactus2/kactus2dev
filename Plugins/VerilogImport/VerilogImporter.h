@@ -17,6 +17,7 @@
 #include "VerilogPortParser.h"
 #include "VerilogParameterParser.h"
 
+#include <Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
 
@@ -29,7 +30,8 @@ class View;
 //-----------------------------------------------------------------------------
 //! Import plugin for verilog source files.
 //-----------------------------------------------------------------------------
-class VERILOGIMPORT_EXPORT VerilogImporter: public QObject, public ImportPlugin, public HighlightSource
+class VERILOGIMPORT_EXPORT VerilogImporter: public QObject, public ImportPlugin, public HighlightSource, 
+    public ExpressionSupport
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "kactus2.plugins.verilogimportplugin" FILE "verilogimportplugin.json")
