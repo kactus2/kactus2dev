@@ -108,6 +108,32 @@ public:
 	*/
 	void write(QXmlStreamWriter& writer);
 
+    /*!
+     *  Set the id of the parameter reference for range of the interface.
+     *
+     *      @param [in] rangeID     The id of the parameter.
+     */
+    void setRangeID(QString rangeID);
+
+    /*!
+     *  Get the id of the parameter reference for the range of the interface.
+     *
+     *      @return The id of the current range.
+     */
+    QString getRangeID();
+
+    /*!
+     *  Check if the range has a reference to the id.
+     *
+     *      @return True, if an id is found, otherwise false.
+     */
+    bool hasRangeID();
+
+    /*!
+     *  Remove the range id from the interface.
+     */
+    void removeRangeID();
+
 	/*! \brief Get the range of the interface
 	 *
 	 * \return QString containing the range.
@@ -166,6 +192,32 @@ public:
 	 *
 	*/
 	void setRemapAddress(const QString& remapAddress);
+
+    /*!
+     *  Set the remap address id for this mirrored slave interface.
+     *
+     *      @param [in] remapID     .
+     */
+    void setRemapAddressID(QString remapID);
+
+    /*!
+     *  Get the remap address id for this mirrored slave interface.
+     *
+     *      @return The remap address id.
+     */
+    QString getRemapAddressID();
+
+    /*!
+     *  Check if the remap address has an id of a reference.
+     *
+     *      @return True, if the address has an id, otherwise false.
+     */
+    bool hasRemapAddressID();
+
+    /*!
+     *  Remove the remap address reference id.
+     */
+    void removeRemapAddressID();
 
 private:
 

@@ -30,7 +30,7 @@ nameEditor_(busif->getNameGroup(), this, tr("Name and description")),
 busType_(VLNV::BUSDEFINITION, libHandler, parentWnd, this),
 absType_(VLNV::ABSTRACTIONDEFINITION, libHandler, parentWnd, this),
 modeSelector_(this, busif),
-modeStack_(busif, component, libHandler, this),
+modeStack_(busif, component, parameterFinder, libHandler, this),
 details_(busif, this),
 parameters_(busif->getParameters(), component, parameterFinder, expressionFormatter, this),
 libHandler_(libHandler) {
@@ -46,6 +46,11 @@ libHandler_(libHandler) {
     connect(&parameters_, SIGNAL(openReferenceTree(QString)),
         this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
 
+    connect(&modeStack_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&modeStack_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
 	connect(&nameEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&busType_, SIGNAL(vlnvEdited()),
@@ -60,6 +65,9 @@ libHandler_(libHandler) {
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&parameters_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+    connect(&parameters_, SIGNAL(contentChanged()),
+        &modeStack_, SIGNAL(busIfParametersChanged()), Qt::UniqueConnection);
 
 	connect(&busType_, SIGNAL(setAbsDef(const VLNV&)),
 		this, SLOT(onSetAbsType(const VLNV&)), Qt::UniqueConnection);

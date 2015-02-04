@@ -8,7 +8,7 @@
 #ifndef PARAMETERCOMBOBOX_H
 #define PARAMETERCOMBOBOX_H
 
-#include <IPXACTmodels/component.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
 
 #include <QComboBox>
 #include <QSharedPointer>
@@ -21,18 +21,15 @@ class ParameterComboBox : public QComboBox {
 
 public:
 
-	/*! \brief The constructor.
+	/*!
+	 *  The constructor.
 	 *
-	 * Method: 		ParameterComboBox
-	 * Full name:	ParameterComboBox::ParameterComboBox
-	 * Access:		private 
-	 *
-	 * \param component Pointer to the component which contains the parameters/model parameters.
-	 * \param parent Pointer to the owner of the combo box.
-	 * \param editable If true then the combo box is editable and user may input custom text.
-	 *
-	*/
-	ParameterComboBox(QSharedPointer<Component> component, QWidget *parent, bool editable = true);
+	 *      @param [in] parameterFinder     Pointer to the parameter finder.
+	 *      @param [in] parent              Pointer to the owner of the combo box.
+	 *      @param [in] editable            If true, then the combo box is editable and user may input custom text.
+	 */
+	ParameterComboBox(QSharedPointer<ParameterFinder> parameterFinder,
+        QWidget *parent, bool editable = true);
 	
 	//! \brief The destructor
 	virtual ~ParameterComboBox();
@@ -63,8 +60,8 @@ private:
 	//! \brief No assignment
 	ParameterComboBox& operator=(const ParameterComboBox& other);
 
-	//! \brief The component which contains the parameters and model parameters.
-	QSharedPointer<Component> component_;
+    //! The parameter finder.
+    QSharedPointer<ParameterFinder> parameterFinder_;
 };
 
 #endif // PARAMETERCOMBOBOX_H

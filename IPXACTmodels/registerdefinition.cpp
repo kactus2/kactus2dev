@@ -275,7 +275,7 @@ void RegisterDefinition::setSizeExpression(QString const& expression)
 {
     if (!expression.isEmpty())
     {
-        sizeAttributes_.insert("expression", expression);
+        sizeAttributes_.insert("kactus2:expression", expression);
     }
 }
 
@@ -286,7 +286,7 @@ QString RegisterDefinition::getSizeExpression()
 {
     if (hasSizeExpression())
     {
-        return sizeAttributes_.value("expression");
+        return sizeAttributes_.value("kactus2:expression");
     }
     else
     {
@@ -299,7 +299,7 @@ QString RegisterDefinition::getSizeExpression()
 //-----------------------------------------------------------------------------
 void RegisterDefinition::removeSizeExpression()
 {
-    sizeAttributes_.remove("expression");
+    sizeAttributes_.remove("kactus2:expression");
 }
 
 //-----------------------------------------------------------------------------
@@ -307,7 +307,7 @@ void RegisterDefinition::removeSizeExpression()
 //-----------------------------------------------------------------------------
 bool RegisterDefinition::hasSizeExpression()
 {
-    return sizeAttributes_.contains("expression");
+    return sizeAttributes_.contains("kactus2:expression");
 }
 
 void RegisterDefinition::setSizeAttributes(

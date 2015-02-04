@@ -17,6 +17,8 @@
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+
 #include <QStackedWidget>
 #include <QSharedPointer>
 
@@ -31,16 +33,18 @@ class InterfaceModeStack : public QStackedWidget {
 
 public:
 
-	/*! \brief The constructor.
+	/*!
+	 *  The constructor.
 	 *
-	 * \param busif Pointer to the bus interface being edited.
-	 * \param component Pointer to the component being edited.
-	 * \param handler Pointer to the instance that manages the library.
-	 * \param parent Pointer to the owner of the stack.
-	 *
-	*/
+	 *      @param [in] busif               Pointer to the bus interface being edited.
+	 *      @param [in] component           Pointer to the component being edited.
+	 *      @param [in] parameterFinder     Pointer to the parameter finder.
+	 *      @param [in] handler             Pointer to the instance that manages the library.
+	 *      @param [in] parent              Pointer to the owner of the stack.
+	 */
 	InterfaceModeStack(QSharedPointer<BusInterface> busif,
 		QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder,
 		LibraryInterface* handler,
 		BusIfGeneralTab* parent);
 	
@@ -63,6 +67,25 @@ signals:
 
 	//! \brief Emitted when the state of one of the editors change.
 	void contentChanged();
+
+    /*!
+     *  Increase the number of references made to the selected parameter.
+     *
+     *      @param [in] id      The id of the selected parameter.
+     */
+    void increaseReferences(QString const& id);
+
+    /*!
+     *  Decrease the number of references made to the selected parameter.
+     *
+     *      @param [in] id      The id of the selected parameter.
+     */
+    void decreaseReferences(QString const& id);
+
+    /*!
+     *  Informs a change in the bus interface parameters.
+     */
+    void busIfParametersChanged();
 
 private:
 	

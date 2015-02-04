@@ -55,6 +55,13 @@ public:
 protected:
 
     /*!
+     *  Gets the column for name.
+     *
+     *      @return The column index for editing name.
+     */
+    virtual int nameColumn() const;
+
+    /*!
      *  Gets the column for choices.
      *
      *      @return The column for editing choice selection.

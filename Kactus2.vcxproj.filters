@@ -2479,9 +2479,6 @@
     <ClCompile Include="GeneratedFiles\moc_busifinterfacemonitor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busifinterfacemslave.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_busifinterfaceslave.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -3956,6 +3953,9 @@
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ParameterizableTable.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_busifinterfacemslave.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5767,7 +5767,8 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\MultipleParameterFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>    <ClInclude Include="editors\ComponentEditor\common\NullParser.h">
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\NullParser.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
     <ClInclude Include="designEditors\common\ComponentInstanceEditor\ConfigurableElementsColumns.h">

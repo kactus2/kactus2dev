@@ -57,6 +57,14 @@ QWidget* ModelParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewI
 }
 
 //-----------------------------------------------------------------------------
+// Function: ModelParameterDelegate::nameColumn()
+//-----------------------------------------------------------------------------
+int ModelParameterDelegate::nameColumn() const
+{
+    return ModelParameterColumns::NAME;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ModelParameterDelegate::choiceColumn()
 //-----------------------------------------------------------------------------
 int ModelParameterDelegate::choiceColumn() const

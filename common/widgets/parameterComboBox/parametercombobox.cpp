@@ -7,49 +7,69 @@
 
 #include "parametercombobox.h"
 
-ParameterComboBox::ParameterComboBox( QSharedPointer<Component> component,
+//-----------------------------------------------------------------------------
+// Function: parametercombobox::ParameterComboBox()
+//-----------------------------------------------------------------------------
+ParameterComboBox::ParameterComboBox(QSharedPointer<ParameterFinder> parameterFinder,
 	QWidget *parent,
 	bool editable /*= true*/ ):
 QComboBox(parent),
-component_(component) {
-
-	Q_ASSERT(component_);
-
+parameterFinder_(parameterFinder)
+{
 	setEditable(editable);
 
 	connect(this, SIGNAL(editTextChanged(const QString&)),
 		this, SLOT(onEditChanged(const QString&)), Qt::UniqueConnection);
 }
 
-ParameterComboBox::~ParameterComboBox() {
+//-----------------------------------------------------------------------------
+// Function: parametercombobox::~ParameterComboBox()
+//-----------------------------------------------------------------------------
+ParameterComboBox::~ParameterComboBox()
+{
+
 }
 
-void ParameterComboBox::refresh() {
-	
-	// the items to be contained in the combo box
-	QStringList items = component_->getModelParameterNames();
-	items.append(component_->getParameterNames());
+//-----------------------------------------------------------------------------
+// Function: parametercombobox::refresh()
+//-----------------------------------------------------------------------------
+void ParameterComboBox::refresh()
+{	
+    // the items are added without emitting signals
+    disconnect(this, SIGNAL(editTextChanged(const QString&)),
+        this, SLOT(onEditChanged(const QString&)));
 
-	// the items are added without emitting signals
-	disconnect(this, SIGNAL(editTextChanged(const QString&)),
-		this, SLOT(onEditChanged(const QString&)));
+    // remove previous items
+    clear();
 
-	// remove previous items
-	clear();
+    QStringList allParameterIds = parameterFinder_->getAllParameterIds();
 
-	// add the parameter/model parameter names
-	addItems(items);
+    foreach (QString valueId, allParameterIds)
+    {
+        QString itemName = parameterFinder_->nameForId(valueId);
+        if (!itemName.isEmpty())
+        {
+            addItem(itemName, valueId);
+        }
+    }
 
 	connect(this, SIGNAL(editTextChanged(const QString&)),
 		this, SLOT(onEditChanged(const QString&)), Qt::UniqueConnection);
 }
 
-void ParameterComboBox::onEditChanged( const QString& text ) {
+//-----------------------------------------------------------------------------
+// Function: parametercombobox::onEditChanged()
+//-----------------------------------------------------------------------------
+void ParameterComboBox::onEditChanged( const QString& text )
+{
 	emit textChanged(text);
 }
 
-void ParameterComboBox::setRemapText( const QString& text ) {
-
+//-----------------------------------------------------------------------------
+// Function: parametercombobox::setRemapText()
+//-----------------------------------------------------------------------------
+void ParameterComboBox::setRemapText( const QString& text )
+{
 	// the text is set without emitting signals
 	disconnect(this, SIGNAL(editTextChanged(const QString&)),
 		this, SLOT(onEditChanged(const QString&)));

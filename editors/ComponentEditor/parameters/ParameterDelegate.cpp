@@ -24,6 +24,8 @@
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 
+#include <IPXACTmodels/validators/namevalidator.h>
+
 //-----------------------------------------------------------------------------
 // Function: ParameterDelegate::ParameterDelegate()
 //-----------------------------------------------------------------------------
@@ -48,6 +50,20 @@ ParameterDelegate::~ParameterDelegate()
 QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
     QModelIndex const& index ) const
 {
+    if (index.column() == nameColumn())
+    {
+        QWidget* editor = QStyledItemDelegate::createEditor(parent, option, index);
+        
+        QLineEdit* lineEditor = qobject_cast<QLineEdit*>(editor);
+
+        if (lineEditor)
+        {
+            lineEditor->setValidator(new NameValidator(lineEditor));
+        }
+
+        return editor;
+    }
+
     if (index.column() == choiceColumn()) 
     {
         return createChoiceSelector(parent);
@@ -160,6 +176,14 @@ void ParameterDelegate::paint(QPainter *painter, QStyleOptionViewItem const& opt
         painter->drawLine(option.rect.topRight() + QPoint(1,1), option.rect.bottomRight() + QPoint(1,1));
         painter->setPen(oldPen);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::nameColumn()
+//-----------------------------------------------------------------------------
+int ParameterDelegate::nameColumn() const
+{
+    return ParameterColumns::NAME;
 }
 
 //-----------------------------------------------------------------------------

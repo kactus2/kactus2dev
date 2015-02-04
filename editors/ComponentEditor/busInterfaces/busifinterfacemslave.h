@@ -13,6 +13,8 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/mirroredslaveinterface.h>
 
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+
 #include <QSharedPointer>
 #include <QLineEdit>
 
@@ -26,15 +28,17 @@ class BusIfInterfaceMSlave : public BusIfInterfaceModeEditor {
 
 public:
 
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param busif Pointer to the bus interface being edited.
-	 * \param component Pointer to the component being edited.
-	 * \param parent Pointer to the owner of this editor.
-	 *
-	*/
+	 *      @param [in] busif               Pointer to the bus interface being edited.
+	 *      @param [in] component           Pointer to the component being edited.
+	 *      @param [in] parameterFinder     Pointer to the parameter finder.
+	 *      @param [in] parent              Pointer to the owner of this editor.
+	 */
 	BusIfInterfaceMSlave(QSharedPointer<BusInterface> busif,
 		QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder,
 		QWidget *parent);
 	
 	//! \brief The destructor
@@ -60,6 +64,27 @@ public:
 	//! \brief Save the interface mode-specific details to the bus interface.
 	virtual void saveModeSpecific();
 
+    /*!
+     *  Gets the current id of selected remap address.
+     *
+     *      @return The id of the selected remap address.
+     */
+    QString getRemapAddressID();
+
+    /*!
+     *  Gets the current id of selected range.
+     *
+     *      @return The id of the selected range.
+     */
+    QString getRangeID();
+
+public slots:
+
+    /*!
+     *  Catches any parameter changes in the bus interface parameters.
+     */
+    void onBusIfParametersChanged();
+
 private slots:
 
 	//! \brief Handler for changes in remap address.
@@ -67,6 +92,22 @@ private slots:
 
 	//! \brief Handler for changes in range.
 	void onRangeChange(const QString& newRange);
+
+signals:
+
+    /*!
+     *  Increase the number of references in the selected parameter.
+     *
+     *      @param [in] id      The id of the selected parameter.
+     */
+    void increaseReferences(QString const& id);
+
+    /*!
+     *  Decrease the number of references in the selected parameter.
+     *
+     *      @param [in] id      The id of the selected parameter.
+     */
+    void decreaseReferences(QString const& id);
 
 private:
 	
@@ -76,6 +117,16 @@ private:
 	//! No assignment
 	BusIfInterfaceMSlave& operator=(const BusIfInterfaceMSlave& other);
 
+    /*!
+     *  Check if the selected value is within the combo box.
+     *
+     *      @param [in] combo       The selected combo box.
+     *      @param [in] newText     The text that was placed in the box.
+     *
+     *      @return True, if the text is found in the combo box, false otherwise.
+     */
+    bool isBoxValueParameter(ParameterComboBox* combo, QString newText);
+
 	//! \brief Pointer to the mirrored slave interface mode being edited.
 	QSharedPointer<MirroredSlaveInterface> mirroredSlave_;
 
@@ -83,7 +134,7 @@ private:
 	ParameterComboBox* remapEdit_;
 
 	//! \brief Editor to set the range.
-	QLineEdit* rangeEdit_;
+    ParameterComboBox* rangeEdit_;
 };
 
 #endif // BUSIFINTERFACEMSLAVE_H
