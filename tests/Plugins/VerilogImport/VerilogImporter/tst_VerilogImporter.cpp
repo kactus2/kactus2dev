@@ -531,6 +531,8 @@ void tst_VerilogImporter::testParameterInPortDeclaration()
 
     QRegularExpression rightRule(expectedRightBoundExpression);
     QVERIFY(rightRule.match(createdPort->getRightBoundExpression()).hasMatch());
+
+    QCOMPARE(importComponent_->getModelParameters().last()->getUsageCount(), 1);
 }
 
 //-----------------------------------------------------------------------------
@@ -617,6 +619,7 @@ void tst_VerilogImporter::testParameterInParameterDeclaration()
     QSharedPointer<ModelParameter> second = importComponent_->getModelParameters().last();
 
     QCOMPARE(second->getValue(), first->getValueId());
+    QCOMPARE(first->getUsageCount(), 1);
 }
 
 //-----------------------------------------------------------------------------

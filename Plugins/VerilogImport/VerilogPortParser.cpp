@@ -376,6 +376,11 @@ QString VerilogPortParser::replaceModelParameterNamesWithIds(QString const& expr
         if (nameReference.match(result).hasMatch())
         {
             result.replace(nameReference, modelParameter->getValueId());
+
+            for(int i = 0; i < expression.count(nameReference); i++)
+            {
+                modelParameter->increaseUsageCount();
+            }
         }
     }
 
