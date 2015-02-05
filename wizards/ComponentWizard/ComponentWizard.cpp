@@ -35,7 +35,8 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
 	  originalComponent_(component),
       workingComponent_(component),
       parameterFinder_(new ComponentParameterFinder(workingComponent_)),
-      expressionFormatter_(new ExpressionFormatter(parameterFinder_))
+      expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
+      referenceCounter_(new ParameterReferenceCounter(parameterFinder_))
 {
 	setWindowTitle(tr("Component Wizard for %1").arg(component->getVlnv()->toString()));
     setWizardStyle(ModernStyle);
@@ -67,6 +68,11 @@ ComponentWizard::ComponentWizard(QSharedPointer<Component> component,
 
     connect(importPage, SIGNAL(componentChanged(QSharedPointer<Component>)), 
         conclusionPage, SLOT(onComponentChanged(QSharedPointer<Component>)), Qt::UniqueConnection);
+
+    connect(importPage, SIGNAL(increaseReferences(QString)),
+        referenceCounter_.data(), SLOT(increaseReferenceCount(QString)), Qt::UniqueConnection);
+    connect(importPage, SIGNAL(decreaseReferences(QString)),
+        referenceCounter_.data(), SLOT(decreaseReferenceCount(QString)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

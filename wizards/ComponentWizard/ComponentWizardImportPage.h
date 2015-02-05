@@ -86,6 +86,20 @@ signals:
      //! Emitted when a new component has been imported.
     void componentChanged(QSharedPointer<Component>);
 
+    /*!
+     *  Increase the number of references to the selected parameter.
+     *
+     *      @param [in] id      The selected parameter.
+     */
+    void increaseReferences(QString const& id);
+
+    /*!
+     *  Decrease the number of references to the selected parameter.
+     *
+     *      @param [in] id      The selected parameter.
+     */
+    void decreaseReferences(QString const& id);
+
 private:
 	// Disable copying.
 	ComponentWizardImportPage(ComponentWizardImportPage const& rhs);

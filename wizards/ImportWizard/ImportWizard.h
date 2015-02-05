@@ -15,6 +15,7 @@
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
 
 #include <QWizard>
 #include <QSharedPointer>
@@ -78,6 +79,9 @@ private:
 
     //! Finds parameters in multiple components.
     QSharedPointer<ParameterFinder> multipleParameterFinder_;
+
+    //! The counter that changes the amount of references to parameters.
+    QSharedPointer<ReferenceCounter> referenceCounter_;
 };
 
 #endif // ImportWizard_H

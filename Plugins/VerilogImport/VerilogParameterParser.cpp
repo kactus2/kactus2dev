@@ -320,6 +320,11 @@ void VerilogParameterParser::replaceNamesWithIdsInModelParameterValues(QSharedPo
             QRegularExpression nameReference("\\b" + referenced->getName() + "\\b");
             if (nameReference.match(parameterValue).hasMatch())
             {
+                for (int i = 0; i < parameterValue.count(nameReference); ++i)
+                {
+                    referenced->increaseUsageCount();
+                }
+
                 parameter->setValue(parameterValue.replace(nameReference, referenced->getValueId()));
             }
         }

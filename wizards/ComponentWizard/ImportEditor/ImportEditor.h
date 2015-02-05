@@ -91,6 +91,20 @@ signals:
     //! Emitted when a new component is imported.
     void componentChanged(QSharedPointer<Component>);
 
+    /*!
+     *  Increase the number of references to the selected parameter.
+     *
+     *      @param [in] id      The selected parameter.
+     */
+    void increaseReferences(QString const& id);
+
+    /*!
+     *  Decrease the number of references to the selected parameter.
+     *
+     *      @param [in] id      The selected parameter.
+     */
+    void decreaseReferences(QString const& id);
+
 private slots:
 
     //! Called when a source file has been selected.

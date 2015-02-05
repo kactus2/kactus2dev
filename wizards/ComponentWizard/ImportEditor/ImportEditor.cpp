@@ -82,6 +82,16 @@ ImportEditor::ImportEditor(QSharedPointer<Component> component, LibraryInterface
     connect(runner_, SIGNAL(noticeMessage(QString const&)), 
         messageBox_, SLOT(setText(QString const&)), Qt::UniqueConnection);
 
+    connect(modelParameterEditor_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(modelParameterEditor_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(portEditor_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(portEditor_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+
     setupLayout();
 }
 

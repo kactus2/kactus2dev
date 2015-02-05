@@ -14,6 +14,7 @@
 
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
 
 #include <QWizard>
 
@@ -88,6 +89,9 @@ private:
 
     QSharedPointer<ParameterFinder> parameterFinder_;
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
+
+    //! The counter that changes the amount of references to parameters.
+    QSharedPointer<ReferenceCounter> referenceCounter_;
 };
 
 #endif // COMPONENTWIZARD_H

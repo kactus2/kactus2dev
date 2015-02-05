@@ -39,6 +39,11 @@ ComponentWizardImportPage::ComponentWizardImportPage(QSharedPointer<Component> c
     connect(editor_, SIGNAL(contentChanged()), this, SIGNAL(completeChanged()), Qt::UniqueConnection);
     connect(editor_, SIGNAL(componentChanged(QSharedPointer<Component>)), 
         this, SIGNAL(componentChanged(QSharedPointer<Component>)), Qt::UniqueConnection);
+
+    connect(editor_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(editor_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

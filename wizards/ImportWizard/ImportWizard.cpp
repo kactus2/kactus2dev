@@ -29,7 +29,8 @@ ImportWizard::ImportWizard(QSharedPointer<const Component> component,
     : QWizard(parent),
       workingComponent_(new Component(*component)),
       parameterFinder_(new ComponentParameterFinder(workingComponent_)),
-      multipleParameterFinder_(new MultipleParameterFinder(workingComponent_))
+      multipleParameterFinder_(new MultipleParameterFinder(workingComponent_)),
+      referenceCounter_(new ParameterReferenceCounter(parameterFinder_))
 {
 	setWindowTitle(tr("Import Wizard for %1").arg(component->getVlnv()->toString()));
     setWizardStyle(ModernStyle);
@@ -55,6 +56,11 @@ ImportWizard::ImportWizard(QSharedPointer<const Component> component,
         this, SLOT(onComponentChanged(QSharedPointer<Component>)), Qt::UniqueConnection);
     connect(importPage, SIGNAL(componentChanged(QSharedPointer<Component>)), 
         finalPage, SLOT(onComponentChanged(QSharedPointer<Component>)), Qt::UniqueConnection);
+
+    connect(importPage, SIGNAL(increaseReferences(QString)),
+        referenceCounter_.data(), SLOT(increaseReferenceCount(QString)), Qt::UniqueConnection);
+    connect(importPage, SIGNAL(decreaseReferences(QString)),
+        referenceCounter_.data(), SLOT(decreaseReferenceCount(QString)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
