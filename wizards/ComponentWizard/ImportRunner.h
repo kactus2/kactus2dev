@@ -14,6 +14,8 @@
 
 #include <Plugins/PluginSystem/PluginManager.h>
 
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+
 #include <QObject>
 #include <QSharedPointer>
 
@@ -32,8 +34,13 @@ class ImportRunner : public QObject
     Q_OBJECT
 public:
 
-	//! The constructor.
-	ImportRunner(QObject* parent);
+	/*!
+	 *  The constructor.
+	 *
+	 *      @param [in] parameterFinder     Pointer to the parameter finder.
+	 *      @param [in] parent              Pointer to the owner of this runner.
+	 */
+	ImportRunner(QSharedPointer<ParameterFinder> parameterFinder, QObject* parent);
 
 	//! The destructor.
 	~ImportRunner();
@@ -154,6 +161,9 @@ private:
 
     //! All loaded import plugins.
     QList<ImportPlugin*> ImportPlugins_;
+
+    //! The parameter finder.
+    QSharedPointer<ParameterFinder> parameterFinder_;
 };
 
 #endif // IMPORTRUNNER_H

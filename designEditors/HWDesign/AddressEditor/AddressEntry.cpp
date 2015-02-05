@@ -53,7 +53,7 @@ AddressEntry::AddressEntry(ComponentItem* component, BusPortItem* port)
         if (hasValidConnection())
         {
             ComponentItem* connectedComp = connectedPort_->encompassingComp();
-            QString mapName = connectedPort_->getBusInterface()->getSlave()->getMemoryMapRef();
+            QString mapName = connectedPort_->getBusInterface()->getMemoryMapRef();
             QSharedPointer<MemoryMap> map = connectedComp->componentModel()->getMemoryMap(mapName);
 
             if (map)
@@ -154,7 +154,7 @@ QString AddressEntry::getMemoryMapName() const
     }
 
     return connectedPort_->encompassingComp()->name() + "." +
-           connectedPort_->getBusInterface()->getSlave()->getMemoryMapRef();
+           connectedPort_->getBusInterface()->getMemoryMapRef();
 }
 
 //-----------------------------------------------------------------------------

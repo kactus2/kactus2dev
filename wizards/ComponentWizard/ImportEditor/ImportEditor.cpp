@@ -55,7 +55,7 @@ ImportEditor::ImportEditor(QSharedPointer<Component> component, LibraryInterface
     refreshButton_(new QPushButton(QIcon(":/icons/common/graphics/refresh.png"), "", this)),
     modelParameterAdapter_(modelParameterEditor_),
     highlighter_(new ImportHighlighter(sourceDisplayer_, this)),
-    runner_(new ImportRunner(this)),
+    runner_(new ImportRunner(parameterFinder, this)),
     messageBox_(new QLabel(this))
 {
 	// CSV import/export is disabled in the wizard.

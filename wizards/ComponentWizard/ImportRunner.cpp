@@ -28,9 +28,10 @@
 //-----------------------------------------------------------------------------
 // Function: ImportRunner::ImportRunner()
 //-----------------------------------------------------------------------------
-ImportRunner::ImportRunner(QObject* parent)
+ImportRunner::ImportRunner(QSharedPointer<ParameterFinder> parameterFinder, QObject* parent)
     : QObject(parent), ImportPlugins_(), highlighter_(0), expressionParser_(new NullParser),
-    modelParameterVisualizer_(0)
+    modelParameterVisualizer_(0),
+    parameterFinder_(parameterFinder)
 {
     
 }
@@ -52,6 +53,8 @@ QSharedPointer<Component> ImportRunner::parse(QString const& importFile, QString
     QApplication::setOverrideCursor(Qt::WaitCursor);    
 
     QSharedPointer<Component> importComponent(new Component(*targetComponent.data()));
+
+    parameterFinder_->setComponent(importComponent);
 
     QStringList filetypes = filetypesOfImportFile(importFile, importComponent);
     
