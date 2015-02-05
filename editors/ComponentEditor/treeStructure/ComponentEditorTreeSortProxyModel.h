@@ -13,6 +13,7 @@
 #define COMPONENTEDITORTREEPROXYMODEL_H
 
 #include <QSortFilterProxyModel>
+#include <QStringList>
 
 //-----------------------------------------------------------------------------
 //! Sorting proxy for Component Editor tree view. Only supports sorting of views.

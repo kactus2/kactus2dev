@@ -11,12 +11,13 @@
 
 #include "ExpressionEditor.h"
 
+#include <QAbstractItemView>
+#include <QCompleter>
 #include <QEvent>
 #include <QLineEdit>
 #include <QKeyEvent>
-#include <QCompleter>
+#include <QRegularExpression>
 #include <QTextCursor>
-#include <QAbstractItemView>
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterColumns.h>

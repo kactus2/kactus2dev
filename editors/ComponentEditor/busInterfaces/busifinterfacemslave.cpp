@@ -126,7 +126,7 @@ void BusIfInterfaceMSlave::onRemapChange( const QString& newRemapAddress )
 
     if (isBoxValueParameter(remapEdit_, newRemapAddress))
     {
-        QString currentID = remapEdit_->currentData().toString();
+        QString currentID = remapEdit_->itemData(remapEdit_->currentIndex()).toString();
         mirroredSlave_->setRemapAddressID(currentID);
         emit increaseReferences(currentID);
     }
@@ -154,7 +154,7 @@ void BusIfInterfaceMSlave::onRangeChange(const QString& newRange)
 
     if (isBoxValueParameter(rangeEdit_, newRange))
     {
-        QString currentID = rangeEdit_->currentData().toString();
+        QString currentID = rangeEdit_->itemData(remapEdit_->currentIndex()).toString();
         mirroredSlave_->setRangeID(currentID);
         emit increaseReferences(currentID);
     }
