@@ -567,7 +567,7 @@ void Port::setRightBoundExpression(QString const& expression)
 //-----------------------------------------------------------------------------
 // Function: port::getLeftBoundExpression()
 //-----------------------------------------------------------------------------
-QString Port::getLeftBoundExpression()
+QString Port::getLeftBoundExpression() const
 {
     if (wire_)
     {
@@ -583,7 +583,7 @@ QString Port::getLeftBoundExpression()
 //-----------------------------------------------------------------------------
 // Function: port::getRightBoundExpression()
 //-----------------------------------------------------------------------------
-QString Port::getRightBoundExpression()
+QString Port::getRightBoundExpression() const
 {
     if (wire_)
     {

@@ -333,14 +333,14 @@ public:
      *
      *      @return     The expression.
      */
-    QString getLeftBoundExpression();
+    QString getLeftBoundExpression() const;
 
     /*!
      *  Get the right bound expression.
      *
      *      @return     The expression.
      */
-    QString getRightBoundExpression();
+    QString getRightBoundExpression() const;
 
     /*!
      *  Remove the left bound expression.

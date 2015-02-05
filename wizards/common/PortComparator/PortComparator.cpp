@@ -88,10 +88,9 @@ QList<QSharedPointer<IPXactDiff> > PortComparator::diffFields(QSharedPointer<con
     portDiff->checkForChange("direction", General::direction2Str(reference->getDirection()), 
         General::direction2Str(subject->getDirection()));
 
-    portDiff->checkForChange("left bound", QString::number(reference->getLeftBound()), 
-        QString::number(subject->getLeftBound()));
-    portDiff->checkForChange("right bound", QString::number(reference->getRightBound()),
-        QString::number(subject->getRightBound()));
+    portDiff->checkForChange("left bound", reference->getLeftBoundExpression(), subject->getLeftBoundExpression());
+    portDiff->checkForChange("right bound", reference->getRightBoundExpression(),
+        subject->getRightBoundExpression());
 
     QList<QSharedPointer<IPXactDiff> > list;
     list.append(portDiff);

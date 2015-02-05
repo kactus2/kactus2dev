@@ -131,7 +131,7 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
     else if (type == "string")
     {
         QRegularExpression stringExpression("^\\s*\".*\"\\s*$");
-        return stringExpression.match(value).hasMatch();
+        return stringExpression.match(solvedValue).hasMatch();
     }
 
     return canConvert;
