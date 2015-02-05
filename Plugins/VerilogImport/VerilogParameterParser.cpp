@@ -123,7 +123,7 @@ QStringList VerilogParameterParser::findANSIDeclarations(QString const &input)
     // Cull the stray comments to avoid distractions to parsing.
     inspect = cullStrayComments(inspect);
 
-    QRegularExpression declarRule("parameter\\s+", QRegularExpression::CaseInsensitiveOption);
+    QRegularExpression declarRule("\\bparameter\\s+", QRegularExpression::CaseInsensitiveOption);
 
     return findDeclarations(declarRule, inspect);
 }
@@ -141,7 +141,7 @@ QStringList VerilogParameterParser::findOldDeclarations(QString const& input)
     QString inspect = input.mid(startIndex, length);
     inspect = cullStrayComments(inspect);
 
-    QRegularExpression declarRule("parameter\\s+", QRegularExpression::CaseInsensitiveOption);
+    QRegularExpression declarRule("\\bparameter\\s+", QRegularExpression::CaseInsensitiveOption);
 
     return findDeclarations(declarRule, inspect);
 }
@@ -182,7 +182,6 @@ QList<QSharedPointer<ModelParameter> > VerilogParameterParser::parseParameters(Q
            
         modelParameter->setName(name);
         modelParameter->setDataType(type);
-        modelParameter->setType(type);
         modelParameter->setValue(value);
         modelParameter->setUsageType("nontyped");
         modelParameter->setDescription(description);
@@ -247,7 +246,7 @@ QString VerilogParameterParser::cullStrayComments(QString const& inspect)
 QString VerilogParameterParser::parseType(QString const& input)
 {
     // The type is assumed to be the first word in the declaration.
-    QRegularExpression typeRule("(\\w+)\\s+" +  VerilogSyntax::NAME_VALUE, 
+    QRegularExpression typeRule("(\\w+)\\s+(?:" + VerilogSyntax::RANGE + "\\s*){0,2}" +  VerilogSyntax::NAME_VALUE, 
         QRegularExpression::CaseInsensitiveOption);
     QString type = typeRule.match(input).captured(1);
 

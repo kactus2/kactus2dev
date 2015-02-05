@@ -42,6 +42,7 @@ private slots:
     void oneUnDescribed();
     void multiLineDescribed();
     void describedparentheses();
+    
     void otherParameterAsParameterValue();
 
     void oldParameter();
@@ -77,7 +78,6 @@ void tst_VerilogParameterParser::verifyParameter( QSharedPointer<ModelParameter>
     QCOMPARE(parameter->getName(), name);
     QCOMPARE(parameter->getValue(), value);
     QCOMPARE(parameter->getDataType(), type);
-    QCOMPARE(parameter->getType(), type);
     QCOMPARE(parameter->getDescription(), description);
 }
 
@@ -400,11 +400,13 @@ void tst_VerilogParameterParser::otherParameterAsParameterValue()
     VerilogParameterParser parser;
     parser.import(input, targetComponent);
 
+    QSharedPointer<ModelParameter> first = targetComponent->getModelParameters().first();
     QSharedPointer<ModelParameter> second = targetComponent->getModelParameters().last();
     QCOMPARE(second->getName(), QString("second"));
 
     QRegularExpression uuid("{[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}");
     QVERIFY(uuid.match(second->getValue()).hasMatch());
+    verifyParameter(second, "second", first->getValueId(), "", "");
 }
 
 void tst_VerilogParameterParser::oldParameter()
@@ -656,33 +658,33 @@ void tst_VerilogParameterParser::braces()
 void tst_VerilogParameterParser::twoDimensional()
 {
     QString input = "module shifter #(\n"
-        "parameter bit [DAC_PDM_QUANTITY:1][2:0] DAC_FILTER_TYPE      = '{3'b001}, //joku\n"
-        "parameter bit [DAC_PDM_QUANTITY:1][1:0] CMP_TYPE             = '{2'b00},\n"
+        "parameter bit [count:1][2:0] shift_type      = '{3'b001}, //joku\n"
+        "parameter bit [count:1][1:0] mask             = '{2'b00},\n"
         ") (\n";
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
 
     QList<QSharedPointer<ModelParameter> > parameters = parser.parseParameters(declarations[0]);
-    verifyParameter( parameters[0], "DAC_FILTER_TYPE", "'{3'b001}", "", "joku" );
+    verifyParameter( parameters[0], "shift_type", "'{3'b001}", "bit", "joku" );
     parameters.append(parser.parseParameters(declarations[1]));
-    verifyParameter( parameters[1], "CMP_TYPE", "'{2'b00}", "", "" );
+    verifyParameter( parameters[1], "mask", "'{2'b00}", "bit", "" );
 }
 
 void tst_VerilogParameterParser::closerOnLine()
 {
     QString input = "module shifter #(\n"
-        "parameter bit [DAC_PDM_QUANTITY:1][2:0] DAC_FILTER_TYPE      = '{3'b001}, //joku\n"
-        "parameter bit [DAC_PDM_QUANTITY:1][1:0] CMP_TYPE             = '{2'b00} ) //hopo"
+        "parameter bit [count:1][2:0] shift_type      = '{3'b001}, //joku\n"
+        "parameter bit [count:1][1:0] mask             = '{2'b00} ) //hopo"
         "\n (";
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
 
     QList<QSharedPointer<ModelParameter> > parameters = parser.parseParameters(declarations[0]);
-    verifyParameter( parameters[0], "DAC_FILTER_TYPE", "'{3'b001}", "", "joku" );
+    verifyParameter( parameters[0], "shift_type", "'{3'b001}", "bit", "joku" );
     parameters.append(parser.parseParameters(declarations[1]));
-    verifyParameter( parameters[1], "CMP_TYPE", "'{2'b00}", "", "" );
+    verifyParameter( parameters[1], "mask", "'{2'b00}", "bit", "" );
 }
 
 void tst_VerilogParameterParser::closerOnLineDescribedparentheses()
