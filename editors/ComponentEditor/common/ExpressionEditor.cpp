@@ -134,7 +134,10 @@ void ExpressionEditor::finishEditingCurrentWord()
             colorCurrentWordRed();
         }
 
-        emit decreaseReference(currentTerm);
+        if (termIsReference)
+        {
+            emit decreaseReference(currentTerm);
+        }
     }
 }
 
@@ -165,7 +168,21 @@ void ExpressionEditor::keyPressEvent(QKeyEvent* keyEvent)
     {
         finishEditingCurrentWord();
 
-        QString termAndDelimiter = nthWordIn(currentWordIndex(), expression_) + keyEvent->text();
+        QString termAndDelimiter = nthWordIn(currentWordIndex(), expression_);
+        QString delimiter = keyEvent->text();
+        if (textCursor().position() == startOfCurrentWord())
+        {
+            termAndDelimiter.prepend(delimiter);
+        }
+        else if (textCursor().position() == endOfCurrentWord())
+        {
+            termAndDelimiter.append(delimiter);
+        }
+        else
+        {
+            termAndDelimiter.insert(textCursor().position() - startOfCurrentWord(), delimiter);
+        }
+
         expression_ = replaceNthWordWith(currentWordIndex(), expression_, termAndDelimiter);
 
         QTextCursor cursor = textCursor();

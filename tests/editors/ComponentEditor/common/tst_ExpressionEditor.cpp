@@ -67,12 +67,15 @@ private slots:
     void testReplaceReferenceWithAnother();
 
     void testCannotRemoveIfActiveSelection();
+     
+    void testEditingConstantExpression();
+    void testEditingConstantExpression_data();
 
 private:
 
     ExpressionEditor* createEditorWithoutFinder();
     ExpressionEditor* createEditorForComponent(QSharedPointer<Component> component);
-
+   
 };
 
 //-----------------------------------------------------------------------------
@@ -843,6 +846,50 @@ void tst_ExpressionEditor::testCannotRemoveIfActiveSelection()
     QCOMPARE(editor->getExpression(), QString("8'hff"));
 
     delete editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testEditingConstantExpression()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testEditingConstantExpression()
+{
+    QFETCH(QString, initialExpression);
+    QFETCH(int, indexForInput);
+    QFETCH(QString, input);
+    QFETCH(QString, expectedExpression);
+
+    QSharedPointer<Component> emptyComponent(new Component());
+
+    ExpressionEditor* editor = createEditorForComponent(emptyComponent);
+
+    editor->setExpression(initialExpression);
+
+    QTextCursor cursor = editor->textCursor();
+    cursor.setPosition(indexForInput);
+    editor->setTextCursor(cursor);
+
+    QTest::keyClicks(editor, input);
+
+    editor->finishEditingCurrentWord();
+
+    QCOMPARE(editor->toPlainText(), expectedExpression);
+    QCOMPARE(editor->getExpression(), expectedExpression);
+
+    delete editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testEditingConstantExpression_data()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testEditingConstantExpression_data()
+{
+    QTest::addColumn<QString>("initialExpression");
+    QTest::addColumn<int>("indexForInput");
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QString>("expectedExpression");
+
+    QTest::newRow("Inserting space before last term") << "1+1" << 2 << " " << "1+ 1";
+    QTest::newRow("Inserting operator in constant term") << "11" << 1 << "+" << "1+1";
 }
 
 //-----------------------------------------------------------------------------
