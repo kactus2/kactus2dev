@@ -579,7 +579,10 @@ void PortsModel::setModelAndLockCurrentPorts(QSharedPointer<Model> model)
 
     foreach(QSharedPointer<Port> port, model_->getPorts())
     {
-        lockPort(port);
+        if (port->getDirection() != General::DIRECTION_PHANTOM)
+        {
+            lockPort(port);
+        }
     }
 
     emit contentChanged();
@@ -660,7 +663,7 @@ bool PortsModel::isLocked(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 bool PortsModel::rowIsLocked(int row)
 {
-    QModelIndex nameIndex = QAbstractTableModel::index(row, 0, QModelIndex());
+    QModelIndex nameIndex = QAbstractTableModel::index(row, PortColumns::NAME, QModelIndex());
     return nameIndex.isValid() && isLocked(nameIndex);
 }
 
