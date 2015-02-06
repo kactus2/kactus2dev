@@ -27,12 +27,6 @@
 	  example in VHDL this could be 'integer' or 'std_logic', whereas in 
 	  C-language int or 'char*' could be used. 
 	</p>
-	<p>
-	  <b>OO usage</b> specifies how this model parameter
-	  is used. Default is 'non-typed' since such parameters are found in all
-	  languages, i.e. all VHDL types are non-typed. 'Typed' parameters appear
-	  in object-oriented languages, i.e. in C++.
-    </p>
     <p>
       <b>Type</b> is the type to which the model parameter value resolves. 
       Possible types are:
@@ -67,19 +61,25 @@
 		<li><b>string</b> indicates that the value shall contain any text.</li>
     </ul>
     <p>
-      By selecting a <b>choice</b>, the user can restrict the allowed model 
-      parameter values to a set of predefined values. Possible values
-      are defined in the choices of the containing component.
-    </p>
-    <p>
       <b>Value</b> contains the mandatory default value of the model parameter. 
 	  This value can be overridden in a design that instantiates this component.
 	  f(x) means that the value can be given as an equation.
     </p>
     <p>
+      By selecting a <b>choice</b>, the user can restrict the allowed model 
+      parameter values to a set of predefined values. Possible values
+      are defined in the choices of the containing component.
+    </p>
+    <p>
       <b>Minimum value</b> and <b>maximum value</b> define the lower and upper
       boundary for the model parameter value. If the selected type is <b>bit</b>
 	  or <b>string</b>, these fields have no effect.
+    </p>
+	<p>
+	  <b>OO usage</b> specifies how this model parameter
+	  is used. Default is 'non-typed' since such parameters are found in all
+	  languages, i.e. all VHDL types are non-typed. 'Typed' parameters appear
+	  in object-oriented languages, i.e. in C++.
     </p>
     <p>
       <b>Resolve</b> specifies the configuration of the model parameter. 
@@ -113,6 +113,11 @@
       dimension in an output language e.g. Verilog.
 	  f(x) means that the value can be given as an equation.
     </p>
+	<p>
+	  <b>Usage count</b> displays the number of references made to this
+	  parameter. Selecting the usage count of a parameter displays a reference
+	  analysis for it. The usage count can not be changed manually.
+	</p>
     <p>
       Model parameters editor contains a context menu (rigth mouse
       button) that has the following options:

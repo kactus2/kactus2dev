@@ -1,0 +1,177 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Toolbar</title>
+  </head>
+  <body>
+    <h2>Toolbar</h2>
+    <p>
+    The toolbar contains actions for performing common actions within the kactus2.
+    </p>
+    <p>
+    The toolbar adapts to the size of the window. If the window gets too small for the
+    toolbar, two buttons for scrolling left and right will be made visible.
+    Scrolling can also be done by using the mouse wheel.
+    </p>
+    <p>
+    The toolbar hides actions that are not available in the current environment. For example,
+    generators are not show when no component or design has been selected.
+    </p>
+    <h3>The toolbar groups</h3>
+    <p>
+    The <b>File</b> group contains functions for controlling the files of the component.
+        <ul>
+            <li>
+            <img src="common/graphics/file-new.png"><br/><b>New.</b> Creates a new component, design, system,
+            bus, COM definition or API definition.
+            <br>
+            </li>
+            <li>
+            <img src="common/graphics/file-save.png"><br/><b>Save.</b> Saves the active document with its
+            current name and location. Activates when a document has been edited.
+            </li>
+            <br>
+            <li>
+            <img src="common/graphics/file-save-as.png"><br><b>Save As.</b> Saves the document with a new name
+            and location.
+            </li>
+            <br>
+            <li>
+            <img src="common/graphics/file-save_all.png"><br><b>Save all.</b> Saves all open documents.
+            </li>
+            <br>
+            <li>
+            <img src="common/graphics/file-print.png"><br><b>Print.</b> Prints the currently open design.
+            </li>
+        </ul>
+    </p>
+    <p>
+    The <b>Library</b> group contains functions for maintaining the IP-XACT libraries used by the Kactus2.
+        <ul>
+            <li>
+            <img src="common/graphics/library-config.png"><br><b>Configure libraries.</b> Select the
+            libraries used in Kactus2. The libraries can be set as default and active.
+            </li>
+            <br>
+            <li>
+            <img src="common/graphics/library-refresh.png"><br><b>Refresh libraries.</b> Refresh the currently
+            active libraries.
+            </li>
+            <br>
+            <li>
+            <img src="common/graphics/checkIntegrity.png"><br><b>Check integrity.</b> Check the file integrity
+            of the libraries.
+            </li>
+        </ul>
+    </p>
+    <p>
+    The <b>Generation</b> group consists of component related generators. Shows the common generators in
+    Kactus2, and any available generator plugins. The common generators are:
+        <ul>
+            <li>
+            <img src="common/graphics/documentation.png"><br><b>Document generator.</b> Generates documentation
+            of the active component in HTML-format. If the active document is a design, all component instances
+            are included as well.
+            </li>
+            <br>
+            <li>
+            <img src="common/graphics/import.png"><br><b>Import File to Component.</b> Imports elements from a
+            source file e.g. VHDL or verilog to the active component.
+            </li>
+            <br>
+            <li>
+            <img src="common/graphics/vhdl_gen.png"><br><b>VHDL generator.</b> Generates top-level VHDL entity
+            template for the current component. If the active document is a design, the generator creates a
+            structural architecture from the component instances and interconnections.
+            </li>
+            <br>
+            <li>
+            <img src="common/graphics/modelsim_generator.png"><br><b>Modelsim generator.</b> Generates a modelsim
+            script for compiling all the VHDL files required for simulating the active component.
+            </li>
+        </ul>
+    </p>
+    <p>
+    The <b>View</b> group has actions for defining the view of the current design. Visible Windows -button
+    is always available.
+        <ul>
+            <li>
+            <img src="common/graphics/view-zoom_in.png"><br><b>Zoom In.</b> Enlarge the display of the active
+            design.
+            </li>
+            <br>
+            <li>
+            <img src="common/graphics/view-zoom_out.png"><br><b>Zoom Out.</b> Reduce the display of the active
+            design.
+            </li>
+            <br>
+            <li>
+            <img src="common/graphics/view-zoom_original.png"><br><b>Original 1:1 Zoom.</b>Return the display
+            to original size.
+            </li>
+            <br>
+            <li>
+            <img src="common/graphics/view-fit_best.png"><br><b>Fit Document to View.</b> Fit the currently
+            active document to the available view.
+            </li>
+            <br>
+            <li>
+            <img src="common/graphics/dockSelect.png"><br><b>Visible Windows.</b> Allows changing the
+            visibilities of the available windows.
+            </li>
+            <br>
+            <li>
+            <img src="common/graphics/visibility.png"><br><b>Visibilities.</b>Change the visibilities of
+            design items.
+            </li>
+        </ul>
+    </p>
+    <p>
+    The <b>Workspace</b> group shows the currently selected workspace.
+        <ul>
+            <li>
+            <img src="common/graphics/workspace.png"><br><b>Workspace.</b> Select, delete or create other 
+            workspaces. Only non-active, non-default workspaces can be deleted.
+            </li>
+        </ul>
+    </p>
+    <p>
+    The <b>Protection</b> group shows the current documents editability. The lock status can be changed with
+    this button.
+        <ul>
+            <li>
+            <img src="common/graphics/protection-locked.png"><br><b>Locked.</b> While locked, no changes can be
+            made to the document.
+            </li>
+            <br>
+            <li>
+            <img src="common/graphics/protection-unlocked.png"><br><b>Unlocked.</b> While unlocked, the documents
+            can be edited and saved.
+            </li>
+        </ul>
+    </p>
+    <p>
+    The <b>System</b> group contains actions related to the whole system.
+        <ul>
+            <li>
+            <img src="common/graphics/system-settings.png"><br><b>Settings.</b> Displays the available settings
+            for Kactus2.
+            </li>
+            <br>
+            <li>
+            <img src="common/graphics/system-help.png"><br><b>Help.</b> Opens the Kactus2 manual.
+            </li>
+            <br>
+            <li>
+            <img src="common/graphics/system-about.png"><br><b>About.</b> Shows information about Kactus2.
+            </li>
+            <br>
+            <li>
+            <img src="common/graphics/system-exit.png"><br><b>Exit.</b> Exit Kactus2.
+            </li>
+        </ul>
+    </p>
+  </body>
+</html>

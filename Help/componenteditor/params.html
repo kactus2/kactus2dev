@@ -53,14 +53,14 @@
 		<li><b>string</b> indicates that the value shall contain any text.</li>
     </ul>
     <p>
-      By selecting a <b>choice</b>, the user can restrict the allowed parameter 
-	  values to a set of predefined values. Possible values are defined in the
-	  choices of the containing component.
-    </p>
-    <p>
       <b>Value</b> contains the mandatory default value of the parameter. This 
 	  value can be overridden in a design that instantiates this component.
 	  The value can be given as an equation.
+    </p>
+	<p>
+      By selecting a <b>choice</b>, the user can restrict the allowed parameter 
+	  values to a set of predefined values. Possible values are defined in the
+	  choices of the containing component.
     </p>
     <p>
       <b>Minimum value</b> and <b>maximum value</b> define the lower and upper
@@ -98,6 +98,11 @@
       <b>Array offset</b> specifies the starting point in the array
       dimension in an output language e.g. Verilog. This is a vendor
       attribute. The value can be given as an equation.
+    </p>
+	<p>
+	  <b>Usage count</b> displays the number of references made to this
+	  parameter. Selecting the usage count opens a reference analysis of the
+	  parameter. The usage count can not be changed manually.
     </p>
     <p>
       Parameters editor contains a context menu (right mouse button)
