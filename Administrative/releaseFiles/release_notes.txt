@@ -1,4 +1,4 @@
-===============================================================================
+	===============================================================================
                             RELEASE NOTES : Kactus2
            Copyright (c) 2012-2015 Tampere University of Technology
                             http://funbase.cs.tut.fi
@@ -7,6 +7,33 @@
               - Bug fix or something removed
               * Changed or Information
 ===============================================================================
+
+06/02/2015 2.7.0
+----------------------------------------------------
+
++ Added support for SystemVerilog expressions in
+    * component parameter and model parameter value,
+	* component port bounds and default value,
+	* component register offset, size and dimension and
+	* design configurable element values.
++ Added support for referencing parameter and model parameter values in expressions.
++ Added autocomplete feature for available parameter names in expressions.
++ Added feature to view all elements referencing a parameter or model parameter.
++ Configurable element values editor now automatically shows the configurable 
+  elements in component instance, their current and default value.
++ Added feature to show/hide elements of a component in component editor.
++ Added support for component choices.
++ Enabled different signal widths for master and slave modes in abstraction definition. 
++ Improved ribbon toolbar.
+
+KNOWN UNRESOLVED ISSUES:
+* SystemVerilog expressions are not supported by some features including generators.
+  If expressions or references have been used, it may cause at least the following issues:
+    * Memory map header generator will generate wrong offsets for registers.
+	* Memory maps visualization shows wrong offset for register and aligns them wrong.
+	* VHDL and Verilog generator will generate wrong values.
+	* Port maps will not automatically adjust to changes in port size.
+* VHDL import does not preserve references to model parameters.
 
 31/10/2014 2.6.0
 ----------------------------------------------------

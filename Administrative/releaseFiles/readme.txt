@@ -23,8 +23,8 @@ Draft & Specify from scratch
  * Quickly draft block diagram blueprints for product boards (PCB), chips,
    system-on-chip, IPs and get them stored in IP-XACT format
  * Draft MCAPI endpoint design for all processors and fixed IPs in a product
- * For new IP-blocks generate code templates (VHDL entities, headers) from
-   IP-XACT components defined in Kactus2
+ * For new IP-blocks generate code templates (VHDL entities, Verilog modules, 
+   headers) from IP-XACT components defined in Kactus2
 
 Packetize IP for reuse and exchange
  * Create "electronic datasheets" of your existing IPs for library as templates
@@ -44,7 +44,7 @@ Contributors
 ----------------------------------------------------
 
 Antti Kamppi, Joni-Matti M‰‰tt‰, Lauri Matilainen, Timo D. H‰m‰l‰inen,
-Juho J‰rvinen, Esko Pekkarinen, Janne Virtanen
+Mikko Teuho, Juho J‰rvinen, Esko Pekkarinen, Janne Virtanen
 
 
 Kactus2 is linked with Qt 5.2.0, copyright Digia Plc. (LGPL)
