@@ -11,8 +11,8 @@
         <filterAttribute>2.0</filterAttribute>
         <toc>
             <section title="Kactus2 Manual" ref="index.html">
-			        <section title="General help" ref="general/general.html">
-                <section title="Toolbar" ref="general/ribbon.html">
+			    <section title="General help" ref="general/general.html">
+					<section title="Toolbar" ref="general/ribbon.html">
                 </section>
 				      </section>
                 <section title="Component Editor" ref="componenteditor/componenteditor.html">
@@ -22,7 +22,7 @@
 							<section title="File" ref="componenteditor/filegeneral.html" />
 						</section>
 					</section>
-          <section title="Choices" ref="componenteditor/choices.html" />
+					<section title="Choices" ref="componenteditor/choices.html" />
 					<section title="Model parameters" ref="componenteditor/modelparams.html" />
 					<section title="Parameters" ref="componenteditor/params.html" />
 					<section title="Memory maps" ref="componenteditor/memorymaps.html">
@@ -92,8 +92,8 @@
             <file>definitions/*.html</file>
             <file>hwdesign/*.html</file>
             <file>swsysdesign/*.html</file>
-			      <file>images/*.png</file>
-            <file>../common/graphics/*.png</file>
+			<file>images/*.png</file>
+			<file>../common/graphics/*.png</file>
         </files>
     </filterSection>
 </QtHelpProject>
