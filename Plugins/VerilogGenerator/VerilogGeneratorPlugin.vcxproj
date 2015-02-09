@@ -129,6 +129,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp" />
+    <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp" />
     <ClCompile Include="CommentWriter\CommentWriter.cpp" />
     <ClCompile Include="common\WriterGroup.cpp" />
     <ClCompile Include="ComponentInstanceVerilogWriter\ComponentInstanceVerilogWriter.cpp" />
@@ -160,6 +162,9 @@
     <ClCompile Include="VerilogWireWriter\VerilogWireWriter.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h" />
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.h" />
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ParameterFinder.h" />
     <ClInclude Include="CommentWriter\CommentWriter.h" />
     <ClInclude Include="common\Writer.h" />
     <ClInclude Include="common\WriterGroup.h" />

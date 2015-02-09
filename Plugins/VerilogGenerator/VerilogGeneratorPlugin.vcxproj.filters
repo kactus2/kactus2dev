@@ -89,6 +89,24 @@
       <Extensions>qrc;*</Extensions>
       <ParseFiles>false</ParseFiles>
     </Filter>
+    <Filter Include="Source Files\editors">
+      <UniqueIdentifier>{4b5799d6-c1dd-45f6-96ae-d78b1137dec0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor">
+      <UniqueIdentifier>{a10df104-4046-4ef2-b7b0-b07545f33657}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\common">
+      <UniqueIdentifier>{1a7c464d-92b2-459b-b2ff-2f674db470c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors">
+      <UniqueIdentifier>{33366b37-96ed-4c9f-843f-9881ab444642}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor">
+      <UniqueIdentifier>{26c9c12a-8361-4c6f-804f-b4516c9b5d6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\common">
+      <UniqueIdentifier>{4ecb9ded-e8e7-4d23-b0ea-cd658ee15fbe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VerilogGeneratorPlugin.cpp">
@@ -133,6 +151,12 @@
     <ClCompile Include="GeneratedFiles\qrc_VerilogGenerator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="veriloggeneratorplugin_global.h">
@@ -173,6 +197,15 @@
     </ClInclude>
     <ClInclude Include="common\WriterGroup.h">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ParameterFinder.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

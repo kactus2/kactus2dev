@@ -22,10 +22,12 @@ namespace
 // Function: ComponentInstanceVerilogWriter::ComponentInstanceVerilogWriter()
 //-----------------------------------------------------------------------------
 ComponentInstanceVerilogWriter::ComponentInstanceVerilogWriter(ComponentInstance const& instance,
-    QSharedPointer<const Component> referencedComponent, QSharedPointer<const PortSorter> sorter) :
+    QSharedPointer<const Component> referencedComponent, QSharedPointer<const PortSorter> sorter,
+    QSharedPointer<ExpressionFormatter> expressionFormatter) :
 componentInstance_(instance), 
-    referencedComponent_(referencedComponent), 
-    sorter_(sorter)
+referencedComponent_(referencedComponent), 
+sorter_(sorter),
+expressionFormatter_(expressionFormatter)
 {
 
 }
@@ -119,11 +121,13 @@ QString ComponentInstanceVerilogWriter::parameterAssignments() const
     QString instanceParameters("#(\n<namesAndValues>)\n");
 
     QStringList assignments;
-    foreach(QString parameterName, componentInstance_.getConfigurableElementValues().keys())
+    foreach(QString parameterID, componentInstance_.getConfigurableElementValues().keys())
     {
         QString assignment(indentation().repeated(2) + ".<parameter>(<value>)");
-        assignment.replace("<parameter>", parameterName.leftJustified(20));
-        assignment.replace("<value>", componentInstance_.getConfElementValue(parameterName));
+        assignment.replace("<parameter>", expressionFormatter_->formatReferringExpression(parameterID).
+            leftJustified(20));
+        assignment.replace("<value>", expressionFormatter_->formatReferringExpression(
+            componentInstance_.getConfElementValue(parameterID)));
         assignments.append(assignment);
     }
 

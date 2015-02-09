@@ -13,6 +13,9 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/abstractiondefinition.h>
 #include <IPXACTmodels/PortRef.h>
@@ -401,10 +404,14 @@ void VerilogGenerator::createWritersForComponentInstances()
     foreach(ComponentInstance instance, design_->getComponentInstances())
     {
         QSharedPointer<Component> component = getComponentForInstance(instance.getInstanceName());
+
+        QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(component));
+        QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
+
         if (component)
         {
             QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter(
-                new ComponentInstanceVerilogWriter(instance, component, sorter_));
+                new ComponentInstanceVerilogWriter(instance, component, sorter_, expressionFormatter));
             instanceWriters_.insert(instance.getInstanceName(), instanceWriter);            
         }
     }

@@ -17,6 +17,10 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/ComponentInstance.h>
 #include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/model.h>
+
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 
 #include <QSharedPointer>
 
@@ -42,7 +46,22 @@ private slots:
     void testDefaultPortValueIsUsedForUnconnectedInputPort();
     void testInstanceParametersAreAssigned();
 
+    void testModelParametersInComponentAreAssigned();
+
 private:
+
+    /*!
+     *  Create an expression formatter using a component.
+     *
+     *      @param [in] component   The component, whose parameters are used.
+     *
+     *      @return Expression formatter, that uses the selected component.
+     */
+    QSharedPointer<ExpressionFormatter> createExpressionFormatterFromComponent(
+        QSharedPointer <Component> component);
+
+    QSharedPointer<ModelParameter> createTestModelParameter(QString const& name, QString const& value,
+        QString const& valueID);
 
     //! The writer output.
     QString output_;
@@ -86,7 +105,8 @@ void tst_ComponentInstanceVerilogWriter::testNullComponentAsConstructorParameter
     VLNV instanceVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0");
     ComponentInstance instance("compInstance", "", "", instanceVLNV, QPointF(), "");
 
-    ComponentInstanceVerilogWriter writer(instance, QSharedPointer<Component>(0), QSharedPointer<PortSorter>(0));
+    ComponentInstanceVerilogWriter writer(instance, QSharedPointer<Component>(0), QSharedPointer<PortSorter>(0),
+        createExpressionFormatterFromComponent(QSharedPointer<Component>(0)));
     writer.write(outputStream_);
 
     QCOMPARE(output_, QString());
@@ -105,7 +125,9 @@ void tst_ComponentInstanceVerilogWriter::testNamedInstance()
     QSharedPointer<Component> component(new Component(instanceVLNV));
     ComponentInstance instance(instanceName, "", "", instanceVLNV, QPointF(), "");
 
-    ComponentInstanceVerilogWriter writer(instance, component, QSharedPointer<PortSorter>(0));
+    QSharedPointer<ExpressionFormatter> expressionFormatter = createExpressionFormatterFromComponent(component);
+
+    ComponentInstanceVerilogWriter writer(instance, component, QSharedPointer<PortSorter>(0), expressionFormatter);
     writer.write(outputStream_);
 
     QCOMPARE(output_, expectedOutput);
@@ -139,7 +161,9 @@ void tst_ComponentInstanceVerilogWriter::testUnconnectedInstancePorts()
 
     ComponentInstance instance("instance1", "", "", instanceVLNV, QPointF(), "");
 
-    ComponentInstanceVerilogWriter writer(instance, refComponent, defaultSorter_);
+    QSharedPointer<ExpressionFormatter> expressionFormatter = createExpressionFormatterFromComponent(refComponent);
+
+    ComponentInstanceVerilogWriter writer(instance, refComponent, defaultSorter_, expressionFormatter);
     writer.write(outputStream_);
 
     QCOMPARE(output_, QString(
@@ -163,7 +187,9 @@ void tst_ComponentInstanceVerilogWriter::testFullyConnectedPorts()
 
     ComponentInstance instance("instance1", "", "", instanceVLNV, QPointF(), "");
 
-    ComponentInstanceVerilogWriter writer(instance, refComponent, defaultSorter_);
+    QSharedPointer<ExpressionFormatter> expressionFormatter = createExpressionFormatterFromComponent(refComponent);
+
+    ComponentInstanceVerilogWriter writer(instance, refComponent, defaultSorter_, expressionFormatter);
     writer.assignPortForFullWidth("clk", "top_clk");
     writer.assignPortForFullWidth("rst_n", "rst");
 
@@ -189,7 +215,9 @@ void tst_ComponentInstanceVerilogWriter::testPartiallyConnectedPorts()
 
     ComponentInstance instance("instance1", "", "", instanceVLNV, QPointF(), "");
 
-    ComponentInstanceVerilogWriter writer(instance, refComponent, defaultSorter_);
+    QSharedPointer<ExpressionFormatter> expressionFormatter = createExpressionFormatterFromComponent(refComponent);
+
+    ComponentInstanceVerilogWriter writer(instance, refComponent, defaultSorter_, expressionFormatter);
     writer.assignPortForRange("chip_select", "top_select", 0, 0);
     writer.assignPortForRange("data", "top_data", 7, 0);    
 
@@ -216,7 +244,9 @@ void tst_ComponentInstanceVerilogWriter::testDefaultPortValueIsUsedForUnconnecte
 
     ComponentInstance instance("instance1", "", "", instanceVLNV, QPointF(), "");
 
-    ComponentInstanceVerilogWriter writer(instance, refComponent, defaultSorter_); 
+    QSharedPointer<ExpressionFormatter> expressionFormatter = createExpressionFormatterFromComponent(refComponent);
+
+    ComponentInstanceVerilogWriter writer(instance, refComponent, defaultSorter_, expressionFormatter); 
     writer.write(outputStream_);
 
     QCOMPARE(output_, QString(
@@ -243,7 +273,9 @@ void tst_ComponentInstanceVerilogWriter::testInstanceParametersAreAssigned()
     parameters.insert("numElements", "16");    
     instance.setConfigurableElementValues(parameters);
 
-    ComponentInstanceVerilogWriter writer(instance, refComponent, defaultSorter_); 
+    QSharedPointer<ExpressionFormatter> expressionFormatter = createExpressionFormatterFromComponent(refComponent);
+
+    ComponentInstanceVerilogWriter writer(instance, refComponent, defaultSorter_, expressionFormatter); 
     writer.write(outputStream_);
 
     QCOMPARE(output_, QString(
@@ -252,6 +284,67 @@ void tst_ComponentInstanceVerilogWriter::testInstanceParametersAreAssigned()
         "        .name                (tester),\n"
         "        .numElements         (16))\n"
         "    instance1();\n"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentInstanceVerilogWriter::testModelParametersInComponentAreAssigned()
+//-----------------------------------------------------------------------------
+void tst_ComponentInstanceVerilogWriter::testModelParametersInComponentAreAssigned()
+{
+    VLNV instanceVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0");
+    QSharedPointer<Component> refComponent(new Component(instanceVLNV));
+
+
+    QSharedPointer<ModelParameter> modelRef = createTestModelParameter("modelRef", "15", "A-model");
+    QSharedPointer<ModelParameter> referringModelRef = createTestModelParameter("referer", modelRef->getValueId(),
+        "B-model");
+
+    refComponent->getModel()->addModelParameter(modelRef);
+    refComponent->getModel()->addModelParameter(referringModelRef);
+
+    ComponentInstance instance("instance1", "", "", instanceVLNV, QPointF(), "");
+
+    QMap<QString, QString> parameters;
+    parameters.insert(modelRef->getValueId(), "10");
+    parameters.insert(referringModelRef->getValueId(), referringModelRef->getValue());
+    instance.setConfigurableElementValues(parameters);
+
+    QSharedPointer<ExpressionFormatter> expressionFormatter = createExpressionFormatterFromComponent(refComponent);
+
+    ComponentInstanceVerilogWriter writer(instance, refComponent, defaultSorter_, expressionFormatter);
+    writer.write(outputStream_);
+
+    QCOMPARE(output_, QString(
+        "    TestComponent #(\n"
+        "        .modelRef            (10),\n"
+        "        .referer             (modelRef))\n"
+        "    instance1();\n"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentInstanceVerilogWriter::createExpressionFormatterFromComponent()
+//-----------------------------------------------------------------------------
+QSharedPointer<ExpressionFormatter> tst_ComponentInstanceVerilogWriter::createExpressionFormatterFromComponent(
+    QSharedPointer<Component> component)
+{
+    QSharedPointer<ParameterFinder> parameterFinder (new ComponentParameterFinder(component));
+    QSharedPointer<ExpressionFormatter> expressionFormatter (new ExpressionFormatter(parameterFinder));
+
+    return expressionFormatter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentInstanceVerilogWriter::createTestModelParameter()
+//-----------------------------------------------------------------------------
+QSharedPointer<ModelParameter> tst_ComponentInstanceVerilogWriter::createTestModelParameter(QString const& name,
+    QString const& value, QString const& valueID)
+{
+    QSharedPointer<ModelParameter> referencingModelParameter(new ModelParameter);
+    referencingModelParameter->setName(name);
+    referencingModelParameter->setValue(value);
+    referencingModelParameter->setValueId(valueID);
+
+    return referencingModelParameter;
 }
 
 QTEST_APPLESS_MAIN(tst_ComponentInstanceVerilogWriter)

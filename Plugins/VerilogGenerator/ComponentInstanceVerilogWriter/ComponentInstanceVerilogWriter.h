@@ -17,6 +17,8 @@
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/ComponentInstance.h>
 
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <Plugins/VerilogGenerator/PortSorter/PortSorter.h>
 #include <Plugins/VerilogGenerator/common/Writer.h>
 
@@ -36,9 +38,12 @@ public:
 	 *      @param [in] instance                The component instance to write to Verilog.
 	 *      @param [in] referencedComponent     The component instantiated by the instance.
 	 *      @param [in] sorter                  Sorter for the ports in the component.
+     *      @param [in] expressionFormatter     The expression formatter.
 	 */
 	ComponentInstanceVerilogWriter(ComponentInstance const& instance,
-        QSharedPointer<const Component> referencedComponent, QSharedPointer<const PortSorter> sorter);
+        QSharedPointer<const Component> referencedComponent,
+        QSharedPointer<const PortSorter> sorter,
+        QSharedPointer<ExpressionFormatter> expressionFormatter);
 
 	//! The destructor.
 	~ComponentInstanceVerilogWriter();
@@ -180,6 +185,9 @@ private:
 
     //! The assigned port connections.
     QMap<QString, General::PortBounds> portAssignments_;
+
+    //! The assigned expression formatter.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 };
 
 #endif // COMPONENTINSTANCEVERILOGWRITER_H
