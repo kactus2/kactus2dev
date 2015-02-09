@@ -12,6 +12,7 @@
 #include "writevalueconstraint.h"
 
 #include <IPXACTmodels/NameGroup.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
 #include <QString>
 #include <QXmlStreamWriter>
@@ -102,11 +103,61 @@ public:
 	 */
     int getBitOffset() const;
 
+    /*!
+     *  Set the expression for bit offset.
+     *
+     *      @param [in] expression      The expression for the bit offset.
+     */
+    void setBitOffsetExpression(QString const& expression);
+
+    /*!
+     *  Get the bit offset expression.
+     *
+     *      @return The expression in bit offset.
+     */
+    QString getBitOffsetExpression();
+
+    /*!
+     *  Check if the field has an expression in bit offset.
+     *
+     *      @return True, if there is an expression, otherwise false.
+     */
+    bool hasBitOffsetExpression();
+
+    /*!
+     *  Remove the expression from bit offset.
+     */
+    void removeBitOffsetExpression();
+
     /*! \brief Get the bit width.
      *
      * \return bit width.
      */
     unsigned int getBitWidth() const;
+
+    /*!
+     *  Set the expression for bit width.
+     *
+     *      @param [in] expression   The expression to be set.
+     */
+    void setBitWidthExpression(QString const& expression);
+
+    /*!
+     *  Get the bit width expression.
+     */
+    QString getBitWidthExpression();
+
+    /*!
+     *  Remove the bit width expression.
+     */
+    void removeBitWidthExpression();
+
+    /*!
+     *  Check if the field has an expression as bit width.
+     *
+     *      @return     True, if there is an expression, otherwise false.
+     */
+    bool hasBitWidthExpression();
 
 	/*! \brief Get the MSB of the field.
 	 *
@@ -326,6 +377,27 @@ public:
 
 private:
 
+    /*!
+     *  Parse the vendor extension from a DOM node.
+     *
+     *      @param [in] fieldNode   The DOM node containing all the vendor extensions.
+     */
+    void parseVendorExtensions(QDomNode const& fieldNode);
+
+    /*!
+     *  Creates a vendor extension for expression in bit offset.
+     *
+     *      @param [in] expression  The initial expression to set.
+     */
+    void createOffsetExpressionExtension(QString const& expression);
+
+    /*!
+     *  Copies vendor extensions from another field.
+     *
+     *      @param [in] other       The field to copy the extension from.
+     */
+    void copyVendorExtensions(const Field & other);
+
 	/*! \brief Assigns a unique id to the containing element
 	 * OPTIONAL spirit:id
 	 */
@@ -388,6 +460,8 @@ private:
 	 * Field vendor extensions.
 	 */
     QList<QSharedPointer<VendorExtension> > vendorExtensions_;
+
+    QSharedPointer<Kactus2Value> offsetExpression_;
 };
 
 #endif /* FIELD_H_ */

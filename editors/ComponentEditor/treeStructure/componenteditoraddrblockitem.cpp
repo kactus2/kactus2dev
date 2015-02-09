@@ -13,7 +13,9 @@
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h>
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 
-
+//-----------------------------------------------------------------------------
+// Function: componenteditoraddrblockitem::ComponentEditorAddrBlockItem()
+//-----------------------------------------------------------------------------
 ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem(QSharedPointer<AddressBlock> addrBlock,
 														   ComponentEditorTreeModel* model,
 														   LibraryInterface* libHandler,
@@ -40,8 +42,8 @@ addressUnitBits_(0)
 		
 		// if the item was a register 
 		if (reg) {
-			QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(
-				reg, model, libHandler, component, this));
+			QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem( reg, model,
+                libHandler, component, parameterFinder_, expressionFormatter_, referenceCounter_, this));
 			childItems_.append(regItem);
 		}
 	}
@@ -65,6 +67,9 @@ bool ComponentEditorAddrBlockItem::isValid() const
 	return addrBlock_->isValid(component_->getChoices());
 }
 
+//-----------------------------------------------------------------------------
+// Function: componenteditoraddrblockitem::editor()
+//-----------------------------------------------------------------------------
 ItemEditor* ComponentEditorAddrBlockItem::editor() {
 	if (!editor_) {
 		editor_ = new AddressBlockEditor(addrBlock_, component_, libHandler_, parameterFinder_,
@@ -91,13 +96,15 @@ ItemEditor* ComponentEditorAddrBlockItem::editor() {
 	return editor_;
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: componenteditoraddrblockitem::createChild()
+//-----------------------------------------------------------------------------
 void ComponentEditorAddrBlockItem::createChild( int index ) {
 	QSharedPointer<RegisterModel> regmodel = regItems_[index];
 	QSharedPointer<Register> reg = regmodel.dynamicCast<Register>();
 	if (reg) {
-		QSharedPointer<ComponentEditorRegisterItem> regItem(
-			new ComponentEditorRegisterItem(reg, model_, libHandler_, component_, this));
+		QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg, model_,
+            libHandler_, component_, parameterFinder_, expressionFormatter_, referenceCounter_, this));
 		regItem->setLocked(locked_);
 		
 		if (visualizer_) {

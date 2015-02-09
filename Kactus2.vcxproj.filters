@@ -5777,6 +5777,9 @@
     <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ExpressionSupport.h">
       <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\RegisterColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="designEditors\common\DiagramUtil.inl">

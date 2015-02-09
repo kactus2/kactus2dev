@@ -10,35 +10,27 @@
 
 #include <QStyledItemDelegate>
 
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionDelegate.h>
+
 /*! \brief The delegate to provide editors to add/remove/edit the details of register.
  *
  */
-class RegisterDelegate : public QStyledItemDelegate {
-	Q_OBJECT
+class RegisterDelegate : public ExpressionDelegate
+{
+    Q_OBJECT
 
 public:
 
-	//! \brief Defines the columns for the register table.
-	enum Column {
-		NAME_COLUMN = 0,
-		DESC_COLUMN,
-		OFFSET_COLUMN,
-		WIDTH_COLUMN,
-		VOLATILE_COLUMN,
-		ACCESS_COLUMN,
-		MOD_WRITE_COLUMN,
-		READ_ACTION_COLUMN,
-		TESTABLE_COLUMN,
-		TEST_CONSTR_COLUMN,
-		COLUMN_COUNT
-	};
-
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param parent Pointer to the owner of the delegate.
-	 *
-	*/
-	RegisterDelegate(QObject *parent);
+	 *      @param [in] parameterNameCompleter  The completer to use for parameter names in expression editor.
+	 *      @param [in] parameterFinder         The parameter finder to use for expression editor.
+	 *      @param [in] parent                  Pointer to the owner of the delegate.
+	 */
+	RegisterDelegate(QCompleter* parameterNameCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+        QObject *parent);
 	
 	//! \brief The destructor
 	virtual ~RegisterDelegate();
@@ -72,6 +64,17 @@ public:
 	*/
 	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, 
 		const QModelIndex& index) const;
+
+protected:
+
+    /*!
+     *  Checks if the given column supports expressions in the editor.
+     *
+     *      @param [in] column  The column to check.
+     *
+     *      @return True if the cells in the column allow expressions, otherwise false.
+     */
+    virtual bool columnAcceptsExpression(int column) const;
 
 private slots:
 

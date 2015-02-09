@@ -191,6 +191,7 @@ HEADERS += ./common/Global.h \
     ./Plugins/PluginSystem/NewPluginsDialog.h \
     ./Plugins/PluginSystem/PluginListDialog.h \
     ./Plugins/PluginSystem/PluginUtilityAdapter.h \
+    ./Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h \
     ./Plugins/PluginSystem/ImportPlugin/ImportColors.h \
     ./Plugins/PluginSystem/ImportPlugin/Highlighter.h \
     ./Plugins/PluginSystem/ImportPlugin/HighlightSource.h \
@@ -594,7 +595,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h
+    ./editors/ComponentEditor/memoryMaps/RegisterColumns.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \

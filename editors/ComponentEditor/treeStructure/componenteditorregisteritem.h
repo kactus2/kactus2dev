@@ -13,6 +13,10 @@
 #include <IPXACTmodels/register.h>
 #include <IPXACTmodels/field.h>
 
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/referenceCounter/ReferenceCounter.h>
+
 #include <QSharedPointer>
 #include <QList>
 
@@ -28,19 +32,25 @@ class ComponentEditorRegisterItem : public ComponentEditorItem {
 
 public:
 
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param reg Pointer to the register being edited.
-	 * \param model Pointer to the model that owns the items.
-	 * \param libHandler Pointer to the instance that manages the library.
-	 * \param component Pointer to the component being edited.
-	 * \param parent Pointer to the parent item.
-	 *
-	*/
+	 *      @param [in] reg                     Pointer to the register being edited.
+	 *      @param [in] model                   Pointer to the model that owns the items.
+	 *      @param [in] libHandler              Pointer to the instance that manages the library.
+	 *      @param [in] component               Pointer to the component being edited.
+	 *      @param [in] parameterFinder         Pointer to the parameter finder.
+	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+	 *      @param [in] referenceCounter        Pointer to the instance for counting references made to parameters.
+	 *      @param [in] parent                  Pointer to the parent item.
+	 */
 	ComponentEditorRegisterItem(QSharedPointer<Register> reg, 
 		ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ReferenceCounter> referenceCounter,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor

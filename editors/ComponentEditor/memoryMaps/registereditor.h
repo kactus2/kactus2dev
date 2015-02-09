@@ -9,6 +9,9 @@
 #define REGISTEREDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <IPXACTmodels/register.h>
 
 #include <QSharedPointer>
@@ -21,7 +24,8 @@ class LibraryInterface;
 /*! \brief The editor to edit the details of a register within component editor.
  *
  */
-class RegisterEditor : public ItemEditor {
+class RegisterEditor : public ItemEditor
+{
 	Q_OBJECT
 
 public:
@@ -32,16 +36,21 @@ public:
 		WIDTH = 700
 	};
 
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param reg Pointer to the register being edited.
-	 * \param component Pointer to the component being edited.
-	 * \param parent Pointer to the parent of this editor.
-	 *
-	*/
+	 *      @param [in] reg                     Pointer to the register being edited.
+	 *      @param [in] component               Pointer to the component being edited.
+	 *      @param [in] handler                 Pointer to the instance that manages the library.
+	 *      @param [in] parameterFinder         Pointer to the parameter finder.
+	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+	 *      @param [in] parent                  Pointer to the parent of this editor.
+	 */
 	RegisterEditor(QSharedPointer<Register> reg,
 		QSharedPointer<Component> component,
-		LibraryInterface* handler, 
+		LibraryInterface* handler,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
 		QWidget* parent = 0);
 
 	//! \brief The destructor

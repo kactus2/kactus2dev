@@ -15,24 +15,35 @@
 #include <QSharedPointer>
 #include <QList>
 
+#include <editors/ComponentEditor/common/ParameterizableTable.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 class Choice;
 /*! \brief The model to manage the details of a single register.
  *
  */
-class RegisterTableModel : public QAbstractTableModel {
+class RegisterTableModel : public ParameterizableTable
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param reg Pointer to the register being edited.
-     * \param componentChoices  Choices in the containing component.
-	 * \param parent Pointer to the owner of the model.
-	 *
-	*/
+	 *      @param [in] reg                     Pointer to the register being edited.
+	 *      @param [in] componentChoices        Choices in the containing component.
+	 *      @param [in] expressionParser        Pointer to the expression parser.
+	 *      @param [in] parameterFinder         Pointer to the parameter finder.
+	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+	 *      @param [in] parent                  Pointer to the owner of the model.
+	 */
 	RegisterTableModel(QSharedPointer<Register> reg,
-        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices, 
+        QSharedPointer <ExpressionParser> expressionParser,
+        QSharedPointer <ParameterFinder> parameterFinder,
+        QSharedPointer <ExpressionFormatter> expressionFormatter,
 		QObject *parent);
 	
 	//! \brief The destructor
@@ -99,6 +110,45 @@ public:
 	*/
 	bool isValid() const;
 
+protected:
+
+    /*!
+     *  Check if the column index is valid for expressions.
+     *
+     *      @param [in] index   The index being evaluated.
+     *
+     *      @return     True, if column can have expressions, otherwise false.
+     */
+    virtual bool isValidExpressionColumn(QModelIndex const& index) const;
+
+    /*!
+     *  Gets the expression for the given index, or plain value if there is no expression.
+     *
+     *      @param [in] index   The index of target data.
+     *
+     *      @return     Expression or plain value in the given index.
+     */
+    virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Validates the data in the column.
+     *
+     *      @param [in] index   The index being validated.
+     *
+     *      @return     True, if the data is valid, otherwise false.
+     */
+    virtual bool validateColumnForParameter(QModelIndex const& index) const;
+
+    /*!
+     *  Gets the number of all the references made on the selected row to the selected parameter.
+     *
+     *      @param [in] row         The row of the selected item.
+     *      @param [in] valueID     The selected parameter.
+     *
+     *      @return The amount of references made on the selected row to the selected parameter.
+     */
+    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const;
+
 public slots:
 
 	/*! \brief Add a new item to the given index.
@@ -134,6 +184,15 @@ private:
 	//! \brief No assignment
 	RegisterTableModel& operator=(const RegisterTableModel& other);
 
+    /*!
+     *  Gets the value for the given index.
+     *
+     *      @param [in] index   The index of target data.
+     *
+     *      @return     The data in the given index.
+     */
+    QVariant valueForIndex(QModelIndex const& index) const;
+
 	//! \brief Pointer to the register being edited.
 	QSharedPointer<Register> reg_;
 
@@ -142,6 +201,9 @@ private:
 
 	//! \brief Contains the fields being edited.
 	QList<QSharedPointer<Field> >& fields_;
+
+    //! Expression formatter, formats the referencing expression to show parameter names.
+    QSharedPointer <ExpressionFormatter> expressionFormatter_;
 };
 
 #endif // REGISTERTABLEMODEL_H

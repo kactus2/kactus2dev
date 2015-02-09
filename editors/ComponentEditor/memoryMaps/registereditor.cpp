@@ -6,22 +6,44 @@
  */
 
 #include "registereditor.h"
-#include <common/views/EditableTableView/editabletableview.h>
 #include "registertablemodel.h"
 #include "registerdelegate.h"
+#include "RegisterColumns.h"
+
+#include <common/views/EditableTableView/editabletableview.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ParameterCompleter.h>
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+
 #include <QVBoxLayout>
 
+//-----------------------------------------------------------------------------
+// Function: registereditor::RegisterEditor()
+//-----------------------------------------------------------------------------
 RegisterEditor::RegisterEditor(QSharedPointer<Register> reg, 
 							   QSharedPointer<Component> component,
-							   LibraryInterface* handler, 
+							   LibraryInterface* handler,
+                               QSharedPointer<ParameterFinder> parameterFinder,
+                               QSharedPointer<ExpressionFormatter> expressionFormatter,
 							   QWidget* parent /*= 0*/ ):
 ItemEditor(component, handler, parent),
 view_(new EditableTableView(this)),
 proxy_(new QSortFilterProxyModel(this)),
-model_(new RegisterTableModel(reg, component->getChoices(), this)) {
+model_(0)
+{
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
+
+    model_ = new RegisterTableModel(reg, component->getChoices(), expressionParser, parameterFinder,
+        expressionFormatter, this);
+
+    ComponentParameterModel* componentParametersModel = new ComponentParameterModel(this, parameterFinder);
+    componentParametersModel->setExpressionParser(expressionParser);
+
+    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
+    parameterCompleter->setModel(componentParametersModel);
 
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Fields summary"), this);
@@ -40,14 +62,13 @@ model_(new RegisterTableModel(reg, component->getChoices(), this)) {
 	view_->setDefaultImportExportPath(defPath);
 	view_->setAllowImportExport(true);
 
-	// items can not be dragged
 	view_->setItemsDraggable(false);
 
 	view_->setSortingEnabled(true);
 
-	view_->setItemDelegate(new RegisterDelegate(this));
+    view_->setItemDelegate(new RegisterDelegate(parameterCompleter, parameterFinder, this));
 
-	view_->sortByColumn(RegisterDelegate::OFFSET_COLUMN, Qt::AscendingOrder);
+    view_->sortByColumn(RegisterColumns::OFFSET_COLUMN, Qt::AscendingOrder);
 
 	connect(model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -56,28 +77,57 @@ model_(new RegisterTableModel(reg, component->getChoices(), this)) {
 	connect(model_, SIGNAL(fieldRemoved(int)),
 		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
+    connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(view_->itemDelegate(), SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
 	connect(view_, SIGNAL(addItem(const QModelIndex&)),
 		model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
 		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(model_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 }
 
-RegisterEditor::~RegisterEditor() {
+//-----------------------------------------------------------------------------
+// Function: registereditor::~RegisterEditor()
+//-----------------------------------------------------------------------------
+RegisterEditor::~RegisterEditor()
+{
+
 }
 
-bool RegisterEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: registereditor::isValid()
+//-----------------------------------------------------------------------------
+bool RegisterEditor::isValid() const
+{
 	return model_->isValid();
 }
 
-void RegisterEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: registereditor::refresh()
+//-----------------------------------------------------------------------------
+void RegisterEditor::refresh()
+{
 	view_->update();
 }
 
-void RegisterEditor::showEvent( QShowEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: registereditor::showEvent()
+//-----------------------------------------------------------------------------
+void RegisterEditor::showEvent( QShowEvent* event )
+{
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/register.html");
 }
 
-QSize RegisterEditor::sizeHint() const {
+//-----------------------------------------------------------------------------
+// Function: registereditor::sizeHint()
+//-----------------------------------------------------------------------------
+QSize RegisterEditor::sizeHint() const
+{
 	return QSize(RegisterEditor::WIDTH, RegisterEditor::HEIGHT);
 }

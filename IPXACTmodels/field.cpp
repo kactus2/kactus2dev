@@ -39,7 +39,8 @@ readAction_(General::READ_ACTION_COUNT),
 testable_(true),
 testConstraint_(General::TEST_UNCONSTRAINED),
 writeConstraint_(),
-vendorExtensions_()
+vendorExtensions_(),
+offsetExpression_()
 {
 
 	// parse the spirit:id attribute
@@ -106,11 +107,7 @@ vendorExtensions_()
 		}
         else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
         {
-            int extensionCount = tempNode.childNodes().count();
-            for (int j = 0; j < extensionCount; ++j) {
-                QDomNode extensionNode = tempNode.childNodes().at(j);
-                vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
-            }
+            parseVendorExtensions(tempNode);
         }
 	}
 }
@@ -131,7 +128,8 @@ readAction_(General::READ_ACTION_COUNT),
 testable_(true),
 testConstraint_(General::TEST_UNCONSTRAINED),
 writeConstraint_(),
-vendorExtensions_()
+vendorExtensions_(),
+offsetExpression_()
 {
 
 }
@@ -152,7 +150,8 @@ readAction_(General::READ_ACTION_COUNT),
 testable_(true),
 testConstraint_(General::TEST_UNCONSTRAINED),
 writeConstraint_(),
-vendorExtensions_()
+vendorExtensions_(),
+offsetExpression_()
 {
 
 }
@@ -173,7 +172,8 @@ readAction_(other.readAction_),
 testable_(other.testable_),
 testConstraint_(other.testConstraint_),
 writeConstraint_(),
-vendorExtensions_(other.vendorExtensions_)
+vendorExtensions_(other.vendorExtensions_),
+offsetExpression_()
 {
 
 	foreach (QSharedPointer<EnumeratedValue> enumValue, other.enumeratedValues_) {
@@ -196,6 +196,8 @@ vendorExtensions_(other.vendorExtensions_)
 		writeConstraint_ = QSharedPointer<WriteValueConstraint>(new WriteValueConstraint(
 			*other.writeConstraint_.data()));
 	}
+
+    copyVendorExtensions(other);
 }
 
 Field& Field::operator=( const Field& other ) {
@@ -234,6 +236,8 @@ Field& Field::operator=( const Field& other ) {
 
 		writeConstraint_ = QSharedPointer<WriteValueConstraint>(
 			new WriteValueConstraint(*other.writeConstraint_.data()));
+
+        copyVendorExtensions(other);
 	}
 	return *this;
 }
@@ -432,12 +436,123 @@ bool Field::isValid(unsigned int registerSize,
     return true;
 }
 
-int Field::getBitOffset() const {
+//-----------------------------------------------------------------------------
+// Function: field::getBitOffset()
+//-----------------------------------------------------------------------------
+int Field::getBitOffset() const
+{
     return bitOffset_;
 }
 
-unsigned int Field::getBitWidth() const {
+//-----------------------------------------------------------------------------
+// Function: field::setBitOffsetExpression()
+//-----------------------------------------------------------------------------
+void Field::setBitOffsetExpression(QString const& expression)
+{
+    if (offsetExpression_.isNull())
+    {
+        createOffsetExpressionExtension(expression);
+    }
+
+    else
+    {
+        offsetExpression_->setValue(expression);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: field::getBitOffsetExpression()
+//-----------------------------------------------------------------------------
+QString Field::getBitOffsetExpression()
+{
+    if (hasBitOffsetExpression())
+    {
+        return offsetExpression_->value();
+    }
+    else
+    {
+        return QString::number(getBitOffset());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: field::hasBitOffsetExpression()
+//-----------------------------------------------------------------------------
+bool Field::hasBitOffsetExpression()
+{
+    if (offsetExpression_.isNull())
+    {
+        return false;
+    }
+
+    QString bitOffsetValue = offsetExpression_->value();
+    if (bitOffsetValue.isEmpty())
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: field::removeBitOffsetExpression()
+//-----------------------------------------------------------------------------
+void Field::removeBitOffsetExpression()
+{
+    vendorExtensions_.removeAll(offsetExpression_);
+    offsetExpression_.clear();
+}
+
+//-----------------------------------------------------------------------------
+// Function: field::getBitWidth()
+//-----------------------------------------------------------------------------
+unsigned int Field::getBitWidth() const
+{
     return bitWidth_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: field::setBitWidthExpression()
+//-----------------------------------------------------------------------------
+void Field::setBitWidthExpression(QString const& expression)
+{
+    if (!expression.isEmpty())
+    {
+        bitWidthAttributes_.insert("expression", expression);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: field::getBitWidthExpression()
+//-----------------------------------------------------------------------------
+QString Field::getBitWidthExpression()
+{
+    if (hasBitWidthExpression())
+    {
+        return bitWidthAttributes_.value("expression");
+    }
+    else
+    {
+        return QString::number(getBitWidth());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: field::removeBitWidthExpression()
+//-----------------------------------------------------------------------------
+void Field::removeBitWidthExpression()
+{
+    bitWidthAttributes_.remove("expression");
+}
+
+//-----------------------------------------------------------------------------
+// Function: field::hasBitWidthExpression()
+//-----------------------------------------------------------------------------
+bool Field::hasBitWidthExpression()
+{
+    return bitWidthAttributes_.contains("expression");
 }
 
 int Field::getMSB() const {
@@ -589,4 +704,56 @@ QSharedPointer<WriteValueConstraint> Field::getWriteConstraint() {
 		writeConstraint_ = QSharedPointer<WriteValueConstraint>(new WriteValueConstraint());
 	}
 	return writeConstraint_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: field::parseVendorExtensions()
+//-----------------------------------------------------------------------------
+void Field::parseVendorExtensions(QDomNode const& fieldNode)
+{
+    int extensionCount = fieldNode.childNodes().count();
+    for (int i = 0; i < extensionCount; ++i)
+    {
+        QDomNode extensionNode = fieldNode.childNodes().at(i);
+
+        if (extensionNode.nodeName() == QString("kactus2:offsetExpression"))
+        {
+            createOffsetExpressionExtension(extensionNode.childNodes().at(i).nodeValue());
+        }
+        else
+        {
+            vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: field::createOffsetExpressionExtension()
+//-----------------------------------------------------------------------------
+void Field::createOffsetExpressionExtension(QString const& expression)
+{
+    if (offsetExpression_.isNull())
+    {
+        offsetExpression_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:offsetExpression", expression));
+        vendorExtensions_.append(offsetExpression_);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: field::copyVendorExtensions()
+//-----------------------------------------------------------------------------
+void Field::copyVendorExtensions(const Field & other)
+{
+    foreach (QSharedPointer<VendorExtension> extension, other.vendorExtensions_)
+    {
+        if (extension->type() == "kactus2:offsetExpression")
+        {
+            offsetExpression_ = QSharedPointer<Kactus2Value>(other.offsetExpression_->clone());
+            vendorExtensions_.append(offsetExpression_);
+        }
+        else
+        {
+            vendorExtensions_.append(QSharedPointer<VendorExtension>(extension->clone()));
+        }
+    }
 }

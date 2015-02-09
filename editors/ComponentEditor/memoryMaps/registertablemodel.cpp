@@ -6,240 +6,364 @@
  */
 
 #include "registertablemodel.h"
-#include "registerdelegate.h"
+#include "RegisterColumns.h"
 
 #include <QColor>
 
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::RegisterTableModel()
+//-----------------------------------------------------------------------------
 RegisterTableModel::RegisterTableModel(QSharedPointer<Register> reg, 
         QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-									   QObject *parent):
-QAbstractTableModel(parent),
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer <ParameterFinder> parameterFinder,
+        QSharedPointer <ExpressionFormatter> expressionFormatter,
+        QObject *parent):
+ParameterizableTable(parameterFinder, parent),
 reg_(reg),
 componentChoices_(componentChoices),
-fields_(reg->getFields())
+fields_(reg->getFields()),
+expressionFormatter_(expressionFormatter)
 {
 	Q_ASSERT(reg);
+
+    setExpressionParser(expressionParser);
 }
 
-RegisterTableModel::~RegisterTableModel() {
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::~RegisterTableModel()
+//-----------------------------------------------------------------------------
+RegisterTableModel::~RegisterTableModel() 
+{
+
 }
 
-int RegisterTableModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::rowCount()
+//-----------------------------------------------------------------------------
+int RegisterTableModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const 
+{
+	if (parent.isValid()) 
+    {
 		return 0;
 	}
 	return fields_.size();
 }
 
-int RegisterTableModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::columnCount()
+//-----------------------------------------------------------------------------
+int RegisterTableModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const 
+{
+	if (parent.isValid()) 
+    {
 		return 0;
 	}
-	return RegisterDelegate::COLUMN_COUNT;
+    return RegisterColumns::COLUMN_COUNT;
 }
 
-Qt::ItemFlags RegisterTableModel::flags( const QModelIndex& index ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::flags()
+//-----------------------------------------------------------------------------
+Qt::ItemFlags RegisterTableModel::flags( const QModelIndex& index ) const 
+{
+	if (!index.isValid()) 
+    {
 		return Qt::NoItemFlags;
 	}
 	// if the field is not testable then the test constraint can not be set
-	if (index.column() == RegisterDelegate::TEST_CONSTR_COLUMN &&
-		!fields_.at(index.row())->getTestable()) {
+    if (index.column() == RegisterColumns::TEST_CONSTR_COLUMN && !fields_.at(index.row())->getTestable())
+    {
 			return Qt::NoItemFlags;
 	}
 	return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable;
 }
 
-QVariant RegisterTableModel::headerData( int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole*/ ) const {
-	if (orientation != Qt::Horizontal) {
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::headerData()
+//-----------------------------------------------------------------------------
+QVariant RegisterTableModel::headerData( int section, Qt::Orientation orientation, 
+    int role /*= Qt::DisplayRole*/ ) const 
+{
+	if (orientation != Qt::Horizontal) 
+    {
 		return QVariant();
 	}
-	if (Qt::DisplayRole == role) {
-
-		switch (section) {
-			case RegisterDelegate::NAME_COLUMN: {
-				return tr("Field\nname");
-													}
-			case RegisterDelegate::DESC_COLUMN: {
-				return tr("Description");
-													  }
-			case RegisterDelegate::OFFSET_COLUMN: {
-				return tr("Offset \n[bits]");
-												 }
-			case RegisterDelegate::WIDTH_COLUMN: {
-				return tr("Width \n[bits]");
-												   }
-			case RegisterDelegate::VOLATILE_COLUMN: {
-				return tr("Volatile");
-													}
-			case RegisterDelegate::ACCESS_COLUMN: {
-				return tr("Access");
-												  }
-			case RegisterDelegate::MOD_WRITE_COLUMN: {
-				return tr("Modified\nwrite value");
-												   }
-			case RegisterDelegate::READ_ACTION_COLUMN: {
-				return tr("Read\naction");
-														   }
-			case RegisterDelegate::TESTABLE_COLUMN: {
-				return tr("Testable");
-														  }
-			case RegisterDelegate::TEST_CONSTR_COLUMN: {
-				return tr("Test\nconstraint");
-													}
-			default: {
-				return QVariant();
-					 }
-		}
+	if (Qt::DisplayRole == role) 
+    {
+        if (section == RegisterColumns::NAME_COLUMN)
+        {
+            return tr("Field\nname");
+        }
+        else if (section == RegisterColumns::DESC_COLUMN)
+        {
+            return tr("Description");
+        }
+        else if (section == RegisterColumns::OFFSET_COLUMN)
+        {
+            QString bitOffset = tr("Offset \n[bits]") + getExpressionSymbol();
+            return bitOffset;
+        }
+        else if (section == RegisterColumns::WIDTH_COLUMN)
+        {
+            QString bitWidth = tr("Width \n[bits]") + getExpressionSymbol();
+            return bitWidth;
+        }
+        else if (section == RegisterColumns::VOLATILE_COLUMN)
+        {
+            return tr("Volatile");
+        }
+        else if (section == RegisterColumns::ACCESS_COLUMN)
+        {
+            return tr("Access");
+        }
+        else if (section == RegisterColumns::MOD_WRITE_COLUMN)
+        {
+            return tr("Modified\nwrite value");
+        }
+        else if (section == RegisterColumns::READ_ACTION_COLUMN)
+        {
+            return tr("Read\naction");
+        }
+        else if (section == RegisterColumns::TESTABLE_COLUMN)
+        {
+            return tr("Testable");
+        }
+        else if (section == RegisterColumns::TEST_CONSTR_COLUMN)
+        {
+            return tr("Test\nconstraint");
+        }
+        else
+        {
+            return QVariant();
+        }
 	}
-	else {
+	else 
+    {
 		return QVariant();
 	}
 }
 
-QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::data()
+//-----------------------------------------------------------------------------
+QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const 
+{
+	if (!index.isValid()) 
+    {
 		return QVariant();
 	}
-	else if (index.row() < 0 || index.row() >= fields_.size()) {
+	else if (index.row() < 0 || index.row() >= fields_.size()) 
+    {
 		return QVariant();
 	}
 
-	if (Qt::DisplayRole == role) {
-
-		switch (index.column()) {
-			case RegisterDelegate::NAME_COLUMN: {
-				return fields_.at(index.row())->getName();
-												}
-			case RegisterDelegate::DESC_COLUMN: {
-				return fields_.at(index.row())->getDescription();
-												}
-			case RegisterDelegate::OFFSET_COLUMN: {
-				return fields_.at(index.row())->getBitOffset();
-												  }
-			case RegisterDelegate::WIDTH_COLUMN: {
-				return fields_.at(index.row())->getBitWidth();
-												 }
-			case RegisterDelegate::VOLATILE_COLUMN: {
-				return fields_.at(index.row())->getVolatile();
-													}
-			case RegisterDelegate::ACCESS_COLUMN: {
-				return General::access2Str(fields_.at(index.row())->getAccess());
-												  }
-			case RegisterDelegate::MOD_WRITE_COLUMN: {
-				return General::modifiedWrite2Str(fields_.at(index.row())->getModifiedWrite());
-													 }
-			case RegisterDelegate::READ_ACTION_COLUMN: {
-				return General::readAction2Str(fields_.at(index.row())->getReadAction());
-													   }
-			case RegisterDelegate::TESTABLE_COLUMN: {
-				return fields_.at(index.row())->getTestable();
-													}
-			case RegisterDelegate::TEST_CONSTR_COLUMN: {
-				return General::testConstraint2Str(fields_.at(index.row())->getTestConstraint());
-													   }
-			default: {
-				return QVariant();
-					 }
-		}
+	if (Qt::DisplayRole == role) 
+    {
+        return valueForIndex(index);
 	}
-	else if (Qt::ForegroundRole == role) {
 
-		if (fields_.at(index.row())->isValid(reg_->getSize(), componentChoices_)) {
-			return QColor("black");
+    else if (role == Qt::EditRole)
+    {
+        return expressionOrValueForIndex(index);
+    }
+
+    else if (role == Qt::ToolTipRole)
+    {
+        return expressionFormatter_->formatReferringExpression(expressionOrValueForIndex(index).toString());
+    }
+
+    else if (role == Qt::FontRole)
+    {
+        return italicForEvaluatedValue(index);
+    }
+
+	else if (Qt::ForegroundRole == role) 
+    {
+        if (fields_.at(index.row())->isValid(reg_->getSize(), componentChoices_)) 
+        {
+            return blackForValidOrRedForInvalidIndex(index);
 		}
-		else {
+		else
+        {
 			return QColor("red");
 		}
 	}
-	else if (Qt::BackgroundRole == role) {
-		switch (index.column()) {
-			case RegisterDelegate::NAME_COLUMN:
-			case RegisterDelegate::OFFSET_COLUMN:
-			case RegisterDelegate::WIDTH_COLUMN: {
-				return QColor("LemonChiffon");
-													}
-			default:
-				return QColor("white");
+	else if (Qt::BackgroundRole == role) 
+    {
+        if (index.column() == RegisterColumns::NAME_COLUMN || index.column() == RegisterColumns::OFFSET_COLUMN ||
+            index.column() == RegisterColumns::WIDTH_COLUMN)
+        {
+            return QColor("LemonChiffon");
+        }
+        else
+        {
+            return QColor("white");
 		}
 	}
-	else {
+	else 
+    {
 		return QVariant();
 	}
 }
 
-bool RegisterTableModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/ ) {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::valueForIndex()
+//-----------------------------------------------------------------------------
+QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
+{
+    if (index.column() == RegisterColumns::NAME_COLUMN)
+    {
+        return fields_.at(index.row())->getName();
+    }
+    else if (index.column() == RegisterColumns::DESC_COLUMN)
+    {
+        return fields_.at(index.row())->getDescription();
+    }
+    else if (index.column() == RegisterColumns::OFFSET_COLUMN)
+    {
+        QString bitOffset = fields_.at(index.row())->getBitOffsetExpression();
+        return formattedValueFor(bitOffset);
+    }
+    else if (index.column() == RegisterColumns::WIDTH_COLUMN)
+    {
+        QString bitWidth = fields_.at(index.row())->getBitWidthExpression();
+        return formattedValueFor(bitWidth);
+    }
+    else if (index.column() == RegisterColumns::VOLATILE_COLUMN)
+    {
+        return fields_.at(index.row())->getVolatile();
+    }
+    else if (index.column() == RegisterColumns::ACCESS_COLUMN)
+    {
+        return General::access2Str(fields_.at(index.row())->getAccess());
+    }
+    else if (index.column() == RegisterColumns::MOD_WRITE_COLUMN)
+    {
+        return General::modifiedWrite2Str(fields_.at(index.row())->getModifiedWrite());
+    }
+    else if (index.column() == RegisterColumns::READ_ACTION_COLUMN)
+    {
+        return General::readAction2Str(fields_.at(index.row())->getReadAction());
+    }
+    else if (index.column() == RegisterColumns::TESTABLE_COLUMN)
+    {
+        return fields_.at(index.row())->getTestable();
+    }
+    else if (index.column() == RegisterColumns::TEST_CONSTR_COLUMN)
+    {
+        return General::testConstraint2Str(fields_.at(index.row())->getTestConstraint());
+    }
+    else
+    {
+        return QVariant();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::setData()
+//-----------------------------------------------------------------------------
+bool RegisterTableModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/ ) 
+{
+	if (!index.isValid()) 
+    {
 		return false;
 	}
-	else if (index.row() < 0 || index.row() >= fields_.size()) {
+	else if (index.row() < 0 || index.row() >= fields_.size()) 
+    {
 		return false;
 	}
 
-	if (Qt::EditRole == role) {
+	if (Qt::EditRole == role) 
+    {
+        if (index.column() == RegisterColumns::NAME_COLUMN)
+        {
+            fields_.at(index.row())->setName(value.toString());
+        }
+        else if (index.column() == RegisterColumns::DESC_COLUMN)
+        {
+            fields_.at(index.row())->setDescription(value.toString());
+        }
+        else if (index.column() == RegisterColumns::OFFSET_COLUMN)
+        {
+            if (!value.isValid())
+            {
+                removeReferencesFromSingleExpression(fields_.at(index.row())->getBitOffsetExpression());
+            }
 
-		switch (index.column()) {
-			case RegisterDelegate::NAME_COLUMN: {
-				fields_.at(index.row())->setName(value.toString());
-				break;
-												}
-			case RegisterDelegate::DESC_COLUMN: {
-				fields_.at(index.row())->setDescription(value.toString());
-				break;
-												}
-			case RegisterDelegate::OFFSET_COLUMN: {
-				fields_.at(index.row())->setBitOffset(value.toInt());
-				break;
-												  }
-			case RegisterDelegate::WIDTH_COLUMN: {
-				fields_.at(index.row())->setBitWidth(value.toUInt());
-				break;
-												 }
-			case RegisterDelegate::VOLATILE_COLUMN: {
-				fields_.at(index.row())->setVolatile(value.toBool());
-				break;
-													}
-			case RegisterDelegate::ACCESS_COLUMN: {
-				fields_.at(index.row())->setAccess(General::str2Access(value.toString(), General::ACCESS_COUNT));
-				break;
-												  }
-			case RegisterDelegate::MOD_WRITE_COLUMN: {
-				fields_.at(index.row())->setModifiedWrite(General::str2ModifiedWrite(value.toString()));
-				break;
-													 }
-			case RegisterDelegate::READ_ACTION_COLUMN: {
-				fields_.at(index.row())->setReadAction(General::str2ReadAction(value.toString()));
-				break;
-													   }
-			case RegisterDelegate::TESTABLE_COLUMN: {
-				bool testable = value.toBool();
-				fields_.at(index.row())->setTestable(testable);
-				// if testable is disabled then clear the test constraint
-				if (!testable) {
-					fields_.at(index.row())->setTestConstraint(General::TESTCONSTRAINT_COUNT);
-					QModelIndex constrIndex = createIndex(index.row(), index.column() + 1, index.internalPointer());
-					emit dataChanged(constrIndex, constrIndex);
-				}
-				break;
-													}
-			case RegisterDelegate::TEST_CONSTR_COLUMN: {
-				fields_.at(index.row())->setTestConstraint(General::str2TestConstraint(value.toString()));
-				break;
-													   }
-			default: {
-				return false;
-					 }
+            QString calculatedExpression = parseExpressionToDecimal(value.toString());
+            fields_.at(index.row())->removeBitOffsetExpression();
+            if (calculatedExpression != value.toString())
+            {
+                fields_.at(index.row())->setBitOffsetExpression(value.toString());
+            }
+            fields_.at(index.row())->setBitOffset(calculatedExpression.toInt());
+        }
+        else if (index.column() == RegisterColumns::WIDTH_COLUMN)
+        {
+            if (!value.isValid())
+            {
+                removeReferencesFromSingleExpression(fields_.at(index.row())->getBitWidthExpression());
+            }
+
+            QString calculatedExpression = parseExpressionToDecimal(value.toString());
+            fields_.at(index.row())->removeBitWidthExpression();
+            if (calculatedExpression != value.toString())
+            {
+                fields_.at(index.row())->setBitWidthExpression(value.toString());
+            }
+            fields_.at(index.row())->setBitWidth(calculatedExpression.toInt());
+        }
+        else if (index.column() == RegisterColumns::VOLATILE_COLUMN)
+        {
+            fields_.at(index.row())->setVolatile(value.toBool());
+        }
+        else if (index.column() == RegisterColumns::ACCESS_COLUMN)
+        {
+            fields_.at(index.row())->setAccess(General::str2Access(value.toString(), General::ACCESS_COUNT));
+        }
+        else if (index.column() == RegisterColumns::MOD_WRITE_COLUMN)
+        {
+            fields_.at(index.row())->setModifiedWrite(General::str2ModifiedWrite(value.toString()));
+        }
+        else if (index.column() == RegisterColumns::READ_ACTION_COLUMN)
+        {
+            fields_.at(index.row())->setReadAction(General::str2ReadAction(value.toString()));
+        }
+        else if (index.column() == RegisterColumns::TESTABLE_COLUMN)
+        {
+            bool testable = value.toBool();
+            fields_.at(index.row())->setTestable(testable);
+
+            if (!testable) 
+            {
+                fields_.at(index.row())->setTestConstraint(General::TESTCONSTRAINT_COUNT);
+                QModelIndex constrIndex = createIndex(index.row(), index.column() + 1, index.internalPointer());
+                emit dataChanged(constrIndex, constrIndex);
+            }
+        }
+        else if (index.column() == RegisterColumns::TEST_CONSTR_COLUMN)
+        {
+            fields_.at(index.row())->setTestConstraint(General::str2TestConstraint(value.toString()));
+        }
+        else
+        {
+            return false;
 		}
 
 		emit dataChanged(index, index);
 		emit contentChanged();
 		return true;
 	}
-	else {
+	else 
+    {
 		return false;
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::isValid()
+//-----------------------------------------------------------------------------
 bool RegisterTableModel::isValid() const 
 {
 	unsigned int regSize = reg_->getSize();
@@ -253,6 +377,73 @@ bool RegisterTableModel::isValid() const
 	return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::isValidExpressionColumn()
+//-----------------------------------------------------------------------------
+bool RegisterTableModel::isValidExpressionColumn(QModelIndex const& index) const
+{
+    if (index.column() == RegisterColumns::OFFSET_COLUMN || index.column() == RegisterColumns::WIDTH_COLUMN)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::expressionOrValueForIndex()
+//-----------------------------------------------------------------------------
+QVariant RegisterTableModel::expressionOrValueForIndex(QModelIndex const& index) const
+{
+    if (index.column() == RegisterColumns::OFFSET_COLUMN)
+    {
+        return fields_.at(index.row())->getBitOffsetExpression();
+    }
+    else if (index.column() == RegisterColumns::WIDTH_COLUMN)
+    {
+        return fields_.at(index.row())->getBitWidthExpression();
+    }
+
+    return data(index, Qt::DisplayRole);
+}
+
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::validateColumnForParameter()
+//-----------------------------------------------------------------------------
+bool RegisterTableModel:: validateColumnForParameter(QModelIndex const& index) const
+{
+    if (index.column() == RegisterColumns::OFFSET_COLUMN)
+    {
+        QString offset = fields_.at(index.row())->getBitOffsetExpression();
+        return isValuePlainOrExpression(offset);
+    }
+    if (index.column() == RegisterColumns::WIDTH_COLUMN)
+    {
+        QString width = fields_.at(index.row())->getBitWidthExpression();
+        return isValuePlainOrExpression(width);
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::getAllReferencesToIdInItemOnRow()
+//-----------------------------------------------------------------------------
+int RegisterTableModel::getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const
+{
+    int referencesInBitOffset = fields_.at(row)->getBitOffsetExpression().count(valueID);
+    int referencesInBitWidth = fields_.at(row)->getBitWidthExpression().count(valueID);
+
+    int totalReferences = referencesInBitOffset + referencesInBitWidth;
+
+    return totalReferences;
+}
+
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::onAddItem()
+//-----------------------------------------------------------------------------
 void RegisterTableModel::onAddItem( const QModelIndex& index ) {
 	int row = fields_.size();
 
@@ -274,6 +465,9 @@ void RegisterTableModel::onAddItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::onRemoveItem()
+//-----------------------------------------------------------------------------
 void RegisterTableModel::onRemoveItem( const QModelIndex& index ) {
 	// don't remove anything if index is invalid
 	if (!index.isValid()) {
@@ -286,6 +480,9 @@ void RegisterTableModel::onRemoveItem( const QModelIndex& index ) {
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
+
+    removeReferencesInItemOnRow(index.row());
+
 	fields_.removeAt(index.row());
 	endRemoveRows();
 

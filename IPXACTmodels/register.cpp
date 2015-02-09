@@ -484,7 +484,7 @@ void Register::parseVendorExtensions(QDomNode const& registerNode)
 
         if (extensionNode.nodeName() == QString("kactus2:dimExpression"))
         {
-            createDimensionExpressionExtension(extensionNode.childNodes().at(0).nodeValue());
+            createDimensionExpressionExtension(extensionNode.childNodes().at(j).nodeValue());
         }
         else
         {

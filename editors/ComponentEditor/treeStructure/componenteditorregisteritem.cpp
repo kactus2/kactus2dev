@@ -12,21 +12,33 @@
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h>
 
+//-----------------------------------------------------------------------------
+// Function: componenteditorregisteritem::ComponentEditorRegisterItem()
+//-----------------------------------------------------------------------------
 ComponentEditorRegisterItem::ComponentEditorRegisterItem(QSharedPointer<Register> reg,
 														 ComponentEditorTreeModel* model,
 														 LibraryInterface* libHandler, 
 														 QSharedPointer<Component> component,
+                                                         QSharedPointer<ParameterFinder> parameterFinder,
+                                                         QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                                         QSharedPointer<ReferenceCounter> referenceCounter,
 														 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
 fields_(reg->getFields()),
 visualizer_(NULL),
-graphItem_(NULL) {
+graphItem_(NULL)
+{
+    setReferenceCounter(referenceCounter);
+    setParameterFinder(parameterFinder);
+    setExpressionFormatter(expressionFormatter);
 
 	setObjectName(tr("ComponentEditorRegisterItem"));
 
-	foreach(QSharedPointer<Field> field, fields_) {
-		if (field) {
+	foreach(QSharedPointer<Field> field, fields_)
+    {
+		if (field)
+        {
 			QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
 				reg, field, model, libHandler, component, this));
 			childItems_.append(fieldItem);
@@ -36,24 +48,46 @@ graphItem_(NULL) {
 	Q_ASSERT(reg_);
 }
 
-ComponentEditorRegisterItem::~ComponentEditorRegisterItem() {
+//-----------------------------------------------------------------------------
+// Function: componenteditorregisteritem::~ComponentEditorRegisterItem()
+//-----------------------------------------------------------------------------
+ComponentEditorRegisterItem::~ComponentEditorRegisterItem()
+{
+
 }
 
-QString ComponentEditorRegisterItem::getTooltip() const {
+//-----------------------------------------------------------------------------
+// Function: componenteditorregisteritem::getToolTip()
+//-----------------------------------------------------------------------------
+QString ComponentEditorRegisterItem::getTooltip() const
+{
 	return tr("Contains details of a single register within an address block.");
 }
 
-QString ComponentEditorRegisterItem::text() const {
+//-----------------------------------------------------------------------------
+// Function: componenteditorregisteritem::text()
+//-----------------------------------------------------------------------------
+QString ComponentEditorRegisterItem::text() const
+{
 	return reg_->getName();
 }
 
-bool ComponentEditorRegisterItem::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: componenteditorregisteritem::isValid()
+//-----------------------------------------------------------------------------
+bool ComponentEditorRegisterItem::isValid() const
+{
 	return reg_->isValid(component_->getChoices());
 }
 
-ItemEditor* ComponentEditorRegisterItem::editor() {
-	if (!editor_) {
-		editor_ = new RegisterEditor(reg_, component_, libHandler_);
+//-----------------------------------------------------------------------------
+// Function: componenteditorregisteritem::editor()
+//-----------------------------------------------------------------------------
+ItemEditor* ComponentEditorRegisterItem::editor()
+{
+	if (!editor_)
+    {
+		editor_ = new RegisterEditor(reg_, component_, libHandler_, parameterFinder_, expressionFormatter_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), 
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
@@ -63,29 +97,42 @@ ItemEditor* ComponentEditorRegisterItem::editor() {
 			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
 			this, SIGNAL(helpUrlRequested(QString const&)));
+
+        connectItemEditorToReferenceCounter();
 	}
+
 	return editor_;
 }
 
-void ComponentEditorRegisterItem::createChild( int index ) {
+//-----------------------------------------------------------------------------
+// Function: componenteditorregisteritem::createChild()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterItem::createChild( int index )
+{
 	QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
 		reg_, fields_.at(index), model_, libHandler_, component_, this));
 	fieldItem->setLocked(locked_);
 	
-	if (visualizer_) {
+	if (visualizer_)
+    {
 		fieldItem->setVisualizer(visualizer_);
 	}
 	childItems_.insert(index, fieldItem);
 }
 
-void ComponentEditorRegisterItem::onEditorChanged() {
-
+//-----------------------------------------------------------------------------
+// Function: componenteditorregisteritem::onEditorChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterItem::onEditorChanged()
+{
 	// on register also the grand parent must be updated
-	if (parent() && parent()->parent()) {
+	if (parent() && parent()->parent())
+    {
 		emit contentChanged(parent()->parent());
 
 		// on register also the grand grand parent must be updated
-		if (parent()->parent()->parent()) {
+		if (parent()->parent()->parent())
+        {
 			emit contentChanged(parent()->parent()->parent());
 		}
 	}
@@ -94,11 +141,19 @@ void ComponentEditorRegisterItem::onEditorChanged() {
 	ComponentEditorItem::onEditorChanged();
 }
 
-ItemVisualizer* ComponentEditorRegisterItem::visualizer() {
+//-----------------------------------------------------------------------------
+// Function: componenteditorregisteritem::visualizer()
+//-----------------------------------------------------------------------------
+ItemVisualizer* ComponentEditorRegisterItem::visualizer()
+{
 	return visualizer_;
 }
 
-void ComponentEditorRegisterItem::setVisualizer( MemoryMapsVisualizer* visualizer ) {
+//-----------------------------------------------------------------------------
+// Function: componenteditorregisteritem::setVisualizer()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterItem::setVisualizer( MemoryMapsVisualizer* visualizer )
+{
 	visualizer_ = visualizer;
 
 	// get the graphics item for the memory map
@@ -115,28 +170,41 @@ void ComponentEditorRegisterItem::setVisualizer( MemoryMapsVisualizer* visualize
 	graphItem_->refresh();
 
 	// update the visualizers for field items
-	foreach (QSharedPointer<ComponentEditorItem> item, childItems_) {
+	foreach (QSharedPointer<ComponentEditorItem> item, childItems_)
+    {
 		QSharedPointer<ComponentEditorFieldItem> fieldItem = item.staticCast<ComponentEditorFieldItem>();
 		fieldItem->setVisualizer(visualizer_);
 	}
 
-	connect(graphItem_, SIGNAL(selectEditor()),
-		this, SLOT(onSelectRequest()), Qt::UniqueConnection);
+	connect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 }
 
-QGraphicsItem* ComponentEditorRegisterItem::getGraphicsItem() {
+//-----------------------------------------------------------------------------
+// Function: componenteditorregisteritem::getGraphicsItem()
+//-----------------------------------------------------------------------------
+QGraphicsItem* ComponentEditorRegisterItem::getGraphicsItem()
+{
 	return graphItem_;
 }
 
-void ComponentEditorRegisterItem::updateGraphics() {
-	if (graphItem_) {
+//-----------------------------------------------------------------------------
+// Function: componenteditorregisteritem::updateGraphics()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterItem::updateGraphics()
+{
+	if (graphItem_)
+    {
 		graphItem_->refresh();
 	}
 }
 
-void ComponentEditorRegisterItem::removeGraphicsItem() {
-	if (graphItem_) {
-
+//-----------------------------------------------------------------------------
+// Function: componenteditorregisteritem::removeGraphicsItem()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterItem::removeGraphicsItem()
+{
+	if (graphItem_)
+    {
 		// get the graphics item for the memory map
 		MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
 		Q_ASSERT(parentItem);
