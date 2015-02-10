@@ -160,6 +160,20 @@ private:
     bool registerHasReference(QSharedPointer<Register> targetRegister);
 
     /*!
+     *  Check if any of the register fields has a reference.
+     *
+     *      @param [in] targetRegister      The register, whose fields are being checked.
+     */
+    bool referenceExistsInRegisterFields(QSharedPointer<Register> targetRegister);
+
+    /*!
+     *  Check if a single field has a reference.
+     *
+     *      @param [in] targetField         The target field.
+     */
+    bool registerFieldHasReference(QSharedPointer<Field> targetField);
+
+    /*!
      *  Create the references for memory maps.
      */
     void createReferencesForMemoryMaps();
@@ -180,6 +194,14 @@ private:
      */
     void createReferencesForSingleAddressBlock(QSharedPointer<AddressBlock> addressBlock,
         QTreeWidgetItem* middleAddressBlocksItem);
+
+    /*!
+     *  Create the references for a single register.
+     *
+     *      @param [in] targetRegister  The register.
+     *      @param [in] parentItem      The parent tree item of the new register tree item.
+     */
+    void createReferencesForSingleRegister(QSharedPointer<Register> targetRegister, QTreeWidgetItem* parentItem);
 
     /*!
      *  Check if a reference exists in bus interfaces.
@@ -263,6 +285,14 @@ private:
      *      @param [in] parent          The parent of the upcoming item.
      */
     void createItemsForRegister(QSharedPointer<Register> targetRegister, QTreeWidgetItem* parent);
+
+    /*!
+     *  Create tree items for a register field that is referencing this parameter.
+     *
+     *      @param [in] targetField     The referencing register field.
+     *      @param [in] parent          The parent of the new item.
+     */
+    void createItemsForField(QSharedPointer<Field> targetField, QTreeWidgetItem* parent);
 
     /*!
      *  Create a referencing tree item.

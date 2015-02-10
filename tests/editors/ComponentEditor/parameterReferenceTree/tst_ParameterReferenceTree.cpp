@@ -24,6 +24,7 @@
 #include <IPXACTmodels/memorymap.h>
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/mirroredslaveinterface.h>
+#include <IPXACTmodels/field.h>
 
 #include <QSharedPointer>
 
@@ -57,6 +58,8 @@ private slots:
     void testReferenceInMultipleRegistersInTwoAddressBlocks();
     void testRegisterwithNoReferences();
 
+    void testReferenceInRegisterFieldAddsEightRows();
+
     void testReferenceInBusInterfaceParameterAddsFourRows();
 
     void testReferenceInBusInterfaceMirroredSlaveAddsFourRows();
@@ -81,6 +84,8 @@ private:
 
     QSharedPointer<MemoryMap> createTestMemoryMap(QString const& name,
         QList <QSharedPointer<AddressBlock> > addressBlocks);
+
+    QSharedPointer<Field> createTestField(QString const& name, QString const& offset, QString const& width);
 
     QSharedPointer<ExpressionFormatter> createTestExpressionFormatter(QSharedPointer<Component> component);
 };
@@ -862,6 +867,89 @@ void tst_ParameterReferenceTree::testRegisterwithNoReferences()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_ParameterReferenceTree::testReferenceInRegisterFieldAddsSevenRows()
+//-----------------------------------------------------------------------------
+void tst_ParameterReferenceTree::testReferenceInRegisterFieldAddsEightRows()
+{
+    QSharedPointer<Parameter> searched(new Parameter);
+    searched->setName("searchedParameter");
+    searched->setValueId("searched");
+
+    QList <QSharedPointer<Parameter> > componentParameters;
+    componentParameters.append(searched);
+
+    QList <QSharedPointer <Register> > registers;
+    QSharedPointer <Register> refRegister = createTestRegister("refRegister", "test", "test");
+    
+    registers.append(refRegister);
+
+    QSharedPointer<Field> refField = createTestField("fieldRef", "searched", "nothing");
+    refRegister->getFields().append(refField);
+    
+    QList <QSharedPointer <AddressBlock> > addressBlocks;
+    QSharedPointer <AddressBlock> addressBlockRef = createTestAddressBlock("addressBlockRef", registers);
+    addressBlocks.append(addressBlockRef);
+
+    QList <QSharedPointer<MemoryMap> > memoryMaps;
+    QSharedPointer<MemoryMap> memoryMapRef = createTestMemoryMap("memoryMapRef", addressBlocks);
+    memoryMaps.append(memoryMapRef);
+
+    QSharedPointer<Component> component(new Component);
+    component->setMemoryMaps(memoryMaps);
+    component->setParameters(componentParameters);
+
+    QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
+
+    ParameterReferenceTree tree(component, expressionFormatter, searched->getValueId());
+
+    QCOMPARE(tree.topLevelItemCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->text(ParameterReferenceTree::ITEM_NAME), QString("Memory maps"));
+    QCOMPARE(tree.topLevelItem(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(tree.topLevelItem(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME), memoryMapRef->getName());
+    QCOMPARE(tree.topLevelItem(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
+        QString("Address blocks"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
+        addressBlockRef->getName());
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
+        refRegister->getName());
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->text(
+        ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
+        ParameterReferenceTree::ITEM_NAME), QString("Fields"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
+        ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
+        ParameterReferenceTree::ITEM_NAME), refField->getName());
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
+        ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
+        ParameterReferenceTree::ITEM_NAME), QString("Offset"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
+        ParameterReferenceTree::ITEM_EXPRESSION), expressionFormatter->formatReferringExpression(
+        refField->getBitOffsetExpression()));
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->
+        childCount(), 0);
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_ParameterReferenceTree::testReferenceInBusInterfaceParameterAddsFourRows()
 //-----------------------------------------------------------------------------
 void tst_ParameterReferenceTree::testReferenceInBusInterfaceParameterAddsFourRows()
@@ -999,6 +1087,9 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
     QSharedPointer<Register> registerRef = createTestRegister("registerRef", "searched", "test");
     registers.append(registerRef);
 
+    QSharedPointer<Field> refField = createTestField("fieldRef", "", "searched");
+    registerRef->getFields().append(refField);
+
     QList <QSharedPointer <AddressBlock> > addressBlocks;
     QSharedPointer<AddressBlock> addressRef = createTestAddressBlock("addressBlockRef", registers);
     addressBlocks.append(addressRef);
@@ -1098,13 +1189,36 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
     QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->text(
         ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
-    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->childCount(), 1);
+    //! Test registers.
+    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->childCount(), 2);
     QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
         ParameterReferenceTree::ITEM_NAME), QString("Offset"));
     QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
         ParameterReferenceTree::ITEM_EXPRESSION),
         expressionFormatter->formatReferringExpression(registerRef->getAddressOffset()));
     QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->childCount(), 0);
+
+    //! Test register fields.
+    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(1)->text(
+        ParameterReferenceTree::ITEM_NAME), QString("Fields"));
+    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(1)->text(
+        ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(1)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->text(
+        ParameterReferenceTree::ITEM_NAME), refField->getName());
+    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->text(
+        ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->child(0)->text(
+        ParameterReferenceTree::ITEM_NAME), QString("Width"));
+    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->child(0)->text(
+        ParameterReferenceTree::ITEM_EXPRESSION), expressionFormatter->formatReferringExpression(
+        refField->getBitWidthExpression()));
+
+    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->child(0)->
+        childCount(), 0);
 
     //! Test views.
     QCOMPARE(tree.topLevelItem(3)->text(ParameterReferenceTree::ITEM_NAME), QString("Views"));
@@ -1276,6 +1390,20 @@ QSharedPointer<MemoryMap> tst_ParameterReferenceTree::createTestMemoryMap(QStrin
     memoryMapRef->setItems(memoryMapItems);
 
     return memoryMapRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterReferenceTree::createTestField()
+//-----------------------------------------------------------------------------
+QSharedPointer<Field> tst_ParameterReferenceTree::createTestField(QString const& name, QString const& offset,
+    QString const& width)
+{
+    QSharedPointer<Field> fieldRef(new Field);
+    fieldRef->setName(name);
+    fieldRef->setBitOffsetExpression(offset);
+    fieldRef->setBitWidthExpression(width);
+
+    return fieldRef;
 }
 
 //-----------------------------------------------------------------------------

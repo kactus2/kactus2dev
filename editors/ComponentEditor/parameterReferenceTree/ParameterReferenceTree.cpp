@@ -340,6 +340,41 @@ bool ParameterReferenceTree::registerHasReference(QSharedPointer<Register> targe
         return true;
     }
 
+    if (referenceExistsInRegisterFields(targetRegister))
+    {
+        return true;
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInRegisterFields()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInRegisterFields(QSharedPointer<Register> targetRegister)
+{
+    foreach (QSharedPointer<Field> registerField, targetRegister->getFields())
+    {
+        if (registerFieldHasReference(registerField))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::registerFieldHasReference()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::registerFieldHasReference(QSharedPointer<Field> targetField)
+{
+    if (targetField->getBitOffsetExpression().contains(targetID_) ||
+        targetField->getBitWidthExpression().contains(targetID_))
+    {
+        return true;
+    }
+
     return false;
 }
 
@@ -404,9 +439,32 @@ void ParameterReferenceTree::createReferencesForSingleAddressBlock(QSharedPointe
         {
             if (registerHasReference(targetRegister))
             {
-                QTreeWidgetItem* registerItem = createMiddleItem(targetRegister->getName(),
-                    addressBlockItem);
-                createItemsForRegister(targetRegister, registerItem);
+                createReferencesForSingleRegister(targetRegister, addressBlockItem);
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::createReferencesForSingleRegister()
+//-----------------------------------------------------------------------------
+void ParameterReferenceTree::createReferencesForSingleRegister(QSharedPointer<Register> targetRegister,
+    QTreeWidgetItem* parentItem)
+{
+    QTreeWidgetItem* registerItem = createMiddleItem(targetRegister->getName(), parentItem);
+    createItemsForRegister(targetRegister, registerItem);
+
+    if (referenceExistsInRegisterFields(targetRegister))
+    {
+        QTreeWidgetItem* fieldsItem = createMiddleItem("Fields", registerItem);
+        colourItemGrey(fieldsItem);
+
+        foreach (QSharedPointer<Field> registerField, targetRegister->getFields())
+        {
+            if (registerFieldHasReference(registerField))
+            {
+                QTreeWidgetItem* singleFieldItem = createMiddleItem(registerField->getName(), fieldsItem);
+                createItemsForField(registerField, singleFieldItem);
             }
         }
     }
@@ -651,6 +709,25 @@ void ParameterReferenceTree::createItemsForRegister(QSharedPointer<Register> tar
     {
         QString itemName = "Size";
         QString expression = targetRegister->getSizeExpression();
+        createItem(itemName, expression, parent);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::createItemsForField()
+//-----------------------------------------------------------------------------
+void ParameterReferenceTree::createItemsForField(QSharedPointer<Field> targetField, QTreeWidgetItem* parent)
+{
+    if (targetField->getBitOffsetExpression().contains(targetID_))
+    {
+        QString itemName = "Offset";
+        QString expression = targetField->getBitOffsetExpression();
+        createItem(itemName, expression, parent);
+    }
+    if (targetField->getBitWidthExpression().contains(targetID_))
+    {
+        QString itemName = "Width";
+        QString expression = targetField->getBitWidthExpression();
         createItem(itemName, expression, parent);
     }
 }
