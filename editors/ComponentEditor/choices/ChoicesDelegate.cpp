@@ -78,6 +78,7 @@ void ChoicesDelegate::setEditorData(QWidget* editor, QModelIndex const& index) c
         EnumerationModel* model = new EnumerationModel(choices_->at(index.row())->enumerations(), view);
 
         proxy->setSourceModel(model);
+        proxy->setSortRole(Qt::EditRole);
 
         view->setModel(proxy);
         view->setSortingEnabled(true);

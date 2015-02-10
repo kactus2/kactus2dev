@@ -139,7 +139,7 @@ bool EnumerationModel::setData(QModelIndex const& index, QVariant const& value, 
     {
         if (isLastRow(index.row()) && !value.toString().isEmpty())
         {
-            onAddItem(index);
+            onAddItem(QModelIndex());
         }
 
         if (hasEnumerationOnRow(index.row()))
