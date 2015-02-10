@@ -16,8 +16,10 @@
 //-----------------------------------------------------------------------------
 // Function: ModelParameterVerilogWriter::ModelParameterVerilogWriter()
 //-----------------------------------------------------------------------------
-ModelParameterVerilogWriter::ModelParameterVerilogWriter(QSharedPointer<ModelParameter> modelParameter) :
-modelParameter_(modelParameter)
+ModelParameterVerilogWriter::ModelParameterVerilogWriter(QSharedPointer<ModelParameter> modelParameter,
+    QSharedPointer<ExpressionFormatter> formatter) :
+modelParameter_(modelParameter),
+formatter_(formatter)
 {
 
 }
@@ -90,5 +92,7 @@ QString ModelParameterVerilogWriter::formattedValue() const
         }
     }
 
-    return value;
+    QString formatted = formatter_->formatReferringExpression(value);
+
+    return formatted;
 }

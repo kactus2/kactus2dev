@@ -15,6 +15,8 @@
 #include "../veriloggeneratorplugin_global.h"
 #include "../common/Writer.h"
 
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <QString>
 #include <QSharedPointer>
 #include <QTextStream>
@@ -32,9 +34,11 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] modelParameter   The model parameter represented by this object.
+	 *      @param [in] modelParameter  The model parameter represented by this object.
+	 *      @param [in] formatter       The expression formatter.
 	 */
-	ModelParameterVerilogWriter(QSharedPointer<ModelParameter> modelParameter);
+	ModelParameterVerilogWriter(QSharedPointer<ModelParameter> modelParameter,
+        QSharedPointer<ExpressionFormatter> formatter);
 	
 	//! The destructor
 	~ModelParameterVerilogWriter();
@@ -80,6 +84,9 @@ private:
 
     //! The model parameter to write to Verilog.
     QSharedPointer<ModelParameter> modelParameter_;
+
+    //! The expresion formatter, used to change ids from expressions to names of references.
+    QSharedPointer<ExpressionFormatter> formatter_;
 };
 
 #endif // ModelParameterVerilogWriter_H

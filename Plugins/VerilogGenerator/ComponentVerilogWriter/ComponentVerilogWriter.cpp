@@ -114,7 +114,7 @@ void ComponentVerilogWriter::writeParameter(QTextStream& outputStream, QSharedPo
     bool isLast) const
 {
     outputStream << indentation();
-    ModelParameterVerilogWriter parameterWriter(parameter);
+    ModelParameterVerilogWriter parameterWriter(parameter, formatter_);
     parameterWriter.write(outputStream);
 
     if (!isLast)

@@ -61,6 +61,8 @@ private slots:
 
     void testParametrizedPort();
 
+    void testParameterizedModelParameter();
+
 private:
     void writeComponent(); 
 
@@ -489,6 +491,30 @@ void tst_ComponentVerilogWriter::testParametrizedPort()
         "    // These ports are not in any interface\n" 
         "    output         [dataWidth-1:0] data\n"
         ");\n"
+        "\n"
+        "endmodule\n"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentVerilogWriter::testParameterizedModelParameter()
+//-----------------------------------------------------------------------------
+void tst_ComponentVerilogWriter::testParameterizedModelParameter()
+{
+    QSharedPointer<ModelParameter> parameter(new ModelParameter());
+    parameter->setName("target");
+    parameter->setValue("40");
+    parameter->setValueId("TARGET-ID");
+    component_->getModel()->addModelParameter(parameter);
+
+    addModelParameter("referer", "TARGET-ID");
+
+    writeComponent();
+
+    QCOMPARE(outputString_, QString(
+        "module TestComponent #(\n"
+        "    parameter         target           = 40,\n"
+        "    parameter         referer          = target\n"
+        ") ();\n"
         "\n"
         "endmodule\n"));
 }
