@@ -65,8 +65,33 @@ public:
 
 protected:
 
-    //! Handler for key press events.
+    /*!
+     *  Captures the user input and edits the underlying expression accordingly.
+     *
+     *      @param [in] keyEvent   The event representing the user input.
+     */
     virtual void keyPressEvent(QKeyEvent* keyEvent);
+
+    /*!
+     *  Selects the text when the editor is opened.
+     *
+     *      @param [in] focusEvent   The event representing the focus change.
+     */
+    virtual void focusInEvent(QFocusEvent* focusEvent);
+
+    /*!
+     *  Captures the mouse move and sets/clears notSelectingText flag according to mouse press.
+     *
+     *      @param [in] mouseEvent   The mouse event representing the mouse movement and button press.
+     */
+    virtual void mouseMoveEvent(QMouseEvent* mouseEvent);
+
+    /*!
+     *  Clears notSelectingText flag when the mouse button is released.
+     *
+     *      @param [in] mouseEvent   The event representing the mouse button release.
+     */
+    virtual void mouseReleaseEvent(QMouseEvent* mouseEvent);
 
 signals:
 
@@ -98,7 +123,7 @@ private slots:
      *  for new completion.
      *
      */
-    void onCursorPositionChanged();
+    void updateCompletions();
 
 private:
 
@@ -147,15 +172,6 @@ private:
      *      @return The format for the given color.
      */
     QTextCharFormat colorFormat(QString const& textColor) const;
-        
-    /*!
-     *  Checks if the key event should not be allowed to edit the content.
-     *
-     *      @param [in] keyEvent   The key event to check.
-     *
-     *      @return True, if the key event should not be allowed, otherwise false.
-     */
-    bool editingNotAllowed(QKeyEvent* keyEvent);
 
     /*!
      *  Checks if the editing would change text in the middle of a referencing term.
@@ -293,6 +309,44 @@ private:
      */
     bool isWordDelimiter(QString const& text) const; 
 
+    /*!
+     *  Checks if the given key event will remove or replace text.
+     *
+     *      @param [in] keyEvent   The event to check.
+     *
+     *      @return True, if the event will remove or replace text, otherwise false.
+     */
+    bool removesOrReplacesText(QKeyEvent* keyEvent);
+
+    /*!
+     *  Removes the current selection in the underlying expression.
+     */
+    void removeSelectionInExpression();
+
+    /*!
+     *  Replaces the references in the underlying expression with the referenced names.
+     *
+     *      @param [in] firstWord   The sequence number of the first word to replace.
+     *      @param [in] lastWord    The sequence number of the last word to replace.
+     */
+    void replaceReferencesInExpressionWithNames(int firstWord, int lastWord);
+
+    /*!
+     *  Ends the editing of current term in the underlying expression with the given word delimiter.
+     *
+     *      @param [in] delimiter   The word delimiter ending the term edit.
+     */
+    void finishEditingCurrentTerm(QString delimiter);
+    
+    /*!
+     *  Checks if the given key event represents shortcut for showing all available completions.
+     *
+     *      @param [in] keyEvent   The key event to check.
+     *
+     *      @return True, if the key event requests showing completions, otherwise false.
+     */
+    bool showCompletionsRequested(QKeyEvent* keyEvent);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -305,6 +359,9 @@ private:
 
     //! The underlying expression for the editor.
     QString expression_;
+    
+    //! Flag for indicating that the user is not selecting text with the mouse.
+    bool notSelectingText_;
 };
 
 #endif // EXPRESSIONEDITOR_H

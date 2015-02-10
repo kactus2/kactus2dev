@@ -25,6 +25,8 @@
 
 #include <IPXACTmodels/component.h>
 
+Q_DECLARE_METATYPE(Qt::Key);
+
 class tst_ExpressionEditor : public QObject
 {
     Q_OBJECT
@@ -58,7 +60,7 @@ private slots:
 
     void testColorsAreSetWhenRemovingText();
 
-    void testReferenceCannotBeEditedInTheMiddleOfTheName();
+    void testEditingInTheMiddleOfReferenceName();
     
     void testRemovingExpression();
     void testRemovingReference();
@@ -66,8 +68,10 @@ private slots:
 
     void testReplaceReferenceWithAnother();
 
-    void testCannotRemoveIfActiveSelection();
-     
+    void testRemoveAndReplaceSelection();
+    void testRemoveAndReplaceSelectionWithReference();
+    void testRemoveAndReplaceSelectionWithReference_data();
+
     void testEditingConstantExpression();
     void testEditingConstantExpression_data();
 
@@ -76,6 +80,7 @@ private:
     ExpressionEditor* createEditorWithoutFinder();
     ExpressionEditor* createEditorForComponent(QSharedPointer<Component> component);
    
+
 };
 
 //-----------------------------------------------------------------------------
@@ -240,6 +245,8 @@ void tst_ExpressionEditor::testCompletionsAreShownOnCtrlSpace()
     QTest::keyClick(editor, Qt::Key_Space, Qt::ControlModifier);
 
     QVERIFY2(completer->popup()->isVisible(), "Completer popup should be visible when Ctrl+Space is pressed.");
+
+    QCOMPARE(editor->toPlainText(), QString(""));
 
     delete editor;
     delete completer;
@@ -573,9 +580,9 @@ void tst_ExpressionEditor::testColorsAreSetWhenRemovingText()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ExpressionEditor::testReferenceCannotBeEditedInTheMiddleOfTheName()
+// Function: tst_ExpressionEditor::testEditingInTheMiddleOfReferenceName()
 //-----------------------------------------------------------------------------
-void tst_ExpressionEditor::testReferenceCannotBeEditedInTheMiddleOfTheName()
+void tst_ExpressionEditor::testEditingInTheMiddleOfReferenceName()
 {
     QSharedPointer<Parameter> testParameter(new Parameter());
     testParameter->setName("testParameter");
@@ -589,6 +596,7 @@ void tst_ExpressionEditor::testReferenceCannotBeEditedInTheMiddleOfTheName()
     targetComponent->setParameters(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
+    QSignalSpy referenceDecreases(editor, SIGNAL(decreaseReference(QString const&)));
 
     editor->setExpression("id");
     
@@ -597,23 +605,25 @@ void tst_ExpressionEditor::testReferenceCannotBeEditedInTheMiddleOfTheName()
     editor->setTextCursor(cursor);
 
     QTest::keyClick(editor, Qt::Key_Space);
-    QCOMPARE(editor->toPlainText(), QString("testParameter"));
-    QCOMPARE(editor->getExpression(), QString("id"));
+    QCOMPARE(editor->toPlainText(), QString("test Parameter"));
+    QCOMPARE(editor->getExpression(), QString("test Parameter"));
+
+    QCOMPARE(referenceDecreases.first().count(), 1);
 
     QTest::keyClick(editor, Qt::Key_Delete);
-    QCOMPARE(editor->toPlainText(), QString("testParameter"));
-    QCOMPARE(editor->getExpression(), QString("id"));
+    editor->finishEditingCurrentWord();
+    QCOMPARE(editor->toPlainText(), QString("test arameter"));
+    QCOMPARE(editor->getExpression(), QString("test arameter"));
 
     QTest::keyClick(editor, Qt::Key_Backspace);
-    QCOMPARE(editor->toPlainText(), QString("testParameter"));
-    QCOMPARE(editor->getExpression(), QString("id"));
+    editor->finishEditingCurrentWord();
+    QCOMPARE(editor->toPlainText(), QString("testarameter"));
+    QCOMPARE(editor->getExpression(), QString("testarameter"));
 
-    QTest::keyClicks(editor, "for");
-    QCOMPARE(editor->toPlainText(), QString("testParameter"));
-    QCOMPARE(editor->getExpression(), QString("id"));
-
-    QTest::keyClick(editor, Qt::Key_Right);
-    QCOMPARE(editor->textCursor().position(), 5);
+    QTest::keyClicks(editor, "+P");
+    editor->finishEditingCurrentWord();
+    QCOMPARE(editor->toPlainText(), QString("test+Parameter"));
+    QCOMPARE(editor->getExpression(), QString("test+Parameter"));
 
     delete editor;
 }
@@ -821,31 +831,121 @@ void tst_ExpressionEditor::testReplaceReferenceWithAnother()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ExpressionEditor::testCannotRemoveIfActiveSelection()
+// Function: tst_ExpressionEditor::testRemoveAndReplaceSelection()
 //-----------------------------------------------------------------------------
-void tst_ExpressionEditor::testCannotRemoveIfActiveSelection()
+void tst_ExpressionEditor::testRemoveAndReplaceSelection()
 {
     QSharedPointer<Component> emptyComponent(new Component());
 
     ExpressionEditor* editor = createEditorForComponent(emptyComponent);
 
-    editor->setExpression("8'hff");
+    editor->setExpression("8'hff+8'hff");
 
     QTextCursor cursor = editor->textCursor();
+    cursor.movePosition(QTextCursor::Start, QTextCursor::MoveAnchor);
+    cursor.setPosition(5, QTextCursor::KeepAnchor);
+    editor->setTextCursor(cursor);
+
+    QTest::keyClick(editor, Qt::Key_Delete);
+    editor->finishEditingCurrentWord();
+
+    QCOMPARE(editor->toPlainText(), QString("+8'hff"));
+    QCOMPARE(editor->getExpression(), QString("+8'hff"));
+
+    cursor = editor->textCursor();
     cursor.movePosition(QTextCursor::Start, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
     editor->setTextCursor(cursor);
 
-    QVERIFY(cursor.hasSelection());
-
-    QTest::keyClick(editor, Qt::Key_Delete);
-    QTest::keyClick(editor, Qt::Key_Backspace);
+    QVERIFY(editor->textCursor().hasSelection());
     QTest::keyClicks(editor, "abc");
 
-    QCOMPARE(editor->toPlainText(), QString("8'hff"));
-    QCOMPARE(editor->getExpression(), QString("8'hff"));
+    editor->finishEditingCurrentWord();
+
+    QCOMPARE(editor->toPlainText(), QString("abc"));
+    QCOMPARE(editor->getExpression(), QString("abc"));
 
     delete editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testRemoveAndReplaceSelectionWithReference()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testRemoveAndReplaceSelectionWithReference()
+{
+    QFETCH(QString, initialExpression);    
+    QFETCH(QString, selectedText);
+    QFETCH(Qt::Key, input);
+    QFETCH(QString, expectedText);
+    QFETCH(QString, expectedExpression);
+    QFETCH(int, numberOfReferencesInSelection);
+
+    QSharedPointer<Parameter> testParameter(new Parameter());
+    testParameter->setName("testParameter");
+    testParameter->setValueId("veryLongReferenceName");
+    testParameter->setValue("32");
+
+    QList<QSharedPointer<Parameter> > parameters;
+    parameters.append(testParameter);
+
+    QSharedPointer<Component> targetComponent(new Component());
+    targetComponent->setParameters(parameters);
+
+    ExpressionEditor* editor = createEditorForComponent(targetComponent);
+    QSignalSpy referenceDecreases(editor, SIGNAL(decreaseReference(QString const&)));
+
+    editor->setExpression(initialExpression);
+
+    QTextCursor cursor = editor->textCursor();
+    cursor.setPosition(editor->toPlainText().indexOf(selectedText), QTextCursor::MoveAnchor);
+    cursor.setPosition(cursor.position() + selectedText.length(), QTextCursor::KeepAnchor);
+    editor->setTextCursor(cursor);
+
+    QTest::keyClick(editor, input);
+    editor->finishEditingCurrentWord();
+
+    QCOMPARE(editor->toPlainText(), expectedText);
+    QCOMPARE(editor->getExpression(), expectedExpression);
+    QCOMPARE(referenceDecreases.count(), numberOfReferencesInSelection);
+
+    delete editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testRemoveAndReplaceSelectionWithReference_data()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testRemoveAndReplaceSelectionWithReference_data()
+{
+    QTest::addColumn<QString>("initialExpression");    
+    QTest::addColumn<QString>("selectedText");
+    QTest::addColumn<Qt::Key>("input");
+    QTest::addColumn<QString>("expectedText");
+    QTest::addColumn<QString>("expectedExpression");
+    QTest::addColumn<int>("numberOfReferencesInSelection");
+
+    QTest::newRow("delete whole expression") << "veryLongReferenceName+veryLongReferenceName" << 
+        "testParameter+testParameter" << Qt::Key_Delete << "" << "" << 2;
+
+    QTest::newRow("delete reference from expression") << "veryLongReferenceName+1" << 
+        "testParameter+" << Qt::Key_Delete << "1" << "1" << 1;
+
+    QTest::newRow("delete part of reference") << "1+veryLongReferenceName+1" << 
+        "Parameter" << Qt::Key_Delete << "1+test+1" << "1+test+1" << 1;
+
+    QTest::newRow("delete part of reference") << "veryLongReferenceName+1+2" << 
+        "Parameter+1" << Qt::Key_Delete << "test+2" << "test+2" << 1;
+
+    QTest::newRow("delete parts from two references") << "veryLongReferenceName+veryLongReferenceName" << 
+        "Parameter+t" << Qt::Key_Delete << "testestParameter" << "testestParameter" << 2;
+
+    QTest::newRow("replace reference") << "veryLongReferenceName" << 
+        "testParameter" << Qt::Key_0 << "0" << "0" << 1;
+
+    QTest::newRow("replace part of reference") << "veryLongReferenceName" << 
+        "test" << Qt::Key_1 << "1Parameter" << "1Parameter" << 1;
+
+    QTest::newRow("replace parts of two references") << "veryLongReferenceName+veryLongReferenceName" << 
+        "Parameter+t" << Qt::Key_T << "testtestParameter" << "testtestParameter" << 2;
 }
 
 //-----------------------------------------------------------------------------
