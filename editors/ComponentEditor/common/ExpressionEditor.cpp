@@ -182,8 +182,7 @@ void ExpressionEditor::keyPressEvent(QKeyEvent* keyEvent)
         QTextEdit::keyPressEvent(keyEvent);
     }
 
-    if (!(keyEvent->key() == Qt::Key_Tab) && 
-        (!currentWord().isEmpty() || showCompletionsRequested(keyEvent)))
+    if (!currentWord().isEmpty() || showCompletionsRequested(keyEvent))
     {
         nameCompleter_->setCompletionPrefix(currentWord());
         nameCompleter_->complete();
@@ -251,7 +250,7 @@ void ExpressionEditor::complete(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 void ExpressionEditor::updateCompletions()
 {
-    if (notSelectingText_ && isVisible())
+    if (notSelectingText_)
     {
         nameCompleter_->setCompletionPrefix(currentWord());
 
