@@ -12,8 +12,14 @@
 #include <QString>
 #include <QtTest>
 
+#include <IPXACTmodels/model.h>
+#include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/port.h>
+
 #include <Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.h>
+
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 
 Q_DECLARE_METATYPE(General::Direction)
 
@@ -29,32 +35,50 @@ public:
 private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
+
     void init();
     void cleanup();
+
     void testNullPointerAsConstructorParameter();
+
     void testWriteEmptyPort();
+
     void testWriteNormalPort();
     void testWriteNormalPort_data();
+
     void testWriteNonTypedPort();
+
     void testWriteVectorPort();
     void testWriteVectorPort_data();
+
+    void testWriteParametrizedPort();
+    void testWriteParametrizedPort_data();
 
 private:
 
     void compareLineByLine(QString const& expectedOutput);
 
+    PortVerilogWriter* makeWriter(QSharedPointer<Port> port);
+   
+    QSharedPointer<Component> enclosingComponent_;
+
     QSharedPointer<Port> port_;
+
+    QSharedPointer<ExpressionFormatter> formatter_;
 
     QString outputString_;
 
     QTextStream outputStream_;
+
+    PortVerilogWriter* portWriter_;
    
 };
 
 //-----------------------------------------------------------------------------
 // Function: tst_PortVerilogWriter::tst_PortVerilogWriter()
 //-----------------------------------------------------------------------------
-tst_PortVerilogWriter::tst_PortVerilogWriter()
+tst_PortVerilogWriter::tst_PortVerilogWriter() : enclosingComponent_(new Component), port_(), 
+    formatter_(), outputString_(), outputStream_(&outputString_), portWriter_(0)
 {
 }
 
@@ -78,8 +102,11 @@ void tst_PortVerilogWriter::cleanupTestCase()
 void tst_PortVerilogWriter::init()
 {
     port_ = QSharedPointer<Port>(new Port());
-    
+ 
     outputStream_.setString(&outputString_);
+
+    QSharedPointer<ComponentParameterFinder> finder(new ComponentParameterFinder(enclosingComponent_));
+    formatter_ = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(finder));
 }
 
 //-----------------------------------------------------------------------------
@@ -87,6 +114,7 @@ void tst_PortVerilogWriter::init()
 //-----------------------------------------------------------------------------
 void tst_PortVerilogWriter::cleanup()
 {
+    delete portWriter_;
     port_.clear();
 
     outputString_.clear();
@@ -97,9 +125,9 @@ void tst_PortVerilogWriter::cleanup()
 //-----------------------------------------------------------------------------
 void tst_PortVerilogWriter::testNullPointerAsConstructorParameter()
 {
-    PortVerilogWriter verilogPort(QSharedPointer<Port>(0));
+    makeWriter(QSharedPointer<Port>(0));
 
-    verilogPort.write(outputStream_);
+    portWriter_->write(outputStream_);
 
     QCOMPARE(outputString_, QString());
 }
@@ -109,9 +137,9 @@ void tst_PortVerilogWriter::testNullPointerAsConstructorParameter()
 //-----------------------------------------------------------------------------
 void tst_PortVerilogWriter::testWriteEmptyPort()
 {
-    PortVerilogWriter verilogPort(port_);
+    makeWriter(port_);
 
-    verilogPort.write(outputStream_);
+    portWriter_->write(outputStream_);
 
     QCOMPARE(outputString_, QString());
 }
@@ -129,9 +157,9 @@ void tst_PortVerilogWriter::testWriteNormalPort()
     port_->setDirection(direction);
     port_->setTypeName(type);
 
-    PortVerilogWriter verilogPort(port_);
+    makeWriter(port_);
 
-    verilogPort.write(outputStream_);
+    portWriter_->write(outputStream_);
 
     QCOMPARE(outputString_, expectedOutput);
 }
@@ -160,9 +188,9 @@ void tst_PortVerilogWriter::testWriteNonTypedPort()
     port_->setName("Data");
     port_->setDirection(General::IN);
 
-    PortVerilogWriter verilogPort(port_);
+    makeWriter(port_);
 
-    verilogPort.write(outputStream_);
+    portWriter_->write(outputStream_);
 
     QCOMPARE(outputString_, QString("input                 Data"));
 }
@@ -185,9 +213,9 @@ void tst_PortVerilogWriter::testWriteVectorPort()
     port_->setLeftBound(leftBound);
     port_->setRightBound(rightBound);
 
-    PortVerilogWriter verilogPort(port_);
+    makeWriter(port_);
 
-    verilogPort.write(outputStream_);
+    portWriter_->write(outputStream_);
 
     QCOMPARE(outputString_, expectedOutput);
 }
@@ -203,10 +231,68 @@ void tst_PortVerilogWriter::testWriteVectorPort_data()
     QTest::addColumn<int>("rightBound");
     QTest::addColumn<QString>("expectedOutput");
 
-    QTest::newRow("scalar port") << "enable" << "" << 0 << 0 <<                 "output                enable";
-    QTest::newRow("normal vector port") << "bus" << "reg" << 7 << 0 <<          "output reg     [7:0]  bus";
-    QTest::newRow("sliced vector port") << "slicedBus" << "" << 7 << 4 <<       "output         [7:4]  slicedBus";
-    QTest::newRow("big endian vector port") << "reversed" << "" << 0 << 15 <<   "output         [0:15] reversed";
+    QTest::newRow("scalar port") << "enable" << "" << 0 << 0 <<               "output                enable";
+    QTest::newRow("normal vector port") << "bus" << "reg" << 7 << 0 <<        "output reg     [7:0]  bus";
+    QTest::newRow("sliced vector port") << "slicedBus" << "" << 7 << 4 <<     "output         [7:4]  slicedBus";
+    QTest::newRow("big endian vector port") << "reversed" << "" << 0 << 15 << "output         [0:15] reversed";
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_PortVerilogWriter::testWriteParametrizedPort()
+//-----------------------------------------------------------------------------
+void tst_PortVerilogWriter::testWriteParametrizedPort()
+{
+    QFETCH(QString, leftExpressions);
+    QFETCH(QString, rightExpression);
+    QFETCH(QString, expectedOutput);
+
+    QSharedPointer<ModelParameter> parameter1(new ModelParameter());
+    parameter1->setName("name");
+    parameter1->setValueId("id");
+
+    QSharedPointer<ModelParameter> parameter2(new ModelParameter());
+    parameter2->setName("name2");
+    parameter2->setValueId("id2");
+
+    enclosingComponent_->getModel()->addModelParameter(parameter1);
+    enclosingComponent_->getModel()->addModelParameter(parameter2);
+
+    port_->setName("data");
+    port_->setDirection(General::IN);
+    port_->setTypeName("bit");
+    port_->setLeftBoundExpression(leftExpressions);
+    port_->setRightBoundExpression(rightExpression);
+
+    makeWriter(port_);
+
+    portWriter_->write(outputStream_);
+
+    QCOMPARE(outputString_, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_PortVerilogWriter::testWriteVectorPort_data()
+//-----------------------------------------------------------------------------
+void tst_PortVerilogWriter::testWriteParametrizedPort_data()
+{
+    QTest::addColumn<QString>("leftExpressions");
+    QTest::addColumn<QString>("rightExpression");
+    QTest::addColumn<QString>("expectedOutput");
+
+    QTest::newRow("Left parameterized") << "id-1" << "0" << "input  bit     [name-1:0] data";
+    QTest::newRow("Right parameterized") << "1" << "id" <<  "input  bit     [1:name] data";
+    QTest::newRow("Left and right parameterized") << "id" << "id" <<  "input  bit     [name:name] data";
+    QTest::newRow("Left and right parameterized with different parameters") 
+        << "id-1" << "id2" <<  "input  bit     [name-1:name2] data";
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_PortVerilogWriter::makeWriter()
+//-----------------------------------------------------------------------------
+PortVerilogWriter* tst_PortVerilogWriter::makeWriter(QSharedPointer<Port> port)
+{
+    portWriter_ = new PortVerilogWriter(port, formatter_);
+    return portWriter_;
 }
 
 //-----------------------------------------------------------------------------
@@ -225,6 +311,7 @@ void tst_PortVerilogWriter::compareLineByLine(QString const& expectedOutput)
 
     QCOMPARE(outputLines.count(), expectedLines.count());
 }
+
 
 QTEST_APPLESS_MAIN(tst_PortVerilogWriter)
 

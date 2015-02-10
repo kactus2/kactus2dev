@@ -11,11 +11,14 @@
 
 #include "PortVerilogWriter.h"
 
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 //-----------------------------------------------------------------------------
 // Function: PortVerilogWriter::PortVerilogWriter()
 //-----------------------------------------------------------------------------
-PortVerilogWriter::PortVerilogWriter(QSharedPointer<const Port> port)
-    : port_(port)
+PortVerilogWriter::PortVerilogWriter(QSharedPointer<const Port> port, 
+    QSharedPointer<ExpressionFormatter> expressionFormatter)
+    : port_(port), formatter_(expressionFormatter)
 {
 
 }
@@ -59,7 +62,7 @@ QString PortVerilogWriter::createDeclaration() const
 
     portDeclaration.replace("<direction>", direction().leftJustified(6));
     portDeclaration.replace("<type>", port_->getTypeName().leftJustified(7));
-    portDeclaration.replace("<bounds>", bounds().leftJustified(6));
+    portDeclaration.replace("<bounds>", formatter_->formatReferringExpression(bounds()).leftJustified(6));
     portDeclaration.replace("<name>", port_->getName());
 
     return portDeclaration;
@@ -93,11 +96,12 @@ QString PortVerilogWriter::direction() const
 //-----------------------------------------------------------------------------
 QString PortVerilogWriter::bounds() const
 {
-    QString boundsDefinition;
-    if (port_->getPortSize() > 1)
+    QString boundsDefinition = "[" + port_->getLeftBoundExpression() + ":" + 
+        port_->getRightBoundExpression() + "]";
+
+    if (boundsDefinition == "[0:0]")
     {
-        boundsDefinition = "[" + QString::number(port_->getLeftBound()) + ":" + 
-                               QString::number(port_->getRightBound()) + "]";
+        return QString();
     }
 
     return boundsDefinition;

@@ -20,14 +20,16 @@
 
 #include <QTextStream>
 
-class LibraryInterface;
+
 class ComponentVerilogWriter;
 class ComponentInstanceVerilogWriter;
+class ExpressionFormatter;
+class LibraryInterface;
+class PortSorter;
 class VerilogHeaderWriter;
 class VerilogWireWriter;
-class WriterGroup;
-class PortSorter;
 class Writer;
+class WriterGroup;
 
 //-----------------------------------------------------------------------------
 // Verilog file generator.
@@ -70,6 +72,15 @@ private:
      *  Initializes writers for parsing.
      */
     void initializeWriters();
+
+    /*!
+     *  Creates an expression formatter for the given component.
+     *
+     *      @param [in] targetComponent   The component for which to create the formatter.
+     *
+     *      @return Expression formatter for the component.
+     */
+    QSharedPointer<ExpressionFormatter> createFormatterForComponent(QSharedPointer<Component> targetComponent);
 
     /*!
     *  Checks if the generator should write nothing.

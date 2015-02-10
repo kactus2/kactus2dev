@@ -15,6 +15,9 @@
 #include <Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h>
 #include <Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.h>
 
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/model.h>
@@ -39,16 +42,24 @@ private slots:
 
     // Test cases:
     void testNullPointerAsConstructorParameter();
+
     void testNamedModule();
     void testNamedModule_data();
+
     void testPortDescriptionIsWrittenAfterPort();
+
     void testInterfaceDescriptionIsPrinted();
     void testInterfaceDescriptionIsPrinted_data();
+
     void testPortsOrderedByName();
     void testPortsOrderedByDirectionThenName();
     void testPortsOrderedByInterfaceThenDirectionThenName();
+
     void testComponentWithModelParameters();
+
     void testParametersPrecedePorts();
+
+    void testParametrizedPort();
 
 private:
     void writeComponent(); 
@@ -61,6 +72,7 @@ private:
 
     void mapPortToInterface( QString const& portName, QString const& interfaceName );
    
+
     //! The top component to write to Verilog.
     QSharedPointer<Component> component_;
 
@@ -72,6 +84,9 @@ private:
 
     //! The writer output stream.
     QTextStream outputStream_;
+
+    //! The formatter for expressions.
+    QSharedPointer<ExpressionFormatter> formatter_;
 };
 
 //-----------------------------------------------------------------------------
@@ -80,7 +95,8 @@ private:
 tst_ComponentVerilogWriter::tst_ComponentVerilogWriter(): component_(), 
     sorter_(new InterfaceDirectionNameSorter()),
     outputString_(), 
-    outputStream_()
+    outputStream_(),
+    formatter_()
 {
 
 }
@@ -110,6 +126,9 @@ void tst_ComponentVerilogWriter::init()
     component_ = QSharedPointer<Component>(new Component(vlnv));
 
     outputStream_.setString(&outputString_);
+
+    QSharedPointer<ComponentParameterFinder> finder(new ComponentParameterFinder(component_));
+    formatter_ = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(finder));
 }
 
 //-----------------------------------------------------------------------------
@@ -128,7 +147,8 @@ void tst_ComponentVerilogWriter::cleanup()
 //-----------------------------------------------------------------------------
 void tst_ComponentVerilogWriter::testNullPointerAsConstructorParameter()
 {
-    ComponentVerilogWriter writer(QSharedPointer<Component>(0), QSharedPointer<PortSorter>(0));
+    ComponentVerilogWriter writer(QSharedPointer<Component>(0),
+        QSharedPointer<PortSorter>(0), QSharedPointer<ExpressionFormatter>(0));
 
     writer.write(outputStream_);
 
@@ -182,7 +202,7 @@ void tst_ComponentVerilogWriter::testNamedModule_data()
 //-----------------------------------------------------------------------------
 void tst_ComponentVerilogWriter::writeComponent()
 {
-    ComponentVerilogWriter writer(component_, sorter_);    
+    ComponentVerilogWriter writer(component_, sorter_, formatter_);    
     writer.write(outputStream_);
 }
 
@@ -447,6 +467,31 @@ void tst_ComponentVerilogWriter::testParametersPrecedePorts()
         "endmodule\n"));
 }
 
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentVerilogWriter::testParametrizedPort()
+//-----------------------------------------------------------------------------
+void tst_ComponentVerilogWriter::testParametrizedPort()
+{
+    addModelParameter("dataWidth", "8");    
+    QString parameterId = component_->getModelParameters().first()->getValueId();
+
+    QSharedPointer<Port> port = QSharedPointer<Port>(new Port("data", General::OUT, 0, 0, "", true));
+    port->setLeftBoundExpression(parameterId + "-1");
+    port->setRightBoundExpression("0");
+    component_->addPort(port);
+
+    writeComponent();
+
+    QCOMPARE(outputString_, QString(
+        "module TestComponent #(\n"
+        "    parameter         dataWidth        = 8\n"
+        ") (\n"
+        "    // These ports are not in any interface\n" 
+        "    output         [dataWidth-1:0] data\n"
+        ");\n"
+        "\n"
+        "endmodule\n"));
+}
 
 QTEST_APPLESS_MAIN(tst_ComponentVerilogWriter)
 

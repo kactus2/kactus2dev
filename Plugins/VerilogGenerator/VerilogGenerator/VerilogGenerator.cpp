@@ -109,11 +109,21 @@ void VerilogGenerator::initializeWriters()
     headerWriter_ = QSharedPointer<VerilogHeaderWriter>(new VerilogHeaderWriter(*topComponent_->getVlnv(), 
         componentXmlPath, currentUser));
 
-    topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(topComponent_, sorter_));
+    topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(topComponent_, sorter_,
+        createFormatterForComponent(topComponent_)));
 
     instanceWriters_.clear();
 
     wireWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogGenerator::createFormatterForComponent()
+//-----------------------------------------------------------------------------
+QSharedPointer<ExpressionFormatter> VerilogGenerator::createFormatterForComponent(QSharedPointer<Component> targetComponent)
+{
+    QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(targetComponent));
+    return QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
 }
 
 //-----------------------------------------------------------------------------
@@ -405,13 +415,11 @@ void VerilogGenerator::createWritersForComponentInstances()
     {
         QSharedPointer<Component> component = getComponentForInstance(instance.getInstanceName());
 
-        QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(component));
-        QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
-
         if (component)
         {
             QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter(
-                new ComponentInstanceVerilogWriter(instance, component, sorter_, expressionFormatter));
+                new ComponentInstanceVerilogWriter(instance, component, sorter_, 
+                createFormatterForComponent(component)));
             instanceWriters_.insert(instance.getInstanceName(), instanceWriter);            
         }
     }

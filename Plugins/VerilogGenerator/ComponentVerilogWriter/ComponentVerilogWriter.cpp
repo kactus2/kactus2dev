@@ -28,8 +28,8 @@
 // Function: ComponentVerilogWriter::ComponentVerilogWriter
 //-----------------------------------------------------------------------------
 ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<const Component> component,
-    QSharedPointer<const PortSorter> sorter) :
-component_(component), sorter_(sorter), childWriters_()
+    QSharedPointer<const PortSorter> sorter, QSharedPointer<ExpressionFormatter> expressionFormatter) :
+component_(component), sorter_(sorter), childWriters_(), formatter_(expressionFormatter)
 {
 
 }
@@ -200,7 +200,7 @@ void ComponentVerilogWriter::writePort(QTextStream& outputStream, QSharedPointer
 {
     outputStream << indentation();
 
-    PortVerilogWriter writer(port);
+    PortVerilogWriter writer(port, formatter_);
     writer.write(outputStream);
 
     if (!isLast)

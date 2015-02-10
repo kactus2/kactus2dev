@@ -20,8 +20,9 @@ HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/VerilogGenerator/common/Writer.h \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.h \
     ../../MockObjects/LibraryMock.h \
+    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../../editors/ComponentEditor/common/ExpressionFormatter.h \
-    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h
+    ../../../../editors/ComponentEditor/common/ParameterFinder.h
 SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.cpp \
@@ -34,5 +35,5 @@ SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp 
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.cpp \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.cpp \
     ./tst_VerilogGenerator.cpp \
-    ../../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
-    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp
+    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ../../../../editors/ComponentEditor/common/ExpressionFormatter.cpp
