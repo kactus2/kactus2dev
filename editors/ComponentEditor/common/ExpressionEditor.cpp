@@ -33,10 +33,14 @@ ExpressionEditor::ExpressionEditor(QSharedPointer<ParameterFinder> parameterFind
 {
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    
+    setUndoRedoEnabled(false);
+
     setTabChangesFocus(true);
     setLineWrapMode(QTextEdit::NoWrap);
-    
+
+    setFrameStyle(QFrame::Plain);
+    setFrameShape(QFrame::Box);
+
     nameCompleter_->setWidget(this);
 
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(updateCompletions()), Qt::UniqueConnection);
