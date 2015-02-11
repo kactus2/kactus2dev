@@ -53,6 +53,7 @@
 #include <designEditors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.h>
 #include <designEditors/SystemDesign/SystemDesignWidget.h>
 #include <designEditors/SystemDesign/SystemDesignDiagram.h>
+#include <designEditors/common/DesignWidgetFactoryImplementation.h>
 
 #include <editors/ApiDefinitionEditor/ApiDefinitionEditor.h>
 #include <editors/BusEditor/buseditor.h>
@@ -1924,7 +1925,9 @@ void MainWindow::generateDoc() {
 		return;
 	}
 
-	DocumentGenerator generator(libraryHandler_, this);
+    DesignWidgetFactory* designWidgetFactory(new DesignWidgetFactoryImplementation(libraryHandler_));
+
+	DocumentGenerator generator(libraryHandler_, designWidgetFactory, this);
 	connect(&generator, SIGNAL(errorMessage(const QString&)),
 		console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&generator, SIGNAL(noticeMessage(const QString&)),

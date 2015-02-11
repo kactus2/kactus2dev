@@ -8,9 +8,11 @@
 #ifndef DOCUMENTGENERATOR_H
 #define DOCUMENTGENERATOR_H
 
-#include <library/LibraryManager/libraryinterface.h>
-#include <IPXACTmodels/vlnv.h>
+#include <designEditors/common/DesignWidgetFactory.h>
 
+#include <library/LibraryManager/libraryinterface.h>
+
+#include <IPXACTmodels/vlnv.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/view.h>
 
@@ -26,12 +28,14 @@ class DocumentGenerator : public QObject {
 
 public:
 
-	DocumentGenerator(LibraryInterface* handler, 
+	DocumentGenerator(LibraryInterface* handler,
+        DesignWidgetFactory* designWidgetFactory,
 		QWidget* parent);
 
 	DocumentGenerator(LibraryInterface* handler, 
 		const VLNV& vlnv,
 		QList<VLNV>& objects,
+        DesignWidgetFactory* designWidgetFactory,
 		DocumentGenerator* parent);
 	
 	//! \brief The destructor
@@ -215,7 +219,10 @@ private:
 	QString targetPath_;
 
 	//! \brief Pointer to the instance that owns the top document generator.
-	QWidget* parent_;
+	QWidget* parentWidget_;
+
+    //! The factory for creating design widgets.
+    DesignWidgetFactory* designWidgetFactory_;
 };
 
 #endif // DOCUMENTGENERATOR_H

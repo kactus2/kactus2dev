@@ -3958,6 +3958,9 @@
     <ClCompile Include="GeneratedFiles\moc_busifinterfacemslave.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\common\DesignWidgetFactoryImplementation.cpp">
+      <Filter>Source Files\designEditors\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5779,6 +5782,12 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\RegisterColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\common\DesignWidgetFactoryImplementation.h">
+      <Filter>Header Files\designEditors\common</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\common\DesignWidgetFactory.h">
+      <Filter>Header Files\designEditors\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

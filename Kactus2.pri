@@ -595,7 +595,9 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/memoryMaps/RegisterColumns.h
+    ./editors/ComponentEditor/memoryMaps/RegisterColumns.h \
+    ./designEditors/common/DesignWidgetFactoryImplementation.h \
+    ./designEditors/common/DesignWidgetFactory.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1136,5 +1138,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
+    ./designEditors/common/DesignWidgetFactoryImplementation.cpp
 RESOURCES += kactus.qrc

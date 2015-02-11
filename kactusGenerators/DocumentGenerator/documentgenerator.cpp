@@ -22,12 +22,13 @@
 #include <IPXACTmodels/view.h>
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <common/utils.h>
-#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 
-#include <designEditors/HWDesign/HWDesignWidget.h>
+#include <designEditors/common/DesignWidget.h>
+#include <designEditors/common/DesignDiagram.h>
 
 #include <QFileDialog>
 #include <QString>
@@ -65,6 +66,7 @@ static const QString VALID_W3C_STRICT = QString("\t\t<p>\n"
 												"\t\t</p>\n");
 
 DocumentGenerator::DocumentGenerator(LibraryInterface* handler,
+                                     DesignWidgetFactory* designWidgetFactory,
 									 QWidget* parent): 
 QObject(parent),
 handler_(handler),
@@ -72,7 +74,9 @@ component_(),
 myNumber_(0),
 childInstances_(),
 targetPath_(), 
-parent_(parent) {
+parentWidget_(parent),
+designWidgetFactory_(designWidgetFactory)
+{
 
 	Q_ASSERT(handler_);
 	Q_ASSERT(parent);
@@ -81,15 +85,17 @@ parent_(parent) {
 DocumentGenerator::DocumentGenerator( LibraryInterface* handler, 
 									 const VLNV& vlnv,
 									 QList<VLNV>& objects,
-									 DocumentGenerator* parent ):
+                                     DesignWidgetFactory* designWidgetFactory,
+									 DocumentGenerator* parent):
 QObject(parent),
 handler_(handler),
 component_(),
 myNumber_(0),
 childInstances_(),
 targetPath_(),
-parent_(NULL) {
-
+parentWidget_(NULL),
+designWidgetFactory_(designWidgetFactory)
+{
 	Q_ASSERT(handler_);
 	Q_ASSERT(parent);
 	Q_ASSERT(handler_->contains(vlnv));
@@ -113,7 +119,7 @@ void DocumentGenerator::setComponent( const VLNV& vlnv ) {
 	Q_ASSERT(handler_->getDocumentType(vlnv) == VLNV::COMPONENT);
 	
 	// this function can be called for only the top document generator
-	Q_ASSERT(parent_);
+	Q_ASSERT(parentWidget_);
 
 	// parse the model for the component
 	QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
@@ -154,7 +160,7 @@ void DocumentGenerator::parseChildItems( QList<VLNV>& objects ) {
 			// create a new instance of document generator and add it to child list
 			objects.append(instance.getComponentRef());
 			QSharedPointer<DocumentGenerator> docGenerator(new DocumentGenerator(
-				handler_, instance.getComponentRef(), objects, this));
+				handler_, instance.getComponentRef(), objects, designWidgetFactory_, this));
 			childInstances_.append(docGenerator);
 		}
 	}
@@ -166,7 +172,7 @@ QString DocumentGenerator::writeDocumentation() {
 	Q_ASSERT(handler_->getDocumentType(*component_->getVlnv()) == VLNV::COMPONENT);
 
 	// this function can only be called for the top document generator
-	Q_ASSERT(parent_);
+	Q_ASSERT(parentWidget_);
 
 	// find the path to the component's xml file
 	const QString xmlPath = handler_->getPath(*component_->getVlnv());
@@ -229,7 +235,7 @@ QString DocumentGenerator::writeDocumentation() {
 
 	// ask user if he wants to save the generated documentation into 
 	// object metadata
-	QMessageBox::StandardButton button = QMessageBox::question(parent_, 
+	QMessageBox::StandardButton button = QMessageBox::question(parentWidget_, 
 		tr("Save generated documentation to metadata?"),
 		tr("Would you like to save the generated documentation to IP-Xact"
 		" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
@@ -1012,11 +1018,12 @@ void DocumentGenerator::createComponentPicture(QStringList& pictureList) {
 }
 
 void DocumentGenerator::createDesignPicture( QStringList& pictureList, 
-											const QString& viewName ) {
+											const QString& viewName )
+{
+    DesignWidget* designWidget (designWidgetFactory_->makeHWDesignWidget());
 
-	HWDesignWidget designWidget(handler_);
-	designWidget.hide();
-	designWidget.setDesign(*component_->getVlnv(), viewName);
+    designWidget->hide();
+    designWidget->setDesign(*component_->getVlnv(), viewName);
 
 	QFileInfo htmlInfo(targetPath_);
 	QString designPicPath = htmlInfo.absolutePath(); 
@@ -1034,7 +1041,7 @@ void DocumentGenerator::createDesignPicture( QStringList& pictureList,
 	}
 
 	// get the rect that bounds all items on box
-	QRectF boundingRect = designWidget.getDiagram()->itemsBoundingRect();
+    QRectF boundingRect = designWidget->getDiagram()->itemsBoundingRect();
 	boundingRect.setHeight(boundingRect.height() + 2);
 	boundingRect.setWidth(boundingRect.width() + 2);
 
@@ -1044,7 +1051,7 @@ void DocumentGenerator::createDesignPicture( QStringList& pictureList,
 	// create the picture for the component
 	QPainter painter(&designPic);
 	painter.fillRect(designPic.rect(), QBrush(Qt::white));
-	designWidget.getDiagram()->render(&painter, designPic.rect(), boundingRect.toRect());
+    designWidget->getDiagram()->render(&painter, designPic.rect(), boundingRect.toRect());
 	if (!designPic.save(&designPicFile, "PNG")) {
 		emit errorMessage(tr("Could not save picture %1").arg(designPicPath));
 	}
