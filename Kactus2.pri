@@ -130,7 +130,6 @@ HEADERS += ./common/Global.h \
     ./mainwindow/NewPages/NewSWComponentPage.h \
     ./mainwindow/NewPages/NewSWDesignPage.h \
     ./mainwindow/NewPages/NewSystemPage.h \
-    ./mainwindow/EditorArea/EditorArea.h \
     ./settings/SettingsUpdater.h \
     ./settings/ComponentEditorSettingsPage.h \
     ./settings/SettingsPage.h \
@@ -397,6 +396,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceDialog.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.h \
     ./editors/ComponentEditor/memoryMaps/AddressBlockColumns.h \
+    ./editors/ComponentEditor/memoryMaps/RegisterColumns.h \
     ./editors/ComponentEditor/memoryMaps/memorymapdelegate.h \
     ./editors/ComponentEditor/memoryMaps/memorymapeditor.h \
     ./editors/ComponentEditor/memoryMaps/memorymapmodel.h \
@@ -548,6 +548,8 @@ HEADERS += ./common/Global.h \
     ./designEditors/HWDesign/AdHocEditor/AdHocDelegate.h \
     ./designEditors/HWDesign/AdHocEditor/AdHocEditor.h \
     ./designEditors/HWDesign/AdHocEditor/AdHocModel.h \
+    ./designEditors/common/DesignWidgetFactory.h \
+    ./designEditors/common/DesignWidgetFactoryImplementation.h \
     ./designEditors/common/NamelabelWidth.h \
     ./designEditors/common/ColumnTypes.h \
     ./designEditors/common/diagramgrid.h \
@@ -595,9 +597,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/memoryMaps/RegisterColumns.h \
-    ./designEditors/common/DesignWidgetFactoryImplementation.h \
-    ./designEditors/common/DesignWidgetFactory.h
+    ./mainwindow/DrawingBoard/DrawingBoard.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -706,7 +706,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./mainwindow/MessageConsole/messageconsole.cpp \
     ./mainwindow/Ribbon/Ribbon.cpp \
     ./mainwindow/Ribbon/RibbonGroup.cpp \
-    ./mainwindow/EditorArea/EditorArea.cpp \
+    ./mainwindow/DrawingBoard/DrawingBoard.cpp \
     ./settings/ComponentEditorSettingsPage.cpp \
     ./settings/FileTypesDelegate.cpp \
     ./settings/FileTypeSettingsPage.cpp \
@@ -1100,6 +1100,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/common/ComponentDesignDiagram.cpp \
     ./designEditors/common/DesignDiagram.cpp \
     ./designEditors/common/DesignWidget.cpp \
+    ./designEditors/common/DesignWidgetFactoryImplementation.cpp \
     ./designEditors/common/NamelabelWidth.cpp \
     ./designEditors/common/ComponentInstanceEditor/componentinstanceeditor.cpp \
     ./designEditors/common/ComponentInstanceEditor/configurableelementdelegate.cpp \
@@ -1138,6 +1139,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./designEditors/common/DesignWidgetFactoryImplementation.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
 RESOURCES += kactus.qrc

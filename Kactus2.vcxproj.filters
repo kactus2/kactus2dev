@@ -644,12 +644,6 @@
     <Filter Include="Header Files\mainwindow\NewPages">
       <UniqueIdentifier>{ff1f42da-f845-43f9-b706-9e6abf435097}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\mainwindow\EditorArea">
-      <UniqueIdentifier>{c85ccfe2-9101-46f3-a314-d9fabf41a4d0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\mainwindow\EditorArea">
-      <UniqueIdentifier>{0f00dbb7-92d4-4cce-82eb-de06e0386c30}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\editors\ApiDefinitionEditor">
       <UniqueIdentifier>{ea420432-6c58-4982-a06f-60ed86e52e1a}</UniqueIdentifier>
     </Filter>
@@ -922,6 +916,12 @@
     </Filter>
     <Filter Include="Header Files\editors\ComponentEditor\parameterReferenceTree">
       <UniqueIdentifier>{0ff10db8-2913-41a7-87d9-036f51058cbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\mainwindow\DrawingBoard">
+      <UniqueIdentifier>{5d10dd83-4ddd-4ae6-805b-f798032d6864}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\mainwindow\DrawingBoard">
+      <UniqueIdentifier>{0d1ef851-a3cc-48b8-8a4e-c2cd9153c690}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -2297,12 +2297,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_NewSystemPage.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\EditorArea\EditorArea.cpp">
-      <Filter>Source Files\mainwindow\EditorArea</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_EditorArea.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ApiDefinitionEditor.cpp">
@@ -3961,6 +3955,12 @@
     <ClCompile Include="designEditors\common\DesignWidgetFactoryImplementation.cpp">
       <Filter>Source Files\designEditors\common</Filter>
     </ClCompile>
+    <ClCompile Include="mainwindow\DrawingBoard\DrawingBoard.cpp">
+      <Filter>Source Files\mainwindow\DrawingBoard</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DrawingBoard.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4634,9 +4634,6 @@
     </CustomBuild>
     <CustomBuild Include="mainwindow\NewPages\NewSystemPage.h">
       <Filter>Header Files\mainwindow\NewPages</Filter>
-    </CustomBuild>
-    <CustomBuild Include="mainwindow\EditorArea\EditorArea.h">
-      <Filter>Header Files\mainwindow\EditorArea</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ApiDefinitionEditor\ApiDefinitionEditor.h">
       <Filter>Header Files\editors\ApiDefinitionEditor</Filter>
@@ -5456,6 +5453,9 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\common\ParameterizableTable.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\DrawingBoard\DrawingBoard.h">
+      <Filter>Header Files\mainwindow\DrawingBoard</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

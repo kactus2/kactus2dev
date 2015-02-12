@@ -18,7 +18,6 @@
 #include <common/IEditProvider.h>
 
 #include <QWidget>
-#include <QTabWidget>
 #include <QString>
 #include <QSettings>
 #include <QMap>
@@ -100,13 +99,6 @@ public:
     virtual void refresh();
 
     /*!
-     *  Adds the tab document to the given tab widget.
-     *
-     *      @param [in] tabWidget The tab widget.
-     */
-    void setTabWidget(QTabWidget* tabWidget);
-
-    /*!
      *  Fits the document fully in view. Supported only if the document can be zoomed.
      */
     virtual void fitInView();
@@ -142,7 +134,7 @@ public:
     /*!
      *  Returns the name of the document.
      */
-    QString const& getDocumentName() const;
+    QString getDocumentName() const;
 
     /*!
      *  Returns the current zoom level in percents.
@@ -216,6 +208,8 @@ public:
      *  Returns the list of related VLNVs.
      */
     QList<VLNV> getRelatedVLNVs() const;
+
+    QString getTitle() const;
 
     /*!
      *  Returns the edit provider.
@@ -293,6 +287,9 @@ signals:
     //! Emitted when a help page should be changed in the context help window.
     void helpUrlRequested(QString const& url);
 
+    //! Emitted when the title of the document changes.
+    void titleChanged(TabDocument* document, QString const& newTitle);
+
 	//! \brief Emitted when the tab document is refreshed.
 	void refreshed();
 
@@ -368,7 +365,7 @@ private:
      *      @param [in] title The title text.
      */
     void setTabTitle(QString const& title);
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -399,9 +396,6 @@ private:
 
     //! The document type name.
     QString docType_;
-
-    //! The parent tab widget.
-    QTabWidget* tabWidget_;
 
     //! If true, the document has been previously unlocked.
     bool previouslyUnlocked_;

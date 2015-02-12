@@ -16,10 +16,9 @@
 #include <QTimer>
 
 //-----------------------------------------------------------------------------
-// Function: TabDocument()
+// Function: TabDocument::TabDocument()
 //-----------------------------------------------------------------------------
-TabDocument::TabDocument(QWidget* parent, unsigned int flags, 
-						 int minZoomLevel, int maxZoomLevel) : 
+TabDocument::TabDocument(QWidget* parent, unsigned int flags, int minZoomLevel, int maxZoomLevel) : 
 QWidget(parent),
 supportedWindows_(OUTPUTWINDOW | PREVIEWWINDOW | LIBRARYWINDOW | CONTEXT_HELP_WINDOW),
 flags_(flags), 
@@ -30,7 +29,6 @@ maxZoomLevel_(maxZoomLevel),
 minZoomLevel_(minZoomLevel),
 title_(""),
 docName_(""), 
-tabWidget_(0),
 previouslyUnlocked_(false),
 relatedVLNVs_(),
 refreshRequested_(false)
@@ -39,37 +37,22 @@ refreshRequested_(false)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~TabDocument()
+// Function: TabDocument::~TabDocument()
 //-----------------------------------------------------------------------------
 TabDocument::~TabDocument()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: applySettings()
+// Function: TabDocument::applySettings()
 //-----------------------------------------------------------------------------
 void TabDocument::applySettings(QSettings& settings)
 {
+
 }
 
 //-----------------------------------------------------------------------------
-// Function: setTabWidget()
-//-----------------------------------------------------------------------------
-void TabDocument::setTabWidget(QTabWidget* tabWidget)
-{
-    // Remove from the old tab.
-    if (tabWidget_ != 0)
-    {
-        tabWidget_->removeTab(tabWidget_->indexOf(this));
-    }
-
-    tabWidget_ = tabWidget;
-    tabWidget_->addTab(this, title_);
-    tabWidget_->setCurrentWidget(this);
-}
-
-//-----------------------------------------------------------------------------
-// Function: setDocumentName()
+// Function: TabDocument::setDocumentName()
 //-----------------------------------------------------------------------------
 void TabDocument::setDocumentName(QString const& name)
 {
@@ -78,7 +61,7 @@ void TabDocument::setDocumentName(QString const& name)
 }
 
 //-----------------------------------------------------------------------------
-// Function: setDocumentType()
+// Function: TabDocument::setDocumentType()
 //-----------------------------------------------------------------------------
 void TabDocument::setDocumentType(QString const& type)
 {
@@ -95,14 +78,15 @@ void TabDocument::setDocumentType(QString const& type)
 }
 
 //-----------------------------------------------------------------------------
-// Function: fitInView()
+// Function: TabDocument::fitInView()
 //-----------------------------------------------------------------------------
 void TabDocument::fitInView()
 {
+
 }
 
 //-----------------------------------------------------------------------------
-// Function: setZoomLevel()
+// Function: TabDocument::setZoomLevel()
 //-----------------------------------------------------------------------------
 void TabDocument::setZoomLevel(int level)
 {
@@ -115,14 +99,15 @@ void TabDocument::setZoomLevel(int level)
 }
 
 //-----------------------------------------------------------------------------
-// Function: setMode()
+// Function: TabDocument::setMode()
 //-----------------------------------------------------------------------------
 void TabDocument::setMode(DrawMode)
 {
+
 }
 
 //-----------------------------------------------------------------------------
-// Function: setProtection()
+// Function: TabDocument::setProtection()
 //-----------------------------------------------------------------------------
 void TabDocument::setProtection(bool locked)
 {
@@ -135,12 +120,14 @@ void TabDocument::setProtection(bool locked)
 }
 
 //-----------------------------------------------------------------------------
-// Function: setModified()
+// Function: TabDocument::setModified()
 //-----------------------------------------------------------------------------
 void TabDocument::setModified(bool modified)
 {
-	if (modified == modified_) 
+	if (modified == modified_)
+    {
 		return;
+    }
 
     if (modified)
     {
@@ -156,9 +143,9 @@ void TabDocument::setModified(bool modified)
 }
 
 //-----------------------------------------------------------------------------
-// Function: getDocumentName()
+// Function: TabDocument::getDocumentName()
 //-----------------------------------------------------------------------------
-QString const& TabDocument::getDocumentName() const
+QString TabDocument::getDocumentName() const
 {
     return docName_;
 }
@@ -285,30 +272,21 @@ void TabDocument::updateTabTitle()
 }
 
 //-----------------------------------------------------------------------------
-// Function: setTabTitle()
+// Function: TabDocument::setTabTitle()
 //-----------------------------------------------------------------------------
 void TabDocument::setTabTitle(QString const& title)
 {
-    // Update the tab title if the document has been added to a tab widget.
-    if (tabWidget_ != 0)
-    {
-        int index = tabWidget_->indexOf(this);
-
-        if (index >= 0)
-        {
-            tabWidget_->setTabText(index, title);
-        }
-    }
-
+    emit titleChanged(this, title);
     title_ = title;
 }
 
-VLNV TabDocument::getDocumentVLNV() const {
+VLNV TabDocument::getDocumentVLNV() const 
+{
 	return VLNV();
 }
 
 //-----------------------------------------------------------------------------
-// Function: getEditProvider()
+// Function: TabDocument::getEditProvider()
 //-----------------------------------------------------------------------------
 IEditProvider* TabDocument::getEditProvider()
 {
@@ -316,18 +294,23 @@ IEditProvider* TabDocument::getEditProvider()
 }
 
 //-----------------------------------------------------------------------------
-// Function: refresh()
+// Function: TabDocument::refresh()
 //-----------------------------------------------------------------------------
-void TabDocument::refresh() {
+void TabDocument::refresh()
+{
 	emit refreshed();
 }
 
-unsigned int TabDocument::getSupportedWindows() const {
+//-----------------------------------------------------------------------------
+// Function: TabDocument::getSupportedWindows()
+//-----------------------------------------------------------------------------
+unsigned int TabDocument::getSupportedWindows() const 
+{
 	return supportedWindows_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: setPreviouslyUnlocked()
+// Function: TabDocument::setPreviouslyUnlocked()
 //-----------------------------------------------------------------------------
 void TabDocument::setPreviouslyUnlocked()
 {
@@ -335,7 +318,7 @@ void TabDocument::setPreviouslyUnlocked()
 }
 
 //-----------------------------------------------------------------------------
-// Function: isPreviouslyUnlocked()
+// Function: TabDocument::isPreviouslyUnlocked()
 //-----------------------------------------------------------------------------
 bool TabDocument::isPreviouslyUnlocked() const
 {
@@ -343,7 +326,7 @@ bool TabDocument::isPreviouslyUnlocked() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: setVisibilityControlState()
+// Function: TabDocument::setVisibilityControlState()
 //-----------------------------------------------------------------------------
 void TabDocument::setVisibilityControlState(QString const& name, bool state)
 {
@@ -354,7 +337,7 @@ void TabDocument::setVisibilityControlState(QString const& name, bool state)
 }
 
 //-----------------------------------------------------------------------------
-// Function: addVisibilityControl()
+// Function: TabDocument::addVisibilityControl()
 //-----------------------------------------------------------------------------
 void TabDocument::addVisibilityControl(QString const& name, bool state)
 {
@@ -362,7 +345,7 @@ void TabDocument::addVisibilityControl(QString const& name, bool state)
 }
 
 //-----------------------------------------------------------------------------
-// Function: getVisibilityControls()
+// Function: TabDocument::getVisibilityControls()
 //-----------------------------------------------------------------------------
 QMap<QString, bool> const& TabDocument::getVisibilityControls() const
 {
@@ -404,6 +387,14 @@ void TabDocument::removeRelatedVLNV(VLNV const& vlnv)
 QList<VLNV> TabDocument::getRelatedVLNVs() const
 {
     return relatedVLNVs_.keys();
+}
+
+//-----------------------------------------------------------------------------
+// Function: TabDocument::getTitle()
+//-----------------------------------------------------------------------------
+QString TabDocument::getTitle() const
+{
+    return title_;
 }
 
 //-----------------------------------------------------------------------------
@@ -456,16 +447,14 @@ void TabDocument::handleRefreshRequest()
     }
     else
     {
-//         QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-//             tr("Related documents contain modifications that affect this document."
-//             "The document will be refreshed."),
-//             QMessageBox::Ok, this);
-//         msgBox.exec();
-
         refresh();
     }
 }
 
-void TabDocument::onErrorDialog( const QString& message ) {
+//-----------------------------------------------------------------------------
+// Function: TabDocument::onErrorDialog()
+//-----------------------------------------------------------------------------
+void TabDocument::onErrorDialog(const QString& message)
+{
 	QMessageBox::warning(this, tr("Component editor"), message);
 }

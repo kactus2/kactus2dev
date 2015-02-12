@@ -44,7 +44,7 @@ class InterfaceEditor;
 class ConnectionEditor;
 class AdHocEditor;
 class HWConnection;
-class EditorArea;
+class DrawingBoard;
 class ConnectionEndpoint;
 class GraphicsConnection;
 class ContextHelpBrowser;
@@ -53,13 +53,20 @@ class HelpWindow;
 class Ribbon;
 class RibbonGroup;
 
-class MainWindow : public QMainWindow {
+class MainWindow : public QMainWindow
+{
     Q_OBJECT
 
 public:
+
+    /*!
+     *  The constructor.
+     *
+     *      @param [in] parent    The parent widget.
+     */
     MainWindow(QWidget *parent = 0);
     
-	//! \brief The destructor
+	//! The destructor
 	virtual ~MainWindow();
 
 public slots:
@@ -90,8 +97,7 @@ public slots:
      *      @param [in] viewName       The name of the view to open.
      *      @param [in] forceUnlocked  Forces the design to be opened in unlocked mode.
      */
-	void openDesign(const VLNV& vlnv = VLNV(), const QString& viewName = QString(),
-                    bool forceUnlocked = false);
+    void openDesign(VLNV const& vlnv = VLNV(), QString const& viewName = QString(), bool forceUnlocked = false);
 
     /*!
      *  Opens the memory design of the HW design specified by the component VLNV and view name.
@@ -101,7 +107,7 @@ public slots:
      *      @param [in] forceUnlocked   Forces the design to be opened in unlocked mode.
      */
     void openMemoryDesign(const VLNV& vlnv = VLNV(), const QString& viewName = QString(),
-                          bool forceUnlocked = false);
+                          bool forceUnlocked = false);    
 
     /*!
      *  Opens a SW design.
@@ -153,15 +159,11 @@ public slots:
      */
     void openApiDefinition(VLNV const& vlnv, bool forceUnlocked = false);
 
-    /*! \brief Called when user wants to close a design tab
-	 *
-	 * \param index Index of the tab to close
-	 *
-	*/
-	void onTabCloseRequested(int index);
+    //! Called when user closes the last design tab.
+    void onLastDocumentClosed();
 
     //! Called when the user has selected another tab.
-    void onTabChanged(int index);
+    void onDocumentChanged(int index);
 
 	/*! \brief Search the file system for new IP-Xact libraries.
 	 *
@@ -196,17 +198,8 @@ public slots:
     //! Called when the zoom has changed.
     void updateZoomTools();
 
-    //! Saves the current tab document.
-    void saveCurrent();
-
-	//! \brief Saves the current tab document as new object
-	void saveCurrentAs();
-
-    //! Saves all modified tab documents.
+    //! Saves all modified documents.
     void saveAll();
-
-    //! Prints the current tab document.
-    void printCurrent();
 
     //! Adds a new column to the current HW/System design.
     void addColumn();
@@ -260,9 +253,6 @@ public slots:
 
     //! Changes the protection of the current document.
     void changeProtection(bool locked);
-
-    //! Refreshes the current view.
-    void refresh();
 
     /*!
      *  Creates a new component to the library.
@@ -488,9 +478,6 @@ private slots:
      */
     void onVisibilityControlToggled(QAction*);
 
-    //! Called when a document has been saved.
-    void onDocumentSaved(TabDocument* doc);
-
     //! Opens a dialog for setting library locations.
     void setLibraryLocations();
 
@@ -503,19 +490,21 @@ private:
     MainWindow& operator=(MainWindow const& rhs);
 
     /*!
-     *  Registers a tab document (connects common signals etc.).
-     *
-     *      @param [in] doc            The document to register.
-     *      @param [in] forceUnlocked  If true the document is initially unlocked.
-     */
-    void registerDocument(TabDocument* doc, bool forceUnlocked);
-
-    /*!
      *  Returns true if a design with the given vlnv is already open.
      *
      *      @remarks If the design is already open, it is displayed.
      */
     bool isDesignOpen(VLNV const& vlnv, KactusAttribute::Implementation implementation) const;
+
+    /*!
+     *  Checks if the given list of VLVNs contain invalid references.
+     *
+     *      @param [in] hierRefs            The list of VLNVs to check
+     *      @param [in] referencingVlnv     The referencing VLNV.
+     *
+     *      @return True, if at least one invalid reference is found, otherwise false.
+     */
+    bool hasInvalidReferences(QList<VLNV> hierRefs, VLNV const& referencingVlnv);
 
     /*!
      *  Restores the program's settings.
@@ -629,13 +618,13 @@ private:
 	//! \brief Set up the connection editor.
 	void setupConnectionEditor();
 
-	/*! \brief Check if a document with the given vlnv is already open in some tab.
+	/*! \brief Check if a document with the given vlnv is already open.
 	 *
 	 * \param vlnv The vlnv that identifies the document.
 	 * 
-	 * \remark If a document with given vlnv is open then the tab is selected.
+	 * \remark If a document with given vlnv is open then the document is shown.
 	 * 
-	 * \return True if the document was already open in some tab.
+	 * \return True if the document was already open.
 	*/
 	bool isOpen(const VLNV& vlnv) const;
 
@@ -715,7 +704,7 @@ private:
 	 *  Set the visibilities for the plug ins.
 	 */
 	void setPluginVisibilities();
-
+   
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -723,11 +712,11 @@ private:
 	//! \brief The instance that manages the IP-Xact library
     LibraryHandler *libraryHandler_;
 
-	//! \brief The dock widget that contains the library widgets
+	//! \brief The dock widget that contains the library widgets.
 	QDockWidget* libraryDock_;
     
-	//! \brief Contains the designWidgets as each in it's own tab
-	EditorArea* designTabs_;
+	//! \brief Contains the open documents as each in it's own tab.
+	DrawingBoard* designTabs_;
 
 	//! \brief The widget to set the display rules for library items in library handler.
 	VLNVDialer* dialer_;

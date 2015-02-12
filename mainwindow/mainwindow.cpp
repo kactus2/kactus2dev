@@ -27,7 +27,7 @@
 #include <mainwindow/NewPages/NewComDefinitionPage.h>
 #include <mainwindow/NewPages/NewApiDefinitionPage.h>
 #include <mainwindow/NewPages/newbuspage.h>
-#include <mainwindow/EditorArea/EditorArea.h>
+#include <mainwindow/DrawingBoard/DrawingBoard.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h>
@@ -674,12 +674,14 @@ void MainWindow::setupActions()
 	actSave_ = new QAction(QIcon(":/icons/common/graphics/file-save.png"), tr("Save"), this);
 	actSave_->setShortcut(QKeySequence::Save);
 	actSave_->setEnabled(false);
-	connect(actSave_, SIGNAL(triggered()), this, SLOT(saveCurrent()));
+	connect(actSave_, SIGNAL(triggered()), designTabs_, SLOT(saveCurrentDocument()));
+    connect(designTabs_, SIGNAL(documentModifiedChanged(bool)), 
+        actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 
 	actSaveAs_ = new QAction(QIcon(":/icons/common/graphics/file-save-as.png"), tr("Save As"), this);
 	actSaveAs_->setShortcut(QKeySequence::SaveAs);
 	actSaveAs_->setEnabled(false);
-	connect(actSaveAs_, SIGNAL(triggered()), this, SLOT(saveCurrentAs()));
+	connect(actSaveAs_, SIGNAL(triggered()), designTabs_, SLOT(saveCurrentDocumentAs()));
 
 	actSaveAll_ = new QAction(QIcon(":/icons/common/graphics/file-save_all.png"), tr("Save All"), this);
 	actSaveAll_->setShortcut(QKeySequence("Ctrl+Shift+S"));
@@ -688,7 +690,7 @@ void MainWindow::setupActions()
 	actPrint_ = new QAction(QIcon(":/icons/common/graphics/file-print.png"), tr("Print"), this);
 	actPrint_->setShortcut(QKeySequence::Print);
 	actPrint_->setEnabled(false);
-	connect(actPrint_, SIGNAL(triggered()), this, SLOT(printCurrent()));
+	connect(actPrint_, SIGNAL(triggered()), designTabs_, SLOT(printCurrentDocument()));
 
 	actUndo_ = new QAction(QIcon(":/icons/common/graphics/edit-undo.png"), tr("Undo"), this);
 	actUndo_->setShortcut(QKeySequence::Undo);
@@ -782,32 +784,30 @@ void MainWindow::setupActions()
     modeActionGroup_->addAction(actToolLabel_);
 	connect(modeActionGroup_, SIGNAL(triggered(QAction *)), this, SLOT(drawModeChange(QAction *)));
 
-	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-
 	// Initialize the action to zoom in.
 	actZoomIn_ = new QAction(QIcon(":/icons/common/graphics/view-zoom_in.png"), tr("Zoom In"), this);
 	actZoomIn_->setEnabled(false);
-	actZoomIn_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_ZOOM_SUPPORT));
+	actZoomIn_->setVisible(false);
 	connect(actZoomIn_, SIGNAL(triggered()), this, SLOT(zoomIn()));
 
 	// Initialize the action to zoom out.
 	actZoomOut_ = new QAction(QIcon(":/icons/common/graphics/view-zoom_out.png"), tr("Zoom Out"), this);
 	actZoomOut_->setEnabled(false);
-	actZoomOut_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_ZOOM_SUPPORT));
+	actZoomOut_->setVisible(false);
 	connect(actZoomOut_, SIGNAL(triggered()), this, SLOT(zoomOut()));
 
 	// Initialize the action to reset the zoom to original 1:1 ratio.
 	actZoomOriginal_ = new QAction(QIcon(":/icons/common/graphics/view-zoom_original.png"),
 		tr("Original 1:1 Zoom"), this);
 	actZoomOriginal_->setEnabled(false);
-	actZoomOriginal_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_ZOOM_SUPPORT));
+	actZoomOriginal_->setVisible(false);
 	connect(actZoomOriginal_, SIGNAL(triggered()), this, SLOT(zoomOriginal()));
 
 	// Initialize the action to fit the document into the view.
 	actFitInView_ = new QAction(QIcon(":/icons/common/graphics/view-fit_best.png"),
 		tr("Fit Document to View"), this);
 	actFitInView_->setEnabled(false);
-	actFitInView_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_ZOOM_SUPPORT));
+	actFitInView_->setVisible(false);
 	connect(actFitInView_, SIGNAL(triggered()), this, SLOT(fitInView()));
 
 	// the action for user to select the visible docks
@@ -818,7 +818,7 @@ void MainWindow::setupActions()
 	// Initialize the action to manage visibility control.
 	actVisibilityControl_ = new QAction(QIcon(":icons/common/graphics/visibility.png"), tr("Visibility Control"), this);
 	actVisibilityControl_->setEnabled(false);
-	actVisibilityControl_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_VISIBILITY_CONTROL_SUPPORT));
+	actVisibilityControl_->setVisible(false);
 	connect(actVisibilityControl_, SIGNAL(triggered()),
 		this, SLOT(openVisibilityControlMenu()), Qt::UniqueConnection);
 
@@ -829,7 +829,7 @@ void MainWindow::setupActions()
 
 	actRefresh_ = new QAction(QIcon(":/icons/common/graphics/refresh.png"), tr("Refresh"), this);
 	actRefresh_->setShortcut(QKeySequence("F5"));
-	connect(actRefresh_, SIGNAL(triggered(bool)), this, SLOT(refresh()));
+	connect(actRefresh_, SIGNAL(triggered(bool)), designTabs_, SLOT(refreshCurrentDocument()));
 
 	actProtect_ = new QAction(QIcon(":/icons/common/graphics/protection-unlocked.png"), tr("Unlocked"), this);
 	actProtect_->setCheckable(true);
@@ -1003,17 +1003,30 @@ void MainWindow::setupMenus()
     
 }
 
-void MainWindow::setupDrawBoard() {
-
-	designTabs_ = new EditorArea();
+//-----------------------------------------------------------------------------
+// Function: MainWindow::setupDrawBoard()
+//-----------------------------------------------------------------------------
+void MainWindow::setupDrawBoard()
+{
+	designTabs_ = new DrawingBoard();
 	designTabs_->setMovable(true);
 	designTabs_->setTabsClosable(true);
+
 	setCentralWidget(designTabs_);
 
-	connect(designTabs_, SIGNAL(tabCloseRequested(int)),
-		this, SLOT(onTabCloseRequested(int)), Qt::UniqueConnection);
-	connect(designTabs_, SIGNAL(currentChanged(int)),
-		this, SLOT(onTabChanged(int)), Qt::UniqueConnection);
+	connect(designTabs_, SIGNAL(lastDocumentClosed()), this, SLOT(onLastDocumentClosed()), Qt::UniqueConnection);
+	connect(designTabs_, SIGNAL(currentChanged(int)), this, SLOT(onDocumentChanged(int)), Qt::UniqueConnection);
+
+    connect(designTabs_, SIGNAL(documentContentChanged()), this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
+    connect(designTabs_, SIGNAL(documentEditStateChanged()), this, SLOT(updateMenuStrip()));
+    
+    connect(designTabs_, SIGNAL(helpUrlRequested(QString const&)),
+        this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
+
+    connect(designTabs_, SIGNAL(errorMessage(const QString&)),
+        console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
+    connect(designTabs_, SIGNAL(noticeMessage(const QString&)),
+        console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
 }
 
 void MainWindow::setupLibraryDock() {
@@ -1288,17 +1301,19 @@ void MainWindow::setupConnectionEditor()
 //-----------------------------------------------------------------------------
 // Function: mainwindow::onDesignChanged()
 //-----------------------------------------------------------------------------
-void MainWindow::onDesignChanged() {
-
+void MainWindow::onDesignChanged() 
+{
 	// find the currently open editor
 	QWidget* widget = designTabs_->currentWidget();
 
 	// if editor was found
-	if (widget) {
+	if (widget) 
+    {
 		DesignWidget* editor = dynamic_cast<DesignWidget*>(widget);
 
 		// if editor is design widget then set it to be modified.
-		if (editor) {
+		if (editor) 
+        {
 			editor->setModified(true);
 			updateMenuStrip();
 		}
@@ -1515,107 +1530,11 @@ void MainWindow::updateMenuStrip()
 }
 
 //-----------------------------------------------------------------------------
-// Function: saveCurrentAs()
-//-----------------------------------------------------------------------------
-void MainWindow::saveCurrentAs() {
-	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-
-	if (doc != 0)
-	{
-        // Validate the document before saving.
-        QStringList errorList;
-
-        if (!doc->validate(errorList))
-        {
-            // If the document contained errors, inform the user and give options to save or cancel.
-            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                               tr("The document contained %1 error(s). The document can be saved but "
-                                  "may not be opened with other IP-XACT tools. Continue save?").arg(errorList.size()),
-                QMessageBox::Yes | QMessageBox::No, this);
-
-            msgBox.setDetailedText("The document contained the following error(s):\n* " + errorList.join("\n* "));
-
-            if (msgBox.exec() == QMessageBox::No)
-            {
-                return;
-            }
-        }
-
-		if (doc->saveAs())
-        {
-		    onTabChanged(designTabs_->currentIndex());
-		    doc->refresh();
-        }
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: saveCurrent()
-//-----------------------------------------------------------------------------
-void MainWindow::saveCurrent()
-{
-	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-
-	if (doc != 0)
-	{
-        // Validate the document before saving.
-        QStringList errorList;
-
-        if (!doc->validate(errorList))
-        {
-            // If the document contained errors, inform the user and give options to save or cancel.
-            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                               tr("The document contained %1 error(s). The document can be saved but "
-                                  "may not be opened with other IP-XACT tools. Continue save?").arg(errorList.size()),
-                               QMessageBox::Yes | QMessageBox::No, this);
-
-            msgBox.setDetailedText("The document contained the following error(s):\n* " + errorList.join("\n* "));
-
-            if (msgBox.exec() == QMessageBox::No)
-            {
-                return;
-            }
-        }
-
-		doc->save();
-		onTabChanged(designTabs_->currentIndex());
-	}
-}
-
-//-----------------------------------------------------------------------------
 // Function: saveAll()
 //-----------------------------------------------------------------------------
 void MainWindow::saveAll()
 {
-	// Go through all documents and save those that have been modified.
-	for (int i = 0; i < designTabs_->count(); ++i)
-	{
-		TabDocument* doc = static_cast<TabDocument*>(designTabs_->widget(i));
-
-		if (doc->isModified())
-		{
-            // Validate the document before saving.
-            QStringList errorList;
-
-            if (!doc->validate(errorList))
-            {
-                // If the document contained errors, inform the user and give options to save or cancel.
-                QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                    tr("Document %1 contained %2 error(s). The document can be saved but "
-                    "may not be opened with other IP-XACT tools. Continue save?").arg(doc->getDocumentName(), errorList.size()),
-                    QMessageBox::Yes | QMessageBox::No, this);
-
-                msgBox.setDetailedText("The document contained the following error(s):\n* " + errorList.join("\n* "));
-
-                if (msgBox.exec() == QMessageBox::No)
-                {
-                    return;
-                }
-            }
-
-			doc->save();
-		}
-	}
+	designTabs_->saveAll();
 
 	if (designTabs_->currentWidget() != 0)
 	{
@@ -1626,17 +1545,6 @@ void MainWindow::saveAll()
 	{
 		actSave_->setEnabled(false);
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: printCurrent()
-//-----------------------------------------------------------------------------
-void MainWindow::printCurrent()
-{
-	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-	Q_ASSERT(doc != 0);
-
-	doc->print();    
 }
 
 //-----------------------------------------------------------------------------
@@ -1910,7 +1818,8 @@ void MainWindow::runGeneratorPlugin(QAction* action)
 //-----------------------------------------------------------------------------
 // Function: generateDoc()
 //-----------------------------------------------------------------------------
-void MainWindow::generateDoc() {
+void MainWindow::generateDoc()
+{
 	// get the vlnv of the current component
 	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
 	Q_ASSERT(doc);
@@ -2068,67 +1977,24 @@ void MainWindow::onDrawModeChanged(DrawMode mode)
     actToolLabel_->setChecked(mode == MODE_LABEL);
 }
 
-void MainWindow::onTabCloseRequested( int index )
+//-----------------------------------------------------------------------------
+// Function: MainWindow::onTabCloseRequested()
+//-----------------------------------------------------------------------------
+void MainWindow::onLastDocumentClosed()
 {	
-	Q_ASSERT(designTabs_->widget(index) != 0);
-	TabDocument* doc = static_cast<TabDocument*>(designTabs_->widget(index));
-
-	// If the document has been modified, ask a confirmation from the user.
-	if (doc->isModified())
-	{
-		QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-			"Do you want to save changes to " + doc->getDocumentName() + "?",
-			QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, this);
-
-		int ret = msgBox.exec();
-
-		switch (ret)
-		{
-		case QMessageBox::Yes:
-			{
-				// Try to save and if it fails, cancel the close operation.
-				if (!doc->save())
-				{
-					return;
-				}
-				break;
-			}
-
-		case QMessageBox::No:
-			{
-				doc->setModified(false);
-				break;
-			}
-
-		case QMessageBox::Cancel:
-			{
-				// Cancel the close operation.
-				return;
-			}
-		}
-	}
-
-	// remove the widget from the tabs
-	designTabs_->removeTab(index);
-
-	// delete the document.
-	delete doc;
-
-	// if there are no more tabs in the tab widget
-	if (designTabs_->count() == 0) {
-        updateWindows();
-	}
+    updateWindows();
 }
 
 //-----------------------------------------------------------------------------
-// Function: onTabChanged()
+// Function: MainWindow::onTabChanged()
 //-----------------------------------------------------------------------------
-void MainWindow::onTabChanged(int index)
+void MainWindow::onDocumentChanged(int index)
 {
 	TabDocument* doc = static_cast<TabDocument*>(designTabs_->widget(index));
 
 	// update the menu 
-	if (doc) {
+	if (doc) 
+    {
 		updateWindows();
 	}
 
@@ -2149,7 +2015,8 @@ void MainWindow::onTabChanged(int index)
         }
 	}
 	// active tab is not design widget so clear the editors associated with design widget
-	else {
+	else
+    {
 		configurationEditor_->clear();
         systemDetailsEditor_->clear();
         addressEditor_->clear();
@@ -2178,53 +2045,23 @@ void MainWindow::onTabChanged(int index)
 //-----------------------------------------------------------------------------
 void MainWindow::closeEvent(QCloseEvent* event)
 {
-	// disconnect the signals that would otherwise change the window states to be saved
+	// disconnect the signals that would otherwise change the window states to be saved.
 	disconnectVisibilityControls();
 
 	// Go through all tab documents and ask the user what to do if they are not saved.
-	while (designTabs_->count() > 0)
-	{
-		TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+    int tabsToClose = designTabs_->count();
+    for (int i = 0; i < tabsToClose; i++)
+    {
+        int openTabCountBeforeClosingCurrent = designTabs_->count();
 
-		if (doc->isModified())
-		{
-			QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-				"Do you want to save changes to " + doc->getDocumentName() + "?",
-				QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, this);
-
-			int ret = msgBox.exec();
-
-			switch (ret)
-			{
-			case QMessageBox::Yes:
-				{
-					// Try to save and if it fails, cancel the close event.
-					if (!doc->save())
-					{
-						event->ignore();
-						return;
-					}
-					break;
-				}
-
-			case QMessageBox::No:
-				{
-					doc->setModified(false);
-					break;
-				}
-
-			case QMessageBox::Cancel:
-				{
-					event->ignore();
-					return;
-				}
-			}
-		}
-
-		designTabs_->removeTab(designTabs_->currentIndex());
-		delete doc;
-		doc = 0;
-	}
+        designTabs_->closeAndRemoveDocument(designTabs_->currentIndex());
+        
+        if (openTabCountBeforeClosingCurrent == designTabs_->count())
+        {
+            event->ignore();
+            return;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -2255,7 +2092,6 @@ void MainWindow::createNew()
 	PropertyPageDialog dialog(QSize(48, 48), 1, PropertyPageDialog::VIEW_ICONS,
                               PropertyPageDialog::APPLY_CURRENT, this);
 	dialog.setFixedWidth(620);
-	//dialog.resize(620, 690);
 	dialog.setWindowTitle(tr("New"));
 
     // Add pages to the dialog.
@@ -3157,91 +2993,37 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 		editor = new BusEditor(this, libraryHandler_, busDef);
 	}
 
-    registerDocument(editor, forceUnlocked);
+    designTabs_->addAndOpenDocument(editor, forceUnlocked);
 }
 
 //-----------------------------------------------------------------------------
 // Function: openDesign()
 //-----------------------------------------------------------------------------
-void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forceUnlocked)
+void MainWindow::openDesign(VLNV const& vlnv, QString const& viewName , bool forceUnlocked)
 {
-	// the vlnv must always be for a component
+	// The vlnv must always be for a component.
 	Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
 
-	// parse the referenced component
-	QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
-	QSharedPointer<Component> comp = libComp.staticCast<Component>();
+	// Parse the referenced component.
+	QSharedPointer<Component> comp = libraryHandler_->getModel(vlnv).staticCast<Component>();
 	
-	// check if the design is already open
+	// Check if the design is already open.
 	VLNV refVLNV = comp->getHierRef(viewName);
 	VLNV designVLNV = libraryHandler_->getDesignVLNV(refVLNV);
-	if (isOpen(designVLNV)) {
-		return;
-	}
-	
-	QList<VLNV> hierRefs = comp->getHierRefs();
-
-	// make sure that all component's hierarchy refs are valid
-	bool hadInvalidRefs = false;
-	foreach (VLNV ref, hierRefs) {
-
-		// if the hierarchy referenced object is not found in library
-		if (!libraryHandler_->contains(ref)) {
-			emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
-				" which is not found in library. Component is not valid and can not "
-				"be opened in design view. Edit component with component editor to "
-				"remove invalid references.").arg(vlnv.toString(":")).arg(ref.toString(":")));
-			hadInvalidRefs = true;
-			continue;
-		}
-
-		// if the reference is to a wrong object type
-		else if (libraryHandler_->getDocumentType(ref) != VLNV::DESIGN &&
-			libraryHandler_->getDocumentType(ref) != VLNV::DESIGNCONFIGURATION) {
-				emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
-					" which is not design or design configuration. Component is not valid and"
-					" can not be opened in design view. Edit component with component editor to"
-					" remove invalid references.").arg(vlnv.toString(":")).arg(ref.toString(":")));
-				hadInvalidRefs = true;
-				continue;
-		}
-
-		// if the reference is for a design configuration then check that also
-		// the design is found
-		else if (libraryHandler_->getDocumentType(ref) == VLNV::DESIGNCONFIGURATION) {
-			VLNV designVLNV = libraryHandler_->getDesignVLNV(ref);
-
-			QSharedPointer<LibraryComponent> libComp2 = libraryHandler_->getModel(ref);
-			QSharedPointer<DesignConfiguration> desConf = libComp2.staticCast<DesignConfiguration>();
-			VLNV refToDesign = desConf->getDesignRef();
-
-			// if the referenced design was not found in the library
-			if (!designVLNV.isValid()) {
-				emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
-					" which is design configuration and references to design %3. This "
-					"design is not found in library so component can not be opened in "
-					"design view. Edit component with component editor to remove "
-					"invalid references").arg(
-					vlnv.toString(":")).arg(
-					ref.toString(":")).arg(
-					refToDesign.toString(":")));
-				hadInvalidRefs = true;
-				continue;
-			}
-		}
-	}
-	// if there was at least one invalid reference then do not open the design
-	if (hadInvalidRefs) {
+	if (isOpen(designVLNV) || hasInvalidReferences(comp->getHierRefs(), vlnv))
+    {
 		return;
 	}
 
-	HWDesignWidget* designWidget = new HWDesignWidget(libraryHandler_, this);
+    DesignWidgetFactoryImplementation factory(libraryHandler_);
+	DesignWidget* designWidget = factory.makeHWDesignWidget(this);
 	
     // open the design in the designWidget
 	designWidget->setDesign(vlnv, viewName);
 
 	// if the design could not be opened
-	if (!designWidget->getOpenDocument()) {
+	if (!designWidget->getOpenDocument())
+    {
 		delete designWidget;
 		return;
 	}
@@ -3273,7 +3055,7 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
     connect(designWidget, SIGNAL(clearItemSelection()),
         this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
-    registerDocument(designWidget, forceUnlocked);
+    designTabs_->addAndOpenDocument(designWidget, forceUnlocked);
 }
 
 //-----------------------------------------------------------------------------
@@ -3291,63 +3073,15 @@ void MainWindow::openMemoryDesign(const VLNV& vlnv, const QString& viewName, boo
     // check if the design is already open
     VLNV refVLNV = comp->getHierRef(viewName);
     VLNV designVLNV = libraryHandler_->getDesignVLNV(refVLNV);
-    if (isOpen(designVLNV)) {
+    if (isOpen(designVLNV))
+    {
         return;
     }
 
-    QList<VLNV> hierRefs = comp->getHierRefs();
-
     // make sure that all component's hierarchy refs are valid
-    bool hadInvalidRefs = false;
-    foreach (VLNV ref, hierRefs) {
-
-        // if the hierarchy referenced object is not found in library
-        if (!libraryHandler_->contains(ref)) {
-            emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
-                " which is not found in library. Component is not valid and can not "
-                "be opened in design view. Edit component with component editor to "
-                "remove invalid references.").arg(vlnv.toString(":")).arg(ref.toString(":")));
-            hadInvalidRefs = true;
-            continue;
-        }
-
-        // if the reference is to a wrong object type
-        else if (libraryHandler_->getDocumentType(ref) != VLNV::DESIGN &&
-            libraryHandler_->getDocumentType(ref) != VLNV::DESIGNCONFIGURATION) {
-                emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
-                    " which is not design or design configuration. Component is not valid and"
-                    " can not be opened in design view. Edit component with component editor to"
-                    " remove invalid references.").arg(vlnv.toString(":")).arg(ref.toString(":")));
-                hadInvalidRefs = true;
-                continue;
-        }
-
-        // if the reference is for a design configuration then check that also
-        // the design is found
-        else if (libraryHandler_->getDocumentType(ref) == VLNV::DESIGNCONFIGURATION) {
-            VLNV designVLNV = libraryHandler_->getDesignVLNV(ref);
-
-            QSharedPointer<LibraryComponent> libComp2 = libraryHandler_->getModel(ref);
-            QSharedPointer<DesignConfiguration> desConf = libComp2.staticCast<DesignConfiguration>();
-            VLNV refToDesign = desConf->getDesignRef();
-
-            // if the referenced design was not found in the library
-            if (!designVLNV.isValid()) {
-                emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
-                    " which is design configuration and references to design %3. This "
-                    "design is not found in library so component can not be opened in "
-                    "design view. Edit component with component editor to remove "
-                    "invalid references").arg(
-                    vlnv.toString(":")).arg(
-                    ref.toString(":")).arg(
-                    refToDesign.toString(":")));
-                hadInvalidRefs = true;
-                continue;
-            }
-        }
-    }
     // if there was at least one invalid reference then do not open the design
-    if (hadInvalidRefs) {
+    if (hasInvalidReferences(comp->getHierRefs(), vlnv))
+    {
         return;
     }
 
@@ -3357,7 +3091,8 @@ void MainWindow::openMemoryDesign(const VLNV& vlnv, const QString& viewName, boo
     designWidget->setDesign(vlnv, viewName);
 
     // if the design could not be opened
-    if (!designWidget->getOpenDocument()) {
+    if (!designWidget->getOpenDocument())
+    {
         delete designWidget;
         return;
     }
@@ -3375,7 +3110,7 @@ void MainWindow::openMemoryDesign(const VLNV& vlnv, const QString& viewName, boo
     connect(designWidget, SIGNAL(clearItemSelection()),
         this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
-    registerDocument(designWidget, forceUnlocked);
+    designTabs_->addAndOpenDocument(designWidget, forceUnlocked);
 }
 
 //-----------------------------------------------------------------------------
@@ -3431,7 +3166,7 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool fo
 	connect(designWidget, SIGNAL(modifiedChanged(bool)),
 		actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 
-    registerDocument(designWidget, forceUnlocked);
+    designTabs_->addAndOpenDocument(designWidget, forceUnlocked);
 }
 
 //-----------------------------------------------------------------------------
@@ -3490,7 +3225,7 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 	connect(designWidget, SIGNAL(modifiedChanged(bool)),
 		actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 
-    registerDocument(designWidget, forceUnlocked);
+    designTabs_->addAndOpenDocument(designWidget, forceUnlocked);
 
 	QApplication::restoreOverrideCursor();
 }
@@ -3545,7 +3280,7 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 	connect(editor, SIGNAL(openSystemDesign(const VLNV&, const QString&)),
 		this, SLOT(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 
-    registerDocument(editor, forceUnlocked);
+    designTabs_->addAndOpenDocument(editor, forceUnlocked);
 
 	QApplication::restoreOverrideCursor();
 }
@@ -3584,7 +3319,7 @@ void MainWindow::openComDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
     }
 
     ComDefinitionEditor* editor = new ComDefinitionEditor(this, libraryHandler_, comDef);
-    registerDocument(editor, forceUnlocked);
+    designTabs_->addAndOpenDocument(editor, forceUnlocked);
 }
 
 
@@ -3622,7 +3357,7 @@ void MainWindow::openApiDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
     }
 
     ApiDefinitionEditor* editor = new ApiDefinitionEditor(this, libraryHandler_, apiDef);
-    registerDocument(editor, forceUnlocked);
+    designTabs_->addAndOpenDocument(editor, forceUnlocked);
 }
 
 //-----------------------------------------------------------------------------
@@ -3890,9 +3625,7 @@ void MainWindow::openCSource(QString const& filename, QSharedPointer<Component> 
 
 	// Open the source to a view.
 	CSourceWidget* sourceWidget = new CSourceWidget(filename, component, libraryHandler_, this, this);
-	connect(sourceWidget, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()));
-	connect(sourceWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
-	sourceWidget->setTabWidget(designTabs_);
+    designTabs_->addAndOpenDocument(sourceWidget, true);
 }
 
 //-----------------------------------------------------------------------------
@@ -4172,7 +3905,8 @@ void MainWindow::showHelp()
     helpWnd_->show();
 }
 
-void MainWindow::selectVisibleDocks() {
+void MainWindow::selectVisibleDocks()
+{
 	windowsMenu_.exec(QCursor::pos());
 }
 
@@ -4395,33 +4129,6 @@ void MainWindow::onVisibilityControlToggled(QAction* action)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainWindow::refresh()
-//-----------------------------------------------------------------------------
-void MainWindow::refresh()
-{
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-    
-    if (doc == 0)
-    {
-        return;
-    }
-
-    if (doc->isModified())
-    {
-        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-            tr("The document has been modified. Save changes before refresh?"),
-            QMessageBox::Yes | QMessageBox::No, this);
-
-        if (msgBox.exec() == QMessageBox::Yes)
-        {
-            doc->save();
-        }
-    }
-
-    doc->refresh();
-}
-
-//-----------------------------------------------------------------------------
 // Function: MainWindow::isDesignOpen()
 //-----------------------------------------------------------------------------
 bool MainWindow::isDesignOpen(VLNV const& vlnv, KactusAttribute::Implementation implementation) const
@@ -4445,56 +4152,60 @@ bool MainWindow::isDesignOpen(VLNV const& vlnv, KactusAttribute::Implementation 
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainWindow::registerDocument()
+// Function: MainWindow::hasInvalidReferences()
 //-----------------------------------------------------------------------------
-void MainWindow::registerDocument(TabDocument* doc, bool forceUnlocked)
+bool MainWindow::hasInvalidReferences(QList<VLNV> hierRefs, VLNV const& referencingVlnv)
 {
-    connect(doc, SIGNAL(errorMessage(const QString&)),
-        console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
-    connect(doc, SIGNAL(noticeMessage(const QString&)),
-        console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
-
-    connect(doc, SIGNAL(helpUrlRequested(QString const&)),
-            this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
-
-
-    if (doc->getEditProvider() != 0)
+    bool invalidReferences = false;
+    foreach (VLNV ref, hierRefs)
     {
-        connect(doc->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
-    }
+        // if the hierarchy referenced object is not found in library
+        if (!libraryHandler_->contains(ref)) {
+            emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
+                " which is not found in library. Component is not valid and can not "
+                "be opened in design view. Edit component with component editor to "
+                "remove invalid references.").arg(referencingVlnv.toString(":")).arg(ref.toString(":")));
+            invalidReferences = true;
+            continue;
+        }
 
-    connect(doc, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
-    connect(doc, SIGNAL(modifiedChanged(bool)), actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
-    connect(doc, SIGNAL(documentSaved(TabDocument*)),
-            this, SLOT(onDocumentSaved(TabDocument*)), Qt::UniqueConnection);
+        // if the reference is to a wrong object type
+        else if (libraryHandler_->getDocumentType(ref) != VLNV::DESIGN &&
+            libraryHandler_->getDocumentType(ref) != VLNV::DESIGNCONFIGURATION) {
+                emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
+                    " which is not design or design configuration. Component is not valid and"
+                    " can not be opened in design view. Edit component with component editor to"
+                    " remove invalid references.").arg(referencingVlnv.toString(":")).arg(ref.toString(":")));
+                invalidReferences = true;
+                continue;
+        }
 
-    if (forceUnlocked/* || !isDocumentOpen(doc->getDocumentVLNV())*/)
-    {
-        doc->setProtection(false);
-    }
-    else
-    {
-        // Open in unlocked mode by default only if the version is draft.
-        doc->setProtection(doc->getDocumentVLNV().getVersion() != "draft");
-    }
+        // if the reference is for a design configuration then check that also
+        // the design is found
+        else if (libraryHandler_->getDocumentType(ref) == VLNV::DESIGNCONFIGURATION) {
+            VLNV designVLNV = libraryHandler_->getDesignVLNV(ref);
 
-    doc->setTabWidget(designTabs_);
-}
+            QSharedPointer<LibraryComponent> libComp2 = libraryHandler_->getModel(ref);
+            QSharedPointer<DesignConfiguration> desConf = libComp2.staticCast<DesignConfiguration>();
+            VLNV refToDesign = desConf->getDesignRef();
 
-//-----------------------------------------------------------------------------
-// Function: MainWindow::onDocumentSaved()
-//-----------------------------------------------------------------------------
-void MainWindow::onDocumentSaved(TabDocument* doc)
-{
-    for (int i = 0; i < designTabs_->count(); i++)
-    {
-        TabDocument* otherDoc = static_cast<TabDocument*>(designTabs_->widget(i));
-
-        if (otherDoc != doc && otherDoc->getRelatedVLNVs().contains(doc->getDocumentVLNV()))
-        {
-            otherDoc->requestRefresh();
+            // if the referenced design was not found in the library
+            if (!designVLNV.isValid()) {
+                emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
+                    " which is design configuration and references to design %3. This "
+                    "design is not found in library so component can not be opened in "
+                    "design view. Edit component with component editor to remove "
+                    "invalid references").arg(
+                    referencingVlnv.toString(":")).arg(
+                    ref.toString(":")).arg(
+                    refToDesign.toString(":")));
+                invalidReferences = true;
+                continue;
+            }
         }
     }
+
+    return invalidReferences;
 }
 
 //-----------------------------------------------------------------------------
