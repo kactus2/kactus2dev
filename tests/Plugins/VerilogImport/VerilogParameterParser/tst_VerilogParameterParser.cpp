@@ -402,10 +402,7 @@ void tst_VerilogParameterParser::otherParameterAsParameterValue()
 
     QSharedPointer<ModelParameter> first = targetComponent->getModelParameters().first();
     QSharedPointer<ModelParameter> second = targetComponent->getModelParameters().last();
-    QCOMPARE(second->getName(), QString("second"));
 
-    QRegularExpression uuid("{[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}");
-    QVERIFY(uuid.match(second->getValue()).hasMatch());
     verifyParameter(second, "second", first->getValueId(), "", "");
 }
 

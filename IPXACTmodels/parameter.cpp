@@ -45,7 +45,7 @@ value_(), valueAttributes_()
 
             if (getValueId().isEmpty())
             {
-                setValueId(QUuid::createUuid().toString());
+                createUuid();
             }
 		}
         else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
@@ -65,7 +65,7 @@ value_(), valueAttributes_()
 //-----------------------------------------------------------------------------
 Parameter::Parameter(): nameGroup_(), value_(), attributes_(), valueAttributes_()
 {
-    setValueId(QUuid::createUuid().toString());
+    createUuid();
 }
 
 //-----------------------------------------------------------------------------
@@ -436,4 +436,13 @@ void Parameter::setValueAttribute(QString const& attributeName, QString const& a
     {
         valueAttributes_.remove(attributeName);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::createUuid()
+//-----------------------------------------------------------------------------
+void Parameter::createUuid()
+{
+    QString formattedUuid = "uuid_" + QUuid::createUuid().toString().remove('{').remove('}').replace('-', '_');
+    setValueId(formattedUuid);
 }

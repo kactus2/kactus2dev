@@ -232,9 +232,7 @@ void ModelParameterModel::onAddItem(QModelIndex const& index)
     QList<QSharedPointer<ModelParameter> >& modelParameters = model_->getModelParameters();
 
     beginInsertRows(QModelIndex(), row, row);
-    QSharedPointer<ModelParameter> createdModelParameter(new ModelParameter());
-    createdModelParameter->setValueId(QUuid::createUuid().toString());
-    modelParameters.insert(row, createdModelParameter);
+    modelParameters.insert(row, QSharedPointer<ModelParameter>(new ModelParameter()));
     endInsertRows();
 
     // tell also parent widget that contents have been changed

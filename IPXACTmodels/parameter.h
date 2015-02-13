@@ -308,6 +308,11 @@ protected:
 
 private:
  
+    /*!
+     *  Creates an UUID for the parameter.
+     */
+    void createUuid();
+
     //! Contains the name, display name and description of parameter.
     NameGroup nameGroup_;
 

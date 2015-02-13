@@ -81,8 +81,7 @@ void ParametersModel::onAddItem(QModelIndex const& index)
     }
 
     beginInsertRows(QModelIndex(), row, row);
-    QSharedPointer<Parameter> createdParameter(new Parameter());
-    parameters_.insert(row, createdParameter);
+    parameters_.insert(row, QSharedPointer<Parameter>(new Parameter()));
     endInsertRows();
 
     // tell also parent widget that contents have been changed

@@ -883,7 +883,7 @@ void tst_VerilogImporter::testModelNameAndEnvironmentIsImportedToView_data()
 //-----------------------------------------------------------------------------
 QString tst_VerilogImporter::parameterUuid() const
 {
-    return "{[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}";
+    return "uuid_[0-9a-f]{8}_[0-9a-f]{4}_[0-9a-f]{4}_[0-9a-f]{4}_[0-9a-f]{12}";
 }
 
 QTEST_MAIN(tst_VerilogImporter)
