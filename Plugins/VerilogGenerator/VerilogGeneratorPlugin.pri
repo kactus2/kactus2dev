@@ -20,7 +20,10 @@ HEADERS += ./veriloggeneratorplugin_global.h \
     ./PortVerilogWriter/PortVerilogWriter.h \
     ./VerilogHeaderWriter/VerilogHeaderWriter.h \
     ./VerilogWireWriter/VerilogWireWriter.h \
-    ./CommentWriter/CommentWriter.h
+    ./CommentWriter/CommentWriter.h \
+    ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
+    ../../editors/ComponentEditor/common/ExpressionFormatter.h \
+    ../../editors/ComponentEditor/common/ParameterFinder.h
 SOURCES += ./VerilogGeneratorPlugin.cpp \
     ./VerilogGenerator/VerilogGenerator.cpp \
     ./ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
@@ -31,5 +34,7 @@ SOURCES += ./VerilogGeneratorPlugin.cpp \
     ./VerilogHeaderWriter/VerilogHeaderWriter.cpp \
     ./VerilogWireWriter/VerilogWireWriter.cpp \
     ./CommentWriter/CommentWriter.cpp \
-    ./common/WriterGroup.cpp
+    ./common/WriterGroup.cpp \
+    ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ../../editors/ComponentEditor/common/ExpressionFormatter.cpp
 RESOURCES += VerilogGenerator.qrc
