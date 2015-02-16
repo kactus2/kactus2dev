@@ -23,7 +23,7 @@
 
 #include <Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h>
 
-#include <tests/Plugins/MockObjects/LibraryMock.h>
+#include <tests/MockObjects/LibraryMock.h>
 
 class tst_VerilogGenerator : public QObject
 {

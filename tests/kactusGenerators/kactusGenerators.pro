@@ -1,20 +1,15 @@
 #-----------------------------------------------------------------------------
-# File: test_all.pro
+# File: subdirs.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
 # Date: 24.27.2014
 #
 # Description:
-# Qt project file for running all unit tests.
+# Qt project file template for running unit tests for generators.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = subdirs
 
 CONFIG += testcase
-
-SUBDIRS += IPXACTmodels/IPXACTmodels.pro \
-		editors/editors.pro \
-		wizards/wizards.pro \
-		Plugins/plugins.pro \
-        kactusGenerators/kactusGenerators.pro   
+SUBDIRS += documentGenerator/tst_documentGenerator.pro

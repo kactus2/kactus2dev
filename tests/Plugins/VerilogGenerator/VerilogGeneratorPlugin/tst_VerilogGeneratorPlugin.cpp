@@ -20,7 +20,7 @@
 #include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/fileset.h>
 
-#include <tests/Plugins/MockObjects/LibraryMock.h>
+#include <tests/MockObjects/LibraryMock.h>
 
 class tst_VerilogGenerator : public VerilogGeneratorPlugin
 {

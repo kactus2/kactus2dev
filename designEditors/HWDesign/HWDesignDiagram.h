@@ -182,7 +182,7 @@ public:
     /*!
      *  Constructor.
      */
-    HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, HWDesignWidget *parent = 0);
+    HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, DesignWidget* parent = 0);
 
 	//! \brief The destructor
 	virtual ~HWDesignDiagram();

@@ -66,7 +66,7 @@ Q_DECLARE_METATYPE(HWDesignDiagram::ColumnCollectionCopyData)
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram()
 //-----------------------------------------------------------------------------
-HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, HWDesignWidget *parent)
+HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, DesignWidget* parent)
     : ComponentDesignDiagram(lh, editProvider, parent),
       dragCompType_(CIT_NONE),
       dragBus_(false),

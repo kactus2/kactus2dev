@@ -1,14 +1,20 @@
-/* 
- * 		filename: designwidget.h
- */
+//-----------------------------------------------------------------------------
+// File: HWDesignWidgetMock.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Mikko Teuho
+// Date: 11.02.2015
+//
+// Description:
+// Mock class for hardware design widget.
+//-----------------------------------------------------------------------------
 
-#ifndef HWDESIGNWIDGET_H
-#define HWDESIGNWIDGET_H
+#ifndef HWDESIGNWIDGETMOCK_H
+#define HWDESIGNWIDGETMOCK_H
 
 #include <IPXACTmodels/vlnv.h>
 
-#include "HWDesignDiagram.h"
-
+#include <designEditors/HWDesign/HWDesignDiagram.h>
 #include <designEditors/common/DesignWidget.h>
 
 #include <QString>
@@ -22,19 +28,19 @@ class HWComponentItem;
 class BusPortItem;
 class DesignConfiguration;
 
-/*! \brief HWDesignWidget is used to edit and view one design
+/*! \brief HWDesignWidgetMock is used to edit and view one design
  *
  */
-class HWDesignWidget : public DesignWidget
+class HWDesignWidgetMock : public DesignWidget
 {
     Q_OBJECT
 
 public:
 
-    HWDesignWidget(LibraryInterface *lh, QWidget *parent = 0);
+    HWDesignWidgetMock(LibraryInterface *lh, QWidget *parent = 0);
 
 	//! \brief The destructor
-	virtual ~HWDesignWidget();
+	virtual ~HWDesignWidgetMock();
 
 	/*! \brief Set the design to be displayed in the block diagram
 	 *
@@ -70,10 +76,10 @@ public:
 signals:
     /*! \brief Emitted when user wants to refresh this widget
 	 *
-	 * \param designWidget Pointer to this HWDesignWidget instance
+	 * \param designWidget Pointer to this HWDesignWidgetMock instance
 	 *
 	*/
-	void refresh(const HWDesignWidget* designWidget);
+	void refresh(const HWDesignWidgetMock* designWidget);
 
 public slots:
     //! \brief Saves the design as new object
@@ -92,8 +98,8 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
 private:
-    HWDesignWidget(const HWDesignWidget &);
-    HWDesignWidget &operator=(const HWDesignWidget &);
+    HWDesignWidgetMock(const HWDesignWidgetMock &);
+    HWDesignWidgetMock &operator=(const HWDesignWidgetMock &);
 
     /*! \brief Create an empty hierarchical component
      *
@@ -114,4 +120,4 @@ private:
 
 };
 
-#endif // HWDESIGNWIDGET_H
+#endif // HWDESIGNWIDGETMOCK_H

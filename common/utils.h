@@ -194,7 +194,7 @@ namespace Utils {
     /*!
      *  Replaces a magic word in a string with the given value.
      */
-    void replaceMagicWord(QString& text, QString const& magicWord, QString const& value);
+    KACTUS2_API void replaceMagicWord(QString& text, QString const& magicWord, QString const& value);
 
     //! \brief Regular expression to validate URLs.
     const QRegExp URL_VALIDITY_REG_EXP = QRegExp("^([A-Za-z]{3,9}\\:\\/\\/)?[A-Za-z0-9]+([\\-\\.][A-Za-z0-9]+)*(\\/[A-Za-z0-9_\\.\\;\\,\\-\\?\\=\\&\\%\\#\\~\\+]*)*$", Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);

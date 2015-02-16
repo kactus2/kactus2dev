@@ -1834,9 +1834,9 @@ void MainWindow::generateDoc()
 		return;
 	}
 
-    DesignWidgetFactory* designWidgetFactory(new DesignWidgetFactoryImplementation(libraryHandler_));
+    DesignWidgetFactoryImplementation designWidgetFactory(libraryHandler_);
 
-	DocumentGenerator generator(libraryHandler_, designWidgetFactory, this);
+    DocumentGenerator generator(libraryHandler_, &designWidgetFactory, this);
 	connect(&generator, SIGNAL(errorMessage(const QString&)),
 		console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&generator, SIGNAL(noticeMessage(const QString&)),

@@ -55,22 +55,14 @@ public:
 	*/
 	QString writeDocumentation();
 
-signals:
+    /*!
+     *  Write the html header.
+     *
+     *      @param [in] stream  The text stream to write the table of contents into.
+     */
+    void writeHtmlHeader(QTextStream& stream);
 
-	//! \brief Print an error message to the user.
-	void errorMessage(const QString& errorMessage);
-
-	//! \brief Print a notification to the user.
-	void noticeMessage(const QString& noticeMessage);
-
-private:
-	//! \brief No copying
-	DocumentGenerator(const DocumentGenerator& other);
-
-	//! \brief No assignment
-	DocumentGenerator& operator=(const DocumentGenerator& other);
-
-	/*! \brief Write the table of contents for the component.
+  	/*! \brief Write the table of contents for the component.
 	 * 
 	 * This function is called recursively by this class.
 	 * 
@@ -81,7 +73,7 @@ private:
 	void writeTableOfContents(unsigned int& componentNumber,
 		QTextStream& stream);
 
-	/*! \brief Write the documentation for the given component.
+   	/*! \brief Write the documentation for the given component.
 	 * 
 	 * This function is called recursively by this class.
 	 * 
@@ -103,28 +95,28 @@ private:
 	*/
 	void writeModelParameters(QTextStream& stream, int& subHeaderNumber);
 
-	/*! \brief Write the parameters and kactus2 parameters of the component
+   	/*! \brief Write the parameters and kactus2 parameters of the component
 	 *
 	 * \param stream The text stream to write the documentation into.
 	 * \param subHeaderNumber The number that defines the number for the sub-header.
 	*/
 	void writeParameters(QTextStream& stream, int& subHeaderNumber);
 
-	/*! \brief Write the ports of the component.
+   	/*! \brief Write the ports of the component.
 	 *
 	 * \param stream The text stream to write the documentation into.
 	 * \param subHeaderNumber The number that defines the number for the sub-header.
 	*/
 	void writePorts(QTextStream& stream, int& subHeaderNumber);
 
-	/*! \brief Write the interfaces of the component.
+   	/*! \brief Write the interfaces of the component.
 	 *
 	 * \param stream The text stream to write the documentation into.
 	 * \param subHeaderNumber The number that defines the number for the sub-header.
 	*/
 	void writeInterfaces(QTextStream& stream, int& subHeaderNumber);
 
-	/*! \brief Write the file sets of the component.
+   	/*! \brief Write the file sets of the component.
 	 *
 	 * \param stream The text stream to write the documentation into.
 	 * \param subHeaderNumber The number that defines the number for the sub-header.
@@ -139,6 +131,28 @@ private:
 	 *
 	*/
 	void writeViews(QTextStream& stream, int& subHeaderNumber, QStringList& pictureList);
+
+    /*!
+     *  Write the end of the document.
+     *
+     *      @param [in] stream  The text stream to write the documentation into.
+     */
+    void writeEndOfDocument(QTextStream& stream);
+
+signals:
+
+	//! \brief Print an error message to the user.
+	void errorMessage(const QString& errorMessage);
+
+	//! \brief Print a notification to the user.
+	void noticeMessage(const QString& noticeMessage);
+
+private:
+	//! \brief No copying
+	DocumentGenerator(const DocumentGenerator& other);
+
+	//! \brief No assignment
+	DocumentGenerator& operator=(const DocumentGenerator& other);
 
 	/*! \brief Write the header to the given stream.
 	 *

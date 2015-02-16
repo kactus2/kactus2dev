@@ -18,13 +18,15 @@
 #include <QGraphicsView>
 #include <QRectF>
 
+#include <common/Global.h>
+
 class Component;
 class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! ComponentPreviewBox class.
 //-----------------------------------------------------------------------------
-class ComponentPreviewBox : public QGraphicsView
+class KACTUS2_API ComponentPreviewBox : public QGraphicsView
 {
 	Q_OBJECT
 

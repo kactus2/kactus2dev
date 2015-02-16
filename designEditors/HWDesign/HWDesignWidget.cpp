@@ -12,14 +12,12 @@
 #include "HWDeleteCommands.h"
 
 #include <designEditors/common/Association/Association.h>
-#include <designEditors/common/DiagramUtil.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
 #include <designEditors/common/Association/AssociationRemoveCommand.h>
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/GenericEditProvider.h>
 
-#include <IPXACTmodels/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include "columnview/ColumnEditDialog.h"
@@ -39,22 +37,8 @@
 
 #include <QMessageBox>
 #include <QFileDialog>
-#include <QDir>
 #include <QFileInfo>
-#include <QGraphicsView>
-#include <QDockWidget>
-#include <QTabWidget>
-#include <QAction>
-#include <QActionGroup>
-#include <QToolBar>
-#include <QKeyEvent>
-#include <QScrollBar>
-#include <QString>
 #include <QCoreApplication>
-#include <QVBoxLayout>
-#include <QPrinter>
-#include <QPainter>
-#include <QPrintDialog>
 
 //-----------------------------------------------------------------------------
 // Function: HWDesignWidget::HWDesignWidget()

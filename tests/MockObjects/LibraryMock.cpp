@@ -149,9 +149,16 @@ LibraryItem const* LibraryMock::getTreeRoot() const
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::getDocumentType()
 //-----------------------------------------------------------------------------
-VLNV::IPXactType LibraryMock::getDocumentType(const VLNV& /*vlnv*/)
+VLNV::IPXactType LibraryMock::getDocumentType(const VLNV& vlnv)
 {
-    return VLNV::INVALID;
+    if ( components_.keys().contains(vlnv) )
+    {
+        return vlnv.getType();
+    }
+    else
+    {
+        return VLNV::INVALID;
+    }
 }
 
 //-----------------------------------------------------------------------------
