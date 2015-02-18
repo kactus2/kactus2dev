@@ -10,7 +10,7 @@
     <p>
       Flat view editor is used to edit the non-hierarchical views of a
       component. The top part of the editor is identical with
-      hiearchical view. User may change the <b>view type</b> and then
+      hierarchical view. User may change the <b>view type</b> and then
       the bottom part changes accordingly.
     </p>
     <p>
@@ -30,27 +30,31 @@
       a generic value such as "*Simulation" and
       "*Synthesis"<b>VendorSpecific</b> can further qualify tool and
       language compatibility, e.g. if some appropriate simulator mode
-      must be enabled.  activated.
+      must be enabled.
     <p>
       <b>View type</b> can be changed and a non-hierarchical view has
-      5 additional optional settings.  <b>Language</b> specifies the
-      HDL for the view, e.g. VHDL, Verilog, or SystemC. <b>Strict</b>
-      denotes if language shall be strictly enforced. The default is
-      false (unchecked). <b>Model name</b> is am optional
-      language-specific identifier. For example, this may be of form
-      <i>entity(architecture)</i> if <b>name</b>-field of the VLNV is
-      not exactly the same as the entity name in VHDL code, or this
-      may be VHDL <i>configuration</i> name. For SystemC, this is the
-      <i>sc_module</i> class name.
-    </p>
-    <p>
-      <b>File set references</b> lists the used file sets of the
-      containing component, e.g. hdl_sources.  <b>Default file build
-      commands</b> lists the <b>commands</b> and <b>flags</b> to
-      compile the files of the listed file sets. <b>Parameters</b> are
-      optional details that describe the view for <i>generator</i>
-      usage. They are given as name-value pairs, augmented with
-      textual description.
+      5 additional optional settings.
+	  <ul>
+		<li><b>Language</b> specifies the HDL for the view, e.g. VHDL, 
+		Verilog, or SystemC. b>Strict</b> denotes if language shall 
+		be strictly enforced. The default is false (unchecked). </li>
+	  
+		<li><b>Model name</b> is an optional language-specific 
+		identifier. For example, this may be of form
+		<i>entity(architecture)</i> if <b>name</b>-field of the VLNV
+		is not exactly the same as the entity name in VHDL code, or 
+		this may be VHDL <i>configuration</i> name. For SystemC, this 
+		is the <i>sc_module</i> class name.</li>
+		
+		<li><b>File set references</b> lists the used file sets of the
+		containing component, e.g. hdl_sources. </li>
+		
+		<li><b>Default file build commands</b> lists the <b>commands</b> 
+		and <b>flags</b> to compile the files of the listed file sets.</li>
+		
+		<li><b>Parameters</b> are optional details that describe the view 
+		for <i>generator</i> usage.	</li>
+	  </ul>
     </p>
   </body>
 </html>

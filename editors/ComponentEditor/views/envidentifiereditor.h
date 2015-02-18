@@ -31,12 +31,9 @@ public:
 	 *
 	 * \param view Pointer to the view being edited
 	 * \param parent Pointer to the owner of this widget.
-	 * \param title The title to set for the group box
 	 *
 	*/
-	EnvIdentifierEditor(QSharedPointer<View> view, 
-		QWidget *parent, 
-		const QString title = QString("Environment identifiers"));
+	EnvIdentifierEditor(QSharedPointer<View> view, QWidget *parent);
 	
 	//! \brief The destructor
 	virtual ~EnvIdentifierEditor();

@@ -14,8 +14,9 @@
 #include <QGridLayout>
 #include <QStringList>
 
-#include <QDebug>
-
+//-----------------------------------------------------------------------------
+// Function: FlatViewGeneralTab::FlatViewGeneralTab()
+//-----------------------------------------------------------------------------
 FlatViewGeneralTab::FlatViewGeneralTab(QSharedPointer<Component> component, 
 									   QSharedPointer<View> view, 
 									   QWidget *parent): 
@@ -25,8 +26,8 @@ view_(view),
 language_(this), 
 languageStrict_(tr("Strict"), this),
 modelName_(this),
-fileSetRefs_(component, tr("File set references"), this) {
-
+fileSetRefs_(component, tr("File set references"), this)
+{
 	fileSetRefs_.initialize();
 
 	// create the labels for user to identify the editors
@@ -45,62 +46,90 @@ fileSetRefs_(component, tr("File set references"), this) {
 	topLayout->addWidget(&fileSetRefs_, 1);
 	topLayout->setContentsMargins(0, 0, 0, 0);
 
-	connect(&language_, SIGNAL(textEdited(const QString&)),
-		this, SLOT(onLanguageChange()), Qt::UniqueConnection);
-	connect(&languageStrict_, SIGNAL(toggled(bool)),
-		this, SLOT(onLanguageChange()), Qt::UniqueConnection);
-	connect(&modelName_, SIGNAL(textEdited(const QString&)),
-		this, SLOT(onModelNameChange(const QString&)), Qt::UniqueConnection);
-	connect(&fileSetRefs_, SIGNAL(contentChanged()),
-		this, SLOT(onFileSetRefChange()), Qt::UniqueConnection);
+	connect(&language_, SIGNAL(textEdited(const QString&)),	this, SLOT(onLanguageChange()), Qt::UniqueConnection);
+	connect(&languageStrict_, SIGNAL(toggled(bool)), this, SLOT(onLanguageChange()), Qt::UniqueConnection);
+	connect(&modelName_, SIGNAL(textEdited(const QString&)), 
+        this, SLOT(onModelNameChange(const QString&)), Qt::UniqueConnection);
+	connect(&fileSetRefs_, SIGNAL(contentChanged()), this, SLOT(onFileSetRefChange()), Qt::UniqueConnection);
 }
 
-FlatViewGeneralTab::~FlatViewGeneralTab() {
+//-----------------------------------------------------------------------------
+// Function: FlatViewGeneralTab::~FlatViewGeneralTab()
+//-----------------------------------------------------------------------------
+FlatViewGeneralTab::~FlatViewGeneralTab()
+{
+
 }
 
-bool FlatViewGeneralTab::isValid() const {
-
+//-----------------------------------------------------------------------------
+// Function: FlatViewGeneralTab::isValid()
+//-----------------------------------------------------------------------------
+bool FlatViewGeneralTab::isValid() const
+{
 	// check the file set references that they are to valid file sets.
 	QStringList fileSetRefs = fileSetRefs_.items();
-	foreach (QString ref, fileSetRefs) {
-		
+	foreach (QString filesetName, fileSetRefs)
+    {
 		// if the component does not contain the referenced file set.
-		if (!component_->hasFileSet(ref)) {
+		if (!component_->hasFileSet(filesetName))
+        {
 			return false;
 		}
 	}
 
 	if (language_.text().isEmpty() && languageStrict_.isChecked())
+    {
 		return false;
+    }
 
 	return true;
 }
 
-void FlatViewGeneralTab::refresh() {
-
+//-----------------------------------------------------------------------------
+// Function: FlatViewGeneralTab::refresh()
+//-----------------------------------------------------------------------------
+void FlatViewGeneralTab::refresh()
+{
 	language_.setText(view_->getLanguage());
 	languageStrict_.setChecked(view_->getLanguageStrict());
+
 	modelName_.setText(view_->getModelName());
 	fileSetRefs_.setItems(view_->getFileSetRefs());
 }
 
-void FlatViewGeneralTab::onLanguageChange() {
+//-----------------------------------------------------------------------------
+// Function: FlatViewGeneralTab::onLanguageChange()
+//-----------------------------------------------------------------------------
+void FlatViewGeneralTab::onLanguageChange()
+{
 	view_->setLanguage(language_.text());
 	view_->setLanguageStrict(languageStrict_.isChecked());
 	emit contentChanged();
 }
 
-void FlatViewGeneralTab::onModelNameChange( const QString& newName ) {
+//-----------------------------------------------------------------------------
+// Function: FlatViewGeneralTab::onModelNameChange()
+//-----------------------------------------------------------------------------
+void FlatViewGeneralTab::onModelNameChange(QString const& newName)
+{
 	view_->setModelName(newName);
 	emit contentChanged();
 }
 
-void FlatViewGeneralTab::onFileSetRefChange() {
+//-----------------------------------------------------------------------------
+// Function: FlatViewGeneralTab::onFileSetRefChange()
+//-----------------------------------------------------------------------------
+void FlatViewGeneralTab::onFileSetRefChange()
+{
 	view_->setFileSetRefs(fileSetRefs_.items());
 	emit contentChanged();
 }
 
-void FlatViewGeneralTab::showEvent( QShowEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: FlatViewGeneralTab::showEvent()
+//-----------------------------------------------------------------------------
+void FlatViewGeneralTab::showEvent(QShowEvent* event)
+{
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/flatview.html");
 }

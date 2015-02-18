@@ -9,19 +9,19 @@
 
 #include "envidentifiersdelegate.h"
 
-#include <QHeaderView>
 #include <QStringList>
-#include <QIcon>
 #include <QVBoxLayout>
 
+//-----------------------------------------------------------------------------
+// Function: EnvIdentifierEditor::EnvIdentifierEditor()
+//-----------------------------------------------------------------------------
 EnvIdentifierEditor::EnvIdentifierEditor(QSharedPointer<View> view, 
-										 QWidget *parent, 
-										 const QString title): 
-QGroupBox(title, parent),
+										 QWidget *parent): 
+QGroupBox(tr("Environment identifiers"), parent),
 view_(this),
 model_(view, this), 
-proxy_(this) {
-
+proxy_(this) 
+{
 	// set view to be sortable
 	view_.setSortingEnabled(true);
 
@@ -59,13 +59,26 @@ proxy_(this) {
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
 
-EnvIdentifierEditor::~EnvIdentifierEditor() {
+//-----------------------------------------------------------------------------
+// Function: EnvIdentifierEditor::~EnvIdentifierEditor()
+//-----------------------------------------------------------------------------
+EnvIdentifierEditor::~EnvIdentifierEditor()
+{
+
 }
 
-void EnvIdentifierEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: EnvIdentifierEditor::refresh()
+//-----------------------------------------------------------------------------
+void EnvIdentifierEditor::refresh()
+{
 	view_.update();
 }
 
-bool EnvIdentifierEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: EnvIdentifierEditor::isValid()
+//-----------------------------------------------------------------------------
+bool EnvIdentifierEditor::isValid() const
+{
 	return model_.isValid();
 }

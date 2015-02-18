@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 14.4.2011
- *      Author: Antti Kamppi
- * 		filename: vieweditor.h
- */
+//-----------------------------------------------------------------------------
+// File: vieweditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 14.4.2011
+//
+// Description:
+// Editor to edit a view within a component.
+//-----------------------------------------------------------------------------
 
 #ifndef VIEWEDITOR_H
 #define VIEWEDITOR_H
@@ -30,10 +34,11 @@
 class Component;
 class LibraryInterface;
 
-/*! \brief Editor to edit a view within a component.
- *
- */
-class ViewEditor : public ItemEditor {
+//-----------------------------------------------------------------------------
+//! Editor to edit a view within a component.
+//-----------------------------------------------------------------------------
+class ViewEditor : public ItemEditor
+{
 	Q_OBJECT
 
 public:
@@ -55,66 +60,63 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QWidget *parent = 0);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ViewEditor();
 
-	/*! \brief Check for the validity of the edited view.
+	/*! Check for the validity of the edited view.
 	*
 	* \return True if all model parameters are in valid state.
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Reload the information from the model to the editor.
+	/*! Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
 
 private slots:
 
-	//! \brief Handler for changes on the hierarchical/flat selector.
+	//! Handler for changes on the hierarchical/flat selector.
 	void onStackChange(int index);
 
 private:
 
-	//! \brief No copying
+	//! No copying
 	ViewEditor(const ViewEditor& other);
 
 	//! No assignment
 	ViewEditor& operator=(const ViewEditor& other);
 
-	//! \brief Set up the layout for the editor.
+	//! Set up the layout for the editor.
 	void setupLayout();
 
-	//! \brief Pointer to the instance that manages the library.
+	//! Pointer to the instance that manages the library.
 	LibraryInterface* libHandler_;
 
-	//! \brief Pointer to the view being edited.
+	//! Pointer to the view being edited.
 	QSharedPointer<View> view_;
 	
-	//! \brief Editor to set the name, display name and description of the view.
+	//! Editor to set the name, display name and description of the view.
 	NameGroupEditor nameEditor_;
 
-	//! \brief Combo box to select between hierarchical/flat views.
+	//! Combo box to select between hierarchical/flat views.
 	QComboBox viewTypeSelector_;
 
-	//! \brief The editor to edit the envIdentifier element.
+	//! The editor to edit the envIdentifier element.
 	EnvIdentifierEditor envIdentifier_;
 
-	//! \brief Widget that contains the flat and hierarchical editors
-	QStackedWidget stack_;
+	//! Widget that contains the flat and hierarchical editors.
+	QStackedWidget typeDependentEditors_;
 
-	//! \brief Tab widget contains the editor to edit a flat view.
-	QWidget flatElements_;
-
-	//! \brief Editor to set general settings of flat view.
+	//! Editor to set general settings of flat view.
 	FlatViewGeneralTab generalTab_;
 
-	//! \brief Editor to set the parameters of flat view.
+	//! Editor to set the parameters of flat view.
 	ParameterGroupBox parameters_;
 
-	//! \brief Editor to set the default file builders of flat view.
+	//! Editor to set the default file builders of flat view.
 	FileBuildersEditor fileBuilders_;
 
-	//! \brief The widget to edit the hierarchical reference
+	//! The widget to edit the hierarchical reference
 	HierarchyRefWidget hierarchyRef_;
 };
 

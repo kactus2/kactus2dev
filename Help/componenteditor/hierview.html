@@ -10,7 +10,7 @@
     <p>
       Hierarchical view editor is used to edit the details of a
       hierarchical view of the component. The top part of the editor
-      is identical with hiearchical view. User may change the <b>view
+      is identical with hierarchical view. User may change the <b>view
       type</b> and then the bottom part changes accordingly.
     </p>
     <p>
@@ -31,29 +31,31 @@
       a generic value such as "*Simulation" and
       "*Synthesis"<b>VendorSpecific</b> can further qualify tool and
       language compatibility, e.g. if some appropriate simulator mode
-      must be enabled.  activated.
+      must be enabled.
       </p>
     <p>
      <b>View type</b> can be changed and a non-hierarchical view has 2
-     additional settings. <b>Hierarchy reference</b> is a mandatory
-     <i>VLNV</i>-reference to a <i>design configuration</i> or
-     <i>design document</i>.  These documents list the sub-components
-     instantiated in the hierarchical design and their configurations.
-     User can simply drag-and-drop appropriate design from IP library
-     over the fields, or type them.  Kactus has also a graphical
-     design editor where the user instantiate and configure components
-     very easily.
-    </p>
-    <p>
-      <img src="../images/appicon.png" alt="kactus logo""><br> <b>Reference to
-      a top-level implementation view</b> is a Kactus2-specific
-      extension. It is a reference to a <i>non-hierarchical view</i>
-      of the same component that contains the generated RTL codes. A
-      <i>design</i> in Kactus is graphical block diagram with
-      sub-components and Kactus can automatically generate top-level
-      structural VHDL from it. This extension ensures that generated
-      codes are automatically included when generating a compilation
-      script for simulation or synthesis.
+     additional settings. 
+	   <ul>
+		<li><b>Hierarchy reference</b> is a mandatory
+		<i>VLNV</i>-reference to a <i>design configuration</i> or
+		<i>design document</i>. These documents list the sub-components
+		instantiated in the hierarchical design and their configurations.
+		User can simply drag-and-drop appropriate design from IP library
+		over the fields, or type them. Kactus2 has also a graphical
+		design editor where the user instantiate and configure components
+		very easily.<li>
+		
+		<li><img src="../images/appicon.png" alt="kactus logo">
+		<b>Reference to a top-level implementation view</b> is a 
+		Kactus2-specific extension. It is a reference to a 
+		<i>non-hierarchical view</i> of the same component that contains 
+		the generated RTL codes. A <i>design</i> in Kactus2 is graphical 
+		block diagram with sub-components and Kactus2 can automatically 
+		generate top-level structural VHDL from it. This extension ensures 
+		that generated codes are automatically included when generating a 
+		compilation script for simulation or synthesis.</li>
+	  </ul>
     </p>
   </body>
 </html>

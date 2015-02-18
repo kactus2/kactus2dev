@@ -1,16 +1,19 @@
-/* 
- *
- *  Created on: 14.4.2011
- *      Author: Antti Kamppi
- * 		filename: vieweditor.cpp
- */
+//-----------------------------------------------------------------------------
+// File: vieweditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 14.4.2011
+//
+// Description:
+// Editor to edit a view within a component.
+//-----------------------------------------------------------------------------
 
 #include "vieweditor.h"
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/view.h>
 #include <library/LibraryManager/libraryinterface.h>
-#include <IPXACTmodels/vlnv.h>
 #include <IPXACTmodels/filebuilder.h>
 
 #include <QVBoxLayout>
@@ -21,6 +24,19 @@
 #include <QGroupBox>
 #include <QScrollArea>
 
+namespace
+{
+    //! Enumeration of view types.
+    enum ViewType
+    {
+        HIERARCHICAL = 0,
+        FLAT
+    };
+}
+
+//-----------------------------------------------------------------------------
+// Function: ViewEditor::ViewEditor()
+//-----------------------------------------------------------------------------
 ViewEditor::ViewEditor( QSharedPointer<Component> component, QSharedPointer<View> view, 
     LibraryInterface* libHandler, QSharedPointer<ParameterFinder> parameterFinder, 
     QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent ): 
@@ -29,90 +45,92 @@ view_(view),
 nameEditor_(view->getNameGroup(), this, tr("View name and description")),
 viewTypeSelector_(),
 envIdentifier_(view, this),
-stack_(this),
-flatElements_(&stack_),
-generalTab_(component, view, &flatElements_),
+typeDependentEditors_(this),
+generalTab_(component, view, &typeDependentEditors_),
 parameters_(view->getParameters(), component, parameterFinder, expressionFormatter, this),
 fileBuilders_(view->getDefaultFileBuilders(), this),
-hierarchyRef_(view, component, libHandler, &stack_) {
-
+hierarchyRef_(view, component, libHandler, &typeDependentEditors_)
+{
 	// set the possible options to the view type selector.
-	viewTypeSelector_.addItem(tr("hierarchical"));
-	viewTypeSelector_.addItem(tr("non-hierarchical"));
+	viewTypeSelector_.insertItem(HIERARCHICAL, tr("hierarchical"));
+	viewTypeSelector_.insertItem(FLAT, tr("non-hierarchical"));
 
-	// add the widget to edit hierarchy reference to index 0 in the stackWidget
-	stack_.addWidget(&hierarchyRef_);
-	// ans tab widget that contains widgets to edit flat views to index 1
-	stack_.addWidget(&flatElements_);
-
-	// create a layout for the flat elements and add the editors
-	QVBoxLayout* flatLayout = new QVBoxLayout(&flatElements_);
-	flatLayout->addWidget(&generalTab_);
-	flatLayout->addWidget(&fileBuilders_);
-	flatLayout->addWidget(&parameters_);
-	flatLayout->setContentsMargins(0, 0, 0, 0);
+	// Add the widget to edit hierarchy reference to index 0 in the stackWidget.
+	typeDependentEditors_.insertWidget(HIERARCHICAL, &hierarchyRef_);
+	// Add tab widget that contains widgets to edit flat views to index 1.
+	typeDependentEditors_.insertWidget(FLAT, &generalTab_);
 
 	setupLayout();
 
+	connect(&nameEditor_, SIGNAL(contentChanged()),	this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	
+    connect(&envIdentifier_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	
+    connect(&hierarchyRef_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&hierarchyRef_, SIGNAL(helpUrlRequested(const QString&)),
+		this, SIGNAL(helpUrlRequested(const QString&)), Qt::UniqueConnection);
+	
+    connect(&generalTab_, SIGNAL(contentChanged()),	this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&generalTab_, SIGNAL(helpUrlRequested(const QString&)),
+		this, SIGNAL(helpUrlRequested(const QString&)), Qt::UniqueConnection);
+	
+    connect(&fileBuilders_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+    connect(&parameters_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&parameters_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(&parameters_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
-
     connect(&parameters_, SIGNAL(openReferenceTree(QString)),
         this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
 
-	connect(&nameEditor_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&envIdentifier_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&hierarchyRef_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&hierarchyRef_, SIGNAL(helpUrlRequested(const QString&)),
-		this, SIGNAL(helpUrlRequested(const QString&)), Qt::UniqueConnection);
-	connect(&viewTypeSelector_, SIGNAL(currentIndexChanged(int)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&generalTab_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&generalTab_, SIGNAL(helpUrlRequested(const QString&)),
-		this, SIGNAL(helpUrlRequested(const QString&)), Qt::UniqueConnection);
-	connect(&fileBuilders_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&parameters_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	// when user changes the view type the correct editor is displayed
+    connect(&viewTypeSelector_, SIGNAL(currentIndexChanged(int)),
+        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&viewTypeSelector_, SIGNAL(currentIndexChanged(int)),
 		this, SLOT(onStackChange(int)), Qt::UniqueConnection);
 
 	refresh();
 }
 
-ViewEditor::~ViewEditor() {
+//-----------------------------------------------------------------------------
+// Function: ViewEditor::~ViewEditor()
+//-----------------------------------------------------------------------------
+ViewEditor::~ViewEditor()
+{
+
 }
 
-bool ViewEditor::isValid() const {
-	
-	// if name group is not valid
-	if (!nameEditor_.isValid())
+//-----------------------------------------------------------------------------
+// Function: ViewEditor::isValid()
+//-----------------------------------------------------------------------------
+bool ViewEditor::isValid() const
+{
+	if (!nameEditor_.isValid() || !envIdentifier_.isValid())
+    {
 		return false;
+    }
 
-	// if environment identifiers have not been defined
-	else if (!envIdentifier_.isValid())
-		return false;
-	
 	// if view is hierarchical make sure the vlnv ref is valid
-	if (viewTypeSelector_.currentIndex() == 0)
+	if (viewTypeSelector_.currentIndex() == HIERARCHICAL)
+    {
 		return hierarchyRef_.isValid();
-
+    }
 	// if view is not hierarchical make sure all it's elements are valid
-	else {
-		return generalTab_.isValid() && parameters_.isValid() &&
-		fileBuilders_.isValid();
+	else
+    {
+		return generalTab_.isValid() && parameters_.isValid() && fileBuilders_.isValid();
 	}
 }
 
-void ViewEditor::setupLayout() {
+//-----------------------------------------------------------------------------
+// Function: ViewEditor::setupLayout()
+//-----------------------------------------------------------------------------
+void ViewEditor::setupLayout()
+{
+    nameEditor_.setMaximumHeight(200);
+    envIdentifier_.setMaximumHeight(nameEditor_.height() + viewTypeSelector_.height());
 
 	// create the scroll area
 	QScrollArea* scrollArea = new QScrollArea(this);
@@ -127,31 +145,54 @@ void ViewEditor::setupLayout() {
 	QWidget* topWidget = new QWidget(scrollArea);
 	topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-	QFormLayout* viewTypeLayout = new QFormLayout();
-	viewTypeLayout->addRow(tr("View type"), &viewTypeSelector_);
-
 	// create the layout for the top widget
 	QVBoxLayout* topLayout = new QVBoxLayout(topWidget);
-	topLayout->addWidget(&nameEditor_);
-	topLayout->addWidget(&envIdentifier_, 1);
-	topLayout->addLayout(viewTypeLayout);
-	topLayout->addWidget(&stack_);
-	topLayout->setContentsMargins(0, 0, 0, 0);
+    topLayout->setContentsMargins(0, 0, 0, 0);
+
+    QFormLayout* viewTypeLayout = new QFormLayout();
+    viewTypeLayout->addRow(tr("View type"), &viewTypeSelector_);
+
+    QVBoxLayout* nameAndTypeLayout = new QVBoxLayout();
+    nameAndTypeLayout->addWidget(&nameEditor_, 0);
+    nameAndTypeLayout->addLayout(viewTypeLayout);
+
+    QHBoxLayout* nameAndEnvIdentifiersLayout = new QHBoxLayout();
+    nameAndEnvIdentifiersLayout->addLayout(nameAndTypeLayout);
+    nameAndEnvIdentifiersLayout->addWidget(&envIdentifier_, 0, Qt::AlignTop);
+
+    topLayout->addLayout(nameAndEnvIdentifiersLayout);
+
+    QHBoxLayout* typeDependentLayout = new QHBoxLayout();
+    typeDependentLayout->addWidget(&typeDependentEditors_);
+    typeDependentLayout->addWidget(&fileBuilders_);
+
+    topLayout->addLayout(typeDependentLayout);
+    topLayout->addWidget(&parameters_);
+    topLayout->addStretch(1);
 
 	scrollArea->setWidget(topWidget);
 }
 
-void ViewEditor::onStackChange( int index ) {
-	stack_.setCurrentIndex(index);
+//-----------------------------------------------------------------------------
+// Function: ViewEditor::onStackChange()
+//-----------------------------------------------------------------------------
+void ViewEditor::onStackChange(int index)
+{
+	typeDependentEditors_.setCurrentIndex(index);
+
+    fileBuilders_.setVisible(index == FLAT);
+    parameters_.setVisible(index == FLAT);
 
 	// if the new index is for hierarchical view then refresh the hierarchical editor
-	if (index == 0) {
+	if (index == HIERARCHICAL) 
+    {
 		hierarchyRef_.refresh();
 	}
 	// if the flat view is selected then clear the hierarchy ref
-	else {
+	else 
+    {
 		hierarchyRef_.clear();
-		generalTab_.refresh();
+        generalTab_.refresh();
 		parameters_.refresh();
 
         // Update order in tree view.
@@ -159,17 +200,23 @@ void ViewEditor::onStackChange( int index ) {
 	}
 }
 
-void ViewEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: ViewEditor::refresh()
+//-----------------------------------------------------------------------------
+void ViewEditor::refresh()
+{
 	nameEditor_.refresh();
 	envIdentifier_.refresh();
 
 	// if view is hierarchical then set it to be selected
-	if (view_->isHierarchical()) {
-		viewTypeSelector_.setCurrentIndex(0);
+	if (view_->isHierarchical())
+    {
+		viewTypeSelector_.setCurrentIndex(HIERARCHICAL);
 		hierarchyRef_.refresh();
 	}
-	else {
-		viewTypeSelector_.setCurrentIndex(1);
+	else
+    {
+		viewTypeSelector_.setCurrentIndex(FLAT);
 		generalTab_.refresh();
 		parameters_.refresh();
 	}

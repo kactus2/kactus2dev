@@ -10,14 +10,16 @@
 
 #include <QVBoxLayout>
 
-FileBuildersEditor::FileBuildersEditor( QList<QSharedPointer<FileBuilder> >& fileBuilders,
-									   QWidget* parent,
-									   const QString& title):
-QGroupBox(title, parent),
+//-----------------------------------------------------------------------------
+// Function: FileBuildersEditor::FileBuildersEditor()
+//-----------------------------------------------------------------------------
+FileBuildersEditor::FileBuildersEditor(QList<QSharedPointer<FileBuilder> >& fileBuilders,
+									   QWidget* parent):
+QGroupBox(tr("Default file build commands"), parent),
 view_(this), 
 model_(fileBuilders, this), 
-proxy_(this) {
-
+proxy_(this)
+{
 	// set view to be sortable
 	view_.setSortingEnabled(true);
 
@@ -52,13 +54,26 @@ proxy_(this) {
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
 
-FileBuildersEditor::~FileBuildersEditor() {
+//-----------------------------------------------------------------------------
+// Function: FileBuildersEditor::~FileBuildersEditor()
+//-----------------------------------------------------------------------------
+FileBuildersEditor::~FileBuildersEditor()
+{
+
 }
 
-bool FileBuildersEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: FileBuildersEditor::isValid()
+//-----------------------------------------------------------------------------
+bool FileBuildersEditor::isValid() const
+{
 	return model_.isValid();
 }
 
-void FileBuildersEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: FileBuildersEditor::refresh()
+//-----------------------------------------------------------------------------
+void FileBuildersEditor::refresh()
+{
 	view_.update();
 }

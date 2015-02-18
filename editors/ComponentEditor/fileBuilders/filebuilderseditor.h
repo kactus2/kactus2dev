@@ -30,9 +30,7 @@ public:
 	 * \param parent Pointer to the owner of this editor.
 	 *
 	*/
-	FileBuildersEditor(QList<QSharedPointer<FileBuilder> >& fileBuilders,
-		QWidget* parent,
-		const QString& title = tr("Default file build commands"));
+	FileBuildersEditor(QList<QSharedPointer<FileBuilder> >& fileBuilders, QWidget* parent);
 
 	//! \brief the destructor
 	virtual ~FileBuildersEditor();
