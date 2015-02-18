@@ -68,8 +68,13 @@ namespace
         "\t\t</p>");
 }
 
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::DocumentGenerator()
+//-----------------------------------------------------------------------------
 DocumentGenerator::DocumentGenerator(LibraryInterface* handler,
+                                     const VLNV& vlnv,
                                      DesignWidgetFactory* designWidgetFactory,
+                                     ExpressionFormatterFactory* expressionFormatterFactory,
 									 QWidget* parent): 
 QObject(parent),
 handler_(handler),
@@ -78,17 +83,42 @@ myNumber_(0),
 childInstances_(),
 targetPath_(), 
 parentWidget_(parent),
-designWidgetFactory_(designWidgetFactory)
+designWidgetFactory_(designWidgetFactory),
+expressionFormatterFactory_(expressionFormatterFactory),
+expressionFormatter_()
 {
-
 	Q_ASSERT(handler_);
 	Q_ASSERT(parent);
+
+    // this function can be called for only the top document generator
+    Q_ASSERT(parentWidget_);
+
+    // parse the model for the component
+    component_ = handler_->getModel(vlnv).dynamicCast<Component>();
+    if (!component_)
+    {
+        emit errorMessage("VLNV was not found in the library.");
+    }
+    else
+    {
+        expressionFormatter_ = expressionFormatterFactory_->makeExpressionFormatter(component_);
+
+        // list of objects that have already been processed to avoid duplicates
+        QList<VLNV> objects;
+        objects.append(vlnv);
+
+        parseChildItems(objects);
+    }
 }
 
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::DocumentGenerator()
+//-----------------------------------------------------------------------------
 DocumentGenerator::DocumentGenerator( LibraryInterface* handler, 
 									 const VLNV& vlnv,
 									 QList<VLNV>& objects,
                                      DesignWidgetFactory* designWidgetFactory,
+                                     ExpressionFormatterFactory* expressionFormatterFactory,
 									 DocumentGenerator* parent):
 QObject(parent),
 handler_(handler),
@@ -97,7 +127,9 @@ myNumber_(0),
 childInstances_(),
 targetPath_(),
 parentWidget_(NULL),
-designWidgetFactory_(designWidgetFactory)
+designWidgetFactory_(designWidgetFactory),
+expressionFormatterFactory_(expressionFormatterFactory),
+expressionFormatter_()
 {
 	Q_ASSERT(handler_);
 	Q_ASSERT(parent);
@@ -112,31 +144,24 @@ designWidgetFactory_(designWidgetFactory)
 	QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
 	component_ = libComp.staticCast<Component>();
 
-	parseChildItems(objects);
-}
-
-DocumentGenerator::~DocumentGenerator() {
-}
-
-void DocumentGenerator::setComponent( const VLNV& vlnv ) {
-	Q_ASSERT(handler_->getDocumentType(vlnv) == VLNV::COMPONENT);
-	
-	// this function can be called for only the top document generator
-	Q_ASSERT(parentWidget_);
-
-	// parse the model for the component
-	QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
-	component_ = libComp.staticCast<Component>();
-
-	// list of objects that have already been processed to avoid duplicates
-	QList<VLNV> objects;
-	objects.append(vlnv);
+    expressionFormatter_ = expressionFormatterFactory_->makeExpressionFormatter(component_);
 
 	parseChildItems(objects);
 }
 
-void DocumentGenerator::parseChildItems( QList<VLNV>& objects ) {
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::~DocumentGenerator()
+//-----------------------------------------------------------------------------
+DocumentGenerator::~DocumentGenerator()
+{
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::parseChildItems()
+//-----------------------------------------------------------------------------
+void DocumentGenerator::parseChildItems( QList<VLNV>& objects )
+{
 	// ask the component for it's hierarchical references
 	QList<VLNV> refs = component_->getHierRefs();
 	foreach (VLNV ref, refs) {
@@ -145,59 +170,40 @@ void DocumentGenerator::parseChildItems( QList<VLNV>& objects ) {
 			continue;
 
 		QList<ComponentInstance> instances = design->getComponentInstances();
-		foreach (ComponentInstance const& instance, instances) {
-
-			// if the component has already been processed
-			if (objects.contains(instance.getComponentRef())) {
-				continue;
-			}
-			// if the referenced component is not found.
-			else if (!handler_->contains(instance.getComponentRef())) {
-				continue;
-			}
-			// if instance reference is not for a component
-			else if (handler_->getDocumentType(instance.getComponentRef()) != VLNV::COMPONENT) {
-				continue;
-			}
-
-			// create a new instance of document generator and add it to child list
-			objects.append(instance.getComponentRef());
-			QSharedPointer<DocumentGenerator> docGenerator(new DocumentGenerator(
-				handler_, instance.getComponentRef(), objects, designWidgetFactory_, this));
-			childInstances_.append(docGenerator);
+		foreach (ComponentInstance const& instance, instances)
+        {
+            if (!objects.contains(instance.getComponentRef()) && handler_->contains(instance.getComponentRef()) &&
+                handler_->getDocumentType(instance.getComponentRef()) == VLNV::COMPONENT)
+            {
+    			// create a new instance of document generator and add it to child list
+			    objects.append(instance.getComponentRef());
+			    QSharedPointer<DocumentGenerator> docGenerator(new DocumentGenerator(handler_,
+                    instance.getComponentRef(), objects, designWidgetFactory_, expressionFormatterFactory_, this));
+			    childInstances_.append(docGenerator);
+            }
 		}
 	}
 }
 
-QString DocumentGenerator::writeDocumentation() {
-	Q_ASSERT(component_);
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeDocumentation()
+//-----------------------------------------------------------------------------
+//QString DocumentGenerator::writeDocumentation()
+void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPath)
+{
+    if (!component_)
+    {
+        emit errorMessage("VLNV was not found in the library.");
+        return;
+    }
+
 	Q_ASSERT(handler_->contains(*component_->getVlnv()));
 	Q_ASSERT(handler_->getDocumentType(*component_->getVlnv()) == VLNV::COMPONENT);
 
 	// this function can only be called for the top document generator
 	Q_ASSERT(parentWidget_);
 
-	// find the path to the component's xml file
-	const QString xmlPath = handler_->getPath(*component_->getVlnv());
-	// create the default path for the documentation file
-	QFileInfo xmlInfo(xmlPath);
-	
-	targetPath_ = QFileDialog::getSaveFileName(NULL, 
-		tr("Save the documentation to..."), xmlInfo.absolutePath(),
-		tr("web pages (*.html)"));
-
-	// if user clicked cancel
-	if (targetPath_.isEmpty())
-		return QString();
-
-	QFile targetFile(targetPath_);
-
-	// if file can not be opened for writing
-	if (!targetFile.open(QFile::WriteOnly)) {
-		emit errorMessage(tr("Could not open file %1 for writing.").arg(targetPath_));
-		return QString();
-	}
-	QTextStream stream(&targetFile);
+    targetPath_ = targetPath;
 
     writeHtmlHeader(stream);
 
@@ -217,10 +223,7 @@ QString DocumentGenerator::writeDocumentation() {
 
     writeEndOfDocument(stream);
 
-	targetFile.close();
-
-	// ask user if he wants to save the generated documentation into 
-	// object metadata
+	// ask user if he wants to save the generated documentation into object metadata
 	QMessageBox::StandardButton button = QMessageBox::question(parentWidget_, 
 		tr("Save generated documentation to metadata?"),
 		tr("Would you like to save the generated documentation to IP-Xact"
@@ -264,8 +267,6 @@ QString DocumentGenerator::writeDocumentation() {
 
 		handler_->writeModelToFile(component_);
 	}
-
-	return targetPath_;
 }
 
 //-----------------------------------------------------------------------------
@@ -293,67 +294,55 @@ void DocumentGenerator::writeHtmlHeader(QTextStream& stream)
 //-----------------------------------------------------------------------------
 // Function: documentgenerator::writeTableOfContents()
 //-----------------------------------------------------------------------------
-void DocumentGenerator::writeTableOfContents(unsigned int& componentNumber,
-											 QTextStream& stream ) {
+void DocumentGenerator::writeTableOfContents(unsigned int& componentNumber, QTextStream& stream )
+{
 	// increase the running number and save this instance's number
 	++componentNumber;
 	myNumber_ = componentNumber;
 
-	stream << "\t\t<a href=\"#" << component_->getVlnv()->toString() << "\">" 
-		<< myNumber_ << ". Component" << SPACE << component_->getVlnv()->getVendor() << " - " <<
-		component_->getVlnv()->getLibrary() << " - " << 
-		component_->getVlnv()->getName() << " - " <<
-		component_->getVlnv()->getVersion()
-		<< "</a><br>" << endl;
-	
+    QString vlnvHeader = "\t\t" + INDENT + "<a href=\"#" + component_->getVlnv()->toString();
+
+    stream << "\t\t<a href=\"#" << component_->getVlnv()->toString() << "\">" << myNumber_ << ". Component" <<
+        SPACE << component_->getVlnv()->toString(" - ") << "</a><br>" << endl;
+
 	// subHeader is running number that counts the number of sub headers for component
 	int subHeader = 1;
 
 	if (component_->hasModelParameters()) {
-		stream << "\t\t" << INDENT << "<a href=\"#" << component_->getVlnv()->toString() <<
-			".modelParams" << "\">" << myNumber_ << "." << subHeader << 
-			". Model parameters</a><br>" << endl;
+        stream << vlnvHeader << ".modelParams\">" << myNumber_ << "." << subHeader <<
+            ". Model parameters</a><br>" << endl;
 		++subHeader;
 	}
 
 	// component always has kactus parameters
-	stream << "\t\t" << INDENT << "<a href=\"#" << component_->getVlnv()->toString() << 
-		".kts_params" << "\">" << myNumber_ << "." << subHeader <<
-		". Kactus2 attributes</a><br>" << endl;
+    stream << vlnvHeader << ".kts_params\">" << myNumber_ << "." << subHeader <<
+        ". Kactus2 attributes</a><br>" << endl;
 	++subHeader;
 
 	if (component_->hasParameters()) {
-		stream << "\t\t" << INDENT << "<a href=\"#" << component_->getVlnv()->toString() <<
-			".parameters" << "\">" << myNumber_ << "." << subHeader <<
-			". General parameters</a><br>" << endl;
+        stream << vlnvHeader << ".parameters\">" << myNumber_ << "." << subHeader <<
+            ". General parameters</a><br>" << endl;
 		++subHeader;
 	}
 
 	if (component_->hasPorts()) {
-		stream << "\t\t" << INDENT << "<a href=\"#" << component_->getVlnv()->toString() <<
-			".ports" << "\">" << myNumber_ << "." << subHeader <<
-			". Ports</a><br>" << endl;
+        stream << vlnvHeader << ".ports\">" << myNumber_ << "." << subHeader << ". Ports</a><br>" << endl;
 		++subHeader;
 	}
 
 	if (component_->hasInterfaces()) {
-		stream << "\t\t" << INDENT << "<a href=\"#" << component_->getVlnv()->toString() <<
-			".interfaces" << "\">" << myNumber_ << "." << subHeader <<
-			". Bus interfaces</a><br>" << endl;
+        stream << vlnvHeader << ".interfaces\">" << myNumber_ << "." << subHeader <<
+            ". Bus interfaces</a><br>" << endl;
 		++subHeader;
 	}
 
 	if (component_->hasFileSets()) {
-		stream << "\t\t" << INDENT << "<a href=\"#" << component_->getVlnv()->toString() <<
-			".fileSets" << "\">" << myNumber_ << "." << subHeader <<
-			". File sets</a><br>" << endl;
+        stream << vlnvHeader << ".fileSets\">" << myNumber_ << "." << subHeader << ". File sets</a><br>" << endl;
 		++subHeader;
 	}
 
 	if (component_->hasViews()) {
-		stream << "\t\t" << INDENT << "<a href=\"#" << component_->getVlnv()->toString() <<
-			".views" << "\">" << myNumber_ << "." << subHeader <<
-			". Views</a><br>" << endl;
+        stream << vlnvHeader << ".views\">" << myNumber_ << "." << subHeader << ". Views</a><br>" << endl;
 	}
 
 	// tell each child to write it's table of contents
@@ -362,9 +351,12 @@ void DocumentGenerator::writeTableOfContents(unsigned int& componentNumber,
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeDocumentation()
+//-----------------------------------------------------------------------------
 void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& targetPath,
-										   QStringList& filesToInclude) {
-	
+                                           QStringList& filesToInclude)
+{
 	targetPath_ = targetPath;
 	
 	// write the component header
@@ -407,7 +399,11 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& t
 	}
 }
 
-void DocumentGenerator::writeModelParameters(QTextStream& stream, int& subHeaderNumber) {
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeModelParameters()
+//-----------------------------------------------------------------------------
+void DocumentGenerator::writeModelParameters(QTextStream& stream, int& subHeaderNumber)
+{
 	if (component_->hasModelParameters()) {
 		
 		writeSubHeader(subHeaderNumber, stream, "Model parameters", "modelParams");
@@ -425,7 +421,8 @@ void DocumentGenerator::writeModelParameters(QTextStream& stream, int& subHeader
 			stream << "\t\t\t\t<tr>" << endl;
 			stream << "\t\t\t\t\t<td>" << param->getName() << "</td>" << endl;
 			stream << "\t\t\t\t\t<td>" << param->getDataType() << "</td>" << endl;
-			stream << "\t\t\t\t\t<td>" << param->getValue() << "</td>" << endl;
+			stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(param->getValue()) <<
+                "</td>" << endl;
 			stream << "\t\t\t\t\t<td>" << param->getDescription() << "</td>" << endl;
 			stream << "\t\t\t\t</tr>" << endl;
 		}
@@ -435,9 +432,11 @@ void DocumentGenerator::writeModelParameters(QTextStream& stream, int& subHeader
 	}
 }
 
-void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumber) {
-	// write the kactus 2 parameters
-	
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeParameters()
+//-----------------------------------------------------------------------------
+void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumber)
+{
 	writeSubHeader(subHeaderNumber, stream, "Kactus2 attributes", "kts_params");
 	
 	stream << "\t\t<p>" << endl;
@@ -469,7 +468,8 @@ void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumbe
 		foreach (QSharedPointer<Parameter> param, params) {
 			stream << "\t\t\t\t<tr>" << endl;
 			stream << "\t\t\t\t\t<td>" << param->getName() << "</td>" << endl;
-			stream << "\t\t\t\t\t<td>" << param->getValue() << "</td>" << endl;
+			stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(param->getValue()) <<
+                "</td>" << endl;
 			stream << "\t\t\t\t\t<td>" << param->getDescription() << "</td>" << endl;
 			stream << "\t\t\t\t</tr>" << endl;
 		}
@@ -478,47 +478,28 @@ void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumbe
 	}
 }
 
-void DocumentGenerator::writePorts(QTextStream& stream, int& subHeaderNumber) {
-
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writePorts()
+//-----------------------------------------------------------------------------
+void DocumentGenerator::writePorts(QTextStream& stream, int& subHeaderNumber)
+{
 	if (component_->hasPorts()) {
 		writeSubHeader(subHeaderNumber, stream, "Ports", "ports");
 
-		QStringList portHeaders;
-		portHeaders.append("Name");
-		portHeaders.append("Direction");
-		portHeaders.append("Width");
-		portHeaders.append("Left bound");
-		portHeaders.append("Right bound");
-		portHeaders.append("Port type");
-		portHeaders.append("Type definition");
-		portHeaders.append("Default value");
-		portHeaders.append("Description");
-		writeTableElement(portHeaders, 
-			"List of all ports the component has.", stream);
-		const QList<QSharedPointer<Port> > ports = component_->getPorts();
-		foreach (QSharedPointer<Port> port, ports) {
-			stream << "\t\t\t\t<tr>" << endl;
-			stream << "\t\t\t\t\t<td><a id=\"" << 
-				component_->getVlnv()->toString() << ".port." << port->getName() << 
-				"\">" <<  port->getName() << "</a></td>" << endl;
-			stream << "\t\t\t\t\t<td>" << General::direction2Str(port->getDirection()) << "</td>" << endl;
-			stream << "\t\t\t\t\t<td>" << port->getPortSize() << "</td>" << endl;
-			stream << "\t\t\t\t\t<td>" << port->getLeftBound() << "</td>" << endl;
-			stream << "\t\t\t\t\t<td>" << port->getRightBound() << "</td>" << endl;
-			const QString typeName = port->getTypeName();
-			stream << "\t\t\t\t\t<td>" << typeName << "</td>" << endl;
-			stream << "\t\t\t\t\t<td>" << port->getTypeDefinition(typeName) << "</td>" << endl;
-			stream << "\t\t\t\t\t<td>" << port->getDefaultValue() << "</td>" << endl;
-			stream << "\t\t\t\t\t<td>" << port->getDescription() << "</td>" << endl;
-			stream << "\t\t\t\t</tr>" << endl;
-		}
+        QString tableTitle = "List of all ports the component has.";
+        const QList<QSharedPointer<Port> > ports = component_->getPorts();
 
-		stream << "\t\t\t</table>" << endl;
-		++subHeaderNumber;
+        writePortTable(stream, tableTitle, ports);
+
+        ++subHeaderNumber;
 	}
 }
 
-void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumber) {
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeInterfaces()
+//-----------------------------------------------------------------------------
+void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
+{
 	if (component_->hasInterfaces()) {
 		
 		writeSubHeader(subHeaderNumber, stream, "Bus interfaces", "interfaces");
@@ -531,7 +512,6 @@ void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumbe
 			
 			stream << "\t\t\t<p>" << endl;
 
-			// if interface has a description
 			if (!interface->getDescription().isEmpty()) {
 				stream << "\t\t\t" << INDENT << "<strong>Description:</strong> " << 
 					interface->getDescription() << "<br>" << endl;
@@ -545,44 +525,19 @@ void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumbe
 
 			stream << "\t\t\t</p>" << endl;
 			
-			QStringList portHeaders;
-			portHeaders.append("Name");
-			portHeaders.append("Direction");
-			portHeaders.append("Width");
-			portHeaders.append("Left bound");
-			portHeaders.append("Right bound");
-			portHeaders.append("Port type");
-			portHeaders.append("Type definition");
-			portHeaders.append("Default value");
-			portHeaders.append("Description");
-			writeTableElement(portHeaders, 
-				QString("List of ports contained in interface %1.").arg(interface->getName()), stream);
-			const QList<QSharedPointer<Port> > ports = component_->getPorts(interface->getName());
-			foreach (QSharedPointer<Port> port, ports) {
-				stream << "\t\t\t\t<tr>" << endl;
-				stream << "\t\t\t\t\t<td><a id=\"" << 
-					component_->getVlnv()->toString() << ".port." << port->getName() << 
-					"\">" <<  port->getName() << "</a></td>" << endl;
-				stream << "\t\t\t\t\t<td>" << General::direction2Str(port->getDirection()) << "</td>" << endl;
-				stream << "\t\t\t\t\t<td>" << port->getPortSize() << "</td>" << endl;
-				stream << "\t\t\t\t\t<td>" << port->getLeftBound() << "</td>" << endl;
-				stream << "\t\t\t\t\t<td>" << port->getRightBound() << "</td>" << endl;
-				const QString typeName = port->getTypeName();
-				stream << "\t\t\t\t\t<td>" << typeName << "</td>" << endl;
-				stream << "\t\t\t\t\t<td>" << port->getTypeDefinition(typeName) << "</td>" << endl;
-				stream << "\t\t\t\t\t<td>" << port->getDefaultValue() << "</td>" << endl;
-				stream << "\t\t\t\t\t<td>" << port->getDescription() << "</td>" << endl;
-				stream << "\t\t\t\t</tr>" << endl;
-			}
-
-			stream << "\t\t\t</table>" << endl;
-
+            QString tableTitle ("List of ports contained in interface " + (interface->getName()) + ".");
+            const QList<QSharedPointer<Port> > ports = component_->getPorts(interface->getName());
+            writePortTable(stream, tableTitle, ports);
 		}
 		++subHeaderNumber;
 	}
 }
 
-void DocumentGenerator::writeFileSets(QTextStream& stream, int& subHeaderNumber) {
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeFileSets()
+//-----------------------------------------------------------------------------
+void DocumentGenerator::writeFileSets(QTextStream& stream, int& subHeaderNumber)
+{
 	if (component_->hasFileSets()) {
 		
 		writeSubHeader(subHeaderNumber, stream, "File sets", "fileSets");
@@ -596,7 +551,6 @@ void DocumentGenerator::writeFileSets(QTextStream& stream, int& subHeaderNumber)
 
 			stream << "\t\t\t<p>" << endl;
 
-			// if file set has a description
 			if (!fileSet->getDescription().isEmpty()) {
 				stream << "\t\t\t" << INDENT << "<strong>Description:</strong> " << 
 					fileSet->getDescription() << "<br>" << endl;
@@ -608,7 +562,6 @@ void DocumentGenerator::writeFileSets(QTextStream& stream, int& subHeaderNumber)
 			for (int i = 0; i < groups.size(); ++i) {
 				stream << groups.at(i);
 
-				// if this is not the last group identifier
 				if (i != groups.size()-1)
 					stream << ", ";
 			}
@@ -618,7 +571,6 @@ void DocumentGenerator::writeFileSets(QTextStream& stream, int& subHeaderNumber)
 			QList<QSharedPointer<FileBuilder> > fileBuilders = fileSet->getDefaultFileBuilders();
 			if (!fileBuilders.isEmpty()) {	
 				stream << "\t\t\t" << INDENT << "<strong>Default file builders:</strong>" << endl;
-
 				stream << "\t\t\t</p>" << endl;
 
 				QStringList builderHeaders;
@@ -669,8 +621,11 @@ void DocumentGenerator::writeFileSets(QTextStream& stream, int& subHeaderNumber)
 	}
 }
 
-void DocumentGenerator::writeViews( QTextStream& stream, int& subHeaderNumber,
-								   QStringList& pictureList ) {
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeViews()
+//-----------------------------------------------------------------------------
+void DocumentGenerator::writeViews( QTextStream& stream, int& subHeaderNumber, QStringList& pictureList )
+{
 	if (component_->hasViews()) {
 		stream << "\t\t\t<h2><a id=\"" << component_->getVlnv()->toString() << ".views\">"
 			<< myNumber_ << "." << subHeaderNumber << " Views</a></h2>" << endl;
@@ -738,11 +693,12 @@ void DocumentGenerator::writeViews( QTextStream& stream, int& subHeaderNumber,
 	}
 }
 
-void DocumentGenerator::writeView( QSharedPointer<View> view, 
-								  QTextStream& stream, 
-								  const int subheaderNumber, 
-								  const int viewNumber ) {
-	
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeView()
+//-----------------------------------------------------------------------------
+void DocumentGenerator::writeView( QSharedPointer<View> view, QTextStream& stream, const int subheaderNumber, 
+								  const int viewNumber )
+{
 	VLNV vlnv = view->getHierarchyRef();
 	
 	// if vlnv was not found in library
@@ -892,14 +848,20 @@ void DocumentGenerator::writeView( QSharedPointer<View> view,
 		stream << "\t\t\t\t\t<td><a href=\"#" << instance.getComponentRef().toString(":") 
 			<< "\">" << instance.getComponentRef().toString(" - ") << "</a></td>" << endl;
 		
-		// write the configurable element values of the instance
+        VLNV tempVlnv = instance.getComponentRef();
+
+        QSharedPointer<LibraryComponent> libComp = handler_->getModel(tempVlnv);
+        QSharedPointer<Component> component = libComp.staticCast<Component>();
+
+        ExpressionFormatter* equationFormatter = expressionFormatterFactory_->makeExpressionFormatter(component);
+
 		QMap<QString, QString> confElements = instance.getConfigurableElementValues();
 		stream << "\t\t\t\t\t<td>" << endl;
 		for (QMap<QString, QString>::iterator i = confElements.begin();
 			i != confElements.end(); ++i) {
-				stream << "\t\t\t\t\t" << i.key() << " = " << i.value();
-				
-				// if this is not the last configurable value
+                stream << "\t\t\t\t\t" << equationFormatter->formatReferringExpression(i.key()) << " = " <<
+                    equationFormatter->formatReferringExpression(i.value());
+
 				if (i != --confElements.end()) {
 					stream << "<br>";
 				}
@@ -921,19 +883,70 @@ void DocumentGenerator::writeView( QSharedPointer<View> view,
 	stream << "\t\t\t</table>" << endl; 
 }
 
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeEndOfDocument()
+//-----------------------------------------------------------------------------
+void DocumentGenerator::writeEndOfDocument(QTextStream& stream)
+{
+    stream << VALID_W3C_STRICT << endl;
+    stream << "\t</body>" << endl;
+    stream << "</html>" << endl;
+}
+
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeSubHeader()
+//-----------------------------------------------------------------------------
 void DocumentGenerator::writeSubHeader( const int headerNumber, 
 									   QTextStream& stream, 
 									   const QString& text,
-									   const QString& headerID) {
-
+									   const QString& headerID)
+{
    stream << "\t\t<h2><a id=\"" << component_->getVlnv()->toString() << "." <<
 	   headerID << "\">" << myNumber_ << "." << headerNumber << " " << text <<
 	   "</a></h2>" << endl;
 }
 
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writePortTable()
+//-----------------------------------------------------------------------------
+void DocumentGenerator::writePortTable(QTextStream& stream, QString const& title,
+    QList <QSharedPointer <Port> > ports)
+{
+    QStringList portHeaders;
+    portHeaders << "Name" << "Direction" << "Width" << "Left bound" << "Right bound" << "Port type" <<
+        "Type definition" << "Default value" << "Description";
+    writeTableElement(portHeaders, title, stream);
+
+    foreach (QSharedPointer<Port> port, ports) {
+        stream << "\t\t\t\t<tr>" << endl;
+        stream << "\t\t\t\t\t<td><a id=\"" << 
+            component_->getVlnv()->toString() << ".port." << port->getName() << 
+            "\">" <<  port->getName() << "</a></td>" << endl;
+        stream << "\t\t\t\t\t<td>" << General::direction2Str(port->getDirection()) << "</td>" << endl;
+        stream << "\t\t\t\t\t<td>" << port->getPortSize() << "</td>" << endl;
+        stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
+            port->getLeftBoundExpression()) << "</td>" << endl;
+        stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
+            port->getRightBoundExpression()) << "</td>" << endl;
+        const QString typeName = port->getTypeName();
+        stream << "\t\t\t\t\t<td>" << typeName << "</td>" << endl;
+        stream << "\t\t\t\t\t<td>" << port->getTypeDefinition(typeName) << "</td>" << endl;
+        stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(port->getDefaultValue())
+            << "</td>" << endl;
+        stream << "\t\t\t\t\t<td>" << port->getDescription() << "</td>" << endl;
+        stream << "\t\t\t\t</tr>" << endl;
+    }
+
+    stream << "\t\t\t</table>" << endl;
+}
+
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeTableElement()
+//-----------------------------------------------------------------------------
 void DocumentGenerator::writeTableElement( const QStringList& headers, 
 										  const QString& title,
-										  QTextStream& stream ) {
+										  QTextStream& stream )
+{
 	stream << "\t\t\t" << TABLE << title << "\">" << endl; 
 	stream << "\t\t\t\t<tr>" << endl;
 	foreach (QString header, headers) {
@@ -942,10 +955,12 @@ void DocumentGenerator::writeTableElement( const QStringList& headers,
 	stream << "\t\t\t\t</tr>\n";
 }
 
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeFile()
+//-----------------------------------------------------------------------------
 void DocumentGenerator::writeFile( QSharedPointer<File> file,
-								  QTextStream& stream ) {
-	
-	// get absolute path to the file
+								  QTextStream& stream )
+{
 	QString relativeFilePath = file->getName();
 	QString absFilePath = General::getAbsolutePath(handler_->getPath(*component_->getVlnv()), relativeFilePath);
 	QFileInfo fileInfo(absFilePath);
@@ -989,7 +1004,11 @@ void DocumentGenerator::writeFile( QSharedPointer<File> file,
 	stream << "\t\t\t\t</tr>" << endl;
 }
 
-void DocumentGenerator::createComponentPicture(QStringList& pictureList) {
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::createComponentPicture()
+//-----------------------------------------------------------------------------
+void DocumentGenerator::createComponentPicture(QStringList& pictureList)
+{
 	ComponentPreviewBox compBox(handler_);
 	compBox.hide();
 	compBox.setComponent(component_);
@@ -1002,7 +1021,6 @@ void DocumentGenerator::createComponentPicture(QStringList& pictureList) {
 
 	QFile compPicFile(compPicPath);
 
-	// if there exists a previous file
 	if (compPicFile.exists()) {
 		compPicFile.remove();
 	}
@@ -1028,8 +1046,10 @@ void DocumentGenerator::createComponentPicture(QStringList& pictureList) {
 	
 }
 
-void DocumentGenerator::createDesignPicture( QStringList& pictureList, 
-											const QString& viewName )
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::createDesignPicture()
+//-----------------------------------------------------------------------------
+void DocumentGenerator::createDesignPicture( QStringList& pictureList, const QString& viewName )
 {
     DesignWidget* designWidget (designWidgetFactory_->makeHWDesignWidget());
 
@@ -1046,7 +1066,6 @@ void DocumentGenerator::createDesignPicture( QStringList& pictureList,
 
 	QFile designPicFile(designPicPath);
 
-	// if there exists a previous file
 	if (designPicFile.exists()) {
 		designPicFile.remove();
 	}
@@ -1069,14 +1088,4 @@ void DocumentGenerator::createDesignPicture( QStringList& pictureList,
 	else {
 		pictureList.append(designPicPath);
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: documentgenerator::writeEndOfDocument()
-//-----------------------------------------------------------------------------
-void DocumentGenerator::writeEndOfDocument(QTextStream& stream)
-{
-    stream << VALID_W3C_STRICT << endl;
-    stream << "\t</body>" << endl;
-    stream << "</html>" << endl;
 }

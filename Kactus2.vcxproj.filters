@@ -3961,6 +3961,9 @@
     <ClCompile Include="GeneratedFiles\moc_DrawingBoard.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5788,6 +5791,12 @@
     </ClInclude>
     <ClInclude Include="designEditors\common\DesignWidgetFactory.h">
       <Filter>Header Files\designEditors\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatterFactory.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

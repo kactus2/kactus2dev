@@ -10,6 +10,9 @@
 
 #include <designEditors/common/DesignWidgetFactory.h>
 
+#include <editors/ComponentEditor/common/ExpressionFormatterFactory.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/vlnv.h>
@@ -28,32 +31,48 @@ class DocumentGenerator : public QObject {
 
 public:
 
+	/*!
+	 *  The constructor.
+	 *
+	 *      @param [in] handler                     Library, where the components reside.
+	 *      @param [in] vlnv                        VLNV of the component or design.
+	 *      @param [in] designWidgetFactory         Factory for making design widgets.
+	 *      @param [in] expressionFormatterFactory  Factory for making expression formatters.
+	 *      @param [in] parent                      The parent widget of the generator.
+	 */
 	DocumentGenerator(LibraryInterface* handler,
+        const VLNV& vlnv,
         DesignWidgetFactory* designWidgetFactory,
+        ExpressionFormatterFactory* expressionFormatterFactory,
 		QWidget* parent);
 
+	/*!
+	 *  The constructor for child generators.
+	 *
+	 *      @param [in] handler                     Library, where the components reside.
+	 *      @param [in] vlnv                        VLNV of the component or design.
+	 *      @param [in] objects                     The vlnvs that have been gone through already.
+	 *      @param [in] designWidgetFactory         The factory for making design widgets.
+	 *      @param [in] expressionFormatterFactory  The factory for making expression formatters.
+	 *      @param [in] parent                      The parent generator.
+	 */
 	DocumentGenerator(LibraryInterface* handler, 
 		const VLNV& vlnv,
 		QList<VLNV>& objects,
         DesignWidgetFactory* designWidgetFactory,
+        ExpressionFormatterFactory* expressionFormatterFactory,
 		DocumentGenerator* parent);
 	
 	//! \brief The destructor
 	virtual ~DocumentGenerator();
 
-	void setComponent(const VLNV& vlnv);
-
-	/*! \brief Write the documentation for the given component.
-	 * 
-	 * NOTE: Before calling this function the changes made to the component 
-	 * (and it's configurations) must be saved to the file system.
-	 * 
-	 * \param vlnv Identifies the component.
-	 * 
-	 * \return QString containing the path to the created html-file.
-	 *
-	*/
-	QString writeDocumentation();
+    /*!
+     *  Write the documentation to the selected stream.
+     *
+     *      @param [in] stream          The stream where to write.
+     *      @param [in] targetPath      The path where the document will be placed.
+     */
+    void writeDocumentation(QTextStream& stream, QString targetPath);
 
     /*!
      *  Write the html header.
@@ -62,75 +81,81 @@ public:
      */
     void writeHtmlHeader(QTextStream& stream);
 
-  	/*! \brief Write the table of contents for the component.
-	 * 
-	 * This function is called recursively by this class.
-	 * 
-	 * \param componentNumber The number for this component.
-	 * \param stream The text stream to write the table of contents into.
+	/*!
+	 *  Write the table of contents for the component.
 	 *
-	*/
-	void writeTableOfContents(unsigned int& componentNumber,
-		QTextStream& stream);
+	 *      @param [in] componentNumber     The number for this component.
+	 *      @param [in] stream              The text stream to write the table of contents into.
+	 */
+	void writeTableOfContents(unsigned int& componentNumber, QTextStream& stream);
 
-   	/*! \brief Write the documentation for the given component.
-	 * 
-	 * This function is called recursively by this class.
-	 * 
-	 * \param stream The text stream to write the documentation into.
-	 * \param targetPath File path to the file to be written. This is needed to 
-	 * print the relative paths to the files.
-	 * \param filesToInclude List of file names that contain pictures needed to display
-	 * the generated document.
+	/*!
+	 *  Write the documentation for the given component.
 	 *
-	*/
-	void writeDocumentation(QTextStream& stream, const QString& targetPath,
-		QStringList& filesToInclude);
+	 *      @param [in] stream          The text stream to write the documentation into.
+	 *      @param [in] targetPath      File path to the file to be written.
+	 *      @param [in] filesToInclude  List of file names that contain pictures needed to display the document.
+	 */
+	void writeDocumentation(QTextStream& stream, const QString& targetPath, QStringList& filesToInclude);
 
-	/*! \brief Write the model parameters of the component
-	 * 
-	 * \param stream The text stream to write the documentation into.
-	 * \param subHeaderNumber The number that defines the number for the sub-header.
-	 * 
-	*/
+	/*!
+	 *  Write the model parameters of the component.
+	 *
+	 *      @param [in] stream              The text stream to write the documentation into.
+	 *      @param [in] subHeaderNumber     The number that defines the number for the sub-header.
+	 */
 	void writeModelParameters(QTextStream& stream, int& subHeaderNumber);
 
-   	/*! \brief Write the parameters and kactus2 parameters of the component
+    /*!
+	 *  Write the parameters and kactus2 parameters of the component.
 	 *
-	 * \param stream The text stream to write the documentation into.
-	 * \param subHeaderNumber The number that defines the number for the sub-header.
-	*/
+	 *      @param [in] stream              The text stream to write the documentation into.
+	 *      @param [in] subHeaderNumber     The number that defines the sub-header.
+	 */
 	void writeParameters(QTextStream& stream, int& subHeaderNumber);
 
-   	/*! \brief Write the ports of the component.
+	/*!
+	 *  Write the ports of the component.
 	 *
-	 * \param stream The text stream to write the documentation into.
-	 * \param subHeaderNumber The number that defines the number for the sub-header.
-	*/
+	 *      @param [in] stream              The text stream to write the documentation into.
+	 *      @param [in] subHeaderNumber     The number that defines the sub header.
+	 */
 	void writePorts(QTextStream& stream, int& subHeaderNumber);
 
-   	/*! \brief Write the interfaces of the component.
+    /*!
+	 *  Write the interfaces of the component.
 	 *
-	 * \param stream The text stream to write the documentation into.
-	 * \param subHeaderNumber The number that defines the number for the sub-header.
-	*/
+	 *      @param [in] stream              The text stream to write the documentation into.
+	 *      @param [in] subHeaderNumber     The number that defines the sub header.
+	 */
 	void writeInterfaces(QTextStream& stream, int& subHeaderNumber);
 
-   	/*! \brief Write the file sets of the component.
+	/*!
+	 *  Write the file sets of the component.
 	 *
-	 * \param stream The text stream to write the documentation into.
-	 * \param subHeaderNumber The number that defines the number for the sub-header.
-	*/
+	 *      @param [in] stream              The text stream to write the documentation into.
+	 *      @param [in] subHeaderNumber     The number that defines the sub header.
+	 */
 	void writeFileSets(QTextStream& stream, int& subHeaderNumber);
 
-	/*! \brief Write the views of the component.
+	/*!
+	 *  Write the views of the component.
 	 *
-	 * \param stream The text stream to write the documentation into.
-	 * \param subHeaderNumber The number that defines the number for the sub-header.
-	 * \param pictureList List of file names to add the pictures of the designs to.
+	 *      @param [in] stream              The text stream to write the documentation into.
+	 *      @param [in] subHeaderNumber     The number that defines the sub header.
+	 *      @param [in] pictureList         List of file names to add the pictures of the designs to.
+	 */
+	void writeViews(QTextStream& stream, int& subHeaderNumber, QStringList& pictureList);
+
+	/*! \brief Write the documentation for the given view.
+	 *
+	 * \param view Pointer to the view the document.
+	 * \param stream Text stream to write into.
+	 * \param subheaderNumber The number of the subheader.
+	 * \param viewNumber The number of the view.
 	 *
 	*/
-	void writeViews(QTextStream& stream, int& subHeaderNumber, QStringList& pictureList);
+	void writeView(QSharedPointer<View> view, QTextStream& stream, const int subheaderNumber, const int viewNumber);
 
     /*!
      *  Write the end of the document.
@@ -165,6 +190,15 @@ private:
 	void writeSubHeader(const int headerNumber, QTextStream& stream, 
 		const QString& text, const QString& headerID);
 
+    /*!
+     *  Write the port table for the selected ports.
+     *
+     *      @param [in] stream  The stream to write into.
+     *      @param [in] title   The title of the port table.
+     *      @param [in] ports   The selected ports.
+     */
+    void writePortTable(QTextStream& stream, QString const& title, QList <QSharedPointer <Port> > ports);
+
 	/*! \brief Write the html-table element start into stream
 	 *
 	 * \param headers The headers for the table
@@ -183,17 +217,6 @@ private:
 	*/
 	void writeFile(QSharedPointer<File> file,  
 		QTextStream& stream);
-
-	/*! \brief Write the documentation for the given view.
-	 *
-	 * \param view Pointer to the view the document.
-	 * \param stream Text stream to write into.
-	 * \param subheaderNumber The number of the subheader.
-	 * \param viewNumber The number of the view.
-	 *
-	*/
-	void writeView(QSharedPointer<View> view, QTextStream& stream,
-		const int subheaderNumber, const int viewNumber);
 
 	/*! \brief Parse the child items for the document generator.
 	 *
@@ -237,6 +260,12 @@ private:
 
     //! The factory for creating design widgets.
     DesignWidgetFactory* designWidgetFactory_;
+
+    //! The factory for creating expression formatters.
+    ExpressionFormatterFactory* expressionFormatterFactory_;
+
+    //! The expression formatter, used to change parameter IDs into names.
+    ExpressionFormatter* expressionFormatter_;
 };
 
 #endif // DOCUMENTGENERATOR_H

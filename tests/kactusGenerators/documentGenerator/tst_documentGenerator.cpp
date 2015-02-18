@@ -17,6 +17,8 @@
 #include <tests/MockObjects/DesignWidgetFactoryMock.h>
 #include <tests/MockObjects/HWDesignWidgetMock.h>
 
+#include <editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h>
+
 #include <common/utils.h>
 
 #include <IPXACTmodels/design.h>
@@ -48,6 +50,8 @@ private slots:
     void cleanup();
     //! Test cases.
 
+    void testInvalidVlnvInConstructor();
+
     void testFileHeaderIsWritten();
     void testTableOfContentsIsWrittenWithOnlyTopComponent();
 
@@ -64,35 +68,84 @@ private slots:
 
     void testViewsWrittenForTopComponent();
 
+    void testDesignIsWritten();
+
     void testEndOfDocumentWrittenForTopComponent();
 
 private:
+
+    /*!
+     *  Create the generator used in most test cases.
+     */
+    DocumentGenerator* createTestGenerator();
+
+    /*!
+     *  Read the output file of the generator.
+     */
     void readOutputFile();
 
+    /*!
+     *  Create a model parameter used in the tests.
+     *
+     *      @param [in] name            Name of the parameter.
+     *      @param [in] dataType        Data type of the parameter.
+     *      @param [in] value           Value of the parameter.
+     *      @param [in] description     Description of the parameter.
+     *      @param [in] uuID            Id of the parameter.
+     */
     QSharedPointer<ModelParameter> createTestModelParameter(QString const& name, QString const& dataType,
         QString const& value, QString const& description, QString const& uuID);
 
+    /*!
+     *  Create a parameter used in the tests.
+     *
+     *      @param [in] name            Name of the parameter.
+     *      @param [in] value           Value of the parameter.
+     *      @param [in] description     Description of the parameter.
+     *      @param [in] uuID            Id of the parameter.
+     */
     QSharedPointer<Parameter> createTestParameter(QString const& name, QString const& value,
         QString const& description, QString const& uuID);
 
+    /*!
+     *  Create a port used in the tests.
+     *
+     *      @param [in] name            Name of the port.
+     *      @param [in] leftBound       The left bound of the port.
+     *      @param [in] rightBound      The right bound of the port.
+     *      @param [in] defaultValue    The default value of the port.
+     */
     QSharedPointer<Port> createTestPort(QString const& name, QString const& leftBound, QString const& rightBound,
         QString const& defaultValue);
 
+    /*!
+     *  Create a map for configurable element values.
+     *
+     *      @param [in] component   The component, whose configurable element values are being created.
+     */
+    QMap<QString, QString> createConfigurableElementvalues(QSharedPointer <Component> component);
+
+    //! Get the string used to describe a space.
     QString getSpaceString();
 
+    //! Get the string used to describe an indent.
     QString getIndentString();
 
+    //! Get the string used to describe a table.
     QString getTableString();
 
+    //! Get the string used to describe the encoding.
     QString getEncodingString();
 
+    //! Get the string used to describe the document type.
     QString getDoctypeString();
 
+    //! Get the string used to describe valid w3c strict.
     QString getValidW3CStrictString();
 
-    DocumentGenerator* createTestGenerator();
-
     QSharedPointer<Component> topComponent_;
+
+    VLNV topComponentVlnv_;
 
     QString output_;
 
@@ -102,6 +155,10 @@ private:
 
     DesignWidgetFactoryMock designWidgetFactory_;
 
+    ExpressionFormatterFactoryImplementation expressionFormatterFactory_;
+
+    QString targetPath_;
+
     QWidget* generatorParentWidget_;
 };
 
@@ -109,8 +166,8 @@ private:
 // Function: tst_documentGenerator::tst_documentGenerator()
 //-----------------------------------------------------------------------------
 tst_documentGenerator::tst_documentGenerator() :
-topComponent_(), output_(), generationTime_(), library_(this), designWidgetFactory_(&library_),
-    generatorParentWidget_(new QWidget)
+topComponent_(), topComponentVlnv_(), output_(), generationTime_(), library_(this), designWidgetFactory_(&library_),
+    expressionFormatterFactory_(), targetPath_("./generatorOutput.html"), generatorParentWidget_(new QWidget)
 {
 
 }
@@ -137,11 +194,12 @@ void tst_documentGenerator::cleanupTestCase()
 void tst_documentGenerator::init()
 {
     VLNV vlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0");
-    topComponent_ = QSharedPointer<Component>(new Component(vlnv));
+    topComponentVlnv_ = vlnv;
+    topComponent_ = QSharedPointer<Component>(new Component(topComponentVlnv_));
 
     library_.clear();
 
-    QVERIFY(!QFile::exists("./generatorOutput.html"));
+    QVERIFY(!QFile::exists(targetPath_));
 }
 
 //-----------------------------------------------------------------------------
@@ -152,7 +210,34 @@ void tst_documentGenerator::cleanup()
     topComponent_.clear();
     output_.clear();
 
-    QFile::remove("./generatorOutput.html");
+    QFile::remove(targetPath_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_documentGenerator::()
+//-----------------------------------------------------------------------------
+void tst_documentGenerator::testInvalidVlnvInConstructor()
+{
+    VLNV invalidVlnv(VLNV::COMPONENT, "invalid", "library", "component", "0");
+
+    DocumentGenerator* generator (new DocumentGenerator(&library_, invalidVlnv, &designWidgetFactory_,
+        &expressionFormatterFactory_, generatorParentWidget_));
+
+    QSignalSpy spy(generator, SIGNAL(errorMessage(QString const&)));
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    generator->writeDocumentation(stream, targetPath_);
+
+    targetFile.close();
+
+    delete generator;
+    generator = 0;
+
+    QCOMPARE(spy.count(), 1);
+    QCOMPARE(spy.takeFirst().at(0).toString(), QString("VLNV was not found in the library."));
 }
 
 //-----------------------------------------------------------------------------
@@ -167,7 +252,7 @@ void tst_documentGenerator::testFileHeaderIsWritten()
 
     DocumentGenerator* generator = createTestGenerator();
 
-    QFile targetFile("./generatorOutput.html");
+    QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
     QTextStream stream(&targetFile);
     
@@ -176,6 +261,9 @@ void tst_documentGenerator::testFileHeaderIsWritten()
     generator->writeHtmlHeader(stream);
 
     targetFile.close();
+
+    delete generator;
+    generator = 0;
 
     QString expectedOutput(getDoctypeString() + "\n"
     "<html>\n"
@@ -224,9 +312,31 @@ void tst_documentGenerator::testFileHeaderIsWritten()
 //-----------------------------------------------------------------------------
 void tst_documentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
 {
+    QSharedPointer<ModelParameter> modelParameter = createTestModelParameter("modelParam", "", "10", "", "M-ID");
+
+    QList <QSharedPointer<Parameter> > componentParameters;
+    QSharedPointer<Parameter> parameter = createTestParameter("parameter", "1", "", "P-ID");
+    componentParameters.append(parameter);
+
+    QSharedPointer<Port> port = createTestPort("port", "10", "1", "");
+
+    QSharedPointer<BusInterface> busInterface (new BusInterface());
+    busInterface->setName("busInterface");
+
+    QSharedPointer<FileSet> fileset (new FileSet("fileSet"));
+
+    View* view (new View("view"));
+
+    topComponent_->getModel()->addModelParameter(modelParameter);
+    topComponent_->setParameters(componentParameters);
+    topComponent_->addPort(port);
+    topComponent_->addBusInterface(busInterface);
+    topComponent_->addFileSet(fileset);
+    topComponent_->addView(view);
+
     DocumentGenerator* generator = createTestGenerator();
 
-    QFile targetFile("./generatorOutput.html");
+    QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
     QTextStream stream(&targetFile);
 
@@ -236,12 +346,28 @@ void tst_documentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
 
     targetFile.close();
 
+    delete generator;
+    generator = 0;
+
     QString expectedOutput(
         "\t\t<a href=\"#" + topComponent_->getVlnv()->toString() + "\">1. Component" + getSpaceString() +
-            topComponent_->getVlnv()->getVendor() + " - " + topComponent_->getVlnv()->getLibrary() + " - " +
-            topComponent_->getVlnv()->getName() + " - " + topComponent_->getVlnv()->getVersion() + "</a><br>\n"
+        topComponent_->getVlnv()->getVendor() + " - " + topComponent_->getVlnv()->getLibrary() + " - " +
+        topComponent_->getVlnv()->getName() + " - " + topComponent_->getVlnv()->getVersion() + "</a><br>\n"
         "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv()->toString() +
-            ".kts_params\">1.1. Kactus2 attributes</a><br>\n");
+        ".modelParams\">1.1. Model parameters</a><br>\n"
+        "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv()->toString() +
+        ".kts_params\">1.2. Kactus2 attributes</a><br>\n"
+        "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv()->toString() +
+        ".parameters\">1.3. General parameters</a><br>\n"
+        "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv()->toString() +
+        ".ports\">1.4. Ports</a><br>\n"
+        "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv()->toString() +
+        ".interfaces\">1.5. Bus interfaces</a><br>\n"
+        "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv()->toString() +
+        ".fileSets\">1.6. File sets</a><br>\n"
+        "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv()->toString() +
+        ".views\">1.7. Views</a><br>\n"
+            );
 
     readOutputFile();
 
@@ -286,7 +412,7 @@ void tst_documentGenerator::testModelParametersWrittenWithOnlyTopComponent()
 
     DocumentGenerator* generator = createTestGenerator();
 
-    QFile targetFile("./generatorOutput.html");
+    QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
     QTextStream stream(&targetFile);
 
@@ -295,6 +421,9 @@ void tst_documentGenerator::testModelParametersWrittenWithOnlyTopComponent()
     generator->writeModelParameters(stream, subHeaderNumber);
 
     targetFile.close();
+
+    delete generator;
+    generator = 0;
 
     QString expectedOutput(
         "\t\t<h2><a id=\"" + topComponent_->getVlnv()->toString() + ".modelParams\">0.1 Model parameters</a></h2>\n"
@@ -360,7 +489,7 @@ void tst_documentGenerator::testModelParametersWithReferences()
 
     DocumentGenerator* generator = createTestGenerator();
 
-    QFile targetFile("./generatorOutput.html");
+    QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
     QTextStream stream(&targetFile);
 
@@ -369,6 +498,9 @@ void tst_documentGenerator::testModelParametersWithReferences()
     generator->writeModelParameters(stream, subHeaderNumber);
 
     targetFile.close();
+
+    delete generator;
+    generator = 0;
 
     QString expectedOutput(
         "\t\t<h2><a id=\"" + topComponent_->getVlnv()->toString() + ".modelParams\">0.1 Model parameters</a></h2>\n"
@@ -443,7 +575,7 @@ void tst_documentGenerator::testParametersWrittenWithOnlyTopComponent()
 
     DocumentGenerator* generator = createTestGenerator();
 
-    QFile targetFile("./generatorOutput.html");
+    QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
     QTextStream stream(&targetFile);
 
@@ -452,6 +584,9 @@ void tst_documentGenerator::testParametersWrittenWithOnlyTopComponent()
     generator->writeParameters(stream, subHeaderNumber);
 
     targetFile.close();
+
+    delete generator;
+    generator = 0;
 
     QString expectedOutput(
         "\t\t<h2><a id=\"" + topComponent_->getVlnv()->toString() + ".kts_params\">0.1 Kactus2 attributes</a></h2>\n"
@@ -534,7 +669,7 @@ void tst_documentGenerator::testPortsWrittenWithOnlyTopComponent()
 
     DocumentGenerator* generator = createTestGenerator();
 
-    QFile targetFile("./generatorOutput.html");
+    QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
     QTextStream stream(&targetFile);
 
@@ -543,6 +678,9 @@ void tst_documentGenerator::testPortsWrittenWithOnlyTopComponent()
     generator->writePorts(stream, subHeaderNumber);
 
     targetFile.close();
+
+    delete generator;
+    generator = 0;
 
     QString expectedOutput(
         "\t\t<h2><a id=\"" + topComponent_->getVlnv()->toString() + ".ports\">0.1 Ports</a></h2>\n"
@@ -565,8 +703,8 @@ void tst_documentGenerator::testPortsWrittenWithOnlyTopComponent()
         "\t\t\t\t\t<td>" + QString::number(portRef->getPortSize()) + "</td>\n"
         "\t\t\t\t\t<td>parameter</td>\n"
         "\t\t\t\t\t<td>" + portRef->getRightBoundExpression() + "</td>\n"
-        "\t\t\t\t\t<td>" + portRef->getTypeName() + "Port type</td>\n"
-        "\t\t\t\t\t<td>" + portRef->getTypeDefinition(portRef->getTypeName()) + "Type definition</td>\n"
+        "\t\t\t\t\t<td>" + portRef->getTypeName() + "</td>\n"
+        "\t\t\t\t\t<td>" + portRef->getTypeDefinition(portRef->getTypeName()) + "</td>\n"
         "\t\t\t\t\t<td>parameter</td>\n"
         "\t\t\t\t\t<td>" + portRef->getDescription() + "</td>\n"
         "\t\t\t\t</tr>\n"
@@ -617,7 +755,7 @@ void tst_documentGenerator::testBusInterfacesWrittenWithoutPorts()
 
     DocumentGenerator* generator = createTestGenerator();
 
-    QFile targetFile("./generatorOutput.html");
+    QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
     QTextStream stream(&targetFile);
 
@@ -626,6 +764,9 @@ void tst_documentGenerator::testBusInterfacesWrittenWithoutPorts()
     generator->writeInterfaces(stream, subHeaderNumber);
 
     targetFile.close();
+
+    delete generator;
+    generator = 0;
 
     QString expectedOutput(
         "\t\t<h2><a id=\"" + topComponent_->getVlnv()->toString() + ".interfaces\">0.1 Bus interfaces</a></h2>\n"
@@ -682,7 +823,7 @@ void tst_documentGenerator::testFileSetsWrittenForTopComponent()
 
     topComponent_->addFileSet(testFileSet);
 
-    QFile targetFile("./generatorOutput.html");
+    QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
     QTextStream stream(&targetFile);
 
@@ -691,6 +832,9 @@ void tst_documentGenerator::testFileSetsWrittenForTopComponent()
     generator->writeFileSets(stream, subHeaderNumber);
 
     targetFile.close();
+
+    delete generator;
+    generator = 0;
 
     QStringList groupIdentifiers = testFileSet->getGroups();
     QString groups;
@@ -766,7 +910,7 @@ void tst_documentGenerator::testViewsWrittenForTopComponent()
 
     topComponent_->addView(flatView);
 
-    QFile targetFile("./generatorOutput.html");
+    QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
     QTextStream stream(&targetFile);
 
@@ -776,6 +920,9 @@ void tst_documentGenerator::testViewsWrittenForTopComponent()
     generator->writeViews(stream, subHeaderNumber, pictureList);
 
     targetFile.close();
+
+    delete generator;
+    generator = 0;
 
     QString expectedOutput(
         "\t\t<h2><a id=\"" + topComponent_->getVlnv()->toString() + ".views\">0.1 Views</a></h2>\n"
@@ -817,13 +964,120 @@ void tst_documentGenerator::testViewsWrittenForTopComponent()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_documentGenerator::testHierarchicalDesignIsWritten()
+//-----------------------------------------------------------------------------
+void tst_documentGenerator::testDesignIsWritten()
+{
+    VLNV designVlnv(VLNV::DESIGN, "Test", "TestLibrary", "TestDesign", "1.0");
+    QSharedPointer<Design> design = QSharedPointer<Design>(new Design(designVlnv));
+    library_.writeModelToFile("C:/Test/TestLibrary/TestDesign/1.0/TestDesign.1.0.xml", design);
+    library_.addComponent(design);
+
+    VLNV firstVlnv (VLNV::COMPONENT, "Test", "TestLibrary", "FirstComponent", "1.0");
+    QSharedPointer<Component> refComponent = QSharedPointer<Component>(new Component(firstVlnv));
+
+    QList <QSharedPointer<Parameter> > componentParameters;
+
+    QSharedPointer<Parameter> targetParameter = createTestParameter("firstParameter", "10", "", "ID-TARGET");
+    QSharedPointer<Parameter> referParameter = createTestParameter("referer", "ID-TARGET", "", "ID-REF");
+    componentParameters.append(targetParameter);
+    componentParameters.append(referParameter);
+
+    refComponent->setParameters(componentParameters);
+
+    library_.addComponent(refComponent);
+    ComponentInstance firstInstance("firstInstance", "", "", firstVlnv, QPointF(), "");
+    firstInstance.setConfigurableElementValues(createConfigurableElementvalues(refComponent));
+
+    QList<ComponentInstance> componentInstances;
+    componentInstances.append(firstInstance);
+    design->setComponentInstances(componentInstances);
+
+    QSharedPointer<View> hierarchicalView(new View);
+    hierarchicalView->setName("HierarchicalView");
+    hierarchicalView->setHierarchyRef(designVlnv);
+    topComponent_->addView(hierarchicalView.data());
+
+    DocumentGenerator* generator = createTestGenerator();
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    int subHeaderNumber = 1;
+
+    generator->writeView(hierarchicalView, stream, subHeaderNumber, subHeaderNumber);
+
+    targetFile.close();
+    delete generator;
+    generator = 0;
+
+    QString expectedOutput(
+        "\t\t\t<h4>0.1.1.2 Design " + design->getVlnv()->toString(" - ") + "</h4>\n"
+        "\t\t\t<p>\n"
+        "\t\t\t<strong>" + getIndentString() + "IP-Xact file: </strong><a href=\"\">TestDesign.1.0.xml</a><br>\n"
+        "\t\t\t<br>\n"
+        "\t\t\t</p>\n"
+        "\t\t\t" + getTableString() + "Component instantiations within this design\">\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<th>Instance name</th>\n"
+        "\t\t\t\t\t<th>Component type</th>\n"
+        "\t\t\t\t\t<th>Configurable values</th>\n"
+        "\t\t\t\t\t<th>Active view</th>\n"
+        "\t\t\t\t\t<th>Description</th>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<td>" + firstInstance.getInstanceName() + "</td>\n"
+        "\t\t\t\t\t<td><a href=\"#" + firstVlnv.toString(":") + "\">" + firstVlnv.toString(" - ") + "</a></td>\n"
+        "\t\t\t\t\t<td>\n"
+        "\t\t\t\t\t" + targetParameter->getName() + " = " + targetParameter->getValue() + "<br>\n"
+        "\t\t\t\t\t" + referParameter->getName() + " = " + targetParameter->getName() + "\n"
+        "\t\t\t\t\t</td>\n"
+        "\t\t\t\t\t<td></td>\n"
+        "\t\t\t\t\t<td>" + firstInstance.getDescription() + "</td>\n"
+        "\t\t\t\t</tr>\n"
+        );
+
+    readOutputFile();
+
+    if (!output_.contains(expectedOutput))
+    {
+        QStringList outputLines = output_.split("\n");
+        QStringList expectedLines = expectedOutput.split("\n");
+
+        QVERIFY(outputLines.count() >= expectedLines.count());
+
+        int lineOffset = outputLines.indexOf(expectedLines.first());
+
+        if (lineOffset == -1)
+        {
+            readOutputFile();
+            QCOMPARE(output_, expectedOutput);
+        }
+        else
+        {
+            int lineCount = expectedLines.count();
+            for (int i = 0; i < lineCount; i++)
+            {
+                QCOMPARE(outputLines.at(i + lineOffset), expectedLines.at(i));
+            }
+        }
+    }
+    else if (output_.count(expectedOutput) != 1)
+    {
+        QVERIFY2(false, QString(expectedOutput + " was found " + QString::number(output_.count(expectedOutput)) +
+            " times in output.").toLocal8Bit());
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_documentGenerator::testEndOfDocumentWrittenForTopComponent()
 //-----------------------------------------------------------------------------
 void tst_documentGenerator::testEndOfDocumentWrittenForTopComponent()
 {
     DocumentGenerator* generator = createTestGenerator();
 
-    QFile targetFile("./generatorOutput.html");
+    QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
     QTextStream stream(&targetFile);
 
@@ -870,11 +1124,25 @@ void tst_documentGenerator::testEndOfDocumentWrittenForTopComponent()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_documentGenerator::createTestGenerator()
+//-----------------------------------------------------------------------------
+DocumentGenerator* tst_documentGenerator::createTestGenerator()
+{
+    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/TestComponent.1.0.xml", topComponent_);
+    library_.addComponent(topComponent_);
+
+    DocumentGenerator* generator (new DocumentGenerator(&library_, topComponentVlnv_, &designWidgetFactory_, 
+        &expressionFormatterFactory_, generatorParentWidget_));
+
+    return generator;
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_documentGenerator::readOutputFile()
 //-----------------------------------------------------------------------------
 void tst_documentGenerator::readOutputFile()
 {
-    QFile outputFile("./generatorOutput.html");
+    QFile outputFile(targetPath_);
 
     QVERIFY(outputFile.open(QIODevice::ReadOnly));
 
@@ -930,6 +1198,27 @@ QSharedPointer<Port> tst_documentGenerator::createTestPort(QString const& name, 
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_documentGenerator::createConfigurableElementvalues()
+//-----------------------------------------------------------------------------
+QMap<QString, QString> tst_documentGenerator::createConfigurableElementvalues(QSharedPointer<Component> component)
+{    
+    ExpressionFormatter* refExpressionFormatter = expressionFormatterFactory_.makeExpressionFormatter(component);
+
+    QMap<QString, QString> instanceConfigurableElementValues;
+
+    foreach (QSharedPointer<Parameter> parameter, component->getParameters())
+    {
+        instanceConfigurableElementValues[parameter->getName()] =
+            refExpressionFormatter->formatReferringExpression(parameter->getValue());
+    }
+
+    delete refExpressionFormatter;
+    refExpressionFormatter = 0;
+
+    return instanceConfigurableElementValues;
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_documentGenerator::getSpaceString()
 //-----------------------------------------------------------------------------
 QString tst_documentGenerator::getSpaceString()
@@ -981,22 +1270,6 @@ QString tst_documentGenerator::getValidW3CStrictString()
         "width=\"88\">\n"
         "\t\t\t</a>\n"
         "\t\t</p>\n");
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_documentGenerator::createTestGenerator()
-//-----------------------------------------------------------------------------
-DocumentGenerator* tst_documentGenerator::createTestGenerator()
-{
-    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/TestComponent.1.0.xml", topComponent_);
-    library_.addComponent(topComponent_);
-
-    DocumentGenerator* generator (new DocumentGenerator(&library_, &designWidgetFactory_, generatorParentWidget_));
-
-    VLNV vlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0");
-    generator->setComponent(vlnv);
-
-    return generator;
 }
 
 QTEST_MAIN(tst_documentGenerator)

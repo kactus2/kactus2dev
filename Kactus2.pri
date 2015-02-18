@@ -7,7 +7,9 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./common/Global.h \
+HEADERS += ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h \
+    ./editors/ComponentEditor/common/ExpressionFormatterFactory.h \
+    ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
@@ -130,6 +132,7 @@ HEADERS += ./common/Global.h \
     ./mainwindow/NewPages/NewSWComponentPage.h \
     ./mainwindow/NewPages/NewSWDesignPage.h \
     ./mainwindow/NewPages/NewSystemPage.h \
+    ./mainwindow/DrawingBoard/DrawingBoard.h \
     ./settings/SettingsUpdater.h \
     ./settings/ComponentEditorSettingsPage.h \
     ./settings/SettingsPage.h \
@@ -596,9 +599,9 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./mainwindow/DrawingBoard/DrawingBoard.h
-SOURCES += ./common/GenericEditProvider.cpp \
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h
+SOURCES += ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.cpp \
+    ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
     ./common/dialogs/comboSelector/comboselector.cpp \

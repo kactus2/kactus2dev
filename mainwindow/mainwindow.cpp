@@ -61,6 +61,7 @@
 #include <editors/ComponentEditor/componenteditor.h>
 #include <editors/CSourceEditor/CSourceWidget.h>
 #include <editors/CSourceEditor/CSourceContentMatcher.h>
+#include <editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h>
 
 #include <Help/HelpSystem/ContextHelpBrowser.h>
 #include <Help/HelpSystem/HelpWindow.h>
@@ -1834,42 +1835,48 @@ void MainWindow::generateDoc()
 		return;
 	}
 
+    const QString XMLPath = libraryHandler_->getPath(vlnv);
+    QFileInfo xmlInfo(XMLPath);
+
+    QString targetPath = QFileDialog::getSaveFileName(NULL, tr("Save the documentation to..."),
+        xmlInfo.absolutePath(), tr("web pages (*.html)"));
+
+    if (targetPath.isEmpty())
+    {
+        return;
+    }
+
+    QFile targetFile(targetPath);
+    if (!targetFile.open(QFile::WriteOnly))
+    {
+        emit errorMessage(tr("Could not open file %1 for writing.").arg(targetPath));
+        return;
+    }
+    QTextStream stream(&targetFile);
+
     DesignWidgetFactoryImplementation designWidgetFactory(libraryHandler_);
 
-    DocumentGenerator generator(libraryHandler_, &designWidgetFactory, this);
+    ExpressionFormatterFactoryImplementation expressionFormatterFactory;
+
+    DocumentGenerator generator(libraryHandler_, vlnv, &designWidgetFactory, &expressionFormatterFactory, this);
 	connect(&generator, SIGNAL(errorMessage(const QString&)),
 		console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&generator, SIGNAL(noticeMessage(const QString&)),
 		console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
 
-	// set the component that's documentation is generated.
-	generator.setComponent(vlnv);
+    generator.writeDocumentation(stream, targetPath);
 
-	// write the documentation
-	QString htmlFilePath = generator.writeDocumentation();
-
-	// if user canceled
-	if (htmlFilePath.isEmpty()) {
-		return;
-	}
+    targetFile.close();
 
 	// open the generated document in user's default browser
-	QDesktopServices::openUrl(QUrl::fromLocalFile(htmlFilePath));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(targetPath));
 
-	// if the editor was component editor then it must be refreshed to make the
-	// changes to metadata visible
+	// if the editor was component editor then it must be refreshed to make the changes to metadata visible
 	ComponentEditor* compEditor = dynamic_cast<ComponentEditor*>(doc);
 
-	if (compEditor) {
-
-		// close the editor
-		bool wasLocked = compEditor->isProtected();
-		int index = designTabs_->currentIndex();
-		designTabs_->removeTab(index);
-		delete compEditor;
-
-		// open the component again in the editor
-		openComponent(vlnv, !wasLocked);
+	if (compEditor)
+    {
+        designTabs_->refreshCurrentDocument();
 	}
 }
 
