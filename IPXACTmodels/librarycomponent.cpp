@@ -34,7 +34,8 @@ vlnv_(),
 description_(),
 kactus2Attributes_(),
 topComments_(),
-vendorExtensions_()
+vendorExtensions_(),
+versionExtension_()
 {
 	// get the VLNV
 	vlnv_ = QSharedPointer<VLNV>(new VLNV(findVLNV(doc)));
@@ -58,15 +59,7 @@ vendorExtensions_()
 		}
         else if (children.at(i).nodeName() == QString("spirit:vendorExtensions"))
         {
-            int vendorExtensionCount = children.at(i).childNodes().count();
-            for(int j = 0; j < vendorExtensionCount; j++)
-            {
-                QDomNode extensionNode = children.at(i).childNodes().at(j);
-                if (!extensionNode.nodeName().contains("kactus2:"))
-                {
-                    vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
-                }                
-            }
+            parseVendorExtensions(children.at(i));
         }
 	}    
 }
@@ -76,7 +69,8 @@ LibraryComponent::LibraryComponent():
 vlnv_(), 
 description_(),
 kactus2Attributes_(),
-vendorExtensions_()
+vendorExtensions_(),
+versionExtension_()
 {
 	vlnv_ = QSharedPointer<VLNV>(new VLNV());
 }
@@ -86,7 +80,8 @@ vlnv_(),
 description_(),
 kactus2Attributes_(),
 topComments_(),
-vendorExtensions_()
+vendorExtensions_(),
+versionExtension_()
 {
     vlnv_ = QSharedPointer<VLNV>(new VLNV(vlnv));
 }
@@ -96,13 +91,18 @@ vlnv_(),
 description_(other.description_),
 kactus2Attributes_(other.kactus2Attributes_),
 topComments_(other.topComments_),
-vendorExtensions_(other.vendorExtensions_)
+vendorExtensions_(),
+versionExtension_()
 {
 	if (other.vlnv_) {
 		vlnv_ = QSharedPointer<VLNV>(new VLNV(*other.vlnv_));
 	}
 	else
+    {
 		vlnv_ = QSharedPointer<VLNV>(new VLNV());
+    }
+
+    copyVendorExtensions(other);
 }
 
 LibraryComponent & LibraryComponent::operator=( const LibraryComponent &other ) {
@@ -120,7 +120,7 @@ LibraryComponent & LibraryComponent::operator=( const LibraryComponent &other ) 
 
 		topComments_ = other.topComments_;
 
-        vendorExtensions_ = other.vendorExtensions_;
+        copyVendorExtensions(other);
 	}
 	return *this;
 }
@@ -311,4 +311,63 @@ QStringList LibraryComponent::getTopComments() const {
 
 const QStringList LibraryComponent::getDependentDirs() const {
 	return QStringList();
+}
+
+//-----------------------------------------------------------------------------
+// Function: librarycomponent::setVersion()
+//-----------------------------------------------------------------------------
+void LibraryComponent::setVersion(QString versionNumber)
+{
+    if (versionExtension_.isNull())
+    {
+        versionExtension_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:version", versionNumber));
+        vendorExtensions_.append(versionExtension_);
+    }
+    else
+    {
+        vendorExtensions_.removeAll(versionExtension_);
+        versionExtension_.clear();
+        versionExtension_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:version", versionNumber));
+        vendorExtensions_.append(versionExtension_);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: librarycomponent::parseVendorExtensions()
+//-----------------------------------------------------------------------------
+void LibraryComponent::parseVendorExtensions(QDomNode const& extensionsNode)
+{
+    int vendorExtensionCount = extensionsNode.childNodes().count();
+    for(int index = 0; index < vendorExtensionCount; index++)
+    {
+        QDomNode childNode = extensionsNode.childNodes().at(index);
+        if (childNode.nodeName() == QString("kactus2:version"))
+        {
+            setVersion(childNode.nodeValue());
+        }
+
+        else if (!childNode.nodeName().contains("kactus2:"))
+        {
+            vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(childNode)));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: librarycomponent::copyVendorExtensions()
+//-----------------------------------------------------------------------------
+void LibraryComponent::copyVendorExtensions(const LibraryComponent & other)
+{
+    foreach (QSharedPointer<VendorExtension> extension, other.vendorExtensions_)
+    {
+        if (extension->type() == "kactus2:version")
+        {
+            versionExtension_ = QSharedPointer<Kactus2Value>(other.versionExtension_->clone());
+            vendorExtensions_.append(versionExtension_);
+        }
+        else
+        {
+            vendorExtensions_.append(QSharedPointer<VendorExtension>(extension->clone()));
+        }
+    }
 }

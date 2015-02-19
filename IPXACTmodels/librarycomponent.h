@@ -12,6 +12,8 @@
 
 #include "ipxactmodels_global.h"
 
+#include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
+
 #include <QString>
 #include <QList>
 #include <QDomDocument>
@@ -240,6 +242,13 @@ public:
      */
     QList<QSharedPointer<VendorExtension> > getVendorExtensions() const;
 
+    /*!
+     *  Set the version number kactus2 during creation of this component.
+     *
+     *      @param [in] versionNumber   Version of kactus2.
+     */
+    void setVersion(QString versionNumber);
+
 protected:
 
 	/*! \brief Write the kactus2 attributes using the writer.
@@ -270,6 +279,20 @@ protected:
      */
     void writeVendorExtensions(QXmlStreamWriter& writer) const;
 
+    /*!
+     *  Parses the vendor extensions from a DOM node.
+     *
+     *      @param [in] extensionsNode  The DOM node containing all vendor extensions.
+     */
+    void parseVendorExtensions(QDomNode const& extensionsNode);
+
+    /*!
+     *  Copies vendor extensions from another register.
+     *
+     *      @param [in] other   The register to copy extensions from.
+     */
+    void copyVendorExtensions(const LibraryComponent & other);
+
 	/*!
 	 * spirit:versionedIdentifier
 	 * MANDATORY
@@ -290,6 +313,9 @@ protected:
 
     //! Component vendor extensions.
     QList<QSharedPointer<VendorExtension> > vendorExtensions_;
+
+    //! Version of kactus2 when this component was created.
+    QSharedPointer<Kactus2Value> versionExtension_;
 };
 
 #endif /* LIBRARYCOMPONENT_H_ */

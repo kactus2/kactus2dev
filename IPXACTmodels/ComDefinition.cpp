@@ -139,6 +139,13 @@ void ComDefinition::write(QFile& file)
 
     writer.writeEndElement(); // kactus2:properties
 
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        writeVendorExtensions(writer);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
+
     writer.writeEndElement(); // kactus2:comDefinition
     writer.writeEndDocument();
 }

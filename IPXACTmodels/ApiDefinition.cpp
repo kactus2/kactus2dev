@@ -158,6 +158,13 @@ void ApiDefinition::write(QFile& file)
 
     writer.writeEndElement(); // kactus2:functions
 
+    if (!vendorExtensions_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        writeVendorExtensions(writer);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
+
     writer.writeEndElement(); // kactus2:apiDefinition
     writer.writeEndDocument();
 }
