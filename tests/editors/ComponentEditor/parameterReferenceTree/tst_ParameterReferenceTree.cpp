@@ -73,7 +73,7 @@ private:
     QSharedPointer<ModelParameter> createTestModelParameter(QString const& name, QString const& value,
         QString const& bitWidth, QString const& arraySize, QString const& arrayOffset);
 
-    QSharedPointer<Port> createTestPort(QString const&name, QString const& leftExpression,
+    QSharedPointer<Port> createTestPort(QString const& name, QString const& leftExpression,
         QString const& rightExpression, QString const& defaultValue);
 
     QSharedPointer<Register> createTestRegister(QString const& name, QString const& offSet,

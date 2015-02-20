@@ -23,6 +23,7 @@
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
+#include <IPXACTmodels/memorymap.h>
 
 #include <common/utils.h>
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
@@ -188,7 +189,6 @@ void DocumentGenerator::parseChildItems( QList<VLNV>& objects )
 //-----------------------------------------------------------------------------
 // Function: documentgenerator::writeDocumentation()
 //-----------------------------------------------------------------------------
-//QString DocumentGenerator::writeDocumentation()
 void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPath)
 {
     if (!component_)
@@ -212,7 +212,6 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
 
 	stream << "\t\t<p>" << endl;
 	stream << "\t\t<strong>Table of contents</strong><br>" << endl;
-	// write the table of contents for this top component
 	writeTableOfContents(runningNumber, stream);
 	stream << "\t\t</p>" << endl;
 
@@ -325,6 +324,12 @@ void DocumentGenerator::writeTableOfContents(unsigned int& componentNumber, QTex
 		++subHeader;
 	}
 
+    if (!component_->getMemoryMaps().isEmpty())
+    {
+        stream << vlnvHeader << ".memoryMaps\">" << myNumber_ << "." << subHeader << ". Memory maps</a><br>" << endl;
+        ++subHeader;
+    }
+
 	if (component_->hasPorts()) {
         stream << vlnvHeader << ".ports\">" << myNumber_ << "." << subHeader << ". Ports</a><br>" << endl;
 		++subHeader;
@@ -388,6 +393,7 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& t
 	int subHeaderNumber = 1;
 	writeModelParameters(stream, subHeaderNumber);
 	writeParameters(stream, subHeaderNumber);
+    writeMemoryMaps(stream, subHeaderNumber);
 	writePorts(stream, subHeaderNumber);
 	writeInterfaces(stream, subHeaderNumber);
 	writeFileSets(stream, subHeaderNumber);
@@ -476,6 +482,234 @@ void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumbe
 		stream << "\t\t\t</table>" << endl;
 		++subHeaderNumber;
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeMemoryMaps()
+//-----------------------------------------------------------------------------
+void DocumentGenerator::writeMemoryMaps(QTextStream& stream, int& subHeaderNumber)
+{
+    if (!component_->getMemoryMaps().isEmpty())
+    {
+        writeSubHeader(subHeaderNumber, stream, "Memory maps", "memoryMaps");
+
+        const QList<QSharedPointer<MemoryMap> > componentMemoryMaps = component_->getMemoryMaps();
+        int memoryMapNumber = 1;
+        foreach (QSharedPointer<MemoryMap> memoryMap, componentMemoryMaps)
+        {
+            stream << "\t\t\t<h3><a id=\"" << component_->getVlnv()->toString() << ".memoryMap." <<
+                memoryMap->getName() << "\">" << myNumber_ << "." << subHeaderNumber << "." <<
+                memoryMapNumber << " " << memoryMap->getName() << "</a></h3>" << endl;
+
+            stream << "\t\t\t<p>" << endl;
+
+            if (!memoryMap->getDescription().isEmpty())
+            {
+                stream << "\t\t\t" << INDENT << "<strong>Description:</strong> " << memoryMap->getDescription() <<
+                    "<br>" << endl;
+            }
+
+            stream << "\t\t\t" << INDENT << "<strong>Address unit bits (AUB):</strong> " <<
+                memoryMap->getAddressUnitBits() << "<br>" << endl;
+
+            stream << "\t\t\t</p>" << endl;
+            
+            QList <QSharedPointer <AddressBlock> > addressBlocks;
+            foreach (QSharedPointer <MemoryMapItem> memoryMapItem, memoryMap->getItems())
+            {
+                QSharedPointer <AddressBlock> addressItem = memoryMapItem.dynamicCast<AddressBlock>();
+
+                if (addressItem)
+                {
+                    addressBlocks.append(addressItem);
+                }
+            }
+
+            writeAddressBlocks(addressBlocks, stream, subHeaderNumber, memoryMapNumber);
+
+            ++memoryMapNumber;
+        }
+
+        ++subHeaderNumber;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeAddressBlock()
+//-----------------------------------------------------------------------------
+void DocumentGenerator::writeAddressBlocks(QList<QSharedPointer<AddressBlock> > addressBlocks, QTextStream& stream,
+    int& subHeaderNumber, int& memoryMapNumber)
+{
+    if (!addressBlocks.isEmpty())
+    {
+        int addressBlockNumber = 1;
+
+        foreach (QSharedPointer <AddressBlock> currentAddressBlock, addressBlocks)
+        {
+            stream << "\t\t\t<h3><a id=\"" << component_->getVlnv()->toString() << ".addressBlock." <<
+                currentAddressBlock->getName() << "\">" << myNumber_ << "." << subHeaderNumber << "." <<
+                memoryMapNumber << "." << addressBlockNumber << " " << currentAddressBlock->getName() <<
+                "</a></h3>" << endl;
+
+            if (!currentAddressBlock->getDescription().isEmpty())
+            {
+                stream << "\t\t\t<p>" << endl;
+                stream << "\t\t\t" << INDENT << "<strong>Description:</strong> " <<
+                    currentAddressBlock->getDescription() << "<br>" << endl;
+                stream << "\t\t\t</p>" << endl;
+            }
+
+            QStringList addressBlockHeaders;
+            addressBlockHeaders << "Usage" << "Base address [AUB]" << "Range [AUB]" << "Width [AUB]" << "Access" <<
+                "Volatile";
+            QString title = "List of values in " + currentAddressBlock->getName() + ".";
+            writeTableElement(addressBlockHeaders, title, stream);
+
+            stream << "\t\t\t\t<tr>" << endl;
+            stream << "\t\t\t\t\t<td>" << General::usage2Str(currentAddressBlock->getUsage()) << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << currentAddressBlock->getBaseAddress() << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << currentAddressBlock->getRange() << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << QString::number(currentAddressBlock->getWidth()) << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << General::access2Str(currentAddressBlock->getAccess()) << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << General::bool2Str(currentAddressBlock->getVolatile()) << "</td>" << endl;
+            stream << "\t\t\t\t</tr>" << endl;
+            stream << "\t\t\t</table>" << endl;
+
+            QList <QSharedPointer <Register> > registers;
+            foreach (QSharedPointer <RegisterModel> registerModelItem, currentAddressBlock->getRegisterData())
+            {
+                QSharedPointer <Register> registerItem = registerModelItem.dynamicCast<Register>();
+
+                if (registerItem)
+                {
+                    registers.append(registerItem);
+                }
+            }
+
+            writeRegisters(registers, stream, subHeaderNumber, memoryMapNumber, addressBlockNumber);
+
+            ++addressBlockNumber;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeRegisters()
+//-----------------------------------------------------------------------------
+void DocumentGenerator::writeRegisters(QList<QSharedPointer<Register> > registers, QTextStream& stream,
+    int& subHeaderNumber, int& memoryMapNumber, int& addressBlockNumber)
+{
+    if (!registers.isEmpty())
+    {
+        int registerNumber = 1;
+
+        foreach (QSharedPointer<Register> currentRegister, registers)
+        {
+            stream << "\t\t\t<h3><a id=\"" << component_->getVlnv()->toString() << ".register." <<
+                currentRegister->getName() << "\">" << myNumber_ << "." << subHeaderNumber << "." <<
+                memoryMapNumber << "." << addressBlockNumber << "." << registerNumber << " " <<
+                currentRegister->getName() << "</a></h3>" << endl;
+
+            if (!currentRegister->getDescription().isEmpty())
+            {
+                stream << "\t\t\t<p>" << endl;
+                stream << "\t\t\t" << INDENT << "<strong>Description:</strong> " <<
+                    currentRegister->getDescription() << "<br>" << endl;
+                stream << "\t\t\t</p>" << endl;
+            }
+
+            QStringList registerHeaders;
+            registerHeaders << "Offset [AUB]" << "Size [bits]" << "Dimension" << "Volatile" << "Access" <<
+                "Reset value" << "Reset mask";
+            QString title = "List of values in " + currentRegister->getName() + ".";
+            writeTableElement(registerHeaders, title, stream);
+
+            stream << "\t\t\t\t<tr>" << endl;
+            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
+                currentRegister->getAddressOffset()) << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>";
+            if (!currentRegister->getSizeExpression().isEmpty())
+            {
+                stream << expressionFormatter_->formatReferringExpression(currentRegister->getSizeExpression());
+            }
+            else
+            {
+                stream << currentRegister->getSize();
+            }
+            stream << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>";
+            if (!currentRegister->getDimensionExpression().isEmpty())
+            {
+                stream << expressionFormatter_->formatReferringExpression(currentRegister->getDimensionExpression());
+            }
+            else
+            {
+                stream << currentRegister->getDim();
+            }
+            stream << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << General::bool2Str(currentRegister->getVolatile()) << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << General::access2Str(currentRegister->getAccess()) << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << currentRegister->getRegisterValue() << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << currentRegister->getRegisterMask() << "</td>" << endl;
+            stream << "\t\t\t\t</tr>" << endl;
+            stream << "\t\t\t</table>" << endl;
+
+            writeFields(currentRegister, stream);
+
+            ++registerNumber;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeFields()
+//-----------------------------------------------------------------------------
+void DocumentGenerator::writeFields(QSharedPointer<Register> currentRegister, QTextStream& stream)
+{
+    if (!currentRegister->getFields().isEmpty())
+    {
+        stream << "\t\t\t<h4>Register " << currentRegister->getName() << " contains the following fields:</h4>" <<
+            endl;
+
+        QStringList fieldHeaders;
+        fieldHeaders << "Field name" << "Offset [bits]" << "Width [bits]" << "Volatile" << "Access" <<
+            "Description";
+        QString title = "List of fields contained within register " + currentRegister->getName() + ".";
+        writeTableElement(fieldHeaders, title, stream);
+
+        foreach (QSharedPointer<Field> currentField, currentRegister->getFields())
+        {
+            stream << "\t\t\t\t<tr>" << endl;
+            stream << "\t\t\t\t\t<td><a id=\"" << component_->getVlnv()->toString() << ".field." <<
+                currentField->getName() << "\">" << currentField->getName() << "</a></td>" << endl;
+            stream << "\t\t\t\t\t<td>";
+            if (!currentField->getBitOffsetExpression().isEmpty())
+            {
+                stream << expressionFormatter_->formatReferringExpression(currentField->getBitOffsetExpression());
+            }
+            else
+            {
+                stream << currentField->getBitOffset();
+            }
+            stream << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>";
+            if (!currentField->getBitWidthExpression().isEmpty())
+            {
+                stream << expressionFormatter_->formatReferringExpression(currentField->getBitWidthExpression());
+            }
+            else
+            {
+                stream << currentField->getBitWidth();
+            }
+            stream << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << General::bool2Str(currentField->getVolatile())  << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << General::access2Str(currentField->getAccess()) << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << currentField->getDescription() << "</td>" << endl;
+            stream << "\t\t\t\t</tr>" << endl;
+        }
+
+        stream << "\t\t\t</table>" << endl;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -596,26 +830,28 @@ void DocumentGenerator::writeFileSets(QTextStream& stream, int& subHeaderNumber)
 				stream << "\t\t\t</p>" << endl;
 			}
 
-			stream << "\t\t\t" << "<h4>" << INDENT << myNumber_ << "." << subHeaderNumber <<
-				"." << fileSetNumber << ".1 Files</h4>" << endl;
+            if (!fileSet->getFiles().isEmpty())
+            {
+                stream << "\t\t\t" << "<h4>" << INDENT << myNumber_ << "." << subHeaderNumber <<
+                    "." << fileSetNumber << ".1 Files</h4>" << endl;
 
-			QStringList fileHeaders;
-			fileHeaders.append("File name");
-			fileHeaders.append("Logical name");
-			fileHeaders.append("Build command");
-			fileHeaders.append("Build flags");
-			fileHeaders.append("Specified file types");
-			fileHeaders.append("Description");
-			writeTableElement(fileHeaders, "List of files contained in this file set.", stream);
+                QStringList fileHeaders;
+                fileHeaders.append("File name");
+                fileHeaders.append("Logical name");
+                fileHeaders.append("Build command");
+                fileHeaders.append("Build flags");
+                fileHeaders.append("Specified file types");
+                fileHeaders.append("Description");
+                writeTableElement(fileHeaders, "List of files contained in this file set.", stream);
 
-			// get the files contained in this file set.
-			const QList<QSharedPointer<File> > files = fileSet->getFiles();
-			foreach (QSharedPointer<File> file, files) {
-				writeFile(file, stream);
-			}
-			stream << "\t\t\t</table>" << endl;
-
-			++fileSetNumber;
+                // get the files contained in this file set.
+                const QList<QSharedPointer<File> > files = fileSet->getFiles();
+                foreach (QSharedPointer<File> file, files) {
+                    writeFile(file, stream);
+                }
+                stream << "\t\t\t</table>" << endl;
+            }
+            ++fileSetNumber;
 		}
 		++subHeaderNumber;
 	}

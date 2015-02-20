@@ -21,17 +21,21 @@
 
 #include <common/utils.h>
 
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/vlnv.h>
-#include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/model.h>
+#include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/parameter.h>
 #include <IPXACTmodels/port.h>
-#include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/PortMap.h>
-#include <IPXACTmodels/fileset.h>
 #include <IPXACTmodels/view.h>
+#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/memorymap.h>
+#include <IPXACTmodels/addressblock.h>
+#include <IPXACTmodels/register.h>
+#include <IPXACTmodels/field.h>
 
 #include <QWidget>
 
@@ -59,6 +63,12 @@ private slots:
     void testModelParametersWithReferences();
 
     void testParametersWrittenWithOnlyTopComponent();
+
+    void testMemoryMapsWrittenWithTopComponent();
+    void testAddressBlocksWrittenWithTopComponent();
+    void testRegistersWrittenWithTopComponent();
+    void testFieldsWrittenWithTopComponent();
+    void testMemoryMapToFieldWrittenWithTopComponent();
 
     void testPortsWrittenWithOnlyTopComponent();
 
@@ -124,6 +134,18 @@ private:
      *      @param [in] component   The component, whose configurable element values are being created.
      */
     QMap<QString, QString> createConfigurableElementvalues(QSharedPointer <Component> component);
+
+    QSharedPointer<Field> createTestField (QString const& name, QString const& description, QString const& offset,
+        QString const& width);
+
+    QSharedPointer<Register> createTestRegister (QString const& name, QString const& offset, QString const& size,
+        QString const& dimension, QString const& description);
+
+    QSharedPointer<AddressBlock> createTestAddressBlock (QString const& name, QString const& description,
+        QList <QSharedPointer <Register> > registers);
+
+    QSharedPointer<MemoryMap> createTestMemoryMap(QString const& name, QString const& description, 
+        int addressUnitbits, QList<QSharedPointer <AddressBlock> > addressBlocks);
 
     //! Get the string used to describe a space.
     QString getSpaceString();
@@ -318,6 +340,20 @@ void tst_documentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
     QSharedPointer<Parameter> parameter = createTestParameter("parameter", "1", "", "P-ID");
     componentParameters.append(parameter);
 
+    QList <QSharedPointer <Register> > registers;
+    QSharedPointer <Register> testRegister = createTestRegister("register", "1", "1", "1", "");
+    QSharedPointer <Field> testField = createTestField("field", "", "1", "8");
+    testRegister->getFields().append(testField);
+    registers.append(testRegister);
+
+    QList <QSharedPointer <AddressBlock> > addressBlocks;
+    QSharedPointer <AddressBlock> testAddressBlock = createTestAddressBlock("addressBlock", "", registers);
+    addressBlocks.append(testAddressBlock);
+
+    QList <QSharedPointer <MemoryMap> > memoryMaps;
+    QSharedPointer<MemoryMap> testMemoryMap = createTestMemoryMap("memoryMap", "", 8, addressBlocks);
+    memoryMaps.append(testMemoryMap);
+
     QSharedPointer<Port> port = createTestPort("port", "10", "1", "");
 
     QSharedPointer<BusInterface> busInterface (new BusInterface());
@@ -333,6 +369,7 @@ void tst_documentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
     topComponent_->addBusInterface(busInterface);
     topComponent_->addFileSet(fileset);
     topComponent_->addView(view);
+    topComponent_->setMemoryMaps(memoryMaps);
 
     DocumentGenerator* generator = createTestGenerator();
 
@@ -360,13 +397,15 @@ void tst_documentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
         "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv()->toString() +
         ".parameters\">1.3. General parameters</a><br>\n"
         "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv()->toString() +
-        ".ports\">1.4. Ports</a><br>\n"
+        ".memoryMaps\">1.4. Memory maps</a><br>\n"
         "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv()->toString() +
-        ".interfaces\">1.5. Bus interfaces</a><br>\n"
+        ".ports\">1.5. Ports</a><br>\n"
         "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv()->toString() +
-        ".fileSets\">1.6. File sets</a><br>\n"
+        ".interfaces\">1.6. Bus interfaces</a><br>\n"
         "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv()->toString() +
-        ".views\">1.7. Views</a><br>\n"
+        ".fileSets\">1.7. File sets</a><br>\n"
+        "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv()->toString() +
+        ".views\">1.8. Views</a><br>\n"
             );
 
     readOutputFile();
@@ -651,6 +690,476 @@ void tst_documentGenerator::testParametersWrittenWithOnlyTopComponent()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_documentGenerator::testMemoryMapsWrittenWithTopComponent()
+//-----------------------------------------------------------------------------
+void tst_documentGenerator::testMemoryMapsWrittenWithTopComponent()
+{
+    QList <QSharedPointer <AddressBlock> > addressBlocks;
+
+    QList <QSharedPointer <MemoryMap> > allMemoryMaps;
+    QSharedPointer<MemoryMap> memoryMap = createTestMemoryMap("memoryMap", "example Description", 8, addressBlocks);
+    allMemoryMaps.append(memoryMap);
+
+    topComponent_->setMemoryMaps(allMemoryMaps);
+
+    DocumentGenerator* generator = createTestGenerator();
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    int subHeaderNumber = 1;
+
+    generator->writeMemoryMaps(stream, subHeaderNumber);
+
+    targetFile.close();
+
+    delete generator;
+    generator = 0;
+
+    QString expectedOutput(
+        "\t\t<h2><a id=\"" + topComponent_->getVlnv()->toString() + ".memoryMaps\">0.1 Memory maps</a></h2>\n"
+        "\t\t\t<h3><a id=\""+ topComponent_->getVlnv()->toString() + ".memoryMap." +
+        memoryMap->getName() + "\">0.1.1 " + memoryMap->getName() + "</a></h3>\n"
+        "\t\t\t<p>\n"
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + memoryMap->getDescription() + "<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Address unit bits (AUB):</strong> " + 
+        QString::number(memoryMap->getAddressUnitBits()) + "<br>\n"
+        "\t\t\t</p>"
+        );
+
+    readOutputFile();
+
+    if (!output_.contains(expectedOutput))
+    {
+        QStringList outputLines = output_.split("\n");
+        QStringList expectedLines = expectedOutput.split("\n");
+
+        QVERIFY(outputLines.count() >= expectedLines.count());
+
+        int lineOffset = outputLines.indexOf(expectedLines.first());
+
+        if (lineOffset == -1)
+        {
+            readOutputFile();
+            QCOMPARE(output_, expectedOutput);
+        }
+        else
+        {
+            int lineCount = expectedLines.count();
+            for (int i = 0; i < lineCount; i++)
+            {
+                QCOMPARE(outputLines.at(i + lineOffset), expectedLines.at(i));
+            }
+        }
+    }
+    else if (output_.count(expectedOutput) != 1)
+    {
+        QVERIFY2(false, QString(expectedOutput + " was found " + QString::number(output_.count(expectedOutput)) +
+            " times in output.").toLocal8Bit());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_documentGenerator::testAddressBlocksWrittenWithTopComponent()
+//-----------------------------------------------------------------------------
+void tst_documentGenerator::testAddressBlocksWrittenWithTopComponent()
+{
+    QList <QSharedPointer <Register> > registers;
+    QSharedPointer <Register> testRegister = createTestRegister("register", "4", "2", "2", "");
+    registers.append(testRegister);
+
+    QList <QSharedPointer <AddressBlock> > addressBlocks;
+    QSharedPointer <AddressBlock> testAddressBlock = createTestAddressBlock("addressBlock", "example", registers);
+    addressBlocks.append(testAddressBlock);
+
+    DocumentGenerator* generator = createTestGenerator();
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    int subHeaderNumber = 1;
+
+    generator->writeAddressBlocks(addressBlocks, stream, subHeaderNumber, subHeaderNumber);
+
+    targetFile.close();
+
+    delete generator;
+    generator = 0;
+    
+    QString expectedOutput(
+        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv()->toString() + ".addressBlock." +
+        testAddressBlock->getName() + "\">0.1.1.1 " + testAddressBlock->getName() + "</a></h3>\n"
+        "\t\t\t<p>\n"
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testAddressBlock->getDescription() +
+        "<br>\n"
+        "\t\t\t</p>\n"
+        "\t\t\t" + getTableString() + "List of values in " + testAddressBlock->getName() + ".\">\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<th>Usage</th>\n"
+        "\t\t\t\t\t<th>Base address [AUB]</th>\n"
+        "\t\t\t\t\t<th>Range [AUB]</th>\n"
+        "\t\t\t\t\t<th>Width [AUB]</th>\n"
+        "\t\t\t\t\t<th>Access</th>\n"
+        "\t\t\t\t\t<th>Volatile</th>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<td>" + General::usage2Str(testAddressBlock->getUsage()) + "</td>\n"
+        "\t\t\t\t\t<td>" + testAddressBlock->getBaseAddress() + "</td>\n"
+        "\t\t\t\t\t<td>" + testAddressBlock->getRange() + "</td>\n"
+        "\t\t\t\t\t<td>" + QString::number(testAddressBlock->getWidth()) + "</td>\n"
+        "\t\t\t\t\t<td>" + General::access2Str(testAddressBlock->getAccess()) + "</td>\n"
+        "\t\t\t\t\t<td>" + General::bool2Str(testAddressBlock->getVolatile()) + "</td>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t</table>\n"
+        );
+
+    readOutputFile();
+
+    if (!output_.contains(expectedOutput))
+    {
+        QStringList outputLines = output_.split("\n");
+        QStringList expectedLines = expectedOutput.split("\n");
+
+        QVERIFY(outputLines.count() >= expectedLines.count());
+
+        int lineOffset = outputLines.indexOf(expectedLines.first());
+
+        if (lineOffset == -1)
+        {
+            readOutputFile();
+            QCOMPARE(output_, expectedOutput);
+        }
+        else
+        {
+            int lineCount = expectedLines.count();
+            for (int i = 0; i < lineCount; i++)
+            {
+                QCOMPARE(outputLines.at(i + lineOffset), expectedLines.at(i));
+            }
+        }
+    }
+    else if (output_.count(expectedOutput) != 1)
+    {
+        QVERIFY2(false, QString(expectedOutput + " was found " + QString::number(output_.count(expectedOutput)) +
+            " times in output.").toLocal8Bit());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_documentGenerator::testRegistersWrittenWithTopComponent()
+//-----------------------------------------------------------------------------
+void tst_documentGenerator::testRegistersWrittenWithTopComponent()
+{
+    QList <QSharedPointer <Register> > registers;
+    QSharedPointer <Register> testRegister = createTestRegister("register", "4", "2", "2", "exampleDescription");
+    registers.append(testRegister);
+
+    DocumentGenerator* generator = createTestGenerator();
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    int subHeaderNumber = 1;
+
+    generator->writeRegisters(registers, stream, subHeaderNumber, subHeaderNumber, subHeaderNumber);
+
+    targetFile.close();
+
+    delete generator;
+    generator = 0;
+
+    QString expectedOutput(
+        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv()->toString() + ".register." + testRegister->getName() +
+        "\">0.1.1.1.1 " + testRegister->getName() + "</a></h3>\n"
+        "\t\t\t<p>\n"
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testRegister->getDescription() + "<br>\n"
+        "\t\t\t</p>\n"
+        "\t\t\t" + getTableString() + "List of values in " + testRegister->getName() + ".\">\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<th>Offset [AUB]</th>\n"
+        "\t\t\t\t\t<th>Size [bits]</th>\n"
+        "\t\t\t\t\t<th>Dimension</th>\n"
+        "\t\t\t\t\t<th>Volatile</th>\n"
+        "\t\t\t\t\t<th>Access</th>\n"
+        "\t\t\t\t\t<th>Reset value</th>\n"
+        "\t\t\t\t\t<th>Reset mask</th>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<td>" + testRegister->getAddressOffset() + "</td>\n"
+        "\t\t\t\t\t<td>" + testRegister->getSizeExpression() + "</td>\n"
+        "\t\t\t\t\t<td>" + testRegister->getDimensionExpression() + "</td>\n"
+        "\t\t\t\t\t<td>" + General::bool2Str(testRegister->getVolatile()) + "</td>\n"
+        "\t\t\t\t\t<td>" + General::access2Str(testRegister->getAccess()) + "</td>\n"
+        "\t\t\t\t\t<td>" + testRegister->getRegisterValue() + "</td>\n"
+        "\t\t\t\t\t<td>" + testRegister->getRegisterMask() + "</td>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t</table>\n"
+        );
+
+    readOutputFile();
+
+    if (!output_.contains(expectedOutput))
+    {
+        QStringList outputLines = output_.split("\n");
+        QStringList expectedLines = expectedOutput.split("\n");
+
+        QVERIFY(outputLines.count() >= expectedLines.count());
+
+        int lineOffset = outputLines.indexOf(expectedLines.first());
+
+        if (lineOffset == -1)
+        {
+            readOutputFile();
+            QCOMPARE(output_, expectedOutput);
+        }
+        else
+        {
+            int lineCount = expectedLines.count();
+            for (int i = 0; i < lineCount; i++)
+            {
+                QCOMPARE(outputLines.at(i + lineOffset), expectedLines.at(i));
+            }
+        }
+    }
+    else if (output_.count(expectedOutput) != 1)
+    {
+        QVERIFY2(false, QString(expectedOutput + " was found " + QString::number(output_.count(expectedOutput)) +
+            " times in output.").toLocal8Bit());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_documentGenerator::testFieldsWrittenWithTopComponent()
+//-----------------------------------------------------------------------------
+void tst_documentGenerator::testFieldsWrittenWithTopComponent()
+{
+    QSharedPointer<Field> testField = createTestField("testField", "Example Field", "2", "8");
+
+    QSharedPointer<Register> fieldRegister =createTestRegister("FieldRegister", "10", "10", "10", "");
+    fieldRegister->getFields().append(testField);
+
+    DocumentGenerator* generator = createTestGenerator();
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    generator->writeFields(fieldRegister, stream);
+
+    targetFile.close();
+
+    delete generator;
+    generator = 0;
+
+    QString expectedOutput(
+        "\t\t\t<h4>Register " + fieldRegister->getName() + " contains the following fields:</h4>\n"
+        "\t\t\t" + getTableString() + "List of fields contained within register " + fieldRegister->getName() +
+        ".\">\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<th>Field name</th>\n"
+        "\t\t\t\t\t<th>Offset [bits]</th>\n"
+        "\t\t\t\t\t<th>Width [bits]</th>\n"
+        "\t\t\t\t\t<th>Volatile</th>\n"
+        "\t\t\t\t\t<th>Access</th>\n"
+        "\t\t\t\t\t<th>Description</th>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<td><a id=\"" + topComponent_->getVlnv()->toString() + ".field." + testField->getName() +
+        "\">" + testField->getName() + "</a></td>\n"
+        "\t\t\t\t\t<td>" + testField->getBitOffsetExpression() + "</td>\n"
+        "\t\t\t\t\t<td>" + testField->getBitWidthExpression() + "</td>\n"
+        "\t\t\t\t\t<td>" + General::bool2Str(testField->getVolatile()) + "</td>\n"
+        "\t\t\t\t\t<td>" + General::access2Str(testField->getAccess()) + "</td>\n"
+        "\t\t\t\t\t<td>" + testField->getDescription() + "</td>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t</table>\n"
+        );
+
+    readOutputFile();
+
+    if (!output_.contains(expectedOutput))
+    {
+        QStringList outputLines = output_.split("\n");
+        QStringList expectedLines = expectedOutput.split("\n");
+
+        QVERIFY(outputLines.count() >= expectedLines.count());
+
+        int lineOffset = outputLines.indexOf(expectedLines.first());
+
+        if (lineOffset == -1)
+        {
+            readOutputFile();
+            QCOMPARE(output_, expectedOutput);
+        }
+        else
+        {
+            int lineCount = expectedLines.count();
+            for (int i = 0; i < lineCount; i++)
+            {
+                QCOMPARE(outputLines.at(i + lineOffset), expectedLines.at(i));
+            }
+        }
+    }
+    else if (output_.count(expectedOutput) != 1)
+    {
+        QVERIFY2(false, QString(expectedOutput + " was found " + QString::number(output_.count(expectedOutput)) +
+            " times in output.").toLocal8Bit());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_documentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
+//-----------------------------------------------------------------------------
+void tst_documentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
+{
+    QSharedPointer<Field> testField = createTestField("testField", "", "2", "8");
+
+    QList <QSharedPointer <Register> > registers;
+    QSharedPointer<Register> testRegister = createTestRegister("testRegister", "10", "4", "2", "Describing reg.");
+    testRegister->getFields().append(testField);
+    registers.append(testRegister);
+
+    QList <QSharedPointer <AddressBlock> > addressBlocks;
+    QSharedPointer <AddressBlock> testAddressBlock = createTestAddressBlock("testAddress", "Describe.", registers);
+    addressBlocks.append(testAddressBlock);
+
+    QList <QSharedPointer <MemoryMap> > memoryMaps;
+    QSharedPointer <MemoryMap> testMemoryMap = createTestMemoryMap("testMemoryMap", "", 8, addressBlocks);
+    memoryMaps.append(testMemoryMap);
+
+    topComponent_->setMemoryMaps(memoryMaps);
+
+    DocumentGenerator* generator = createTestGenerator();
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    int subHeaderNumber = 1;
+
+    generator->writeMemoryMaps(stream, subHeaderNumber);
+
+    targetFile.close();
+
+    delete generator;
+    generator = 0;
+
+    QString expectedOutput(
+        "\t\t<h2><a id=\"" + topComponent_->getVlnv()->toString() + ".memoryMaps\">0.1 Memory maps</a></h2>\n"
+        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv()->toString() + ".memoryMap." + testMemoryMap->getName() +
+        "\">0.1.1 " + testMemoryMap->getName() + "</a></h3>\n"
+        "\t\t\t<p>\n"
+        "\t\t\t" + getIndentString() + "<strong>Address unit bits (AUB):</strong> " +
+        QString::number(testMemoryMap->getAddressUnitBits()) + "<br>\n"
+        "\t\t\t</p>\n"
+        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv()->toString() + ".addressBlock." +
+        testAddressBlock->getName() + "\">0.1.1.1 " + testAddressBlock->getName() + "</a></h3>\n"
+        "\t\t\t<p>\n"
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testAddressBlock->getDescription() +
+        "<br>\n"
+        "\t\t\t</p>\n"
+        "\t\t\t" + getTableString() + "List of values in " + testAddressBlock->getName() + ".\">\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<th>Usage</th>\n"
+        "\t\t\t\t\t<th>Base address [AUB]</th>\n"
+        "\t\t\t\t\t<th>Range [AUB]</th>\n"
+        "\t\t\t\t\t<th>Width [AUB]</th>\n"
+        "\t\t\t\t\t<th>Access</th>\n"
+        "\t\t\t\t\t<th>Volatile</th>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<td>" + General::usage2Str(testAddressBlock->getUsage()) + "</td>\n"
+        "\t\t\t\t\t<td>" + testAddressBlock->getBaseAddress() + "</td>\n"
+        "\t\t\t\t\t<td>" + testAddressBlock->getRange() + "</td>\n"
+        "\t\t\t\t\t<td>" + QString::number(testAddressBlock->getWidth()) + "</td>\n"
+        "\t\t\t\t\t<td>" + General::access2Str(testAddressBlock->getAccess()) + "</td>\n"
+        "\t\t\t\t\t<td>" + General::bool2Str(testAddressBlock->getVolatile()) + "</td>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t</table>\n"
+        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv()->toString() + ".register." + testRegister->getName() +
+        "\">0.1.1.1.1 " + testRegister->getName() + "</a></h3>\n"
+        "\t\t\t<p>\n"
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testRegister->getDescription() + "<br>\n"
+        "\t\t\t</p>\n"
+        "\t\t\t" + getTableString() + "List of values in " + testRegister->getName() + ".\">\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<th>Offset [AUB]</th>\n"
+        "\t\t\t\t\t<th>Size [bits]</th>\n"
+        "\t\t\t\t\t<th>Dimension</th>\n"
+        "\t\t\t\t\t<th>Volatile</th>\n"
+        "\t\t\t\t\t<th>Access</th>\n"
+        "\t\t\t\t\t<th>Reset value</th>\n"
+        "\t\t\t\t\t<th>Reset mask</th>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<td>" + testRegister->getAddressOffset() + "</td>\n"
+        "\t\t\t\t\t<td>" + testRegister->getSizeExpression() + "</td>\n"
+        "\t\t\t\t\t<td>" + testRegister->getDimensionExpression() + "</td>\n"
+        "\t\t\t\t\t<td>" + General::bool2Str(testRegister->getVolatile()) + "</td>\n"
+        "\t\t\t\t\t<td>" + General::access2Str(testRegister->getAccess()) + "</td>\n"
+        "\t\t\t\t\t<td>" + testRegister->getRegisterValue() + "</td>\n"
+        "\t\t\t\t\t<td>" + testRegister->getRegisterMask() + "</td>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t</table>\n"
+        "\t\t\t<h4>Register " + testRegister->getName() + " contains the following fields:</h4>\n"
+        "\t\t\t" + getTableString() + "List of fields contained within register " + testRegister->getName() +
+        ".\">\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<th>Field name</th>\n"
+        "\t\t\t\t\t<th>Offset [bits]</th>\n"
+        "\t\t\t\t\t<th>Width [bits]</th>\n"
+        "\t\t\t\t\t<th>Volatile</th>\n"
+        "\t\t\t\t\t<th>Access</th>\n"
+        "\t\t\t\t\t<th>Description</th>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<td><a id=\"" + topComponent_->getVlnv()->toString() + ".field." +
+        testField->getName() + "\">" + testField->getName() + "</a></td>\n"
+        "\t\t\t\t\t<td>" + testField->getBitOffsetExpression() + "</td>\n"
+        "\t\t\t\t\t<td>" + testField->getBitWidthExpression() + "</td>\n"
+        "\t\t\t\t\t<td>" + General::bool2Str(testField->getVolatile()) + "</td>\n"
+        "\t\t\t\t\t<td>" + General::access2Str(testField->getAccess()) + "</td>\n"
+        "\t\t\t\t\t<td>" + testField->getDescription() + "</td>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t</table>\n"
+        );
+
+    readOutputFile();
+
+    if (!output_.contains(expectedOutput))
+    {
+        QStringList outputLines = output_.split("\n");
+        QStringList expectedLines = expectedOutput.split("\n");
+
+        QVERIFY(outputLines.count() >= expectedLines.count());
+
+        int lineOffset = outputLines.indexOf(expectedLines.first());
+
+        if (lineOffset == -1)
+        {
+            readOutputFile();
+            QCOMPARE(output_, expectedOutput);
+        }
+        else
+        {
+            int lineCount = expectedLines.count();
+            for (int i = 0; i < lineCount; i++)
+            {
+                QCOMPARE(outputLines.at(i + lineOffset), expectedLines.at(i));
+            }
+        }
+    }
+    else if (output_.count(expectedOutput) != 1)
+    {
+        QVERIFY2(false, QString(expectedOutput + " was found " + QString::number(output_.count(expectedOutput)) +
+            " times in output.").toLocal8Bit());
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_documentGenerator::testPortsWrittenWithOnlyTopComponent()
 //-----------------------------------------------------------------------------
 void tst_documentGenerator::testPortsWrittenWithOnlyTopComponent()
@@ -855,17 +1364,7 @@ void tst_documentGenerator::testFileSetsWrittenForTopComponent()
         "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testFileSet->getDescription() + "<br>\n"
         "\t\t\t" + getIndentString() + "<strong>Identifiers:</strong> " + groups + "<br>\n"
         "\t\t\t</p>\n"
-        "\t\t\t<h4>" + getIndentString() + "0.1.1.1 Files</h4>\n"
-        "\t\t\t" + getTableString() + "List of files contained in this file set.\">\n"
-        "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<th>File name</th>\n"
-        "\t\t\t\t\t<th>Logical name</th>\n"
-        "\t\t\t\t\t<th>Build command</th>\n"
-        "\t\t\t\t\t<th>Build flags</th>\n"
-        "\t\t\t\t\t<th>Specified file types</th>\n"
-        "\t\t\t\t\t<th>Description</th>\n"
-        "\t\t\t\t</tr>\n"
-        "\t\t\t</table>\n");
+        );
 
     readOutputFile();
 
@@ -1216,6 +1715,90 @@ QMap<QString, QString> tst_documentGenerator::createConfigurableElementvalues(QS
     refExpressionFormatter = 0;
 
     return instanceConfigurableElementValues;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_documentGenerator::createTestField()
+//-----------------------------------------------------------------------------
+QSharedPointer <Field> tst_documentGenerator::createTestField(QString const& name, QString const& description,
+    QString const& offset, QString const& width)
+{
+    QSharedPointer <Field> testField (new Field);
+    testField->setName(name);
+    testField->setDescription(description);
+    testField->setBitOffsetExpression(offset);
+    testField->setBitWidthExpression(width);
+    testField->setVolatile(General::BOOL_FALSE);
+    testField->setAccess(General::READ_ONLY);
+
+    return testField;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_documentGenerator::createTestRegister()
+//-----------------------------------------------------------------------------
+QSharedPointer <Register> tst_documentGenerator::createTestRegister(QString const& name, QString const& offset,
+    QString const& dimension, QString const& size, QString const& description)
+{
+    QSharedPointer<Register> testRegister (new Register);
+    testRegister->setName(name);
+    testRegister->setAddressOffset(offset);
+    testRegister->setSizeExpression(size);
+    testRegister->setDimensionExpression(dimension);
+    testRegister->setDescription(description);
+    testRegister->setVolatile(General::BOOL_TRUE);
+    testRegister->setAccess(General::READ_WRITE);
+    testRegister->setRegisterValue("2");
+    testRegister->setRegisterMask("4");
+
+    return testRegister;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_documentGenerator::createTestAddressBlock()
+//-----------------------------------------------------------------------------
+QSharedPointer <AddressBlock> tst_documentGenerator::createTestAddressBlock(QString const& name,
+    QString const& description, QList<QSharedPointer<Register> > registers)
+{
+    QSharedPointer <AddressBlock> testAddressBlock(new AddressBlock);
+    testAddressBlock->setName(name);
+    testAddressBlock->setUsage(General::REGISTER);
+    testAddressBlock->setBaseAddress("0x0");
+    testAddressBlock->setRange("4");
+    testAddressBlock->setWidth(32);
+    testAddressBlock->setDescription(description);
+    testAddressBlock->setAccess(General::READ_WRITE);
+    testAddressBlock->setVolatile(General::BOOL_TRUE);
+
+    QList <QSharedPointer <RegisterModel> >& registerModels(testAddressBlock->getRegisterData());
+    foreach (QSharedPointer<RegisterModel> testRegister, registers)
+    {
+        registerModels.append(testRegister);
+    }
+
+    return testAddressBlock;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_documentGenerator::createTestMemoryMap()
+//-----------------------------------------------------------------------------
+QSharedPointer <MemoryMap> tst_documentGenerator::createTestMemoryMap(QString const& name,
+    QString const& descprition, int addressUnitbits, QList<QSharedPointer<AddressBlock> > addressBlocks)
+{
+    QSharedPointer<MemoryMap> memoryMap(new MemoryMap);
+    memoryMap->setName(name);
+    memoryMap->setAddressUnitBits(addressUnitbits);
+    memoryMap->setDescription(descprition);
+
+    QList <QSharedPointer <MemoryMapItem> > memorymapItems(memoryMap->getItems());
+    foreach (QSharedPointer <AddressBlock> includedAddressBlock, addressBlocks)
+    {
+        memorymapItems.append(includedAddressBlock);
+    }
+
+    memoryMap->setItems(memorymapItems);
+
+    return memoryMap;
 }
 
 //-----------------------------------------------------------------------------

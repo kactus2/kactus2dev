@@ -18,6 +18,9 @@
 #include <IPXACTmodels/vlnv.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/view.h>
+#include <IPXACTmodels/addressblock.h>
+#include <IPXACTmodels/register.h>
+#include <IPXACTmodels/field.h>
 
 #include <QObject>
 #include <QTextStream>
@@ -113,6 +116,45 @@ public:
 	 *      @param [in] subHeaderNumber     The number that defines the sub-header.
 	 */
 	void writeParameters(QTextStream& stream, int& subHeaderNumber);
+
+    /*!
+     *  Write the memory maps of the component.
+     *
+     *      @param [in] stream              The text stream to write the documentation into.
+     *      @param [in] subHeaderNumber     The number that defines the sub header.
+     */
+    void writeMemoryMaps(QTextStream& stream, int& subHeaderNumber);
+
+    /*!
+     *  Write the address blocks of the memory map.
+     *
+     *      @param [in] addressBlocks       The list of the address blocks.
+     *      @param [in] stream              The text stream to write the documentation into.
+     *      @param [in] subHeaderNumber     The number that defines the sub header.
+     *      @param [in] memoryMapNumber     The number for the memory map, whose address blocks are written.
+     */
+    void writeAddressBlocks(QList <QSharedPointer <AddressBlock> > addressBlocks, QTextStream& stream,
+        int& subHeaderNumber, int& memoryMapNumber);
+
+    /*!
+     *  Write the registers of the address block.
+     *
+     *      @param [in] registers           The list of registers.
+     *      @param [in] stream              The text stream to write the documentation into.
+     *      @param [in] subHeaderNumber     The number that defines the sub header.
+     *      @param [in] memoryMapNumber     The number that defines the memory map.
+     *      @param [in] addressBlockNumber  The number that defines the address block.
+     */
+    void writeRegisters(QList <QSharedPointer <Register> > registers, QTextStream& stream, int& subHeaderNumber,
+        int& memoryMapNumber, int& addressBlockNumber);
+
+    /*!
+     *  Write the fields of the register.
+     *
+     *      @param [in] currentRegister     The register, whose fields are to be written.
+     *      @param [in] stream              The text stream to write the documentation into.
+     */
+    void writeFields(QSharedPointer <Register> currentRegister, QTextStream& stream);
 
 	/*!
 	 *  Write the ports of the component.
