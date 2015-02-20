@@ -6,7 +6,7 @@
 // Date: 29.3.2011
 //
 // Description:
-// This model can be used to edit and update the model parameters of a component
+// This model can be used to edit and update a list of model parameters.
 //-----------------------------------------------------------------------------
 
 #ifndef MODELPARAMETERMODEL_H
@@ -21,11 +21,11 @@
 
 class Component;
 class ExpressionParser;
-class Model;
 class ModelParameter;
+class ModelParameterFactory;
 
 //-----------------------------------------------------------------------------
-//! This model can be used to edit and update the model parameters of a component
+//! This model can be used to edit and update a list of model parameters.
 //-----------------------------------------------------------------------------
 class ModelParameterModel : public AbstractParameterModel
 {
@@ -35,14 +35,14 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in]  model                  The model being edited.
+	 *      @param [in]  modelParameters        The model parameters being edited.
      *      @param [in]  choices                The choices available for the model parameter values.
      *      @param [in]  expressionParser       Expression parser for configurable elements.
      *      @param [in]  parameterFinder        The parameter finder.
      *      @param [in]  expressionFormatter    Expression formatter.
 	 *      @param [in]  parent                 The owner of this model.
 	*/
-    ModelParameterModel(QSharedPointer<Model> model,
+    ModelParameterModel(QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParameters,
         QSharedPointer<QList<QSharedPointer<Choice> > > choices,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
@@ -117,11 +117,18 @@ public:
     virtual QSharedPointer<ModelParameter> getParameter(QModelIndex const& index) const;    
        
     /*!
-     *  Sets the edited model and locks all current model parameters.
+     *  Sets the model parameters to edit and locks them.
      *
-     *      @param [in] component   The model whose model parameters to edit.
+     *      @param [in] modelParameters   The model parameters to edit.
      */
-    void setModelAndLockCurrentModelParameters(QSharedPointer<Model> model);
+    void setAndLockModelParameters(QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParameters);
+
+    /*!
+     *  Sets the model parameter factory to use when creating new model parameters.
+     *
+     *      @param [in] factory   The factory to use.
+     */
+    void setParameterFactory(QSharedPointer<ModelParameterFactory> factory);
 
 public slots:
 
@@ -297,8 +304,15 @@ private:
      */
     bool isLocked(QModelIndex const& index) const;
 
-    //! The model whose model parameters to edit.
-    QSharedPointer<Model> model_;
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The model parameters to edit.
+    QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParameters_;
+
+    //! The factory to use for creating new model parameters.
+    QSharedPointer<ModelParameterFactory> parameterFactory_;
 
     //! The locked indexes that cannot be edited.
     QList<QPersistentModelIndex> lockedIndexes_;

@@ -291,13 +291,7 @@ public:
 	 *
 	 * \return QList containing component's parameters
 	 */
-	QList<QSharedPointer<Parameter> >& getParameters();
-
-	/*! \brief Get this component's parameters
-	 *
-	 * \return QList containing component's parameters
-	 */
-	const QList<QSharedPointer<Parameter> >& getParameters() const;
+	QSharedPointer<QList<QSharedPointer<Parameter> > > getParameters() const;
 
 	/*! \brief Get names of the parameters stored in the component.
 	 *
@@ -305,23 +299,11 @@ public:
 	*/
 	QStringList getParameterNames() const;
 
-	/*! \brief Set parameters for this component
-	*
-	* \param parameters QList containing the parameters to be set
-	*/
-	void setParameters(const QList<QSharedPointer<Parameter> > &parameters);
-
 	/*! \brief Get the model parameters of the component.
 	*
 	* \return QList containing the model parameters.
 	*/
-	QList<QSharedPointer<ModelParameter> >& getModelParameters();
-
-	/*! \brief Get the model parameters of the component.
-	*
-	* \return QList containing the model parameters.
-	*/
-	const QList<QSharedPointer<ModelParameter> >& getModelParameters() const;
+	QSharedPointer<QList<QSharedPointer<ModelParameter> > > getModelParameters() const;
 
 	/*! \brief Get the names of the model parameters of the component.
 	*
@@ -1711,7 +1693,7 @@ public:
      *
      *      @return True, if the parameters, the group and possible choice references are valid, otherwise false.
      */
-    bool validateParameters(QList<QSharedPointer<Parameter> > parameters) const;
+    bool validateParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters) const;
     
     /*!
      *  Validates a single parameter within the component.
@@ -1879,7 +1861,7 @@ private:
 	 * Describes any parameter that can be used to configure or hold information
 	 * related to this component.
 	 */
-	QList<QSharedPointer<Parameter> > parameters_;
+	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
 
 	//! \brief Contains the attributes for the spirit:component element.
 	//! OPTIONAL

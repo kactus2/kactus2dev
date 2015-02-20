@@ -98,11 +98,13 @@ HEADERS += ../resource.h \
     ./wireabstraction.h \
     ./writevalueconstraint.h \
     ./XmlUtils.h \
+    ./kactusExtensions/ComponentInstantiation.h \
     ./kactusExtensions/Kactus2Group.h \
     ./kactusExtensions/Kactus2Placeholder.h \
     ./kactusExtensions/Kactus2Position.h \
     ./kactusExtensions/Kactus2Value.h \
     ./kactusExtensions/KactusAttribute.h \
+    ./kactusExtensions/ModuleParameter.h \
     ./validators/IPXactValueParser.h \
     ./validators/ModelParameterValidator.h \
     ./validators/ParameterValidator.h \
@@ -196,11 +198,13 @@ SOURCES += ./abstractiondefinition.cpp \
     ./wireabstraction.cpp \
     ./writevalueconstraint.cpp \
     ./XmlUtils.cpp \
+    ./kactusExtensions/ComponentInstantiation.cpp \
     ./kactusExtensions/Kactus2Group.cpp \
     ./kactusExtensions/Kactus2Placeholder.cpp \
     ./kactusExtensions/Kactus2Position.cpp \
     ./kactusExtensions/Kactus2Value.cpp \
     ./kactusExtensions/KactusAttribute.cpp \
+    ./kactusExtensions/ModuleParameter.cpp \
     ./validators/IPXactValueParser.cpp \
     ./validators/ModelParameterValidator.cpp \
     ./validators/namevalidator.cpp \

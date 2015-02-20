@@ -47,10 +47,14 @@ viewTypeSelector_(),
 envIdentifier_(view, this),
 typeDependentEditors_(this),
 generalTab_(component, view, &typeDependentEditors_),
+moduleParameters_(view->getModuleParameters(), component, parameterFinder, expressionFormatter, this),
 parameters_(view->getParameters(), component, parameterFinder, expressionFormatter, this),
 fileBuilders_(view->getDefaultFileBuilders(), this),
 hierarchyRef_(view, component, libHandler, &typeDependentEditors_)
 {
+    moduleParameters_.setTitle(tr("Module parameters"));
+    parameters_.setTitle(tr("View-specific generator parameters"));
+
 	// set the possible options to the view type selector.
 	viewTypeSelector_.insertItem(HIERARCHICAL, tr("hierarchical"));
 	viewTypeSelector_.insertItem(FLAT, tr("non-hierarchical"));
@@ -84,12 +88,19 @@ hierarchyRef_(view, component, libHandler, &typeDependentEditors_)
     connect(&parameters_, SIGNAL(openReferenceTree(QString)),
         this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
 
+    connect(&moduleParameters_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&moduleParameters_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&moduleParameters_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(&moduleParameters_, SIGNAL(openReferenceTree(QString)),
+        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
 
 	// when user changes the view type the correct editor is displayed
     connect(&viewTypeSelector_, SIGNAL(currentIndexChanged(int)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&viewTypeSelector_, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(onStackChange(int)), Qt::UniqueConnection);
+		this, SLOT(onViewTypeChanged(int)), Qt::UniqueConnection);
 
 	refresh();
 }
@@ -120,7 +131,7 @@ bool ViewEditor::isValid() const
 	// if view is not hierarchical make sure all it's elements are valid
 	else
     {
-		return generalTab_.isValid() && parameters_.isValid() && fileBuilders_.isValid();
+		return generalTab_.isValid() && parameters_.isValid() && moduleParameters_.isValid() && fileBuilders_.isValid();
 	}
 }
 
@@ -129,8 +140,9 @@ bool ViewEditor::isValid() const
 //-----------------------------------------------------------------------------
 void ViewEditor::setupLayout()
 {
-    nameEditor_.setMaximumHeight(200);
-    envIdentifier_.setMaximumHeight(nameEditor_.height() + viewTypeSelector_.height());
+    envIdentifier_.setMaximumHeight(175);
+    typeDependentEditors_.setMaximumHeight(200);
+    fileBuilders_.setMaximumHeight(200);
 
 	// create the scroll area
 	QScrollArea* scrollArea = new QScrollArea(this);
@@ -162,12 +174,16 @@ void ViewEditor::setupLayout()
 
     topLayout->addLayout(nameAndEnvIdentifiersLayout);
 
-    QHBoxLayout* typeDependentLayout = new QHBoxLayout();
-    typeDependentLayout->addWidget(&typeDependentEditors_);
-    typeDependentLayout->addWidget(&fileBuilders_);
+    QHBoxLayout* adjustingLayout = new QHBoxLayout();
+    adjustingLayout->addWidget(&typeDependentEditors_);
+    adjustingLayout->addWidget(&fileBuilders_);
+
+    QVBoxLayout* typeDependentLayout = new QVBoxLayout();
+    typeDependentLayout->addLayout(adjustingLayout);
+    typeDependentLayout->addWidget(&moduleParameters_, 1);
+    typeDependentLayout->addWidget(&parameters_);
 
     topLayout->addLayout(typeDependentLayout);
-    topLayout->addWidget(&parameters_);
     topLayout->addStretch(1);
 
 	scrollArea->setWidget(topWidget);
@@ -176,11 +192,12 @@ void ViewEditor::setupLayout()
 //-----------------------------------------------------------------------------
 // Function: ViewEditor::onStackChange()
 //-----------------------------------------------------------------------------
-void ViewEditor::onStackChange(int index)
+void ViewEditor::onViewTypeChanged(int index)
 {
 	typeDependentEditors_.setCurrentIndex(index);
 
     fileBuilders_.setVisible(index == FLAT);
+    moduleParameters_.setVisible(index == FLAT);
     parameters_.setVisible(index == FLAT);
 
 	// if the new index is for hierarchical view then refresh the hierarchical editor

@@ -42,11 +42,6 @@ value_(), valueAttributes_()
         {
 			value_ = tempNode.childNodes().at(0).nodeValue();
 			valueAttributes_ = XmlUtils::parseAttributes(tempNode);
-
-            if (getValueId().isEmpty())
-            {
-                createUuid();
-            }
 		}
         else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
         {
@@ -58,6 +53,11 @@ value_(), valueAttributes_()
             }
         }
 	}
+
+    if (getValueId().isEmpty())
+    {
+        createUuid();
+    }
 }
 
 //-----------------------------------------------------------------------------

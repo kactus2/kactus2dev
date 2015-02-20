@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 23.2.2012
- *      Author: Antti Kamppi
- * 		filename: parametergroupbox.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: parametergroupbox.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 23.2.2012
+//
+// Description:
+// Group box that can be used to edit list of parameters.
+//-----------------------------------------------------------------------------
 
 #include "parametergroupbox.h"
 
@@ -11,10 +15,13 @@
 #include <editors/ComponentEditor/parameters/ParameterColumns.h>
 #include <editors/ComponentEditor/parameters/ParameterDelegate.h>
 #include <editors/ComponentEditor/parameters/ParameterEditorHeaderView.h>
+#include <editors/ComponentEditor/parameters/parametersmodel.h>
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ParameterCompleter.h>
 
 #include <IPXACTmodels/component.h>
 
@@ -23,7 +30,7 @@
 //-----------------------------------------------------------------------------
 // Function: ParameterGroupBox::ParameterGroupBox()
 //-----------------------------------------------------------------------------
-ParameterGroupBox::ParameterGroupBox(QList<QSharedPointer<Parameter> >& parameters,
+ParameterGroupBox::ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
                                      QSharedPointer<Component> component,
                                      QSharedPointer<ParameterFinder> parameterFinder,
                                      QSharedPointer<ExpressionFormatter> expressionFormatter,
@@ -37,17 +44,16 @@ proxy_(this)
     model_ = new ParametersModel(parameters, component->getChoices(), expressionParser, parameterFinder, 
         expressionFormatter, this);
 
-	connect(model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(model_, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
-		model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(addItem(const QModelIndex&)), 
+        model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 

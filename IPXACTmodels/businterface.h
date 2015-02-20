@@ -209,13 +209,7 @@ public:
 	 *
 	 * \return A QList holding the parameters for this interface.
 	 */
-	QList<QSharedPointer<Parameter> >& getParameters();
-
-	/*! \brief Get the parameters of the bus interface
-	 *
-	 * \return A QList holding the parameters for this interface.
-	 */
-	const QList<QSharedPointer<Parameter> >& getParameters() const;
+	QSharedPointer<QList<QSharedPointer<Parameter> > > getParameters() const;
 
 	/*! \brief Get the port maps for this interface
 	 *
@@ -237,8 +231,7 @@ public:
 	 *
 	 * \param bitSteeringAttributes A QList holding the attributes
 	 */
-	void setBitSteeringAttributes(QMap<QString, QString>
-	&bitSteeringAttributes);
+	void setBitSteeringAttributes(QMap<QString, QString>& bitSteeringAttributes);
 
 	/*! \brief Set the bit steering for this interface
 	 *
@@ -302,14 +295,6 @@ public:
 	 *
 	*/
 	void setDescription(const QString& description);
-
-	/*! \brief Set the parameters of this interface
-	 *
-	 * Calling this function deletes the old parameters
-	 *
-	 * \param parameters A QList holding the parameters.
-	 */
-	void setParameters(QList<QSharedPointer<Parameter> > &parameters);
 
 	/*! \brief Set the port maps for this interface
 	 *
@@ -602,7 +587,7 @@ private:
 	/*! \brief Specifies any parameter data values for this bus interface.
 	 * OPTIONAL
 	 */
-	QList<QSharedPointer<Parameter> > parameters_;
+	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
 
 	/*! \brief spirit:master or spirit:mirroredMaster
 	 * (one of five is mandatory)

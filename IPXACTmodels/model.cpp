@@ -22,7 +22,7 @@
 Model::Model(QDomNode &modelNode):
 views_(),
 ports_(),
-modelParameters_() {
+modelParameters_(new QList<QSharedPointer<ModelParameter> >()) {
 
 	for (int i = 0; i < modelNode.childNodes().count(); ++i) {
 		QDomNode tempNode = modelNode.childNodes().at(i);
@@ -57,7 +57,7 @@ modelParameters_() {
 				QDomNode modelParameterNode = tempNode.childNodes().at(j);
 				if (!modelParameterNode.isComment()) {
 
-					modelParameters_.append(QSharedPointer<ModelParameter>(new ModelParameter(modelParameterNode)));
+					modelParameters_->append(QSharedPointer<ModelParameter>(new ModelParameter(modelParameterNode)));
 				}
 			}
 		}
@@ -65,13 +65,16 @@ modelParameters_() {
 	return;
 }
 
-Model::Model(): views_(), ports_(), modelParameters_() {
+Model::Model(): views_(), ports_(), 
+    modelParameters_(new QList<QSharedPointer<ModelParameter> >()) 
+{
+
 }
 
 Model::Model( const Model &other ):
 views_(),
 ports_(),
-modelParameters_() {
+modelParameters_(new QList<QSharedPointer<ModelParameter> >()) {
 
 	foreach (QSharedPointer<View> view, other.views_) {
 		if (view) {
@@ -89,13 +92,11 @@ modelParameters_() {
 		}
 	}
 
-	foreach (QSharedPointer<ModelParameter> modelParam, other.modelParameters_) {
-		if (modelParam) {
-			QSharedPointer<ModelParameter> copy = QSharedPointer<ModelParameter>(
-				new ModelParameter(*modelParam.data()));
-			modelParameters_.append(copy);
-		}
-	}
+	foreach (QSharedPointer<ModelParameter> modelParam, *other.modelParameters_)
+    {
+        QSharedPointer<ModelParameter> copy = QSharedPointer<ModelParameter>(new ModelParameter(*modelParam.data()));
+        modelParameters_->append(copy);
+    }
 }
 
 Model& Model::operator=( const Model &other ) {
@@ -119,22 +120,21 @@ Model& Model::operator=( const Model &other ) {
 			}
 		}
 
-		modelParameters_.clear();
-		foreach (QSharedPointer<ModelParameter> modelParam, other.modelParameters_) {
-			if (modelParam) {
-				QSharedPointer<ModelParameter> copy = QSharedPointer<ModelParameter>(
-					new ModelParameter(*modelParam.data()));
-				modelParameters_.append(copy);
-			}
-		}
-	}
+        modelParameters_->clear();
+        foreach (QSharedPointer<ModelParameter> modelParam, *other.modelParameters_)
+        {
+            QSharedPointer<ModelParameter> copy = QSharedPointer<ModelParameter>(
+                new ModelParameter(*modelParam.data()));
+            modelParameters_->append(copy);
+        }
+    }
 	return *this;
 }
 
 Model::~Model() {
 	views_.clear();
 	ports_.clear();
-	modelParameters_.clear();
+	modelParameters_->clear();
 	return;
 }
 
@@ -167,11 +167,13 @@ void Model::write(QXmlStreamWriter& writer) {
 	}
 
 	// write the modelParameters of the model
-	if (modelParameters_.size() != 0) {
+	if (modelParameters_->size() != 0)
+    {
 		writer.writeStartElement("spirit:modelParameters");
 
 		// go through each modelParameter
-		foreach (QSharedPointer<ModelParameter> modelparam, modelParameters_) {
+		foreach (QSharedPointer<ModelParameter> modelparam, *modelParameters_)
+        {
 			modelparam->write(writer);
 		}
 
@@ -227,8 +229,8 @@ bool Model::isValid( const QStringList& fileSetNames,
 
     ModelParameterValidator validator;
 	QStringList modelParamNames;
-	foreach (QSharedPointer<ModelParameter> modelParam, modelParameters_) {
-
+	foreach (QSharedPointer<ModelParameter> modelParam, *modelParameters_) 
+    {
 		if (modelParamNames.contains(modelParam->getName())) {
 			errorList.append(QObject::tr("%1 contains several model parameters"
 				" with name %2").arg(parentIdentifier).arg(modelParam->getName()));
@@ -288,7 +290,7 @@ bool Model::isValid(const QStringList& fileSetNames,
 
     ModelParameterValidator validator;
 	QStringList modelParamNames;
-	foreach (QSharedPointer<ModelParameter> modelParam, modelParameters_)
+	foreach (QSharedPointer<ModelParameter> modelParam, *modelParameters_)
     {
 		if (modelParamNames.contains(modelParam->getName()))
         {
@@ -582,17 +584,15 @@ QString Model::getArchitectureName( const QString& viewName ) const {
 	return QString();
 }
 
-const QList<QSharedPointer<ModelParameter> >& Model::getModelParameters() const {
+QSharedPointer<QList<QSharedPointer<ModelParameter> > > Model::getModelParameters() const
+{
 	return modelParameters_;
 }
 
-QList<QSharedPointer<ModelParameter> >& Model::getModelParameters() {
-	return modelParameters_;
-}
-
-QSharedPointer<ModelParameter> Model::getModelParameter( const QString& name ) const {
-
-	foreach (QSharedPointer<ModelParameter> modelParam, modelParameters_) {
+QSharedPointer<ModelParameter> Model::getModelParameter(QString const& name) const
+{
+	foreach (QSharedPointer<ModelParameter> modelParam, *modelParameters_) 
+    {
 		if (modelParam->getName() == name) {
 			return modelParam;
 		}
@@ -600,28 +600,19 @@ QSharedPointer<ModelParameter> Model::getModelParameter( const QString& name ) c
 	return QSharedPointer<ModelParameter>();
 }
 
-void Model::setModelParameters(const QList<QSharedPointer<ModelParameter> >& modelParameters) {
-	// delete the old model parameters
-	modelParameters_.clear();
-
-	// save the new model parameters
-	modelParameters_ = modelParameters;
-}
-
 //-----------------------------------------------------------------------------
 // Function: addModelParameter()
 //-----------------------------------------------------------------------------
-bool Model::addModelParameter(QSharedPointer<ModelParameter> param) {
+bool Model::addModelParameter(QSharedPointer<ModelParameter> param) 
+{
+    if (modelParameters_->contains(param))
+    {
+        return false;
+    }
 
-	// no duplicates
-	foreach (QSharedPointer<ModelParameter> modelParam, modelParameters_) {
-		if (modelParam == param) {
-			return false;
-		}
-	}
 
-	modelParameters_.append(param);
-	return true;
+    modelParameters_->append(param);
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -629,24 +620,27 @@ bool Model::addModelParameter(QSharedPointer<ModelParameter> param) {
 //-----------------------------------------------------------------------------
 void Model::removeModelParameter(const QString& paramName) {
 
-	for (int i = 0; i < modelParameters_.size(); ++i) {
-		if (modelParameters_.at(i)->getName() == paramName) {
-			modelParameters_.removeAt(i);
+	for (int i = 0; i < modelParameters_->size(); ++i)
+    {
+		if (modelParameters_->at(i)->getName() == paramName) {
+			modelParameters_->removeAt(i);
 			--i;
 		}
 	}
 }
 
-QStringList Model::getModelParameterNames() const {
+QStringList Model::getModelParameterNames() const
+{
 	QStringList list;
-	foreach (QSharedPointer<ModelParameter> modelParam, modelParameters_) {
+	foreach (QSharedPointer<ModelParameter> modelParam, *modelParameters_) {
 		list.append(modelParam->getName());
 	}
 	return list;
 }
 
-bool Model::hasModelParameters() const {
-	return !modelParameters_.isEmpty();
+bool Model::hasModelParameters() const 
+{
+	return !modelParameters_->isEmpty();
 }
 
 const QList<QSharedPointer<Port> >& Model::getPorts() const {

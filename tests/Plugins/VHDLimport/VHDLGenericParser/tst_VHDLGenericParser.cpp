@@ -77,9 +77,9 @@ void tst_VHDLGenericParser::testGenericIsParsed()
 
     runParser(fileContent);
 
-    QCOMPARE(importComponent_->getModelParameters().count(), 1);
+    QCOMPARE(importComponent_->getModelParameters()->count(), 1);
 
-    QSharedPointer<ModelParameter> createdModelParamter = importComponent_->getModelParameters().first();
+    QSharedPointer<ModelParameter> createdModelParamter = importComponent_->getModelParameters()->first();
     QCOMPARE(createdModelParamter->getName(), expectedName);
     QCOMPARE(createdModelParamter->getDataType(), expectedType);
     QCOMPARE(createdModelParamter->getValue(), expectedDefaultValue);
@@ -149,7 +149,7 @@ void tst_VHDLGenericParser::testMultipleGenericsAreParsed()
 
     runParser(fileContent);
 
-    QCOMPARE(importComponent_->getModelParameters().count(), expectedNumberOfGenerics);
+    QCOMPARE(importComponent_->getModelParameters()->count(), expectedNumberOfGenerics);
 }
 
 //-----------------------------------------------------------------------------
@@ -236,7 +236,7 @@ void tst_VHDLGenericParser::testCommentedGenericIsNotParsed()
 
     runParser(fileContent);
 
-    QCOMPARE(importComponent_->getModelParameters().count(), 0);
+    QCOMPARE(importComponent_->getModelParameters()->count(), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -261,7 +261,7 @@ void tst_VHDLGenericParser::testModelParametersAreNotParsedOutsideEntity()
 
     runParser(fileContent);
 
-    QCOMPARE(importComponent_->getModelParameters().count(), 0);
+    QCOMPARE(importComponent_->getModelParameters()->count(), 0);
 }
 
 QTEST_APPLESS_MAIN(tst_VHDLGenericParser)

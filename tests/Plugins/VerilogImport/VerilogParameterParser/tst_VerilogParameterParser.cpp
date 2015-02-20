@@ -400,8 +400,8 @@ void tst_VerilogParameterParser::otherParameterAsParameterValue()
     VerilogParameterParser parser;
     parser.import(input, targetComponent);
 
-    QSharedPointer<ModelParameter> first = targetComponent->getModelParameters().first();
-    QSharedPointer<ModelParameter> second = targetComponent->getModelParameters().last();
+    QSharedPointer<ModelParameter> first = targetComponent->getModelParameters()->first();
+    QSharedPointer<ModelParameter> second = targetComponent->getModelParameters()->last();
 
     verifyParameter(second, "second", first->getValueId(), "", "");
 }

@@ -313,9 +313,6 @@ protected:
 
     //! Component vendor extensions.
     QList<QSharedPointer<VendorExtension> > vendorExtensions_;
-
-    //! Version of kactus2 when this component was created.
-    QSharedPointer<Kactus2Value> versionExtension_;
 };
 
 #endif /* LIBRARYCOMPONENT_H_ */

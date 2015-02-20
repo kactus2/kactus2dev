@@ -468,9 +468,7 @@ void ConfigurableElementsModel::readComponentConfigurableElements()
 void ConfigurableElementsModel::readConfigurableParameters(QSharedPointer<Component> componentModel,
     QString unEditableResolve)
 {
-    QList < QSharedPointer <Parameter> > componentParameters = componentModel->getParameters();
-
-    foreach (QSharedPointer <Parameter> parameterPointer, componentParameters)
+    foreach (QSharedPointer<Parameter> parameterPointer, *componentModel->getParameters())
     {
         addParameterWithIDToVisibleElements(parameterPointer, unEditableResolve);
     }
@@ -482,9 +480,7 @@ void ConfigurableElementsModel::readConfigurableParameters(QSharedPointer<Compon
 void ConfigurableElementsModel::readConfigurableModelParameters(QSharedPointer<Component> componentModel,
     QString unEditableResolve)
 {
-    QList < QSharedPointer < ModelParameter > > componentModelParameters = componentModel->getModelParameters();
-
-    foreach (QSharedPointer < Parameter > modelParameterPointer, componentModelParameters)
+    foreach (QSharedPointer < Parameter > modelParameterPointer, *componentModel->getModelParameters())
     {
         addParameterWithIDToVisibleElements(modelParameterPointer, unEditableResolve);
     }

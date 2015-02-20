@@ -68,7 +68,7 @@ sourceDirs_(),
 ignoredFiles_(),
 cpus_(),
 otherClockDrivers_(),
-parameters_(), 
+parameters_(new QList<QSharedPointer<Parameter> >()), 
 attributes_(),
 swViews_(),
 systemViews_(),
@@ -271,7 +271,7 @@ author_()
 
 				if (!parameterNode.isComment())
                 {
-					parameters_.append(QSharedPointer<Parameter>(new Parameter(parameterNode)));
+					parameters_->append(QSharedPointer<Parameter>(new Parameter(parameterNode)));
 				}
 			}
 		}
@@ -366,7 +366,7 @@ sourceDirs_(),
 ignoredFiles_(),
 cpus_(),
 otherClockDrivers_(),
-parameters_(), 
+parameters_(new QList<QSharedPointer<Parameter> >()), 
 attributes_(),
 author_()
 {
@@ -395,7 +395,7 @@ sourceDirs_(),
 ignoredFiles_(),
 cpus_(), 
 otherClockDrivers_(), 
-parameters_(),
+parameters_(new QList<QSharedPointer<Parameter> >()),
 attributes_(),
 author_()
 {
@@ -424,7 +424,7 @@ sourceDirs_(other.sourceDirs_),
 ignoredFiles_(other.ignoredFiles_),
 cpus_(),
 otherClockDrivers_(),
-parameters_(),
+parameters_(new QList<QSharedPointer<Parameter> >()),
 attributes_(other.attributes_),
 author_(other.author_)
 {
@@ -538,12 +538,11 @@ author_(other.author_)
 		}
 	}
 
-	foreach (QSharedPointer<Parameter> param, other.parameters_) {
-		if (param) {
-			QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*param.data()));
-			parameters_.append(copy);
-		}
-	}
+	foreach (QSharedPointer<Parameter> param, *other.parameters_)
+    {
+        QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*param.data()));
+        parameters_->append(copy);
+    }
 
     // Make deep copies of the properties and SW views.
     foreach (QSharedPointer<ComProperty> property, other.swProperties_)
@@ -697,13 +696,12 @@ Component & Component::operator=( const Component &other ) {
 			}
 		}
 
-		parameters_.clear();
-		foreach (QSharedPointer<Parameter> param, other.parameters_) {
-			if (param) {
-				QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*param.data()));
-				parameters_.append(copy);
-			}
-		}
+		parameters_->clear();
+		foreach (QSharedPointer<Parameter> param, *other.parameters_)
+        {
+            QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*param.data()));
+            parameters_->append(copy);
+        }
 
         // Make deep copies of the properties.
         swProperties_.clear();
@@ -746,7 +744,7 @@ Component::~Component()
     pendingFileDependencies_.clear();
 	cpus_.clear();
 	otherClockDrivers_.clear();
-	parameters_.clear();
+	parameters_->clear();
 	model_.clear();
 }
 
@@ -900,12 +898,12 @@ void Component::write(QFile& file) {
 		writer.writeTextElement("spirit:description", description_);
 	}
 
-	if (parameters_.size() != 0) {
+	if (parameters_->size() != 0) {
 		writer.writeStartElement("spirit:parameters");
 
 		// write each parameter
-		for (int i = 0; i < parameters_.size(); ++i) {
-			parameters_.at(i)->write(writer);
+		for (int i = 0; i < parameters_->size(); ++i) {
+			parameters_->at(i)->write(writer);
 		}
 
 		writer.writeEndElement(); // spirit:parameters
@@ -1288,7 +1286,7 @@ bool Component::isValid( QStringList& errorList ) const {
 
     ParameterValidator validator;
     QStringList paramNames;
-	foreach (QSharedPointer<Parameter> param, parameters_)
+	foreach (QSharedPointer<Parameter> param, *parameters_)
     {
 		if (paramNames.contains(param->getName())) 
         {
@@ -1349,7 +1347,7 @@ bool Component::isValid() const {
 			return false;
 		}
 
-        foreach(QSharedPointer<ModelParameter> modelParameter, model_->getModelParameters())
+        foreach(QSharedPointer<ModelParameter> modelParameter, *model_->getModelParameters())
         {
             if (!validateParameter(modelParameter))
             {
@@ -1558,11 +1556,8 @@ const QList<QSharedPointer<ComponentGenerator> >& Component::getCompGenerators()
 	return compGenerators_;
 }
 
-QList<QSharedPointer<Parameter> >& Component::getParameters() {
-	return parameters_;
-}
-
-const QList<QSharedPointer<Parameter> >& Component::getParameters() const {
+QSharedPointer<QList<QSharedPointer<Parameter> > > Component::getParameters() const
+{
 	return parameters_;
 }
 
@@ -1626,14 +1621,9 @@ const QList<QSharedPointer<FileSet> >& Component::getFileSets() const {
 	return fileSets_;
 }
 
-QList<QSharedPointer<FileSet> >& Component::getFileSets() {
+QList<QSharedPointer<FileSet> >& Component::getFileSets()
+{
 	return fileSets_;
-}
-
-void Component::setParameters(QList<QSharedPointer<Parameter> > const& parameters) {
-	// remove old parameters first
-	parameters_.clear();
-	parameters_ = parameters;
 }
 
 void Component::setCpus(const QList<QSharedPointer<Cpu> > &cpus) {
@@ -2183,19 +2173,10 @@ QStringList Component::getPortNames() const {
 		return QStringList();
 }
 
-QList<QSharedPointer<ModelParameter> >& Component::getModelParameters() {
-	if (model_) {
-		return model_->getModelParameters();
-	}
-	else {
-		model_ = QSharedPointer<Model>(new Model());
-		return model_->getModelParameters();
-	}
-}
-
-const QList<QSharedPointer<ModelParameter> >& Component::getModelParameters() const {
-	Q_ASSERT(model_);
-	return model_->getModelParameters();
+QSharedPointer<QList<QSharedPointer<ModelParameter> > > Component::getModelParameters() const
+{
+    Q_ASSERT(model_);
+    return model_->getModelParameters();
 }
 
 General::Direction Component::getPortDirection( const QString& portName ) const {
@@ -2345,7 +2326,7 @@ bool Component::hasModelParameters() const {
 }
 
 bool Component::hasParameters() const {
-	return !parameters_.isEmpty();
+	return !parameters_->isEmpty();
 }
 
 bool Component::hasPorts() const {
@@ -3786,9 +3767,11 @@ bool Component::hasLocalMemoryMaps() const {
 	return false;
 }
 
-QStringList Component::getParameterNames() const {
+QStringList Component::getParameterNames() const 
+{
 	QStringList names;
-	foreach (QSharedPointer<Parameter> param, parameters_) {
+	foreach (QSharedPointer<Parameter> param, *parameters_)
+    {
 		names.append(param->getName());
 	}
 	return names;
@@ -3812,8 +3795,10 @@ QString Component::getAllParametersDefaultValue( const QString& paramName ) cons
 	}
 
 	// model parameter was not found, search among parameters
-	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (param->getName() == paramName) {
+	foreach (QSharedPointer<Parameter> param, *parameters_)
+    {
+		if (param->getName() == paramName)
+        {
 			return param->getValue();
 		}
 	}
@@ -3893,10 +3878,10 @@ QString Component::getAuthor() const
 //-----------------------------------------------------------------------------
 // Function: Component::validateParameters()
 //-----------------------------------------------------------------------------
-bool Component::validateParameters(QList<QSharedPointer<Parameter> > parameters) const
+bool Component::validateParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters) const
 {
     QStringList parameterNames;
-    foreach (QSharedPointer<Parameter> param, parameters)
+    foreach (QSharedPointer<Parameter> param, *parameters)
     {
         if (parameterNames.contains(param->getName()))
         {

@@ -353,6 +353,12 @@
     <ClCompile Include="validators\ParameterValidator2014.cpp">
       <Filter>Source Files\validators</Filter>
     </ClCompile>
+    <ClCompile Include="kactusExtensions\ComponentInstantiation.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ModuleParameter.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ipxactmodels_global.h">
@@ -654,6 +660,12 @@
     </ClInclude>
     <ClInclude Include="validators\ParameterValidator2014.h">
       <Filter>Header Files\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ComponentInstantiation.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ModuleParameter.h">
+      <Filter>Header Files\kactusExtensions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

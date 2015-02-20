@@ -272,27 +272,13 @@ public:
 	*
 	* \return QList containing the model parameters.
 	*/
-	const QList<QSharedPointer<ModelParameter> >& getModelParameters() const;
-
-	/*! \brief Get the model parameters of this model.
-	*
-	* \return QList containing the model parameters.
-	*/
-	QList<QSharedPointer<ModelParameter> >& getModelParameters();
+	QSharedPointer<QList<QSharedPointer<ModelParameter> > > getModelParameters() const;
 
 	/*! \brief Get the names of the model parameters of the model.
 	 *
 	 * \return QStringList containing the names of the model parameters.
 	*/
 	QStringList getModelParameterNames() const;
-
-	/*! \brief Set the model parameters for this model
-	*
-	* Calling this function will delete the old model parameters.
-	*
-	* \param modelParameters QList containing the new model parameters.
-	*/
-	void setModelParameters(const QList<QSharedPointer<ModelParameter> >& modelParameters);
 
 	/*! \brief Get the specific model parameter.
 	*
@@ -478,7 +464,7 @@ private:
 	 * OPTIONAL
 	 * Contains the model parameters for this model.
 	 */
-	QList<QSharedPointer<ModelParameter> > modelParameters_;
+	QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParameters_;
 
 };
 

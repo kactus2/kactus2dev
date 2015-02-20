@@ -86,7 +86,7 @@ private:
 	ComponentEditorModelParamsItem& operator=(const ComponentEditorModelParamsItem& other);
 
 	//! \brief The map that contains the model parameters.
-	QList<QSharedPointer<ModelParameter> >& modelParams_;
+	QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParams_;
 };
 
 #endif // COMPONENTEDITORMODELPARAMSITEM_H

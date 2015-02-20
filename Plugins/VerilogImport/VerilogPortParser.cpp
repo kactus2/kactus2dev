@@ -370,7 +370,7 @@ QString VerilogPortParser::replaceModelParameterNamesWithIds(QString const& expr
     QSharedPointer<Component> targetComponent) const
 {
     QString result = expression;
-    foreach (QSharedPointer<ModelParameter> modelParameter, targetComponent->getModelParameters())
+    foreach (QSharedPointer<ModelParameter> modelParameter, *targetComponent->getModelParameters())
     {
         QRegularExpression nameReference("\\b" + modelParameter->getName() + "\\b");
         if (nameReference.match(result).hasMatch())

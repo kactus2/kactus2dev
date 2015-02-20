@@ -475,7 +475,7 @@ void tst_ComponentVerilogWriter::testParametersPrecedePorts()
 void tst_ComponentVerilogWriter::testParametrizedPort()
 {
     addModelParameter("dataWidth", "8");    
-    QString parameterId = component_->getModelParameters().first()->getValueId();
+    QString parameterId = component_->getModelParameters()->first()->getValueId();
 
     QSharedPointer<Port> port = QSharedPointer<Port>(new Port("data", General::OUT, 0, 0, "", true));
     port->setLeftBoundExpression(parameterId + "-1");

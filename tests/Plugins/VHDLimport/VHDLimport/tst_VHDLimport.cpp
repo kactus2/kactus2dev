@@ -618,7 +618,7 @@ void tst_VHDLimport::testModelParameterChangeAppliesToPort()
 
     QCOMPARE(createdPort->getPortSize(), 8);
 
-    QSharedPointer<ModelParameter> createdGeneric = importComponent_->getModelParameters().first();
+    QSharedPointer<ModelParameter> createdGeneric = importComponent_->getModelParameters()->first();
     createdGeneric->setValue("16");
 
     parser_.onModelParameterChanged(createdGeneric);
@@ -636,9 +636,9 @@ void tst_VHDLimport::testModelParameterIsAssignedToModelParameter()
 
     runParser(fileContent);
 
-    QVERIFY2(!importComponent_->getModelParameters().isEmpty(), "Did not create a valid model parameter.");
+    QVERIFY2(!importComponent_->getModelParameters()->isEmpty(), "Did not create a valid model parameter.");
 
-    QSharedPointer<ModelParameter> createdGeneric = importComponent_->getModelParameters().last();
+    QSharedPointer<ModelParameter> createdGeneric = importComponent_->getModelParameters()->last();
     QCOMPARE(createdGeneric->getValue(), expectedValue);
 }
 
@@ -704,7 +704,7 @@ void tst_VHDLimport::testPortsAndModelParametersAreNotParsedOutsideEntity()
     runParser(fileContent);
 
     QCOMPARE(importComponent_->getPorts().count(), 0);
-    QCOMPARE(importComponent_->getModelParameters().count(), 0);
+    QCOMPARE(importComponent_->getModelParameters()->count(), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -726,8 +726,8 @@ void tst_VHDLimport::testParameterNotFoundInFileIsRemoved()
 
     runParser(fileContent);
 
-    QCOMPARE(importComponent_->getModelParameters().count(), 1);
-    QSharedPointer<ModelParameter> importedParameter = importComponent_->getModelParameters().first();
+    QCOMPARE(importComponent_->getModelParameters()->count(), 1);
+    QSharedPointer<ModelParameter> importedParameter = importComponent_->getModelParameters()->first();
     QCOMPARE(importedParameter->getName(), QString("dataWidth_g"));
 }
 
@@ -740,7 +740,7 @@ void tst_VHDLimport::testExistingModelParameterIdDoesNotChange()
     existingParameter->setName("dataWidth_g");
     existingParameter->setValueId("existingId");
 
-    importComponent_->getModelParameters().append(existingParameter);
+    importComponent_->getModelParameters()->append(existingParameter);
 
     QString fileContent = 
         "entity test is\n"
@@ -751,8 +751,8 @@ void tst_VHDLimport::testExistingModelParameterIdDoesNotChange()
 
     runParser(fileContent);
 
-    QSharedPointer<ModelParameter> importedParameter = importComponent_->getModelParameters().first();
-    QCOMPARE(importComponent_->getModelParameters().count(), 1);
+    QSharedPointer<ModelParameter> importedParameter = importComponent_->getModelParameters()->first();
+    QCOMPARE(importComponent_->getModelParameters()->count(), 1);
     QCOMPARE(importedParameter->getValueId(), QString("existingId"));
     QCOMPARE(importedParameter->getValue(), QString("8"));
 }

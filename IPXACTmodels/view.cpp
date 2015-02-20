@@ -3,14 +3,15 @@
  *      Author: Antti Kamppi
  */
 
-#include "view.h"
-#include "parameter.h"
 #include "generaldeclarations.h"
 #include "GenericVendorExtension.h"
+#include "modelparameter.h"
+#include "parameter.h"
+#include "view.h"
+#include "vlnv.h"
 #include "XmlUtils.h"
 
-#include"vlnv.h"
-
+#include <IPXACTmodels/kactusExtensions/ComponentInstantiation.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 #include <IPXACTmodels/validators/ParameterValidator.h>
 
@@ -28,77 +29,72 @@ languageStrict_(false),
 modelName_(),
 fileSetRefs_(), 
 constraintSetRefs_(),
-parameters_(),
+parameters_(new QList<QSharedPointer<Parameter> >()),
 hierarchyRef_(), 
 defaultFileBuilders_(),
 topLevelViewRef_(),
 vendorExtensions_()
 {
-	for (int i = 0; i < viewNode.childNodes().count(); ++i) {
+	for (int i = 0; i < viewNode.childNodes().count(); ++i)
+    {
 		QDomNode tempNode = viewNode.childNodes().at(i);
 
-		if (tempNode.nodeName() == QString("spirit:envIdentifier")) {
+		if (tempNode.nodeName() == QString("spirit:envIdentifier"))
+        {
 			envIdentifiers_.append(tempNode.childNodes().at(0).nodeValue());
 		}
-
-		else if (tempNode.nodeName() == QString("spirit:language")) {
+		else if (tempNode.nodeName() == QString("spirit:language"))
+        {
 			language_ = tempNode.childNodes().at(0).nodeValue();
 
 			// get the spirit:strict attribute
 			QDomNamedNodeMap attributeMap = tempNode.attributes();
-			QString strict = attributeMap.namedItem(QString("spirit:strict")).
-					childNodes().at(0).nodeValue();
-
+			QString strict = attributeMap.namedItem(QString("spirit:strict")).childNodes().at(0).nodeValue();
 			languageStrict_ = General::str2Bool(strict, false);
 		}
-
-		else if (tempNode.nodeName() == QString("spirit:modelName")) {
+		else if (tempNode.nodeName() == QString("spirit:modelName"))
+        {
 			modelName_ = tempNode.childNodes().at(0).nodeValue();
 		}
-
-		else if (tempNode.nodeName() == QString("spirit:fileSetRef")) {
-
-			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-				if (tempNode.childNodes().at(j).nodeName() ==
-						QString("spirit:localName")) {
-
+		else if (tempNode.nodeName() == QString("spirit:fileSetRef"))
+        {
+			for (int j = 0; j < tempNode.childNodes().count(); ++j)
+            {
+				if (tempNode.childNodes().at(j).nodeName() == QString("spirit:localName")) 
+                {
 					// strip the name of embedded whitespace characters
-					QString localName = tempNode.childNodes().at(j).
-							childNodes().at(0).nodeValue();
+					QString localName = tempNode.childNodes().at(j).childNodes().at(0).nodeValue();
 					localName = XmlUtils::removeWhiteSpace(localName);
 					fileSetRefs_.append(localName);
 				}
 			}
 		}
-
-		else if (tempNode.nodeName() == QString("spirit:constraintSetRef")) {
-			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
-				QString constraintSetRef = tempNode.childNodes().
-						at(j).childNodes().at(0).nodeValue();
+		else if (tempNode.nodeName() == QString("spirit:constraintSetRef"))
+        {
+			for (int j = 0; j < tempNode.childNodes().count(); ++j)
+            {
+				QString constraintSetRef = tempNode.childNodes().at(j).childNodes().at(0).nodeValue();
 				constraintSetRef = XmlUtils::removeWhiteSpace(constraintSetRef);
 				constraintSetRefs_.append(constraintSetRef);
 			}
 		}
-
-		else if (tempNode.nodeName() == QString("spirit:parameters")) {
-
+		else if (tempNode.nodeName() == QString("spirit:parameters"))
+        {
 			// go through all parameters
-			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
+			for (int j = 0; j < tempNode.childNodes().count(); ++j)
+            {
 				QDomNode parameterNode = tempNode.childNodes().at(j);
-				parameters_.append(QSharedPointer<Parameter>(
-						new Parameter(parameterNode)));
+				parameters_->append(QSharedPointer<Parameter>(new Parameter(parameterNode)));
 			}
 		}
-
-		else if (tempNode.nodeName() == QString("spirit:hierarchyRef")) {
+		else if (tempNode.nodeName() == QString("spirit:hierarchyRef"))
+        {
 			hierarchyRef_ = VLNV::createVLNV(tempNode, VLNV::DESIGN);
 		}
-
-		else if (tempNode.nodeName() == QString("spirit:defaultFileBuilder")) {
-			defaultFileBuilders_.append(
-				QSharedPointer<FileBuilder>(new FileBuilder(tempNode)));
+		else if (tempNode.nodeName() == QString("spirit:defaultFileBuilder"))
+        {
+			defaultFileBuilders_.append(QSharedPointer<FileBuilder>(new FileBuilder(tempNode)));
 		}
-
         else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) 
         {
             parseVendorExtensions(tempNode);
@@ -114,7 +110,7 @@ languageStrict_(false),
 modelName_(),
 fileSetRefs_(), 
 constraintSetRefs_(),
-parameters_(),
+parameters_(new QList<QSharedPointer<Parameter> >()),
 hierarchyRef_(), 
 defaultFileBuilders_(),
 topLevelViewRef_(),
@@ -130,7 +126,7 @@ languageStrict_(false),
 modelName_(),
 fileSetRefs_(), 
 constraintSetRefs_(),
-parameters_(), 
+parameters_(new QList<QSharedPointer<Parameter> >()), 
 hierarchyRef_(), 
 defaultFileBuilders_(),
 topLevelViewRef_(),
@@ -146,27 +142,23 @@ languageStrict_(other.languageStrict_),
 modelName_(other.modelName_),
 fileSetRefs_(other.fileSetRefs_),
 constraintSetRefs_(other.constraintSetRefs_),
-parameters_(),
+parameters_(new QList<QSharedPointer<Parameter> >()),
 hierarchyRef_(other.hierarchyRef_),
 defaultFileBuilders_(),
 topLevelViewRef_(),
 vendorExtensions_()
 {
-	foreach (QSharedPointer<Parameter> param, other.parameters_) {
-		if (param) {
-			QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(
-				new Parameter(*param.data()));
-			parameters_.append(copy);
-		}
-	}
+	foreach (QSharedPointer<Parameter> param, *other.parameters_)
+    {
+        QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*param.data()));
+        parameters_->append(copy);
+    }
 
-	foreach (QSharedPointer<FileBuilder> builder, other.defaultFileBuilders_) {
-		if (builder) {
-			QSharedPointer<FileBuilder> copy = QSharedPointer<FileBuilder>(
-				new FileBuilder(*builder.data()));
-			defaultFileBuilders_.append(copy);
-		}
-	}
+	foreach (QSharedPointer<FileBuilder> builder, other.defaultFileBuilders_)
+    {
+        QSharedPointer<FileBuilder> copy = QSharedPointer<FileBuilder>(new FileBuilder(*builder.data()));
+        defaultFileBuilders_.append(copy);
+    }
 
     copyVendorExtensions(other);
 }
@@ -182,34 +174,32 @@ View & View::operator=( const View &other ) {
 		constraintSetRefs_ = other.constraintSetRefs_;
 		hierarchyRef_ = other.hierarchyRef_;
 
-		parameters_.clear();
-		foreach (QSharedPointer<Parameter> param, other.parameters_) {
-			if (param) {
-				QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(
-					new Parameter(*param.data()));
-				parameters_.append(copy);
-			}
-		}
+        parameters_->clear();
+        foreach (QSharedPointer<Parameter> param, *other.parameters_)
+        {
+            QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*param.data()));
+            parameters_->append(copy);
+        }
 
-		defaultFileBuilders_.clear();
-		foreach (QSharedPointer<FileBuilder> builder, other.defaultFileBuilders_) {
-			if (builder) {
-				QSharedPointer<FileBuilder> copy = QSharedPointer<FileBuilder>(
-					new FileBuilder(*builder.data()));
-				defaultFileBuilders_.append(copy);
-			}
-		}
+        defaultFileBuilders_.clear();
+        foreach (QSharedPointer<FileBuilder> builder, other.defaultFileBuilders_)
+        {
+            QSharedPointer<FileBuilder> copy = QSharedPointer<FileBuilder>(new FileBuilder(*builder.data()));
+            defaultFileBuilders_.append(copy);
+        }
 
         copyVendorExtensions(other);
 	}
 	return *this;
 }
 
-View::~View() {
-	parameters_.clear();
+View::~View()
+{
+	parameters_->clear();
 }
 
-void View::write(QXmlStreamWriter& writer) {
+void View::write(QXmlStreamWriter& writer)
+{
 	writer.writeStartElement("spirit:view");
 
     nameGroup_.write(writer);
@@ -263,12 +253,14 @@ void View::write(QXmlStreamWriter& writer) {
 	}
 
 	// write all the parameters
-	if (parameters_.size() != 0) {
+	if (parameters_->size() != 0)
+    {
 		writer.writeStartElement("spirit:parameters");
 
 		// go through each parameter
-		for (int i = 0; i < parameters_.size(); ++i) {
-			parameters_.at(i)->write(writer);
+		for (int i = 0; i < parameters_->size(); ++i)
+        {
+			parameters_->at(i)->write(writer);
 		}
 
 		writer.writeEndElement(); // spirit:parameters
@@ -323,7 +315,7 @@ bool View::isValid( const QStringList& fileSetNames,
 		}
 
         ParameterValidator validator;
-        foreach (QSharedPointer<Parameter> param, parameters_)
+        foreach (QSharedPointer<Parameter> param, *parameters_)
         {
             errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, componentChoices));
             if (!validator.validate(param.data(), componentChoices)) 
@@ -366,7 +358,7 @@ bool View::isValid( const QStringList& fileSetNames,
 		}
 
         ParameterValidator validator;
-        foreach (QSharedPointer<Parameter> param, parameters_)
+        foreach (QSharedPointer<Parameter> param, *parameters_)
         {
             if (!validator.validate(param.data(), componentChoices)) 
             {
@@ -394,19 +386,9 @@ QString View::getName() const {
 	return nameGroup_.name();
 }
 
-VLNV View::getHierarchyRef() const {
+VLNV View::getHierarchyRef() const
+{
 	return hierarchyRef_;
-}
-
-void View::setParameters(const QList<QSharedPointer<Parameter> > &parameters) {
-	// delete the old parameters
-	parameters_.clear();
-
-	// save the new parameters
-	parameters_ = parameters;
-
-	hierarchyRef_.clear();
-    removeTopLevelViewRefExtension();
 }
 
 void View::setLanguage(const QString &language) {
@@ -431,8 +413,8 @@ QStringList View::getFileSetRefs() const {
 	return fileSetRefs_;
 }
 
-void View::setHierarchyRef(const VLNV& hierarchyRef) {
-
+void View::setHierarchyRef(const VLNV& hierarchyRef)
+{
 	hierarchyRef_ = hierarchyRef;
 
 	// if view is hierarchical then it can't have these elements.
@@ -442,7 +424,8 @@ void View::setHierarchyRef(const VLNV& hierarchyRef) {
 	fileSetRefs_.clear();
 	constraintSetRefs_.clear();
 	defaultFileBuilders_.clear();
-	parameters_.clear();
+	parameters_->clear();
+    getOrCreateComponentInstantiation()->getModuleParameters()->clear();
 }
 
 void View::setEnvIdentifiers( const QStringList& envIdentifiers ) {
@@ -463,16 +446,18 @@ QStringList& View::getEnvIdentifiers() {
 	return envIdentifiers_;
 }
 
-QList<QSharedPointer<Parameter> >& View::getParameters() {
+//-----------------------------------------------------------------------------
+// Function: View::getParameters()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<Parameter> > > View::getParameters() const
+{
 	return parameters_;
 }
 
-const QList<QSharedPointer<Parameter> >& View::getParameters() const {
-	return parameters_;
-}
-
-void View::setName(const QString &name) {
+void View::setName(QString const& name) 
+{
 	nameGroup_.setName(name);
+    getOrCreateComponentInstantiation()->setName(name);
 }
 
 void View::setModelName(const QString &modelName) {
@@ -564,20 +549,49 @@ void View::setTopLevelView( const QString& viewName ) {
 	modelName_.clear();
 	fileSetRefs_.clear();
 	constraintSetRefs_.clear();
-	parameters_.clear();
+	parameters_->clear();
 }
 
 NameGroup& View::getNameGroup() {
 	return nameGroup_;
 }
 
-const NameGroup& View::getNameGroup() const {
+const NameGroup& View::getNameGroup() const
+{
 	return nameGroup_;
 }
 
-void View::clearHierarchy() {
+void View::clearHierarchy()
+{
 	hierarchyRef_.clear();
     removeTopLevelViewRefExtension();
+}
+
+//-----------------------------------------------------------------------------
+// Function: View::getModuleParameters()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<ModelParameter> > > View::getModuleParameters()
+{
+    return getOrCreateComponentInstantiation()->getModuleParameters();
+}
+
+//-----------------------------------------------------------------------------
+// Function: View::getOrCreateComponentInstantiation()
+//-----------------------------------------------------------------------------
+QSharedPointer<ComponentInstantiation> View::getOrCreateComponentInstantiation()
+{
+    foreach(QSharedPointer<VendorExtension> extension, vendorExtensions_)
+    {
+        if (extension->type() == "kactus2:componentInstantiation")
+        {
+            QSharedPointer<ComponentInstantiation> instantiation = extension.dynamicCast<ComponentInstantiation>();
+            return instantiation;
+        }
+    }
+
+    QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation());
+    vendorExtensions_.append(instantiation);
+    return instantiation;
 }
 
 //-----------------------------------------------------------------------------
@@ -591,6 +605,10 @@ void View::parseVendorExtensions(QDomNode const& extensionsNode)
         if (extensionNode.nodeName() == QString("kactus2:topLevelViewRef"))
         {
             createTopLevelViewRefExtension(extensionNode.childNodes().at(0).nodeValue());
+        }
+        else if (extensionNode.nodeName() == QString("kactus2:componentInstantiation"))
+        {
+            parseComponentInstantiation(extensionNode);
         }
         else
         {
@@ -609,6 +627,20 @@ void View::createTopLevelViewRefExtension(QString topLevelViewRef)
         topLevelViewRef_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:topLevelViewRef", topLevelViewRef));
         vendorExtensions_.append(topLevelViewRef_);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: View::parseModuleParameters()
+//-----------------------------------------------------------------------------
+void View::parseComponentInstantiation(QDomNode& instantiationNode)
+{
+    QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation(instantiationNode));
+    if (instantiation->getName().isEmpty())
+    {
+        instantiation->setName(getName());
+    }
+
+    vendorExtensions_.append(instantiation);
 }
 
 //-----------------------------------------------------------------------------

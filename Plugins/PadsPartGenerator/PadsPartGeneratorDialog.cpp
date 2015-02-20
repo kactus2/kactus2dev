@@ -474,7 +474,7 @@ void PadsPartGeneratorDialog::generateHeader()
         }
         headerLine1.replace(PadsAsciiSyntax::LOGFAMILY, familyEditor_->text());
 
-        int numAttr = PREGEN_ATTRS + component_->getParameters().size();
+        int numAttr = PREGEN_ATTRS + component_->getParameters()->size();
 
         headerLine1.replace(PadsAsciiSyntax::NUM_ATTRS, QString::number(numAttr));
         int gateCount = 1;
@@ -700,7 +700,7 @@ void PadsPartGeneratorDialog::insertAttributes(QTextCursor& cursor)
     insertLine(attr.join(PadsAsciiSyntax::SEPARATOR), cursor, PadsAsciiSyntax::ATTRIBUTE_EXP);
 
     // Insert all parameters as attributes.
-    foreach(QSharedPointer<Parameter> parameter, component_->getParameters())
+    foreach(QSharedPointer<Parameter> parameter, *component_->getParameters())
     {
         attr.replace(PadsAsciiSyntax::ATTRNAME, "\"" + parameter->getName() + "\"");
         attr.replace(PadsAsciiSyntax::VALUE, parameter->getValue());

@@ -40,7 +40,7 @@ QSharedPointer<Parameter> MultipleParameterFinder::getParameterWithID(QString co
 
     foreach (QSharedPointer<Component> component, allComponents)
     {
-        foreach (QSharedPointer<Parameter> parameter, component->getParameters())
+        foreach (QSharedPointer<Parameter> parameter, *component->getParameters())
         {
             if (parameter->getValueId() == parameterId)
             {
@@ -48,7 +48,7 @@ QSharedPointer<Parameter> MultipleParameterFinder::getParameterWithID(QString co
             }
         }
 
-        foreach (QSharedPointer<ModelParameter> modelParameter, component->getModelParameters())
+        foreach (QSharedPointer<ModelParameter> modelParameter, *component->getModelParameters())
         {
             if (modelParameter->getValueId() == parameterId)
             {
@@ -58,7 +58,7 @@ QSharedPointer<Parameter> MultipleParameterFinder::getParameterWithID(QString co
 
         foreach (QSharedPointer<View> view, component->getViews())
         {
-            foreach(QSharedPointer<Parameter> parameter, view->getParameters())
+            foreach(QSharedPointer<Parameter> parameter, *view->getParameters())
             {
                 if (parameter->getValueId() == parameterId)
                 {
@@ -82,7 +82,7 @@ bool MultipleParameterFinder::hasId(QString const& id) const
     
     foreach (QSharedPointer<Component> component, allComponents)
     {
-        foreach (QSharedPointer<Parameter> parameter, component->getParameters())
+        foreach (QSharedPointer<Parameter> parameter, *component->getParameters())
         {
             if (parameter->getValueId() == id)
             {
@@ -90,7 +90,7 @@ bool MultipleParameterFinder::hasId(QString const& id) const
             }
         }
         
-        foreach (QSharedPointer<ModelParameter> componentModelParameter, component->getModelParameters())
+        foreach (QSharedPointer<ModelParameter> componentModelParameter, *component->getModelParameters())
         {
             if (componentModelParameter->getValueId() == id)
             {
@@ -100,7 +100,7 @@ bool MultipleParameterFinder::hasId(QString const& id) const
         
         foreach (QSharedPointer<View> view, component->getViews())
         {
-            foreach (QSharedPointer<Parameter> viewParameter, view->getParameters())
+            foreach (QSharedPointer<Parameter> viewParameter, *view->getParameters())
             {
                 if (viewParameter->getValueId() == id)
                 {
@@ -146,17 +146,17 @@ QStringList MultipleParameterFinder::getAllParameterIds() const
     
     foreach (QSharedPointer<Component> component, allComponents)
     {
-        foreach (QSharedPointer<Parameter> parameter, component->getParameters())
+        foreach (QSharedPointer<Parameter> parameter, *component->getParameters())
         {
             allParameterIds.append(parameter->getValueId());
         }
-        foreach (QSharedPointer<ModelParameter> modelParameter, component->getModelParameters())
+        foreach (QSharedPointer<ModelParameter> modelParameter, *component->getModelParameters())
         {
             allParameterIds.append(modelParameter->getValueId());
         }
         foreach (QSharedPointer<View> view, component->getViews())
         {
-            foreach (QSharedPointer<Parameter> viewParameter, view->getParameters())
+            foreach (QSharedPointer<Parameter> viewParameter, *view->getParameters())
             {
                 allParameterIds.append(viewParameter->getValueId());
             }

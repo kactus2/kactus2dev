@@ -23,8 +23,8 @@ instantations_()
 	Q_ASSERT(component);
 
 	// parse the generics for the component declaration
-	QList<QSharedPointer<ModelParameter> > modelParams = component_->getModelParameters();
-	foreach (QSharedPointer<ModelParameter> modelParam, modelParams) {
+	foreach (QSharedPointer<ModelParameter> modelParam, *component_->getModelParameters())
+    {
 		QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(modelParam.data() ));
 		generics_.insert(generic->name(), generic);
 	}

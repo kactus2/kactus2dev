@@ -193,11 +193,13 @@
     <ClCompile Include="HierConnection.cpp" />
     <ClCompile Include="Interconnection.cpp" />
     <ClCompile Include="Interface.cpp" />
+    <ClCompile Include="kactusExtensions\ComponentInstantiation.cpp" />
     <ClCompile Include="kactusExtensions\Kactus2Group.cpp" />
     <ClCompile Include="kactusExtensions\Kactus2Placeholder.cpp" />
     <ClCompile Include="kactusExtensions\Kactus2Position.cpp" />
     <ClCompile Include="kactusExtensions\Kactus2Value.cpp" />
     <ClCompile Include="kactusExtensions\KactusAttribute.cpp" />
+    <ClCompile Include="kactusExtensions\ModuleParameter.cpp" />
     <ClCompile Include="librarycomponent.cpp" />
     <ClCompile Include="masterinterface.cpp" />
     <ClCompile Include="memoryblockdata.cpp" />
@@ -295,11 +297,13 @@
     <ClInclude Include="Interconnection.h" />
     <ClInclude Include="Interface.h" />
     <ClInclude Include="ipxactmodels_global.h" />
+    <ClInclude Include="kactusExtensions\ComponentInstantiation.h" />
     <ClInclude Include="kactusExtensions\Kactus2Group.h" />
     <ClInclude Include="kactusExtensions\Kactus2Placeholder.h" />
     <ClInclude Include="kactusExtensions\Kactus2Position.h" />
     <ClInclude Include="kactusExtensions\Kactus2Value.h" />
     <ClInclude Include="kactusExtensions\KactusAttribute.h" />
+    <ClInclude Include="kactusExtensions\ModuleParameter.h" />
     <ClInclude Include="librarycomponent.h" />
     <ClInclude Include="masterinterface.h" />
     <ClInclude Include="memoryblockdata.h" />

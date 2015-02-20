@@ -290,7 +290,7 @@ int VHDLPortParser::parseLeftValue(QString const& vectorBounds, QSharedPointer<C
     {
         QString leftEquation = VECTOR_BOUNDS.match(vectorBounds).captured(1);
 
-        HDLEquationParser equationParser(ownerComponent->getModelParameters());
+        HDLEquationParser equationParser(*ownerComponent->getModelParameters());
         value = equationParser.parse(leftEquation);
     }	
 
@@ -308,7 +308,7 @@ int VHDLPortParser::parseRightValue(QString const& vectorBounds, QSharedPointer<
     {
         QString rightEquation = VECTOR_BOUNDS.match(vectorBounds).captured(2);
 
-        HDLEquationParser equationParser(ownerComponent->getModelParameters());
+        HDLEquationParser equationParser(*ownerComponent->getModelParameters());
         value = equationParser.parse(rightEquation);
     }	
 

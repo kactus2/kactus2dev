@@ -53,7 +53,7 @@ void tst_ParameterCompleter::testNameIsFoundAsCompletion()
     parameters.append(testParameter);
 
     QSharedPointer<Component> targetComponent(new Component());
-    targetComponent->setParameters(parameters);
+    targetComponent->getParameters()->append(parameters);
 
     QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(targetComponent));
 

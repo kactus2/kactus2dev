@@ -66,7 +66,8 @@ bitsInLau_(DEFAULT_BITS_IN_LAU),
 bitSteering_(General::BITSTEERING_UNSPECIFIED),
 bitSteeringAttributes_(),
 endianness_(General::LITTLE),
-parameters_(), master_(), slave_(), system_(),
+parameters_(new QList<QSharedPointer<Parameter> >()),
+master_(), slave_(), system_(),
 monitor_() {
 
 	// get the attributes for the bus interface
@@ -237,7 +238,7 @@ monitor_() {
 
 				QDomNode parameterNode = children.at(i).childNodes().at(j);
 				Parameter *temp = new Parameter(parameterNode);
-				parameters_.append(QSharedPointer<Parameter>(temp));
+				parameters_->append(QSharedPointer<Parameter>(temp));
 			}
 		}
         else if (children.at(i).nodeName() == "spirit:vendorExtensions")
@@ -286,7 +287,8 @@ BusInterface::BusInterface(): nameGroup_(),
 		bitSteering_(General::BITSTEERING_UNSPECIFIED),
 		bitSteeringAttributes_(),
 		endianness_(General::LITTLE),
-        parameters_(), master_(QSharedPointer<MasterInterface>(new MasterInterface)),
+        parameters_(new QList<QSharedPointer<Parameter> >()), 
+        master_(QSharedPointer<MasterInterface>(new MasterInterface)),
         slave_(), system_(),
         monitor_(),
         defaultPos_()
@@ -305,7 +307,7 @@ bitsInLau_(other.bitsInLau_),
 bitSteering_(other.bitSteering_),
 bitSteeringAttributes_(other.bitSteeringAttributes_),
 endianness_(other.endianness_),
-parameters_(),
+parameters_(new QList<QSharedPointer<Parameter> >()),
 master_(),
 slave_(),
 system_(other.system_),
@@ -321,13 +323,10 @@ defaultPos_(other.defaultPos_)
 		}
 	}
 
-	foreach (QSharedPointer<Parameter> param, other.parameters_) {
-		if (param) {
-			QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(
-				new Parameter(*param.data()));
-			parameters_.append(copy);
-		}
-	}
+	foreach (QSharedPointer<Parameter> param, *other.parameters_) {
+        QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*param.data()));
+        parameters_->append(copy);
+    }
 
 	if (other.master_) {
 		master_ = QSharedPointer<MasterInterface>(
@@ -376,14 +375,12 @@ BusInterface & BusInterface::operator=( const BusInterface &other )
 			}
 		}
 
-		parameters_.clear();
-		foreach (QSharedPointer<Parameter> param, other.parameters_) {
-			if (param) {
-				QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(
-					new Parameter(*param.data()));
-				parameters_.append(copy);
-			}
-		}
+        parameters_->clear();
+        foreach (QSharedPointer<Parameter> param, *other.parameters_)
+        {
+            QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*param.data()));
+            parameters_->append(copy);
+        }
 
 		if (other.master_) {
 			master_ = QSharedPointer<MasterInterface>(
@@ -422,7 +419,7 @@ BusInterface & BusInterface::operator=( const BusInterface &other )
 BusInterface::~BusInterface() {
 	portMaps_.clear();
 	bitSteeringAttributes_.clear();
-	parameters_.clear();
+	parameters_->clear();
 	master_.clear();
 	slave_.clear();
 	monitor_.clear();
@@ -570,12 +567,12 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 	writer.writeTextElement("spirit:endianness",
 			General::endianness2Str(endianness_));
 
-	if (parameters_.size() != 0) {
+	if (parameters_->size() != 0) {
 		writer.writeStartElement("spirit:parameters");
 
 		// write each parameter
-		for (int i = 0; i < parameters_.size(); ++i) {
-			parameters_.at(i)->write(writer);
+		for (int i = 0; i < parameters_->size(); ++i) {
+			parameters_->at(i)->write(writer);
 		}
 		writer.writeEndElement(); // spirit:parameters
 	}
@@ -680,7 +677,7 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts,
 	}
 
     ParameterValidator validator;
-    foreach (QSharedPointer<Parameter> param, parameters_)
+    foreach (QSharedPointer<Parameter> param, *parameters_)
     {
         errorList.append(validator.findErrorsIn(param.data(), thisIdentifier, componentChoices));
         if (!validator.validate(param.data(), componentChoices)) 
@@ -751,7 +748,7 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts,
 	}
 
     ParameterValidator validator;
-    foreach (QSharedPointer<Parameter> param, parameters_)
+    foreach (QSharedPointer<Parameter> param, *parameters_)
     {
         if (!validator.validate(param.data(), componentChoices)) 
         {
@@ -807,18 +804,19 @@ void BusInterface::setBitsInLau(unsigned int bitsInLau) {
 	bitsInLau_ = bitsInLau;
 }
 
-QList<QSharedPointer<Parameter> >& BusInterface::getParameters() {
+QSharedPointer<QList<QSharedPointer<Parameter> > > BusInterface::getParameters() const
+{
 	return parameters_;
 }
-
+/*
 const QList<QSharedPointer<Parameter> >& BusInterface::getParameters() const {
 	return parameters_;
-}
+}*/
 
 void BusInterface::setAbstractionType(const VLNV& abstractionType) {
 	abstractionType_ = abstractionType;
 }
-
+/*
 void BusInterface::setParameters(
 		QList<QSharedPointer<Parameter> > &parameters) {
 	// delete old parameteres
@@ -826,7 +824,7 @@ void BusInterface::setParameters(
 
 	// save the new parameters
 	parameters_ = parameters;
-}
+}*/
 
 QList<QSharedPointer<PortMap> >& BusInterface::getPortMaps() {
 	return portMaps_;
@@ -1145,7 +1143,7 @@ QString BusInterface::getLogicalPortName( const QString& physicalPortName ) cons
 void BusInterface::setMCAPIPortID(int portID)
 {
     // Try to replace the old one if it already exists.
-    foreach (QSharedPointer<Parameter> param, parameters_)
+    foreach (QSharedPointer<Parameter> param, *parameters_)
     {
         if (param->getName() == "kts_port_id")
         {
@@ -1158,7 +1156,7 @@ void BusInterface::setMCAPIPortID(int portID)
     QSharedPointer<Parameter> param(new Parameter());
     param->setName("kts_port_id");
     param->setValue(QString::number(portID));
-    parameters_.append(param);
+    parameters_->append(param);
 }
 
 //-----------------------------------------------------------------------------
@@ -1166,7 +1164,7 @@ void BusInterface::setMCAPIPortID(int portID)
 //-----------------------------------------------------------------------------
 int BusInterface::getMCAPIPortID() const
 {
-    foreach (QSharedPointer<Parameter> param, parameters_)
+    foreach (QSharedPointer<Parameter> param, *parameters_)
     {
         if (param->getName() == "kts_port_id")
         {

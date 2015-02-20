@@ -22,11 +22,13 @@
 #include <QXmlStreamWriter>
 #include <QStringList>
 
+class ComponentInstantiation;
 class Choice;
-class VLNV;
+class Kactus2Value;
+class ModelParameter;
 class Parameter;
 class VendorExtension;
-class Kactus2Value;
+class VLNV;
 
 /*! \brief Equals the spirit:view element in IP-Xact specification
  *
@@ -206,13 +208,7 @@ public:
 	 *
 	 * \return QList containing the parameters for this view.
 	 */
-	QList<QSharedPointer<Parameter> >& getParameters();
-
-	/*! \brief Get list of the parameters for this view
-	 *
-	 * \return QList containing the parameters for this view.
-	 */
-	const QList<QSharedPointer<Parameter> >& getParameters() const;
+	QSharedPointer<QList<QSharedPointer<Parameter> > > getParameters() const;
 
 	/*! \brief Set the envIdentifiers for this view
 	 *
@@ -262,14 +258,6 @@ public:
 	 */
 	void setName(const QString &name);
 
-	/*! \brief Set the parameters for this view
-	 *
-	 * Calling this function will delete the old parameters.
-	 *
-	 * \param parameters QList containing the new parameters.
-	 */
-	void setParameters(const QList<QSharedPointer<Parameter> > &parameters);
-
 	/*! \brief Add a new envIdentifier for this view.
 	 *
 	 * \param envIdentifier The envIdentifier to add.
@@ -318,7 +306,21 @@ public:
 	*/
 	void clearHierarchy();
 
+    /*!
+     *  Gets the module parameters associated with the view.
+     *
+     *      @return The module parameters for the view.
+     */
+    QSharedPointer<QList<QSharedPointer<ModelParameter> > > getModuleParameters();
+
 private:
+
+    /*!
+     *  Gets the vendor extension for component instantiation. If it does not exist yet, creates one.
+     *
+     *      @return The component instantiation for the view.
+     */
+    QSharedPointer<ComponentInstantiation> getOrCreateComponentInstantiation();
 
     /*!
      *  Parses the vendor extensions from a DOM node.
@@ -334,6 +336,13 @@ private:
      */
     void createTopLevelViewRefExtension(QString topLevelViewRef);
 
+    /*!
+     *  Parses the component instantiation vendor extension from a DOM node.
+     *
+     *      @param [in] instantiationNode   The DOM node describing the instantiation.
+     */
+    void parseComponentInstantiation(QDomNode& instantiationNode);
+
     //! Removes the top level view reference vendor extension.
     void removeTopLevelViewRefExtension();
 
@@ -343,6 +352,10 @@ private:
      *      @param [in] other   The view to copy extensions from.
      */
     void copyVendorExtensions(const View & other);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! \brief Contains the name, display name and description of view.
 	NameGroup nameGroup_;
@@ -387,7 +400,7 @@ private:
 	 * OPTIONAL spirit:parameters
 	 * Any additional parameters that describe the view.
 	 */
-	QList<QSharedPointer<Parameter> > parameters_;
+	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
 
 	/*!
 	 * MANDATORY spirit:hierarchyRef

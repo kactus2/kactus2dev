@@ -131,7 +131,7 @@ void tst_IPXactSystemVerilogParser::testParameterWithoutId()
     QSharedPointer<Parameter> firstParameter(new Parameter());
     firstParameter->setValueId("");
     firstParameter->setValue("1");
-    testComponent->getParameters().append(firstParameter);
+    testComponent->getParameters()->append(firstParameter);
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
@@ -150,12 +150,12 @@ void tst_IPXactSystemVerilogParser::testExpressionWithParameterReferences()
     QSharedPointer<Parameter> firstParameter(new Parameter());
     firstParameter->setValueId("one");
     firstParameter->setValue("1");
-    testComponent->getParameters().append(firstParameter);
+    testComponent->getParameters()->append(firstParameter);
 
     QSharedPointer<Parameter> secondParameter(new Parameter());
     secondParameter->setValueId("two");
     secondParameter->setValue("2");
-    testComponent->getParameters().append(secondParameter);
+    testComponent->getParameters()->append(secondParameter);
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
     
@@ -226,13 +226,13 @@ void tst_IPXactSystemVerilogParser::testExpressionWithViewParameterReferences()
     firstParameter->setValueId("one");
     firstParameter->setValue("1");
     View* view1 = testComponent->createView();
-    view1->getParameters().append(firstParameter);
+    view1->getParameters()->append(firstParameter);
 
     QSharedPointer<Parameter> secondParameter(new Parameter());
     secondParameter->setValueId("two");
     secondParameter->setValue("2");
     View* view2 = testComponent->createView();
-    view2->getParameters().append(secondParameter);
+    view2->getParameters()->append(secondParameter);
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
@@ -319,12 +319,12 @@ void tst_IPXactSystemVerilogParser::testExpressionWithBusInterfaceParameterRefer
     secondParameter->setValue("2");
 
     QSharedPointer<BusInterface> busInterface1(new BusInterface());
-    busInterface1->getParameters().append(firstParameter);
+    busInterface1->getParameters()->append(firstParameter);
     testComponent->addBusInterface(busInterface1);
 
     QSharedPointer<BusInterface> busInterface2(new BusInterface());
     busInterface2->setName("busIf");
-    busInterface2->getParameters().append(secondParameter);
+    busInterface2->getParameters()->append(secondParameter);
     testComponent->addBusInterface(busInterface2);
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
@@ -352,12 +352,12 @@ void tst_IPXactSystemVerilogParser::testParameterDefinedUsingOtherParameter()
     QSharedPointer<Parameter> firstParameter(new Parameter());
     firstParameter->setValueId("first");
     firstParameter->setValue("1");
-    testComponent->getParameters().append(firstParameter);
+    testComponent->getParameters()->append(firstParameter);
 
     QSharedPointer<Parameter> secondParameter(new Parameter());
     secondParameter->setValueId("second");
     secondParameter->setValue("2*first");
-    testComponent->getParameters().append(secondParameter);
+    testComponent->getParameters()->append(secondParameter);
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
@@ -385,12 +385,12 @@ void tst_IPXactSystemVerilogParser::testLoopTerminatesEventually()
     QSharedPointer<Parameter> firstParameter(new Parameter());
     firstParameter->setValueId("first");
     firstParameter->setValue("second");
-    testComponent->getParameters().append(firstParameter);
+    testComponent->getParameters()->append(firstParameter);
 
     QSharedPointer<Parameter> secondParameter(new Parameter());
     secondParameter->setValueId("second");
     secondParameter->setValue("first");
-    testComponent->getParameters().append(secondParameter);
+    testComponent->getParameters()->append(secondParameter);
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
@@ -406,12 +406,12 @@ void tst_IPXactSystemVerilogParser::testReferenceToStringInExpression()
     QSharedPointer<Parameter> firstParameter(new Parameter());
     firstParameter->setValueId("first");
     firstParameter->setValue("\"text\"");
-    testComponent->getParameters().append(firstParameter);
+    testComponent->getParameters()->append(firstParameter);
 
     QSharedPointer<Parameter> secondParameter(new Parameter());
     secondParameter->setValueId("second");
     secondParameter->setValue("first + 2");
-    testComponent->getParameters().append(secondParameter);
+    testComponent->getParameters()->append(secondParameter);
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
@@ -428,7 +428,7 @@ void tst_IPXactSystemVerilogParser::testGetBaseForExpression()
     QSharedPointer<Parameter> firstParameter(new Parameter());
     firstParameter->setValueId("first");
     firstParameter->setValue("'h1");
-    testComponent->getParameters().append(firstParameter);
+    testComponent->getParameters()->append(firstParameter);
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
@@ -447,12 +447,12 @@ void tst_IPXactSystemVerilogParser::testExpressionWithRealValueParameterReferenc
     QSharedPointer<Parameter> firstParameter(new Parameter());
     firstParameter->setValueId("firstValue");
     firstParameter->setValue("30");
-    testComponent->getParameters().append(firstParameter);
+    testComponent->getParameters()->append(firstParameter);
 
     QSharedPointer<Parameter> secondParameter(new Parameter());
     secondParameter->setValueId("secondValue");
     secondParameter->setValue("0.751");
-    testComponent->getParameters().append(secondParameter);
+    testComponent->getParameters()->append(secondParameter);
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 

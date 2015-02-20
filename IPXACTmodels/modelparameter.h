@@ -51,7 +51,7 @@ public:
 	ModelParameter &operator=(const ModelParameter &other);
 
 	//! The destructor
-	~ModelParameter();
+	virtual ~ModelParameter();
     
 	/*! Get the data type of the model parameter
 	 *

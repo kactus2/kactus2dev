@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 23.2.2012
- *      Author: Antti Kamppi
- * 		filename: parametergroupbox.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: parametergroupbox.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 23.2.2012
+//
+// Description:
+// Group box that can be used to edit list of parameters.
+//-----------------------------------------------------------------------------
 
 #ifndef PARAMETERGROUPBOX_H
 #define PARAMETERGROUPBOX_H
@@ -11,21 +15,23 @@
 #include <IPXACTmodels/parameter.h>
 
 #include <common/views/EditableTableView/editabletableview.h>
-#include <editors/ComponentEditor/parameters/parametersmodel.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <QGroupBox>
 #include <QList>
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
 
+class Component;
 class Choice;
+class ParameterFinder;
+class ParametersModel;
+class ExpressionFormatter;
 
-/*! \brief Group box that can be used to edit list of parameters.
- *
- */
-class ParameterGroupBox : public QGroupBox {
+//-----------------------------------------------------------------------------
+//! Group box that can be used to edit list of parameters.
+//-----------------------------------------------------------------------------
+class ParameterGroupBox : public QGroupBox 
+{
 	Q_OBJECT
 
 public:
@@ -33,48 +39,48 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] parameters              The list containing the parameters.
-	 *      @param [in] component               The containing component whose parameters are being edited.
-	 *      @param [in] parameterFinder         The parameter finder used to search the components parameters.
-	 *      @param [in] expressionFormatter     The expression formatter.
-	 *      @param [in] parent                  Pointer to the owner of this editor.
+	 *      @param [in]  parameters              The list containing the parameters.
+	 *      @param [in]  component               The containing component whose parameters are being edited.
+	 *      @param [in]  parameterFinder         The parameter finder used to search the components parameters.
+	 *      @param [in]  expressionFormatter     The expression formatter.
+	 *      @param [in]  parent                  Pointer to the owner of this editor.
 	 */
-	ParameterGroupBox(QList<QSharedPointer<Parameter> >& parameters, QSharedPointer<Component> component,
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+	ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters, 
+        QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder, 
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
         QWidget *parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ParameterGroupBox();
 
-	/*! \brief Check for the validity of the edited parameters
+	/*! Check for the validity of the edited parameters
 	*
 	* \return True if all parameters are in valid state.
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Check for the validity of the edited parameters.
+	/*! Check for the validity of the edited parameters.
 	*
-	* \param errorList          The list to add the possible error messages to.
-	* \param parentIdentifier   String from parent to help to identify the location of the error.
+	*       @param [inout] errorList          The list to add the possible error messages to.
+	*       @param [in]    parentIdentifier   String from parent to help to identify the location of the error.
 	*
-	* \return bool True if the state is valid and writing is possible.
+	*       @return bool True if the state is valid and writing is possible.
 	*/
 	bool isValid(QStringList& errorList, const QString& parentIdentifier) const;
 
-	/*! \brief Restore the changes made in the editor back to ones in parameter models.
-	*
-	*/
+	//! Restore the changes made in the editor back to ones in parameter models.
 	virtual void refresh();
 
 signals:
 
-	//! \brief Emitted when contents of the editor change.
+	//! Emitted when contents of the editor change.
 	void contentChanged();
 
-	//! \brief Prints an error message to the user.
+	//! Prints an error message to the user.
 	void errorMessage(const QString& msg) const;
 
-	//! \brief Prints a notification to user.
+	//! Prints a notification to user.
 	void noticeMessage(const QString& msg) const;
 
     /*!
@@ -99,19 +105,23 @@ signals:
     void openReferenceTree(QString const& id) const;
 
 private:
-	//! \brief No copying
+	//! No copying
 	ParameterGroupBox(const ParameterGroupBox& other);
 
-	//! \brief No assignment
+	//! No assignment
 	ParameterGroupBox& operator=(const ParameterGroupBox& other);
 
-	//! \brief The view that displays the parameters.
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+	//! The view that displays the parameters.
 	EditableTableView view_;
 
-	//! \brief The model that holds the data to be displayed to the user
+	//! The model that holds the data to be displayed to the user
 	ParametersModel* model_;
 
-	//! \brief The proxy that is used to do the sorting of parameters.
+	//! The proxy that is used to do the sorting of parameters.
 	QSortFilterProxyModel proxy_;
 };
 

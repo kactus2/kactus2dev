@@ -45,7 +45,7 @@ public:
 	 *      @param [in]  parent                 The owner of this model.
 	 *
 	*/
-	ParametersModel(QList<QSharedPointer<Parameter> >& parameters, 
+	ParametersModel(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters, 
         QSharedPointer<QList<QSharedPointer<Choice> > > choices,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
@@ -207,7 +207,7 @@ private:
 	ParametersModel& operator=(const ParametersModel& other);
 	
 	//! The parameters to be edited.
-	QList<QSharedPointer<Parameter> >& parameters_;
+	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
 };
 
 #endif // PARAMETERSMODEL_H

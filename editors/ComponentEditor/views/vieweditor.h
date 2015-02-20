@@ -18,8 +18,11 @@
 #include "flatviewgeneraltab.h"
 #include "hierarchyrefwidget.h"
 
+#include "ModuleParameterEditor.h"
+
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
+
 #include <editors/ComponentEditor/fileBuilders/filebuilderseditor.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
@@ -76,7 +79,7 @@ public:
 private slots:
 
 	//! Handler for changes on the hierarchical/flat selector.
-	void onStackChange(int index);
+	void onViewTypeChanged(int index);
 
 private:
 
@@ -109,6 +112,9 @@ private:
 
 	//! Editor to set general settings of flat view.
 	FlatViewGeneralTab generalTab_;
+
+    //! Editor to set the module parameters of flat view.
+    ModuleParameterEditor moduleParameters_;
 
 	//! Editor to set the parameters of flat view.
 	ParameterGroupBox parameters_;

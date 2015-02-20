@@ -599,6 +599,11 @@ HEADERS += ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementa
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
+    ./editors/ComponentEditor/views/ModuleParameterEditor.h \
+    ./editors/ComponentEditor/modelParameters/ModelParameterFactoryImplementation.h \
+    ./editors/ComponentEditor/modelParameters/ModelParameterFactory.h \
+    ./editors/ComponentEditor/views/ModuleParameterFactoryImplementation.h
     ./kactusGenerators/quartusGenerator/quartusgenerator.h
 SOURCES += ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.cpp \
     ./common/GenericEditProvider.cpp \
@@ -1142,5 +1147,8 @@ SOURCES += ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementa
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
+    ./editors/ComponentEditor/views/ModuleParameterEditor.cpp \
+    ./editors/ComponentEditor/modelParameters/ModelParameterFactoryImplementation.cpp \
+    ./editors/ComponentEditor/views/ModuleParameterFactoryImplementation.cpp
 RESOURCES += kactus.qrc

@@ -249,18 +249,19 @@ ModelParameterDelegate* tst_ModelParameterDelegate::createDelegate()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ModelParameterDelegate::createModelWithEmptyModelParameter()
+// Function: tst_ModelParameterDelegate::createModelWithSimpleModelParameter()
 //-----------------------------------------------------------------------------
 ModelParameterModel* tst_ModelParameterDelegate::createModelWithSimpleModelParameter()
 {
-    QSharedPointer<Model> model(new Model());
-    model->addModelParameter(QSharedPointer<ModelParameter>(new ModelParameter()));
+    QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParameters(
+        new QList<QSharedPointer<ModelParameter> >());
+    modelParameters->append(QSharedPointer<ModelParameter>(new ModelParameter()));
 
     QSharedPointer<Component> component (new Component);
     QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(component));
     QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
 
-    return new ModelParameterModel(model, choices_, QSharedPointer<ExpressionParser>(0), parameterFinder,
+    return new ModelParameterModel(modelParameters, choices_, QSharedPointer<ExpressionParser>(0), parameterFinder,
         expressionFormatter, this);
 }
 

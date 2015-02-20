@@ -85,7 +85,7 @@ void tst_VerilogPortParser::testNothingIsParsedFromMalformedInput()
     runParser(input);
 
     QCOMPARE(importComponent_->getPorts().count(), 0);
-    QCOMPARE(importComponent_->getModelParameters().count(), 0);
+    QCOMPARE(importComponent_->getModelParameters()->count(), 0);
 }
 
 //-----------------------------------------------------------------------------

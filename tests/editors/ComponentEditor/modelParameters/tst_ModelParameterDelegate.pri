@@ -19,7 +19,9 @@ HEADERS += ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h
     ../../../../editors/ComponentEditor/parameters/ParameterDelegate.h \
     ../../../../editors/ComponentEditor/common/ParameterizableTable.h \
     ../../../../editors/ComponentEditor/modelParameters/modelparametermodel.h \
-    ../../../../IPXACTmodels/validators/namevalidator.h
+    ../../../../IPXACTmodels/validators/namevalidator.h \
+    ../../../../editors/ComponentEditor/modelParameters/ModelParameterFactoryImplementation.h \
+    ../../../../editors/ComponentEditor/modelParameters/ModelParameterFactory.h
 SOURCES += ../../../../editors/ComponentEditor/common/AbstractParameterModel.cpp \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../../editors/ComponentEditor/common/ExpressionDelegate.cpp \
@@ -30,5 +32,6 @@ SOURCES += ../../../../editors/ComponentEditor/common/AbstractParameterModel.cpp
     ../../../../editors/ComponentEditor/common/ParameterizableTable.cpp \
     ../../../../editors/ComponentEditor/common/ValueFormatter.cpp \
     ../../../../editors/ComponentEditor/modelParameters/modelparametermodel.cpp \
+    ../../../../IPXACTmodels/validators/namevalidator.cpp \
     ./tst_ModelParameterDelegate.cpp \
-    ../../../../IPXACTmodels/validators/namevalidator.cpp
+    ../../../../editors/ComponentEditor/modelParameters/ModelParameterFactoryImplementation.cpp

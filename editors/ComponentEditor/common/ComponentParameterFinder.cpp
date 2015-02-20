@@ -42,7 +42,7 @@ QSharedPointer<Parameter> ComponentParameterFinder::getParameterWithID(QString c
 {
     if (!component_.isNull())
     {
-        foreach (QSharedPointer<Parameter> parameter, component_->getParameters())
+        foreach (QSharedPointer<Parameter> parameter, *component_->getParameters())
         {
             if (parameter->getValueId() == parameterId)
             {
@@ -50,7 +50,7 @@ QSharedPointer<Parameter> ComponentParameterFinder::getParameterWithID(QString c
             }
         }
 
-        foreach (QSharedPointer<ModelParameter> modelParameter, component_->getModelParameters())
+        foreach (QSharedPointer<ModelParameter> modelParameter, *component_->getModelParameters())
         {
             if (modelParameter->getValueId() == parameterId)
             {
@@ -93,7 +93,7 @@ bool ComponentParameterFinder::hasId(QString const& id) const
 {
     if (!component_.isNull())
     {
-        foreach (QSharedPointer<Parameter> parameter, component_->getParameters())
+        foreach (QSharedPointer<Parameter> parameter, *component_->getParameters())
         {
             if (parameter->getValueId() == id)
             {
@@ -101,7 +101,7 @@ bool ComponentParameterFinder::hasId(QString const& id) const
             }
         }
 
-        foreach (QSharedPointer<ModelParameter> componentModelParameter, component_->getModelParameters())
+        foreach (QSharedPointer<ModelParameter> componentModelParameter, *component_->getModelParameters())
         {
             if (componentModelParameter->getValueId() == id)
             {
@@ -166,12 +166,12 @@ QStringList ComponentParameterFinder::getAllParameterIds() const
 
     if (!component_.isNull())
     {
-        foreach (QSharedPointer<Parameter> parameter, component_->getParameters())
+        foreach (QSharedPointer<Parameter> parameter, *component_->getParameters())
         {
             allParameterIds.append(parameter->getValueId());
         }
 
-        foreach (QSharedPointer<ModelParameter> modelParameter, component_->getModelParameters())
+        foreach (QSharedPointer<ModelParameter> modelParameter, *component_->getModelParameters())
         {
             allParameterIds.append(modelParameter->getValueId());
         }
@@ -222,7 +222,7 @@ QList<QSharedPointer<Parameter> > ComponentParameterFinder::allViewParameters() 
     QList<QSharedPointer<Parameter> > viewParameters;
     foreach (QSharedPointer<View> view, component_->getViews())
     {
-        viewParameters.append(view->getParameters());
+        viewParameters.append(*view->getParameters());
     }
 
     return viewParameters;
@@ -236,7 +236,7 @@ QList<QSharedPointer<Parameter> > ComponentParameterFinder::allBusInterfaceParam
     QList<QSharedPointer<Parameter> > busInterfaceParameters;
     foreach (QSharedPointer<BusInterface> busInterface, component_->getBusInterfaces())
     {
-        busInterfaceParameters.append(busInterface->getParameters());
+        busInterfaceParameters.append(*busInterface->getParameters());
     }
 
     return busInterfaceParameters;

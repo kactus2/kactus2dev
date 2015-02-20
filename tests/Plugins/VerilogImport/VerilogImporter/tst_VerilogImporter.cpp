@@ -130,7 +130,7 @@ void tst_VerilogImporter::testNothingIsParsedFromMalformedInput()
     runParser(input);
 
     QCOMPARE(importComponent_->getPorts().count(), 0);
-    QCOMPARE(importComponent_->getModelParameters().count(), 0);
+    QCOMPARE(importComponent_->getModelParameters()->count(), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -389,7 +389,7 @@ void tst_VerilogImporter::testParameterIsHighlighted()
 
     runParser(fileContent);
 
-    QVERIFY2(importComponent_->getModelParameters().count() != 0, "No parameters parsed from input.");
+    QVERIFY2(importComponent_->getModelParameters()->count() != 0, "No parameters parsed from input.");
 
     int begin = fileContent.indexOf(parameterDeclaration);
 
@@ -532,7 +532,7 @@ void tst_VerilogImporter::testParameterInPortDeclaration()
     QRegularExpression rightRule(expectedRightBoundExpression);
     QVERIFY(rightRule.match(createdPort->getRightBoundExpression()).hasMatch());
 
-    QCOMPARE(importComponent_->getModelParameters().last()->getUsageCount(), 1);
+    QCOMPARE(importComponent_->getModelParameters()->last()->getUsageCount(), 1);
 }
 
 //-----------------------------------------------------------------------------
@@ -615,8 +615,8 @@ void tst_VerilogImporter::testParameterInParameterDeclaration()
         "endmodule");
 
 
-    QSharedPointer<ModelParameter> first = importComponent_->getModelParameters().first();
-    QSharedPointer<ModelParameter> second = importComponent_->getModelParameters().last();
+    QSharedPointer<ModelParameter> first = importComponent_->getModelParameters()->first();
+    QSharedPointer<ModelParameter> second = importComponent_->getModelParameters()->last();
 
     QCOMPARE(second->getValue(), first->getValueId());
     QCOMPARE(first->getUsageCount(), 1);
@@ -637,7 +637,7 @@ void tst_VerilogImporter::testSemicolonInComments()
         ");\n"
         "endmodule");
 
-    QCOMPARE(importComponent_->getModelParameters().count(), 2);
+    QCOMPARE(importComponent_->getModelParameters()->count(), 2);
     QCOMPARE(importComponent_->getPorts().count(), 1);
 }
 
@@ -659,8 +659,8 @@ void tst_VerilogImporter::testParameterNotFoundInFileIsRemoved()
 
     runParser(fileContent);
 
-    QCOMPARE(importComponent_->getModelParameters().count(), 1);
-    QSharedPointer<ModelParameter> importedParameter = importComponent_->getModelParameters().first();
+    QCOMPARE(importComponent_->getModelParameters()->count(), 1);
+    QSharedPointer<ModelParameter> importedParameter = importComponent_->getModelParameters()->first();
     QCOMPARE(importedParameter->getName(), QString("dataWidth_g"));
 }
 
@@ -683,7 +683,7 @@ void tst_VerilogImporter::testExistingModelParameterIdDoesNotChange()
 
     runParser(fileContent);
 
-    QSharedPointer<ModelParameter> importedParameter = importComponent_->getModelParameters().first();
+    QSharedPointer<ModelParameter> importedParameter = importComponent_->getModelParameters()->first();
     QCOMPARE(importedParameter->getValueId(), QString("existingId"));
     QCOMPARE(importedParameter->getValue(), QString("8"));
 }

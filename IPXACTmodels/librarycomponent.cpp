@@ -34,8 +34,7 @@ vlnv_(),
 description_(),
 kactus2Attributes_(),
 topComments_(),
-vendorExtensions_(),
-versionExtension_()
+vendorExtensions_()
 {
 	// get the VLNV
 	vlnv_ = QSharedPointer<VLNV>(new VLNV(findVLNV(doc)));
@@ -69,8 +68,7 @@ LibraryComponent::LibraryComponent():
 vlnv_(), 
 description_(),
 kactus2Attributes_(),
-vendorExtensions_(),
-versionExtension_()
+vendorExtensions_()
 {
 	vlnv_ = QSharedPointer<VLNV>(new VLNV());
 }
@@ -80,8 +78,7 @@ vlnv_(),
 description_(),
 kactus2Attributes_(),
 topComments_(),
-vendorExtensions_(),
-versionExtension_()
+vendorExtensions_()
 {
     vlnv_ = QSharedPointer<VLNV>(new VLNV(vlnv));
 }
@@ -91,8 +88,7 @@ vlnv_(),
 description_(other.description_),
 kactus2Attributes_(other.kactus2Attributes_),
 topComments_(other.topComments_),
-vendorExtensions_(),
-versionExtension_()
+vendorExtensions_()
 {
 	if (other.vlnv_) {
 		vlnv_ = QSharedPointer<VLNV>(new VLNV(*other.vlnv_));
@@ -318,18 +314,16 @@ const QStringList LibraryComponent::getDependentDirs() const {
 //-----------------------------------------------------------------------------
 void LibraryComponent::setVersion(QString versionNumber)
 {
-    if (versionExtension_.isNull())
+    foreach(QSharedPointer<VendorExtension> extension, vendorExtensions_)
     {
-        versionExtension_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:version", versionNumber));
-        vendorExtensions_.append(versionExtension_);
+        if (extension->type() == "kactus2:version")
+        {
+            extension.dynamicCast<Kactus2Value>()->setValue(versionNumber);
+            return;
+        }
     }
-    else
-    {
-        vendorExtensions_.removeAll(versionExtension_);
-        versionExtension_.clear();
-        versionExtension_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:version", versionNumber));
-        vendorExtensions_.append(versionExtension_);
-    }
+
+    vendorExtensions_.append(QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:version", versionNumber)));
 }
 
 //-----------------------------------------------------------------------------
@@ -360,14 +354,6 @@ void LibraryComponent::copyVendorExtensions(const LibraryComponent & other)
 {
     foreach (QSharedPointer<VendorExtension> extension, other.vendorExtensions_)
     {
-        if (extension->type() == "kactus2:version")
-        {
-            versionExtension_ = QSharedPointer<Kactus2Value>(other.versionExtension_->clone());
-            vendorExtensions_.append(versionExtension_);
-        }
-        else
-        {
-            vendorExtensions_.append(QSharedPointer<VendorExtension>(extension->clone()));
-        }
+        vendorExtensions_.append(QSharedPointer<VendorExtension>(extension->clone()));
     }
 }

@@ -419,11 +419,10 @@ void DocumentGenerator::writeModelParameters(QTextStream& stream, int& subHeader
 		paramHeaders.append("Data type");
 		paramHeaders.append("Default value");
 		paramHeaders.append("Description");
-		writeTableElement(paramHeaders, 
-			"List of model parameters defined for the component",
-			stream);
-		const QList<QSharedPointer<ModelParameter> > modelParams = component_->getModelParameters();
-		foreach (QSharedPointer<ModelParameter> param, modelParams) {
+		writeTableElement(paramHeaders, "List of model parameters defined for the component", stream);
+
+		foreach (QSharedPointer<ModelParameter> param, *component_->getModelParameters())
+        {
 			stream << "\t\t\t\t<tr>" << endl;
 			stream << "\t\t\t\t\t<td>" << param->getName() << "</td>" << endl;
 			stream << "\t\t\t\t\t<td>" << param->getDataType() << "</td>" << endl;
@@ -470,8 +469,8 @@ void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumbe
 		paramHeaders.append("Description");
 		writeTableElement(paramHeaders,
 			"List of parameters defined for the component", stream);
-		QList<QSharedPointer<Parameter> > params = component_->getParameters();
-		foreach (QSharedPointer<Parameter> param, params) {
+		QSharedPointer<QList<QSharedPointer<Parameter> > > params = component_->getParameters();
+		foreach (QSharedPointer<Parameter> param, *params) {
 			stream << "\t\t\t\t<tr>" << endl;
 			stream << "\t\t\t\t\t<td>" << param->getName() << "</td>" << endl;
 			stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(param->getValue()) <<

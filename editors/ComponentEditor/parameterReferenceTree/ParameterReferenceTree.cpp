@@ -101,9 +101,10 @@ void ParameterReferenceTree::setupTree()
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::referenceExistsInParameters()
 //-----------------------------------------------------------------------------
-bool ParameterReferenceTree::referenceExistsInParameters(QList<QSharedPointer<Parameter> > parameterList)
+bool ParameterReferenceTree::referenceExistsInParameters(
+    QSharedPointer<QList<QSharedPointer<Parameter> > > parameterList)
 {
-    foreach (QSharedPointer<Parameter> parameter, parameterList)
+    foreach (QSharedPointer<Parameter> parameter, *parameterList)
     {
         if (parameterHasReference(parameter))
         {
@@ -135,7 +136,7 @@ void ParameterReferenceTree::createParameterReferences()
 {
     QTreeWidgetItem* topParametersItem = createTopItem("Parameters");
 
-    foreach (QSharedPointer<Parameter> parameter, component_->getParameters())
+    foreach (QSharedPointer<Parameter> parameter, *component_->getParameters())
     {
         if (parameterHasReference(parameter))
         {
@@ -150,7 +151,7 @@ void ParameterReferenceTree::createParameterReferences()
 //-----------------------------------------------------------------------------
 bool ParameterReferenceTree::referenceExistsInModelParameters()
 {
-    foreach(QSharedPointer<Parameter> modelParameter, component_->getModelParameters())
+    foreach(QSharedPointer<Parameter> modelParameter, *component_->getModelParameters())
     {
         if(parameterHasReference(modelParameter))
         {
@@ -168,7 +169,7 @@ void ParameterReferenceTree::createReferencesForModelParameters()
 {
     QTreeWidgetItem* topModelParameterItem = createTopItem("Model Parameters");
 
-    foreach (QSharedPointer<ModelParameter> modelParameter, component_->getModelParameters())
+    foreach (QSharedPointer<ModelParameter> modelParameter, *component_->getModelParameters())
     {
         if (parameterHasReference(modelParameter))
         {
@@ -186,7 +187,7 @@ bool ParameterReferenceTree::referenceExistsInViews()
 {
     foreach(QSharedPointer<View> view, component_->getViews())
     {
-        foreach (QSharedPointer<Parameter> parameter, view->getParameters())
+        foreach (QSharedPointer<Parameter> parameter, *view->getParameters())
         {
             if (parameterHasReference(parameter))
             {
@@ -211,7 +212,7 @@ void ParameterReferenceTree::createReferencesForViews()
         {
             QTreeWidgetItem* viewItem = createMiddleItem(view->getName(), topViewsItem);
 
-            foreach (QSharedPointer<Parameter> parameter, view->getParameters())
+            foreach (QSharedPointer<Parameter> parameter, *view->getParameters())
             {
                 if (parameterHasReference(parameter))
                 {
@@ -491,7 +492,7 @@ bool ParameterReferenceTree::referenceExistsInBusInterfaces()
 //-----------------------------------------------------------------------------
 bool ParameterReferenceTree::referenceExistsInSingleBusInterface(QSharedPointer<BusInterface> busInterface)
 {
-    foreach (QSharedPointer<Parameter> parameter, busInterface->getParameters())
+    foreach (QSharedPointer<Parameter> parameter, *busInterface->getParameters())
     {
         if (parameterHasReference(parameter))
         {
@@ -592,7 +593,7 @@ void ParameterReferenceTree::createReferencesForBusInterfaces()
 
             if (referenceExistsInParameters(busInterface->getParameters()))
             {
-                foreach (QSharedPointer<Parameter> parameter, busInterface->getParameters())
+                foreach (QSharedPointer<Parameter> parameter, *busInterface->getParameters())
                 {
                     if (parameterHasReference(parameter))
                     {

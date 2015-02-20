@@ -96,10 +96,10 @@ void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStrea
     {
         outputStream << " #(" << endl;
 
-        QList<QSharedPointer<ModelParameter> > modelParameters = component_->getModelParameters();
-        foreach(QSharedPointer<ModelParameter> parameter, modelParameters)
+        QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParameters = component_->getModelParameters();
+        foreach(QSharedPointer<ModelParameter> parameter, *modelParameters)
         {
-            bool isLastParameter = parameter == modelParameters.last();
+            bool isLastParameter = parameter == modelParameters->last();
             writeParameter(outputStream, parameter, isLastParameter);
         }
 

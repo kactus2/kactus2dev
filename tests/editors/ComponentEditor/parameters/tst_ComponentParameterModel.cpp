@@ -64,7 +64,7 @@ void tst_ComponentParameterModel::testHasRowForEachTopLevelParameter()
     }
 
     QSharedPointer<Component> component(new Component());
-    component->setParameters(parameters);
+    component->getParameters()->append(parameters);
 
     ComponentParameterModel* model = make(component);
 
@@ -97,7 +97,7 @@ void tst_ComponentParameterModel::testHasColumnForNameValueAndId()
     parameters.append(testParameter);
    
     QSharedPointer<Component> component(new Component());
-    component->setParameters(parameters);
+    component->getParameters()->append(parameters);
 
     ComponentParameterModel* model = make(component);
 
@@ -124,7 +124,7 @@ void tst_ComponentParameterModel::testFunctionAsValue()
     parameters.append(testParameter);
 
     QSharedPointer<Component> component(new Component());
-    component->setParameters(parameters);
+    component->getParameters()->append(parameters);
 
     ComponentParameterModel* model = make(component);
 

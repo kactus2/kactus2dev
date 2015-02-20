@@ -82,7 +82,7 @@ private:
 	ComponentEditorParametersItem& operator=(const ComponentEditorParametersItem& other);
 
 	//! \brief The list containing the parameters to edit.
-	QList<QSharedPointer<Parameter> >& parameters_;
+	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
 };
 
 #endif // COMPONENTEDITORPARAMETERITEM_H

@@ -3960,9 +3960,20 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_DrawingBoard.cpp">
       <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.cpp">
+    </ClCompile>    <ClCompile Include="editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\views\ModuleParameterEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\views</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ModuleParameterEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\modelParameters\ModelParameterFactoryImplementation.cpp">
+      <Filter>Source Files\editors\ComponentEditor\modelParameters</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\views\ModuleParameterFactoryImplementation.cpp">
+      <Filter>Source Files\editors\ComponentEditor\views</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5460,6 +5471,9 @@
     <CustomBuild Include="mainwindow\DrawingBoard\DrawingBoard.h">
       <Filter>Header Files\mainwindow\DrawingBoard</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\views\ModuleParameterEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\views</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -5797,6 +5811,15 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\modelParameters\ModelParameterFactoryImplementation.h">
+      <Filter>Header Files\editors\ComponentEditor\modelParameters</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\modelParameters\ModelParameterFactory.h">
+      <Filter>Header Files\editors\ComponentEditor\modelParameters</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\views\ModuleParameterFactoryImplementation.h">
+      <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

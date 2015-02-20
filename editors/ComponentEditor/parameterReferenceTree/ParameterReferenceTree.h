@@ -64,7 +64,7 @@ private:
      *
      *      @return True, if there is a reference in parameters to this parameter, false otherwise.
      */
-    bool referenceExistsInParameters(QList <QSharedPointer<Parameter> > parameterList);
+    bool referenceExistsInParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > parameterList);
 
     /*!
      *  Check if a parameter has a reference to this parameter.

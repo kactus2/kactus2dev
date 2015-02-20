@@ -208,7 +208,7 @@ void VHDLimport::onPortParsed(QSharedPointer<Port> parsedPort, QString const& de
 {
     parsedPortDeclarations_.insert(parsedPort, declaration);  
 
-    foreach(QSharedPointer<ModelParameter> modelParameter, targetComponent_->getModelParameters())
+    foreach(QSharedPointer<ModelParameter> modelParameter, *targetComponent_->getModelParameters())
     {
         if (declaration.contains(modelParameter->getName()))
         {

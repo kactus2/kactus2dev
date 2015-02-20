@@ -30,7 +30,7 @@ ComponentEditorParametersItem::~ComponentEditorParametersItem()
 QFont ComponentEditorParametersItem::getFont() const
 {
     QFont font(ComponentEditorItem::getFont());    
-    font.setBold(!parameters_.isEmpty());    
+    font.setBold(!parameters_->isEmpty());    
     return font;
 }
 

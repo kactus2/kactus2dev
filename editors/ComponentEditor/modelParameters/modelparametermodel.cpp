@@ -6,15 +6,15 @@
 // Date: 29.3.2011
 //
 // Description:
-// This model can be used to edit and update the model parameters of a component
+// This model can be used to edit and update a list of model parameters.
 //-----------------------------------------------------------------------------
 
 #include "modelparametermodel.h"
 
 #include "ModelParameterColumns.h"
+#include "ModelParameterFactoryImplementation.h"
 
 #include <IPXACTmodels/modelparameter.h>
-#include <IPXACTmodels/model.h>
 
 #include <IPXACTmodels/validators/ModelParameterValidator.h>
 
@@ -25,14 +25,16 @@
 //-----------------------------------------------------------------------------
 // Function: ModelParameterModel::ModelParameterModel()
 //-----------------------------------------------------------------------------
-ModelParameterModel::ModelParameterModel(QSharedPointer<Model> model, 
+ModelParameterModel::ModelParameterModel(QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParameters,
     QSharedPointer<QList<QSharedPointer<Choice> > > choices,
     QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter,
     QObject *parent): 
 AbstractParameterModel(choices, expressionParser, parameterFinder, expressionFormatter, parent),
-model_(model), lockedIndexes_()
+modelParameters_(modelParameters), 
+parameterFactory_(new ModelParameterFactoryImplementation()), 
+lockedIndexes_()
 {
 
 }
@@ -56,7 +58,7 @@ int ModelParameterModel::rowCount(QModelIndex const& parent /*= QModelIndex() */
 		return 0;
     }
 
-	return model_->getModelParameters().count();
+	return modelParameters_->count();
 }
 
 //-----------------------------------------------------------------------------
@@ -229,10 +231,8 @@ void ModelParameterModel::onAddItem(QModelIndex const& index)
         row = index.row();
     }
 
-    QList<QSharedPointer<ModelParameter> >& modelParameters = model_->getModelParameters();
-
     beginInsertRows(QModelIndex(), row, row);
-    modelParameters.insert(row, QSharedPointer<ModelParameter>(new ModelParameter()));
+    modelParameters_->insert(row, QSharedPointer<ModelParameter>(parameterFactory_->make()));
     endInsertRows();
 
     // tell also parent widget that contents have been changed
@@ -259,8 +259,7 @@ void ModelParameterModel::onRemoveItem(QModelIndex const& index)
     {
         // remove the specified item
         beginRemoveRows(QModelIndex(), index.row(), index.row());
-        QList<QSharedPointer<ModelParameter> >& modelParameters = model_->getModelParameters();
-        modelParameters.removeAt(index.row());
+        modelParameters_->removeAt(index.row());
         endRemoveRows();
         
         // tell also parent widget that contents have been changed
@@ -273,7 +272,7 @@ void ModelParameterModel::onRemoveItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 QSharedPointer<Parameter> ModelParameterModel::getParameterOnRow(int row) const
 {
-    return model_->getModelParameters().at(row);
+    return modelParameters_->at(row);
 }
 
 //-----------------------------------------------------------------------------
@@ -394,26 +393,34 @@ int ModelParameterModel::usageCountColumn() const
 QSharedPointer<ModelParameter> ModelParameterModel::getParameter(QModelIndex const& index) const
 {
 	Q_ASSERT(index.isValid());
-    return  model_->getModelParameters().at(index.row());
+    return  modelParameters_->at(index.row());
 }   
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterModel::setModelAndLockCurrentModelParameters()
+// Function: ModelParameterModel::setAndLockModelParameters()
 //-----------------------------------------------------------------------------
-void ModelParameterModel::setModelAndLockCurrentModelParameters(QSharedPointer<Model> model)
+void ModelParameterModel::setAndLockModelParameters(
+    QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParameters)
 {
     beginResetModel();
-    
     lockedIndexes_.clear();
-    model_ = model;
+    modelParameters_ = modelParameters;
     endResetModel();
 
-    foreach(QSharedPointer<ModelParameter> modelParameter, model_->getModelParameters())
+    foreach(QSharedPointer<ModelParameter> modelParameter, *modelParameters_)
     {
         lockModelParameter(modelParameter);
     }
 
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModelParameterModel::setParameterFactory()
+//-----------------------------------------------------------------------------
+void ModelParameterModel::setParameterFactory(QSharedPointer<ModelParameterFactory> factory)
+{
+    parameterFactory_ = factory;
 }
 
 //-----------------------------------------------------------------------------
@@ -456,7 +463,7 @@ void ModelParameterModel::lockModelParameter(QSharedPointer<ModelParameter> mode
 QModelIndex ModelParameterModel::indexFor(QSharedPointer<ModelParameter> modelParam) const
 {
     // find the correct row
-    int row =  model_->getModelParameters().indexOf(modelParam);
+    int row =  modelParameters_->indexOf(modelParam);
 
     if (row < 0)
     {

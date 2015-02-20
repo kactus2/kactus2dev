@@ -33,7 +33,7 @@ ComponentEditorModelParamsItem::~ComponentEditorModelParamsItem()
 QFont ComponentEditorModelParamsItem::getFont() const 
 {
     QFont font(ComponentEditorItem::getFont());
-    font.setBold(!modelParams_.empty());
+    font.setBold(!modelParams_->empty());
     return font;
 }
 
@@ -45,7 +45,7 @@ QString ComponentEditorModelParamsItem::text() const
 bool ComponentEditorModelParamsItem::isValid() const 
 {
     // if one model parameter is invalid
-    foreach (QSharedPointer<ModelParameter> modelParam, modelParams_) 
+    foreach (QSharedPointer<ModelParameter> modelParam, *modelParams_) 
     {
         if (!component_->validateParameter(modelParam))
         {

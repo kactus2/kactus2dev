@@ -64,8 +64,8 @@ bool ComponentComparator::compareModelParameters(QSharedPointer<const Component>
     QSharedPointer<const Component> subjectComponent) const
 {
     ModelParameterComparator modelParameterComparator;
-    return modelParameterComparator.compare(referenceComponent->getModelParameters(),
-        subjectComponent->getModelParameters());
+    return modelParameterComparator.compare(*referenceComponent->getModelParameters(),
+        *subjectComponent->getModelParameters());
 }
 
 //-----------------------------------------------------------------------------
@@ -127,8 +127,8 @@ QList<QSharedPointer<IPXactDiff> > ComponentComparator::diffFields(QSharedPointe
     if (!compareModelParameters(reference, subject))
     {
         ModelParameterComparator modelParameterComparator;
-        diffResult.append(modelParameterComparator.diff(reference->getModelParameters(), 
-            subject->getModelParameters()));
+        diffResult.append(modelParameterComparator.diff(*reference->getModelParameters(), 
+            *subject->getModelParameters()));
     }
 
     if (!comparePorts(reference, subject))

@@ -65,8 +65,8 @@ void VerilogParameterParser::import(QString const& input, QSharedPointer<Compone
 
     copyIdsFromOldModelParameters(parsedParameters, targetComponent);
 
-    targetComponent->getModelParameters().clear();
-    targetComponent->getModelParameters().append(parsedParameters);
+    targetComponent->getModelParameters()->clear();
+    targetComponent->getModelParameters()->append(parsedParameters);
 
     replaceNamesWithIdsInModelParameterValues(targetComponent);
 }
@@ -311,9 +311,9 @@ void VerilogParameterParser::copyIdsFromOldModelParameters(QList<QSharedPointer<
 //-----------------------------------------------------------------------------
 void VerilogParameterParser::replaceNamesWithIdsInModelParameterValues(QSharedPointer<Component> targetComponent)
 {
-    foreach (QSharedPointer<ModelParameter> parameter, targetComponent->getModelParameters())
+    foreach (QSharedPointer<ModelParameter> parameter, *targetComponent->getModelParameters())
     {
-        foreach (QSharedPointer<ModelParameter> referenced, targetComponent->getModelParameters())
+        foreach (QSharedPointer<ModelParameter> referenced, *targetComponent->getModelParameters())
         {
             QString parameterValue = parameter->getValue();
 

@@ -57,7 +57,7 @@ VHDLGenericParser::~VHDLGenericParser()
 //-----------------------------------------------------------------------------
 void VHDLGenericParser::import(QString const& input, QSharedPointer<Component> targetComponent)
 {
-    foreach (QSharedPointer<ModelParameter> modelParameter, targetComponent->getModelParameters())
+    foreach (QSharedPointer<ModelParameter> modelParameter, *targetComponent->getModelParameters())
     {
         modelParameter->setAttribute("kactus2:import", "no");
     }
@@ -71,11 +71,11 @@ void VHDLGenericParser::import(QString const& input, QSharedPointer<Component> t
         }        
     }
 
-    foreach (QSharedPointer<ModelParameter> modelParameter, targetComponent->getModelParameters())
+    foreach (QSharedPointer<ModelParameter> modelParameter, *targetComponent->getModelParameters())
     {
         if (modelParameter->getAttribute("kactus2:import") == "no")
         {
-            targetComponent->getModelParameters().removeAll(modelParameter);
+            targetComponent->getModelParameters()->removeAll(modelParameter);
         }
     }
 }

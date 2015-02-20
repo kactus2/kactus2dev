@@ -23,7 +23,7 @@
 //-----------------------------------------------------------------------------
 // Function: ParametersModel::ParametersModel()
 //-----------------------------------------------------------------------------
-ParametersModel::ParametersModel(QList<QSharedPointer<Parameter> >& parameters,
+ParametersModel::ParametersModel(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
     QSharedPointer<QList<QSharedPointer<Choice> > > choices, QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QObject *parent):
@@ -51,7 +51,7 @@ int ParametersModel::rowCount(QModelIndex const& parent /*= QModelIndex() */ ) c
 		return 0;
 	}
 
-	return parameters_.size();
+	return parameters_->size();
 }
 
 //-----------------------------------------------------------------------------
@@ -59,7 +59,6 @@ int ParametersModel::rowCount(QModelIndex const& parent /*= QModelIndex() */ ) c
 //-----------------------------------------------------------------------------
 int ParametersModel::columnCount(QModelIndex const& parent) const
 {
-
 	if (parent.isValid())
     {
 		return 0;
@@ -73,7 +72,7 @@ int ParametersModel::columnCount(QModelIndex const& parent) const
 //-----------------------------------------------------------------------------
 void ParametersModel::onAddItem(QModelIndex const& index)
 {
-    int row = parameters_.size();
+    int row = parameters_->size();
 
     // if the index is valid then add the item to the correct position
     if (index.isValid()) {
@@ -81,7 +80,7 @@ void ParametersModel::onAddItem(QModelIndex const& index)
     }
 
     beginInsertRows(QModelIndex(), row, row);
-    parameters_.insert(row, QSharedPointer<Parameter>(new Parameter()));
+    parameters_->insert(row, QSharedPointer<Parameter>(new Parameter()));
     endInsertRows();
 
     // tell also parent widget that contents have been changed
@@ -103,7 +102,7 @@ void ParametersModel::onRemoveItem(QModelIndex const& index )
     {
     	// remove the specified item
 	    beginRemoveRows(QModelIndex(), index.row(), index.row());
-    	parameters_.removeAt(index.row());
+    	parameters_->removeAt(index.row());
 	    endRemoveRows();
 
     	// tell also parent widget that contents have been changed
@@ -116,7 +115,7 @@ void ParametersModel::onRemoveItem(QModelIndex const& index )
 //-----------------------------------------------------------------------------
 QSharedPointer<Parameter> ParametersModel::getParameterOnRow(int row) const
 {
-    return parameters_.at(row);
+    return parameters_->at(row);
 }
 
 //-----------------------------------------------------------------------------

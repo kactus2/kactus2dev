@@ -147,7 +147,7 @@ void tst_ParameterReferenceTree::testNoReferencesFoundAddsOneRow()
     QSharedPointer<Parameter> viewParamRef = createTestParameter("viewParamRef", "test", "", "", "");
     viewParameters.append(viewParamRef);
     View *viewRef(new View("viewRef"));
-    viewRef->setParameters(viewParameters);
+    viewRef->getParameters()->append(viewParameters);
 
     // Port: No references
     QSharedPointer<Port> portRef = createTestPort("portRef", "", "test", "test");
@@ -166,7 +166,7 @@ void tst_ParameterReferenceTree::testNoReferencesFoundAddsOneRow()
     memoryMaps.append(memoryMapRef);
 
     QSharedPointer<Component> component(new Component);
-    component->setParameters(componentParameters);
+    component->getParameters()->append(componentParameters);
     component->setModel(componentModel);
     component->addView(viewRef);
     component->addPort(portRef);
@@ -197,7 +197,7 @@ void tst_ParameterReferenceTree::testReferenceInParameterValueAddsThreeRows()
     componentParameters.append(searched);
 
     QSharedPointer<Component> component(new Component);
-    component->setParameters(componentParameters);
+    component->getParameters()->append(componentParameters);
 
     QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
 
@@ -237,7 +237,7 @@ void tst_ParameterReferenceTree::testMultipleReferencesInOneParameter()
     componentParameters.append(referencer);
 
     QSharedPointer<Component> component(new Component);
-    component->setParameters(componentParameters);
+    component->getParameters()->append(componentParameters);
 
     QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
 
@@ -291,7 +291,7 @@ void tst_ParameterReferenceTree::testMultipleReferencesInMultipleParameters()
     componentParameters.append(secondRef);
 
     QSharedPointer<Component> component(new Component);
-    component->setParameters(componentParameters);
+    component->getParameters()->append(componentParameters);
 
     QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
 
@@ -356,7 +356,7 @@ void tst_ParameterReferenceTree::testReferenceAsAnExpressionInParameter()
     componentParameters.append(firstRef);
 
     QSharedPointer<Component> component(new Component);
-    component->setParameters(componentParameters);
+    component->getParameters()->append(componentParameters);
 
     QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
 
@@ -395,7 +395,7 @@ void tst_ParameterReferenceTree::testMultipleReferencesInSameExpression()
     componentParameters.append(firstRef);
 
     QSharedPointer<Component> component(new Component);
-    component->setParameters(componentParameters);
+    component->getParameters()->append(componentParameters);
 
     QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
 
@@ -437,7 +437,7 @@ void tst_ParameterReferenceTree::testReferenceInModelParameterValueAddsThreeRows
 
     QSharedPointer<Component> component(new Component);
     component->setModel(componentModel);
-    component->setParameters(componentParameters);
+    component->getParameters()->append(componentParameters);
 
     QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
 
@@ -481,7 +481,7 @@ void tst_ParameterReferenceTree::testReferencesInParametersAndModelParameters()
     componentModel->addModelParameter(modelRef);
     
     QSharedPointer<Component> component(new Component);
-    component->setParameters(componentParameters);
+    component->getParameters()->append(componentParameters);
     component->setModel(componentModel);
 
     QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
@@ -543,7 +543,7 @@ void tst_ParameterReferenceTree::testReferenceInViewParameterValueAddsFourRows()
     componentParameters.append(paramRef);
 
     View *viewRef(new View("viewRef"));
-    viewRef->setParameters(componentParameters);
+    viewRef->getParameters()->append(componentParameters);
 
     QSharedPointer<Component> component(new Component);
     component->addView(viewRef);
@@ -590,7 +590,7 @@ void tst_ParameterReferenceTree::testReferenceInPortRightboundAddsThreeRows()
 
     QSharedPointer<Component> component(new Component);
     component->addPort(portRef);
-    component->setParameters(componentParameters);
+    component->getParameters()->append(componentParameters);
 
     QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
 
@@ -641,7 +641,7 @@ void tst_ParameterReferenceTree::testReferenceInRegisterDimensionAddsSixRows()
 
     QSharedPointer<Component> component(new Component);
     component->setMemoryMaps(memoryMaps);
-    component->setParameters(componentParameters);
+    component->getParameters()->append(componentParameters);
 
     QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
 
@@ -717,7 +717,7 @@ void tst_ParameterReferenceTree::testReferenceInMultipleRegistersInTwoAddressBlo
 
     QSharedPointer<Component> component(new Component);
     component->setMemoryMaps(memoryMaps);
-    component->setParameters(componentParameters);
+    component->getParameters()->append(componentParameters);
 
     QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
 
@@ -825,7 +825,7 @@ void tst_ParameterReferenceTree::testRegisterwithNoReferences()
 
     QSharedPointer<Component> component(new Component);
     component->setMemoryMaps(memoryMaps);
-    component->setParameters(componentParameters);
+    component->getParameters()->append(componentParameters);
 
     QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
 
@@ -896,7 +896,7 @@ void tst_ParameterReferenceTree::testReferenceInRegisterFieldAddsEightRows()
 
     QSharedPointer<Component> component(new Component);
     component->setMemoryMaps(memoryMaps);
-    component->setParameters(componentParameters);
+    component->getParameters()->append(componentParameters);
 
     QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
 
@@ -966,10 +966,10 @@ void tst_ParameterReferenceTree::testReferenceInBusInterfaceParameterAddsFourRow
     QSharedPointer<Parameter> busIFParameter = createTestParameter("busIFParameterRef", "", "", "searched", "");
     busInterfaceParameters.append(busIFParameter);
 
-    refBusInterface->setParameters(busInterfaceParameters);
+    refBusInterface->getParameters()->append(busInterfaceParameters);
 
     QSharedPointer<Component> component(new Component);
-    component->setParameters(componentParameters);
+    component->getParameters()->append(componentParameters);
     component->addBusInterface(refBusInterface);
 
     QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
@@ -1020,7 +1020,7 @@ void tst_ParameterReferenceTree::testReferenceInBusInterfaceMirroredSlaveAddsFou
     refBusInterface->setMirroredSlave(mirrorSlave);
 
     QSharedPointer<Component> component(new Component);
-    component->setParameters(componentParameters);
+    component->getParameters()->append(componentParameters);
     component->addBusInterface(refBusInterface);
 
     QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
@@ -1076,7 +1076,7 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
     QSharedPointer<Parameter> viewParamRef = createTestParameter("viewParamRef", "searched", "", "", "");
     viewParameters.append(viewParamRef);
     View *viewRef(new View("viewRef"));
-    viewRef->setParameters(viewParameters);
+    viewRef->getParameters()->append(viewParameters);
 
     // Port: One reference, in default value.
     QSharedPointer<Port> portRef = createTestPort("portRef", "", "test", "searched");
@@ -1105,7 +1105,7 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
     QSharedPointer<Parameter> busIFParameter = createTestParameter("busIFParameterRef", "searched", "", "", "");
     busInterfaceParameters.append(busIFParameter);
 
-    refBusInterface->setParameters(busInterfaceParameters);
+    refBusInterface->getParameters()->append(busInterfaceParameters);
 
     refBusInterface->setInterfaceMode(General::MIRROREDSLAVE);
 
@@ -1115,7 +1115,7 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
     refBusInterface->setMirroredSlave(mirrorSlave);
 
     QSharedPointer<Component> component(new Component);
-    component->setParameters(componentParameters);
+    component->getParameters()->append(componentParameters);
     component->setModel(componentModel);
     component->addView(viewRef);
     component->addPort(portRef);

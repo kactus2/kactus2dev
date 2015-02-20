@@ -272,7 +272,7 @@ void tst_ExpressionEditor::testExpressionInitialization()
     parameters.append(testParameter);
 
     QSharedPointer<Component> targetComponent(new Component());
-    targetComponent->setParameters(parameters);
+    targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
 
@@ -348,7 +348,7 @@ void tst_ExpressionEditor::testExpressionIsUpdatedForSelectedCompletion()
     parameters.append(testParameter);
 
     QSharedPointer<Component> targetComponent(new Component());
-    targetComponent->setParameters(parameters);
+    targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
 
@@ -403,7 +403,7 @@ void tst_ExpressionEditor::testCompletionChangesWithCursor()
     parameters.append(testParameter);
 
     QSharedPointer<Component> targetComponent(new Component());
-    targetComponent->setParameters(parameters);
+    targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
 
@@ -450,7 +450,7 @@ void tst_ExpressionEditor::testAutomaticCompletionForSingleOption()
     parameters.append(testParameter);
 
     QSharedPointer<Component> targetComponent(new Component());
-    targetComponent->setParameters(parameters);
+    targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
 
@@ -489,7 +489,7 @@ void tst_ExpressionEditor::testColorsAreSetWhenWritingText()
     parameters.append(testParameter);
 
     QSharedPointer<Component> targetComponent(new Component());
-    targetComponent->setParameters(parameters);
+    targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
 
@@ -549,7 +549,7 @@ void tst_ExpressionEditor::testColorsAreSetWhenRemovingText()
     parameters.append(testParameter);
 
     QSharedPointer<Component> targetComponent(new Component());
-    targetComponent->setParameters(parameters);
+    targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
 
@@ -593,7 +593,7 @@ void tst_ExpressionEditor::testEditingInTheMiddleOfReferenceName()
     parameters.append(testParameter);
 
     QSharedPointer<Component> targetComponent(new Component());
-    targetComponent->setParameters(parameters);
+    targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
     QSignalSpy referenceDecreases(editor, SIGNAL(decreaseReference(QString const&)));
@@ -685,7 +685,7 @@ void tst_ExpressionEditor::testRemovingReference()
     parameters.append(testParameter);
 
     QSharedPointer<Component> targetComponent(new Component());
-    targetComponent->setParameters(parameters);
+    targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
 
@@ -739,7 +739,7 @@ void tst_ExpressionEditor::testRemovingReferenceWithBackSpaceAndDelete()
     parameters.append(testParameter);
 
     QSharedPointer<Component> targetComponent(new Component());
-    targetComponent->setParameters(parameters);
+    targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
 
@@ -802,7 +802,7 @@ void tst_ExpressionEditor::testReplaceReferenceWithAnother()
     parameters.append(otherParameter);
 
     QSharedPointer<Component> targetComponent(new Component());
-    targetComponent->setParameters(parameters);
+    targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
 
@@ -889,7 +889,7 @@ void tst_ExpressionEditor::testRemoveAndReplaceSelectionWithReference()
     parameters.append(testParameter);
 
     QSharedPointer<Component> targetComponent(new Component());
-    targetComponent->setParameters(parameters);
+    targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
     QSignalSpy referenceDecreases(editor, SIGNAL(decreaseReference(QString const&)));

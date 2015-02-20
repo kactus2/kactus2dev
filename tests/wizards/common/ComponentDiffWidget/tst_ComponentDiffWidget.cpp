@@ -218,7 +218,7 @@ void tst_ComponentDiffWidget::testModificationShowsElementPreviousAndCurrentValu
     QSharedPointer<Component> subject(new Component());
     addModelParameter(subject, "testParameter", "1");
     
-    QSharedPointer<ModelParameter> modifiedModelParameter = subject->getModelParameters().first();
+    QSharedPointer<ModelParameter> modifiedModelParameter = subject->getModelParameters()->first();
     modifiedModelParameter->setUsageType("nontyped");
 
     QSharedPointer<ParameterFinder> parameterFinder(new MultipleParameterFinder(reference));

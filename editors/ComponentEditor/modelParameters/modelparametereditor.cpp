@@ -18,6 +18,7 @@
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
+
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <library/LibraryManager/libraryinterface.h>
@@ -38,7 +39,7 @@ proxy_(this)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    model_ = new ModelParameterModel(component->getModel(), component->getChoices(), expressionParser,
+    model_ = new ModelParameterModel(component->getModelParameters(), component->getChoices(), expressionParser,
         parameterFinder, expressionFormatter, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(this, parameterFinder);
@@ -147,7 +148,7 @@ void ModelParameterEditor::refresh()
 //-----------------------------------------------------------------------------
 void ModelParameterEditor::setComponent(QSharedPointer<Component> component)
 {
-    model_->setModelAndLockCurrentModelParameters(component->getModel());
+    model_->setAndLockModelParameters(component->getModelParameters());
 }
 
 //-----------------------------------------------------------------------------
@@ -173,7 +174,7 @@ void ModelParameterEditor::setAllowImportExport( bool allow )
 void ModelParameterEditor::modelDataChanged(QModelIndex const& index)
 {
     // Only changes in the default value emits parameterChanged.
-    if ( index.column() == ModelParameterColumns::VALUE )
+    if (index.column() == ModelParameterColumns::VALUE)
     {
         QSharedPointer<ModelParameter> changedParameter = model_->getParameter(index);
         emit parameterChanged(changedParameter);

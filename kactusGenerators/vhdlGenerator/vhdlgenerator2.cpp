@@ -439,10 +439,9 @@ bool VhdlGenerator2::containsArchitecture() const {
 	return design_;
 }
 
-void VhdlGenerator2::parseTopGenerics() {
-
-	QList<QSharedPointer<ModelParameter> > modelParams = component_->getModelParameters();
-	foreach (QSharedPointer<ModelParameter> modelParam, modelParams) {
+void VhdlGenerator2::parseTopGenerics()
+{
+	foreach (QSharedPointer<ModelParameter> modelParam, *component_->getModelParameters()) {
 		QString name = modelParam->getName();
 		QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(modelParam.data()));
 
