@@ -364,7 +364,7 @@ void tst_documentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
     View* view (new View("view"));
 
     topComponent_->getModel()->addModelParameter(modelParameter);
-    topComponent_->setParameters(componentParameters);
+    topComponent_->getParameters()->append(componentParameters);
     topComponent_->addPort(port);
     topComponent_->addBusInterface(busInterface);
     topComponent_->addFileSet(fileset);
@@ -609,7 +609,7 @@ void tst_documentGenerator::testParametersWrittenWithOnlyTopComponent()
     componentParameters.append(parameter);
     componentParameters.append(refParameter);
 
-    topComponent_->setParameters(componentParameters);
+    topComponent_->getParameters()->append(componentParameters);
     topComponent_->setComponentHierarchy(KactusAttribute::KTS_GLOBAL);
 
     DocumentGenerator* generator = createTestGenerator();
@@ -1174,7 +1174,7 @@ void tst_documentGenerator::testPortsWrittenWithOnlyTopComponent()
 
     topComponent_->addPort(portRef);
 
-    topComponent_->setParameters(componentParameters);
+    topComponent_->getParameters()->append(componentParameters);
 
     DocumentGenerator* generator = createTestGenerator();
 
@@ -1482,7 +1482,7 @@ void tst_documentGenerator::testDesignIsWritten()
     componentParameters.append(targetParameter);
     componentParameters.append(referParameter);
 
-    refComponent->setParameters(componentParameters);
+    refComponent->getParameters()->append(componentParameters);
 
     library_.addComponent(refComponent);
     ComponentInstance firstInstance("firstInstance", "", "", firstVlnv, QPointF(), "");
@@ -1705,7 +1705,7 @@ QMap<QString, QString> tst_documentGenerator::createConfigurableElementvalues(QS
 
     QMap<QString, QString> instanceConfigurableElementValues;
 
-    foreach (QSharedPointer<Parameter> parameter, component->getParameters())
+    foreach (QSharedPointer<Parameter> parameter, *component->getParameters())
     {
         instanceConfigurableElementValues[parameter->getName()] =
             refExpressionFormatter->formatReferringExpression(parameter->getValue());

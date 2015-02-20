@@ -95,8 +95,7 @@ HEADERS += ../../../designEditors/HWDesign/AdHocEnabled.h \
     ../../../common/widgets/vlnvEditor/vlnveditor.h \
     ../../../editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h \
     ../../../editors/ComponentEditor/common/ExpressionFormatter.h \
-    ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
-    ../../../editors/ComponentEditor/common/ExpressionFormatterFactory.h
+    ../../../editors/ComponentEditor/common/ComponentParameterFinder.h
 SOURCES += ../../../designEditors/HWDesign/AdHocEnabled.cpp \
     ../../../designEditors/HWDesign/AdHocInterfaceItem.cpp \
     ../../../designEditors/HWDesign/AdHocPortItem.cpp \

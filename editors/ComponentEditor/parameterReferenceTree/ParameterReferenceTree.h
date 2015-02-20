@@ -77,20 +77,28 @@ private:
 
     /*!
      *  Create the references for parameters.
+     *
+     *      @param [in] parameters      The model parameters to create references for.
+     *      @param [in] parentItem      The parent item for references.
      */
-    void createParameterReferences();
+    void createParameterReferences(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
+        QTreeWidgetItem* parentItem);
 
     /*!
      *  Check if a reference exists in components model parameters.
      *
      *      @return True, if there is a reference in model parameters to this parameter, false otherwise.
      */
-    bool referenceExistsInModelParameters();
+    bool referenceExistsInModelParameters(QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParameters);
 
     /*!
      *  Create the references for model parameters.
+     *
+     *      @param [in] modelParametes  The model parameters to create references for.
+     *      @param [in] parentItem      The parent item for references.
      */
-    void createReferencesForModelParameters();
+    void createReferencesForModelParameters(QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParametes,
+        QTreeWidgetItem* parentItem);
 
     /*!
      *  Check if a reference exists in views' parameters.
@@ -98,6 +106,13 @@ private:
      *      @return True, if there is a reference to this parameter, false otherwise.
      */
     bool referenceExistsInViews();
+
+    /*!
+     *  Check if a reference exists in a single view parameters.
+     *
+     *      @return True, if there is a reference to this parameter, false otherwise.
+     */
+    bool referenceExistsInView(QSharedPointer<View> view);
 
     /*!
      *  Create the references for views.
@@ -309,6 +324,10 @@ private:
      *      @param [in] item    The selected item.
      */
     void colourItemGrey(QTreeWidgetItem* item);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! The component in which this id is situated.
     QSharedPointer<Component> component_;

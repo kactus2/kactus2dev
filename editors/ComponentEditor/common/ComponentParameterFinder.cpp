@@ -223,6 +223,10 @@ QList<QSharedPointer<Parameter> > ComponentParameterFinder::allViewParameters() 
     foreach (QSharedPointer<View> view, component_->getViews())
     {
         viewParameters.append(*view->getParameters());
+        foreach(QSharedPointer<ModelParameter> moduleParameter, *view->getModuleParameters())
+        {
+            viewParameters.append(moduleParameter);
+        }
     }
 
     return viewParameters;

@@ -26,6 +26,8 @@
 #include <IPXACTmodels/mirroredslaveinterface.h>
 #include <IPXACTmodels/field.h>
 
+#include <IPXACTmodels/kactusExtensions/ModuleParameter.h>
+
 #include <QSharedPointer>
 
 class tst_ParameterReferenceTree : public QObject
@@ -50,7 +52,8 @@ private slots:
     void testReferenceInModelParameterValueAddsThreeRows();
     void testReferencesInParametersAndModelParameters();
 
-    void testReferenceInViewParameterValueAddsFourRows();
+    void testReferenceInViewParameterValueAddsFiveRows();
+    void testReferenceInViewModuleParameterValueAddsFiveRows();
 
     void testReferenceInPortRightboundAddsThreeRows();
 
@@ -527,51 +530,113 @@ void tst_ParameterReferenceTree::testReferencesInParametersAndModelParameters()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ParameterReferenceTree::testReferenceInViewParameterValueAddsFourRows()
+// Function: tst_ParameterReferenceTree::testReferenceInViewParameterValueAddsFiveRows()
 //-----------------------------------------------------------------------------
-void tst_ParameterReferenceTree::testReferenceInViewParameterValueAddsFourRows()
+void tst_ParameterReferenceTree::testReferenceInViewParameterValueAddsFiveRows()
 {
     QSharedPointer<Parameter> searched(new Parameter);
     searched->setName("searchedParameter");
     searched->setValueId("searched");
 
-    QList<QSharedPointer<Parameter> > componentParameters;
-    componentParameters.append(searched);
-
     // One reference, in array offset.
     QSharedPointer<Parameter> paramRef = createTestParameter("paramRef", "searched", "", "", "");
-    componentParameters.append(paramRef);
 
     View *viewRef(new View("viewRef"));
-    viewRef->getParameters()->append(componentParameters);
+    viewRef->getParameters()->append(paramRef);
 
     QSharedPointer<Component> component(new Component);
+    component->getParameters()->append(searched);
     component->addView(viewRef);
+
+    QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
+
+    ParameterReferenceTree tree(component, expressionFormatter, searched->getValueId());
+        
+    QCOMPARE(tree.topLevelItemCount(), 1);
+    QTreeWidgetItem* viewsItem = tree.topLevelItem(0);
+    QCOMPARE(viewsItem->text(ParameterReferenceTree::ITEM_NAME), QString("Views"));
+    QCOMPARE(viewsItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(viewsItem->background(ParameterReferenceTree::ITEM_EXPRESSION).color(), QColor(230, 230, 230));
+
+    QCOMPARE(viewsItem->childCount(), 1);
+    QTreeWidgetItem* refViewItem = tree.topLevelItem(0)->child(0);
+    QCOMPARE(refViewItem->text(ParameterReferenceTree::ITEM_NAME), viewRef->getName());
+    QCOMPARE(refViewItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(refViewItem->childCount(), 1);
+    QTreeWidgetItem* viewParametersItem = refViewItem->child(0);
+    QCOMPARE(viewParametersItem->text(ParameterReferenceTree::ITEM_NAME), QString("Parameters"));
+    QCOMPARE(viewParametersItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(viewParametersItem->background(ParameterReferenceTree::ITEM_EXPRESSION).color(), QColor(230, 230, 230));
+
+    QCOMPARE(refViewItem->childCount(), 1);
+    QTreeWidgetItem* parameterItem = viewParametersItem->child(0);
+    QCOMPARE(parameterItem->text(ParameterReferenceTree::ITEM_NAME), paramRef->getName());
+    QCOMPARE(parameterItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(parameterItem->childCount(), 1);
+    QTreeWidgetItem* valueItem = parameterItem->child(0);
+    QCOMPARE(valueItem->text(ParameterReferenceTree::ITEM_NAME), QString("Value"));
+    QCOMPARE(valueItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        expressionFormatter->formatReferringExpression(paramRef->getValue()));
+
+    QCOMPARE(valueItem->childCount(), 0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterReferenceTree::testReferenceInViewModuleParameterValueAddsFiveRows()
+//-----------------------------------------------------------------------------
+void tst_ParameterReferenceTree::testReferenceInViewModuleParameterValueAddsFiveRows()
+{
+    QSharedPointer<Parameter> searched(new Parameter());
+    searched->setName("searchedParameter");
+    searched->setValueId("searched");
+
+    QSharedPointer<Component> component(new Component);
+    component->getParameters()->append(searched);  
+
+    View* viewRef(new View("viewRef"));
+    component->addView(viewRef);
+
+    QDomNode emptyNode;
+    QSharedPointer<ModuleParameter> paramRef(new ModuleParameter(emptyNode));
+    paramRef->setName("paramRef");
+    paramRef->setValue(searched->getValueId());
+    viewRef->getModuleParameters()->append(paramRef);
 
     QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
 
     ParameterReferenceTree tree(component, expressionFormatter, searched->getValueId());
 
     QCOMPARE(tree.topLevelItemCount(), 1);
-    QCOMPARE(tree.topLevelItem(0)->text(ParameterReferenceTree::ITEM_NAME), QString("Views"));
-    QCOMPARE(tree.topLevelItem(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QTreeWidgetItem* viewsItem = tree.topLevelItem(0);
+    QCOMPARE(viewsItem->text(ParameterReferenceTree::ITEM_NAME), QString("Views"));
+    QCOMPARE(viewsItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(viewsItem->background(ParameterReferenceTree::ITEM_EXPRESSION).color(), QColor(230, 230, 230));
 
-    QCOMPARE(tree.topLevelItem(0)->childCount(), 1);
-    QCOMPARE(tree.topLevelItem(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME), viewRef->getName());
-    QCOMPARE(tree.topLevelItem(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(viewsItem->childCount(), 1);
+    QTreeWidgetItem* refViewItem = tree.topLevelItem(0)->child(0);
+    QCOMPARE(refViewItem->text(ParameterReferenceTree::ITEM_NAME), viewRef->getName());
+    QCOMPARE(refViewItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
-    QCOMPARE(tree.topLevelItem(0)->child(0)->childCount(), 1);
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
-        paramRef->getName());
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(refViewItem->childCount(), 1);
+    QTreeWidgetItem* viewModuleParametersItem = refViewItem->child(0);
+    QCOMPARE(viewModuleParametersItem->text(ParameterReferenceTree::ITEM_NAME), QString("Module Parameters"));
+    QCOMPARE(viewModuleParametersItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(viewModuleParametersItem->background(ParameterReferenceTree::ITEM_EXPRESSION).color(), QColor(230, 230, 230));
 
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->childCount(), 1);
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
-        QString("Value"));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
+    QCOMPARE(refViewItem->childCount(), 1);
+    QTreeWidgetItem* parameterItem = viewModuleParametersItem->child(0);
+    QCOMPARE(parameterItem->text(ParameterReferenceTree::ITEM_NAME), paramRef->getName());
+    QCOMPARE(parameterItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(parameterItem->childCount(), 1);
+    QTreeWidgetItem* valueItem = parameterItem->child(0);
+    QCOMPARE(valueItem->text(ParameterReferenceTree::ITEM_NAME), QString("Value"));
+    QCOMPARE(valueItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
         expressionFormatter->formatReferringExpression(paramRef->getValue()));
 
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->childCount(), 0);
+    QCOMPARE(valueItem->childCount(), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -1228,17 +1293,21 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
     QCOMPARE(tree.topLevelItem(3)->child(0)->text(ParameterReferenceTree::ITEM_NAME), viewRef->getName());
     QCOMPARE(tree.topLevelItem(3)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
-    QCOMPARE(tree.topLevelItem(3)->child(0)->childCount(), 1);
-    QCOMPARE(tree.topLevelItem(3)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
-        viewParamRef->getName());
+    QCOMPARE(tree.topLevelItem(3)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(3)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME), QString("Parameters"));
     QCOMPARE(tree.topLevelItem(3)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
     QCOMPARE(tree.topLevelItem(3)->child(0)->child(0)->childCount(), 1);
     QCOMPARE(tree.topLevelItem(3)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
+        viewParamRef->getName());
+    QCOMPARE(tree.topLevelItem(3)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(tree.topLevelItem(3)->child(0)->child(0)->child(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(3)->child(0)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
         QString("Value"));
-    QCOMPARE(tree.topLevelItem(3)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
+    QCOMPARE(tree.topLevelItem(3)->child(0)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
         expressionFormatter->formatReferringExpression(viewParamRef->getValue()));
-    QCOMPARE(tree.topLevelItem(3)->child(0)->child(0)->child(0)->childCount(), 0);
+    QCOMPARE(tree.topLevelItem(3)->child(0)->child(0)->child(0)->child(0)->childCount(), 0);
 
     //! Test ports.
     QCOMPARE(tree.topLevelItem(4)->text(ParameterReferenceTree::ITEM_NAME), QString("Ports"));
