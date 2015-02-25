@@ -11,10 +11,11 @@
 
 #include <QtTest>
 
-#include <Plugins/VerilogGenerator/GeneratorConfiguration.h>
 #include <Plugins/VerilogGenerator/veriloggeneratorplugin_global.h>
 #include <Plugins/VerilogGenerator/VerilogGeneratorPlugin.h>
+
 #include <Plugins/PluginSystem/PluginUtilityAdapter.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/design.h>
