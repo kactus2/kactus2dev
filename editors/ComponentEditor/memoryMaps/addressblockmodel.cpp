@@ -135,7 +135,16 @@ QVariant AddressBlockModel::data( const QModelIndex& index, int role /*= Qt::Dis
 
 	if (Qt::DisplayRole == role) 
     {
-        return valueForIndex(index);
+        if (index.column() == AddressBlockColumns::REGISTER_OFFSET ||
+            index.column() == AddressBlockColumns::REGISTER_SIZE ||
+            index.column() == AddressBlockColumns::REGISTER_DIMENSION)
+        {
+            return expressionFormatter_->formatReferringExpression(valueForIndex(index).toString());
+        }
+        else
+        {
+            return valueForIndex(index);
+        }
 	}
 
     else if (role == Qt::EditRole)
@@ -145,12 +154,16 @@ QVariant AddressBlockModel::data( const QModelIndex& index, int role /*= Qt::Dis
 
     else if (role == Qt::ToolTipRole)
     {
-        return expressionFormatter_->formatReferringExpression(expressionOrValueForIndex(index).toString());
-    }
-
-    else if (role == Qt::FontRole)
-    {
-        return italicForEvaluatedValue(index);
+        if (index.column() == AddressBlockColumns::REGISTER_OFFSET ||
+            index.column() == AddressBlockColumns::REGISTER_SIZE ||
+            index.column() == AddressBlockColumns::REGISTER_DIMENSION)
+        {
+            return formattedValueFor(valueForIndex(index).toString());
+        }
+        else
+        {
+            return valueForIndex(index).toString();
+        }
     }
 
 	else if (Qt::ForegroundRole == role) {
@@ -192,7 +205,7 @@ QVariant AddressBlockModel::valueForIndex(const QModelIndex& index) const
         const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
         if (reg)
         {
-            return formattedValueFor(reg->getAddressOffset());
+            return reg->getAddressOffset();
         }
         else
         {
@@ -204,7 +217,7 @@ QVariant AddressBlockModel::valueForIndex(const QModelIndex& index) const
         const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
         if (reg)
         {
-            QString size = formattedValueFor(reg->getSizeExpression());
+            QString size = reg->getSizeExpression();
 
             if (size == "n/a")
             {
@@ -223,7 +236,7 @@ QVariant AddressBlockModel::valueForIndex(const QModelIndex& index) const
         const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
         if (reg)
         {
-            QString dimension = formattedValueFor(reg->getDimensionExpression());
+            QString dimension = reg->getDimensionExpression();
 
             if (dimension == "n/a")
             {

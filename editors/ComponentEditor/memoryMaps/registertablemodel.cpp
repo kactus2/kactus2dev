@@ -160,7 +160,14 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
 
 	if (Qt::DisplayRole == role) 
     {
-        return valueForIndex(index);
+        if (index.column() == RegisterColumns::OFFSET_COLUMN || index.column() == RegisterColumns::WIDTH_COLUMN)
+        {
+            return expressionFormatter_->formatReferringExpression(valueForIndex(index).toString());
+        }
+        else
+        {
+            return valueForIndex(index);
+        }
 	}
 
     else if (role == Qt::EditRole)
@@ -170,12 +177,14 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
 
     else if (role == Qt::ToolTipRole)
     {
-        return expressionFormatter_->formatReferringExpression(expressionOrValueForIndex(index).toString());
-    }
-
-    else if (role == Qt::FontRole)
-    {
-        return italicForEvaluatedValue(index);
+        if (index.column() == RegisterColumns::OFFSET_COLUMN || index.column() == RegisterColumns::WIDTH_COLUMN)
+        {
+            return formattedValueFor(valueForIndex(index).toString());
+        }
+        else
+        {
+            return valueForIndex(index).toString();
+        }
     }
 
 	else if (Qt::ForegroundRole == role) 
@@ -223,12 +232,12 @@ QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
     else if (index.column() == RegisterColumns::OFFSET_COLUMN)
     {
         QString bitOffset = fields_.at(index.row())->getBitOffsetExpression();
-        return formattedValueFor(bitOffset);
+        return bitOffset;
     }
     else if (index.column() == RegisterColumns::WIDTH_COLUMN)
     {
         QString bitWidth = fields_.at(index.row())->getBitWidthExpression();
-        return formattedValueFor(bitWidth);
+        return bitWidth;
     }
     else if (index.column() == RegisterColumns::VOLATILE_COLUMN)
     {

@@ -59,15 +59,15 @@ void ParameterizableTable::setExpressionParser(QSharedPointer <ExpressionParser>
 //-----------------------------------------------------------------------------
 QString ParameterizableTable::formattedValueFor(QString const& expression) const
 {
-    if (expressionParser_->isPlainValue(expression))
-    {
-        return expression;
-    }
-    else if (expressionParser_->isValidExpression(expression))
+    if (expressionParser_->isValidExpression(expression))
     {
         ValueFormatter formatter;
         return formatter.format(expressionParser_->parseExpression(expression),
             expressionParser_->baseForExpression(expression));
+    }
+    else if (expressionParser_->isPlainValue(expression))
+    {
+        return expression;
     }
     else
     {

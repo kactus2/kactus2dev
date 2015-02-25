@@ -59,7 +59,15 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
     
     if (role == Qt::DisplayRole)
     {
-        return valueForIndex(index);
+        if (index.column() == valueColumn() ||index.column() == bitWidthColumn() ||
+            index.column() == arraySizeColumn() || index.column() == arrayOffsetColumn())
+        {
+            return expressionFormatter_->formatReferringExpression(valueForIndex(index).toString());
+        }
+        else
+        {
+            return valueForIndex(index);
+        }
     }
     else if (role == Qt::EditRole)
     {
@@ -67,7 +75,15 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
     }
     else if (role == Qt::ToolTipRole)
     {
-        return expressionFormatter_->formatReferringExpression(expressionOrValueForIndex(index).toString());
+        if (index.column() == valueColumn() ||index.column() == bitWidthColumn() ||
+            index.column() == arraySizeColumn() || index.column() == arrayOffsetColumn())
+        {
+            return formattedValueFor(valueForIndex(index).toString());
+        }
+        else
+        {
+            return valueForIndex(index);
+        }
     }
     else if (Qt::BackgroundRole == role) 
     {
@@ -77,11 +93,8 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
     {
         return blackForValidOrRedForInvalidIndex(index);
     }
-    else if (role == Qt::FontRole)
-    {
-        return italicForEvaluatedValue(index);
-    }
-	else // if unsupported role
+
+    else // if unsupported role
     {
 		return QVariant();
 	}
@@ -360,7 +373,7 @@ QString AbstractParameterModel::evaluateValueFor(QSharedPointer<Parameter> param
     }
     else
     {
-        return formattedValueFor(parameter->getValue());
+        return parameter->getValue();
     }
 }
 
@@ -483,7 +496,7 @@ QVariant AbstractParameterModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == bitWidthColumn())
     {
-        return formattedValueFor(parameter->getBitWidth());
+        return parameter->getBitWidth();
     }
     else if (index.column() == minimumColumn())
     {
@@ -507,11 +520,11 @@ QVariant AbstractParameterModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == arraySizeColumn())
     {
-        return formattedValueFor(parameter->getAttribute("arraySize"));
+        return parameter->getAttribute("arraySize");
     }
     else if (index.column() == arrayOffsetColumn())
     {
-        return formattedValueFor(parameter->getAttribute("arrayOffset"));
+        return parameter->getAttribute("arrayOffset");
     }
     else if (index.column() == descriptionColumn())
     {

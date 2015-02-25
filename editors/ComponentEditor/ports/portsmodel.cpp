@@ -91,7 +91,15 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
 
     if (role == Qt::DisplayRole) 
     {
-        return valueForIndex(index);
+        if (index.column() == PortColumns::LEFT_BOUND || index.column() == PortColumns::RIGHT_BOUND ||
+            index.column() == PortColumns::DEFAULT_VALUE)
+        {
+            return expressionFormatter_->formatReferringExpression(valueForIndex(index).toString());
+        }
+        else
+        {
+            return valueForIndex(index);
+        }
     }
     else if (role == Qt::EditRole)
     {
@@ -99,12 +107,17 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
     }
     else if (role == Qt::ToolTipRole)
     {
-        return expressionFormatter_->formatReferringExpression(expressionOrValueForIndex(index).toString());
+        if (index.column() == PortColumns::LEFT_BOUND || index.column() == PortColumns::RIGHT_BOUND ||
+            index.column() == PortColumns::DEFAULT_VALUE)
+        {
+            return formattedValueFor(valueForIndex(index).toString());
+        }
+        else
+        {
+            return valueForIndex(index);
+        }
     }
-    else if (role == Qt::FontRole)
-    {
-        return italicForEvaluatedValue(index);
-    }
+
     else if (Qt::ForegroundRole == role)
     {
         if (isLocked(index))
@@ -692,7 +705,7 @@ QVariant PortsModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == PortColumns::LEFT_BOUND)
     {
-        QString leftBound = formattedValueFor(port->getLeftBoundExpression());
+        QString leftBound = port->getLeftBoundExpression();
 
         if (leftBound == "n/a")
         {
@@ -703,7 +716,7 @@ QVariant PortsModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == PortColumns::RIGHT_BOUND)
     {
-        QString rightBound = formattedValueFor(port->getRightBoundExpression());
+        QString rightBound = port->getRightBoundExpression();
 
         if (rightBound == "n/a")
         {
