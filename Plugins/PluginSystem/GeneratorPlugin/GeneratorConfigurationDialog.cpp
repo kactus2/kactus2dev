@@ -43,7 +43,8 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     QPushButton* browseButton = new QPushButton(tr("Browse"), this);
     pathSelectionLayout->addWidget(browseButton);
 
-    QDialogButtonBox* dialogButtons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
+    QDialogButtonBox* dialogButtons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, 
+        Qt::Horizontal, this);
 
     QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addLayout(filesetLayout);
