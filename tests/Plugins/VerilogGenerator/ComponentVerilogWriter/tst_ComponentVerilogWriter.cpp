@@ -25,6 +25,7 @@
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/PortMap.h>
 #include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/kactusExtensions/ModuleParameter.h>
 
 class tst_ComponentVerilogWriter : public QObject
 {
@@ -63,8 +64,10 @@ private slots:
 
     void testParameterizedModelParameter();
 
+    void testModuleParameterIsWrittenAfterModelParameter();
+
 private:
-    void writeComponent(); 
+    void writeComponent(QString const& activeView = QString()); 
 
     void addPort(QString const& portName, int portSize, General::Direction direction);
 
@@ -149,7 +152,7 @@ void tst_ComponentVerilogWriter::cleanup()
 //-----------------------------------------------------------------------------
 void tst_ComponentVerilogWriter::testNullPointerAsConstructorParameter()
 {
-    ComponentVerilogWriter writer(QSharedPointer<Component>(0),
+    ComponentVerilogWriter writer(QSharedPointer<Component>(0), "",
         QSharedPointer<PortSorter>(0), QSharedPointer<ExpressionFormatter>(0));
 
     writer.write(outputStream_);
@@ -202,9 +205,9 @@ void tst_ComponentVerilogWriter::testNamedModule_data()
 //-----------------------------------------------------------------------------
 // Function: tst_ComponentVerilogWriter::writeComponent()
 //-----------------------------------------------------------------------------
-void tst_ComponentVerilogWriter::writeComponent()
+void tst_ComponentVerilogWriter::writeComponent(QString const& activeView /*= QString()*/)
 {
-    ComponentVerilogWriter writer(component_, sorter_, formatter_);    
+    ComponentVerilogWriter writer(component_, activeView, sorter_, formatter_);    
     writer.write(outputStream_);
 }
 
@@ -514,6 +517,33 @@ void tst_ComponentVerilogWriter::testParameterizedModelParameter()
         "module TestComponent #(\n"
         "    parameter         target           = 40,\n"
         "    parameter         referer          = target\n"
+        ") ();\n"
+        "\n"
+        "endmodule\n"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentVerilogWriter::testModuleParameterIsWrittenAfterModelParameter()
+//-----------------------------------------------------------------------------
+void tst_ComponentVerilogWriter::testModuleParameterIsWrittenAfterModelParameter()
+{
+    addModelParameter("modelParameter", "0");
+
+    QSharedPointer<ModuleParameter> moduleParameter(new ModuleParameter());
+    moduleParameter->setName("moduleParameter1");
+    moduleParameter->setValue("1");
+    
+    View* activeView = new View();
+    activeView->setName("rtl");
+    activeView->getModuleParameters()->append(moduleParameter);
+    component_->addView(activeView);
+
+    writeComponent("rtl");
+
+    QCOMPARE(outputString_, QString(
+        "module TestComponent #(\n"
+        "    parameter         modelParameter   = 0,\n"
+        "    parameter         moduleParameter1 = 1\n"
         ") ();\n"
         "\n"
         "endmodule\n"));

@@ -46,12 +46,14 @@ public:
     /*!
      *  Parses a given component for generation.
      *
-     *      @param [in] component   The component to parse for generation.
-     *      @param [in] design      The design to parse for generation.
+     *      @param [in] component           The component to parse for generation.
+     *      @param [in] topComponentView    The component view to parse for generation.
+     *      @param [in] design              The design to parse for generation.
      *
      *      @remark If parse() is not called before generate(), nothing is generated.
      */
-    void parse(QSharedPointer<Component> component, QSharedPointer<Design> design = QSharedPointer<Design>());
+    void parse(QSharedPointer<Component> component, QString const& topComponentView, 
+        QSharedPointer<Design> design = QSharedPointer<Design>());
     
     /*!
      *  Generates the component Verilog to a given file.
@@ -71,7 +73,7 @@ private:
     /*!
      *  Initializes writers for parsing.
      */
-    void initializeWriters();
+    void initializeWriters(QString const& topComponentView);
 
     /*!
      *  Creates an expression formatter for the given component.

@@ -21,6 +21,8 @@
 #include <IPXACTmodels/PortMap.h>
 #include <IPXACTmodels/vlnv.h>
 
+#include <IPXACTmodels/kactusExtensions/ModuleParameter.h>
+
 #include <Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h>
 
 #include <tests/MockObjects/LibraryMock.h>
@@ -40,22 +42,30 @@ private slots:
 
     // Test cases:
     void testTopLevelComponent();
+
     void testConsecutiveParseCalls();
+
     void testFileHeaderIsPrinted();
+
     void testHierarchicalConnections();
     void testSlicedHierarchicalConnection();
     void testUnknownInstanceIsNotWritten();
+
     void testMasterToSlaveInterconnection();
     void testMasterToMultipleSlavesInterconnections();
     void testInterconnectionToVaryingSizeLogicalMaps();
     void testSlicedInterconnection();
     void testMasterInterconnectionToMirroredMaster();
     void testMirroredSlaveInterconnectionToSlaves();  
+
     void testAdhocConnectionBetweenComponentInstances();    
     void testHierarchicalAdhocConnection();
     void testAdHocConnectionToUnknownInstanceIsNotWritten();
+
     void testDescriptionAndVLNVIsPrintedAboveInstance();
     void testDescriptionAndVLNVIsPrintedAboveInstance_data();
+
+    void testTopLevelModuleParametersAreWritten();
 
 private:
 
@@ -64,7 +74,7 @@ private:
 
     void addModelParameter( QString const& name, QString const& value );
 
-    void runGenerator();
+    void runGenerator(QString const& activeView = QString());
 
     void createHierarchicalConnection(QString const& topInterfaceRef, QString const& instanceInterfaceRef);
 
@@ -223,11 +233,11 @@ void tst_VerilogGenerator::addModelParameter( QString const& name, QString const
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::runGenerator()
 //-----------------------------------------------------------------------------
-void tst_VerilogGenerator::runGenerator()
+void tst_VerilogGenerator::runGenerator(QString const& activeView /*= QString()*/)
 {
     VerilogGenerator generator(&library_);
 
-    generator.parse(topComponent_, design_);
+    generator.parse(topComponent_, activeView, design_);
 
     generationTime_ =  QDateTime::currentDateTime();
 
@@ -275,8 +285,8 @@ void tst_VerilogGenerator::testConsecutiveParseCalls()
 
     VerilogGenerator generator(&library_);
 
-    generator.parse(topComponent_);
-    generator.parse(secondComponent);
+    generator.parse(topComponent_, QString());
+    generator.parse(secondComponent, QString());
 
     generator.generate("./generatorOutput.v");
     
@@ -1005,6 +1015,32 @@ void tst_VerilogGenerator::testDescriptionAndVLNVIsPrintedAboveInstance_data()
         "    // lines.\n"
         "    // IP-XACT VLNV: Test:TestLibrary:TestComponent:1.0\n"
         "    TestComponent instance1();\n";
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testTopLevelModuleParametersAreWritten()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testTopLevelModuleParametersAreWritten()
+{
+    View* activeView = new View();
+    activeView->setName("rtl");
+    QSharedPointer<ModuleParameter> moduleParameter(new ModuleParameter());
+    moduleParameter->setName("moduleParameter");
+    moduleParameter->setValue("1");
+
+    activeView->getModuleParameters()->append(moduleParameter);
+    topComponent_->addView(activeView);
+
+    runGenerator("rtl");
+
+    verifyOutputContains(QString(
+        "module TestComponent #(\n"
+        "    parameter         moduleParameter  = 1\n"
+        ") ();\n"
+        "\n"
+        "\n"
+        "endmodule\n"
+        ));
 }
 
 //-----------------------------------------------------------------------------

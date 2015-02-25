@@ -38,10 +38,13 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component   The component to write to Verilog.
-	 *      @param [in] sorter      Sorter for the ports in the component.
+	 *      @param [in] component               The component to write to Verilog.
+     *      @param [in] activeView              The active view name for the component.
+	 *      @param [in] sorter                  Sorter for the ports in the component.
+     *      @param [in] expressionFormatter     Formatter for writing expressions.
 	 */
-	ComponentVerilogWriter(QSharedPointer<const Component> component, QSharedPointer<const PortSorter> sorter,
+	ComponentVerilogWriter(QSharedPointer<const Component> component, QString const& activeView,
+        QSharedPointer<const PortSorter> sorter,
         QSharedPointer<ExpressionFormatter> expressionFormatter);
 
 	//! The destructor.
@@ -85,6 +88,14 @@ private:
       *      @param [in] outputStream   The output to write to.
       */
     void writeParameterDeclarations(QTextStream& outputStream) const;
+
+    /*!
+     *  Writes a single parameter declaration.
+     *
+     *      @param [in] outputStream    The output to write to.
+     *      @param [in] parameter       The parameter to write.
+     *      @param [in] isLast          Indicates if the parameter is the last to write.
+     */
     void writeParameter(QTextStream& outputStream, QSharedPointer<ModelParameter> parameter, bool isLast) const;
 
     /*!
@@ -93,6 +104,14 @@ private:
      *      @param [in] outputStream   The output to write to.
      */
     void writePortDeclarations(QTextStream& outputStream) const;
+    
+    /*!
+     *  Writes a single port declaration.
+     *
+     *      @param [in] outputStream    The output to write to.
+     *      @param [in] port            The port to write.
+     *      @param [in] isLast          Indicates if the port is the last to write.
+     */
     void writePort(QTextStream& outputStream, QSharedPointer<Port> port, bool isLast) const;
 
     /*!
@@ -132,6 +151,9 @@ private:
 
     //! The component to write to Verilog module.
     QSharedPointer<const Component> component_;
+
+    //! The component active view.
+    QString activeView_;
 
     //! Sorter for the ports of the component.
     QSharedPointer<const PortSorter> sorter_;

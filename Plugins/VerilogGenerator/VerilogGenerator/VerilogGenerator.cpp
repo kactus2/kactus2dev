@@ -51,12 +51,13 @@ VerilogGenerator::~VerilogGenerator()
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::parse()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer<Design> design)
+void VerilogGenerator::parse(QSharedPointer<Component> component, QString const& topComponentView, 
+    QSharedPointer<Design> design /*= QSharedPointer<Design>()*/)
 {
     topComponent_ = component;
     design_ = design;
 
-    initializeWriters();
+    initializeWriters(topComponentView);
 
     if (design_)
     {
@@ -100,7 +101,7 @@ void VerilogGenerator::generate(QString const& outputPath) const
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::initializeWriters()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::initializeWriters()
+void VerilogGenerator::initializeWriters(QString const& topComponentView)
 {
     QSettings settings;
     QString currentUser = settings.value("General/Username").toString();
@@ -109,8 +110,8 @@ void VerilogGenerator::initializeWriters()
     headerWriter_ = QSharedPointer<VerilogHeaderWriter>(new VerilogHeaderWriter(*topComponent_->getVlnv(), 
         componentXmlPath, currentUser));
 
-    topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(topComponent_, sorter_,
-        createFormatterForComponent(topComponent_)));
+    topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(topComponent_, topComponentView,
+        sorter_, createFormatterForComponent(topComponent_)));
 
     instanceWriters_.clear();
 
