@@ -155,14 +155,14 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
         utility_->printInfo(tr("Generation started %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
         
         VerilogGenerator generator(utility->getLibraryInterface());
-        generator.parse(topComponent_, libDes.dynamicCast<Design>());
+        generator.parse(topComponent_, configuration_->getActiveViewName(), libDes.dynamicCast<Design>());
         generator.generate(outputFile_);
 
         utility_->printInfo(tr("Finished writing file %1.").arg(outputFile_));
 
         if (configuration->getSaveToFileset())
         {          
-            QString viewName = configuration->getActiveViewName(); //getActiveViewName(libDes, libDesConf);
+            QString viewName = configuration->getActiveViewName();
             addGeneratedFileToFileSet(viewName);
             addRTLViewToTopComponent(viewName);
             saveChanges();
