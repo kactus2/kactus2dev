@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
     <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
@@ -18,21 +18,25 @@
       name</b> can be more detailed or user-friendly than name, but
       usually only few words.
     </p>
-    <p>
-    <p>
-      <b>Environment identifiers</b> in mandatory textual information
-      about how this view deployed in tool
-      environment. <b>Language</b> indicates this view may be
-      compatible with a particular tool, but only if that language is
-      supported in that tool, e.g., different versions of some
-      simulators may support two or more languages. <b>Tool</b>
-      indicates that this view contains tool-information, e.g., HDL
-      models that use simulator-specific extensions. The tool can have
-      a generic value such as "*Simulation" and
-      "*Synthesis"<b>VendorSpecific</b> can further qualify tool and
-      language compatibility, e.g. if some appropriate simulator mode
-      must be enabled.
-      </p>
+
+    <p><b>Environment identifiers</b> in mandatory textual information
+    about how this view deployed in different tool environments.
+      <ul>
+        <li><b>Language</b> indicates this view may be
+        compatible with a particular tool, but only if that language is
+        supported in that tool, e.g., different versions of some
+        simulators may support two or more languages.</li>
+
+        <li><b>Tool</b> indicates that this view contains tool-information, 
+        e.g., HDL models that use simulator-specific extensions. The tool 
+        can have a generic value such as "*Simulation" and "*Synthesis".</li>
+
+        <li><b>VendorSpecific</b> can further qualify tool and
+        language compatibility, e.g. if some appropriate simulator mode
+        must be enabled.</li>
+      </ul>
+    </p>
+
     <p>
      <b>View type</b> can be changed and a non-hierarchical view has 2
      additional settings. 
@@ -46,7 +50,7 @@
 		design editor where the user instantiate and configure components
 		very easily.<li>
 		
-		<li><img src="../images/appicon.png" alt="kactus logo">
+		<li><img src="../images/appicon.png" alt="kactus logo"/>
 		<b>Reference to a top-level implementation view</b> is a 
 		Kactus2-specific extension. It is a reference to a 
 		<i>non-hierarchical view</i> of the same component that contains 

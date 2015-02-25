@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
     <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
@@ -18,25 +18,31 @@
       name</b> can be more detailed or user-friendly than name, but
       usually only few words.
     </p>
-    <p>
-      <b>Environment identifiers</b> in mandatory textual information
-      about how this view deployed in tool
-      environment. <b>Language</b> indicates this view may be
-      compatible with a particular tool, but only if that language is
-      supported in that tool, e.g., different versions of some
-      simulators may support two or more languages. <b>Tool</b>
-      indicates that this view contains tool-information, e.g., HDL
-      models that use simulator-specific extensions. The tool can have
-      a generic value such as "*Simulation" and
-      "*Synthesis"<b>VendorSpecific</b> can further qualify tool and
-      language compatibility, e.g. if some appropriate simulator mode
-      must be enabled.
+
+    <p><b>Environment identifiers</b> in mandatory textual information
+    about how this view deployed in different tool environments.
+      <ul>
+        <li><b>Language</b> indicates this view may be
+        compatible with a particular tool, but only if that language is
+        supported in that tool, e.g., different versions of some
+        simulators may support two or more languages.</li>
+
+        <li><b>Tool</b> indicates that this view contains tool-information, 
+        e.g., HDL models that use simulator-specific extensions. The tool 
+        can have a generic value such as "*Simulation" and "*Synthesis".</li>
+
+        <li><b>VendorSpecific</b> can further qualify tool and
+        language compatibility, e.g. if some appropriate simulator mode
+        must be enabled.</li>
+      </ul>
+    </p>
+
     <p>
       <b>View type</b> can be changed and a non-hierarchical view has
-      5 additional optional settings.
+      6 additional optional settings.
 	  <ul>
 		<li><b>Language</b> specifies the HDL for the view, e.g. VHDL, 
-		Verilog, or SystemC. b>Strict</b> denotes if language shall 
+		Verilog, or SystemC. <b>Strict</b> denotes if language shall 
 		be strictly enforced. The default is false (unchecked). </li>
 	  
 		<li><b>Model name</b> is an optional language-specific 
@@ -51,7 +57,12 @@
 		
 		<li><b>Default file build commands</b> lists the <b>commands</b> 
 		and <b>flags</b> to compile the files of the listed file sets.</li>
-		
+				
+        <li><img src="../images/appicon.png" alt="kactus logo"/>
+        <b>Module parameters</b> are optional elements that configure
+        the model for this view. They can be utilized as view-specific
+        <i>model parameters</i>.</li>
+
 		<li><b>Parameters</b> are optional details that describe the view 
 		for <i>generator</i> usage.	</li>
 	  </ul>
