@@ -669,6 +669,7 @@ void tst_SystemVerilogExpressionParser::testIsPlainValue_data()
    QTest::newRow("Binary constant is plain") << "'b1" << true;
    QTest::newRow("String is plain") << "\"text\"" << true;
    QTest::newRow("Empty value is plain") << "" << true;
+   QTest::newRow("Decimal with preceding and trailing spaces is plain") << "  1  " << true;
 
    QTest::newRow("Addition is not plain") << "'h1 + 'h1" << false;
    QTest::newRow("Subtraction is not plain") << "'o2 - 'o1" << false;
@@ -678,6 +679,7 @@ void tst_SystemVerilogExpressionParser::testIsPlainValue_data()
    QTest::newRow("clog2 function is not plain") << "$clog2(8)" << false;
 
    QTest::newRow("Constant in parentheses is plain") << "(8)" << true;
+   QTest::newRow("Constant in parentheses with spaces is plain") << " ( 8 ) " << true;
    QTest::newRow("Addition in parentheses is not plain") << "(8 + 2)" << false;
 
    QTest::newRow("Large negative number is plain") << "-99999" << true;

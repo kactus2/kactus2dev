@@ -40,6 +40,7 @@ private slots:
 
     void testExpressionWithUnknownReference();
     void testParameterWithoutId();
+    void testParameterWithGeneratedId();
 
     void testExpressionWithParameterReferences();
     void testExpressionWithParameterReferences_data();
@@ -117,7 +118,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithUnknownReference()
 {
     QSharedPointer<Component> emptyComponent(new Component());
 
-        IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(emptyComponent)));
+    IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(emptyComponent)));
 
     QCOMPARE(parser.parseExpression("unknownParameter"), QString("unknownParameter"));
 }
@@ -136,6 +137,22 @@ void tst_IPXactSystemVerilogParser::testParameterWithoutId()
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
     QCOMPARE(parser.parseExpression("unknownParameter"), QString("unknownParameter"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_IPXactSystemVerilogParser::testParameterWithGeneratedId()
+//-----------------------------------------------------------------------------
+void tst_IPXactSystemVerilogParser::testParameterWithGeneratedId()
+{
+    QSharedPointer<Component> testComponent(new Component());
+    QSharedPointer<Parameter> firstParameter(new Parameter());
+    firstParameter->setValue("1");
+    testComponent->getParameters()->append(firstParameter);
+
+    IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
+
+    QCOMPARE(parser.isPlainValue(firstParameter->getValueId()), false);
+    QCOMPARE(parser.parseExpression(firstParameter->getValueId()), QString("1"));
 }
 
 //-----------------------------------------------------------------------------
@@ -246,7 +263,6 @@ void tst_IPXactSystemVerilogParser::testExpressionWithViewParameterReferences_da
 {
     testExpressionWithParameterReferences_data();
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: tst_IPXactSystemVerilogParser::testExpressionWithRegisterParameterReferences()

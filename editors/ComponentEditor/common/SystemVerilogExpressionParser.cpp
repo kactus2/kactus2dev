@@ -105,8 +105,7 @@ bool SystemVerilogExpressionParser::isValidExpression(QString const& expression)
 //-----------------------------------------------------------------------------
 bool SystemVerilogExpressionParser::isPlainValue(QString const& expression) const
 {
-    return expression.isEmpty() || isLiteral(expression) || (!expression.contains(BINARY_OPERATOR) && 
-        !expression.contains(QRegularExpression(CLOG2_FUNCTION)));
+    return expression.isEmpty() || isLiteral(expression) || isStringLiteral(expression);
 }
 
 //-----------------------------------------------------------------------------
@@ -140,8 +139,8 @@ bool SystemVerilogExpressionParser::isStringLiteral(QString const &expression) c
 //-----------------------------------------------------------------------------
 bool SystemVerilogExpressionParser::isLiteral(QString const& expression) const
 {
-    QRegularExpression literalExpression("^(" + SystemVerilogSyntax::INTEGRAL_NUMBER 
-        + "|" + REAL_NUMBER + ")$");
+    QRegularExpression literalExpression("^\\s*[(]*\\s*(" + SystemVerilogSyntax::INTEGRAL_NUMBER 
+        + "|" + REAL_NUMBER + ")\\s*[)]*\\s*$");
 
     return literalExpression.match(expression).hasMatch();
 }
