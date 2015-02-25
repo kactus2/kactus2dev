@@ -8,7 +8,6 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./veriloggeneratorplugin_global.h \
-    ./VerilogGeneratorPlugin.h \
     ./VerilogGenerator/VerilogGenerator.h \
     ./common/Writer.h \
     ./common/WriterGroup.h \
@@ -23,9 +22,11 @@ HEADERS += ./veriloggeneratorplugin_global.h \
     ./CommentWriter/CommentWriter.h \
     ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../editors/ComponentEditor/common/ExpressionFormatter.h \
-    ../../editors/ComponentEditor/common/ParameterFinder.h
-SOURCES += ./VerilogGeneratorPlugin.cpp \
-    ./VerilogGenerator/VerilogGenerator.cpp \
+    ../../editors/ComponentEditor/common/ParameterFinder.h \
+    ../PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.h \
+    ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
+    ./VerilogGeneratorPlugin.h
+SOURCES += ./VerilogGenerator/VerilogGenerator.cpp \
     ./ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ./ComponentVerilogWriter/ComponentVerilogWriter.cpp \
     ./ModelParameterVerilogWriter/ModelParameterVerilogWriter.cpp \
@@ -36,5 +37,8 @@ SOURCES += ./VerilogGeneratorPlugin.cpp \
     ./CommentWriter/CommentWriter.cpp \
     ./common/WriterGroup.cpp \
     ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
-    ../../editors/ComponentEditor/common/ExpressionFormatter.cpp
+    ../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
+    ../PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.cpp \
+    ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
+    ./VerilogGeneratorPlugin.cpp
 RESOURCES += VerilogGenerator.qrc

@@ -23,6 +23,9 @@ class IPXACTMODELS_EXPORT ModuleParameter : public ModelParameter
 {
 public:
 
+    //! The default constructor.
+    ModuleParameter();
+
 	//! The constructor.
 	ModuleParameter(QDomNode& node);
 

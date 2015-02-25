@@ -228,11 +228,19 @@ void ViewEditor::refresh()
 	// if view is hierarchical then set it to be selected
 	if (view_->isHierarchical())
     {
+        fileBuilders_.hide();
+        moduleParameters_.hide();
+        parameters_.hide();
+
 		viewTypeSelector_.setCurrentIndex(HIERARCHICAL);
 		hierarchyRef_.refresh();
 	}
 	else
     {
+        fileBuilders_.show();
+        moduleParameters_.show();
+        parameters_.show();
+
 		viewTypeSelector_.setCurrentIndex(FLAT);
 		generalTab_.refresh();
 		parameters_.refresh();

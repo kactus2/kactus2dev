@@ -33,6 +33,5 @@ ModuleParameterFactoryImplementation::~ModuleParameterFactoryImplementation()
 //-----------------------------------------------------------------------------
 ModelParameter* ModuleParameterFactoryImplementation::make() const
 {
-    QDomNode emptyNode;
-    return new ModuleParameter(emptyNode);
+    return new ModuleParameter();
 }

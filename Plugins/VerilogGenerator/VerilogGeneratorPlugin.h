@@ -17,12 +17,15 @@
 #include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/IGeneratorPlugin.h>
 
+#include <IPXACTmodels/vlnv.h>
+
 #include <QObject>
 #include <QSharedPointer>
 #include <QtPlugin>
 
-class LibraryComponent;
 class Component;
+class GeneratorConfiguration;
+class LibraryComponent;
 
 //-----------------------------------------------------------------------------
 //! Plugin for structural verilog generation.
@@ -116,30 +119,45 @@ public:
 protected:
 
     /*!
-     *  Selects the output for the generation.     
+     *  Finds the possible view names for generation.
      *
-     *      @return The absolute path to the output file.
+     *      @param [in,out]	    libComp			The library component for which the generator is run.
+     *      @param [in]	        libDes   		The design which the generator is run.
+     *      @param [in]	        libDesConf      The design configuration object for which the generator is run.
+     *
+     *      @return List of possible view names for which to run the generation.
      */
-    virtual QString selectOutputFile() const;
+    QStringList findPossibleViewNames(QSharedPointer<LibraryComponent> libComp, 
+        QSharedPointer<LibraryComponent> libDes, 
+        QSharedPointer<LibraryComponent> libDesConf) const;
+
+    /*!
+     *  Checks if the generator could be configured.
+     *
+     *      @param [in] possibleViewNames   The list of possible view names for generation.
+     *
+     *      @return True, if configuration was successful, otherwise false.
+     */
+    virtual bool couldConfigure(QStringList const& possibleViewNames) const;
+
+    /*!
+     *  Gets the configuration for the generation.
+     *
+     *      @return The configuration to use in generation.
+     */
+    virtual QSharedPointer<GeneratorConfiguration> getConfiguration();
+
+private:
+	// Disable copying.
+	VerilogGeneratorPlugin(VerilogGeneratorPlugin const& rhs);
+	VerilogGeneratorPlugin& operator=(VerilogGeneratorPlugin const& rhs);
     
     /*!
      *  Gets the default output path.     
      *
      *      @return The default output path.
      */
-    virtual QString defaultOutputPath() const;
-
-private:
-	// Disable copying.
-	VerilogGeneratorPlugin(VerilogGeneratorPlugin const& rhs);
-	VerilogGeneratorPlugin& operator=(VerilogGeneratorPlugin const& rhs);
-
-    /*!
-     *  Checks if the output file for generation has been selected.     
-     *
-     *      @return True, if an output file has been selected, otherwise false.
-     */
-    bool outputFileSelected() const;
+    QString defaultOutputPath() const;
 
     /*!
      *  Checks if the generated file should be added to a file set in the top component.
@@ -180,22 +198,21 @@ private:
      *      @param [in] activeViewName   The name of the top component active view.
      */
     void addRTLViewToTopComponent(QString const& activeViewName) const;
-    
-    /*!
-     *  Finds the active view of the top component.
-     *
-     *      @param [in] design          The design for which the generator is run.
-     *      @param [in] designConfig    The desing configuration for which the generator is run.
-     *
-     *      @return The name of the active view.
-     */
-    QString getActiveViewName(QSharedPointer<LibraryComponent> design, 
-        QSharedPointer<LibraryComponent> designConfig) const;
 
-    //!Saves the changes made to the top component.
+    //! Saves the changes made to the top component.
     void saveChanges() const;
 
-    //-----------------------------------------------------------------------------
+    /*!
+     *  Finds all the views in containing component referencing the given design or design configuration VLNV.
+     *
+     *      @param [in] containingComponent     The component whose views to search through.
+     *      @param [in] targetReference         The reference to find in views.
+     *
+     *      @return The names of the views referencing the given VLNV.
+     */
+    QStringList findReferencingViews(QSharedPointer<Component> containingComponent, VLNV targetReference) const;
+
+     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
@@ -207,6 +224,9 @@ private:
 
     //! The path to selected output file.
     QString outputFile_;
+
+    //! The configuration for file generation.
+    QSharedPointer<GeneratorConfiguration> configuration_;
 };
 
 #endif // VERILOGGENERATORPLUGIN_H

@@ -1,68 +1,76 @@
 //-----------------------------------------------------------------------------
-// File: ModuleParameter.cpp
+// File: GeneratorConfiguration.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
-// Date: 18.02.2015
+// Date: 23.02.2015
 //
 // Description:
-// Component instance module parameter element in IP-XACT 2014.
+// Container class for generator configuration.
 //-----------------------------------------------------------------------------
 
-#include "ModuleParameter.h"
+#include "GeneratorConfiguration.h"
 
 //-----------------------------------------------------------------------------
-// Function: ModuleParameter::ModuleParameter()
+// Function: GeneratorConfiguration::GeneratorConfiguration()
 //-----------------------------------------------------------------------------
-ModuleParameter::ModuleParameter(): ModelParameter()
+GeneratorConfiguration::GeneratorConfiguration() : outputPath_(), activeViewName_(), saveToFileset_(false)
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModuleParameter::ModuleParameter()
+// Function: GeneratorConfiguration::~GeneratorConfiguration()
 //-----------------------------------------------------------------------------
-ModuleParameter::ModuleParameter(QDomNode& node): ModelParameter(node)
+GeneratorConfiguration::~GeneratorConfiguration()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModuleParameter::~ModuleParameter()
+// Function: GeneratorConfiguration::setActiveView()
 //-----------------------------------------------------------------------------
-ModuleParameter::~ModuleParameter()
+void GeneratorConfiguration::setActiveView(QString const& viewName)
 {
-
+    activeViewName_ = viewName;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModuleParameter::clone()
+// Function: GeneratorConfiguration::getActiveViewName()
 //-----------------------------------------------------------------------------
-ModuleParameter* ModuleParameter::clone() const
+QString GeneratorConfiguration::getActiveViewName() const
 {
-    return new ModuleParameter(*this);
+    return activeViewName_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModuleParameter::elementName()
+// Function: GeneratorConfiguration::getAddToFileset()
 //-----------------------------------------------------------------------------
-QString ModuleParameter::elementName() const
+bool GeneratorConfiguration::getSaveToFileset() const
 {
-    return "module parameter";
+    return saveToFileset_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModuleParameter::elementIdentifier()
+// Function: GeneratorConfiguration::setAddToFileset()
 //-----------------------------------------------------------------------------
-QString ModuleParameter::elementIdentifier() const
+void GeneratorConfiguration::setSaveToFileset(bool shouldSave)
 {
-    return "kactus2:moduleParameter";
+   saveToFileset_ = shouldSave;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModuleParameter::ModuleParameter()
+// Function: GeneratorConfiguration::setOutputPath()
 //-----------------------------------------------------------------------------
-ModuleParameter::ModuleParameter(ModuleParameter const& other) : ModelParameter(other) 
+void GeneratorConfiguration::setOutputPath(QString const& path)
 {
+    outputPath_ = path;
+}
 
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::getOutputPath()
+//-----------------------------------------------------------------------------
+QString GeneratorConfiguration::getOutputPath() const
+{
+    return outputPath_;
 }

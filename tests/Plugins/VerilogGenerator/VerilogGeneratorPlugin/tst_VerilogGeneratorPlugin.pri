@@ -7,8 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../MockObjects/LibraryMock.h \
-    ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
+HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h \
@@ -22,8 +21,11 @@ HEADERS += ../../../MockObjects/LibraryMock.h \
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.h \
     ../../../../Plugins/VerilogGenerator/common/Writer.h \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.h \
+    ../../../MockObjects/LibraryMock.h \
     ../../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
-    ../../../../Plugins/VerilogGenerator/VerilogGeneratorPlugin.h
+    ../../../../Plugins/VerilogGenerator/VerilogGeneratorPlugin.h \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.h
 SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
@@ -39,4 +41,6 @@ SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp 
     ../../../../Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.cpp \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.cpp \
-    ./tst_VerilogGeneratorPlugin.cpp
+    ./tst_VerilogGeneratorPlugin.cpp \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.cpp

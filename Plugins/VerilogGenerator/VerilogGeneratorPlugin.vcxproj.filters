@@ -109,15 +109,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="VerilogGeneratorPlugin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_VerilogGeneratorPlugin.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_VerilogGeneratorPlugin.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="VerilogGenerator\VerilogGenerator.cpp">
       <Filter>Source Files\VerilogGenerator</Filter>
     </ClCompile>
@@ -156,6 +147,27 @@
     </ClCompile>
     <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_GeneratorConfigurationDialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_GeneratorConfigurationDialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\GeneratorConfiguration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\GeneratorConfigurationDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VerilogGeneratorPlugin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_VerilogGeneratorPlugin.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_VerilogGeneratorPlugin.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -207,13 +219,19 @@
     <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\GeneratorConfiguration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="VerilogGeneratorPlugin.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="VerilogGenerator.qrc">
       <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\GeneratorConfigurationDialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="VerilogGeneratorPlugin.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

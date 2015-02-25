@@ -3960,7 +3960,8 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_DrawingBoard.cpp">
       <Filter>Generated Files</Filter>
-    </ClCompile>    <ClCompile Include="editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.cpp">
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\views\ModuleParameterEditor.cpp">

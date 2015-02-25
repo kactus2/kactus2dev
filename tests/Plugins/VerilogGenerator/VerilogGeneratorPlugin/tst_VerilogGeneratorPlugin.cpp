@@ -11,6 +11,7 @@
 
 #include <QtTest>
 
+#include <Plugins/VerilogGenerator/GeneratorConfiguration.h>
 #include <Plugins/VerilogGenerator/veriloggeneratorplugin_global.h>
 #include <Plugins/VerilogGenerator/VerilogGeneratorPlugin.h>
 #include <Plugins/PluginSystem/PluginUtilityAdapter.h>
@@ -55,11 +56,16 @@ private slots:
 
     void testConsecutiveRunsCreateOnlyOneView();
 
+    void testFlatViewsArePossibleForTopComponent();
+    void testRefenecedDesignViewIsPossible();
+    void testRefenecedDesignConfigurationViewIsPossible();
+    void testDelegationToImplementationViewIsPossible();
+
 protected:
-    
-    virtual QString selectOutputFile() const;
-    
-    virtual bool outputFileAndViewShouldBeAddedToTopComponent() const;
+
+    virtual bool couldConfigure(QStringList const& possibleViewNames) const;
+
+    virtual QSharedPointer<GeneratorConfiguration> getConfiguration();
 
 private:
 
@@ -72,7 +78,7 @@ private:
    void verifyRTLView(View* rtlView);
 
    void verifyHierarchicalView(View* hierView, QString const& viewName);    
-  
+
 
     //! The test mock for library interface.
     LibraryMock library_;
@@ -82,13 +88,15 @@ private:
     VerilogGeneratorPlugin plugin_;
 
     QWidget* activeWindow_;
+
+    QSharedPointer<GeneratorConfiguration> configuration_;
 };
 
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::tst_VerilogGenerator()
 //-----------------------------------------------------------------------------
 tst_VerilogGenerator::tst_VerilogGenerator(): library_(this), 
-    utilityMock_(&library_, 0, this), plugin_(), activeWindow_(0)
+    utilityMock_(&library_, 0, this), plugin_(), activeWindow_(0), configuration_(new GeneratorConfiguration())
 {
 
 }
@@ -115,6 +123,7 @@ void tst_VerilogGenerator::cleanupTestCase()
 void tst_VerilogGenerator::init()
 {
     library_.clear();
+    configuration_ = QSharedPointer<GeneratorConfiguration>(new GeneratorConfiguration());
 }
 
 //-----------------------------------------------------------------------------
@@ -122,7 +131,7 @@ void tst_VerilogGenerator::init()
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::cleanup()
 {
-      QFile::remove(selectOutputFile());
+    QFile::remove("test.v");
 }
 
 //-----------------------------------------------------------------------------
@@ -134,7 +143,7 @@ void tst_VerilogGenerator::testFilesetIsCreatedWhenRunForComponent()
 
     runGenerator(&utilityMock_, targetComponent);
 
-    QVERIFY2(QFile::exists(selectOutputFile()), "No file created");
+    QVERIFY2(QFile::exists("test.v"), "No file created");
     QVERIFY2(targetComponent->hasFileSet("verilogSource"), "No file set created");
     QVERIFY2(targetComponent->getFileSet("verilogSource")->getFileNames().contains("test.v"), 
         "No file added to fileset");
@@ -154,9 +163,9 @@ void tst_VerilogGenerator::testFilesetIsCreatedWhenRunForDesign()
     structuralView->setHierarchyRef(*targetDesign->getVlnv());
     targetComponent->addView(structuralView);
 
-    runGenerator(&utilityMock_, targetComponent, targetDesign);
+    runGenerator(&utilityMock_, targetComponent, QSharedPointer<LibraryComponent>(), targetDesign);
 
-    QVERIFY2(QFile::exists(selectOutputFile()), "No file created");
+    QVERIFY2(QFile::exists("test.v"), "No file created");
     QVERIFY2(targetComponent->hasFileSet(viewName + "_verilogSource"), "No file set created");
     QVERIFY2(targetComponent->getFileSet(viewName + "_verilogSource")->getFileNames().contains("test.v"), 
         "No file added to fileset");
@@ -309,7 +318,7 @@ void tst_VerilogGenerator::testRTLViewIsCreatedWhenRunForComponentWithHierarchic
     QSharedPointer<Component> targetComponent = createTestComponent();
 
     View* structuralView = new View("structural");
-    structuralView->setHierarchyRef(VLNV(VLNV::DESIGNCONFIGURATION, "", "", "", ""));
+    structuralView->setHierarchyRef(VLNV(VLNV::DESIGNCONFIGURATION, "TUT", "TestLib", "TestDesign", "1.0"));
     targetComponent->addView(structuralView);
 
     runGenerator(&utilityMock_, targetComponent, QSharedPointer<LibraryComponent>(0), QSharedPointer<LibraryComponent>(0));
@@ -335,20 +344,143 @@ void tst_VerilogGenerator::testConsecutiveRunsCreateOnlyOneView()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VerilogGenerator::selectOutputFile()
+// Function: tst_VerilogGenerator::testFlatViewsArePossibleForTopComponent()
 //-----------------------------------------------------------------------------
-QString tst_VerilogGenerator::selectOutputFile() const
-{
-    return "test.v";
+void tst_VerilogGenerator::testFlatViewsArePossibleForTopComponent() 
+{    
+    QSharedPointer<Component> targetComponent = createTestComponent();
+    QSharedPointer<Design> targetDesign = createTestDesign();
+
+    View* firstView = new View("View1");
+    targetComponent->addView(firstView);
+
+    View* secondView = new View("View2");
+    targetComponent->addView(secondView);
+
+    View* hierView = new View("hierView");
+    hierView->setHierarchyRef(*targetDesign->getVlnv());
+    targetComponent->addView(hierView);
+
+    QStringList possibleViews = findPossibleViewNames(targetComponent, QSharedPointer<LibraryComponent>(0), 
+        QSharedPointer<LibraryComponent>(0));
+
+    QCOMPARE(possibleViews.count(), 2);
+    QVERIFY(possibleViews.contains("View1"));
+    QVERIFY(possibleViews.contains("View2"));
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VerilogGenerator::fileShouldBeAddedToFileset()
+// Function: tst_VerilogGenerator::testRefenecedDesignViewIsPossible()
 //-----------------------------------------------------------------------------
-bool tst_VerilogGenerator::outputFileAndViewShouldBeAddedToTopComponent() const
+void tst_VerilogGenerator::testRefenecedDesignViewIsPossible() 
+{    
+    QSharedPointer<Component> targetComponent = createTestComponent();
+    QSharedPointer<Design> targetDesign = createTestDesign();
+
+    View* firstView = new View("View1");
+    targetComponent->addView(firstView);
+
+    View* secondView = new View("View2");
+    targetComponent->addView(secondView);
+
+    View* hierView = new View("hierView");
+    hierView->setHierarchyRef(*targetDesign->getVlnv());
+    targetComponent->addView(hierView);
+
+    QStringList possibleViews = findPossibleViewNames(targetComponent, targetDesign, 
+        QSharedPointer<LibraryComponent>(0));
+
+    QCOMPARE(possibleViews.count(), 1);
+    QVERIFY(possibleViews.contains("hierView"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testRefenecedDesignConfigurationViewIsPossible()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testRefenecedDesignConfigurationViewIsPossible() 
+{    
+    QSharedPointer<Component> targetComponent = createTestComponent();
+    QSharedPointer<Design> targetDesign = createTestDesign();
+    QSharedPointer<DesignConfiguration> targetConfiguration = createTestDesignConfig();
+    targetConfiguration->setDesignRef(*targetDesign->getVlnv());
+
+    View* flatView = new View("flat");
+    targetComponent->addView(flatView);
+
+    View* designView = new View("designView");
+    designView->setHierarchyRef(*targetDesign->getVlnv());
+    targetComponent->addView(designView);
+
+    View* designConfigView = new View("designConfigView");
+    designConfigView->setHierarchyRef(*targetConfiguration->getVlnv());
+    targetComponent->addView(designConfigView);
+
+    QStringList possibleViews = findPossibleViewNames(targetComponent, targetDesign, targetConfiguration);
+
+    QCOMPARE(possibleViews.count(), 1);
+    QVERIFY(possibleViews.contains("designConfigView"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testDelegationToImplementationViewIsPossible()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testDelegationToImplementationViewIsPossible() 
+{    
+    QSharedPointer<Component> targetComponent = createTestComponent();
+    QSharedPointer<Design> targetDesign = createTestDesign();
+    QSharedPointer<DesignConfiguration> targetConfiguration = createTestDesignConfig();
+    targetConfiguration->setDesignRef(*targetDesign->getVlnv());
+
+    View* rtlView = new View("rtl");
+    targetComponent->addView(rtlView);
+
+    View* designView = new View("designView");
+    designView->setHierarchyRef(*targetDesign->getVlnv());
+    targetComponent->addView(designView);
+
+    View* designConfigView = new View("designConfigView");
+    designConfigView->setHierarchyRef(*targetConfiguration->getVlnv());
+    designConfigView->setTopLevelView("rtl");
+    targetComponent->addView(designConfigView);
+
+    QStringList possibleViews = findPossibleViewNames(targetComponent, targetDesign, targetConfiguration);
+
+    QCOMPARE(possibleViews.count(), 1);
+    QVERIFY(possibleViews.contains("rtl"));
+
+    designView->setTopLevelView("rtl");
+
+    possibleViews = findPossibleViewNames(targetComponent, targetDesign, QSharedPointer<LibraryComponent>(0));
+
+    QCOMPARE(possibleViews.count(), 1);
+    QVERIFY(possibleViews.contains("rtl"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::couldConfigure()
+//-----------------------------------------------------------------------------
+bool tst_VerilogGenerator::couldConfigure(QStringList const& possibleViewNames) const
 {
+    configuration_->setActiveView("");
+    if (!possibleViewNames.isEmpty())
+    {
+        configuration_->setActiveView(possibleViewNames.first());
+    }
+
     return true;
 }
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::configure()
+//-----------------------------------------------------------------------------
+QSharedPointer<GeneratorConfiguration> tst_VerilogGenerator::getConfiguration()
+{
+    configuration_->setSaveToFileset(true);
+    configuration_->setOutputPath("test.v");
+
+    return configuration_;
+}
+
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::createTestComponent()
 //-----------------------------------------------------------------------------
