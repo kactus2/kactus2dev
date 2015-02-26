@@ -94,6 +94,7 @@ HEADERS += ./common/Global.h \
     ./common/graphicsItems/CommonGraphicsUndoCommands.h \
     ./common/delegates/ComboDelegate/combodelegate.h \
     ./common/delegates/LineEditDelegate/lineeditdelegate.h \
+    ./common/views/EditableTableView/ColumnFreezableTable.h \
     ./common/views/EditableTableView/editabletableview.h \
     ./common/views/EditableListView/editablelistview.h \
     ./common/dialogs/comboSelector/comboselector.h \
@@ -401,6 +402,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceDialog.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.h \
     ./editors/ComponentEditor/memoryMaps/AddressBlockColumns.h \
+    ./editors/ComponentEditor/memoryMaps/MemoryMapColumns.h \
     ./editors/ComponentEditor/memoryMaps/RegisterColumns.h \
     ./editors/ComponentEditor/memoryMaps/memorymapdelegate.h \
     ./editors/ComponentEditor/memoryMaps/memorymapeditor.h \
@@ -603,8 +605,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./common/views/EditableTableView/ColumnFreezableTable.h
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -694,6 +695,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/graphicsItems/visualizeritem.cpp \
     ./common/delegates/ComboDelegate/combodelegate.cpp \
     ./common/delegates/LineEditDelegate/lineeditdelegate.cpp \
+    ./common/views/EditableTableView/ColumnFreezableTable.cpp \
     ./common/views/EditableTableView/editabletableview.cpp \
     ./common/views/EditableListView/editablelistview.cpp \
     ./mainwindow/DeleteWorkspaceDialog.cpp \
@@ -1150,6 +1152,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./common/views/EditableTableView/ColumnFreezableTable.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
 RESOURCES += kactus.qrc

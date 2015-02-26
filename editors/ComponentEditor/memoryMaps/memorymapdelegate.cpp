@@ -6,167 +6,185 @@
  */
 
 #include "memorymapdelegate.h"
+
+#include "MemoryMapColumns.h"
+
 #include <common/widgets/booleanComboBox/booleancombobox.h>
 #include <common/widgets/usageComboBox/usagecombobox.h>
 #include <common/widgets/accessComboBox/accesscombobox.h>
 
+#include <IPXACTmodels/validators/namevalidator.h>
+
 #include <QLineEdit>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 #include <QSpinBox>
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapDelegate::MemoryMapDelegate()
+//-----------------------------------------------------------------------------
 MemoryMapDelegate::MemoryMapDelegate(QObject *parent):
-QStyledItemDelegate(parent) {
+QStyledItemDelegate(parent)
+{
+
 }
 
-MemoryMapDelegate::~MemoryMapDelegate() {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapDelegate::~MemoryMapDelegate()
+//-----------------------------------------------------------------------------
+MemoryMapDelegate::~MemoryMapDelegate()
+{
+
 }
 
-QWidget* MemoryMapDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case MemoryMapDelegate::USAGE_COLUMN: {
-			UsageComboBox* usageBox = new UsageComboBox(parent);
-			return usageBox;
-											  }
-		case MemoryMapDelegate::NAME_COLUMN: 
-		case MemoryMapDelegate::BASE_COLUMN:
-		
-		case MemoryMapDelegate::DESCRIPTION_COLUMN: {
-			QLineEdit* edit = new QLineEdit(parent);
-			connect(edit, SIGNAL(editingFinished()),
-				this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-			return edit;
-													}
-        case MemoryMapDelegate::RANGE_COLUMN:
-		case MemoryMapDelegate::WIDTH_COLUMN: {
-			QSpinBox* spinBox = new QSpinBox(parent);
-			connect(spinBox, SIGNAL(editingFinished()),
-				this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-			spinBox->setRange(1, 4096);
-			return spinBox;
-											  }
-		case MemoryMapDelegate::ACCESS_COLUMN: {
-			AccessComboBox* accessBox = new AccessComboBox(parent);
-			return accessBox;
-											   }
-		case MemoryMapDelegate::VOLATILE_COLUMN: {
-			BooleanComboBox* boolBox = new BooleanComboBox(parent);
-			return boolBox;
-											  }
-		default: {
-			return QStyledItemDelegate::createEditor(parent, option, index);
-				 }
-	}
+//-----------------------------------------------------------------------------
+// Function: MemoryMapDelegate::createEditor()
+//-----------------------------------------------------------------------------
+QWidget* MemoryMapDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
+    QModelIndex const& index) const 
+{
+    if (index.column() == MemoryMapColumns::NAME_COLUMN)
+    {
+        return createNameEditor(parent, option, index);
+    }
+    else if (index.column() == MemoryMapColumns::USAGE_COLUMN)
+    {
+        UsageComboBox* usageBox = new UsageComboBox(parent);
+        return usageBox;
+    }
+    else if (index.column() == MemoryMapColumns::RANGE_COLUMN)
+    {
+        return createValidatingEditor(parent, "([1-9][0-9]{0,8}([kMTG])?)?");
+    }
+    else if (index.column() == MemoryMapColumns::WIDTH_COLUMN)
+    {
+        return createValidatingEditor(parent, "([1-9][0-9]{0,3})?");
+    }
+    else if (index.column() == MemoryMapColumns::ACCESS_COLUMN)
+    {
+        AccessComboBox* accessBox = new AccessComboBox(parent);
+        return accessBox;
+    }
+    else if (index.column() == MemoryMapColumns::VOLATILE_COLUMN)
+    {
+        BooleanComboBox* boolBox = new BooleanComboBox(parent);
+        return boolBox;
+    }
+    else
+    {
+        return QStyledItemDelegate::createEditor(parent, option, index);
+    }
 }
 
-void MemoryMapDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case MemoryMapDelegate::USAGE_COLUMN: {
-			UsageComboBox* usageBox = qobject_cast<UsageComboBox*>(editor);
-			Q_ASSERT(usageBox);
+//-----------------------------------------------------------------------------
+// Function: MemoryMapDelegate::setEditorData()
+//-----------------------------------------------------------------------------
+void MemoryMapDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
+{
+    if (index.column() == MemoryMapColumns::USAGE_COLUMN)
+    {
+        UsageComboBox* usageBox = qobject_cast<UsageComboBox*>(editor);
+        Q_ASSERT(usageBox);
 
-			General::Usage usage = General::str2Usage(
-				index.model()->data(index, Qt::DisplayRole).toString(), General::USAGE_COUNT);
-			usageBox->setCurrentValue(usage);
-			break;
-											  }
-		case MemoryMapDelegate::NAME_COLUMN: 
-		case MemoryMapDelegate::BASE_COLUMN:	
-		case MemoryMapDelegate::DESCRIPTION_COLUMN: {
-			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-			Q_ASSERT(edit);
+        General::Usage usage = General::str2Usage(index.model()->data(index).toString(), General::USAGE_COUNT);
+        usageBox->setCurrentValue(usage);
+    }
+    else if (index.column() == MemoryMapColumns::ACCESS_COLUMN)
+    {
+        AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
+        Q_ASSERT(accessBox);
 
-			const QString text = index.model()->data(index, Qt::DisplayRole).toString();
-			edit->setText(text);
-			break;
-													}
-	    case MemoryMapDelegate::RANGE_COLUMN:
-		case MemoryMapDelegate::WIDTH_COLUMN: {
-			QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
-			Q_ASSERT(spinBox);
+        General::Access access = General::str2Access(index.model()->data(index).toString(), General::ACCESS_COUNT);
+        accessBox->setCurrentValue(access);
+    }
+    else if (index.column() == MemoryMapColumns::VOLATILE_COLUMN)
+    {
+        BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
+        Q_ASSERT(boolBox);
 
-			unsigned int value = index.model()->data(index, Qt::DisplayRole).toUInt();
-			spinBox->setValue(value);
-			break;
-											  }
-		case MemoryMapDelegate::ACCESS_COLUMN: {
-			AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
-			Q_ASSERT(accessBox);
-
-			General::Access access = General::str2Access(index.model()->data(
-				index, Qt::DisplayRole).toString(), General::ACCESS_COUNT);
-			accessBox->setCurrentValue(access);
-			break;
-											   }
-		case MemoryMapDelegate::VOLATILE_COLUMN: {
-			BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
-			Q_ASSERT(boolBox);
-
-			bool value = index.model()->data(index, Qt::DisplayRole).toBool();
-			boolBox->setCurrentValue(value);
-			break;
-											  }
-		default: {
-			QStyledItemDelegate::setEditorData(editor, index);
-			break;
-				 }
-	}
+        bool value = index.model()->data(index).toBool();
+        boolBox->setCurrentValue(value);
+    }
+    else
+    {
+        QStyledItemDelegate::setEditorData(editor, index);
+    }
 }
 
-void MemoryMapDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case MemoryMapDelegate::USAGE_COLUMN: {
-			UsageComboBox* usageBox = qobject_cast<UsageComboBox*>(editor);
-			Q_ASSERT(usageBox);
+//-----------------------------------------------------------------------------
+// Function: MemoryMapDelegate::setModelData()
+//-----------------------------------------------------------------------------
+void MemoryMapDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
+{
+    if (index.column() ==  MemoryMapColumns::USAGE_COLUMN)
+    {
+        UsageComboBox* usageBox = qobject_cast<UsageComboBox*>(editor);
+        Q_ASSERT(usageBox);
 
-			General::Usage usage = usageBox->getCurrentValue();
-			model->setData(index, General::usage2Str(usage), Qt::EditRole);
-			break;
-											  }
-		case MemoryMapDelegate::NAME_COLUMN: 
-		case MemoryMapDelegate::BASE_COLUMN:		
-		case MemoryMapDelegate::DESCRIPTION_COLUMN: {
-			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-			Q_ASSERT(edit);
+        General::Usage usage = usageBox->getCurrentValue();
+        model->setData(index, General::usage2Str(usage), Qt::EditRole);
+    }
+    else if (index.column() ==  MemoryMapColumns::ACCESS_COLUMN)
+    {
+        AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
+        Q_ASSERT(accessBox);
 
-			QString text = edit->text();
-			model->setData(index, text, Qt::EditRole);
-			break;
-													}
-        case MemoryMapDelegate::RANGE_COLUMN:
-		case MemoryMapDelegate::WIDTH_COLUMN: {
-			QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
-			Q_ASSERT(spinBox);
+        General::Access access = accessBox->getCurrentValue();
+        model->setData(index, General::access2Str(access), Qt::EditRole);
+    }
+    else if (index.column() ==  MemoryMapColumns::VOLATILE_COLUMN)
+    {
+        BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
+        Q_ASSERT(boolBox);
 
-			unsigned int value = spinBox->value();
-			model->setData(index, value, Qt::EditRole);
-			break;
-											  }
-		case MemoryMapDelegate::ACCESS_COLUMN: {
-			AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
-			Q_ASSERT(accessBox);
-
-			General::Access access = accessBox->getCurrentValue();
-			model->setData(index, General::access2Str(access), Qt::EditRole);
-			break;
-											   }
-		case MemoryMapDelegate::VOLATILE_COLUMN: {
-			BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
-			Q_ASSERT(boolBox);
-
-			bool value = boolBox->getCurrentValue();
-			model->setData(index, value, Qt::EditRole);
-			break;
-											  }
-		default: {
-			QStyledItemDelegate::setModelData(editor, model, index);
-			break;
-				 }
-	}
+        bool value = boolBox->getCurrentValue();
+        model->setData(index, value, Qt::EditRole);
+    }
+    else 
+    {
+        QStyledItemDelegate::setModelData(editor, model, index);
+    }
 }
 
-void MemoryMapDelegate::commitAndCloseEditor() {
-	QWidget* edit = qobject_cast<QWidget*>(sender());
-	Q_ASSERT(edit);
+//-----------------------------------------------------------------------------
+// Function: MemoryMapDelegate::commitAndCloseEditor()
+//-----------------------------------------------------------------------------
+void MemoryMapDelegate::commitAndCloseEditor()
+{
+	QWidget* editor = qobject_cast<QWidget*>(sender());
+	Q_ASSERT(editor);
 
-	emit commitData(edit);
-	emit closeEditor(edit);
+	emit commitData(editor);
+	emit closeEditor(editor);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapDelegate::createNameEditor()
+//-----------------------------------------------------------------------------
+QWidget* MemoryMapDelegate::createNameEditor(QWidget* parent, QStyleOptionViewItem const& option, 
+    QModelIndex const& index) const
+{
+    QWidget* nameEditor = QStyledItemDelegate::createEditor(parent, option, index);
+
+    QLineEdit* lineEditor = qobject_cast<QLineEdit*>(nameEditor);
+    if (lineEditor)
+    {
+        lineEditor->setValidator(new NameValidator(lineEditor));
+    }
+
+    connect(nameEditor, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+    return nameEditor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapDelegate::createValidatingEditor()
+//-----------------------------------------------------------------------------
+QWidget* MemoryMapDelegate::createValidatingEditor(QWidget* parent, QString const& validatingExpression) const
+{
+    QLineEdit* lineEditor = new QLineEdit(parent);
+    lineEditor->setValidator(new QRegularExpressionValidator(QRegularExpression(validatingExpression),
+        lineEditor));
+
+    connect(lineEditor, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+    return lineEditor;
 }

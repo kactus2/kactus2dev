@@ -6,12 +6,16 @@
  */
 
 #include "localmemorymapeditor.h"
+
+#include <common/widgets/summaryLabel/summarylabel.h>
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/views/EditableTableView/editabletableview.h>
-#include <editors/ComponentEditor/memoryMaps/memorymapmodel.h>
+
+#include <editors/ComponentEditor/memoryMaps/MemoryMapColumns.h>
 #include <editors/ComponentEditor/memoryMaps/memorymapdelegate.h>
-#include <common/widgets/summaryLabel/summarylabel.h>
+#include <editors/ComponentEditor/memoryMaps/memorymapmodel.h>
 #include <editors/ComponentEditor/memoryMaps/memorymapproxy.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
@@ -52,17 +56,13 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
 	view_->setItemDelegate(new MemoryMapDelegate(this));
 	view_->setSortingEnabled(true);
 
-	view_->sortByColumn(MemoryMapDelegate::BASE_COLUMN, Qt::AscendingOrder);
+	view_->sortByColumn(MemoryMapColumns::BASE_COLUMN, Qt::AscendingOrder);
 
-	connect(nameEditor_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-	connect(model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(model_, SIGNAL(itemAdded(int)),
-		this, SIGNAL(itemAdded(int)), Qt::UniqueConnection);
-	connect(model_, SIGNAL(itemRemoved(int)),
-		this, SIGNAL(itemRemoved(int)), Qt::UniqueConnection);
+	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(model_, SIGNAL(itemAdded(int)), this, SIGNAL(itemAdded(int)), Qt::UniqueConnection);
+	connect(model_, SIGNAL(itemRemoved(int)), this, SIGNAL(itemRemoved(int)), Qt::UniqueConnection);
 
 	// connect view to model
 	connect(view_, SIGNAL(addItem(const QModelIndex&)),
@@ -70,8 +70,7 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
 	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
 		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
-    connect(enableMemMapBox_, SIGNAL(stateChanged(int)), 
-        this, SLOT(onEnableChanged()), Qt::UniqueConnection);
+    connect(enableMemMapBox_, SIGNAL(stateChanged(int)), this, SLOT(onEnableChanged()), Qt::UniqueConnection);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(enableMemMapBox_);
@@ -83,26 +82,23 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
 //-----------------------------------------------------------------------------
 // Function: LocalMemoryMapEditor::~LocalMemoryMapEditor()
 //-----------------------------------------------------------------------------
-LocalMemoryMapEditor::~LocalMemoryMapEditor() {
+LocalMemoryMapEditor::~LocalMemoryMapEditor()
+{
 }
 
 //-----------------------------------------------------------------------------
 // Function: LocalMemoryMapEditor::isValid()
 //-----------------------------------------------------------------------------
-bool LocalMemoryMapEditor::isValid() const {
-	if (!nameEditor_->isValid()) {
-		return false;
-	}
-	if (!model_->isValid()) {
-		return false;
-	}
-	return true;
+bool LocalMemoryMapEditor::isValid() const
+{
+	return nameEditor_->isValid() && model_->isValid();
 }
 
 //-----------------------------------------------------------------------------
 // Function: LocalMemoryMapEditor::refresh()
 //-----------------------------------------------------------------------------
-void LocalMemoryMapEditor::refresh() {
+void LocalMemoryMapEditor::refresh()
+{
 	nameEditor_->refresh();
 	view_->update();
     

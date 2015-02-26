@@ -6,38 +6,50 @@
  */
 
 #include "memorymapproxy.h"
-#include "memorymapdelegate.h"
+
+#include "MemoryMapColumns.h"
+
 #include <common/utils.h>
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapProxy::MemoryMapProxy()
+//-----------------------------------------------------------------------------
 MemoryMapProxy::MemoryMapProxy(QObject *parent):
-QSortFilterProxyModel(parent) {
+QSortFilterProxyModel(parent)
+{
+
 }
 
-MemoryMapProxy::~MemoryMapProxy() {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapProxy::~MemoryMapProxy()
+//-----------------------------------------------------------------------------
+MemoryMapProxy::~MemoryMapProxy()
+{
+
 }
 
-bool MemoryMapProxy::lessThan( const QModelIndex& left, const QModelIndex& right ) const {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapProxy::lessThan()
+//-----------------------------------------------------------------------------
+bool MemoryMapProxy::lessThan( const QModelIndex& left, const QModelIndex& right ) const
+{
+    Q_ASSERT(left.column() == right.column());
 
-	Q_ASSERT(left.column() == right.column());
+    if (left.column() == MemoryMapColumns::BASE_COLUMN || left.column() == MemoryMapColumns::RANGE_COLUMN)
+    {
+        // convert the data on left index into number
+        QString leftStr = left.model()->data(left, Qt::DisplayRole).toString();
+        quint64 leftNumber = Utils::str2Uint(leftStr);
 
-	switch (left.column()) {
+        // convert data on right index into number
+        QString rightStr = right.model()->data(right, Qt::DisplayRole).toString();
+        quint64 rightNumber = Utils::str2Uint(rightStr);
 
-		case MemoryMapDelegate::BASE_COLUMN:
-		case MemoryMapDelegate::RANGE_COLUMN: {
-			
-			// convert the data on left index into number
-			QString leftStr = left.model()->data(left, Qt::DisplayRole).toString();
-			quint64 leftNumber = Utils::str2Uint(leftStr);
-			
-			// convert data on right index into number
-			QString rightStr = right.model()->data(right, Qt::DisplayRole).toString();
-			quint64 rightNumber = Utils::str2Uint(rightStr);
-
-			// compare the numbers instead of strings to provide correct comparison results
-			return leftNumber < rightNumber;
-											  }
-		default: {
-			return QSortFilterProxyModel::lessThan(left, right);
-				 }
-	}
+        // compare the numbers instead of strings to provide correct comparison results
+        return leftNumber < rightNumber;
+    }
+    else 
+    {
+        return QSortFilterProxyModel::lessThan(left, right);
+    }
 }

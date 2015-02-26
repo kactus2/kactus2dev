@@ -6,274 +6,333 @@
  */
 
 #include "memorymapmodel.h"
-#include "memorymapdelegate.h"
+
+#include "MemoryMapColumns.h"
+
 #include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include <QColor>
 #include <QDebug>
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapModel::MemoryMapModel()
+//-----------------------------------------------------------------------------
 MemoryMapModel::MemoryMapModel(QSharedPointer<MemoryMap> memoryMap,
     QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
 							   QObject *parent):
 QAbstractTableModel(parent),
 memoryMap_(memoryMap),
 componentChoices_(componentChoices),
-items_(memoryMap->getItems()) {
-
+items_(memoryMap->getItems()) 
+{
 	Q_ASSERT(memoryMap_);
 }
 
-MemoryMapModel::~MemoryMapModel() {
+MemoryMapModel::~MemoryMapModel()
+{
 }
 
-int MemoryMapModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapModel::rowCount()
+//-----------------------------------------------------------------------------
+int MemoryMapModel::rowCount(QModelIndex const& parent) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
 	return items_.size();
 }
 
-int MemoryMapModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapModel::columnCount()
+//-----------------------------------------------------------------------------
+int MemoryMapModel::columnCount(QModelIndex const& parent) const
+{
 	if (parent.isValid()) {
 		return 0;
 	}
-	return MemoryMapDelegate::COLUMN_COUNT;
+	return MemoryMapColumns::COLUMN_COUNT;
 }
 
-Qt::ItemFlags MemoryMapModel::flags( const QModelIndex& index ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapModel::flags()
+//-----------------------------------------------------------------------------
+Qt::ItemFlags MemoryMapModel::flags(QModelIndex const& index) const
+{
+	if (!index.isValid())
+    {
 		return Qt::NoItemFlags;
 	}
 	return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable;
 }
 
-QVariant MemoryMapModel::headerData( int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole*/ ) const {
-	if (orientation != Qt::Horizontal) {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapModel::headerData()
+//-----------------------------------------------------------------------------
+QVariant MemoryMapModel::headerData(int section, Qt::Orientation orientation, int role) const 
+{
+	if (orientation != Qt::Horizontal)
+    {
 		return QVariant();
 	}
-	if (Qt::DisplayRole == role) {
 
-		switch (section) {
-			case MemoryMapDelegate::USAGE_COLUMN: {
-				return tr("Usage");
-											}
-			case MemoryMapDelegate::NAME_COLUMN: {
-				return tr("Address block\nname");
-													}
-			case MemoryMapDelegate::BASE_COLUMN: {
-				return tr("Base address\n [AUB]");
-												 }
-			case MemoryMapDelegate::RANGE_COLUMN: {
-				return tr("Range\n [AUB]");
-												   }
-			case MemoryMapDelegate::WIDTH_COLUMN: {
-				return tr("Width\n [bits]");
-												  }
-			case MemoryMapDelegate::DESCRIPTION_COLUMN: {
-				return tr("Description");
-												  }
-			case MemoryMapDelegate::ACCESS_COLUMN: {
-				return tr("Access");
-												  }
-			case MemoryMapDelegate::VOLATILE_COLUMN: {
-				return tr("Volatile");
-												  }
-			default: {
-				return QVariant();
-					 }
-		}
+	if (Qt::DisplayRole == role)
+    {
+        if (section == MemoryMapColumns::USAGE_COLUMN)
+        {
+            return tr("Usage");
+        }
+        else if (section == MemoryMapColumns::NAME_COLUMN)
+        {
+            return tr("Address block\nname");
+        }
+        else if (section == MemoryMapColumns::BASE_COLUMN)
+        {
+            return tr("Base address\n [AUB]");
+        }
+        else if (section == MemoryMapColumns::RANGE_COLUMN)
+        {
+            return tr("Range\n [AUB]");
+        }
+        else if (section == MemoryMapColumns::WIDTH_COLUMN)
+        {
+            return tr("Width\n [bits]");
+        }
+        else if (section == MemoryMapColumns::DESCRIPTION_COLUMN)
+        {
+            return tr("Description");
+        }
+        else if (section == MemoryMapColumns::ACCESS_COLUMN)
+        {
+            return tr("Access");
+        }
+        else if (section == MemoryMapColumns::VOLATILE_COLUMN)
+        {
+            return tr("Volatile");
+        }
+        else {
+            return QVariant();
+        }
 	}
-	else {
+	else 
+    {
 		return QVariant();
 	}
 }
 
-QVariant MemoryMapModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapModel::data()
+//-----------------------------------------------------------------------------
+QVariant MemoryMapModel::data(QModelIndex const& index, int role) const
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= items_.size())
+    {
 		return QVariant();
 	}
-	else if (index.row() < 0 || index.row() >= items_.size()) {
-		return QVariant();
-	}
 
-	if (Qt::DisplayRole == role) {
+	if (role == Qt::DisplayRole || role == Qt::EditRole)
+    {
+        if (index.column() == MemoryMapColumns::USAGE_COLUMN)
+        {
+            QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
+            if (addrBlock) {
+                return General::usage2Str(addrBlock->getUsage());
+            }
+            else {
+                return QVariant();
+            }
+        }
+        else if (index.column() == MemoryMapColumns::NAME_COLUMN)
+        {
+            return items_.at(index.row())->getName();
+        }
+        else if (index.column() == MemoryMapColumns::BASE_COLUMN)
+        {
+            return items_.at(index.row())->getBaseAddress();
+        }
+        else if (index.column() == MemoryMapColumns::RANGE_COLUMN)
+        {
+            QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
+            if (addrBlock) {
+                return addrBlock->getRange();
+            }
+            else {
+                return QVariant();
+            }
+        }
+        else if (index.column() == MemoryMapColumns::WIDTH_COLUMN) {
+            QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
+            if (addrBlock) {
+                return addrBlock->getWidth();
+            }
+            else {
+                return QVariant();
+            }
+        }
+        else if (index.column() == MemoryMapColumns::DESCRIPTION_COLUMN) {
+            return items_.at(index.row())->getDescription();
+        }
+        else if (index.column() == MemoryMapColumns::ACCESS_COLUMN) {
+            QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
+            if (addrBlock) {
+                return General::access2Str(addrBlock->getAccess());
+            }
+            else {
+                return QVariant();
+            }
+        }
+        else if (index.column() == MemoryMapColumns::VOLATILE_COLUMN)
+        {
+            QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
+            if (addrBlock) {
+                return General::BooleanValue2Bool(addrBlock->getVolatile(), false);
+            }
+            else {
+                return QVariant();
+            }
+        }
+        else {
+            return QVariant();
+        }
+    }
 
-		switch (index.column()) {
-			case MemoryMapDelegate::USAGE_COLUMN: {
-				QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
-				if (addrBlock) {
-					return General::usage2Str(addrBlock->getUsage());
-				}
-				else {
-					return QVariant();
-				}
-												  }
-			case MemoryMapDelegate::NAME_COLUMN: {
-				return items_.at(index.row())->getName();
-													}
-			case MemoryMapDelegate::BASE_COLUMN: {
-				return items_.at(index.row())->getBaseAddress();
-												 }
-			case MemoryMapDelegate::RANGE_COLUMN: {
-				QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
-				if (addrBlock) {
-					return addrBlock->getRange();
-				}
-				else {
-					return QVariant();
-				}
-												  }
-			case MemoryMapDelegate::WIDTH_COLUMN: {
-				QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
-				if (addrBlock) {
-					return addrBlock->getWidth();
-				}
-				else {
-					return QVariant();
-				}
-												  }
-			case MemoryMapDelegate::DESCRIPTION_COLUMN: {
-				return items_.at(index.row())->getDescription();
-												  }
-			case MemoryMapDelegate::ACCESS_COLUMN: {
-				QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
-				if (addrBlock) {
-					return General::access2Str(addrBlock->getAccess());
-				}
-				else {
-					return QVariant();
-				}
-												   }
-			case MemoryMapDelegate::VOLATILE_COLUMN: {
-				QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
-				if (addrBlock) {
-					return General::BooleanValue2Bool(addrBlock->getVolatile(), false);
-				}
-				else {
-					return QVariant();
-				}
-												  }
-			default: {
-				return QVariant();
-					 }
-		}
-	}
-	else if (Qt::ForegroundRole == role) {
-
-		if (items_.at(index.row())->isValid(componentChoices_)) {
+	else if (role == Qt::ForegroundRole)
+    {
+		if (items_.at(index.row())->isValid(componentChoices_))
+        {
 			return QColor("black");
 		}
-		else {
+		else
+        {
 			return QColor("red");
 		}
-	}
-	else if (Qt::BackgroundRole == role) {
-		switch (index.column()) {
-			case MemoryMapDelegate::USAGE_COLUMN:
-			case MemoryMapDelegate::NAME_COLUMN:
-			case MemoryMapDelegate::BASE_COLUMN:
-			case MemoryMapDelegate::RANGE_COLUMN:
-			case MemoryMapDelegate::WIDTH_COLUMN: {
-				return QColor("LemonChiffon");
-												 }
-			default:
-				return QColor("white");
-		}
-	}
-	else {
-		return QVariant();
-	}
+    }
+    else if (role == Qt::BackgroundRole)
+    {
+        if (index.column() == MemoryMapColumns::USAGE_COLUMN ||
+            index.column() == MemoryMapColumns::NAME_COLUMN ||
+            index.column() == MemoryMapColumns::BASE_COLUMN ||
+            index.column() == MemoryMapColumns::RANGE_COLUMN ||
+            index.column() == MemoryMapColumns::WIDTH_COLUMN) 
+        {
+            return QColor("LemonChiffon");
+        }
+        else 
+        {
+            return QColor("white");
+        }
+    }
+    else 
+    {
+        return QVariant();
+    }
 }
 
-bool MemoryMapModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/ ) {
-	if (!index.isValid()) {
-		return false;
-	}
-	else if (index.row() < 0 || index.row() >= items_.size()) {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapModel::setData()
+//-----------------------------------------------------------------------------
+bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, int role)
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= items_.size())
+    {
 		return false;
 	}
 
-	if (Qt::EditRole == role) {
+    if (Qt::EditRole == role)
+    {
+        if (index.column() == MemoryMapColumns::USAGE_COLUMN)
+        {
+            QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
+            if (addrBlock)
+            {
+                addrBlock->setUsage(General::str2Usage(value.toString(), General::USAGE_COUNT));
+            }
+            // if the item is not address block then usage can not be saved
+            else 
+            {
+                return false;
+            }
+        }
+        else if (index.column() == MemoryMapColumns::NAME_COLUMN)
+        {
+            items_.at(index.row())->setName(value.toString());
+        }									
+        else if (index.column() == MemoryMapColumns::BASE_COLUMN)
+        {
+            items_.at(index.row())->setBaseAddress(value.toString());
+        }
+        else if (index.column() == MemoryMapColumns::RANGE_COLUMN)
+        {
+            QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
+            if (addrBlock)
+            {
+                addrBlock->setRange(value.toString());
+            }
+            // if the item is not address block then range can not be saved
+            else 
+            {
+                return false;
+            }
+        }
+        else if (index.column() == MemoryMapColumns::WIDTH_COLUMN)
+        {
+            QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
+            if (addrBlock) {
+                addrBlock->setWidth(value.toInt());
+            }
+            else 
+            {
+                return false;
+            }
+        }
+        else if (index.column() == MemoryMapColumns::DESCRIPTION_COLUMN)
+        {
+            items_.at(index.row())->setDescription(value.toString());
+        }
+        else if (index.column() == MemoryMapColumns::ACCESS_COLUMN)
+        {
+            QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
+            if (addrBlock)
+            {
+                addrBlock->setAccess(General::str2Access(value.toString(), General::ACCESS_COUNT));
+            }
+            else 
+            {
+                return false;
+            }
+        }
+        else if (index.column() == MemoryMapColumns::VOLATILE_COLUMN)
+        {
+            QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
+            if (addrBlock)
+            {
+                addrBlock->setVolatile(General::bool2BooleanValue(value.toBool()));
+            }
+            else 
+            {
+                return false;
+            }
+        }
+        else 
+        {
+            return false;
+        }
 
-		switch (index.column()) {
-			case MemoryMapDelegate::USAGE_COLUMN: {
-				QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
-				if (addrBlock) {
-					addrBlock->setUsage(General::str2Usage(value.toString(), General::USAGE_COUNT));
-					break;
-				}
-				// if the item is not address block then usage can not be saved
-				else {
-					return false;
-				}
-												  }
-			case MemoryMapDelegate::NAME_COLUMN: {
-				items_.at(index.row())->setName(value.toString());
-				break;
-													}
-			case MemoryMapDelegate::BASE_COLUMN: {
-				items_.at(index.row())->setBaseAddress(value.toString());
-				break;
-												 }
-			case MemoryMapDelegate::RANGE_COLUMN: {
-				QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
-				if (addrBlock) {
-					addrBlock->setRange(value.toString());
-					break;
-				}
-				// if the item is not address block then range can not be saved
-				else {
-					return false;
-				}
-												  }
-			case MemoryMapDelegate::WIDTH_COLUMN: {
-				QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
-				if (addrBlock) {
-					addrBlock->setWidth(value.toInt());
-					break;
-				}
-				else {
-					return false;
-				}
-												  }
-			case MemoryMapDelegate::DESCRIPTION_COLUMN: {
-				items_.at(index.row())->setDescription(value.toString());
-				break;
-												  }
-			case MemoryMapDelegate::ACCESS_COLUMN: {
-				QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
-				if (addrBlock) {
-					addrBlock->setAccess(General::str2Access(value.toString(), General::ACCESS_COUNT));
-					break;
-				}
-				else {
-					return false;
-				}
-												   }
-			case MemoryMapDelegate::VOLATILE_COLUMN: {
-				QSharedPointer<AddressBlock> addrBlock = items_.at(index.row()).dynamicCast<AddressBlock>();
-				if (addrBlock) {
-					addrBlock->setVolatile(General::bool2BooleanValue(value.toBool()));
-					break;
-				}
-				else {
-					return false;
-				}
-												  }
-			default: {
-				return false;
-					 }
-		}
-
-		emit dataChanged(index, index);
-		emit contentChanged();
-		return true;
-	}
-	else {
-		return false;
-	}
+        emit dataChanged(index, index);
+        emit contentChanged();
+        return true;
+    }
+    else 
+    {
+        return false;
+    }
 }
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapModel::isValid()
+//-----------------------------------------------------------------------------
 bool MemoryMapModel::isValid() const
 {
 	foreach (QSharedPointer<MemoryMapItem> memItem, items_)
@@ -286,18 +345,24 @@ bool MemoryMapModel::isValid() const
 	return true;
 }
 
-void MemoryMapModel::onAddItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapModel::onAddItem()
+//-----------------------------------------------------------------------------
+void MemoryMapModel::onAddItem( QModelIndex const& index )
+{
 	int row = items_.size();
 
 	// if the index is valid then add the item to the correct position
-	if (index.isValid()) {
+	if (index.isValid())
+    {
 		row = index.row();
 	}
 
 	// the address where the current memory map ends
 	quint64 previousEnd = memoryMap_->getLastAddress();
 	// if this is the first item to add then do not increase address
-	if (previousEnd != 0) {
+	if (previousEnd != 0)
+    {
 		++previousEnd;
 	}
 
@@ -321,13 +386,14 @@ void MemoryMapModel::onAddItem( const QModelIndex& index ) {
 	emit contentChanged();
 }
 
-void MemoryMapModel::onRemoveItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapModel::onRemoveItem()
+//-----------------------------------------------------------------------------
+void MemoryMapModel::onRemoveItem( QModelIndex const& index )
+{
 	// don't remove anything if index is invalid
-	if (!index.isValid()) {
-		return;
-	}
-	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= items_.size()) {
+	if (!index.isValid() || index.row() < 0 || index.row() >= items_.size())
+    {
 		return;
 	}
 

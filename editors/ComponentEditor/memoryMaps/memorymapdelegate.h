@@ -13,25 +13,11 @@
 /*! \brief The delegate that provides editors to add/remove/edit details of a single memory map.
  *
  */
-class MemoryMapDelegate : public QStyledItemDelegate {
+class MemoryMapDelegate : public QStyledItemDelegate 
+{
 	Q_OBJECT
 
 public:
-
-	//! \brief Contains the columns for the table.
-	enum Column {
-        NAME_COLUMN = 0,		
-        USAGE_COLUMN,	
-		BASE_COLUMN,
-		RANGE_COLUMN,
-		WIDTH_COLUMN,
-		DESCRIPTION_COLUMN,
-		ACCESS_COLUMN,
-		VOLATILE_COLUMN,
-// 		LATENCY_COLUMN,
-// 		BANDWIDTH_COLUMN,
-		COLUMN_COUNT
-	};
 	
 	/*! \brief The constructor.
 	 *
@@ -51,9 +37,9 @@ public:
 	 *
 	 * \return Pointer to the editor to be used to edit the item.
 	*/
-	virtual QWidget* createEditor(QWidget* parent, 
-		const QStyleOptionViewItem& option, 
-		const QModelIndex& index) const;
+	virtual QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, 
+        QModelIndex const& index) const;
+
 
 	/*! \brief Set the data for the editor.
 	 *
@@ -61,7 +47,7 @@ public:
 	 * \param index Model index identifying the item that's data is to be set.
 	 *
 	*/
-	virtual void setEditorData(QWidget* editor, const QModelIndex& index) const;
+	virtual void setEditorData(QWidget* editor, QModelIndex const& index) const;
 
 	/*! \brief Save the data from the editor to the model.
 	 *
@@ -71,7 +57,7 @@ public:
 	 *
 	*/
 	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, 
-		const QModelIndex& index) const;
+		QModelIndex const& index) const;
 
 private slots:
 
@@ -87,6 +73,27 @@ private:
 
 	//! \brief No assignment
 	MemoryMapDelegate& operator=(const MemoryMapDelegate& other);
+
+    /*!
+     *  Creates an editor for name.
+     *
+     *      @param [in] parent   The parent widget for the editor.
+     *      @param [in] option   The style options for the editor.
+     *      @param [in] index    The index for which the editor is created.
+     *
+     *      @return Editor for editing name.
+     */
+    QWidget* createNameEditor(QWidget* parent, QStyleOptionViewItem const& option, QModelIndex const& index) const;
+
+    /*!
+     *  Creates an editor with validation of input.
+     *
+     *      @param [in] parent                  The parent widget for the editor.
+     *      @param [in] validatingExpression    The regular expression used for validating.
+     *
+     *      @return Editor for editing value in given format.
+     */
+    QWidget* createValidatingEditor(QWidget* parent, QString const& validatingExpression) const;
 };
 
 #endif // MEMORYMAPDELEGATE_H

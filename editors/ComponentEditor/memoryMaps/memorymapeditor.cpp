@@ -6,24 +6,31 @@
  */
 
 #include "memorymapeditor.h"
-#include <common/views/EditableTableView/editabletableview.h>
+
 #include "memorymapmodel.h"
 #include "memorymapdelegate.h"
-#include <common/widgets/summaryLabel/summarylabel.h>
+#include "MemoryMapColumns.h"
 #include "memorymapproxy.h"
+
+#include <common/views/EditableTableView/editabletableview.h>
+#include <common/widgets/summaryLabel/summarylabel.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 
+//-----------------------------------------------------------------------------
+// Function: MemoryMapEditor::MemoryMapEditor()
+//-----------------------------------------------------------------------------
 MemoryMapEditor::MemoryMapEditor(QSharedPointer<Component> component,
-	LibraryInterface* handler, 
-								 QSharedPointer<MemoryMap> memoryMap,
-								 QWidget* parent /*= 0*/ ):
+    LibraryInterface* handler, 
+    QSharedPointer<MemoryMap> memoryMap,
+    QWidget* parent):
 ItemEditor(component, handler, parent),
-view_(new EditableTableView(this)),
-proxy_(new MemoryMapProxy(this)),
-model_(new MemoryMapModel(memoryMap, component->getChoices(), this)) {
-
+    view_(new EditableTableView(this)),
+    proxy_(new MemoryMapProxy(this)),
+    model_(new MemoryMapModel(memoryMap, component->getChoices(), this)) 
+{
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Address blocks summary"), this);
 
@@ -48,14 +55,11 @@ model_(new MemoryMapModel(memoryMap, component->getChoices(), this)) {
 
 	view_->setItemDelegate(new MemoryMapDelegate(this));
 
-	view_->sortByColumn(MemoryMapDelegate::BASE_COLUMN, Qt::AscendingOrder);
+	view_->sortByColumn(MemoryMapColumns::BASE_COLUMN, Qt::AscendingOrder);
 
-	connect(model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(model_, SIGNAL(itemAdded(int)),
-		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
-	connect(model_, SIGNAL(itemRemoved(int)),
-		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(model_, SIGNAL(itemAdded(int)),	this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
+	connect(model_, SIGNAL(itemRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
 	connect(view_, SIGNAL(addItem(const QModelIndex&)),
 		model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
@@ -63,22 +67,42 @@ model_(new MemoryMapModel(memoryMap, component->getChoices(), this)) {
 		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
 
-MemoryMapEditor::~MemoryMapEditor() {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapEditor::~MemoryMapEditor()
+//-----------------------------------------------------------------------------
+MemoryMapEditor::~MemoryMapEditor()
+{
 }
 
-bool MemoryMapEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapEditor::isValid()
+//-----------------------------------------------------------------------------
+bool MemoryMapEditor::isValid() const
+{
 	return model_->isValid();
 }
 
-void MemoryMapEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapEditor::refresh()
+//-----------------------------------------------------------------------------
+void MemoryMapEditor::refresh()
+{
 	view_->update();
 }
 
-void MemoryMapEditor::showEvent( QShowEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapEditor::showEvent()
+//-----------------------------------------------------------------------------
+void MemoryMapEditor::showEvent( QShowEvent* event )
+{
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/memorymap.html");
 }
 
-QSize MemoryMapEditor::sizeHint() const {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapEditor::sizeHint()
+//-----------------------------------------------------------------------------
+QSize MemoryMapEditor::sizeHint() const
+{
 	return QSize(MemoryMapEditor::WIDTH, MemoryMapEditor::HEIGHT);
 }
