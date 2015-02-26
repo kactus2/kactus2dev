@@ -74,7 +74,7 @@ proxy_(this)
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(parameterModel);
 
-    view_.setItemDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
+    view_.setDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
         this));
 
     connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)), 

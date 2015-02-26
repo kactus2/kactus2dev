@@ -52,7 +52,7 @@ public:
 	 * \param allow If true then import/export is enabled.
 	 *
 	*/
-	void setAllowImportExport(bool allow);
+	virtual void setAllowImportExport(bool allow);
 
 	/*! \brief Set the model class for this view.
 	 *
@@ -93,7 +93,7 @@ public slots:
 	 * \param path The path to use as default.
 	 *
 	*/
-	void setDefaultImportExportPath(const QString& path);
+	virtual void setDefaultImportExportPath(const QString& path);
 
 signals:
 

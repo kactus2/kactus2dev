@@ -77,7 +77,7 @@ proxy_(this)
 	view_.setSortingEnabled(true);
 
 	// set the delegate to edit the usage column
-    view_.setItemDelegate(new ModelParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
+    view_.setDelegate(new ModelParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
         this));
 
     connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)), 

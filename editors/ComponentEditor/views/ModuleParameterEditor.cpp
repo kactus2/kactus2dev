@@ -13,7 +13,7 @@
 
 #include "ModuleParameterFactoryImplementation.h"
 
-#include <common/views/EditableTableView/editabletableview.h>
+#include <common/views/EditableTableView/ColumnFreezableTable.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
@@ -50,7 +50,7 @@ ModuleParameterEditor::ModuleParameterEditor(QSharedPointer<QList<QSharedPointer
     
     model_->setParameterFactory(QSharedPointer<ModelParameterFactory>(new ModuleParameterFactoryImplementation()));
 
-    EditableTableView* view_ = new EditableTableView(this);
+    ColumnFreezableTable* view_ = new ColumnFreezableTable(this);
 
     connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
@@ -82,7 +82,7 @@ ModuleParameterEditor::ModuleParameterEditor(QSharedPointer<QList<QSharedPointer
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(parameterModel);
 
-    view_->setItemDelegate(new ModelParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
+    view_->setDelegate(new ModelParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
         this));
 
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)), 

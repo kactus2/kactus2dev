@@ -91,7 +91,7 @@ void tst_ComponentParameterModel::testHasColumnForNameValueAndId()
     QSharedPointer<Parameter> testParameter(new Parameter());
     testParameter->setName("testParameter");
     testParameter->setValueId("testId");
-    testParameter->setValue("testValue");
+    testParameter->setValue("1");
 
     QList<QSharedPointer<Parameter> > parameters;
     parameters.append(testParameter);
@@ -103,7 +103,7 @@ void tst_ComponentParameterModel::testHasColumnForNameValueAndId()
 
     QCOMPARE(model->columnCount(), 3);
     QCOMPARE(model->data(model->index(0, ComponentParameterColumns::NAME)).toString(), QString("testParameter"));
-    QCOMPARE(model->data(model->index(0, ComponentParameterColumns::VALUE)).toString(), QString("testValue"));
+    QCOMPARE(model->data(model->index(0, ComponentParameterColumns::VALUE)).toString(), QString("1"));
     QCOMPARE(model->data(model->index(0, ComponentParameterColumns::ID)).toString(), QString("testId"));
 
     QCOMPARE(model->data(QModelIndex()).toString(), QString(""));

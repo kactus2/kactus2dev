@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/parameter.h>
 
-#include <common/views/EditableTableView/editabletableview.h>
+#include <common/views/EditableTableView/ColumnFreezableTable.h>
 
 #include <QGroupBox>
 #include <QList>
@@ -116,7 +116,7 @@ private:
     //-----------------------------------------------------------------------------
 
 	//! The view that displays the parameters.
-	EditableTableView view_;
+    ColumnFreezableTable view_;
 
 	//! The model that holds the data to be displayed to the user
 	ParametersModel* model_;

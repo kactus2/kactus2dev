@@ -17,7 +17,7 @@
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <common/views/EditableTableView/editabletableview.h>
+#include <common/views/EditableTableView/ColumnFreezableTable.h>
 
 #include <QString>
 #include <QMap>
@@ -109,7 +109,7 @@ private:
 	ModelParameterEditor& operator=(const ModelParameterEditor& other);
     
 	//! \brief The view that displays the parameters.
-	EditableTableView view_;
+    ColumnFreezableTable view_;
 
 	//! \brief The model that holds the data to be displayed to the user
 	ModelParameterModel* model_;

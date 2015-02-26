@@ -13,7 +13,7 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
-#include <common/views/EditableTableView/editabletableview.h>
+#include <common/views/EditableTableView/ColumnFreezableTable.h>
 
 #include <IPXACTmodels/component.h>
 
@@ -71,8 +71,8 @@ private:
 	//! No assignment
 	ParametersEditor& operator=(const ParametersEditor& other);
 
-	//! \brief The view that displays the parameters.
-	EditableTableView view_;
+    //! The view that displays the parameters.
+    ColumnFreezableTable view_;
 
 	//! \brief The model that holds the data to be displayed to the user
 	ParametersModel* model_;

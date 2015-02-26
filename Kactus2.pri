@@ -7,9 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h \
-    ./editors/ComponentEditor/common/ExpressionFormatterFactory.h \
-    ./common/Global.h \
+HEADERS += ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
@@ -250,6 +248,8 @@ HEADERS += ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementa
     ./editors/ComponentEditor/general/generaleditor.h \
     ./editors/ComponentEditor/modelParameters/ModelParameterColumns.h \
     ./editors/ComponentEditor/modelParameters/ModelParameterEditorHeaderView.h \
+    ./editors/ComponentEditor/modelParameters/ModelParameterFactory.h \
+    ./editors/ComponentEditor/modelParameters/ModelParameterFactoryImplementation.h \
     ./editors/ComponentEditor/modelParameters/ModelParameterDelegate.h \
     ./editors/ComponentEditor/modelParameters/modelparametermodel.h \
     ./editors/ComponentEditor/modelParameters/modelparametereditor.h \
@@ -355,6 +355,8 @@ HEADERS += ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementa
     ./editors/ComponentEditor/cpus/cpusdelegate.h \
     ./editors/ComponentEditor/cpus/cpuseditor.h \
     ./editors/ComponentEditor/cpus/cpusmodel.h \
+    ./editors/ComponentEditor/views/ModuleParameterFactoryImplementation.h \
+    ./editors/ComponentEditor/views/ModuleParameterEditor.h \
     ./editors/ComponentEditor/views/filesetrefmodel.h \
     ./editors/ComponentEditor/views/flatviewgeneraltab.h \
     ./editors/ComponentEditor/views/hierarchyrefwidget.h \
@@ -470,6 +472,8 @@ HEADERS += ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementa
     ./editors/ComponentEditor/choices/ChoicesDelegate.h \
     ./editors/ComponentEditor/choices/EnumerationModel.h \
     ./editors/ComponentEditor/common/ExpressionFormatter.h \
+    ./editors/ComponentEditor/common/ExpressionFormatterFactory.h \
+    ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h \
     ./editors/ComponentEditor/common/ExpressionParser.h \
     ./editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ./editors/ComponentEditor/common/MultipleParameterFinder.h \
@@ -600,13 +604,8 @@ HEADERS += ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementa
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/views/ModuleParameterEditor.h \
-    ./editors/ComponentEditor/modelParameters/ModelParameterFactoryImplementation.h \
-    ./editors/ComponentEditor/modelParameters/ModelParameterFactory.h \
-    ./editors/ComponentEditor/views/ModuleParameterFactoryImplementation.h
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h
-SOURCES += ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.cpp \
-    ./common/GenericEditProvider.cpp \
+    ./common/views/EditableTableView/ColumnFreezableTable.h
+SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
     ./common/dialogs/comboSelector/comboselector.cpp \
@@ -890,6 +889,7 @@ SOURCES += ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementa
     ./editors/ComponentEditor/modelParameters/ModelParameterDelegate.cpp \
     ./editors/ComponentEditor/modelParameters/modelparametereditor.cpp \
     ./editors/ComponentEditor/modelParameters/ModelParameterEditorHeaderView.cpp \
+    ./editors/ComponentEditor/modelParameters/ModelParameterFactoryImplementation.cpp \
     ./editors/ComponentEditor/modelParameters/modelparametermodel.cpp \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.cpp \
@@ -911,6 +911,8 @@ SOURCES += ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementa
     ./editors/ComponentEditor/views/filesetrefmodel.cpp \
     ./editors/ComponentEditor/views/flatviewgeneraltab.cpp \
     ./editors/ComponentEditor/views/hierarchyrefwidget.cpp \
+    ./editors/ComponentEditor/views/ModuleParameterEditor.cpp \
+    ./editors/ComponentEditor/views/ModuleParameterFactoryImplementation.cpp \
     ./editors/ComponentEditor/views/vieweditor.cpp \
     ./editors/ComponentEditor/views/viewseditor.cpp \
     ./editors/ComponentEditor/views/viewsmodel.cpp \
@@ -1034,6 +1036,7 @@ SOURCES += ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementa
     ./editors/ComponentEditor/common/ExpressionDelegate.cpp \
     ./editors/ComponentEditor/common/ExpressionEditor.cpp \
     ./editors/ComponentEditor/common/ExpressionFormatter.cpp \
+    ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.cpp \
     ./editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ./editors/ComponentEditor/common/MultipleParameterFinder.cpp \
     ./editors/ComponentEditor/common/NullParser.cpp \
@@ -1148,7 +1151,5 @@ SOURCES += ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementa
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./editors/ComponentEditor/views/ModuleParameterEditor.cpp \
-    ./editors/ComponentEditor/modelParameters/ModelParameterFactoryImplementation.cpp \
-    ./editors/ComponentEditor/views/ModuleParameterFactoryImplementation.cpp
+    ./common/views/EditableTableView/ColumnFreezableTable.cpp
 RESOURCES += kactus.qrc

@@ -3976,6 +3976,12 @@
     <ClCompile Include="editors\ComponentEditor\views\ModuleParameterFactoryImplementation.cpp">
       <Filter>Source Files\editors\ComponentEditor\views</Filter>
     </ClCompile>
+    <ClCompile Include="common\views\EditableTableView\ColumnFreezableTable.cpp">
+      <Filter>Source Files\common\views\EditableTableView</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ColumnFreezableTable.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5474,6 +5480,9 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\views\ModuleParameterEditor.h">
       <Filter>Header Files\editors\ComponentEditor\views</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\views\EditableTableView\ColumnFreezableTable.h">
+      <Filter>Header Files\common\views\EditableTableView</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
