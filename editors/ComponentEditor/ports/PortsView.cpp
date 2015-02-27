@@ -19,7 +19,7 @@
 // Function: PortsView::PortsView()
 //-----------------------------------------------------------------------------
 PortsView::PortsView(QWidget *parent ):
-    EditableTableView(parent),
+    ColumnFreezableTable(2, QSharedPointer<EditableTableView> (new EditableTableView(parent)), parent),
     createBus_(tr("Create new bus definition"), this),
     createExistingBus_(tr("Use existing bus definition"),this)
 {

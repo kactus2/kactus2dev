@@ -36,7 +36,7 @@ ParameterGroupBox::ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Paramet
                                      QSharedPointer<ExpressionFormatter> expressionFormatter,
 									 QWidget *parent):
 QGroupBox(tr("Parameters"), parent),
-view_(this), 
+view_(1, QSharedPointer<EditableTableView> (new EditableTableView(this)), this), 
 model_(0),
 proxy_(this)
 {

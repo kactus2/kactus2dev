@@ -33,7 +33,7 @@ ModelParameterEditor::ModelParameterEditor(QSharedPointer<Component> component, 
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QWidget *parent): 
 ItemEditor(component, handler, parent), 
-view_(this),
+view_(1, QSharedPointer <EditableTableView> (new EditableTableView(this)), this),
 model_(0),
 proxy_(this)
 {

@@ -87,7 +87,7 @@ handler_(handler)
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 
-	view_.setItemDelegate(new PortsDelegate(parameterCompleter, parameterFinder, this));
+	view_.setDelegate(new PortsDelegate(parameterCompleter, parameterFinder, this));
 
     connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)), 
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

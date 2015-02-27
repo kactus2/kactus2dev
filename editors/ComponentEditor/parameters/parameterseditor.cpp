@@ -30,7 +30,7 @@ ParametersEditor::ParametersEditor(QSharedPointer<Component> component, LibraryI
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QWidget* parent): 
 ItemEditor(component, handler, parent),
-view_(this),
+view_(1, QSharedPointer<EditableTableView> (new EditableTableView(this)), this),
 model_(0), 
 proxy_(0)
 {
@@ -74,8 +74,7 @@ proxy_(0)
     view_.setSortingEnabled(true);
     view_.setItemsDraggable(false);
 
-    view_.setDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
-        this));
+    view_.setDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder, this));
 
     connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

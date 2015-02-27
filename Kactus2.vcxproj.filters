@@ -2737,9 +2737,6 @@
     <ClCompile Include="GeneratedFiles\moc_portsmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_PortsView.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_PropertyValueModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -3978,6 +3975,9 @@
     </ClCompile>
     <ClCompile Include="common\views\EditableTableView\ColumnFreezableTable.cpp">
       <Filter>Source Files\common\views\EditableTableView</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortsView.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ColumnFreezableTable.cpp">
       <Filter>Generated Files</Filter>

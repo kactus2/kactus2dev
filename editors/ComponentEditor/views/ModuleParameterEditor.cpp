@@ -50,7 +50,8 @@ ModuleParameterEditor::ModuleParameterEditor(QSharedPointer<QList<QSharedPointer
     
     model_->setParameterFactory(QSharedPointer<ModelParameterFactory>(new ModuleParameterFactoryImplementation()));
 
-    ColumnFreezableTable* view_ = new ColumnFreezableTable(this);
+    ColumnFreezableTable* view_ = new ColumnFreezableTable(1,
+        QSharedPointer <EditableTableView> (new EditableTableView(this)), this);
 
     connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),

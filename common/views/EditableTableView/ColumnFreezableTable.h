@@ -12,11 +12,12 @@
 #ifndef COLUMNFREEZABLETABLE_H
 #define COLUMNFREEZABLETABLE_H
 
+#include "editabletableview.h"
+
 #include <QTableView>
 #include <QAbstractItemModel>
 #include <QModelIndex>
-
-#include "editabletableview.h"
+#include <QSharedPointer>
 
 class ColumnFreezableTable : public EditableTableView
 {
@@ -27,9 +28,11 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent  Parent of the table.
+     *      @param [in] numberOfFrozenColumns   The amount of columns that are frozen in the table.
+     *      @param [in] frozenColums            Pointer to the table that is being frozen.
+     *      @param [in] parent                  Parent of the table.
      */
-    ColumnFreezableTable(QWidget *parent);
+    ColumnFreezableTable(int numberOfFrozenColumns, QSharedPointer<EditableTableView> frozenColumns, QWidget* parent);
 
     /*!
      *  The destructor.
@@ -67,7 +70,7 @@ public slots:
     virtual void setDefaultImportExportPath(const QString& path);
 
 protected:
-    
+
     /*!
      *  Receives resize events. Calls table views resize event, and updates the table geometry.
      *
@@ -113,9 +116,6 @@ private slots:
 
 private:
 
-    //! The frozen part of the editable table.
-    EditableTableView freezedColumns_;
-
     /*!
      *  Initialize the table.
      */
@@ -125,6 +125,12 @@ private:
      *  Update the geometry of the frozen columns.
      */
     void updateColumnFreezableTableGeometry();
+
+    //! The frozen part of the editable table.
+    QSharedPointer <EditableTableView> frozenColumns_;
+
+    //! The number of columns that are frozen.
+    int numberOfFrozenColumns_;
 };
 
 #endif // COLUMNFREEZABLETABLE_H

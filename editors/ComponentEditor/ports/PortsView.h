@@ -11,7 +11,8 @@
 #ifndef PortsView_H
 #define PortsView_H
 
-#include <common/views/EditableTableView/editabletableview.h>
+#include <common/views/EditableTableView/ColumnFreezableTable.h>
+
 #include <IPXACTmodels/port.h>
 #include <IPXACTmodels/component.h>
 
@@ -20,9 +21,9 @@
 //-----------------------------------------------------------------------------
 // View for port editor.
 //-----------------------------------------------------------------------------
-class PortsView : public EditableTableView {
-	Q_OBJECT
-
+class PortsView : public ColumnFreezableTable
+{
+    Q_OBJECT
 public:
 
 
