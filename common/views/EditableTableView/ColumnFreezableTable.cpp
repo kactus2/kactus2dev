@@ -57,6 +57,9 @@ void ColumnFreezableTable::setModel(QAbstractItemModel* model)
         this, SIGNAL(removeItem(const QModelIndex&)), Qt::UniqueConnection);
     connect(frozenColumns_.data(), SIGNAL(moveItem(const QModelIndex&, const QModelIndex&)),
         this, SIGNAL(moveItem(const QModelIndex&, const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(frozenColumns_->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(closeSortingSection(int)));
+    connect(horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(closeSortingSection(int)));
 }
 
 //-----------------------------------------------------------------------------
@@ -206,4 +209,13 @@ void ColumnFreezableTable::updateSectionWidth(int logicalIndex, int, int newSize
 void ColumnFreezableTable::updateSectionHeight(int logicalIndex, int, int newSize)
 {
     frozenColumns_->setRowHeight(logicalIndex, newSize);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ColumnFreezableTable::closeSortingSection()
+//-----------------------------------------------------------------------------
+void ColumnFreezableTable::closeSortingSection(int logicalIndex)
+{
+    horizontalHeader()->setSortIndicatorShown(logicalIndex >= numberOfFrozenColumns_);
+    frozenColumns_->horizontalHeader()->setSortIndicatorShown(logicalIndex < numberOfFrozenColumns_);
 }

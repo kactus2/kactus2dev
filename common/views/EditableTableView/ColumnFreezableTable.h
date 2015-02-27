@@ -114,6 +114,13 @@ private slots:
      */
     void updateSectionHeight(int logicalIndex, int, int newSize);
 
+    /*!
+     *  Close the sorting section from the table that wasn't used in sorting.
+     *
+     *      @param [in] logicalIndex   The index of the sorting column.
+     */
+    void closeSortingSection(int logicalIndex);
+
 private:
 
     /*!
