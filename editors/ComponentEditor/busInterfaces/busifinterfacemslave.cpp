@@ -154,7 +154,7 @@ void BusIfInterfaceMSlave::onRangeChange(const QString& newRange)
 
     if (isBoxValueParameter(rangeEdit_, newRange))
     {
-        QString currentID = rangeEdit_->itemData(remapEdit_->currentIndex()).toString();
+        QString currentID = rangeEdit_->itemData(rangeEdit_->currentIndex()).toString();
         mirroredSlave_->setRangeID(currentID);
         emit increaseReferences(currentID);
     }

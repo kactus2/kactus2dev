@@ -20,7 +20,7 @@
 	  <b>Description</b> is free text for further details.
     </p>
     <p>
-      <b>Type</b> is the type to which the parameter value resolves. 
+      <b>Type</b> is an optional constraint for the type to which the parameter value resolves. 
       Possible types are:
     </p>
     <ul>
@@ -55,7 +55,8 @@
     <p>
       <b>Value</b> contains the mandatory default value of the parameter. This 
 	  value can be overridden in a design that instantiates this component.
-	  The value can be given as an equation.
+	  The value is given in SystemVerilog format and may be given as an equation.
+      Any other text must be enclosed within quotes e.g. "Any text".
     </p>
 	<p>
       By selecting a <b>choice</b>, the user can restrict the allowed parameter 

@@ -65,6 +65,7 @@ void tst_ParameterValidator2014::testValueIsValidForGivenType()
         parameter->setName("param");
         parameter->setType(type);
         parameter->setValue(value);
+        parameter->setValueId("parameterid");
 
         QStringList errorlist = validator.findErrorsIn(parameter, "test", 
             QSharedPointer<QList<QSharedPointer<Choice> > >());
@@ -198,6 +199,14 @@ void tst_ParameterValidator2014::testValueIsValidForGivenType_data()
     QTest::newRow("String in double quotes is valid") << "\"text\"" << "string" << true;
     QTest::newRow("Decimal number is invalid for string type") << "1" << "string" << false;
     QTest::newRow("Expression is invalid for string type") << "12 + 12" << "string" << false;
+
+    QTest::newRow("Text is invalid for empty type") << "text" << "" << false;
+    QTest::newRow("Text in quotes is valid for empty type") << "\"text\"" << "" << true;
+    //QTest::newRow("Reference is invalid for empty type") << "parameterid" << "" << false;
+    QTest::newRow("Expression: divide by zero is invalid") << "4/0" << "" << false;
+    QTest::newRow("Expression: 1+1 is valid") << "1+1" << "" << true;
+    QTest::newRow("Single character x is invalid") << "x" << "" << false;
+    QTest::newRow("Parenthesis only is invalid") << "()" << "" << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -234,7 +243,7 @@ void tst_ParameterValidator2014::testValidityWithMaximumValueAndType_data()
     QTest::addColumn<QString>("maximum");
     QTest::addColumn<bool>("isValid");
 
-    QTest::newRow("Any value is valid for empty type") << "" << "value42" << "" << true;
+    //QTest::newRow("Any value is valid for empty type") << "" << "value42" << "" << true;
     QTest::newRow("Any double quoted string is valid for string type") << "string" << "\"42\"" << "1" << true;
 
     QTest::newRow("Real value is valid for real type") << "real" << "2.0" << "" << true;

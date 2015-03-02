@@ -28,8 +28,8 @@
 	  C-language int or 'char*' could be used. 
 	</p>
     <p>
-      <b>Type</b> is the type to which the model parameter value resolves. 
-      Possible types are:
+      <b>Type</b> is an optional constraint for the type to which the model parameter
+      value resolves. Possible types are:
     </p>
     <ul>
         <li><b>bit</b> indicates that the value shall resolve to a System Verilog bit,
@@ -61,9 +61,10 @@
 		<li><b>string</b> indicates that the value shall contain any text.</li>
     </ul>
     <p>
-      <b>Value</b> contains the mandatory default value of the model parameter. 
-	  This value can be overridden in a design that instantiates this component.
-	  f(x) means that the value can be given as an equation.
+      <b>Value</b> contains the mandatory default value of the model parameter. This 
+	  value can be overridden in a design that instantiates this component.
+	  The value is given in SystemVerilog format and may be given as an equation.
+      Any other text must be enclosed within quotes e.g. "Any text".
     </p>
     <p>
       By selecting a <b>choice</b>, the user can restrict the allowed model 

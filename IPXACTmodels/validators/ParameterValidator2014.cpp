@@ -80,7 +80,7 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
 {
     if (type.isEmpty())
     {
-        return true;
+        return expressionParser_->isValidExpression(value) && expressionParser_->parseExpression(value) != "x";
     }
 
     if (!expressionParser_->isValidExpression(value))
