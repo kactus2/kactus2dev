@@ -110,7 +110,8 @@ HEADERS += ../resource.h \
     ./validators/ParameterValidator.h \
     ./validators/ParameterValidator2014.h \
     ./validators/namevalidator.h \
-    ./validators/NMTokenValidator.h
+    ./validators/NMTokenValidator.h \
+    ./validators/BinaryValidator.h
 SOURCES += ./abstractiondefinition.cpp \
     ./addressblock.cpp \
     ./addressspace.cpp \
@@ -210,4 +211,5 @@ SOURCES += ./abstractiondefinition.cpp \
     ./validators/namevalidator.cpp \
     ./validators/NMTokenValidator.cpp \
     ./validators/ParameterValidator.cpp \
-    ./validators/ParameterValidator2014.cpp
+    ./validators/ParameterValidator2014.cpp \
+    ./validators/BinaryValidator.cpp

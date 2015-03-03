@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
     <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
@@ -45,7 +45,9 @@
       <b>Reset mask</b> defines the bits of the register that have a
       known reset value. Bit value of 1 means that the corresponding
       bit has a known reset value, whereas 0 means that the value is
-      unknown.
+      unknown. Both use SystemVerilog syntax for binary values e.g.
+      'b1011, 4'b1011, and 4'b10_11 are all valid values. The number
+      of bits must equal the register <i>size</i>.
     </p>
   </body>
 </html>

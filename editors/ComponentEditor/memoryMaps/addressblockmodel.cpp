@@ -13,6 +13,7 @@
 #include <IPXACTmodels/register.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include <QRegularExpression>
 #include <QColor>
 
 AddressBlockModel::AddressBlockModel(QSharedPointer<AddressBlock> addressBlock,
@@ -168,10 +169,12 @@ QVariant AddressBlockModel::data( const QModelIndex& index, int role /*= Qt::Dis
 
 	else if (Qt::ForegroundRole == role) {
 
-		if (items_.at(index.row())->isValid(componentChoices_)) {
+		if (items_.at(index.row())->isValid(componentChoices_))
+        {
             return blackForValidOrRedForInvalidIndex(index);
 		}
-		else {
+		else
+        {
 			return QColor("red");
 		}
 	}
@@ -584,48 +587,107 @@ QVariant AddressBlockModel::expressionOrValueForIndex(QModelIndex const& index) 
 //-----------------------------------------------------------------------------
 bool AddressBlockModel::validateColumnForParameter(QModelIndex const& index) const
 {
-    if (index.column() == AddressBlockColumns::REGISTER_DIMENSION)
+    const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
+
+    if (reg)
     {
-        const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
-        if (reg)
+        if (index.column() == AddressBlockColumns::REGISTER_DIMENSION)
         {
             QString dimension = QString::number(reg->getDim());
             return isValuePlainOrExpression(dimension);
         }
-        else
+        else if (index.column() == AddressBlockColumns::REGISTER_SIZE)
         {
-            return false;
-        }
-    }
-    else if (index.column() == AddressBlockColumns::REGISTER_SIZE)
-    {
-        const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
-        if (reg)
-        {
-            QString size = QString::number(reg->getSize());
-            return isValuePlainOrExpression(size);
-        }
-        else
-        {
-            return false;
-        }
-    }
+            QString size = reg->getSizeExpression();
+            if (isValuePlainOrExpression(size))
+            {
+                QString resetValue = reg->getRegisterValue();
+                QString resetMask = reg->getRegisterMask();
+                int registerSize = formattedValueFor(size).toInt();
+                if (!resetValue.isEmpty())
+                {
+                    if (!validateResetColumn(resetValue, registerSize))
+                    {
+                        return false;
+                    }
+                }
 
-    else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
-    {
-        const QSharedPointer<Register> reg = items_.at(index.row()).dynamicCast<Register>();
-        if (reg)
+                if (!resetMask.isEmpty())
+                {
+                    if (!validateResetColumn(resetMask, registerSize))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
         {
             QString bitOffset = reg->getAddressOffset();
             return isValuePlainOrExpression(bitOffset);
         }
-        else
+
+        else if (index.column() == AddressBlockColumns::RESET_VALUE)
+        {
+            QString resetValue = reg->getRegisterValue();
+            int registerSize = formattedValueFor(reg->getSizeExpression()).toInt();
+
+            return validateResetColumn(resetValue, registerSize);
+        }
+
+        else if (index.column() == AddressBlockColumns::RESET_MASK)
+        {
+            QString resetMask = reg->getRegisterMask();
+            int registerSize = formattedValueFor(reg->getSizeExpression()).toInt();
+
+            return validateResetColumn(resetMask, registerSize);
+        }
+
+        return true;
+    }
+
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: addressblockmodel::validateResetColumns()
+//-----------------------------------------------------------------------------
+bool AddressBlockModel::validateResetColumn(QString const& resetValue, int const& registerSize) const
+{
+    //QRegularExpression resetExpression("(?<size>[1-9]?[0-9]*)'[sS]?(?<bitChar>[bB])(?<bits>[01_]+)");
+    QRegularExpression resetExpression("(?<size>[1-9]?[0-9]*)'(?<bitChar>[bB])(?<bits>[01_]+)");
+    QRegularExpressionMatch match = resetExpression.match(resetValue);
+
+    if (match.hasMatch())
+    {
+        QString sizeOfBits = match.captured("size");
+        QString bitChar = match.captured("bitChar");
+        QString bits = match.captured("bits");
+        bits.remove("_");
+
+        if (bits.size() != registerSize || (!sizeOfBits.isEmpty() && sizeOfBits.toInt() != registerSize))
         {
             return false;
         }
+        else
+        {
+            return true;
+        }
     }
-
-    return true;
+    else
+    {
+        return false;
+    }
 }
 
 //-----------------------------------------------------------------------------

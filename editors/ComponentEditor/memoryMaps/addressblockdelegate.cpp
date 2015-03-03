@@ -10,6 +10,8 @@
 #include <common/widgets/booleanComboBox/booleancombobox.h>
 #include <common/widgets/accessComboBox/accesscombobox.h>
 
+#include <IPXACTmodels/validators/BinaryValidator.h>
+
 #include <QLineEdit>
 #include <QIntValidator>
 
@@ -34,8 +36,7 @@ AddressBlockDelegate::~AddressBlockDelegate()
 //-----------------------------------------------------------------------------
 // Function: AddressBlockDelegate::createEditor()
 //-----------------------------------------------------------------------------
-QWidget* AddressBlockDelegate::createEditor(QWidget* parent,  
-    QStyleOptionViewItem const& option, 
+QWidget* AddressBlockDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
     QModelIndex const& index ) const
 {
     if (index.column() == AddressBlockColumns::VOLATILE)
@@ -45,6 +46,21 @@ QWidget* AddressBlockDelegate::createEditor(QWidget* parent,
     else if (index.column() == AddressBlockColumns::REGISTER_ACCESS)
     {
         return new AccessComboBox(parent);
+    }
+    else if (index.column() == AddressBlockColumns::RESET_VALUE || index.column() == AddressBlockColumns::RESET_MASK)
+    {
+        QWidget* editor = QStyledItemDelegate::createEditor(parent, option, index);
+        QLineEdit* lineEditor = qobject_cast<QLineEdit*>(editor);
+
+        if (lineEditor)
+        {
+            QModelIndex modelIndex (index.sibling(index.row(), AddressBlockColumns::REGISTER_SIZE));
+            QString sizeExpression = modelIndex.data(Qt::ToolTipRole).toString();
+
+            lineEditor->setValidator(new BinaryValidator(sizeExpression, lineEditor));
+        }
+
+        return editor;
     }
     else
     {
