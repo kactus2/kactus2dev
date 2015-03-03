@@ -59,6 +59,8 @@ public:
         QString name;
         // The list of all included directories.
         QStringList includeDirectories;
+        // The list of all include files.
+        QList<MakeObjectData> includeFiles;
         // The list of parsed software instances. Tracked to avoid re-parsing a dependency.
         QStringList parsedInstances;
         // Instance specific fileSet, which is to contain the makefile generated for the instance.

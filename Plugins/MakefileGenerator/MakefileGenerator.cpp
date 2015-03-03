@@ -59,12 +59,8 @@ void MakefileGenerator::generate(QString targetPath, QString topPath) const
 void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPath,
     MakefileParser::MakeFileData &mfd, QStringList &makeNames) const
 {
-    // Create directory for the object files.
-    QString instancePath = basePath + mfd.name;
-    QDir path;
-    path.mkpath( instancePath + "/obj" );
-
     // Create the makefile and open a stream to write it.
+    QString instancePath = basePath + mfd.name;
     QString dir = instancePath + "/Makefile"; 
     QFile makeFile(dir);
     makeFile.open(QIODevice::WriteOnly);
@@ -84,8 +80,16 @@ void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPa
     outStream << endl;
     outStream << "INCLUDES=$(patsubst %, -I%, $(_INCLUDES))" << endl << endl;
 
-    // These are also dependencies of the source files.
-    outStream << "DEPS= $(_INCLUDES)/*.h" << endl;
+    // The files proper are also dependencies of the source files.
+    // The object directory is an dependency, so that it will be created if needed.
+    outStream << "DEPS= $(ODIR)";
+
+    foreach(MakefileParser::MakeObjectData file, mfd.includeFiles)
+    {
+        outStream << " " << General::getRelativePath(instancePath,file.path) << "/" << file.fileName;
+    }
+
+    outStream << endl << endl;
 
     // Other stuff is in their own functions.
     writeFinalFlagsAndBuilder(mfd, outStream);
@@ -268,7 +272,10 @@ void MakefileGenerator::writeExeBuild(QTextStream& outStream) const
 
     // Delete all known object files. May leave renamed files undeleted, but is more secure than deleting all
     // content of the object directory.
-    outStream << "clean:\n\trm -f $(OBJ);" << endl;
+    outStream << "clean:\n\trm -f $(OBJ);" << endl << endl;
+
+    // Make a directory for the object files.
+    outStream << "$(ODIR):\n\tmkdir -p $(ODIR);" << endl;
 }
 
 //-----------------------------------------------------------------------------
