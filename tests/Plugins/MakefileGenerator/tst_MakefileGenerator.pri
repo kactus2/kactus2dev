@@ -9,8 +9,10 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ../../../Plugins/MakefileGenerator/MakefileGenerator.h \
     ../../../Plugins/MakefileGenerator/MakefileParser.h \
-    ../../MockObjects/LibraryMock.h
-SOURCES += ../../../Plugins/MakefileGenerator/MakefileGenerator.cpp \
+    ../../MockObjects/LibraryMock.h \
+    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h
+SOURCES += ../../MockObjects/LibraryMock.cpp \
+    ../../../Plugins/MakefileGenerator/MakefileGenerator.cpp \
     ../../../Plugins/MakefileGenerator/MakefileParser.cpp \
-    ../../MockObjects/LibraryMock.cpp \
-    ./tst_MakefileGenerator.cpp
+    ./tst_MakefileGenerator.cpp \
+    ../../../Plugins/PluginSystem/PluginUtilityAdapter.cpp

@@ -23,11 +23,12 @@
 #include <IPXACTmodels/SWView.h>
 
 #include <library/LibraryManager/libraryinterface.h>
+#include <Plugins/PluginSystem/IPluginUtility.h>
 
 class MakefileGenerator
 {
 public:
-    MakefileGenerator( MakefileParser& parser );
+    MakefileGenerator( MakefileParser& parser, IPluginUtility* utility );
 
     ~MakefileGenerator();
 
@@ -150,6 +151,8 @@ private:
       QList<MakefileParser::MakeFileData> parsedData_;
       //! The fileSet for the main makefile and the launcher.
       QSharedPointer<FileSet> generalFileSet_;
+      //! The utility used to print message and etc.
+      IPluginUtility* utility_;
 };
 
 #endif // MAKEFILEGENERATOR_H

@@ -155,7 +155,7 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
         }
     }
 
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, utility );
     generator.generate(targetDir, topDir);
 
     utility->getLibraryInterface()->writeModelToFile(libComp);

@@ -14,13 +14,15 @@
 #include <QFile>
 #include <QDir>
 #include <QTextStream>
+#include <QIODevice> 
 #include <IPXACTmodels/fileset.h>
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::MakefileGenerator()
 //-----------------------------------------------------------------------------
-MakefileGenerator::MakefileGenerator( MakefileParser& parser ) : parsedData_( parser.getParsedData() ),
-    generalFileSet_( parser.getGeneralFileSet() )
+MakefileGenerator::MakefileGenerator( MakefileParser& parser, IPluginUtility* utility )
+    : parsedData_( parser.getParsedData() ), generalFileSet_( parser.getGeneralFileSet() ),
+    utility_( utility )
 {
 }
 
@@ -59,11 +61,21 @@ void MakefileGenerator::generate(QString targetPath, QString topPath) const
 void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPath,
     MakefileParser::MakeFileData &mfd, QStringList &makeNames) const
 {
-    // Create the makefile and open a stream to write it.
+    // Construct the path and folder.
     QString instancePath = basePath + mfd.name;
-    QString dir = instancePath + "/Makefile"; 
-    QFile makeFile(dir);
-    makeFile.open(QIODevice::WriteOnly);
+    QDir path;
+    path.mkpath( instancePath );
+
+    // Create the makefile and open a stream to write it.
+    QString makePath = instancePath + "/Makefile"; 
+    QFile makeFile(makePath);
+    
+    if ( !makeFile.open(QIODevice::WriteOnly) )
+    {
+        utility_->printError("Could not open the makefile at location " + makePath);
+        utility_->printError("Reason: " + makeFile.errorString() );
+    }
+
     QTextStream outStream(&makeFile);
 
     // Add the path to the list of created makefiles for later reference.
@@ -106,7 +118,7 @@ void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPa
     QSharedPointer<FileSet> fileSet = mfd.fileSet;
 
     // The path in the fileSet must be relative to the basePath.
-    QString relDir = General::getRelativePath(topPath,dir);
+    QString relDir = General::getRelativePath(topPath,makePath);
 
     // Add the file to instance fileSet
     if ( !fileSet->contains(relDir) )

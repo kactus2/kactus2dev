@@ -24,6 +24,7 @@
 
 #include <Plugins/MakefileGenerator/MakefileParser.h>
 #include <Plugins/MakefileGenerator/MakefileGenerator.h>
+#include <Plugins/PluginSystem/PluginUtilityAdapter.h>
 
 #include <QRegExp>
 
@@ -93,9 +94,12 @@ private:
 
     //! Output directory for the generator
     QString outputDir_;
+
+    //! Mock utility to be used in tests
+    PluginUtilityAdapter utilityMock_;
 };
 
-tst_MakefileGenerator::tst_MakefileGenerator(): library_( this )
+tst_MakefileGenerator::tst_MakefileGenerator(): library_( this ), utilityMock_(&library_, 0, this)
 {
 }
 
@@ -126,7 +130,7 @@ void tst_MakefileGenerator::baseCase()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, outputDir_ );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
     generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("software_0", "_OBJ= array.c.o");
@@ -173,7 +177,7 @@ void tst_MakefileGenerator::fileBuildOverride()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
     generator.generate(outputDir_,outputDir_);
 
     verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) -sw");
@@ -211,7 +215,7 @@ void tst_MakefileGenerator::fileSetBuildOverride()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -254,7 +258,7 @@ void tst_MakefileGenerator::fileFlagReplace()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -293,7 +297,7 @@ void tst_MakefileGenerator::fileSetFlagReplace()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -335,7 +339,7 @@ void tst_MakefileGenerator::includeFile()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -378,7 +382,7 @@ void tst_MakefileGenerator::swSWViewFlagReplace()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -425,7 +429,7 @@ void tst_MakefileGenerator::hwBuilder()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -471,7 +475,7 @@ void tst_MakefileGenerator::hwBuilderWithNoSoftView()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -518,7 +522,7 @@ void tst_MakefileGenerator::hwRef()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -573,7 +577,7 @@ void tst_MakefileGenerator::hwandswRef()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -623,7 +627,7 @@ void tst_MakefileGenerator::instanceHeaders()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 }
@@ -670,7 +674,7 @@ void tst_MakefileGenerator::multipleFiles()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -724,7 +728,7 @@ void tst_MakefileGenerator::multipleFileSets()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -777,7 +781,7 @@ void tst_MakefileGenerator::multipleComponents()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -827,7 +831,7 @@ void tst_MakefileGenerator::noFilesComponent()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -885,7 +889,7 @@ void tst_MakefileGenerator::multipleHardWare()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -951,7 +955,7 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -991,7 +995,7 @@ void tst_MakefileGenerator::noHardWare()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -1046,7 +1050,7 @@ void tst_MakefileGenerator::multipleInstances()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -1113,7 +1117,7 @@ void tst_MakefileGenerator::apiUsage()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -1203,7 +1207,7 @@ void tst_MakefileGenerator::threeLevelStack()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -1308,7 +1312,7 @@ void tst_MakefileGenerator::fullCircularapiUsage()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
@@ -1406,7 +1410,7 @@ void tst_MakefileGenerator::circularapiUsage()
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design );
-    MakefileGenerator generator( parser );
+    MakefileGenerator generator( parser, &utilityMock_ );
 
     generator.generate(outputDir_,outputDir_);
 
