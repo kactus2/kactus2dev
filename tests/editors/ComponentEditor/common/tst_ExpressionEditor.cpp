@@ -299,8 +299,8 @@ void tst_ExpressionEditor::testExpressionInitialization_data()
     QTest::newRow("Parameter id is replaced with name and shown in darkGreen") << "testParameter" << "id" 
         << "id" << "testParameter" << "darkGreen";
 
-    QTest::newRow("Parameter id can be uuid") << "testParameter" << "{12345678-90ab-cdef-ffff-abcdef000000}" 
-        << "{12345678-90ab-cdef-ffff-abcdef000000}" << "testParameter" << "darkGreen";
+    QTest::newRow("Parameter id can be uuid") << "testParameter" << "uuid_12345678_90ab_cdef_ffff_abcdef000000" 
+        << "uuid_12345678_90ab_cdef_ffff_abcdef000000" << "testParameter" << "darkGreen";
 
     QTest::newRow("Constant is written in black") << "testParameter" << "id" 
         << "1" << "1" << "black";
@@ -333,9 +333,15 @@ void tst_ExpressionEditor::testExpressionIsUpdatedForSelectedCompletion()
 
     QUuid uuid("{12345678-90ab-cdef-ffff-abcdef000000}");
 
+    QString uuidString = uuid.toString();
+    uuidString.remove('{');
+    uuidString.remove('}');
+    uuidString.replace('-','_');
+    uuidString.prepend("uuid_");
+
     QSharedPointer<Parameter> uuidParameter(new Parameter());
     uuidParameter->setName("alpha");
-    uuidParameter->setValueId(uuid.toString());
+    uuidParameter->setValueId(uuidString);
     uuidParameter->setValue("a");
 
     QSharedPointer<Parameter> testParameter(new Parameter());
@@ -385,8 +391,8 @@ void tst_ExpressionEditor::testExpressionIsUpdatedForSelectedCompletion_data()
     QTest::newRow("Adding another reference does not remove id") << "id" << "+testP" 
         << "id+id" << "testParameter+testParameter";
 
-    QTest::newRow("Uuid as parameter id") << "{12345678-90ab-cdef-ffff-abcdef000000}" << "-1" 
-        << "{12345678-90ab-cdef-ffff-abcdef000000}-1" << "alpha-1";
+    QTest::newRow("Uuid as parameter id") << "uuid_12345678_90ab_cdef_ffff_abcdef000000" << "-1" 
+        << "uuid_12345678_90ab_cdef_ffff_abcdef000000-1" << "alpha-1";
 }
 
 //-----------------------------------------------------------------------------

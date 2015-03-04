@@ -13,7 +13,7 @@ TEMPLATE = app
 
 TARGET = tst_MakefileGenerator
 
-QT += core xml gui testlib
+QT += core xml gui testlib widgets
 CONFIG += testcase console
 
 win32:CONFIG(release, debug|release) {

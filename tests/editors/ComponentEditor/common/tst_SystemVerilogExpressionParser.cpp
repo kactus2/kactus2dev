@@ -83,6 +83,15 @@ void tst_SystemVerilogExpressionParser::testParseConstant_data()
     QTest::addColumn<QString>("constant");
     QTest::addColumn<QString>("expectedValue");
 
+    //! Array.
+    QTest::newRow("Array of {1,1} should evaluate to an array of {1,1}") << "{1,1}" << "{1,1}";
+    QTest::newRow("Array with one value is a valid array") << "{2}" << "{2}";
+    QTest::newRow("Inadequate array of {1,1,-} should evaluate to unknown") << "{1,1,-}" << "x";
+    QTest::newRow("Inadequate array of {1,} should evaluate to unknown") << "{1,}" << "x";
+    QTest::newRow("Inadequate array of ,1} should evaluate to unknown") << ",1}" << "x";
+    //QTest::newRow("Array consisting of multiple types of data is unknown") << "{1.1,1,\"helloWorld\"}" << "x";
+    //QTest::newRow("Array inside an array is ok") << "{1,{1,1}}" << "{1,{1,1}}";
+
     QTest::newRow("Empty expression should evaluate to unknown") << "" << "x";
 
     //! Decimal numbers.
@@ -207,6 +216,11 @@ void tst_SystemVerilogExpressionParser::testParseAddition_data()
     QTest::newRow("Addition without second operand is unknown") << "1+" << "x";
     QTest::newRow("Addition without second operand and whitespaces is unknown") << " 1 + " << "x";
 
+    //! Array.
+    QTest::newRow("Addition of arrays should evaluate to unknown") << "{1,1}+{1,1}" << "x";
+    QTest::newRow("1+1 inside array equals 2") << "{1+1,1}" << "{2,1}";
+    QTest::newRow("Constant added to an array is unknown") << "{1,1} + 1" << "x";
+
     //! Decimal numbers.
     QTest::newRow("Constant plus zero equals constant") << "1+0" << "1";
     QTest::newRow("One plus one equals two") << "1+1" << "2";
@@ -269,6 +283,11 @@ void tst_SystemVerilogExpressionParser::testParseSubtraction_data()
     QTest::addColumn<QString>("minusExpression");
     QTest::addColumn<QString>("expectedResult");
 
+    //! Arrays.
+    QTest::newRow("One minus one equals zero in array") << "{1,1-1}" << "{1,0}";
+    QTest::newRow("Subtraction of arrays evaluates to unknown") << "{1,1} - {1,1}" << "x";
+    QTest::newRow("Constant subtracted from an array is unknown") << "{1,1} - 1" << "x";
+
     //! Decimal numbers.
     QTest::newRow("Constant minus zero equals constant") << "1-0" << "1";
     QTest::newRow("Constant minus constant equals zero") << "1-1" << "0";
@@ -326,6 +345,11 @@ void tst_SystemVerilogExpressionParser::testParseMultiply_data()
     QTest::newRow("Zero times zero equals zero") << "0*0" << "0";
     QTest::newRow("Zero times constant equals zero") << "0*1" << "0";
     QTest::newRow("Constant times zero equals zero") << "1*0" << "0";
+
+    //! Arrays.
+    QTest::newRow("Multiplication of arrays is unknown") << "{1,1}*{1,1}" << "x";
+    QTest::newRow("Two times two inside array is four") << "{2*2,2*2}" << "{4,4}";
+    QTest::newRow("Constant multiplied with an array is unknown") << "{1,1} * 1" << "x";
 
     //! Decimal numbers.
     QTest::newRow("One times constant equals constant") << "1*2" << "2";
@@ -386,6 +410,12 @@ void tst_SystemVerilogExpressionParser::testParseDivision_data()
     QTest::newRow("Constant divided by one equals the same constant") << "2/1" << "2";
     QTest::newRow("Constant divided by zero equals x") << "1/0" << "x";
 
+    //! Arrays.
+    QTest::newRow("Division of arrays evaluates to unknown") << "{1,1}/{1,1}" << "x";
+    QTest::newRow("Ten divided by two inside array is five") << "{10/2,1,1}" << "{5,1,1}";
+    QTest::newRow("Constant divided by an array is unknown") << "1 / {1,1}" << "x";
+    QTest::newRow("An array divided by a constant is unknown") << "{1,1} 7 1" << "x";
+
     //! Decimal numbers.
     QTest::newRow("Division result for integer truncates towards zero") << "3/2" << "1";
 
@@ -444,6 +474,12 @@ void tst_SystemVerilogExpressionParser::testParsePower_data()
     QTest::addColumn<QString>("powerExpression");
     QTest::addColumn<QString>("expectedResult");
 
+    //! Arrays.
+    QTest::newRow("Array to the power of an array is unknown") << "{1,1}**{1,1}" << "x";
+    QTest::newRow("Two to the power of three is eight inside an array") << "{1,2**3,1}" << "{1,8,1}";
+    QTest::newRow("Constant to the power of an array is unknown") << "1**{1,1}" << "x";
+    QTest::newRow("An array to the power of a constant is unknown") << "{1,1} ** 1" << "x";
+
     //! Decimal numbers.
     QTest::newRow("One to the power of zero equals one") << "1**0" << "1";
     QTest::newRow("Zero to the power of zero equals one") << "0**0" << "1";
@@ -496,6 +532,9 @@ void tst_SystemVerilogExpressionParser::testClog2Function_data()
 {
     QTest::addColumn<QString>("expression");
     QTest::addColumn<QString>("expectedResult");
+
+    //! Arrays.
+    QTest::newRow("$clog(3) inside an array equals 2") << "{$clog2(3),1,1,1}" << "{2,1,1,1}";
 
     QTest::newRow("$clog(0) equals 0") << "$clog2(0)" << "0";
     QTest::newRow("$clog(1) equals 1") << "$clog2(1)" << "1";

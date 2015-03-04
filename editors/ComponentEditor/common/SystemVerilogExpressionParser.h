@@ -48,6 +48,15 @@ public:
     virtual bool isValidExpression(QString const& expression) const;
 
     /*!
+     *  Check if the given expression is an array.
+     *
+     *      @param [in] expression   The expression to check.
+     *
+     *      @return True, if the expression is an array, otherwise false.
+     */
+    virtual bool isArrayExpression(QString const& expression) const;
+
+    /*!
      *  Checks if the given expression is a plain value and does not need evaluation.
      *
      *      @param [in] expression   The expression to check.

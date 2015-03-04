@@ -96,6 +96,14 @@ bool IPXactValueParser::isValidExpression(QString const& expression, QString con
 }
 
 //-----------------------------------------------------------------------------
+// Function: IPXactValueParser::isArrayExpression()
+//-----------------------------------------------------------------------------
+bool IPXactValueParser::isArrayExpression(QString const& expression) const
+{
+    return false;
+}
+
+//-----------------------------------------------------------------------------
 // Function: IPXactValueParser::isPlainValue()
 //-----------------------------------------------------------------------------
 bool IPXactValueParser::isPlainValue(QString const& expression) const

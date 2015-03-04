@@ -270,7 +270,7 @@ void ExpressionEditor::updateCompletions()
 //-----------------------------------------------------------------------------
 QRegularExpression ExpressionEditor::wordDelimiter() const
 {
-    return QRegularExpression("[+/*() ]|[-](?![a-fA-F0-9]+([-][a-fA-F0-9]+)*[}])");
+    return QRegularExpression("[-+/*() ,{}]");
 }
 
 //-----------------------------------------------------------------------------

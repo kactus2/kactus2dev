@@ -52,6 +52,15 @@ public:
     virtual bool isPlainValue(QString const& expression) const = 0;
 
     /*!
+     *  Check if the given expression is an array.
+     *
+     *      @param [in] expression   The expression to check.
+     *
+     *      @return True, if the expression is an array, otherwise false.
+     */
+    virtual bool isArrayExpression(QString const& expression) const = 0;
+
+    /*!
      *  Finds the common base in the expression.
      *
      *      @param [in] expression   The expression to search in.

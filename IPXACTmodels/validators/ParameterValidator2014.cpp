@@ -91,7 +91,12 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
     bool canConvert = false;
     QString solvedValue = expressionParser_->parseExpression(value);
 
-    if (type == "bit")
+    if (expressionParser_->isArrayExpression(solvedValue))
+    {
+        return isArrayValidForType(solvedValue, type);
+    }
+
+    else if (type == "bit")
     {
         QRegularExpression bitExpression("^([01]|[1-9]+[0-9]*'([bB][01]+|[hH][0-9a-fA-F]+))$");
         return bitExpression.match(value).hasMatch() || bitExpression.match(solvedValue).hasMatch();
@@ -135,6 +140,26 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
     }
 
     return canConvert;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterValidator2014::isArrayValidForType()
+//-----------------------------------------------------------------------------
+bool ParameterValidator2014::isArrayValidForType(QString const& arrayExpression, QString const& type) const
+{
+    QStringList subValues = arrayExpression.split(',');
+    subValues.first() = subValues.first().mid(1, subValues.first().size());
+    subValues.last() = subValues.last().mid(0, subValues.last().size() - 1);
+
+    foreach (QString innerValue, subValues)
+    {
+        if (!hasValidValueForType(innerValue, type))
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -182,7 +207,24 @@ bool ParameterValidator2014::valueIsLessThanMinimum(Parameter const* parameter) 
 {
     QString minimum = parameter->getMinimumValue();
     QString type = parameter->getType();
-    QString value = parameter->getValue();
+    QString value = expressionParser_->parseExpression(parameter->getValue());
+
+    if (expressionParser_->isArrayExpression(value) && type != "bit" && type != "string" && !type.isEmpty())
+    {
+        QStringList subValues = value.split(',');
+        subValues.first() = subValues.first().mid(1, subValues.first().size());
+        subValues.last() = subValues.last().mid(0, subValues.last().size() - 1);
+
+        foreach (QString innerValue, subValues)
+        {
+            if (shouldCompareValueAndBoundary(minimum, type) && valueOf(innerValue, type) < valueOf(minimum, type))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     return shouldCompareValueAndBoundary(minimum, type) && valueOf(value, type) < valueOf(minimum, type);
 }
@@ -194,7 +236,24 @@ bool ParameterValidator2014::valueIsGreaterThanMaximum(Parameter const* paramete
 {
     QString maximum = parameter->getMaximumValue();
     QString type = parameter->getType();
-    QString value = parameter->getValue();
+    QString value = expressionParser_->parseExpression(parameter->getValue());
+
+    if (expressionParser_->isArrayExpression(value) && type != "bit" && type != "string" && !type.isEmpty())
+    {
+        QStringList subValues = value.split(',');
+        subValues.first() = subValues.first().mid(1, subValues.first().size());
+        subValues.last() = subValues.last().mid(0, subValues.last().size() - 1);
+
+        foreach (QString innerValue, subValues)
+        {
+            if (shouldCompareValueAndBoundary(maximum, type) && valueOf(innerValue, type) > valueOf(maximum, type))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     return shouldCompareValueAndBoundary(maximum, type) && valueOf(value, type) > valueOf(maximum, type);
 }

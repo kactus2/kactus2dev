@@ -107,7 +107,7 @@ public:
      *      @return True, if the value is less than minimum, otherwise false.
      */
     virtual bool valueIsLessThanMinimum(Parameter const* parameter) const;
-     
+
     /*!
      *  Checks if the value of the given parameter is greater than the specified maximum value.
      *
@@ -171,6 +171,16 @@ protected:
      *      @return List of the found errors in the parameter value format.
      */
     virtual QStringList findErrorsInType(Parameter const* parameter, QString const& context) const;
+
+    /*!
+     *  Check if the values in the array are valid for the given type.
+     *
+     *      @param [in] arrayExpression     The array.
+     *      @param [in] type                The type of the parameter.
+     *
+     *      @return True, if the contents of the array are valid for type, otherwise false.
+     */
+    bool isArrayValidForType(QString const& arrayExpression, QString const& type) const;
 
 private:
 

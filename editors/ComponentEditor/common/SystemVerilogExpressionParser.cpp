@@ -61,6 +61,27 @@ QString SystemVerilogExpressionParser::parseExpression(QString const& expression
     {
         return expression.trimmed();
     }
+    
+    if (isArrayExpression(expression))
+    {
+        QStringList subExpressions = expression.split(',');
+        subExpressions.first() = subExpressions.first().mid(1, subExpressions.first().size());
+        subExpressions.last() = subExpressions.last().mid(0, subExpressions.last().size()-1);
+
+        QString arrayExpression("{");
+
+        for (int arrayIndex = 0; arrayIndex < subExpressions.size(); ++arrayIndex)
+        {
+            arrayExpression.append(parseExpression(subExpressions.at(arrayIndex)));
+            if (arrayIndex < subExpressions.size() - 1)
+            {
+                arrayExpression.append(',');
+            }
+        }
+        arrayExpression.append('}');
+
+        return arrayExpression;
+    }
 
     QStringList equation = toStringList(expression);
 
@@ -91,13 +112,23 @@ QString SystemVerilogExpressionParser::parseExpression(QString const& expression
 //-----------------------------------------------------------------------------
 bool SystemVerilogExpressionParser::isValidExpression(QString const& expression) const
 {
+    QString stringOrExpression ("\\s*(" + SystemVerilogSyntax::STRING_LITERAL + "|"
+        "(" + PRIMARY_LITERAL.pattern() + "(\\s*" + NEXT_OPERAND.pattern() + ")*))\\s*");
+
+    QRegularExpression arrayExpression("({" + stringOrExpression + "(," + stringOrExpression + ")*})");
+
     QRegularExpression validatingExp("^\\s*(" + SystemVerilogSyntax::STRING_LITERAL + "|"
-        "(" + PRIMARY_LITERAL.pattern() + "(\\s*" + NEXT_OPERAND.pattern() + ")*))\\s*$");
+        "(" + PRIMARY_LITERAL.pattern() + "(\\s*" + NEXT_OPERAND.pattern() + ")*)|" + arrayExpression.pattern() +
+        ")\\s*$");
 
     int openParenthesisCount = expression.count('(');
     int closeParenthesisCount = expression.count(')');
 
-    return validatingExp.match(expression).hasMatch() && openParenthesisCount == closeParenthesisCount;
+    int arrayOpenCount = expression.count('{');
+    int arrayCloseCount = expression.count('}');
+
+    return validatingExp.match(expression).hasMatch() && openParenthesisCount == closeParenthesisCount &&
+        arrayOpenCount == arrayCloseCount;
 }
 
 //-----------------------------------------------------------------------------
@@ -132,6 +163,14 @@ bool SystemVerilogExpressionParser::isStringLiteral(QString const &expression) c
 {
     QRegularExpression stringExpression("^\\s*" + SystemVerilogSyntax::STRING_LITERAL + "\\s*$");
     return expression.indexOf(stringExpression) == 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::isArrayExpression()
+//-----------------------------------------------------------------------------
+bool SystemVerilogExpressionParser::isArrayExpression(QString const& expression) const
+{
+    return expression.contains('{') && expression.contains('}');
 }
 
 //-----------------------------------------------------------------------------
