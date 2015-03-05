@@ -147,9 +147,7 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
 //-----------------------------------------------------------------------------
 bool ParameterValidator2014::isArrayValidForType(QString const& arrayExpression, QString const& type) const
 {
-    QStringList subValues = arrayExpression.split(',');
-    subValues.first() = subValues.first().mid(1, subValues.first().size());
-    subValues.last() = subValues.last().mid(0, subValues.last().size() - 1);
+    QStringList subValues = splitArrayToList(arrayExpression);
 
     foreach (QString innerValue, subValues)
     {
@@ -211,9 +209,7 @@ bool ParameterValidator2014::valueIsLessThanMinimum(Parameter const* parameter) 
 
     if (expressionParser_->isArrayExpression(value) && type != "bit" && type != "string" && !type.isEmpty())
     {
-        QStringList subValues = value.split(',');
-        subValues.first() = subValues.first().mid(1, subValues.first().size());
-        subValues.last() = subValues.last().mid(0, subValues.last().size() - 1);
+        QStringList subValues = splitArrayToList(value);
 
         foreach (QString innerValue, subValues)
         {
@@ -240,9 +236,7 @@ bool ParameterValidator2014::valueIsGreaterThanMaximum(Parameter const* paramete
 
     if (expressionParser_->isArrayExpression(value) && type != "bit" && type != "string" && !type.isEmpty())
     {
-        QStringList subValues = value.split(',');
-        subValues.first() = subValues.first().mid(1, subValues.first().size());
-        subValues.last() = subValues.last().mid(0, subValues.last().size() - 1);
+        QStringList subValues = splitArrayToList(value);
 
         foreach (QString innerValue, subValues)
         {
@@ -361,4 +355,18 @@ QStringList ParameterValidator2014::findErrorsInValue(Parameter const* parameter
     }
 
     return valueErrors;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterValidator2014::splitArrayToList()
+//-----------------------------------------------------------------------------
+QStringList ParameterValidator2014::splitArrayToList(QString const& arrayValue) const
+{
+    QStringList subValues = arrayValue.split(',');
+    QRegularExpression startExpression ("^'?{");
+
+    subValues.first().remove(startExpression);
+    subValues.last().chop(1);
+
+    return subValues;
 }

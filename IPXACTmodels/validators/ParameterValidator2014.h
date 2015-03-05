@@ -188,6 +188,15 @@ private:
 	ParameterValidator2014(ParameterValidator2014 const& rhs);
 	ParameterValidator2014& operator=(ParameterValidator2014 const& rhs);
 
+    /*!
+     *  Split the given array to a list.
+     *
+     *      @param [in] arrayValue  The given array.
+     *
+     *      @return The list of values in the array.
+     */
+    QStringList splitArrayToList(QString const& arrayValue) const;
+
     //! The expression parser to use for solving minimum, maximum and value.
     QSharedPointer<ExpressionParser> expressionParser_;
 };

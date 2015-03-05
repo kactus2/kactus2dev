@@ -65,8 +65,11 @@ QString SystemVerilogExpressionParser::parseExpression(QString const& expression
     if (isArrayExpression(expression))
     {
         QStringList subExpressions = expression.split(',');
-        subExpressions.first() = subExpressions.first().mid(1, subExpressions.first().size());
-        subExpressions.last() = subExpressions.last().mid(0, subExpressions.last().size()-1);
+
+        QRegularExpression removeFromStart ("^'?{");
+
+        subExpressions.first().remove(removeFromStart);
+        subExpressions.last().chop(1);
 
         QString arrayExpression("{");
 
@@ -115,7 +118,7 @@ bool SystemVerilogExpressionParser::isValidExpression(QString const& expression)
     QString stringOrExpression ("\\s*(" + SystemVerilogSyntax::STRING_LITERAL + "|"
         "(" + PRIMARY_LITERAL.pattern() + "(\\s*" + NEXT_OPERAND.pattern() + ")*))\\s*");
 
-    QRegularExpression arrayExpression("({" + stringOrExpression + "(," + stringOrExpression + ")*})");
+    QRegularExpression arrayExpression("('?{" + stringOrExpression + "(," + stringOrExpression + ")*})");
 
     QRegularExpression validatingExp("^\\s*(" + SystemVerilogSyntax::STRING_LITERAL + "|"
         "(" + PRIMARY_LITERAL.pattern() + "(\\s*" + NEXT_OPERAND.pattern() + ")*)|" + arrayExpression.pattern() +

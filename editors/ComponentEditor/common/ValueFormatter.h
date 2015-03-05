@@ -40,6 +40,13 @@ private:
 	ValueFormatter(ValueFormatter const& rhs);
 	ValueFormatter& operator=(ValueFormatter const& rhs);
 
+    /*!
+     *  Format the given array.
+     *
+     *      @param [in] arrayValue  The array to be formatted.
+     *      @param [in] base        The base to use in formatting.
+     */
+    QString formatArray(QString const& arrayValue, int& base) const;
 };
 
 #endif // VALUEFORMATTER_H

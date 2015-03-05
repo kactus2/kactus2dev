@@ -89,6 +89,8 @@ void tst_SystemVerilogExpressionParser::testParseConstant_data()
     QTest::newRow("Inadequate array of {1,1,-} should evaluate to unknown") << "{1,1,-}" << "x";
     QTest::newRow("Inadequate array of {1,} should evaluate to unknown") << "{1,}" << "x";
     QTest::newRow("Inadequate array of ,1} should evaluate to unknown") << ",1}" << "x";
+    QTest::newRow("Hexadecimal values in array are evaluated as decimal values") << "{'h10,'h14}" << "{16,20}";
+    QTest::newRow("Array '{1,1} should evaluate to an array of {1,1}") << "'{1,1}" << "{1,1}";
     //QTest::newRow("Array consisting of multiple types of data is unknown") << "{1.1,1,\"helloWorld\"}" << "x";
     //QTest::newRow("Array inside an array is ok") << "{1,{1,1}}" << "{1,{1,1}}";
 
@@ -98,6 +100,7 @@ void tst_SystemVerilogExpressionParser::testParseConstant_data()
     QTest::newRow("Decimal number 0 should evaluate to 0") << "0" << "0";
     QTest::newRow("Decimal number 1 should evaluate to 1") << "1" << "1";
     QTest::newRow("Decimal number 7 should evaluate to 7") << "7" << "7";
+    QTest::newRow("Decimal number '4 should evaluate to 4") << "4" << "4";
 
     QTest::newRow("Positive decimal number") << "+1" << "1";
     QTest::newRow("Negative decimal number") << "-1" << "-1";

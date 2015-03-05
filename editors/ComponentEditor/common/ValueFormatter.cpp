@@ -11,6 +11,9 @@
 
 #include "ValueFormatter.h"
 
+#include <QStringList>
+#include <QRegularExpression>
+
 //-----------------------------------------------------------------------------
 // Function: ValueFormatter::ValueFormatter()
 //-----------------------------------------------------------------------------
@@ -32,7 +35,12 @@ ValueFormatter::~ValueFormatter()
 //-----------------------------------------------------------------------------
 QString ValueFormatter::format(QString const& value, int base) const
 {
-    if (base == 2)
+    if (value.contains('{') && value.contains('}'))
+    {
+        return formatArray(value, base);
+    }
+
+    else if (base == 2)
     {
         return "'b" + QString::number(value.toInt(), 2);
     }
@@ -48,4 +56,30 @@ QString ValueFormatter::format(QString const& value, int base) const
     {
         return value;
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ValueFormatter::formatArray()
+//-----------------------------------------------------------------------------
+QString ValueFormatter::formatArray(QString const& arrayValue, int& base) const
+{
+    QStringList subValues = arrayValue.split(',');
+
+    QRegularExpression arrayStart ("^'?{");
+
+    subValues.first().remove(arrayStart);
+    subValues.last().chop(1);
+
+    QString formattedArray("{");
+    for (int arrayIndex = 0; arrayIndex < subValues.size(); ++arrayIndex)
+    {
+        formattedArray.append(format(subValues.at(arrayIndex), base));
+        if (arrayIndex < subValues.size() - 1)
+        {
+            formattedArray.append(',');
+        }
+    }
+    formattedArray.append('}');
+
+    return formattedArray;
 }

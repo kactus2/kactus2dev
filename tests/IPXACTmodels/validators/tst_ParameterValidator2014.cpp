@@ -99,6 +99,7 @@ void tst_ParameterValidator2014::testValueIsValidForGivenType_data()
     QTest::newRow("Binary 2'b11 with size is valid for bit type") << "2'b11" << "bit" << true;
     QTest::newRow("Array {1,0} is valid for bit type") << "{1,0}" << "bit" << true;
     QTest::newRow("Array {1, 1.0, \"text\"} is invalid for bit type") << "{1, 1.0, \"text\"}" << "bit" << false;
+    QTest::newRow("Array '{1,1} is valid for bit type") << "'{1,1}" << "bit" << true;
 
     QTest::newRow("Binary 'b11 without size is not valid for bit type") << "'b11" << "bit" << false;
     QTest::newRow("Binary 3'b13 is not valid for bit type") << "3'b13" << "bit" << false;
@@ -170,6 +171,7 @@ void tst_ParameterValidator2014::testValueIsValidForGivenType_data()
     QTest::newRow("string is invalid for int type") << "\"some other text\"" << "int" << false;
     QTest::newRow("Fractional number 0.123 is invalid for int type") << "0.123" << "int" << false;
     QTest::newRow("Array {32768,32768} is valid for int type") << "{32768,32768}" << "int" << true;
+    QTest::newRow("Array {'h10,'h10} is valid for int type") << "{'h10,'h10}" << "int" << true;
     QTest::newRow("Array {1, 1.0, \"text\"} is invalid for int type") << "{1, 1.0, \"text\"}" << "int" << false;
 
     QTest::newRow("0 is valid for longint type") << "0" << "longint" << true;
@@ -278,7 +280,9 @@ void tst_ParameterValidator2014::testValidityWithMaximumValueAndType_data()
     QTest::newRow("Int value is not valid with invalid maximum") << "int" << "1" << "f" << true;
 
     QTest::newRow("Array {2,2,2} is valid with valid maximum 3") << "int" << "{2,2,2}" << "3" << true;
+    QTest::newRow("Array '{2,2,2} is valid with valid maximum 3") << "int" << "'{2,2,2}" << "3" << true;
     QTest::newRow("Array {1,3,4} is invalid with valid maximum 3") << "int" << "{1,3,4}" << "3" << false;
+    QTest::newRow("Array '{4,4,2} is valid with valid maximum 3") << "int" << "'{4,4,2}" << "3" << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -329,8 +333,10 @@ void tst_ParameterValidator2014::testValidityWithMinimumValueAndType_data()
     QTest::newRow("Int value is not valid with greater minimum") << "int" << "1" << "2" << false;
     QTest::newRow("Int value is not valid with invalid minimum") << "int" << "1" << "f" << true;
 
-    QTest::newRow("Array {2,2,2} is valid with valid minimum") << "int" << "{2,2,2}" << "1" << true;
-    QTest::newRow("Array {1,3,4} is invalid with valid minimum") << "int" << "{1,3,4}" << "2" << false;
+    QTest::newRow("Array {2,2,2} is valid with valid minimum 1") << "int" << "{2,2,2}" << "1" << true;
+    QTest::newRow("Array '{2,2,2} is valid with valid minimum 1") << "int" << "'{2,2,2}" << "1" << true;
+    QTest::newRow("Array {1,3,4} is invalid with valid minimum 2") << "int" << "{1,3,4}" << "2" << false;
+    QTest::newRow("Array '{2,2,2} is valid with valid minimum 3") << "int" << "'{2,2,2}" << "3" << false;
 }
 
 //-----------------------------------------------------------------------------
