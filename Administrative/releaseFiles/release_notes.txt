@@ -8,6 +8,33 @@
               * Changed or Information
 ===============================================================================
 
+06/03/2015 2.7.192
+----------------------------------------------------
+
++ Added support for references in Verilog generator.
++ Verilog importer accepts semicolons in comments.
++ Added memory maps and registers to html documentation.
++ Added support for references in import wizard.
+	* Replaced evaluated value with IDs in Verilog import.
++ Improved usability of expression editor.
++ Added support for references in document generator.
++ Implemented module parameters in views.
++ Added name as a frozen column to parameters, model parameters and module parameters.
+	* Name and port number columns were frozen in port table.
++ Where expressions are used, changed the table to show the expression by default.
+	* The tooltip now shows the evaluated value.
++ Register reset value and reset mask can now be inserted as a bit type value.
++ Arrays can be insterted as a value for parameters.
+
+KNOWN UNRESOLVED ISSUES:
+* SystemVerilog expressions are not supported by some features including generators.
+  If expressions or references have been used, it may cause at least the following issues:
+    * Memory map header generator will generate wrong offsets for registers.
+	* Memory maps visualization shows wrong offset for register and aligns them wrong.
+	* VHDL generator will generate wrong values.
+	* Port maps will not automatically adjust to changes in port size.
+* VHDL import does not preserve references to model parameters.
+
 06/02/2015 2.7.0
 ----------------------------------------------------
 
