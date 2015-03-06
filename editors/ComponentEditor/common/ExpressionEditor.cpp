@@ -146,6 +146,25 @@ void ExpressionEditor::finishEditingCurrentWord()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ExpressionEditor::contextMenuEvent()
+//-----------------------------------------------------------------------------
+void ExpressionEditor::contextMenuEvent(QContextMenuEvent* menuEvent)
+{
+    menuEvent->accept();
+    return;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::mousePressEvent()
+//-----------------------------------------------------------------------------
+void ExpressionEditor::mousePressEvent(QMouseEvent* mouseEvent)
+{
+    finishEditingCurrentWord();
+
+    QTextEdit::mousePressEvent(mouseEvent);
+}
+
+//-----------------------------------------------------------------------------
 // Function: ExpressionEditor::keyPressEvent()
 //-----------------------------------------------------------------------------
 void ExpressionEditor::keyPressEvent(QKeyEvent* keyEvent)
@@ -156,7 +175,18 @@ void ExpressionEditor::keyPressEvent(QKeyEvent* keyEvent)
         return;
     }
 
-    if (removesOrReplacesText(keyEvent))
+    if (keysequenceCopyCutPaste(keyEvent))
+    {
+        keyEvent->accept();
+        return;
+    }
+
+    if (keyMovesCursor(keyEvent))
+    {
+        finishEditingCurrentWord();
+    }
+
+    else if (removesOrReplacesText(keyEvent))
     {
         if (textCursor().hasSelection())
         {
@@ -534,6 +564,23 @@ bool ExpressionEditor::removesOrReplacesText(QKeyEvent* keyEvent)
 {
     return keyEvent->key() == Qt::Key_Delete || keyEvent->key() == Qt::Key_Backspace || 
         (textCursor().hasSelection() && !keyEvent->text().isEmpty());
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::keysequenceCopyCutPaste()
+//-----------------------------------------------------------------------------
+bool ExpressionEditor::keysequenceCopyCutPaste(QKeyEvent* keyEvent)
+{
+    return keyEvent == QKeySequence::Copy || keyEvent == QKeySequence::Cut || keyEvent == QKeySequence::Paste;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::movesCursor()
+//-----------------------------------------------------------------------------
+bool ExpressionEditor::keyMovesCursor(QKeyEvent* keyEvent)
+{
+    return keyEvent->key() == Qt::Key_Home || keyEvent->key() == Qt::Key_End || keyEvent->key() == Qt::Key_Left ||
+        keyEvent->key() == Qt::Key_Right;
 }
 
 //-----------------------------------------------------------------------------

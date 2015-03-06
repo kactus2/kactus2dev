@@ -66,6 +66,20 @@ public:
 protected:
 
     /*!
+     *  Captures the context menu event and accepts it.
+     *
+     *      @param [in] menuEvent   The event for context menu.
+     */
+    virtual void contextMenuEvent(QContextMenuEvent* menuEvent);
+
+    /*!
+     *  Captures the mouse press event and finishes editing the current word.
+     *
+     *      @param [in] mouseEvent  The event representing user input.
+     */
+    virtual void mousePressEvent(QMouseEvent* mouseEvent);
+
+    /*!
      *  Captures the user input and edits the underlying expression accordingly.
      *
      *      @param [in] keyEvent   The event representing the user input.
@@ -317,6 +331,24 @@ private:
      *      @return True, if the event will remove or replace text, otherwise false.
      */
     bool removesOrReplacesText(QKeyEvent* keyEvent);
+
+    /*!
+     *  Checks if the given event will copy, cut or paste text.
+     *
+     *      @param [in] keyEvent    The event to check.
+     *
+     *      @return True, if the event will copy, cut or paste text, otherwise false.
+     */
+    bool keysequenceCopyCutPaste(QKeyEvent* keyEvent);
+
+    /*!
+     *  Checks if the given event will move the cursor.
+     *
+     *      @param [in] keyEvent    The event to check.
+     *
+     *      @return True, if the event will move the cursor, otherwise false.
+     */
+    bool keyMovesCursor(QKeyEvent* keyEvent);
 
     /*!
      *  Removes the current selection in the underlying expression.

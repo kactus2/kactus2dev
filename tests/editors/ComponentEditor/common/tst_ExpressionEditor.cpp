@@ -54,6 +54,14 @@ private slots:
 
     void testCompletionChangesWithCursor();
 
+    void testCompleteChangesInAllValuesWithKeyNavigation();
+    void testCompleteChangesInAllValuesWithKeyNavigation_data();
+
+    void testCompleteChangesInAllValuesWithMouseNavigation();
+
+    void testCutCopyPasteIsDisabled();
+    void testCutCopyPasteIsDisabled_data();
+
     void testAutomaticCompletionForSingleOption();
 
     void testColorsAreSetWhenWritingText();
@@ -433,6 +441,154 @@ void tst_ExpressionEditor::testCompletionChangesWithCursor()
     QVERIFY2(!editor->completer()->popup()->isVisible(), "Completer popup should not be visible after clicking a constant.");
 
     delete editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testCompleteChangesInAllValuesWithKeyNavigationRight()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testCompleteChangesInAllValuesWithKeyNavigation()
+{
+    QFETCH(QString, expectedValue);
+    QFETCH(QList<Qt::Key>, keysUsed);
+    QFETCH(int, numberOfRounds);
+
+    ExpressionEditor* editor = createEditorWithoutFinder();
+
+    editor->show();
+    QVERIFY(QTest::qWaitForWindowActive(editor));
+
+    editor->setExpression("1+1+1+1");
+    QTextCursor cursor = editor->textCursor();
+    cursor.setPosition(0);
+
+    QTest::keyClick(editor, keysUsed.at(0));
+
+    for (int i = 0; i < numberOfRounds; ++i)
+    {
+        for (int j = 1; j < keysUsed.size(); ++j)
+        {
+            QTest::keyClick(editor, keysUsed.at(j));
+            if (keysUsed.at(j) == Qt::Key_Delete)
+            {
+                QTest::keyClicks(editor, "20");
+            }
+        }
+    }
+
+    editor->finishEditingCurrentWord();
+
+    QCOMPARE(editor->toPlainText(), expectedValue);
+    QCOMPARE(editor->getExpression(), expectedValue);
+
+    delete editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testCompleteChangesInAllValuesWithKeyNavigation_data()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testCompleteChangesInAllValuesWithKeyNavigation_data()
+{
+    QTest::addColumn<QString>("expectedValue");
+    QTest::addColumn<QList < Qt::Key > >("keysUsed");
+    QTest::addColumn<int>("numberOfRounds");
+
+    QList<Qt::Key> keysUsedInTest;
+    keysUsedInTest << Qt::Key_Home << Qt::Key_Delete << Qt::Key_Right;
+    QTest::newRow("Complete all changes when using right key to navigate") << "20+20+20+20" << keysUsedInTest << 4;
+
+    keysUsedInTest.clear();
+    keysUsedInTest << Qt::Key_End << Qt::Key_Left << Qt::Key_Delete << Qt::Key_Left << Qt::Key_Left << Qt::Key_Left;
+    QTest::newRow("Complete all changes when using left key to navigate") << "20+20+20+20" << keysUsedInTest << 4;
+
+    keysUsedInTest.clear();
+    keysUsedInTest << Qt::Key_End << Qt::Key_Left << Qt::Key_Delete << Qt::Key_Home << Qt::Key_Delete;
+    QTest::newRow("Complete all changes when using end and home keys to navigate") << "20+1+1+20" << keysUsedInTest << 1;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testCompleteChangesInAllValuesWithMouseNavigation()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testCompleteChangesInAllValuesWithMouseNavigation()
+{
+    ExpressionEditor* editor = createEditorWithoutFinder();
+    editor->show();
+    QVERIFY(QTest::qWaitForWindowActive(editor));
+
+    editor->setExpression("1+1+1+1");
+    QTextCursor cursor = editor->textCursor();
+
+    cursor.setPosition(0);
+    QPoint clickPoint = editor->cursorRect(cursor).center();
+    QTest::mouseClick(editor->viewport(), Qt::LeftButton, 0, clickPoint);
+    QTest::keyClick(editor, Qt::Key_Delete);
+    QTest::keyClicks(editor, "20");
+
+    cursor.setPosition(5);
+    clickPoint = editor->cursorRect(cursor).center();
+    QTest::mouseClick(editor->viewport(), Qt::LeftButton, 0, clickPoint);
+    QTest::keyClick(editor, Qt::Key_Delete);
+    QTest::keyClicks(editor, "20");
+
+    cursor.setPosition(3);
+    clickPoint = editor->cursorRect(cursor).center();
+    QTest::mouseClick(editor->viewport(), Qt::LeftButton, 0, clickPoint);
+    QTest::keyClick(editor, Qt::Key_Delete);
+    QTest::keyClicks(editor, "20");
+
+    editor->finishEditingCurrentWord();
+
+    QString expectedValue("20+20+20+1");
+
+    QCOMPARE(editor->toPlainText(), expectedValue);
+    QCOMPARE(editor->getExpression(), expectedValue);
+
+    delete editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testCutCopyPasteIsDisabled()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testCutCopyPasteIsDisabled()
+{
+    QFETCH(Qt::Key, keyForCopying);
+
+    ExpressionEditor* editor = createEditorWithoutFinder();
+    editor->show();
+    QVERIFY(QTest::qWaitForWindowActive(editor));
+
+    editor->setExpression("1+2+2+1");
+    QTextCursor cursor = editor->textCursor();
+
+    QTest::keyClick(editor, Qt::Key_Home);
+    QTest::keyClick(editor, Qt::Key_Right);
+    for (int i = 0; i < 4; ++i)
+    {
+        QTest::keyClick(editor, Qt::Key_Right, Qt::ShiftModifier);
+    }
+    QTest::keyClick(editor, keyForCopying, Qt::ControlModifier);
+
+    QTest::keyClick(editor, Qt::Key_End);
+    QTest::keyClick(editor, Qt::Key_V, Qt::ControlModifier);
+
+    editor->finishEditingCurrentWord();
+
+    QString expectedValue("1+2+2+1");
+
+    QCOMPARE(editor->toPlainText(), expectedValue);
+    QCOMPARE(editor->getExpression(), expectedValue);
+
+    delete editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testCutCopyPasteIsDisabled_data()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testCutCopyPasteIsDisabled_data()
+{
+    QTest::addColumn<Qt::Key>("keyForCopying");
+
+    QTest::newRow("Copying is disabled inside the editor") << Qt::Key_C;
+    QTest::newRow("Cutting is disabled inside the editor") << Qt::Key_X;
 }
 
 //-----------------------------------------------------------------------------
