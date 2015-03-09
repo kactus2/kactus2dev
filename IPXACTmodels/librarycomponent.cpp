@@ -335,9 +335,10 @@ void LibraryComponent::parseVendorExtensions(QDomNode const& extensionsNode)
     for(int index = 0; index < vendorExtensionCount; index++)
     {
         QDomNode childNode = extensionsNode.childNodes().at(index);
+
         if (childNode.nodeName() == QString("kactus2:version"))
         {
-            setVersion(childNode.nodeValue());
+            setVersion(childNode.childNodes().at(0).nodeValue());
         }
 
         else if (!childNode.nodeName().contains("kactus2:"))
