@@ -27,6 +27,8 @@
 + Arrays can be insterted as a value for parameters.
 
 KNOWN UNRESOLVED ISSUES:
+* Parameters created with version 2.7.0 may not work with the latest release due to 
+  change in id formatting. The fastest way to fix this is to re-create the parameters.
 * SystemVerilog expressions are not supported by some features including generators.
   If expressions or references have been used, it may cause at least the following issues:
     * Memory map header generator will generate wrong offsets for registers.
