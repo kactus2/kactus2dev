@@ -51,11 +51,9 @@ itemsToAdd_()
 
 	data_ = QSharedPointer<LibraryData>(new LibraryData(this, parent));   
 
-    treeModel_ = QSharedPointer<LibraryTreeModel>(
-			new LibraryTreeModel(this, data_.data(), this));
+    treeModel_ = QSharedPointer<LibraryTreeModel>(new LibraryTreeModel(this, data_.data(), this));
 
-    hierarchyModel_ = QSharedPointer<HierarchyModel>(
-		new HierarchyModel(data_.data(), this, this));
+    hierarchyModel_ = QSharedPointer<HierarchyModel>(new HierarchyModel(data_.data(), this, this));
 
 	// create the connections between models and library handler
 	syncronizeModels();

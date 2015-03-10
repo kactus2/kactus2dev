@@ -77,11 +77,11 @@ private:
 	//! \brief Set up the connections between child widgets
 	void setupConnections(LibraryTreeModel* dataModel);
 
+    //! \brief The filter between the view and data model.
+    LibraryTreeFilter filter_;
+
 	//! \brief The table view to display the search results
 	LibraryTreeView view_;
-
-	//! \brief The filter between the view and data model.
-	LibraryTreeFilter filter_;
 
 	//! \brief The model for the filter
 	LibraryTreeModel* dataModel_;

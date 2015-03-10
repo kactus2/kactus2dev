@@ -1702,9 +1702,6 @@
     <ClCompile Include="GeneratedFiles\moc_firmnessgroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_hierarchygroup.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_implementationgroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -3982,6 +3979,15 @@
     <ClCompile Include="GeneratedFiles\moc_ColumnFreezableTable.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="library\LibraryManager\LibraryFilter.cpp">
+      <Filter>Source Files\library\LibraryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_LibraryFilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_hierarchygroup.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5483,6 +5489,9 @@
     </CustomBuild>
     <CustomBuild Include="common\views\EditableTableView\ColumnFreezableTable.h">
       <Filter>Header Files\common\views\EditableTableView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\LibraryManager\LibraryFilter.h">
+      <Filter>Header Files\library\LibraryManager</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

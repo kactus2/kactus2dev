@@ -18,9 +18,11 @@ LibraryTreeWidget::LibraryTreeWidget(VLNVDialer* dialer,
 									 LibraryTreeModel* dataModel,
 									 QWidget* parent):
 QWidget(parent),
+filter_(handler, dialer, this), 
 view_(handler, &filter_, this),
-filter_(handler, dialer, dataModel, this), 
-dataModel_(dataModel) {
+dataModel_(dataModel)
+{
+    filter_.setSourceModel(dataModel);
 
 	// set view to use LibraryTreeFilter as source model
 	view_.setModel(&filter_);
