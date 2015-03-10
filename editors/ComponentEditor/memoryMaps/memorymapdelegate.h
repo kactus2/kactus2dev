@@ -10,21 +10,27 @@
 
 #include <QStyledItemDelegate>
 
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionDelegate.h>
+
 /*! \brief The delegate that provides editors to add/remove/edit details of a single memory map.
  *
  */
-class MemoryMapDelegate : public QStyledItemDelegate 
+class MemoryMapDelegate : public ExpressionDelegate
 {
 	Q_OBJECT
 
 public:
 	
-	/*! \brief The constructor.
+	/*!
+	 *  The constructor.
 	 *
-	 * \param parent Pointer to the owner the delegate.
-	 *
-	*/
-	MemoryMapDelegate(QObject *parent);
+	 *      @param [in] parameterNameCompleter  The completer to use for parameter names in expression editor.
+	 *      @param [in] parameterFinder         The parameter finder for expression editor.
+	 *      @param [in] parent                  Pointer to the owner of the delegate.
+	 */
+	MemoryMapDelegate(QCompleter* parameterNameCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+        QObject *parent);
 	
 	//! \brief The destructor.
 	virtual ~MemoryMapDelegate();
@@ -59,6 +65,17 @@ public:
 	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, 
 		QModelIndex const& index) const;
 
+protected:
+
+    /*!
+     *  Checks if the given column supports expressions in the editor.
+     *
+     *      @param [in] column  The column to check.
+     *
+     *      @return True if the cells in the column allow expressions, otherwise false.
+     */
+    virtual bool columnAcceptsExpression(int column) const;
+
 private slots:
 
 	/*! \brief Commit the data from the sending editor and close the editor.
@@ -84,16 +101,6 @@ private:
      *      @return Editor for editing name.
      */
     QWidget* createNameEditor(QWidget* parent, QStyleOptionViewItem const& option, QModelIndex const& index) const;
-
-    /*!
-     *  Creates an editor with validation of input.
-     *
-     *      @param [in] parent                  The parent widget for the editor.
-     *      @param [in] validatingExpression    The regular expression used for validating.
-     *
-     *      @return Editor for editing value in given format.
-     */
-    QWidget* createValidatingEditor(QWidget* parent, QString const& validatingExpression) const;
 };
 
 #endif // MEMORYMAPDELEGATE_H

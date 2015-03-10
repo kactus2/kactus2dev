@@ -75,7 +75,8 @@ bool ComponentEditorAddrSpaceItem::isValid() const
 
 ItemEditor* ComponentEditorAddrSpaceItem::editor() {
 	if (!editor_) {
-		editor_ = new AddressSpaceEditor(component_, libHandler_, addrSpace_);
+		editor_ = new AddressSpaceEditor(component_, libHandler_, addrSpace_, parameterFinder_,
+            expressionFormatter_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()),
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
@@ -87,6 +88,8 @@ ItemEditor* ComponentEditorAddrSpaceItem::editor() {
             this, SIGNAL(errorMessage(QString const&)));
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
 			this, SIGNAL(helpUrlRequested(QString const&)));
+
+        connectItemEditorToReferenceCounter();
 	}
 	return editor_;
 }

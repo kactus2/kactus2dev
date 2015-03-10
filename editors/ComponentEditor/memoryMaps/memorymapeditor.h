@@ -9,6 +9,9 @@
 #define MEMORYMAPEDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <IPXACTmodels/memorymap.h>
 
 #include <QSortFilterProxyModel>
@@ -33,18 +36,22 @@ public:
 		WIDTH = 700
 	};
 	
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param component Pointer to the component being edited.
-	 * \param handler Pointer to the instance managing the library.
-	 * \param memoryMap Pointer to the memory map being edited.
-	 * \param parent Pointer to the parent of this editor.
-	 *
-	*/
+	 *      @param [in] component               Pointer to the component being edited.
+	 *      @param [in] handler                 Pointer to the instance managing the library.
+	 *      @param [in] memoryMap               Pointer to the memory map being edited.
+	 *      @param [in] parameterFinder         Pointer to the parameter finder.
+	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+	 *      @param [in] parent                  Pointer to the parent of this editor.
+	 */
 	MemoryMapEditor(QSharedPointer<Component> component,
 		LibraryInterface* handler, 
 		QSharedPointer<MemoryMap> memoryMap,
-				QWidget* parent = 0);
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QWidget* parent = 0);
 	
 	//! \brief The destructor
 	virtual ~MemoryMapEditor();

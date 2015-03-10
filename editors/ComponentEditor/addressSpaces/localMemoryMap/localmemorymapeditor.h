@@ -11,6 +11,9 @@
 #include <IPXACTmodels/memorymap.h>
 #include <IPXACTmodels/component.h>
 
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <QGroupBox>
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
@@ -30,17 +33,21 @@ class LocalMemoryMapEditor : public QGroupBox {
 
 public:
 
-	/*! \brief The constructor.
+	/*!
+	 *  The constructor.
 	 *
-	 * \param memoryMap Pointer to the local memory map being edited.
-	 * \param component Pointer to the component being edited.
-	 * \param handler Pointer to the instance managing the library.
-	 * \param parent Pointer to the owner of the editor.
-	 *
-	*/
+	 *      @param [in] memoryMap               Pointer to the local memory map being edited.
+	 *      @param [in] component               Pointer to the component being edited.
+	 *      @param [in] handler                 Pointer to the instance managing the library.
+	 *      @param [in] parameterFinder         Pointer to the parameter finder.
+	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+	 *      @param [in] parent                  Pointer to the owner of the editor.
+	 */
 	LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
 		QSharedPointer<Component> component,
 		LibraryInterface* handler,
+        QSharedPointer <ParameterFinder> parameterFinder,
+        QSharedPointer <ExpressionFormatter> expressionFormatter,
 		QWidget *parent);
 	
 	//! \brief The destructor.
@@ -68,6 +75,20 @@ signals:
 
     //! \brief Prints an error message to the user.
     void errorMessage(const QString& msg) const;
+
+    /*!
+     *  Increase the amount of references to a parameter.
+     *
+     *      @param [in] id  The id of the parameter.
+     */
+    void increaseReferences(QString id);
+
+    /*!
+     *  Decrease the amount of references to a parameter.
+     *
+     *      @param [in] id  The id of the parameter.
+     */
+    void decreaseReferences(QString id);
 
 public slots:
 

@@ -15,14 +15,16 @@
 AddressSpaceEditor::AddressSpaceEditor( QSharedPointer<Component> component, 
 										LibraryInterface* handler,
 									   QSharedPointer<AddressSpace> addrSpace,
+                                       QSharedPointer <ParameterFinder> parameterFinder,
+                                       QSharedPointer <ExpressionFormatter> expressionFormatter,
 									   QWidget* parent /*= 0*/ ):
 ItemEditor(component, handler, parent),
 addrSpace_(addrSpace),
 nameEditor_(addrSpace->getNameGroup(), this),
 general_(addrSpace, this),
 segments_(addrSpace, component, handler, this),
-localMemMap_(addrSpace->getLocalMemoryMap(), component, handler, this) {
-
+localMemMap_(addrSpace->getLocalMemoryMap(), component, handler, parameterFinder, expressionFormatter, this)
+{
 	Q_ASSERT(addrSpace_);
 
 	// create the scroll area
@@ -66,6 +68,11 @@ localMemMap_(addrSpace->getLocalMemoryMap(), component, handler, this) {
 		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(&localMemMap_, SIGNAL(itemRemoved(int)),
 		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+
+    connect(&localMemMap_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&localMemMap_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
 	layout->setContentsMargins(0, 0, 0, 0);
 

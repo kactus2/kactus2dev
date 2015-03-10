@@ -18,6 +18,9 @@
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <editors/ComponentEditor/itemeditor.h>
 #include <QSharedPointer>
 
@@ -31,17 +34,21 @@ class AddressSpaceEditor : public ItemEditor {
 
 public:
 
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param component Pointer to the component being edited.
-	 * \param handler Pointer to the instance managing the library.
-	 * \param addrSpace Pointer to the address space being edited.
-	 * \param parent Pointer to the owner of this editor.
-	 *
-	*/
+	 *      @param [in] component               Pointer to the component being edited.
+	 *      @param [in] handler                 Pointer to the instance managing the library.
+	 *      @param [in] addrSpace               Pointer to the address space being edited.
+	 *      @param [in] parameterFinder         Pointer to the parameter finder.
+	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+	 *      @param [in] parent                  Pointer to the owner of this editor.
+	 */
 	AddressSpaceEditor(QSharedPointer<Component> component,
 		LibraryInterface* handler,
 		QSharedPointer<AddressSpace> addrSpace,
+        QSharedPointer <ParameterFinder> parameterFinder,
+        QSharedPointer <ExpressionFormatter> expressionFormatter,
 		QWidget* parent = 0);
 	
 	//! \brief The destructor

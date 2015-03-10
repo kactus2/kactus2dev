@@ -13,6 +13,9 @@
 #include <IPXACTmodels/addressblock.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
 
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapitem::ComponentEditorMemMapItem()
+//-----------------------------------------------------------------------------
 ComponentEditorMemMapItem::ComponentEditorMemMapItem(QSharedPointer<MemoryMap> memoryMap, 
 													 ComponentEditorTreeModel* model,
 													 LibraryInterface* libHandler,
@@ -52,21 +55,37 @@ graphItem_(NULL)
 	Q_ASSERT(memoryMap_);
 }
 
-ComponentEditorMemMapItem::~ComponentEditorMemMapItem() {
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapitem::~ComponentEditorMemMapItem()
+//-----------------------------------------------------------------------------
+ComponentEditorMemMapItem::~ComponentEditorMemMapItem()
+{
+
 }
 
-QString ComponentEditorMemMapItem::text() const {
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapitem::text()
+//-----------------------------------------------------------------------------
+QString ComponentEditorMemMapItem::text() const
+{
 	return memoryMap_->getName();
 }
 
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapitem::isValid()
+//-----------------------------------------------------------------------------
 bool ComponentEditorMemMapItem::isValid() const
 {
 	return memoryMap_->isValid(component_->getChoices());
 }
 
-ItemEditor* ComponentEditorMemMapItem::editor() {
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapitem::editor()
+//-----------------------------------------------------------------------------
+ItemEditor* ComponentEditorMemMapItem::editor()
+{
 	if (!editor_) {
-		editor_ = new MemoryMapEditor(component_, libHandler_, memoryMap_);
+		editor_ = new MemoryMapEditor(component_, libHandler_, memoryMap_, parameterFinder_, expressionFormatter_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), 
 			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
@@ -76,17 +95,26 @@ ItemEditor* ComponentEditorMemMapItem::editor() {
 			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
 			this, SIGNAL(helpUrlRequested(QString const&)));
+
+        connectItemEditorToReferenceCounter();
 	}
 	return editor_;
 }
 
-QString ComponentEditorMemMapItem::getTooltip() const {
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapitem::getTooltip()
+//-----------------------------------------------------------------------------
+QString ComponentEditorMemMapItem::getTooltip() const
+{
 	return tr("Contains the details of a single memory map that can be referenced"
 		" by containing component's slave interfaces");
 }
 
-void ComponentEditorMemMapItem::createChild( int index ) {
-
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapitem::createChild()
+//-----------------------------------------------------------------------------
+void ComponentEditorMemMapItem::createChild( int index )
+{
 	QSharedPointer<MemoryMapItem> memItem = items_[index];
 	QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
 	if (addrBlock) {
@@ -105,11 +133,19 @@ void ComponentEditorMemMapItem::createChild( int index ) {
 	}
 }
 
-ItemVisualizer* ComponentEditorMemMapItem::visualizer() {
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapitem::visualizer()
+//-----------------------------------------------------------------------------
+ItemVisualizer* ComponentEditorMemMapItem::visualizer()
+{
 	return visualizer_;
 }	
 
-void ComponentEditorMemMapItem::setVisualizer( MemoryMapsVisualizer* visualizer ) {
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapitem::setVisualizer()
+//-----------------------------------------------------------------------------
+void ComponentEditorMemMapItem::setVisualizer( MemoryMapsVisualizer* visualizer )
+{
 	visualizer_ = visualizer;
 
 	graphItem_ = new MemoryMapGraphItem(memoryMap_);
@@ -126,15 +162,27 @@ void ComponentEditorMemMapItem::setVisualizer( MemoryMapsVisualizer* visualizer 
 		this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 }
 
-QGraphicsItem* ComponentEditorMemMapItem::getGraphicsItem() {
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapitem::getGraphicsItem()
+//-----------------------------------------------------------------------------
+QGraphicsItem* ComponentEditorMemMapItem::getGraphicsItem()
+{
 	return graphItem_;
 }
 
-void ComponentEditorMemMapItem::updateGraphics() {
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapitem::updateGraphics()
+//-----------------------------------------------------------------------------
+void ComponentEditorMemMapItem::updateGraphics()
+{
 	graphItem_->refresh();
 }
 
-void ComponentEditorMemMapItem::removeGraphicsItem() {
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapitem::removeGraphicsItem()
+//-----------------------------------------------------------------------------
+void ComponentEditorMemMapItem::removeGraphicsItem()
+{
 	Q_ASSERT(graphItem_);
 
 	// remove the graph item from the scene

@@ -15,6 +15,9 @@
 #include <editors/ComponentEditor/memoryMaps/memorymapdelegate.h>
 #include <editors/ComponentEditor/memoryMaps/memorymapmodel.h>
 #include <editors/ComponentEditor/memoryMaps/memorymapproxy.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ParameterCompleter.h>
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -26,6 +29,8 @@
 LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
                                            QSharedPointer<Component> component,
                                            LibraryInterface* handler,
+                                           QSharedPointer<ParameterFinder> parameterFinder,
+                                           QSharedPointer<ExpressionFormatter> expressionFormatter,
                                            QWidget *parent)
     : QGroupBox(tr("Local memory map"), parent),
       enableMemMapBox_(new QCheckBox("Use local memory map", this)),
@@ -33,10 +38,21 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
       nameEditor_(new NameGroupEditor(memoryMap->getNameGroup(), this)),
       view_(new EditableTableView(this)),
       proxy_(new MemoryMapProxy(this)),
-      model_(new MemoryMapModel(memoryMap, component->getChoices(), this)),
+      model_(0),
       component_(component),
       handler_(handler)
 {
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
+
+    model_ = new MemoryMapModel(memoryMap, component->getChoices(), expressionParser, parameterFinder,
+        expressionFormatter, this);
+
+    ComponentParameterModel* componentParameterModel = new ComponentParameterModel(this, parameterFinder);
+    componentParameterModel->setExpressionParser(expressionParser);
+
+    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
+    parameterCompleter->setModel(componentParameterModel);
+
 	proxy_->setSourceModel(model_);
 	view_->setModel(proxy_);
 
@@ -53,7 +69,7 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
 
 	// items can not be dragged
 	view_->setItemsDraggable(false);
-	view_->setItemDelegate(new MemoryMapDelegate(this));
+    view_->setItemDelegate(new MemoryMapDelegate(parameterCompleter, parameterFinder, this));
 	view_->setSortingEnabled(true);
 
 	view_->sortByColumn(MemoryMapColumns::BASE_COLUMN, Qt::AscendingOrder);
@@ -71,6 +87,14 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
 		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
     connect(enableMemMapBox_, SIGNAL(stateChanged(int)), this, SLOT(onEnableChanged()), Qt::UniqueConnection);
+
+    connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(view_->itemDelegate(), SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(model_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(enableMemMapBox_);

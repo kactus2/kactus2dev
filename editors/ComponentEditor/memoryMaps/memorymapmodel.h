@@ -8,6 +8,10 @@
 #ifndef MEMORYMAPMODEL_H
 #define MEMORYMAPMODEL_H
 
+#include <editors/ComponentEditor/common/ParameterizableTable.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
 #include <IPXACTmodels/memorymap.h>
 #include <IPXACTmodels/memorymapitem.h>
 
@@ -20,20 +24,27 @@ class Choice;
 /*! \brief The model to manage the details of a single memory map.
  *
  */
-class MemoryMapModel : public QAbstractTableModel {
+class MemoryMapModel : public ParameterizableTable
+{
 	Q_OBJECT
 
 public:
 	
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param memoryMap Pointer to the memory map being edited.
-     * \param componentChoices  Choices in the containing component.
-	 * \param parent Pointer to the owner of this model.
-	 *
-	*/
+	 *      @param [in] memoryMap               Pointer to the memory map being edited.
+	 *      @param [in] componentChoices        Choices in the containing component.
+	 *      @param [in] expressionParser        Pointer to the expression parser.
+	 *      @param [in] parameterFinder         Pointer to the parameter finder.
+	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+	 *      @param [in] parent                  Pointer to the owner of this model.
+	 */
 	MemoryMapModel(QSharedPointer<MemoryMap> memoryMap, 
-        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+        QSharedPointer <QList<QSharedPointer<Choice> > > componentChoices,
+        QSharedPointer <ExpressionParser> expressionParser,
+        QSharedPointer <ParameterFinder> parameterFinder,
+        QSharedPointer <ExpressionFormatter> expressionFormatter,
 		QObject *parent);
 	
 	//! \brief The destructor
@@ -115,6 +126,45 @@ public slots:
 	*/
 	virtual void onRemoveItem(QModelIndex const& index);
 
+protected:
+
+    /*!
+     *  Checks if the column index is valid for expressions.
+     *
+     *      @param [in] index   The index being evaluated.
+     *
+     *      @return True, if the column can have expressions, otherwise false.
+     */
+    virtual bool isValidExpressionColumn(QModelIndex const& index) const;
+
+    /*!
+     *  Gets the expression for the given index, or plain value if there is no expression.
+     *
+     *      @param [in] index   The index of the target data.
+     *
+     *      @return Expression or plain value in the given index.
+     */
+    virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  validates the data in the column.
+     *
+     *      @param [in] index   The index being validated.
+     *
+     *      @return True, if the data is valid, otherwise false.
+     */
+    virtual bool validateColumnForParameter(QModelIndex const& index) const;
+
+    /*!
+     *  Gets the number of all the references made on the selected row to the selected parameter.
+     *
+     *      @param [in] row         The row of the selected item.
+     *      @param [in] valueID     The referenced parameter.
+     *
+     *      @return The number of references made to the parameter on the selected row.
+     */
+    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const;
+
 signals:
 
 	//! \brief Emitted when the contents of the model change.
@@ -134,6 +184,15 @@ private:
 	//! \brief No assignment
 	MemoryMapModel& operator=(const MemoryMapModel& other);
 
+    /*!
+     *  Gets the value for the given index.
+     *
+     *      @param [in] index   The index of the target data.
+     *
+     *      @return The data in the given index.
+     */
+    QVariant valueForIndex(QModelIndex const& index) const;
+
 	//! \brief Pointer to the memory map being edited.
 	QSharedPointer<MemoryMap> memoryMap_;
 
@@ -142,6 +201,8 @@ private:
 
 	//! \brief Contains the memory map items being edited.
 	QList<QSharedPointer<MemoryMapItem> >& items_;
+
+    QSharedPointer <ExpressionFormatter> expressionFormatter_;
 };
 
 #endif // MEMORYMAPMODEL_H

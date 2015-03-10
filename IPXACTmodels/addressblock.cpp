@@ -409,6 +409,45 @@ void AddressBlock::setWidth( int width ) {
 	width_ = width;
 }
 
+//-----------------------------------------------------------------------------
+// Function: addressblock::setWidthExpression()
+//-----------------------------------------------------------------------------
+void AddressBlock::setWidthExpression(QString const& widthExpression)
+{
+    widthAttributes_.insert("kactus2:widthExpression", widthExpression);
+}
+
+//-----------------------------------------------------------------------------
+// Function: addressblock::getWidthExpression()
+//-----------------------------------------------------------------------------
+QString AddressBlock::getWidthExpression()
+{
+    if (hasWidthExpression())
+    {
+        return widthAttributes_.value("kactus2:widthExpression");
+    }
+    else
+    {
+        return QString::number(getWidth());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: addressblock::hasWidthExpression()
+//-----------------------------------------------------------------------------
+bool AddressBlock::hasWidthExpression()
+{
+    return widthAttributes_.contains("kactus2:widthExpression");
+}
+
+//-----------------------------------------------------------------------------
+// Function: addressblock::removeWidthExpression()
+//-----------------------------------------------------------------------------
+void AddressBlock::removeWidthExpression()
+{
+    widthAttributes_.remove("kactus2:widthExpression");
+}
+
 void AddressBlock::setRange(const QString &range) {
 	range_ = range;
 }

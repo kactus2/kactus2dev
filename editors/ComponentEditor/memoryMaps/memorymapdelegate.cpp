@@ -23,8 +23,9 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryMapDelegate::MemoryMapDelegate()
 //-----------------------------------------------------------------------------
-MemoryMapDelegate::MemoryMapDelegate(QObject *parent):
-QStyledItemDelegate(parent)
+MemoryMapDelegate::MemoryMapDelegate(QCompleter* parameterNameCompleter,
+                                     QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
+ExpressionDelegate(parameterNameCompleter, parameterFinder, parent)
 {
 
 }
@@ -52,14 +53,6 @@ QWidget* MemoryMapDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
         UsageComboBox* usageBox = new UsageComboBox(parent);
         return usageBox;
     }
-    else if (index.column() == MemoryMapColumns::RANGE_COLUMN)
-    {
-        return createValidatingEditor(parent, "([1-9][0-9]{0,8}([kMTG])?)?");
-    }
-    else if (index.column() == MemoryMapColumns::WIDTH_COLUMN)
-    {
-        return createValidatingEditor(parent, "([1-9][0-9]{0,3})?");
-    }
     else if (index.column() == MemoryMapColumns::ACCESS_COLUMN)
     {
         AccessComboBox* accessBox = new AccessComboBox(parent);
@@ -72,7 +65,7 @@ QWidget* MemoryMapDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     }
     else
     {
-        return QStyledItemDelegate::createEditor(parent, option, index);
+        return ExpressionDelegate::createEditor(parent, option, index);
     }
 }
 
@@ -107,7 +100,7 @@ void MemoryMapDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
     }
     else
     {
-        QStyledItemDelegate::setEditorData(editor, index);
+        ExpressionDelegate::setEditorData(editor, index);
     }
 }
 
@@ -142,7 +135,7 @@ void MemoryMapDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
     }
     else 
     {
-        QStyledItemDelegate::setModelData(editor, model, index);
+        ExpressionDelegate::setModelData(editor, model, index);
     }
 }
 
@@ -177,14 +170,10 @@ QWidget* MemoryMapDelegate::createNameEditor(QWidget* parent, QStyleOptionViewIt
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapDelegate::createValidatingEditor()
+// Function: memorymapdelegate::columnAcceptsExpression()
 //-----------------------------------------------------------------------------
-QWidget* MemoryMapDelegate::createValidatingEditor(QWidget* parent, QString const& validatingExpression) const
+bool MemoryMapDelegate::columnAcceptsExpression(int column) const
 {
-    QLineEdit* lineEditor = new QLineEdit(parent);
-    lineEditor->setValidator(new QRegularExpressionValidator(QRegularExpression(validatingExpression),
-        lineEditor));
-
-    connect(lineEditor, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-    return lineEditor;
+    return column == MemoryMapColumns::BASE_COLUMN || column == MemoryMapColumns::RANGE_COLUMN ||
+        column == MemoryMapColumns::WIDTH_COLUMN;
 }

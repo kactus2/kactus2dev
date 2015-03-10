@@ -277,6 +277,32 @@ public:
 	 */
 	void setWidthAttributes(const QMap<QString, QString>& widthAttributes);
 
+    /*!
+     *  Sets the expression attribute for width.
+     *
+     *      @param [in] widthExpression     The expression for width.
+     */
+    void setWidthExpression(QString const& widthExpression);
+
+    /*!
+     *  Gets the width expression.
+     *
+     *      @return The width expression, if the address block has one.
+     */
+    QString getWidthExpression();
+
+    /*!
+     *  Checks if the address block has a width expression.
+     *
+     *      @return True if the address block has a width expression, otherwise false.
+     */
+    bool hasWidthExpression();
+
+    /*!
+     *  Removes the width expression from the width attributes.
+     */
+    void removeWidthExpression();
+
 	/*! \brief Get the parameters of the address block
 	 *
 	 * \return QList containing the attributes

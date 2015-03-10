@@ -160,7 +160,7 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
 
 	if (Qt::DisplayRole == role) 
     {
-        if (index.column() == RegisterColumns::OFFSET_COLUMN || index.column() == RegisterColumns::WIDTH_COLUMN)
+        if (isValidExpressionColumn(index))
         {
             return expressionFormatter_->formatReferringExpression(valueForIndex(index).toString());
         }
@@ -177,7 +177,7 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
 
     else if (role == Qt::ToolTipRole)
     {
-        if (index.column() == RegisterColumns::OFFSET_COLUMN || index.column() == RegisterColumns::WIDTH_COLUMN)
+        if (isValidExpressionColumn(index))
         {
             return formattedValueFor(valueForIndex(index).toString());
         }

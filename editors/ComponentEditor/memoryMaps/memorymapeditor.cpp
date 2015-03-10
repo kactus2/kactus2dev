@@ -15,6 +15,10 @@
 #include <common/views/EditableTableView/editabletableview.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
 
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ParameterCompleter.h>
+#include <editors/ComponentEditor/parameters\ComponentParameterModel.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
@@ -22,15 +26,25 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryMapEditor::MemoryMapEditor()
 //-----------------------------------------------------------------------------
-MemoryMapEditor::MemoryMapEditor(QSharedPointer<Component> component,
-    LibraryInterface* handler, 
-    QSharedPointer<MemoryMap> memoryMap,
-    QWidget* parent):
+MemoryMapEditor::MemoryMapEditor(QSharedPointer<Component> component, LibraryInterface* handler,
+    QSharedPointer<MemoryMap> memoryMap, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget* parent /* = 0 */):
 ItemEditor(component, handler, parent),
-    view_(new EditableTableView(this)),
-    proxy_(new MemoryMapProxy(this)),
-    model_(new MemoryMapModel(memoryMap, component->getChoices(), this)) 
+view_(new EditableTableView(this)),
+proxy_(new MemoryMapProxy(this)),
+model_(0)
 {
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
+
+    model_ = new MemoryMapModel(memoryMap, component->getChoices(), expressionParser, parameterFinder,
+        expressionFormatter, this);
+
+    ComponentParameterModel* componentParameterModel = new ComponentParameterModel(this, parameterFinder);
+    componentParameterModel->setExpressionParser(expressionParser);
+
+    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
+    parameterCompleter->setModel(componentParameterModel);
+
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Address blocks summary"), this);
 
@@ -53,7 +67,7 @@ ItemEditor(component, handler, parent),
 
 	view_->setSortingEnabled(true);
 
-	view_->setItemDelegate(new MemoryMapDelegate(this));
+    view_->setItemDelegate(new MemoryMapDelegate(parameterCompleter, parameterFinder, this));
 
 	view_->sortByColumn(MemoryMapColumns::BASE_COLUMN, Qt::AscendingOrder);
 
@@ -65,6 +79,14 @@ ItemEditor(component, handler, parent),
 		model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
 		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(view_->itemDelegate(), SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(model_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
