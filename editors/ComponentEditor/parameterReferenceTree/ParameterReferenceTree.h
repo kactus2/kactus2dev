@@ -19,6 +19,7 @@
 #include <IPXACTmodels/addressblock.h>
 #include <IPXACTmodels/memorymap.h>
 #include <IPXACTmodels/mirroredslaveinterface.h>
+#include <IPXACTmodels/addressspace.h>
 
 #include <QTreeWidget>
 #include <QSharedPointer>
@@ -101,6 +102,13 @@ private:
         QTreeWidgetItem* parentItem);
 
     /*!
+     *  Check if a reference exists in address spaces.
+     *
+     *      @return True, if there is a reference to this parameter, false otherwise.
+     */
+    bool referenceExistsInAddressSpaces();
+
+    /*!
      *  Check if a reference exists in views' parameters.
      *
      *      @return True, if there is a reference to this parameter, false otherwise.
@@ -166,6 +174,15 @@ private:
     bool referenceExistsInAddressBlock(QSharedPointer<AddressBlock> addressBlock);
 
     /*!
+     *  Checks if a reference exists in an address blocks values.
+     *
+     *      @param [in] addressBlock    The address block whose references are being looked at.
+     *
+     *      @return True, if there is a reference to this parameter, false otherwise.
+     */
+    bool referenceExistsInAddressBlockValues(QSharedPointer<AddressBlock> addressBlock);
+
+    /*!
      *  Check if a register has a reference.
      *
      *      @param [in] targetRegister      The register being studied.
@@ -187,6 +204,11 @@ private:
      *      @param [in] targetField         The target field.
      */
     bool registerFieldHasReference(QSharedPointer<Field> targetField);
+
+    /*!
+     *  Create the references for address spaces.
+     */
+    void createReferencesForAddressSpaces();
 
     /*!
      *  Create the references for memory maps.
@@ -292,6 +314,14 @@ private:
      *      @param [in] parent      The parent of the upcoming item.
      */
     void createItemsForPort(QSharedPointer<Port> port, QTreeWidgetItem* parent);
+
+    /*!
+     *  Create tree items for an address block that is referencing this parameter.
+     *
+     *      @param [in] targetAddressBlock  The referencing address block.
+     *      @param [in] parent              The parent for the upcoming item.
+     */
+    void createItemsForAddressBlock(QSharedPointer<AddressBlock> targetAddressBlock, QTreeWidgetItem* parent);
 
     /*!
      *  Create tree items for a register that is referencing this parameter.

@@ -74,6 +74,11 @@ void ParameterReferenceTree::setupTree()
             createReferencesForMemoryMaps();
         }
 
+        if (referenceExistsInAddressSpaces())
+        {
+            createReferencesForAddressSpaces();
+        }
+
         if (referenceExistsInViews())
         {
             createReferencesForViews();
@@ -178,6 +183,22 @@ void ParameterReferenceTree::createReferencesForModelParameters(
             createItemsForParameter(modelParameter, modelParameterItem);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInAddressSpaces()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInAddressSpaces()
+{
+    foreach(QSharedPointer<AddressSpace> addressSpace, component_->getAddressSpaces())
+    {
+        if (referenceExistsInSingleMemoryMap(addressSpace->getLocalMemoryMap()))
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -340,6 +361,11 @@ bool ParameterReferenceTree::referenceExistsInSingleMemoryMap(QSharedPointer<Mem
 //-----------------------------------------------------------------------------
 bool ParameterReferenceTree::referenceExistsInAddressBlock(QSharedPointer<AddressBlock> addressBlock)
 {
+    if (referenceExistsInAddressBlockValues(addressBlock))
+    {
+        return true;
+    }
+
     foreach (QSharedPointer<RegisterModel> registerItem, addressBlock->getRegisterData())
     {
         QSharedPointer<Register> targetRegister = registerItem.dynamicCast<Register>();
@@ -354,6 +380,15 @@ bool ParameterReferenceTree::referenceExistsInAddressBlock(QSharedPointer<Addres
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInAddressBlockValues()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInAddressBlockValues(QSharedPointer<AddressBlock> addressBlock)
+{
+    return addressBlock->getBaseAddress().contains(targetID_) || addressBlock->getRange().contains(targetID_) ||
+        addressBlock->getWidthExpression().contains(targetID_);
 }
 
 //-----------------------------------------------------------------------------
@@ -407,6 +442,25 @@ bool ParameterReferenceTree::registerFieldHasReference(QSharedPointer<Field> tar
 }
 
 //-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::createReferencesForAddressSpaces()
+//-----------------------------------------------------------------------------
+void ParameterReferenceTree::createReferencesForAddressSpaces()
+{
+    QTreeWidgetItem* topAddressSpaceItem = createTopItem("Address Spaces");
+
+    foreach (QSharedPointer<AddressSpace> addressSpace, component_->getAddressSpaces())
+    {
+        if (addressSpace->hasLocalMemoryMap() && referenceExistsInSingleMemoryMap(addressSpace->getLocalMemoryMap()))
+        {
+            QTreeWidgetItem* addressSpaceItem = createMiddleItem(addressSpace->getName(), topAddressSpaceItem);
+            QSharedPointer <MemoryMap> localMemoryMap = addressSpace->getLocalMemoryMap();
+
+            createReferencesForSingleMemoryMap(localMemoryMap, addressSpaceItem);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::createReferencesForMemoryMaps()
 //-----------------------------------------------------------------------------
 void ParameterReferenceTree::createReferencesForMemoryMaps()
@@ -457,6 +511,11 @@ void ParameterReferenceTree::createReferencesForSingleAddressBlock(QSharedPointe
 {
     QTreeWidgetItem* addressBlockItem = createMiddleItem(addressBlock->getName(),
         middleAddressBlocksItem);
+
+    if (referenceExistsInAddressBlockValues(addressBlock))
+    {
+        createItemsForAddressBlock(addressBlock, addressBlockItem);
+    }
 
     foreach (QSharedPointer<RegisterModel> registerModel,
         addressBlock->getRegisterData())
@@ -730,6 +789,32 @@ void ParameterReferenceTree::createItemsForRegister(QSharedPointer<Register> tar
     {
         QString itemName = "Size";
         QString expression = targetRegister->getSizeExpression();
+        createItem(itemName, expression, parent);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::createItemsForAddressBlock()
+//-----------------------------------------------------------------------------
+void ParameterReferenceTree::createItemsForAddressBlock(QSharedPointer<AddressBlock> targetAddressBlock,
+    QTreeWidgetItem* parent)
+{
+    if (targetAddressBlock->getBaseAddress().contains(targetID_))
+    {
+        QString itemName = "Base Address";
+        QString expression = targetAddressBlock->getBaseAddress();
+        createItem(itemName, expression, parent);
+    }
+    if (targetAddressBlock->getRange().contains(targetID_))
+    {
+        QString itemName = "Range";
+        QString expression = targetAddressBlock->getRange();
+        createItem(itemName, expression, parent);
+    }
+    if (targetAddressBlock->getWidthExpression().contains(targetID_))
+    {
+        QString itemName = "Width";
+        QString expression = targetAddressBlock->getWidthExpression();
         createItem(itemName, expression, parent);
     }
 }
