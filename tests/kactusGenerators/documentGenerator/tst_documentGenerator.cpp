@@ -66,6 +66,7 @@ private slots:
 
     void testMemoryMapsWrittenWithTopComponent();
     void testAddressBlocksWrittenWithTopComponent();
+    void testExpressionsInAddressBlocks();
     void testRegistersWrittenWithTopComponent();
     void testFieldsWrittenWithTopComponent();
     void testMemoryMapToFieldWrittenWithTopComponent();
@@ -142,6 +143,7 @@ private:
         QString const& dimension, QString const& description);
 
     QSharedPointer<AddressBlock> createTestAddressBlock (QString const& name, QString const& description,
+        QString const& baseAddress, QString const& range, QString const& width,
         QList <QSharedPointer <Register> > registers);
 
     QSharedPointer<MemoryMap> createTestMemoryMap(QString const& name, QString const& description, 
@@ -347,7 +349,8 @@ void tst_documentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
     registers.append(testRegister);
 
     QList <QSharedPointer <AddressBlock> > addressBlocks;
-    QSharedPointer <AddressBlock> testAddressBlock = createTestAddressBlock("addressBlock", "", registers);
+    QSharedPointer <AddressBlock> testAddressBlock = createTestAddressBlock("addressBlock", "", "'h0", "4", "32",
+        registers);
     addressBlocks.append(testAddressBlock);
 
     QList <QSharedPointer <MemoryMap> > memoryMaps;
@@ -610,7 +613,7 @@ void tst_documentGenerator::testParametersWrittenWithOnlyTopComponent()
     componentParameters.append(refParameter);
 
     topComponent_->getParameters()->append(componentParameters);
-    topComponent_->setComponentHierarchy(KactusAttribute::KTS_GLOBAL);
+    topComponent_->setComponentHierarchy(KactusAttribute::FLAT);
 
     DocumentGenerator* generator = createTestGenerator();
 
@@ -770,7 +773,8 @@ void tst_documentGenerator::testAddressBlocksWrittenWithTopComponent()
     registers.append(testRegister);
 
     QList <QSharedPointer <AddressBlock> > addressBlocks;
-    QSharedPointer <AddressBlock> testAddressBlock = createTestAddressBlock("addressBlock", "example", registers);
+    QSharedPointer <AddressBlock> testAddressBlock = createTestAddressBlock("addressBlock", "example", "'h0", "4",
+        "32", registers);
     addressBlocks.append(testAddressBlock);
 
     DocumentGenerator* generator = createTestGenerator();
@@ -808,7 +812,95 @@ void tst_documentGenerator::testAddressBlocksWrittenWithTopComponent()
         "\t\t\t\t\t<td>" + General::usage2Str(testAddressBlock->getUsage()) + "</td>\n"
         "\t\t\t\t\t<td>" + testAddressBlock->getBaseAddress() + "</td>\n"
         "\t\t\t\t\t<td>" + testAddressBlock->getRange() + "</td>\n"
-        "\t\t\t\t\t<td>" + QString::number(testAddressBlock->getWidth()) + "</td>\n"
+        "\t\t\t\t\t<td>" + testAddressBlock->getWidthExpression() + "</td>\n"
+        "\t\t\t\t\t<td>" + General::access2Str(testAddressBlock->getAccess()) + "</td>\n"
+        "\t\t\t\t\t<td>" + General::bool2Str(testAddressBlock->getVolatile()) + "</td>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t</table>\n"
+        );
+
+    readOutputFile();
+
+    if (!output_.contains(expectedOutput))
+    {
+        QStringList outputLines = output_.split("\n");
+        QStringList expectedLines = expectedOutput.split("\n");
+
+        QVERIFY(outputLines.count() >= expectedLines.count());
+
+        int lineOffset = outputLines.indexOf(expectedLines.first());
+
+        if (lineOffset == -1)
+        {
+            readOutputFile();
+            QCOMPARE(output_, expectedOutput);
+        }
+        else
+        {
+            int lineCount = expectedLines.count();
+            for (int i = 0; i < lineCount; i++)
+            {
+                QCOMPARE(outputLines.at(i + lineOffset), expectedLines.at(i));
+            }
+        }
+    }
+    else if (output_.count(expectedOutput) != 1)
+    {
+        QVERIFY2(false, QString(expectedOutput + " was found " + QString::number(output_.count(expectedOutput)) +
+            " times in output.").toLocal8Bit());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_documentGenerator::testExpressionsInAddressBlocks()
+//-----------------------------------------------------------------------------
+void tst_documentGenerator::testExpressionsInAddressBlocks()
+{
+    QSharedPointer <Parameter> targetParameter = createTestParameter("target", "4", "", "ID-TARGET");
+
+    QList <QSharedPointer <AddressBlock> > addressBlocks;
+    QSharedPointer <AddressBlock> testAddressBlock = createTestAddressBlock("addressBlock", "example", "'h0",
+        "ID-TARGET", "ID-TARGET + 2", QList <QSharedPointer <Register> > ());
+    addressBlocks.append(testAddressBlock);
+
+    topComponent_->getParameters()->append(targetParameter);
+
+    DocumentGenerator* generator = createTestGenerator();
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    int subHeaderNumber = 1;
+
+    generator->writeAddressBlocks(addressBlocks, stream, subHeaderNumber, subHeaderNumber);
+
+    targetFile.close();
+
+    delete generator;
+    generator = 0;
+
+    QString expectedOutput(
+        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv()->toString() + ".addressBlock." +
+        testAddressBlock->getName() + "\">0.1.1.1 " + testAddressBlock->getName() + "</a></h3>\n"
+        "\t\t\t<p>\n"
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testAddressBlock->getDescription() +
+        "<br>\n"
+        "\t\t\t</p>\n"
+        "\t\t\t" + getTableString() + "List of values in " + testAddressBlock->getName() + ".\">\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<th>Usage</th>\n"
+        "\t\t\t\t\t<th>Base address [AUB]</th>\n"
+        "\t\t\t\t\t<th>Range [AUB]</th>\n"
+        "\t\t\t\t\t<th>Width [AUB]</th>\n"
+        "\t\t\t\t\t<th>Access</th>\n"
+        "\t\t\t\t\t<th>Volatile</th>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<td>" + General::usage2Str(testAddressBlock->getUsage()) + "</td>\n"
+        "\t\t\t\t\t<td>" + "'h0" + "</td>\n"
+        "\t\t\t\t\t<td>" + "target" + "</td>\n"
+        "\t\t\t\t\t<td>" + "target + 2" + "</td>\n"
         "\t\t\t\t\t<td>" + General::access2Str(testAddressBlock->getAccess()) + "</td>\n"
         "\t\t\t\t\t<td>" + General::bool2Str(testAddressBlock->getVolatile()) + "</td>\n"
         "\t\t\t\t</tr>\n"
@@ -1023,7 +1115,8 @@ void tst_documentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
     registers.append(testRegister);
 
     QList <QSharedPointer <AddressBlock> > addressBlocks;
-    QSharedPointer <AddressBlock> testAddressBlock = createTestAddressBlock("testAddress", "Describe.", registers);
+    QSharedPointer <AddressBlock> testAddressBlock = createTestAddressBlock("testAddress", "Describe.", "'h0", "4",
+        "32", registers);
     addressBlocks.append(testAddressBlock);
 
     QList <QSharedPointer <MemoryMap> > memoryMaps;
@@ -1074,7 +1167,7 @@ void tst_documentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "\t\t\t\t\t<td>" + General::usage2Str(testAddressBlock->getUsage()) + "</td>\n"
         "\t\t\t\t\t<td>" + testAddressBlock->getBaseAddress() + "</td>\n"
         "\t\t\t\t\t<td>" + testAddressBlock->getRange() + "</td>\n"
-        "\t\t\t\t\t<td>" + QString::number(testAddressBlock->getWidth()) + "</td>\n"
+        "\t\t\t\t\t<td>" + testAddressBlock->getWidthExpression() + "</td>\n"
         "\t\t\t\t\t<td>" + General::access2Str(testAddressBlock->getAccess()) + "</td>\n"
         "\t\t\t\t\t<td>" + General::bool2Str(testAddressBlock->getVolatile()) + "</td>\n"
         "\t\t\t\t</tr>\n"
@@ -1758,15 +1851,16 @@ QSharedPointer <Register> tst_documentGenerator::createTestRegister(QString cons
 // Function: tst_documentGenerator::createTestAddressBlock()
 //-----------------------------------------------------------------------------
 QSharedPointer <AddressBlock> tst_documentGenerator::createTestAddressBlock(QString const& name,
-    QString const& description, QList<QSharedPointer<Register> > registers)
+    QString const& description, QString const& baseAddress, QString const& range, QString const& width,
+    QList<QSharedPointer<Register> > registers)
 {
     QSharedPointer <AddressBlock> testAddressBlock(new AddressBlock);
     testAddressBlock->setName(name);
     testAddressBlock->setUsage(General::REGISTER);
-    testAddressBlock->setBaseAddress("0x0");
-    testAddressBlock->setRange("4");
-    testAddressBlock->setWidth(32);
     testAddressBlock->setDescription(description);
+    testAddressBlock->setBaseAddress(baseAddress);
+    testAddressBlock->setRange(range);
+    testAddressBlock->setWidthExpression(width);
     testAddressBlock->setAccess(General::READ_WRITE);
     testAddressBlock->setVolatile(General::BOOL_TRUE);
 

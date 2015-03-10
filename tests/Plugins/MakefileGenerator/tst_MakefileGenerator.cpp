@@ -1437,7 +1437,7 @@ QSharedPointer<Component> tst_MakefileGenerator::createDesign(QSharedPointer<Des
 
     VLNV topvlvnv("","kyytto","raision kirjasto","master-plan","1.0");
     QSharedPointer<Component> top = QSharedPointer<Component>(new Component(topvlvnv));
-    top->setComponentImplementation(KactusAttribute::KTS_SYS);
+    top->setComponentImplementation(KactusAttribute::SYSTEM);
     library_.addComponent(top);
     library_.writeModelToFile("polku/master-plan",top);
 

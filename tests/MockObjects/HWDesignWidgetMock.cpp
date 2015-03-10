@@ -334,5 +334,5 @@ QSharedPointer<Design> HWDesignWidgetMock::createDesign( const VLNV& vlnv )
 //-----------------------------------------------------------------------------
 KactusAttribute::Implementation HWDesignWidgetMock::getImplementation() const
 {
-    return KactusAttribute::KTS_HW;
+    return KactusAttribute::HW;
 }

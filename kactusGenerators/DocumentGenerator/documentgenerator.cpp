@@ -566,9 +566,12 @@ void DocumentGenerator::writeAddressBlocks(QList<QSharedPointer<AddressBlock> > 
 
             stream << "\t\t\t\t<tr>" << endl;
             stream << "\t\t\t\t\t<td>" << General::usage2Str(currentAddressBlock->getUsage()) << "</td>" << endl;
-            stream << "\t\t\t\t\t<td>" << currentAddressBlock->getBaseAddress() << "</td>" << endl;
-            stream << "\t\t\t\t\t<td>" << currentAddressBlock->getRange() << "</td>" << endl;
-            stream << "\t\t\t\t\t<td>" << QString::number(currentAddressBlock->getWidth()) << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
+                currentAddressBlock->getBaseAddress()) << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
+                currentAddressBlock->getRange()) << "</td>" << endl;
+            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
+                currentAddressBlock->getWidthExpression()) << "</td>" << endl;
             stream << "\t\t\t\t\t<td>" << General::access2Str(currentAddressBlock->getAccess()) << "</td>" << endl;
             stream << "\t\t\t\t\t<td>" << General::bool2Str(currentAddressBlock->getVolatile()) << "</td>" << endl;
             stream << "\t\t\t\t</tr>" << endl;
