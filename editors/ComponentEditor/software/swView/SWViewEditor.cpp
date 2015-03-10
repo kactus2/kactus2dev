@@ -45,7 +45,7 @@ bspEditor_(NULL) {
 
 	hierRefEditor_ = new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, parentW, this);
     hierRefEditor_->addContentType(VLNV::DESIGN);
-    hierRefEditor_->setImplementationFilter(true, KactusAttribute::KTS_SW);
+    hierRefEditor_->setImplementationFilter(true, KactusAttribute::SW);
 	hierRefEditor_->setTitle(tr("Hierarchy reference"));
 	hierRefEditor_->setMandatory(false);
 
@@ -57,7 +57,7 @@ bspEditor_(NULL) {
 	bspEditor_ = new BSPBuildEditor(swView->getBSPBuildCommand(), component, this);
 
 	// BSP is displayed only for HW components
-	if (component->getComponentImplementation() != KactusAttribute::KTS_HW) {
+	if (component->getComponentImplementation() != KactusAttribute::HW) {
 		bspEditor_->hide();
 	}
 	else {

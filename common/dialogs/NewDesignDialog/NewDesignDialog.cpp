@@ -48,7 +48,7 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
 {
     switch (designType)
     {
-    case KactusAttribute::KTS_HW:
+    case KactusAttribute::HW:
         {
             viewNameLabel_->setText(tr("Name for a new view to HW component:"));
             viewNameEdit_->setDisallowedInputs(component->getViewNames());
@@ -59,7 +59,7 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
             break;
         }
 
-    case KactusAttribute::KTS_SW:
+    case KactusAttribute::SW:
         {
             viewNameLabel_->setText(tr("Name for a new SW view to component:"));
             viewNameEdit_->setDisallowedInputs(component->getSWViewNames());
@@ -70,7 +70,7 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
             break;
         }
 
-    case KactusAttribute::KTS_SYS:
+    case KactusAttribute::SYSTEM:
         {
             viewNameLabel_->setText(tr("Name for a new system view to HW component:"));
             viewNameEdit_->setDisallowedInputs(component->getSystemViewNames());

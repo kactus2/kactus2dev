@@ -30,7 +30,7 @@ NewComponentPage::NewComponentPage(LibraryInterface* libInterface, QWidget* pare
     attributeEditor_ = new KactusAttributeEditor(this);
     connect(attributeEditor_, SIGNAL(productHierarchyChanged()), this, SLOT(onProductHierarchyChanged()));
 
-    vlnvEditor_->setImplementationFilter(true, KactusAttribute::KTS_HW);
+    vlnvEditor_->setImplementationFilter(true, KactusAttribute::HW);
 
     // Setup the layout.
     QVBoxLayout* widgetLayout = dynamic_cast<QVBoxLayout*>(layout());
@@ -81,7 +81,7 @@ void NewComponentPage::apply()
 bool NewComponentPage::onPageChange()
 {
     // Discard the VLNV and reset the attributes.
-    attributeEditor_->setAttributes(KactusAttribute::KTS_GLOBAL, KactusAttribute::KTS_TEMPLATE);
+    attributeEditor_->setAttributes(KactusAttribute::FLAT, KactusAttribute::TEMPLATE);
     onProductHierarchyChanged();
     return NewPage::onPageChange();
 }

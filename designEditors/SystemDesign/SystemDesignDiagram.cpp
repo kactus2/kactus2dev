@@ -687,11 +687,11 @@ void SystemDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
             }
 
             // Only SW and HW is allowed.
-            if (comp->getComponentImplementation() == KactusAttribute::KTS_SW)
+            if (comp->getComponentImplementation() == KactusAttribute::SW)
             {
                 dragType_ = DRAG_TYPE_SW;
             }
-            else if (comp->getComponentImplementation() == KactusAttribute::KTS_HW)
+            else if (comp->getComponentImplementation() == KactusAttribute::HW)
             {
                 dragType_ = DRAG_TYPE_HW;
             }
@@ -1260,7 +1260,7 @@ void SystemDesignDiagram::onSelected(QGraphicsItem* newSelection)
             ComponentItem* item = static_cast<ComponentItem*>(newSelection);
             emit componentSelected(item);
 
-            if (item->componentModel()->getComponentImplementation() == KactusAttribute::KTS_HW)
+            if (item->componentModel()->getComponentImplementation() == KactusAttribute::HW)
             {
                 emit helpUrlRequested("swsysdesign/hwmappinginstance.html");
             }
@@ -1369,7 +1369,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
             // Create an unpackaged component so that we can still visualize the component instance.
             component = QSharedPointer<Component>(new Component(instance.getComponentRef()));
-            component->setComponentImplementation(KactusAttribute::KTS_HW);
+            component->setComponentImplementation(KactusAttribute::HW);
         }
 
         HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance.getInstanceName(),
@@ -1479,7 +1479,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         {
             // Create an unpackaged component so that we can still visualize the component instance.
             component = QSharedPointer<Component>(new Component(instance.getComponentRef()));
-            component->setComponentImplementation(KactusAttribute::KTS_SW);
+            component->setComponentImplementation(KactusAttribute::SW);
         }
 
         SWComponentItem* item = new SWComponentItem(getLibraryInterface(), component, instance.getInstanceName(),
@@ -2059,7 +2059,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
 
             // Create an unpackaged component so that we can still visualize the component instance.
             component = QSharedPointer<Component>(new Component(instance.getComponentRef()));
-            component->setComponentImplementation(KactusAttribute::KTS_SW);
+            component->setComponentImplementation(KactusAttribute::SW);
         }
 
         // Determine a unique name for the instance.
@@ -2375,7 +2375,7 @@ void SystemDesignDiagram::draftAt(QPointF const& clickedPosition)
                 // Create a component model without a valid vlnv.
                 QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
                 comp->setVlnv(VLNV());
-                comp->setComponentImplementation(KactusAttribute::KTS_SW);
+                comp->setComponentImplementation(KactusAttribute::SW);
 
                 // Create the corresponding SW component item.
                 SWComponentItem* swCompItem = new SWComponentItem(getLibraryInterface(), comp, name);

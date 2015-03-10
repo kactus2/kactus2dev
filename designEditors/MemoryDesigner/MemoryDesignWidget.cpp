@@ -223,7 +223,7 @@ void MemoryDesignWidget::addColumn()
 //-----------------------------------------------------------------------------
 KactusAttribute::Implementation MemoryDesignWidget::getImplementation() const
 {
-    return KactusAttribute::KTS_HW;
+    return KactusAttribute::HW;
 }
 
 //-----------------------------------------------------------------------------

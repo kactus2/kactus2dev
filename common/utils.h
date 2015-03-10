@@ -18,116 +18,119 @@
 
 namespace Utils {
 
-	//! \brief Contains firmness search settings.
+	//! Contains firmness search settings.
 	struct ImplementationOptions {
 	
-		//! \brief If true then hardware components should be included in search.
+		//! If true then hardware components should be included in search.
 		bool hw_;
 
-		//! \brief If true then software components should be included in search.
+		//! If true then software components should be included in search.
 		bool sw_;
 
-		//! \brief If true then system components should be included in search.
+		//! If true then system components should be included in search.
 		bool system_;
 
-		/*! \brief The default constructor
+		/*! The default constructor
 		 *
 		 * Constructs struct with all options set to true.
 		*/
 		ImplementationOptions();
 	};
 
-	//! \brief Contains the search settings for hierarchy.
+	//! Contains the search settings for hierarchy.
 	struct HierarchyOptions {
 
-		//! \brief If true then global objects should be included in search.
-		bool global_;
+		//! If true then global objects should be included in search.
+		bool flat_;
 
-		//! \brief If true then product objects should be included in search.
+		//! If true then product objects should be included in search.
 		bool product_;
 
-		//! \brief If true then board objects should be included in search.
+		//! If true then board objects should be included in search.
 		bool board_;
 
-		//! \brief If true then chip objects should be included in search.
+		//! If true then chip objects should be included in search.
 		bool chip_;
 
-		//! \brief If true then soc objects should be included in search.
+		//! If true then soc objects should be included in search.
 		bool soc_;
 
-		//! \brief If true then ip objects should be included in search.
+		//! If true then ip objects should be included in search.
 		bool ip_;
 
-		/*! \brief The default constructor.
+		/*! The default constructor.
 		 *
 		 * Constructs struct with all options set to true.
 		*/
 		HierarchyOptions();
 	};
 
-	//! \brief Contains the Re-usability search filters.
+	//! Contains the Re-usability search filters.
 	struct FirmnessOptions {
 
-		//! \brief If true then templates should be included in search.
+		//! If true then templates should be included in search.
 		bool templates_;
 
-		//! \brief If true then mutables should be included in search.
+		//! If true then mutables should be included in search.
 		bool mutable_;
 
-		//! \brief If true then fixeds should be included in search.
+		//! If true then fixeds should be included in search.
 		bool fixed_;
 
-		/*! \brief The default constructor
+        //! If true then definitions should be included in search.
+        bool definitions_;
+
+		/*! The default constructor
 		 *
 		 * Constructs struct with all options set to true
 		*/
 		FirmnessOptions();
 	};
 
-	//! \brief Contains the search options for document types.
+	//! Contains the search options for document types.
 	struct TypeOptions {
 
-		//! \brief If true then components should be included in search.
+		//! If true then components should be included in search.
 		bool components_;
 
-		//! \brief If true then bus definitions should be included in search.
+		//! If true then bus definitions should be included in search.
 		bool buses_;
 
-		//! \brief If true then other IP-Xact types should be included in search.
+		//! If true then other IP-Xact types should be included in search.
 		bool advanced_;
 
-		/*! \brief The default constructor
+		/*! The default constructor
 		 *
 		 * Constructs struct with all options set to true.
 		*/
 		TypeOptions();
 	};
 
-	//! \brief The struct to handle a port name and its left and right boundary.
+	//! The struct to handle a port name and its left and right boundary.
 	struct Mapping {
 
-	//! \brief The name of the port.
+	//! The name of the port.
 		QString portName_;
 
-	//! \brief The left bound of the port.
+	//! The left bound of the port.
 		int left_;
 
-	//! \brief The right bound of the port.
+	//! The right bound of the port.
 		int right_;
 
-		/*! \brief The default constructor
+		/*! The default constructor
 		 *
 		*/
 		Mapping();
 
-		/*! \brief The constructor
+		/*! The constructor
 		 *
 		 * \param name The name for the port in the mapping.
 		 *
 		*/
 		Mapping(const QString& name);
 
-		/*! \brief The constructor
+		/*! The constructor
 		 *
 		 * \param name The name for the port in the mapping.
 		 * \param left The left bound for the port.
@@ -136,20 +139,20 @@ namespace Utils {
 		*/
 		Mapping(const QString& name, int left, int right);
 
-		//! \brief Operator that returns true if the port names are identical.
+		//! Operator that returns true if the port names are identical.
 		bool operator==(const Mapping& other) const;
 
-		//! \brief Operator that returns true if the port names are not identical.
+		//! Operator that returns true if the port names are not identical.
 		bool operator!=(const Mapping& other) const;
 
-		//! \brief Operator for sorting mappings by the name
+		//! Operator for sorting mappings by the name
 		bool operator<(const Mapping& other) const;
 
-		//! \brief Operator for sorting mappings by name
+		//! Operator for sorting mappings by name
 		bool operator>(const Mapping& other) const;
 	};
 
-	/*! \brief Convert a string to unsigned int format.
+	/*! Convert a string to unsigned int format.
 	 * 
 	 * The multiples in the string are converted as following:
 	 * k/K = 2^10
@@ -164,7 +167,7 @@ namespace Utils {
 	*/
 	KACTUS2_API quint64 str2Uint(const QString& str);
 
-	/*! \brief Convert a string to int format.
+	/*! Convert a string to int format.
 	 * 
 	 * The multiples in the string are converted as following:
 	 * k/K = 2^10
@@ -179,7 +182,7 @@ namespace Utils {
 	*/
 	KACTUS2_API qint64 str2Int(const QString& str);
 
-	/*! \brief Check if the string contains a number that can be parsed.
+	/*! Check if the string contains a number that can be parsed.
 	 *
 	 * Method: 		isNumber
 	 * Full name:	Utils::isNumber
@@ -196,10 +199,10 @@ namespace Utils {
      */
     KACTUS2_API void replaceMagicWord(QString& text, QString const& magicWord, QString const& value);
 
-    //! \brief Regular expression to validate URLs.
+    //! Regular expression to validate URLs.
     const QRegExp URL_VALIDITY_REG_EXP = QRegExp("^([A-Za-z]{3,9}\\:\\/\\/)?[A-Za-z0-9]+([\\-\\.][A-Za-z0-9]+)*(\\/[A-Za-z0-9_\\.\\;\\,\\-\\?\\=\\&\\%\\#\\~\\+]*)*$", Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
 
-	//! \brief Regular expression to check if given string is a URL.
+	//! Regular expression to check if given string is a URL.
 	const QRegExp URL_IDENTIFY_REG_EXP = QRegExp("^([A-Za-z]{3,9}\\:\\/\\/)?[A-Za-z0-9]+([\\-\\.][A-Za-z0-9]+)*(\\/[A-Za-z0-9_\\.\\;\\,\\-\\?\\=\\&\\%\\#\\~\\+]*)*$", Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
 
     /*!

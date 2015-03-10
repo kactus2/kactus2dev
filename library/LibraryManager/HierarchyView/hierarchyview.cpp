@@ -360,12 +360,12 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
 
 			// depending on the type of the component
 			switch (component->getComponentImplementation()) {
-            case KactusAttribute::KTS_SYS: {
+            case KactusAttribute::SYSTEM: {
                     menu.addAction(openCompAction_);
                     break;
                 }
 
-            case KactusAttribute::KTS_SW: {
+            case KactusAttribute::SW: {
 
                     menu.addAction(openCompAction_);
 

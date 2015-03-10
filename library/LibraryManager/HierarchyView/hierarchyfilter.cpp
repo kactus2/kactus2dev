@@ -13,8 +13,9 @@
 
 #include <QRegExp>
 
-#include <QDebug>
-
+//-----------------------------------------------------------------------------
+// Function: HierarchyFilter::HierarchyFilter()
+//-----------------------------------------------------------------------------
 HierarchyFilter::HierarchyFilter(VLNVDialer* dialer,
 								 QObject *parent):
 QSortFilterProxyModel(parent),
@@ -62,10 +63,17 @@ version_() {
 		this, SLOT(onHierarchyChanged(const Utils::HierarchyOptions&)), Qt::UniqueConnection);
 }
 
+//-----------------------------------------------------------------------------
+// Function: HierarchyFilter::~HierarchyFilter()
+//-----------------------------------------------------------------------------
 HierarchyFilter::~HierarchyFilter() {
 }
 
-void HierarchyFilter::onVendorChanged( const QString& vendorText ) {
+//-----------------------------------------------------------------------------
+// Function: HierarchyFilter::onVendorChanged()
+//-----------------------------------------------------------------------------
+void HierarchyFilter::onVendorChanged(QString const& vendorText)
+{
 	vendor_ = vendorText;
 
 	// update the reg exp for validator
@@ -75,7 +83,11 @@ void HierarchyFilter::onVendorChanged( const QString& vendorText ) {
 	invalidateFilter();
 }
 
-void HierarchyFilter::onLibraryChanged( const QString& libraryText ) {
+//-----------------------------------------------------------------------------
+// Function: HierarchyFilter::onLibraryChanged()
+//-----------------------------------------------------------------------------
+void HierarchyFilter::onLibraryChanged(QString const& libraryText)
+{
 	library_ = libraryText;
 
 	// update the reg exp for validator
@@ -85,7 +97,11 @@ void HierarchyFilter::onLibraryChanged( const QString& libraryText ) {
 	invalidateFilter();
 }
 
-void HierarchyFilter::onNameChanged( const QString& nameText ) {
+//-----------------------------------------------------------------------------
+// Function: HierarchyFilter::onNameChanged()
+//-----------------------------------------------------------------------------
+void HierarchyFilter::onNameChanged(QString const& nameText) 
+{
 	name_ = nameText;
 
 	// update the reg exp for validator
@@ -95,7 +111,11 @@ void HierarchyFilter::onNameChanged( const QString& nameText ) {
 	invalidateFilter();
 }
 
-void HierarchyFilter::onVersionChanged( const QString& versionText ) {
+//-----------------------------------------------------------------------------
+// Function: HierarchyFilter::onVersionChanged()
+//-----------------------------------------------------------------------------
+void HierarchyFilter::onVersionChanged(QString const& versionText)
+{
 	version_ = versionText;
 
 	// update the reg exp for validator
@@ -105,29 +125,47 @@ void HierarchyFilter::onVersionChanged( const QString& versionText ) {
 	invalidateFilter();
 }
 
-void HierarchyFilter::onFirmnessChanged( const Utils::FirmnessOptions& options ) {
+//-----------------------------------------------------------------------------
+// Function: HierarchyFilter::onFirmnessChanged()
+//-----------------------------------------------------------------------------
+void HierarchyFilter::onFirmnessChanged(Utils::FirmnessOptions const& options)
+{
 	firmness_ = options;
 	invalidateFilter();
 }
 
-void HierarchyFilter::onImplementationChanged( const Utils::ImplementationOptions& options ) {
+//-----------------------------------------------------------------------------
+// Function: HierarchyFilter::onImplementationChanged()
+//-----------------------------------------------------------------------------
+void HierarchyFilter::onImplementationChanged(Utils::ImplementationOptions const& options)
+{
 	implementation_ = options;
 	invalidateFilter();
 }
 
-void HierarchyFilter::onTypeChanged( const Utils::TypeOptions& options ) {
+//-----------------------------------------------------------------------------
+// Function: HierarchyFilter::onTypeChanged()
+//-----------------------------------------------------------------------------
+void HierarchyFilter::onTypeChanged(Utils::TypeOptions const& options)
+{
 	type_ = options;
 	invalidateFilter();
 }
 
-void HierarchyFilter::onHierarchyChanged( const Utils::HierarchyOptions& options ) {
+//-----------------------------------------------------------------------------
+// Function: HierarchyFilter::onHierarchyChanged()
+//-----------------------------------------------------------------------------
+void HierarchyFilter::onHierarchyChanged(Utils::HierarchyOptions const& options)
+{
 	hierarchy_ = options;
 	invalidateFilter();
 }
 
-bool HierarchyFilter::filterAcceptsRow( int source_row,
-									   const QModelIndex& source_parent ) const {
-
+//-----------------------------------------------------------------------------
+// Function: HierarchyFilter::filterAcceptsRow()
+//-----------------------------------------------------------------------------
+bool HierarchyFilter::filterAcceptsRow(int source_row, QModelIndex const& source_parent) const
+{
 	// find the hierarchy item
 	QModelIndex itemIndex = sourceModel()->index(source_row, 0, source_parent);
 
@@ -184,7 +222,8 @@ bool HierarchyFilter::filterAcceptsRow( int source_row,
 
 	QList<VLNV> list = item->getVLNVs();
 
-	if (component) {
+	if (component)
+    {
 		// check the filters
 		if (!checkFirmness(component))
 			return false;
@@ -200,61 +239,75 @@ bool HierarchyFilter::filterAcceptsRow( int source_row,
 		return true;
 }
 
-bool HierarchyFilter::checkVLNVs( const QList<VLNV>& list ) const {
+//-----------------------------------------------------------------------------
+// Function: HierarchyFilter::checkVLNVs()
+//-----------------------------------------------------------------------------
+bool HierarchyFilter::checkVLNVs( const QList<VLNV>& list ) const
+{
+    foreach (VLNV vlnv, list) 
+    {
+        int pos = 0;
 
-	foreach (VLNV vlnv, list) {
+        // QT library Forced to use temp variables
+        QString vendor = vlnv.getVendor();
+        QString library =  vlnv.getLibrary();
+        QString name =  vlnv.getName();
+        QString version =  vlnv.getVersion();
 
-		int pos = 0;
+        // if the vlnv matches the search rules
+        if ((vendorValidator_.validate(vendor, pos) == QValidator::Acceptable) &&
+            (libraryValidator_.validate(library, pos) == QValidator::Acceptable) &&
+            (nameValidator_.validate(name, pos) == QValidator::Acceptable) &&
+            (versionValidator_.validate(version, pos) == QValidator::Acceptable)) 
+        {
+                return true;
 
-                // QT library Forced to use temp variables
-                QString vendor = vlnv.getVendor();
-                QString library =  vlnv.getLibrary();
-                QString name =  vlnv.getName();
-                QString version =  vlnv.getVersion();
-
-
-                // if the vlnv matches the search rules
-                if ((vendorValidator_.validate(vendor, pos) ==
-                        QValidator::Acceptable) &&
-                        (libraryValidator_.validate(library, pos) ==
-                        QValidator::Acceptable) &&
-                        (nameValidator_.validate(name, pos) ==
-                        QValidator::Acceptable) &&
-                        (versionValidator_.validate(version, pos) ==
-                        QValidator::Acceptable)) {
-				return true;
-			
-		}
-
-	}
+        }
+    }
 
 	// if none of the vlnvs matched
 	return false;
 }
 
-bool HierarchyFilter::checkFirmness( QSharedPointer<Component const> component ) const {
+//-----------------------------------------------------------------------------
+// Function: HierarchyFilter::checkFirmness()
+//-----------------------------------------------------------------------------
+bool HierarchyFilter::checkFirmness(QSharedPointer<Component const> component) const
+{
 	Q_ASSERT(component);
 
-	switch (component->getComponentFirmness()) {
-		case KactusAttribute::KTS_TEMPLATE: 
-			return firmness_.templates_;
-											
-		case KactusAttribute::KTS_MUTABLE: 
-			return firmness_.mutable_;
-
-		case KactusAttribute::KTS_FIXED: 
-			return firmness_.fixed_;
-
-		default:
-			return false;
-	}
+    KactusAttribute::Firmness componentFirmness = component->getComponentFirmness();
+    if (componentFirmness == KactusAttribute::TEMPLATE) 
+    {
+        return firmness_.templates_;
+    }
+    else if (componentFirmness == KactusAttribute::MUTABLE)
+    {	
+        return firmness_.mutable_;
+    }
+    else if (componentFirmness == KactusAttribute::FIXED)
+    { 
+        return firmness_.fixed_;
+    }
+    else if (componentFirmness == KactusAttribute::DEFINITIONS)
+    { 
+        return firmness_.definitions_;
+    }
+    else
+    {
+        return false;
+    }
 }
 
-bool HierarchyFilter::checkImplementation( QSharedPointer<Component const> component ) const {
+//-----------------------------------------------------------------------------
+// Function: HierarchyFilter::checkImplementation()
+//-----------------------------------------------------------------------------
+bool HierarchyFilter::checkImplementation( QSharedPointer<Component const> component ) const
+{
 	Q_ASSERT(component);
 
 	switch (component->getComponentImplementation()) {
-		case KactusAttribute::KTS_HW: {
+		case KactusAttribute::HW: {
 
 			// if the HW component contains system views then it should be considered also as system
 			if (component->hasSystemViews()) {
@@ -264,10 +317,10 @@ bool HierarchyFilter::checkImplementation( QSharedPointer<Component const> compo
 			// if the component is pure HW 
 			return implementation_.hw_;
 												}
-		case KactusAttribute::KTS_SW: {
+		case KactusAttribute::SW: {
 			return implementation_.sw_;
 												}
-		case KactusAttribute::KTS_SYS: {
+		case KactusAttribute::SYSTEM: {
 			return implementation_.system_;
 												 }
 		default:
@@ -275,26 +328,30 @@ bool HierarchyFilter::checkImplementation( QSharedPointer<Component const> compo
 	} 
 }
 
-bool HierarchyFilter::checkHierarchy( QSharedPointer<Component const> component ) const {
+//-----------------------------------------------------------------------------
+// Function: HierarchyFilter::checkHierarchy()
+//-----------------------------------------------------------------------------
+bool HierarchyFilter::checkHierarchy(QSharedPointer<Component const> component) const
+{
 	Q_ASSERT(component);
 
 	switch (component->getComponentHierarchy()) {
-		case KactusAttribute::KTS_GLOBAL:
-			return hierarchy_.global_;
+		case KactusAttribute::FLAT:
+			return hierarchy_.flat_;
 
-		case KactusAttribute::KTS_PRODUCT:
+		case KactusAttribute::PRODUCT:
 			return hierarchy_.product_;
 
-		case KactusAttribute::KTS_BOARD:
+		case KactusAttribute::BOARD:
 			return hierarchy_.board_;
 
-		case KactusAttribute::KTS_CHIP:
+		case KactusAttribute::CHIP:
 			return hierarchy_.chip_;
 
-		case KactusAttribute::KTS_SOC:
+		case KactusAttribute::SOC:
 			return hierarchy_.soc_;
 
-		case KactusAttribute::KTS_IP:
+		case KactusAttribute::IP:
 			return hierarchy_.ip_;
 
 		default:

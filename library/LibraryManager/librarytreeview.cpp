@@ -122,7 +122,7 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 
 			// depending on the type of the component
 			switch (component->getComponentImplementation()) {
-				case KactusAttribute::KTS_SYS: {
+				case KactusAttribute::SYSTEM: {
                     if (component->hasSystemViews())
                     {
 					    menu.addAction(openSystemAction_);
@@ -131,7 +131,7 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
                     menu.addAction(openCompAction_);
 					break;
 											   }
-				case KactusAttribute::KTS_SW: {
+				case KactusAttribute::SW: {
 					if (component->hasSWViews())
                         menu.addAction(openSWDesignAction_);
 

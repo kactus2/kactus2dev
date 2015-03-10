@@ -40,7 +40,7 @@ component_(component) {
 	view_->sortByColumn(0, Qt::AscendingOrder);
 
 	// Software components do not contain the command
-	view_->setColumnHidden(SWBuildDelegate::COMMAND_COLUMN, component->getComponentImplementation() == KactusAttribute::KTS_SW);
+	view_->setColumnHidden(SWBuildDelegate::COMMAND_COLUMN, component->getComponentImplementation() == KactusAttribute::SW);
 
 	// create the layout, add widgets to it
 	QVBoxLayout* layout = new QVBoxLayout(this);
@@ -64,6 +64,6 @@ bool SWBuildCommandEditor::isValid() const {
 
 void SWBuildCommandEditor::refresh() {
 	// Software components do not contain the command
-	view_->setColumnHidden(SWBuildDelegate::COMMAND_COLUMN, component_->getComponentImplementation() == KactusAttribute::KTS_SW);
+	view_->setColumnHidden(SWBuildDelegate::COMMAND_COLUMN, component_->getComponentImplementation() == KactusAttribute::SW);
 	view_->update();
 }

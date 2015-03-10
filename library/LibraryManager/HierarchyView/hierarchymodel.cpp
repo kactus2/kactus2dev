@@ -291,10 +291,10 @@ QVariant HierarchyModel::data(const QModelIndex& index,
 		if (item->type() == HierarchyItem::COMPONENT) {
 			
 			switch (item->getImplementation()) {
-				case KactusAttribute::KTS_SYS: {
+				case KactusAttribute::SYSTEM: {
 					return QIcon(":/icons/common/graphics/system-component.png");
 											   }
-				case KactusAttribute::KTS_SW: {
+				case KactusAttribute::SW: {
                     if (item->isHierarchical())
                     {
 					    return QIcon(":/icons/common/graphics/hier-sw-component.png");

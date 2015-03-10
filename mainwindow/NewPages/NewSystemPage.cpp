@@ -86,7 +86,7 @@ mapDescLabel_(new QLabel(tr("Creates a SW architecture and maps it to selected t
         this, SLOT(onTreeItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
 
     // Create the VLNV editor.
-    vlnvEditor_->setImplementationFilter(true, KactusAttribute::KTS_SYS);
+    vlnvEditor_->setImplementationFilter(true, KactusAttribute::SYSTEM);
     vlnvEditor_->addNameExtension(".sysdesign");
     vlnvEditor_->addNameExtension(".sysdesigncfg");
     //vlnvEditor_->setTitle(tr("VLNV of the new system design"));
@@ -290,7 +290,7 @@ void NewSystemPage::addChildItems(LibraryItem const* libItem, QTreeWidgetItem* t
             views.removeAll("kts_sw_ref");
             views.removeAll("kts_sys_ref");
 
-            if (comp->getComponentImplementation() != KactusAttribute::KTS_HW || views.empty())
+            if (comp->getComponentImplementation() != KactusAttribute::HW || views.empty())
             {
                 delete item;
                 continue;

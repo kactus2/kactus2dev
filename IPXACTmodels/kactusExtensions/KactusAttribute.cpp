@@ -17,7 +17,7 @@ namespace KactusAttribute
     {
         QString const PROD_HIER_NAMES[KTS_PRODHIER_COUNT] =
         {
-            "Global",
+            "Flat",
             "Product",
             "Board",
             "Chip",
@@ -29,7 +29,8 @@ namespace KactusAttribute
         {
             "Mutable",
             "Template",
-            "Fixed"
+            "Fixed",
+            "Definitions"
         };
 
         QString const IMPLEMENTATION_NAMES[KTS_IMPLEMENTATION_COUNT] =

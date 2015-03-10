@@ -179,13 +179,13 @@ void HierarchyItem::parseDesign( const VLNV& vlnv, KactusAttribute::Implementati
 	viewName_ = viewName;
 
 	switch (implementation) {
-		case KactusAttribute::KTS_HW:
+		case KactusAttribute::HW:
 			type_ = HierarchyItem::HW_DESIGN;
 			break;
-		case KactusAttribute::KTS_SW:
+		case KactusAttribute::SW:
 			type_ = HierarchyItem::SW_DESIGN;
 			break;
-		case KactusAttribute::KTS_SYS:
+		case KactusAttribute::SYSTEM:
 			type_ = HierarchyItem::SYS_DESIGN;
 			break;
 		default:
@@ -543,7 +543,7 @@ void HierarchyItem::updateItems( const VLNV& vlnv ) {
 	if (count > 0) {
 
 		// if a child was removed then create a new child for the component
-		HierarchyItem* item = new HierarchyItem(handler_, this, vlnv, KactusAttribute::KTS_HW);
+		HierarchyItem* item = new HierarchyItem(handler_, this, vlnv, KactusAttribute::HW);
 		childItems_.append(item);
 	}
 }
@@ -611,7 +611,7 @@ void HierarchyItem::clear() {
 bool HierarchyItem::isHierarchical() const {
 	Q_ASSERT(component_);
 
-    if (component_->getComponentImplementation() == KactusAttribute::KTS_SW)
+    if (component_->getComponentImplementation() == KactusAttribute::SW)
     {
         return component_->hasSWViews();
     }

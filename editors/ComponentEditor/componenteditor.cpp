@@ -91,15 +91,15 @@ expressionFormatter_(new ExpressionFormatter(parameterFinder_))
 	setDocumentName(QString("%1 (%2)").arg(component_->getVlnv()->getName()).arg(
 		component_->getVlnv()->getVersion()));
 
-    if (component_->getComponentImplementation() == KactusAttribute::KTS_HW)
+    if (component_->getComponentImplementation() == KactusAttribute::HW)
     {
 	    setDocumentType(tr("HW Component"));
     }
-    else if (component_->getComponentImplementation() == KactusAttribute::KTS_SW)
+    else if (component_->getComponentImplementation() == KactusAttribute::SW)
     {
         setDocumentType(tr("SW Component"));
     }
-    else if (component_->getComponentImplementation() == KactusAttribute::KTS_SYS)
+    else if (component_->getComponentImplementation() == KactusAttribute::SYSTEM)
     {
         setDocumentType(tr("Unmapped System"));
     }
@@ -192,7 +192,7 @@ VLNV ComponentEditor::getDocumentVLNV() const
 //-----------------------------------------------------------------------------
 bool ComponentEditor::isHWImplementation() const
 {
-	return component_->getComponentImplementation() == KactusAttribute::KTS_HW;
+	return component_->getComponentImplementation() == KactusAttribute::HW;
 }
 
 //-----------------------------------------------------------------------------
@@ -308,7 +308,7 @@ bool ComponentEditor::saveAs()
 	VLNV vlnv;
 	QString directory;
 
-    if (component_->getComponentImplementation() == KactusAttribute::KTS_HW)
+    if (component_->getComponentImplementation() == KactusAttribute::HW)
     {
 	    if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, *component_->getVlnv(),
 		                                   prodHier, firmness, vlnv, directory))
@@ -621,7 +621,7 @@ VLNV ComponentEditor::getIdentifyingVLNV() const
 QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootForComponent(
     QSharedPointer<Component> component)
 {
-     if (component->getComponentImplementation() == KactusAttribute::KTS_HW)
+     if (component->getComponentImplementation() == KactusAttribute::HW)
      {
         return createHWRootItem(component);
      }
@@ -805,23 +805,23 @@ void ComponentEditor::setRowVisibility(QSettings& settings)
 	{
 		settings.beginGroup("HW");
 
-		if(component_->getComponentHierarchy() == KactusAttribute::KTS_GLOBAL)
+		if(component_->getComponentHierarchy() == KactusAttribute::FLAT)
 		{
 			settings.beginGroup("Global");
 		}
-		else if (component_->getComponentHierarchy() == KactusAttribute::KTS_PRODUCT)
+		else if (component_->getComponentHierarchy() == KactusAttribute::PRODUCT)
 		{
 			settings.beginGroup("Product");
 		}
-		else if (component_->getComponentHierarchy() == KactusAttribute::KTS_BOARD)
+		else if (component_->getComponentHierarchy() == KactusAttribute::BOARD)
 		{
 			settings.beginGroup("Board");
 		}
-		else if (component_->getComponentHierarchy() == KactusAttribute::KTS_CHIP)
+		else if (component_->getComponentHierarchy() == KactusAttribute::CHIP)
 		{
 			settings.beginGroup("Chip");
 		}
-		else if (component_->getComponentHierarchy() == KactusAttribute::KTS_SOC)
+		else if (component_->getComponentHierarchy() == KactusAttribute::SOC)
 		{
 			settings.beginGroup("Soc");
 		}

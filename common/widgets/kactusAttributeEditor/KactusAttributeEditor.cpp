@@ -83,6 +83,7 @@ void KactusAttributeEditor::setAttributes(KactusAttribute::ProductHierarchy prod
 {
     prodHierCombo_->setCurrentIndex(prodHier);
     firmnessCombo_->setCurrentIndex(firmness);
+    firmnessCombo_->setEnabled(firmness != KactusAttribute::DEFINITIONS);
 }
 
 //-----------------------------------------------------------------------------

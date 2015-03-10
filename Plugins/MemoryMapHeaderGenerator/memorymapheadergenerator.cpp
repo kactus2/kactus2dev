@@ -132,7 +132,7 @@ bool MemoryMapHeaderGenerator::checkGeneratorSupport(QSharedPointer<LibraryCompo
 	QSharedPointer<DesignConfiguration const> designConf = libDesConf.dynamicCast<DesignConfiguration const>();
 	// the design configuration must be for HW or system
 	if (designConf) {
-		return comp->getComponentImplementation() == KactusAttribute::KTS_HW;
+		return comp->getComponentImplementation() == KactusAttribute::HW;
 	}
 	else {
 		return false;
@@ -166,7 +166,7 @@ void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility,
 		Q_ASSERT(desConf);
 
 		// if the generator is run on a hierarchical HW component
-		if (implementation == KactusAttribute::KTS_HW) {
+		if (implementation == KactusAttribute::HW) {
 			generateGlobalHeaders(comp, design);
 		}
 
@@ -183,7 +183,7 @@ void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility,
 		KactusAttribute::Implementation implementation = comp->getViewType(*design->getVlnv());
 
 		// if the generator is run on a hierarchical HW component
-		if (implementation == KactusAttribute::KTS_HW) {
+		if (implementation == KactusAttribute::HW) {
 			generateGlobalHeaders(comp, design);
 		}
 

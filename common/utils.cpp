@@ -202,7 +202,7 @@ system_(true) {
 }
 
 Utils::HierarchyOptions::HierarchyOptions():
-global_(true),
+flat_(true),
 product_(true),
 board_(true),
 chip_(true),
@@ -213,7 +213,9 @@ ip_(true) {
 Utils::FirmnessOptions::FirmnessOptions():
 templates_(true),
 mutable_(true),
-fixed_(true) {
+fixed_(true),
+definitions_(true)
+{
 }
 
 Utils::TypeOptions::TypeOptions():

@@ -53,7 +53,7 @@ signals:
 private slots:
 
 	//! \brief Handler for global box state changes.
-	void onGlobalChange(bool checked);
+	void onFlatChange(bool checked);
 
 	//! \brief Handler for product box state changes.
 	void onProductChange(bool checked);
@@ -78,7 +78,7 @@ private:
 	HierarchyGroup& operator=(const HierarchyGroup& other);
 
 	//! \brief Check box to select global components in/out of search results.
-	QCheckBox globalBox_;
+	QCheckBox flatBox_;
 
 	//! \brief Check box to select product components in/out of search results.
 	QCheckBox productBox_;

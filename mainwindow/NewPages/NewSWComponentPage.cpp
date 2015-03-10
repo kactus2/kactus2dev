@@ -24,7 +24,7 @@ NewPage(libInterface, VLNV::COMPONENT, tr("New SW Component"), tr("Creates a SW 
 {
     
     // Create the VLNV editor.
-    vlnvEditor_->setImplementationFilter(true, KactusAttribute::KTS_SW);
+    vlnvEditor_->setImplementationFilter(true, KactusAttribute::SW);
 
 }
 

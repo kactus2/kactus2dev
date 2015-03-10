@@ -105,7 +105,7 @@ void ComponentWizardConclusionPage::updateComponentDetails()
 {
     vlnvLabel_->setText(workingComponent_->getVlnv()->toString());        
 
-    if (workingComponent_->getComponentImplementation() == KactusAttribute::KTS_HW)
+    if (workingComponent_->getComponentImplementation() == KactusAttribute::HW)
     {
         hierarchyLabel_->setText(KactusAttribute::valueToString(workingComponent_->getComponentHierarchy()));
         firmnessLabel_->setText(KactusAttribute::valueToString(workingComponent_->getComponentFirmness()));
@@ -132,7 +132,7 @@ void ComponentWizardConclusionPage::updateComponentDetails()
         filesetsLabel_->setText(fileSets.left(fileSets.lastIndexOf("<br")));
     }
 
-    if (workingComponent_->getComponentImplementation() == KactusAttribute::KTS_HW)
+    if (workingComponent_->getComponentImplementation() == KactusAttribute::HW)
     {
         ComponentComparator comparator;
         QList<QSharedPointer<IPXactDiff> > diff = comparator.diff(originalComponent_, workingComponent_);        
@@ -204,7 +204,7 @@ void ComponentWizardConclusionPage::setupLayout()
     layout->addWidget(vlnvLabel_, rows, 1, 1, 1);
     rows++;
 
-    if (originalComponent_->getComponentImplementation() == KactusAttribute::KTS_HW)
+    if (originalComponent_->getComponentImplementation() == KactusAttribute::HW)
     {
         QLabel* hierarchyTitleLabel = new QLabel("<b>Product Hierarchy:</b>",  this);
         layout->addWidget(hierarchyTitleLabel, rows, 0, 1, 1, Qt::AlignTop);    
@@ -237,7 +237,7 @@ void ComponentWizardConclusionPage::setupLayout()
     layout->addWidget(filesetsLabel_, rows, 1, 1, 1);
     rows++;
 
-    if (originalComponent_->getComponentImplementation() == KactusAttribute::KTS_HW)
+    if (originalComponent_->getComponentImplementation() == KactusAttribute::HW)
     {
         QLabel* parameterTitleLabel = new QLabel("<b>Model Parameters:</b>",  this);
         layout->addWidget(parameterTitleLabel, rows, 0, 1, 1, Qt::AlignTop);    
@@ -255,7 +255,7 @@ void ComponentWizardConclusionPage::setupLayout()
         rows++;        
     }
 
-    if (originalComponent_->getComponentImplementation() == KactusAttribute::KTS_HW)
+    if (originalComponent_->getComponentImplementation() == KactusAttribute::HW)
     {    
         SummaryLabel* diffLabel = new SummaryLabel(QObject::tr("Details"), this);
         layout->addWidget(diffLabel, rows, 0, 1, 3, Qt::AlignCenter);    

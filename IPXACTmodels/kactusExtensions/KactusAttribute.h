@@ -27,12 +27,12 @@ namespace KactusAttribute
     //-----------------------------------------------------------------------------
     enum ProductHierarchy
     {
-        KTS_GLOBAL = 0,
-        KTS_PRODUCT,
-        KTS_BOARD,
-        KTS_CHIP,
-        KTS_SOC,
-        KTS_IP,
+        FLAT = 0,
+        PRODUCT,
+        BOARD,
+        CHIP,
+        SOC,
+        IP,
         KTS_PRODHIER_COUNT
     };
 
@@ -60,9 +60,10 @@ namespace KactusAttribute
     //-----------------------------------------------------------------------------
     enum Firmness
     {
-        KTS_MUTABLE=0,
-        KTS_TEMPLATE,
-        KTS_FIXED,
+        MUTABLE = 0,
+        TEMPLATE,
+        FIXED,
+        DEFINITIONS,
         KTS_REUSE_LEVEL_COUNT
     };
 
@@ -90,9 +91,9 @@ namespace KactusAttribute
     //--------------------------------------------------------------------------
     enum Implementation
     {
-        KTS_HW = 0,
-        KTS_SW,
-        KTS_SYS,
+        HW = 0,
+        SW,
+        SYSTEM,
         KTS_IMPLEMENTATION_COUNT
     };
 

@@ -107,10 +107,14 @@ bool GeneralEditor::isValid() const
     return true;
 }
 
-void GeneralEditor::refresh() {
+//-----------------------------------------------------------------------------
+// Function: GeneralEditor::refresh()
+//-----------------------------------------------------------------------------
+void GeneralEditor::refresh()
+{
 	disconnect(attributeEditor_, SIGNAL(contentChanged()),
 		this, SLOT(onAttributesChange()));
-	if (component()->getComponentImplementation() == KactusAttribute::KTS_HW)
+	if (component()->getComponentImplementation() == KactusAttribute::HW)
 	{
 		KactusAttribute::ProductHierarchy prodHier = component()->getComponentHierarchy();
 		KactusAttribute::Firmness firmness = component()->getComponentFirmness();
@@ -147,8 +151,12 @@ void GeneralEditor::refresh() {
 		this, SLOT(onHeaderChange()), Qt::UniqueConnection);
 }
 
-void GeneralEditor::onAttributesChange() {
-	if (component()->getComponentImplementation() == KactusAttribute::KTS_HW)
+//-----------------------------------------------------------------------------
+// Function: GeneralEditor::onAttributesChange()
+//-----------------------------------------------------------------------------
+void GeneralEditor::onAttributesChange()
+{
+	if (component()->getComponentImplementation() == KactusAttribute::HW)
 	{
 		component()->setComponentHierarchy(attributeEditor_->getProductHierarchy());
 		component()->setComponentFirmness(attributeEditor_->getFirmness());
@@ -159,23 +167,38 @@ void GeneralEditor::onAttributesChange() {
 	emit hierarchyChanged(settings);
 }
 
-void GeneralEditor::onDescriptionChange() {
+//-----------------------------------------------------------------------------
+// Function: GeneralEditor::onDescriptionChange()
+//-----------------------------------------------------------------------------
+void GeneralEditor::onDescriptionChange()
+{
 	component()->setDescription(descEditor_->getDescription());
 	emit contentChanged();
 }
 
-void GeneralEditor::showEvent( QShowEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: GeneralEditor::showEvent()
+//-----------------------------------------------------------------------------
+void GeneralEditor::showEvent( QShowEvent* event )
+{
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/general.html");
 
     previewBox_->updatePreview();
 }
 
-void GeneralEditor::onHeaderChange() {
+//-----------------------------------------------------------------------------
+// Function: GeneralEditor::onHeaderChange()
+//-----------------------------------------------------------------------------
+void GeneralEditor::onHeaderChange()
+{
 	component()->setTopComments(headerEditor_->getDescription());
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: GeneralEditor::onAuthorChange()
+//-----------------------------------------------------------------------------
 void GeneralEditor::onAuthorChange()
 {
     component()->setAuthor(authorEditor_->text());

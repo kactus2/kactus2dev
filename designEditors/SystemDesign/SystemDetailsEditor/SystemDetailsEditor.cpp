@@ -91,7 +91,7 @@ void SystemDetailsEditor::setSystem(DesignWidget* designWidget)
     viewSelector_->clear();
 
     // Fill them only if the component is not a system component (system component is always unmapped).
-    if (component_->getComponentImplementation() != KactusAttribute::KTS_SYS)
+    if (component_->getComponentImplementation() != KactusAttribute::SYSTEM)
     {
         hwRefEditor_->setVLNV(component_->getVlnv());
         viewSelector_->addItems(component_->getHierViews());
@@ -105,8 +105,8 @@ void SystemDetailsEditor::setSystem(DesignWidget* designWidget)
     hwRefEditor_->setEnabled(!designWidget_->isProtected());
     viewSelector_->setEnabled(!designWidget_->isProtected());
     removeMappingButton_->setEnabled(!designWidget_->isProtected() && 
-        component_->getComponentImplementation() != KactusAttribute::KTS_SYS);
-    exportButton_->setEnabled(component_->getComponentImplementation() != KactusAttribute::KTS_SYS);
+        component_->getComponentImplementation() != KactusAttribute::SYSTEM);
+    exportButton_->setEnabled(component_->getComponentImplementation() != KactusAttribute::SYSTEM);
     revertButton_->setDisabled(true);
 
     connect(viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
@@ -158,7 +158,7 @@ void SystemDetailsEditor::setLocked(bool locked)
 {
     hwRefEditor_->setEnabled(!locked);
     viewSelector_->setEnabled(!locked);
-    removeMappingButton_->setEnabled(!locked && component_->getComponentImplementation() != KactusAttribute::KTS_SYS);
+    removeMappingButton_->setEnabled(!locked && component_->getComponentImplementation() != KactusAttribute::SYSTEM);
 }
 
 //-----------------------------------------------------------------------------
@@ -357,7 +357,7 @@ void SystemDetailsEditor::applyHW()
 //-----------------------------------------------------------------------------
 void SystemDetailsEditor::revert()
 {
-    if (component_->getComponentImplementation() != KactusAttribute::KTS_SYS)
+    if (component_->getComponentImplementation() != KactusAttribute::SYSTEM)
     {
         hwRefEditor_->setVLNV(component_->getVlnv());
         onHWRefChanged();
@@ -402,7 +402,7 @@ void SystemDetailsEditor::removeMapping()
 
     // Create a new system component and add the system view to it.
     QSharedPointer<Component> newComponent(new Component(dialog.getVLNV()));
-    newComponent->setComponentImplementation(KactusAttribute::KTS_SYS);
+    newComponent->setComponentImplementation(KactusAttribute::SYSTEM);
 
     newComponent->addSystemView(newView);
     handler_->writeModelToFile(dialog.getPath(), newComponent);
@@ -469,7 +469,7 @@ void SystemDetailsEditor::exportSW()
 
     // Create a new system component and add the system view to it.
     QSharedPointer<Component> newComponent(new Component(vlnv));
-    newComponent->setComponentImplementation(KactusAttribute::KTS_SYS);
+    newComponent->setComponentImplementation(KactusAttribute::SYSTEM);
 
     newComponent->addSystemView(newView);
     handler_->writeModelToFile(dialog.getPath(), newComponent);

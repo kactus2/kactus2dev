@@ -130,7 +130,7 @@ void ConfigurationEditor::onAdd() {
     // create new view for the component and set it to reference to the configuration
     switch (designWidget_->getImplementation())
     {
-    case KactusAttribute::KTS_HW:
+    case KactusAttribute::HW:
         {
 	        View* view = component_->createView();
 	        view->setName(viewName);
@@ -143,7 +143,7 @@ void ConfigurationEditor::onAdd() {
             break;
         }
 
-    case KactusAttribute::KTS_SW:
+    case KactusAttribute::SW:
         {
             SWView* view = component_->createSWView();
             view->setName(viewName);
@@ -151,7 +151,7 @@ void ConfigurationEditor::onAdd() {
             break;
         }
 
-    case KactusAttribute::KTS_SYS:
+    case KactusAttribute::SYSTEM:
         {
             SystemView* view = component_->createSystemView();
             view->setName(viewName);
@@ -210,19 +210,19 @@ void ConfigurationEditor::onRemove() {
 
     switch (designWidget_->getImplementation())
     {
-    case KactusAttribute::KTS_HW:
+    case KactusAttribute::HW:
         {
             configVLNV = component_->findView(viewToRemove)->getHierarchyRef();
             break;
         }
 
-    case KactusAttribute::KTS_SW:
+    case KactusAttribute::SW:
         {
             configVLNV = component_->findSWView(viewToRemove)->getHierarchyRef();
             break;
         }
 
-    case KactusAttribute::KTS_SYS:
+    case KactusAttribute::SYSTEM:
         {
             configVLNV = component_->findSystemView(viewToRemove)->getHierarchyRef();
             break;
@@ -252,21 +252,21 @@ void ConfigurationEditor::onRemove() {
 
     switch (designWidget_->getImplementation())
     {
-    case KactusAttribute::KTS_HW:
+    case KactusAttribute::HW:
         {
             component_->removeView(viewToRemove);
             hierRefs = component_->getHierRefs();
             break;
         }
 
-    case KactusAttribute::KTS_SW:
+    case KactusAttribute::SW:
         {
             component_->removeSWView(viewToRemove);
             hierRefs = component_->getHierSWRefs();
             break;
         }
 
-    case KactusAttribute::KTS_SYS:
+    case KactusAttribute::SYSTEM:
         {
             component_->removeSystemView(viewToRemove);
             hierRefs = component_->getHierSystemRefs();
@@ -344,17 +344,17 @@ void ConfigurationEditor::setConfiguration(DesignWidget* designWidget)
 	QStringList hierViewNames;
     
     switch (designWidget->getImplementation()) {
-    case KactusAttribute::KTS_HW: {
+    case KactusAttribute::HW: {
             hierViewNames = component_->getHierViews();
             break;
 								  }
 
-    case KactusAttribute::KTS_SW: {
+    case KactusAttribute::SW: {
             hierViewNames = component_->getSWViewNames();
             break;
 								  }
 
-    case KactusAttribute::KTS_SYS: {
+    case KactusAttribute::SYSTEM: {
             hierViewNames = component_->getSystemViewNames();
 			break;
 								   }
@@ -376,17 +376,17 @@ void ConfigurationEditor::setConfiguration(DesignWidget* designWidget)
 		// the vlnv that the component references
 		VLNV ref;
 		switch (designWidget->getImplementation()) {
-        case KactusAttribute::KTS_HW: {
+        case KactusAttribute::HW: {
 				ref = component_->getHierRef(viewName);
 				break;
 								  }
 
-        case KactusAttribute::KTS_SW: {
+        case KactusAttribute::SW: {
 				ref = component_->getHierSWRef(viewName);
 				break;
 								  }
 
-        case KactusAttribute::KTS_SYS: {
+        case KactusAttribute::SYSTEM: {
 				ref = component_->getHierSystemRef(viewName);
 				break;
 								   }

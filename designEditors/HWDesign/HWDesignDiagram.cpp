@@ -134,7 +134,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         {
             // Create an unpackaged component so that we can still visualize the component instance.
             component = QSharedPointer<Component>(new Component(instance.getComponentRef()));
-            component->setComponentImplementation(KactusAttribute::KTS_HW);         
+            component->setComponentImplementation(KactusAttribute::HW);         
         }
 
         HWComponentItem* item = new HWComponentItem(getLibraryInterface(), component,
@@ -1360,7 +1360,7 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
         // Disallow instantiation of components marked as template.
-        if (comp->getComponentFirmness() == KactusAttribute::KTS_TEMPLATE)
+        if (comp->getComponentFirmness() == KactusAttribute::TEMPLATE)
         {
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                                tr("Template component cannot be directly instantiated in a design. "

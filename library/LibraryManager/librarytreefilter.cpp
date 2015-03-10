@@ -16,8 +16,9 @@
 
 #include <QRegExp>
 
-#include <QDebug>
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeFilter::LibraryTreeFilter()
+//-----------------------------------------------------------------------------
 LibraryTreeFilter::LibraryTreeFilter(LibraryInterface* handler, 
 									 VLNVDialer* dialer,
 									 QAbstractItemModel* sourceModel,
@@ -70,11 +71,16 @@ version_() {
 		this, SLOT(onHierarchyChanged(const Utils::HierarchyOptions&)), Qt::UniqueConnection);
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeFilter::~LibraryTreeFilter()
+//-----------------------------------------------------------------------------
 LibraryTreeFilter::~LibraryTreeFilter() {
 }
 
-bool LibraryTreeFilter::filterAcceptsRow(int sourceRow,
-                const QModelIndex& sourceParent) const {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeFilter::filterAcceptsRow()
+//-----------------------------------------------------------------------------
+bool LibraryTreeFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const {
 
 	QModelIndex itemIndex = sourceModel()->index(sourceRow, 0, sourceParent);
 
@@ -156,7 +162,7 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow,
                 {
                     QSharedPointer<Design> design = handler_->getDesign(vlnv);
                     if (type_.components_ && implementation_.sw_ && 
-                        design->getDesignImplementation() == KactusAttribute::KTS_SW)
+                        design->getDesignImplementation() == KactusAttribute::SW)
                     {
                         return true;
                     }
@@ -189,6 +195,9 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow,
 	return false;
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeFilter::onVendorChanged()
+//-----------------------------------------------------------------------------
 void LibraryTreeFilter::onVendorChanged( const QString& vendorText ) {
 
 	// update the reg exp for validator
@@ -198,6 +207,9 @@ void LibraryTreeFilter::onVendorChanged( const QString& vendorText ) {
 	invalidateFilter();
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeFilter::onLibraryChanged()
+//-----------------------------------------------------------------------------
 void LibraryTreeFilter::onLibraryChanged( const QString& libraryText ) {
 
 	// update the reg exp for validator
@@ -207,6 +219,9 @@ void LibraryTreeFilter::onLibraryChanged( const QString& libraryText ) {
 	invalidateFilter();
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeFilter::onNameChanged()
+//-----------------------------------------------------------------------------
 void LibraryTreeFilter::onNameChanged( const QString& nameText ) {
 
 	// update the reg exp for validator
@@ -216,6 +231,9 @@ void LibraryTreeFilter::onNameChanged( const QString& nameText ) {
 	invalidateFilter();
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeFilter::onVersionChanged()
+//-----------------------------------------------------------------------------
 void LibraryTreeFilter::onVersionChanged( const QString& versionText ) {
 
 	// update the reg exp for validator
@@ -225,49 +243,75 @@ void LibraryTreeFilter::onVersionChanged( const QString& versionText ) {
 	invalidateFilter();
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeFilter::onFirmnessChanged()
+//-----------------------------------------------------------------------------
 void LibraryTreeFilter::onFirmnessChanged( const Utils::FirmnessOptions& options ) {
 	firmness_ = options;
 	invalidateFilter();
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeFilter::onImplementationChanged()
+//-----------------------------------------------------------------------------
 void LibraryTreeFilter::onImplementationChanged( const Utils::ImplementationOptions& options ) {
 	implementation_ = options;
 	invalidateFilter();
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeFilter::onTypeChanged()
+//-----------------------------------------------------------------------------
 void LibraryTreeFilter::onTypeChanged( const Utils::TypeOptions& options ) {
 	type_ = options;
 	invalidateFilter();
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeFilter::onHierarchyChanged()
+//-----------------------------------------------------------------------------
 void LibraryTreeFilter::onHierarchyChanged( const Utils::HierarchyOptions& options ) {
 	hierarchy_ = options;
 	invalidateFilter();
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeFilter::checkFirmness()
+//-----------------------------------------------------------------------------
 bool LibraryTreeFilter::checkFirmness( QSharedPointer<Component const> component ) const {
 	Q_ASSERT(component);
 
-	switch (component->getComponentFirmness()) {
-		case KactusAttribute::KTS_TEMPLATE: 
-			return firmness_.templates_;
-
-		case KactusAttribute::KTS_MUTABLE: 
-			return firmness_.mutable_;
-
-		case KactusAttribute::KTS_FIXED: 
-			return firmness_.fixed_;
-
-		default:
-			return false;
-	}
+    KactusAttribute::Firmness componentFirmness = component->getComponentFirmness();
+    if (componentFirmness == KactusAttribute::TEMPLATE)
+    {
+        return firmness_.templates_;
+    }
+    else if (componentFirmness == KactusAttribute::MUTABLE)
+    {
+        return firmness_.mutable_;
+    }
+    else if (componentFirmness == KactusAttribute::FIXED)
+    {
+        return firmness_.fixed_;
+    }
+    else if (componentFirmness == KactusAttribute::DEFINITIONS)
+    {
+        return firmness_.definitions_;
+    }
+    else
+    {
+        return false;
+    }
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeFilter::checkImplementation()
+//-----------------------------------------------------------------------------
 bool LibraryTreeFilter::checkImplementation( QSharedPointer<Component const> component ) const {
 	Q_ASSERT(component);
 
 	switch (component->getComponentImplementation()) {
-		case KactusAttribute::KTS_HW: {
+		case KactusAttribute::HW: {
 			// if the HW component contains system views then it should be considered also as system
 			if (component->hasSystemViews()) {
 				return implementation_.hw_ || implementation_.system_;
@@ -276,10 +320,10 @@ bool LibraryTreeFilter::checkImplementation( QSharedPointer<Component const> com
 			// if the component is pure HW 
 			return implementation_.hw_;
 												}
-		case KactusAttribute::KTS_SW: {
+		case KactusAttribute::SW: {
 			return implementation_.sw_;
 												}
-		case KactusAttribute::KTS_SYS: {
+		case KactusAttribute::SYSTEM: {
 			return implementation_.system_;
 												 }
 		default:
@@ -287,26 +331,30 @@ bool LibraryTreeFilter::checkImplementation( QSharedPointer<Component const> com
 	}
 }
 
-bool LibraryTreeFilter::checkHierarchy( QSharedPointer<Component const> component ) const {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeFilter::checkHierarchy()
+//-----------------------------------------------------------------------------
+bool LibraryTreeFilter::checkHierarchy( QSharedPointer<Component const> component ) const
+{
 	Q_ASSERT(component);
 
 	switch (component->getComponentHierarchy()) {
-		case KactusAttribute::KTS_GLOBAL:
-			return hierarchy_.global_;
+		case KactusAttribute::FLAT:
+			return hierarchy_.flat_;
 
-		case KactusAttribute::KTS_PRODUCT:
+		case KactusAttribute::PRODUCT:
 			return hierarchy_.product_;
 
-		case KactusAttribute::KTS_BOARD:
+		case KactusAttribute::BOARD:
 			return hierarchy_.board_;
 
-		case KactusAttribute::KTS_CHIP:
+		case KactusAttribute::CHIP:
 			return hierarchy_.chip_;
 
-		case KactusAttribute::KTS_SOC:
+		case KactusAttribute::SOC:
 			return hierarchy_.soc_;
 
-		case KactusAttribute::KTS_IP:
+		case KactusAttribute::IP:
 			return hierarchy_.ip_;
 
 		default:
@@ -314,31 +362,35 @@ bool LibraryTreeFilter::checkHierarchy( QSharedPointer<Component const> componen
 	}
 }
 
-bool LibraryTreeFilter::checkVLNVs( const QList<VLNV>& list ) const {
-	foreach (VLNV vlnv, list) {
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeFilter::checkVLNVs()
+//-----------------------------------------------------------------------------
+bool LibraryTreeFilter::checkVLNVs(QList<VLNV> const& list) const
+{
+    foreach (VLNV vlnv, list)
+    {
+        int pos = 0;
 
-		int pos = 0;
-
-                // QT library Forced to use temp variables
-                QString vendor = vlnv.getVendor();
-                QString library =  vlnv.getLibrary();
-                QString name =  vlnv.getName();
-                QString version =  vlnv.getVersion();
+        // QT library Forced to use temp variables
+        QString vendor = vlnv.getVendor();
+        QString library =  vlnv.getLibrary();
+        QString name =  vlnv.getName();
+        QString version =  vlnv.getVersion();
 
 
-                // if the vlnv matches the search rules
-                if ((vendorValidator_.validate(vendor, pos) ==
-			QValidator::Acceptable) &&
-                        (libraryValidator_.validate(library, pos) ==
-			QValidator::Acceptable) &&
-                        (nameValidator_.validate(name, pos) ==
-			QValidator::Acceptable) &&
-                        (versionValidator_.validate(version, pos) ==
-			QValidator::Acceptable)) {
+        // if the vlnv matches the search rules
+        if ((vendorValidator_.validate(vendor, pos) ==
+            QValidator::Acceptable) &&
+            (libraryValidator_.validate(library, pos) ==
+            QValidator::Acceptable) &&
+            (nameValidator_.validate(name, pos) ==
+            QValidator::Acceptable) &&
+            (versionValidator_.validate(version, pos) ==
+            QValidator::Acceptable)) {
 
-				return true;
+                return true;
 
-		}
+        }
 
 	}
 

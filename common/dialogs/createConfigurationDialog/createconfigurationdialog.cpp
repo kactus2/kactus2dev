@@ -52,7 +52,7 @@ CreateConfigurationDialog::CreateConfigurationDialog(LibraryInterface* handler,
 
     switch (configType)
     {
-    case KactusAttribute::KTS_HW:
+    case KactusAttribute::HW:
         {
             QStringList suggestions = settings.value("Policies/HWViewNames").toStringList();
             configNameMatcher_.setItems(suggestions);
@@ -62,7 +62,7 @@ CreateConfigurationDialog::CreateConfigurationDialog(LibraryInterface* handler,
             break;
         }
 
-    case KactusAttribute::KTS_SW:
+    case KactusAttribute::SW:
         {
             QStringList suggestions = settings.value("Policies/SWViewNames").toStringList();
             configNameMatcher_.setItems(suggestions);
@@ -72,7 +72,7 @@ CreateConfigurationDialog::CreateConfigurationDialog(LibraryInterface* handler,
             break;
         }
 
-    case KactusAttribute::KTS_SYS:
+    case KactusAttribute::SYSTEM:
         {
             QStringList suggestions = settings.value("Policies/SysViewNames").toStringList();
             configNameMatcher_.setItems(suggestions);

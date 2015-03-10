@@ -58,7 +58,7 @@ VLNVEditor::VLNVEditor(VLNV::IPXactType type,
       versionMatcher_(libHandler),
       handler_(libHandler),
       implementationFilterEnabled_(false),
-      implementationFilter_(KactusAttribute::KTS_HW)
+      implementationFilter_(KactusAttribute::HW)
 {
     Q_ASSERT(libHandler != 0);
     Q_ASSERT(type_ != VLNV::INVALID);

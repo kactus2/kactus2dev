@@ -828,5 +828,5 @@ QSharedPointer<Design> HWDesignWidget::createDesign( const VLNV& vlnv ) {
 //-----------------------------------------------------------------------------
 KactusAttribute::Implementation HWDesignWidget::getImplementation() const
 {
-    return KactusAttribute::KTS_HW;
+    return KactusAttribute::HW;
 }

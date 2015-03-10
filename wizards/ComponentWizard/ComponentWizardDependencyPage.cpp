@@ -104,7 +104,7 @@ ComponentWizardDependencyPage::~ComponentWizardDependencyPage()
 //-----------------------------------------------------------------------------
 int ComponentWizardDependencyPage::nextId() const
 {
-     if (component_->getComponentImplementation() == KactusAttribute::KTS_HW)
+     if (component_->getComponentImplementation() == KactusAttribute::HW)
     {
         return ComponentWizardPages::IMPORT;
     }

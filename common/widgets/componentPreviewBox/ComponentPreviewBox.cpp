@@ -108,13 +108,13 @@ void ComponentPreviewBox::updatePreview()
 
         switch (component_->getComponentImplementation())
         {
-        case KactusAttribute::KTS_HW:
+        case KactusAttribute::HW:
             {
                 item = new HWComponentItem(lh_, component_, component_->getVlnv()->getName());
                 break;
             }
 
-        case KactusAttribute::KTS_SW:
+        case KactusAttribute::SW:
             {
                 item = new SWComponentItem(lh_, component_, component_->getVlnv()->getName());
                 break;

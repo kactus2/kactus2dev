@@ -30,7 +30,7 @@ attributeEditor_(0)
     connect(attributeEditor_, SIGNAL(productHierarchyChanged()), this, SLOT(onProductHierarchyChanged()));
 
     // Create the VLNV editor.
-    vlnvEditor_->setImplementationFilter(true, KactusAttribute::KTS_HW);
+    vlnvEditor_->setImplementationFilter(true, KactusAttribute::HW);
 
    
     // Setup the layout.
@@ -100,7 +100,7 @@ void NewDesignPage::apply()
 bool NewDesignPage::onPageChange()
 {
     // Discard the VLNV and reset the attributes.
-    attributeEditor_->setAttributes(KactusAttribute::KTS_GLOBAL, KactusAttribute::KTS_TEMPLATE);
+    attributeEditor_->setAttributes(KactusAttribute::FLAT, KactusAttribute::TEMPLATE);
     onProductHierarchyChanged();
     return NewPage::onPageChange();
 }

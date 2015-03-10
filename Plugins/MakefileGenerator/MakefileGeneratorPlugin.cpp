@@ -110,7 +110,7 @@ bool MakefileGeneratorPlugin::checkGeneratorSupport( QSharedPointer<LibraryCompo
 
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
 
-    return ( libDes != 0 && desgConf != 0 && desgConf->getDesignConfigImplementation() == KactusAttribute::KTS_SYS );
+    return ( libDes != 0 && desgConf != 0 && desgConf->getDesignConfigImplementation() == KactusAttribute::SYSTEM );
 }
 
 //-----------------------------------------------------------------------------

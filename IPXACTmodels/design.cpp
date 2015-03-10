@@ -1330,7 +1330,7 @@ void Design::setDesignImplementation(KactusAttribute::Implementation implementat
 //-----------------------------------------------------------------------------
 KactusAttribute::Implementation Design::getDesignImplementation() const
 {
-    KactusAttribute::Implementation implementation = KactusAttribute::KTS_HW;
+    KactusAttribute::Implementation implementation = KactusAttribute::HW;
 
     if (!kactus2Attributes_.contains(QString("kts_implementation")))
         return implementation;

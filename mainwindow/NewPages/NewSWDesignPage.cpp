@@ -22,7 +22,7 @@ NewSWDesignPage::NewSWDesignPage(LibraryInterface* libInterface, QWidget* parent
 NewPage(libInterface, VLNV::COMPONENT, tr("New SW Design"), tr("Creates a hierarchical SW design"), parentDlg)
 {    
     // Create the VLNV editor.
-    vlnvEditor_->setImplementationFilter(true, KactusAttribute::KTS_SW);
+    vlnvEditor_->setImplementationFilter(true, KactusAttribute::SW);
 }
 
 //-----------------------------------------------------------------------------

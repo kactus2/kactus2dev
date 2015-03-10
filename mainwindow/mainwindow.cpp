@@ -388,7 +388,7 @@ void MainWindow::createNewWorkspace(QString workspaceName)
 	settings.setValue("ShowSystem", filters.implementation.system_);
 	settings.endGroup();
 	settings.beginGroup("Hierarchy");
-	settings.setValue("ShowGlobal", filters.hierarchy.global_);
+	settings.setValue("ShowGlobal", filters.hierarchy.flat_);
 	settings.setValue("ShowProduct", filters.hierarchy.product_);
 	settings.setValue("ShowBoard", filters.hierarchy.board_);
 	settings.setValue("ShowChip", filters.hierarchy.chip_);
@@ -567,7 +567,7 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
     filters.implementation.system_ = settings.value("ShowSystem", true).toBool();
     settings.endGroup();
     settings.beginGroup("Hierarchy");
-    filters.hierarchy.global_ = settings.value("ShowGlobal", true).toBool();
+    filters.hierarchy.flat_ = settings.value("ShowGlobal", true).toBool();
     filters.hierarchy.product_ = settings.value("ShowProduct", true).toBool();
     filters.hierarchy.board_ = settings.value("ShowBoard", true).toBool();
     filters.hierarchy.chip_ = settings.value("ShowChip", true).toBool();
@@ -645,7 +645,7 @@ void MainWindow::saveWorkspace(QString const& workspaceName)
     settings.setValue("ShowSystem", filters.implementation.system_);
     settings.endGroup();
     settings.beginGroup("Hierarchy");
-    settings.setValue("ShowGlobal", filters.hierarchy.global_);
+    settings.setValue("ShowGlobal", filters.hierarchy.flat_);
     settings.setValue("ShowProduct", filters.hierarchy.product_);
     settings.setValue("ShowBoard", filters.hierarchy.board_);
     settings.setValue("ShowChip", filters.hierarchy.chip_);
@@ -1669,15 +1669,15 @@ void MainWindow::runGeneratorPlugin()
 
 		// the implementation defines where to search for the hierarchy ref
 		switch (desWidget->getImplementation()) {
-		case KactusAttribute::KTS_HW: {
+		case KactusAttribute::HW: {
 			desConfVLNV = comp->getHierRef(viewName);
 			break;
 						 }
-		case KactusAttribute::KTS_SW: {
+		case KactusAttribute::SW: {
 			desConfVLNV = comp->getHierSWRef(viewName);
 			break;
 						 }
-		case KactusAttribute::KTS_SYS: {
+		case KactusAttribute::SYSTEM: {
 			desConfVLNV = comp->getHierSystemRef(viewName);
 			break;
 						  }
@@ -1773,15 +1773,15 @@ void MainWindow::runGeneratorPlugin(QAction* action)
 
 		 // the implementation defines where to search for the hierarchy ref
 		 switch (desWidget->getImplementation()) {
-		 case KactusAttribute::KTS_HW: {
+		 case KactusAttribute::HW: {
 			 desConfVLNV = comp->getHierRef(viewName);
 			 break;
 												 }
-		 case KactusAttribute::KTS_SW: {
+		 case KactusAttribute::SW: {
 			 desConfVLNV = comp->getHierSWRef(viewName);
 			 break;
 												 }
-		 case KactusAttribute::KTS_SYS: {
+		 case KactusAttribute::SYSTEM: {
 			 desConfVLNV = comp->getHierSystemRef(viewName);
 			 break;
 												  }
@@ -2169,7 +2169,7 @@ void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier, Kac
 	// Set Kactus attributes.
 	component->setComponentHierarchy(prodHier);
 	component->setComponentFirmness(firmness);
-	component->setComponentImplementation(KactusAttribute::KTS_HW);
+	component->setComponentImplementation(KactusAttribute::HW);
 	component->createEmptyFlatView();
     component->setVersion(VERSION_FILESTR);
 
@@ -2205,7 +2205,7 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier, Kactus
 	// Set Kactus attributes.
 	component->setComponentHierarchy(prodHier);
 	component->setComponentFirmness(firmness);
-	component->setComponentImplementation(KactusAttribute::KTS_HW);
+	component->setComponentImplementation(KactusAttribute::HW);
     component->setVersion(VERSION_FILESTR);
 
 	component->createHierarchicalView(desConfVLNV);
@@ -2214,12 +2214,12 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier, Kactus
 
 	// Create the design and design configuration.
 	QSharedPointer<Design> design(new Design(designVLNV));
-    design->setDesignImplementation(KactusAttribute::KTS_HW);
+    design->setDesignImplementation(KactusAttribute::HW);
     design->setVersion(VERSION_FILESTR);
 
 	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
 	designConf->setDesignRef(designVLNV);
-    designConf->setDesignConfigImplementation(KactusAttribute::KTS_HW);
+    designConf->setDesignConfigImplementation(KactusAttribute::HW);
     designConf->setVersion(VERSION_FILESTR);
 
 	// Create the files.
@@ -2268,7 +2268,7 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     QSharedPointer<Component> component = libComp.staticCast<Component>();
 
     // Ask the user the VLNV, target path and view name.
-    NewDesignDialog dialog(libraryHandler_, component, KactusAttribute::KTS_HW, this);
+    NewDesignDialog dialog(libraryHandler_, component, KactusAttribute::HW, this);
     dialog.setVLNV(VLNV(VLNV::DESIGN, component->getVlnv()->getVendor(), component->getVlnv()->getLibrary(), "", ""));
 
     QSettings settings;
@@ -2309,11 +2309,11 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     // Create the design and design configuration objects.
     QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV()));
     designConf->setDesignRef(dialog.getDesignVLNV());
-    designConf->setDesignConfigImplementation(KactusAttribute::KTS_HW);
+    designConf->setDesignConfigImplementation(KactusAttribute::HW);
     designConf->setVersion(VERSION_FILESTR);
 
     QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV()));
-    newDesign->setDesignImplementation(KactusAttribute::KTS_HW);
+    newDesign->setDesignImplementation(KactusAttribute::HW);
     newDesign->setVersion(VERSION_FILESTR);
     
     QList<ColumnDesc> columns;
@@ -2373,7 +2373,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
     QSharedPointer<Component> component(new Component(vlnv));
 
     // Set Kactus attributes.
-    component->setComponentImplementation(KactusAttribute::KTS_SW);
+    component->setComponentImplementation(KactusAttribute::SW);
     component->setVersion(VERSION_FILESTR);
 
     // Create the view.
@@ -2383,12 +2383,12 @@ void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
 
     // Create the design and design configuration.
     QSharedPointer<Design> design(new Design(designVLNV));
-    design->setDesignImplementation(KactusAttribute::KTS_SW);
+    design->setDesignImplementation(KactusAttribute::SW);
     design->setVersion(VERSION_FILESTR);
     
     QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
     designConf->setDesignRef(designVLNV);
-    designConf->setDesignConfigImplementation(KactusAttribute::KTS_SW);
+    designConf->setDesignConfigImplementation(KactusAttribute::SW);
     designConf->setVersion(VERSION_FILESTR);
 
     QList<ColumnDesc> columns;
@@ -2446,7 +2446,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     QSharedPointer<Component> component = libComp.staticCast<Component>();
 
     // Ask the user the VLNV, target path and view name.
-    NewDesignDialog dialog(libraryHandler_, component, KactusAttribute::KTS_SW, this);
+    NewDesignDialog dialog(libraryHandler_, component, KactusAttribute::SW, this);
     dialog.setWindowTitle(tr("New SW Design"));
     dialog.setVLNV(VLNV(VLNV::DESIGN, component->getVlnv()->getVendor(), component->getVlnv()->getLibrary(), "", ""));
 
@@ -2487,16 +2487,16 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     // Create the design and design configuration objects.
     QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV()));
     designConf->setDesignRef(dialog.getDesignVLNV());
-    designConf->setDesignConfigImplementation(KactusAttribute::KTS_SW);
+    designConf->setDesignConfigImplementation(KactusAttribute::SW);
     designConf->setVersion(VERSION_FILESTR);
 
     QSharedPointer<Design> newDesign(new Design(dialog.getDesignVLNV()));
-    newDesign->setDesignImplementation(KactusAttribute::KTS_SW);
+    newDesign->setDesignImplementation(KactusAttribute::SW);
     newDesign->setVersion(VERSION_FILESTR);
 
     QList<ColumnDesc> columns;
 
-    if (component->getComponentImplementation() == KactusAttribute::KTS_SW)
+    if (component->getComponentImplementation() == KactusAttribute::SW)
     {
         columns.append(ColumnDesc("Low-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
         columns.append(ColumnDesc("Middle-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
@@ -2591,9 +2591,9 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName, VLN
     {
         // Otherwise create a system component to encapsulate the system design.
         parentComp = QSharedPointer<Component>(new Component(sysVLNV));
-        parentComp->setComponentHierarchy(KactusAttribute::KTS_PRODUCT);
-        parentComp->setComponentFirmness(KactusAttribute::KTS_FIXED);
-        parentComp->setComponentImplementation(KactusAttribute::KTS_SYS);
+        parentComp->setComponentHierarchy(KactusAttribute::PRODUCT);
+        parentComp->setComponentFirmness(KactusAttribute::FIXED);
+        parentComp->setComponentImplementation(KactusAttribute::SYSTEM);
         parentComp->setVersion(VERSION_FILESTR);
     }
 
@@ -2615,7 +2615,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName, VLN
 
 	// Flat-out the hierarchy to form the system design.
 	QSharedPointer<Design> sysDesign(new Design(designVLNV));
-    sysDesign->setDesignImplementation(KactusAttribute::KTS_SYS);
+    sysDesign->setDesignImplementation(KactusAttribute::SYSTEM);
     sysDesign->setVersion(VERSION_FILESTR);
 
     QList<ColumnDesc> columns;
@@ -2628,7 +2628,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName, VLN
 	// Create the design configuration.
 	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
 	designConf->setDesignRef(designVLNV);
-    designConf->setDesignConfigImplementation(KactusAttribute::KTS_SYS);
+    designConf->setDesignConfigImplementation(KactusAttribute::SYSTEM);
     designConf->setVersion(VERSION_FILESTR);
 
 	// Create the files.
@@ -2687,7 +2687,7 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     component->setVersion(VERSION_FILESTR);
 
     // Ask the user the VLNV, target path and view name.
-    NewDesignDialog dialog(libraryHandler_, component, KactusAttribute::KTS_SYS, this);
+    NewDesignDialog dialog(libraryHandler_, component, KactusAttribute::SYSTEM, this);
     dialog.setWindowTitle(tr("New System Design"));
     dialog.setVLNV(VLNV(VLNV::DESIGN, component->getVlnv()->getVendor(), component->getVlnv()->getLibrary(), "", ""));
 
@@ -2728,11 +2728,11 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     // Create the design and design configuration objects to the same folder as the component.
     QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV()));
     designConf->setDesignRef(dialog.getDesignVLNV());
-    designConf->setDesignConfigImplementation(KactusAttribute::KTS_SYS);
+    designConf->setDesignConfigImplementation(KactusAttribute::SYSTEM);
     designConf->setVersion(VERSION_FILESTR);
 
     QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV()));
-    newDesign->setDesignImplementation(KactusAttribute::KTS_SYS);
+    newDesign->setDesignImplementation(KactusAttribute::SYSTEM);
     newDesign->setVersion(VERSION_FILESTR);
 
     QList<ColumnDesc> columns;
@@ -3905,7 +3905,7 @@ void MainWindow::createSWComponent(VLNV const& vlnv, QString const& directory)
     component->setVersion(VERSION_FILESTR);
 
 	// Set Kactus attributes.
-	component->setComponentImplementation(KactusAttribute::KTS_SW);
+	component->setComponentImplementation(KactusAttribute::SW);
 
     // Create the file.
     if (!libraryHandler_->writeModelToFile(directory, component))
@@ -4424,15 +4424,15 @@ void MainWindow::setPluginVisibilities()
 
 			// the implementation defines where to search for the hierarchy ref
 			switch (desWidget->getImplementation()) {
-			case KactusAttribute::KTS_HW: {
+			case KactusAttribute::HW: {
 				desConfVLNV = comp->getHierRef(viewName);
 				break;
 										  }
-			case KactusAttribute::KTS_SW: {
+			case KactusAttribute::SW: {
 				desConfVLNV = comp->getHierSWRef(viewName);
 				break;
 										  }
-			case KactusAttribute::KTS_SYS: {
+			case KactusAttribute::SYSTEM: {
 				desConfVLNV = comp->getHierSystemRef(viewName);
 				break;
 										   }

@@ -130,7 +130,7 @@ bool VerilogGeneratorPlugin::checkGeneratorSupport(QSharedPointer<LibraryCompone
 {
     QSharedPointer<const Component> targetComponent = libComp.dynamicCast<const Component>();
     
-    return targetComponent && targetComponent->getComponentImplementation() == KactusAttribute::KTS_HW;    
+    return targetComponent && targetComponent->getComponentImplementation() == KactusAttribute::HW;    
 }
 
 //-----------------------------------------------------------------------------

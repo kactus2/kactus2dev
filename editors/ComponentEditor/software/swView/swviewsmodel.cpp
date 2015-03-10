@@ -254,7 +254,7 @@ bool SWViewsModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
             QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(vlnv);
             QSharedPointer<Design const> design = libComp.staticCast<Design const>();
 
-            if (design && design->getDesignImplementation() == KactusAttribute::KTS_SW)
+            if (design && design->getDesignImplementation() == KactusAttribute::SW)
             {
                 setData(index(parent.row(),parent.column()),vlnv.toString(":"));
                 emit contentChanged();
@@ -266,7 +266,7 @@ bool SWViewsModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
             QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(vlnv);
             QSharedPointer<DesignConfiguration const> designConf = libComp.staticCast<DesignConfiguration const>();
 
-            if (designConf && designConf->getDesignConfigImplementation() == KactusAttribute::KTS_SW)
+            if (designConf && designConf->getDesignConfigImplementation() == KactusAttribute::SW)
             {
                 setData(index(parent.row(),parent.column()),vlnv.toString(":"));
                 emit contentChanged();

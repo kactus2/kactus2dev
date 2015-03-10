@@ -92,7 +92,7 @@ bool AlteraBSPGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent 
 	switch (comp->getComponentImplementation()) {
 	
 		// HW component must be CPU and contain at least one SW view which specifies the BSP command
-	case KactusAttribute::KTS_HW: {
+	case KactusAttribute::HW: {
 		return comp->hasSWViews() && comp->isCpu();
 											}
 	// only HW components can contain BSP

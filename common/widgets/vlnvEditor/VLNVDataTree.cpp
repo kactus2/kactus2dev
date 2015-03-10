@@ -143,11 +143,11 @@ void VLNVDataNode::setVLNV(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 VLNVDataTree::VLNVDataTree()
     : firmnessFilterEnabled_(false),
-      firmnessFilter_(KactusAttribute::KTS_TEMPLATE),
+      firmnessFilter_(KactusAttribute::TEMPLATE),
       hierarchyFilterEnabled_(false),
-      hierarchyFilter_(KactusAttribute::KTS_IP),
+      hierarchyFilter_(KactusAttribute::IP),
       implementationFilterEnabled_(false),
-      implementationFilter_(KactusAttribute::KTS_HW),
+      implementationFilter_(KactusAttribute::HW),
       extensions_()
 {
 }

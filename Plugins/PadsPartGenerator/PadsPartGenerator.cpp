@@ -168,8 +168,8 @@ bool PadsPartGenerator::checkGeneratorSupport(QSharedPointer<LibraryComponent co
     // Part generation can only run on HW chip components.
     QSharedPointer<const Component> comp = libComp.dynamicCast<const Component>();
     if (comp == 0 || 
-        comp->getComponentImplementation() != KactusAttribute::KTS_HW || 
-        comp->getComponentHierarchy() != KactusAttribute::KTS_CHIP)
+        comp->getComponentImplementation() != KactusAttribute::HW || 
+        comp->getComponentHierarchy() != KactusAttribute::CHIP)
     {
         return false;
     }
@@ -187,7 +187,7 @@ void PadsPartGenerator::runGenerator(IPluginUtility* utility,
 {
     // Part generation can only run on HW components
     QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
-    if (comp == 0 || comp->getComponentImplementation() != KactusAttribute::KTS_HW)
+    if (comp == 0 || comp->getComponentImplementation() != KactusAttribute::HW)
     {
         return;
     }

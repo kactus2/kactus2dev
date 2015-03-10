@@ -113,7 +113,7 @@ void MemoryDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
             // Create an unpackaged component so that we can still visualize the component instance.
             component = QSharedPointer<Component>(new Component(instance.getComponentRef()));
-            component->setComponentImplementation(KactusAttribute::KTS_HW);
+            component->setComponentImplementation(KactusAttribute::HW);
         }
 
         foreach (QSharedPointer<MemoryMap> map, component->getMemoryMaps())

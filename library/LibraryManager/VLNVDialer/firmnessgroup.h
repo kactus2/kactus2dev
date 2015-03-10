@@ -13,7 +13,7 @@
 #include <QGroupBox>
 #include <QCheckBox>
 
-/*! \brief Contains the check boxes to set the re-usability options for VLNVDialer.
+/*! Contains the check boxes to set the re-usability options for VLNVDialer.
  *
  */
 class FirmnessGroup : public QGroupBox {
@@ -21,14 +21,14 @@ class FirmnessGroup : public QGroupBox {
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
 	 * \param parent Pointer to the owner of this widget.
 	 *
 	*/
 	FirmnessGroup(QWidget *parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~FirmnessGroup();
 
     /*!
@@ -47,37 +47,43 @@ public:
 
 signals:
 
-	//! \brief Emitted when one of the check boxes changes state.
+	//! Emitted when one of the check boxes changes state.
 	void optionsChanged(const Utils::FirmnessOptions& options);
 
 private slots:
 
-	//! \brief Handler for template check box state changes.
+	//! Handler for template check box state changes.
 	void onTemplateChanged(bool checked);
 
-	//! \brief Handler for block check box state changes.
-	void onBlockChanged(bool checked);
+	//! Handler for mutable check box state changes.
+	void onMutableChanged(bool checked);
 
-	//! \brief Handler for configuration check box state changes.
+	//! Handler for configuration check box state changes.
 	void onConfigurationChanged(bool checked);
 
+    //! Handler for definitions check box state changes.
+    void onDefinitionChanged(bool checked);
+
 private:
-	//! \brief No copying
+	//! No copying
 	FirmnessGroup(const FirmnessGroup& other);
 
-	//! \brief No assignment
+	//! No assignment
 	FirmnessGroup& operator=(const FirmnessGroup& other);
 
-	//! \brief Check box to select templates in/out of search results.
+	//! Check box to select templates in/out of search results.
 	QCheckBox templateBox_;
 
-	//! \brief Check box to select mutable in/out of search results.
+	//! Check box to select mutable in/out of search results.
 	QCheckBox mutableBox_;
 
-	//! \brief Check box to select fixed in/out of search results.
+	//! Check box to select fixed in/out of search results.
 	QCheckBox fixedBox_;
 
-	//! \brief Contains the current re-usability settings.
+    //! Check box to select definitions in/out of search results.
+    QCheckBox definitionsBox_;
+
+	//! Contains the current re-usability settings.
 	Utils::FirmnessOptions options_;
 };
 

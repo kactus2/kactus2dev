@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 HierarchyGroup::HierarchyGroup(QWidget *parent):
 QGroupBox(tr("Product Hierarchy"), parent),
-globalBox_(tr("Global"), this),
+flatBox_(tr("Flat"), this),
 productBox_(tr("Product"), this),
 boardBox_(tr("Board"), this),
 chipBox_(tr("Chip"), this),
@@ -25,7 +25,7 @@ ipBox_(tr("IP"), this),
 options_() {
 
 	QGridLayout* layout = new QGridLayout(this);
-	layout->addWidget(&globalBox_, 0, 0, 1, 1);
+	layout->addWidget(&flatBox_, 0, 0, 1, 1);
 	layout->addWidget(&productBox_, 0, 1, 1, 1);
 	layout->addWidget(&boardBox_, 0, 2, 1, 1);
 	layout->addWidget(&chipBox_, 1, 0, 1, 1);
@@ -34,25 +34,19 @@ options_() {
 	layout->setSpacing(0);
 	layout->setContentsMargins(4, 4, 4, 4);
 
-	globalBox_.setChecked(true);
+	flatBox_.setChecked(true);
 	productBox_.setChecked(true);
 	boardBox_.setChecked(true);
 	chipBox_.setChecked(true);
 	socBox_.setChecked(true);
 	ipBox_.setChecked(true);
 
-	connect(&globalBox_, SIGNAL(clicked(bool)),
-		this, SLOT(onGlobalChange(bool)), Qt::UniqueConnection);
-	connect(&productBox_, SIGNAL(clicked(bool)),
-		this, SLOT(onProductChange(bool)), Qt::UniqueConnection);
-	connect(&boardBox_, SIGNAL(clicked(bool)),
-		this, SLOT(onBoardChange(bool)), Qt::UniqueConnection);
-	connect(&chipBox_, SIGNAL(clicked(bool)),
-		this, SLOT(onChipChange(bool)), Qt::UniqueConnection);
-	connect(&socBox_, SIGNAL(clicked(bool)),
-		this, SLOT(onSocChange(bool)), Qt::UniqueConnection);
-	connect(&ipBox_, SIGNAL(clicked(bool)),
-		this, SLOT(onIpChange(bool)), Qt::UniqueConnection);
+	connect(&flatBox_, SIGNAL(clicked(bool)), this, SLOT(onFlatChange(bool)), Qt::UniqueConnection);
+	connect(&productBox_, SIGNAL(clicked(bool)), this, SLOT(onProductChange(bool)), Qt::UniqueConnection);
+	connect(&boardBox_, SIGNAL(clicked(bool)), this, SLOT(onBoardChange(bool)), Qt::UniqueConnection);
+	connect(&chipBox_, SIGNAL(clicked(bool)), this, SLOT(onChipChange(bool)), Qt::UniqueConnection);
+	connect(&socBox_, SIGNAL(clicked(bool)), this, SLOT(onSocChange(bool)), Qt::UniqueConnection);
+	connect(&ipBox_, SIGNAL(clicked(bool)),	this, SLOT(onIpChange(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -66,7 +60,7 @@ HierarchyGroup::~HierarchyGroup() {
 //-----------------------------------------------------------------------------
 void HierarchyGroup::setHierarchy(Utils::HierarchyOptions options)
 {
-    globalBox_.setChecked(options.global_);
+    flatBox_.setChecked(options.flat_);
     productBox_.setChecked(options.product_);
     boardBox_.setChecked(options.board_);    
     chipBox_.setChecked(options.chip_);
@@ -83,7 +77,7 @@ void HierarchyGroup::setHierarchy(Utils::HierarchyOptions options)
 Utils::HierarchyOptions HierarchyGroup::getHierarchy() const
 {
     Utils::HierarchyOptions options;
-    options.global_ = globalBox_.isChecked();
+    options.flat_ = flatBox_.isChecked();
     options.product_ = productBox_.isChecked();
     options.board_ = boardBox_.isChecked();
     options.chip_ = chipBox_.isChecked();
@@ -93,10 +87,10 @@ Utils::HierarchyOptions HierarchyGroup::getHierarchy() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyGroup::onGlobalChange()
+// Function: HierarchyGroup::onFlatChange()
 //-----------------------------------------------------------------------------
-void HierarchyGroup::onGlobalChange( bool checked ) {
-	options_.global_ = checked;
+void HierarchyGroup::onFlatChange( bool checked ) {
+	options_.flat_ = checked;
 	emit optionsChanged(options_);
 }
 

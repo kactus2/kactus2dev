@@ -461,11 +461,11 @@ KactusAttribute::Implementation SystemDesignWidget::getImplementation() const
 {
     if (onlySW_)
     {
-        return KactusAttribute::KTS_SW;
+        return KactusAttribute::SW;
     }
     else
     {
-        return KactusAttribute::KTS_SYS;
+        return KactusAttribute::SYSTEM;
     }
 }
 

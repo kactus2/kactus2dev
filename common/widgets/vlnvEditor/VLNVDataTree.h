@@ -167,7 +167,7 @@ public:
      *      @param [in] on        If true, the filter is turned on; otherwise it is turned off.
      *      @param [in] firmness  The allowed firmness.
      */
-    void setFirmnessFilter(bool on, KactusAttribute::Firmness firmness = KactusAttribute::KTS_TEMPLATE);
+    void setFirmnessFilter(bool on, KactusAttribute::Firmness firmness = KactusAttribute::TEMPLATE);
 
     /*!
      *  Sets the product hierarchy filter on/off.
@@ -175,7 +175,7 @@ public:
      *      @param [in] on           If true, the filter is turned on; otherwise it is turned off.
      *      @param [in] productHier  The allowed product hierarchy.
      */
-    void setHierarchyFilter(bool on, KactusAttribute::ProductHierarchy productHier = KactusAttribute::KTS_IP);
+    void setHierarchyFilter(bool on, KactusAttribute::ProductHierarchy productHier = KactusAttribute::IP);
 
     /*!
      *  Sets the implementation filter on/off.
@@ -183,7 +183,7 @@ public:
      *      @param [in] on              If true, the filter is turned on; otherwise it is turned off.
      *      @param [in] implementation  The allowed implementation.
      */
-    void setImplementationFilter(bool on, KactusAttribute::Implementation implementation = KactusAttribute::KTS_HW);
+    void setImplementationFilter(bool on, KactusAttribute::Implementation implementation = KactusAttribute::HW);
 
     /*!
      *  Adds an extension to be filtered out from the content search results.

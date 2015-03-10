@@ -138,7 +138,7 @@ bool QuartusPinImportPlugin::checkGeneratorSupport(QSharedPointer<LibraryCompone
 
     // Pin import can only run on HW components.
     QSharedPointer<const Component> comp = libComp.dynamicCast<const Component>();
-    if (comp == 0 || comp->getComponentImplementation() != KactusAttribute::KTS_HW)
+    if (comp == 0 || comp->getComponentImplementation() != KactusAttribute::HW)
     {
         return false;
     }

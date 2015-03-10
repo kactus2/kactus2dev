@@ -114,8 +114,8 @@ bool MCAPICodeGeneratorPlugin::checkGeneratorSupport( QSharedPointer<LibraryComp
     QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
 
-    return (comp != 0 && comp->getComponentImplementation() == KactusAttribute::KTS_SW) ||
-        ( libDes != 0 && desgConf != 0 && desgConf->getDesignConfigImplementation() == KactusAttribute::KTS_SYS );
+    return (comp != 0 && comp->getComponentImplementation() == KactusAttribute::SW) ||
+        ( libDes != 0 && desgConf != 0 && desgConf->getDesignConfigImplementation() == KactusAttribute::SYSTEM );
 }
 
 //-----------------------------------------------------------------------------
@@ -130,7 +130,7 @@ void MCAPICodeGeneratorPlugin::runGenerator( IPluginUtility* utility,
     QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
 
-    if ( comp != 0 && comp->getComponentImplementation() == KactusAttribute::KTS_SW )
+    if ( comp != 0 && comp->getComponentImplementation() == KactusAttribute::SW )
     {
         MCAPIParser parser( utility );
         parser.parseMCAPIForComponent(comp);
@@ -139,7 +139,7 @@ void MCAPICodeGeneratorPlugin::runGenerator( IPluginUtility* utility,
         generator.generateMCAPIForComponent(dir, comp);
     }
     else if ( libDes != 0 && desgConf != 0 &&
-        desgConf->getDesignConfigImplementation() == KactusAttribute::KTS_SYS )
+        desgConf->getDesignConfigImplementation() == KactusAttribute::SYSTEM )
     {
         MCAPIParser parser( utility );
         parser.parseTopLevel(design, comp, desgConf);

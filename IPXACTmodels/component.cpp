@@ -936,7 +936,7 @@ void Component::write(QFile& file) {
 
             foreach (QSharedPointer<SWView> view, swViews_)
             {
-                view->write(writer, getComponentImplementation() == KactusAttribute::KTS_HW);
+                view->write(writer, getComponentImplementation() == KactusAttribute::HW);
             }
 
             writer.writeEndElement(); // kactus2:swViews
@@ -2266,7 +2266,7 @@ void Component::setVlnv( const VLNV& vlnv ) {
 
 KactusAttribute::ProductHierarchy Component::getComponentHierarchy() const {
 
-	KactusAttribute::ProductHierarchy hierarchy = KactusAttribute::KTS_GLOBAL;
+	KactusAttribute::ProductHierarchy hierarchy = KactusAttribute::FLAT;
 
 	// if attribute is not found
 	if (!kactus2Attributes_.contains(QString("kts_productHier")))
@@ -2279,7 +2279,7 @@ KactusAttribute::ProductHierarchy Component::getComponentHierarchy() const {
 }
 
 KactusAttribute::Firmness Component::getComponentFirmness() const {
-	KactusAttribute::Firmness firmness = KactusAttribute::KTS_MUTABLE;
+	KactusAttribute::Firmness firmness = KactusAttribute::MUTABLE;
 
 	if (!kactus2Attributes_.contains(QString("kts_firmness")))
 		return firmness;
@@ -2290,7 +2290,7 @@ KactusAttribute::Firmness Component::getComponentFirmness() const {
 }
 
 KactusAttribute::Implementation Component::getComponentImplementation() const {
-	KactusAttribute::Implementation implementation = KactusAttribute::KTS_HW;
+	KactusAttribute::Implementation implementation = KactusAttribute::HW;
 
 	if (!kactus2Attributes_.contains(QString("kts_implementation")))
 		return implementation;
@@ -2461,20 +2461,20 @@ QList<VLNV> Component::getHierRefs() const {
 KactusAttribute::Implementation Component::getViewType( const VLNV& vlnv ) const {
 	// if hw view refers to vlnv
 	if (model_ && model_->hasHierView(vlnv)) {
-		return KactusAttribute::KTS_HW;
+		return KactusAttribute::HW;
 	}
 
 	// if sw view refers to vlnv
 	foreach (QSharedPointer<SWView> swView, swViews_) {
 		if (swView->getHierarchyRef() == vlnv) {
-			return KactusAttribute::KTS_SW;
+			return KactusAttribute::SW;
 		}
 	}
 
 	// if system view refers to vlnv
 	foreach (QSharedPointer<SystemView> sysView, systemViews_) {
 		if (sysView->getHierarchyRef() == vlnv) {
-			return KactusAttribute::KTS_SYS;
+			return KactusAttribute::SYSTEM;
 		}
 	}
 
@@ -2991,8 +2991,8 @@ void Component::createEmptyFlatView() {
 	KactusAttribute::ProductHierarchy hier = getComponentHierarchy();
 	switch (hier) 
 	{
-	case KactusAttribute::KTS_IP:
-	case KactusAttribute::KTS_SOC: {
+	case KactusAttribute::IP:
+	case KactusAttribute::SOC: {
 		// set the name
 		newView->setName("rtl");
 		break;
@@ -3020,8 +3020,8 @@ void Component::createHierarchicalView( const VLNV& hierRef ) {
 	KactusAttribute::ProductHierarchy hier = getComponentHierarchy();
 	switch (hier) 
 	{
-	case KactusAttribute::KTS_IP:
-	case KactusAttribute::KTS_SOC: {
+	case KactusAttribute::IP:
+	case KactusAttribute::SOC: {
 		// set the name
 		newView->setName("structural");
 		break;

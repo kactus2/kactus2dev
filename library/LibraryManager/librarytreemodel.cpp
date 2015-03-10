@@ -228,10 +228,10 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
                 if (component != 0)
                 {
                     switch (component->getComponentImplementation()) {
-                    case KactusAttribute::KTS_SYS: {
+                    case KactusAttribute::SYSTEM: {
                         return QIcon(":/icons/common/graphics/system-component.png");
                                                    }
-                    case KactusAttribute::KTS_SW: {
+                    case KactusAttribute::SW: {
                         if (component->hasSWViews())
                         {
                             return QIcon(":/icons/common/graphics/hier-sw-component.png");
@@ -276,7 +276,7 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
                 // Determine the design type.
                 QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
                 QSharedPointer<Design> design = libComp.staticCast<Design>();
-                if (design && design->getDesignImplementation() == KactusAttribute::KTS_SW)
+                if (design && design->getDesignImplementation() == KactusAttribute::SW)
                 {
                     return QIcon(":/icons/common/graphics/sw-design24x24.png");
                 }
