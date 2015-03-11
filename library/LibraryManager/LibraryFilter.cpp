@@ -207,6 +207,11 @@ bool LibraryFilter::checkFirmness( QSharedPointer<Component const> component ) c
 {
 	Q_ASSERT(component);
 
+    if (component->getComponentImplementation() == KactusAttribute::SW)
+    {
+        return true;
+    }
+
     KactusAttribute::Firmness componentFirmness = component->getComponentFirmness();
     if (componentFirmness == KactusAttribute::TEMPLATE)
     {
@@ -266,9 +271,14 @@ bool LibraryFilter::checkImplementation( QSharedPointer<Component const> compone
 //-----------------------------------------------------------------------------
 // Function: LibraryFilter::checkHierarchy()
 //-----------------------------------------------------------------------------
-bool LibraryFilter::checkHierarchy( QSharedPointer<Component const> component ) const
+bool LibraryFilter::checkHierarchy(QSharedPointer<Component const> component) const
 {
 	Q_ASSERT(component);
+
+    if (component->getComponentImplementation() == KactusAttribute::SW)
+    {
+        return true;
+    }
 
     KactusAttribute::ProductHierarchy componentHierarchy = component->getComponentHierarchy();
     if (componentHierarchy == KactusAttribute::FLAT)
