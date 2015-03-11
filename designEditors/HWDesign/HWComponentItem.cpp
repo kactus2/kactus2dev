@@ -532,6 +532,10 @@ void HWComponentItem::updateComponent()
         {
             setBrush(QBrush(KactusColors::HW_BUS_COMPONENT));
         }
+        else if(componentModel()->getComponentFirmness() == KactusAttribute::DEFINITIONS)
+        {
+            setBrush(QBrush(KactusColors::HW_DEFINITIONS));
+        }
         else
         {
             setBrush(QBrush(KactusColors::HW_COMPONENT));

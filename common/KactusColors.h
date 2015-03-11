@@ -28,15 +28,16 @@ namespace KactusColors
     //! Color used for allowed visualization in design diagrams.
     QColor const DIAGRAM_ALLOWED_INTERFACE = Qt::magenta;
 
-    //! Colors used for component in different scenarios.
+    //! Colors used for component.
     QColor const MISSING_COMPONENT = QColor(0xe8, 0xc5, 0xc5);
     QColor const DRAFT_COMPONENT = QColor(217, 217, 217);
     QColor const HW_BUS_COMPONENT = QColor(0xce,0xdf,0xff);
     QColor const HW_COMPONENT = QColor(0xa5,0xc3,0xef);
+    QColor const HW_DEFINITIONS = QColor("NavajoWhite");
     QColor const SW_COMPONENT = QColor(0xc5,0xff, 0xab);
 
     //! Colors used for memory/address sections in the memory designer.
-    QColor const MEMORY_BLOCK = QColor(0xd6, 0xba, 0xff); //QColor(0xe6,0xba,0xff);
+    QColor const MEMORY_BLOCK = QColor(0xd6, 0xba, 0xff);
     QColor const ADDRESS_SEGMENT = QColor(0xc6,0xef,0xd7);
     QColor const ADDRESS_SEGMENT_UNSEGMENTED = QColor(217, 217, 217);
 
