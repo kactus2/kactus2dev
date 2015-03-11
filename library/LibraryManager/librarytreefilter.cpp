@@ -19,8 +19,6 @@
 #include <IPXACTmodels/design.h>
 #include <IPXACTmodels/designconfiguration.h>
 
-#include <QRegExp>
-
 //-----------------------------------------------------------------------------
 // Function: LibraryTreeFilter::LibraryTreeFilter()
 //-----------------------------------------------------------------------------

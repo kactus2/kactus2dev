@@ -49,7 +49,6 @@ HEADERS += ./common/Global.h \
     ./common/widgets/memoryMapSelector/memorymapselector.h \
     ./common/widgets/interfaceSelector/interfaceselector.h \
     ./common/widgets/LineEditEx/LineEditEx.h \
-    ./common/widgets/ComboBoxEx/ComboBoxEx.h \
     ./common/widgets/SnippetTextEdit/SnippetHighlighter.h \
     ./common/widgets/SnippetTextEdit/SnippetTextEdit.h \
     ./common/widgets/usageComboBox/usagecombobox.h \
@@ -111,8 +110,6 @@ HEADERS += ./common/Global.h \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.h \
     ./common/dialogs/fileSaveDialog/filesavedialog.h \
     ./common/dialogs/fileSaveDialog/filesavedialogview.h \
-    ./common/dialogs/commandLineGeneratorDialog/commandlinegeneratordialog.h \
-    ./common/dialogs/commandLineGeneratorDialog/commandlineconsole.h \
     ./common/dialogs/NewBusDialog/NewBusDialog.h \
     ./mainwindow/SplashScreen.h \
     ./mainwindow/NewWorkspaceDialog.h \
@@ -202,6 +199,7 @@ HEADERS += ./common/Global.h \
     ./library/LibraryManager/ipxactitem.h \
     ./library/LibraryManager/libraryinterface.h \
     ./library/LibraryManager/LibraryUtils.h \
+    ./library/LibraryManager/LibraryFilter.h \
     ./library/LibraryManager/ipxactmodel.h \
     ./library/LibraryManager/ipxactwidget.h \
     ./library/LibraryManager/librarydata.h \
@@ -605,8 +603,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./library/LibraryManager/LibraryFilter.h
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -624,8 +621,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/dialogs/TableViewDialog/TableViewDialog.cpp \
     ./common/dialogs/fileSaveDialog/filesavedialog.cpp \
     ./common/dialogs/fileSaveDialog/filesavedialogview.cpp \
-    ./common/dialogs/commandLineGeneratorDialog/commandlineconsole.cpp \
-    ./common/dialogs/commandLineGeneratorDialog/commandlinegeneratordialog.cpp \
     ./common/dialogs/NewBusDialog/NewBusDialog.cpp \
     ./common/validators/AddressValidator.cpp \
     ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
@@ -661,7 +656,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/memoryMapSelector/memorymapselector.cpp \
     ./common/widgets/interfaceSelector/interfaceselector.cpp \
     ./common/widgets/LineEditEx/LineEditEx.cpp \
-    ./common/widgets/ComboBoxEx/ComboBoxEx.cpp \
     ./common/widgets/colorBox/ColorBox.cpp \
     ./common/widgets/SnippetTextEdit/SnippetHighlighter.cpp \
     ./common/widgets/SnippetTextEdit/SnippetTextEdit.cpp \
@@ -773,6 +767,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./library/LibraryManager/ipxactwidget.cpp \
     ./library/LibraryManager/librarydata.cpp \
     ./library/LibraryManager/LibraryErrorModel.cpp \
+    ./library/LibraryManager/LibraryFilter.cpp \
     ./library/LibraryManager/libraryhandler.cpp \
     ./library/LibraryManager/libraryitem.cpp \
     ./library/LibraryManager/librarytreefilter.cpp \
@@ -1153,6 +1148,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./library/LibraryManager/LibraryFilter.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
 RESOURCES += kactus.qrc

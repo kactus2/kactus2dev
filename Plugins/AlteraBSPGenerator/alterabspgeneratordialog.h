@@ -8,11 +8,10 @@
 #ifndef ALTERABSPGENERATORDIALOG_H
 #define ALTERABSPGENERATORDIALOG_H
 
-#include <common/Global.h>
-
-#include <common/dialogs/commandLineGeneratorDialog/commandlinegeneratordialog.h>
-#include <IPXACTmodels/component.h>
+#include <commandLineGeneratorDialog/commandlinegeneratordialog.h>
 #include <common/widgets/viewSelector/viewselector.h>
+
+#include <IPXACTmodels/component.h>
 #include <IPXACTmodels/SWView.h>
 
 #include <QSharedPointer>

@@ -8,14 +8,12 @@
 #ifndef COMMANDLINECONSOLE_H
 #define COMMANDLINECONSOLE_H
 
-#include <common/Global.h>
-
 #include <QTextEdit>
 
 /*! \brief Used to print standard and error output from other processes run through Kactus2.
  * 
  */
-class KACTUS2_API CommandLineConsole : public QTextEdit {
+class CommandLineConsole : public QTextEdit {
 	Q_OBJECT
 
 public:

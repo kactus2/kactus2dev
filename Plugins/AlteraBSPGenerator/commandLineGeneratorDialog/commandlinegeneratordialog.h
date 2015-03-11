@@ -8,8 +8,6 @@
 #ifndef COMMANDLINEGENERATORDIALOG_H
 #define COMMANDLINEGENERATORDIALOG_H
 
-#include <common/Global.h>
-
 #include "commandlineconsole.h"
 
 #include <QDialog>
@@ -24,7 +22,7 @@
  * This class must be sub-classed and can not be used as such.
  * Sub-classes must set up the top layout for the dialog.
  */
-class KACTUS2_API CommandLineGeneratorDialog : public QDialog {
+class CommandLineGeneratorDialog : public QDialog {
 	Q_OBJECT
 
 public:

@@ -29,6 +29,12 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="Source Files\commandLineGeneratorDialog">
+      <UniqueIdentifier>{8956e4b5-e388-441a-96fd-d8a1a39b4d64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\commandLineGeneratorDialog">
+      <UniqueIdentifier>{7b44b107-c7da-401b-bfa2-7caa2d240fe5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\qrc_AlteraBSPGenerator.cpp">
@@ -52,6 +58,24 @@
     <ClCompile Include="GeneratedFiles\Release\moc_alterabspgeneratordialog.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="commandLineGeneratorDialog\commandlinegeneratordialog.cpp">
+      <Filter>Source Files\commandLineGeneratorDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="commandLineGeneratorDialog\commandlineconsole.cpp">
+      <Filter>Source Files\commandLineGeneratorDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_commandlineconsole.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_commandlineconsole.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_commandlinegeneratordialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_commandlinegeneratordialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="AlteraBSPGenerator.qrc">
@@ -62,6 +86,12 @@
     </CustomBuild>
     <CustomBuild Include="alterabspgeneratordialog.h">
       <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="commandLineGeneratorDialog\commandlineconsole.h">
+      <Filter>Header Files\commandLineGeneratorDialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="commandLineGeneratorDialog\commandlinegeneratordialog.h">
+      <Filter>Header Files\commandLineGeneratorDialog</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

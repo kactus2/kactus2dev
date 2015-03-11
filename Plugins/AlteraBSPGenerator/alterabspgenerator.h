@@ -1,7 +1,7 @@
 /* 
  *	Created on: 15.2.2013
  *	Author:		Antti Kamppi
- * File name:	memorymapheadergenerator.h
+ * File name:	alterabspgenerator.h
  * Project:	Kactus 2
 */
 

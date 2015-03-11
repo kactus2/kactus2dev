@@ -110,9 +110,6 @@
     <Filter Include="Source Files\common\widgets\LineEditEx">
       <UniqueIdentifier>{64aa0fcf-fb37-41dd-a6c8-fd01f4dfbc80}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\widgets\ComboBoxEx">
-      <UniqueIdentifier>{ac714122-befe-491f-bfad-2634d7c22069}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\widgets\SnippetTextEdit">
       <UniqueIdentifier>{df803563-6875-4e92-9a16-e11f3f55a516}</UniqueIdentifier>
     </Filter>
@@ -377,12 +374,6 @@
     <Filter Include="Source Files\common\widgets\EnumCollectionEditor">
       <UniqueIdentifier>{91f601a7-3b40-46ca-948c-9db2dfa372e6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\common\dialogs\commandLineGeneratorDialog">
-      <UniqueIdentifier>{cf7bdfb8-046a-4e74-97b6-b997d007b0d3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\dialogs\commandLineGeneratorDialog">
-      <UniqueIdentifier>{ca94da07-4954-4c3b-b08c-f5474019e1b2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\common\widgets\FileSelector">
       <UniqueIdentifier>{e1b5c92c-2ad8-4366-8766-0e0dd5845044}</UniqueIdentifier>
     </Filter>
@@ -394,9 +385,6 @@
     </Filter>
     <Filter Include="Source Files\common\widgets\fileViewer">
       <UniqueIdentifier>{f1482c4f-32eb-4070-abb8-4d5a2398e80e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\widgets\ComboBoxEx\colorBox">
-      <UniqueIdentifier>{9b05bee6-46c8-4ad5-9f89-361f31037f76}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\mainwindow\NewPages">
       <UniqueIdentifier>{c5f861cd-161d-40dd-85cf-5c9af8ab6f37}</UniqueIdentifier>
@@ -923,6 +911,9 @@
     <Filter Include="Header Files\mainwindow\DrawingBoard">
       <UniqueIdentifier>{0d1ef851-a3cc-48b8-8a4e-c2cd9153c690}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\common\widgets\colorBox">
+      <UniqueIdentifier>{9b05bee6-46c8-4ad5-9f89-361f31037f76}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -1022,7 +1013,7 @@
       <Filter>Source Files\common\widgets\vlnvEditor</Filter>
     </ClCompile>
     <ClCompile Include="common\widgets\colorBox\ColorBox.cpp">
-      <Filter>Source Files\common\widgets\ComboBoxEx\colorBox</Filter>
+      <Filter>Source Files\common\widgets\colorBox</Filter>
     </ClCompile>
     <ClCompile Include="common\widgets\kactusAttributeEditor\KactusAttributeEditor.cpp">
       <Filter>Source Files\common\widgets\kactusAttributeEditor</Filter>
@@ -1068,9 +1059,6 @@
     </ClCompile>
     <ClCompile Include="common\widgets\LineEditEx\LineEditEx.cpp">
       <Filter>Source Files\common\widgets\LineEditEx</Filter>
-    </ClCompile>
-    <ClCompile Include="common\widgets\ComboBoxEx\ComboBoxEx.cpp">
-      <Filter>Source Files\common\widgets\ComboBoxEx</Filter>
     </ClCompile>
     <ClCompile Include="common\widgets\SnippetTextEdit\SnippetHighlighter.cpp">
       <Filter>Source Files\common\widgets\SnippetTextEdit</Filter>
@@ -1354,9 +1342,6 @@
     <ClCompile Include="GeneratedFiles\moc_combodelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ComboBoxEx.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ColorBox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -1452,18 +1437,6 @@
     </ClCompile>
     <ClCompile Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.cpp">
       <Filter>Source Files\common\widgets\EnumCollectionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_commandlinegeneratordialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="common\dialogs\commandLineGeneratorDialog\commandlinegeneratordialog.cpp">
-      <Filter>Source Files\common\dialogs\commandLineGeneratorDialog</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_commandlineconsole.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="common\dialogs\commandLineGeneratorDialog\commandlineconsole.cpp">
-      <Filter>Source Files\common\dialogs\commandLineGeneratorDialog</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_dirlistmanagermodel.cpp">
       <Filter>Generated Files</Filter>
@@ -4119,9 +4092,6 @@
     <CustomBuild Include="common\widgets\colorBox\ColorBox.h">
       <Filter>Header Files\common\widgets\colorBox</Filter>
     </CustomBuild>
-    <CustomBuild Include="common\widgets\ComboBoxEx\ComboBoxEx.h">
-      <Filter>Header Files\common\widgets\ComboBoxEx</Filter>
-    </CustomBuild>
     <CustomBuild Include="common\widgets\componentPreviewBox\ComponentPreviewBox.h">
       <Filter>Header Files\common\widgets\componentPreviewBox</Filter>
     </CustomBuild>
@@ -4262,12 +4232,6 @@
     </CustomBuild>
     <CustomBuild Include="settings\filetypesview.h">
       <Filter>Header Files\settings</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\dialogs\commandLineGeneratorDialog\commandlinegeneratordialog.h">
-      <Filter>Header Files\common\dialogs\commandLineGeneratorDialog</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\dialogs\commandLineGeneratorDialog\commandlineconsole.h">
-      <Filter>Header Files\common\dialogs\commandLineGeneratorDialog</Filter>
     </CustomBuild>
     <CustomBuild Include="common\widgets\listManager\dirlistmanagermodel.h">
       <Filter>Header Files\common\widgets\listManager</Filter>
