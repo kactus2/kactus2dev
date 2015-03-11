@@ -1370,6 +1370,16 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             return;
         }
 
+        // Disallow instantiation of components marked as definitions.
+        if (comp->getComponentFirmness() == KactusAttribute::DEFINITIONS)
+        {
+            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                tr("Definitions component cannot be directly instantiated in a design. "),
+                QMessageBox::Ok, getParent());
+            msgBox.exec();
+            return;
+        }
+
         // Set the instance name for the new component instance.
         QString instanceName = createInstanceName(comp);
 
