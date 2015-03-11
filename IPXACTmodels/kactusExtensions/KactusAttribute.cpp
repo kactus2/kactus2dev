@@ -56,6 +56,12 @@ namespace KactusAttribute
     {
         QString lowStr = str.toLower();
 
+        if (lowStr == "global")
+        {
+            val = KactusAttribute::FLAT;
+            return true;
+        }
+
         for (unsigned int i = 0; i < KTS_PRODHIER_COUNT; ++i)
         {
             if (lowStr == PROD_HIER_NAMES[i].toLower())

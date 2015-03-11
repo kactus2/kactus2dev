@@ -177,7 +177,6 @@ void ComponentEditorSettingsPage::onSwHorizonSelectAll(int rowIndex)
 	{
 		workspaceSwCheckBoxes_.at(currentWorkspaceIndex_).at(rowIndex)->setChecked(true);
 	}
-
 }
 
 //-----------------------------------------------------------------------------
@@ -247,7 +246,7 @@ QStackedWidget* ComponentEditorSettingsPage::createWorkspacePages(QString curren
 {
 	SettingsPage::settings().beginGroup("Workspaces");
 
-	SettingsPage::settings().beginGroup(currentWorkspaceName + "/ComponentEditorFilters/HW/Global");
+	SettingsPage::settings().beginGroup(currentWorkspaceName + "/ComponentEditorFilters/HW/Flat");
 	QStringList hwCheckBoxNames = SettingsPage::settings().childKeys();
 	SettingsPage::settings().endGroup(); // workspaceName/ComponentEditorFilters/HW
 

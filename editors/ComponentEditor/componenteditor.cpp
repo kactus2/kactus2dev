@@ -796,7 +796,6 @@ void ComponentEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void ComponentEditor::setRowVisibility(QSettings& settings)
 {
-
 	QString workSpace = settings.value("Workspaces/CurrentWorkspace").toString();
 
 	settings.beginGroup( "Workspaces/" + workSpace + "/ComponentEditorFilters");
@@ -804,33 +803,8 @@ void ComponentEditor::setRowVisibility(QSettings& settings)
 	if (isHWImplementation())
 	{
 		settings.beginGroup("HW");
-
-		if(component_->getComponentHierarchy() == KactusAttribute::FLAT)
-		{
-			settings.beginGroup("Global");
-		}
-		else if (component_->getComponentHierarchy() == KactusAttribute::PRODUCT)
-		{
-			settings.beginGroup("Product");
-		}
-		else if (component_->getComponentHierarchy() == KactusAttribute::BOARD)
-		{
-			settings.beginGroup("Board");
-		}
-		else if (component_->getComponentHierarchy() == KactusAttribute::CHIP)
-		{
-			settings.beginGroup("Chip");
-		}
-		else if (component_->getComponentHierarchy() == KactusAttribute::SOC)
-		{
-			settings.beginGroup("Soc");
-		}
-		else
-		{
-			settings.beginGroup("IP");
-		}
+        settings.beginGroup(KactusAttribute::valueToString(component_->getComponentHierarchy()));
 	}
-
 	else
 	{
 		settings.beginGroup("SW");
