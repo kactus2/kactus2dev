@@ -13,19 +13,21 @@
 #include <QVBoxLayout>
 #include <QSizePolicy>
 
-LibraryTreeWidget::LibraryTreeWidget(VLNVDialer* dialer, 
-									 LibraryInterface* handler,
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeWidget::LibraryTreeWidget()
+//-----------------------------------------------------------------------------
+LibraryTreeWidget::LibraryTreeWidget(LibraryInterface* handler,
 									 LibraryTreeModel* dataModel,
 									 QWidget* parent):
 QWidget(parent),
-filter_(handler, dialer, this), 
-view_(handler, &filter_, this),
+filter_(new LibraryTreeFilter(handler, this)),
+view_(handler, filter_, this),
 dataModel_(dataModel)
 {
-    filter_.setSourceModel(dataModel);
+    filter_->setSourceModel(dataModel);
 
 	// set view to use LibraryTreeFilter as source model
-	view_.setModel(&filter_);
+	view_.setModel(filter_);
 
 	// the layout to manage the visible items in the widget
 	QVBoxLayout* layout = new QVBoxLayout(this);
@@ -37,12 +39,18 @@ dataModel_(dataModel)
 	view_.sortByColumn(0, Qt::AscendingOrder);
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeWidget::~LibraryTreeWidget()
+//-----------------------------------------------------------------------------
 LibraryTreeWidget::~LibraryTreeWidget() {
 
 }
 
-void LibraryTreeWidget::setupConnections(LibraryTreeModel* dataModel) {
-
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeWidget::setupConnections()
+//-----------------------------------------------------------------------------
+void LibraryTreeWidget::setupConnections(LibraryTreeModel* dataModel)
+{
 	connect(&view_, SIGNAL(errorMessage(const QString&)),
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 
@@ -108,34 +116,44 @@ void LibraryTreeWidget::setupConnections(LibraryTreeModel* dataModel) {
 		this, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
 
 	connect(dataModel, SIGNAL(invalidateFilter()),
-		&filter_, SLOT(invalidate()), Qt::UniqueConnection);
+		filter_, SLOT(invalidate()), Qt::UniqueConnection);
 }
 
-void LibraryTreeWidget::selectItem( const VLNV& vlnv ) {
-	
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeWidget::selectItem()
+//-----------------------------------------------------------------------------
+void LibraryTreeWidget::selectItem(VLNV const& vlnv)
+{	
 	// if vlnv is not valid
-	if (!vlnv.isValid()) {
-
+	if (!vlnv.isValid())
+    {
 		// do not select anything
 		view_.clearSelection();
 	}
-
 	
 	// find the item to be selected
 	LibraryItem* item = dataModel_->getRoot()->findItem(vlnv);
 
 	// if item is not found then print an error message telling user that 
 	// library is corrupted
-	if (!item) {
+	if (!item)
+    {
 		emit errorMessage(tr("Selected item was not found, library is corrupted."));
 		return;
 	}
 
 	// create an index to the item
 	QModelIndex itemIndex = dataModel_->index(item);
-
-	QModelIndex filteredIndex = filter_.mapFromSource(itemIndex);
+	QModelIndex filteredIndex = filter_->mapFromSource(itemIndex);
 	
 	// tell view to select the item
 	view_.setCurrentIndex(filteredIndex);
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeWidget::getFilter()
+//-----------------------------------------------------------------------------
+LibraryFilter* LibraryTreeWidget::getFilter() const
+{
+    return filter_;
 }

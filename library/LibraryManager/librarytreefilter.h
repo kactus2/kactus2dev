@@ -14,7 +14,6 @@
 
 #include "LibraryFilter.h"
 
-class VLNVDialer;
 class LibraryInterface;
 
 //-----------------------------------------------------------------------------
@@ -29,11 +28,10 @@ public:
     /*! The constructor
      *
      *      @param [in]  handler    Pointer to the instance that manages the library.
-     *      @param [in]  dialer     Pointer to the VLNVDialer that provides search options.
      *      @param [in]  parent     Pointer to the owner of this widget.
      *
     */
-    LibraryTreeFilter(LibraryInterface* handler, VLNVDialer* dialer, QObject *parent = 0);
+    LibraryTreeFilter(LibraryInterface* handler, QObject *parent = 0);
 
 	//! The destructor
     virtual ~LibraryTreeFilter();

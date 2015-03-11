@@ -22,7 +22,6 @@
 #include <QRegExpValidator>
 #include <QSharedPointer>
 
-class VLNVDialer;
 class LibraryInterface;
 
 //-----------------------------------------------------------------------------
@@ -37,12 +36,11 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] dialer   The dialer for selecting the filters.
      *      @param [in] parent   The parent object.
      *
      *      @return <Description>.
      */
-    LibraryFilter(VLNVDialer* dialer, QObject *parent = 0);
+    LibraryFilter(QObject *parent = 0);
 
 	//! The destructor
     virtual ~LibraryFilter();

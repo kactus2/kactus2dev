@@ -10,10 +10,10 @@
 //-----------------------------------------------------------------------------
 
 #include "LibraryFilter.h"
-#include "libraryitem.h"
 
+#include "libraryitem.h"
 #include "libraryinterface.h"
-#include <library/LibraryManager/VLNVDialer/vlnvdialer.h>
+
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/busdefinition.h>
 #include <IPXACTmodels/design.h>
@@ -24,7 +24,7 @@
 //-----------------------------------------------------------------------------
 // Function: LibraryFilter::LibraryFilter()
 //-----------------------------------------------------------------------------
-LibraryFilter::LibraryFilter(VLNVDialer* dialer, QObject *parent):
+LibraryFilter::LibraryFilter(QObject *parent):
 QSortFilterProxyModel(parent), 
 firmness_(),
 implementation_(),
@@ -38,8 +38,6 @@ libraryFilter_(),
 nameFilter_(),
 versionFilter_() 
 {
-	Q_ASSERT(dialer);
-
 	// set settings for filter
 	setSortLocaleAware(true);
 	setSortCaseSensitivity(Qt::CaseInsensitive);
@@ -49,23 +47,6 @@ versionFilter_()
 	libraryValidator_.setRegExp(regExp);
 	nameValidator_.setRegExp(regExp);
 	versionValidator_.setRegExp(regExp);
-
-	connect(dialer, SIGNAL(vendorChanged(const QString&)),
-		this, SLOT(onVendorChanged(const QString&)), Qt::UniqueConnection);
-	connect(dialer, SIGNAL(libraryChanged(const QString&)),
-		this, SLOT(onLibraryChanged(const QString&)), Qt::UniqueConnection);
-	connect(dialer, SIGNAL(nameChanged(const QString&)), 
-		this, SLOT(onNameChanged(const QString&)), Qt::UniqueConnection);
-	connect(dialer, SIGNAL(versionChanged(const QString&)),
-		this, SLOT(onVersionChanged(const QString&)), Qt::UniqueConnection);
-	connect(dialer, SIGNAL(firmnessChanged(const Utils::FirmnessOptions&)),
-		this, SLOT(onFirmnessChanged(const Utils::FirmnessOptions&)), Qt::UniqueConnection);
-	connect(dialer, SIGNAL(implementationChanged(const Utils::ImplementationOptions&)),
-		this, SLOT(onImplementationChanged(const Utils::ImplementationOptions&)), Qt::UniqueConnection);
-	connect(dialer, SIGNAL(typeChanged(const Utils::TypeOptions&)),
-		this, SLOT(onTypeChanged(const Utils::TypeOptions&)), Qt::UniqueConnection);
-	connect(dialer, SIGNAL(hierarchyChanged(const Utils::HierarchyOptions&)),
-		this, SLOT(onHierarchyChanged(const Utils::HierarchyOptions&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

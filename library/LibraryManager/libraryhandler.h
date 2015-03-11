@@ -35,8 +35,8 @@ class VLNVDialer;
 /*! \brief LibraryHandler is the class that implements the services to manage library
  *
  */
-class LibraryHandler : public QTabWidget, public LibraryInterface {
-
+class LibraryHandler : public QTabWidget, public LibraryInterface
+{
     Q_OBJECT
 
 public:
@@ -576,7 +576,17 @@ private:
 	*/
 	bool containsPath(const QString& path, const QStringList& pathsToSearch) const;
 
-	/*******************************************************************/
+    /*!
+     *  Connects a library view filter to dialer for selecting filter conditions.
+     *
+     *      @param [in] filter   The filter to connect.
+     *      @param [in] dialer   The dialer for selecting filters.
+     */
+    void connectLibraryFilter(LibraryFilter* filter, VLNVDialer* dialer) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! \brief The data model that contains the library and is model for search view
     QSharedPointer<LibraryData> data_;

@@ -5,9 +5,11 @@
  */
 
 #include "libraryhandler.h"
-#include <IPXACTmodels/vlnv.h>
 
+#include "LibraryFilter.h"
 #include "LibraryErrorModel.h"
+
+#include <library/LibraryManager/VLNVDialer/vlnvdialer.h>
 
 // the dialog files
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
@@ -21,6 +23,7 @@
 #include <IPXACTmodels/designconfiguration.h>
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/design.h>
+#include <IPXACTmodels/vlnv.h>
 
 #include <QString>
 #include <QStringList>
@@ -58,12 +61,14 @@ itemsToAdd_()
 	// create the connections between models and library handler
 	syncronizeModels();
 
-	treeWidget_ = new LibraryTreeWidget(dialer, this, treeModel_.data(), this);
+	treeWidget_ = new LibraryTreeWidget(this, treeModel_.data(), this);
+    connectLibraryFilter(treeWidget_->getFilter(), dialer);
 
 	connect(treeWidget_, SIGNAL(itemSelected(const VLNV&)),
 		this, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
 
-	hierarchyWidget_ = new HierarchyWidget(dialer, this, this, hierarchyModel_.data());
+	hierarchyWidget_ = new HierarchyWidget(this, hierarchyModel_.data(), this);
+    connectLibraryFilter(hierarchyWidget_->getFilter(), dialer);
 
 	connect(hierarchyWidget_, SIGNAL(componentSelected(const VLNV&)),
 		this, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
@@ -1590,4 +1595,27 @@ void LibraryHandler::onShowErrors(VLNV const& vlnv)
 
         dialog.exec();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryHandler::connectVLNVFilter()
+//-----------------------------------------------------------------------------
+void LibraryHandler::connectLibraryFilter(LibraryFilter* filter, VLNVDialer* dialer) const
+{
+    connect(dialer, SIGNAL(vendorChanged(const QString&)),
+        filter, SLOT(onVendorChanged(const QString&)), Qt::UniqueConnection);
+    connect(dialer, SIGNAL(libraryChanged(const QString&)),
+        filter, SLOT(onLibraryChanged(const QString&)), Qt::UniqueConnection);
+    connect(dialer, SIGNAL(nameChanged(const QString&)), 
+        filter, SLOT(onNameChanged(const QString&)), Qt::UniqueConnection);
+    connect(dialer, SIGNAL(versionChanged(const QString&)),
+        filter, SLOT(onVersionChanged(const QString&)), Qt::UniqueConnection);
+    connect(dialer, SIGNAL(firmnessChanged(const Utils::FirmnessOptions&)),
+        filter, SLOT(onFirmnessChanged(const Utils::FirmnessOptions&)), Qt::UniqueConnection);
+    connect(dialer, SIGNAL(implementationChanged(const Utils::ImplementationOptions&)),
+        filter, SLOT(onImplementationChanged(const Utils::ImplementationOptions&)), Qt::UniqueConnection);
+    connect(dialer, SIGNAL(typeChanged(const Utils::TypeOptions&)),
+        filter, SLOT(onTypeChanged(const Utils::TypeOptions&)), Qt::UniqueConnection);
+    connect(dialer, SIGNAL(hierarchyChanged(const Utils::HierarchyOptions&)),
+        filter, SLOT(onHierarchyChanged(const Utils::HierarchyOptions&)), Qt::UniqueConnection);
 }

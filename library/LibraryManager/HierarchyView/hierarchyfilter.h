@@ -21,8 +21,6 @@
 #include <QSharedPointer>
 #include <QString>
 
-class VLNVDialer;
-
 //-----------------------------------------------------------------------------
 //! The class that does the filtering and sorting of items for the library hierarchy view.
 //-----------------------------------------------------------------------------
@@ -34,10 +32,9 @@ public:
 
 	/*! The constructor
 	 * 
-	 *      @param [in]  dialer Pointer to the VLNVDialer that provides search options.
 	 *      @param [in]  parent Pointer to the owner of this filter.
 	*/
-	HierarchyFilter(VLNVDialer* dialer, QObject *parent);
+	HierarchyFilter(QObject *parent);
 	
 	//! The destructor
 	virtual ~HierarchyFilter();

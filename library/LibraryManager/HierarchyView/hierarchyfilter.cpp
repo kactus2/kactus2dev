@@ -10,18 +10,17 @@
 //-----------------------------------------------------------------------------
 
 #include "hierarchyfilter.h"
+
 #include "../LibraryFilter.h"
+#include "hierarchyitem.h"
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
-
-#include <library/LibraryManager/VLNVDialer/vlnvdialer.h>
-#include "hierarchyitem.h"
 
 //-----------------------------------------------------------------------------
 // Function: HierarchyFilter::HierarchyFilter()
 //-----------------------------------------------------------------------------
-HierarchyFilter::HierarchyFilter(VLNVDialer* dialer, QObject *parent):
-LibraryFilter(dialer, parent)
+HierarchyFilter::HierarchyFilter(QObject *parent):
+LibraryFilter(parent)
 {
 
 }

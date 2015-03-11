@@ -17,28 +17,24 @@
 
 class HierarchyModel;
 class LibraryInterface;
-class VLNVDialer;
 
 /*! \brief The container for hierarchy view and hierarchy filter.
  *
  */
-class HierarchyWidget : public QWidget {
+class HierarchyWidget : public QWidget
+{
 	Q_OBJECT
 
 public:
 
 	/*! \brief The constructor
 	 * 
-	 * \param dialer Pointer to the dialer that provides search options.
 	 * \param parent Pointer to the owner of this widget.
 	 * \param handler Pointer to the instance that manages library.
 	 * \param dataModel Pointer to the model that provides data to view and filter.
 	 *
 	*/
-	HierarchyWidget(VLNVDialer* dialer, 
-		QWidget *parent, 
-		LibraryInterface* handler,
-		HierarchyModel* dataModel);
+    HierarchyWidget(LibraryInterface* handler, HierarchyModel* dataModel, QWidget* parent);
 	
 	//! \brief The destructor
 	virtual ~HierarchyWidget();
@@ -49,6 +45,13 @@ public:
 	 *
 	*/
 	void selectItems(const VLNV& vlnv);
+    	
+    /*!
+     *  Gets the filter for the tree model.
+     *
+     *      @return The filter in use.
+     */
+    LibraryFilter* getFilter() const;
 
 signals:
 
@@ -72,7 +75,7 @@ private:
 	void setupConnections(HierarchyModel* dataModel);
 
 	//! \brief The filter to sort and filter the components.
-	HierarchyFilter filter_;
+	HierarchyFilter* filter_;
 
 	//! \brief The view to display the library components.
 	HierarchyView view_;

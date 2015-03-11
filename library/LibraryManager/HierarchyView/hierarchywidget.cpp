@@ -13,15 +13,15 @@
 
 #include <QDebug>
 
-HierarchyWidget::HierarchyWidget( VLNVDialer* dialer, 
-								 QWidget *parent, 
-								 LibraryInterface* handler,
-								 HierarchyModel* dataModel ):
+//-----------------------------------------------------------------------------
+// Function: HierarchyWidget::HierarchyWidget()
+//-----------------------------------------------------------------------------
+HierarchyWidget::HierarchyWidget(LibraryInterface* handler, HierarchyModel* dataModel, QWidget *parent):
 QWidget(parent), 
-filter_(dialer, this),
-view_(this, handler, &filter_),
-model_(dataModel) {
-
+    filter_(new HierarchyFilter(this)),
+    view_(this, handler, filter_),
+    model_(dataModel)
+{
 	Q_ASSERT_X(handler, "HierarchyWidget constructor",
 		"Null LibraryInterface pointer given as parameter");
 	Q_ASSERT_X(dataModel, "HierarchyWidget constructor",
@@ -31,8 +31,8 @@ model_(dataModel) {
 	layout->addWidget(&view_);
 	layout->setContentsMargins(0, 0, 0, 0);
 
-	filter_.setSourceModel(dataModel);
-	view_.setModel(&filter_);
+	filter_->setSourceModel(dataModel);
+	view_.setModel(filter_);
 
 	view_.sortByColumn(0, Qt::AscendingOrder);
 	view_.setColumnWidth(0, 200);
@@ -40,9 +40,16 @@ model_(dataModel) {
 	setupConnections(dataModel);
 }
 
-HierarchyWidget::~HierarchyWidget() {
+//-----------------------------------------------------------------------------
+// Function: HierarchyWidget::~HierarchyWidget()
+//-----------------------------------------------------------------------------
+HierarchyWidget::~HierarchyWidget()
+{
 }
 
+//-----------------------------------------------------------------------------
+// Function: HierarchyWidget::setupConnections()
+//-----------------------------------------------------------------------------
 void HierarchyWidget::setupConnections( HierarchyModel* dataModel ) {
 	connect(&view_, SIGNAL(errorMessage(const QString&)),
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
@@ -106,13 +113,17 @@ void HierarchyWidget::setupConnections( HierarchyModel* dataModel ) {
 		this, SIGNAL(componentSelected(const VLNV&)), Qt::UniqueConnection);
 
 	connect(dataModel, SIGNAL(invalidateFilter()),
-		&filter_, SLOT(invalidate()), Qt::UniqueConnection);
+		filter_, SLOT(invalidate()), Qt::UniqueConnection);
 }
 
-void HierarchyWidget::selectItems( const VLNV& vlnv ) {
+//-----------------------------------------------------------------------------
+// Function: HierarchyWidget::selectItems()
+//-----------------------------------------------------------------------------
+void HierarchyWidget::selectItems(VLNV const& vlnv)
+{
 	// if vlnv is not valid
-	if (!vlnv.isValid()) {
-
+	if (!vlnv.isValid())
+    {
 		// do not select anything
 		view_.clearSelection();
 	}
@@ -121,10 +132,19 @@ void HierarchyWidget::selectItems( const VLNV& vlnv ) {
 
 	// convert the model indexes to view indexes
 	QModelIndexList viewIndexes;
-	foreach (QModelIndex index, modelIndexes) {
+	foreach (QModelIndex index, modelIndexes)
+    {
 		if (index.isValid())
-			viewIndexes.append(filter_.mapFromSource(index));
+			viewIndexes.append(filter_->mapFromSource(index));
 	}
 
 	view_.setSelectedIndexes(viewIndexes);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierarchyWidget::getFilter()
+//-----------------------------------------------------------------------------
+LibraryFilter* HierarchyWidget::getFilter() const
+{
+    return filter_;
 }

@@ -8,7 +8,6 @@
 #define LIBRARYTREEWIDGET_H
 
 #include "librarytreeview.h"
-#include "librarytreefilter.h"
 
 #include <IPXACTmodels/vlnv.h>
 
@@ -16,15 +15,15 @@
 
 class LibraryTreeModel;
 class LibraryInterface;
-class VLNVDialer;
+class LibraryTreeFilter;
 
 /*! \brief LibraryTreeWidget is the widget that displays the library in a tree.
  *
  * Widget contains an add-button to select items from the library and check
  * box to hide/show hidden library items.
  */
-class LibraryTreeWidget : public QWidget {
-
+class LibraryTreeWidget : public QWidget
+{
 	Q_OBJECT
 
 public:
@@ -34,16 +33,12 @@ public:
 	 *  Constructs the library tree view and the filter model for the tree view
 	 *  and connects the view and filter model to the dataModel.
 	 * 
-	 *  \param dialer Pointer to the dialer that provides search options.
 	 *  \param handler Pointer to the instance that manages the library.
 	 *  \param dataModel Pointer to the dataModel instance that holds the data
 	 *  to be displayed in the view.
 	 *  \param parent Pointer to the owner of this widget.
 	 */
-    LibraryTreeWidget(VLNVDialer* dialer,
-		LibraryInterface* handler, 
-		LibraryTreeModel* dataModel,
-		QWidget* parent);
+    LibraryTreeWidget(LibraryInterface* handler, LibraryTreeModel* dataModel, QWidget* parent);
 
     //! \brief The destructor
     virtual ~LibraryTreeWidget();
@@ -53,7 +48,14 @@ public:
 	 * \param vlnv Reference to the vlnv that identifies the libraryItem to select
 	 *
 	*/
-	void selectItem(const VLNV& vlnv);
+	void selectItem(VLNV const& vlnv);
+
+    /*!
+     *  Gets the filter for the tree model.
+     *
+     *      @return The filter in use.
+     */
+    LibraryFilter* getFilter() const;
 
 signals:
 
@@ -76,9 +78,9 @@ private:
 
 	//! \brief Set up the connections between child widgets
 	void setupConnections(LibraryTreeModel* dataModel);
-
+   
     //! \brief The filter between the view and data model.
-    LibraryTreeFilter filter_;
+    LibraryTreeFilter* filter_;
 
 	//! \brief The table view to display the search results
 	LibraryTreeView view_;

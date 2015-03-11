@@ -24,8 +24,8 @@
 //-----------------------------------------------------------------------------
 // Function: LibraryTreeFilter::LibraryTreeFilter()
 //-----------------------------------------------------------------------------
-LibraryTreeFilter::LibraryTreeFilter(LibraryInterface* handler, VLNVDialer* dialer, QObject *parent):
-LibraryFilter(dialer, parent), 
+LibraryTreeFilter::LibraryTreeFilter(LibraryInterface* handler, QObject *parent):
+LibraryFilter(parent), 
     handler_(handler)
 {
     Q_ASSERT(handler_);
