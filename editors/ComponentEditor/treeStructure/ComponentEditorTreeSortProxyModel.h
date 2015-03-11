@@ -35,10 +35,12 @@ public:
 	 */
     ~ComponentEditorTreeProxyModel();
 
-	/*!
-	 *  Sets the visibility status for the tree view.
-	 */
-	void setRowVisibility(QList <QString> invisibleRows);
+    /*!
+     *  Sets the items to be hidden.
+     *
+     *      @param [in] hiddenItemNames   The names of the items to hide.
+     */
+    void setRowVisibility(QStringList hiddenItemNames);
 
 protected:
 
@@ -54,7 +56,7 @@ protected:
      *
      *      @return True if left precedes right, otherwise false.
      */
-    bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
+    bool lessThan(QModelIndex const& left, QModelIndex const& right) const;
 
 	/*!
 	 *  Filters the selected rows.
@@ -64,7 +66,7 @@ protected:
 	 *
 	 *      @return True, if row passes filters, otherwise false.
 	 */
-	bool filterAcceptsRow(int source_row, QModelIndex const& source_parent) const;
+    bool filterAcceptsRow(int sourceRow, QModelIndex const& sourceParent) const;
 
 private:
     //! \brief No copying
@@ -77,7 +79,7 @@ private:
 	 *
 	 *      @param [in] index   Index of item.
 	 */
-	bool itemIsValidAndCanBeHidden(QModelIndex &index) const;
+    bool itemIsValidAndCanBeHidden(QModelIndex const& index) const;
 
 	//! A list of all the rows that will be hidden.
 	QStringList hiddenItems_;

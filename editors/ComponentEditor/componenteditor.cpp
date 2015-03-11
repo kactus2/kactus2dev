@@ -169,14 +169,11 @@ ComponentEditor::~ComponentEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentEditor::setProtection()
+// Function: ComponentEditor::getIdentifyingVLNV()
 //-----------------------------------------------------------------------------
-void ComponentEditor::setProtection( bool locked )
+VLNV ComponentEditor::getIdentifyingVLNV() const
 {
-	TabDocument::setProtection(locked);
-
-	// tell tree items to change the state of the editors
-	navigationModel_.setLocked(locked);
+    return getDocumentVLNV();
 }
 
 //-----------------------------------------------------------------------------
@@ -608,11 +605,87 @@ bool ComponentEditor::onModelsimGenerate()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentEditor::getIdentifyingVLNV()
+// Function: ComponentEditor::setProtection()
 //-----------------------------------------------------------------------------
-VLNV ComponentEditor::getIdentifyingVLNV() const
+void ComponentEditor::setProtection( bool locked )
 {
-	return getDocumentVLNV();
+    TabDocument::setProtection(locked);
+
+    // tell tree items to change the state of the editors
+    navigationModel_.setLocked(locked);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::setRowVisibility()
+//-----------------------------------------------------------------------------
+void ComponentEditor::setRowVisibility(QSettings& settings)
+{
+    if (isHWImplementation() && component_->getComponentFirmness() == KactusAttribute::DEFINITIONS)
+    {
+        proxy_.setRowVisibility(hiddenItemsForDefinitions());
+        return;
+    }
+
+    QString workSpace = settings.value("Workspaces/CurrentWorkspace").toString();
+
+    settings.beginGroup("Workspaces/" + workSpace + "/ComponentEditorFilters");
+
+    if (isHWImplementation())
+    {
+        settings.beginGroup("HW");
+        settings.beginGroup(KactusAttribute::valueToString(component_->getComponentHierarchy()));
+    }
+    else
+    {
+        settings.beginGroup("SW");
+    }
+
+    // List of the hidden rows in component editor.
+    QStringList hiddenRows;
+    foreach (QString name, settings.childKeys()) 
+    {
+        if (settings.value(name, true).toBool() == false)
+        {
+            QString wordReplaced = name.replace("_"," ");
+            hiddenRows.append(wordReplaced);
+        }
+    }
+
+    if (isHWImplementation())
+    {
+        // End hierarchy group.
+        settings.endGroup();
+    }
+
+    // End hardware or software group.
+    settings.endGroup();
+
+    // End Workspace/CurrentWorkspace/ComponentEditorFilters group.
+    settings.endGroup();
+
+    proxy_.setRowVisibility( hiddenRows );
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditor::openReferenceTree()
+//-----------------------------------------------------------------------------
+void ComponentEditor::openReferenceTree(QString const& parameterId)
+{
+    QDialog* referenceTreeWindow(new QDialog(this));
+
+    referenceTreeWindow->setWindowTitle("References to " + parameterFinder_->nameForId(parameterId));
+
+    referenceTreeWindow->setMinimumWidth(600);
+    referenceTreeWindow->setMinimumHeight(400);
+
+    ParameterReferenceTree* referenceTree(new ParameterReferenceTree(
+        component_, expressionFormatter_, parameterId, referenceTreeWindow));
+
+    QHBoxLayout* treeWindowLayout(new QHBoxLayout);
+    treeWindowLayout->addWidget(referenceTree);
+    referenceTreeWindow->setLayout(treeWindowLayout);
+
+    referenceTreeWindow->show();
 }
 
 //-----------------------------------------------------------------------------
@@ -765,6 +838,22 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createSWRootItem(QShare
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentEditor::hiddenItemsForDefinitions()
+//-----------------------------------------------------------------------------
+QStringList ComponentEditor::hiddenItemsForDefinitions() const
+{
+    QStringList definitionsHiddenRows = getHwItemNames();
+    definitionsHiddenRows.removeAll("Parameters");
+    definitionsHiddenRows.removeAll("Model_parameters");
+    definitionsHiddenRows.removeAll("Choices");
+    definitionsHiddenRows.removeAll("File_sets");
+
+    definitionsHiddenRows.replaceInStrings("_", " ");
+
+    return definitionsHiddenRows;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void ComponentEditor::setupLayout()
@@ -789,75 +878,4 @@ void ComponentEditor::setupLayout()
     navigationSize.append(ComponentTreeView::DEFAULT_WIDTH);
     navigationSize.append(4 * ComponentTreeView::DEFAULT_WIDTH);
     navigationSplitter_.setSizes(navigationSize);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditor::setRowVisibility()
-//-----------------------------------------------------------------------------
-void ComponentEditor::setRowVisibility(QSettings& settings)
-{
-	QString workSpace = settings.value("Workspaces/CurrentWorkspace").toString();
-
-	settings.beginGroup( "Workspaces/" + workSpace + "/ComponentEditorFilters");
-
-	if (isHWImplementation())
-	{
-		settings.beginGroup("HW");
-        settings.beginGroup(KactusAttribute::valueToString(component_->getComponentHierarchy()));
-	}
-	else
-	{
-		settings.beginGroup("SW");
-	}
-
-	QStringList settingsChildren = settings.childKeys();
-
-	// List of the hidden rows in component editor.
-	QStringList hiddenRows;
-
-	foreach (QString name, settingsChildren) 
-	{
-		if (settings.value(name, true).toBool() == false)
-		{
-			QString wordReplaced = name.replace("_"," ");
-			hiddenRows.append(wordReplaced);
-		}
-	}
-
-	if (isHWImplementation())
-	{
-		// End hierarchy group.
-		settings.endGroup();
-	}
-
-	// End hardware or software group.
-	settings.endGroup();
-
-	// End Workspace/CurrentWorkspace/ComponentEditorFilters group.
-	settings.endGroup();
-
-	proxy_.setRowVisibility( hiddenRows );
-}
-
-
-//-----------------------------------------------------------------------------
-// Function: componenteditor::openReferenceTree()
-//-----------------------------------------------------------------------------
-void ComponentEditor::openReferenceTree(QString const& parameterId)
-{
-    QDialog* referenceTreeWindow(new QDialog(this));
-
-    referenceTreeWindow->setWindowTitle("References to " + parameterFinder_->nameForId(parameterId));
-
-    referenceTreeWindow->setMinimumWidth(600);
-    referenceTreeWindow->setMinimumHeight(400);
-
-    ParameterReferenceTree* referenceTree(new ParameterReferenceTree(
-        component_, expressionFormatter_, parameterId, referenceTreeWindow));
-
-    QHBoxLayout* treeWindowLayout(new QHBoxLayout);
-    treeWindowLayout->addWidget(referenceTree);
-    referenceTreeWindow->setLayout(treeWindowLayout);
-
-    referenceTreeWindow->show();
 }

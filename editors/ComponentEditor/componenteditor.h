@@ -84,8 +84,18 @@ public:
 	 */
 	void applySettings(QSettings& settings);
 
+	/*!
+	 *  Gets the names of all component editor items for HW component.
+	 *
+	 *      @return The names of the items.
+	 */
 	static QStringList getHwItemNames();
 
+	/*!
+	 *  Gets the names of all component editor items for SW component.
+	 *
+	 *      @return The names of the items.
+	 */
 	static QStringList getSwItemNames();
 
 public slots:
@@ -206,6 +216,13 @@ private:
      *      @return The root item for the navigation model for the component.
      */
     QSharedPointer<ComponentEditorRootItem> createSWRootItem(QSharedPointer<Component> component);
+
+    /*!
+     *  Finds the component editor items that should be hidden for definitions component.
+     *
+     *      @return The hidden rows for definitions.
+     */
+    QStringList hiddenItemsForDefinitions() const;
 
     //! Setups the editor layout.
     void setupLayout();

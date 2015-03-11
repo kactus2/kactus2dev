@@ -32,11 +32,19 @@ ComponentEditorTreeProxyModel::~ComponentEditorTreeProxyModel()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentEditorTreeProxyModel::setRowVisibility()
+//-----------------------------------------------------------------------------
+void ComponentEditorTreeProxyModel::setRowVisibility(QStringList hiddenItemNames)
+{
+    hiddenItems_ = hiddenItemNames;
+    invalidateFilter();
+}
+
+//-----------------------------------------------------------------------------
 // Function: lessThan()
 //-----------------------------------------------------------------------------
-bool ComponentEditorTreeProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+bool ComponentEditorTreeProxyModel::lessThan(QModelIndex const& left, QModelIndex const& right) const
 {
-
     ComponentEditorItem* leftItem = static_cast<ComponentEditorItem*>(left.internalPointer());
     ComponentEditorItem* rightItem = static_cast<ComponentEditorItem*>(right.internalPointer());
 
@@ -50,19 +58,16 @@ bool ComponentEditorTreeProxyModel::lessThan(const QModelIndex &left, const QMod
         {
             return left.data().toString() < right.data().toString();
         }
-
         // Only left is hierarchical, precedes right.
         else if (leftViewItem->isHierarchical() )
         {
             return true;
         }
-
         // Only right is hierarchical, precedes left.
         else if (rightViewItem->isHierarchical())
         {
             return false;
         }
-
         // Both non-hierarchical, sort alphabetically.
         else
         {
@@ -78,9 +83,9 @@ bool ComponentEditorTreeProxyModel::lessThan(const QModelIndex &left, const QMod
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorTreeProxyModel::filterAcceptsRow()
 //-----------------------------------------------------------------------------
-bool ComponentEditorTreeProxyModel::filterAcceptsRow(int source_row, QModelIndex const& source_parent) const
+bool ComponentEditorTreeProxyModel::filterAcceptsRow(int sourceRow, QModelIndex const& sourceParent) const
 {
-	QModelIndex itemIndex = sourceModel()->index(source_row, 0, source_parent);
+	QModelIndex itemIndex = sourceModel()->index(sourceRow, 0, sourceParent);
 	QString itemName = sourceModel()->data(itemIndex).toString();
 
 	if (itemIsValidAndCanBeHidden(itemIndex) && hiddenItems_.contains( itemName ))
@@ -88,23 +93,13 @@ bool ComponentEditorTreeProxyModel::filterAcceptsRow(int source_row, QModelIndex
 		return false;
 	}
 
-	return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorTreeProxyModel::setRowVisibility()
-//-----------------------------------------------------------------------------
-void ComponentEditorTreeProxyModel::setRowVisibility( QList<QString> hiddenItemNames)
-{
-	hiddenItems_ = hiddenItemNames;
-
-	invalidateFilter();
+	return QSortFilterProxyModel::filterAcceptsRow(sourceRow, sourceParent);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorTreeSortProxyModel::itemIsValidAndCanBeHidden()
 //-----------------------------------------------------------------------------
-bool ComponentEditorTreeProxyModel::itemIsValidAndCanBeHidden(QModelIndex &index) const
+bool ComponentEditorTreeProxyModel::itemIsValidAndCanBeHidden(QModelIndex const& index) const
 {
 	return !(index.isValid() && !static_cast<ComponentEditorItem*>(index.internalPointer())->isValid());
 }
