@@ -16,6 +16,7 @@
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
+#include <IPXACTmodels/validators/ParameterValidator2014.h>
 #include <IPXACTmodels/choice.h>
 
 #include <QSharedPointer>
@@ -126,6 +127,13 @@ public:
      */
     QString getArrayData();
 
+    /*!
+     *  Set the type for the values in the array.
+     *
+     *      @param [in] parameterType   The new type for the parameters.
+     */
+    void setParameterType(QString const& parameterType);
+
 signals:
     //! Emitted when the model content has changed.
     void contentChanged();
@@ -214,5 +222,11 @@ private:
 
     //! The currently active choice.
     QSharedPointer<Choice> selectedChoice_;
+
+    //! The validator for the array values.
+    ParameterValidator2014* validator_;
+
+    //! The parameter type.
+    QString parameterType_;
 };
 #endif // PARAMETERARRAYMODEL_H

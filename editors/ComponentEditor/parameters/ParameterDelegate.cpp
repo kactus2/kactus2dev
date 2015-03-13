@@ -138,8 +138,11 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
 
         QModelIndex valueIndex = index.sibling(index.row(), valueColumn());
         QString parameterValue = valueIndex.data(Qt::EditRole).toString();
-
         model->setArrayData(parameterValue);
+
+        QModelIndex typeIndex = index.sibling(index.row(), formatColumn());
+        QString parameterType = typeIndex.data(Qt::EditRole).toString();
+        model->setParameterType(parameterType);
 
         view->setItemDelegate(new ArrayDelegate(parameterNameCompleter_, parameterFinder_, selectedChoice,
             this->parent()));

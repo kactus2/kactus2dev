@@ -93,7 +93,14 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
 
     if (expressionParser_->isArrayExpression(solvedValue))
     {
-        return isArrayValidForType(solvedValue, type);
+        if (type == "bit")
+        {
+            return isArrayValidForType(value, type);
+        }
+        else
+        {
+            return isArrayValidForType(solvedValue, type);
+        }
     }
 
     else if (type == "bit")

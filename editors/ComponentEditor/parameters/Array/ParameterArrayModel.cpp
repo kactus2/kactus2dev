@@ -26,7 +26,9 @@ ParameterizableTable(parameterFinder, parent),
 sizeOfArray_(sizeOfArray),
 expressionformatter_(expressionFormatter),
 arrayValues_(),
-selectedChoice_(selectedChoice)
+selectedChoice_(selectedChoice),
+validator_(new ParameterValidator2014(expressionParser)),
+parameterType_()
 {
     QString repeater = ",";
     QString newArray = repeater.repeated(sizeOfArray_ - 1);
@@ -155,7 +157,8 @@ QVariant ParameterArrayModel::data(const QModelIndex &index, int role) const
     {
         if (index.column() == ArrayColumns::ARRAY_INDEX)
         {
-            return Qt::AlignRight | Qt::AlignVCenter;
+            //return Qt::AlignRight | Qt::AlignVCenter;
+            return Qt::AlignCenter;
         }
 
         else return QVariant();
@@ -252,7 +255,8 @@ bool ParameterArrayModel::validateColumnForParameter(QModelIndex const& index) c
 {
     if (index.column() == ArrayColumns::VALUE)
     {
-        return isValuePlainOrExpression(arrayValues_.at(index.row()));
+        //return isValuePlainOrExpression(arrayValues_.at(index.row()));
+        return validator_->hasValidValueForType(arrayValues_.at(index.row()), parameterType_);
     }
 
     return true;
@@ -335,4 +339,12 @@ QString ParameterArrayModel::getArrayData()
     QString newValue = arrayValues_.join(',');
 
     return newValue;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterArrayModel::setParameterType()
+//-----------------------------------------------------------------------------
+void ParameterArrayModel::setParameterType(QString const& parameterType)
+{
+    parameterType_ = parameterType;
 }
