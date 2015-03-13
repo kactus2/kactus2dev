@@ -27,6 +27,7 @@
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/choice.h>
@@ -245,7 +246,8 @@ void tst_ModelParameterDelegate::testKeyInputForColumn(int column)
 //-----------------------------------------------------------------------------
 ModelParameterDelegate* tst_ModelParameterDelegate::createDelegate()
 {
-    return new ModelParameterDelegate(choices_, 0, QSharedPointer<ParameterFinder>(), this);
+    return new ModelParameterDelegate(choices_, 0, QSharedPointer<ParameterFinder>(),
+        QSharedPointer<ExpressionFormatter>(), this);
 }
 
 //-----------------------------------------------------------------------------
@@ -261,8 +263,9 @@ ModelParameterModel* tst_ModelParameterDelegate::createModelWithSimpleModelParam
     QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(component));
     QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
 
-    return new ModelParameterModel(modelParameters, choices_, QSharedPointer<ExpressionParser>(0), parameterFinder,
-        expressionFormatter, this);
+    QSharedPointer<IPXactSystemVerilogParser> parser (new IPXactSystemVerilogParser(parameterFinder));
+
+    return new ModelParameterModel(modelParameters, choices_, parser, parameterFinder, expressionFormatter, this);
 }
 
 //-----------------------------------------------------------------------------

@@ -369,7 +369,16 @@ QString AbstractParameterModel::evaluateValueFor(QSharedPointer<Parameter> param
     if (!parameter->getChoiceRef().isEmpty())
     {
         QSharedPointer<Choice> choice = findChoice(parameter->getChoiceRef());
-        return findDisplayValueForEnumeration(choice, parameter->getValue());
+
+        if(parameter->getValue().contains('{') && parameter->getValue().contains('}'))
+        {
+            return matchArrayValuesToSelectedChoice(choice, parameter->getValue());
+        }
+
+        else
+        {
+            return findDisplayValueForEnumeration(choice, parameter->getValue());
+        }
     }
     else
     {
@@ -408,6 +417,29 @@ QString AbstractParameterModel::findDisplayValueForEnumeration(QSharedPointer<Ch
     }
 
     return enumerationValue;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractParameterModel::matchArrayValuesToSelectedChoice()
+//-----------------------------------------------------------------------------
+QString AbstractParameterModel::matchArrayValuesToSelectedChoice(QSharedPointer<Choice> choice,
+    QString const& arrayValue) const
+{
+    QStringList parameterArray = arrayValue.split(',');
+    parameterArray.first().remove('{');
+    parameterArray.last().remove('}');
+
+    QStringList resultingArray;
+
+    foreach (QString value, parameterArray)
+    {
+        resultingArray.append(findDisplayValueForEnumeration(choice, value));
+    }
+    QString choiceValue = resultingArray.join(',');
+    choiceValue.prepend('{');
+    choiceValue.append('}');
+
+    return choiceValue;
 }
 
 //-----------------------------------------------------------------------------

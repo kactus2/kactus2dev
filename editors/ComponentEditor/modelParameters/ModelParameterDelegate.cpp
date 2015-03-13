@@ -23,8 +23,9 @@
 // Function: ModelParameterDelegate::ModelParameterDelegate()
 //-----------------------------------------------------------------------------
 ModelParameterDelegate::ModelParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, 
-    QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder, QObject* parent):
-ParameterDelegate(choices, parameterCompleter, parameterFinder, parent)
+    QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QObject* parent):
+ParameterDelegate(choices, parameterCompleter, parameterFinder, expressionFormatter, parent)
 {
 
 }

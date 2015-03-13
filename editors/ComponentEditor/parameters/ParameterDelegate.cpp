@@ -15,23 +15,31 @@
 
 #include <IPXACTmodels/choice.h>
 #include <IPXACTmodels/Enumeration.h>
-
-#include <QComboBox>
-#include <QLineEdit>
-#include <QPainter>
+#include <IPXACTmodels/validators/namevalidator.h>
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/parameters/Array/ParameterArrayModel.h>
+#include <editors/ComponentEditor/parameters/Array/ArrayDelegate.h>
+#include <editors/ComponentEditor/parameters/Array/ArrayView.h>
 
-#include <IPXACTmodels/validators/namevalidator.h>
+#include <QComboBox>
+#include <QLineEdit>
+#include <QPainter>
+#include <QScrollArea>
+#include <QSortFilterProxyModel>
 
 //-----------------------------------------------------------------------------
 // Function: ParameterDelegate::ParameterDelegate()
 //-----------------------------------------------------------------------------
 ParameterDelegate::ParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, 
-    QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder, QObject* parent):
-ExpressionDelegate(parameterCompleter, parameterFinder, parent), choices_(choices)
+    QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QObject* parent):
+ExpressionDelegate(parameterCompleter, parameterFinder, parent),
+choices_(choices),
+expressionFormatter_(expressionFormatter)
 {
 
 }
@@ -68,10 +76,6 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     {
         return createChoiceSelector(parent);
     }
-    else if (isIndexForValueUsingChoice(index)) 
-    {
-        return createEnumerationSelector(parent, index);
-    }
     else if (index.column() == formatColumn()) 
     {
         return createFormatSelector(parent);
@@ -88,6 +92,25 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
 
         return 0;
     }
+    
+    else if (index.column() == valueColumn() && valueIsArray(index))
+    {
+        ArrayView* editor = new ArrayView(parent);
+
+        QScrollArea* scrollingWidget = new QScrollArea(parent);
+        scrollingWidget->setWidgetResizable(true);
+        scrollingWidget->setWidget(editor);
+
+        scrollingWidget->parent()->installEventFilter(editor);
+
+        return scrollingWidget;
+    }
+
+    else if (isIndexForValueUsingChoice(index)) 
+    {
+        return createEnumerationSelector(parent, index);
+    }
+
     else
     {
         return ExpressionDelegate::createEditor(parent, option, index);
@@ -99,7 +122,43 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
 //-----------------------------------------------------------------------------
 void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const 
 {
-    if (isIndexForValueUsingChoice(index)) 
+    if (index.column() == valueColumn() && valueIsArray(index))
+    {
+        ArrayView* view = dynamic_cast<ArrayView*>(dynamic_cast<QScrollArea*>(editor)->widget());
+
+        QModelIndex arraySizeIndex = index.sibling(index.row(), arraySizeColumn());
+        int arraySize = arraySizeIndex.data(Qt::ToolTipRole).toInt();
+
+        QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder_));
+
+        QSharedPointer<Choice> selectedChoice = findChoice(index);
+
+        ParameterArrayModel* model = new ParameterArrayModel(arraySize, expressionParser, parameterFinder_,
+            expressionFormatter_, selectedChoice, view);
+
+        QModelIndex valueIndex = index.sibling(index.row(), valueColumn());
+        QString parameterValue = valueIndex.data(Qt::EditRole).toString();
+
+        model->setArrayData(parameterValue);
+
+        view->setItemDelegate(new ArrayDelegate(parameterNameCompleter_, parameterFinder_, selectedChoice,
+            this->parent()));
+
+        view->setModel(model);
+        view->setSortingEnabled(false);
+        view->resizeColumnsToContents();
+
+        connect(model, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+        connect(model, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+        connect(view->itemDelegate(), SIGNAL(increaseReferences(QString)),
+            this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+        connect(view->itemDelegate(), SIGNAL(decreaseReferences(QString)),
+            this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    }
+
+    else if (isIndexForValueUsingChoice(index)) 
     {
         QString text = index.model()->data(index, Qt::DisplayRole).toString();
         QComboBox* combo = qobject_cast<QComboBox*>(editor);
@@ -123,6 +182,7 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
     {
         // Do nothing.
 	}
+
     else
     {
         ExpressionDelegate::setEditorData(editor, index);
@@ -135,7 +195,17 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
 void ParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, 
     QModelIndex const& index) const 
 {
-    if (isIndexForValueUsingChoice(index)) 
+    if (index.column() == valueColumn() && valueIsArray(index))
+    {
+        QScrollArea* scrollWidget = qobject_cast<QScrollArea*>(editor);
+        ArrayView* arrayTable = qobject_cast<ArrayView*>(scrollWidget->widget());
+        ParameterArrayModel* arrayModel = qobject_cast<ParameterArrayModel*>(arrayTable->model());
+
+        QString arrayValue = arrayModel->getArrayData();
+        model->setData(index, arrayValue, Qt::EditRole);
+    }
+
+    else if (isIndexForValueUsingChoice(index)) 
     {
         QComboBox* combo = qobject_cast<QComboBox*>(editor);
         QString text = combo->currentText();
@@ -152,6 +222,7 @@ void ParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
         }
         model->setData(index, text, Qt::EditRole);
     }
+
 	else 
     {
         ExpressionDelegate::setModelData(editor, model, index);
@@ -388,4 +459,70 @@ QWidget* ParameterDelegate::createResolveSelector(QWidget* parent) const
     combo->addItem(QString("user"));
     combo->addItem(QString("generated"));
     return combo;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::valueIsArray()
+//-----------------------------------------------------------------------------
+bool ParameterDelegate::valueIsArray(QModelIndex const& index) const
+{
+    QModelIndex valueIdIndex = index.sibling(index.row(), arraySizeColumn());
+    bool arraySizeIsOk = true;
+    int arraySize = valueIdIndex.data(Qt::ToolTipRole).toInt(&arraySizeIsOk);
+    
+    return arraySizeIsOk && arraySize > 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::updateEditorGeometry()
+//-----------------------------------------------------------------------------
+void ParameterDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
+    const QModelIndex &index) const
+{
+    ExpressionDelegate::updateEditorGeometry(editor, option, index);
+
+    if (index.column() == valueColumn() && valueIsArray(index))
+    {
+        repositionAndResizeEditor(editor, option, index);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::repositionAndResizeEditor()
+//-----------------------------------------------------------------------------
+void ParameterDelegate::repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option,
+    QModelIndex const& index) const
+{
+    QModelIndex valueIdIndex = index.sibling(index.row(), arraySizeColumn());
+    int arraySize = valueIdIndex.data(Qt::ToolTipRole).toInt();
+    int editorMinimumSize = 24 * (arraySize + 1);
+
+    editor->setFixedWidth(300);
+
+    const int PARENT_HEIGHT = editor->parentWidget()->height();
+    const int AVAILABLE_HEIGHT_BELOW = PARENT_HEIGHT - option.rect.top();
+
+    if (AVAILABLE_HEIGHT_BELOW > editorMinimumSize)
+    {
+        editor->move(option.rect.topLeft());
+    }
+    else
+    {
+        int editorNewY = PARENT_HEIGHT-editorMinimumSize;
+        if (editorNewY <= 0)
+        {
+            editorNewY = 0;
+        }
+
+        editor->move(option.rect.left(), editorNewY);
+    }
+
+    if (editorMinimumSize > PARENT_HEIGHT)
+    {
+        editor->setFixedHeight(PARENT_HEIGHT);
+    }
+    else
+    {
+        editor->setFixedHeight(editorMinimumSize);
+    }
 }

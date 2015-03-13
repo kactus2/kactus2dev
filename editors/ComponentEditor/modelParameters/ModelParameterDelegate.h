@@ -31,11 +31,14 @@ public:
 	 *
 	 *     @param [in] choices              The choices available for model parameter value.
      *     @param [in] parameterCompleter   The completer to use for expression editors.
-     *     @param [in] resolver             The parameter resolver to use for for expression editors.
+     *     @param [in] parameterFinder      The parameter finder.
+     *     @param [in] expressionFormatter  The expression formatter.
 	 *     @param [in] parent               The parent object
 	*/
 	ModelParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-        QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+        QCompleter* parameterCompleter,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
         QObject *parent = 0);
 
 	//! The destructor

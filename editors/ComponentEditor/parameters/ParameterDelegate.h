@@ -13,6 +13,7 @@
 #define PARAMETERDELEGATE_H
 
 #include <editors/ComponentEditor/common/ExpressionDelegate.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <QCompleter>
 
@@ -28,15 +29,20 @@ class ParameterDelegate : public ExpressionDelegate
 
 public:
 
-	/*! The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 *     @param [in] choices              The choices available for model parameter value.
-     *     @param [in] parameterCompleter   The completer to use for expression editors.
-     *     @param [in] finder               The parameter finder to use for for expression editors.
-	 *     @param [in] parent               The parent object
-	*/
+	 *      @param [in] choices                 The choices available for model parameter value.
+	 *      @param [in] parameterCompleter      The completer to use for expression editors.
+	 *      @param [in] finder                  The parameter finder to user for expression editors.
+	 *      @param [in] expressionFormatter     The expression formatter for changing ids to parameter names.
+	 *      @param [in] parent                  The parent of the object.
+	 */
 	ParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, 
-        QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> finder, QObject* parent = 0);
+        QCompleter* parameterCompleter,
+        QSharedPointer<ParameterFinder> finder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QObject* parent = 0);
 
 	//! The destructor
 	virtual ~ParameterDelegate();
@@ -77,6 +83,16 @@ public:
      */
     virtual void paint(QPainter *painter, QStyleOptionViewItem const& option, QModelIndex const& index) const;
 
+    /*!
+     *  Updates the editor geometry.
+     *
+     *      @param [in] editor  The editor being updated.
+     *      @param [in] option  The options used to update the editor.
+     *      @param [in] index   The model index being edited.
+     */
+    virtual void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
+        const QModelIndex &index) const;
+
 signals:
 
     /*!
@@ -85,6 +101,9 @@ signals:
      *      @param [in] id      The id of the parameter.
      */
     void openReferenceTree(QString const& id) const;
+
+    //! Emitted when the values of the array change.
+    void contentChanged();
 
 protected:
 
@@ -260,12 +279,35 @@ private:
      */
     QSharedPointer<Choice> findChoice(QModelIndex const& index) const;
     
+    /*!
+     *  Check if the value should be an array.
+     *
+     *      @param [in] index   The index of the current value.
+     *
+     *      @return True, if the value is an array, otherwise false.
+     */
+    bool valueIsArray(QModelIndex const& index) const;
+
+    /*!
+     *  Repositions the editor if there is not enough space under the default position. The editor is then resized
+     *  to use the available space.
+     *
+     *      @param [in] editor  The editor to reposition.
+     *      @param [in] option  The style options for the editor.
+     *      @param [in] index   The current index.
+     */
+    void repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option, QModelIndex const& index)
+        const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The choices available for model parameter value.
     QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
+
+    //! The expression formatter used to change parameter uuids in references to parameter names.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 };
 
 #endif // ParameterDelegate_H

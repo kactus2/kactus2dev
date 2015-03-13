@@ -914,6 +914,12 @@
     <Filter Include="Source Files\common\widgets\colorBox">
       <UniqueIdentifier>{9b05bee6-46c8-4ad5-9f89-361f31037f76}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\parameters\Array">
+      <UniqueIdentifier>{515bd76a-649f-4059-9f79-7cf861fbc9ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\parameters\Array">
+      <UniqueIdentifier>{fab22ef7-a0eb-4485-a6c1-2ef9fd88c332}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3961,6 +3967,24 @@
     <ClCompile Include="GeneratedFiles\moc_hierarchygroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ArrayDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ParameterArrayModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\parameters\Array\ParameterArrayModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\parameters\Array</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\parameters\Array\ArrayDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\parameters\Array</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\parameters\Array\ArrayView.cpp">
+      <Filter>Source Files\editors\ComponentEditor\parameters\Array</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ArrayView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5457,6 +5481,15 @@
     <CustomBuild Include="library\LibraryManager\LibraryFilter.h">
       <Filter>Header Files\library\LibraryManager</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\parameters\Array\ArrayDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\parameters\Array</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\parameters\Array\ParameterArrayModel.h">
+      <Filter>Header Files\editors\ComponentEditor\parameters\Array</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\parameters\Array\ArrayView.h">
+      <Filter>Header Files\editors\ComponentEditor\parameters\Array</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -5806,6 +5839,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\MemoryMapColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\parameters\Array\ArrayColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\parameters\Array</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

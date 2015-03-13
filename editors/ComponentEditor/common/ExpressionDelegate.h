@@ -94,6 +94,12 @@ protected:
      */
     virtual bool columnAcceptsExpression(int column) const = 0;
 
+    //! Finder for parameters in the containing component.
+    QSharedPointer<ParameterFinder> parameterFinder_;
+
+    //! The completer for parameter names in expressions.
+    QCompleter* parameterNameCompleter_;
+
 private:
     // Disable copying.
     ExpressionDelegate(ExpressionDelegate const& rhs);
@@ -107,16 +113,6 @@ private:
      *      @return An editor for expressions.
      */
     QWidget* createExpressionEditor(QWidget* parent) const;
-    
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The completer for parameter names in expressions.
-    QCompleter* parameterNameCompleter_;
-
-    //! Finder for parameters in the containing component.
-    QSharedPointer<ParameterFinder> parameterFinder_;
 };
 
 #endif // EXPRESSIONDELEGATE_H

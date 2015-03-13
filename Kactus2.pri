@@ -603,7 +603,11 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
+    ./editors/ComponentEditor/parameters/Array/ArrayDelegate.h \
+    ./editors/ComponentEditor/parameters/Array/ParameterArrayModel.h \
+    ./editors/ComponentEditor/parameters/Array/ArrayView.h \
+    ./editors/ComponentEditor/parameters/Array/ArrayColumns.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -893,6 +897,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.cpp \
     ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
+    ./editors/ComponentEditor/parameters/Array/ParameterArrayModel.cpp \
     ./editors/ComponentEditor/parameters/ParameterDelegate.cpp \
     ./editors/ComponentEditor/parameters/ParameterEditorHeaderView.cpp \
     ./editors/ComponentEditor/parameters/parameterseditor.cpp \
@@ -1148,5 +1153,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
+    ./editors/ComponentEditor/parameters/Array/ArrayDelegate.cpp \
+    ./editors/ComponentEditor/parameters/Array/ArrayView.cpp
 RESOURCES += kactus.qrc

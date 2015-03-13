@@ -75,7 +75,7 @@ proxy_(this)
     parameterCompleter->setModel(parameterModel);
 
     view_.setDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
-        this));
+        expressionFormatter, this));
 
     connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)), 
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

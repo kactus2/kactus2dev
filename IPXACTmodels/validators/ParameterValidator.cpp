@@ -183,6 +183,24 @@ bool ParameterValidator::hasValidValueForChoice(Parameter const* parameter,
     else
     {
         QSharedPointer<Choice> referencedChoice = findChoiceByName(parameter->getChoiceRef(), availableChoices);
+
+        if (!referencedChoice.isNull() && parameter->getValue().contains('{') &&
+            parameter->getValue().contains('}'))
+        {
+            QStringList valueArray = parameter->getValue().split(',');
+            valueArray.first().remove('{');
+            valueArray.last().remove('}');
+
+            foreach (QString parameterValue, valueArray)
+            {
+                if (!referencedChoice->hasEnumeration(parameterValue))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         return !referencedChoice.isNull() && referencedChoice->hasEnumeration(parameter->getValue());
     }
 }

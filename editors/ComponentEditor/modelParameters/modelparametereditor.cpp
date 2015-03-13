@@ -78,7 +78,7 @@ proxy_(this)
 
 	// set the delegate to edit the usage column
     view_.setDelegate(new ModelParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
-        this));
+        expressionFormatter, this));
 
     connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)), 
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

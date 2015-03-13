@@ -350,6 +350,16 @@ private:
      */
     QVariant backgroundColorForIndex(QModelIndex const& index) const;
 
+    /*!
+     *  Changes the array value to match the current choice.
+     *
+     *      @param [in] choice          The currently active choice.
+     *      @param [in] arrayValue      The array value to be changed.
+     *
+     *      @return Array whose values have been changed to match the currently selected choice
+     */
+    QString matchArrayValuesToSelectedChoice(QSharedPointer<Choice> choice, QString const& arrayValue) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

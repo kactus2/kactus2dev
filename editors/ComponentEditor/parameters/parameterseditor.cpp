@@ -74,7 +74,8 @@ proxy_(0)
     view_.setSortingEnabled(true);
     view_.setItemsDraggable(false);
 
-    view_.setDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder, this));
+    view_.setDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
+        expressionFormatter, this));
 
     connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
