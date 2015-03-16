@@ -12,9 +12,11 @@
 #include <QtTest>
 
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 
 #include <IPXACTmodels/validators/ParameterValidator2014.h>
 #include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/component.h>
 
 class tst_ParameterValidator2014 : public QObject
 {
@@ -59,7 +61,9 @@ void tst_ParameterValidator2014::testValueIsValidForGivenType()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
 
-    ParameterValidator2014 validator(parser);
+    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
+
+    ParameterValidator2014 validator(parser, finder);
     QCOMPARE(validator.hasValidValueForType(value, type), isValid);
 
     if (!isValid && !value.isEmpty())
@@ -100,6 +104,12 @@ void tst_ParameterValidator2014::testValueIsValidForGivenType_data()
     QTest::newRow("Array {1,0} is valid for bit type") << "{1,0}" << "bit" << true;
     QTest::newRow("Array {1, 1.0, \"text\"} is invalid for bit type") << "{1, 1.0, \"text\"}" << "bit" << false;
     QTest::newRow("Array '{1,1} is valid for bit type") << "'{1,1}" << "bit" << true;
+    QTest::newRow("Array {3'b101,3'b111} is valid for bit type") << "{3'b101,3'b111}" << "bit" << true;
+    QTest::newRow("Array {3'b101,2'b10} is invalid for bit type") << "{3'b101,2'b10}" << "bit" << false;
+    QTest::newRow("Array {2'b10, 2'b11 } is valid for bit type") << "{2'b10, 2'b11 }" << "bit" << true;
+    QTest::newRow("Array {6'b10_1101,6'b11_1010} is valid for bit type") << "{6'b10_1101,6'b11_1010}" << "bit" << true;
+    QTest::newRow("Array {'b1, 'b0} is valid for bit type") << "{'b1, 'b0}" << "bit" << true;
+    QTest::newRow("Array {'b11, 'b00} is invalid for bit type") << "{'b11, 'b00}" << "bit" << false;
 
     QTest::newRow("Binary 'b11 without size is not valid for bit type") << "'b11" << "bit" << false;
     QTest::newRow("Binary 3'b13 is not valid for bit type") << "3'b13" << "bit" << false;
@@ -247,8 +257,9 @@ void tst_ParameterValidator2014::testValidityWithMaximumValueAndType()
     parameter->setMaximumValue(maximum);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
 
-    ParameterValidator2014 validator(parser);
+    ParameterValidator2014 validator(parser, finder);
     QCOMPARE(validator.hasValidValue(parameter, QSharedPointer<QList<QSharedPointer<Choice> > >()), isValid);
 
     delete parameter;
@@ -302,8 +313,9 @@ void tst_ParameterValidator2014::testValidityWithMinimumValueAndType()
     parameter->setMinimumValue(minimum);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(QSharedPointer<Component>()));
 
-    ParameterValidator2014 validator(parser);
+    ParameterValidator2014 validator(parser, finder);
     QCOMPARE(validator.hasValidValue(parameter, QSharedPointer<QList<QSharedPointer<Choice> > >()), isValid);
 
     delete parameter;

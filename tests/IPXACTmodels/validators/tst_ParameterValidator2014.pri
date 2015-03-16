@@ -8,8 +8,11 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ../../../editors/ComponentEditor/common/ExpressionParser.h \
+    ../../../IPXACTmodels/validators/ParameterValidator2014.h \
     ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ../../../IPXACTmodels/validators/ParameterValidator2014.h
-SOURCES += ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ../../../IPXACTmodels/validators/ParameterValidator2014.cpp \
-    ./tst_ParameterValidator2014.cpp
+    ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
+    ../../../editors/ComponentEditor/common/ParameterFinder.h
+SOURCES += ../../../IPXACTmodels/validators/ParameterValidator2014.cpp \
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ./tst_ParameterValidator2014.cpp \
+    ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp

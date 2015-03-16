@@ -15,6 +15,8 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/validators/ParameterValidator.h>
 
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+
 #include <QString>
 
 class IPXACTMODELS_EXPORT ParameterValidator2014 : public ParameterValidator 
@@ -25,8 +27,10 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] expressionParser   The parser to use for solving expressions.
+     *      @param [in] parameterFinder    The parameter finder.
 	 */
-	ParameterValidator2014(QSharedPointer<ExpressionParser> expressionParser);
+    ParameterValidator2014(QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ParameterFinder> parameterFinder);
 
 	//! The destructor.
 	~ParameterValidator2014();
@@ -197,8 +201,21 @@ private:
      */
     QStringList splitArrayToList(QString const& arrayValue) const;
 
+    /*!
+     *  Check if all the values in the array are of the same size.
+     *
+     *      @param [in] bitArray    The array to check.
+     *      @param [in] type        The given type of the array.
+     *
+     *      @return True, if the array values are of the same size, otherwise false.
+     */
+    bool arrayValuesAreSameSize(QStringList const& bitArray, QString type) const;
+
     //! The expression parser to use for solving minimum, maximum and value.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! The parameter finder.
+    QSharedPointer<ParameterFinder> parameterFinder_;
 };
 
 #endif // SYSTEMVERILOGVALIDATOR_H

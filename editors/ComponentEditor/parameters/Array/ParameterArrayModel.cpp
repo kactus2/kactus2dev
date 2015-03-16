@@ -27,7 +27,7 @@ sizeOfArray_(sizeOfArray),
 expressionformatter_(expressionFormatter),
 arrayValues_(),
 selectedChoice_(selectedChoice),
-validator_(new ParameterValidator2014(expressionParser)),
+validator_(new ParameterValidator2014(expressionParser, parameterFinder)),
 parameterType_()
 {
     QString repeater = ",";

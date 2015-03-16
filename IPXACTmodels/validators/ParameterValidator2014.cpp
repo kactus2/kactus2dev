@@ -19,8 +19,11 @@
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogValidator::SystemVerilogValidator()
 //-----------------------------------------------------------------------------
-ParameterValidator2014::ParameterValidator2014(QSharedPointer<ExpressionParser> expressionParser) : 
-ParameterValidator(), expressionParser_(expressionParser)
+ParameterValidator2014::ParameterValidator2014(QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ParameterFinder> parameterFinder) : 
+ParameterValidator(),
+expressionParser_(expressionParser),
+parameterFinder_(parameterFinder)
 {
 
 }
@@ -95,7 +98,14 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
     {
         if (type == "bit")
         {
-            return isArrayValidForType(value, type);
+            if (parameterFinder_->hasId(value))
+            {
+                return hasValidValueForType(parameterFinder_->valueForId(value), type);
+            }
+            else
+            {
+                return isArrayValidForType(value, type);
+            }
         }
         else
         {
@@ -105,7 +115,7 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
 
     else if (type == "bit")
     {
-        QRegularExpression bitExpression("^([01]|[1-9]+[0-9]*'([bB][01]+|[hH][0-9a-fA-F]+))$");
+        QRegularExpression bitExpression("^([01]|[1-9]+[0-9]*'([bB][01_]+|[hH][0-9a-fA-F_]+))$");
         return bitExpression.match(value).hasMatch() || bitExpression.match(solvedValue).hasMatch();
     }
     else if (type == "byte")
@@ -156,15 +166,22 @@ bool ParameterValidator2014::isArrayValidForType(QString const& arrayExpression,
 {
     QStringList subValues = splitArrayToList(arrayExpression);
 
-    foreach (QString innerValue, subValues)
+    if (arrayValuesAreSameSize(subValues, type))
     {
-        if (!hasValidValueForType(innerValue, type))
+        foreach (QString innerValue, subValues)
         {
-            return false;
+            innerValue = innerValue.remove(" ");
+            if (!hasValidValueForType(innerValue, type))
+            {
+                return false;
+            }
         }
+        return true;
     }
-
-    return true;
+    else
+    {
+        return false;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -376,4 +393,58 @@ QStringList ParameterValidator2014::splitArrayToList(QString const& arrayValue) 
     subValues.last().chop(1);
 
     return subValues;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterValidator2014::arrayValuesAreSameSize()
+//-----------------------------------------------------------------------------
+bool ParameterValidator2014::arrayValuesAreSameSize(QStringList const& bitArray, QString type) const
+{
+    if (type == "bit")
+    {
+        QString firstValue = bitArray.first();
+        firstValue = firstValue.remove(" ");
+        QRegularExpression sizeValueSeparator ("'[bB]");
+        int bitSize = 1;
+
+        if (firstValue.contains(sizeValueSeparator))
+        {
+            QStringList comparisonValues = firstValue.split(sizeValueSeparator);
+
+            if (!comparisonValues.at(0).isEmpty())
+            {
+                bitSize = comparisonValues.at(0).toInt();
+            }
+
+            foreach (QString arrayValue, bitArray)
+            {
+                arrayValue = arrayValue.remove(" ");
+                comparisonValues = arrayValue.split(sizeValueSeparator);
+
+                if (comparisonValues.at(0).isEmpty())
+                {
+                    comparisonValues[0] = "1";
+                }
+
+                comparisonValues[1] = comparisonValues[1].remove("_");
+                if (comparisonValues.at(0).toInt() != bitSize || comparisonValues.at(1).size() != bitSize)
+                {
+                    return false;
+                }
+            }
+        }
+
+        else
+        {
+            foreach (QString arrayValue, bitArray)
+            {
+                if (arrayValue.size() != bitSize)
+                {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
 }

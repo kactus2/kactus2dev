@@ -32,7 +32,7 @@ AbstractParameterModel::AbstractParameterModel(QSharedPointer<QList<QSharedPoint
     QSharedPointer<ExpressionFormatter> expressionFormatter, QObject *parent): 
 ParameterizableTable(parameterFinder, parent),
 choices_(choices), 
-validator_(new ParameterValidator2014(expressionParser)),
+validator_(new ParameterValidator2014(expressionParser, parameterFinder)),
 parameterFinder_(parameterFinder),
 expressionFormatter_(expressionFormatter)
 {

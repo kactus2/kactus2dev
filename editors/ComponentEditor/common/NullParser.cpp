@@ -46,7 +46,7 @@ bool NullParser::isValidExpression(QString const& /*expression*/) const
 //-----------------------------------------------------------------------------
 // Function: NullParser::isArrayExpression()
 //-----------------------------------------------------------------------------
-bool NullParser::isArrayExpression(QString const& expression) const
+bool NullParser::isArrayExpression(QString const& /*expression*/) const
 {
     return false;
 }
