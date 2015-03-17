@@ -133,6 +133,11 @@ QVariant RegisterTableModel::headerData( int section, Qt::Orientation orientatio
         {
             return tr("Test\nconstraint");
         }
+        else if (section == RegisterColumns::IS_PRESENT_COLUMN)
+        {
+            QString isPresent = tr("Is Present") + getExpressionSymbol();
+            return isPresent;
+        }
         else
         {
             return QVariant();
@@ -263,6 +268,10 @@ QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
     {
         return General::testConstraint2Str(fields_.at(index.row())->getTestConstraint());
     }
+    else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
+    {
+        return fields_.at(index.row())->getIsPresentExpression();
+    }
     else
     {
         return QVariant();
@@ -355,6 +364,17 @@ bool RegisterTableModel::setData( const QModelIndex& index, const QVariant& valu
         {
             fields_.at(index.row())->setTestConstraint(General::str2TestConstraint(value.toString()));
         }
+        else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
+        {
+            if (!value.isValid())
+            {
+                removeReferencesFromSingleExpression(fields_.at(index.row())->getIsPresentExpression());
+
+                fields_.at(index.row())->removeIsPresentExpression();
+            }
+
+            fields_.at(index.row())->setIsPresentExpression(value.toString());
+        }
         else
         {
             return false;
@@ -391,7 +411,8 @@ bool RegisterTableModel::isValid() const
 //-----------------------------------------------------------------------------
 bool RegisterTableModel::isValidExpressionColumn(QModelIndex const& index) const
 {
-    if (index.column() == RegisterColumns::OFFSET_COLUMN || index.column() == RegisterColumns::WIDTH_COLUMN)
+    if (index.column() == RegisterColumns::OFFSET_COLUMN || index.column() == RegisterColumns::WIDTH_COLUMN ||
+        index.column() == RegisterColumns::IS_PRESENT_COLUMN)
     {
         return true;
     }
@@ -414,6 +435,10 @@ QVariant RegisterTableModel::expressionOrValueForIndex(QModelIndex const& index)
     {
         return fields_.at(index.row())->getBitWidthExpression();
     }
+    else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
+    {
+        return fields_.at(index.row())->getIsPresentExpression();
+    }
 
     return data(index, Qt::DisplayRole);
 }
@@ -428,10 +453,26 @@ bool RegisterTableModel:: validateColumnForParameter(QModelIndex const& index) c
         QString offset = fields_.at(index.row())->getBitOffsetExpression();
         return isValuePlainOrExpression(offset);
     }
-    if (index.column() == RegisterColumns::WIDTH_COLUMN)
+    else if (index.column() == RegisterColumns::WIDTH_COLUMN)
     {
         QString width = fields_.at(index.row())->getBitWidthExpression();
         return isValuePlainOrExpression(width);
+    }
+    else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
+    {
+        QString isPresent = formattedValueFor(fields_.at(index.row())->getIsPresentExpression());
+
+        bool conversionToIntOk = true;
+        int presenceValue = isPresent.toInt(&conversionToIntOk);
+
+        if (conversionToIntOk && (presenceValue == 1 || presenceValue == 0))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     return true;
@@ -444,8 +485,9 @@ int RegisterTableModel::getAllReferencesToIdInItemOnRow(const int& row, QString 
 {
     int referencesInBitOffset = fields_.at(row)->getBitOffsetExpression().count(valueID);
     int referencesInBitWidth = fields_.at(row)->getBitWidthExpression().count(valueID);
+    int referencesInIsPresent = fields_.at(row)->getIsPresentExpression().count(valueID);
 
-    int totalReferences = referencesInBitOffset + referencesInBitWidth;
+    int totalReferences = referencesInBitOffset + referencesInBitWidth + referencesInIsPresent;
 
     return totalReferences;
 }

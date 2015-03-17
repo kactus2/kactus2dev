@@ -129,6 +129,32 @@ public:
      */
     void removeBitOffsetExpression();
 
+    /*!
+     *  Set the expression for field presence.
+     *
+     *      @param [in] expression  The expression for field presence.
+     */
+    void setIsPresentExpression(QString const& expression);
+
+    /*!
+     *  Get the expression for field presence.
+     *
+     *      @return The expression for field presence.
+     */
+    QString getIsPresentExpression();
+
+    /*!
+     *  remove the expression from field presence.
+     */
+    void removeIsPresentExpression();
+
+    /*!
+     *  Check if the field has an expression for presence.
+     *
+     *      @return True, if there is an expression, otherwise false.
+     */
+    bool hasIsPresentExpression();
+
     /*! \brief Get the bit width.
      *
      * \return bit width.
@@ -391,6 +417,8 @@ private:
      */
     void createOffsetExpressionExtension(QString const& expression);
 
+    void createIsPresentExpressionExtension(QString const& expression);
+
     /*!
      *  Copies vendor extensions from another field.
      *
@@ -461,7 +489,11 @@ private:
 	 */
     QList<QSharedPointer<VendorExtension> > vendorExtensions_;
 
+    //! The vendor extension for offset expression.
     QSharedPointer<Kactus2Value> offsetExpression_;
+
+    //! The vendor extension for is present expression.
+    QSharedPointer<Kactus2Value> isPresentExpression_;
 };
 
 #endif /* FIELD_H_ */

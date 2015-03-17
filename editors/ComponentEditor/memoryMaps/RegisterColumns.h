@@ -27,6 +27,7 @@ namespace RegisterColumns
         READ_ACTION_COLUMN,
         TESTABLE_COLUMN,
         TEST_CONSTR_COLUMN,
+        IS_PRESENT_COLUMN,
         COLUMN_COUNT
     };
 }

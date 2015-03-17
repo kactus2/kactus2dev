@@ -194,5 +194,6 @@ void RegisterDelegate::commitAndCloseEditor() {
 //-----------------------------------------------------------------------------
 bool RegisterDelegate::columnAcceptsExpression(int column) const
 {
-    return column == RegisterColumns::WIDTH_COLUMN ||column == RegisterColumns::OFFSET_COLUMN;
+    return column == RegisterColumns::WIDTH_COLUMN || column == RegisterColumns::OFFSET_COLUMN ||
+        column == RegisterColumns::IS_PRESENT_COLUMN;
 }

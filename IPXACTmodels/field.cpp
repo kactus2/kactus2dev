@@ -40,7 +40,8 @@ testable_(true),
 testConstraint_(General::TEST_UNCONSTRAINED),
 writeConstraint_(),
 vendorExtensions_(),
-offsetExpression_()
+offsetExpression_(),
+isPresentExpression_()
 {
 
 	// parse the spirit:id attribute
@@ -129,7 +130,8 @@ testable_(true),
 testConstraint_(General::TEST_UNCONSTRAINED),
 writeConstraint_(),
 vendorExtensions_(),
-offsetExpression_()
+offsetExpression_(),
+isPresentExpression_()
 {
 
 }
@@ -151,7 +153,8 @@ testable_(true),
 testConstraint_(General::TEST_UNCONSTRAINED),
 writeConstraint_(),
 vendorExtensions_(),
-offsetExpression_()
+offsetExpression_(),
+isPresentExpression_()
 {
 
 }
@@ -172,8 +175,9 @@ readAction_(other.readAction_),
 testable_(other.testable_),
 testConstraint_(other.testConstraint_),
 writeConstraint_(),
-vendorExtensions_(other.vendorExtensions_),
-offsetExpression_()
+vendorExtensions_(),
+offsetExpression_(),
+isPresentExpression_()
 {
 
 	foreach (QSharedPointer<EnumeratedValue> enumValue, other.enumeratedValues_) {
@@ -506,6 +510,58 @@ void Field::removeBitOffsetExpression()
 }
 
 //-----------------------------------------------------------------------------
+// Function: field::setIsPresentExpression()
+//-----------------------------------------------------------------------------
+void Field::setIsPresentExpression(QString const& expression)
+{
+    if (hasIsPresentExpression())
+    {
+        isPresentExpression_->setValue(expression);
+    }
+    else if (!expression.isEmpty())
+    {
+        createIsPresentExpressionExtension(expression);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: field::getIsPresentExpression()
+//-----------------------------------------------------------------------------
+QString Field::getIsPresentExpression()
+{
+    if (hasIsPresentExpression())
+    {
+        return isPresentExpression_->value();
+    }
+
+    return QString("1");
+}
+
+//-----------------------------------------------------------------------------
+// Function: field::removeIsPresentExpression()
+//-----------------------------------------------------------------------------
+void Field::removeIsPresentExpression()
+{
+    vendorExtensions_.removeAll(isPresentExpression_);
+    isPresentExpression_.clear();
+}
+
+//-----------------------------------------------------------------------------
+// Function: field::hasIsPresentExpression()
+//-----------------------------------------------------------------------------
+bool Field::hasIsPresentExpression()
+{
+    if (isPresentExpression_.isNull())
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: field::getBitWidth()
 //-----------------------------------------------------------------------------
 unsigned int Field::getBitWidth() const
@@ -720,6 +776,10 @@ void Field::parseVendorExtensions(QDomNode const& fieldNode)
         {
             createOffsetExpressionExtension(extensionNode.childNodes().at(i).nodeValue());
         }
+        else if (extensionNode.nodeName() == QString("kactus2:isPresent"))
+        {
+            createIsPresentExpressionExtension(extensionNode.childNodes().at(i).nodeValue());
+        }
         else
         {
             vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
@@ -740,6 +800,18 @@ void Field::createOffsetExpressionExtension(QString const& expression)
 }
 
 //-----------------------------------------------------------------------------
+// Function: field::createIsPresentExpressionExtension()
+//-----------------------------------------------------------------------------
+void Field::createIsPresentExpressionExtension(QString const& expression)
+{
+    if (isPresentExpression_.isNull())
+    {
+        isPresentExpression_ = QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:isPresent", expression));
+        vendorExtensions_.append(isPresentExpression_);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: field::copyVendorExtensions()
 //-----------------------------------------------------------------------------
 void Field::copyVendorExtensions(const Field & other)
@@ -750,6 +822,11 @@ void Field::copyVendorExtensions(const Field & other)
         {
             offsetExpression_ = QSharedPointer<Kactus2Value>(other.offsetExpression_->clone());
             vendorExtensions_.append(offsetExpression_);
+        }
+        else if (extension->type() == "kactus2:isPresent")
+        {
+            isPresentExpression_ = QSharedPointer<Kactus2Value>(other.isPresentExpression_->clone());
+            vendorExtensions_.append(isPresentExpression_);
         }
         else
         {
