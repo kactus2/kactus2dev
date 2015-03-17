@@ -4452,11 +4452,27 @@ void MainWindow::setPluginVisibilities()
 		}
 	}
 
+    bool isGenerationGroupVisible = false;
 	foreach (QAction* action, pluginActionGroup_->actions())
 	{
 		IGeneratorPlugin* plugin = reinterpret_cast<IGeneratorPlugin*>(action->data().value<void*>());
 		Q_ASSERT(plugin != 0);
 
 		action->setVisible(libComp != 0 && plugin->checkGeneratorSupport(libComp, libDesConf, libDes));
+        if (action->isVisible())
+        {
+            isGenerationGroupVisible = true;
+        }
 	}
+
+    foreach (QAction* action, generationGroup_->actions())
+    {
+        if (action->isVisible())
+        {
+            isGenerationGroupVisible = true;
+            break;
+        }
+    }
+
+    generationGroup_->setVisible(isGenerationGroupVisible);
 }
