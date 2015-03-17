@@ -433,7 +433,8 @@ bool ParameterReferenceTree::referenceExistsInRegisterFields(QSharedPointer<Regi
 bool ParameterReferenceTree::registerFieldHasReference(QSharedPointer<Field> targetField)
 {
     if (targetField->getBitOffsetExpression().contains(targetID_) ||
-        targetField->getBitWidthExpression().contains(targetID_))
+        targetField->getBitWidthExpression().contains(targetID_) ||
+        targetField->getIsPresentExpression().contains(targetID_))
     {
         return true;
     }
@@ -834,6 +835,12 @@ void ParameterReferenceTree::createItemsForField(QSharedPointer<Field> targetFie
     {
         QString itemName = "Width";
         QString expression = targetField->getBitWidthExpression();
+        createItem(itemName, expression, parent);
+    }
+    if (targetField->getIsPresentExpression().contains(targetID_))
+    {
+        QString itemName = "Is Present";
+        QString expression = targetField->getIsPresentExpression();
         createItem(itemName, expression, parent);
     }
 }
