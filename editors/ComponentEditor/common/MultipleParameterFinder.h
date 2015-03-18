@@ -30,12 +30,14 @@ public:
      *
      *      @param [in] component   The component which parameters are being searched for.
      */
-    MultipleParameterFinder(QSharedPointer<Component> component);
+    MultipleParameterFinder();
 
     /*!
      *  Destructor.
      */
     ~MultipleParameterFinder();
+
+     void addFinder(QSharedPointer<ParameterFinder> finder);
 
     /*!
      *  Get the parameter with the given id.
@@ -98,12 +100,8 @@ private:
     MultipleParameterFinder(const MultipleParameterFinder& other);
 	//! No assignment
     MultipleParameterFinder& operator=(const MultipleParameterFinder& other);
-
-    //! The old component.
-    QSharedPointer<Component> oldComponent_;
-
-    //! The new component.
-    QSharedPointer<Component> newComponent_;
+   
+    QList<QSharedPointer<ParameterFinder> > finders_;
 };
 
 #endif // MULTIPLEPARAMETERFINDER_H

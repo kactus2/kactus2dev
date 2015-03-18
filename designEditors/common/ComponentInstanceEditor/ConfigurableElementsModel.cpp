@@ -203,11 +203,7 @@ bool ConfigurableElementsModel::setData( const QModelIndex& index,
 									 const QVariant& value, 
 									 int role /*= Qt::EditRole */ ) 
 {
-	if (!index.isValid())
-    {
-		return false;
-    }
-	else if (index.row() < 0 || index.row() >= visibleConfigurableElements_.size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= visibleConfigurableElements_.size())
     {
 		return false;
     }
@@ -456,41 +452,36 @@ void ConfigurableElementsModel::readComponentConfigurableElements()
 {
     QSharedPointer <Component> componentModel = component_->componentModel();
 
-    QString unEditableResolveValue = "immediate";
-
-    readConfigurableParameters(componentModel, unEditableResolveValue);
-    readConfigurableModelParameters(componentModel, unEditableResolveValue);
+    readConfigurableParameters(componentModel);
+    readConfigurableModelParameters(componentModel);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::readConfigurableParameters()
 //-----------------------------------------------------------------------------
-void ConfigurableElementsModel::readConfigurableParameters(QSharedPointer<Component> componentModel,
-    QString unEditableResolve)
+void ConfigurableElementsModel::readConfigurableParameters(QSharedPointer <Component> componentModel)
 {
     foreach (QSharedPointer<Parameter> parameterPointer, *componentModel->getParameters())
     {
-        addParameterWithIDToVisibleElements(parameterPointer, unEditableResolve);
+        addParameterWithIDToVisibleElements(parameterPointer);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::readConfigurableModelParameters()
 //-----------------------------------------------------------------------------
-void ConfigurableElementsModel::readConfigurableModelParameters(QSharedPointer<Component> componentModel,
-    QString unEditableResolve)
+void ConfigurableElementsModel::readConfigurableModelParameters(QSharedPointer <Component> componentModel)
 {
     foreach (QSharedPointer < Parameter > modelParameterPointer, *componentModel->getModelParameters())
     {
-        addParameterWithIDToVisibleElements(modelParameterPointer, unEditableResolve);
+        addParameterWithIDToVisibleElements(modelParameterPointer);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::addParameterWithIdToVisibleElements()
 //-----------------------------------------------------------------------------
-void ConfigurableElementsModel::addParameterWithIDToVisibleElements(
-    QSharedPointer<Parameter> parameterPointer, QString unEditableResolveValue)
+void ConfigurableElementsModel::addParameterWithIDToVisibleElements(QSharedPointer <Parameter> parameterPointer)
 {
     if (!parameterPointer->getValueId().isEmpty())
     {
@@ -501,8 +492,7 @@ void ConfigurableElementsModel::addParameterWithIDToVisibleElements(
         
         bool isEditable = true;
 
-        if (parameterPointer->getValueResolve() == unEditableResolveValue ||
-            parameterPointer->getValueResolve().isEmpty())
+        if (parameterPointer->getValueResolve() == "immediate" || parameterPointer->getValueResolve().isEmpty())
         {
             isEditable = false;
         }

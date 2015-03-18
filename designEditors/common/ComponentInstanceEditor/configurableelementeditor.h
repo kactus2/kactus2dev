@@ -10,7 +10,6 @@
 
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
@@ -22,7 +21,7 @@
 #include <QPushButton>
 
 class ComponentItem;
-
+class ParameterFinder;
 //-----------------------------------------------------------------------------
 //! Editor for configurable elements of a component instance.
 //-----------------------------------------------------------------------------
@@ -76,17 +75,11 @@ private:
 	//! \brief No assignment
 	ConfigurableElementEditor& operator=(const ConfigurableElementEditor& other);
 
-	//! \brief Pointer to the component instance being edited.
-	ComponentItem* component_;
-
 	//! \brief The widget to display the contents of the model.
 	EditableTableView view_;
 
 	//! \brief The filter to do the sorting of items to display.
 	QSortFilterProxyModel filter_;
-
-    //! The parameter finder.
-    QSharedPointer<ParameterFinder> parameterFinder_;
 
     //! Model for all the parameters within a single component.
     ComponentParameterModel* componentParameterModel_;

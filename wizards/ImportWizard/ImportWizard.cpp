@@ -16,6 +16,8 @@
 
 #include <wizards/ComponentWizard/ComponentWizardConclusionPage.h>
 
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+
 #include <IPXACTmodels/component.h>
 
 
@@ -28,10 +30,14 @@ ImportWizard::ImportWizard(QSharedPointer<const Component> component,
 	                             QWidget* parent)
     : QWizard(parent),
       workingComponent_(new Component(*component)),
-      parameterFinder_(new ComponentParameterFinder(workingComponent_)),
-      multipleParameterFinder_(new MultipleParameterFinder(workingComponent_)),
-      referenceCounter_(new ParameterReferenceCounter(parameterFinder_))
+      updatingFinder_(new ComponentParameterFinder(workingComponent_)),
+      referenceCounter_(new ParameterReferenceCounter(updatingFinder_))
 {
+    QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
+    QSharedPointer<ParameterFinder> notImportedFinder(new ComponentParameterFinder(workingComponent_));
+    multiFinder->addFinder(notImportedFinder);
+    multiFinder->addFinder(updatingFinder_);
+
 	setWindowTitle(tr("Import Wizard for %1").arg(component->getVlnv()->toString()));
     setWizardStyle(ModernStyle);
     resize(800, 800);
@@ -39,12 +45,11 @@ ImportWizard::ImportWizard(QSharedPointer<const Component> component,
     setOption(NoBackButtonOnStartPage, true);
     setOption(HaveFinishButtonOnEarlyPages, false);
 
-    QSharedPointer<ExpressionFormatter> singleExpressionFormatter(new ExpressionFormatter(parameterFinder_));
-    QSharedPointer<ExpressionFormatter> multipleExpressionFormatter(
-        new ExpressionFormatter(multipleParameterFinder_));
+    QSharedPointer<ExpressionFormatter> singleExpressionFormatter(new ExpressionFormatter(updatingFinder_));
+    QSharedPointer<ExpressionFormatter> multipleExpressionFormatter(new ExpressionFormatter(multiFinder));
 
     ImportWizardImportPage* importPage = new ImportWizardImportPage(workingComponent_, handler, pluginMgr,
-        parameterFinder_, singleExpressionFormatter, this);
+        updatingFinder_, singleExpressionFormatter, this);
     ComponentWizardConclusionPage* finalPage = new ComponentWizardConclusionPage(workingComponent_, handler,
         multipleExpressionFormatter, this);
 
@@ -85,7 +90,5 @@ QSharedPointer<Component> ImportWizard::getComponent()
 void ImportWizard::onComponentChanged(QSharedPointer<Component> component)
 {
     workingComponent_ = component;
-
-    parameterFinder_->setComponent(workingComponent_);
-    multipleParameterFinder_->setComponent(workingComponent_);
+    updatingFinder_->setComponent(workingComponent_);
 }

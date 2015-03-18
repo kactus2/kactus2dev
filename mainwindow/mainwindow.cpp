@@ -1353,7 +1353,7 @@ void MainWindow::onComponentSelected( ComponentItem* component ) {
 	interfaceEditor_->clear();
 
 	// Update the instance and ad-hoc visibility editors.
-	instanceEditor_->setComponent(component);
+	instanceEditor_->setComponentInstance(component);
 
     if (dynamic_cast<HWComponentItem*>(component) != 0)
     {
@@ -1985,7 +1985,7 @@ void MainWindow::onDrawModeChanged(DrawMode mode)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainWindow::onTabCloseRequested()
+// Function: MainWindow::onLastDocumentClosed()
 //-----------------------------------------------------------------------------
 void MainWindow::onLastDocumentClosed()
 {	
@@ -1993,7 +1993,7 @@ void MainWindow::onLastDocumentClosed()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainWindow::onTabChanged()
+// Function: MainWindow::onDocumentChanged()
 //-----------------------------------------------------------------------------
 void MainWindow::onDocumentChanged(int index)
 {
@@ -2011,6 +2011,13 @@ void MainWindow::onDocumentChanged(int index)
 	if (designwidget)
     {
 		configurationEditor_->setConfiguration(designwidget);
+        
+        QSharedPointer<LibraryComponent> topItem = libraryHandler_->getModel(doc->getDocumentVLNV());
+        QSharedPointer<Component> topComponent = topItem.dynamicCast<Component>();
+        if (topComponent)
+        {
+            instanceEditor_->setTopComponent(topComponent);
+        }
 
         if (doc->getSupportedWindows() & TabDocument::SYSTEM_DETAILS_WINDOW)
         {

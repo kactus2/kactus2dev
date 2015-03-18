@@ -12,6 +12,7 @@
 #include <QString>
 #include <QtTest>
 
+#include <IPXACTmodels/component.h>
 #include <IPXACTmodels/model.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/port.h>
@@ -77,7 +78,7 @@ private:
 //-----------------------------------------------------------------------------
 // Function: tst_PortVerilogWriter::tst_PortVerilogWriter()
 //-----------------------------------------------------------------------------
-tst_PortVerilogWriter::tst_PortVerilogWriter() : enclosingComponent_(new Component), port_(), 
+tst_PortVerilogWriter::tst_PortVerilogWriter() : enclosingComponent_(new Component()), port_(), 
     formatter_(), outputString_(), outputStream_(&outputString_), portWriter_(0)
 {
 }

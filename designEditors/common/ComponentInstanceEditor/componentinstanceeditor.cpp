@@ -9,9 +9,13 @@
 
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 
-#include <designEditors/SystemDesign/SystemChangeCommands.h>
 #include <designEditors/HWDesign/HWComponentItem.h>
+#include <designEditors/HWDesign/HWDesignDiagram.h>
+#include <designEditors/HWDesign/HWDesignWidget.h>
+#include <designEditors/HWDesign/HWChangeCommands.h>
+#include <designEditors/SystemDesign/SystemChangeCommands.h>
 #include <designEditors/SystemDesign/SystemComponentItem.h>
 #include <designEditors/SystemDesign/SWComponentItem.h>
 
@@ -19,13 +23,13 @@
 #include <IPXACTmodels/designconfiguration.h>
 
 #include <IPXACTmodels/vlnv.h>
-#include <designEditors/HWDesign/HWDesignDiagram.h>
-#include <designEditors/HWDesign/HWDesignWidget.h>
-#include <designEditors/HWDesign/HWChangeCommands.h>
 
 #include <QVBoxLayout>
 #include <QDockWidget>
 
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceEditor::ComponentInstanceEditor()
+//-----------------------------------------------------------------------------
 ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent)
     : QWidget(parent),
       component_(0),
@@ -35,11 +39,16 @@ ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent)
       swGroup_(new QGroupBox(tr("SW"), this)),
       fileSetRefCombo_(new QComboBox(this)),
       propertyValueEditor_(new PropertyValueEditor(this)),
-      editProvider_(0)
+      editProvider_(0),
+      instanceFinder_(new ComponentParameterFinder(QSharedPointer<Component>(0))),
+      topFinder_(new ComponentParameterFinder(QSharedPointer<Component>(0)))
 {
-    QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(QSharedPointer<Component>(0)));
-    configurableElements_ = new ConfigurableElementEditor( parameterFinder,
-        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder)), this);
+    QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
+    multiFinder->addFinder(instanceFinder_);
+    multiFinder->addFinder(topFinder_);
+
+    configurableElements_ = new ConfigurableElementEditor(multiFinder,
+        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(multiFinder)), this);
 
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
@@ -64,28 +73,37 @@ ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent)
     layout->addWidget(propertyValueEditor_);
 	layout->addStretch();
 
-	connect(nameGroup_, SIGNAL(nameChanged(const QString&)),
-		    this, SLOT(onNameChanged(const QString&)), Qt::UniqueConnection);
+	connect(nameGroup_, SIGNAL(nameChanged(QString const&)),
+		    this, SLOT(onNameChanged(QString const&)), Qt::UniqueConnection);
 	connect(nameGroup_, SIGNAL(displayNameChanged(const QString)),
 		    this, SLOT(onDisplayNameChanged(const QString)), Qt::UniqueConnection);
 	connect(nameGroup_, SIGNAL(descriptionChanged(const QString)),
-		    this, SLOT(onDescriptionChanged(const QString&)), Qt::UniqueConnection);
+		    this, SLOT(onDescriptionChanged(QString const&)), Qt::UniqueConnection);
     connect(propertyValueEditor_, SIGNAL(contentChanged()),
             this, SLOT(onPropertyValuesChanged()), Qt::UniqueConnection);            
 
     clear();
 }
 
-ComponentInstanceEditor::~ComponentInstanceEditor() {
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceEditor::~ComponentInstanceEditor()
+//-----------------------------------------------------------------------------
+ComponentInstanceEditor::~ComponentInstanceEditor()
+{
 }
 
-void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceEditor::setComponentInstance()
+//-----------------------------------------------------------------------------
+void ComponentInstanceEditor::setComponentInstance(ComponentItem* component)
+{
 	Q_ASSERT(component);
 
 	parentWidget()->raise();
 
 	// if previous component has been specified, then disconnect signals to this editor.
-	if (component_) {
+	if (component_)
+    {
 		component_->disconnect(this);
         component_->disconnect(propertyValueEditor_);
 		component_->disconnect(nameGroup_);
@@ -96,6 +114,7 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
 	}
 
 	component_ = component;
+    instanceFinder_->setComponent(component->componentModel());
 
     bool locked = false;
 
@@ -166,12 +185,12 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
 	    configurableElements_->show();
     }
 
-	connect(component_, SIGNAL(nameChanged(const QString&, const QString&)),
-		    nameGroup_, SLOT(setName(const QString&)), Qt::UniqueConnection);
-	connect(component_, SIGNAL(displayNameChanged(const QString&)),
-		    nameGroup_, SLOT(setDisplayName(const QString&)), Qt::UniqueConnection);
-	connect(component_, SIGNAL(descriptionChanged(const QString&)),
-		    nameGroup_, SLOT(setDescription(const QString&)), Qt::UniqueConnection);
+	connect(component_, SIGNAL(nameChanged(QString const&, QString const&)),
+		    nameGroup_, SLOT(setName(QString const&)), Qt::UniqueConnection);
+	connect(component_, SIGNAL(displayNameChanged(QString const&)),
+		    nameGroup_, SLOT(setDisplayName(QString const&)), Qt::UniqueConnection);
+	connect(component_, SIGNAL(descriptionChanged(QString const&)),
+		    nameGroup_, SLOT(setDescription(QString const&)), Qt::UniqueConnection);
 
     connect(fileSetRefCombo_, SIGNAL(currentIndexChanged(QString const&)),
         this, SLOT(onFileSetRefChanged(QString const&)), Qt::UniqueConnection);
@@ -183,10 +202,22 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
 	parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
 }
 
-void ComponentInstanceEditor::clear() {
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceEditor::setTopComponent()
+//-----------------------------------------------------------------------------
+void ComponentInstanceEditor::setTopComponent(QSharedPointer<Component> topComponent)
+{
+    topFinder_->setComponent(topComponent);
+}
 
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceEditor::clear()
+//-----------------------------------------------------------------------------
+void ComponentInstanceEditor::clear()
+{
 	// if previous component has been specified, then disconnect signals to this editor.
-	if (component_) {
+	if (component_)
+    {
         component_->disconnect(this);
         component_->disconnect(propertyValueEditor_);
         component_->disconnect(nameGroup_);
@@ -209,53 +240,69 @@ void ComponentInstanceEditor::clear() {
 	parentWidget()->setMaximumHeight(20);
 }
 
-void ComponentInstanceEditor::onNameChanged( const QString& newName ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceEditor::onNameChanged()
+//-----------------------------------------------------------------------------
+void ComponentInstanceEditor::onNameChanged( QString const& newName )
+{
 	// create command to the undo/redo stack
 	QSharedPointer<ComponentChangeNameCommand> cmd(new ComponentChangeNameCommand(component_, newName));
 
-	disconnect(component_, SIGNAL(nameChanged(const QString&, const QString&)),
-		       nameGroup_, SLOT(setName(const QString&)));
+	disconnect(component_, SIGNAL(nameChanged(QString const&, QString const&)),
+		       nameGroup_, SLOT(setName(QString const&)));
 
 	editProvider_->addCommand(cmd);
     cmd->redo();
 
-	connect(component_, SIGNAL(nameChanged(const QString&, const QString&)),
-		    nameGroup_, SLOT(setName(const QString&)), Qt::UniqueConnection);
+	connect(component_, SIGNAL(nameChanged(QString const&, QString const&)),
+		    nameGroup_, SLOT(setName(QString const&)), Qt::UniqueConnection);
 }
 
-void ComponentInstanceEditor::onDisplayNameChanged( const QString& newDisplayName ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceEditor::onDisplayNameChanged()
+//-----------------------------------------------------------------------------
+void ComponentInstanceEditor::onDisplayNameChanged( QString const& newDisplayName )
+{
 	// create command to the undo/redo stack
-	QSharedPointer<ComponentChangeDisplayNameCommand> cmd(new ComponentChangeDisplayNameCommand(component_, newDisplayName));
+	QSharedPointer<ComponentChangeDisplayNameCommand> cmd(new ComponentChangeDisplayNameCommand(component_, 
+        newDisplayName));
 
-	disconnect(component_, SIGNAL(displayNameChanged(const QString&)),
-		       nameGroup_, SLOT(setDisplayName(const QString&)));
+	disconnect(component_, SIGNAL(displayNameChanged(QString const&)),
+        nameGroup_, SLOT(setDisplayName(QString const&)));
 
 	editProvider_->addCommand(cmd);
     cmd->redo();
 
-	connect(component_, SIGNAL(displayNameChanged(const QString&)),
-		    nameGroup_, SLOT(setDisplayName(const QString&)), Qt::UniqueConnection);
+	connect(component_, SIGNAL(displayNameChanged(QString const&)),
+		    nameGroup_, SLOT(setDisplayName(QString const&)), Qt::UniqueConnection);
 }
 
-void ComponentInstanceEditor::onDescriptionChanged( const QString& newDescription ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceEditor::onDescriptionChanged()
+//-----------------------------------------------------------------------------
+void ComponentInstanceEditor::onDescriptionChanged( QString const& newDescription ) {
 	// create command to the undo/redo stack
 	QSharedPointer<ComponentChangeDescriptionNameCommand> cmd(new ComponentChangeDescriptionNameCommand(component_, newDescription));
 
-	disconnect(component_, SIGNAL(descriptionChanged(const QString&)),
-		nameGroup_, SLOT(setDescription(const QString&)));
+	disconnect(component_, SIGNAL(descriptionChanged(QString const&)),
+		nameGroup_, SLOT(setDescription(QString const&)));
 	editProvider_->addCommand(cmd);
     cmd->redo();
-	connect(component_, SIGNAL(descriptionChanged(const QString&)),
-		nameGroup_, SLOT(setDescription(const QString&)), Qt::UniqueConnection);
+	connect(component_, SIGNAL(descriptionChanged(QString const&)),
+		nameGroup_, SLOT(setDescription(QString const&)), Qt::UniqueConnection);
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceEditor::onPropertyValuesChanged()
+//-----------------------------------------------------------------------------
 void ComponentInstanceEditor::onPropertyValuesChanged()
 {
     disconnect(component_, SIGNAL(propertyValuesChanged(QMap<QString, QString> const&)),
                propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)));
 
     SystemComponentItem* swComp = static_cast<SystemComponentItem*>(component_);
-    QSharedPointer<PropertyValuesChangeCommand> cmd(new PropertyValuesChangeCommand(swComp, propertyValueEditor_->getData()));
+    QSharedPointer<PropertyValuesChangeCommand> cmd(new PropertyValuesChangeCommand(swComp,
+        propertyValueEditor_->getData()));
     editProvider_->addCommand(cmd);
     cmd->redo();
 

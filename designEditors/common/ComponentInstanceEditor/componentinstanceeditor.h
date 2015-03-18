@@ -21,7 +21,7 @@
 #include <QSharedPointer>
 
 class ComponentItem;
-
+class ParameterFinder;
 /*! \brief Editor to edit the details of a component instance within a design.
  *
  */
@@ -45,7 +45,9 @@ public:
 	 * \param component Pointer to the component instance being edited.
 	 *
 	*/
-	void setComponent(ComponentItem* component);
+    void setComponentInstance(ComponentItem* component);
+
+    void setTopComponent(QSharedPointer<Component> topComponent);
 
 public slots:
 
@@ -62,13 +64,13 @@ signals:
 private slots:
 
 	//! \brief Handler when user changes the name of the component instance.
-	void onNameChanged(const QString& newName);
+	void onNameChanged(QString const& newName);
 
 	//! \brief Handler when user changes the display name of the component instance.
-	void onDisplayNameChanged(const QString& newDisplayName);
+	void onDisplayNameChanged(QString const& newDisplayName);
 
 	//! \brief Handler when user changes the description of the component instance.
-	void onDescriptionChanged(const QString& newDescription);
+	void onDescriptionChanged(QString const& newDescription);
 
     //! Handler when the user changes any property values.
     void onPropertyValuesChanged();
@@ -85,7 +87,7 @@ private:
 
 	//! \brief No assignment
 	ComponentInstanceEditor& operator=(const ComponentInstanceEditor& other);
-    
+
 	//! \brief Pointer to the component instance being edited.
 	ComponentItem* component_;
 
@@ -109,6 +111,12 @@ private:
 
 	//! \brief Pointer to the generic edit provider that manages the undo/redo stack.
 	GenericEditProvider* editProvider_;
+
+    //! The parameter finder for component instances.
+    QSharedPointer<ParameterFinder> instanceFinder_;
+
+    //! The parameter finder for component instances.
+    QSharedPointer<ParameterFinder> topFinder_;
 };
 
 #endif // COMPONENTINSTANCEEDITOR_H

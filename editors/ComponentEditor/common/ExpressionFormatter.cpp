@@ -11,6 +11,8 @@
 
 #include "ExpressionFormatter.h"
 
+#include <QStringList>
+
 //-----------------------------------------------------------------------------
 // Function: ExpressionFormatter::ExpressionFormatter()
 //-----------------------------------------------------------------------------

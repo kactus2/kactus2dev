@@ -8,23 +8,25 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ../../../../wizards/common/ComponentComparator/ComponentComparator.h \
+    ../../../../editors/ComponentEditor/common/ExpressionFormatter.h \
     ../../../../wizards/common/IPXactDiff.h \
     ../../../../wizards/common/IPXactElementComparator.h \
     ../../../../wizards/common/ListComparator.h \
     ../../../../wizards/common/ModelParameterComparator/ModelParameterComparator.h \
+    ../../../../editors/ComponentEditor/common/MultipleParameterFinder.h \
     ../../../../wizards/common/PortComparator/PortComparator.h \
     ../../../../wizards/common/VLNVComparator/VLNVComparator.h \
     ../../../../wizards/common/ViewComparator/ViewComparator.h \
     ../../../../wizards/common/ComponentDiffWidget/ComponentDiffWidget.h \
-    ../../../../editors/ComponentEditor/common/ExpressionFormatter.h \
-    ../../../../editors/ComponentEditor/common/MultipleParameterFinder.h
+    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h
 SOURCES += ../../../../wizards/common/ComponentComparator/ComponentComparator.cpp \
     ../../../../wizards/common/ComponentDiffWidget/ComponentDiffWidget.cpp \
+    ../../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ../../../../wizards/common/IPXactDiff.cpp \
     ../../../../wizards/common/ModelParameterComparator/ModelParameterComparator.cpp \
+    ../../../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
     ../../../../wizards/common/PortComparator/PortComparator.cpp \
     ../../../../wizards/common/VLNVComparator/VLNVComparator.cpp \
     ../../../../wizards/common/ViewComparator/ViewComparator.cpp \
     ./tst_ComponentDiffWidget.cpp \
-    ../../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
-    ../../../../editors/ComponentEditor/common/MultipleParameterFinder.cpp
+    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp

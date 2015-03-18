@@ -13,6 +13,8 @@
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
+#include <QStringList>
+
 //-----------------------------------------------------------------------------
 // Function: IPXactSystemVerilogParser::IPXactSystemVerilogParser()
 //-----------------------------------------------------------------------------

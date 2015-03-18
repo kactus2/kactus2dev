@@ -12,9 +12,10 @@
 #ifndef PARAMETERFINDER_H
 #define PARAMETERFINDER_H
 
-#include <IPXACTmodels/parameter.h>
-#include <IPXACTmodels/component.h>
+#include <QSharedPointer>
 
+class Parameter;
+class Component;
 //-----------------------------------------------------------------------------
 //! Parameter finder.
 //-----------------------------------------------------------------------------

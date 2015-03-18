@@ -14,9 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: MultipleParameterFinder::MultipleParameterFinder()
 //-----------------------------------------------------------------------------
-MultipleParameterFinder::MultipleParameterFinder(QSharedPointer<Component> component):
-    oldComponent_(component),
-    newComponent_(component)
+MultipleParameterFinder::MultipleParameterFinder(): finders_()
 {
 
 }
@@ -30,42 +28,27 @@ MultipleParameterFinder::~MultipleParameterFinder()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MultipleParameterFinder::addFinder()
+//-----------------------------------------------------------------------------
+void MultipleParameterFinder::addFinder(QSharedPointer<ParameterFinder> finder)
+{
+    if (!finders_.contains(finder))
+    {
+        finders_.append(finder);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: MultipleParameterFinder::getParameterWithID()
 //-----------------------------------------------------------------------------
 QSharedPointer<Parameter> MultipleParameterFinder::getParameterWithID(QString const& parameterId) const
 {
-    QList <QSharedPointer<Component> > allComponents;
-    allComponents.append(oldComponent_);
-    allComponents.append(newComponent_);
-
-    foreach (QSharedPointer<Component> component, allComponents)
+    foreach(QSharedPointer<ParameterFinder> finder, finders_)
     {
-        foreach (QSharedPointer<Parameter> parameter, *component->getParameters())
+        if (finder->hasId(parameterId))
         {
-            if (parameter->getValueId() == parameterId)
-            {
-                return parameter;
-            }
+            return finder->getParameterWithID(parameterId);
         }
-
-        foreach (QSharedPointer<ModelParameter> modelParameter, *component->getModelParameters())
-        {
-            if (modelParameter->getValueId() == parameterId)
-            {
-                return modelParameter;
-            }
-        }
-
-        foreach (QSharedPointer<View> view, component->getViews())
-        {
-            foreach(QSharedPointer<Parameter> parameter, *view->getParameters())
-            {
-                if (parameter->getValueId() == parameterId)
-                {
-                    return parameter;
-                }
-            }
-        }   
     }
 
     return QSharedPointer<Parameter>(new Parameter);
@@ -76,37 +59,11 @@ QSharedPointer<Parameter> MultipleParameterFinder::getParameterWithID(QString co
 //-----------------------------------------------------------------------------
 bool MultipleParameterFinder::hasId(QString const& id) const
 {
-    QList <QSharedPointer<Component> > allComponents;
-    allComponents.append(oldComponent_);
-    allComponents.append(newComponent_);
-    
-    foreach (QSharedPointer<Component> component, allComponents)
+    foreach(QSharedPointer<ParameterFinder> finder, finders_)
     {
-        foreach (QSharedPointer<Parameter> parameter, *component->getParameters())
+        if (finder->hasId(id))
         {
-            if (parameter->getValueId() == id)
-            {
-                return true;
-            }
-        }
-        
-        foreach (QSharedPointer<ModelParameter> componentModelParameter, *component->getModelParameters())
-        {
-            if (componentModelParameter->getValueId() == id)
-            {
-                return true;
-            }
-        }
-        
-        foreach (QSharedPointer<View> view, component->getViews())
-        {
-            foreach (QSharedPointer<Parameter> viewParameter, *view->getParameters())
-            {
-                if (viewParameter->getValueId() == id)
-                {
-                    return true;
-                }
-            }
+            return true;
         }
     }
 
@@ -140,27 +97,9 @@ QStringList MultipleParameterFinder::getAllParameterIds() const
 {
     QStringList allParameterIds;
 
-    QList <QSharedPointer<Component> > allComponents;
-    allComponents.append(oldComponent_);
-    allComponents.append(newComponent_);
-    
-    foreach (QSharedPointer<Component> component, allComponents)
+    foreach(QSharedPointer<ParameterFinder> finder, finders_)
     {
-        foreach (QSharedPointer<Parameter> parameter, *component->getParameters())
-        {
-            allParameterIds.append(parameter->getValueId());
-        }
-        foreach (QSharedPointer<ModelParameter> modelParameter, *component->getModelParameters())
-        {
-            allParameterIds.append(modelParameter->getValueId());
-        }
-        foreach (QSharedPointer<View> view, component->getViews())
-        {
-            foreach (QSharedPointer<Parameter> viewParameter, *view->getParameters())
-            {
-                allParameterIds.append(viewParameter->getValueId());
-            }
-        }
+        allParameterIds.append(finder->getAllParameterIds());
     }
 
     return allParameterIds;
@@ -181,5 +120,5 @@ int MultipleParameterFinder::getNumberOfParameters() const
 //-----------------------------------------------------------------------------
 void MultipleParameterFinder::setComponent(QSharedPointer<Component> component)
 {
-    newComponent_ = component;
+    //?
 }

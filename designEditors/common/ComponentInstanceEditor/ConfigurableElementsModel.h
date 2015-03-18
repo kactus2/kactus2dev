@@ -254,7 +254,7 @@ private:
      *      @param [in] componentModel      The component pointer.
      *      @param [in] unEditableResolve   The text for uneditable resolve value.
      */
-    void readConfigurableParameters(QSharedPointer <Component> componentModel, QString unEditableResolve);
+    void readConfigurableParameters(QSharedPointer <Component> componentModel);
 
     /*!
      *  Read the configurable model parameters from the component.
@@ -262,7 +262,7 @@ private:
      *      @param [in] componentModel      The component pointer.
      *      @param [in] unEditableResolve   The text for uneditable resolve value.
      */
-    void readConfigurableModelParameters(QSharedPointer <Component> componentModel, QString unEditableResolve);
+    void readConfigurableModelParameters(QSharedPointer <Component> componentModel);
 
     /*!
      *  Add parameter to the table, if it has an id.
@@ -270,8 +270,7 @@ private:
      *      @param [in] parameterPointer        Pointer to the parameter or model parameter.
      *      @param [in] unEditableResolveValue  The text for uneditable resolve value.
      */
-    void addParameterWithIDToVisibleElements(QSharedPointer <Parameter> parameterPointer,
-        QString unEditableResolveValue);
+    void addParameterWithIDToVisibleElements(QSharedPointer <Parameter> parameterPointer);
 
 	//! Pointer to the component instance being edited.
 	ComponentItem* component_;

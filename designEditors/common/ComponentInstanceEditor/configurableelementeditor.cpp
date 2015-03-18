@@ -8,8 +8,11 @@
 #include "configurableelementeditor.h"
 
 #include "configurableelementdelegate.h"
+
 #include <IPXACTmodels/component.h>
+
 #include <designEditors/HWDesign/HWComponentItem.h>
+
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <QIcon>
@@ -26,11 +29,9 @@ ConfigurableElementEditor::ConfigurableElementEditor(QSharedPointer<ParameterFin
                                                      QWidget *parent,
 													 const QString& title):
 QGroupBox(title, parent),
-component_(0),
 view_(this),
 filter_(this),
-parameterFinder_(parameterFinder),
-componentParameterModel_(new ComponentParameterModel(this, parameterFinder_)),
+componentParameterModel_(new ComponentParameterModel(this, parameterFinder)),
 model_(parameterFinder, expressionFormatter, this)
 {
 	filter_.setSourceModel(&model_);
@@ -39,7 +40,7 @@ model_(parameterFinder, expressionFormatter, this)
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(componentParameterModel_);
 
-    QSharedPointer <IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder_));
+    QSharedPointer <IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
     componentParameterModel_->setExpressionParser(expressionParser);
     model_.setExpressionParser(expressionParser);
 
@@ -47,7 +48,7 @@ model_(parameterFinder, expressionFormatter, this)
 	view_.setSortingEnabled(true);
 	view_.setItemsDraggable(false);
 
-	view_.setItemDelegate(new ConfigurableElementDelegate(parameterCompleter, parameterFinder_, this));
+	view_.setItemDelegate(new ConfigurableElementDelegate(parameterCompleter, parameterFinder, this));
 
     view_.setAlternatingRowColors(false);
 
@@ -72,11 +73,8 @@ ConfigurableElementEditor::~ConfigurableElementEditor()
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementEditor::setComponent()
 //-----------------------------------------------------------------------------
-void ConfigurableElementEditor::setComponent( ComponentItem* component ) 
+void ConfigurableElementEditor::setComponent(ComponentItem* component) 
 {
-    parameterFinder_->setComponent(component->componentModel());
-
-	component_ = component;
 	model_.setComponent(component);
 }
 
@@ -85,7 +83,6 @@ void ConfigurableElementEditor::setComponent( ComponentItem* component )
 //-----------------------------------------------------------------------------
 void ConfigurableElementEditor::clear() 
 {
-	component_ = 0;
 	model_.clear();
 }
 
