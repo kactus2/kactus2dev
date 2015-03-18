@@ -213,8 +213,7 @@ ip_(true) {
 Utils::FirmnessOptions::FirmnessOptions():
 templates_(true),
 mutable_(true),
-fixed_(true),
-definitions_(true)
+fixed_(true)
 {
 }
 

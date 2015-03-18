@@ -29,8 +29,7 @@ namespace KactusAttribute
         {
             "Mutable",
             "Template",
-            "Fixed",
-            "Definitions"
+            "Fixed"
         };
 
         QString const IMPLEMENTATION_NAMES[KTS_IMPLEMENTATION_COUNT] =

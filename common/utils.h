@@ -77,9 +77,6 @@ namespace Utils {
 		//! If true then fixeds should be included in search.
 		bool fixed_;
 
-        //! If true then definitions should be included in search.
-        bool definitions_;
-
 		/*! The default constructor
 		 *
 		 * Constructs struct with all options set to true

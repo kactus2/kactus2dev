@@ -26,10 +26,7 @@ KactusAttributeEditor::KactusAttributeEditor(QWidget* parent) : QGroupBox(tr("Ka
 {
     // Create the product hierarchy label and combo box.
     prodHierLabel_ = new QLabel(tr("Product Hierarchy:"), this);
-    //prodHierLabel_->setVisible(false);
-
     prodHierCombo_ = new QComboBox(this);
-    //prodHierCombo_->setVisible(false);
     
     for (unsigned int i = 0; i < KactusAttribute::KTS_PRODHIER_COUNT; ++i)
     {
@@ -83,7 +80,6 @@ void KactusAttributeEditor::setAttributes(KactusAttribute::ProductHierarchy prod
 {
     prodHierCombo_->setCurrentIndex(prodHier);
     firmnessCombo_->setCurrentIndex(firmness);
-    firmnessCombo_->setEnabled(firmness != KactusAttribute::DEFINITIONS);
 }
 
 //-----------------------------------------------------------------------------

@@ -620,12 +620,6 @@ void ComponentEditor::setProtection( bool locked )
 //-----------------------------------------------------------------------------
 void ComponentEditor::setRowVisibility(QSettings& settings)
 {
-    if (isHWImplementation() && component_->getComponentFirmness() == KactusAttribute::DEFINITIONS)
-    {
-        proxy_.setRowVisibility(hiddenItemsForDefinitions());
-        return;
-    }
-
     QString workSpace = settings.value("Workspaces/CurrentWorkspace").toString();
 
     settings.beginGroup("Workspaces/" + workSpace + "/ComponentEditorFilters");
@@ -835,22 +829,6 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createSWRootItem(QShare
         new ComponentEditorSWPropertiesItem(&navigationModel_, libHandler_, component, swRoot)));
     
     return QSharedPointer<ComponentEditorRootItem>(swRoot);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditor::hiddenItemsForDefinitions()
-//-----------------------------------------------------------------------------
-QStringList ComponentEditor::hiddenItemsForDefinitions() const
-{
-    QStringList definitionsHiddenRows = getHwItemNames();
-    definitionsHiddenRows.removeAll("Parameters");
-    definitionsHiddenRows.removeAll("Model_parameters");
-    definitionsHiddenRows.removeAll("Choices");
-    definitionsHiddenRows.removeAll("File_sets");
-
-    definitionsHiddenRows.replaceInStrings("_", " ");
-
-    return definitionsHiddenRows;
 }
 
 //-----------------------------------------------------------------------------

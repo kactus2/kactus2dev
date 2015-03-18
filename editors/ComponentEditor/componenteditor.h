@@ -217,13 +217,6 @@ private:
      */
     QSharedPointer<ComponentEditorRootItem> createSWRootItem(QSharedPointer<Component> component);
 
-    /*!
-     *  Finds the component editor items that should be hidden for definitions component.
-     *
-     *      @return The hidden rows for definitions.
-     */
-    QStringList hiddenItemsForDefinitions() const;
-
     //! Setups the editor layout.
     void setupLayout();
 

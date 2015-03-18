@@ -63,7 +63,6 @@ namespace KactusAttribute
         MUTABLE = 0,
         TEMPLATE,
         FIXED,
-        DEFINITIONS,
         KTS_REUSE_LEVEL_COUNT
     };
 

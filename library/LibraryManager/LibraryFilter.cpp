@@ -206,10 +206,6 @@ bool LibraryFilter::checkFirmness( QSharedPointer<Component const> component ) c
     {
         return firmness_.fixed_;
     }
-    else if (componentFirmness == KactusAttribute::DEFINITIONS)
-    {
-        return firmness_.definitions_;
-    }
     else
     {
         return false;

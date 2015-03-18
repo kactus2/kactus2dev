@@ -19,21 +19,18 @@ QGroupBox(tr("Firmness"), parent),
 templateBox_(tr("Template"), this),
 mutableBox_(tr("Mutable"), this),
 fixedBox_(tr("Fixed"), this),
-definitionsBox_(tr("Definitions"), this),
-options_() {
-
+options_()
+{
 	QGridLayout* layout = new QGridLayout(this);
 	layout->addWidget(&templateBox_, 0, 0, 1, 1);
 	layout->addWidget(&mutableBox_, 0, 1, 1, 1);
 	layout->addWidget(&fixedBox_, 0, 2, 1, 1);
-    layout->addWidget(&definitionsBox_, 0, 3, 1, 1);
 	layout->setSpacing(0);
 	layout->setContentsMargins(4, 4, 4, 4);
 
 	templateBox_.setChecked(true);
 	mutableBox_.setChecked(true);
 	fixedBox_.setChecked(true);
-    definitionsBox_.setChecked(true);
 
     connect(&templateBox_, SIGNAL(clicked(bool)),
         this, SLOT(onTemplateChanged(bool)), Qt::UniqueConnection);
@@ -41,8 +38,6 @@ options_() {
         this, SLOT(onMutableChanged(bool)), Qt::UniqueConnection);
     connect(&fixedBox_, SIGNAL(clicked(bool)),
         this, SLOT(onConfigurationChanged(bool)), Qt::UniqueConnection);
-    connect(&definitionsBox_, SIGNAL(clicked(bool)),
-        this, SLOT(onDefinitionChanged(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -60,7 +55,6 @@ void FirmnessGroup::setFirmness(Utils::FirmnessOptions options)
     templateBox_.setChecked(options.templates_);
     mutableBox_.setChecked(options.mutable_);
     fixedBox_.setChecked(options.fixed_);
-    definitionsBox_.setChecked(options.definitions_);
 
     options_ = options;
     emit optionsChanged(options_);
@@ -75,7 +69,6 @@ Utils::FirmnessOptions FirmnessGroup::getFirmness() const
     options.templates_ = templateBox_.isChecked();
     options.mutable_ = mutableBox_.isChecked();
     options.fixed_ = fixedBox_.isChecked();
-    options.definitions_ = definitionsBox_.isChecked();
     return options;
 }
 
@@ -104,13 +97,4 @@ void FirmnessGroup::onConfigurationChanged( bool checked )
 {
 	options_.fixed_ = checked;
 	emit optionsChanged(options_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: FirmnessGroup::onDefinitionChanged()
-//-----------------------------------------------------------------------------
-void FirmnessGroup::onDefinitionChanged(bool checked)
-{
-    options_.definitions_ = checked;
-    emit optionsChanged(options_);
 }

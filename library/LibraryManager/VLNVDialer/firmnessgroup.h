@@ -61,9 +61,6 @@ private slots:
 	//! Handler for configuration check box state changes.
 	void onConfigurationChanged(bool checked);
 
-    //! Handler for definitions check box state changes.
-    void onDefinitionChanged(bool checked);
-
 private:
 	//! No copying
 	FirmnessGroup(const FirmnessGroup& other);
@@ -79,9 +76,6 @@ private:
 
 	//! Check box to select fixed in/out of search results.
 	QCheckBox fixedBox_;
-
-    //! Check box to select definitions in/out of search results.
-    QCheckBox definitionsBox_;
 
 	//! Contains the current re-usability settings.
 	Utils::FirmnessOptions options_;

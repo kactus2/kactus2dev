@@ -33,7 +33,6 @@ namespace KactusColors
     QColor const DRAFT_COMPONENT = QColor(217, 217, 217);
     QColor const HW_BUS_COMPONENT = QColor(0xce,0xdf,0xff);
     QColor const HW_COMPONENT = QColor(0xa5,0xc3,0xef);
-    QColor const HW_DEFINITIONS = QColor("NavajoWhite");
     QColor const SW_COMPONENT = QColor(0xc5,0xff, 0xab);
 
     //! Colors used for memory/address sections in the memory designer.
