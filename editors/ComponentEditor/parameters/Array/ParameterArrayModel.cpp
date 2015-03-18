@@ -123,7 +123,14 @@ QVariant ParameterArrayModel::data(const QModelIndex &index, int role) const
     {
         if (index.column() == ArrayColumns::VALUE)
         {
-            return formattedValueFor(valueForIndex(index).toString());
+            if (!selectedChoice_->getName().isEmpty())
+            {
+                return expressionOrValueForIndex(index);
+            }
+            else
+            {
+                return formattedValueFor(valueForIndex(index).toString());
+            }
         }
         else
         {

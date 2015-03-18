@@ -75,6 +75,15 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
     }
     else if (role == Qt::ToolTipRole)
     {
+        if (index.column() == valueColumn() && !index.sibling(index.row(), choiceColumn()).data().toString().isEmpty())
+        {
+            QString choiceText = index.sibling(index.row(), choiceColumn()).data(Qt::DisplayRole).toString();
+            if (!choiceText.isEmpty())
+            {
+                return expressionOrValueForIndex(index);
+            }
+        }
+
         if (index.column() == valueColumn() ||index.column() == bitWidthColumn() ||
             index.column() == arraySizeColumn() || index.column() == arrayOffsetColumn())
         {
@@ -281,7 +290,14 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
         }
         else if (index.column() == valueIdColumn())
         {
-            parameter->setValueId(value.toString());
+            if (parameterFinder_->hasId(value.toString()))
+            {
+                return false;
+            }
+            else
+            {
+                parameter->setValueId(value.toString());
+            }
         }
         else
         {
