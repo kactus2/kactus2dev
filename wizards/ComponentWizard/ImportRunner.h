@@ -14,7 +14,7 @@
 
 #include <Plugins/PluginSystem/PluginManager.h>
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 
 #include <QObject>
 #include <QSharedPointer>
@@ -40,7 +40,7 @@ public:
 	 *      @param [in] parameterFinder     Pointer to the parameter finder.
 	 *      @param [in] parent              Pointer to the owner of this runner.
 	 */
-	ImportRunner(QSharedPointer<ParameterFinder> parameterFinder, QObject* parent);
+	ImportRunner(QSharedPointer<ComponentParameterFinder> parameterFinder, QObject* parent);
 
 	//! The destructor.
 	~ImportRunner();
@@ -163,7 +163,8 @@ private:
     QList<ImportPlugin*> ImportPlugins_;
 
     //! The parameter finder.
-    QSharedPointer<ParameterFinder> parameterFinder_;
+    //QSharedPointer<ParameterFinder> parameterFinder_;
+    QSharedPointer <ComponentParameterFinder> parameterFinder_;
 };
 
 #endif // IMPORTRUNNER_H

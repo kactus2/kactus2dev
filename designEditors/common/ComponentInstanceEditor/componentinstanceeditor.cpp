@@ -7,7 +7,6 @@
 
 #include "componentinstanceeditor.h"
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 

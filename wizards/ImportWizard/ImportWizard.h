@@ -74,7 +74,7 @@ private:
     QSharedPointer<Component> workingComponent_;
 
     //! Parameter finder, finds the desired parameters.
-    QSharedPointer<ParameterFinder> updatingFinder_;
+    QSharedPointer <ComponentParameterFinder> updatingFinder_;
 
     //! The counter that changes the amount of references to parameters.
     QSharedPointer<ReferenceCounter> referenceCounter_;

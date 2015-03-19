@@ -38,7 +38,7 @@
 // Function: ImportEditor::ImportEditor()
 //-----------------------------------------------------------------------------
 ImportEditor::ImportEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    PluginManager const& pluginMgr, QSharedPointer<ParameterFinder> parameterFinder,
+    PluginManager const& pluginMgr, QSharedPointer <ComponentParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
     QWidget(parent),
     splitter_(Qt::Vertical, this),

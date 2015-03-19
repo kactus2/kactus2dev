@@ -22,7 +22,8 @@
 // Function: ComponentWizardVhdlImportPage::ComponentWizardVhdlImportPage()
 //-----------------------------------------------------------------------------
 ComponentWizardImportPage::ComponentWizardImportPage(QSharedPointer<Component> component, 
-	LibraryInterface* handler, PluginManager const& pluginMgr, QSharedPointer<ParameterFinder> parameterFinder,
+	LibraryInterface* handler, PluginManager const& pluginMgr,
+    QSharedPointer <ComponentParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget* parent)
     : QWizardPage(parent),
       editor_(new ImportEditor(component, handler, pluginMgr, parameterFinder, expressionFormatter, this))

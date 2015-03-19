@@ -14,7 +14,7 @@
 
 #include "ModelParameterEditorAdapter.h"
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <IPXACTmodels/component.h>
@@ -60,7 +60,7 @@ public:
 	ImportEditor(QSharedPointer<Component> component,
         LibraryInterface* handler,
         PluginManager const& pluginMgr,
-        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer <ComponentParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QWidget *parent);
 	

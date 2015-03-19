@@ -45,7 +45,7 @@ public:
     ImportWizardImportPage(QSharedPointer<Component> component,
         LibraryInterface* handler,
         PluginManager const& pluginMgr,
-        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer <ComponentParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QWidget* parent);
 

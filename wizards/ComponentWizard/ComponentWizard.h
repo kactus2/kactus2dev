@@ -87,7 +87,10 @@ private:
     //! The working copy of a component after import.
     QSharedPointer<Component> workingComponent_;
 
-    QSharedPointer<ParameterFinder> parameterFinder_;
+    //! The parameter finder used for finding parameters with parameter ids.
+    QSharedPointer <ComponentParameterFinder> parameterFinder_;
+
+    //! The expression formatter, used for showing the expressions as names instead of ids.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
 
     //! The counter that changes the amount of references to parameters.

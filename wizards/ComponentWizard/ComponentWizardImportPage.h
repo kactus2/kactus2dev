@@ -12,7 +12,7 @@
 #ifndef COMPONENTWIZARDVHDLIMPORTPAGE_H
 #define COMPONENTWIZARDVHDLIMPORTPAGE_H
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <QWizardPage>
@@ -43,7 +43,7 @@ public:
     ComponentWizardImportPage(QSharedPointer<Component> component,
 		 LibraryInterface* handler,
          PluginManager const& pluginMgr,
-         QSharedPointer<ParameterFinder> parameterFinder,
+         QSharedPointer <ComponentParameterFinder> parameterFinder,
          QSharedPointer<ExpressionFormatter> expressionFormatter,
 		 QWidget* parent);
 

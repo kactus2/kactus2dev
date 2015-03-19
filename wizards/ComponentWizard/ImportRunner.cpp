@@ -28,7 +28,7 @@
 //-----------------------------------------------------------------------------
 // Function: ImportRunner::ImportRunner()
 //-----------------------------------------------------------------------------
-ImportRunner::ImportRunner(QSharedPointer<ParameterFinder> parameterFinder, QObject* parent)
+ImportRunner::ImportRunner(QSharedPointer<ComponentParameterFinder> parameterFinder, QObject* parent)
     : QObject(parent), ImportPlugins_(), highlighter_(0), expressionParser_(new NullParser),
     modelParameterVisualizer_(0),
     parameterFinder_(parameterFinder)

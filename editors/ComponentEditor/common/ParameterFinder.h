@@ -76,13 +76,6 @@ public:
      *      @return The number of parameters.
      */
     virtual int getNumberOfParameters() const = 0;
-
-    /*!
-     *  Set a new component for the parameter finder.
-     *
-     *      @param [in] component   The new component for the finder.
-     */
-    virtual void setComponent(QSharedPointer<Component> component) = 0;
 };
 
 #endif // PARAMETERFINDER_H

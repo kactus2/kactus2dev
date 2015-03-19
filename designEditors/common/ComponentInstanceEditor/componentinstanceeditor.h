@@ -10,6 +10,8 @@
 
 #include <editors/ComponentEditor/software/PropertyValueEditor.h>
 
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/nameGroupBox/namegroupbox.h>
 #include <common/GenericEditProvider.h>
@@ -113,10 +115,10 @@ private:
 	GenericEditProvider* editProvider_;
 
     //! The parameter finder for component instances.
-    QSharedPointer<ParameterFinder> instanceFinder_;
+    QSharedPointer<ComponentParameterFinder> instanceFinder_;
 
     //! The parameter finder for component instances.
-    QSharedPointer<ParameterFinder> topFinder_;
+    QSharedPointer<ComponentParameterFinder> topFinder_;
 };
 
 #endif // COMPONENTINSTANCEEDITOR_H

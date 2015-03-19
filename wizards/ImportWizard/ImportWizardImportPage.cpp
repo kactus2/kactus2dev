@@ -18,7 +18,7 @@
 // Function: ImportWizardImportPage::ImportWizardImportPage()
 //-----------------------------------------------------------------------------
 ImportWizardImportPage::ImportWizardImportPage(QSharedPointer<Component> component, LibraryInterface* handler,
-    PluginManager const& pluginMgr, QSharedPointer<ParameterFinder> parameterFinder,
+    PluginManager const& pluginMgr, QSharedPointer <ComponentParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget* parent):
 ComponentWizardImportPage(component, handler, pluginMgr, parameterFinder, expressionFormatter, parent)
 {

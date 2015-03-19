@@ -21,7 +21,7 @@
 #include <editors/ComponentEditor/treeStructure/componenteditorgroupslot.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
 #include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <QSharedPointer>
@@ -255,7 +255,7 @@ private:
 	ComponentEditorGroupSlot visualizerSlot_;
 
     //! Finds the specified parameter inside the component.
-    QSharedPointer<ParameterFinder> parameterFinder_;
+    QSharedPointer<ComponentParameterFinder> parameterFinder_;
 
     //! The counter that increases the amount of references to parameters.
     QSharedPointer<ReferenceCounter> referenceCounter_;
