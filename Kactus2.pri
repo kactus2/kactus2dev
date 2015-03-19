@@ -264,6 +264,10 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/parameters/ParameterDelegate.h \
     ./editors/ComponentEditor/parameters/ParameterEditorHeaderView.h \
     ./editors/ComponentEditor/parameters/parameterseditor.h \
+    ./editors/ComponentEditor/parameters/Array/ArrayColumns.h \
+    ./editors/ComponentEditor/parameters/Array/ArrayDelegate.h \
+    ./editors/ComponentEditor/parameters/Array/ParameterArrayModel.h \
+    ./editors/ComponentEditor/parameters/Array/ArrayView.h \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.h \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.h \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.h \
@@ -558,6 +562,7 @@ HEADERS += ./common/Global.h \
     ./designEditors/common/DesignWidgetFactory.h \
     ./designEditors/common/DesignWidgetFactoryImplementation.h \
     ./designEditors/common/NamelabelWidth.h \
+    ./designEditors/common/TopComponentParameterFinder.h \
     ./designEditors/common/ColumnTypes.h \
     ./designEditors/common/diagramgrid.h \
     ./designEditors/common/DiagramUtil.h \
@@ -603,11 +608,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/parameters/Array/ArrayDelegate.h \
-    ./editors/ComponentEditor/parameters/Array/ParameterArrayModel.h \
-    ./editors/ComponentEditor/parameters/Array/ArrayView.h \
-    ./editors/ComponentEditor/parameters/Array/ArrayColumns.h
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -660,7 +661,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/memoryMapSelector/memorymapselector.cpp \
     ./common/widgets/interfaceSelector/interfaceselector.cpp \
     ./common/widgets/LineEditEx/LineEditEx.cpp \
-    ./common/widgets/colorBox/ColorBox.cpp \
     ./common/widgets/SnippetTextEdit/SnippetHighlighter.cpp \
     ./common/widgets/SnippetTextEdit/SnippetTextEdit.cpp \
     ./common/widgets/usageComboBox/usagecombobox.cpp \
@@ -679,6 +679,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.cpp \
     ./common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.cpp \
     ./common/widgets/DirectoryListSelector/DirectoryListSelector.cpp \
+    ./common/widgets/colorBox/ColorBox.cpp \
     ./common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
     ./common/graphicsItems/ConnectionEndpoint.cpp \
@@ -897,11 +898,13 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.cpp \
     ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
-    ./editors/ComponentEditor/parameters/Array/ParameterArrayModel.cpp \
     ./editors/ComponentEditor/parameters/ParameterDelegate.cpp \
     ./editors/ComponentEditor/parameters/ParameterEditorHeaderView.cpp \
     ./editors/ComponentEditor/parameters/parameterseditor.cpp \
     ./editors/ComponentEditor/parameters/parametersmodel.cpp \
+    ./editors/ComponentEditor/parameters/Array/ArrayDelegate.cpp \
+    ./editors/ComponentEditor/parameters/Array/ArrayView.cpp \
+    ./editors/ComponentEditor/parameters/Array/ParameterArrayModel.cpp \
     ./editors/ComponentEditor/ports/portsdelegate.cpp \
     ./editors/ComponentEditor/ports/portseditor.cpp \
     ./editors/ComponentEditor/ports/portsmodel.cpp \
@@ -1116,6 +1119,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/common/DesignWidget.cpp \
     ./designEditors/common/DesignWidgetFactoryImplementation.cpp \
     ./designEditors/common/NamelabelWidth.cpp \
+    ./designEditors/common/TopComponentParameterFinder.cpp \
     ./designEditors/common/ComponentInstanceEditor/componentinstanceeditor.cpp \
     ./designEditors/common/ComponentInstanceEditor/configurableelementdelegate.cpp \
     ./designEditors/common/ComponentInstanceEditor/configurableelementeditor.cpp \
@@ -1153,7 +1157,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./editors/ComponentEditor/parameters/Array/ArrayDelegate.cpp \
-    ./editors/ComponentEditor/parameters/Array/ArrayView.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
 RESOURCES += kactus.qrc

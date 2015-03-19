@@ -21,16 +21,18 @@
 #include <IPXACTmodels/SWView.h>
 #include <IPXACTmodels/SystemView.h>
 
+#include <QApplication>
+#include <QCoreApplication>
+#include <QFileInfo>
+#include <QFormLayout>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <QFormLayout>
-#include <QStringList>
 #include <QMessageBox>
-#include <QFileInfo>
-#include <QCoreApplication>
+#include <QStringList>
 
-#include <QDebug>
-
+//-----------------------------------------------------------------------------
+// Function: ConfigurationEditor::ConfigurationEditor()
+//-----------------------------------------------------------------------------
 ConfigurationEditor::ConfigurationEditor(LibraryInterface* handler, 
 										 QWidget *parent):
 QWidget(parent),
@@ -40,17 +42,25 @@ removeButton_(tr("Remove\nconfiguration"), this),
 configurationSelector_(this),
 activeViewEditor_(this),
 component_(),
-designWidget_(NULL) {
-
+designWidget_(NULL)
+{
 	setuplayout();
 	setupConnections();
 	clear();
 }
 
-ConfigurationEditor::~ConfigurationEditor() {
+//-----------------------------------------------------------------------------
+// Function: ConfigurationEditor::~ConfigurationEditor()
+//-----------------------------------------------------------------------------
+ConfigurationEditor::~ConfigurationEditor()
+{
 }
 
-void ConfigurationEditor::setuplayout() {
+//-----------------------------------------------------------------------------
+// Function: ConfigurationEditor::setuplayout()
+//-----------------------------------------------------------------------------
+void ConfigurationEditor::setuplayout()
+{
 	QHBoxLayout* buttonLayout = new QHBoxLayout();
 	buttonLayout->addWidget(&addNewButton_);
 	buttonLayout->addWidget(&removeButton_);
@@ -64,26 +74,39 @@ void ConfigurationEditor::setuplayout() {
 	topLayout->addWidget(&activeViewEditor_);
 }
 
-void ConfigurationEditor::setupConnections() {
+//-----------------------------------------------------------------------------
+// Function: ConfigurationEditor::setupConnections()
+//-----------------------------------------------------------------------------
+void ConfigurationEditor::setupConnections()
+{
+	connect(&addNewButton_, SIGNAL(clicked(bool)), this, SLOT(onAdd()), Qt::UniqueConnection);
+	connect(&removeButton_, SIGNAL(clicked(bool)), this, SLOT(onRemove()), Qt::UniqueConnection);
 
-	connect(&addNewButton_, SIGNAL(clicked(bool)),
-		this, SLOT(onAdd()), Qt::UniqueConnection);
-	connect(&removeButton_, SIGNAL(clicked(bool)),
-		this, SLOT(onRemove()), Qt::UniqueConnection);
-	connect(&configurationSelector_, SIGNAL(currentIndexChanged(const QString&)),
-		this, SLOT(onConfigurationChanged(const QString&)), Qt::UniqueConnection);
+    connect(&configurationSelector_, SIGNAL(currentIndexChanged(QString const&)),
+        this, SIGNAL(configurationChanged(QString const&)), Qt::UniqueConnection);
+	connect(&configurationSelector_, SIGNAL(currentIndexChanged(QString const&)),
+		this, SLOT(onConfigurationChanged(QString const&)), Qt::UniqueConnection);
 }
 
-void ConfigurationEditor::onAdd() {
-
+//-----------------------------------------------------------------------------
+// Function: ConfigurationEditor::onAdd()
+//-----------------------------------------------------------------------------
+void ConfigurationEditor::onAdd()
+{
 	askSave();
 	
+    const KactusAttribute::Implementation designImplementation = designWidget_->getImplementation();
+
 	// create dialog to input the settings for the new configuration
-	CreateConfigurationDialog dialog(handler_, component_, designWidget_->getImplementation(), this);
-	// if user cancels the dialog
-	if (dialog.exec() == QDialog::Rejected) {
+	CreateConfigurationDialog dialog(handler_, component_, designImplementation, this);
+	
+    // if user cancels the dialog
+	if (dialog.exec() == QDialog::Rejected)
+    {
 		return;
 	}
+
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	// get the info from the dialog
 	QString viewName = dialog.getConfigurationName();
@@ -125,45 +148,36 @@ void ConfigurationEditor::onAdd() {
 				 }
 	}
 
-	handler_->writeModelToFile(dirPath, desConf);
+    handler_->writeModelToFile(dirPath, desConf);
 
     // create new view for the component and set it to reference to the configuration
-    switch (designWidget_->getImplementation())
+    if (designImplementation == KactusAttribute::HW )
     {
-    case KactusAttribute::HW:
+        View* view = component_->createView();
+        view->setName(viewName);
+        // if user specified an implementation reference
+        if (!implementationRef.isEmpty())
         {
-	        View* view = component_->createView();
-	        view->setName(viewName);
-	        // if user specified an implementation reference
-	        if (!implementationRef.isEmpty()) {
-		        view->setTopLevelView(implementationRef);
-	        }
-	        view->setHierarchyRef(configVLNV);
-	        view->addEnvIdentifier(QString(""));
-            break;
+            view->setTopLevelView(implementationRef);
         }
-
-    case KactusAttribute::SW:
-        {
-            SWView* view = component_->createSWView();
-            view->setName(viewName);
-            view->setHierarchyRef(configVLNV);
-            break;
-        }
-
-    case KactusAttribute::SYSTEM:
-        {
-            SystemView* view = component_->createSystemView();
-            view->setName(viewName);
-            view->setHierarchyRef(configVLNV);
-            break;
-        }
-
-    default:
-        {
-            Q_ASSERT(false);
-            break;
-        }
+        view->setHierarchyRef(configVLNV);
+        view->addEnvIdentifier(QString(""));
+    }
+    else if (designImplementation == KactusAttribute::SW)
+    {
+        SWView* view = component_->createSWView();
+        view->setName(viewName);
+        view->setHierarchyRef(configVLNV);
+    }
+    else if (designImplementation == KactusAttribute::SYSTEM)
+    {
+        SystemView* view = component_->createSystemView();
+        view->setName(viewName);
+        view->setHierarchyRef(configVLNV);
+    }
+    else
+    {
+        Q_ASSERT(false);
     }
 
 	handler_->writeModelToFile(component_);
@@ -179,9 +193,15 @@ void ConfigurationEditor::onAdd() {
 
 	// now theres at least two configurations so one of them can be removed.
 	removeButton_.setEnabled(true);
+
+    QApplication::restoreOverrideCursor();
 }
 
-void ConfigurationEditor::onRemove() {
+//-----------------------------------------------------------------------------
+// Function: ConfigurationEditor::onRemove()
+//-----------------------------------------------------------------------------
+void ConfigurationEditor::onRemove()
+{
 	// there has to be at least two views to remove one
 	Q_ASSERT(configurationSelector_.count() > 1);
 
@@ -193,8 +213,10 @@ void ConfigurationEditor::onRemove() {
 		QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
 
 	if (answer == QMessageBox::Cancel)
+    {
 		return;
-	
+    }
+
 	// disconnect the signals from selector
 	configurationSelector_.disconnect(this);
 
@@ -208,40 +230,35 @@ void ConfigurationEditor::onRemove() {
 	// find the vlnvs of the objects to remove
 	VLNV configVLNV;
 
-    switch (designWidget_->getImplementation())
+    const KactusAttribute::Implementation designImplementation = designWidget_->getImplementation();
+    if (designImplementation == KactusAttribute::HW)
     {
-    case KactusAttribute::HW:
-        {
-            configVLNV = component_->findView(viewToRemove)->getHierarchyRef();
-            break;
-        }
-
-    case KactusAttribute::SW:
-        {
-            configVLNV = component_->findSWView(viewToRemove)->getHierarchyRef();
-            break;
-        }
-
-    case KactusAttribute::SYSTEM:
-        {
-            configVLNV = component_->findSystemView(viewToRemove)->getHierarchyRef();
-            break;
-        }
-
-    default:
-        {
-            Q_ASSERT(false);
-            break;
-        }
+        configVLNV = component_->findView(viewToRemove)->getHierarchyRef();
     }
+    else if (designImplementation == KactusAttribute::SW)
+    {
+        configVLNV = component_->findSWView(viewToRemove)->getHierarchyRef();
+    }
+
+    else if (designImplementation ==  KactusAttribute::SYSTEM)
+    {
+        configVLNV = component_->findSystemView(viewToRemove)->getHierarchyRef();
+    }
+    else
+    {
+        Q_ASSERT(false);
+    }
+    
 
 	VLNV designVLNV;
 	QSharedPointer<LibraryComponent> libComp = handler_->getModel(configVLNV);
-	if (handler_->getDocumentType(configVLNV) == VLNV::DESIGNCONFIGURATION) {
+	if (handler_->getDocumentType(configVLNV) == VLNV::DESIGNCONFIGURATION)
+    {
 		QSharedPointer<DesignConfiguration> desConf = libComp.staticCast<DesignConfiguration>();
 		designVLNV = desConf->getDesignRef();
 	}
-	else if (handler_->getDocumentType(configVLNV) == VLNV::DESIGN) {
+	else if (handler_->getDocumentType(configVLNV) == VLNV::DESIGN)
+    {
 		designVLNV = configVLNV;
 		configVLNV.clear();
 	}
@@ -250,66 +267,63 @@ void ConfigurationEditor::onRemove() {
 	// remove the view from the component and retrieve the remaining references.
     QList<VLNV> hierRefs;
 
-    switch (designWidget_->getImplementation())
+    if (designImplementation == KactusAttribute::HW)
     {
-    case KactusAttribute::HW:
-        {
-            component_->removeView(viewToRemove);
-            hierRefs = component_->getHierRefs();
-            break;
-        }
-
-    case KactusAttribute::SW:
-        {
-            component_->removeSWView(viewToRemove);
-            hierRefs = component_->getHierSWRefs();
-            break;
-        }
-
-    case KactusAttribute::SYSTEM:
-        {
-            component_->removeSystemView(viewToRemove);
-            hierRefs = component_->getHierSystemRefs();
-            break;
-        }
-
-    default:
-        {
-            Q_ASSERT(false);
-            break;
-        }
+        component_->removeView(viewToRemove);
+        hierRefs = component_->getHierRefs();
     }
-	
+    else if (designImplementation == KactusAttribute::SW)
+    {
+        component_->removeSWView(viewToRemove);
+        hierRefs = component_->getHierSWRefs();
+    }
+    else if (designImplementation == KactusAttribute::SYSTEM)
+    {
+        component_->removeSystemView(viewToRemove);
+        hierRefs = component_->getHierSystemRefs();
+    }
+    else
+    {
+        Q_ASSERT(false);
+    }
+
 	// if config vlnv is still valid then it can be removed 
 	bool removeConfig = configVLNV.isValid();
 	bool removeDesign = true;
 
-	foreach (VLNV ref, hierRefs) {
-		
+	foreach (VLNV ref, hierRefs)
+    {
 		// if theres still a reference to the configuration don't remove anything
-		if (ref == configVLNV) {
+		if (ref == configVLNV)
+        {
 			removeConfig = false;
 			removeDesign = false;
 			break;
 		}
 
 		// if theres reference to design then don't remove the design
-		else if (ref == designVLNV) {
+		else if (ref == designVLNV)
+        {
 			removeDesign = false;
 		}
 
 		// if one of the remaining configurations references to the design
 		libComp = handler_->getModel(ref);
 		QSharedPointer<DesignConfiguration> desConf = libComp.dynamicCast<DesignConfiguration>();
-		if (desConf && desConf->getDesignRef() == designVLNV) {
+		if (desConf && desConf->getDesignRef() == designVLNV)
+        {
 			removeDesign = false;
 		}
 	}
 
 	if (removeConfig)
+    {
 		handler_->removeObject(configVLNV);
-	if (removeDesign)
-		handler_->removeObject(designVLNV);
+    }
+    if (removeDesign)
+	{
+        handler_->removeObject(designVLNV);
+    }
 
 	// save the component 
 	handler_->writeModelToFile(component_);
@@ -319,51 +333,50 @@ void ConfigurationEditor::onRemove() {
 	setConfiguration(designWidget_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: ConfigurationEditor::setConfiguration()
+//-----------------------------------------------------------------------------
 void ConfigurationEditor::setConfiguration(DesignWidget* designWidget)
 {
-
 	// if there was a previous design being displayed.
 	if (designWidget_)
+    {
 		designWidget_->disconnect(this);
+    }
 
 	// connect the new design.
 	designWidget_ = designWidget;
-	connect(designWidget_, SIGNAL(refreshed()),
-		this, SLOT(onRefresh()), Qt::UniqueConnection);
-	connect(&activeViewEditor_, SIGNAL(contentChanged()),
-		designWidget_, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(designWidget_, SIGNAL(refreshed()),	this, SLOT(onRefresh()), Qt::UniqueConnection);
+	connect(&activeViewEditor_, SIGNAL(contentChanged()), 
+        designWidget_, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	addNewButton_.setDisabled(designWidget_->isProtected());
 	removeButton_.setDisabled(designWidget_->isProtected());
 	configurationSelector_.setEnabled(true);
 
 	// get the component being edited
-	component_ = designWidget->getEditedComponent();
+    component_ = designWidget->getEditedComponent();
 
-	// get the names of the hierarchical views.
-	QStringList hierViewNames;
-    
-    switch (designWidget->getImplementation()) {
-    case KactusAttribute::HW: {
-            hierViewNames = component_->getHierViews();
-            break;
-								  }
+    // get the names of the hierarchical views.
+    QStringList hierViewNames;
 
-    case KactusAttribute::SW: {
-            hierViewNames = component_->getSWViewNames();
-            break;
-								  }
+    const KactusAttribute::Implementation designImplementation = designWidget->getImplementation();
+    if (designImplementation == KactusAttribute::HW)
+    {
+        hierViewNames = component_->getHierViews();
+    }
+    else if (designImplementation == KactusAttribute::SW)
+    {
+        hierViewNames = component_->getSWViewNames();
+    }
 
-    case KactusAttribute::SYSTEM: {
-            hierViewNames = component_->getSystemViewNames();
-			break;
-								   }
-
-    default:
-        {
-            Q_ASSERT(false);
-            break;
-        }
+    else if (designImplementation == KactusAttribute::SYSTEM)
+    {
+        hierViewNames = component_->getSystemViewNames();
+    }
+    else
+    {
+        Q_ASSERT(false);
     }
 
 	// the vlnv of the design used
@@ -371,46 +384,40 @@ void ConfigurationEditor::setConfiguration(DesignWidget* designWidget)
 	
 	// add the views that use the same design
 	QStringList viewsToAdd;
-	foreach (QString viewName, hierViewNames) {
-
+	foreach (QString viewName, hierViewNames)
+    {
 		// the vlnv that the component references
 		VLNV ref;
-		switch (designWidget->getImplementation()) {
-        case KactusAttribute::HW: {
-				ref = component_->getHierRef(viewName);
-				break;
-								  }
+        if (designImplementation == KactusAttribute::HW)
+        {
+            ref = component_->getHierRef(viewName);
+        }
+        else if (designImplementation == KactusAttribute::SW)
+        {
+            ref = component_->getHierSWRef(viewName);
+        }
 
-        case KactusAttribute::SW: {
-				ref = component_->getHierSWRef(viewName);
-				break;
-								  }
-
-        case KactusAttribute::SYSTEM: {
-				ref = component_->getHierSystemRef(viewName);
-				break;
-								   }
-
-        default:
-            {
-                Q_ASSERT(false);
-                break;
-            }
-		}
+        else if (designImplementation ==  KactusAttribute::SYSTEM)
+        {
+            ref = component_->getHierSystemRef(viewName);
+        }
+        else
+        {
+            Q_ASSERT(false);
+        }
 
 		// the VLNV for the design used by the view
 		VLNV referencedDesign = handler_->getDesignVLNV(ref);
 
-		if (referencedDesign == designVLNV) {
+		if (referencedDesign == designVLNV)
+        {
 			// add view name to the list of configurations for the same design
 			viewsToAdd.append(viewName);
 		}
 	}
 
 	// if theres only one configuration then it can't be removed.
-	if (viewsToAdd.size() < 2) {
-		removeButton_.setDisabled(true);
-	}
+    removeButton_.setDisabled(viewsToAdd.size() < 2);
 
 	// ask the active view name.
 	QString activeView = designWidget->getOpenViewName();
@@ -425,8 +432,10 @@ void ConfigurationEditor::setConfiguration(DesignWidget* designWidget)
 	configurationSelector_.setCurrentIndex(activeIndex);
 
 	// reconnect the signal
-	connect(&configurationSelector_, SIGNAL(currentIndexChanged(const QString&)),
-		this, SLOT(onConfigurationChanged(const QString&)), Qt::UniqueConnection);
+    connect(&configurationSelector_, SIGNAL(currentIndexChanged(QString const&)),
+        this, SIGNAL(configurationChanged(QString const&)), Qt::UniqueConnection);
+	connect(&configurationSelector_, SIGNAL(currentIndexChanged(QString const&)),
+		this, SLOT(onConfigurationChanged(QString const&)), Qt::UniqueConnection);
 
 	activeViewEditor_.setDesign(designWidget);
 
@@ -434,9 +443,13 @@ void ConfigurationEditor::setConfiguration(DesignWidget* designWidget)
 	parentWidget()->raise();
 }
 
-void ConfigurationEditor::clear() {
-
-	if (designWidget_) {
+//-----------------------------------------------------------------------------
+// Function: ConfigurationEditor::clear()
+//-----------------------------------------------------------------------------
+void ConfigurationEditor::clear()
+{
+	if (designWidget_)
+    {
 		designWidget_->disconnect(this);
 		designWidget_ = 0;
 	}
@@ -450,16 +463,23 @@ void ConfigurationEditor::clear() {
 	activeViewEditor_.clear();
 }
 
-void ConfigurationEditor::onRefresh() {
+//-----------------------------------------------------------------------------
+// Function: ConfigurationEditor::onRefresh()
+//-----------------------------------------------------------------------------
+void ConfigurationEditor::onRefresh()
+{
 	setConfiguration(designWidget_);
 }
 
-void ConfigurationEditor::onConfigurationChanged( const QString& newConfigName ) {
-
+//-----------------------------------------------------------------------------
+// Function: ConfigurationEditor::onConfigurationChanged()
+//-----------------------------------------------------------------------------
+void ConfigurationEditor::onConfigurationChanged(QString const& newConfigName)
+{
 	askSave();
 
-	if (designWidget_) {
-
+	if (designWidget_)
+    {
 		// ask if previous configuration was locked
 		bool wasLocked = designWidget_->isProtected();
 
@@ -471,32 +491,36 @@ void ConfigurationEditor::onConfigurationChanged( const QString& newConfigName )
 	}
 }
 
-void ConfigurationEditor::askSave() {
+//-----------------------------------------------------------------------------
+// Function: ConfigurationEditor::askSave()
+//-----------------------------------------------------------------------------
+void ConfigurationEditor::askSave()
+{
 	// if the current configuration is modified
-	if (designWidget_ && designWidget_->isModified()) {
-
+	if (designWidget_ && designWidget_->isModified())
+    {
 		// ask user if he wants to save the changes
 		QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-			"Do you want to save changes to " + designWidget_->getDocumentName() + 
-			"?",
+			"Do you want to save changes to " + designWidget_->getDocumentName() + "?",
 			QMessageBox::Yes | QMessageBox::No, this);
 
-		int ret = msgBox.exec();
 		// if user wanted to save
-		if (ret == QMessageBox::Yes)
+		if (msgBox.exec() == QMessageBox::Yes)
+        {
 			designWidget_->save();
+        }
 	}
-
 }
 
-void ConfigurationEditor::setLocked( bool locked ) {
+//-----------------------------------------------------------------------------
+// Function: ConfigurationEditor::setLocked()
+//-----------------------------------------------------------------------------
+void ConfigurationEditor::setLocked(bool locked)
+{
 	addNewButton_.setDisabled(locked);
 
 	// if theres only one configuration it can't be removed
-	if (configurationSelector_.count() < 2)
-		removeButton_.setDisabled(true);
-	else
-		removeButton_.setDisabled(locked);
+    removeButton_.setDisabled(configurationSelector_.count() < 2);
 
 	activeViewEditor_.setLocked(locked);
 }

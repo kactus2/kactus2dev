@@ -24,7 +24,8 @@
 
 class ComponentItem;
 class ParameterFinder;
-/*! \brief Editor to edit the details of a component instance within a design.
+class TopComponentParameterFinder;
+/*! Editor to edit the details of a component instance within a design.
  *
  */
 class ComponentInstanceEditor : public QWidget {
@@ -32,46 +33,64 @@ class ComponentInstanceEditor : public QWidget {
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param parent Pointer to the owner of this widget.
+	 *      @param [in] parent Pointer to the owner of this widget.
 	 *
 	*/
 	ComponentInstanceEditor(QWidget *parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ComponentInstanceEditor();
 
-	/*! \brief Set the component to be edited.
+	/*! Set the component to be edited.
 	 *
-	 * \param component Pointer to the component instance being edited.
-	 *
+	 *      @param [in] component Pointer to the component instance being edited.
 	*/
     void setComponentInstance(ComponentItem* component);
 
-    void setTopComponent(QSharedPointer<Component> topComponent);
+    /*!
+     *  Sets the top component for the instances.
+     *
+     *      @param [in] topComponent   The top component.
+     */
+    void setContext(QSharedPointer<Component> topComponent, GenericEditProvider* editProvider);
+
+    /*!
+     *  Sets the protection state for the instance editor.
+     *
+     *      @param [in] locked   Locks/unlock the editor.
+     */
+    void setProtection(bool locked);
 
 public slots:
+        
+    /*!
+     *  Sets the active view to use for the top component.
+     *
+     *      @param [in] activeView   The name of the active view.
+     */
+    void setTopComponentActiveView(QString const& activeView);
 
-	/*! \brief Clear the editor so no instance details are shown
+	/*! Clear the editor so no instance details are shown
 	 *
 	*/
 	void clear();
 
 signals:
 
-	//! \brief Emitted when contents of the editor changes.
+	//! Emitted when contents of the editor changes.
 	void contentChanged();
 
 private slots:
 
-	//! \brief Handler when user changes the name of the component instance.
+	//! Handler when user changes the name of the component instance.
 	void onNameChanged(QString const& newName);
 
-	//! \brief Handler when user changes the display name of the component instance.
+	//! Handler when user changes the display name of the component instance.
 	void onDisplayNameChanged(QString const& newDisplayName);
 
-	//! \brief Handler when user changes the description of the component instance.
+	//! Handler when user changes the description of the component instance.
 	void onDescriptionChanged(QString const& newDescription);
 
     //! Handler when the user changes any property values.
@@ -84,22 +103,22 @@ private slots:
     void updateFileSetRef(QString const& fileSetRef);
 
 private:
-	//! \brief No copying
+	//! No copying
 	ComponentInstanceEditor(const ComponentInstanceEditor& other);
 
-	//! \brief No assignment
+	//! No assignment
 	ComponentInstanceEditor& operator=(const ComponentInstanceEditor& other);
-
-	//! \brief Pointer to the component instance being edited.
+    
+	//! Pointer to the component instance being edited.
 	ComponentItem* component_;
 
-	//! \brief The widget to display the vlnv of the component instance
+	//! The widget to display the vlnv of the component instance
 	VLNVDisplayer* vlnvDisplayer_;
 
-	//! \brief The widget to set the instance name, display name and description.
+	//! The widget to set the instance name, display name and description.
 	NameGroupBox* nameGroup_;
 
-	//! \brief The widget to set the configurable elements of a component instance.
+	//! The widget to set the configurable elements of a component instance.
 	ConfigurableElementEditor* configurableElements_;
 
     //! SW group.
@@ -111,14 +130,17 @@ private:
     //! Property value editor for SW properties.
     PropertyValueEditor* propertyValueEditor_;
 
-	//! \brief Pointer to the generic edit provider that manages the undo/redo stack.
+	//! Pointer to the generic edit provider that manages the undo/redo stack.
 	GenericEditProvider* editProvider_;
 
     //! The parameter finder for component instances.
     QSharedPointer<ComponentParameterFinder> instanceFinder_;
 
     //! The parameter finder for component instances.
-    QSharedPointer<ComponentParameterFinder> topFinder_;
+    QSharedPointer<TopComponentParameterFinder> topFinder_;
+
+    //! The current top component.
+    QSharedPointer<Component> topComponent_;
 };
 
 #endif // COMPONENTINSTANCEEDITOR_H

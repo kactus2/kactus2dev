@@ -1197,8 +1197,9 @@ void MainWindow::setupConfigurationEditor() {
 	configurationDock_->setWidget(configurationEditor_);
 	addDockWidget(Qt::RightDockWidgetArea, configurationDock_);
 
-	connect(configurationEditor_, SIGNAL(contentChanged()),
-		    this, SLOT(onDesignChanged()), Qt::UniqueConnection);
+	connect(configurationEditor_, SIGNAL(contentChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
+    connect(configurationEditor_, SIGNAL(configurationChanged(QString const&)),
+        instanceEditor_, SLOT(setTopComponentActiveView(QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -1215,8 +1216,7 @@ void MainWindow::setupSystemDetailsEditor()
     systemDetailsDock_->setWidget(systemDetailsEditor_);
     addDockWidget(Qt::RightDockWidgetArea, systemDetailsDock_);
 
-    connect(systemDetailsEditor_, SIGNAL(contentChanged()),
-            this, SLOT(onDesignChanged()), Qt::UniqueConnection);
+    connect(systemDetailsEditor_, SIGNAL(contentChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -1233,8 +1233,7 @@ void MainWindow::setupInstanceEditor()
 	instanceDock_->setWidget(instanceEditor_);
 	addDockWidget(Qt::RightDockWidgetArea, instanceDock_);
 
-	connect(instanceEditor_, SIGNAL(contentChanged()),
-		this, SLOT(onDesignChanged()), Qt::UniqueConnection);
+	connect(instanceEditor_, SIGNAL(contentChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -2016,7 +2015,9 @@ void MainWindow::onDocumentChanged(int index)
         QSharedPointer<Component> topComponent = topItem.dynamicCast<Component>();
         if (topComponent)
         {
-            instanceEditor_->setTopComponent(topComponent);
+            instanceEditor_->setContext(topComponent, &designwidget->getDiagram()->getEditProvider());
+            instanceEditor_->setTopComponentActiveView(designwidget->getOpenViewName());
+            instanceEditor_->setProtection(designwidget->isProtected());
         }
 
         if (doc->getSupportedWindows() & TabDocument::SYSTEM_DETAILS_WINDOW)
@@ -3838,6 +3839,7 @@ void MainWindow::changeProtection(bool locked)
 	if (designwidget) {
 		// update the editors to match the locked state
 		configurationEditor_->setLocked(locked);
+        instanceEditor_->setProtection(locked);
 
         if (designwidget->getSupportedWindows() & TabDocument::SYSTEM_DETAILS_WINDOW) {
             systemDetailsEditor_->setLocked(locked);

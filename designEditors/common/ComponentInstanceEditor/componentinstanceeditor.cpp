@@ -9,9 +9,9 @@
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <designEditors/common/TopComponentParameterFinder.h>
 
 #include <designEditors/HWDesign/HWComponentItem.h>
-#include <designEditors/HWDesign/HWDesignDiagram.h>
 #include <designEditors/HWDesign/HWDesignWidget.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
 #include <designEditors/SystemDesign/SystemChangeCommands.h>
@@ -40,7 +40,7 @@ ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent)
       propertyValueEditor_(new PropertyValueEditor(this)),
       editProvider_(0),
       instanceFinder_(new ComponentParameterFinder(QSharedPointer<Component>(0))),
-      topFinder_(new ComponentParameterFinder(QSharedPointer<Component>(0)))
+      topFinder_(new TopComponentParameterFinder(QSharedPointer<Component>(0)))
 {
     QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
     multiFinder->addFinder(instanceFinder_);
@@ -115,13 +115,6 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component)
 	component_ = component;
     instanceFinder_->setComponent(component->componentModel());
 
-    bool locked = false;
-
-	// Get the edit provider that manages the undo/redo stack.
-    DesignDiagram* diagram = static_cast<DesignDiagram*>(component->scene());
-    editProvider_ = &diagram->getEditProvider();
-    locked = diagram->isProtected();
-    
 	// set the vlnv of the component to be displayed
 	vlnvDisplayer_->setVLNV(*component->componentModel()->getVlnv(), true);
 	vlnvDisplayer_->show();
@@ -129,7 +122,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component)
 	nameGroup_->setName(component->name());
 	nameGroup_->setDisplayName(component->displayName());
 	nameGroup_->setDescription(component->description());
-    nameGroup_->setEnabled(!locked);
+
 	nameGroup_->show();
 
     // Show the file set reference if the component is software.
@@ -139,8 +132,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component)
 
         fileSetRefCombo_->clear();
         fileSetRefCombo_->addItem("");
-        fileSetRefCombo_->addItems(diagram->getEditedComponent()->getFileSetNames());
-        fileSetRefCombo_->setEnabled(!locked);
+        fileSetRefCombo_->addItems(topComponent_->getFileSetNames());
 
         int index = fileSetRefCombo_->findText(swComponent->getFileSetRef());
 
@@ -166,9 +158,8 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component)
 
         propertyValueEditor_->setData(swComponent->getPropertyValues());
         propertyValueEditor_->setAllowedProperties(&swComponent->componentModel()->getSWProperties());
-        propertyValueEditor_->setEnabled(!locked);
-        propertyValueEditor_->show();
 
+        propertyValueEditor_->show();
         configurableElements_->hide();
 
         connect(swComponent, SIGNAL(propertyValuesChanged(QMap<QString, QString> const&)),
@@ -180,7 +171,6 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component)
 
         // Show the component's configurable elements in case of HW.
 	    configurableElements_->setComponent(component);
-        configurableElements_->setEnabled(!locked);
 	    configurableElements_->show();
     }
 
@@ -195,18 +185,38 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component)
         this, SLOT(onFileSetRefChanged(QString const&)), Qt::UniqueConnection);
 
 	// if the connected component is destroyed then clear this editor
-	connect(component_, SIGNAL(destroyed(ComponentItem*)),
-		    this, SLOT(clear()), Qt::UniqueConnection);
+	connect(component_, SIGNAL(destroyed(ComponentItem*)), this, SLOT(clear()), Qt::UniqueConnection);
 
 	parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceEditor::setTopComponent()
+// Function: ComponentInstanceEditor::setContext()
 //-----------------------------------------------------------------------------
-void ComponentInstanceEditor::setTopComponent(QSharedPointer<Component> topComponent)
+void ComponentInstanceEditor::setContext(QSharedPointer<Component> topComponent, GenericEditProvider* editProvider)
 {
     topFinder_->setComponent(topComponent);
+    editProvider_ = editProvider;
+    topComponent_ = topComponent;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceEditor::setProtection()
+//-----------------------------------------------------------------------------
+void ComponentInstanceEditor::setProtection(bool locked)
+{
+    nameGroup_->setEnabled(!locked);
+    fileSetRefCombo_->setEnabled(!locked);
+    propertyValueEditor_->setEnabled(!locked);
+    configurableElements_->setEnabled(!locked);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceEditor::setTopComponentActiveView()
+//-----------------------------------------------------------------------------
+void ComponentInstanceEditor::setTopComponentActiveView(QString const& activeView)
+{
+    topFinder_->setActiveView(activeView);
 }
 
 //-----------------------------------------------------------------------------
@@ -234,7 +244,6 @@ void ComponentInstanceEditor::clear()
     propertyValueEditor_->hide();
 	configurableElements_->hide();
 	configurableElements_->clear();
-	editProvider_ = 0;
 
 	parentWidget()->setMaximumHeight(20);
 }

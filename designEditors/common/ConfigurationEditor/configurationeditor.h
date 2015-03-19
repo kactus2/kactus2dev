@@ -21,7 +21,7 @@
 class DesignWidget;
 class LibraryInterface;
 
-/*! \brief Editor to edit the design configurations for component.
+/*! Editor to edit the design configurations for component.
  *
  */
 class ConfigurationEditor : public QWidget {
@@ -29,7 +29,7 @@ class ConfigurationEditor : public QWidget {
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
 	 * \param handler Pointer to the instance that manages the library.
 	 * \param parent Pointer to the owner of this widget.
@@ -37,89 +37,91 @@ public:
 	*/
 	ConfigurationEditor(LibraryInterface* handler, QWidget *parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ConfigurationEditor();
 
-	/*! \brief Set the configuration to be displayed.
+	/*! Set the configuration to be displayed.
 	 *
 	 * \param designWidget Pointer to the design widget used to edit the design.
 	 *
 	*/
     void setConfiguration(DesignWidget* designWidget);
 
-	/*! \brief Clear the contents of this editor.
-	 *
-	*/
+	//! Clear the contents of this editor.
 	void clear();
 
 public slots:
 
-	//! \brief Handler for design widget's refreshed signal.
+	//! Handler for design widget's refreshed signal.
 	void onRefresh();
 
-	//! \brief Set the editor to locked/unlocked mode.
+	//! Set the editor to locked/unlocked mode.
 	void setLocked(bool locked);
 
 signals:
 
-	//! \brief Emitted when the editor changes some value.
+	//! Emitted when the editor changes some value.
 	void contentChanged();
+
+    //! Emitted when the active configuration changes.
+	void configurationChanged(QString const& newConfigName);
 
 private slots:
 
-	//! \brief Handler for add button clicks.
+	//! Handler for add button clicks.
 	void onAdd();
 
-	//! \brief Handler for remove button clicks.
+	//! Handler for remove button clicks.
 	void onRemove();
 
-	/*! \brief Called when user changes the current configuration.
+	/*! Called when user changes the current configuration.
 	 *
 	 * \param newConfigName The name of the new configuration to display.
 	 *
 	*/
-	void onConfigurationChanged(const QString& newConfigName);
+	void onConfigurationChanged(QString const& newConfigName);
 
 private:
-	//! \brief No copying
+	//! No copying
 	ConfigurationEditor(const ConfigurationEditor& other);
 
-	//! \brief No assignment
+	//! No assignment
 	ConfigurationEditor& operator=(const ConfigurationEditor& other);
 
-	//! \brief Set up the layout of this widget
+	//! Set up the layout of this widget
 	void setuplayout();
 
-	//! \brief Set up the signals between widgets.
+	//! Set up the signals between widgets.
 	void setupConnections();
 
-	/*! \brief Ask user if he wants to save the previous configuration is it was modified.
+	/*! Ask user if he wants to save the previous configuration is it was modified.
 	 *
 	*/
 	void askSave();
 
-	//! \brief Pointer to the instance that manages the library.
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+	//! Pointer to the instance that manages the library.
 	LibraryInterface* handler_;
 
-	//! \brief Button to add new configurations to top component.
+	//! Button to add new configurations to top component.
 	QPushButton addNewButton_;
 
-	//! \brief Button to remove the selected configuration from the top component.
+	//! Button to remove the selected configuration from the top component.
 	QPushButton removeButton_;
 
-	//! \brief Combo box to select the current configuration.
+	//! Combo box to select the current configuration.
 	QComboBox configurationSelector_;
 
-	//! \brief Editor to select the active view for each component instance.
+	//! Editor to select the active view for each component instance.
 	ActiveViewEditor activeViewEditor_;
 
-	//! \brief Pointer to the top component being edited.
+	//! Pointer to the top component being edited.
 	QSharedPointer<Component> component_;
 
-	//! \brief List of design configurations the top component contains.
-	//QList<QSharedPointer<DesignConfiguration> > designConfs_;
-
-	//! \brief Pointer to the design widget that contains the design.
+	//! Pointer to the design widget that contains the design.
 	DesignWidget* designWidget_;
 };
 

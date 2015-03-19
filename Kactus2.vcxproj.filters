@@ -2077,9 +2077,6 @@
     <ClCompile Include="GeneratedFiles\moc_documentgenerator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_componentinstanceeditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_configurableelementdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2138,9 +2135,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_activeviewmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_configurationeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="designEditors\SystemDesign\SystemDetailsEditor\ExportSWDialog.cpp">
@@ -3983,6 +3977,15 @@
       <Filter>Source Files\editors\ComponentEditor\parameters\Array</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ArrayView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\TopComponentParameterFinder.cpp">
+      <Filter>Source Files\designEditors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_configurationeditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_componentinstanceeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5842,6 +5845,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\parameters\Array\ArrayColumns.h">
       <Filter>Header Files\editors\ComponentEditor\parameters\Array</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\common\TopComponentParameterFinder.h">
+      <Filter>Header Files\designEditors\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
