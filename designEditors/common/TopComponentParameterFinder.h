@@ -12,7 +12,7 @@
 #ifndef TOPCOMPONENTPARAMETERFINDER_H
 #define TOPCOMPONENTPARAMETERFINDER_H
 
-#include "ParameterFinder.h"
+#include <editors/ComponentEditor/common/ParameterFinder.h>
 
 class Component;
 
