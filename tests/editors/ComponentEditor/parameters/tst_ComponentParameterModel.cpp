@@ -138,7 +138,7 @@ ComponentParameterModel* tst_ComponentParameterModel::make(QSharedPointer<Compon
 {
     QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(component));
 
-    ComponentParameterModel* model = new ComponentParameterModel(this, parameterFinder);
+    ComponentParameterModel* model = new ComponentParameterModel(parameterFinder, this);
     
     QSharedPointer<ExpressionParser> parser(new IPXactSystemVerilogParser(parameterFinder));
     model->setExpressionParser(parser);

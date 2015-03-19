@@ -68,7 +68,7 @@ proxy_(this)
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 
-    ComponentParameterModel* parameterModel = new ComponentParameterModel(this, parameterFinder);
+    ComponentParameterModel* parameterModel = new ComponentParameterModel(parameterFinder, this);
     parameterModel->setExpressionParser(expressionParser);
 
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);

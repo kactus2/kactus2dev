@@ -47,7 +47,7 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
     model_ = new MemoryMapModel(memoryMap, component->getChoices(), expressionParser, parameterFinder,
         expressionFormatter, this);
 
-    ComponentParameterModel* componentParameterModel = new ComponentParameterModel(this, parameterFinder);
+    ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
 
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);

@@ -13,8 +13,6 @@
 
 #include <designEditors/HWDesign/HWComponentItem.h>
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-
 #include <QIcon>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -26,23 +24,21 @@
 //-----------------------------------------------------------------------------
 ConfigurableElementEditor::ConfigurableElementEditor(QSharedPointer<ParameterFinder> parameterFinder, 
                                                      QSharedPointer<ExpressionFormatter> expressionFormatter,
-                                                     QWidget *parent,
-													 const QString& title):
-QGroupBox(title, parent),
+                                                     QSharedPointer<ExpressionParser> expressionParser,
+                                                     QAbstractItemModel* completionModel,
+                                                     QWidget *parent):
+QGroupBox(tr("Configurable element values"), parent),
 view_(this),
 filter_(this),
-componentParameterModel_(new ComponentParameterModel(this, parameterFinder)),
 model_(parameterFinder, expressionFormatter, this)
 {
 	filter_.setSourceModel(&model_);
 	view_.setModel(&filter_);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParameterModel_);
-
-    QSharedPointer <IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
-    componentParameterModel_->setExpressionParser(expressionParser);
     model_.setExpressionParser(expressionParser);
+
+    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
+    parameterCompleter->setModel(completionModel);
 
 	// set options for the view
 	view_.setSortingEnabled(true);

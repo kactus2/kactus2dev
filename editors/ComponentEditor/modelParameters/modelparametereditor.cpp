@@ -42,7 +42,7 @@ proxy_(this)
     model_ = new ModelParameterModel(component->getModelParameters(), component->getChoices(), expressionParser,
         parameterFinder, expressionFormatter, this);
 
-    ComponentParameterModel* componentParametersModel = new ComponentParameterModel(this, parameterFinder);
+    ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
 
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);

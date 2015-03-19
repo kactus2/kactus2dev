@@ -57,7 +57,7 @@ void tst_ParameterCompleter::testNameIsFoundAsCompletion()
 
     QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(targetComponent));
 
-    ComponentParameterModel* model = new ComponentParameterModel(this, parameterFinder);
+    ComponentParameterModel* model = new ComponentParameterModel(parameterFinder, this);
 
     QCompleter* completer = new ParameterCompleter(this);
     completer->setModel(model);

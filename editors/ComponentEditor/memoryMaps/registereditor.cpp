@@ -39,7 +39,7 @@ model_(0)
     model_ = new RegisterTableModel(reg, component->getChoices(), expressionParser, parameterFinder,
         expressionFormatter, this);
 
-    ComponentParameterModel* componentParametersModel = new ComponentParameterModel(this, parameterFinder);
+    ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
 
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);

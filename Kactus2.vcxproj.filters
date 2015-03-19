@@ -3988,6 +3988,12 @@
     <ClCompile Include="GeneratedFiles\moc_componentinstanceeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_DesignCompletionModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\DesignCompletionModel.cpp">
+      <Filter>Source Files\designEditors\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5492,6 +5498,9 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\parameters\Array\ArrayView.h">
       <Filter>Header Files\editors\ComponentEditor\parameters\Array</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\DesignCompletionModel.h">
+      <Filter>Header Files\designEditors\common</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

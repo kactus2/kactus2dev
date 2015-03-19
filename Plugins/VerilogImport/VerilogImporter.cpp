@@ -75,7 +75,7 @@ QString const& VerilogImporter::getVendor() const
 //-----------------------------------------------------------------------------
 QString const& VerilogImporter::getLicence() const
 {
-    static QString licence("GLP2");
+    static QString licence("GPL2");
     return licence;
 }
 

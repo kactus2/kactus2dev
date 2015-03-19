@@ -29,13 +29,13 @@ public:
 	/*!
 	 *  The constructor.
 	 *
+     *      @param [in] parameterFinder     The parameter finder.
 	 *      @param [in] parent              The owner of this model.
-	 *      @param [in] parameterFinder     The parameter finder.
 	 */
-	ComponentParameterModel(QObject *parent, QSharedPointer<ParameterFinder> parameterFinder);
+	ComponentParameterModel(QSharedPointer<ParameterFinder> parameterFinder, QObject *parent);
 
 	//! The destructor.
-	~ComponentParameterModel();
+	virtual ~ComponentParameterModel();
 
     /*!
      *  Finds the number of rows in the model.

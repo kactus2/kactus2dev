@@ -1169,7 +1169,7 @@ ExpressionEditor* tst_ExpressionEditor::createEditorForComponent(QSharedPointer<
 {
     QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(component));
 
-    ComponentParameterModel* parameterModel = new ComponentParameterModel(0, finder);
+    ComponentParameterModel* parameterModel = new ComponentParameterModel(finder, 0);
     parameterModel->setExpressionParser(QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(finder)));
 
     QCompleter* completer = new QCompleter(this);

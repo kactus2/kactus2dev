@@ -9,8 +9,10 @@
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
-#include <designEditors/common/TopComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
+#include <designEditors/common/DesignCompletionModel.h>
+#include <designEditors/common/TopComponentParameterFinder.h>
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/HWDesign/HWDesignWidget.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
@@ -46,8 +48,14 @@ ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent)
     multiFinder->addFinder(instanceFinder_);
     multiFinder->addFinder(topFinder_);
 
-    configurableElements_ = new ConfigurableElementEditor(multiFinder,
-        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(multiFinder)), this);
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(multiFinder));
+
+    DesignCompletionModel* completionModel = new DesignCompletionModel(topFinder_, multiFinder, this); 
+    completionModel->setExpressionParser(expressionParser);
+
+    configurableElements_ = new ConfigurableElementEditor(multiFinder, 
+        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(multiFinder)), expressionParser, 
+        completionModel, this);
 
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
