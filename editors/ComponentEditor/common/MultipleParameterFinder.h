@@ -87,13 +87,6 @@ public:
      */
     virtual int getNumberOfParameters() const;
 
-    /*!
-     *  Set a new component for the parameter finder.
-     *
-     *      @param [in] component   The new component.
-     */
-    virtual void setComponent(QSharedPointer<Component> component);
-
 private:
 
 	//! No copying

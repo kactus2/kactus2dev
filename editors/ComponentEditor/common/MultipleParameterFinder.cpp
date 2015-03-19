@@ -114,11 +114,3 @@ int MultipleParameterFinder::getNumberOfParameters() const
 
     return allParameterIds.size();
 }
-
-//-----------------------------------------------------------------------------
-// Function: MultipleParameterFinder::setComponent()
-//-----------------------------------------------------------------------------
-void MultipleParameterFinder::setComponent(QSharedPointer<Component> component)
-{
-    //?
-}

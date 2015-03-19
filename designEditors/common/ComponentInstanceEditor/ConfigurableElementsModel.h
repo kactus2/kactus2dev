@@ -10,11 +10,13 @@
 
 #include <common/GenericEditProvider.h>
 #include <designEditors/HWDesign/HWComponentItem.h>
-#include <IPXACTmodels/parameter.h>
-#include <IPXACTmodels/modelparameter.h>
+
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
+
+#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/modelparameter.h>
 
 #include <QAbstractTableModel>
 #include <QMap>
@@ -190,51 +192,6 @@ private:
      */
     QVariant valueForIndex(QModelIndex const& index) const;
 
-	//! Struct that contains the name-value pair for configurable element.
-	struct ConfigurableElement {
-
-		//! The name of the configurable element.
-		QString name_;
-
-        //! The unique id of the configurable element
-        QString uuID_;
-
-		//! The value of the configurable element.
-		QString value_;
-
-        //! The default value of the configurable element.
-        QString defaultValue_;
-
-        //! True if item is editable.
-        bool isEditable_;
-
-		/*! \brief Struct constructor
-		 *
-		 * \param name Name of the configurable element
-		 * \param value Value of the configurable element.
-		 *
-		*/
-		ConfigurableElement(const QString& name, const QString& uuID, 
-                            const QString& value, const QString& defaultValue, const bool& isEditable);
-        //ConfigurableElement(const QSharedPointer <Parameter> parameter, const QString& value);
-
-		/*! \brief Constructs struct with empty value
-		 * 
-		 * \param name Name of the configurable element
-		 *
-		*/
-		ConfigurableElement(const QString& name, const QString& value);
-        //ConfigurableElement(const QSharedPointer <Parameter> parameter);
-
-		/*! \brief Operator ==
-		 *
-		 * \param other Reference to the Configurable element to compare to.
-		 *
-		 * \return bool True if the names of the configurable elements match.
-		*/
-		bool operator==(const ConfigurableElement& other) const;
-	};
-
 	//! Save the elements from the table to values_ map.
 	void save();
 
@@ -249,28 +206,20 @@ private:
     void readComponentConfigurableElements();
 
     /*!
-     *  Read the configurable parameters from the component.
+     *  Check if the configurable element is editable.
      *
-     *      @param [in] componentModel      The component pointer.
-     *      @param [in] unEditableResolve   The text for uneditable resolve value.
+     *      @param [in] parameterIndex  The index of the element.
+     *
+     *      @return True, if the element can be edited, false otherwise.
      */
-    void readConfigurableParameters(QSharedPointer <Component> componentModel);
+    bool isParameterEditable(const int& parameterIndex) const;
 
     /*!
-     *  Read the configurable model parameters from the component.
+     *  Set the parameter into the configurable elements.
      *
-     *      @param [in] componentModel      The component pointer.
-     *      @param [in] unEditableResolve   The text for uneditable resolve value.
+     *      @param [in] parameterPointer    The pointer to the parameter to be set to configurable elements.
      */
-    void readConfigurableModelParameters(QSharedPointer <Component> componentModel);
-
-    /*!
-     *  Add parameter to the table, if it has an id.
-     *
-     *      @param [in] parameterPointer        Pointer to the parameter or model parameter.
-     *      @param [in] unEditableResolveValue  The text for uneditable resolve value.
-     */
-    void addParameterWithIDToVisibleElements(QSharedPointer <Parameter> parameterPointer);
+    void setParameterToConfigurableElements(QSharedPointer <Parameter> parameterPointer);
 
 	//! Pointer to the component instance being edited.
 	ComponentItem* component_;
@@ -278,8 +227,8 @@ private:
 	//! Reference to the map containing the actual configurable elements.
 	QMap<QString, QString> currentElementValues_;
 
-	//! The list that is used to display the elements in a table form.
-	QList<ConfigurableElement> visibleConfigurableElements_;
+    //! The list that is used to display the elements in a table form.
+    QList <QSharedPointer <Parameter> > configurableElements_;
 
 	//! Pointer to the generic edit provider that manages the undo/redo stack.
 	GenericEditProvider* editProvider_;

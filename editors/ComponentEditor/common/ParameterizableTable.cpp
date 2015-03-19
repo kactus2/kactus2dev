@@ -163,3 +163,11 @@ void ParameterizableTable::removeReferencesFromSingleExpression(QString const& e
         }
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: ParameterizableTable::getParameterFinder()
+//-----------------------------------------------------------------------------
+QSharedPointer<ParameterFinder> ParameterizableTable::getParameterFinder()
+{
+    return parameterFinder_;
+}

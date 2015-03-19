@@ -150,6 +150,13 @@ protected:
      */
     void removeReferencesFromSingleExpression(QString const& expression) const;
 
+    /*!
+     *  Get the parameter finder.
+     *
+     *      @return The parameter finder used in the table.
+     */
+    QSharedPointer<ParameterFinder> getParameterFinder();
+
 signals:
 
     /*!

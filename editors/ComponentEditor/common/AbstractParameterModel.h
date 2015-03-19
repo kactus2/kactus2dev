@@ -370,9 +370,6 @@ private:
     //! Validator for parameters.
     ParameterValidator2014* validator_;
 
-    //! The parameter finder.
-    QSharedPointer<ParameterFinder> parameterFinder_;
-
     //! Formatter for parameter expressions.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
 };

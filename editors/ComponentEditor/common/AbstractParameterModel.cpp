@@ -33,7 +33,6 @@ AbstractParameterModel::AbstractParameterModel(QSharedPointer<QList<QSharedPoint
 ParameterizableTable(parameterFinder, parent),
 choices_(choices), 
 validator_(new ParameterValidator2014(expressionParser, parameterFinder)),
-parameterFinder_(parameterFinder),
 expressionFormatter_(expressionFormatter)
 {
     setExpressionParser(expressionParser);
@@ -290,7 +289,7 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
         }
         else if (index.column() == valueIdColumn())
         {
-            if (parameterFinder_->hasId(value.toString()))
+            if (getParameterFinder()->hasId(value.toString()))
             {
                 return false;
             }

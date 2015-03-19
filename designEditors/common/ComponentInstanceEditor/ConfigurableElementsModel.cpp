@@ -19,7 +19,7 @@ ConfigurableElementsModel::ConfigurableElementsModel(QSharedPointer<ParameterFin
 ParameterizableTable(parameterFinder, parent),
 component_(0),
 currentElementValues_(),
-visibleConfigurableElements_(),
+configurableElements_(),
 editProvider_(0),
 expressionFormatter_(expressionFormatter)
 {
@@ -79,7 +79,7 @@ void ConfigurableElementsModel::clear()
 	currentElementValues_.clear();
 
 	beginResetModel();
-	visibleConfigurableElements_.clear();
+    configurableElements_.clear();
 	endResetModel();
 }
 
@@ -92,7 +92,7 @@ int ConfigurableElementsModel::rowCount( const QModelIndex& parent /*= QModelInd
     {
         return 0;
     }
-	return visibleConfigurableElements_.size();
+    return configurableElements_.size();
 }
 
 //-----------------------------------------------------------------------------
@@ -113,20 +113,19 @@ int ConfigurableElementsModel::columnCount( const QModelIndex& parent /*= QModel
 //-----------------------------------------------------------------------------
 QVariant ConfigurableElementsModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const 
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= visibleConfigurableElements_.size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= configurableElements_.size())
     {
 		return QVariant();
     }
 
     if (role == Qt::ForegroundRole)
     {
-        if (visibleConfigurableElements_.at(index.row()).defaultValue_.isEmpty())
+        if (configurableElements_.at(index.row())->getValueAttribute("spirit:defaultValue").isEmpty())
         {
             return QColor(Qt::red);
         }
         
-        else if (visibleConfigurableElements_.at(index.row()).isEditable_ &&
-            index.column() == ConfigurableElementsColumns::VALUE)
+        else if (index.column() == ConfigurableElementsColumns::VALUE && isParameterEditable(index.row()))
         {
             return blackForValidOrRedForInvalidIndex(index);
         }
@@ -203,7 +202,7 @@ bool ConfigurableElementsModel::setData( const QModelIndex& index,
 									 const QVariant& value, 
 									 int role /*= Qt::EditRole */ ) 
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= visibleConfigurableElements_.size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= configurableElements_.size())
     {
 		return false;
     }
@@ -212,7 +211,18 @@ bool ConfigurableElementsModel::setData( const QModelIndex& index,
     {
         if (index.column() == ConfigurableElementsColumns::VALUE)
         {
-            visibleConfigurableElements_[index.row()].value_ = value.toString();
+            if (!value.isValid())
+            {
+                configurableElements_.at(index.row())->setValue(configurableElements_.at(index.row())->
+                    getValueAttribute("spirit:defaultValue"));
+                configurableElements_.at(index.row())->setAttribute("spirit:editedInConfigurableElements", "");
+            }
+
+            else
+            {
+                configurableElements_.at(index.row())->setAttribute("spirit:editedInConfigurableElements", "true");
+                configurableElements_.at(index.row())->setValue(value.toString());
+            }
         }
         else if (index.column() != ConfigurableElementsColumns::NAME &&
             index.column() != ConfigurableElementsColumns::DEFAULT_VALUE)
@@ -240,7 +250,7 @@ Qt::ItemFlags ConfigurableElementsModel::flags( const QModelIndex& index ) const
 		return Qt::NoItemFlags;
     }
 
-    if (!visibleConfigurableElements_.at(index.row()).isEditable_)
+    if (!isParameterEditable(index.row()))
     {
         return Qt::ItemIsSelectable;
     }
@@ -278,15 +288,15 @@ QVariant ConfigurableElementsModel::valueForIndex(QModelIndex const& index) cons
 {
     if (index.column() == ConfigurableElementsColumns::NAME)
     {
-        return visibleConfigurableElements_.at(index.row()).name_;
+        return configurableElements_.at(index.row())->getName();
     }
     else if (index.column() == ConfigurableElementsColumns::VALUE)
     {
-        return formattedValueFor(visibleConfigurableElements_.at(index.row()).value_);
+        return formattedValueFor(configurableElements_.at(index.row())->getValue());
     }
     else if (index.column() == ConfigurableElementsColumns::DEFAULT_VALUE)
     {
-        return formattedValueFor(visibleConfigurableElements_.at(index.row()).defaultValue_);
+        return formattedValueFor(configurableElements_.at(index.row())->getValueAttribute("spirit:defaultValue"));
     }
     else
     {
@@ -301,15 +311,15 @@ QVariant ConfigurableElementsModel::expressionOrValueForIndex(QModelIndex const&
 {
     if (index.column() == ConfigurableElementsColumns::NAME)
     {
-        return visibleConfigurableElements_.at(index.row()).name_;
+        return configurableElements_.at(index.row())->getName();
     }
     else if (index.column() == ConfigurableElementsColumns::VALUE)
     {
-        return visibleConfigurableElements_.at(index.row()).value_;
+        return configurableElements_.at(index.row())->getValue();
     }
     else if (index.column() == ConfigurableElementsColumns::DEFAULT_VALUE)
     {
-        return visibleConfigurableElements_.at(index.row()).defaultValue_;
+        return configurableElements_.at(index.row())->getValueAttribute("spirit:defaultValue");
     }
     else
     {
@@ -322,7 +332,7 @@ QVariant ConfigurableElementsModel::expressionOrValueForIndex(QModelIndex const&
 //-----------------------------------------------------------------------------
 bool ConfigurableElementsModel::validateColumnForParameter(QModelIndex const& index) const
 {
-    QString value = visibleConfigurableElements_.at(index.row()).value_;
+    QString value = configurableElements_.at(index.row())->getValue();
 
     return isValuePlainOrExpression(value);
 }
@@ -332,8 +342,8 @@ bool ConfigurableElementsModel::validateColumnForParameter(QModelIndex const& in
 //-----------------------------------------------------------------------------
 int ConfigurableElementsModel::getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const
 {
-    int valueReferences = visibleConfigurableElements_.at(row).value_.contains(valueID);
-    int defaultReferences = visibleConfigurableElements_.at(row).value_.contains(valueID);
+    int valueReferences = configurableElements_.at(row)->getValue().count(valueID);
+    int defaultReferences = configurableElements_.at(row)->getValueAttribute("spirit:defaultValue").count(valueID);
 
     int totalReferences = valueReferences + defaultReferences;
     return totalReferences;
@@ -346,9 +356,12 @@ void ConfigurableElementsModel::save()
 {
 	// create the map that contains the new values.
 	QMap<QString, QString> newValues;
-	for (int i = 0; i < visibleConfigurableElements_.size(); ++i) 
+    for (int i = 0; i < configurableElements_.size(); ++i)
     {
-		newValues.insert(visibleConfigurableElements_.at(i).uuID_, visibleConfigurableElements_.at(i).value_); 
+        if (configurableElements_.at(i)->hasAttribute("spirit:editedInConfigurableElements"))
+        {
+            newValues.insert(configurableElements_.at(i)->getValueId(), configurableElements_.at(i)->getValue());
+        }
 	}
 
 	QSharedPointer<ComponentConfElementChangeCommand> cmd(new ComponentConfElementChangeCommand(component_,
@@ -372,12 +385,15 @@ void ConfigurableElementsModel::save()
 //-----------------------------------------------------------------------------
 void ConfigurableElementsModel::onRemove( const QModelIndex& index ) 
 {
-	if (!index.isValid() || !visibleConfigurableElements_.at(index.row()).defaultValue_.isEmpty())
+    if (!index.isValid() ||
+        !configurableElements_.at(index.row())->getValueAttribute("spirit:defaultValue").isEmpty())
+    {
 		return;
+    }
 
 	// remove the indexed configurable element
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	visibleConfigurableElements_.removeAt(index.row());
+    configurableElements_.removeAt(index.row());
 	endRemoveRows();
 	
 	// save the changes to the diagram component
@@ -392,18 +408,20 @@ void ConfigurableElementsModel::onRemove( const QModelIndex& index )
 void ConfigurableElementsModel::onRemoveItem( const QModelIndex& index ) 
 {
 	// don't remove anything if index is invalid
-	if (!index.isValid() || !visibleConfigurableElements_.at(index.row()).defaultValue_.isEmpty())
+    if (!index.isValid() ||
+        !configurableElements_.at(index.row())->getValueAttribute("spirit:defaultValue").isEmpty())
     {
 		return;
 	}
 	// make sure the row number is valid
-	else if (index.row() < 0 || index.row() >= visibleConfigurableElements_.size()) {
+    else if (index.row() < 0 || index.row() >= configurableElements_.size())
+    {
 		return;
 	}
 
 	// remove the indexed configurable element
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	visibleConfigurableElements_.removeAt(index.row());
+    configurableElements_.removeAt(index.row());
 	endRemoveRows();
 
 	// save the changes to the diagram component
@@ -429,17 +447,40 @@ void ConfigurableElementsModel::readValues()
 	beginResetModel();
 
 	// remove the items after the previous component instance
-	visibleConfigurableElements_.clear();
+    configurableElements_.clear();
 
     readComponentConfigurableElements();
 
     // Insert any remaining items in the values_ map.
-	for (QMap<QString, QString>::iterator i = currentElementValues_.begin(); i != currentElementValues_.end(); ++i)
+	for (QMap<QString, QString>::iterator elementIterator = currentElementValues_.begin();
+        elementIterator != currentElementValues_.end(); ++elementIterator)
     {
-        QString name = i.key();
-        QString value = i.value();
+        QString name = elementIterator.key();
+        QString value = elementIterator.value();
 
-        visibleConfigurableElements_.append(ConfigurableElement(name, value));
+        bool elementWasFound = false;
+
+        foreach (QSharedPointer<Parameter> parameterElement, configurableElements_)
+        {
+            if (parameterElement->getValueId() == name)
+            {
+                parameterElement->setValue(value);
+                parameterElement->setAttribute("spirit:editedInConfigurableElements", "true");
+                elementWasFound = true;
+                break;
+            }
+        }
+
+        if (!elementWasFound)
+        {
+            QSharedPointer<Parameter> newParameter (new Parameter);
+            newParameter->setName(name);
+            newParameter->setValueId(name);
+            newParameter->setValue(value);
+            newParameter->setValueResolve("user");
+
+            configurableElements_.append(newParameter);
+        }
 	}
     
 	endResetModel();
@@ -450,93 +491,42 @@ void ConfigurableElementsModel::readValues()
 //-----------------------------------------------------------------------------
 void ConfigurableElementsModel::readComponentConfigurableElements()
 {
-    QSharedPointer <Component> componentModel = component_->componentModel();
+    QSharedPointer<Component> componentModel = component_->componentModel();
 
-    readConfigurableParameters(componentModel);
-    readConfigurableModelParameters(componentModel);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConfigurableElementsModel::readConfigurableParameters()
-//-----------------------------------------------------------------------------
-void ConfigurableElementsModel::readConfigurableParameters(QSharedPointer <Component> componentModel)
-{
     foreach (QSharedPointer<Parameter> parameterPointer, *componentModel->getParameters())
     {
-        addParameterWithIDToVisibleElements(parameterPointer);
+        setParameterToConfigurableElements(parameterPointer);
     }
-}
 
-//-----------------------------------------------------------------------------
-// Function: ConfigurableElementsModel::readConfigurableModelParameters()
-//-----------------------------------------------------------------------------
-void ConfigurableElementsModel::readConfigurableModelParameters(QSharedPointer <Component> componentModel)
-{
-    foreach (QSharedPointer < Parameter > modelParameterPointer, *componentModel->getModelParameters())
+    foreach (QSharedPointer<Parameter> parameterPointer, *componentModel->getModelParameters())
     {
-        addParameterWithIDToVisibleElements(modelParameterPointer);
+        setParameterToConfigurableElements(parameterPointer);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConfigurableElementsModel::addParameterWithIdToVisibleElements()
+// Function: ConfigurableElementsModel::isParameterEditable()
 //-----------------------------------------------------------------------------
-void ConfigurableElementsModel::addParameterWithIDToVisibleElements(QSharedPointer <Parameter> parameterPointer)
+bool ConfigurableElementsModel::isParameterEditable(const int& parameterIndex) const
 {
-    if (!parameterPointer->getValueId().isEmpty())
+    if (configurableElements_.at(parameterIndex)->getValueResolve() == "immediate" ||
+        configurableElements_.at(parameterIndex)->getValueResolve().isEmpty())
     {
-        QString name = parameterPointer->getName();
-        QString value = parameterPointer->getValue();
-        QString uuId = parameterPointer->getValueId();
-        QString defaultValue = parameterPointer->getValue();
-        
-        bool isEditable = true;
-
-        if (parameterPointer->getValueResolve() == "immediate" || parameterPointer->getValueResolve().isEmpty())
-        {
-            isEditable = false;
-        }
-
-        if (currentElementValues_.contains(uuId))
-        {
-            value = currentElementValues_.take(uuId);
-        }
-        visibleConfigurableElements_.append(ConfigurableElement(name, uuId, value, defaultValue, isEditable));
+        return false;
+    }
+    else
+    {
+        return true;
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConfigurableElementsModel::ConfigurableElement::ConfigurableElements()
+// Function: ConfigurableElementsModel::setParameterToConfigurableElements()
 //-----------------------------------------------------------------------------
-ConfigurableElementsModel::ConfigurableElement::ConfigurableElement(
-    const QString& name, const QString& uuID,
-    const QString& value, const QString& defaultValue, const bool& isEditable):
-name_(name),
-uuID_(uuID),
-value_(value),
-defaultValue_(defaultValue),
-isEditable_(isEditable)
+void ConfigurableElementsModel::setParameterToConfigurableElements(QSharedPointer<Parameter> parameterPointer)
 {
+    QSharedPointer<Parameter> newConfigurableElement (new Parameter(*(parameterPointer)));
+    newConfigurableElement->setValueAttribute("spirit:defaultValue", newConfigurableElement->getValue());
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConfigurableElementsModel::ConfigurableElement::ConfigurableElements()
-//-----------------------------------------------------------------------------
-ConfigurableElementsModel::ConfigurableElement::ConfigurableElement(const QString& name, const QString& value):
-name_(name),
-uuID_(name),
-value_(value),
-defaultValue_(),
-isEditable_(true)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConfigurableElementsModel::ConfigurableElement::operator==
-//-----------------------------------------------------------------------------
-bool ConfigurableElementsModel::ConfigurableElement::operator==(const ConfigurableElement& other ) const 
-{
-    return uuID_ == other.uuID_;
+    configurableElements_.append(newConfigurableElement);
 }
