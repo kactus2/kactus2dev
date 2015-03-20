@@ -41,7 +41,7 @@ QSharedPointer<Parameter> TopComponentParameterFinder::getParameterWithID(QStrin
     {
         foreach (QSharedPointer<Parameter> parameter, *component_->getParameters())
         {
-            if (parameter->getValueId() == parameterId)
+            if (parameter->getValueId() == parameterId || parameter->getCopySources().contains(parameterId))
             {
                 return parameter;
             }
@@ -49,7 +49,7 @@ QSharedPointer<Parameter> TopComponentParameterFinder::getParameterWithID(QStrin
 
         foreach (QSharedPointer<ModelParameter> modelParameter, *component_->getModelParameters())
         {
-            if (modelParameter->getValueId() == parameterId)
+            if (modelParameter->getValueId() == parameterId || modelParameter->getCopySources().contains(parameterId))
             {
                 return modelParameter;
             }
@@ -57,7 +57,7 @@ QSharedPointer<Parameter> TopComponentParameterFinder::getParameterWithID(QStrin
 
         foreach (QSharedPointer<Parameter> viewParameter, activeViewParameters())
         {
-            if (viewParameter->getValueId() == parameterId)
+            if (viewParameter->getValueId() == parameterId || viewParameter->getCopySources().contains(parameterId))
             {
                 return viewParameter;
             }
@@ -76,15 +76,15 @@ bool TopComponentParameterFinder::hasId(QString const& id) const
     {
         foreach (QSharedPointer<Parameter> parameter, *component_->getParameters())
         {
-            if (parameter->getValueId() == id)
+            if (parameter->getValueId() == id || parameter->getCopySources().contains(id))
             {
                 return true;
             }
         }
 
-        foreach (QSharedPointer<ModelParameter> componentModelParameter, *component_->getModelParameters())
+        foreach (QSharedPointer<ModelParameter> modelParameter, *component_->getModelParameters())
         {
-            if (componentModelParameter->getValueId() == id)
+            if (modelParameter->getValueId() == id || modelParameter->getCopySources().contains(id))
             {
                 return true;
             }
@@ -92,7 +92,7 @@ bool TopComponentParameterFinder::hasId(QString const& id) const
 
         foreach (QSharedPointer<Parameter> viewParameter, activeViewParameters())
         {
-            if (viewParameter->getValueId() == id)
+            if (viewParameter->getValueId() == id || viewParameter->getCopySources().contains(id))
             {
                 return true;
             }

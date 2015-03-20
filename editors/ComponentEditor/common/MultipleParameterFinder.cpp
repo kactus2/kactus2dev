@@ -75,9 +75,7 @@ bool MultipleParameterFinder::hasId(QString const& id) const
 //-----------------------------------------------------------------------------
 QString MultipleParameterFinder::nameForId(QString const& id) const
 {
-    QSharedPointer <Parameter> targetParameter = getParameterWithID(id);
-
-    return targetParameter->getName();
+    return getParameterWithID(id)->getName();
 }
 
 //-----------------------------------------------------------------------------
@@ -85,9 +83,7 @@ QString MultipleParameterFinder::nameForId(QString const& id) const
 //-----------------------------------------------------------------------------
 QString MultipleParameterFinder::valueForId(QString const& id) const
 {
-    QSharedPointer <Parameter> targetParameter = getParameterWithID(id);
-
-    return targetParameter->getValue();
+    return getParameterWithID(id)->getValue();
 }
 
 //-----------------------------------------------------------------------------
@@ -99,9 +95,15 @@ QStringList MultipleParameterFinder::getAllParameterIds() const
 
     foreach(QSharedPointer<ParameterFinder> finder, finders_)
     {
-        allParameterIds.append(finder->getAllParameterIds());
+        QStringList finderParameters = finder->getAllParameterIds();
+        allParameterIds.append(finderParameters);
+        
+        foreach(QString parameterId, finderParameters)
+        {
+            allParameterIds.append(finder->getParameterWithID(parameterId)->getCopySources());
+        }
     }
-
+    
     return allParameterIds;
 }
 
@@ -110,7 +112,12 @@ QStringList MultipleParameterFinder::getAllParameterIds() const
 //-----------------------------------------------------------------------------
 int MultipleParameterFinder::getNumberOfParameters() const
 {
-    QStringList allParameterIds = getAllParameterIds();
+    QStringList allParameterIds;
+
+    foreach(QSharedPointer<ParameterFinder> finder, finders_)
+    {
+        allParameterIds.append(finder->getAllParameterIds());
+    }
 
     return allParameterIds.size();
 }
