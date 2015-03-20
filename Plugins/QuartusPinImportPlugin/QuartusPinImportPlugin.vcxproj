@@ -118,11 +118,6 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\rcc.exe" -name "%(Filename)" -no-compress "%(FullPath)" -o .\GeneratedFiles\qrc_%(Filename).cpp</Command>
     </CustomBuild>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Kactus2.vcxproj">
-      <Project>{09486b51-70a7-3073-b15b-6d4baf3ec8c6}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C0DBF909-F12F-473F-8AC3-2248ABA68B92}</ProjectGuid>
     <Keyword>Qt4VSv1.0</Keyword>

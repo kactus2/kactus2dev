@@ -262,12 +262,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Kactus2.vcxproj">
-      <Project>{09486b51-70a7-3073-b15b-6d4baf3ec8c6}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="mcapi.json" />
     <CustomBuild Include="MCAPICodeGenerator.qrc">
       <FileType>Document</FileType>

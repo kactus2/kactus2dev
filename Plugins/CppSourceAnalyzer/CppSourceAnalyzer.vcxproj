@@ -224,11 +224,6 @@
   <ItemGroup>
     <None Include="CppSourceAnalyzer.json" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Kactus2.vcxproj">
-      <Project>{09486b51-70a7-3073-b15b-6d4baf3ec8c6}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -97,11 +97,6 @@ QStringList MultipleParameterFinder::getAllParameterIds() const
     {
         QStringList finderParameters = finder->getAllParameterIds();
         allParameterIds.append(finderParameters);
-        
-        foreach(QString parameterId, finderParameters)
-        {
-            allParameterIds.append(finder->getParameterWithID(parameterId)->getCopySources());
-        }
     }
     
     return allParameterIds;
@@ -112,12 +107,5 @@ QStringList MultipleParameterFinder::getAllParameterIds() const
 //-----------------------------------------------------------------------------
 int MultipleParameterFinder::getNumberOfParameters() const
 {
-    QStringList allParameterIds;
-
-    foreach(QSharedPointer<ParameterFinder> finder, finders_)
-    {
-        allParameterIds.append(finder->getAllParameterIds());
-    }
-
-    return allParameterIds.size();
+    return getAllParameterIds().size();
 }

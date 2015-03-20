@@ -132,20 +132,22 @@ QStringList TopComponentParameterFinder::getAllParameterIds() const
         foreach (QSharedPointer<Parameter> parameter, *component_->getParameters())
         {
             allParameterIds.append(parameter->getValueId());
+            allParameterIds.append(parameter->getCopySources());
         }
 
         foreach (QSharedPointer<ModelParameter> modelParameter, *component_->getModelParameters())
         {
             allParameterIds.append(modelParameter->getValueId());
+            allParameterIds.append(modelParameter->getCopySources());
         }
 
         foreach (QSharedPointer<Parameter> parameter, activeViewParameters())
         {
             allParameterIds.append(parameter->getValueId());
+            allParameterIds.append(parameter->getCopySources());
         }
     }
 
-    allParameterIds.removeAll("");
     return allParameterIds;
 }
 
