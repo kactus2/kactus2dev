@@ -86,7 +86,7 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     }
     else if (index.column() == usageCountColumn())
     {
-        QModelIndex valueIdIndex = index.sibling(index.row(), valueIdColumn());
+        QModelIndex valueIdIndex = index.sibling(index.row(), sourceIdsColumn());
         QString targetId = valueIdIndex.data(Qt::DisplayRole).toString();
         emit(openReferenceTree(targetId));
 
@@ -351,9 +351,9 @@ int ParameterDelegate::usageCountColumn() const
 //-----------------------------------------------------------------------------
 // Function: ParameterDelegate::valueIdColumn()
 //-----------------------------------------------------------------------------
-int ParameterDelegate::valueIdColumn() const
+int ParameterDelegate::sourceIdsColumn() const
 {
-    return ParameterColumns::VALUEID;
+    return ParameterColumns::SOURCEIDS;
 }
 
 //-----------------------------------------------------------------------------

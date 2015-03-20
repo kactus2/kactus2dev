@@ -13,15 +13,13 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
-#include <common/views/EditableTableView/ColumnFreezableTable.h>
-
 #include <IPXACTmodels/component.h>
 
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
 
 class LibraryInterface;
-
+class ColumnFreezableTable;
 /*! \brief Editor to add/edit/remove parameters of a component.
  *
  */
@@ -72,13 +70,10 @@ private:
 	ParametersEditor& operator=(const ParametersEditor& other);
 
     //! The view that displays the parameters.
-    ColumnFreezableTable view_;
+    ColumnFreezableTable* view_;
 
 	//! \brief The model that holds the data to be displayed to the user
 	ParametersModel* model_;
-
-	//! \brief Pointer to the proxy that is used to sort the view
-	QSortFilterProxyModel* proxy_;
 };
 
 #endif // PARAMETERSEDITOR_H

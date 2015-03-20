@@ -6,7 +6,7 @@
 // Date: 13.01.2015
 //
 // Description:
-// <Short description of the class/file contents>
+// Model for all parameter completions within a single component.
 //-----------------------------------------------------------------------------
 
 #include "ComponentParameterModel.h"
@@ -51,13 +51,11 @@ int ComponentParameterModel::columnCount(QModelIndex const& /*parent = QModelInd
 //-----------------------------------------------------------------------------
 Qt::ItemFlags ComponentParameterModel::flags(QModelIndex const& index) const
 {
-    return QAbstractTableModel::flags(index);
-
-    if (index.column() == ComponentParameterColumns::NAME)
+    if (index.isValid())
     {
         return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     }
-
+    
     return Qt::NoItemFlags;
 }
 
@@ -121,8 +119,7 @@ QVariant ComponentParameterModel::expressionOrValueForIndex(QModelIndex const& i
 //-----------------------------------------------------------------------------
 bool ComponentParameterModel::validateColumnForParameter(QModelIndex const& index) const
 {
-   if (index.column() == ComponentParameterColumns::NAME || 
-       index.column() == ComponentParameterColumns::ID)
+   if (index.column() == ComponentParameterColumns::NAME || index.column() == ComponentParameterColumns::ID)
    {
        return !data(index).toString().isEmpty();
    }

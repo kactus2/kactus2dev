@@ -14,13 +14,11 @@
 
 #include <IPXACTmodels/parameter.h>
 
-#include <common/views/EditableTableView/ColumnFreezableTable.h>
-
 #include <QGroupBox>
 #include <QList>
 #include <QSharedPointer>
-#include <QSortFilterProxyModel>
 
+class ColumnFreezableTable;
 class Component;
 class Choice;
 class ParameterFinder;
@@ -116,13 +114,10 @@ private:
     //-----------------------------------------------------------------------------
 
 	//! The view that displays the parameters.
-    ColumnFreezableTable view_;
+    ColumnFreezableTable* view_;
 
 	//! The model that holds the data to be displayed to the user
 	ParametersModel* model_;
-
-	//! The proxy that is used to do the sorting of parameters.
-	QSortFilterProxyModel proxy_;
 };
 
 #endif // PARAMETERGROUPBOX_H

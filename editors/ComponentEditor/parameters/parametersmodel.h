@@ -185,11 +185,11 @@ protected:
     virtual int descriptionColumn() const;
 
     /*!
-     *  Gets the column index for value id.
+     *  Gets the column index for source ids.
      *
-     *      @return     The column index for value id.
+     *      @return     The column index for source ids.
      */
-    virtual int valueIdColumn() const;
+    virtual int sourceIdsColumn() const;
 
     /*!
      *  Gets the column index for usage count.

@@ -16,7 +16,8 @@
 //-----------------------------------------------------------------------------
 // Function: ColumnFreezableTable::ColumnFreezableTable()
 //-----------------------------------------------------------------------------
-ColumnFreezableTable::ColumnFreezableTable(int numberOfFrozenColumns, QSharedPointer<EditableTableView> frozenColumns, QWidget* parent):
+ColumnFreezableTable::ColumnFreezableTable(int numberOfFrozenColumns, 
+    QSharedPointer<EditableTableView> frozenColumns, QWidget* parent):
 EditableTableView(parent),
 frozenColumns_(frozenColumns),
 numberOfFrozenColumns_(numberOfFrozenColumns)
@@ -187,7 +188,7 @@ void ColumnFreezableTable::updateColumnFreezableTableGeometry()
 
     totalWidth += numberOfFrozenColumns_;
 
-    frozenColumns_->setGeometry(pos().x(), pos().y(), totalWidth,
+    frozenColumns_->setGeometry(pos().x(), pos().y(), totalWidth + verticalHeader()->width(),
         viewport()->height() + horizontalHeader()->height());
 }
 
@@ -198,7 +199,8 @@ void ColumnFreezableTable::updateSectionWidth(int logicalIndex, int, int newSize
 {
     if (logicalIndex < numberOfFrozenColumns_)
     {
-        frozenColumns_->setColumnWidth(numberOfFrozenColumns_ - 1, newSize);
+        frozenColumns_->setColumnWidth(numberOfFrozenColumns_ - 1, 
+            newSize - (verticalHeader()->width()/numberOfFrozenColumns_));
         updateColumnFreezableTableGeometry();
     }
 }

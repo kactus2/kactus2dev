@@ -39,7 +39,7 @@ DesignCompletionModel::~DesignCompletionModel()
 //-----------------------------------------------------------------------------
 QVariant DesignCompletionModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole*/) const
 {
-    if (!index.isValid() || index.row() > rowCount())
+    if (!index.isValid())
     {
         return QVariant();
     }

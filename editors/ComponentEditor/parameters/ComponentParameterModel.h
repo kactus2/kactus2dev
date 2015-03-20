@@ -6,7 +6,7 @@
 // Date: 13.01.2015
 //
 // Description:
-// Model for all parameters within a single component.
+// Model for all parameter completions within a single component.
 //-----------------------------------------------------------------------------
 
 #ifndef COMPONENTPARAMETERMODEL_H
@@ -19,7 +19,7 @@
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
 //-----------------------------------------------------------------------------
-//! Model for all parameters within a single component.
+//! Model for all parameter completions within a single component.
 //-----------------------------------------------------------------------------
 class ComponentParameterModel : public ParameterizableTable
 {

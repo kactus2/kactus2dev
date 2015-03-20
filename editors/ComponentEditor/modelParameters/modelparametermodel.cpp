@@ -130,13 +130,7 @@ QVariant ModelParameterModel::data(QModelIndex const& index, int role) const
 //-----------------------------------------------------------------------------
 QVariant ModelParameterModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-	// only horizontal headers are supported
-	if (orientation != Qt::Horizontal) 
-    {
-		return QVariant();
-    }
-
-	else if (role == Qt::DisplayRole) 
+	if (orientation == Qt::Horizontal && role == Qt::DisplayRole) 
     {	
 		if (section ==  ModelParameterColumns::DATA_TYPE)
         {
@@ -372,11 +366,11 @@ int ModelParameterModel::descriptionColumn() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: modelparametermodel::valueIdColumn()
+// Function: modelparametermodel::sourceIdsColumn()
 //-----------------------------------------------------------------------------
-int ModelParameterModel::valueIdColumn() const
+int ModelParameterModel::sourceIdsColumn() const
 {
-    return ModelParameterColumns::VALUEID;
+    return ModelParameterColumns::SOURCEIDS;
 }
 
 //-----------------------------------------------------------------------------

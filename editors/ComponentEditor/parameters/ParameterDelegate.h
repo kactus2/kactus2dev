@@ -192,11 +192,11 @@ protected:
     virtual int usageCountColumn() const;
 
     /*!
-     *  Gets the column for the unique id.
+     *  Gets the column index for the source ids for the parameter.
      *
-     *      @return     The column index for id.
+     *      @return     The column index for source ids.
      */
-    virtual int valueIdColumn() const;
+    virtual int sourceIdsColumn() const;
 
     /*!
      *  Checks if the cells in given column accept expression as an input value.

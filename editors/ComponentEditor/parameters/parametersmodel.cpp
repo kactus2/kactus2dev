@@ -215,11 +215,11 @@ int ParametersModel::descriptionColumn() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: parametersmodel::valueIdColumn()
+// Function: parametersmodel::sourceIdsColumn()
 //-----------------------------------------------------------------------------
-int ParametersModel::valueIdColumn() const
+int ParametersModel::sourceIdsColumn() const
 {
-    return ParameterColumns::VALUEID;
+    return ParameterColumns::SOURCEIDS;
 }
 
 //-----------------------------------------------------------------------------

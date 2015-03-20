@@ -12,6 +12,7 @@
 #include "ParameterEditorHeaderView.h"
 
 #include <common/widgets/summaryLabel/summarylabel.h>
+#include <common/views/EditableTableView/ColumnFreezableTable.h>
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
@@ -30,10 +31,15 @@ ParametersEditor::ParametersEditor(QSharedPointer<Component> component, LibraryI
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QWidget* parent): 
 ItemEditor(component, handler, parent),
-view_(1, QSharedPointer<EditableTableView> (new EditableTableView(this)), this),
-model_(0), 
-proxy_(0)
+view_(0),
+model_(0)
 {
+    QSharedPointer<EditableTableView> parametersView(new EditableTableView(this));
+    parametersView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    parametersView->verticalHeader()->show();
+
+    view_ = new ColumnFreezableTable(1, parametersView, this);
+
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
     model_ = new ParametersModel(component->getParameters(), component->getChoices(), expressionParser,
@@ -54,52 +60,52 @@ proxy_(0)
 	connect(model_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
-    connect(&view_, SIGNAL(addItem(const QModelIndex&)),
+    connect(view_, SIGNAL(addItem(const QModelIndex&)),
         model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
-    connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
+    connect(view_, SIGNAL(removeItem(const QModelIndex&)),
         model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
 	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/parameterList.csv").arg(compPath);
 
     ParameterEditorHeaderView* parameterHorizontalHeader = new ParameterEditorHeaderView(Qt::Horizontal, this);
-    view_.setHorizontalHeader(parameterHorizontalHeader);
+    view_->setHorizontalHeader(parameterHorizontalHeader);
 
-    view_.horizontalHeader()->setSectionsClickable(true);
-    view_.horizontalHeader()->setStretchLastSection(true);
+    view_->horizontalHeader()->setSectionsClickable(true);
+    view_->horizontalHeader()->setStretchLastSection(true);
 
-    view_.setDefaultImportExportPath(defPath);
-    view_.setAllowImportExport(true);
+    view_->setDefaultImportExportPath(defPath);
+    view_->setAllowImportExport(true);
 
-    view_.setSortingEnabled(true);
-    view_.setItemsDraggable(false);
+    view_->setSortingEnabled(true);
+    view_->setItemsDraggable(false);
 
-    view_.setDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
+    view_->setDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
         expressionFormatter, this));
 
-    connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)),
+    connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(view_.itemDelegate(), SIGNAL(decreaseReferences(QString)),
+    connect(view_->itemDelegate(), SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    connect(view_.itemDelegate(), SIGNAL(openReferenceTree(QString)),
+    connect(view_->itemDelegate(), SIGNAL(openReferenceTree(QString)),
         this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
 
 	// set proxy to do the sorting automatically
-	proxy_ = new QSortFilterProxyModel(this);
+	QSortFilterProxyModel* sortingProxy = new QSortFilterProxyModel(this);
 
 	// set source model for proxy
-	proxy_->setSourceModel(model_);
+	sortingProxy->setSourceModel(model_);
 	// set proxy to be the source for the view
-    view_.setModel(proxy_);
+    view_->setModel(sortingProxy);
 
-    proxy_->setSortCaseSensitivity(Qt::CaseInsensitive);
+    sortingProxy->setSortCaseSensitivity(Qt::CaseInsensitive);
 
-    view_.sortByColumn(0, Qt::AscendingOrder);
-    view_.setColumnHidden(ParameterColumns::VALUEID, true);
+    view_->sortByColumn(0, Qt::AscendingOrder);
+    view_->setColumnHidden(ParameterColumns::SOURCEIDS, true);
 
     // display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Parameters"), this);
@@ -107,7 +113,7 @@ proxy_(0)
 	// create the layout, add widgets to it
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
-    layout->addWidget(&view_);
+    layout->addWidget(view_);
 	layout->setContentsMargins(0, 0, 0, 0);
 
 	refresh();
@@ -134,7 +140,7 @@ bool ParametersEditor::isValid() const
 //-----------------------------------------------------------------------------
 void ParametersEditor::refresh()
 {
-    view_.update();
+    view_->update();
 }
 
 //-----------------------------------------------------------------------------

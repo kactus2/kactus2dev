@@ -113,12 +113,7 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
 //-----------------------------------------------------------------------------
 QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (orientation != Qt::Horizontal)
-    {
-        return QVariant();
-    }
-
-    if (role == Qt::DisplayRole) 
+    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) 
     {
         if (section == nameColumn())
         {
@@ -172,9 +167,9 @@ QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orienta
         { 
             return tr("Description");
         }
-        else if (section == valueIdColumn())
+        else if (section == sourceIdsColumn())
         {
-            return tr("Value ID");
+            return tr("Copy source IDs");
         }
         else if (section == usageCountColumn())
         {
@@ -185,6 +180,10 @@ QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orienta
         {
             return QVariant();
         }
+    }
+    else if (orientation == Qt::Vertical && role == Qt::DisplayRole) 
+    {
+        return QString(" ");
     }
     // if unsupported role
     else 
@@ -287,16 +286,9 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
         {
             parameter->setDescription(value.toString());
         }
-        else if (index.column() == valueIdColumn())
+        else if (index.column() == sourceIdsColumn())
         {
-            if (getParameterFinder()->hasId(value.toString()))
-            {
-                return false;
-            }
-            else
-            {
-                parameter->setValueId(value.toString());
-            }
+            parameter->addCopySource(value.toString());
         }
         else
         {
@@ -577,9 +569,11 @@ QVariant AbstractParameterModel::valueForIndex(QModelIndex const& index) const
     {
         return parameter->getDescription();
     }
-    else if (index.column() == valueIdColumn())
+    else if (index.column() == sourceIdsColumn())
     {
-        return parameter->getValueId();
+        QStringList copySources(parameter->getValueId());
+        copySources.append(parameter->getCopySources());
+        return copySources.join(',');
     }
     else if (index.column() == usageCountColumn())
     {

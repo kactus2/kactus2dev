@@ -109,13 +109,10 @@ private:
 	ModelParameterEditor& operator=(const ModelParameterEditor& other);
     
 	//! \brief The view that displays the parameters.
-    ColumnFreezableTable view_;
+    ColumnFreezableTable* view_;
 
 	//! \brief The model that holds the data to be displayed to the user
 	ModelParameterModel* model_;
-
-	//! \brief Pointer to the proxy that is used to sort the view
-	QSortFilterProxyModel proxy_;
 };
 
 #endif // MODELPARAMETEREDITOR_H

@@ -11,6 +11,8 @@
 
 #include "parametergroupbox.h"
 
+#include <common/views/EditableTableView/ColumnFreezableTable.h>
+
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/parameters/ParameterColumns.h>
 #include <editors/ComponentEditor/parameters/ParameterDelegate.h>
@@ -26,6 +28,7 @@
 #include <IPXACTmodels/component.h>
 
 #include <QVBoxLayout>
+#include <QSortFilterProxyModel>
 
 //-----------------------------------------------------------------------------
 // Function: ParameterGroupBox::ParameterGroupBox()
@@ -36,10 +39,15 @@ ParameterGroupBox::ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Paramet
                                      QSharedPointer<ExpressionFormatter> expressionFormatter,
 									 QWidget *parent):
 QGroupBox(tr("Parameters"), parent),
-view_(1, QSharedPointer<EditableTableView> (new EditableTableView(this)), this), 
-model_(0),
-proxy_(this)
+view_(0), 
+model_(0)
 {
+    QSharedPointer<EditableTableView> parametersView(new EditableTableView(this));
+    parametersView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    parametersView->verticalHeader()->show();
+
+    view_ = new ColumnFreezableTable(1, parametersView, this);
+
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
     model_ = new ParametersModel(parameters, component->getChoices(), expressionParser, parameterFinder, 
         expressionFormatter, this);
@@ -52,21 +60,21 @@ proxy_(this)
 	connect(model_, SIGNAL(noticeMessage(const QString&)),
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(addItem(const QModelIndex&)), 
+	connect(view_, SIGNAL(addItem(const QModelIndex&)), 
         model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
-	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
+	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
 		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
     ParameterEditorHeaderView* parameterHorizontalHeader = new ParameterEditorHeaderView(Qt::Horizontal, this);
-    view_.setHorizontalHeader(parameterHorizontalHeader);
-    view_.horizontalHeader()->setSectionsClickable(true);
-    view_.horizontalHeader()->setStretchLastSection(true);
+    view_->setHorizontalHeader(parameterHorizontalHeader);
+    view_->horizontalHeader()->setSectionsClickable(true);
+    view_->horizontalHeader()->setStretchLastSection(true);
 
 	// set view to be sortable
-	view_.setSortingEnabled(true);
+	view_->setSortingEnabled(true);
 
 	// items can not be dragged
-	view_.setItemsDraggable(false);
+	view_->setItemsDraggable(false);
 
     ComponentParameterModel* parameterModel = new ComponentParameterModel(parameterFinder, this);
     parameterModel->setExpressionParser(expressionParser);
@@ -74,32 +82,35 @@ proxy_(this)
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(parameterModel);
 
-    view_.setDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
+    view_->setDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
         expressionFormatter, this));
 
-    connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)), 
+    connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)), 
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(view_.itemDelegate(), SIGNAL(decreaseReferences(QString)),
+    connect(view_->itemDelegate(), SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    connect(view_.itemDelegate(), SIGNAL(openReferenceTree(QString)),
+    connect(view_->itemDelegate(), SIGNAL(openReferenceTree(QString)),
         this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
 
+    //! The proxy that is used to do the sorting of parameters.
+    QSortFilterProxyModel* sortingProxy = new QSortFilterProxyModel(this);
+
 	// set source model for proxy
-	proxy_.setSourceModel(model_);
+	sortingProxy->setSourceModel(model_);
 	// set proxy to be the source for the view
-	view_.setModel(&proxy_);
+	view_->setModel(sortingProxy);
 
 	// sort the view
-	view_.sortByColumn(0, Qt::AscendingOrder);
+	view_->sortByColumn(0, Qt::AscendingOrder);
 
-    view_.setColumnHidden(ParameterColumns::VALUEID, true);
+    view_->setColumnHidden(ParameterColumns::SOURCEIDS, true);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(&view_);
+	layout->addWidget(view_);
 }
 
 //-----------------------------------------------------------------------------
@@ -131,5 +142,5 @@ bool ParameterGroupBox::isValid(QStringList& errorList, const QString& parentIde
 //-----------------------------------------------------------------------------
 void ParameterGroupBox::refresh() 
 {
-	view_.update();
+	view_->update();
 }

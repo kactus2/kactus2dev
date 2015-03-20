@@ -297,6 +297,20 @@ public:
      */
     virtual QString elementName() const;
 
+    /*!
+     *  Adds a copy source id for the parameter.
+     *
+     *      @param [in] sourceId   The id of the parameter copied to this parameter.
+     */
+    void addCopySource(QString const& sourceId);
+        
+    /*!
+     *  Gets the list of ids of parameters copied to create this parameter.
+     *
+     *      @return The parameter ids.
+     */
+    QStringList getCopySources() const;
+
 protected:
         
     /*!
