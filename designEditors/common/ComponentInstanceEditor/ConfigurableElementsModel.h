@@ -17,6 +17,7 @@
 
 #include <IPXACTmodels/parameter.h>
 #include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/choice.h>
 
 #include <QAbstractTableModel>
 #include <QMap>
@@ -191,6 +192,45 @@ private:
      *      @return     The data in the given index.
      */
     QVariant valueForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Evaluate the value for the given index.
+     *
+     *      @param [in] index   The index of the value to be given.
+     *      @param [in] value   The stored value of the index.
+     *
+     *      @return The true value for the given index, whether it is given using a choice or not.
+     */
+    QString evaluateValueForIndex(QModelIndex const& index, QString const& value) const;
+
+    /*!
+     *  Finds the display value for the currently selected enumeration.
+     *
+     *      @param [in] choice              The currently selected choice.
+     *      @param [in] enumerationValue    The current value to be changed into an enumeration.
+     *
+     *      @return The displayable value of the enumeration.
+     */
+    QString findDisplayValueForEnumeration(QSharedPointer<Choice> choice, QString const& enumerationValue) const;
+
+    /*!
+     *  Finds the display values for the currently selected enumeration inside an array.
+     *
+     *      @param [in] choice      The currently selected choice.
+     *      @param [in] arrayValue  The value that contains an array.
+     *
+     *      @return The displayable array value of the enumeration.
+     */
+    QString matchArrayValuesToSelectedChoice(QSharedPointer<Choice> choice, QString const& arrayValue) const;
+
+    /*!
+     *  Finds the currently selected choice.
+     *
+     *      @param [in] choiceName  The name of the choice to be searched for.
+     *
+     *      @return The currently selected choice.
+     */
+    QSharedPointer<Choice> findChoice(QString const& choiceName) const;
 
 	//! Save the elements from the table to values_ map.
 	void save();

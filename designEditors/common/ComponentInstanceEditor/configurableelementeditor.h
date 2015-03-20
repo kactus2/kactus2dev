@@ -14,6 +14,7 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include "ConfigurableElementsModel.h"
+#include "configurableelementdelegate.h"
 
 #include <QAbstractItemModel>
 #include <QGroupBox>
@@ -88,6 +89,9 @@ private:
 
 	//! The model to edit the configurable elements of a component instance.
 	ConfigurableElementsModel model_;
+
+    //! The delegate used in the display widget.
+    QSharedPointer<ConfigurableElementDelegate> delegate_;
 };
 
 #endif // CONFIGURABLEELEMENTEDITOR_H

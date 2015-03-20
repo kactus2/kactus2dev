@@ -19,6 +19,7 @@ namespace ConfigurableElementsColumns
         NAME,               //!< Column for the name of the configurable element.
         VALUE,              //!< Column for the configurable value.
         DEFAULT_VALUE,      //!< Column for the original value of the parameter.
+        CHOICE,             //!< Column for the selected choice of the parameter.
         COLUMN_COUNT
     };
 }

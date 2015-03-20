@@ -11,6 +11,8 @@
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
 
+#include <IPXACTmodels/Enumeration.h>
+
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::ConfigurableElementsModel()
 //-----------------------------------------------------------------------------
@@ -105,7 +107,7 @@ int ConfigurableElementsModel::columnCount( const QModelIndex& parent /*= QModel
 		return 0;
     }
 
-	return 3;
+	return ConfigurableElementsColumns::COLUMN_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -183,6 +185,10 @@ QVariant ConfigurableElementsModel::headerData( int section,
         else if (section == ConfigurableElementsColumns::DEFAULT_VALUE)
         {
             return tr("Default value");
+        }
+        else if (section == ConfigurableElementsColumns::CHOICE)
+        {
+            return tr("Choice");
         }
         else
         {
@@ -292,16 +298,102 @@ QVariant ConfigurableElementsModel::valueForIndex(QModelIndex const& index) cons
     }
     else if (index.column() == ConfigurableElementsColumns::VALUE)
     {
-        return formattedValueFor(configurableElements_.at(index.row())->getValue());
+        return evaluateValueForIndex(index, configurableElements_.at(index.row())->getValue());
     }
     else if (index.column() == ConfigurableElementsColumns::DEFAULT_VALUE)
     {
-        return formattedValueFor(configurableElements_.at(index.row())->getValueAttribute("spirit:defaultValue"));
+        return evaluateValueForIndex(index, configurableElements_.at(index.row())->getValueAttribute
+            ("spirit:defaultValue"));
+    }
+    else if (index.column() == ConfigurableElementsColumns::CHOICE)
+    {
+        return configurableElements_.at(index.row())->getChoiceRef();
     }
     else
     {
         return QVariant();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsModel::evaluateValueForIndex()
+//-----------------------------------------------------------------------------
+QString ConfigurableElementsModel::evaluateValueForIndex(QModelIndex const& index, QString const& value) const
+{
+    if (!configurableElements_.at(index.row())->getChoiceRef().isEmpty())
+    {
+        QSharedPointer<Choice> choice = findChoice(configurableElements_.at(index.row())->getChoiceRef());
+
+        if (value.contains('{') && value.contains('}'))
+        {
+            return matchArrayValuesToSelectedChoice(choice, value);
+        }
+        else
+        {
+            return findDisplayValueForEnumeration(choice, value);
+        }
+    }
+    else
+    {
+        return formattedValueFor(value);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsModel::findChoice()
+//-----------------------------------------------------------------------------
+QSharedPointer<Choice> ConfigurableElementsModel::findChoice(QString const& choiceName) const
+{
+    foreach (QSharedPointer<Choice> choice, *component_->componentModel()->getChoices())
+    {
+        if (choice->getName() == choiceName)
+        {
+            return choice;
+        }
+    }
+
+    return QSharedPointer<Choice> (new Choice());
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsModel::findDisplayValueForEnumeration()
+//-----------------------------------------------------------------------------
+QString ConfigurableElementsModel::findDisplayValueForEnumeration(QSharedPointer<Choice> choice,
+    QString const& enumerationValue) const
+{
+    foreach (QSharedPointer<Enumeration> enumeration, *choice->enumerations())
+    {
+        if (enumeration->getValue() == enumerationValue && !enumeration->getText().isEmpty())
+        {
+            return enumeration->getText();
+        }
+    }
+
+    return enumerationValue;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsModel::matchArrayValuesToSelectedChoice()
+//-----------------------------------------------------------------------------
+QString ConfigurableElementsModel::matchArrayValuesToSelectedChoice(QSharedPointer<Choice> choice,
+    QString const& arrayValue) const
+{
+    QStringList parameterArray = arrayValue.split(',');
+    parameterArray.first().remove('{');
+    parameterArray.last().remove('}');
+
+    QStringList resultingArray;
+
+    foreach (QString value, parameterArray)
+    {
+        resultingArray.append(findDisplayValueForEnumeration(choice, value));
+    }
+
+    QString choiceValue = resultingArray.join(',');
+    choiceValue.prepend('{');
+    choiceValue.append('}');
+
+    return choiceValue;
 }
 
 //-----------------------------------------------------------------------------

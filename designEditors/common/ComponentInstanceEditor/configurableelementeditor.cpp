@@ -6,8 +6,8 @@
  */
 
 #include "configurableelementeditor.h"
-
 #include "configurableelementdelegate.h"
+#include "ConfigurableElementsColumns.h"
 
 #include <IPXACTmodels/component.h>
 
@@ -30,7 +30,8 @@ ConfigurableElementEditor::ConfigurableElementEditor(QSharedPointer<ParameterFin
 QGroupBox(tr("Configurable element values"), parent),
 view_(this),
 filter_(this),
-model_(parameterFinder, expressionFormatter, this)
+model_(parameterFinder, expressionFormatter, this),
+delegate_()
 {
 	filter_.setSourceModel(&model_);
 	view_.setModel(&filter_);
@@ -44,9 +45,13 @@ model_(parameterFinder, expressionFormatter, this)
 	view_.setSortingEnabled(true);
 	view_.setItemsDraggable(false);
 
-	view_.setItemDelegate(new ConfigurableElementDelegate(parameterCompleter, parameterFinder, this));
+    delegate_ = QSharedPointer<ConfigurableElementDelegate> (new ConfigurableElementDelegate(parameterCompleter,
+        parameterFinder, this));
+
+    view_.setItemDelegate(delegate_.data());
 
     view_.setAlternatingRowColors(false);
+    view_.setColumnHidden(ConfigurableElementsColumns::CHOICE, true);
 
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
 	topLayout->addWidget(&view_);
@@ -72,6 +77,7 @@ ConfigurableElementEditor::~ConfigurableElementEditor()
 void ConfigurableElementEditor::setComponent(ComponentItem* component) 
 {
 	model_.setComponent(component);
+    delegate_->setChoices(component->componentModel()->getChoices());
 }
 
 //-----------------------------------------------------------------------------
