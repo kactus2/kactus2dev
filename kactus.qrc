@@ -50,7 +50,6 @@
       <file>common/graphics/mcapi-port.png</file>
       <file>common/graphics/mcapi-type.png</file>
       <file>common/graphics/connect.png</file>
-      <file>common/graphics/sw-design-add_node.png</file>
       <file>common/graphics/hierarchy.png</file>
       <file>common/graphics/imported.png</file>
       <file>common/graphics/cleanup.png</file>
@@ -95,7 +94,6 @@
       <file>common/graphics/diff.png</file>
       <file>common/graphics/external.png</file>
       <file>common/graphics/import_folders.png</file>
-      <file>common/graphics/source_listing_generator.png</file>
       <file>common/graphics/generator_plugin_overlay.png</file>
       <file>common/graphics/plugin-generator.png</file>
       <file>common/graphics/plugin-source_analyzer.png</file>
