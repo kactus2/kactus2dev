@@ -567,6 +567,7 @@ HEADERS += ./common/Global.h \
     ./designEditors/common/diagramgrid.h \
     ./designEditors/common/DiagramUtil.h \
     ./designEditors/common/DrawMode.h \
+    ./designEditors/common/DesignCompletionModel.h \
     ./designEditors/common/DesignDiagram.h \
     ./designEditors/common/DesignWidget.h \
     ./designEditors/common/ComponentDesignDiagram.h \
@@ -609,7 +610,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./designEditors/common/DesignCompletionModel.h
+    ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1116,6 +1117,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/SystemDesign/SystemDetailsEditor/SwitchHWDialog.cpp \
     ./designEditors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.cpp \
     ./designEditors/common/ComponentDesignDiagram.cpp \
+    ./designEditors/common/DesignCompletionModel.cpp \
     ./designEditors/common/DesignDiagram.cpp \
     ./designEditors/common/DesignWidget.cpp \
     ./designEditors/common/DesignWidgetFactoryImplementation.cpp \
@@ -1159,5 +1161,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./designEditors/common/DesignCompletionModel.cpp
+    ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.cpp
 RESOURCES += kactus.qrc

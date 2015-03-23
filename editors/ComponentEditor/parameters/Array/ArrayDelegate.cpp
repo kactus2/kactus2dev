@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 ArrayDelegate::ArrayDelegate(QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> finder,
     QSharedPointer<Choice> selectedChoice, QObject* parent):
-ExpressionDelegate(parameterCompleter, finder, parent),
+ChoiceCreatorDelegate(parameterCompleter, finder, parent),
 selectedChoice_(selectedChoice)
 {
 
@@ -43,12 +43,12 @@ QWidget* ArrayDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const
 {
     if (isIndexForValueUsingChoice(index))
     {
-        return createEnumerationSelector(parent);
+        return createEnumerationSelector(parent, index);
     }
 
     else
     {
-        return ExpressionDelegate::createEditor(parent, option, index);
+        return ChoiceCreatorDelegate::createEditor(parent, option, index);
     }
 }
 
@@ -73,7 +73,7 @@ void ArrayDelegate::setEditorData(QWidget* editor, QModelIndex const& index) con
 
     else
     {
-        return ExpressionDelegate::setEditorData(editor, index);
+        return ChoiceCreatorDelegate::setEditorData(editor, index);
     }
 }
 
@@ -92,7 +92,7 @@ void ArrayDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QMo
 
     else
     {
-        return ExpressionDelegate::setModelData(editor, model, index);
+        return ChoiceCreatorDelegate::setModelData(editor, model, index);
     }
 }
 
@@ -105,33 +105,25 @@ bool ArrayDelegate::columnAcceptsExpression(int column) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ArrayDelegate::isIndexForValueUsingChoice()
+// Function: ArrayDelegate::valueColumn()
 //-----------------------------------------------------------------------------
-bool ArrayDelegate::isIndexForValueUsingChoice(QModelIndex const& index) const
+int ArrayDelegate::valueColumn() const
 {
-    return index.column() == ArrayColumns::VALUE && !selectedChoice_->getName().isEmpty();
+    return ArrayColumns::VALUE;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ArrayDelegate::createEnumerationSelector()
+// Function: ArrayDelegate::choiceNameOnRow()
 //-----------------------------------------------------------------------------
-QWidget* ArrayDelegate::createEnumerationSelector(QWidget* parent) const
+QString ArrayDelegate::choiceNameOnRow(QModelIndex const& /*index*/) const
 {
-    QComboBox* combo = new QComboBox(parent);
+    return selectedChoice_->getName();
+}
 
-    if (!selectedChoice_.isNull())
-    {
-        foreach(QSharedPointer<Enumeration> enumeration, *selectedChoice_->enumerations())
-        {
-            QString itemText = enumeration->getValue();
-            if (!enumeration->getText().isEmpty())
-            {
-                itemText.append(":" + enumeration->getText());
-            }
-
-            combo->addItem(itemText);
-        }
-    }
-
-    return combo;
+//-----------------------------------------------------------------------------
+// Function: ArrayDelegate::findChoice()
+//-----------------------------------------------------------------------------
+QSharedPointer<Choice> ArrayDelegate::findChoice(QModelIndex const& /*index*/) const
+{
+    return selectedChoice_;
 }

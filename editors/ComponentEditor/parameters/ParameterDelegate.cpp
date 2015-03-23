@@ -37,11 +37,10 @@
 ParameterDelegate::ParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, 
     QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QObject* parent):
-ExpressionDelegate(parameterCompleter, parameterFinder, parent),
-choices_(choices),
+ChoiceCreatorDelegate(parameterCompleter, parameterFinder, parent),
 expressionFormatter_(expressionFormatter)
 {
-
+    setChoices(choices);
 }
 
 //-----------------------------------------------------------------------------
@@ -113,7 +112,7 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
 
     else
     {
-        return ExpressionDelegate::createEditor(parent, option, index);
+        return ChoiceCreatorDelegate::createEditor(parent, option, index);
     }
 }
 
@@ -188,7 +187,7 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
 
     else
     {
-        ExpressionDelegate::setEditorData(editor, index);
+        ChoiceCreatorDelegate::setEditorData(editor, index);
     }
 }
 
@@ -228,7 +227,7 @@ void ParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
 
 	else 
     {
-        ExpressionDelegate::setModelData(editor, model, index);
+        ChoiceCreatorDelegate::setModelData(editor, model, index);
 	}
 }
 
@@ -366,36 +365,11 @@ bool ParameterDelegate::columnAcceptsExpression(int column) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterDelegate::choiceSelected()
-//-----------------------------------------------------------------------------
-bool ParameterDelegate::isIndexForValueUsingChoice(QModelIndex const& index) const
-{
-    return index.column() == valueColumn() && !choiceNameOnRow(index).isEmpty();
-}
-
-//-----------------------------------------------------------------------------
 // Function: ParameterDelegate::choiceNameOnRow()
 //-----------------------------------------------------------------------------
 QString ParameterDelegate::choiceNameOnRow(QModelIndex const& index) const
 {
     return index.sibling(index.row(), choiceColumn()).data().toString();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterDelegate::findChoice()
-//-----------------------------------------------------------------------------
-QSharedPointer<Choice> ParameterDelegate::findChoice(QModelIndex const& index) const
-{
-    QString choiceName = choiceNameOnRow(index);
-    foreach (QSharedPointer<Choice> choice, *choices_)
-    {
-        if (choice->getName() == choiceName)
-        {
-            return choice;
-        }
-    }	
-
-    return QSharedPointer<Choice>(new Choice());
 }
 
 //-----------------------------------------------------------------------------
@@ -423,30 +397,9 @@ QWidget* ParameterDelegate::createChoiceSelector(QWidget* parent) const
 {
     QComboBox* combo = new QComboBox(parent);
     combo->addItem(QString("<none>"));
-    foreach (QSharedPointer<Choice> choice, *choices_)
+    foreach (QSharedPointer<Choice> choice, *getChoices())
     {
         combo->addItem(choice->getName());
-    }
-
-    return combo;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterDelegate::createEnumerationSelector()
-//-----------------------------------------------------------------------------
-QWidget* ParameterDelegate::createEnumerationSelector(QWidget* parent, QModelIndex const& index) const
-{
-    QComboBox* combo = new QComboBox(parent);
-
-    QSharedPointer<Choice> selectedChoice = findChoice(index);
-    foreach (QSharedPointer<Enumeration> enumeration, *selectedChoice->enumerations())
-    {
-        QString itemText = enumeration->getValue();
-        if (!enumeration->getText().isEmpty())
-        {
-            itemText.append(":" + enumeration->getText());
-        }
-        combo->addItem(itemText);
     }
 
     return combo;

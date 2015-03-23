@@ -3994,6 +3994,12 @@
     <ClCompile Include="designEditors\common\DesignCompletionModel.cpp">
       <Filter>Source Files\designEditors\common</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ChoiceCreatorDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\parameters\ChoiceCreatorDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5501,6 +5507,9 @@
     </CustomBuild>
     <CustomBuild Include="designEditors\common\DesignCompletionModel.h">
       <Filter>Header Files\designEditors\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\parameters\ChoiceCreatorDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

@@ -12,7 +12,8 @@
 #ifndef ARRAYDELEGATE_H
 #define ARRAYDELEGATE_H
 
-#include <editors/ComponentEditor/common/ExpressionDelegate.h>
+#include <editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h>
+
 #include <IPXACTmodels/choice.h>
 
 #include <QCompleter>
@@ -20,7 +21,7 @@
 //-----------------------------------------------------------------------------
 //! Delegate that provides widgets for editing arrays.
 //-----------------------------------------------------------------------------
-class ArrayDelegate : public ExpressionDelegate
+class ArrayDelegate : public ChoiceCreatorDelegate
 {
 	Q_OBJECT
 
@@ -85,6 +86,29 @@ protected:
      */
     virtual bool columnAcceptsExpression(int column) const;
 
+    /*!
+     *  Gets the name of the currently selected choice.
+     *
+     *      @param [in] index   The index of the currently selected row.
+     *
+     *      @return The name of the selected choice.
+     */
+    virtual QString choiceNameOnRow(QModelIndex const& index) const;
+
+    /*!
+     *  Gets the column number for the value column.
+     *
+     *      @return The number of the column for value.
+     */
+    virtual int valueColumn() const;
+
+    /*!
+     *  Gets the currently selected choice.
+     *
+     *      @param [in] index   The index of the currently selected row.
+     */
+    virtual QSharedPointer<Choice> findChoice(QModelIndex const& index) const;
+
 private:
 
 	//! No copying
@@ -92,24 +116,6 @@ private:
 
 	//! No assignment
     ArrayDelegate& operator=(const ArrayDelegate& other);
-
-    /*!
-     *  Finds if a given index is used to select an array value using choice.
-     *
-     *      @param [in] index   The index of the array value.
-     *
-     *      @return True if the value must be given as a choice value, false otherwise.
-     */
-    bool isIndexForValueUsingChoice(QModelIndex const& index) const;
-
-    /*!
-     *  Create the editor for selecting an enumeration of a choice.
-     *
-     *      @param [in] parent  The parent for the editor.
-     *
-     *      @return An editor for selecting the enumeration.
-     */
-    QWidget* createEnumerationSelector(QWidget* parent) const;
 
     //! The currently selected choice.
     QSharedPointer<Choice> selectedChoice_;

@@ -17,8 +17,7 @@
 //-----------------------------------------------------------------------------
 ConfigurableElementDelegate::ConfigurableElementDelegate(QCompleter* parameterCompleter,
     QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
-ExpressionDelegate(parameterCompleter, parameterFinder, parent),
-choices_(new QList<QSharedPointer<Choice> > ())
+ChoiceCreatorDelegate(parameterCompleter, parameterFinder, parent)
 {
 
 }
@@ -44,7 +43,7 @@ QWidget* ConfigurableElementDelegate::createEditor(QWidget* parent, QStyleOption
 
     else
     {
-        return ExpressionDelegate::createEditor(parent, option, index);
+        return ChoiceCreatorDelegate::createEditor(parent, option, index);
     }
 }
 
@@ -68,7 +67,7 @@ void ConfigurableElementDelegate::setEditorData(QWidget* editor, QModelIndex con
 
     else
     {
-        ExpressionDelegate::setEditorData(editor, index);
+        ChoiceCreatorDelegate::setEditorData(editor, index);
     }
 }
 
@@ -88,7 +87,7 @@ void ConfigurableElementDelegate::setModelData(QWidget* editor, QAbstractItemMod
 
     else
     {
-        ExpressionDelegate::setModelData(editor, model, index);
+        ChoiceCreatorDelegate::setModelData(editor, model, index);
     }
 }
 
@@ -97,7 +96,7 @@ void ConfigurableElementDelegate::setModelData(QWidget* editor, QAbstractItemMod
 //-----------------------------------------------------------------------------
 void ConfigurableElementDelegate::setChoices(QSharedPointer<QList<QSharedPointer<Choice> > > choices)
 {
-    choices_ = choices;
+    ChoiceCreatorDelegate::setChoices(choices);
 }
 
 //-----------------------------------------------------------------------------
@@ -109,55 +108,17 @@ bool ConfigurableElementDelegate::columnAcceptsExpression(int column) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: configurableelementdelegate::isIndexForValueUsingChoice()
+// Function: configurableelementdelegate::choiceNameOnRow()
 //-----------------------------------------------------------------------------
-bool ConfigurableElementDelegate::isIndexForValueUsingChoice(QModelIndex const& index) const
-{
-    return index.column() == ConfigurableElementsColumns::VALUE && !getChoiceNameAtIndex(index).isEmpty();
-}
-
-//-----------------------------------------------------------------------------
-// Function: configurableelementdelegate::getChoiceNameAtIndex()
-//-----------------------------------------------------------------------------
-QString ConfigurableElementDelegate::getChoiceNameAtIndex(QModelIndex const& index) const
+QString ConfigurableElementDelegate::choiceNameOnRow(QModelIndex const& index) const
 {
     return index.sibling(index.row(), ConfigurableElementsColumns::CHOICE).data(Qt::DisplayRole).toString();
 }
 
 //-----------------------------------------------------------------------------
-// Function: configurableelementdelegate::createEnumerationSelector()
+// Function: configurableelementdelegate::valueColumn()
 //-----------------------------------------------------------------------------
-QWidget* ConfigurableElementDelegate::createEnumerationSelector(QWidget* parent, QModelIndex const& index) const
+int ConfigurableElementDelegate::valueColumn() const
 {
-    QComboBox* combo = new QComboBox(parent);
-
-    QSharedPointer<Choice> selectedChoice = findChoice(index);
-    foreach (QSharedPointer<Enumeration> enumeration, *selectedChoice->enumerations())
-    {
-        QString itemText = enumeration->getValue();
-        if (!enumeration->getText().isEmpty())
-        {
-            itemText.append(":" + enumeration->getText());
-        }
-        combo->addItem(itemText);
-    }
-
-    return combo;
-}
-
-//-----------------------------------------------------------------------------
-// Function: configurableelementdelegate::findChoice()
-//-----------------------------------------------------------------------------
-QSharedPointer<Choice> ConfigurableElementDelegate::findChoice(QModelIndex const& index) const
-{
-    QString choiceName = getChoiceNameAtIndex(index);
-    foreach (QSharedPointer<Choice> currentChoice, *choices_)
-    {
-        if (currentChoice->getName() == choiceName)
-        {
-            return currentChoice;
-        }
-    }
-
-    return QSharedPointer<Choice>(new Choice());
+    return ConfigurableElementsColumns::VALUE;
 }

@@ -12,7 +12,7 @@
 #ifndef PARAMETERDELEGATE_H
 #define PARAMETERDELEGATE_H
 
-#include <editors/ComponentEditor/common/ExpressionDelegate.h>
+#include <editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <QCompleter>
@@ -23,7 +23,7 @@ class Choice;
 //-----------------------------------------------------------------------------
 //! Delegate that provides widgets for editing parameters.
 //-----------------------------------------------------------------------------
-class ParameterDelegate : public ExpressionDelegate
+class ParameterDelegate : public ChoiceCreatorDelegate
 {
 	Q_OBJECT
 
@@ -226,16 +226,6 @@ protected:
     QWidget* createChoiceSelector(QWidget* parent) const;
     
     /*!
-     *  Creates an editor for selecting an enumeration of a choice.
-     *
-     *      @param [in] parent   The parent widget for the editor.
-     *      @param [in] index    The index for which to create the editor.
-     *
-     *      @return An editor for selecting an enumeration.
-     */
-    QWidget* createEnumerationSelector(QWidget* parent, QModelIndex const& index) const;
-    
-    /*!
      *  Creates an editor for selecting a format for parameter value.
      *
      *      @param [in] parent   The parent widget for the editor.
@@ -262,24 +252,6 @@ private:
 	ParameterDelegate& operator=(const ParameterDelegate& other);
 
     /*!
-     *  Finds if the given index is used to select a parameter value using a choice.
-     *
-     *      @param [in] index   The index to check.
-     *
-     *      @return True, if the index is for selecting value with a choice, otherwise false.
-     */
-    bool isIndexForValueUsingChoice(QModelIndex const& index) const;
-
-    /*!
-     *  Finds the choice used on the row identified by the given index.
-     *
-     *      @param [in] index   The index whose row to find the choice from.
-     *
-     *      @return The choice selected on the given row.
-     */
-    QSharedPointer<Choice> findChoice(QModelIndex const& index) const;
-    
-    /*!
      *  Check if the value should be an array.
      *
      *      @param [in] index   The index of the current value.
@@ -302,9 +274,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The choices available for model parameter value.
-    QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
 
     //! The expression formatter used to change parameter uuids in references to parameter names.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;

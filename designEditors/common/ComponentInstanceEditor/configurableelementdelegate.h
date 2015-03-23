@@ -8,28 +8,29 @@
 #ifndef CONFIGURABLEELEMENTDELEGATE_H
 #define CONFIGURABLEELEMENTDELEGATE_H
 
-#include <editors/ComponentEditor/common/ExpressionDelegate.h>
+#include <editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
 #include <IPXACTmodels/choice.h>
 
 #include <QWidget>
 
-/*! \brief Delegate that provides editors to edit the configurable element values.
- *
- */
-class ConfigurableElementDelegate : public ExpressionDelegate
- {
+//-----------------------------------------------------------------------------
+//! Delegate that provides editors to edit the configurable element values.
+//-----------------------------------------------------------------------------
+class ConfigurableElementDelegate : public ChoiceCreatorDelegate
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param component Pointer to the component that defines the component instance type.
-	 * \param parent Pointer to the owner of this delegate.
-	 *
-	*/
+	 *      @param [in] parameterCompleter  Pointer to the completer, used in expression editor.
+	 *      @param [in] parameterFinder     Pointer to the parameter finder, used in expression editor.
+	 *      @param [in] parent              Pointer to the owner of this delegate.
+	 */
 	ConfigurableElementDelegate(QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
         QObject *parent);
 	
@@ -83,6 +84,22 @@ protected:
      */
     bool columnAcceptsExpression(int column) const;
 
+    /*!
+     *  Gets the name of the choice on the currently selected row.
+     *
+     *      @param [in] index   The index of the currently selected row.
+     *
+     *      @return The name of the choice used in the row on the given index.
+     */
+    virtual QString choiceNameOnRow(QModelIndex const& index) const;
+
+    /*!
+     *  Gets the column number of the value column.
+     *
+     *      @return The column number of the value column.
+     */
+    virtual int valueColumn() const;
+
 private:
 	//! \brief No copying
 	ConfigurableElementDelegate(const ConfigurableElementDelegate& other);
@@ -90,45 +107,6 @@ private:
 	//! \brief No assignment
 	ConfigurableElementDelegate& operator=(const ConfigurableElementDelegate& other);
 
-    /*!
-     *  Checks if the index is used to select a parameter value using a choice.
-     *
-     *      @param [in] index   The index to check.
-     *
-     *      @return True, if the index is for selecting a value with a choice, otherwise false.
-     */
-    bool isIndexForValueUsingChoice(QModelIndex const& index) const;
-
-    /*!
-     *  Finds the name of the choice corresponding to the given index.
-     *
-     *      @param [in] index   The index of the row to get the choice name from.
-     *
-     *      @return The name of the choice on the row.
-     */
-    QString getChoiceNameAtIndex(QModelIndex const& index) const;
-
-    /*!
-     *  Create the enumeration selector for a value containing a choice.
-     *
-     *      @param [in] parent  The parent widget for the editor.
-     *      @param [in] index   The index for which to create the editor.
-     *
-     *      @return An editor for selecting an enumeration.
-     */
-    QWidget* createEnumerationSelector(QWidget* parent, QModelIndex const& index) const;
-
-    /*!
-     *  Gets the choice used on the row identified by the given index.
-     *
-     *      @param [in] index   The index whose row to find the choice from.
-     *
-     *      @return The choice selected on the given row
-     */
-    QSharedPointer<Choice> findChoice(QModelIndex const& index) const;
-
-    //! The list of the currently available choices.
-    QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
 };
 
 #endif // CONFIGURABLEELEMENTDELEGATE_H
