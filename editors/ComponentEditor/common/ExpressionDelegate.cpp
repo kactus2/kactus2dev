@@ -95,3 +95,19 @@ QWidget* ExpressionDelegate::createExpressionEditor(QWidget* parent) const
 
     return editor;
 }
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionDelegate::getParameterFinder()
+//-----------------------------------------------------------------------------
+QSharedPointer<ParameterFinder> ExpressionDelegate::getParameterFinder() const
+{
+    return parameterFinder_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionDelegate::getNameCompleter()
+//-----------------------------------------------------------------------------
+QCompleter* ExpressionDelegate::getNameCompleter() const
+{
+    return parameterNameCompleter_;
+}

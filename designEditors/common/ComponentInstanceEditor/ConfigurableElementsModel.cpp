@@ -192,6 +192,14 @@ QVariant ConfigurableElementsModel::headerData( int section,
         {
             return tr("Choice");
         }
+        else if (section == ConfigurableElementsColumns::ARRAY_SIZE)
+        {
+            return tr("Array size");
+        }
+        else if (section == ConfigurableElementsColumns::TYPE)
+        {
+            return tr("Type");
+        }
         else
         {
             return QVariant();
@@ -310,6 +318,14 @@ QVariant ConfigurableElementsModel::valueForIndex(QModelIndex const& index) cons
     else if (index.column() == ConfigurableElementsColumns::CHOICE)
     {
         return configurableElements_.at(index.row())->getChoiceRef();
+    }
+    else if (index.column() == ConfigurableElementsColumns::ARRAY_SIZE)
+    {
+        return configurableElements_.at(index.row())->getAttribute("arraySize");
+    }
+    else if (index.column() == ConfigurableElementsColumns::TYPE)
+    {
+        return configurableElements_.at(index.row())->getValueFormat();
     }
     else
     {

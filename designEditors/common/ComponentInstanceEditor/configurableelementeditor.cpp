@@ -44,12 +44,14 @@ delegate_()
 	view_.setItemsDraggable(false);
 
     delegate_ = QSharedPointer<ConfigurableElementDelegate> (new ConfigurableElementDelegate(parameterCompleter,
-        parameterFinder, this));
+        parameterFinder, expressionFormatter, this));
 
     view_.setItemDelegate(delegate_.data());
 
     view_.setAlternatingRowColors(false);
     view_.setColumnHidden(ConfigurableElementsColumns::CHOICE, true);
+    view_.setColumnHidden(ConfigurableElementsColumns::ARRAY_SIZE, true);
+    view_.setColumnHidden(ConfigurableElementsColumns::TYPE, true);
 
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
 	topLayout->addWidget(&view_);

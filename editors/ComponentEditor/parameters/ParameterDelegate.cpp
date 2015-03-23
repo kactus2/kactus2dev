@@ -128,11 +128,12 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
         QModelIndex arraySizeIndex = index.sibling(index.row(), arraySizeColumn());
         int arraySize = arraySizeIndex.data(Qt::ToolTipRole).toInt();
 
-        QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder_));
+        QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(
+            getParameterFinder()));
 
         QSharedPointer<Choice> selectedChoice = findChoice(index);
 
-        ParameterArrayModel* model = new ParameterArrayModel(arraySize, expressionParser, parameterFinder_,
+        ParameterArrayModel* model = new ParameterArrayModel(arraySize, expressionParser, getParameterFinder(),
             expressionFormatter_, selectedChoice, view);
 
         QModelIndex valueIndex = index.sibling(index.row(), valueColumn());
@@ -143,7 +144,7 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
         QString parameterType = typeIndex.data(Qt::EditRole).toString();
         model->setParameterType(parameterType);
 
-        view->setItemDelegate(new ArrayDelegate(parameterNameCompleter_, parameterFinder_, selectedChoice,
+        view->setItemDelegate(new ArrayDelegate(getNameCompleter(), getParameterFinder(), selectedChoice,
             this->parent()));
 
         view->setModel(model);
@@ -448,7 +449,7 @@ void ParameterDelegate::updateEditorGeometry(QWidget *editor, const QStyleOption
 //-----------------------------------------------------------------------------
 void ParameterDelegate::repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option,
     QModelIndex const& index) const
-{
+{   
     QModelIndex valueIdIndex = index.sibling(index.row(), arraySizeColumn());
     int arraySize = valueIdIndex.data(Qt::ToolTipRole).toInt();
     int editorMinimumSize = 24 * (arraySize + 1);

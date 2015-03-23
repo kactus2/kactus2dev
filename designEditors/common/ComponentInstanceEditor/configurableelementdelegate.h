@@ -10,6 +10,7 @@
 
 #include <editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <IPXACTmodels/choice.h>
 
@@ -27,11 +28,14 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] parameterCompleter  Pointer to the completer, used in expression editor.
-	 *      @param [in] parameterFinder     Pointer to the parameter finder, used in expression editor.
-	 *      @param [in] parent              Pointer to the owner of this delegate.
+	 *      @param [in] parameterCompleter      Pointer to the completer, used in expression editor.
+	 *      @param [in] parameterFinder         Pointer to the parameter finder, used in expression editor.
+     *      @param [in] expressionFormatter     Expression formatter, used to change parameter ids to names.
+	 *      @param [in] parent                  Pointer to the owner of this delegate.
 	 */
-	ConfigurableElementDelegate(QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+	ConfigurableElementDelegate(QCompleter* parameterCompleter,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
         QObject *parent);
 	
 	//! \brief The destructor
@@ -73,6 +77,16 @@ public:
      */
     void setChoices(QSharedPointer<QList<QSharedPointer<Choice> > > choices);
 
+    /*!
+     *  Updates the editor geometry.
+     *
+     *      @param [in] editor  The editor being updated.
+     *      @param [in] option  The options used to update the editor.
+     *      @param [in] index   The model index being edited.
+     */
+    virtual void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
+        const QModelIndex &index) const;
+
 protected:
 
     /*!
@@ -107,6 +121,36 @@ private:
 	//! \brief No assignment
 	ConfigurableElementDelegate& operator=(const ConfigurableElementDelegate& other);
 
+    /*!
+     *  Check if the value at the given index is an array.
+     *
+     *      @param [in] index   The index of the current value.
+     *
+     *      @return True, if the value is an array, false otherwise.
+     */
+    bool valueIsArray(QModelIndex const& index) const;
+
+    /*!
+     *  Create the editor for the array value.
+     *
+     *      @param [in] editor  The editor to be changed to array editor.
+     *      @param [in] index   The index of the current value.
+     */
+    void createArrayEditor(QWidget* editor, QModelIndex const& index) const;
+
+    /*!
+     *  Repositions the editor to better use the available space. The editor is then resized to best cover the
+     *  usable area.
+     *
+     *      @param [in] editor  The editor to reposition.
+     *      @param [in] option  The style options for the editor.
+     *      @param [in] index   The current index.
+     */
+    void repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option, QModelIndex const& index)
+        const;
+
+    //! Expression formatter, used in expressions to change parameter ids into names.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 };
 
 #endif // CONFIGURABLEELEMENTDELEGATE_H
