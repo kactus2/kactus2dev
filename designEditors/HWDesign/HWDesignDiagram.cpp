@@ -116,243 +116,19 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
     /* component instances */
     foreach (ComponentInstance const& instance, design->getComponentInstances())
     {
-        QSharedPointer<Component> component;
-
-        if (!instance.getComponentRef().isEmpty())
-        {
-            component = getLibraryInterface()->getModel(instance.getComponentRef()).dynamicCast<Component>();
-
-            if (!component && instance.getComponentRef().isValid())
-            {
-                emit errorMessage(tr("The component %1 instantiated within design "
-                    "%2 was not found in the library").arg(
-                    instance.getComponentRef().getName()).arg(design->getVlnv()->getName()));
-            }           
-        }
-
-        if(!component)
-        {
-            // Create an unpackaged component so that we can still visualize the component instance.
-            component = QSharedPointer<Component>(new Component(instance.getComponentRef()));
-            component->setComponentImplementation(KactusAttribute::HW);         
-        }
-
-        HWComponentItem* item = new HWComponentItem(getLibraryInterface(), component,
-                                                    instance.getInstanceName(),
-                                                    instance.getDisplayName(),
-                                                    instance.getDescription(),
-                                                    instance.getUuid(),
-                                                    instance.getConfigurableElementValues(),
-                                                    instance.getPortAdHocVisibilities());
-
-        item->setBusInterfacePositions(instance.getBusInterfacePositions(), true);
-        item->setAdHocPortPositions(instance.getAdHocPortPositions());
-        item->setVendorExtensions(instance.getVendorExtensions());
-        
-        if (instance.isDraft())
-        {
-            item->setDraft();
-        }
-
-        // Check if the position is not found.
-        if (instance.getPosition().isNull())
-        {
-            // Migrate from the old layout to the column based layout.
-            getLayout()->addItem(item);
-        }
-        else
-        {
-            item->setPos(instance.getPosition());
-
-            GraphicsColumn* column = getLayout()->findColumnAt(instance.getPosition());
-            
-            if (column != 0)
-            {
-                column->addItem(item, true);
-            }
-            else
-            {
-                getLayout()->addItem(item);
-            }
-        }
-
-		onComponentInstanceAdded(item);
+        createComponentItem(instance, design);
     }
 
     /* interconnections */
     foreach(Interconnection interconnection, design->getInterconnections())
     {
-        QPair<Interface, Interface> connInterfaces = interconnection.getInterfaces();
-
-		// find the first referenced component
-        HWComponentItem *comp1 = getComponent(connInterfaces.first.getComponentRef());
-
-		if (!comp1) {
-			emit errorMessage(tr("Component %1 was not found in the design").arg(
-			connInterfaces.first.getComponentRef()));
-			continue;
-		}
-		
-		// find the second referenced component
-        HWComponentItem *comp2 = getComponent(connInterfaces.second.getComponentRef());
-
-		if (!comp2) {
-			emit errorMessage(tr("Component %1 was not found in the design").arg(
-			connInterfaces.second.getComponentRef()));
-			continue;
-		}
-
-		// find the port of the first referenced component
-        ConnectionEndpoint* port1 = comp1->getBusPort(connInterfaces.first.getBusRef());
-
-		if (!port1)
-        {
-			emit errorMessage(tr("Port %1 was not found in the component %2").arg(
-			connInterfaces.first.getBusRef()).arg(connInterfaces.first.getComponentRef()));
-
-			port1 = createMissingPort(connInterfaces.first.getBusRef(), comp1, design);
-		}
-		
-		// find the port of the second referenced component
-        ConnectionEndpoint* port2 = comp2->getBusPort(connInterfaces.second.getBusRef());
-
-		if (!port2)
-        {
-			emit errorMessage(tr("Port %1 was not found in the component %2").arg(
-			connInterfaces.second.getBusRef()).arg(connInterfaces.second.getComponentRef()));
-			
-            port2 = createMissingPort(connInterfaces.second.getBusRef(), comp2, design);
-		}
-
-        if (interconnection.isOffPage())
-        {
-            port1 = port1->getOffPageConnector();
-            port2 = port2->getOffPageConnector();
-        }
-
-		// if both components and their ports are found an interconnection can be
-		// created
-		if (comp1 && comp2 && port1 && port2)
-        {
-			HWConnection *diagramInterconnection =
-				new HWConnection(port1, port2, true, QString(), interconnection.displayName(),
-                                           interconnection.description(), this);
-            diagramInterconnection->setRoute(interconnection.getRoute());
-			diagramInterconnection->setName(interconnection.name());
-
-            if (interconnection.isOffPage())
-            {
-                diagramInterconnection->hide();
-            }
-            diagramInterconnection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
-
-            connect(diagramInterconnection, SIGNAL(errorMessage(QString const&)), this,
-                    SIGNAL(errorMessage(QString const&)));
-
-            addItem(diagramInterconnection);
-            diagramInterconnection->updatePosition();
-		}
+        createInterconnection(interconnection, design);
     }
 
 	// Create hierarchical connections.
-    QList<QString> connectedHier;
-    QList<HierConnection> hierConnections = design->getHierarchicalConnections();
-
-    for (int i = 0; i < hierConnections.size(); ++i)
+    foreach (HierConnection hierConn, design->getHierarchicalConnections())
     {
-        HierConnection hierConn = hierConnections.at(i);
-
-		QSharedPointer<BusInterface> busIf = getEditedComponent()->getBusInterface(hierConn.getInterfaceRef());
-        ConnectionEndpoint* diagIf = 0;
-
-		// if the bus interface was not found
-		if (busIf == 0)
-        {
-			emit errorMessage(tr("Bus interface %1 was not found in the top-component").arg(hierConn.getInterfaceRef()));
-
-            // Create a dummy interface which is marked as invalid.
-            busIf = QSharedPointer<BusInterface>(new BusInterface());
-            busIf->setName(hierConn.getInterfaceRef());
-
-            diagIf = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), busIf, 0);
-            diagIf->setTemporary(true);
-            diagIf->updateInterface();
-        }
-        else
-        {			
-            // Find the corresponding diagram interface.
-            foreach (QGraphicsItem* item, items())
-            {
-                if (item->type() == BusInterfaceItem::Type &&
-                    static_cast<BusInterfaceItem*>(item)->getBusInterface() == busIf)
-                {
-                    diagIf = static_cast<BusInterfaceItem*>(item);
-                    break;
-                }
-            }
-		}
-
-        Q_ASSERT(diagIf != 0);
-
-		// Check if the position is found.
-        if (!hierConn.getPosition().isNull())
-        {
-            diagIf->setPos(hierConn.getPosition());
-            diagIf->setDirection(hierConn.getDirection());
-
-            GraphicsColumn* column = getLayout()->findColumnAt(hierConn.getPosition());
-            
-            if (column != 0)
-            {
-                column->addItem(diagIf);
-            }
-            else
-            {
-                getLayout()->addItem(diagIf);
-            }
-        }
-
-		// find the component where the hierarchical connection is connected to
-        HWComponentItem *comp = getComponent(hierConn.getInterface().getComponentRef());
-		if (!comp) {
-			emit errorMessage(tr("Component %1 was not found in the top-design").arg(
-				hierConn.getInterface().getComponentRef()));
-			continue;
-		}
-
-		// find the port of the component
-        ConnectionEndpoint* compPort = comp->getBusPort(hierConn.getInterface().getBusRef());
-		if (!compPort)
-        {
-			emit errorMessage(tr("Port %1 was not found in the component %2").arg(
-				hierConn.getInterface().getBusRef()).arg(hierConn.getInterface().getComponentRef()));
-
-            compPort = createMissingPort(hierConn.getInterface().getBusRef(), comp, design);
-		}        
-
-        if (hierConn.isOffPage())
-        {
-            compPort = compPort->getOffPageConnector();
-            diagIf = diagIf->getOffPageConnector();
-        }
-
-        HWConnection* diagConn = new HWConnection(compPort, diagIf, true, QString(), QString(), QString(), this);
-        diagConn->setRoute(hierConn.getRoute());
-
-        if (hierConn.isOffPage())
-        {
-            diagConn->hide();
-        }
-
-        diagConn->setVendorExtensions(hierConn.getVendorExtensions());
-        diagConn->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
-
-        connect(diagConn, SIGNAL(errorMessage(QString const&)), this,
-            SIGNAL(errorMessage(QString const&)));
-        connectedHier.append(hierConn.getInterfaceRef());
-
-        addItem(diagConn);
-        diagConn->updatePosition();
+        createHierarchicalConnection(hierConn, design);
     }
 
     // Set the ad-hoc data for the diagram.
@@ -627,9 +403,7 @@ QSharedPointer<Design> HWDesignDiagram::createDesign(const VLNV &vlnv) const
             instance.setVendorExtensions(comp->getVendorExtensions());
 
             // Save the port positions.
-            QListIterator<QSharedPointer<BusInterface> >
-                itrBusIf(comp->componentModel()->getBusInterfaces());
-
+            QListIterator<QSharedPointer<BusInterface> > itrBusIf(comp->componentModel()->getBusInterfaces());
             while (itrBusIf.hasNext())
             {
                 QSharedPointer<BusInterface> busif = itrBusIf.next();
@@ -637,7 +411,6 @@ QSharedPointer<Design> HWDesignDiagram::createDesign(const VLNV &vlnv) const
             }
 
             QMapIterator<QString, bool> itrAdHoc(comp->getPortAdHocVisibilities());
-
             while (itrAdHoc.hasNext())
             {
                 itrAdHoc.next();
@@ -2023,10 +1796,165 @@ void HWDesignDiagram::replace(ComponentItem* destComp, ComponentItem* sourceComp
 }
 
 //-----------------------------------------------------------------------------
-// Function: createMissingPort()
+// Function: HWDesignDiagram::createComponentItem()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::createComponentItem(ComponentInstance const &instance, QSharedPointer<Design> design)
+{
+    QSharedPointer<Component> component;
+
+    if (!instance.getComponentRef().isEmpty())
+    {
+        component = getLibraryInterface()->getModel(instance.getComponentRef()).dynamicCast<Component>();
+
+        if (!component && instance.getComponentRef().isValid())
+        {
+            emit errorMessage(tr("Component %1 instantiated within design %2 was not found in the library").arg(
+                instance.getComponentRef().getName()).arg(design->getVlnv()->getName()));
+        }           
+    }
+
+    if(!component)
+    {
+        // Create an unpackaged component so that we can still visualize the component instance.
+        component = QSharedPointer<Component>(new Component(instance.getComponentRef()));
+        component->setComponentImplementation(KactusAttribute::HW);         
+    }
+
+    HWComponentItem* item = new HWComponentItem(getLibraryInterface(), component,
+        instance.getInstanceName(),
+        instance.getDisplayName(),
+        instance.getDescription(),
+        instance.getUuid(),
+        instance.getConfigurableElementValues(),
+        instance.getPortAdHocVisibilities());
+
+    if (!getDesignConfiguration().isNull())
+    {
+        QMap<QString, QString> mergedCEVs = instance.getConfigurableElementValues();
+        QMap<QString, QString> overrideCEVs = getDesignConfiguration()->getConfigurableElementValues(
+            instance.getUuid());
+
+        foreach(QString id, overrideCEVs.keys())
+        {
+            mergedCEVs.insert(id, overrideCEVs.value(id));
+        }
+        item->setConfigurableElements(mergedCEVs);
+    }
+
+    item->setBusInterfacePositions(instance.getBusInterfacePositions(), true);
+    item->setAdHocPortPositions(instance.getAdHocPortPositions());
+    item->setVendorExtensions(instance.getVendorExtensions());
+
+    if (instance.isDraft())
+    {
+        item->setDraft();
+    }
+
+    // Check if the position is not found.
+    // Migrate from the old layout to the column based layout.
+    if (instance.getPosition().isNull())
+    {
+        getLayout()->addItem(item);
+    }
+    else
+    {
+        item->setPos(instance.getPosition());
+
+        GraphicsColumn* column = getLayout()->findColumnAt(instance.getPosition());
+
+        if (column != 0)
+        {
+            column->addItem(item, true);
+        }
+        else
+        {
+            getLayout()->addItem(item);
+        }
+    }
+
+    onComponentInstanceAdded(item);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::createInterconnection()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::createInterconnection(Interconnection const& interconnection, QSharedPointer<Design> design)
+{
+    QPair<Interface, Interface> connInterfaces = interconnection.getInterfaces();
+
+    // find the first referenced component
+    QString firstComponentRef = connInterfaces.first.getComponentRef();
+    HWComponentItem* comp1 = getComponent(firstComponentRef);
+    if (!comp1)
+    {
+        emit errorMessage(tr("Component %1 was not found in the design").arg(firstComponentRef));
+        return;
+    }
+
+    // find the second referenced component
+    QString secondComponent = connInterfaces.second.getComponentRef();
+    HWComponentItem* comp2 = getComponent(secondComponent);
+    if (!comp2)
+    {
+        emit errorMessage(tr("Component %1 was not found in the design").arg(secondComponent));
+        return;
+    }
+
+    // Find the referenced ports.
+    ConnectionEndpoint* port1 = findOrCreateMissingPort(comp1, firstComponentRef, connInterfaces.first.getBusRef(), 
+        design);
+    ConnectionEndpoint* port2 = findOrCreateMissingPort(comp2, secondComponent, connInterfaces.second.getBusRef(), 
+        design);
+
+    if (interconnection.isOffPage())
+    {
+        port1 = port1->getOffPageConnector();
+        port2 = port2->getOffPageConnector();
+    }
+
+    // if both components and their ports are found an interconnection can be created.
+    if (comp1 && comp2 && port1 && port2)
+    {
+        HWConnection *diagramInterconnection = new HWConnection(port1, port2, true, 
+            interconnection.name(), interconnection.displayName(), interconnection.description(), this);
+        diagramInterconnection->setRoute(interconnection.getRoute());
+
+        if (interconnection.isOffPage())
+        {
+            diagramInterconnection->hide();
+        }
+        diagramInterconnection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
+
+        connect(diagramInterconnection, SIGNAL(errorMessage(QString const&)), 
+            this, SIGNAL(errorMessage(QString const&)));
+
+        addItem(diagramInterconnection);
+        diagramInterconnection->updatePosition();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::findOrCreatePort()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint* HWDesignDiagram::findOrCreateMissingPort(HWComponentItem* componentItem, 
+    QString const& componentRef, QString const& busRef, QSharedPointer<Design> design)
+{
+    ConnectionEndpoint* portItem = componentItem->getBusPort(busRef);
+
+    if (!portItem)
+    {
+        emit errorMessage(tr("Port %1 was not found in the component %2").arg(busRef).arg(componentRef));
+        portItem = createMissingPort(busRef, componentItem, design);
+    }	
+
+    return portItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::createMissingPort()
 //-----------------------------------------------------------------------------
 BusPortItem* HWDesignDiagram::createMissingPort(QString const& portName, HWComponentItem* component,
-                                                QSharedPointer<Design> design)
+    QSharedPointer<Design> design)
 {
     QSharedPointer<BusInterface> busIf(new BusInterface());
     busIf->setName(portName);
@@ -2045,6 +1973,99 @@ BusPortItem* HWDesignDiagram::createMissingPort(QString const& portName, HWCompo
     }
 
     return port;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::createHierarchicalConnection()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::createHierarchicalConnection(HierConnection const& hierConn, QSharedPointer<Design> design)
+{
+    ConnectionEndpoint* hierarchicalInterface = 0;
+    QSharedPointer<BusInterface> busIf = getEditedComponent()->getBusInterface(hierConn.getInterfaceRef());
+
+    // if the bus interface was not found
+    if (busIf == 0)
+    {
+        emit errorMessage(tr("Bus interface %1 was not found in the top-component").arg(hierConn.getInterfaceRef()));
+
+        // Create a dummy interface which is marked as invalid.
+        busIf = QSharedPointer<BusInterface>(new BusInterface());
+        busIf->setName(hierConn.getInterfaceRef());
+
+        hierarchicalInterface = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), busIf, 0);
+        hierarchicalInterface->setTemporary(true);
+        hierarchicalInterface->updateInterface();
+    }
+    else
+    {			
+        // Find the corresponding diagram interface.
+        foreach (QGraphicsItem* item, items())
+        {
+            if (item->type() == BusInterfaceItem::Type &&
+                static_cast<BusInterfaceItem*>(item)->getBusInterface() == busIf)
+            {
+                hierarchicalInterface = static_cast<BusInterfaceItem*>(item);
+                break;
+            }
+        }
+    }
+
+    Q_ASSERT(hierarchicalInterface != 0);
+
+    // Check if the position is found.
+    if (!hierConn.getPosition().isNull())
+    {
+        hierarchicalInterface->setPos(hierConn.getPosition());
+        hierarchicalInterface->setDirection(hierConn.getDirection());
+
+        GraphicsColumn* column = getLayout()->findColumnAt(hierConn.getPosition());
+
+        if (column != 0)
+        {
+            column->addItem(hierarchicalInterface);
+        }
+        else
+        {
+            getLayout()->addItem(hierarchicalInterface);
+        }
+    }
+
+    // Find the component where the hierarchical connection is connected.
+    HWComponentItem *comp = getComponent(hierConn.getInterface().getComponentRef());
+    if (!comp)
+    {
+        emit errorMessage(tr("Component %1 was not found in the top-design").arg(
+            hierConn.getInterface().getComponentRef()));
+        return;
+    }
+
+    // Find the port of the component.
+    ConnectionEndpoint* componentPort = findOrCreateMissingPort(comp, hierConn.getInterface().getComponentRef(), 
+        hierConn.getInterface().getBusRef(), design);
+
+    if (hierConn.isOffPage())
+    {
+        componentPort = componentPort->getOffPageConnector();
+        hierarchicalInterface = hierarchicalInterface->getOffPageConnector();
+    }
+
+    HWConnection* hierarchicalConnection = new HWConnection(componentPort, hierarchicalInterface, true, 
+        QString(), QString(), QString(), this);
+    hierarchicalConnection->setRoute(hierConn.getRoute());
+
+    if (hierConn.isOffPage())
+    {
+        hierarchicalConnection->hide();
+    }
+
+    hierarchicalConnection->setVendorExtensions(hierConn.getVendorExtensions());
+    hierarchicalConnection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
+
+    connect(hierarchicalConnection, SIGNAL(errorMessage(QString const&)), this,
+        SIGNAL(errorMessage(QString const&)));
+
+    addItem(hierarchicalConnection);
+    hierarchicalConnection->updatePosition();
 }
 
 //-----------------------------------------------------------------------------

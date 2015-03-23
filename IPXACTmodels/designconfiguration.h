@@ -220,15 +220,13 @@ public:
      *
      * \return QList containing pointers to the configurations
      */
-    const QList<QSharedPointer<GeneratorChainConfiguration> >&
-	getGeneratorChainConfs();
+    const QList<QSharedPointer<GeneratorChainConfiguration> >& getGeneratorChainConfs();
 
     /*! \brief Get list of the interconnection configurations
      *
      * \return QList containing pointers to the interconnection configurations
      */
-    const QList<QSharedPointer<InterconnectionConf> >&
-	getInterconnectionConfs();
+    const QList<QSharedPointer<InterconnectionConf> >& getInterconnectionConfs();
 
     /*! \brief Get the view configurations
      *
@@ -267,18 +265,14 @@ public:
      * \param generatorChainConfs QList containing pointers to the generator
      * chain configurations
      */
-    void setGeneratorChainConfs(
-	QList<QSharedPointer<GeneratorChainConfiguration> >&
-	generatorChainConfs);
+    void setGeneratorChainConfs(QList<QSharedPointer<GeneratorChainConfiguration> >& generatorChainConfs);
 
     /*! \brief Set the interconnection configurations
      *
      * \param interconnectionConfs QList containing pointers to the
      * interconnection configurations
      */
-    void setInterconnectionConfs(
-	QList<QSharedPointer<InterconnectionConf> >&
-	interconnectionConfs);
+    void setInterconnectionConfs(QList<QSharedPointer<InterconnectionConf> >& interconnectionConfs);
 
     /*! \brief Set the view configurations for this design configuration
      *
@@ -309,8 +303,7 @@ public:
 	 * \param viewName The name of the component's view that is set as active.
 	 *
 	*/
-	virtual void addViewConfiguration(const QString& instanceName, 
-		const QString& viewName);
+	virtual void addViewConfiguration(const QString& instanceName, const QString& viewName);
 
 	/*! \brief Remove the view configuration for given name.
 	 *
@@ -351,6 +344,15 @@ public:
      */
 	KactusAttribute::Implementation getDesignConfigImplementation() const;
 
+    /*!
+     *  Gets the override configurable element values for a given component instance identified by UUID.
+     *
+     *      @param [in] instanceUUID   The uuid for the instance to get the values.
+     *
+     *      @return Configurable element values for the instance.
+     */
+    QMap<QString, QString> getConfigurableElementValues(QString const& instanceUUID) const;
+
 private:
 
     /*!
@@ -358,7 +360,20 @@ private:
      *
      *      @param [in] node The QDomNode from where to parse the information.
      */
-    void parseVendorExtensions(QDomNode& node);
+    void parseVendorExtensions(QDomNode const& extensionsNode);
+
+    /*!
+     *  Parses the override configurable element values for component instances.
+     *
+     *      @param [in] extensionNode   The DOM node containing the extensions for configurable element values.
+     *
+     *      @remark This is for Kactus2 extensions.
+     */
+    void parseConfigurableElementValues(QDomNode const& extensionNode);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     /*! \brief MANDATORY spirit:designRef
      * Specifies the design for this design configuration

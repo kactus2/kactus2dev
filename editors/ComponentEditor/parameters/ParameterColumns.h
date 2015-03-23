@@ -28,6 +28,6 @@ namespace ParameterColumns
         ARRAY_SIZE,
         ARRAY_OFFSET,
         USAGE_COUNT,
-        COLUMN_COUNT,
+        COLUMN_COUNT
     };
 }

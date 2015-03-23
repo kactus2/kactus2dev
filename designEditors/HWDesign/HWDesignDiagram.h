@@ -38,6 +38,10 @@ class HWDesignWidget;
 class ConnectionEndpoint;
 class GraphicsConnection;
 
+class HierConnection;
+class Interconnection;
+class ComponentInstance;
+
 /*! \brief HWDesignDiagram is a graphical view to a design
  *
  */
@@ -448,13 +452,53 @@ private:
     virtual void replace(ComponentItem* destComp, ComponentItem* sourceComp);
 
     /*!
+     *  Creates a graphics item for component instance and adds it to the diagram.
+     *
+     *      @param [in] instance    The instance to create item for.
+     *      @param [in] design      The design containing the instance.
+     */
+    void createComponentItem(ComponentInstance const& instance, QSharedPointer<Design> design);
+
+    /*!
+     *  Finds a port item on a component item or creates one if not found.
+     *
+     *      @param [in] componentItem   The component graphic item containing the port.
+     *      @param [in] componentRef    The reference name for the component.
+     *      @param [in] busRef          The reference name for the bus interface.
+     *      @param [in] design          The design containing the component instance.
+     *
+     *      @return The port item on the component.
+     */
+    ConnectionEndpoint* findOrCreateMissingPort(HWComponentItem* componentItem, QString const& componentRef, 
+        QString const& busRef, QSharedPointer<Design> design);
+    
+    /*!
      *  Creates a missing port to the given component item.
      *
      *      @param [in] portName   The name of the port to create.
      *      @param [in] component  The parent component.
      *      @param [in] design     The design containing related information.
+     *
+     *      @return A port item for a missing port.
      */
-    BusPortItem* createMissingPort(QString const& portName, HWComponentItem* component, QSharedPointer<Design> design);
+    BusPortItem* createMissingPort(QString const& portName, HWComponentItem* component, 
+        QSharedPointer<Design> design);
+
+    /*!
+     *  Creates a graphics item for interconnection and adds it to the diagram.
+     *
+     *      @param [in] interconnection     The interconnection to create item for.
+     *      @param [in] design              The design containing the interconnection.
+     */
+    void createInterconnection(Interconnection const& interconnection, QSharedPointer<Design> design);
+
+    /*!
+     *  Creates a graphics item for hierarchical interconnection and adds it to the diagram.
+     *
+     *      @param [in] hierConn    The hierarchical interconnection to create item for.
+     *      @param [in] design      The design containing the interconnection.
+     */
+    void createHierarchicalConnection(HierConnection const& hierConn, QSharedPointer<Design> design);
 
     /*!
      *  Copies component instances in a format which can be saved to clipboard.

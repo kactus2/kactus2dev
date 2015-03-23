@@ -65,10 +65,9 @@ void Kactus2Placeholder::write(QXmlStreamWriter& writer) const
 {
     writer.writeEmptyElement(name_);
 
-    for (QMapIterator<QString, QString> attributeIterator(attributes_); attributeIterator.hasNext(); 
-        attributeIterator.next())
+    foreach (QString attribute, attributes_.keys())
     {
-        writer.writeAttribute(attributeIterator.key(), attributeIterator.value());
+        writer.writeAttribute(attribute, attributes_.value(attribute));
     }
 }
 
