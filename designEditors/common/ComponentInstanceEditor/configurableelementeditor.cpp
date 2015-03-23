@@ -30,13 +30,11 @@ ConfigurableElementEditor::ConfigurableElementEditor(QSharedPointer<ParameterFin
 QGroupBox(tr("Configurable element values"), parent),
 view_(this),
 filter_(this),
-model_(parameterFinder, expressionFormatter, this),
+model_(parameterFinder, expressionFormatter, expressionParser, this),
 delegate_()
 {
 	filter_.setSourceModel(&model_);
 	view_.setModel(&filter_);
-
-    model_.setExpressionParser(expressionParser);
 
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(completionModel);

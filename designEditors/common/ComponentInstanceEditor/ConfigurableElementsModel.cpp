@@ -17,15 +17,17 @@
 // Function: ConfigurableElementsModel::ConfigurableElementsModel()
 //-----------------------------------------------------------------------------
 ConfigurableElementsModel::ConfigurableElementsModel(QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QObject *parent):
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
+    QObject *parent):
 ParameterizableTable(parameterFinder, parent),
 component_(0),
 currentElementValues_(),
 configurableElements_(),
 editProvider_(0),
-expressionFormatter_(expressionFormatter)
+expressionFormatter_(expressionFormatter),
+validator_(new ParameterValidator2014(expressionParser, parameterFinder))
 {
-
+    setExpressionParser(expressionParser);
 }
 
 //-----------------------------------------------------------------------------
@@ -424,9 +426,20 @@ QVariant ConfigurableElementsModel::expressionOrValueForIndex(QModelIndex const&
 //-----------------------------------------------------------------------------
 bool ConfigurableElementsModel::validateColumnForParameter(QModelIndex const& index) const
 {
-    QString value = configurableElements_.at(index.row())->getValue();
+    QSharedPointer<Parameter> parameter = configurableElements_.at(index.row());
 
-    return isValuePlainOrExpression(value);
+    if (index.column() == ConfigurableElementsColumns::NAME)
+    {
+        return validator_->hasValidName(parameter.data());
+    }
+    else if (index.column() == ConfigurableElementsColumns::VALUE)
+    {
+        return validator_->hasValidValue(parameter.data(), component_->componentModel()->getChoices());
+    }
+    else
+    {
+        return true;
+    }
 }
 
 //-----------------------------------------------------------------------------

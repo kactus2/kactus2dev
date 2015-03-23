@@ -18,6 +18,7 @@
 #include <IPXACTmodels/parameter.h>
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/choice.h>
+#include <IPXACTmodels/validators/ParameterValidator2014.h>
 
 #include <QAbstractTableModel>
 #include <QMap>
@@ -40,10 +41,12 @@ public:
 	 *
 	 *      @param [in] parameterFinder         Pointer to the instance for finding parameters.
 	 *      @param [in] expressionFormatter     Pointer to the formatter for referencing expressions.
+     *      @param [in] expressionParser        Pointer to the expression parser for parsing the expressions.
 	 *      @param [in] parent                  Pointer to the owner of this model.
 	 */
 	ConfigurableElementsModel(QSharedPointer<ParameterFinder> parameterFinder, 
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
         QObject *parent);
 	
 	//! \brief The destructor
@@ -275,6 +278,9 @@ private:
 
     //! The formatter for referencing expressions.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
+
+    //! Validator for parameters.
+    ParameterValidator2014* validator_;
 };
 
 #endif // CONFIGURABLEELEMENTSMODEL_H
