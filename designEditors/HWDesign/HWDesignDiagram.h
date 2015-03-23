@@ -9,6 +9,7 @@
 #include "AdHocEnabled.h"
 
 #include <designEditors/common/ComponentDesignDiagram.h>
+
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/ColumnDesc.h>
 
@@ -17,30 +18,30 @@
 #include <QSharedPointer>
 #include <QUndoCommand>
 
-class LibraryInterface;
-class Component;
-class Design;
-class DesignConfiguration;
-class HWComponentItem;
-class ComponentItem;
+class AbstractionDefinition;
+class AdHocConnection;
+class AdHocInterfaceItem;
+class AdHocPortItem;
 class BusPortItem;
 class BusInterfaceItem;
-class AdHocPortItem;
-class AdHocInterfaceItem;
-class HWConnection;
-class HWConnectionEndpoint;
+class Component;
+class ComponentInstance;
+class ComponentItem;
+class ConnectionEndpoint;
+class Design;
+class DesignConfiguration;
+class GenericEditProvider;
 class GraphicsColumn;
 class GraphicsColumnLayout;
-class AbstractionDefinition;
-class VLNV;
-class GenericEditProvider;
-class HWDesignWidget;
-class ConnectionEndpoint;
 class GraphicsConnection;
-
 class HierConnection;
+class HWComponentItem;
+class HWConnection;
+class HWConnectionEndpoint;
 class Interconnection;
-class ComponentInstance;
+class LibraryInterface;
+class PortRef;
+class VLNV;
 
 /*! \brief HWDesignDiagram is a graphical view to a design
  *
@@ -500,6 +501,30 @@ private:
      */
     void createHierarchicalConnection(HierConnection const& hierConn, QSharedPointer<Design> design);
 
+    /*!
+     *  Creates the hierarchical ad-hoc port items in the diagram.
+     *
+     *      @param [in] design   The design containing the ad-hoc ports.
+     */
+    void createHierachicalAdHocPorts(QSharedPointer<Design> design);
+    
+    /*!
+     *  Creates a graphics item for an ad-hoc interconnection and adds it to the diagram.
+     *
+     *      @param [in] adHocConn   The ad-hoc connection to create the item for.
+     */
+    void createAdHocConnection(AdHocConnection const& adHocConn);
+
+    /*!
+     *  Creates a graphics item for an ad-hoc interconnection between two ports and adds it to the diagram.
+     *
+     *      @param [in] adHocConnection     The ad-hoc connection containing the ports.
+     *      @param [in] internalPort        The connected internal port on a component instance.
+     *      @param [in] primaryPort         The connected hierarchical port or component instance port.
+     *      @param [in] primaryPortItem     The port item for the primary port.
+     */
+    void creatConnectionForAdHocPorts(AdHocConnection const& adHocConnection, PortRef const& internalPort, 
+        PortRef const& primaryPort, ConnectionEndpoint* primaryPortItem);
     /*!
      *  Copies component instances in a format which can be saved to clipboard.
      *

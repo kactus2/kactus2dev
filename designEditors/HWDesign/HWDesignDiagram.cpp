@@ -135,189 +135,12 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
     setAdHocData(getEditedComponent(), design->getPortAdHocVisibilities());
 
     // Create top-level ad-hoc interfaces and set their positions.
-    QMapIterator<QString, bool> itrCurPort(getPortAdHocVisibilities());
-    QMap<QString, QPointF> const& adHocPortPositions = design->getAdHocPortPositions();
-
-    while (itrCurPort.hasNext())
-    {
-        itrCurPort.next();
-
-        if (itrCurPort.value())
-        {
-            QString const& name = itrCurPort.key();
-            AdHocInterfaceItem* adHocIf = new AdHocInterfaceItem(getEditedComponent(),
-                                                                 getEditedComponent()->getPort(name).data(),
-                                                                 getLibraryInterface(), 0);
-            if (adHocPortPositions.contains(name))
-            {
-                QPointF pos = adHocPortPositions[name];
-                adHocIf->setPos(pos);
-            }
-
-            // Add the ad-hoc interface to the first column where it is allowed to be placed.
-            GraphicsColumn* column = getLayout()->findColumnAt(adHocIf->scenePos());
-
-            if (column != 0 && adHocPortPositions.contains(name))
-            {
-                column->addItem(adHocIf, true);
-            }
-            else
-            {
-                getLayout()->addItem(adHocIf);
-            }
-        }
-    }
+    createHierachicalAdHocPorts(design);
 
     // Create ad-hoc connections based on the design data.
-    QList<AdHocConnection> adHocConnections = design->getAdHocConnections();
-
-    foreach (AdHocConnection const& adHocConn, adHocConnections)
+    foreach (AdHocConnection const& adHocConn, design->getAdHocConnections())
     {
-        // Convert one multiple-port connection to two-port-only connections.
-        if (adHocConn.externalPortReferences().empty() && !adHocConn.internalPortReferences().empty())
-        {
-            // Find the first referenced component.
-            HWComponentItem* comp1 = getComponent(adHocConn.internalPortReferences().at(0).getComponentRef());
-
-            if (comp1 == 0)
-            {
-                emit errorMessage(tr("Component %1 was not found in the design").arg(
-                    adHocConn.internalPortReferences().at(0).getComponentRef()));
-                continue;
-            }
-
-            // Find the corresponding port.
-            ConnectionEndpoint* port1 = comp1->getAdHocPort(adHocConn.internalPortReferences().at(0).getPortRef());
-
-            if (port1 == 0)
-            {
-                emit errorMessage(tr("Port %1 was not found in the component %2").arg(
-                    adHocConn.internalPortReferences().at(0).getPortRef()).arg(adHocConn.internalPortReferences().at(0).getComponentRef()));
-            }
-
-            if (adHocConn.isOffPage())
-            {
-                port1 = port1->getOffPageConnector();
-            }
-
-            for (int i = 1; i < adHocConn.internalPortReferences().size(); ++i)
-            {
-                // Find the second referenced component.
-                HWComponentItem* comp2 = getComponent(adHocConn.internalPortReferences().at(i).getComponentRef());
-
-                if (comp2 == 0)
-                {
-                    emit errorMessage(tr("Component %1 was not found in the design").arg(
-                        adHocConn.internalPortReferences().at(i).getComponentRef()));
-                    continue;
-                }
-
-                ConnectionEndpoint* port2 = comp2->getAdHocPort(adHocConn.internalPortReferences().at(i).getPortRef());
-
-                if (port2 == 0)
-                {
-                    emit errorMessage(tr("Port %1 was not found in the component %2").arg(
-                        adHocConn.internalPortReferences().at(i).getPortRef()).arg(adHocConn.internalPortReferences().at(i).getComponentRef()));
-                    continue;
-                }
-
-                if (adHocConn.isOffPage())
-                {
-                    port2 = port2->getOffPageConnector();
-                }
-
-                // Create the ad-hoc connection graphics item.
-                HWConnection* conn = new HWConnection(port1, port2, true, adHocConn.name(),
-                                                                          adHocConn.displayName(),
-                                                                          adHocConn.description(), this);
-                conn->setRoute(adHocConn.getRoute());
-                
-                conn->setAdHocLeftBound(0, adHocConn.internalPortReferences().at(0).getLeft());
-                conn->setAdHocRightBound(0, adHocConn.internalPortReferences().at(0).getRight());
-
-                conn->setAdHocLeftBound(1, adHocConn.internalPortReferences().at(i).getLeft());
-                conn->setAdHocRightBound(1, adHocConn.internalPortReferences().at(i).getRight());
-
-                if (adHocConn.isOffPage())
-                {
-                    conn->hide();
-                }
-                conn->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
-
-                connect(conn, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
-
-                addItem(conn);
-                conn->updatePosition();
-            }
-        }
-
-        for (int j = 0; j < adHocConn.externalPortReferences().size(); ++j)
-        {
-            ConnectionEndpoint* adHocIf =
-                getDiagramAdHocPort(adHocConn.externalPortReferences().at(j).getPortRef());
-
-            if (adHocIf == 0)
-            {
-                emit errorMessage(tr("Port %1 was not found in the top-level component").arg(
-                                  adHocConn.externalPortReferences().at(j).getPortRef()));
-                continue;
-            }
-
-            if (adHocConn.isOffPage())
-            {
-                adHocIf = adHocIf->getOffPageConnector();
-            }
-
-            for (int i = 0; i < adHocConn.internalPortReferences().size(); ++i)
-            {
-                // Find the referenced component.
-                HWComponentItem* comp = getComponent(adHocConn.internalPortReferences().at(i).getComponentRef());
-
-                if (comp == 0)
-                {
-                    emit errorMessage(tr("Component %1 was not found in the design").arg(
-                        adHocConn.internalPortReferences().at(i).getComponentRef()));
-                    continue;
-                }
-
-                ConnectionEndpoint* port = comp->getAdHocPort(adHocConn.internalPortReferences().at(i).getPortRef());
-
-                if (port == 0)
-                {
-                    emit errorMessage(tr("Port %1 was not found in the component %2").arg(
-                        adHocConn.internalPortReferences().at(i).getPortRef()).arg(adHocConn.internalPortReferences().at(i).getComponentRef()));
-                    continue;
-                }
-
-                if (adHocConn.isOffPage())
-                {
-                    port = port->getOffPageConnector();
-                }
-
-                // Create the ad-hoc connection graphics item.
-                HWConnection* conn = new HWConnection(port, adHocIf, true,
-                                                                          adHocConn.name(),
-                                                                          adHocConn.displayName(),
-                                                                           adHocConn.description(), this);
-                conn->setRoute(adHocConn.getRoute());
-
-                conn->setAdHocLeftBound(0, adHocConn.internalPortReferences().at(i).getLeft());
-                conn->setAdHocRightBound(0, adHocConn.internalPortReferences().at(i).getRight());
-
-                conn->setAdHocLeftBound(1, adHocConn.externalPortReferences().at(j).getLeft());
-                conn->setAdHocRightBound(1, adHocConn.externalPortReferences().at(j).getRight());
-
-                if (adHocConn.isOffPage())
-                {
-                    conn->hide();
-                }
-                conn->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
-
-                connect(conn, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
-                addItem(conn);
-                conn->updatePosition();
-            }
-        }
+        createAdHocConnection(adHocConn);
     }
 
     // Update the stacking of the columns.
@@ -333,10 +156,11 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 HWComponentItem *HWDesignDiagram::getComponent(const QString &instanceName)
 {
 	// search all graphicsitems in the scene
-	foreach (QGraphicsItem *item, items()) {
-
+	foreach (QGraphicsItem *item, items())
+    {
 		// if the item is a component
-        if (item->type() == HWComponentItem::Type) {
+        if (item->type() == HWComponentItem::Type)
+        {
             HWComponentItem *comp = qgraphicsitem_cast<HWComponentItem *>(item);
 
 			// if component's name matches
@@ -2066,6 +1890,158 @@ void HWDesignDiagram::createHierarchicalConnection(HierConnection const& hierCon
 
     addItem(hierarchicalConnection);
     hierarchicalConnection->updatePosition();
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::createHierachicalAdHocPorts()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::createHierachicalAdHocPorts(QSharedPointer<Design> design)
+{
+    QMapIterator<QString, bool> itrCurPort(getPortAdHocVisibilities());
+    QMap<QString, QPointF> const& adHocPortPositions = design->getAdHocPortPositions();
+
+    while (itrCurPort.hasNext())
+    {
+        itrCurPort.next();
+
+        if (itrCurPort.value())
+        {
+            QString const& name = itrCurPort.key();
+            AdHocInterfaceItem* adHocIf = new AdHocInterfaceItem(getEditedComponent(),
+                getEditedComponent()->getPort(name).data(),
+                getLibraryInterface(), 0);
+            if (adHocPortPositions.contains(name))
+            {
+                QPointF pos = adHocPortPositions[name];
+                adHocIf->setPos(pos);
+            }
+
+            // Add the ad-hoc interface to the first column where it is allowed to be placed.
+            GraphicsColumn* column = getLayout()->findColumnAt(adHocIf->scenePos());
+
+            if (column != 0 && adHocPortPositions.contains(name))
+            {
+                column->addItem(adHocIf, true);
+            }
+            else
+            {
+                getLayout()->addItem(adHocIf);
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::createAdHocConnection()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::createAdHocConnection(AdHocConnection const& adHocConn)
+{
+    // Convert one-to-many internal connections to one-to-one connections.
+    if (adHocConn.externalPortReferences().empty() && !adHocConn.internalPortReferences().empty())
+    {
+        PortRef primaryPort = adHocConn.internalPortReferences().at(0);
+
+        // Find the first referenced component.
+        HWComponentItem* comp1 = getComponent(primaryPort.getComponentRef());
+
+        if (comp1 == 0)
+        {
+            emit errorMessage(tr("Component %1 was not found in the design").arg(primaryPort.getComponentRef()));
+            return;
+        }
+
+        // Find the corresponding port.
+        ConnectionEndpoint* port1 = comp1->getAdHocPort(primaryPort.getPortRef());
+        if (port1 == 0)
+        {
+            emit errorMessage(tr("Port %1 was not found in the component %2").arg(primaryPort.getPortRef(), 
+                primaryPort.getComponentRef()));
+            return;
+        }
+
+        if (adHocConn.isOffPage())
+        {
+            port1 = port1->getOffPageConnector();
+        }
+
+        for (int i = 1; i < adHocConn.internalPortReferences().size(); ++i)
+        {
+            PortRef secondaryPort = adHocConn.internalPortReferences().at(i);
+            creatConnectionForAdHocPorts(adHocConn, secondaryPort, primaryPort, port1);
+        }         
+    }
+
+    foreach (PortRef externalPort, adHocConn.externalPortReferences())
+    {
+        ConnectionEndpoint* topAdHocPort = getDiagramAdHocPort(externalPort.getPortRef());
+        if (topAdHocPort == 0)
+        {
+            emit errorMessage(tr("Port %1 was not found in the top-level component").arg(externalPort.getPortRef()));
+            return;
+        }
+
+        if (adHocConn.isOffPage())
+        {
+            topAdHocPort = topAdHocPort->getOffPageConnector();
+        }
+
+        foreach (PortRef internalPort, adHocConn.internalPortReferences())
+        {
+            creatConnectionForAdHocPorts(adHocConn, internalPort, externalPort, topAdHocPort);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::creatConnectionForAdHocPorts()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::creatConnectionForAdHocPorts(AdHocConnection const& adHocConnection, 
+    PortRef const& internalPort, PortRef const& primaryPort, ConnectionEndpoint* primaryPortItem)
+{
+    // Find the referenced component.
+    HWComponentItem* comp = getComponent(internalPort.getComponentRef());
+    if (comp == 0)
+    {
+        emit errorMessage(tr("Component %1 was not found in the design").arg(internalPort.getComponentRef()));
+        return;
+    }
+
+    ConnectionEndpoint* componentAdHocPort = comp->getAdHocPort(internalPort.getPortRef());
+
+    if (componentAdHocPort == 0)
+    {
+        emit errorMessage(tr("Port %1 was not found in the component %2").arg(internalPort.getPortRef(), 
+            internalPort.getComponentRef()));
+        return;
+    }
+
+    if (adHocConnection.isOffPage())
+    {
+        componentAdHocPort = componentAdHocPort->getOffPageConnector();
+    }
+
+    // Create the ad-hoc connection graphics item.
+    HWConnection* connection = new HWConnection(componentAdHocPort, primaryPortItem, true,
+        adHocConnection.name(), adHocConnection.displayName(), adHocConnection.description(), this);
+
+    connection->setRoute(adHocConnection.getRoute());
+
+    connection->setAdHocLeftBound(0, internalPort.getLeft());
+    connection->setAdHocRightBound(0, internalPort.getRight());
+
+    connection->setAdHocLeftBound(1, primaryPort.getLeft());
+    connection->setAdHocRightBound(1, primaryPort.getRight());
+
+    if (adHocConnection.isOffPage())
+    {
+        connection->hide();
+    }
+    connection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
+
+    connect(connection, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
+
+    addItem(connection);
+    connection->updatePosition();
 }
 
 //-----------------------------------------------------------------------------
