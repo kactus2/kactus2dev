@@ -146,7 +146,7 @@ QVariant ConfigurableElementsModel::data( const QModelIndex& index, int role /*=
 
     else if (role == Qt::ToolTipRole)
     {
-        return expressionFormatter_->formatReferringExpression(expressionOrValueForIndex(index).toString());
+        return tooltipForIndex(index);
     }
 
     else if (role == Qt::FontRole)
@@ -315,6 +315,34 @@ QVariant ConfigurableElementsModel::valueForIndex(QModelIndex const& index) cons
     {
         return QVariant();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsModel::tooltipForIndex()
+//-----------------------------------------------------------------------------
+QString ConfigurableElementsModel::tooltipForIndex(QModelIndex const& index) const
+{
+    QSharedPointer<Parameter> parameter = configurableElements_.at(index.row());
+
+    if (parameter->getValueAttribute("spirit:defaultValue").isEmpty())
+    {
+        return QString("This parameter was not found in " + component_->name() + ".");
+    }
+
+    else if (index.column() == ConfigurableElementsColumns::VALUE)
+    {
+        QString context = component_->name();
+
+        QStringList errorList = validator_->findErrorsIn(
+            parameter.data(), context, component_->componentModel()->getChoices());
+
+        if (!errorList.isEmpty())
+        {
+            QString errors = errorList.join("\n");
+            return errors;
+        }
+    }
+    return expressionFormatter_->formatReferringExpression(expressionOrValueForIndex(index).toString());
 }
 
 //-----------------------------------------------------------------------------

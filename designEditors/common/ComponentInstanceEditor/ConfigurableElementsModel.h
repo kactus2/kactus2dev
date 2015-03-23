@@ -197,6 +197,15 @@ private:
     QVariant valueForIndex(QModelIndex const& index) const;
 
     /*!
+     *  Gets the text for the tooltip related to the data in the given index.
+     *
+     *      @param [in] index   The index of the target data.
+     *
+     *      @return The corresponding text for a tool tip.
+     */
+    QString tooltipForIndex(QModelIndex const& index) const;
+
+    /*!
      *  Evaluate the value for the given index.
      *
      *      @param [in] index   The index of the value to be given.
