@@ -32,7 +32,8 @@ editProvider_(0),
 configurableElementExpressionFormatter_(configurableElementExpressionFormatter),
 componentInstanceExpressionFormatter_(componentInstanceExpressionFormatter),
 componentInstanceExpressionParser_(componentInstanceExpressionParser),
-validator_(new ParameterValidator2014(configurableElementExpressionParser, parameterFinder))
+validator_(new ParameterValidator2014(configurableElementExpressionParser, parameterFinder)),
+designConfiguration_(new DesignConfiguration())
 {
     listParameterFinder->setParameterList(configurableElements_);
     setExpressionParser(configurableElementExpressionParser);
@@ -301,6 +302,14 @@ bool ConfigurableElementsModel::isParameterEditable(const int& parameterIndex) c
     {
         return true;
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsModel::setComponentActiveView()
+//-----------------------------------------------------------------------------
+void ConfigurableElementsModel::setDesignConfigurationModel(QSharedPointer<DesignConfiguration> designConfiguration)
+{
+    designConfiguration_ = designConfiguration.data();
 }
 
 //-----------------------------------------------------------------------------
@@ -646,6 +655,26 @@ void ConfigurableElementsModel::readComponentConfigurableElements()
     foreach (QSharedPointer<Parameter> parameterPointer, *componentModel->getModelParameters())
     {
         addParameterToConfigurableElements(parameterPointer);
+    }
+
+    if (designConfiguration_)
+    {
+        QString componentInstanceName = component_->name();
+
+        if (designConfiguration_->hasActiveView(componentInstanceName))
+        {
+            QString activeViewName = designConfiguration_->getActiveView(componentInstanceName);
+            View* activeView = component_->componentModel()->findView(activeViewName);
+
+            foreach (QSharedPointer<Parameter> parameterPointer, *activeView->getModuleParameters())
+            {
+                addParameterToConfigurableElements(parameterPointer);
+            }
+            foreach (QSharedPointer<Parameter> parameterPointer, *activeView->getParameters())
+            {
+                addParameterToConfigurableElements(parameterPointer);
+            }
+        }
     }
 }
 

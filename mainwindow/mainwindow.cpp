@@ -2015,7 +2015,8 @@ void MainWindow::onDocumentChanged(int index)
         QSharedPointer<Component> topComponent = topItem.dynamicCast<Component>();
         if (topComponent)
         {
-            instanceEditor_->setContext(topComponent, &designwidget->getDiagram()->getEditProvider());
+            instanceEditor_->setContext(topComponent, designwidget->getDiagram()->getDesignConfiguration(),
+                &designwidget->getDiagram()->getEditProvider());
             instanceEditor_->setTopComponentActiveView(designwidget->getOpenViewName());
             instanceEditor_->setProtection(designwidget->isProtected());
         }

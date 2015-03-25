@@ -18,6 +18,8 @@
 #include <common/GenericEditProvider.h>
 #include "configurableelementeditor.h"
 
+#include <IPXACTmodels/designconfiguration.h>
+
 #include <QWidget>
 #include <QComboBox>
 #include <QGroupBox>
@@ -53,9 +55,12 @@ public:
     /*!
      *  Sets the top component for the instances.
      *
-     *      @param [in] topComponent   The top component.
+     *      @param [in] topComponent            The top component.
+     *      @param [in] designConfiguration     The design configuration currently in use.
+     *      @param [in] editProvider            The generic edit provider.
      */
-    void setContext(QSharedPointer<Component> topComponent, GenericEditProvider* editProvider);
+    void setContext(QSharedPointer<Component> topComponent,
+        QSharedPointer<DesignConfiguration> designConfiguration, GenericEditProvider* editProvider);
 
     /*!
      *  Sets the protection state for the instance editor.

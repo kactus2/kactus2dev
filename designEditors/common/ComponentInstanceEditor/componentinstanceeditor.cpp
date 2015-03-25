@@ -204,8 +204,10 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component)
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceEditor::setContext()
 //-----------------------------------------------------------------------------
-void ComponentInstanceEditor::setContext(QSharedPointer<Component> topComponent, GenericEditProvider* editProvider)
+void ComponentInstanceEditor::setContext(QSharedPointer<Component> topComponent,
+    QSharedPointer<DesignConfiguration> designConfiguration, GenericEditProvider* editProvider)
 {
+    configurableElements_->setDesignConfigurationToModel(designConfiguration);
     topFinder_->setComponent(topComponent);
     editProvider_ = editProvider;
     topComponent_ = topComponent;

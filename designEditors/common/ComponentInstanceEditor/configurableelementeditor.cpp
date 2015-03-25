@@ -38,6 +38,7 @@ model_(parameterFinder, listFinder, configurableElementFormatter, componentInsta
 delegate_()
 {
 	filter_.setSourceModel(&model_);
+    filter_.setSortCaseSensitivity(Qt::CaseInsensitive);
 	view_.setModel(&filter_);
 
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
@@ -90,6 +91,15 @@ void ConfigurableElementEditor::setComponent(ComponentItem* component)
 void ConfigurableElementEditor::clear() 
 {
 	model_.clear();
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementeditor::setDesignConfigurationToModel()
+//-----------------------------------------------------------------------------
+void ConfigurableElementEditor::setDesignConfigurationToModel(
+    QSharedPointer<DesignConfiguration> designConfiguration)
+{
+    model_.setDesignConfigurationModel(designConfiguration);
 }
 
 //-----------------------------------------------------------------------------

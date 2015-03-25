@@ -17,6 +17,8 @@
 #include "ConfigurableElementsModel.h"
 #include "configurableelementdelegate.h"
 
+#include <IPXACTmodels/designconfiguration.h>
+
 #include <QAbstractItemModel>
 #include <QGroupBox>
 #include <QSortFilterProxyModel>
@@ -68,6 +70,13 @@ public:
 	 *
 	*/
 	void clear();
+
+    /*!
+     *  Set the design configuration model for the configurable element model.
+     *
+     *      @param [in] designConfiguration     The design configuration to be set.
+     */
+    void setDesignConfigurationToModel(QSharedPointer<DesignConfiguration> designConfiguration);
 
 signals:
 

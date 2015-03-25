@@ -19,6 +19,7 @@
 #include <IPXACTmodels/modelparameter.h>
 #include <IPXACTmodels/choice.h>
 #include <IPXACTmodels/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/designconfiguration.h>
 
 #include <QAbstractTableModel>
 #include <QMap>
@@ -125,6 +126,13 @@ public:
      *      @return Flags containing info on which operations are available for given index.
 	 */
 	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
+
+    /*!
+     *  Set the design configuration model.
+     *
+     *      @param [in] designConfiguration     The design configuration model to be set.
+     */
+    void setDesignConfigurationModel(QSharedPointer<DesignConfiguration> designConfiguration);
 
 public slots:
 
@@ -332,6 +340,9 @@ private:
 
     //! Validator for parameters.
     ParameterValidator2014* validator_;
+
+    //! The design configuration model used to find the currently active view of the component instance.
+    DesignConfiguration* designConfiguration_;
 };
 
 #endif // CONFIGURABLEELEMENTSMODEL_H
