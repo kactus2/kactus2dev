@@ -42,20 +42,23 @@ ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent)
       propertyValueEditor_(new PropertyValueEditor(this)),
       editProvider_(0),
       instanceFinder_(new ComponentParameterFinder(QSharedPointer<Component>(0))),
+      listFinder_(new ListParameterFinder()),
       topFinder_(new TopComponentParameterFinder(QSharedPointer<Component>(0)))
 {
     QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
-    multiFinder->addFinder(instanceFinder_);
+    multiFinder->addFinder(listFinder_);
     multiFinder->addFinder(topFinder_);
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(multiFinder));
+    QSharedPointer<IPXactSystemVerilogParser> instanceParser (new IPXactSystemVerilogParser(instanceFinder_));
 
     DesignCompletionModel* completionModel = new DesignCompletionModel(topFinder_, multiFinder, this); 
     completionModel->setExpressionParser(expressionParser);
 
-    configurableElements_ = new ConfigurableElementEditor(multiFinder, 
-        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(multiFinder)), expressionParser, 
-        completionModel, this);
+    configurableElements_ = new ConfigurableElementEditor(listFinder_, multiFinder, 
+        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(multiFinder)),
+        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(instanceFinder_)),
+        expressionParser, instanceParser, completionModel, this);
 
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 

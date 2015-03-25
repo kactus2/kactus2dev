@@ -13,7 +13,7 @@
 
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ListParameterFinder.h>
 
 #include <IPXACTmodels/parameter.h>
 #include <IPXACTmodels/modelparameter.h>
@@ -37,104 +37,115 @@ class ConfigurableElementsModel : public ParameterizableTable
 public:
 
 	/*!
-	 *  [Description].
+	 *  The constructor.
 	 *
-	 *      @param [in] parameterFinder         Pointer to the instance for finding parameters.
-	 *      @param [in] expressionFormatter     Pointer to the formatter for referencing expressions.
-     *      @param [in] expressionParser        Pointer to the expression parser for parsing the expressions.
+	 *      @param [in] parameterFinder         Finds parameters in configurable elements and top component.
+	 *      @param [in] listParameterFinder     Finds parameters in configurable elements.
+	 *      @param [in] expressionFormatter     Formatter for referencing expressions in configurable elements.
+	 *      @param [in] instanceFormatter       Formatter for referencing expressions in default value.
+	 *      @param [in] expressionParser        Parses expressions in configurable element values.
+	 *      @param [in] instanceParser          Parses expressions in default values.
 	 *      @param [in] parent                  Pointer to the owner of this model.
 	 */
 	ConfigurableElementsModel(QSharedPointer<ParameterFinder> parameterFinder, 
+        QSharedPointer<ListParameterFinder> listParameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionFormatter> instanceFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionParser> instanceParser,
         QObject *parent);
 	
-	//! \brief The destructor
+	/*!
+	 *  The destructor.
+	 */
 	virtual ~ConfigurableElementsModel();
 
-	/*! \brief Set the component being edited.
+	/*!
+	 *  Set the component being edited.
 	 *
-	 * \param component Pointer to the component being edited.
-	 *
-	*/
+	 *      @param [in] component   Pointer to the component being edited.
+	 */
 	void setComponent(ComponentItem* component);
 
-	/*! \brief Get the number of rows to be displayed.
+	/*!
+	 *  Get the number of rows to be displayed.
 	 *
-	 * \param parent Identifies the parent, must always be invalid index.
-	 *
-	 * \return int - the number of rows to display.
-	*/
+	 *      @param [in] parent  Identifies the parent, must always be invalid index.
+     *
+     *      @return The number of rows to display.
+	 */
 	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
-	/*! \brief Get the number of columns to display.
+	/*!
+	 *  Get the number of columns to display.
 	 *
-	 * \param parent Identifies the parent , must always be invalid index.
-	 *
-	 * \return int - the number of columns to display, always 2 for invalid parents.
-	*/
+	 *      @param [in] parent  Identifies the parent, must always be invalid index.
+     *
+     *      @return The number of columns to display.
+	 */
 	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
 
-	/*! \brief Get that data for specified index in given data role.
+	/*!
+	 *  Get the data for specified index in given data role.
 	 *
-	 * \param index Identifies the object that's data is wanted.
-	 * \param role Identifies the type of data being requested.
-	 *
-	 * \return QVariant contains the requested data.
-	*/
+	 *      @param [in] index   Identifies the object that's data is wanted.
+	 *      @param [in] role    Identifies the type of data being requested.
+     *
+     *      @return QVariant that contains the requested data.
+	 */
 	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
-	/*! \brief Get the data for given header in given data role.
+	/*!
+	 *  Get the data for the given header in the given data role.
 	 *
-	 * \param section Identifies the header section.
-	 * \param orientation Only Qt::Horizontal is supported.
-	 * \param role Identifies the type of the data being requested.
-	 *
-	 * \return QVariant contains the requested data.
-	*/
+	 *      @param [in] section         Identifies the header section.
+	 *      @param [in] orientation     Only horizontal header is supported.
+	 *      @param [in] role            Identifies the type of the data being requested.
+     *
+     *      @return QVariant that contains the requested data.
+	 */
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
-	/*! \brief Set the data for specified index.
+	/*!
+	 *  Set the data for the specified index.
 	 *
-	 * \param index Identifies the object that's data is to be saved.
-	 * \param value Contains the data to be saved.
-	 * \param role Identifies the type of the data to be saved.
-	 *
-	 * \return bool True if data was saved successfully.
-	*/
+	 *      @param [in] index   Identifies the object which data is to be saved.
+	 *      @param [in] value   Contains the data to be saved.
+	 *      @param [in] role    Identifies the type of the data to be saved.
+     *
+     *      @return True if data was saved successfully.
+	 */
 	virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole );
 
-	/*! \brief Get info on what operations are possible for specified item.
+	/*!
+	 *  Get info on what operations are possible for specified item.
 	 *
-	 * \param index Identifies the item that's operations are requested.
-	 *
-	 * \return Qt::ItemFlags Contains info on which operations are available for given index.
-	*/
+	 *      @param [in] index   Identifies the item that's operations are requested.
+     *
+     *      @return Flags containing info on which operations are available for given index.
+	 */
 	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
 
 public slots:
 
-	/*! \brief Remove the specified item from the model.
-	 *
-	 * \param index Identifies the configurable element to remove.
-	 *
-	*/
-	void onRemove(const QModelIndex& index);
-
-	/*! \brief An item should be removed from the model.
-	 * 
-	 * \param index Identifies the item that should be removed.
-	 *
-	*/
-	void onRemoveItem(const QModelIndex& index);
-
-	/*! \brief Clear the model.
-	 *
-	*/
+	/*!
+	 *  Clear the model.
+	 */
 	void clear();
 
-	//! \brief Change the configurable elements of this model.
-	void changeElements(const QMap<QString, QString>& confElements);
+    /*!
+     *  Change the configurable elements of this model.
+     *
+     *      @param [in] confElements    The new configurable elements.
+     */
+    void changeElements(const QMap<QString, QString>& confElements);
+
+	/*!
+	 *  An item should be removed from the model.
+	 *
+	 *      @param [in] index   Identifies the item that should be removed.
+	 */
+	void onRemoveItem(const QModelIndex& index);
 
 signals:
 
@@ -151,6 +162,15 @@ protected:
      *      @return     True, if column can have expressions, false otherwise.
      */
     virtual bool isValidExpressionColumn(QModelIndex const& index) const;
+
+    /*!
+     *  Gets a formatted value for a given expression in default value column.
+     *
+     *      @param [in] expression  The expression which is being formatted.
+     *
+     *      @return The formatted value for the expression.
+     */
+    virtual QString formattedValueFor(QString const& expression) const;
 
     /*!
      *  Gets the expression for the given index, or plain value if there is no expression.
@@ -188,6 +208,15 @@ private:
 	ConfigurableElementsModel& operator=(const ConfigurableElementsModel& other);
 
     /*!
+     *  Check if the configurable element is editable.
+     *
+     *      @param [in] parameterIndex  The index of the element.
+     *
+     *      @return True, if the element can be edited, false otherwise.
+     */
+    bool isParameterEditable(const int& parameterIndex) const;
+
+    /*!
      *  Gets the value for the given index.
      *
      *      @param [in] index   The index of target data.
@@ -195,15 +224,6 @@ private:
      *      @return     The data in the given index.
      */
     QVariant valueForIndex(QModelIndex const& index) const;
-
-    /*!
-     *  Gets the text for the tooltip related to the data in the given index.
-     *
-     *      @param [in] index   The index of the target data.
-     *
-     *      @return The corresponding text for a tool tip.
-     */
-    QString tooltipForIndex(QModelIndex const& index) const;
 
     /*!
      *  Evaluate the value for the given index.
@@ -214,16 +234,15 @@ private:
      *      @return The true value for the given index, whether it is given using a choice or not.
      */
     QString evaluateValueForIndex(QModelIndex const& index, QString const& value) const;
-
+    
     /*!
-     *  Finds the display value for the currently selected enumeration.
+     *  Finds the currently selected choice.
      *
-     *      @param [in] choice              The currently selected choice.
-     *      @param [in] enumerationValue    The current value to be changed into an enumeration.
+     *      @param [in] choiceName  The name of the choice to be searched for.
      *
-     *      @return The displayable value of the enumeration.
+     *      @return The currently selected choice.
      */
-    QString findDisplayValueForEnumeration(QSharedPointer<Choice> choice, QString const& enumerationValue) const;
+    QSharedPointer<Choice> findChoice(QString const& choiceName) const;
 
     /*!
      *  Finds the display values for the currently selected enumeration inside an array.
@@ -236,13 +255,23 @@ private:
     QString matchArrayValuesToSelectedChoice(QSharedPointer<Choice> choice, QString const& arrayValue) const;
 
     /*!
-     *  Finds the currently selected choice.
+     *  Finds the display value for the currently selected enumeration.
      *
-     *      @param [in] choiceName  The name of the choice to be searched for.
+     *      @param [in] choice              The currently selected choice.
+     *      @param [in] enumerationValue    The current value to be changed into an enumeration.
      *
-     *      @return The currently selected choice.
+     *      @return The displayable value of the enumeration.
      */
-    QSharedPointer<Choice> findChoice(QString const& choiceName) const;
+    QString findDisplayValueForEnumeration(QSharedPointer<Choice> choice, QString const& enumerationValue) const;
+
+    /*!
+     *  Gets the text for the tooltip related to the data in the given index.
+     *
+     *      @param [in] index   The index of the target data.
+     *
+     *      @return The corresponding text for a tool tip.
+     */
+    QString tooltipForIndex(QModelIndex const& index) const;
 
 	//! Save the elements from the table to values_ map.
 	void save();
@@ -250,7 +279,7 @@ private:
 	/*!
 	 *  Read the configurable elements from the component and from the saved values.
 	 */
-	void readValues();
+	void setupConfigurableElements();
 
     /*!
      *  Read the configurable elements from the component.
@@ -258,20 +287,27 @@ private:
     void readComponentConfigurableElements();
 
     /*!
-     *  Check if the configurable element is editable.
-     *
-     *      @param [in] parameterIndex  The index of the element.
-     *
-     *      @return True, if the element can be edited, false otherwise.
-     */
-    bool isParameterEditable(const int& parameterIndex) const;
-
-    /*!
      *  Set the parameter into the configurable elements.
      *
      *      @param [in] parameterPointer    The pointer to the parameter to be set to configurable elements.
      */
-    void setParameterToConfigurableElements(QSharedPointer <Parameter> parameterPointer);
+    void addParameterToConfigurableElements(QSharedPointer <Parameter> parameterPointer);
+
+    /*!
+     *  Restore the previously saved configurable element values to their correct element.
+     */
+    void restoreStoredConfigurableElements();
+
+    /*!
+     *  Get the configurable element that was saved previously.
+     *
+     *      @param [in] elementName     The id of the element to be searched for.
+     */
+    QSharedPointer<Parameter> getStoredConfigurableElement(QString const& elementID);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! Pointer to the component instance being edited.
 	ComponentItem* component_;
@@ -280,13 +316,19 @@ private:
 	QMap<QString, QString> currentElementValues_;
 
     //! The list that is used to display the elements in a table form.
-    QList <QSharedPointer <Parameter> > configurableElements_;
+    QSharedPointer<QList<QSharedPointer<Parameter> > > configurableElements_;
 
 	//! Pointer to the generic edit provider that manages the undo/redo stack.
 	GenericEditProvider* editProvider_;
 
-    //! The formatter for referencing expressions.
-    QSharedPointer<ExpressionFormatter> expressionFormatter_;
+    //! The formatter for referencing expressions in values.
+    QSharedPointer<ExpressionFormatter> configurableElementExpressionFormatter_;
+
+    //! The formatter for referencing expressions in default values.
+    QSharedPointer<ExpressionFormatter> componentInstanceExpressionFormatter_;
+
+    //! The expression parser for default values.
+    QSharedPointer<ExpressionParser> componentInstanceExpressionParser_;
 
     //! Validator for parameters.
     ParameterValidator2014* validator_;

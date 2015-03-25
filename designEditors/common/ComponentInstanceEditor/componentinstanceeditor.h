@@ -11,6 +11,7 @@
 #include <editors/ComponentEditor/software/PropertyValueEditor.h>
 
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/ListParameterFinder.h>
 
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/nameGroupBox/namegroupbox.h>
@@ -135,6 +136,9 @@ private:
 
     //! The parameter finder for component instances.
     QSharedPointer<ComponentParameterFinder> instanceFinder_;
+
+    //! The parameter finder for configurable element values.
+    QSharedPointer<ListParameterFinder> listFinder_;
 
     //! The parameter finder for component instances.
     QSharedPointer<TopComponentParameterFinder> topFinder_;

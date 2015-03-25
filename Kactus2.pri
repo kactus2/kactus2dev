@@ -610,7 +610,8 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h
+    ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h \
+    ./editors/ComponentEditor/common/ListParameterFinder.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1161,5 +1162,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.cpp
+    ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.cpp \
+    ./editors/ComponentEditor/common/ListParameterFinder.cpp
 RESOURCES += kactus.qrc

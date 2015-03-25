@@ -581,6 +581,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\common\ExpressionFormatter.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
+    <ClCompile Include="editors\ComponentEditor\common\ListParameterFinder.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\MultipleParameterFinder.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\NullParser.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ParameterCompleter.cpp" />
@@ -2046,6 +2047,7 @@ CreateHelp
     <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.h" />
     <ClInclude Include="editors\ComponentEditor\common\ExpressionParser.h" />
     <ClInclude Include="editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
+    <ClInclude Include="editors\ComponentEditor\common\ListParameterFinder.h" />
     <ClInclude Include="editors\ComponentEditor\common\MultipleParameterFinder.h" />
     <ClInclude Include="editors\ComponentEditor\common\NullParser.h" />
     <ClInclude Include="editors\ComponentEditor\common\ParameterFinder.h" />

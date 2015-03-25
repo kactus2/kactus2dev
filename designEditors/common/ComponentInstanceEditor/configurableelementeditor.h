@@ -12,6 +12,7 @@
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/ListParameterFinder.h>
 
 #include "ConfigurableElementsModel.h"
 #include "configurableelementdelegate.h"
@@ -35,17 +36,21 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] parameterFinder         The pointer to the instance for finding parameters.
-     *      @param [in] expressionFormatter     The pointer to the instance for formatting referencing expressions.
-	 *      @param [in] expressionParser        The parser to use for solving expressions.
-	 *      @param [in] completionModel         The completion model for selecting parameter references.
-	 *      @param [in] parent                  The parent widget.
-	 *
-	 *      @return <Description>.
+	 *      @param [in] listFinder                      The finder for the configurable element values.
+	 *      @param [in] parameterFinder                 The finder for configurable elements and top parameters.
+	 *      @param [in] configurableElementFormatter    Formats referencing expressions in configurable elements.
+	 *      @param [in] instanceExpressionFormatter     Formats referencing expressions in component instance.
+	 *      @param [in] expressionParser                Solves expressions in configurable elements.
+	 *      @param [in] instanceParser                  Solves expressions in default values (component instance).
+	 *      @param [in] completionModel                 The completion model for selecting parameter references.
+	 *      @param [in] parent                          The parent widget.
 	 */
-	ConfigurableElementEditor(QSharedPointer<ParameterFinder> parameterFinder, 
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
+	ConfigurableElementEditor(QSharedPointer<ListParameterFinder> listFinder,
+        QSharedPointer<ParameterFinder> parameterFinder, 
+        QSharedPointer<ExpressionFormatter> configurableElementFormatter,
+        QSharedPointer<ExpressionFormatter> instanceExpressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionParser> instanceParser,
         QAbstractItemModel* completionModel,
         QWidget *parent);
 	

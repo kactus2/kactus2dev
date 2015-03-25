@@ -16,10 +16,10 @@
 #include <IPXACTmodels/component.h>
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
-
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <QAbstractTableModel>
 
-class ExpressionParser;
+//class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Base class for models editing parameters and model parameters.
 //-----------------------------------------------------------------------------
@@ -60,7 +60,7 @@ protected:
      *
      *      @return     The formatted value for the expression.
      */
-    QString formattedValueFor(QString const& expression) const;
+    virtual QString formattedValueFor(QString const& expression) const;
 
     /*!
      *  Gets an italic font for an evaluated value and normal font for others.

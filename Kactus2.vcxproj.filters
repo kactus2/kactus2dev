@@ -4000,6 +4000,9 @@
     <ClCompile Include="editors\ComponentEditor\parameters\ChoiceCreatorDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ListParameterFinder.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5866,6 +5869,9 @@
     </ClInclude>
     <ClInclude Include="designEditors\common\TopComponentParameterFinder.h">
       <Filter>Header Files\designEditors\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\ListParameterFinder.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

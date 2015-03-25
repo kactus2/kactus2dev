@@ -22,15 +22,19 @@
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementEditor::ConfigurableElementEditor()
 //-----------------------------------------------------------------------------
-ConfigurableElementEditor::ConfigurableElementEditor(QSharedPointer<ParameterFinder> parameterFinder, 
-                                                     QSharedPointer<ExpressionFormatter> expressionFormatter,
-                                                     QSharedPointer<ExpressionParser> expressionParser,
-                                                     QAbstractItemModel* completionModel,
-                                                     QWidget *parent):
+ConfigurableElementEditor::ConfigurableElementEditor(QSharedPointer<ListParameterFinder> listFinder,
+                                                  QSharedPointer<ParameterFinder> parameterFinder, 
+                                                  QSharedPointer<ExpressionFormatter> configurableElementFormatter,
+                                                  QSharedPointer<ExpressionFormatter> componentInstanceFormatter,
+                                                  QSharedPointer<ExpressionParser> expressionParser,
+                                                  QSharedPointer<ExpressionParser> instanceParser,
+                                                  QAbstractItemModel* completionModel,
+                                                  QWidget *parent):
 QGroupBox(tr("Configurable element values"), parent),
 view_(this),
 filter_(this),
-model_(parameterFinder, expressionFormatter, expressionParser, this),
+model_(parameterFinder, listFinder, configurableElementFormatter, componentInstanceFormatter, expressionParser,
+       instanceParser, this),
 delegate_()
 {
 	filter_.setSourceModel(&model_);
@@ -44,7 +48,7 @@ delegate_()
 	view_.setItemsDraggable(false);
 
     delegate_ = QSharedPointer<ConfigurableElementDelegate> (new ConfigurableElementDelegate(parameterCompleter,
-        parameterFinder, expressionFormatter, this));
+        parameterFinder, configurableElementFormatter, this));
 
     view_.setItemDelegate(delegate_.data());
 
@@ -96,5 +100,7 @@ void ConfigurableElementEditor::onRemoveClick()
 	QModelIndex index = view_.currentIndex();
 	QModelIndex sourceIndex = filter_.mapToSource(index);
 	if (sourceIndex.isValid())
-		model_.onRemove(sourceIndex);
+    {
+        model_.onRemoveItem(sourceIndex);
+    }
 }
