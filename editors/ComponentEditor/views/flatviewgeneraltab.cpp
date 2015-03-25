@@ -18,7 +18,8 @@
 // Function: FlatViewGeneralTab::FlatViewGeneralTab()
 //-----------------------------------------------------------------------------
 FlatViewGeneralTab::FlatViewGeneralTab(QSharedPointer<Component> component, 
-									   QSharedPointer<View> view, 
+    QSharedPointer<View> view, QSharedPointer<ParameterFinder> parameterFinder, 
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
 									   QWidget *parent): 
 QWidget(parent),
 component_(component),
@@ -26,31 +27,43 @@ view_(view),
 language_(this), 
 languageStrict_(tr("Strict"), this),
 modelName_(this),
-fileSetRefs_(component, tr("File set references"), this)
+fileSetRefs_(component, tr("File set references"), this),
+fileBuilders_(view->getDefaultFileBuilders(), this),
+moduleParameters_(view->getModuleParameters(), component, parameterFinder, expressionFormatter, this),
+parameters_(view->getParameters(), component, parameterFinder, expressionFormatter, this)
 {
 	fileSetRefs_.initialize();
 
-	// create the labels for user to identify the editors
-	QLabel* languageLabel = new QLabel(tr("Language"), this);
-	QLabel* modelLabel = new QLabel(tr("Model name"), this);
+    moduleParameters_.setTitle(tr("Module parameters"));
 
-	QGridLayout* gridLayout = new QGridLayout();
-	gridLayout->addWidget(languageLabel, 0, 0, 1, 1);
-	gridLayout->addWidget(&language_, 0, 1, 1, 1);
-	gridLayout->addWidget(&languageStrict_, 0, 2, 1, 1);
-	gridLayout->addWidget(modelLabel, 1, 0, 1, 1);
-	gridLayout->addWidget(&modelName_, 1, 1, 1, 1);
-
-	QVBoxLayout* topLayout = new QVBoxLayout(this);
-	topLayout->addLayout(gridLayout);
-	topLayout->addWidget(&fileSetRefs_, 1);
-	topLayout->setContentsMargins(0, 0, 0, 0);
+    parameters_.setTitle(tr("View-specific generator parameters"));
 
 	connect(&language_, SIGNAL(textEdited(const QString&)),	this, SLOT(onLanguageChange()), Qt::UniqueConnection);
 	connect(&languageStrict_, SIGNAL(toggled(bool)), this, SLOT(onLanguageChange()), Qt::UniqueConnection);
 	connect(&modelName_, SIGNAL(textEdited(const QString&)), 
         this, SLOT(onModelNameChange(const QString&)), Qt::UniqueConnection);
+
 	connect(&fileSetRefs_, SIGNAL(contentChanged()), this, SLOT(onFileSetRefChange()), Qt::UniqueConnection);
+
+    connect(&fileBuilders_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+    connect(&moduleParameters_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&moduleParameters_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&moduleParameters_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(&moduleParameters_, SIGNAL(openReferenceTree(QString)),
+        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+
+    connect(&parameters_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&parameters_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&parameters_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(&parameters_, SIGNAL(openReferenceTree(QString)),
+        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+
+    setupLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -82,7 +95,7 @@ bool FlatViewGeneralTab::isValid() const
 		return false;
     }
 
-	return true;
+    return fileBuilders_.isValid() && moduleParameters_.isValid() && parameters_.isValid();
 }
 
 //-----------------------------------------------------------------------------
@@ -95,6 +108,9 @@ void FlatViewGeneralTab::refresh()
 
 	modelName_.setText(view_->getModelName());
 	fileSetRefs_.setItems(view_->getFileSetRefs());
+
+    fileBuilders_.refresh();
+    parameters_.refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -132,4 +148,37 @@ void FlatViewGeneralTab::showEvent(QShowEvent* event)
 {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/flatview.html");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FlatViewGeneralTab::setupLayout()
+//-----------------------------------------------------------------------------
+void FlatViewGeneralTab::setupLayout()
+{
+    // create the labels for user to identify the editors
+    QLabel* languageLabel = new QLabel(tr("Language"), this);
+    QLabel* modelLabel = new QLabel(tr("Model name"), this);
+
+    QGridLayout* languageAndModelLayout = new QGridLayout();
+    languageAndModelLayout->addWidget(languageLabel, 0, 0, 1, 1);
+    languageAndModelLayout->addWidget(&language_, 0, 1, 1, 1);
+    languageAndModelLayout->addWidget(&languageStrict_, 0, 2, 1, 1);
+    languageAndModelLayout->addWidget(modelLabel, 1, 0, 1, 1);
+    languageAndModelLayout->addWidget(&modelName_, 1, 1, 1, 1);
+
+    QGridLayout* halfPageLayout = new QGridLayout();
+    halfPageLayout->addLayout(languageAndModelLayout, 0, 0, 1, 1);
+    halfPageLayout->setColumnStretch(0, 50);
+    halfPageLayout->setColumnStretch(1, 50);
+
+    QHBoxLayout* fileSetAndBuildLayout = new QHBoxLayout();
+    fileSetAndBuildLayout->addWidget(&fileSetRefs_);
+    fileSetAndBuildLayout->addWidget(&fileBuilders_);
+
+    QVBoxLayout* topLayout = new QVBoxLayout(this);
+    topLayout->addLayout(halfPageLayout);
+    topLayout->addLayout(fileSetAndBuildLayout);
+    topLayout->addWidget(&moduleParameters_, 1);
+    topLayout->addWidget(&parameters_, 1);
+    topLayout->setContentsMargins(0, 0, 0, 0);
 }

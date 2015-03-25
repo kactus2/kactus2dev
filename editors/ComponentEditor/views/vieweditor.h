@@ -18,14 +18,7 @@
 #include "flatviewgeneraltab.h"
 #include "hierarchyrefwidget.h"
 
-#include "ModuleParameterEditor.h"
-
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
-#include <common/widgets/ParameterGroupBox/parametergroupbox.h>
-
-#include <editors/ComponentEditor/fileBuilders/filebuilderseditor.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <IPXACTmodels/view.h>
 
@@ -35,7 +28,9 @@
 #include <QSharedPointer>
 
 class Component;
+class ExpressionFormatter;
 class LibraryInterface;
+class ParameterFinder;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit a view within a component.
@@ -111,19 +106,10 @@ private:
 	QStackedWidget typeDependentEditors_;
 
 	//! Editor to set general settings of flat view.
-	FlatViewGeneralTab generalTab_;
-
-    //! Editor to set the module parameters of flat view.
-    ModuleParameterEditor moduleParameters_;
-
-	//! Editor to set the parameters of flat view.
-	ParameterGroupBox parameters_;
-
-	//! Editor to set the default file builders of flat view.
-	FileBuildersEditor fileBuilders_;
+	FlatViewGeneralTab flatViewEditor_;
 
 	//! The widget to edit the hierarchical reference
-	HierarchyRefWidget hierarchyRef_;
+	HierarchyRefWidget hierarchyReferenceEditor_;
 };
 
 #endif // VIEWEDITOR_H
