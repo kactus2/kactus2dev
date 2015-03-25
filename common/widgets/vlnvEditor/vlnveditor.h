@@ -113,28 +113,28 @@ signals:
     //! Emitted when the user edits the VLNV in the editor.
     void vlnvEdited();
 
-	/*! \brief Emitted when a vlnv for abstraction definition is dropped to this editor.
+	/*! Emitted when a vlnv for abstraction definition is dropped to this editor.
 	 *
-	 * \param busDefVLNV The vlnv of the matching bus definition.
+	 *        @param [in] busDefVLNV The vlnv of the matching bus definition.
 	 *
 	*/
 	void setBusDef(const VLNV& busDefVLNV);
 
-	/*! \brief Emitted when a vlnv for bus definition is dropped to this editor.
+	/*! Emitted when a vlnv for bus definition is dropped to this editor.
 	 * 
 	 * If there are several matching abstraction definitions then this is not emitted.
 	 * 
-	 * \param absDefVLNV Identifies the vlnv of matching abstraction definition.
+	 *        @param [in] absDefVLNV Identifies the vlnv of matching abstraction definition.
 	 *
 	*/
 	void setAbsDef(const VLNV& absDefVLNV);
 
 public slots:
-	/*! \brief Set the widget to be mandatory or not.
+	/*! Set the widget to be mandatory or not.
 	 * 
 	 * The default setting is mandatory on.
 	 * 
-	 * \param mandatory If true then all 4 vlnv fields are displayed as mandatory fields.
+	 *        @param [in] mandatory If true then all 4 vlnv fields are displayed as mandatory fields.
 	 *
 	*/
 	void setMandatory(bool mandatory);
@@ -168,29 +168,29 @@ public slots:
     //! Called when the name field has changed.
     void updateVersionMatcherItem();
 
-	//! \brief Sets the vendor-field to contain the given string.
-	void setVendor(const QString& vendor);
+	//! Sets the vendor-field to contain the given string.
+	void setVendor(QString const& vendor);
 
-	//! \brief Sets the library-field to contain the given string.
-	void setLibrary(const QString& library);
+	//! Sets the library-field to contain the given string.
+	void setLibrary(QString const& library);
 
-	//! \brief Sets the name-field to contain the given string.
-	void setName(const QString& name);
+	//! Sets the name-field to contain the given string.
+	void setName(QString const& name);
 
-	//! \brief Sets the version-field to contain the given string.
-	void setVersion(const QString& version);
+	//! Sets the version-field to contain the given string.
+	void setVersion(QString const& version);
 
 protected:
-	/*! \brief Handler for drop events on drag & drop
+	/*! Handler for drop events on drag & drop
 	 *
-	 * \param event Pointer to the drop event.
+	 *        @param [in] event Pointer to the drop event.
 	 *
 	*/
 	virtual void dropEvent(QDropEvent* event);
 
-	/*! \brief Handler for drag enter events in drag & drop.
+	/*! Handler for drag enter events in drag & drop.
 	 *
-	 * \param event Pointer to the event.
+	 *        @param [in] event Pointer to the event.
 	 *
 	*/
 	virtual void dragEnterEvent(QDragEnterEvent* event);
@@ -198,6 +198,7 @@ protected:
     virtual void showEvent(QShowEvent* event);
 
 private slots:
+
     //! Refreshes the filtering and matcher items.
     void refresh();
 
@@ -262,7 +263,7 @@ private:
     //! Content matcher for the version field.
     VLNVContentMatcher versionMatcher_;
 
-	//! \brief Pointer to the instance that manages the library
+	//! Pointer to the instance that manages the library
 	LibraryInterface* handler_;
 
     //! Implementation filter data.

@@ -12,14 +12,15 @@
 #include "vlnveditor.h"
 
 #include <common/widgets/assistedLineEdit/AssistedLineEdit.h>
-#include <IPXACTmodels/validators/namevalidator.h>
 
-#include <IPXACTmodels/validators/NMTokenValidator.h>
-
-#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/libraryitem.h>
 #include <library/LibraryManager/libraryhandler.h>
+
+#include <IPXACTmodels/validators/namevalidator.h>
+#include <IPXACTmodels/validators/NMTokenValidator.h>
+
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <IPXACTmodels/librarycomponent.h>
 #include <IPXACTmodels/abstractiondefinition.h>
@@ -115,7 +116,11 @@ void VLNVEditor::setVLNV(VLNV const* vlnv)
     versionEdit_->setText(vlnv->getVersion());
 }
 
-void VLNVEditor::setVLNV( const VLNV& vlnv ) {
+//-----------------------------------------------------------------------------
+// Function: VLNVEditor::setVLNV()
+//-----------------------------------------------------------------------------
+void VLNVEditor::setVLNV( const VLNV& vlnv )
+{
 	setVLNV(&vlnv);
 }
 
@@ -133,8 +138,7 @@ VLNV VLNVEditor::getVLNV() const
 //-----------------------------------------------------------------------------
 bool VLNVEditor::isValid() const
 {
-    return (!vendorEdit_->text().isEmpty() && !libraryEdit_->text().isEmpty() &&
-            !nameEdit_->text().isEmpty() && !versionEdit_->text().isEmpty());
+    return !isEmpty();
 }
 
 //-----------------------------------------------------------------------------
@@ -142,7 +146,6 @@ bool VLNVEditor::isValid() const
 //-----------------------------------------------------------------------------
 void VLNVEditor::updateMatcherItems()
 {
-    //vendorMatcher_.setDataNode(&dataTree_);
     updateLibraryMatcherItem();
 }
 
@@ -262,64 +265,87 @@ void VLNVEditor::initWidgets(QWidget* parentWnd, bool compact)
 void VLNVEditor::initConnections()
 {
     // Connect the signals informing of changes in items.
-    connect(vendorEdit_, SIGNAL(textChanged(const QString&)),
+    connect(vendorEdit_, SIGNAL(textChanged(QString const&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(libraryEdit_, SIGNAL(textChanged(const QString&)),
+    connect(libraryEdit_, SIGNAL(textChanged(QString const&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(nameEdit_, SIGNAL(textChanged(const QString&)),
+    connect(nameEdit_, SIGNAL(textChanged(QString const&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(versionEdit_, SIGNAL(textChanged(const QString&)),
+    connect(versionEdit_, SIGNAL(textChanged(QString const&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     // Connect the signals informing the editing of items.
-    connect(vendorEdit_, SIGNAL(textEdited(const QString&)),
+    connect(vendorEdit_, SIGNAL(textEdited(QString const&)),
         this, SIGNAL(vlnvEdited()), Qt::UniqueConnection);
-    connect(libraryEdit_, SIGNAL(textEdited(const QString&)),
+    connect(libraryEdit_, SIGNAL(textEdited(QString const&)),
         this, SIGNAL(vlnvEdited()), Qt::UniqueConnection);
-    connect(nameEdit_, SIGNAL(textEdited(const QString&)),
+    connect(nameEdit_, SIGNAL(textEdited(QString const&)),
         this, SIGNAL(vlnvEdited()), Qt::UniqueConnection);
-    connect(versionEdit_, SIGNAL(textEdited(const QString&)),
+    connect(versionEdit_, SIGNAL(textEdited(QString const&)),
         this, SIGNAL(vlnvEdited()), Qt::UniqueConnection);
 
     // Connect the matcher update slots to the textChanged signals.
-    connect(vendorEdit_, SIGNAL(textChanged(const QString&)),
-        this, SLOT(updateMatcherItems()), Qt::UniqueConnection);
-    connect(vendorEdit_, SIGNAL(textChanged(const QString&)),
+    connect(vendorEdit_, SIGNAL(textChanged(QString const&)),
         this, SLOT(updateLibraryMatcherItem()), Qt::UniqueConnection);
-    connect(libraryEdit_, SIGNAL(textChanged(const QString&)),
+    connect(libraryEdit_, SIGNAL(textChanged(QString const&)),
         this, SLOT(updateNameMatcherItem()), Qt::UniqueConnection);
-    connect(nameEdit_, SIGNAL(textChanged(const QString&)),
+    connect(nameEdit_, SIGNAL(textChanged(QString const&)),
         this, SLOT(updateVersionMatcherItem()), Qt::UniqueConnection);
 
     connect(static_cast<LibraryHandler*>(handler_), SIGNAL(refreshDialer()),
             this, SLOT(refresh()), Qt::UniqueConnection);
 }
 
-bool VLNVEditor::isEmpty() const {
+//-----------------------------------------------------------------------------
+// Function: VLNVEditor::isEmpty()
+//-----------------------------------------------------------------------------
+bool VLNVEditor::isEmpty() const
+{
 	return (vendorEdit_->text().isEmpty() && libraryEdit_->text().isEmpty() &&
 		nameEdit_->text().isEmpty() && versionEdit_->text().isEmpty());
 }
 
-void VLNVEditor::setVendor( const QString& vendor ) {
+//-----------------------------------------------------------------------------
+// Function: VLNVEditor::setVendor()
+//-----------------------------------------------------------------------------
+void VLNVEditor::setVendor(QString const& vendor)
+{
 	vendorEdit_->setText(vendor);
 }
 
-void VLNVEditor::setLibrary( const QString& library ) {
+//-----------------------------------------------------------------------------
+// Function: VLNVEditor::setLibrary()
+//-----------------------------------------------------------------------------
+void VLNVEditor::setLibrary(QString const& library)
+{
 	libraryEdit_->setText(library);
 }
 
-void VLNVEditor::setName( const QString& name ) {
+//-----------------------------------------------------------------------------
+// Function: VLNVEditor::setName()
+//-----------------------------------------------------------------------------
+void VLNVEditor::setName(QString const& name)
+{
 	nameEdit_->setText(name);
 }
 
-void VLNVEditor::setVersion( const QString& version ) {
+//-----------------------------------------------------------------------------
+// Function: VLNVEditor::setVersion()
+//-----------------------------------------------------------------------------
+void VLNVEditor::setVersion(QString const& version)
+{
 	versionEdit_->setText(version);
 }
 
-void VLNVEditor::dropEvent( QDropEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: VLNVEditor::dropEvent()
+//-----------------------------------------------------------------------------
+void VLNVEditor::dropEvent(QDropEvent* event)
+{
 	// Retrieve the vlnv.
 	QVariant data = event->mimeData()->imageData();
-	if (!data.canConvert<VLNV>()) {
+	if (!data.canConvert<VLNV>())
+    {
 		return;
 	}
 
@@ -351,62 +377,62 @@ void VLNVEditor::dropEvent( QDropEvent* event ) {
 	setVLNV(vlnv);
 	event->acceptProposedAction();
 
-	// for abs def and bus def there is additional option to set the paired vlnv editor
-	switch (type) 
-	{
-	case VLNV::BUSDEFINITION: {
-		
-		// if there is only one abs def for the dropped bus def
-		QList<VLNV> absDefVLNVs;
-		if (handler_->getChildren(absDefVLNVs, vlnv) == 1) {
-			emit setAbsDef(absDefVLNVs.first());
-		}
+    // for abs def and bus def there is additional option to set the paired vlnv editor
+    if (type == VLNV::BUSDEFINITION)
+    {
+        // if there is only one abs def for the dropped bus def
+        QList<VLNV> absDefVLNVs;
+        if (handler_->getChildren(absDefVLNVs, vlnv) == 1)
+        {
+            emit setAbsDef(absDefVLNVs.first());
+        }
 
-		// if there are more than one abs defs for the bus def
-		else if (absDefVLNVs.size() > 1) {
+        // if there are more than one abs defs for the bus def
+        else if (absDefVLNVs.size() > 1)
+        {
+            // if the signal is connected then inform user that the abs def must be
+            // selected manually
+            if (receivers(SIGNAL(setAbsDef(const VLNV&))) > 0)
+            {
+                QMessageBox::information(this, QCoreApplication::applicationName(),
+                    tr("More than one abstraction definitions exist for the dropped"
+                    " bus definition. Select one manually from the library."),
+                    QMessageBox::Close, QMessageBox::Close);
+            }
+        }
 
-			// if the signal is connected then inform user that the abs def must be
-			// selected manually
-			if (receivers(SIGNAL(setAbsDef(const VLNV&))) > 0) {
-				QMessageBox::information(this, QCoreApplication::applicationName(),
-					tr("More than one abstraction definitions exist for the dropped"
-					" bus definition. Select one manually from the library."),
-					QMessageBox::Close, QMessageBox::Close);
-			}
-		}
-		break;
-							  }
-	case VLNV::ABSTRACTIONDEFINITION: {
-		QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
-		QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
-		Q_ASSERT(absDef);
+    }
+    else if(type == VLNV::ABSTRACTIONDEFINITION)
+    {
+        QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
+        QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
+        Q_ASSERT(absDef);
 
-		VLNV busDefVLNV = absDef->getBusType();
-		emit setBusDef(busDefVLNV);
-		break;
-									  }
-
-    default:
-        break;
-	
-	}
+        VLNV busDefVLNV = absDef->getBusType();
+        emit setBusDef(busDefVLNV);
+    }
 
     emit vlnvEdited();
 }
 
-void VLNVEditor::dragEnterEvent( QDragEnterEvent* event ) {
-	if (event->mimeData()->hasImage()) {
-		
+//-----------------------------------------------------------------------------
+// Function: VLNVEditor::dragEnterEvent()
+//-----------------------------------------------------------------------------
+void VLNVEditor::dragEnterEvent( QDragEnterEvent* event )
+{
+	if (event->mimeData()->hasImage())
+    {
 		// Retrieve the vlnv.
 		QVariant data = event->mimeData()->imageData();
-		if (!data.canConvert<VLNV>()) {
+		if (!data.canConvert<VLNV>())
+        {
 			return;
 		}
 
 		VLNV vlnv = data.value<VLNV>();
-
 		// if the vlnv is of correct type
-		if (contentTypes_.contains(handler_->getDocumentType(vlnv))) {
+		if (contentTypes_.contains(handler_->getDocumentType(vlnv)))
+        {
 			event->acceptProposedAction();
 		}
 	}
@@ -451,7 +477,11 @@ void VLNVEditor::updateFiltering()
     dirty_ = false;
 }
 
-void VLNVEditor::setMandatory( bool mandatory ) {
+//-----------------------------------------------------------------------------
+// Function: VLNVEditor::setMandatory()
+//-----------------------------------------------------------------------------
+void VLNVEditor::setMandatory(bool mandatory)
+{
 	vendorEdit_->setProperty("mandatoryField", mandatory);
 	libraryEdit_->setProperty("mandatoryField", mandatory);
 	nameEdit_->setProperty("mandatoryField", mandatory);
@@ -477,7 +507,6 @@ void VLNVEditor::addNameExtension(QString const& extension)
     dataTree_.addExtensionFilter(extension);
     dirty_ = true;
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: VLNVEditor::showEvent()
