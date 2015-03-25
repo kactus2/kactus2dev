@@ -27,7 +27,8 @@ HEADERS += ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h
     ../../../../editors/ComponentEditor/parameters/Array/ArrayView.h \
     ../../../../editors/ComponentEditor/parameters/Array/ParameterArrayModel.h \
     ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
-    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h
+    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../../../editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h
 SOURCES += ../../../../editors/ComponentEditor/common/AbstractParameterModel.cpp \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../../editors/ComponentEditor/common/ExpressionDelegate.cpp \
@@ -45,4 +46,5 @@ SOURCES += ../../../../editors/ComponentEditor/common/AbstractParameterModel.cpp
     ../../../../editors/ComponentEditor/parameters/Array/ArrayView.cpp \
     ../../../../editors/ComponentEditor/parameters/Array/ArrayDelegate.cpp \
     ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
-    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp
+    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../../../editors/ComponentEditor/parameters/ChoiceCreatorDelegate.cpp
