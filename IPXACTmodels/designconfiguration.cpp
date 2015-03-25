@@ -670,7 +670,7 @@ void DesignConfiguration::setInterconnectionConfs(QList<QSharedPointer<Interconn
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::setViewConfigurations()
 //-----------------------------------------------------------------------------
-void DesignConfiguration::setViewConfigurations(QMap<QString,QString>& viewConfigurations)
+void DesignConfiguration::setViewConfigurations(QMap<QString,QString> const& viewConfigurations)
 {
     // delete old values
     viewConfigurations_.clear();
@@ -893,6 +893,98 @@ QMap<QString, QString> DesignConfiguration::getConfigurableElementValues(QString
 }
 
 //-----------------------------------------------------------------------------
+// Function: DesignConfiguration::setConfigurableElementValues()
+//-----------------------------------------------------------------------------
+void DesignConfiguration::setConfigurableElementValues(QString const& instanceUUID, 
+    QMap<QString, QString> const& configurableElementValues)
+{
+    if (configurableElementValues.isEmpty())
+    {
+        return;
+    }
+
+    QMap<QString, QString> valuesToSet = configurableElementValues;
+
+    QSharedPointer<Kactus2Group> instanceGroup =
+        findOrCreateInstanceExtension(instanceUUID).dynamicCast<Kactus2Group>();
+
+    foreach(QSharedPointer<VendorExtension> value, instanceGroup->getByType("kactus2:configurableElementValue"))
+    {
+        QSharedPointer<Kactus2Placeholder> existingValue = value.dynamicCast<Kactus2Placeholder>();
+
+        QString referenceId = existingValue->getAttributeValue("referenceId");
+        if (valuesToSet.contains(referenceId))
+        {
+            QString updatedValue = valuesToSet.value(referenceId);
+            existingValue->setAttribute("value", updatedValue);
+            valuesToSet.remove(referenceId);
+        }
+        else
+        {
+            instanceGroup->removeFromGroup(existingValue);
+        }
+    }
+
+    foreach (QString newId, valuesToSet.keys())
+    {
+        QSharedPointer<Kactus2Placeholder> valueHolder(new Kactus2Placeholder("kactus2:configurableElementValue"));
+        valueHolder->setAttribute("referenceId", newId);
+        valueHolder->setAttribute("value", valuesToSet.value(newId));
+        instanceGroup->addToGroup(valueHolder);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignConfiguration::findOrCreateInstanceExtension()
+//-----------------------------------------------------------------------------
+QSharedPointer<VendorExtension> DesignConfiguration::findOrCreateInstanceExtension(QString const& instanceUUID)
+{
+    QSharedPointer<Kactus2Group> cevGroup;
+    foreach(QSharedPointer<VendorExtension> extension, vendorExtensions_)
+    {
+        if (extension->type() == "kactus2:configurableElementValues")
+        {
+            cevGroup = extension.dynamicCast<Kactus2Group>();
+            break;
+        }
+    }
+
+    if (cevGroup.isNull())
+    {
+        cevGroup = QSharedPointer<Kactus2Group>(new Kactus2Group("kactus2:configurableElementValues"));
+        vendorExtensions_.append(cevGroup);
+    }
+
+    QSharedPointer<Kactus2Group> targetInstanceGroup;
+    foreach (QSharedPointer<VendorExtension> instanceNode, cevGroup->getByType("kactus2:componentInstance"))
+    {
+        QSharedPointer<Kactus2Group> instanceGroup = instanceNode.dynamicCast<Kactus2Group>();
+        QString groupUUID = "";
+        QList<QSharedPointer<VendorExtension> > uuidValues = instanceGroup->getByType("kactus2:uuid");
+        if (!uuidValues.isEmpty())
+        {
+            groupUUID = uuidValues.first().dynamicCast<Kactus2Value>()->value();
+        }
+
+        if (groupUUID == instanceUUID)
+        {
+            targetInstanceGroup  = instanceNode.dynamicCast<Kactus2Group>();
+            break;
+        }
+    }
+
+    if (targetInstanceGroup.isNull())
+    {
+        targetInstanceGroup = QSharedPointer<Kactus2Group>(new Kactus2Group("kactus2:componentInstance"));
+        targetInstanceGroup->addToGroup(QSharedPointer<Kactus2Value>(
+            new Kactus2Value("kactus2:uuid", instanceUUID)));
+        cevGroup->addToGroup(targetInstanceGroup);
+    }
+
+    return targetInstanceGroup;
+}
+
+//-----------------------------------------------------------------------------
 // Function: DesignConfiguration::parseVendorExtensions()
 //-----------------------------------------------------------------------------
 void DesignConfiguration::parseVendorExtensions(QDomNode const& extensionsNode)
@@ -917,10 +1009,6 @@ void DesignConfiguration::parseVendorExtensions(QDomNode const& extensionsNode)
         {
             parseConfigurableElementValues(extensionNode);
         }
-        else
-        {
-            vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
-        }
     }
 }
 
@@ -937,28 +1025,24 @@ void DesignConfiguration::parseConfigurableElementValues(QDomNode const& extensi
         QDomNode instanceNode = extensionNode.childNodes().at(i);
         for (int j = 0; j < instanceNode.childNodes().size(); j++)
         {
-            QDomNode subNode = instanceNode.childNodes().at(j);
-            if (subNode.nodeName() == "kactus2:uuid")
+            QDomNode leafNode = instanceNode.childNodes().at(j);
+            if (leafNode.nodeName() == "kactus2:uuid")
             {
-                QString groupUUID = subNode.childNodes().at(0).nodeValue();
+                QString groupUUID = leafNode.childNodes().at(0).nodeValue();
                 QSharedPointer<VendorExtension> uuidValue(new Kactus2Value("kactus2:uuid", groupUUID));
 
                 instanceGroup->addToGroup(uuidValue);
             }
-            else if (subNode.nodeName() == "kactus2:configurableElementValue")                    
+            else if (leafNode.nodeName() == "kactus2:configurableElementValue")                    
             {
                 QSharedPointer<Kactus2Placeholder> valueHolder(
                     new Kactus2Placeholder("kactus2:configurableElementValue"));
 
-                QDomNamedNodeMap attributes = subNode.attributes();
+                QDomNamedNodeMap attributes = leafNode.attributes();
                 valueHolder->setAttribute("referenceId", attributes.namedItem("referenceId").nodeValue());
                 valueHolder->setAttribute("value", attributes.namedItem("value").nodeValue());
 
                 instanceGroup->addToGroup(valueHolder);
-            }
-            else
-            {
-                instanceGroup->addToGroup(QSharedPointer<VendorExtension>(new GenericVendorExtension(subNode)));
             }
         }
 

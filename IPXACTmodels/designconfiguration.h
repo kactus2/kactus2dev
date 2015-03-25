@@ -279,7 +279,7 @@ public:
      * \param viewConfigurations QMap containing instance names and view
      * names.
      */
-    void setViewConfigurations(QMap<QString,QString>& viewConfigurations);
+    void setViewConfigurations(QMap<QString,QString> const& viewConfigurations);
 
     /*! \brief Get list of the files needed by this designConfiguration.
      *
@@ -343,6 +343,16 @@ public:
      *
      */
 	KactusAttribute::Implementation getDesignConfigImplementation() const;
+    
+    /*!
+     *  Sets the override configurable element values for a given component instance identified by UUID.
+     *
+     *      @param [in] instanceUUID                The uuid for the instance to get the values.
+     *      @param [in] configurableElementValues   The values to save in the design configuration.
+     */
+    void setConfigurableElementValues(QString const& instanceUUID, 
+        QMap<QString, QString> const& configurableElementValues);
+    QSharedPointer<VendorExtension> findOrCreateInstanceExtension(QString const& instanceUUID);
 
     /*!
      *  Gets the override configurable element values for a given component instance identified by UUID.

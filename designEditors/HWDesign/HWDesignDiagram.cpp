@@ -222,7 +222,15 @@ QSharedPointer<Design> HWDesignDiagram::createDesign(const VLNV &vlnv) const
                                        comp->scenePos(), comp->getUuid());
 
 			// save the configurable element values to the design
-			instance.setConfigurableElementValues(comp->getConfigurableElements());
+            if (getDesignConfiguration().isNull())
+            {
+                 instance.setConfigurableElementValues(comp->getConfigurableElements());
+            }
+            else
+            {
+			   getDesignConfiguration()->setConfigurableElementValues(instance.getUuid(),
+                   comp->getConfigurableElements());
+            }
             instance.setPortAdHocVisibilities(comp->getPortAdHocVisibilities());
             instance.setVendorExtensions(comp->getVendorExtensions());
 

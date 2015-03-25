@@ -853,10 +853,6 @@ void Design::parseVendorExtensions(QDomNode &node)
         {
             parseKactus2Attributes(childNode);
         }
-        else
-        {
-            vendorExtensions_.append(QSharedPointer<VendorExtension>(new GenericVendorExtension(childNode)));
-        }
     }
 }
 
