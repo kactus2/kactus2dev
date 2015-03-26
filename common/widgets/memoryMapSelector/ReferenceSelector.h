@@ -5,16 +5,16 @@
  *		Project: Kactus 2
  */
 
-#ifndef MEMORYMAPSELECTOR_H
-#define MEMORYMAPSELECTOR_H
+#ifndef REFERENCESELECTOR_H
+#define REFERENCESELECTOR_H
 
 #include <QColor>
 #include <QComboBox>
 
 //-----------------------------------------------------------------------------
-//! Combo box to select a memory map from a component.
+//! Combo box to select a name reference.
 //-----------------------------------------------------------------------------
-class MemoryMapSelector : public QComboBox
+class ReferenceSelector : public QComboBox
 {
 	Q_OBJECT
 
@@ -26,27 +26,27 @@ public:
 	 * \param parent Pointer to the owner of this editor.
 	 *
 	*/
-	MemoryMapSelector(QWidget *parent);
+	ReferenceSelector(QWidget *parent);
 	
 	//! The destructor.
-	virtual ~MemoryMapSelector();
+	virtual ~ReferenceSelector();
 
 public slots:
 
 	//! Refresh the items to be selected in the combo box.
-    void refresh(QStringList const& memoryMapNames);
+    void refresh(QStringList const& itemNames);
 
 	/*! Set the specified memory map as selected.
 	 *
 	 * \param memoryMapName The name of the memory map to select.
 	 *
 	*/
-	void selectMemoryMap(QString const& memoryMapName);
+    void selectItem(QString const& itemName);
 
 signals:
 
 	//! Emitted when memory map was selected by user.
-	void memoryMapSelected(QString const& memoryMapName);
+	void itemSelected(QString const& memoryMapName);
 
 private slots:
 
@@ -56,10 +56,10 @@ private slots:
 private:
 	
 	//! No copying
-	MemoryMapSelector(const MemoryMapSelector& other);
+	ReferenceSelector(const ReferenceSelector& other);
 
 	//! No assignment
-	MemoryMapSelector& operator=(const MemoryMapSelector& other);
+	ReferenceSelector& operator=(const ReferenceSelector& other);
 
     /*!
      *  Sets the color of the text of the current text.
@@ -69,4 +69,4 @@ private:
     void setTextColor(QColor const& color);
 };
 
-#endif // MEMORYMAPSELECTOR_H
+#endif // REFERENCESELECTOR_H

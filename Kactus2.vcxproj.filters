@@ -98,9 +98,6 @@
     <Filter Include="Source Files\common\widgets\interfaceModeSelector">
       <UniqueIdentifier>{f98df068-5745-46d9-b18d-f5c32817fad6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\widgets\addressSpaceSelector">
-      <UniqueIdentifier>{d09c171c-1116-41d9-9ecd-133d61f5e3ec}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\widgets\memoryMapSelector">
       <UniqueIdentifier>{a1fe8793-272c-438e-9b59-c9665c54d216}</UniqueIdentifier>
     </Filter>
@@ -221,9 +218,6 @@
     </Filter>
     <Filter Include="Header Files\common\widgets\interfaceModeSelector">
       <UniqueIdentifier>{866f1e78-b5de-4717-b036-11a2bee9084c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\widgets\addressSpaceSelector">
-      <UniqueIdentifier>{dd309d85-d230-408c-a554-76a4cf5a4161}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\memoryMapSelector">
       <UniqueIdentifier>{ba6f747f-1c53-4c49-bebf-f2acd09e25db}</UniqueIdentifier>
@@ -1054,12 +1048,6 @@
     <ClCompile Include="common\widgets\interfaceModeSelector\interfacemodeselector.cpp">
       <Filter>Source Files\common\widgets\interfaceModeSelector</Filter>
     </ClCompile>
-    <ClCompile Include="common\widgets\addressSpaceSelector\addressspaceselector.cpp">
-      <Filter>Source Files\common\widgets\addressSpaceSelector</Filter>
-    </ClCompile>
-    <ClCompile Include="common\widgets\memoryMapSelector\memorymapselector.cpp">
-      <Filter>Source Files\common\widgets\memoryMapSelector</Filter>
-    </ClCompile>
     <ClCompile Include="common\widgets\interfaceSelector\interfaceselector.cpp">
       <Filter>Source Files\common\widgets\interfaceSelector</Filter>
     </ClCompile>
@@ -1246,9 +1234,6 @@
     <ClCompile Include="GeneratedFiles\moc_modwritecombobox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_memorymapselector.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_mainwindow.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -1361,9 +1346,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_AssistedLineEdit.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_addressspaceselector.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_accesscombobox.cpp">
@@ -4003,6 +3985,12 @@
     <ClCompile Include="editors\ComponentEditor\common\ListParameterFinder.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
+    <ClCompile Include="common\widgets\memoryMapSelector\ReferenceSelector.cpp">
+      <Filter>Source Files\common\widgets\memoryMapSelector</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ReferenceSelector.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4116,9 +4104,6 @@
     <CustomBuild Include="common\widgets\accessComboBox\accesscombobox.h">
       <Filter>Header Files\common\widgets\accessComboBox</Filter>
     </CustomBuild>
-    <CustomBuild Include="common\widgets\addressSpaceSelector\addressspaceselector.h">
-      <Filter>Header Files\common\widgets\addressSpaceSelector</Filter>
-    </CustomBuild>
     <CustomBuild Include="common\widgets\assistedLineEdit\AssistedLineEdit.h">
       <Filter>Header Files\common\widgets\assistedLineEdit</Filter>
     </CustomBuild>
@@ -4166,9 +4151,6 @@
     </CustomBuild>
     <CustomBuild Include="common\widgets\listManager\listmanagermodel.h">
       <Filter>Header Files\common\widgets\listManager</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\widgets\memoryMapSelector\memorymapselector.h">
-      <Filter>Header Files\common\widgets\memoryMapSelector</Filter>
     </CustomBuild>
     <CustomBuild Include="common\widgets\modWriteComboBox\modwritecombobox.h">
       <Filter>Header Files\common\widgets\modWriteComboBox</Filter>
@@ -5513,6 +5495,9 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\parameters\ChoiceCreatorDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\memoryMapSelector\ReferenceSelector.h">
+      <Filter>Header Files\common\widgets\memoryMapSelector</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

@@ -9,7 +9,9 @@
 #define BUSIFINTERFACEMASTER_H
 
 #include "busifinterfacemodeeditor.h"
-#include <common/widgets/addressSpaceSelector/addressspaceselector.h>
+
+#include <common/widgets/memoryMapSelector/ReferenceSelector.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/businterface.h>
@@ -85,7 +87,7 @@ private:
 	General::InterfaceMode mode_;
 
 	//! \brief Combo box to select an address space within component
-	AddressSpaceSelector addressSpaceRef_;
+	ReferenceSelector addressSpaceReferenceSelector_;
 
 	//! \brief Line edit to set the base address of master's address space.
 	QLineEdit baseAddress_;

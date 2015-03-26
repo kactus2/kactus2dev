@@ -45,8 +45,6 @@ HEADERS += ./common/Global.h \
     ./common/widgets/nameGroupEditor/namegroupeditor.h \
     ./common/widgets/summaryLabel/summarylabel.h \
     ./common/widgets/interfaceModeSelector/interfacemodeselector.h \
-    ./common/widgets/addressSpaceSelector/addressspaceselector.h \
-    ./common/widgets/memoryMapSelector/memorymapselector.h \
     ./common/widgets/interfaceSelector/interfaceselector.h \
     ./common/widgets/LineEditEx/LineEditEx.h \
     ./common/widgets/SnippetTextEdit/SnippetHighlighter.h \
@@ -261,6 +259,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/parameters/ParameterColumns.h \
     ./editors/ComponentEditor/parameters/parametersmodel.h \
     ./editors/ComponentEditor/parameters/ComponentParameterModel.h \
+    ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h \
     ./editors/ComponentEditor/parameters/ParameterDelegate.h \
     ./editors/ComponentEditor/parameters/ParameterEditorHeaderView.h \
     ./editors/ComponentEditor/parameters/parameterseditor.h \
@@ -480,6 +479,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h \
     ./editors/ComponentEditor/common/ExpressionParser.h \
     ./editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ./editors/ComponentEditor/common/ListParameterFinder.h \
     ./editors/ComponentEditor/common/MultipleParameterFinder.h \
     ./editors/ComponentEditor/common/NullParser.h \
     ./editors/ComponentEditor/common/ParameterFinder.h \
@@ -610,8 +610,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h \
-    ./editors/ComponentEditor/common/ListParameterFinder.h
+    ./common/widgets/memoryMapSelector/ReferenceSelector.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -660,8 +659,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/nameGroupEditor/namegroupeditor.cpp \
     ./common/widgets/summaryLabel/summarylabel.cpp \
     ./common/widgets/interfaceModeSelector/interfacemodeselector.cpp \
-    ./common/widgets/addressSpaceSelector/addressspaceselector.cpp \
-    ./common/widgets/memoryMapSelector/memorymapselector.cpp \
+    ./common/widgets/memoryMapSelector/ReferenceSelector.cpp \
     ./common/widgets/interfaceSelector/interfaceselector.cpp \
     ./common/widgets/LineEditEx/LineEditEx.cpp \
     ./common/widgets/SnippetTextEdit/SnippetHighlighter.cpp \
@@ -900,6 +898,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.cpp \
+    ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.cpp \
     ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ./editors/ComponentEditor/parameters/ParameterDelegate.cpp \
     ./editors/ComponentEditor/parameters/ParameterEditorHeaderView.cpp \
@@ -1047,6 +1046,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.cpp \
     ./editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ./editors/ComponentEditor/common/ListParameterFinder.cpp \
     ./editors/ComponentEditor/common/MultipleParameterFinder.cpp \
     ./editors/ComponentEditor/common/NullParser.cpp \
     ./editors/ComponentEditor/common/ParameterCompleter.cpp \
@@ -1161,7 +1161,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.cpp \
-    ./editors/ComponentEditor/common/ListParameterFinder.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
 RESOURCES += kactus.qrc

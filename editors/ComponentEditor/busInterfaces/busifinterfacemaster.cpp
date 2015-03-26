@@ -16,6 +16,9 @@
 #include <QGridLayout>
 #include <QString>
 
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceMaster::BusIfInterfaceMaster()
+//-----------------------------------------------------------------------------
 BusIfInterfaceMaster::BusIfInterfaceMaster(General::InterfaceMode mode,
 										   QSharedPointer<BusInterface> busif,
 										   QSharedPointer<Component> component,
@@ -23,7 +26,7 @@ BusIfInterfaceMaster::BusIfInterfaceMaster(General::InterfaceMode mode,
 BusIfInterfaceModeEditor(busif, component, tr("Master"), parent), 
 master_(QSharedPointer<MasterInterface>(new MasterInterface())),
 mode_(mode),
-addressSpaceRef_(component, this), 
+addressSpaceReferenceSelector_(this), 
 baseAddress_(this) {
 
 	// set the title depending on the mode
@@ -47,95 +50,127 @@ baseAddress_(this) {
 
 	QGridLayout* topLayout = new QGridLayout(this);
 	topLayout->addWidget(addrSpaceLabel, 0, 0, Qt::AlignLeft);
-	topLayout->addWidget(&addressSpaceRef_, 0, 1, Qt::AlignLeft);
+	topLayout->addWidget(&addressSpaceReferenceSelector_, 0, 1, Qt::AlignLeft);
 	topLayout->addWidget(baseAddrLabel, 1, 0, Qt::AlignLeft);
 	topLayout->addWidget(&baseAddress_, 1, 1, Qt::AlignLeft);
 	topLayout->setColumnStretch(2, 1);
 	topLayout->setRowStretch(2, 1);
 
-	connect(&addressSpaceRef_, SIGNAL(addressSpaceSelected(const QString&)),
+	connect(&addressSpaceReferenceSelector_, SIGNAL(itemSelected(const QString&)),
 		this, SLOT(onAddressSpaceChange(const QString&)), Qt::UniqueConnection);
 	connect(&baseAddress_, SIGNAL(textEdited(const QString&)),
 		this, SLOT(onBaseAddressChange(const QString&)), Qt::UniqueConnection);
 }
 
-BusIfInterfaceMaster::~BusIfInterfaceMaster() {
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceMaster::~BusIfInterfaceMaster()
+//-----------------------------------------------------------------------------
+BusIfInterfaceMaster::~BusIfInterfaceMaster()
+{
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceMaster::isValid()
+//-----------------------------------------------------------------------------
 bool BusIfInterfaceMaster::isValid() const {
 
-	QString selectedAddrSpace = addressSpaceRef_.currentText();
+	QString selectedAddrSpace = addressSpaceReferenceSelector_.currentText();
 
 	// address space ref is not mandatory
-	if (selectedAddrSpace.isEmpty()) {
+	if (selectedAddrSpace.isEmpty())
+    {
 		return true;
 	}
 	
 	// if the selected address space does not belong to component
 	QStringList addrSpaceNames = component_->getAddressSpaceNames();
-	if (!addrSpaceNames.contains(selectedAddrSpace)) {
+	if (!addrSpaceNames.contains(selectedAddrSpace))
+    {
 		return false;
 	}
 	
 	return true;
 }
 
-void BusIfInterfaceMaster::refresh() {
-
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceMaster::isValid()
+//-----------------------------------------------------------------------------
+void BusIfInterfaceMaster::refresh()
+{
 	// if the model contains master-element
-	if (busif_->getMaster()) {
+	if (busif_->getMaster())
+    {
 		master_ = busif_->getMaster();
 	}
-	else {
+	else
+    {
 		master_.clear();
 		master_ = QSharedPointer<MasterInterface>(new MasterInterface());
 	}
 
 	// update the selectable items
-	addressSpaceRef_.refresh();
+	addressSpaceReferenceSelector_.refresh(component_->getAddressSpaceNames());
 
 	QString addrSpaceRef = master_->getAddressSpaceRef();
 
 	// if address space ref is empty then there can be no base address
-	if (addrSpaceRef.isEmpty()) {
+	if (addrSpaceRef.isEmpty())
+    {
 		baseAddress_.setDisabled(true);
 	}
-	else {
+	else 
+    {
 		baseAddress_.setEnabled(true);
 		baseAddress_.setText(master_->getBaseAddress());
 	}
 
 	// select the address space ref and base address
-	addressSpaceRef_.selectAddressSpace(addrSpaceRef);
+	addressSpaceReferenceSelector_.selectItem(addrSpaceRef);
 }
 
-
-
-General::InterfaceMode BusIfInterfaceMaster::getInterfaceMode() const {
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceMaster::getInterfaceMode()
+//-----------------------------------------------------------------------------
+General::InterfaceMode BusIfInterfaceMaster::getInterfaceMode() const
+{
 	return mode_;
 }
 
-void BusIfInterfaceMaster::onAddressSpaceChange(const QString& addrSpaceName) {
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceMaster::onAddressSpaceChange()
+//-----------------------------------------------------------------------------
+void BusIfInterfaceMaster::onAddressSpaceChange(const QString& addrSpaceName)
+{
 	master_->setAddressSpaceRef(addrSpaceName);
 
 	// if address space reference is empty then there can be no base address
-	if (addrSpaceName.isEmpty()) {
+	if (addrSpaceName.isEmpty())
+    {
 		baseAddress_.clear();
 		baseAddress_.setDisabled(true);
 		master_->setBaseAddress("");
 	}
-	else {
+	else
+    {
 		baseAddress_.setEnabled(true);
 	}
 
 	emit contentChanged();
 }
 
-void BusIfInterfaceMaster::onBaseAddressChange(const QString& newBase) {
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceMaster::onBaseAddressChange()
+//-----------------------------------------------------------------------------
+void BusIfInterfaceMaster::onBaseAddressChange(const QString& newBase)
+{
 	master_->setBaseAddress(newBase);
 	emit contentChanged();
 }	
 
-void BusIfInterfaceMaster::saveModeSpecific() {
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceMaster::saveModeSpecific()
+//-----------------------------------------------------------------------------
+void BusIfInterfaceMaster::saveModeSpecific()
+{
 	busif_->setMaster(master_);
 }

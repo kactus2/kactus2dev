@@ -5,14 +5,14 @@
  *		Project: Kactus 2
  */
 
-#include "memorymapselector.h"
+#include "ReferenceSelector.h"
 
 #include <QPalette>
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapSelector::MemoryMapSelector()
+// Function: ReferenceSelector::ReferenceSelector()
 //-----------------------------------------------------------------------------
-MemoryMapSelector::MemoryMapSelector(QWidget *parent):
+ReferenceSelector::ReferenceSelector(QWidget *parent):
 QComboBox(parent)
 {
 	setEditable(false);
@@ -21,17 +21,17 @@ QComboBox(parent)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapSelector::~MemoryMapSelector()
+// Function: ReferenceSelector::~ReferenceSelector()
 //-----------------------------------------------------------------------------
-MemoryMapSelector::~MemoryMapSelector()
+ReferenceSelector::~ReferenceSelector()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapSelector::refresh()
+// Function: ReferenceSelector::refresh()
 //-----------------------------------------------------------------------------
-void MemoryMapSelector::refresh(QStringList const& memoryMapNames)
+void ReferenceSelector::refresh(QStringList const& itemNames)
 {
 	disconnect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(onIndexChange(int)));
 
@@ -40,25 +40,25 @@ void MemoryMapSelector::refresh(QStringList const& memoryMapNames)
 
 	// Add an empty item and list of memory maps.
 	addItem("");
-	addItems(memoryMapNames);
+	addItems(itemNames);
 
 	connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(onIndexChange(int)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapSelector::selectMemoryMap()
+// Function: ReferenceSelector::selectMemoryMap()
 //-----------------------------------------------------------------------------
-void MemoryMapSelector::selectMemoryMap(QString const& memoryMapName)
+void ReferenceSelector::selectItem(QString const& itemName)
 {
 	disconnect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(onIndexChange(int)));
 
-	int index = findText(memoryMapName);
-    if (!memoryMapName.isEmpty() && index == -1)
+	int index = findText(itemName);
+    if (!itemName.isEmpty() && index == -1)
     {
         setTextColor(Qt::red);
 
-        addItem(memoryMapName);
-        index = findText(memoryMapName);
+        addItem(itemName);
+        index = findText(itemName);
 
         setItemData(index, QColor(Qt::red), Qt::TextColorRole);
         setItemIcon(index, QIcon(QPixmap(":/icons/common/graphics/exclamation.png")));
@@ -74,9 +74,9 @@ void MemoryMapSelector::selectMemoryMap(QString const& memoryMapName)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapSelector::onIndexChange()
+// Function: ReferenceSelector::onIndexChange()
 //-----------------------------------------------------------------------------
-void MemoryMapSelector::onIndexChange(int newIndex)
+void ReferenceSelector::onIndexChange(int newIndex)
 {
     if (itemIcon(newIndex).isNull())
     {
@@ -89,13 +89,13 @@ void MemoryMapSelector::onIndexChange(int newIndex)
 
 	// find the text for the index
 	QString text = itemText(newIndex);
-	emit memoryMapSelected(text);
+	emit itemSelected(text);
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapSelector::setTextColor()
+// Function: ReferenceSelector::setTextColor()
 //-----------------------------------------------------------------------------
-void MemoryMapSelector::setTextColor(QColor const& color)
+void ReferenceSelector::setTextColor(QColor const& color)
 {
     QPalette coloredPalette = palette();
     coloredPalette.setColor(QPalette::Text, color);

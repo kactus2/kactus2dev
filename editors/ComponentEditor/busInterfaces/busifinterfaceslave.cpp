@@ -74,7 +74,7 @@ void BusIfInterfaceSlave::refresh()
 
 	// select the correct memory map in the combo box
 	QString memMapRef = slave_->getMemoryMapRef();
-	memoryMapReferenceSelector_.selectMemoryMap(memMapRef);
+	memoryMapReferenceSelector_.selectItem(memMapRef);
 
 	bridges_.refresh(slave_);
 }

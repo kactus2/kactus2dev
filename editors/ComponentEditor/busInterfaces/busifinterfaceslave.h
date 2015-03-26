@@ -9,11 +9,13 @@
 #define BUSIFINTERFACESLAVE_H
 
 #include "busifinterfacemodeeditor.h"
+#include "bridgeseditor.h"
+
+#include <common/widgets/memoryMapSelector/ReferenceSelector.h>
+
 #include <IPXACTmodels/businterface.h>
 #include <IPXACTmodels/component.h>
 #include <IPXACTmodels/slaveinterface.h>
-#include <common/widgets/memoryMapSelector/memorymapselector.h>
-#include "bridgeseditor.h"
 
 #include <QSharedPointer>
 
@@ -76,7 +78,7 @@ private:
 	QSharedPointer<SlaveInterface> slave_;
 
 	//! \brief The editor to select a memory map from the component.
-	MemoryMapSelector memSelector_;
+	ReferenceSelector memoryMapReferenceSelector_;
 
 	//! \brief The editor to edit the bridges of a slave interface.
 	BridgesEditor bridges_;
