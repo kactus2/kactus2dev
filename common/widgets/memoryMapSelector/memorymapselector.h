@@ -8,63 +8,65 @@
 #ifndef MEMORYMAPSELECTOR_H
 #define MEMORYMAPSELECTOR_H
 
-#include <IPXACTmodels/component.h>
-
+#include <QColor>
 #include <QComboBox>
-#include <QSharedPointer>
 
-/*! \brief Combo box to select a memory map from a component.
- *
- */
-class MemoryMapSelector : public QComboBox {
+//-----------------------------------------------------------------------------
+//! Combo box to select a memory map from a component.
+//-----------------------------------------------------------------------------
+class MemoryMapSelector : public QComboBox
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor.
+	/*! The constructor.
 	 *
 	 * \param component Pointer to the component that's memory maps are being selected.
 	 * \param parent Pointer to the owner of this editor.
 	 *
 	*/
-	MemoryMapSelector(QSharedPointer<Component> component,
-		QWidget *parent);
+	MemoryMapSelector(QWidget *parent);
 	
-	//! \brief The destructor.
+	//! The destructor.
 	virtual ~MemoryMapSelector();
 
 public slots:
 
-	//! \brief Refresh the items to be selected in the combo box.
-	void refresh();
+	//! Refresh the items to be selected in the combo box.
+    void refresh(QStringList const& memoryMapNames);
 
-	/*! \brief Set the specified memory map as selected.
+	/*! Set the specified memory map as selected.
 	 *
 	 * \param memoryMapName The name of the memory map to select.
 	 *
 	*/
-	void selectMemoryMap(const QString& memoryMapName);
+	void selectMemoryMap(QString const& memoryMapName);
 
 signals:
 
-	//! \brief Emitted when memory map was selected by user.
-	void memoryMapSelected(const QString& memoryMapName);
+	//! Emitted when memory map was selected by user.
+	void memoryMapSelected(QString const& memoryMapName);
 
 private slots:
 
-	//! \brief Handler for selected index changes.
+	//! Handler for selected index changes.
 	void onIndexChange(int newIndex);
 
 private:
 	
-	//! \brief No copying
+	//! No copying
 	MemoryMapSelector(const MemoryMapSelector& other);
 
-	//! \brief No assignment
+	//! No assignment
 	MemoryMapSelector& operator=(const MemoryMapSelector& other);
 
-	//! \brief Pointer to the component that's memory maps are being selected.
-	QSharedPointer<Component> component_;
+    /*!
+     *  Sets the color of the text of the current text.
+     *
+     *      @param [in] color   The color to set.
+     */
+    void setTextColor(QColor const& color);
 };
 
 #endif // MEMORYMAPSELECTOR_H

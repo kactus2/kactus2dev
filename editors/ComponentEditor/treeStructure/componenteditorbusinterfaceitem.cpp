@@ -37,7 +37,7 @@ QString ComponentEditorBusInterfaceItem::text() const {
 
 bool ComponentEditorBusInterfaceItem::isValid() const {
 	// check that the bus interface is valid
-	if (!busif_->isValid(component_->getPortBounds(), component_->getChoices()))
+	if (!busif_->isValid(component_->getPortBounds(), component_->getMemoryMapNames(), component_->getChoices()))
     {
 		return false;
 	}

@@ -1098,6 +1098,7 @@ bool Component::isValid( QStringList& errorList ) const {
 		}
 	}
 
+    QStringList memoryMaps = getMemoryMapNames();
 	QStringList busifNames;
 	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
 		
@@ -1110,7 +1111,7 @@ bool Component::isValid( QStringList& errorList ) const {
 			busifNames.append(busif->getName());
 		}
 
-		if (!busif->isValid(physPorts, choices_, errorList, thisIdentifier)) {
+		if (!busif->isValid(physPorts, memoryMaps, choices_, errorList, thisIdentifier)) {
 			valid = false;
 		}
 	}
@@ -1356,6 +1357,7 @@ bool Component::isValid() const {
         }
     }
 
+    QStringList memoryMaps = getMemoryMapNames();
 	QStringList busifNames;
 	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
 
@@ -1366,7 +1368,7 @@ bool Component::isValid() const {
 			busifNames.append(busif->getName());
 		}
 
-		if (!busif->isValid(physPorts, choices_))
+		if (!busif->isValid(physPorts, memoryMaps, choices_))
         {
 			return false;
 		}

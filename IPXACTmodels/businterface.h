@@ -114,14 +114,15 @@ public:
 
 	/*! \brief Check if the bus interface is in a valid state.
 	 *
-	 * \param physicalPorts List of the physical ports of the component and their bounds.
+	 * \param physicalPorts     List of the physical ports of the component and their bounds.
+	 * \param memoryMaps        List of the memory map names in the component.
      * \param componentChoices  Choices in the containing component.
-	 * \param errorList The list to add the possible error messages to.
-	 * \param parentIdentifier String from parent to help to identify the location of the error.
+	 * \param errorList         The list to add the possible error messages to.
+	 * \param parentIdentifier  String from parent to help to identify the location of the error.
 	 *
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(const QList<General::PortBounds>& physicalPorts, 
+	bool isValid(const QList<General::PortBounds>& physicalPorts, QStringList const& memoryMaps,
         QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
 		QStringList& errorList, 
 		const QString& parentIdentifier) const;
@@ -129,11 +130,12 @@ public:
 	/*! \brief Check if the bus interface is in a valid state.
 	 * 
 	 * \param physicalPorts List of the physical ports of the component and their bounds.
+     * \param memoryMaps List of the memory map names in the component.
      * \param componentChoices  Choices in the containing component.
 	 * 
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(const QList<General::PortBounds>& physicalPorts,
+	bool isValid(const QList<General::PortBounds>& physicalPorts, QStringList const& memoryMaps,
         QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const;
 
 	/*! \brief get the vlnv to the abstraction definition

@@ -7,49 +7,97 @@
 
 #include "memorymapselector.h"
 
-MemoryMapSelector::MemoryMapSelector(QSharedPointer<Component> component,
-									 QWidget *parent):
-QComboBox(parent),
-component_(component) {
+#include <QPalette>
 
-	Q_ASSERT(component_);
-
+//-----------------------------------------------------------------------------
+// Function: MemoryMapSelector::MemoryMapSelector()
+//-----------------------------------------------------------------------------
+MemoryMapSelector::MemoryMapSelector(QWidget *parent):
+QComboBox(parent)
+{
 	setEditable(false);
 
-	connect(this, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(onIndexChange(int)), Qt::UniqueConnection);
+	connect(this, SIGNAL(currentIndexChanged(int)),	this, SLOT(onIndexChange(int)), Qt::UniqueConnection);
 }
 
-MemoryMapSelector::~MemoryMapSelector() {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapSelector::~MemoryMapSelector()
+//-----------------------------------------------------------------------------
+MemoryMapSelector::~MemoryMapSelector()
+{
+
 }
 
-void MemoryMapSelector::refresh() {
-	disconnect(this, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(onIndexChange(int)));
+//-----------------------------------------------------------------------------
+// Function: MemoryMapSelector::refresh()
+//-----------------------------------------------------------------------------
+void MemoryMapSelector::refresh(QStringList const& memoryMapNames)
+{
+	disconnect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(onIndexChange(int)));
 
-	// remove the previous items
+	// Remove the previous items
 	clear();
 
-	// add an empty item and list of address spaces
-	QStringList memoryMapNames = component_->getMemoryMapNames();
+	// Add an empty item and list of memory maps.
 	addItem("");
 	addItems(memoryMapNames);
 
-	connect(this, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(onIndexChange(int)), Qt::UniqueConnection);
+	connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(onIndexChange(int)), Qt::UniqueConnection);
 }
 
-void MemoryMapSelector::selectMemoryMap( const QString& memoryMapName ) {
-	disconnect(this, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(onIndexChange(int)));
+//-----------------------------------------------------------------------------
+// Function: MemoryMapSelector::selectMemoryMap()
+//-----------------------------------------------------------------------------
+void MemoryMapSelector::selectMemoryMap(QString const& memoryMapName)
+{
+	disconnect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(onIndexChange(int)));
+
 	int index = findText(memoryMapName);
-	setCurrentIndex(index);
-	connect(this, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(onIndexChange(int)), Qt::UniqueConnection);
+    if (!memoryMapName.isEmpty() && index == -1)
+    {
+        setTextColor(Qt::red);
+
+        addItem(memoryMapName);
+        index = findText(memoryMapName);
+
+        setItemData(index, QColor(Qt::red), Qt::TextColorRole);
+        setItemIcon(index, QIcon(QPixmap(":/icons/common/graphics/exclamation.png")));
+    }
+    else
+    {
+        setTextColor(Qt::black);
+    }
+
+    setCurrentIndex(index);
+
+	connect(this, SIGNAL(currentIndexChanged(int)),	this, SLOT(onIndexChange(int)), Qt::UniqueConnection);
 }
 
-void MemoryMapSelector::onIndexChange( int newIndex ) {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapSelector::onIndexChange()
+//-----------------------------------------------------------------------------
+void MemoryMapSelector::onIndexChange(int newIndex)
+{
+    if (itemIcon(newIndex).isNull())
+    {
+        setTextColor(Qt::black);
+    }
+    else
+    {
+        setTextColor(Qt::red);
+    }
+
 	// find the text for the index
 	QString text = itemText(newIndex);
 	emit memoryMapSelected(text);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapSelector::setTextColor()
+//-----------------------------------------------------------------------------
+void MemoryMapSelector::setTextColor(QColor const& color)
+{
+    QPalette coloredPalette = palette();
+    coloredPalette.setColor(QPalette::Text, color);
+    setPalette(coloredPalette);
 }

@@ -264,18 +264,6 @@ monitor_() {
             }
         }
 	}
-
-	// if mandatory elements are missing
-// 	if (!busType_.isValid()) {
-// 		throw Parse_error(QString("Mandatory element spirit:busType missing"
-// 				" in spirit:busInterface"));
-// 	}
-// 
-// 	if (nameGroup_.name().isNull()) {
-// 		throw Parse_error(QString("Mandatory element spirit:name missing"
-// 				" in spirit:busInterface"));
-// 	}
-	return;
 }
 
 BusInterface::BusInterface(): nameGroup_(),
@@ -591,7 +579,7 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:busInterface
 }
 
-bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, 
+bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QStringList const& memoryMaps,
     QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
 						   QStringList& errorList,
 						   const QString& parentIdentifier ) const {
@@ -633,6 +621,13 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts,
 					thisIdentifier));
 				valid = false;
 			}
+            else if (!slave_->getMemoryMapRef().isEmpty() && !memoryMaps.contains(slave_->getMemoryMapRef()))
+            {
+                errorList.append(QObject::tr("Memory map %1 referenced in %2 cannot "
+                    "be found in the containing component.").arg(slave_->getMemoryMapRef(),
+                    thisIdentifier));
+                valid = false;
+            }
 			break;
 							 }
 		case General::MIRROREDSLAVE: {
@@ -689,7 +684,7 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts,
 	return valid;
 }
 
-bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts,
+bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QStringList const& memoryMaps,
     QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const 
 {
 	
@@ -711,7 +706,9 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts,
 			break;
 									  }
 		case General::SLAVE: {
-			if (!slave_) {
+			if (!slave_ || 
+                (!slave_->getMemoryMapRef().isEmpty() && !memoryMaps.contains(slave_->getMemoryMapRef()))) 
+            {
 				return false;
 			}
 			break;
