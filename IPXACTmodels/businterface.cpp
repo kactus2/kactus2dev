@@ -604,73 +604,75 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QSt
         valid = false;
     }
 
-	switch (interfaceMode_) {
-		case General::MASTER: 
-		case General::MIRROREDMASTER: {
-			if (!master_) {
-				errorList.append(QObject::tr("The interface mode of %1 is "
-					"master/mirrored master but no element for it has been defined.").arg(
-					thisIdentifier));
-				valid = false;
-			}
-            else if (!master_->getAddressSpaceRef().isEmpty() && 
-                !addressSpaces.contains(master_->getAddressSpaceRef()))
-            {
-                errorList.append(QObject::tr("Bus interface %1 references address space %2 which is not "
-                    "found within %3.").arg(nameGroup_.name(), master_->getAddressSpaceRef(), parentIdentifier));
-                valid = false;
-            }
-			break;
-									  }
-		case General::SLAVE: {
-			if (!slave_) {
-				errorList.append(QObject::tr("The interface mode of %1 is "
-					"slave but no element for it has been defined.").arg(
-					thisIdentifier));
-				valid = false;
-			}
-            else if (!slave_->getMemoryMapRef().isEmpty() && !memoryMaps.contains(slave_->getMemoryMapRef()))
-            {
-                errorList.append(QObject::tr("Bus interface %1 references memory map %2 which is not "
-                    "found within %3.").arg(nameGroup_.name(), slave_->getMemoryMapRef(), parentIdentifier));
-                valid = false;
-            }
-			break;
-							 }
-		case General::MIRROREDSLAVE: {
-			if (!mirroredSlave_) {
-				errorList.append(QObject::tr("The interface mode of %1 is "
-					"mirrored slave but no element for it has been defined.").arg(
-					thisIdentifier));
-				valid = false;
-			}
-			break;
-									 }
-		case General::SYSTEM:
-		case General::MIRROREDSYSTEM: {
-			if (system_.isEmpty()) {
-				errorList.append(QObject::tr("Interface mode is system/mirrored system"
-					" but no group has been specified for %1 within %2").arg(
-					thisIdentifier).arg(parentIdentifier));
-				valid = false;
-			}
-			break;
-									  }
-		case General::MONITOR: {
-			if (monitor_->interfaceMode_ == General::INTERFACE_MODE_COUNT) {
-				errorList.append(QObject::tr("No interface mode set for monitor"
-					" within %1").arg(thisIdentifier));
-				valid = false;
-			}
-			break;
-							   }
-		// if the interface mode is invalid
-		default: {
-            errorList.append(QObject::tr("The interface mode of %1 is not specified.").arg(thisIdentifier));
-			valid = false;
-			break;
-				 }
-	}
+    if (interfaceMode_ == General::MASTER || interfaceMode_ == General::MIRROREDMASTER)
+    {
+        if (!master_)
+        {
+            errorList.append(QObject::tr("The interface mode of %1 is "
+                "master/mirrored master but no element for it has been defined.").arg(
+                thisIdentifier));
+            valid = false;
+        }
+        else if (!master_->getAddressSpaceRef().isEmpty() && 
+            !addressSpaces.contains(master_->getAddressSpaceRef()))
+        {
+            errorList.append(QObject::tr("Bus interface %1 references address space %2 which is not "
+                "found within %3.").arg(nameGroup_.name(), master_->getAddressSpaceRef(), parentIdentifier));
+            valid = false;
+        }
+
+    }
+    else if (interfaceMode_ == General::SLAVE)
+    {
+        if (!slave_)
+        {
+            errorList.append(QObject::tr("The interface mode of %1 is "
+                "slave but no element for it has been defined.").arg(
+                thisIdentifier));
+            valid = false;
+        }
+        else if (!slave_->getMemoryMapRef().isEmpty() && !memoryMaps.contains(slave_->getMemoryMapRef()))
+        {
+            errorList.append(QObject::tr("Bus interface %1 references memory map %2 which is not "
+                "found within %3.").arg(nameGroup_.name(), slave_->getMemoryMapRef(), parentIdentifier));
+            valid = false;
+        }
+
+    }
+    else if (interfaceMode_ ==  General::MIRROREDSLAVE)
+    {
+        if (!mirroredSlave_) {
+            errorList.append(QObject::tr("The interface mode of %1 is "
+                "mirrored slave but no element for it has been defined.").arg(
+                thisIdentifier));
+            valid = false;
+        }
+    }
+    else if (interfaceMode_ ==  General::SYSTEM || General::MIRROREDSYSTEM)
+    {
+        if (system_.isEmpty())
+        {
+            errorList.append(QObject::tr("Interface mode is system/mirrored system"
+                " but no group has been specified for %1 within %2").arg(
+                thisIdentifier).arg(parentIdentifier));
+            valid = false;
+        }
+    }
+    else if (interfaceMode_ ==  General::MONITOR)
+    {
+        if (monitor_->interfaceMode_ == General::INTERFACE_MODE_COUNT)
+        {
+            errorList.append(QObject::tr("No interface mode set for monitor"
+                " within %1").arg(thisIdentifier));
+            valid = false;
+        }
+    }
+    // if the interface mode is invalid
+    else
+    {
+        errorList.append(QObject::tr("The interface mode of %1 is not specified.").arg(thisIdentifier));
+        valid = false;
+    }
 
 	foreach (QSharedPointer<PortMap> portMap, portMaps_) {
 		if (!portMap->isValid(physicalPorts, errorList, thisIdentifier)) {
@@ -700,52 +702,51 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QSt
 	}
 
 	// check the bus type validity
-	if (!busType_.isValid()) {
+	if (!busType_.isValid())
+    {
 		return false;
 	}
 
-	switch (interfaceMode_) {
-		case General::MASTER: 
-		case General::MIRROREDMASTER: {
-			if (!master_ ||
-                !master_->getAddressSpaceRef().isEmpty() && !addressSpaces.contains(master_->getAddressSpaceRef()))
-            {
-				return false;
-			}
-			break;
-									  }
-		case General::SLAVE: {
-			if (!slave_ || 
-                (!slave_->getMemoryMapRef().isEmpty() && !memoryMaps.contains(slave_->getMemoryMapRef()))) 
-            {
-				return false;
-			}
-			break;
-							 }
-		case General::MIRROREDSLAVE: {
-			if (!mirroredSlave_) {
-				return false;
-			}
-			break;
-									 }
-		case General::SYSTEM:
-		case General::MIRROREDSYSTEM: {
-			if (system_.isEmpty()) {
-				return false;
-			}
-			break;
-									  }
-		case General::MONITOR: {
-			if (monitor_->interfaceMode_ == General::INTERFACE_MODE_COUNT) {
-				return false;
-			}
-			break;
-							   }
-		 // if the interface mode is invalid
-		default: {
-			return false;
-				 }
-	}
+    if (interfaceMode_ == General::MASTER || interfaceMode_ == General::MIRROREDMASTER)
+    {
+        if (!master_ ||
+            (!master_->getAddressSpaceRef().isEmpty() && !addressSpaces.contains(master_->getAddressSpaceRef())))
+        {
+            return false;
+        }
+
+    }
+    else if (interfaceMode_ == General::SLAVE)
+    {
+        if (!slave_ || (!slave_->getMemoryMapRef().isEmpty() && !memoryMaps.contains(slave_->getMemoryMapRef()))) 
+        {
+            return false;
+        }
+    }
+    else if (interfaceMode_ == General::MIRROREDSLAVE)
+    {
+        if (!mirroredSlave_) {
+            return false;
+        }
+    }
+    else if (interfaceMode_ == General::SYSTEM || interfaceMode_ == General::MIRROREDSYSTEM)
+    {
+        if (system_.isEmpty())
+        {
+            return false;
+        }
+    }
+    else if (interfaceMode_ == General::MONITOR)
+    {
+        if (monitor_->interfaceMode_ == General::INTERFACE_MODE_COUNT) {
+            return false;
+        }
+    }
+    // if the interface mode is invalid
+    else
+    {
+        return false;
+    }
 
 	foreach (QSharedPointer<PortMap> portMap, portMaps_) {
 		if (!portMap->isValid(physicalPorts)) {
@@ -814,23 +815,10 @@ QSharedPointer<QList<QSharedPointer<Parameter> > > BusInterface::getParameters()
 {
 	return parameters_;
 }
-/*
-const QList<QSharedPointer<Parameter> >& BusInterface::getParameters() const {
-	return parameters_;
-}*/
 
 void BusInterface::setAbstractionType(const VLNV& abstractionType) {
 	abstractionType_ = abstractionType;
 }
-/*
-void BusInterface::setParameters(
-		QList<QSharedPointer<Parameter> > &parameters) {
-	// delete old parameteres
-	parameters_.clear();
-
-	// save the new parameters
-	parameters_ = parameters;
-}*/
 
 QList<QSharedPointer<PortMap> >& BusInterface::getPortMaps() {
 	return portMaps_;
