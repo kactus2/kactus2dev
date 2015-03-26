@@ -13,6 +13,8 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
+
 #include <IPXACTmodels/view.h>
 #include <IPXACTmodels/designconfiguration.h>
 
@@ -33,7 +35,7 @@ QWidget(parent),
     view_(view),
     designConfigurationEditor_(new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, parent->parentWidget(), this)),
     designReferenceDisplay_(new VLNVEditor(VLNV::DESIGN, libHandler, parent->parentWidget(), this)),
-    topLevelRef_(new QComboBox(this))
+    topLevelRef_(new ReferenceSelector(this))
 {
 	designConfigurationEditor_->setTitle(tr("Design configuration"));
 	designConfigurationEditor_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -105,11 +107,8 @@ void HierarchyRefWidget::refresh(QStringList const& availableViews)
 	viewList.append(availableViews);
     viewList.removeAll(view_->getName()); //<! Cannot refer to this view.
 
-	topLevelRef_->addItems(viewList);
-
-	// Find the text in the combo box and select it.
-	int index = topLevelRef_->findText(view_->getTopLevelView());
-	topLevelRef_->setCurrentIndex(index);
+	topLevelRef_->refresh(viewList);
+    topLevelRef_->selectItem(view_->getTopLevelView());
 
 	// after change reconnect the editor
 	connect(topLevelRef_, SIGNAL(currentIndexChanged(QString const&)),

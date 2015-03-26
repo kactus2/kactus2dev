@@ -13,6 +13,7 @@
 #define HIERARCHYREFWIDGET_H
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
+
 #include <IPXACTmodels/view.h>
 
 #include <QWidget>
@@ -21,7 +22,7 @@
 #include <QSharedPointer>
 
 class LibraryInterface;
-
+class ReferenceSelector;
 //-----------------------------------------------------------------------------
 //! Editor to set the hierarchy reference for a hierarchical view.
 //-----------------------------------------------------------------------------
@@ -131,7 +132,7 @@ private:
     VLNVEditor* designReferenceDisplay_;
 
 	//! The editor to set the reference to a top level implementation view.
-	QComboBox* topLevelRef_;
+	ReferenceSelector* topLevelRef_;
 };
 
 #endif // HIERARCHYREFWIDGET_H
