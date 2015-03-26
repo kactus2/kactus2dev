@@ -93,7 +93,7 @@ signals:
 public slots:
 
     
-    void onEnableChanged();
+    void onCheckStateChanged();
 
 private:
 	
@@ -102,8 +102,6 @@ private:
 
 	//! \brief No assignment
 	LocalMemoryMapEditor& operator=(const LocalMemoryMapEditor& other);
-
-    QCheckBox* enableMemMapBox_;
 
 	//! \brief Pointer to the local memory map being edited.
 	QSharedPointer<MemoryMap> localMemoryMap_;

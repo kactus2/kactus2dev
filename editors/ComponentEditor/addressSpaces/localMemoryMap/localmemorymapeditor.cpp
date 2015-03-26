@@ -33,7 +33,6 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
                                            QSharedPointer<ExpressionFormatter> expressionFormatter,
                                            QWidget *parent)
     : QGroupBox(tr("Local memory map"), parent),
-      enableMemMapBox_(new QCheckBox("Use local memory map", this)),
       localMemoryMap_(memoryMap),
       nameEditor_(new NameGroupEditor(memoryMap->getNameGroup(), this)),
       view_(new EditableTableView(this)),
@@ -42,6 +41,9 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
       component_(component),
       handler_(handler)
 {
+    setCheckable(true);
+    setChecked(!localMemoryMap_->isEmpty());
+
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
     model_ = new MemoryMapModel(memoryMap, component->getChoices(), expressionParser, parameterFinder,
@@ -74,6 +76,8 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
 
 	view_->sortByColumn(MemoryMapColumns::BASE_COLUMN, Qt::AscendingOrder);
 
+    connect(this, SIGNAL(toggled(bool)), this, SLOT(onCheckStateChanged()), Qt::UniqueConnection);
+
 	connect(nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -82,11 +86,9 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
 
 	// connect view to model
 	connect(view_, SIGNAL(addItem(const QModelIndex&)),
-		model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+        model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
 		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
-
-    connect(enableMemMapBox_, SIGNAL(stateChanged(int)), this, SLOT(onEnableChanged()), Qt::UniqueConnection);
 
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -97,7 +99,6 @@ LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(enableMemMapBox_);
 	layout->addWidget(nameEditor_);
 	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
 	layout->addWidget(view_);
@@ -126,29 +127,17 @@ void LocalMemoryMapEditor::refresh()
 	nameEditor_->refresh();
 	view_->update();
     
-    onEnableChanged();
+    onCheckStateChanged();
 }
 
 //-----------------------------------------------------------------------------
 // Function: LocalMemoryMapEditor::onEnableChanged()
 //-----------------------------------------------------------------------------
-void LocalMemoryMapEditor::onEnableChanged()
+void LocalMemoryMapEditor::onCheckStateChanged()
 {
-    if (enableMemMapBox_->checkState() == Qt::Unchecked && !localMemoryMap_->isEmpty())
+    if (!isChecked() && !localMemoryMap_->isEmpty())
     {
-        enableMemMapBox_->setCheckState(Qt::Checked);
+        setChecked(true);
         emit errorMessage("Cannot unselect local memory map since all fields are not empty.");        
     }
-
-    if (enableMemMapBox_->checkState() == Qt::Checked)
-    {
-        nameEditor_->setEnabled(true);
-        view_->setEnabled(true);
-    }
-    else
-    {
-        nameEditor_->setEnabled(false);
-        view_->setEnabled(false);
-    }
 }
-
