@@ -580,12 +580,13 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 }
 
 bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QStringList const& memoryMaps,
+    QStringList const& addressSpaces,
     QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-						   QStringList& errorList,
-						   const QString& parentIdentifier ) const {
-
-	bool valid = true;
-	const QString thisIdentifier(QObject::tr("bus interface %1").arg(nameGroup_.name()));
+    QStringList& errorList,
+    const QString& parentIdentifier ) const 
+{
+    bool valid = true;
+    const QString thisIdentifier(QObject::tr("bus interface %1").arg(nameGroup_.name()));
 
 	if (nameGroup_.name().isEmpty()) {
 		errorList.append(QObject::tr("No name specified for bus interface within %1").arg(
@@ -612,6 +613,13 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QSt
 					thisIdentifier));
 				valid = false;
 			}
+            else if (!master_->getAddressSpaceRef().isEmpty() && 
+                !addressSpaces.contains(master_->getAddressSpaceRef()))
+            {
+                errorList.append(QObject::tr("Bus interface %1 references address space %2 which is not "
+                    "found within %3.").arg(nameGroup_.name(), master_->getAddressSpaceRef(), parentIdentifier));
+                valid = false;
+            }
 			break;
 									  }
 		case General::SLAVE: {
@@ -623,9 +631,8 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QSt
 			}
             else if (!slave_->getMemoryMapRef().isEmpty() && !memoryMaps.contains(slave_->getMemoryMapRef()))
             {
-                errorList.append(QObject::tr("Memory map %1 referenced in %2 cannot "
-                    "be found in the containing component.").arg(slave_->getMemoryMapRef(),
-                    thisIdentifier));
+                errorList.append(QObject::tr("Bus interface %1 references memory map %2 which is not "
+                    "found within %3.").arg(nameGroup_.name(), slave_->getMemoryMapRef(), parentIdentifier));
                 valid = false;
             }
 			break;
@@ -685,10 +692,10 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QSt
 }
 
 bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QStringList const& memoryMaps,
-    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const 
+    QStringList const& addressSpaces, QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices) const 
 {
-	
-	if (nameGroup_.name().isEmpty()) {
+	if (nameGroup_.name().isEmpty())
+    {
 		return false;
 	}
 
@@ -700,7 +707,9 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, QSt
 	switch (interfaceMode_) {
 		case General::MASTER: 
 		case General::MIRROREDMASTER: {
-			if (!master_) {
+			if (!master_ ||
+                !master_->getAddressSpaceRef().isEmpty() && !addressSpaces.contains(master_->getAddressSpaceRef()))
+            {
 				return false;
 			}
 			break;

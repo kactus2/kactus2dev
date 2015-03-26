@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 7.4.2011
- *      Author: Antti Kamppi
- * 		filename: busifinterfacemaster.cpp
- */
+//-----------------------------------------------------------------------------
+// File: busifinterfacemaster.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 7.4.2011
+//
+// Description:
+// Editor to edit master or mirrored master settings of a bus interface.
+//-----------------------------------------------------------------------------
 
 #include "busifinterfacemaster.h"
 
@@ -27,23 +31,22 @@ BusIfInterfaceModeEditor(busif, component, tr("Master"), parent),
 master_(QSharedPointer<MasterInterface>(new MasterInterface())),
 mode_(mode),
 addressSpaceReferenceSelector_(this), 
-baseAddress_(this) {
-
-	// set the title depending on the mode
-	switch (mode) {
-		case General::MASTER: {
-			setTitle(tr("Master"));
-			break;
-							  }
-		case General::MIRROREDMASTER: {
-			setTitle(tr("Mirrored master"));
-			break;
-									  }
-		// this editor should only be used for masters and mirrored masters
-		default: {
-			Q_ASSERT(false);
-				 }
-	}
+baseAddress_(this) 
+{
+    // set the title depending on the mode
+    if (mode == General::MASTER)
+    {
+        setTitle(tr("Master"));
+    }
+    else if (mode == General::MIRROREDMASTER)
+    {
+        setTitle(tr("Mirrored master"));
+    }
+    // this editor should only be used for masters and mirrored masters
+    else
+    {
+        Q_ASSERT(false);
+    }
 
 	QLabel* addrSpaceLabel = new QLabel(tr("Address space"), this);
 	QLabel* baseAddrLabel = new QLabel(tr("Base address"), this);
@@ -72,8 +75,8 @@ BusIfInterfaceMaster::~BusIfInterfaceMaster()
 //-----------------------------------------------------------------------------
 // Function: BusIfInterfaceMaster::isValid()
 //-----------------------------------------------------------------------------
-bool BusIfInterfaceMaster::isValid() const {
-
+bool BusIfInterfaceMaster::isValid() const
+{
 	QString selectedAddrSpace = addressSpaceReferenceSelector_.currentText();
 
 	// address space ref is not mandatory

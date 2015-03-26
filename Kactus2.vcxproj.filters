@@ -98,9 +98,6 @@
     <Filter Include="Source Files\common\widgets\interfaceModeSelector">
       <UniqueIdentifier>{f98df068-5745-46d9-b18d-f5c32817fad6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\widgets\memoryMapSelector">
-      <UniqueIdentifier>{a1fe8793-272c-438e-9b59-c9665c54d216}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\widgets\interfaceSelector">
       <UniqueIdentifier>{83f927c0-235c-44d5-901f-0e0f720be325}</UniqueIdentifier>
     </Filter>
@@ -218,9 +215,6 @@
     </Filter>
     <Filter Include="Header Files\common\widgets\interfaceModeSelector">
       <UniqueIdentifier>{866f1e78-b5de-4717-b036-11a2bee9084c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\widgets\memoryMapSelector">
-      <UniqueIdentifier>{ba6f747f-1c53-4c49-bebf-f2acd09e25db}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\interfaceSelector">
       <UniqueIdentifier>{0b8eccd5-4625-4845-ad73-d4c055dd0a1f}</UniqueIdentifier>
@@ -913,6 +907,12 @@
     </Filter>
     <Filter Include="Source Files\editors\ComponentEditor\parameters\Array">
       <UniqueIdentifier>{fab22ef7-a0eb-4485-a6c1-2ef9fd88c332}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\common\ReferenceSelector">
+      <UniqueIdentifier>{fa3c13ca-7838-4467-809a-0a23fa49ae7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\common\ReferenceSelector">
+      <UniqueIdentifier>{896f6f47-c2da-4e57-aff5-95c29a0c8de5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -3985,11 +3985,11 @@
     <ClCompile Include="editors\ComponentEditor\common\ListParameterFinder.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
-    <ClCompile Include="common\widgets\memoryMapSelector\ReferenceSelector.cpp">
-      <Filter>Source Files\common\widgets\memoryMapSelector</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ReferenceSelector.cpp">
       <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ReferenceSelector\ReferenceSelector.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common\ReferenceSelector</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5496,8 +5496,8 @@
     <CustomBuild Include="editors\ComponentEditor\parameters\ChoiceCreatorDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
     </CustomBuild>
-    <CustomBuild Include="common\widgets\memoryMapSelector\ReferenceSelector.h">
-      <Filter>Header Files\common\widgets\memoryMapSelector</Filter>
+    <CustomBuild Include="editors\ComponentEditor\common\ReferenceSelector\ReferenceSelector.h">
+      <Filter>Header Files\editors\ComponentEditor\common\ReferenceSelector</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

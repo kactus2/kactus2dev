@@ -154,7 +154,8 @@ QVariant BusInterfacesModel::data( const QModelIndex& index, int role /*= Qt::Di
 		// bus interface to check the port maps
 		QList<General::PortBounds> physPorts = component_->getPortBounds();
 
-		if (busifs_.at(index.row())->isValid(physPorts, component_->getMemoryMapNames(), component_->getChoices()))
+		if (busifs_.at(index.row())->isValid(physPorts, component_->getMemoryMapNames(),
+            component_->getAddressSpaceNames(), component_->getChoices()))
         {
 			return QColor("black");
 		}
@@ -411,10 +412,12 @@ bool BusInterfacesModel::isValid() const
 	// bus interface to check the port maps
 	QList<General::PortBounds> physPorts = component_->getPortBounds();
 
+    QStringList memoryMaps = component_->getMemoryMapNames();
+    QStringList addressSpaces = component_->getAddressSpaceNames();
 	// if at least one address space is invalid
 	foreach (QSharedPointer<BusInterface> busif, busifs_)
     {
-		if (!busif->isValid(physPorts, component_->getMemoryMapNames(), component_->getChoices()))
+		if (!busif->isValid(physPorts, memoryMaps, addressSpaces, component_->getChoices()))
         {
 			return false;
 		}

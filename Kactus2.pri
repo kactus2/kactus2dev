@@ -45,6 +45,7 @@ HEADERS += ./common/Global.h \
     ./common/widgets/nameGroupEditor/namegroupeditor.h \
     ./common/widgets/summaryLabel/summarylabel.h \
     ./common/widgets/interfaceModeSelector/interfacemodeselector.h \
+    ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h \
     ./common/widgets/interfaceSelector/interfaceselector.h \
     ./common/widgets/LineEditEx/LineEditEx.h \
     ./common/widgets/SnippetTextEdit/SnippetHighlighter.h \
@@ -609,8 +610,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./common/widgets/memoryMapSelector/ReferenceSelector.h
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -659,7 +659,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/nameGroupEditor/namegroupeditor.cpp \
     ./common/widgets/summaryLabel/summarylabel.cpp \
     ./common/widgets/interfaceModeSelector/interfacemodeselector.cpp \
-    ./common/widgets/memoryMapSelector/ReferenceSelector.cpp \
+    ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.cpp \
     ./common/widgets/interfaceSelector/interfaceselector.cpp \
     ./common/widgets/LineEditEx/LineEditEx.cpp \
     ./common/widgets/SnippetTextEdit/SnippetHighlighter.cpp \

@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 7.4.2011
- *      Author: Antti Kamppi
- * 		filename: busifinterfaceslave.cpp
- */
+//-----------------------------------------------------------------------------
+// File: busifinterfaceslave.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 7.4.2011
+//
+// Description:
+// Editor to the slave details of a bus interface.
+//-----------------------------------------------------------------------------
 
 #include "busifinterfaceslave.h"
 
@@ -32,7 +36,7 @@ bridges_(slave_, component, this)
 	topLayout->addLayout(memRefLayout);
 	topLayout->addWidget(&bridges_);
 
-	connect(&memoryMapReferenceSelector_, SIGNAL(memoryMapSelected(QString const&)),
+	connect(&memoryMapReferenceSelector_, SIGNAL(itemSelected(QString const&)),
 		this, SLOT(onMemoryMapChange(QString const&)), Qt::UniqueConnection);
 	connect(&bridges_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
