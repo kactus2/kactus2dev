@@ -82,6 +82,9 @@ private slots:
 	//! Handler for changes in top level reference.
     void onTopViewChanged(QString const& newViewName);
 
+    //! Called when design configuration group has been checked/unchecked.
+    void designConfigEditorClicked();
+
 private:
 
 	//! No copying
@@ -95,6 +98,21 @@ private:
 
     //! Sets the widget layout.
     void setupLayout();
+
+    /*!
+     *  Updates the error displaying for hierarchy reference.
+     */
+    void updateErrorSignAndTooltip();
+
+    /*!
+     *  Shows the error sign and a tool tip for the cause of an error in hierarchy reference.
+     */
+    void showErrorSignAndTooltip();
+    
+    /*!
+     *  Hides the error sign and a tool tip for the cause of an error in hierarchy reference.
+     */
+    void hideErrorSignAndTooltip();
 
     //-----------------------------------------------------------------------------
     // Data.

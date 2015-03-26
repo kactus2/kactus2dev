@@ -138,7 +138,8 @@ VLNV VLNVEditor::getVLNV() const
 //-----------------------------------------------------------------------------
 bool VLNVEditor::isValid() const
 {
-    return !isEmpty();
+    return (!vendorEdit_->text().isEmpty() && !libraryEdit_->text().isEmpty() &&
+            !nameEdit_->text().isEmpty() && !versionEdit_->text().isEmpty());
 }
 
 //-----------------------------------------------------------------------------

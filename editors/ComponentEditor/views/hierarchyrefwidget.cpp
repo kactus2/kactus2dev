@@ -38,6 +38,13 @@ QWidget(parent),
 	designConfigurationEditor_->setTitle(tr("Design configuration"));
 	designConfigurationEditor_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
+    QString designConfigurationErrorStyle = "QGroupBox::indicator:checked {"
+        "image: url(:/icons/common/graphics/exclamation.png);"
+        "}";
+    designConfigurationEditor_->setStyleSheet(designConfigurationErrorStyle);
+    connect(designConfigurationEditor_, SIGNAL(toggled(bool)), 
+        this, SLOT(designConfigEditorClicked()), Qt::UniqueConnection);
+
     designReferenceDisplay_->setTitle(tr("Design"));
     designReferenceDisplay_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     designReferenceDisplay_->setMandatory(false);
@@ -72,16 +79,18 @@ bool HierarchyRefWidget::isValid() const
 void HierarchyRefWidget::refresh(QStringList const& availableViews)
 {	
     VLNV viewReference = view_->getHierarchyRef();
-    if (library_->getDocumentType(viewReference) == VLNV::DESIGNCONFIGURATION)
-    {
-        designConfigurationEditor_->setVLNV(viewReference);
-        updateDesignReference();
-    }
-    else
+    if (library_->getDocumentType(viewReference) == VLNV::DESIGN)
     {
         designConfigurationEditor_->setVLNV(VLNV());
         designReferenceDisplay_->setVLNV(viewReference);
     }
+    else
+    {
+        designConfigurationEditor_->setVLNV(viewReference);
+        updateDesignReference();
+    }
+
+    updateErrorSignAndTooltip();
 
 	// before changing the index, the editor must be disconnected
 	disconnect(topLevelRef_, SIGNAL(currentIndexChanged(QString const&)),
@@ -115,6 +124,7 @@ void HierarchyRefWidget::onVLNVChanged()
 	view_->setHierarchyRef(designConfigurationEditor_->getVLNV());
 
     updateDesignReference();
+    updateErrorSignAndTooltip();
 
 	emit contentChanged();
 }
@@ -126,6 +136,15 @@ void HierarchyRefWidget::onTopViewChanged(QString const& newViewName)
 {
 	view_->setTopLevelView(newViewName);
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierarchyRefWidget::designConfigEditorClicked()
+//-----------------------------------------------------------------------------
+void HierarchyRefWidget::designConfigEditorClicked()
+{
+    //! Do not allow uncheck since this would disable the editor.
+    designConfigurationEditor_->setChecked(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -206,4 +225,61 @@ void HierarchyRefWidget::setupLayout()
     topLayout->addLayout(halfPageLayout);
     topLayout->addStretch();
     topLayout->setContentsMargins(0, 0, 0, 0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierarchyRefWidget::updateErrorSignAndTooltip()
+//-----------------------------------------------------------------------------
+void HierarchyRefWidget::updateErrorSignAndTooltip()
+{
+    VLNV::IPXactType referenceType = library_->getDocumentType(view_->getHierarchyRef());
+    if (referenceType == VLNV::DESIGN || referenceType == VLNV::DESIGNCONFIGURATION)
+    {
+        hideErrorSignAndTooltip();
+    }
+    else
+    {
+        showErrorSignAndTooltip();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierarchyRefWidget::showErrorSignAndTooltip()
+//-----------------------------------------------------------------------------
+void HierarchyRefWidget::showErrorSignAndTooltip()
+{
+    QPalette errorPalette = designConfigurationEditor_->palette();
+    errorPalette.setColor(QPalette::Foreground, Qt::red);
+    designConfigurationEditor_->setPalette(errorPalette);
+
+    //! Enable showing check indicator that is error sign.
+    designConfigurationEditor_->setCheckable(true);
+
+    VLNV viewReference = view_->getHierarchyRef();
+    if (!library_->contains(viewReference))
+    {
+        QString tooltipMessage = tr("<p>VLNV %1 not found in the library.</p>").arg(viewReference.toString());
+        designConfigurationEditor_->setToolTip(tooltipMessage);
+    }
+    else
+    {
+        QString tooltipMessage = tr("<p>VLNV %1 does not reference a design or design configuration.</p>").arg(
+            viewReference.toString());
+        designConfigurationEditor_->setToolTip(tooltipMessage);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierarchyRefWidget::hideErrorSignAndTooltip()
+//-----------------------------------------------------------------------------
+void HierarchyRefWidget::hideErrorSignAndTooltip()
+{
+    QPalette normalPalette = designConfigurationEditor_->palette();
+    normalPalette.setColor(QPalette::Foreground, Qt::black);
+    designConfigurationEditor_->setPalette(normalPalette);
+
+    //! Disable showing check indicator that is error sign.
+    designConfigurationEditor_->setCheckable(false);
+
+    designConfigurationEditor_->setToolTip("");
 }
