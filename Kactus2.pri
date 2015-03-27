@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./common/Global.h \
+HEADERS += ./version.h \
+    ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
@@ -107,8 +108,6 @@ HEADERS += ./common/Global.h \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
     ./common/dialogs/TableViewDialog/TableViewDialog.h \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.h \
-    ./common/dialogs/fileSaveDialog/filesavedialog.h \
-    ./common/dialogs/fileSaveDialog/filesavedialogview.h \
     ./common/dialogs/NewBusDialog/NewBusDialog.h \
     ./mainwindow/SplashScreen.h \
     ./mainwindow/NewWorkspaceDialog.h \
@@ -626,8 +625,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.cpp \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ./common/dialogs/TableViewDialog/TableViewDialog.cpp \
-    ./common/dialogs/fileSaveDialog/filesavedialog.cpp \
-    ./common/dialogs/fileSaveDialog/filesavedialogview.cpp \
     ./common/dialogs/NewBusDialog/NewBusDialog.cpp \
     ./common/validators/AddressValidator.cpp \
     ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
