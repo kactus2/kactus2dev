@@ -23,7 +23,6 @@
 
 * Configurable element values are now stored by default in Design Configuration instead of Design.
 * Renamed hierarchy level "Global" to "Flat".
-* Changed register mask and reset value to SystemVerilog bit format.
 * Changed Quartus Pin Import plugin to conform with Import plugin interface.
 
 KNOWN UNRESOLVED ISSUES:
