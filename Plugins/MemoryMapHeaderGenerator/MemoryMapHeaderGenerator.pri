@@ -12,10 +12,14 @@ HEADERS += ./memorymapheadergenerator_global.h \
     ./memorymapheadergenerator.h \
     ./globalheadersavemodel.h \
     ./localheadersavedelegate.h \
-    ./localheadersavemodel.h
+    ./localheadersavemodel.h \
+    ./fileSaveDialog/filesavedialog.h \
+    ./fileSaveDialog/filesavedialogview.h
 SOURCES += ./globalheadersavemodel.cpp \
     ./localheadersavedelegate.cpp \
     ./localheadersavemodel.cpp \
     ./memorymapheadergenerator.cpp \
-    ./systemheadersavemodel.cpp
+    ./systemheadersavemodel.cpp \
+    ./fileSaveDialog/filesavedialogview.cpp \
+    ./fileSaveDialog/filesavedialog.cpp
 RESOURCES += memorymapheadergenerator.qrc

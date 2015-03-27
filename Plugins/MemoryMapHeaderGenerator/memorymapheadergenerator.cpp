@@ -15,7 +15,8 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <common/dialogs/fileSaveDialog/filesavedialog.h>
+#include <fileSaveDialog/filesavedialog.h>
+
 #include <common/utils.h>
 
 #include <IPXACTmodels/SWView.h>

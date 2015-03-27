@@ -13,17 +13,15 @@
 
 FileSaveDialog::FileSaveDialog(QWidget *parent):
 QDialog(parent),
-view_(new FileSaveDialogView(this)) {
-
+view_(new FileSaveDialogView(this))
+{
 	QLabel* infoText = new QLabel(tr("Select names for the output files"), this);
 
 	QDialogButtonBox* buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
 		Qt::Horizontal, this);
 
-	connect(buttons, SIGNAL(accepted()), 
-		this, SLOT(accept()), Qt::UniqueConnection);
-	connect(buttons, SIGNAL(rejected()), 
-		this, SLOT(reject()), Qt::UniqueConnection);
+	connect(buttons, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
+	connect(buttons, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(infoText);

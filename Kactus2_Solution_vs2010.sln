@@ -19,9 +19,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VHDLSourceAnalyzer", "Plugi
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MemoryMapHeaderGenerator", "Plugins\MemoryMapHeaderGenerator\MemoryMapHeaderGenerator.vcxproj", "{C846486D-4A9D-4212-89A8-D25BEFED7FC5}"
-	ProjectSection(ProjectDependencies) = postProject
-		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6} = {09486B51-70A7-3073-B15B-6D4BAF3EC8C6}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AlteraBSPGenerator", "Plugins\AlteraBSPGenerator\AlteraBSPGenerator.vcxproj", "{16C73FC5-A179-4B2C-983C-59B9D1431703}"
 	ProjectSection(ProjectDependencies) = postProject

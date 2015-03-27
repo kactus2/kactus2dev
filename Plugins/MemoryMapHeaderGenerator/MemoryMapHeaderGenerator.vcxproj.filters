@@ -29,6 +29,12 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="Header Files\fileSaveDialog">
+      <UniqueIdentifier>{b83ec61f-c442-4d4e-837d-d2a15546f1d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\fileSaveDialog">
+      <UniqueIdentifier>{96791d0b-4242-4c48-8995-dc759e173938}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="memorymapheadergenerator.cpp">
@@ -79,6 +85,24 @@
     <ClCompile Include="GeneratedFiles\Release\moc_systemheadersavemodel.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="fileSaveDialog\filesavedialogview.cpp">
+      <Filter>Source Files\fileSaveDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="fileSaveDialog\filesavedialog.cpp">
+      <Filter>Source Files\fileSaveDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_filesavedialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_filesavedialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_filesavedialogview.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_filesavedialogview.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="memorymapheadergenerator_global.h">
@@ -103,6 +127,12 @@
     </CustomBuild>
     <CustomBuild Include="systemheadersavemodel.h">
       <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="fileSaveDialog\filesavedialog.h">
+      <Filter>Header Files\fileSaveDialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="fileSaveDialog\filesavedialogview.h">
+      <Filter>Header Files\fileSaveDialog</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

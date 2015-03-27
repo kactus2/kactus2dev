@@ -7,8 +7,6 @@
 #ifndef FILESAVEDIALOG_H
 #define FILESAVEDIALOG_H
 
-#include <common/Global.h>
-
 #include "filesavedialogview.h"
 
 #include <QDialog>
@@ -21,7 +19,8 @@
  * The dialog needs a model which is used to display the files to be created. 
  * User can change the file names and paths.
  */
-class KACTUS2_API FileSaveDialog : public QDialog {
+class FileSaveDialog : public QDialog
+{
 	Q_OBJECT
 
 public:
