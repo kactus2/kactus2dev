@@ -13,8 +13,8 @@
 #define MODULEPARAMETEREDITOR_H
 
 #include <QGroupBox>
+#include <QSortFilterProxyModel>
 
-class Component;
 class Choice;
 class ModelParameter;
 class ModelParameterModel;
@@ -32,7 +32,7 @@ public:
 
 	//! The constructor.
     ModuleParameterEditor(QSharedPointer<QList<QSharedPointer<ModelParameter> > > parameters,
-        QSharedPointer<Component> component,
+        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QWidget* parent);
@@ -46,6 +46,8 @@ public:
      *      @return True, if contents is valid, otherwise false.
      */
     bool isValid() const;
+
+    void refresh();
 
 signals:
     //! Emitted when contents of the editor change.
@@ -84,6 +86,8 @@ private:
 	ModuleParameterEditor(ModuleParameterEditor const& rhs);
 	ModuleParameterEditor& operator=(ModuleParameterEditor const& rhs);
   
+    QSortFilterProxyModel* proxy_;
+
     //! The used for editing model parameters.
     ModelParameterModel* model_;
 };

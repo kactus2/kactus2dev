@@ -40,6 +40,7 @@ ParameterGroupBox::ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Paramet
 									 QWidget *parent):
 QGroupBox(tr("Parameters"), parent),
 view_(0), 
+proxy_(new QSortFilterProxyModel(this)),
 model_(0)
 {
     QSharedPointer<EditableTableView> parametersView(new EditableTableView(this));
@@ -96,13 +97,10 @@ model_(0)
     connect(view_->itemDelegate(), SIGNAL(openReferenceTree(QString)),
         this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
 
-    //! The proxy that is used to do the sorting of parameters.
-    QSortFilterProxyModel* sortingProxy = new QSortFilterProxyModel(this);
-
 	// set source model for proxy
-	sortingProxy->setSourceModel(model_);
+	proxy_->setSourceModel(model_);
 	// set proxy to be the source for the view
-	view_->setModel(sortingProxy);
+	view_->setModel(proxy_);
 
 	// sort the view
 	view_->sortByColumn(0, Qt::AscendingOrder);
@@ -142,5 +140,6 @@ bool ParameterGroupBox::isValid(QStringList& errorList, const QString& parentIde
 //-----------------------------------------------------------------------------
 void ParameterGroupBox::refresh() 
 {
+    proxy_->invalidate();
 	view_->update();
 }

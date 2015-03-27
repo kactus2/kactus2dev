@@ -29,12 +29,16 @@
 //-----------------------------------------------------------------------------
 HierarchyRefWidget::HierarchyRefWidget(QSharedPointer<View> view, 
 									   LibraryInterface* libHandler,
+                                       QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+                                       QSharedPointer<ParameterFinder> parameterFinder, 
+                                       QSharedPointer<ExpressionFormatter> expressionFormatter,
 									   QWidget *parent): 
 QWidget(parent),
     library_(libHandler),
     view_(view),
     designConfigurationEditor_(new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, parent->parentWidget(), this)),
     designReferenceDisplay_(new VLNVEditor(VLNV::DESIGN, libHandler, parent->parentWidget(), this)),
+    moduleParameterEditor_(view->getModuleParameters(), componentChoices, parameterFinder, expressionFormatter, this),
     topLevelRef_(new ReferenceSelector(this))
 {
 	designConfigurationEditor_->setTitle(tr("Design configuration"));
@@ -55,6 +59,15 @@ QWidget(parent),
 	connect(designConfigurationEditor_, SIGNAL(vlnvEdited()), this, SLOT(onVLNVChanged()), Qt::UniqueConnection);
 	connect(topLevelRef_, SIGNAL(currentIndexChanged(QString const&)),
 		this, SLOT(onTopViewChanged(QString const&)), Qt::UniqueConnection);
+
+    connect(&moduleParameterEditor_, SIGNAL(contentChanged()),
+        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&moduleParameterEditor_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&moduleParameterEditor_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(&moduleParameterEditor_, SIGNAL(openReferenceTree(QString)),
+        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
 
     setupLayout();
 }
@@ -113,6 +126,8 @@ void HierarchyRefWidget::refresh(QStringList const& availableViews)
 	// after change reconnect the editor
 	connect(topLevelRef_, SIGNAL(currentIndexChanged(QString const&)),
 		this, SLOT(onTopViewChanged(QString const&)), Qt::UniqueConnection);
+
+    moduleParameterEditor_.refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -202,31 +217,6 @@ void HierarchyRefWidget::updateDesignReference()
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyRefWidget::setupLayout()
-//-----------------------------------------------------------------------------
-void HierarchyRefWidget::setupLayout()
-{
-    QGroupBox* hierarchyReferenceGroup = new QGroupBox(tr("Hierarchy reference"), this);
-    QHBoxLayout* referenceLayout = new QHBoxLayout(hierarchyReferenceGroup);
-    referenceLayout->addWidget(designConfigurationEditor_);
-    referenceLayout->addWidget(designReferenceDisplay_);
-
-    QFormLayout* extensionLayout = new QFormLayout();
-    extensionLayout->addRow(tr("VendorExtension: Reference to a top-level implementation view"), topLevelRef_);
-
-    QGridLayout* halfPageLayout = new QGridLayout();
-    halfPageLayout->addLayout(extensionLayout, 0, 0, 1, 1);
-    halfPageLayout->setColumnStretch(0, 50);
-    halfPageLayout->setColumnStretch(1, 50);
-
-    QVBoxLayout* topLayout = new QVBoxLayout(this);
-    topLayout->addWidget(hierarchyReferenceGroup);
-    topLayout->addLayout(halfPageLayout);
-    topLayout->addStretch();
-    topLayout->setContentsMargins(0, 0, 0, 0);
-}
-
-//-----------------------------------------------------------------------------
 // Function: HierarchyRefWidget::updateErrorSignAndTooltip()
 //-----------------------------------------------------------------------------
 void HierarchyRefWidget::updateErrorSignAndTooltip()
@@ -281,4 +271,30 @@ void HierarchyRefWidget::hideErrorSignAndTooltip()
     designConfigurationEditor_->setCheckable(false);
 
     designConfigurationEditor_->setToolTip("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierarchyRefWidget::setupLayout()
+//-----------------------------------------------------------------------------
+void HierarchyRefWidget::setupLayout()
+{
+    QGroupBox* hierarchyReferenceGroup = new QGroupBox(tr("Hierarchy reference"), this);
+    QHBoxLayout* referenceLayout = new QHBoxLayout(hierarchyReferenceGroup);
+    referenceLayout->addWidget(designConfigurationEditor_);
+    referenceLayout->addWidget(designReferenceDisplay_);
+
+    QFormLayout* extensionLayout = new QFormLayout();
+    extensionLayout->addRow(tr("VendorExtension: Reference to a top-level implementation view"), topLevelRef_);
+
+    QGridLayout* halfPageLayout = new QGridLayout();
+    halfPageLayout->addLayout(extensionLayout, 0, 0, 1, 1);
+    halfPageLayout->setColumnStretch(0, 50);
+    halfPageLayout->setColumnStretch(1, 50);
+
+    QVBoxLayout* topLayout = new QVBoxLayout(this);
+    topLayout->addWidget(hierarchyReferenceGroup);
+    topLayout->addWidget(&moduleParameterEditor_);
+    topLayout->addLayout(halfPageLayout);
+    topLayout->addStretch();
+    topLayout->setContentsMargins(0, 0, 0, 0);
 }

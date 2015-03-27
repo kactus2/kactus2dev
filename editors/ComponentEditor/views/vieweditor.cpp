@@ -47,7 +47,8 @@ viewTypeSelector_(),
 envIdentifier_(view, this),
 typeDependentEditors_(this),
 flatViewEditor_(component, view, parameterFinder, expressionFormatter, &typeDependentEditors_),
-hierarchyReferenceEditor_(view, libHandler, &typeDependentEditors_)
+hierarchyReferenceEditor_(view, libHandler, component->getChoices(),
+    parameterFinder, expressionFormatter, &typeDependentEditors_)
 {
 	// set the possible options to the view type selector.
 	viewTypeSelector_.insertItem(HIERARCHICAL, tr("hierarchical"));
@@ -63,13 +64,19 @@ hierarchyReferenceEditor_(view, libHandler, &typeDependentEditors_)
 	connect(&nameEditor_, SIGNAL(contentChanged()),	this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	
     connect(&envIdentifier_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	
+
     connect(&hierarchyReferenceEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&hierarchyReferenceEditor_, SIGNAL(helpUrlRequested(const QString&)),
-		this, SIGNAL(helpUrlRequested(const QString&)), Qt::UniqueConnection);
-	
+    connect(&hierarchyReferenceEditor_, SIGNAL(helpUrlRequested(const QString&)),
+        this, SIGNAL(helpUrlRequested(const QString&)), Qt::UniqueConnection);
+    connect(&hierarchyReferenceEditor_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&hierarchyReferenceEditor_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(&hierarchyReferenceEditor_, SIGNAL(openReferenceTree(QString)),
+        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+
     connect(&flatViewEditor_, SIGNAL(contentChanged()),	this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&flatViewEditor_, SIGNAL(helpUrlRequested(const QString&)),
+    connect(&flatViewEditor_, SIGNAL(helpUrlRequested(const QString&)),
 		this, SIGNAL(helpUrlRequested(const QString&)), Qt::UniqueConnection);
     connect(&flatViewEditor_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

@@ -29,12 +29,10 @@ languageStrict_(tr("Strict"), this),
 modelName_(this),
 fileSetRefs_(component, tr("File set references"), this),
 fileBuilders_(view->getDefaultFileBuilders(), this),
-moduleParameters_(view->getModuleParameters(), component, parameterFinder, expressionFormatter, this),
+moduleParameters_(view->getModuleParameters(), component->getChoices(), parameterFinder, expressionFormatter, this),
 parameters_(view->getParameters(), component, parameterFinder, expressionFormatter, this)
 {
 	fileSetRefs_.initialize();
-
-    moduleParameters_.setTitle(tr("Module parameters"));
 
     parameters_.setTitle(tr("View-specific generator parameters"));
 
@@ -111,6 +109,8 @@ void FlatViewGeneralTab::refresh()
 
     fileBuilders_.refresh();
     parameters_.refresh();
+
+    moduleParameters_.refresh();
 }
 
 //-----------------------------------------------------------------------------

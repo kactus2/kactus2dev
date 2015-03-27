@@ -12,6 +12,8 @@
 #ifndef HIERARCHYREFWIDGET_H
 #define HIERARCHYREFWIDGET_H
 
+#include "ModuleParameterEditor.h"
+
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
 #include <IPXACTmodels/view.h>
@@ -21,7 +23,9 @@
 #include <QComboBox>
 #include <QSharedPointer>
 
+class ExpressionFormatter;
 class LibraryInterface;
+class ParameterFinder;
 class ReferenceSelector;
 //-----------------------------------------------------------------------------
 //! Editor to set the hierarchy reference for a hierarchical view.
@@ -34,12 +38,18 @@ public:
 
 	/*! The constructor
 	 *
-	 *        @param [in] view          The view being edited.
-	 *        @param [in] libHandler    The library handler instance to use.
-	 *        @param [in] parent        The owner of this editor.
-	 *
-	*/
-	HierarchyRefWidget(QSharedPointer<View> view, LibraryInterface* libHandler, QWidget* parent);
+	 *        @param [in] view                  The view being edited.
+	 *        @param [in] libHandler            The library handler instance to use.
+     *        @param [in] componentChoices      The choices available in the component.
+     *        @param [in] parameterFinder       Finder for component parameters.
+     *        @param [in] expressionFormatter   The formatter for module parameter expressions.
+	 *        @param [in] parent                The owner of this editor.
+	 */
+	HierarchyRefWidget(QSharedPointer<View> view, LibraryInterface* libHandler,
+        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
+        QSharedPointer<ParameterFinder> parameterFinder, 
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QWidget* parent);
 	
 	//! The destructor
 	virtual ~HierarchyRefWidget();
@@ -69,6 +79,27 @@ signals:
 
 	//! Emitted when a help page should be changed in the context help window.
 	void helpUrlRequested(QString const& url);
+        
+    /*!
+     *  Increase the amount of references to a parameter with a matching id.
+     *
+     *      @param [in] id      Id of the parameter, whose references are being increased.
+     */
+    void increaseReferences(QString id);
+
+    /*!
+     *  Decrease the amount of references to a parameter with a matching id.
+     *
+     *      @param [in] id      Id of the parameter, whose references are being increased.
+     */
+    void decreaseReferences(QString id);
+
+    /*!
+     *  Open the reference tree of the selected parameter.
+     *
+     *      @param [in] id      Id of the selected parameter.
+     */
+    void openReferenceTree(QString const& id) const;
 
 protected:
 
@@ -97,9 +128,6 @@ private:
     //! Updates the referenced design according to the view hierarchy reference.
     void updateDesignReference();
 
-    //! Sets the widget layout.
-    void setupLayout();
-
     /*!
      *  Updates the error displaying for hierarchy reference.
      */
@@ -114,6 +142,9 @@ private:
      *  Hides the error sign and a tool tip for the cause of an error in hierarchy reference.
      */
     void hideErrorSignAndTooltip();
+
+    //! Sets the widget layout.
+    void setupLayout();
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -130,6 +161,9 @@ private:
 
     //! The display for referenced design.
     VLNVEditor* designReferenceDisplay_;
+
+    //! Editor to set the module parameters of the view.
+    ModuleParameterEditor moduleParameterEditor_;
 
 	//! The editor to set the reference to a top level implementation view.
 	ReferenceSelector* topLevelRef_;

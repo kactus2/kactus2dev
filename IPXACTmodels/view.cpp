@@ -425,7 +425,6 @@ void View::setHierarchyRef(const VLNV& hierarchyRef)
 	constraintSetRefs_.clear();
 	defaultFileBuilders_.clear();
 	parameters_->clear();
-    getOrCreateComponentInstantiation()->getModuleParameters()->clear();
 }
 
 void View::setEnvIdentifiers( const QStringList& envIdentifiers ) {

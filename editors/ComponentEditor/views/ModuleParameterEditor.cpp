@@ -28,8 +28,6 @@
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 
-#include <IPXACTmodels/component.h>
-
 #include <QSortFilterProxyModel>
 #include <QVBoxLayout>
 
@@ -37,16 +35,17 @@
 // Function: ModuleParameterEditor::ModuleParameterEditor()
 //-----------------------------------------------------------------------------
 ModuleParameterEditor::ModuleParameterEditor(QSharedPointer<QList<QSharedPointer<ModelParameter> > > parameters,
-    QSharedPointer<Component> component,
+    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
     QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter,
     QWidget *parent)
     : QGroupBox(tr("Module parameters"), parent), 
+    proxy_(new QSortFilterProxyModel(this)),
     model_(0)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
     
-    model_ = new ModelParameterModel(parameters, component->getChoices(), expressionParser, 
+    model_ = new ModelParameterModel(parameters, componentChoices, expressionParser, 
         parameterFinder, expressionFormatter, this);
     
     model_->setParameterFactory(QSharedPointer<ModelParameterFactory>(new ModuleParameterFactoryImplementation()));
@@ -69,7 +68,7 @@ ModuleParameterEditor::ModuleParameterEditor(QSharedPointer<QList<QSharedPointer
         model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
     connect(view, SIGNAL(removeItem(const QModelIndex&)),
         model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
-
+    
     ModelParameterEditorHeaderView* parameterHorizontalHeader = new ModelParameterEditorHeaderView(Qt::Horizontal, this);
     view->setHorizontalHeader(parameterHorizontalHeader);
     view->horizontalHeader()->setSectionsClickable(true);
@@ -87,7 +86,7 @@ ModuleParameterEditor::ModuleParameterEditor(QSharedPointer<QList<QSharedPointer
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(parameterModel);
 
-    view->setDelegate(new ModelParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
+    view->setDelegate(new ModelParameterDelegate(componentChoices, parameterCompleter, parameterFinder,
         expressionFormatter, this));
 
     connect(view->itemDelegate(), SIGNAL(increaseReferences(QString)), 
@@ -102,7 +101,7 @@ ModuleParameterEditor::ModuleParameterEditor(QSharedPointer<QList<QSharedPointer
         this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
 
     // set source model for proxy
-    QSortFilterProxyModel* proxy_ = new QSortFilterProxyModel(this);
+
     proxy_->setSourceModel(model_);
     // set proxy to be the source for the view
     view->setModel(proxy_);
@@ -130,4 +129,12 @@ ModuleParameterEditor::~ModuleParameterEditor()
 bool ModuleParameterEditor::isValid() const
 {
     return model_->isValid();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModuleParameterEditor::refresh()
+//-----------------------------------------------------------------------------
+void ModuleParameterEditor::refresh()
+{
+    proxy_->invalidate();
 }

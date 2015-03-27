@@ -17,6 +17,7 @@
 #include <QGroupBox>
 #include <QList>
 #include <QSharedPointer>
+#include <QSortFilterProxyModel>
 
 class ColumnFreezableTable;
 class Component;
@@ -115,6 +116,9 @@ private:
 
 	//! The view that displays the parameters.
     ColumnFreezableTable* view_;
+
+    //! The proxy that is used to do the sorting of parameters.
+    QSortFilterProxyModel* proxy_;
 
 	//! The model that holds the data to be displayed to the user
 	ParametersModel* model_;
