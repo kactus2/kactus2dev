@@ -8,6 +8,35 @@
               * Changed or Information
 ===============================================================================
 
+27/03/2015 2.7.463
+----------------------------------------------------
+
++ Added support for referencing parameters in top component of a design.
++ Added new editor for parameter values in an array.
++ Improved validation of configurable element values:
+	* Minimum, maximum and type restrictions are enforced.
+	* Choices can be selected from drop-down list.
+	* Arrays can be edited in similar fashion to component editor.
++ Added support for enabling/disabling register fields.
++ Added support for expressions in AddressBlock base addrss, range and width.
++ Added validity checks and separate display for referenced designs in hierarchical views. 
+
+* Configurable element values are now stored by default in Design Configuration instead of Design.
+* Renamed hierarchy level "Global" to "Flat".
+* Changed register mask and reset value to SystemVerilog bit format.
+* Changed Quartus Pin Import plugin to conform with Import plugin interface.
+
+KNOWN UNRESOLVED ISSUES:
+* Parameters created with version 2.7.0 may not work with the latest release due to 
+  change in id formatting. The fastest way to fix this is to re-create the parameters.
+* SystemVerilog expressions are not supported by some features including generators.
+  If expressions or references have been used, it may cause at least the following issues:
+    * Memory map header generator will generate wrong offsets for registers.
+	* Memory maps visualization shows wrong offset for register and aligns them wrong.
+	* VHDL generator will generate wrong values.
+	* Port maps will not automatically adjust to changes in port size.
+* VHDL import does not preserve references to model parameters.
+
 06/03/2015 2.7.192
 ----------------------------------------------------
 

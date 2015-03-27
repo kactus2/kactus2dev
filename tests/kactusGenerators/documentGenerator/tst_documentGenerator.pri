@@ -13,8 +13,11 @@ HEADERS += ../../../designEditors/HWDesign/AdHocEnabled.h \
     ../../../designEditors/common/Association/AssociationAddCommand.h \
     ../../../designEditors/common/Association/AssociationChangeEndpointCommand.h \
     ../../../designEditors/common/Association/AssociationRemoveCommand.h \
+    ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../common/graphicsItems/ConnectionUndoCommands.h \
     ../../MockObjects/DesignWidgetFactoryMock.h \
+    ../../../editors/ComponentEditor/common/ExpressionFormatter.h \
+    ../../../editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h \
     ../../../common/graphicsItems/GraphicsColumnUndoCommands.h \
     ../../../designEditors/HWDesign/HWAddCommands.h \
     ../../../designEditors/HWDesign/HWMoveCommands.h \
@@ -93,9 +96,13 @@ HEADERS += ../../../designEditors/HWDesign/AdHocEnabled.h \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.h \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portmapsview.h \
     ../../../common/widgets/vlnvEditor/vlnveditor.h \
-    ../../../editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h \
-    ../../../editors/ComponentEditor/common/ExpressionFormatter.h \
-    ../../../editors/ComponentEditor/common/ComponentParameterFinder.h
+    ../../../common/widgets/componentPreviewBox/ComponentPreviewBox.h \
+    ../../../designEditors/SystemDesign/SWComponentItem.h \
+    ../../../designEditors/SystemDesign/SystemComponentItem.h \
+    ../../../designEditors/SystemDesign/SWPortItem.h \
+    ../../../designEditors/SystemDesign/SWConnectionEndpoint.h \
+    ../../../designEditors/SystemDesign/SWOffPageConnectorItem.h \
+    ../../../designEditors/SystemDesign/SystemMoveCommands.h
 SOURCES += ../../../designEditors/HWDesign/AdHocEnabled.cpp \
     ../../../designEditors/HWDesign/AdHocInterfaceItem.cpp \
     ../../../designEditors/HWDesign/AdHocPortItem.cpp \
@@ -117,11 +124,14 @@ SOURCES += ../../../designEditors/HWDesign/AdHocEnabled.cpp \
     ../../../common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ../../../designEditors/common/ComponentDesignDiagram.cpp \
     ../../../common/graphicsItems/ComponentItem.cpp \
+    ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../common/graphicsItems/ConnectionEndpoint.cpp \
     ../../../common/graphicsItems/ConnectionUndoCommands.cpp \
     ../../../designEditors/common/DesignDiagram.cpp \
     ../../../designEditors/common/DesignWidget.cpp \
     ../../MockObjects/DesignWidgetFactoryMock.cpp \
+    ../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
+    ../../../editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.cpp \
     ../../../common/GenericEditProvider.cpp \
     ../../../common/graphicsItems/GraphicsColumn.cpp \
     ../../../common/graphicsItems/GraphicsColumnLayout.cpp \
@@ -182,6 +192,10 @@ SOURCES += ../../../designEditors/HWDesign/AdHocEnabled.cpp \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portmapsview.cpp \
     ./tst_documentGenerator.cpp \
     ../../../common/widgets/vlnvEditor/vlnveditor.cpp \
-    ../../../editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.cpp \
-    ../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
-    ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp
+    ../../../common/widgets/componentPreviewBox/ComponentPreviewBox.cpp \
+    ../../../designEditors/SystemDesign/SWComponentItem.cpp \
+    ../../../designEditors/SystemDesign/SystemComponentItem.cpp \
+    ../../../designEditors/SystemDesign/SWPortItem.cpp \
+    ../../../designEditors/SystemDesign/SWConnectionEndpoint.cpp \
+    ../../../designEditors/SystemDesign/SWOffPageConnectorItem.cpp \
+    ../../../designEditors/SystemDesign/SystemMoveCommands.cpp
