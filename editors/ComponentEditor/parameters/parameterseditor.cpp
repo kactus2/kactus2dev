@@ -105,7 +105,7 @@ model_(0)
     sortingProxy->setSortCaseSensitivity(Qt::CaseInsensitive);
 
     view_->sortByColumn(0, Qt::AscendingOrder);
-    view_->setColumnHidden(ParameterColumns::SOURCEIDS, true);
+    view_->setColumnHidden(ParameterColumns::ID, true);
 
     // display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Parameters"), this);

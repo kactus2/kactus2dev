@@ -424,27 +424,6 @@ QString Parameter::elementName() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: Parameter::addCopySource()
-//-----------------------------------------------------------------------------
-void Parameter::addCopySource(QString const& sourceId)
-{
-    QStringList sourceIds = getCopySources();
-    if (!sourceIds.contains(sourceId))
-    {
-        sourceIds.append(sourceId);
-        setValueAttribute("kactus2:sourceIds", sourceIds.join(','));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Parameter::getSourceIds()
-//-----------------------------------------------------------------------------
-QStringList Parameter::getCopySources() const
-{
-    return getValueAttribute("kactus2:sourceIds").split(',', QString::SkipEmptyParts);
-}
-
-//-----------------------------------------------------------------------------
 // Function: Parameter::setValueAttribute()
 //-----------------------------------------------------------------------------
 void Parameter::setValueAttribute(QString const& attributeName, QString const& attributeValue)

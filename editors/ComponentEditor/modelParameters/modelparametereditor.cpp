@@ -112,7 +112,7 @@ model_(0)
 	// sort the view
 	view_->sortByColumn(0, Qt::AscendingOrder);;
 
-    view_->setColumnHidden(ModelParameterColumns::SOURCEIDS, true);
+    view_->setColumnHidden(ModelParameterColumns::ID, true);
 
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Model parameters"), this);

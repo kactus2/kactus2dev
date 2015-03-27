@@ -17,7 +17,7 @@ namespace ParameterColumns
         NAME = 0,
         DISPLAY_NAME,
         DESCRIPTION,
-        SOURCEIDS,
+        ID,
         TYPE,
         VALUE,
         CHOICE,

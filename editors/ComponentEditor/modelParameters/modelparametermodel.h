@@ -242,11 +242,11 @@ protected:
     virtual int descriptionColumn() const;
 
     /*!
-     *  Gets the column index for source ids.
+     *  Gets the column index for model parameter id.
      *
-     *      @return     The column index for source ids.
+     *      @return     The column index for the model parameter id.
      */
-    virtual int sourceIdsColumn() const;
+    virtual int idColumn() const;
 
     /*!
      *  Gets the column index for usage count.

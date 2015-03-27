@@ -142,11 +142,11 @@ protected:
     virtual int usageCountColumn() const;
 
     /*!
-     *  Gets the column index for the source ids for the model parameter.
+     *  Gets the column index for the id of the model parameter.
      *
-     *      @return     The column index for source ids.
+     *      @return     The column index for model parameter id.
      */
-    virtual int sourceIdsColumn() const;
+    virtual int idColumn() const;
 
 private:
 

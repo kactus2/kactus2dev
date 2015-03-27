@@ -110,7 +110,7 @@ ModuleParameterEditor::ModuleParameterEditor(QSharedPointer<QList<QSharedPointer
     // sort the view
     view->sortByColumn(0, Qt::AscendingOrder);
 
-    view->setColumnHidden(ModelParameterColumns::SOURCEIDS, true);
+    view->setColumnHidden(ModelParameterColumns::ID, true);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(view);

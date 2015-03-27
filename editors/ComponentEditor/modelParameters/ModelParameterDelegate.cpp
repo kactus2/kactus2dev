@@ -154,9 +154,9 @@ int ModelParameterDelegate::usageCountColumn() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterDelegate::sourceIdsColumn()
+// Function: ModelParameterDelegate::idColumn()
 //-----------------------------------------------------------------------------
-int ModelParameterDelegate::sourceIdsColumn() const
+int ModelParameterDelegate::idColumn() const
 {
-    return ModelParameterColumns::SOURCEIDS;
+    return ModelParameterColumns::ID;
 }

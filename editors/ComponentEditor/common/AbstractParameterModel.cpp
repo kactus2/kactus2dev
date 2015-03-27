@@ -167,9 +167,9 @@ QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orienta
         { 
             return tr("Description");
         }
-        else if (section == sourceIdsColumn())
+        else if (section == idColumn())
         {
-            return tr("Copy source IDs");
+            return tr("Parameter id");
         }
         else if (section == usageCountColumn())
         {
@@ -286,9 +286,9 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
         {
             parameter->setDescription(value.toString());
         }
-        else if (index.column() == sourceIdsColumn())
+        else if (index.column() == idColumn())
         {
-            parameter->addCopySource(value.toString());
+            return false;
         }
         else
         {
@@ -569,11 +569,9 @@ QVariant AbstractParameterModel::valueForIndex(QModelIndex const& index) const
     {
         return parameter->getDescription();
     }
-    else if (index.column() == sourceIdsColumn())
+    else if (index.column() == idColumn())
     {
-        QStringList copySources(parameter->getValueId());
-        copySources.append(parameter->getCopySources());
-        return copySources.join(',');
+        return parameter->getValueId();
     }
     else if (index.column() == usageCountColumn())
     {

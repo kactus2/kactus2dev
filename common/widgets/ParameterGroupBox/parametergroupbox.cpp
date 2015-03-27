@@ -107,7 +107,7 @@ model_(0)
 	// sort the view
 	view_->sortByColumn(0, Qt::AscendingOrder);
 
-    view_->setColumnHidden(ParameterColumns::SOURCEIDS, true);
+    view_->setColumnHidden(ParameterColumns::ID, true);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(view_);
