@@ -15,23 +15,28 @@
 #include "QuartusPinImportPlugin_global.h"
 
 #include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
+#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
 
-#include <QtPlugin>
+#include <IPXACTmodels/generaldeclarations.h>
+
 #include <QObject>
-#include <QFile>
+#include <QString>
+#include <QtPlugin>
 
 class Component;
+class Highlighter;
 //-----------------------------------------------------------------------------
 // Plugin for importing component ports from Quartus II pin file.
 //-----------------------------------------------------------------------------
-class QUARTUSPINIMPORTPLUGIN_EXPORT QuartusPinImportPlugin : public QObject, public IGeneratorPlugin
+class QUARTUSPINIMPORTPLUGIN_EXPORT QuartusPinImportPlugin : public QObject, 
+    public ImportPlugin, public HighlightSource
 {
 
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "kactus2.plugins.quartuspinimportplugin" FILE "quartuspinimportplugin.json")
     Q_INTERFACES(IPlugin)
-    Q_INTERFACES(IGeneratorPlugin)
+    Q_INTERFACES(ImportPlugin)
 
 public:
     //! The constructor.
@@ -72,50 +77,35 @@ public:
 
     //! Returns the external program requirements of the plugin.
     virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements();
-
-/*!
-     *  Returns the icon for the generator.
+        
+    /*!
+     *  Sets the given highlighter to be used by the plugin.
+     *
+     *      @param [in] highlighter   The highlighter to use.          
      */
-    virtual QIcon getIcon() const;
+    virtual void setHighlighter(Highlighter* highlighter);
 
     /*!
-     *  Checks whether the generator supports generation for the given library component.
+     *  Returns the supported import file types.
      *
-     *      @param [in] libComp		The library component for which to check support.
-     *      @param [in] libDesConf	The optional design configuration object.
-     *      @param [in] libDes		The optional design object.
-     *
-     *      @return True, if the generator supports the given component. Otherwise false.
+     *      @return The file types the import plugin supports.
      */
-    virtual bool checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp,
-		QSharedPointer<LibraryComponent const> libDesConf = QSharedPointer<LibraryComponent const>(),
-		QSharedPointer<LibraryComponent const> libDes = QSharedPointer<LibraryComponent const>()) const;
-
+    virtual QStringList getSupportedFileTypes() const;
+    
     /*!
-     *  Runs the generator.
+     *  Gets any compatibility warnings for the plugin.
      *
-     *      @param [in]			utility			The plugin utility interface.
-     *      @param [in,out]	libComp			The library component for which the generator is run.
-     *      @param [in, out]	libDesConf		The optional design configuration object for the generator.
-     *      @param [in, out]	libDes			The optional design object.
+     *      @return The warning text.
      */
-    virtual void runGenerator(IPluginUtility* utility,
-                              QSharedPointer<LibraryComponent> libComp,
-							  QSharedPointer<LibraryComponent> libDesConf = QSharedPointer<LibraryComponent>(),
-							  QSharedPointer<LibraryComponent> libDes = QSharedPointer<LibraryComponent>());
-
-    void printGeneratorSummary( IPluginUtility* utility );
-
-
-public slots:
-
+    virtual QString getCompatibilityWarnings() const;
+    
     /*!
-     *  Called for storing messages that must be displayed in the message console after the 
-     *  generation has completed.
+     *  Runs the import by parsing the given input and applying the parsed elements to the given component.
      *
-     *      @param [in] message   The message to store.
+     *      @param [in] input               The input text to parse.
+     *      @param [in] targetComponent     The component to apply all imported changes to.
      */
-    void logMessage(QString const& message);
+    virtual void import(QString const& input, QSharedPointer<Component> targetComponent);
 
 private:
 
@@ -124,9 +114,26 @@ private:
 
     //! No assignment
     QuartusPinImportPlugin& operator=(const QuartusPinImportPlugin& other);
-    
-    //! List of errors produced by the generator widget.
-    QStringList messageList_;
+
+    /*!
+     *  Creates a port in the component from the given line in the pin file.
+     *
+     *      @param [in] line                The line to parse as port.
+     *      @param [in] targetComponent     The component to add the port into.
+     */
+    void createPort(QString const& line, QSharedPointer<Component> targetComponent);
+
+    /*!
+     *  Parses pin direction to IP-XACT port direction.
+     *
+     *      @param [in] direction   The direction to parse.
+     *
+     *      @return The port direction.
+     */
+    General::Direction parseDirection(QString const& direction);
+
+    //! The highlighter to use.
+    Highlighter* highlighter_;
 };
 
 #endif // QUARTUSPINIMPORTPLUGIN_H

@@ -8,8 +8,6 @@
 #ifndef FILESELECTOR_H
 #define FILESELECTOR_H
 
-#include <common/Global.h>
-
 #include <IPXACTmodels/component.h>
 
 #include <QComboBox>
@@ -19,7 +17,8 @@
 /*! \brief Used to select one file from the component's file sets.
  *
  */
-class KACTUS2_API FileSelector : public QComboBox {
+class FileSelector : public QComboBox
+{
 	Q_OBJECT
 
 public:

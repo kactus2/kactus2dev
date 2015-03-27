@@ -11,34 +11,26 @@
 
 
 #include "QuartusPinImportPlugin.h"
-#include "QuartusPinImportDialog.h"
 
 #include "QuartusPinSyntax.h"
 
-#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
+#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <Plugins/PluginSystem/ImportPlugin/Highlighter.h>
+#include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
+
 #include <IPXACTmodels/component.h>
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <Plugins/PluginSystem/IPluginUtility.h>
-
-#include <QApplication>
-#include <QFile>
-#include <QFileInfo>
-#include <QDate>
-#include <QList>
-#include <QRegExp>
-#include <QString>
-#include <QTextStream>
-#include <QTime>
+#include <QRegularExpression>
+#include <QStringList>
 #include <QtPlugin>
 
 //-----------------------------------------------------------------------------
 // Function: QuartusPinImportPlugin::QuartusPinImportPlugin()
 //-----------------------------------------------------------------------------
-QuartusPinImportPlugin::QuartusPinImportPlugin()
-  : messageList_()
+QuartusPinImportPlugin::QuartusPinImportPlugin(): highlighter_(0)
 {
 }
 
@@ -54,7 +46,7 @@ QuartusPinImportPlugin::~QuartusPinImportPlugin()
 //-----------------------------------------------------------------------------
 QString const& QuartusPinImportPlugin::getName() const
 {
-    static QString name(tr("Quartus II Pin Import Plugin"));
+    static QString name(tr("Quartus II Pin Import"));
     return name;
 }
 
@@ -63,7 +55,7 @@ QString const& QuartusPinImportPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString const& QuartusPinImportPlugin::getVersion() const
 {
-    static QString version(tr("1.0"));
+    static QString version(tr("1.1"));
     return version;
 }
 
@@ -117,96 +109,105 @@ QList<IPlugin::ExternalProgramRequirement> QuartusPinImportPlugin::getProgramReq
 }
 
 //-----------------------------------------------------------------------------
-// Function: QuartusPinImportPlugin::getIcon()
+// Function: QuartusPinImportPlugin::setHighlighter()
 //-----------------------------------------------------------------------------
-QIcon QuartusPinImportPlugin::getIcon() const
+void QuartusPinImportPlugin::setHighlighter(Highlighter* highlighter)
 {
-    return QIcon(":icons/quartuspinimport.png");
+    highlighter_ = highlighter;
 }
 
 //-----------------------------------------------------------------------------
-// Function: QuartusPinImportPlugin::checkGeneratorSupport()
+// Function: QuartusPinImportPlugin::getSupportedFileTypes()
 //-----------------------------------------------------------------------------
-bool QuartusPinImportPlugin::checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp, 
-    QSharedPointer<LibraryComponent const> libDesConf /*= QSharedPointer<LibraryComponent const>()*/, 
-    QSharedPointer<LibraryComponent const> libDes /*= QSharedPointer<LibraryComponent const>()*/) const
+QStringList QuartusPinImportPlugin::getSupportedFileTypes() const
 {
-    // Pin import can only be run on component editor.
-    if (libDesConf || libDes) {
-        return false;
-    }
-
-    // Pin import can only run on HW components.
-    QSharedPointer<const Component> comp = libComp.dynamicCast<const Component>();
-    if (comp == 0 || comp->getComponentImplementation() != KactusAttribute::HW)
-    {
-        return false;
-    }
-
-    return true;
+    return QStringList("quartusPinFile");
 }
 
 //-----------------------------------------------------------------------------
-// Function: QuartusPinImportPlugin::runGenerator()
+// Function: QuartusPinImportPlugin::getCompatibilityWarnings()
 //-----------------------------------------------------------------------------
-void QuartusPinImportPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<LibraryComponent> libComp, 
-    QSharedPointer<LibraryComponent> libDesConf /*= QSharedPointer<LibraryComponent>()*/, 
-    QSharedPointer<LibraryComponent> libDes /*= QSharedPointer<LibraryComponent>()*/)
+QString QuartusPinImportPlugin::getCompatibilityWarnings() const
 {
-    QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
-    if (comp == 0)
+    return QString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: QuartusPinImportPlugin::import()
+//-----------------------------------------------------------------------------
+void QuartusPinImportPlugin::import(QString const& input, QSharedPointer<Component> targetComponent)
+{
+    if (highlighter_)
     {
-        return;
+        highlighter_->applyFontColor(input, QColor("gray"));
     }
 
-    QuartusPinImportDialog dialog(comp, utility->getLibraryInterface(), utility->getParentWidget());
-    connect(&dialog, SIGNAL(printMessage(QString const&)), 
-        this, SLOT(logMessage(QString const&)), Qt::UniqueConnection);
-
-    // Save changes to file, if parsing was accepted.
-    if (dialog.exec() == QDialog::Accepted)
+    foreach (QSharedPointer<Port> existingPort, targetComponent->getPorts())
     {
+        existingPort->setDirection(General::DIRECTION_PHANTOM);
+    }
 
-        comp->getPorts().clear();
-
-        QApplication::setOverrideCursor(Qt::WaitCursor);
-
-        // Replace with newly generated ports.
-        foreach(QSharedPointer<Port> port, dialog.getPorts())
+    foreach (QString line, input.split(QRegularExpression("(\\r\\n?|\\n\\r?)")))
+    {
+        if (QuartusPinSyntax::pinDefinition.match(line).hasMatch())
         {
-            comp->addPort(port);
+            createPort(line, targetComponent);
         }
-
-        utility->getLibraryInterface()->writeModelToFile(comp);
-        QApplication::restoreOverrideCursor();
-
-        printGeneratorSummary(utility);
-
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: QuartusPinImportPlugin::logError()
+// Function: QuartusPinImportPlugin::createPort()
 //-----------------------------------------------------------------------------
-void QuartusPinImportPlugin::logMessage(QString const& message)
+void QuartusPinImportPlugin::createPort(QString const& line, QSharedPointer<Component> targetComponent)
 {
-    messageList_ << message;
-}
-
-//-----------------------------------------------------------------------------
-// Function: QuartusPinImportPlugin::printGeneratorSummary()
-//-----------------------------------------------------------------------------
-void QuartusPinImportPlugin::printGeneratorSummary(IPluginUtility* utility)
-{
-    utility->printInfo(QString("---------- " + getName() + " " + getVersion() + " ----------"));    
-    utility->printInfo(QString(tr("Generation finished ") + QDate::currentDate().toString("dd.MM.yyyy") + 
-        " " + QTime::currentTime().toString()));
-
-    foreach(QString message, messageList_)
+    if (highlighter_)
     {
-        utility->printInfo(message);
+        highlighter_->applyFontColor(line, Qt::black);
+        highlighter_->applyHighlight(line, ImportColors::PORT);
     }
+
+    QRegularExpressionMatch lineMatch = QuartusPinSyntax::pinDefinition.match(line);
+    
+    QString portName = lineMatch.captured(QuartusPinSyntax::LOCATION);
+
+    QString direction = lineMatch.captured(QuartusPinSyntax::DIRECTION);
+    General::Direction portDirection = parseDirection(direction);
+
+    QString description = lineMatch.captured(QuartusPinSyntax::PINUSAGE);
+
+    QSharedPointer<Port> port = targetComponent->getPort(portName);
+    if (port.isNull())
+    {
+        port = QSharedPointer<Port>(new Port(portName, General::DIRECTION_PHANTOM, 0, 0, "", "", "", ""));
+        targetComponent->addPort(port);
+    }
+
+    port->setDirection(portDirection);
+    port->setDescription(description);
+    port->setPortSize(1);
 }
 
-
-
+//-----------------------------------------------------------------------------
+// Function: QuartusPinImportPlugin::parseDirection()
+//-----------------------------------------------------------------------------
+General::Direction QuartusPinImportPlugin::parseDirection(QString const& direction)
+{
+    if (QRegularExpression("input", QRegularExpression::CaseInsensitiveOption).match(direction).hasMatch())
+    {
+        return General::IN;
+    }
+    else if (QRegularExpression("output", QRegularExpression::CaseInsensitiveOption).match(direction).hasMatch())
+    {
+        return General::OUT;
+    }
+    else if (QRegularExpression("bidir|power|gnd",
+        QRegularExpression::CaseInsensitiveOption).match(direction).hasMatch())
+    {
+        return General::INOUT;
+    }
+    else
+    {
+        return General::DIRECTION_PHANTOM;
+    }
+}

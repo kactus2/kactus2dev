@@ -36,9 +36,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PadsPartGenerator", "Plugin
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuartusPinImportPlugin", "Plugins\QuartusPinImportPlugin\QuartusPinImportPlugin.vcxproj", "{C0DBF909-F12F-473F-8AC3-2248ABA68B92}"
-	ProjectSection(ProjectDependencies) = postProject
-		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6} = {09486B51-70A7-3073-B15B-6D4BAF3EC8C6}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{9AC1D5FF-D209-4186-8C80-027639ACC2A3}"
 EndProject
@@ -220,9 +217,9 @@ Global
 		{5C0CA59D-CFCE-49C6-B62A-9E3065CA34DD} = {9AC1D5FF-D209-4186-8C80-027639ACC2A3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
-		BuildVersion_UpdateAssemblyVersion = True
-		BuildVersion_UpdateFileVersion = True
 		Qt5Version = 5.2.0x64
+		BuildVersion_UpdateFileVersion = True
+		BuildVersion_UpdateAssemblyVersion = True
+		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
 	EndGlobalSection
 EndGlobal

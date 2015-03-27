@@ -12,9 +12,11 @@
 #ifndef QUARTUSPINSYNTAX_H
 #define QUARTUSPINSYNTAX_H
 
+#include <QString>
+#include <QRegularExpression>
+
 namespace QuartusPinSyntax
 {
-
     // Delimiter for properties.
     const char DELIMITER = ':';
 
@@ -23,22 +25,23 @@ namespace QuartusPinSyntax
 
     // Each pin assignment is described on its own line using the following syntax:
     // Pin Name/Usage : Location : Dir. : I/O Standard : Voltage : I/O Bank  : User Assignment    
-    const QRegExp pinName = QRegExp("[^ :]+(?: / [^ :]+)*", Qt::CaseInsensitive);
-    const QRegExp location = QRegExp("\\w+", Qt::CaseInsensitive);
-    const QRegExp direction = QRegExp("input|output|bidir|power|gnd", Qt::CaseInsensitive);
-    const QRegExp ioStandard = QRegExp("[^ :]+(?:" + SPACE + "[^ :]+)*", Qt::CaseInsensitive);
-    const QRegExp voltage = QRegExp("\\d+\\.\\d+" + SPACE +"V", Qt::CaseInsensitive);
-    const QRegExp ioBank = QRegExp("\\w+", Qt::CaseInsensitive);
-    const QRegExp userAssignment = QRegExp("Y|N", Qt::CaseInsensitive);
+    const QString pinName = "[^ :]+(?: / [^ :]+)*";
+    const QString location = "\\w+";
+    const QString direction = "input|output|bidir|power|gnd";
+    const QString ioStandard = "[^ :]+(?:" + SPACE + "[^ :]+)*";
+    const QString voltage = "\\d+\\.\\d+" + SPACE +"V";
+    const QString ioBank = "\\w+";
+    const QString userAssignment = "Y|N";
 
     // Pin definition line.
-    const QRegExp pinDef = QRegExp("(" + pinName.pattern() + ")" + SPACE + DELIMITER + SPACE +        
-                                   "(" + location.pattern() + ")" + SPACE + DELIMITER + SPACE +
-                                   "(" + direction.pattern() + ")?" + SPACE + DELIMITER + SPACE +
-                                   "(" + ioStandard.pattern() + ")?" + SPACE + DELIMITER + SPACE +
-                                   "(" + voltage.pattern() + ")?" + SPACE + DELIMITER + SPACE +
-                                   "(" + ioBank.pattern() + ")?" + SPACE + DELIMITER + SPACE +
-                                   "(" + userAssignment.pattern() + ")?" + SPACE +"$", Qt::CaseInsensitive);
+    const QRegularExpression pinDefinition = QRegularExpression("\\b(" + pinName + ")" + SPACE + DELIMITER + SPACE +        
+                                   "(" + location + ")" + SPACE + DELIMITER + SPACE +
+                                   "(" + direction + ")?" + SPACE + DELIMITER + SPACE +
+                                   "(" + ioStandard + ")?" + SPACE + DELIMITER + SPACE +
+                                   "(" + voltage + ")?" + SPACE + DELIMITER + SPACE +
+                                   "(" + ioBank + ")?" + SPACE + DELIMITER + SPACE +
+                                   "(" + userAssignment + ")?(?=\\s*$)", 
+                                   QRegularExpression::CaseInsensitiveOption);
 
     // Property capture positions.
     enum propertyPos

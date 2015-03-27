@@ -9,8 +9,5 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ./QuartusPinImportPlugin_global.h \
     ./QuartusPinSyntax.h \
-    ./QuartusPinImportDialog.h \
     ./QuartusPinImportPlugin.h
-SOURCES += ./QuartusPinImportDialog.cpp \
-    ./QuartusPinImportPlugin.cpp
-RESOURCES += QuartusPinImportPlugin.qrc
+SOURCES += ./QuartusPinImportPlugin.cpp

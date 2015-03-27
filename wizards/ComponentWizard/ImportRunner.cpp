@@ -104,7 +104,7 @@ QStringList ImportRunner::filetypesOfImportFile(QString const& importFile,
 
     if (files.size() == 1)
     {
-        fileTypes.append(files.first()->getFileTypes());
+        fileTypes.append(files.first()->getAllFileTypes());
     }
       
     fileTypes.removeDuplicates();
