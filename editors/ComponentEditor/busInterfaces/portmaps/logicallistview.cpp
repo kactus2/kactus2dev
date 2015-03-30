@@ -7,8 +7,6 @@
 
 #include "logicallistview.h"
 
-#include "portmapsview.h"
-
 #include <QMimeData>
 #include <QDrag>
 
@@ -26,15 +24,9 @@ void LogicalListView::dropEvent( QDropEvent* event )
 {
 	// make sure the source is not this view
 	PortListView* source = qobject_cast<PortListView*>(event->source());
-	PortMapsView* mapSource = qobject_cast<PortMapsView*>(event->source());
 
 	// if source is neither of the supported
-	if (!source && !mapSource) {
-		return;
-	}
-
-	if (mapSource && event->proposedAction() == Qt::CopyAction) {
-		event->acceptProposedAction();
+	if (!source) {
 		return;
 	}
 

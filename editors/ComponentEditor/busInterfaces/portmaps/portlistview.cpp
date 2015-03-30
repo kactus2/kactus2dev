@@ -7,8 +7,6 @@
 
 #include "portlistview.h"
 
-#include "portmapsview.h"
-
 #include <QMimeData>
 #include <QDrag>
 #include <QApplication>
@@ -45,7 +43,6 @@ void PortListView::dragEnterEvent( QDragEnterEvent* event ) {
 	// make sure the source is port list view or port maps view and
 	// that data is correct type
 	PortListView* source = qobject_cast<PortListView*>(event->source());
-	PortMapsView* mapSource = qobject_cast<PortMapsView*>(event->source());
 	
 	// if source is port list view
 	if (source && event->mimeData()->hasFormat("text/plain")) {
@@ -54,18 +51,12 @@ void PortListView::dragEnterEvent( QDragEnterEvent* event ) {
 		event->setDropAction(Qt::MoveAction);
 		event->accept();
 	}
-	// if source is port maps view
-	else if (mapSource && event->mimeData()->hasFormat("text/plain")) {
-		event->acceptProposedAction();
-	}
-
 }
 
 void PortListView::dragMoveEvent( QDragMoveEvent* e ) {
 
 	// make sure the data is correct type
 	PortListView* source = qobject_cast<PortListView*>(e->source());
-	PortMapsView* mapSource = qobject_cast<PortMapsView*>(e->source());
 
 	// if the source is another port list view then select the item under
 	// the cursor
@@ -77,9 +68,6 @@ void PortListView::dragMoveEvent( QDragMoveEvent* e ) {
 		// the item can be removed from the original model
 		e->setDropAction(Qt::MoveAction);
 		e->accept();
-	}
-	else if (mapSource && e->mimeData()->hasFormat("text/plain")) {
-		e->acceptProposedAction();
 	}
 }
 
