@@ -26,6 +26,7 @@ HEADERS += ../../../designEditors/HWDesign/AdHocEnabled.h \
     ../../../designEditors/HWDesign/PortmapDialog.h \
     ../../../designEditors/common/StickyNote/StickyNoteEditCommand.h \
     ../../../designEditors/common/StickyNote/StickyNoteMoveCommand.h \
+    ../../../designEditors/SystemDesign/SystemMoveCommands.h \
     ../../../common/widgets/vlnvEditor/VLNVContentMatcher.h \
     ../../../common/widgets/vlnvEditor/VLNVDataTree.h \
     ../../../designEditors/HWDesign/AdHocInterfaceItem.h \
@@ -43,6 +44,7 @@ HEADERS += ../../../designEditors/HWDesign/AdHocEnabled.h \
     ../../../common/graphicsItems/CommonGraphicsUndoCommands.h \
     ../../../designEditors/common/ComponentDesignDiagram.h \
     ../../../common/graphicsItems/ComponentItem.h \
+    ../../../common/widgets/componentPreviewBox/ComponentPreviewBox.h \
     ../../../common/graphicsItems/ConnectionEndpoint.h \
     ../../../designEditors/common/DesignDiagram.h \
     ../../../designEditors/common/DesignWidget.h \
@@ -72,10 +74,15 @@ HEADERS += ../../../designEditors/HWDesign/AdHocEnabled.h \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeItem.h \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeModel.h \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeView.h \
+    ../../../designEditors/SystemDesign/SWComponentItem.h \
+    ../../../designEditors/SystemDesign/SWConnectionEndpoint.h \
+    ../../../designEditors/SystemDesign/SWOffPageConnectorItem.h \
+    ../../../designEditors/SystemDesign/SWPortItem.h \
     ../../../designEditors/HWDesign/SelectItemTypeDialog.h \
     ../../../designEditors/common/StickyNote/StickyNote.h \
     ../../../designEditors/common/StickyNote/StickyNoteAddCommand.h \
     ../../../designEditors/common/StickyNote/StickyNoteRemoveCommand.h \
+    ../../../designEditors/SystemDesign/SystemComponentItem.h \
     ../../../common/widgets/tabDocument/TabDocument.h \
     ../../../designEditors/common/ConfigurationEditor/activeviewmodel.h \
     ../../../editors/ComponentEditor/busInterfaces/busifportmaptab.h \
@@ -94,15 +101,7 @@ HEADERS += ../../../designEditors/HWDesign/AdHocEnabled.h \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portlistmodel.h \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portlistview.h \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.h \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/portmapsview.h \
-    ../../../common/widgets/vlnvEditor/vlnveditor.h \
-    ../../../common/widgets/componentPreviewBox/ComponentPreviewBox.h \
-    ../../../designEditors/SystemDesign/SWComponentItem.h \
-    ../../../designEditors/SystemDesign/SystemComponentItem.h \
-    ../../../designEditors/SystemDesign/SWPortItem.h \
-    ../../../designEditors/SystemDesign/SWConnectionEndpoint.h \
-    ../../../designEditors/SystemDesign/SWOffPageConnectorItem.h \
-    ../../../designEditors/SystemDesign/SystemMoveCommands.h
+    ../../../common/widgets/vlnvEditor/vlnveditor.h
 SOURCES += ../../../designEditors/HWDesign/AdHocEnabled.cpp \
     ../../../designEditors/HWDesign/AdHocInterfaceItem.cpp \
     ../../../designEditors/HWDesign/AdHocPortItem.cpp \
@@ -125,6 +124,7 @@ SOURCES += ../../../designEditors/HWDesign/AdHocEnabled.cpp \
     ../../../designEditors/common/ComponentDesignDiagram.cpp \
     ../../../common/graphicsItems/ComponentItem.cpp \
     ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ../../../common/widgets/componentPreviewBox/ComponentPreviewBox.cpp \
     ../../../common/graphicsItems/ConnectionEndpoint.cpp \
     ../../../common/graphicsItems/ConnectionUndoCommands.cpp \
     ../../../designEditors/common/DesignDiagram.cpp \
@@ -163,12 +163,18 @@ SOURCES += ../../../designEditors/HWDesign/AdHocEnabled.cpp \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeModel.cpp \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeView.cpp \
     ../../../designEditors/HWDesign/PortmapDialog.cpp \
+    ../../../designEditors/SystemDesign/SWComponentItem.cpp \
+    ../../../designEditors/SystemDesign/SWConnectionEndpoint.cpp \
+    ../../../designEditors/SystemDesign/SWOffPageConnectorItem.cpp \
+    ../../../designEditors/SystemDesign/SWPortItem.cpp \
     ../../../designEditors/HWDesign/SelectItemTypeDialog.cpp \
     ../../../designEditors/common/StickyNote/StickyNote.cpp \
     ../../../designEditors/common/StickyNote/StickyNoteAddCommand.cpp \
     ../../../designEditors/common/StickyNote/StickyNoteEditCommand.cpp \
     ../../../designEditors/common/StickyNote/StickyNoteMoveCommand.cpp \
     ../../../designEditors/common/StickyNote/StickyNoteRemoveCommand.cpp \
+    ../../../designEditors/SystemDesign/SystemComponentItem.cpp \
+    ../../../designEditors/SystemDesign/SystemMoveCommands.cpp \
     ../../../common/widgets/tabDocument/TabDocument.cpp \
     ../../../common/widgets/vlnvEditor/VLNVContentMatcher.cpp \
     ../../../common/widgets/vlnvEditor/VLNVDataTree.cpp \
@@ -189,13 +195,5 @@ SOURCES += ../../../designEditors/HWDesign/AdHocEnabled.cpp \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portlistmodel.cpp \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portlistview.cpp \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.cpp \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/portmapsview.cpp \
     ./tst_documentGenerator.cpp \
-    ../../../common/widgets/vlnvEditor/vlnveditor.cpp \
-    ../../../common/widgets/componentPreviewBox/ComponentPreviewBox.cpp \
-    ../../../designEditors/SystemDesign/SWComponentItem.cpp \
-    ../../../designEditors/SystemDesign/SystemComponentItem.cpp \
-    ../../../designEditors/SystemDesign/SWPortItem.cpp \
-    ../../../designEditors/SystemDesign/SWConnectionEndpoint.cpp \
-    ../../../designEditors/SystemDesign/SWOffPageConnectorItem.cpp \
-    ../../../designEditors/SystemDesign/SystemMoveCommands.cpp
+    ../../../common/widgets/vlnvEditor/vlnveditor.cpp

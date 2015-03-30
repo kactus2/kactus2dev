@@ -7,44 +7,46 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
+HEADERS += ../../../../editors/ComponentEditor/parameters/Array/ArrayColumns.h \
+    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../../editors/ComponentEditor/common/ExpressionFormatter.h \
+    ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../../../editors/ComponentEditor/modelParameters/ModelParameterColumns.h \
     ../../../../editors/ComponentEditor/modelParameters/ModelParameterFactory.h \
     ../../../../editors/ComponentEditor/modelParameters/ModelParameterFactoryImplementation.h \
     ../../../../editors/ComponentEditor/common/ParameterFinder.h \
+    ../../../../editors/ComponentEditor/common/ParameterizableTable.h \
+    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../../editors/ComponentEditor/common/ValueFormatter.h \
     ../../../../editors/ComponentEditor/common/AbstractParameterModel.h \
+    ../../../../editors/ComponentEditor/parameters/Array/ArrayDelegate.h \
+    ../../../../editors/ComponentEditor/parameters/Array/ArrayView.h \
+    ../../../../editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h \
     ../../../../editors/ComponentEditor/common/ExpressionDelegate.h \
     ../../../../editors/ComponentEditor/common/ExpressionEditor.h \
     ../../../../editors/ComponentEditor/modelParameters/ModelParameterDelegate.h \
+    ../../../../editors/ComponentEditor/parameters/Array/ParameterArrayModel.h \
     ../../../../editors/ComponentEditor/parameters/ParameterDelegate.h \
-    ../../../../editors/ComponentEditor/common/ParameterizableTable.h \
     ../../../../editors/ComponentEditor/modelParameters/modelparametermodel.h \
     ../../../../IPXACTmodels/validators/namevalidator.h \
-    ../../../../editors/ComponentEditor/parameters/Array/ArrayColumns.h \
-    ../../../../editors/ComponentEditor/parameters/Array/ArrayDelegate.h \
-    ../../../../editors/ComponentEditor/parameters/Array/ArrayView.h \
-    ../../../../editors/ComponentEditor/parameters/Array/ParameterArrayModel.h \
-    ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
-    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ../../../../editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h
+    ../../../../editors/ComponentEditor/common/ReferencingTableModel.h
 SOURCES += ../../../../editors/ComponentEditor/common/AbstractParameterModel.cpp \
+    ../../../../editors/ComponentEditor/parameters/Array/ArrayDelegate.cpp \
+    ../../../../editors/ComponentEditor/parameters/Array/ArrayView.cpp \
+    ../../../../editors/ComponentEditor/parameters/ChoiceCreatorDelegate.cpp \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../../editors/ComponentEditor/common/ExpressionDelegate.cpp \
     ../../../../editors/ComponentEditor/common/ExpressionEditor.cpp \
     ../../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
+    ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../../../editors/ComponentEditor/modelParameters/ModelParameterDelegate.cpp \
     ../../../../editors/ComponentEditor/modelParameters/ModelParameterFactoryImplementation.cpp \
+    ../../../../editors/ComponentEditor/parameters/Array/ParameterArrayModel.cpp \
     ../../../../editors/ComponentEditor/parameters/ParameterDelegate.cpp \
     ../../../../editors/ComponentEditor/common/ParameterizableTable.cpp \
+    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../../../editors/ComponentEditor/common/ValueFormatter.cpp \
     ../../../../editors/ComponentEditor/modelParameters/modelparametermodel.cpp \
     ../../../../IPXACTmodels/validators/namevalidator.cpp \
     ./tst_ModelParameterDelegate.cpp \
-    ../../../../editors/ComponentEditor/parameters/Array/ParameterArrayModel.cpp \
-    ../../../../editors/ComponentEditor/parameters/Array/ArrayView.cpp \
-    ../../../../editors/ComponentEditor/parameters/Array/ArrayDelegate.cpp \
-    ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
-    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ../../../../editors/ComponentEditor/parameters/ChoiceCreatorDelegate.cpp
+    ../../../../editors/ComponentEditor/common/ReferencingTableModel.cpp

@@ -11,14 +11,16 @@ HEADERS += ../../../../editors/ComponentEditor/parameters/ComponentParameterColu
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../../../editors/ComponentEditor/common/ParameterFinder.h \
+    ../../../../editors/ComponentEditor/common/ParameterizableTable.h \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../../editors/ComponentEditor/common/ValueFormatter.h \
     ../../../../editors/ComponentEditor/parameters/ComponentParameterModel.h \
-    ../../../../editors/ComponentEditor/common/ParameterizableTable.h
-SOURCES += ../../../../editors/ComponentEditor/common/ParameterizableTable.cpp \
-    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ../../../../editors/ComponentEditor/common/ReferencingTableModel.h
+SOURCES += ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../../editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../../../editors/ComponentEditor/common/ParameterizableTable.cpp \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../../../editors/ComponentEditor/common/ValueFormatter.cpp \
-    ./tst_ComponentParameterModel.cpp
+    ./tst_ComponentParameterModel.cpp \
+    ../../../../editors/ComponentEditor/common/ReferencingTableModel.cpp
