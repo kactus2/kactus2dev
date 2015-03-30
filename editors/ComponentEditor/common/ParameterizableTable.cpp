@@ -21,8 +21,7 @@
 //-----------------------------------------------------------------------------
 // Function: ParameterizableTable::ParametrizableTable()
 //-----------------------------------------------------------------------------
-ParameterizableTable::ParameterizableTable(QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
-QAbstractTableModel(parent),
+ParameterizableTable::ParameterizableTable(QSharedPointer<ParameterFinder> parameterFinder):
 expressionParser_(),
 parameterFinder_(parameterFinder)
 {
@@ -130,38 +129,6 @@ bool ParameterizableTable::isValuePlainOrExpression(QString const& value) const
 QString ParameterizableTable::parseExpressionToDecimal (QString const& expression) const
 {
     return expressionParser_->parseExpression(expression);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterizableTable::removeReferencesToItemOnRow()
-//-----------------------------------------------------------------------------
-void ParameterizableTable::removeReferencesInItemOnRow(const int& row) const
-{
-    QStringList allParameterIds = parameterFinder_->getAllParameterIds();
-    foreach (QString valueID, allParameterIds)
-    {
-        int totalReferences = getAllReferencesToIdInItemOnRow(row, valueID);
-        for (int i = 0; i < totalReferences; ++i)
-        {
-            emit decreaseReferences(valueID);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterizableTable::removeReferencesFromSingleExpression()
-//-----------------------------------------------------------------------------
-void ParameterizableTable::removeReferencesFromSingleExpression(QString const& expression) const
-{
-    QStringList allParameterIds = parameterFinder_->getAllParameterIds();
-    foreach (QString valueID, allParameterIds)
-    {
-        int referencesToId = expression.count(valueID);
-        for (int i = 0; i < referencesToId; ++i)
-        {
-            emit decreaseReferences(valueID);
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------

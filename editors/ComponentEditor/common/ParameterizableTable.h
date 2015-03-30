@@ -13,26 +13,26 @@
 #define PARAMETERIZABLETABLE_H
 
 #include <IPXACTmodels/parameter.h>
-#include <IPXACTmodels/component.h>
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+//#include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <QAbstractTableModel>
 
-//class ExpressionParser;
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Base class for models editing parameters and model parameters.
 //-----------------------------------------------------------------------------
-class ParameterizableTable: public QAbstractTableModel
+class ParameterizableTable
 {
-    Q_OBJECT
 
 public:
 
-    /*!
-     *  The constructor.
-     */
-	ParameterizableTable(QSharedPointer<ParameterFinder> parameterFinder, QObject *parent);
+	/*!
+	 *  The constructor.
+	 *
+	 *      @param [in] parameterFinder     Parameter finder.
+	 */
+	ParameterizableTable(QSharedPointer<ParameterFinder> parameterFinder);
 
     /*!
      *  The destructor.
@@ -44,7 +44,7 @@ public:
      *
      *      @param [in] expressionParser    The expression parser.
      */
-    void setExpressionParser(QSharedPointer <ExpressionParser> expressionParser);
+    void setExpressionParser(QSharedPointer<ExpressionParser> expressionParser);
 
 protected:
 
@@ -127,44 +127,11 @@ protected:
     QString parseExpressionToDecimal(QString const& expression) const;
 
     /*!
-     *  Remove all the references to all parameters from the item on the selected row.
-     *
-     *      @param [in] row     The row of the selected item.
-     */
-    void removeReferencesInItemOnRow(const int& row) const;
-
-    /*!
-     *  Gets the number of all the references made to a selected id on the selected row.
-     *
-     *      @param [in] row         The row of the selected item.
-     *      @param [in] valueID     The id of the referenced parameter.
-     *
-     *      @return The amount of references made to the selected id on the selected row.
-     */
-    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const = 0;
-
-    /*!
-     *  Remove all the references from a single expression.
-     *
-     *      @param [in] expression  The expression, where to seek the references.
-     */
-    void removeReferencesFromSingleExpression(QString const& expression) const;
-
-    /*!
      *  Get the parameter finder.
      *
      *      @return The parameter finder used in the table.
      */
     QSharedPointer<ParameterFinder> getParameterFinder();
-
-signals:
-
-    /*!
-     *  Decrease the amount of references to the selected parameter.
-     *
-     *      @param [in] valueId   The id of the referenced parameter.
-     */
-    void decreaseReferences(const QString& valueId) const;
 
 private:
 

@@ -24,7 +24,8 @@ ConfigurableElementsModel::ConfigurableElementsModel(QSharedPointer<ParameterFin
     QSharedPointer<ExpressionParser> configurableElementExpressionParser,
     QSharedPointer<ExpressionParser> componentInstanceExpressionParser,
     QObject *parent):
-ParameterizableTable(parameterFinder, parent),
+QAbstractItemModel(parent),
+ParameterizableTable(parameterFinder),
 component_(0),
 currentElementValues_(),
 configurableElements_(new QList<QSharedPointer<Parameter> > ()),
@@ -33,8 +34,21 @@ configurableElementExpressionFormatter_(configurableElementExpressionFormatter),
 componentInstanceExpressionFormatter_(componentInstanceExpressionFormatter),
 componentInstanceExpressionParser_(componentInstanceExpressionParser),
 validator_(new ParameterValidator2014(configurableElementExpressionParser, parameterFinder)),
-designConfiguration_(new DesignConfiguration())
+designConfiguration_(new DesignConfiguration()),
+rootItems_()
 {
+    QString* parameters (new QString("Parameters"));
+    QString* modelParameters (new QString("Model parameters"));
+    QString* viewParameters (new QString("View parameters"));
+    QString* moduleParameters (new QString("Module parameters"));
+    QString* unknownElements (new QString("Unknown"));
+
+    rootItems_.append(parameters);
+    rootItems_.append(modelParameters);
+    rootItems_.append(viewParameters);
+    rootItems_.append(moduleParameters);
+    rootItems_.append(unknownElements);
+
     listParameterFinder->setParameterList(configurableElements_);
     setExpressionParser(configurableElementExpressionParser);
 }
@@ -101,24 +115,41 @@ void ConfigurableElementsModel::clear()
 //-----------------------------------------------------------------------------
 int ConfigurableElementsModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const 
 {
-	if (parent.isValid())
+    if (!parent.isValid())
     {
+        return rootItems_.size();
+    }
+
+    else
+    {
+        foreach (QString* rootItem, rootItems_)
+        {
+            if (rootItem == parent.internalPointer())
+            {
+                QString parentItemName = *rootItem;
+                int numberOfRows = 0;
+
+                foreach (QSharedPointer<Parameter> parameter, *configurableElements_)
+                {
+                    if (parameter->getAttribute("kactus2:rootItem") == parentItemName)
+                    {
+                        ++numberOfRows;
+                    }
+                }
+
+                return numberOfRows;
+            }
+        }
         return 0;
     }
-    return configurableElements_->size();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::columnCount()
 //-----------------------------------------------------------------------------
-int ConfigurableElementsModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const 
+int ConfigurableElementsModel::columnCount( const QModelIndex& /*parent = QModelIndex()*/ ) const 
 {
-	if (parent.isValid())
-    {
-		return 0;
-    }
-
-	return ConfigurableElementsColumns::COLUMN_COUNT;
+    return ConfigurableElementsColumns::COLUMN_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -126,21 +157,29 @@ int ConfigurableElementsModel::columnCount( const QModelIndex& parent /*= QModel
 //-----------------------------------------------------------------------------
 QVariant ConfigurableElementsModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const 
 {
-    if (!index.isValid() || index.row() < 0 || index.row() >= configurableElements_->size())
+    if (!isIndexValid(index))
     {
-		return QVariant();
+        return QVariant();
     }
 
     if (role == Qt::ForegroundRole)
     {
-        if (configurableElements_->at(index.row())->getValueAttribute("spirit:defaultValue").isEmpty())
+        if (index.parent().isValid())
         {
-            return QColor(Qt::red);
+            QSharedPointer<Parameter> element = getIndexedConfigurableElement(index.parent(), index.row());
+
+            if (element->getValueAttribute("kactus2:defaultValue").isEmpty())
+            {
+                return QColor(Qt::red);
+            }
+            else if (index.column() == ConfigurableElementsColumns::VALUE && isParameterEditable(index))
+            {
+                return blackForValidOrRedForInvalidIndex(index);
+            }
         }
-        
-        else if (index.column() == ConfigurableElementsColumns::VALUE && isParameterEditable(index.row()))
+        else
         {
-            return blackForValidOrRedForInvalidIndex(index);
+            return QColor(Qt::black);
         }
     }
 
@@ -163,10 +202,14 @@ QVariant ConfigurableElementsModel::data( const QModelIndex& index, int role /*=
         return italicForEvaluatedValue(index);
     }
 
-	else 
+    else if (role == Qt::BackgroundRole)
     {
-		return QVariant();
+        if (!index.parent().isValid())
+        {
+            return QColor(230, 230, 230);
+        }
     }
+
     return QVariant();
 }
 
@@ -225,42 +268,44 @@ QVariant ConfigurableElementsModel::headerData( int section, Qt::Orientation ori
 bool ConfigurableElementsModel::setData( const QModelIndex& index, const QVariant& value, 
     int role /*= Qt::EditRole */ ) 
 {
-    if (!index.isValid() || index.row() < 0 ||index.row() >= configurableElements_->size())
+    if (!isIndexValid(index))
     {
-		return false;
+        return false;
     }
 
-	if (role == Qt::EditRole) 
+    if (index.parent().isValid())
     {
-        if (index.column() == ConfigurableElementsColumns::VALUE)
+        if (role == Qt::EditRole) 
         {
-            if (!value.isValid() || value.toString().isEmpty())
-            {
-                configurableElements_->at(index.row())->setValue(configurableElements_->at(index.row())->
-                    getValueAttribute("spirit:defaultValue"));
-                configurableElements_->at(index.row())->setAttribute("spirit:editedInConfigurableElements", "");
-            }
+            QSharedPointer<Parameter> element = getIndexedConfigurableElement(index.parent(), index.row());
 
-            else
+            if (index.column() == ConfigurableElementsColumns::VALUE)
             {
-                configurableElements_->at(index.row())->setAttribute("spirit:editedInConfigurableElements", "true");
-                configurableElements_->at(index.row())->setValue(value.toString());
+                if (!value.isValid() || value.toString().isEmpty())
+                {
+                    element->setValue(element->getValueAttribute("kactus2:defaultValue"));
+                    element->setAttribute("kactus2:editedInConfigurableElements", "");
+                }
+
+                else
+                {
+                    element->setAttribute("kactus2:editedInConfigurableElements", "true");
+                    element->setValue(value.toString());
+                }
             }
+            else if (index.column() != ConfigurableElementsColumns::NAME &&
+                index.column() != ConfigurableElementsColumns::DEFAULT_VALUE)
+            {
+                return false;
+            }
+            save();
+            emit dataChanged(index, index);
+            emit contentChanged();
+            return true;
         }
-        else if (index.column() != ConfigurableElementsColumns::NAME &&
-            index.column() != ConfigurableElementsColumns::DEFAULT_VALUE)
-        {
-            return false;
-        }
-		save();
-		emit dataChanged(index, index);
-		emit contentChanged();
-		return true;
-	}
-	else
-    {
-		return false;
     }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -273,7 +318,7 @@ Qt::ItemFlags ConfigurableElementsModel::flags( const QModelIndex& index ) const
 		return Qt::NoItemFlags;
     }
 
-    if (!isParameterEditable(index.row()))
+    if (!isParameterEditable(index))
     {
         return Qt::ItemIsSelectable;
     }
@@ -291,16 +336,24 @@ Qt::ItemFlags ConfigurableElementsModel::flags( const QModelIndex& index ) const
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::isParameterEditable()
 //-----------------------------------------------------------------------------
-bool ConfigurableElementsModel::isParameterEditable(const int& parameterIndex) const
+bool ConfigurableElementsModel::isParameterEditable(QModelIndex const& index) const
 {
-    if (configurableElements_->at(parameterIndex)->getValueResolve() == "immediate" ||
-        configurableElements_->at(parameterIndex)->getValueResolve().isEmpty())
+    if (index.parent().isValid())
     {
-        return false;
+        QSharedPointer<Parameter> element = getIndexedConfigurableElement(index.parent(), index.row());
+
+        if (element->getValueResolve() == "immediate" || element->getValueResolve().isEmpty())
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
     else
     {
-        return true;
+        return false;
     }
 }
 
@@ -333,45 +386,86 @@ bool ConfigurableElementsModel::isValidExpressionColumn(QModelIndex const& index
 //-----------------------------------------------------------------------------
 QVariant ConfigurableElementsModel::valueForIndex(QModelIndex const& index) const
 {
-    if (index.column() == ConfigurableElementsColumns::NAME)
+    if (index.parent().isValid())
     {
-        return configurableElements_->at(index.row())->getName();
+        QSharedPointer<Parameter> targetElement = getIndexedConfigurableElement(index.parent(), index.row());
+
+        if (index.column() == ConfigurableElementsColumns::NAME)
+        {
+            return targetElement->getName();
+        }
+        else if (index.column() == ConfigurableElementsColumns::VALUE)
+        {
+            return evaluateValue(index.column(), targetElement->getChoiceRef(), targetElement->getValue());
+        }
+        else if (index.column() == ConfigurableElementsColumns::DEFAULT_VALUE)
+        {
+            return evaluateValue(index.column(), targetElement->getChoiceRef(),
+                targetElement->getValueAttribute("kactus2:defaultValue"));
+        }
+        else if (index.column() == ConfigurableElementsColumns::CHOICE)
+        {
+            return targetElement->getChoiceRef();
+        }
+        else if (index.column() == ConfigurableElementsColumns::ARRAY_SIZE)
+        {
+            return targetElement->getAttribute("arraySize");
+        }
+        else if (index.column() == ConfigurableElementsColumns::TYPE)
+        {
+            return targetElement->getValueFormat();
+        }
     }
-    else if (index.column() == ConfigurableElementsColumns::VALUE)
+
+    else if (!index.parent().isValid() && index.column() == ConfigurableElementsColumns::NAME)
     {
-        return evaluateValueForIndex(index, configurableElements_->at(index.row())->getValue());
+        return QString(*rootItems_.at(index.row()));
     }
-    else if (index.column() == ConfigurableElementsColumns::DEFAULT_VALUE)
+
+    return QVariant();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsModel::getIndexedParameter()
+//-----------------------------------------------------------------------------
+QSharedPointer<Parameter> ConfigurableElementsModel::getIndexedConfigurableElement(QModelIndex const& parentIndex,
+    int row) const
+{
+    foreach (QString* rootItem, rootItems_)
     {
-        return evaluateValueForIndex(index, configurableElements_->at(index.row())->
-            getValueAttribute("spirit:defaultValue"));
+        if (rootItem == parentIndex.internalPointer())
+        {
+            int childRow = 0;
+
+            foreach (QSharedPointer<Parameter> element, *configurableElements_)
+            {
+                if (element->getAttribute("kactus2:rootItem") == *rootItem)
+                {
+                    if (childRow == row)
+                    {
+                        return element;
+                    }
+                    else
+                    {
+                        ++childRow;
+                    }
+                }
+            }
+        }
     }
-    else if (index.column() == ConfigurableElementsColumns::CHOICE)
-    {
-        return configurableElements_->at(index.row())->getChoiceRef();
-    }
-    else if (index.column() == ConfigurableElementsColumns::ARRAY_SIZE)
-    {
-        return configurableElements_->at(index.row())->getAttribute("arraySize");
-    }
-    else if (index.column() == ConfigurableElementsColumns::TYPE)
-    {
-        return configurableElements_->at(index.row())->getValueFormat();
-    }
-    else
-    {
-        return QVariant();
-    }
+
+    return QSharedPointer<Parameter> (new Parameter());
 }
 
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::evaluateValueForIndex()
 //-----------------------------------------------------------------------------
-QString ConfigurableElementsModel::evaluateValueForIndex(QModelIndex const& index, QString const& value) const
+QString ConfigurableElementsModel::evaluateValue(int column, QString const& choiceName,
+    QString const& value) const
 {
-    if (!configurableElements_->at(index.row())->getChoiceRef().isEmpty())
+    if (!choiceName.isEmpty())
     {
-        QSharedPointer<Choice> choice = findChoice(configurableElements_->at(index.row())->getChoiceRef());
+        QSharedPointer<Choice> choice = findChoice(choiceName);
 
         if (value.contains('{') && value.contains('}'))
         {
@@ -382,7 +476,7 @@ QString ConfigurableElementsModel::evaluateValueForIndex(QModelIndex const& inde
             return findDisplayValueForEnumeration(choice, value);
         }
     }
-    else if (index.column() == ConfigurableElementsColumns::VALUE)
+    else if (column == ConfigurableElementsColumns::VALUE)
     {
         return ParameterizableTable::formattedValueFor(value);
     }
@@ -475,22 +569,25 @@ QString ConfigurableElementsModel::findDisplayValueForEnumeration(QSharedPointer
 //-----------------------------------------------------------------------------
 QVariant ConfigurableElementsModel::expressionOrValueForIndex(QModelIndex const& index) const
 {
-    if (index.column() == ConfigurableElementsColumns::NAME)
+    if (index.parent().isValid())
     {
-        return configurableElements_->at(index.row())->getName();
+        QSharedPointer<Parameter> element = getIndexedConfigurableElement(index.parent(), index.row());
+
+        if (index.column() == ConfigurableElementsColumns::NAME)
+        {
+            return element->getName();
+        }
+        else if (index.column() == ConfigurableElementsColumns::VALUE)
+        {
+            return element->getValue();
+        }
+        else if (index.column() == ConfigurableElementsColumns::DEFAULT_VALUE)
+        {
+            return element->getValueAttribute("kactus2:defaultValue");
+        }
     }
-    else if (index.column() == ConfigurableElementsColumns::VALUE)
-    {
-        return configurableElements_->at(index.row())->getValue();
-    }
-    else if (index.column() == ConfigurableElementsColumns::DEFAULT_VALUE)
-    {
-        return configurableElements_->at(index.row())->getValueAttribute("spirit:defaultValue");
-    }
-    else
-    {
-        return data(index, Qt::DisplayRole);
-    }
+
+    return data(index, Qt::DisplayRole);
 }
 
 //-----------------------------------------------------------------------------
@@ -498,30 +595,33 @@ QVariant ConfigurableElementsModel::expressionOrValueForIndex(QModelIndex const&
 //-----------------------------------------------------------------------------
 QString ConfigurableElementsModel::tooltipForIndex(QModelIndex const& index) const
 {
-    QSharedPointer<Parameter> parameter = configurableElements_->at(index.row());
-
-    if (parameter->getValueAttribute("spirit:defaultValue").isEmpty())
+    if (index.parent().isValid())
     {
-        return QString("This parameter was not found in " + component_->name() + ".");
-    }
+        QSharedPointer<Parameter> element = getIndexedConfigurableElement(index.parent(), index.row());
 
-    else if (index.column() == ConfigurableElementsColumns::VALUE)
-    {
-        QString context = component_->name();
-
-        QStringList errorList = validator_->findErrorsIn(
-            parameter.data(), context, component_->componentModel()->getChoices());
-
-        if (!errorList.isEmpty())
+        if (element->getValueAttribute("kactus2:defaultValue").isEmpty())
         {
-            QString errors = errorList.join("\n");
-            return errors;
+            return QString("This parameter was not found in " + component_->name() + ".");
         }
-    }
-    else if (index.column() == ConfigurableElementsColumns::DEFAULT_VALUE)
-    {
-        return componentInstanceExpressionFormatter_->
-            formatReferringExpression(expressionOrValueForIndex(index).toString());
+
+        else if (index.column() == ConfigurableElementsColumns::VALUE)
+        {
+            QString context = component_->name();
+
+            QStringList errorList = validator_->findErrorsIn(
+                element.data(), context, component_->componentModel()->getChoices());
+
+            if (!errorList.isEmpty())
+            {
+                QString errors = errorList.join("\n");
+                return errors;
+            }
+        }
+        else if (index.column() == ConfigurableElementsColumns::DEFAULT_VALUE)
+        {
+            return componentInstanceExpressionFormatter_->
+                formatReferringExpression(expressionOrValueForIndex(index).toString());
+        }
     }
 
     return configurableElementExpressionFormatter_->
@@ -533,20 +633,21 @@ QString ConfigurableElementsModel::tooltipForIndex(QModelIndex const& index) con
 //-----------------------------------------------------------------------------
 bool ConfigurableElementsModel::validateColumnForParameter(QModelIndex const& index) const
 {
-    QSharedPointer<Parameter> parameter = configurableElements_->at(index.row());
+    if (index.parent().isValid())
+    {
+        QSharedPointer<Parameter> element = getIndexedConfigurableElement(index.parent(), index.row());
 
-    if (index.column() == ConfigurableElementsColumns::NAME)
-    {
-        return validator_->hasValidName(parameter.data());
+        if (index.column() == ConfigurableElementsColumns::NAME)
+        {
+            return validator_->hasValidName(element.data());
+        }
+        else if (index.column() == ConfigurableElementsColumns::VALUE)
+        {
+            return validator_->hasValidValue(element.data(), component_->componentModel()->getChoices());
+        }
     }
-    else if (index.column() == ConfigurableElementsColumns::VALUE)
-    {
-        return validator_->hasValidValue(parameter.data(), component_->componentModel()->getChoices());
-    }
-    else
-    {
-        return true;
-    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -557,7 +658,7 @@ void ConfigurableElementsModel::save()
 	QMap<QString, QString> newValues;
     for (int i = 0; i < configurableElements_->size(); ++i)
     {
-        if (configurableElements_->at(i)->hasAttribute("spirit:editedInConfigurableElements"))
+        if (configurableElements_->at(i)->hasAttribute("kactus2:editedInConfigurableElements"))
         {
             newValues.insert(configurableElements_->at(i)->getValueId(), configurableElements_->at(i)->getValue());
         }
@@ -592,36 +693,28 @@ void ConfigurableElementsModel::changeElements( const QMap<QString, QString>& co
 //-----------------------------------------------------------------------------
 void ConfigurableElementsModel::onRemoveItem( const QModelIndex& index ) 
 {
-    if (!index.isValid() || index.row() < 0 || index.row() >= configurableElements_->size() || 
-        !configurableElements_->at(index.row())->getValueAttribute("spirit:defaultValue").isEmpty())
+    if (!isIndexValid(index))
     {
-		return;
-	}
-
+        return;
+    }
+    if (!index.parent().isValid())
+    {
+        return;
+    }
+    
 	// remove the indexed configurable element
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 
-    removeReferencesInItemOnRow(index.row());
+    QSharedPointer<Parameter> element = getIndexedConfigurableElement(index.parent(), index.row());
+    int indexOfElement = configurableElements_->indexOf(element);
 
-    configurableElements_->removeAt(index.row());
+    configurableElements_->removeAt(indexOfElement);
 
     endRemoveRows();
 
 	save();
 
 	emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConfigurableElementsModel::getAllReferencesToIdInItemOnRow()
-//-----------------------------------------------------------------------------
-int ConfigurableElementsModel::getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const
-{
-    int valueReferences = configurableElements_->at(row)->getValue().count(valueID);
-    int defaultReferences = configurableElements_->at(row)->getValueAttribute("spirit:defaultValue").count(valueID);
-
-    int totalReferences = valueReferences + defaultReferences;
-    return totalReferences;
 }
 
 //-----------------------------------------------------------------------------
@@ -647,14 +740,20 @@ void ConfigurableElementsModel::readComponentConfigurableElements()
 {
     QSharedPointer<Component> componentModel = component_->componentModel();
 
-    foreach (QSharedPointer<Parameter> parameterPointer, *componentModel->getParameters())
+    if (!componentModel->getParameters()->isEmpty())
     {
-        addParameterToConfigurableElements(parameterPointer);
+        foreach (QSharedPointer<Parameter> parameterPointer, *componentModel->getParameters())
+        {
+            addParameterToConfigurableElements(parameterPointer, "Parameters");
+        }
     }
 
-    foreach (QSharedPointer<Parameter> parameterPointer, *componentModel->getModelParameters())
+    if (!componentModel->getModelParameters()->isEmpty())
     {
-        addParameterToConfigurableElements(parameterPointer);
+        foreach (QSharedPointer<Parameter> parameterPointer, *componentModel->getModelParameters())
+        {
+            addParameterToConfigurableElements(parameterPointer, "Model parameters");
+        }
     }
 
     if (designConfiguration_)
@@ -666,13 +765,20 @@ void ConfigurableElementsModel::readComponentConfigurableElements()
             QString activeViewName = designConfiguration_->getActiveView(componentInstanceName);
             View* activeView = component_->componentModel()->findView(activeViewName);
 
-            foreach (QSharedPointer<Parameter> parameterPointer, *activeView->getModuleParameters())
+            if (!activeView->getParameters()->isEmpty())
             {
-                addParameterToConfigurableElements(parameterPointer);
+                foreach (QSharedPointer<Parameter> parameterPointer, *activeView->getParameters())
+                {
+                    addParameterToConfigurableElements(parameterPointer, "View parameters");
+                }
             }
-            foreach (QSharedPointer<Parameter> parameterPointer, *activeView->getParameters())
+
+            if (!activeView->getModuleParameters()->isEmpty())
             {
-                addParameterToConfigurableElements(parameterPointer);
+                foreach (QSharedPointer<Parameter> parameterPointer, *activeView->getModuleParameters())
+                {
+                    addParameterToConfigurableElements(parameterPointer, "Module parameters");
+                }
             }
         }
     }
@@ -681,10 +787,13 @@ void ConfigurableElementsModel::readComponentConfigurableElements()
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::addParameterToConfigurableElements()
 //-----------------------------------------------------------------------------
-void ConfigurableElementsModel::addParameterToConfigurableElements(QSharedPointer<Parameter> parameterPointer)
+void ConfigurableElementsModel::addParameterToConfigurableElements(QSharedPointer<Parameter> parameterPointer,
+    QString const& rootItemName)
 {
     QSharedPointer<Parameter> newConfigurableElement (new Parameter(*(parameterPointer)));
-    newConfigurableElement->setValueAttribute("spirit:defaultValue", parameterPointer->getValue());
+    newConfigurableElement->setValueAttribute("kactus2:defaultValue", parameterPointer->getValue());
+
+    newConfigurableElement->setAttribute("kactus2:rootItem", rootItemName);
 
     configurableElements_->append(newConfigurableElement);
 }
@@ -702,7 +811,7 @@ void ConfigurableElementsModel::restoreStoredConfigurableElements()
 
         QSharedPointer<Parameter> storedConfigurableElement = getStoredConfigurableElement(elementID);
         storedConfigurableElement->setValue(elementValue);
-        storedConfigurableElement->setAttribute("spirit:editedInConfigurableElements", "true");
+        storedConfigurableElement->setAttribute("kactus2:editedInConfigurableElements", "true");
     }
 }
 
@@ -723,7 +832,97 @@ QSharedPointer<Parameter> ConfigurableElementsModel::getStoredConfigurableElemen
     newConfigurableElement->setName(elementID);
     newConfigurableElement->setValueId(elementID);
     newConfigurableElement->setValueResolve("user");
+    newConfigurableElement->setAttribute("kactus2:rootItem", "Unknown");
     configurableElements_->append(newConfigurableElement);
 
     return newConfigurableElement;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsModel::index()
+//-----------------------------------------------------------------------------
+QModelIndex ConfigurableElementsModel::index(int row, int column, const QModelIndex &parent /* = QModelIndex() */)
+    const
+{
+    if (!parent.isValid() && 0 <= row && row < rootItems_.size() )
+    {
+        return createIndex(row, column, rootItems_.at(row));
+    }
+
+    else 
+    {
+        QSharedPointer<Parameter> element = getIndexedConfigurableElement(parent, row);
+
+        return createIndex(row, column, element.data());
+    }
+
+    return QModelIndex();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsModel::parent()
+//-----------------------------------------------------------------------------
+QModelIndex ConfigurableElementsModel::parent(const QModelIndex & child) const
+{
+    if (!child.isValid())
+    {
+        return QModelIndex();
+    }
+
+    foreach (QString* rootItem, rootItems_)
+    {
+        if (rootItem == child.internalPointer())
+        {
+            return QModelIndex();
+        }
+    }
+
+    Parameter* childItem = static_cast<Parameter*>(child.internalPointer());
+    QString parentName = childItem->getAttribute("kactus2:rootItem");
+
+    for (int i = 0; i < rootItems_.size(); ++i)
+    {
+        if (parentName == *rootItems_.at(i))
+        {
+            return createIndex(i, 0, rootItems_.at(i));
+        }
+    }
+
+    // This should never be reached.
+    return QModelIndex();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsModel::isIndexValid()
+//-----------------------------------------------------------------------------
+bool ConfigurableElementsModel::isIndexValid(QModelIndex const& index) const
+{
+    if (!index.parent().isValid())
+    {
+        if (index.isValid() && 0 <= index.row() && index.row() < rootItems_.size())
+        {
+            return true;
+        }
+    }
+
+    else
+    {
+        QString parentName = *static_cast<QString*>(index.parent().internalPointer());
+
+        int elementsWithThisParent = 0;
+        foreach (QSharedPointer<Parameter> element, *configurableElements_)
+        {
+            if (element->getAttribute("kactus2:rootItem") == parentName)
+            {
+                ++elementsWithThisParent;
+            }
+        }
+
+        if (index.isValid() && 0 <= index.row() && index.row() < elementsWithThisParent)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }

@@ -29,7 +29,8 @@
 PortsModel::PortsModel(QSharedPointer<Model> model, QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QObject *parent):
-ParameterizableTable(parameterFinder, parent),
+ReferencingTableModel(parameterFinder, parent),
+ParameterizableTable(parameterFinder),
 model_(model),
 lockedIndexes_(),
 parameterFinder_(parameterFinder),

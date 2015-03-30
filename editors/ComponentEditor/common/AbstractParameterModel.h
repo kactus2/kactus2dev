@@ -13,6 +13,7 @@
 #define ABSTRACTPARAMETERMODEL_H
 
 #include "ParameterizableTable.h"
+#include "ReferencingTableModel.h"
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
@@ -29,7 +30,7 @@ class ParameterValidator2014;
 //-----------------------------------------------------------------------------
 //! Base class for models editing parameters and model parameters.
 //-----------------------------------------------------------------------------
-class AbstractParameterModel : public ParameterizableTable
+class AbstractParameterModel : public ReferencingTableModel, public ParameterizableTable
 {
 	Q_OBJECT
 

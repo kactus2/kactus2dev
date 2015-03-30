@@ -16,7 +16,8 @@
 // Function: ComponentParameterModel::ComponentParameterModel()
 //-----------------------------------------------------------------------------
 ComponentParameterModel::ComponentParameterModel(QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
-    ParameterizableTable(parameterFinder, parent),
+    ReferencingTableModel(parameterFinder, parent),
+    ParameterizableTable(parameterFinder),
     parameterFinder_(parameterFinder)
 {
 

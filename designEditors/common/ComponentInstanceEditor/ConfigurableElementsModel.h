@@ -31,7 +31,7 @@ class ComponentItem;
 //-----------------------------------------------------------------------------
 //! Model class to manage the configurable element values being edited.
 //-----------------------------------------------------------------------------
-class ConfigurableElementsModel : public ParameterizableTable
+class ConfigurableElementsModel : public QAbstractItemModel, public ParameterizableTable
 {
 	Q_OBJECT
 
@@ -134,6 +134,26 @@ public:
      */
     void setDesignConfigurationModel(QSharedPointer<DesignConfiguration> designConfiguration);
 
+    /*!
+     *  Get the model index of the specified object.
+     *
+     *      @param [in] row     Row number of the object.
+     *      @param [in] column  Column number of the object.
+     *      @param [in] parent  Model index of the parent of the object.
+     *
+     *      @return QModelIndex that identifies the object.
+     */
+    QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const;
+
+    /*!
+     *  Get the model index of the parent of the object.
+     *
+     *      @param [in] child   Model index that identifies the child of the object.
+     *
+     *      @return QModelindex that identifies the parent of the given object.
+     */
+    QModelIndex parent(const QModelIndex& child) const;
+
 public slots:
 
 	/*!
@@ -198,16 +218,6 @@ protected:
      */
     virtual bool validateColumnForParameter(QModelIndex const& index) const;
 
-    /*!
-     *  Get all the references to a particular id from the configurable element value on selected row.
-     *
-     *      @param [in] row         The row of the selected configurable element value.
-     *      @param [in] valueID     The id of the parameter being searched for.
-     *
-     *      @return The amount of references to the selected id.
-     */
-    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString valueID) const;
-
 private:
 	//! No copying
 	ConfigurableElementsModel(const ConfigurableElementsModel& other);
@@ -222,7 +232,7 @@ private:
      *
      *      @return True, if the element can be edited, false otherwise.
      */
-    bool isParameterEditable(const int& parameterIndex) const;
+    bool isParameterEditable(QModelIndex const& index) const;
 
     /*!
      *  Gets the value for the given index.
@@ -234,15 +244,26 @@ private:
     QVariant valueForIndex(QModelIndex const& index) const;
 
     /*!
+     *  Get the configurable element at the given index.
+     *
+     *      @param [in] parentIndex     The index of the parent of the given object.
+     *      @param [in] row             The row number of the configurable element.
+     *
+     *      @return The correct configurable element.
+     */
+    QSharedPointer<Parameter> getIndexedConfigurableElement(QModelIndex const& parentIndex, int row) const;
+
+    /*!
      *  Evaluate the value for the given index.
      *
-     *      @param [in] index   The index of the value to be given.
-     *      @param [in] value   The stored value of the index.
+     *      @param [in] column      The column of the required value.
+     *      @param [in] choiceName  The name of the choice used in the given value.
+     *      @param [in] value       The given value.
      *
      *      @return The true value for the given index, whether it is given using a choice or not.
      */
-    QString evaluateValueForIndex(QModelIndex const& index, QString const& value) const;
-    
+    QString evaluateValue(int column, QString const& choiceName, QString const& value) const;
+
     /*!
      *  Finds the currently selected choice.
      *
@@ -298,8 +319,10 @@ private:
      *  Set the parameter into the configurable elements.
      *
      *      @param [in] parameterPointer    The pointer to the parameter to be set to configurable elements.
+     *      @param [in] rootItemName        The root item of the configurable element.
      */
-    void addParameterToConfigurableElements(QSharedPointer <Parameter> parameterPointer);
+    void addParameterToConfigurableElements(QSharedPointer <Parameter> parameterPointer,
+        QString const& rootItemName);
 
     /*!
      *  Restore the previously saved configurable element values to their correct element.
@@ -312,6 +335,15 @@ private:
      *      @param [in] elementName     The id of the element to be searched for.
      */
     QSharedPointer<Parameter> getStoredConfigurableElement(QString const& elementID);
+
+    /*!
+     *  Check if the given index is valid.
+     *
+     *      @param [in] index   The index to be checked.
+     *
+     *      @return True, if the given index is valid, false otherwise.
+     */
+    bool isIndexValid(QModelIndex const& index) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -343,6 +375,9 @@ private:
 
     //! The design configuration model used to find the currently active view of the component instance.
     DesignConfiguration* designConfiguration_;
+
+    //! The list containing all the root items in the model.
+    QList<QString*> rootItems_;
 };
 
 #endif // CONFIGURABLEELEMENTSMODEL_H

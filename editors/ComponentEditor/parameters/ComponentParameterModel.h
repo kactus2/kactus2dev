@@ -16,14 +16,16 @@
 #include <QSharedPointer>
 
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
+#include <editors/ComponentEditor/common/ReferencingTableModel.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
 //-----------------------------------------------------------------------------
 //! Model for all parameter completions within a single component.
 //-----------------------------------------------------------------------------
-class ComponentParameterModel : public ParameterizableTable
+class ComponentParameterModel : public ReferencingTableModel, public ParameterizableTable
 {
     Q_OBJECT
+
 public:
 
 	/*!

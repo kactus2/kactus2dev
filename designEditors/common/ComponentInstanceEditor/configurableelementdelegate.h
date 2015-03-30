@@ -15,6 +15,7 @@
 #include <IPXACTmodels/choice.h>
 
 #include <QWidget>
+#include <QSize>
 
 //-----------------------------------------------------------------------------
 //! Delegate that provides editors to edit the configurable element values.
@@ -86,6 +87,25 @@ public:
      */
     virtual void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
         const QModelIndex &index) const;
+
+    /*!
+     *  Paint the delegate.
+     *
+     *      @param [in] painter     The painter used.
+     *      @param [in] option      The style option in use.
+     *      @param [in] index       The current index of the model.
+     */
+    virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
+    /*!
+     *  Returns the size needed by the delegate to display the item in index.
+     *
+     *      @param [in] option  The style information.
+     *      @param [in] index   The index of the item.
+     *
+     *      @return The size needed by the delegate to display the item in index.
+     */
+    virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
 protected:
 

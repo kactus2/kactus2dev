@@ -18,6 +18,9 @@
 #include <QScrollArea>
 #include <QComboBox>
 
+#include <QPen>
+#include <QPainter>
+
 //-----------------------------------------------------------------------------
 // Function: configurableelementdelegate::ConfigurableElemenetDelegate()
 //-----------------------------------------------------------------------------
@@ -194,7 +197,7 @@ void ConfigurableElementDelegate::repositionAndResizeEditor(QWidget* editor, QSt
     int arraySize = arraySizeIndex.data(Qt::DisplayRole).toInt();
     int editorMinimumSize = 24 * (arraySize + 1);
 
-    editor->setFixedWidth(200);
+    editor->setFixedWidth(150);
 
     const int PARENT_HEIGHT = editor->parentWidget()->height();
     const int AVAILABLE_HEIGHT_BELOW = PARENT_HEIGHT - option.rect.top();
@@ -258,4 +261,39 @@ void ConfigurableElementDelegate::createArrayEditor(QWidget* editor, QModelIndex
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(view->itemDelegate(), SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::paint()
+//-----------------------------------------------------------------------------
+void ConfigurableElementDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
+    const QModelIndex &index) const
+{
+    ChoiceCreatorDelegate::paint(painter, option, index);
+    
+    QPen oldPen = painter->pen();
+    QPen newPen(Qt::lightGray);
+    newPen.setWidth(1);
+    painter->setPen(newPen);
+    
+    painter->drawLine(option.rect.bottomLeft(), option.rect.bottomRight());
+
+    if (index.parent().isValid() || 
+        (!index.parent().isValid() && index.column() == ConfigurableElementsColumns::NAME))
+    {
+        painter->drawLine(option.rect.topLeft(), option.rect.bottomLeft());
+    }
+
+    painter->setPen(oldPen);
+}
+
+//-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::sizeHint()
+//-----------------------------------------------------------------------------
+QSize ConfigurableElementDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    QSize givenSize = ChoiceCreatorDelegate::sizeHint(option, index);
+
+    QSize newSize (givenSize.width(), 20);
+    return newSize;
 }

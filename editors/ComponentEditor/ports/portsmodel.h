@@ -20,16 +20,17 @@
 #include <QFile>
 
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
+#include <editors/ComponentEditor/common/ReferencingTableModel.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
 class Model;
 class Port;
 
-/*! Table model that can be used to display ports to be edited.
- *
- */
-class PortsModel : public ParameterizableTable
+//-----------------------------------------------------------------------------
+//! Table model that can be used to display ports to be edited.
+//-----------------------------------------------------------------------------
+class PortsModel : public ReferencingTableModel, public ParameterizableTable
 {
 	Q_OBJECT
 

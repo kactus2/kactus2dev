@@ -46,7 +46,8 @@ delegate_()
 
 	// set options for the view
 	view_.setSortingEnabled(true);
-	view_.setItemsDraggable(false);
+    view_.setSelectionBehavior(QAbstractItemView::SelectItems);
+    view_.setSelectionMode(QAbstractItemView::SingleSelection);
 
     delegate_ = QSharedPointer<ConfigurableElementDelegate> (new ConfigurableElementDelegate(parameterCompleter,
         parameterFinder, configurableElementFormatter, this));
@@ -83,6 +84,8 @@ void ConfigurableElementEditor::setComponent(ComponentItem* component)
 {
 	model_.setComponent(component);
     delegate_->setChoices(component->componentModel()->getChoices());
+
+    view_.expandAll();
 }
 
 //-----------------------------------------------------------------------------

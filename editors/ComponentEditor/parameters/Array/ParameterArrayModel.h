@@ -13,6 +13,7 @@
 #define PARAMETERARRAYMODEL_H
 
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
+#include <editors/ComponentEditor/common/ReferencingTableModel.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
@@ -26,7 +27,7 @@
 //-----------------------------------------------------------------------------
 // class ParameterArrayModel.
 //-----------------------------------------------------------------------------
-class ParameterArrayModel : public ParameterizableTable
+class ParameterArrayModel : public ReferencingTableModel, public ParameterizableTable
 {
 	Q_OBJECT
 

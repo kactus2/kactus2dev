@@ -8,8 +8,6 @@
 #ifndef CONFIGURABLEELEMENTEDITOR_H
 #define CONFIGURABLEELEMENTEDITOR_H
 
-#include <common/views/EditableTableView/editabletableview.h>
-
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ListParameterFinder.h>
@@ -23,6 +21,8 @@
 #include <QGroupBox>
 #include <QSortFilterProxyModel>
 #include <QPushButton>
+
+#include <QTreeView>
 
 class ComponentItem;
 class ExpressionParser;
@@ -96,7 +96,7 @@ private:
 	ConfigurableElementEditor& operator=(const ConfigurableElementEditor& other);
 
 	//! The widget to display the contents of the model.
-	EditableTableView view_;
+    QTreeView view_;
 
 	//! The filter to do the sorting of items to display.
 	QSortFilterProxyModel filter_;

@@ -22,7 +22,8 @@
 ParameterArrayModel::ParameterArrayModel(int sizeOfArray, QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<Choice> selectedChoice, QObject* parent /* = 0 */):
-ParameterizableTable(parameterFinder, parent),
+ReferencingTableModel(parameterFinder, parent),
+ParameterizableTable(parameterFinder),
 sizeOfArray_(sizeOfArray),
 expressionformatter_(expressionFormatter),
 arrayValues_(),

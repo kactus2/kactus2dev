@@ -9,6 +9,7 @@
 #define MEMORYMAPMODEL_H
 
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
+#include <editors/ComponentEditor/common/ReferencingTableModel.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
@@ -24,7 +25,7 @@ class Choice;
 /*! \brief The model to manage the details of a single memory map.
  *
  */
-class MemoryMapModel : public ParameterizableTable
+class MemoryMapModel : public ReferencingTableModel, public ParameterizableTable
 {
 	Q_OBJECT
 

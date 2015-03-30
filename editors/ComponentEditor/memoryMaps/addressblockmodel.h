@@ -12,6 +12,7 @@
 #include <IPXACTmodels/registermodel.h>
 
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
+#include <editors/ComponentEditor/common/ReferencingTableModel.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
@@ -23,7 +24,7 @@ class Choice;
 /*! \brief The model to manage the details of a single address block.
  *
  */
-class AddressBlockModel : public ParameterizableTable
+class AddressBlockModel : public ReferencingTableModel, public ParameterizableTable
 {
 	Q_OBJECT
 

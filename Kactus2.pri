@@ -308,7 +308,6 @@ HEADERS += ./version.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeItem.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeModel.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeView.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/portmapsview.h \
     ./editors/ComponentEditor/fileBuilders/filebuildersdelegate.h \
     ./editors/ComponentEditor/fileBuilders/filebuilderseditor.h \
     ./editors/ComponentEditor/fileBuilders/filebuildersmodel.h \
@@ -609,7 +608,10 @@ HEADERS += ./version.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.h
+    ./kactusGenerators/quartusGenerator/quartusgenerator.h \
+    ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h \
+    ./editors/ComponentEditor/common/ListParameterFinder.h \
+    ./editors/ComponentEditor/common/ReferencingTableModel.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -845,7 +847,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeItem.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeModel.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeView.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/portmapsview.cpp \
     ./editors/ComponentEditor/channels/channelinterfacemanagerdelegate.cpp \
     ./editors/ComponentEditor/channels/channelsdelegate.cpp \
     ./editors/ComponentEditor/channels/channelseditor.cpp \
@@ -1158,5 +1159,8 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp
+    ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
+    ./editors/ComponentEditor/common/ReferencingTableModel.cpp \
+    ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.cpp \
+    ./editors/ComponentEditor/common/ListParameterFinder.cpp
 RESOURCES += kactus.qrc

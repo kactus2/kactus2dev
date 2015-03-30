@@ -238,7 +238,7 @@ void ParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
 void ParameterDelegate::paint(QPainter *painter, QStyleOptionViewItem const& option, 
     QModelIndex const& index) const
 {
-    ExpressionDelegate::paint(painter, option, index);
+    ChoiceCreatorDelegate::paint(painter, option, index);
 
     if (index.column() == maximumColumn() || index.column() == valueColumn() || 
         index.column() == arrayOffsetColumn())

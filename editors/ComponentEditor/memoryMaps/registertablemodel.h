@@ -16,6 +16,7 @@
 #include <QList>
 
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
+#include <editors/ComponentEditor/common/ReferencingTableModel.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
@@ -23,7 +24,7 @@ class Choice;
 /*! \brief The model to manage the details of a single register.
  *
  */
-class RegisterTableModel : public ParameterizableTable
+class RegisterTableModel : public ReferencingTableModel, public ParameterizableTable
 {
 	Q_OBJECT
 
