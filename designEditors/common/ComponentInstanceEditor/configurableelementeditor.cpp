@@ -65,8 +65,11 @@ delegate_()
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
-		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
+        &filter_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+    
+    connect(&filter_, SIGNAL(removeItem(const QModelIndex&)),
+        &model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

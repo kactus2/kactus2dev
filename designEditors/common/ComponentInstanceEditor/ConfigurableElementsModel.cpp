@@ -176,11 +176,20 @@ QVariant ConfigurableElementsModel::data( const QModelIndex& index, int role /*=
             {
                 return blackForValidOrRedForInvalidIndex(index);
             }
+            else
+            {
+                return QColor(Qt::gray);
+            }
         }
         else
         {
             return QColor(Qt::black);
         }
+    }
+
+    else if (role == Qt::UserRole)
+    {
+        return isElementDeletable(index);
     }
 
 	else if (role == Qt::DisplayRole) 
@@ -320,7 +329,7 @@ Qt::ItemFlags ConfigurableElementsModel::flags( const QModelIndex& index ) const
 
     if (!isParameterEditable(index))
     {
-        return Qt::ItemIsSelectable;
+        return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     }
 
     if (index.column() == ConfigurableElementsColumns::VALUE)
@@ -329,7 +338,7 @@ Qt::ItemFlags ConfigurableElementsModel::flags( const QModelIndex& index ) const
     }
     else
     {
-        return Qt::ItemIsSelectable;
+        return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     }
 }
 
@@ -342,19 +351,13 @@ bool ConfigurableElementsModel::isParameterEditable(QModelIndex const& index) co
     {
         QSharedPointer<Parameter> element = getIndexedConfigurableElement(index.parent(), index.row());
 
-        if (element->getValueResolve() == "immediate" || element->getValueResolve().isEmpty())
-        {
-            return false;
-        }
-        else
+        if (element->getValueResolve() != "immediate" && !element->getValueResolve().isEmpty())
         {
             return true;
         }
     }
-    else
-    {
-        return false;
-    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -697,24 +700,22 @@ void ConfigurableElementsModel::onRemoveItem( const QModelIndex& index )
     {
         return;
     }
+
     if (!index.parent().isValid())
     {
         return;
     }
     
-	// remove the indexed configurable element
-	beginRemoveRows(QModelIndex(), index.row(), index.row());
-
     QSharedPointer<Parameter> element = getIndexedConfigurableElement(index.parent(), index.row());
-    int indexOfElement = configurableElements_->indexOf(element);
 
-    configurableElements_->removeAt(indexOfElement);
-
-    endRemoveRows();
-
-	save();
-
-	emit contentChanged();
+    if (element && element->getValueAttribute("kactus2:defaultValue").isEmpty())
+    {
+        beginRemoveRows(index.parent(), index.row(), index.row());
+        configurableElements_->removeOne(element);
+        endRemoveRows();
+        save();
+        emit contentChanged();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -908,7 +909,7 @@ bool ConfigurableElementsModel::isIndexValid(QModelIndex const& index) const
     else
     {
         QString parentName = *static_cast<QString*>(index.parent().internalPointer());
-
+        
         int elementsWithThisParent = 0;
         foreach (QSharedPointer<Parameter> element, *configurableElements_)
         {
@@ -925,4 +926,21 @@ bool ConfigurableElementsModel::isIndexValid(QModelIndex const& index) const
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsModel::isElementDeletable()
+//-----------------------------------------------------------------------------
+bool ConfigurableElementsModel::isElementDeletable(QModelIndex const& index) const
+{
+    QSharedPointer<Parameter> element = getIndexedConfigurableElement(index.parent(), index.row());
+
+    if (element->getValueAttribute("kactus2:defaultValue").isEmpty())
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

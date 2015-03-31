@@ -197,7 +197,8 @@ void ConfigurableElementDelegate::repositionAndResizeEditor(QWidget* editor, QSt
     int arraySize = arraySizeIndex.data(Qt::DisplayRole).toInt();
     int editorMinimumSize = 24 * (arraySize + 1);
 
-    editor->setFixedWidth(150);
+    QPoint nameColumnTopRight = option.rect.topLeft();
+    editor->setFixedWidth(editor->parentWidget()->width() - nameColumnTopRight.x());
 
     const int PARENT_HEIGHT = editor->parentWidget()->height();
     const int AVAILABLE_HEIGHT_BELOW = PARENT_HEIGHT - option.rect.top();
@@ -276,12 +277,9 @@ void ConfigurableElementDelegate::paint(QPainter *painter, const QStyleOptionVie
     newPen.setWidth(1);
     painter->setPen(newPen);
     
-    painter->drawLine(option.rect.bottomLeft(), option.rect.bottomRight());
-
-    if (index.parent().isValid() || 
-        (!index.parent().isValid() && index.column() == ConfigurableElementsColumns::NAME))
+    if (index.parent().isValid())
     {
-        painter->drawLine(option.rect.topLeft(), option.rect.bottomLeft());
+        painter->drawLine(option.rect.topRight(), option.rect.bottomRight());
     }
 
     painter->setPen(oldPen);

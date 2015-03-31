@@ -14,6 +14,8 @@
 
 #include "ConfigurableElementsModel.h"
 #include "configurableelementdelegate.h"
+#include "ConfigurableElementsView.h"
+#include "ConfigurableElementsFilter.h"
 
 #include <IPXACTmodels/designconfiguration.h>
 
@@ -96,10 +98,10 @@ private:
 	ConfigurableElementEditor& operator=(const ConfigurableElementEditor& other);
 
 	//! The widget to display the contents of the model.
-    QTreeView view_;
+    ConfigurableElementsView view_;
 
 	//! The filter to do the sorting of items to display.
-	QSortFilterProxyModel filter_;
+    ConfigurableElementsFilter filter_;
 
 	//! The model to edit the configurable elements of a component instance.
 	ConfigurableElementsModel model_;

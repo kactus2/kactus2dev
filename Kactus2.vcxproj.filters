@@ -3970,6 +3970,18 @@
     <ClCompile Include="GeneratedFiles\moc_AbstractParameterModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ConfigurableElementsView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\ComponentInstanceEditor\ConfigurableElementsView.cpp">
+      <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ConfigurableElementsFilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\ComponentInstanceEditor\ConfigurableElementsFilter.cpp">
+      <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5471,6 +5483,12 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\common\ReferencingTableModel.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ComponentInstanceEditor\ConfigurableElementsView.h">
+      <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ComponentInstanceEditor\ConfigurableElementsFilter.h">
+      <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

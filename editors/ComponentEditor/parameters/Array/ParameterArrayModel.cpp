@@ -115,6 +115,18 @@ QVariant ParameterArrayModel::data(const QModelIndex &index, int role) const
         }
     }
 
+    else if (role == Qt::UserRole)
+    {
+        if (index.row() == sizeOfArray_ - 1)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     else if (role == Qt::EditRole)
     {
         return expressionOrValueForIndex(index);

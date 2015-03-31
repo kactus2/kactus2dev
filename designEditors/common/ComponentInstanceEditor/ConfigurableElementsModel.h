@@ -345,6 +345,15 @@ private:
      */
     bool isIndexValid(QModelIndex const& index) const;
 
+    /*!
+     *  Checks if it is possible to delete the element in the given index.
+     *
+     *      @param [in] index   The given index of the element.
+     *
+     *      @return True, if the element can be deleted, false otherwise.
+     */
+    bool isElementDeletable(QModelIndex const& index) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

@@ -7,8 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./version.h \
-    ./common/Global.h \
+HEADERS += ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
@@ -46,7 +45,6 @@ HEADERS += ./version.h \
     ./common/widgets/nameGroupEditor/namegroupeditor.h \
     ./common/widgets/summaryLabel/summarylabel.h \
     ./common/widgets/interfaceModeSelector/interfacemodeselector.h \
-    ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h \
     ./common/widgets/interfaceSelector/interfaceselector.h \
     ./common/widgets/LineEditEx/LineEditEx.h \
     ./common/widgets/SnippetTextEdit/SnippetHighlighter.h \
@@ -492,6 +490,8 @@ HEADERS += ./version.h \
     ./editors/ComponentEditor/common/ExpressionEditor.h \
     ./editors/ComponentEditor/common/ParameterCompleter.h \
     ./editors/ComponentEditor/common/ParameterizableTable.h \
+    ./editors/ComponentEditor/common/ReferencingTableModel.h \
+    ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
     ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
     ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.h \
@@ -609,9 +609,8 @@ HEADERS += ./version.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h \
-    ./editors/ComponentEditor/common/ListParameterFinder.h \
-    ./editors/ComponentEditor/common/ReferencingTableModel.h
+    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsView.h \
+    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsFilter.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -658,7 +657,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/nameGroupEditor/namegroupeditor.cpp \
     ./common/widgets/summaryLabel/summarylabel.cpp \
     ./common/widgets/interfaceModeSelector/interfacemodeselector.cpp \
-    ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.cpp \
     ./common/widgets/interfaceSelector/interfaceselector.cpp \
     ./common/widgets/LineEditEx/LineEditEx.cpp \
     ./common/widgets/SnippetTextEdit/SnippetHighlighter.cpp \
@@ -1049,8 +1047,10 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/common/NullParser.cpp \
     ./editors/ComponentEditor/common/ParameterCompleter.cpp \
     ./editors/ComponentEditor/common/ParameterizableTable.cpp \
+    ./editors/ComponentEditor/common/ReferencingTableModel.cpp \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./editors/ComponentEditor/common/ValueFormatter.cpp \
+    ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.cpp \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.cpp \
     ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.cpp \
     ./editors/CSourceEditor/CSourceContentMatcher.cpp \
@@ -1160,7 +1160,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./editors/ComponentEditor/common/ReferencingTableModel.cpp \
-    ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.cpp \
-    ./editors/ComponentEditor/common/ListParameterFinder.cpp
+    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsView.cpp \
+    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsFilter.cpp
 RESOURCES += kactus.qrc
