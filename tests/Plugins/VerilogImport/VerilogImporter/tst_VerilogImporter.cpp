@@ -148,11 +148,10 @@ void tst_VerilogImporter::testNothingIsParsedFromMalformedInput_data()
 
     QTest::newRow("no module ending") <<
         "module broken(input clk);\n";
-
-    /*
+    
     QTest::newRow("Commented out module") <<
         "//module test(input clk);\n"
-        "//endmodule\n";*/
+        "//endmodule\n";
 
     QTest::newRow("No semicolon after ports") <<
         "module test (\n"
@@ -160,7 +159,6 @@ void tst_VerilogImporter::testNothingIsParsedFromMalformedInput_data()
         "    input rst\n"
         ") // Missing semicolon.\n"
         "endmodule";
-
 }
 
 //-----------------------------------------------------------------------------

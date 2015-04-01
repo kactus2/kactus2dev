@@ -16,4 +16,5 @@ CONFIG += testcase
 SUBDIRS += VerilogGenerator/VerilogGenerator.pro \
 			MakefileGenerator/tst_MakefileGenerator.pro \
 			VHDLimport/VHDLimport.pro \
-			VerilogImport/VerilogImport.pro
+			VerilogImport/VerilogImport.pro \
+		    VerilogIncludeImport/tst_VerilogIncludeImport.pro

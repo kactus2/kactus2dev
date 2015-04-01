@@ -21,6 +21,8 @@ namespace ImportColors
 
     QColor const MODELPARAMETER = KactusColors::HW_BUS_COMPONENT;
 
+    QColor const PARAMETER = KactusColors::MEMORY_BLOCK;
+
     QColor const VIEWNAME = QColor("Moccasin");
 }
 
