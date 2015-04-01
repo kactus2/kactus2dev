@@ -40,7 +40,7 @@ void ParameterEditorHeaderView::paintSection(QPainter *painter, const QRect &rec
     QHeaderView::paintSection(painter, rect, logicalIndex);
     painter->restore();
 
-    if ( logicalIndex == maximumColumn() || logicalIndex == valueColumn() || logicalIndex == arrayOffsetColumn())
+    if ( logicalIndex == maximumColumn() || logicalIndex == valueColumn() || logicalIndex == arrayRightColumn() )
     {
         QPen oldPen = painter->pen();
         QPen newPen(Qt::lightGray);
@@ -77,9 +77,9 @@ int ParameterEditorHeaderView::maximumColumn() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterEditorHeaderView::arrayOffsetColumn()
+// Function: ParameterEditorHeaderView::arrayRightColumn()
 //-----------------------------------------------------------------------------
-int ParameterEditorHeaderView::arrayOffsetColumn() const
+int ParameterEditorHeaderView::arrayRightColumn() const
 {
-    return ParameterColumns::ARRAY_OFFSET;
+    return ParameterColumns::ARRAY_RIGHT;
 }

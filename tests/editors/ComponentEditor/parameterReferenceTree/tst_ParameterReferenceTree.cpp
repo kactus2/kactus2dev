@@ -77,10 +77,10 @@ private slots:
 
 private:
     QSharedPointer<Parameter> createTestParameter(QString const& name, QString const& value, 
-        QString const& bitWidth, QString const& arraySize, QString const& arrayOffset);
+        QString const& bitWidth, QString const& arrayLeft, QString const& arrayRight);
 
     QSharedPointer<ModelParameter> createTestModelParameter(QString const& name, QString const& value,
-        QString const& bitWidth, QString const& arraySize, QString const& arrayOffset);
+        QString const& bitWidth, QString const& arrayLeft, QString const& arrayRight);
 
     QSharedPointer<Port> createTestPort(QString const& name, QString const& leftExpression,
         QString const& rightExpression, QString const& defaultValue);
@@ -284,12 +284,12 @@ void tst_ParameterReferenceTree::testMultipleReferencesInOneParameter()
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(1)->text(ParameterReferenceTree::ITEM_NAME), QString("Bit Width"));
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(1)->text(ParameterReferenceTree::ITEM_EXPRESSION),
         expressionFormatter->formatReferringExpression(referencer->getBitWidth()));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(2)->text(ParameterReferenceTree::ITEM_NAME), QString("Array Size"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(2)->text(ParameterReferenceTree::ITEM_NAME), QString("Array Left"));
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(2)->text(ParameterReferenceTree::ITEM_EXPRESSION),
-        expressionFormatter->formatReferringExpression(referencer->getAttribute("arraySize")));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(3)->text(ParameterReferenceTree::ITEM_NAME), QString("Array Offset"));
+        expressionFormatter->formatReferringExpression(referencer->getAttribute("kactus2:arrayLeft")));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(3)->text(ParameterReferenceTree::ITEM_NAME), QString("Array Right"));
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(3)->text(ParameterReferenceTree::ITEM_EXPRESSION),
-        expressionFormatter->formatReferringExpression(referencer->getAttribute("arrayOffset")));
+        expressionFormatter->formatReferringExpression(referencer->getAttribute("kactus2:arrayRight")));
 
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->childCount(), 0);
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(1)->childCount(), 0);
@@ -335,13 +335,13 @@ void tst_ParameterReferenceTree::testMultipleReferencesInMultipleParameters()
 
     QCOMPARE(tree.topLevelItem(0)->child(0)->childCount(), 2);
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
-        QString("Array Size"));
+        QString("Array Left"));
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
-        expressionFormatter->formatReferringExpression(firstRef->getAttribute("arraySize")));
+        expressionFormatter->formatReferringExpression(firstRef->getAttribute("kactus2:arrayLeft")));
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(1)->text(ParameterReferenceTree::ITEM_NAME),
-        QString("Array Offset"));
+        QString("Array Right"));
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(1)->text(ParameterReferenceTree::ITEM_EXPRESSION),
-        expressionFormatter->formatReferringExpression(firstRef->getAttribute("arrayOffset")));
+        expressionFormatter->formatReferringExpression(firstRef->getAttribute("kactus2:arrayRight")));
 
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->childCount(), 0);
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(1)->childCount(), 0);
@@ -352,13 +352,13 @@ void tst_ParameterReferenceTree::testMultipleReferencesInMultipleParameters()
     QCOMPARE(tree.topLevelItem(0)->child(1)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
         expressionFormatter->formatReferringExpression(secondRef->getBitWidth()));
     QCOMPARE(tree.topLevelItem(0)->child(1)->child(1)->text(ParameterReferenceTree::ITEM_NAME),
-        QString("Array Size"));
+        QString("Array Left"));
     QCOMPARE(tree.topLevelItem(0)->child(1)->child(1)->text(ParameterReferenceTree::ITEM_EXPRESSION),
-        expressionFormatter->formatReferringExpression(secondRef->getAttribute("arraySize")));
+        expressionFormatter->formatReferringExpression(secondRef->getAttribute("kactus2:arrayLeft")));
     QCOMPARE(tree.topLevelItem(0)->child(1)->child(2)->text(ParameterReferenceTree::ITEM_NAME),
-        QString("Array Offset"));
+        QString("Array Right"));
     QCOMPARE(tree.topLevelItem(0)->child(1)->child(2)->text(ParameterReferenceTree::ITEM_EXPRESSION),
-        expressionFormatter->formatReferringExpression(secondRef->getAttribute("arrayOffset")));
+        expressionFormatter->formatReferringExpression(secondRef->getAttribute("kactus2:arrayRight")));
 
     QCOMPARE(tree.topLevelItem(0)->child(1)->child(0)->childCount(), 0);
     QCOMPARE(tree.topLevelItem(0)->child(1)->child(1)->childCount(), 0);
@@ -529,9 +529,9 @@ void tst_ParameterReferenceTree::testReferencesInParametersAndModelParameters()
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
         expressionFormatter->formatReferringExpression(modelRef->getBitWidth()));
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(1)->text(ParameterReferenceTree::ITEM_NAME),
-        QString("Array Size"));
+        QString("Array Left"));
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(1)->text(ParameterReferenceTree::ITEM_EXPRESSION),
-        expressionFormatter->formatReferringExpression(modelRef->getAttribute("arraySize")));
+        expressionFormatter->formatReferringExpression(modelRef->getAttribute("kactus2:arrayLeft")));
 
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->childCount(), 0);
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(1)->childCount(), 0);
@@ -545,9 +545,9 @@ void tst_ParameterReferenceTree::testReferencesInParametersAndModelParameters()
 
     QCOMPARE(tree.topLevelItem(1)->child(0)->childCount(), 1);
     QCOMPARE(tree.topLevelItem(1)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
-        QString("Array Offset"));
+        QString("Array Right"));
     QCOMPARE(tree.topLevelItem(1)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
-        expressionFormatter->formatReferringExpression(paramRef->getAttribute("arrayOffset")));
+        expressionFormatter->formatReferringExpression(paramRef->getAttribute("kactus2:arrayRight")));
 
     QCOMPARE(tree.topLevelItem(1)->child(0)->child(0)->childCount(), 0);
 }
@@ -1281,9 +1281,9 @@ void tst_ParameterReferenceTree::testReferenceInBusInterfaceParameterAddsFourRow
 
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->childCount(), 1);
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
-        QString("Array Size"));
+        QString("Array Left"));
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
-        expressionFormatter->formatReferringExpression(busIFParameter->getAttribute("arraySize")));
+        expressionFormatter->formatReferringExpression(busIFParameter->getAttribute("kactus2:arrayLeft")));
 
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->childCount(), 0);
 }
@@ -1457,15 +1457,15 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
 
     QCOMPARE(tree.topLevelItem(1)->child(0)->childCount(), 2);
     QCOMPARE(tree.topLevelItem(1)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
-        QString("Array Size"));
+        QString("Array Left"));
     QCOMPARE(tree.topLevelItem(1)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
-        expressionFormatter->formatReferringExpression(paramRef->getAttribute("arraySize")));
+        expressionFormatter->formatReferringExpression(paramRef->getAttribute("kactus2:arrayLeft")));
     QCOMPARE(tree.topLevelItem(1)->child(0)->child(0)->childCount(), 0);
 
     QCOMPARE(tree.topLevelItem(1)->child(0)->child(1)->text(ParameterReferenceTree::ITEM_NAME),
-        QString("Array Offset"));
+        QString("Array Right"));
     QCOMPARE(tree.topLevelItem(1)->child(0)->child(1)->text(ParameterReferenceTree::ITEM_EXPRESSION),
-        expressionFormatter->formatReferringExpression(paramRef->getAttribute("arrayOffset")));
+        expressionFormatter->formatReferringExpression(paramRef->getAttribute("kactus2:arrayRight")));
     QCOMPARE(tree.topLevelItem(1)->child(0)->child(1)->childCount(), 0);
 
     //! Test memory maps.
@@ -1644,14 +1644,14 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
 // Function: tst_ParameterReferenceTree::createTestParameter()
 //-----------------------------------------------------------------------------
 QSharedPointer<Parameter> tst_ParameterReferenceTree::createTestParameter (QString const& name, 
-    QString const& value, QString const& bitWidth, QString const& arraySize, QString const& arrayOffset)
+    QString const& value, QString const& bitWidth, QString const& arrayLeft, QString const& arrayRight)
 {
     QSharedPointer<Parameter> referencingParameter(new Parameter);
     referencingParameter->setName(name);
     referencingParameter->setValue(value);
     referencingParameter->setBitWidth(bitWidth);
-    referencingParameter->setAttribute("arraySize", arraySize);
-    referencingParameter->setAttribute("arrayOffset", arrayOffset);
+    referencingParameter->setAttribute("kactus2:arrayLeft", arrayLeft);
+    referencingParameter->setAttribute("kactus2:arrayRight", arrayRight);
 
     return referencingParameter;
 }
@@ -1660,14 +1660,14 @@ QSharedPointer<Parameter> tst_ParameterReferenceTree::createTestParameter (QStri
 // Function: tst_ParameterReferenceTree::createTestModelParameter()
 //-----------------------------------------------------------------------------
 QSharedPointer<ModelParameter> tst_ParameterReferenceTree::createTestModelParameter(QString const& name,
-    QString const& value, QString const& bitWidth, QString const& arraySize, QString const& arrayOffset)
+    QString const& value, QString const& bitWidth, QString const& arrayLeft, QString const& arrayRight)
 {
     QSharedPointer<ModelParameter> referencingModelParameter(new ModelParameter);
     referencingModelParameter->setName(name);
     referencingModelParameter->setValue(value);
     referencingModelParameter->setBitWidth(bitWidth);
-    referencingModelParameter->setAttribute("arraySize", arraySize);
-    referencingModelParameter->setAttribute("arrayOffset", arrayOffset);
+    referencingModelParameter->setAttribute("kactus2:arrayLeft", arrayLeft);
+    referencingModelParameter->setAttribute("kactus2:arrayRight", arrayRight);
 
     return referencingModelParameter;
 }

@@ -121,18 +121,18 @@ protected:
     virtual int descriptionColumn() const;
     
     /*!
-     *  Gets the column index for array size.
+     *  Gets the column index for array left.
      *
-     *      @return     The column index for array size.
+     *      @return     The column index for array left side.
      */
-    virtual int arraySizeColumn() const;
+    virtual int arrayLeftColumn() const;
 
     /*!
-     *  Gets the column index for array offset.
+     *  Gets the column index for array right.
      *
-     *      @return     The column index for array offset.
+     *      @return     The column index for array right side.
      */
-    virtual int arrayOffsetColumn() const;
+    virtual int arrayRightColumn() const;
 
     /*!
      *  Gets the column index for usage count.

@@ -207,19 +207,19 @@ protected:
     virtual int resolveColumn() const = 0;
     
     /*!
-     *  Gets the column for array size.
+     *  Gets the column for array left.
      *
-     *      @return The column for editing array size.
+     *      @return The column for editing array left side.
      */
-    virtual int arraySizeColumn() const = 0;
-        
+    virtual int arrayLeftColumn() const = 0;  
+
     /*!
-     *  Gets the column for array offset.
+     *  Gets the column for array right.
      *
-     *      @return The column for editing array offset.
+     *      @return The column for editing array right side.
      */
-    virtual int arrayOffsetColumn() const = 0;
-        
+    virtual int arrayRightColumn() const = 0;
+
     /*!
      *  Gets the column for description.
      *

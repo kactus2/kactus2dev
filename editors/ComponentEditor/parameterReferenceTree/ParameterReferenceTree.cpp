@@ -128,8 +128,8 @@ bool ParameterReferenceTree::referenceExistsInParameters(
 bool ParameterReferenceTree::parameterHasReference(QSharedPointer<Parameter> parameter)
 {
     if (parameter->getValue().contains(targetID_) || parameter->getBitWidth().contains(targetID_) ||
-        parameter->getAttribute("arraySize").contains(targetID_) ||
-        parameter->getAttribute("arrayOffset").contains(targetID_))
+        parameter->getAttribute("kactus2:arrayLeft").contains(targetID_) ||
+        parameter->getAttribute("kactus2:arrayRight").contains(targetID_))
     {
         return true;
     }
@@ -729,16 +729,16 @@ void ParameterReferenceTree::createItemsForParameter(QSharedPointer<Parameter> p
         QString expression = parameter->getBitWidth();
         createItem(itemName, expression, parent);
     }
-    if (parameter->getAttribute("arraySize").contains(targetID_))
+    if (parameter->getAttribute("kactus2:arrayLeft").contains(targetID_))
     {
-        QString itemName = "Array Size";
-        QString expression = parameter->getAttribute("arraySize");
+        QString itemName = "Array Left";
+        QString expression = parameter->getAttribute("kactus2:arrayLeft");
         createItem(itemName, expression, parent);
     }
-    if (parameter->getAttribute("arrayOffset").contains(targetID_))
+    if (parameter->getAttribute("kactus2:arrayRight").contains(targetID_))
     {
-        QString itemName = "Array Offset";
-        QString expression = parameter->getAttribute("arrayOffset");
+        QString itemName = "Array Right";
+        QString expression = parameter->getAttribute("kactus2:arrayRight");
         createItem(itemName, expression, parent);
     }
 }

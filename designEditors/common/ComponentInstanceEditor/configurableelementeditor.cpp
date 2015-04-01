@@ -8,6 +8,7 @@
 #include "configurableelementeditor.h"
 #include "configurableelementdelegate.h"
 #include "ConfigurableElementsColumns.h"
+#include "ConfigurableElementsFilter.h"
 
 #include <IPXACTmodels/component.h>
 
@@ -32,14 +33,14 @@ ConfigurableElementEditor::ConfigurableElementEditor(QSharedPointer<ListParamete
                                                   QWidget *parent):
 QGroupBox(tr("Configurable element values"), parent),
 view_(this),
-filter_(this),
 model_(parameterFinder, listFinder, configurableElementFormatter, componentInstanceFormatter, expressionParser,
        instanceParser, this),
 delegate_()
 {
-	filter_.setSourceModel(&model_);
-    filter_.setSortCaseSensitivity(Qt::CaseInsensitive);
-	view_.setModel(&filter_);
+    ConfigurableElementsFilter* filter (new ConfigurableElementsFilter(this));
+	filter->setSourceModel(&model_);
+    filter->setSortCaseSensitivity(Qt::CaseInsensitive);
+	view_.setModel(filter);
 
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(completionModel);
@@ -56,7 +57,7 @@ delegate_()
 
     view_.setAlternatingRowColors(false);
     view_.setColumnHidden(ConfigurableElementsColumns::CHOICE, true);
-    view_.setColumnHidden(ConfigurableElementsColumns::ARRAY_SIZE, true);
+    view_.setColumnHidden(ConfigurableElementsColumns::ARRAY_LEFT, true);
     view_.setColumnHidden(ConfigurableElementsColumns::TYPE, true);
 
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
@@ -66,9 +67,9 @@ delegate_()
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
-        &filter_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+        filter, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
     
-    connect(&filter_, SIGNAL(removeItem(const QModelIndex&)),
+    connect(filter, SIGNAL(removeItem(const QModelIndex&)),
         &model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
 
@@ -106,17 +107,4 @@ void ConfigurableElementEditor::setDesignConfigurationToModel(
     QSharedPointer<DesignConfiguration> designConfiguration)
 {
     model_.setDesignConfigurationModel(designConfiguration);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConfigurableElementEditor::onRemoveClick()
-//-----------------------------------------------------------------------------
-void ConfigurableElementEditor::onRemoveClick() 
-{
-	QModelIndex index = view_.currentIndex();
-	QModelIndex sourceIndex = filter_.mapToSource(index);
-	if (sourceIndex.isValid())
-    {
-        model_.onRemoveItem(sourceIndex);
-    }
 }

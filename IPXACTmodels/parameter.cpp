@@ -34,6 +34,8 @@ value_(), valueAttributes_()
 {
     attributes_ = XmlUtils::parseAttributes(parameterNode);
 
+    changeOldArrayValuesToNewArrayValues();
+
 	for (int i = 0; i < parameterNode.childNodes().count(); ++i)
     {
 		QDomNode tempNode = parameterNode.childNodes().at(i);
@@ -445,4 +447,22 @@ void Parameter::createUuid()
 {
     QString formattedUuid = "uuid_" + QUuid::createUuid().toString().remove('{').remove('}').replace('-', '_');
     setValueId(formattedUuid);
+}
+
+//-----------------------------------------------------------------------------
+// Function: parameter::changeOldArrayValuesToNewArrayValues()
+//-----------------------------------------------------------------------------
+void Parameter::changeOldArrayValuesToNewArrayValues()
+{
+    if (attributes_.contains("arraySize"))
+    {
+        QString arraySize = attributes_.take("arraySize");
+        setAttribute("kactus2:arrayLeft", arraySize);
+    }
+
+    if (attributes_.contains("arrayOffset"))
+    {
+        QString arrayOffset = attributes_.take("arrayOffset");
+        setAttribute("kactus2:arrayRight", arrayOffset);
+    }
 }

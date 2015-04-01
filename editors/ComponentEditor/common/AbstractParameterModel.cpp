@@ -60,7 +60,7 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
     if (role == Qt::DisplayRole)
     {
         if (index.column() == valueColumn() ||index.column() == bitWidthColumn() ||
-            index.column() == arraySizeColumn() || index.column() == arrayOffsetColumn())
+            index.column() == arrayLeftColumn() || index.column() == arrayRightColumn())
         {
             return expressionFormatter_->formatReferringExpression(valueForIndex(index).toString());
         }
@@ -85,7 +85,7 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
         }
 
         if (index.column() == valueColumn() ||index.column() == bitWidthColumn() ||
-            index.column() == arraySizeColumn() || index.column() == arrayOffsetColumn())
+            index.column() == arrayLeftColumn() || index.column() == arrayRightColumn())
         {
             return formattedValueFor(valueForIndex(index).toString());
         }
@@ -154,15 +154,15 @@ QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orienta
         {     
             return tr("Resolve");
         }  
-        else if (section == arraySizeColumn())
+        else if (section == arrayLeftColumn())
         {
-            QString arraySizeHeader = tr("Array\nsize") + getExpressionSymbol();
-            return arraySizeHeader;
+            QString arrayLeftHeader = tr("Array\nleft") + getExpressionSymbol();
+            return arrayLeftHeader;
         }  
-        else if (section == arrayOffsetColumn())
+        else if (section == arrayRightColumn())
         {
-            QString arrayOffsetHeader = tr("Array\noffset") + getExpressionSymbol();
-            return arrayOffsetHeader;
+            QString arrayRightHeader = tr("Array\nright") + getExpressionSymbol();
+            return arrayRightHeader;
         } 
         else if (section == descriptionColumn())
         { 
@@ -259,29 +259,29 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
         {
             parameter->setValueResolve(value.toString());
         }
-        else if (index.column() == arraySizeColumn())
+        else if (index.column() == arrayLeftColumn())
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(parameter->getAttribute("arraySize"));
+                removeReferencesFromSingleExpression(parameter->getAttribute("kactus2:arrayLeft"));
 
                 emit dataChanged(QAbstractTableModel::index(0, usageCountColumn()),
                     QAbstractTableModel::index(rowCount() - 1, usageCountColumn()));
             }
 
-            parameter->setAttribute("arraySize", value.toString());
+            parameter->setAttribute("kactus2:arrayLeft", value.toString());
         }
-        else if (index.column() == arrayOffsetColumn())
+        else if (index.column() == arrayRightColumn())
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(parameter->getAttribute("arrayOffset"));
+                removeReferencesFromSingleExpression(parameter->getAttribute("kactus2:arrayRight"));
 
                 emit dataChanged(QAbstractTableModel::index(0, usageCountColumn()),
                     QAbstractTableModel::index(rowCount() - 1, usageCountColumn()));
             }
 
-            parameter->setAttribute("arrayOffset", value.toString());
+            parameter->setAttribute("kactus2:arrayRight", value.toString());
         }
         else if (index.column() == descriptionColumn())
         {
@@ -503,9 +503,9 @@ bool AbstractParameterModel::isValidExpressionColumn(QModelIndex const& index) c
 {
      QSharedPointer<Parameter> parameter = getParameterOnRow(index.row());
 
-    if ((index.column() == valueColumn() && parameter->getType() != "string") || 
-        index.column() == bitWidthColumn()|| index.column() == arraySizeColumn() ||
-        index.column() == arrayOffsetColumn())
+    if ((index.column() == valueColumn() && parameter->getType() != "string") ||
+        index.column() == arrayLeftColumn() || index.column() == arrayRightColumn() ||
+        index.column() == bitWidthColumn())
     {
         return true;
     }
@@ -558,13 +558,13 @@ QVariant AbstractParameterModel::valueForIndex(QModelIndex const& index) const
     {
         return parameter->getValueResolve();
     }
-    else if (index.column() == arraySizeColumn())
+    else if (index.column() == arrayLeftColumn())
     {
-        return parameter->getAttribute("arraySize");
+        return parameter->getAttribute("kactus2:arrayLeft");
     }
-    else if (index.column() == arrayOffsetColumn())
+    else if (index.column() == arrayRightColumn())
     {
-        return parameter->getAttribute("arrayOffset");
+        return parameter->getAttribute("kactus2:arrayRight");
     }
     else if (index.column() == descriptionColumn())
     {
@@ -603,13 +603,13 @@ QVariant AbstractParameterModel::expressionOrValueForIndex(QModelIndex const& in
     {
         return parameter->getMaximumValue();
     }
-    else if (index.column() == arraySizeColumn())
+    else if (index.column() == arrayLeftColumn())
     {
-        return parameter->getAttribute("arraySize");
+        return parameter->getAttribute("kactus2:arrayLeft");
     }
-    else if (index.column() == arrayOffsetColumn())
+    else if (index.column() == arrayRightColumn())
     {
-        return parameter->getAttribute("arrayOffset");
+        return parameter->getAttribute("kactus2:arrayRight");
     }
     else if (index.column() == bitWidthColumn())
     {
@@ -686,11 +686,11 @@ int AbstractParameterModel::getAllReferencesToIdInItemOnRow(const int& row, QStr
 
     int referencesInValue = parameter->getValue().count(valueID);
     int referencesInBitWidth = parameter->getBitWidth().count(valueID);
-    int referencesInArraySize = parameter->getAttribute("arraySize").count(valueID);
-    int referencesInArrayOffset = parameter->getAttribute("arrayOffset").count(valueID);
+    int referencesInArrayLeft = parameter->getAttribute("kactus2:arrayLeft").count(valueID);
+    int referencesinArrayRight = parameter->getAttribute("kactus2:arrayRight").count(valueID);
 
-    int totalReferencesToParameter = referencesInValue + referencesInBitWidth + referencesInArraySize +
-        referencesInArrayOffset;
+    int totalReferencesToParameter = referencesInValue + referencesInBitWidth + referencesInArrayLeft +
+        referencesinArrayRight;
 
     return totalReferencesToParameter;
 }

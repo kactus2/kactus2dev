@@ -15,7 +15,6 @@
 #include "ConfigurableElementsModel.h"
 #include "configurableelementdelegate.h"
 #include "ConfigurableElementsView.h"
-#include "ConfigurableElementsFilter.h"
 
 #include <IPXACTmodels/designconfiguration.h>
 
@@ -85,11 +84,6 @@ signals:
 	//! Emitted when contents of the editor changes.
 	void contentChanged();
 
-private slots:
-
-	//! Handler for remove button clicks.
-	void onRemoveClick();
-
 private:
 	//! No copying
 	ConfigurableElementEditor(const ConfigurableElementEditor& other);
@@ -99,9 +93,6 @@ private:
 
 	//! The widget to display the contents of the model.
     ConfigurableElementsView view_;
-
-	//! The filter to do the sorting of items to display.
-    ConfigurableElementsFilter filter_;
 
 	//! The model to edit the configurable elements of a component instance.
 	ConfigurableElementsModel model_;

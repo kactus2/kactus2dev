@@ -191,19 +191,19 @@ int ParametersModel::resolveColumn() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParametersModel::arraySizeColumn()
+// Function: parametersmodel::arrayLeftColumn()
 //-----------------------------------------------------------------------------
-int ParametersModel::arraySizeColumn() const
+int ParametersModel::arrayLeftColumn() const
 {
-    return ParameterColumns::ARRAY_SIZE;
+    return ParameterColumns::ARRAY_LEFT;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParametersModel::arrayOffsetColumn()
+// Function: parametersmodel::arrayRightColumn()
 //-----------------------------------------------------------------------------
-int ParametersModel::arrayOffsetColumn() const
+int ParametersModel::arrayRightColumn() const
 {
-    return ParameterColumns::ARRAY_OFFSET;
+    return ParameterColumns::ARRAY_RIGHT;
 }
 
 //-----------------------------------------------------------------------------

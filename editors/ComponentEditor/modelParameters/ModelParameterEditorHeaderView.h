@@ -55,11 +55,11 @@ protected:
     virtual int maximumColumn() const;
 
     /*!
-     *  Gets the index of array offset column.
+     *  Gets the index of array right column.
      *
-     *      @return     The array offset column index.
+     *      @return     The array right column index.
      */
-    virtual int arrayOffsetColumn() const;
+    virtual int arrayRightColumn() const;
 
 private:
 

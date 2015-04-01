@@ -252,9 +252,9 @@ QVariant ConfigurableElementsModel::headerData( int section, Qt::Orientation ori
         {
             return tr("Choice");
         }
-        else if (section == ConfigurableElementsColumns::ARRAY_SIZE)
+        else if (section == ConfigurableElementsColumns::ARRAY_LEFT)
         {
-            return tr("Array size");
+            return tr("Array left");
         }
         else if (section == ConfigurableElementsColumns::TYPE)
         {
@@ -410,9 +410,9 @@ QVariant ConfigurableElementsModel::valueForIndex(QModelIndex const& index) cons
         {
             return targetElement->getChoiceRef();
         }
-        else if (index.column() == ConfigurableElementsColumns::ARRAY_SIZE)
+        else if (index.column() == ConfigurableElementsColumns::ARRAY_LEFT)
         {
-            return targetElement->getAttribute("arraySize");
+            return targetElement->getAttribute("kactus2:arrayLeft");
         }
         else if (index.column() == ConfigurableElementsColumns::TYPE)
         {

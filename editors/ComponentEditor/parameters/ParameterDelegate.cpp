@@ -125,7 +125,7 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
     {
         ArrayView* view = dynamic_cast<ArrayView*>(dynamic_cast<QScrollArea*>(editor)->widget());
 
-        QModelIndex arraySizeIndex = index.sibling(index.row(), arraySizeColumn());
+        QModelIndex arraySizeIndex = index.sibling(index.row(), arrayLeftColumn());
         int arraySize = arraySizeIndex.data(Qt::ToolTipRole).toInt();
 
         QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(
@@ -241,7 +241,7 @@ void ParameterDelegate::paint(QPainter *painter, QStyleOptionViewItem const& opt
     ChoiceCreatorDelegate::paint(painter, option, index);
 
     if (index.column() == maximumColumn() || index.column() == valueColumn() || 
-        index.column() == arrayOffsetColumn())
+        index.column() == arrayRightColumn())
     {
         QPen oldPen = painter->pen();
         QPen newPen(Qt::lightGray);
@@ -325,19 +325,19 @@ int ParameterDelegate::descriptionColumn() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterDelegate::arraySizeColumn()
+// Function: ParameterDelegate::arrayLeftColumn()
 //-----------------------------------------------------------------------------
-int ParameterDelegate::arraySizeColumn() const
+int ParameterDelegate::arrayLeftColumn() const
 {
-    return ParameterColumns::ARRAY_SIZE;
+    return ParameterColumns::ARRAY_LEFT;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterDelegate::arrayOffsetColumn()
+// Function: ParameterDelegate::arrayRightColumn()
 //-----------------------------------------------------------------------------
-int ParameterDelegate::arrayOffsetColumn() const
+int ParameterDelegate::arrayRightColumn() const
 {
-    return ParameterColumns::ARRAY_OFFSET;
+    return ParameterColumns::ARRAY_RIGHT;
 }
 
 //-----------------------------------------------------------------------------
@@ -362,7 +362,7 @@ int ParameterDelegate::idColumn() const
 bool ParameterDelegate::columnAcceptsExpression(int column) const
 {
     return column == valueColumn() || column == bitwidthColumn() ||
-        column == arraySizeColumn() || column == arrayOffsetColumn();
+        column == arrayLeftColumn() || column == arrayRightColumn();
 }
 
 //-----------------------------------------------------------------------------
@@ -423,7 +423,7 @@ QWidget* ParameterDelegate::createResolveSelector(QWidget* parent) const
 //-----------------------------------------------------------------------------
 bool ParameterDelegate::valueIsArray(QModelIndex const& index) const
 {
-    QModelIndex valueIdIndex = index.sibling(index.row(), arraySizeColumn());
+    QModelIndex valueIdIndex = index.sibling(index.row(), arrayLeftColumn());
     bool arraySizeIsOk = true;
     int arraySize = valueIdIndex.data(Qt::ToolTipRole).toInt(&arraySizeIsOk);
     
@@ -450,7 +450,7 @@ void ParameterDelegate::updateEditorGeometry(QWidget *editor, const QStyleOption
 void ParameterDelegate::repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option,
     QModelIndex const& index) const
 {   
-    QModelIndex valueIdIndex = index.sibling(index.row(), arraySizeColumn());
+    QModelIndex valueIdIndex = index.sibling(index.row(), arrayLeftColumn());
     int arraySize = valueIdIndex.data(Qt::ToolTipRole).toInt();
     int editorMinimumSize = 24 * (arraySize + 1);
 

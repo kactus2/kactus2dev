@@ -27,8 +27,8 @@ namespace ModelParameterColumns
         USAGE_TYPE,
         RESOLVE,
         BITWIDTH,
-        ARRAY_SIZE,
-        ARRAY_OFFSET,
+        ARRAY_LEFT,
+        ARRAY_RIGHT,
         USAGE_COUNT,
         COLUMN_COUNT,
     };

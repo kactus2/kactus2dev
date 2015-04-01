@@ -313,6 +313,16 @@ private:
      */
     void createUuid();
 
+    /*!
+     *  Change the old parameter attributes array size and array offset to new attributes array left and
+     *  array right.
+     */
+    void changeOldArrayValuesToNewArrayValues();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! Contains the name, display name and description of parameter.
     NameGroup nameGroup_;
 

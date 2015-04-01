@@ -342,19 +342,19 @@ int ModelParameterModel::resolveColumn() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterModel::arraySizeColumn()
+// Function: ModelParameterModel::arrayLeftColumn()
 //-----------------------------------------------------------------------------
-int ModelParameterModel::arraySizeColumn() const
+int ModelParameterModel::arrayLeftColumn() const
 {
-    return ModelParameterColumns::ARRAY_SIZE;
+    return ModelParameterColumns::ARRAY_LEFT;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterModel::arrayOffsetColumn()
+// Function: ModelParameterModel::arrayRightColumn()
 //-----------------------------------------------------------------------------
-int ModelParameterModel::arrayOffsetColumn() const
+int ModelParameterModel::arrayRightColumn() const
 {
-    return ModelParameterColumns::ARRAY_OFFSET;
+    return ModelParameterColumns::ARRAY_RIGHT;
 }
 
 //-----------------------------------------------------------------------------
