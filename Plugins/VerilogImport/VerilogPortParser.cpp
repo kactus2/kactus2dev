@@ -323,7 +323,7 @@ QString VerilogPortParser::parseLeftBound(QString const& portDeclaration,
 {
     QString bounds = PORT_EXP.match(portDeclaration).captured(3);
 
-    QRegularExpression boundedExp("\\[(" + HDLmath::TERM + ")\\s*[:]\\s*(" + HDLmath::TERM + ")\\]");
+    QRegularExpression boundedExp("\\[(" + VerilogSyntax::TERM + ")\\s*[:]\\s*(" + VerilogSyntax::TERM + ")\\]");
 
     QString leftBound = 0;
     if (!bounds.isEmpty())
@@ -347,7 +347,7 @@ QString VerilogPortParser::parseRightBound(QString const& portDeclaration,
 {
     QString bounds = PORT_EXP.match(portDeclaration).captured(3);
 
-    QRegularExpression boundedExp("\\[(" + HDLmath::TERM + ")\\s*[:]\\s*(" + HDLmath::TERM + ")\\]");
+    QRegularExpression boundedExp("\\[(" + VerilogSyntax::TERM + ")\\s*[:]\\s*(" + VerilogSyntax::TERM + ")\\]");
 
     QString rightBound = 0;
     if (!bounds.isEmpty())
@@ -370,6 +370,23 @@ QString VerilogPortParser::replaceModelParameterNamesWithIds(QString const& expr
     QSharedPointer<Component> targetComponent) const
 {
     QString result = expression;
+    if (expression.contains('`'))
+    {
+        foreach (QSharedPointer<Parameter> define, *targetComponent->getParameters())
+        {
+            QRegularExpression macroUsage("`" + define->getName());
+            if (macroUsage.match(result).hasMatch())
+            {
+                result.replace(macroUsage, define->getValueId());
+
+                for(int i = 0; i < expression.count(macroUsage); i++)
+                {
+                    define->increaseUsageCount();
+                }
+            }
+        }
+    }
+    
     foreach (QSharedPointer<ModelParameter> modelParameter, *targetComponent->getModelParameters())
     {
         QRegularExpression nameReference("\\b" + modelParameter->getName() + "\\b");

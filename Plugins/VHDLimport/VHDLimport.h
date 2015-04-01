@@ -175,13 +175,6 @@ private:
     bool hasValidEntity(QString const& fileContent) const;
 
     /*!
-     *  Grays the whole input.
-     *
-     *      @param [in] fileContent   The input file content to gray out.
-     */
-    void grayOutFileContent(QString const& fileContent) const;
-
-    /*!
      *  Highlights the entity section in the input.
      *
      *      @param [in] fileContent   The input file content to highlight entity in.

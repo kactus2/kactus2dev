@@ -158,8 +158,6 @@ void VHDLimport::import(QString const& input, QSharedPointer<Component> targetCo
 
     clear();
 
-    grayOutFileContent(input);
-
     if (hasValidEntity(input))
     {        
         highlightEntity(input);
@@ -269,17 +267,6 @@ bool VHDLimport::hasValidEntity(QString const& fileContent) const
     bool hasOnlyOneEntity = entityStartIndex == ENTITY_EXP.lastIndexIn(fileContent);
 
     return hasEntity && hasOnlyOneEntity;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLimport::VHDLimport::grayOutFileContent()
-//-----------------------------------------------------------------------------
-void VHDLimport::grayOutFileContent(QString const& fileContent) const
-{    
-    if (highlighter_)
-    {
-        highlighter_->applyFontColor(fileContent, QColor("gray"));
-    }    
 }
 
 //-----------------------------------------------------------------------------

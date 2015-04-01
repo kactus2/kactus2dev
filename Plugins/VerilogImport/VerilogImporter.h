@@ -139,13 +139,6 @@ private:
     bool hasModuleDeclaration(QString const& input);
 
     /*!
-     *  Grays the whole input.
-     *
-     *      @param [in] input   The input content to gray out.
-     */
-    void grayOutFileContent(QString const& input);
-
-    /*!
      *  Highlights the module section in the input.
      *
      *      @param [in] fileContent   The input file content to highlight entity in.

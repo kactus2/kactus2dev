@@ -71,7 +71,7 @@ public:
      *
      *      @param [in] pluginManager   The plugin manager owning all the plugins.
      */
-    void loadImportPlugins(PluginManager const &pluginManager);
+    void loadImportPlugins(PluginManager const& pluginManager);
 
     /*!
      *  Runs all import plugins with matching file types for a given file and component.
@@ -82,7 +82,7 @@ public:
      *
      *      @return The component with all the imported elements.     
      */
-    QSharedPointer<Component> parse(QString const& importFile, QString const& componentXmlPath, 
+    QSharedPointer<Component> import(QString const& importFile, QString const& componentXmlPath, 
         QSharedPointer<const Component> targetComponent);
 
     /*!
@@ -145,6 +145,13 @@ private:
      *      @param [in] parser   The plugin to add highlighting to.     
      */
     void addHighlightIfPossible(ImportPlugin* parser);
+       
+    /*!
+     *  Adds expression parser to a given import plugin if possible.
+     *
+     *      @param [in] parser   The plugin to add expression parser to.     
+     */
+    void addExpressionParserIfPossible(ImportPlugin* importPlugin);
 
     //-----------------------------------------------------------------------------
     // Data.

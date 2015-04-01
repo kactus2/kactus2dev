@@ -128,7 +128,6 @@ QString VerilogImporter::getCompatibilityWarnings() const
 //-----------------------------------------------------------------------------
 void VerilogImporter::import(QString const& input, QSharedPointer<Component> targetComponent)
 {   
-    grayOutFileContent(input);
     if (hasModuleDeclaration(input))
     {
         highlightModule(input);
@@ -159,17 +158,6 @@ void VerilogImporter::setHighlighter(Highlighter* highlighter)
 void VerilogImporter::setExpressionParser(QSharedPointer<ExpressionParser> parser)
 {
     portParser_.setExpressionParser(parser);
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogImporter::grayOutFileContent()
-//-----------------------------------------------------------------------------
-void VerilogImporter::grayOutFileContent(QString const& input)
-{
-    if (highlighter_)
-    {
-        highlighter_->applyFontColor(input, QColor("gray"));
-    }
 }
 
 //-----------------------------------------------------------------------------

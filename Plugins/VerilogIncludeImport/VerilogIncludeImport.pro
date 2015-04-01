@@ -6,7 +6,7 @@ TEMPLATE = lib
 TARGET = VerilogIncludeImport
 DESTDIR = ../../executable/Plugins
 QT += core xml widgets gui
-CONFIG += debug
+CONFIG += release
 DEFINES += QT_DLL QT_WIDGETS_LIB VERILOGINCLUDEIMPORT_LIB QT_XML_LIB
 INCLUDEPATH += ./../.. \
     ./GeneratedFiles \

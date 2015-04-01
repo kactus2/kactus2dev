@@ -739,9 +739,7 @@ void tst_VerilogImporter::testModuleIsHighlighted()
 
     int begin = fileContent.indexOf(module);
 
-    verifySectionFontColorIs(1, begin, QColor("gray"));
     verifySectionFontColorIs(begin, module.length(), QColor("black"));
-    verifySectionFontColorIs(begin +  module.length(), fileContent.length(), QColor("gray"));
 }
 
 //-----------------------------------------------------------------------------

@@ -53,8 +53,8 @@ private slots:
     void testGenericIsHighlighted();
     void testGenericIsHighlighted_data();
 
-    void testFontInsideEntityIsBlackAndOutsideEntityGray();
-    void testFontInsideEntityIsBlackAndOutsideEntityGray_data();
+    void testFontInsideEntityIsBlack();
+    void testFontInsideEntityIsBlack_data();
 
     void testModelParameterIsAssignedToPort();
     void testModelParameterIsAssignedToPort_data();
@@ -463,29 +463,23 @@ void tst_VHDLimport::testGenericIsHighlighted_data()
 //-----------------------------------------------------------------------------
 // Function: tst_VHDLimport::testFontInsideEntityIsBlackAndOutsideEntityGray()
 //-----------------------------------------------------------------------------
-void tst_VHDLimport::testFontInsideEntityIsBlackAndOutsideEntityGray()
+void tst_VHDLimport::testFontInsideEntityIsBlack()
 {
     QFETCH(QString, fileContent);
     QFETCH(QString, entity);
 
     runParser(fileContent);
 
-    int begin = 1;
     int entityBegin = fileContent.indexOf(entity);
     int entityEnd = fileContent.indexOf(entity) + entity.length();
-    int end = fileContent.length();
-
-    verifySectionFontColorIs(begin, entityBegin, QColor("gray"));
 
     verifySectionFontColorIs(entityBegin, entityEnd, QColor("black"));
-
-    verifySectionFontColorIs(entityEnd, end, QColor("gray"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: tst_VHDLimport::testFontInsideEntityIsBlackAndOutsideEntityGray_data()
 //-----------------------------------------------------------------------------
-void tst_VHDLimport::testFontInsideEntityIsBlackAndOutsideEntityGray_data()
+void tst_VHDLimport::testFontInsideEntityIsBlack_data()
 {
     QTest::addColumn<QString>("fileContent");
     QTest::addColumn<QString>("entity");

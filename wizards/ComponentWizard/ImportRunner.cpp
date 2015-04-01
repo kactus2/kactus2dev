@@ -29,7 +29,7 @@
 // Function: ImportRunner::ImportRunner()
 //-----------------------------------------------------------------------------
 ImportRunner::ImportRunner(QSharedPointer<ComponentParameterFinder> parameterFinder, QObject* parent)
-    : QObject(parent), ImportPlugins_(), highlighter_(0), expressionParser_(new NullParser),
+    : QObject(parent), ImportPlugins_(), highlighter_(0), expressionParser_(new NullParser()),
     modelParameterVisualizer_(0),
     parameterFinder_(parameterFinder)
 {
@@ -47,19 +47,22 @@ ImportRunner::~ImportRunner()
 //-----------------------------------------------------------------------------
 // Function: ImportRunner::parse()
 //-----------------------------------------------------------------------------
-QSharedPointer<Component> ImportRunner::parse(QString const& importFile, QString const& componentXmlPath,
+QSharedPointer<Component> ImportRunner::import(QString const& importFile, QString const& componentXmlPath,
     QSharedPointer<const Component> targetComponent)
 {
     QApplication::setOverrideCursor(Qt::WaitCursor);    
+
+    QString const& fileContent = readInputFile(importFile, componentXmlPath);
+    if (highlighter_)
+    {
+        highlighter_->applyFontColor(fileContent, Qt::gray);
+    }
 
     QSharedPointer<Component> importComponent(new Component(*targetComponent.data()));
 
     parameterFinder_->setComponent(importComponent);
 
     QStringList filetypes = filetypesOfImportFile(importFile, importComponent);
-    
-    QString const& fileContent = readInputFile(importFile, componentXmlPath);
-
     QStringList parserCompatibilityWarnings;
 
     foreach(ImportPlugin* parser, parsersForFileTypes(filetypes))
@@ -125,7 +128,7 @@ QList<ImportPlugin*> ImportRunner::parsersForFileTypes(QStringList const& filety
         {
             if (parserAcceptedFiletypes.contains(filetype) && !parsersForFiletype.contains(parser))
             {
-                parsersForFiletype.append(parser);
+                parsersForFiletype.prepend(parser);
             }
         }
     }
@@ -162,17 +165,12 @@ void ImportRunner::loadImportPlugins(PluginManager const& pluginManager)
     {
         ImportPlugin* importPlugin = dynamic_cast<ImportPlugin*>(plugin);
         if (importPlugin)
-        {
+        {            
             ImportPlugins_.append(importPlugin);
 
             addHighlightIfPossible(importPlugin);
             addModelParameterVisualizationIfPossible(importPlugin);
-
-            ExpressionSupport* pluginRequiringParser = dynamic_cast<ExpressionSupport*>(importPlugin);
-            if (pluginRequiringParser)
-            {
-                pluginRequiringParser->setExpressionParser(expressionParser_);
-            }
+            addExpressionParserIfPossible(importPlugin);
         }
     }
 }
@@ -228,5 +226,17 @@ void ImportRunner::addModelParameterVisualizationIfPossible(ImportPlugin* parser
         {
             modelParameterSource->setModelParameterVisualizer(modelParameterVisualizer_);        
         }        
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ImportRunner::addExpressionParserIfPossible()
+//-----------------------------------------------------------------------------
+void ImportRunner::addExpressionParserIfPossible(ImportPlugin* importPlugin)
+{
+    ExpressionSupport* pluginRequiringParser = dynamic_cast<ExpressionSupport*>(importPlugin);
+    if (pluginRequiringParser)
+    {
+        pluginRequiringParser->setExpressionParser(expressionParser_);
     }
 }

@@ -21,7 +21,7 @@
 
 namespace
 {
-    QRegularExpression const DEFINE("`define (\\w+) (((\\\\\\\n)|(.*?))*)\\n");
+    QRegularExpression const DEFINE("`define (\\w+(?!\\s?[(].*?[)])) (((\\\\\\\n)|(.*?))*)\\n");
 }
 
 //-----------------------------------------------------------------------------

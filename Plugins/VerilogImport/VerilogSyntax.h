@@ -18,6 +18,8 @@
 
 namespace VerilogSyntax
 {
+    const QString TERM = "(?:[`]?\\w+)(?:\\s*(?:" + HDLmath::OPERATOR + ")\\s*(?:[`]?\\w+))*";
+
     //! Module begins with module <name> #(<parameters>) (<ports>);.
     const QRegularExpression MODULE_BEGIN("module\\s+(\\w+)\\s*(#\\s*[(].*[)])?\\s*(?=([(][^)][)])?\\s*;)?",
         QRegularExpression::DotMatchesEverythingOption);
@@ -26,7 +28,7 @@ namespace VerilogSyntax
     const QRegularExpression MODULE_END("endmodule");
 
     //! Pattern for ranges for e.g. port sizes are given as [left:right].
-    const QString RANGE("\\[" + HDLmath::TERM + "\\s*[:]\\s*" + HDLmath::TERM + "\\]");
+    const QString RANGE("\\[" + TERM + "\\s*[:]\\s*" + TERM + "\\]");
 
     /*  Identifiers e.g. port names may contain characters a-z, A-Z, numbers, underscores and dollar signs.
      *  Multiple identifiers declared at once must be comma separated.

@@ -156,7 +156,7 @@ void ImportEditor::onOpenEditor()
 void ImportEditor::onRefresh() 
 {
     loadFileToDisplay();
-    importComponent_ = runner_->parse(selectedSourceFile_, componentXmlPath_, component_);
+    importComponent_ = runner_->import(selectedSourceFile_, componentXmlPath_, component_);
 
     scrollSourceDisplayToFirstHighlight();
     portEditor_->setComponent(importComponent_);
