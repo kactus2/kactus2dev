@@ -278,17 +278,26 @@ void tst_ModelParameterComparator::testDiffToSameComponentIsNoChange()
 void tst_ModelParameterComparator::testDiffModelParameters()
 {
     QList<QSharedPointer<ModelParameter> > reference;  
-    QSharedPointer<ModelParameter> referenceModelParameter(new ModelParameter());
+    QSharedPointer<ModelParameter> referenceModelParameter(new ModelParameter());    
     referenceModelParameter->setName("id");
+    referenceModelParameter->setDescription("Old description");
     referenceModelParameter->setUsageType("nontyped");
     referenceModelParameter->setValue("1");
+    referenceModelParameter->setMinimumValue("0");
+    referenceModelParameter->setMaximumValue("2");
+    referenceModelParameter->setValueResolve("immediate");
     reference.append(referenceModelParameter);
 
     QList<QSharedPointer<ModelParameter> > subject;  
     QSharedPointer<ModelParameter> subjectModelParameter(new ModelParameter());
     subjectModelParameter->setName("id");
+    subjectModelParameter->setDescription("New description");
+    subjectModelParameter->setType("int");
     subjectModelParameter->setDataType("int");
     subjectModelParameter->setValue("200");
+    subjectModelParameter->setMinimumValue("1");
+    subjectModelParameter->setMaximumValue("3");
+    subjectModelParameter->setValueResolve("user");
     subject.append(subjectModelParameter);
 
     QList<QSharedPointer<IPXactDiff> > diff = comparator_->diff(reference, subject);
@@ -297,16 +306,31 @@ void tst_ModelParameterComparator::testDiffModelParameters()
     verifyDiffElementAndType(diff.first(), "model parameter", "id", IPXactDiff::MODIFICATION);
 
     QList<IPXactDiff::Modification> modifications = diff.first()->getChangeList();
-    QCOMPARE(modifications.count(), 3);
+    QCOMPARE(modifications.count(), 8);
 
-    IPXactDiff::Modification valueTypeChange = modifications.at(0);
+    IPXactDiff::Modification descriptionChange = modifications.at(0);
+    verifyModificationIs(descriptionChange, "description", "Old description", "New description");
+
+    IPXactDiff::Modification typeChange = modifications.at(1);
+    verifyModificationIs(typeChange, "type", "", "int");
+
+    IPXactDiff::Modification valueTypeChange = modifications.at(2);
     verifyModificationIs(valueTypeChange, "value", "1", "200");
 
-    IPXactDiff::Modification dataTypeChange = modifications.at(1);
+    IPXactDiff::Modification dataTypeChange = modifications.at(3);
     verifyModificationIs(dataTypeChange, "data type", "", "int");
-   
-    IPXactDiff::Modification usageTypeChange = modifications.at(2);
+ 
+    IPXactDiff::Modification minimumChange = modifications.at(4);
+    verifyModificationIs(minimumChange, "minimum value", "0", "1");  
+
+    IPXactDiff::Modification maximumChange = modifications.at(5);
+    verifyModificationIs(maximumChange, "maximum value", "2", "3");  
+
+    IPXactDiff::Modification usageTypeChange = modifications.at(6);
     verifyModificationIs(usageTypeChange, "usage type", "nontyped", "");    
+
+    IPXactDiff::Modification resolveChange = modifications.at(7);
+    verifyModificationIs(resolveChange, "resolve", "immediate", "user");    
 }
 
 //-----------------------------------------------------------------------------

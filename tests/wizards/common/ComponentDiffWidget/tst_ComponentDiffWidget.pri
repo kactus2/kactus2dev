@@ -8,6 +8,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ../../../../wizards/common/ComponentComparator/ComponentComparator.h \
+    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../../editors/ComponentEditor/common/ExpressionFormatter.h \
     ../../../../wizards/common/IPXactDiff.h \
     ../../../../wizards/common/IPXactElementComparator.h \
@@ -18,9 +19,10 @@ HEADERS += ../../../../wizards/common/ComponentComparator/ComponentComparator.h 
     ../../../../wizards/common/VLNVComparator/VLNVComparator.h \
     ../../../../wizards/common/ViewComparator/ViewComparator.h \
     ../../../../wizards/common/ComponentDiffWidget/ComponentDiffWidget.h \
-    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h
+    ../../../../wizards/common/ParameterComparator/ParameterComparator.h
 SOURCES += ../../../../wizards/common/ComponentComparator/ComponentComparator.cpp \
     ../../../../wizards/common/ComponentDiffWidget/ComponentDiffWidget.cpp \
+    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ../../../../wizards/common/IPXactDiff.cpp \
     ../../../../wizards/common/ModelParameterComparator/ModelParameterComparator.cpp \
@@ -29,4 +31,4 @@ SOURCES += ../../../../wizards/common/ComponentComparator/ComponentComparator.cp
     ../../../../wizards/common/VLNVComparator/VLNVComparator.cpp \
     ../../../../wizards/common/ViewComparator/ViewComparator.cpp \
     ./tst_ComponentDiffWidget.cpp \
-    ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp
+    ../../../../wizards/common/ParameterComparator/ParameterComparator.cpp

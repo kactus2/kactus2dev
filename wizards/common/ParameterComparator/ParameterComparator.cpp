@@ -1,68 +1,66 @@
 //-----------------------------------------------------------------------------
-// File: ModelParameterComparator.cpp
+// File: ParameterComparator.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
-// Date: 17.10.2014
+// Date: 01.04.2015
 //
 // Description:
 // Comparator for finding differences in lists of model parameters.
 //-----------------------------------------------------------------------------
 
-#include "ModelParameterComparator.h"
+#include "ParameterComparator.h"
 
-#include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/parameter.h>
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterComparator::()
+// Function: ParameterComparator::ParameterComparator()
 //-----------------------------------------------------------------------------
-ModelParameterComparator::ModelParameterComparator()
+ParameterComparator::ParameterComparator()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterComparator::()
+// Function: ParameterComparator::ParameterComparator()
 //-----------------------------------------------------------------------------
-ModelParameterComparator::~ModelParameterComparator()
+ParameterComparator::~ParameterComparator()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterComparator::compare()
+// Function: ParameterComparator::compare()
 //-----------------------------------------------------------------------------
-bool ModelParameterComparator::compare(QSharedPointer<ModelParameter> first, 
-    QSharedPointer<ModelParameter> second) const
+bool ParameterComparator::compare(QSharedPointer<Parameter> first, 
+    QSharedPointer<Parameter> second) const
 {
     return IPXactElementComparator::compare(first, second);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterComparator::compareFields()
+// Function: ParameterComparator::compareFields()
 //-----------------------------------------------------------------------------
-bool ModelParameterComparator::compareFields(QSharedPointer<const ModelParameter> first, 
-    QSharedPointer<const ModelParameter> second) const
+bool ParameterComparator::compareFields(QSharedPointer<const Parameter> first, 
+    QSharedPointer<const Parameter> second) const
 {
-    return first->getValue() == second->getValue() &&
-        first->getDataType() == second->getDataType() &&
-        first->getUsageType() == second->getUsageType();
+    return first->getValue() == second->getValue();
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterComparator::compare()
+// Function: ParameterComparator::compare()
 //-----------------------------------------------------------------------------
-bool ModelParameterComparator::compare(QList<QSharedPointer<ModelParameter> > const references,
-    QList<QSharedPointer<ModelParameter> > const subjects)
+bool ParameterComparator::compare(QList<QSharedPointer<Parameter> > const references,
+    QList<QSharedPointer<Parameter> > const subjects)
 {
     return ListComparator::compare(references, subjects);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterComparator::diffFields()
+// Function: ParameterComparator::diffFields()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<IPXactDiff> > ModelParameterComparator::diffFields(QSharedPointer<const ModelParameter> reference, 
-    QSharedPointer<const ModelParameter> subject) const
+QList<QSharedPointer<IPXactDiff> > ParameterComparator::diffFields(QSharedPointer<const Parameter> reference, 
+    QSharedPointer<const Parameter> subject) const
 {
     QList<QSharedPointer<IPXactDiff> > diffResult;
 
@@ -72,10 +70,8 @@ QList<QSharedPointer<IPXactDiff> > ModelParameterComparator::diffFields(QSharedP
     modification->checkForChange("description", reference->getDescription(), subject->getDescription());
     modification->checkForChange("type", reference->getType(), subject->getType());
     modification->checkForChange("value", reference->getValue(), subject->getValue());
-    modification->checkForChange("data type", reference->getDataType(), subject->getDataType());
     modification->checkForChange("minimum value", reference->getMinimumValue(), subject->getMinimumValue());
     modification->checkForChange("maximum value", reference->getMaximumValue(), subject->getMaximumValue());
-    modification->checkForChange("usage type", reference->getUsageType(), subject->getUsageType());
     modification->checkForChange("resolve", reference->getValueResolve(), subject->getValueResolve());
 
     diffResult.append(modification);
@@ -83,9 +79,9 @@ QList<QSharedPointer<IPXactDiff> > ModelParameterComparator::diffFields(QSharedP
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelParameterComparator::elementType()
+// Function: ParameterComparator::elementType()
 //-----------------------------------------------------------------------------
-QString ModelParameterComparator::elementType() const
+QString ParameterComparator::elementType() const
 {
-    return "model parameter";
+    return "parameter";
 }

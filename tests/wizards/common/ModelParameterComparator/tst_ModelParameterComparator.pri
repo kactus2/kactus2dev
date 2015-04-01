@@ -7,11 +7,11 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../wizards/common/IPXactDiff.h \
+HEADERS += ../ComparatorTest.h \
+    ../../../../wizards/common/IPXactDiff.h \
     ../../../../wizards/common/IPXactElementComparator.h \
-    ../../../../wizards/common/ModelParameterComparator/ModelParameterComparator.h \
-    ../ComparatorTest.h
-SOURCES += ../../../../wizards/common/IPXactDiff.cpp \
+    ../../../../wizards/common/ModelParameterComparator/ModelParameterComparator.h
+SOURCES += ../ComparatorTest.cpp \
+    ../../../../wizards/common/IPXactDiff.cpp \
     ../../../../wizards/common/ModelParameterComparator/ModelParameterComparator.cpp \
-    ./tst_ModelParameterComparator.cpp \
-    ../ComparatorTest.cpp
+    ./tst_ModelParameterComparator.cpp

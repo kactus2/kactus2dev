@@ -572,6 +572,8 @@ HEADERS += ./common/Global.h \
     ./designEditors/common/ComponentDesignDiagram.h \
     ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsColumns.h \
     ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsModel.h \
+    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsView.h \
+    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsFilter.h \
     ./designEditors/common/ComponentInstanceEditor/componentinstanceeditor.h \
     ./designEditors/common/ComponentInstanceEditor/configurableelementdelegate.h \
     ./designEditors/common/ComponentInstanceEditor/configurableelementeditor.h \
@@ -609,8 +611,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
     ./kactusGenerators/quartusGenerator/quartusgenerator.h \
-    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsView.h \
-    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsFilter.h
+    ./wizards/common/ParameterComparator/ParameterComparator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1125,7 +1126,9 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/common/ComponentInstanceEditor/componentinstanceeditor.cpp \
     ./designEditors/common/ComponentInstanceEditor/configurableelementdelegate.cpp \
     ./designEditors/common/ComponentInstanceEditor/configurableelementeditor.cpp \
+    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsFilter.cpp \
     ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsModel.cpp \
+    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsView.cpp \
     ./designEditors/common/ConnectionEditor/AdHocBoundsDelegate.cpp \
     ./designEditors/common/ConnectionEditor/AdHocBoundsModel.cpp \
     ./designEditors/common/ConnectionEditor/connectioneditor.cpp \
@@ -1160,6 +1163,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./kactusGenerators/quartusGenerator/quartusgenerator.cpp \
-    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsView.cpp \
-    ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsFilter.cpp
+    ./wizards/common/ParameterComparator/ParameterComparator.cpp
 RESOURCES += kactus.qrc

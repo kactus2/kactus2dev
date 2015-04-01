@@ -63,21 +63,26 @@ private:
     void verifyItemColumnTexts(QTreeWidgetItem* item, QString const& name, QString const& element,
         QString const& previousValue, QString const& newValue);
    
+    void addParameter(QSharedPointer<Component> component, QString const& name, QString const& value) const;
+
     void addModelParameter(QSharedPointer<Component> component, QString const& name, QString const& value) const;
    
     void addView(QSharedPointer<Component> component, QString const& viewName);
    
-    QTreeWidgetItem * getModelParametersItem(ComponentDiffWidget const& widget);
+    void verifyParametersItem(ComponentDiffWidget const& widget);
+
+    QTreeWidgetItem* getParametersItem(ComponentDiffWidget const& widget);
 
     void verifyModelParametersItem(ComponentDiffWidget const& widget);
 
     void verifyModelParameterChangeItem(ComponentDiffWidget const& widget, int itemIndex, QString const& expectedName);
 
+    QTreeWidgetItem* getModelParametersItem(ComponentDiffWidget const& widget);
+
     QTreeWidgetItem* getViewsItem(ComponentDiffWidget const& widget) const;
     QTreeWidgetItem* getTopLevelItemByName(ComponentDiffWidget const& widget, QString const& name) const;
 
     QTreeWidgetItem* getChildItemByName(QString const& name, QTreeWidgetItem* parentItem) const;
-
 
     void verifyViewsItem(ComponentDiffWidget const& widget);
    
@@ -91,6 +96,8 @@ private:
     void verifyPortsItem(ComponentDiffWidget const& widget);
 
     QSharedPointer<ParameterFinder> createFinder(QSharedPointer<Component> reference, QSharedPointer<Component> subject) const;
+   
+
 };
 
 //-----------------------------------------------------------------------------
@@ -425,17 +432,21 @@ void tst_ComponentDiffWidget::testAddingDifferentTypeElements()
     QSharedPointer<Component> reference(new Component());
 
     QSharedPointer<Component> subject(new Component());    
+    addParameter(subject, "testParameter", "1");
     addModelParameter(subject, "testModelParameter", "");
     addView(subject, "testView");
     addPort(subject, "testPort");
-
+    
     QSharedPointer<ParameterFinder> parameterFinder = createFinder(reference, subject);
     QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
 
     ComponentDiffWidget widget(expressionFormatter, 0);
     widget.setComponents(reference, subject);
 
-    QCOMPARE(widget.topLevelItemCount(), 3);
+    QCOMPARE(widget.topLevelItemCount(), 4);
+
+    verifyParametersItem(widget);
+    QCOMPARE(getParametersItem(widget)->childCount(), 1);
 
     verifyModelParametersItem(widget);
     QCOMPARE(getModelParametersItem(widget)->childCount(), 1);
@@ -457,6 +468,18 @@ void tst_ComponentDiffWidget::verifyItemColumnTexts(QTreeWidgetItem* item, QStri
     QCOMPARE(item->text(ELEMENT_COLUMN), element);
     QCOMPARE(item->text(PREVIOUS_VALUE_COLUMN), previousValue);
     QCOMPARE(item->text(UPDATED_VALUE_COLUMN), newValue);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentDiffWidget::addParameter()
+//-----------------------------------------------------------------------------
+void tst_ComponentDiffWidget::addParameter(QSharedPointer<Component> component, QString const& name, 
+    QString const& value) const
+{
+    QSharedPointer<Parameter> otherParameter(new Parameter());
+    otherParameter->setName(name);
+    otherParameter->setValue(value);
+    component->getParameters()->append(otherParameter);
 }
 
 //-----------------------------------------------------------------------------
@@ -488,6 +511,27 @@ void tst_ComponentDiffWidget::addPort(QSharedPointer<Component> component, QStri
 void tst_ComponentDiffWidget::addView(QSharedPointer<Component> component, QString const& viewName)
 {
     component->addView(new View(viewName));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentDiffWidget::verifyParametersItem()
+//-----------------------------------------------------------------------------
+void tst_ComponentDiffWidget::verifyParametersItem(ComponentDiffWidget const& widget)
+{
+    verifyHasChildWithColumns(widget.invisibleRootItem(), "Parameters", "", "", "");
+    for (int i = 0; i < widget.columnCount(); i++)
+    {
+        QVERIFY2(getParametersItem(widget)->backgroundColor(i) == QColor(230, 230, 230), 
+            "Item 'Parameters' does not have gray background."); 
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentDiffWidget::getParametersItem()
+//-----------------------------------------------------------------------------
+QTreeWidgetItem* tst_ComponentDiffWidget::getParametersItem(ComponentDiffWidget const& widget)
+{
+    return getTopLevelItemByName(widget, "Parameters");
 }
 
 //-----------------------------------------------------------------------------

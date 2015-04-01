@@ -19,6 +19,7 @@
 
 class Component;
 class ModelParameter;
+class Parameter;
 class VLNV;
 
 //-----------------------------------------------------------------------------
@@ -53,12 +54,24 @@ public:
      *      @return Set of differences between the reference and subject.
      */
     virtual QList<QSharedPointer<IPXactDiff> > diff(QSharedPointer<const Component> reference,
-
         QSharedPointer<const Component> subject) const;
-
+    
+    /*!
+     *  Finds the differences between the sub-elements of two given elements.
+     *
+     *      @param [in] reference   The reference element to compare to.
+     *      @param [in] subject     The element to compare against the reference.
+     *
+     *      @return Set of differences between the sub-elements of reference and subject.
+     */
     QList<QSharedPointer<IPXactDiff> > diffFields(QSharedPointer<const Component> reference, 
         QSharedPointer<const Component> subject) const;
-
+    
+    /*!
+     *  Returns the type for the element.
+     *
+     *      @return The element type.
+     */
     virtual QString elementType() const;
 
 private:
@@ -89,10 +102,36 @@ private:
     bool compareModelParameters(QSharedPointer<const Component> referenceComponent, 
         QSharedPointer<const Component> subjectComponent) const;
 
-    bool comparePorts(QSharedPointer<const Component> first, QSharedPointer<const Component>second) const;
-
-    bool compareViews(QSharedPointer<const Component> first, QSharedPointer<const Component> second) const;
+    /*!
+     *  Compares the parameters in the given components.
+     *
+     *      @param [in] referenceComponent  The reference component to compare to.
+     *      @param [in] subjectComponent    The subject component to compare against the reference.
+     *
+     *      @return True, if the parameters are similar, otherwise false.
+     */  
+    bool compareParameters(QSharedPointer<const Component> referenceComponent, 
+        QSharedPointer<const Component> subjectComponent) const;
     
+    /*!
+     *  Compares the ports in the given components.
+     *
+     *      @param [in] referenceComponent  The reference component to compare to.
+     *      @param [in] subjectComponent    The subject component to compare against the reference.
+     *
+     *      @return True, if the ports are similar, otherwise false.
+     */  
+    bool comparePorts(QSharedPointer<const Component> first, QSharedPointer<const Component>second) const;
+    
+    /*!
+     *  Compares the views in the given components.
+     *
+     *      @param [in] referenceComponent  The reference component to compare to.
+     *      @param [in] subjectComponent    The subject component to compare against the reference.
+     *
+     *      @return True, if the views are similar, otherwise false.
+     */  
+    bool compareViews(QSharedPointer<const Component> first, QSharedPointer<const Component> second) const;
 };
 
 #endif // COMPONENTCOMPARATOR_H

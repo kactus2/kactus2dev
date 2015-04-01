@@ -90,7 +90,7 @@ QMap<QString, QTreeWidgetItem*> ComponentDiffWidget::createTopLevelItems(QList<Q
     QMap<QString, QTreeWidgetItem*> topItems;
 
     QStringList topElements;
-    topElements << "view" << "model parameter" << "port";
+    topElements << "view" << "model parameter" << "port" << "parameter";
 
     foreach(QSharedPointer<IPXactDiff> diff, diffs)
     {

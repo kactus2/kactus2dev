@@ -131,6 +131,9 @@ private:
     //! Label for the component filesets.
     QLabel* filesetsLabel_;
 
+    //! Label for the created model parameters.
+    QLabel* modelParametersLabel_;
+
     //! Label for the created parameters.
     QLabel* parametersLabel_;
 

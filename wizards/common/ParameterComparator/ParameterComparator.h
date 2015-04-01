@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: ModelParameterComparator.h
+// File: ParameterComparator.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
@@ -9,29 +9,28 @@
 // Comparator for finding differences in lists of model parameters.
 //-----------------------------------------------------------------------------
 
-#ifndef MODELPARAMETERCOMPARATOR_H
-#define MODELPARAMETERCOMPARATOR_H
+#ifndef PARAMETERCOMPARATOR_H
+#define PARAMETERCOMPARATOR_H
 
 #include <QList>
 #include <QSharedPointer>
 
 #include <wizards/common/IPXactDiff.h>
 #include <wizards/common/ListComparator.h>
-#include <wizards/common/ParameterComparator/ParameterComparator.h>
 
-class ModelParameter;
+class Parameter;
 
 //-----------------------------------------------------------------------------
 //! Comparator for finding differences in lists of model parameters.
 //-----------------------------------------------------------------------------
-class ModelParameterComparator : public ListComparator<ModelParameter>
+class ParameterComparator : public ListComparator<Parameter>
 {
 public:
     //! The constructor.
-    ModelParameterComparator();
+    ParameterComparator();
 
     //! The destructor.
-    ~ModelParameterComparator();
+    virtual ~ParameterComparator();
 
     /*!
      *  Finds the differences between the two given model parameters.
@@ -41,7 +40,7 @@ public:
      *
      *      @return Set of differences between the reference and subject.
      */
-    virtual bool compare(QSharedPointer<ModelParameter> first, QSharedPointer<ModelParameter> second) const;
+    virtual bool compare(QSharedPointer<Parameter> first, QSharedPointer<Parameter> second) const;
     
     /*!
      *  Compares the sub-elements of two model parameters.
@@ -51,8 +50,8 @@ public:
      *
      *      @return True, if the sub-elements are similar, otherwise false.
      */
-    virtual bool compareFields(QSharedPointer<const ModelParameter> first, 
-        QSharedPointer<const ModelParameter> second) const;
+    virtual bool compareFields(QSharedPointer<const Parameter> first, 
+        QSharedPointer<const Parameter> second) const;
 
     /*!
      *  Compares the two lists of model parameters.
@@ -62,8 +61,7 @@ public:
      *
      *      @return True, if the lists are similar, otherwise false.
      */
-    bool compare(QList<QSharedPointer<ModelParameter> > const first, 
-        QList<QSharedPointer<ModelParameter> > const second) ;
+    bool compare(QList<QSharedPointer<Parameter> > const first, QList<QSharedPointer<Parameter> > const second);
     
     /*!
      *  Finds the differences between the sub-elements of two given model parameters.
@@ -73,8 +71,8 @@ public:
      *
      *      @return Set of differences between the sub-elements of reference and subject.
      */
-    virtual QList<QSharedPointer<IPXactDiff> > diffFields(QSharedPointer<const ModelParameter> reference,
-        QSharedPointer<const ModelParameter> subject) const;
+    virtual QList<QSharedPointer<IPXactDiff> > diffFields(QSharedPointer<const Parameter> reference,
+        QSharedPointer<const Parameter> subject) const;
     
     /*!
      *  Returns the type for the element.
@@ -86,9 +84,9 @@ public:
 private:
 
     //! Disable copying.
-    ModelParameterComparator(ModelParameterComparator const& rhs);
-    ModelParameterComparator& operator=(ModelParameterComparator const& rhs);
+    ParameterComparator(ParameterComparator const& rhs);
+    ParameterComparator& operator=(ParameterComparator const& rhs);
 
 };
 
-#endif // MODELPARAMETERCOMPARATOR_H
+#endif // PARAMETERCOMPARATOR_H

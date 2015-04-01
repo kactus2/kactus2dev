@@ -908,6 +908,12 @@
     <Filter Include="Source Files\editors\ComponentEditor\common\ReferenceSelector">
       <UniqueIdentifier>{896f6f47-c2da-4e57-aff5-95c29a0c8de5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\wizards\common\ParameterComparator">
+      <UniqueIdentifier>{9f305af1-83c6-43c5-bde4-1cc9c03e5720}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\wizards\common\ParameterComparator">
+      <UniqueIdentifier>{d6bba5c6-b242-428e-958c-f810131842c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3982,6 +3988,9 @@
     <ClCompile Include="designEditors\common\ComponentInstanceEditor\ConfigurableElementsFilter.cpp">
       <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
     </ClCompile>
+    <ClCompile Include="wizards\common\ParameterComparator\ParameterComparator.cpp">
+      <Filter>Source Files\wizards\common\ParameterComparator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5848,6 +5857,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\ListParameterFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="wizards\common\ParameterComparator\ParameterComparator.h">
+      <Filter>Header Files\wizards\common\ParameterComparator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

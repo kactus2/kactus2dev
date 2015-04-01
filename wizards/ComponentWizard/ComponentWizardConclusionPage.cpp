@@ -38,12 +38,12 @@ ComponentWizardConclusionPage::ComponentWizardConclusionPage(QSharedPointer<Comp
       handler_(lh), 
       summaryWidget_(this), 
       vlnvLabel_(new QLabel(this)), 
-      
       hierarchyLabel_(new QLabel(this)), 
       firmnessLabel_(new QLabel(this)), 
       directoryLabel_(new QLabel(this)), 
       authorLabel_(new QLabel(this)), 
       filesetsLabel_(new QLabel(this)), 
+      modelParametersLabel_(new QLabel(this)), 
       parametersLabel_(new QLabel(this)), 
       portsLabel_(new QLabel(this)), 
       viewsLabel_(new QLabel(this)), 
@@ -138,10 +138,16 @@ void ComponentWizardConclusionPage::updateComponentDetails()
         QList<QSharedPointer<IPXactDiff> > diff = comparator.diff(originalComponent_, workingComponent_);        
 
         DiffSummary modelParameterSummary = creteSummaryFor("model parameter", diff);
-        parametersLabel_->setText(tr("%1 created, %2 removed, %3 modified.").arg(
+        modelParametersLabel_->setText(tr("%1 created, %2 removed, %3 modified.").arg(
             QString::number(modelParameterSummary.added),  
             QString::number(modelParameterSummary.removed),  
             QString::number(modelParameterSummary.modified)));             
+
+        DiffSummary parameterSummary = creteSummaryFor("parameter", diff);
+        parametersLabel_->setText(tr("%1 created, %2 removed, %3 modified.").arg(
+            QString::number(parameterSummary.added),  
+            QString::number(parameterSummary.removed),  
+            QString::number(parameterSummary.modified)));     
 
         DiffSummary portSummary = creteSummaryFor("port", diff);
         portsLabel_->setText(tr("%1 created, %2 removed, %3 modified.").arg(
@@ -239,7 +245,12 @@ void ComponentWizardConclusionPage::setupLayout()
 
     if (originalComponent_->getComponentImplementation() == KactusAttribute::HW)
     {
-        QLabel* parameterTitleLabel = new QLabel("<b>Model Parameters:</b>",  this);
+        QLabel* modelParameterTitleLabel = new QLabel("<b>Model Parameters:</b>",  this);
+        layout->addWidget(modelParameterTitleLabel, rows, 0, 1, 1, Qt::AlignTop);    
+        layout->addWidget(modelParametersLabel_, rows, 1, 1, 1);
+        rows++;
+
+        QLabel* parameterTitleLabel = new QLabel("<b>Parameters:</b>",  this);
         layout->addWidget(parameterTitleLabel, rows, 0, 1, 1, Qt::AlignTop);    
         layout->addWidget(parametersLabel_, rows, 1, 1, 1);
         rows++;
