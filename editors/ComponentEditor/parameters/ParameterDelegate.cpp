@@ -125,8 +125,12 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
     {
         ArrayView* view = dynamic_cast<ArrayView*>(dynamic_cast<QScrollArea*>(editor)->widget());
 
-        QModelIndex arraySizeIndex = index.sibling(index.row(), arrayLeftColumn());
-        int arraySize = arraySizeIndex.data(Qt::ToolTipRole).toInt();
+        QModelIndex arrayLeftIndex = index.sibling(index.row(), arrayLeftColumn());
+        int arrayLeftValue = arrayLeftIndex.data(Qt::ToolTipRole).toInt();
+        QModelIndex arrayRightIndex = index.sibling(index.row(), arrayRightColumn());
+        int arrayRightValue = arrayRightIndex.data(Qt::ToolTipRole).toInt();
+
+        int arraySize = getArraySize(arrayLeftValue, arrayRightValue);
 
         QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(
             getParameterFinder()));
@@ -423,11 +427,17 @@ QWidget* ParameterDelegate::createResolveSelector(QWidget* parent) const
 //-----------------------------------------------------------------------------
 bool ParameterDelegate::valueIsArray(QModelIndex const& index) const
 {
-    QModelIndex valueIdIndex = index.sibling(index.row(), arrayLeftColumn());
-    bool arraySizeIsOk = true;
-    int arraySize = valueIdIndex.data(Qt::ToolTipRole).toInt(&arraySizeIsOk);
+    QModelIndex arrayLeftIndex = index.sibling(index.row(), arrayLeftColumn());
+    bool arrayLeftIsOk = true;
+    int arrayLeftValue = arrayLeftIndex.data(Qt::ToolTipRole).toInt(&arrayLeftIsOk);
     
-    return arraySizeIsOk && arraySize > 0;
+    QModelIndex arrayRightIndex = index.sibling(index.row(), arrayRightColumn());
+    bool arrayRightIsOk = true;
+    int arrayRightValue = arrayRightIndex.data(Qt::ToolTipRole).toInt(&arrayRightIsOk);
+
+    int arraySize = getArraySize(arrayLeftValue, arrayRightValue);
+
+    return arrayLeftIsOk && arrayRightIsOk && arraySize > 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -450,8 +460,14 @@ void ParameterDelegate::updateEditorGeometry(QWidget *editor, const QStyleOption
 void ParameterDelegate::repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option,
     QModelIndex const& index) const
 {   
-    QModelIndex valueIdIndex = index.sibling(index.row(), arrayLeftColumn());
-    int arraySize = valueIdIndex.data(Qt::ToolTipRole).toInt();
+    QModelIndex arrayLeftIndex = index.sibling(index.row(), arrayLeftColumn());
+    int arrayLeftValue = arrayLeftIndex.data(Qt::ToolTipRole).toInt();
+
+    QModelIndex arrayRightIndex = index.sibling(index.row(), arrayRightColumn());
+    int arrayRightValue = arrayRightIndex.data(Qt::ToolTipRole).toInt();
+
+    int arraySize = getArraySize(arrayLeftValue, arrayRightValue);
+
     int editorMinimumSize = 24 * (arraySize + 1);
 
     editor->setFixedWidth(300);
@@ -482,4 +498,12 @@ void ParameterDelegate::repositionAndResizeEditor(QWidget* editor, QStyleOptionV
     {
         editor->setFixedHeight(editorMinimumSize);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::()
+//-----------------------------------------------------------------------------
+int ParameterDelegate::getArraySize(int arrayLeftValue, int arrayRightValue) const
+{
+    return abs(arrayLeftValue - arrayRightValue) + 1;
 }

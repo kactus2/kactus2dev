@@ -166,11 +166,17 @@ int ConfigurableElementDelegate::valueColumn() const
 //-----------------------------------------------------------------------------
 bool ConfigurableElementDelegate::valueIsArray(QModelIndex const& index) const
 {
-    QModelIndex arraySizeIndex = index.sibling(index.row(), ConfigurableElementsColumns::ARRAY_LEFT);
-    bool arraySizeIsOk = true;
-    int arraySize = arraySizeIndex.data(Qt::DisplayRole).toInt(&arraySizeIsOk);
+    QModelIndex arraySizeIndex = index.sibling(index.row(), ConfigurableElementsColumns::ARRAY_SIZE);
+    int arraySize = arraySizeIndex.data(Qt::DisplayRole).toInt();
 
-    return arraySizeIsOk && arraySize > 0;
+    if (arraySize > 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -193,7 +199,7 @@ void ConfigurableElementDelegate::updateEditorGeometry(QWidget *editor, const QS
 void ConfigurableElementDelegate::repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option,
     QModelIndex const& index) const
 {
-    QModelIndex arraySizeIndex = index.sibling(index.row(), ConfigurableElementsColumns::ARRAY_LEFT);
+    QModelIndex arraySizeIndex = index.sibling(index.row(), ConfigurableElementsColumns::ARRAY_SIZE);
     int arraySize = arraySizeIndex.data(Qt::DisplayRole).toInt();
     int editorMinimumSize = 24 * (arraySize + 1);
 
@@ -234,7 +240,7 @@ void ConfigurableElementDelegate::repositionAndResizeEditor(QWidget* editor, QSt
 void ConfigurableElementDelegate::createArrayEditor(QWidget* editor, QModelIndex const& index) const
 {
     ArrayView* view = dynamic_cast<ArrayView*>(dynamic_cast<QScrollArea*>(editor)->widget());
-    QModelIndex arraySizeIndex = index.sibling(index.row(), ConfigurableElementsColumns::ARRAY_LEFT);
+    QModelIndex arraySizeIndex = index.sibling(index.row(), ConfigurableElementsColumns::ARRAY_SIZE);
     int arraySize = arraySizeIndex.data(Qt::DisplayRole).toInt();
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(getParameterFinder()));

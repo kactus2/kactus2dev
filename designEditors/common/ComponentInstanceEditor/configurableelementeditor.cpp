@@ -57,7 +57,7 @@ delegate_()
 
     view_.setAlternatingRowColors(false);
     view_.setColumnHidden(ConfigurableElementsColumns::CHOICE, true);
-    view_.setColumnHidden(ConfigurableElementsColumns::ARRAY_LEFT, true);
+    view_.setColumnHidden(ConfigurableElementsColumns::ARRAY_SIZE, true);
     view_.setColumnHidden(ConfigurableElementsColumns::TYPE, true);
 
 	QVBoxLayout* topLayout = new QVBoxLayout(this);

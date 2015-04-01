@@ -270,6 +270,11 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
             }
 
             parameter->setAttribute("kactus2:arrayLeft", value.toString());
+
+            if (value.isValid() && parameter->getAttribute("kactus2:arrayRight").isEmpty())
+            {
+                parameter->setAttribute("kactus2:arrayRight", QString::number(0));
+            }
         }
         else if (index.column() == arrayRightColumn())
         {
@@ -282,6 +287,11 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
             }
 
             parameter->setAttribute("kactus2:arrayRight", value.toString());
+
+            if (value.isValid() && parameter->getAttribute("kactus2:arrayLeft").isEmpty())
+            {
+                parameter->setAttribute("kactus2:arrayLeft", QString::number(0));
+            }
         }
         else if (index.column() == descriptionColumn())
         {
@@ -491,6 +501,14 @@ bool AbstractParameterModel::validateColumnForParameter(QModelIndex const& index
     else if (index.column() == resolveColumn())
     {
         return validator_->hasValidResolve(parameter.data());
+    }
+    else if (index.column() == arrayLeftColumn())
+    {
+        return validator_->hasValidArrayValues(parameter);
+    }
+    else if (index.column() == arrayRightColumn())
+    {
+        return validator_->hasValidArrayValues(parameter);
     }
 
     return true;

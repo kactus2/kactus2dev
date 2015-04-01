@@ -271,6 +271,14 @@ private:
     void repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option, QModelIndex const& index)
         const;
 
+    /*!
+     *  Gets the size of the array.
+     *
+     *      @param [in] arrayLeftValue      The left value of the array.
+     *      @param [in] arrayRightValue     The right value of the array.
+     */
+    int getArraySize(int arrayLeftValue, int arrayRightValue) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

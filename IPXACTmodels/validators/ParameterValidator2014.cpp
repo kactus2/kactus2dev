@@ -448,3 +448,26 @@ bool ParameterValidator2014::arrayValuesAreSameSize(QStringList const& bitArray,
 
     return true;
 }
+
+//-----------------------------------------------------------------------------
+// Function: ParameterValidator2014::hasValidArrayValues()
+//-----------------------------------------------------------------------------
+bool ParameterValidator2014::hasValidArrayValues(QSharedPointer<Parameter> parameter) const
+{
+    bool arrayLeftIsOk = true;
+    bool arrayRightIsOk = true;
+
+    if (parameter->getAttribute("kactus2:arrayLeft").isEmpty()
+        && parameter->getAttribute("kactus2:arrayRight").isEmpty())
+    {
+        return true;
+    }
+
+    else
+    {
+        parameter->getAttribute("kactus2:arrayLeft").toInt(&arrayLeftIsOk);
+        parameter->getAttribute("kactus2:arrayRight").toInt(&arrayRightIsOk);
+
+        return arrayLeftIsOk && arrayRightIsOk;
+    }
+}

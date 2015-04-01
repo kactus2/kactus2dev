@@ -133,6 +133,15 @@ public:
     virtual QStringList findErrorsIn(Parameter const* parameter, QString const& context, 
         QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices) const;
 
+    /*!
+     *  Check if the parameter has a valid array values.
+     *
+     *      @param [in] parameter   The parameter whose array is examined.
+     *
+     *      @return True, if the parameter has valid array values, false otherwise.
+     */
+    bool hasValidArrayValues(QSharedPointer<Parameter> parameter) const;
+
 protected:
              
     /*!
