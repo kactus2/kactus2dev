@@ -237,22 +237,22 @@ void Design::write(QFile& file)
 		writer.writeEndElement();
 	}
 
+    if (!adHocConnections_.isEmpty()) {
+        writer.writeStartElement("spirit:adHocConnections");
+
+        foreach (AdHocConnection adhoc, adHocConnections_)
+        {
+            adhoc.write(writer);
+        }
+
+        writer.writeEndElement();
+    }
+
 	if (!hierConnections_.isEmpty()) {
 		writer.writeStartElement("spirit:hierConnections");
 
 		foreach (HierConnection hier, hierConnections_) {
 			hier.write(writer);
-		}
-
-		writer.writeEndElement();
-	}
-
-	if (!adHocConnections_.isEmpty()) {
-		writer.writeStartElement("spirit:adHocConnections");
-
-		foreach (AdHocConnection adhoc, adHocConnections_)
-        {
-            adhoc.write(writer);
 		}
 
 		writer.writeEndElement();
