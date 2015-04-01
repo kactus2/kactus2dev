@@ -7,7 +7,7 @@ TARGET = VerilogIncludeImport
 DESTDIR = ../../executable/Plugins
 QT += core xml widgets gui
 CONFIG += debug
-DEFINES += WIN64 QT_DLL QT_WIDGETS_LIB VERILOGINCLUDEIMPORT_LIB QT_XML_LIB
+DEFINES += QT_DLL QT_WIDGETS_LIB VERILOGINCLUDEIMPORT_LIB QT_XML_LIB
 INCLUDEPATH += ./../.. \
     ./GeneratedFiles \
     . \
@@ -18,3 +18,6 @@ OBJECTS_DIR += debug
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(VerilogIncludeImport.pri)
+
+target.path = /usr/share/kactus2/plugins
+INSTALLS += target
