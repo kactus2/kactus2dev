@@ -21,7 +21,8 @@ SUBDIRS += IPXACTmodels/IPXACTmodels.pro \
 	Plugins/MakefileGenerator/MakefileGenerator.pro \
 	Plugins/VerilogGenerator/VerilogGeneratorPlugin.pro \
 	Plugins/VHDLimport/VHDLimport.pro \
-	Plugins/VerilogImport/VerilogImport.pro
+	Plugins/VerilogImport/VerilogImport.pro \
+	Plugins/VerilogIncludeImport/VerilogIncludeImport.pro
 
 CONFIG(test) {
 	SUBDIRS += tests/test_all.pro
