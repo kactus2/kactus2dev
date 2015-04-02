@@ -237,9 +237,9 @@ void PortsDelegate::paint(QPainter* painter, QStyleOptionViewItem const& option,
 //-----------------------------------------------------------------------------
 bool PortsDelegate::columnAcceptsExpression(int column) const
 {
-    return column == PortColumns::DEFAULT_VALUE || 
-        column == PortColumns::LEFT_BOUND ||
-        column == PortColumns::RIGHT_BOUND;
+    return column == PortColumns::DEFAULT_VALUE || column == PortColumns::LEFT_BOUND ||
+        column == PortColumns::RIGHT_BOUND || column == PortColumns::ARRAY_LEFT ||
+        column == PortColumns::ARRAY_RIGHT;
 }
 
 //-----------------------------------------------------------------------------

@@ -92,8 +92,7 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
 
     if (role == Qt::DisplayRole) 
     {
-        if (index.column() == PortColumns::LEFT_BOUND || index.column() == PortColumns::RIGHT_BOUND ||
-            index.column() == PortColumns::DEFAULT_VALUE)
+        if (isValidExpressionColumn(index))
         {
             return expressionFormatter_->formatReferringExpression(valueForIndex(index).toString());
         }
@@ -108,8 +107,7 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
     }
     else if (role == Qt::ToolTipRole)
     {
-        if (index.column() == PortColumns::LEFT_BOUND || index.column() == PortColumns::RIGHT_BOUND ||
-            index.column() == PortColumns::DEFAULT_VALUE)
+        if (isValidExpressionColumn(index))
         {
             return formattedValueFor(valueForIndex(index).toString());
         }
@@ -226,6 +224,16 @@ QVariant PortsModel::headerData( int section, Qt::Orientation orientation, int r
             {
                 QString defaultHeader = tr("Default\nvalue") + getExpressionSymbol();
                 return defaultHeader;
+            }
+            else if (section == PortColumns::ARRAY_LEFT)
+            {
+                QString arrayLeftHeader = tr("Array\nleft") + getExpressionSymbol();
+                return arrayLeftHeader;
+            }
+            else if (section == PortColumns::ARRAY_RIGHT)
+            {
+                QString arrayRightHeader = tr("Array\nright") + getExpressionSymbol();
+                return arrayRightHeader;
             }
             else if (section == PortColumns::PORT_COL_DESC)
             {
@@ -383,6 +391,34 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
             }
 
             port->setDefaultValue(value.toString());
+        }
+        else if (index.column() == PortColumns::ARRAY_LEFT)
+        {
+            if (!value.isValid())
+            {
+                removeReferencesFromSingleExpression(port->getArrayLeft());
+            }
+
+            port->setArrayLeft(value.toString());
+
+            if (value.isValid() && port->getArrayRight().isEmpty() && !port->getArrayLeft().isEmpty())
+            {
+                port->setArrayRight(QString::number(0));
+            }
+        }
+        else if (index.column() == PortColumns::ARRAY_RIGHT)
+        {
+            if (!value.isValid())
+            {
+                removeReferencesFromSingleExpression(port->getArrayRight());
+            }
+
+            port->setArrayRight(value.toString());
+
+            if (value.isValid() && port->getArrayLeft().isEmpty() && !port->getArrayRight().isEmpty())
+            {
+                port->setArrayLeft(QString::number(0));
+            }
         }
         else if (index.column() == PortColumns::PORT_COL_DESC)
         {
@@ -737,7 +773,15 @@ QVariant PortsModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == PortColumns::DEFAULT_VALUE)
     {
-        return formattedValueFor(port->getDefaultValue());
+        return port->getDefaultValue();
+    }
+    else if (index.column() == PortColumns::ARRAY_LEFT)
+    {
+        return port->getArrayLeft();
+    }
+    else if (index.column() == PortColumns::ARRAY_RIGHT)
+    {
+        return port->getArrayRight();
     }
     else if (index.column() == PortColumns::PORT_COL_DESC)
     {
@@ -759,7 +803,8 @@ QVariant PortsModel::valueForIndex(QModelIndex const& index) const
 bool PortsModel::isValidExpressionColumn(QModelIndex const& index) const
 {
     return index.column() == PortColumns::LEFT_BOUND || index.column() == PortColumns::RIGHT_BOUND || 
-        index.column() == PortColumns::DEFAULT_VALUE;
+        index.column() == PortColumns::DEFAULT_VALUE || index.column() == PortColumns::ARRAY_LEFT ||
+        index.column() == PortColumns::ARRAY_RIGHT;
 }
 
 //-----------------------------------------------------------------------------
@@ -780,6 +825,14 @@ QVariant PortsModel::expressionOrValueForIndex(QModelIndex const& index) const
     else if (index.column() == PortColumns::DEFAULT_VALUE)
     {
         return port->getDefaultValue();
+    }
+    else if (index.column() == PortColumns::ARRAY_LEFT)
+    {
+        return port->getArrayLeft();
+    }
+    else if (index.column() == PortColumns::ARRAY_RIGHT)
+    {
+        return port->getArrayRight();
     }
     else
     {
@@ -808,8 +861,39 @@ bool PortsModel::validateColumnForParameter(QModelIndex const& index) const
     {
         return isValuePlainOrExpression(port->getDefaultValue());
     }
+    else if (index.column() == PortColumns::ARRAY_LEFT || index.column() == PortColumns::ARRAY_RIGHT)
+    {
+        return isArrayValid(port);
+    }
 
-    return true;
+    else
+    {
+        return true;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: portsmodel::isArrayValid()
+//-----------------------------------------------------------------------------
+bool PortsModel::isArrayValid(QSharedPointer<Port> port) const
+{
+    if (port->getArrayLeft().isEmpty() && port->getArrayRight().isEmpty())
+    {
+        return true;
+    }
+    else
+    {
+        bool isLeftOk = true;
+        bool isRightOk = true;
+
+        QString leftExpression = parseExpressionToDecimal(port->getArrayLeft());
+        QString rightExpression = parseExpressionToDecimal(port->getArrayRight());
+
+        leftExpression.toInt(&isLeftOk);
+        rightExpression.toInt(&isRightOk);
+
+        return isLeftOk && isRightOk;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -822,8 +906,11 @@ int PortsModel::getAllReferencesToIdInItemOnRow(const int& row, QString valueID)
     int referencesInLeftBound = port->getLeftBoundExpression().count(valueID);
     int referencesInRightbount = port->getRightBoundExpression().count(valueID);
     int referencesInDefaultValue = port->getDefaultValue().count(valueID);
+    int referencesInArrayLeft = port->getArrayLeft().count(valueID);
+    int referencesInArrayRight = port->getArrayRight().count(valueID);
 
-    int  totalReferences = referencesInLeftBound + referencesInRightbount + referencesInDefaultValue;
+    int  totalReferences = referencesInLeftBound + referencesInRightbount + referencesInDefaultValue +
+        referencesInArrayLeft + referencesInArrayRight;
     return totalReferences;
 }
 

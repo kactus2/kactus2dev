@@ -34,6 +34,7 @@ portAccessHandle_(),
 portAccessType_(),
 adHocVisible_(),
 defaultPos_(),
+configurableArray_(),
 vendorExtensions_()
 {
     createAdHocVisibleExtension();
@@ -86,6 +87,7 @@ portAccessHandle_(other.portAccessHandle_),
 portAccessType_(other.portAccessType_),
 adHocVisible_(),
 defaultPos_(),
+configurableArray_(),
 vendorExtensions_()
 {	
     if (other.wire_ != 0) {
@@ -109,6 +111,7 @@ portAccessHandle_(other.portAccessHandle_),
 portAccessType_(other.portAccessType_),
 adHocVisible_(),
 defaultPos_(),
+configurableArray_(),
 vendorExtensions_()
 {
 	if (other.wire_) {
@@ -168,6 +171,7 @@ portAccessHandle_(),
 portAccessType_(),
 adHocVisible_(),
 defaultPos_(),
+configurableArray_(),
 vendorExtensions_()
 {
 	wire_ = QSharedPointer<Wire>(new Wire());
@@ -193,6 +197,7 @@ portAccessHandle_(),
 portAccessType_(),
 adHocVisible_(),
 defaultPos_(),
+configurableArray_(),
 vendorExtensions_()
 {
 	wire_ = QSharedPointer<Wire>(new Wire(direction, leftBound, rightBound, defaultValue, allLogicalDirections));
@@ -220,6 +225,7 @@ portAccessHandle_(),
 portAccessType_(),
 adHocVisible_(),
 defaultPos_(),
+configurableArray_(),
 vendorExtensions_()
 {
 
@@ -784,6 +790,76 @@ QPointF Port::getDefaultPos() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: port::()
+//-----------------------------------------------------------------------------
+QString Port::getArrayLeft() const
+{
+    if (configurableArray_.isNull())
+    {
+        return QString();
+    }
+    else
+    {
+        return configurableArray_->getLeft();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: port::()
+//-----------------------------------------------------------------------------
+void Port::setArrayLeft(QString const& newArrayLeft)
+{
+    if (newArrayLeft.isEmpty() && getArrayRight().isEmpty())
+    {
+        vendorExtensions_.removeAll(configurableArray_);
+        configurableArray_.clear();
+    }
+    else if (configurableArray_.isNull())
+    {
+        createArrayExtension(newArrayLeft, QString());
+    }
+    else
+    {
+        configurableArray_->setLeft(newArrayLeft);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: port::getArrayRight()
+//-----------------------------------------------------------------------------
+QString Port::getArrayRight() const
+{
+    if (configurableArray_.isNull())
+    {
+        return QString();
+    }
+    else
+    {
+        return configurableArray_->getRight();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: port::setArrayRight()
+//-----------------------------------------------------------------------------
+void Port::setArrayRight(QString const& newArrayRight)
+{
+    if (newArrayRight.isEmpty() && getArrayLeft().isEmpty())
+    {
+        vendorExtensions_.removeAll(configurableArray_);
+        configurableArray_.clear();
+    }
+    else if (configurableArray_.isNull())
+    {
+        createArrayExtension(QString(), newArrayRight);
+    }
+    else
+    {
+        configurableArray_->setRight(newArrayRight);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: Port::parseVendorExtensions()
 //-----------------------------------------------------------------------------
 void Port::parseVendorExtensions(QDomNode const& extensionsNode)
@@ -801,6 +877,10 @@ void Port::parseVendorExtensions(QDomNode const& extensionsNode)
         {            
             QPointF position = XmlUtils::parsePoint(extensionNode);
             setDefaultPos(position);
+        }
+        else if (extensionNode.nodeName() == "kactus2:array")
+        {
+            createArrayExtensionFromExtensionNode(extensionNode);
         }
         else
         {                    
@@ -823,6 +903,13 @@ void Port::copyVendorExtensions(Port const& other)
         else if (extension->type() == "kactus2:position")
         {
             setDefaultPos(other.defaultPos_->position());           
+        }
+        else if (extension->type() == "kactus2:array")
+        {
+            vendorExtensions_.removeAll(configurableArray_);
+
+            configurableArray_ = QSharedPointer<Kactus2Array>(other.configurableArray_->clone());
+            vendorExtensions_.append(configurableArray_);
         }
         else
         {
@@ -847,4 +934,37 @@ void Port::createPositionExtension()
     defaultPos_ = QSharedPointer<Kactus2Position>(new Kactus2Position(QPointF()));
 }
 
+//-----------------------------------------------------------------------------
+// Function: port::createArrayExtensionFromExtensionNode()
+//-----------------------------------------------------------------------------
+void Port::createArrayExtensionFromExtensionNode(QDomNode arrayExtensionNode)
+{
+    QString arrayLeft;
+    QString arrayRight;
 
+    int extensionCount = arrayExtensionNode.childNodes().count();
+    for (int i = 0; i < extensionCount; ++i)
+    {
+        QDomNode childNode = arrayExtensionNode.childNodes().at(i);
+
+        if (childNode.nodeName() == "kactus2:left")
+        {
+            arrayLeft = childNode.childNodes().at(0).nodeValue();
+        }
+        else if (childNode.nodeName() == "kactus2:right")
+        {
+            arrayRight = childNode.childNodes().at(0).nodeValue();
+        }
+    }
+
+    createArrayExtension(arrayLeft, arrayRight);
+}
+
+//-----------------------------------------------------------------------------
+// Function: port::createArrayExtension()
+//-----------------------------------------------------------------------------
+void Port::createArrayExtension(QString const& left, QString const& right)
+{
+    configurableArray_ = QSharedPointer<Kactus2Array>(new Kactus2Array(left, right));
+    vendorExtensions_.append(configurableArray_);
+}

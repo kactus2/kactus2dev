@@ -454,9 +454,6 @@ bool ParameterValidator2014::arrayValuesAreSameSize(QStringList const& bitArray,
 //-----------------------------------------------------------------------------
 bool ParameterValidator2014::hasValidArrayValues(QSharedPointer<Parameter> parameter) const
 {
-    bool arrayLeftIsOk = true;
-    bool arrayRightIsOk = true;
-
     if (parameter->getAttribute("kactus2:arrayLeft").isEmpty()
         && parameter->getAttribute("kactus2:arrayRight").isEmpty())
     {
@@ -465,8 +462,13 @@ bool ParameterValidator2014::hasValidArrayValues(QSharedPointer<Parameter> param
 
     else
     {
-        parameter->getAttribute("kactus2:arrayLeft").toInt(&arrayLeftIsOk);
-        parameter->getAttribute("kactus2:arrayRight").toInt(&arrayRightIsOk);
+        bool arrayLeftIsOk = true;
+        bool arrayRightIsOk = true;
+
+        QString leftValue = expressionParser_->parseExpression(parameter->getAttribute("kactus2:arrayLeft"));
+        QString rightValue = expressionParser_->parseExpression(parameter->getAttribute("kactus2:arrayRight"));
+        leftValue.toInt(&arrayLeftIsOk);
+        rightValue.toInt(&arrayRightIsOk);
 
         return arrayLeftIsOk && arrayRightIsOk;
     }

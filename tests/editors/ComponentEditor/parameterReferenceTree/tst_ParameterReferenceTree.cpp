@@ -57,6 +57,7 @@ private slots:
     void testReferenceInViewModuleParameterValueAddsFiveRows();
 
     void testReferenceInPortRightboundAddsThreeRows();
+    void testReferenceInPortArraysAddsThreeRows();
 
     void testReferenceInAddressBlockBaseAddressAddsFiveRows();
     void testReferenceInAddressBlockNoReferenceInRegister();
@@ -83,7 +84,8 @@ private:
         QString const& bitWidth, QString const& arrayLeft, QString const& arrayRight);
 
     QSharedPointer<Port> createTestPort(QString const& name, QString const& leftExpression,
-        QString const& rightExpression, QString const& defaultValue);
+        QString const& rightExpression, QString const& defaultValue, QString const& arrayLeft,
+        QString const& arrayRight);
 
     QSharedPointer<Register> createTestRegister(QString const& name, QString const& offSet,
         QString const& dimension);
@@ -163,7 +165,7 @@ void tst_ParameterReferenceTree::testNoReferencesFoundAddsOneRow()
     viewRef->getParameters()->append(viewParameters);
 
     // Port: No references
-    QSharedPointer<Port> portRef = createTestPort("portRef", "", "test", "test");
+    QSharedPointer<Port> portRef = createTestPort("portRef", "", "test", "test", "", "");
 
     // Register: No references
     QList <QSharedPointer<Register> > registers;
@@ -674,7 +676,7 @@ void tst_ParameterReferenceTree::testReferenceInPortRightboundAddsThreeRows()
     QList < QSharedPointer<Parameter> > componentParameters;
     componentParameters.append(searched);
 
-    QSharedPointer<Port> portRef = createTestPort("portRef", "", "searched", "");
+    QSharedPointer<Port> portRef = createTestPort("portRef", "", "searched", "", "", "");
 
     QSharedPointer<Component> component(new Component);
     component->addPort(portRef);
@@ -699,6 +701,51 @@ void tst_ParameterReferenceTree::testReferenceInPortRightboundAddsThreeRows()
         expressionFormatter->formatReferringExpression(portRef->getRightBoundExpression()));
 
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->childCount(), 0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterReferenceTree::testReferenceInPortArraysAddsThreeRows()
+//-----------------------------------------------------------------------------
+void tst_ParameterReferenceTree::testReferenceInPortArraysAddsThreeRows()
+{
+    QSharedPointer<Parameter> searched(new Parameter);
+    searched->setName("searchedParameter");
+    searched->setValueId("searched");
+
+    QList<QSharedPointer<Parameter> > componentParameters;
+    componentParameters.append(searched);
+
+    QSharedPointer<Port> portRef = createTestPort("portRef", "", "", "", "searched", "searched");
+    
+    QSharedPointer<Component> component(new Component);
+    component->addPort(portRef);
+    component->getParameters()->append(componentParameters);
+
+    QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
+
+    ParameterReferenceTree tree(component, expressionFormatter, searched->getValueId());
+
+    QCOMPARE(tree.topLevelItemCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->text(ParameterReferenceTree::ITEM_NAME), QString("Ports"));
+    QCOMPARE(tree.topLevelItem(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(tree.topLevelItem(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME), portRef->getName());
+    QCOMPARE(tree.topLevelItem(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->childCount(), 2);
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
+        QString("Array Left"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        QString("searchedParameter"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->childCount(), 0);
+
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(1)->text(ParameterReferenceTree::ITEM_NAME),
+        QString("Array Right"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(1)->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        QString("searchedParameter"));
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(1)->childCount(), 0);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -1369,10 +1416,9 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
     viewRef->getParameters()->append(viewParameters);
 
     // Port: One reference, in default value.
-    QSharedPointer<Port> portRef = createTestPort("portRef", "", "test", "searched");
+    QSharedPointer<Port> portRef = createTestPort("portRef", "", "test", "searched", "", "");
 
     // Register: One reference, in offset
-
     QList <QSharedPointer<Register> > registers;
     QSharedPointer<Register> registerRef = createTestRegister("registerRef", "searched", "test");
     registers.append(registerRef);
@@ -1675,14 +1721,17 @@ QSharedPointer<ModelParameter> tst_ParameterReferenceTree::createTestModelParame
 //-----------------------------------------------------------------------------
 // Function: tst_ParameterReferenceTree::createTestPort()
 //-----------------------------------------------------------------------------
-QSharedPointer<Port> tst_ParameterReferenceTree::createTestPort(QString const&name,
-    QString const& leftExpression, QString const& rightExpression, QString const& defaultValue)
+QSharedPointer<Port> tst_ParameterReferenceTree::createTestPort(QString const& name, QString const& leftExpression,
+    QString const& rightExpression, QString const& defaultValue, QString const& arrayLeft,
+    QString const& arrayRight)
 {
     QSharedPointer<Port> referencingPort(new Port);
     referencingPort->setName(name);
     referencingPort->setLeftBoundExpression(leftExpression);
     referencingPort->setRightBoundExpression(rightExpression);
     referencingPort->setDefaultValue(defaultValue);
+    referencingPort->setArrayLeft(arrayLeft);
+    referencingPort->setArrayRight(arrayRight);
 
     return referencingPort;
 }

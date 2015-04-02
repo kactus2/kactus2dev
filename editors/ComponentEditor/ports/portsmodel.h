@@ -301,6 +301,15 @@ private:
      */
     bool hasExpressionInLeftOrRightBound(QSharedPointer<Port> port) const;
 
+    /*!
+     *  Checks if the given data for array is valid.
+     *
+     *      @param [in] port    The port whose array is being examined.
+     *
+     *      @return True, if the data in both left and right is valid, false otherwise.
+     */
+    bool isArrayValid(QSharedPointer<Port> port) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

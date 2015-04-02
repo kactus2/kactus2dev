@@ -25,8 +25,10 @@ namespace PortColumns
         TYPE_NAME,          //!< Column for the port typename.
         TYPE_DEF,           //!< Column for the port type definition.
         DEFAULT_VALUE,      //!< Column for setting the default value for the port.
-        PORT_COL_DESC,      //!< Column for adding a description for the port.
+        ARRAY_LEFT,         //!< Column for setting the left side of the array.
+        ARRAY_RIGHT,        //!< Column for setting the right side of the array.
         ADHOC_VISIBILITY,   //!< Column for toggling ad-hoc visibility on/off.
+        PORT_COL_DESC,      //!< Column for adding a description for the port.
         COLUMN_COUNT
     };
 }

@@ -8,10 +8,10 @@
 #define PORT_H_
 
 #include "generaldeclarations.h"
-
 #include "ipxactmodels_global.h"
 
 #include <IPXACTmodels/NameGroup.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Array.h>
 
 #include <QString>
 #include <QDomNode>
@@ -470,6 +470,34 @@ public:
      */
     bool isAdHocVisible() const;
 
+    /*!
+     *  Gets the left value of the array.
+     *
+     *      @return The left value of the array.
+     */
+    QString getArrayLeft() const;
+
+    /*!
+     *  Sets the left value for the array.
+     *
+     *      @param [in] newArrayLeft    The value to be set as left.
+     */
+    void setArrayLeft(QString const& newArrayLeft);
+
+    /*!
+     *  Gets the right value of the array.
+     *
+     *      @return The right value of the array.
+     */
+    QString getArrayRight() const;
+
+    /*!
+     *  Sets the right value for the array.
+     *
+     *      @param [in] newArrayRight   The value to be set as right.
+     */
+    void setArrayRight(QString const& newArrayRight);
+
 private:
 
     /*!
@@ -486,9 +514,32 @@ private:
      */
     void copyVendorExtensions(Port const& other);
 
+    /*!
+     *  Create the ad hoc visibility extension.
+     */
     void createAdHocVisibleExtension();
+
+    /*!
+     *  Creates the port position extension.
+     */
     void createPositionExtension();
-	//! \brief Contains the name, display name and description for the port.
+	
+    /*!
+     *  Create the array extension using the given dom node.
+     *
+     *      @param [in] arrayExtensionNode  The dom node for array extension.
+     */
+    void createArrayExtensionFromExtensionNode(QDomNode arrayExtensionNode);
+
+    /*!
+     *  Creates the array extension.
+     *
+     *      @param [in] left    Value for the left side of the array.
+     *      @param [in] right   Value for the right side of the array.
+     */
+    void createArrayExtension(QString const& left, QString const& right);
+
+    //! \brief Contains the name, display name and description for the port.
 	NameGroup nameGroup_;
 
 	/*!
@@ -519,9 +570,14 @@ private:
 	 */
 	QString portAccessType_;
 
+    //! The extension for ad hoc visibility
     QSharedPointer<Kactus2Placeholder> adHocVisible_;
 
+    //! The extension for the default position.
     QSharedPointer<Kactus2Position> defaultPos_;
+
+    //! The extension for the array.
+    QSharedPointer<Kactus2Array> configurableArray_;
 
 	/*!
 	 * OPTIONAL (spirit: vendorExtensions)

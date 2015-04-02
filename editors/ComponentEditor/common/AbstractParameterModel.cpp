@@ -271,7 +271,8 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
 
             parameter->setAttribute("kactus2:arrayLeft", value.toString());
 
-            if (value.isValid() && parameter->getAttribute("kactus2:arrayRight").isEmpty())
+            if (value.isValid() && parameter->getAttribute("kactus2:arrayRight").isEmpty() &&
+                !parameter->getAttribute("kactus2:arrayLeft").isEmpty())
             {
                 parameter->setAttribute("kactus2:arrayRight", QString::number(0));
             }
@@ -288,7 +289,8 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
 
             parameter->setAttribute("kactus2:arrayRight", value.toString());
 
-            if (value.isValid() && parameter->getAttribute("kactus2:arrayLeft").isEmpty())
+            if (value.isValid() && parameter->getAttribute("kactus2:arrayLeft").isEmpty() &&
+                !parameter->getAttribute("kactus2:arrayRight").isEmpty())
             {
                 parameter->setAttribute("kactus2:arrayLeft", QString::number(0));
             }

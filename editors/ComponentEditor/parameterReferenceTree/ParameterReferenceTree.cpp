@@ -292,9 +292,9 @@ bool ParameterReferenceTree::referenceExistsInPorts()
 //-----------------------------------------------------------------------------
 bool ParameterReferenceTree::portHasreference(QSharedPointer<Port> port)
 {
-    if (port->getLeftBoundExpression().contains(targetID_) || 
-        port->getRightBoundExpression().contains(targetID_) || 
-        port->getDefaultValue().contains(targetID_))
+    if (port->getLeftBoundExpression().contains(targetID_) ||
+        port->getRightBoundExpression().contains(targetID_) || port->getDefaultValue().contains(targetID_) ||
+        port->getArrayLeft().contains(targetID_) || port->getArrayRight().contains(targetID_))
     {
         return true;
     }
@@ -764,6 +764,18 @@ void ParameterReferenceTree::createItemsForPort(QSharedPointer<Port> port, QTree
     {
         QString itemName = "Default Value";
         QString expression = port->getDefaultValue();
+        createItem(itemName, expression, parent);
+    }
+    if (port->getArrayLeft().contains(targetID_))
+    {
+        QString itemName = "Array Left";
+        QString expression = port->getArrayLeft();
+        createItem(itemName, expression, parent);
+    }
+    if (port->getArrayRight().contains(targetID_))
+    {
+        QString itemName = "Array Right";
+        QString expression = port->getArrayRight();
         createItem(itemName, expression, parent);
     }
 }

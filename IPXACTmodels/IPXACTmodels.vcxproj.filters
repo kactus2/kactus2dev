@@ -368,6 +368,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_BinaryValidator.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="kactusExtensions\Kactus2Array.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ipxactmodels_global.h">
@@ -674,6 +677,9 @@
       <Filter>Header Files\kactusExtensions</Filter>
     </ClInclude>
     <ClInclude Include="kactusExtensions\ModuleParameter.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\Kactus2Array.h">
       <Filter>Header Files\kactusExtensions</Filter>
     </ClInclude>
   </ItemGroup>

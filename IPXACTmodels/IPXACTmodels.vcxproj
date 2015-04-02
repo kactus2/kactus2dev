@@ -202,6 +202,7 @@
     <ClCompile Include="Interconnection.cpp" />
     <ClCompile Include="Interface.cpp" />
     <ClCompile Include="kactusExtensions\ComponentInstantiation.cpp" />
+    <ClCompile Include="kactusExtensions\Kactus2Array.cpp" />
     <ClCompile Include="kactusExtensions\Kactus2Group.cpp" />
     <ClCompile Include="kactusExtensions\Kactus2Placeholder.cpp" />
     <ClCompile Include="kactusExtensions\Kactus2Position.cpp" />
@@ -307,6 +308,7 @@
     <ClInclude Include="Interface.h" />
     <ClInclude Include="ipxactmodels_global.h" />
     <ClInclude Include="kactusExtensions\ComponentInstantiation.h" />
+    <ClInclude Include="kactusExtensions\Kactus2Array.h" />
     <ClInclude Include="kactusExtensions\Kactus2Group.h" />
     <ClInclude Include="kactusExtensions\Kactus2Placeholder.h" />
     <ClInclude Include="kactusExtensions\Kactus2Position.h" />
