@@ -13,10 +13,9 @@
       ports.
     </p>
     <p>
-      <b>Port name</b> is a
-      unique identifier and must match the name of the port in the
-      implementation language. For example, the ports listed in the
-      VHDL entity declaration are listed here.
+      <b>Port name</b> is a unique identifier and must match
+      the name of the port in the implementation language. For example,
+      the ports listed in the VHDL entity declaration are listed here.
     </p>
     <p>
       <b>Direction</b> has four options:
@@ -43,8 +42,8 @@
       'std_logic_vector' for vectored ports (multibit). 
     </p>
     <p>
-      The <b>type definition</b> is a language specific reference to 
-      where the type is defined, e.g. package or header file. Type 
+      The <b>type definition</b> is an optional language specific reference
+      to where the type is defined, e.g. package or header file. Type 
       definition will be included at the beginnig of the generated top-level
       code. In VHDL, 'std_logic' types are defined in
       'IEEE.std_logic_1164.all' ('all' means that the whole package is
@@ -53,11 +52,19 @@
       is not set.
     </p>
     <p>
-      <b>Default value</b> is useful since it assigns a value for an
-      unconnected (input) port. This is used, for example, when
+      <b>Default value</b> is optional and can be used to assign a value for 
+      an unconnected (input) port. This is used, for example, when
       generating a structural top-level VHDL for the hierarchical
       component where some input ports are not connected any other
-      port in the design. Textual <b>description</b> is also optional.
+      port in the design.
+    </p>
+    <p>
+      <b>Array left</b> and <b>array right</b> are optional Kactus2 extensions.
+      They define the indices of an array port. The values can be given as an 
+      equation, but it must resolve into a decimal number. 
+      If either value is given, the port is considered to be of an array type.
+      <br>
+      <img src="../images/appicon.png" alt="Kactus-extension">
     </p>
     <p>
       <b>Ad-hoc</b> column is a Kactus2-specific extension which is used
@@ -76,6 +83,9 @@
       displays 2 ad-hoc ports: rx_av_in and led_out.
     </p>
     <p>
+      <b>Description</b> is an optional free text for further details.
+    </p>
+    <p>
       Ports editor provides a context menu (right mouse button) that
       contains following options:
     </p>
@@ -85,6 +95,8 @@
       <li>Clear the selected cells</li>
       <li>Copy the contents of the selected cells to clipboard</li>
       <li>Paste the contents of the clipboard to the selected cells</li>
+      <li>New Bus Interface creates a new bus interface in the component
+        using the currently selected ports</li>
       <li>Import a csv-file to the editor</li>
       <li>Export the contents of the editor to a csv-file</li>
     </ul>

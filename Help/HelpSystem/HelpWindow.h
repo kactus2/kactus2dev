@@ -62,15 +62,6 @@ private:
     //! Dock widget for table of contents.
     QDockWidget* tocDock_;
 
-    //! Dock widget for index.
-    //QDockWidget* indexDock_;
-
-    //! The search widget.
-    //HelpSearchWidget* searchWidget_;
-
-    //! Dock widget for search.
-    //QDockWidget* searchDock_;
-
     //! The help browser.
     ContextHelpBrowser* browser_;
 };
