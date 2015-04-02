@@ -55,6 +55,8 @@ private slots:
 
     void testParameterInParameterDeclaration();
 
+    void testParameterInParameterArray();
+
     void testSemicolonInComments(); //<! Issue #203.
     
     void testParameterNotFoundInFileIsRemoved();
@@ -618,6 +620,31 @@ void tst_VerilogImporter::testParameterInParameterDeclaration()
 
     QCOMPARE(second->getValue(), first->getValueId());
     QCOMPARE(first->getUsageCount(), 1);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogImporter::testParameterInParameterArray()
+//-----------------------------------------------------------------------------
+void tst_VerilogImporter::testParameterInParameterArray()
+{
+    runParser(
+        "module test #(\n"
+        "   parameter arraySize = 4,\n"
+        "   parameter arrayOffset = 0,\n"
+        "   parameter bit [arraySize-1:arrayOffset] [7:0] second = first)\n"
+        "();\n"
+        "endmodule");
+
+
+    QSharedPointer<ModelParameter> first = importComponent_->getModelParameters()->first();
+    QSharedPointer<ModelParameter> second = importComponent_->getModelParameters()->at(1);
+    QSharedPointer<ModelParameter> last = importComponent_->getModelParameters()->last();
+
+    QCOMPARE(last->getAttribute("kactus2:arrayLeft"), first->getValueId() + "-1");
+    QCOMPARE(last->getAttribute("kactus2:arrayRight"), second->getValueId());
+    QCOMPARE(last->getBitWidth(), QString("8"));
+    QCOMPARE(first->getUsageCount(), 1);
+    QCOMPARE(second->getUsageCount(), 1);
 }
 
 //-----------------------------------------------------------------------------

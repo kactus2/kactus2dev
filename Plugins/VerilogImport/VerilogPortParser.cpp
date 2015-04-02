@@ -52,7 +52,8 @@ namespace
 
     //! Verilog ports in both ANSI-C and Verilog-1995 style.
     const QRegularExpression PORT_EXP("(" + PORT_DIRECTION + ")\\s+(?:(" + PORT_TYPE + ")\\s+)?(?:signed)?\\s*"
-        "(" + VerilogSyntax::RANGE + ")?\\s*(" + VerilogSyntax::NAMES + ")(?:" + PORT_DECLARATION_END + ")");
+        "(?:(" + VerilogSyntax::RANGE +")?\\s*(" + VerilogSyntax::RANGE + "))?\\s*"
+        "(" + VerilogSyntax::NAMES + ")(?:" + PORT_DECLARATION_END + ")");
 
     //! Verilog ports in Verilog-1995 style.
     const QRegularExpression PORT_1995("(" + PORT_DIRECTION + ")\\s+(" + VerilogSyntax::RANGE + ")?\\s*"
@@ -247,8 +248,8 @@ void VerilogPortParser::createPortFromDeclaration(QString const& portDeclaration
     QString type = PORT_EXP.match(portDeclaration).captured(2);
     QString typeDefinition;
 
-    QString leftBound = parseLeftBound(portDeclaration, targetComponent);
-    QString lowerBound = parseRightBound(portDeclaration, targetComponent);
+    QPair<QString, QString> vectorBounds = parseVectorBounds(portDeclaration, targetComponent);
+    QPair<QString, QString> arrayBounds = parseArrayBounds(portDeclaration, targetComponent);
 
     QStringList portNames = parsePortNames(portDeclaration);
 
@@ -270,12 +271,14 @@ void VerilogPortParser::createPortFromDeclaration(QString const& portDeclaration
 
         port->setName(name);
         port->setDirection(direction);
-        port->setLeftBound(parser_->parseExpression(leftBound).toInt());
-        port->setRightBound(parser_->parseExpression(lowerBound).toInt());
-        port->setLeftBoundExpression(leftBound);
-        port->setRightBoundExpression(lowerBound);
+        port->setLeftBound(parser_->parseExpression(vectorBounds.first).toInt());
+        port->setRightBound(parser_->parseExpression(vectorBounds.second).toInt());
+        port->setLeftBoundExpression(vectorBounds.first);
+        port->setRightBoundExpression(vectorBounds.second);
         port->setTypeName(type);
         port->setTypeDefinition(type, typeDefinition);
+        port->setArrayLeft(arrayBounds.first);
+        port->setArrayRight(arrayBounds.second);
         port->setDescription(description);
     }
 }
@@ -316,43 +319,34 @@ General::Direction VerilogPortParser::parseDirection(QString const& portDeclarat
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogPortParser::parseLeftBound()
+// Function: VerilogPortParser::parseArrayBounds()
 //-----------------------------------------------------------------------------
-QString VerilogPortParser::parseLeftBound(QString const& portDeclaration, 
+QPair<QString, QString> VerilogPortParser::parseArrayBounds(QString const& portDeclaration,
     QSharedPointer<Component> targetComponent) const
 {
-    QString bounds = PORT_EXP.match(portDeclaration).captured(3);
+    QString vectorBounds = PORT_EXP.match(portDeclaration).captured(3);
 
-    QRegularExpression boundedExp("\\[(" + VerilogSyntax::TERM + ")\\s*[:]\\s*(" + VerilogSyntax::TERM + ")\\]");
+    return parseLeftAndRight(vectorBounds, targetComponent);
+}
 
-    QString leftBound = 0;
+//-----------------------------------------------------------------------------
+// Function: VerilogPortParser::parseLeftAndRight()
+//-----------------------------------------------------------------------------
+QPair<QString, QString> VerilogPortParser::parseLeftAndRight(QString const& bounds,
+    QSharedPointer<Component> targetComponent) const
+{
+    QString leftBound = "";
+    QString rightBound = "";
+
     if (!bounds.isEmpty())
     {
-        leftBound = boundedExp.match(bounds).captured(1);
+        leftBound = VerilogSyntax::CAPTURING_RANGE.match(bounds).captured(1);
+        rightBound = VerilogSyntax::CAPTURING_RANGE.match(bounds).captured(2);
 
         if (!parser_->isValidExpression(leftBound))
         {
             leftBound = replaceModelParameterNamesWithIds(leftBound, targetComponent);
         }
-    }     
-
-     return leftBound;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogPortParser::parseRightBound()
-//-----------------------------------------------------------------------------
-QString VerilogPortParser::parseRightBound(QString const& portDeclaration, 
-    QSharedPointer<Component> targetComponent) const
-{
-    QString bounds = PORT_EXP.match(portDeclaration).captured(3);
-
-    QRegularExpression boundedExp("\\[(" + VerilogSyntax::TERM + ")\\s*[:]\\s*(" + VerilogSyntax::TERM + ")\\]");
-
-    QString rightBound = 0;
-    if (!bounds.isEmpty())
-    {
-        rightBound = boundedExp.match(bounds).captured(2);
 
         if (!parser_->isValidExpression(rightBound))
         {
@@ -360,7 +354,18 @@ QString VerilogPortParser::parseRightBound(QString const& portDeclaration,
         }
     }
 
-    return rightBound;
+    return qMakePair(leftBound, rightBound);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogPortParser::parseVectorBounds()
+//-----------------------------------------------------------------------------
+QPair<QString, QString> VerilogPortParser::parseVectorBounds(QString const& portDeclaration,
+    QSharedPointer<Component> targetComponent) const
+{
+    QString vectorBounds = PORT_EXP.match(portDeclaration).captured(4);
+
+    return parseLeftAndRight(vectorBounds, targetComponent);
 }
 
 //-----------------------------------------------------------------------------
@@ -409,7 +414,7 @@ QString VerilogPortParser::replaceModelParameterNamesWithIds(QString const& expr
 //-----------------------------------------------------------------------------
 QStringList VerilogPortParser::parsePortNames(QString const& portDeclaration) const
 {
-    QString names = PORT_EXP.match(portDeclaration).captured(4);
+    QString names = PORT_EXP.match(portDeclaration).captured(5);
     
     return names.split(QRegularExpression("\\s*[,]\\s*"), QString::SkipEmptyParts);
 }
@@ -422,3 +427,4 @@ QString VerilogPortParser::parseDescription(QString const& portDeclaration) cons
     QRegularExpression commentExp(VerilogSyntax::COMMENT);
     return commentExp.match(portDeclaration).captured(1).trimmed();
 }
+

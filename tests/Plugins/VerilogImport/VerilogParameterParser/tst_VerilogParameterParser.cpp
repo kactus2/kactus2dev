@@ -655,17 +655,24 @@ void tst_VerilogParameterParser::braces()
 void tst_VerilogParameterParser::twoDimensional()
 {
     QString input = "module shifter #(\n"
-        "parameter bit [count:1][2:0] shift_type      = '{3'b001}, //joku\n"
-        "parameter bit [count:1][1:0] mask             = '{2'b00},\n"
+        "parameter bit          [7:0] shift_type      = '{3'b001}, //joku\n"
+        "parameter bit [count:0][1:0] mask            = '{2'b00},\n"
         ") (\n";
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
 
     QList<QSharedPointer<ModelParameter> > parameters = parser.parseParameters(declarations[0]);
+
     verifyParameter( parameters[0], "shift_type", "'{3'b001}", "bit", "joku" );
+    QCOMPARE(parameters[0]->getBitWidth(),QString("8"));
+    QCOMPARE(parameters[0]->getAttribute("kactus2:arrayLeft"),QString(""));
+    QCOMPARE(parameters[0]->getAttribute("kactus2:arrayRight"),QString(""));
+
     parameters.append(parser.parseParameters(declarations[1]));
     verifyParameter( parameters[1], "mask", "'{2'b00}", "bit", "" );
+    QCOMPARE(parameters[1]->getAttribute("kactus2:arrayLeft"),QString("count"));
+    QCOMPARE(parameters[1]->getAttribute("kactus2:arrayRight"),QString("0"));
 }
 
 void tst_VerilogParameterParser::closerOnLine()
@@ -680,8 +687,16 @@ void tst_VerilogParameterParser::closerOnLine()
 
     QList<QSharedPointer<ModelParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "shift_type", "'{3'b001}", "bit", "joku" );
+    QCOMPARE(parameters[0]->getBitWidth(),QString("3"));
+    QCOMPARE(parameters[0]->getAttribute("kactus2:arrayLeft"),QString("count"));
+    QCOMPARE(parameters[0]->getAttribute("kactus2:arrayRight"),QString("1"));
+
     parameters.append(parser.parseParameters(declarations[1]));
     verifyParameter( parameters[1], "mask", "'{2'b00}", "bit", "" );
+    QCOMPARE(parameters[1]->getBitWidth(),QString("2"));
+    QCOMPARE(parameters[1]->getAttribute("kactus2:arrayLeft"),QString("count"));
+    QCOMPARE(parameters[1]->getAttribute("kactus2:arrayRight"),QString("1"));
+
 }
 
 void tst_VerilogParameterParser::closerOnLineDescribedparentheses()

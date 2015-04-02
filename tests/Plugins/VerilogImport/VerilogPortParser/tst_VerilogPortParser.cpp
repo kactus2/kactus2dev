@@ -52,6 +52,9 @@ public:
         void testEquationAsPortBound();
         void testEquationAsPortBound_data();
 
+        void testArrayPort();
+        void testArrayPort_data();
+
         void testMacroInBoundsIsParsed();
         void testMacroInBoundsIsParsed_data();
 private:
@@ -724,6 +727,96 @@ void tst_VerilogPortParser::testEquationAsPortBound_data()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_VerilogPortParser::testArrayPort()
+//-----------------------------------------------------------------------------
+void tst_VerilogPortParser::testArrayPort()
+{
+    QSharedPointer<Parameter> macroDefinition(new Parameter());
+    macroDefinition->setName("WIDTH");
+    macroDefinition->setValue("16");
+    macroDefinition->setValueId("macroId");
+    importComponent_->getParameters()->append(macroDefinition);
+
+    QFETCH(QString, fileContent);
+    QFETCH(QString, expectedLeftExpression);
+    QFETCH(QString, expectedRightExpression);
+
+    runParser(fileContent);
+
+    QVERIFY2(importComponent_->getPorts().count() != 0, "No ports parsed from input.");
+
+    QSharedPointer<Port> createdPort = importComponent_->getPorts().first();
+    QCOMPARE(createdPort->getArrayLeft(), expectedLeftExpression);
+    QCOMPARE(createdPort->getArrayRight(), expectedRightExpression);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogPortParser::testArrayPort_data()
+//-----------------------------------------------------------------------------
+void tst_VerilogPortParser::testArrayPort_data()
+{
+    QTest::addColumn<QString>("fileContent");
+    QTest::addColumn<QString>("expectedLeftExpression");
+    QTest::addColumn<QString>("expectedRightExpression");
+
+    QTest::newRow("No array bounds, only vector bounds") <<
+        "module test(\n"
+        "    input bit [7:0] data\n"
+        ");\n"
+        "endmodule\n"
+        << "" << "";
+
+    QTest::newRow("Constants as array bounds") <<
+        "module test(\n"
+        "    input bit [7:0] [0:0] data\n"
+        ");\n"
+        "endmodule\n"
+        << "7" << "0";
+
+    QTest::newRow("Expression as array bounds") <<
+        "module test(\n"
+        "    input bit [2**4:1] [0:0] data\n"
+        ");\n"
+        "endmodule\n"
+        << "2**4" << "1";
+
+    QTest::newRow("Expression with parenthesis as array bounds") <<
+        "module test(\n"
+        "    input bit [2*(8+8-1):1] [0:0] data\n"
+        ");\n"
+        "endmodule\n"
+        << "2*(8+8-1)" << "1";
+
+    QTest::newRow("Macro in left array bound") <<
+        "module test(\n"
+        "    input [`WIDTH:0] [7:0] data\n"
+        ");\n"
+        "endmodule\n"
+        << "macroId" << "0";
+
+    QTest::newRow("Macro in left v expression") <<
+        "module test(\n"
+        "    input [8+`WIDTH:0] [7:0] data\n"
+        ");\n"
+        "endmodule\n"
+        << "8+macroId" << "0";
+
+    QTest::newRow("Macro in right array bound") <<
+        "module test(\n"
+        "    input [0:`WIDTH] [7:0] data\n"
+        ");\n"
+        "endmodule\n"
+        << "0" << "macroId";
+
+    QTest::newRow("Macro in right array expression") <<
+        "module test(\n"
+        "    input [0:2*`WIDTH] [7:0] data\n"
+        ");\n"
+        "endmodule\n"
+        << "0" << "2*macroId";
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_VerilogPortParser::testMacroInBoundsIsParsed()
 //-----------------------------------------------------------------------------
 void tst_VerilogPortParser::testMacroInBoundsIsParsed()
@@ -762,34 +855,33 @@ void tst_VerilogPortParser::testMacroInBoundsIsParsed_data()
     QTest::addColumn<QString>("expectedLeftExpression");
     QTest::addColumn<QString>("expectedRightExpression");
 
-    QTest::newRow("Macro in left bound") <<
+    QTest::newRow("Macro in left vector bound") <<
         "module test(\n"
         "    input [`WIDTH:0] data\n"
         ");\n"
         "endmodule\n"
         << 16 << 0 << "macroId" << "0";
 
-    QTest::newRow("Macro in left expression") <<
+    QTest::newRow("Macro in left vector expression") <<
         "module test(\n"
         "    input [8+`WIDTH:0] data\n"
         ");\n"
         "endmodule\n"
         << 24 << 0 << "8+macroId" << "0";
 
-    QTest::newRow("Macro in right bound") <<
+    QTest::newRow("Macro in right vector bound") <<
         "module test(\n"
         "    input [0:`WIDTH] data\n"
         ");\n"
         "endmodule\n"
         << 0 << 16 << "0" << "macroId";
 
-    QTest::newRow("Macro in right expression") <<
+    QTest::newRow("Macro in right vector expression") <<
         "module test(\n"
         "    input [0:2*`WIDTH] data\n"
         ");\n"
         "endmodule\n"
         << 0 << 32 << "0" << "2*macroId";
-
 }
 
 QTEST_APPLESS_MAIN(tst_VerilogPortParser)
